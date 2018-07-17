@@ -1,0 +1,193 @@
+"aa" = (/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"ab" = (/obj/structure/wild/tree,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"ac" = (/turf/floor/dirt,/area/prishtina/german/bunker)
+"ad" = (/turf/floor/wood,/area/prishtina/german/bunker)
+"ae" = (/turf/wall/wood,/area/prishtina/german/bunker)
+"af" = (/obj/structure/barricade/steel,/obj/structure/window/classic,/turf/floor/wood,/area/prishtina/german/bunker)
+"ag" = (/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/turf/floor/wood,/area/prishtina/german/bunker)
+"ah" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/sausage,/obj/item/weapon/reagent_containers/food/snacks/sausage,/turf/floor/wood,/area/prishtina/german/bunker)
+"ai" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/spaghetti,/turf/floor/wood,/area/prishtina/german/bunker)
+"aj" = (/obj/item/weapon/gun/projectile/pistol/luger,/turf/floor/wood,/area/prishtina/german/bunker)
+"ak" = (/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"al" = (/obj/structure/pot,/turf/floor/wood,/area/prishtina/german/bunker)
+"am" = (/obj/structure/oven,/turf/floor/wood,/area/prishtina/german/bunker)
+"an" = (/obj/effect/decal/cleanable/dirt,/turf/floor/wood,/area/prishtina/german/bunker)
+"ao" = (/obj/item/ammo_magazine/luger,/turf/floor/wood,/area/prishtina/german/bunker)
+"ap" = (/obj/item/trash/snack_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood,/area/prishtina/german/bunker)
+"aq" = (/obj/effect/decal/cleanable/dirt,/obj/item/stack/material/wood{amount = 20},/turf/floor/wood,/area/prishtina/german/bunker)
+"ar" = (/obj/item/trash/snack_bowl,/turf/floor/wood,/area/prishtina/german/bunker)
+"as" = (/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"at" = (/obj/effect/landmark{name = "JoinLateCivilian"},/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"au" = (/obj/structure/window/sandbag,/turf/floor/wood,/area/prishtina/german/bunker)
+"av" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled,/turf/floor/wood,/area/prishtina/german/bunker)
+"aw" = (/obj/effect/decal/cleanable/dirt,/obj/structure/window/sandbag,/turf/floor/wood,/area/prishtina/german/bunker)
+"ax" = (/obj/item/flashlight/lantern,/turf/floor/wood,/area/prishtina/german/bunker)
+"ay" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/prishtina/german/bunker)
+"az" = (/obj/structure/wild/tree,/turf/floor/dirt,/area/prishtina/german/bunker)
+"aA" = (/obj/item/flashlight/lantern,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"aB" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"aC" = (/obj/effect/decal/cleanable/dirt,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"aD" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"aE" = (/obj/item/weapon/grenade/explosive/rgd,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"aF" = (/obj/item/ammo_magazine/kar98k,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"aG" = (/turf/floor/plating/dirt,/area/prishtina/german/bunker)
+"aH" = (/obj/effect/decal/cleanable/dirt,/turf/wall/wood,/area/prishtina/german/bunker)
+"aI" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"aJ" = (/obj/item/weapon/gun/projectile/boltaction/kar98k,/turf/floor/wood,/area/prishtina/german/bunker)
+"aK" = (/obj/item/ammo_magazine/kar98k,/turf/floor/wood,/area/prishtina/german/bunker)
+"aL" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/crowbar,/turf/floor/wood,/area/prishtina/german/bunker)
+"aM" = (/obj/structure/bed/chair/wood/red,/turf/floor/wood,/area/prishtina/german/bunker)
+"aN" = (/obj/item/weapon/grenade/explosive/l2a2,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"aO" = (/mob/living/simple_animal/hostile/commanded/bear,/turf/floor/dirt,/area/prishtina/german/bunker)
+"aP" = (/obj/item/ammo_magazine/kar98k,/obj/item/weapon/gun/projectile/boltaction/kar98k,/turf/floor/dirt,/area/prishtina/german/bunker)
+"aQ" = (/obj/item/weapon/grenade/explosive/rgd,/turf/floor/wood,/area/prishtina/german/bunker)
+"aR" = (/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"aS" = (/obj/effect/decal/cleanable/dirt,/turf/floor/dirt,/area/prishtina/german/bunker)
+"aT" = (/obj/item/ammo_magazine/kar98k,/turf/floor/dirt,/area/prishtina/german/bunker)
+"aU" = (/obj/item/weapon/beartrap{deployed = 1},/turf/floor/wood,/area/prishtina/german/bunker)
+"aV" = (/obj/item/weapon/beartrap{deployed = 1},/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"aW" = (/obj/item/flashlight/lantern,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"aX" = (/obj/item/weapon/storage/backpack/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"aY" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/gun/projectile/boltaction/kar98k,/turf/floor/wood,/area/prishtina/german/bunker)
+"aZ" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/wood,/area/prishtina/german/bunker)
+"ba" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/obj/item/weapon/grenade/explosive/rgd,/obj/item/weapon/storage/backpack/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"bb" = (/obj/effect/decal/cleanable/dirt,/mob/living/simple_animal/hostile/commanded/bear,/turf/floor/wood,/area/prishtina/german/bunker)
+"bc" = (/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood,/area/prishtina/german/bunker)
+"bd" = (/obj/item/flashlight/lantern,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood,/area/prishtina/german/bunker)
+"be" = (/obj/item/weapon/reagent_containers/food/condiment/flour,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bf" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/dirt,/area/prishtina/german/bunker)
+"bg" = (/obj/effect/decal/cleanable/dirt,/obj/item/trash/snack_bowl,/turf/floor/wood,/area/prishtina/german/bunker)
+"bh" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/storage/backpack/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"bi" = (/obj/effect/decal/cleanable/dirt,/obj/item/trash/snack_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bj" = (/obj/item/weapon/reagent_containers/food/condiment/flour,/turf/floor/wood,/area/prishtina/german/bunker)
+"bk" = (/obj/structure/barricade/steel,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bl" = (/obj/item/weapon/crowbar,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bm" = (/obj/item/ammo_magazine/luger,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bn" = (/obj/item/weapon/gun/projectile/pistol/luger,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bo" = (/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bp" = (/obj/item/weapon/flammenwerfer_fueltank,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bq" = (/obj/item/weapon/storage/backpack/flammenwerfer,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"br" = (/obj/item/weapon/gun/projectile/boltaction/kar98k,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bs" = (/obj/item/clothing/accessory/holster/hip,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bt" = (/obj/effect/landmark{name = "JoinLateCivilian"},/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bu" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled,/turf/floor/wood,/area/prishtina/german/bunker)
+"bv" = (/turf/floor/plating/beach/water/sewage,/area/prishtina/german/bunker)
+"bw" = (/obj/structure/wild/tree,/obj/structure/barricade/steel,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bx" = (/obj/structure/barbwire,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"by" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bz" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"bA" = (/obj/structure/barricade/steel,/obj/structure/window/classic,/obj/structure/barbwire,/turf/floor/wood,/area/prishtina/german/bunker)
+"bB" = (/obj/item/weapon/reagent_containers/food/snacks/spaghetti,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bC" = (/obj/structure/wild/tree,/obj/structure/barbwire,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bD" = (/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood,/area/prishtina/german/bunker)
+"bE" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/sausage,/obj/item/weapon/reagent_containers/food/snacks/sausage,/obj/item/weapon/reagent_containers/food/snacks/sausage,/obj/item/weapon/reagent_containers/food/snacks/sausage,/obj/item/weapon/reagent_containers/food/snacks/sausage,/obj/item/weapon/reagent_containers/food/snacks/sausage,/turf/floor/wood,/area/prishtina/german/bunker)
+"bF" = (/obj/structure/barbwire,/obj/structure/barbwire,/turf/floor/dirt,/area/prishtina/german/bunker)
+"bG" = (/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bH" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/obj/item/flashlight/lantern,/turf/floor/wood,/area/prishtina/german/bunker)
+"bI" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bJ" = (/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/wood,/area/prishtina/german/bunker)
+"bK" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bL" = (/obj/item/weapon/reagent_containers/food/snacks/spaghetti,/turf/floor/wood,/area/prishtina/german/bunker)
+"bM" = (/obj/structure/window/sandbag{tag = "icon-sandbag (NORTH)"; icon_state = "sandbag"; dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/wood,/area/prishtina/german/bunker)
+"bN" = (/obj/structure/barbwire,/turf/floor/dirt,/area/prishtina/german/bunker)
+"bO" = (/obj/effect/decal/cleanable/dirt,/obj/effect/landmark{name = "JoinLateCivilian"},/turf/floor/wood,/area/prishtina/german/bunker)
+"bP" = (/obj/structure/wild/tree,/obj/structure/wild/tree,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bQ" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/storage/backpack/german,/obj/item/flashlight/lantern,/turf/floor/wood,/area/prishtina/german/bunker)
+"bR" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/boltaction/kar98k,/turf/floor/wood,/area/prishtina/german/bunker)
+"bS" = (/obj/effect/decal/cleanable/dirt,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/prishtina/german/bunker)
+"bT" = (/obj/structure/closet/crate/sandbags,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bU" = (/obj/effect/decal/cleanable/dirt,/obj/item/flashlight/lantern,/turf/floor/wood,/area/prishtina/german/bunker)
+"bV" = (/obj/structure/table/wood,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"bW" = (/obj/structure/table/wood,/obj/item/weapon/grenade/explosive/l2a2,/obj/item/weapon/grenade/explosive/l2a2,/obj/item/weapon/grenade/explosive/l2a2,/turf/floor/wood,/area/prishtina/german/bunker)
+"bX" = (/obj/structure/table/wood,/obj/item/weapon/storage/backpack/flammenwerfer,/turf/floor/wood,/area/prishtina/german/bunker)
+"bY" = (/obj/map_metadata/pillar,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"bZ" = (/obj/structure/table/wood,/obj/item/weapon/flammenwerfer_fueltank,/turf/floor/wood,/area/prishtina/german/bunker)
+"ca" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/obj/effect/landmark{name = "JoinLateCivilian"},/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"cb" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled,/obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled,/obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled,/obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled,/obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled,/turf/floor/wood,/area/prishtina/german/bunker)
+"cc" = (/obj/item/flashlight/flare/nighttime,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"cd" = (/obj/structure/wild/tree,/turf/floor/plating/dirt,/area/prishtina/german/bunker)
+"ce" = (/obj/structure/closet/crate/wood,/turf/floor/plating/grass/wild,/area/prishtina/german/bunker)
+"cf" = (/obj/structure/multiz/ladder/ww2/manhole{area_id = "sewers2"},/turf/floor/plating/beach/water/sewage,/area/prishtina/german/bunker)
+"cg" = (/obj/item/flashlight/flare/nighttime,/turf/floor/wood,/area/prishtina/german/bunker)
+"ch" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/german/bunker)
+"ci" = (/obj/effect/decal/cleanable/dirt,/obj/item/flashlight/lantern,/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"cj" = (/obj/effect/landmark{name = "JoinLateCivilian"},/turf/floor/wood,/area/prishtina/german/bunker)
+"ck" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/german/bunker)
+"cl" = (/obj/effect/decal/cleanable/dirt,/obj/effect/landmark{name = "JoinLateCivilian"},/turf/floor/wood_broken,/area/prishtina/german/bunker)
+"cm" = (/obj/effect/decal/cleanable/dirt,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood,/area/prishtina/german/bunker)
+"cs" = (/obj/effect/decal/cleanable/dirt,/obj/structure/multiz/ladder/ww2/manhole{area_id = "sewers1"},/turf/floor/wood,/area/prishtina/german/bunker)
+"cv" = (/obj/item/flashlight/lantern,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood,/area/prishtina/german/bunker)
+"cw" = (/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood,/area/prishtina/german/bunker)
+
+(1,1,1) = {"
+aaaaabacacaaabaaaaabaaaeaeaeaeaeaeaeaeaeaEaFabaeaeaeaeaeaeaeaeaeaeabaaaaaaaaaaaeaHaeacacacacacaeaeaeaeaeaeaaaaaaaaaaaaaaabaaababaaaaaaaaaaaa
+abababacacacabaaababaaafagahaiajakalamaeaaaFabaeaIadaJadaKaLaMalaeabaNaaaaaaaaaeananacaKaOaPaQaKadaKadadaeaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaa
+ababacacaaatabaaabaaaaaeakadanaoavcmapaeaaababafaRadaKadaKadaCamafabaaaaaaaaaaafadanaSadadacaTadakadanaUayaaacaaacacabaaaaaaaaaaababaaaaaaaa
+aaabacacacaaabababaaaaaeadaqaobtarasadaeaVababaeadaWadaXadaYadahaeabaaaaaaaaaaaeadadaZbaacakadadbbanadaUayaaacaaaaacaaaaaaacaaaaaaabaaaaaaaa
+aaabaaaaacabababaaaaaaaeakauadadawadaxaeaaaaabaeanaBbcbdbeadakahaeababbYaaaaaaaeadadadbfaZacadaCaZadadadaeaaacaaaaaaaaacacacacacaaababaaaaaa
+aaababacacabababaaaaaaaeaeafaeaeafaeayaeaaaVabafbuarbgbgbtcvanahafaaabaaaaaaaaaeadakadaCaZaSanbhadadadadafaaaaaaaaaaacacacaaacaaacaaabaaaaaa
+aaaaabacaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaababaebuaCbiaqadakanbjaeaaaaaaabaaaaaeadadanananaCanaZacadadadaeaaazaaaaaaaaaaaaaaaaaaacaaabaaaaaa
+aaaaabacacacacaaaaaaacaaaaacaaaaaaaaacaaababaaaebububuadauauauadaeaaaaaaabaaaaaeadanaSanaCadaCanaSadadadafaaaaaaaaabaaaaaaaaacacacaaabaaaaaa
+aaababacacaaaaacaaacaaaaacaaaaacaaacaaaaabaaaaaeaeaeayaeafafafaeaeaaaaababaaaaafadaCanadadadanadadananadaeaaaaaaaaaaabababacacacacaaabaaaaaa
+aaazacacaaabaaabababaaaaaaaaaaaaaaaaaaababaaaaaaaaaabkaaacaaaaaaaaaaaaabaaaaaaaeadadadadadakadadadadanadafaaaaaaabababaaacacacaaababaaaaaaaa
+aaazacacaaabaaaaaaabababababababababababaaaaaaaaaaaaaaacaaaaaaaaaaaaaaaaabaaaaaeaeafaeafaeaeafaeafaeafaeaeaaaaababaaacacacababababaaaaaaaaaa
+aaaaabacacababaaaaaaaeaeafaeaeaeaeaeafaeaeaaaaaaaaaaaaaAaaaaaaaaaablaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababacacacabababaaaaaaaaaaaaaaaa
+aaaaabacacaaabaaaaaaaeadaxananadadadadadaeaaaaaaaaaaacacaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaaaabaaaaabababaaacaaababaaaaaaaaaaaaaaaaaaaa
+aaabacacaaaaabaaaaaaaeadadadaBavanaCaXadafaaaaaabIacacaaaaaaaaaaaaaaaaaaaaaaabababaaaaaaaaaaaaaaaaaaaaababaaaaacaaababaaaaaaaaaaaaaaaaaaaaaa
+aaabacaaaaaaaaabaaaaaeaCadadadbOaDanakadaeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabkabbmaaababababababababababaaacacaaaaabaaaaaaaaaaaaaaaaaaaaaaaa
+aaabacacacaaaaabaaaaaeajaobuanakanbuadadayaaaaaaaaaaaaaaaaacacababababaaaaaabkabbnaaabaaaaaaaaaaaaaaaaaaacacaaaaababababababaaaaaaaaaaaaaaaa
+aaabaaaaacacaaabaaaaaeaeafaeaeaeaeaeafaeaeaaaaaaaaaaaaababaaaaacacacabababbkaaababaaabaaaaacacacacacacacazababababaaaaaaaaababaaaaaaaaaaaaaa
+aaabaaacacacababaaaaababababababaaaaaaaaababababababaaaaababababaaacacabboaaaaababababacacacaaaaabababababaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaa
+aaababacaaaaababaaababaaababaaababababababaaaaacaaababababaaaaababaaacabababababaaacacacaaaaabababaaaaaaaaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaa
+aaababacaaaaaaabababaaaaaaacacaaacaaaaaaacacaaaaaaaaaaacababababacacaaababaaacacacacaaaaaaababaaaaaaaeaeafaeaeaeaeaeafaeaeaaaaaaababaaaaaaaa
+aaababacacacacacacacacaaacacaaacacacaaacaaacaaaaacaaacacacacacacacacacacacacacabababababababaaaaaaaaaeadaxananadadadadadaeaaaaaaaaabaaaaaaaa
+aabpabaaataaaaaaaaaaacacaaacacacaaacacacaaaaaaaaaaaaaaaaacaaaaaaaaaaaaaaababacacababaaaaaaaaaaaaaaaaaeadadadcaananaCaXadafaaaaaaaaababaaaaaa
+aabqbpabababaaaaaaaaaaaaaaaaacaaaaaaacaaaaaaaaabababababababababababababaaababacaaababababaaaaaaaaaaaeaCadadbuanaDanakadaeaaaaaaaaaaabaaaaaa
+aaaaaaaaaaabababababaaaaaaaaaaaaaaaaaaabababababaaaaaaaaaaaaaaaaaaaaaaaNbrababacaaaaaaaaabababaaaaaaaeajaoadanakanadadadayaaaaaaaaaaaaabaaaa
+aaaaaaaaaaaaaaaaaaababababababaaaaaaaaabaaaaaaaaaaabaaaaaaaaaaabaaaaaaaaabaaabaaacacacacacaaababaaaaaeaeafaeaeaeaeaeafaeaeaaaaaaaaaaaaababaa
+aaabaaaaaaabaaaaaaaaaaaaaaaaababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababaaabababababababacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaa
+aaaaaaaaaaaaaaaaabaaaaaaaaaabsabcfbvbsaaaaaaaaaaaaaaaaaaabaaaaaaaaababaaaaaaaaaaaaaaaaaaabacacacaaaaaaacacacacacacaaaaaaaaaaaaaaaaaaaaababaa
+aaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaccaaaaaaabaaaaaaaaaaabababababbwabaaaaaaaaaaaaaaaaaaaaabacacacaaaaaeaeafaeaeaeaeaeafaeaeaaaaaaaaaaababaaaa
+aaababababaaaaaaababababababababababaaaaaaabababababababaaababbkbkbkaaaaaaaaaaaaaaaaaaaaababacaaaaaaaeadaxananbuadadadadaeaaaaaaaaababaaaaaa
+ababaabxaaaaaaaabxabaaaaaaababaaaaababababaaaaaaabaaaaabababbkbkaeaeaeaeaeaeaeaeaeaeaaaaababacaaaaaaaeadadadcaananaCadbuafaaacaaaaabaaaaaaaa
+abaaaabxaaaaaaaaaaababaaaaaaababaaaaaaababaaabababaaababaaababaaaeaganananbybzamalaeaaaaabaaacaaaaaaaeaCadadadanaZanakadaeaaaaaaaaabaaaaaaaa
+abaaaaaaaaaabkbkaaaaababaaaaaaabaaababababaaabaaabababaaaaaaabaabAagauaradbBaradadaeaaaaabaaaaaaaaaaaeadaoadanakanadadadayaaaaaaaaabaaaaaaaa
+abaaaabkbkbkaaaaaaaaaabCababaaabababaaaaababaaababababababababaaaeagakagadadadbDbEaeaaaaabacaaaaaaaaaeaeafaeaeaeaeaeafaeaeaaaaaaaaabaaaaaaaa
+abaaaabkaaacacacacacacbFacabababaaaaaaaaaaabababaaacacacacacacaaayadadbGasbgbHaCcbaeaaababacaaababababaaaaabababababaaaaaaaaaaaaaaababaaaaaa
+abaabxaaaaaaaaaaaaaaaabxaaacacababaaaaaaababaaaaacaaaaaaababaaaaaeagadbJcwbKbgbjadaeaaabacacabababaaababababaaaaaaabababaaaaabababababababaa
+abaabxaaaaaaaaaaaaaaaaaaaaaaacaaababaaababaaacacaaababababaaaabxbAagadbJarbKbLanadaeababacaaaaaaaaababababababababababababababaaaaaaaaaaabab
+abaaaaaaaabkbkbkaaaaaaaaaaaaaaacbxabababaaacaaabababbkbkaaaaaabxaeagbManadbcadadadaeabacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababaa
+abaabkbkbkbkaaaaaaaaaabkbkaaaaaabNaaaaacacababaaaaaabkbkbkaaaabxaeagananadadadadaXaeabacacaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abaaaaaaaaaaaabxaabkbkbkaaaabxaaacacacacababaaaaaabkbkbkbkaaaaaeaeadadciadadakadadaeababacacaaaaaaaaabbPaaaaaaababaaaaaaababaaababaaaaaaaaaa
+abaaaabxaaaaaabxaabkaaaaaaaabxaaaaacacaaabaaaaaeaeaeaeaeaeaeaeaeadakadakbQananadadaeaaababacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abaaaabxaaaaaaababababaaabababababaaacaaababaaaebRadadadaeadadadaxadadadaCaCadadaxaeaaaaababaaacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ababaabxaaaaaaabaaababababaaaaaaababaaacaaabaaaebRakananbSaBananananbhadananaZadadaeaaaaaaabababaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabTaa
+aaabbkbkbkaaaaabaaabaaaaaaaaabaaababaaacacabaaaebRadaCadayanadakadbUanadakadanadadaeaaaaaaaaabababacacacaaaaabacacacacacababaaaaaaaaaaaaaaaa
+aaabaaaabkbkbkabaaabaaaaaaaaabababaaaaaaacabaaaebVakanadaeadadadadadadadadadadadadaeaaaaabababacacaaaaaaacacacaaaaaaaaaaacazacaaaaaaabaaaaaa
+aaabaaaaaaaaaaabaaabaaaaaaababaaababaaacacabaaaebWadanadaeaeaeaeaeaeaeaeaeaeaeaeaeaeaaababaaacacabaaaaaaaaabaaaaaaaaabaaaaaaaaaaaaaaabaaabaa
+aaababaaaaaaababaaaaaaaeaeaeaeaeaaabacacaaabaaaebXaCadadaeaaaNaaaaaaaaaaaaaaaaaaaaaaaaabaaacacaaaaabababaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaabaa
+ababaaaaaaaaabaaaaaaaaayanancgaeaaabacaaaaabaaaebZanadadaeaaaaaaaaaaaaaaaaaaaaaaaaaaababacacacaaaaaaaaabababaaaaaaaaabaaaaaaababaaaaaaaaaaaG
+aaababaaaaababaaabaaaaaechcsbvaeaaabacacaaabaaaeaeaeaeaeaeaaaaaaaaaaaaababababababababacacaaacacaaaaaaaaaaabababababaaaaaaaaaaababaaababaaaG
+abaaabaaababaaaaaaaaaaaeadckanaeaaabaaacaaabaaaaaaaaaaaaaaaaaaaaabababaaaaacacacacacaaacaaabaaaaacacaaaaaaaaaaaaaaabababababababaaaaaaabaacd
+aaababababaaaaaaaaaaaaaeaeaeaeaeaaabaaacaaabaaaaaaaaaaaaaaababababaaacacacacababababaaacaaababaaaaaaacacaaaaaaaaaaaaaaaaaaaaaaabababaaceaaaa
+aaaabkaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaabababababababababaaaaaaacacababababaaabaaaaacaaaaabaaaaaaaaacacaaaaaaaaaaaaaaaaabababababababaaaa
+aabkbkaaaaaaaabkbkaaaaaaaaaaaaababaaaaacaaaaacacacacacacaaaaacacacabababaaaaaaaaabaaaaaaacaaababaaaaaaaaacaaaaabababababababaaababaaaaababab
+aaaaaaababaaaaaabkbkaaaaaaabababaaaaacacacacaaaaabababacacacacaaababaaaaaaaaaaababaaaaaaacaaaaabaaaaaaaaacacababaaaaaaaaababababaaaaabaaaaaa
+aaaaaaabaaaaaaaaaaaaaaabababaaaaacacacababacaaaaabaaabababababababaaaaaaaaaaaaabaaaaaaacaaaaaaabaaaaaaaaabacababababababaaaaaaaaaaacabaaaaaa
+aaaaabaaaaaaaaaaababababaaaaacacacaaaaabababacaaabaaaeaeaeaeaeaeaeaebAaeacacaeabaaacacacaaaaaaaaabaaaaababacacaaaaabababababaaaaaaaaabaaaaaa
+aaababaaaaaaaaababaaaaaaacacacaaaaaaaaabaaaaazaaabaaaeadadadadadadadadakakadaeabaaacaaaaaaaaaaaaabaaababaaabazaaacaaaaaaaaaaaaaaaaaaabaaaaaa
+aaabaaaaaaaaababaaacacacacaaaaaaaaaaababaaaaazacabaaaeadananananadadadadadadaeabaaacaaaaaaaaaaaaababababababaaaaaaaaaaaaaaabababaaababacaaaa
+aaaaaaaaaaaaabaaacaaaaaaaaaaaaaaaaababaaaaaaabacababaeadananananadadakadadadbAabaaacaaaaaaabaaaaaaababaaaaaaaaacaaataaaaababaaaaacabaaacaaaa
+aabkaaaaaaababacacaaaaaaaaaaaaaaaaababaaaaaaabacaaabaeadanaCaCanakanadadanadaeabaaacaaabaaaaaaaaaaababaaaaaaabaaaaaaababaaaaaaaaababaaacaaab
+aabkbkaaaaabaaacaaabaaaaaaaaaaaaaaaaabaaaaaaabacaaabaeananadadadadadadadadadaeabaaacaaaaaaaaaaaaaaaaababaaaaabaaaaababaaaaacacacazaaaaaaabab
+aaaabkaaababacacaaababaaaaaaaaaaaaaaabaeaeaeaeacbAaeaeaeaeaeaeadadadadadadadbAabaaacaaaaaaaaababaaaaaaabaaaaabacaaabaaaaacaaacaaaaaaaaababaa
+aaaabkbkabacacaaaaaaabaaaaaaaaaaaaababaeadadadadadadaeadadakadadadadadadbDbEaeabaaacaaabaaaaaaaaaaaaaaabaaaaazazacabaaaaaaaaaaaaaaaaababaaaa
+aaaaaaababacaaaaaaaaaaabaaaaaaaaaaabaaaeakanadadadakaeakadadcwaCanasbgbHaCcbaeabaaacacaaaaaaabaaaaaaaaababacaaabaaababaaaaaaaaaaaaataaaaaaaa
+aaaaaaabacaaaaaaaaaaaaababaaaaaaaaabaabAadanadaCaCaCaHanananalaCanadbKbgbjadbAabaaaaacacaaaaaaaaabaaaaaaabacacabaaaaaaaaaaacaaaaabaaaaaaaaaa
+aaaaaaacacaaaaaaaabkaaaaababaaaaaaabaaaeadanadaCaCaCaHananananaHaHaHaHaHadadaeababaaaaacaaaaaaaaaaaaaaaaabaaacacabaaaaaaaaacaaabaaacacabaaaa
+aaaaaaacaaaaaaaaaabkaaaaaaabaaaaaaabaaaeadadanananananaCanananaHanananadadadaeaaababaaaeakaeaeaeaeaeaaaaabaaacacabacaaacacaaababaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaabkbkaaaaababaaaaabaaaeadadanaCananakakadadadaeadadanadadadaeaaabaaaaaeaCadcjaZadaeaaaaababaaacaaazacacaaacabaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabkbkaaaaaaaaaaabaabAadadadanaCanadbtadadadaHanadadadanadbAaaabaaaaaeadaBaWbOaCaeaaaaaaabaaaaacazacaaazazaaaaaaaaabaaaaaa
+aaaaaaaaaaaaaaaaaaaaaabkbkaaaaaaaaabaaaeadadadanananadadadananaeadadadadadadaeaaababaaaeanclanbOakaeaaaaaaabaaaaaaacacaaaaaaabababababaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaabkbkbkaaabaaaeaeaeaebAaeaeaeaebAaeaeaebAaeaebAaeaeaeaaaaabaaaeaeaeaeaeaeaeaaaaaaabaaaaaaababababababaaaaaaaaaaaaaa
+"}

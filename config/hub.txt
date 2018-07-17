@@ -1,0 +1,45 @@
+## Hub settings
+
+#### First, a list of valid constants and their purpose (MUST be enclosed in {brackets}): 
+#### Text constants have three forms: Capitalized, UPPERCASE, and lowercase. For example, {Season} = Spring, {SEASON} = SPRING, {season} = spring.
+
+# CLIENTS = number of clients online
+# PLAYERS = number of mobs with clients attached
+# MOBS = number of mobs online
+# LIVING = number of /mob/living(s) online
+# HUMANS = number of /mob/living/carbon/human(s) online
+# HUMAN_CLIENTS = number of /mob/living/carbon/human (s) online that have clients
+# DEAD = number of /mob/dead online
+# OBSERVERS = number of /mob/dead/observer online that have clients
+
+#### Some notes about the above constants:
+
+## /mob/living/carbon is not here because it's being phased out
+## observers and ghosts are excluded because they are not generally used here
+## and also because there is no convenient list to efficiently get the number of them
+## TODO: add observers and ghosts somehow
+
+#### various game things
+
+# TIMEOFDAY = displays the current time of day
+# WEATHER = displays the current weather
+# SEASON = displays the current season
+
+#### meta game things
+
+# ROUNDTIME = displays the current round time
+# MAP = displays the active map's ID
+
+#### other stuff
+
+# null, Null, NULL, nil, Nil, NILL = nothing
+
+#### Actual definitions
+
+PREINFO nil
+TITLE <font color = red>Lebensraum</font>
+OOCDESC The official WW13 server, running the bleeding edge of the WW13 codebase.
+ICDESC {Timeofday}, {Weather}, {Season}, Ukraine.<br>The round time is {ROUNDTIME}. Map: {Map}.
+RPLEVEL Low-Medium Roleplay
+HOSTEDBY <b>Kachnov</b>
+POSTINFO nil

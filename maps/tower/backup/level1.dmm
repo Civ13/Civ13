@@ -1,0 +1,133 @@
+"aa" = (/obj/skybox,/turf/wall/indestructable/black,/area/prishtina/void)
+"ab" = (/turf/wall/indestructable/black,/area/prishtina/void)
+"ac" = (/obj/map_metadata/tower,/turf/wall/indestructable/black,/area/prishtina/void)
+"ad" = (/turf/wall/indestructable/black,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"ae" = (/turf/wall/brick,/area/prishtina/void)
+"af" = (/turf/wall/brick,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"ag" = (/obj/structure/sign/flag/germany,/turf/wall/brick,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"ah" = (/obj/structure/sign/nosmoking_1,/turf/wall/brick,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"ai" = (/obj/structure/sign/redcross,/turf/wall/brick,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"aj" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/obj/structure/closet/crate/mg34ammo,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"ak" = (/obj/structure/closet/crate/mp40kammo,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"al" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/obj/structure/closet/crate/mauserammo,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"am" = (/obj/structure/barbwire,/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"an" = (/obj/structure/barbwire{dir = 4; icon_state = "barbwire"; pixel_y = 0; tag = "icon-barbwire (EAST)"},/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"ao" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/obj/item/weapon/storage/fancy/cigarettes,/obj/item/weapon/storage/fancy/cigarettes,/obj/item/weapon/storage/fancy/cigarettes,/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"ap" = (/obj/item/weapon/storage/fancy/candle_box,/obj/item/weapon/storage/fancy/candle_box,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aq" = (/obj/item/weapon/flame/lighter,/obj/item/weapon/flame/lighter,/obj/item/weapon/flame/lighter,/obj/item/weapon/flame/lighter,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"ar" = (/obj/structure/bookcase,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"as" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/obj/structure/vending/germanequipment,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"at" = (/obj/structure/vending/germanequipment,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"au" = (/obj/structure/vending/germanapparel,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"av" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/obj/structure/vending/germanapparel,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aw" = (/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"ax" = (/obj/structure/window/sandbag{tag = "icon-sandbag (NORTH)"; icon_state = "sandbag_66%"; dir = 8},/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"ay" = (/obj/structure/bed/roller,/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/obj/effect/decal/cleanable/blood/drip,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"az" = (/obj/structure/iv_drip,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aA" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/obj/structure/closet/crate/gauze,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aB" = (/obj/effect/landmark{name = "JoinLateHeerQM"},/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"aC" = (/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"aD" = (/obj/structure/window/sandbag{tag = "icon-sandbag (NORTH)"; icon_state = "sandbag_66%"; dir = 8},/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"aE" = (/obj/structure/table/wood,/obj/item/weapon/stamp,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aF" = (/obj/item/weapon/storage/backpack/german,/obj/item/weapon/storage/backpack/german,/obj/item/weapon/storage/backpack/german,/obj/item/weapon/storage/backpack/german,/obj/item/weapon/storage/backpack/german,/obj/item/weapon/storage/backpack/german,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aG" = (/obj/effect/landmark{name = "JoinLateHeer-S4"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aH" = (/obj/structure/largecrate,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aI" = (/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aJ" = (/obj/structure/bed/roller,/obj/effect/decal/cleanable/blood/drip,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aK" = (/obj/structure/bed/roller,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aL" = (/obj/effect/landmark{name = "JoinLateHeerDr"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aM" = (/obj/structure/closet/crate/lugerammo,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"aN" = (/obj/structure/closet/crate/lugers,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"aO" = (/obj/effect/landmark{name = "JoinLateHeer"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aP" = (/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"aQ" = (/obj/structure/flag/german,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aR" = (/obj/effect/landmark{name = "JoinLateHeer-S4"},/turf/floor/wood_broken,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aS" = (/obj/effect/landmark{name = "JoinLateHeer-S3"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aT" = (/obj/effect/landmark{name = "JoinLateHeer-S1"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aU" = (/obj/structure/window/sandbag{tag = "icon-sandbag (NORTH)"; icon_state = "sandbag_66%"; dir = 8},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aV" = (/obj/effect/decal/cleanable/blood/drip,/obj/effect/landmark{name = "JoinLateHeerDr"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aW" = (/obj/structure/closet/crate/kar98kammo,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"aX" = (/obj/item/weapon/paper,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"aY" = (/obj/structure/window/sandbag{tag = "icon-sandbag_66%"; icon_state = "sandbag_66%"; dir = 2},/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"aZ" = (/obj/structure/window/sandbag{tag = "icon-sandbag (NORTH)"; icon_state = "sandbag_33%"; dir = 8},/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"ba" = (/obj/structure/window/sandbag{tag = "icon-sandbag_66%"; icon_state = "sandbag_66%"; dir = 2},/obj/structure/closet/crate/medical,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"bb" = (/obj/effect/decal/cleanable/blood/drip,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Hospital"})
+"bc" = (/obj/structure/multiz/ladder/ww2/up{area_id = "floor_u"},/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bd" = (/obj/item/weapon/pen,/obj/effect/landmark{name = "JoinLateHeer"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"be" = (/obj/item/weapon/paper/crumpled,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bf" = (/turf/floor/wood_broken,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bg" = (/obj/effect/landmark{name = "JoinLateHeer-S1-Leader"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bh" = (/obj/effect/landmark{name = "JoinLateHeer-S2"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bi" = (/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"bj" = (/obj/effect/landmark{name = "JoinLateHeerXO"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"bk" = (/obj/effect/landmark{name = "JoinLateHeer-S2-Leader"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bl" = (/obj/item/weapon/phone/tohighcommand/german,/obj/structure/table/wood/poker,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"bm" = (/obj/effect/landmark{name = "JoinLateHeerMP"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"bn" = (/obj/effect/landmark{name = "JoinLateHeer-S3-Leader"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bo" = (/obj/effect/landmark{name = "JoinLateHeer-S2"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"bp" = (/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/structure/table/wood/poker,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"bq" = (/obj/item/weapon/newspaper,/obj/effect/landmark{name = "JoinLateHeerSO"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"br" = (/obj/structure/closet/crate/german_smoke_grenade,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bs" = (/obj/structure/closet/crate/gauze,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bt" = (/obj/item/weapon/newspaper,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bu" = (/obj/effect/landmark{name = "JoinLateHeer-S4-Leader"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bv" = (/obj/structure/sign/portrait/hitler,/turf/wall/brick,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"bw" = (/obj/effect/landmark{name = "JoinLateHeerSL"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"bx" = (/obj/effect/landmark{name = "JoinLateHeerCO"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Command"})
+"by" = (/turf/floor/wood_broken,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bz" = (/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"bA" = (/turf/floor/wood_broken,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"bB" = (/obj/structure/closet/crate/rations/water,/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"bC" = (/obj/effect/landmark{name = "JoinLateHeerMP"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bD" = (/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bE" = (/obj/structure/table/wood,/obj/item/trash/snack_bowl,/obj/item/trash/snack_bowl,/obj/item/trash/snack_bowl,/obj/item/trash/snack_bowl,/obj/item/trash/snack_bowl,/obj/item/trash/snack_bowl,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bF" = (/obj/structure/closet/crate/german_grenade,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bG" = (/obj/structure/closet/crate/german_grenade2,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bH" = (/obj/structure/closet/crate/sandbags,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bI" = (/obj/structure/shower,/turf/floor/tiled/steel{tag = "icon-freezerfloor"; icon_state = "freezerfloor"},/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"bJ" = (/obj/structure/closet/crate/rations/german_solids,/turf/floor/wood_broken,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bK" = (/obj/structure/simple_door/key_door/anyone/wood{icon_state = "wood"; name = "Bathroom"},/turf/floor/tiled/steel{tag = "icon-freezerfloor"; icon_state = "freezerfloor"},/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"bL" = (/obj/effect/landmark{name = "JoinLateHeerChef"},/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bM" = (/obj/structure/oven,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bN" = (/obj/structure/light/small,/obj/item/stack/material/barbwire,/obj/item/stack/material/barbwire,/turf/floor/wood,/area/prishtina/german/engineering{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bO" = (/obj/item/weapon/plastique/german,/obj/item/weapon/plastique/german,/obj/item/weapon/plastique/german,/turf/floor/wood,/area/prishtina/german/engineering{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bP" = (/obj/structure/sink{dir = 8; icon_state = "sink"; pixel_x = -14},/turf/floor/tiled/steel{tag = "icon-freezerfloor"; icon_state = "freezerfloor"},/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"bQ" = (/obj/structure/light/small,/turf/floor/wood,/area/prishtina/german/engineering{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bR" = (/obj/structure/closet/crate/flares,/turf/floor/wood,/area/prishtina/german/armory{base_turf = /turf/floor/wood_broken; capturable = 0})
+"bS" = (/obj/structure/bookcase,/obj/structure/light/small,/turf/floor/wood,/area/prishtina/german/base_defenses{base_turf = /turf/floor/wood_broken; location = 0})
+"bT" = (/obj/item/weapon/paper/crumpled/bloody,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bU" = (/turf/floor/tiled/steel{tag = "icon-freezerfloor"; icon_state = "freezerfloor"},/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"bV" = (/obj/structure/light/small,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green1"; name = "German Resting area"})
+"bW" = (/obj/structure/light/small,/obj/structure/closet/crate/rations/german_meat,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bX" = (/obj/effect/landmark{name = "JoinLateHeerChef"},/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"bY" = (/obj/structure/pot,/obj/structure/light/small,/turf/floor/wood,/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; icon_state = "green2"; name = "German Kitchen"})
+"cf" = (/obj/effect/landmark{name = "JoinLateHeer"},/obj/structure/light/small,/turf/floor/tiled/steel{tag = "icon-freezerfloor"; icon_state = "freezerfloor"},/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+"cg" = (/obj/structure/toilet{tag = "icon-toilet00 (EAST)"; icon_state = "toilet00"; dir = 4},/turf/floor/tiled/steel{tag = "icon-freezerfloor"; icon_state = "freezerfloor"},/area/prishtina/german/bunker{base_turf = /turf/floor/wood_broken; name = "German Base"})
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababab
+aaaaaaaaadadadadadadadadadadadadadadadadadadadadadadadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafafafafafafafafagafafafafafagafafahaiafafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafajakalamanamaoapaqarasatauavawaxayazaAafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafaBaBaCanamanaDawaEaraFaGawawaHaIaJaKaLafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafaMaNaCamanamaPaOawaraQaRaOaSaTaUaJaJaVafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafaWaWaCanamanaZaOaraXaOaGaOaSaTaYbabbaLafadababababaeaeaeababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafbcaCaCamanamaDbdbeawbfaGbgaSaTbhbibibjagadababababababaeababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafbcaCaCanamanaPaOawawbeaGbkaSaTbhbiblbmbvadabaeaeabaeaeaeababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafbcaCaCamanamaPaOawarawarbnaSaTbhbobpbqagadababababaeababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafbrbsaCanamanbBbtaXaraGaGbuaSaTbhbobwbxafadababababaeaeaeababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafaCbyaCbzbzbzbzawbfarawafafbKafbAbCbDbEafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafbFbGbybHaCaCbzarbfawawafbPbUbIafbJbLbMafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafbNbObQbHbHbRbSawawbTbVafbPcfcgbUbWbXbYafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadafafafafafafafafagafafafafafafafafafafafafadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaadadadadadadadadadadadadadadadadadadadadadadadabababababababababababababababababababababababaaaaaaaaaaaaaaababab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabab
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabab
+acaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabab
+"}

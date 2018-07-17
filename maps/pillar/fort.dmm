@@ -1,0 +1,114 @@
+"a" = (/turf/wall/rockwall,/area/prishtina/german/bunker)
+"b" = (/obj/structure/bed,/obj/item/weapon/bedsheet,/obj/effect/landmark{name = "JoinLateSS"},/turf/floor/wood,/area/prishtina/german/bunker)
+"d" = (/turf/floor/wood,/area/prishtina/german/bunker)
+"e" = (/obj/structure/simple_door/key_door/german/SS,/turf/floor/wood,/area/prishtina/german/bunker)
+"f" = (/obj/item/weapon/gun/projectile/pistol/luger,/obj/item/ammo_magazine/luger,/obj/structure/closet/anchored,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/turf/floor/wood,/area/prishtina/german/bunker)
+"g" = (/obj/structure/table/rack,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/ammo_magazine/a792x33/stgmag,/obj/item/weapon/gun/projectile/semiautomatic/stg,/turf/floor/wood,/area/prishtina/german/bunker)
+"h" = (/obj/structure/vending/SSequipment,/turf/floor/wood,/area/prishtina/german/bunker)
+"i" = (/obj/structure/table/rack,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/mine/betty,/obj/item/weapon/grenade/smokebomb/german,/obj/item/weapon/grenade/smokebomb/german,/obj/item/weapon/grenade/smokebomb/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"j" = (/obj/item/weapon/gun/projectile/automatic/mg34,/obj/item/ammo_magazine/a762,/obj/item/ammo_magazine/a762,/obj/item/ammo_magazine/a762,/obj/item/ammo_magazine/a762,/obj/item/ammo_magazine/a762,/obj/item/ammo_magazine/a762,/obj/item/ammo_magazine/a762,/obj/item/ammo_magazine/a762,/obj/structure/closet/anchored,/turf/floor/wood,/area/prishtina/german/bunker)
+"k" = (/obj/item/weapon/storage/backpack/flammenwerfer,/obj/structure/table/rack,/obj/item/weapon/flammenwerfer_fueltank,/obj/item/weapon/flammenwerfer_fueltank,/obj/item/weapon/flammenwerfer_fueltank,/turf/floor/wood,/area/prishtina/german/bunker)
+"l" = (/obj/structure/closet/crate/medical,/turf/floor/wood,/area/prishtina/german/bunker)
+"m" = (/obj/structure/vending/germanapparel,/turf/floor/wood,/area/prishtina/german/bunker)
+"n" = (/obj/structure/closet/crate/rations/german_liquids,/turf/floor/wood,/area/prishtina/german/bunker)
+"o" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/structure/closet/anchored,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/turf/floor/wood,/area/prishtina/german/bunker)
+"p" = (/obj/effect/landmark{name = "JoinLateSS-Officer"},/turf/floor/wood,/area/prishtina/german/bunker)
+"q" = (/obj/item/weapon/gun/projectile/boltaction/kar98k,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/clothing/accessory/storage/webbing,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/item/ammo_magazine/kar98k,/obj/structure/closet/anchored,/turf/floor/wood,/area/prishtina/german/bunker)
+"r" = (/obj/structure/closet/crate/rations/german_alcohol,/turf/floor/wood,/area/prishtina/german/bunker)
+"s" = (/obj/structure/closet/crate/rations/water,/turf/floor/wood,/area/prishtina/german/bunker)
+"t" = (/obj/lift_lever/soviet,/turf/floor/wood,/area/prishtina/german/bunker)
+"u" = (/obj/item,/turf/floor/wood,/area/prishtina/no_mans_land/invisible_wall/inside)
+"v" = (/turf/open,/area/prishtina/german/lift/down)
+"w" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/wood,/area/prishtina/german/bunker)
+"x" = (/obj/lift_controller/down/soviet,/turf/open,/area/prishtina/german/lift/down)
+"y" = (/obj/structure/light/small,/turf/floor/wood,/area/prishtina/german/bunker)
+"z" = (/obj/item/flashlight/flare/nighttime,/turf/floor/wood,/area/prishtina/german/bunker)
+"A" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 1},/turf/floor/wood,/area/prishtina/german/bunker)
+"B" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 8},/turf/floor/wood,/area/prishtina/german/bunker)
+"C" = (/obj/map_metadata/pillar,/turf/wall/rockwall,/area/prishtina/german/bunker)
+"D" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 4},/turf/floor/wood,/area/prishtina/german/bunker)
+"E" = (/obj/structure/closet/crate/rations/german_liquids,/obj/structure/light/small{icon_state = "bulb1"; dir = 4},/turf/floor/wood,/area/prishtina/german/bunker)
+"F" = (/obj/structure/closet/crate/rations/german_alcohol,/obj/structure/light/small{icon_state = "bulb1"; dir = 4},/turf/floor/wood,/area/prishtina/german/bunker)
+"G" = (/obj/structure/closet/crate/rations/water,/obj/structure/light/small{icon_state = "bulb1"; dir = 4},/turf/floor/wood,/area/prishtina/german/bunker)
+"H" = (/obj/structure/closet/crate/medical,/obj/structure/light/small{icon_state = "bulb1"; dir = 4},/turf/floor/wood,/area/prishtina/german/bunker)
+"I" = (/obj/structure/table/rack,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/weapon/grenade/explosive/stgnade,/obj/item/mine/betty,/obj/item/weapon/grenade/smokebomb/german,/obj/item/weapon/grenade/smokebomb/german,/obj/item/weapon/grenade/smokebomb/german,/obj/structure/light/small{icon_state = "bulb1"; dir = 4},/turf/floor/wood,/area/prishtina/german/bunker)
+"J" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/structure/closet/anchored,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/ammo_magazine/mp40,/obj/item/weapon/gun/projectile/submachinegun/mp40,/turf/floor/wood,/area/prishtina/german/bunker)
+"K" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 8},/obj/structure/closet/crate/rations/german_liquids,/turf/floor/wood,/area/prishtina/german/bunker)
+"L" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 8},/obj/structure/closet/crate/rations/german_alcohol,/turf/floor/wood,/area/prishtina/german/bunker)
+"M" = (/obj/structure/light/small{icon_state = "bulb1"; dir = 8},/obj/structure/closet/crate/rations/water,/turf/floor/wood,/area/prishtina/german/bunker)
+"N" = (/obj/item/weapon/storage/backpack/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"O" = (/obj/item/weapon/storage/belt/german,/turf/floor/wood,/area/prishtina/german/bunker)
+"P" = (/obj/structure/bed/roller,/obj/effect/landmark{name = "JoinLateSS"},/turf/floor/wood,/area/prishtina/german/bunker)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaahdzdfffffffffffffffffffffffffffffdzdddIaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaahdddddddddddddddddddddddddddddddddddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaahdddydydydydydydydydydydydydydydydddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaahdzdjjjjjjjjjjjjjjjjjjjjjjjjjjjjjdzdddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaahdddddddddddddddddddddddddddddddddddddIaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaahdddydydydydydydydydydydydydydydydddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaahdzdfffffffffffffffffffffffffffffdzdddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaBdddddddddddddddddddddddddddddddddddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaddddddddddddNNNNNNNNNNNNNNddddddddddddIaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaBdzdkkkdddddggggggggggggggddddkkkdzdddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaddddddddddddOOOOOOOOOOOOOOddddddddddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaBdddydydydydydydydydydydydydydydydddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaamdzdooooooooooooooooooooooooooooodzdddIaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaamdddddddddddddddddddddddddddddddddddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaamdddydydydydydydydydydydydydydydydddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaamdzdqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdzdddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaamdddddddddddddddddwdddddddddddddddddddIaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaamdddydydydydydydydydydydypydydydydddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaamdzdJJJJJJJJJJJJJJJJJJJJJJJJJJJJJdzdddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaddddAdAdAdAdAdAdAdAdAdAdAdAdAdAdAdddddiaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaddddddddddddddddddddddddddddddddddddddIaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaeeeaaaaaaaaaaaeeeaaaaaaaaaaaeeeaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaapdAdddddAdadAdAdAdddddAdAdAdadAdddddAdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaanbdbzbdbdnaBdzdzdzuuuzdzdzdDadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaKddddddddEadduuuuuutuuuuuuddaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaanbdbzbdbdnadduvvvvvvvvvvvuddadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaKddddddddEaBduvvvvvvvvvvvudDaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaanbdbzbdbdnadduvvvvvvvvvvvuddadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaBddddddddDadduvvvvvvvvvvvuddaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaarbdbzbdbdraBduvvvvvvvvvvvudDadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaLddddddddFadduvvvvvxvvvvvuddaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaarbdbzbdbdradduvvvvvvvvvvvuddadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaLddddddddFaBduvvvvvvvvvvvudDaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaarbdbzbdbdradduvvvvvvvvvvvuddadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaBddddddddDadduvvvvvvvvvvvuddaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaasbdbzbdbdsaBduvvvvvvvvvvvudDadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaMddddddddGadduuuuuuuuuuuuuddaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaasbdbzbdbdsaddzdzdzdzdzdzdzddadPdPzPdPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaMddddddddGaBdddddddddddddddDaBddddddddHaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaasbybzbybdsadydydyddyddydydydadPyPzPyPdlaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}

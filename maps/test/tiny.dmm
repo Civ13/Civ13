@@ -1,0 +1,114 @@
+"aa" = (/turf/floor/plating/grass/wild,/area/prishtina)
+"ab" = (/turf/floor/plating/grass/wild,/area/prishtina/german/armory)
+"ac" = (/turf/floor/plating/grass/wild,/area/prishtina/german/briefing)
+"ad" = (/turf/floor/plating/grass/wild,/area/prishtina/german/cafeteria)
+"ae" = (/turf/floor/plating/grass/wild,/area/prishtina/german/command)
+"af" = (/turf/floor/plating/grass/wild,/area/prishtina/german/command/office)
+"ag" = (/turf/floor/plating/grass/wild,/area/prishtina/german/drying1)
+"ah" = (/turf/floor/plating/grass/wild,/area/prishtina/german/resting_area_1)
+"ai" = (/turf/floor/plating/grass/wild,/area/prishtina/german/resting_area_4)
+"aj" = (/turf/floor/plating/grass/wild,/area/prishtina/german/shower1)
+"ak" = (/turf/floor/plating/grass/wild,/area/prishtina/german/ss_torture_room)
+"al" = (/turf/floor/plating/grass/wild,/area/prishtina/german/base_defenses)
+"am" = (/turf/floor/plating/grass/wild,/area/prishtina/german/engineering)
+"an" = (/turf/floor/plating/grass/wild,/area/prishtina/german/drying3)
+"ao" = (/turf/floor/plating/grass/wild,/area/prishtina/german/drying2)
+"ap" = (/obj/structure/wild/tree,/turf/floor/plating/grass/wild,/area/prishtina/german/resting_area_1)
+"aq" = (/turf/floor/plating/grass/wild,/area/prishtina/german/resting_area_3)
+"ar" = (/turf/floor/plating/grass/wild,/area/prishtina/german/shower2)
+"as" = (/obj/structure/wild/tree,/turf/floor/plating/grass/wild,/area/prishtina)
+"at" = (/turf/floor/plating/grass/wild,/area/prishtina/german/gas_chamber)
+"au" = (/turf/floor/plating/grass/wild,/area/prishtina/german/gearing)
+"av" = (/turf/floor/plating/grass/wild,/area/prishtina/german/kitchen)
+"aw" = (/turf/floor/plating/grass/wild,/area/prishtina/german/main_area)
+"ax" = (/turf/floor/plating/grass/wild,/area/prishtina/german/main_area/dogshed)
+"ay" = (/turf/floor/plating/grass/wild,/area/prishtina/german/main_area/sector1)
+"az" = (/turf/floor/plating/grass/wild,/area/prishtina/german/main_area/sector3)
+"aA" = (/turf/floor/plating/grass/wild,/area/prishtina/german/resting_area_2)
+"aB" = (/turf/floor/plating/grass/wild,/area/prishtina/german/janitor)
+"aC" = (/turf/floor/plating/grass/wild,/area/prishtina/german/main_area/sector2)
+"aD" = (/turf/floor/plating/grass/wild,/area/prishtina/german/medical)
+"aE" = (/obj/structure/wild/tree,/turf/floor/plating/grass/wild,/area/prishtina/german/resting_area_3)
+"aF" = (/turf/floor/plating/grass/wild,/area/prishtina/german/shower3)
+"aG" = (/turf/floor/plating/grass/wild,/area/prishtina/german/outside/indoors)
+"aH" = (/turf/floor/plating/grass/wild,/area/prishtina/german/outside)
+"aI" = (/obj/structure/wild/bush,/turf/floor/plating/grass/wild,/area/prishtina)
+"aJ" = (/obj/structure/window/sandbag{tag = "icon-sandbag (EAST)"; icon_state = "sandbag"; dir = 4},/turf/floor/plating/grass/wild,/area/prishtina)
+"aK" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/entrance)
+"aL" = (/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/turf/floor/plating/grass/wild,/area/prishtina)
+"aM" = (/obj/structure/window/sandbag{tag = "icon-sandbag (EAST)"; icon_state = "sandbag"; dir = 4},/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/entrance)
+"aN" = (/obj/structure/window/sandbag,/turf/floor/plating/grass/wild,/area/prishtina)
+"aO" = (/obj/structure/window/sandbag{tag = "icon-sandbag (EAST)"; icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag,/turf/floor/plating/grass/wild,/area/prishtina)
+"aP" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/turf/floor/plating/grass/wild,/area/prishtina)
+"aQ" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag{tag = "icon-sandbag (EAST)"; icon_state = "sandbag"; dir = 4},/turf/floor/plating/grass/wild,/area/prishtina)
+"aR" = (/obj/structure/window/sandbag{tag = "icon-sandbag (WEST)"; icon_state = "sandbag"; dir = 8},/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/command/office)
+"aS" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/command/office)
+"aT" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/command)
+"aU" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/engineering)
+"aV" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/janitor)
+"aW" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/kitchen)
+"aX" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/main_hallway)
+"aY" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/medical)
+"aZ" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/resting_area)
+"ba" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/showers)
+"bb" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/tunnel)
+"bc" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/armory)
+"bd" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/briefing)
+"bf" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/cafeteria)
+"bg" = (/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/cargo)
+"bh" = (/obj/structure/window/sandbag{tag = "icon-sandbag (EAST)"; icon_state = "sandbag"; dir = 4},/turf/floor/plating/grass/wild,/area/prishtina/soviet/bunker/cargo)
+"bi" = (/turf/wall/brick,/area/prishtina)
+"bj" = (/obj/structure/grille/fence,/turf/floor/plating/grass/wild,/area/prishtina)
+"bl" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/prishtina)
+"bm" = (/obj/structure/toilet,/turf/floor/tiled/white,/area/prishtina)
+"bn" = (/turf/floor/tiled/white,/area/prishtina)
+"bo" = (/obj/structure/sink{dir = 8; icon_state = "sink"; pixel_x = -14},/turf/floor/tiled/white,/area/prishtina)
+"bp" = (/obj/structure/bookcase,/turf/floor/wood,/area/prishtina)
+"br" = (/turf/floor/wood,/area/prishtina)
+"bs" = (/obj/structure/table/wood,/obj/item/trash/plate,/turf/floor/wood,/area/prishtina)
+"bt" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/turf/floor/wood,/area/prishtina)
+"bu" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/turf/floor/wood,/area/prishtina)
+"bv" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood,/area/prishtina)
+"bw" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/carpet,/area/prishtina)
+"bx" = (/obj/structure/closet/cabinet,/turf/floor/carpet,/area/prishtina)
+"bz" = (/turf/floor/carpet,/area/prishtina)
+"bA" = (/obj/structure/bed/chair/comfy/red{tag = "icon-comfychair_preview (WEST)"; icon_state = "comfychair_preview"; dir = 8},/turf/floor/wood,/area/prishtina)
+"bB" = (/obj/structure/grille/broken,/turf/floor/plating/grass/wild,/area/prishtina)
+"bC" = (/turf/floor/plating/cobblestone{tag = "icon-cobble_vertical"; icon_state = "cobble_vertical"},/area/prishtina)
+"bD" = (/obj/effect/floor_decal/corner/grey/border{dir = 8},/turf/floor/plating/grass/wild,/area/prishtina)
+"bE" = (/obj/effect/floor_decal/corner/grey/border{dir = 4},/turf/floor/plating/grass/wild,/area/prishtina)
+"bF" = (/obj/effect/floor_decal/corner/grey/border{dir = 4},/obj/structure/grille/fence,/turf/floor/plating/grass/wild,/area/prishtina)
+"bG" = (/obj/effect/floor_decal/corner/grey/border{dir = 8},/obj/structure/grille/fence,/turf/floor/plating/grass/wild,/area/prishtina)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ababacacadadaeafagahahaiaiajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ababacacadadaeafagahahaiaiajakaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+alalamamamananaoaoahapaqaqarakaaaaaaaaaaaaaaaaaaasaaaaaaaaaa
+atauauavavawaxayazaAaAaqaqarakaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aBauauavavawaxaCaDaAaAaEaqaFaFaaaaaaasaaaaaaaaaaaaaaaaaaaaaa
+aaaGaGaGaaaaaHaHaHaaaaaaaabibibibibiaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaasaaaaaaaaasaaaabibxbzbwbiaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaabibzbzbzbiaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaabibibibiblbibibibibiaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabibibibibrbrbrbrbrbibpbpbiaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabibmbnbibrbubsbtbrbibrbrbiaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabibnbnblbrbubsbtbrbibrbAbiaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabibobnbibrbrbrbrbrbrbrbrbiaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabibibibibrbrbrbrbrbrbrbrbiaaaaaaaaaaaaaaaaaa
+aaaIaaaaaaaaaaaabjasasbibibvbiblblbibvbibiaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabjaaaaaaaaaabEbCbCbDaaaabjaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabjaaaaaaaaaabEbCbCbDaaaabjaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabjbBbjbjbjbBbFbCbCbGbjbBbjaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaabEbCbCbDaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaabEbCbCbDaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaabEbCbCbDaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaabEbCbCbDaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaJaKaLaaaaaaaJaMaaaaaaaaaaaaaaaaaaaaaaaa
+aaaNaNaNaNaNaNaNaNaNaOaKaPaNaNaNaQaMaNaNaNaNaNaNaNaNaNaaaaaa
+aaaRaSaTaUaUaVaWaXaXaYaYaZaZbababbbcbdbdaaaabfbfbgbgbhaaaaaa
+aaaRaSaTaUaUaWaWaXaXaYaYaZaZbababcbcbdbdaaaabfbfbgbgbhaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}

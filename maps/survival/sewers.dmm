@@ -1,0 +1,206 @@
+"aa" = (/turf/wall/brick,/area/prishtina/sewers)
+"ab" = (/turf/wall/rockwall,/area/prishtina/sewers)
+"ac" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/sewers)
+"ad" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ae" = (/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"af" = (/obj/effect/decal/cleanable/dirt,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ag" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ah" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ai" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aj" = (/obj/structure/lattice,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"ak" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"al" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"am" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"an" = (/obj/structure/catwalk,/obj/structure/railing,/obj/structure/railing{dir = 1},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"ao" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"ap" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aq" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ar" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"as" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"at" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"au" = (/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"av" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aw" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ax" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ay" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"az" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aA" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aB" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aC" = (/obj/structure/barbwire,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aD" = (/obj/structure/barricade,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aE" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aF" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aG" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aH" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aI" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aJ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aK" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aL" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aM" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aN" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aO" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aP" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aQ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aR" = (/obj/structure/multiz/ladder/ww2/up{area_id = "sewers1"},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aS" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aT" = (/obj/structure/lattice,/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aU" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aV" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aW" = (/obj/structure/lattice,/obj/effect/decal/cleanable/dirt,/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aX" = (/obj/structure/catwalk,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"aY" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"aZ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ba" = (/obj/structure/lattice,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"bb" = (/obj/structure/lattice,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"bc" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"bd" = (/obj/structure/catwalk,/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"be" = (/obj/structure/catwalk,/obj/structure/railing,/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"bf" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bg" = (/obj/effect/decal/cleanable/dirt,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bh" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/road,/area/prishtina/sewers)
+"bi" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/road,/area/prishtina/sewers)
+"bj" = (/turf/floor/plating/road,/area/prishtina/sewers)
+"bk" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bl" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bm" = (/obj/structure/multiz/ladder/ww2/up{area_id = "sewers2"},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bn" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bo" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bp" = (/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bq" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bs" = (/obj/structure/multiz/stairs{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bt" = (/obj/structure/multiz/stairs{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bu" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bv" = (/obj/effect/decal/cleanable/dirt,/turf/wall/rockwall,/area/prishtina/sewers)
+"bw" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bx" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"by" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bz" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bA" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bB" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bC" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bD" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bE" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bF" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bG" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bI" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"bJ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bK" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bL" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bM" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bN" = (/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bO" = (/obj/structure/barricade,/turf/floor/plating/road,/area/prishtina/sewers)
+"bP" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/generic,/obj/item/trash/plate,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bQ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bR" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bS" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/sewers)
+"bT" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bU" = (/obj/structure/multiz/stairs,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bV" = (/obj/structure/catwalk,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"bW" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bX" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bY" = (/obj/effect/landmark{name = "JoinLatePillarMan"},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"bZ" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ca" = (/obj/effect/landmark{name = "JoinLateVampire"},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cb" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cc" = (/obj/structure/multiz/stairs{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"cd" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ce" = (/obj/structure/barricade,/turf/wall/rockwall,/area/prishtina/sewers)
+"cf" = (/obj/structure/catwalk,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/railing{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"cg" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ch" = (/obj/structure/multiz/stairs{dir = 1},/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"ci" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cj" = (/obj/effect/decal/cleanable/dirt,/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ck" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cl" = (/obj/structure/catwalk,/obj/effect/floor_decal/industrial/warning/dust,/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"cm" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cn" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing,/obj/structure/barbwire,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"co" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cp" = (/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cr" = (/obj/effect/decal/cleanable/dirt,/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"ct" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cu" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/mucus,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cv" = (/obj/effect/decal/cleanable/mucus,/turf/wall/brick,/area/prishtina/sewers)
+"cw" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cx" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/effect/decal/cleanable/vomit,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"cA" = (/obj/effect/decal/cleanable/dirt,/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cB" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"cD" = (/obj/structure/multiz/stairs,/turf/floor/plating/beach/water/sewage,/area/prishtina/sewers)
+"cE" = (/obj/item/weapon/storage/box/shotgunammo,/obj/item/weapon/storage/box/shotgunammo,/obj/item/weapon/storage/box/shotgunammo,/obj/item/weapon/storage/box/shotgunammo,/obj/item/weapon/storage/box/shotgunammo,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"cH" = (/obj/item/weapon/gun/projectile/shotgun/pump,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/sewers)
+"eW" = (/turf/wall/brick,/area/prishtina/no_mans_land/invisible_wall/inside)
+"fb" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/no_mans_land/invisible_wall/inside)
+"fc" = (/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/no_mans_land/invisible_wall/inside)
+"fd" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/no_mans_land/invisible_wall/inside)
+
+(1,1,1) = {"
+aaabababababababababababababababababababababababababababababababababacadaeafaaababababababababababababababababababababababababababababababab
+aaabababababababababababababababababababababababababababababababababacagaeahaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabab
+aaabababababababababababababababababababababababababababababababababaaagaeaiaaabaaaeajaeaeaeaeaeaeaeaeaeaeajajaeaeaeaeaeaeaeaeaeaeajaeaaabab
+aaaaaaaaaaaaacaaaaaaaaaaacaaaaaaaaacacacaaaaaaaaacaaaaaaacaaaaaaaaaaaaadaeaiaaabaaajakalalamalalalamanananamamalalalalamamalalalalaoajaaabab
+apaqaqapapaqaqaparapapaqapapapaparaqasaqaqaqapatapauapavawaqapapapapapaxaeaiaaabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeayaeaCaDaeaeaeaeaeaeaeaeaEacabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+aFaGaHaHaHaGaHaHaHaIaHaJaFaKaHalaFaLaHaIaGaMaNaFaFauaFaOaPaFaFaFaFaFaFaQalbTacabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+aaaaaaaaaaaaaaacaaaaaaaaaaaaadaeaaaaaaaaacaaaaacacaaaaaaaaaaaaaaaaaaaaagaeahaaabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+abaaaaacaaaaaaacaaaaaaaaaaacagaeacabababababababababababababababababaaaSaeahaaabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+abaaajajajajajajajajajajaTaUaVaeaaabababaaaaaaacaaaaacaaaaaaacaaaaaaaaadaeaiaaabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+abaaaaaaaaacaaaaaaaaaaaaaaaaagaeaaabababacajajajajajajajajajajajajaWaUaXaeaiaaabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+abababababababababababababaaaYaeacabababaaajaaaaaaaaacaaaaaaaaaaaaaaaaadaeaiaaabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+abababababababababababababacaZaeacabababaaajaaabababababababababababacadaeaiacabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+ababaaaaaaacaaacaaaaaaaaaaaaagaeaaabababacajacabababababababababababacadaeahacabaaaeayaeaeazaeaeaeazaeaeaeaAaBaeaeaeaeaAaBaeaeaeaeazaeaaabab
+ababaabaajbbajajajajajajaTaUaVaeaaabababaaajaaabababababababababababaaadaeahaaabaaajbcananbdanananbdanananaXaXalalalalbdbdananananbeajaaabab
+ababaaaaacaaacaaaaacaaaaaaaaagaeaaabaaaaaaajaaaaaaaaaaaaaaaaaaaaaaabaaadaebfaaabaaaeaeaeajaeaeaeaeaeaeajaeaAaBaeajaeaeaeaeaeaeajaeaeaeaaabab
+abababababababababababababaabgaeacabacbhbiajbjbjbjbjbjbjbjbjbjbjaaabaaadaeahacabaabkaeaeblaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaQaeaeahaaabab
+abaaaaacaaaaacaaaaaaacaaaaacagaeaaabacbibiajajajajajajajajajbibjaaabaaadaeahacabaaadaeaeahbnbobpaubnbobqbnbnaubnauauaubpauauauadaeaeahaaabab
+abaaajajajajajajajbbajajaTaUaVaeacabaabibjajajajajajajajajajbjbjaaabacagaeahacabacadaeaeahauauaubnaubnbnbnauauauauauauauauauauadaeaeahaaabab
+abaaaaacaaaaaaaaaaacaaaaaaaaagaeaaabaabjbjbjbibjbjbjbjbjbjbjbibjacabaaadaeahaaabacacaeaeaaaaaaaaaaaaaaaaaabsbtaaaaaaaaaaaaaaaaaaaeaeacacabab
+abababababababababababababaaadaeacabaaaaacacacacacaaaaaaaaaaaaaaaaabaaadaeahaaababacaeaeaaabababababababaaauauaaabababababababaaaeaeacababab
+abababababababababababababaabuaeaaabababababababababababababababababacadaeahaaababacaeaeaaabbvbvbvabababaabwbwaaabababababababaaaeaeaaababab
+aaacaaaaaaacaaaaaaaaacaaaaaaadaeaaaaaaaaacaaaaaaaaacaaaaaaaaaaaaacaaaaadaeahaaacacaaaeaeaaaaacacacaaaaaaaaauauaaaaaaaaaaaaaaaaaaaeaeacaaacaa
+apaqapbxapbyaqaqaqaqbzaqaqbAaxaebBapapbCbDawawapaqaqbnapapapaqaqaqapapbEalbFbybGapaxaeaebBapapaqbnapbGapapaqapapapapapapaqauapaxaeaebBapaqap
+aeaeaeayaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaCaDaDaDaeaeaeayaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebIbIayaeaeaeaeaeaeaeaeaeaeaeaeayaeaeaeaeaeaeaeae
+aHaHaHbnaKaMaFaQaebJaFaFaLaHaHaHaKaJaHbKbLbLbLaFaFaFauaHaHaHaHaFaFaFaFbkalblaFaFaFaFaLaFaFaFaHbMauaFaFaFbkalblaFaFaFaFaFaFbnaFaFaFaFaFaFaFaF
+acacacacaaaaaaagaeaiaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaabOaaaaaaaaaaaaaaaabPaeahacaaacaaaaaaaaacacacaaaaaaaabQaDbRaaacaaaaaaaaacacaaaaacaaaaaaaa
+ajaaababababacagaeaEaaauaabnbnauacababababababababaabOacababababababaaadaeahaaaaajajajajajajajajajajaTaUaBaeahaaabababababababababababababaa
+bbacababababbSagaebTaaauaabnajbUaaaaaaacaaaaacaaaaaaajaaababababababaaadaeahaaaaajaaaaaaacaaaaacaaaaaaaabQaDbRacabababababaaaaaaabababababaa
+bbacaaaaaaaaaaagaeahaaauacauajajajajajajajajajajajajajaaababababababacadaeahacaaajaaabababababababababaabQaDbRacabababababaabaaaabababababaa
+bbbbbbajajaTaUbVaeahacauaabnauauacaaacaaaubnaaaaaaacajacababababababacagaeahacaaajaaabababababababababacbWaCbXaaabababababacajacabababababaa
+acacacaaaaaaaaadaeahacauaaacaaacaaauauauauauauaucEaaajaaababababababaaagaeahacaaajaaaaaaaaaaaaaaaaaaabacadaeahaaabababababaaajacabababababaa
+ababababababaaagaeahacauauauauauauaubYaubYaubYaucHaaajaaaaaaacacaaaaaaagaeaiacaaajacaabaajajajajajaaabaaadaeahaaabababababaaajacabababababaa
+ababababababacagaeahaaauauauauauauauauauauauaucHcHacajbZauaubnbnauaubwadaeaiaaaaajacaaajaaacaaacajaaabacadaeahaaaaaaacacacaaajacabababababaa
+aaaaababababacaZaebfaaauauauauaucacacacacacacacacaaaajaaaaaaacaaaaaaaaadaeahaaaaajaaaaajaaaaaaacajaaabaccbaeaAccaTajajajajajajacabababababaa
+baaaababababacaSaeahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaajaaababababababaaadaeahbnaaajaaaaajajajaaaaajaaabacadaeahaaaaaaaaaaaaaaajaaabababababaa
+ajacababababacagaeaiacaabaajajajajajajajajajajajajajajacababababababacadaeaiauauajacaaajajajaaaaajaaabaaadaeahaaabababababaaajaaabababababaa
+ajaaababababaaadaecdacaaajaaaaaaacaaaaaaacaaaaacaaaaaaaaababababababacadaeaiaaauajacaaajajajaaacajaaabaaadaeahacabababababacajaaabababababaa
+ajacaaaaaaaaaaadaeaEacaaajaaacaaaaaaaaaaaaabababababababababababababaaagaeaiacaaajacaaaaaaaaaaacajaaceacadaeahacabababababaaajaaabababababaa
+ajajajajajaTaUcfaeaiacaaajajajajajajajajacabababababababababababababaacgaDbRaaaaajaaaaaaacacaaaaajauauacadaeahacabababababaaacacabababababaa
+acaaacaaaaacaaagaeaiacaaaaaaacaaaaaaaaaTaaabababababababababababababaabQaDbRaaaaajajajajajajajajajauauaaadaeahaaabababababababababababababaa
+aaaaacaaacaaaabuaeahaaaaacaaacaaaaacaachacaaacaaacaaaaaaaaaaaaaaaaaaaabQaDbRaaaaaaaaacaaaaacacaaaaaaacacadaeahacacacacacacaaaaacacacaaaaaaaa
+ciapapaqapapaqaxaecjauapapbGapbAaqckapclapapapaparapapaqbnaqapapbGapapcmcncobDaqaqapapaqapcpapawawapapapaxaecrapapapapapatauapaqckaqapapapap
+aeaeaeaeaeaeaeaeaeaeayaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeayaeaeaeaeaeaeaeaeaeaDaeaeaeaeaeaeayaeaDaDaeaeaeaeaeaeaeaeaeaeaeaeayaeaeaeaeaeaeaeae
+aFaFaFaFaHaFaKaHaHaHauaFaFaFaHctaHaHaFaKaFaLaFaGaHaHaHaHbnaJaHaLaFaHaFbkalblbLaFaHaHaHaHaGbnaFaPaFaFaFaKaQaebJaFaFaFaFaFaFauaFaFaFcuaFaFaFaF
+acaaaaaaaaaaacaaacaaaaacacaaaaaaaaaaaaacaaacaacvaaaaacaaaaaaaaacaaaaeWadaeahaaaaacaaaaaaaaaaacaaaaaaacaaadaecwaaaaaaacaaaaaaaaacacaaaaacaaaa
+ababababababababababababababababababababababababababababababababababeWadaeahaaaaaaaaaaaaaaaaaaaaaaaaaaaaadaeahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ababababababababababababababababababababababababababababababababababeWagaeahaaaaajajajajajajajajajajaTaUaBaecxccaTajajajajajajajajajajajajaa
+ababababababababababababababababababababababababababababababababababeWaZaeaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaadaeahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ababababababababababababababababababababababababababababababababababeWagaecdaaababababababababababababaaadaeahaaabababababababababababababab
+ababababababababababababababababababababababababababababababababababeWagaeaiaaababababababababababababaaadaeahacabababababababababababababab
+ababababababababababababababababababababababababababababababababababeWadaeahaaababababababababababababaaadaeahacabababababababababababababab
+ababababababababababababababababababababababababababababababababababfbadaeahaaababababababababababababaaadaeahacabababababababababababababab
+ababababababababababababababababababababababababababababababababababfbadaeaiacababababababababababababacadaeahaaabababababababababababababab
+ababababababababababababababababababababababababababababababababababfbadaeaiacababababababababababababacagaeahaaabababababababababababababab
+abababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaababfbadaeaiacababababababababababababaaagaeahaaabababababababababababababab
+abababababababababababababababababababaaauauauauauauauauauauauaaababeWadaeahaaababababababababababababaaadaecdaaabababababababababababababab
+abababababababababababababababababababaaauauauauauaRauauauauauaaababeWadaeahaaababababababababababababacbuaeaiaaabababababababababababababab
+abababababababababababababababababababaaauauauauauauauauauauauaaababeWagaeahaaababababababababababababaaadaeaiaaabababababababababababababab
+abababababababababababababababababababaaauauauauauauauauauauaueWeWeWfbagaeahaaaaacaaaaacacacaaaaacacaaaaadaeahaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abababababababababababababababababababaaauauauauauauauauauauaufcauaufdagaebBarapapaqcAaqaqaqapaqaqapatapaxalbBapaqaqaqaparaqaqaqapauaqapapap
+abababababababababababababababababababaaauauauauauauauauauauaufcauaufdagaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeayaeaeaeae
+abababababababababababababababababababaaauauauauauauauauauauaufcauaufcaZaeblaGaHaFaFaFcBaHaHaFaFaHaMaFaFaFaFaFaFaFaFaFaKaHaHaHaFaFauaFaFaFaF
+abababababababababababababababababababaaauauauauauauauauauauaueWeWeWeWadaeahacaaaaaaaacDaaaaaaaaaaacaaaaaaaaaaacacacacaaaaaaaaaaacacaaacaaaa
+abababababababababababababababababababaaauauauauauauauauauauauaaababfbadaeahacabababaaaTacababababababaabaacabababababababababaaajaaabababab
+abababababababababababababababababababaaauauauauaubmauauauauauaaababfbadalahaaabababaaajacababababababaaajaaabababababababababacajaaabababab
+abababababababababababababababababababaaauauauauauauauauauauauaaababfbadaecwaaaaaaaaaaajacaaaaaaacacacaaajaaaaaaacacacacaaaaaaaaajaaabababab
+abababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaababfbadaeahacaaajajajajajajajajajajajajajajajajajajajajajajajajajaaabababab
+ababababababababababababababababababababababababababababababababababfbadaeahacaaaaaaaaaaaaacacacaaaaaaacacacacaaaaaaaaacacacacaaaaaaabababab
+ababababababababababababababababababababababababababababababababababeWadaeahaaababababababababababababababababababababababababababababababab
+"}

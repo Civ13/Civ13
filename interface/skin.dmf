@@ -1,0 +1,842 @@
+macro "macro"
+	elem 
+		name = "Tab"
+		command = ".winset \"mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
+	elem 
+		name = "Center+REP"
+		command = ".center"
+	elem 
+		name = "Space"
+		command = "on-press-spacebar"
+	elem 
+		name = "Northeast"
+		command = ".northeast"
+	elem 
+		name = "Southeast"
+		command = ".southeast"
+	elem 
+		name = "Southwest"
+		command = ".southwest"
+	elem 
+		name = "Northwest"
+		command = ".northwest"
+	elem 
+		name = "West"
+		command = ".startmovingleft"
+	elem 
+		name = "CTRL+West"
+		command = "westface"
+	elem 
+		name = "West+UP"
+		command = ".stopmovingleft"
+	elem 
+		name = "North"
+		command = ".startmovingup"
+	elem 
+		name = "CTRL+North"
+		command = "northface"
+	elem 
+		name = "North+UP"
+		command = ".stopmovingup"
+	elem 
+		name = "East"
+		command = ".startmovingright"
+	elem 
+		name = "CTRL+East"
+		command = "eastface"
+	elem 
+		name = "East+UP"
+		command = ".stopmovingright"
+	elem 
+		name = "South"
+		command = ".startmovingdown"
+	elem 
+		name = "CTRL+South"
+		command = "southface"
+	elem 
+		name = "South+UP"
+		command = ".stopmovingdown"
+	elem 
+		name = "Insert"
+		command = "a-intent right"
+	elem 
+		name = "Delete"
+		command = "delete-key-pressed"
+	elem 
+		name = "CTRL+1"
+		command = "a-intent help"
+	elem 
+		name = "CTRL+2"
+		command = "a-intent disarm"
+	elem 
+		name = "CTRL+3"
+		command = "a-intent grab"
+	elem 
+		name = "CTRL+4"
+		command = "a-intent harm"
+	elem 
+		name = "CTRL+E"
+		command = "quick-equip"
+	elem 
+		name = "CTRL+F"
+		command = "a-intent left"
+	elem 
+		name = "CTRL+G"
+		command = "a-intent right"
+	elem 
+		name = "CTRL+SHIFT+G"
+		command = ".configure graphics-hwmode on"
+	elem 
+		name = "CTRL+Q"
+		command = ".northwest"
+	elem 
+		name = "CTRL+R"
+		command = ".southwest"
+	elem 
+		name = "CTRL+S"
+		command = "Say \"*scream"
+	elem 
+		name = "CTRL+X"
+		command = ".northeast"
+	elem 
+		name = "CTRL+Y"
+		command = "Activate-Held-Object"
+	elem 
+		name = "CTRL+Z"
+		command = "Activate-Held-Object"
+	elem 
+		name = "CTRL+SHIFT+F1+REP"
+		command = ".options"
+
+macro "hotkeymode"
+	elem 
+		name = "Tab"
+		command = ".winset \"mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true\""
+	elem 
+		name = "Center+REP"
+		command = ".center"
+	elem 
+		name = "Space"
+		command = "on-press-spacebar"
+	elem 
+		name = "Southwest"
+		command = ".southwest"
+	elem 
+		name = "Northwest"
+		command = ".northwest"
+	elem 
+		name = "West"
+		command = ".startmovingleft"
+	elem 
+		name = "CTRL+West"
+		command = "westface"
+	elem 
+		name = "West+UP"
+		command = ".stopmovingleft"
+	elem 
+		name = "North"
+		command = ".startmovingup"
+	elem 
+		name = "CTRL+North"
+		command = "northface"
+	elem 
+		name = "North+UP"
+		command = ".stopmovingup"
+	elem 
+		name = "East"
+		command = ".startmovingright"
+	elem 
+		name = "CTRL+East"
+		command = "eastface"
+	elem 
+		name = "East+UP"
+		command = ".stopmovingright"
+	elem 
+		name = "South"
+		command = ".startmovingdown"
+	elem 
+		name = "CTRL+South"
+		command = "southface"
+	elem 
+		name = "South+UP"
+		command = ".stopmovingdown"
+	elem 
+		name = "Insert"
+		command = "a-intent right"
+	elem 
+		name = "Delete"
+		command = "delete-key-pressed"
+	elem 
+		name = "1"
+		command = "a-intent help"
+	elem 
+		name = "CTRL+1"
+		command = "a-intent help"
+	elem 
+		name = "2"
+		command = "a-intent disarm"
+	elem 
+		name = "CTRL+2"
+		command = "a-intent disarm"
+	elem 
+		name = "3"
+		command = "a-intent grab"
+	elem 
+		name = "CTRL+3"
+		command = "a-intent grab"
+	elem 
+		name = "4"
+		command = "a-intent harm"
+	elem 
+		name = "CTRL+4"
+		command = "a-intent harm"
+	elem 
+		name = "5"
+		command = ".me"
+	elem 
+		name = "A"
+		command = ".startmovingleft"
+	elem 
+		name = "A+UP"
+		command = ".stopmovingleft"
+	elem 
+		name = "D"
+		command = ".startmovingright"
+	elem 
+		name = "D+UP"
+		command = ".stopmovingright"
+	elem 
+		name = "E"
+		command = "quick-equip"
+	elem 
+		name = "CTRL+E"
+		command = "quick-equip"
+	elem 
+		name = "F"
+		command = "a-intent left"
+	elem 
+		name = "CTRL+F"
+		command = "a-intent left"
+	elem 
+		name = "G"
+		command = "a-intent right"
+	elem 
+		name = "CTRL+G"
+		command = "a-intent right"
+	elem 
+		name = "H"
+		command = "holster"
+	elem 
+		name = "CTRL+H"
+		command = "holster"
+	elem 
+		name = "J"
+		command = "toggle-gun-mode"
+	elem 
+		name = "CTRL+J"
+		command = "toggle-gun-mode"
+	elem 
+		name = "Q"
+		command = ".northwest"
+	elem 
+		name = "CTRL+Q"
+		command = ".northwest"
+	elem 
+		name = "R"
+		command = ".southwest"
+	elem 
+		name = "CTRL+R"
+		command = ".southwest"
+	elem "s_key"
+		name = "S"
+		command = ".startmovingdown"
+	elem 
+		name = "CTRL+S"
+		command = "Say \"*scream"
+	elem 
+		name = "S+UP"
+		command = ".stopmovingdown"
+	elem 
+		name = "T"
+		command = ".say"
+	elem "w_key"
+		name = "W"
+		command = ".startmovingup"
+	elem 
+		name = "W+UP"
+		command = ".stopmovingup"
+	elem 
+		name = "X"
+		command = ".northeast"
+	elem 
+		name = "CTRL+X"
+		command = ".northeast"
+	elem 
+		name = "Y"
+		command = "Activate-Held-Object"
+	elem 
+		name = "CTRL+Y"
+		command = "Activate-Held-Object"
+	elem 
+		name = "Z"
+		command = "Activate-Held-Object"
+	elem 
+		name = "CTRL+Z"
+		command = "Activate-Held-Object"
+	elem 
+		name = "CTRL+SHIFT+F1+REP"
+		command = ".options"
+
+
+menu "menu"
+	elem 
+		name = "&File"
+		command = ""
+		saved-params = "is-checked"
+	elem 
+		name = "&Quick screenshot\tF2"
+		command = ".screenshot auto"
+		category = "&File"
+		saved-params = "is-checked"
+	elem 
+		name = "&Save screenshot as...\tShift+F2"
+		command = ".screenshot"
+		category = "&File"
+		saved-params = "is-checked"
+	elem 
+		name = ""
+		command = ""
+		category = "&File"
+		saved-params = "is-checked"
+	elem 
+		name = "&Reconnect"
+		command = ".reconnect"
+		category = "&File"
+		saved-params = "is-checked"
+	elem 
+		name = "&Quit"
+		command = ".quit"
+		category = "&File"
+		saved-params = "is-checked"
+	elem 
+		name = "&Icons"
+		command = ""
+		saved-params = "is-checked"
+	elem "stretch"
+		name = "&Stretch to fit"
+		command = ".winset \"mapwindow.map.icon-size=0\""
+		category = "&Icons"
+		is-checked = true
+		can-check = true
+		group = "size"
+		saved-params = "is-checked"
+	elem "icon64"
+		name = "&64x64"
+		command = ".winset \"mapwindow.map.icon-size=64\""
+		category = "&Icons"
+		can-check = true
+		group = "size"
+		saved-params = "is-checked"
+	elem "icon48"
+		name = "&48x48"
+		command = ".winset \"mapwindow.map.icon-size=48\""
+		category = "&Icons"
+		can-check = true
+		group = "size"
+		saved-params = "is-checked"
+	elem "icon32"
+		name = "&32x32"
+		command = ".winset \"mapwindow.map.icon-size=32\""
+		category = "&Icons"
+		can-check = true
+		group = "size"
+		saved-params = "is-checked"
+	elem 
+		name = ""
+		command = ""
+		category = "&Icons"
+		saved-params = "is-checked"
+	elem "textmode"
+		name = "&Text"
+		command = ".winset \"menu.textmode.is-checked=true?mapwindow.map.text-mode=true:mapwindow.map.text-mode=false\""
+		category = "&Icons"
+		can-check = true
+		saved-params = "is-checked"
+	elem 
+		name = "&Help"
+		command = ""
+		saved-params = "is-checked"
+	elem 
+		name = "&Admin help\tF1"
+		command = "adminhelp"
+		category = "&Help"
+		saved-params = "is-checked"
+	elem 
+		name = "&Hotkeys"
+		command = "hotkeys-help"
+		category = "&Help"
+		saved-params = "is-checked"
+
+
+window "chemdispenser"
+	elem "chemdispenser"
+		type = MAIN
+		pos = 464,0
+		size = 340x480
+		anchor1 = none
+		anchor2 = none
+		is-visible = false
+		saved-params = "pos;size;is-minimized;is-maximized"
+		title = "Chem Dispenser"
+		statusbar = false
+	elem "energy"
+		type = LABEL
+		pos = 8,24
+		size = 56x16
+		anchor1 = none
+		anchor2 = none
+		saved-params = ""
+		text = "Energy: 25"
+	elem "eject"
+		type = BUTTON
+		pos = 264,4
+		size = 72x20
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "[Insert beaker]"
+		command = "skincmd \"chemdispenser;eject\""
+	elem "amountc"
+		type = BUTTON
+		pos = 208,4
+		size = 48x20
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "[Other]"
+		command = "skincmd \"chemdispenser;amountc\""
+	elem "amount3"
+		type = BUTTON
+		pos = 176,4
+		size = 24x20
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "[30]"
+		command = "skincmd \"chemdispenser;amount30\""
+	elem "amount2"
+		type = BUTTON
+		pos = 144,4
+		size = 24x20
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "[20]"
+		command = "skincmd \"chemdispenser;amount20\""
+	elem "amount1"
+		type = BUTTON
+		pos = 112,4
+		size = 24x20
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "[10]"
+		command = "skincmd \"chemdispenser;amount10\""
+	elem "amount"
+		type = LABEL
+		pos = 4,4
+		size = 100x20
+		anchor1 = none
+		anchor2 = none
+		font-size = 12
+		saved-params = ""
+		text = "Amount: 30"
+	elem "child1"
+		type = CHILD
+		pos = 0,40
+		size = 340x440
+		anchor1 = none
+		anchor2 = none
+		saved-params = "splitter"
+		left = "chemdispenser_reagents"
+		is-vert = false
+
+window "chemdispenser_reagents"
+	elem "chemdispenser_reagents"
+		type = MAIN
+		pos = 464,0
+		size = 340x448
+		anchor1 = none
+		anchor2 = none
+		saved-params = "pos;size;is-minimized;is-maximized"
+		titlebar = false
+		statusbar = false
+		can-close = false
+		can-minimize = false
+		can-resize = false
+		is-pane = true
+		can-scroll = vertical
+	elem "template_dispense"
+		type = BUTTON
+		pos = 256,8
+		size = 64x32
+		anchor1 = none
+		anchor2 = none
+		is-visible = false
+		saved-params = "is-checked"
+		text = "Dispense"
+		image = 'icons\\dispensebutton_bg.png'
+		command = ""
+		is-flat = true
+	elem "template_name"
+		type = LABEL
+		pos = 18,8
+		size = 230x32
+		anchor1 = none
+		anchor2 = none
+		font-size = 15
+		is-visible = false
+		saved-params = ""
+		text = "Chloral Hydrate"
+		image = 'icons\\reagentname_bg.png'
+		image-mode = stretch
+
+window "mainwindow"
+	elem "mainwindow"
+		type = MAIN
+		pos = 281,0
+		size = 640x440
+		anchor1 = none
+		anchor2 = none
+		is-default = true
+		saved-params = "pos;size;is-minimized;is-maximized"
+		title = "Space Station 13"
+		is-maximized = true
+		macro = "macro"
+		menu = "menu"
+	elem "hotkey_toggle"
+		type = BUTTON
+		pos = 560,420
+		size = 80x20
+		anchor1 = 100,100
+		anchor2 = none
+		saved-params = ""
+		text = "Hotkey Toggle"
+		command = ".winset \"mainwindow.macro!=macro ? mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true : mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
+		button-type = pushbox
+	elem "mainvsplit"
+		type = CHILD
+		pos = 3,0
+		size = 634x416
+		anchor1 = 0,0
+		anchor2 = 100,100
+		background-color = #000000
+		saved-params = "splitter"
+		right = "rpane"
+		is-vert = true
+	elem "input"
+		type = INPUT
+		pos = 3,420
+		size = 517x20
+		anchor1 = 0,100
+		anchor2 = 100,100
+		background-color = #d3b5b5
+		is-default = true
+		border = sunken
+		saved-params = "command"
+	elem "saybutton"
+		type = BUTTON
+		pos = 520,420
+		size = 40x20
+		anchor1 = 100,100
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "Chat"
+		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" macrobutton.is-checked=false:input.command=\""
+		button-type = pushbox
+
+window "mapwindow"
+	elem "mapwindow"
+		type = MAIN
+		pos = 464,0
+		size = 640x480
+		anchor1 = none
+		anchor2 = none
+		saved-params = "pos;size;is-minimized;is-maximized"
+		titlebar = false
+		statusbar = false
+		can-close = false
+		can-minimize = false
+		can-resize = false
+		is-pane = true
+	elem "map"
+		type = MAP
+		pos = 0,0
+		size = 640x480
+		anchor1 = 0,0
+		anchor2 = 100,100
+		font-family = "Arial Rounded MT Bold,Arial Black,Arial,sans-serif"
+		font-size = 7
+		is-default = true
+		saved-params = "icon-size"
+		on-show = ".winset\"mainwindow.mainvsplit.left=mapwindow\""
+		on-hide = ".winset\"mainwindow.mainvsplit.left=\""
+
+window "outputwindow"
+	elem "outputwindow"
+		type = MAIN
+		pos = 464,0
+		size = 640x480
+		anchor1 = none
+		anchor2 = none
+		saved-params = "pos;size;is-minimized;is-maximized"
+		titlebar = false
+		statusbar = false
+		can-close = false
+		can-minimize = false
+		can-resize = false
+		is-pane = true
+	elem "output"
+		type = OUTPUT
+		pos = 0,0
+		size = 640x480
+		anchor1 = 0,0
+		anchor2 = 100,100
+		font-family = "@SimSun-ExtB"
+		is-default = true
+		saved-params = "max-lines"
+		style = ".system {color:#ff0000;}"
+		max-lines = 0
+
+window "browserwindow"
+	elem "browserwindow"
+		type = MAIN
+		pos = 464,0
+		size = 640x480
+		anchor1 = none
+		anchor2 = none
+		saved-params = "pos;size;is-minimized;is-maximized"
+		title = "Browser"
+		is-pane = true
+	elem "browser"
+		type = BROWSER
+		pos = 0,0
+		size = 638x503
+		anchor1 = 0,0
+		anchor2 = 100,100
+		background-color = #ffffff
+		is-default = true
+		saved-params = ""
+		on-show = ".winset\"rpane.infob.is-visible=true?rpane.infob.pos=130,0;rpane.textb.is-visible=true;rpane.browseb.is-visible=true;rpane.browseb.is-checked=true;rpane.rpanewindow.pos=0,30;rpane.rpanewindow.size=0x0;rpane.rpanewindow.left=browserwindow\""
+		on-hide = ".winset\"rpane.infob.is-visible=true?rpane.infob.is-checked=true rpane.infob.pos=65,0 rpane.rpanewindow.left=infowindow:rpane.rpanewindow.left=textwindow rpane.textb.is-visible=true rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0\""
+
+window "infowindow"
+	elem "infowindow"
+		type = MAIN
+		pos = 464,0
+		size = 640x480
+		anchor1 = none
+		anchor2 = none
+		background-color = #000000
+		saved-params = "pos;size;is-minimized;is-maximized"
+		title = "Info"
+		titlebar = false
+		statusbar = false
+		can-close = false
+		can-minimize = false
+		can-resize = false
+		is-pane = true
+	elem "info"
+		type = INFO
+		pos = 0,16
+		size = 640x464
+		anchor1 = 0,3
+		anchor2 = 100,100
+		font-family = "Book Antiqua"
+		font-size = 8
+		text-color = #e1e1d7
+		background-color = #1e1e28
+		is-default = true
+		border = line
+		drop-zone = false
+		saved-params = ""
+		highlight-color = #00aa00
+		tab-text-color = #e1e1d7
+		tab-background-color = #282832
+		tab-font-family = "Book Antiqua"
+		tab-font-size = 9
+		on-show = ".winset\"rpane.infob.is-visible=true;rpane.browseb.is-visible=true?rpane.infob.pos=130,0:rpane.infob.pos=65,0 rpane.textb.is-visible=true rpane.infob.is-checked=true rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0 rpane.rpanewindow.left=infowindow\""
+		on-hide = ".winset\"rpane.infob.is-visible=false;rpane.browseb.is-visible=true?rpane.browseb.is-checked=true rpane.rpanewindow.left=browserwindow:rpane.textb.is-visible=true rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0 rpane.rpanewindow.left=\""
+
+window "rpane"
+	elem "rpane"
+		type = MAIN
+		pos = 464,0
+		size = 947x480
+		anchor1 = none
+		anchor2 = none
+		saved-params = "pos;size;is-minimized;is-maximized"
+		titlebar = false
+		statusbar = false
+		can-close = false
+		can-minimize = false
+		can-resize = false
+		is-pane = true
+	elem "rpanewindow"
+		type = CHILD
+		pos = 0,0
+		size = 947x505
+		anchor1 = 0,0
+		anchor2 = 100,100
+		background-color = #1e1e28
+		saved-params = "splitter"
+		left = "buttons"
+		right = "outputwindow"
+		is-vert = false
+	elem "button7"
+		type = BUTTON
+		pos = 789,0
+		size = 158x22
+		anchor1 = 83,0
+		anchor2 = 100,5
+		font-family = "Book Antiqua"
+		font-size = 7
+		font-style = "bold"
+		text-color = #ffffff
+		background-color = #40628a
+		border = line
+		saved-params = "is-checked"
+		text = "Suggestion"
+		command = "makeasugg"
+		group = "rpanemode"
+	elem "button6"
+		type = BUTTON
+		pos = 631,0
+		size = 158x22
+		anchor1 = 67,0
+		anchor2 = 83,5
+		font-family = "Book Antiqua"
+		font-size = 7
+		font-style = "bold"
+		text-color = #ffffff
+		background-color = #40628a
+		border = line
+		saved-params = "is-checked"
+		text = "Report Bug"
+		command = "reportabug"
+		group = "rpanemode"
+	elem "rulesb"
+		type = BUTTON
+		pos = 315,0
+		size = 158x22
+		anchor1 = 33,0
+		anchor2 = 50,5
+		font-family = "Book Antiqua"
+		font-size = 7
+		font-style = "bold"
+		text-color = #ffffff
+		background-color = #40628a
+		border = line
+		saved-params = "is-checked"
+		text = "Rules"
+		command = "rules"
+		group = "rpanemode"
+	elem "discord"
+		type = BUTTON
+		pos = 473,0
+		size = 158x22
+		anchor1 = 50,0
+		anchor2 = 67,5
+		font-family = "Book Antiqua"
+		font-size = 7
+		font-style = "bold"
+		text-color = #ffffff
+		background-color = #40628a
+		border = line
+		saved-params = "is-checked"
+		text = "Discord"
+		command = "discord"
+		group = "rpanemode"
+	elem "forumb"
+		type = BUTTON
+		pos = 157,0
+		size = 158x22
+		anchor1 = 17,0
+		anchor2 = 33,5
+		font-family = "Book Antiqua"
+		font-size = 7
+		font-style = "bold"
+		text-color = #ffffff
+		background-color = #40628a
+		border = line
+		saved-params = "is-checked"
+		text = "Github"
+		command = "github"
+		group = "rpanemode"
+	elem "wikib"
+		type = BUTTON
+		pos = 0,0
+		size = 157x22
+		anchor1 = 0,0
+		anchor2 = 17,5
+		font-family = "Book Antiqua"
+		font-size = 7
+		font-style = "bold"
+		text-color = #ffffff
+		background-color = #40628a
+		border = line
+		saved-params = "is-checked"
+		text = "Wiki"
+		command = "wiki"
+		group = "rpanemode"
+
+window "text_editor"
+	elem "text_editor"
+		type = MAIN
+		pos = 464,0
+		size = 360x488
+		anchor1 = none
+		anchor2 = none
+		is-visible = false
+		border = sunken
+		saved-params = "pos;size;is-minimized;is-maximized"
+		title = "Text Editor"
+		can-minimize = false
+		can-resize = false
+	elem "exit"
+		type = BUTTON
+		pos = 248,456
+		size = 104x24
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "Exit without saving"
+		command = ""
+	elem "save"
+		type = BUTTON
+		pos = 128,456
+		size = 104x24
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "Save"
+		command = ""
+	elem "saveexit"
+		type = BUTTON
+		pos = 8,456
+		size = 104x24
+		anchor1 = none
+		anchor2 = none
+		saved-params = "is-checked"
+		text = "Save + Exit"
+		command = ""
+	elem "textedit"
+		type = INPUT
+		pos = 0,0
+		size = 360x448
+		anchor1 = none
+		anchor2 = none
+		border = line
+		saved-params = ""
+		multi-line = true
+

@@ -1,0 +1,327 @@
+"aa" = (/turf/wall/brick,/area/prishtina/houses/nml_eight)
+"ab" = (/turf/wall/rockwall,/area/prishtina/houses/nml_eight)
+"ac" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/houses/nml_eight)
+"ad" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"ae" = (/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"af" = (/obj/effect/decal/cleanable/dirt,/obj/structure/multiz/ladder/ww2/up{ladder_id = 10},/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"ag" = (/turf/wall/brick,/area/prishtina/houses/nml_eleven)
+"ah" = (/turf/wall/rockwall,/area/prishtina/houses/nml_eleven)
+"ai" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aj" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"ak" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"al" = (/obj/structure/lattice,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"am" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"an" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"ao" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"ap" = (/obj/structure/catwalk,/obj/structure/railing,/obj/structure/railing{dir = 1},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"aq" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"ar" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"as" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"at" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"au" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"av" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aw" = (/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"ax" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"ay" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"az" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aA" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"aB" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"aC" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"aD" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"aE" = (/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"aF" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"aG" = (/obj/structure/barbwire,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"aH" = (/obj/structure/barricade,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"aI" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"aJ" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/houses/nml_eleven)
+"aK" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aL" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aM" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aN" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aO" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aP" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aQ" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"aR" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aS" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aT" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aU" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aV" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aW" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aX" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"aY" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"aZ" = (/obj/structure/lattice,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"ba" = (/obj/structure/lattice,/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"bb" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"bc" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"bd" = (/obj/structure/lattice,/obj/effect/decal/cleanable/dirt,/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"be" = (/obj/structure/catwalk,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"bf" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bg" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bh" = (/obj/structure/lattice,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"bi" = (/obj/structure/lattice,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eight)
+"bj" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"bk" = (/obj/structure/catwalk,/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"bl" = (/obj/structure/catwalk,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"bm" = (/obj/structure/catwalk,/obj/structure/railing,/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"bn" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bo" = (/obj/effect/decal/cleanable/dirt,/obj/structure/multiz/ladder/ww2/up{ladder_id = 11},/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bp" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/road,/area/prishtina/houses/nml_eight)
+"bq" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/road,/area/prishtina/houses/nml_eight)
+"br" = (/turf/floor/plating/road,/area/prishtina/houses/nml_eight)
+"bs" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bt" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bu" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bv" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bw" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bx" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"by" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bz" = (/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bA" = (/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bB" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bC" = (/obj/structure/multiz/stairs{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bD" = (/obj/structure/multiz/stairs{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bE" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bF" = (/obj/effect/decal/cleanable/dirt,/turf/wall/rockwall,/area/prishtina/houses/nml_eleven)
+"bG" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bH" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bI" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bJ" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bK" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bL" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bM" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bN" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bO" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bP" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bQ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bR" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bS" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bT" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bU" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bV" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bW" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"bX" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_eleven)
+"bY" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"bZ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"ca" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"cb" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eight)
+"cc" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"cd" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"ce" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_eleven)
+"cf" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/houses/nml_four)
+"cg" = (/turf/wall/brick,/area/prishtina/houses/nml_four)
+"ch" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"ci" = (/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"cj" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"ck" = (/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cl" = (/obj/structure/barricade,/turf/floor/plating/road,/area/prishtina/houses/nml_four)
+"cm" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/generic,/obj/item/trash/plate,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cn" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"co" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/houses/nml_five)
+"cp" = (/turf/wall/brick,/area/prishtina/houses/nml_five)
+"cq" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"cr" = (/obj/structure/barricade,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cs" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"ct" = (/obj/structure/lattice,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"cu" = (/turf/wall/rockwall,/area/prishtina/houses/nml_four)
+"cv" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cw" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cx" = (/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cy" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cz" = (/obj/structure/lattice,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cA" = (/obj/structure/lattice,/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cB" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cC" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cD" = (/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cE" = (/turf/wall/rockwall,/area/prishtina/houses/nml_five)
+"cF" = (/obj/structure/lattice,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"cG" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/houses/nml_four)
+"cH" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cI" = (/obj/structure/multiz/stairs,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cJ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cK" = (/obj/structure/lattice,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cL" = (/obj/structure/lattice,/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"cM" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"cN" = (/obj/structure/catwalk,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"cO" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"cP" = (/obj/structure/barbwire,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cQ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"cR" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"cS" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"cT" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cU" = (/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cV" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cW" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"cX" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"cY" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"cZ" = (/obj/structure/multiz/stairs{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"da" = (/obj/structure/lattice,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"db" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dc" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dd" = (/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"de" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"df" = (/obj/structure/barricade,/turf/wall/rockwall,/area/prishtina/houses/nml_five)
+"dg" = (/obj/structure/catwalk,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/railing{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"dh" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"di" = (/obj/structure/barricade,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"dj" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dk" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dl" = (/obj/structure/multiz/stairs{dir = 1},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"dm" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dn" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"do" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dp" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dq" = (/obj/effect/decal/cleanable/dirt,/obj/structure/multiz/ladder/ww2/up{ladder_id = 12},/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dr" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"ds" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dt" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"du" = (/obj/structure/catwalk,/obj/effect/floor_decal/industrial/warning/dust,/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"dv" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dw" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dx" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing,/obj/structure/barbwire,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"dy" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/structure/barbwire,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dz" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dA" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dB" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dC" = (/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dD" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dE" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dF" = (/obj/effect/decal/cleanable/dirt,/obj/structure/multiz/ladder/ww2/up{ladder_id = 14},/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dG" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dH" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dI" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"dJ" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_five)
+"dK" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dL" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dM" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dN" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dO" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/generic,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dP" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dQ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dR" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_four)
+"dS" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_four)
+"dT" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dU" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dV" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dW" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dX" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dY" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/structure/barricade,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"dZ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"ea" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"eb" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"ec" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/mucus,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_five)
+"ed" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/houses/nml_fourteen)
+"ee" = (/turf/wall/brick,/area/prishtina/houses/nml_fourteen)
+"ef" = (/obj/effect/decal/cleanable/mucus,/turf/wall/brick,/area/prishtina/houses/nml_fourteen)
+"eg" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_fourteen)
+"eh" = (/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"ei" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"ej" = (/turf/wall/brick,/area/prishtina/houses/nml_nine)
+"ek" = (/obj/effect/decal/cleanable/dirt,/turf/wall/brick,/area/prishtina/houses/nml_nine)
+"el" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"em" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"en" = (/turf/wall/rockwall,/area/prishtina/houses/nml_fourteen)
+"eo" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_fourteen)
+"ep" = (/obj/structure/lattice,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"eq" = (/obj/structure/lattice,/obj/structure/simple_door/key_door/anyone,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"er" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"es" = (/obj/structure/catwalk,/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"et" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/effect/decal/cleanable/vomit,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"eu" = (/obj/structure/multiz/stairs{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"ev" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_fourteen)
+"ew" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"ex" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"ey" = (/turf/wall/rockwall,/area/prishtina/houses/nml_nine)
+"ez" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eA" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eB" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eC" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eD" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eE" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eF" = (/obj/effect/decal/cleanable/dirt,/obj/structure/multiz/ladder/ww2/up{ladder_id = 13},/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/decal/cleanable/blood,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eG" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eH" = (/obj/effect/floor_decal/industrial/warning/dust,/obj/effect/floor_decal/industrial/warning/dust{dir = 4},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eI" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/structure/railing,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"eJ" = (/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eK" = (/obj/structure/catwalk,/obj/structure/railing{dir = 8},/obj/structure/railing{dir = 4},/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"eL" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8},/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eM" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eN" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eO" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eP" = (/obj/structure/catwalk,/obj/structure/railing{dir = 1},/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"eQ" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/vomit,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eR" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 1},/obj/effect/decal/cleanable/mucus,/turf/floor/plating/cobblestone/vertical/dark,/area/prishtina/houses/nml_nine)
+"eS" = (/obj/structure/multiz/stairs,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+"eT" = (/obj/structure/lattice,/obj/effect/decal/cleanable/cobweb,/turf/floor/plating/beach/water/sewage,/area/prishtina/houses/nml_nine)
+
+(1,1,1) = {"
+aaabababababababababababababababababababababababababababababababababacadaeafagahahahahahahahahahahahahahahahahahahahahahahahahahahahahahahah
+aaabababababababababababababababababababababababababababababababababacaiaeajagahagagagagagagagagagagagagagagagagagagagagagagagagagagagagahah
+aaabababababababababababababababababababababababababababababababababaaaiaeakagahagaealaeaeaeaeaeaeaeaeaeaealalaeaeaeaeaeaeaeaeaeaealaeagahah
+aaaaaaaaaaaaacaaaaaaaaaaacaaaaaaaaacacacaaaaaaaaacaaaaaaacaaaaaaaaaaaaadaeakagahagalamananaoanananaoapapapaoaoananananaoaoananananaqalagahah
+arasasararasasaratararasararararatasauasasasaravarawaraxayasarararararazaeakagahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+aEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaFaEaGaHaEaEaEaEaEaEaEaeaIaJahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+aKaLaMaMaMaLaMaMaMaNaMaOaKaPaMaQaKaRaMaNaLaSaTaKaKawaKaUaVaKaKaKaKaKaKaWanaXaJahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+aaaaaaaaaaaaaaacaaaaaaaaaaaaadaEaaaaaaaaacaaaaacacaaaaaaaaaaaaaaaaaaaaaiaeajagahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+abaaaaacaaaaaaacaaaaaaaaaaacaiaEacabababababababababababababababababaaaYaeajagahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+abaaaZaZaZaZaZaZaZaZaZaZbabbbcaEaaabababaaaaaaacaaaaacaaaaaaacaaaaaaaaadaeakagahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+abaaaaaaaaacaaaaaaaaaaaaaaaaaiaEaaabababacaZaZaZaZaZaZaZaZaZaZaZaZbdbbbeaeakagahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+abababababababababababababaabfaEacabababaaaZaaaaaaaaacaaaaaaaaaaaaaaaaadaeakagahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+abababababababababababababacbgaEacabababaaaZaaabababababababababababacadaeakaJahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+ababaaaaaaacaaacaaaaaaaaaaaaaiaEaaabababacaZacabababababababababababacadaeajaJahagaeaAaeaeaBaeaeaeaBaeaeaeaCaDaeaeaeaeaCaDaeaeaeaeaBaeagahah
+ababaabhaZbiaZaZaZaZaZaZbabbbcaEaaabababaaaZaaabababababababababababaaadaeajagahagalbjapapbkapapapbkapapapblblananananbkbkapapapapbmalagahah
+ababaaaaacaaacaaaaacaaaaaaaaaiaEaaabaaaaaaaZaaaaaaaaaaaaaaaaaaaaaaabaaadaebnagahagaeaeaealaeaeaeaeaeaealaeaCaDaealaeaeaeaeaeaealaeaeaeagahah
+abababababababababababababaaboaEacabacbpbqaZbrbrbrbrbrbrbrbrbrbraaabaaadaeajaJahagbsaeaebtbububububububububububububububububububvaeaeajagahah
+abaaaaacaaaaacaaaaaaacaaaaacaiaEaaabacbqbqaZaZaZaZaZaZaZaZaZbqbraaabaaadaeajaJahagbwaeaeajbxbybzbAbxbybBbxbxbAbxbAbAbAbzbAbAbAbwaeaeajagahah
+abaaaZaZaZaZaZaZaZbiaZaZbabbbcaEacabaabqbraZaZaZaZaZaZaZaZaZbrbraaabacaiaeajaJahaJbwaeaeajbAbAbAbxbAbxbxbxbAbAbAbAbAbAbAbAbAbAbwaeaeajagahah
+abaaaaacaaaaaaaaaaacaaaaaaaaaiaEaaabaabrbrbrbqbrbrbrbrbrbrbrbqbracabaaadaeajagahaJaJaeaeagagagagagagagagagbCbDagagagagagagagagagaeaeaJaJahah
+abababababababababababababaaadaEacabaaaaacacacacacaaaaaaaaaaaaaaaaabaaadaeajagahahaJaeaeagahahahahahahahagbAbAagahahahahahahahagaeaeaJahahah
+abababababababababababababaabEaEaaabababababababababababababababababacadaeajagahahaJaeaeagahbFbFbFahahahagbGbGagahahahahahahahagaeaeagahahah
+aaacaaaaaaacaaaaaaaaacaaaaaaadaEaaaaaaaaacaaaaaaaaacaaaaaaaaaaaaacaaaaadaeajagaJaJagaeaeagagaJaJaJagagagagbAbAagagagagagagagagagaeaeaJagaJag
+arasarbHarbIasasasasbJasasbKazaEbLararbMbNayayarasasbOarararasasasararbPanbQbRbSbTbUaeaebVbTbTbWbxbTbSbTbTbWbTbTbTbTbTbTbWbAbTbUaeaebVbTbWbT
+aEaEaEaFaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaGaHaHaHaEaEaEaFaEaEaEaEaEaEaEaEaEaeaeaeaeaeaeaeaeaeaebXbXaAaeaeaeaeaeaeaeaeaeaeaeaeaAaeaeaeaeaeaeaeae
+aMaMaMbOaPaSaKaWaEbYaKaKaRaMaMaMaPaOaMbZcacacaaKaKaKawaMaMaMaMaKaKaKaKcbanbtbubububuccbububucdcebAbubububsanbtbububububububxbubububububububu
+cfcfcfcfcgcgcgchcicjcgcgcgcgckcgcgcgcgcgcgcgcgcgcgcgclcgcgcgcgcgcgcgcgcmcicncocpcocpcpcpcpcocococpcpcpcpcqcrcscpcocpcpcpcpcococpcpcocpcpcpcp
+ctcgcucucucucfchcicvcgcucgcwcwcxcfcucucucucucucucucgclcfcucucucucucucgcycicncpcpczczczczczczczczczczcAcBcCcDcncpcEcEcEcEcEcEcEcEcEcEcEcEcEcp
+cFcfcucucucucGchcicHcgcucgcwctcIcgcgcgcfcgcgcfcgcgcgctcgcucucucucucucgcycicncpcpczcpcpcpcocpcpcocpcpcpcpcqcrcscocEcEcEcEcEcpcpcpcEcEcEcEcEcp
+cFcfcgcgcgcgcgchcicJcgcucfcxctctctctctctctctctctctctctcgcucucucucucucfcycicncocpczcpcEcEcEcEcEcEcEcEcEcpcqcrcscocEcEcEcEcEcpcKcpcEcEcEcEcEcp
+cFcFcFctctcLcMcNcicJcfcucgcwcxcxcfcgcfcgcgcfcgcgcgcfctcfcucucucucucucfchcicncocpczcpcEcEcEcEcEcEcEcEcEcocOcPcQcpcEcEcEcEcEcoczcocEcEcEcEcEcp
+cfcfcfcgcgcgcgcycicJcfcucgcfcgcfcgcucucucucucucucucgctcgcucucucucucucgchcicncocpczcpcpcpcpcpcpcpcpcpcEcocRcDcncpcEcEcEcEcEcpczcocEcEcEcEcEcp
+cucucucucucucgchcicJcfcucucucucucucucucucucucucucucgctcgcgcgcfcfcgcgcgchcicScocpczcocpcKczczczczczcpcEcpcRcDcncpcEcEcEcEcEcpczcocEcEcEcEcEcp
+cucucucucucucfchcicJcgcucucucucucucucucucucucucucucfctcTcxcxcwcwcxcxcUcycicScpcpczcocpczcpcocpcoczcpcEcocRcDcncpcpcpcocococpczcocEcEcEcEcEcp
+cgcgcucucucucfcVcicWcgcucucucucucucucucucucucucucucgctcgcgcgcfcgcgcgcgcycicncpcpczcpcpczcpcpcpcoczcpcEcocXcDcYcZcAczczczczczczcocEcEcEcEcEcp
+dacgcucucucucfdbcicJcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgctcgcucucucucucucgcycicndccpczcpcpczczczcpcpczcpcEcocRcDcncpcpcpcpcpcpcpczcpcEcEcEcEcEcp
+ctcfcucucucucfchcicjcfcgdactctctctctctctctctctctctctctcfcucucucucucucfcycicSddddczcocpczczczcpcpczcpcEcpcRcDcncpcEcEcEcEcEcpczcpcEcEcEcEcEcp
+ctcgcucucucucgcycidecfcgctcgcgcgcfcgcgcgcfcgcgcfcgcgcgcgcucucucucucucfcycicScpddczcocpczczczcpcoczcpcEcpcRcDcncocEcEcEcEcEcoczcpcEcEcEcEcEcp
+ctcfcgcgcgcgcgcycicvcfcgctcgcfcgcgcgcgcgcgcucucucucucucucucucucucucucgchcicScocpczcocpcpcpcpcpcoczcpdfcocRcDcncocEcEcEcEcEcpczcpcEcEcEcEcEcp
+ctctctctctcLcMdgcicjcfcgctctctctctctctctcfcucucucucucucucucucucucucucgdhdicscpcpczcpcpcpcococpcpczddddcocRcDcncocEcEcEcEcEcpcococEcEcEcEcEcp
+cfcgcfcgcgcfcgchcicjcfcgcgcgcfcgcgcgcgcLcgcucucucucucucucucucucucucucgdjdicscpcpczczczczczczczczczddddcpcRcDcncpcEcEcEcEcEcEcEcEcEcEcEcEcEcp
+cgcgcfcgcfcgcgdkcicJcgcgcfcgcfcgcgcfcgdlcfcgcfcgcfcgcgcgcgcgcgcgcgcgcgdjdicscpcpcpcpcocpcpcococpcpcpcococRcDcncococococococpcpcocococpcpcpcp
+dmdndndodndndodpcidqcxdndndrdndsdodtdndudndndndndvdndndocwdodndndrdndndwdxdydzdAdAdBdBdAdBdCdBdDdDdBdBdBdEcDdFdBdBdBdBdBdGdddBdAdHdAdBdBdBdB
+cicicicicicicicicicidIcicicicicicicicicicicicicicicicicidIcicicicicicicicicDcrcDcDcDcDcDcDdJcDcrcrcDcDcDcDcDcDcDcDcDcDcDcDdJcDcDcDcDcDcDcDcD
+dKdKdKdKdLdKdMdLdLdLcxdKdKdKdLdNdLdLdKdMdKdOdKdPdLdLdLdLcwdQdLdOdKdLdKdRdSdTdUdVdWdWdWdWdXdcdVdYdVdVdVdZeacDebdVdVdVdVdVdVdddVdVdVecdVdVdVdV
+edeeeeeeeeeeedeeedeeeeededeeeeeeeeeeeeedeeedeeefeeeeedeeeeeeeeedeeeeeeegeheiejejekejejejejejekejejejekejelehemejejejekejejejejekekejejekejej
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeegeheiejejejejejejejejejejejejejejeleheiejejejejejejejejejejejejejejej
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeeoeheiejejepepepepepepepepepepeqereseheteueqepepepepepepepepepepepepej
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeevehewejejejejejejejejejejejejejejeleheiejejejejejejejejejejejejejejej
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeeoehexejeyeyeyeyeyeyeyeyeyeyeyeyejeleheiejeyeyeyeyeyeyeyeyeyeyeyeyeyey
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeeoehewejeyeyeyeyeyeyeyeyeyeyeyeyejeleheiekeyeyeyeyeyeyeyeyeyeyeyeyeyey
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeegeheiejeyeyeyeyeyeyeyeyeyeyeyeyejeleheiekeyeyeyeyeyeyeyeyeyeyeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegeheiejeyeyeyeyeyeyeyeyeyeyeyeyejeleheiekeyeyeyeyeyeyeyeyeyeyeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegehewekeyeyeyeyeyeyeyeyeyeyeyeyekeleheiejeyeyeyeyeyeyeyeyeyeyeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegehewekeyeyeyeyeyeyeyeyeyeyeyeyekezeheiejeyeyeyeyeyeyeyeyeyeyeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegehewekeyeyeyeyeyeyeyeyeyeyeyeyejezeheiejeyeyeyeyeyeyeyeyeyeyeyeyeyey
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeegeheiejeyeyeyeyeyeyeyeyeyeyeyeyejelehexejeyeyeyeyeyeyeyeyeyeyeyeyeyey
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeegeheiejeyeyeyeyeyeyeyeyeyeyeyeyekeAehewejeyeyeyeyeyeyeyeyeyeyeyeyeyey
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeeoeheiejeyeyeyeyeyeyeyeyeyeyeyeyejelehewejeyeyeyeyeyeyeyeyeyeyeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedeoeheiejejekejejekekekejejekekejejeleheiejejejejejejejejejejejejejejej
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedeoeheBeCeDeDeEeFeEeEeEeDeEeEeDeGeDeHeIeBeDeEeEeEeDeCeEeEeEeDeJeEeDeDeD
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedeoeheheheheheheheheheheheheheheheheheheheheheheheheheheheheheKeheheheh
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeeveheLeMeNeOeOeOePeNeNeOeOeNeQeOeOeOeOeOeOeOeOeOeReNeNeNeOeOeJeOeOeOeO
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeegeheiekejejejejeSejejejejejekejejejejejekekekekejejejejejekekejekejej
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegeheiekeyeyeyejeqekeyeyeyeyeyeyejeTekeyeyeyeyeyeyeyeyeyejepejeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegeIeiejeyeyeyejepekeyeyeyeyeyeyejepejeyeyeyeyeyeyeyeyeyekepejeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegehemejejejejejepekejejejekekekejepejejejekekekekejejejejepejeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegeheiekejepepepepepepepepepepepepepepepepepepepepepepepepepejeyeyeyey
+enenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenenedegeheiekejejejejejejekekekejejejekekekekejejejejekekekekejejejeyeyeyey
+eneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneneeegeheiejeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyeyey
+"}

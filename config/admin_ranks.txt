@@ -1,0 +1,21 @@
+## ADMIN RANK DEFINES                                                                   
+## The format of this is very simple. Rank name goes first.                             
+## Rank is CASE-SENSITIVE, all punctuation will be stripped so spaces don't matter.     
+## Each rank is then followed by keywords with the prefix "+".                          
+## These keywords represent groups of verbs and abilities which are given to that rank. 
+## +@ (or +prev) is a special shorthand which adds all the rights of the rank above it. 
+## Ranks with no keywords will just be given the most basic verbs and abilities   
+## +RIGHTS (or +PERMISSIONS) = allows you to promote and/or demote people.
+## +SOUND (or +SOUNDS) = allows you to upload and play sounds
+## +SPAWN (or +CREATE) = mob transformations, spawning of most atoms including mobs (high-risk atoms, e.g. blackholes, will require the +FUN flag too)
+## +EVERYTHING (or +HOST or +ALL) = Simply gives you everything without having to type every flag
+
+Mentor +MENTOR
+Secondary Admin +MOD
+Primary Admin +ADMIN +SPAWN +REJUV +VAREDIT +BAN +POSSESS +BUILDMODE +SERVER +FUN +STEALTH +SOUNDS +DEBUG +MOD
+Head Admin +@
+Manager +@ +PERMISSIONS
+Senator +EVERYTHING
+Senate Chairman +EVERYTHING
+Host +EVERYTHING
+Debug Host +EVERYTHING
