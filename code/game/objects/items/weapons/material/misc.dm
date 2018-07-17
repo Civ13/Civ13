@@ -3,6 +3,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "Tharr she blows!"
+	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "harpoon"
 	item_state = "harpoon"
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
@@ -66,6 +67,7 @@
 	edge = TRUE
 //	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
+	slot_flags = SLOT_BELT
 	applies_material_colour = FALSE
 
 

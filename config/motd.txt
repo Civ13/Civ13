@@ -1,10 +1,7 @@
-<h2><small><span style = "font-size: 1.20em;">Welcome to <b><span style = "font-size: 1.20em;">Lebensraum <span style = "color: #CD4C6C">Alpha Edition</span></span></b></span></small></h2>
+<h2><small><span style = "font-size: 1.20em;">Welcome to <b><span style = "font-size: 1.20em;">1713 <span style = "color: #CD4C6C">Alpha Edition</span></span></b></span></small></h2>
 <i>
 The current map is <b>{server_map}</b>.
 <br>
 This server is running {server_version}, and you are running {client_version}. For the best experience, always run the latest version of the BYOND alpha, which you can get <a href = "http://www.byond.com/download/">here</a>.
-<h2><small>Rules: http://mechahitler.co.nf/lebensraum/rules.html</small></h2>
-<h2><small> Pacific rules: https://docs.google.com/document/d/1DoMAm9yxvMk8AR4tSlFVJi0WD-0-JLpFuta8Y5bmPs0/edit </small></h2>
-<h2><small>Patreon: https://www.patreon.com/worldwar2inspace</small></h2>
-<h2><small>Github: https://github.com/WW2-SS13/WW13/issues</small></h2>
+<h2><small>Github: https://github.com/cariosecus/1713</small></h2>
 </i>

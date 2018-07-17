@@ -39,6 +39,10 @@
 	desc = "A common european sword, with about one meter in lenght."
 	icon_state = "smallsword"
 	item_state = "smallsword"
+	throw_speed = 3
+	throw_range = 5
+	force_divisor = 0.6 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 
 /obj/item/weapon/material/sword/spadroon
@@ -46,6 +50,10 @@
 	desc = "A light sword with a straight blade. Common among the military."
 	icon_state = "spadroon"
 	item_state = "spadroon"
+	throw_speed = 3
+	throw_range = 4
+	force_divisor = 0.8 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 
 /obj/item/weapon/material/sword/cutlass
@@ -53,4 +61,8 @@
 	desc = "A small, slightly curved sword, preferred by pirates."
 	icon_state = "cutlass"
 	item_state = "cutlass"
+	throw_speed = 3
+	throw_range = 4
+	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK

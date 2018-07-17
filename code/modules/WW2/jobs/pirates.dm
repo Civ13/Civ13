@@ -104,6 +104,7 @@
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/material/boarding_axe(H), slot_belt)
 	else if (randweapon == 5)
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/material/harpoon(H), slot_belt)
+
 	H.add_note("Role", "You are a <b>[title]</b>, a simple pirate. Follow your Captain's orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_MEDIUM_LOW)

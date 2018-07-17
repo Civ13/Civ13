@@ -1,12 +1,8 @@
-# World War 13
+# 1713
 <kbd>
- <img src="https://puu.sh/wFD0e/b3099eccb1.jpg">
+ <img src="https://i.imgur.com/r8ubPZR.png">
 </kbd>
 
-[![forthebadge](http://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)](http://forthebadge.com)
 
-# Development Discord
-[![discord](https://discordapp.com/api/guilds/457695742849581056/widget.png)](https://discord.gg/wSzZTgU)
-
-# Lebensraum Discord
-[![discord](https://discordapp.com/api/guilds/331613189462556672/widget.png)](https://discord.gg/PVqjqCv)
+# 1713 Discord
+<b><i>Coming Soon</b></i>
