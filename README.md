@@ -5,4 +5,4 @@
 
 
 # 1713 Discord
-<b><i>Coming Soon</b></i>
+<iframe src="https://discordapp.com/widget?id=468979034571931648&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
