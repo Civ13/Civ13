@@ -605,10 +605,7 @@ var/list/vocal_emotes = list(
 					m_type = 1
 				else
 					if (!muzzled)
-						if (istype(src, /mob/living/carbon/human/vampire))
-							message = "wryyys."
-						else
-							message = "screams!"
+						message = "screams!"
 						m_type = 2
 						scream_sound(src, FALSE)
 					else
@@ -642,22 +639,6 @@ var/list/vocal_emotes = list(
 									message = "dabs on \the [O]."
 									goto enddab
 					enddab
-
-			if ("pose")
-				if (istype(src, /mob/living/carbon/human/pillarman))
-					var/mob/living/carbon/human/pillarman/P = src
-					if (P.next_pose > world.time)
-						P << "<span class = 'danger'>You can't pose again yet.</span>"
-						return
-					message = "poses [pick("fabulously", "spectacularly")]!"
-					playsound(get_turf(P), 'sound/effects/awaken.ogg', 100)
-					for (var/turf/T in getcircle(get_turf(P), 2))
-						new/obj/effect/kana(T, P)
-					for (var/mob/living/carbon/human/H in range(5, P))
-						if (!H.takes_less_damage)
-							H.SpinAnimation(7,1)
-							H.Weaken(rand(4,5))
-					P.next_pose = world.time + 600
 
 			if ("help")
 				src << {"blink, blink_r, blush, bow-(none)/mob, burp, choke, chuckle, clap, collapse, cough,

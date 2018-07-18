@@ -81,24 +81,6 @@ var/GRACE_PERIOD_LENGTH = 7
 	spawn (1)
 		world << "<span class = 'notice'>Setting up seasons.</span>"
 
-	// fixes a crash
-	if (map && istype(map, /obj/map_metadata/forest))
-		return TRUE
-
-	// forces Spring in Reichstag map
-	if (map && istype(map, /obj/map_metadata/reichstag))
-		(season = "SPRING")
-		return TRUE
-
-	// forces Fall in Partisan map
-	if (map && istype(map, /obj/map_metadata/partisan))
-		(season = "FALL")
-		return TRUE
-
-	// forces Fall in Escort map
-	if (map && istype(map, /obj/map_metadata/escort))
-		(season = "FALL")
-		return TRUE
 
 	// forces Spring in Island map
 	if (map && istype(map, /obj/map_metadata/island))
@@ -205,27 +187,8 @@ var/GRACE_PERIOD_LENGTH = 7
 
 	return TRUE
 
-/hook/roundstart/proc/show_battle_report()
-	if (istype(map, /obj/map_metadata/forest))
-		spawn (600)
-			show_global_battle_report(null)
-	return TRUE
-
-// calls the train_move hook on maps without a train, which does map.announce_mission_start() among other things
-/hook/roundstart/proc/automatic_train_move_hook()
-	spawn (20)
-		if (!WW2_train_check())
-			callHook("train_move")
-
-var/mission_announced = FALSE
-var/mapcheck_train_arrived = FALSE
-
 /hook/train_move/proc/announce_mission_start()
 
-	if (mission_announced)
-		return TRUE
-
-	mission_announced = processes.ticker.playtime_elapsed
 
 	var/preparation_time = world.realtime - roundstart_time
 
@@ -241,8 +204,6 @@ var/mapcheck_train_arrived = FALSE
 				np:new_player_panel_proc()
 
 	var/show_report_after = 0
-	if (istype(map, /obj/map_metadata/city))
-		show_report_after = 600
 	spawn (show_report_after)
 		show_global_battle_report(null)
 

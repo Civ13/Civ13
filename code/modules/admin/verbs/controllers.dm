@@ -49,29 +49,6 @@ var/list/special_globalobjects = list("processScheduler", "Master", "Ticker", "C
 		if ("Observation")
 			debug_variables(all_observable_events)
 
-		if ("Primary German Train")
-			if (!german_train_master)
-				src << "<span class = 'danger'>This object doesn't exist.</span>"
-				return
-			debug_variables(german_train_master)
-
-		if ("German Supply Train")
-			if (!german_supplytrain_master)
-				src << "<span class = 'danger'>This object doesn't exist.</span>"
-				return
-			debug_variables(german_supplytrain_master)
-
-		if ("Russian Supply Lift")
-			var/which = input("Top or bottom?") in list("Top", "Bottom")
-			if (which == "Top")
-				for (var/obj/lift_controller/down/soviet/lift in lift_list)
-					debug_variables(lift)
-					return
-			else
-				for (var/obj/lift_controller/up/soviet/lift in lift_list)
-					debug_variables(lift)
-					return
-
 		if ("Whitelists")
 			var/which = input("Which whitelist?") in global_whitelists
 			var/datum/whitelist/W = global_whitelists[which]

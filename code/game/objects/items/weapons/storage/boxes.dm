@@ -397,17 +397,6 @@
 		new /obj/item/weapon/storage/pill_bottle( src )
 
 
-/obj/item/weapon/storage/box/snappops
-	name = "snap pop box"
-	desc = "Eight wrappers of fun! Ages 8 and up. Not suitable for children."
-	icon = 'icons/obj/toy.dmi'
-	icon_state = "spbox"
-	can_hold = list(/obj/item/toy/snappop)
-	New()
-		..()
-		for (var/i=1; i <= 8; i++)
-			new /obj/item/toy/snappop(src)
-
 /obj/item/weapon/storage/box/matches
 	name = "matchbox"
 	desc = "A small box of 'Space-Proof' premium matches."

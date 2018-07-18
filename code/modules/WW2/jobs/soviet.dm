@@ -2,20 +2,16 @@
 	faction = "Station"
 
 /datum/job/soviet/give_random_name(var/mob/living/carbon/human/H)
-	if (map && istype(map, /obj/map_metadata/partisan))
-		H.name = H.species.get_random_polish_name(H.gender)
+	if (H.client && H.client.prefs)
+		switch (H.client.prefs.soviet_ethnicity)
+			if (RUSSIAN)
+				H.name = H.species.get_random_russian_name(H.gender)
+			if (UKRAINIAN)
+				H.name = H.species.get_random_ukrainian_name(H.gender)
+			if (POLISH)
+				H.name = H.species.get_random_polish_name(H.gender)
 	else
-		if (H.client && H.client.prefs)
-
-			switch (H.client.prefs.soviet_ethnicity)
-				if (RUSSIAN)
-					H.name = H.species.get_random_russian_name(H.gender)
-				if (UKRAINIAN)
-					H.name = H.species.get_random_ukrainian_name(H.gender)
-				if (POLISH)
-					H.name = H.species.get_random_polish_name(H.gender)
-		else
-			H.name = H.species.get_random_russian_name(H.gender)
+		H.name = H.species.get_random_russian_name(H.gender)
 	H.real_name = H.name
 
 /datum/job/soviet/commander

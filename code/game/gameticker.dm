@@ -140,7 +140,6 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 		//Holiday Round-start stuff	~Carn
 
 		// todo: make these hooks. Apparently they all fail on /hook/roundstart
-		handle_lifts()
 		setup_autobalance()
 		reinforcements_master = new
 

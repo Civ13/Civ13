@@ -148,8 +148,6 @@
 	//		if ("polyparrot")		M.change_mob_type( /mob/living/simple_animal/parrot/Poly , null, null, delmob )
 			if ("mechahitler")		New = M.change_mob_type( /mob/living/carbon/human/mechahitler , null, null, delmob, href_list["species"])
 			if ("megastalin")		New = M.change_mob_type( /mob/living/carbon/human/megastalin , null, null, delmob, href_list["species"])
-			if ("pillarman")		New = M.change_mob_type( /mob/living/carbon/human/pillarman , null, null, delmob, href_list["species"])
-			if ("vampire")			New = M.change_mob_type( /mob/living/carbon/human/vampire , null, null, delmob, href_list["species"])
 		if (New)
 			if (New.type == /mob/living/carbon/human)
 				var/mob/living/carbon/human/H = New

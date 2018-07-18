@@ -122,7 +122,6 @@
 	var/teleport_z_offset = FALSE
 
 	Trigger(var/atom/movable/A)
-		playsound(loc, 'sound/landing_craft.ogg', 100, TRUE)
 		A << "<span class='info'>The landing craft is moving...</span>"
 		spawn(150)
 			if (teleport_x && teleport_y && teleport_z)

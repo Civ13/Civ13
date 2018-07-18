@@ -585,23 +585,12 @@ Proc for attack log creation, because really why not
 			mobs = mob_list // we want actual mobs, not name = mob
 		if (GERMAN)
 			mobs = getgermanmobs(0)
-		if (ITALIAN)
-			mobs = getitalianmobs(0)
 		if (SOVIET, "SOVIET")
 			mobs = getsovietmobs(0)
-		if ("PARATROOPERS")
-			mobs = getgermanparatroopers(0)
-		if ("SS")
-			mobs = getSS(0)
 		if (PARTISAN)
 			mobs = getpartisans(0)
 		if (CIVILIAN)
 			mobs = getcivilians(0)
-		if (PILLARMEN, "UNDEAD")
-			mobs = list()
-			for (var/mob/living/carbon/human/H in human_mob_list)
-				if (istype(H, /mob/living/carbon/human/vampire) || istype(H, /mob/living/carbon/human/pillarman))
-					mobs += H
 
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)

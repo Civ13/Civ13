@@ -38,55 +38,6 @@
 
 /mob/living/carbon/human/Life()
 
-	if (wear_mask && istype(wear_mask, /obj/item/clothing/mask/stone))
-		if (mind && type == /mob/living/carbon/human)
-			invisibility = 101
-			var/datum/mind/M = mind
-			var/mob/living/carbon/human/vampire/V = new(get_turf(src), null, FALSE, TRUE)
-			loc = null
-			V.canmove = FALSE
-			var/oldname = name
-			var/oldreal_name = real_name
-
-			spawn (12)
-				V.name = oldname
-				V.real_name = oldreal_name
-				crush(do_gibs = FALSE)
-
-			M.transfer_to(V)
-			canmove = FALSE
-			var/old_items = list()
-			old_items["[slot_s_store]"] = s_store
-			old_items["[slot_wear_id]"] = wear_id
-			old_items["[slot_belt]"] = belt
-			old_items["[slot_back]"] = back
-		// hand slots don't work, unsure why - Kachnov
-		//	old_items["[slot_l_hand]"] = l_hand
-		//	old_items["[slot_r_hand]"] = r_hand
-			old_items["[slot_l_store]"] = l_store
-			old_items["[slot_r_store]"] = r_store
-
-			for (var/obj/item/clothing/I in contents)
-				var/I_was_equipped = isEquipped(I)
-				drop_from_inventory(I)
-				spawn (15)
-					if (I_was_equipped)
-						V.equip_to_appropriate_slot(I)
-			spawn (20)
-				for (var/slotname in old_items)
-					if (old_items[slotname] != null)
-						V.equip_to_slot_if_possible(old_items[slotname], text2num(slotname))
-			spawn (30)
-				V.canmove = TRUE
-				if (istype(V.wear_mask, /obj/item/clothing/mask/stone/oneuse))
-					var/obj/item/mask = V.wear_mask
-					V.drop_from_inventory(mask)
-					qdel(mask)
-
-			spawn (10)
-				visible_message("<span class = 'danger'>[V] becomes a Vampire!</span>")
-
-			return
 
 	handle_zoom_stuff()
 

@@ -24,16 +24,10 @@
 
 	var/mob/M
 
-	if (list(/mob/living/carbon/human/vampire, /mob/living/carbon/human/pillarman, /mob/living/carbon/human/mechahitler, /mob/living/carbon/human/megastalin).Find(new_type))
-		if (isturf(location))
-			M = new new_type(location, snowflake = TRUE)
-		else
-			M = new new_type(loc, snowflake = TRUE)
+	if (isturf(location))
+		M = new new_type(location)
 	else
-		if (isturf(location))
-			M = new new_type(location)
-		else
-			M = new new_type(loc)
+		M = new new_type(loc)
 
 	if (!M || !ismob(M))
 		usr << "Type path is not a mob (new_type = [new_type]) in change_mob_type(). Contact a coder."

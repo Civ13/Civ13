@@ -197,7 +197,7 @@
 
 /obj/structure/light/floor/streetlight/New()
 	..()
-	if (prob(40) && (!map || !istype(map, /obj/map_metadata/camp)))
+	if (prob(40))
 		broken(TRUE)
 
 /obj/structure/light/floor/streetlight/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)

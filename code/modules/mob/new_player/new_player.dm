@@ -3,12 +3,7 @@
 /proc/job2mobtype(rank)
 	for (var/datum/job/J in job_master.occupations)
 		if (J.title == rank)
-			if (istype(J, /datum/job/pillarman/pillarman))
-				return /mob/living/carbon/human/pillarman
-			else if (istype(J, /datum/job/pillarman/vampire))
-				return /mob/living/carbon/human/vampire
-			else
-				return /mob/living/carbon/human
+			return /mob/living/carbon/human
 
 /mob/new_player
 	var/ready = FALSE
@@ -527,10 +522,6 @@
 		SOVIET = FALSE,
 		PARTISAN = FALSE,
 		CIVILIAN = FALSE,
-		ITALIAN = FALSE,
-		UKRAINIAN = FALSE,
-		PILLARMEN = FALSE,
-		POLISH_INSURGENTS = FALSE,
 		USA = FALSE,
 		JAPAN = FALSE,
 		PIRATES = FALSE,

@@ -88,8 +88,6 @@
 					. = SS_TV
 	else if (istype(src, /datum/job/italian))
 		. = ITALIAN
-	else if (istype(src, /datum/job/pillarman))
-		. = PILLARMEN
 	else if (istype(src, /datum/job/japanese))
 		. = JAPAN
 	else if (istype(src, /datum/job/usa))

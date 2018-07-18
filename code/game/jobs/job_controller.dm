@@ -140,12 +140,6 @@ var/global/datum/controller/occupations/job_master
 			positions = max(positions, J.min_positions)
 			positions = min(positions, J.max_positions)
 			J.total_positions = positions
-			if (!italiano)
-				if (istype(J, /datum/job/italian/soldier))
-					italiano = TRUE
-			if (!warcrimes)
-				if (istype(J, /datum/job/german/soldier_ss))
-					warcrimes = TRUE
 		else
 			J.total_positions = 0
 

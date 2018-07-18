@@ -19,35 +19,6 @@
 			H << "<span class = 'red'>You can't use your hand.</span>"
 			return
 
-	if (!istype(src, /mob/living/carbon/human/pillarman))
-		if (lying || stat == UNCONSCIOUS || stat == DEAD)
-			if (istype(H, /mob/living/carbon/human/pillarman))
-				var/mob/living/carbon/human/pillarman/P = H
-				if (P.a_intent == I_HURT)
-					if (P.may_absorb())
-						return P.absorb(src)
-					else
-						P << "<span class = 'warning'>You have enough energy already.</span>"
-						return
-
-	if (!istype(src, /mob/living/carbon/human/vampire) && !istype(src, /mob/living/carbon/human/pillarman))
-		if (lying || stat == UNCONSCIOUS || stat == DEAD)
-			if (istype(H, /mob/living/carbon/human/vampire))
-				var/mob/living/carbon/human/vampire/V = H
-				if (V.a_intent == I_HURT)
-					if (V.may_drink())
-						return V.drink(src)
-					else
-						V << "<span class = 'warning'>You have enough blood already.</span>"
-						return
-
-	if (istype(src, /mob/living/carbon/human/pillarman) && istype(H, /mob/living/carbon/human/vampire))
-		if (H.a_intent == I_HURT)
-			H << "<span class = 'danger'>You may not harm your master.</span>"
-			return
-
-	..()
-
 	// Should this all be in Touch()?
 	if (istype(H))
 		if (H != src && check_shields(0, null, H, H.targeted_organ, H.name))

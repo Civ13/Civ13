@@ -1,21 +1,6 @@
 /* objects that don't actually do anything, used in a few areas on the map
  for flavor. It's mostly atmospherics stuff I removed - Kachnov */
 
-/obj/structure/atmospherics_pipe_tank
-	icon = 'icons/atmos/tank.dmi'
-	icon_state = "examplemapstate_map"
-/obj/structure/atmospherics_pipe_tank/New()
-	..()
-	icon_state = replacetext(icon_state, "_map", "")
-
-
-/obj/structure/atmospherics_pipe_tank/oxygen
-	name = "Pressure Tank (Oxygen)"
-	icon_state = "o2_map"
-/obj/structure/atmospherics_pipe_tank/nitrogen
-	name = "Pressure Tank (Nitrogen)"
-	icon_state = "n2_map"
-
 // ores
 
 /obj/item/weapon/ore

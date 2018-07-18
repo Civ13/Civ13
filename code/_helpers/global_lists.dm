@@ -59,9 +59,6 @@ var/global/list/door_list = list()
 
 var/global/list/vending_machine_list = list()
 
-var/global/list/lift_list = list()
-
-var/global/list/transport_list = list()
 
 /* because different levers are currently snowflake types that aren't actually related (train levers, lift levers, etc)
  * this list needs typechecking always - Kachnov */

@@ -21,12 +21,6 @@
 		return
 	if (isobserver(mover))
 		return
-	if (istype(mover, /obj/lift_controller))
-		return
-	if (istype(mover, /obj/lift_pseudoturf))
-		return
-	if (locate(/obj/lift_pseudoturf) in contents)
-		return
 	if (istype(mover, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = mover
 		if (H.stopDumbDamage)

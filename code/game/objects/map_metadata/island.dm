@@ -1,3 +1,4 @@
+#define NO_WINNER "No ship has been captured."
 /obj/map_metadata/island
 	ID = MAP_ISLAND
 	title = "Island (100x150x2)"
@@ -24,13 +25,7 @@
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(USA = 0.42, JAPAN = 0.58)
-	songs = list(
-		"Song of the Kamikaze:1" = 'sound/music/kamikaze.ogg',
-		"Blood On the Risers(Gory Gory):1" = 'sound/music/gory.ogg',
-		"Battotai:1" = 'sound/music/battotai.ogg',
-		"American March:1" = 'sound/music/american_march.ogg',
-		"Marine's Hymn (Halls of Montezuma):1" = 'sound/music/montezuma.ogg',
-		)
+	songs = list()
 	meme = FALSE
 	battle_name = "Battle of Peleliu"
 

@@ -599,9 +599,6 @@
 						switch (orientation)
 							if (VERTICAL)
 								if (tpt.y + getMoveInc() < limit_point.y) // since y decreases as we go down
-									if (istype(src, /datum/train_controller/german_train_controller))
-										spawn (3000)
-											mapcheck_train_arrived = TRUE
 									return FALSE // + getMoveInc() because getMoveInc() handles signs
 							if (HORIZONTAL)
 								if (tpt.x + getMoveInc() > limit_point.x)
