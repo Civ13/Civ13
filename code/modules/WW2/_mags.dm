@@ -632,6 +632,7 @@ OTHER
 
 
 //////XVIII Century stuff//////////
+/*
 /obj/item/ammo_magazine/musketball
 	name = "musketball and gunpowder"
 	icon_state = "musketball_gunpowder"
@@ -667,3 +668,4 @@ OTHER
 	max_ammo = 1
 	weight = 0.11
 	multiple_sprites = FALSE
+	*/

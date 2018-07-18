@@ -854,6 +854,7 @@
 #include "code\modules\WW2\weapons\zoom.dm"
 #include "code\modules\WW2\weapons\guns\_gun.dm"
 #include "code\modules\WW2\weapons\guns\bolt-action.dm"
+#include "code\modules\WW2\weapons\guns\flintlock.dm"
 #include "code\modules\WW2\weapons\guns\heavy.dm"
 #include "code\modules\WW2\weapons\guns\pistols.dm"
 #include "code\modules\WW2\weapons\guns\semiautomatic.dm"

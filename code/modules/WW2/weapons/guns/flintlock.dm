@@ -16,7 +16,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/musketball
-	magazine_type = /obj/item/ammo_magazine/musket
+//	magazine_type = /obj/item/ammo_magazine/musketball
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	//+2 accuracy over the LWAP because only one shot
 	accuracy = TRUE
@@ -81,6 +81,9 @@
 
 	var/cocked = FALSE
 	var/check_cocked = FALSE //Keeps the bolt from being interfered with
+	var/jammed_until = -1
+	var/jamcheck = 0
+	var/last_fire = -1
 
 /obj/item/weapon/gun/projectile/flintlock/attack_self(mob/user)
 	if (!check_cocked)//Keeps people from spamming the bolt
@@ -108,6 +111,8 @@
 	return ..()
 
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)
+	if (cocked)
+		return
 	..()
 
 /obj/item/weapon/gun/projectile/flintlock/unload_ammo(mob/user, var/allow_dump=1)
@@ -117,6 +122,30 @@
 
 /obj/item/weapon/gun/projectile/flintlock/handle_post_fire()
 	..()
+
+	if (last_fire != -1)
+		if (world.time - last_fire <= 7)
+			jamcheck += 4
+		else if (world.time - last_fire <= 10)
+			jamcheck += 3
+		else if (world.time - last_fire <= 20)
+			jamcheck += 2
+		else if (world.time - last_fire <= 30)
+			++jamcheck
+		else if (world.time - last_fire <= 40)
+			++jamcheck
+		else if (world.time - last_fire <= 50)
+			++jamcheck
+		else
+			jamcheck = 0
+	else
+		++jamcheck
+
+	if (prob(jamcheck))
+		jammed_until = max(world.time + (jamcheck * 5), 50)
+		jamcheck = 0
+
+	last_fire = world.time
 
 /obj/item/weapon/gun/projectile/flintlock/musket
 	name = "flintlock musket"
@@ -138,7 +167,7 @@
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 4.0
-	effectiveness_mod = 0.90
+	effectiveness_mod = 0.87
 	ammo_type = /obj/item/ammo_casing/musketball
 
 /obj/item/weapon/gun/projectile/flintlock/pistol
@@ -157,6 +186,7 @@
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
 	move_delay = 3
 	fire_delay = 3
+	load_delay = 120
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -269,6 +299,7 @@
 	item_state = "blunderbuss"
 	recoil = 4
 	force = 14
+	load_delay = 120
 	caliber = "blunderbuss"
 	weight = 4.5
 	effectiveness_mod = 0.7
