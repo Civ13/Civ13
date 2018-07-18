@@ -261,8 +261,6 @@ var/world_topic_spam_protect_time = world.timeofday
 	spawn (20)
 		serverswap_close_server()
 
-	roundabout()
-
 	/* Wait for serverswap to do its magic
 	 * this was 50 but now it's 70 to let the entire JOJO meme play even when the server restarts quickly
 	 * because sometimes it takes 1 second to restart other times 30 seconds :thinking: - Kachnov */
@@ -289,14 +287,6 @@ var/world_topic_spam_protect_time = world.timeofday
 		..(reason)
 
 #define COLOR_LIGHT_SEPIA "#D4C6B8"
-/world/proc/roundabout() // yes i know this is dumb - kachnov
-	if (config.jojoreference || (map && istype(map, /obj/map_metadata/survival)))
-		world << sound('sound/misc/roundabout.ogg')
-		spawn (40)
-			for (var/client/client in clients)
-				client.color = COLOR_LIGHT_SEPIA
-				client.screen += tobecontinued
-				client.canmove = FALSE
 #undef COLOR_SEPIA
 /*
 /hook/startup/proc/loadMode()
