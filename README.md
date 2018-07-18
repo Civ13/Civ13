@@ -5,4 +5,4 @@
 
 
 # 1713 Discord
-<iframe src="https://discordapp.com/widget?id=468979034571931648&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
+[![discord](https://discordapp.com/api/guilds/468979034571931648/widget.png)](https://discord.gg/hBEtg4x)
