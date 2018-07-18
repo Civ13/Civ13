@@ -307,3 +307,29 @@ WW 2 WEAPONS MAGS N AMMO
 	icon_state = "flare_casing"
 	projectile_type = /obj/item/projectile/flare
 	caliber = "flare"
+
+
+/////////////////XVIII CENTURY STUFF/////////////////////////////
+/obj/item/ammo_casing/musketball
+	name = "a musketball projectile"
+	icon_state = "musketball"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/bullet/rifle/musketball
+	weight = 0.02
+	caliber = "musketball"
+
+/obj/item/ammo_casing/musketball_pistol
+	name = "a small musketball projectile"
+	projectile_type = /obj/item/projectile/bullet/rifle/musketball_pistol
+	weight = 0.015
+	icon_state = "musketball_pistol"
+	spent_icon = null
+	caliber = "musketball_pistol"
+
+/obj/item/ammo_casing/blunderbuss
+	name = "some blunderbuss projectiles"
+	icon_state = "blunderbuss"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/bullet/rifle/blunderbuss
+	weight = 0.035
+	caliber = "blunderbuss"

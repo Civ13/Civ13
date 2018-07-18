@@ -211,6 +211,22 @@
 	damage = DAMAGE_LOW
 	penetrating = 0
 
+// XVIII Century stuff
+/obj/item/projectile/bullet/rifle/musketball
+	damage = DAMAGE_HIGH + 4
+	penetrating = 2
+	armor_penetration = 70
+
+/obj/item/projectile/bullet/rifle/musketball_pistol
+	damage = DAMAGE_MEDIUM + 8
+	penetrating = 1
+	armor_penetration = 40
+
+/obj/item/projectile/bullet/rifle/blunderbuss
+	damage = DAMAGE_HIGH + 6
+	penetrating = 3
+	armor_penetration = 100
+
 #undef DAMAGE_LOW
 #undef DAMAGE_MEDIUM
 #undef DAMAGE_HIGH
