@@ -6,13 +6,14 @@
 "f" = (/obj/map_metadata/naval,/turf/floor/plating/beach/water/deep,/area/prishtina)
 "g" = (/turf/wall/wood,/area/prishtina)
 "h" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/prishtina)
-"i" = (/obj/item/weapon/gun/projectile/flintlock/blunderbuss,/turf/floor/wood,/area/prishtina)
-"j" = (/obj/item/weapon/gun/projectile/flintlock/musket,/turf/floor/wood,/area/prishtina)
-"k" = (/obj/item/weapon/gun/projectile/flintlock/musketoon,/turf/floor/wood,/area/prishtina)
-"l" = (/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/wood,/area/prishtina)
+"i" = (/obj/item/weapon/gun/projectile/flintlock/blunderbuss,/obj/structure/table/wood,/turf/floor/wood,/area/prishtina)
+"j" = (/obj/item/weapon/gun/projectile/flintlock/musket,/obj/structure/table/wood,/turf/floor/wood,/area/prishtina)
+"k" = (/obj/item/weapon/gun/projectile/flintlock/musketoon,/obj/structure/table/wood,/turf/floor/wood,/area/prishtina)
+"l" = (/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/structure/table/wood,/turf/floor/wood,/area/prishtina)
 "m" = (/obj/item/ammo_casing/blunderbuss,/turf/floor/wood,/area/prishtina)
 "n" = (/obj/item/ammo_casing/musketball,/turf/floor/wood,/area/prishtina)
 "o" = (/obj/item/ammo_casing/musketball_pistol,/turf/floor/wood,/area/prishtina)
+"p" = (/obj/structure/closet/crate/wood_empty,/turf/floor/wood,/area/prishtina)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -56,7 +57,7 @@ aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccccccccccccbbbbaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbccccchcccccccccccccccccccccccccccccbbbbaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccccccccccccccccccbbbaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgcccddcccccecddccccccccddccccccccccbgggggaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgccccccijklccccccccccccccccccccccbbbaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaagbcccccgccccccijklccppccccccccccccccccccbbbaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbccccchccccccmnoccccccccccccccccccccbbbbaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccccccccccccbbbbaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgcccccccccccccccccccccccccbbaaaaaaaaaaaaaaaaaaaaa

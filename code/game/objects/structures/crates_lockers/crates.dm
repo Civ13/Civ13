@@ -255,7 +255,7 @@
 	icon_closed = "medicalcrate"
 
 
-obj/structure/closet/crate/wood
+obj/structure/closet/crate/wood_empty
 	name = "wood crate"
 	desc = "A wooden crate."
 	icon_state = "wood_crate"
