@@ -254,53 +254,14 @@
 	icon_opened = "medicalcrateopen"
 	icon_closed = "medicalcrate"
 
-/obj/structure/closet/crate/rcd
-	name = "\improper RCD crate"
-	desc = "A crate with rapid construction device."
-	icon_state = "crate"
-	icon_opened = "crateopen"
-	icon_closed = "crate"
 
-/obj/structure/closet/crate/rcd/New()
-	..()
-//	new /obj/item/weapon/rcd_ammo(src)
-//	new /obj/item/weapon/rcd_ammo(src)
-//	new /obj/item/weapon/rcd_ammo(src)
-//	new /obj/item/weapon/rcd(src)
+obj/structure/closet/crate/wood
+	name = "wood crate"
+	desc = "A wooden crate."
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
 
-/obj/structure/closet/crate/freezer
-	name = "freezer"
-	desc = "A freezer."
-	icon_state = "freezer"
-	icon_opened = "freezeropen"
-	icon_closed = "freezer"
-	var/target_temp = T0C - 40
-	var/cooling_power = 40
-
-	return_air()
-		var/datum/gas_mixture/gas = (..())
-		if (!gas)	return null
-		var/datum/gas_mixture/newgas = new/datum/gas_mixture()
-		newgas.copy_from(gas)
-		if (newgas.temperature <= target_temp)	return
-
-		if ((newgas.temperature - cooling_power) > target_temp)
-			newgas.temperature -= cooling_power
-		else
-			newgas.temperature = target_temp
-		return newgas
-
-/obj/structure/closet/crate/freezer/rations //Fpr use in the escape shuttle
-	name = "emergency rations"
-	desc = "A crate of emergency rations."
-
-
-/obj/structure/closet/crate/freezer/rations/New()
-	..()
-	new /obj/item/weapon/reagent_containers/food/snacks/liquidfood(src)
-	new /obj/item/weapon/reagent_containers/food/snacks/liquidfood(src)
-	new /obj/item/weapon/reagent_containers/food/snacks/liquidfood(src)
-	new /obj/item/weapon/reagent_containers/food/snacks/liquidfood(src)
 
 /obj/structure/closet/crate/bin
 	name = "large bin"
@@ -309,23 +270,7 @@
 	icon_opened = "largebinopen"
 	icon_closed = "largebin"
 
-/obj/structure/closet/crate/radiation
-	name = "radioactive gear crate"
-	desc = "A crate with a radiation sign on it."
-	icon_state = "radiation"
-	icon_opened = "radiationopen"
-	icon_closed = "radiation"
 
-/obj/structure/closet/crate/radiation/New()
-	..()
-	new /obj/item/clothing/suit/radiation(src)
-	new /obj/item/clothing/head/radiation(src)
-	new /obj/item/clothing/suit/radiation(src)
-	new /obj/item/clothing/head/radiation(src)
-	new /obj/item/clothing/suit/radiation(src)
-	new /obj/item/clothing/head/radiation(src)
-	new /obj/item/clothing/suit/radiation(src)
-	new /obj/item/clothing/head/radiation(src)
 /*
 /obj/structure/closet/crate/secure/weapon
 	name = "weapons crate"

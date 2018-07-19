@@ -116,13 +116,15 @@
 	..()
 
 /obj/item/weapon/gun/projectile/flintlock/unload_ammo(mob/user, var/allow_dump=1)
-	if (!cocked)
-		return
+	return
+	// you cant, sorry
 	..()
 
 /obj/item/weapon/gun/projectile/flintlock/handle_post_fire()
 	..()
-
+	loaded -= chambered
+	chambered = null
+	cocked = FALSE
 	if (last_fire != -1)
 		if (world.time - last_fire <= 7)
 			jamcheck += 4
