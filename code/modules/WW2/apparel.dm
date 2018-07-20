@@ -1112,9 +1112,9 @@
 /obj/item/clothing/suit/storage/jacket/piratejacket5
 	name = "fancy pirate jacket"
 	desc = "A fancy pirate jacket. This one is red."
-	icon_state = "piratejacket2"
-	item_state = "piratejacket2"
-	worn_state = "piratejacket2"
+	icon_state = "piratejacket5"
+	item_state = "piratejacket5"
+	worn_state = "piratejacket5"
 
 /obj/item/clothing/under/pirate1
 	name = "pirate clothes"
@@ -1182,3 +1182,58 @@
 	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
+
+/////////british stuff/////////
+
+/obj/item/clothing/under/british_sailor1
+	name = "british sailor clothes"
+	desc = "A set of royal navy sailor clothes, with a white shirt and trousers."
+	icon_state = "british_sailor1"
+	item_state = "british_sailor1"
+	worn_state = "british_sailor1"
+
+/obj/item/clothing/under/british_sailor2
+	name = "british sailor clothes"
+	desc = "A set of royal navy sailor clothes, with a white shirt and trousers."
+	icon_state = "british_sailor2"
+	item_state = "british_sailor2"
+	worn_state = "british_sailor2"
+
+/obj/item/clothing/under/british_sailor3
+	name = "british sailor trousers"
+	desc = "White british sailor trousers. For when it's too hot to wear a shirt."
+	icon_state = "british_sailor3"
+	item_state = "british_sailor3"
+	worn_state = "british_sailor3"
+
+/obj/item/clothing/under/british_sailor4
+	name = "british sailor clothes"
+	desc = "A set of royal navy sailor clothes, with a grey shirt and trousers."
+	icon_state = "british_sailor4"
+	item_state = "british_sailor4"
+	worn_state = "british_sailor4"
+
+/obj/item/clothing/head/tarred_hat
+	name = "tarred hat"
+	desc = "A tarred hat, used by sailors."
+	icon_state = "tarred_hat"
+	item_state = "tarred_hat"
+
+/obj/item/clothing/head/tricorne_black
+	name = "black tricorne"
+	desc = "A black tricorne. Commonly used by navy officers."
+	icon_state = "redcoat"
+	item_state = "redcoat"
+
+/obj/item/clothing/accessory/armband/british_scarf
+	name = "blue scarf"
+	desc = "A blue scarf, used by Royal Navy sailors."
+	icon_state = "british_scarf"
+	item_state = "british_scarf"
+
+/obj/item/clothing/suit/storage/jacket/british_captain
+	name = "Royal Navy Captain jacket"
+	desc = "A standard Captain jacket of the Royal Navy. Blue with golden buttons and cuffs."
+	icon_state = "british_captain"
+	item_state = "british_captain"
+	worn_state = "british_captain"

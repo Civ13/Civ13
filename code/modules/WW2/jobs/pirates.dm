@@ -35,16 +35,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the [title] Pirate ship!</big></b>"
+	world << "<b><big>[H.real_name] is the [title] of the Pirate ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("engineering", STAT_VERY_LOW)
-	H.setStat("rifle", STAT_LOW)
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("engineering", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("mg", STAT_MEDIUM_LOW)
 	H.setStat("smg", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("shotgun", STAT_NORMAL)
 
 	return TRUE
@@ -147,28 +147,85 @@
 
 /datum/job/british/captain/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat/wrappedboots(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/japuni_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/japncohat(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/type100(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/jap_katana(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_hand)
-	world << "<b><big>[H.real_name] is the [title] of the British ship!</big></b>"
-	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is the command the ship.")
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("engineering", STAT_VERY_LOW)
-	H.setStat("rifle", STAT_LOW)
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor1(H), slot_w_uniform) // for now
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_captain(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	world << "<b><big>[H.real_name] is the [title] of the Royal Navy ship!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("engineering", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("mg", STAT_MEDIUM_LOW)
 	H.setStat("smg", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("shotgun", STAT_NORMAL)
 
 	return TRUE
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/datum/job/british/seaman
+	title = "Seaman"
+	en_meaning = "Royal Navy Seaman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRA"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 6
+	max_positions = 20
+
+/datum/job/british/seaman/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
+
+//clothes
+	var/randcloth = rand(1,4)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor3(H), slot_w_uniform)
+	else if (randcloth == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor4(H), slot_w_uniform)
+
+	var/obj/item/clothing/accessory/armband/british_scarf/british_scarf_a = new /obj/item/clothing/accessory/armband/british_scarf(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(british_scarf_a, H)
+//head
+	if (prob(70))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/tarred_hat(H), slot_head)
+	var/randweapon = rand(1,2)
+	if (randweapon == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
+	else if (randweapon == 2)
+		H.equip_to_slot_or_del(new 	/obj/item/weapon/material/harpoon(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a simple seaman employed by the Royal Navy. Follow your Captain's orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("engineering", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("smg", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("heavyweapon", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("shotgun", STAT_NORMAL)
+
+	return TRUE
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
