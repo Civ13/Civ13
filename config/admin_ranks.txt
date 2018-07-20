@@ -11,11 +11,9 @@
 ## +EVERYTHING (or +HOST or +ALL) = Simply gives you everything without having to type every flag
 
 Mentor +MENTOR
-Secondary Admin +MOD
-Primary Admin +ADMIN +SPAWN +REJUV +VAREDIT +BAN +POSSESS +BUILDMODE +SERVER +FUN +STEALTH +SOUNDS +DEBUG +MOD
-Head Admin +@
-Manager +@ +PERMISSIONS
-Senator +EVERYTHING
-Senate Chairman +EVERYTHING
+Trial Master +MOD
+Master +ADMIN +SPAWN +REJUV +VAREDIT +BAN +POSSESS +BUILDMODE +SERVER +FUN +STEALTH +SOUNDS +DEBUG +MOD
+Captain +@ +PERMISSIONS
+Admiral +EVERYTHING
 Host +EVERYTHING
 Debug Host +EVERYTHING

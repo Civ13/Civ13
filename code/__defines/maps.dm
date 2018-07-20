@@ -1,4 +1,3 @@
-#define MAP_ISLAND "ISLAND"
 #define MAP_NAVAL "NAVAL" // test map
 // ideas:
 // ship sailing through the ocean, High-rp
