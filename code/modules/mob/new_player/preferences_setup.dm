@@ -249,9 +249,9 @@
 
 			switch (v)
 				if (2)
-					clothes = new /icon('icons/mob/uniform.dmi', "geruni")
+					clothes = new /icon('icons/mob/uniform.dmi', "pirate1")
 				if (3)
-					clothes = new /icon('icons/mob/uniform.dmi', "sovuni")
+					clothes = new /icon('icons/mob/uniform.dmi', "british_sailor1")
 
 			if (clothes)
 				I.Blend(clothes, ICON_OVERLAY)

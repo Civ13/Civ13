@@ -436,8 +436,6 @@ s
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
 		if (PARTISAN)
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
-		if (SCHUTZSTAFFEL)
-			. = faction == SOVIET
 		if (GERMAN)
 			. = faction == SOVIET
 		if (SOVIET)

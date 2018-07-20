@@ -349,16 +349,10 @@ var/list/vocal_emotes = list(
 					if (!muzzled)
 						message = "charges!"
 						m_type = 2
-						if (faction_text == SOVIET)
-							playsound(get_turf(src), "charge_SOVIET", 100)
-						if (faction_text == GERMAN)
-							playsound(get_turf(src), "charge_GERMAN", 100)
-						if (faction_text == JAPAN)
-							playsound(get_turf(src), "charge_JAPAN", 100)
-						if (faction_text == USA)
+						if (faction_text == PIRATES)
 							playsound(get_turf(src), "charge_USA", 100)
-						if (faction_text == POLISH_INSURGENTS)
-							playsound(get_turf(src), "charge_POLISH_INSURGENTS", 100)
+						if (faction_text == BRITISH)
+							playsound(get_turf(src), "charge_USA", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2

@@ -8,15 +8,6 @@
 /obj/item/remains/human
 	desc = "They look like human remains. They have a strange aura about them."
 
-/obj/item/remains/xeno
-	desc = "They look like the remains of something... alien. They have a strange aura about them."
-	icon_state = "remainsxeno"
-
-/obj/item/remains/robot
-	desc = "They look like the remains of something mechanical. They have a strange aura about them."
-	icon = 'icons/mob/robots.dmi'
-	icon_state = "remainsrobot"
-
 /obj/item/remains/mouse
 	desc = "They look like the remains of a small rodent."
 	icon_state = "mouse"

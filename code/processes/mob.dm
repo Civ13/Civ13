@@ -47,8 +47,6 @@
 							M.original_job_title = J.title
 							break
 				continue
-			else if (istype(M.original_job, /datum/job/german/trainsystem))
-				continue
 
 		skip1
 

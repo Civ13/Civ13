@@ -61,7 +61,6 @@
 	slot_flags = SLOT_BACK
 	caliber = "14.5mm"
 	recoil = 3 //extra kickback
-	fire_sound = 'sound/weapons/WW2/ptrd_fire.ogg'
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	max_shells = TRUE

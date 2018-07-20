@@ -248,12 +248,6 @@ var/global/squad_members[6]
 			squad_leaders[SOVIET]++
 		else if (istype(J, /datum/job/partisan))
 			squad_leaders[PARTISAN]++
-		else if (istype(J, /datum/job/polish))
-			squad_leaders[POLISH_INSURGENTS]++
-		else if (istype(J, /datum/job/japanese))
-			squad_leaders[JAPAN]++
-		else if (istype(J, /datum/job/usa))
-			squad_leaders[USA]++
 	else if (findtext("[type]", "officer"))
 		if (istype(J, /datum/job/german))
 			officers[GERMAN]++
@@ -261,12 +255,6 @@ var/global/squad_members[6]
 			officers[SOVIET]++
 		else if (istype(J, /datum/job/partisan))
 			officers[PARTISAN]++
-		else if (istype(J, /datum/job/polish))
-			officers[POLISH_INSURGENTS]++
-		else if (istype(J, /datum/job/japanese))
-			officers[JAPAN]++
-		else if (istype(J, /datum/job/usa))
-			officers[USA]++
 	else if (findtext("[type]", "commander"))
 		if (istype(J, /datum/job/german))
 			commanders[GERMAN]++
@@ -274,12 +262,6 @@ var/global/squad_members[6]
 			commanders[SOVIET]++
 		else if (istype(J, /datum/job/partisan))
 			commanders[PARTISAN]++
-		else if (istype(J, /datum/job/polish))
-			commanders[POLISH_INSURGENTS]++
-		else if (istype(J, /datum/job/japanese))
-			commanders[JAPAN]++
-		else if (istype(J, /datum/job/usa))
-			commanders[USA]++
 	else if (!J.is_officer && !J.is_commander && !J.is_squad_leader)
 		if (istype(J, /datum/job/german))
 			if ("[type]" == "/datum/faction/german")
@@ -296,21 +278,6 @@ var/global/squad_members[6]
 				soldiers[PARTISAN]++
 			else if (findtext("[type]", "squad") && !src:is_leader)
 				squad_members[PARTISAN]++
-		else if (istype(J, /datum/job/polish))
-			if ("[type]" == "/datum/faction/polish")
-				soldiers[POLISH_INSURGENTS]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[POLISH_INSURGENTS]++
-		else if (istype(J, /datum/job/usa))
-			if ("[type]" == "/datum/faction/usa")
-				soldiers[USA]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[USA]++
-		else if (istype(J, /datum/job/japanese))
-			if ("[type]" == "/datum/faction/japanese")
-				soldiers[JAPAN]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[JAPAN]++
 		else if (istype(J, /datum/job/pirates))
 			if ("[type]" == "/datum/faction/pirates")
 				soldiers[PIRATES]++

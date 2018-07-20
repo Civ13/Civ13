@@ -221,8 +221,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		usr << "<span class='warning'>Another consciousness is in your body... it is resisting you.</span>"
 		return
 
-	client.remove_ghost_only_admin_verbs()
-
 	stop_following()
 	mind.current.ajourn=0
 	mind.current.key = key
@@ -398,49 +396,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if (input != "Cancel")
 		ManualFollow(getdogs()[input])
 
-/mob/observer/ghost/verb/follow_train()
-	set category = "Ghost"
-	set name = "Jump to the Main Train"
-
-	var/oldloc = get_turf(src)
-
-	var/datum/train_controller/german_train_controller/tc = german_train_master
-
-	if (tc)
-		for (var/obj/train_car_center/tcc in tc.reverse_train_car_centers)
-			for (var/obj/train_pseudoturf/tpt in tcc.backwards_pseudoturfs) // start at the front
-				ManualFollow(tpt)
-				goto endloop // TRUE break statement is not enough
-
-		endloop
-
-		var/newloc = get_turf(src)
-
-		if (oldloc == newloc) // we didn't move: train isn't here
-			loc = locate(127, 454, TRUE) // take us to the train station
-
-
-// FOLLOWING TANKS
-
-/proc/gettanks()
-	var/list/tanks = list()
-	for (var/T in tank_list)
-		var/atom/tank = T
-		var/count = FALSE
-		for (var/tank2 in tanks)
-			var/atom/other = tanks[tank2]
-			if (other.name == tank.name)
-				++count // tank, tank (1), tank (2), etc
-		tanks["[tank.name][count ? "([count])" : ""]"] = tank
-	return tanks
-
-/mob/observer/ghost/verb/follow_tank(input in gettanks())
-	set category = "Ghost"
-	set name = "Follow a Tank"
-
-	var/obj/tank/tank = gettanks()[input]
-	if (!tank) return
-	ManualFollow(tank)
 
 /mob/observer/ghost/verb/toggle_visibility()
 	set category = "Ghost"

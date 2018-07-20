@@ -186,9 +186,6 @@ var/obj/burning_overlay_turf = null
 					a.overlays |= burning_overlay_turf
 					burning_turf_list += a
 
-	for (var/obj/tank/T in my_tile)
-		T.damage += T.x_percent_of_max_damage(1.0 * (temperature/default_temperature))
-		T.update_damage_status()
 
 	//spread
 

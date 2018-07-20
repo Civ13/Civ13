@@ -7,7 +7,7 @@
 	gas_transfer_coefficient = 0.90
 	permeability_coefficient = 0.50
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	allowed = list(/obj/item/weapon/material/knife, /obj/item/radio/rbs,/obj/item/radio/feldfu,/obj/item/radio/partisan)
+	allowed = list(/obj/item/weapon/material/knife)
 
 //Chef
 /obj/item/clothing/suit/chef/classic
@@ -56,12 +56,3 @@
 	/obj/item/weapon/crowbar, /obj/item/weapon/screwdriver, /obj/item/weapon/weldingtool, /obj/item/weapon/wirecutters, /obj/item/weapon/wrench, /obj/item/weapon/tank/emergency_oxygen, \
 	/obj/item/clothing/mask/gas)
 	body_parts_covered = UPPER_TORSO
-
-/obj/item/clothing/suit/storage/civjacket
-	name = "blue jacket"
-	desc = "Jacket with specks of dust."
-	icon_state = "civjacket"
-	item_state = "civjacket"
-	blood_overlay_type = "armor"
-	body_parts_covered = UPPER_TORSO|ARMS
-	allowed = list(/obj/item/weapon/material/knife, /obj/item/radio/rbs,/obj/item/radio/feldfu,/obj/item/radio/partisan)

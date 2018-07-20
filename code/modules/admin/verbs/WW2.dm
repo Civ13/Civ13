@@ -1,39 +1,3 @@
-/client/proc/send_german_train()
-	set category = "Special"
-	set name = "Send train (German)"
-
-	if (!processes.train || !processes.train.fires_at_gamestates.Find(ticker.current_state))
-		src << "<span class = 'warning'>You can't send the train right now.</span>"
-		return
-
-	var/direction = input("Make the train go forwards, backwards, or stop?") in list("Forwards", "Backwards", "Stop", "Cancel")
-
-	if (!direction || direction == "Cancel")
-		return
-
-	var/found = FALSE
-
-	for (var/obj/train_lever/german/lever in lever_list)
-		lever.automatic_function(direction, src)
-		found = TRUE
-		break
-
-	if (found)
-
-		if (direction == "Forwards")
-			direction = "to the train station"
-
-		else if (direction == "Backwards")
-			direction = "back to the base"
-
-		else if (direction == "Stop")
-			message_admins("[key_name(src)] stopped the German train.")
-			return
-
-		message_admins("[key_name(src)] sent the German train [direction].")
-
-	else
-		src << "<span class = 'warning'>There is no train.</span>"
 
 /client/proc/toggle_playing()
 	set category = "Special"
@@ -181,30 +145,17 @@
 /proc/show_global_battle_report(var/shower, var/private = FALSE)
 
 	var/total_germans = alive_germans.len + dead_germans.len + heavily_injured_germans.len
-	var/total_italians = alive_italians.len + dead_italians.len + heavily_injured_italians.len
 	var/total_russians = alive_russians.len + dead_russians.len + heavily_injured_russians.len
 	var/total_civilians = alive_civilians.len + dead_civilians.len + heavily_injured_civilians.len
 	var/total_partisans = alive_partisans.len + dead_partisans.len + heavily_injured_partisans.len
-	var/total_undead = alive_undead.len + dead_undead.len + heavily_injured_undead.len
-	var/total_polish = alive_polish.len + dead_polish.len + heavily_injured_polish.len
-	var/total_usa = alive_usa.len + dead_usa.len + heavily_injured_usa.len
-	var/total_japan = alive_japan.len + dead_japan.len + heavily_injured_japan.len
 
 	var/mortality_coefficient_german = 0
-	var/mortality_coefficient_italian = 0
 	var/mortality_coefficient_russian = 0
 	var/mortality_coefficient_civilian = 0
 	var/mortality_coefficient_partisan = 0
-	var/mortality_coefficient_undead = 0
-	var/mortality_coefficient_polish = 0
-	var/mortality_coefficient_usa = 0
-	var/mortality_coefficient_japan = 0
 
 	if (dead_germans.len > 0)
 		mortality_coefficient_german = dead_germans.len/total_germans
-
-	if (dead_italians.len > 0)
-		mortality_coefficient_italian = dead_italians.len/total_italians
 
 	if (dead_russians.len > 0)
 		mortality_coefficient_russian = dead_russians.len/total_russians
@@ -215,56 +166,26 @@
 	if (dead_partisans.len > 0)
 		mortality_coefficient_partisan = dead_partisans.len/total_partisans
 
-	if (dead_undead.len > 0)
-		mortality_coefficient_undead = dead_undead.len/total_undead
-
-	if (dead_polish.len > 0)
-		mortality_coefficient_polish = dead_polish.len/total_polish
-
-	if (dead_usa.len > 0)
-		mortality_coefficient_usa = dead_usa.len/total_usa
-
-	if (dead_japan.len > 0)
-		mortality_coefficient_japan = dead_japan.len/total_japan
 
 	var/mortality_german = round(mortality_coefficient_german*100)
-	var/mortality_italian = round(mortality_coefficient_italian*100)
 	var/mortality_russian = round(mortality_coefficient_russian*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
 	var/mortality_partisan = round(mortality_coefficient_partisan*100)
-	var/mortality_undead = round(mortality_coefficient_undead*100)
-	var/mortality_polish = round(mortality_coefficient_polish*100)
-	var/mortality_usa = round(mortality_coefficient_usa*100)
-	var/mortality_japan = round(mortality_coefficient_japan*100)
 
 	var/msg1 = "German Side: [alive_germans.len] alive, [heavily_injured_germans.len] heavily injured or unconscious, [dead_germans.len] deceased. Mortality rate: [mortality_german]%"
 	var/msg2 = "Italian Side: [alive_italians.len] alive, [heavily_injured_italians.len] heavily injured or unconscious, [dead_italians.len] deceased. Mortality rate: [mortality_italian]%"
 	var/msg3 = "Soviet Side: [alive_russians.len] alive, [heavily_injured_russians.len] heavily injured or unconscious, [dead_russians.len] deceased. Mortality rate: [mortality_russian]%"
 	var/msg4 = "Civilians: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
 	var/msg5 = "Partisans: [alive_partisans.len] alive, [heavily_injured_partisans.len] heavily injured or unconscious, [dead_partisans.len] deceased. Mortality rate: [mortality_partisan]%"
-	var/msg6 = "Undead: [alive_undead.len] alive, [heavily_injured_undead.len] heaily injured or unconscious, [dead_undead.len] deceased. Mortality rate: [mortality_undead]%"
-	var/msg7 = "Polish Side: [alive_polish.len] alive, [heavily_injured_polish.len] heaily injured or unconscious, [dead_polish.len] deceased. Mortality rate: [mortality_polish]%"
-	var/msg8 = "American Side: [alive_usa.len] alive, [heavily_injured_usa.len] heaily injured or unconscious, [dead_usa.len] deceased. Mortality rate: [mortality_usa]%"
-	var/msg9 = "Japanese Side: [alive_japan.len] alive, [heavily_injured_japan.len] heaily injured or unconscious, [dead_japan.len] deceased. Mortality rate: [mortality_japan]%"
 
 	if (map && !map.faction_organization.Find(GERMAN))
 		msg1 = null
-	if (map && !map.faction_organization.Find(ITALIAN))
-		msg2 = null
 	if (map && !map.faction_organization.Find(SOVIET))
 		msg3 = null
 	if (map && !map.faction_organization.Find(CIVILIAN))
 		msg4 = null
 	if (map && !map.faction_organization.Find(PARTISAN))
 		msg5 = null
-	if (map && !map.faction_organization.Find(PILLARMEN))
-		msg6 = null
-	if (map && !map.faction_organization.Find(POLISH_INSURGENTS))
-		msg7 = null
-	if (map && !map.faction_organization.Find(JAPAN))
-		msg8 = null
-	if (map && !map.faction_organization.Find(USA))
-		msg9 = null
 
 	var/public = "Yes"
 
@@ -279,22 +200,12 @@
 
 			if (msg1)
 				world << "<font size=3>[msg1]</font>"
-			if (msg2)
-				world << "<font size=3>[msg2]</font>"
 			if (msg3)
 				world << "<font size=3>[msg3]</font>"
 			if (msg4)
 				world << "<font size=3>[msg4]</font>"
 			if (msg5)
 				world << "<font size=3>[msg5]</font>"
-			if (msg6)
-				world << "<font size=3>[msg6]</font>"
-			if (msg7)
-				world << "<font size=3>[msg7]</font>"
-			if (msg8)
-				world << "<font size=3>[msg8]</font>"
-			if (msg9)
-				world << "<font size=3>[msg9]</font>"
 
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
@@ -514,13 +425,8 @@ var/japanese_toggled = TRUE
 
 	choices += "PARTISANS ([partisans_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CIVILIANS ([civilians_toggled ? "ENABLED" : "DISABLED"])"
-	choices += "WAFFEN-SS ([SS_toggled ? "ENABLED" : "DISABLED"])"
-	choices += "PARATROOPERS ([paratroopers_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "GERMANS ([germans_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "SOVIET ([soviets_toggled ? "ENABLED" : "DISABLED"])"
-	choices += "POLISH_INSURGENTS ([soviets_toggled ? "ENABLED" : "DISABLED"])"
-	choices += "JAPAN ([soviets_toggled ? "ENABLED" : "DISABLED"])"
-	choices += "USA ([soviets_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -536,14 +442,6 @@ var/japanese_toggled = TRUE
 		civilians_toggled = !civilians_toggled
 		world << "<span class = 'warning'>The Civilian faction has been [civilians_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Civilian faction 'enabled' setting to [civilians_toggled].")
-	else if (findtext(choice, "WAFFEN-SS"))
-		SS_toggled = !SS_toggled
-		world << "<span class = 'warning'>The SS faction has been [SS_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the SS faction 'enabled' setting to [SS_toggled].")
-	else if (findtext(choice, "PARATROOPERS"))
-		paratroopers_toggled = !paratroopers_toggled
-		world << "<span class = 'warning'>The Paratrooper faction has been [paratroopers_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the Paratrooper faction 'enabled' setting to [paratroopers_toggled].")
 	else if (findtext(choice, "GERMAN"))
 		germans_toggled = !germans_toggled
 		world << "<span class = 'warning'>The German faction (not SS) has been [germans_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
@@ -552,18 +450,6 @@ var/japanese_toggled = TRUE
 		soviets_toggled = !soviets_toggled
 		world << "<span class = 'warning'>The Soviet faction has been [soviets_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Soviet faction 'enabled' setting to [soviets_toggled].")
-	else if (findtext(choice, "POLISH_INSURGENTS"))
-		polish_toggled = !polish_toggled
-		world << "<span class = 'warning'>The Polish faction has been [soviets_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the Polish faction 'enabled' setting to [soviets_toggled].")
-	else if (findtext(choice, "JAPAN"))
-		japanese_toggled = !japanese_toggled
-		world << "<span class = 'warning'>The Japan faction has been [soviets_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the Japan faction 'enabled' setting to [soviets_toggled].")
-	else if (findtext(choice, "USA"))
-		usa_toggled = !usa_toggled
-		world << "<span class = 'warning'>The American faction has been [soviets_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the American faction 'enabled' setting to [soviets_toggled].")
 
 var/partisans_forceEnabled = FALSE
 var/civilians_forceEnabled = FALSE
@@ -589,11 +475,6 @@ var/polish_forceEnabled = FALSE
 	choices += "CIVILIANS ([civilians_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "GERMANS ([germans_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "SOVIET ([soviets_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
-	choices += "SS ([SS_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
-	choices += "PARATROOPERS ([paratroopers_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
-	choices += "POLISH_INSURGENTS ([polish_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
-	choices += "JAPAN ([japanese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
-	choices += "USA ([usa_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -617,26 +498,6 @@ var/polish_forceEnabled = FALSE
 		soviets_forceEnabled = !soviets_forceEnabled
 		world << "<span class = 'notice'>The Soviet faction [soviets_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Soviet faction 'forceEnabled' setting to [soviets_forceEnabled].")
-	else if (findtext(choice, "SS"))
-		SS_forceEnabled = !SS_forceEnabled
-		world << "<span class = 'notice'>The SS subfaction [SS_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the SS subfaction 'forceEnabled' setting to [SS_forceEnabled].")
-	else if (findtext(choice, "PARATROOPERS"))
-		paratroopers_forceEnabled = !paratroopers_forceEnabled
-		world << "<span class = 'notice'>The Paratrooper subfaction [paratroopers_forceEnabled ? "has been forcibly <b><i>ENABLED</i></b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the Paratrooper subfaction 'forceEnabled' setting to [paratroopers_forceEnabled].")
-	else if (findtext(choice, "POLISH_INSURGENTS"))
-		paratroopers_forceEnabled = !polish_forceEnabled
-		world << "<span class = 'notice'>The Polish faction [paratroopers_forceEnabled ? "has been forcibly <b><i>ENABLED</i></b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the Polish faction 'forceEnabled' setting to [paratroopers_forceEnabled].")
-	else if (findtext(choice, "JAPAN"))
-		paratroopers_forceEnabled = !japanese_forceEnabled
-		world << "<span class = 'notice'>The Japanese faction [paratroopers_forceEnabled ? "has been forcibly <b><i>ENABLED</i></b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the Japanese faction 'forceEnabled' setting to [paratroopers_forceEnabled].")
-	else if (findtext(choice, "USA"))
-		paratroopers_forceEnabled = !usa_forceEnabled
-		world << "<span class = 'notice'>The American faction [paratroopers_forceEnabled ? "has been forcibly <b><i>ENABLED</i></b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the American faction 'forceEnabled' setting to [paratroopers_forceEnabled].")
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"

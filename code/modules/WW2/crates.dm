@@ -495,12 +495,6 @@
 /obj/structure/closet/crate/bayonets/german
 	paths = list(/obj/item/weapon/attachment/bayonet/german = 15)
 
-/obj/structure/closet/crate/supply_req_sheets
-	name = "Supply requisition forms crate"
-	icon_state = "mil_crate_closed"
-	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate_closed"
-	paths = list(/obj/item/weapon/paper/supply_train_requisitions_sheet = 20)
 
 /obj/structure/closet/crate/lugers
 	name = "Luger crate"

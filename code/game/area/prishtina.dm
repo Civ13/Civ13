@@ -9,14 +9,10 @@
 
 /area/prishtina/New()
 	..()
-	if (istype(src, /area/prishtina/german) && !istype(src, /area/prishtina/german/ss_torture_room))
+	if (istype(src, /area/prishtina/german))
 		name = "(Axis) [name]"
 	else if (istype(src, /area/prishtina/soviet))
 		name = "(Allies) [name]"
-	else if (istype(src, /area/prishtina/void/german/ss_train))
-		name = "(Waffen-S.S.) [name]"
-	else if (istype(src, /area/prishtina/german/ss_torture_room))
-		name = "(Waffen-S.S.) [name]"
 	else if (istype(src, /area/prishtina/void/sky/paratrooper_drop_zone))
 		name = "(Sky) [name]"
 	else if (!istype(src, /area/prishtina/void/sky))

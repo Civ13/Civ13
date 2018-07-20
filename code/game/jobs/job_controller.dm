@@ -20,13 +20,11 @@ var/global/datum/controller/occupations/job_master
 	if (!map)
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[GERMAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[SOVIET]
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ITALIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[UKRAINIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CIVILIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PARTISAN]
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[POLISH_INSURGENTS]
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[JAPAN]
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[USA]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[BRITISH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PIRATES]
 	else
 		for (var/faction in map.faction_organization)
 			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
@@ -48,33 +46,19 @@ var/global/datum/controller/occupations/job_master
 */
 	var/current_german_squad = 1
 	var/current_soviet_squad = 1
-	var/current_usa_squad = 1
-	var/current_japan_squad = 1
 
 	var/german_squad_members = 0
 	var/german_squad_leaders = 0
-
-	var/japan_squad_members = 0
-	var/japan_squad_leaders = 0
-
-	var/usa_squad_members = 0
-	var/usa_squad_leaders = 0
 
 	var/soviet_squad_members = 0
 	var/soviet_squad_leaders = 0
 
 	var/german_squad_info[4]
 	var/soviet_squad_info[4]
-	var/usa_squad_info[4]
-	var/japan_squad_info[4]
 
 	var/german_officer_squad_info[4]
 	var/soviet_officer_squad_info[4]
-	var/usa_officer_squad_info[4]
-	var/japan_officer_squad_info[4]
 
-	var/italians_were_enabled = FALSE
-	var/SS_was_enabled = FALSE
 	var/civilians_were_enabled = FALSE
 	var/partisans_were_enabled = FALSE
 
@@ -97,43 +81,6 @@ var/global/datum/controller/occupations/job_master
 		else
 			world << "<span class = 'warning'>An admin has reset autobalance for [max(_clients, autobalance_for_players)] players.</span>"
 
-	var/italiano = FALSE
-	var/warcrimes = FALSE
-
-	for (var/datum/job/J in occupations)
-		if (map)
-			if (J.is_SS)
-				if (!map.available_subfactions.Find(SCHUTZSTAFFEL))
-					J.total_positions = 0
-					continue
-			if (J.is_SS_TV)
-				if (!map.available_subfactions.Find(SS_TV))
-					J.total_positions = 0
-					continue
-			if (J.is_prisoner)
-				if (!map.available_subfactions.Find(SOVIET_PRISONER))
-					J.total_positions = 0
-					continue
-			if (J.is_reichstag)
-				if (!map.available_subfactions.Find(GERMAN_REICHSTAG))
-					J.total_positions = 0
-					continue
-			if (J.is_dirlewanger)
-				if (!map.available_subfactions.Find(DIRLEWANGER))
-					J.total_positions = 0
-					continue
-			if (J.is_partisan)
-				if (!map.available_subfactions.Find(SOVIET_PARTISAN))
-					J.total_positions = 0
-					continue
-			if (J.is_escort)
-				if (!map.available_subfactions.Find(ESCORT))
-					J.total_positions = 0
-					continue
-			else if (J.base_type_flag() == ITALIAN)
-				if (!map.available_subfactions.Find(ITALIAN))
-					J.total_positions = 0
-					continue
 
 		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
 			var/positions = round((autobalance_for_players/J.scale_to_players) * J.max_positions)
@@ -146,33 +93,9 @@ var/global/datum/controller/occupations/job_master
 	if (map && map.subfaction_is_main_faction)
 		announce = FALSE
 
-	if (italiano)
-		if (announce)
-			world << "<font size = 3><span class = 'notice'>The Wehrmacht has the assistance of the Italian Army for this battle.</span></font>"
-		italians_were_enabled = TRUE
-		for (var/obj/structure/vending/italian/apparel/pizzeria in vending_machine_list)
-			pizzeria.invisibility = 0
-			pizzeria.density = TRUE
-		for (var/obj/structure/vending/italian/equipment/meatballshooter in vending_machine_list)
-			meatballshooter.invisibility = 0
-			meatballshooter.density = TRUE
-	else
-		for (var/obj/structure/vending/italian/apparel/pizzeria in vending_machine_list)
-			pizzeria.invisibility = 101
-			pizzeria.density = FALSE
-		for (var/obj/structure/vending/italian/equipment/meatballshooter in vending_machine_list)
-			meatballshooter.invisibility = 101
-			meatballshooter.density = FALSE
-		if (map)
-			map.faction_organization -= ITALIAN
-
-	if (warcrimes)
-		if (announce)
-			world << "<font size = 3><span class = 'notice'>The Wehrmacht has the assistance of the Waffen-SS for this battle.</span></font>"
-		SS_was_enabled = TRUE
 
 	if (!is_side_locked(CIVILIAN) && map && map.faction_organization.Find(CIVILIAN) && map.faction_organization.Find(PARTISAN))
-		if (italiano || warcrimes || autobalance_for_players >= PLAYER_THRESHOLD_HIGHEST-10)
+		if (autobalance_for_players >= PLAYER_THRESHOLD_HIGHEST-10)
 			if (announce)
 				world << "<font size = 3><span class = 'notice'>Civilian and Partisan factions are enabled.</span></font>"
 			civilians_were_enabled = TRUE
@@ -209,10 +132,6 @@ var/global/datum/controller/occupations/job_master
 			return round(german_squad_members/MEMBERS_PER_SQUAD)
 		if (SOVIET)
 			return round(soviet_squad_members/MEMBERS_PER_SQUAD)
-		if (USA)
-			return round(usa_squad_members/MEMBERS_PER_SQUAD)
-		if (JAPAN)
-			return round(japan_squad_members/MEMBERS_PER_SQUAD)
 	return FALSE
 
 /datum/controller/occupations/proc/must_have_squad_leader(var/team)
@@ -223,12 +142,6 @@ var/global/datum/controller/occupations/job_master
 		if (SOVIET)
 			if (full_squads(team) > soviet_squad_leaders && !(soviet_squad_leaders == 4))
 				return TRUE
-		if (USA)
-			if (full_squads(team) > usa_squad_leaders && !(usa_squad_leaders == 4))
-				return TRUE
-		if (JAPAN)
-			if (full_squads(team) > japan_squad_leaders && !(japan_squad_leaders == 4))
-				return TRUE
 	return FALSE // not relevant for other teams
 
 /datum/controller/occupations/proc/must_not_have_squad_leader(var/team)
@@ -238,12 +151,6 @@ var/global/datum/controller/occupations/job_master
 				return TRUE
 		if (SOVIET)
 			if (soviet_squad_leaders > full_squads(team))
-				return TRUE
-		if (JAPAN)
-			if (japan_squad_leaders > full_squads(team))
-				return TRUE
-		if (USA)
-			if (usa_squad_leaders > full_squads(team))
 				return TRUE
 	return FALSE // not relevant for other teams
 
@@ -404,114 +311,8 @@ var/global/datum/controller/occupations/job_master
 
 		job.equip(H)
 
-		// civs and partisans
-		if (istype(job, /datum/job/partisan))
-			H.equip_coat(/obj/item/clothing/suit/storage/coat/civilian)
-		else if (istype(job, /datum/job/german))
-			if (job.is_officer)
-				H.equip_coat(/obj/item/clothing/suit/storage/coat/german/officer)
-			else if (job.is_SS)
-				H.equip_coat(/obj/item/clothing/suit/storage/coat/german/SS)
-			else
-				H.equip_coat(/obj/item/clothing/suit/storage/coat/german)
-		else if (istype(job, /datum/job/soviet))
-			if (job.is_officer)
-				H.equip_coat(/obj/item/clothing/suit/storage/coat/soviet/officer)
-			else if (job.is_partisan)
-				H.equip_coat(/obj/item/clothing/suit/polcoat1)
-			else
-				H.equip_coat(/obj/item/clothing/suit/storage/coat/soviet)
-		else if (istype(job, /datum/job/italian))
-			H.equip_coat(/obj/item/clothing/suit/storage/coat/italian)
-
 		#define SAFE_SPAWN_TIME 4
-		// Add loadout items. spawn(SAFE_SPAWN_TIME) so it happens after our pockets are filled with default job items
-		spawn (SAFE_SPAWN_TIME)
-			if (map.custom_loadout && !findtext("[H.original_job.type]", "doctor"))
-				if (!list(CIVILIAN).Find(H.original_job.base_type_flag()))
-					for (var/v in 1 to 2)
-						var/slot = (v == 1 ? slot_l_store : slot_r_store)
-						// short circuit if pockets are already full
-						switch (slot)
-							if (slot_l_store)
-								if (H.l_store)
-									continue
-							if (slot_r_store)
-								if (H.r_store)
-									continue
-						var/other_slot_num = (v == 1 ? 2 : 1)
-						if (H.client && H.client.prefs.pockets.len >= v)
-							switch (lowertext(H.client.prefs.pockets[v]))
-								if (null, "Magazine")
-									continue
-								if ("water")
-									H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled(H), slot)
-/*								if ("booze")
-									var/probs = list()
-									switch (H.original_job.base_type_flag())
-										if (GERMAN)
-											probs["beer"] = 75
-											probs["vodka"] = 15
-											probs["wine"] = 10
-										if (ITALIAN)
-											probs["beer"] = 50
-											probs["vodka"] = 10
-											probs["wine"] = 40
-										if (SOVIET, PARTISAN)
-											probs["beer"] = 40
-											probs["vodka"] = 60
-											probs["wine"] = 0
-
-									tryagain
-									if (prob(probs["beer"]))
-										H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer(H), slot)
-									else if (prob(probs["vodka"]))
-										H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka(H), slot)
-									else if (prob(probs["wine"]))
-										H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/bottle/wine(H), slot)
-									else goto tryagain
-*/
-								if ("grenade")
-									switch (H.original_job.base_type_flag())
-										if (GERMAN, ITALIAN)
-											if (prob(50))
-												H.equip_to_slot_or_del(new /obj/item/weapon/grenade/explosive/stgnade(H), slot)
-											else
-												H.equip_to_slot_or_del(new /obj/item/weapon/grenade/explosive/l2a2(H), slot)
-										if (SOVIET, PARTISAN)
-											if (prob(50))
-												H.equip_to_slot_or_del(new /obj/item/weapon/grenade/explosive/rgd(H), slot)
-											else
-												H.equip_to_slot_or_del(new /obj/item/weapon/grenade/explosive/f1(H), slot)
-								if ("smoke grenade")
-									switch (H.original_job.base_type_flag())
-										if (GERMAN, ITALIAN)
-											H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/german(H), slot)
-										if (SOVIET, PARTISAN)
-											H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/soviet(H), slot)
-								if ("stolen gun") // hackcode to equip ammo after the gun always
-									var/ammo_check = (H.client.prefs.pockets[other_slot_num] == "Stolen gun ammo")
-									H.original_job.equip_random_enemy_gun(H, slot, ammo_check)
-									if (ammo_check)
-										break // if we're slot #1, we know what went in the other slot already
-								if ("stolen gun ammo")
-									continue // see "stolen gun" just above
-								if ("flare")
-									H.equip_to_slot_or_del(new /obj/item/flashlight/flare(H), slot)
-								if ("knife")
-									H.equip_to_slot_or_del(new /obj/item/weapon/material/knife(H), slot)
-								if ("cigarettes")
-									H.equip_to_slot(new /obj/item/weapon/storage/fancy/cigarettes(H), slot)
-								if ("lighter")
-									H.equip_to_slot(new /obj/item/weapon/flame/lighter(H), slot)
-								if ("crowbar")
-									H.equip_to_slot(new /obj/item/weapon/crowbar(H), slot)
-								if ("wrench")
-									H.equip_to_slot(new /obj/item/weapon/wrench(H), slot)
-								if ("screwdriver")
-									H.equip_to_slot(new /obj/item/weapon/screwdriver(H), slot)
-
-		// Give the guy some ammo for his gun: spawn(SAFE_SPAWN_TIME*2) so it happens after custom loadout
+		// Add loadout items. spawn(SAFE_SPAWN_TIME) so it happens after our pockets are filled with default job item
 		spawn (SAFE_SPAWN_TIME*2)
 			for (var/obj/item/weapon/gun/projectile/gun in H.contents)
 				if (gun.w_class == 5 && gun.gun_type == GUN_TYPE_MG) // MG
@@ -594,11 +395,7 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateHeer"
 				if (SOVIET)
 					spawn_location = "JoinLateRA"
-				if (USA)
-					spawn_location = "JoinLateUSA"
-				if (JAPAN)
-					spawn_location = "JoinLateHeer"
-				if ((PARTISAN) || (POLISH_INSURGENTS))
+				if (PARTISAN)
 					spawn_location = "JoinLatePartisan"
 				if (PIRATES)
 					spawn_location = "JoinLateHeer"
@@ -680,41 +477,6 @@ var/global/datum/controller/occupations/job_master
 					else
 						spawn (2)
 							H << "<i>Your squad, #[current_soviet_squad], does not have a Squad Leader yet. Consider waiting for one before deploying.</i>"
-		else if (isusasquadmember_or_leader(H))
-			if (isusasquadleader(H))
-				usa_squad_info[current_usa_squad] = "<b>The leader of your squad (#[current_usa_squad]) is [H.real_name]. He has a golden HUD.</b>"
-				if (!istype(get_area(H), /area/prishtina/admin) && ticker.current_state != GAME_STATE_PREGAME) // first check fails due to bad location, fix
-					world << "<b>The leader of American Squad #[current_usa_squad] is [H.real_name]!</b>"
-				usa_officer_squad_info[current_usa_squad] = "<b><i>The leader of squad #[current_usa_squad] is [H.real_name].</i></b>"
-				++usa_squad_leaders
-			else
-				if (!job.is_officer)
-					++usa_squad_members
-					if (usa_squad_info[current_usa_squad])
-						spawn (0)
-							H << usa_squad_info[current_usa_squad]
-							H.add_memory(usa_squad_info[current_usa_squad])
-					else
-						spawn (2)
-							H << "<i>Your squad, #[current_usa_squad], does not have a Squad Leader yet. Consider waiting for one before deploying.</i>"
-		else if (isjapansquadmember_or_leader(H))
-			if (isjapansquadleader(H))
-				japan_squad_info[current_japan_squad] = "<b>The leader of your squad (#[current_japan_squad]) is [H.real_name]. He has a golden HUD.</b>"
-				if (!istype(get_area(H), /area/prishtina/admin) && ticker.current_state != GAME_STATE_PREGAME) // first check fails due to bad location, fix
-					world << "<b>The leader of Japanese Squad #[current_japan_squad] is [H.real_name]!</b>"
-				japan_officer_squad_info[current_japan_squad] = "<b><i>The leader of squad #[current_japan_squad] is [H.real_name].</i></b>"
-				++japan_squad_leaders
-			else
-				if (!job.is_officer)
-					++japan_squad_members
-					if (japan_squad_info[current_japan_squad])
-						spawn (0)
-							H << japan_squad_info[current_japan_squad]
-							H.add_memory(japan_squad_info[current_japan_squad])
-					else
-						spawn (2)
-							H << "<i>Your squad, #[current_japan_squad], does not have a Squad Leader yet. Consider waiting for one before deploying.</i>"
-
 		else if (H.original_job.is_officer && H.original_job.base_type_flag() == SOVIET)
 			spawn (5)
 				for (var/i in 1 to soviet_officer_squad_info.len)
@@ -729,19 +491,6 @@ var/global/datum/controller/occupations/job_master
 				//		H << "<br>[german_officer_squad_info[i]]"
 						H.add_memory(german_officer_squad_info[i])
 
-		else if (H.original_job.is_officer && H.original_job.base_type_flag() == USA)
-			spawn (5)
-				for (var/i in 1 to usa_officer_squad_info.len)
-					if (usa_officer_squad_info[i])
-				//		H << "<br>[german_officer_squad_info[i]]"
-						H.add_memory(usa_officer_squad_info[i])
-		else if (H.original_job.is_officer && H.original_job.base_type_flag() == JAPAN)
-			spawn (5)
-				for (var/i in 1 to japan_officer_squad_info.len)
-					if (japan_officer_squad_info[i])
-				//		H << "<br>[german_officer_squad_info[i]]"
-						H.add_memory(japan_officer_squad_info[i])
-
 		if (H.original_job.is_officer)
 			if (H.original_job.base_type_flag() == GERMAN)
 		//		H << "The passcode for radios and phones is <b>[supply_codes[GERMAN]].</b>"
@@ -750,12 +499,12 @@ var/global/datum/controller/occupations/job_master
 			else if (H.original_job.base_type_flag() == SOVIET)
 		//		H << "The passcode for radios and phones is <b>[supply_codes[SOVIET]].</b>"
 				H.add_memory("The passcode for radios and phones is [processes.supply.codes[SOVIET]].")
-			else if (H.original_job.base_type_flag() == USA)
+			else if (H.original_job.base_type_flag() == PIRATES)
 		//		H << "The passcode for radios and phones is <b>[supply_codes[SOVIET]].</b>"
-				H.add_memory("The passcode for radios and phones is [processes.supply.codes[USA]].")
-			else if (H.original_job.base_type_flag() == JAPAN)
+				H.add_memory("The passcode for radios and phones is [processes.supply.codes[PIRATES]].")
+			else if (H.original_job.base_type_flag() == BRITISH)
 		//		H << "The passcode for radios and phones is <b>[supply_codes[SOVIET]].</b>"
-				H.add_memory("The passcode for radios and phones is [processes.supply.codes[JAPAN]].")
+				H.add_memory("The passcode for radios and phones is [processes.supply.codes[BRITISH]].")
 
 		#ifdef SPAWNLOC_DEBUG
 		world << "[H] ([rank]) GOT TO job spawn location = [H.job_spawn_location]"
@@ -877,12 +626,11 @@ var/global/datum/controller/occupations/job_master
 	// count number of each side
 	var/germans = alive_n_of_side(GERMAN)
 	var/soviets = alive_n_of_side(SOVIET)
-	var/italians = alive_n_of_side(ITALIAN)
 	var/civilians = alive_n_of_side(CIVILIAN)
 	var/partisans = alive_n_of_side(PARTISAN)
 //	var/poles = alive_n_of_side(POLISH_INSURGENTS)
 //	var/americans = alive_n_of_side(USA)
-//	var/japanese = alive_n_of_side(JAPAN)
+//	var/japanese = alive_n_of_side(BRITISH)
 
 	// by default no sides are hardlocked
 	var/max_germans = INFINITY
@@ -914,11 +662,11 @@ var/global/datum/controller/occupations/job_master
 //		if (map.faction_distribution_coeffs.Find(POLISH_INSURGENTS))
 //			max_poles = ceil(relevant_clients * map.faction_distribution_coeffs[POLISH_INSURGENTS])
 
-//		if (map.faction_distribution_coeffs.Find(USA))
-//			max_americans = ceil(relevant_clients * map.faction_distribution_coeffs[USA])
+//		if (map.faction_distribution_coeffs.Find(PIRATES))
+//			max_americans = ceil(relevant_clients * map.faction_distribution_coeffs[PIRATES])
 
-//		if (map.faction_distribution_coeffs.Find(JAPAN))
-//			max_japanese = ceil(relevant_clients * map.faction_distribution_coeffs[JAPAN])
+//		if (map.faction_distribution_coeffs.Find(BRITISH))
+//			max_japanese = ceil(relevant_clients * map.faction_distribution_coeffs[BRITISH])
 
 	// fixes soviet-biased autobalance on verylow pop - Kachnov
 	if (map && relevant_clients <= 7)

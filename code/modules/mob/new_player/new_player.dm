@@ -29,9 +29,6 @@
 	mob_list += src
 	new_player_mob_list += src
 
-	spawn (1)
-		if (client)
-			client.remove_ghost_only_admin_verbs()
 
 	spawn (10)
 		if (client)
@@ -510,9 +507,9 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_germans.len] Germans, [alive_russians.len] Soviets, [alive_partisans.len+alive_polish.len] Partisans, [alive_civilians.len] Civilians, [alive_usa.len] Americans, [alive_japan.len] Japanese."
+	dat += "<b>Current Autobalance Status</b>: [alive_germans.len] Germans, [alive_russians.len] Soviets, [alive_partisans.len+alive_polish.len] Partisans, [alive_civilians.len] Civilians."
 	dat += "<br>"
-	dat += "<i>Jobs available for Penal banned players are marked with an *</i>"
+	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 	dat += "<br>"
 
 //	var/list/restricted_choices = list()
@@ -522,8 +519,6 @@
 		SOVIET = FALSE,
 		PARTISAN = FALSE,
 		CIVILIAN = FALSE,
-		USA = FALSE,
-		JAPAN = FALSE,
 		PIRATES = FALSE,
 		BRITISH = FALSE)
 
@@ -745,12 +740,6 @@
 				client.prefs.gender = client.prefs.german_gender
 			else if (J_flag == SOVIET)
 				client.prefs.gender = client.prefs.russian_gender
-			else if (J_flag == ITALIAN)
-				client.prefs.gender = client.prefs.italian_gender
-			else if (J_flag == USA)
-				client.prefs.gender = client.prefs.english_gender
-			else if (J_flag == JAPAN)
-				client.prefs.gender = client.prefs.japanese_gender
 
 			// traps came back, this should fix them for good - Kachnov
 			new_character.gender = client.prefs.gender

@@ -459,28 +459,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	else
 		return
 
-/client/proc/cmd_admin_emp(atom/O as obj|mob|turf in range(world.view))
-	set category = "Special"
-	set name = "EM Pulse"
-
-	if (!check_rights(R_DEBUG|R_FUN))	return
-
-	var/heavy = input("Range of heavy pulse.", text("Input"))  as num|null
-	if (heavy == null) return
-	var/light = input("Range of light pulse.", text("Input"))  as num|null
-	if (light == null) return
-
-	if (heavy || light)
-
-		empulse(O, heavy, light)
-		log_admin("[key_name(usr)] created an EM Pulse ([heavy],[light]) at ([O.x],[O.y],[O.z])")
-		message_admins("[key_name_admin(usr)] created an EM PUlse ([heavy],[light]) at ([O.x],[O.y],[O.z])", TRUE)
-
-
-		return
-	else
-		return
-
 /client/proc/cmd_admin_gib(mob/M as mob in mob_list)
 	set category = "Special"
 	set name = "Gib"

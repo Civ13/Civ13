@@ -197,17 +197,6 @@
 		cmd_admin_explosion(A)
 		href_list["datumrefresh"] = href_list["explode"]
 
-	else if (href_list["emp"])
-		if (!check_rights(R_DEBUG|R_FUN))	return
-
-		var/atom/A = locate(href_list["emp"])
-		if (!isobj(A) && !ismob(A) && !isturf(A))
-			usr << "This can only be done to instances of type /obj, /mob and /turf"
-			return
-
-		cmd_admin_emp(A)
-		href_list["datumrefresh"] = href_list["emp"]
-
 	else if (href_list["mark_object"])
 		if (!check_rights(0))	return
 

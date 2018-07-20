@@ -49,9 +49,6 @@
 		living_mob_list += src
 	..()
 
-	spawn (1)
-		if (!isobserver(src) && client)
-			client.remove_ghost_only_admin_verbs()
 
 	if (!isnewplayer(src))
 		src << browse(null, "window=playersetup;")

@@ -19,11 +19,6 @@ var/global/list/new_player_mob_list = list()	//List of all new_players, excludes
 
 var/global/list/fallschirm_landmarks = list()
 
-var/global/list/train_car_centers = list()
-// to prevent typechecking and speed up train soundcode
-var/global/list/german_main_train_car_centers = list()
-var/global/list/german_supply_train_car_centers = list()
-
 var/global/list/burning_obj_list = list()
 var/global/list/burning_turf_list = list()
 

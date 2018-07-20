@@ -10,8 +10,8 @@
 	i2faction[1] = GERMAN
 	i2faction[2] = SOVIET
 	i2faction[3] = PARTISAN
-	i2faction[4] = JAPAN
-	i2faction[5] = USA
+	i2faction[4] = BRITISH
+	i2faction[5] = PIRATES
 
 	for (var/i in TRUE to 3)
 		var/faction = i2faction[i]

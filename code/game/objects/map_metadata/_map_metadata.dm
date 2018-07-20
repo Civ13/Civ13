@@ -36,9 +36,9 @@ var/global/obj/map_metadata/map = null
 	var/list/faction_distribution_coeffs = list(INFINITY) // list(INFINITY) = no hard locks on factions
 	var/list/available_subfactions = list()
 	var/list/roundend_condition_sides = list(
-		list(GERMAN, ITALIAN, JAPAN) = /area/prishtina/german,
-		list(SOVIET, USA) = /area/prishtina/soviet)
-	var/list/ambience = list('sound/ambience/war.ogg')
+		list(GERMAN, PIRATES) = /area/prishtina/german,
+		list(SOVIET, BRITISH) = /area/prishtina/soviet)
+	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
 	"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 
@@ -156,12 +156,10 @@ var/global/obj/map_metadata/map = null
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (SOVIET, USA, POLISH_INSURGENTS, BRITISH)
+				if (SOVIET, BRITISH)
 					return !soviets_can_cross_blocks()
-				if (GERMAN, ITALIAN, PARTISAN, CIVILIAN, JAPAN, PIRATES)
+				if (GERMAN, PARTISAN, CIVILIAN, PIRATES)
 					return !germans_can_cross_blocks()
-				if (PILLARMEN)
-					return !specialfaction_can_cross_blocks()
 	return FALSE
 
 /obj/map_metadata/proc/soviets_can_cross_blocks()
@@ -296,13 +294,8 @@ var/global/obj/map_metadata/map = null
 	var/list/soldiers = list(
 		GERMAN = 0,
 		SOVIET = 0,
-		ITALIAN = 0,
 		CIVILIAN = 0,
 		PARTISAN = 0,
-		PILLARMEN = 0,
-		POLISH_INSURGENTS = 0,
-		JAPAN = 0,
-		USA = 0,
 		BRITISH = 0,
 		PIRATES = 0)
 
@@ -384,10 +377,10 @@ var/global/obj/map_metadata/map = null
 			return "Partisan"
 		if (POLISH_INSURGENTS)
 			return "Polish"
-		if (JAPAN)
-			return "Japanese"
-		if (USA)
-			return "American"
+		if (BRITISH)
+			return "British"
+		if (PIRATES)
+			return "Pirate"
 
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
@@ -399,12 +392,10 @@ var/global/obj/map_metadata/map = null
 			return "Undead"
 		if (PARTISAN)
 			return "Partisan Group"
-		if (POLISH_INSURGENTS)
-			return "Polish Partisans"
-		if (JAPAN)
-			return "Imperial Japanese Army"
-		if (USA)
-			return "US Army"
+		if (BRITISH)
+			return "Royal Navy"
+		if (PIRATES)
+			return "Pirate group"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
@@ -416,12 +407,10 @@ var/global/obj/map_metadata/map = null
 			return "Undead"
 		if ("Partisan Group")
 			return "Partisan"
-		if ("Imperial Japanese Army")
-			return "Japanese"
-		if ("Polish Partisans")
-			return "Polish"
-		if ("US Army")
-			return "American"
+		if ("Royal Navy")
+			return "British"
+		if ("Pirate group")
+			return "Pirate"
 
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE

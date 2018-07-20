@@ -57,8 +57,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 
 	var/list/snowfall_valid_turfs = list()
 
-	var/is_train_area = FALSE
-
 	var/is_void_area = FALSE
 
 	var/capturable = TRUE

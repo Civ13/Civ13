@@ -161,13 +161,6 @@ var/list/gamemode_cache = list()
 	var/hub_features = ""
 	var/hub_banner_url = ""
 
-	// TRAINS
-
-	var/german_train_cars_officer = TRUE
-	var/german_train_cars_storage = TRUE
-	var/german_train_cars_supply = TRUE
-	var/german_train_cars_soldier = TRUE
-	var/german_train_cars_conductor = TRUE
 
 	//WW2
 
@@ -294,18 +287,7 @@ var/list/gamemode_cache = list()
 				if ("machinery_does_not_use_power")
 					config.machinery_does_not_use_power = text2num(value)
 
-				// TRAINS
 
-				if ("german_train_cars_officer")
-					config.german_train_cars_officer = text2num(value)
-				if ("german_train_cars_storage")
-					config.german_train_cars_storage = text2num(value)
-				if ("german_train_cars_soldier")
-					config.german_train_cars_soldier = text2num(value)
-				if ("german_train_cars_conductor")
-					config.german_train_cars_conductor = text2num(value)
-				if ("german_supplytrain_cars")
-					config.german_train_cars_supply = text2num(value)
 
 				if ("lighting_is_rustic")
 					config.lighting_is_rustic = text2num(value)

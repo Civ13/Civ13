@@ -264,20 +264,6 @@
 		new /obj/item/weapon/grenade/chem_grenade/teargas(src)
 
 
-
-/obj/item/weapon/storage/box/emps
-	name = "box of emp grenades"
-	desc = "A box containing 5 military grade EMP grenades.<br> WARNING: Do not use near unshielded electronics or biomechanical augmentations, death or permanent paralysis may occur."
-	icon_state = "flashbang"
-
-	New()
-		..()
-		new /obj/item/weapon/grenade/empgrenade(src)
-		new /obj/item/weapon/grenade/empgrenade(src)
-		new /obj/item/weapon/grenade/empgrenade(src)
-		new /obj/item/weapon/grenade/empgrenade(src)
-		new /obj/item/weapon/grenade/empgrenade(src)
-
 /obj/item/weapon/storage/box/smokes
 	name = "box of smoke bombs"
 	desc = "A box containing 5 smoke bombs."

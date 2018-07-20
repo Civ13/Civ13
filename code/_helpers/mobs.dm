@@ -329,12 +329,7 @@ Proc for attack log creation, because really why not
 
 	var/user_loc = user.loc
 	var/target_loc = target.loc
-	var/last_train_move_time = null
 
-	if (user.is_on_train())
-		var/datum/train_controller/tc = user.get_train()
-		if (istype(tc) && tc.moving)
-			last_train_move_time = user.last_moved_on_train
 
 	var/holding = user.get_active_hand()
 	var/datum/progressbar/progbar
@@ -356,18 +351,9 @@ Proc for attack log creation, because really why not
 		if (uninterruptible)
 			continue
 
-		if (!user || user.incapacitated() || (!last_train_move_time && user.loc != user_loc))
+		if (!user || user.incapacitated())
 			. = FALSE
 			break
-
-		if (!last_train_move_time && target.loc != target_loc)
-			. = FALSE
-			break
-
-		if (last_train_move_time)
-			if (user.last_moved_on_train != last_train_move_time || !user.is_on_train())
-				. = FALSE
-				break
 
 		if (user.get_active_hand() != holding)
 			. = FALSE
@@ -387,20 +373,9 @@ Proc for attack log creation, because really why not
 		user.may_do_after = FALSE
 
 	var/target_loc = null
-	var/last_train_move_time = null
 
 	// made this account for being moved on rollerbeds - Kachnov
 
-	var/user_on_train = FALSE
-	if (user.is_on_train())
-		var/datum/train_controller/tc = user.get_train()
-		if (istype(tc) && tc.moving)
-			last_train_move_time = user.last_moved_on_train
-			user_on_train = TRUE
-
-	if (!user_on_train)
-		if (target)
-			target_loc = target.loc
 
 	var/atom/original_loc = user.loc
 
@@ -426,18 +401,10 @@ Proc for attack log creation, because really why not
 			. = FALSE
 			break
 
-		if (!can_move)
-			if (user.loc != original_loc && !last_train_move_time)
-				. = FALSE
-				break
 
 		// this should fix the bug where a guy can start resisting on a train,
 		// get moved off the train, and keep resisting even after being moved
 		// - Kachnov
-		if (last_train_move_time)
-			if (user.last_moved_on_train != last_train_move_time || !user.is_on_train())
-				. = FALSE
-				break
 
 		if (needhand)
 			if (user.get_active_hand() != holding)
@@ -509,22 +476,6 @@ Proc for attack log creation, because really why not
 
 	return germans
 
-/proc/getitalianmobs(var/alive = FALSE)
-	var/list/italians = list()
-	for (var/mob/living/carbon/human/H in mob_list)
-		if (!istype(H))
-			continue
-		if (!H.loc) // supply train announcer
-			continue
-		if (alive && H.stat == DEAD)
-			continue
-		if (!istype(H.original_job, /datum/job/italian))
-			continue
-		if (istype(H, /mob/living/carbon/human/corpse))
-			continue
-		italians += H
-
-	return italians
 
 /proc/getukrainianmobs(var/alive = FALSE)
 	var/list/ukrainians = list()
@@ -543,21 +494,6 @@ Proc for attack log creation, because really why not
 
 	return ukrainians
 
-/proc/getgermanparatroopers(var/alive = FALSE)
-	var/list/germans = getgermanmobs(alive)
-	var/list/paratroopers = list()
-	for (var/mob/living/carbon/human/H in germans)
-		if (istype(H.original_job, /datum/job/german/paratrooper))
-			paratroopers += H
-	return paratroopers
-
-/proc/getSS(var/alive = FALSE)
-	var/list/germans = getgermanmobs(alive)
-	var/list/SS = list()
-	for (var/mob/living/carbon/human/H in germans)
-		if (istype(H.original_job, /datum/job/german/soldier_ss) || istype(H.original_job, /datum/job/german/squad_leader_ss))
-			SS += H
-	return SS
 
 /proc/getcivilians(var/alive = FALSE)
 	var/list/ukrainians = getukrainianmobs(alive)
