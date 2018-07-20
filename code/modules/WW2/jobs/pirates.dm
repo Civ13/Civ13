@@ -154,7 +154,7 @@
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_captain(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	world << "<b><big>[H.real_name] is the [title] of the Royal Navy ship!</big></b>"

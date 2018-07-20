@@ -1222,8 +1222,15 @@
 /obj/item/clothing/head/tricorne_black
 	name = "black tricorne"
 	desc = "A black tricorne. Commonly used by navy officers."
-	icon_state = "redcoat"
-	item_state = "redcoat"
+	icon_state = "tricorne_black"
+	item_state = "tricorne_black"
+
+/obj/item/clothing/head/tricorne_british
+	name = "Royal Navy tricorne"
+	desc = "A blue tricorne, used by the British Royal Navy."
+	icon_state = "tricorne_british"
+	item_state = "tricorne_british"
+
 
 /obj/item/clothing/accessory/armband/british_scarf
 	name = "blue scarf"
@@ -1233,7 +1240,14 @@
 
 /obj/item/clothing/suit/storage/jacket/british_captain
 	name = "Royal Navy Captain jacket"
-	desc = "A standard Captain jacket of the Royal Navy. Blue with golden buttons and cuffs."
+	desc = "A standard Captain jacket of the Royal Navy. Blue with golden buttons, white laces and golden cuffs."
 	icon_state = "british_captain"
 	item_state = "british_captain"
 	worn_state = "british_captain"
+
+/obj/item/clothing/suit/storage/jacket/british_officer
+	name = "Royal Navy Officer jacket"
+	desc = "A standard Officer jacket of the Royal Navy. Blue with golden buttons."
+	icon_state = "british_officer"
+	item_state = "british_officer"
+	worn_state = "british_officer"
