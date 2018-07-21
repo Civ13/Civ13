@@ -77,10 +77,6 @@ var/global/list/zoom_scopes_list = list()
 
 var/global/list/zoom_processing_mobs = list()
 
-var/global/list/supplydrop_processing_objects_german = list()
-
-var/global/list/supplydrop_processing_objects_soviet = list()
-
 var/global/list/menacing_atoms = list()
 
 var/global/list/faction_hud_users = list()
@@ -141,10 +137,6 @@ var/global/list/rune_list = new()
 var/global/list/escape_list = list()
 var/global/list/endgame_exits = list()
 var/global/list/endgame_safespawns = list()
-
-// supply
-var/global/list/german_supplydrop_spots = list()
-var/global/list/soviet_supplydrop_spots = list()
 
 // for mass deletion
 var/global/list/bullet_casings = list()

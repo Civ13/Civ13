@@ -28,8 +28,8 @@
 	set name = "Toggle reinforcements (German)"
 
 	if (reinforcements_master)
-		reinforcements_master.locked[GERMAN] = !reinforcements_master.locked[GERMAN]
-		world << "<font color=red>Reinforcements [(!reinforcements_master.locked[GERMAN]) ? "can" : "can't"] join the Germans [(!reinforcements_master.locked[GERMAN]) ? "now" : "anymore"].</font>"
+		reinforcements_master.locked[BRITISH] = !reinforcements_master.locked[BRITISH]
+		world << "<font color=red>Reinforcements [(!reinforcements_master.locked[BRITISH]) ? "can" : "can't"] join the Germans [(!reinforcements_master.locked[BRITISH]) ? "now" : "anymore"].</font>"
 		message_admins("[key_name(src)] changed the geforce reinforcements setting.")
 	else
 		src << "<span class = danger>WARNING: No reinforcements master found.</span>"
@@ -39,8 +39,8 @@
 	set name = "Toggle reinforcements (Russian)"
 
 	if (reinforcements_master)
-		reinforcements_master.locked[SOVIET] = !reinforcements_master.locked[SOVIET]
-		world << "<font color=red>Reinforcements [(!reinforcements_master.locked[SOVIET]) ? "can" : "can't"] join the Russians [(!reinforcements_master.locked[SOVIET]) ? "now" : "anymore"].</font>"
+		reinforcements_master.locked[PIRATES] = !reinforcements_master.locked[PIRATES]
+		world << "<font color=red>Reinforcements [(!reinforcements_master.locked[PIRATES]) ? "can" : "can't"] join the Russians [(!reinforcements_master.locked[PIRATES]) ? "now" : "anymore"].</font>"
 		message_admins("[key_name(src)] changed the ruforce reinforcements setting.")
 	else
 		src << "<span class = danger>WARNING: No reinforcements master found.</span>"
@@ -50,12 +50,12 @@
 	set category = "Special"
 	set name = "Quickspawn reinforcements (German)"
 
-	var/list/l = reinforcements_master.reinforcement_pool[GERMAN]
+	var/list/l = reinforcements_master.reinforcement_pool[BRITISH]
 
 	if (reinforcements_master)
 		if (l.len)
-			reinforcements_master.allow_quickspawn[GERMAN] = TRUE
-			reinforcements_master.german_countdown = 0
+			reinforcements_master.allow_quickspawn[BRITISH] = TRUE
+			reinforcements_master.british_countdown = 0
 		else
 			src << "<span class = danger>Nobody is in the German reinforcement pool.</span>"
 	else
@@ -69,12 +69,12 @@
 	set category = "Special"
 	set name = "Quickspawn reinforcements (Russian)"
 
-	var/list/l = reinforcements_master.reinforcement_pool[SOVIET]
+	var/list/l = reinforcements_master.reinforcement_pool[PIRATES]
 
 	if (reinforcements_master)
 		if (l.len)
-			reinforcements_master.allow_quickspawn[SOVIET] = TRUE
-			reinforcements_master.soviet_countdown = 0
+			reinforcements_master.allow_quickspawn[PIRATES] = TRUE
+			reinforcements_master.pirates_countdown = 0
 		else
 			src << "<span class = danger>Nobody is in the Russian reinforcement pool.</span>"
 	else
@@ -119,22 +119,22 @@
 		message_admins("[key_name(src)] reset all grace periods!")
 		log_admin("[key_name(src)] reset all grace periods.")
 
-var/german_civilian_mode = FALSE
-var/soviet_civilian_mode = FALSE
+var/british_civilian_mode = FALSE
+var/pirates_civilian_mode = FALSE
 
-/client/proc/toggle_german_civilian_mode()
+/client/proc/toggle_british_civilian_mode()
 	set category = "Special"
 	set name = "Toggle German Civilian Mode"
-	german_civilian_mode = !german_civilian_mode
-	var/M = "[key_name(src)] [german_civilian_mode ? "enabled" : "disabled"] German Civilian Mode - Civilians will [german_civilian_mode ? "now" : "no longer"] count towards the amount of Germans."
+	british_civilian_mode = !british_civilian_mode
+	var/M = "[key_name(src)] [british_civilian_mode ? "enabled" : "disabled"] German Civilian Mode - Civilians will [british_civilian_mode ? "now" : "no longer"] count towards the amount of Germans."
 	message_admins(M)
 	log_admin(M)
 
-/client/proc/toggle_soviet_civilian_mode()
+/client/proc/toggle_pirates_civilian_mode()
 	set category = "Special"
 	set name = "Toggle Soviet Civilian Mode"
-	soviet_civilian_mode = !soviet_civilian_mode
-	var/M = "[key_name(src)] [soviet_civilian_mode ? "enabled" : "disabled"] Soviet Civilian Mode - Civilians will [soviet_civilian_mode ? "now" : "no longer"] count towards the amount of Soviets."
+	pirates_civilian_mode = !pirates_civilian_mode
+	var/M = "[key_name(src)] [pirates_civilian_mode ? "enabled" : "disabled"] Soviet Civilian Mode - Civilians will [pirates_civilian_mode ? "now" : "no longer"] count towards the amount of Soviets."
 	message_admins(M)
 	log_admin(M)
 
@@ -142,8 +142,8 @@ var/partisans_toggled = TRUE
 var/civilians_toggled = TRUE
 var/SS_toggled = TRUE
 var/paratroopers_toggled = TRUE
-var/germans_toggled = TRUE
-var/soviets_toggled = TRUE
+var/british_toggled = TRUE
+var/pirates_toggled = TRUE
 var/polish_toggled = TRUE
 var/usa_toggled = TRUE
 var/japanese_toggled = TRUE
@@ -160,8 +160,8 @@ var/japanese_toggled = TRUE
 
 	choices += "PARTISANS ([partisans_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CIVILIANS ([civilians_toggled ? "ENABLED" : "DISABLED"])"
-	choices += "GERMANS ([germans_toggled ? "ENABLED" : "DISABLED"])"
-	choices += "SOVIET ([soviets_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "BRITISH ([british_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "PIRATES ([pirates_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -177,19 +177,19 @@ var/japanese_toggled = TRUE
 		civilians_toggled = !civilians_toggled
 		world << "<span class = 'warning'>The Civilian faction has been [civilians_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Civilian faction 'enabled' setting to [civilians_toggled].")
-	else if (findtext(choice, "GERMAN"))
-		germans_toggled = !germans_toggled
-		world << "<span class = 'warning'>The German faction (not SS) has been [germans_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the German faction 'enabled' setting to [germans_toggled].")
-	else if (findtext(choice, "SOVIET"))
-		soviets_toggled = !soviets_toggled
-		world << "<span class = 'warning'>The Soviet faction has been [soviets_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the Soviet faction 'enabled' setting to [soviets_toggled].")
+	else if (findtext(choice, "BRITISH"))
+		british_toggled = !british_toggled
+		world << "<span class = 'warning'>The German faction (not SS) has been [british_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the German faction 'enabled' setting to [british_toggled].")
+	else if (findtext(choice, "PIRATES"))
+		pirates_toggled = !pirates_toggled
+		world << "<span class = 'warning'>The Soviet faction has been [pirates_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Soviet faction 'enabled' setting to [pirates_toggled].")
 
 var/partisans_forceEnabled = FALSE
 var/civilians_forceEnabled = FALSE
-var/germans_forceEnabled = FALSE
-var/soviets_forceEnabled = FALSE
+var/british_forceEnabled = FALSE
+var/pirates_forceEnabled = FALSE
 var/SS_forceEnabled = FALSE
 var/paratroopers_forceEnabled = FALSE
 var/usa_forceEnabled = FALSE
@@ -208,8 +208,8 @@ var/polish_forceEnabled = FALSE
 
 	choices += "PARTISANS ([partisans_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CIVILIANS ([civilians_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
-	choices += "GERMANS ([germans_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
-	choices += "SOVIET ([soviets_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "BRITISH ([british_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "PIRATES ([pirates_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -225,14 +225,14 @@ var/polish_forceEnabled = FALSE
 		civilians_forceEnabled = !civilians_forceEnabled
 		world << "<span class = 'notice'>The Civilian faction [civilians_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Civilian faction 'forceEnabled' setting to [civilians_forceEnabled].")
-	else if (findtext(choice, "GERMAN"))
-		germans_forceEnabled = !germans_forceEnabled
-		world << "<span class = 'notice'>The German faction [germans_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the German faction 'forceEnabled' setting to [germans_forceEnabled].")
-	else if (findtext(choice, "SOVIET"))
-		soviets_forceEnabled = !soviets_forceEnabled
-		world << "<span class = 'notice'>The Soviet faction [soviets_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the Soviet faction 'forceEnabled' setting to [soviets_forceEnabled].")
+	else if (findtext(choice, "BRITISH"))
+		british_forceEnabled = !british_forceEnabled
+		world << "<span class = 'notice'>The German faction [british_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the German faction 'forceEnabled' setting to [british_forceEnabled].")
+	else if (findtext(choice, "PIRATES"))
+		pirates_forceEnabled = !pirates_forceEnabled
+		world << "<span class = 'notice'>The Soviet faction [pirates_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Soviet faction 'forceEnabled' setting to [pirates_forceEnabled].")
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"
@@ -243,32 +243,3 @@ var/polish_forceEnabled = FALSE
 	log_admin(M)
 	world << "<font size = 3><span class = 'notice'>Respawn delays are now <b>[config.no_respawn_delays ? "disabled" : "enabled"]</b>.</span></font>"
 
-/client/proc/open_armory_doors()
-	set name = "Open Armory Doors"
-	set category = "Special"
-	var/side = input("Which side?") in list("Soviet", "German", "Cancel")
-	if (side == "Soviet")
-		for (var/obj/structure/simple_door/key_door/soviet/QM/D in door_list)
-			D.Open()
-		var/M = "[key_name(src)] opened Soviet Armory doors."
-		message_admins(M)
-		log_admin(M)
-	else if (side == "German")
-		for (var/obj/structure/simple_door/key_door/german/QM/D in door_list)
-			D.Open()
-		var/M = "[key_name(src)] opened German Armory doors."
-		message_admins(M)
-		log_admin(M)
-
-/client/proc/close_armory_doors()
-	set name = "Close Armory Doors"
-	set category = "Special"
-	var/side = input("Which side?") in list("Soviet", "German", "Cancel")
-	if (side == "Soviet")
-		for (var/obj/structure/simple_door/key_door/soviet/QM/D in door_list)
-			D.Close()
-			D.keyslot.locked = TRUE
-	else if (side == "German")
-		for (var/obj/structure/simple_door/key_door/german/QM/D in door_list)
-			D.Close()
-			D.keyslot.locked = TRUE

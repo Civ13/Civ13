@@ -73,18 +73,12 @@ bullet_act
 					H.adaptStat("heavyweapon", 1)
 
 	def_zone = check_zone(def_zone)
-	if (is_spy && istype(spy_faction, /datum/faction/german))
-		say("GOD DAMN IT HURTS", languages.Find(GERMAN))
+	if (is_spy && istype(spy_faction, /datum/faction/pirates))
+		say("GOD DAMN IT HURTS", languages.Find(ENGLISH))
 
-	if (is_spy && istype(spy_faction, /datum/faction/soviet))
-		say("GOD DAMN IT HURTS", languages.Find(RUSSIAN))
+	if (is_spy && istype(spy_faction, /datum/faction/british))
+		say("GOD DAMN IT HURTS", languages.Find(ENGLISH))
 
-	if (P.firer && (P.firer_original_dir == dir || lying) && P.firer.targeted_organ == "chest")
-		if (istype(back, /obj/item/weapon/storage/backpack/flammenwerfer))
-			var/obj/item/weapon/storage/backpack/flammenwerfer/flamethrower = back
-			if (prob(16) || (world.time - last_movement >= 50) || lying)
-				if (!flamethrower.is_empty())
-					flamethrower.explode()
 
 	if (!has_organ(def_zone))
 		return PROJECTILE_FORCE_MISS //if they don't have the organ in question then the projectile just passes by.
@@ -226,20 +220,6 @@ bullet_act
 					var/emote_scream = pick("screams in pain and ", "lets out a sharp cry and ", "cries out and ")
 					emote("me", TRUE, "[(species && species.flags & NO_PAIN) ? "" : emote_scream ]drops what they were holding in their [affected.name]!")
 
-		else
-			if (agony_amount > 10)
-				if (is_spy && istype(spy_faction, /datum/faction/german))
-					say("OH GOD THE PAIN", languages.Find(GERMAN))
-
-				if (is_spy && istype(spy_faction, /datum/faction/soviet))
-					say("OH GOD THE PAIN", languages.Find(RUSSIAN))
-		else
-			if (agony_amount > 10)
-				if (is_spy && istype(spy_faction, /datum/faction/german))
-					say("OH GOD THE PAIN", languages.Find(GERMAN))
-
-				if (is_spy && istype(spy_faction, /datum/faction/soviet))
-					say("OH GOD THE PAIN", languages.Find(RUSSIAN))
 	..(stun_amount, agony_amount, def_zone)
 
 /mob/living/carbon/human/getarmor(var/def_zone, var/type)

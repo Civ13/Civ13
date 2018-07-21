@@ -174,7 +174,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 			var/datum/job/J = input("What job?") in possibilities
 			fields["type_specific_info"] = J.title
 		if ("Faction")
-			var/faction = input("What faction?") in list(GERMAN, SOVIET, BRITISH, UKRAINIAN, PIRATES, PARTISAN, CIVILIAN)
+			var/faction = input("What faction?") in list(BRITISH, UKRAINIAN, PIRATES, PARTISAN, CIVILIAN)
 			fields["type_specific_info"] = faction
 
 	reenter_bantime

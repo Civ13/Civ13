@@ -1,20 +1,20 @@
 // APPAREL RACKS
 
-/obj/structure/vending/sovietapparel
+/obj/structure/vending/piratesapparel
 	name = "Soviet apparel rack"
-	desc = "Basic wear for soviet soldiers."
-	icon_state = "apparel_soviet"
+	desc = "Basic wear for pirates soldiers."
+	icon_state = "apparel_pirates"
 	products = list(
-		/obj/item/clothing/suit/storage/coat/soviet = 50,
+		/obj/item/clothing/suit/storage/coat/pirates = 50,
 		/obj/item/clothing/accessory/storage/webbing = 50,
 		/obj/item/clothing/under/sovuni = 50,
 		/obj/item/clothing/head/helmet/sovhelm = 50,
 		/obj/item/clothing/shoes/swat/wrappedboots = 50,
 		/obj/item/clothing/head/ushanka = 25,
-		/obj/item/clothing/mask/gas/soviet = 25,
+		/obj/item/clothing/mask/gas/pirates = 25,
 		/obj/item/clothing/under/sovuni/camo = 5,
-		/obj/item/weapon/storage/belt/soviet_basic = 15,
-		/obj/item/weapon/storage/backpack/soviet = 15
+		/obj/item/weapon/storage/belt/pirates_basic = 15,
+		/obj/item/weapon/storage/backpack/pirates = 15
 	)
 //	idle_power_usage = 0
 
@@ -298,18 +298,18 @@
 
 	)
 
-/obj/structure/vending/sovietequipment
+/obj/structure/vending/piratesequipment
 	name = "Soviet equipment rack"
 	desc = "Basic equip for Soviet soldiers."
-	icon_state = "equipment_soviet"
+	icon_state = "equipment_pirates"
 	products = list(
 		/obj/item/weapon/material/knife/boot/bowie_knife = 25,
-		/obj/item/weapon/attachment/bayonet/soviet = 25,
+		/obj/item/weapon/attachment/bayonet/pirates = 25,
 		/obj/item/weapon/gauze_pack/bint = 25,
 		/obj/item/flashlight = 25,
 		/obj/item/weapon/shovel/spade/russia = 25,
 		/obj/item/weapon/gun/projectile/boltaction/mosin = 25,
 		/obj/item/ammo_magazine/mosin = 50,
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/soviet = 25
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/pirates = 25
 	)
 //	idle_power_usage = 0

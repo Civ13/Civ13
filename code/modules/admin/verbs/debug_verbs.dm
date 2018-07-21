@@ -5,7 +5,6 @@ var/list/debug_verbs = list (
         ,/client/proc/count_objects_on_z_level
         ,/client/proc/count_objects_all
         ,/client/proc/cmd_assume_direct_control
-        ,/client/proc/startSinglo
         ,/client/proc/ticklag
       //  ,/client/proc/kaboom
   //      ,/client/proc/cmd_admin_areatest

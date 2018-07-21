@@ -90,8 +90,6 @@ var/list/ghostteleportlocs = list()
 		if (ghostteleportlocs.Find(AR.name)) continue
 		if (AR.type == /area/prishtina/void) continue
 		if (!istype(AR, /area/prishtina)) continue
-		if (istype(AR, /area/prishtina/void/sky) && !istype(AR, /area/prishtina/void/sky/paratrooper_drop_zone/plane)) continue
-		if (istype(AR, /area/prishtina/void/skybox)) continue
 		var/turf/picked = pick_area_turf(AR.type, list(/proc/is_station_turf))
 		if (picked)
 			ghostteleportlocs += AR.name
@@ -303,7 +301,7 @@ var/list/mob/living/forced_ambiance_list = new
 
 	var/override_ambience = FALSE
 
-	for (var/typecheck in list(/area/prishtina/german, /area/prishtina/soviet, /area/prishtina/no_mans_land, /area/prishtina/forest, /area/prishtina/void))
+	for (var/typecheck in list(/area/prishtina/british, /area/prishtina/pirates, /area/prishtina/no_mans_land, /area/prishtina/forest, /area/prishtina/void))
 		if (istype(oldarea, typecheck))
 			if (!istype(newarea, typecheck))
 				override_ambience = TRUE
@@ -353,9 +351,6 @@ var/list/mob/living/forced_ambiance_list = new
 	var/lastsound = CL.ambience_playing
 	var/sound = (map && map.ambience.len) ? pick(map.ambience) : null
 	var/override_volume = 0
-	if (istype(src, /area/prishtina/void/sky))
-		sound = 'sound/ambience/shipambience.ogg'
-		override_volume = 50
 
 	if (sound && (!CL.ambience_playing || override || sound != lastsound))
 		CL.ambience_playing = sound

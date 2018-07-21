@@ -25,10 +25,6 @@ var/global/obj/map_metadata/map = null
 	var/reinforcements = TRUE
 	var/custom_loadout = TRUE // set to false to prevent people to spawn with guns and ammo on POW Camp map
 	var/squad_spawn_locations = TRUE
-	var/list/supply_points_per_tick = list(
-		GERMAN = 1.00,
-		SOVIET = 1.00)
-	var/katyushas = TRUE
 	var/no_subfaction_chance = TRUE
 	var/subfaction_is_main_faction = FALSE
 	var/list/faction_organization = list()
@@ -36,8 +32,8 @@ var/global/obj/map_metadata/map = null
 	var/list/faction_distribution_coeffs = list(INFINITY) // list(INFINITY) = no hard locks on factions
 	var/list/available_subfactions = list()
 	var/list/roundend_condition_sides = list(
-		list(GERMAN, PIRATES) = /area/prishtina/german,
-		list(SOVIET, BRITISH) = /area/prishtina/soviet)
+		list(PIRATES) = /area/prishtina/pirates,
+		list(BRITISH) = /area/prishtina/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
 	"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
@@ -100,33 +96,18 @@ var/global/obj/map_metadata/map = null
 
 // called from the map process
 /obj/map_metadata/proc/tick()
-	if (last_crossing_block_status[GERMAN] == FALSE)
-		if (germans_can_cross_blocks())
-			world << cross_message(GERMAN)
+
+	if (last_crossing_block_status[PIRATES] == FALSE)
+		if (pirates_can_cross_blocks())
+			world << cross_message(PIRATES)
 			// let new players see the reinforcements links
 			for (var/np in new_player_mob_list)
 				if (np:client)
 					np:new_player_panel_proc()
 
-	else if (last_crossing_block_status[GERMAN] == TRUE)
-		if (!germans_can_cross_blocks())
-			world << reverse_cross_message(GERMAN)
-			// let new players see the reinforcements links
-			for (var/np in new_player_mob_list)
-				if (np:client)
-					np:new_player_panel_proc()
-
-	if (last_crossing_block_status[SOVIET] == FALSE)
-		if (soviets_can_cross_blocks())
-			world << cross_message(SOVIET)
-			// let new players see the reinforcements links
-			for (var/np in new_player_mob_list)
-				if (np:client)
-					np:new_player_panel_proc()
-
-	else if (last_crossing_block_status[SOVIET] == TRUE)
-		if (!soviets_can_cross_blocks())
-			world << reverse_cross_message(SOVIET)
+	else if (last_crossing_block_status[PIRATES] == TRUE)
+		if (!pirates_can_cross_blocks())
+			world << reverse_cross_message(PIRATES)
 			// let new players see the reinforcements links
 			for (var/np in new_player_mob_list)
 				if (np:client)
@@ -139,8 +120,8 @@ var/global/obj/map_metadata/map = null
 		if (!specialfaction_can_cross_blocks())
 			world << reverse_cross_message(event_faction)
 
-	last_crossing_block_status[GERMAN] = germans_can_cross_blocks()
-	last_crossing_block_status[SOVIET] = soviets_can_cross_blocks()
+	last_crossing_block_status[BRITISH] = british_can_cross_blocks()
+	last_crossing_block_status[PIRATES] = pirates_can_cross_blocks()
 
 	if (event_faction)
 		last_crossing_block_status[event_faction] = specialfaction_can_cross_blocks()
@@ -156,16 +137,16 @@ var/global/obj/map_metadata/map = null
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (SOVIET, BRITISH)
-					return !soviets_can_cross_blocks()
-				if (GERMAN, PARTISAN, CIVILIAN, PIRATES)
-					return !germans_can_cross_blocks()
+				if (PIRATES)
+					return !pirates_can_cross_blocks()
+				if (BRITISH)
+					return !british_can_cross_blocks()
 	return FALSE
 
-/obj/map_metadata/proc/soviets_can_cross_blocks()
+/obj/map_metadata/proc/pirates_can_cross_blocks()
 	return TRUE
 
-/obj/map_metadata/proc/germans_can_cross_blocks()
+/obj/map_metadata/proc/british_can_cross_blocks()
 	return TRUE
 
 /obj/map_metadata/proc/specialfaction_can_cross_blocks()
@@ -175,7 +156,7 @@ var/global/obj/map_metadata/map = null
 	return TRUE
 
 /obj/map_metadata/proc/game_really_started()
-	return (soviets_can_cross_blocks() && germans_can_cross_blocks())
+	return (pirates_can_cross_blocks() && british_can_cross_blocks())
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
 	return TRUE
@@ -291,8 +272,6 @@ var/global/obj/map_metadata/map = null
 		return FALSE
 
 	var/list/soldiers = list(
-		GERMAN = 0,
-		SOVIET = 0,
 		CIVILIAN = 0,
 		PARTISAN = 0,
 		BRITISH = 0,
@@ -366,10 +345,7 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/roundend_condition_def2name(define)
 	switch (define)
-		if (GERMAN)
-			return "German"
-		if (SOVIET)
-			return "Soviet"
+		if (PARTISAN)
 			return "Partisan"
 		if (BRITISH)
 			return "British"
@@ -378,10 +354,6 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
-		if (GERMAN)
-			return "Wehrmacht"
-		if (SOVIET)
-			return "Red Army"
 		if (PARTISAN)
 			return "Partisan Group"
 		if (BRITISH)
@@ -391,10 +363,6 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
-		if ("Wehrmacht")
-			return "German"
-		if ("Red Army")
-			return "Soviet"
 		if ("Royal Navy")
 			return "British"
 		if ("Pirate group")

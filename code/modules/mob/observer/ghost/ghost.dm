@@ -297,23 +297,23 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if (mobs[input])
 			ManualFollow(mobs[input])
 
-/mob/observer/ghost/verb/follow_soviet(input in getfitmobs(SOVIET)+"Cancel")
+/mob/observer/ghost/verb/follow_pirates(input in getfitmobs(PIRATES)+"Cancel")
 	set category = "Ghost"
 	set name = "Follow a Soviet"
 	set desc = "Follow and haunt a living Soviet."
 
 	if (input != "Cancel")
-		var/list/mobs = getfitmobs(SOVIET)
+		var/list/mobs = getfitmobs(PIRATES)
 		if (mobs[input])
 			ManualFollow(mobs[input])
 
-/mob/observer/ghost/verb/follow_german(input in getfitmobs(GERMAN)+"Cancel")
+/mob/observer/ghost/verb/follow_british(input in getfitmobs(BRITISH)+"Cancel")
 	set category = "Ghost"
 	set name = "Follow a German"
 	set desc = "Follow and haunt a living German."
 
 	if (input != "Cancel")
-		var/list/mobs = getfitmobs(GERMAN)
+		var/list/mobs = getfitmobs(BRITISH)
 		if (mobs[input])
 			ManualFollow(mobs[input])
 
@@ -334,16 +334,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	if (input != "Cancel")
 		var/list/mobs = getfitmobs(CIVILIAN)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_undead(input in getfitmobs(PILLARMEN)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow an Undead"
-	set desc = "Follow and haunt an Undead."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(PILLARMEN)
 		if (mobs[input])
 			ManualFollow(mobs[input])
 

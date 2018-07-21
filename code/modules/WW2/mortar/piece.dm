@@ -94,7 +94,7 @@
 
 	if (href_list["fire"])
 
-		if (map && !map.soviets_can_cross_blocks())
+		if (map && !map.pirates_can_cross_blocks())
 			user << "<span class = 'danger'>You can't fire yet.</span>"
 			return
 

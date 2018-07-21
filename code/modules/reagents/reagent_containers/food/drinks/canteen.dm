@@ -20,11 +20,11 @@
 	name = "German Officer's Canteen"
 	isGlass = FALSE
 
-/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/soviet
-	icon_state = "canteen_soviet"
+/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/pirates
+	icon_state = "canteen_pirates"
 	name = "Soviet Soldier's Canteen"
 
-/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/soviet/officer
-	icon_state = "canteen_soviet_officer"
+/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/pirates/officer
+	icon_state = "canteen_pirates_officer"
 	name = "Soviet Officer's Canteen"
 	isGlass = FALSE

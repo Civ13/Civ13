@@ -105,13 +105,13 @@
 /obj/item/weapon/plastique/attack(mob/M as mob, mob/user as mob, def_zone)
 	return
 
-/obj/item/weapon/plastique/german
+/obj/item/weapon/plastique/british
 	name = "Satchel Charge"
 	desc = "Placed to bust through walls."
-	icon_state = "german_charge"
+	icon_state = "british_charge"
 
-/obj/item/weapon/plastique/german/New()
-	image_overlay = image('icons/obj/assemblies.dmi', "german_charge_placed")
+/obj/item/weapon/plastique/british/New()
+	image_overlay = image('icons/obj/assemblies.dmi', "british_charge_placed")
 	..()
 
 /obj/item/weapon/plastique/russian

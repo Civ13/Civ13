@@ -62,7 +62,7 @@
 	desc = "Ein Volk, ein Reich, ein Fuhrer!"
 	icon_state = "ger_flag"
 
-/obj/structure/sign/flag/soviet
+/obj/structure/sign/flag/pirates
 	name = "Soviet Union flag"
 	desc = "Soyuz nerushimy respublik svobodnyh!"
 	icon_state = "sov_flag"
@@ -72,7 +72,7 @@
 	desc = "Ein Volk, ein Reich, ein Fuhrer!"
 	icon_state = "ger_flag"
 
-/obj/structure/sign/flag/soviet2
+/obj/structure/sign/flag/pirates2
 	name = "Soviet Union flag"
 	desc = "Soyuz nerushimy respublik svobodnyh!"
 	icon_state = "sov_flag"
@@ -93,7 +93,7 @@
 	desc = "Ein Volk, ein Reich, ein Fuhrer!"
 	icon_state = "ger_banner"
 
-/obj/structure/sign/flag/sovietbanner
+/obj/structure/sign/flag/piratesbanner
 	name = "Soviet Union banner"
 	desc = "Soyuz nerushimy respublik svobodnyh!"
 	icon_state = "sov_banner"
@@ -104,7 +104,7 @@
 	desc = "Ein Volk, ein Reich, ein Fuhrer!"
 	icon_state = "ger_cerflag"
 
-/obj/structure/sign/flag/sovietcerflag
+/obj/structure/sign/flag/piratescerflag
 	name = "Soviet Union flag"
 	desc = "Soyuz nerushimy respublik svobodnyh!"
 	icon_state = "sov_cerflag"

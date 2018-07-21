@@ -94,12 +94,12 @@
 	if (reinforcements_master && reinforcements_master.is_ready() && client && !client.quickBan_isbanned("Penal"))
 		height = 350
 		if (!reinforcements_master.has(src))
-			output += "<p><a href='byond://?src=\ref[src];re_german=1'>Join as an Axis reinforcement!</A></p>"
+			output += "<p><a href='byond://?src=\ref[src];re_british=1'>Join as an Axis reinforcement!</A></p>"
 			output += "<p><a href='byond://?src=\ref[src];re_russian=1'>Join as an Allied reinforcement!</A></p>"
 		else
-			if (reinforcements_master.has(src, GERMAN))
-				output += "<p><a href='byond://?src=\ref[src];unre_german=1'>Leave the Axis reinforcement pool.</A></p>"
-			else if (reinforcements_master.has(src, SOVIET))
+			if (reinforcements_master.has(src, BRITISH))
+				output += "<p><a href='byond://?src=\ref[src];unre_british=1'>Leave the Axis reinforcement pool.</A></p>"
+			else if (reinforcements_master.has(src, PIRATES))
 				output += "<p><a href='byond://?src=\ref[src];unre_russian=1'>Leave the Allies reinforcement pool.</A></p>"
 	else
 		output += "<p><i>Reinforcements are not available yet.</i></p>"
@@ -131,9 +131,9 @@
 
 		for (var/player in new_player_mob_list)
 			if (reinforcements_master)
-				if (reinforcements_master.reinforcement_pool[GERMAN]:Find(player))
+				if (reinforcements_master.reinforcement_pool[BRITISH]:Find(player))
 					stat("[player:key] - joining as Axis")
-				else if (reinforcements_master.reinforcement_pool[SOVIET]:Find(player))
+				else if (reinforcements_master.reinforcement_pool[PIRATES]:Find(player))
 					stat("[player:key] - joining as Allies")
 				else
 					stat(player:key)
@@ -229,7 +229,7 @@
 
 			return TRUE
 
-	if (href_list["re_german"])
+	if (href_list["re_british"])
 
 		if (client && client.quickBan_isbanned("Playing"))
 			src << "<span class = 'danger'>You're banned from playing.</span>"
@@ -239,14 +239,14 @@
 			src << "<span class = 'danger'>You can't join the game yet.</span>"
 			return TRUE
 
-		if (!reinforcements_master.is_permalocked(GERMAN))
+		if (!reinforcements_master.is_permalocked(BRITISH))
 			if (client.prefs.s_tone < -30)
 				usr << "<span class='danger'>You are too dark to be a German soldier.</span>"
 				return
 			if (client.prefs.german_gender == FEMALE)
 				usr << "<span class='danger'>German soldiers must be male.</span>"
 				return
-			reinforcements_master.add(src, GERMAN)
+			reinforcements_master.add(src, BRITISH)
 		else
 			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
 	if (href_list["re_russian"])
@@ -259,14 +259,14 @@
 			src << "<span class = 'danger'>You can't join the game yet.</span>"
 			return TRUE
 
-		if (!reinforcements_master.is_permalocked(SOVIET))
-			reinforcements_master.add(src, SOVIET)
+		if (!reinforcements_master.is_permalocked(PIRATES))
+			reinforcements_master.add(src, PIRATES)
 		else
 			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-	if (href_list["unre_german"])
-		reinforcements_master.remove(src, GERMAN)
+	if (href_list["unre_british"])
+		reinforcements_master.remove(src, BRITISH)
 	if (href_list["unre_russian"])
-		reinforcements_master.remove(src, SOVIET)
+		reinforcements_master.remove(src, PIRATES)
 
 	if (href_list["late_join"])
 
@@ -312,14 +312,14 @@
 		var/job_flag = actual_job.base_type_flag()
 
 
-		if (job_flag == GERMAN)
+		if (job_flag == BRITISH)
 			if (client.prefs.s_tone < -30)
 				usr << "<span class='danger'>You are too dark to be a German soldier.</span>"
 				return
 			if (client.prefs.german_gender == FEMALE && !actual_job.is_nonmilitary)
 				usr << "<span class='danger'>German soldiers must be male.</span>"
 				return
-		else if (job_flag == SOVIET)
+		else if (job_flag == PIRATES)
 			if (client.prefs.russian_gender == FEMALE && actual_job.is_officer)
 				usr << "<span class='danger'>Soviet officers must be male.</span>"
 				return
@@ -485,7 +485,7 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_germans.len] Germans, [alive_russians.len] Soviets, [alive_partisans.len] Partisans, [alive_civilians.len] Civilians."
+	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_pirates.len] Pirates, [alive_partisans.len] Partisans, [alive_civilians.len] Civilians."
 	dat += "<br>"
 	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 	dat += "<br>"
@@ -493,8 +493,8 @@
 //	var/list/restricted_choices = list()
 
 	var/list/available_jobs_per_side = list(
-		GERMAN = FALSE,
-		SOVIET = FALSE,
+		BRITISH = FALSE,
+		PIRATES = FALSE,
 		PARTISAN = FALSE,
 		CIVILIAN = FALSE,
 		PIRATES = FALSE,
@@ -559,10 +559,10 @@
 		if (istype(job, /datum/job/partisan/civilian) && !civilians_toggled)
 			job_is_available = FALSE
 
-		if (istype(job, /datum/job/german) && !germans_toggled)
+		if (istype(job, /datum/job/british) && !british_toggled)
 			job_is_available = FALSE
 
-		if (istype(job, /datum/job/soviet) && !soviets_toggled)
+		if (istype(job, /datum/job/pirates) && !pirates_toggled)
 			job_is_available = FALSE
 
 		// check if the job is admin-locked or disabled codewise
@@ -708,9 +708,9 @@
 
 			if (list(PARTISAN, CIVILIAN).Find(J_flag))
 				client.prefs.gender = client.prefs.ukrainian_gender
-			else if (J_flag == GERMAN)
-				client.prefs.gender = client.prefs.german_gender
-			else if (J_flag == SOVIET)
+			else if (J_flag == BRITISH)
+				client.prefs.gender = client.prefs.english_gender
+			else if (J_flag == PIRATES)
 				client.prefs.gender = client.prefs.russian_gender
 
 			// traps came back, this should fix them for good - Kachnov

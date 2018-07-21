@@ -1,7 +1,7 @@
 /* the only reason this exists is because apparently 'new pick(listoftypes)'
 	is invalid code - Kachnov */
 
-// GERMAN RATIONS
+// BRITISH RATIONS
 
 var/list/german_rations_solids = list(/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel,
@@ -25,27 +25,27 @@ var/list/german_rations_meat = list(
 /obj/item/weapon/reagent_containers/food/snacks/meat
 )
 
-// soviet RATIONS
+// pirates RATIONS
 
-var/list/soviet_rations_solids = list(/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,
+var/list/pirates_rations_solids = list(/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread,
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel,
 /obj/item/weapon/reagent_containers/food/snacks/sandwich,
 /obj/item/weapon/reagent_containers/food/snacks/mint,
 /obj/item/weapon/reagent_containers/food/snacks/sausage,
-/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/soviet
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/pirates
 )
 
-var/list/soviet_rations_liquids = list(
+var/list/pirates_rations_liquids = list(
 /obj/item/weapon/reagent_containers/food/snacks/mushroomsoup,
 /obj/item/weapon/reagent_containers/food/snacks/beetsoup,
 )
 
 // blin no dessert in mother russia
-var/list/soviet_rations_desserts = list(
+var/list/pirates_rations_desserts = list(
 
 )
 
-var/list/soviet_rations_meat = list(
+var/list/pirates_rations_meat = list(
 /obj/item/weapon/reagent_containers/food/snacks/bearmeat,
 /obj/item/weapon/reagent_containers/food/snacks/meat
 )
@@ -74,11 +74,11 @@ var/added_plants_to_rations = FALSE
 
 	if (!added_plants_to_rations)
 		german_rations_solids += (typesof(/obj/item/weapon/reagent_containers/food/snacks/grown) - /obj/item/weapon/reagent_containers/food/snacks/grown)
-		soviet_rations_solids += (typesof(/obj/item/weapon/reagent_containers/food/snacks/grown) - /obj/item/weapon/reagent_containers/food/snacks/grown)
+		pirates_rations_solids += (typesof(/obj/item/weapon/reagent_containers/food/snacks/grown) - /obj/item/weapon/reagent_containers/food/snacks/grown)
 		added_plants_to_rations = TRUE
 
 	switch (faction)
-		if (GERMAN)
+		if (BRITISH)
 			switch (sort)
 				if ("solid")
 					var/solid = pick(german_rations_solids)
@@ -107,31 +107,31 @@ var/added_plants_to_rations = FALSE
 					food.pixel_x = FALSE
 					food.pixel_y = FALSE
 					return food
-		if (SOVIET)
+		if (PIRATES)
 			switch (sort)
 				if ("solid")
-					var/solid = pick(soviet_rations_solids)
+					var/solid = pick(pirates_rations_solids)
 					if (prob(50))
 						while (istype(solid, /obj/item/weapon/reagent_containers/food/snacks/grown))
-							solid = pick(soviet_rations_solids)
+							solid = pick(pirates_rations_solids)
 					var/obj/food = new solid
 					food.pixel_x = FALSE
 					food.pixel_y = FALSE
 					return food
 				if ("liquid")
-					var/liquid = pick(soviet_rations_liquids)
+					var/liquid = pick(pirates_rations_liquids)
 					var/obj/food = new liquid
 					food.pixel_x = FALSE
 					food.pixel_y = FALSE
 					return food
 				if ("dessert")
-					var/dessert = pick(soviet_rations_desserts)
+					var/dessert = pick(pirates_rations_desserts)
 					var/obj/food = new dessert
 					food.pixel_x = FALSE
 					food.pixel_y = FALSE
 					return food
 				if ("meat")
-					var/meat = pick(soviet_rations_meat)
+					var/meat = pick(pirates_rations_meat)
 					var/obj/food = new meat
 					food.pixel_x = FALSE
 					food.pixel_y = FALSE

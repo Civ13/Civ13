@@ -272,14 +272,9 @@
 /datum/species/proc/get_random_german_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			if (jew)
-				return capitalize(pick(first_names_female_german_jew)) + " " + capitalize(pick(last_names_german_jew))
-			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german))
+			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(russify(last_names_german, gender)))
 		else
-			if (jew)
-				return capitalize(pick(first_names_male_german_jew)) + " " + capitalize(pick(last_names_german_jew))
-			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(last_names_german))
-
+			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(russify(last_names_german, gender)))
 	var/datum/language/species_language = all_languages[name_language]
 	if (!species_language)
 		species_language = all_languages[default_language]

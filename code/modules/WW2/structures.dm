@@ -60,8 +60,8 @@
 		if (3.0)
 			return
 
-/obj/structure/flag/soviet
-	icon_state = "soviet"
+/obj/structure/flag/pirates
+	icon_state = "pirates"
 	name = "Soviet Flag"
 
 /obj/structure/flag/german

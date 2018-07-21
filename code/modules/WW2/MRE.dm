@@ -46,7 +46,7 @@
 	desc = "A pickled cabbage MRE."
 	nutriment_desc = list("pickled cabbage" = 1)
 
-/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/soviet
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/pirates
 	name = "Soviet MRE: Cabbage"
 	desc = "A cabbage MRE."
 	nutriment_desc = list("overcooked cabbage" = 1)

@@ -302,11 +302,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_eng)
 			if ("charge_PIRATES")
 				soundin = pick(charge_sounds_eng)
-			if ("charge_SOVIET")
-				soundin = pick(charge_sounds_eng)
 			if ("charge_CIVILIAN")
 				soundin = pick(charge_sounds_eng)
-			if ("charge_GERMAN")
-				soundin = pick(charge_sounds_eng)
+
 
 	return soundin

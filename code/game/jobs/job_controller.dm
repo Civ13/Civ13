@@ -18,8 +18,6 @@ var/global/datum/controller/occupations/job_master
 			faction_organized_occupations_separate_lists[Jflag] = list()
 		faction_organized_occupations_separate_lists[Jflag] += J
 	if (!map)
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[GERMAN]
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[SOVIET]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[UKRAINIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CIVILIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PARTISAN]
@@ -39,25 +37,25 @@ var/global/datum/controller/occupations/job_master
 		//Debug info
 	var/list/job_debug = list()
 /*
-	var/soviet_count = 0
-	var/german_count = 0
+	var/pirates_count = 0
+	var/british_count = 0
 	var/civilian_count = 0
 	var/partisan_count = 0
 */
-	var/current_german_squad = 1
-	var/current_soviet_squad = 1
+	var/current_british_squad = 1
+	var/current_pirates_squad = 1
 
-	var/german_squad_members = 0
-	var/german_squad_leaders = 0
+	var/british_squad_members = 0
+	var/british_squad_leaders = 0
 
-	var/soviet_squad_members = 0
-	var/soviet_squad_leaders = 0
+	var/pirates_squad_members = 0
+	var/pirates_squad_leaders = 0
 
-	var/german_squad_info[4]
-	var/soviet_squad_info[4]
+	var/british_squad_info[4]
+	var/pirates_squad_info[4]
 
-	var/german_officer_squad_info[4]
-	var/soviet_officer_squad_info[4]
+	var/british_officer_squad_info[4]
+	var/pirates_officer_squad_info[4]
 
 	var/civilians_were_enabled = FALSE
 	var/partisans_were_enabled = FALSE
@@ -286,11 +284,6 @@ var/global/datum/controller/occupations/job_master
 		job.apply_fingerprints(H)
 		job.assign_faction(H)
 
-		if (!game_started)
-			if (!job.try_make_initial_spy(H))
-				job.try_make_jew(H)
-		else
-			job.try_make_latejoin_spy(H)
 
 		// removed /mob/living/job since it was confusing; it wasn't a job, but a job title
 		H.original_job = job
@@ -317,10 +310,6 @@ var/global/datum/controller/occupations/job_master
 
 		if (!spawn_location)
 			switch (H.original_job.base_type_flag())
-				if (GERMAN)
-					spawn_location = "JoinLateHeer"
-				if (SOVIET)
-					spawn_location = "JoinLateRA"
 				if (PARTISAN)
 					spawn_location = "JoinLatePartisan"
 				if (PIRATES)
@@ -333,8 +322,6 @@ var/global/datum/controller/occupations/job_master
 		if (!spawn_location)
 			if (findtext(H.original_job.spawn_location, "JoinLateHeer"))
 				spawn_location = "JoinLateHeer"
-			else if (findtext(H.original_job.spawn_location, "JoinLateSS"))
-				spawn_location = "JoinLateSS"
 			else if (findtext(H.original_job.spawn_location, "JoinLateRA"))
 				spawn_location = "JoinLateRA"
 		H.job_spawn_location = spawn_location
@@ -431,14 +418,14 @@ var/global/datum/controller/occupations/job_master
 /datum/controller/occupations/proc/is_side_locked(side)
 	if (!ticker)
 		return TRUE
-	if (side == SOVIET)
-		if (soviets_forceEnabled)
+	if (side == PIRATES)
+		if (pirates_forceEnabled)
 			return FALSE
 		if (side_is_hardlocked(side))
 			return 2
 		return !ticker.can_latejoin_ruforce
-	else if (side == GERMAN || side == ITALIAN)
-		if (germans_forceEnabled)
+	else if (side == BRITISH)
+		if (british_forceEnabled)
 			return FALSE
 		if (side_is_hardlocked(side))
 			return 2
@@ -453,12 +440,12 @@ var/global/datum/controller/occupations/job_master
 		return map.game_really_started()
 	return FALSE
 
-// this is a solution to 5 germans and 1 soviet on lowpop.
+// this is a solution to 5 british and 1 pirates on lowpop.
 /datum/controller/occupations/proc/side_is_hardlocked(side)
 
 	// count number of each side
-	var/germans = alive_n_of_side(GERMAN)
-	var/soviets = alive_n_of_side(SOVIET)
+	var/pirates = alive_n_of_side(PIRATES)
+	var/british = alive_n_of_side(BRITISH)
 	var/civilians = alive_n_of_side(CIVILIAN)
 	var/partisans = alive_n_of_side(PARTISAN)
 //	var/poles = alive_n_of_side(POLISH_INSURGENTS)
@@ -466,25 +453,15 @@ var/global/datum/controller/occupations/job_master
 //	var/japanese = alive_n_of_side(BRITISH)
 
 	// by default no sides are hardlocked
-	var/max_germans = INFINITY
-	var/max_soviets = INFINITY
+	var/max_british = INFINITY
+	var/max_pirates = INFINITY
 	var/max_civilians = INFINITY
 	var/max_partisans = INFINITY
-//	var/max_americans = INFINITY
-//	var/max_poles = INFINITY
-//	var/max_japanese = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
 
 	if (map && !map.faction_distribution_coeffs.Find(INFINITY))
-		if (map.faction_distribution_coeffs.Find(GERMAN))
-			max_germans = ceil(relevant_clients * map.faction_distribution_coeffs[GERMAN])
-
-		// Italians are disabled/enabled whenever Germans are
-
-		if (map.faction_distribution_coeffs.Find(SOVIET))
-			max_soviets = ceil(relevant_clients * map.faction_distribution_coeffs[SOVIET])
 
 		if (map.faction_distribution_coeffs.Find(CIVILIAN))
 			max_civilians = ceil(relevant_clients * map.faction_distribution_coeffs[CIVILIAN])
@@ -492,23 +469,20 @@ var/global/datum/controller/occupations/job_master
 		if (map.faction_distribution_coeffs.Find(PARTISAN))
 			max_partisans = ceil(relevant_clients * map.faction_distribution_coeffs[PARTISAN])
 
-//		if (map.faction_distribution_coeffs.Find(POLISH_INSURGENTS))
-//			max_poles = ceil(relevant_clients * map.faction_distribution_coeffs[POLISH_INSURGENTS])
+		if (map.faction_distribution_coeffs.Find(PIRATES))
+			max_pirates = ceil(relevant_clients * map.faction_distribution_coeffs[PIRATES])
 
-//		if (map.faction_distribution_coeffs.Find(PIRATES))
-//			max_americans = ceil(relevant_clients * map.faction_distribution_coeffs[PIRATES])
+		if (map.faction_distribution_coeffs.Find(BRITISH))
+			max_british = ceil(relevant_clients * map.faction_distribution_coeffs[BRITISH])
 
-//		if (map.faction_distribution_coeffs.Find(BRITISH))
-//			max_japanese = ceil(relevant_clients * map.faction_distribution_coeffs[BRITISH])
-
-	// fixes soviet-biased autobalance on verylow pop - Kachnov
+	// fixes pirates-biased autobalance on verylow pop - Kachnov
 	if (map && relevant_clients <= 7)
-		if (map.faction_distribution_coeffs[SOVIET] > map.faction_distribution_coeffs[GERMAN])
-			max_soviets = max_germans
-		else if (map.faction_distribution_coeffs[GERMAN] > map.faction_distribution_coeffs[SOVIET])
-			max_germans = max_soviets
-		while ((max_germans+max_soviets) < relevant_clients)
-			++max_soviets
+		if (map.faction_distribution_coeffs[PIRATES] > map.faction_distribution_coeffs[BRITISH])
+			max_pirates = max_british
+		else if (map.faction_distribution_coeffs[BRITISH] > map.faction_distribution_coeffs[PIRATES])
+			max_british = max_pirates
+		while ((max_british+max_pirates) < relevant_clients)
+			++max_pirates
 
 	switch (side)
 		if (PARTISAN)
@@ -523,15 +497,15 @@ var/global/datum/controller/occupations/job_master
 			if (civilians >= max_civilians)
 				return TRUE
 			return FALSE
-		if (GERMAN)
-			if (germans_forceEnabled)
+		if (BRITISH)
+			if (british_forceEnabled)
 				return FALSE
-			if ((germans) >= max_germans)
+			if ((british) >= max_british)
 				return TRUE
-		if (SOVIET)
-			if (soviets_forceEnabled)
+		if (PIRATES)
+			if (pirates_forceEnabled)
 				return FALSE
-			if (soviets >= max_soviets)
+			if (pirates >= max_pirates)
 				return TRUE
 		if (UKRAINIAN)
 			return TRUE

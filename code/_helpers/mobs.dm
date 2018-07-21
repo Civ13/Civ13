@@ -436,8 +436,8 @@ Proc for attack log creation, because really why not
 
 	return creatures
 
-/proc/getsovietmobs(var/alive = FALSE)
-	var/list/soviets = list()
+/proc/getbritishmobs(var/alive = FALSE)
+	var/list/british = list()
 	for (var/mob/living/carbon/human/H in mob_list)
 		if (!istype(H))
 			continue
@@ -445,16 +445,16 @@ Proc for attack log creation, because really why not
 			continue
 		if (!H.loc)
 			continue
-		if (!istype(H.original_job, /datum/job/soviet))
+		if (!istype(H.original_job, /datum/job/british))
 			continue
 		if (istype(H, /mob/living/carbon/human/corpse))
 			continue
-		soviets += H
+		british += H
 
-	return soviets
+	return british
 
-/proc/getgermanmobs(var/alive = FALSE)
-	var/list/germans = list()
+/proc/getpiratesmobs(var/alive = FALSE)
+	var/list/pirates = list()
 	for (var/mob/living/carbon/human/H in mob_list)
 		if (!istype(H))
 			continue
@@ -462,13 +462,13 @@ Proc for attack log creation, because really why not
 			continue
 		if (alive && H.stat == DEAD)
 			continue
-		if (!istype(H.original_job, /datum/job/german))
+		if (!istype(H.original_job, /datum/job/pirates))
 			continue
 		if (istype(H, /mob/living/carbon/human/corpse))
 			continue
-		germans += H
+		pirates += H
 
-	return germans
+	return pirates
 
 
 /proc/getukrainianmobs(var/alive = FALSE)
@@ -513,10 +513,10 @@ Proc for attack log creation, because really why not
 	switch (faction)
 		if (null)
 			mobs = mob_list // we want actual mobs, not name = mob
-		if (GERMAN)
-			mobs = getgermanmobs(0)
-		if (SOVIET, "SOVIET")
-			mobs = getsovietmobs(0)
+		if (BRITISH)
+			mobs = getbritishmobs(0)
+		if (PIRATES)
+			mobs = getpiratesmobs(0)
 		if (PARTISAN)
 			mobs = getpartisans(0)
 		if (CIVILIAN)

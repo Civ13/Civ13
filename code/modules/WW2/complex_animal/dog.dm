@@ -96,7 +96,7 @@
 /mob/living/simple_animal/complex_animal/canine/dog/german_shepherd
 	icon_state = "g_shepherd"
 	name = "German Shepherd"
-	faction = GERMAN
+	faction = BRITISH
 /mob/living/simple_animal/complex_animal/canine/dog/german_shepherd/wild
 	name = "Wild German Shepherd"
 	faction = null
@@ -106,7 +106,7 @@
 /mob/living/simple_animal/complex_animal/canine/dog/samoyed
 	icon_state = "samoyed"
 	name = "Soviet Samoyed"
-	faction = SOVIET
+	faction = PIRATES
 
 /mob/living/simple_animal/complex_animal/canine/dog/samoyed/sosku
 	name = "sosku dog"
@@ -129,7 +129,7 @@
 	see_in_dark = 5
 	mob_size = 8
 	possession_candidate = TRUE
-	faction = SOVIET
+	faction = PIRATES
 	allow_moving_outside_home = TRUE
 	attack_mode = -1
 
@@ -225,7 +225,7 @@
 			/*		if (istype(H.original_job, /datum/job/german/dogmaster))
 						command_level_to_dog = COMMAND_LEVEL_1
 
-					if (istype(H.original_job, /datum/job/soviet/dogmaster))
+					if (istype(H.original_job, /datum/job/pirates/dogmaster))
 						command_level_to_dog = COMMAND_LEVEL_1
 *			*/
 					// daga kotowaru
@@ -353,10 +353,10 @@ s
 			if (H.loc && H.z == z && H_area_check && H.client && H.stat == CONSCIOUS && H.original_job && H.original_job.base_type_flag() != faction)
 
 				// makes dogs stop trying to detect people extremely far away. Hack.
-				if (istype(H_area, /area/prishtina/soviet) && !istype(src_area, /area/prishtina/soviet))
+				if (istype(H_area, /area/prishtina/pirates) && !istype(src_area, /area/prishtina/pirates))
 					continue
 
-				else if (istype(H_area, /area/prishtina/german) && !istype(src_area, /area/prishtina/german))
+				else if (istype(H_area, /area/prishtina/british) && !istype(src_area, /area/prishtina/british))
 					continue
 
 				else if (H_area.is_void_area && H_area != src_area)
@@ -436,10 +436,10 @@ s
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
 		if (PARTISAN)
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
-		if (GERMAN)
-			. = faction == SOVIET
-		if (SOVIET)
-			. = faction == GERMAN
+		if (BRITISH)
+			. = faction == PIRATES
+		if (PIRATES)
+			. = faction == BRITISH
 	if (. && H.original_job.is_nonmilitary)
 		. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
 

@@ -3,14 +3,8 @@ var/grace_period = TRUE
 var/game_started = FALSE
 var/train_checked = FALSE
 var/secret_ladder_message = null
-var/list/list_of_germans_who_crossed_the_river = list()
 var/GRACE_PERIOD_LENGTH = 7
 
-/proc/WW2_train_check()
-	if (locate_type(landmarks_list, /obj/effect/landmark/train/german_train_start) || train_checked)
-		train_checked = TRUE
-		return TRUE
-	return FALSE
 
 /hook/roundstart/proc/game_start()
 
@@ -28,11 +22,11 @@ var/GRACE_PERIOD_LENGTH = 7
 						sleep(1)
 					world << "<br><font size=3><span class = 'notice'>It's <b>[lowertext(processes.time_of_day_change.changeto)]</b>, and the season is <b>[get_season()]</b>.</span></font>"
 
-	// spawn mice so soviets have something to eat after they start starving
+	// spawn mice so pirates have something to eat after they start starving
 	var/mice_spawned = FALSE
 	var/max_mice = rand(40,50)
 
-	for (var/area/prishtina/soviet/bunker/area in area_list)
+	for (var/area/prishtina/pirates/bunker/area in area_list)
 		for (var/turf/T in area.contents)
 			if (T.density)
 				continue

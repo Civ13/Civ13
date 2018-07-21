@@ -69,9 +69,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/end_all_grace_periods,
 	/client/proc/reset_all_grace_periods,
 	/datum/admins/proc/paralyze_mob,
-	/client/proc/removeEmptyCases,
-	/client/proc/removeHalfEmptyCases,
-	/client/proc/removeAllBlood,
 	/client/proc/toggle_jobs,
 	/client/proc/toggle_factions,
 	/client/proc/forcibly_enable_faction
@@ -129,7 +126,6 @@ var/list/admin_verbs_debug = list(
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/Debug2,
 	/client/proc/debug_controller,
-	/client/proc/cmd_debug_mob_lists,
 	/client/proc/cmd_admin_delete,
 	/client/proc/cmd_debug_del_all,
 	/client/proc/reload_admins,
@@ -143,7 +139,6 @@ var/list/admin_verbs_debug = list(
 	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
 	/client/proc/dsay,
-	/client/proc/check_positions,
 	/client/proc/change_time_of_day,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather
@@ -211,7 +206,6 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/Debug2,
 	/client/proc/reload_admins,
 	/client/proc/debug_controller,
-	/client/proc/cmd_debug_mob_lists,
 	/client/proc/cmd_debug_del_all,
 	/client/proc/enable_debug_verbs,
 //	/client/proc/roll_dices,
@@ -248,11 +242,9 @@ var/list/admin_verbs_mod = list(
 	/client/proc/allow_rjoin_ruforce,
 	/client/proc/force_reinforcements_geforce,
 	/client/proc/force_reinforcements_ruforce,
-	/client/proc/toggle_german_civilian_mode,
-	/client/proc/toggle_soviet_civilian_mode,
+	/client/proc/toggle_british_civilian_mode,
+	/client/proc/toggle_pirates_civilian_mode,
 	/client/proc/toggle_respawn_delays,
-	/client/proc/open_armory_doors,
-	/client/proc/close_armory_doors,
 	/client/proc/create_crate
 )
 

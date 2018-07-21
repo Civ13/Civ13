@@ -134,7 +134,7 @@
 	glass_type = "flute"
 	volume = 20
 
-// for /obj/machinery/vending/sovietsoda
+// for /obj/machinery/vending/piratesoda
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda
 	New()
 		..()

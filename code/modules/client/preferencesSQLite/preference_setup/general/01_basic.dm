@@ -129,7 +129,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<br>"
 	. += "<b>English Gender:</b> <a href='?src=\ref[src];gender_english=1'><b>[capitalize(lowertext(pref.english_gender))]</b></a><br>"
 	. += "<br>"
-	. += "<b>Soviet Ethnicity:</b> <a href='?src=\ref[src];ethnicity_soviet=1'><b>[capitalize(lowertext(pref.soviet_ethnicity))]</b></a><br>"
+	. += "<b>Soviet Ethnicity:</b> <a href='?src=\ref[src];ethnicity_pirates=1'><b>[capitalize(lowertext(pref.pirates_ethnicity))]</b></a><br>"
 	. += "<br><br>"
 	// languages & ethnicity
 /*	. += "<b>German Second Language:</b> <a href='?src=\ref[src];second_language_german=1'><b>[capitalize(lowertext(pref.german_second_language))]</b></a><br>"
@@ -352,8 +352,8 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 		return TOPIC_REFRESH
 
 
-	else if (href_list["ethnicity_soviet"])
-		pref.soviet_ethnicity = next_in_list(pref.soviet_ethnicity, list(RUSSIAN, UKRAINIAN, POLISH))
+	else if (href_list["ethnicity_pirates"])
+		pref.pirates_ethnicity = next_in_list(pref.pirates_ethnicity, list(RUSSIAN, UKRAINIAN, POLISH))
 		return TOPIC_REFRESH
 
 	else if (href_list["body_build"])

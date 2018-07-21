@@ -29,14 +29,14 @@ var/list/preferences_datums = list()
 	var/italian_name = "Alessandro Giovanni"
 	var/japanese_name = "Haruki Nakamura"
 	var/english_name = "John Adams"
-	var/be_random_name = FALSE				//whether we are a random name every round
-	var/be_random_name_german = FALSE
-	var/be_random_name_russian = FALSE
-	var/be_random_name_ukrainian = FALSE
-	var/be_random_name_polish = FALSE
-	var/be_random_name_italian = FALSE
-	var/be_random_name_english = FALSE
-	var/be_random_name_japanese = FALSE
+	var/be_random_name = TRUE				//whether we are a random name every round
+	var/be_random_name_german = TRUE
+	var/be_random_name_russian = TRUE
+	var/be_random_name_ukrainian = TRUE
+	var/be_random_name_polish = TRUE
+	var/be_random_name_italian = TRUE
+	var/be_random_name_english = TRUE
+	var/be_random_name_japanese = TRUE
 	var/gender = MALE					//gender of character (well duh)
 	var/german_gender = MALE
 	var/russian_gender = MALE
@@ -45,17 +45,17 @@ var/list/preferences_datums = list()
 	var/italian_gender = MALE
 	var/english_gender = MALE
 	var/japanese_gender = MALE
-	var/soviet_ethnicity = RUSSIAN
+	var/pirates_ethnicity = RUSSIAN
 	var/body_build = "Default"			//character body build name
-	var/age = 30						//age of character
+	var/age = 25						//age of character
 
 	var/b_type = "A+"					//blood type (not-chooseable)
 	var/backbag = 2						//backpack type
-	var/h_style = "Bald"				//Hair type
+	var/h_style = "Short Hair"				//Hair type
 	var/r_hair = FALSE						//Hair color
 	var/g_hair = FALSE						//Hair color
 	var/b_hair = FALSE						//Hair color
-	var/f_style = "Shaved"				//Face hair type
+	var/f_style = "Chinstrap"				//Face hair type
 	var/r_facial = FALSE					//Face hair color
 	var/g_facial = FALSE					//Face hair color
 	var/b_facial = FALSE					//Face hair color
@@ -99,7 +99,7 @@ var/list/preferences_datums = list()
 
 	var/disabilities = 0
 
-	var/list/pockets = list("Magazine", "Magazine")
+	var/list/pockets = list("Knife", "Food")
 
 	var/client/client = null
 	var/client_ckey = null
@@ -202,7 +202,7 @@ var/list/preferences_datums = list()
 
 	if (pockets.len != 2)
 		qdel_list(pockets)
-		pockets = list("Magazine", "Magazine")
+		pockets = list("Knife", "Food")
 
 	var/dat = {"
 	<br>

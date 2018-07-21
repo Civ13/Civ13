@@ -198,7 +198,7 @@ Current Defines (_defines/attachment.dm)
 	weakens = 1
 	weight = 0.361
 
-/obj/item/weapon/attachment/bayonet/soviet
+/obj/item/weapon/attachment/bayonet/pirates
 	force = WEAPON_FORCE_DANGEROUS
 	weakens = 2
 	weight = 0.419

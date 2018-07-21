@@ -35,7 +35,7 @@
 	minbodytemp = FALSE
 	var/stance_step = FALSE
 
-	faction = SOVIET
+	faction = PIRATES
 
 //SPACE BEARS! SQUEEEEEEEE~     OW! FUCK! IT BIT MY HAND OFF!!
 /mob/living/simple_animal/hostile/bear/Hudson

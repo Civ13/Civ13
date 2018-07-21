@@ -37,24 +37,6 @@ var/global/squad_members[6]
 /datum/faction/proc/base_type()
 	return "/datum/faction"
 
-// you appear to be a partisan to all other partisans
-/datum/faction/polish
-	icon_state = "partisan_soldier"
-	title = "Polish Soldier"
-	team = TEAM_PO
-
-/datum/faction/polish/base_type()
-	return "/datum/faction/polish"
-
-// you appear to be an officer to all other partisans (UNUSED)
-/datum/faction/polish/officer
-	icon_state = "partisan_officer"
-	team = TEAM_PO
-// you appear to be a partisan leader to all other partisans
-/datum/faction/polish/commander
-	icon_state = "partisan_commander"
-	title = "Polish Leader"
-	team = TEAM_PO
 
 // you appear to be a partisan to all other partisans
 /datum/faction/partisan
@@ -74,23 +56,23 @@ var/global/squad_members[6]
 	icon_state = "partisan_commander"
 	title = "Partisan Leader"
 	team = TEAM_PN
-// you appear to be a german soldier to all other germans
-/datum/faction/german
-	icon_state = "german_soldier"
-	title = "Wehrmacht Soldier"
+
+
+// you appear to be a pirate to other pirates
+/datum/faction/pirates
+	icon_state = "pirate_basic"
+	title = "Pirate"
 	team = TEAM_GE
 
-/datum/faction/german/base_type()
-	return "/datum/faction/german"
-// you appear to be a SS soldier to all other germans/italians
+/datum/faction/pirates/base_type()
+	return "/datum/faction/pirates"
 
-// you appear to be a soviet soldier to all other sovivets
-/datum/faction/soviet
-	icon_state = "soviet_soldier"
-	title = "Soviet Soldier"
+// you appear to be a british soldier to all other brits
+/datum/faction/british
+	icon_state = "rn_basic"
+	title = "Royal Navy Sailor"
 	team = TEAM_RU
 
-/datum/faction/soviet/base_type()
-	return "/datum/faction/soviet"
-// you appear to be an officer to all other soviets
+/datum/faction/british/base_type()
+	return "/datum/faction/british"
 

@@ -30,12 +30,12 @@
 	desc = "A wooden police baton perfect for subduing Untermensch."
 	weakens = 5
 
-/obj/item/weapon/melee/classic_baton/MP/soviet
+/obj/item/weapon/melee/classic_baton/MP/pirates
 	name = "Soviet police baton"
 	desc = "A wooden police baton perfect for subduing fascists."
 	weakens = 3
 
-/obj/item/weapon/melee/classic_baton/MP/soviet/old
+/obj/item/weapon/melee/classic_baton/MP/pirates/old
 	name = "Old Soviet police baton"
 	weakens = 2
 

@@ -197,7 +197,7 @@
 		"tournament janitor",
 		"pirate",
 		"space pirate",
-		"soviet admiral",
+		"pirates admiral",
 		"tunnel clown",
 		"masked killer",
 		"assassin",
@@ -236,45 +236,6 @@
 			job.equip(M)
 			job.apply_fingerprints(M)
 			job_master.spawnKeys(M, selected_job)
-/*
-		if ("tournament standard red","tournament standard green") //we think stunning weapon is too overpowered to use it on tournaments. --rastaf0
-			if (dresscode=="tournament standard red")
-				M.equip_to_slot_or_del(new /obj/item/clothing/under/color/red(M), slot_w_uniform)
-			else
-				M.equip_to_slot_or_del(new /obj/item/clothing/under/color/green(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(M), slot_shoes)
-
-			M.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/vest(M), slot_wear_suit)
-			M.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/thunderdome(M), slot_head)
-
-			M.equip_to_slot_or_del(new /obj/item/weapon/gun/energy/pulse_rifle/destroyer(M), slot_r_hand)
-			M.equip_to_slot_or_del(new /obj/item/weapon/material/knife(M), slot_l_hand)
-			M.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb(M), slot_r_store)
-*/
-/*
-		if ("tournament gangster") //gangster are supposed to fight each other. --rastaf0
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/det(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(M), slot_shoes)
-
-			M.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/det_trench(M), slot_wear_suit)
-			M.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal/plain/monocle(M), slot_glasses)
-			M.equip_to_slot_or_del(new /obj/item/clothing/head/det(M), slot_head)
-
-			M.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver(M), slot_r_hand)
-			M.equip_to_slot_or_del(new /obj/item/ammo_magazine/a357(M), slot_l_store)
-*/
-/*
-		if ("tournament chef") //Steven Seagal FTW
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/rank/chef(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(M), slot_wear_suit)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(M), slot_shoes)
-			M.equip_to_slot_or_del(new /obj/item/clothing/head/chefhat(M), slot_head)
-
-			M.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/rollingpin(M), slot_r_hand)
-			M.equip_to_slot_or_del(new /obj/item/weapon/material/knife(M), slot_l_hand)
-			M.equip_to_slot_or_del(new /obj/item/weapon/material/knife(M), slot_r_store)
-			M.equip_to_slot_or_del(new /obj/item/weapon/material/knife(M), slot_s_store)
-*/
 		if ("tournament janitor")
 			M.equip_to_slot_or_del(new /obj/item/clothing/under/rank/janitor(M), slot_w_uniform)
 			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(M), slot_shoes)
@@ -297,130 +258,3 @@
 			M.equip_to_slot_or_del(new /obj/item/stack/tile/floor(M), slot_in_backpack)
 			M.equip_to_slot_or_del(new /obj/item/stack/tile/floor(M), slot_in_backpack)
 			M.equip_to_slot_or_del(new /obj/item/stack/tile/floor(M), slot_in_backpack)
-/*
-		if ("pirate")
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/pirate(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/brown(M), slot_shoes)
-			M.equip_to_slot_or_del(new /obj/item/clothing/head/bandana(M), slot_head)
-			M.equip_to_slot_or_del(new /obj/item/clothing/glasses/eyepatch(M), slot_glasses)
-			M.equip_to_slot_or_del(new /obj/item/weapon/melee/energy/sword/pirate(M), slot_r_hand)
-		*/
-		if ("soviet soldier")
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/soviet(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(M), slot_shoes)
-			M.equip_to_slot_or_del(new /obj/item/clothing/head/ushanka(M), slot_head)
-/*
-		if ("masked killer")
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/overalls(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(M), slot_shoes)
-			M.equip_to_slot_or_del(new /obj/item/clothing/gloves/latex(M), slot_gloves)
-			M.equip_to_slot_or_del(new /obj/item/clothing/mask/surgical(M), slot_wear_mask)
-			M.equip_to_slot_or_del(new /obj/item/clothing/head/welding(M), slot_head)
-			M.equip_to_slot_or_del(new /obj/item/radio/headset(M), slot_l_ear)
-			M.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal/plain/monocle(M), slot_glasses)
-			M.equip_to_slot_or_del(new /obj/item/clothing/suit/apron(M), slot_wear_suit)
-			M.equip_to_slot_or_del(new /obj/item/weapon/material/knife(M), slot_l_store)
-			M.equip_to_slot_or_del(new /obj/item/weapon/scalpel(M), slot_r_store)
-
-			var/obj/item/weapon/material/twohanded/fireaxe/fire_axe = new(M)
-			M.equip_to_slot_or_del(fire_axe, slot_r_hand)
-
-			for (var/obj/item/carried_item in M.contents)
-				if (!istype(carried_item, /obj/item/weapon/implant))//If it's not an implant.
-					carried_item.add_blood(M)//Oh yes, there will be blood...
-*/
-	M.regenerate_icons()
-
-	log_admin("[key_name(usr)] changed the equipment of [key_name(M)] to [dresscode].")
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] changed the equipment of [key_name_admin(M)] to [dresscode]..</span>", TRUE)
-	return
-
-/client/proc/check_positions()
-	set category = "Debug"
-	set name = "Check positions"
-
-	var/mob/user = mob
-	if (user != usr || !holder || !holder.marked_datum())
-		return
-
-	var/turf/user_pos = get_turf(user)
-	var/turf/other_pos = get_turf(holder.marked_datum())
-
-	user << "Check relations of positions:"
-	user << "User position ([user_pos.x],[user_pos.y],[user_pos.z])"
-	user << "Other position ([other_pos.x],[other_pos.y],[other_pos.z])"
-	user << "get_dist = [get_dist(user_pos, other_pos)]"
-	user << "get_dir  = [get_dir(user_pos, other_pos)]"
-	user << "Adjacent = [user_pos.Adjacent(other_pos)]"
-	user << "Check ended."
-
-	return
-
-
-/client/proc/startSinglo()
-
-	set category = "Debug"
-	set name = "Start Singularity"
-	set desc = "Sets up the singularity and all machines to get power flowing through the station"
-
-	return
-
-/client/proc/cmd_debug_mob_lists()
-	set category = "Debug"
-	set name = "Debug Mob Lists"
-	set desc = "For when you just gotta know"
-
-	switch(input("Which list?") in list("Players","Admins","Mobs","Living Mobs","Dead Mobs", "Clients"))
-		if ("Players")
-			usr << jointext(player_list,",")
-		if ("Admins")
-			usr << jointext(admins,",")
-		if ("Mobs")
-			usr << jointext(mob_list,",")
-		if ("Living Mobs")
-			usr << jointext(living_mob_list,",")
-		if ("Dead Mobs")
-			usr << jointext(dead_mob_list,",")
-		if ("Clients")
-			usr << jointext(clients,",")
-
-/client/proc/removeEmptyCases()
-	set category = "Debug"
-	set name = "Remove empty bullet casings"
-	set desc = "Removes ALL empty bullet casings from the map"
-
-	for (var/A in bullet_casings)
-		var/obj/item/ammo_casing/B = A
-		if (B.BB)
-			continue
-		qdel(B)
-	log_admin("[key_name(usr)] has removed all empty bullet casings.")
-	message_admins("<span class='notice'>[key_name_admin(usr)] has removed all empty bullet casings.</span>", TRUE)
-
-/client/proc/removeHalfEmptyCases()
-	set category = "Debug"
-	set name = "Remove half of empty bullet casings"
-	set desc = "Removes half of the empty bullet casings from the map"
-
-	var/limit = bullet_casings.len/2
-	var/counter = FALSE
-	for (var/A in bullet_casings)
-		var/obj/item/ammo_casing/B = A
-		if (B.BB || counter > limit)
-			continue
-		counter ++
-		qdel(B)
-	log_admin("[key_name(usr)] has removed half of all empty bullet casings.")
-	message_admins("<span class='notice'>[key_name_admin(usr)] has removed half of all empty bullet casings.</span>", TRUE)
-
-/client/proc/removeAllBlood()
-	set category = "Debug"
-	set name = "Remove All Blood"
-	set desc = "Removes ALL blood from the map"
-
-	for (var/B in blood)
-		if (istype(B, /datum))
-			qdel(B)
-
-	log_admin("[key_name(usr)] has removed all blood.")
-	message_admins("<span class='notice'>[key_name_admin(usr)] has removed all blood.</span>", TRUE)

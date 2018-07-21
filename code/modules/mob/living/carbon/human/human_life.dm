@@ -1217,9 +1217,9 @@
 			var/image/holder = hud_list[SPY_FACTION]
 			holder.icon = 'icons/mob/hud_WW2.dmi'
 			switch (original_job.base_type_flag())
-				if (SOVIET)
+				if (PIRATES)
 					holder.icon_state = spy_faction.icon_state
-				if (GERMAN)
+				if (BRITISH)
 					holder.icon_state = spy_faction.icon_state
 				if (PARTISAN)
 					holder.icon_state = spy_faction.icon_state
@@ -1231,9 +1231,9 @@
 			var/image/holder = hud_list[OFFICER_FACTION]
 			holder.icon = 'icons/mob/hud_WW2.dmi'
 			switch (original_job.base_type_flag())
-				if (SOVIET)
+				if (PIRATES)
 					holder.icon_state = officer_faction.icon_state
-				if (GERMAN)
+				if (BRITISH)
 					holder.icon_state = officer_faction.icon_state
 				if (PARTISAN)
 					holder.icon_state = officer_faction.icon_state
@@ -1245,9 +1245,9 @@
 			var/image/holder = hud_list[BASE_FACTION]
 			holder.icon = 'icons/mob/hud_WW2.dmi'
 			switch (original_job.base_type_flag())
-				if (SOVIET)
+				if (PIRATES)
 					holder.icon_state = base_faction.icon_state
-				if (GERMAN)
+				if (BRITISH)
 					holder.icon_state = base_faction.icon_state
 				if (PARTISAN)
 					holder.icon_state = base_faction.icon_state

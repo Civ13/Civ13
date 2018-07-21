@@ -141,12 +141,6 @@
 	//item_state = "sl_suit"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
-/obj/item/clothing/under/soviet
-	name = "soviet uniform"
-	desc = "For the Motherland!"
-	icon_state = "soviet"
-	item_state = "gy_suit"
-
 /obj/item/clothing/under/kilt
 	name = "kilt"
 	desc = "Includes shoes and plaid"

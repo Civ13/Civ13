@@ -158,7 +158,7 @@ var/area/partisan_stockpile = null
 			qdel(src)
 			return
 
-		// NEW GERMAN LANDMARKS
+		// NEW BRITISH LANDMARKS
 
 		if ("JoinLateHeer")
 			if (!latejoin_turfs[name])
@@ -622,7 +622,7 @@ var/area/partisan_stockpile = null
 		if ("PartisanStockpile")
 
 			// partisans get 6 guns, a maxim, and some mags
-			// they have to loot the rest from soviets or germans
+			// they have to loot the rest from pirates or british
 			var/turf/turf = get_turf(loc)
 			for (var/v in 1 to 5)
 				if (prob(80)) // spawn approx. 4 lugers
@@ -645,7 +645,7 @@ var/area/partisan_stockpile = null
 				if (prob(60))
 					new /obj/item/weapon/attachment/bayonet(turf)
 				if (prob(50))
-					new /obj/item/weapon/melee/classic_baton/MP/soviet/old(turf)
+					new /obj/item/weapon/melee/classic_baton/MP/pirates/old(turf)
 
 			// ptrd ammo
 			for (var/v in 1 to rand(10,20))
@@ -747,17 +747,6 @@ var/area/partisan_stockpile = null
 			return
 		if ("bluespacerift")
 			endgame_exits += loc
-			qdel(src)
-			return
-
-		// supply
-		if ("german_supplydrop_spot")
-			german_supplydrop_spots += loc
-			qdel(src)
-			return
-
-		if ("soviet_supplydrop_spot")
-			soviet_supplydrop_spots += loc
 			qdel(src)
 			return
 

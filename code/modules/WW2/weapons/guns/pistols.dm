@@ -80,7 +80,7 @@
 /obj/item/weapon/gun/projectile/pistol/luger/gibber
 	crushes = TRUE
 
-// new soviet officer gun
+// new pirates officer gun
 /obj/item/weapon/gun/projectile/pistol/_45
 	name = "Colt M1911"
 	desc = "a Colt M1911A1. Uses .45 rounds."

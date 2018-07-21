@@ -114,35 +114,35 @@
 	..()
 	update_capacity(30)
 	var/textpath = "[type]"
-	if (findtext(textpath, GERMAN))
+	if (findtext(textpath, BRITISH))
 		if (findtext(textpath, "solids"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration(GERMAN, "solid")
+				contents += new_ration(BRITISH, "solid")
 		if (findtext(textpath, "liquids"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration(GERMAN, "liquid")
+				contents += new_ration(BRITISH, "liquid")
 		if (findtext(textpath, "desserts"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration(GERMAN, "dessert")
+				contents += new_ration(BRITISH, "dessert")
 		if (findtext(textpath, "meat"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration(GERMAN, "meat")
+				contents += new_ration(BRITISH, "meat")
 		if (findtext(textpath, "alcohol"))
 			for (var/v in 1 to rand(10,15))
 				contents += beer_ration()
-	else if (findtext(textpath, "soviet"))
+	else if (findtext(textpath, "pirates"))
 		if (findtext(textpath, "solids"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration(SOVIET, "solid")
+				contents += new_ration(PIRATES, "solid")
 		if (findtext(textpath, "liquids"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration(SOVIET, "liquid")
+				contents += new_ration(PIRATES, "liquid")
 	/*	if (findtext(textpath, "desserts"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration("SOVIET", "dessert")*/
+				contents += new_ration("PIRATES", "dessert")*/
 		if (findtext(textpath, "meat"))
 			for (var/v in 1 to rand(10,15))
-				contents += new_ration(SOVIET, "meat")
+				contents += new_ration(PIRATES, "meat")
 		if (findtext(textpath, "alcohol"))
 			for (var/v in 1 to rand(10,15))
 				contents += vodka_ration()
@@ -154,35 +154,35 @@
 	update_capacity(min(30, contents.len+5))
 
 
-/obj/structure/closet/crate/rations/german_solids
+/obj/structure/closet/crate/rations/british_solids
 	name = "Rations: solids"
 
-/obj/structure/closet/crate/rations/german_liquids
+/obj/structure/closet/crate/rations/british_liquids
 	name = "Rations: liquids"
 
-/obj/structure/closet/crate/rations/german_desserts
+/obj/structure/closet/crate/rations/british_desserts
 	name = "Rations: dessert"
 
-/obj/structure/closet/crate/rations/german_meat
+/obj/structure/closet/crate/rations/british_meat
 	name = "Rations: meat"
 
-/obj/structure/closet/crate/rations/german_alcohol
+/obj/structure/closet/crate/rations/british_alcohol
 	name = "Rations: bier"
 
-/obj/structure/closet/crate/rations/soviet_solids
+/obj/structure/closet/crate/rations/pirates_solids
 	name = "Rations: solids"
 
-/obj/structure/closet/crate/rations/soviet_liquids
+/obj/structure/closet/crate/rations/pirates_liquids
 	name = "Rations: liquids"
 
 /*
-/obj/structure/closet/crate/rations/soviet_desserts
+/obj/structure/closet/crate/rations/pirates_desserts
 	name = "Rations: dessert"*/
 
-/obj/structure/closet/crate/rations/soviet_meat
+/obj/structure/closet/crate/rations/pirates_meat
 	name = "Rations: meat"
 
-/obj/structure/closet/crate/rations/soviet_alcohol
+/obj/structure/closet/crate/rations/pirates_alcohol
 	name = "Rations: vodka"
 
 /obj/structure/closet/crate/rations/water

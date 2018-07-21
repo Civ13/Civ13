@@ -1,107 +1,107 @@
-// all soviets
-#define soviet_CODE 995 * 2
-/datum/keyslot/soviet
-	code = soviet_CODE
+// all pirates
+#define pirates_CODE 995 * 2
+/datum/keyslot/pirates
+	code = pirates_CODE
 
-/obj/item/weapon/key/soviet
-	code = soviet_CODE
+/obj/item/weapon/key/pirates
+	code = pirates_CODE
 	name = "General Access Key"
 
-/obj/structure/simple_door/key_door/soviet
-	keyslot_type = /datum/keyslot/soviet
+/obj/structure/simple_door/key_door/pirates
+	keyslot_type = /datum/keyslot/pirates
 	unique_door_name = "General Access"
-#undef soviet_CODE
+#undef pirates_CODE
 /*
-// all soviet SOLDAT
-#define soviet_SOLDAT_CODE 900 * 2
-/datum/keyslot/soviet/soldat
-	code = soviet_SOLDAT_CODE
+// all pirates SOLDAT
+#define pirates_SOLDAT_CODE 900 * 2
+/datum/keyslot/pirates/soldat
+	code = pirates_SOLDAT_CODE
 
-/obj/item/weapon/key/soviet/soldat
-	code = soviet_SOLDAT_CODE
+/obj/item/weapon/key/pirates/soldat
+	code = pirates_SOLDAT_CODE
 	name = "Soldier Access Key"
 
-/obj/structure/simple_door/key_door/soviet/soldat
-	keyslot_type = /datum/keyslot/soviet/soldat
+/obj/structure/simple_door/key_door/pirates/soldat
+	keyslot_type = /datum/keyslot/pirates/soldat
 	unique_door_name = "Soldier Access"
-#undef soviet_SOLDAT_CODE*/
+#undef pirates_SOLDAT_CODE*/
 // medics
-#define soviet_MEDIC_CODE 901 * 2
-/datum/keyslot/soviet/medic
-	code = soviet_MEDIC_CODE
+#define pirates_MEDIC_CODE 901 * 2
+/datum/keyslot/pirates/medic
+	code = pirates_MEDIC_CODE
 
-/obj/item/weapon/key/soviet/medic
-	code = soviet_MEDIC_CODE
+/obj/item/weapon/key/pirates/medic
+	code = pirates_MEDIC_CODE
 	name = "Medical Access Key"
 
-/obj/structure/simple_door/key_door/soviet/medic
-	keyslot_type = /datum/keyslot/soviet/medic
+/obj/structure/simple_door/key_door/pirates/medic
+	keyslot_type = /datum/keyslot/pirates/medic
 	unique_door_name = "Medical Supplies"
-#undef soviet_MEDIC_CODE
+#undef pirates_MEDIC_CODE
 // engineering
-#define soviet_ENGINEER_CODE 902 * 2
-/datum/keyslot/soviet/engineer
-	code = soviet_ENGINEER_CODE
+#define pirates_ENGINEER_CODE 902 * 2
+/datum/keyslot/pirates/engineer
+	code = pirates_ENGINEER_CODE
 
-/obj/item/weapon/key/soviet/engineer
-	code = soviet_ENGINEER_CODE
+/obj/item/weapon/key/pirates/engineer
+	code = pirates_ENGINEER_CODE
 	name = "Engineering Access Key"
 
-/obj/structure/simple_door/key_door/soviet/engineer
-	keyslot_type = /datum/keyslot/soviet/engineer
+/obj/structure/simple_door/key_door/pirates/engineer
+	keyslot_type = /datum/keyslot/pirates/engineer
 	unique_door_name = "Engineering"
-#undef soviet_ENGINEER_CODE
-// the soviet quartermaster
-#define soviet_QM_CODE 997 * 2
-/datum/keyslot/soviet/QM
-	code = soviet_QM_CODE
+#undef pirates_ENGINEER_CODE
+// the pirates quartermaster
+#define pirates_QM_CODE 997 * 2
+/datum/keyslot/pirates/QM
+	code = pirates_QM_CODE
 
-/obj/item/weapon/key/soviet/QM
-	code = soviet_QM_CODE
+/obj/item/weapon/key/pirates/QM
+	code = pirates_QM_CODE
 	name = "Supply Access Key"
 
-/obj/structure/simple_door/key_door/soviet/QM
-	keyslot_type = /datum/keyslot/soviet/QM
+/obj/structure/simple_door/key_door/pirates/QM
+	keyslot_type = /datum/keyslot/pirates/QM
 	unique_door_name = "Cargo"
-#undef soviet_QM_CODE
+#undef pirates_QM_CODE
 // all intermediate (and above) command
-#define soviet_INTER_COMMAND_CODE 999 * 2
-/datum/keyslot/soviet/command_intermediate
-	code = soviet_INTER_COMMAND_CODE
+#define pirates_INTER_COMMAND_CODE 999 * 2
+/datum/keyslot/pirates/command_intermediate
+	code = pirates_INTER_COMMAND_CODE
 
-/obj/item/weapon/key/soviet/command_intermediate
-	code = soviet_INTER_COMMAND_CODE
+/obj/item/weapon/key/pirates/command_intermediate
+	code = pirates_INTER_COMMAND_CODE
 	name = "Intermediate Command Access Key"
 
-/obj/structure/simple_door/key_door/soviet/command_intermediate
-	keyslot_type = /datum/keyslot/soviet/command_intermediate
+/obj/structure/simple_door/key_door/pirates/command_intermediate
+	keyslot_type = /datum/keyslot/pirates/command_intermediate
 	unique_door_name = "Intermediate Command Access"
-#undef soviet_INTER_COMMAND_CODE
+#undef pirates_INTER_COMMAND_CODE
 
 // all high (and above) command
-#define soviet_HIGH_COMMAND_CODE 1000 * 2
-/datum/keyslot/soviet/command_high
-	code = soviet_HIGH_COMMAND_CODE
+#define pirates_HIGH_COMMAND_CODE 1000 * 2
+/datum/keyslot/pirates/command_high
+	code = pirates_HIGH_COMMAND_CODE
 
-/obj/item/weapon/key/soviet/command_high
-	code = soviet_HIGH_COMMAND_CODE
+/obj/item/weapon/key/pirates/command_high
+	code = pirates_HIGH_COMMAND_CODE
 	name = "High Command Access Key"
 
-/obj/structure/simple_door/key_door/soviet/command_high
-	keyslot_type = /datum/keyslot/soviet/command_high
+/obj/structure/simple_door/key_door/pirates/command_high
+	keyslot_type = /datum/keyslot/pirates/command_high
 	unique_door_name = "High Command Access"
-#undef soviet_HIGH_COMMAND_CODE
+#undef pirates_HIGH_COMMAND_CODE
 // bunker doors
-#define soviet_BUNKER_DOORS_CODE 1001 * 2
-/datum/keyslot/soviet/bunker_doors
-	code = soviet_BUNKER_DOORS_CODE
+#define pirates_BUNKER_DOORS_CODE 1001 * 2
+/datum/keyslot/pirates/bunker_doors
+	code = pirates_BUNKER_DOORS_CODE
 
-/obj/item/weapon/key/soviet/bunker_doors
-	code = soviet_BUNKER_DOORS_CODE
+/obj/item/weapon/key/pirates/bunker_doors
+	code = pirates_BUNKER_DOORS_CODE
 	name = "Bunker Doors Access Key"
 
-/obj/structure/simple_door/key_door/soviet/bunker_doors
-	keyslot_type = /datum/keyslot/soviet/bunker_doors
+/obj/structure/simple_door/key_door/pirates/bunker_doors
+	keyslot_type = /datum/keyslot/pirates/bunker_doors
 	unique_door_name = "Bunker Doors Access"
 	starts_open = 1
-#undef soviet_BUNKER_DOORS_CODE
+#undef pirates_BUNKER_DOORS_CODE

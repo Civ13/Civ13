@@ -35,7 +35,7 @@ var/list/nonbreaking_types = list(
 	health = 300
 	initial_health = health
 
-	if (istype(keyslot, /datum/keyslot/german/command_high) || istype(keyslot, /datum/keyslot/soviet/command_high) || istype(keyslot, /datum/keyslot/allied/command_high) || istype(keyslot, /datum/keyslot/japan/command_high))
+	if (istype(keyslot, /datum/keyslot/german/command_high) || istype(keyslot, /datum/keyslot/pirates/command_high) || istype(keyslot, /datum/keyslot/allied/command_high) || istype(keyslot, /datum/keyslot/japan/command_high))
 		health *= 3
 		initial_health = health
 

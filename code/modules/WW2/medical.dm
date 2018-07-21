@@ -161,13 +161,6 @@
 /obj/item/stack/medical/bruise_pack/New()
 	..()
 	// no infinite loops
-	if (type == /obj/item/stack/medical/bruise_pack)
-		var/area/H_area = get_area(src)
-		if (istype(H_area, /area/prishtina/german) || istype(H_area, /area/prishtina/void/german))
-			new /obj/item/stack/medical/bruise_pack/gauze(loc)
-		else
-			new /obj/item/stack/medical/bruise_pack/bint(loc)
-		qdel(src)
 
 /obj/item/stack/medical/bruise_pack/bint
 	name = "roll of bint"

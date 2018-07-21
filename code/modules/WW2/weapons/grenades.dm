@@ -65,7 +65,7 @@
 	icon_state = "smoke_grenade"
 	det_time = 20
 
-/obj/item/weapon/grenade/smokebomb/soviet
+/obj/item/weapon/grenade/smokebomb/pirates
 	desc = "Soviet smoke grenade. Won't blow up."
 	name = "Soviet Smoke grenade"
 	icon = 'icons/obj/grenade.dmi'

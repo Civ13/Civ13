@@ -14,28 +14,16 @@
 					if (H.original_job.base_type_flag() == CIVILIAN)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
-		if (GERMAN)
+		if (BRITISH)
 			for (var/mob/living/carbon/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
-					if (H.original_job.base_type_flag() == GERMAN)
+					if (H.original_job.base_type_flag() == BRITISH)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
-		if (SOVIET)
+		if (PIRATES)
 			for (var/mob/living/carbon/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
-					if (H.original_job.base_type_flag() == SOVIET)
-						BATTLEREPORT_VARIABLE_CHECK(H)
-							++.
-		if (ITALIAN)
-			for (var/mob/living/carbon/human/H in player_list)
-				if (H.original_job && H.stat != DEAD)
-					if (H.original_job.base_type_flag() == ITALIAN)
-						BATTLEREPORT_VARIABLE_CHECK(H)
-							++.
-		if (PILLARMEN)
-			for (var/mob/living/carbon/human/H in player_list)
-				if (H.original_job && H.stat != DEAD)
-					if (H.original_job.base_type_flag() == PILLARMEN)
+					if (H.original_job.base_type_flag() == PIRATES)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
 
@@ -48,9 +36,9 @@
 			return dead_partisans.len + heavily_injured_partisans.len + alive_partisans.len
 		if (CIVILIAN)
 			return dead_civilians.len + heavily_injured_civilians.len + alive_civilians.len
-		if (GERMAN)
-			return dead_germans.len + heavily_injured_germans.len + alive_germans.len
-		if (SOVIET)
-			return dead_russians.len + heavily_injured_russians.len + alive_russians.len
+		if (BRITISH)
+			return dead_british.len + heavily_injured_british.len + alive_british.len
+		if (PIRATES)
+			return dead_pirates.len + heavily_injured_pirates.len + alive_pirates.len
 
 

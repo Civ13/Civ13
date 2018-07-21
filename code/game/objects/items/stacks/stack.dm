@@ -196,21 +196,6 @@
 				H << "<span class = 'warning'>You need a ceiling to make a noose.</span>"
 				return
 
-	else if (recipe.result_type == /obj/structure/barbwire)
-		if (locate(/obj/structure/barbwire) in get_turf(H))
-			return
-		if (H)
-			if (H.original_job)
-				var/area/H_area = get_area(H)
-				if (H_area.location == AREA_INSIDE)
-					if (H.original_job.base_type_flag() == GERMAN)
-						if (istype(H_area, /area/prishtina/german))
-							user << "<span class = 'warning'>This isn't a great place for barbwire.</span>"
-							return
-					else if (H.original_job.base_type_flag() == SOVIET)
-						if (istype(H_area, /area/prishtina/soviet))
-							user << "<span class = 'warning'>This isn't a great place for barbwire.</span>"
-							return
 
 	else if (engineer_exclusive_recipe_types.Find(recipe.result_type))
 		if (H)

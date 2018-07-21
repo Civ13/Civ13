@@ -11,7 +11,7 @@
 	icon_state = "ba_suit"
 	item_state = "ba_suit"
 
-// soviets and partisans
+// pirates and partisans
 
 /obj/item/clothing/shoes/swat/wrappedboots
 	name = "\improper wrapped boots"

@@ -1,17 +1,17 @@
 #define BATTLEREPORT_VARIABLE_CHECK(_mob) if (!istype(_mob, /mob/living/carbon/human/corpse) && (!get_area(_mob) || !istype(get_area(_mob), /area/prishtina/admin)))
 
-var/list/alive_germans = list()
-var/list/alive_russians = list()
+var/list/alive_british = list()
+var/list/alive_pirates = list()
 var/list/alive_civilians = list()
 var/list/alive_partisans = list()
 
-var/list/heavily_injured_germans = list()
-var/list/heavily_injured_russians = list()
+var/list/heavily_injured_british = list()
+var/list/heavily_injured_pirates = list()
 var/list/heavily_injured_civilians = list()
 var/list/heavily_injured_partisans = list()
 
-var/list/dead_germans = list()
-var/list/dead_russians = list()
+var/list/dead_british = list()
+var/list/dead_pirates = list()
 var/list/dead_civilians = list()
 var/list/dead_partisans = list()
 
@@ -25,14 +25,14 @@ var/list/recently_died = list()
 	var/list/dead = list()
 
 	switch (original_job.base_type_flag())
-		if (GERMAN)
-			dead = dead_germans
-			injured = heavily_injured_germans
-			alive = alive_germans
-		if (SOVIET)
-			dead = dead_russians
-			injured = heavily_injured_russians
-			alive = alive_russians
+		if (BRITISH)
+			dead = dead_british
+			injured = heavily_injured_british
+			alive = alive_british
+		if (PIRATES)
+			dead = dead_pirates
+			injured = heavily_injured_pirates
+			alive = alive_pirates
 		if (CIVILIAN)
 			dead = dead_civilians
 			injured = heavily_injured_civilians
