@@ -114,19 +114,6 @@
 		if (is_hot(W))
 			burn(is_hot(W))
 
-	if (locate(/obj/effect/overlay/wallrot) in src)
-		if (istype(W, /obj/item/weapon/weldingtool) )
-			var/obj/item/weapon/weldingtool/WT = W
-			if ( WT.remove_fuel(0,user) )
-				user << "<span class='notice'>You burn away the fungi with \the [WT].</span>"
-				playsound(src, 'sound/items/Welder.ogg', 10, TRUE)
-				for (var/obj/effect/overlay/wallrot/WR in src)
-					qdel(WR)
-				return
-		else if (!is_sharp(W) && W.force >= 10 || W.force >= 20)
-			user << "<span class='notice'>\The [src] crumbles away under the force of your [W.name].</span>"
-			dismantle_wall(1)
-			return
 
 	//THERMITE related stuff. Calls thermitemelt() which handles melting walls and the relevant effects
 /*	if (thermite)
@@ -141,23 +128,6 @@
 
 	var/turf/T = user.loc	//get user's location for delay checks
 
-	if (damage && istype(W, /obj/item/weapon/weldingtool))
-
-		var/obj/item/weapon/weldingtool/WT = W
-
-		if (!WT.isOn())
-			return
-
-		if (WT.remove_fuel(0,user))
-			user << "<span class='notice'>You start repairing the damage to [src].</span>"
-			playsound(src, 'sound/items/Welder.ogg', 100, TRUE)
-			if (do_after(user, max(5, damage / 5), src) && WT && WT.isOn())
-				user << "<span class='notice'>You finish repairing the damage to [src].</span>"
-				take_damage(-damage)
-		else
-			user << "<span class='notice'>You need more welding fuel to complete this task.</span>"
-			return
-		return
 
 	// Basic dismantling.
 	if (isnull(construction_stage) || !reinf_material)

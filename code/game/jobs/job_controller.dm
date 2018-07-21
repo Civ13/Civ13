@@ -81,7 +81,7 @@ var/global/datum/controller/occupations/job_master
 		else
 			world << "<span class = 'warning'>An admin has reset autobalance for [max(_clients, autobalance_for_players)] players.</span>"
 
-
+	for (var/datum/job/J in occupations)
 		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
 			var/positions = round((autobalance_for_players/J.scale_to_players) * J.max_positions)
 			positions = max(positions, J.min_positions)
@@ -180,24 +180,6 @@ var/global/datum/controller/occupations/job_master
 				return FALSE
 	return TRUE
 
-// too many people joined as a SL and not enough as soldier
-// return FALSE if j is a squad leader
-/datum/controller/occupations/proc/squad_member_check(var/mob/new_player/np, var/datum/job/j)
-	if (!j.is_commander && !j.is_nonmilitary && !j.is_SS && !j.is_paratrooper)
-		// we're trying to join as a soldier or officer
-		if (j.is_officer) // handle officer
-			if (must_not_have_squad_leader(j.base_type_flag())) // don't accept SLs
-				if (istype(j, /datum/job/german/squad_leader) || istype(j, /datum/job/soviet/squad_leader))
-					np << "<span class = 'danger'>Squad #[current_german_squad] already has a Squad Leader! You can't join as one yet.</span>"
-					return FALSE
-				else
-					return TRUE
-	else
-		if (must_have_squad_leader(j.base_type_flag()))
-			if (!j.SL_check_independent)
-				np << "<span class = 'danger'>Squad #[current_german_squad] needs a Squad Leader! You can't join as anything else until it has one.</span>"
-				return FALSE
-	return TRUE
 
 /datum/controller/occupations/proc/relocate(var/mob/living/carbon/human/H)
 

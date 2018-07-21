@@ -745,14 +745,6 @@ var/area/partisan_stockpile = null
 			endgame_safespawns += loc
 			qdel(src)
 			return
-		if ("artillery_spawn")
-			new/obj/structure/artillery(loc, null, SOUTH)
-			qdel(src)
-			return
-		if ("nebel_artillery_spawn")
-			new/obj/structure/artillery/nebel(loc, null, SOUTH)
-			qdel(src)
-			return
 		if ("bluespacerift")
 			endgame_exits += loc
 			qdel(src)

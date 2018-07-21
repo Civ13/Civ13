@@ -54,23 +54,3 @@
 			return dead_russians.len + heavily_injured_russians.len + alive_russians.len
 
 
-/datum/job/proc/equip_random_civilian_clothing(var/mob/living/carbon/human/H)
-	if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-	else if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-	else if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/civjacket,slot_wear_suit)
-
-datum/job/proc/equip_random_partisan_clothing(var/mob/living/carbon/human/H)
-	if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-	else if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-	else if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/overalls(H), slot_w_uniform)

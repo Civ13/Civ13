@@ -128,10 +128,6 @@ var/list/global/wall_cache = list()
 			user << "<span class='warning'>It looks moderately damaged.</span>"
 		else
 			user << "<span class='danger'>It looks heavily damaged.</span>"
-
-	if (locate(/obj/effect/overlay/wallrot) in src)
-		user << "<span class='warning'>There is fungus growing on [src].</span>"
-
 //Damage
 
 /turf/wall/melt()

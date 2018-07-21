@@ -213,11 +213,6 @@
 
 				I.Blend(new /icon(icobase, "[name][g][body.index]"), ICON_OVERLAY)
 
-			//Tail
-			if (current_species && (current_species.tail))
-				var/icon/temp = new/icon("icon" = 'icons/effects/species.dmi', "icon_state" = "[current_species.tail]_s")
-				I.Blend(temp, ICON_OVERLAY)
-
 			// Skin color
 			if (current_species && (current_species.appearance_flags & HAS_SKIN_COLOR))
 				I.Blend(rgb(r_skin, g_skin, b_skin), ICON_ADD)

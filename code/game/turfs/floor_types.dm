@@ -576,13 +576,3 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "cobble_vertical_dark"
 	interior = FALSE
-
-turf/air
-	icon_state = "air"
-	name = "air"
-	icon = 'icons/WW2/ju57.dmi'
-
-turf/junkers
-	icon = 'icons/WW2/ju57.dmi'
-	name = "Ju-52 cassis"
-

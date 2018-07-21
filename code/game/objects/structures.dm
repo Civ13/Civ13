@@ -150,10 +150,6 @@
 		if (S != src && S.density)
 			return
 
-	// because we're moving if we're on a train
-	if (usr.is_on_train())
-		target = get_turf(src)
-
 	usr.forceMove(target)
 
 	if (get_turf(user) == target)

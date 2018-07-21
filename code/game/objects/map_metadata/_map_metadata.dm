@@ -371,12 +371,7 @@ var/global/obj/map_metadata/map = null
 			return "German"
 		if (SOVIET)
 			return "Soviet"
-		if (PILLARMEN)
-			return "Undead"
-		if (PARTISAN)
 			return "Partisan"
-		if (POLISH_INSURGENTS)
-			return "Polish"
 		if (BRITISH)
 			return "British"
 		if (PIRATES)
@@ -388,8 +383,6 @@ var/global/obj/map_metadata/map = null
 			return "Wehrmacht"
 		if (SOVIET)
 			return "Red Army"
-		if (PILLARMEN)
-			return "Undead"
 		if (PARTISAN)
 			return "Partisan Group"
 		if (BRITISH)
@@ -403,10 +396,6 @@ var/global/obj/map_metadata/map = null
 			return "German"
 		if ("Red Army")
 			return "Soviet"
-		if ("Undead")
-			return "Undead"
-		if ("Partisan Group")
-			return "Partisan"
 		if ("Royal Navy")
 			return "British"
 		if ("Pirate group")

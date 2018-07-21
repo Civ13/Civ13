@@ -25,17 +25,9 @@
 /datum/job/var/is_nonmilitary = FALSE
 /datum/job/var/spawn_delay = FALSE
 /datum/job/var/delayed_spawn_message = ""
-/datum/job/var/is_SS = FALSE
-/datum/job/var/is_SS_TV = FALSE
-/datum/job/var/is_prisoner = FALSE
-/datum/job/var/is_reichstag = FALSE
-/datum/job/var/is_dirlewanger = FALSE
 /datum/job/var/is_partisan = FALSE
 /datum/job/var/is_primary = TRUE
 /datum/job/var/is_secondary = FALSE
-/datum/job/var/is_paratrooper = FALSE
-/datum/job/var/is_sturmovik = FALSE
-/datum/job/var/is_guard = FALSE
 /datum/job/var/is_tankuser = FALSE
 /datum/job/var/blacklisted = FALSE
 /datum/job/var/is_redcross = FALSE
@@ -135,82 +127,10 @@
 
 	if (istype(src, /datum/job/german))
 		user.faction_text = "GERMAN"
-		if (istype(src, /datum/job/german/soldier_ss))
-			user.base_faction = new/datum/faction/german/SS(user, src)
-		else
-			user.base_faction = new/datum/faction/german(user, src)
-
-		if (is_officer && !is_commander)
-			user.officer_faction = new/datum/faction/german/officer(user, src)
-
-		else if (is_commander)
-			if (istype(src, /datum/job/german/squad_leader_ss))
-				user.officer_faction = new/datum/faction/german/commander/SS(user, src)
-			else
-				user.officer_faction = new/datum/faction/german/commander(user, src)
-
-		if (is_squad_leader)
-			switch (squad_leaders[GERMAN])
-				if (0)
-					user.squad_faction = new/datum/faction/squad/one/leader(user, src)
-				if (1)
-					user.squad_faction = new/datum/faction/squad/two/leader(user, src)
-				if (2)
-					user.squad_faction = new/datum/faction/squad/three/leader(user, src)
-				if (3)
-					user.squad_faction = new/datum/faction/squad/four/leader(user, src)
-		else if (!is_officer && !is_commander && !is_nonmilitary && !is_SS && !is_paratrooper && !is_guard && !is_tankuser)
-			switch (squad_members[GERMAN]) // non officers
-				if (0 to MEMBERS_PER_SQUAD-1)
-					user.squad_faction = new/datum/faction/squad/one(user, src)
-				if ((MEMBERS_PER_SQUAD) to (MEMBERS_PER_SQUAD*2)-1)
-					user.squad_faction = new/datum/faction/squad/two(user, src)
-				if ((MEMBERS_PER_SQUAD*2) to (MEMBERS_PER_SQUAD*3)-1)
-					user.squad_faction = new/datum/faction/squad/three(user, src)
-				if ((MEMBERS_PER_SQUAD*3) to (MEMBERS_PER_SQUAD*4)-1)
-					user.squad_faction = new/datum/faction/squad/four(user, src)
-				if ((MEMBERS_PER_SQUAD*4) to INFINITY) // latejoiners
-					if (prob(50))
-						if (prob(50))
-							user.squad_faction = new/datum/faction/squad/one(user, src)
-						else
-							user.squad_faction = new/datum/faction/squad/two(user, src)
-					else
-						if (prob(50))
-							user.squad_faction = new/datum/faction/squad/three(user, src)
-						else
-							user.squad_faction = new/datum/faction/squad/four(user, src)
 
 	else if (istype(src, /datum/job/soviet))
 		user.faction_text = "SOVIET"
 		user.base_faction = new/datum/faction/soviet(user, src)
-
-		if (is_officer && !is_commander)
-			user.officer_faction = new/datum/faction/soviet/officer(user, src)
-
-		else if (is_commander)
-			user.officer_faction = new/datum/faction/soviet/commander(user, src)
-
-		if (is_squad_leader)
-			switch (squad_leaders[SOVIET])
-				if (0)
-					user.squad_faction = new/datum/faction/squad/one/leader(user, src)
-				if (1)
-					user.squad_faction = new/datum/faction/squad/two/leader(user, src)
-				if (2)
-					user.squad_faction = new/datum/faction/squad/three/leader(user, src)
-				if (3)
-					user.squad_faction = new/datum/faction/squad/four/leader(user, src)
-		else if (!is_officer && !is_commander && !is_nonmilitary && !is_guard && !is_tankuser)
-			switch (squad_members[SOVIET]) // non officers
-				if (0 to 7-1)
-					user.squad_faction = new/datum/faction/squad/one(user, src)
-				if (8-1 to 14-1)
-					user.squad_faction = new/datum/faction/squad/two(user, src)
-				if (15-1 to 21-1)
-					user.squad_faction = new/datum/faction/squad/three(user, src)
-				if (22-1 to 28-1)
-					user.squad_faction = new/datum/faction/squad/four(user, src)
 
 	else if (istype(src, /datum/job/partisan))
 		user.faction_text = "PARTISAN"

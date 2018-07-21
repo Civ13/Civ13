@@ -429,16 +429,6 @@ var/const/enterloopsanity = 100
 			else
 				footstepsound = "erikafootsteps"
 
-			if (locate(/obj/train_pseudoturf) in contents)
-				var/obj/train_pseudoturf/tpt = locate() in contents
-				if (istype(tpt.based_on_type, /turf/floor/wood))
-					footstepsound = "woodfootsteps"
-				else
-					footstepsound = "erikafootsteps"
-
-			else if (locate(/obj/train_connector) in contents)
-				footstepsound = "erikafootsteps"
-
 			if (istype(H.shoes, /obj/item/clothing/shoes))
 				if (movementMachine.ticks >= H.next_footstep_sound_at_movement_tick)
 					playsound(src, footstepsound, 100, TRUE)

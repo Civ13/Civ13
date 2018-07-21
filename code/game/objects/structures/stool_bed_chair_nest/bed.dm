@@ -225,9 +225,6 @@
 		else
 			buckled_mob = null
 
-		if (buckled_mob && buckled_mob.is_on_train())
-			buckled_mob.last_moved_on_train = world.time
-
 	return TRUE
 
 /obj/structure/bed/roller/post_buckle_mob(mob/living/M as mob)

@@ -140,17 +140,6 @@
 
 		cmd_admin_mute(M, mute_type)
 
-	else if (href_list["corgione"])
-		if (!check_rights(R_SPAWN))	return
-
-		var/mob/living/carbon/human/H = locate(href_list["corgione"])
-		if (!istype(H))
-			usr << "This can only be used on instances of type /mob/living/carbon/human"
-			return
-
-		log_admin("[key_name(usr)] attempting to corgize [key_name(H)]")
-		message_admins("<span class = 'notice'>[key_name_admin(usr)] attempting to corgize [key_name_admin(H)]</span>", TRUE)
-		H.corgize()
 
 	else if (href_list["forcespeech"])
 		if (!check_rights(R_FUN))	return

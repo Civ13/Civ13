@@ -173,7 +173,6 @@
 	var/mortality_partisan = round(mortality_coefficient_partisan*100)
 
 	var/msg1 = "German Side: [alive_germans.len] alive, [heavily_injured_germans.len] heavily injured or unconscious, [dead_germans.len] deceased. Mortality rate: [mortality_german]%"
-	var/msg2 = "Italian Side: [alive_italians.len] alive, [heavily_injured_italians.len] heavily injured or unconscious, [dead_italians.len] deceased. Mortality rate: [mortality_italian]%"
 	var/msg3 = "Soviet Side: [alive_russians.len] alive, [heavily_injured_russians.len] heavily injured or unconscious, [dead_russians.len] deceased. Mortality rate: [mortality_russian]%"
 	var/msg4 = "Civilians: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
 	var/msg5 = "Partisans: [alive_partisans.len] alive, [heavily_injured_partisans.len] heavily injured or unconscious, [dead_partisans.len] deceased. Mortality rate: [mortality_partisan]%"
@@ -214,16 +213,12 @@
 	else
 		if (msg1)
 			shower << msg1
-		if (msg2)
-			shower << msg2
 		if (msg3)
 			shower << msg3
 		if (msg4)
 			shower << msg4
 		if (msg5)
 			shower << msg5
-		if (msg6)
-			shower << msg6
 
 /client/proc/message_russians()
 	set category = "Special"
@@ -304,33 +299,6 @@
 
 		src << "You sent '[msg]' to the SS."
 		message_admins("[key_name(src)] sent '[msg]' to the SS")
-
-
-/client/proc/message_paratroopers()
-	set category = "Special"
-	set name = "Messages Paratroopers"
-
-	var/msg = input(usr, "Send what?", "Message Paratroopers") as text
-
-	if (!msg)
-		return
-
-	var/ick_ock = input(usr, "Make this an IC message?", "Message Paratroopers") in list("Yes", "No")
-
-	if (ick_ock == "Yes")
-		ick_ock = TRUE
-	else
-		ick_ock = FALSE
-
-	if (msg)
-		for (var/mob/living/carbon/human/H in player_list)
-			if (istype(H) && H.client)
-				if (H.original_job && H.original_job.base_type_flag() == GERMAN && istype(H.original_job, /datum/job/german/paratrooper))
-					var/msg_start = ick_ock ? "<b>IMPORTANT MESSAGE FROM THE GERMAN HIGH COMMAND TO THE PARATROOPER SQUAD:</b>" : "<b>MESSAGE TO THE PARATROOPER SQUAD FROM ADMINS:</b>"
-					H << "[msg_start] <span class = 'notice'>[msg]</span>"
-
-		src << "You sent '[msg]' to the paratroopers."
-		message_admins("[key_name(src)] sent '[msg]' to the paratroopers")
 
 /client/proc/message_civilians()
 	set category = "Special"

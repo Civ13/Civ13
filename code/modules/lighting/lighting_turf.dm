@@ -254,8 +254,6 @@
 	. = TRUE
 	if (locate(/atom/movable/lighting_overlay) in src)
 		. = FALSE
-	if (locate(/obj/train_track) in src)
-		. = FALSE
 	if (map && map.zlevels_without_lighting.Find(z))
 		. = FALSE
 

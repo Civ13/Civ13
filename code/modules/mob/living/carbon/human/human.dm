@@ -87,15 +87,6 @@ var/list/coefflist = list()
 	. = ..()
 	if (.)
 		// the loc.density short circuits 95% of the time and bypasses an expensive typecheck - Kachnov
-		if (loc && loc.density && istype(loc, /obj/tank))
-			var/obj/tank/tank = loc
-			var/fuel_slot_screwed = tank.fuel_slot_screwed ? "Screwed," : "Unscrewed,"
-			var/fuel_slot_open = tank.fuel_slot_open ? " open" : " closed"
-			if (statpanel("Vehicle"))
-				stat("Vehicle Integrity:", tank.health_percentage())
-				stat("Ready to fire?:", (world.time - tank.last_fire > tank.fire_delay || tank.last_fire == -1) ? "Yes" : "No")
-				stat("Fuel Slot:", "[fuel_slot_screwed][fuel_slot_open].")
-				stat("Fuel:", "[round((tank.fuel/tank.max_fuel)*100)]%")
 		if (client.status_tabs && statpanel("Character"))
 			stat("")
 			stat(stat_header("Character"))

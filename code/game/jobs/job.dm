@@ -77,9 +77,6 @@
 /datum/job/proc/give_random_name(var/mob/living/carbon/human/H)
 	return FALSE
 
-/datum/job/proc/train_check()
-	return TRUE
-
 /datum/job/proc/get_keys()
 	return list()
 

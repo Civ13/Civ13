@@ -121,60 +121,6 @@
 		"You hear the grunting and clanging of a metal ladder being used."
 	)
 
-	if (do_after(M, 10, src))
-		if (target.loc && locate(/obj/train_pseudoturf) in target.loc)
-			T = target.loc // this is to prevent the train teleporting error
-		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
-
-		// pulling/grabbing people with you
-		var/atom/movable/was_pulling = null
-		var/grabbing = FALSE
-
-		if (M.pulling)
-			was_pulling = M.pulling
-			M.stop_pulling(was_pulling)
-		else
-			for (var/obj/item/weapon/grab/G in M.contents)
-				if (G.affecting)
-					was_pulling = G.affecting
-					grabbing = TRUE
-					break
-
-		if (was_pulling)
-			var/turf/move_pulling = get_step(T, M.dir)
-			if (move_pulling.density)
-				move_pulling = get_step(T, NORTH)
-			if (move_pulling.density)
-				move_pulling = get_step(T, SOUTH)
-			if (move_pulling.density)
-				move_pulling = get_step(T, EAST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, WEST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, NORTHEAST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, NORTHWEST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, SOUTHEAST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, SOUTHWEST)
-
-			was_pulling.Move(move_pulling)
-			M.Move(T)
-
-			if (was_pulling && !grabbing)
-				M.start_pulling(was_pulling)
-		else
-			M.Move(T)
-
-		M.visible_message(
-			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
-			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
-			"You hear the grunting and clanging of a metal ladder being used."
-		)
-
-//// laddervision - Kachnov ////
-
 /mob/living/carbon/human/var/laddervision = null
 
 /obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/carbon/human/user as mob)

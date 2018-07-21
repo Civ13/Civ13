@@ -291,12 +291,6 @@ var/datum/reinforcements/reinforcements_master = null
 				ret = TRUE
 	reinforcement_pool[SOVIET] = list()
 	lock_check()
-	var/obj/item/radio/R = main_radios[SOVIET]
-	if (R && R.loc)
-		processes.callproc.queue(R, /obj/item/radio/proc/announce, list("A new squadron has been deployed.", "Reinforcements Announcements"), 10)
-	world << "<font size=3>A new <b>Allied</b> squadron has been deployed.</font>"
-	return ret
-
 /datum/reinforcements/proc/reset_german_timer()
 	var/ret = FALSE
 	var/list/l = reinforcement_pool[GERMAN]
@@ -318,15 +312,10 @@ var/datum/reinforcements/reinforcements_master = null
 		for (var/mob/new_player/np in l)
 			if (np) // maybe helps with logged out nps
 				np.LateSpawnForced("Pirate", TRUE, TRUE)
-				reinforcements_granted[PIRATE] = reinforcements_granted[PIRATE]+1
+				reinforcements_granted[PIRATES] = reinforcements_granted[PIRATES]+1
 				ret = TRUE
 	reinforcement_pool[GERMAN] = list()
 	lock_check()
-	var/obj/item/radio/R = main_radios[GERMAN]
-	if (R && R.loc)
-		processes.callproc.queue(R, /obj/item/radio/proc/announce, list("A new squadron has been deployed.", "Reinforcements Announcements"), 10)
-	world << "<font size=3>A new <b>Axis</b> squadron has been deployed.</font>"
-	return ret
 
 
 
@@ -336,14 +325,6 @@ var/datum/reinforcements/reinforcements_master = null
 
 /datum/reinforcements/proc/r_soviet()
 	var/list/l = reinforcement_pool[SOVIET]
-	return l.len
-
-/datum/reinforcements/proc/r_usa()
-	var/list/l = reinforcement_pool[PIRATES]
-	return l.len
-
-/datum/reinforcements/proc/r_japan()
-	var/list/l = reinforcement_pool[JAPAN]
 	return l.len
 
 datum/reinforcements/proc/lock_check()

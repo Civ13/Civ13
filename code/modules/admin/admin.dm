@@ -102,22 +102,6 @@ proc/admin_notice(var/message, var/rights)
 			else
 				body += "<A href='?src=\ref[src];monkeyone=\ref[M]'>Monkeyize</A> | "
 
-			//Corgi
-			if (iscorgi(M))
-				body += "<b>Corgized</b> | "
-			else
-				body += "<A href='?src=\ref[src];corgione=\ref[M]'>Corgize</A> | "
-
-			//AI / Cyborg
-	/*		if (isAI(M))
-				body += "<b>Is an AI</b> "
-			else if (ishuman(M))
-				body += {"<A href='?src=\ref[src];makeai=\ref[M]'>Make AI</A> |
-					<A href='?src=\ref[src];makerobot=\ref[M]'>Make Robot</A> |
-					<A href='?src=\ref[src];makealien=\ref[M]'>Make Alien</A> |
-					<A href='?src=\ref[src];makeslime=\ref[M]'>Make slime</A>
-				"}*/
-
 			//Simple Animals
 			if (isanimal(M))
 				body += "<A href='?src=\ref[src];makeanimal=\ref[M]'>Re-Animalize</A> | "

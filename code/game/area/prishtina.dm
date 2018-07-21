@@ -435,28 +435,6 @@
 	name = "Gas Chamber"
 	icon_state = "red3"
 
-/area/prishtina/german/train_zone
-	name = "Train Zone"
-	icon_state = "blue1"
-	#ifdef USE_TRAIN_LIGHTS
-	dynamic_lighting = TRUE
-	#else
-	dynamic_lighting = FALSE
-	#endif
-	location = AREA_INSIDE
-	is_train_area = TRUE
-	capturable = FALSE
-
-/area/prishtina/german/train_starting_zone
-	icon_state = "blue2"
-	name = "Train Boarding"
-	capturable = FALSE
-
-/area/prishtina/german/train_landing_zone
-	icon_state = "blue2"
-	name = "Train Unboarding"
-	capturable = FALSE
-
 /area/prishtina/german/resting_area_1
 	name = "Resting Area #1"
 	icon_state = "green1"
@@ -515,11 +493,6 @@
 	capturable = FALSE
 	location = AREA_INSIDE
 
-/area/prishtina/german/armory/train
-	name = "Armory"
-	icon_state = "blue3"
-	is_train_area = TRUE
-	capturable = FALSE
 
 /area/prishtina/german/cafeteria
 	name = "Cafeteria"
@@ -923,49 +896,8 @@
 	name = "Prison Cell #2"
 	capturable = FALSE
 
-/area/prishtina/soviet/lift/
-	icon_state = "blue1"
-	name = "Lift"
-	location = AREA_INSIDE
-
-/area/prishtina/soviet/lift/upper
-
-/area/prishtina/soviet/lift/lower
-
 /area/prishtina/soviet/backup_armory
 	icon_state = "blue2"
 	name = "Backup Armory"
 	location = AREA_INSIDE
-
-
-// areas for example train cars
-
-/area/prishtina/train // nothing here yet, but I feel like I will need it later - Kachnov
-
-/area/prishtina/train/german
-
-/area/prishtina/train/german/cabin
-
-/area/prishtina/train/german/cabin/officer // fanciest cabin. Also, nobody has to walk through your room since it's in the back.
-
-/area/prishtina/train/german/cabin/storage // crates
-
-// don't inherit this from storage, it causes problems
-/area/prishtina/train/german/cabin/storage_horizontal // crates
-
-/area/prishtina/train/german/cabin/soldier // personnel
-
-/area/prishtina/train/german/cabin/conductor // where the conductor drives the train
-
-/area/prishtina/train/russian
-
-/area/prishtina/train/russian/cabin
-
-/area/prishtina/train/russian/cabin/officer // fanciest cabin. Also, nobody has to walk through your room since it's in the back.
-
-/area/prishtina/train/russian/cabin/storage // crates
-
-/area/prishtina/train/russian/cabin/soldier // personnel
-
-/area/prishtina/train/russian/cabin/conductor // where the conductor drives the train
 

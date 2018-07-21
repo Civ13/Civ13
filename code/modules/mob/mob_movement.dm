@@ -309,10 +309,6 @@
 	var/mob_is_human = istype(mob, /mob/living/carbon/human)
 	var/mob_loc = mob.loc
 
-	if (mob_is_living && istype(mob_loc, /obj/tank))
-		var/obj/tank/tank = mob_loc
-		tank.receive_command_from(mob, direct)
-		return TRUE
 
 	// prevent passing the invisible wall: now supports diagonals :agony:
 	var/list/dirs = list()

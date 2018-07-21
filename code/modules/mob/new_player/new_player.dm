@@ -575,12 +575,6 @@
 		if (map && !map.job_enabled_specialcheck(job))
 			job_is_available = FALSE
 
-		if (istype(job, /datum/job/german/paratrooper) && !paratroopers_toggled)
-			job_is_available = FALSE
-
-		if ((istype(job, /datum/job/german/soldier_ss) || istype(job, /datum/job/german/squad_leader_ss)) && !SS_toggled)
-			job_is_available = FALSE
-
 		if (istype(job, /datum/job/partisan) && !istype(job, /datum/job/partisan/civilian) && !partisans_toggled)
 			job_is_available = FALSE
 
