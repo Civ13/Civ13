@@ -33,10 +33,10 @@
 					H.add_language(RUSSIAN, TRUE)
 					H.add_note("Known Languages", "Russian")
 					notes += "Russian"
-				if (UKRAINIAN)
-					H.add_language(UKRAINIAN, TRUE)
-					H.add_note("Known Languages", "Ukrainian")
-					notes += "Ukrainian"
+				if (ENGLISH)
+					H.add_language(ENGLISH, TRUE)
+					H.add_note("Known Languages", "English")
+					notes += "English"
 				if (POLISH)
 					H.add_language(POLISH, TRUE)
 					H.add_note("Known Languages", "Polish")

@@ -10,12 +10,12 @@ var/list/admin_datums = list()
 
 /datum/admins/proc/OOC_rank()
 	switch (rank)
-		if ("SenateChairman")
-			return "Sen. Chairman"
-		if ("PrimaryAdmin")
-			return "Pr. Admin"
-		if ("SecondaryAdmin")
-			return "Sec. Admin"
+		if ("Admiral")
+			return "Admiral"
+		if ("Captain")
+			return "Captain"
+		if ("Master")
+			return "Master"
 		if ("HeadAdmin")
 			return "Headmin"
 		if ("DebugHost")

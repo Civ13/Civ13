@@ -62,7 +62,7 @@ var/GRACE_PERIOD_LENGTH = 7
 		world << "<span class = 'notice'>Setting up seasons.</span>"
 
 
-	// forces Spring in Island map
+	// forces Spring in test map
 	if (map && istype(map, /obj/map_metadata/naval))
 		(season = "SPRING")
 		return TRUE
@@ -70,18 +70,6 @@ var/GRACE_PERIOD_LENGTH = 7
 
 	// snow is disabled because it breaks the game
 	var/use_snow = FALSE
-
-	// first, make all water into ice if it's winter
-	if (season == "WINTER")
-		for (var/turf/floor/plating/beach/water/W in turfs)
-			if (!istype(W, /turf/floor/plating/beach/water/sewage))
-				new /turf/floor/plating/beach/water/ice (W)
-	/*	if (prob(50))
-			use_snow = TRUE */
-
-	if (!use_snow)
-		for (var/obj/snow_maker/SM in world)
-			qdel(SM)
 
 	for (var/grass in grass_turf_list)
 

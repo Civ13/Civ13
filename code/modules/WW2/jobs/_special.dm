@@ -42,14 +42,6 @@
 	else if (istype(src, /datum/job/british))
 		. = BRITISH
 
-	else if (istype(src, /datum/job/partisan))
-		if (istype(src, /datum/job/partisan/civilian))
-			. = CIVILIAN
-		else
-			. = PARTISAN
-
-
-
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -57,47 +49,6 @@
 	return capitalize(lowertext(base_type_flag()))
 
 /datum/job/proc/assign_faction(var/mob/living/carbon/human/user)
-
-
-
-	if (!squad_leaders[BRITISH])
-		squad_leaders[BRITISH] = FALSE
-	if (!squad_leaders[PIRATES])
-		squad_leaders[PIRATES] = FALSE
-	if (!squad_leaders[PARTISAN])
-		squad_leaders[PARTISAN] = FALSE
-
-	if (!officers[BRITISH])
-		officers[BRITISH] = FALSE
-	if (!officers[PIRATES])
-		officers[PIRATES] = FALSE
-	if (!officers[PARTISAN])
-		officers[PARTISAN] = FALSE
-
-	if (!commanders[BRITISH])
-		commanders[BRITISH] = FALSE
-	if (!commanders[PIRATES])
-		commanders[PIRATES] = FALSE
-	if (!commanders[PARTISAN])
-		commanders[PARTISAN] = FALSE
-
-	if (!soldiers[BRITISH])
-		soldiers[BRITISH] = FALSE
-	if (!soldiers[PIRATES])
-		soldiers[PIRATES] = FALSE
-	if (!soldiers[PARTISAN])
-		soldiers[PARTISAN] = FALSE
-
-
-	if (!squad_members[BRITISH])
-		squad_members[BRITISH] = FALSE
-	if (!squad_members[PIRATES])
-		squad_members[PIRATES] = FALSE
-	if (!squad_members[PARTISAN])
-		squad_members[PARTISAN] = FALSE
-
-	if (!istype(user))
-		return
 
 	if (istype(src, /datum/job/pirates))
 		user.faction_text = "PIRATES"

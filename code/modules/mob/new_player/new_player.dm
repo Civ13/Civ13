@@ -518,9 +518,6 @@
 		if (!job.specialcheck())
 			continue
 
-		if (job)
-			continue
-
 		var/job_is_available = job && IsJobAvailable(job.title)
 
 		if (!job.validate(src))
