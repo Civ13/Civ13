@@ -55,7 +55,7 @@
 					area_icon_state = "rain3"
 					area_alpha = 255
 
-	for (var/area/prishtina/A in area_list)
+	for (var/area/caribbean/A in area_list)
 		if (istype(A) && A.location == AREA_OUTSIDE && A.z == TRUE)
 			A.icon = area_icon
 			A.icon_state = area_icon_state

@@ -44,14 +44,14 @@ default behaviour is:
 
 /mob/living/Bump(atom/movable/AM, yes)
 
-	// no more pushing people past prishtina blocks - Kachnov
+	// no more pushing people past caribbean blocks - Kachnov
 	if (istype(AM, /obj/structure/closet))
 		for (var/mob/living/carbon/human/H in AM)
-			if (map.check_prishtina_block(H, get_step(get_turf(AM), dir)))
+			if (map.check_caribbean_block(H, get_step(get_turf(AM), dir)))
 				return
 
 	else if (ishuman(AM))
-		if (map.check_prishtina_block(AM, get_step(get_turf(AM), dir)))
+		if (map.check_caribbean_block(AM, get_step(get_turf(AM), dir)))
 			return
 
 	spawn(0)

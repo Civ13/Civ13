@@ -61,7 +61,7 @@
 		var/turf/T = get_step(loc, grip_dir)
 		if (user.loc == T)
 			if (user.has_empty_hand(both = TRUE) && !is_used_by(user))
-				if (!map || !map.check_prishtina_block(user, loc))
+				if (!map || !map.check_caribbean_block(user, loc))
 					if (do_after(user, 15, src))
 						user.use_MG(src)
 						usedby(user, src)

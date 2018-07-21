@@ -286,7 +286,7 @@
 		return
 
 	// relocate or gib chucklefucks who somehow cross the wall
-	if (map && map.check_prishtina_block(mob, mob.loc))
+	if (map && map.check_caribbean_block(mob, mob.loc))
 		if (!map.special_relocate(mob))
 			if (job_master)
 				job_master.relocate(mob)
@@ -332,7 +332,7 @@
 	for (var/refdir in dirs)
 		var/turf/ref = get_step(mob, refdir)
 
-		if (ref && map.check_prishtina_block(mob, ref))
+		if (ref && map.check_caribbean_block(mob, ref))
 			mob.dir = direct
 			if (world.time >= mob.next_gracewall_message)
 				mob << "<span class = 'warning'>You cannot pass the invisible wall until the Grace Period has ended.</span>"

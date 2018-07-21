@@ -23,20 +23,6 @@ var/GRACE_PERIOD_LENGTH = 7
 					world << "<br><font size=3><span class = 'notice'>It's <b>[lowertext(processes.time_of_day_change.changeto)]</b>, and the season is <b>[get_season()]</b>.</span></font>"
 
 	// spawn mice so pirates have something to eat after they start starving
-	var/mice_spawned = FALSE
-	var/max_mice = rand(40,50)
-
-	for (var/area/prishtina/pirates/bunker/area in area_list)
-		for (var/turf/T in area.contents)
-			if (T.density)
-				continue
-			if (istype(T, /turf/open))
-				continue
-			if (prob(1))
-				new/mob/living/simple_animal/mouse/gray(T)
-				++mice_spawned
-				if (mice_spawned > max_mice)
-					return TRUE
 
 	// open squad preparation doors
 	for (var/obj/structure/simple_door/key_door/keydoor in door_list)

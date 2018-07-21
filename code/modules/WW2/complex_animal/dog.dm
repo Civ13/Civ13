@@ -348,15 +348,15 @@ s
 
 			var/H_area_check = H_area
 			if (H_area_check)
-				H_area_check = istype(H_area_check, /area/prishtina)
+				H_area_check = istype(H_area_check, /area/caribbean)
 
 			if (H.loc && H.z == z && H_area_check && H.client && H.stat == CONSCIOUS && H.original_job && H.original_job.base_type_flag() != faction)
 
 				// makes dogs stop trying to detect people extremely far away. Hack.
-				if (istype(H_area, /area/prishtina/pirates) && !istype(src_area, /area/prishtina/pirates))
+				if (istype(H_area, /area/caribbean/pirates) && !istype(src_area, /area/caribbean/pirates))
 					continue
 
-				else if (istype(H_area, /area/prishtina/british) && !istype(src_area, /area/prishtina/british))
+				else if (istype(H_area, /area/caribbean/british) && !istype(src_area, /area/caribbean/british))
 					continue
 
 				else if (H_area.is_void_area && H_area != src_area)

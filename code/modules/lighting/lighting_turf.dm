@@ -189,7 +189,7 @@
 			var/counted = 0
 			// a turf found in range() of another turf can only be contained in an area: so don't use expensive get_area() checks. if (T.loc) is probably unneeded but oh well
 			for (var/turf/T in orange(1, src))
-				if (T.loc && (T.loc:location == AREA_OUTSIDE || T.loc.type == /area/prishtina/void))
+				if (T.loc && (T.loc:location == AREA_OUTSIDE || T.loc.type == /area/caribbean/void))
 					. += 0.25
 				++counted
 			// count null turfs as outside

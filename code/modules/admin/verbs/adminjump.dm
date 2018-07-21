@@ -153,11 +153,11 @@ var/turf/default_adminzone_turf = null
 		default_adminzone_turf = locate(90, 92, 3)
 
 	if (default_adminzone_turf)
-		if (get_area(default_adminzone_turf).type == /area/prishtina/admin)
+		if (get_area(default_adminzone_turf).type == /area/caribbean/admin)
 			mob.loc = default_adminzone_turf
 			return TRUE
 
-	var/area/prishtina/admin/admin_zone = locate() in area_list
+	var/area/caribbean/admin/admin_zone = locate() in area_list
 	for (var/turf/T in admin_zone.contents)
 		if (!T.density && !locate(/obj/structure) in T)
 			mob.loc = T

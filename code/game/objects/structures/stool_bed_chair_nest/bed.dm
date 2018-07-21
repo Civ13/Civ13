@@ -207,7 +207,7 @@
 
 /obj/structure/bed/roller/Move(var/turf/newloc)
 
-	if (buckled_mob && map.check_prishtina_block(buckled_mob, newloc))
+	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
 
 	var/oloc = loc

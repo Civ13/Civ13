@@ -12,16 +12,13 @@
 #define TEAM_RU 1
 #define TEAM_GE 2
 #define TEAM_PN 3
-#define TEAM_JP 4
-#define TEAM_US 5
-#define TEAM_PO 6
 
-var/global/spies[6]
-var/global/officers[6]
-var/global/commanders[6]
-var/global/squad_leaders[6]
-var/global/soldiers[6]
-var/global/squad_members[6]
+var/global/spies[3]
+var/global/officers[3]
+var/global/commanders[3]
+var/global/squad_leaders[3]
+var/global/soldiers[3]
+var/global/squad_members[3]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -36,26 +33,6 @@ var/global/squad_members[6]
 
 /datum/faction/proc/base_type()
 	return "/datum/faction"
-
-
-// you appear to be a partisan to all other partisans
-/datum/faction/partisan
-	icon_state = "partisan_soldier"
-	title = "Partisan Soldier"
-	team = TEAM_PN
-
-/datum/faction/partisan/base_type()
-	return "/datum/faction/partisan"
-
-// you appear to be an officer to all other partisans (UNUSED)
-/datum/faction/partisan/officer
-	icon_state = "partisan_officer"
-	team = TEAM_PN
-// you appear to be a partisan leader to all other partisans
-/datum/faction/partisan/commander
-	icon_state = "partisan_commander"
-	title = "Partisan Leader"
-	team = TEAM_PN
 
 
 // you appear to be a pirate to other pirates

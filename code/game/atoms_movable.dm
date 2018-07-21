@@ -85,12 +85,12 @@
 		for (var/refdir in dirs)
 			var/turf/ref = get_step(mob, refdir)
 
-			if (ref && map.check_prishtina_block(mob, ref))
+			if (ref && map.check_caribbean_block(mob, ref))
 				mob.dir = direction
 				return FALSE
 
 	// bug abusers btfo
-	if (map.check_prishtina_block(mob, get_turf(mob)))
+	if (map.check_caribbean_block(mob, get_turf(mob)))
 		return FALSE
 
 	return TRUE

@@ -3,7 +3,7 @@
 	ID = MAP_NAVAL
 	title = "Naval Battle (75x75x2)"
 //	lobby_icon_state = "pirates"
-	prishtina_blocking_area_types = list(/area/prishtina/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1800
 	squad_spawn_locations = FALSE
 	reinforcements = FALSE
@@ -14,8 +14,8 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/prishtina/british,
-		list(PIRATES) = /area/prishtina/pirates
+		list(BRITISH) = /area/caribbean/british,
+		list(PIRATES) = /area/caribbean/pirates
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(BRITISH = 0.4, PIRATES = 0.6)

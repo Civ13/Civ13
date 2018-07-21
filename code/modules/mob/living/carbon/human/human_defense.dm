@@ -162,7 +162,7 @@ bullet_act
 						for (var/obj/structure/window/W in get_turf(slammed_into))
 							W.shatter()
 				else
-					if (!map || !map.check_prishtina_block(src, behind))
+					if (!map || !map.check_caribbean_block(src, behind))
 						forceMove(behind)
 						spawn (1)
 							visible_message("<span class = 'danger'>[src] flies back from the force of the blast!</span>")

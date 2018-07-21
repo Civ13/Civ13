@@ -15,7 +15,7 @@
 	..()
 	amount = pick(0.04, 0.05, 0.06) // around 2 inches
 	var/area/A = get_area(src)
-	if (A && istype(A, /area/prishtina/forest))
+	if (A && istype(A, /area/caribbean/forest))
 		amount *= 2
 
 /obj/snow/proc/descriptor()

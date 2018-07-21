@@ -86,7 +86,7 @@
 				Bump(target, TRUE)
 			else
 				var/area/src_area = get_area(src)
-				if (src_area && map && map.prishtina_blocking_area_types.Find(src_area.type))
+				if (src_area && map && map.caribbean_blocking_area_types.Find(src_area.type))
 					Bump(loc, TRUE, FALSE)
 				else
 					Bump(loc, TRUE)

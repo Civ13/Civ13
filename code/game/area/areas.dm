@@ -88,8 +88,8 @@ var/list/ghostteleportlocs = list()
 	for (var/area in area_list)
 		var/area/AR = area
 		if (ghostteleportlocs.Find(AR.name)) continue
-		if (AR.type == /area/prishtina/void) continue
-		if (!istype(AR, /area/prishtina)) continue
+		if (AR.type == /area/caribbean/void) continue
+		if (!istype(AR, /area/caribbean)) continue
 		var/turf/picked = pick_area_turf(AR.type, list(/proc/is_station_turf))
 		if (picked)
 			ghostteleportlocs += AR.name
@@ -301,7 +301,7 @@ var/list/mob/living/forced_ambiance_list = new
 
 	var/override_ambience = FALSE
 
-	for (var/typecheck in list(/area/prishtina/british, /area/prishtina/pirates, /area/prishtina/no_mans_land, /area/prishtina/forest, /area/prishtina/void))
+	for (var/typecheck in list(/area/caribbean/british, /area/caribbean/pirates, /area/caribbean/no_mans_land, /area/caribbean/forest, /area/caribbean/void))
 		if (istype(oldarea, typecheck))
 			if (!istype(newarea, typecheck))
 				override_ambience = TRUE

@@ -12,7 +12,7 @@ var/global/obj/map_metadata/map = null
 	var/ID = null // MUST be text, or aspects will break
 	var/title = null
 	var/lobby_icon_state = "1"
-	var/list/prishtina_blocking_area_types = list()
+	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]
 	var/admin_ended_all_grace_periods = FALSE
@@ -32,8 +32,8 @@ var/global/obj/map_metadata/map = null
 	var/list/faction_distribution_coeffs = list(INFINITY) // list(INFINITY) = no hard locks on factions
 	var/list/available_subfactions = list()
 	var/list/roundend_condition_sides = list(
-		list(PIRATES) = /area/prishtina/pirates,
-		list(BRITISH) = /area/prishtina/british)
+		list(PIRATES) = /area/caribbean/pirates,
+		list(BRITISH) = /area/caribbean/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
 	"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
@@ -128,11 +128,11 @@ var/global/obj/map_metadata/map = null
 
 	update_win_condition()
 
-/obj/map_metadata/proc/check_prishtina_block(var/mob/living/carbon/human/H, var/turf/T)
+/obj/map_metadata/proc/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
-	if (prishtina_blocking_area_types.Find(A.type))
+	if (caribbean_blocking_area_types.Find(A.type))
 		if (!H.original_job)
 			return FALSE
 		else

@@ -106,14 +106,6 @@
 		user.faction_text = "BRITISH"
 		user.base_faction = new/datum/faction/british(user, src)
 
-	else if (istype(src, /datum/job/partisan))
-		user.faction_text = "PARTISAN"
-		user.base_faction = new/datum/faction/partisan(user, src)
-		if (is_officer && !is_commander)
-			user.officer_faction = new/datum/faction/partisan/officer(user, src)
-		else if (is_commander)
-			user.officer_faction = new/datum/faction/partisan/commander(user, src)
-
 
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))

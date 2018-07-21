@@ -397,7 +397,7 @@
 		return FALSE
 	if (scrambling)
 		return FALSE
-	if (map.check_prishtina_block(src, F) || map.check_prishtina_block(src, get_turf(src))) // you somehow got here, fuck you - Kachnov
+	if (map.check_caribbean_block(src, F) || map.check_caribbean_block(src, get_turf(src))) // you somehow got here, fuck you - Kachnov
 		return FALSE
 
 	var/oloc = loc
