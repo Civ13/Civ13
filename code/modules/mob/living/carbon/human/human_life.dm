@@ -592,7 +592,6 @@
 		if (paralysis || sleeping)
 			blinded = TRUE
 			stat = UNCONSCIOUS
-			animate_tail_reset()
 			adjustHalLoss(-3)
 			if (l_hand) unEquip(l_hand)
 			if (r_hand) unEquip(r_hand)
@@ -1256,19 +1255,6 @@
 					holder.icon_state = ""
 			hud_list[BASE_FACTION] = holder
 
-		if (squad_faction)
-			var/image/holder = hud_list[SQUAD_FACTION]
-			holder.icon = 'icons/mob/hud_WW2.dmi'
-			switch (original_job.base_type_flag())
-				if (SOVIET)
-					holder.icon_state = squad_faction.icon_state
-				if (GERMAN)
-					holder.icon_state = squad_faction.icon_state
-				if (PARTISAN)
-					holder.icon_state = squad_faction.icon_state
-				if (CIVILIAN)
-					holder.icon_state = ""
-			hud_list[SQUAD_FACTION] = holder
 
 	if (stat != life_hud_check["stat"] || health != life_hud_check["health"])
 		var/image/holder = hud_list[HEALTH_HUD]

@@ -238,8 +238,7 @@
 						M_job = "Carbon-based"
 
 				else if (isanimal(M)) //simple animals
-					else
-						M_job = "Animal"
+					M_job = "Animal"
 
 				else
 					M_job = "Living"

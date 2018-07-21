@@ -36,30 +36,6 @@
 	usr.show_message(t, TRUE)
 
 
-/client/proc/cmd_admin_robotize(var/mob/M in mob_list)
-	set category = "Fun"
-	set name = "Make Robot"
-	return FALSE
-
-/client/proc/cmd_admin_animalize(var/mob/M in mob_list)
-	set category = "Fun"
-	set name = "Make Simple Animal"
-
-	if (!ticker)
-		WWalert(src, "Wait until the game starts.", "Make Simple Animal")
-		return
-
-	if (!M)
-		WWalert(src, "That mob doesn't seem to exist; please close the panel and try again.", "Make Simple Animal")
-		return
-
-	if (istype(M, /mob/new_player))
-		WWalert(src, "The mob must not be a new_player.", "Make Simple Animal")
-		return
-
-	log_admin("[key_name(src)] has animalized [M.key].")
-	spawn(10)
-		M.Animalize()
 
 //TODO: merge the vievars version into this or something maybe mayhaps
 /client/proc/cmd_debug_del_all()

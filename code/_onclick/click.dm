@@ -92,32 +92,6 @@
 	if (!canClick()) // in the year 2000...
 		return
 
-	if (istype(loc, /obj/tank))
-		if (A == loc)
-			var/obj/tank/tank = loc
-			var/obj/item/ammo_magazine/maxim/hand = get_active_hand()
-			var/exit_tank = FALSE
-			if (l_hand && r_hand && istype(l_hand, /obj/item/ammo_magazine/maxim) && istype(r_hand, /obj/item/ammo_magazine/maxim))
-				if ((WWinput(src, "Exit the tank or replace the MG belt?", "Choose", "Replace MG Belt", list("Exit", "Replace MG Belt"))) == "Exit")
-					exit_tank = TRUE
-			// reloading the tank MG
-			if (hand && istype(hand) && !exit_tank)
-				if (tank.MG && tank.MG.magazine_type == hand.type)
-					tank.tank_message("<span class = 'warning'>[src] starts to replace the MG belt...</span>")
-					if (do_after(src, 50))
-						var/obj/item/ammo_magazine/maxim/oldmag = tank.MG.ammo_magazine
-						tank.MG.ammo_magazine = hand
-						remove_from_mob(hand)
-						if (oldmag)
-							oldmag.update_icon()
-							put_in_any_hand_if_possible(oldmag, prioritize_active_hand = TRUE)
-						tank.tank_message("<span class = 'warning'>[src] finishes replacing the MG belt.</span>")
-				return
-			else
-				// leaving the tank
-				tank.handle_seat_exit(src)
-				return
-
 	// stop looking down a ladder
 	if (istype(A, /obj/structure/multiz/ladder/ww2))
 		var/mob/living/carbon/human/H = src
@@ -139,79 +113,6 @@
 
 	var/obj/item/W = get_active_hand()
 
-	if (!W)
-
-		var/atom/movable/special_MG = null
-		var/tankcheck = FALSE
-
-		if (using_MG)
-			special_MG = using_MG
-		else if (istank(loc))
-			var/obj/tank/T = loc
-			if (T.back_seat() == src && !T.halftrack)
-				special_MG = T.MG
-				special_MG.dir = T.dir // for dir checks below
-				switch (T.dir) // tank sprite memes
-					if (NORTH, NORTHEAST, NORTHWEST)
-						special_MG.loc = locate(T.x+1, T.y+2, T.z)
-					if (SOUTH, SOUTHEAST, SOUTHWEST)
-						special_MG.loc = locate(T.x+1, T.y-1, T.z)
-					if (EAST)
-						special_MG.loc = locate(T.x+3, T.y+2, T.z)
-					if (WEST)
-						special_MG.loc = locate(T.x-1, T.y+1, T.z)
-				tankcheck = TRUE
-			else if (T.halftrack)
-				special_MG = T.MG
-				special_MG.dir = T.dir // for dir checks below
-				switch (T.dir) // tank sprite memes
-					if (NORTH, NORTHEAST, NORTHWEST)
-						special_MG.loc = locate(T.x, T.y+2, T.z)
-					if (SOUTH, SOUTHEAST, SOUTHWEST)
-						special_MG.loc = locate(T.x, T.y-1, T.z)
-					if (EAST)
-						special_MG.loc = locate(T.x+3, T.y+1, T.z)
-					if (WEST)
-						special_MG.loc = locate(T.x-2, T.y+1, T.z)
-				tankcheck = TRUE
-
-		if (special_MG && special_MG.loc)
-
-			var/obj/item/weapon/gun/projectile/automatic/stationary/MG = special_MG
-
-			var/can_fire = FALSE
-
-			switch (MG.dir)
-				if (EAST)
-					if (A.x > MG.x)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-				if (WEST)
-					if (A.x < MG.x)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-				if (NORTH, NORTHEAST, NORTHWEST)
-					if (A.y > MG.y)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-				if (SOUTH, SOUTHEAST, SOUTHWEST)
-					if (A.y < MG.y)
-						can_fire = TRUE
-					else
-						can_fire = FALSE
-
-			if (!can_fire)
-				goto skip
-
-			MG.Fire(A, src, force = TRUE)
-
-			skip
-
-		if (tankcheck)
-			special_MG.loc = null
 
 
 	if (W == A) // Handle attack_self

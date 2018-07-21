@@ -402,17 +402,6 @@
 					if (display == "Partisan")
 						display = "Civilian"
 
-					if (team != PILLARMEN)
-						msg += "<br><i>[T.He] [T.is] a <b>[display]</b>.</i>"
-
-				if (original_job.base_type_flag() == H.original_job.base_type_flag() && (original_job.base_type_flag() == SOVIET || original_job.base_type_flag() == GERMAN))
-					if (isleader(src, H))
-						msg += "<br><b>[T.He] [T.is] your squad leader.</b>"
-					else if (isleader(H, src))
-						msg += "<br><b>[T.He] [T.is] your soldat.</b>"
-					else if (getsquad(H) == getsquad(src) && getsquad(H) != null)
-						msg += "<br><b>[T.He] [T.is] in your squad.</b>"
-
 		else if (isobserver(user))
 			msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
 

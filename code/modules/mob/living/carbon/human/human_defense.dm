@@ -145,7 +145,7 @@ bullet_act
 				KD_check = TRUE
 				break
 
-		if (prob(P.KD_chance/2) && !is_on_train() && !KD_check)
+		if (prob(P.KD_chance/2) && !KD_check)
 			SpinAnimation(5,1)
 			// P.firer_original_dir is more accurate, since P.dir is never explicitly set? - Kachnov
 			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir)

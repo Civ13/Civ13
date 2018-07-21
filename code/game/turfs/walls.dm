@@ -105,15 +105,6 @@ var/list/global/wall_cache = list()
 
 	take_damage(tforce)
 
-/turf/wall/proc/clear_plants()
-	for (var/obj/effect/overlay/wallrot/WR in src)
-		qdel(WR)
-	return
-
-/turf/wall/ChangeTurf(var/newtype)
-	clear_plants()
-	..(newtype)
-
 //Appearance
 /turf/wall/examine(mob/user)
 	. = ..(user)
@@ -158,8 +149,6 @@ var/list/global/wall_cache = list()
 	if (reinf_material)
 		cap += reinf_material.integrity
 
-	if (locate(/obj/effect/overlay/wallrot) in src)
-		cap = cap / 10
 
 	if (damage >= cap)
 		dismantle_wall()
@@ -195,7 +184,6 @@ var/list/global/wall_cache = list()
 		else
 			O.loc = src
 
-	clear_plants()
 	material = get_material_by_name("placeholder")
 	reinf_material = null
 	//update_connections(1)
@@ -217,12 +205,6 @@ var/list/global/wall_cache = list()
 			take_damage(rand(50, 100))
 
 // Wall-rot effect, a nasty fungus that destroys walls.
-/turf/wall/proc/rot()
-	if (locate(/obj/effect/overlay/wallrot) in src)
-		return
-	var/number_rots = rand(2,3)
-	for (var/i=0, i<number_rots, i++)
-		new/obj/effect/overlay/wallrot(src)
 
 /turf/wall/proc/can_melt()
 	if (material.flags & MATERIAL_UNMELTABLE)

@@ -187,45 +187,6 @@
 	return hear
 
 
-/proc/get_mobs_in_radio_ranges(var/list/obj/item/radio/radios)
-
-	set background = TRUE
-
-	. = list()
-	// Returns a list of mobs who can hear any of the radios given in @radios
-	var/list/speaker_coverage = list()
-	for (var/obj/item/radio/R in radios)
-		if (R)
-		/*
-			//Cyborg checks. Receiving message uses a bit of cyborg's charge.
-			var/obj/item/radio/borg/BR = R
-			if (istype(BR) && BR.myborg)
-				var/mob/living/silicon/robot/borg = BR.myborg
-				var/datum/robot_component/CO = borg.get_component("radio")
-				if (!CO)
-					continue //No radio component (Shouldn't happen)
-				if (!borg.is_component_functioning("radio") || !borg.cell_use_power(CO.active_usage))
-					continue //No power.
-
-					*/
-
-			var/turf/speaker = get_turf(R)
-			if (speaker)
-				for (var/turf/T in hear(R.canhear_range,speaker))
-					speaker_coverage[T] = T
-
-
-	// Try to find all the players who can hear the message
-	for (var/i = TRUE; i <= player_list.len; i++)
-		var/mob/M = player_list[i]
-		if (M)
-			var/turf/ear = get_turf(M)
-			if (ear)
-				// Ghostship is magic: Ghosts can hear radio chatter from anywhere
-				if (speaker_coverage[ear] || (isghost(M) && M.is_preference_enabled(/datum/client_preference/ghost_radio)))
-					. |= M		// Since we're already looping through mobs, why bother using |= ? This only slows things down.
-	return .
-
 #define SIGN(X) ((X<0)?-1:1)
 
 proc

@@ -125,23 +125,8 @@ var/list/sneeze_sounds_female = list(
 	'sound/effects/emotes/female_sneeze1.ogg',
 	'sound/effects/emotes/female_sneeze2.ogg')
 
-var/list/charge_sounds_ger = list(
-	'sound/effects/emotes/charge_ger.ogg',
-	'sound/effects/emotes/charge_ger2.ogg',
-	'sound/effects/emotes/charge_ger3.ogg',
-	'sound/effects/emotes/charge_ger4.ogg',
-	'sound/effects/emotes/charge_ger5.ogg')
-var/list/charge_sounds_sov = list(
-	'sound/effects/emotes/charge_sov.ogg',
-	'sound/effects/emotes/charge_sov2.ogg',
-	'sound/effects/emotes/charge_sov3.ogg',
-	'sound/effects/emotes/charge_sov4.ogg')
 var/list/charge_sounds_eng = list(
 	'sound/effects/emotes/charge_eng.ogg')
-var/list/charge_sounds_jap = list(
-	'sound/effects/emotes/charge_jap.ogg')
-var/list/charge_sounds_pol = list(
-	'sound/effects/emotes/charge_pol.ogg')
 
 // pain, etc sounds from Interbay
 
@@ -265,13 +250,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("sparks") soundin = pick(spark_sound)
 			if ("rustle") soundin = pick(rustle_sound)
 			if ("punch") soundin = pick(punch_sound)
-			if ("clownstep") soundin = pick(clown_sound)
 			if ("swing_hit") soundin = pick(swing_hit_sound)
-			if ("hiss") soundin = pick(hiss_sound)
 			if ("pageturn") soundin = pick(page_sound)
-			if ("keyboard") soundin = pick(keyboard_sound)
-			if ("robot_talk_heavy") soundin = pick(robot_talk_heavy_sound)
-			if ("robot_talk_light") soundin = pick(robot_talk_light_sound)
 			if ("miss_sound") soundin = pick(miss_sound)
 			if ("ric_sound") soundin = pick(ric_sound)
 			if ("casing_sound") soundin = pick(casing_sound)
@@ -285,13 +265,6 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("sandfootsteps") soundin = pick(sandfootsteps)
 			if ("woodfootsteps") soundin = pick(woodfootsteps)
 			if ("carpetfootsteps") soundin = pick(carpetfootsteps)
-			if ("artillery_out") soundin = pick(artillery_out)
-			if ("artillery_in") soundin = pick(artillery_in)
-			if ("artillery_out_distance") soundin = pick(artillery_out_distance)
-			if ("artillery_in_distance") soundin = pick(artillery_in_distance)
-			if ("train_movement") soundin = pick(train_movement_sounds)
-			if ("train_halting") soundin = pick(train_halting_sounds)
-			if ("wryyy") soundin = pick(wryyys)
 			if ("doorknock") soundin = pick(doorknock_sounds)
 
 			// emote sounds from InterBay
@@ -330,10 +303,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("charge_PIRATES")
 				soundin = pick(charge_sounds_eng)
 			if ("charge_SOVIET")
-				soundin = pick(charge_sounds_sov)
+				soundin = pick(charge_sounds_eng)
 			if ("charge_CIVILIAN")
-				soundin = pick(charge_sounds_sov)
+				soundin = pick(charge_sounds_eng)
 			if ("charge_GERMAN")
-				soundin = pick(charge_sounds_ger)
+				soundin = pick(charge_sounds_eng)
 
 	return soundin

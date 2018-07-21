@@ -1,6 +1,6 @@
 /turf/open
 	name = "open space"
-	icon = 'icons/turf/space.dmi'
+	icon = 'icons/turf/areas.dmi'
 	icon_state = "black"
 	density = FALSE
 	plane = OPENSPACE_PLANE

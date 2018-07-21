@@ -83,7 +83,7 @@ var/GRACE_PERIOD_LENGTH = 7
 
 
 	// forces Spring in Island map
-	if (map && istype(map, /obj/map_metadata/island))
+	if (map && istype(map, /obj/map_metadata/naval))
 		(season = "SPRING")
 		return TRUE
 
@@ -184,27 +184,5 @@ var/GRACE_PERIOD_LENGTH = 7
 //		spawn (0)
 //			for (var/obj/snow_maker/SM in G)
 //				qdel(SM)
-
-	return TRUE
-
-/hook/train_move/proc/announce_mission_start()
-
-
-	var/preparation_time = world.realtime - roundstart_time
-
-	if (map)
-		map.announce_mission_start(preparation_time)
-
-	game_started = TRUE
-
-	// let the new players see reinforcements now
-	spawn (1)
-		for (var/np in new_player_mob_list)
-			if (np:client)
-				np:new_player_panel_proc()
-
-	var/show_report_after = 0
-	spawn (show_report_after)
-		show_global_battle_report(null)
 
 	return TRUE

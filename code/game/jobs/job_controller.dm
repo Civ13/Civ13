@@ -125,61 +125,6 @@ var/global/datum/controller/occupations/job_master
 			np.AttemptLateSpawn(j.title)
 			return
 
-// full squads, not counting SLs
-/datum/controller/occupations/proc/full_squads(var/team)
-	switch (team)
-		if (GERMAN)
-			return round(german_squad_members/MEMBERS_PER_SQUAD)
-		if (SOVIET)
-			return round(soviet_squad_members/MEMBERS_PER_SQUAD)
-	return FALSE
-
-/datum/controller/occupations/proc/must_have_squad_leader(var/team)
-	switch (team)
-		if (GERMAN)
-			if (full_squads(team) > german_squad_leaders && !(german_squad_leaders == 4))
-				return TRUE
-		if (SOVIET)
-			if (full_squads(team) > soviet_squad_leaders && !(soviet_squad_leaders == 4))
-				return TRUE
-	return FALSE // not relevant for other teams
-
-/datum/controller/occupations/proc/must_not_have_squad_leader(var/team)
-	switch (team)
-		if (GERMAN)
-			if (german_squad_leaders > full_squads(team))
-				return TRUE
-		if (SOVIET)
-			if (soviet_squad_leaders > full_squads(team))
-				return TRUE
-	return FALSE // not relevant for other teams
-
-
-// too many people joined as a soldier and not enough as SL
-// return FALSE if j is anything but a squad leader or special roles
-/datum/controller/occupations/proc/squad_leader_check(var/mob/new_player/np, var/datum/job/j)
-	var/current_squad = istype(j, /datum/job/german) ? current_german_squad : current_soviet_squad
-	if (!j.is_commander && !j.is_nonmilitary && !j.is_SS && !j.is_paratrooper)
-		// we're trying to join as a soldier or officer
-		if (j.is_officer) // handle officer
-			if (must_have_squad_leader(j.base_type_flag())) // only accept SLs
-				if (!j.SL_check_independent)
-					np << "<span class = 'danger'>Squad #[current_squad] needs a Squad Leader! You can't join as anything else until it has one. You can still spawn in through reinforcements, though.</span>"
-					return FALSE
-				else // we're joining as the SL or another allowed role
-					return TRUE
-		else
-			if (must_have_squad_leader(j.base_type_flag())) // only accept SLs
-				if (!j.SL_check_independent)
-					np << "<span class = 'danger'>Squad #[current_squad] needs a Squad Leader! You can't join as anything else until it has one. You can still spawn in through reinforcements, though.</span>"
-					return FALSE
-	else
-		if (must_have_squad_leader(j.base_type_flag()))
-			if (!j.SL_check_independent)
-				np << "<span class = 'danger'>Squad #[current_german_squad] needs a Squad Leader! You can't join as anything else until it has one. You can still spawn in through reinforcements, though.</span>"
-				return FALSE
-	return TRUE
-
 
 /datum/controller/occupations/proc/relocate(var/mob/living/carbon/human/H)
 
@@ -221,7 +166,6 @@ var/global/datum/controller/occupations/job_master
 		if (!job)	continue
 		if (job.faction != faction)	continue
 		occupations += job
-	occupations += new/datum/job/german/oberstleutnant
 	return TRUE
 
 
@@ -393,100 +337,7 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateSS"
 			else if (findtext(H.original_job.spawn_location, "JoinLateRA"))
 				spawn_location = "JoinLateRA"
-
 		H.job_spawn_location = spawn_location
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "got to squadsetting code"
-		#endif
-
-		if (H.original_job.base_type_flag() == GERMAN)
-			current_german_squad = max(current_german_squad, H.squad_faction ? H.squad_faction.actual_number : current_german_squad)
-		else if (H.original_job.base_type_flag() == SOVIET)
-			current_soviet_squad = max(current_soviet_squad, H.squad_faction ? H.squad_faction.actual_number : current_soviet_squad)
-
-		#ifdef SPAWNLOC_DEBUG
-		world << "got past squadsetting code"
-		#endif
-
-		if ((!map || map.squad_spawn_locations) && H.squad_faction)
-			switch (spawn_location)
-				// German
-				if ("JoinLateHeer")
-					spawn_location = "JoinLateHeer-S[current_german_squad]"
-				if ("JoinLateHeerSL")
-					spawn_location = "JoinLateHeer-S[current_german_squad]-Leader"
-				// Soviet
-				if ("JoinLateRA")
-					spawn_location = "JoinLateRA-S[current_soviet_squad]"
-				if ("JoinLateRASL")
-					spawn_location = "JoinLateRA-S[current_soviet_squad]-Leader"
-
-		H.job_spawn_location = spawn_location
-
-		if (isgermansquadmember_or_leader(H))
-			if (isgermansquadleader(H))
-				++german_squad_leaders
-				german_squad_info[current_german_squad] = "<b>The leader of your squad (#[current_german_squad]) is [H.real_name]. He has a golden HUD.</b>"
-				if (!istype(get_area(H), /area/prishtina/admin) && ticker.current_state != GAME_STATE_PREGAME) // first check fails due to bad location, fix
-					world << "<b>The leader of Wehrmacht Squad #[current_german_squad] is [H.real_name]!</b>"
-				german_officer_squad_info[current_german_squad] = "<b><i>The leader of squad #[current_german_squad] is [H.real_name].</i></b>"
-			else
-				if (!job.is_officer && !job.is_SS && !job.is_paratrooper && !job.is_nonmilitary)
-					++german_squad_members
-					if (german_squad_info[current_german_squad])
-						spawn (0)
-							H << german_squad_info[current_german_squad]
-							H.add_memory(german_squad_info[current_german_squad])
-					else
-						spawn (2)
-							H << "<i>Your squad, #[current_german_squad], does not have a Squad Leader yet. Consider waiting for one before deploying.</i>"
-
-		else if (issovietsquadmember_or_leader(H))
-			if (issovietsquadleader(H))
-				soviet_squad_info[current_soviet_squad] = "<b>The leader of your squad (#[current_soviet_squad]) is [H.real_name]. He has a golden HUD.</b>"
-				if (!istype(get_area(H), /area/prishtina/admin) && ticker.current_state != GAME_STATE_PREGAME) // first check fails due to bad location, fix
-					world << "<b>The leader of Soviet Squad #[current_soviet_squad] is [H.real_name]!</b>"
-				soviet_officer_squad_info[current_soviet_squad] = "<b><i>The leader of squad #[current_soviet_squad] is [H.real_name].</i></b>"
-				++soviet_squad_leaders
-			else
-				if (!job.is_officer)
-					++soviet_squad_members
-					if (soviet_squad_info[current_soviet_squad])
-						spawn (0)
-							H << soviet_squad_info[current_soviet_squad]
-							H.add_memory(soviet_squad_info[current_soviet_squad])
-					else
-						spawn (2)
-							H << "<i>Your squad, #[current_soviet_squad], does not have a Squad Leader yet. Consider waiting for one before deploying.</i>"
-		else if (H.original_job.is_officer && H.original_job.base_type_flag() == SOVIET)
-			spawn (5)
-				for (var/i in 1 to soviet_officer_squad_info.len)
-					if (soviet_officer_squad_info[i])
-				//		H << "<br>[soviet_officer_squad_info[i]]"
-						H.add_memory(soviet_officer_squad_info[i])
-
-		else if (H.original_job.is_officer && H.original_job.base_type_flag() == GERMAN)
-			spawn (5)
-				for (var/i in 1 to german_officer_squad_info.len)
-					if (german_officer_squad_info[i])
-				//		H << "<br>[german_officer_squad_info[i]]"
-						H.add_memory(german_officer_squad_info[i])
-
-		if (H.original_job.is_officer)
-			if (H.original_job.base_type_flag() == GERMAN)
-		//		H << "The passcode for radios and phones is <b>[supply_codes[GERMAN]].</b>"
-				H.add_memory("The passcode for radios and phones is [processes.supply.codes[GERMAN]].")
-
-			else if (H.original_job.base_type_flag() == SOVIET)
-		//		H << "The passcode for radios and phones is <b>[supply_codes[SOVIET]].</b>"
-				H.add_memory("The passcode for radios and phones is [processes.supply.codes[SOVIET]].")
-			else if (H.original_job.base_type_flag() == PIRATES)
-		//		H << "The passcode for radios and phones is <b>[supply_codes[SOVIET]].</b>"
-				H.add_memory("The passcode for radios and phones is [processes.supply.codes[PIRATES]].")
-			else if (H.original_job.base_type_flag() == BRITISH)
-		//		H << "The passcode for radios and phones is <b>[supply_codes[SOVIET]].</b>"
-				H.add_memory("The passcode for radios and phones is [processes.supply.codes[BRITISH]].")
 
 		#ifdef SPAWNLOC_DEBUG
 		world << "[H] ([rank]) GOT TO job spawn location = [H.job_spawn_location]"
@@ -672,10 +523,10 @@ var/global/datum/controller/occupations/job_master
 			if (civilians >= max_civilians)
 				return TRUE
 			return FALSE
-		if (GERMAN, ITALIAN)
+		if (GERMAN)
 			if (germans_forceEnabled)
 				return FALSE
-			if ((germans+italians) >= max_germans)
+			if ((germans) >= max_germans)
 				return TRUE
 		if (SOVIET)
 			if (soviets_forceEnabled)

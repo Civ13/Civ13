@@ -59,15 +59,7 @@
 	radiate()
 	add_fingerprint(user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	var/rotting = (locate(/obj/effect/overlay/wallrot) in src)
-	if (HULK in user.mutations)
-		if (rotting || !prob(material.hardness))
-			success_smash(user)
-		else
-			fail_smash(user)
-			return TRUE
 
-	try_touch(user, rotting)
 
 /turf/wall/attack_generic(var/mob/user, var/damage, var/attack_message, var/wallbreaker)
 
@@ -76,13 +68,9 @@
 		return
 
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	var/rotting = (locate(/obj/effect/overlay/wallrot) in src)
 	if (!damage || !wallbreaker)
-		try_touch(user, rotting)
 		return
 
-	if (rotting)
-		return success_smash(user)
 
 	if (reinf_material)
 		if ((wallbreaker == 2) || (damage >= max(material.hardness,reinf_material.hardness)))

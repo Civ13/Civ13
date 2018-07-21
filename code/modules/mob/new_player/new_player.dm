@@ -311,13 +311,6 @@
 
 		var/job_flag = actual_job.base_type_flag()
 
-		if (job_flag == GERMAN || job_flag == SOVIET)
-			// we're only accepting squad leaders right now
-			if (!job_master.squad_leader_check(src, actual_job))
-				return
-			// we aren't accepting squad leaders right now
-			if (!job_master.squad_member_check(src, actual_job))
-				return
 
 		if (job_flag == GERMAN)
 			if (client.prefs.s_tone < -30)
@@ -460,11 +453,6 @@
 			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
 		return
 
-	if (job.is_paratrooper && !paratroopers_forceEnabled)
-		if (map && map.germans_can_cross_blocks() && map.soviets_can_cross_blocks())
-			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
-			return
-
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -485,16 +473,6 @@
 
 	character.lastarea = get_area(loc)
 
-	if (character.original_job)
-		if (character.original_job.base_type_flag() == SOVIET)
-			var/obj/item/radio/R = main_radios[SOVIET]
-			if (R && R.loc)
-				R.announce_after("[character.real_name], [rank], has arrived.", "Arrivals Announcements", 10)
-		else if (character.original_job.base_type_flag() == GERMAN)
-			var/obj/item/radio/R = main_radios[GERMAN]
-			if (R && R.loc)
-				R.announce_after("[character.real_name], [rank], has arrived.", "Arrivals Announcements", 10)
-
 	return TRUE
 
 /mob/new_player/proc/LateChoices()
@@ -507,7 +485,7 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_germans.len] Germans, [alive_russians.len] Soviets, [alive_partisans.len+alive_polish.len] Partisans, [alive_civilians.len] Civilians."
+	dat += "<b>Current Autobalance Status</b>: [alive_germans.len] Germans, [alive_russians.len] Soviets, [alive_partisans.len] Partisans, [alive_civilians.len] Civilians."
 	dat += "<br>"
 	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 	dat += "<br>"
@@ -540,7 +518,7 @@
 		if (!job.specialcheck())
 			continue
 
-		if (job && !job.train_check())
+		if (job)
 			continue
 
 		var/job_is_available = job && IsJobAvailable(job.title)
@@ -581,7 +559,7 @@
 		if (istype(job, /datum/job/partisan/civilian) && !civilians_toggled)
 			job_is_available = FALSE
 
-		if (istype(job, /datum/job/german) && !job.is_SS && !germans_toggled)
+		if (istype(job, /datum/job/german) && !germans_toggled)
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/soviet) && !soviets_toggled)
@@ -815,13 +793,6 @@
 /mob/new_player/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null)
 	return
 
-/mob/new_player/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/part_a, var/part_b, var/mob/speaker = null, var/hard_to_hear = FALSE)
-	return
 
 /mob/new_player/MayRespawn()
 	return TRUE
-
-/mob/new_player/verb/see_battle_report()
-	set category = "OOC"
-	set name = "See Battle Report"
-	show_global_battle_report(src, TRUE)

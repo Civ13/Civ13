@@ -327,10 +327,6 @@ Proc for attack log creation, because really why not
 
 	user.may_do_mob = FALSE
 
-	var/user_loc = user.loc
-	var/target_loc = target.loc
-
-
 	var/holding = user.get_active_hand()
 	var/datum/progressbar/progbar
 	if (progress)
@@ -376,8 +372,6 @@ Proc for attack log creation, because really why not
 
 	// made this account for being moved on rollerbeds - Kachnov
 
-
-	var/atom/original_loc = user.loc
 
 	var/holding = user.get_active_hand()
 

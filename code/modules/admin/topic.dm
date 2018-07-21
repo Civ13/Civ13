@@ -170,16 +170,6 @@
 		else
 			usr << "Admin Rejuvinates have been disabled"
 
-	else if (href_list["makeanimal"])
-		if (!check_rights(R_SPAWN))	return
-
-		var/mob/M = locate(href_list["makeanimal"])
-		if (istype(M, /mob/new_player))
-			usr << "This cannot be used on instances of type /mob/new_player"
-			return
-
-		usr.client.cmd_admin_animalize(M)
-
 	else if (href_list["adminplayeropts"])
 		var/mob/M = locate(href_list["adminplayeropts"])
 		show_player_panel(M)

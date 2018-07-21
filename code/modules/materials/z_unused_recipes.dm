@@ -3,7 +3,6 @@
 /material/plasteel/generate_recipes()
 	..()
 	recipes += new/datum/stack_recipe("Metal crate", /obj/structure/closet/crate, 10, _time = 35, _one_per_turf = TRUE)
-	recipes += new/datum/stack_recipe("knife grip", /obj/item/weapon/material/butterflyhandle, 4, _time = 15, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("dark floor tile", /obj/item/stack/tile/floor/dark, TRUE, 4, 20)
 
 /material/sandstone/generate_recipes()

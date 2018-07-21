@@ -16,3 +16,11 @@
 #define UKRAINIAN "UKRAINIAN"
 #define ENGLISH "ENGLISH"
 #define JAPANESE "JAPANESE"
+
+/proc/faction_const2name(constant)
+
+	if (constant == PIRATES)
+		return "Pirates"
+
+	if (constant == BRITISH)
+		return "Royal Navy"

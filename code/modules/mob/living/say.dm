@@ -113,13 +113,6 @@ proc/get_radio_key_from_channel(var/channel)
 	returns[3] = speech_problem_flag
 	return returns
 
-/mob/living/proc/handle_message_mode(message_mode, message, verb, speaking, used_radios, alt_name)
-	if (message_mode == "intercom")
-		for (var/obj/item/radio/intercom/I in view(1, null))
-			I.talk_into(src, message, verb, speaking)
-			used_radios += I
-	return FALSE
-
 /mob/living/proc/handle_speech_sound()
 	var/list/returns[2]
 	returns[1] = null
@@ -195,9 +188,6 @@ proc/get_radio_key_from_channel(var/channel)
 	if (!message || message == "")
 		return FALSE
 
-	var/list/obj/item/used_radios = new
-	if (handle_message_mode(message_mode, message, verb, speaking, used_radios, alt_name))
-		return TRUE
 
 	var/list/handle_v = handle_speech_sound()
 	var/sound/speech_sound = handle_v[1]

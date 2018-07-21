@@ -4,9 +4,6 @@
 /obj/item/clothing/under
 	var/swapped = FALSE
 
-/obj/item/clothing/under/proc/add_alternative_setting()
-	verbs += /obj/item/clothing/under/proc/Swap
-
 
 /obj/item/clothing/under/doctor
 	name = "doctor's uniform"

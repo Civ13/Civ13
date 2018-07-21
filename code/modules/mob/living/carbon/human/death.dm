@@ -36,29 +36,17 @@
 	next_emote["vocal"] = world.time - 1
 	emote("scream")
 
-/mob/living/carbon/human/dust()
-	if (species)
-		..(species.dusted_anim, species.remains_type)
-	else
-		..()
-
 /mob/living/carbon/human/death(gibbed = FALSE)
 
 	if (stat == DEAD) return
 
 	src << browse(null, "window=memory")
 
-	if (original_job)
-		switch (original_job.base_type_flag())
-			if (GERMAN)
-				++processes.battle_report.german_deaths_this_cycle
-			if (SOVIET)
-				++processes.battle_report.soviet_deaths_this_cycle
+
 
 	//Handle species-specific deaths.
 	species.handle_death(src)
 
-	animate_tail_stop()
 
 	callHook("death", list(src, gibbed))
 

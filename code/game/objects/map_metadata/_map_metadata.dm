@@ -217,7 +217,6 @@ var/global/obj/map_metadata/map = null
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major

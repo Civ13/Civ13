@@ -19,12 +19,6 @@
 		command_buffer.Add(lowertext(html_decode(message)))
 	return FALSE
 
-/mob/living/simple_animal/hostile/commanded/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/part_a, var/part_b, var/mob/speaker = null, var/hard_to_hear = FALSE)
-	if ((speaker in friends) || speaker == master)
-		command_buffer.Add(speaker)
-		command_buffer.Add(lowertext(html_decode(message)))
-	return FALSE
-
 /mob/living/simple_animal/hostile/commanded/Life()
 	while (command_buffer.len > 0)
 		var/mob/speaker = command_buffer[1]

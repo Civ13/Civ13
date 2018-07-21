@@ -38,18 +38,7 @@
 
 	message_without_html = handle_speech_problems(message_without_html)[1]
 
-	// radio talk
-	if ((!dd_hasprefix(message_without_html, ":t") && !dd_hasprefix(message_without_html, ":T")) || !istype(loc, /obj/tank))
-		post_say(message_without_html)
 
-	// tank talk
-	else if ((dd_hasprefix(message_without_html, ":t") || dd_hasprefix(message_without_html, ":T")) && istype(loc, /obj/tank))
-		var/obj/tank/my_tank = loc
-		if (my_tank.radio)
-			for (var/human in human_mob_list)
-				var/mob/living/carbon/human/H = human
-				if (H.loc == loc)
-					H.on_hear_radio(my_tank.radio, "<span class = 'srvradio'><big><b>TANKCHAT</b>: [real_name] says, \"<span class = 'notice'>[capitalize(trim_left(copytext(message_without_html, 3, length(message_without_html)+1)))]</span>\"</big></span>")
 
 /mob/living/carbon/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)
@@ -178,18 +167,6 @@
 	returns[2] = verb
 	returns[3] = speech_problem_flag
 	return returns
-
-		if ("whisper")
-			whisper_say(message, speaking, alt_name)
-			return TRUE
-		else
-			if (message_mode)
-				if (l_ear && istype(l_ear,/obj/item/radio))
-					l_ear.talk_into(src,message, message_mode, verb, speaking)
-					used_radios += l_ear
-				else if (r_ear && istype(r_ear,/obj/item/radio))
-					r_ear.talk_into(src,message, message_mode, verb, speaking)
-					used_radios += r_ear
 
 /mob/living/carbon/human/handle_speech_sound()
 	if (species.speech_sounds && prob(species.speech_chance))

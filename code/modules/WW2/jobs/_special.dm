@@ -175,8 +175,7 @@
 	..()
 	if (is_officer)
 		H.make_artillery_officer()
-		H.verbs += /mob/living/carbon/human/proc/Execute
-		H.add_note("Officer", "As an officer, you can check coordinates and execute subordinates.</span>")
+		H.add_note("Officer", "As an officer, you can check coordinates.</span>")
 
 	// hack to make scope icons immediately appear - Kachnov
 	spawn (20)

@@ -3,11 +3,9 @@ var/list/exterior_turfs = list(/turf/floor/plating/grass,
 							/turf/floor/plating/sand,
 							/turf/floor/plating/concrete,
 							/turf/floor/plating/road,
-							/turf/floor/plating/asteroid
 							)
 
 var/list/interior_areas = list(/area/prishtina/houses,
-							/area/prishtina/train
 							)
 
 // atmos stuff

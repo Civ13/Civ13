@@ -356,16 +356,6 @@
 		if (!t)
 			return
 
-	else if (mob.is_on_train() && !mob.buckled)
-		var/datum/train_controller/tc = mob.get_train()
-		if (tc && tc.moving)
-			if (mob.train_move_check(get_step(mob, direct)) && !mob.lying && mob.stat != UNCONSCIOUS && mob.stat != DEAD)
-				mob.next_train_movement = direct
-				mob.train_gib_immunity = TRUE
-				mob.last_train_movement = world.time // last successful move
-			mob.last_train_movement_attempt = world.time // last move attempt
-			return // prevent normal movement if we're on a train
-
 	if (mob.control_object)	Move_object(direct)
 
 	if (mob.incorporeal_move && mob_is_observer)
@@ -430,10 +420,6 @@
 	if (!mob.lastarea)
 		mob.lastarea = get_area(mob_loc)
 
-	if (isobj(mob_loc) || ismob(mob_loc)) //Inside an object, tell it we moved
-		var/atom/movable/O = mob_loc
-		if (!istype(O, /obj/tank))
-			return O.relaymove(mob, direct)
 
 	else if (isturf(mob_loc))
 		if (mob.restrained()) //Why being pulled while cuffed prevents you from moving

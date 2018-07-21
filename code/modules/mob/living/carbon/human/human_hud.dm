@@ -238,37 +238,6 @@ the HUD updates properly! */
 		if (!perp.original_job)
 			continue
 
-		var/shared_job_check = FALSE
-
-		if (viewer == perp)
-			shared_job_check = TRUE
-		else if (viewer.original_job.base_type_flag() == perp.original_job.base_type_flag())
-			shared_job_check = TRUE
-		else if (viewer.original_job.base_type_flag() == ITALIAN)
-			if (perp.original_job.base_type_flag() == GERMAN)
-				shared_job_check = TRUE
-		else if (perp.original_job.base_type_flag() == ITALIAN)
-			if (viewer.original_job.base_type_flag() == GERMAN)
-				shared_job_check = TRUE
-
-		if (shared_job_check)
-			if (sharesquads(viewer, perp)) // same squad or SL
-				P.Client.images += perp.hud_list[perp.squad_faction_hud_constant()]
-			else // unrelated
-				P.Client.images += perp.hud_list[perp.most_important_faction_hud_constant()]
-		else
-			// one of us is a spy, allowing us to recognize true factions
-
-			// condition 1: they're the spy
-			// condition 2: we're the spy
-			// condition 3: they're just an enemy
-
-			if (perp.spy_faction == viewer.base_faction)
-				P.Client.images += perp.hud_list[perp.spy_faction_hud_constant()]
-			else if (viewer.spy_faction == perp.base_faction)
-				P.Client.images += perp.hud_list[perp.base_faction_hud_constant()]
-			else // we're just enemies. No hud for now
-				P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 
 /datum/arranged_hud_process
 	var/client/Client

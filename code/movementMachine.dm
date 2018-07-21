@@ -44,7 +44,7 @@ var/movementMachine/movementMachine = null
 						if ((M.movement_eastwest || M.movement_northsouth) && M.client.canmove && !M.client.moving && world.time >= M.client.move_delay)
 							var/diag = FALSE
 							var/movedir = M.movement_northsouth ? M.movement_northsouth : M.movement_eastwest
-							if ((M.movement_eastwest && M.movement_northsouth) && !istank(M.loc))
+							if ((M.movement_eastwest && M.movement_northsouth))
 								if (M.movement_northsouth == NORTH && M.movement_eastwest == WEST)
 									movedir = NORTHWEST
 									diag = TRUE

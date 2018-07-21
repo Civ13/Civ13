@@ -83,12 +83,6 @@
 /proc/say_timestamp()
 	return "<span class='say_quote'>\[[stationtime2text()]\]</span>"
 
-/mob/proc/on_hear_radio(var/obj/item/radio/source, var/fullmessage)
-	src << "\icon[getFlatIcon(source)] [fullmessage]"
-
-/mob/observer/ghost/on_hear_radio(var/obj/item/radio/source, var/fullmessage)
-	src << "\icon[getFlatIcon(source)] [fullmessage]"
-
 /mob/proc/hear_signlang(var/message, var/verb = "gestures", var/datum/language/language, var/mob/speaker = null)
 	if (!client)
 		return

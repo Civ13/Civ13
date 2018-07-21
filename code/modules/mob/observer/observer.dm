@@ -26,11 +26,6 @@ var/const/GHOST_IMAGE_ALL = ~GHOST_IMAGE_NONE
 		ghost_sightless_images |= ghost_image //so ghosts can see the eye when they disable ghost sight
 	updateallghostimages()
 
-	spawn (1)
-		if (client)
-			client.add_ghost_only_admin_verbs()
-			observer_mob_list |= src
-
 /mob/observer/Destroy()
 	observer_mob_list -= src
 	if (ghost_image)
@@ -52,8 +47,3 @@ mob/observer/check_airflow_movable()
 
 /mob/observer/gib()		//observers can't be gibbed.
 	return
-
-/mob/observer/verb/see_battle_report()
-	set category = "OOC"
-	set name = "See Battle Report"
-	show_global_battle_report(src, TRUE)

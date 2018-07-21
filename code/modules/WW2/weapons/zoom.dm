@@ -114,9 +114,6 @@ Parts of code courtesy of Super3222
 	if (user.stat || !ishuman(user))
 		if (!silent) user << "You are unable to focus through \the [src]."
 		return FALSE
-	else if (istype(user.loc, /obj/tank))
-		if (!silent) user << "You can't use \the [src] while inside a tank."
-		return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		if (!silent) user << "Your visor gets in the way of looking through \the [src]."
 		return FALSE
@@ -304,9 +301,6 @@ Parts of code courtesy of Super3222
 	..()
 	handle_zooms_with_movement()
 
-/mob/living/carbon/human/train_move(_loc)
-	..(_loc)
-	handle_zooms_with_movement()
 /*
 // item helpers
 /obj/item/proc/is_zoomable_object()
