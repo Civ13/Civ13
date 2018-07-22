@@ -1,9 +1,8 @@
-//#define WINTER_TESTING
-#define TANK_LOWPOP_THRESHOLD 12
-#define ARTILLERY_LOWPOP_THRESHOLD 15
+
 
 /hook/startup/proc/seasons()
 	season = pick("SPRING", "SUMMER", "FALL", "WINTER")
+	return
 // code is horribly broken, lets leave it like this
 
 /hook/roundstart/proc/mainstuff()

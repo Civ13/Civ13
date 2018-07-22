@@ -46,9 +46,7 @@ var/global/list/crate_list = list()
 
 var/global/list/artillery_list = list()
 
-var/global/list/mortar_piece_list = list()
-
-var/global/list/mortar_spade_list = list()
+var/global/list/cannon_piece_list = list()
 
 var/global/list/door_list = list()
 

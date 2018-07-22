@@ -72,7 +72,7 @@
 /obj/item/weapon/extinguisher/afterattack(var/atom/target, var/mob/user, var/flag)
 	//TODO; Add support for reagents in water.
 
-	if ( istype(target, /obj/structure/reagent_dispensers/watertank) && flag)
+	if ( istype(target, /obj/structure/reagent_dispensers/barrel) && flag)
 		var/obj/o = target
 		var/amount = o.reagents.trans_to_obj(src, 50)
 		user << "<span class='notice'>You fill [src] with [amount] units of the contents of [target].</span>"

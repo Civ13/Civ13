@@ -1,26 +1,26 @@
-/obj/structure/mortar
-	name = "Mortar that shouldn't exist"
-	icon = 'icons/WW2/mortar.dmi'
+/obj/structure/cannon
+	name = "Cannon"
+	icon = 'icons/obj/cannon.dmi'
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
-	icon_state = null
-	var/angle = 65
+	icon_state = "cannon"
+	var/angle = 0
 	var/travelled = 0
 	var/max_distance = 0
 	var/high_distance = 0
 	var/high = TRUE
 	var/mob/user = null
-	var/obj/item/mortar_shell/loaded = null
+	var/obj/item/cannon_ball/loaded = null
 
-/obj/structure/mortar/New()
+/obj/structure/cannon/New()
 	..()
-	mortar_piece_list += src
+	cannon_piece_list += src
 
-/obj/structure/mortar/Destroy()
-	mortar_piece_list -= src
+/obj/structure/cannon/Destroy()
+	cannon_piece_list -= src
 	..()
 
-/obj/structure/mortar/ex_act(severity)
+/obj/structure/cannon/ex_act(severity)
 	switch(severity)
 		if (1.0)
 			qdel(src)
@@ -32,12 +32,12 @@
 		if (3.0)
 			return
 
-/obj/structure/mortar/attack_hand(var/mob/attacker)
+/obj/structure/cannon/attack_hand(var/mob/attacker)
 	interact(attacker)
 
 // todo: loading artillery. This will regenerate the shrapnel and affect our explosion
-/obj/structure/mortar/attackby(obj/item/W as obj, mob/M as mob)
-	if (istype(W, /obj/item/mortar_shell))
+/obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
+	if (istype(W, /obj/item/cannon_ball))
 		if (loaded)
 			M << "<span class = 'warning'>There's already a shell loaded.</span>"
 			return
@@ -49,7 +49,7 @@
 			do_html(M)
 
 
-/obj/structure/mortar/interact(var/mob/m)
+/obj/structure/cannon/interact(var/mob/m)
 	if (user)
 		if (get_dist(src, user) > 1)
 			user = null
@@ -64,7 +64,7 @@
 		user = m
 		do_html(user)
 
-/obj/structure/mortar/Topic(href, href_list, hsrc)
+/obj/structure/cannon/Topic(href, href_list, hsrc)
 
 	var/mob/user = usr
 
@@ -74,7 +74,7 @@
 	user.face_atom(src)
 
 	if (!locate(src) in get_step(user, user.dir))
-		user << "<span class = 'danger'>Get behind the mortar to use it.</span>"
+		user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
 		return FALSE
 
 	if (!user.can_use_hands())
@@ -82,15 +82,15 @@
 		return FALSE
 
 	if (href_list["load"])
-		var/obj/item/mortar_shell/M = user.get_active_hand()
+		var/obj/item/cannon_ball/M = user.get_active_hand()
 		if (M && istype(M) && do_after(user, 10, src))
 			user.remove_from_mob(M)
 			M.loc = src
 			loaded = M
 
 	if (href_list["set_angle"])
-		angle = input(user, "Set the angle to what? (From 45° to 80°)") as num
-		angle = Clamp(angle, 45, 80)
+		angle = input(user, "Set the angle to what? (From 0° to 45°)") as num
+		angle = Clamp(angle, 0, 45)
 
 	if (href_list["fire"])
 
@@ -99,14 +99,11 @@
 			return
 
 		if (!loaded)
-			user << "<span class = 'danger'>There's nothing in the mortar.</span>"
+			user << "<span class = 'danger'>There's nothing in the cannon.</span>"
 			return
 
-		var/area/user_area = get_area(user)
 
-		if (user_area.location == AREA_INSIDE)
-			user << "<span class = 'danger'>You can't fire from inside.</span>"
-		else if (do_after(user, 20, src))
+		if (do_after(user, 20, src))
 
 			// firing code
 
@@ -133,7 +130,7 @@
 			var/turf/target = get_turf(src)
 			var/odir = dir
 
-			max_distance = (80 - angle) + rand(38,42)
+			max_distance = (10 + angle) + rand(2,7)
 
 			switch (dir)
 				if (WEST)
@@ -213,13 +210,13 @@
 								for (var/mob/living/L in view(20, target))
 									shake_camera(L, 5, 5)
 									L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
-								message_admins("Mortar hit the ceiling at [target.x], [target.y], [target.z].")
-								log_admin("Mortar hit the ceiling at [target.x], [target.y], [target.z].")
+								message_admins("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
+								log_admin("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
 								return
 							else if (target_area_original_integrity)
 								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
-							message_admins("Mortar hit at [target.x], [target.y], [target.z].")
-							log_admin("Mortar hit at [target.x], [target.y], [target.z].")
+							message_admins("Cannonball hit at [target.x], [target.y], [target.z].")
+							log_admin("Cannonball hit at [target.x], [target.y], [target.z].")
 							explosion(target, 1, 2, 3, 4)
 						break
 
@@ -227,7 +224,7 @@
 
 	do_html(user)
 
-/obj/structure/mortar/proc/do_html(var/mob/m)
+/obj/structure/cannon/proc/do_html(var/mob/m)
 
 	if (m)
 

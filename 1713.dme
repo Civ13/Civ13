@@ -780,7 +780,6 @@
 #include "code\modules\WW2\jobs\whitelist.dm"
 #include "code\modules\WW2\mortar\piece.dm"
 #include "code\modules\WW2\mortar\shell.dm"
-#include "code\modules\WW2\mortar\spade.dm"
 #include "code\modules\WW2\sandbags\cover.dm"
 #include "code\modules\WW2\sandbags\sandbag.dm"
 #include "code\modules\WW2\weapons\attachment.dm"

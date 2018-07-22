@@ -66,12 +66,3 @@
 /obj/item/weapon/ore/New()
 	pixel_x = rand(0,16)-8
 	pixel_y = rand(0,8)-8
-
-// from mining/machine_processing.dm
-
-/obj/structure/processing_unit_console
-	name = "production machine console"
-	icon = 'icons/obj/machines/mining_machines.dmi'
-	icon_state = "console"
-	density = TRUE
-	anchored = TRUE

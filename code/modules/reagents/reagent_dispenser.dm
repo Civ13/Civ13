@@ -1,10 +1,10 @@
 
-
+//basically, the dispensers are now wood barrels and wood crates.
 /obj/structure/reagent_dispensers
-	name = "Dispenser"
+	name = "Barrel"
 	desc = "..."
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "watertank"
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood"
 	density = TRUE
 	anchored = FALSE
 
@@ -65,23 +65,17 @@
 
 
 //Dispensers
-/obj/structure/reagent_dispensers/watertank
-	name = "watertank"
-	desc = "A watertank. It is used to store high amounts of water."
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "watertank"
+
+/obj/structure/reagent_dispensers/barrel/water
+	name = "water barrel"
+	desc = "A wood barrel, filled with drinking water."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
 	amount_per_transfer_from_this = 10
 	New()
 		..()
-		reagents.add_reagent("water",500)
+		reagents.add_reagent("water",250)
 
-/obj/structure/reagent_dispensers/watertank/huge
-	name = "high-volume watertank"
-	desc = "A high-volume watertank. It is used to store HUGE amounts of water."
-	icon_state = "hvwatertank"
-	New()
-		..()
-		reagents.add_reagent("water",500)		//Adds 500 units to the amount, that already is inside. It'll be 1000.
 
 /obj/structure/reagent_dispensers/fueltank
 	name = "fueltank"
@@ -94,14 +88,6 @@
 	New()
 		..()
 		reagents.add_reagent("fuel",500)
-
-/obj/structure/reagent_dispensers/fueltank/huge
-	name = "high-volume fueltank"
-	desc = "A high-volume fueltank. It is used to store HUGE amounts of fuel."
-	icon_state = "hvweldtank"
-	New()
-		..()
-		reagents.add_reagent("fuel",500)		//Adds 500 units to the amount, that already is inside. It'll be 1000.
 
 /obj/structure/reagent_dispensers/fueltank/examine(mob/user)
 	if (!..(user, 2))
@@ -195,77 +181,32 @@
 	reagents.remove_reagent("fuel",amount)
 	new /obj/effect/decal/cleanable/liquid_fuel(loc, amount,1)
 
-/obj/structure/reagent_dispensers/peppertank
-	name = "Pepper Spray Refiller"
-	desc = "Refill pepper spray canisters."
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "peppertank"
-	anchored = TRUE
-	density = FALSE
-	amount_per_transfer_from_this = 45
-	New()
-		..()
-		reagents.add_reagent("condensedcapsaicin",1000)
-
-
-/obj/structure/reagent_dispensers/water_cooler
-	name = "Water-Cooler"
-	desc = "A machine that dispenses water to drink."
-	amount_per_transfer_from_this = 5
-	icon = 'icons/obj/vending.dmi'
-	icon_state = "water_cooler"
-	possible_transfer_amounts = null
-	anchored = TRUE
-	New()
-		..()
-		reagents.add_reagent("water",500)
-
-/obj/structure/reagent_dispensers/water_cooler/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon/wrench))
-		add_fingerprint(user)
-		if (anchored)
-			user.visible_message("\The [user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
-		else
-			user.visible_message("\The [user] begins securing \the [src] to the floor.", "You start securing \the [src] to the floor.")
-
-		if (do_after(user, 20, src))
-			if (!src) return
-			user << "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>"
-			anchored = !anchored
-		return
-	else
-		return ..()
-
-/obj/structure/reagent_dispensers/beerkeg
-	name = "beer keg"
-	desc = "A beer keg"
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "beertankTEMP"
+/obj/structure/reagent_dispensers/barrel/beer
+	name = "beer barrel"
+	desc = "A barrel of beer. Keep it secured!"
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
 	amount_per_transfer_from_this = 10
 	New()
 		..()
-		reagents.add_reagent("beer",1000)
+		reagents.add_reagent("beer",200)
 
-/obj/structure/reagent_dispensers/virusfood
-	name = "Virus Food Dispenser"
-	desc = "A dispenser of virus food."
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "virusfoodtank"
+/obj/structure/reagent_dispensers/barrel/rum
+	name = "rum barrel"
+	desc = "A barrel of rum. You better keep it locked and away from the crew!"
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
 	amount_per_transfer_from_this = 10
-	anchored = TRUE
-
 	New()
 		..()
-		reagents.add_reagent("virusfood", 1000)
+		reagents.add_reagent("rum",200)
 
-/obj/structure/reagent_dispensers/acid
-	name = "Sulphuric Acid Dispenser"
-	desc = "A dispenser of acid for industrial processes."
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "acidtank"
+/obj/structure/reagent_dispensers/barrel/gunpowder
+	name = "gunpowder barrel"
+	desc = "A barrel of gunpowder. Don't light it on fire."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_gunpowder"
 	amount_per_transfer_from_this = 10
-	anchored = TRUE
-
 	New()
 		..()
-		reagents.add_reagent("sacid", 1000)
+		reagents.add_reagent("gunpowder",200)

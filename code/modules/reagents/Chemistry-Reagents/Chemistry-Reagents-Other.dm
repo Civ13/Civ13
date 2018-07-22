@@ -344,6 +344,14 @@
 	reagent_state = LIQUID
 	color = "#808080"
 
+/datum/reagent/gunpowder
+	name = "gunpowder"
+	id = "gunpowder"
+	description = "Try to light it on fire and see what happens"
+	taste_description = "charcoal"
+	reagent_state = SOLID
+	color = "#484753"
+
 /datum/reagent/nitroglycerin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, 2)
