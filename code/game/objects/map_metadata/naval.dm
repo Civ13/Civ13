@@ -10,7 +10,8 @@
 //	min_autobalance_players = 90
 	faction_organization = list(
 		BRITISH,
-		PIRATES)
+		PIRATES,
+		CIVILIAN)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(

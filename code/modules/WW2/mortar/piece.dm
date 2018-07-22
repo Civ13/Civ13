@@ -1,6 +1,6 @@
 /obj/structure/cannon
 	name = "Cannon"
-	icon = 'icons/obj/cannon.dmi'
+	icon = 'icons/obj/cannon_v.dmi'
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "cannon"
@@ -11,10 +11,14 @@
 	var/high = TRUE
 	var/mob/user = null
 	var/obj/item/cannon_ball/loaded = null
+	var/vertical_icon = 'icons/obj/cannon_v.dmi'
+	var/horizontal_icon = 'icons/obj/cannon_h.dmi'
+	bound_height = 64
 
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
+
 
 /obj/structure/cannon/Destroy()
 	cannon_piece_list -= src
@@ -31,6 +35,7 @@
 				return
 		if (3.0)
 			return
+
 
 /obj/structure/cannon/attack_hand(var/mob/attacker)
 	interact(attacker)
@@ -54,6 +59,9 @@
 		if (get_dist(src, user) > 1)
 			user = null
 	restart
+	if (!anchored)
+		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		user = null
 	if (user && user != m)
 		if (user.client)
 			return
@@ -81,6 +89,10 @@
 		user << "<span class = 'danger'>You have no hands to use this with.</span>"
 		return FALSE
 
+	if (!anchored)
+		user << "<span class = 'danger'>You need to fix it to the floor before firing.</span>"
+		return FALSE
+
 	if (href_list["load"])
 		var/obj/item/cannon_ball/M = user.get_active_hand()
 		if (M && istype(M) && do_after(user, 10, src))
@@ -89,8 +101,8 @@
 			loaded = M
 
 	if (href_list["set_angle"])
-		angle = input(user, "Set the angle to what? (From 0° to 45°)") as num
-		angle = Clamp(angle, 0, 45)
+		angle = input(user, "Set the angle to what? (From 0° to 80°)") as num
+		angle = Clamp(angle, 0, 80)
 
 	if (href_list["fire"])
 
@@ -228,7 +240,7 @@
 
 	if (m)
 
-		max_distance = (80 - angle) + 40
+		max_distance = (80 - angle) + 10
 
 		m << browse({"
 
@@ -266,3 +278,87 @@
 		<br>
 		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
+
+/obj/structure/cannon/verb/rotate_left()
+	set category = null
+	set name = "Rotate left"
+	set src in range(2, usr)
+	if (anchored)
+		user << "<span class='notice'>You need to unsecure the cannon first!</span>"
+	else
+		switch(dir)
+			if (EAST)
+				dir = NORTH
+				bound_height = 64
+				bound_width = 32
+				icon = vertical_icon
+			if (WEST)
+				dir = SOUTH
+				bound_height = 64
+				bound_width = 32
+				icon = vertical_icon
+			if (NORTH)
+				dir = WEST
+				bound_height = 32
+				bound_width = 64
+				icon = horizontal_icon
+			if (SOUTH)
+				dir = EAST
+				bound_height = 32
+				bound_width = 64
+				icon = horizontal_icon
+	return
+
+/obj/structure/cannon/verb/rotate_right()
+	set category = null
+	set name = "Rotate right"
+	set src in range(2, usr)
+	if (anchored)
+		user << "<span class='notice'>You need to unsecure the cannon first!</span>"
+	else
+		switch(dir)
+			if (EAST)
+				dir = SOUTH
+				bound_height = 64
+				bound_width = 32
+				icon = vertical_icon
+				icon_state = "cannon"
+			if (WEST)
+				dir = NORTH
+				bound_height = 64
+				bound_width = 32
+				icon = vertical_icon
+				icon_state = "cannon"
+			if (NORTH)
+				dir = EAST
+				bound_height = 32
+				bound_width = 64
+				icon = horizontal_icon
+				icon_state = "cannon"
+			if (SOUTH)
+				dir = WEST
+				bound_height = 32
+				bound_width = 64
+				icon = horizontal_icon
+				icon_state = "cannon"
+	return
+
+/obj/structure/cannon/verb/fix()
+	set category = null
+	set name = "Lock in place"
+	set src in range(1, usr)
+	if (anchored)
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << "<span class='notice'>Now unsecuring the cannon...</span>"
+		if (do_after(user, 20, src))
+			if (!src) return
+			user << "<span class='notice'>You unsecured the cannon.</span>"
+			anchored = FALSE
+	else if (!anchored)
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << "<span class='notice'>Now securing the cannon...</span>"
+		if (do_after(user, 20, src))
+			if (!src) return
+			user << "<span class='notice'>You secured the cannon.</span>"
+			anchored = TRUE
+	return

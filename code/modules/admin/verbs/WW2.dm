@@ -140,13 +140,8 @@ var/pirates_civilian_mode = FALSE
 
 var/partisans_toggled = TRUE
 var/civilians_toggled = TRUE
-var/SS_toggled = TRUE
-var/paratroopers_toggled = TRUE
 var/british_toggled = TRUE
 var/pirates_toggled = TRUE
-var/polish_toggled = TRUE
-var/usa_toggled = TRUE
-var/japanese_toggled = TRUE
 
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
@@ -190,11 +185,6 @@ var/partisans_forceEnabled = FALSE
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
-var/SS_forceEnabled = FALSE
-var/paratroopers_forceEnabled = FALSE
-var/usa_forceEnabled = FALSE
-var/japanese_forceEnabled = FALSE
-var/polish_forceEnabled = FALSE
 
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"
@@ -227,12 +217,12 @@ var/polish_forceEnabled = FALSE
 		message_admins("[key_name(src)] changed the Civilian faction 'forceEnabled' setting to [civilians_forceEnabled].")
 	else if (findtext(choice, "BRITISH"))
 		british_forceEnabled = !british_forceEnabled
-		world << "<span class = 'notice'>The German faction [british_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the German faction 'forceEnabled' setting to [british_forceEnabled].")
+		world << "<span class = 'notice'>The British faction [british_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the British faction 'forceEnabled' setting to [british_forceEnabled].")
 	else if (findtext(choice, "PIRATES"))
 		pirates_forceEnabled = !pirates_forceEnabled
-		world << "<span class = 'notice'>The Soviet faction [pirates_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the Soviet faction 'forceEnabled' setting to [pirates_forceEnabled].")
+		world << "<span class = 'notice'>The Pirate faction [pirates_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Pirate faction 'forceEnabled' setting to [pirates_forceEnabled].")
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"

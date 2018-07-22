@@ -188,8 +188,10 @@ var/list/global/wall_cache = list()
 	reinf_material = null
 	//update_connections(1)
 	update_icon()
-
-	ChangeTurf(/turf/floor/plating/grass/wild)
+	if (material == "wood")
+		ChangeTurf(/turf/floor/plating/beach/water)
+	else
+		ChangeTurf(/turf/floor/plating/grass/wild)
 
 /turf/wall/ex_act(severity)
 	var/area/src_area = get_area(src)

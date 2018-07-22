@@ -47,9 +47,9 @@
 	M.adjustToxLoss(removed * 1.5)
 
 /datum/reagent/carbon
-	name = "Carbon"
+	name = "Coal"
 	id = "carbon"
-	description = "A chemical element, the builing block of life."
+	description = "A chemical element, good for cooking and heating."
 	taste_description = "sour chalk"
 	taste_mult = 1.5
 	reagent_state = SOLID
@@ -110,7 +110,7 @@
 /datum/reagent/ethanol/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	if (issmall(M)) removed *= 2
 	M.nutrition += nutriment_factor * removed
-	var/strength_mod = 0.5
+	var/strength_mod = 2
 
 	if (M.water < 0)
 		M.water += rand(40,50)

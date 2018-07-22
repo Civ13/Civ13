@@ -352,6 +352,10 @@
 	reagent_state = SOLID
 	color = "#484753"
 
+/datum/reagent/gunpowder/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.add_chemical_effect(CE_PULSE, 2)
+
 /datum/reagent/nitroglycerin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, 2)

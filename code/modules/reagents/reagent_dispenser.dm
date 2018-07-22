@@ -210,3 +210,27 @@
 	New()
 		..()
 		reagents.add_reagent("gunpowder",200)
+
+/obj/structure/reagent_dispensers/barrel/gunpowder/bullet_act(var/obj/item/projectile/proj)
+	if (proj && !proj.nodamage)
+		if (prob(30))
+			visible_message("<span class = 'warning'>\The [src] is hit by \the [proj] and explodes!</span>")
+			return explode()
+	return FALSE
+
+/obj/structure/reagent_dispensers/barrel/gunpowder/ex_act()
+	explode()
+
+/obj/structure/reagent_dispensers/barrel/gunpowder/proc/explode()
+	if (reagents.total_volume > 500)
+		explosion(loc,1,2,4,2)
+	else if (reagents.total_volume > 100)
+		explosion(loc,0,1,3,1)
+	else if (reagents.total_volume > 50)
+		explosion(loc,-1,1,2,1)
+	if (src) qdel(src)
+
+/obj/structure/reagent_dispensers/barrel/gunpowder/fire_act(temperature)
+	if (temperature > T0C+500)
+		explode()
+	return ..()

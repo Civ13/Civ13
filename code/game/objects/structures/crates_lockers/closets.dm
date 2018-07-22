@@ -276,7 +276,7 @@
 // tk grab then use on self
 /obj/structure/closet/attack_self_tk(mob/user as mob)
 	add_fingerprint(user)
-	if (!toggle())
+	if (!toggle())w
 		usr << "<span class='notice'>It won't budge!</span>"
 */
 /obj/structure/closet/verb/verb_toggleopen()

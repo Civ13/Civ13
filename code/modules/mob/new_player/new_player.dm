@@ -311,19 +311,6 @@
 
 		var/job_flag = actual_job.base_type_flag()
 
-
-		if (job_flag == BRITISH)
-			if (client.prefs.s_tone < -30)
-				usr << "<span class='danger'>You are too dark to be a German soldier.</span>"
-				return
-			if (client.prefs.german_gender == FEMALE && !actual_job.is_nonmilitary)
-				usr << "<span class='danger'>German soldiers must be male.</span>"
-				return
-		else if (job_flag == PIRATES)
-			if (client.prefs.russian_gender == FEMALE && actual_job.is_officer)
-				usr << "<span class='danger'>Soviet officers must be male.</span>"
-				return
-
 		if (!config.enter_allowed)
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 			return
@@ -493,8 +480,6 @@
 //	var/list/restricted_choices = list()
 
 	var/list/available_jobs_per_side = list(
-		BRITISH = FALSE,
-		PIRATES = FALSE,
 		PARTISAN = FALSE,
 		CIVILIAN = FALSE,
 		PIRATES = FALSE,
@@ -530,22 +515,6 @@
 
 		if (job_master.is_side_locked(job.base_type_flag()))
 			job_is_available = FALSE
-
-		//	unavailable_message = " <span class = 'color: rgb(255,215,0);'>{DISABLED BY AUTOBALANCE}</span> "
-
-	//	if (jobBanned(job.title))
-	//		job_is_available = FALSE
-		//	unavailable_message = " <span class = 'color: rgb(255,0,0);'>{BANNED}</span> "
-
-	//	if (factionBanned(job.base_type_flag(1)))
-		//	job_is_available = FALSE
-		//	unavailable_message = " <span class = 'color: rgb(255,0,0);'>{BANNED FROM FACTION}</span> "
-
-	//	if (officerBanned() && job.is_officer)
-		//	job_is_available = FALSE
-		//	unavailable_message = " <span class = 'color: rgb(255,0,0);'>{BANNED FROM OFFICER POSITIONS}</span> "
-
-		// check if the faction is admin-locked
 
 		if (map && !map.job_enabled_specialcheck(job))
 			job_is_available = FALSE

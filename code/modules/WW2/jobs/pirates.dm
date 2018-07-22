@@ -35,7 +35,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the [title] of the Pirate ship!</big></b>"
+	world << "<b><big>[H.real_name] is the Captain of the Pirate ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
@@ -157,7 +157,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the [title] of the Royal Navy ship!</big></b>"
+	world << "<b><big>[H.real_name] is the Captain of the Royal Navy ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)

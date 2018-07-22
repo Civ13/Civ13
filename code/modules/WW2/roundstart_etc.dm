@@ -60,12 +60,8 @@ var/GRACE_PERIOD_LENGTH = 7
 /hook/roundstart/proc/do_seasonal_stuff()
 	spawn (1)
 		world << "<span class = 'notice'>Setting up seasons.</span>"
-
-
-	// forces Spring in test map
-	if (map && istype(map, /obj/map_metadata/naval))
-		(season = "SPRING")
-		return TRUE
+	season = "SPRING"
+	return TRUE
 
 
 	// snow is disabled because it breaks the game

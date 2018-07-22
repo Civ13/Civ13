@@ -653,6 +653,28 @@
 	e.start()
 	holder.clear_reagents()
 
+/datum/chemical_reaction/gunpowder
+	name = "Gunpowder"
+	id = "gunpowder"
+	result = "gunpowder"
+	required_reagents = list("sulfur" = 1, "carbon" = 1, "potassium" = 1)
+	result_amount = 2
+	log_is_important = TRUE
+
+/datum/chemical_reaction/ngunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
+	var/exloc = get_turf(holder.my_atom)
+	var/datum/effect/effect/system/reagents_explosion/e = new()
+	e.set_up(round (created_volume/4, TRUE), exloc, FALSE, FALSE)
+	for (var/mob/living/L in exloc)
+		e.amount *= 0.25
+		if (L.stat != DEAD)
+			if (e.amount >= 6)
+				L.crush()
+			e.amount *= 1.5
+	e.start()
+	holder.clear_reagents()
+
+
 /datum/chemical_reaction/napalm
 	name = "Napalm"
 	id = "napalm"

@@ -125,29 +125,8 @@
 	loaded -= chambered
 	chambered = null
 	cocked = FALSE
-	if (last_fire != -1)
-		if (world.time - last_fire <= 7)
-			jamcheck += 4
-		else if (world.time - last_fire <= 10)
-			jamcheck += 3
-		else if (world.time - last_fire <= 20)
-			jamcheck += 2
-		else if (world.time - last_fire <= 30)
-			++jamcheck
-		else if (world.time - last_fire <= 40)
-			++jamcheck
-		else if (world.time - last_fire <= 50)
-			++jamcheck
-		else
-			jamcheck = 0
-	else
-		++jamcheck
-
-	if (prob(jamcheck))
-		jammed_until = max(world.time + (jamcheck * 5), 50)
-		jamcheck = 0
-
-	last_fire = world.time
+	spawn (1)
+		new/obj/effect/effect/smoke/chem(get_step(src, dir))
 
 /obj/item/weapon/gun/projectile/flintlock/musket
 	name = "flintlock musket"

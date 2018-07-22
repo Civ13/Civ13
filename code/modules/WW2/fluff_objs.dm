@@ -9,18 +9,13 @@
 	icon_state = "ore2"
 	w_class = 2
 
-/obj/item/weapon/ore/uranium
-	name = "pitchblende"
-	icon_state = "ore_uranium"
-//	origin_tech = list(TECH_MATERIAL = 5)
-
 /obj/item/weapon/ore/iron
-	name = "hematite"
+	name = "iron ore"
 	icon_state = "ore_iron"
 //	origin_tech = list(TECH_MATERIAL = TRUE)
 
 /obj/item/weapon/ore/coal
-	name = "raw carbon"
+	name = "mineral coal"
 	icon_state = "ore_coal"
 //	origin_tech = list(TECH_MATERIAL = TRUE)
 
@@ -30,18 +25,13 @@
 //	origin_tech = list(TECH_MATERIAL = TRUE)
 	slot_flags = SLOT_HOLSTER
 
-/obj/item/weapon/ore/plasma
-	name = "plasma crystals"
-	icon_state = "ore_plasma"
-//	origin_tech = list(TECH_MATERIAL = 2)
-
 /obj/item/weapon/ore/silver
-	name = "native silver ore"
+	name = "silver ore"
 	icon_state = "ore_silver"
 //	origin_tech = list(TECH_MATERIAL = 3)
 
 /obj/item/weapon/ore/gold
-	name = "native gold ore"
+	name = "gold ore"
 	icon_state = "ore_gold"
 //	origin_tech = list(TECH_MATERIAL = 4)
 
@@ -49,19 +39,6 @@
 	name = "diamonds"
 	icon_state = "ore_diamond"
 //	origin_tech = list(TECH_MATERIAL = 6)
-
-/obj/item/weapon/ore/osmium
-	name = "raw platinum"
-	icon_state = "ore_platinum"
-
-/obj/item/weapon/ore/hydrogen
-	name = "raw hydrogen"
-	icon_state = "ore_hydrogen"
-
-/obj/item/weapon/ore/slag
-	name = "Slag"
-	desc = "Someone screwed up..."
-	icon_state = "slag"
 
 /obj/item/weapon/ore/New()
 	pixel_x = rand(0,16)-8
