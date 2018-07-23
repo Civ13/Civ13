@@ -76,7 +76,7 @@
 	name = "Vendomat"
 	desc = "A generic vending machine."
 	icon = 'icons/obj/vending.dmi'
-	icon_state = "generic"
+	icon_state = "apparel_british"
 	layer = 2.9
 	anchored = TRUE
 	density = TRUE

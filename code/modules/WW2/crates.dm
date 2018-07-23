@@ -47,17 +47,18 @@
 /obj/structure/closet/crate
 	icon = 'icons/obj/crate.dmi'*/
 
-/obj/structure/closet/crate/empty
-	name = "Crate"
-	icon_state = "mil_crate_closed"
-	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate_closed"
+obj/structure/closet/crate/empty
+	name = "wood crate"
+	desc = "A wooden crate."
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
 
 /obj/structure/closet/crate/wood
 	name = "Wood planks crate"
-	icon_state = "mil_crate_closed"
-	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate_closed"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/wood = 5)
 
 /obj/structure/closet/crate/wood/New()
@@ -68,9 +69,9 @@
 
 /obj/structure/closet/crate/steel
 	name = "Steel sheets crate"
-	icon_state = "mil_crate_closed"
-	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate_closed"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/steel = 5)
 
 /obj/structure/closet/crate/steel/New()
@@ -81,9 +82,9 @@
 
 /obj/structure/closet/crate/iron
 	name = "Iron ingots crate"
-	icon_state = "mil_crate_closed"
-	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate_closed"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/iron = 5)
 
 /obj/structure/closet/crate/iron/New()
@@ -94,9 +95,9 @@
 
 /obj/structure/closet/crate/glass
 	name = "Glass sheets crate"
-	icon_state = "mil_crate_closed"
-	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate_closed"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/glass = 5)
 
 /obj/structure/closet/crate/glass/New()
@@ -106,9 +107,9 @@
 		S.amount = 20
 /obj/structure/closet/crate/rations/
 	name = "Rations"
-	icon_state = "mil_crate_closed"
-	icon_opened = "mil_crate_opened"
-	icon_closed = "mil_crate_closed"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
 
 /obj/structure/closet/crate/rations/New()
 	..()
@@ -188,4 +189,32 @@
 /obj/structure/closet/crate/rations/water
 	name = "Rations: water"
 
+///WEAPONS///
+/obj/structure/closet/crate/musketball
+	name = "Musket ammunition crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/musketball = 25)
+
+/obj/structure/closet/crate/musketball_pistol
+	name = "Pistol ammunition crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/musketball_pistol = 25)
+
+/obj/structure/closet/crate/blunderbuss_ammo
+	name = "Blunderbuss ammunition crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_casing/blunderbuss = 15)
+
+/obj/structure/closet/crate/cannonball
+	name = "Cannonball crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/cannon_ball = 15)
 #undef DYNAMIC_AMT
