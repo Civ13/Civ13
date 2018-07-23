@@ -65,6 +65,9 @@
 	..(newloc,"sandstone")
 /turf/wall/wood/New(var/newloc)
 	..(newloc,"hardwood")
+/turf/wall/wood/low/New(var/newloc)
+	..(newloc,"hardwood")
+	opacity = FALSE
 /turf/wall/indestructable
 	icon_state = "rgeneric" // so we look better on the map
 /turf/wall/indestructable/black

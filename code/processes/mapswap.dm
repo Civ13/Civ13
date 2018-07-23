@@ -1,22 +1,13 @@
 /process/mapswap
 	// map = required players
 	var/list/maps = list(
-		MAP_CITY = 0,
-		MAP_FOREST = 20,
-		MAP_TOWER = 0,
-		MAP_CAMP = 15,
-//		MAP_SURVIVAL = 0, until its fixed
-		MAP_REICHSTAG = 0,
-//		MAP_ESCORT = 15,
-//		MAP_FOREST_NEW = 25,
-		MAP_ISLAND = 10,
-		MAP_PARTISAN = 0
+		MAP_NAVAL = 0,
 	)
 
 	var/ready = TRUE
 	var/admin_triggered = FALSE
 	var/finished_at = -1
-	var/next_map_title = "City"
+	var/next_map_title = "Naval"
 
 /process/mapswap/setup()
 	name = "mapswap"
@@ -50,7 +41,7 @@
 			. = TRUE
 	return .
 
-/process/mapswap/proc/swap(var/winner = "City")
+/process/mapswap/proc/swap(var/winner = "Naval")
 	next_map_title = winner
 	winner = uppertext(winner)
 	if (!maps.Find(winner))

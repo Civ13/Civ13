@@ -44,7 +44,7 @@
 /obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
 	if (istype(W, /obj/item/cannon_ball))
 		if (loaded)
-			M << "<span class = 'warning'>There's already a shell loaded.</span>"
+			M << "<span class = 'warning'>There's already a cannonball loaded.</span>"
 			return
 		// load first and only slot
 		M.remove_from_mob(W)
@@ -101,8 +101,8 @@
 			loaded = M
 
 	if (href_list["set_angle"])
-		angle = input(user, "Set the angle to what? (From 0° to 80°)") as num
-		angle = Clamp(angle, 0, 80)
+		angle = input(user, "Set the target distance to what? (From 5 to 80 meters)") as num
+		angle = Clamp(angle, 5, 80)
 
 	if (href_list["fire"])
 
@@ -142,7 +142,7 @@
 			var/turf/target = get_turf(src)
 			var/odir = dir
 
-			max_distance = (10 + angle) + rand(2,7)
+			max_distance = angle + rand(2,7)
 
 			switch (dir)
 				if (WEST)
