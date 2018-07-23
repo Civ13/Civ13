@@ -11,9 +11,9 @@
 	var/high = TRUE
 	var/mob/user = null
 	var/obj/item/cannon_ball/loaded = null
-	var/vertical_icon = 'icons/obj/cannon_v.dmi'
-	var/horizontal_icon = 'icons/obj/cannon_h.dmi'
 	bound_height = 64
+	bound_width = 32
+	anchored = TRUE
 
 /obj/structure/cannon/New()
 	..()
@@ -288,25 +288,25 @@
 	else
 		switch(dir)
 			if (EAST)
-				dir = NORTH
-				bound_height = 64
-				bound_width = 32
-				icon = vertical_icon
-			if (WEST)
 				dir = SOUTH
 				bound_height = 64
 				bound_width = 32
-				icon = vertical_icon
+				icon = 'icons/obj/cannon_v.dmi'
+			if (WEST)
+				dir = NORTH
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
 			if (NORTH)
-				dir = WEST
-				bound_height = 32
-				bound_width = 64
-				icon = horizontal_icon
-			if (SOUTH)
 				dir = EAST
 				bound_height = 32
 				bound_width = 64
-				icon = horizontal_icon
+				icon = 'icons/obj/cannon_h.dmi'
+			if (SOUTH)
+				dir = WEST
+				bound_height = 32
+				bound_width = 64
+				icon = 'icons/obj/cannon_h.dmi'
 	return
 
 /obj/structure/cannon/verb/rotate_right()
@@ -321,28 +321,26 @@
 				dir = SOUTH
 				bound_height = 64
 				bound_width = 32
-				icon = vertical_icon
-				icon_state = "cannon"
+				icon = 'icons/obj/cannon_v.dmi'
 			if (WEST)
 				dir = NORTH
 				bound_height = 64
 				bound_width = 32
-				icon = vertical_icon
-				icon_state = "cannon"
+				icon = 'icons/obj/cannon_v.dmi'
 			if (NORTH)
 				dir = EAST
 				bound_height = 32
 				bound_width = 64
-				icon = horizontal_icon
-				icon_state = "cannon"
+				icon = 'icons/obj/cannon_h.dmi'
 			if (SOUTH)
 				dir = WEST
 				bound_height = 32
 				bound_width = 64
-				icon = horizontal_icon
-				icon_state = "cannon"
+				icon = 'icons/obj/cannon_h.dmi'
 	return
 
+
+/*
 /obj/structure/cannon/verb/fix()
 	set category = null
 	set name = "Lock in place"
@@ -362,3 +360,4 @@
 			user << "<span class='notice'>You secured the cannon.</span>"
 			anchored = TRUE
 	return
+*/

@@ -49,6 +49,10 @@
 	icon_state = "snack_bowl"
 	dropsound = 'sound/effects/drop_glass.ogg'
 
+/obj/item/trash/wood_bowl
+	name = "wood bowl"
+	icon_state = "wood_bowl"
+
 /obj/item/trash/snack_bowl/New()
 	..()
 	pixel_x = rand(-5,5)

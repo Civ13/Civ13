@@ -22,6 +22,7 @@
 "v" = (/obj/item/cannon_ball,/turf/floor/wood,/area/caribbean)
 "w" = (/obj/structure/reagent_dispensers/barrel/gunpowder,/turf/floor/wood,/area/caribbean)
 "x" = (/obj/structure/cannon{dir = 4},/turf/floor/wood,/area/caribbean)
+"y" = (/obj/item/trash/wood_bowl,/turf/floor/wood,/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -63,8 +64,8 @@ aaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbcccccccccccccbaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgccccccursccccccccccccccccbbaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccccccccccccbbbbaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbccccchcccccccccccccxcccccccccccccccbbbbaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccccccccccccccccccbbbaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgcccddcccccecddccccccqcddccccccccccbgggggaaaaaaaa
+aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccycccccccccccccccbbbaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaagbcccccgcccddcccccecddcyycccqcddccccccccccbgggggaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgccccccijklccppccccccccccccccccccbbbaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbccccchccccccmnoccccccwwccccccccccccbbbbaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccvvccccccccccbbbbaaaaaaaaaaaaaaaaaa
