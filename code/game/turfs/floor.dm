@@ -10,8 +10,8 @@
 	// Plating data.
 	var/base_name = "plating"
 	var/base_desc = "A destroyed floor."
-	var/base_icon = 'icons/turf/flooring/plating.dmi'
-	var/base_icon_state = "plating"
+	var/base_icon = 'icons/turf/floors.dmi'
+	var/base_icon_state = "dirtnew"
 
 	// Flooring data.
 	var/flooring_override

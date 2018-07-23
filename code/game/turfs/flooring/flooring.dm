@@ -57,15 +57,6 @@ var/list/flooring_types
 	build_type = null
 
 
-/decl/flooring/hull
-	name = "hull"
-	icon = 'icons/turf/flooring/hull.dmi'
-	icon_base = "hullcenter"
-	flags = TURF_HAS_EDGES | TURF_HAS_CORNERS | TURF_USE0ICON
-	build_type = null
-	has_base_range = 35
-	//try_update_icon = FALSE
-
 /decl/flooring/carpet
 	name = "carpet"
 	desc = "Imported and comfy."
@@ -167,14 +158,6 @@ var/list/flooring_types
 //	name = "steelridged"
 	icon_base = "steel_ridged"
 
-/decl/flooring/linoleum
-	name = "linoleum"
-	desc = "It's like the 2390's all over again."
-	icon = 'icons/turf/flooring/linoleum.dmi'
-	icon_base = "lino"
-	can_paint = TRUE
-	build_type = /obj/item/stack/tile/linoleum
-	flags = TURF_REMOVE_SCREWDRIVER
 
 /decl/flooring/tiling/steel
 	name = "floor"

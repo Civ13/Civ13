@@ -191,6 +191,11 @@
 	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
+/turf/floor/wood_ship
+	name = "floor"
+	icon_state = "wood_ship"
+	floor_type = /obj/item/stack/tile/wood
+	stepsound = "wood"
 
 /* when this is a subtype of /turf/floor/wood, it doesn't get the right icon.
  * not sure why right now - kachnov */

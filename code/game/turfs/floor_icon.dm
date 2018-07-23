@@ -113,10 +113,7 @@ var/list/flooring_cache = list()
 	if (decals && decals.len)
 		overlays |= decals
 
-	if (is_plating() && !(isnull(broken) && isnull(burnt))) //temp, todo
-		icon = 'icons/turf/flooring/plating.dmi'
-		icon_state = "dmg[rand(1,4)]"
-	else if (flooring)
+	if (flooring)
 		if (!isnull(broken) && (flooring.flags & TURF_CAN_BREAK))
 			overlays |= get_flooring_overlay("[flooring.icon_base]-broken-[broken]", "broken[broken]")
 		if (!isnull(burnt) && (flooring.flags & TURF_CAN_BURN))

@@ -1,28 +1,30 @@
 "a" = (/turf/floor/plating/beach/water/deep,/area/caribbean)
 "b" = (/turf/wall/wood{opacity = 0},/area/caribbean)
-"c" = (/turf/floor/wood,/area/caribbean)
+"c" = (/obj/structure/cannon{dir = 1},/turf/floor/wood_ship,/area/caribbean)
 "d" = (/turf/wall/wood{name = "mast"},/area/caribbean)
-"e" = (/obj/effect/landmark{name = "JoinLateHeer"},/turf/floor/wood,/area/caribbean)
+"e" = (/obj/structure/reagent_dispensers/barrel/rum,/turf/floor/wood_ship,/area/caribbean)
 "f" = (/obj/map_metadata/naval,/turf/floor/plating/beach/water/deep,/area/caribbean)
 "g" = (/turf/wall/wood,/area/caribbean)
 "h" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean)
-"i" = (/obj/item/weapon/gun/projectile/flintlock/blunderbuss,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean)
-"j" = (/obj/item/weapon/gun/projectile/flintlock/musket,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean)
-"k" = (/obj/item/weapon/gun/projectile/flintlock/musketoon,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean)
-"l" = (/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean)
-"m" = (/obj/item/ammo_casing/blunderbuss,/turf/floor/wood,/area/caribbean)
-"n" = (/obj/item/ammo_casing/musketball,/turf/floor/wood,/area/caribbean)
-"o" = (/obj/item/ammo_casing/musketball_pistol,/turf/floor/wood,/area/caribbean)
-"p" = (/obj/structure/closet/crate/wood_empty,/turf/floor/wood,/area/caribbean)
-"q" = (/obj/effect/landmark{name = "JoinLateRA"},/turf/floor/wood,/area/caribbean)
-"r" = (/obj/structure/reagent_dispensers/barrel/beer,/turf/floor/wood,/area/caribbean)
-"s" = (/obj/structure/reagent_dispensers/barrel/water,/turf/floor/wood,/area/caribbean)
-"t" = (/obj/structure/cannon,/turf/floor/wood,/area/caribbean)
-"u" = (/obj/structure/reagent_dispensers/barrel/rum,/turf/floor/wood,/area/caribbean)
-"v" = (/obj/item/cannon_ball,/turf/floor/wood,/area/caribbean)
-"w" = (/obj/structure/reagent_dispensers/barrel/gunpowder,/turf/floor/wood,/area/caribbean)
-"x" = (/obj/structure/cannon{dir = 4},/turf/floor/wood,/area/caribbean)
-"y" = (/obj/item/trash/wood_bowl,/turf/floor/wood,/area/caribbean)
+"i" = (/obj/structure/reagent_dispensers/barrel/beer,/turf/floor/wood_ship,/area/caribbean)
+"j" = (/obj/structure/reagent_dispensers/barrel/water,/turf/floor/wood_ship,/area/caribbean)
+"k" = (/obj/effect/landmark{name = "JoinLateHeer"},/turf/floor/wood_ship,/area/caribbean)
+"l" = (/obj/structure/cannon{dir = 4},/turf/floor/wood_ship,/area/caribbean)
+"m" = (/obj/item/trash/wood_bowl,/turf/floor/wood_ship,/area/caribbean)
+"n" = (/obj/item/weapon/gun/projectile/flintlock/blunderbuss,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean)
+"o" = (/obj/item/weapon/gun/projectile/flintlock/musket,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean)
+"p" = (/obj/item/weapon/gun/projectile/flintlock/musketoon,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean)
+"q" = (/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean)
+"r" = (/obj/structure/closet/crate/wood_empty,/turf/floor/wood_ship,/area/caribbean)
+"s" = (/obj/item/ammo_casing/blunderbuss,/turf/floor/wood_ship,/area/caribbean)
+"t" = (/obj/item/ammo_casing/musketball,/turf/floor/wood_ship,/area/caribbean)
+"u" = (/obj/item/ammo_casing/musketball_pistol,/turf/floor/wood_ship,/area/caribbean)
+"v" = (/obj/structure/reagent_dispensers/barrel/gunpowder,/turf/floor/wood_ship,/area/caribbean)
+"w" = (/obj/item/cannon_ball,/turf/floor/wood_ship,/area/caribbean)
+"x" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean)
+"y" = (/obj/structure/cannon,/turf/wall/wood{opacity = 0},/area/caribbean)
+"z" = (/turf/floor/wood_ship,/area/caribbean)
+"A" = (/obj/effect/landmark{name = "JoinLateRA"},/turf/floor/wood_ship,/area/caribbean)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -59,37 +61,37 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaagggggaaaaaaaaaaaabbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbcccccccccccccbaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgccccccursccccccccccccccccbbaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccccccccccccbbbbaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbccccchcccccccccccccxcccccccccccccccbbbbaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccccycccccccccccccccbbbaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgcccddcccccecddcyycccqcddccccccccccbgggggaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgccccccijklccppccccccccccccccccccbbbaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbccccchccccccmnoccccccwwccccccccccccbbbbaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgccccccccccccccvvccccccccccbbbbaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaagbcccccgcccccccccccccccvcccccccccbbaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbcccctcctcctcbbaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaagggggaaaaaaaaaaaabbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaagggggaaaaaaaaaaaabbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbczzzzczzzzczzbaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzgzzzzzzeijzzzzzzzzzzzzzzzzbbaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzgzzzzzzzzzzzzzzzzzzzzzkzzzzbbbbaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzhzzkzzzkkzzzzzlzkzzzkzzzzkkzzzbbbbaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzgzzzzzzzzzzzzzzzzmzzzzzzzzzkzzzzzbbbaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzgzzzddzzzzzkzddzmmzzkzzddzzzzzzzzzzbgggggaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzgzzzzzznopqzzrrzzzzzzzzzzzzzzzzzzbbbaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzhzzkzzzstuzzzzzzvvzzzzkkzzzzzzbbbbaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzgzzzzzzzzzzzzzzwwzzzzzzzzzzbbbbaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaagbzzzzzgzzzzzxzzzzzzzzzwzzzzzzzzzxbaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaabbbbbbbbbbbbxbbbbbbzzzxzzzzzzzzbxaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaagggggaaaaaaxaaaaabybbxbybbbbybbxaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaxaaaaaaaaaxaaaaaaaaaxaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaxaaaaaaaaaxaaaaaaaaaxaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaxaaaaaaaaaxaaaaaaaaaxaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaxaaaaaaaaaxaaaaaaaaaxaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaagggggbbbbaxaaaaaaaaaxaaaaabbbbxbbbbbbbaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaabbbbbbbbbbbxbbbbbbbbbxbbbbbbzzzxggzzzzbbaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgzxzzczzzzczxzzczzzzAzzggzzzzzbbaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgzzzzzzzzzzzzzzzzzzzzzzgzzzzzzzbbaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzhzzzzAzzAzzlzzzAzzzzzzzhzzzzzzzzbbaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgzzzzzzzzzzzzzzAAzzzzzzgzzzzzzzzbbbaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgddzzzzzzzdddzzzzzAzddzgzzzzzzzzbbbbbbbaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgddzzzzzzAdddzzzzzAzddzgzzzzzzzzbbbbbbbaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgzzznopqzzrrzzAzzzzzzzzgzzzzzzzzbbbaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzhzzzstuzzzzzzzzzzAzzzzzhzzzzzzzzbbaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgzAzzzzzAzzzzzzzzzAzzzzgzzzzzzzbbaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaagbzzzzzzzzgzzzzzzzzzzzzzzzzzzzzzzggzzzzzbbaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaabbbbbbbbbbbbbbybbbbybbbbybbbzzzzggzzzzbbaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaggggbbbbbaaaaaaaaaaaaaaaaabbbbbbbbbbbbaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

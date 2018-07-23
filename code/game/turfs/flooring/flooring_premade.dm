@@ -70,11 +70,6 @@
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE
 
-/turf/floor/hull
-	name = "hull"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "hullcenter0"
-	initial_flooring = /decl/flooring/hull
 
 /turf/floor/hull/New()
 	if (icon_state != "hullcenter0")
@@ -267,11 +262,6 @@
 	icon_state = "freezer"
 	initial_flooring = /decl/flooring/tiling/freezer
 
-/turf/floor/lino
-	name = "lino"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "lino"
-	initial_flooring = /decl/flooring/linoleum
 
 //ATMOS PREMADES
 /turf/floor/reinforced/airless

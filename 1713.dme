@@ -330,7 +330,6 @@
 #include "code\game\objects\structures\morgue.dm"
 #include "code\game\objects\structures\optable.dm"
 #include "code\game\objects\structures\piano.dm"
-#include "code\game\objects\structures\plating.dm"
 #include "code\game\objects\structures\railing.dm"
 #include "code\game\objects\structures\safe.dm"
 #include "code\game\objects\structures\sign_flags.dm"
