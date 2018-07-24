@@ -4,7 +4,7 @@
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
 	icon_state = "cannon"
-	var/angle = 0
+	var/angle = 20
 	var/travelled = 0
 	var/max_distance = 0
 	var/high_distance = 0

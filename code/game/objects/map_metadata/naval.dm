@@ -15,8 +15,8 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british,
-		list(PIRATES) = /area/caribbean/pirates
+		list(BRITISH) = /area/caribbean/british/ship/lower,
+		list(PIRATES) = /area/caribbean/pirates/ship/lower
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(BRITISH = 0.4, PIRATES = 0.6)

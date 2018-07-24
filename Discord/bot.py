@@ -132,14 +132,14 @@ def get_winners(n):
 				votes[winner] = -1
 	return winners
 	
-def counting(client):
-	count = 0
-	while 1 == 1:
-		count += 1
-		for channel in client.get_server("468979034571931648").channels:
-			if channel.name == "staff":
-				yield from client.send_message(channel, count)
-				break
+##def counting(client):
+##	count = 0
+##	while 1 == 1:
+##		count += 1
+##		for channel in client.get_server("468979034571931648").channels:
+##			if channel.name == "staff":
+##				yield from client.send_message(channel, count)
+##				break
 
 @client.event
 @asyncio.coroutine
@@ -165,35 +165,6 @@ def on_message(message):
 		
 	if str(message.channel) == 'hosting' or str(message.channel) == 'website':
 		return 
-	#elif message.content.lower().startswith('bad bot'):
-		#yield from client.send_file(message.channel, 'god.txt', "")
-	elif message.content.lower().startswith('>>'):
-		embed = discord.Embed(color=0x00ff00)
-		messagetouse = str(message.content)
-		#print(messagetouse)
-		embed.add_field(name="Implications from @"+str(message.author), value=messagetouse, inline=False)
-		yield from client.send_message(message.channel, embed=embed)
-	elif message.content.startswith('!s serverstatis'):
-		embed = discord.Embed(color=0x00ff00)
-		embed.add_field(name="Server Status", value="Onaline", inline=False)
-		embed.add_field(name="Address", value='colonialmarine.xxx', inline=False)
-		embed.add_field(name="Map", value='bigred', inline=False)
-		embed.add_field(name="Players", value='5', inline=False)
-		embed.add_field(name="Whitelist", value='its !s serverstatus you fucking gook', inline=False)
-		yield from client.send_message(message.channel, embed=embed)
-	elif message.content.lower().startswith('omae wa mou shindeiru'):
-		yield from client.send_message(message.channel, '**NANI!?**')
-	elif message.content == 'start neuralnet':
-		yield from client.send_message(message.channel, "Blackbeard Neural Net Based Chatbot has been activated @here ... PLease talk to me! ")
-		while (1 != 2):
-			x = str(input())
-			yield from client.send_message(message.channel, x)
-	elif message.content == '<:picklerickldab:373260795104067588>':
-		if not my_message(message):
-			yield from client.send_message(message.channel, '<:picklerickrdab:373260846362525696>')
-	elif message.content == '<:picklerickrdab:373260846362525696>':
-		if not my_message(message):
-			yield from client.send_message(message.channel, '<:picklerickldab:373260795104067588>')
 	elif message.content.startswith('!s '):
 		message.content = remove_prefix(message.content, '!s ')
 	#	if message.content.startswith('!test'):
@@ -210,16 +181,12 @@ def on_message(message):
 			
 		#if message.content.startswith('curchannel'):
 		#	yield from client.send_message(message.channel, message.channel)
-		if message.content.startswith('germanscience'):
-			yield from client.send_message(message.channel, '**BBBBBBBBBBBAKAMONO GAAAAAAAAAAA! DOITSU NO KAGAKU WO SEKAI ICHI**')
-		elif message.content.startswith('germanmedicine'):
-			yield from client.send_message(message.channel, '**GERMAN MEDICINE IS THE BEST IN THE WORLD!**')
-		elif message.content.lower().startswith('approveme'):
+		if message.content.lower().startswith('approveme'):
 		
 			# dammit harcourt
 			accepted = False
 			for role in message.author.roles:
-				if role.name == "Tester" or role.name == "Staff" or role.name == "Senate" or role.name == "Contributor" or role.name == "Wiki-Helper" or role.name == "master":
+				if role.name == "Admiral" or role.name == "Captain" or role.name == "Seaman" or role.name == "Able Seaman" or role.name == "Master":
 					accepted = True 
 					break
 			if not accepted:
@@ -236,8 +203,8 @@ def on_message(message):
 					myfile.write(z)
 				result = "You have been approved!"
 				#server = Client.get_server("331613189462556672")
-				#role = discord.utils.get(server.roles, name="approved")
-				approved = discord.utils.get(message.server.roles, name="approved")
+				#role = discord.utils.get(server.roles, name="Seaman")
+				approved = discord.utils.get(message.server.roles, name="Seaman")
 				#role = discord.utils.get(message.server.roles, name="approved")
 				yield from client.add_roles(message.author, approved)
 			yield from client.send_message(message.channel, result)
@@ -306,18 +273,9 @@ def on_message(message):
 
 		elif message.content.startswith('chinaman'):
 			yield from client.send_message(message.channel, 'http://mechahitler.co.nf/chinaman.jpg')
-		elif message.content.startswith('hdab'):
-			yield from client.send_message(message.channel, 'http://mechahitler.co.nf/hdab.jpg')
-		elif message.content.startswith('wry'):
-			yield from client.send_message(message.channel, 'http://mechahitler.co.nf/wryyy.png')
 		elif message.content.startswith('help'):
-			yield from client.send_message(message.channel, '**List of Commands**: germanscience, germanmedicine, serverstatus, 1713, lebenchan, chinaman, wryyy, hdab, dabon, cpu, ping, (un)whitelistme, (un)patronme, updateserver, rebuildbinaries, host-1713, kill-1713, restart-1713')
-		elif message.content.startswith('dabon'):
-			dabbingOn = message.content.split("dabon ")
-			if len(dabbingOn) == 1:
-				return
-			dabbingOn = dabbingOn[1]
-			yield from client.send_message(message.channel, '<:picklerickldab:373260795104067588>' + dabbingOn + '<:picklerickrdab:373260846362525696>')
+			yield from client.send_message(message.channel, '**List of Commands**: serverstatus, 1713, chinaman, cpu, ping, (un)whitelistme, updateserver, rebuildbinaries, host-1713, kill-1713, restart-1713')
+
 		elif message.content.startswith('pingeveryone'):
 			accepted = False
 			for role in message.author.roles:
@@ -325,9 +283,6 @@ def on_message(message):
 					accepted = True 
 			if accepted:
 				yield from client.send_message(message.channel, "@everyone")
-		elif message.content.startswith('lebenchan'):
-			yield from client.send_message(message.channel, 'https://cdn.discordapp.com/attachments/331613625963773953/413741473759232022/unknown.png')
-		# https://gist.github.com/NNTin/d92e2a8c8edfe46e9e47afe7cf3fc138
 		elif message.content.startswith('ping'):
 			channel = message.channel
 			t1 = time.perf_counter()

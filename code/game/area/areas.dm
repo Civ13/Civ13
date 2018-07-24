@@ -64,6 +64,8 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 	var/parent_area_type = null
 	var/area/parent_area = null
 
+	var/last_lift_master = null
+
 
 /*Adding a wizard area teleport list because motherfucking lag -- Urist*/
 /*I am far too lazy to make it a proper list of areas so I'll just make it run the usual telepot routine at the start of the game*/
@@ -185,17 +187,20 @@ var/list/ghostteleportlocs = list()
 		eject = FALSE
 		updateicon()
 	return
-/*
-/area/proc/partyalert()
-	if (!( party ))
-		party = TRUE
-		updateicon()
-		mouse_opacity = FALSE
-	return
 
-/area/proc/partyreset()
-	return
-*/
+area/proc/lift_master()
+	if (last_lift_master)
+		switch (last_lift_master)
+			if (-1)
+				return null
+			else
+				return last_lift_master
+	for (var/obj/lift_controller/master in contents)
+		last_lift_master = master
+		return master
+	last_lift_master = -1 // indicate that we have no lift master in this area - saves a HUGE amount of tick usage
+	return null
+
 /area/proc/updateicon()
 	if ((fire || eject) && (!requires_power||power_environ))//If it doesn't require power, can still activate this proc.
 		if (fire)
