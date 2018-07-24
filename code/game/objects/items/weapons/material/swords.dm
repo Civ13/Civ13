@@ -7,7 +7,7 @@
 	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	sharp = TRUE
-	edge = TRUE
+	edge = FALSE
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	hitsound = 'sound/weapons/bladeslice.ogg'
 
