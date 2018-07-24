@@ -44,8 +44,8 @@ Parts of code courtesy of Super3222
 
 //Not actually an attachment
 /obj/item/weapon/attachment/scope/adjustable/binoculars
-	name = "binoculars"
-	desc = "A pair of binoculars."
+	name = "telescope"
+	desc = "A naval telescope."
 	max_zoom = ZOOM_CONSTANT*3
 	attachable = FALSE
 

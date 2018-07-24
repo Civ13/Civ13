@@ -26,10 +26,10 @@
 	battle_name = "Naval Battle"
 
 /obj/map_metadata/naval/british_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 9000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/naval/pirates_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 9000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/naval/announce_mission_start(var/preparation_time)
 	world << "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"

@@ -119,7 +119,7 @@
 
 /obj/item/weapon/storage/firstaid/surgery
 	name = "surgery kit"
-	desc = "Contains tools for surgery. Has precise foam fitting for safe transport."
+	desc = "Contains tools for surgery."
 	icon_state = "firstaid2"
 	item_state = "firstaid_2"
 
@@ -134,7 +134,6 @@
 	new /obj/item/weapon/scalpel(src)
 	new /obj/item/weapon/surgicaldrill(src)
 	new /obj/item/weapon/bonegel(src)
-	new /obj/item/weapon/FixOVein(src)
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
 
 	make_exact_fit()

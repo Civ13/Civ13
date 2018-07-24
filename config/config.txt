@@ -12,19 +12,19 @@ SERVER_NAME 1713 Alpha
 HUB_FEATURES A new light-medium roleplay WW2 Server
 
 ## The main content of your hub message
-HUB_BODY <i>1713 A.D., Caribbean Sea, SEASON, TIME_OF_DAY</i><br>
+HUB_BODY <i>1713 A.D.</i>, <b>Caribbean Sea, TIME_OF_DAY</b><br>
 
 ## Use a link to a banner on your hub message? Comment out if not
-HUB_BANNER_URL <img src='http://tny.im/btn'>
+HUB_BANNER_URL <img src='https://image.ibb.co/bRnrzT/logo.png'>
 
 ## Open the hub discord link in a new window? 1 = yes, 0 = no
 OPEN_HUB_DISCORD_IN_NEW_WINDOW 1
 
 ## When hosting on this port number, your server will not show on the hub
-TESTING_PORT 12345
+TESTING_PORT 11000
 
 ## When hosting on this port number, you server WILL show up on the hub, but only admins can join
-HUBTESTING_PORT 12346
+HUBTESTING_PORT 11001
 
 ## Put on byond hub: uncomment this to put your server on the byond hub.
 HUB

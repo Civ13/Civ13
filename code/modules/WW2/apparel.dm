@@ -96,36 +96,36 @@
 	worn_state = "piratejacket5"
 
 /obj/item/clothing/under/pirate1
-	name = "pirate clothes"
-	desc = "A set of pirate clothes, with a shirt and some trousers."
+	name = "black stripes clothing"
+	desc = "A set of clothes with a black striped shirt."
 	icon_state = "pirate1"
 	item_state = "pirate1"
 	worn_state = "pirate1"
 
 /obj/item/clothing/under/pirate2
-	name = "pirate clothes"
-	desc = "A set of pirate clothes, with a shirt and some trousers."
+	name = "red stripes clothing"
+	desc = "A set of clothes with a red striped shirt."
 	icon_state = "pirate2"
 	item_state = "pirate2"
 	worn_state = "pirate2"
 
 /obj/item/clothing/under/pirate3
-	name = "pirate clothes"
-	desc = "A set of pirate clothes, with a shirt and some trousers."
+	name = "white shirt clothing"
+	desc = "A set of clothes with a white shirt."
 	icon_state = "pirate3"
 	item_state = "pirate3"
 	worn_state = "pirate3"
 
 /obj/item/clothing/under/pirate4
-	name = "pirate clothes"
-	desc = "A set of pirate clothes, with a shirt and some trousers."
+	name = "baggy clothing"
+	desc = "A set of clothes with a white shirt and baggy trousers"
 	icon_state = "pirate4"
 	item_state = "pirate4"
 	worn_state = "pirate4"
 
 /obj/item/clothing/under/pirate5
-	name = "pirate clothes"
-	desc = "A set of pirate clothes, with a shirt and some trousers."
+	name = "sleeveless clothing"
+	desc = "A set of clothes with a sleeveless shirt."
 	icon_state = "pirate5"
 	item_state = "pirate5"
 	worn_state = "pirate5"
@@ -172,8 +172,8 @@
 	worn_state = "british_sailor1"
 
 /obj/item/clothing/under/british_sailor2
-	name = "british sailor clothes"
-	desc = "A set of royal navy sailor clothes, with a white shirt and trousers."
+	name = "open british sailor clothes"
+	desc = "A set of royal navy sailor clothes, with an unbuttoned white shirt and trousers."
 	icon_state = "british_sailor2"
 	item_state = "british_sailor2"
 	worn_state = "british_sailor2"
@@ -186,7 +186,7 @@
 	worn_state = "british_sailor3"
 
 /obj/item/clothing/under/british_sailor4
-	name = "british sailor clothes"
+	name = "grey british sailor clothes"
 	desc = "A set of royal navy sailor clothes, with a grey shirt and trousers."
 	icon_state = "british_sailor4"
 	item_state = "british_sailor4"

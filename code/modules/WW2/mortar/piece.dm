@@ -240,7 +240,7 @@
 
 	if (m)
 
-		max_distance = (80 - angle) + 10
+		max_distance = angle
 
 		m << browse({"
 
@@ -267,7 +267,7 @@
 		<big><b>[name]</b></big><br><br>
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a><br><br>
-		Angle: <a href='?src=\ref[src];set_angle=1'>[angle]° (~[max_distance] meters)</a><br><br>
+		Distance: <a href='?src=\ref[src];set_angle=1'>[angle] meters</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>

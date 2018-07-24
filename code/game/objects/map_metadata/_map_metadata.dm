@@ -36,8 +36,8 @@ var/global/obj/map_metadata/map = null
 		list(BRITISH) = /area/caribbean/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
-//	"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-	)
+	"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
+//	)
 	// stuff ported from removed game mode system
 	var/required_players = 2
 	var/time_both_sides_locked = -1
