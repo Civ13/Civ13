@@ -276,7 +276,7 @@ def on_message(message):
 		elif message.content.startswith('sopademacaco'):
 			yield from client.send_message(message.channel, 'https://i.kym-cdn.com/photos/images/original/001/278/910/42e.jpg')
 		elif message.content.startswith('piratechan'):
-			yield from client.send_message(message.channel, 'https://vignette.wikia.nocookie.net/percyjacksonfanfiction/images/a/ab/Anime-pirate.png')	
+			yield from client.send_message(message.channel, 'https://i.imgur.com/SGxK1uX.png')	
 		elif message.content.startswith('help'):
 			yield from client.send_message(message.channel, '**List of Commands**: serverstatus, chinaman, sopademacaco, piratechan, cpu, ping, (un)whitelistme, updateserver, rebuildbinaries, host-1713, kill-1713, restart-1713')
 
