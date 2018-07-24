@@ -23,7 +23,6 @@
 "aw" = (/obj/structure/sign/flag/medical,/turf/wall/wood,/area/caribbean/pirates/ship/lower)
 "ax" = (/obj/structure/vending/flintlock,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "ay" = (/obj/structure/multiz/ladder/ww2{area_id = "p3"},/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
-"az" = (/obj/structure/cannon{dir = 4},/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "aA" = (/obj/structure/vending/britishapparel,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "aB" = (/turf/wall/wood{name = "mast"},/area/caribbean/british/ship/main_deck)
 "aC" = (/obj/structure/cannon,/turf/wall/wood{opacity = 0},/area/caribbean/british/ship/main_deck)
@@ -263,7 +262,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaaaaaoaaaaaaaaaaaaaaaaaoaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVararaoararararararararaoararararararaTaTauasaqaqatatatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaXaWbmaYaYaYaZaVaTaTasauavauataPauavauasatauavauaPatatatatataqaqatatatatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbabbaWaWaWaWaWaWaVatatatatatatatatatatatatatatatatatatatatatataqatbwatbwatataxaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWbcaWaWaWaWaWaWbdatatatatatatatatatatazbxatatataIaIatatatatatbEatatatatatatatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWbcaWaWaWaWaWaWbdatatatatatatatatatatatbxatatataIaIatatatatatbEatatatatatatatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWbyaWbeaVauatatatatbzatatatatatatatatbxatatatatatatataqauatbwatbwatataAaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbAaWaWaWaWaWaWaWaVaBaBatatatatatatauaBaBaBauatatatatatataBaBauaqatatatatatatataAaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWaWaWaWaVaBaBatatatbxatatataBaBaBatatatatatatataBaBauaqatatatatbwatataAaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaa

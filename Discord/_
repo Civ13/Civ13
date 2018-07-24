@@ -1,0 +1,164 @@
+from __future__ import print_function
+import discord
+import asyncio
+import codecs
+import random
+import os.path
+import psutil
+from googletrans import Translator
+
+translator = Translator()
+
+
+client = discord.Client()
+
+protips = ["test one", "test2"]
+
+def remove_prefix(text, prefix):
+    if text.startswith(prefix): # only modify the text if it starts with the prefix
+         text = text.replace(prefix, "", 1) # remove one instance of prefix
+    return text
+	
+def random_line(language = None):
+	lines = open('god.txt').read().splitlines()
+	line = random.choice(lines)
+	while line.find("@") != -1 or line.find("<") != -1 or line.find(">") != -1 or line.find("https://") != -1 or line.find(".png") != -1 or line.find(".jpg") != -1 or line.find(".gif") != -1:
+		line = random.choice(lines)
+	if language != None:
+		if line.find(":") == -1:
+			line = translator.translate(line, language).text
+	return line
+	
+def my_message(msg):
+    return msg.author == client.user
+	
+@client.event
+async def on_ready():
+    print('Logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')
+
+@client.event
+async def on_message(message):
+	if str(message.channel) == 'hosting' or str(message.channel) == 'website':
+		return 
+	elif message.content.lower().startswith('bad bot'):
+		await client.send_message(message.channel, 'no you')
+	elif message.content.startswith('serverstatis'):
+		embed = discord.Embed(color=0x00ff00)
+		embed.add_field(name="Server Status", value="Online", inline=False)
+		embed.add_field(name="Address", value='colonialmarine.xxx', inline=False)
+		embed.add_field(name="Map", value='bigred', inline=False)
+		embed.add_field(name="Players", value='5', inline=False)
+		embed.add_field(name="Whitelist", value='its !s serverstatus you fucking gook', inline=False)
+		await client.send_message(message.channel, embed=embed)
+	elif message.content.lower().startswith('omae wa mou shindeiru'):
+		await client.send_message(message.channel, '**NANI!?**')
+	elif message.content == '<:picklerickldab:373260795104067588>':
+		if not my_message(message):
+			await client.send_message(message.channel, '<:picklerickrdab:373260846362525696>')
+	elif message.content == '<:picklerickrdab:373260846362525696>':
+		if not my_message(message):
+			await client.send_message(message.channel, '<:picklerickldab:373260795104067588>')
+	elif message.content.startswith('!s '):
+		message.content = remove_prefix(message.content, '!s ')
+	#	if message.content.startswith('!test'):
+		#	counter = 0
+		#	tmp = await client.send_message(message.channel, 'Calculating messages...')
+		#	async for log in client.logs_from(message.channel, limit=100):
+		#		if log.author == message.author:
+		#			counter += 1
+
+		#	await client.edit_message(tmp, 'You have {} messages.'.format(counter))
+		#if message.content.startswith('sleep'):
+			#await asyncio.sleep(5)
+			#await client.send_message(message.channel, 'Done sleeping')
+			
+		if message.content.startswith('curchannel'):
+			await client.send_message(message.channel, message.channel)
+		elif message.content.startswith('germanscience'):
+			await client.send_message(message.channel, '**BBBBBBBBBBBAKAMONO GAAAAAAAAAAA﻿! DOITSU NO KAGAKU WO SEKAI ICHI**')
+		elif message.content.startswith('germanmedicine'):
+			await client.send_message(message.channel, '**GERMAN MEDICINE IS THE BEST IN THE WORLD!**')
+		elif message.content.startswith('cpu'):
+			CPU_Pct= str(psutil.cpu_percent())
+			await client.send_message(message.channel, 'CPU Usage: ' + CPU_Pct +"%")
+		#elif message.content.startswith('meme'):
+			#await client.send_message(message.channel, ':swastika: :swastika: :swastika: :fire: :fire: :fire: mecha :b:itler :ok_hand: :fire: :fire: :fire: :swastika: :swastika: :swastika:')
+		elif message.content.startswith('serverstatus'):
+			data = None;
+			if os.path.isfile('/home/linda2/WW13/WW13-1/Interstation-Two-WW2/serverdata.txt') == True:
+				data = codecs.open('/home/linda2/WW13/WW13-1/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+			elif os.path.isfile('/home/linda2/WW13/WW13-2/Interstation-Two-WW2/serverdata.txt') == True:
+				data = codecs.open('/home/linda2/WW13/WW13-2/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+			else:
+				embed = discord.Embed(color=0x00ff00)
+				embed.add_field(name="Server Status",value="Offline", inline=False)
+				await client.send_message(message.channel, embed=embed)
+				return 
+			data = data.replace('<b>Server Status</b>: ','')
+			data = data.replace('<b>Address</b>: ', '')
+			data = data.replace('<b>Map</b>: ', '')
+			data = data.replace('<b>Players</b>:','')
+			data = data.replace('</b>','')
+			data = data.replace('<b>','')
+			data = data.replace('Whitelist: ','')
+			data = data.split(";")
+			#embed = discord.Embed(title="**Lebensraum Bot**", color=0x00ff00)
+			embed = discord.Embed(color=0x00ff00)
+			embed.add_field(name="Server Status", value=data[0], inline=False)
+			embed.add_field(name="Address", value='<'+data[1]+'>', inline=False)
+			embed.add_field(name="Map", value=data[2], inline=False)
+			embed.add_field(name="Players", value=data[3], inline=False)
+			if len(data) > 4:
+				embed.add_field(name="Whitelist", value=data[4], inline=False)
+			await client.send_message(message.channel, embed=embed)
+			#await client.send_message(message.channel, data)
+			#await client.send_message(message.channel, 'Is having daughters the ultimate cuckoldry? I cannot think or comprehend of anything more cucked than having a daughter. Honestly, think about it rationally. You are feeding, clothing, raising and rearing a girl for at least 18 years solely so she can go and get ravaged by another man. All the hard work you put into your beautiful little girl - reading her stories at bedtime, making her go to sports practice, making sure she had a healthy diet, educating her, playing with her. All of it has one simple result: her body is more enjoyable for the men that will eventually fuck her in every hole. Raised the perfect girl? Great. Who benefits? If you\'re lucky, a random man who had nothing to do with the way she grew up, who marries her. He gets to fuck her tight pussy every night. He gets the benefits of her kind and sweet personality that came from the way you raised her. As a man who has a daughter, you are LITERALLY dedicating at least 20 years of your life simply to raise a girl for another man to enjoy. It is the ULTIMATE AND FINAL cuck. Think about it logically ')
+		elif message.content.startswith('godsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line() + " "
+			
+			await client.send_message(message.channel, "God Says... " + god + ".")
+		elif message.content.startswith('yahwehsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('yi') + " "
+			
+			await client.send_message(message.channel, "Yahweh Says... " + god + ".")
+		elif message.content.startswith('hitlersays') or message.content.startswith('stroheimsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('de') + " "
+							
+			await client.send_message(message.channel, "Hitler Says... " + god + ".")
+		elif message.content.startswith('stalinsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('ru') + " "
+							
+			await client.send_message(message.channel, "Stalin Says... " + god + ".")
+		elif message.content.startswith('hirohitosays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('ja') + " "
+							
+			await client.send_message(message.channel, "Hirohito Says... " + god + ".")
+		elif message.content.startswith('lebensraum'):
+			await client.send_message(message.channel, codecs.open('lebensraum.txt', encoding='utf-8').read())
+			#await client.send_message(message.channel, 'To be fair, you have to have a very high IQ to understand Lebensruam. The gameplay is extremely  subtle, and without a solid grasp of your keyboard most of the mechanics will go over a typical player▒~@~Ys head. There▒~@~Ys also Hitlers correct outlook, which is deftly woven into his characterisation- his personal philosophy draws heavily from the Jews  for instance. The fans understand this stuff; they have the intellectual capacity to truly appreciate the depths of these deaths, to realise that they▒~@~Yre not just funny- they say something deep about LIFE. As a consequence people who dislike Lebensruam truly ARE idiots- of course they wouldn▒~@~Yt appreciate, for instance, the humour in Mods existential catchphrase ▒~@~\Fucking Normies,▒~@~] which itself is a cryptic reference to CS;GO. I▒~@~Ym smirking right now just imagining one of those addlepated russians scratching their heads in confusion as Adolf`s genius wit unfolds itself on their battlefield. What fools.. how I pity them. :joy: And yes, by the way, i DO have a Hitler tattoo. And no, you cannot see it. It▒~@~Ys for the ladies▒~@~Y eyes only- and even then they have to demonstrate that they▒~@~Yre within 5 IQ points of my own (preferably lower) beforehand. Nothin personnel jew :sunglasses:')
+		elif message.content.startswith('chinaman'):
+			await client.send_message(message.channel, 'http://mechahitler.co.nf/chinaman.jpg')
+		elif message.content.startswith('hdab'):
+			await client.send_message(message.channel, 'http://mechahitler.co.nf/hdab.jpg')
+		elif message.content.startswith('help'):
+			await client.send_message(message.channel, '**List of Commands**: germanscience, germanmedicine, serverstatus, lebensraum, cpu')
+
+	elif not message.content.startswith('God Says') and not message.content.startswith('Hitler Says') and not message.content.startswith('Stalin Says') and not message.content.startswith('Hirohito Says') and not message.content.startswith('Yahweh Says') and not message.content.startswith('!s'):
+		f = open("god.txt","a")
+		f.write(str(message.content).replace(" ","\n"))
+		f.close()
+client.run('NDAxNTk4MDg1MzEyMTUxNTc0.DTshHw.i8Gzoqt8_HKW71YflWacNXcrY0g')
+

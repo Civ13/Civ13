@@ -1,0 +1,30 @@
+		elif message.content.startswith('godsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line() + " "
+			
+			await client.send_message(message.channel, "God Says... " + god + ".")
+		elif message.content.startswith('yahwehsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('yi') + " "
+			
+			await client.send_message(message.channel, "Yahweh Says... " + god + ".")
+		elif message.content.startswith('hitlersays') or message.content.startswith('stroheimsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('de') + " "
+							
+			await client.send_message(message.channel, "Hitler Says... " + god + ".")
+		elif message.content.startswith('stalinsays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('ru') + " "
+							
+			await client.send_message(message.channel, "Stalin Says... " + god + ".")
+		elif message.content.startswith('hirohitosays'):
+			god = ""
+			for _ in range (random.randint(5,50)):
+				god = god + random_line('ja') + " "
+							
+			await client.send_message(message.channel, "Hirohito Says... " + god + ".")
