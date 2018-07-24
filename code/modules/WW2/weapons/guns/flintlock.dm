@@ -159,7 +159,8 @@
 	icon_state = "flintpistol"
 	item_state = "pistol"
 	recoil = 2
-	force = 8
+	force = 6
+	w_class = 2
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball_pistol"
 	weight = 2.5

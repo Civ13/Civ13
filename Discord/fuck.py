@@ -1,6 +1,6 @@
 	# for all messages, trigger an update of the whitelists 
-	tester_whitelist = open("/home/customer/WW13/testserver/whitelists/tester.txt", "w")
-	patreon_whitelist = open("/home/customer/WW13/testserver/whitelists/patreon.txt", "w")
+	tester_whitelist = open("/home/customer/1713/testserver/whitelists/tester.txt", "w")
+	patreon_whitelist = open("/home/customer/1713/testserver/whitelists/patreon.txt", "w")
 	
 	if time.time() >= nextWhitelistGenerationTime:
 		nextWhitelistGenerationTime = time.time() + 5

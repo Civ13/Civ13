@@ -91,7 +91,7 @@
 
 	return TRUE
 
-/datum/job/pirates/boatswwain
+/datum/job/pirates/boatswain
 	title = "Pirate Boatswain"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"
@@ -476,7 +476,7 @@
 
 	return TRUE
 
-/datum/job/british/boatswwain
+/datum/job/british/boatswain
 	title = "Royal Navy Boatswain"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Boatswain"

@@ -260,15 +260,15 @@ def on_message(message):
 			else:
 				data = None;
 				if _13000 and _13001:
-					if os.path.isfile('/home/customer/WW13/WW13-1/Interstation-Two-WW2/serverdata.txt') == True:
-						data = codecs.open('/home/customer/WW13/WW13-1/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
-					elif os.path.isfile('/home/customer/WW13/WW13-2/Interstation-Two-WW2/serverdata.txt') == True:
-						data = codecs.open('/home/customer/WW13/WW13-2/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+					if os.path.isfile('/home/customer/1713/1713-1/Interstation-Two-WW2/serverdata.txt') == True:
+						data = codecs.open('/home/customer/1713/1713-1/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+					elif os.path.isfile('/home/customer/1713/1713-2/Interstation-Two-WW2/serverdata.txt') == True:
+						data = codecs.open('/home/customer/1713/1713-2/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
 				elif _13002 and _13003:
-					if os.path.isfile('/home/customer/WW13/WW13-3/Interstation-Two-WW2/serverdata.txt') == True:
-						data = codecs.open('/home/customer/WW13/WW13-3/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
-					elif os.path.isfile('/home/customer/WW13/WW13-4/Interstation-Two-WW2/serverdata.txt') == True:
-						data = codecs.open('/home/customer/WW13/WW13-4/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+					if os.path.isfile('/home/customer/1713/1713-3/Interstation-Two-WW2/serverdata.txt') == True:
+						data = codecs.open('/home/customer/1713/1713-3/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+					elif os.path.isfile('/home/customer/1713/1713-4/Interstation-Two-WW2/serverdata.txt') == True:
+						data = codecs.open('/home/customer/1713/1713-4/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
 				else:
 					embed = discord.Embed(color=0x00ff00)
 					embed.add_field(name="Server Status",value="Offline", inline=False)
@@ -347,7 +347,7 @@ def on_message(message):
 						accepted = True 
 				if accepted:
 				
-					whitelist = "/home/customer/WW13/testserver/whitelist.txt"
+					whitelist = "/home/customer/1713/testserver/whitelist.txt"
 					
 					open(whitelist, "a").close()
 					
@@ -385,7 +385,7 @@ def on_message(message):
 			
 				removed = "N/A"
 			
-				list = "/home/customer/WW13/testserver/whitelist.txt"
+				list = "/home/customer/1713/testserver/whitelist.txt"
 				
 				open(list, "a").close()
 				
@@ -421,7 +421,7 @@ def on_message(message):
 						amt = max(amt, int(splittext))
 				if accepted:
 				
-					list = "/home/customer/WW13/patrons.txt"
+					list = "/home/customer/1713/patrons.txt"
 					
 					open(list, "a").close()
 					
@@ -458,7 +458,7 @@ def on_message(message):
 			
 				removed = "N/A"
 			
-				list = "/home/customer/WW13/patrons.txt"
+				list = "/home/customer/1713/patrons.txt"
 				
 				open(list, "a").close()
 				
@@ -492,7 +492,7 @@ def on_message(message):
 					
 				for channel in message.server.channels:
 					if channel.name.lower() == "updates":
-						yield from client.send_message(channel, "The server has been updated. Update triggered by {}. See https://github.com/WW2-SS13/WW13/pulse or development channels for recent changes.".format(message.author.name))
+						yield from client.send_message(channel, "The server has been updated. Update triggered by {}. See https://github.com/WW2-SS13/1713/pulse or development channels for recent changes.".format(message.author.name))
 			#	yield from client.send_message(message.channel, "Now updating the code to the latest git build. It will take about 15 seconds.")
 				#subprocess.call(['/bin/bash', '-i', '-c', "update-server-auto"])
 				#bash_command("update-server-auto")
@@ -526,8 +526,8 @@ def on_message(message):
 					accepted = True 
 					break 
 			if accepted:
-				bash_command("host-WW13-core1")
-				bash_command("host-WW13-core2")
+				bash_command("host-1713-core1")
+				bash_command("host-1713-core2")
 				yield from client.send_message(message.channel, "Attempted to bring up Lebensraum.")
 
 			else:

@@ -13,7 +13,7 @@ pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 for pid in pids:
 	try:
 		name = open(os.path.join('/proc', pid, 'cmdline'), 'r').read()
-		if "WW13.dmb" in name:
+		if "1713.dmb" in name:
 			if "sudo" in name:
 				os.kill(int(pid), signal.SIGKILL)
 	except IOError: # proc has already terminated
@@ -21,9 +21,9 @@ for pid in pids:
 
 # what name ends up being, for reference - Kachnov 
 
-#sudoWW13.dmb13000-trusted-logself
-#DreamDaemonWW13.dmb13000-trusted-logself
-#sudoDreamDaemonWW13.dmb13001-trusted-logself
-#DreamDaemonWW13.dmb13001-trusted-logself
+#sudo1713.dmb13000-trusted-logself
+#DreamDaemon1713.dmb13000-trusted-logself
+#sudoDreamDaemon1713.dmb13001-trusted-logself
+#DreamDaemon1713.dmb13001-trusted-logself
 
 # also note os.getpid() to get our pid

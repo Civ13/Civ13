@@ -1,4 +1,4 @@
-/home/customer/WW13-git/config/tips.txt
-/home/customer/WW13-git/config/motd.txt
-/home/customer/WW13-git/config/hub.txt
-/home/customer/WW13-git/config/admin_ranks.txt
+/home/customer/1713-git/config/tips.txt
+/home/customer/1713-git/config/motd.txt
+/home/customer/1713-git/config/hub.txt
+/home/customer/1713-git/config/admin_ranks.txt

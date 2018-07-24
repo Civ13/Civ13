@@ -7,7 +7,7 @@ if len(sys.argv) == 1:
 	
 print("Updating git...")
 	
-os.chdir("/home/customer/WW13-git")
+os.chdir("/home/customer/1713-git")
 os.system("git pull")
 os.system("git reset --hard origin/master")
 	
@@ -48,7 +48,7 @@ else:
 	print("Invalid argument.")
 	sys.exit()
 
-DME = "/home/customer/WW13-git/WW13.dme"
+DME = "/home/customer/1713-git/1713.dme"
 
 lines = []
 with open(DME, "r") as search:
@@ -71,7 +71,7 @@ for line in lines:
 			
 DME.close()
 
-os.system('sudo python3.5 /home/customer/WW13/scripts/updateserverabspathsnogitpull.py')
+os.system('sudo python3.5 /home/customer/1713/scripts/updateserverabspathsnogitpull.py')
 
 # no longer used (was never used)
 #lastMapSwapStatus = open("/home/customer/lastMapSwapStatus.txt", "w")
