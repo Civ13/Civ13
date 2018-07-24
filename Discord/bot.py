@@ -381,7 +381,7 @@ def on_message(message):
 					
 				for channel in message.server.channels:
 					if channel.name.lower() == "updates":
-						yield from client.send_message(channel, "The server has been updated. Update triggered by {}. See https://github.com/WW2-SS13/1713/pulse or development channels for recent changes.".format(message.author.name))
+						yield from client.send_message(channel, "The server has been updated. Update triggered by {}. See https://github.com/1713-SS13/1713/pulse or development channels for recent changes.".format(message.author.name))
 			#	yield from client.send_message(message.channel, "Now updating the code to the latest git build. It will take about 15 seconds.")
 				#subprocess.call(['/bin/bash', '-i', '-c', "update-server-auto"])
 				#bash_command("update-server-auto")

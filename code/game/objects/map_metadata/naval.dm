@@ -1,7 +1,7 @@
 #define NO_WINNER "No ship has been captured."
 /obj/map_metadata/naval
 	ID = MAP_NAVAL
-	title = "Naval Battle (75x75x2)"
+	title = "Naval Battle (75x75x4)"
 //	lobby_icon_state = "pirates"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
@@ -10,8 +10,7 @@
 //	min_autobalance_players = 90
 	faction_organization = list(
 		BRITISH,
-		PIRATES,
-		CIVILIAN)
+		PIRATES)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
@@ -23,7 +22,7 @@
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
-	battle_name = "Naval Battle"
+	battle_name = "Naval boarding"
 
 /obj/map_metadata/naval/british_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
