@@ -300,18 +300,18 @@ def on_message(message):
 					#os.system('sudo rm -f /home/customer/1713/sharedinfo/*.txt')
 					#os.system('sudo rm -f /home/customer/1713/1713-1/serverdata.txt')
 					#os.system('sudo rm -f /home/customer/1713/1713-2/serverdata.txt')
-					#os.system('sudo DreamDaemon /home/customer/1713/1713-1/1713.dmb 13000 -trusted -webclient -logself &')
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-1/1713.dmb 12000 -trusted -webclient -logself &')
 					#time.sleep(5) # this is pretty important 
-					#os.system('sudo DreamDaemon /home/customer/1713/1713-2/1713.dmb 13001 -trusted -webclient -logself &')
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-2/1713.dmb 12001 -trusted -webclient -logself &')
 				yield from client.send_message(message.channel, "Attempted to bring up the 1713 server (Main Server)")
 					#time.sleep(10) # ditto
 					#os.system('sudo python3 /home/customer/1713/scripts/killsudos.py')
 					#os.system('sudo rm -f /home/customer/1713/testserver/sharedinfo/*.txt')
 					#os.system('sudo rm -f /home/customer/1713/1713-3/serverdata.txt')
 					#os.system('sudo rm -f /home/customer/1713/1713-4/serverdata.txt')
-					#os.system('sudo DreamDaemon /home/customer/1713/1713-3/1713.dmb 13002 -trusted -webclient -logself &')
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-3/1713.dmb 12002 -trusted -webclient -logself &')
 					#time.sleep(5) # this is pretty important 
-					#os.system('sudo DreamDaemon /home/customer/1713/1713-4/1713.dmb 13003 -trusted -webclient -logself &')
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-4/1713.dmb 12003 -trusted -webclient -logself &')
 					#yield from client.send_message(message.channel, "Attempted to bring up Lebensraum (Testing Server)")
 					#time.sleep(10) # ditto
 					#os.system('sudo python3 /home/customer/1713/scripts/killsudos.py')

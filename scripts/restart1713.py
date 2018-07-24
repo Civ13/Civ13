@@ -17,20 +17,20 @@ for pid in pids:
 				# main server logic: for some reason I could get a valid string/int for port so we're just using "in"
 				
 				# 1713-1 is the active server; restart 1713-1
-				if "13000" in name:
+				if "12000" in name:
 					if os.path.isfile("/home/customer/1713/1713-1/serverdata.txt"):
 						process = psutil.Process(int(pid))
 						if process != None:
 							os.kill(int(pid), signal.SIGUSR1)
-							print("Restarted ACTIVE server on port 13000.")
+							print("Restarted ACTIVE server on port 12000.")
 							
 				# 1713-2 is the active server; restart 1713-2
-				elif "13001" in name:
+				elif "12001" in name:
 					if os.path.isfile("/home/customer/1713/1713-2/serverdata.txt"):
 						process = psutil.Process(int(pid))
 						if process != None:
 							os.kill(int(pid), signal.SIGUSR1)
-							print("Restarted ACTIVE server on port 13001.")
+							print("Restarted ACTIVE server on port 12001.")
 						
 			 		  
 	except IOError: # proc has already terminated
@@ -38,9 +38,9 @@ for pid in pids:
 
 # what name ends up being, for reference - Kachnov 
 
-#sudo1713.dmb13000-trusted-logself
-#DreamDaemon1713.dmb13000-trusted-logself
-#sudoDreamDaemon1713.dmb13001-trusted-logself
-#DreamDaemon1713.dmb13001-trusted-logself
+#sudo1713.dmb12000-trusted-logself
+#DreamDaemon1713.dmb12000-trusted-logself
+#sudoDreamDaemon1713.dmb12001-trusted-logself
+#DreamDaemon1713.dmb12001-trusted-logself
 
 # also note os.getpid() to get our pid

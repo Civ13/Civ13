@@ -57,18 +57,18 @@ client = discord.Client()
 
 protips = ["test one", "test2"]
 
-senate_approval_for_judge_elections = []
+senate_approval_for_master_elections = []
 
-judge_election_pledged_votes = dict()
+master_election_pledged_votes = dict()
 
-judge_election_candidates = []
+master_election_candidates = []
 
-judge_election_registered_ids = dict()
+master_election_registered_ids = dict()
 
 #nextWhitelistGenerationTime = -1
 
-judge_elections_end_at = -1
-judge_election_slots = 5
+master_elections_end_at = -1
+master_election_slots = 5
 next_election_status_update = -1
 
 def remove_prefix(text, prefix):
@@ -98,18 +98,18 @@ def search_players(ckey):
 		return str(x)
 	else:
 		return str(x[0])	
-# judge elections take 36 hours
+# master elections take 36 hours
 _36_hours = 129600
-#def start_judge_elections():
-	#judge_elections_end_at = time.time() + 120
+#def start_master_elections():
+	#master_elections_end_at = time.time() + 120
 	
 # return a dictionary of candidates paired with number of votes they got 
 def count_votes():
 	votes = dict()
-	for key in judge_election_candidates:
+	for key in master_election_candidates:
 		votes[key] = 0
-	for key in judge_election_pledged_votes:
-		candidate = judge_election_pledged_votes[key]
+	for key in master_election_pledged_votes:
+		candidate = master_election_pledged_votes[key]
 		votes[candidate] += 1
 	return votes
 	
@@ -136,8 +136,8 @@ def counting(client):
 	count = 0
 	while 1 == 1:
 		count += 1
-		for channel in client.get_server("331613189462556672").channels:
-			if channel.name == "senate":
+		for channel in client.get_server("468979034571931648").channels:
+			if channel.name == "staff":
 				yield from client.send_message(channel, count)
 				break
 
@@ -155,13 +155,13 @@ def on_ready():
 @asyncio.coroutine
 def on_message(message):
 
-	global senate_approval_for_judge_elections
-	global judge_election_pledged_votes
-	global judge_election_candidates
-	global judge_elections_end_at
-	global judge_election_slots
+	global senate_approval_for_master_elections
+	global master_election_pledged_votes
+	global master_election_candidates
+	global master_elections_end_at
+	global master_election_slots
 	global next_election_status_update
-	global judge_election_registered_ids
+	global master_election_registered_ids
 		
 	if str(message.channel) == 'hosting' or str(message.channel) == 'website':
 		return 
@@ -184,7 +184,7 @@ def on_message(message):
 	elif message.content.lower().startswith('omae wa mou shindeiru'):
 		yield from client.send_message(message.channel, '**NANI!?**')
 	elif message.content == 'start neuralnet':
-		yield from client.send_message(message.channel, "Stroheim Neural Net Based Chatbot has been activated @here ... PLease talk to me! ")
+		yield from client.send_message(message.channel, "Blackbeard Neural Net Based Chatbot has been activated @here ... PLease talk to me! ")
 		while (1 != 2):
 			x = str(input())
 			yield from client.send_message(message.channel, x)
@@ -219,7 +219,7 @@ def on_message(message):
 			# dammit harcourt
 			accepted = False
 			for role in message.author.roles:
-				if role.name == "Tester" or role.name == "Staff" or role.name == "Senate" or role.name == "Contributor" or role.name == "Wiki-Helper" or role.name == "Judge":
+				if role.name == "Tester" or role.name == "Staff" or role.name == "Senate" or role.name == "Contributor" or role.name == "Wiki-Helper" or role.name == "master":
 					accepted = True 
 					break
 			if not accepted:
@@ -247,10 +247,10 @@ def on_message(message):
 		#elif message.content.startswith('meme'):
 			#yield from client.send_message(message.channel, ':swastika: :swastika: :swastika: :fire: :fire: :fire: mecha :b:itler :ok_hand: :fire: :fire: :fire: :swastika: :swastika: :swastika:')
 		elif message.content.startswith('serverstatus'):
-			_13000 = not portIsAvailable(13000)
-			_13001 = not portIsAvailable(13001)
-			_13002 = not portIsAvailable(13002)
-			_13003 = not portIsAvailable(13003)
+			_13000 = not portIsAvailable(12000)
+			_13001 = not portIsAvailable(12001)
+			_13002 = not portIsAvailable(12002)
+			_13003 = not portIsAvailable(12003)
 			server_is_up = (_13000 and _13001) or (_13002 and _13003)
 			if not server_is_up:
 				embed = discord.Embed(color=0x00ff00)
@@ -283,7 +283,7 @@ def on_message(message):
 				data = data.replace('<b>','')
 				data = data.replace('Whitelist: ','')
 				data = data.split(";")
-				#embed = discord.Embed(title="**Lebensraum Bot**", color=0x00ff00)
+				#embed = discord.Embed(title="**1713 Bot**", color=0x00ff00)
 				embed = discord.Embed(color=0x00ff00)
 				embed.add_field(name="Server Status", value=data[0], inline=False)
 				embed.add_field(name="Address", value='<'+data[1]+'>', inline=False)
@@ -311,7 +311,7 @@ def on_message(message):
 		elif message.content.startswith('wry'):
 			yield from client.send_message(message.channel, 'http://mechahitler.co.nf/wryyy.png')
 		elif message.content.startswith('help'):
-			yield from client.send_message(message.channel, '**List of Commands**: germanscience, germanmedicine, serverstatus, lebensraum, lebenchan, chinaman, wryyy, hdab, dabon, cpu, ping, (un)whitelistme, (un)patronme, updateserver, rebuildbinaries, host-lebensraum, host-ahnenerbe, kill-lebensraum, kill-ahnenerbe, restart-lebensraum, restart-ahnenerbe')
+			yield from client.send_message(message.channel, '**List of Commands**: germanscience, germanmedicine, serverstatus, 1713, lebenchan, chinaman, wryyy, hdab, dabon, cpu, ping, (un)whitelistme, (un)patronme, updateserver, rebuildbinaries, host-1713, kill-1713, restart-1713')
 		elif message.content.startswith('dabon'):
 			dabbingOn = message.content.split("dabon ")
 			if len(dabbingOn) == 1:
@@ -321,7 +321,7 @@ def on_message(message):
 		elif message.content.startswith('pingeveryone'):
 			accepted = False
 			for role in message.author.roles:
-				if role.name == "Senate":
+				if role.name == "Admiral":
 					accepted = True 
 			if accepted:
 				yield from client.send_message(message.channel, "@everyone")
@@ -406,82 +406,12 @@ def on_message(message):
 				yield from client.send_message(message.channel, "Rejected! You are not a tester.")
 		
 		# patron list
-		elif message.content.startswith("patronme"):
-			
-			split_message = message.content.split("patronme ")
-			if len(split_message) > 1 and len(split_message[1]) > 0:
-				ckey = split_message[1]
-				accepted = False
-				amt = 3
-				for role in message.author.roles:
-					if role.name == "Patron":
-						accepted = True 
-					elif "Patron" in role.name:
-						splittext = role.name.split("Patron ($")[1].split("+)")[0]
-						amt = max(amt, int(splittext))
-				if accepted:
-				
-					list = "/home/customer/1713/patrons.txt"
-					
-					open(list, "a").close()
-					
-					with open(list, "r") as search:
-						for line in search:
-							line = line.rstrip()  # remove '\n' at end of line
-							if line == ckey+"="+str(message.author):
-								yield from client.send_message(message.channel, "{} is already in the patron list, soyboy.".format(ckey))
-								return
-							elif str(message.author) in line:
-								yield from client.send_message(message.channel, "Woah there, {}, you already added one key!".format(str(message.author).split("#")[0]))
-								return 
-						search.close()
-								
-					somefile = open(list, "a")
-					somefile.write(ckey+"="+str(message.author)+"="+str(amt))
-					somefile.write("\n")
-					somefile.close()
-					
-					yield from client.send_message(message.channel, "{} has been added to the server patron list as a ${} patron.".format(ckey, amt))
-				else:
-					yield from client.send_message(message.channel, "Rejected! To become a patron, please donate at https://www.patreon.com/worldwar2inspace")
-			else:
-				yield from client.send_message(message.channel, "Wrong format. Please try '!s patronme [ckey]'")
 	
-		elif message.content.startswith("unpatronme"):
-			
-			accepted = False
-			for role in message.author.roles:
-				if role.name == "Patron":
-					accepted = True 
-					break
-			if accepted:
-			
-				removed = "N/A"
-			
-				list = "/home/customer/1713/patrons.txt"
-				
-				open(list, "a").close()
-				
-				f = open(list, "r")
-				lines = f.readlines()
-				f.close()
-				f = open(list, "w")
-				for line in lines:
-					if not str(message.author) in line:
-						f.write(line)
-					else:
-						removed = line.split("=")[0]
-							
-				f.close()
-				
-				yield from client.send_message(message.channel, "Ckey {} has been removed from the server patron list".format(removed))
-			else:
-				yield from client.send_message(message.channel, "Rejected! You are not a patron.")
 			
 		elif message.content.startswith("updateserver"):
 			accepted = False 
 			for role in message.author.roles:
-				if role.name == "Git Maintainers" or role.name == "Git Maintainer" or role.name == "Senate":
+				if role.name == "Captain" or role.name == "Admiral":
 					accepted = True 
 					break 
 			if accepted:
@@ -507,7 +437,7 @@ def on_message(message):
 		elif message.content.startswith("rebuildbinaries"):
 			accepted = False 
 			for role in message.author.roles:
-				if role.name == "Git Maintainers" or role.name == "Git Maintainer" or role.name == "Senate":
+				if role.name == "Captain" or role.name == "Admiral":
 					accepted = True 
 					break 
 			if accepted:
@@ -519,10 +449,10 @@ def on_message(message):
 			else:
 				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
 		
-		elif message.content.startswith("host-lebensraum"):
+		elif message.content.startswith("host-1713"):
 		
 			private = False 
-			if "private" in message.content.split("host-lebensraum")[1]:
+			if "private" in message.content.split("host-1713")[1]:
 				private = True
 		
 			accepted = False 
@@ -538,30 +468,30 @@ def on_message(message):
 					os.system('sudo rm -f /home/customer/1713/sharedinfo/*.txt')
 					os.system('sudo rm -f /home/customer/1713/1713-1/serverdata.txt')
 					os.system('sudo rm -f /home/customer/1713/1713-2/serverdata.txt')
-					os.system('sudo DreamDaemon /home/customer/1713/1713-1/1713.dmb 13000 -trusted -webclient -logself &')
+					os.system('sudo DreamDaemon /home/customer/1713/1713-1/1713.dmb 12000 -trusted -webclient -logself &')
 					time.sleep(5) # this is pretty important 
-					os.system('sudo DreamDaemon /home/customer/1713/1713-2/1713.dmb 13001 -trusted -webclient -logself &')
-					yield from client.send_message(message.channel, "Attempted to bring up Lebensraum (Main Server)")
+					os.system('sudo DreamDaemon /home/customer/1713/1713-2/1713.dmb 12001 -trusted -webclient -logself &')
+					yield from client.send_message(message.channel, "Attempted to bring up 1713 (Main Server)")
 					time.sleep(10) # ditto
 					os.system('sudo python3.5 /home/customer/1713/scripts/killsudos.py')
 				else:
 					os.system('sudo rm -f /home/customer/1713/testserver/sharedinfo/*.txt')
 					os.system('sudo rm -f /home/customer/1713/1713-3/serverdata.txt')
 					os.system('sudo rm -f /home/customer/1713/1713-4/serverdata.txt')
-					os.system('sudo DreamDaemon /home/customer/1713/1713-3/1713.dmb 13002 -trusted -webclient -logself &')
+					os.system('sudo DreamDaemon /home/customer/1713/1713-3/1713.dmb 12002 -trusted -webclient -logself &')
 					time.sleep(5) # this is pretty important 
-					os.system('sudo DreamDaemon /home/customer/1713/1713-4/1713.dmb 13003 -trusted -webclient -logself &')
-					yield from client.send_message(message.channel, "Attempted to bring up Lebensraum (Testing Server)")
+					os.system('sudo DreamDaemon /home/customer/1713/1713-4/1713.dmb 12003 -trusted -webclient -logself &')
+					yield from client.send_message(message.channel, "Attempted to bring up 1713 (Testing Server)")
 					time.sleep(10) # ditto
 					os.system('sudo python3.5 /home/customer/1713/scripts/killsudos.py')
 
 			else:
 				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
 		
-		elif message.content.startswith("kill-lebensraum"):
+		elif message.content.startswith("kill-1713"):
 		
 			private = False 
-			if "private" in message.content.split("kill-lebensraum")[1]:
+			if "private" in message.content.split("kill-1713")[1]:
 				private = True
 		
 			accepted = False 
@@ -575,14 +505,14 @@ def on_message(message):
 					os.system('sudo python3.5 /home/customer/1713/scripts/kill1713_private.py')
 				else:
 					os.system('sudo python3.5 /home/customer/1713/scripts/kill1713.py')
-				yield from client.send_message(message.channel, "Attempted to kill Lebensraum.")
+				yield from client.send_message(message.channel, "Attempted to kill 1713.")
 			else:
 				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
 		
-		elif message.content.startswith("restart-lebensraum"):
+		elif message.content.startswith("restart-1713"):
 		
 			private = False 
-			if "private" in message.content.split("restart-lebensraum")[1]:
+			if "private" in message.content.split("restart-1713")[1]:
 				private = True
 		
 			accepted = False
@@ -599,50 +529,10 @@ def on_message(message):
 					os.system('sudo python3.5 /home/customer/1713/scripts/restart1713_private.py')
 				else:
 					os.system('sudo python3.5 /home/customer/1713/scripts/restart1713.py')
-				yield from client.send_message(message.channel, "Attempted to restart Lebensraum.")
+				yield from client.send_message(message.channel, "Attempted to restart 1713.")
 			else:
 				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
 		
-		elif message.content.startswith("host-ahnenerbe"):
-			accepted = False 
-			for role in message.author.roles:
-				if role.name == "Senate" or role.name == "Ahnenerbe Viceroy":
-					accepted = True 
-					break 
-			if accepted:
-				os.system('sudo DreamDaemon /home/customer/LBAY/InterBay/InterBay.dmb 13007 -trusted -logself &')
-				yield from client.send_message(message.channel, "Attempted to bring up Ahnenerbe.")
-
-			else:
-				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
-		
-		elif message.content.startswith("kill-ahnenerbe"):
-		
-			accepted = False 
-			for role in message.author.roles:
-				if role.name == "Senate" or role.name == "Ahnenerbe Viceroy":
-					accepted = True 
-					break 
-					
-			if accepted:
-				os.system('sudo python3.5 /home/customer/1713/scripts/killAhnenerbe.py')
-				yield from client.send_message(message.channel, "Attempted to kill Ahnenerbe.")
-			else:
-				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
-
-		elif message.content.startswith("restart-ahnenerbe"):
-		
-			accepted = False 
-			for role in message.author.roles:
-				if role.name == "Senate" or role.name == "Ahnenerbe Viceroy":
-					accepted = True 
-					break 
-					
-			if accepted:
-				os.system('sudo python3.5 /home/customer/1713/scripts/restartAhnenerbe.py')
-				yield from client.send_message(message.channel, "Attempted to restart Ahnenerbe.")
-			else:
-				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
 
 		# elections 
 		elif message.content.startswith("voteelection"):
@@ -651,54 +541,54 @@ def on_message(message):
 				if role.name == "Senate":
 					accepted = True 
 					break 
-			if accepted or len(senate_approval_for_judge_elections) >= 3:
-				if message.author.name in senate_approval_for_judge_elections:
-					yield from client.send_message(message.channel, "You have already voted for Judge elections this cycle.")
+			if accepted or len(senate_approval_for_master_elections) >= 3:
+				if message.author.name in senate_approval_for_master_elections:
+					yield from client.send_message(message.channel, "You have already voted for master elections this cycle.")
 				else:
-					senate_approval_for_judge_elections.append(message.author.name)
-					yield from client.send_message(message.channel, "{} has voted for Judge elections. Judge elections now have {}/3 of Senate votes necessary to commence.".format(message.author.name, len(senate_approval_for_judge_elections)))
-					if len(senate_approval_for_judge_elections) >= 3:
-						yield from client.send_message(message.channel, "Judge elections have 3/4 needed votes and will commence. Please ensure that this bot is not shut down or restarted within the next 36 hours, or the vote will be canceled!")
+					senate_approval_for_master_elections.append(message.author.name)
+					yield from client.send_message(message.channel, "{} has voted for master elections. master elections now have {}/3 of Senate votes necessary to commence.".format(message.author.name, len(senate_approval_for_master_elections)))
+					if len(senate_approval_for_master_elections) >= 3:
+						yield from client.send_message(message.channel, "master elections have 3/4 needed votes and will commence. Please ensure that this bot is not shut down or restarted within the next 36 hours, or the vote will be canceled!")
 
 						
 						# allow voting now
-						judge_elections_end_at = time.time() + _36_hours
+						master_elections_end_at = time.time() + _36_hours
 						next_election_status_update = time.time() + 600
 						
-						# dissolve the judge team 
+						# dissolve the master team 
 						for member in message.server.members:
 							for role in member.roles:
-								if role.name in ["Judge", "Head Judge", "Chief Judge"]:
+								if role.name in ["Master"]:
 									yield from client.remove_roles(member, role)
 						
 						# inform everyone about the elections
 						for channel in message.server.channels:
 							if channel.name == "elections" or channel.name == "Elections":
-								yield from client.send_message(channel, "Judge elections have been automatically started by Senate vote, and the Judge Team has been dissolved! If you have a role, please use the commands '!s votefor [name]' or '!s register [name]' to vote/run for Judge! You can also see election results with '!s election'. @everyone")
+								yield from client.send_message(channel, "Master elections have been automatically started by Admiralty vote, and the Master Team has been dissolved! If you have a role, please use the commands '!s votefor [name]' or '!s register [name]' to vote/run for Master! You can also see election results with '!s election'. @everyone")
 								admins_and_managers = []
 								for member in message.server.members:
 									for role in member.roles:
 										if role.name in ["Admin Team", "Staff Manager", "Staff Managers", "Head Admin"]:
 											if not member in admins_and_managers:
 												admins_and_managers.append(member)
-								judge_election_slots = math.floor(len(admins_and_managers)/2)
-								yield from client.send_message(channel, "As many as **{}** judges will be elected after **36 hours**, when the elections will end.".format(judge_election_slots))
+								master_election_slots = math.floor(len(admins_and_managers)/2)
+								yield from client.send_message(channel, "As many as **{}**	Masters will be elected after **36 hours**, when the elections will end.".format(master_election_slots))
 								
 			else:
-				yield from client.send_message(message.channel, "You are not Senate.")
+				yield from client.send_message(message.channel, "You are not an Admiral.")
 				
 		elif message.content.startswith("forceelections"):
 			accepted = False 
 			if message.author.name == "Kachnov" and str(message.author.discriminator) == "0051":
 				accepted = True 
 			if accepted:
-				senate_approval_for_judge_elections.append("this")
-				senate_approval_for_judge_elections.append("is")
-				senate_approval_for_judge_elections.append("hacky")
+				senate_approval_for_master_elections.append("this")
+				senate_approval_for_master_elections.append("is")
+				senate_approval_for_master_elections.append("hacky")
 						
 		elif message.content.startswith("votefor"):
 		
-			if judge_elections_end_at == -1:
+			if master_elections_end_at == -1:
 				yield from client.send_message(message.channel, "Elections are not in session.")
 				return
 						
@@ -707,30 +597,30 @@ def on_message(message):
 				votingfor = split_message[1].lower()
 				accepted = False
 				for role in message.author.roles:
-					if role.name in ["Staff", "Contributor", "Wiki-Helper", "Patron", "Tester", "Senate", "Approved", "+1"]:
+					if role.name in ["Able Seaman", "Captain", "Admiral", "Master"]:
 						accepted = True 
 						break
 				if accepted:
-					if votingfor in judge_election_candidates:
+					if votingfor in master_election_candidates:
 						oldvote_message = ""
-						if message.author.id in judge_election_pledged_votes:
-							if votingfor == judge_election_pledged_votes[message.author.id]:
+						if message.author.id in master_election_pledged_votes:
+							if votingfor == master_election_pledged_votes[message.author.id]:
 								yield from client.send_message(message.channel, "You've already voted for them, {}.".format(message.author.name))
 								return
 							else:
-								oldvote_message = " Your old vote towards {} was rescinded.".format(judge_election_pledged_votes[message.author.id].capitalize())
-						judge_election_pledged_votes[message.author.id] = votingfor
+								oldvote_message = " Your old vote towards {} was rescinded.".format(master_election_pledged_votes[message.author.id].capitalize())
+						master_election_pledged_votes[message.author.id] = votingfor
 						yield from client.send_message(message.channel, "You've voted for {}, {}.{}".format(votingfor.capitalize(), message.author.name, oldvote_message))
 					else:
 						yield from client.send_message(message.channel, "You can't vote for them, {}.".format(message.author.name))
 				else:
-					yield from client.send_message(message.channel, "Rejected! To vote, you need to have one or more of the following roles: Staff, Contributor, Wiki-Helper, Patron, Tester, Senate, Approved, +1.")
+					yield from client.send_message(message.channel, "Rejected! To vote, you need to have one or more of the following roles: Able Seaman, Captain, Admiral, Master")
 			else:
 				yield from client.send_message(message.channel, "Wrong format. Please try '!s votefor [name]'")
 				
 		elif message.content.startswith("register"):
 		
-			if message.author.id in judge_election_registered_ids:
+			if message.author.id in master_election_registered_ids:
 				yield from client.send_message(message.channel, "You're already registered, {}.".format(message.author.name))
 				return
 		
@@ -742,26 +632,26 @@ def on_message(message):
 					return
 				accepted = False
 				for role in message.author.roles:
-					if role.name in ["Staff", "Contributor", "Wiki-Helper", "Patron", "Tester", "Senate", "Approved", "+1"]:
+					if role.name in ["Able Seaman", "Captain", "Admiral", "Master"]:
 						accepted = True 
 						break
 				if accepted:
 					for role in message.author.roles:
-						if role.name in ["Admin Team", "Staff Managers", "Senate"]:
-							yield from client.send_message(message.channel, "You may not run for Judge, because you have a conflicting role.")
+						if role.name in ["Captain", "Admiral"]:
+							yield from client.send_message(message.channel, "You may not run for Master, because you have a conflicting role.")
 							return
-					if not votename.lower() in judge_election_candidates:
-						judge_election_candidates.append(votename.lower())
-						judge_election_registered_ids[message.author.id] = votename.lower()
-						yield from client.send_message(message.channel, "You've been registered as a candidate for Judge under the name '{}'. If this bot restarts, you will have to re-register.".format(votename))
+					if not votename.lower() in master_election_candidates:
+						master_election_candidates.append(votename.lower())
+						master_election_registered_ids[message.author.id] = votename.lower()
+						yield from client.send_message(message.channel, "You've been registered as a candidate for Master under the name '{}'. If this bot restarts, you will have to re-register.".format(votename))
 				else:
-					yield from client.send_message(message.channel, "Rejected! To vote, you need to have one or more of the following roles: Staff, Contributor, Wiki-Helper, Patron, Tester, Senate, Approved, +1.")
+					yield from client.send_message(message.channel, "Rejected! To vote, you need to have one or more of the following roles: Able Seaman, Captain, Admiral, Master.")
 			else:
 				yield from client.send_message(message.channel, "Wrong format. Please try '!s register [name]'. Whatever name you select is what others will type in to vote for you.")
 		
 		elif message.content.startswith("election"):
 		
-			if judge_elections_end_at == -1:
+			if master_elections_end_at == -1:
 				yield from client.send_message(message.channel, "Elections are not in session.")
 				return
 				
@@ -790,7 +680,7 @@ def on_message(message):
 			members = []
 			for member in message.server.members:
 				for role in member.roles:
-					if role.name in ["Staff", "Contributor", "Wiki-Helper", "Patron", "Tester", "Senate", "Approved", "+1"]:
+					if role.name in ["Able Seaman", "Captain", "Admiral", "Master"]:
 						if not member in members:
 							members.append(member)
 			yield from client.send_message(message.channel, "There are {} eligible voters.".format(len(members)))
@@ -814,19 +704,19 @@ def on_message(message):
 					yield from client.send_message(message.channel, authorping + " " + random.choice(['<:picklerickldab:373260795104067588>', '<:picklerickrdab:373260846362525696>', '<:angery:417389685229486082>']))
 
 	# elections dude
-	if judge_elections_end_at != -1:
-		if time.time() >= judge_elections_end_at:
-			judge_elections_end_at = -1
+	if master_elections_end_at != -1:
+		if time.time() >= master_elections_end_at:
+			master_elections_end_at = -1
 			# actually send the results to #elections channel 
 			for channel in message.server.channels:
 				if channel.name.lower() == "elections":
 					yield from client.send_message(channel, "**The elections are over!** The winners are:")
-					winners = get_winners(judge_election_slots)
+					winners = get_winners(master_election_slots)
 					i = 0
 					for winner in winners:
 						votes = winners[winner]
 						if i == 0:										
-							yield from client.send_message(channel, "**1st Place**, {} votes (Head Judge): {}".format(votes, winner.capitalize()))
+							yield from client.send_message(channel, "**1st Place**, {} votes (Captain): {}".format(votes, winner.capitalize()))
 						else:
 							place = "???"
 							if i == 1:
@@ -836,30 +726,30 @@ def on_message(message):
 							else:
 								place = "{}th".format(str(i))
 								
-							yield from client.send_message(channel, "**{} Place**, {} votes (Judge): {}".format(place, votes, winner.capitalize()))
+							yield from client.send_message(channel, "**{} Place**, {} votes (Master): {}".format(place, votes, winner.capitalize()))
 
-						for id in judge_election_registered_ids:
-								if judge_election_registered_ids[id] == winner:
+						for id in master_election_registered_ids:
+								if master_election_registered_ids[id] == winner:
 									for member in message.server.members:
 										if member.id == id:
 											if i == 0:
-												judge = discord.utils.get(message.server.roles, name="Judge")
-												headjudge = discord.utils.get(message.server.roles, name="Head Judge")
-												yield from client.add_roles(member, judge)
-												yield from client.add_roles(member, headjudge)
+												master = discord.utils.get(message.server.roles, name="Master")
+												captain = discord.utils.get(message.server.roles, name="Captain")
+												yield from client.add_roles(member, master)
+												yield from client.add_roles(member, captain)
 											else:
-												judge = discord.utils.get(message.server.roles, name="Judge")
-												yield from client.add_roles(member, judge)		
+												master = discord.utils.get(message.server.roles, name="Master")
+												yield from client.add_roles(member, master)		
 						i += 1
 												
 			# clear unneeded data 
-			senate_approval_for_judge_elections = []
+			senate_approval_for_master_elections = []
 
-			judge_election_pledged_votes = dict()
+			master_election_pledged_votes = dict()
 
-			judge_election_candidates = []
+			master_election_candidates = []
 
-			judge_election_registered_ids = dict()							
+			master_election_registered_ids = dict()							
 		else:
 			if time.time() >= next_election_status_update:
 				next_election_status_update = time.time() + 600 # 10 minutes
@@ -894,4 +784,4 @@ def on_message(message):
 	#	f.write(str(message.content).replace(" ","\n"))
 	#	f.close()
 			
-client.run('NDAxNTk4MDg1MzEyMTUxNTc0.DTshHw.i8Gzoqt8_HKW71YflWacNXcrY0g')
+client.run('NDcxMTU4MTYyOTA5NjkxOTI0.DjgwCw.B4-McI2xyB2NVs5OZwAZcdPFChI')

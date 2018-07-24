@@ -17,9 +17,9 @@ for pid in pids:
 
 # what name ends up being, for reference - Kachnov 
 
-#sudo1713.dmb13000-trusted-logself
-#DreamDaemon1713.dmb13000-trusted-logself
-#sudoDreamDaemon1713.dmb13001-trusted-logself
-#DreamDaemon1713.dmb13001-trusted-logself
+#sudo1713.dmb12000-trusted-logself
+#DreamDaemon1713.dmb12000-trusted-logself
+#sudoDreamDaemon1713.dmb12001-trusted-logself
+#DreamDaemon1713.dmb12001-trusted-logself
 
 # also note os.getpid() to get our pid
