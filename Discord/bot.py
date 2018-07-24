@@ -273,8 +273,12 @@ def on_message(message):
 
 		elif message.content.startswith('chinaman'):
 			yield from client.send_message(message.channel, 'http://mechahitler.co.nf/chinaman.jpg')
+		elif message.content.startswith('sopademacaco'):
+			yield from client.send_message(message.channel, 'https://i.kym-cdn.com/photos/images/original/001/278/910/42e.jpg')
+		elif message.content.startswith('piratechan'):
+			yield from client.send_message(message.channel, 'https://vignette.wikia.nocookie.net/percyjacksonfanfiction/images/a/ab/Anime-pirate.png')	
 		elif message.content.startswith('help'):
-			yield from client.send_message(message.channel, '**List of Commands**: serverstatus, 1713, chinaman, cpu, ping, (un)whitelistme, updateserver, rebuildbinaries, host-1713, kill-1713, restart-1713')
+			yield from client.send_message(message.channel, '**List of Commands**: serverstatus, chinaman, sopademacaco, piratechan, cpu, ping, (un)whitelistme, updateserver, rebuildbinaries, host-1713, kill-1713, restart-1713')
 
 		elif message.content.startswith('pingeveryone'):
 			accepted = False
@@ -298,7 +302,7 @@ def on_message(message):
 				ckey = split_message[1]
 				accepted = False
 				for role in message.author.roles:
-					if role.name == "Tester" or role.name == "Staff" or role.name == "Senate":
+					if role.name == "Admiral" or role.name == "Captain" or role.name == "Seaman" or role.name == "Able Seaman" or role.name == "Master":
 						accepted = True 
 				if accepted:
 				
@@ -333,7 +337,7 @@ def on_message(message):
 			
 			accepted = False
 			for role in message.author.roles:
-				if role.name == "Tester" or role.name == "Staff" or role.name == "Senate":
+				if role.name == "Admiral" or role.name == "Captain" or role.name == "Seaman" or role.name == "Able Seaman" or role.name == "Master":
 					accepted = True 
 					break
 			if accepted:
@@ -387,7 +391,7 @@ def on_message(message):
 			#	yield from client.send_message(message.channel, "Finished updating the code to the latest git build.")
 
 			else:
-				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
+				yield from client.send_message(message.channel, "Piss off nu-male :soyboy:")
 				
 		elif message.content.startswith("rebuildbinaries"):
 			accepted = False 
@@ -412,7 +416,7 @@ def on_message(message):
 		
 			accepted = False 
 			for role in message.author.roles:
-				if role.name == "Senate" or (private and "Git" in role.name and "Maintainer" in role.name):
+				if role.name == "Admiral" or role.name == "Captain":
 					accepted = True 
 					break 
 			if accepted:
@@ -451,7 +455,7 @@ def on_message(message):
 		
 			accepted = False 
 			for role in message.author.roles:
-				if role.name == "Senate" or (private and "Git" in role.name and "Maintainer" in role.name):
+				if role.name == "Admiral" or role.name == "Captain":
 					accepted = True 
 					break 
 					
@@ -472,7 +476,7 @@ def on_message(message):
 		
 			accepted = False
 			for role in message.author.roles:
-				if role.name == "Senate" or (private and "Git" in role.name and "Maintainer" in role.name):
+				if role.name == "Admiral" or role.name == "Captain":
 					accepted = True 
 					break 
 					
@@ -493,7 +497,7 @@ def on_message(message):
 		elif message.content.startswith("voteelection"):
 			accepted = False 
 			for role in message.author.roles:
-				if role.name == "Senate":
+				if role.name == "Admiral":
 					accepted = True 
 					break 
 			if accepted or len(senate_approval_for_master_elections) >= 3:
