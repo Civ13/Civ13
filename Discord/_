@@ -88,10 +88,10 @@ async def on_message(message):
 			#await client.send_message(message.channel, ':swastika: :swastika: :swastika: :fire: :fire: :fire: mecha :b:itler :ok_hand: :fire: :fire: :fire: :swastika: :swastika: :swastika:')
 		elif message.content.startswith('serverstatus'):
 			data = None;
-			if os.path.isfile('/home/linda2/WW13/WW13-1/Interstation-Two-WW2/serverdata.txt') == True:
-				data = codecs.open('/home/linda2/WW13/WW13-1/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
-			elif os.path.isfile('/home/linda2/WW13/WW13-2/Interstation-Two-WW2/serverdata.txt') == True:
-				data = codecs.open('/home/linda2/WW13/WW13-2/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+			if os.path.isfile('/home/linda2/1713/1713-1/Interstation-Two-WW2/serverdata.txt') == True:
+				data = codecs.open('/home/linda2/1713/1713-1/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
+			elif os.path.isfile('/home/linda2/1713/1713-2/Interstation-Two-WW2/serverdata.txt') == True:
+				data = codecs.open('/home/linda2/1713/1713-2/Interstation-Two-WW2/serverdata.txt', encoding='utf-8').read()
 			else:
 				embed = discord.Embed(color=0x00ff00)
 				embed.add_field(name="Server Status",value="Offline", inline=False)

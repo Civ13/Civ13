@@ -4,7 +4,7 @@
 	title = "Naval Battle (75x75x2)"
 //	lobby_icon_state = "pirates"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 1800
+	respawn_delay = 0
 	squad_spawn_locations = FALSE
 	reinforcements = FALSE
 //	min_autobalance_players = 90

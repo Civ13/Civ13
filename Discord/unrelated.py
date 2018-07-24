@@ -204,7 +204,7 @@ def on_message(message):
 				#data = data.replace('<b>','')
 				#data = data.replace('Whitelist: ','')
 				#data = data.split(";")
-				#embed = discord.Embed(title="**Lebensraum Bot**", color=0x00ff00)
+				#embed = discord.Embed(title="**1713 Bot**", color=0x00ff00)
 				#embed = discord.Embed(color=0x00ff00)
 				#embed.add_field(name="Server Status", value=data[0], inline=False)
 				#embed.add_field(name="Address", value='<'+data[1]+'>', inline=False)
@@ -266,12 +266,12 @@ def on_message(message):
 			if accepted:
 			
 				yield from client.send_message(message.channel, "Now updating the server to the latest git build...")
-				#os.system('sudo python3 /home/customer/WW13/scripts/updateserverabspaths.py')
+				#os.system('sudo python3 /home/customer/1713/scripts/updateserverabspaths.py')
 				yield from client.send_message(message.channel, "Finished updating the server to the latest git build. Not really!")
 					
 				for channel in message.server.channels:
 					if channel.name.lower() == "changelog":
-						yield from client.send_message(channel, "The server has been updated. Update triggered by {}. See https://github.com/WW2-SS13/WW13/pulse or development channels for recent changes.".format(message.author.name))
+						yield from client.send_message(channel, "The server has been updated. Update triggered by {}. See https://github.com/1713-SS13/1713 or development channels for recent changes.".format(message.author.name))
 			#	yield from client.send_message(message.channel, "Now updating the code to the latest git build. It will take about 15 seconds.")
 				#subprocess.call(['/bin/bash', '-i', '-c', "update-server-auto"])
 				#bash_command("update-server-auto")
@@ -290,31 +290,31 @@ def on_message(message):
 		
 			accepted = False 
 			for role in message.author.roles:
-				if role.name == "Senate":
+				if role.name == "Admiral":
 					accepted = True 
 					break 
 			if accepted:
 				yield from client.send_message(message.channel, "Please wait, updating the code...")
-				#os.system('sudo python3 /home/customer/WW13/scripts/updateserverabspaths.py')
+				#os.system('sudo python3 /home/customer/1713/scripts/updateserverabspaths.py')
 				yield from client.send_message(message.channel, "Updated the code.")
-					#os.system('sudo rm -f /home/customer/WW13/sharedinfo/*.txt')
-					#os.system('sudo rm -f /home/customer/WW13/WW13-1/serverdata.txt')
-					#os.system('sudo rm -f /home/customer/WW13/WW13-2/serverdata.txt')
-					#os.system('sudo DreamDaemon /home/customer/WW13/WW13-1/WW13.dmb 13000 -trusted -webclient -logself &')
+					#os.system('sudo rm -f /home/customer/1713/sharedinfo/*.txt')
+					#os.system('sudo rm -f /home/customer/1713/1713-1/serverdata.txt')
+					#os.system('sudo rm -f /home/customer/1713/1713-2/serverdata.txt')
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-1/1713.dmb 13000 -trusted -webclient -logself &')
 					#time.sleep(5) # this is pretty important 
-					#os.system('sudo DreamDaemon /home/customer/WW13/WW13-2/WW13.dmb 13001 -trusted -webclient -logself &')
-				yield from client.send_message(message.channel, "Attempted to bring up Lebensraum (Main Server)")
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-2/1713.dmb 13001 -trusted -webclient -logself &')
+				yield from client.send_message(message.channel, "Attempted to bring up the 1713 server (Main Server)")
 					#time.sleep(10) # ditto
-					#os.system('sudo python3 /home/customer/WW13/scripts/killsudos.py')
-					#os.system('sudo rm -f /home/customer/WW13/testserver/sharedinfo/*.txt')
-					#os.system('sudo rm -f /home/customer/WW13/WW13-3/serverdata.txt')
-					#os.system('sudo rm -f /home/customer/WW13/WW13-4/serverdata.txt')
-					#os.system('sudo DreamDaemon /home/customer/WW13/WW13-3/WW13.dmb 13002 -trusted -webclient -logself &')
+					#os.system('sudo python3 /home/customer/1713/scripts/killsudos.py')
+					#os.system('sudo rm -f /home/customer/1713/testserver/sharedinfo/*.txt')
+					#os.system('sudo rm -f /home/customer/1713/1713-3/serverdata.txt')
+					#os.system('sudo rm -f /home/customer/1713/1713-4/serverdata.txt')
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-3/1713.dmb 13002 -trusted -webclient -logself &')
 					#time.sleep(5) # this is pretty important 
-					#os.system('sudo DreamDaemon /home/customer/WW13/WW13-4/WW13.dmb 13003 -trusted -webclient -logself &')
+					#os.system('sudo DreamDaemon /home/customer/1713/1713-4/1713.dmb 13003 -trusted -webclient -logself &')
 					#yield from client.send_message(message.channel, "Attempted to bring up Lebensraum (Testing Server)")
 					#time.sleep(10) # ditto
-					#os.system('sudo python3 /home/customer/WW13/scripts/killsudos.py')
+					#os.system('sudo python3 /home/customer/1713/scripts/killsudos.py')
 
 			else:
 				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
@@ -330,8 +330,8 @@ def on_message(message):
 					break 
 					
 			if accepted:
-				#os.system('sudo python3 /home/customer/WW13/scripts/killWW13.py')
-				yield from client.send_message(message.channel, "Attempted to kill Lebensraum.")
+				#os.system('sudo python3 /home/customer/1713/scripts/kill1713.py')
+				yield from client.send_message(message.channel, "Attempted to kill the 1713 server")
 			else:
 				yield from client.send_message(message.channel, "Piss off nu-male <:picklerickldab:373260795104067588><:picklerickrdab:373260846362525696>")
 		
