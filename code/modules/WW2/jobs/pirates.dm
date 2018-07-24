@@ -318,7 +318,7 @@
 
 /datum/job/pirates/seaman
 	title = "Pirate"
-	en_meaning = "Pirate Seaman"
+	en_meaning = "Seaman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
@@ -522,7 +522,7 @@
 /datum/job/british/midshipman
 	title = "Royal Navy Midshipman"
 	en_meaning = "Petty Officer"
-	rank_abbreviation = "Mate"
+	rank_abbreviation = "Midshipman"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
@@ -691,8 +691,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /datum/job/british/seaman
-	title = "Seaman"
-	en_meaning = "Royal Navy Seaman"
+	title = "Royal Navy Seaman"
+	en_meaning = "Seaman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
