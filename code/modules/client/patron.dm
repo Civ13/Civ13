@@ -24,12 +24,3 @@
 				if (patron == ckey && pledge2 >= number)
 					return TRUE
 	return FALSE
-
-/client/proc/enable_disable_dabs()
-	set category = "Patron"
-	set name = "Enable/Disable Dabbing"
-	config.allow_dabbing = !config.allow_dabbing
-	if (config.allow_dabbing)
-		world << "<big>[key] has enabled *dab.</big>"
-	else
-		world << "<big>[key] has disabled *dab.</big>"

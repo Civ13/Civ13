@@ -93,8 +93,6 @@
 		message = "<b>[src]</b> [verb]."
 
 	if (status_flags & PASSEMOTES)
-		for (var/obj/item/weapon/holder/H in contents)
-			H.show_message(message)
 		for (var/mob/living/M in contents)
 			M.show_message(message)
 	show_message(message)

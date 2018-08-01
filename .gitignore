@@ -27,3 +27,6 @@ serverdata.txt
 
 
 
+.DS_Store
+UI/Thumbs.db:encryptable
+UI/Thumbs.db

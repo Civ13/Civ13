@@ -23,8 +23,6 @@
 			return
 		if ("internals")
 			visible_message("<span class='danger'>\The [usr] is trying to set \the [src]'s internals!</span>")
-			if (do_mob(user,src,HUMAN_STRIP_DELAY, progress = FALSE))
-				toggle_internals(user)
 			return
 		if ("tie")
 			var/obj/item/clothing/under/suit = w_uniform
@@ -109,34 +107,3 @@
 			visible_message("<span class='danger'>\The [user] removes \the [src]'s splints!</span>")
 		else
 			user << "<span class='warning'>\The [src] has no splints to remove.</span>"
-
-// Set internals on or off.
-/mob/living/carbon/human/proc/toggle_internals(var/mob/living/user)
-	if (internal)
-		internal.add_fingerprint(user)
-		internal = null
-		if (HUDneed.Find("internal"))
-			var/obj/screen/HUDelm = HUDneed["internal"]
-			HUDelm.icon_state = "internal0"
-	else
-		// Check for airtight mask/helmet.
-		if (!(istype(wear_mask, /obj/item/clothing/mask)))
-			return
-		// Find an internal source.
-		if (istype(back, /obj/item/weapon/tank))
-			internal = back
-		else if (istype(s_store, /obj/item/weapon/tank))
-			internal = s_store
-		else if (istype(belt, /obj/item/weapon/tank))
-			internal = belt
-
-	if (internal)
-		visible_message("<span class='warning'>\The [src] is now running on internals!</span>")
-		internal.add_fingerprint(user)
-/*		if (internals)
-			internals.icon_state = "internal1"*/
-		if (HUDneed.Find("internal"))
-			var/obj/screen/HUDelm = HUDneed["internal"]
-			HUDelm.icon_state = "internal1"
-	else
-		visible_message("<span class='danger'>\The [user] disables \the [src]'s internals!</span>")

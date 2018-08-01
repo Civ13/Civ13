@@ -85,11 +85,15 @@
 
 	var/increase_multiple = 0.001 // 1 / 1000, to prevent crazy ugly decimals
 
-	if (list("mg", "smg").Find(statname))
+	if (list("mg").Find(statname))
 		stats[statname][1] *= (1 + round(multiplier/400, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/400, increase_multiple))
 
 	else if (list("rifle", "pistol", "heavy", "shotgun").Find(statname))
+		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
+		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
+
+	else if (statname == "swords")
 		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
 

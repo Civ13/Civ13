@@ -50,22 +50,15 @@
 	icon_state = "slatino"
 	density = TRUE
 
-/obj/structure/sign/wide/barrier
-	name = "Security Gate"
-	icon = 'icons/obj/gate.dmi'
-	desc = "A base security gate. Pull it to the side to let vehicles pass."
-	icon_state = "gate"
-	density = TRUE
-
 /obj/structure/sign/flag/germany
 	name = "Third Reich flag"
 	desc = "Ein Volk, ein Reich, ein Fuhrer!"
 	icon_state = "ger_flag"
 
 /obj/structure/sign/flag/pirates
-	name = "Soviet Union flag"
-	desc = "Soyuz nerushimy respublik svobodnyh!"
-	icon_state = "sov_flag"
+	name = "Pirate flag"
+	desc = "A skull and bones flag."
+	icon_state = "pir_flag"
 
 /obj/structure/sign/flag/germany2
 	name = "Third Reich flag"
@@ -108,11 +101,3 @@
 	name = "Soviet Union flag"
 	desc = "Soyuz nerushimy respublik svobodnyh!"
 	icon_state = "sov_cerflag"
-
-/obj/structure/sign/wide96
-	icon = 'icons/obj/decals_32x96.dmi'
-
-/obj/structure/sign/wide96/ger_bigbanner
-	name = "Big Third Reich banner"
-	desc = "A big Swastika banner."
-	icon_state = "ger_extbanner"

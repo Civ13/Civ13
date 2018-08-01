@@ -24,7 +24,7 @@
 			add_fingerprint(user)
 			return
 	// adding sheets
-	if (istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/photo))
+	if (istype(W, /obj/item/weapon/paper))
 		insert_sheet_at(user, pages.len+1, W)
 
 	// burning
@@ -42,8 +42,6 @@
 		user << "<span class='notice'>You add \the [W.name] to [(name == "paper bundle") ? "the paper bundle" : name].</span>"
 		qdel(W)
 	else
-		if (istype(W, /obj/item/weapon/tape_roll))
-			return FALSE
 		if (istype(W, /obj/item/weapon/pen))
 			usr << browse("", "window=[name]") //Closes the dialog
 		var/obj/P = pages[page]
@@ -57,8 +55,6 @@
 /obj/item/weapon/paper_bundle/proc/insert_sheet_at(mob/user, var/index, obj/item/weapon/sheet)
 	if (istype(sheet, /obj/item/weapon/paper))
 		user << "<span class='notice'>You add [(sheet.name == "paper") ? "the paper" : sheet.name] to [(name == "paper bundle") ? "the paper bundle" : name].</span>"
-	else if (istype(sheet, /obj/item/weapon/photo))
-		user << "<span class='notice'>You add [(sheet.name == "photo") ? "the photo" : sheet.name] to [(name == "paper bundle") ? "the paper bundle" : name].</span>"
 
 	user.drop_from_inventory(sheet)
 	sheet.loc = src
@@ -121,19 +117,11 @@
 
 	if (istype(pages[page], /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/P = W
-		if (!(istype(usr, /mob/living/carbon/human) || isghost(usr) || istype(usr, /mob/living/silicon)))
+		if (!(istype(usr, /mob/living/carbon/human) || isghost(usr)))
 			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[stars(P.info)][P.stamps]</BODY></HTML>"
 		else
 			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[P.info][P.stamps]</BODY></HTML>"
 		user << browse(dat, "window=[name]")
-	else if (istype(pages[page], /obj/item/weapon/photo))
-		var/obj/item/weapon/photo/P = W
-		user << browse_rsc(P.img, "tmp_photo.png")
-		user << browse(dat + "<html><head><title>[P.name]</title></head>" \
-		+ "<body style='overflow:hidden'>" \
-		+ "<div> <img src='tmp_photo.png' width = '180'" \
-		+ "[P.scribble ? "<div> Written on the back:<br><i>[P.scribble]</i>" : ]"\
-		+ "</body></html>", "window=[name]")
 
 /obj/item/weapon/paper_bundle/attack_self(mob/user as mob)
 	show_content(user)
@@ -147,13 +135,13 @@
 		usr.set_using_object(src)
 		var/obj/item/weapon/in_hand = usr.get_active_hand()
 		if (href_list["next_page"])
-			if (in_hand && (istype(in_hand, /obj/item/weapon/paper) || istype(in_hand, /obj/item/weapon/photo)))
+			if (in_hand && (istype(in_hand, /obj/item/weapon/paper)))
 				insert_sheet_at(usr, page+1, in_hand)
 			else if (page != pages.len)
 				page++
 				playsound(loc, "pageturn", 50, TRUE)
 		if (href_list["prev_page"])
-			if (in_hand && (istype(in_hand, /obj/item/weapon/paper) || istype(in_hand, /obj/item/weapon/photo)))
+			if (in_hand && (istype(in_hand, /obj/item/weapon/paper)))
 				insert_sheet_at(usr, page, in_hand)
 			else if (page > 1)
 				page--
@@ -216,7 +204,6 @@
 	overlays = P.overlays
 	underlays = FALSE
 	var/i = FALSE
-	var/photo
 	for (var/obj/O in src)
 		var/image/img = image('icons/obj/bureaucracy.dmi')
 		if (istype(O, /obj/item/weapon/paper))
@@ -227,16 +214,9 @@
 			pixel_y = min(  TRUE*i, 2)
 			underlays += img
 			i++
-		else if (istype(O, /obj/item/weapon/photo))
-			var/obj/item/weapon/photo/Ph = O
-			img = Ph.tiny
-			photo = TRUE
-			overlays += img
 	if (i>1)
 		desc =  "[i] papers clipped to each other."
 	else
 		desc = "A single sheet of paper."
-	if (photo)
-		desc += "\nThere is a photo attached to it."
 	overlays += image('icons/obj/bureaucracy.dmi', "clip")
 	return

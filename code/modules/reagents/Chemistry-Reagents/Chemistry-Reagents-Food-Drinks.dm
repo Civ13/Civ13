@@ -86,8 +86,7 @@
 	color = "#FFFFFF"
 
 /datum/reagent/nutriment/flour/touch_turf(var/turf/T)
-	if (!istype(T, /turf/space))
-		new /obj/effect/decal/cleanable/flour(T)
+	new /obj/effect/decal/cleanable/flour(T)
 
 /datum/reagent/nutriment/coco
 	name = "Coco Powder"
@@ -153,7 +152,7 @@
 		return
 
 	var/hotspot = (locate(/obj/fire) in T)
-	if (hotspot && !istype(T, /turf/space))
+	if (hotspot)
 	//	var/datum/gas_mixture/lowertemp = T.remove_air(T:air:total_moles)
 	//	lowertemp.temperature = max(min(lowertemp.temperature-2000, lowertemp.temperature / 2), FALSE)
 	//	lowertemp.react()

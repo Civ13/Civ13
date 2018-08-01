@@ -13,4 +13,8 @@
 	drawsound(user)
 
 /obj/item/weapon/proc/drawsound(mob/user)
-	return
+	if(drawsound)
+		playsound(user, drawsound, 50, 1)
+		spawn(3)
+			user.visible_message("<span class = 'warning'><b>[user] draws a weapon!</b></span>")
+

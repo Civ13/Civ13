@@ -169,6 +169,7 @@
 	move_delay = 3
 	fire_delay = 3
 	load_delay = 120
+	stat = "pistol"
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -283,6 +284,7 @@
 	force = 14
 	load_delay = 120
 	caliber = "blunderbuss"
+	stat = "shotgun"
 	weight = 4.5
 	effectiveness_mod = 0.7
 	ammo_type = /obj/item/ammo_casing/blunderbuss

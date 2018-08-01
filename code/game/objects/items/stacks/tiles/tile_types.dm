@@ -48,14 +48,6 @@
 	throw_range = 20
 	flags = FALSE
 
-/obj/item/stack/tile/wood/cyborg
-	name = "wood floor tile synthesizer"
-	desc = "A device that makes wood floor tiles."
-	uses_charge = TRUE
-	charge_costs = list(250)
-	stacktype = /obj/item/stack/tile/wood
-	build_type = /obj/item/stack/tile/wood
-
 /*
  * Carpets
  */
@@ -124,12 +116,6 @@
 	singular_name = "dark floor tile"
 	icon_state = "fr_tile"
 	matter = list("plasteel" = 937.5)
-
-/obj/item/stack/tile/floor/freezer
-	name = "freezer floor tile"
-	singular_name = "freezer floor tile"
-	icon_state = "tile_freezer"
-	matter = list("plastic" = 937.5)
 
 /obj/item/stack/tile/floor/cyborg
 	name = "floor tile synthesizer"

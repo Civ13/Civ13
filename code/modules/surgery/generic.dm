@@ -149,7 +149,6 @@
 	allowed_tools = list(
 	/obj/item/weapon/hemostat = 100,	\
 	/obj/item/stack/cable_coil = 75, 	\
-	/obj/item/assembly/mousetrap = 20
 	)
 
 	min_duration = 40
@@ -173,7 +172,6 @@
 		"<span class = 'notice'>You clamp bleeders in [target]'s [affected.name] with \the [tool].</span>")
 		affected.clamp()
 		spread_germs_to_organ(affected, user)
-		playsound(target.loc, 'sound/items/Welder.ogg', 50, TRUE)
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -241,7 +239,6 @@
 	/obj/item/weapon/cautery = 100,			\
 	/obj/item/clothing/mask/smokable/cigarette = 75,	\
 	/obj/item/weapon/flame/lighter = 50,			\
-	/obj/item/weapon/weldingtool = 25
 	)
 
 	min_duration = 70

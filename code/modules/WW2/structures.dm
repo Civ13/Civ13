@@ -62,27 +62,8 @@
 
 /obj/structure/flag/pirates
 	icon_state = "pirates"
-	name = "Soviet Flag"
-
-/obj/structure/flag/german
-	icon_state = "german"
-	name = "German Flag"
-
-/obj/structure/flag/italian
-	icon_state = "italian"
-	name = "Italian Flag"
-
-/obj/structure/flag/ukrainian
-	icon_state = "ukrainian"
-	name = "Ukrainian Flag"
-
-/obj/structure/flag/japanese
-	icon_state = "japanese"
-	name = "Japanese Flag"
-
-/obj/structure/flag/us
-	icon_state = "us"
-	name = "USA Flag"
+	name = "Pirate Flag"
+	desc = "A black and white pirate flags with skull and bones."
 
 
 /obj/structure/noose

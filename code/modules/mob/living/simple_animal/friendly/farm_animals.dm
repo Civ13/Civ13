@@ -191,8 +191,8 @@ var/global/chicken_count = FALSE
 /mob/living/simple_animal/chicken
 	name = "\improper chicken"
 	desc = "Hopefully the eggs are good this season."
-	icon_state = "chicken"
-	icon_living = "chicken"
+	icon_state = "chicken_brown"
+	icon_living = "chicken_brown"
 	icon_dead = "chicken_dead"
 	speak = list("Cluck!","BWAAAAARK BWAK BWAK BWAK!","Bwaak bwak.")
 	speak_emote = list("clucks","croons")

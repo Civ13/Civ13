@@ -17,14 +17,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/lit = FALSE
 
 /proc/isflamesource(A)
-	if (istype(A, /obj/item/weapon/weldingtool))
-		var/obj/item/weapon/weldingtool/WT = A
-		return (WT.isOn())
-	else if (istype(A, /obj/item/weapon/flame))
+	if (istype(A, /obj/item/weapon/flame))
 		var/obj/item/weapon/flame/F = A
 		return (F.lit)
-	else if (istype(A, /obj/item/assembly/igniter))
-		return TRUE
 	return FALSE
 
 ///////////
@@ -187,10 +182,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			text = zippomes
 		else if (istype(W, /obj/item/weapon/flame/lighter))
 			text = lightermes
-		else if (istype(W, /obj/item/weapon/weldingtool))
-			text = weldermes
-		else if (istype(W, /obj/item/assembly/igniter))
-			text = ignitermes
 		text = replacetext(text, "USER", "[user]")
 		text = replacetext(text, "NAME", "[name]")
 		text = replacetext(text, "FLAME", "[W.name]")
@@ -389,10 +380,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		var/obj/item/weapon/flame/match/M = W
 		if (M.lit)
 			light("<span class='notice'>[user] lights their [name] with their [W].</span>")
-
-	else if (istype(W, /obj/item/assembly/igniter))
-		light("<span class='notice'>[user] fiddles with [W], and manages to light their [name] with the power of science.</span>")
-
 	user.update_inv_wear_mask(0)
 	user.update_inv_l_hand(0)
 	user.update_inv_r_hand(1)

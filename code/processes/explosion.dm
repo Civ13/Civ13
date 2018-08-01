@@ -92,13 +92,6 @@
 
 	//Whether or not this explosion causes enough vibration to send sound or shockwaves through the station
 	var/vibration = TRUE
-	if (istype(epicenter,/turf/space))
-		vibration = FALSE
-		for (var/turf/T in range(src, max_range))
-			if (!istype(T,/turf/space))
-		//If there is a nonspace tile within the explosion radius
-		//Then we can reverberate shockwaves through that, and allow it to be felt in a vacuum
-				vibration = TRUE
 
 	if (vibration)
 		for (var/player in player_list)
@@ -112,15 +105,6 @@
 				var/turf/M_turf = get_turf(M)
 
 				if (M_turf && M_turf.z == epicenter.z)
-					if (istype(M_turf,/turf/space))
-					//If the person is standing in space, they wont hear
-						//But they may still feel the shaking
-						reception = FALSE
-						for (var/turf/T in range(M, 1))
-							if (!istype(T,/turf/space))
-							//If theyre touching the hull or on some extruding part of the station
-								reception = TRUE//They will get screenshake
-								break
 
 					if (!reception)
 						continue

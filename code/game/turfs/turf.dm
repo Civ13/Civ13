@@ -481,11 +481,6 @@ var/const/enterloopsanity = 100
 		return TRUE //we bloodied the floor
 	return FALSE
 
-// Only adds blood on the floor -- Skie
-/turf/proc/add_blood_floor(mob/living/carbon/M as mob)
-	if ( istype(M, /mob/living/carbon/alien ))
-		var/obj/effect/decal/cleanable/blood/xeno/this = new /obj/effect/decal/cleanable/blood/xeno(src)
-		this.blood_DNA["UNKNOWN BLOOD"] = "X*"
 
 /turf/proc/can_build_cable(var/mob/user)
 	return FALSE

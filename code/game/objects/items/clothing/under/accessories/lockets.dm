@@ -34,7 +34,7 @@
 		user << "You have to open it first."
 		return
 
-	if (istype(O,/obj/item/weapon/paper) || istype(O, /obj/item/weapon/photo))
+	if (istype(O,/obj/item/weapon/paper))
 		if (held)
 			usr << "\The [src] already has something inside it."
 		else

@@ -60,7 +60,7 @@
 	color_weight = 20
 
 /datum/reagent/paint/touch_turf(var/turf/T)
-	if (istype(T) && !istype(T, /turf/space))
+	if (istype(T))
 		T.color = color
 
 /datum/reagent/paint/touch_obj(var/obj/O)
@@ -173,11 +173,10 @@
 
 /datum/reagent/uranium/touch_turf(var/turf/T)
 	if (volume >= 3)
-		if (!istype(T, /turf/space))
-			var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
-			if (!glow)
-				new /obj/effect/decal/cleanable/greenglow(T)
-			return
+		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
+		if (!glow)
+			new /obj/effect/decal/cleanable/greenglow(T)
+		return
 
 /datum/reagent/adrenaline
 	name = "Adrenaline"

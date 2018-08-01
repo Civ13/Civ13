@@ -1,8 +1,8 @@
 //todo: toothbrushes, and some sort of "toilet-filthinator" for the hos
 
 /obj/structure/toilet
-	name = "toilet"
-	desc = "The HT-451, a torque rotation-based, waste disposal unit for small matter. This one seems remarkably clean."
+	name = "latrine"
+	desc = "A simple wooden latrine."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "toilet00"
 	density = FALSE
@@ -109,43 +109,6 @@
 		if (O.reagents && O.reagents.total_volume)
 			O.reagents.clear_reagents()
 			user << "<span class='notice'>You empty the [O] into the [src].</span>"
-
-
-
-/obj/structure/urinal
-	name = "urinal"
-	desc = "The HU-452, an experimental urinal."
-	icon = 'icons/obj/watercloset.dmi'
-	icon_state = "urinal"
-	density = FALSE
-	anchored = TRUE
-
-/obj/structure/urinal/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			qdel(src)
-			return
-		if (2.0)
-			if (prob(10))
-				qdel(src)
-				return
-		if (3.0)
-			return
-
-/obj/structure/urinal/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, /obj/item/weapon/grab))
-		var/obj/item/weapon/grab/G = I
-		if (isliving(G.affecting))
-			var/mob/living/GM = G.affecting
-			if (G.state>1)
-				if (!GM.loc == get_turf(src))
-					user << "<span class='notice'>[GM.name] needs to be on the urinal.</span>"
-					return
-				user.visible_message("<span class='danger'>[user] slams [GM.name] into the [src]!</span>", "<span class='notice'>You slam [GM.name] into the [src]!</span>")
-				GM.adjustBruteLoss(8)
-			else
-				user << "<span class='notice'>You need a tighter grip.</span>"
-
 
 
 /obj/structure/shower
@@ -375,14 +338,6 @@
 			H << "<span class='danger'>The water is searing hot!</span>"
 		else if (temperature <= H.species.cold_level_1)
 			H << "<span class='warning'>The water is freezing cold!</span>"
-
-/obj/item/weapon/bikehorn/rubberducky
-	name = "rubber ducky"
-	desc = "Rubber ducky you're so fine, you make bathtime lots of fuuun. Rubber ducky I'm awfully fooooond of yooooouuuu~"	//thanks doohl
-	icon = 'icons/obj/watercloset.dmi'
-	icon_state = "rubberducky"
-	item_state = "rubberducky"
-
 
 
 /obj/structure/sink

@@ -568,20 +568,6 @@
 			tickcomp = ((1/(world.tick_lag))*1.3) - 1.3
 			move_delay += tickcomp
 
-		if (mob.buckled && istype(mob.buckled, /obj/vehicle))
-			//manually set move_delay for vehicles so we don't inherit any mob movement penalties
-			//specific vehicle move delays are set in code\modules\vehicles\vehicle.dm
-			move_delay = world.time + tickcomp
-			//drunk driving
-			if (mob.confused && prob(40))
-				direct = pick(cardinal)
-
-			return mob.buckled.relaymove(mob,direct)
-/*
-		if (mob.machine && istype(mob.machine, /obj/machinery))
-			if (mob.machine.relaymove(mob,direct))
-				return*/
-
 		if (mob.pulledby || mob.buckled) // Wheelchair driving!
 /*			if (istype(mob.pulledby, /obj/structure/bed/chair/wheelchair))
 				return mob.pulledby.relaymove(mob, direct)*/
@@ -679,11 +665,6 @@
 								H.visible_message("<span class = 'warning'>[H] steps over [L].</span>")
 
 			#undef STOMP_TIME
-
-			if (!mob_is_observer)
-				for (var/obj/structure/multiz/ladder/ww2/manhole/M in mob.loc)
-					processes.callproc.queue(M, /obj/structure/multiz/ladder/ww2/manhole/proc/fell, list(mob), 1)
-					break
 
 			// make animals acknowledge us
 			if (mob_is_human)
@@ -851,8 +832,6 @@
 				return TRUE
 
 	for (var/obj/O in orange(1, src))
-		if (istype(O, /obj/structure/lattice))
-			return TRUE
 		if (O && O.density && O.anchored)
 			return TRUE
 

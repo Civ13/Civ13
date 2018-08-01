@@ -46,10 +46,6 @@
 
 	if (lying || list(UNCONSCIOUS, DEAD).Find(stat))
 		layer = MOB_LAYER - 0.01
-		if (back && istype(back, /obj/item/weapon/storage/backpack/flammenwerfer))
-			var/obj/item/weapon/storage/backpack/flammenwerfer/flamethrower_backpack = back
-			if (flamethrower_backpack.flamethrower && flamethrower_backpack.flamethrower.loc != flamethrower_backpack)
-				flamethrower_backpack.reclaim_flamethrower()
 	else
 		layer = MOB_LAYER
 
@@ -243,24 +239,6 @@
 	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	..()
-
-/mob/living/carbon/human/get_breath_from_internal(volume_needed=BREATH_VOLUME)
-	if (internal)
-
-		var/obj/item/weapon/tank/rig_supply
-
-		if (!rig_supply && (!contents.Find(internal) || !((wear_mask && (wear_mask.item_flags & AIRTIGHT)) || (head && (head.item_flags & AIRTIGHT)))))
-			internal = null
-
-		if (internal)
-			return internal.remove_air_volume(volume_needed)
-		else if (HUDneed.Find("internal"))
-			var/obj/screen/HUDelm = HUDneed["internal"]
-			HUDelm.icon_state = "internal0"
-/*		else if (internals)
-			internals.icon_state = "internal0"*/
-	return null
-
 /mob/living/carbon/human/handle_breath(datum/gas_mixture/breath)
 	if (status_flags & GODMODE)
 		return

@@ -50,18 +50,6 @@
 	new foldable(get_turf(src))
 	qdel(src)
 
-/obj/item/weapon/storage/box/survival/
-	New()
-		..()
-		new /obj/item/clothing/mask/breath( src )
-		new /obj/item/weapon/tank/emergency_oxygen( src )
-
-/obj/item/weapon/storage/box/engineer/
-	New()
-		..()
-		new /obj/item/clothing/mask/breath( src )
-		new /obj/item/weapon/tank/emergency_oxygen/engi( src )
-
 /obj/item/weapon/storage/box/gloves
 	name = "box of latex gloves"
 	desc = "Contains white gloves."
@@ -136,134 +124,6 @@
 		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
 		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
 
-/obj/item/weapon/storage/box/blanks
-	name = "box of blank shells"
-	desc = "It has a picture of a gun and several warning symbols on the front."
-
-	New()
-		..()
-		new /obj/item/ammo_casing/shotgun/blank(src)
-		new /obj/item/ammo_casing/shotgun/blank(src)
-		new /obj/item/ammo_casing/shotgun/blank(src)
-		new /obj/item/ammo_casing/shotgun/blank(src)
-		new /obj/item/ammo_casing/shotgun/blank(src)
-		new /obj/item/ammo_casing/shotgun/blank(src)
-		new /obj/item/ammo_casing/shotgun/blank(src)
-
-/obj/item/weapon/storage/box/beanbags
-	name = "box of beanbag shells"
-	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
-
-	New()
-		..()
-		new /obj/item/ammo_casing/shotgun/beanbag(src)
-		new /obj/item/ammo_casing/shotgun/beanbag(src)
-		new /obj/item/ammo_casing/shotgun/beanbag(src)
-		new /obj/item/ammo_casing/shotgun/beanbag(src)
-		new /obj/item/ammo_casing/shotgun/beanbag(src)
-		new /obj/item/ammo_casing/shotgun/beanbag(src)
-		new /obj/item/ammo_casing/shotgun/beanbag(src)
-
-/obj/item/weapon/storage/box/shotgunammo
-	name = "box of shotgun slugs"
-	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
-
-	New()
-		..()
-		new /obj/item/ammo_casing/shotgun(src)
-		new /obj/item/ammo_casing/shotgun(src)
-		new /obj/item/ammo_casing/shotgun(src)
-		new /obj/item/ammo_casing/shotgun(src)
-		new /obj/item/ammo_casing/shotgun(src)
-		new /obj/item/ammo_casing/shotgun(src)
-		new /obj/item/ammo_casing/shotgun(src)
-
-/obj/item/weapon/storage/box/shotgunshells
-	name = "box of shotgun shells"
-	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
-
-	New()
-		..()
-		new /obj/item/ammo_casing/shotgun/pellet(src)
-		new /obj/item/ammo_casing/shotgun/pellet(src)
-		new /obj/item/ammo_casing/shotgun/pellet(src)
-		new /obj/item/ammo_casing/shotgun/pellet(src)
-		new /obj/item/ammo_casing/shotgun/pellet(src)
-		new /obj/item/ammo_casing/shotgun/pellet(src)
-		new /obj/item/ammo_casing/shotgun/pellet(src)
-
-/obj/item/weapon/storage/box/stunshells
-	name = "box of stun shells"
-	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
-
-	New()
-		..()
-		new /obj/item/ammo_casing/shotgun/stunshell(src)
-		new /obj/item/ammo_casing/shotgun/stunshell(src)
-		new /obj/item/ammo_casing/shotgun/stunshell(src)
-		new /obj/item/ammo_casing/shotgun/stunshell(src)
-		new /obj/item/ammo_casing/shotgun/stunshell(src)
-		new /obj/item/ammo_casing/shotgun/stunshell(src)
-		new /obj/item/ammo_casing/shotgun/stunshell(src)
-
-/obj/item/weapon/storage/box/practiceshells
-	name = "box of practice shells"
-	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
-
-	New()
-		..()
-		new /obj/item/ammo_casing/shotgun/practice(src)
-		new /obj/item/ammo_casing/shotgun/practice(src)
-		new /obj/item/ammo_casing/shotgun/practice(src)
-		new /obj/item/ammo_casing/shotgun/practice(src)
-		new /obj/item/ammo_casing/shotgun/practice(src)
-		new /obj/item/ammo_casing/shotgun/practice(src)
-		new /obj/item/ammo_casing/shotgun/practice(src)
-
-/obj/item/weapon/storage/box/sniperammo
-	name = "box of 14.5mm shells"
-	desc = "It has a picture of a gun and several warning symbols on the front.<br>WARNING: Live ammunition. Misuse may result in serious injury or death."
-
-	New()
-		..()
-		new /obj/item/ammo_casing/a145(src)
-		new /obj/item/ammo_casing/a145(src)
-		new /obj/item/ammo_casing/a145(src)
-		new /obj/item/ammo_casing/a145(src)
-		new /obj/item/ammo_casing/a145(src)
-		new /obj/item/ammo_casing/a145(src)
-		new /obj/item/ammo_casing/a145(src)
-
-/obj/item/weapon/storage/box/flashbangs
-	name = "box of flashbangs"
-	desc = "A box containing 7 antipersonnel flashbang grenades.<br> WARNING: These devices are extremely dangerous and can cause blindness or deafness in repeated use."
-	icon_state = "flashbang"
-
-	New()
-		..()
-		new /obj/item/weapon/grenade/flashbang(src)
-		new /obj/item/weapon/grenade/flashbang(src)
-		new /obj/item/weapon/grenade/flashbang(src)
-		new /obj/item/weapon/grenade/flashbang(src)
-		new /obj/item/weapon/grenade/flashbang(src)
-		new /obj/item/weapon/grenade/flashbang(src)
-		new /obj/item/weapon/grenade/flashbang(src)
-
-/obj/item/weapon/storage/box/teargas
-	name = "box of pepperspray grenades"
-	desc = "A box containing 7 tear gas grenades. A gas mask is printed on the label.<br> WARNING: Exposure carries risk of serious injury or death. Keep away from persons with lung conditions."
-	icon_state = "flashbang"
-
-	New()
-		..()
-		new /obj/item/weapon/grenade/chem_grenade/teargas(src)
-		new /obj/item/weapon/grenade/chem_grenade/teargas(src)
-		new /obj/item/weapon/grenade/chem_grenade/teargas(src)
-		new /obj/item/weapon/grenade/chem_grenade/teargas(src)
-		new /obj/item/weapon/grenade/chem_grenade/teargas(src)
-		new /obj/item/weapon/grenade/chem_grenade/teargas(src)
-
-
 /obj/item/weapon/storage/box/smokes
 	name = "box of smoke bombs"
 	desc = "A box containing 5 smoke bombs."
@@ -277,10 +137,6 @@
 		new /obj/item/weapon/grenade/smokebomb(src)
 		new /obj/item/weapon/grenade/smokebomb(src)
 
-/obj/item/weapon/storage/box/anti_photons
-	name = "box of anti-photon grenades"
-	desc = "A box containing 5 experimental photon disruption grenades."
-	icon_state = "flashbang"
 
 /obj/item/weapon/storage/box/rxglasses
 	name = "box of prescription glasses"
@@ -354,20 +210,6 @@
 		new /obj/item/weapon/handcuffs(src)
 
 
-/obj/item/weapon/storage/box/mousetraps
-	name = "box of Pest-B-Gon mousetraps"
-	desc = "<b><FONT color='red'>WARNING:</FONT></b> <I>Keep out of reach of children</I>."
-	icon_state = "mousetraps"
-
-	New()
-		..()
-		new /obj/item/assembly/mousetrap( src )
-		new /obj/item/assembly/mousetrap( src )
-		new /obj/item/assembly/mousetrap( src )
-		new /obj/item/assembly/mousetrap( src )
-		new /obj/item/assembly/mousetrap( src )
-		new /obj/item/assembly/mousetrap( src )
-
 /obj/item/weapon/storage/box/pillbottles
 	name = "box of pill bottles"
 	desc = "It has pictures of pill bottles on its front."
@@ -385,7 +227,7 @@
 
 /obj/item/weapon/storage/box/matches
 	name = "matchbox"
-	desc = "A small box of 'Space-Proof' premium matches."
+	desc = "A small box of premium matches."
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "matchbox"
 	item_state = "zippo"
@@ -410,16 +252,7 @@
 				playsound(loc, 'sound/items/matchstick_hit.ogg', 25, FALSE, -1)
 		W.update_icon()
 		return
-/*
-/obj/item/weapon/storage/box/autoinjectors
-	name = "box of injectors"
-	desc = "Contains autoinjectors."
-	icon_state = "syringe"
-	New()
-		..()
-		for (var/i; i < 7; i++)
-			new /obj/item/weapon/reagent_containers/hypospray/autoinjector(src)
-*/
+/
 /obj/item/weapon/storage/box/lights
 	name = "box of replacement bulbs"
 	icon = 'icons/obj/storage.dmi'

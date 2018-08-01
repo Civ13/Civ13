@@ -127,6 +127,10 @@ var/global/obj/map_metadata/map = null
 		last_crossing_block_status[event_faction] = specialfaction_can_cross_blocks()
 
 	update_win_condition()
+	check_events()
+
+/obj/map_metadata/proc/check_events()
+	return TRUE
 
 /obj/map_metadata/proc/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))

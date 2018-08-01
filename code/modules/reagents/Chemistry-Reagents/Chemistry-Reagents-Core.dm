@@ -26,10 +26,6 @@
 		return
 	if (!data["donor"] || istype(data["donor"], /mob/living/carbon/human))
 		blood_splatter(T, src, TRUE)
-	else if (istype(data["donor"], /mob/living/carbon/alien))
-		var/obj/effect/decal/cleanable/blood/B = blood_splatter(T, src, TRUE)
-		if (B)
-			B.blood_DNA["UNKNOWN DNA STRUCTURE"] = "X*"
 
 /datum/reagent/blood/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 
@@ -95,14 +91,6 @@
 
 	var/datum/gas_mixture/environment = T.return_air()
 	var/min_temperature = T0C + 100 // 100C, the boiling point of water
-
-	var/hotspot = (locate(/obj/fire) in T)
-	if (hotspot && !istype(T, /turf/space))
-	//	var/datum/gas_mixture/lowertemp = T.remove_air(T:air:total_moles)
-	//	lowertemp.temperature = max(min(lowertemp.temperature-2000, lowertemp.temperature / 2), FALSE)
-	//	lowertemp.react()
-	//	T.assume_air(lowertemp)
-		qdel(hotspot)
 
 	if (environment && environment.temperature > min_temperature) // Abstracted as steam or something
 		var/removed_heat = between(0, volume * WATER_LATENT_HEAT, -environment.get_thermal_energy_change(min_temperature))

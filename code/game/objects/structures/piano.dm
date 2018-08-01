@@ -9,7 +9,7 @@
 	var/list/lines = new()
 	var/tempo = 5
 
-/obj/structure/device/piano
+/obj/structure/piano
 	name = "Upright Piano"
 	icon = 'icons/obj/musician.dmi'
 	icon_state = "minimoog"
@@ -22,7 +22,7 @@
 	var/edit = TRUE
 	var/repeat = FALSE
 
-/obj/structure/device/piano/New()
+/obj/structure/piano/New()
 	if (prob(50))
 		name = "Pohlmann and Son Upright Piano"
 		desc = "Overstrung piano. Beautiful veneer with marquetry detail. Minor damage to veneer on legs and to edge of lid."
@@ -33,11 +33,11 @@
 		icon_state = "piano"
 	processing_objects += src
 
-/obj/structure/device/piano/Del()
+/obj/structure/piano/Del()
 	processing_objects -= src
 	..()
 
-/obj/structure/device/piano/process()
+/obj/structure/piano/process()
 	for (var/mob/living/carbon/human/H in range(1, src))
 		var/turf/T = get_step(H, H.dir)
 		if (T.contents.Find(src))
@@ -45,7 +45,7 @@
 	playing = FALSE
 	return FALSE
 
-/obj/structure/device/piano/proc/playnote(var/note as text)
+/obj/structure/piano/proc/playnote(var/note as text)
 	//world << "Note: [note]"
 	var/soundfile
 	/*BYOND loads resource files at compile time if they are ''. This means you can't really manipulate them dynamically.
@@ -228,7 +228,7 @@
 		M.playsound_local(source, file(soundfile), 100, falloff = 5)
 
 
-/obj/structure/device/piano/proc/playsong()
+/obj/structure/piano/proc/playsong()
 	do
 		var/cur_oct[7]
 		var/cur_acc[7]
@@ -272,7 +272,7 @@
 	playing = FALSE
 	updateUsrDialog()
 
-/obj/structure/device/piano/attack_hand(var/mob/user as mob)
+/obj/structure/piano/attack_hand(var/mob/user as mob)
 	if (!anchored)
 		return
 
@@ -325,7 +325,7 @@
 	user << browse(dat, "window=piano;size=700x300")
 	onclose(user, "piano")
 
-/obj/structure/device/piano/Topic(href, href_list)
+/obj/structure/piano/Topic(href, href_list)
 
 	if (!in_range(src, usr) || !anchored || !usr.canmove || usr.restrained())
 		usr << browse(null, "window=piano;size=700x300")
@@ -427,7 +427,7 @@
 	updateUsrDialog()
 	return
 
-/obj/structure/device/piano/attackby(obj/item/O as obj, mob/user as mob)
+/obj/structure/piano/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/wrench))
 		if (anchored)
 			playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)

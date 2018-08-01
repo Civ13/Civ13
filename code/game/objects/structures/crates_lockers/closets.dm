@@ -206,36 +206,11 @@
 			return FALSE
 /*		if (istype(W,/obj/item/tk_grab))
 			return FALSE*/
-		if (istype(W, /obj/item/weapon/weldingtool))
-			var/obj/item/weapon/weldingtool/WT = W
-			if (!WT.remove_fuel(0,user))
-				if (!WT.isOn())
-					return
-				else
-					user << "<span class='notice'>You need more welding fuel to complete this task.</span>"
-					return
-			new /obj/item/stack/material/steel(loc)
-			for (var/mob/M in viewers(src))
-				M.show_message("<span class='notice'>\The [src] has been cut apart by [user] with \the [WT].</span>", 3, "You hear welding.", 2)
-			qdel(src)
-			return
 		if (W.loc != user) // This should stop mounted modules ending up outside the module.
 			return
 		usr.drop_item()
 		if (W)
 			W.forceMove(loc)
-	else if (istype(W, /obj/item/weapon/weldingtool))
-		var/obj/item/weapon/weldingtool/WT = W
-		if (!WT.remove_fuel(0,user))
-			if (!WT.isOn())
-				return
-			else
-				user << "<span class='notice'>You need more welding fuel to complete this task.</span>"
-				return
-		welded = !welded
-		update_icon()
-		for (var/mob/M in viewers(src))
-			M.show_message("<span class='warning'>[src] has been [welded?"welded shut":"unwelded"] by [user.name].</span>", 3, "You hear welding.", 2)
 	else
 		attack_hand(user)
 	return

@@ -249,8 +249,6 @@
 			bucket.reagents.add_reagent("water", 70)
 			M.equip_to_slot_or_del(bucket, slot_l_hand)
 
-			M.equip_to_slot_or_del(new /obj/item/weapon/grenade/chem_grenade/cleaner(M), slot_r_store)
-			M.equip_to_slot_or_del(new /obj/item/weapon/grenade/chem_grenade/cleaner(M), slot_l_store)
 			M.equip_to_slot_or_del(new /obj/item/stack/tile/floor(M), slot_in_backpack)
 			M.equip_to_slot_or_del(new /obj/item/stack/tile/floor(M), slot_in_backpack)
 			M.equip_to_slot_or_del(new /obj/item/stack/tile/floor(M), slot_in_backpack)

@@ -41,7 +41,7 @@
 
 /obj/item/weapon/reagent_containers/glass/rag/attackby(obj/item/W, mob/user)
 	if (!on_fire)
-		if (istype(W, /obj/item/weapon/flame) || istype(W, /obj/item/clothing/mask/smokable/cigarette) || (istype(W, /obj/item/flashlight/flare) && W:on) || (istype(W, /obj/item/weapon/weldingtool) && W:welding))
+		if (istype(W, /obj/item/weapon/flame) || istype(W, /obj/item/clothing/mask/smokable/cigarette) || (istype(W, /obj/item/flashlight/flare) && W:on))
 			var/cont = FALSE
 			var/obj/item/weapon/flame/F = W
 			if (istype(F) && F.lit)
@@ -50,10 +50,6 @@
 				var/obj/item/flashlight/FL = W
 				if (FL.on)
 					cont = TRUE
-			else if (istype(W, /obj/item/weapon/weldingtool))
-				var/obj/item/weapon/weldingtool/WT = W
-				if (WT.welding)
-					cont = TRUE
 
 			if (cont)
 				ignite()
@@ -61,23 +57,6 @@
 					visible_message("<span class='warning'>\The [user] lights [src] with [W].</span>")
 				else
 					user << "<span class='warning'>You manage to singe [src], but fail to light it. Maybe you should wet it.</span>"
-		else if (istype(W, /obj/item/weapon/weldingtool))
-			var/obj/item/weapon/weldingtool/F = W
-			if (F.welding)
-				ignite()
-				if (on_fire)
-					visible_message("<span class='warning'>\The [user] lights [src] with [W].</span>")
-				else
-					user << "<span class='warning'>You manage to singe [src], but fail to light it. Maybe you should wet it.</span>"
-		else if (istype(W, /obj/item/weapon/flamethrower))
-			var/obj/item/weapon/flamethrower/F = W
-			if (F.lit)
-				ignite()
-				if (on_fire)
-					visible_message("<span class='warning'>\The [user] lights [src] with [W].</span>")
-				else
-					user << "<span class='warning'>You manage to singe [src], but fail to light it. Maybe you should wet it.</span>"
-
 	. = ..()
 	update_name()
 

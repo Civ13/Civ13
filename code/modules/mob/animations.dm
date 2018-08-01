@@ -88,18 +88,6 @@ note dizziness decrements automatically in the mob's Life() proc.
 		make_floating(0)
 		return
 
-	var/turf/turf = get_turf(src)
-	if (!istype(turf,/turf/space))
-		var/area/A = turf.loc
-		if (istype(A) && A.has_gravity)
-			make_floating(0)
-			return
-		else if (Check_Shoegrip())
-			make_floating(0)
-			return
-		else
-			make_floating(1)
-			return
 
 	if (dense_object && Check_Shoegrip())
 		make_floating(0)

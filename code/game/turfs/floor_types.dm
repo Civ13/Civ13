@@ -1,27 +1,3 @@
-/*/turf/shuttle
-	name = "shuttle"
-	icon = 'icons/turf/shuttle.dmi'
-	thermal_conductivity = 0.05
-	heat_capacity = FALSE
-	layer = 2
-
-/turf/shuttle/floor
-	name = "floor"
-	icon_state = "floor"
-
-/turf/shuttle/floor/mining
-	icon_state = "6,19"
-	icon = 'icons/turf/shuttlemining.dmi'
-
-/turf/shuttle/plating
-	name = "plating"
-	icon = 'icons/turf/flooring/plating.dmi'
-	icon_state = "plating"
-	level = TRUE
-
-/turf/shuttle/plating/is_plating()
-	return TRUE*/
-
 /turf/floor/plating/under
 	name = "underplating"
 	icon_state = "un"
@@ -48,7 +24,7 @@
 	if (isnull(set_update_icon) && (flags & TURF_HAS_EDGES))
 		for (var/step_dir in cardinal)
 			var/turf/floor/T = get_step(src, step_dir)
-			if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open) && !istype(T, /turf/space))
+			if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
 				has_border |= step_dir
 				overlays |= get_flooring_overlayu("[icon_base]-edge-[step_dir]", "[icon_base]_edges", step_dir)
 		if ((flags & TURF_USE0ICON) && has_border)
@@ -69,20 +45,20 @@
 			if (!(has_border & NORTH))
 				if (!(has_border & EAST))
 					var/turf/floor/T = get_step(src, NORTHEAST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open) && !istype(T, /turf/space))
+					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
 						overlays |= get_flooring_overlayu("[icon_base]-corner-[NORTHEAST]", "[icon_base]_corners", NORTHEAST)
 				if (!(has_border & WEST))
 					var/turf/floor/T = get_step(src, NORTHWEST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open) && !istype(T, /turf/space))
+					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
 						overlays |= get_flooring_overlayu("[icon_base]-corner-[NORTHWEST]", "[icon_base]_corners", NORTHWEST)
 			if (!(has_border & SOUTH))
 				if (!(has_border & EAST))
 					var/turf/floor/T = get_step(src, SOUTHEAST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open) && !istype(T, /turf/space))
+					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
 						overlays |= get_flooring_overlayu("[icon_base]-corner-[SOUTHEAST]", "[icon_base]_corners", SOUTHEAST)
 				if (!(has_border & WEST))
 					var/turf/floor/T = get_step(src, SOUTHWEST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open) && !istype(T, /turf/space))
+					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
 						overlays |= get_flooring_overlayu("[icon_base]-corner-[SOUTHWEST]", "[icon_base]_corners", SOUTHWEST)
 
 	if (decals && decals.len)
@@ -144,47 +120,6 @@
 			return
 	return
 
-/turf/shuttle/plating/vox //Skipjack plating
-//	oxygen = FALSE
-//	nitrogen = MOLES_N2STANDARD + MOLES_O2STANDARD
-
-/turf/shuttle/floor4 // Added this floor tile so that I have a seperate turf to check in the shuttle -- Polymorph
-	name = "Brig floor"        // Also added it into the 2x3 brig area of the shuttle.
-	icon_state = "floor4"
-
-/turf/shuttle/floor4/vox //skipjack floors
-	name = "skipjack floor"
-//	oxygen = FALSE
-//	nitrogen = MOLES_N2STANDARD + MOLES_O2STANDARD
-
-/turf/floor/airless
-	icon_state = "floor"
-	name = "airless floor"
-//	oxygen = FALSE
-//	nitrogen = FALSE
-	temperature = TCMB
-
-	New()
-		..()
-		name = "floor"
-
-/turf/floor/airless/ceiling
-	icon_state = "rockvault"
-
-/turf/floor/light
-	name = "Light floor"
-	light_range = 5
-	icon_state = "light_on"
-	floor_type = /obj/item/stack/tile/light
-
-	New()
-		var/n = name //just in case commands rename it in the ..() call
-		..()
-		spawn(4)
-			if (src)
-				update_icon()
-				name = n
-
 /turf/floor/wood
 	name = "floor"
 	icon_state = "wood"
@@ -210,62 +145,6 @@
 /turf/floor/wood_broken/New()
 	..()
 	icon_state = "broken[rand(0,6)]"
-
-/turf/floor/vault
-	icon_state = "rockvault"
-
-	New(location,type)
-		..()
-		icon_state = "[type]vault"
-
-/turf/wall/vault
-	icon_state = "rockvault"
-
-	New(location,type)
-		..()
-		icon_state = "[type]vault"
-/*
-/turf/floor/engine
-	name = "reinforced floor"
-	icon_state = "engine"
-	thermal_conductivity = 0.025
-	heat_capacity = 325000
-	intact = FALSE
-
-/turf/floor/engine/nitrogen
-//	oxygen = FALSE
-
-/turf/floor/engine/attackby(obj/item/weapon/C as obj, mob/user as mob)
-	if (!C)
-		return
-	if (!user)
-		return
-	if (istype(C, /obj/item/weapon/wrench))
-		user << "<span class = 'notice'>Removing rods...</span>"
-		playsound(src, 'sound/items/Ratchet.ogg', 80, TRUE)
-		if (do_after(user, 30))
-			PoolOrNew(/obj/item/stack/rods, list(loc, 2))
-			ChangeTurf(/turf/floor)
-			var/turf/floor/F = src
-			F.make_plating()
-			return
-
-/turf/floor/engine/cult
-	name = "engraved floor"
-	icon_state = "cult"
-
-/turf/floor/engine/n20
-	New()
-		. = ..()
-	//	assume_gas("sleeping_agent", 2000)
-
-/turf/floor/engine/vacuum
-	name = "vacuum floor"
-	icon_state = "engine"
-//	oxygen = FALSE
-//	nitrogen = FALSE
-	temperature = TCMB
-*/
 /turf/floor/plating
 	name = "plating"
 	icon_state = "plating"
@@ -282,63 +161,6 @@
 				ChangeTurf(world.turf)
 	return
 
-/turf/floor/plating/airless
-	icon_state = "plating"
-	name = "airless plating"
-//	oxygen = FALSE
-//	nitrogen = FALSE
-	temperature = TCMB
-
-	New()
-		..()
-		name = "plating"
-
-/turf/floor/bluegrid
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "bcircuit"
-
-/turf/floor/greengrid
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "gcircuit"
-
-/*
-/turf/shuttle
-	name = "shuttle"
-	icon = 'icons/turf/shuttle.dmi'
-	thermal_conductivity = 0.05
-	heat_capacity = FALSE
-	layer = TURF_LAYER
-
-/turf/shuttle/wall
-	name = "wall"
-	icon_state = "wall1"
-	opacity = TRUE
-	density = TRUE
-//	blocks_air = TRUE
-
-/turf/shuttle/floor
-	name = "floor"
-	icon_state = "floor"
-
-/turf/shuttle/plating
-	name = "plating"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "plating"
-
-/turf/shuttle/plating/vox	//Skipjack plating
-//	oxygen = FALSE
-//	nitrogen = MOLES_N2STANDARD + MOLES_O2STANDARD
-
-/turf/shuttle/floor4 // Added this floor tile so that I have a seperate turf to check in the shuttle -- Polymorph
-	name = "Brig floor"        // Also added it into the 2x3 brig area of the shuttle.
-	icon_state = "floor4"
-
-/turf/shuttle/floor4/vox	//skipjack floors
-	name = "skipjack floor"
-//	oxygen = FALSE
-//	nitrogen = MOLES_N2STANDARD + MOLES_O2STANDARD
-
-*/
 /turf/floor/grass
 	name = "Grass patch"
 	icon_state = "grass1"

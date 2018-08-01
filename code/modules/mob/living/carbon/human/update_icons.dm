@@ -313,13 +313,6 @@ var/global/list/damage_icon_parts = list()
 	//END CACHED ICON GENERATION.
 	stand_icon.Blend(base_icon,ICON_OVERLAY)
 
-	//Underwear
-	if (species.appearance_flags & HAS_UNDERWEAR)
-		for (var/category in all_underwear)
-			var/datum/category_item/underwear/UW = all_underwear[category]
-			if (!UW.icon_state)
-				return
-			stand_icon.Blend(new /icon(body_build.underwear_icon, UW.icon_state), ICON_OVERLAY)
 
 	if (update_icons)
 		update_icons()

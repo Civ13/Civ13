@@ -104,7 +104,6 @@ var/list/admin_verbs_spawn = list(
 	)
 
 var/list/admin_verbs_server = list(
-	/datum/admins/proc/capture_map,
 	/client/proc/ToRban,
 	/datum/admins/proc/startnow,
 	/datum/admins/proc/restart,
@@ -715,26 +714,3 @@ var/list/admin_verbs_host = list(
 			job_master.FreeRole(job)
 			message_admins("A job slot for [job] has been opened by [key_name_admin(usr)]")
 			return
-
-/client/proc/man_up(mob/T as mob in mob_list)
-	set category = "Fun"
-	set name = "Man Up"
-	set desc = "Tells mob to man up and deal with it."
-
-	T << "<span class='notice'><b><font size=3>Man up and deal with it.</font></b></span>"
-	T << "<span class='notice'>Move on.</span>"
-
-	log_admin("[key_name(usr)] told [key_name(T)] to man up and deal with it.")
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] told [key_name(T)] to man up and deal with it.</span>", TRUE)
-
-/client/proc/global_man_up()
-	set category = "Fun"
-	set name = "Man Up Global"
-	set desc = "Tells everyone to man up and deal with it."
-
-	for (var/mob/T as mob in mob_list)
-		T << "<br><center><span class='notice'><b><font size=4>Man up.<br> Deal with it.</font></b><br>Move on.</span></center><br>"
-		T << 'sound/voice/ManUp1.ogg'
-
-	log_admin("[key_name(usr)] told everyone to man up and deal with it.")
-	message_admins("<span class = 'notice'>[key_name_admin(usr)] told everyone to man up and deal with it.</span>", TRUE)

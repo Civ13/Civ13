@@ -65,7 +65,6 @@
 				else
 					take_organ_damage(d)
 				user.visible_message("<span class='danger'>[user] attacks [src]'s stomach wall with the [I.name]!</span>")
-				playsound(user.loc, 'sound/effects/attackblob.ogg', 50, TRUE)
 
 				if (prob(getBruteLoss() - 50))
 					for (var/atom/movable/A in stomach_contents)
@@ -373,7 +372,7 @@
 
 		if (!lastarea)
 			lastarea = get_area(loc)
-		if ((istype(loc, /turf/space)) || (lastarea.has_gravity == FALSE))
+		if (lastarea.has_gravity == FALSE)
 			inertia_dir = get_dir(target, src)
 			step(src, inertia_dir)
 
@@ -478,8 +477,7 @@
 	<BR><b>Head(Mask):</b> <A href='?src=\ref[src];item=mask'>[(wear_mask ? wear_mask : "Nothing")]</A>
 	<BR><b>Left Hand:</b> <A href='?src=\ref[src];item=l_hand'>[(l_hand ? l_hand  : "Nothing")]</A>
 	<BR><b>Right Hand:</b> <A href='?src=\ref[src];item=r_hand'>[(r_hand ? r_hand : "Nothing")]</A>
-	<BR><b>Back:</b> <A href='?src=\ref[src];item=back'>[(back ? back : "Nothing")]</A> [((istype(wear_mask, /obj/item/clothing/mask) && istype(back, /obj/item/weapon/tank) && !( internal )) ? text(" <A href='?src=\ref[];item=internal'>Set Internal</A>", src) : "")]
-	<BR>[(internal ? text("<A href='?src=\ref[src];item=internal'>Remove Internal</A>") : "")]
+	<BR><b>Back:</b> <A href='?src=\ref[src];item=back'>[(back ? back : "Nothing")]</A>
 	<BR><A href='?src=\ref[src];item=pockets'>Empty Pockets</A>
 	<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>
 	<BR><A href='?src=\ref[user];mach_close=mob[name]'>Close</A>

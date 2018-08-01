@@ -70,15 +70,3 @@
 			return
 		else
 	return
-
-/obj/structure/catwalk/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/weldingtool))
-		var/obj/item/weapon/weldingtool/WT = C
-		if (WT.remove_fuel(0, user))
-			playsound(src, 'sound/items/Welder.ogg', 100, TRUE)
-			user << "<span class = 'notice'>Slicing lattice joints ...</span>"
-			new /obj/item/stack/rods(loc)
-			new /obj/item/stack/rods(loc)
-			new /obj/structure/lattice/(loc)
-			qdel(src)
-	return

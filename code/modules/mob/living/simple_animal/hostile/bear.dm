@@ -50,10 +50,7 @@
 	if (!.)
 		return
 
-	if (loc && istype(loc,/turf/space))
-		icon_state = "bear"
-	else
-		icon_state = "bearfloor"
+	icon_state = "bearfloor"
 
 	switch(stance)
 

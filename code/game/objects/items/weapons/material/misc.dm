@@ -59,7 +59,7 @@
 	name = "boarding axe"
 	desc = "A short axe, useful for breaking wood and boarding enemy ships."
 	icon = 'icons/obj/weapons.dmi'
-	icon_state = "combat axe"
+	icon_state = "combat_axe"
 	force_divisor = 0.4 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
 	w_class = 2

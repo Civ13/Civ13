@@ -101,24 +101,6 @@
 		user << "A coil of power cable. There are [get_amount()] lengths of cable in the coil."
 
 
-/obj/item/stack/cable_coil/verb/make_restraint()
-	set name = "Make Cable Restraints"
-	set category = null
-	var/mob/M = usr
-
-	if (ishuman(M) && !M.restrained() && !M.stat && !M.paralysis && ! M.stunned)
-		if (!istype(usr.loc,/turf)) return
-		if (amount <= 14)
-			usr << "<span class = 'red'>You need at least 15 lengths to make restraints!</span>"
-			return
-		var/obj/item/weapon/handcuffs/cable/B = new /obj/item/weapon/handcuffs/cable(usr.loc)
-		B.color = color
-		usr << "<span class='notice'>You wind some cable together to make some restraints.</span>"
-		use(15)
-	else
-		usr << "<span class = 'notice'>You cannot do that.</span>"
-	..()
-
 // Items usable on a cable coil :
 //   - Wirecutters : cut them duh !
 //   - Cable coil : merge cables

@@ -465,9 +465,6 @@
 			if (R.price <= 0)
 				vend(R, usr)
 
-			else if (istype(usr,/mob/living/silicon)) //If the item is not free, provide feedback if a synth is trying to buy something.
-				usr << "<span class='danger'>Artificial unit recognized.  Artificial units cannot complete this transaction.  Purchase canceled.</span>"
-				return
 			else
 				currently_vending = R
 				status_message = "Please swipe a card or insert cash to pay for the item."

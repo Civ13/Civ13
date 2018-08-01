@@ -1,15 +1,3 @@
-
-/turf/proc/ReplaceWithLattice()
-	ChangeTurf(get_base_turf_by_area(src))
-	spawn()
-		new /obj/structure/lattice( locate(x, y, z) )
-
-// Removes all signs of lattice on the pos of the turf -Donkieyo
-/turf/proc/RemoveLattice()
-	var/obj/structure/lattice/L = locate(/obj/structure/lattice, src)
-	if (L)
-		qdel(L)
-
 //Creates a new turf
 /turf/proc/ChangeTurf(var/turf/N, var/tell_universe=1, var/force_lighting_update = FALSE)
 	if (!N)
@@ -38,10 +26,6 @@
 
 		if (old_fire)
 			fire = old_fire
-
-		if (istype(W,/turf/floor))
-			W.RemoveLattice()
-
 
 		W.levelupdate()
 		. = W

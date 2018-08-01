@@ -132,7 +132,7 @@
 		"rifle" = list(100,100),
 		"shotgun" = list(100,100),
 		"mg" = list(100,100),
-		"smg" = list(100,100),
+		"swords" = list(100,100),
 		"pistol" = list(100,100),
 		"heavyweapon" = list(100,100),
 		"medical" = list(100,100),

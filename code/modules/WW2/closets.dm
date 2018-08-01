@@ -1,22 +1,3 @@
-/obj/structure/closet/welding
-	name = "welding supplies"
-	icon_state = "secureengweld1"
-	icon_closed = "secureengweld"
-	icon_opened = "toolclosetopen"
-
-	New()
-		..()
-		new /obj/item/clothing/head/welding(src)
-		new /obj/item/clothing/head/welding(src)
-		new /obj/item/clothing/head/welding(src)
-		new /obj/item/weapon/weldingtool/largetank(src)
-		new /obj/item/weapon/weldingtool/largetank(src)
-		new /obj/item/weapon/weldingtool/largetank(src)
-		new /obj/item/weapon/weldpack(src)
-		new /obj/item/weapon/weldpack(src)
-		new /obj/item/weapon/weldpack(src)
-		return
-
 /obj/structure/closet/cabinet
 	name = "cabinet"
 	desc = "Old will forever be in fashion."

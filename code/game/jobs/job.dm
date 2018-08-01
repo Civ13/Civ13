@@ -19,7 +19,6 @@
 	var/ideal_character_age = 30
 	var/account_allowed = TRUE				  // Does this job type come with a station account?
 	var/economic_modifier = 2			  // With how much does this job modify the initial account amount?
-	var/survival_gear = /obj/item/weapon/storage/box/survival// Custom box for spawn in backpack
 
 	//job equipment
 	var/uniform = /obj/item/clothing/under/color/grey
@@ -91,7 +90,6 @@
 		var/backpack = backpacks[H.backbag-1]
 		var/obj/item/weapon/storage/backpack/BPK = new backpack(H)
 		if (H.equip_to_slot_or_del(BPK, slot_back,1))
-			new survival_gear(BPK)
 			for ( var/path in put_in_backpack )
 				new path(BPK)
 

@@ -24,6 +24,8 @@
 	var/list/attack_verb = list() //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/force = FALSE
 
+	var/sharpness = 0
+
 	var/heat_protection = FALSE //flags which determine which body parts are protected from heat. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
 	var/cold_protection = FALSE //flags which determine which body parts are protected from cold. Use the HEAD, UPPER_TORSO, LOWER_TORSO, etc. flags. See setup.dm
 	var/max_heat_protection_temperature //Set this variable to determine up to which temperature (IN KELVIN) the item protects against heat damage. Keep at null to disable protection. Only protects areas set by heat_protection flags
@@ -210,18 +212,6 @@
 	return
 
 /obj/item/proc/nodrop_special_check()
-	if (istype(src, /obj/item/weapon/flamethrower/flammenwerfer))
-		var/obj/item/weapon/flamethrower/flammenwerfer/flamethrower = src
-		if (istype(flamethrower.loc, /mob))
-			if (ishuman(flamethrower.loc))
-				var/mob/living/carbon/human/H = flamethrower.loc
-				if (istype(H.back, /obj/item/weapon/storage/backpack/flammenwerfer))
-					return TRUE
-	else if (istype(src, /obj/item/weapon/storage/backpack/flammenwerfer))
-		var/obj/item/weapon/storage/backpack/flammenwerfer/flamethrower_backpack = src
-		if (flamethrower_backpack.flamethrower.loc == flamethrower_backpack)
-			return FALSE
-		return TRUE
 	return FALSE
 
 /obj/item/proc/nothrow_special_check()

@@ -136,19 +136,6 @@
 				playsound(src, 'sound/items/Deconstruct.ogg', 80, TRUE)
 				return
 		// Repairs.
-		else if (istype(C, /obj/item/weapon/weldingtool))
-			var/obj/item/weapon/weldingtool/welder = C
-			if (welder.isOn() && (is_plating()))
-				if (broken || burnt)
-					if (welder.remove_fuel(0,user))
-						user << "<span class='notice'>You fix some dents on the broken plating.</span>"
-						playsound(src, 'sound/items/Welder.ogg', 80, TRUE)
-						icon_state = "plating"
-						burnt = null
-						broken = null
-					else
-						user << "<span class='warning'>You need more welding fuel to complete this task.</span>"
-					return
 	return ..()
 
 

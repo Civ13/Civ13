@@ -22,6 +22,3 @@
 	if (istype(F))
 		new /obj/effect/decal/cleanable/ash(F)
 	qdel(src)
-
-/obj/item/remains/robot/attack_hand(mob/user as mob)
-	return

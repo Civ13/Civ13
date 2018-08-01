@@ -234,10 +234,6 @@
 		add_admin_verbs()
 		admin_memo_show()
 
-	if (isPatron("$20+"))
-		if (config.patrons_can_enable_disable_dabbing)
-			verbs += /client/proc/enable_disable_dabs
-
 	verbs += /client/proc/hide_status_tabs
 
 	// Forcibly enable hardware-accelerated graphics, as we need them for the lighting overlays.

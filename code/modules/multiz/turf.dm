@@ -103,30 +103,13 @@
 
 // Straight copy from space.
 /turf/open/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/stack/rods))
-		var/obj/structure/lattice/L = locate(/obj/structure/lattice, src)
-		if (L)
-			return
-		var/obj/item/stack/rods/R = C
-		if (R.use(1))
-			user << "<span class='notice'>Constructing support lattice ...</span>"
-			playsound(src, 'sound/weapons/Genhit.ogg', 50, TRUE)
-			ReplaceWithLattice()
-		return
 
 	if (istype(C, /obj/item/stack/tile/floor))
-		var/obj/structure/lattice/L = locate(/obj/structure/lattice, src)
-		if (L)
-			var/obj/item/stack/tile/floor/S = C
-			if (S.get_amount() < 1)
-				return
-			qdel(L)
-			playsound(src, 'sound/weapons/Genhit.ogg', 50, TRUE)
-			S.use(1)
-			ChangeTurf(/turf/floor/airless)
+		var/obj/item/stack/tile/floor/S = C
+		if (S.get_amount() < 1)
 			return
-		else
-			user << "<span class='warning'>The plating is going to need some support.</span>"
+		S.use(1)
+		return
 	return
 
 /turf/open/attack_hand(mob/user)//Climbing down.

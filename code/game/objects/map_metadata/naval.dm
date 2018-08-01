@@ -24,6 +24,17 @@
 //	meme = TRUE
 	battle_name = "Naval boarding"
 
+	var/done = FALSE
+/obj/map_metadata/naval/check_events()
+	if ((world.time >= 300) && !done)
+		world << "Pirates are approaching!"
+		for (var/obj/effect/area_teleporter/AT)
+			AT.Activated()
+			world << "Pirates are trying to board the ship!"
+			done = TRUE
+			return TRUE
+	else return FALSE
+
 /obj/map_metadata/naval/british_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 

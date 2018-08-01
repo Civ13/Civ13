@@ -686,17 +686,6 @@ proc/GaussRandRound(var/sigma,var/roundto)
 					X.underlays = old_underlays
 					X.decals = old_decals
 
-					if (istype(T, /turf/space))
-						X.ChangeTurf(get_base_turf_by_area(B))
-/*
-					var/turf/ST = T
-					if (istype(ST) && ST.zone)
-						var/turf/SX = X
-						if (!SX.air)
-							SX.make_air()
-						SX.air.copy_from(ST.zone.air)
-						ST.zone.remove(ST)
-*/
 					/* Quick visual fix for some weird shuttle corner artefacts when on transit space tiles */
 					if (direction && findtext(X.icon_state, "swall_s"))
 
@@ -712,7 +701,7 @@ proc/GaussRandRound(var/sigma,var/roundto)
 
 						// Find a new turf to take on the property of
 						var/turf/nextturf = get_step(corner, direction)
-						if (!nextturf || !istype(nextturf, /turf/space))
+						if (!nextturf)
 							nextturf = get_step(corner, turn(direction, 180))
 
 
@@ -972,7 +961,6 @@ proc/get_mob_with_client_list()
 var/global/list/common_tools = list(
 /obj/item/stack/cable_coil,
 /obj/item/weapon/wrench,
-/obj/item/weapon/weldingtool,
 /obj/item/weapon/screwdriver,
 /obj/item/weapon/wirecutters,
 ///obj/item/multitool,
@@ -985,11 +973,6 @@ var/global/list/common_tools = list(
 
 /proc/iswrench(O)
 	if (istype(O, /obj/item/weapon/wrench))
-		return TRUE
-	return FALSE
-
-/proc/iswelder(O)
-	if (istype(O, /obj/item/weapon/weldingtool))
 		return TRUE
 	return FALSE
 
@@ -1025,12 +1008,6 @@ var/global/list/common_tools = list(
 
 proc/is_hot(obj/item/W as obj)
 	switch(W.type)
-		if (/obj/item/weapon/weldingtool)
-			var/obj/item/weapon/weldingtool/WT = W
-			if (WT.isOn())
-				return 3800
-			else
-				return FALSE
 		if (/obj/item/weapon/flame/lighter)
 			if (W:lit)
 				return 1500
@@ -1053,6 +1030,13 @@ proc/is_hot(obj/item/W as obj)
 
 	return FALSE
 
+//Whether or not the given item counts as cutting with an edge in terms of removing limbs
+/proc/has_edge(obj/O as obj)
+	if (!O) return 0
+	if (O.edge) return 1
+	return 0
+
+
 //Whether or not the given item counts as sharp in terms of dealing damage
 /proc/is_sharp(obj/O as obj)
 	if (!O) return FALSE
@@ -1068,7 +1052,6 @@ proc/is_hot(obj/item/W as obj)
 		W.sharp													  || \
 		istype(W, /obj/item/weapon/screwdriver)                   || \
 		istype(W, /obj/item/weapon/pen)                           || \
-		istype(W, /obj/item/weapon/weldingtool)					  || \
 		istype(W, /obj/item/weapon/flame/lighter/zippo)			  || \
 		istype(W, /obj/item/weapon/flame/match)            		  || \
 		istype(W, /obj/item/clothing/mask/smokable/cigarette) 		      || \

@@ -152,7 +152,7 @@
 		I.SwapColor(rgb(255, FALSE, 220, 255), rgb(0, FALSE, FALSE, FALSE))
 		B.icon = I
 
-		playsound(src,'sound/effects/GLASS_Rattle_Many_Fragments_01_stereo.wav',100,1)
+		playsound(src,'sound/effects/drop_glass.ogg',100,1)
 		transfer_fingerprints_to(B)
 
 		qdel(src)
@@ -163,7 +163,7 @@
 		insert_rag(W, user)
 		update_icon()
 		return
-	else if (rag && (istype(W, /obj/item/weapon/flame) || istype(W, /obj/item/clothing/mask/smokable/cigarette) || (istype(W, /obj/item/flashlight/flare) && W:on) || (istype(W, /obj/item/weapon/weldingtool) && W:welding)))
+	else if (rag && (istype(W, /obj/item/weapon/flame) || istype(W, /obj/item/clothing/mask/smokable/cigarette) || (istype(W, /obj/item/flashlight/flare) && W:on)))
 		rag.attackby(W, user)
 		update_icon()
 		return

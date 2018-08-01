@@ -382,51 +382,6 @@ var/list/name_to_material
 
 /material/glass/proc/is_reinforced()
 	return (hardness > 35) //todo
-
-/material/glass/reinforced
-	name = "rglass"
-	display_name = "reinforced glass"
-	stack_type = /obj/item/stack/material/glass/reinforced
-	flags = MATERIAL_BRITTLE
-	icon_colour = "#00E1FF"
-	opacity = 0.3
-	integrity = 100
-	shard_type = SHARD_SHARD
-	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 40
-	weight = 30
-	stack_origin_tech = "materials=2"
-	composite_material = list(DEFAULT_WALL_MATERIAL = 1875,"glass" = 3750)
-//	window_options = list("One Direction" = TRUE, "Full Window" = 4, "Windoor" = 5)
-	created_window = /obj/structure/window/reinforced
-	wire_product = null
-	rod_product = null
-
-/material/glass/plasma
-	name = "borosilicate glass"
-	display_name = "borosilicate glass"
-	stack_type = /obj/item/stack/material/glass/plasmaglass
-	flags = MATERIAL_BRITTLE
-	integrity = 100
-	icon_colour = "#FC2BC5"
-	stack_origin_tech = list(TECH_MATERIAL = 4)
-	created_window = /obj/structure/window/plasmabasic
-	wire_product = null
-	rod_product = /obj/item/stack/material/glass/plasmarglass
-
-/material/glass/plasma/reinforced
-	name = "reinforced borosilicate glass"
-	display_name = "reinforced borosilicate glass"
-	stack_type = /obj/item/stack/material/glass/plasmarglass
-	stack_origin_tech = list(TECH_MATERIAL = 5)
-	composite_material = list() //todo
-	created_window = /obj/structure/window/plasmareinforced
-	hardness = 40
-	weight = 30
-	//stack_origin_tech = list(TECH_MATERIAL = 2)
-	//composite_material = list() //todo
-	rod_product = null
-
 /material/plastic
 	name = "plastic"
 	stack_type = /obj/item/stack/material/plastic

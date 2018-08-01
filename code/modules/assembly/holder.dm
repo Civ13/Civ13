@@ -26,11 +26,6 @@
 	proc/detached()
 		return
 
-
-	IsAssemblyHolder()
-		return TRUE
-
-
 	attach(var/obj/item/D, var/obj/item/D2, var/mob/user)
 		if ((!D)||(!D2))	return FALSE
 		if ((!isassembly(D))||(!isassembly(D2)))	return FALSE
@@ -175,11 +170,6 @@
 					if ("Left")	a_left.attack_self(user)
 					if ("Right")	a_right.attack_self(user)
 				return
-			else
-				if (!istype(a_left,/obj/item/assembly/igniter))
-					a_left.attack_self(user)
-				if (!istype(a_right,/obj/item/assembly/igniter))
-					a_right.attack_self(user)
 		else
 			var/turf/T = get_turf(src)
 			if (!T)	return FALSE
@@ -216,62 +206,3 @@
 		a_right.hear_talk(M,msg,verb,speaking)
 	if (a_left)
 		a_left.hear_talk(M,msg,verb,speaking)
-
-
-
-
-/obj/item/assembly_holder/timer_igniter
-	name = "timer-igniter assembly"
-
-	New()
-		..()
-
-		var/obj/item/assembly/igniter/ign = new(src)
-		ign.secured = TRUE
-		ign.holder = src
-		var/obj/item/assembly/timer/tmr = new(src)
-		tmr.time=5
-		tmr.secured = TRUE
-		tmr.holder = src
-		processing_objects.Add(tmr)
-		a_left = tmr
-		a_right = ign
-		secured = TRUE
-		update_icon()
-		name = initial(name) + " ([tmr.time] secs)"
-
-		loc.verbs += /obj/item/assembly_holder/timer_igniter/verb/configure
-
-	detached()
-		loc.verbs -= /obj/item/assembly_holder/timer_igniter/verb/configure
-		..()
-
-	verb/configure()
-		set name = "Set Timer"
-		set category = null
-		set src in usr
-
-		if ( !(usr.stat || usr.restrained()) )
-			var/obj/item/assembly_holder/holder
-			if (istype(src,/obj/item/weapon/grenade/chem_grenade))
-				var/obj/item/weapon/grenade/chem_grenade/gren = src
-				holder=gren.detonator
-			var/obj/item/assembly/timer/tmr = holder.a_left
-			if (!istype(tmr,/obj/item/assembly/timer))
-				tmr = holder.a_right
-			if (!istype(tmr,/obj/item/assembly/timer))
-				usr << "<span class='notice'>This detonator has no timer.</span>"
-				return
-
-			if (tmr.timing)
-				usr << "<span class='notice'>Clock is ticking already.</span>"
-			else
-				var/ntime = input("Enter desired time in seconds", "Time", "5") as num
-				if (ntime>0 && ntime<1000)
-					tmr.time = ntime
-					name = initial(name) + "([tmr.time] secs)"
-					usr << "<span class='notice'>Timer set to [tmr.time] seconds.</span>"
-				else
-					usr << "<span class='notice'>Timer can't be [ntime<=0?"negative":"more than 1000 seconds"].</span>"
-		else
-			usr << "<span class='notice'>You cannot do this while [usr.stat?"unconscious/dead":"restrained"].</span>"

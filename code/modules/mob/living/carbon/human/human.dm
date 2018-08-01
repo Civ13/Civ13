@@ -139,7 +139,7 @@ var/list/coefflist = list()
 					if (coefflist:Find(coeff))
 						coeff = "[coeff]0"
 
-				if (!list("mg", "smg").Find(statname))
+				if (!list("mg").Find(statname))
 					if (statname != "stamina")
 						stat("[capitalize(statname)]: ", "[coeff]x average")
 				else
@@ -265,11 +265,6 @@ var/list/coefflist = list()
 	if (species.hud.has_hands)
 		dat += "<BR><b>Left hand:</b> <A href='?src=\ref[src];item=[slot_l_hand]'>[istype(l_hand) ? l_hand : "nothing"]</A>"
 		dat += "<BR><b>Right hand:</b> <A href='?src=\ref[src];item=[slot_r_hand]'>[istype(r_hand) ? r_hand : "nothing"]</A>"
-
-	// Do they get an option to set internals?
-	if (istype(wear_mask, /obj/item/clothing/mask))
-		if (istype(back, /obj/item/weapon/tank) || istype(belt, /obj/item/weapon/tank) || istype(s_store, /obj/item/weapon/tank))
-			dat += "<BR><A href='?src=\ref[src];item=internals'>Toggle internals.</A>"
 
 	// Other incidentals.
 /*	if (istype(suit) && suit.has_sensor == TRUE)

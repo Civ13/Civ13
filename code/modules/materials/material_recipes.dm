@@ -53,7 +53,6 @@ var/list/engineer_exclusive_recipe_types = list(/obj/structure/girder, /obj/stru
 	recipes += new/datum/stack_recipe("wall girders", /obj/structure/girder, 3, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("railing", /obj/structure/railing, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
-	recipes += new/datum/stack_recipe("grenade casing", /obj/item/weapon/grenade/chem_grenade)
 	recipes += new/datum/stack_recipe("unlocked door", /obj/structure/simple_door/key_door/anyone, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("locked door", /obj/structure/simple_door/key_door/anyone, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("anti-tank hedgehog", /obj/structure/anti_tank, 10, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)

@@ -33,26 +33,8 @@
 /turf
 	var/explosion_resistance
 
-/turf/space
-	explosion_resistance = 3
-
 /turf/floor
 	explosion_resistance = TRUE
-
-/turf/mineral
-	explosion_resistance = 2
-
-/turf/shuttle/floor
-	explosion_resistance = TRUE
-
-/turf/shuttle/floor4
-	explosion_resistance = TRUE
-
-/turf/shuttle/plating
-	explosion_resistance = TRUE
-
-/turf/shuttle/wall
-	explosion_resistance = 10
 
 /turf/wall
 	explosion_resistance = 10

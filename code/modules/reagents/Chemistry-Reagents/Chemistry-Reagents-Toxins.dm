@@ -329,7 +329,7 @@
 
 /datum/reagent/space_drugs/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.druggy = max(M.druggy, 15)
-	if (prob(10) && isturf(M.loc) && !istype(M.loc, /turf/space) && M.canmove && !M.restrained())
+	if (prob(10) && isturf(M.loc) && M.canmove && !M.restrained())
 		step(M, pick(cardinal))
 	if (prob(7))
 		M.emote(pick("twitch", "drool", "moan", "giggle"))

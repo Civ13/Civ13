@@ -38,14 +38,12 @@
 		///obj/item/weapon/combitool,
 		/obj/item/weapon/crowbar/prybar,
 		/obj/item/weapon/screwdriver,
-		/obj/item/weapon/weldingtool/ww2,
 		/obj/item/weapon/wirecutters/boltcutters,
 		/obj/item/weapon/wrench,
 		/obj/item/flashlight,
 		/obj/item/stack/cable_coil,
 		/obj/item/weapon/material/minihoe,
 		/obj/item/weapon/material/hatchet,
-		/obj/item/weapon/extinguisher/mini
 		)
 
 
@@ -53,19 +51,10 @@
 	..()
 	new /obj/item/weapon/screwdriver(src)
 	new /obj/item/weapon/wrench(src)
-	new /obj/item/weapon/weldingtool/ww2(src)
 	new /obj/item/weapon/crowbar/prybar(src)
 	new /obj/item/weapon/wirecutters/boltcutters(src)
 	new /obj/item/stack/cable_coil(src,30,pick("red","yellow","orange"))
 
-
-/obj/item/weapon/storage/belt/utility/atmostech/New()
-	..()
-	new /obj/item/weapon/screwdriver(src)
-	new /obj/item/weapon/wrench(src)
-	new /obj/item/weapon/weldingtool/ww2(src)
-	new /obj/item/weapon/crowbar/prybar(src)
-	new /obj/item/weapon/wirecutters/boltcutters(src)
 
 /obj/item/weapon/storage/belt/medical
 	name = "medical belt"
@@ -87,7 +76,6 @@
 		/obj/item/clothing/gloves/latex,
 		/obj/item/weapon/crowbar/prybar,
 		/obj/item/flashlight,
-		/obj/item/weapon/extinguisher/mini
 		)
 
 /obj/item/weapon/storage/belt/medical/emt

@@ -169,7 +169,6 @@ var/list/global/wall_cache = list()
 
 /turf/wall/proc/dismantle_wall(var/devastated, var/explode, var/no_product)
 
-	playsound(src, 'sound/items/Welder.ogg', 100, TRUE)
 	if (!no_product)
 		if (reinf_material)
 			reinf_material.place_dismantled_girder(src, reinf_material)

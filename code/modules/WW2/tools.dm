@@ -57,11 +57,6 @@
 	name = "prybar"
 	icon_state = "prybar"
 
-/obj/item/weapon/weldingtool/ww2
-	name = "welding tool"
-	icon_state = "ww2_welder_off"
-	on_state = "ww2_welder_on"
-	off_state = "ww2_welder_off"
 /*
 /obj/item/flashlight/ww2
 	name = "flashlight"

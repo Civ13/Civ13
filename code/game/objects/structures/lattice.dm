@@ -12,7 +12,7 @@
 /obj/structure/lattice/initialize()
 	..()
 ///// Z-Level Stuff
-	if (!(istype(loc, /turf/space) || istype(loc, /turf/open) || istype(loc, /turf/floor/hull))) // || istype(loc, /turf/floor/open)
+	if (istype(loc, /turf/open))
 ///// Z-Level Stuff
 		qdel(src)
 	for (var/obj/structure/lattice/LAT in loc)
@@ -87,7 +87,7 @@
 			T = get_step(src, direction)
 			if (locate(/obj/structure/lattice, T) || locate(/obj/structure/catwalk, T))
 				dir_sum += direction
-			else if (!istype(T, /turf/space) && !istype(T, /turf/open))
+			else if (!istype(T, /turf/open))
 				dir_sum += direction
 
 		icon_state = "lattice[dir_sum]"

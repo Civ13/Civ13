@@ -28,7 +28,7 @@
 	return
 
 /obj/item/weapon/folder/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/photo) || istype(W, /obj/item/weapon/paper_bundle))
+	if (istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/paper_bundle))
 		user.drop_item()
 		W.loc = src
 		playsound(src,'sound/effects/Paper_Shake.wav',40,1)
@@ -45,8 +45,6 @@
 
 	for (var/obj/item/weapon/paper/P in src)
 		dat += "<A href='?src=\ref[src];remove=\ref[P]'>Remove</A> <A href='?src=\ref[src];rename=\ref[P]'>Rename</A> - <A href='?src=\ref[src];read=\ref[P]'>[P.name]</A><BR>"
-	for (var/obj/item/weapon/photo/Ph in src)
-		dat += "<A href='?src=\ref[src];remove=\ref[Ph]'>Remove</A> <A href='?src=\ref[src];rename=\ref[Ph]'>Rename</A> - <A href='?src=\ref[src];look=\ref[Ph]'>[Ph.name]</A><BR>"
 	for (var/obj/item/weapon/paper_bundle/Pb in src)
 		dat += "<A href='?src=\ref[src];remove=\ref[Pb]'>Remove</A> <A href='?src=\ref[src];rename=\ref[Pb]'>Rename</A> - <A href='?src=\ref[src];browse=\ref[Pb]'>[Pb.name]</A><BR>"
 	user << browse(dat, "window=folder")
@@ -72,16 +70,12 @@
 			var/obj/item/weapon/paper/P = locate(href_list["read"])
 			playsound(src,'sound/effects/Paper_Shake.wav',40,1)
 			if (P && (P.loc == src) && istype(P))
-				if (!(istype(usr, /mob/living/carbon/human) || isghost(usr) || istype(usr, /mob/living/silicon)))
+				if (!(istype(usr, /mob/living/carbon/human) || isghost(usr)))
 					usr << browse("<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[stars(P.info)][P.stamps]</BODY></HTML>", "window=[P.name]")
 					onclose(usr, "[P.name]")
 				else
 					usr << browse("<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[P.info][P.stamps]</BODY></HTML>", "window=[P.name]")
 					onclose(usr, "[P.name]")
-		else if (href_list["look"])
-			var/obj/item/weapon/photo/P = locate(href_list["look"])
-			if (P && (P.loc == src) && istype(P))
-				P.show(usr)
 		else if (href_list["browse"])
 			var/obj/item/weapon/paper_bundle/P = locate(href_list["browse"])
 			if (P && (P.loc == src) && istype(P))
@@ -93,10 +87,6 @@
 			if (O && (O.loc == src))
 				if (istype(O, /obj/item/weapon/paper))
 					var/obj/item/weapon/paper/to_rename = O
-					to_rename.rename()
-
-				else if (istype(O, /obj/item/weapon/photo))
-					var/obj/item/weapon/photo/to_rename = O
 					to_rename.rename()
 
 				else if (istype(O, /obj/item/weapon/paper_bundle))

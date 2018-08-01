@@ -30,17 +30,6 @@
 		// a stake's density to FALSE meaning it can't be pushed anymore. Instead of pushing
 		// the stake now, we have to push the target.
 
-
-
-	attackby(obj/item/W as obj, mob/user as mob)
-		if (istype(W, /obj/item/weapon/weldingtool))
-			var/obj/item/weapon/weldingtool/WT = W
-			if (WT.remove_fuel(0, user))
-				overlays.Cut()
-				usr << "You slice off [src]'s uneven chunks of aluminum and scorch marks."
-				return
-
-
 	attack_hand(mob/user as mob)
 		// taking pinned targets off!
 		var/obj/structure/target_stake/stake

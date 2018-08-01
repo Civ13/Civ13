@@ -1,9 +1,5 @@
 /atom/movable/proc/get_mob()
 	return
-
-/obj/vehicle/train/get_mob()
-	return buckled_mob
-
 /mob/get_mob()
 	return src
 
@@ -370,8 +366,10 @@ Proc for attack log creation, because really why not
 
 	var/target_loc = null
 
-	// made this account for being moved on rollerbeds - Kachnov
+	if (target)
+		target_loc = target.loc
 
+	var/atom/original_loc = user.loc
 
 	var/holding = user.get_active_hand()
 
@@ -395,10 +393,10 @@ Proc for attack log creation, because really why not
 			. = FALSE
 			break
 
-
-		// this should fix the bug where a guy can start resisting on a train,
-		// get moved off the train, and keep resisting even after being moved
-		// - Kachnov
+		if (!can_move)
+			if (user.loc != original_loc)
+				. = FALSE
+				break
 
 		if (needhand)
 			if (user.get_active_hand() != holding)
@@ -551,8 +549,6 @@ Proc for attack log creation, because really why not
 	for (var/mob/living/carbon/human/M in sortmob)
 		moblist.Add(M)
 	for (var/mob/living/carbon/brain/M in sortmob)
-		moblist.Add(M)
-	for (var/mob/living/carbon/alien/M in sortmob)
 		moblist.Add(M)
 	for (var/mob/observer/ghost/M in sortmob)
 		moblist.Add(M)

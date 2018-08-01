@@ -306,24 +306,12 @@
 		return
 
 	if (istype(I, /obj/item/weapon/screwdriver))
-		if (istype(src, /obj/structure/table/reinforced))
-			var/obj/structure/table/reinforced/RT = src
-			if (RT.status == TRUE)
-				table_destroy(2, user)
-				return
-		else
-			table_destroy(2, user)
-			return
+		table_destroy(2, user)
+		return
 
 	if (istype(I, /obj/item/weapon/wrench))
-		if (istype(src, /obj/structure/table/reinforced))
-			var/obj/structure/table/reinforced/RT = src
-			if (RT.status == TRUE)
-				table_destroy(3, user)
-				return
-		else
-			table_destroy(3, user)
-			return
+		table_destroy(3, user)
+		return
 
 	user.drop_item(loc)
 	playsound(loc, I.dropsound, 100, TRUE)
@@ -445,33 +433,3 @@
 
 
 /* Reinforced tables */
-
-/obj/structure/table/reinforced
-	name = "reinforced steel table"
-	desc = "A reinforced version of the four legged table, much harder to simply deconstruct."
-	icon_state = "reinftable"
-	var/status = 2
-	frame = /obj/structure/table_frame
-	framestack = /obj/item/stack/material/steel
-	buildstack = /obj/item/stack/material/steel
-
-/obj/structure/table/reinforced/attackby(obj/item/weapon/W, mob/user, params)
-	if (istype(W, /obj/item/weapon/weldingtool))
-		var/obj/item/weapon/weldingtool/WT = W
-		if (WT.remove_fuel(0, user))
-			if (status == 2)
-				user << "<span class='notice'>You start weakening the reinforced table...</span>"
-				playsound(loc, 'sound/items/Welder.ogg', 50, TRUE)
-				if (do_after(user, 50, target = src))
-					if (!src || !WT.isOn()) return
-					user << "<span class='notice'>You weaken the table.</span>"
-					status = TRUE
-			else
-				user << "<span class='notice'>You start strengthening the reinforced table...</span>"
-				playsound(loc, 'sound/items/Welder.ogg', 50, TRUE)
-				if (do_after(user, 50, target = src))
-					if (!src || !WT.isOn()) return
-					user << "<span class='notice'>You strengthen the table.</span>"
-					status = 2
-			return
-	..()

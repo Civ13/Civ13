@@ -592,7 +592,7 @@ var/setting_up_db_connection = FALSE
 						serverswap_closed = FALSE
 						if (ticker)
 							// reset the pregame timer
-							ticker.pregame_timeleft = 185
+							ticker.pregame_timeleft = 90
 							// recreate the database, may or may not fix a DB bug
 							database = new("[serverswap["masterdir"]]SQL/database.db")
 

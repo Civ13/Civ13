@@ -197,14 +197,6 @@ steam.start() -- spawns the effect
 /obj/effect/effect/smoke/proc/affect(var/mob/living/carbon/M)
 	if (istype(M))
 		return FALSE
-	if (M.internal != null)
-		if (M.wear_mask && (M.wear_mask.item_flags & AIRTIGHT))
-			return FALSE
-		if (istype(M,/mob/living/carbon/human))
-			var/mob/living/carbon/human/H = M
-			if (H.head && (H.head.item_flags & AIRTIGHT))
-				return FALSE
-		return FALSE
 	return TRUE
 
 /////////////////////////////////////////////
@@ -396,14 +388,6 @@ steam.start() -- spawns the effect
 			spawn(0)
 				var/turf/T = get_turf(holder)
 				if (T != oldposition)
-					if (istype(T, /turf/space))
-						var/obj/effect/effect/ion_trails/I = PoolOrNew(/obj/effect/effect/ion_trails, oldposition)
-						oldposition = T
-						I.set_dir(holder.dir)
-						flick("ion_fade", I)
-						I.icon_state = "blank"
-						spawn( 20 )
-							qdel(I)
 					spawn(2)
 						if (on)
 							processing = TRUE

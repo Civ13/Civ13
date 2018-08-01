@@ -65,13 +65,12 @@
 			M.ingested.remove_reagent(R.id, removed * effect)
 
 /datum/reagent/carbon/touch_turf(var/turf/T)
-	if (!istype(T, /turf/space))
-		var/obj/effect/decal/cleanable/dirt/dirtoverlay = locate(/obj/effect/decal/cleanable/dirt, T)
-		if (!dirtoverlay)
-			dirtoverlay = new/obj/effect/decal/cleanable/dirt(T)
-			dirtoverlay.alpha = volume * 30
-		else
-			dirtoverlay.alpha = min(dirtoverlay.alpha + volume * 30, 255)
+	var/obj/effect/decal/cleanable/dirt/dirtoverlay = locate(/obj/effect/decal/cleanable/dirt, T)
+	if (!dirtoverlay)
+		dirtoverlay = new/obj/effect/decal/cleanable/dirt(T)
+		dirtoverlay.alpha = volume * 30
+	else
+		dirtoverlay.alpha = min(dirtoverlay.alpha + volume * 30, 255)
 
 /datum/reagent/copper
 	name = "Copper"
@@ -201,8 +200,6 @@
 	color = "#808080"
 
 /datum/reagent/lithium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	if (M.canmove && !M.restrained() && istype(M.loc, /turf/space))
-		step(M, pick(cardinal))
 	if (prob(5))
 		M.emote(pick("twitch", "drool", "moan"))
 
@@ -215,8 +212,6 @@
 	color = "#484848"
 
 /datum/reagent/mercury/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	if (M.canmove && !M.restrained() && istype(M.loc, /turf/space))
-		step(M, pick(cardinal))
 	if (prob(5))
 		M.emote(pick("twitch", "drool", "moan"))
 	M.adjustBrainLoss(0.1)

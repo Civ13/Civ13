@@ -176,11 +176,6 @@ var/list/flooring_types
 	icon_base = "dark"
 	build_type = /obj/item/stack/tile/floor/dark
 
-/decl/flooring/tiling/freezer
-	name = "floor"
-	desc = "Don't slip."
-	icon_base = "freezer"
-	build_type = /obj/item/stack/tile/floor/freezer
 
 /decl/flooring/wood
 	name = "wooden floor"
@@ -192,39 +187,3 @@ var/list/flooring_types
 	descriptor = "planks"
 	build_type = /obj/item/stack/tile/wood
 	flags = TURF_CAN_BREAK | TURF_IS_FRAGILE | TURF_REMOVE_SCREWDRIVER
-
-/decl/flooring/reinforced
-	name = "reinforced floor"
-	desc = "Heavily reinforced with steel rods."
-	icon = 'icons/turf/flooring/tiles.dmi'
-	icon_base = "reinforced"
-	flags = TURF_REMOVE_WRENCH | TURF_ACID_IMMUNE
-	build_type = /obj/item/stack/rods
-	build_cost = 2
-	build_time = 30
-	apply_thermal_conductivity = 0.025
-	apply_heat_capacity = 325000
-	can_paint = TRUE
-
-/decl/flooring/reinforced/circuit
-	name = "processing strata"
-	icon = 'icons/turf/flooring/circuit.dmi'
-	icon_base = "bcircuit"
-	build_type = null
-	flags = TURF_ACID_IMMUNE | TURF_CAN_BREAK
-	can_paint = TRUE
-
-/decl/flooring/reinforced/circuit/green
-	name = "processing strata"
-	icon_base = "gcircuit"
-/*
-/decl/flooring/reinforced/cult
-	name = "engraved floor"
-	desc = "Unsettling whispers waver from the surface..."
-	icon = 'icons/turf/flooring/cult.dmi'
-	icon_base = "cult"
-	build_type = null
-	has_damage_range = 6
-	flags = TURF_ACID_IMMUNE | TURF_CAN_BREAK
-	can_paint = null
-*/

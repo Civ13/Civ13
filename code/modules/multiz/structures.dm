@@ -121,6 +121,55 @@
 		"You hear the grunting and clanging of a metal ladder being used."
 	)
 
+	if (do_after(M, 10, src))
+		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
+
+		// pulling/grabbing people with you
+		var/atom/movable/was_pulling = null
+		var/grabbing = FALSE
+
+		if (M.pulling)
+			was_pulling = M.pulling
+			M.stop_pulling(was_pulling)
+		else
+			for (var/obj/item/weapon/grab/G in M.contents)
+				if (G.affecting)
+					was_pulling = G.affecting
+					grabbing = TRUE
+					break
+
+		if (was_pulling)
+			var/turf/move_pulling = get_step(T, M.dir)
+			if (move_pulling.density)
+				move_pulling = get_step(T, NORTH)
+			if (move_pulling.density)
+				move_pulling = get_step(T, SOUTH)
+			if (move_pulling.density)
+				move_pulling = get_step(T, EAST)
+			if (move_pulling.density)
+				move_pulling = get_step(T, WEST)
+			if (move_pulling.density)
+				move_pulling = get_step(T, NORTHEAST)
+			if (move_pulling.density)
+				move_pulling = get_step(T, NORTHWEST)
+			if (move_pulling.density)
+				move_pulling = get_step(T, SOUTHEAST)
+			if (move_pulling.density)
+				move_pulling = get_step(T, SOUTHWEST)
+
+			was_pulling.Move(move_pulling)
+			M.Move(T)
+
+			if (was_pulling && !grabbing)
+				M.start_pulling(was_pulling)
+		else
+			M.Move(T)
+		M.visible_message(
+			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
+			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
+			"You hear the grunting and clanging of a metal ladder being used."
+		)
+
 /mob/living/carbon/human/var/laddervision = null
 
 /obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/carbon/human/user as mob)
@@ -197,104 +246,6 @@
 		qdel(target)
 	return ..()
 
-/* manholes! These are just ww2 ladders. The top manhole should be paired
- * with a bottom ladder that has the same ID */
-
-/obj/structure/multiz/ladder/ww2/manhole
-	icon_state = "manhole"
-	density = FALSE
-	name = "manhole"
-
-/obj/structure/multiz/ladder/ww2/manhole/proc/fell(var/mob/living/M)
-	if (icon_state == "manhole-open" && target)
-		M.visible_message("<span class = 'warning'>[M] falls down the manhole!</span>", "<span class = 'userdanger'>You fall down the manhole!</span>")
-		M.adjustBruteLoss(rand(15,20))
-		M.loc = get_turf(target)
-
-/obj/structure/multiz/ladder/ww2/manhole/attack_hand(var/mob/M)
-	if (isobserver(M))
-		return ..(M)
-	switch (icon_state)
-		if ("manhole")
-			visible_message("<span class = 'danger'>[M] starts to move the cover off of the manhole.</span>")
-			icon_state = "manhole-opening"
-			if (do_after(M, 35, src)) // it takes 3.5 seconds for the animation
-				visible_message("<span class = 'danger'>[M] moves the cover off of the manhole.</span>")
-				icon_state = "manhole-open"
-			else
-				icon_state = "manhole"
-		if ("manhole-opening")
-			return
-		if ("manhole-open")
-			var/I = input(M, "Climb down the manhole or put the cover back on?") in list("Climb Down", "Replace the Cover", "Cancel")
-			if (I == "Cancel")
-				return
-			else
-				switch (I)
-					if ("Climb Down")
-						return ..(M)
-					if ("Replace the Cover")
-						visible_message("<span class = 'danger'>[M] starts to replace the cover back on to the manhole.</span>")
-						icon_state = "manhole-closing"
-						if (do_after(M, 35, src)) // it takes 3.5 seconds for the animation
-							visible_message("<span class = 'danger'>[M] moves the cover off of the manhole.</span>")
-							icon_state = "manhole"
-						else
-							icon_state = "manhole-open"
-////STAIRS////
-/*
-//Spizjeno by guap and then by bo20202
-/obj/structure/stairs
-	name = "Stairs"
-	desc = "Stairs leading to another deck.  Not too useful if the gravity goes out."
-	icon = 'icons/obj/stairs.dmi'
-	icon_state = "rampup"
-	layer = 2.4
-	density = FALSE
-	opacity = FALSE
-	anchored = TRUE
-	var/istop = TRUE
-
-	CanPass(obj/mover, turf/source, height, airflow)
-		return airflow || !density
-
-/obj/structure/stairs/enter
-	icon_state = "ramptop"
-
-/obj/structure/stairs/enter/bottom
-	icon_state = "rampbottom"
-	istop = FALSE
-
-/obj/structure/stairs/active
-	density = TRUE
-
-/obj/structure/stairs/active/Bumped(var/atom/movable/M)
-	if (istype(src, /obj/structure/stairs/active/bottom) && !locate(/obj/structure/stairs/enter) in M.loc)
-		return //If on bottom, only let them go up stairs if they've moved to the entry tile first.
-	//If it's the top, they can fall down just fine.
-	if (ismob(M) && M:client)
-		M:client.moving = TRUE
-	M.Move(locate(x, y, targetZ()))
-	if (ismob(M) && M:client)
-		M:client.moving = FALSE
-
-/obj/structure/stairs/active/attack_hand(mob/user)
-	. = ..()
-	if (Adjacent(user))
-		Bumped(user)
-
-
-/obj/structure/stairs/active/bottom
-	icon_state = "rampdark"
-	istop = FALSE
-	opacity = TRUE
-
-/obj/structure/attack_tk(mob/user as mob)
-	return
-
-/obj/structure/stairs/proc/targetZ()
-	return z + (istop ? -1 : TRUE)
-*/
 
 /obj/structure/multiz/stairs
 	name = "Stairs"

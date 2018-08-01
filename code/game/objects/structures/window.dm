@@ -492,29 +492,6 @@
 	damage_per_fire_tick = 2.0
 	maxhealth = 12.0
 
-/obj/structure/window/plasmabasic
-	name = "plasma window"
-	desc = "A borosilicate alloy window. It seems to be quite strong."
-	basestate = "plasmawindow"
-	icon_state = "plasmawindow"
-	shardtype = /obj/item/weapon/material/shard/plasma
-	glasstype = /obj/item/stack/material/glass/plasmaglass
-	maximal_heat = T0C + 2000
-	damage_per_fire_tick = 1.0
-	maxhealth = 40.0
-
-/obj/structure/window/plasmareinforced
-	name = "reinforced borosilicate window"
-	desc = "A borosilicate alloy window, with rods supporting it. It seems to be very strong."
-	basestate = "plasmarwindow"
-	icon_state = "plasmarwindow"
-	shardtype = /obj/item/weapon/material/shard/plasma
-	glasstype = /obj/item/stack/material/glass/plasmarglass
-	reinf = TRUE
-	maximal_heat = T0C + 9000
-	damage_per_fire_tick = 1.0 // This should last for 80 fire ticks if the window is not damaged at all. The idea is that borosilicate windows have something like ablative layer that protects them for a while.
-	maxhealth = 80.0
-
 
 /obj/structure/window/reinforced
 	name = "reinforced window"
@@ -534,54 +511,3 @@
 	//player-constructed windows
 	if (constructed)
 		state = FALSE
-
-/obj/structure/window/reinforced/full
-    dir = 5
-    icon_state = "fwindow"
-
-/obj/structure/window/reinforced/tinted
-	name = "tinted window"
-	desc = "It looks rather strong and opaque. Might take a few good hits to shatter it."
-	icon_state = "twindow"
-	basestate = "twindow"
-	opacity = TRUE
-
-/obj/structure/window/reinforced/tinted/frosted
-	name = "frosted window"
-	desc = "It looks rather strong and frosted over. Looks like it might take a few less hits then a normal reinforced window."
-	icon_state = "fwindow"
-	basestate = "fwindow"
-	maxhealth = 30
-
-
-/obj/structure/window/reinforced/polarized
-	name = "electrochromic window"
-	desc = "Adjusts its tint with voltage. Might take a few good hits to shatter it."
-	var/id
-
-/obj/structure/window/reinforced/polarized/proc/toggle()
-	if (opacity)
-		animate(src, color="#FFFFFF", time=5)
-		set_opacity(0)
-	else
-		animate(src, color="#222222", time=5)
-		set_opacity(1)
-
-/obj/structure/window/reinforced/crescent/attack_hand()
-	return
-
-/obj/structure/window/reinforced/crescent/attackby()
-	return
-
-/obj/structure/window/reinforced/crescent/ex_act()
-	return
-
-/obj/structure/window/reinforced/crescent/hitby()
-	return
-
-/obj/structure/window/reinforced/crescent/take_damage()
-	return
-
-/obj/structure/window/reinforced/crescent/shatter()
-	return
-
