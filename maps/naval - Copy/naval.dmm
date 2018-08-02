@@ -43,6 +43,7 @@
 "aQ" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "aR" = (/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
 "aS" = (/obj/structure/vending/piratesapparel,/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
+"aT" = (/obj/covers/wood,/turf/floor/plating/beach/water/deep,/area/caribbean/void)
 "aU" = (/obj/structure/vending/flintlock,/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
 "aV" = (/turf/wall/wood,/area/caribbean/british/ship/office)
 "aW" = (/turf/floor/wood_ship,/area/caribbean/british/ship/office)
@@ -74,6 +75,7 @@
 "bw" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "bx" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "by" = (/obj/effect/landmark{name = "JoinLateRNBoatswain"},/turf/floor/wood_ship,/area/caribbean/british/ship/office)
+"bz" = (/obj/covers/wood,/mob/living/simple_animal/hostile/pirate,/turf/floor/plating/beach/water/deep,/area/caribbean/void)
 "bA" = (/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/wood_ship,/area/caribbean/british/ship/office)
 "bB" = (/obj/item/weapon/scalpel,/obj/item/weapon/retractor,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bC" = (/obj/effect/landmark{name = "JoinLateRNCarpenter"},/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
@@ -81,6 +83,7 @@
 "bE" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "bF" = (/obj/map_metadata/naval,/turf/floor/plating/beach/water/deep,/area/caribbean/sea/sea)
 "bG" = (/turf/wall/wood,/area/caribbean/pirates/ship/lower)
+"bH" = (/obj/structure/largecrate,/obj/covers/wood,/turf/floor/plating/beach/water/deep,/area/caribbean/void)
 "bI" = (/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bJ" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bK" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b3"},/turf/floor/wood_ship,/area/caribbean/british/ship/hold)
@@ -212,6 +215,7 @@
 "eg" = (/obj/structure/flag/pirates,/turf/wall/wood,/area/caribbean/pirates/ship/office)
 "eh" = (/obj/structure/flag/pirates,/turf/wall/wood,/area/caribbean/pirates/ship/main_deck)
 "ei" = (/obj/effect/area_teleporter{id = "two"; id_target = null},/turf/floor/plating/beach/water/deep,/area/caribbean/sea/sea)
+"ej" = (/obj/effect/area_teleporter{id = "one"; id_target = "two"},/obj/covers/wood,/turf/floor/plating/beach/water/deep,/area/caribbean/void)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -262,9 +266,9 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccccccccccccccccccccccccccccccccccccdcececece
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaccccccccccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTbzaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabHaTbzaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaejbzaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncncncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncococococpcococqcncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
