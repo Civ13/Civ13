@@ -2,43 +2,6 @@
 //////////////////////////////////////////////////////////////////
 //						BONE SURGERY							//
 //////////////////////////////////////////////////////////////////
-
-/datum/surgery_step/glue_bone
-	allowed_tools = list(
-	/obj/item/weapon/bonegel = 100,	\
-	/obj/item/weapon/screwdriver = 75
-	)
-	can_infect = TRUE
-	blood_level = TRUE
-
-	min_duration = 50
-	max_duration = 60
-
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		if (!hasorgans(target))
-			return FALSE
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && !(affected.status & ORGAN_ROBOT) && affected.open >= 2 && affected.stage == 0
-
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		if (affected.stage == FALSE)
-			user.visible_message("[user] starts applying medication to the damaged bones in [target]'s [affected.name] with \the [tool]." , \
-			"You start applying medication to the damaged bones in [target]'s [affected.name] with \the [tool].")
-		target.custom_pain("Something in your [affected.name] is causing you a lot of pain!",1)
-		..()
-
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("<span class = 'notice'>[user] applies some [tool] to [target]'s bone in [affected.name]</span>", \
-			"<span class = 'notice'>You apply some [tool] to [target]'s bone in [affected.name] with \the [tool].</span>")
-		affected.stage = TRUE
-
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("<span class = 'red'>[user]'s hand slips, smearing [tool] in the incision in [target]'s [affected.name]!</span>" , \
-		"<span class = 'red'>Your hand slips, smearing [tool] in the incision in [target]'s [affected.name]!</span>")
-
 /datum/surgery_step/set_bone
 	allowed_tools = list(
 	/obj/item/weapon/bonesetter = 100,	\
@@ -111,41 +74,3 @@
 		var/obj/item/organ/external/head/h = affected
 		h.createwound(BRUISE, 10)
 		h.disfigured = TRUE
-
-/datum/surgery_step/finish_bone
-	allowed_tools = list(
-	/obj/item/weapon/bonegel = 100,	\
-	/obj/item/weapon/screwdriver = 75
-	)
-	can_infect = TRUE
-	blood_level = TRUE
-
-	min_duration = 50
-	max_duration = 60
-
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		if (!hasorgans(target))
-			return FALSE
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && affected.open >= 2 && !(affected.status & ORGAN_ROBOT) && affected.stage == 2
-
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("[user] starts to finish mending the damaged bones in [target]'s [affected.name] with \the [tool].", \
-		"You start to finish mending the damaged bones in [target]'s [affected.name] with \the [tool].")
-		..()
-
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("<span class = 'notice'>[user] has mended the damaged bones in [target]'s [affected.name] with \the [tool].</span>"  , \
-			"<span class = 'notice'>You have mended the damaged bones in [target]'s [affected.name] with \the [tool].</span>" )
-		affected.status &= ~ORGAN_BROKEN
-		affected.status &= ~ORGAN_SPLINTED
-		affected.stage = 0
-		affected.perma_injury = 0
-		affected.damage = 0
-
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("<span class = 'red'>[user]'s hand slips, smearing [tool] in the incision in [target]'s [affected.name]!</span>" , \
-		"<span class = 'red'>Your hand slips, smearing [tool] in the incision in [target]'s [affected.name]!</span>")

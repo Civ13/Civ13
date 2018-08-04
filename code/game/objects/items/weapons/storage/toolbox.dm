@@ -28,21 +28,3 @@
 		new /obj/item/weapon/crowbar/prybar(src)
 	//	new /obj/item/analyzer(src)
 		new /obj/item/weapon/wirecutters/boltcutters(src)
-
-/obj/item/weapon/storage/toolbox/electrical
-	name = "electrical toolbox"
-	icon_state = "yellow"
-	item_state = "toolbox_yellow"
-
-	New()
-		..()
-		var/color = pick("red","yellow","green","blue","pink","orange","cyan","white")
-		new /obj/item/weapon/screwdriver(src)
-		new /obj/item/weapon/wirecutters/boltcutters(src)
-		new /obj/item/weapon/crowbar/prybar(src)
-		new /obj/item/stack/cable_coil(src,30,color)
-		new /obj/item/stack/cable_coil(src,30,color)
-		if (prob(5))
-			new /obj/item/clothing/gloves/insulated(src)
-		else
-			new /obj/item/stack/cable_coil(src,30,color)

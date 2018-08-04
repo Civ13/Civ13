@@ -453,7 +453,7 @@
 		if (F && F_is_valid_floor)
 
 			var/area/F_area = get_area(F)
-			if (F_area.weather == WEATHER_RAIN && F.may_become_muddy && !locate_type(F.contents, /obj/structure/catwalk))
+			if (F_area.weather == WEATHER_RAIN && F.may_become_muddy)
 				F.muddy = TRUE
 			else
 				F.muddy = FALSE

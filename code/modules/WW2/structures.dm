@@ -66,6 +66,12 @@
 	desc = "A black and white pirate flags with skull and bones."
 
 
+/obj/structure/flag/black
+	icon_state = "black"
+	name = "Black Flag"
+	desc = "A black flag. That's it."
+
+
 /obj/structure/noose
 	icon = 'icons/obj/noose.dmi'
 	icon_state = ""

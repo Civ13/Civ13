@@ -112,18 +112,6 @@ var/list/flooring_types
 	build_type = /obj/item/stack/tile/floor
 	can_paint = TRUE
 
-/decl/flooring/tiling/tech
-//	name = "techfloor"
-	desc = "Scuffed from the passage of countless greyshirts."
-	icon = 'icons/turf/flooring/techfloor.dmi'
-	icon_base = "techfloor_gray"
-	build_type = /obj/item/stack/tile/floor/techgrey
-	can_paint = null
-
-/decl/flooring/tiling/tech/grid
-	icon_base = "techfloor_grid"
-	build_type = /obj/item/stack/tile/floor/techgrid
-
 /decl/flooring/tiling/new_tile
 	name = "floor"
 	icon_base = "tile_full"

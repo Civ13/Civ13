@@ -92,8 +92,6 @@
 
 /turf/floor/plating/under/Entered(mob/living/M as mob)
 	..()
-	for (var/obj/structure/catwalk/C in get_turf(src))
-		return
 
 	if (!ishuman(M) || !has_gravity(src))
 		return
@@ -105,20 +103,6 @@
 			M << "<span class='warning'>You tripped over!</span>"
 			return
 
-/turf/floor/plating/under/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/stack/rods))
-		var/obj/item/stack/rods/R = C
-		if (R.amount <= 2)
-			return
-		else
-			R.use(2)
-			user << "<span class='notice'>You start connecting [R.name]s to [name], creating catwalk ...</span>"
-			if (do_after(user,50))
-				alpha = FALSE
-				var/obj/structure/catwalk/CT = new /obj/structure/catwalk(loc)
-				contents += CT
-			return
-	return
 
 /turf/floor/wood
 	name = "floor"
@@ -285,8 +269,6 @@
 	density = TRUE
 
 /turf/floor/plating/beach/water/get_move_delay()
-	if (locate(/obj/structure/catwalk) in contents)
-		return 0
 	return move_delay
 
 /turf/floor/plating/beach/water/sewage

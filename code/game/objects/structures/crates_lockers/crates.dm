@@ -71,26 +71,6 @@
 		return TRUE
 	return !density
 
-/obj/structure/closet/crate/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (opened)
-		return ..()
-	else if (istype(W, /obj/item/stack/cable_coil))
-		var/obj/item/stack/cable_coil/C = W
-		if (rigged)
-			user << "<span class='notice'>[src] is already rigged!</span>"
-			return
-		if (C.use(1))
-			user  << "<span class='notice'>You rig [src].</span>"
-			rigged = TRUE
-			return
-	else if (istype(W, /obj/item/weapon/wirecutters))
-		if (rigged)
-			user  << "<span class='notice'>You cut away the wiring.</span>"
-			playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
-			rigged = FALSE
-			return
-	else return attack_hand(user)
-
 /obj/structure/closet/crate/ex_act(severity)
 	switch(severity)
 		if (1.0)

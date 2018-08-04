@@ -42,9 +42,6 @@
 	if (!has_gravity(src))
 		return
 
-	if (locate(/obj/structure/catwalk) in src)
-		return
-
 	// Prevent pipes from falling into the void... if there is a pipe to support it.
 	/*if (mover.anchored || istype(mover, /obj/item/pipe) && \
 		(locate(/obj/structure/disposalpipe/up) in below) || \

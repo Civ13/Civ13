@@ -167,6 +167,8 @@ var/global/processScheduler/processScheduler
 	main:
 		while (tmpQueued.len && (world.tick_usage-initial_tick_usage) < max_tick_usage)
 			for (var/process/p in tmpQueued)
+				if (p.frozen)
+					continue
 				var/used_tick_usage = world.tick_usage-initial_tick_usage
 				var/available_tick_usage = max_tick_usage - used_tick_usage
 				if (p.always_runs || p.priority != PROCESS_PRIORITY_IRRELEVANT || p == tmpQueued[1] || p.may_run(available_tick_usage))
@@ -174,9 +176,7 @@ var/global/processScheduler/processScheduler
 					if (p.run_time_tick_usage_allowance == -1)
 						p.run_time_tick_usage_allowance = calculate_run_time_allowance(p.priority)
 					// we finished our current run, reset our current_list to a fresh one
-					if (p.process() != PROCESS_TICK_CHECK_RETURNED_EARLY)
-						p.reset_current_list()
-						tmpQueued -= p
+					relayProcess(p, tmpQueued)
 					p.run_failures = 0
 					processed += p
 				else
@@ -190,6 +190,14 @@ var/global/processScheduler/processScheduler
 		++p.run_failures
 	#undef MINIMUM_TICK_USAGE
 	#undef MAXIMUM_TICK_USAGE
+
+/processScheduler/proc/relayProcess(var/process/p, var/list/queue)
+	set waitfor = FALSE
+	p.frozen = TRUE
+	if (p.process() != PROCESS_TICK_CHECK_RETURNED_EARLY)
+		p.reset_current_list()
+		queue -= p
+	p.frozen = FALSE
 
 /processScheduler/proc/addProcess(var/process/process)
 

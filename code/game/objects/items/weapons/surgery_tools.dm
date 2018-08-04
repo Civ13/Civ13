@@ -132,13 +132,6 @@
 	edge = TRUE
 
 //misc, formerly from code/defines/weapons.dm
-/obj/item/weapon/bonegel
-	name = "bone gel"
-	icon = 'icons/obj/surgery.dmi'
-	icon_state = "bone-gel"
-	force = FALSE
-	w_class = 2.0
-	throwforce = 1.0
 
 /obj/item/weapon/FixOVein
 	name = "FixOVein"

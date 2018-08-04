@@ -66,8 +66,7 @@
 	hold.can_hold = list(/obj/item/weapon/material/hatchet/unathiknife,\
 	/obj/item/weapon/material/kitchen/utensil/knife,\
 	/obj/item/weapon/material/kitchen/utensil/knife/plastic,\
-	/obj/item/weapon/material/knife,\
-	/obj/item/weapon/material/knife/ritual)
+	/obj/item/weapon/material/knife,)
 
 	new /obj/item/weapon/material/hatchet/unathiknife(hold)
 	new /obj/item/weapon/material/hatchet/unathiknife(hold)

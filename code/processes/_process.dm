@@ -102,6 +102,8 @@
 	var/run_failures = 0
 	// do we ignore tick_usage checks and run no matter what
 	var/always_runs = FALSE
+	// frozen?
+	var/frozen = FALSE
 
 /process/New(var/processScheduler/scheduler)
 	..()

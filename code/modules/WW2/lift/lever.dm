@@ -1,7 +1,7 @@
 /obj/lift_lever // same icon as the train lever for now
 	anchored = 1.0
 	density = TRUE
-	icon = 'icons/WW2/mortar_shell.dmi'
+	icon = 'icons/WW2/medical.dmi'
 	icon_state = "lever_none"
 	var/none_state = "lever_none"
 	var/pushed_state = "lever_pulled" // lever_pushed is the wrong direction

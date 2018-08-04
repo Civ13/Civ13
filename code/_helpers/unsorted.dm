@@ -959,7 +959,6 @@ proc/get_mob_with_client_list()
 
 //Quick type checks for some tools
 var/global/list/common_tools = list(
-/obj/item/stack/cable_coil,
 /obj/item/weapon/wrench,
 /obj/item/weapon/screwdriver,
 /obj/item/weapon/wirecutters,
@@ -973,11 +972,6 @@ var/global/list/common_tools = list(
 
 /proc/iswrench(O)
 	if (istype(O, /obj/item/weapon/wrench))
-		return TRUE
-	return FALSE
-
-/proc/iscoil(O)
-	if (istype(O, /obj/item/stack/cable_coil))
 		return TRUE
 	return FALSE
 
@@ -998,11 +992,6 @@ var/global/list/common_tools = list(
 */
 /proc/iscrowbar(O)
 	if (istype(O, /obj/item/weapon/crowbar))
-		return TRUE
-	return FALSE
-
-/proc/iswire(O)
-	if (istype(O, /obj/item/stack/cable_coil))
 		return TRUE
 	return FALSE
 
@@ -1064,7 +1053,6 @@ proc/is_hot(obj/item/W as obj)
 	istype(W, /obj/item/weapon/hemostat)		||	\
 	istype(W, /obj/item/weapon/retractor)		||	\
 	istype(W, /obj/item/weapon/cautery)			||	\
-	istype(W, /obj/item/weapon/bonegel)			||	\
 	istype(W, /obj/item/weapon/bonesetter)
 	)
 

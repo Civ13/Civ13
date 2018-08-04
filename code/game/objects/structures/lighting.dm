@@ -76,28 +76,11 @@
 					icon_state = "floortube-construct-stage1"
 			if ("bulb")
 				icon_state = "bulb-construct-stage1"
-		new /obj/item/stack/cable_coil(get_turf(loc), TRUE, "red")
 		user.visible_message("[user.name] removes the wiring from [src].", \
 			"You remove the wiring from [src].", "You hear a noise.")
 		playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
 		return
 
-	if (istype(W, /obj/item/stack/cable_coil))
-		if (stage != TRUE) return
-		var/obj/item/stack/cable_coil/coil = W
-		if (coil.use(1))
-			switch(fixture_type)
-				if ("tube")
-					if (!istype(src, /obj/structure/light_construct/floor)) // TODO Переделать это
-						icon_state = "tube-construct-stage2"
-					else
-						icon_state = "floortube-construct-stage2"
-				if ("bulb")
-					icon_state = "bulb-construct-stage2"
-			stage = 2
-			user.visible_message("[user.name] adds wires to [src].", \
-				"You add wires to [src].")
-		return
 
 	if (istype(W, /obj/item/weapon/screwdriver))
 		if (stage == 2)

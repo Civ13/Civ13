@@ -3,7 +3,7 @@
 	if (!C || !user)
 		return FALSE
 
-	if (istype(C, /obj/item/stack/cable_coil) || (flooring && istype(C, /obj/item/stack/rods)))
+	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)
 
 	else if (istype(C, /obj/item/weapon/reagent_containers/food/drinks))
@@ -102,9 +102,6 @@
 			user << "<span class='notice'>You shovel off the [flooring.descriptor].</span>"
 			make_grass()
 			playsound(src, 'sound/items/Deconstruct.ogg', 80, TRUE)
-			return
-		else if (istype(C, /obj/item/stack/cable_coil))
-			user << "<span class='warning'>You must remove the [flooring.descriptor] first.</span>"
 			return
 	else
 		if (istype(C, /obj/item/stack))

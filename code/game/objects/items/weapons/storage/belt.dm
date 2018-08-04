@@ -41,7 +41,6 @@
 		/obj/item/weapon/wirecutters/boltcutters,
 		/obj/item/weapon/wrench,
 		/obj/item/flashlight,
-		/obj/item/stack/cable_coil,
 		/obj/item/weapon/material/minihoe,
 		/obj/item/weapon/material/hatchet,
 		)
@@ -53,7 +52,6 @@
 	new /obj/item/weapon/wrench(src)
 	new /obj/item/weapon/crowbar/prybar(src)
 	new /obj/item/weapon/wirecutters/boltcutters(src)
-	new /obj/item/stack/cable_coil(src,30,pick("red","yellow","orange"))
 
 
 /obj/item/weapon/storage/belt/medical

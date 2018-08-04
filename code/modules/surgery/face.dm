@@ -47,7 +47,6 @@
 /datum/surgery_step/face/mend_vocal
 	allowed_tools = list(
 	/obj/item/weapon/hemostat = 100, 	\
-	/obj/item/stack/cable_coil = 75, 	\
 	)
 
 	min_duration = 70
