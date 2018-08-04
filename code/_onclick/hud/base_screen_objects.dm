@@ -764,6 +764,32 @@
 		if (I_DISARM)
 			icon_state = "disarm"
 //-----------------------intent END------------------------------
+//-----------------------mode------------------------------
+/obj/screen/mode
+	name = "mode"
+	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon_state = "dodge"
+	screen_loc = "11,1"
+
+/obj/screen/mode/New()
+	..()
+	update_icon()
+
+/obj/screen/mode/Click()
+	if (parentmob.defense_intent == I_DODGE)
+		parentmob.defense_intent = I_PARRY
+	else
+		parentmob.defense_intent = I_DODGE
+/obj/screen/mode/update_icon()
+	switch (parentmob.defense_intent)
+		if (I_DODGE)
+			icon_state = "dodge"
+		if (I_PARRY)
+			icon_state = "parry"
+
+//-----------------------mode END------------------------------
+
+
 /obj/screen/fastintent
 	name = "fastintent"
 	icon = 'icons/mob/screen/WW13Style.dmi'

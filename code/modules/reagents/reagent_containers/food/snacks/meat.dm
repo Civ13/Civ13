@@ -21,10 +21,6 @@
 	else
 		..()
 
-/obj/item/weapon/reagent_containers/food/snacks/meat/syntiflesh
-	name = "synthetic meat"
-	desc = "A synthetic slab of flesh."
-
 // Seperate definitions because some food likes to know if it's human.
 // TODO: rewrite kitchen code to check a var on the meat item so we can remove
 // all these sybtypes.
@@ -36,6 +32,6 @@
 	name = "Monkey meat"
 	desc = "Tastes like human."
 
-/obj/item/weapon/reagent_containers/food/snacks/meat/corgi
-	name = "Corgi meat"
-	desc = "Tastes like... well, you know."
+/obj/item/weapon/reagent_containers/food/snacks/meat/turtle
+	name = "Turtle meat"
+	desc = "Tastes like... something."

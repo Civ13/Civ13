@@ -1,4 +1,4 @@
-#define GAMETICKER_PREGAME_TIME 180
+#define GAMETICKER_PREGAME_TIME 90
 
 var/global/datum/controller/gameticker/ticker
 var/global/datum/lobby_music_player/lobby_music_player = null

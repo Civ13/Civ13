@@ -55,8 +55,29 @@
 	name = "The Forest"
 	icon_state = "purple1"
 
+/area/caribbean/transport
+	name = "Boat"
+	icon_state = "red1"
 
+/area/caribbean/transport/one
+	name = "Boat"
+	icon_state = "red1"
 
+/area/caribbean/transport/two
+	name = "Boat"
+	icon_state = "red1"
+
+/area/caribbean/transport/three
+	name = "Boat"
+	icon_state = "red1"
+
+/area/caribbean/transport/four
+	name = "Boat"
+	icon_state = "red1"
+
+/area/caribbean/transport/five
+	name = "Boat"
+	icon_state = "red1"
 
 /area/caribbean/farm
 	name = "Farmland"

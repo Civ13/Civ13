@@ -1102,19 +1102,6 @@
 		new /obj/item/weapon/reagent_containers/food/snacks/dough(location)
 	return
 
-/datum/chemical_reaction/syntiflesh
-	name = "Syntiflesh"
-	id = "syntiflesh"
-	result = null
-	required_reagents = list("blood" = 5, "clonexadone" = 1)
-	result_amount = TRUE
-
-/datum/chemical_reaction/syntiflesh/on_reaction(var/datum/reagents/holder, var/created_volume)
-	var/location = get_turf(holder.my_atom)
-	for (var/i = TRUE, i <= created_volume, i++)
-		new /obj/item/weapon/reagent_containers/food/snacks/meat/syntiflesh(location)
-	return
-
 /datum/chemical_reaction/hot_ramen
 	name = "Hot Ramen"
 	id = "hot_ramen"

@@ -34,10 +34,12 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 					for(var/obj/O in get_area(src))
 						if (!O.is_teleporter)
 							O.z = BT.z	//Teleport to destnation's y level.
+							if (O.is_cover == TRUE)
+								O.updateturf()
 					for(var/mob/M in get_area(src))
 						M.z = BT.z	//Teleport to destnation's y level.
-					for(var/turf/T in get_area(src))
+/*					for(var/turf/T in get_area(BT))
 						for(var/turf/TD in BT)
-							TD.ChangeTurf(T)
+							TD.ChangeTurf(T)*/
 
 			return

@@ -224,19 +224,6 @@ var/list/organ_cache = list()
 	else
 		germ_level -= 2 //at germ_level == 1000, this will cure the infection in 5 minutes
 
-//Adds autopsy data for used_weapon.
-/obj/item/organ/proc/add_autopsy_data(var/used_weapon, var/damage)
-	var/datum/autopsy_data/W = autopsy_data[used_weapon]
-	if (!W)
-		W = new()
-		W.weapon = used_weapon
-		autopsy_data[used_weapon] = W
-
-	W.hits += 1
-	W.damage += damage
-	W.time_inflicted = world.time
-
-//Note: external organs have their own version of this proc
 /obj/item/organ/proc/take_damage(amount, var/silent=0)
 
 	if (status & ORGAN_ROBOT)
@@ -253,32 +240,6 @@ var/list/organ_cache = list()
 /obj/item/organ/proc/bruise()
 	damage = max(damage, min_bruised_damage)
 
-/obj/item/organ/proc/robotize() //Being used to make robutt hearts, etc
-	robotic = 2
-	status &= ~ORGAN_BROKEN
-	status &= ~ORGAN_BLEEDING
-	status &= ~ORGAN_SPLINTED
-	status &= ~ORGAN_CUT_AWAY
-	status |= ORGAN_ROBOT
-	status |= ORGAN_ASSISTED
-
-/obj/item/organ/proc/mechassist() //Used to add things like pacemakers, etc
-	robotize()
-	status &= ~ORGAN_ROBOT
-	robotic = TRUE
-	min_bruised_damage = 15
-	min_broken_damage = 35
-
-/obj/item/organ/emp_act(severity)
-	if (!(status & ORGAN_ROBOT))
-		return
-	switch (severity)
-		if (1)
-			take_damage(9)
-		if (2)
-			take_damage(3)
-		if (3)
-			take_damage(1)
 
 /obj/item/organ/proc/removed(var/mob/living/user)
 

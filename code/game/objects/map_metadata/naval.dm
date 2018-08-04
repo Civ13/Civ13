@@ -23,7 +23,7 @@
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
 	battle_name = "Naval boarding"
-
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 /*	var/done = FALSE
 /obj/map_metadata/naval/check_events()
 	if ((world.time >= 300) && !done)
@@ -40,9 +40,6 @@
 
 /obj/map_metadata/naval/pirates_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/naval/announce_mission_start(var/preparation_time)
-	world << "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 
 /obj/map_metadata/naval/reinforcements_ready()
 	return (british_can_cross_blocks() && pirates_can_cross_blocks())

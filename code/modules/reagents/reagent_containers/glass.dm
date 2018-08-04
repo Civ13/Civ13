@@ -27,7 +27,6 @@
 //		/obj/machinery/atmospherics/unary/cryo_cell,
 	//	/obj/machinery/dna_scannernew,
 		/obj/item/weapon/storage/secure/safe,
-		/obj/structure/iv_drip,
 	//	/obj/machinery/disease2/incubator,
 	//	/obj/machinery/disposal,
 		/mob/living/simple_animal/cow,

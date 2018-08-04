@@ -11,7 +11,6 @@
 /material/plastic/generate_recipes()
 	..()
 	recipes += new/datum/stack_recipe("plastic bag", /obj/item/weapon/storage/bag/plasticbag, 3, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("blood pack", /obj/item/weapon/reagent_containers/blood/empty, 4, _on_floor = FALSE)
 
 	recipes += new/datum/stack_recipe("white floor tile", /obj/item/stack/tile/floor/white, TRUE, 4, 20)
 

@@ -312,6 +312,9 @@ bullet_act
 	if (check_shields(I.force, I, user, target_zone, "the [I.name]"))
 		return null
 
+	if(attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
+		return null
+
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting || affecting.is_stump())
 		user << "<span class='danger'>They are missing that limb!</span>"

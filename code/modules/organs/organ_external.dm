@@ -211,12 +211,6 @@
 			parent.update_damages()
 
 
-/obj/item/organ/external/robotize()
-	..()
-	//robit limbs take reduced damage
-	brute_mod = 0.8
-	burn_mod = 0.8
-
 /****************************************************
 			   DAMAGE PROCS
 ****************************************************/
@@ -242,8 +236,6 @@
 	if (status & ORGAN_BROKEN && prob(40) && brute)
 		if (!(owner.species && (owner.species.flags & NO_PAIN)))
 			owner.emote("scream")	//getting hit on broken hand hurts
-	if (used_weapon)
-		add_autopsy_data("[used_weapon]", brute + burn)
 
 	var/can_cut = (prob(brute*2) || sharp) && !(status & ORGAN_ROBOT)
 
@@ -762,8 +754,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 				parent_organ.update_damages()
 			else
 				var/obj/item/organ/external/stump/stump = new (victim, FALSE, src)
-				if (status & ORGAN_ROBOT)
-					stump.robotize()
 				stump.wounds |= W
 				victim.organs |= stump
 				stump.update_damages()
@@ -948,18 +938,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	status &= ~ORGAN_BROKEN
 	return TRUE
 
-/obj/item/organ/external/robotize(var/company)
-	return
-
-/obj/item/organ/external/proc/mutate()
-	if (status & ORGAN_ROBOT)
-		return
-	status |= ORGAN_MUTATED
-	if (owner) owner.update_body()
-
-/obj/item/organ/external/proc/unmutate()
-	status &= ~ORGAN_MUTATED
-	if (owner) owner.update_body()
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage
 	return max(brute_dam + burn_dam - perma_injury, perma_injury)	//could use max_damage?

@@ -208,32 +208,5 @@ Current Defines (_defines/attachment.dm)
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT
 
-/obj/item/weapon/attachment/scope/adjustable/sniper_scope
-	name = "sniper scope"
-	icon_state = "kar_scope"
-	desc = "You can attach this to rifles... or use them as binoculars."
-	max_zoom = ZOOM_CONSTANT*2
-
-/obj/item/weapon/attachment/scope/adjustable/sniper_scope/removed(mob/user, obj/item/weapon/gun/G)
-  ..()
-  //This should only be temporary until more attachment icons are made, then we switch to adding/removing icon masks
-  G.icon_state = initial(G.icon_state)
-  G.item_state = initial(G.item_state)
-  if (istype(G, /obj/item/weapon/gun/projectile/boltaction))
-    var/obj/item/weapon/gun/projectile/boltaction/W = G
-    if (W.bolt_open)
-      W.icon_state = addtext(W.icon_state, "_open")
-
-/obj/item/weapon/attachment/scope/adjustable/sniper_scope/attached(mob/user, obj/item/weapon/gun/G)
-  ..()
-  if (istype(G, /obj/item/weapon/gun/projectile/boltaction))
-    var/obj/item/weapon/gun/projectile/boltaction/W = G
-    W.update_icon(1)
-
-/obj/item/weapon/attachment/scope/removed(mob/user, obj/item/weapon/gun/G)
-  ..()
-  G.accuracy = initial(G.accuracy)
-  G.recoil = initial(G.recoil)
-
 /obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
   return

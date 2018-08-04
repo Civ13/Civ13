@@ -301,10 +301,7 @@
 	else
 		if (get_amount() < used)
 			return FALSE
-		for (var/i = TRUE to charge_costs.len)
-			var/datum/matter_synth/S = synths[i]
-			S.use_charge(charge_costs[i] * used) // Doesn't need to be deleted
-		return TRUE
+
 	return FALSE
 
 /obj/item/stack/proc/add(var/extra)
@@ -314,13 +311,6 @@
 		else
 			amount += extra
 		return TRUE
-	else if (!synths || synths.len < uses_charge)
-		return FALSE
-	else
-		for (var/i = TRUE to uses_charge)
-			var/datum/matter_synth/S = synths[i]
-			S.add_charge(charge_costs[i] * extra)
-
 /*
 	The transfer and split procs work differently than use() and add().
 	Whereas those procs take no action if the desired amount cannot be added or removed these procs will try to transfer whatever they can.
@@ -369,29 +359,9 @@
 	return null
 
 /obj/item/stack/proc/get_amount()
-	if (uses_charge)
-		if (!synths || synths.len < uses_charge)
-			return FALSE
-		var/datum/matter_synth/S = synths[1]
-		. = round(S.get_charge() / charge_costs[1])
-		if (charge_costs.len > 1)
-			for (var/i = 2 to charge_costs.len)
-				S = synths[i]
-				. = min(., round(S.get_charge() / charge_costs[i]))
-		return
 	return amount
 
 /obj/item/stack/proc/get_max_amount()
-	if (uses_charge)
-		if (!synths || synths.len < uses_charge)
-			return FALSE
-		var/datum/matter_synth/S = synths[1]
-		. = round(S.max_energy / charge_costs[1])
-		if (uses_charge > 1)
-			for (var/i = 2 to uses_charge)
-				S = synths[i]
-				. = min(., round(S.max_energy / charge_costs[i]))
-		return
 	return max_amount
 
 /obj/item/stack/proc/add_to_stacks(mob/user as mob)

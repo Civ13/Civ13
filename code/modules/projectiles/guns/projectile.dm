@@ -254,10 +254,6 @@
 			loaded.len--
 			user.put_in_hands(C)
 			user.visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
-			if (istype(src, /obj/item/weapon/gun/projectile/boltaction))
-				var/obj/item/weapon/gun/projectile/boltaction/B = src
-				if (B.bolt_safety && !B.loaded.len)
-					B.check_bolt_lock++
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
 		user << "<span class='warning'>[src] is empty.</span>"

@@ -197,8 +197,6 @@
 			if (affecting)
 				M << "<span class='danger'>You land heavily on your [affecting.name]!</span>"
 				affecting.take_damage(damage, FALSE)
-				if (affecting.parent)
-					affecting.parent.add_autopsy_data("Misadventure", damage)
 			else
 				H << "<span class='danger'>You land heavily!</span>"
 				H.adjustBruteLoss(damage)

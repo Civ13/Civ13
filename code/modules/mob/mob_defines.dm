@@ -100,8 +100,10 @@
 
 	var/shakecamera = FALSE
 	var/a_intent = I_HELP//Living
+	var/defense_intent = I_DODGE//Living. For dodging and parrying.
 	var/m_intent = "walk"//Living
 	var/obj/buckled = null//Living
+	var/combat_mode = 0//Living
 	var/obj/item/l_hand = null//Living
 	var/obj/item/r_hand = null//Living
 	var/obj/item/weapon/back = null//Human/Monkey

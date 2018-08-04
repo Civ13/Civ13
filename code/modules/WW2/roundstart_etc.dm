@@ -5,7 +5,6 @@ var/train_checked = FALSE
 var/secret_ladder_message = null
 var/GRACE_PERIOD_LENGTH = 7
 
-
 /hook/roundstart/proc/game_start()
 
 	roundstart_time = world.realtime

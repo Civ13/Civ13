@@ -14,6 +14,7 @@
 	var/special_id = FALSE
 	var/scoped_invisible = FALSE
 	var/is_teleporter = FALSE
+	var/is_cover = FALSE
 
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
@@ -42,6 +43,9 @@
 		return ..()
 	user << "<span class='danger'>\icon[src]Access Denied!</span>"
 	return STATUS_CLOSE
+/obj/proc/updateturf()
+	return TRUE
+// for cover floors
 
 /mob/proc/CanUseObjTopic()
 	return TRUE

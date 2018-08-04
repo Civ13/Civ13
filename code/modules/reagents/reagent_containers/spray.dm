@@ -185,21 +185,4 @@
 			reagents.trans_to_obj(D, amount_per_transfer_from_this)
 			D.set_color()
 			D.set_up(my_target, rand(6, 8), 2)
-	return
-
-/obj/item/weapon/reagent_containers/spray/plantbgone
-	name = "Plant-B-Gone"
-	desc = "Kills those pesky weeds!"
-	icon = 'icons/obj/hydroponics_machines.dmi'
-	icon_state = "plantbgone"
-	item_state = "plantbgone"
-	volume = 100
-
-/obj/item/weapon/reagent_containers/spray/plantbgone/New()
-	..()
-	reagents.add_reagent("plantbgone", 100)
-
-/obj/item/weapon/reagent_containers/spray/plantbgone/afterattack(atom/A as mob|obj, mob/user as mob, proximity)
-	if (!proximity) return
-
-	..()
+	returnon

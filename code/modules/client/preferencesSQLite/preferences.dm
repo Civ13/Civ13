@@ -381,19 +381,6 @@ var/list/preferences_datums = list()
 						character.organs_by_name[child.limb_name] = null
 						character.organs -= child
 
-			else if (status == "cyborg")
-				if (rlimb_data[name])
-					O.robotize(rlimb_data[name])
-				else
-					O.robotize()
-		else
-			var/obj/item/organ/I = character.internal_organs_by_name[name]
-			if (I)
-				if (status == "assisted")
-					I.mechassist()
-				else if (status == "mechanical")
-					I.robotize()
-
 	character.all_underwear.Cut()
 
 	if (backbag > 4 || backbag < 1)

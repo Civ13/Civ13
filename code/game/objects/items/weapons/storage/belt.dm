@@ -66,7 +66,6 @@
 		/obj/item/weapon/reagent_containers/glass/beaker,
 		/obj/item/weapon/reagent_containers/glass/bottle,
 		/obj/item/weapon/reagent_containers/pill,
-		/obj/item/weapon/reagent_containers/syringe,
 		/obj/item/weapon/flame/lighter/zippo,
 		/obj/item/weapon/storage/pill_bottle,
 		/obj/item/stack/medical,

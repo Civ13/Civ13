@@ -152,51 +152,6 @@
 	// Notify our AI if they can now control the suit.
 	..()
 
-/mob/living/carbon/human/getCloneLoss()
-	if (species.flags & (NO_SCAN))
-		cloneloss = FALSE
-	return ..()
-
-/mob/living/carbon/human/setCloneLoss(var/amount)
-	if (species.flags & (NO_SCAN))
-		cloneloss = FALSE
-	else
-		..()
-
-/mob/living/carbon/human/adjustCloneLoss(var/amount)
-	..()
-
-	if (species.flags & (NO_SCAN))
-		cloneloss = FALSE
-		return
-
-	var/heal_prob = max(0, 80 - getCloneLoss())
-	var/mut_prob = min(80, getCloneLoss()+10)
-	if (amount > 0)
-		if (prob(mut_prob))
-			var/list/obj/item/organ/external/candidates = list()
-			for (var/obj/item/organ/external/O in organs)
-				if (!(O.status & ORGAN_MUTATED))
-					candidates |= O
-			if (candidates.len)
-				var/obj/item/organ/external/O = pick(candidates)
-				O.mutate()
-				src << "<span class = 'notice'>Something is not right with your [O.name]...</span>"
-				return
-	else
-		if (prob(heal_prob))
-			for (var/obj/item/organ/external/O in organs)
-				if (O.status & ORGAN_MUTATED)
-					O.unmutate()
-					src << "<span class = 'notice'>Your [O.name] is shaped normally again.</span>"
-					return
-
-	if (getCloneLoss() < 1)
-		for (var/obj/item/organ/external/O in organs)
-			if (O.status & ORGAN_MUTATED)
-				O.unmutate()
-				src << "<span class = 'notice'>Your [O.name] is shaped normally again.</span>"
-
 // Defined here solely to take species flags into account without having to recast at mob/living level.
 /mob/living/carbon/human/getOxyLoss()
 	if (species.flags & NO_BREATHE)

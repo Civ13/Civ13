@@ -48,23 +48,6 @@
 		new /obj/item/stack/medical/ointment(src)
 		return
 
-/obj/item/weapon/storage/firstaid/toxin
-	name = "toxin first aid"
-	desc = "Used to treat high amounts of toxins in the body."
-	icon_state = "antitoxin2"
-	item_state = "firstaid_2"
-
-	New()
-		..()
-		if (empty) return
-
-		new /obj/item/weapon/reagent_containers/syringe/antitoxin( src )
-		new /obj/item/weapon/reagent_containers/syringe/antitoxin( src )
-		new /obj/item/weapon/reagent_containers/syringe/antitoxin( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		new /obj/item/weapon/reagent_containers/pill/antitox( src )
-		return
 
 /obj/item/weapon/storage/firstaid/o2
 	name = "oxygen deprivation first aid"
@@ -79,7 +62,6 @@
 		new /obj/item/weapon/reagent_containers/pill/dexalin( src )
 		new /obj/item/weapon/reagent_containers/pill/dexalin( src )
 		new /obj/item/weapon/reagent_containers/pill/dexalin( src )
-		new /obj/item/weapon/reagent_containers/syringe/inaprovaline( src )
 		return
 
 /obj/item/weapon/storage/firstaid/adv
@@ -137,22 +119,3 @@
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
 
 	make_exact_fit()
-
-/obj/item/weapon/storage/firstaid/injectorpack
-	name = "Pack of morphine injectors"
-	desc = "Contains five injectors of morphine"
-	icon_state = "firstaid2"
-	item_state = "firstaid_2"
-	storage_slots = 5
-	max_w_class = 2
-	can_hold = list(/obj/item/weapon/reagent_containers/syringe/morphine)
-
-/obj/item/weapon/storage/firstaid/injectorpack/New()
-	..()
-	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
-	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
-	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
-	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
-	new /obj/item/weapon/reagent_containers/syringe/morphine(src)
-
-	return

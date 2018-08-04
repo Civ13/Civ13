@@ -108,31 +108,6 @@
 	name = "Soviet Samoyed"
 	faction = PIRATES
 
-/mob/living/simple_animal/complex_animal/canine/dog/samoyed/sosku
-	name = "sosku dog"
-	real_name = "sosku"
-	desc = "the one that helped keep the morale up when all hope was lost."
-	icon_state = "samoyed"
-	icon_living = "samoyed"
-	icon_dead = "samoyed_dead"
-	speak = list("YAP", "Woof!", "Bark!", "AUUUUUU")
-	speak_emote = list("barks", "woofs")
-	emote_hear = list("barks", "woofs", "yaps","pants")
-	emote_see = list("shakes its head", "shivers", "dab")
-	speak_chance = TRUE
-	turns_per_move = 10
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat/corgi
-	meat_amount = 4
-	response_help  = "pets"
-	response_disarm = "bops"
-	response_harm   = "kicks"
-	see_in_dark = 5
-	mob_size = 8
-	possession_candidate = TRUE
-	faction = PIRATES
-	allow_moving_outside_home = TRUE
-	attack_mode = -1
-
 
 /mob/living/simple_animal/complex_animal/canine/dog/samoyed/wild
 	name = "Wild Samoyed"

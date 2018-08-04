@@ -2,7 +2,7 @@
 	name = "plastic explosives"
 	desc = "Used to put holes in specific areas without too much extra hole."
 	gender = PLURAL
-	icon = 'icons/obj/assemblies.dmi'
+	icon = 'icons/obj/grenade.dmi'
 	icon_state = "plastic-explosive0"
 	item_state = "plasticx"
 	flags = NOBLUDGEON
@@ -104,21 +104,3 @@
 
 /obj/item/weapon/plastique/attack(mob/M as mob, mob/user as mob, def_zone)
 	return
-
-/obj/item/weapon/plastique/british
-	name = "Satchel Charge"
-	desc = "Placed to bust through walls."
-	icon_state = "british_charge"
-
-/obj/item/weapon/plastique/british/New()
-	image_overlay = image('icons/obj/assemblies.dmi', "british_charge_placed")
-	..()
-
-/obj/item/weapon/plastique/russian
-	name = "Satchel Charge"
-	desc = "Placed to bust through walls."
-	icon_state = "russian_charge"
-
-/obj/item/weapon/plastique/russian/New()
-	image_overlay = image('icons/obj/assemblies.dmi', "russian_charge_placed")
-	..()

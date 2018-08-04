@@ -15,7 +15,7 @@
 /obj/structure/table
 	name = "table"
 	desc = "A square piece of metal standing on four metal legs. It can not move."
-	icon = 'icons/obj/structures_FO13.dmi'
+	icon = 'icons/obj/structures.dmi'
 	icon_state = "table"
 	density = TRUE
 	anchored = TRUE

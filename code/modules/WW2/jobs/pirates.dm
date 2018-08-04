@@ -41,7 +41,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -82,7 +82,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -125,7 +125,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -162,7 +162,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -200,7 +200,7 @@
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("engineering", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used
@@ -251,7 +251,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used
@@ -303,7 +303,7 @@
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("engineering", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW) //not used
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used
@@ -372,7 +372,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used
@@ -426,7 +426,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -467,7 +467,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -510,7 +510,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -547,7 +547,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("mg", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("heavyweapon", STAT_NORMAL)
@@ -583,7 +583,7 @@
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("engineering", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used
@@ -629,7 +629,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used
@@ -678,7 +678,7 @@
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("engineering", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW) //not used
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used
@@ -734,7 +734,7 @@
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
-	H.setStat("mg", STAT_MEDIUM_LOW) //not used
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL) //not used
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("heavyweapon", STAT_NORMAL) //not used

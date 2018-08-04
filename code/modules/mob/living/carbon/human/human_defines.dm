@@ -131,7 +131,7 @@
 		"engineering" = list(100,100),
 		"rifle" = list(100,100),
 		"shotgun" = list(100,100),
-		"mg" = list(100,100),
+		"dexterity" = list(100,100),
 		"swords" = list(100,100),
 		"pistol" = list(100,100),
 		"heavyweapon" = list(100,100),

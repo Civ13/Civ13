@@ -12,7 +12,7 @@
 /obj/structure/table_frame
 	name = "table frame"
 	desc = "Four metal legs with four framing rods for a table. You could easily pass through this."
-	icon = 'icons/obj/structures_FO13.dmi'
+	icon = 'icons/obj/structures.dmi'
 	icon_state = "table_frame"
 	density = FALSE
 	anchored = FALSE
