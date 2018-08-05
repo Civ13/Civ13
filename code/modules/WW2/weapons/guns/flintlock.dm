@@ -7,7 +7,7 @@
 	item_state = "musket"
 	w_class = 4
 	force = 10
-	throwforce = 20
+	throwforce = 10
 	max_shells = 1 //duh
 	slot_flags = SLOT_BACK
 	caliber = "musketball"

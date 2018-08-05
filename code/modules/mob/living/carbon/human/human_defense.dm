@@ -339,18 +339,18 @@ bullet_act
 	else if (!..())
 		return FALSE
 
-	if ((effective_force > 12 && prob(15)) || (effective_force >= 10 && prob(15)))
+	if ((effective_force > 12 && prob(15)))
 		forcesay(hit_appends)	//forcesay checks stat already
-	if ((I.damtype == BRUTE || I.damtype == HALLOSS) && prob(12 + (effective_force * 2)))
+	if ((I.damtype == BRUTE || I.damtype == HALLOSS) && prob(5 + (effective_force)))
 		if (!stat)
 			if (headcheck(hit_zone))
 				//Harder to score a stun but if you do it lasts a bit longer
-				if (prob(effective_force))
+				if (prob(effective_force/2))
 					visible_message("<span class='danger'>[src] [species.knockout_message]</span>")
 					apply_effect(14, PARALYZE, blocked)
 			else
 				//Easier to score a stun but lasts less time
-				if (prob(effective_force))
+				if (prob(effective_force/2))
 					visible_message("<span class='danger'>[src] has been knocked down!</span>")
 					apply_effect(6, WEAKEN, blocked)
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
