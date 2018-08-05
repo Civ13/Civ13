@@ -939,7 +939,7 @@
 	name = "Rum"
 	id = "rum"
 	description = "Yohoho and all that."
-	taste_description = "spiked butterscotch"
+	taste_description = "sweet"
 	taste_mult = 1.1
 	color = "#664300"
 	strength = 15

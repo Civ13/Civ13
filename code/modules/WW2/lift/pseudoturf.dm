@@ -67,8 +67,6 @@ var/turf/floor/plating/under/ref_under_plating = null
 	for (var/atom/movable/am in move)
 		if (istype(am, /obj/lift_controller))
 			continue
-		if (istype(am, /obj/structure/light))
-			continue
 		am.loc = loc
 
 
@@ -80,10 +78,6 @@ var/turf/floor/plating/under/ref_under_plating = null
 		if (o == src || istype(o, type))
 			continue
 		if (istype(o, /obj/lift_controller))
-			continue
-		if (istype(o, /obj/structure/light))
-			continue
-		if (istype(o, /obj/effect/landmark))
 			continue
 		if (istype(o, /atom/movable/lighting_overlay))
 			continue

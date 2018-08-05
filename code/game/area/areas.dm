@@ -179,13 +179,11 @@ var/list/ghostteleportlocs = list()
 /area/proc/readyalert()
 	if (!eject)
 		eject = TRUE
-		updateicon()
 	return
 
 /area/proc/readyreset()
 	if (eject)
 		eject = FALSE
-		updateicon()
 	return
 
 area/proc/lift_master()
@@ -201,32 +199,6 @@ area/proc/lift_master()
 	last_lift_master = -1 // indicate that we have no lift master in this area - saves a HUGE amount of tick usage
 	return null
 
-/area/proc/updateicon()
-	if ((fire || eject) && (!requires_power||power_environ))//If it doesn't require power, can still activate this proc.
-		if (fire)
-			//icon_state = "blue"
-			for (var/obj/structure/light/L in src)
-				if (istype(L, /obj/structure/light/small))
-					continue
-				L.set_red()
-	/*	else if (atmosalm == 2)
-			for (var/obj/machinery/light/L in src)
-				if (istype(L, /obj/machinery/light/small))
-					continue
-				L.set_blue()
-		else if (!fire && eject && !party && !(atmosalm == 2))
-			icon_state = "red"
-		else if (party && !fire && !eject && !(atmosalm == 2))
-			icon_state = "party"*/
-		//else
-			//icon_state = "blue-red"
-	else
-	//	new lighting behaviour with obj lights
-		icon_state = null
-		for (var/obj/structure/light/L in src)
-			if (istype(L, /obj/structure/light/small))
-				continue
-			L.reset_color()
 
 
 /*

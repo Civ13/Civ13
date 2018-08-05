@@ -21,7 +21,7 @@
 	return
 
 /obj/structure/sign/attackby(obj/item/tool as obj, mob/user as mob)	//deconstruction
-	if (istype(tool, /obj/item/weapon/screwdriver) && !istype(src, /obj/structure/sign/double))
+	if (istype(tool, /obj/item/weapon/screwdriver))
 		user << "You unfasten the sign with your [tool]."
 		var/obj/item/sign/S = new(loc)
 		S.name = name
@@ -62,35 +62,11 @@
 			qdel(src)
 	else ..()
 
-/obj/structure/sign/double/map
-	name = "station map"
-	desc = "A framed picture of the station."
-
-/obj/structure/sign/double/map/left
-	icon_state = "map-left"
-
-/obj/structure/sign/double/map/right
-	icon_state = "map-right"
 
 /obj/structure/sign/securearea
 	name = "\improper SECURE AREA"
 	desc = "A warning sign which reads 'SECURE AREA'."
 	icon_state = "securearea"
-
-/obj/structure/sign/fire
-	name = "\improper DANGER: FIRE"
-	desc = "A warning sign which reads 'DANGER: FIRE'."
-	icon_state = "fire"
-
-/obj/structure/sign/nosmoking_1
-	name = "\improper NO SMOKING"
-	desc = "A warning sign which reads 'NO SMOKING'."
-	icon_state = "nosmoking"
-
-/obj/structure/sign/nosmoking_2
-	name = "\improper NO SMOKING"
-	desc = "A warning sign which reads 'NO SMOKING'."
-	icon_state = "nosmoking2"
 
 /obj/structure/sign/redcross
 	name = "medbay"

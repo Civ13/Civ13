@@ -13,14 +13,6 @@
 	max_amount = 60
 	attack_verb = list("hit", "bludgeoned", "whacked")
 
-/obj/item/stack/rods/cyborg
-	name = "metal rod synthesizer"
-	desc = "A device that makes metal rods."
-	gender = NEUTER
-	matter = null
-	uses_charge = TRUE
-	charge_costs = list(500)
-	stacktype = /obj/item/stack/rods
 
 /obj/item/stack/rods/attack_self(mob/user as mob)
 	add_fingerprint(user)

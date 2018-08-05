@@ -770,7 +770,7 @@
 	icon = 'icons/mob/screen/WW13Style.dmi'
 	icon_state = "dodge"
 	screen_loc = "11,1"
-	process_flag = TRUE
+//	process_flag = TRUE
 
 /obj/screen/mode/New()
 	..()

@@ -601,35 +601,6 @@ OTHER
 	max_ammo = 30
 	multiple_sprites = TRUE
 
-/////////////////////FLAREGUNS//////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
-
-/obj/item/ammo_magazine/flare
-	name = "flare that shouldn't exist"
-	icon_state = ""
-	caliber = "flare"
-	ammo_type = /obj/item/ammo_casing/flare
-	multiple_sprites = FALSE
-	mag_type = MAGAZINE
-	initial_ammo = TRUE
-	max_ammo = TRUE
-
-/obj/item/ammo_magazine/flare/red
-	name = "red flare"
-	icon_state = "flare_red"
-
-/obj/item/ammo_magazine/flare/green
-	name = "green flare"
-	icon_state = "flare_green"
-
-/obj/item/ammo_magazine/flare/yellow
-	name = "yellow flare"
-	icon_state = "flare_yellow"
-
-
 
 //////XVIII Century stuff//////////
 /*

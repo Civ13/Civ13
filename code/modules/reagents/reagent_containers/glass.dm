@@ -90,7 +90,7 @@
 			return
 
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
-		if (istype(W, /obj/item/weapon/pen) || istype(W, /obj/item/flashlight/pen))
+		if (istype(W, /obj/item/weapon/pen))
 			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)
 			if (length(tmp_label) > 10)
 				user << "<span class='notice'>The label can be at most 10 characters long.</span>"

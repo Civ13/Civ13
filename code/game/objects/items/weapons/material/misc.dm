@@ -45,7 +45,7 @@
 	name = "combat axe"
 	desc = "A very sharp axe blade upon a short wooden handle. It has a long history of chopping things, but now it is used for chopping down your enemie's."
 	icon = 'icons/obj/weapons.dmi'
-	icon_state = "combat axe"
+	icon_state = "hatchet"
 	force_divisor = 0.4 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
 	w_class = 2

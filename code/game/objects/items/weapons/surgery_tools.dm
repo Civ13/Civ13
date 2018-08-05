@@ -133,15 +133,6 @@
 
 //misc, formerly from code/defines/weapons.dm
 
-/obj/item/weapon/FixOVein
-	name = "FixOVein"
-	icon = 'icons/obj/surgery.dmi'
-	icon_state = "fixovein"
-	force = FALSE
-	throwforce = 1.0
-//	origin_tech = list(TECH_MATERIAL = TRUE, TECH_BIO = 3)
-	w_class = 2.0
-	var/usage_amount = 10
 
 /obj/item/weapon/bonesetter
 	name = "bone setter"

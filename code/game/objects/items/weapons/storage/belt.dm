@@ -67,7 +67,6 @@
 		/obj/item/weapon/flame/lighter/zippo,
 		/obj/item/weapon/storage/pill_bottle,
 		/obj/item/stack/medical,
-		/obj/item/flashlight/pen,
 		/obj/item/clothing/mask/surgical,
 		/obj/item/clothing/head/surgery,
 		/obj/item/clothing/gloves/latex,

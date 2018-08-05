@@ -94,7 +94,8 @@
 	amount_per_transfer_from_this = 10
 	New()
 		..()
-		reagents.add_reagent("rum",200)
+		reagents.add_reagent("rum",140)
+		reagents.add_reagent("tramadol", 60)
 
 /obj/structure/reagent_dispensers/barrel/gunpowder
 	name = "gunpowder barrel"

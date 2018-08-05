@@ -117,43 +117,6 @@
 					user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [C].</span>"
 			use(1)
 */
-/obj/item/stack/medical/ointment
-	name = "ointment"
-	desc = "Used to treat those nasty burns."
-	gender = PLURAL
-	singular_name = "ointment"
-	icon_state = "ointment"
-	heal_burn = TRUE
-//	origin_tech = list(TECH_BIO = TRUE)
-
-/obj/item/stack/medical/ointment/attack(mob/living/carbon/M as mob, mob/user as mob)
-	if (..())
-		return TRUE
-
-	if (istype(M, /mob/living/carbon/human))
-		var/mob/living/carbon/human/H = M
-		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
-
-		if (affecting.open == FALSE)
-			if (affecting.is_salved())
-				user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been salved.</span>"
-				return TRUE
-			else
-				user.visible_message("<span class='notice'>\The [user] starts salving wounds on [M]'s [affecting.name].</span>", \
-						             "<span class='notice'>You start salving the wounds on [M]'s [affecting.name].</span>" )
-				if (!do_mob(user, M, 10))
-					user << "<span class='notice'>You must stand still to salve wounds.</span>"
-					return TRUE
-				user.visible_message("<span class='notice'>[user] salved wounds on [M]'s [affecting.name].</span>", \
-				                         "<span class='notice'>You salved wounds on [M]'s [affecting.name].</span>" )
-				use(1)
-				affecting.salve()
-		else
-			if (can_operate(H))        //Checks if mob is lying down on table for surgery
-				if (do_surgery(H,user,src))
-					return
-			else
-				user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
 
 /obj/item/stack/medical/advanced/bruise_pack
 	name = "advanced trauma kit"
@@ -309,3 +272,18 @@
 			affecting.status |= ORGAN_SPLINTED
 			use(1)
 		return
+
+/obj/item/stack/medical/bruise_pack/bint
+	name = "roll of bint"
+	singular_name = "bint length"
+	icon = 'icons/WW2/medical.dmi'
+	icon_state = "bint"
+	heal_brute = 10 // for healing dogs and other animals
+
+
+/obj/item/stack/medical/bruise_pack/gauze
+	name = "roll of gauze"
+	singular_name = "gauze length"
+	icon = 'icons/WW2/medical.dmi'
+	icon_state = "gauze"
+	heal_brute = 10 // for healing dogs and other animals

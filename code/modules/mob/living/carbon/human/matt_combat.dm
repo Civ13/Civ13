@@ -11,15 +11,6 @@
 		combat_mode = 1
 		to_chat(src, "You toggle on combat mode.")
 */
-/mob/living/carbon/human/verb/toggle_dodge_parry()
-	set name = "Toggle Defense Intent"
-	set category = "Combat"
-
-	if(defense_intent == I_DODGE)
-		defense_intent = I_PARRY
-	else
-		defense_intent = I_DODGE
-
 
 //Going here till I find a better place for it.
 

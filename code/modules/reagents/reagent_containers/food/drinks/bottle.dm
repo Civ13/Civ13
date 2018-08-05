@@ -395,7 +395,8 @@
 	center_of_mass = list("x"=16, "y"=8)
 	New()
 		..()
-		reagents.add_reagent("rum", 100)
+		reagents.add_reagent("rum", 70)
+		reagents.add_reagent("tramadol", 30)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/rum/empty
 	name = "Captain Pete's Cuban Spiced Rum"

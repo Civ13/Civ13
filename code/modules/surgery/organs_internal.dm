@@ -292,55 +292,6 @@
 		var/obj/item/organ/I = tool
 		if (istype(I))
 			I.take_damage(rand(3,5),0)
-
-/datum/surgery_step/internal/attach_organ
-	allowed_tools = list(
-	/obj/item/weapon/FixOVein = 100, \
-	)
-
-	min_duration = 100
-	max_duration = 120
-
-	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-
-		if (!..())
-			return FALSE
-
-		target.op_stage.current_organ = null
-
-		var/list/removable_organs = list()
-		for (var/organ in target.internal_organs_by_name)
-			var/obj/item/organ/I = target.internal_organs_by_name[organ]
-			if (I && (I.status & ORGAN_CUT_AWAY) && !(I.status & ORGAN_ROBOT) && I.parent_organ == target_zone)
-				removable_organs |= organ
-
-		var/organ_to_replace = input(user, "Which organ do you want to reattach?") as null|anything in removable_organs
-		if (!organ_to_replace)
-			return FALSE
-
-		target.op_stage.current_organ = organ_to_replace
-		return ..()
-
-	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		user.visible_message("[user] begins reattaching [target]'s [target.op_stage.current_organ] with \the [tool].", \
-		"You start reattaching [target]'s [target.op_stage.current_organ] with \the [tool].")
-		target.custom_pain("Someone's digging needles into your [target.op_stage.current_organ]!",1)
-		..()
-
-	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		user.visible_message("<span class='notice'>[user] has reattached [target]'s [target.op_stage.current_organ] with \the [tool].</span>" , \
-		"<span class='notice'>You have reattached [target]'s [target.op_stage.current_organ] with \the [tool].</span>")
-
-		var/obj/item/organ/I = target.internal_organs_by_name[target.op_stage.current_organ]
-		if (I && istype(I))
-			I.status &= ~ORGAN_CUT_AWAY
-
-	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("<span class='warning'>[user]'s hand slips, damaging the flesh in [target]'s [affected.name] with \the [tool]!</span>", \
-		"<span class='warning'>Your hand slips, damaging the flesh in [target]'s [affected.name] with \the [tool]!</span>")
-		affected.createwound(BRUISE, 20)
-
 //////////////////////////////////////////////////////////////////
 //						HEART SURGERY							//
 //////////////////////////////////////////////////////////////////

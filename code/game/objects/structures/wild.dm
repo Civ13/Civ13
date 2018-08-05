@@ -1,5 +1,6 @@
 /obj/structure/wild
 	icon = 'icons/obj/wild.dmi'
+	icon_state = "tree"
 	anchored = TRUE
 	var/sways = FALSE
 /*

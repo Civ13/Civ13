@@ -143,11 +143,6 @@
 	icon_state = "sheet-plasma"
 	default_type = "plasma"
 
-/obj/item/stack/material/plastic
-	name = "plastic"
-	icon_state = "sheet-plastic"
-	default_type = "plastic"
-
 /obj/item/stack/material/gold
 	name = "gold"
 	icon_state = "sheet-gold"
@@ -163,25 +158,6 @@
 	name = "platinum"
 	icon_state = "sheet-adamantine"
 	default_type = "platinum"
-
-//Extremely valuable to Research.
-/obj/item/stack/material/mhydrogen
-	name = "metallic hydrogen"
-	icon_state = "sheet-mythril"
-	default_type = "mhydrogen"
-
-//Fuel for MRSPACMAN generator.
-/obj/item/stack/material/tritium
-	name = "tritium"
-	icon_state = "sheet-silver"
-	default_type = "tritium"
-	apply_colour = TRUE
-
-/obj/item/stack/material/osmium
-	name = "osmium"
-	icon_state = "sheet-silver"
-	default_type = "osmium"
-	apply_colour = TRUE
 
 /obj/item/stack/material/steel
 	name = DEFAULT_WALL_MATERIAL
@@ -226,17 +202,3 @@
 	name = "reinforced glass"
 	icon_state = "sheet-rglass"
 	default_type = "rglass"
-
-/obj/item/stack/material/glass/plasmaglass
-	name = "borosilicate glass"
-	desc = "This sheet is special platinum-glass alloy designed to withstand large temperatures"
-	singular_name = "borosilicate glass sheet"
-	icon_state = "sheet-plasmaglass"
-	default_type = "borosilicate glass"
-
-/obj/item/stack/material/glass/plasmarglass
-	name = "reinforced borosilicate glass"
-	desc = "This sheet is special platinum-glass alloy designed to withstand large temperatures. It is reinforced with few rods."
-	singular_name = "reinforced borosilicate glass sheet"
-	icon_state = "sheet-plasmarglass"
-	default_type = "reinforced borosilicate glass"

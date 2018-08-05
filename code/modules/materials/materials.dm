@@ -382,45 +382,6 @@ var/list/name_to_material
 
 /material/glass/proc/is_reinforced()
 	return (hardness > 35) //todo
-/material/plastic
-	name = "plastic"
-	stack_type = /obj/item/stack/material/plastic
-	flags = MATERIAL_BRITTLE
-	icon_base = "solid"
-	icon_reinf = "reinf_over"
-	icon_colour = "#CCCCCC"
-	hardness = 10
-	weight = 12
-	melting_point = T0C+371 //assuming heat resistant plastic
-	stack_origin_tech = list(TECH_MATERIAL = 3)
-
-/material/plastic/holographic
-	name = "holoplastic"
-	display_name = "plastic"
-	stack_type = null
-	shard_type = SHARD_NONE
-
-/material/osmium
-	name = "osmium"
-	stack_type = /obj/item/stack/material/osmium
-	icon_colour = "#9999FF"
-	stack_origin_tech = list(TECH_MATERIAL = 5)
-	sheet_singular_name = "ingot"
-	sheet_plural_name = "ingots"
-
-/material/tritium
-	name = "tritium"
-	stack_type = /obj/item/stack/material/tritium
-	icon_colour = "#777777"
-	stack_origin_tech = list(TECH_MATERIAL = 5)
-	sheet_singular_name = "ingot"
-	sheet_plural_name = "ingots"
-
-/material/mhydrogen
-	name = "mhydrogen"
-	stack_type = /obj/item/stack/material/mhydrogen
-	icon_colour = "#E6C5DE"
-	stack_origin_tech = list(TECH_MATERIAL = 6, TECH_POWER = 6, TECH_MAGNET = 5)
 
 /material/platinum
 	name = "platinum"

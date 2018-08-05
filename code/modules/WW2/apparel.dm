@@ -49,14 +49,15 @@
 // WEBBING - can hold everything but clothing
 
 /obj/item/clothing/accessory/storage/webbing
-	name = "webbing"
-	desc = "A sturdy mess of cotton belts and buckles, ready to share your burden."
-	icon_state = "webbing"
+	name = "bandolier"
+	desc = "two cotton belts with small pouches for ammunition."
+	icon_state = "bandolier"
+	item_state = "bandolier"
 	slots = 8
 
 	New()
 		..()
-		hold.cant_hold = list(/obj/item/clothing)
+		hold.can_hold = list(/obj/item/ammo_casing/musketball,/obj/item/ammo_casing/musketball_pistol,/obj/item/ammo_casing/blunderbuss)
 
 //pirate stuff
 

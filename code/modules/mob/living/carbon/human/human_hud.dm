@@ -50,47 +50,6 @@
 
 	return FALSE
 
-/*/mob/living/carbon/human/check_HUDinventory()//correct a HUDinventory?
-	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
-	var/mob/living/carbon/human/H = src
-
-	if ((H.HUDinventory.len != FALSE) && (H.HUDinventory.len == species.hud.gear.len) && !(recreate_flag))
-		for (var/obj/screen/inventory/HUDinv in H.HUDinventory)
-			if (!(HUDdatum.slot_data.Find(HUDinv.slot_id) && species.hud.gear.Find(HUDinv.slot_id))) //Если данного slot_id нет в датуме худа и в датуме расы.
-				recreate_flag = TRUE
-				break //то нахуй это дерьмо
-	else
-		recreate_flag = TRUE
-
-	return
-
-/mob/living/carbon/human/check_HUDneed()
-	var/mob/living/carbon/human/H = src
-	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
-
-	if ((H.HUDneed.len != FALSE) && (H.HUDneed.len == species.hud.ProcessHUD.len)) //Если у моба есть ХУД и кол-во эл. худа соотвсетсвует заявленному
-		for (var/i=1,i<=HUDneed.len,i++)
-			if (!(HUDdatum.HUDneed.Find(HUDneed[i]) && species.hud.ProcessHUD.Find(HUDneed[i]))) //Если данного худа нет в датуме худа и в датуме расы.
-				recreate_flag = TRUE
-				break //то нахуй это дерьмо
-	else
-		recreate_flag = TRUE
-	return
-
-/mob/living/carbon/human/check_HUDfrippery()
-	var/mob/living/carbon/human/H = src
-	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
-	return
-/mob/living/carbon/human/check_HUDprocess()
-	var/mob/living/carbon/human/H = src
-	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
-	return
-/mob/living/carbon/human/check_HUDtech()
-	var/mob/living/carbon/human/H = src
-	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
-	return*/
-
-
 /mob/living/carbon/human/update_hud()	//TODO: do away with this if possible
 	if (client)
 		check_HUD()

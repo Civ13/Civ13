@@ -20,8 +20,6 @@
 	recipes += new/datum/stack_recipe("box", /obj/item/weapon/storage/box)
 	recipes += new/datum/stack_recipe("donut box", /obj/item/weapon/storage/box/donut/empty)
 	recipes += new/datum/stack_recipe("egg box", /obj/item/weapon/storage/fancy/egg_box)
-	recipes += new/datum/stack_recipe("light tubes box", /obj/item/weapon/storage/box/lights/tubes)
-	recipes += new/datum/stack_recipe("light bulbs box", /obj/item/weapon/storage/box/lights/bulbs)
 //	recipes += new/datum/stack_recipe("cardborg suit", /obj/item/clothing/suit/cardborg, 3)
 //	recipes += new/datum/stack_recipe("cardborg helmet", /obj/item/clothing/head/cardborg)
 //	recipes += new/datum/stack_recipe("pizza box", /obj/item/pizzabox)

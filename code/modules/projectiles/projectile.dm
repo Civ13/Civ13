@@ -428,7 +428,7 @@
 		for (var/obj/O in T.contents)
 			if (O == original)
 				var/hitchance = 60 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
-				if (isstructure(O) && !istype(O, /obj/structure/light))
+				if (isstructure(O))
 					hitchance = 100
 				else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
 					hitchance = 100

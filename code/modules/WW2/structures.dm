@@ -42,6 +42,7 @@
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
+	icon_state = "black"
 	layer = MOB_LAYER + 0.01
 	bound_width = 32
 	bound_height = 32

@@ -90,7 +90,7 @@
 		slot_l_hand_str = "det_hat",
 		slot_r_hand_str = "det_hat",
 		)
-	allowed = list(/obj/item/weapon/reagent_containers/food/snacks/candy_corn, /obj/item/weapon/pen)
+	allowed = list(/obj/item/weapon/pen)
 	armor = list(melee = 20, bullet = 5, laser = 10,energy = 5, bomb = FALSE, bio = FALSE, rad = FALSE)
 	siemens_coefficient = 0.9
 	body_parts_covered = FALSE

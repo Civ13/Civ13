@@ -161,3 +161,16 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 	if (HUDneed.Find("intent"))
 		var/obj/screen/intent/I = HUDneed["intent"]
 		I.update_icon()
+
+/mob/verb/combatmode_change(input as text)
+	set name = "a-combat"
+	set hidden = TRUE
+
+	if (ishuman(src) || isbrain(src))
+		switch(input)
+			if (I_DODGE,I_PARRY)
+				defense_intent = input
+
+	if (HUDneed.Find("mode"))
+		var/obj/screen/intent/I = HUDneed["mode"]
+		I.update_icon()

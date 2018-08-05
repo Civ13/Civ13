@@ -90,50 +90,11 @@
 	else
 		return ..()
 
-/obj/item/flashlight/pen
-	name = "penlight"
-	desc = "A pen-sized light, used by medical staff."
-	icon_state = "penlight"
-	item_state = ""
-	flags = CONDUCT
-	slot_flags = SLOT_EARS
-	brightness_on = 2
-	w_class = TRUE
-
-// the desk lamps are a bit special
-/obj/item/flashlight/lamp
-	name = "desk lamp"
-	desc = "A desk lamp with an adjustable mount."
-	icon_state = "lamp"
-	item_state = "lamp"
-	brightness_on = 4
-	w_class = 4
-	flags = CONDUCT
-
-	on = TRUE
-
-
-// green-shaded desk lamp
-/obj/item/flashlight/lamp/green
-	desc = "A classic green-shaded desk lamp."
-	icon_state = "lampgreen"
-	item_state = "lampgreen"
-	brightness_on = 4
-	light_color = "#FFC58F"
-
-/obj/item/flashlight/lamp/verb/toggle_light()
-	set name = "Toggle light"
-	set category = null
-	set src in oview(1)
-
-	if (!usr.stat)
-		attack_self(usr)
-
 // FLARES
 
 /obj/item/flashlight/flare
-	name = "flare"
-	desc = "A red standard-issue flare. There are instructions on the side reading 'pull cord, make light'."
+	name = "torch"
+	desc = "A stick of wood with grease on one end."
 	w_class = 2.0
 	brightness_on = 4 // Pretty bright.
 	light_power = 2
@@ -178,14 +139,14 @@
 /obj/item/flashlight/flare/attack_self(mob/user)
 	if (turn_on(user))
 		playsound(loc, turn_on_sound, 75, TRUE)
-		user.visible_message("<span class='notice'>\The [user] activates \the [src].</span>", "<span class='notice'>You pull the cord on the flare, activating it!</span>")
+		user.visible_message("<span class='notice'>\The [user] lights \the [src].</span>", "<span class='notice'>You ignite the torch!</span>")
 
 /obj/item/flashlight/flare/proc/turn_on(var/mob/user)
 	if (on)
 		return FALSE
 	if (!fuel)
 		if (user)
-			user << "<span class='notice'>It's out of fuel.</span>"
+			user << "<span class='notice'>The torch is out.</span>"
 		return FALSE
 	on = TRUE
 	force = on_damage
@@ -193,112 +154,3 @@
 	processing_objects += src
 	update_icon()
 	return TRUE
-
-/obj/item/flashlight/glowstick
-	name = "green glowstick"
-	desc = "A military-grade glowstick."
-	w_class = 2.0
-	color = "#49F37C"
-	icon_state = "glowstick"
-	item_state = "glowstick"
-	action_button_name = null
-	var/fuel = FALSE
-
-/obj/item/flashlight/glowstick/New()
-	pixel_x = rand(-12,12)
-	pixel_y = rand(-12,12)
-	fuel = rand(1600, 2000)
-	light_color = color
-	..()
-
-/obj/item/flashlight/glowstick/process()
-	fuel = max(fuel - 1, FALSE)
-	if (!fuel)
-		turn_off()
-		processing_objects -= src
-		update_icon()
-
-/obj/item/flashlight/glowstick/proc/turn_off()
-	on = FALSE
-	update_icon()
-
-/obj/item/flashlight/glowstick/update_icon()
-	item_state = "glowstick"
-	overlays.Cut()
-	if (!fuel)
-		icon_state = "glowstick-empty"
-		set_light(0)
-	else if (on)
-		var/image/I = image(icon,"glowstick-on",color)
-		I.blend_mode = BLEND_ADD
-		overlays += I
-		item_state = "glowstick-on"
-		set_light(2.5, TRUE)
-	else
-		icon_state = "glowstick"
-	var/mob/M = loc
-	if (istype(M))
-		if (M.l_hand == src)
-			M.update_inv_l_hand()
-		if (M.r_hand == src)
-			M.update_inv_r_hand()
-
-/obj/item/flashlight/glowstick/attack_self(mob/user)
-
-	if (!fuel)
-		user << "<span class='notice'>The [src] is spent.</span>"
-		return
-	if (on)
-		user << "<span class='notice'>The [src] is already lit.</span>"
-		return
-
-	. = ..()
-	if (.)
-		user.visible_message("<span class='notice'>[user] cracks and shakes the glowstick.</span>", "<span class='notice'>You crack and shake the glowstick, turning it on!</span>")
-		processing_objects += src
-
-/obj/item/flashlight/glowstick/red
-	name = "red glowstick"
-	color = "#FC0F29"
-
-/obj/item/flashlight/glowstick/blue
-	name = "blue glowstick"
-	color = "#599DFF"
-
-/obj/item/flashlight/glowstick/orange
-	name = "orange glowstick"
-	color = "#FA7C0B"
-
-/obj/item/flashlight/glowstick/yellow
-	name = "yellow glowstick"
-	color = "#FEF923"
-
-/obj/item/flashlight/glowstick/random
-	name = "glowstick"
-	desc = "A party-grade glowstick."
-	color = "#FF00FF"
-
-/obj/item/flashlight/glowstick/random/New()
-	color = rgb(rand(50,255),rand(50,255),rand(50,255))
-	..()
-
-/obj/item/flashlight/slime
-	gender = PLURAL
-	name = "glowing slime extract"
-	desc = "A glowing ball of what appears to be amber."
-	icon = 'icons/obj/lighting.dmi'
-	icon_state = "floor1" //not a slime extract sprite but... something close enough!
-	item_state = "slime"
-	w_class = TRUE
-	brightness_on = 6
-	on = TRUE //Bio-luminesence has one setting, on.
-
-/obj/item/flashlight/slime/New()
-	..()
-	set_light(brightness_on)
-
-/obj/item/flashlight/slime/update_icon()
-	return
-
-/obj/item/flashlight/slime/attack_self(mob/user)
-	return //Bio-luminescence does not toggle.

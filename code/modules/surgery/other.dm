@@ -7,7 +7,7 @@
 /datum/surgery_step/fix_vein
 	priority = 2
 	allowed_tools = list(
-	/obj/item/weapon/FixOVein = 100, \
+	/obj/item/weapon/hemostat = 100, 	\
 	)
 	can_infect = TRUE
 	blood_level = TRUE

@@ -277,7 +277,7 @@
 	name = "candy"
 	desc = "Nougat, love it or hate it."
 	icon_state = "candy"
-	trash = /obj/item/trash/candy
+	trash = /obj/item/trash
 	filling_color = "#7D5F46"
 	center_of_mass = list("x"=15, "y"=15)
 	nutriment_amt = 1
@@ -288,43 +288,6 @@
 		reagents.add_reagent("sugar", 3)
 		bitesize = 2
 
-/obj/item/weapon/reagent_containers/food/snacks/candy/donor
-	name = "Donor Candy"
-	desc = "A little treat for blood donors."
-	trash = /obj/item/trash/candy
-	nutriment_desc = list("candy" = 10)
-	New()
-		..()
-		reagents.add_reagent("nutriment", 10)
-		reagents.add_reagent("sugar", 3)
-		bitesize = 5
-
-/obj/item/weapon/reagent_containers/food/snacks/candy_corn
-	name = "candy corn"
-	desc = "It's a handful of candy corn. Cannot be stored in a detective's hat, alas."
-	icon_state = "candy_corn"
-	filling_color = "#FFFCB0"
-	center_of_mass = list("x"=14, "y"=10)
-	nutriment_amt = 4
-	nutriment_desc = list("candy corn" = 4)
-	New()
-		..()
-		reagents.add_reagent("nutriment", 4)
-		reagents.add_reagent("sugar", 2)
-		bitesize = 2
-
-/obj/item/weapon/reagent_containers/food/snacks/chips
-	name = "chips"
-	desc = "Commander Riker's What-The-Crisps"
-	icon_state = "chips"
-	trash = /obj/item/trash/chips
-	filling_color = "#E8C31E"
-	center_of_mass = list("x"=15, "y"=15)
-	nutriment_amt = 3
-	nutriment_desc = list("salt" = 1, "chips" = 2)
-	New()
-		..()
-		bitesize = 1
 
 /obj/item/weapon/reagent_containers/food/snacks/cookie
 	name = "cookie"
@@ -338,33 +301,6 @@
 		..()
 		bitesize = 1
 
-/obj/item/weapon/reagent_containers/food/snacks/chocolatebar
-	name = "Chocolate Bar"
-	desc = "Such sweet, fattening food."
-	icon_state = "chocolatebar"
-	filling_color = "#7D5F46"
-	center_of_mass = list("x"=15, "y"=15)
-	nutriment_amt = 2
-	nutriment_desc = list("chocolate" = 5)
-	New()
-		..()
-		reagents.add_reagent("sugar", 2)
-		reagents.add_reagent("coco", 2)
-		bitesize = 2
-
-/obj/item/weapon/reagent_containers/food/snacks/chocolateegg
-	name = "Chocolate Egg"
-	desc = "Such sweet, fattening food."
-	icon_state = "chocolateegg"
-	filling_color = "#7D5F46"
-	center_of_mass = list("x"=16, "y"=13)
-	nutriment_amt = 3
-	nutriment_desc = list("chocolate" = 5)
-	New()
-		..()
-		reagents.add_reagent("sugar", 2)
-		reagents.add_reagent("coco", 2)
-		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/donut
 	name = "donut"
@@ -792,7 +728,7 @@
 	name = "waffles"
 	desc = "Mmm, waffles"
 	icon_state = "waffles"
-	trash = /obj/item/trash/waffles
+	trash = /obj/item/trash
 	filling_color = "#E6DEB5"
 	center_of_mass = list("x"=15, "y"=11)
 	nutriment_desc = list("waffle" = 8)
@@ -870,25 +806,6 @@
 			reagents.add_reagent("tricordrazine", 5)
 			bitesize = 2
 
-/obj/item/weapon/reagent_containers/food/snacks/popcorn
-	name = "Popcorn"
-	desc = "Now let's find some cinema."
-	icon_state = "popcorn"
-	trash = /obj/item/trash/popcorn
-	var/unpopped = FALSE
-	filling_color = "#FFFAD4"
-	center_of_mass = list("x"=16, "y"=8)
-	nutriment_desc = list("popcorn" = 3)
-	nutriment_amt = 2
-	New()
-		..()
-		unpopped = rand(1,10)
-		bitesize = 0.1 //this snack is supposed to be eating during looooong time. And this it not dinner food! --rastaf0
-	On_Consume()
-		if (prob(unpopped))	//lol ...what's the point?
-			usr << "<span class='warning'>You bite down on an un-popped kernel!</span>"
-			unpopped = max(0, unpopped-1)
-		..()
 
 /obj/item/weapon/reagent_containers/food/snacks/loadedbakedpotato
 	name = "Loaded Baked Potato"
@@ -2355,26 +2272,11 @@
 	nutriment_desc = list("raw potato" = 3)
 	nutriment_amt = 3
 
-/obj/item/weapon/reagent_containers/food/snacks/liquidfood
-	name = "\improper LiquidFood Ration"
-	desc = "A prepackaged grey slurry of all the essential nutrients for a spacefarer on the go. Should this be crunchy?"
-	icon_state = "liquidfood"
-	trash = /obj/item/trash/liquidfood
-	filling_color = "#A8A8A8"
-	center_of_mass = list("x"=16, "y"=15)
-	nutriment_desc = list("chalk" = 6)
-	nutriment_amt = 20
-	New()
-		..()
-		reagents.add_reagent("iron", 3)
-		bitesize = 4
-
-
 /obj/item/weapon/reagent_containers/food/snacks/tastybread
 	name = "bread tube"
 	desc = "Bread in a tube. Chewy...and surprisingly tasty."
 	icon_state = "tastybread"
-	trash = /obj/item/trash/tastybread
+	trash = /obj/item/trash
 	filling_color = "#A66829"
 	center_of_mass = list("x"=17, "y"=16)
 	nutriment_desc = list("bread" = 2, "sweetness" = 3)

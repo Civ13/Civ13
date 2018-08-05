@@ -221,7 +221,6 @@
 #include "code\game\objects\items\clothing\under\jobs\medsci.dm"
 #include "code\game\objects\items\clothing\under\jobs\security.dm"
 #include "code\game\objects\items\devices\flashlight.dm"
-#include "code\game\objects\items\devices\megaphone.dm"
 #include "code\game\objects\items\devices\violin.dm"
 #include "code\game\objects\items\paper\bundle.dm"
 #include "code\game\objects\items\paper\carbon.dm"
@@ -286,7 +285,6 @@
 #include "code\game\objects\structures\girders.dm"
 #include "code\game\objects\structures\grille.dm"
 #include "code\game\objects\structures\kitchen_spike.dm"
-#include "code\game\objects\structures\lighting.dm"
 #include "code\game\objects\structures\mirror.dm"
 #include "code\game\objects\structures\optable.dm"
 #include "code\game\objects\structures\piano.dm"
@@ -774,5 +772,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\naval\naval.dmm"
+#include "maps\voyage\voyage.dmm"
 // END_INCLUDE
