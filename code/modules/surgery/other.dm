@@ -30,15 +30,15 @@
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("[user] starts patching the damaged vein in [target]'s [affected.name] with \the [tool]." , \
-		"You start patching the damaged vein in [target]'s [affected.name] with \the [tool].")
+		user.visible_message("[user] starts pinching the damaged vein in [target]'s [affected.name] with \the [tool]." , \
+		"You start pinching the damaged vein in [target]'s [affected.name] with \the [tool].")
 		target.custom_pain("The pain in [affected.name] is unbearable!",1)
 		..()
 
 	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("<span class = 'notice'>[user] has patched the damaged vein in [target]'s [affected.name] with \the [tool].</span>", \
-			"<span class = 'notice'>You have patched the damaged vein in [target]'s [affected.name] with \the [tool].</span>")
+		user.visible_message("<span class = 'notice'>[user] has pinched the damaged vein in [target]'s [affected.name] with \the [tool].</span>", \
+			"<span class = 'notice'>You have pinched the damaged vein in [target]'s [affected.name] with \the [tool].</span>")
 
 		for (var/datum/wound/W in affected.wounds) if (W.internal)
 			affected.wounds -= W

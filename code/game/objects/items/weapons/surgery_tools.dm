@@ -24,7 +24,7 @@
  */
 /obj/item/weapon/hemostat
 	name = "hemostat"
-	desc = "You think you have seen this before."
+	desc = "Pinches veins. Prevents bleeding."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "hemostat"
 	matter = list(DEFAULT_WALL_MATERIAL = 5000, "glass" = 2500)
@@ -37,7 +37,7 @@
  */
 /obj/item/weapon/cautery
 	name = "cautery"
-	desc = "This stops bleeding."
+	desc = "A hot iron. Closes wounds and stops bleeding."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "cautery"
 	matter = list(DEFAULT_WALL_MATERIAL = 5000, "glass" = 2500)
@@ -82,35 +82,6 @@
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 
 /*
- * Researchable Scalpels
- */
-/obj/item/weapon/scalpel/laser1
-	name = "laser scalpel"
-	desc = "A scalpel augmented with a directed laser, for more precise cutting without blood entering the field.  This one looks basic and could be improved."
-	icon_state = "scalpel_laser1_on"
-	damtype = "fire"
-
-/obj/item/weapon/scalpel/laser2
-	name = "laser scalpel"
-	desc = "A scalpel augmented with a directed laser, for more precise cutting without blood entering the field.  This one looks somewhat advanced."
-	icon_state = "scalpel_laser2_on"
-	damtype = "fire"
-	force = WEAPON_FORCE_DANGEROUS
-
-/obj/item/weapon/scalpel/laser3
-	name = "laser scalpel"
-	desc = "A scalpel augmented with a directed laser, for more precise cutting without blood entering the field.  This one looks to be the pinnacle of precision energy cutlery!"
-	icon_state = "scalpel_laser3_on"
-	damtype = "fire"
-	force = WEAPON_FORCE_DANGEROUS
-
-/obj/item/weapon/scalpel/manager
-	name = "incision management system"
-	desc = "A true extension of the surgeon's body, this marvel instantly and completely prepares an incision allowing for the immediate commencement of therapeutic steps."
-	icon_state = "scalpel_manager_on"
-	force = WEAPON_FORCE_WEAK
-
-/*
  * Circular Saw
  */
 /obj/item/weapon/bone_saw
@@ -136,6 +107,7 @@
 
 /obj/item/weapon/bonesetter
 	name = "bone setter"
+	desc = "To set bones in place."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bone setter"
 	force = WEAPON_FORCE_NORMAL

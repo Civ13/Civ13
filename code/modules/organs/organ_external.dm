@@ -577,9 +577,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 //Updating wounds. Handles wound natural I had some free spachealing, internal bleedings and infections
 /obj/item/organ/external/proc/update_wounds()
 
-	if ((status & ORGAN_ROBOT)) //Robotic limbs don't heal or get worse.
-		return
-
 	for (var/datum/wound/W in wounds)
 		// wounds can disappear after 10 minutes at the earliest
 		if (W.damage <= 0 && W.created + 10 * 10 * 60 <= world.time)
@@ -930,11 +927,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return
 
 /obj/item/organ/external/proc/mend_fracture()
-	if (status & ORGAN_ROBOT)
-		return FALSE	//ORGAN_BROKEN doesn't have the same meaning for robot limbs
-	if (brute_dam >= min_broken_damage * config.organ_health_multiplier)
-		return FALSE	//will just immediately fracture again
-
+//	if (brute_dam >= min_broken_damage * config.organ_health_multiplier)
+//		return FALSE	//will just immediately fracture again
+// since this is the XVIII century, lets remove this for now - There's no bicaridine and we need to allow some arcade stuff if we want to make surgery useful.
 	status &= ~ORGAN_BROKEN
 	return TRUE
 

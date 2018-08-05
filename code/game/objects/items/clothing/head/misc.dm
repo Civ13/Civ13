@@ -61,18 +61,6 @@
 	siemens_coefficient = 0.9
 	body_parts_covered = FALSE
 
-/obj/item/clothing/head/syndicatefake
-	name = "red space-helmet replica"
-	item_state_slots = list(
-		slot_l_hand_str = "syndicate-helm-black-red",
-		slot_r_hand_str = "syndicate-helm-black-red",
-		)
-	icon_state = "syndicate"
-	desc = "A plastic replica of a bloodthirsty mercenary's space helmet, you'll look just like a real murderous criminal operative in this! This is a toy, it is not made for use in space!"
-	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|BLOCKHAIR
-	siemens_coefficient = 2.0
-	body_parts_covered = HEAD|FACE|EYES
-
 /obj/item/clothing/head/greenbandana
 	name = "green bandana"
 	desc = "It's a green bandana with some fine nanotech lining."
@@ -237,23 +225,3 @@
 	desc = "An orange piece of cloth, worn on the head."
 	icon_state = "orange_bandana"
 	body_parts_covered = FALSE
-
-/obj/item/clothing/head/hijab
-	name = "hijab"
-	desc = "A veil that is wrapped to cover the head and chest"
-	icon_state = "hijab"
-	body_parts_covered = FALSE
-	flags_inv = BLOCKHAIR
-
-/obj/item/clothing/head/kippa
-	name = "kippa"
-	desc = "A small, brimless cap."
-	icon_state = "kippa"
-	body_parts_covered = FALSE
-
-/obj/item/clothing/head/turban
-	name = "turban"
-	desc = "A cloth used to wind around the head"
-	icon_state = "turban"
-	body_parts_covered = FALSE
-	flags_inv = BLOCKHAIR
