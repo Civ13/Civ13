@@ -19,14 +19,14 @@
 				try
 					switch (AM.throwmode)
 						if (0)
-							if (AM && AM.original_target &&((((AM.x < AM.original_target.x && AM.dx == EAST) || (AM.x > AM.original_target.x && AM.dx == WEST)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)  || istype(AM.loc, /turf/space)) && AM.throwing && istype(AM.loc, /turf))
+							if (AM && AM.original_target &&((((AM.x < AM.original_target.x && AM.dx == EAST) || (AM.x > AM.original_target.x && AM.dx == WEST)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)) && AM.throwing && istype(AM.loc, /turf))
 								// only stop when we've gone the whole distance (or max throw AM.range) and are on a non-space tile, or hit something, or hit the end of the map, or someone picks it up
 								if (AM.error < 0)
 									var/atom/step = get_step(AM, AM.dy)
 									if (!step) // going off the edge of the map makes get_step return null, don't let things go off the edge
 										thrown_list -= AM
 										continue
-									if (map.check_prishtina_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
+									if (map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE
@@ -55,7 +55,7 @@
 									if (!step) // going off the edge of the map makes get_step return null, don't let things go off the edge
 										thrown_list -= AM
 										continue
-									if (map.check_prishtina_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
+									if (map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE
@@ -77,14 +77,14 @@
 							else
 								AM.finished_throwing()
 						if (1)
-							if (AM && AM.original_target &&((((AM.y < AM.original_target.y && AM.dy == NORTH) || (AM.y > AM.original_target.y && AM.dy == SOUTH)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)  || istype(AM.loc, /turf/space)) && AM.throwing && istype(AM.loc, /turf))
+							if (AM && AM.original_target &&((((AM.y < AM.original_target.y && AM.dy == NORTH) || (AM.y > AM.original_target.y && AM.dy == SOUTH)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)) && AM.throwing && istype(AM.loc, /turf))
 								// only stop when we've gonea the whole distance (or max throw AM.range) and are on a non-space tile, or hit something, or hit the end of the map, or someone picks it up
 								if (AM.error < 0)
 									var/atom/step = get_step(AM, AM.dx)
 									if (!step) // going off the edge of the map makes get_step return null, don't let things go off the edge
 										thrown_list -= AM
 										continue
-									if (map.check_prishtina_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
+									if (map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE
@@ -107,7 +107,7 @@
 									if (!step) // going off the edge of the map makes get_step return null, don't let things go off the edge
 										thrown_list -= AM
 										continue
-									if (map.check_prishtina_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
+									if (map.check_caribbean_block(AM.thrower, get_turf(step)) && (!map.allow_bullets_through_blocks.Find(get_area(step):type) || ismob(AM)))
 										if (istype(AM, /obj/item/weapon/grenade))
 											var/obj/item/weapon/grenade/G = AM
 											G.active = FALSE

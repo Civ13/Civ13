@@ -88,7 +88,7 @@
 	name = "bone saw"
 	desc = "For heavy duty cutting."
 	icon = 'icons/obj/surgery.dmi'
-	icon_state = "saw3"
+	icon_state = "saw"
 	hitsound = 'sound/weapons/circsawhit.ogg'
 	flags = CONDUCT
 	force = WEAPON_FORCE_ROBUST

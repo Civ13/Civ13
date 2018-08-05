@@ -29,29 +29,4 @@
 	if (..()) // handle attachments
 		return TRUE
 
-	if (istype(I, /obj/item/weapon/silencer))
-		if (user.l_hand != src && user.r_hand != src)	//if we're not in his hands
-			user << "<span class='notice'>You'll need [src] in your hands to do that.</span>"
-			return
-		user.drop_item()
-		user << "<span class='notice'>You screw [I] onto [src].</span>"
-		silenced = I	//dodgy?
-		w_class = 3
-		I.loc = src		//put the silencer into the gun
-		update_icon()
-		return
 	..()
-
-/obj/item/weapon/gun/projectile/pistol/update_icon()
-	..()
-	if (silenced)
-		icon_state = "[initial(icon_state)]-silencer"
-	else
-		icon_state = "[initial(icon_state)]"
-
-/obj/item/weapon/silencer
-	name = "silencer"
-	desc = "a silencer"
-	icon = 'icons/obj/gun.dmi'
-	icon_state = "silencer"
-	w_class = 2

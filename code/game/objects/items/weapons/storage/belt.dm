@@ -68,7 +68,6 @@
 		/obj/item/weapon/storage/pill_bottle,
 		/obj/item/stack/medical,
 		/obj/item/clothing/mask/surgical,
-		/obj/item/clothing/head/surgery,
 		/obj/item/clothing/gloves/latex,
 		/obj/item/weapon/crowbar/prybar,
 		/obj/item/flashlight,

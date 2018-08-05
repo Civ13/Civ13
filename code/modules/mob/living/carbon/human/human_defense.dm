@@ -7,15 +7,6 @@ bullet_act
 
 /mob/living/carbon/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
-	if (istype(W, /obj/item/clothing/mask/stone))
-		user.visible_message("<span class = 'notice'>[user] starts to put a stone mask on [src]!</span>")
-		if (do_mob(user, src, 10) && W && W.loc == user)
-			if (wear_mask)
-				unEquip(wear_mask)
-			user.remove_from_mob(W)
-			equip_to_slot(W, slot_wear_mask)
-		return
-
 	if (stat != DEAD)
 		return ..(W, user)
 

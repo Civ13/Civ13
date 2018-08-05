@@ -10,7 +10,7 @@
 /datum/job/pirates/captain
 	title = "Pirate Captain"
 	en_meaning = "Ship Captain"
-	rank_abbreviation = "Cpt"
+	rank_abbreviation = "Captain"
 	head_position = TRUE
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateCap"
@@ -53,7 +53,7 @@
 /datum/job/pirates/qm
 	title = "Pirate Quartermaster"
 	en_meaning = "2IC / Supplies Officer"
-	rank_abbreviation = "QM"
+	rank_abbreviation = "Quartermaster"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirateQM"
 	is_commander = TRUE
@@ -395,7 +395,7 @@
 /datum/job/british/captain
 	title = "Royal Navy Captain"
 	en_meaning = "Ship Captain"
-	rank_abbreviation = "Cpt"
+	rank_abbreviation = "Captain"
 	head_position = TRUE
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
@@ -438,7 +438,7 @@
 /datum/job/british/qm
 	title = "Royal Navy Quartermaster"
 	en_meaning = "2IC / Supplies Officer"
-	rank_abbreviation = "QM"
+	rank_abbreviation = "Quartermaster"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
