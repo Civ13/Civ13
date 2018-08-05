@@ -33,7 +33,7 @@
 	name = "shield"
 	icon_state = "buckler"
 	item_state = "buckler"
-	var/base_block_chance = 50
+	var/base_block_chance = 25
 
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
