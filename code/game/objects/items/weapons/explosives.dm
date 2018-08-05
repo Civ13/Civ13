@@ -1,5 +1,5 @@
 /obj/item/weapon/bomb
-	name = "plastic explosives"
+	name = "gunpowder barrel with fuse"
 	desc = "Used to put holes in specific areas without too much extra hole."
 	gender = PLURAL
 	icon = 'icons/obj/grenade.dmi'

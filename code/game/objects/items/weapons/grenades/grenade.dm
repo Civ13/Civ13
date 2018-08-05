@@ -132,4 +132,4 @@
 
 	if(explosion_size)
 		explosion(O,1,2,3,1)
-	d	qdel(src)
+		qdel(src)
