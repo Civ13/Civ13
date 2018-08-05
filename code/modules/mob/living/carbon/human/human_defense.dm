@@ -205,9 +205,9 @@ bullet_act
 				msg_admin_attack("[name] ([ckey]) was disarmed by a stun effect")
 
 				drop_from_inventory(c_hand)
-				else
-					var/emote_scream = pick("screams in pain and ", "lets out a sharp cry and ", "cries out and ")
-					emote("me", TRUE, "[(species && species.flags & NO_PAIN) ? "" : emote_scream ]drops what they were holding in their [affected.name]!")
+			else
+				var/emote_scream = pick("screams in pain and ", "lets out a sharp cry and ", "cries out and ")
+				emote("me", TRUE, "[(species && species.flags & NO_PAIN) ? "" : emote_scream ]drops what they were holding in their [affected.name]!")
 
 	..(stun_amount, agony_amount, def_zone)
 
