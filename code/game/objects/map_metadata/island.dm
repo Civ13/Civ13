@@ -1,7 +1,7 @@
 #define NO_WINNER "No ship has been captured."
 /obj/map_metadata/island
 	ID = MAP_ISLAND
-	title = "Skull Island (125x125x1)"
+	title = "Skull Island (125x125x2)"
 //	lobby_icon_state = "pirates"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
@@ -14,14 +14,16 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british/land/inside,
+		list(BRITISH) = /area/caribbean/british/ship/,
 		list(PIRATES) = /area/caribbean/pirates/land/inside
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(BRITISH = 0.6, PIRATES = 0.4)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
+	songs = list(
+		"Fish in the Sea:1" = 'sound/music/shanties/fish_in_the_sea.ogg',
+		"Spanish Ladies:1" = 'sound/music/shanties/spanish_ladies.ogg',
+		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
+	meme = TRUE
 	battle_name = "Skull Island"
 	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the combat starts.</font>"
 /*	var/done = FALSE

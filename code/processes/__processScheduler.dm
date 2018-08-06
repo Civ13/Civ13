@@ -165,8 +165,6 @@ var/global/processScheduler/processScheduler
 	main:
 		while (tmpQueued.len && (world.tick_usage-initial_tick_usage) < max_tick_usage)
 			for (var/process/p in tmpQueued)
-				if (p.frozen)
-					continue
 				var/used_tick_usage = world.tick_usage-initial_tick_usage
 				var/available_tick_usage = max_tick_usage - used_tick_usage
 				if (p.always_runs || p.priority != PROCESS_PRIORITY_IRRELEVANT || p == tmpQueued[1] || p.may_run(available_tick_usage))

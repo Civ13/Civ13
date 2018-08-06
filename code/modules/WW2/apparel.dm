@@ -111,8 +111,8 @@
 	worn_state = "pirate2"
 
 /obj/item/clothing/under/pirate3
-	name = "white shirt clothing"
-	desc = "A set of clothes with a white shirt."
+	name = "blue stripes clothing"
+	desc = "A set of clothes with a blue striped shirt."
 	icon_state = "pirate3"
 	item_state = "pirate3"
 	worn_state = "pirate3"

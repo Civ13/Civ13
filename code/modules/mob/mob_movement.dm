@@ -776,7 +776,7 @@
 			mob.dir = direct
 	// Crossed is always a bit iffy
 	for (var/obj/S in mob.loc)
-		if (istype(S,/obj/effect/step_trigger) || istype(S,/obj/effect/beam))
+		if (istype(S,/obj/effect/step_trigger))
 			S.Crossed(mob)
 		if (istype(S,/obj/fire))
 			var/obj/fire/fire = S

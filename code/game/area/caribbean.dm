@@ -20,6 +20,11 @@
  * to slow down dramatically. The forest area reached this limit, but only
  * when there were snow objects, so its been split into 9 separate areas.
 */
+/area/caribbean/island
+	name = "Island"
+	base_turf = /turf/floor/plating/beach/sand
+	icon_state = "red3"
+
 /area/caribbean/sea
 	name = "Island"
 	base_turf = /turf/floor/plating/beach/sand
@@ -54,6 +59,7 @@
 /area/caribbean/forest
 	name = "The Forest"
 	icon_state = "purple1"
+	base_turf = /turf/floor/plating/grass/wild
 
 /area/caribbean/transport
 	name = "Boat"
@@ -91,6 +97,7 @@
 	name = "Admin Zone"
 	location = AREA_INSIDE
 	artillery_integrity = INFINITY
+	base_turf = /turf/floor/dirt
 
 
 // houses in No Man's Land
@@ -99,6 +106,7 @@
 	name = "Houses"
 	icon_state = "red1"
 	location = AREA_INSIDE
+	base_turf = /turf/floor/dirt
 
 /area/caribbean/houses/nml_one
 /area/caribbean/houses/nml_two
@@ -155,6 +163,7 @@
 /area/caribbean/british/land
 	name = "Land Base"
 	icon_state = "red1"
+	base_turf = /turf/floor/dirt
 
 /area/caribbean/british/land/inside
 	location = AREA_INSIDE
@@ -227,6 +236,7 @@
 /area/caribbean/pirates/land
 	name = "Land Base"
 	icon_state = "red1"
+	base_turf = /turf/floor/dirt
 
 /area/caribbean/pirates/land/inside
 	location = AREA_INSIDE
