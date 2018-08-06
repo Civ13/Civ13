@@ -29,7 +29,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	if (!id_target)
 		//user.loc = loc	//Stop at teleporter location, there is nowhere to teleport to.
 		return
-	spawn(600)
+	spawn(6000)
 		for (var/obj/effect/area_teleporter/BT)
 			if (BT.id == id_target)
 				for(var/obj/O in get_area(src))
