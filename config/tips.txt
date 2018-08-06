@@ -1,41 +1,19 @@
 Drag yourself to a ladder to look up or down it.
-The artillery sprite only faces one way right now, but it fires in any direction.
-Soviets on forestmap can eat mice when they run out of food. To butcher a dead mouse, use a knife or sharp weapon on it.
+Ran out of food? Hunt some mice.
 Cannibalism is a feature, but eating other people makes you valid.
-Squad Leaders are allowed to shoot men who disobey their orders, and a Commander can shoot anyone for insubordination.
-Repair tanks with a wrench or welding tool. Wrenches can repair more serious damage, but repair less than welding tools. Welding tools can only repair a tank that's at at least 50% of its maximum health.
-On forestmap, the Zavhoz gets a supply lift that leads to a backup armory.
-Sandbags get exponentially more effective when "stacked". But shooting past multiple sandbags is difficult.
-Bayonets are an extremely effective close-range weapon.
-Sometimes it's better to go through barbwire than around it, since they don't do much damage.
+Ship officers are allowed to execute sailors for insubordination.
 Trees provide good cover, but they go down very quickly.
-It's a bad idea to run on train tracks.
-The Quartermaster for either side can shoot anyone who comes in the Armory without permission.
 You can build locked doors in the same way as regular doors. You have to have a key in one hand and metal/wood in the other (active) hand.
-Flammenwerfers can melt snow and burn down trees and plants.
 Use a rifle's 'Field Strip' verb to remove its attachments.
-Use a lighter on a wet rag and put it in a bottle of vodka/beer to make a Molotov.
-Panzerfausts, Molotovs, and PTRDs are great weapons against tanks. Normal bullets can take down a tank with enough shots.
 Use the *surrender emote to surrender.
 You can use rope to build nooses.
-Good artillery can win the round for the Germans.
-War crimes are a part of life on the Eastern Front.
-Partisan shotguns are inaccurate compared to military-grade weapons, but they dish out immense damage.
-Read the wiki.
-Read the rules.
-The Italian Squad Leader's SMG, the Modello 38, accepts a bayonet. 
-If you're a doctor, making combat pills is an extremely effective tactic.
 Everyone dies eventually; don't get too salty about it. As they say, war is heck.
 You are twice as likely to hit someone if you shoot them from behind.
 Drag a keychain to your hand and use it on a door, instead of using individual keys.
-Donate at https://www.patreon.com/worldwar2inspace to submit a custom tip.
-Dabbing is bad and makes you valid.
-If you waltz around with a luger as a Doctor, don't complain when you get shot.
-Civilians who carry guns are valid.
+Civilians who carry guns in a combat area are a valid target for the Navy.
 Use the Emote tab to surrender at 2x speed.
 You can ping people using the format "@key". This is case insensitive.
-If you use a sniper rifle, aim for the head. Otherwise, aim for the chest to kill and the feet to cripple.
-Stew saves lives.
-You will probably die at least once by the end of the round.
+If you are a sharpshooter, aim for the head. Otherwise, aim for the chest to kill and the feet to cripple.
 Dogs can be named by clicking on them.
-As an medium or low ranking officer, you are fully capable of fighting on the front, but you should prioritize ordering supplies and organizing attacks.
+Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout, but does less damage. Slash will easily make your enemy bleed. Stabbing gives an higher probability of internal bleeding.
+You can switch between Parry mode and Dodge mode under the IC tab.

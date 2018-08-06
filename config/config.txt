@@ -9,13 +9,13 @@ RESOURCE_WEBSITE nil
 SERVER_NAME 1713 Alpha
 
 ## What features do you want to advertise on your hub message?
-HUB_FEATURES A new light-medium roleplay WW2 Server
+HUB_FEATURES XVIII Century Naval Combat
 
 ## The main content of your hub message
 HUB_BODY <i>1713 A.D.</i>, <b>Caribbean Sea, TIME_OF_DAY</b><br>
 
 ## Use a link to a banner on your hub message? Comment out if not
-HUB_BANNER_URL <img src='https://i.imgur.com/Ouxiybj.png'>
+HUB_BANNER_URL <img src="https://i.imgur.com/Ouxiybj.png">
 
 ## Open the hub discord link in a new window? 1 = yes, 0 = no
 OPEN_HUB_DISCORD_IN_NEW_WINDOW 1
@@ -93,7 +93,7 @@ LOG_PRAYER
 # KICK_INACTIVE
 
 ## Comment this out to stop admins being able to choose their personal ooccolor
-ALLOW_ADMIN_OOCCOLOR
+#ALLOW_ADMIN_OOCCOLOR
 
 ## If metadata is supported
 ALLOW_METADATA
@@ -123,7 +123,7 @@ NORESPAWN
 # DONT_DEL_NEWMOB
 
 ## set a hosted by name for unix platforms
-HOSTEDBY The Senate
+HOSTEDBY The Admiralship
 
 ## Set to jobban "Guest-" accounts from Captain, HoS, HoP, CE, RD, CMO, Warden, Security, Detective, and AI positions.
 ## Set to 1 to jobban them from those positions, set to 0 to allow them.
@@ -149,7 +149,7 @@ CHECK_RANDOMIZER
 #IPINTEL_DOMAIN check.getipintel.net
 
 ## Uncomment to allow web client connections
-#ALLOW_WEBCLIENT
+ALLOW_WEBCLIENT
 
 ## Uncomment to restrict web client connections to byond members
 ## This makes for a nice pay gate to cut down on ban evading, as the webclient's cid system isn't that great
@@ -172,25 +172,22 @@ ALLOW_TESTING_STAFF
 SERVER 192.210.161.174:23999
 
 ## forum address
-FORUMURL http://ww13.boards.net/
+FORUMURL 
 
 ## donation address
-DONATIONURL https://www.paypal.me/WW13Server
+DONATIONURL 
 
 ## rules address
-RULESURL http://mechahitler.co.nf/lebensraum/rules.html
+RULESURL 
 
 ## discord address
-DISCORDURL https://discord.gg/PVqjqCv
+DISCORDURL https://discord.gg/hBEtg4x
 
 ## Wiki address
-WIKIURL http://mechahitler.co.nf/wiki/media/index.php?title=Main_Page
+WIKIURL 
 
 ## Website address
-WEBSITEURL http://mechahitler.co.nf/
-
-##Rules address
-# RULESURL http://mechahitler.co.nf/lebensraum/rules.html
+WEBSITEURL 
 
 ##Github address
 GITHUBURL https://github.com/1713-SS13/1713/issues
@@ -201,7 +198,7 @@ GITHUBURL https://github.com/1713-SS13/1713/issues
 # GITHUBREPOID 3234987
 
 ## Ban appeals URL - usually for a forum or wherever people should go to contact your admins.
-# BANAPPEALS http://justanotherday.example.com
+# BANAPPEALS https://discord.gg/hBEtg4x
 
 ## Remove the # to show a popup 'reply to' window to every non-admin that recieves an adminPM.
 ## The intention is to make adminPMs more visible. (although I fnd popups annoying so this defaults to off)

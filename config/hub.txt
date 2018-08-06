@@ -37,9 +37,9 @@
 #### Actual definitions
 
 PREINFO nil
-TITLE <font color = red>Lebensraum</font>
-OOCDESC The official WW13 server, running the bleeding edge of the WW13 codebase.
-ICDESC {Timeofday}, {Weather}, {Season}, Ukraine.<br>The round time is {ROUNDTIME}. Map: {Map}.
-RPLEVEL Low-Medium Roleplay
-HOSTEDBY <b>Kachnov</b>
+TITLE <font color = red>1713</font>
+OOCDESC XVIII century fighting.
+ICDESC {Timeofday}, {Weather}, 1713 A.D.<br>The round time is {ROUNDTIME}. Map: {Map}.
+RPLEVEL Medium Roleplay
+HOSTEDBY <b>The Admiralship</b>
 POSTINFO nil
