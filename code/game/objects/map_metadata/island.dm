@@ -26,17 +26,8 @@
 	meme = TRUE
 	battle_name = "Skull Island"
 	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the combat starts.</font>"
-/*	var/done = FALSE
-/obj/map_metadata/island/check_events()
-	if ((world.time >= 300) && !done)
-		world << "Pirates are approaching!"
-		for (var/obj/effect/area_teleporter/AT)
-			AT.Activated()
-			world << "Pirates are trying to board the ship!"
-			done = TRUE
-			return TRUE
-	else return FALSE
-*/
+	var/done = FALSE
+
 /obj/map_metadata/island/british_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
 

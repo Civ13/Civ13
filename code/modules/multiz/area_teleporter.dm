@@ -12,11 +12,14 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	opacity = FALSE
 	var/active = TRUE
 	is_teleporter = TRUE
-	var/timer = 0			//immediate by default
+	var/timer = 600			//immediate by default
 
 /obj/effect/area_teleporter/New()
 	..()
 	AREA_TELEPORTERS += src
+	spawn(20)
+		Activated()
+		return
 
 /obj/effect/area_teleporter/Destroy()
 	AREA_TELEPORTERS -= src
@@ -26,21 +29,19 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	if (!id_target)
 		//user.loc = loc	//Stop at teleporter location, there is nowhere to teleport to.
 		return
+	spawn(600)
+		for (var/obj/effect/area_teleporter/BT)
+			if (BT.id == id_target)
+				for(var/obj/O in get_area(src))
+					if (!O.is_teleporter)
+						O.z = BT.z	//Teleport to destination's y level.
+	//					O.invisibility = 0
+						if (O.is_cover == TRUE)
+							O.updateturf()
+				for(var/mob/M in get_area(src))
+					M.z = BT.z	//Teleport to destination's y level.
+	/*			for(var/turf/T in get_area(BT))
+					for(var/turf/TD in BT)
+						TD.ChangeTurf(T)*/
 
-	for (var/obj/effect/area_teleporter/BT in AREA_TELEPORTERS)
-		if (BT.id == id_target)
-			if (active)
-				spawn(timer)
-					for(var/obj/O in get_area(src))
-						if (!O.is_teleporter)
-							O.z = BT.z	//Teleport to destination's y level.
-							O.invisibility = 1
-							if (O.is_cover == TRUE)
-								O.updateturf()
-					for(var/mob/M in get_area(src))
-						M.z = BT.z	//Teleport to destination's y level.
-/*					for(var/turf/T in get_area(BT))
-						for(var/turf/TD in BT)
-							TD.ChangeTurf(T)*/
-
-			return
+				return
