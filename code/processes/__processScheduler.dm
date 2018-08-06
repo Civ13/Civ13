@@ -152,40 +152,49 @@ var/global/processScheduler/processScheduler
 		if (world.time >= (last_queued[p] + p.schedule_interval))
 			setQueuedProcessState(p)
 
-// new processScheduler crap
-/processScheduler/proc/canProcess(var/process/p, var/list/tmpQueued)
-	return (p.always_runs || p.priority != PROCESS_PRIORITY_IRRELEVANT || p == tmpQueued[1] || p.may_run(95 - world.tick_usage))
 
 /processScheduler/proc/runQueuedProcesses()
+	#define MINIMUM_TICK_USAGE 10
+	#define MAXIMUM_TICK_USAGE 90
+	var/max_tick_usage = min(max(MINIMUM_TICK_USAGE, 100 - world.tick_usage), MAXIMUM_TICK_USAGE)
+	var/initial_tick_usage = world.tick_usage
 
-	// copy all processes
 	var/list/tmpQueued = queued.Copy()
 	var/list/processed = list()
 
-	// run for up to 95% of the world tick
-	for (var/process/p in tmpQueued)
-		if (canProcess(p, tmpQueued))
-			p.run_time_tick_usage = world.tick_usage
-			if (p.run_time_tick_usage_allowance == -1)
-				p.run_time_tick_usage_allowance = calculate_run_time_allowance(p.priority)
-			relayProcess(p, tmpQueued)
-			p.run_failures = 0
-			processed += p
+	main:
+		while (tmpQueued.len && (world.tick_usage-initial_tick_usage) < max_tick_usage)
+			for (var/process/p in tmpQueued)
+				if (p.frozen)
+					continue
+				var/used_tick_usage = world.tick_usage-initial_tick_usage
+				var/available_tick_usage = max_tick_usage - used_tick_usage
+				if (p.always_runs || p.priority != PROCESS_PRIORITY_IRRELEVANT || p == tmpQueued[1] || p.may_run(available_tick_usage))
+					p.run_time_tick_usage = world.tick_usage
+					if (p.run_time_tick_usage_allowance == -1)
+						p.run_time_tick_usage_allowance = calculate_run_time_allowance(p.priority)
+					// we finished our current run, reset our current_list to a fresh one
+					relayProcess(p, tmpQueued)
+					p.run_failures = 0
+					processed += p
+				else
+					if (p) // p might have been killed between now and when the loop started, causing a runtime
+						p.reset_current_list()
+						tmpQueued -= p
+				if (used_tick_usage >= max_tick_usage)
+					break main
 
-	// count run failures
-	countRunFailures(tmpQueued, processed)
+	for (var/process/p in queued-processed)
+		++p.run_failures
+	#undef MINIMUM_TICK_USAGE
+	#undef MAXIMUM_TICK_USAGE
+
 
 /processScheduler/proc/relayProcess(var/process/p, var/list/queue)
 	set waitfor = FALSE
 	if (p.process() != PROCESS_TICK_CHECK_RETURNED_EARLY)
 		p.reset_current_list()
 		queue -= p
-
-/processScheduler/proc/countRunFailures(var/list/queued, var/list/processed)
-	set waitfor = FALSE
-	sleep(world.tick_lag * 2)
-	for (var/process/p in queued-processed)
-		++p.run_failures
 
 /processScheduler/proc/addProcess(var/process/process)
 
