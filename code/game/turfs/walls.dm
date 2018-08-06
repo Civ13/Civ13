@@ -177,11 +177,7 @@ var/list/global/wall_cache = list()
 		material.place_dismantled_product(src,devastated)
 
 	for (var/obj/O in contents) //Eject contents!
-		if (istype(O,/obj/item/weapon/contraband/poster))
-			var/obj/item/weapon/contraband/poster/P = O
-			P.roll_and_drop(src)
-		else
-			O.loc = src
+		O.loc = src
 
 	material = get_material_by_name("placeholder")
 	reinf_material = null

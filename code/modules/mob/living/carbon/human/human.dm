@@ -443,16 +443,6 @@ var/list/rank_prefix = list(\
 		set_species()
 	return species.name
 
-/mob/living/carbon/human/proc/play_xylophone()
-	if (!xylophone)
-		visible_message("<span class = 'red'>\The [src] begins playing \his ribcage like a xylophone. It's quite spooky.</span>","<span class = 'notice'>You begin to play a spooky refrain on your ribcage.</span>","<span class = 'red'>You hear a spooky xylophone melody.</span>")
-		var/song = pick('sound/effects/xylophone1.ogg','sound/effects/xylophone2.ogg','sound/effects/xylophone3.ogg')
-		playsound(loc, song, 50, TRUE, -1)
-		xylophone = TRUE
-		spawn(1200)
-			xylophone=0
-	return
-
 /mob/living/carbon/human/proc/check_has_mouth()
 	// Todo, check stomach organ when implemented.
 	var/obj/item/organ/external/head/H = get_organ("head")

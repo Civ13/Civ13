@@ -281,18 +281,6 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 		if (S.spawn_flags & IS_WHITELISTED)
 			whitelisted_species += S.name
 
-	//Posters
-	paths = typesof(/datum/poster) - /datum/poster /*- /datum/poster/wanted*/
-	for (var/T in paths)
-		var/datum/poster/P = new T
-		poster_designs += P
-/*
-	//Corporations
-	paths = typesof(/datum/corporation) - /datum/corporation
-	for (var/T in paths)
-		var/datum/corporation/C = new T
-		global.global_corporations[C.name] = C
-*/
 	paths = typesof(/datum/hud) - /datum/hud
 	for (var/T in paths)
 		var/datum/hud/C = new T
