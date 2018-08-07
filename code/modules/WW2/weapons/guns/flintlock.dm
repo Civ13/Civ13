@@ -6,6 +6,8 @@
 	icon_state = "musket"
 	item_state = "musket"
 	w_class = 4
+	throw_range = 4
+	throw_speed = 2
 	force = 10
 	throwforce = 10
 	max_shells = 1 //duh
