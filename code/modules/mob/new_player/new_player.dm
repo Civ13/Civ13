@@ -95,12 +95,12 @@
 		height = 350
 		if (!reinforcements_master.has(src))
 			output += "<p><a href='byond://?src=\ref[src];re_british=1'>Join as an Axis reinforcement!</A></p>"
-			output += "<p><a href='byond://?src=\ref[src];re_russian=1'>Join as an Allied reinforcement!</A></p>"
+			output += "<p><a href='byond://?src=\ref[src];re_pirate=1'>Join as an Allied reinforcement!</A></p>"
 		else
 			if (reinforcements_master.has(src, BRITISH))
 				output += "<p><a href='byond://?src=\ref[src];unre_british=1'>Leave the Axis reinforcement pool.</A></p>"
 			else if (reinforcements_master.has(src, PIRATES))
-				output += "<p><a href='byond://?src=\ref[src];unre_russian=1'>Leave the Allies reinforcement pool.</A></p>"
+				output += "<p><a href='byond://?src=\ref[src];unre_pirate=1'>Leave the Allies reinforcement pool.</A></p>"
 	else
 		output += "<p><i>Reinforcements are not available yet.</i></p>"
 
@@ -243,13 +243,10 @@
 			if (client.prefs.s_tone < -30)
 				usr << "<span class='danger'>You are too dark to be a German soldier.</span>"
 				return
-			if (client.prefs.german_gender == FEMALE)
-				usr << "<span class='danger'>German soldiers must be male.</span>"
-				return
 			reinforcements_master.add(src, BRITISH)
 		else
 			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-	if (href_list["re_russian"])
+	if (href_list["re_pirate"])
 
 		if (client && client.quickBan_isbanned("Playing"))
 			src << "<span class = 'danger'>You're banned from playing.</span>"
@@ -265,7 +262,7 @@
 			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
 	if (href_list["unre_british"])
 		reinforcements_master.remove(src, BRITISH)
-	if (href_list["unre_russian"])
+	if (href_list["unre_pirate"])
 		reinforcements_master.remove(src, PIRATES)
 
 	if (href_list["late_join"])
@@ -671,13 +668,10 @@
 			var/datum/job/J = original_job
 			var/J_flag = J.base_type_flag()
 			var/client_prefs_original_gender = client.prefs.gender
-
-			if (list(PARTISAN, CIVILIAN).Find(J_flag))
-				client.prefs.gender = client.prefs.ukrainian_gender
-			else if (J_flag == BRITISH)
+			if (J_flag == BRITISH)
 				client.prefs.gender = client.prefs.english_gender
 			else if (J_flag == PIRATES)
-				client.prefs.gender = client.prefs.russian_gender
+				client.prefs.gender = client.prefs.pirate_gender
 
 			// traps came back, this should fix them for good - Kachnov
 			new_character.gender = client.prefs.gender

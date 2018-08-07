@@ -159,8 +159,6 @@ the HUD updates properly! */
 // faction HUDs processing and stuff
 
 /mob/living/carbon/human/proc/most_important_faction_hud_constant()
-	if (spy_faction)
-		return SPY_FACTION
 	if (officer_faction)
 		return OFFICER_FACTION
 	return BASE_FACTION
@@ -170,9 +168,6 @@ the HUD updates properly! */
 
 /mob/living/carbon/human/proc/squad_faction_hud_constant()
 	return SQUAD_FACTION
-
-/mob/living/carbon/human/proc/spy_faction_hud_constant()
-	return SPY_FACTION
 
 /proc/process_faction_hud(var/mob/M, var/mob/Alt)
 

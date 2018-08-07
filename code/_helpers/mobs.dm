@@ -72,34 +72,6 @@ proc/random_name(gender, species = "Human")
 	else
 		return current_species.get_random_name(gender)
 
-
-proc/random_german_name(gender, species = "Human")
-
-	var/datum/species/current_species
-	if (species)
-		current_species = all_species[species]
-
-	if (!current_species || current_species.name_language == null)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german))
-		else
-			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(last_names_german))
-	else
-		return current_species.get_random_german_name(gender)
-
-proc/random_italian_name(gender, species = "Human")
-
-	var/datum/species/current_species
-	if (species)
-		current_species = all_species[species]
-
-	if (!current_species || current_species.name_language == null)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_italian)) + " " + capitalize(pick(last_names_italian))
-		else
-			return capitalize(pick(first_names_male_italian)) + " " + capitalize(pick(last_names_italian))
-	else
-		return current_species.get_random_italian_name(gender)
 proc/random_english_name(gender, species = "Human")
 	var/datum/species/current_species
 	if (species)
@@ -113,18 +85,6 @@ proc/random_english_name(gender, species = "Human")
 	else
 		return current_species.get_random_english_name(gender)
 
-proc/random_japanese_name(gender, species = "Human")
-	var/datum/species/current_species
-	if (species)
-		current_species = all_species[species]
-
-	if (!current_species || current_species.name_language == null)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese))
-		else
-			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese))
-	else
-		return current_species.get_random_japanese_name(gender)
 
 proc/russify(var/list/name_list, gender)
 	var/list/l = name_list.Copy()
@@ -144,7 +104,7 @@ proc/polify(var/list/name_list, gender)
 		l[v] = name
 	return l
 
-proc/random_russian_name(gender, species = "Human")
+proc/random_pirate_name(gender, species = "Human")
 
 	var/datum/species/current_species
 
@@ -153,41 +113,11 @@ proc/random_russian_name(gender, species = "Human")
 
 	if (!current_species || current_species.name_language == null)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(russify(last_names_russian, gender)))
+			return capitalize(pick(first_names_female_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
 		else
-			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(russify(last_names_russian, gender)))
+			return capitalize(pick(first_names_male_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
 	else
-		return current_species.get_random_russian_name(gender)
-
-proc/random_ukrainian_name(gender, species = "Human")
-
-	var/datum/species/current_species
-
-	if (species)
-		current_species = all_species[species]
-
-	if (!current_species || current_species.name_language == null)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_ukrainian)) + " " + capitalize(pick(russify(last_names_ukrainian, gender)))
-		else
-			return capitalize(pick(first_names_male_ukrainian)) + " " + capitalize(pick(russify(last_names_ukrainian, gender)))
-	else
-		return current_species.get_random_ukrainian_name(gender)
-
-proc/random_polish_name(gender, species = "Human")
-
-	var/datum/species/current_species
-
-	if (species)
-		current_species = all_species[species]
-
-	if (!current_species || current_species.name_language == null)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_polish)) + " " + capitalize(pick(polify(last_names_polish, gender)))
-		else
-			return capitalize(pick(first_names_male_polish)) + " " + capitalize(pick(polify(last_names_polish, gender)))
-	else
-		return current_species.get_random_polish_name(gender)
+		return current_species.get_random_pirate_name(gender)
 
 proc/random_skin_tone()
 

@@ -1185,26 +1185,6 @@
 
 		never_set_faction_huds = FALSE
 
-		if (base_faction)
-			var/image/holder = hud_list[FACTION_TO_ENEMIES]
-			holder.icon = null
-			holder.icon_state = null
-			hud_list[FACTION_TO_ENEMIES] = holder
-
-		if (spy_faction)
-			var/image/holder = hud_list[SPY_FACTION]
-			holder.icon = 'icons/mob/hud_WW2.dmi'
-			switch (original_job.base_type_flag())
-				if (PIRATES)
-					holder.icon_state = spy_faction.icon_state
-				if (BRITISH)
-					holder.icon_state = spy_faction.icon_state
-				if (PARTISAN)
-					holder.icon_state = spy_faction.icon_state
-				if (CIVILIAN)
-					holder.icon_state = ""
-			hud_list[SPY_FACTION] = holder
-
 		if (officer_faction)
 			var/image/holder = hud_list[OFFICER_FACTION]
 			holder.icon = 'icons/mob/hud_WW2.dmi'

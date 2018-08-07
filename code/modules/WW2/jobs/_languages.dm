@@ -26,21 +26,6 @@
 	var/list/notes = list()
 
 	H.languages.Cut()
-	if (base_type_flag() == PIRATES)
-		if (H.client && H.client.prefs)
-			switch (H.client.prefs.pirates_ethnicity)
-				if (RUSSIAN)
-					H.add_language(RUSSIAN, TRUE)
-					H.add_note("Known Languages", "Russian")
-					notes += "Russian"
-				if (ENGLISH)
-					H.add_language(ENGLISH, TRUE)
-					H.add_note("Known Languages", "English")
-					notes += "English"
-				if (POLISH)
-					H.add_language(POLISH, TRUE)
-					H.add_note("Known Languages", "Polish")
-					notes += "Polish"
 
 	if (!H.languages.len)
 		H.add_language(default_language, TRUE)

@@ -102,13 +102,10 @@
 	var/datum/faction/base_faction = null
 	var/datum/faction/officer_faction = null
 	var/datum/faction/squad/squad_faction = null
-	var/datum/faction/spy_faction = null
 	var/faction_text = null
 
 	var/list/faction_images[100] // names are keys, values are images
 
-	var/is_spy = FALSE
-	var/is_jew = FALSE
 
 	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
 	var/obj/item/weapon/rig/wearing_rig // This is very not good, but it's much much better than calling get_rig() every update_canmove() call.

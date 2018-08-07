@@ -38,102 +38,13 @@
 
 	return "[trim(full_name)]"
 
-/datum/language/proc/get_random_german_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+
+/datum/language/proc/get_random_pirate_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german))
+			return capitalize(pick(first_names_female_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
 		else
-			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(last_names_german))
-
-	var/full_name = ""
-	var/new_name = ""
-
-	for (var/i = 0;i<name_count;i++)
-		new_name = ""
-		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
-			new_name += pick(syllables)
-		full_name += " [capitalize(lowertext(new_name))]"
-
-	return "[trim(full_name)]"
-
-
-/datum/language/proc/get_random_russian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
-	if (!syllables || !syllables.len)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(russify(last_names_russian, gender)))
-		else
-			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(russify(last_names_russian, gender)))
-
-	var/full_name = ""
-	var/new_name = ""
-
-	for (var/i = 0;i<name_count;i++)
-		new_name = ""
-		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
-			new_name += pick(syllables)
-		full_name += " [capitalize(lowertext(new_name))]"
-
-	return "[trim(full_name)]"
-
-/datum/language/proc/get_random_ukrainian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
-	if (!syllables || !syllables.len)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_ukrainian)) + " " + capitalize(pick(russify(last_names_ukrainian, gender)))
-		else
-			return capitalize(pick(first_names_male_ukrainian)) + " " + capitalize(pick(russify(last_names_ukrainian, gender)))
-
-	var/full_name = ""
-	var/new_name = ""
-
-	for (var/i = 0;i<name_count;i++)
-		new_name = ""
-		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
-			new_name += pick(syllables)
-		full_name += " [capitalize(lowertext(new_name))]"
-
-	return "[trim(full_name)]"
-
-/datum/language/proc/get_random_polish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
-	if (!syllables || !syllables.len)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_polish)) + " " + capitalize(pick(polify(last_names_polish, gender)))
-		else
-			return capitalize(pick(first_names_male_polish)) + " " + capitalize(pick(polify(last_names_polish, gender)))
-
-	var/full_name = ""
-	var/new_name = ""
-
-	for (var/i = 0;i<name_count;i++)
-		new_name = ""
-		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
-			new_name += pick(syllables)
-		full_name += " [capitalize(lowertext(new_name))]"
-
-	return "[trim(full_name)]"
-
-/datum/language/proc/get_random_italian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
-	if (!syllables || !syllables.len)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_italian)) + " " + capitalize(pick(last_names_italian))
-		else
-			return capitalize(pick(first_names_male_italian)) + " " + capitalize(pick(last_names_italian))
-
-	var/full_name = ""
-	var/new_name = ""
-
-	for (var/i = 0;i<name_count;i++)
-		new_name = ""
-		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
-			new_name += pick(syllables)
-		full_name += " [capitalize(lowertext(new_name))]"
-
-	return "[trim(full_name)]"
-/datum/language/proc/get_random_japanese_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
-	if (!syllables || !syllables.len)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese))
-		else
-			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese))
+			return capitalize(pick(first_names_male_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
 
 	var/full_name = ""
 	var/new_name = ""
@@ -295,73 +206,19 @@
 	else
 		new_language = all_languages[language]
 
-	var/cname_check = TRUE
 
 	for (var/v in 1 to languages.len)
-		var/datum/language/l = languages[v]
-		if (l)
-			if (istype(l, /datum/language/german))
-				cname_check = FALSE
-			else if (istype(l, /datum/language/russian))
-				cname_check = FALSE
-
-	if (cname_check && allow_name_changing)
-		if (istype(new_language, /datum/language/german))
-			if (ishuman(src))
+		if (istype(new_language, /datum/language/english))
+			if (ishuman(src) && src.faction == PIRATES)
 				var/mob/living/carbon/human/H = src
-				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_german)
-						H.real_name = H.species.get_random_german_name(H.gender, FALSE)
+				if (H.species && H.client && H.faction == PIRATES)
+					if (H.client.prefs.be_random_name_pirate)
+						H.real_name = H.species.get_random_pirate_name(H.gender, FALSE)
 					else
-						H.real_name = H.client.prefs.german_name
-					H.name = H.client.prefs.real_name
-
-		else if (istype(new_language, /datum/language/russian))
-			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_russian)
-						H.real_name = H.species.get_random_russian_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.russian_name
+						H.real_name = H.client.prefs.pirate_name
 					H.name = H.real_name
-					H.gender = H.client.prefs.russian_gender
-
-		else if (istype(new_language, /datum/language/ukrainian))
-			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_ukrainian)
-						H.real_name = H.species.get_random_ukrainian_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.ukrainian_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.ukrainian_gender
-
-		else if (istype(new_language, /datum/language/polish))
-			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_polish)
-						H.real_name = H.species.get_random_polish_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.polish_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.russian_gender
-
-		else if (istype(new_language, /datum/language/italian))
-			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_italian)
-						H.real_name = H.species.get_random_italian_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.italian_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.italian_gender
-
-		else if (istype(new_language, /datum/language/english))
-			if (ishuman(src))
+					H.gender = H.client.prefs.pirate_gender
+			else
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					if (H.client.prefs.be_random_name_english)
@@ -371,16 +228,6 @@
 					H.name = H.real_name
 					H.gender = H.client.prefs.english_gender
 
-		else if (istype(new_language, /datum/language/japanese))
-			if (ishuman(src))
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_japanese)
-						H.real_name = H.species.get_random_japanese_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.japanese_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.japanese_gender
 
 	if (!istype(new_language) || (new_language in languages))
 		return FALSE

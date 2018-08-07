@@ -56,17 +56,10 @@ bullet_act
 					H.adaptStat("rifle", 1)
 				if (GUN_TYPE_PISTOL)
 					H.adaptStat("pistol", 1)
-				if (GUN_TYPE_MG)
-					H.adaptStat("MG", 1)
 				if (GUN_TYPE_HEAVY)
 					H.adaptStat("heavyweapon", 1)
 
 	def_zone = check_zone(def_zone)
-	if (is_spy && istype(spy_faction, /datum/faction/pirates))
-		say("GOD DAMN IT HURTS", languages.Find(ENGLISH))
-
-	if (is_spy && istype(spy_faction, /datum/faction/british))
-		say("GOD DAMN IT HURTS", languages.Find(ENGLISH))
 
 
 	if (!has_organ(def_zone))

@@ -269,74 +269,20 @@
 		return "unknown"
 	return species_language.get_random_name(gender)
 
-/datum/species/proc/get_random_german_name(var/gender, var/jew)
-	if (!name_language)
-		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(russify(last_names_german, gender)))
-		else
-			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(russify(last_names_german, gender)))
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_german_name(gender)
 
-/datum/species/proc/get_random_russian_name(var/gender, var/jew)
+/datum/species/proc/get_random_pirate_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(russify(last_names_russian, gender)))
+			return capitalize(pick(first_names_female_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
 		else
-			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(russify(last_names_russian, gender)))
+			return capitalize(pick(first_names_male_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
 
 	var/datum/language/species_language = all_languages[name_language]
 	if (!species_language)
 		species_language = all_languages[default_language]
 	if (!species_language)
 		return "unknown"
-	return species_language.get_random_russian_name(gender)
-
-/datum/species/proc/get_random_ukrainian_name(var/gender, var/jew)
-	if (!name_language)
-		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_ukrainian)) + " " + capitalize(pick(russify(last_names_ukrainian, gender)))
-		else
-			return capitalize(pick(first_names_male_ukrainian)) + " " + capitalize(pick(russify(last_names_ukrainian, gender)))
-
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_ukrainian_name(gender)
-
-/datum/species/proc/get_random_polish_name(var/gender, var/jew)
-	if (!name_language)
-		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_polish)) + " " + capitalize(pick(polify(last_names_polish, gender)))
-		else
-			return capitalize(pick(first_names_male_polish)) + " " + capitalize(pick(polify(last_names_polish, gender)))
-
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_polish_name(gender)
-
-/datum/species/proc/get_random_italian_name(var/gender, var/jew)
-	if (!name_language)
-		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_italian)) + " " + capitalize(pick(russify(last_names_italian, gender)))
-		else
-			return capitalize(pick(first_names_male_italian)) + " " + capitalize(pick(russify(last_names_italian, gender)))
-
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_italian_name(gender)
+	return species_language.get_random_pirate_name(gender)
 
 /datum/species/proc/get_random_english_name(var/gender, var/jew)
 	if (!name_language)
@@ -352,19 +298,6 @@
 		return "unknown"
 	return species_language.get_random_english_name(gender)
 
-/datum/species/proc/get_random_japanese_name(var/gender, var/jew)
-	if (!name_language)
-		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(russify(last_names_japanese, gender)))
-		else
-			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(russify(last_names_japanese, gender)))
-
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_japanese_name(gender)
 
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 

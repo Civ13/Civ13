@@ -161,7 +161,7 @@
 /*
 	if (istype(src, /datum/category_group/player_setup_category/general_preferences_german))
 		user.client.prefs.current_character_type = BRITISH
-	else if (istype(src, /datum/category_group/player_setup_category/general_preferences_russian))
+	else if (istype(src, /datum/category_group/player_setup_category/general_preferences_pirate))
 		user.client.prefs.current_character_type = PIRATES
 */
 /datum/category_group/player_setup_category/occupation_preferences/content(var/mob/user)
