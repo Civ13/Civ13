@@ -64,8 +64,8 @@ var/list/admin_verbs_admin = list(
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
 	/client/proc/change_human_appearance_self,	// Allows the human-based mob itself change its basic appearance ,
 	/client/proc/view_chemical_reaction_logs,
-	/client/proc/allow_join_ruforce,
-	/client/proc/allow_join_geforce,
+/*	/client/proc/allow_join_ruforce,
+	/client/proc/allow_join_geforce,*/
 	/client/proc/end_all_grace_periods,
 	/client/proc/reset_all_grace_periods,
 	/datum/admins/proc/paralyze_mob,
@@ -235,15 +235,17 @@ var/list/admin_verbs_mod = list(
 	/client/proc/admin_memo,			//admin memo system. show/delete/write. +SERVER needed to delete admin memos of others,
 	/client/proc/player_memo,
 	/client/proc/game_panel,			//game panel, allows to change game-mode etc,
-	/client/proc/allow_join_ruforce,
+/*	/client/proc/allow_join_ruforce,
 	/client/proc/allow_join_geforce,
 	/client/proc/allow_rjoin_geforce,
 	/client/proc/allow_rjoin_ruforce,
 	/client/proc/force_reinforcements_geforce,
 	/client/proc/force_reinforcements_ruforce,
 	/client/proc/toggle_british_civilian_mode,
-	/client/proc/toggle_pirates_civilian_mode,
+	/client/proc/toggle_pirates_civilian_mode,*/
 	/client/proc/toggle_respawn_delays,
+	/client/proc/see_battle_report,
+	/client/proc/show_battle_report,
 	/client/proc/create_crate
 )
 

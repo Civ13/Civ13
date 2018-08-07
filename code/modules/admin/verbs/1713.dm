@@ -6,7 +6,7 @@
 	ticker.players_can_join = !ticker.players_can_join
 	world << "<big><b>You [(ticker.players_can_join) ? "can" : "can't"] join the game [(ticker.players_can_join) ? "now" : "anymore"].</b></big>"
 	message_admins("[key_name(src)] changed the playing setting.")
-
+/*
 /client/proc/allow_join_geforce()
 	set category = "Special"
 	set name = "Toggle joining (German)"
@@ -83,7 +83,7 @@
 	message_admins("[key_name(src)] tried to send reinforcements for the Russians.")
 
 	reinforcements_master.lock_check()
-
+*/
 // debugging
 /client/proc/reset_roundstart_autobalance()
 	set category = "Special"
@@ -119,24 +119,6 @@
 		message_admins("[key_name(src)] reset all grace periods!")
 		log_admin("[key_name(src)] reset all grace periods.")
 
-var/british_civilian_mode = FALSE
-var/pirates_civilian_mode = FALSE
-
-/client/proc/toggle_british_civilian_mode()
-	set category = "Special"
-	set name = "Toggle German Civilian Mode"
-	british_civilian_mode = !british_civilian_mode
-	var/M = "[key_name(src)] [british_civilian_mode ? "enabled" : "disabled"] German Civilian Mode - Civilians will [british_civilian_mode ? "now" : "no longer"] count towards the amount of Germans."
-	message_admins(M)
-	log_admin(M)
-
-/client/proc/toggle_pirates_civilian_mode()
-	set category = "Special"
-	set name = "Toggle Soviet Civilian Mode"
-	pirates_civilian_mode = !pirates_civilian_mode
-	var/M = "[key_name(src)] [pirates_civilian_mode ? "enabled" : "disabled"] Soviet Civilian Mode - Civilians will [pirates_civilian_mode ? "now" : "no longer"] count towards the amount of Soviets."
-	message_admins(M)
-	log_admin(M)
 var/civilians_toggled = TRUE
 var/british_toggled = TRUE
 var/pirates_toggled = TRUE
@@ -220,3 +202,93 @@ var/pirates_forceEnabled = FALSE
 	log_admin(M)
 	world << "<font size = 3><span class = 'notice'>Respawn delays are now <b>[config.no_respawn_delays ? "disabled" : "enabled"]</b>.</span></font>"
 
+
+
+/client/proc/show_battle_report()
+	set category = "Special"
+	set name = "Show Battle Report"
+
+	if (!processes.battle_report || !processes.battle_report.fires_at_gamestates.Find(ticker.current_state))
+		src << "<span class = 'warning'>You can't send a battle report right now.</span>"
+		return
+
+	// to prevent showing multiple battle reports - Kachnov
+	if (processes.battle_report)
+		message_admins("[key_name(src)] showed everyone the battle report.")
+		processes.battle_report.BR_ticks = processes.battle_report.max_BR_ticks
+	else
+		show_global_battle_report(src)
+
+/client/proc/see_battle_report()
+	set category = "Special"
+	set name = "See Battle Report"
+	if (!processes.battle_report || !processes.battle_report.fires_at_gamestates.Find(ticker.current_state))
+		src << "<span class = 'warning'>You can't see the battle report right now.</span>"
+		return
+	show_global_battle_report(src, TRUE)
+
+/proc/show_global_battle_report(var/shower, var/private = FALSE)
+
+	var/total_pirates = alive_pirates.len + dead_pirates.len + heavily_injured_pirates.len
+	var/total_british = alive_british.len + dead_british.len + heavily_injured_british.len
+	var/total_civilians = alive_civilians.len + dead_civilians.len + heavily_injured_civilians.len
+
+
+	var/mortality_coefficient_pirates = 0
+	var/mortality_coefficient_british = 0
+	var/mortality_coefficient_civilian = 0
+
+	if (dead_british.len > 0)
+		mortality_coefficient_british = dead_british.len/total_british
+
+	if (dead_pirates.len > 0)
+		mortality_coefficient_pirates = dead_pirates.len/total_pirates
+
+	if (dead_civilians.len > 0)
+		mortality_coefficient_civilian = dead_civilians.len/total_civilians
+
+
+	var/mortality_british = round(mortality_coefficient_british*100)
+	var/mortality_pirates = round(mortality_coefficient_pirates*100)
+	var/mortality_civilian = round(mortality_coefficient_civilian*100)
+
+	var/msg1 = "British Side: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
+	var/msg2 = "Pirate Side: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
+	var/msg3 = "Civilians: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+
+	if (map && !map.faction_organization.Find(BRITISH))
+		msg1 = null
+	if (map && !map.faction_organization.Find(PIRATES))
+		msg2 = null
+	if (map && !map.faction_organization.Find(CIVILIAN))
+		msg3 = null
+
+	var/public = "Yes"
+
+	if (shower && !private)
+		public = WWinput(shower, "Show the report to the entire server?", "Battle Report", "Yes", list("Yes", "No"))
+	else if (private)
+		public = "No"
+
+	if (public == "Yes")
+		if (!shower || (input(shower, "Are you sure you want to show the battle report? Unless the Battle Controller Process died, it will happen automatically!", "Battle Report") in list ("Yes", "No")) == "Yes")
+			world << "<font size=4>Battle status report:</font>"
+
+			if (msg1)
+				world << "<font size=3>[msg1]</font>"
+			if (msg2)
+				world << "<font size=3>[msg2]</font>"
+			if (msg3)
+				world << "<font size=3>[msg3]</font>"
+
+			if (shower)
+				message_admins("[key_name(shower)] showed everyone the battle report.")
+			else
+				message_admins("the <b>Battle Controller Process</b> showed everyone the battle report.")
+	else
+		if (msg1)
+			shower << msg1
+		if (msg2)
+			shower << msg2
+		if (msg3)
+			shower << msg3
