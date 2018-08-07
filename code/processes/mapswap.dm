@@ -1,8 +1,8 @@
 /process/mapswap
 	// map = required players
 	var/list/maps = list(
-//		MAP_NAVAL = 0,
-		MAP_ISLAND = 0,
+		MAP_NAVAL = 0,
+//		MAP_ISLAND = 0,
 //		MAP_VOYAGE = 10,
 	)
 

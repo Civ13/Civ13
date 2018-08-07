@@ -170,7 +170,7 @@
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
 	move_delay = 3
 	fire_delay = 3
-	load_delay = 120
+	load_delay = 100
 	stat = "pistol"
 	accuracy_list = list(
 
