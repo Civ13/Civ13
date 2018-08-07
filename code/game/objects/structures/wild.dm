@@ -79,7 +79,7 @@
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 
-/obj/structure/wild/tree/New()
+/obj/structure/wild/palm/New()
 	..()
 	icon_state = pick("palm1","palm2")
 
