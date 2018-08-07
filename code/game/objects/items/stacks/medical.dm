@@ -155,14 +155,14 @@
 						user << "<span class='notice'>You must stand still to bandage wounds.</span>"
 						break
 					if (W.current_stage <= W.max_bleeding_stage)
-						user.visible_message("<span class='notice'>\The [user] cleans \a [W.desc] on [M]'s [affecting.name] and seals the edges with bioglue.</span>", \
-						                     "<span class='notice'>You clean and seal \a [W.desc] on [M]'s [affecting.name].</span>" )
+						user.visible_message("<span class='notice'>\The [user] cleans \a [W.desc] on [M]'s [affecting.name] and covers it with a bandage.</span>", \
+						                     "<span class='notice'>You clean and cover \a [W.desc] on [M]'s [affecting.name].</span>" )
 					else if (W.damage_type == BRUISE)
 						user.visible_message("<span class='notice'>\The [user] places a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>", \
 						                              "<span class='notice'>You place a medical patch over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					else
-						user.visible_message("<span class='notice'>\The [user] smears some bioglue over \a [W.desc] on [M]'s [affecting.name].</span>", \
-						                              "<span class='notice'>You smear some bioglue over \a [W.desc] on [M]'s [affecting.name].</span>" )
+						user.visible_message("<span class='notice'>\The [user] smears some ointment over \a [W.desc] on [M]'s [affecting.name].</span>", \
+						                              "<span class='notice'>You smear some ointment over \a [W.desc] on [M]'s [affecting.name].</span>" )
 					W.bandage()
 					W.disinfect()
 					W.heal_damage(heal_brute)
