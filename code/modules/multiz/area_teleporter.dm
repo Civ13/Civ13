@@ -17,7 +17,6 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 /obj/effect/area_teleporter/New()
 	..()
 	AREA_TELEPORTERS += src
-
 /obj/effect/area_teleporter/Destroy()
 	AREA_TELEPORTERS -= src
 	return ..()
