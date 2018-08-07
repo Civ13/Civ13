@@ -95,7 +95,6 @@ var/global/obj/map_metadata/map = null
 
 	// makes win condition helper datum
 	win_condition = new
-var/do_once_activations = TRUE
 // called from the map process
 /obj/map_metadata/proc/tick()
 
@@ -142,10 +141,6 @@ var/do_once_activations = TRUE
 	last_crossing_block_status[BRITISH] = british_can_cross_blocks()
 	last_crossing_block_status[PIRATES] = pirates_can_cross_blocks()
 
-	if (playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
-	for (var/obj/effect/area_teleporter/AT)
-		AT.Activated()
-	do_once_activations = FALSE
 
 	if (event_faction)
 		last_crossing_block_status[event_faction] = specialfaction_can_cross_blocks()

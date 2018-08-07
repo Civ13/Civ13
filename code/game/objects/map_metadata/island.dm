@@ -7,6 +7,7 @@
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
 	reinforcements = FALSE
+	var/do_once_activations = TRUE
 //	min_autobalance_players = 90
 	faction_organization = list(
 		BRITISH,
@@ -36,5 +37,12 @@
 
 /obj/map_metadata/island/reinforcements_ready()
 	return (british_can_cross_blocks() && pirates_can_cross_blocks())
+
+/obj/map_metadata/island/tick()
+	..()
+	if (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+		for (var/obj/effect/area_teleporter/AT)
+			AT.Activated()
+		do_once_activations = FALSE
 
 #undef NO_WINNER
