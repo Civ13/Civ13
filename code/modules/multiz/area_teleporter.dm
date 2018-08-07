@@ -12,14 +12,11 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	opacity = FALSE
 	var/active = TRUE
 	is_teleporter = TRUE
-	var/timer = 600			//immediate by default
+	var/timer = 0			//immediate by default
 
 /obj/effect/area_teleporter/New()
 	..()
 	AREA_TELEPORTERS += src
-	spawn(20)
-		Activated()
-		return
 
 /obj/effect/area_teleporter/Destroy()
 	AREA_TELEPORTERS -= src
@@ -29,7 +26,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	if (!id_target)
 		//user.loc = loc	//Stop at teleporter location, there is nowhere to teleport to.
 		return
-	spawn(6000)
+	spawn(20)
 		for (var/obj/effect/area_teleporter/BT)
 			if (BT.id == id_target)
 				for(var/obj/O in get_area(src))
