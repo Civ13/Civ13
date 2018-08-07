@@ -313,7 +313,7 @@
 				var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = item
 				if (B.rag && B.rag.on_fire)
 					var/nothrow = FALSE
-					if (map && !map.pirates_can_cross_blocks() && list(PARTISAN, CIVILIAN, PIRATES).Find(H.original_job.base_type_flag()))
+					if (map && !map.pirates_can_cross_blocks() && list(CIVILIAN, PIRATES).Find(H.original_job.base_type_flag()))
 						nothrow = TRUE
 					else if (map && !map.british_can_cross_blocks() && list(BRITISH).Find(H.original_job.base_type_flag()))
 						nothrow = TRUE

@@ -137,8 +137,6 @@ var/pirates_civilian_mode = FALSE
 	var/M = "[key_name(src)] [pirates_civilian_mode ? "enabled" : "disabled"] Soviet Civilian Mode - Civilians will [pirates_civilian_mode ? "now" : "no longer"] count towards the amount of Soviets."
 	message_admins(M)
 	log_admin(M)
-
-var/partisans_toggled = TRUE
 var/civilians_toggled = TRUE
 var/british_toggled = TRUE
 var/pirates_toggled = TRUE
@@ -153,7 +151,6 @@ var/pirates_toggled = TRUE
 
 	var/list/choices = list()
 
-	choices += "PARTISANS ([partisans_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CIVILIANS ([civilians_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "BRITISH ([british_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "PIRATES ([pirates_toggled ? "ENABLED" : "DISABLED"])"
@@ -164,10 +161,6 @@ var/pirates_toggled = TRUE
 	if (choice == "CANCEL")
 		return
 
-	if (findtext(choice, "PARTISANS"))
-		partisans_toggled = !partisans_toggled
-		world << "<span class = 'warning'>The Partisan faction has been [partisans_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the Partisan faction 'enabled' setting to [partisans_toggled].")
 	else if (findtext(choice, "CIVILIANS"))
 		civilians_toggled = !civilians_toggled
 		world << "<span class = 'warning'>The Civilian faction has been [civilians_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
@@ -181,7 +174,6 @@ var/pirates_toggled = TRUE
 		world << "<span class = 'warning'>The Soviet faction has been [pirates_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Soviet faction 'enabled' setting to [pirates_toggled].")
 
-var/partisans_forceEnabled = FALSE
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -196,7 +188,6 @@ var/pirates_forceEnabled = FALSE
 
 	var/list/choices = list()
 
-	choices += "PARTISANS ([partisans_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CIVILIANS ([civilians_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "BRITISH ([british_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "PIRATES ([pirates_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
@@ -207,10 +198,6 @@ var/pirates_forceEnabled = FALSE
 	if (choice == "CANCEL")
 		return
 
-	if (findtext(choice, "PARTISANS"))
-		partisans_forceEnabled = !partisans_forceEnabled
-		world << "<span class = 'notice'>The Partisan faction [partisans_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
-		message_admins("[key_name(src)] changed the Partisan faction 'forceEnabled' setting to [partisans_forceEnabled].")
 	else if (findtext(choice, "CIVILIANS"))
 		civilians_forceEnabled = !civilians_forceEnabled
 		world << "<span class = 'notice'>The Civilian faction [civilians_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"

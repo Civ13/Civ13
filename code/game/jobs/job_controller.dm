@@ -18,9 +18,7 @@ var/global/datum/controller/occupations/job_master
 			faction_organized_occupations_separate_lists[Jflag] = list()
 		faction_organized_occupations_separate_lists[Jflag] += J
 	if (!map)
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[UKRAINIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CIVILIAN]
-		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PARTISAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[BRITISH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PIRATES]
 	else
@@ -30,7 +28,7 @@ var/global/datum/controller/occupations/job_master
 /datum/controller/occupations
 		//List of all jobs
 	var/list/occupations = list()
-		//List of all jobs ordered by faction: German, Soviet, Italian, Ukrainian, Civilian, Partisan
+		//List of all jobs ordered by faction
 	var/list/faction_organized_occupations = list()
 		//Players who need jobs
 	var/list/unassigned = list()
@@ -40,7 +38,6 @@ var/global/datum/controller/occupations/job_master
 	var/pirates_count = 0
 	var/british_count = 0
 	var/civilian_count = 0
-	var/partisan_count = 0
 */
 	var/current_british_squad = 1
 	var/current_pirates_squad = 1
@@ -58,7 +55,6 @@ var/global/datum/controller/occupations/job_master
 	var/pirates_officer_squad_info[4]
 
 	var/civilians_were_enabled = FALSE
-	var/partisans_were_enabled = FALSE
 
 	var/admin_expected_clients = 0
 
@@ -92,15 +88,14 @@ var/global/datum/controller/occupations/job_master
 		announce = FALSE
 
 
-	if (!is_side_locked(CIVILIAN) && map && map.faction_organization.Find(CIVILIAN) && map.faction_organization.Find(PARTISAN))
+	if (!is_side_locked(CIVILIAN) && map && map.faction_organization.Find(CIVILIAN))
 		if (autobalance_for_players >= PLAYER_THRESHOLD_HIGHEST-10)
 			if (announce)
-				world << "<font size = 3><span class = 'notice'>Civilian and Partisan factions are enabled.</span></font>"
+				world << "<font size = 3><span class = 'notice'>Civilian faction is enabled.</span></font>"
 			civilians_were_enabled = TRUE
-			partisans_were_enabled = TRUE
 		else
 			if (map)
-				map.faction_organization -= list(CIVILIAN, PARTISAN)
+				map.faction_organization -= list(CIVILIAN)
 
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job
@@ -310,8 +305,6 @@ var/global/datum/controller/occupations/job_master
 
 		if (!spawn_location)
 			switch (H.original_job.base_type_flag())
-				if (PARTISAN)
-					spawn_location = "JoinLatePartisan"
 				if (PIRATES)
 					spawn_location = "JoinLateHeer"
 				if (BRITISH)
@@ -434,10 +427,6 @@ var/global/datum/controller/occupations/job_master
 		if (civilians_forceEnabled)
 			return FALSE
 		return map.game_really_started()
-	else if (side == PARTISAN)
-		if (partisans_forceEnabled)
-			return FALSE
-		return map.game_really_started()
 	return FALSE
 
 // this is a solution to 5 british and 1 pirates on lowpop.
@@ -447,16 +436,11 @@ var/global/datum/controller/occupations/job_master
 	var/pirates = alive_n_of_side(PIRATES)
 	var/british = alive_n_of_side(BRITISH)
 	var/civilians = alive_n_of_side(CIVILIAN)
-	var/partisans = alive_n_of_side(PARTISAN)
-//	var/poles = alive_n_of_side(POLISH_INSURGENTS)
-//	var/americans = alive_n_of_side(USA)
-//	var/japanese = alive_n_of_side(BRITISH)
 
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
 	var/max_pirates = INFINITY
 	var/max_civilians = INFINITY
-	var/max_partisans = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -466,8 +450,6 @@ var/global/datum/controller/occupations/job_master
 		if (map.faction_distribution_coeffs.Find(CIVILIAN))
 			max_civilians = ceil(relevant_clients * map.faction_distribution_coeffs[CIVILIAN])
 
-		if (map.faction_distribution_coeffs.Find(PARTISAN))
-			max_partisans = ceil(relevant_clients * map.faction_distribution_coeffs[PARTISAN])
 
 		if (map.faction_distribution_coeffs.Find(PIRATES))
 			max_pirates = ceil(relevant_clients * map.faction_distribution_coeffs[PIRATES])
@@ -485,12 +467,6 @@ var/global/datum/controller/occupations/job_master
 			++max_pirates
 
 	switch (side)
-		if (PARTISAN)
-			if (partisans_forceEnabled)
-				return FALSE
-			if (partisans >= max_partisans)
-				return TRUE
-			return FALSE
 		if (CIVILIAN)
 			if (civilians_forceEnabled)
 				return FALSE
@@ -507,7 +483,5 @@ var/global/datum/controller/occupations/job_master
 				return FALSE
 			if (pirates >= max_pirates)
 				return TRUE
-		if (UKRAINIAN)
-			return TRUE
 
 	return FALSE

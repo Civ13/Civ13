@@ -469,7 +469,7 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_pirates.len] Pirates, [alive_partisans.len] Partisans, [alive_civilians.len] Civilians."
+	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_pirates.len] Pirates, [alive_civilians.len] Civilians."
 	dat += "<br>"
 	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 	dat += "<br>"
@@ -477,7 +477,6 @@
 //	var/list/restricted_choices = list()
 
 	var/list/available_jobs_per_side = list(
-		PARTISAN = FALSE,
 		CIVILIAN = FALSE,
 		PIRATES = FALSE,
 		BRITISH = FALSE)
@@ -516,8 +515,6 @@
 		if (map && !map.job_enabled_specialcheck(job))
 			job_is_available = FALSE
 
-		if (istype(job, /datum/job/partisan) && !istype(job, /datum/job/partisan/civilian) && !partisans_toggled)
-			job_is_available = FALSE
 
 		if (istype(job, /datum/job/partisan/civilian) && !civilians_toggled)
 			job_is_available = FALSE

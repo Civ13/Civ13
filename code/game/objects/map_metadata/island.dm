@@ -1,4 +1,4 @@
-#define NO_WINNER "No ship has been captured."
+#define NO_WINNER "No faction has captured the enemy's base."
 /obj/map_metadata/island
 	ID = MAP_ISLAND
 	title = "Skull Island (125x125x2)"
@@ -18,18 +18,18 @@
 		list(PIRATES) = /area/caribbean/pirates/land/inside
 		)
 	front = "Pacific"
-	faction_distribution_coeffs = list(BRITISH = 0.6, PIRATES = 0.4)
+	faction_distribution_coeffs = list(BRITISH = 0.5, PIRATES = 0.5)
 	songs = list(
 		"Fish in the Sea:1" = 'sound/music/shanties/fish_in_the_sea.ogg',
 		"Spanish Ladies:1" = 'sound/music/shanties/spanish_ladies.ogg',
 		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
 	meme = TRUE
 	battle_name = "Skull Island"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the combat starts.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the combat starts. Pirates will be able to board the ship after 10 minutes.</font>"
 	var/done = FALSE
 
 /obj/map_metadata/island/british_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/island/pirates_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)

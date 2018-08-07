@@ -297,7 +297,6 @@ var/global/obj/map_metadata/map = null
 
 	var/list/soldiers = list(
 		CIVILIAN = 0,
-		PARTISAN = 0,
 		BRITISH = 0,
 		PIRATES = 0)
 
@@ -369,8 +368,6 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/roundend_condition_def2name(define)
 	switch (define)
-		if (PARTISAN)
-			return "Partisan"
 		if (BRITISH)
 			return "British"
 		if (PIRATES)
@@ -378,18 +375,16 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
-		if (PARTISAN)
-			return "Partisan Group"
 		if (BRITISH)
 			return "Royal Navy"
 		if (PIRATES)
-			return "Pirate group"
+			return "Pirates"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("Royal Navy")
 			return "British"
-		if ("Pirate group")
+		if ("Pirates")
 			return "Pirate"
 
 /obj/map_metadata/proc/special_relocate(var/mob/M)

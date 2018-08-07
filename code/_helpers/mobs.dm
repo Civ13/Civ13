@@ -113,9 +113,9 @@ proc/random_pirate_name(gender, species = "Human")
 
 	if (!current_species || current_species.name_language == null)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
+			return capitalize(pick(first_names_female_pirate)) + " " + capitalize(pick(last_names_pirate))
 		else
-			return capitalize(pick(first_names_male_pirate)) + " " + capitalize(pick(russify(last_names_pirate, gender)))
+			return capitalize(pick(first_names_male_pirate)) + " " + capitalize(pick(last_names_pirate))
 	else
 		return current_species.get_random_pirate_name(gender)
 
@@ -399,39 +399,12 @@ Proc for attack log creation, because really why not
 	return pirates
 
 
-/proc/getukrainianmobs(var/alive = FALSE)
-	var/list/ukrainians = list()
-	for (var/mob/living/carbon/human/H in mob_list)
-		if (!istype(H))
-			continue
-		if (!H.loc)
-			continue
-		if (alive && H.stat == DEAD)
-			continue
-		if (!istype(H.original_job, /datum/job/partisan))
-			continue
-		if (istype(H, /mob/living/carbon/human/corpse))
-			continue
-		ukrainians += H
-
-	return ukrainians
-
-
 /proc/getcivilians(var/alive = FALSE)
-	var/list/ukrainians = getukrainianmobs(alive)
 	var/list/civilians = list()
-	for (var/mob/living/carbon/human/H in ukrainians)
+	for (var/mob/living/carbon/human/H in mob_list)
 		if (istype(H.original_job, /datum/job/partisan/civilian))
 			civilians += H
 	return civilians
-
-/proc/getpartisans(var/alive = FALSE)
-	var/list/ukrainians = getukrainianmobs(alive)
-	var/list/partisans = list()
-	for (var/mob/living/carbon/human/H in ukrainians)
-		if (!istype(H.original_job, /datum/job/partisan/civilian))
-			partisans += H
-	return partisans
 
 /proc/getfitmobs(var/faction)
 
@@ -445,8 +418,6 @@ Proc for attack log creation, because really why not
 			mobs = getbritishmobs(0)
 		if (PIRATES)
 			mobs = getpiratesmobs(0)
-		if (PARTISAN)
-			mobs = getpartisans(0)
 		if (CIVILIAN)
 			mobs = getcivilians(0)
 

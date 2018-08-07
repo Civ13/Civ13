@@ -3,17 +3,14 @@
 var/list/alive_british = list()
 var/list/alive_pirates = list()
 var/list/alive_civilians = list()
-var/list/alive_partisans = list()
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
 var/list/heavily_injured_civilians = list()
-var/list/heavily_injured_partisans = list()
 
 var/list/dead_british = list()
 var/list/dead_pirates = list()
 var/list/dead_civilians = list()
-var/list/dead_partisans = list()
 
 
 var/list/recently_died = list()
@@ -37,10 +34,6 @@ var/list/recently_died = list()
 			dead = dead_civilians
 			injured = heavily_injured_civilians
 			alive = alive_civilians
-		if (PARTISAN)
-			dead = dead_partisans
-			injured = heavily_injured_partisans
-			alive = alive_partisans
 
 	return list(alive, dead, injured)
 

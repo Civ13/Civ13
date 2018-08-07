@@ -32,10 +32,6 @@
 /proc/total_n_of_side(x)
 	. = 0
 	switch (x)
-		if (PARTISAN)
-			return dead_partisans.len + heavily_injured_partisans.len + alive_partisans.len
-		if (CIVILIAN)
-			return dead_civilians.len + heavily_injured_civilians.len + alive_civilians.len
 		if (BRITISH)
 			return dead_british.len + heavily_injured_british.len + alive_british.len
 		if (PIRATES)

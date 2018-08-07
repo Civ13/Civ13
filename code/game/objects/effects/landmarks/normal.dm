@@ -1,4 +1,3 @@
-var/area/partisan_stockpile = null
 
 /obj/effect/landmark
 	name = "landmark"

@@ -669,7 +669,6 @@
 #include "code\modules\WW2\crates.dm"
 #include "code\modules\WW2\doctor_handbook.dm"
 #include "code\modules\WW2\fluff_objs.dm"
-#include "code\modules\WW2\hats.dm"
 #include "code\modules\WW2\helmet.dm"
 #include "code\modules\WW2\lantern.dm"
 #include "code\modules\WW2\medals.dm"

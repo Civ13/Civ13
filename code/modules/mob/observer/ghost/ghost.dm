@@ -299,8 +299,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 /mob/observer/ghost/verb/follow_pirates(input in getfitmobs(PIRATES)+"Cancel")
 	set category = "Ghost"
-	set name = "Follow a Soviet"
-	set desc = "Follow and haunt a living Soviet."
+	set name = "Follow a Pirate"
+	set desc = "Follow and haunt a living Pirate."
 
 	if (input != "Cancel")
 		var/list/mobs = getfitmobs(PIRATES)
@@ -309,21 +309,11 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 /mob/observer/ghost/verb/follow_british(input in getfitmobs(BRITISH)+"Cancel")
 	set category = "Ghost"
-	set name = "Follow a German"
-	set desc = "Follow and haunt a living German."
+	set name = "Follow a British"
+	set desc = "Follow and haunt a living British."
 
 	if (input != "Cancel")
 		var/list/mobs = getfitmobs(BRITISH)
-		if (mobs[input])
-			ManualFollow(mobs[input])
-
-/mob/observer/ghost/verb/follow_partisan(input in getfitmobs(PARTISAN)+"Cancel")
-	set category = "Ghost"
-	set name = "Follow a Partisan"
-	set desc = "Follow and haunt a living Partisan."
-
-	if (input != "Cancel")
-		var/list/mobs = getfitmobs(PARTISAN)
 		if (mobs[input])
 			ManualFollow(mobs[input])
 

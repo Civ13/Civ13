@@ -3,9 +3,8 @@
 	faction = "Station"
 
 /datum/job/pirates/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_english_name(H.gender)
+	H.name = H.species.get_random_pirate_name(H.gender)
 	H.real_name = H.name
-	H.s_tone = 58
 
 /datum/job/pirates/captain
 	title = "Pirate Captain"

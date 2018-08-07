@@ -1193,8 +1193,6 @@
 					holder.icon_state = officer_faction.icon_state
 				if (BRITISH)
 					holder.icon_state = officer_faction.icon_state
-				if (PARTISAN)
-					holder.icon_state = officer_faction.icon_state
 				if (CIVILIAN)
 					holder.icon_state = ""
 			hud_list[OFFICER_FACTION] = holder
@@ -1206,8 +1204,6 @@
 				if (PIRATES)
 					holder.icon_state = base_faction.icon_state
 				if (BRITISH)
-					holder.icon_state = base_faction.icon_state
-				if (PARTISAN)
 					holder.icon_state = base_faction.icon_state
 				if (CIVILIAN)
 					holder.icon_state = ""

@@ -393,12 +393,6 @@
 						msg += "<br><i>You recognize [T.him] as a <b>[original_job.title]</b>.</i>"
 				else // examining someone on another team
 
-					// make partisans show up as civs
-					var/team = original_job.base_type_flag()
-					var/display = capitalize(lowertext(team))
-					if (display == "Partisan")
-						display = "Civilian"
-
 		else if (isobserver(user))
 			msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
 
