@@ -226,16 +226,12 @@ var/list/organ_cache = list()
 
 /obj/item/organ/proc/take_damage(amount, var/silent=0)
 
-	if (status & ORGAN_ROBOT)
-		damage = between(0, damage + (amount * 0.8), max_damage)
-	else
-		damage = between(0, damage + amount, max_damage)
+	damage = between(0, damage + amount, max_damage)
 
-		//only show this if the organ is not robotic
-		if (owner && parent_organ && amount > 0)
-			var/obj/item/organ/external/parent = owner.get_organ(parent_organ)
-			if (parent && !silent)
-				owner.custom_pain("Something inside your [parent.name] hurts a lot.", TRUE)
+	if (owner && parent_organ && amount > 0)
+		var/obj/item/organ/external/parent = owner.get_organ(parent_organ)
+		if (parent && !silent)
+			owner.custom_pain("Something inside your [parent.name] hurts a lot.", TRUE)
 
 /obj/item/organ/proc/bruise()
 	damage = max(damage, min_bruised_damage)

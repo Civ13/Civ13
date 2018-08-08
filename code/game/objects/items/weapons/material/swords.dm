@@ -90,7 +90,7 @@
 	item_state = "smallsword"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.6 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 15
@@ -102,7 +102,7 @@
 	item_state = "spadroon"
 	throw_speed = 3
 	throw_range = 3
-	force_divisor = 0.8 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.8 // 48 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
