@@ -859,7 +859,7 @@ var/list/be_special_flags = list(
 
 #define NEXT_MOVE_DELAY 8
 
-#define DROPLIMB_EDGE FALSE
+#define DROPLIMB_EDGE TRUE
 #define DROPLIMB_BLUNT TRUE
 #define DROPLIMB_BURN 2
 
