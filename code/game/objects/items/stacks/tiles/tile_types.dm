@@ -89,16 +89,6 @@
 	throw_range = 20
 	flags = CONDUCT
 
-/obj/item/stack/tile/floor/techgrey
-	name = "grey techfloor tile"
-	singular_name = "grey techfloor tile"
-	icon_state = "techtile_grey"
-
-/obj/item/stack/tile/floor/techgrid
-	name = "grid techfloor tile"
-	singular_name = "grid techfloor tile"
-	icon_state = "techtile_grid"
-
 /obj/item/stack/tile/floor/steel
 	name = "steel floor tile"
 	singular_name = "steel floor tile"
@@ -116,13 +106,3 @@
 	singular_name = "dark floor tile"
 	icon_state = "fr_tile"
 	matter = list("plasteel" = 937.5)
-
-/obj/item/stack/tile/floor/cyborg
-	name = "floor tile synthesizer"
-	desc = "A device that makes floor tiles."
-	gender = NEUTER
-	matter = null
-	uses_charge = TRUE
-	charge_costs = list(250)
-	stacktype = /obj/item/stack/tile/floor
-	build_type = /obj/item/stack/tile/floor

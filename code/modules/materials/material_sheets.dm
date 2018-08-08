@@ -101,10 +101,6 @@
 	icon_state = "sheet-diamond"
 	default_type = "diamond"
 
-/obj/item/stack/material/barbwire
-	name = "Barbwire"
-	icon_state = "barbwire_stack"
-	default_type = "barbedwire"
 
 /obj/item/stack/material/rope
 	name = "Rope"
@@ -133,15 +129,6 @@
 			if (amount < 1)
 				qdel(src)
 
-/obj/item/stack/material/uranium
-	name = "uranium"
-	icon_state = "sheet-uranium"
-	default_type = "uranium"
-
-/obj/item/stack/material/plasma
-	name = "solid plasma"
-	icon_state = "sheet-plasma"
-	default_type = "plasma"
 
 /obj/item/stack/material/gold
 	name = "gold"
@@ -163,12 +150,6 @@
 	name = DEFAULT_WALL_MATERIAL
 	icon_state = "sheet-metal"
 	default_type = DEFAULT_WALL_MATERIAL
-
-/obj/item/stack/material/plasteel
-	name = "plasteel"
-	icon_state = "sheet-plasteel"
-	item_state = "sheet-metal"
-	default_type = "plasteel"
 
 /obj/item/stack/material/wood
 	name = "wooden plank"

@@ -221,16 +221,6 @@ var/list/name_to_material
 	return
 
 // Datum definitions follow.
-/material/uranium
-	name = "uranium"
-	stack_type = /obj/item/stack/material/uranium
-	radioactivity = 12
-	icon_base = "stone"
-	icon_reinf = "reinf_stone"
-	icon_colour = "#007A00"
-	weight = 22
-	stack_origin_tech = list(TECH_MATERIAL = 5)
-	door_icon_base = "stone"
 
 /material/diamond
 	name = "diamond"
@@ -242,17 +232,6 @@ var/list/name_to_material
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
 	hardness = 100
-	stack_origin_tech = list(TECH_MATERIAL = 6)
-
-/material/barbedwire
-	name = "barbedwire"
-	stack_type = /obj/item/stack/material/barbwire
-	flags = MATERIAL_UNMELTABLE
-	cut_delay = 10
-	icon_colour = "#FFFFFF"
-	shard_type = SHARD_SHARD
-	tableslam_noise = 'sound/effects/Glasshit.ogg'
-	hardness = 30
 	stack_origin_tech = list(TECH_MATERIAL = 6)
 
 /material/rope
@@ -333,35 +312,6 @@ var/list/name_to_material
 	icon_colour = "#666666"
 	hitsound = 'sound/weapons/genhit.ogg'
 
-/material/steel/holographic
-	name = "holo" + DEFAULT_WALL_MATERIAL
-	display_name = DEFAULT_WALL_MATERIAL
-	stack_type = null
-	shard_type = SHARD_NONE
-
-/material/plasteel
-	name = "plasteel"
-	stack_type = /obj/item/stack/material/plasteel
-	integrity = 400
-	melting_point = 6000
-	icon_base = "solid"
-	icon_reinf = "reinf_over"
-	icon_colour = "#777777"
-	explosion_resistance = 25
-	hardness = 80
-	weight = 23
-	stack_origin_tech = list(TECH_MATERIAL = 2)
-	composite_material = list(DEFAULT_WALL_MATERIAL = 3750, "platinum" = 3750) //todo
-	hitsound = 'sound/weapons/genhit.ogg'
-
-/material/plasteel/titanium
-	name = "titanium"
-	stack_type = null
-	icon_base = "metal"
-	door_icon_base = "metal"
-	icon_colour = "#D1E6E3"
-	icon_reinf = "reinf_metal"
-
 /material/glass
 	name = "glass"
 	stack_type = /obj/item/stack/material/glass
@@ -420,18 +370,6 @@ var/list/name_to_material
 	sheet_plural_name = "ingots"
 	hitsound = 'sound/weapons/smash.ogg'
 
-// Adminspawn only, do not let anyone get this.
-/material/voxalloy
-	name = "voxalloy"
-	display_name = "durable alloy"
-	stack_type = null
-	icon_colour = "#6C7364"
-	integrity = 1200
-	melting_point = 6000       // Hull plating.
-	explosion_resistance = 200 // Hull plating.
-	hardness = 500
-	weight = 500
-
 /material/wood
 	name = "wood"
 	stack_type = /obj/item/stack/material/wood
@@ -457,12 +395,6 @@ var/list/name_to_material
 	name = "hardwood"
 	integrity = 175
 	hardness = 200
-
-/material/wood/holographic
-	name = "holowood"
-	display_name = "wood"
-	stack_type = null
-	shard_type = SHARD_NONE
 
 /material/cardboard
 	name = "cardboard"

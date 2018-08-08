@@ -176,6 +176,7 @@
 
 /area/caribbean/british/ship
 	icon_state = "blue1"
+	base_turf = /turf/open
 
 /area/caribbean/british/ship/main_deck
 	name = "Main Deck"
@@ -210,6 +211,7 @@
 	name = "Hold"
 	icon_state = "blue4"
 	location = AREA_INSIDE
+	base_turf = /turf/floor/plating/beach/water
 
 /area/caribbean/british/ship/galley
 	name = "Prison"
@@ -249,6 +251,7 @@
 
 /area/caribbean/pirates/ship
 	icon_state = "green1"
+	base_turf = /turf/open
 
 /area/caribbean/pirates/ship/main_deck
 	name = "Main Deck"
@@ -283,6 +286,7 @@
 	name = "Hold"
 	icon_state = "green4"
 	location = AREA_INSIDE
+	base_turf = /turf/floor/plating/beach/water
 
 /area/caribbean/pirates/ship/galley
 	name = "Prison"

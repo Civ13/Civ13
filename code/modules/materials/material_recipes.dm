@@ -24,7 +24,7 @@ var/list/engineer_exclusive_recipe_types = list(/obj/structure/girder, /obj/stru
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork/plastic, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] knife", /obj/item/weapon/material/kitchen/utensil/knife/plastic, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 
-/material/steel/generate_recipes()
+/material/leather/generate_recipes()
 	..()
 
 	recipes += new/datum/stack_recipe_list("comfy chairs", list( \
@@ -39,23 +39,16 @@ var/list/engineer_exclusive_recipe_types = list(/obj/structure/girder, /obj/stru
 		new/datum/stack_recipe("green comfy chair", /obj/structure/bed/chair/comfy/green, 3, _one_per_turf = TRUE, _on_floor = TRUE), \
 		))
 
-
-	recipes += new/datum/stack_recipe_list("floor tile", list( \
-		new/datum/stack_recipe("regular floor tile", /obj/item/stack/tile/floor, TRUE, 4, 20), \
-		new/datum/stack_recipe("grey techfloor tile", /obj/item/stack/tile/floor/techgrey, TRUE, 4, 20), \
-		new/datum/stack_recipe("grid techfloor tile", /obj/item/stack/tile/floor/techgrid, TRUE, 4, 20), \
-		))
+/material/steel/generate_recipes()
+	..()
 
 	recipes += new/datum/stack_recipe("table", /obj/structure/table, 4, _time = 7, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("rack", /obj/structure/table/rack, 2, _time = 5, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("closet", /obj/structure/closet, 3, _time = 10, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("metal rod", /obj/item/stack/rods, TRUE, 2, 60)
-	recipes += new/datum/stack_recipe("wall girders", /obj/structure/girder, 3, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("railing", /obj/structure/railing, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	recipes += new/datum/stack_recipe("unlocked door", /obj/structure/simple_door/key_door/anyone, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("locked door", /obj/structure/simple_door/key_door/anyone, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("anti-tank hedgehog", /obj/structure/anti_tank, 10, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/wood/generate_recipes()
 	..()
@@ -67,8 +60,6 @@ var/list/engineer_exclusive_recipe_types = list(/obj/structure/girder, /obj/stru
 	recipes += new/datum/stack_recipe("door", /obj/structure/simple_door/key_door/anyone/wood, 5, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 7, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("window frame", /obj/structure/window_frame, 3, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
-/material/barbedwire/generate_recipes()
-	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))
 
 /material/rope/generate_recipes()
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))

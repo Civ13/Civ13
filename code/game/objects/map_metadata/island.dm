@@ -26,14 +26,14 @@
 		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
 	meme = TRUE
 	battle_name = "Skull Island"
-	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts. Pirates will be able to board the ship after 7 minutes.</font>"
+	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 	var/done = FALSE
 
 /obj/map_metadata/island/british_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/island/pirates_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/island/reinforcements_ready()
 	return (british_can_cross_blocks() && pirates_can_cross_blocks())

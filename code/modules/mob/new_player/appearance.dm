@@ -212,9 +212,9 @@
 		name = "Devil Lock"
 		icon_state = "hair_devilock"
 
-//	dreadlocks
-//		name = "Dreadlocks"
-//		icon_state = "hair_dreads"
+	dreadlocks
+		name = "Dreadlocks"
+		icon_state = "hair_dreads"
 
 	curls
 		name = "Curls"
@@ -222,19 +222,19 @@
 		gender = FEMALE
 
 // you must be fucking kidding me
-//	afro
-//		name = "Afro"
-//		icon_state = "hair_afro"
+	afro
+		name = "Afro"
+		icon_state = "hair_afro"
 
 
-//	afro2
-//		name = "Afro 2"
-//		icon_state = "hair_afro2"
+	afro2
+		name = "Afro 2"
+		icon_state = "hair_afro2"
 
-//	afro_large
-//		name = "Big Afro"
-//		icon_state = "hair_bigafro"
-//		gender = MALE
+	afro_large
+		name = "Big Afro"
+		icon_state = "hair_bigafro"
+		gender = MALE
 
 	sargeant
 		name = "Flat Top"
@@ -537,9 +537,9 @@
 		name = "Volaju"
 		icon_state = "facial_volaju"
 
-//	dwarf
-//		name = "Dwarf Beard"
-//		icon_state = "facial_dwarf"
+	dwarf
+		name = "Dwarf Beard"
+		icon_state = "facial_dwarf"
 
 //skin styles - WIP
 //going to have to re-integrate this with surgery
