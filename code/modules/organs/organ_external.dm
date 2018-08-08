@@ -175,6 +175,9 @@
 /obj/item/organ/external/update_health()
 	damage = min(max_damage, (brute_dam + burn_dam))
 	pain = min(max_damage, (brute_dam + burn_dam))
+	if (damage > max_damage)
+		if (prob(30))
+			droplimb(0,DROPLIMB_EDGE)
 	return
 
 
