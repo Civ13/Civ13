@@ -12,7 +12,7 @@
 
 /turf/open/initialize()
 	..()
-	below = GetBelow(src)
+	below = get_step(src,DOWN)
 //	ASSERT(HasBelow(z)) // why does this fail at roundstart? Who knows - Kach
 
 /turf/open/Entered(var/atom/movable/mover)

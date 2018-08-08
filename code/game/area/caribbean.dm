@@ -176,7 +176,7 @@
 
 /area/caribbean/british/ship
 	icon_state = "blue1"
-	base_turf = /turf/open
+	base_turf = /turf/floor/plating/beach/water
 
 /area/caribbean/british/ship/main_deck
 	name = "Main Deck"
@@ -251,7 +251,7 @@
 
 /area/caribbean/pirates/ship
 	icon_state = "green1"
-	base_turf = /turf/open
+	base_turf = /turf/floor/plating/beach/water
 
 /area/caribbean/pirates/ship/main_deck
 	name = "Main Deck"

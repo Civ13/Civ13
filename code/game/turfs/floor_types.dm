@@ -249,6 +249,7 @@
 /turf/floor/plating/beach
 	name = "Beach"
 	icon = 'icons/misc/beach.dmi'
+	var/water_level = 0
 
 /turf/floor/plating/beach/sand
 	name = "Sand"
@@ -259,17 +260,32 @@
 	icon = 'icons/misc/beach2.dmi'
 	icon_state = "sandwater"
 
+//water level is measured in centimeters. the maximum is 200 (2 meters). up to 1.5 will make movement progressively slower, up from that you will drown if you stay for too long.
+
 /turf/floor/plating/beach/water
 	name = "Water"
+	desc = "Water. Seems to be shallow."
 	icon_state = "seashallow"
 	move_delay = 3
+	water_level = 30 // in centimeters
 
 /turf/floor/plating/beach/water/deep
 	name = "Deep Water"
 	icon_state = "seadeep"
+	desc = "Water. Seems to be very deep, you cant see the bottom."
 	density = TRUE
+	water_level = 200
 
 /turf/floor/plating/beach/water/get_move_delay()
+	move_delay = round(water_level/10)
+	if (water_level >=20)
+		desc ="Water. Seems to be shallow."
+	if (water_level >=100)
+		desc ="Water. Seems to be waist level."
+	if (water_level >=140)
+		desc ="Water. Seems to be somewhat deep, maybe chest level."
+	if (water_level >=200)
+		desc ="Water. Seems to be very deep, you cant see the bottom."
 	return move_delay
 
 /turf/floor/plating/beach/water/sewage

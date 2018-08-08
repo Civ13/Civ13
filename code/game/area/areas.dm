@@ -161,20 +161,6 @@ var/list/ghostteleportlocs = list()
 /area/proc/get_camera_tag(var/obj/machinery/camera/C)
 	return "[name] [camera_id++]"
 
-/area/proc/atmosalert(danger_level, var/alarm_source)
-	return
-
-/area/proc/air_doors_close()
-	return
-
-/area/proc/air_doors_open()
-	return
-
-/area/proc/fire_alert()
-	return
-
-/area/proc/fire_reset()
-	return
 
 /area/proc/readyalert()
 	if (!eject)
