@@ -126,7 +126,11 @@ var/list/sneeze_sounds_female = list(
 	'sound/effects/emotes/female_sneeze2.ogg')
 
 var/list/charge_sounds_eng = list(
-	'sound/effects/emotes/charge_eng.ogg')
+	'sound/effects/emotes/charge_eng.ogg',
+	'sound/effects/emotes/god_save_the_king.ogg',)
+var/list/charge_sounds_pir = list(
+	'sound/effects/emotes/charge_pir.ogg',
+	'sound/effects/emotes/charge_pir2.ogg',)
 
 // pain, etc sounds from Interbay
 
@@ -301,7 +305,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("charge_BRITISH")
 				soundin = pick(charge_sounds_eng)
 			if ("charge_PIRATES")
-				soundin = pick(charge_sounds_eng)
+				soundin = pick(charge_sounds_pir)
 			if ("charge_CIVILIAN")
 				soundin = pick(charge_sounds_eng)
 
