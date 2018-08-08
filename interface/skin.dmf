@@ -107,6 +107,9 @@ macro "macro"
 	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
+	elem "ooc"
+		name = "F4"
+		command = "ooc"
 
 macro "hotkeymode"
 	elem 
@@ -286,6 +289,9 @@ macro "hotkeymode"
 	elem 
 		name = "CTRL+SHIFT+F1+REP"
 		command = ".options"
+	elem "ooc"
+		name = "F4"
+		command = "ooc"
 
 
 menu "menu"

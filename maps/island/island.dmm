@@ -115,7 +115,7 @@
 "ck" = (/obj/structure/table/wood,/obj/item/weapon/pen,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
 "cl" = (/obj/structure/reagent_dispensers/barrel/beer,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
 "cm" = (/obj/structure/bookcase,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
-"cn" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/philosopher_wig,/obj/item/clothing/head/philosopher_wig,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
+"cn" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
 "co" = (/obj/structure/cannon{dir = 1},/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "cp" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "cq" = (/obj/item/weapon/grenade/old_grenade,/obj/item/weapon/grenade/old_grenade,/obj/item/weapon/grenade/old_grenade,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
