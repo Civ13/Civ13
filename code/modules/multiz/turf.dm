@@ -34,20 +34,7 @@
 		below = GetBelow(src)
 		if (!below)
 			return
-/*
-	if (istype(mover, /mob/living/bot/floorbot) && locate(/obj/structure/lattice) in src)
-		return  // This will prevent floorbot from falling on open space turfs with support
-*/
-	// No gravit, No fall.
-	if (!has_gravity(src))
-		return
 
-	// Prevent pipes from falling into the void... if there is a pipe to support it.
-	/*if (mover.anchored || istype(mover, /obj/item/pipe) && \
-		(locate(/obj/structure/disposalpipe/up) in below) || \
-		 locate(/obj/machinery/atmospherics/pipe/zpipe/up in below))
-		return
-*/
 	// See if something prevents us from falling.
 	var/soft = FALSE
 	for (var/atom/A in below)

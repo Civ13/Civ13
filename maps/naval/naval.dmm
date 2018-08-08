@@ -231,6 +231,7 @@
 "ew" = (/obj/structure/reagent_dispensers/barrel/rum,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
 "ex" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
 "ey" = (/obj/item/weapon/reagent_containers/food/snacks/stew,/obj/item/weapon/reagent_containers/food/snacks/stew,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
+"ez" = (/turf/open,/area/caribbean/british/ship/main_deck)
 "eA" = (/obj/item/weapon/reagent_containers/food/snacks/stew,/obj/item/weapon/reagent_containers/food/snacks/stew,/obj/item/weapon/reagent_containers/food/snacks/stew,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
 "eB" = (/obj/item/weapon/gun/projectile/flintlock/musketoon,/obj/item/weapon/gun/projectile/flintlock/musketoon,/obj/item/weapon/gun/projectile/flintlock/musketoon,/obj/item/weapon/gun/projectile/flintlock/musketoon,/obj/item/weapon/gun/projectile/flintlock/musketoon,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
 "eC" = (/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
@@ -540,7 +541,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaaaaaoaaaaaaaaaaaaaaaaaoaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVararaoararararararararaoarararararareeeeauasaqaqateoepeqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaXaWbmaYaYaYaZaVeeeeasauavauataPauavauasatauavauaPatatatatataqaqatatatateraqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbabbaWaWaWaWaWaWaVatatatatatatatatatatatatatatatatatatatatatataqatbwatbwatataxaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWbcaWaWaWaWaWaWbdatatatatatatatatatatatbxatatataIaIatatatatatbEatatatatatatatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWbcaWaWaWaWaWaWbdatatezatatatatatatatatbxatatataIaIatatatatatbEatatatatatatatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWbyaWbeaVauatatatatefatateGeHeIeJeKatbxatatatesatatataqauatbwatbwatataAaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbAaWaWaWaWaWaWaWaVaBaBatatatatatatauaBaBaBauatatatatatesaBaBauaqatatatatatatataAaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWaWaWaWaVaBaBatatatbxatateLaBaBaBeMatatatatatesaBaBauaqatatatatbwatataAaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaa
