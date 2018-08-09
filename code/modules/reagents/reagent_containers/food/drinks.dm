@@ -201,6 +201,11 @@
 	volume = 120
 	center_of_mass = list("x"=17, "y"=7)
 
+/obj/item/weapon/reagent_containers/food/drinks/teapot/filled
+	New()
+		..()
+		reagents.add_reagent("tea", 120)
+
 /obj/item/weapon/reagent_containers/food/drinks/flask
 	name = "Officer's Flask"
 	desc = "A nice metal flask used by officers"

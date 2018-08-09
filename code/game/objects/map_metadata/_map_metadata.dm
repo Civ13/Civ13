@@ -378,13 +378,13 @@ var/global/obj/map_metadata/map = null
 		if (BRITISH)
 			return "Royal Navy"
 		if (PIRATES)
-			return "Pirates"
+			return "Pirate crew"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("Royal Navy")
 			return "British"
-		if ("Pirates")
+		if ("Pirate crew")
 			return "Pirate"
 
 /obj/map_metadata/proc/special_relocate(var/mob/M)

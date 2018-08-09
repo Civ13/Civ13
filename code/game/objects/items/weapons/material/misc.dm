@@ -9,7 +9,7 @@
 	throw_speed = 3
 	throw_range = 7
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
-	thrown_force_divisor = 1.5 // 30 with weight 20 (steel)
+	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","stabbed","ripped")
 
 /obj/item/weapon/material/hatchet

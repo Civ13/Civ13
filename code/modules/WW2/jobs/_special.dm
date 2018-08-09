@@ -62,7 +62,7 @@
 	if (istype(src, /datum/job/pirates))
 		return "Royal Navy"
 	else
-		return "Pirates"
+		return "Pirate crew"
 		/*
 
 */
@@ -70,7 +70,7 @@
 	if (side == BRITISH)
 		return "Royal Navy"
 	if (side == PIRATES)
-		return "Pirates"
+		return "Pirate crew"
 	return null
 
 // here's a story
