@@ -178,25 +178,25 @@ var/world_topic_spam_protect_time = world.timeofday
 	// custom 1713 hub modules
 
 	if (T == "1713.preinfo")
-		return replace_custom_hub_text(config.1713_hub_preinfo)
+		return replace_custom_hub_text(config.s1713_hub_preinfo)
 
 	else if (T == "1713.title")
-		return replace_custom_hub_text(config.1713_hub_title)
+		return replace_custom_hub_text(config.s1713_hub_title)
 
 	else if (T == "1713.oocdesc")
-		return replace_custom_hub_text(config.1713_hub_oocdesc)
+		return replace_custom_hub_text(config.s1713_hub_oocdesc)
 
 	else if (T == "1713.icdesc")
-		return replace_custom_hub_text(config.1713_hub_icdesc)
+		return replace_custom_hub_text(config.s1713_hub_icdesc)
 
 	else if (T == "1713.rplevel")
-		return replace_custom_hub_text(config.1713_hub_rplevel)
+		return replace_custom_hub_text(config.s1713_hub_rplevel)
 
 	else if (T == "1713.hostedby")
-		return replace_custom_hub_text(config.1713_hub_hostedby)
+		return replace_custom_hub_text(config.s1713_hub_hostedby)
 
 	else if (T == "1713.postinfo")
-		return replace_custom_hub_text(config.1713_hub_postinfo)
+		return replace_custom_hub_text(config.s1713_hub_postinfo)
 
 	// normal ss13 stuff
 

@@ -176,13 +176,13 @@ var/list/gamemode_cache = list()
 
 	//1713 hub stuff
 
-	var/1713_hub_preinfo
-	var/1713_hub_title
-	var/1713_hub_oocdesc
-	var/1713_hub_icdesc
-	var/1713_hub_rplevel
-	var/1713_hub_hostedby
-	var/1713_hub_postinfo
+	var/s1713_hub_preinfo
+	var/s1713_hub_title
+	var/s1713_hub_oocdesc
+	var/s1713_hub_icdesc
+	var/s1713_hub_rplevel
+	var/s1713_hub_hostedby
+	var/s1713_hub_postinfo
 
 	// misc
 	var/resource_website = null
@@ -682,19 +682,19 @@ var/list/gamemode_cache = list()
 
 			switch (name)
 				if ("preinfo")
-					config.1713_hub_preinfo = value
+					config.s1713_hub_preinfo = value
 				if ("title")
-					config.1713_hub_title = value
+					config.s1713_hub_title = value
 				if ("oocdesc")
-					config.1713_hub_oocdesc = value
+					config.s1713_hub_oocdesc = value
 				if ("icdesc")
-					config.1713_hub_icdesc = value
+					config.s1713_hub_icdesc = value
 				if ("rplevel")
-					config.1713_hub_rplevel = value
+					config.s1713_hub_rplevel = value
 				if ("hostedby")
-					config.1713_hub_hostedby = value
+					config.s1713_hub_hostedby = value
 				if ("postinfo")
-					config.1713_hub_postinfo = value
+					config.s1713_hub_postinfo = value
 
 		else if (type == "game_schedule")
 
