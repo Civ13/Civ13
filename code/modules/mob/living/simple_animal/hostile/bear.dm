@@ -1,7 +1,7 @@
 //Space bears!
 /mob/living/simple_animal/hostile/bear
-	name = "space bear"
-	desc = "RawrRawr!!"
+	name = "bear"
+	desc = "Rawr Rawr!!"
 	icon_state = "bear"
 	icon_living = "bear"
 	icon_dead = "bear_dead"
@@ -36,14 +36,6 @@
 	var/stance_step = FALSE
 
 	faction = PIRATES
-
-//SPACE BEARS! SQUEEEEEEEE~     OW! FUCK! IT BIT MY HAND OFF!!
-/mob/living/simple_animal/hostile/bear/Hudson
-	name = "Hudson"
-	desc = ""
-	response_help  = "pets"
-	response_disarm = "gently pushes aside"
-	response_harm   = "pokes"
 
 /mob/living/simple_animal/hostile/bear/Life()
 	. =..()
