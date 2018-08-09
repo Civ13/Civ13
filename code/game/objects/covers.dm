@@ -5,6 +5,7 @@
 	icon_state = "wood_ship"
 	var/passable = TRUE
 	var/origin_density = FALSE
+	var/origin_water_level = 0
 	is_cover = TRUE
 	anchored = TRUE
 	opacity = FALSE
@@ -21,8 +22,8 @@
 
 /obj/covers/New()
 	..()
+	var/turf/T = get_turf(src)
 	if (passable)
-		var/turf/T = get_turf(src)
 		origin_density = T.density
 		T.density = FALSE
 	return TRUE
@@ -34,16 +35,16 @@
 			Mb.invisibility = 101 */
 
 /obj/covers/updateturf()
+	var/turf/T = get_turf(src)
 	if (passable)
-		var/turf/T = get_turf(src)
 		origin_density = T.density
 		T.density = FALSE
 	return TRUE
 
 
 /obj/covers/Destroy()
+	var/turf/T = get_turf(src)
 	if (origin_density)
-		var/turf/T = get_turf(src)
-		T.density = TRUE
+		T.density = origin_density
 	..()
 	return TRUE

@@ -3,11 +3,12 @@
 	icon = 'icons/turf/areas.dmi'
 	icon_state = "black"
 	density = FALSE
-	var/floorbelowz = FALSE
+	var/floorbelowz = null
 
 /turf/broken_floor/New()
 	..()
-	floorbelowz = get_turf(get_step(src,DOWN))
+	if (z > 1)
+		floorbelowz = locate(x, y, z-1)
 
 /turf/broken_floor/Enter(atom/A)
 	if (floorbelowz)

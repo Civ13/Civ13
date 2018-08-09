@@ -277,16 +277,22 @@
 	water_level = 200
 
 /turf/floor/plating/beach/water/get_move_delay()
-	move_delay = round(water_level/10)
-	if (water_level >=20)
-		desc ="Water. Seems to be shallow."
-	if (water_level >=100)
-		desc ="Water. Seems to be waist level."
-	if (water_level >=140)
-		desc ="Water. Seems to be somewhat deep, maybe chest level."
-	if (water_level >=200)
-		desc ="Water. Seems to be very deep, you cant see the bottom."
+	if (water_level != 0)
+		move_delay = round(water_level/10)
+		if (water_level >= 20)
+			desc ="Water. Seems to be shallow."
+		if (water_level >= 100)
+			desc ="Water. Seems to be waist level."
+		if (water_level >= 140)
+			desc ="Water. Seems to be somewhat deep, maybe chest level."
+		if (water_level >= 200)
+			desc ="Water. Seems to be very deep, you cant see the bottom."
+		for (var/obj/covers/C in loc)
+			water_level = 0
+	else
+		move_delay = 0
 	return move_delay
+
 
 /turf/floor/plating/beach/water/sewage
 	name = "Sewage Water"
