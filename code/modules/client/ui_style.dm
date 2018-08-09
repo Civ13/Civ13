@@ -1,5 +1,5 @@
 /var/all_ui_styles = list(
-	"WW13Style",
+	"1713Style",
 	/*"Midnight"     = 'icons/mob/screen/midnight.dmi',
 	"Orange"       = 'icons/mob/screen/orange.dmi',
 	"old"          = 'icons/mob/screen/old.dmi',

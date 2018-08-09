@@ -1,4 +1,4 @@
-/* WWinput: WW13 wrappers for input()/alert(). Example: WWinput(mob_or_client, "Y/N", "Choices", "text", list("Y", "N"))
+/* WWinput: 1713 wrappers for input()/alert(). Example: WWinput(mob_or_client, "Y/N", "Choices", "text", list("Y", "N"))
  * Specifying the type variable when type == "text" is not necessary, but it's recommended. WWinput has two purposes:
  	* 1. Standardizing input()/alert() with a format that encourages supplying all args, like 'title', for the sake of QOL
  	* 2. Stopping mob movement while an alert/input window is active

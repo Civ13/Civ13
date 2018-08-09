@@ -20,7 +20,7 @@ var/station_name        = null//"CEV Eris"
 //var/const/boss_short    = "Centcomm"
 //var/const/company_name  = "NanoTrasen"
 //var/const/company_short = "NT"
-var/game_version        = "WW13"
+var/game_version        = "1713"
 var/changelog_hash      = ""
 //var/game_year           = (text2num(time2text(world.realtime, "YYYY")) + 544)
 

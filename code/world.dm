@@ -175,28 +175,28 @@ var/world_topic_spam_protect_time = world.timeofday
 /world/Topic(T, addr, master, key)
 	diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key][log_end]"
 
-	// custom WW13 hub modules
+	// custom 1713 hub modules
 
-	if (T == "WW13.preinfo")
-		return replace_custom_hub_text(config.ww13_hub_preinfo)
+	if (T == "1713.preinfo")
+		return replace_custom_hub_text(config.1713_hub_preinfo)
 
-	else if (T == "WW13.title")
-		return replace_custom_hub_text(config.ww13_hub_title)
+	else if (T == "1713.title")
+		return replace_custom_hub_text(config.1713_hub_title)
 
-	else if (T == "WW13.oocdesc")
-		return replace_custom_hub_text(config.ww13_hub_oocdesc)
+	else if (T == "1713.oocdesc")
+		return replace_custom_hub_text(config.1713_hub_oocdesc)
 
-	else if (T == "WW13.icdesc")
-		return replace_custom_hub_text(config.ww13_hub_icdesc)
+	else if (T == "1713.icdesc")
+		return replace_custom_hub_text(config.1713_hub_icdesc)
 
-	else if (T == "WW13.rplevel")
-		return replace_custom_hub_text(config.ww13_hub_rplevel)
+	else if (T == "1713.rplevel")
+		return replace_custom_hub_text(config.1713_hub_rplevel)
 
-	else if (T == "WW13.hostedby")
-		return replace_custom_hub_text(config.ww13_hub_hostedby)
+	else if (T == "1713.hostedby")
+		return replace_custom_hub_text(config.1713_hub_hostedby)
 
-	else if (T == "WW13.postinfo")
-		return replace_custom_hub_text(config.ww13_hub_postinfo)
+	else if (T == "1713.postinfo")
+		return replace_custom_hub_text(config.1713_hub_postinfo)
 
 	// normal ss13 stuff
 
@@ -337,7 +337,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	else
 		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br>"
 
-	// for the custom WW13 hub only!
+	// for the custom 1713 hub only!
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "TIME_OF_DAY", capitalize(lowertext(time_of_day)))
@@ -414,7 +414,7 @@ var/setting_up_db_connection = FALSE
 					// "this" = "s1" or "sfinal" = "s2" or "snext" = "s2"
 					serverswap[p1] = p2
 				else if (p1 == "masterdir")
-					// "masterdir" = "server/WW13/.../"
+					// "masterdir" = "server/1713/.../"
 					if (p2 == "nil")
 						serverswap.Cut()
 						goto end_serverswap

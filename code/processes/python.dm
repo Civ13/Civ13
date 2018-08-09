@@ -24,4 +24,4 @@
 		return config.scripts_directory
 	if (serverswap && serverswap.Find("masterdir"))
 		return "[serverswap["masterdir"]]scripts"
-	return "WW13/scripts"
+	return "1713/scripts"

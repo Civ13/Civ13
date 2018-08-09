@@ -11,8 +11,8 @@
 	var/list/ConteinerData
 
 /datum/hud/human
-	name = "WW13Style"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	name = "1713Style"
+	icon = 'icons/mob/screen/1713Style.dmi'
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(

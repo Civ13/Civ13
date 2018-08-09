@@ -6,7 +6,7 @@ var/database/database = null
 	// lets make some tables
 	spawn (1)
 
-		/* WW13 has 11 tables. ALL data should be stored in one of these tables,
+		/* 1713 has 11 tables. ALL data should be stored in one of these tables,
 	     * It is fine to make new tables - Kachnov */
 
 		if (!execute("TABLE misc EXISTS;"))

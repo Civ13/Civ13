@@ -174,15 +174,15 @@ var/list/gamemode_cache = list()
 	var/list/people_with_role_preference = list() // just a list of ckeys
 	var/list/untermenschen = list() // just a list of ckeys
 
-	//WW13 hub stuff
+	//1713 hub stuff
 
-	var/ww13_hub_preinfo
-	var/ww13_hub_title
-	var/ww13_hub_oocdesc
-	var/ww13_hub_icdesc
-	var/ww13_hub_rplevel
-	var/ww13_hub_hostedby
-	var/ww13_hub_postinfo
+	var/1713_hub_preinfo
+	var/1713_hub_title
+	var/1713_hub_oocdesc
+	var/1713_hub_icdesc
+	var/1713_hub_rplevel
+	var/1713_hub_hostedby
+	var/1713_hub_postinfo
 
 	// misc
 	var/resource_website = null
@@ -682,19 +682,19 @@ var/list/gamemode_cache = list()
 
 			switch (name)
 				if ("preinfo")
-					config.ww13_hub_preinfo = value
+					config.1713_hub_preinfo = value
 				if ("title")
-					config.ww13_hub_title = value
+					config.1713_hub_title = value
 				if ("oocdesc")
-					config.ww13_hub_oocdesc = value
+					config.1713_hub_oocdesc = value
 				if ("icdesc")
-					config.ww13_hub_icdesc = value
+					config.1713_hub_icdesc = value
 				if ("rplevel")
-					config.ww13_hub_rplevel = value
+					config.1713_hub_rplevel = value
 				if ("hostedby")
-					config.ww13_hub_hostedby = value
+					config.1713_hub_hostedby = value
 				if ("postinfo")
-					config.ww13_hub_postinfo = value
+					config.1713_hub_postinfo = value
 
 		else if (type == "game_schedule")
 

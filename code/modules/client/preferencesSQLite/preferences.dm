@@ -14,7 +14,7 @@ var/list/preferences_datums = list()
 	//game-preferences
 	var/ooccolor = "#010000"			//Whatever this is set to acts as 'reset' color and is thus unusable as an actual custom color
 	var/list/be_special_role = list()		//Special role selection
-	var/UI_style = "WW13Style"
+	var/UI_style = "1713Style"
 	var/UI_useborder = FALSE
 	var/UI_style_color = "#FFFFFF"
 	var/UI_style_alpha = 255

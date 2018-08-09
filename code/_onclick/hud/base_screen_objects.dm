@@ -230,7 +230,7 @@
 //--------------------------------------------------inventory---------------------------------------------------------
 /obj/screen/inventory
 	var/slot_id //The indentifier for the slot. It has nothing to do with ID cards.
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	layer = 19
 
 /obj/screen/inventory/New(_name = "unnamed", _screen_loc = "7,7", _slot_id = null, _icon = null, _icon_state = null, _parentmob = null)
@@ -281,7 +281,7 @@
 //--------------------------------------------------health---------------------------------------------------------
 /obj/screen/health
 	name = "health"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "health0"
 	screen_loc = "15,7"
 	process_flag = TRUE
@@ -318,7 +318,7 @@
 //--------------------------------------------------nutrition---------------------------------------------------------
 /obj/screen/nutrition
 	name = "nutrition"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "nutrition1"
 	screen_loc = "15,6"
 	process_flag = TRUE
@@ -363,7 +363,7 @@
 //--------------------------------------------------bodytemp---------------------------------------------------------
 /obj/screen/bodytemp
 	name = "bodytemp"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "temp0"
 	screen_loc = "15,8"
 	process_flag = TRUE
@@ -425,7 +425,7 @@
 //--------------------------------------------------pressure---------------------------------------------------------
 /obj/screen/pressure
 	name = "pressure"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "pressure0"
 	screen_loc = "15,13"
 	process_flag = TRUE
@@ -441,7 +441,7 @@
 //--------------------------------------------------toxin---------------------------------------------------------
 /obj/screen/toxin
 	name = "toxin"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "tox0"
 	screen_loc = "15,10"
 	process_flag = TRUE
@@ -457,7 +457,7 @@
 
 /obj/screen/oxygen
 	name = "oxygen"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "oxy0"
 	screen_loc = "15,12"
 	process_flag = TRUE
@@ -472,7 +472,7 @@
 //--------------------------------------------------fire---------------------------------------------------------
 /obj/screen/fire
 	name = "fire"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "fire0"
 	screen_loc = "15,9"
 	process_flag = TRUE
@@ -497,14 +497,14 @@
 //--------------------------------------------------fire end---------------------------------------------------------
 /*/obj/screen/slot_object
 	name = "slot"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "block"
 	screen_loc = ""*/
 //-----------------------internal------------------------------
 /*
 /obj/screen/internal
 	name = "internal"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "internal0"
 	screen_loc = "15,14"
 
@@ -605,7 +605,7 @@
 */
 /obj/screen/pull
 	name = "pull"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "pull0"
 	screen_loc = "14,2"
 
@@ -625,7 +625,7 @@
 //-----------------------throw------------------------------
 /obj/screen/HUDthrow
 	name = "throw"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "act_throw_off"
 	screen_loc = "15,2"
 
@@ -651,7 +651,7 @@
 //-----------------------drop------------------------------
 /obj/screen/drop
 	name = "drop"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "act_drop"
 	screen_loc = "15:-16,2"
 
@@ -663,7 +663,7 @@
 //-----------------------resist------------------------------
 /obj/screen/resist
 	name = "resist"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "act_resist"
 	screen_loc = "14:16,2"
 
@@ -676,7 +676,7 @@
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "running"
 	screen_loc = "14,1"
 
@@ -717,7 +717,7 @@
 //-----------------------mov_intent END------------------------------
 /obj/screen/equip
 	name = "equip"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "act_equip"
 	screen_loc = "8,2"
 
@@ -728,7 +728,7 @@
 //-----------------------swap------------------------------
 /obj/screen/swap
 	name = "swap hand"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "swap-l"
 
 /obj/screen/swap/New()
@@ -741,7 +741,7 @@
 //-----------------------intent------------------------------
 /obj/screen/intent
 	name = "intent"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "help"
 	screen_loc = "8,2"
 
@@ -767,7 +767,7 @@
 //-----------------------mode------------------------------
 /obj/screen/mode
 	name = "mode"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "dodge"
 	screen_loc = "11,1"
 //	process_flag = TRUE
@@ -793,7 +793,7 @@
 
 /obj/screen/fastintent
 	name = "fastintent"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 //update in a_intent_change, because macro
 /*/obj/screen/fastintent/Click()
 	if (parentmob.HUDneed.Find("intent"))
@@ -997,7 +997,7 @@
 //-----------------------Gun Mod------------------------------
 /obj/screen/gun
 	name = "gun"
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	master = null
 	dir = 2
 
@@ -1103,7 +1103,7 @@
 
 //-----------------------toggle_invetory------------------------------
 /obj/screen/toggle_invetory
-	icon = 'icons/mob/screen/WW13Style.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "b-open"
 	name = "toggle invetory"
 	screen_loc = "1,0"
