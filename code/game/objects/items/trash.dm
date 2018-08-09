@@ -26,7 +26,9 @@
 	..()
 	pixel_x = rand(-5,5)
 
-
+/obj/item/trash/wood_bowl/New()
+	..()
+	pixel_x = rand(-5,5)
 /obj/item/trash/tray
 	name = "tray"
 	icon_state = "tray"

@@ -73,7 +73,7 @@
 				update_icon()
 			H << "<span class = 'notice'>[H] fills the pot with some water. It's about [fullness]% full.</span>"
 			return
-	else if (!istype(I, /obj/item/trash/snack_bowl) && !istype(I, /obj/item/trash/wood_bowl))
+	else if (!istype(I, /obj/item/trash/snack_bowl) || !istype(I, /obj/item/trash/wood_bowl))
 		if (istype(I, /obj/item/weapon/reagent_containers/food))
 			if (!list(STATE_WATER, STATE_BOILING).Find(state))
 				return
@@ -104,10 +104,41 @@
 				if (state == STATE_WATER)
 					state = STATE_BOILING
 					update_icon()
-	else
+	else if (istype(I, /obj/item/trash/wood_bowl))
 		if (state != STATE_STEWING)
 			return
+		var/obj/item/weapon/reagent_containers/food/snacks/stew_wood/w_stew = new
+		if (stew_desc)
+			w_stew.name = stew_desc
+			w_stew.nutriment_desc.Cut()
 
+			for (var/desc in stew_nutriment_desc)
+				w_stew.nutriment_desc[desc] = 1
+
+		if (stew_nutriment)
+			w_stew.reagents.remove_reagent("nutriment", 500)
+			w_stew.reagents.add_reagent("nutriment", stew_nutriment)
+
+		if (stew_protein)
+			w_stew.reagents.remove_reagent("protein", 500)
+			w_stew.reagents.add_reagent("protein", stew_protein)
+
+		for (var/datum/reagent/R in reagents.reagent_list)
+			var/amt = ceil(R.volume/initial_bowls)
+			w_stew.reagents.maximum_volume += amt
+			w_stew.reagents.add_reagent(R.id, amt)
+
+		if (H.l_hand == I)
+			H.remove_from_mob(I)
+			H.equip_to_slot(w_stew, slot_l_hand)
+
+		else if (H.r_hand == I)
+			H.remove_from_mob(I)
+			H.equip_to_slot(w_stew, slot_r_hand)
+
+	else if (istype(I, /obj/item/trash/snack_bowl))
+		if (state != STATE_STEWING)
+			return
 		var/obj/item/weapon/reagent_containers/food/snacks/stew/stew = new
 		if (stew_desc)
 			stew.name = stew_desc

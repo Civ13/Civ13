@@ -1,4 +1,4 @@
-/obj/item/weapon/bomb
+/*/obj/item/weapon/bomb
 	name = "gunpowder barrel with fuse"
 	desc = "Used to put holes in specific areas without too much extra hole."
 	gender = PLURAL
@@ -97,3 +97,4 @@
 
 /obj/item/weapon/bomb/attack(mob/M as mob, mob/user as mob, def_zone)
 	return
+*/

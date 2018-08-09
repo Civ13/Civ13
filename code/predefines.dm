@@ -575,10 +575,9 @@
 
 // Languages.
 #define LANGUAGE_HUMAN  TRUE
-#define LANGUAGE_ALIEN  2
-#define LANGUAGE_DOG    4
-#define LANGUAGE_CAT    8
-#define LANGUAGE_BINARY 16
+#define LANGUAGE_DOG    2
+#define LANGUAGE_CAT    4
+#define LANGUAGE_BINARY 8
 #define LANGUAGE_OTHER  32768
 
 #define LANGUAGE_UNIVERSAL 65535

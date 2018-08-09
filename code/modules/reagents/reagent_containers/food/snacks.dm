@@ -268,9 +268,6 @@
 	nutriment_desc = list("apples" = 3,"salad" = 5)
 
 	New()
-		..()
-		reagents.add_reagent("doctorsdelight", 8)
-		reagents.add_reagent("tricordrazine", 8)
 		bitesize = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/candy
@@ -1226,6 +1223,23 @@
 	nutriment_desc = list("tomato" = 2, "potato" = 2, "carrot" = 2, "eggplant" = 2, "mushroom" = 2)
 	nutriment_amt = 6
 	trash = /obj/item/trash/snack_bowl
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("tomatojuice", 5)
+		reagents.add_reagent("imidazoline", 5)
+		reagents.add_reagent("water", 30)
+		bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/stew_wood
+	name = "Stew"
+	desc = "A nice and warm stew. Healthy and strong."
+	icon_state = "stew_wood"
+	filling_color = "#9E673A"
+	center_of_mass = list("x"=16, "y"=5)
+	nutriment_desc = list("tomato" = 2, "potato" = 2, "carrot" = 2, "meat" = 2, "mushroom" = 2)
+	nutriment_amt = 6
+	trash = /obj/item/trash/wood_bowl
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
