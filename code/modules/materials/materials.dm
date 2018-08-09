@@ -396,22 +396,6 @@ var/list/name_to_material
 	integrity = 175
 	hardness = 200
 
-/material/cardboard
-	name = "cardboard"
-	stack_type = /obj/item/stack/material/cardboard
-	flags = MATERIAL_BRITTLE
-	integrity = 10
-	icon_base = "solid"
-	icon_reinf = "reinf_over"
-	icon_colour = "#AAAAAA"
-	hardness = TRUE
-	weight = TRUE
-	ignition_point = T0C+232 //"the temperature at which book-paper catches fire, and burns." close enough
-	melting_point = T0C+232 //temperature at which cardboard walls would be destroyed
-	stack_origin_tech = list(TECH_MATERIAL = TRUE)
-	door_icon_base = "wood"
-	destruction_desc = "crumples"
-
 /material/cloth //todo
 	name = "cloth"
 	stack_origin_tech = list(TECH_MATERIAL = 2)

@@ -326,11 +326,6 @@ Parts of code courtesy of Super3222
 				if (T.scope.zoomed && m_intent=="run")
 					shake_camera(src, 2, rand(2,3))
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/M in range(2, src))
-		if (M.last_user == src && loc != get_turf(M))
-			M.stopped_using(src)
-			M.last_user = null
-
 // reset all zooms - called from Life(), Weaken(), ghosting and more
 /mob/living/carbon/human/proc/handle_zoom_stuff(var/forced = FALSE)
 
@@ -344,20 +339,12 @@ Parts of code courtesy of Super3222
 						T.scope.zoom(src, FALSE)
 						success = TRUE
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/M in range(2, src))
-		if (M.last_user == src && (loc != get_turf(M) || forced))
-			M.stopped_using(src)
-			M.last_user = null
-			success = TRUE
-
 	if (success && client)
 		client.pixel_x = 0
 		client.pixel_y = 0
 		client.view = world.view
 
 /mob/living/carbon/human/proc/using_zoom()
-	if (using_MG)
-		return TRUE
 	if (stat == CONSCIOUS)
 		if (client && actions.len)
 			if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons

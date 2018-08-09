@@ -112,15 +112,9 @@
 	if (ismob(loc))
 		firer = loc
 	else if (isturf(loc))
-		if (istype(src, /obj/item/weapon/gun/projectile/automatic/stationary))
-			for (var/mob/living/L in loc)
-				if (L.using_MG == src)
-					firer = L
-					break
-		else
-			for (var/mob/living/L in loc)
-				firer = L
-				break
+		for (var/mob/living/L in loc)
+			firer = L
+			break
 
 	if (!firer || !target || !istype(target))
 		return prob(50)

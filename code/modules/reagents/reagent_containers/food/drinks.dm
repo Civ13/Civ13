@@ -124,16 +124,6 @@
 		..()
 		reagents.add_reagent("milk", 50)
 
-/obj/item/weapon/reagent_containers/food/drinks/soymilk
-	name = "SoyMilk"
-	desc = "It's soy milk. White and nutritious goodness!"
-	icon_state = "soymilk"
-	item_state = "carton"
-	center_of_mass = list("x"=16, "y"=9)
-	New()
-		..()
-		reagents.add_reagent("soymilk", 50)
-
 /obj/item/weapon/reagent_containers/food/drinks/coffee
 	name = "Robust Coffee"
 	desc = "Careful, the beverage you're about to enjoy is extremely hot."
@@ -171,15 +161,6 @@
 	New()
 		..()
 		reagents.add_reagent("hot_coco", 30)
-
-/obj/item/weapon/reagent_containers/food/drinks/dry_ramen
-	name = "Cup Ramen"
-	desc = "Just add 10ml water, self heats! A taste that reminds you of your school years."
-	icon_state = "ramen"
-	center_of_mass = list("x"=16, "y"=11)
-	New()
-		..()
-		reagents.add_reagent("dry_ramen", 30)
 
 
 /obj/item/weapon/reagent_containers/food/drinks/sillycup

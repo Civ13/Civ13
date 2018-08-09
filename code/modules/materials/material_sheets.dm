@@ -162,10 +162,6 @@
 	icon_state = "sheet-cloth"
 	default_type = "cloth"
 
-/obj/item/stack/material/cardboard
-	name = "cardboard"
-	icon_state = "sheet-card"
-	default_type = "cardboard"
 
 /obj/item/stack/material/leather
 	name = "leather"

@@ -52,24 +52,6 @@ var/list/pirates_rations_meat = list(
 
 var/added_plants_to_rations = FALSE
 
-/proc/water_ration()
-	var/obj/water = new /obj/item/weapon/reagent_containers/food/drinks/bottle/water/filled
-	water.pixel_x = FALSE
-	water.pixel_y = FALSE
-	return water
-
-/proc/vodka_ration()
-	var/obj/vodka = new /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka
-	vodka.pixel_x = FALSE
-	vodka.pixel_y = FALSE
-	return vodka
-
-/proc/beer_ration()
-	var/obj/beer = new /obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer
-	beer.pixel_x = FALSE
-	beer.pixel_y = FALSE
-	return beer
-
 /proc/new_ration(faction, sort)
 
 	if (!added_plants_to_rations)

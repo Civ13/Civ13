@@ -128,9 +128,6 @@ obj/structure/closet/crate/empty
 		if (findtext(textpath, "meat"))
 			for (var/v in 1 to rand(10,15))
 				contents += new_ration(BRITISH, "meat")
-		if (findtext(textpath, "alcohol"))
-			for (var/v in 1 to rand(10,15))
-				contents += beer_ration()
 	else if (findtext(textpath, "pirates"))
 		if (findtext(textpath, "solids"))
 			for (var/v in 1 to rand(10,15))
@@ -144,13 +141,7 @@ obj/structure/closet/crate/empty
 		if (findtext(textpath, "meat"))
 			for (var/v in 1 to rand(10,15))
 				contents += new_ration(PIRATES, "meat")
-		if (findtext(textpath, "alcohol"))
-			for (var/v in 1 to rand(10,15))
-				contents += vodka_ration()
 
-	else if (findtext(textpath, "water"))
-		for (var/v in 1 to rand(20,30))
-			contents += water_ration()
 
 	update_capacity(min(30, contents.len+5))
 

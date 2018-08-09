@@ -4,12 +4,6 @@
 	singular_name = "human skin piece"
 	icon_state = "sheet-hide"
 
-/obj/item/stack/material/animalhide/corgi
-	name = "corgi hide"
-	desc = "The by-product of corgi farming."
-	singular_name = "corgi hide piece"
-	icon_state = "sheet-corgi"
-
 /obj/item/stack/material/animalhide/cat
 	name = "cat hide"
 	desc = "The by-product of cat farming."
@@ -21,12 +15,6 @@
 	desc = "The by-product of monkey farming."
 	singular_name = "monkey hide piece"
 	icon_state = "sheet-monkey"
-
-/obj/item/stack/material/animalhide/lizard
-	name = "lizard skin"
-	desc = "Sssssss..."
-	singular_name = "lizard skin piece"
-	icon_state = "sheet-lizard"
 
 /obj/item/stack/material/hairlesshide
 	name = "hairless hide"

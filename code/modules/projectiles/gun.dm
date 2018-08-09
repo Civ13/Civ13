@@ -159,8 +159,8 @@
 	var/obj/item/weapon/gun/off_hand = null
 	if (ishuman(user) && user.a_intent == "harm")
 		var/mob/living/carbon/human/H = user
-		if (istype(H.l_hand, /obj/item/weapon/gun/projectile/pistol))
-			if (istype(H.r_hand, /obj/item/weapon/gun/projectile/pistol))
+		if (istype(H.l_hand, /obj/item/weapon/gun/projectile/flintlock/pistol))
+			if (istype(H.r_hand, /obj/item/weapon/gun/projectile/flintlock/pistol))
 				if (H.r_hand == src)
 					off_hand = H.l_hand
 
