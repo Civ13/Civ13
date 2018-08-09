@@ -440,23 +440,3 @@
 /datum/reagent/nicotine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, TRUE)
-
-/datum/reagent/nanites
-	name = "Nanomachines"
-	id = "nanites"
-	description = "Microscopic construction robots."
-	taste_description = "slimey metal"
-	reagent_state = LIQUID
-	color = "#535E66"
-
-/datum/reagent/xenomicrobes
-	name = "Xenomicrobes"
-	id = "xenomicrobes"
-	description = "Microbes with an entirely alien cellular structure."
-	taste_description = "sludge"
-	reagent_state = LIQUID
-	color = "#535E66"
-
-
-
-

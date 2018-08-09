@@ -183,10 +183,6 @@
 			endgame_safespawns += loc
 			qdel(src)
 			return
-		if ("bluespacerift")
-			endgame_exits += loc
-			qdel(src)
-			return
 
 	landmarks_list += src
 	return TRUE

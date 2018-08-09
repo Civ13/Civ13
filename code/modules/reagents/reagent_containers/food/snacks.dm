@@ -647,18 +647,6 @@
 	else
 		..()
 
-/obj/item/weapon/reagent_containers/food/snacks/xenomeat
-	name = "meat"
-	desc = "A slab of green meat. Smells like acid."
-	icon_state = "xenomeat"
-	filling_color = "#43DE18"
-	center_of_mass = list("x"=16, "y"=10)
-
-	New()
-		..()
-		reagents.add_reagent("protein", 6)
-		reagents.add_reagent("pacid",6)
-		bitesize = 6
 
 /obj/item/weapon/reagent_containers/food/snacks/meatball
 	name = "meatball"
@@ -1665,31 +1653,7 @@
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=13)
 
-/*
-/obj/item/weapon/reagent_containers/food/snacks/sliceable/xenomeatbread
-	name = "xenomeatbread loaf"
-	desc = "The culinary base of every self-respecting eloquent gentleman. Extra Heretical."
-	icon_state = "xenomeatbread"
-	slice_path = /obj/item/weapon/reagent_containers/food/snacks/xenomeatbreadslice
-	slices_num = 5
-	filling_color = "#8AFF75"
-	center_of_mass = list("x"=16, "y"=9)
-	nutriment_desc = list("bread" = 10)
-	nutriment_amt = 10
-	New()
-		..()
-		reagents.add_reagent("protein", 20)
-		bitesize = 2
 
-/obj/item/weapon/reagent_containers/food/snacks/xenomeatbreadslice
-	name = "xenomeatbread slice"
-	desc = "A slice of delicious meatbread. Extra Heretical."
-	icon_state = "xenobreadslice"
-	trash = /obj/item/trash/plate
-	filling_color = "#8AFF75"
-	bitesize = 2
-	center_of_mass = list("x"=16, "y"=13)
-*/
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/bananabread
 	name = "Banana-nut bread"
 	desc = "A heavenly and filling treat."
@@ -1714,31 +1678,6 @@
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=8)
 
-/*
-/obj/item/weapon/reagent_containers/food/snacks/sliceable/tofubread
-	name = "Tofubread"
-	icon_state = "Like meatbread but for vegetarians. Not guaranteed to give superpowers."
-	icon_state = "tofubread"
-	slice_path = /obj/item/weapon/reagent_containers/food/snacks/tofubreadslice
-	slices_num = 5
-	filling_color = "#F7FFE0"
-	center_of_mass = list("x"=16, "y"=9)
-	nutriment_desc = list("tofu" = 10)
-	nutriment_amt = 10
-	New()
-		..()
-		bitesize = 2
-
-/obj/item/weapon/reagent_containers/food/snacks/tofubreadslice
-	name = "Tofubread slice"
-	desc = "A slice of delicious tofubread."
-	icon_state = "tofubreadslice"
-	trash = /obj/item/trash/plate
-	filling_color = "#F7FFE0"
-	bitesize = 2
-	center_of_mass = list("x"=16, "y"=13)
-
-*/
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/carrotcake
 	name = "Carrot Cake"
@@ -1763,33 +1702,6 @@
 	filling_color = "#FFD675"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=14)
-
-/*
-/obj/item/weapon/reagent_containers/food/snacks/sliceable/braincake
-	name = "Brain Cake"
-	desc = "A squishy cake-thing."
-	icon_state = "braincake"
-	slice_path = /obj/item/weapon/reagent_containers/food/snacks/braincakeslice
-	slices_num = 5
-	filling_color = "#E6AEDB"
-	center_of_mass = list("x"=16, "y"=10)
-	nutriment_desc = list("cake" = 10, "sweetness" = 10, "slime" = 15)
-	nutriment_amt = 5
-	New()
-		..()
-		reagents.add_reagent("protein", 25)
-		reagents.add_reagent("alkysine", 10)
-		bitesize = 2
-
-/obj/item/weapon/reagent_containers/food/snacks/braincakeslice
-	name = "Brain Cake slice"
-	desc = "Lemme tell you something about prions. THEY'RE DELICIOUS."
-	icon_state = "braincakeslice"
-	trash = /obj/item/trash/plate
-	filling_color = "#E6AEDB"
-	bitesize = 2
-	center_of_mass = list("x"=16, "y"=12)
-*/
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesecake
 	name = "Cheese Cake"
@@ -1940,29 +1852,6 @@
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=10)
 
-/obj/item/weapon/reagent_containers/food/snacks/sliceable/birthdaycake
-	name = "Birthday Cake"
-	desc = "Happy Birthday..."
-	icon_state = "birthdaycake"
-	slice_path = /obj/item/weapon/reagent_containers/food/snacks/birthdaycakeslice
-	slices_num = 5
-	filling_color = "#FFD6D6"
-	center_of_mass = list("x"=16, "y"=10)
-	nutriment_desc = list("cake" = 10, "sweetness" = 10)
-	nutriment_amt = 20
-	New()
-		..()
-		reagents.add_reagent("sprinkles", 10)
-		bitesize = 3
-
-/obj/item/weapon/reagent_containers/food/snacks/birthdaycakeslice
-	name = "Birthday Cake slice"
-	desc = "A slice of your birthday."
-	icon_state = "birthdaycakeslice"
-	trash = /obj/item/trash/plate
-	filling_color = "#FFD6D6"
-	bitesize = 2
-	center_of_mass = list("x"=16, "y"=14)
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread
 	name = "Bread"

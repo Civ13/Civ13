@@ -191,17 +191,6 @@
 /datum/reagent/iron/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_BLOODRESTORE, 8 * removed)
 
-/datum/reagent/lithium
-	name = "Lithium"
-	id = "lithium"
-	description = "A chemical element, used as antidepressant."
-	taste_description = "metal"
-	reagent_state = SOLID
-	color = "#808080"
-
-/datum/reagent/lithium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	if (prob(5))
-		M.emote(pick("twitch", "drool", "moan"))
 
 /datum/reagent/mercury
 	name = "Mercury"
@@ -330,13 +319,6 @@
 	power = 3
 	meltdose = 8
 
-/datum/reagent/silicon
-	name = "Silicon"
-	id = "silicon"
-	description = "A tetravalent metalloid, silicon is less reactive than its chemical analog carbon."
-	reagent_state = SOLID
-	color = "#A8A8A8"
-
 /datum/reagent/sodium
 	name = "Sodium"
 	id = "sodium"
@@ -364,11 +346,3 @@
 	taste_description = "old eggs"
 	reagent_state = SOLID
 	color = "#BF8C00"
-
-/datum/reagent/tungsten
-	name = "Tungsten"
-	id = "tungsten"
-	description = "A chemical element, and a strong oxidising agent."
-	taste_mult = FALSE //no taste
-	reagent_state = SOLID
-	color = "#DCDCDC"

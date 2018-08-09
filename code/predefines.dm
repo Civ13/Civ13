@@ -438,7 +438,6 @@
 #define GODMODE     4096
 #define FAKEDEATH   8192  // Replaces stuff like changeling.changeling_fakedeath.
 #define DISFIGURED  16384 // I'll probably move this elsewhere if I ever get wround to writing a bitflag mob-damage system.
-#define XENO_HOST   32768 // Tracks whether we're gonna be a baby alien's mummy.
 
 // Grab levels.
 #define GRAB_PASSIVE    TRUE
@@ -569,43 +568,9 @@
 
 #define TOGGLES_DEFAULT (SOUND_ADMINHELP|SOUND_MIDI|SOUND_AMBIENCE|SOUND_LOBBY|CHAT_OOC|CHAT_DEAD|CHAT_GHOSTEARS|CHAT_GHOSTSIGHT|CHAT_PRAYER|CHAT_RADIO|CHAT_ATTACKLOGS|CHAT_LOOC)
 
-#define BE_TRAITOR    TRUE
-#define BE_OPERATIVE  2
-#define BE_CHANGELING 4
-#define BE_WIZARD     8
-#define BE_MALF       16
-#define BE_REV        32
-#define BE_ALIEN      64
-#define BE_AI         128
-#define BE_CULTIST    256
-#define BE_MONKEY     512
-#define BE_NINJA      1024
-#define BE_RAIDER     2048
-#define BE_PLANT      4096
-#define BE_MUTINEER   8192
-#define BE_PAI        16384
-
-// TODO: Update to new antagonist system.
-var/list/be_special_flags = list(
-	"Traitor"          = BE_TRAITOR,
-	"Operative"        = BE_OPERATIVE,
-	"Changeling"       = BE_CHANGELING,
-	"Wizard"           = BE_WIZARD,
-	"Malf AI"          = BE_MALF,
-	"Revolutionary"    = BE_REV,
-	"Xenomorph"        = BE_ALIEN,
-	"Positronic Brain" = BE_AI,
-	"Cultist"          = BE_CULTIST,
-	"Monkey"           = BE_MONKEY,
-	"Ninja"            = BE_NINJA,
-	"Raider"           = BE_RAIDER,
-	"Diona"            = BE_PLANT,
-	"Mutineer"         = BE_MUTINEER,
-	"pAI"              = BE_PAI
-)
 
 // Age limits on a character.
-#define AGE_MIN 16
+#define AGE_MIN 12
 #define AGE_MAX 75
 
 // Languages.
@@ -688,46 +653,9 @@ var/list/be_special_flags = list(
 #define INFECTION_LEVEL_TWO   500
 #define INFECTION_LEVEL_THREE 1000
 
-/*
- *	Shuttles.
-*/
-
-// These define the time taken for the shuttle to get to the space station, and the time before it leaves again.
-#define SHUTTLE_PREPTIME                300 // 5 minutes = 300 seconds - after this time, the shuttle departs centcom and cannot be recalled.
-#define SHUTTLE_LEAVETIME               180 // 3 minutes = 180 seconds - the duration for which the shuttle will wait at the station after arriving.
-#define SHUTTLE_TRANSIT_DURATION        300 // 5 minutes = 300 seconds - how long it takes for the shuttle to get to the station.
-#define SHUTTLE_TRANSIT_DURATION_RETURN 120 // 2 minutes = 120 seconds - for some reason it takes less time to come back, go figure.
-
-// Shuttle moving status.
-#define SHUTTLE_IDLE      FALSE
-#define SHUTTLE_WARMUP    TRUE
-#define SHUTTLE_INTRANSIT 2
-
-// Ferry shuttle processing status.
-#define IDLE_STATE   FALSE
-#define WAIT_LAUNCH  TRUE
-#define FORCE_LAUNCH 2
-#define WAIT_ARRIVE  3
-#define WAIT_FINISH  4
-
-// computer3 error codes, move lower in the file when it passes dev -Sayu
-#define PROG_CRASH          TRUE  // Generic crash.
-#define MISSING_PERIPHERAL  2  // Missing hardware.
-#define BUSTED_ASS_COMPUTER 4  // Self-perpetuating error.  BAC will continue to crash forever.
-#define MISSING_PROGRAM     8  // Some files try to automatically launch a program. This is that failing.
-#define FILE_DRM            16 // Some files want to not be copied/moved. This is them complaining that you tried.
-#define NETWORK_FAILURE     32
-
 // Special return values from bullet_act(). Positive return values are already used to indicate the blocked level of the projectile.
 #define PROJECTILE_CONTINUE   -1 //if the projectile should continue flying after calling bullet_act()
 #define PROJECTILE_FORCE_MISS -2 //if the projectile should treat the attack as a miss (suppresses attack and admin logs) - only applies to mobs.
-
-// Some on_mob_life() procs check for alien races.
-#define IS_DIONA  TRUE
-#define IS_VOX    2
-#define IS_SKRELL 3
-#define IS_UNATHI 4
-#define IS_XENOS  5
 
 #define MAX_GEAR_COST 5 // Used in chargen for accessory loadout limit.
 
@@ -808,26 +736,6 @@ var/list/be_special_flags = list(
 #define APPEARANCE_ALL_HAIR (APPEARANCE_HAIR|APPEARANCE_HAIR_COLOR|APPEARANCE_FACIAL_HAIR|APPEARANCE_FACIAL_HAIR_COLOR)
 #define APPEARANCE_ALL 511
 
-// Mode/antag template macros.
-#define MODE_BORER "borer"
-#define MODE_XENOMORPH "xeno"
-#define MODE_LOYALIST "loyalist"
-#define MODE_MUTINEER "mutineer"
-#define MODE_COMMANDO "commando"
-#define MODE_DEATHSQUAD "deathsquad"
-#define MODE_ERT "ert"
-#define MODE_MERCENARY "mercenary"
-#define MODE_NINJA "ninja"
-#define MODE_RAIDER "raider"
-#define MODE_WIZARD "wizard"
-#define MODE_CHANGELING "changeling"
-#define MODE_CULTIST "cultist"
-#define MODE_HIGHLANDER "highlander"
-#define MODE_MONKEY "monkey"
-#define MODE_RENEGADE "renegade"
-#define MODE_REVOLUTIONARY "revolutionary"
-#define MODE_MALFUNCTION "malf"
-#define MODE_TRAITOR "traitor"
 
 #define MIN_SUPPLIED_LAW_NUMBER 15
 #define MAX_SUPPLIED_LAW_NUMBER 50
@@ -849,13 +757,10 @@ var/list/be_special_flags = list(
 
 #define HUMAN TRUE
 #define MONKEY 2
-#define ALIEN 4
-#define ROBOT 8
-#define SLIME 16
-#define SIMPLE_ANIMAL 32
+#define SIMPLE_ANIMAL 4
 
 
-#define ALLMOBS (HUMAN|MONKEY|ALIEN|ROBOT|SLIME|SIMPLE_ANIMAL)
+#define ALLMOBS (HUMAN|MONKEY|SIMPLE_ANIMAL)
 
 #define NEXT_MOVE_DELAY 8
 
@@ -912,17 +817,3 @@ var/list/be_special_flags = list(
 	dview_mob.see_invisible = invis_flags; \
 	for (type in view(range, dview_mob))
 #define END_FOR_DVIEW dview_mob.loc = null
-
-//Cyber implant usage types
-#define CYBER_TOGGLE	1
-#define CYBER_ONESHOT	2
-#define CYBER_LOAD		4
-#define CYBER_UNLOAD	8
-
-//
-#define CYBER_BIO		1
-#define CYBER_MECH		2
-#define CYBER_BIOMECH	3
-
-#define RIGHT_SLEEVE	1
-#define LEFT_SLEEVE		2

@@ -159,20 +159,14 @@ var/list/gamemode_cache = list()
 	var/open_hub_discord_in_new_window = TRUE
 	var/hub_body = ""
 	var/hub_features = ""
-	var/hub_banner_url = ""
+	var/hub_banner_url = "https://i.imgur.com/Ouxiybj.png"
 
 
 	//WW2
 
 	var/lighting_is_rustic = FALSE
 	var/machinery_does_not_use_power = FALSE
-	var/paratrooper_drop_time = 3000
-
 	//WW2 donor shit
-
-	var/list/job_specific_custom_loadouts = list() // format is a triple list, first of jobs, second of ckeys containing a list of items
-	var/list/people_with_role_preference = list() // just a list of ckeys
-	var/list/untermenschen = list() // just a list of ckeys
 
 	//1713 hub stuff
 
@@ -189,7 +183,6 @@ var/list/gamemode_cache = list()
 
 	// dumb memes
 	var/allow_dabbing = FALSE
-	var/patrons_can_enable_disable_dabbing = FALSE
 
 	// seasons and weather
 	var/list/allowed_seasons = list(1)
@@ -268,8 +261,6 @@ var/list/gamemode_cache = list()
 								config.hub = TRUE
 							if ("no")
 								config.hub = FALSE
-				if ("jojoreference")
-					config.jojoreference = TRUE
 				if ("testing_port")
 					config.testing_port = text2num(value)
 				if ("hubtesting_port")
@@ -287,13 +278,9 @@ var/list/gamemode_cache = list()
 				if ("machinery_does_not_use_power")
 					config.machinery_does_not_use_power = text2num(value)
 
-
-
 				if ("lighting_is_rustic")
 					config.lighting_is_rustic = text2num(value)
 
-				if ("paratrooper_drop_time")
-					config.paratrooper_drop_time = text2num(value)
 
 				if ("resource_urls")
 					config.resource_urls = splittext(value, " ")
@@ -595,11 +582,6 @@ var/list/gamemode_cache = list()
 
 				if ("round_end_countdown")
 					config.round_end_countdown = text2num(value)
-
-				if ("allow_dabbing")
-					config.allow_dabbing = text2num(value)
-					if (config.allow_dabbing)
-						config.patrons_can_enable_disable_dabbing = TRUE
 
 				if ("enabled_seasons")
 					if (value)

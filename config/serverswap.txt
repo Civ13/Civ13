@@ -1,7 +1,7 @@
-enabled = false
-masterdir = nil
-s1 = 2000
-s2 = 3000
+enabled = true
+masterdir = /home/customer/1713/
+s1 = 12000
+s2 = 12001
 sfinal = s2
 this = s1
 snext = s2

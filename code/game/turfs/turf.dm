@@ -17,7 +17,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 
 
 /turf
-	name = "station"
+	name = "turf"
 	icon = 'icons/turf/floors.dmi'
 	level = TRUE
 //	var/holy = FALSE

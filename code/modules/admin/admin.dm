@@ -571,16 +571,6 @@ proc/admin_notice(var/message, var/rights)
 	log_admin("[key_name(usr)] toggled respawn to [config.abandon_allowed ? "On" : "Off"].")
 	world.update_status()
 
-/*
-/datum/admins/proc/toggle_aliens()
-	set category = "Server"
-	set desc="Toggle alien mobs"
-	set name="Toggle Aliens"
-	config.aliens_allowed = !config.aliens_allowed
-	log_admin("[key_name(usr)] toggled Aliens to [config.aliens_allowed].")
-	message_admins("[key_name_admin(usr)] toggled Aliens [config.aliens_allowed ? "on" : "off"].", TRUE)
-
-*/
 /datum/admins/proc/delay()
 	set category = "Server"
 	set desc="Delay the game start/end"
@@ -641,19 +631,6 @@ proc/admin_notice(var/message, var/rights)
 	world << "<span class = 'red'><b>Rebooting world!</b> <span class = 'notice'>Initiated by [usr.client.holder.fakekey ? "Admin" : usr.key]!</span></span>"
 	log_admin("[key_name(usr)] initiated an immediate reboot.")
 	world.Reboot()
-
-/datum/admins/proc/unprison(var/mob/M in mob_list)
-	set category = "Admin"
-	set name = "Unprison"
-	if (M.z == 6)
-		if (config.allow_admin_jump)
-			M.loc = pick(latejoin)
-			message_admins("[key_name_admin(usr)] has unprisoned [key_name_admin(M)]", TRUE)
-			log_admin("[key_name(usr)] has unprisoned [key_name(M)]")
-		else
-			WWalert(usr, "Admin jumping is disabled.", "Denied")
-	else
-		WWalert(usr, "[M.name] is not prisoned.", "Unprison")
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////ADMIN HELPER PROCS

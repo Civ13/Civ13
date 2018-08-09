@@ -20,7 +20,7 @@
 /proc/new_station_name()
 	if (config.server_name)
 		return config.server_name
-	return "No Man's Land: Unofficial Server"
+	return "1713"
 
 /proc/station_name()
 	if (!station_name)

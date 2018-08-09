@@ -10,7 +10,7 @@
 
 /obj/effect/decal/cleanable/ash
 	name = "ashes"
-	desc = "Ashes to ashes, dust to dust, and into space."
+	desc = "Ashes to ashes, dust to dust."
 	gender = PLURAL
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "ash"

@@ -28,24 +28,14 @@
 	w_class = 2.0
 	weight = 1.18
 
-/obj/item/weapon/shovel/spade/russia
-	name = "lopata"
-	icon_state = "lopata"
-	item_state = "lopata"
-
-/obj/item/weapon/shovel/spade/german
-	name = "feldspaten"
+/obj/item/weapon/shovel/spade/foldable
+	name = "foldable shovel"
 	icon_state = "german_shovel2"
 	item_state = "lopata"
 
-/obj/item/weapon/shovel/spade/japan
-	name = "japanese field shovel"
+/obj/item/weapon/shovel/spade/small
+	name = "small shovel"
 	icon_state = "lopata"
-	item_state = "lopata"
-
-/obj/item/weapon/shovel/spade/usa
-	name = "american field shovel"
-	icon_state = "german_shovel2"
 	item_state = "lopata"
 
 /obj/item/weapon/wirecutters/boltcutters
@@ -56,10 +46,3 @@
 /obj/item/weapon/crowbar/prybar
 	name = "prybar"
 	icon_state = "prybar"
-
-/*
-/obj/item/flashlight/ww2
-	name = "flashlight"
-	icon_state = "ww2_welder_off"
-	on_state = "ww2_welder_on"
-	off_state = "ww2_welder_off"*/

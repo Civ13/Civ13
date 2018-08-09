@@ -241,9 +241,6 @@
 
 	var/msg_prefix = ""
 
-	if (dd_hasprefix(msg, ">>") && (isPatron("$3+") || holder.rights))
-		msg = copytext(msg, 3, lentext(msg)+1)
-		msg_prefix = "<span style = 'color:green'>></span>"
 
 	msg = sanitize(msg)
 	msg = "[msg_prefix][msg]"
@@ -336,8 +333,6 @@
 
 			var/admin_patron_check = FALSE
 			if (holder && !holder.fakekey && (holder.rights & R_ADMIN))
-				admin_patron_check = TRUE
-			if (isPatron("$3+"))
 				admin_patron_check = TRUE
 
 			if (admin_patron_check && config.allow_admin_ooccolor && (prefs.ooccolor != initial(prefs.ooccolor))) // keeping this for the badmins

@@ -65,7 +65,7 @@
 	if ((input(src, "Are you sure you want to kick ALL unwhitelisted players?") in list("Yes", "No")) == "Yes")
 		if ((input(src, "Seriously?") in list("Yes", "No")) == "Yes")
 			for (var/client/C in clients)
-				if (!C.holder && !C.validate_whitelist("Server", TRUE) && !C.isPatron("$10+"))
+				if (!C.holder && !C.validate_whitelist("Server", TRUE))
 					++ejected
 					C << "<span class = 'userdanger'>The server has been closed to those who aren't whitelisted for private testing. Get whitelisted on the Discord.</span>"
 					del C

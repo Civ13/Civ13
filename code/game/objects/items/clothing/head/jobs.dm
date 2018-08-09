@@ -36,7 +36,7 @@
 //Chaplain
 /obj/item/clothing/head/chaplain_hood
 	name = "preacher's hood"
-	desc = "It's hood that covers the head. It keeps you warm during the space winters."
+	desc = "It's hood that covers the head."
 	icon_state = "chaplain_hood"
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
@@ -44,7 +44,7 @@
 //Chaplain
 /obj/item/clothing/head/nun_hood
 	name = "nun hood"
-	desc = "Maximum piety in this star system."
+	desc = "A typical nun hood."
 	icon_state = "nun_hood"
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
@@ -55,30 +55,3 @@
 	desc = "A beret, an artists favorite headwear."
 	icon_state = "beret"
 	body_parts_covered = FALSE
-
-/obj/item/clothing/head/caphat/km_cap
-	name = "Kriegsmarine cap"
-	desc = "A formal cap of the Kriegsmarine."
-	icon_state = "km_cap"
-
-//Security
-/obj/item/clothing/head/beret/sec/navy/officer
-	name = "Operative beret"
-	desc = "A navy blue beret with an Operative's rank emblem. For officers that are more inclined towards style than safety."
-	icon_state = "beret_navy_officer"
-/obj/item/clothing/head/beret/sec/navy/hos
-	name = "Commander beret"
-	desc = "A navy blue beret with a Commander's rank emblem. For officers that are more inclined towards style than safety."
-	icon_state = "beret_navy_hos"
-/obj/item/clothing/head/beret/sec/navy/warden
-	name = "Sergeant beret"
-	desc = "A navy blue beret with a Sergeant's rank emblem. For officers that are more inclined towards style than safety."
-	icon_state = "beret_navy_warden"
-/obj/item/clothing/head/beret/engineering
-	name = "engineering beret"
-	desc = "A beret with the engineering insignia emblazoned on it. For engineers that are more inclined towards style than safety."
-	icon_state = "beret_engineering"
-/obj/item/clothing/head/beret/purple
-	name = "purple beret"
-	desc = "A stylish, if purple, beret."
-	icon_state = "beret_purple"

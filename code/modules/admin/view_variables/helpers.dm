@@ -60,29 +60,21 @@
 		<option value='?_src_=vars;remverb=\ref[src]'>Remove Verb</option>
 		<option>---</option>
 		<option value='?_src_=vars;gib=\ref[src]'>Gib</option>
-		<option value='?_src_=vars;explode=\ref[src]'>Trigger explosion</option>
-		<option value='?_src_=vars;emp=\ref[src]'>Trigger EM pulse</option>
 		"}
 
 /mob/living/carbon/human/get_view_variables_options()
 	return ..() + {"
 		<option value='?_src_=vars;setspecies=\ref[src]'>Set Species</option>
-		<option value='?_src_=vars;makeai=\ref[src]'>Make AI</option>
-		<option value='?_src_=vars;makerobot=\ref[src]'>Make cyborg</option>
 		<option value='?_src_=vars;makemonkey=\ref[src]'>Make monkey</option>
-		<option value='?_src_=vars;makealien=\ref[src]'>Make alien</option>
-		<option value='?_src_=vars;makeslime=\ref[src]'>Make slime</option>
 		"}
 
 /obj/get_view_variables_options()
 	return ..() + {"
 		<option value='?_src_=vars;delall=\ref[src]'>Delete all of type</option>
 		<option value='?_src_=vars;explode=\ref[src]'>Trigger explosion</option>
-		<option value='?_src_=vars;emp=\ref[src]'>Trigger EM pulse</option>
 		"}
 
 /turf/get_view_variables_options()
 	return ..() + {"
 		<option value='?_src_=vars;explode=\ref[src]'>Trigger explosion</option>
-		<option value='?_src_=vars;emp=\ref[src]'>Trigger EM pulse</option>
 		"}

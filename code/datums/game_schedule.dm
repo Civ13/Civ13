@@ -94,7 +94,7 @@ var/datum/game_schedule/global_game_schedule = null
 	forceClosed = TRUE
 	update()
 	for (var/client/C in clients)
-		if (!C.holder && !C.isPatron("$10+"))
+		if (!C.holder)
 			C << "<span class = 'userdanger'>The server has been closed.</span>"
 			spawn (1)
 				del C

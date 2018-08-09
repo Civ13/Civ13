@@ -74,9 +74,6 @@
 
 /mob/living/carbon/human/say_understands(var/mob/other,var/datum/language/speaking = null)
 
-	if (has_brain_worms()) //Brain worms translate everything. Even mice and alien speak.
-		return TRUE
-
 	if (species.can_understand(other))
 		return TRUE
 

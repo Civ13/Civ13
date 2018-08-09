@@ -14,5 +14,5 @@
 	icon_state = "soapdeluxe"
 
 /obj/item/weapon/soap/deluxe/New()
-	desc = "A deluxe Waffle Co. brand bar of soap. Smells of [pick("lavender", "vanilla", "strawberry", "chocolate" ,"space")]."
+	desc = "A deluxe brand bar of soap. Smells of [pick("lavender", "vanilla", "strawberry")]."
 	..()

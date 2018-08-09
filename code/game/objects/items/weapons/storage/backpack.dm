@@ -43,64 +43,12 @@
  * Backpack Types
  */
 
-/obj/item/weapon/storage/backpack/holding
-	name = "bag of holding"
-	desc = "A backpack that opens into a localized pocket of Blue Space."
-//	origin_tech = list(TECH_BLUESPACE = 4)
-	icon_state = "holdingpack"
-	max_w_class = 4
-	max_storage_space = 56
-	storage_cost = 29
-
-	New()
-		..()
-		return
-
-	attackby(obj/item/weapon/W as obj, mob/user as mob)
-		if (istype(W, /obj/item/weapon/storage/backpack/holding))
-			user << "<span class='warning'>The Bluespace interfaces of the two devices conflict and malfunction.</span>"
-			qdel(W)
-			return
-		..()
-
-	//Please don't clutter the parent storage item with stupid hacks.
-	can_be_inserted(obj/item/W as obj, stop_messages = FALSE)
-		if (istype(W, /obj/item/weapon/storage/backpack/holding))
-			return TRUE
-		return ..()
-
-/obj/item/weapon/storage/backpack/santabag
-	name = "\improper Santa's gift bag"
-	desc = "Space Santa uses this to deliver toys to all the nice children in space in Christmas! Wow, it's pretty big!"
-	icon_state = "giftbag0"
-	item_state = "giftbag"
-	w_class = 4.0
-	max_w_class = 3
-	max_storage_space = 400 // can store a ton of shit!
-	item_state_slots = null
-
-/obj/item/weapon/storage/backpack/cultpack
-	name = "trophy rack"
-	desc = "It's useful for both carrying extra gear and proudly declaring your insanity."
-	icon_state = "cultpack"
-
-/obj/item/weapon/storage/backpack/clown
-	name = "Giggles von Honkerton"
-	desc = "It's a backpack made by Honk! Co."
-	icon_state = "clownpack"
-	item_state_slots = null
-
 /obj/item/weapon/storage/backpack/medic
 	name = "medical backpack"
 	desc = "It's a backpack especially designed for use in a sterile environment."
 	icon_state = "medicalpack"
 	item_state_slots = null
 
-/obj/item/weapon/storage/backpack/security
-	name = "security backpack"
-	desc = "It's a very robust backpack."
-	icon_state = "securitypack"
-	item_state_slots = null
 
 /obj/item/weapon/storage/backpack/captain
 	name = "captain's backpack"
@@ -110,7 +58,7 @@
 
 /obj/item/weapon/storage/backpack/industrial
 	name = "industrial backpack"
-	desc = "It's a tough backpack for the daily grind of station life."
+	desc = "It's a tough backpack for the daily grind of ship life."
 	icon_state = "engiepack"
 	item_state_slots = null
 

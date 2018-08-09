@@ -13,69 +13,24 @@
 var/diary               = null
 var/attack_log          = null
 var/href_logfile        = null
-var/station_name        = null//"CEV Eris"
-//var/station_short       = "Eris"
-//var/const/dock_name     = "N.A.S. Crescent"
-//var/const/boss_name     = "Central Command"
-//var/const/boss_short    = "Centcomm"
-//var/const/company_name  = "NanoTrasen"
-//var/const/company_short = "NT"
+var/station_name        = null
 var/game_version        = "1713"
 var/changelog_hash      = ""
 //var/game_year           = (text2num(time2text(world.realtime, "YYYY")) + 544)
 
 var/round_progressing = TRUE
-//var/master_mode       = "WW2" // "extended"
-//var/secret_force_mode = "WW2"   // if this is anything but "secret", the secret rotation will forceably choose this mode.
-
-//var/host = null //only here until check @ code\modules\ghosttrap\trap.dm:112 is fixed
-
-
-//var/list/bombers       = list()
-//var/list/lastsignalers = list() // Keeps last 100 signals here in format: "[src] used \ref[src] @ location [loc]: [freq]/[code]"
-//var/list/lawchanges    = list() // Stores who uploaded laws to which silicon-based lifeform, and what the law was.
-
-//var/list/monkeystart     = list()
-//var/list/wizardstart     = list()
-
-
-//var/list/latejoin_gateway = list()
-//var/list/latejoin_cryo    = list()
-//var/list/latejoin_cyborg  = list()
-
-//var/list/prisonwarp         = list() // Prisoners go to these
-//var/list/holdingfacility    = list() // Captured people go here
-//var/list/xeno_spawn         = list() // Aliens spawn at at these.
-//var/list/tdome1             = list()
-//var/list/tdome2             = list()
-//var/list/tdomeobserve       = list()
-//var/list/tdomeadmin         = list()
-//var/list/prisonsecuritywarp = list() // Prison security goes to these.
-//var/list/prisonwarped       = list() // List of players already warped.
-
 
 var/datum/configuration/config      = null
-//var/datum/sun/sun                   = null
-/*
-var/list/combatlog = list()
-var/list/IClog     = list()
-var/list/OOClog    = list()
-var/list/adminlog  = list()
-*/
-//var/list/powernets = list()
+
 
 var/Debug2 = FALSE
 var/datum/debug/debugobj
 
-//var/datum/moduletypes/mods = new()
 
-//var/gravity_is_on = TRUE
 
 var/join_motd = null
 
 var/datum/nanomanager/nanomanager		= new() // NanoManager, the manager for Nano UIs.
-
-//var/list/awaydestinations = list() // Away missions. A list of landmarks that the warpgate can take you to.
 
 var/season = "SPRING"
 
@@ -87,74 +42,12 @@ var/season = "SPRING"
 
 /proc/get_season()
 	return capitalize(lowertext(season))
-/*
-// MySQL configuration
-var/sqladdress = "localhost"
-var/sqlport    = "3306"
-var/sqldb      = "tgstation"
-var/sqllogin   = "root"
-var/sqlpass    = ""
 
-// Feedback gathering sql connection
-var/sqlfdbkdb    = "test"
-var/sqlfdbklogin = "root"
-var/sqlfdbkpass  = ""
-var/sqllogging   = FALSE // Should we log deaths, population stats, etc.?
-
-// Forum MySQL configuration. (for use with forum account/key authentication)
-// These are all default values that will load should the forumdbconfig.txt file fail to read for whatever reason.
-var/forumsqladdress = "localhost"
-var/forumsqlport    = "3306"
-var/forumsqldb      = "tgstation"
-var/forumsqllogin   = "root"
-var/forumsqlpass    = ""
-var/forum_activated_group     = "2"
-var/forum_authenticated_group = "10"
-*/
 // For FTP requests. (i.e. downloading runtime logs.)
 // However it'd be ok to use for accessing attack logs and such too, which are even laggier.
 var/fileaccess_timer = 0
 var/custom_event_msg = null
 
-/*
-// Database connections. A connection is established on world creation.
-// Ideally, the connection dies when the server restarts (After feedback logging.).
-var/DBConnection/dbcon     = new() // Feedback    database (New database)
-var/DBConnection/dbcon_old = new() // /tg/station database (Old database) -- see the files in the SQL folder for information on what goes where.
-*/
-/*
-
-// Reference list for disposal sort junctions. Filled up by sorting junction's New()
-/var/list/tagger_locations = list()
-
-// Used by robots and robot preferences.
-var/list/robot_module_types = list(
-	"Standard", "Engineering", "Surgeon",  "Crisis",
-	"Miner",    "Janitor",     "Service",      "Clerical", "Security",
-	"Research"
-)
-
-// Some scary sounds.
-var/static/list/scarySounds = list(
-	'sound/weapons/thudswoosh.ogg',
-	'sound/weapons/Taser.ogg',
-	'sound/weapons/armbomb.ogg',
-	'sound/voice/hiss1.ogg',
-	'sound/voice/hiss2.ogg',
-	'sound/voice/hiss3.ogg',
-	'sound/voice/hiss4.ogg',
-	'sound/voice/hiss5.ogg',
-	'sound/voice/hiss6.ogg',
-	'sound/effects/Glassbr1.ogg',
-	'sound/effects/Glassbr2.ogg',
-	'sound/effects/Glassbr3.ogg',
-	'sound/items/Welder.ogg',
-	'sound/items/Welder2.ogg',
-	'sound/machines/airlock.ogg',
-	'sound/effects/clownstep1.ogg',
-	'sound/effects/clownstep2.ogg'
-)
-*/
 // Bomb cap!
 var/max_explosion_range = 14
 

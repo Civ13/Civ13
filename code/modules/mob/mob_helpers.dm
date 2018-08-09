@@ -1,6 +1,4 @@
 // fun if you want to typecast humans/monkeys/etc without writing long path-filled lines.
-/proc/isxenomorph(A)
-	return FALSE
 
 /proc/issmall(A)
 	if (A && istype(A, /mob/living))
@@ -8,15 +6,6 @@
 		return L.mob_size <= MOB_SMALL
 	return FALSE
 
-/mob/living/proc/isSynthetic()
-	return FALSE
-
-/mob/living/carbon/human/isSynthetic()
-	// If they are 100% robotic, they count as synthetic.
-	for (var/obj/item/organ/external/E in organs)
-		if (!(E.status & ORGAN_ROBOT))
-			return FALSE
-	return TRUE
 
 proc/isdeaf(A)
 	if (isliving(A))
@@ -33,21 +22,7 @@ proc/iscuffed(A)
 		if (C.handcuffed)
 			return TRUE
 	return FALSE
-/*
-proc/hassensorlevel(A, var/level)
-	var/mob/living/carbon/human/H = A
-	if (istype(H) && istype(H.w_uniform, /obj/item/clothing/under))
-		var/obj/item/clothing/under/U = H.w_uniform
-		return U.sensor_mode >= level
-	return FALSE
-
-proc/getsensorlevel(A)
-	var/mob/living/carbon/human/H = A
-	if (istype(H) && istype(H.w_uniform, /obj/item/clothing/under))
-		var/obj/item/clothing/under/U = H.w_uniform
-		return U.sensor_mode
-	return SUIT_SENSOR_OFF
-*/
+/
 
 /proc/is_admin(var/mob/user)
 	return check_rights(R_ADMIN, FALSE, user) != FALSE

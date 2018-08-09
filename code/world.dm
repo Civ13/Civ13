@@ -210,11 +210,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		var/input[] = params2list(T)
 		var/list/s = list()
 		s["version"] = game_version
-//		s["mode"] = master_mode
 		s["respawn"] = config.abandon_allowed
 		s["enter"] = config.enter_allowed
 		s["vote"] = config.allow_vote_mode
-		s["ai"] = config.allow_ai
 		s["host"] = host ? host : null
 
 		// This is dumb, but spacestation13.com's banners break if player count isn't the 8th field of the reply, so... this has to go here.
@@ -288,29 +286,12 @@ var/world_topic_spam_protect_time = world.timeofday
 
 #define COLOR_LIGHT_SEPIA "#D4C6B8"
 #undef COLOR_SEPIA
-/*
-/hook/startup/proc/loadMode()
-	world.load_mode()
-	return TRUE
 
-/world/proc/load_mode()
-	var/list/Lines = file2list("data/mode.txt")
-	if (Lines.len)
-		if (Lines[1])
-			master_mode = Lines[1]
-			log_misc("Saved mode is '[master_mode]'")
-
-/world/proc/save_mode(var/the_mode)
-	var/F = file("data/mode.txt")
-	fdel(F)
-	F << the_mode
-*/
 /hook/startup/proc/loadMOTD()
 	world.load_motd()
 	return TRUE
 
 /world/proc/load_motd()
-//	join_motd = russian_to_cp1251(file2text("config/motd.txt"))
 	join_motd = file2text("config/motd.txt")
 
 /proc/load_configuration()
@@ -434,16 +415,7 @@ var/setting_up_db_connection = FALSE
 
 			if (serverswap.Find("this"))
 				if (serverswap["this"] == "s1")
-				/*
-					// we're starting up for the first time, so clear the sharedinfo folder
-					for (var/i in TRUE to 10)
-						var/d1 = "[serverswap["masterdir"]]sharedinfo/s[i]_normal.txt"
-						var/d2 = "[serverswap["masterdir"]]sharedinfo/s[i]_closed.txt"
-						if (fexists(d1))
-							fdel(d1)
-						if (fexists(d2))
-							fdel(d2)
-						*/
+
 					DEBUG_SERVERSWAP(5.1)
 					if (fexists("[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_closed.txt"))
 						serverswap_open_status = FALSE

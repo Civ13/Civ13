@@ -123,26 +123,3 @@
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 15
-
-/datum/reagent/fuel
-	name = "Welding fuel"
-	id = "fuel"
-	description = "Required for welders. Flamable."
-	taste_description = "gross metal"
-	reagent_state = LIQUID
-	color = "#660000"
-	touch_met = 5
-
-/datum/reagent/fuel/touch_turf(var/turf/T)
-	new /obj/effect/decal/cleanable/liquid_fuel(T, volume)
-	remove_self(volume)
-	return
-
-/datum/reagent/fuel/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	if (issmall(M)) removed *= 2
-	M.adjustToxLoss(2 * removed)
-
-/datum/reagent/fuel/touch_mob(var/mob/living/L, var/amount)
-	if (istype(L))
-		L.adjust_fire_stacks(amount / 10) // Splashing people with welding fuel to make them easy to ignite!
-

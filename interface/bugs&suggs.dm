@@ -92,67 +92,52 @@
 /client/verb/makeasugg()
 	set hidden = TRUE
 
-	if (isPatron("$5+") && (input(src, "You are a Patron. Would you like to submit a tip that will be displayed at roundstart?") in list("Yes", "No")) == "Yes")
-		establish_db_connection()
-		var/tip = input("What is this tip?") as null|text
-		if (!tip)
-			return
-		if (lentext(tip) > 500)
-			tip = copytext(tip, TRUE, 501)
-			src << "<span class = 'warning'>Your tip's name was clamped to 500 characters.</span>"
-		tip = sanitizeSQL(tip, 500)
-		if (database.execute("INSERT INTO player_tips (UID, submitter, tip) VALUES ('[database.newUID()]', '[ckey]', '[tip]');"))
-			src << "<span class = 'good'>Success! Your tip was sent to the admins.</span>"
-		else
-			src << "<span class = 'bad'>A database error occured. Your tip was not sent to the admins.</span>"
-	else
+	establish_db_connection()
 
-		establish_db_connection()
+	rename
 
-		rename
+	var/suggname = input("What is a name for this suggestion?") as null|text
+	if (!suggname)
+		return
 
-		var/suggname = input("What is a name for this suggestion?") as null|text
-		if (!suggname)
-			return
+	if (lentext(suggname) > 100)
+		suggname = copytext(suggname, TRUE, 101)
+		src << "<span class = 'warning'>Your suggestion's name was clamped to 50 characters.</span>"
 
-		if (lentext(suggname) > 100)
-			suggname = copytext(suggname, TRUE, 101)
-			src << "<span class = 'warning'>Your suggestion's name was clamped to 50 characters.</span>"
+	var/check_name_already_exists = database.execute("SELECT * FROM suggestions WHERE name = '[suggname]';", FALSE)
+	if (islist(check_name_already_exists) && !isemptylist(check_name_already_exists))
+		src << "<span class = 'danger'>This suggestion already exists! Please choose another name.</span>"
+		goto rename
 
-		var/check_name_already_exists = database.execute("SELECT * FROM suggestions WHERE name = '[suggname]';", FALSE)
-		if (islist(check_name_already_exists) && !isemptylist(check_name_already_exists))
-			src << "<span class = 'danger'>This suggestion already exists! Please choose another name.</span>"
-			goto rename
+	suggname = sanitizeSQL(suggname)
 
-		suggname = sanitizeSQL(suggname)
+	redesc
 
-		redesc
+	var/suggdesc = input("What is the suggestions's description?") as text
+	if (lentext(suggdesc) > 500)
+		suggdesc = copytext(suggdesc, TRUE, 501)
+		src << "<span class = 'warning'>Your suggestion's description was clamped to 500 characters.</span>"
 
-		var/suggdesc = input("What is the suggestions's description?") as text
-		if (lentext(suggdesc) > 500)
-			suggdesc = copytext(suggdesc, TRUE, 501)
-			src << "<span class = 'warning'>Your suggestion's description was clamped to 500 characters.</span>"
+	if (!suggdesc)
+		src << "<span class = 'warning'>Please put something in the description field.</span>"
+		goto redesc
 
-		if (!suggdesc)
-			src << "<span class = 'warning'>Please put something in the description field.</span>"
-			goto redesc
+	suggdesc = sanitizeSQL(suggdesc)
 
-		suggdesc = sanitizeSQL(suggdesc)
+	suggdesc += "<br><i>Suggested by [src], who was, at the time, [key_name(src)]</i>"
 
-		suggdesc += "<br><i>Suggested by [src], who was, at the time, [key_name(src)]</i>"
-
-		_tryagain_
-		if (suggname && suggdesc)
-			if (database)
-				if (database.execute("INSERT INTO suggestions (name, desc) VALUES ('[suggname]', '[suggdesc]');", FALSE))
-					src << "<span class = 'notice'>Your suggestion was successfully received. Thank you!</span>"
-					message_admins("New suggestion received from [key_name(src)], titled '[suggname]'.")
-				else
-					src << "<span class = 'warning'>A database error occured; your suggestion was NOT sent.</span>"
-					var/tryagain = input(src, "Try to send this suggestion once more?") in list("Yes", "No")
-					if (tryagain == "Yes")
-						goto _tryagain_
+	_tryagain_
+	if (suggname && suggdesc)
+		if (database)
+			if (database.execute("INSERT INTO suggestions (name, desc) VALUES ('[suggname]', '[suggdesc]');", FALSE))
+				src << "<span class = 'notice'>Your suggestion was successfully received. Thank you!</span>"
+				message_admins("New suggestion received from [key_name(src)], titled '[suggname]'.")
 			else
 				src << "<span class = 'warning'>A database error occured; your suggestion was NOT sent.</span>"
+				var/tryagain = input(src, "Try to send this suggestion once more?") in list("Yes", "No")
+				if (tryagain == "Yes")
+					goto _tryagain_
 		else
-			src << "<span class = 'warning'>Please fill in all fields!</span>"
+			src << "<span class = 'warning'>A database error occured; your suggestion was NOT sent.</span>"
+	else
+		src << "<span class = 'warning'>Please fill in all fields!</span>"

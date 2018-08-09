@@ -69,4 +69,4 @@
 	return ..()
 
 /datum/category_item/player_setup_item/player_global/ui/proc/can_select_ooc_color(var/mob/user)
-	return ((config.allow_admin_ooccolor && check_rights(R_ADMIN, FALSE, user)) || (user.client && user.client.isPatron("$3+")))
+	return ((config.allow_admin_ooccolor && check_rights(R_ADMIN, FALSE, user)))

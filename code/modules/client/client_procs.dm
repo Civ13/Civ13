@@ -194,7 +194,7 @@
 	 */
 
 	if (clients.len >= PLAYERCAP)
-		if (!holder && !isPatron("$3+") && !validate_whitelist("server"))
+		if (!holder && !validate_whitelist("server"))
 			src << "<span class = 'danger'><font size = 4>The server is full right now, sorry.</font></span>"
 			del(src)
 			return
@@ -210,7 +210,7 @@
 	if (world.host == key || (holder && (holder.rights & R_HOST)))
 		control_freak = 0
 
-	if (!holder && !isPatron("$10+"))
+	if (!holder)
 
 		if (!world_is_open)
 			src << "<span class = 'userdanger'>The server is currently closed to non-admins. The game is open [global_game_schedule.getScheduleAsString()].</span>"

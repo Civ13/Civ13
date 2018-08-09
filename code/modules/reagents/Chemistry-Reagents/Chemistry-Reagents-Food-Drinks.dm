@@ -162,23 +162,6 @@
 	if (volume >= 3)
 		T.wet_floor()
 
-/datum/reagent/nutriment/virus_food
-	name = "Virus Food"
-	id = "virusfood"
-	description = "A mixture of water, milk, and oxygen. Virus cells can use this mixture to reproduce."
-	taste_description = "vomit"
-	taste_mult = 2
-	reagent_state = LIQUID
-	nutriment_factor = 2
-	color = "#899613"
-
-/datum/reagent/nutriment/sprinkles
-	name = "Sprinkles"
-	id = "sprinkles"
-	description = "Multi-colored little bits of sugar, commonly found on donuts. Loved by cops."
-	taste_description = "childhood whimsy"
-	nutriment_factor = TRUE
-	color = "#FF00FF"
 
 /datum/reagent/nutriment/mint
 	name = "Mint"
@@ -187,18 +170,6 @@
 	taste_description = "mint"
 	reagent_state = LIQUID
 	color = "#CF3600"
-
-/datum/reagent/lipozine // The anti-nutriment.
-	name = "Lipozine"
-	id = "lipozine"
-	description = "A chemical compound that causes a powerful fat-burning reaction."
-	taste_description = "mothballs"
-	reagent_state = LIQUID
-	color = "#BBEDA4"
-	overdose = REAGENTS_OVERDOSE
-
-/datum/reagent/lipozine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.nutrition = max(M.nutrition - 10 * removed, FALSE)
 
 /* Non-food stuff like condiments */
 
@@ -220,29 +191,14 @@
 	color = "#000000"
 
 /datum/reagent/enzyme
-	name = "Universal Enzyme"
+	name = "Yeast"
 	id = "enzyme"
-	description = "A universal enzyme used in the preperation of certain chemicals and foods."
+	description = "A type of fungus used in the preperation of certain chemicals and foods."
 	taste_description = "sweetness"
 	taste_mult = 0.7
 	reagent_state = LIQUID
 	color = "#365E30"
 	overdose = REAGENTS_OVERDOSE
-
-/datum/reagent/frostoil
-	name = "Frost Oil"
-	id = "frostoil"
-	description = "A special oil that noticably chills the body. Extracted from Ice Peppers."
-	taste_description = "mint"
-	taste_mult = 1.5
-	reagent_state = LIQUID
-	color = "#B31008"
-
-/datum/reagent/frostoil/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.bodytemperature = max(M.bodytemperature - 10 * TEMPERATURE_DAMAGE_COEFFICIENT, FALSE)
-	if (prob(1))
-		M.emote("shiver")
-	holder.remove_reagent("capsaicin", 5)
 
 /datum/reagent/capsaicin
 	name = "Capsaicin Oil"
@@ -508,29 +464,6 @@
 	taste_description = "creamy milk"
 	color = "#DFD7AF"
 
-/datum/reagent/drink/milk/soymilk
-	name = "Soy Milk"
-	id = "soymilk"
-	description = "An opaque white liquid made from soybeans."
-	taste_description = "soy milk"
-	color = "#DFDFC7"
-
-/datum/reagent/drink/milk/soymilk/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	// soyboys btfo - Kachnov
-	if (ishuman(M) && M.gender == MALE)
-		var/mob/living/carbon/human/H = M
-		H.adaptStat("strength", -ceil(removed/5))
-		if (prob(20))
-			H << "<span class = 'warning'>You feel weak.</span>"
-		if (prob(ceil(removed/100)))
-			H.change_gender(FEMALE)
-			H.visible_message("<span class = 'danger'>[H] turns into a woman!</span>")
-		else if (prob(ceil(removed/100)) && H.size_multiplier >= 0.50)
-			H.size_multiplier = max(H.size_multiplier - 0.05, 0.50)
-			H.regenerate_icons()
-			H.visible_message("<span class = 'danger'>[H] shrinks!</span>")
-
 /datum/reagent/drink/tea
 	name = "Tea"
 	id = "tea"
@@ -545,14 +478,6 @@
 /datum/reagent/drink/tea/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(-0.5 * removed)
-
-/datum/reagent/drink/tea/icetea
-	name = "Iced Tea"
-	id = "icetea"
-	description = "No relation to a certain rap artist/ actor."
-	taste_description = "sweet tea"
-	color = "#104038" // rgb: TRUE6, 64, 56
-	adj_temp = -5
 
 /datum/reagent/drink/coffee
 	name = "Coffee"
@@ -577,38 +502,6 @@
 	M.make_jittery(5)
 	M.add_chemical_effect(CE_PULSE, 2)
 
-/datum/reagent/drink/coffee/icecoffee
-	name = "Iced Coffee"
-	id = "icecoffee"
-	description = "Coffee and ice, refreshing and cool."
-	taste_description = "bitter coldness"
-	color = "#102838"
-	adj_temp = -5
-
-/datum/reagent/drink/coffee/soy_latte
-	name = "Soy Latte"
-	id = "soy_latte"
-	description = "A nice and tasty beverage while you are reading your hippie books."
-	taste_description = "creamy coffee"
-	color = "#664300"
-	adj_temp = 5
-
-/datum/reagent/drink/coffee/soy_latte/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.heal_organ_damage(0.5 * removed, FALSE)
-
-/datum/reagent/drink/coffee/cafe_latte
-	name = "Cafe Latte"
-	id = "cafe_latte"
-	description = "A nice, strong and tasty beverage while you are reading."
-	taste_description = "bitter cream"
-	color = "#664300" // rgb: 102, 67, FALSE
-	adj_temp = 5
-
-/datum/reagent/drink/coffee/cafe_latte/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.heal_organ_damage(0.5 * removed, FALSE)
-
 /datum/reagent/drink/hot_coco
 	name = "Hot Chocolate"
 	id = "hot_coco"
@@ -618,24 +511,6 @@
 	color = "#403010"
 	nutrition = 2
 	adj_temp = 5
-
-/datum/reagent/drink/sodawater
-	name = "Soda Water"
-	id = "sodawater"
-	description = "A can of club soda. Why not make a scotch and soda?"
-	taste_description = "carbonated water"
-	color = "#619494"
-	adj_dizzy = -5
-	adj_drowsy = -3
-	adj_temp = -5
-
-/datum/reagent/drink/grapesoda
-	name = "Grape Soda"
-	id = "grapesoda"
-	description = "Grapes made into a fine drank."
-	taste_description = "grape soda"
-	color = "#421C52"
-	adj_drowsy = -3
 
 /datum/reagent/drink/tonic
 	name = "Tonic Water"
@@ -656,22 +531,6 @@
 	color = "#FFFF00"
 	adj_temp = -5
 
-/datum/reagent/drink/kiraspecial
-	name = "Kira Special"
-	description = "Long live the guy who everyone had mistaken for a girl. Baka!"
-	taste_description = "fruity sweetness"
-	id = "kiraspecial"
-	color = "#CCCC99"
-	adj_temp = -5
-
-/datum/reagent/drink/brownstar
-	name = "Brown Star"
-	description = "It's not what it sounds like..."
-	taste_description = "orange and cola soda"
-	id = "brownstar"
-	color = "#9F3400"
-	adj_temp = -2
-
 /datum/reagent/drink/milkshake
 	name = "Milkshake"
 	description = "Glorious brainfreezing mixture."
@@ -680,105 +539,12 @@
 	color = "#AEE5E4"
 	adj_temp = -9
 
-/datum/reagent/drink/rewriter
-	name = "Rewriter"
-	description = "The secret of the sanctuary of the Libarian..."
-	taste_description = "a bad night out"
-	id = "rewriter"
-	color = "#485000"
-	adj_temp = -5
-
-/datum/reagent/drink/rewriter/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.make_jittery(5)
-
-/datum/reagent/drink/nuka_cola
-	name = "Nuka Cola"
-	id = "nuka_cola"
-	description = "Cola, cola never changes."
-	taste_description = "the future"
-	color = "#100800"
-	adj_temp = -5
-	adj_sleepy = -2
-
-/datum/reagent/drink/nuka_cola/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
-	M.make_jittery(20)
-	M.druggy = max(M.druggy, 30)
-	M.dizziness += 5
-	M.drowsyness = FALSE
-
 /datum/reagent/drink/grenadine
 	name = "Grenadine Syrup"
 	id = "grenadine"
 	description = "Made in the modern day with proper pomegranate substitute. Who uses real fruit, anyways?"
 	taste_description = "100% pure pomegranate"
 	color = "#FF004F"
-
-/datum/reagent/drink/space_cola
-	name = "Space Cola"
-	id = "cola"
-	description = "A refreshing beverage."
-	taste_description = "cola"
-	reagent_state = LIQUID
-	color = "#100800"
-	adj_drowsy = -3
-	adj_temp = -5
-
-/datum/reagent/drink/spacemountainwind
-	name = "Mountain Wind"
-	id = "spacemountainwind"
-	description = "Blows right through you like a space wind."
-	taste_description = "sweet citrus soda"
-	color = "#102000"
-	adj_drowsy = -7
-	adj_sleepy = -1
-	adj_temp = -5
-
-/datum/reagent/drink/dr_gibb
-	name = "Dr. Gibb"
-	id = "dr_gibb"
-	description = "A delicious blend of 42 different flavours"
-	taste_description = "cherry soda"
-	color = "#102000"
-	adj_drowsy = -6
-	adj_temp = -5
-
-/datum/reagent/drink/space_up
-	name = "Space-Up"
-	id = "space_up"
-	description = "Tastes like a hull breach in your mouth."
-	taste_description = "a hull breach"
-	color = "#202800"
-	adj_temp = -8
-
-/datum/reagent/drink/lemon_lime
-	name = "Lemon Lime"
-	description = "A tangy substance made of 0.5% natural citrus!"
-	taste_description = "tangy lime and lemon soda"
-	id = "lemon_lime"
-	color = "#878F00"
-	adj_temp = -8
-
-/datum/reagent/drink/doctor_delight
-	name = "The Doctor's Delight"
-	id = "doctorsdelight"
-	description = "A gulp a day keeps the MediBot away. That's probably for the best."
-	taste_description = "homely fruit"
-	reagent_state = LIQUID
-	color = "#FF8CFF"
-	nutrition = TRUE
-
-/datum/reagent/drink/doctor_delight/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.adjustOxyLoss(-4 * removed)
-	M.heal_organ_damage(2 * removed, 2 * removed)
-	M.adjustToxLoss(-2 * removed)
-	if (M.dizziness)
-		M.dizziness = max(0, M.dizziness - 15)
-	if (M.confused)
-		M.confused = max(0, M.confused - 5)
 
 /datum/reagent/drink/dry_ramen
 	name = "Dry Ramen"
@@ -798,19 +564,6 @@
 	color = "#302000"
 	nutrition = 5
 	adj_temp = 5
-
-/datum/reagent/drink/hell_ramen
-	name = "Hell Ramen"
-	id = "hell_ramen"
-	description = "The noodles are boiled, the flavors are artificial, just like being back in school."
-	taste_description = "wet and cheap noodles on fire"
-	reagent_state = LIQUID
-	color = "#302000"
-	nutrition = 5
-
-/datum/reagent/drink/hell_ramen/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.bodytemperature += 10 * TEMPERATURE_DAMAGE_COEFFICIENT
 
 /datum/reagent/drink/ice
 	name = "Ice"

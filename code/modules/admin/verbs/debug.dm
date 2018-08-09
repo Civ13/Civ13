@@ -52,23 +52,6 @@
 		log_admin("[key_name(src)] has deleted all instances of [hsbitem].")
 		message_admins("[key_name_admin(src)] has deleted all instances of [hsbitem].", FALSE)
 
-/*
-/client/proc/cmd_debug_make_powernets()
-	set category = "Debug"
-	set name = "Make Powernets"
-	makepowernets()
-	log_admin("[key_name(src)] has remade the powernet. makepowernets() called.")
-	message_admins("[key_name_admin(src)] has remade the powernets. makepowernets() called.", FALSE)
-*/
-/*
-/client/proc/cmd_debug_tog_aliens()
-	set category = "Server"
-	set name = "Toggle Aliens"
-
-	config.aliens_allowed = !config.aliens_allowed
-	log_admin("[key_name(src)] has turned aliens [config.aliens_allowed ? "on" : "off"].")
-	message_admins("[key_name_admin(src)] has turned aliens [config.aliens_allowed ? "on" : "off"].", FALSE)
-*/
 /client/proc/cmd_assume_direct_control(var/mob/M in mob_list)
 	set category = "Admin"
 	set name = "Assume direct control"
@@ -237,7 +220,6 @@
 			job.apply_fingerprints(M)
 			job_master.spawnKeys(M, selected_job)
 		if ("tournament janitor")
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/rank/janitor(M), slot_w_uniform)
 			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(M), slot_shoes)
 			var/obj/item/weapon/storage/backpack/backpack = new(M)
 			for (var/obj/item/I in backpack)

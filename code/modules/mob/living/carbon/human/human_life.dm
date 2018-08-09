@@ -265,9 +265,6 @@
 /mob/living/carbon/human/var/loc_temperature = -1 // for debugging.
 /mob/living/carbon/human/handle_environment()
 
-	//Stuff like the xenomorph's plasma regen happens here.
-	species.handle_environment_special(src)
-
 	//Moved pressure calculations here for use in skip-processing check.
 //	var/pressure = NORMAL_PRESSURE
 	var/loc_temp = 293

@@ -33,12 +33,6 @@
 	body_parts_covered = FALSE
 
 
-/obj/item/clothing/head/mailman
-	name = "station cap"
-	icon_state = "mailman"
-	desc = "<i>Choo-choo</i>!"
-	body_parts_covered = FALSE
-
 /obj/item/clothing/head/plaguedoctorhat
 	name = "plague doctor's hat"
 	desc = "These were once used by Plague doctors. They're pretty much useless."
@@ -162,18 +156,6 @@
 	icon_state = "bearpelt"
 	flags_inv = BLOCKHAIR
 	siemens_coefficient = 0.7
-
-/obj/item/clothing/head/xenos
-	name = "xenos helmet"
-	icon_state = "xenos"
-	item_state_slots = list(
-		slot_l_hand_str = "xenos_helm",
-		slot_r_hand_str = "xenos_helm",
-		)
-	desc = "A helmet made out of chitinous alien hide."
-	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|BLOCKHAIR
-	siemens_coefficient = 2.0
-	body_parts_covered = HEAD|FACE|EYES
 
 /obj/item/clothing/head/philosopher_wig
 	name = "natural philosopher's wig"
