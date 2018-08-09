@@ -139,7 +139,7 @@
 "cI" = (/obj/item/violin,/turf/floor/plating/sand,/area/caribbean/island)
 "cJ" = (/obj/structure/barricade,/turf/floor/plating/beach/sand,/area/caribbean/island)
 "cK" = (/mob/living/simple_animal/parrot,/turf/floor/plating/grass/wild,/area/caribbean/island)
-"cL" = (/obj/structure/vending/piratesapparel,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
+"cL" = (/obj/structure/vending/britishapparel,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "cM" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "cN" = (/obj/structure/reagent_dispensers/barrel/water,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "cO" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/obj/structure/closet/crate/empty,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
