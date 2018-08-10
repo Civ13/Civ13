@@ -724,7 +724,7 @@ var/global/list/global_colour_matrix = null
 	set name = "Color Filter"
 	set category = "Debug"
 	set desc = "Apply cool colour filter to players' screens."
-	var/input = input("Choose filter", "Filter") in list("normal", "black and white", "bloody", "blood2", "special")
+	var/input = input("Choose filter", "Filter") in list("normal", "black and white", "bloody", "bloody2", "special")
 	switch(input)
 		if("normal")
 			global_colour_matrix = null

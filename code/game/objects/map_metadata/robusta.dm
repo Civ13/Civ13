@@ -50,23 +50,35 @@
 		return FALSE
 	else
 		return TRUE
-
+/*
 /obj/map_metadata/robusta/update_win_condition()
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	var/message = ""
 	if (!win_condition_specialcheck())
+		return FALSE
+	if (world.time >= next_win && next_win != -1)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		for (var/mob/living/carbon/human/H in player_list)
-			if (H.original_job && H.stat != DEAD)
-				if (H.original_job.base_type_flag() == PIRATES)
-					winner_name =  H.name
-					winner_ckey = H.ckey
-		message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		if (current_winner && current_loser)
+			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
+	if (!win_condition_specialcheck())
+			return FALSE
+		if (win_condition_spam_check)
+			ticker.finished = TRUE
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == PIRATES)
+						winner_name =  H.name
+						winner_ckey = H.ckey
+			message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
+			win_condition_spam_check = TRUE
+			return FALSE
 
 	if (world.time >= 36000)
 		if (win_condition_spam_check)
@@ -75,4 +87,5 @@
 		message = "One hour has passed! The combat has ended in a stalemate!"
 		win_condition_spam_check = TRUE
 		return FALSE
+*/
 #undef NO_WINNER
