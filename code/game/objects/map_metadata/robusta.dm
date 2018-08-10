@@ -69,14 +69,16 @@
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
-	else if (world.time >= 3000)
-		if (alive_n_of_side(PIRATES) <= 1 && processes.ticker.playtime_elapsed >= 1200)
+	if (processes.ticker.playtime_elapsed >= 1200)
+		if (alive_n_of_side(PIRATES) <= 1)
 			for (var/mob/living/carbon/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
 					if (H.original_job.base_type_flag() == PIRATES)
 						winner_name =  H.name
 						winner_ckey = H.ckey
 						message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
+						world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			ticker.finished = TRUE
 			return FALSE
 
 #undef NO_WINNER
