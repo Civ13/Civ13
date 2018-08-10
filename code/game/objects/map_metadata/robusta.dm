@@ -45,4 +45,34 @@
 /obj/map_metadata/robusta/reinforcements_ready()
 	return (pirates_can_cross_blocks())
 
+/obj/map_metadata/robusta/win_condition_specialcheck()
+	if (alive_n_of_side(PIRATES) <= 1 && processes.ticker.playtime_elapsed >= 1200)
+		return FALSE
+	else
+		return TRUE
+
+/obj/map_metadata/robusta/update_win_condition()
+	var/winner_name = "Unknown"
+	var/winner_ckey = "Unknown"
+	var/message = ""
+	if (!win_condition_specialcheck())
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		for (var/mob/living/carbon/human/H in player_list)
+			if (H.original_job && H.stat != DEAD)
+				if (H.original_job.base_type_flag() == PIRATES)
+					winner_name =  H.name
+					winner_ckey = H.ckey
+		message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
+		win_condition_spam_check = TRUE
+		return FALSE
+
+	if (world.time >= 36000)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		message = "One hour has passed! The combat has ended in a stalemate!"
+		win_condition_spam_check = TRUE
+		return FALSE
 #undef NO_WINNER
