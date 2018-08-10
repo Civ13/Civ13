@@ -4,7 +4,7 @@
 /obj/item/weapon/pill_pack
 	name = "pill pack"
 	desc = "Pills in sterile and handy pack."
-	icon = 'icons/WW2/medical.dmi'
+	icon = 'icons/obj/surgery.dmi'
 	w_class = TRUE//Packed very effective
 	icon_state = "pill_pack"
 	var/pill_type = null

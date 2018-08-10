@@ -1,8 +1,8 @@
 /obj/structure/optable
 	name = "Operating Table"
 	desc = "Used for advanced medical procedures."
-	icon = 'icons/WW2/ww2_operating_table.dmi'
-	icon_state = "table2-idle"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "operating_table"
 	density = TRUE
 	anchored = 1.0
 	var/mob/living/carbon/human/victim = null
@@ -66,11 +66,8 @@
 	if (locate(/mob/living/carbon/human, loc))
 		var/mob/living/carbon/human/M = locate(/mob/living/carbon/human, loc)
 		if (M.lying)
-			victim = M
-			icon_state = M.pulse() ? "table2-active" : "table2-idle"
 			return TRUE
 	victim = null
-	icon_state = "table2-idle"
 	return FALSE
 
 /obj/structure/optable/process()
@@ -89,12 +86,6 @@
 	for (var/obj/O in src)
 		O.loc = loc
 	add_fingerprint(user)
-	if (ishuman(C))
-		var/mob/living/carbon/human/H = C
-		victim = H
-		icon_state = H.pulse() ? "table2-active" : "table2-idle"
-	else
-		icon_state = "table2-idle"
 
 /obj/structure/optable/MouseDrop_T(mob/target, mob/user)
 
