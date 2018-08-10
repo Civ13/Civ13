@@ -1,4 +1,4 @@
-enabled = true
+enabled = false
 masterdir = /home/customer/1713/
 s1 = 12000
 s2 = 12001
