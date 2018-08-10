@@ -10,7 +10,9 @@
 	if(global_colour_matrix)
 		colour_matrix = global_colour_matrix
 	else
-		var/newcolor1 = max((1 - (health/maxHealth)) * 0.33, 0.33)
+		var/newcolor1 = (1 - (health/maxHealth)) * 0.33
+		if(0.33 < newcolor1 || 0 > newcolor1)
+			newcolor1 = 0.33
 		var/newcolor2 = 1 - (2* newcolor1)
 		colour_matrix = list(newcolor2, newcolor1, newcolor1,\
 							newcolor1, newcolor2, newcolor1,\
