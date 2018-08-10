@@ -34,6 +34,7 @@ var/list/global_huds = list(
 	screen.icon = 'icons/obj/hud_full.dmi'
 	screen.icon_state = icon_state
 	screen.layer = 17
+	screen.plane = HUD_PLANE
 	screen.mouse_opacity = FALSE
 
 	return screen
@@ -44,6 +45,7 @@ var/list/global_huds = list(
 	druggy.screen_loc = ui_entire_screen
 	druggy.icon_state = "druggy"
 	druggy.layer = 17
+	druggy.plane = HUD_PLANE
 	druggy.mouse_opacity = FALSE
 
 	//that white blurry effect you get when you eyes are damaged
@@ -51,6 +53,7 @@ var/list/global_huds = list(
 	blurry.screen_loc = ui_entire_screen
 	blurry.icon_state = "blurry"
 	blurry.layer = 17
+	blurry.plane = HUD_PLANE
 	blurry.mouse_opacity = FALSE
 
 	nvg = setup_overlay("nvg_hud")
@@ -107,154 +110,6 @@ var/list/global_huds = list(
 		O.layer = 17
 		O.mouse_opacity = FALSE
 
-/*
-	The hud datum
-	Used to show and hide huds for all the different mob types,
-	including inventories and item quick actions.
-*/
-
-/*/datum/hud
-	var/mob/mymob
-
-	var/hud_shown = TRUE			//Used for the HUD toggle (F12)
-	var/inventory_shown = TRUE		//the inventory
-	var/show_intent_icons = FALSE
-	var/hotkey_ui_hidden = FALSE	//This is to hide the buttons that can be used via hotkeys. (hotkeybuttons list of buttons)
-
-	var/obj/screen/lingchemdisplay
-	var/obj/screen/blobpwrdisplay
-	var/obj/screen/blobhealthdisplay
-	var/obj/screen/r_hand_hud_object
-	var/obj/screen/l_hand_hud_object
-	var/obj/screen/action_intent
-	var/obj/screen/move_intent
-
-	var/list/adding
-	var/list/other
-	var/list/obj/screen/hotkeybuttons
-
-	var/obj/screen/movable/action_button/hide_toggle/hide_actions_toggle
-	var/action_buttons_hidden = FALSE
-
-datum/hud/New(mob/owner)
-	mymob = owner
-	instantiate()
-	..()
-
-/datum/hud/Destroy()
-	..()
-	grab_intent = null
-	hurt_intent = null
-	disarm_intent = null
-	help_intent = null
-	lingchemdisplay = null
-	blobpwrdisplay = null
-	blobhealthdisplay = null
-	r_hand_hud_object = null
-	l_hand_hud_object = null
-	action_intent = null
-	move_intent = null
-	adding = null
-	other = null
-	hotkeybuttons = null
-//	item_action_list = null // ?
-	mymob = null
-
-/datum/hud/proc/hidden_inventory_update()
-	if (!mymob) return
-	if (ishuman(mymob))
-		var/mob/living/carbon/human/H = mymob
-		for (var/gear_slot in H.species.hud.gear)
-			var/list/hud_data = H.species.hud.gear[gear_slot]
-			if (inventory_shown && hud_shown)
-				switch(hud_data["slot"])
-					if (slot_head)
-						if (H.head)      H.head.screen_loc =      hud_data["loc"]
-					if (slot_shoes)
-						if (H.shoes)     H.shoes.screen_loc =     hud_data["loc"]
-					if (slot_l_ear)
-						if (H.l_ear)     H.l_ear.screen_loc =     hud_data["loc"]
-					if (slot_r_ear)
-						if (H.r_ear)     H.r_ear.screen_loc =     hud_data["loc"]
-					if (slot_gloves)
-						if (H.gloves)    H.gloves.screen_loc =    hud_data["loc"]
-					if (slot_glasses)
-						if (H.glasses)   H.glasses.screen_loc =   hud_data["loc"]
-					if (slot_w_uniform)
-						if (H.w_uniform) H.w_uniform.screen_loc = hud_data["loc"]
-					if (slot_wear_suit)
-						if (H.wear_suit) H.wear_suit.screen_loc = hud_data["loc"]
-					if (slot_wear_mask)
-						if (H.wear_mask) H.wear_mask.screen_loc = hud_data["loc"]
-			else
-				switch(hud_data["slot"])
-					if (slot_head)
-						if (H.head)      H.head.screen_loc =      null
-					if (slot_shoes)
-						if (H.shoes)     H.shoes.screen_loc =     null
-					if (slot_l_ear)
-						if (H.l_ear)     H.l_ear.screen_loc =     null
-					if (slot_r_ear)
-						if (H.r_ear)     H.r_ear.screen_loc =     null
-					if (slot_gloves)
-						if (H.gloves)    H.gloves.screen_loc =    null
-					if (slot_glasses)
-						if (H.glasses)   H.glasses.screen_loc =   null
-					if (slot_w_uniform)
-						if (H.w_uniform) H.w_uniform.screen_loc = null
-					if (slot_wear_suit)
-						if (H.wear_suit) H.wear_suit.screen_loc = null
-					if (slot_wear_mask)
-						if (H.wear_mask) H.wear_mask.screen_loc = null
-
-
-/datum/hud/proc/persistant_inventory_update()
-	if (!mymob)
-		return
-
-	if (ishuman(mymob))
-		var/mob/living/carbon/human/H = mymob
-		for (var/gear_slot in H.species.hud.gear)
-			var/list/hud_data = H.species.hud.gear[gear_slot]
-			if (hud_shown)
-				switch(hud_data["slot"])
-					if (slot_s_store)
-						if (H.s_store) H.s_store.screen_loc = hud_data["loc"]
-					if (slot_wear_id)
-						if (H.wear_id) H.wear_id.screen_loc = hud_data["loc"]
-					if (slot_belt)
-						if (H.belt)    H.belt.screen_loc =    hud_data["loc"]
-					if (slot_back)
-						if (H.back)    H.back.screen_loc =    hud_data["loc"]
-					if (slot_l_store)
-						if (H.l_store) H.l_store.screen_loc = hud_data["loc"]
-					if (slot_r_store)
-						if (H.r_store) H.r_store.screen_loc = hud_data["loc"]
-			else
-				switch(hud_data["slot"])
-					if (slot_s_store)
-						if (H.s_store) H.s_store.screen_loc = null
-					if (slot_wear_id)
-						if (H.wear_id) H.wear_id.screen_loc = null
-					if (slot_belt)
-						if (H.belt)    H.belt.screen_loc =    null
-					if (slot_back)
-						if (H.back)    H.back.screen_loc =    null
-					if (slot_l_store)
-						if (H.l_store) H.l_store.screen_loc = null
-					if (slot_r_store)
-						if (H.r_store) H.r_store.screen_loc = null
-
-
-/datum/hud/proc/instantiate()
-	if (!ismob(mymob)) return FALSE
-	if (!mymob.client) return FALSE
-	var/ui_style = ui_style2icon(mymob.client.prefs.UI_style)
-	var/ui_color = mymob.client.prefs.UI_style_color
-	var/ui_alpha = mymob.client.prefs.UI_style_alpha
-	mymob.instantiate_hud(src, ui_style, ui_color, ui_alpha)
-	mymob.HUD_create()
-*/
 /mob/proc/instantiate_hud(var/datum/hud/HUD, var/ui_style, var/ui_color, var/ui_alpha)
 	return
 
@@ -274,48 +129,7 @@ datum/hud/New(mob/owner)
 	if (!client) return
 	if (client.view != world.view)
 		return
-	/*if (hud_used.hud_shown)
-		hud_used.hud_shown = FALSE
-		if (hud_used.adding)
-			client.screen -= hud_used.adding
-		if (hud_used.other)
-			client.screen -= hud_used.other
-		if (hud_used.hotkeybuttons)
-			client.screen -= hud_used.hotkeybuttons
 
-		//Due to some poor coding some things need special treatment:
-		//These ones are a part of 'adding', 'other' or 'hotkeybuttons' but we want them to stay
-		if (!full)
-			client.screen += hud_used.l_hand_hud_object	//we want the hands to be visible
-			client.screen += hud_used.r_hand_hud_object	//we want the hands to be visible
-			client.screen += hud_used.action_intent		//we want the intent swticher visible
-			hud_used.action_intent.screen_loc = ui_acti_alt	//move this to the alternative position, where zone_select usually is.
-		else
-			client.screen -= healths
-			client.screen -= internals
-			client.screen -= gun_setting_icon
-
-		//These ones are not a part of 'adding', 'other' or 'hotkeybuttons' but we want them gone.
-		client.screen -= zone_sel	//zone_sel is a mob variable for some reason.
-
-	else
-		hud_used.hud_shown = TRUE
-		if (hud_used.adding)
-			client.screen += hud_used.adding
-		if (hud_used.other && hud_used.inventory_shown)
-			client.screen += hud_used.other
-		if (hud_used.hotkeybuttons && !hud_used.hotkey_ui_hidden)
-			client.screen += hud_used.hotkeybuttons
-		if (healths)
-			client.screen |= healths
-		if (internals)
-			client.screen |= internals
-		if (gun_setting_icon)
-			client.screen |= gun_setting_icon
-
-		hud_used.action_intent.screen_loc = ui_acti //Restore intent selection to the original position
-		client.screen += zone_sel				//This one is a special snowflake
-*/
 //	hud_used.hidden_inventory_update()
 //	hud_used.persistant_inventory_update()
 	update_action_buttons()
@@ -331,29 +145,25 @@ datum/hud/New(mob/owner)
 	if (client.view != world.view)
 		return
 
-/*	if (hud_used.hud_shown)
-		hud_used.hud_shown = FALSE
-		if (hud_used.adding)
-			client.screen -= hud_used.adding
-		if (hud_used.other)
-			client.screen -= hud_used.other
-		if (hud_used.hotkeybuttons)
-			client.screen -= hud_used.hotkeybuttons
-		client.screen -= internals
-		client.screen += hud_used.action_intent		//we want the intent swticher visible
-	else
-		hud_used.hud_shown = TRUE
-		if (hud_used.adding)
-			client.screen += hud_used.adding
-		if (hud_used.other && hud_used.inventory_shown)
-			client.screen += hud_used.other
-		if (hud_used.hotkeybuttons && !hud_used.hotkey_ui_hidden)
-			client.screen += hud_used.hotkeybuttons
-		if (internals)
-			client.screen |= internals
-		hud_used.action_intent.screen_loc = ui_acti //Restore intent selection to the original position
-
-	hud_used.hidden_inventory_update()
-	hud_used.persistant_inventory_update()*/
 	update_action_buttons()
 
+/datum/hud
+	var/mob/mymob
+	var/list/obj/screen/plane_master/plane_masters = list()
+/datum/hud/New(mob/owner)
+
+/datum/hud/New(mob/owner)
+	mymob = owner
+	//instantiate()
+	for(var/mytype in subtypesof(/obj/screen/plane_master))
+		var/obj/screen/plane_master/instance = new mytype()
+		plane_masters["[instance.plane]"] = instance
+		instance.backdrop(mymob)
+		mymob.client.screen |= instance
+	..()
+/datum/hud/Destroy()
+	if(plane_masters.len)
+		for(var/thing in plane_masters)
+			qdel(plane_masters[thing])
+		plane_masters.Cut()
+	return ..()

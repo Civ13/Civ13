@@ -241,7 +241,7 @@
 
 		if (!reinforcements_master.is_permalocked(BRITISH))
 			if (client.prefs.s_tone < -30)
-				usr << "<span class='danger'>You are too dark to be a German soldier.</span>"
+				usr << "<span class='danger'>You are too dark to be a British soldier.</span>"
 				return
 			reinforcements_master.add(src, BRITISH)
 		else
@@ -379,9 +379,7 @@
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)
 
-	if (character.mind.assigned_role != "Cyborg")
-	//	data_core.manifest_inject(character)
-		ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
+	ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
 
 	character.lastarea = get_area(loc)
 
@@ -423,7 +421,7 @@
 	if (penalBanned())
 		if (job.blacklisted == FALSE)
 			if (!nomsg)
-				usr << "<span class = 'warning'>You're under a Penal Battalion ban, you can only play as that role!</span>"
+				usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
 			return FALSE
 
 	else
@@ -437,6 +435,10 @@
 			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
 		return
 
+	if (job.is_deathmatch)
+		if (map && map.pirates_can_cross_blocks())
+			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
+			return
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)

@@ -16,6 +16,7 @@
 	name = ""
 	icon = 'icons/mob/screen1.dmi'
 	layer = 20.0
+	plane = HUD_PLANE
 //	unacidable = TRUE
 	var/obj/master = null //A reference to the object in the slot. Grabs or items, generally.
 	var/mob/living/parentmob

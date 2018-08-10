@@ -1,5 +1,6 @@
 /atom/movable
 	layer = 3
+	plane = GAME_PLANE
 	var/last_move = null
 	var/anchored = FALSE
 	// var/elevation = 2    - not used anywhere

@@ -535,11 +535,11 @@ var/list/VVckey_edit = list("key", "ckey")
 	if (marked_datum && class == "marked datum ([marked_datum.type])")
 		class = "marked datum"
 
-	if (list("lastKnownCID", "lastKnownCkey", "lastKnownIP").Find(variable))
+	if (variable in list("lastKnownCID", "lastKnownCkey", "lastKnownIP"))
 		usr << "<span class = 'danger'>You are not permitted to edit this variable.</span>"
 		return
 
-	if (list("ckey", "key").Find(variable) && class != "text")
+	if (variable in list("ckey", "key") && class != "text")
 		usr << "<span class = 'danger'>Invalid type for this variable.</span>"
 		return
 
@@ -558,7 +558,7 @@ var/list/VVckey_edit = list("key", "ckey")
 		if ("text")
 			var/var_new = input("Enter new text:","Text",O.vars[variable]) as null|text
 			if (var_new==null) return
-			if (list("ckey", "key").Find(variable) && list(usr.ckey, usr.key).Find(var_new))
+			if (variable in list("ckey", "key") && var_new in list(usr.ckey, usr.key))
 				if (!O.vars["lastKnownCkey"] || !(O.vars["lastKnownCkey"] == usr.ckey))
 					usr << "<span class = 'danger'>Use the player panel to spawn yourself in as a mob.</span>"
 					return

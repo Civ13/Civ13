@@ -48,3 +48,10 @@ What is the naming convention for planes or layers?
 
 #define OVER_OPENSPACE_PLANE -7
 
+#define HUD_PLANE 15
+
+#define LIGHTING_PLANE 2
+
+#define GAME_PLANE 1
+
+#define FLOOR_PLANE 0

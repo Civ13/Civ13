@@ -25,7 +25,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	if (!pref.real_name)
 		pref.real_name	= random_name(pref.gender, pref.species)
 
-	/* start setting up german, russian names*/
+	/* start setting up pirate, british names*/
 
 	pref.pirate_name		= sanitize_name(pref.pirate_name, pref.species)
 	if (!pref.pirate_name)

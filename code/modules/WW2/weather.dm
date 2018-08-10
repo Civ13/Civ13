@@ -9,7 +9,7 @@
 	if (weather == _weather && !bypass_same_weather_check)
 		return
 
-	if (map && !map.valid_weather_types.Find(_weather) && _weather != WEATHER_NONE)
+	if (map && !(_weather in map.valid_weather_types) && _weather != WEATHER_NONE)
 		return
 
 	if (config)
@@ -20,7 +20,7 @@
 				if (1)
 					// pass
 				else
-					if (!config.allowed_weather.Find(WEATHER_CONST2TEXT(_weather)) && _weather != WEATHER_NONE)
+					if (!(WEATHER_CONST2TEXT(_weather) in config.allowed_weather) && _weather != WEATHER_NONE)
 						return
 
 	var/old_weather = weather

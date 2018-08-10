@@ -220,6 +220,7 @@
 // apparently called whenever an item is removed from a slot, container, or anything else.
 /obj/item/proc/dropped(mob/user as mob)
 	..()
+	plane = GAME_PLANE
 	spawn (1)
 		if (dropsound)
 			if (!istype(src, /obj/item/clothing/mask/smokable) && !istype(src, /obj/item/weapon/paper) && !istype(src, /obj/item/weapon/pen))
@@ -254,6 +255,7 @@
 // note this isn't called during the initial dressing of a player
 /obj/item/proc/equipped(var/mob/user, var/slot)
 	layer = 20
+	plane = HUD_PLANE
 	if (user.client)	user.client.screen |= src
 	if (user.pulling == src) user.stop_pulling()
 	return

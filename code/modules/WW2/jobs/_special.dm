@@ -6,10 +6,9 @@
 /datum/job/var/is_nonmilitary = FALSE
 /datum/job/var/spawn_delay = FALSE
 /datum/job/var/delayed_spawn_message = ""
-/datum/job/var/is_partisan = FALSE
 /datum/job/var/is_primary = TRUE
 /datum/job/var/is_secondary = FALSE
-/datum/job/var/is_tankuser = FALSE
+/datum/job/var/is_deathmatch = FALSE
 /datum/job/var/blacklisted = FALSE
 /datum/job/var/is_target = FALSE //for VIP modes
 /datum/job/var/rank_abbreviation = null

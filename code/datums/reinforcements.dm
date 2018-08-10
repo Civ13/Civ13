@@ -220,16 +220,16 @@ var/datum/reinforcements/reinforcements_master = null
 	var/list/l = reinforcement_pool[PIRATES]
 	if (l.len < reinforcement_spawn_req && !allow_quickspawn[PIRATES])
 		for (var/mob/new_player/np in l)
-			np << "<span class='danger'>Failed to spawn a new Allied squadron. [reinforcement_spawn_req - l.len] more draftees needed."
+			np << "<span class='danger'>Failed to spawn a new Pirate squadron. [reinforcement_spawn_req - l.len] more draftees needed."
 		return ret
 	else if (map && map.has_occupied_base(PIRATES))
 		for (var/mob/new_player/np in l)
-			np << "<span class='danger'>The Axis forces are currently occupying the Allied base! Reinforcements can't be sent."
+			np << "<span class='danger'>The British forces are currently occupying the Pirate base! Reinforcements can't be sent."
 		return ret
 	if (map.front == "Eastern")
 		for (var/mob/new_player/np in l)
 			if (np)
-				np.LateSpawnForced("Sovietsky Soldat", TRUE, TRUE)
+				np.LateSpawnForced("Pirate", TRUE, TRUE)
 				reinforcements_granted[PIRATES] = reinforcements_granted[PIRATES]+1
 				ret = TRUE
 	if (map.front == "Pacific")
@@ -245,16 +245,16 @@ var/datum/reinforcements/reinforcements_master = null
 	var/list/l = reinforcement_pool[BRITISH]
 	if (l.len < reinforcement_spawn_req && !allow_quickspawn[BRITISH])
 		for (var/mob/new_player/np in l)
-			np << "<span class='danger'>Failed to spawn a new Axis squadron. [reinforcement_spawn_req - l.len] more draftees needed."
+			np << "<span class='danger'>Failed to spawn a new British squadron. [reinforcement_spawn_req - l.len] more draftees needed."
 		return ret
 	else if (map && map.has_occupied_base(BRITISH))
 		for (var/mob/new_player/np in l)
-			np << "<span class='danger'>The Allies are currently occupying the Axis base! Reinforcements can't be sent."
+			np << "<span class='danger'>The Pirates are currently occupying the British base! Reinforcements can't be sent."
 		return ret
 	if (map.front == "Eastern")
 		for (var/mob/new_player/np in l)
 			if (np) // maybe helps with logged out nps
-				np.LateSpawnForced("Soldat", TRUE, TRUE)
+				np.LateSpawnForced("Sailor", TRUE, TRUE)
 				reinforcements_granted[BRITISH] = reinforcements_granted[BRITISH]+1
 				ret = TRUE
 	if (map.front == "Pacific")
@@ -293,7 +293,7 @@ datum/reinforcements/proc/lock_check()
 	if (is_permalocked(PIRATES))
 
 		if (!showed_permalock_message[PIRATES])
-			world << "<font size = 3>The Allied forces are out of reinforcements.</font>"
+			world << "<font size = 3>The Pirates forces are out of reinforcements.</font>"
 			showed_permalock_message[PIRATES] = TRUE
 
 		locked[PIRATES] = TRUE
@@ -305,7 +305,7 @@ datum/reinforcements/proc/lock_check()
 	if (is_permalocked(BRITISH))
 
 		if (!showed_permalock_message[BRITISH])
-			world << "<font size = 3>The Axis forces are out of reinforcements.</font>"
+			world << "<font size = 3>The British forces are out of reinforcements.</font>"
 			showed_permalock_message[BRITISH] = TRUE
 
 		locked[BRITISH] = TRUE

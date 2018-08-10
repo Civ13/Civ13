@@ -152,12 +152,12 @@
 
 	// nothing can save you at point blank range - Kachnov
 	if (distance != 1)
-		if (list("mouth", "eyes").Find(zone))
+		if (zone == "mouth" || zone == "eyes")
 			var/hitchance = 100 - .
 			hitchance /= 2.00 // this used to be 3, needs to be 2 to double to triple miss chance
 			. = ceil(100 - hitchance)
 
-		else if (list("head").Find(zone))
+		else if (zone == "head")
 			var/hitchance = 100 - .
 			hitchance /= 1.33 // this used to be 2 and made headshots really inaccurate, needs to be 1.33 to "double" miss chance - Kachnov
 			. = ceil(100 - hitchance)

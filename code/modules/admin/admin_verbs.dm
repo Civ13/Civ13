@@ -140,7 +140,8 @@ var/list/admin_verbs_debug = list(
 	/client/proc/dsay,
 	/client/proc/change_time_of_day,
 	/client/proc/randomly_change_weather,
-	/client/proc/randomly_modify_weather
+	/client/proc/randomly_modify_weather,
+	/client/proc/change_colour_filter
 	)
 
 var/list/admin_verbs_paranoid_debug = list(
@@ -716,3 +717,51 @@ var/list/admin_verbs_host = list(
 			job_master.FreeRole(job)
 			message_admins("A job slot for [job] has been opened by [key_name_admin(usr)]")
 			return
+
+var/global/list/global_colour_matrix = null
+
+/client/proc/change_colour_filter()
+	set name = "Color Filter"
+	set category = "Debug"
+	set desc = "Apply cool colour filter to players' screens."
+	var/input = input("Choose filter", "Filter") in list("normal", "black and white", "bloody", "special")
+	switch(input)
+		if("normal")
+			global_colour_matrix = null
+		if("black and white")
+			global_colour_matrix = list(0.33, 0.33, 0.33,\
+										0.33, 0.33, 0.33,\
+										0.33, 0.33, 0.33)
+		if("bloody")
+			global_colour_matrix = list(1, 0.33, 0.33,\
+										0, 0.33, 0.33,\
+										0, 0.33, 0.33)
+		if("bloody2")
+			global_colour_matrix = list(1, 0, 0,\
+										0, 0.5, 0.5,\
+										0, 0.5, 0.5)
+		if("special")
+			global_colour_matrix = list()
+			var/global_colour_matrix_temp = list()
+			src << "<span class='notice'>Input num between 0 and 1.</span>"
+			for(var/i = 0, i <= 9, i++)
+				switch(i)
+					if(1)
+						global_colour_matrix_temp += CLAMP01(input("Red to Red") as num)
+					if(2)
+						global_colour_matrix_temp += CLAMP01(input("Red to Green") as num)
+					if(3)
+						global_colour_matrix_temp += CLAMP01(input("Red to Blue") as num)
+					if(4)
+						global_colour_matrix_temp += CLAMP01(input("Green to Red") as num)
+					if(5)
+						global_colour_matrix_temp += CLAMP01(input("Green to Green") as num)
+					if(6)
+						global_colour_matrix_temp += CLAMP01(input("Green to Blue") as num)
+					if(7)
+						global_colour_matrix_temp += CLAMP01(input("Blue to Red") as num)
+					if(8)
+						global_colour_matrix_temp += CLAMP01(input("Blue to Green") as num)
+					if(9)
+						global_colour_matrix_temp += CLAMP01(input("Blue to Blue") as num)
+			global_colour_matrix = global_colour_matrix_temp

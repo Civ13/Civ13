@@ -65,7 +65,7 @@ var/global/datum/controller/occupations/job_master
 
 	_clients = max(max(_clients, (map ? map.min_autobalance_players : 0)), clients.len, admin_expected_clients)
 
-	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 50))
+	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 150))
 
 	if (announce == TRUE)
 		world << "<span class = 'notice'>Setting up roundstart autobalance for [max(_clients, autobalance_for_players)] players.</span>"
@@ -136,11 +136,11 @@ var/global/datum/controller/occupations/job_master
 	#endif
 
 	var/list/turfs = latejoin_turfs[spawn_location]
-
-	for (var/spawnpoint in turfs)
-		if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
-			H.loc = spawnpoint
-			break
+	var/spawnpoint = pick(turfs)
+	if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
+		H.loc = spawnpoint
+		if (map.ID == MAP_ROBUSTA) // if its the DM map, remove the "used" spawnpoint from the list
+			latejoin_turfs[spawn_location] -= spawnpoint
 
 	// make sure we have the right ambience for our new location
 	spawn (1)
@@ -306,17 +306,17 @@ var/global/datum/controller/occupations/job_master
 		if (!spawn_location)
 			switch (H.original_job.base_type_flag())
 				if (PIRATES)
-					spawn_location = "JoinLateHeer"
+					spawn_location = "JoinLatePirate"
 				if (BRITISH)
-					spawn_location = "JoinLateRA"
+					spawn_location = "JoinLateRN"
 
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
-			if (findtext(H.original_job.spawn_location, "JoinLateHeer"))
-				spawn_location = "JoinLateHeer"
-			else if (findtext(H.original_job.spawn_location, "JoinLateRA"))
-				spawn_location = "JoinLateRA"
+			if (findtext(H.original_job.spawn_location, "JoinLatePirate"))
+				spawn_location = "JoinLatePirate"
+			else if (findtext(H.original_job.spawn_location, "JoinLateRN"))
+				spawn_location = "JoinLateRN"
 		H.job_spawn_location = spawn_location
 
 		#ifdef SPAWNLOC_DEBUG

@@ -43,7 +43,7 @@ var/GRACE_PERIOD_LENGTH = 7
 
 	// create wild grasses in "clumps"
 	spawn (1)
-		world << "<span class = 'notice'>Setting up wild grasses.</span>"
+//		world << "<span class = 'notice'>Setting up wild grasses.</span>"
 
 	for (var/grass in grass_turf_list)
 		var/turf/floor/plating/grass/G = grass
@@ -58,7 +58,7 @@ var/GRACE_PERIOD_LENGTH = 7
 // ditto
 /hook/roundstart/proc/do_seasonal_stuff()
 	spawn (1)
-		world << "<span class = 'notice'>Setting up seasons.</span>"
+//		world << "<span class = 'notice'>Setting up seasons.</span>"
 	season = "SPRING"
 	return TRUE
 

@@ -33,6 +33,11 @@
 		for (var/i=1,i<=HUDtech.len,i++)
 			var/p = HUDtech[i]
 			client.screen += HUDtech[p]
+		if(src.hud_used)
+			for(var/thing in hud_used.plane_masters)
+				var/obj/screen/plane_master/PM = hud_used.plane_masters[thing]
+				PM.backdrop(src)
+				src.client.screen += PM
 //For HUD checking needs
 
 /mob/living/proc/recolor_HUD(var/_color, var/_alpha)

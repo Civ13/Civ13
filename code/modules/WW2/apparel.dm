@@ -211,9 +211,9 @@
 	icon_state = "tricorne_british"
 	item_state = "tricorne_british"
 
-/obj/item/clothing/head/tricorne_british_soldier
-	name = "British Army tricorne"
-	desc = "A back tricorne, used by the British Army and Marines."
+/obj/item/clothing/head/bicorne_british_soldier
+	name = "British Army bicorne"
+	desc = "A back bicorne, used by the British Army and Marines."
 	icon_state = "tricorne_british_soldier"
 	item_state = "tricorne_british_soldier"
 

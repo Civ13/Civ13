@@ -279,18 +279,18 @@ Parts of code courtesy of Super3222
 	if (azoom)
 
 		if (istype(loc, /obj/item))
-			var/mob/user = loc.loc
-			if (user && istype(user))
-				azoom.Remove(user)
-				if (list(user.r_hand, user.l_hand).Find(loc))
-					azoom.Grant(user)
+			var/mob/M = loc.loc
+			if (M && istype(M))
+				azoom.Remove(M)
+				if(loc == M.r_hand || loc == M.l_hand)
+					azoom.Grant(M)
 
 		else if (istype(loc, /mob))
-			var/mob/user = loc
-			if (user && istype(user))
-				azoom.Remove(user)
-				if (list(user.r_hand, user.l_hand).Find(src))
-					azoom.Grant(user)
+			var/mob/M = loc
+			if (istype(M))
+				azoom.Remove(M)
+				if (src == M.r_hand || src == M.l_hand)
+					azoom.Grant(M)
 
 /obj/item/weapon/attachment/scope/dropped(mob/user)
 	..()

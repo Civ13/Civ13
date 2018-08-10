@@ -748,19 +748,20 @@
 
 
 /datum/job/pirates/battleroyale
-	title = "Pirate"
-	en_meaning = "Seaman"
+	title = "Marooned Pirate"
+	en_meaning = "Marooned Pirate"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLatePirate"
+	spawn_location = "JoinLateDM"
 	SL_check_independent = TRUE
+	is_deathmatch = TRUE
 
 	// AUTOBALANCE
 	min_positions = 0
 	max_positions = 0
 	total_positions = 0
 
-/datum/job/battleroyale/seaman/equip(var/mob/living/carbon/human/H)
+/datum/job/pirates/battleroyale/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(60))
@@ -800,6 +801,10 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
 	else if (randhead == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
+
+//food and bandages
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/snacks/stew_wood(H), slot_r_store)
 
 	H.add_note("Role", "You are one of the pirates abandoned at this island. Be the last one to live!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

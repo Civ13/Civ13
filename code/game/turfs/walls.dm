@@ -10,6 +10,7 @@ var/list/global/wall_cache = list()
 //	blocks_air = TRUE
 	thermal_conductivity = WALL_HEAT_TRANSFER_COEFFICIENT
 	heat_capacity = 312500 //a little over 5 cm thick , 312500 for TRUE m by 2.5 m by 0.25 m plasteel wall
+	plane = GAME_PLANE
 	var/damage = FALSE
 	var/damage_overlay = FALSE
 	var/global/damage_overlays[16]

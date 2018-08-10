@@ -110,7 +110,7 @@ var/list/nonbreaking_types = list(
 				if (!viewers(world.view, L).Find(user))
 					L << "<span class = 'notice'>You hear a knock at the door.</span>"
 			playsound(get_turf(src), "doorknock", 75, TRUE)
-		else if (list(I_DISARM, I_GRAB).Find(user.a_intent))
+		else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
 			user.visible_message("<span class = 'warning'>[user] bangs on the door.</span>")
 			for (var/mob/living/L in view(world.view, src))
 				if (!viewers(world.view, L).Find(user))

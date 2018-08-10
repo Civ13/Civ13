@@ -363,25 +363,25 @@
 #define DEAF  4
 
 // /mob/var/stat things.
-#define CONSCIOUS   FALSE
-#define UNCONSCIOUS TRUE
+#define CONSCIOUS   0
+#define UNCONSCIOUS 1
 #define DEAD        2
 
 // Channel numbers for power.
-#define EQUIP   TRUE
+#define EQUIP   1
 #define LIGHT   2
 #define ENVIRON 3
 #define TOTAL   4 // For total power used only.
 
 // Bitflags for machine stat variable.
-#define BROKEN   TRUE
+#define BROKEN   1
 #define NOPOWER  2
 #define POWEROFF 4  // TBD.
 #define MAINT    8  // Under maintenance.
 #define EMPED    16 // Temporary broken by EMP pulse.
 
 // Bitmasks for door switches.
-#define OPEN   TRUE
+#define OPEN   1
 #define IDSCAN 2
 #define BOLTS  4
 #define SHOCK  8
@@ -484,11 +484,10 @@
 #define INVISIBILITY_EYE		          61
 
 #define SEE_INVISIBLE_LIVING              25
-#define SEE_INVISIBLE_OBSERVER_NOLIGHTING 15
+#define SEE_INVISIBLE_OBSERVER_NOLIGHTING 45
 #define SEE_INVISIBLE_LEVEL_ONE           35
 #define SEE_INVISIBLE_LEVEL_TWO           45
-#define SEE_INVISIBLE_CULT		          60
-#define SEE_INVISIBLE_OBSERVER            61
+#define SEE_INVISIBLE_OBSERVER            25
 
 #define SEE_INVISIBLE_MINIMUM 5
 #define INVISIBILITY_MAXIMUM 100

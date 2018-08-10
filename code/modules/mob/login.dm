@@ -36,6 +36,8 @@
 	update_Login_details()
 	world.update_status()
 
+	update_client_colour(0)
+
 	client.images = null				//remove the images such as AIs being unable to see runes
 	client.screen = null				//remove hud items just in case
 	if (hud_used)	qdel(hud_used)		//remove the hud objects

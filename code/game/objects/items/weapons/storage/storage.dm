@@ -183,6 +183,7 @@
 	for (var/obj/O in contents)
 		O.screen_loc = "[cx],[cy]"
 		O.layer = 20
+		O.plane = HUD_PLANE
 		cx++
 		if (cx > mx)
 			cx = tx
@@ -201,6 +202,7 @@
 			ND.sample_object.screen_loc = "[cx]:16,[cy]:16"
 			ND.sample_object.maptext = "<font color='white'>[(ND.number > 1)? "[ND.number]" : ""]</font>"
 			ND.sample_object.layer = 20
+			ND.sample_object.plane = HUD_PLANE
 			cx++
 			if (cx > (Xcord+cols))
 				cx = Xcord
@@ -210,6 +212,7 @@
 			O.screen_loc = "[cx]:16,[cy]:16"
 			O.maptext = ""
 			O.layer = 20
+			O.plane = HUD_PLANE
 			cx++
 			if (cx > (Xcord+cols))
 				cx = Xcord
@@ -259,6 +262,7 @@
 		O.screen_loc = "[Xcord]:[round((startpoint+endpoint)/2)+2],[Ycord]:16"
 		O.maptext = ""
 		O.layer = 20
+		O.plane = HUD_PLANE
 
 	closer.screen_loc = "[Xcord]:[storage_width+19],[Ycord]:16"
 	return
@@ -421,8 +425,10 @@
 			W.dropped(usr)
 		if (ismob(new_location))
 			W.layer = 20
+			W.plane = GAME_PLANE
 		else
 			W.layer = initial(W.layer)
+			W.plane = GAME_PLANE
 		W.loc = new_location
 	else
 		W.loc = get_turf(src)

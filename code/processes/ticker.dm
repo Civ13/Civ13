@@ -37,7 +37,7 @@
 	ticker.process()
 
 	// for keeping track of time - Kachnov
-	if (list(GAME_STATE_PLAYING, GAME_STATE_FINISHED).Find(ticker.current_state))
+	if (ticker.current_state >= GAME_STATE_PLAYING)
 		playtime_elapsed += schedule_interval
 
 /process/ticker/proc/getLastTickerTimeDuration()

@@ -300,7 +300,7 @@ var/global/obj/map_metadata/map = null
 		BRITISH = 0,
 		PIRATES = 0)
 
-	if (!soldiers.Find(side))
+	if (!(side in soldiers))
 		soldiers[side] = 0
 
 	var/s1 = 0
@@ -314,12 +314,12 @@ var/global/obj/map_metadata/map = null
 			continue
 
 		if (H.stat != DEAD && H.stat != UNCONSCIOUS && !H.restrained() && ((H.weakened+H.stunned) == 0) && H.client)
-			if (soldiers.Find(job.base_type_flag()))
+			if (job.base_type_flag() in soldiers)
 				var/H_area = get_area(H)
-				if (roundend_condition_sides[1].Find(job.base_type_flag()))
+				if (job.base_type_flag() in roundend_condition_sides[1])
 					if (istype(H_area, roundend_condition_sides[roundend_condition_sides[2]]))
 						++s1
-				else if (roundend_condition_sides[2].Find(job.base_type_flag()))
+				else if (job.base_type_flag() in roundend_condition_sides[2])
 					if (istype(H_area, roundend_condition_sides[roundend_condition_sides[1]]))
 						++s2
 			else
@@ -328,9 +328,9 @@ var/global/obj/map_metadata/map = null
 				message_admins(M)
 				log_debug(M)
 
-	if (roundend_condition_sides[1].Find(side))
+	if (side in roundend_condition_sides[1])
 		return s2 > s1
-	else if (roundend_condition_sides[2].Find(side))
+	else if (side in roundend_condition_sides[2])
 		return s1 > s2
 
 	return FALSE

@@ -91,6 +91,7 @@
 #include "code\_onclick\hud\human.dm"
 #include "code\_onclick\hud\movable_screen_objects.dm"
 #include "code\_onclick\hud\other_mobs.dm"
+#include "code\_onclick\hud\plane_master.dm"
 #include "code\datums\browser.dm"
 #include "code\datums\category.dm"
 #include "code\datums\configuration.dm"

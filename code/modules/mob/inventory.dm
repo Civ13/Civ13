@@ -280,6 +280,7 @@ var/list/slot_equipment_priority = list( \
 	if (client)
 		client.screen -= O
 	O.layer = initial(O.layer)
+	O.plane = GAME_PLANE
 	O.screen_loc = null
 	if (istype(O, /obj/item))
 		var/obj/item/I = O

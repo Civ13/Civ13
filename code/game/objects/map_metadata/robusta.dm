@@ -21,25 +21,28 @@
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
 	battle_name = "Isla Robusta"
-	mission_start_message = "<font size=4>You and several other pirates were abandoned in this forsaken island. Only one can survive! Last standing player wins!</font>"
+	mission_start_message = "<font size=4>You and several other pirates were abandoned at this forsaken island. Only one can survive! <b>Last standing player wins!</b></font>"
 	single_faction = TRUE
 
 /obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
-	. = TRUE
-	if (istype(J, /datum/job/pirates))
-		. = FALSE
+	if (istype(J, /datum/job/pirates/battleroyale))
+		J.total_positions = 32
+		J.min_positions = 32
+		J.max_positions = 32
+		. = TRUE
 	else
-		if (istype(J, /datum/job/pirates/battleroyale))
-			J.total_positions = 32
+		. = FALSE
 	return .
 
 /obj/map_metadata/robusta/british_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 600 || admin_ended_all_grace_periods)
+	return FALSE
 
 /obj/map_metadata/robusta/pirates_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
+/obj/map_metadata/robusta/cross_message(faction)
+	return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 /obj/map_metadata/robusta/reinforcements_ready()
-	return (british_can_cross_blocks() && pirates_can_cross_blocks())
+	return (pirates_can_cross_blocks())
 
 #undef NO_WINNER

@@ -1,4 +1,24 @@
-// fun if you want to typecast humans/monkeys/etc without writing long path-filled lines.
+/mob/proc/update_client_colour(var/time = 10) //Update the mob's client.color with an animation the specified time in length.
+	if(!client) //No client_colour without client. If the player logs back in they'll be back through here anyway.
+		return
+	client.colour_transition(get_screen_colour(), time = time) //Get the colour matrix we're going to transition to depending on relevance (magic glasses first, eyes second).
+
+/mob/proc/get_screen_colour()
+
+/mob/living/get_screen_colour() //Fetch the colour matrix from wherever (e.g. eyes) so it can be compared to client.color.
+	var/list/colour_matrix = null
+	if(global_colour_matrix)
+		colour_matrix = global_colour_matrix
+	else
+		var/newcolor1 = max((1 - (health/maxHealth)) * 0.33, 0.33)
+		var/newcolor2 = 1 - (2* newcolor1)
+		colour_matrix = list(newcolor2, newcolor1, newcolor1,\
+							newcolor1, newcolor2, newcolor1,\
+							newcolor1, newcolor1, newcolor2)
+	return colour_matrix
+
+/client/proc/colour_transition(var/list/colour_to = null, var/time = 10) //Call this with no parameters to reset to default.
+	animate(src, color=colour_to, time=time, easing=SINE_EASING)
 
 /proc/issmall(A)
 	if (A && istype(A, /mob/living))

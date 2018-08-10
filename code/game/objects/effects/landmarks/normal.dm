@@ -15,10 +15,6 @@
 	tag = text("landmark*[]", name)
 
 	switch(name)			//some of these are probably obsolete
-	/*	if ("monkey")
-			monkeystart += loc
-			delete_me = TRUE
-			return*/
 		if ("start")
 			newplayer_start += loc
 			delete_me = TRUE
@@ -49,6 +45,12 @@
 			return
 
 		// PIRATE LANDMARKS
+		if ("JoinLateDM")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 
 		if ("JoinLatePirate")
 			if (!latejoin_turfs[name])

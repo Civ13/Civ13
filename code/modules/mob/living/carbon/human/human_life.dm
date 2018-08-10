@@ -44,7 +44,7 @@
 	if (transforming)
 		return
 
-	if (lying || list(UNCONSCIOUS, DEAD).Find(stat))
+	if (lying || stat < CONSCIOUS)
 		layer = MOB_LAYER - 0.01
 	else
 		layer = MOB_LAYER

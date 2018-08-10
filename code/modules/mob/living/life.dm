@@ -48,6 +48,9 @@
 		//Random events (vomiting etc)
 		handle_random_events()
 
+		//Cool colour filters
+		update_client_colour()
+
 		. = TRUE
 
 		handle_environment()

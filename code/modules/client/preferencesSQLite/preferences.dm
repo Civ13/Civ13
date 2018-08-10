@@ -142,8 +142,7 @@ var/list/preferences_datums = list()
 		if (preferences_exist(1))
 			load_preferences(1)
 		else
-//			real_name = random_name(gender, species)
-			real_name = "PLACEHOLDER"
+			real_name = random_name(gender, species)
 			pirate_name = random_pirate_name(gender, species)
 			english_name = random_english_name(gender, species)
 			remember_preference("real_name", real_name)
