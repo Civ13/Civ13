@@ -744,3 +744,72 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////BATTLE/ROYALE/STUFF//////////////////////////////////////////////////////
+
+
+/datum/job/pirates/battleroyale
+	title = "Pirate"
+	en_meaning = "Seaman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLatePirate"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 0
+	max_positions = 0
+	total_positions = 0
+
+/datum/job/battleroyale/seaman/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(60))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
+//clothes
+	var/randcloth = rand(1,5)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
+	else if (randcloth == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate4(H), slot_w_uniform)
+	else if (randcloth == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate5(H), slot_w_uniform)
+//jacket
+	var/randjacket = rand(1,5)
+	if (randjacket == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket1(H), slot_wear_suit)
+	else if (randjacket == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket2(H), slot_wear_suit)
+	else if (randjacket == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket3(H), slot_wear_suit)
+	else if (randjacket == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket4(H), slot_wear_suit)
+	else if (randjacket == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket5(H), slot_wear_suit)
+
+//head
+	var/randhead = rand(1,3)
+	if (randhead == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/piratebandana1(H), slot_head)
+	else if (randhead == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
+	else if (randhead == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
+
+	H.add_note("Role", "You are one of the pirates abandoned at this island. Be the last one to live!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("engineering", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("heavyweapon", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("shotgun", STAT_NORMAL)
+
+	return TRUE

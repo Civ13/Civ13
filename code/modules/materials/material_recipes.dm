@@ -1,4 +1,4 @@
-var/list/engineer_exclusive_recipe_types = list(/obj/structure/girder, /obj/structure/anti_tank)
+var/list/engineer_exclusive_recipe_types = list(/obj/structure/girder)
 
 /material/proc/get_recipes()
 	if (!recipes)

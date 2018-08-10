@@ -1,6 +1,7 @@
 #define MAP_NAVAL "NAVAL" // test map
 #define MAP_VOYAGE "VOYAGE"
 #define MAP_ISLAND "ISLAND"
+#define MAP_ROBUSTA "ROBUSTA"
 // ideas:
 // ship sailing through the ocean, High-rp
 // pirates boarding a ship

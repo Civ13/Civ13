@@ -257,35 +257,6 @@
 
 
 
-/obj/item/weapon/reagent_containers/food/snacks/aesirsalad
-	name = "Aesir salad"
-	desc = "Probably too incredible for mortal men to fully enjoy."
-	icon_state = "aesirsalad"
-	trash = /obj/item/trash/snack_bowl
-	filling_color = "#468C00"
-	center_of_mass = list("x"=17, "y"=11)
-	nutriment_amt = 8
-	nutriment_desc = list("apples" = 3,"salad" = 5)
-
-	New()
-		bitesize = 3
-
-/obj/item/weapon/reagent_containers/food/snacks/candy
-	name = "candy"
-	desc = "Nougat, love it or hate it."
-	icon_state = "candy"
-	trash = /obj/item/trash
-	filling_color = "#7D5F46"
-	center_of_mass = list("x"=15, "y"=15)
-	nutriment_amt = 1
-	nutriment_desc = list("candy" = 1)
-
-	New()
-		..()
-		reagents.add_reagent("sugar", 3)
-		bitesize = 2
-
-
 /obj/item/weapon/reagent_containers/food/snacks/cookie
 	name = "cookie"
 	desc = "COOKIE!!!"
@@ -2174,30 +2145,3 @@
 	center_of_mass = list("x"=16, "y"=12)
 	nutriment_desc = list("raw potato" = 3)
 	nutriment_amt = 3
-
-/obj/item/weapon/reagent_containers/food/snacks/tastybread
-	name = "bread tube"
-	desc = "Bread in a tube. Chewy...and surprisingly tasty."
-	icon_state = "tastybread"
-	trash = /obj/item/trash
-	filling_color = "#A66829"
-	center_of_mass = list("x"=17, "y"=16)
-	nutriment_desc = list("bread" = 2, "sweetness" = 3)
-	nutriment_amt = 6
-	New()
-		..()
-		bitesize = 2
-
-/*
-/obj/item/weapon/reagent_containers/food/snacks/skrellsnacks
-	name = "\improper SkrellSnax"
-	desc = "Cured fungus shipped all the way from Jargon 4, almost like jerky! Almost."
-	icon_state = "skrellsnacks"
-	filling_color = "#A66829"
-	center_of_mass = list("x"=15, "y"=12)
-	nutriment_desc = list("mushroom" = 5, "salt" = 5)
-	nutriment_amt = 10
-	New()
-		..()
-		bitesize = 3
-*/

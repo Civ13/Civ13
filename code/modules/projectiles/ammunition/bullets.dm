@@ -83,17 +83,6 @@
 	projectile_type = /obj/item/projectile/bullet/shotgun/practice
 	matter = list("metal" = 90)
 
-/obj/item/ammo_casing/shotgun/beanbag
-	name = "beanbag shell"
-	desc = "A beanbag shell."
-	icon_state = "bshell"
-	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
-	matter = list(DEFAULT_WALL_MATERIAL = 180)
-
-/obj/item/ammo_casing/shotgun/stunshell/emp_act(severity)
-	if (prob(100/severity)) BB = null
-	update_icon()
-
 /obj/item/ammo_casing/a762
 	desc = "A 7.62mm bullet casing."
 	caliber = "a762"

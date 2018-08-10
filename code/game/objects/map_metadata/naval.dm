@@ -35,6 +35,12 @@
 			return TRUE
 	else return FALSE
 */
+obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
+	if (istype(J, /datum/job/pirates/battleroyale))
+		. = FALSE
+	else
+		. = TRUE
+	return .
 /obj/map_metadata/naval/british_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 

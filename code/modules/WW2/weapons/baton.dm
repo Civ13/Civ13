@@ -23,36 +23,3 @@
 	user.a_intent = user_last_intent
 
 	force = initial(force)
-
-
-/obj/item/weapon/melee/classic_baton/MP/SS
-	name = "SS police baton"
-	desc = "A wooden police baton perfect for subduing Untermensch."
-	weakens = 5
-
-/obj/item/weapon/melee/classic_baton/MP/pirates
-	name = "Soviet police baton"
-	desc = "A wooden police baton perfect for subduing fascists."
-	weakens = 3
-
-/obj/item/weapon/melee/classic_baton/MP/pirates/old
-	name = "Old Soviet police baton"
-	weakens = 2
-
-/obj/item/weapon/melee/classic_baton/MP/german
-	name = "Wehrmacht police baton"
-	desc = "A wooden police baton perfect for subduing communists."
-	weakens = 4
-
-/obj/item/weapon/melee/classic_baton/MP/japan
-	name = "Japanese police baton"
-	desc = "A wooden police baton perfect for subduing western dogs."
-	weakens = 4
-
-/obj/item/weapon/melee/classic_baton/MP/usa
-	name = "American MP police baton"
-	desc = "A wooden police baton perfect for subduing the enemies of democracy."
-	weakens = 2
-
-
-

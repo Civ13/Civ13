@@ -172,23 +172,7 @@
 /obj/item/projectile/bullet/rifle/a556
 	damage = 35
 
-/* Miscellaneous */
 
-/obj/item/projectile/bullet/suffocationbullet//How does this even work?
-	name = "co bullet"
-	damage = 20
-	damage_type = OXY
-
-/obj/item/projectile/bullet/cyanideround
-	name = "poison bullet"
-	damage = 40
-	damage_type = TOX
-
-/obj/item/projectile/bullet/burstbullet
-	name = "exploding bullet"
-	damage = 20
-	embed = FALSE
-	edge = TRUE
 
 /obj/item/projectile/bullet/gyro/on_hit(var/atom/target, var/blocked = FALSE)
 	if (isturf(target))

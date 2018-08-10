@@ -357,54 +357,6 @@ steam.start() -- spawns the effect
 /datum/effect/effect/system/smoke_spread/mustard
 	smoke_type = /obj/effect/effect/smoke/mustard
 
-
-/////////////////////////////////////////////
-//////// Attach an Ion trail to any object, that spawns when it moves (like for the jetpack)
-/// just pass in the object to attach it to in set_up
-/// Then do start() to start it and stop() to stop it, obviously
-/// and don't call start() in a loop that will be repeated otherwise it'll get spammed!
-/////////////////////////////////////////////
-
-/obj/effect/effect/ion_trails
-	name = "ion trails"
-	icon_state = "ion_trails"
-	anchored = 1.0
-
-/datum/effect/effect/system/ion_trail_follow
-	var/turf/oldposition
-	var/processing = TRUE
-	var/on = TRUE
-
-	set_up(atom/atom)
-		attach(atom)
-		oldposition = get_turf(atom)
-
-	start()
-		if (!on)
-			on = TRUE
-			processing = TRUE
-		if (processing)
-			processing = FALSE
-			spawn(0)
-				var/turf/T = get_turf(holder)
-				if (T != oldposition)
-					spawn(2)
-						if (on)
-							processing = TRUE
-							start()
-				else
-					spawn(2)
-						if (on)
-							processing = TRUE
-							start()
-
-	proc/stop()
-		processing = FALSE
-		on = FALSE
-
-
-
-
 /////////////////////////////////////////////
 //////// Attach a steam trail to an object (eg. a reacting beaker) that will follow it
 // even if it's carried of thrown.

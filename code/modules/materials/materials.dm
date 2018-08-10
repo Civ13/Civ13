@@ -326,7 +326,7 @@ var/list/name_to_material
 	door_icon_base = "stone"
 	destruction_desc = "shatters"
 //	window_options = list("One Direction" = 1, "Full Window" = 4)
-	created_window = /obj/structure/window/basic
+	created_window = /obj/structure/window/classic
 	rod_product = /obj/item/stack/material/glass/reinforced
 	hitsound = 'sound/effects/Glasshit.ogg'
 

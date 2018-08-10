@@ -11,34 +11,6 @@
 	icon_state = "[rand(1,3)]"
 	color = "#c8c8c8"
 
-/obj/structure/anti_tank
-	icon_state = "anti-tank"
-	bound_width = 32
-	bound_height = 32
-	density = TRUE
-	anchored = TRUE
-	name = "anti-tank structure"
-
-/obj/structure/anti_tank/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (istype(mover, /obj/item/projectile))
-		if (prob(20))
-			return TRUE
-		else
-			visible_message("<span class = 'warning'>The [mover.name] riochetes off of the [name]!</span>")
-			return FALSE
-	return FALSE
-
-/obj/structure/anti_tank/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			qdel(src)
-			return
-		if (2.0)
-			if (prob(25))
-				qdel(src)
-				return
-		if (3.0)
-			return
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'

@@ -211,6 +211,11 @@
 	icon_state = "tricorne_british"
 	item_state = "tricorne_british"
 
+/obj/item/clothing/head/tricorne_british_soldier
+	name = "British Army tricorne"
+	desc = "A back tricorne, used by the British Army and Marines."
+	icon_state = "tricorne_british_soldier"
+	item_state = "tricorne_british_soldier"
 
 /obj/item/clothing/accessory/armband/british_scarf
 	name = "blue scarf"
@@ -231,3 +236,10 @@
 	icon_state = "british_officer"
 	item_state = "british_officer"
 	worn_state = "british_officer"
+
+/obj/item/clothing/suit/storage/jacket/british_soldier
+	name = "British soldier jacket"
+	desc = "The british redcoat, used by the British Army and Marines."
+	icon_state = "british_soldier_jacket"
+	item_state = "british_soldier_jacket"
+	worn_state = "british_soldier_jacket"

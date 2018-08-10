@@ -65,28 +65,3 @@
 	name = "Japanese MRE: Noodles"
 	desc = "A package of precooked noodles and dry meat."
 	nutriment_desc = list("noodles" = 1, "vegetables" = 1, "dried meat")
-
-// scho ka kola
-
-/obj/item/weapon/reagent_containers/food/snacks/MRE/schokakola
-	base_state = "schokakola"
-	icon_state = "schokakola"
-	name = "Scho-Ka-Kola"
-	desc = "A delicious chocolate treat with lots of caffeine."
-	trash = /obj/item/weapon/schokakola_trash
-	nutriment_desc = list("chocolate" = 1, "caffeine" = 1)
-
-/obj/item/weapon/reagent_containers/food/snacks/MRE/schokakola/New()
-	..()
-	reagents.reagent_list.Cut()
-	reagents.add_reagent("nutriment", 3)
-	reagents.add_reagent("sugar", 3)
-	reagents.add_reagent("coco", 3)
-	reagents.add_reagent("hyperzine", 3)
-
-/obj/item/weapon/schokakola_trash
-	icon = 'icons/obj/food.dmi'
-	icon_state = "schokakola_trash"
-	name = "Schokakola trash"
-	desc = "The remains of a delicious Scho-Ka-Kola."
-	w_class = 1
