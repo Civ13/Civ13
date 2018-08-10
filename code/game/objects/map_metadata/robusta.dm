@@ -23,6 +23,9 @@
 	battle_name = "Isla Robusta"
 	mission_start_message = "<font size=4>You and several other pirates were abandoned at this forsaken island. Only one can survive! <b>Last standing player wins!</b></font>"
 	single_faction = TRUE
+	var/winner_name = "Unknown"
+	var/winner_ckey = "Unknown"
+	var/message = ""
 
 /obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
@@ -44,48 +47,36 @@
 	return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 /obj/map_metadata/robusta/reinforcements_ready()
 	return (pirates_can_cross_blocks())
-
+/*
 /obj/map_metadata/robusta/win_condition_specialcheck()
 	if (alive_n_of_side(PIRATES) <= 1 && processes.ticker.playtime_elapsed >= 1200)
+		for (var/mob/living/carbon/human/H in player_list)
+			if (H.original_job && H.stat != DEAD)
+				if (H.original_job.base_type_flag() == PIRATES)
+					winner_name =  H.name
+					winner_ckey = H.ckey
+					message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
 		return FALSE
 	else
 		return TRUE
-/*
+*/
 /obj/map_metadata/robusta/update_win_condition()
-	var/winner_name = "Unknown"
-	var/winner_ckey = "Unknown"
-	var/message = ""
-	if (!win_condition_specialcheck())
-		return FALSE
-	if (world.time >= next_win && next_win != -1)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		if (current_winner && current_loser)
-			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
-		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-		win_condition_spam_check = TRUE
-		return FALSE
-	if (!win_condition_specialcheck())
-			return FALSE
-		if (win_condition_spam_check)
-			ticker.finished = TRUE
-			for (var/mob/living/carbon/human/H in player_list)
-				if (H.original_job && H.stat != DEAD)
-					if (H.original_job.base_type_flag() == PIRATES)
-						winner_name =  H.name
-						winner_ckey = H.ckey
-			message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
-			win_condition_spam_check = TRUE
-			return FALSE
-
 	if (world.time >= 36000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
 		message = "One hour has passed! The combat has ended in a stalemate!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
-*/
+	else if (world.time >= 3000)
+		if (alive_n_of_side(PIRATES) <= 1 && processes.ticker.playtime_elapsed >= 1200)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == PIRATES)
+						winner_name =  H.name
+						winner_ckey = H.ckey
+						message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
+			return FALSE
+
 #undef NO_WINNER
