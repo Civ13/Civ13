@@ -291,6 +291,7 @@ var/list/admin_verbs_host = list(
 		if (holder.rights & R_PERMISSIONS)
 			verbs += admin_verbs_permissions
 			verbs += admin_verbs_manager
+			verbs += /client/proc/colorooc
 		if (holder.rights & R_STEALTH)		verbs += /client/proc/stealth
 		if (holder.rights & R_REJUVINATE)	verbs += admin_verbs_rejuv
 		if (holder.rights & R_SOUNDS)		verbs += admin_verbs_sounds
