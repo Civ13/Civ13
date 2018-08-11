@@ -16,7 +16,7 @@
 
 /datum/surgery_step/generic/cut_face
 	allowed_tools = list(
-	/obj/item/weapon/scalpel = 100,		\
+	/obj/item/weapon/surgery/scalpel = 100,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
 	)
@@ -46,7 +46,7 @@
 
 /datum/surgery_step/face/mend_vocal
 	allowed_tools = list(
-	/obj/item/weapon/hemostat = 100, 	\
+	/obj/item/weapon/surgery/hemostat = 100, 	\
 	)
 
 	min_duration = 70
@@ -72,7 +72,7 @@
 
 /datum/surgery_step/face/fix_face
 	allowed_tools = list(
-	/obj/item/weapon/retractor = 100, 	\
+	/obj/item/weapon/surgery/retractor = 100, 	\
 	/obj/item/weapon/crowbar = 55,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 75)
 
@@ -100,7 +100,7 @@
 
 /datum/surgery_step/face/cauterize
 	allowed_tools = list(
-	/obj/item/weapon/cautery = 100,			\
+	/obj/item/weapon/surgery/cautery = 100,			\
 	/obj/item/clothing/mask/smokable/cigarette = 75,	\
 	/obj/item/weapon/flame/lighter = 50,			\
 	)

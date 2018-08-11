@@ -17,7 +17,7 @@
 
 /datum/surgery_step/open_encased/saw
 	allowed_tools = list(
-	/obj/item/weapon/bone_saw = 100, \
+	/obj/item/weapon/surgery/bone_saw = 100, \
 	/obj/item/weapon/material/hatchet = 75
 	)
 
@@ -66,7 +66,7 @@
 
 /datum/surgery_step/open_encased/retract
 	allowed_tools = list(
-	/obj/item/weapon/retractor = 100, 	\
+	/obj/item/weapon/surgery/retractor = 100, 	\
 	/obj/item/weapon/crowbar = 75
 	)
 
@@ -122,7 +122,7 @@
 
 /datum/surgery_step/open_encased/close
 	allowed_tools = list(
-	/obj/item/weapon/retractor = 100, 	\
+	/obj/item/weapon/surgery/retractor = 100, 	\
 	/obj/item/weapon/crowbar = 75
 	)
 

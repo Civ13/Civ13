@@ -1049,11 +1049,11 @@ proc/is_hot(obj/item/W as obj)
 
 /proc/is_surgery_tool(obj/item/W as obj)
 	return (	\
-	istype(W, /obj/item/weapon/scalpel)			||	\
-	istype(W, /obj/item/weapon/hemostat)		||	\
-	istype(W, /obj/item/weapon/retractor)		||	\
-	istype(W, /obj/item/weapon/cautery)			||	\
-	istype(W, /obj/item/weapon/bonesetter)
+	istype(W, /obj/item/weapon/surgery/scalpel)			||	\
+	istype(W, /obj/item/weapon/surgery/hemostat)		||	\
+	istype(W, /obj/item/weapon/surgery/retractor)		||	\
+	istype(W, /obj/item/weapon/surgery/cautery)			||	\
+	istype(W, /obj/item/weapon/surgery/bonesetter)
 	)
 
 //check if mob is lying down on something we can operate him on.

@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////
 /datum/surgery_step/set_bone
 	allowed_tools = list(
-	/obj/item/weapon/bonesetter = 100,	\
+	/obj/item/weapon/surgery/bonesetter = 100,	\
 	/obj/item/weapon/wrench = 75		\
 	)
 
@@ -43,7 +43,7 @@
 
 /datum/surgery_step/mend_skull
 	allowed_tools = list(
-	/obj/item/weapon/bonesetter = 100,	\
+	/obj/item/weapon/surgery/bonesetter = 100,	\
 	/obj/item/weapon/wrench = 75		\
 	)
 

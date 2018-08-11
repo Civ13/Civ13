@@ -7,7 +7,7 @@
 /datum/surgery_step/fix_vein
 	priority = 2
 	allowed_tools = list(
-	/obj/item/weapon/hemostat = 100, 	\
+	/obj/item/weapon/surgery/hemostat = 100, 	\
 	)
 	can_infect = TRUE
 	blood_level = TRUE
@@ -54,7 +54,7 @@
 /datum/surgery_step/fix_dead_tissue		//Debridement
 	priority = 2
 	allowed_tools = list(
-		/obj/item/weapon/scalpel = 100,		\
+		/obj/item/weapon/surgery/scalpel = 100,		\
 		/obj/item/weapon/material/knife = 75,	\
 		/obj/item/weapon/material/shard = 50, 		\
 	)

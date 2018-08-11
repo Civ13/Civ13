@@ -23,7 +23,7 @@
 
 /datum/surgery_step/generic/cut_open
 	allowed_tools = list(
-	/obj/item/weapon/scalpel = 100,		\
+	/obj/item/weapon/surgery/scalpel = 100,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
 	)
@@ -63,7 +63,7 @@
 
 /datum/surgery_step/generic/clamp_bleeders
 	allowed_tools = list(
-	/obj/item/weapon/hemostat = 100,	\
+	/obj/item/weapon/surgery/hemostat = 100,	\
 	)
 
 	min_duration = 40
@@ -96,7 +96,7 @@
 
 /datum/surgery_step/generic/retract_skin
 	allowed_tools = list(
-	/obj/item/weapon/retractor = 100, 	\
+	/obj/item/weapon/surgery/retractor = 100, 	\
 	/obj/item/weapon/crowbar = 75,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 50
 	)
@@ -151,7 +151,7 @@
 
 /datum/surgery_step/generic/cauterize
 	allowed_tools = list(
-	/obj/item/weapon/cautery = 100,			\
+	/obj/item/weapon/surgery/cautery = 100,			\
 	/obj/item/clothing/mask/smokable/cigarette = 75,	\
 	/obj/item/weapon/flame/lighter = 50,			\
 	)
@@ -187,7 +187,7 @@
 
 /datum/surgery_step/generic/amputate
 	allowed_tools = list(
-	/obj/item/weapon/bone_saw = 100, \
+	/obj/item/weapon/surgery/bone_saw = 100, \
 	/obj/item/weapon/material/hatchet = 75
 	)
 
