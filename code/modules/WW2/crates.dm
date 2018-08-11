@@ -181,6 +181,14 @@ obj/structure/closet/crate/empty
 	name = "Rations: water"
 
 ///WEAPONS///
+
+/obj/structure/closet/crate/grenades
+	name = "Grenade crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/grenade/old_grenade = 10)
+
 /obj/structure/closet/crate/musketball
 	name = "Musket ammunition crate"
 	icon_state = "wood_crate"

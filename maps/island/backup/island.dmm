@@ -31,7 +31,7 @@
 "aE" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/splint,/obj/structure/table/wood,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "aF" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/ointment,/obj/structure/table/wood,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "aG" = (/obj/effect/landmark{name = "JoinLatePirateSurgeon"},/turf/floor/plating/grass/wild,/area/caribbean/island)
-"aH" = (/obj/item/weapon/surgery/cautery,/obj/item/weapon/surgery/bonesetter,/obj/item/weapon/surgery/bone_saw,/obj/item/weapon/surgery/hemostat,/obj/item/weapon/surgery/retractor,/obj/item/weapon/surgery/scalpel,/obj/structure/table/wood,/turf/floor/plating/grass/wild,/area/caribbean/island)
+"aH" = (/obj/item/weapon/cautery,/obj/item/weapon/bonesetter,/obj/item/weapon/bone_saw,/obj/item/weapon/hemostat,/obj/item/weapon/retractor,/obj/item/weapon/scalpel,/obj/structure/table/wood,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "aI" = (/obj/structure/bed,/turf/floor/dirt,/area/caribbean/island)
 "aJ" = (/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/item/weapon/reagent_containers/food/snacks/meat,/obj/structure/closet/crate/empty{name = "meat crate"},/turf/floor/plating/dirt,/area/caribbean/island)
 "aK" = (/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/item/weapon/reagent_containers/food/snacks/grown/potato,/obj/structure/closet/crate/empty{name = "vegetables crate"},/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage,/turf/floor/plating/grass/wild,/area/caribbean/island)
@@ -176,7 +176,7 @@
 "dt" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "du" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/trash/wood_bowl,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dv" = (/obj/structure/bed/chair/wood{dir = 4},/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
-"dw" = (/obj/item/weapon/surgery/cautery,/obj/item/weapon/surgery/bonesetter,/obj/item/weapon/surgery/bone_saw,/obj/item/weapon/surgery/hemostat,/obj/item/weapon/surgery/retractor,/obj/item/weapon/surgery/scalpel,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
+"dw" = (/obj/item/weapon/cautery,/obj/item/weapon/bonesetter,/obj/item/weapon/bone_saw,/obj/item/weapon/hemostat,/obj/item/weapon/retractor,/obj/item/weapon/scalpel,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dx" = (/obj/structure/table/iron,/obj/item/weapon/pen,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dy" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/splint,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dz" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/trash/wood_bowl,/obj/item/trash/wood_bowl,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
@@ -243,7 +243,6 @@
 "eI" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eJ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eK" = (/mob/living/simple_animal/monkey,/turf/floor/plating/grass/wild,/area/caribbean/island)
-"eL" = (/obj/effect/landmark{name = "JoinLateRNCarpenter"},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -396,7 +395,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZdzdgdcdAdBdCdAdcdD
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZdHdcdcdAdIdCdAdcdDdEdEcZcZdidccRdcdidEdEdEdidccRdcdicZcZdEdEdkdcdFdcdcdcdJdcdcdccZcZcZcZcZcZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZdddcdmdmdcdcdcdcdcdcdKddcZdddcdcdcdcdcdcdcdcdcdcdcddcZdcdddLdcdLdcdMdcdcdcdcdcddcZcZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZdhdgdfdNdOdceBdPdgdcdcdcdpdcdcdcdccRdccRdcdidccRdcdcdpdcdcdcdcdFdcdQdFdRdcdcdcdccZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZdSdcdceBdcdcdcdTdgdcdcdcdpdceLeLdcdcdcdcdcdcdcdcdcddcZdcdcdLdcdUdcdLdcdcdQdcdbcZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZdSdcdceBdcdcdcdTdgdcdcdcdpdcdcdcdcdcdcdcdcdcdcdcdcddcZdcdcdLdcdUdcdLdcdcdQdcdbcZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZdhdgdcdcdcdceBdSdgdadadccZdVdWdWdccRdcdidccRdcdidcdicZdcdcdcdQdcdcdcdXdcdcdccZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZcZdadadLdcdLdddLdcdbdbcZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacZcZcZcZcZcZcZdYcZdYcZcZaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

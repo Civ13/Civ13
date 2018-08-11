@@ -117,9 +117,8 @@
 "dl" = (/obj/structure/pot,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dm" = (/obj/structure/oven,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dn" = (/obj/effect/landmark{name = "JoinLateRNSurgeon"},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
-"do" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dp" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
-"dq" = (/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
+"dq" = (/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dr" = (/obj/structure/bed{material = "wood"},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "ds" = (/obj/effect/decal/cleanable/blood,/obj/structure/bed{material = "wood"},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dt" = (/obj/structure/table/wood,/obj/item/trash/candle,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
@@ -363,7 +362,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcQcRbObObObObOcScRchchbObMcTbOcTbOcTbOcTbOcT
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcWcRbOcXcXbOcYcZcRbObObObQbObObObObObObObObObObObOdabMbObObObObOdbdcddcRbObOcObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMdecRcSdecSbOcYdebObObObObQbObOcTbOcTbOcTbOcTbOcTbObObQbObObObOcYdcdfdcbOdgbObObObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMdabOdfdfbObObObObOcscsdabMdabObObObObObObObObObObOdabMbOdacUcUcYdbbOdhbOdibObOdabMbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcQcRbOdjdkdldjbOdmbRbRbMbMcTbOcTbOcTbRbRbRcTbOcTbOcTbMbMbRbRcVbObObOdnbOdobObObObMbMbMbMbMbMbMaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcQcRbOdjdkdldjbOdmbRbRbMbMcTbOcTbOcTbRbRbRcTbOcTbOcTbMbMbRbRcVbObObOdnbOdqbObObObMbMbMbMbMbMbMaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcQbObOdjdpdldjbOdmbRbRbMbMcTbOcTbOcTbRbRbRcTbOcTbOcTbMbMbRbRcVbOdnbObObOdqbObObObMbMbMbMbMbMbMaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMdabOcXcXbObObObObOcscsdabMdabObObObObObObObObObObOdabMbOdadrbOdrbOdsbObObObObOdabMbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcScRcQdtdubOcYdvcRbObObObQbObOcTbOcTbOcTbOcTbOcTbObObQbObObObOdnbOdwdndxbObObObObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

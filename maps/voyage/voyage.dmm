@@ -109,7 +109,7 @@
 "dd" = (/obj/structure/table/iron,/obj/item/weapon/book,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "de" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "df" = (/obj/structure/bed/chair/wood{dir = 6},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
-"dg" = (/obj/item/weapon/scalpel,/obj/item/weapon/retractor,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
+"dg" = (/obj/item/weapon/surgery/scalpel,/obj/item/weapon/surgery/retractor,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dh" = (/obj/structure/table/iron,/obj/item/weapon/pen,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "di" = (/obj/item/stack/medical/splint,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dj" = (/obj/effect/landmark{name = "JoinLateRNCook"},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)

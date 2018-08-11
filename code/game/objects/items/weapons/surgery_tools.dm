@@ -11,7 +11,7 @@
 /*
  * Retractor
  */
-/obj/item/weapon/retractor
+/obj/item/weapon/surgery/retractor
 	name = "retractor"
 	desc = "Retracts stuff."
 	icon = 'icons/obj/surgery.dmi'
@@ -22,7 +22,7 @@
 /*
  * Hemostat
  */
-/obj/item/weapon/hemostat
+/obj/item/weapon/surgery/hemostat
 	name = "hemostat"
 	desc = "Pinches veins. Prevents bleeding."
 	icon = 'icons/obj/surgery.dmi'
@@ -35,7 +35,7 @@
 /*
  * Cautery
  */
-/obj/item/weapon/cautery
+/obj/item/weapon/surgery/cautery
 	name = "cautery"
 	desc = "A hot iron. Closes wounds and stops bleeding."
 	icon = 'icons/obj/surgery.dmi'
@@ -48,7 +48,7 @@
 /*
  * Surgical Drill
  */
-/obj/item/weapon/surgicaldrill
+/obj/item/weapon/surgery/surgicaldrill
 	name = "surgical drill"
 	desc = "You can drill using this item. You dig?"
 	icon = 'icons/obj/surgery.dmi'
@@ -63,7 +63,7 @@
 /*
  * Scalpel
  */
-/obj/item/weapon/scalpel
+/obj/item/weapon/surgery/scalpel
 	name = "scalpel"
 	desc = "Cut, cut, and once more cut."
 	icon = 'icons/obj/surgery.dmi'
@@ -84,7 +84,7 @@
 /*
  * Circular Saw
  */
-/obj/item/weapon/bone_saw
+/obj/item/weapon/surgery/bone_saw
 	name = "bone saw"
 	desc = "For heavy duty cutting."
 	icon = 'icons/obj/surgery.dmi'
@@ -105,7 +105,7 @@
 //misc, formerly from code/defines/weapons.dm
 
 
-/obj/item/weapon/bonesetter
+/obj/item/weapon/surgery/bonesetter
 	name = "bone setter"
 	desc = "To set bones in place."
 	icon = 'icons/obj/surgery.dmi'

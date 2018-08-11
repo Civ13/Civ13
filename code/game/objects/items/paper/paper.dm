@@ -503,16 +503,3 @@
 
 /obj/item/weapon/paper/crumpled/bloody
 	icon_state = "scrap_bloodied"
-
-/obj/item/weapon/paper/map
-	name = "the map of Slatino"
-	icon_state = "photo"
-	info = "<img src='slatino.png' width='816' height='816'/>"
-	item_state = "paper"
-
-	show_content(var/mob/user, var/forceshow=0)
-		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info]</BODY></HTML>", "window=[name];size=816x816")
-		onclose(user, "[name]")
-
-/obj/item/weapon/paper/map/update_icon()
-	return
