@@ -132,7 +132,7 @@
 		constructtype = "harvester"
 
 	mymob.flash = new /obj/screen()
-	mymob.flash.icon = 'icons/mob/screen1.dmi'
+	mymob.flash.icon = 'icons/mob/screen/1713Style.dmi'
 	mymob.flash.icon_state = "blank"
 	mymob.flash.name = "flash"
 	mymob.flash.screen_loc = ui_entire_screen

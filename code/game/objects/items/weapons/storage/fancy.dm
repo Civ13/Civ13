@@ -79,47 +79,6 @@
 		new /obj/item/weapon/flame/candle(src)
 	return
 
-/*
- * Crayon Box
- */
-
-/obj/item/weapon/storage/fancy/crayons
-	name = "box of crayons"
-	desc = "A box of crayons for all your rune drawing needs."
-	icon = 'icons/obj/crayons.dmi'
-	icon_state = "crayonbox"
-	w_class = 2.0
-	icon_type = "crayon"
-	can_hold = list(
-		/obj/item/weapon/pen/crayon
-	)
-
-/obj/item/weapon/storage/fancy/crayons/New()
-	..()
-	new /obj/item/weapon/pen/crayon/red(src)
-	new /obj/item/weapon/pen/crayon/orange(src)
-	new /obj/item/weapon/pen/crayon/yellow(src)
-	new /obj/item/weapon/pen/crayon/green(src)
-	new /obj/item/weapon/pen/crayon/blue(src)
-	new /obj/item/weapon/pen/crayon/purple(src)
-	update_icon()
-
-/obj/item/weapon/storage/fancy/crayons/update_icon()
-	overlays = list() //resets list
-	overlays += image('icons/obj/crayons.dmi',"crayonbox")
-	for (var/obj/item/weapon/pen/crayon/crayon in contents)
-		overlays += image('icons/obj/crayons.dmi',crayon.colourName)
-
-/obj/item/weapon/storage/fancy/crayons/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon/pen/crayon))
-		switch(W:colourName)
-			if ("mime")
-				usr << "This crayon is too sad to be contained in this box."
-				return
-			if ("rainbow")
-				usr << "This crayon is too powerful to be contained in this box."
-				return
-	..()
 
 ////////////
 //CIG PACK//

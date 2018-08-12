@@ -130,17 +130,6 @@
 
 	#define DISABLE_CASINGS // goodbye lag (EXPERIMENTAL) - Kachnov
 
-	switch(handle_casings)
-		if (EJECT_CASINGS) //eject casing onto ground.
-			#ifndef DISABLE_CASINGS
-			#endif
-			playsound(loc, casing_sound, 50, TRUE)
-		if (CYCLE_CASINGS) //cycle the casing back to the end.
-			if (ammo_magazine)
-				ammo_magazine.stored_ammo += chambered
-			else
-				loaded += chambered
-
 	if (handle_casings != HOLD_CASINGS)
 		chambered = null
 

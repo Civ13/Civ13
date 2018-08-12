@@ -60,47 +60,6 @@
 		new /obj/item/clothing/mask/surgical(src)
 		new /obj/item/clothing/mask/surgical(src)
 
-/obj/item/weapon/storage/box/beakers
-	name = "box of beakers"
-	icon_state = "beaker"
-
-	New()
-		..()
-		new /obj/item/weapon/reagent_containers/glass/beaker( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker( src )
-
-/obj/item/weapon/storage/box/beakers_large
-	name = "box of large beakers"
-	icon_state = "beaker"
-
-	New()
-		..()
-		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
-		new /obj/item/weapon/reagent_containers/glass/beaker/large( src )
-
-/obj/item/weapon/storage/box/smokes
-	name = "box of smoke bombs"
-	desc = "A box containing 5 smoke bombs."
-	icon_state = "flashbang"
-
-/obj/item/weapon/storage/box/smokes/New()
-		..()
-		new /obj/item/weapon/grenade/smokebomb(src)
-		new /obj/item/weapon/grenade/smokebomb(src)
-		new /obj/item/weapon/grenade/smokebomb(src)
-		new /obj/item/weapon/grenade/smokebomb(src)
-		new /obj/item/weapon/grenade/smokebomb(src)
-
 
 /obj/item/weapon/storage/box/rxglasses
 	name = "box of prescription glasses"

@@ -11,7 +11,7 @@
 	var/istop = TRUE
 	var/status = STATUS_LIFT_DOCKED
 	var/next_activation = -1
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/islc = FALSE
 

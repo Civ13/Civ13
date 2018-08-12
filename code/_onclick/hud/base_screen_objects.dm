@@ -14,7 +14,7 @@
 
 /obj/screen
 	name = ""
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	layer = 20.0
 	plane = HUD_PLANE
 //	unacidable = TRUE

@@ -106,6 +106,13 @@
 	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
 	try_destroy()
 
+/obj/structure/barricade/horizontal
+	name = "wood barrier"
+	desc = "A wood wall made of vines and logs roped together."
+
+/obj/structure/barricade/vertical
+	name = "wood barrier"
+	desc = "A wood wall made of vines and logs roped together."
 // steel barricades
 
 /obj/structure/barricade/steel

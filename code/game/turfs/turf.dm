@@ -45,6 +45,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 
 	var/wet = FALSE
 	var/image/wet_overlay = null
+	var/floorbelowz
 
 	//Mining resources (for the large drills).
 //	var/has_resources

@@ -19,7 +19,7 @@
 
 //revolves the magazine, allowing players to choose between multiple grenade types
 /obj/item/weapon/gun/launcher/grenade/proc/pump(mob/M as mob)
-	playsound(M, 'sound/weapons/shotgunpump.ogg', 60, TRUE)
+//	playsound(M, 'sound/weapons/shotgunpump.ogg', 60, TRUE)
 
 	var/obj/item/weapon/grenade/next
 	if (grenades.len)

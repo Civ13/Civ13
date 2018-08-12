@@ -161,7 +161,7 @@
 		return TRUE
 
 	var/trans = reagents.trans_to(target, amount_per_transfer_from_this)
-	playsound(src,'sound/effects/Liquid_transfer_mono.wav',50,1)
+	playsound(src,'sound/effects/Liquid_transfer_mono.ogg',50,1)
 	user << "<span class='notice'>You transfer [trans] units of the solution to [target].</span>"
 
 	// fixes rags not updating names after being wet - Kachnov

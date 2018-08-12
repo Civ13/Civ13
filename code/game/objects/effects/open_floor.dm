@@ -1,9 +1,9 @@
-/*/turf/broken_floor
+/turf/broken_floor
 	name = "hole"
 	icon = 'icons/turf/areas.dmi'
 	icon_state = "black"
 	density = FALSE
-	var/floorbelowz = null
+	floorbelowz = locate(x,y,z)
 
 /turf/broken_floor/New()
 	..()
@@ -18,4 +18,3 @@
 			return
 		else
 			A.z = floorbelowz.z
-*/

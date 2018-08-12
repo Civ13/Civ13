@@ -4,7 +4,7 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata
 	name = ""
-	icon = 'icons/mob/screen1.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	anchored = TRUE
 	simulated = FALSE

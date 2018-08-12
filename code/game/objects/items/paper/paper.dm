@@ -96,7 +96,7 @@
 	set name = "Rename paper"
 	set category = null
 	set src in usr
-	playsound(src,'sound/effects/PEN_Ball_Point_Pen_Circling_01_mono.wav',40,1)
+	playsound(src,'sound/effects/pen.ogg',40,1)
 
 	if ((CLUMSY in usr.mutations) && prob(50))
 		usr << "<span class='warning'>You cut yourself on the paper.</span>"
@@ -331,7 +331,7 @@
 
 
 		// if paper is not in usr, then it must be near them, or in a clipboard or folder, which must be in or near usr
-		if (loc != usr && !Adjacent(usr) && !(istype(loc, /obj/item/weapon/folder)) && (loc.loc == usr || loc.Adjacent(usr)) )
+		if (loc != usr && !Adjacent(usr) && (loc.loc == usr || loc.Adjacent(usr)) )
 			return
 /*
 		t = checkhtml(t)
@@ -362,7 +362,7 @@
 		else
 			info += t // Oh, he wants to edit to the end of the file, let him.
 			updateinfolinks()
-		playsound(src,'sound/effects/PEN_Ball_Point_Pen_Circling_01_mono.wav',40,1)
+		playsound(src,'sound/effects/pen.ogg',40,1)
 		update_space(t)
 
 		usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
