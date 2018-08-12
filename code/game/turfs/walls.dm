@@ -171,10 +171,6 @@ var/list/global/wall_cache = list()
 /turf/wall/proc/dismantle_wall(var/devastated, var/explode, var/no_product)
 
 	if (!no_product)
-		if (reinf_material)
-			reinf_material.place_dismantled_girder(src, reinf_material)
-		else
-			material.place_dismantled_girder(src)
 		material.place_dismantled_product(src,devastated)
 
 	for (var/obj/O in contents) //Eject contents!
@@ -247,7 +243,6 @@ var/list/global/wall_cache = list()
 /turf/wall/proc/burn(temperature)
 	if (material.combustion_effect(src, temperature, 0.7))
 		spawn(2)
-			new /obj/structure/girder(src)
 			ChangeTurf(/turf/floor)
 			for (var/turf/wall/W in range(3,src))
 				W.burn((temperature/4))

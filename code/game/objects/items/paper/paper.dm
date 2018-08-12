@@ -439,7 +439,7 @@
 	else if (istype(P, /obj/item/weapon/stamp))
 		if ((!in_range(src, usr) && loc != user && loc.loc != user && user.get_active_hand() != P))
 			return
-		playsound(src,'sound/effects/Stamp.wav',40,1)
+		playsound(src,'sound/effects/Stamp.ogg',40,1)
 		stamps += (stamps=="" ? "<HR>" : "<BR>") + "<i>This paper has been stamped with the [P.name].</i>"
 
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')

@@ -1,4 +1,4 @@
-var/list/engineer_exclusive_recipe_types = list(/obj/structure/girder)
+var/list/engineer_exclusive_recipe_types = null
 
 /material/proc/get_recipes()
 	if (!recipes)

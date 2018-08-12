@@ -57,8 +57,6 @@
 		if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
 			chance /= 2
 
-	else if (istype(A, /obj/structure/girder))
-		chance = 66
 	else if (istype(A, /obj/structure))
 		chance = round(damage/2) + 10
 
