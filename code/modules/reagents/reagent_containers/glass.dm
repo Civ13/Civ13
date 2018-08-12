@@ -18,7 +18,6 @@
 	var/label_text = ""
 
 	var/list/can_be_placed_into = list(
-		/obj/structure/chem_master/,
 		/obj/structure/chemical_dispenser,
 		/obj/structure/table,
 		/obj/structure/closet,
@@ -84,7 +83,7 @@
 			return
 
 		if (reagents.total_volume)
-			playsound(src,'sound/effects/Splash_Small_01_mono.wav',50,1)
+			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
 			reagents.splash(target, reagents.total_volume)
 			return

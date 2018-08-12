@@ -19,6 +19,7 @@
 
 	else if (istype(C, /obj/item/weapon/shovel))
 		var/obj/snow/S = has_snow()
+		var/turf/T = get_turf(user)
 		var/mob/living/carbon/human/H = user
 		if (S && istype(H) && !H.shoveling_snow)
 			H.shoveling_snow = TRUE
@@ -31,6 +32,20 @@
 				qdel(S)
 			else
 				H.shoveling_snow = FALSE
+		else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
+			if (T.available_dirt >= 1)
+				H.shoveling_dirt = TRUE
+				visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',75,1)
+				if (do_after(user, rand(45,60)))
+					visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
+					H.shoveling_dirt = FALSE
+					T.available_dirt -= 1
+					new /obj/item/weapon/sandbag(T)
+				else
+					H.shoveling_dirt = FALSE
+			else
+				user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
 		else
 			return ..(C, user)
 
@@ -56,15 +71,15 @@
 			sandbag_time /= (H.getStatCoeff("engineering") * H.getStatCoeff("engineering"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a sandbag [your_dir] of you.", "Sandbag Construction", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
+			if (WWinput(user, "This will start building a dirt wall [your_dir] of you.", "Dirt Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
+				visible_message("<span class='danger'>[user] starts constructing the base of a dirt wall.</span>", "<span class='danger'>You start constructing the base of a dirt wall.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/obj/item/weapon/sandbag/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
 					var/obj/structure/window/sandbag/incomplete/sandbag = new/obj/structure/window/sandbag/incomplete(src, user)
 					sandbag.progress = progress
-					visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
+					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt wall. Anyone can now add to it.</span>")
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("engineering", 3)
@@ -134,13 +149,3 @@
 				return
 		// Repairs.
 	return ..()
-
-
-/turf/floor/can_build_cable(var/mob/user)
-	if (!is_plating() || flooring)
-		user << "<span class='warning'>Removing the tiling first.</span>"
-		return FALSE
-	if (broken || burnt)
-		user << "<span class='warning'>This section is too damaged to support anything. Use a welder to fix the damage.</span>"
-		return FALSE
-	return TRUE

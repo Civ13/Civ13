@@ -115,6 +115,7 @@
 	var/job_spawn_location = null // used to override job.spawn_location for a single mob
 
 	var/shoveling_snow = FALSE
+	var/shoveling_dirt = FALSE
 
 	/* These are stats. They affect how fast and how well you can do certain
 	 * actions. All stats have a min (stats[stat][1]) and a max (stats[stat][2]),

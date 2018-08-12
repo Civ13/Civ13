@@ -191,11 +191,6 @@ var/list/name_to_material
 	name = "placeholder"
 
 // Places a girder object when a wall is dismantled, also applies reinforced material.
-/material/proc/place_dismantled_girder(var/turf/target, var/material/reinf_material)
-	var/obj/structure/girder/G = new(target)
-	if (reinf_material)
-		G.reinf_material = reinf_material
-		G.reinforce_girder()
 
 // General wall debris product placement.
 // Not particularly necessary aside from snowflakey cult girders.

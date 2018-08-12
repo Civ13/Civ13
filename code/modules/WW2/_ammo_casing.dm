@@ -8,7 +8,7 @@
 	caliber = "musketball"
 
 /obj/item/ammo_casing/musketball_pistol
-	name = "small musketball projectile"
+	name = "pistol projectile"
 	projectile_type = /obj/item/projectile/bullet/rifle/musketball_pistol
 	weight = 0.015
 	icon_state = "musketball_pistol_gunpowder"
