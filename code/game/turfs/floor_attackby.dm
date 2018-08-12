@@ -36,7 +36,7 @@
 			if (T.available_dirt >= 1)
 				H.shoveling_dirt = TRUE
 				visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
-				playsound(src,'sound/effects/shovelling.ogg',75,1)
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
 				if (do_after(user, rand(45,60)))
 					visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
 					H.shoveling_dirt = FALSE
