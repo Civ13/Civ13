@@ -36,7 +36,9 @@ var/global/obj/map_metadata/map = null
 		list(BRITISH) = /area/caribbean/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
-	"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
+		"Fish in the Sea:1" = 'sound/music/shanties/fish_in_the_sea.ogg',
+		"Spanish Ladies:1" = 'sound/music/shanties/spanish_ladies.ogg',
+		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
 	var/mission_start_message = "Mission will start soon!"
 //	)
 	// stuff ported from removed game mode system

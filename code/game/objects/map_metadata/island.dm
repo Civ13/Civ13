@@ -20,10 +20,7 @@
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(BRITISH = 0.5, PIRATES = 0.5)
-	songs = list(
-		"Fish in the Sea:1" = 'sound/music/shanties/fish_in_the_sea.ogg',
-		"Spanish Ladies:1" = 'sound/music/shanties/spanish_ladies.ogg',
-		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
+	//songs = list()
 	meme = TRUE
 	battle_name = "Skull Island"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"

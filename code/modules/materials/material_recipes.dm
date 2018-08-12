@@ -16,8 +16,6 @@ var/list/engineer_exclusive_recipe_types = null
 	//	recipes += new/datum/stack_recipe("[display_name] door", /obj/machinery/door/unpowered/simple, 10, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] barricade", /obj/structure/barricade, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] stool", /obj/item/weapon/stool, 3, _one_per_turf = TRUE, _on_floor = TRUE, _supplied_material = "[name]")
-		recipes += new/datum/stack_recipe("horizontal [display_name] barrier", /obj/structure/barricade/horizontal, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE, _supplied_material = "[name]")
-		recipes += new/datum/stack_recipe("vertical [display_name] barrier", /obj/structure/barricade/vertical, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		if (!istype(src, /material/wood))
 			recipes += new/datum/stack_recipe("[display_name] chair", /obj/structure/bed/chair, 3, _one_per_turf = TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] bed", /obj/structure/bed, 4, _one_per_turf = TRUE, _on_floor = TRUE, _supplied_material = "[name]")
@@ -62,6 +60,9 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe("door", /obj/structure/simple_door/key_door/anyone/wood, 5, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 7, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("window frame", /obj/structure/window_frame, 3, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("horizontal wood barrier", /obj/structure/barricade/horizontal, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("vertical wood barrier", /obj/structure/barricade/vertical, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
+
 
 /material/rope/generate_recipes()
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))

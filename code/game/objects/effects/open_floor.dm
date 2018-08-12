@@ -3,18 +3,35 @@
 	icon = 'icons/turf/areas.dmi'
 	icon_state = "black"
 	density = FALSE
-	floorbelowz = locate(x,y,z)
 
 /turf/broken_floor/New()
 	..()
 	if (z > 1)
 		floorbelowz = locate(x, y, z-1)
+	else
+		floorbelowz = locate(x, y, 1)
 
-/turf/broken_floor/Enter(atom/A)
+/turf/broken_floor/Enter(atom/movable/A)
+	..()
 	if (floorbelowz)
 		if (istype(A, /mob))
-			A.z = floorbelowz.z
-		if (istype(A, /obj/item/projectile) ||istype(A, /obj/covers))
-			return
-		else
-			A.z = floorbelowz.z
+			A.z -= 1
+			A.visible_message("\[A] falls from the deck above and slams into \the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch")
+			if (istype(A, /mob/living/carbon/human))
+				playsound(A.loc, 'sound/effects/gore/fallsmash.ogg', 50, TRUE)
+				var/mob/living/carbon/human/H = A
+				var/damage = 10
+				H.apply_damage(rand(0, damage), BRUTE, "head")
+				H.apply_damage(rand(0, damage), BRUTE, "chest")
+				H.apply_damage(rand(0, damage), BRUTE, "l_leg")
+				H.apply_damage(rand(0, damage), BRUTE, "r_leg")
+				H.apply_damage(rand(0, damage), BRUTE, "l_arm")
+				H.apply_damage(rand(0, damage), BRUTE, "r_arm")
+				H.Stun(3)//.
+				H.updatehealth()//.
+		if (istype(A, /obj))
+			if (istype(A, /obj/item/projectile) ||istype(A, /obj/covers))
+				return
+			else
+				A.z -= 1
+				A.visible_message("\The [A] falls from the deck above and slams into the floor!", "You hear something slam into the deck.")

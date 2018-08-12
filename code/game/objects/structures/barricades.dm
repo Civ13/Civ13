@@ -109,10 +109,19 @@
 /obj/structure/barricade/horizontal
 	name = "wood barrier"
 	desc = "A wood wall made of vines and logs roped together."
+	icon_state = "woodbarricade_horizontal"
 
 /obj/structure/barricade/vertical
 	name = "wood barrier"
 	desc = "A wood wall made of vines and logs roped together."
+	icon_state = "woodbarricade_vertical"
+
+/obj/structure/barricade/vertical/New()
+	..()
+	icon_state = "woodbarricade_vertical"
+/obj/structure/barricade/horizontal/New()
+	..()
+	icon_state = "woodbarricade_horizontal"
 // steel barricades
 
 /obj/structure/barricade/steel

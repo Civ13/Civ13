@@ -196,13 +196,6 @@
 				H << "<span class = 'warning'>You need a ceiling to make a noose.</span>"
 				return
 
-
-	else if (engineer_exclusive_recipe_types.Find(recipe.result_type))
-		if (H)
-			if (H.getStatCoeff("engineering") < GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
-				H << "<span class = 'notice'>You have no idea of how to build this.</span>"
-				return
-
 	if (recipe.time)
 		var/buildtime = recipe.time
 		if (H)
