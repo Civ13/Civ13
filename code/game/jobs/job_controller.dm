@@ -139,7 +139,7 @@ var/global/datum/controller/occupations/job_master
 	var/spawnpoint = pick(turfs)
 	if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
 		H.loc = spawnpoint
-		if (map.ID == MAP_ROBUSTA) // if its the DM map, remove the "used" spawnpoint from the list
+		if (map.ID == MAP_BATTLEROYALE) // if its the DM map, remove the "used" spawnpoint from the list
 			latejoin_turfs[spawn_location] -= spawnpoint
 
 	// make sure we have the right ambience for our new location
