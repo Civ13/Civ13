@@ -293,22 +293,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			. += "</li><li>"
 			if (admin)
 				. += "\t(<a href='?src=\ref[src];vote=toggle_restart'>[config.allow_vote_restart?"Allowed":"Disallowed"]</a>)"
-		//	. += "</li><li>"
-			//gamemode
-			/*
-			if (trialmin || config.allow_vote_mode)
-				. += "<a href='?src=\ref[src];vote=gamemode'>GameMode</a>"
-			else
-				. += "<font color='grey'>GameMode (Disallowed)</font>"
-			if (trialmin)
-				. += "\t(<a href='?src=\ref[src];vote=toggle_gamemode'>[config.allow_vote_mode?"Allowed":"Disallowed"]</a>)"
-			. += "</li><li>"
-			//extra antagonists
-			if (!antag_add_failed && config.allow_extra_antags)
-				. += "<a href='?src=\ref[src];vote=add_antagonist'>Add Antagonist Type</a>"
-			else
-				. += "<font color='grey'>Add Antagonist Type (Disallowed)</font>"
-			. += "</li>"*/
 			//custom
 			if (admin)
 				. += "<li><a href='?src=\ref[src];vote=custom'>Custom</a></li>"
@@ -336,12 +320,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if ("restart")
 				if (config.allow_vote_restart || usr.client.holder)
 					initiate_vote("restart",usr.key)
-		/*	if ("gamemode")
-				if (config.allow_vote_mode || usr.client.holder)
-					initiate_vote("gamemode",usr.key)
-			if ("add_antagonist")
-				if (config.allow_extra_antags)
-					initiate_vote("add_antagonist",usr.key)*/
 			if ("custom")
 				if (usr.client.holder)
 					initiate_vote("custom",usr.key)

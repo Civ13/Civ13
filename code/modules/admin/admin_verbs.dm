@@ -107,7 +107,6 @@ var/list/admin_verbs_server = list(
 	/client/proc/ToRban,
 	/datum/admins/proc/startnow,
 	/datum/admins/proc/restart,
-	/datum/admins/proc/jojorestart,
 	/datum/admins/proc/delay,
 	/client/proc/trigger_roundend,
 	/client/proc/toggle_round_ending,

@@ -403,27 +403,6 @@ proc/admin_notice(var/message, var/rights)
 		sleep(50)
 		world.Reboot()
 
-/datum/admins/proc/jojorestart()
-	set category = "Server"
-	set name = "Jojo Restart"
-	set desc="Restarts the world with to be continued memes"
-	if (!usr.client.holder)
-		return
-	var/confirm = WWinput(usr, "Restart the game world?", "Restart", "Yes", list("Yes", "Cancel"))
-	if (confirm == "Cancel")
-		return
-	if (processes.mapswap && ticker.restarting_is_very_bad && serverswap.Find("snext"))
-		var/unconfirm = WWinput(usr, "Mapswap is in progress. Restarting now may break the linked server. Continue?", "Warning", "No", list("No", "Yes"))
-		if (unconfirm == "No")
-			return
-	if (confirm == "Yes")
-		config.jojoreference = TRUE
-		world << "<span class='danger'>Restarting world!</span> <span class='notice'>Initiated by <b>[usr.client.holder.fakekey ? "Admin" : usr.key]</b>!</span>"
-		log_admin("[key_name(usr)] initiated a reboot.")
-		sleep(50)
-		world.Reboot()
-
-
 /datum/admins/proc/announce()
 	set category = "Special"
 	set name = "Announce"

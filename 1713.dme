@@ -265,6 +265,7 @@
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
+#include "code\game\objects\map_metadata\supply_raid.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\structures\barricades.dm"
 #include "code\game\objects\structures\bedsheet_bin.dm"
