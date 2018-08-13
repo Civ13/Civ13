@@ -4,7 +4,7 @@
 		MAP_NAVAL = 0,
 		MAP_ISLAND = 0,
 //		MAP_VOYAGE = 10,
-//		MAP_ROBUSTA = 0,
+		MAP_ROBUSTA = 10,
 //		MAP_BATTLEROYALE = 20,
 	)
 
