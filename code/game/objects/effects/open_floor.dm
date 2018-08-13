@@ -37,9 +37,10 @@
 				H.Stun(3)
 				H.updatehealth()
 
-/*		if (istype(A, /obj) && !(istype(A, /obj/item/projectile) || !(istype(A, /obj/covers)))
-			A.z -= 1
-			A.visible_message("\The [A] falls from the deck above and slams into the floor!", "You hear something slam into the deck."
-		if (istype(A, /obj/item/projectile) || istype(A, /obj/covers))
-			return
-*/
+		if (istype(A, /obj))
+			if (istype(A, /obj/item/projectile) || istype(A, /obj/covers))
+				return
+			else
+				A.z -= 1
+				A.visible_message("\The [A] falls from the deck above and slams into the floor!", "You hear something slam into the deck.")
+
