@@ -112,7 +112,7 @@
 "ch" = (/obj/structure/barricade/ship/wood/a8,/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
 "ci" = (/obj/structure/closet/cabinet{anchored = 1; desc = "Something looks strange in this bush..."; icon = 'icons/obj/wild.dmi'; icon_closed = "small_bush"; icon_opened = "small_bush"; icon_state = "small_bush"; name = "weird bush"; opened = 1},/turf/floor/dirt,/area/caribbean/island)
 "cj" = (/obj/structure/barricade/ship/wood/port0,/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
-"ck" = (/obj/structure/barricade/ship/wood/port0,/obj/structure/closet/crate/cannonball,/turf/floor/ship/wood_ship/south,/area/caribbean/british/ship{name = "British Ship"})
+"ck" = (/turf/floor/plating/beach/water/deep,/obj/structure/barricade/ship/wood/port2,/turf/floor/ship/wood_ship/south,/area/caribbean/british/ship{name = "British Ship"})
 "cl" = (/obj/structure/barricade/ship/wood/port0,/obj/item/flashlight/lantern/on/anchored,/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
 "cm" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/island)
 "cn" = (/obj/structure/barricade/ship/wood/a3,/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
@@ -124,7 +124,6 @@
 "ct" = (/obj/structure/bookcase,/obj/effect/floor_decal/spline/fancy/wood{dir = 5},/turf/floor/carpet,/area/caribbean/british/ship{name = "British Ship"})
 "cu" = (/obj/structure/barricade/ship/wood/a12,/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
 "cv" = (/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
-"cw" = (/obj/structure/cannon{dir = 1},/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
 "cx" = (/obj/structure/multiz/stairs{dir = 8},/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
 "cy" = (/obj/item/violin,/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
 "cz" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/ship/wood_ship,/area/caribbean/british/ship{name = "British Ship"})
@@ -307,8 +306,6 @@
 "fU" = (/mob/living/simple_animal/mouse/gray,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "fV" = (/mob/living/simple_animal/parrot,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "fW" = (/mob/living/simple_animal/mouse/white,/turf/floor/plating/grass/wild,/area/caribbean/island)
-"fX" = (/turf/floor/plating/beach/water/deep,/obj/structure/barricade/ship/wood/port2,/turf/floor/ship/wood_ship/south,/area/caribbean/british/ship{name = "British Ship"})
-"fY" = (/turf/floor/plating/beach/water/deep,/obj/structure/barricade/ship/wood/port2,/obj/structure/closet/crate/cannonball,/turf/floor/ship/wood_ship/south,/area/caribbean/british/ship{name = "British Ship"})
 
 (1,1,1) = {"
 asbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZaoaobZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZbZahbZbZbZbZbZbZbZbZbZaoaoaoaobZbZbZbZbZbZbZbZbZbZaoaoaoaobZaoaobZbZbZbZbZbZbZbZbZbZbZcacaasasasasasasasasasasas
@@ -326,7 +323,7 @@ asbZbZaoaoaoababaeababababbSababababababaoababababababccabababaeabababaeaeabamcc
 asbZbZaoaoaoaoabaiabapabababaeabaeaeababaeababaeababcTababcTabababababaeabababababaiabababaJababababaeakakbIabababbFaRbJbKaraDaLbGbEbGbGaNbEaDaDararaDaDaLbLaDaDaDaKanaoaabZbZbZbZbZbZasasasasasasasasas
 asbZbZaoaoaoaoababababcTabaiabababccababdxababababcdabababababaeababakakabakabababaecTamaiaYabaeabakakabababababaeabaRbMbMaDaLaDaDaDbNaDaDaDaDaDbNaLaKaDaDaDananananaoaoaabZbZbZbZbZbZasasasasasasasasas
 asasbZaoaoaoaoabababcTcTababaoabababababdaabaecUababaoababcUababakabakakabakakaiabababababaJabakakabababababaiabaiabaRaDbObObPbObOaKbObObObObOaKbObObObOananananananaoaaaabZbZbZbZasasasasasasasasasasas
-asasbZaoaoaoaoabbSaeababababababababcTfUabababababacabababaeababakccamabaiabakababababababbQaeakadababaeabaeabafabagbRaDbTanbUbVbRbRananbVananananbVbWananananananbXaoadaabZbZbZbZasasasasasasasasasasas
+asasbZaoaoaoaoabbSaeababababababababcTfUabababababacabababaeababakccamabaiabakababababababbQaeakadababaeabaeabafabagbRaDbTanbUbVbRbRaDanananaDananbVbWananananananbXaoadaabZbZbZbZasasasasasasasasasasas
 asbZbZaoaoaoaoabababccabaeaeababccaeabababababababababaeapababakabccababababakakabaeabaeambYakakadadabadabacabadadadadadadadadadadadadadaoaoaoaoaoaoaoaoaoaoaoaoaoaoaoadaabZbZbZbZasasasasasasasasasasas
 asbZbZbZaoaoaoaoababababcTababfVabaiababccabaeabababababapababakabfWabaeaeabababakakakakcibYadadadadadadadadadadadadadadbmadadadadaoadadadaoaoaoadadadadaoaoaoaoaoadadadadbZbZbZbZbZbZasasasasasasasasas
 asasbZbZaoaoaoabaeamabababababababcdcUabababalabababaeabakakabababababababababababaoacababaYabadcWcWadadadadadaoadadaoaoaoaoaoaoaoaoaoaoadadadadadadadadadaoaoadadadadadadbZbZbZbZbZbZasasasasasasasasas
@@ -344,8 +341,8 @@ asbZaoaoaoaoaoacababaiababaeacabababababababcUakccababababcUababababababccabacab
 asbZaoaoaoababababaeababaiamababababaeababababakabaiabaeabababaeaeaeaiaeabababaoaoadaobZbZajbZbZbZbZasasbZcbcbcbbZasasasasasasasasasasasasasbZbZbZbZbZbZbZbZbZbZadadadbZbZbZbZbZbZbZbZasasasasasasasasas
 asbZaoaoaoaoaoabababababababdxabcTaeababaeababakakabaeaeabfUababaeabapabcTabababaoaoaobZbZajcbcbbZasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasbZbZbZbZbZbZbZbZbZbZasasasasasasasasasasas
 asbZbZaoaoaoaobSabaeababababababaeabababamaeabakakababcTababcTabababababcTabaeaoaoaoaobZbZahbZbZbZasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasasbZasbZbZbZasasasasasasasasasasas
-asasbZaoaoaoaoabababababaeababababababcTabababakdvababcdababalabfVaeababababaicUaoaocbbZasdwbZasasasasascfcgcgcgchfXcjfXcjfXckfXclfXcjfYcjfXclcncgcgcocpasasasasasasasasasasasasasasasasasasasasasasasas
-asasbZbZaoaoababamababaiababaeababaeabababcUakakababababababamababababababababaoadaobZbZasdwasasasasbsascqcrcsctcucvcvcvcvcwcvcvcvcwcvcvcvcwcvcxcvcyczcAcpasasasasasasasasasasasasasasasasasasasasasasas
+asasbZaoaoaoaoabababababaeababababababcTabababakdvababcdababalabfVaeababababaicUaoaocbbZasdwbZasasasasascfcgcgcgchckcjckcjckcjckclckcjckcjckclcncgcgcocpasasasasasasasasasasasasasasasasasasasasasasasas
+asasbZbZaoaoababamababaiababaeababaeabababcUakakababababababamababababababababaoadaobZbZasdwasasasasbsascqcrcsctcucvcvcvcvcvcvcvcvcvcvcvcvcvcvcxcvcyczcAcpasasasasasasasasasasasasasasasasasasasasasasas
 asbZbZaoaoaoababababaeababbSababababaeabababakakabaiaeabdaababababcTcTabaeaeababaoaobZbZbZdwasasasasasascqbtcCbvcuczcvcvcvcvcvcvcvcvcvcvcvcvcvcxcvcvcvcvcAcpasasasasasasasasasasasasasasasasasasasasasas
 asasbZaoaoaoabacababapabfVamabdaabapababamababakccababababcTabcUababaiababababaiaoaoaobZbZahbZasasasasascqcBcEbwcFcvcvcGcvcvcvcvcvcvcvcvcGcvcvcxcvcvcvcvcvcHasasasasasasasasasasasasasasasasasasasasasas
 asasahajajajaYaJdzaJaJaJdzaJaJaJaJdAaJdAaJaJaJbYbYaJaYaJaJaJdBaJdDaYaYaJbQaJaJajajajajajajahahahahasasascqcIcJcDcuczcvcvcvcvcvcvcvcvcvcvcvcvcvcxcvcvcvcvcKcLasasasasasasasasasasasasasasasasasasasasasas
