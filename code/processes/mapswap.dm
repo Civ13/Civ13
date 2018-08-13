@@ -6,6 +6,7 @@
 //		MAP_VOYAGE = 10,
 		MAP_ROBUSTA = 10,
 //		MAP_BATTLEROYALE = 20,
+		MAP_SUPPLY_RAID = 0,
 	)
 
 	var/ready = TRUE

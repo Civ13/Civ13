@@ -23,7 +23,7 @@
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
 	battle_name = "Supply Raid"
-	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the combat starts.</font>"
+	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the combat starts.</font>"
 
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
@@ -32,10 +32,10 @@ obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	return .
 /obj/map_metadata/supply_raid/british_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/supply_raid/pirates_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/supply_raid/reinforcements_ready()
 	return (british_can_cross_blocks() && pirates_can_cross_blocks())
