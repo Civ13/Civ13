@@ -232,7 +232,7 @@
 "ex" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
 "ey" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "ez" = (/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
-"eA" = (/obj/item/weapon/reagent_containers/food/drinks/teapot,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
+"eA" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eC" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
 "eF" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/plating/beach/water/deep,/area/caribbean/sea/sea)
 "eG" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)

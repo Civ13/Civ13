@@ -240,7 +240,7 @@
 "eF" = (/mob/living/simple_animal/mouse/white,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "eG" = (/mob/living/simple_animal/mouse/brown,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "eH" = (/mob/living/simple_animal/mouse/gray,/turf/floor/plating/beach/sand,/area/caribbean/island)
-"eI" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
+"eI" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eJ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eK" = (/mob/living/simple_animal/monkey,/turf/floor/plating/grass/wild,/area/caribbean/island)
 "eL" = (/obj/structure/sign/flag/medical,/turf/wall/wood,/area/caribbean/british/ship{name = "Second Deck"})

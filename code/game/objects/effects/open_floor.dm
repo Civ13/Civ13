@@ -10,9 +10,16 @@
 		floorbelowz = locate(x, y, z-1)
 	else
 		floorbelowz = locate(x, y, 1)
+//	var/mob/shadow/shadowcover = new/mob/shadow(src)
 
-/turf/broken_floor/Enter(atom/movable/A)
-	..()
+/turf/broken_floor/Entered(atom/movable/A)
+	. = ..()
+	if (!A || !A.loc)
+		return
+	if (isobserver(A))
+		return
+	if (istype(A, /mob/shadow))
+		return
 	if (floorbelowz)
 		if (istype(A, /mob))
 			A.z -= 1
@@ -27,11 +34,12 @@
 				H.apply_damage(rand(0, damage), BRUTE, "r_leg")
 				H.apply_damage(rand(0, damage), BRUTE, "l_arm")
 				H.apply_damage(rand(0, damage), BRUTE, "r_arm")
-				H.Stun(3)//.
-				H.updatehealth()//.
-		if (istype(A, /obj))
-			if (istype(A, /obj/item/projectile) ||istype(A, /obj/covers))
-				return
-			else
-				A.z -= 1
-				A.visible_message("\The [A] falls from the deck above and slams into the floor!", "You hear something slam into the deck.")
+				H.Stun(3)
+				H.updatehealth()
+
+/*		if (istype(A, /obj) && !(istype(A, /obj/item/projectile) || !(istype(A, /obj/covers)))
+			A.z -= 1
+			A.visible_message("\The [A] falls from the deck above and slams into the floor!", "You hear something slam into the deck."
+		if (istype(A, /obj/item/projectile) || istype(A, /obj/covers))
+			return
+*/
