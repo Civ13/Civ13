@@ -13,14 +13,15 @@ var/process/open_floor/OS2_controller = null
 	for (var/turf/floor/broken_floor/T in open_floors)
 		T.update_icon()
 
+//to create the "shadow" over the previous floor
 /obj/effect/overlay/overfloor
 	name = "Hole"
-	desc = "It's a hole in the floor. You can see whats below."
+	desc = "It's a hole in the floor. You can see what is below."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "black_open"
 	density = FALSE
-	layer = 5
 	anchored = TRUE
+	flags = NOBLUDGEON
 
 /turf/floor/broken_floor
 	name = "hole"
@@ -37,7 +38,7 @@ var/process/open_floor/OS2_controller = null
 //	var/mob/shadow/shadowcover = new/mob/shadow(src)
 	spawn(5)
 		update_icon()
-		new/obj/effect/overlay/overfloor(floorbelowz)
+		new/obj/effect/overlay/overfloor(src)
 
 /turf/floor/broken_floor/Entered(atom/movable/A)
 	. = ..()

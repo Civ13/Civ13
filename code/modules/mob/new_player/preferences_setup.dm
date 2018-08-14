@@ -244,7 +244,7 @@
 
 			switch (v)
 				if (2)
-					clothes = new /icon('icons/mob/uniform.dmi', "pirate1")
+					clothes = new /icon('icons/mob/uniform.dmi', "demo_pirate")
 				if (3)
 					clothes = new /icon('icons/mob/uniform.dmi', "demo_british")
 
