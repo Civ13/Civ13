@@ -114,3 +114,36 @@ var/process/open_floor/OS2_controller = null
 			over_OS2_darkness.plane = OVER_OPENSPACE_PLANE
 			over_OS2_darkness.layer = MOB_LAYER + 0.1
 			overlays += over_OS2_darkness
+
+/turf/floor/broken_floor/attackby(mob/user)
+	var/your_dir = "NORTH"
+
+	switch (user.dir)
+		if (NORTH)
+			your_dir = "NORTH"
+		if (SOUTH)
+			your_dir = "SOUTH"
+		if (EAST)
+			your_dir = "EAST"
+		if (WEST)
+			your_dir = "WEST"
+
+	var/covers_time = 80
+
+	if (ishuman(user))
+		var/mob/living/carbon/human/H = user
+		covers_time /= H.getStatCoeff("strength")
+		covers_time /= (H.getStatCoeff("engineering") * H.getStatCoeff("engineering"))
+
+	if (src == get_step(user, user.dir))
+		if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+			visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
+			if (do_after(user, covers_time, user.loc))
+				qdel(src)
+				new/obj/covers/repairedfloor(src, user)
+				visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
+				if (ishuman(user))
+					var/mob/living/carbon/human/H = user
+					H.adaptStat("engineering", 3)
+			return
+	return
