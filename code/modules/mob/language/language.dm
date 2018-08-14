@@ -217,7 +217,7 @@
 					else
 						H.real_name = H.client.prefs.pirate_name
 					H.name = H.real_name
-					H.gender = H.client.prefs.pirate_gender
+					H.gender = H.client.prefs.gender
 			else
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
@@ -226,7 +226,7 @@
 					else
 						H.real_name = H.client.prefs.english_name
 					H.name = H.real_name
-					H.gender = H.client.prefs.english_gender
+					H.gender = H.client.prefs.gender
 
 
 	if (!istype(new_language) || (new_language in languages))

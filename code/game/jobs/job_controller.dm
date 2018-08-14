@@ -21,6 +21,10 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CIVILIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[BRITISH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PIRATES]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[SPANISH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PORTUGUESE]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FRENCH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[INDIANS]
 	else
 		for (var/faction in map.faction_organization)
 			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
@@ -39,21 +43,6 @@ var/global/datum/controller/occupations/job_master
 	var/british_count = 0
 	var/civilian_count = 0
 */
-	var/current_british_squad = 1
-	var/current_pirates_squad = 1
-
-	var/british_squad_members = 0
-	var/british_squad_leaders = 0
-
-	var/pirates_squad_members = 0
-	var/pirates_squad_leaders = 0
-
-	var/british_squad_info[4]
-	var/pirates_squad_info[4]
-
-	var/british_officer_squad_info[4]
-	var/pirates_officer_squad_info[4]
-
 	var/civilians_were_enabled = FALSE
 
 	var/admin_expected_clients = 0
@@ -309,6 +298,14 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLatePirate"
 				if (BRITISH)
 					spawn_location = "JoinLateRN"
+				if (INDIANS)
+					spawn_location = "JoinLateIND"
+				if (PORTUGUESE)
+					spawn_location = "JoinLatePT"
+				if (FRENCH)
+					spawn_location = "JoinLateFR"
+				if (SPANISH)
+					spawn_location = "JoinLateSP"
 
 		// fixes spawning at 1,1,1
 
@@ -317,6 +314,14 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLatePirate"
 			else if (findtext(H.original_job.spawn_location, "JoinLateRN"))
 				spawn_location = "JoinLateRN"
+			else if (findtext(H.original_job.spawn_location, "JoinLateIND"))
+				spawn_location = "JoinLateIND"
+			else if (findtext(H.original_job.spawn_location, "JoinLatePT"))
+				spawn_location = "JoinLatePT"
+			else if (findtext(H.original_job.spawn_location, "JoinLateSP"))
+				spawn_location = "JoinLateSP"
+			else if (findtext(H.original_job.spawn_location, "JoinLateFR"))
+				spawn_location = "JoinLateFR"
 		H.job_spawn_location = spawn_location
 
 		#ifdef SPAWNLOC_DEBUG
@@ -436,11 +441,18 @@ var/global/datum/controller/occupations/job_master
 	var/pirates = alive_n_of_side(PIRATES)
 	var/british = alive_n_of_side(BRITISH)
 	var/civilians = alive_n_of_side(CIVILIAN)
-
+	var/portuguese = alive_n_of_side(PORTUGUESE)
+	var/french = alive_n_of_side(FRENCH)
+	var/indians = alive_n_of_side(INDIANS)
+	var/spanish = alive_n_of_side(SPANISH)
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
 	var/max_pirates = INFINITY
 	var/max_civilians = INFINITY
+	var/max_spanish = INFINITY
+	var/max_french = INFINITY
+	var/max_portuguese = INFINITY
+	var/max_indians = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -456,6 +468,18 @@ var/global/datum/controller/occupations/job_master
 
 		if (map.faction_distribution_coeffs.Find(BRITISH))
 			max_british = ceil(relevant_clients * map.faction_distribution_coeffs[BRITISH])
+
+		if (map.faction_distribution_coeffs.Find(SPANISH))
+			max_spanish = ceil(relevant_clients * map.faction_distribution_coeffs[SPANISH])
+
+		if (map.faction_distribution_coeffs.Find(PORTUGUESE))
+			max_portuguese = ceil(relevant_clients * map.faction_distribution_coeffs[PORTUGUESE])
+
+		if (map.faction_distribution_coeffs.Find(FRENCH))
+			max_french = ceil(relevant_clients * map.faction_distribution_coeffs[FRENCH])
+
+		if (map.faction_distribution_coeffs.Find(INDIANS))
+			max_indians = ceil(relevant_clients * map.faction_distribution_coeffs[INDIANS])
 
 	// fixes pirates-biased autobalance on verylow pop - Kachnov
 	if (map && relevant_clients <= 7)
@@ -482,6 +506,30 @@ var/global/datum/controller/occupations/job_master
 			if (pirates_forceEnabled)
 				return FALSE
 			if (pirates >= max_pirates)
+				return TRUE
+
+		if (INDIANS)
+			if (indians_forceEnabled)
+				return FALSE
+			if (indians >= max_indians)
+				return TRUE
+
+		if (FRENCH)
+			if (french_forceEnabled)
+				return FALSE
+			if (french >= max_french)
+				return TRUE
+
+		if (SPANISH)
+			if (spanish_forceEnabled)
+				return FALSE
+			if (spanish >= max_spanish)
+				return TRUE
+
+		if (PORTUGUESE)
+			if (portuguese_forceEnabled)
+				return FALSE
+			if (portuguese >= max_portuguese)
 				return TRUE
 
 	return FALSE

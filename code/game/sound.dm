@@ -135,7 +135,18 @@ var/list/charge_sounds_eng = list(
 var/list/charge_sounds_pir = list(
 	'sound/effects/emotes/charge_pir.ogg',
 	'sound/effects/emotes/charge_pir2.ogg',)
-
+var/list/charge_sounds_ind = list(
+	'sound/effects/emotes/charge_eng.ogg',
+	'sound/effects/emotes/god_save_the_king.ogg',)
+var/list/charge_sounds_pt = list(
+	'sound/effects/emotes/charge_eng.ogg',
+	'sound/effects/emotes/god_save_the_king.ogg',)
+var/list/charge_sounds_fr = list(
+	'sound/effects/emotes/charge_eng.ogg',
+	'sound/effects/emotes/god_save_the_king.ogg',)
+var/list/charge_sounds_sp = list(
+	'sound/effects/emotes/charge_eng.ogg',
+	'sound/effects/emotes/god_save_the_king.ogg',)
 // pain, etc sounds from Interbay
 
 
@@ -311,6 +322,13 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_pir)
 			if ("charge_CIVILIAN")
 				soundin = pick(charge_sounds_eng)
-
+			if ("charge_INDIANS")
+				soundin = pick(charge_sounds_ind)
+			if ("charge_PORTUGUESE")
+				soundin = pick(charge_sounds_pt)
+			if ("charge_FRENCH")
+				soundin = pick(charge_sounds_fr)
+			if ("charge_SPANISH")
+				soundin = pick(charge_sounds_sp)
 
 	return soundin

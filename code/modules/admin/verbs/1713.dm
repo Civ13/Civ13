@@ -159,6 +159,10 @@ var/pirates_toggled = TRUE
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
+var/portuguese_forceEnabled = FALSE
+var/spanish_forceEnabled = FALSE
+var/french_forceEnabled = FALSE
+var/indians_forceEnabled = FALSE
 
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"

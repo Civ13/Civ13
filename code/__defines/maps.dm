@@ -11,5 +11,3 @@
 // attacking an island
 
 #define MODE_WAR 1
-#define MODE_BRITISH_OCCUPATION 2
-#define MODE_PIRATES_OCCUPATION 3

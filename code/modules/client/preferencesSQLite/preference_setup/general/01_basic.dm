@@ -5,7 +5,7 @@
 	name = "Basic"
 	sort_order = 1
 	var/list/valid_player_genders = list(MALE, FEMALE)
-	var/list/valid_second_languages = list(GERMAN, RUSSIAN, ITALIAN, UKRAINIAN)
+	var/list/valid_second_languages = list(ENGLISH, FRENCH, SPANISH, PORTUGUESE)
 
 datum/preferences/proc/set_biological_gender(var/set_gender)
 	gender = set_gender
@@ -16,8 +16,6 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	var/datum/species/S = all_species[pref.species ? pref.species : "Human"]
 	pref.age			= sanitize_integer(pref.age, S.min_age, S.max_age, initial(pref.age))
 	pref.gender 		= sanitize_inlist(pref.gender, valid_player_genders, pick(valid_player_genders))
-	pref.pirate_gender 		= sanitize_inlist(pref.pirate_gender, valid_player_genders, pick(valid_player_genders))
-	pref.english_gender 		= sanitize_inlist(pref.english_gender, valid_player_genders, pick(valid_player_genders))
 	pref.body_build 	= sanitize_inlist(pref.body_build, list("Slim", "Default", "Fat"), "Default")
 	pref.identifying_gender = (pref.identifying_gender in all_genders_define_list) ? pref.identifying_gender : pref.gender
 	pref.real_name		= sanitize_name(pref.real_name, pref.species)
@@ -29,12 +27,12 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 
 	pref.pirate_name		= sanitize_name(pref.pirate_name, pref.species)
 	if (!pref.pirate_name)
-		pref.pirate_name	= random_pirate_name(pref.pirate_gender, pref.species)
+		pref.pirate_name	= random_pirate_name(pref.gender, pref.species)
 
 
 	pref.english_name		= sanitize_name(pref.english_name, pref.species)
 	if (!pref.english_name)
-		pref.english_name	= random_english_name(pref.english_gender, pref.species)
+		pref.english_name	= random_english_name(pref.gender, pref.species)
 	/*										*/
 
 //	pref.spawnpoint		= sanitize_inlist(pref.spawnpoint, spawntypes, initial(pref.spawnpoint))
@@ -63,10 +61,6 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<br><br>"
 	// gender
 	. += "<b>Default Gender:</b> <a href='?src=\ref[src];gender=1'><b>[capitalize(lowertext(pref.gender))]</b></a><br>"
-	. += "<br>"
-	. += "<b>Pirate Gender:</b> <a href='?src=\ref[src];gender_pirate=1'><b>[capitalize(lowertext(pref.pirate_gender))]</b></a><br>"
-	. += "<br>"
-	. += "<b>British Gender:</b> <a href='?src=\ref[src];gender_english=1'><b>[capitalize(lowertext(pref.english_gender))]</b></a><br>"
 	. += "<br>"
 	. += "<br><br>"
 
@@ -112,7 +106,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 				return TOPIC_NOACTION
 
 	else if (href_list["random_name_pirate"])
-		pref.pirate_name = random_pirate_name(pref.pirate_gender, pref.species)
+		pref.pirate_name = random_pirate_name(pref.gender, pref.species)
 		return TOPIC_REFRESH
 
 	else if (href_list["always_random_name_pirate"])
@@ -132,7 +126,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 				return TOPIC_NOACTION
 
 	else if (href_list["random_name_english"])
-		pref.english_name = random_english_name(pref.english_gender, pref.species)
+		pref.english_name = random_english_name(pref.gender, pref.species)
 		return TOPIC_REFRESH
 
 	else if (href_list["always_random_name_english"])
@@ -141,19 +135,6 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 
 	else if (href_list["gender"])
 		pref.gender = next_in_list(pref.gender, valid_player_genders)
-		return TOPIC_REFRESH
-
-
-	else if (href_list["gender_pirate"])
-		pref.pirate_gender = next_in_list(pref.pirate_gender, valid_player_genders)
-		if ((input(user, "Choose new Pirate name that corresponds with this gender?") in list("Yes", "No")) == "Yes")
-			pref.pirate_name = random_pirate_name(pref.pirate_gender, pref.species)
-		return TOPIC_REFRESH
-
-	else if (href_list["gender_english"])
-		pref.english_gender = next_in_list(pref.english_gender, valid_player_genders)
-		if ((input(user, "Choose new English name that corresponds with this gender?") in list("Yes", "No")) == "Yes")
-			pref.english_name = random_english_name(pref.english_gender, pref.species)
 		return TOPIC_REFRESH
 
 

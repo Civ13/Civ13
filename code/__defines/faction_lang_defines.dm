@@ -1,17 +1,17 @@
-//factiosn only
+//factions only
 #define PIRATES "PIRATES"
-#define BRITISH "BRITISH"
 #define CIVILIAN "CIVILIAN"
-#define PARTISAN "PARTISAN"
+#define INDIANS "INDIANS"
+#define BRITISH "BRITISH"
 
 // used for languages only
-#define GERMAN "GERMAN"
-#define RUSSIAN "RUSSIAN"
-#define POLISH "POLISH"
-#define UKRAINIAN "UKRAINIAN"
 #define ENGLISH "ENGLISH"
-#define JAPANESE "JAPANESE"
-#define ITALIAN "ITALIAN"
+#define CARIB "CARIB"
+
+//used for languages & factions
+#define SPANISH "SPANISH"
+#define PORTUGUESE "PORTUGUESE"
+#define FRENCH "FRENCH"
 
 /proc/faction_const2name(constant)
 

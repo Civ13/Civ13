@@ -818,3 +818,31 @@
 	H.setStat("shotgun", STAT_NORMAL)
 
 	return TRUE
+
+/datum/job/spanish
+	faction = "Station"
+
+/datum/job/spanish/give_random_name(var/mob/living/carbon/human/H)
+	H.name = H.species.get_random_pirate_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/portuguese
+	faction = "Station"
+
+/datum/job/portuguese/give_random_name(var/mob/living/carbon/human/H)
+	H.name = H.species.get_random_pirate_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/french
+	faction = "Station"
+
+/datum/job/portuguese/give_random_name(var/mob/living/carbon/human/H)
+	H.name = H.species.get_random_pirate_name(H.gender)
+	H.real_name = H.name
+
+/datum/job/french
+	faction = "Station"
+
+/datum/job/indians/give_random_name(var/mob/living/carbon/human/H)
+	H.name = H.species.get_random_pirate_name(H.gender)
+	H.real_name = H.name

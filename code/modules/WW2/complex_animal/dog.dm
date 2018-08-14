@@ -409,8 +409,6 @@ s
 	switch (H.original_job.base_type_flag())
 		if (CIVILIAN)
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
-		if (PARTISAN)
-			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
 		if (BRITISH)
 			. = faction == PIRATES
 		if (PIRATES)

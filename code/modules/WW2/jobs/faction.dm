@@ -11,13 +11,15 @@
 
 #define TEAM_EN 1
 #define TEAM_PI 2
+#define TEAM_SP 3
+#define TEAM_PT 4
+#define TEAM_FR 5
+#define TEAM_IN 6
 
-var/global/spies[2]
-var/global/officers[2]
-var/global/commanders[2]
-var/global/squad_leaders[2]
-var/global/soldiers[2]
-var/global/squad_members[2]
+var/global/officers[6]
+var/global/commanders[6]
+var/global/soldiers[6]
+var/global/squad_members[6]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -42,6 +44,41 @@ var/global/squad_members[2]
 
 /datum/faction/pirates/base_type()
 	return "/datum/faction/pirates"
+
+// you appear to be a pirate to other pirates
+/datum/faction/spanish
+	icon_state = "spanish_basic"
+	title = "Spanish"
+	team = TEAM_SP
+
+/datum/faction/spanish/base_type()
+	return "/datum/faction/spanish"
+
+// you appear to be a pirate to other pirates
+/datum/faction/portuguese
+	icon_state = "portuguese_basic"
+	title = "Portuguese"
+	team = TEAM_PT
+
+/datum/faction/portuguese/base_type()
+	return "/datum/faction/portuguese"
+
+// you appear to be a pirate to other pirates
+/datum/faction/french
+	icon_state = "french_basic"
+	title = "French"
+	team = TEAM_FR
+
+/datum/faction/french/base_type()
+	return "/datum/faction/french"
+
+/datum/faction/indians
+	icon_state = "indian_basic"
+	title = "Indian"
+	team = TEAM_IN
+
+/datum/faction/indians/base_type()
+	return "/datum/faction/indians"
 
 // you appear to be a british soldier to all other brits
 /datum/faction/british

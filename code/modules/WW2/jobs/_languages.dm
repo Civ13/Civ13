@@ -3,22 +3,30 @@
 	var/list/additional_languages = list() // "Name" = probability between 1-100
 	var/SL_check_independent = FALSE // we're important, so we can spawn even if SLs are needed
 
-/datum/job/partisan
-	default_language = "Ukrainian"
-	additional_languages = list("German" = 50, "Russian" = 75)
+/datum/job/civilian
+	default_language = "English"
+	additional_languages = list("French" = 25, "Spanish" = 15, "Portuguese" = 10)
 
-/datum/job/partisan/civilian
-	default_language = "Ukrainian"
-	additional_languages = list("German" = 50, "Russian" = 75)
+/datum/job/civilian/portuguese
+	default_language = "Portuguese"
+	additional_languages = list("French" = 25, "Spanish" = 35, "English" = 10)
+
+/datum/job/civilian/spanish
+	default_language = "Portuguese"
+	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
+
 
 /datum/job/pirates
 	default_language = "English"
-	additional_languages = list("German" = 15, "Japanese" = 5)
+	additional_languages = list("French" = 25, "Spanish" = 35, "Portuguese" = 25)
 
 /datum/job/british
 	default_language = "English"
-	additional_languages = list("German" = 20)
+	additional_languages = list("French" = 15, "Spanish" = 15, "Portuguese" = 5)
 
+/datum/job/indian
+	default_language = "Carib"
+	additional_languages = list("French" = 25, "Spanish" = 25, "Portuguese" = 25, "English" = 25)
 
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
@@ -50,4 +58,20 @@
 		if (PIRATES, BRITISH)
 			for (var/datum/language/english/E in H.languages)
 				H.default_language = E
+				break
+		if (SPANISH)
+			for (var/datum/language/spanish/S in H.languages)
+				H.default_language = S
+				break
+		if (PORTUGUESE)
+			for (var/datum/language/portuguese/P in H.languages)
+				H.default_language = P
+				break
+		if (FRENCH)
+			for (var/datum/language/french/F in H.languages)
+				H.default_language = F
+				break
+		if (INDIANS)
+			for (var/datum/language/carib/C in H.languages)
+				H.default_language = C
 				break

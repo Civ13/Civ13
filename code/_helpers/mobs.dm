@@ -381,6 +381,74 @@ Proc for attack log creation, because really why not
 
 	return british
 
+/proc/getportuguesemobs(var/alive = FALSE)
+	var/list/portuguese = list()
+	for (var/mob/living/carbon/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/portuguese))
+			continue
+		if (istype(H, /mob/living/carbon/human/corpse))
+			continue
+		portuguese += H
+
+	return portuguese
+
+/proc/getspanishmobs(var/alive = FALSE)
+	var/list/spanish = list()
+	for (var/mob/living/carbon/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/spanish))
+			continue
+		if (istype(H, /mob/living/carbon/human/corpse))
+			continue
+		spanish += H
+
+	return spanish
+
+/proc/getfrenchmobs(var/alive = FALSE)
+	var/list/french = list()
+	for (var/mob/living/carbon/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/french))
+			continue
+		if (istype(H, /mob/living/carbon/human/corpse))
+			continue
+		french += H
+
+	return french
+
+/proc/getindiansmobs(var/alive = FALSE)
+	var/list/indians = list()
+	for (var/mob/living/carbon/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/indians))
+			continue
+		if (istype(H, /mob/living/carbon/human/corpse))
+			continue
+		indians += H
+
+	return indians
+
 /proc/getpiratesmobs(var/alive = FALSE)
 	var/list/pirates = list()
 	for (var/mob/living/carbon/human/H in mob_list)
@@ -402,7 +470,7 @@ Proc for attack log creation, because really why not
 /proc/getcivilians(var/alive = FALSE)
 	var/list/civilians = list()
 	for (var/mob/living/carbon/human/H in mob_list)
-		if (istype(H.original_job, /datum/job/partisan/civilian))
+		if (istype(H.original_job, /datum/job/civilian))
 			civilians += H
 	return civilians
 
@@ -420,6 +488,14 @@ Proc for attack log creation, because really why not
 			mobs = getpiratesmobs(0)
 		if (CIVILIAN)
 			mobs = getcivilians(0)
+		if (INDIANS)
+			mobs = getindiansmobs(0)
+		if (FRENCH)
+			mobs = getfrenchmobs(0)
+		if (SPANISH)
+			mobs = getspanishmobs(0)
+		if (PORTUGUESE)
+			mobs = getportuguesemobs(0)
 
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)

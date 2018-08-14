@@ -40,7 +40,14 @@
 		. = PIRATES
 	else if (istype(src, /datum/job/british))
 		. = BRITISH
-
+	else if (istype(src, /datum/job/french))
+		. = FRENCH
+	else if (istype(src, /datum/job/portuguese))
+		. = PORTUGUESE
+	else if (istype(src, /datum/job/spanish))
+		. = SPANISH
+	else if (istype(src, /datum/job/indians))
+		. = INDIANS
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -55,6 +62,18 @@
 	else if (istype(src, /datum/job/british))
 		user.faction_text = "BRITISH"
 		user.base_faction = new/datum/faction/british(user, src)
+	else if (istype(src, /datum/job/portuguese))
+		user.faction_text = "PORTUGUESE"
+		user.base_faction = new/datum/faction/portuguese(user, src)
+	else if (istype(src, /datum/job/french))
+		user.faction_text = "FRENCH"
+		user.base_faction = new/datum/faction/french(user, src)
+	else if (istype(src, /datum/job/spanish))
+		user.faction_text = "SPANISH"
+		user.base_faction = new/datum/faction/spanish(user, src)
+	else if (istype(src, /datum/job/indians))
+		user.faction_text = "INDIANS"
+		user.base_faction = new/datum/faction/indians(user, src)
 
 
 /datum/job/proc/opposite_faction_name()

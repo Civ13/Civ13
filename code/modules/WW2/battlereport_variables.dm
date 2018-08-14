@@ -3,15 +3,26 @@
 var/list/alive_british = list()
 var/list/alive_pirates = list()
 var/list/alive_civilians = list()
+var/list/alive_french = list()
+var/list/alive_spanish = list()
+var/list/alive_portuguese = list()
+var/list/alive_indians = list()
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
 var/list/heavily_injured_civilians = list()
+var/list/heavily_injured_french = list()
+var/list/heavily_injured_spanish = list()
+var/list/heavily_injured_portuguese = list()
+var/list/heavily_injured_indians = list()
 
 var/list/dead_british = list()
 var/list/dead_pirates = list()
 var/list/dead_civilians = list()
-
+var/list/dead_french = list()
+var/list/dead_spanish = list()
+var/list/dead_portuguese = list()
+var/list/dead_indians = list()
 
 var/list/recently_died = list()
 
@@ -34,6 +45,22 @@ var/list/recently_died = list()
 			dead = dead_civilians
 			injured = heavily_injured_civilians
 			alive = alive_civilians
+		if (FRENCH)
+			dead = dead_french
+			injured = heavily_injured_french
+			alive = alive_french
+		if (PORTUGUESE)
+			dead = dead_portuguese
+			injured = heavily_injured_portuguese
+			alive = alive_portuguese
+		if (SPANISH)
+			dead = dead_spanish
+			injured = heavily_injured_spanish
+			alive = alive_spanish
+		if (INDIANS)
+			dead = dead_indians
+			injured = heavily_injured_indians
+			alive = alive_indians
 
 	return list(alive, dead, injured)
 

@@ -1190,6 +1190,14 @@
 					holder.icon_state = officer_faction.icon_state
 				if (BRITISH)
 					holder.icon_state = officer_faction.icon_state
+				if (FRENCH)
+					holder.icon_state = officer_faction.icon_state
+				if (SPANISH)
+					holder.icon_state = officer_faction.icon_state
+				if (PORTUGUESE)
+					holder.icon_state = officer_faction.icon_state
+				if (INDIANS)
+					holder.icon_state = officer_faction.icon_state
 				if (CIVILIAN)
 					holder.icon_state = ""
 			hud_list[OFFICER_FACTION] = holder
@@ -1202,6 +1210,14 @@
 					holder.icon_state = base_faction.icon_state
 				if (BRITISH)
 					holder.icon_state = base_faction.icon_state
+				if (FRENCH)
+					holder.icon_state = officer_faction.icon_state
+				if (SPANISH)
+					holder.icon_state = officer_faction.icon_state
+				if (PORTUGUESE)
+					holder.icon_state = officer_faction.icon_state
+				if (INDIANS)
+					holder.icon_state = officer_faction.icon_state
 				if (CIVILIAN)
 					holder.icon_state = ""
 			hud_list[BASE_FACTION] = holder

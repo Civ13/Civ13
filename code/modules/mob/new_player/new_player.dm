@@ -481,6 +481,10 @@
 	var/list/available_jobs_per_side = list(
 		CIVILIAN = FALSE,
 		PIRATES = FALSE,
+		SPANISH = FALSE,
+		FRENCH = FALSE,
+		INDIANS = FALSE,
+		PORTUGUESE = FALSE,
 		BRITISH = FALSE)
 
 	var/prev_side = FALSE
@@ -515,10 +519,6 @@
 			job_is_available = FALSE
 
 		if (map && !map.job_enabled_specialcheck(job))
-			job_is_available = FALSE
-
-
-		if (istype(job, /datum/job/partisan/civilian) && !civilians_toggled)
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/british) && !british_toggled)
@@ -664,13 +664,7 @@
 			client.prefs.randomize_appearance_for (new_character)
 		else
 			// no more traps - Kachnov
-			var/datum/job/J = original_job
-			var/J_flag = J.base_type_flag()
 			var/client_prefs_original_gender = client.prefs.gender
-			if (J_flag == BRITISH)
-				client.prefs.gender = client.prefs.english_gender
-			else if (J_flag == PIRATES)
-				client.prefs.gender = client.prefs.pirate_gender
 
 			// traps came back, this should fix them for good - Kachnov
 			new_character.gender = client.prefs.gender
