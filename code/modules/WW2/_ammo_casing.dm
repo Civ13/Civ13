@@ -22,3 +22,13 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/blunderbuss
 	weight = 0.035
 	caliber = "blunderbuss"
+
+/obj/item/ammo_casing/arrow
+	name = "arrow"
+	desc = "Use a bow to fire it."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "arrow"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/bullet/rifle/arrow
+	weight = 0.15
+	caliber = "arrow"

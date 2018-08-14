@@ -48,3 +48,18 @@
 		T.density = origin_density
 	..()
 	return TRUE
+
+// the item you can use to repair a hole
+/obj/item/weapon/covers
+	name = "wood tile"
+	desc = "Use this to cover holes."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "wood_ship_repaired"
+	w_class = 2.0
+
+/obj/covers/repairedfloor
+	name = "repaired floor"
+	desc = "a repaired wood floor."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "wood_ship_repaired"
+	var/wood_ammount = FALSE

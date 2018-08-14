@@ -375,11 +375,6 @@
 			step(src, inertia_dir)
 
 
-/*
-		if (istype(loc, /turf/space) || (flags & NOGRAV)) //they're in space, move em one space in the opposite direction
-			inertia_dir = get_dir(target, src)
-			step(src, inertia_dir)
-*/
 
 		/* 2 throw range for mobs, MGs
 		 * 4 throw range for smgs

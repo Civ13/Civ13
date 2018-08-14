@@ -2,15 +2,32 @@
 	name = "harpoon"
 	sharp = TRUE
 	edge = TRUE
-	desc = "Tharr she blows!"
+	desc = "Good for whale hunting."
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "harpoon"
 	item_state = "harpoon"
 	throw_speed = 3
 	throw_range = 7
+	allow_spin = FALSE
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
 	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
-	attack_verb = list("jabbed","stabbed","ripped")
+	attack_verb = list("jabbed","impaled","ripped")
+
+
+/obj/item/weapon/material/spear
+	name = "spear"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A crude, yet effective weapon."
+	slot_flags = SLOT_BACK | SLOT_BELT
+	icon_state = "spear"
+	item_state = "harpoon"
+	throw_speed = 6
+	throw_range = 11
+	allow_spin = FALSE
+	force_divisor = 0.4 // 24 with hardness 60 (steel)
+	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
 
 /obj/item/weapon/material/hatchet
 	name = "hatchet"

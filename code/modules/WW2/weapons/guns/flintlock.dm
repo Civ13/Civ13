@@ -167,6 +167,7 @@
 	caliber = "musketball_pistol"
 	weight = 2.5
 	effectiveness_mod = 1
+	attachment_slots = ATTACH_IRONSIGHTS
 	ammo_type = /obj/item/ammo_casing/musketball_pistol
 	move_delay = 3
 	fire_delay = 3
@@ -289,4 +290,5 @@
 	stat = "shotgun"
 	weight = 4.5
 	effectiveness_mod = 0.7
+	attachment_slots = ATTACH_IRONSIGHTS
 	ammo_type = /obj/item/ammo_casing/blunderbuss

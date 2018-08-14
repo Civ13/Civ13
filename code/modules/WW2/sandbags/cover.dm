@@ -81,7 +81,7 @@
 						return TRUE
 
 			if (check_cover(mover, mover.throw_source) && prob(bullet_deflection_chance(mover)))
-				visible_message("<span class = 'warning'>[mover] hits the sandbag!</span>")
+				visible_message("<span class = 'warning'>[mover] hits the dirt wall!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover
 					B.damage = 0 // make sure we can't hurt people after hitting a sandbag

@@ -15,15 +15,16 @@
 	penetrating = 3
 	armor_penetration = 100
 
+/obj/item/projectile/bullet/rifle/arrow
+	damage = DAMAGE_HIGH + 4
+	penetrating = 1
+	armor_penetration = 35
+
 #undef DAMAGE_LOW
 #undef DAMAGE_MEDIUM
 #undef DAMAGE_HIGH
 #undef DAMAGE_VERY_HIGH
 #undef DAMAGE_OH_GOD
-
-/obj/item/projectile/bullet/chameleon
-	damage = TRUE // stop trying to murderbone with a fake gun dumbass!!!
-	embed = FALSE // nope
 
 // missiles
 

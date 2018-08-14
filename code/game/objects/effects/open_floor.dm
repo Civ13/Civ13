@@ -20,6 +20,9 @@
 		return
 	if (istype(A, /mob/shadow))
 		return
+	for (var/obj/covers/C in loc)
+		if (istype(C, /obj/covers))
+			return
 	if (floorbelowz)
 		if (istype(A, /mob))
 			A.z -= 1

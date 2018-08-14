@@ -1,7 +1,7 @@
 #define NO_WINNER "The fighting is still going."
 /obj/map_metadata/supply_raid
 	ID = MAP_SUPPLY_RAID
-	title = "Supply Raid (125x125x1)"
+	title = "Supply Raid (100x75x1)"
 //	lobby_icon_state = "pirates"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0

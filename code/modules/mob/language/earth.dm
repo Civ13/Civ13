@@ -1,89 +1,44 @@
-#define RUSSIAN_SYLLABLES list("al", "an", "bi", "vye", "vo", "go", "dye", "yel", "?n", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nye", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "rye", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "vyer", "yego", "yeny", "yenn", "yest", "kak", "ln", "ova", "ogo", "?l", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto")
-#define POLISH_SYLLABLES list("al", "an", "bi", "ve", "vo", "go", "de", "yel", "n", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nee", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "re", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "ver", "ego", "eny", "enn", "est", "kak", "ln", "ova", "ogo", "l", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto", "pa", "tu", "wa", "ugu")
-#define GERMAN_SYLLABLES list("al", "an", "ar", "as", "at", "ea", "ed", "en", "er", "es", "ha", "he", "hi", "in", "is", "it", "le", "me", "nd", "ne", "ng", "nt", "on", "or", "ou", "re", "se", "st", "te", "th", "ti", "to", "ve", "wa", "all", "and", "are", "but", "ent", "era", "ere", "eve", "for", "had", "hat", "hen", "her", "hin", "his", "ing", "ion", "ith", "not", "ome", "oul", "our", "sho", "ted", "ter", "tha", "the", "thi", "tio", "uld", "ver", "was", "wit", "you")
-#define ITALIAN_SYLLABLES list("pi", "za", "pe", "pp", "er", "on", "i", "ma", "mia", "na", "va", "ta", "ra", "ga", "da", "na", "sa", "la", "te", "re", "ge", "de", "ne", "se", "le", "ti", "ri", "gi", "di", "ni", "si")
+#define PORTUGUESE_SYLLABLES list("ad", "al", "am", "an", "ar", "as", "ca", "co", "da", "de", "do", "el", "em", "en", "er", "es", "in", "le", "ma", "me", "nt", "om", "or", "os", "pa", "po", "qu", "ra", "re", "ri", "sa", "se", "st", "ta", "te", "ti", "to", "ue", "um", "ve", "ão", "ra", "en", "de", "ar", "es", "er", "nt", "te", "do", "os", "as", "co", "qu", "se", "re", "ta", "ma", "to", "me", "pa", "el", "or", "ue", "em", "da", "ão", "an", "ad", "in", "st", "po", "um", "al", "ve", "ri", "am", "om", "sa", "le", "ca", "ti", "ada", "ado", "ame", "and", "ant", "ara", "com", "con", "dos", "ela", "ele", "ent", "era", "eri", "est", "ida", "inh", "ito", "mas", "men", "ndo", "nha", "nte", "nto", "não", "ocê", "par", "per", "por", "qua", "que", "res", "ria", "seu", "sta", "tos", "uma", "ver", "voc", "ent", "que", "nte", "par", "ara", "men", "com", "est", "ado", "ele", "não", "uma", "era", "voc", "sta", "nto", "ant", "ocê", "con", "ver", "ria", "seu", "nha", "ame", "por", "inh", "per", "mas", "tos", "ela", "ada", "res", "eri", "dos", "and", "qua", "ito", "ndo", "ida")
+#define FRENCH_SYLLABLES list( "ai", "an", "ar", "au", "ce", "ch", "co", "de", "em", "en", "er", "es", "et", "eu", "ie", "il", "in", "is", "it", "la", "le", "ma", "me", "ne", "ns", "nt", "on", "ou", "pa", "qu", "ra", "re", "se", "te", "ti", "tr", "ue", "un", "ur", "us", "ve", "le", "en", "es", "de", "re", "ai", "ou", "nt", "on", "er", "ur", "it", "an", "te", "et", "me", "la", "is", "qu", "se", "il", "ue", "us", "eu", "co", "ra", "ne", "in", "ve", "pa", "ma", "au", "ar", "ns", "ch", "ie", "ti", "tr", "ce", "em", "un", "ain", "ais", "ait", "ans", "ant", "ati", "ava", "ave", "cha", "che", "com", "con", "dan", "des", "ell", "eme", "ent", "est", "eur", "eux", "fai", "ien", "ion", "ire", "les", "lle", "lus", "mai", "men", "mme", "nte", "omm", "ont", "our", "ous", "out", "ouv", "par", "pas", "plu", "pou", "que", "res", "son", "sur", "tai", "tio", "tou", "tre", "une", "ure", "ver", "vou", "éta", "ent", "que", "ait", "les", "our", "lle", "men", "ais", "tre", "est", "par", "ous", "mai", "ion", "ant", "eme", "tai", "ans", "pas", "ell", "vou", "tou", "pou", "res", "ont", "eur", "dan", "une", "éta", "sur", "ien", "son", "mme", "tio", "des", "ire", "ver", "omm", "com", "con", "che", "ave", "ain", "ure", "out", "plu", "cha", "eux", "ava", "ouv", "nte", "lus", "fai", "ati")
+#define SPANISH_SYLLABLES list ("ad", "al", "an", "ar", "as", "ci", "co", "de", "do", "el", "en", "er", "es", "ie", "in", "la", "lo", "me", "na", "no", "nt", "on", "or", "os", "pa", "qu", "ra", "re", "ro", "se", "st", "ta", "te", "to", "ue", "un", "en", "de", "er", "es", "ue", "la", "ra", "os", "nt", "te", "ar", "qu", "el", "ta", "do", "co", "re", "as", "on", "an", "to", "lo", "st", "un", "or", "ad", "ie", "se", "ci", "al", "pa", "na", "ro", "no", "me", "in", "aci", "ada", "ado", "ant", "ara", "ció", "com", "con", "des", "dos", "ent", "era", "ero", "est", "ido", "ien", "ier", "ión", "las", "los", "men", "nte", "nto", "par", "per", "por", "que", "res", "sta", "ste", "ten", "tra", "una", "ver", "que", "ent", "nte", "con", "est", "ado", "par", "los", "era", "ien", "men", "per", "sta", "ara", "una", "por", "ión", "tra", "ant", "nto", "ero", "ció", "aci", "las", "com", "ste", "res", "ten", "ier", "ver", "dos", "des", "ido", "ada")
+#define ENGLISH_SYLLABLES list("ing", "ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "light", "es", "lar", "car", "out", "main", "re", "ad", "pa", "of", "tion", "ar", "ture", "mo", "pos", "ro", "in", "ers", "for", "an", "tain", "my", "e", "ment", "is", "side", "nal", "con", "ings", "ness", "y", "tions", "pe", "se", "ning", "ments", "ties", "so", "tor", "set", "ward" , "ence", "up")
 
-#define ENGLISH_SYLLABLES list("ing", "Ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "light", "es", "lar", "car", "out", "main", "re", "ad", "pa", "of", "tion", "ar", "ture", "mo", "pos", "ro", "in", "ers", "for", "an", "tain", "my", "e", "ment", "is", "side", "nal", "con", "ings", "ness", "y", "tions", "pe", "se", "ning", "ments", "ties", "so", "tor", "set", "ward" , "ence", "up")
-#define JAPANESE_SYLLABLES list("ka", "ki", "ku", "ke", "ko", "ta", "chi", "tsu", "te", "to", "sa", "shi", "su", "se", "so", "na", "ni", "nu", "ne", "no", "n", "ha", "hi", "fu", "he", "ho", "ma", "mi", "mu", "me", "mo", "ya", "yu", "yo", "ra", "ri", "ru", "re", "ro", "wa", "wo")
-
-/datum/language/russian
-	name = "Russian"
-	desc = "slava sovyetskomu soyuzu!"
-	key = "r"
-	colour = "Russian"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = RUSSIAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/ukrainian = 66,
-		/datum/language/polish = 45)
-
-/datum/language/ukrainian
-	name = "Ukrainian"
-	desc = "Smert' do radyans'koho soyuzu!"
-	key = "u"
-	colour = "Russian"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = list()
-	mutual_intelligibility = list(/datum/language/polish = 75,
-		/datum/language/russian = 70)
-
-/datum/language/ukrainian/New()
-	..()
-	syllables = RUSSIAN_SYLLABLES|POLISH_SYLLABLES
-
-/datum/language/polish
-	name = "Polish"
-	desc = "Smierc dla ciemiezców!"
+/datum/language/portuguese
+	name = "Portuguese"
+	desc = "Muito bom."
 	key = "p"
-	colour = "Russian"
+	colour = "Portuguese"
 	flags = RESTRICTED | COMMON_VERBS
-	syllables = POLISH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/ukrainian = 75,
-		/datum/language/russian = 45)
+	syllables = PORTUGUESE_SYLLABLES
+	mutual_intelligibility = list(/datum/language/spanish = 75,
+		/datum/language/french = 35)
 
-/datum/language/german
-	name = "German"
-	desc = "Sieg heil!"
-	key = "g"
-	colour = "english"
+/datum/language/spanish
+	name = "Spanish"
+	desc = "Muy bueno."
+	key = "s"
+	colour = "Spanish"
 	flags = RESTRICTED | COMMON_VERBS
-	syllables = GERMAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 15)
-
-/datum/language/italian
-	name = "Italian"
-	desc = "Mama mia!"
-	key = "i"
-	colour = "english"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = ITALIAN_SYLLABLES
-	mutual_intelligibility = list(/datum/language/romanian = 50)
-
-/datum/language/romanian
-	name = "Romanian"
-	desc = "Mama mea!"
-	key = "ro"
-	colour = "english"
-	flags = RESTRICTED | COMMON_VERBS
-	syllables = list()
-	mutual_intelligibility = list(/datum/language/italian = 50)
+	syllables = SPANISH_SYLLABLES
+	mutual_intelligibility = list(/datum/language/portuguese = 50,
+		/datum/language/french = 35)
 
 /datum/language/english
 	name = "English"
-	desc = "We can do it!"
+	desc = "Very good."
 	key = "e"
-	colour = "english"
+	colour = "English"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ENGLISH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/german = 10)
+	mutual_intelligibility = list(/datum/language/french = 10)
 
-/datum/language/japanese
+/datum/language/french
 	name = "Japanese"
-	desc = "Banzai!"
-	key = "j"
-	colour = "english"
+	desc = "Trés bien."
+	key = "f"
+	colour = "French"
 	flags = RESTRICTED | COMMON_VERBS
-	syllables = JAPANESE_SYLLABLES
-
-/datum/language/romanian/New()
-	..()
-	syllables = ITALIAN_SYLLABLES | list("vye", "vo", "go", "dye", "yel", "?n", "yer", "yet", "ka", "ko")
+	syllables = FRENCH_SYLLABLES
+	mutual_intelligibility = list(/datum/language/english = 10,
+		/datum/language/spanish = 25,
+		/datum/language/portuguese = 10)

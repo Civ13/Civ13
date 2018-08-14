@@ -132,7 +132,7 @@
 		"dexterity" = list(100,100),
 		"swords" = list(100,100),
 		"pistol" = list(100,100),
-		"heavyweapon" = list(100,100),
+		"bows" = list(100,100),
 		"medical" = list(100,100),
 		"survival" = list(100,100),
 		"stamina" = list(100,100))
