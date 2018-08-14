@@ -3,6 +3,7 @@
 	if (!C || !user)
 		return FALSE
 
+
 	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)
 
@@ -110,6 +111,7 @@
 			if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 				if (do_after(user, covers_time, user.loc))
+					qdel(C)
 					new/obj/covers/repairedfloor(src, user)
 					visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 					if (ishuman(user))

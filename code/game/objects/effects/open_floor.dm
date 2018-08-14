@@ -1,18 +1,45 @@
-/turf/broken_floor
+var/process/open_floor/OS2_controller = null
+
+/process/open_floor
+	var/list/open_floors = list()
+
+/process/open_floor/setup()
+	name = "openfloor"
+	schedule_interval = TRUE SECONDS // every second
+	start_delay = 12
+	OS2_controller = src
+
+/process/open_floor/fire()
+	for (var/turf/floor/broken_floor/T in open_floors)
+		T.update_icon()
+
+/obj/effect/overlay/overfloor
+	name = "Hole"
+	desc = "It's a hole in the floor. You can see whats below."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "black_open"
+	density = FALSE
+	layer = 5
+	anchored = TRUE
+
+/turf/floor/broken_floor
 	name = "hole"
 	icon = 'icons/turf/areas.dmi'
 	icon_state = "black"
 	density = FALSE
 
-/turf/broken_floor/New()
+/turf/floor/broken_floor/New()
 	..()
 	if (z > 1)
 		floorbelowz = locate(x, y, z-1)
 	else
 		floorbelowz = locate(x, y, 1)
 //	var/mob/shadow/shadowcover = new/mob/shadow(src)
+	spawn(5)
+		update_icon()
+		new/obj/effect/overlay/overfloor(floorbelowz)
 
-/turf/broken_floor/Entered(atom/movable/A)
+/turf/floor/broken_floor/Entered(atom/movable/A)
 	. = ..()
 	if (!A || !A.loc)
 		return
@@ -20,7 +47,7 @@
 		return
 	if (istype(A, /mob/shadow))
 		return
-	for (var/obj/covers/C in loc)
+	for (var/obj/covers/C in src)
 		if (istype(C, /obj/covers))
 			return
 	if (floorbelowz)
@@ -47,3 +74,42 @@
 				A.z -= 1
 				A.visible_message("\The [A] falls from the deck above and slams into the floor!", "You hear something slam into the deck.")
 
+/turf/floor/broken_floor/New()
+	..()
+	if (OS2_controller)
+		OS2_controller.open_floors += src
+
+/turf/floor/broken_floor/Del()
+	if (OS2_controller)
+		OS2_controller.open_floors -= src
+	..()
+/turf/floor/broken_floor/update_icon()
+	overlays.Cut()
+	var/turf/below = locate(x, y, z-1)
+	if (!isturf(below))
+		below = locate(x, y, z)
+	if (below)
+		icon = below.icon
+		icon_state = below.icon_state
+		dir = below.dir
+		color = below.color//rgb(127,127,127)
+	//	overlays += below.overlays // for some reason this turns an open
+	// space into plating.
+
+		if (!istype(below,/turf/floor/broken_floor))
+			// get objects
+			var/image/o_img = list()
+			for (var/obj/o in below)
+				// ignore objects that have any form of invisibility
+				if (o.invisibility) continue
+				var/image/temp2 = image(o, dir=o.dir, layer = o.layer)
+				temp2.plane = plane
+				temp2.color = o.color//rgb(127,127,127)
+				temp2.overlays += o.overlays
+				o_img += temp2
+			overlays += o_img
+
+			var/image/over_OS2_darkness = image('icons/turf/floors.dmi', "black_open")
+			over_OS2_darkness.plane = OVER_OPENSPACE_PLANE
+			over_OS2_darkness.layer = MOB_LAYER + 0.1
+			overlays += over_OS2_darkness

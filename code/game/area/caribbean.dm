@@ -181,37 +181,37 @@
 /area/caribbean/british/ship/main_deck
 	name = "Main Deck"
 	icon_state = "blue1"
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/british/ship/poop_deck
 	name = "Poop Deck"
 	icon_state = "blue2"
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/british/ship/upper_gun
 	name = "Upper Gun Deck"
 	icon_state = "blue3"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/british/ship/middle
 	name = "Middle Deck"
 	icon_state = "blue3"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/british/ship/lower
 	name = "Lower Deck"
 	icon_state = "blue3"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 
 /area/caribbean/british/ship/orlop
 	name = "Orlop Deck"
 	icon_state = "blue4"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/british/ship/hold
 	name = "Hold"
@@ -224,21 +224,21 @@
 	icon_state = "blue5"
 	capturable = FALSE
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 
 /area/caribbean/british/ship/kitchen
 	name = "Kitchen"
 	icon_state = "blue5"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 
 /area/caribbean/british/ship/office
 	name = "Captain's Office"
 	icon_state = "green5"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 // pirates areas
 
@@ -265,37 +265,37 @@
 /area/caribbean/pirates/ship/main_deck
 	name = "Main Deck"
 	icon_state = "green1"
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/pirates/ship/poop_deck
 	name = "Poop Deck"
 	icon_state = "green2"
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/pirates/ship/upper_gun
 	name = "Upper Gun Deck"
 	icon_state = "green3"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/pirates/ship/middle
 	name = "Middle Deck"
 	icon_state = "green3"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/pirates/ship/lower
 	name = "Lower Deck"
 	icon_state = "green3"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 
 /area/caribbean/pirates/ship/orlop
 	name = "Orlop Deck"
 	icon_state = "green4"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 /area/caribbean/pirates/ship/hold
 	name = "Hold"
@@ -308,18 +308,18 @@
 	icon_state = "green5"
 	capturable = FALSE
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 
 /area/caribbean/pirates/ship/kitchen
 	name = "Kitchen"
 	icon_state = "green5"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor
 
 
 /area/caribbean/pirates/ship/office
 	name = "Captain's Office"
 	icon_state = "green5"
 	location = AREA_INSIDE
-	base_turf = /turf/broken_floor
+	base_turf = /turf/floor/broken_floor

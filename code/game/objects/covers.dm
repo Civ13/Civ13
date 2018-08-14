@@ -51,7 +51,7 @@
 
 // the item you can use to repair a hole
 /obj/item/weapon/covers
-	name = "wood tile"
+	name = "floor cover"
 	desc = "Use this to cover holes."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
