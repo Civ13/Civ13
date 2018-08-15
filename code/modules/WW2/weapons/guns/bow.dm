@@ -14,12 +14,12 @@
 	slot_flags = SLOT_BACK
 	caliber = "arrow"
 	recoil = 1 //extra kickback
-	//fire_sound = 'sound/weapons/sniper.ogg'
+	fire_sound = 'sound/weapons/arrow_fly.ogg'
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/arrow
 //	magazine_type = /obj/item/ammo_magazine/musketball
-	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	load_shell_sound = 'sound/weapons/pull_bow.ogg'
 	//+2 accuracy over the LWAP because only one shot
 	accuracy = TRUE
 //	scoped_accuracy = 2

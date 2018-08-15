@@ -22,12 +22,14 @@
 
 /obj/covers/New()
 	..()
-	var/turf/T = get_turf(src)
-	if (passable)
-		origin_density = T.density
-		T.density = FALSE
-	return TRUE
-/*	for(var/obj/Ob in get_turf(src))
+	spawn(15)
+		var/turf/T = get_turf(loc)
+		if (passable)
+			origin_density = T.density
+			T.density = FALSE
+		return TRUE
+/*
+	for(var/obj/Ob in get_turf(src))
 		if (Ob.invisibility == 0)
 			Ob.invisibility = 101
 	for(var/mob/Mb in get_turf(src))
@@ -35,7 +37,7 @@
 			Mb.invisibility = 101 */
 
 /obj/covers/updateturf()
-	var/turf/T = get_turf(src)
+	var/turf/T = get_turf(loc)
 	if (passable)
 		origin_density = T.density
 		T.density = FALSE
@@ -43,7 +45,7 @@
 
 
 /obj/covers/Destroy()
-	var/turf/T = get_turf(src)
+	var/turf/T = get_turf(loc)
 	if (origin_density)
 		T.density = origin_density
 	..()
@@ -83,12 +85,11 @@
 		var/mob/living/carbon/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("engineering") * H.getStatCoeff("engineering"))
-
 	if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc))
 			qdel(src)
-			new/obj/covers/repairedfloor(src, user)
+			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 			if (ishuman(user))
 				var/mob/living/carbon/human/H = user

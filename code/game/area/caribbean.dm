@@ -24,11 +24,13 @@
 	name = "Island"
 	base_turf = /turf/floor/plating/beach/sand
 	icon_state = "red3"
+	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/sea
 	name = "Island"
 	base_turf = /turf/floor/plating/beach/sand
 	icon_state = "purple1"
+	ambience = list("sound/ambience/ship1.ogg")
 
 /area/caribbean/sea/beach
 	name = "Beach"
@@ -164,6 +166,8 @@
 	name = "Land Base"
 	icon_state = "red1"
 	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
 
 /area/caribbean/british/land/inside
 	location = AREA_INSIDE
@@ -177,6 +181,7 @@
 /area/caribbean/british/ship
 	icon_state = "blue1"
 	base_turf = /turf/floor/plating/beach/water
+	ambience = list("sound/ambience/ship1.ogg")
 
 /area/caribbean/british/ship/main_deck
 	name = "Main Deck"
@@ -248,6 +253,7 @@
 	name = "Land Base"
 	icon_state = "red1"
 	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/pirates/land/inside
 	location = AREA_INSIDE
@@ -261,6 +267,7 @@
 /area/caribbean/pirates/ship
 	icon_state = "green1"
 	base_turf = /turf/floor/plating/beach/water
+	ambience = list("sound/ambience/ship1.ogg")
 
 /area/caribbean/pirates/ship/main_deck
 	name = "Main Deck"
