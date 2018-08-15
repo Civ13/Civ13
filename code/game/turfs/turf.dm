@@ -46,6 +46,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/wet = FALSE
 	var/image/wet_overlay = null
 	var/floorbelowz = FALSE
+	var/water_level = 0 // For flooding
 
 	//Mining resources (for the large drills).
 //	var/has_resources
@@ -59,6 +60,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/dirt = FALSE
 
 	var/datum/scheduled_task/unwet_task
+	var/datum/scheduled_task/flooding_task
 	var/interior = TRUE
 	var/stepsound = null
 	var/floor_type= null

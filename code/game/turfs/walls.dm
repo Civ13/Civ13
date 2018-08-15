@@ -183,7 +183,7 @@ var/list/global/wall_cache = list()
 	if (material == "wood")
 		ChangeTurf(/turf/floor/plating/beach/water)
 	else
-		ChangeTurf(/turf/floor/plating/grass/wild)
+		ChangeTurf(/turf/floor/wood_broken)
 
 /turf/wall/ex_act(severity)
 	var/area/src_area = get_area(src)
