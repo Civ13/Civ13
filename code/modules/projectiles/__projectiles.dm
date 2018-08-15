@@ -15,18 +15,12 @@
 	penetrating = 3
 	armor_penetration = 100
 
-/obj/item/projectile/bullet/rifle/arrow
+/obj/item/projectile/bullet/arrow
 	damage = DAMAGE_HIGH + 4
 	penetrating = 1
 	armor_penetration = 35
+	icon_state = "arrow"
 
-#undef DAMAGE_LOW
-#undef DAMAGE_MEDIUM
-#undef DAMAGE_HIGH
-#undef DAMAGE_VERY_HIGH
-#undef DAMAGE_OH_GOD
-
-// missiles
 
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"

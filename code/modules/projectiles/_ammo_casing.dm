@@ -29,6 +29,6 @@
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "arrow"
 	spent_icon = null
-	projectile_type = /obj/item/projectile/bullet/rifle/arrow
+	projectile_type = /obj/item/projectile/bullet/arrow
 	weight = 0.15
 	caliber = "arrow"

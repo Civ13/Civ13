@@ -164,13 +164,6 @@
 	armor_penetration = 20
 	penetrating = 1
 
-/obj/item/projectile/bullet/rifle/a762
-	damage = 25
-
-/obj/item/projectile/bullet/rifle/a556
-	damage = 35
-
-
 
 /obj/item/projectile/bullet/gyro/on_hit(var/atom/target, var/blocked = FALSE)
 	if (isturf(target))

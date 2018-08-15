@@ -11,7 +11,7 @@
 	icon_state = "ba_suit"
 	item_state = "ba_suit"
 
-// pirates and partisans
+// pirates
 
 /obj/item/clothing/shoes/swat/wrappedboots
 	name = "\improper wrapped boots"
@@ -22,7 +22,7 @@
 	siemens_coefficient = 0.6
 
 
-// partisans / civs
+// civs
 
 /obj/item/clothing/under/civ1
 	name = "Civilian Clothing"
@@ -243,3 +243,31 @@
 	icon_state = "british_soldier_jacket"
 	item_state = "british_soldier_jacket"
 	worn_state = "british_soldier_jacket"
+
+/////////indian stuff/////////
+
+/obj/item/clothing/under/indian1
+	name = "short indian clothing"
+	desc = "A wrap of leather cloth, worn around the waist."
+	icon_state = "indian1"
+	item_state = "indian1"
+	worn_state = "indian1"
+
+/obj/item/clothing/under/indian2
+	name = "long indian clothing"
+	desc = "A wrap of leather cloth, worn around the waist."
+	icon_state = "indian2"
+	item_state = "indian2"
+	worn_state = "indian2"
+
+/obj/item/clothing/accessory/armband/indian1
+	name = "indian acessories"
+	desc = "red face paint and indian necklaces."
+	icon_state = "indian1"
+	item_state = "indian1"
+
+/obj/item/clothing/accessory/armband/indian2
+	name = "indian acessories"
+	desc = "yellow indian necklaces."
+	icon_state = "indian2"
+	item_state = "indian2"

@@ -13,13 +13,14 @@
 	max_shells = 1 //duh
 	slot_flags = SLOT_BACK
 	caliber = "arrow"
-	recoil = 1 //extra kickback
+	recoil = 0 //no shaking
 	fire_sound = 'sound/weapons/arrow_fly.ogg'
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/arrow
 //	magazine_type = /obj/item/ammo_magazine/musketball
 	load_shell_sound = 'sound/weapons/pull_bow.ogg'
+	bulletinsert_sound = 'sound/weapons/pull_bow.ogg'
 	//+2 accuracy over the LWAP because only one shot
 	accuracy = TRUE
 //	scoped_accuracy = 2
@@ -32,7 +33,6 @@
 	move_delay = 5
 	fire_delay = 5
 
-	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -81,10 +81,35 @@
 	load_delay = 30 //15 seconds for rifles, 12 seconds for pistols & blunderbuss
 	aim_miss_chance_divider = 3.00
 
+/obj/item/weapon/gun/projectile/bow/New()
+	..()
+	loaded = 0
 
 /obj/item/weapon/gun/projectile/bow/handle_post_fire()
 	..()
 	loaded -= chambered
 	chambered = null
 
+/obj/item/weapon/gun/projectile/bow/load_ammo(var/obj/item/A, mob/user)
+	..()
+	icon_state = "bow_loaded"
 
+/obj/item/weapon/gun/projectile/bow/unload_ammo(mob/user, var/allow_dump=1)
+
+	icon_state = "bow"
+	icon_state = "bow_loaded"
+
+/obj/item/weapon/gun/projectile/bow/update_icon()
+
+	if (chambered)
+		icon_state = "bow_loaded"
+		return
+	else
+		icon_state = "bow"
+		return
+
+/obj/item/weapon/gun/projectile/bow/handle_click_empty(mob/user)
+	if (user)
+		user.visible_message("", "<span class='danger'>You don't have an arrow here!</span>")
+	else
+		visible_message("")

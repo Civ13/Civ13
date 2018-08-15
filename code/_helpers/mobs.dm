@@ -86,24 +86,6 @@ proc/random_english_name(gender, species = "Human")
 		return current_species.get_random_english_name(gender)
 
 
-proc/russify(var/list/name_list, gender)
-	var/list/l = name_list.Copy()
-	for (var/v in 1 to l.len)
-		var/name = l[v]
-		if (gender == FEMALE)
-			name = replacetext(name, "ovich", "ovna")
-		l[v] = name
-	return l
-
-proc/polify(var/list/name_list, gender)
-	var/list/l = name_list.Copy()
-	for (var/v in 1 to l.len)
-		var/name = l[v]
-		if (gender == FEMALE)
-			name = replacetext(name, "ski", "ska")
-		l[v] = name
-	return l
-
 proc/random_pirate_name(gender, species = "Human")
 
 	var/datum/species/current_species
@@ -119,6 +101,60 @@ proc/random_pirate_name(gender, species = "Human")
 	else
 		return current_species.get_random_pirate_name(gender)
 
+
+proc/random_spanish_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_spanish)) + " " + capitalize(pick(last_names_spanish))
+		else
+			return capitalize(pick(first_names_male_spanish)) + " " + capitalize(pick(last_names_spanish))
+	else
+		return current_species.get_random_spanish_name(gender)
+
+
+proc/random_portuguese_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_portuguese)) + " " + capitalize(pick(last_names_portuguese))
+		else
+			return capitalize(pick(first_names_male_portuguese)) + " " + capitalize(pick(last_names_portuguese))
+	else
+		return current_species.get_random_portuguese_name(gender)
+
+
+proc/random_french_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_french)) + " " + capitalize(pick(last_names_french))
+		else
+			return capitalize(pick(first_names_male_french)) + " " + capitalize(pick(last_names_french))
+	else
+		return current_species.get_random_french_name(gender)
+
+proc/random_carib_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_carib)) + " " + capitalize(pick(last_names_carib))
+		else
+			return capitalize(pick(first_names_male_carib)) + " " + capitalize(pick(last_names_carib))
+	else
+		return current_species.get_random_carib_name(gender)
 proc/random_skin_tone()
 
 	var/skin_tone = "caucasian"

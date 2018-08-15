@@ -107,11 +107,6 @@
 	return
 
 /atom/proc/pre_bullet_act(var/obj/item/projectile/P)
-	if (istype(P, /obj/item/projectile/bullet/rifle/missile))
-		var/obj/item/projectile/bullet/rifle/missile/M = P
-		M.missile_effect(src)
-		return TRUE
-	return FALSE
 
 /atom/proc/bullet_act(var/obj/item/projectile/P, def_zone)
 	P.on_hit(src, FALSE, def_zone)
