@@ -31,14 +31,14 @@ obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = TRUE
 	return .
-/obj/map_metadata/island/british_can_cross_blocks()
+/obj/map_metadata/island/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/island/pirates_can_cross_blocks()
+/obj/map_metadata/island/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/island/reinforcements_ready()
-	return (british_can_cross_blocks() && pirates_can_cross_blocks())
+	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 /obj/map_metadata/island/tick()
 	..()

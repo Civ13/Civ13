@@ -31,13 +31,13 @@ obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = TRUE
 	return .
-/obj/map_metadata/supply_raid/british_can_cross_blocks()
+/obj/map_metadata/supply_raid/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/supply_raid/pirates_can_cross_blocks()
+/obj/map_metadata/supply_raid/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/supply_raid/reinforcements_ready()
-	return (british_can_cross_blocks() && pirates_can_cross_blocks())
+	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 #undef NO_WINNER

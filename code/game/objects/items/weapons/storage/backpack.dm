@@ -49,19 +49,6 @@
 	icon_state = "medicalpack"
 	item_state_slots = null
 
-
-/obj/item/weapon/storage/backpack/captain
-	name = "captain's backpack"
-	desc = "It's a special backpack made exclusively for officers."
-	icon_state = "captainpack"
-	item_state_slots = null
-
-/obj/item/weapon/storage/backpack/industrial
-	name = "industrial backpack"
-	desc = "It's a tough backpack for the daily grind of ship life."
-	icon_state = "engiepack"
-	item_state_slots = null
-
 /*
  * Satchel Types
  */

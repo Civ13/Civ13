@@ -37,16 +37,16 @@
 		. = FALSE
 	return .
 
-/obj/map_metadata/battleroyale/british_can_cross_blocks()
+/obj/map_metadata/battleroyale/faction2_can_cross_blocks()
 	return FALSE
 
-/obj/map_metadata/battleroyale/pirates_can_cross_blocks()
+/obj/map_metadata/battleroyale/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/battleroyale/cross_message(faction)
 	return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
 /obj/map_metadata/battleroyale/reinforcements_ready()
-	return (pirates_can_cross_blocks())
+	return (faction1_can_cross_blocks())
 /*
 /obj/map_metadata/robusta/win_condition_specialcheck()
 	if (alive_n_of_side(PIRATES) <= 1 && processes.ticker.playtime_elapsed >= 1200)

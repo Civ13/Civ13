@@ -59,6 +59,22 @@
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing/musketball,/obj/item/ammo_casing/musketball_pistol,/obj/item/ammo_casing/blunderbuss)
 
+/obj/item/weapon/storage/backpack/quiver
+	name = "quiver"
+	desc = "The best way to carry a bow and arrows."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "quiver"
+	item_state = "quiver"
+
+	New()
+		..()
+		can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)
+		new /obj/item/ammo_casing/arrow(src)
+		new /obj/item/ammo_casing/arrow(src)
+		new /obj/item/ammo_casing/arrow(src)
+		new /obj/item/ammo_casing/arrow(src)
+		new /obj/item/ammo_casing/arrow(src)
+		new /obj/item/ammo_casing/arrow(src)
 //pirate stuff
 
 /obj/item/clothing/suit/storage/jacket/piratejacket1
@@ -260,6 +276,27 @@
 	item_state = "indian2"
 	worn_state = "indian2"
 
+/obj/item/clothing/under/indian3
+	name = "covering indian clothing"
+	desc = "A wrap of leather cloth, worn around the waist and the chest."
+	icon_state = "indian3"
+	item_state = "indian3"
+	worn_state = "indian3"
+
+/obj/item/clothing/under/indianchief
+	name = "indian chief clothing"
+	desc = "An elaborate wrap of leather cloth, worn by tribal chiefs."
+	icon_state = "indianchef"
+	item_state = "indianchef"
+	worn_state = "indiancgef"
+
+/obj/item/clothing/under/indianshaman
+	name = "indian shaman clothing"
+	desc = "A white cloth, worn around the waist, painted with religious symbols."
+	icon_state = "indianshaman"
+	item_state = "indianshaman"
+	worn_state = "indianshaman"
+
 /obj/item/clothing/accessory/armband/indian1
 	name = "indian acessories"
 	desc = "red face paint and indian necklaces."
@@ -268,6 +305,48 @@
 
 /obj/item/clothing/accessory/armband/indian2
 	name = "indian acessories"
-	desc = "yellow indian necklaces."
+	desc = "gold indian necklaces."
 	icon_state = "indian2"
 	item_state = "indian2"
+
+	/obj/item/clothing/accessory/armband/indianshaman
+	name = "indian shaman bodypaint"
+	desc = "red and white bodypaint, worn by native shamans."
+	icon_state = "indianshaman"
+	item_state = "indianshaman"
+
+/////////Portuguese/////////
+
+/obj/item/clothing/under/portuguese_sailor1
+	name = "portuguese sailor clothes"
+	desc = "A set of portuguese navy sailor clothes, with a white shirt and pink trousers."
+	icon_state = "portuguese_sailor1"
+	item_state = "portuguese_sailor1"
+	worn_state = "portuguese_sailor1"
+
+/obj/item/clothing/under/portuguese_sailor2
+	name = "open british sailor clothes"
+	desc = "A set of portuguese navy sailor clothes, with an unbuttoned white shirt and pink trousers."
+	icon_state = "portuguese_sailor2"
+	item_state = "portuguese_sailor2"
+	worn_state = "portuguese_sailor2"
+
+/obj/item/clothing/under/portuguese_sailor3
+	name = "british sailor trousers"
+	desc = "Pink portuguese sailor trousers. For when it's too hot to wear a shirt."
+	icon_state = "portuguese_sailor3"
+	item_state = "portuguese_sailor3"
+	worn_state = "portuguese_sailor3"
+
+/obj/item/clothing/under/portuguese_sailor4
+	name = "grey british sailor clothes"
+	desc = "A set of portuguese navy sailor clothes, with a white shirt and pink trousers. There is a red scarf attatched."
+	icon_state = "portuguese_sailor4"
+	item_state = "portuguese_sailor4"
+	worn_state = "portuguese_sailor4"
+
+/obj/item/clothing/head/red_beret
+	name = "red sailor berret"
+	desc = "A red berret, worn by portuguese sailors."
+	icon_state = "redberet"
+	item_state = "redberet"

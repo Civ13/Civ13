@@ -16,7 +16,7 @@
 	armor_penetration = 100
 
 /obj/item/projectile/bullet/arrow
-	damage = DAMAGE_HIGH + 4
+	damage = DAMAGE_MEDIUM
 	penetrating = 1
 	armor_penetration = 35
 	icon_state = "arrow"

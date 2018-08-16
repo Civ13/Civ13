@@ -17,30 +17,3 @@
 	item_state = "apronchef"
 	blood_overlay_type = "armor"
 	body_parts_covered = FALSE
-
-/*
-
-//Detective
-/obj/item/clothing/suit/storage/insp_trench
-	name = "Inspector's armored trenchcoat"
-	desc = "Brown and armored trenchcoat, designed and created by Ironhammer Security. The coat is externally impact resistant - perfect for your next act of autodefenestration!"
-	icon_state = "insp_coat"
-	item_state = "insp_coat"
-	blood_overlay_type = "coat"
-	body_parts_covered = UPPER_TORSO|ARMS
-	allowed = list(/obj/item/weapon/tank/emergency_oxygen, /obj/item/flashlight,/obj/item/weapon/gun/energy,/obj/item/weapon/gun/projectile,/obj/item/ammo_magazine,/obj/item/ammo_casing,/*/obj/item/weapon/melee/baton,*//obj/item/weapon/handcuffs,/obj/item/weapon/storage/fancy/cigarettes,/obj/item/weapon/flame/lighter)
-	armor = list(melee = 50, bullet = 10, laser = 25, energy = 10, bomb = FALSE, bio = FALSE, rad = FALSE)
-*/
-/obj/item/clothing/suit/storage/det_trench
-	name = "brown trenchcoat"
-	desc = "A rugged canvas trenchcoat, designed and created by TX Fabrication Corp. The coat is externally impact resistant - perfect for your next act of autodefenestration!"
-	icon_state = "detective"
-	item_state = "det_suit"
-	blood_overlay_type = "coat"
-	body_parts_covered = UPPER_TORSO|ARMS
-	allowed = list(/obj/item/flashlight,/*/obj/item/weapon/gun/energy,*//obj/item/weapon/gun/projectile,/obj/item/ammo_magazine,/obj/item/ammo_casing,/*/obj/item/weapon/melee/baton,*//obj/item/weapon/handcuffs,/obj/item/weapon/storage/fancy/cigarettes,/obj/item/weapon/flame/lighter)
-	armor = list(melee = 50, bullet = 10, laser = 25, energy = 10, bomb = FALSE, bio = FALSE, rad = FALSE)
-
-/obj/item/clothing/suit/storage/det_trench/grey
-	name = "grey trenchcoat"
-	icon_state = "detective2"

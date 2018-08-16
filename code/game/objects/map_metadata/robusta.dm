@@ -31,13 +31,13 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = TRUE
 	return .
-/obj/map_metadata/robusta/british_can_cross_blocks()
+/obj/map_metadata/robusta/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/robusta/pirates_can_cross_blocks()
+/obj/map_metadata/robusta/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/robusta/reinforcements_ready()
-	return (british_can_cross_blocks() && pirates_can_cross_blocks())
+	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 #undef NO_WINNER

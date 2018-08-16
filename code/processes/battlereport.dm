@@ -28,7 +28,7 @@
 		var/british_death_coeff = (british_deaths_this_cycle+1)/(alive_british.len + 1)
 
 		// because admins can cause this to happen a lot
-		if (world.time >= next_can_grant_points && map && map.pirates_can_cross_blocks())
+		if (world.time >= next_can_grant_points && map && map.faction1_can_cross_blocks())
 
 			if (pirates_deaths_this_cycle && pirates_death_coeff > soviet_death_coeff)
 				radio2soviets("Due to your triumphs in the battlefield, we are rewarding you with 200 supply points, comrades.")

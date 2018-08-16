@@ -39,24 +39,6 @@
 	return "[trim(full_name)]"
 
 
-/datum/language/proc/get_random_pirate_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
-	if (!syllables || !syllables.len)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_pirate)) + " " + capitalize(pick(last_names_pirate, gender))
-		else
-			return capitalize(pick(first_names_male_pirate)) + " " + capitalize(pick(last_names_pirate, gender))
-
-	var/full_name = ""
-	var/new_name = ""
-
-	for (var/i = 0;i<name_count;i++)
-		new_name = ""
-		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
-			new_name += pick(syllables)
-		full_name += " [capitalize(lowertext(new_name))]"
-
-	return "[trim(full_name)]"
-
 /datum/language/proc/get_random_english_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -283,10 +265,10 @@
 			if (ishuman(src) && src.faction == PIRATES)
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client && H.faction == PIRATES)
-					if (H.client.prefs.be_random_name_pirate)
-						H.real_name = H.species.get_random_pirate_name(H.gender, FALSE)
+					if (H.client.prefs.be_random_name_english)
+						H.real_name = H.species.get_random_english_name(H.gender, FALSE)
 					else
-						H.real_name = H.client.prefs.pirate_name
+						H.real_name = H.client.prefs.english_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 			else if (ishuman(src) && src.faction == BRITISH)
@@ -298,6 +280,16 @@
 						H.real_name = H.client.prefs.english_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+		if (istype(new_language, /datum/language/spanish))
+			if (ishuman(src) && src.faction == PIRATES)
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client && H.faction == PIRATES)
+					if (H.client.prefs.be_random_name_spanish)
+						H.real_name = H.species.get_random_spanish_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.spanish_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
 			else if (ishuman(src) && src.faction == SPANISH)
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
@@ -305,6 +297,16 @@
 						H.real_name = H.species.get_random_spanish_name(H.gender, FALSE)
 					else
 						H.real_name = H.client.prefs.spanish_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+		if (istype(new_language, /datum/language/portuguese))
+			if (ishuman(src) && src.faction == PIRATES)
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client && H.faction == PIRATES)
+					if (H.client.prefs.be_random_name_portuguese)
+						H.real_name = H.species.get_random_portuguese_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.portuguese_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 			else if (ishuman(src) && src.faction == PORTUGUESE)
@@ -316,6 +318,16 @@
 						H.real_name = H.client.prefs.portuguese_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+		if (istype(new_language, /datum/language/french))
+			if (ishuman(src) && src.faction == PIRATES)
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client && H.faction == PIRATES)
+					if (H.client.prefs.be_random_name_french)
+						H.real_name = H.species.get_random_french_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.french_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
 			else if (ishuman(src) && src.faction == FRENCH)
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
@@ -325,7 +337,8 @@
 						H.real_name = H.client.prefs.french_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
-			else if (ishuman(src) && src.faction == INDIANS)
+		if (istype(new_language, /datum/language/carib))
+			if (ishuman(src) && src.faction == INDIANS)
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					if (H.client.prefs.be_random_name_carib)

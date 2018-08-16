@@ -18,7 +18,7 @@ var/global/list/valid_coordinates = list()
 
 
 /proc/check_coords_check()
-	return (!map || (map.british_can_cross_blocks() && map.pirates_can_cross_blocks()))
+	return (!map || (map.faction2_can_cross_blocks() && map.faction1_can_cross_blocks()))
 
 /mob/living/carbon/human/proc/Check_Coordinates()
 	set category = "Officer"

@@ -82,14 +82,14 @@
 					return TRUE
 	else return FALSE
 
-/obj/map_metadata/voyage/british_can_cross_blocks()
+/obj/map_metadata/voyage/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 100000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/voyage/pirates_can_cross_blocks()
+/obj/map_metadata/voyage/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 100000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/voyage/reinforcements_ready()
-	return (british_can_cross_blocks() && pirates_can_cross_blocks())
+	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 /obj/map_metadata/voyage/New() // since DM doesn't want to attribute random vars at the beggining...
 	..()

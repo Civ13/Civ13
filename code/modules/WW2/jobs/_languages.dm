@@ -24,7 +24,7 @@
 	default_language = "English"
 	additional_languages = list("French" = 15, "Spanish" = 15, "Portuguese" = 5)
 
-/datum/job/indian
+/datum/job/indians
 	default_language = "Carib"
 	additional_languages = list("French" = 25, "Spanish" = 25, "Portuguese" = 25, "English" = 25)
 
@@ -34,6 +34,22 @@
 	var/list/notes = list()
 
 	H.languages.Cut()
+
+	if (base_type_flag() == PIRATES)
+		if (H.client && H.client.prefs)
+			switch (H.client.prefs.pirate_ethnicity)
+				if (SPANISH)
+					H.add_language(SPANISH, TRUE)
+					H.add_note("Known Languages", "Spanish")
+					notes += "Spanish"
+				if (PORTUGUESE)
+					H.add_language(PORTUGUESE, TRUE)
+					H.add_note("Known Languages", "Portuguese")
+					notes += "Portuguese"
+				if (FRENCH)
+					H.add_language(FRENCH, TRUE)
+					H.add_note("Known Languages", "French")
+					notes += "French"
 
 	if (!H.languages.len)
 		H.add_language(default_language, TRUE)

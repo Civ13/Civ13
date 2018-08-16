@@ -85,23 +85,6 @@ proc/random_english_name(gender, species = "Human")
 	else
 		return current_species.get_random_english_name(gender)
 
-
-proc/random_pirate_name(gender, species = "Human")
-
-	var/datum/species/current_species
-
-	if (species)
-		current_species = all_species[species]
-
-	if (!current_species || current_species.name_language == null)
-		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_pirate)) + " " + capitalize(pick(last_names_pirate))
-		else
-			return capitalize(pick(first_names_male_pirate)) + " " + capitalize(pick(last_names_pirate))
-	else
-		return current_species.get_random_pirate_name(gender)
-
-
 proc/random_spanish_name(gender, species = "Human")
 	var/datum/species/current_species
 	if (species)

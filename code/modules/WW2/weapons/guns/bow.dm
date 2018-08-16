@@ -1,5 +1,3 @@
-//All the flintlock weapons
-
 /obj/item/weapon/gun/projectile/bow
 	name = "bow"
 	desc = "A simple and crude bow. Outdated but faster than muskets."
@@ -32,6 +30,7 @@
 	stat = "rifle"
 	move_delay = 5
 	fire_delay = 5
+	loaded = list()
 
 	accuracy_list = list(
 
@@ -78,12 +77,8 @@
 			VERY_LONG_RANGE_MOVING = 32),
 	)
 
-	load_delay = 30 //15 seconds for rifles, 12 seconds for pistols & blunderbuss
+	load_delay = 30
 	aim_miss_chance_divider = 3.00
-
-/obj/item/weapon/gun/projectile/bow/New()
-	..()
-	loaded = 0
 
 /obj/item/weapon/gun/projectile/bow/handle_post_fire()
 	..()
@@ -93,11 +88,11 @@
 /obj/item/weapon/gun/projectile/bow/load_ammo(var/obj/item/A, mob/user)
 	..()
 	icon_state = "bow_loaded"
+	qdel(A)
 
 /obj/item/weapon/gun/projectile/bow/unload_ammo(mob/user, var/allow_dump=1)
 
 	icon_state = "bow"
-	icon_state = "bow_loaded"
 
 /obj/item/weapon/gun/projectile/bow/update_icon()
 

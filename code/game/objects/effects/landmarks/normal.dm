@@ -179,6 +179,14 @@
 			qdel(src)
 			return
 
+		// NATIVE LANDMARKS
+		if ("JoinLateIND")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
 /////////////////
 
 		if ("endgame_exit")

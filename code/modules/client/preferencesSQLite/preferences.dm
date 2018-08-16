@@ -22,7 +22,6 @@ var/list/preferences_datums = list()
 
 	//character preferences
 	var/real_name = "John Doe"						//our character's name
-	var/pirate_name = "Eric Kidd"
 	var/english_name = "John Adams"
 	var/spanish_name = "Juan Garcia"
 	var/french_name = "Mathieu Bertrand"
@@ -36,6 +35,7 @@ var/list/preferences_datums = list()
 	var/be_random_name_portuguese = FALSE
 	var/be_random_name_english = FALSE
 	var/gender = MALE					//gender of character (well duh)
+	var/pirate_ethnicity = ENGLISH
 
 	var/body_build = "Default"			//character body build name
 	var/age = 25						//age of character
@@ -55,14 +55,6 @@ var/list/preferences_datums = list()
 	var/r_skin = FALSE						//Skin color
 	var/g_skin = FALSE						//Skin color
 	var/b_skin = FALSE						//Skin color
-
-	var/german_r_skin = FALSE						//Skin color
-	var/german_g_skin = FALSE						//Skin color
-	var/german_b_skin = FALSE						//Skin color
-
-	var/pirate_r_skin = FALSE						//Skin color
-	var/pirate_g_skin = FALSE						//Skin color
-	var/pirate_b_skin = FALSE						//Skin color
 
 	var/r_eyes = FALSE						//Eye color
 	var/g_eyes = FALSE						//Eye color
@@ -150,14 +142,12 @@ var/list/preferences_datums = list()
 			load_preferences(1)
 		else
 			real_name = random_name(gender, species)
-			pirate_name = random_pirate_name(gender, species)
 			english_name = random_english_name(gender, species)
 			french_name = random_french_name(gender, species)
 			portuguese_name = random_portuguese_name(gender, species)
 			spanish_name = random_spanish_name(gender, species)
 			carib_name = random_carib_name(gender, species)
 			remember_preference("real_name", real_name)
-			remember_preference("pirate_name", pirate_name)
 			remember_preference("english_name", english_name)
 			remember_preference("french_name", french_name)
 			remember_preference("spanish_name", spanish_name)

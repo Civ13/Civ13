@@ -188,6 +188,14 @@
 					affecting.wounds.Cut()
 					H_user.bad_external_organs -= affecting
 
+/obj/item/stack/medical/advanced/bruise_pack/herbs
+	name = "healing herbs"
+	singular_name = "healing herbs"
+	desc = "A bunch of healing herbs collected from the jungle. Helps clean the wounds."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "healing_herbs"
+	item_state = null
+
 /obj/item/stack/medical/advanced/ointment
 	name = "advanced burn kit"
 	singular_name = "advanced burn kit"
@@ -217,8 +225,8 @@
 				if (!do_mob(user, M, 10))
 					user << "<span class='notice'>You must stand still to salve wounds.</span>"
 					return TRUE
-				user.visible_message( 	"<span class='notice'>[user] covers wounds on [M]'s [affecting.name] with regenerative membrane.</span>", \
-										"<span class='notice'>You cover wounds on [M]'s [affecting.name] with regenerative membrane.</span>" )
+				user.visible_message( 	"<span class='notice'>[user] covers wounds on [M]'s [affecting.name] with a healing ointment.</span>", \
+										"<span class='notice'>You cover wounds on [M]'s [affecting.name] with a healing ointment .</span>" )
 				affecting.heal_damage(0,heal_burn)
 				use(1)
 				affecting.salve()

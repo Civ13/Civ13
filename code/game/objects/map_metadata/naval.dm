@@ -41,13 +41,13 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = TRUE
 	return .
-/obj/map_metadata/naval/british_can_cross_blocks()
+/obj/map_metadata/naval/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/naval/pirates_can_cross_blocks()
+/obj/map_metadata/naval/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/naval/reinforcements_ready()
-	return (british_can_cross_blocks() && pirates_can_cross_blocks())
+	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 #undef NO_WINNER

@@ -25,11 +25,6 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 
 	/* start setting up pirate, british names*/
 
-	pref.pirate_name		= sanitize_name(pref.pirate_name, pref.species)
-	if (!pref.pirate_name)
-		pref.pirate_name	= random_pirate_name(pref.gender, pref.species)
-
-
 	pref.english_name		= sanitize_name(pref.english_name, pref.species)
 	if (!pref.english_name)
 		pref.english_name	= random_english_name(pref.gender, pref.species)
@@ -54,7 +49,6 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 
 //	pref.spawnpoint		= sanitize_inlist(pref.spawnpoint, spawntypes, initial(pref.spawnpoint))
 	pref.be_random_name	= sanitize_integer(pref.be_random_name, FALSE, TRUE, initial(pref.be_random_name))
-	pref.be_random_name_pirate	= sanitize_integer(pref.be_random_name_pirate, FALSE, TRUE, initial(pref.be_random_name_pirate))
 	pref.be_random_name_english	= sanitize_integer(pref.be_random_name_english, FALSE, TRUE, initial(pref.be_random_name_english))
 	pref.be_random_name_french	= sanitize_integer(pref.be_random_name_french, FALSE, TRUE, initial(pref.be_random_name_french))
 	pref.be_random_name_spanish	= sanitize_integer(pref.be_random_name_spanish, FALSE, TRUE, initial(pref.be_random_name_spanish))
@@ -68,14 +62,8 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "(<a href='?src=\ref[src];random_name=1'>Random Name</A>) "
 	. += "(<a href='?src=\ref[src];always_random_name=1'>Always Random Name: [pref.be_random_name ? "Yes" : "No"]</a>)"
 	. += "<br><br>"
-	// pirate name
-	. += "<b>Pirate Name:</b> "
-	. += "<a href='?src=\ref[src];rename_pirate=1'><b>[pref.pirate_name]</b></a><br>"
-	. += "(<a href='?src=\ref[src];random_name_pirate=1'>Random Name</A>) "
-	. += "(<a href='?src=\ref[src];always_random_name_pirate=1'>Always Random Name: [pref.be_random_name_pirate ? "Yes" : "No"]</a>)"
-	. += "<br><br>"
 	// british name
-	. += "<b>British Name:</b> "
+	. += "<b>English Name:</b> "
 	. += "<a href='?src=\ref[src];rename_english=1'><b>[pref.english_name]</b></a><br>"
 	. += "(<a href='?src=\ref[src];random_name_english=1'>Random Name</A>) "
 	. += "(<a href='?src=\ref[src];always_random_name_english=1'>Always Random Name: [pref.be_random_name_english ? "Yes" : "No"]</a>)"
@@ -104,7 +92,8 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<b>Default Gender:</b> <a href='?src=\ref[src];gender=1'><b>[capitalize(lowertext(pref.gender))]</b></a><br>"
 	. += "<br>"
 	. += "<br><br>"
-
+	. += "<b>Pirate Ethnicity:</b> <a href='?src=\ref[src];ethnicity_pirate=1'><b>[capitalize(lowertext(pref.pirate_ethnicity))]</b></a><br>"
+	. += "<br><br>"
 
 //	var/client/client = pref.client
 
@@ -131,27 +120,6 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 
 	else if (href_list["always_random_name"])
 		pref.be_random_name = !pref.be_random_name
-		return TOPIC_REFRESH
-
-
-	//pirate names
-	if (href_list["rename_pirate"])
-		var/raw_name = input(user, "Choose your character's pirate name:", "Character Name")  as text|null
-		if (!isnull(raw_name) && CanUseTopic(user))
-			var/new_name = sanitize_name(raw_name, pref.species)
-			if (new_name)
-				pref.pirate_name = new_name
-				return TOPIC_REFRESH
-			else
-				user << "<span class='warning'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and .</span>"
-				return TOPIC_NOACTION
-
-	else if (href_list["random_name_pirate"])
-		pref.pirate_name = random_pirate_name(pref.gender, pref.species)
-		return TOPIC_REFRESH
-
-	else if (href_list["always_random_name_pirate"])
-		pref.be_random_name_pirate = !pref.be_random_name_pirate
 		return TOPIC_REFRESH
 
 	//english names
@@ -258,6 +226,9 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 		pref.gender = next_in_list(pref.gender, valid_player_genders)
 		return TOPIC_REFRESH
 
+	else if (href_list["ethnicity_pirate"])
+		pref.pirate_ethnicity = next_in_list(pref.pirate_ethnicity, list(ENGLISH, SPANISH, PORTUGUESE, FRENCH))
+		return TOPIC_REFRESH
 
 	else if (href_list["body_build"])
 		pref.body_build = input("Body Shape", "Body") in list("Default", "Slim", "Fat")

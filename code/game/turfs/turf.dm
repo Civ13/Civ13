@@ -60,7 +60,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/dirt = FALSE
 
 	var/datum/scheduled_task/unwet_task
-	var/datum/scheduled_task/flooding_task
+//	var/datum/scheduled_task/flooding_task
 	var/interior = TRUE
 	var/stepsound = null
 	var/floor_type= null

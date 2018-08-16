@@ -11,6 +11,25 @@
 	icon_state = "[rand(1,3)]"
 	color = "#c8c8c8"
 
+/obj/structure/grille/logfence
+	name = "fence"
+	desc = "An old wooden fence."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "oldfence"
+	health = 22
+	hitsound = 'sound/effects/wooddoorhit.ogg'
+
+/obj/structure/wallclock
+	name = "wall clock"
+	desc = "A classic wall clock."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wall_clock"
+
+/obj/structure/potted_plant
+	name = "potted plant"
+	desc = "A potted plant."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "potted_plant"
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'

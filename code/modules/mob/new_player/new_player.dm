@@ -436,7 +436,7 @@
 		return
 
 	if (job.is_deathmatch)
-		if (map && map.pirates_can_cross_blocks())
+		if (map && map.faction1_can_cross_blocks())
 			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
 			return
 	spawning = TRUE

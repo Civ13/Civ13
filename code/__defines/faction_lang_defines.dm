@@ -20,3 +20,18 @@
 
 	if (constant == BRITISH)
 		return "Royal Navy"
+
+	if (constant == CIVILIAN)
+		return "Civilians"
+
+	if (constant == INDIANS)
+		return "Natives"
+
+	if (constant == PORTUGUESE)
+		return "Portuguese Navy"
+
+	if (constant == SPANISH)
+		return "Spanish Navy"
+
+	if (constant == FRENCH)
+		return "French Navy"

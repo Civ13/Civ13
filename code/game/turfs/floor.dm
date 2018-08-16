@@ -134,6 +134,7 @@
 
 //water flowing between floor tiles.
 //there is also a proc for water flowing from holes/rivers/seas to floor tiles.
+/*
 /turf/floor/proc/flood_into()
 	if (water_level > 1)
 		var/turf/floor/TW = locate(x+1,y,z)
@@ -160,9 +161,8 @@
 			TS.water_level +=1
 			get_move_delay()
 			TW.get_move_delay()
-	if (flooding_task)
-		flooding_task.trigger_task_in(8 SECONDS)
-	else
-		flooding_task = schedule_task_in(8 SECONDS)
-		task_triggered_event.register(flooding_task, src, /turf/floor/proc/flood_into)
+	spawn(80)
+		call(/turf/floor/proc/flood_into)
 
+
+*/

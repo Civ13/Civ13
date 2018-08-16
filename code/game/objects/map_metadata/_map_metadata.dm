@@ -25,6 +25,10 @@ var/global/obj/map_metadata/map = null
 	var/reinforcements = TRUE
 	var/custom_loadout = TRUE // set to false to prevent people to spawn with guns and ammo on POW Camp map
 	var/squad_spawn_locations = TRUE
+
+//faction stuff
+	var/faction1 = BRITISH
+	var/faction2 = PIRATES
 	var/no_subfaction_chance = TRUE
 	var/subfaction_is_main_faction = FALSE
 	var/list/faction_organization = list()
@@ -39,9 +43,8 @@ var/global/obj/map_metadata/map = null
 		"Fish in the Sea:1" = 'sound/music/shanties/fish_in_the_sea.ogg',
 		"Spanish Ladies:1" = 'sound/music/shanties/spanish_ladies.ogg',
 		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
-	var/mission_start_message = "Mission will start soon!"
-//	)
-	// stuff ported from removed game mode system
+	var/mission_start_message = "Round will start soon!"
+
 	var/required_players = 2
 	var/time_both_sides_locked = -1
 	var/time_to_end_round_after_both_sides_locked = 6000
@@ -100,34 +103,34 @@ var/global/obj/map_metadata/map = null
 // called from the map process
 /obj/map_metadata/proc/tick()
 
-	if (last_crossing_block_status[PIRATES] == FALSE)
-		if (pirates_can_cross_blocks())
-			world << cross_message(PIRATES)
+	if (last_crossing_block_status[faction1] == FALSE)
+		if (faction1_can_cross_blocks())
+			world << cross_message(faction1)
 			// let new players see the reinforcements links
 			for (var/np in new_player_mob_list)
 				if (np:client)
 					np:new_player_panel_proc()
 
-	else if (last_crossing_block_status[PIRATES] == TRUE)
-		if (!pirates_can_cross_blocks())
-			world << reverse_cross_message(PIRATES)
+	else if (last_crossing_block_status[faction1] == TRUE)
+		if (!faction1_can_cross_blocks())
+			world << reverse_cross_message(faction1)
 			// let new players see the reinforcements links
 			for (var/np in new_player_mob_list)
 				if (np:client)
 					np:new_player_panel_proc()
 
 
-	if (last_crossing_block_status[BRITISH] == FALSE)
-		if (british_can_cross_blocks())
-			world << cross_message(BRITISH)
+	if (last_crossing_block_status[faction2] == FALSE)
+		if (faction2_can_cross_blocks())
+			world << cross_message(faction2)
 			// let new players see the reinforcements links
 			for (var/np in new_player_mob_list)
 				if (np:client)
 					np:new_player_panel_proc()
 
-	else if (last_crossing_block_status[BRITISH] == TRUE)
-		if (!british_can_cross_blocks())
-			world << reverse_cross_message(BRITISH)
+	else if (last_crossing_block_status[faction2] == TRUE)
+		if (!faction2_can_cross_blocks())
+			world << reverse_cross_message(faction2)
 			// let new players see the reinforcements links
 			for (var/np in new_player_mob_list)
 				if (np:client)
@@ -140,8 +143,8 @@ var/global/obj/map_metadata/map = null
 		if (!specialfaction_can_cross_blocks())
 			world << reverse_cross_message(event_faction)
 
-	last_crossing_block_status[BRITISH] = british_can_cross_blocks()
-	last_crossing_block_status[PIRATES] = pirates_can_cross_blocks()
+	last_crossing_block_status[faction2] = faction2_can_cross_blocks()
+	last_crossing_block_status[faction1] = faction1_can_cross_blocks()
 
 
 	if (event_faction)
@@ -162,23 +165,23 @@ var/global/obj/map_metadata/map = null
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (PIRATES)
-					return !pirates_can_cross_blocks()
 				if (BRITISH)
-					return !british_can_cross_blocks()
+					return !faction1_can_cross_blocks()
+				if (PIRATES)
+					return !faction2_can_cross_blocks()
 	return FALSE
 
-/obj/map_metadata/proc/pirates_can_cross_blocks()
+/obj/map_metadata/proc/faction1_can_cross_blocks()
 	return TRUE
 
-/obj/map_metadata/proc/british_can_cross_blocks()
+/obj/map_metadata/proc/faction2_can_cross_blocks()
 	return TRUE
 
 /obj/map_metadata/proc/specialfaction_can_cross_blocks()
 	return TRUE
 
 /obj/map_metadata/proc/game_really_started()
-	return (pirates_can_cross_blocks() && british_can_cross_blocks())
+	return (faction1_can_cross_blocks() && faction2_can_cross_blocks())
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
 	return TRUE
@@ -374,6 +377,16 @@ var/global/obj/map_metadata/map = null
 			return "British"
 		if (PIRATES)
 			return "Pirate"
+		if (CIVILIAN)
+			return "Civilian"
+		if (INDIANS)
+			return "Native"
+		if (FRENCH)
+			return "French"
+		if (PORTUGUESE)
+			return "Portuguese"
+		if (SPANISH)
+			return "Spanish"
 
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
@@ -381,6 +394,16 @@ var/global/obj/map_metadata/map = null
 			return "Royal Navy"
 		if (PIRATES)
 			return "Pirate crew"
+		if (CIVILIAN)
+			return "Civilians"
+		if (INDIANS)
+			return "Natives"
+		if (FRENCH)
+			return "French Navy"
+		if (PORTUGUESE)
+			return "Portuguese Navy"
+		if (SPANISH)
+			return "Spanish Navy"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
@@ -388,7 +411,16 @@ var/global/obj/map_metadata/map = null
 			return "British"
 		if ("Pirate crew")
 			return "Pirate"
-
+		if ("Civilians")
+			return "Civilian"
+		if ("Natives")
+			return "Native"
+		if ("French Navy")
+			return "French"
+		if ("Portuguese Navy")
+			return "Portuguese"
+		if ("Spanish Navy")
+			return "Spanish"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 
