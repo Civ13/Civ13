@@ -236,10 +236,17 @@ var/indians_forceEnabled = FALSE
 	var/total_pirates = alive_pirates.len + dead_pirates.len + heavily_injured_pirates.len
 	var/total_british = alive_british.len + dead_british.len + heavily_injured_british.len
 	var/total_civilians = alive_civilians.len + dead_civilians.len + heavily_injured_civilians.len
-
+	var/total_spanish = alive_spanish.len + dead_spanish.len + heavily_injured_spanish.len
+	var/total_indians = alive_indians.len + dead_indians.len + heavily_injured_indians.len
+	var/total_french = alive_french.len + dead_french.len + heavily_injured_french.len
+	var/total_portuguese = alive_portuguese.len + dead_portuguese.len + heavily_injured_portuguese.len
 
 	var/mortality_coefficient_pirates = 0
 	var/mortality_coefficient_british = 0
+	var/mortality_coefficient_spanish = 0
+	var/mortality_coefficient_portuguese = 0
+	var/mortality_coefficient_french = 0
+	var/mortality_coefficient_indians = 0
 	var/mortality_coefficient_civilian = 0
 
 	if (dead_british.len > 0)
@@ -248,17 +255,38 @@ var/indians_forceEnabled = FALSE
 	if (dead_pirates.len > 0)
 		mortality_coefficient_pirates = dead_pirates.len/total_pirates
 
+	if (dead_indians.len > 0)
+		mortality_coefficient_indians = dead_indians.len/total_indians
+
+	if (dead_spanish.len > 0)
+		mortality_coefficient_spanish = dead_spanish.len/total_spanish
+
+	if (dead_portuguese.len > 0)
+		mortality_coefficient_portuguese = dead_portuguese.len/total_portuguese
+
+	if (dead_french.len > 0)
+		mortality_coefficient_french = dead_french.len/total_french
+
 	if (dead_civilians.len > 0)
 		mortality_coefficient_civilian = dead_civilians.len/total_civilians
 
-
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
+	var/mortality_civilian = round(mortality_coefficient_civilian*100)
+	var/mortality_french = round(mortality_coefficient_french*100)
+	var/mortality_spanish = round(mortality_coefficient_spanish*100)
+	var/mortality_portuguese = round(mortality_coefficient_portuguese*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
 
 	var/msg1 = "British Side: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
 	var/msg2 = "Pirate Side: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
 	var/msg3 = "Civilians: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+	var/msg3 = "Spanish: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+	var/msg3 = "Portuguese: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+	var/msg3 = "French: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+	var/msg3 = "Natives: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+
+
 
 	if (map && !map.faction_organization.Find(BRITISH))
 		msg1 = null
@@ -266,6 +294,14 @@ var/indians_forceEnabled = FALSE
 		msg2 = null
 	if (map && !map.faction_organization.Find(CIVILIAN))
 		msg3 = null
+	if (map && !map.faction_organization.Find(SPANISH))
+		msg4 = null
+	if (map && !map.faction_organization.Find(PORTUGUESE))
+		msg5 = null
+	if (map && !map.faction_organization.Find(FRENCH))
+		msg6 = null
+	if (map && !map.faction_organization.Find(INDIANS))
+		msg7 = null
 
 	var/public = "Yes"
 
@@ -284,6 +320,14 @@ var/indians_forceEnabled = FALSE
 				world << "<font size=3>[msg2]</font>"
 			if (msg3)
 				world << "<font size=3>[msg3]</font>"
+			if (msg4)
+				world << "<font size=3>[msg3]</font>"
+			if (msg5)
+				world << "<font size=3>[msg3]</font>"
+			if (msg6)
+				world << "<font size=3>[msg3]</font>"
+			if (msg7)
+				world << "<font size=3>[msg3]</font>"
 
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
@@ -296,3 +340,11 @@ var/indians_forceEnabled = FALSE
 			shower << msg2
 		if (msg3)
 			shower << msg3
+		if (msg4)
+			shower << msg4
+		if (msg5)
+			shower << msg5
+		if (msg6)
+			shower << msg6
+		if (msg7)
+			shower << msg7
