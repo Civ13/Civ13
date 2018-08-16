@@ -110,9 +110,16 @@ obj/structure/wild/burnedbush
 	opacity = FALSE
 	density = FALSE
 
-obj/structure/wild/junglebush
+/*obj/structure/wild/junglebush
 	name = "jungle vegetation"
 	icon_state = "jungle1"
+	opacity = FALSE
+	density = FALSE
+*/
+obj/structure/wild/junglebush
+	name = "jungle vegetation"
+	icon = 'icons/obj/flora/jungleflora.dmi'
+	icon_state = "1"
 	opacity = FALSE
 	density = FALSE
 
@@ -149,11 +156,15 @@ obj/structure/wild/rock
 
 	icon_state = "burnedbush[rand(1,5)]"
 
-/obj/structure/wild/junglebush/New()
+/*/obj/structure/wild/junglebush/New()
 	..()
 
 	icon_state = "jungle[rand(1,6)]"
+*/
+/obj/structure/wild/junglebush/New()
+	..()
 
+	icon_state = "[rand(1,30)]"
 
 /obj/structure/wild/burnedtree/New()
 	..()
@@ -164,3 +175,21 @@ obj/structure/wild/rock
 	..()
 
 	icon_state = "rock[rand(1,5)]"
+
+/obj/structure/wild/jungle
+	name = "jungle tree"
+	icon = 'icons/obj/flora/jungletreesmall.dmi'
+	icon_state = "tree1"
+	opacity = TRUE
+	density = TRUE
+	sways = FALSE
+	bound_x = -32
+
+/obj/structure/wild/jungle/fire_act(temperature)
+	if (prob(15 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] collapses.</span>")
+		qdel(src)
+
+/obj/structure/wild/jungle/New()
+	..()
+	icon_state = "tree[rand(1,7)]"

@@ -6,6 +6,7 @@
 	sound_env = STANDARD_STATION
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
+	ambience = list("sound/ambience/ship1.ogg")
 
 /area/caribbean/New()
 	..()

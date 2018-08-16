@@ -258,20 +258,25 @@
 		new_language = language
 	else
 		new_language = all_languages[language]
-
+	var/cname_check = TRUE
 
 	for (var/v in 1 to languages.len)
+		var/datum/language/l = languages[v]
+		if (l)
+			if (istype(l, /datum/language/english))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/carib))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/spanish))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/portuguese))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/french))
+				cname_check = FALSE
+
+	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
-			if (ishuman(src) && src.faction == PIRATES)
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client && H.faction == PIRATES)
-					if (H.client.prefs.be_random_name_english)
-						H.real_name = H.species.get_random_english_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.english_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.gender
-			else if (ishuman(src) && src.faction == BRITISH)
+			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					if (H.client.prefs.be_random_name_english)
@@ -281,16 +286,7 @@
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 		if (istype(new_language, /datum/language/spanish))
-			if (ishuman(src) && src.faction == PIRATES)
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client && H.faction == PIRATES)
-					if (H.client.prefs.be_random_name_spanish)
-						H.real_name = H.species.get_random_spanish_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.spanish_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.gender
-			else if (ishuman(src) && src.faction == SPANISH)
+			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					if (H.client.prefs.be_random_name_spanish)
@@ -299,17 +295,9 @@
 						H.real_name = H.client.prefs.spanish_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+
 		if (istype(new_language, /datum/language/portuguese))
-			if (ishuman(src) && src.faction == PIRATES)
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client && H.faction == PIRATES)
-					if (H.client.prefs.be_random_name_portuguese)
-						H.real_name = H.species.get_random_portuguese_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.portuguese_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.gender
-			else if (ishuman(src) && src.faction == PORTUGUESE)
+			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					if (H.client.prefs.be_random_name_portuguese)
@@ -318,17 +306,9 @@
 						H.real_name = H.client.prefs.portuguese_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+
 		if (istype(new_language, /datum/language/french))
-			if (ishuman(src) && src.faction == PIRATES)
-				var/mob/living/carbon/human/H = src
-				if (H.species && H.client && H.faction == PIRATES)
-					if (H.client.prefs.be_random_name_french)
-						H.real_name = H.species.get_random_french_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.french_name
-					H.name = H.real_name
-					H.gender = H.client.prefs.gender
-			else if (ishuman(src) && src.faction == FRENCH)
+			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					if (H.client.prefs.be_random_name_french)
@@ -337,8 +317,9 @@
 						H.real_name = H.client.prefs.french_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+
 		if (istype(new_language, /datum/language/carib))
-			if (ishuman(src) && src.faction == INDIANS)
+			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
 					if (H.client.prefs.be_random_name_carib)

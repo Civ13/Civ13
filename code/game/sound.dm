@@ -136,8 +136,7 @@ var/list/charge_sounds_pir = list(
 	'sound/effects/emotes/charge_pir.ogg',
 	'sound/effects/emotes/charge_pir2.ogg',)
 var/list/charge_sounds_ind = list(
-	'sound/effects/emotes/charge_eng.ogg',
-	'sound/effects/emotes/god_save_the_king.ogg',)
+	'sound/effects/emotes/charge_ind.ogg',)
 var/list/charge_sounds_pt = list(
 	'sound/effects/emotes/charge_eng.ogg',
 	'sound/effects/emotes/god_save_the_king.ogg',)

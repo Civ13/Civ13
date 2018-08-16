@@ -14,12 +14,15 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
 	SL_check_independent = TRUE
+	is_officer = TRUE
 
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 5
+	max_positions = 10
 /datum/job/indians/carib_chief/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chief_hat(H), slot_head)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/indianchief(H), slot_w_uniform)
 
@@ -56,7 +59,7 @@
 
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 5
+	max_positions = 10
 /datum/job/indians/carib_shaman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -98,8 +101,8 @@
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
-	min_positions = 6
-	max_positions = 20
+	min_positions = 20
+	max_positions = 100
 
 /datum/job/indians/carib/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

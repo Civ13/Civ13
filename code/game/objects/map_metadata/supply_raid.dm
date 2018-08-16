@@ -10,20 +10,22 @@
 //	min_autobalance_players = 90
 	faction_organization = list(
 		BRITISH,
-		PIRATES)
+		INDIANS)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/british/land,
-		list(PIRATES) = /area/caribbean/pirates/land
+		list(INDIANS) = /area/caribbean/pirates/land
 		)
 	front = "Pacific"
-	faction_distribution_coeffs = list(BRITISH = 0.5, PIRATES = 0.5)
+	faction_distribution_coeffs = list(BRITISH = 0.5, INDIANS = 0.5)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
 	battle_name = "Supply Raid"
 	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the combat starts.</font>"
+	faction1 = BRITISH
+	faction2 = INDIANS
 
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))

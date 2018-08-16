@@ -23,11 +23,6 @@
 	if (!user.IsAdvancedToolUser())
 		return
 
-	if ((CLUMSY in user.mutations) && prob(50))
-		user << "<span class='warning'>Uh ... how do those things work?!</span>"
-		place_handcuffs(user, user)
-		return
-
 	if (!C.handcuffed)
 		if (C == user)
 			place_handcuffs(user, user)
@@ -109,3 +104,9 @@ var/last_chew = FALSE
 		H:UpdateDamageIcon()
 
 	last_chew = world.time
+
+/obj/item/weapon/handcuffs/rope
+	name = "rope handcuffs"
+	desc = "Use this to keep prisoners in line."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "ropecuffs"

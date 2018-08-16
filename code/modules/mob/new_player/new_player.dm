@@ -246,6 +246,85 @@
 			reinforcements_master.add(src, BRITISH)
 		else
 			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
+
+	if (href_list["re_portuguese"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!reinforcements_master.is_permalocked(PORTUGUESE))
+			if (client.prefs.s_tone < -65)
+				usr << "<span class='danger'>You are too dark to be a Portuguese soldier.</span>"
+				return
+			reinforcements_master.add(src, PORTUGUESE)
+		else
+			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
+
+
+	if (href_list["re_spanish"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!reinforcements_master.is_permalocked(SPANISH))
+			if (client.prefs.s_tone < -65)
+				usr << "<span class='danger'>You are too dark to be a Spanish soldier.</span>"
+				return
+			reinforcements_master.add(src, SPANISH)
+		else
+			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
+
+
+	if (href_list["re_french"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!reinforcements_master.is_permalocked(FRENCH))
+			if (client.prefs.s_tone < -45)
+				usr << "<span class='danger'>You are too dark to be a French soldier.</span>"
+				return
+			reinforcements_master.add(src, FRENCH)
+		else
+			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
+
+	if (href_list["re_indians"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!reinforcements_master.is_permalocked(INDIANS))
+			if (client.prefs.s_tone < -195)
+				usr << "<span class='danger'>You are too dark to be a Native.</span>"
+				return
+			if (client.prefs.s_tone > -100)
+				usr << "<span class='danger'>Your skin is too light for you to be a Native.</span>"
+				return
+			reinforcements_master.add(src, INDIANS)
+		else
+			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
+
+
 	if (href_list["re_pirate"])
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -264,7 +343,14 @@
 		reinforcements_master.remove(src, BRITISH)
 	if (href_list["unre_pirate"])
 		reinforcements_master.remove(src, PIRATES)
-
+	if (href_list["unre_portuguese"])
+		reinforcements_master.remove(src, PORTUGUESE)
+	if (href_list["unre_spanish"])
+		reinforcements_master.remove(src, SPANISH)
+	if (href_list["unre_french"])
+		reinforcements_master.remove(src, FRENCH)
+	if (href_list["unre_indians"])
+		reinforcements_master.remove(src, INDIANS)
 	if (href_list["late_join"])
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -438,6 +524,13 @@
 	if (job.is_deathmatch)
 		if (map && map.faction1_can_cross_blocks())
 			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
+			return
+	if (istype(job, /datum/job/indians))
+		if (client.prefs.s_tone < -145)
+			usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
+			return
+		if (client.prefs.s_tone > -100)
+			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
 			return
 	spawning = TRUE
 	close_spawn_windows()

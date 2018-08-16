@@ -190,7 +190,7 @@
 
 /obj/item/stack/medical/advanced/bruise_pack/herbs
 	name = "healing herbs"
-	singular_name = "healing herbs"
+	singular_name = "healing herb"
 	desc = "A bunch of healing herbs collected from the jungle. Helps clean the wounds."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "healing_herbs"

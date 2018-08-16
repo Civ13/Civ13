@@ -309,12 +309,17 @@
 	icon_state = "indian2"
 	item_state = "indian2"
 
-	/obj/item/clothing/accessory/armband/indianshaman
+/obj/item/clothing/accessory/armband/indianshaman
 	name = "indian shaman bodypaint"
 	desc = "red and white bodypaint, worn by native shamans."
 	icon_state = "indianshaman"
 	item_state = "indianshaman"
 
+/obj/item/clothing/head/chief_hat
+	name = "Chief hat"
+	desc = "A hat made with withe feathers. Worn by tribal leaders."
+	icon_state = "chief_hat"
+	item_state = "chief_hat"
 /////////Portuguese/////////
 
 /obj/item/clothing/under/portuguese_sailor1
