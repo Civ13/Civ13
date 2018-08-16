@@ -106,6 +106,7 @@
 					update_icon()
 	if (state != STATE_STEWING)
 		return
+	qdel(I)
 	var/obj/item/weapon/reagent_containers/food/snacks/stew_wood/w_stew = new
 	if (stew_desc)
 		w_stew.name = stew_desc

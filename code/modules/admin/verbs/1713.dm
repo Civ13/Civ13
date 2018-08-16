@@ -276,15 +276,15 @@ var/indians_forceEnabled = FALSE
 	var/mortality_french = round(mortality_coefficient_french*100)
 	var/mortality_spanish = round(mortality_coefficient_spanish*100)
 	var/mortality_portuguese = round(mortality_coefficient_portuguese*100)
-	var/mortality_civilian = round(mortality_coefficient_civilian*100)
+	var/mortality_indians = round(mortality_coefficient_indians*100)
 
 	var/msg1 = "British Side: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
 	var/msg2 = "Pirate Side: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
 	var/msg3 = "Civilians: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
-	var/msg3 = "Spanish: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
-	var/msg3 = "Portuguese: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
-	var/msg3 = "French: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
-	var/msg3 = "Natives: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
+	var/msg4 = "Spanish: [alive_spanish.len] alive, [heavily_injured_spanish.len] heavily injured or unconscious, [dead_spanish.len] deceased. Mortality rate: [mortality_spanish]%"
+	var/msg5 = "Portuguese: [alive_portuguese.len] alive, [heavily_injured_portuguese.len] heavily injured or unconscious, [dead_portuguese.len] deceased. Mortality rate: [mortality_portuguese]%"
+	var/msg6 = "French: [alive_french.len] alive, [heavily_injured_french.len] heavily injured or unconscious, [dead_french.len] deceased. Mortality rate: [mortality_french]%"
+	var/msg7 = "Natives: [alive_indians.len] alive, [heavily_injured_indians.len] heavily injured or unconscious, [dead_indians.len] deceased. Mortality rate: [mortality_indians]%"
 
 
 
@@ -321,13 +321,13 @@ var/indians_forceEnabled = FALSE
 			if (msg3)
 				world << "<font size=3>[msg3]</font>"
 			if (msg4)
-				world << "<font size=3>[msg3]</font>"
+				world << "<font size=3>[msg4]</font>"
 			if (msg5)
-				world << "<font size=3>[msg3]</font>"
+				world << "<font size=3>[msg5]</font>"
 			if (msg6)
-				world << "<font size=3>[msg3]</font>"
+				world << "<font size=3>[msg6]</font>"
 			if (msg7)
-				world << "<font size=3>[msg3]</font>"
+				world << "<font size=3>[msg7]</font>"
 
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
