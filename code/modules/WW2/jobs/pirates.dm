@@ -154,7 +154,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 5
+	max_positions = 8
 
 /datum/job/pirates/midshipman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -190,7 +190,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 2
+	max_positions = 5
 
 /datum/job/pirates/surgeon/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -228,7 +228,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 3
+	max_positions = 5
 
 /datum/job/pirates/carpenter/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -279,7 +279,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 3
+	max_positions = 5
 
 /datum/job/pirates/cook/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -335,7 +335,7 @@
 
 	// AUTOBALANCE
 	min_positions = 6
-	max_positions = 20
+	max_positions = 60
 
 /datum/job/pirates/seaman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
