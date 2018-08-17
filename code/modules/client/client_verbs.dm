@@ -314,7 +314,7 @@
 			ooc_style = "moderator"
 		if (holder.rights & R_DEBUG)
 			ooc_style = "developer"
-		if (holder.rights & R_ADMIN)
+		if (holder.rights & R_PERMISSIONS)
 			ooc_style = "admin"
 
 	for (var/client/target in clients)
