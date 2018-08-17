@@ -331,3 +331,12 @@
 	icon_state = "green5"
 	location = AREA_INSIDE
 	base_turf = /turf/floor/broken_floor
+
+/area/caribbean/indians
+	name = "Natives"
+
+/area/caribbean/indians/camp
+	name = "Native Camp"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
