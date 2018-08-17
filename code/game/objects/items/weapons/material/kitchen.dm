@@ -116,50 +116,16 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.3
 
-/obj/item/weapon/material/kitchen/utensil/knife/boot/trench_knife
-	name = "trench knife"
-	desc = "this knife is good when your charging, stabbing, cutting heads and good at slicing yours mothers pepperoni."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "trench_knife"
+/obj/item/weapon/material/kitchen/utensil/knife/bone
+	name = "cerimonial bone knife"
+	desc = "A small knife with a bone blade and obsidian handle."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "boneknife"
 	item_state = "knife"
 	applies_material_colour = FALSE
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.3
-
-/obj/item/weapon/material/kitchen/utensil/knife/boot/nr40_knife
-	name = "german knife"
-	desc = "standerd german knife that you can put into your boot."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "nr40_knife"
-	item_state = "knife"
-	applies_material_colour = FALSE
-	unbreakable = TRUE
-	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
-
-/obj/item/weapon/material/kitchen/utensil/knife/boot/bowie_knife
-	name = "bowie knife"
-	desc = "every thing is bigger in mother russia."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "bowie_knife"
-	item_state = "knife"
-	applies_material_colour = FALSE
-	unbreakable = TRUE
-	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
-
-/obj/item/weapon/material/kitchen/utensil/knife/boot/nr40_knife_SS
-	name = "SS dagger"
-	desc = "'My loyalty is my honor."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "nr40_knife_SS"
-	item_state = "knife"
-	applies_material_colour = FALSE
-	unbreakable = TRUE
-	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
-
 
 /obj/item/weapon/material/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))

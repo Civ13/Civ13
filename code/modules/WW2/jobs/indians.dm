@@ -68,6 +68,8 @@
 	var/obj/item/clothing/accessory/armband/indianshaman_a = new /obj/item/clothing/accessory/armband/indianshaman(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianshaman_a, H)
+
+	H.equip_to_slot_or_del(/obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_belt)
 	//todo: poisonous arrows
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver(H), slot_back)
