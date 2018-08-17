@@ -135,17 +135,17 @@
 		H.remove_from_mob(I)
 		H.equip_to_slot(w_stew, slot_r_hand)
 
-		qdel(I)
-		--bowls
+	qdel(I)
+	--bowls
 
-		if (bowls <= 0)
-			state = STATE_EMPTY
-			stew_desc = ""
-			stew_nutriment_desc.Cut()
-			stew_nutriment = 0
-			stew_protein = 0
-			fullness = 0
-			update_icon()
+	if (bowls <= 0)
+		state = STATE_EMPTY
+		stew_desc = ""
+		stew_nutriment_desc.Cut()
+		stew_nutriment = 0
+		stew_protein = 0
+		fullness = 0
+		update_icon()
 
 /obj/structure/pot/attack_hand(var/mob/living/carbon/human/H)
 	if (!istype(H))
