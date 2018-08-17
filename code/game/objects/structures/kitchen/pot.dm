@@ -73,7 +73,7 @@
 				update_icon()
 			H << "<span class = 'notice'>[H] fills the pot with some water. It's about [fullness]% full.</span>"
 			return
-	else if (!istype(I, /obj/item/trash/snack_bowl) && !istype(I, /obj/item/trash/wood_bowl))
+	else if (!istype(I, /obj/item/trash/snack_bowl) || !istype(I, /obj/item/trash/wood_bowl))
 		if (istype(I, /obj/item/weapon/reagent_containers/food))
 			if (!list(STATE_WATER, STATE_BOILING).Find(state))
 				return
