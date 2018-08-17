@@ -31,6 +31,12 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "potted_plant"
 
+/obj/structure/impaledskull
+	name = "impaled skull"
+	desc = "A skull on a spike."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "impaledskull"
+
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
 	icon_state = "black"
