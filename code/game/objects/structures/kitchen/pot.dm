@@ -134,39 +134,7 @@
 	else if (H.r_hand == I)
 		H.remove_from_mob(I)
 		H.equip_to_slot(w_stew, slot_r_hand)
-/*
-	else if (istype(I, /obj/item/trash/snack_bowl))
-		if (state != STATE_STEWING)
-			return
-		var/obj/item/weapon/reagent_containers/food/snacks/stew/stew = new
-		if (stew_desc)
-			stew.name = stew_desc
-			stew.nutriment_desc.Cut()
 
-			for (var/desc in stew_nutriment_desc)
-				stew.nutriment_desc[desc] = 1
-
-		if (stew_nutriment)
-			stew.reagents.remove_reagent("nutriment", 500)
-			stew.reagents.add_reagent("nutriment", stew_nutriment)
-
-		if (stew_protein)
-			stew.reagents.remove_reagent("protein", 500)
-			stew.reagents.add_reagent("protein", stew_protein)
-
-		for (var/datum/reagent/R in reagents.reagent_list)
-			var/amt = ceil(R.volume/initial_bowls)
-			stew.reagents.maximum_volume += amt
-			stew.reagents.add_reagent(R.id, amt)
-
-		if (H.l_hand == I)
-			H.remove_from_mob(I)
-			H.equip_to_slot(stew, slot_l_hand)
-
-		else if (H.r_hand == I)
-			H.remove_from_mob(I)
-			H.equip_to_slot(stew, slot_r_hand)
-*/
 		qdel(I)
 		--bowls
 
