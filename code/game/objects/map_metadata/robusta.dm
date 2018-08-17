@@ -10,12 +10,14 @@
 //	min_autobalance_players = 90
 	faction_organization = list(
 		BRITISH,
-		PIRATES)
+		PIRATES,
+		INDIANS)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/british/land,
-		list(PIRATES) = /area/caribbean/pirates/land
+		list(PIRATES) = /area/caribbean/pirates/land,
+		list(INDIANS) = list(/area/caribbean/pirates/land, /area/caribbean/british/land),
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(BRITISH = 0.5, PIRATES = 0.5)

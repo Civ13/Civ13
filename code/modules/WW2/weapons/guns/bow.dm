@@ -30,7 +30,6 @@
 	stat = "rifle"
 	move_delay = 5
 	fire_delay = 5
-	loaded = list()
 
 	accuracy_list = list(
 
@@ -80,19 +79,57 @@
 	load_delay = 30
 	aim_miss_chance_divider = 3.00
 
+/obj/item/weapon/gun/projectile/bow/New()
+	..()
+	loaded = list()
+	chambered = null
+
 /obj/item/weapon/gun/projectile/bow/handle_post_fire()
 	..()
 	loaded -= chambered
 	chambered = null
 
 /obj/item/weapon/gun/projectile/bow/load_ammo(var/obj/item/A, mob/user)
-	..()
-	icon_state = "bow_loaded"
-	qdel(A)
+	if (world.time < user.next_load)
+		return
+
+	if (load_delay && !do_after(user, load_delay, src, can_move = TRUE))
+		return
+
+	user.next_load = world.time + 1
+	if (istype(A, /obj/item/ammo_casing))
+		var/obj/item/ammo_casing/C = A
+		if (caliber != C.caliber)
+			return //incompatible
+		if (loaded.len >= max_shells)
+			user << "<span class='warning'>the [src] already has an arrow ready!</span>"
+			return
+
+		user.remove_from_mob(C)
+		C.loc = src
+		loaded.Insert(1, C) //add to the head of the list
+		user.visible_message("[user] inserts \an [C] into the [src].", "<span class='notice'>You insert \an [C] into the [src].</span>")
+		icon_state = "bow_loaded"
+		if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 
 /obj/item/weapon/gun/projectile/bow/unload_ammo(mob/user, var/allow_dump=1)
+	if (ammo_magazine)
+		user.put_in_hands(ammo_magazine)
 
-	icon_state = "bow"
+		if (unload_sound) playsound(loc, unload_sound, 75, TRUE)
+		ammo_magazine.update_icon()
+		ammo_magazine = null
+	else if (loaded.len)
+		if (load_method & SINGLE_CASING)
+			var/obj/item/ammo_casing/C = loaded[loaded.len]
+			loaded.len--
+			user.put_in_hands(C)
+			user.visible_message("[user] removes \an [C] from the [src].", "<span class='notice'>You remove \an [C] from the [src].</span>")
+			icon_state = "bow"
+			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
+	else
+		user << "<span class='warning'>[src] is empty.</span>"
+	update_icon()
 
 /obj/item/weapon/gun/projectile/bow/update_icon()
 
@@ -108,3 +145,4 @@
 		user.visible_message("", "<span class='danger'>You don't have an arrow here!</span>")
 	else
 		visible_message("")
+	return

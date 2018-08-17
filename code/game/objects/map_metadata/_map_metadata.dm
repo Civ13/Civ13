@@ -165,9 +165,9 @@ var/global/obj/map_metadata/map = null
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (BRITISH)
+				if (BRITISH, PORTUGUESE, FRENCH, SPANISH)
 					return !faction1_can_cross_blocks()
-				if (PIRATES)
+				if (PIRATES, INDIANS)
 					return !faction2_can_cross_blocks()
 	return FALSE
 
