@@ -382,12 +382,46 @@ menu "menu"
 		command = "hotkeys-help"
 		category = "&Help"
 		saved-params = "is-checked"
+	elem 
+		name = "Suggestion"
+		command = "makeasugg"
+		category = "&Help"
+		saved-params = "is-checked"
+	elem 
+		name = "Report Bugs"
+		command = "reportabug"
+		category = "&Help"
+		saved-params = "is-checked"
+	elem 
+		name = "Links"
+		command = ""
+		saved-params = "is-checked"
+	elem 
+		name = "Discord"
+		command = "discord"
+		category = "Links"
+		saved-params = "is-checked"
+	elem 
+		name = "Wiki"
+		command = "wiki"
+		category = "Links"
+		saved-params = "is-checked"
+	elem 
+		name = "Rules"
+		command = "rules"
+		category = "Links"
+		saved-params = "is-checked"
+	elem 
+		name = "Github"
+		command = "github"
+		category = "Links"
+		saved-params = "is-checked"
 
 
 window "chemdispenser"
 	elem "chemdispenser"
 		type = MAIN
-		pos = 464,0
+		pos = 372,0
 		size = 340x480
 		anchor1 = none
 		anchor2 = none
@@ -470,7 +504,7 @@ window "chemdispenser"
 window "chemdispenser_reagents"
 	elem "chemdispenser_reagents"
 		type = MAIN
-		pos = 464,0
+		pos = 372,0
 		size = 340x448
 		anchor1 = none
 		anchor2 = none
@@ -491,7 +525,6 @@ window "chemdispenser_reagents"
 		is-visible = false
 		saved-params = "is-checked"
 		text = "Dispense"
-		image = 'icons\\dispensebutton_bg.png'
 		command = ""
 		is-flat = true
 	elem "template_name"
@@ -504,7 +537,6 @@ window "chemdispenser_reagents"
 		is-visible = false
 		saved-params = ""
 		text = "Chloral Hydrate"
-		image = 'icons\\reagentname_bg.png'
 		image-mode = stretch
 
 window "mainwindow"
@@ -514,6 +546,7 @@ window "mainwindow"
 		size = 640x440
 		anchor1 = none
 		anchor2 = none
+		background-color = none
 		is-default = true
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Space Station 13"
@@ -526,6 +559,7 @@ window "mainwindow"
 		size = 80x20
 		anchor1 = 100,100
 		anchor2 = none
+		background-color = none
 		saved-params = ""
 		text = "Hotkey Toggle"
 		command = ".winset \"mainwindow.macro!=macro ? mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true : mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
@@ -556,6 +590,7 @@ window "mainwindow"
 		size = 40x20
 		anchor1 = 100,100
 		anchor2 = none
+		background-color = none
 		saved-params = "is-checked"
 		text = "Chat"
 		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" macrobutton.is-checked=false:input.command=\""
@@ -564,10 +599,11 @@ window "mainwindow"
 window "mapwindow"
 	elem "mapwindow"
 		type = MAIN
-		pos = 464,0
+		pos = 372,0
 		size = 640x480
 		anchor1 = none
 		anchor2 = none
+		background-color = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		titlebar = false
 		statusbar = false
@@ -591,10 +627,11 @@ window "mapwindow"
 window "outputwindow"
 	elem "outputwindow"
 		type = MAIN
-		pos = 464,0
+		pos = 372,0
 		size = 640x480
 		anchor1 = none
 		anchor2 = none
+		background-color = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		titlebar = false
 		statusbar = false
@@ -617,7 +654,7 @@ window "outputwindow"
 window "browserwindow"
 	elem "browserwindow"
 		type = MAIN
-		pos = 464,0
+		pos = 372,0
 		size = 640x480
 		anchor1 = none
 		anchor2 = none
@@ -639,8 +676,8 @@ window "browserwindow"
 window "infowindow"
 	elem "infowindow"
 		type = MAIN
-		pos = 464,0
-		size = 640x480
+		pos = 372,0
+		size = 420x480
 		anchor1 = none
 		anchor2 = none
 		background-color = #000000
@@ -655,20 +692,19 @@ window "infowindow"
 	elem "info"
 		type = INFO
 		pos = 0,16
-		size = 640x464
+		size = 420x464
 		anchor1 = 0,3
 		anchor2 = 100,100
 		font-family = "Book Antiqua"
 		font-size = 8
 		text-color = #e1e1d7
-		background-color = #1e1e28
+		background-color = #271a0c
 		is-default = true
-		border = line
 		drop-zone = false
 		saved-params = ""
-		highlight-color = #00aa00
+		highlight-color = #ff8040
 		tab-text-color = #e1e1d7
-		tab-background-color = #282832
+		tab-background-color = #271a0c
 		tab-font-family = "Book Antiqua"
 		tab-font-size = 9
 		on-show = ".winset\"rpane.infob.is-visible=true;rpane.browseb.is-visible=true?rpane.infob.pos=130,0:rpane.infob.pos=65,0 rpane.textb.is-visible=true rpane.infob.is-checked=true rpane.rpanewindow.pos=0,30 rpane.rpanewindow.size=0x0 rpane.rpanewindow.left=infowindow\""
@@ -677,10 +713,11 @@ window "infowindow"
 window "rpane"
 	elem "rpane"
 		type = MAIN
-		pos = 464,0
-		size = 947x480
+		pos = 372,0
+		size = 420x457
 		anchor1 = none
 		anchor2 = none
+		background-color = #000000
 		saved-params = "pos;size;is-minimized;is-maximized"
 		titlebar = false
 		statusbar = false
@@ -691,115 +728,33 @@ window "rpane"
 	elem "rpanewindow"
 		type = CHILD
 		pos = 0,0
-		size = 947x505
+		size = 420x482
 		anchor1 = 0,0
 		anchor2 = 100,100
-		background-color = #1e1e28
+		background-color = #271a0c
 		saved-params = "splitter"
 		left = "buttons"
 		right = "outputwindow"
 		is-vert = false
-	elem "button7"
-		type = BUTTON
-		pos = 789,0
-		size = 158x22
-		anchor1 = 83,0
-		anchor2 = 100,5
-		font-family = "Book Antiqua"
-		font-size = 7
-		font-style = "bold"
-		text-color = #ffffff
-		background-color = #40628a
-		border = line
-		saved-params = "is-checked"
-		text = "Suggestion"
-		command = "makeasugg"
-		group = "rpanemode"
-	elem "button6"
-		type = BUTTON
-		pos = 631,0
-		size = 158x22
-		anchor1 = 67,0
-		anchor2 = 83,5
-		font-family = "Book Antiqua"
-		font-size = 7
-		font-style = "bold"
-		text-color = #ffffff
-		background-color = #40628a
-		border = line
-		saved-params = "is-checked"
-		text = "Report Bug"
-		command = "reportabug"
-		group = "rpanemode"
-	elem "rulesb"
-		type = BUTTON
-		pos = 315,0
-		size = 158x22
-		anchor1 = 33,0
-		anchor2 = 50,5
-		font-family = "Book Antiqua"
-		font-size = 7
-		font-style = "bold"
-		text-color = #ffffff
-		background-color = #40628a
-		border = line
-		saved-params = "is-checked"
-		text = "Rules"
-		command = "rules"
-		group = "rpanemode"
-	elem "discord"
-		type = BUTTON
-		pos = 473,0
-		size = 158x22
-		anchor1 = 50,0
-		anchor2 = 67,5
-		font-family = "Book Antiqua"
-		font-size = 7
-		font-style = "bold"
-		text-color = #ffffff
-		background-color = #40628a
-		border = line
-		saved-params = "is-checked"
-		text = "Discord"
-		command = "discord"
-		group = "rpanemode"
-	elem "forumb"
-		type = BUTTON
-		pos = 157,0
-		size = 158x22
-		anchor1 = 17,0
-		anchor2 = 33,5
-		font-family = "Book Antiqua"
-		font-size = 7
-		font-style = "bold"
-		text-color = #ffffff
-		background-color = #40628a
-		border = line
-		saved-params = "is-checked"
-		text = "Github"
-		command = "github"
-		group = "rpanemode"
-	elem "wikib"
-		type = BUTTON
+		splitter = 30
+	elem "Title"
+		type = LABEL
 		pos = 0,0
-		size = 157x22
+		size = 420x20
 		anchor1 = 0,0
-		anchor2 = 17,5
-		font-family = "Book Antiqua"
-		font-size = 7
-		font-style = "bold"
-		text-color = #ffffff
-		background-color = #40628a
-		border = line
-		saved-params = "is-checked"
-		text = "Wiki"
-		command = "wiki"
-		group = "rpanemode"
+		anchor2 = 100,4
+		font-family = "Bookman Old Style"
+		font-size = 12
+		font-style = "bold italic"
+		text-color = #e1e1d7
+		background-color = #271a0c
+		saved-params = ""
+		text = "1713"
 
 window "text_editor"
 	elem "text_editor"
 		type = MAIN
-		pos = 464,0
+		pos = 372,0
 		size = 360x488
 		anchor1 = none
 		anchor2 = none

@@ -7,7 +7,7 @@
 // .info					{color: #E1E1FF;} -> this is removed because it was the same as .notice
 
 client/script = {"<style>
-body					{font-family: "Book Antiqua", Verdana, sans-serif; font-size: 0.75em; background-color: #1E1E28; color: #E1E1D7}
+body					{font-family: "Book Antiqua", Verdana, sans-serif; font-size: 0.75em; background-color: #271a0c; color: #E1E1D7}
 
 h1, h2, h3, h4, h5, h6	{color: #E1E1FF; font-family: "Book Antiqua", Georgia, Verdana, sans-serif;}
 
@@ -34,7 +34,7 @@ a, a:link, a:visited, :active, a:hover
 .ooc .looc				{color: #75B5B5;}
 .ooc .elevated			{color: #2e78d9;}
 .ooc .moderator			{color: #184880;}
-.ooc .developer			{color: #1b521f;}
+.ooc .developer			{color: #39ac41;}
 .ooc .admin				{color: #b82e00;}
 
 /* Admin: Private Messages */

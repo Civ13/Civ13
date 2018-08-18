@@ -64,7 +64,7 @@ body
 {
 	padding: 0;
 	margin: 0;
-	background-color: #272727;
+	background-color: #271a0c;
 	font-size: 12px;
 	color: #ffffff;
 	line-height: 170%;
@@ -72,7 +72,7 @@ body
 
 hr
 {
-	background-color: #40628a;
+	background-color: #271a0c;
 	height: 1px;
 }
 
@@ -80,8 +80,8 @@ a, a:link, a:visited, a:active, .linkOn, .linkOff
 {
 	color: #ffffff;
 	text-decoration: none;
-	background: #40628a;
-	border: 1px solid #161616;
+	background: #404040;
+	border: 1px solid #3d3d29;
 	padding: 1px 4px 1px 4px;
 	margin: 0 2px 0 0;
 	cursor:default;
@@ -89,16 +89,16 @@ a, a:link, a:visited, a:active, .linkOn, .linkOff
 
 a:hover
 {
-	color: #40628a;
-	background: #ffffff;
+	color: #ebebe0;
+	background: #7a7a52;
 }
 
 a.white, a.white:link, a.white:visited, a.white:active
 {
-	color: #40628a;
+	color: #ebebe0;
 	text-decoration: none;
 	background: #ffffff;
-	border: 1px solid #161616;
+	border: 1px solid #3d3d29;
 	padding: 1px 4px 1px 4px;
 	margin: 0 2px 0 0;
 	cursor:default;
@@ -107,21 +107,21 @@ a.white, a.white:link, a.white:visited, a.white:active
 a.white:hover
 {
 	color: #ffffff;
-	background: #40628a;
+	background: #bfbfbf;
 }
 
 .linkOn, a.linkOn:link, a.linkOn:visited, a.linkOn:active, a.linkOn:hover
 {
 	color: #ffffff;
-	background: #2f943c;
-	border-color: #24722e;
+	background: #595959;
+	border-color: #888888;
 }
 
 .linkOff, a.linkOff:link, a.linkOff:visited, a.linkOff:active, a.linkOff:hover
 {
 	color: #ffffff;
 	background: #999999;
-	border-color: #666666;
+	border-color: #888888;
 }
 
 a.icon, .linkOn.icon, .linkOff.icon
@@ -160,7 +160,7 @@ h1, h2, h3, h4, h5, h6
 {
 	margin: 0;
 	padding: 16px 0 8px 0;
-	color: #517087;
+	color: #eaeae1;
 }
 
 h1
@@ -195,7 +195,7 @@ h4
 {
 	clear: both;
 	padding: 6px 8px 6px 8px;
-	border-bottom: 2px solid #161616;
+	border-bottom: 2px solid #3d3d29;
 	background: #383838;
 	color: #98B0C3;
 	font-size: 16px;
@@ -255,7 +255,7 @@ h4
 
 .dark
 {
-	color: #272727;
+	color: #3e2a14;
 }
 
 .notice
@@ -292,7 +292,7 @@ div.notice
 {
 	background: #000000;
 	color: #ffffff;
-	border: 1px solid #40628a;
+	border: 1px solid #ebebe0;
 	padding: 4px;
 	margin: 3px 0;
 }
@@ -301,8 +301,8 @@ div.notice
 {
 	padding: 8px;
 	margin: 10px 4px 4px 4px;
-	border: 1px solid #40628a;
-	background-color: #202020;
+	border: 1px solid #ebebe0;
+	background-color: #3e2a14;
 }
 
 .block h3
@@ -324,7 +324,7 @@ div.notice
 {
 	width: 100%;
 	height: 100%;
-	background: #40628a;
+	background: #ebebe0;
 	overflow: hidden;
 }
 
