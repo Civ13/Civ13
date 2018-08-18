@@ -26,6 +26,7 @@
 //	meme = TRUE
 	battle_name = "Isla Robusta"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the combat starts.</font>"
+	ambience = list('sound/ambience/jungle1.ogg')
 
 obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))

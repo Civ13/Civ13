@@ -18,7 +18,7 @@
 		list(INDIANS) = /area/caribbean/pirates/land
 		)
 	front = "Pacific"
-	faction_distribution_coeffs = list(BRITISH = 0.5, INDIANS = 0.5)
+	faction_distribution_coeffs = list(BRITISH = 0.35, INDIANS = 0.65)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
@@ -26,6 +26,7 @@
 	mission_start_message = "<font size=4>All factions have <b>6 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = BRITISH
 	faction2 = INDIANS
+	ambience = list('sound/ambience/jungle1.ogg')
 
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))

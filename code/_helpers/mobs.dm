@@ -133,9 +133,9 @@ proc/random_carib_name(gender, species = "Human")
 
 	if (!current_species || current_species.name_language == null)
 		if (gender==FEMALE)
-			return capitalize(pick(first_names_female_carib)) + " " + capitalize(pick(last_names_carib))
+			return capitalize(pick(first_names_female_carib))
 		else
-			return capitalize(pick(first_names_male_carib)) + " " + capitalize(pick(last_names_carib))
+			return capitalize(pick(first_names_male_carib))
 	else
 		return current_species.get_random_carib_name(gender)
 proc/random_skin_tone()

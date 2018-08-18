@@ -77,7 +77,7 @@
 	item_state = "mouse_[body_color]"
 	icon_living = "mouse_[body_color]"
 	icon_dead = "mouse_[body_color]_dead"
-	desc = "It's a small [body_color] rodent, often seen hiding in maintenance areas and making a nuisance of itself."
+	desc = "It's a small [body_color] rodent, often seen hiding in the ship's hull and making a nuisance of itself."
 
 /mob/living/simple_animal/mouse/proc/splat()
 	health = FALSE

@@ -286,9 +286,9 @@
 /datum/species/proc/get_random_carib_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_carib)) + " " + capitalize(pick(last_names_carib, gender))
+			return capitalize(pick(first_names_female_carib))
 		else
-			return capitalize(pick(first_names_male_carib)) + " " + capitalize(pick(last_names_carib, gender))
+			return capitalize(pick(first_names_male_carib))
 
 	var/datum/language/species_language = all_languages[name_language]
 	if (!species_language)
