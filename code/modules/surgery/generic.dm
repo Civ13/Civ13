@@ -26,6 +26,7 @@
 	/obj/item/weapon/surgery/scalpel = 100,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
+	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100 \
 	)
 
 	min_duration = 90
@@ -188,7 +189,8 @@
 /datum/surgery_step/generic/amputate
 	allowed_tools = list(
 	/obj/item/weapon/surgery/bone_saw = 100, \
-	/obj/item/weapon/material/hatchet = 75
+	/obj/item/weapon/material/hatchet = 75, \
+	/obj/item/weapon/material/kitchen/utensil/knife/bone = 75
 	)
 
 	min_duration = 110

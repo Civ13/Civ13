@@ -12,13 +12,14 @@
 			return FALSE
 
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && !(affected.status & ORGAN_ROBOT) && affected.encased && affected.open >= 2
+		return affected && affected.encased && affected.open >= 1
 
 
 /datum/surgery_step/open_encased/saw
 	allowed_tools = list(
 	/obj/item/weapon/surgery/bone_saw = 100, \
-	/obj/item/weapon/material/hatchet = 75
+	/obj/item/weapon/material/hatchet = 75, \
+	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100 \
 	)
 
 	min_duration = 50
@@ -28,7 +29,7 @@
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return ..() && affected && affected.open == 2
+		return ..() && affected && affected.open == 1
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
@@ -49,7 +50,7 @@
 
 		user.visible_message("<span class = 'notice'>[user] has cut [target]'s [affected.encased] open with \the [tool].</span>",		\
 		"<span class = 'notice'>You have cut [target]'s [affected.encased] open with \the [tool].</span>")
-		affected.open = 2.5
+		affected.open = 1.5
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
@@ -77,7 +78,7 @@
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return ..() && affected && affected.open == 2.5
+		return ..() && affected && affected.open == 1.5
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
@@ -101,7 +102,7 @@
 		var/self_msg = "<span class = 'notice'>You force open [target]'s [affected.encased] with \the [tool].</span>"
 		user.visible_message(msg, self_msg)
 
-		affected.open = 3
+		affected.open = 2
 
 		// Whoops!
 		if (prob(10))
@@ -134,7 +135,7 @@
 		if (!hasorgans(target))
 			return
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return ..() && affected && affected.open == 3
+		return ..() && affected && affected.open == 2.5
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
@@ -158,7 +159,7 @@
 		var/self_msg = "<span class = 'notice'>You bend [target]'s [affected.encased] back into place with \the [tool].</span>"
 		user.visible_message(msg, self_msg)
 
-		affected.open = 2.5
+		affected.open = 1
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 

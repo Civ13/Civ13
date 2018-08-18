@@ -220,7 +220,7 @@ obj/structure/wild/rock
 		if (healthamount == 1)
 			if (prob(25))
 				user << "You harvest some medicinal leaves."
-				var/newherbs = new /obj/item/stack/medical/advanced/bruise_pack/herbs(user)
+				new /obj/item/stack/medical/advanced/bruise_pack/herbs(user)
 				healthamount = 0
 			else
 				user << "You couldn't find any good leaves in this plant."

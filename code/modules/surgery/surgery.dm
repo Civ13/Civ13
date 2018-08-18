@@ -99,18 +99,19 @@ proc/do_surgery(mob/living/carbon/M, mob/living/user, obj/item/tool)
 				M.op_stage.in_progress += zone
 				S.begin_step(user, M, zone, tool)		//start on it
 				//We had proper tools! (or RNG smiled.) and user did not move or change hands.
-				if (prob(S.tool_quality(tool, user)) && do_mob(user, M, rand(S.min_duration, S.max_duration)))
+				if (prob(S.tool_quality(tool, user)) && do_after(user, rand(S.min_duration, S.max_duration), M))//&& do_mob(user, M, rand(S.min_duration, S.max_duration), FALSE) && user.Adjacent(M))
 					S.end_step(user, M, zone, tool)		//finish successfully
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("medical", 1)
-				else if ((tool in user.contents) && user.Adjacent(M))			//or
-					// better solution to combat surgery, nothing happens unless you were doing it for a while - Kachnov
-					var/failtime = world.time
-					if (failtime - starttime >= (S.min_duration * 0.5))
-						S.fail_step(user, M, zone, tool)		//malpractice~
-				else // This failing silently was a pain.
-					user << "<span class='warning'>You must remain close to your patient to conduct surgery.</span>"
+				else if (tool in user.contents)
+					if (user.Adjacent(M))			//or
+						// better solution to combat surgery, nothing happens unless you were doing it for a while - Kachnov
+						var/failtime = world.time
+						if (failtime - starttime >= (S.min_duration * 0.5))
+							S.fail_step(user, M, zone, tool)		//malpractice
+					else // This failing silently was a pain.
+						user << "<span class='warning'>You must remain close to your patient to conduct surgery.</span>"
 				M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 				if (ishuman(M))
 					var/mob/living/carbon/human/H = M

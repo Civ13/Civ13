@@ -3,9 +3,8 @@
  *		Retractor
  *		Hemostat
  *		Cautery
- *		Surgical Drill
  *		Scalpel
- *		Circular Saw
+ *		Bone Saw
  */
 
 /*

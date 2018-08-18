@@ -10,7 +10,7 @@
 		return FALSE
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return affected && affected.open == (affected.encased ? 3 : 2)
+	return affected && affected.open == (affected.encased ? 2 : 1)
 
 //////////////////////////////////////////////////////////////////
 //				CHEST INTERNAL ORGAN SURGERY					//
@@ -41,9 +41,9 @@
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/tool_name = "\the [tool]"
 		if (istype(tool, /obj/item/stack/medical/advanced/bruise_pack))
-			tool_name = "regenerative membrane"
+			tool_name = "healing ointment"
 		else if (istype(tool, /obj/item/stack/medical/bruise_pack))
-			tool_name = "the bandaid"
+			tool_name = "the bandage"
 
 		if (!hasorgans(target))
 			return
@@ -61,9 +61,9 @@
 	end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/tool_name = "\the [tool]"
 		if (istype(tool, /obj/item/stack/medical/advanced/bruise_pack))
-			tool_name = "regenerative membrane"
+			tool_name = "healing ointment"
 		if (istype(tool, /obj/item/stack/medical/bruise_pack))
-			tool_name = "the bandaid"
+			tool_name = "the bandage"
 
 		if (!hasorgans(target))
 			return
@@ -104,6 +104,7 @@
 	/obj/item/weapon/surgery/scalpel = 100,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
+	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
 	)
 
 	min_duration = 90
@@ -163,7 +164,8 @@
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
 	/obj/item/weapon/wirecutters = 75,	\
-	/obj/item/weapon/material/kitchen/utensil/fork = 20
+	/obj/item/weapon/material/kitchen/utensil/fork = 20, \
+	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
 	)
 
 	min_duration = 60
