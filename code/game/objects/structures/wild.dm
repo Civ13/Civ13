@@ -66,9 +66,8 @@
 /obj/structure/wild/proc/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
-		if (amount > 0)
-			for(var/i = FALSE; i < amount; i++)
-				new /obj/item/stack/material/wood(src)
+		for(var/i = FALSE; i < amount; i++)
+			new /obj/item/stack/material/wood(src)
 		qdel(src)
 		return
 
