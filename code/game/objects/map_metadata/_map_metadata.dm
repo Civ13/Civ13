@@ -303,6 +303,10 @@ var/global/obj/map_metadata/map = null
 	var/list/soldiers = list(
 		CIVILIAN = 0,
 		BRITISH = 0,
+		PORTUGUESE = 0,
+		SPANISH = 0,
+		FRENCH = 0,
+		INDIANS = 0,
 		PIRATES = 0)
 
 	if (!(side in soldiers))

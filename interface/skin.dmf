@@ -680,7 +680,7 @@ window "infowindow"
 		size = 420x480
 		anchor1 = none
 		anchor2 = none
-		background-color = #000000
+		background-color = #271a0c
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Info"
 		titlebar = false
@@ -717,7 +717,7 @@ window "rpane"
 		size = 420x457
 		anchor1 = none
 		anchor2 = none
-		background-color = #000000
+		background-color = #271a0c
 		saved-params = "pos;size;is-minimized;is-maximized"
 		titlebar = false
 		statusbar = false

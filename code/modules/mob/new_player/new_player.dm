@@ -90,19 +90,7 @@
 	else
 		output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
-	var/height = 300
-	if (reinforcements_master && reinforcements_master.is_ready() && client && !client.quickBan_isbanned("Penal"))
-		height = 350
-		if (!reinforcements_master.has(src))
-			output += "<p><a href='byond://?src=\ref[src];re_british=1'>Join as an Axis reinforcement!</A></p>"
-			output += "<p><a href='byond://?src=\ref[src];re_pirate=1'>Join as an Allied reinforcement!</A></p>"
-		else
-			if (reinforcements_master.has(src, BRITISH))
-				output += "<p><a href='byond://?src=\ref[src];unre_british=1'>Leave the Axis reinforcement pool.</A></p>"
-			else if (reinforcements_master.has(src, PIRATES))
-				output += "<p><a href='byond://?src=\ref[src];unre_pirate=1'>Leave the Allies reinforcement pool.</A></p>"
-	else
-		output += "<p><i>Reinforcements are not available yet.</i></p>"
+	var/height = 250
 
 	output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 

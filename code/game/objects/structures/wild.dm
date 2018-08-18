@@ -66,8 +66,6 @@
 /obj/structure/wild/proc/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
-		for(var/i = FALSE; i < amount; i++)
-			new /obj/item/stack/material/wood(src)
 		qdel(src)
 		return
 
@@ -112,6 +110,21 @@
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 
+/obj/structure/wild/tree/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 3
+		qdel(src)
+		return
+
+/obj/structure/wild/palm/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 2
+		qdel(src)
+		return
 /obj/structure/wild/palm/New()
 	..()
 	icon_state = pick("palm1","palm2")
@@ -220,6 +233,8 @@ obj/structure/wild/rock
 	bound_height = 64
 	bound_width = 32
 	amount = 6
+	health = 200
+	maxhealth = 200
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -229,3 +244,11 @@ obj/structure/wild/rock
 /obj/structure/wild/jungle/New()
 	..()
 	icon_state = "tree[rand(1,7)]"
+
+/obj/structure/wild/jungle/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 6
+		qdel(src)
+		return
