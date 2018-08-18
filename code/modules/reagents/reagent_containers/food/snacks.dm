@@ -254,8 +254,39 @@
 //		reagents.add_reagent("xenomicrobes", 10)						//This is what is in the food item. you may copy/paste
 //		reagents.add_reagent("nutriment", 2)							//	this line of code for all the contents.
 //		bitesize = 3													//This is the amount each bite consumes.
+/obj/item/weapon/reagent_containers/food/snacks/hardtack
+	name = "hardtack"
+	desc = "Looks like it has been in a ship's hull for years."
+	icon_state = "hardtack1"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 2
+	nutriment_desc = list("salt" = 1, "flour" = 2)
+	New()
+		..()
+		bitesize = 2
+		icon_state = "hardtack[rand(1,2)]"
 
 
+/obj/item/weapon/reagent_containers/food/snacks/pickle
+	name = "pickle"
+	desc = "A pickle. That's it."
+	icon_state = "pickle"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 1
+	nutriment_desc = list("vinegar" = 3)
+	New()
+		..()
+		bitesize = 1
+/obj/item/weapon/reagent_containers/food/snacks/pickle/big
+	name = "big pickle"
+	desc = "Oh boy, that's a big pickle!"
+	icon_state = "pickleb"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 5
+	nutriment_desc = list("vinegar" = 5)
+	New()
+		..()
+		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/cookie
 	name = "cookie"
@@ -269,124 +300,6 @@
 		..()
 		bitesize = 1
 
-
-/obj/item/weapon/reagent_containers/food/snacks/donut
-	name = "donut"
-	desc = "Goes great with Robust Coffee."
-	icon_state = "donut1"
-	filling_color = "#D9C386"
-	var/overlay_state = "box-donut1"
-	center_of_mass = list("x"=13, "y"=16)
-	nutriment_desc = list("sweetness", "donut")
-
-/obj/item/weapon/reagent_containers/food/snacks/donut/normal
-	name = "donut"
-	desc = "Goes great with Robust Coffee."
-	icon_state = "donut1"
-	nutriment_amt = 3
-	New()
-		..()
-		reagents.add_reagent("sprinkles", 1)
-		bitesize = 3
-		if (prob(30))
-			icon_state = "donut2"
-			overlay_state = "box-donut2"
-			name = "frosted donut"
-			reagents.add_reagent("sprinkles", 2)
-			center_of_mass = list("x"=19, "y"=16)
-
-/obj/item/weapon/reagent_containers/food/snacks/donut/chaos
-	name = "Chaos Donut"
-	desc = "Like life, it never quite tastes the same."
-	icon_state = "donut1"
-	filling_color = "#ED11E6"
-	nutriment_amt = 2
-	New()
-		..()
-		reagents.add_reagent("sprinkles", 1)
-		bitesize = 10
-		var/chaosselect = pick(1,2,3,4,5,6,7,8,9,10)
-		switch(chaosselect)
-			if (1)
-				reagents.add_reagent("nutriment", 3)
-			if (2)
-				reagents.add_reagent("capsaicin", 3)
-			if (3)
-				reagents.add_reagent("frostoil", 3)
-			if (4)
-				reagents.add_reagent("sprinkles", 3)
-			if (5)
-				reagents.add_reagent("plasma", 3)
-			if (6)
-				reagents.add_reagent("coco", 3)
-			if (7)
-				reagents.add_reagent("slimejelly", 3)
-			if (8)
-				reagents.add_reagent("banana", 3)
-			if (9)
-				reagents.add_reagent("berryjuice", 3)
-			if (10)
-				reagents.add_reagent("tricordrazine", 3)
-		if (prob(30))
-			icon_state = "donut2"
-			overlay_state = "box-donut2"
-			name = "Frosted Chaos Donut"
-			reagents.add_reagent("sprinkles", 2)
-
-
-/obj/item/weapon/reagent_containers/food/snacks/donut/jelly
-	name = "Jelly Donut"
-	desc = "You jelly?"
-	icon_state = "jdonut1"
-	filling_color = "#ED1169"
-	center_of_mass = list("x"=16, "y"=11)
-	nutriment_amt = 3
-	New()
-		..()
-		reagents.add_reagent("sprinkles", 1)
-		reagents.add_reagent("berryjuice", 5)
-		bitesize = 5
-		if (prob(30))
-			icon_state = "jdonut2"
-			overlay_state = "box-donut2"
-			name = "Frosted Jelly Donut"
-			reagents.add_reagent("sprinkles", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/donut/slimejelly
-	name = "Jelly Donut"
-	desc = "You jelly?"
-	icon_state = "jdonut1"
-	filling_color = "#ED1169"
-	center_of_mass = list("x"=16, "y"=11)
-	nutriment_amt = 3
-	New()
-		..()
-		reagents.add_reagent("sprinkles", 1)
-		reagents.add_reagent("slimejelly", 5)
-		bitesize = 5
-		if (prob(30))
-			icon_state = "jdonut2"
-			overlay_state = "box-donut2"
-			name = "Frosted Jelly Donut"
-			reagents.add_reagent("sprinkles", 2)
-
-/obj/item/weapon/reagent_containers/food/snacks/donut/cherryjelly
-	name = "Jelly Donut"
-	desc = "You jelly?"
-	icon_state = "jdonut1"
-	filling_color = "#ED1169"
-	center_of_mass = list("x"=16, "y"=11)
-	nutriment_amt = 3
-	New()
-		..()
-		reagents.add_reagent("sprinkles", 1)
-		reagents.add_reagent("cherryjelly", 5)
-		bitesize = 5
-		if (prob(30))
-			icon_state = "jdonut2"
-			overlay_state = "box-donut2"
-			name = "Frosted Jelly Donut"
-			reagents.add_reagent("sprinkles", 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg
 	name = "egg"

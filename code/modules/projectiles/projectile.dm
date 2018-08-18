@@ -296,7 +296,7 @@
 	var/redirections = 0
 
 	var/obj/item/weapon/gun/projectile/mygun = firedfrom
-	if (mygun.redirection_chances.Find(def_zone))
+	if (def_zone in mygun.redirection_chances)
 		for (var/nzone in mygun.redirection_chances[def_zone])
 			if (prob(mygun.redirection_chances[def_zone][nzone]))
 				def_zone = nzone
@@ -457,15 +457,20 @@
 					if (!L.lying || T == get_turf(original) || execution)
 						// if they have a neck grab on someone, that person gets hit instead
 						var/obj/item/weapon/grab/G = locate() in L
-						if (G && G.state >= GRAB_NECK)
+						if (G && G.state >= GRAB_NECK && G.affecting.stat < UNCONSCIOUS)
 							visible_message("<span class='danger'>\The [L] uses [G.affecting] as a shield!</span>")
-							if (Bump(G.affecting, forced=1))
-								bumped = TRUE // for shrapnel
-								return FALSE
-						L.pre_bullet_act(src)
-						attack_mob(L)
-						if (!L.lying)
-							passthrough = FALSE
+							//if (Bump(G.affecting, forced=1))
+							//	bumped = TRUE // for shrapnel
+							//	return FALSE
+							G.affecting.pre_bullet_act(src)
+							attack_mob(G.affecting)
+							if (!G.affecting.lying)
+								passthrough = FALSE
+						else
+							L.pre_bullet_act(src)
+							attack_mob(L)
+							if (!L.lying)
+								passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
 					if (O.density || istype(O, /obj/structure/window/classic)) // hack

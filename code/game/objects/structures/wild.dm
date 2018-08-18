@@ -168,6 +168,7 @@ obj/structure/wild/junglebush
 	icon_state = "1"
 	opacity = FALSE
 	density = FALSE
+	var/healthamount = 1
 
 obj/structure/wild/burnedtree
 	name = "burned tree"
@@ -210,8 +211,23 @@ obj/structure/wild/rock
 */
 /obj/structure/wild/junglebush/New()
 	..()
-
 	icon_state = "[rand(1,30)]"
+
+/obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone))
+		user.do_attack_animation(src)
+		if (healthamount == 1)
+			if (prob(25))
+				user << "You harvest some medicinal leaves."
+				var/newherbs = new /obj/item/stack/medical/advanced/bruise_pack/herbs(get_turf(src))
+				healthamount = 0
+			else
+				user << "You couldn't find any good leaves in this plant."
+				healthamount = 0
+		else
+			user << "There are no leaves to harvest here."
+	..()
 
 /obj/structure/wild/burnedtree/New()
 	..()

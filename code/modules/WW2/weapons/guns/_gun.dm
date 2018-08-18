@@ -217,10 +217,11 @@
 //	log_debug("HC: [hit_chance]")
 	// We hit. Return the zone or a zone in redirection_chances[zone]
 	if (prob(hit_chance))
-		if (redirection_chances.Find(zone))
+		if (zone in redirection_chances)
 			for (var/nzone in redirection_chances[zone])
 				if (prob(redirection_chances[zone][nzone]))
 					zone = nzone
+					break
 		return zone
 	// We didn't hit, and the target is running. Give us a chance to hit something in adjacent_redirections[zone]
 	else if (target.lastMovedRecently(target.get_run_delay(), TRUE))
@@ -233,7 +234,7 @@
 
 		if (hitchance_still && hitchance_delta)
 			if (prob(ceil(hitchance_delta * 0.75)))
-				if (!adjacent_redirections.Find(zone)) // wtf
+				if (!(zone in adjacent_redirections)) // wtf
 					log_debug("No '[zone]' found in '[src].adjacent_redirections'! Returning null (_gun.dm, ~line 200)")
 					return null
 				return pick(adjacent_redirections[zone])

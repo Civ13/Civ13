@@ -182,3 +182,30 @@
 		if (!istype(C)) return
 		reagents.trans_to_obj(C, (reagents.total_volume/contents.len))
 		..()
+
+
+/*
+ * Pickle Jar
+ */
+
+/obj/item/weapon/storage/fancy/picklejar
+	name = "pickle jar"
+	desc = "a jar filled with pickles and vinegar"
+	icon = 'icons/obj/food.dmi'
+	icon_state = "picklejar"
+	throwforce = WEAPON_FORCE_NORMAL
+	storage_slots = 7
+
+
+/obj/item/weapon/storage/fancy/picklejar/New()
+	..()
+	for (var/i=1; i <= 14; i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/pickle(src)
+	return
+
+/obj/item/weapon/storage/fancy/picklejar/update_icon()
+	if (contents.len == 0)
+		icon_state = "emptyjar_open"
+	else if (contents.len < 14)
+		icon_state = "picklejar_open"
+	return

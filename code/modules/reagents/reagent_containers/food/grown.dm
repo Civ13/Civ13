@@ -20,26 +20,30 @@
 /obj/item/weapon/reagent_containers/food/snacks/grown/lemon
 	name = "lemon"
 	icon_state = "lemon"
-	color = "#eedd82"
+//	color = "#eedd82"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/lime
-	name = "lemon"
-	icon_state = "lemon"
-	color = "#32cd32"
+	name = "lime"
+	icon_state = "lime"
+//	color = "#32cd32"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/orange
-	name = "lemon"
-	icon_state = "lemon"
-	color = "#ffa500"
+	name = "orange"
+	icon_state = "orange"
+//	color = "#ffa500"
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/apple
 	name = "apple"
 	icon_state = "apple"
-	color = "#ff0000"
+//	color = "#ff0000"
+/obj/item/weapon/reagent_containers/food/snacks/grown/banana
+	name = "banana"
+	icon_state = "banana"
+/obj/item/weapon/reagent_containers/food/snacks/grown/coconut
+	name = "coconut"
+	icon_state = "coconut"
 
 // misc crops
-
-
 /obj/item/weapon/reagent_containers/food/snacks/grown/rice
 	name = "rice stalk"
 	icon_state = "rice"
