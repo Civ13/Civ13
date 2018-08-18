@@ -317,7 +317,7 @@ proc/admin_notice(var/message, var/rights)
 	usr << browse(dat, "window=adminplayerinfo;size=480x480")
 /*
 /datum/admins/proc/Jobbans()
-	if (!check_rights(R_BAN))	return
+	if (!check_rights(R_MOD))	return
 
 	var/dat = "<b>Job Bans!</b><HR><table>"
 	for (var/t in jobban_keylist)

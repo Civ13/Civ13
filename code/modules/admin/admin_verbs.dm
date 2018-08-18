@@ -19,11 +19,8 @@ var/list/admin_verbs_default = list(
 	)
 var/list/admin_verbs_admin = list(
 	/client/proc/add_to_server_whitelist,
-	/client/proc/add_to_super_whitelist,
 	/client/proc/remove_from_server_whitelist,
-	/client/proc/remove_from_super_whitelist,
 	/client/proc/view_server_whitelist,
-	/client/proc/view_super_whitelist,
 	/client/proc/eject_unwhitelisted,
 	/client/proc/enable_disable_server_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
@@ -74,9 +71,25 @@ var/list/admin_verbs_admin = list(
 	/client/proc/forcibly_enable_faction
 
 )
-var/list/admin_verbs_ban = list(
+var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_search,
-	/client/proc/quickBan_person
+	/client/proc/quickBan_person,
+	/client/proc/player_panel_new,
+	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
+	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
+	/client/proc/admin_ghost,			//allows us to ghost/reenter body at will,
+	/datum/admins/proc/toggleooc,		//toggles ooc on/off for everyone,
+	/datum/admins/proc/togglelooc,		//toggles looc on/off for everyone,
+	/datum/admins/proc/toggleoocdead,	//toggles ooc on/off for everyone who is dead,
+	/datum/admins/proc/toggledsay,		//toggles dsay on/off for everyone,
+	/client/proc/free_slot,			//frees slot for chosen job,
+	/datum/admins/proc/spawn_player_as_job,
+	/client/proc/respawn_character,
+	/client/proc/trigger_roundend,
+	/datum/admins/proc/immreboot,
+	/client/proc/Jump,
+	/client/proc/jumptomob,
+	/client/proc/jumptocoord,
 	)
 
 var/list/admin_verbs_sounds = list(
@@ -235,18 +248,12 @@ var/list/admin_verbs_mod = list(
 	/client/proc/admin_memo,			//admin memo system. show/delete/write. +SERVER needed to delete admin memos of others,
 	/client/proc/player_memo,
 	/client/proc/game_panel,			//game panel, allows to change game-mode etc,
-/*	/client/proc/allow_join_ruforce,
-	/client/proc/allow_join_geforce,
-	/client/proc/allow_rjoin_geforce,
-	/client/proc/allow_rjoin_ruforce,
-	/client/proc/force_reinforcements_geforce,
-	/client/proc/force_reinforcements_ruforce,
-	/client/proc/toggle_british_civilian_mode,
-	/client/proc/toggle_pirates_civilian_mode,*/
 	/client/proc/toggle_respawn_delays,
 	/client/proc/see_battle_report,
 	/client/proc/show_battle_report,
-	/client/proc/create_crate
+	/client/proc/create_crate,
+	/client/proc/quickBan_search,
+	/client/proc/quickBan_person
 )
 
 var/list/admin_verbs_mentor = list(
@@ -279,7 +286,6 @@ var/list/admin_verbs_host = list(
 		verbs += admin_verbs_default
 	//	if (holder.rights & R_BUILDMODE)		verbs += /client/proc/togglebuildmodeself
 		if (holder.rights & R_ADMIN)			verbs += admin_verbs_admin
-		if (holder.rights & R_BAN)			verbs += admin_verbs_ban
 		if (holder.rights & R_FUN)			verbs += admin_verbs_fun
 		if (holder.rights & R_SERVER)		verbs += admin_verbs_server
 		if (holder.rights & R_DEBUG)
@@ -297,6 +303,7 @@ var/list/admin_verbs_host = list(
 		if (holder.rights & R_SPAWN)			verbs += admin_verbs_spawn
 		if (holder.rights & R_MOD)			verbs += admin_verbs_mod
 		if (holder.rights & R_MENTOR)		verbs += admin_verbs_mentor
+		if (holder.rights & R_TRIALMASTER)		verbs += admin_verbs_trialmaster
 		if (holder.rights & R_HOST)
 			verbs += admin_verbs_host
 
@@ -305,7 +312,7 @@ var/list/admin_verbs_host = list(
 		admin_verbs_default,
 //		/client/proc/togglebuildmodeself,
 		admin_verbs_admin,
-		admin_verbs_ban,
+		admin_verbs_trialadmin,
 		admin_verbs_fun,
 		admin_verbs_server,
 		admin_verbs_debug,

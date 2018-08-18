@@ -530,7 +530,7 @@
 // Admin permissions. Please don't edit these values without speaking to Errorage first. ~Carn
 #define R_BUILDMODE     TRUE
 #define R_ADMIN         2
-#define R_BAN           4
+#define R_TRIALMASTER   4
 #define R_FUN           8
 #define R_SERVER        16
 #define R_DEBUG         32
