@@ -127,6 +127,10 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.3
 
+/obj/item/weapon/material/kitchen/utensil/knife/bone/New()
+	name = "cerimonial bone knife"
+
+
 /obj/item/weapon/material/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))
 		user << "<span class='warning'>You accidentally cut yourself with \the [src].</span>"

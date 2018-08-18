@@ -32,3 +32,4 @@
 	projectile_type = /obj/item/projectile/bullet/arrow
 	weight = 0.15
 	caliber = "arrow"
+	slot_flags = SLOT_BELT

@@ -305,7 +305,6 @@ BLIND     // can't see anything
 	if (can_hold_knife && istype(I, /obj/item/weapon/material/shard) || \
 	 istype(I, /obj/item/weapon/material/butterfly) || \
 	 istype(I, /obj/item/weapon/material/kitchen/utensil) || \
-	 istype(I, /obj/item/weapon/material/hatchet/tacknife) || \
 	 istype(I, /obj/item/weapon/material/knife) || \
 	 istype(I, /obj/item/weapon/attachment/bayonet))
 		if (holding)

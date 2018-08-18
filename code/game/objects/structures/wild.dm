@@ -3,6 +3,9 @@
 	icon_state = "tree"
 	anchored = TRUE
 	var/sways = FALSE
+	var/amount = 0 //how much wood to drop. 0 = none
+	var/health = 100
+	var/maxhealth = 100
 /*
 /obj/structure/wild/New()
 	..()*/
@@ -14,6 +17,9 @@
 				return
 */
 /obj/structure/wild/Destroy()
+	if (amount > 0)
+		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
+		wooddrop.amount = amount
 	for (var/obj/o in get_turf(src))
 		if (o.special_id == "seasons")
 			qdel(o)
@@ -41,6 +47,31 @@
 			return TRUE
 	else
 		return ..()
+/obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if(istype(W,/obj/item/weapon/material/hatchet))
+		health -= 25
+	else
+		switch(W.damtype)
+			if ("fire")
+				health -= W.force * TRUE
+			if ("brute")
+				health -= W.force * 0.20
+
+	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+	user.do_attack_animation(src)
+	try_destroy()
+	..()
+
+/obj/structure/wild/proc/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		if (amount > 0)
+			for(var/i = FALSE; i < amount; i++)
+				new /obj/item/stack/material/wood(src)
+		qdel(src)
+		return
+
 
 /obj/structure/wild/bullet_act(var/obj/item/projectile/proj)
 	if (prob(proj.damage - 30)) // makes shrapnel unable to take down trees
@@ -53,6 +84,8 @@
 	opacity = TRUE
 	density = TRUE
 	sways = TRUE
+	amount = 3
+
 
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -73,6 +106,7 @@
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
+	amount = 2
 
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -134,6 +168,7 @@ obj/structure/wild/rock
 	icon_state = "rock1"
 	opacity = FALSE
 	density = FALSE
+	amount = 0
 
 /obj/structure/wild/bush/New()
 	..()
@@ -178,12 +213,14 @@ obj/structure/wild/rock
 
 /obj/structure/wild/jungle
 	name = "jungle tree"
-	icon = 'icons/obj/flora/jungletreesmall.dmi'
+	icon = 'icons/obj/flora/jungletreesmaller.dmi'
 	icon_state = "tree1"
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
-	bound_x = -32
+	bound_height = 64
+	bound_width = 32
+	amount = 6
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
