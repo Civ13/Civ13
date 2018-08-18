@@ -30,6 +30,7 @@
 	stat = "rifle"
 	move_delay = 5
 	fire_delay = 5
+	muzzle_flash = FALSE
 
 	accuracy_list = list(
 

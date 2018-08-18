@@ -240,7 +240,7 @@
 			return TRUE
 
 		if (!reinforcements_master.is_permalocked(BRITISH))
-			if (client.prefs.s_tone < -30)
+			if (client.prefs.s_tone < -35)
 				usr << "<span class='danger'>You are too dark to be a British soldier.</span>"
 				return
 			reinforcements_master.add(src, BRITISH)
@@ -531,6 +531,14 @@
 			return
 		if (client.prefs.s_tone > -100)
 			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
+			return
+	if (istype(job, /datum/job/british) || istype(job, /datum/job/french))
+		if (client.prefs.s_tone < -45)
+			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 80.</span>"
+			return
+	if (istype(job, /datum/job/portuguese) || istype(job, /datum/job/spanish))
+		if (client.prefs.s_tone < -65)
+			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 100.</span>"
 			return
 	spawning = TRUE
 	close_spawn_windows()
