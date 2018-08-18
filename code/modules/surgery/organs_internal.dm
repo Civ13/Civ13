@@ -10,7 +10,7 @@
 		return FALSE
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return affected && affected.open == (affected.encased ? 2 : 1)
+	return affected && affected.open == (affected.encased ? 1.5 : 1)
 
 //////////////////////////////////////////////////////////////////
 //				CHEST INTERNAL ORGAN SURGERY					//
@@ -117,7 +117,7 @@
 
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
-		if (!(affected && !(affected.status & ORGAN_ROBOT)))
+		if (!(affected))
 			return FALSE
 
 		target.op_stage.current_organ = null
