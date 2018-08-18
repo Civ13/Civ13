@@ -303,7 +303,7 @@ var/list/admin_verbs_host = list(
 		if (holder.rights & R_SPAWN)			verbs += admin_verbs_spawn
 		if (holder.rights & R_MOD)			verbs += admin_verbs_mod
 		if (holder.rights & R_MENTOR)		verbs += admin_verbs_mentor
-		if (holder.rights & R_TRIALMASTER)		verbs += admin_verbs_trialmaster
+		if (holder.rights & R_TRIALADMIN)		verbs += admin_verbs_trialadmin
 		if (holder.rights & R_HOST)
 			verbs += admin_verbs_host
 
