@@ -285,6 +285,13 @@
 	item_state = "indianshaman"
 	worn_state = "indianshaman"
 
+/obj/item/clothing/under/indianhuge
+	name = "big leopard pelt"
+	desc = "A massive leopard pelt."
+	icon_state = "giant_leopard_pelt"
+	item_state = "giant_leopard_pelt"
+	worn_state = "giant_leopard_pelt"
+
 /obj/item/clothing/accessory/armband/indian1
 	name = "indian acessories"
 	desc = "red face paint and indian necklaces."
