@@ -118,6 +118,9 @@
 	if (!cocked)
 		user << "<span class='warning'>You can't fire the [src] while the weapon is uncocked!</span>"
 		return FALSE
+	if (!(user.has_empty_hand(both = FALSE)) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/pistol))
+		user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+		return FALSE
 	return ..()
 
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)

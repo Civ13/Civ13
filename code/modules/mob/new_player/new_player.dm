@@ -354,15 +354,15 @@
 			return
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
-			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/10)
 			if (check_rights(R_ADMIN, FALSE, src))
-				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
-					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more seconds to respawn. Do you want to bypass this?", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+					var/msg = "[key_name(src)] bypassed a [wait] second wait to respawn."
 					log_admin(msg)
 					message_admins(msg)
 					LateChoices()
 					return TRUE
-			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			WWalert(src, "Because you died in combat, you must wait [wait] more seconds to respawn.", "Error")
 			return FALSE
 		LateChoices()
 		return TRUE
