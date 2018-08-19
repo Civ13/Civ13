@@ -209,18 +209,6 @@
 	item_state = "british_sailor4"
 	worn_state = "british_sailor4"
 
-/obj/item/clothing/head/tarred_hat
-	name = "tarred hat"
-	desc = "A tarred hat, used by sailors."
-	icon_state = "tarred_hat"
-	item_state = "tarred_hat"
-
-/obj/item/clothing/head/tricorne_black
-	name = "black tricorne"
-	desc = "A black tricorne. Commonly used by navy officers."
-	icon_state = "tricorne_black"
-	item_state = "tricorne_black"
-
 /obj/item/clothing/head/tricorne_british
 	name = "Royal Navy tricorne"
 	desc = "A blue tricorne, used by the British Royal Navy."
@@ -321,6 +309,25 @@
 	icon_state = "chief_hat"
 	item_state = "chief_hat"
 /////////Portuguese/////////
+/obj/item/clothing/head/tricorne_portuguese
+	name = "Portuguese Navy tricorne"
+	desc = "A blue tricorne, used by the Portuguese Navy."
+	icon_state = "tricorne_british"
+	item_state = "tricorne_british"
+
+/obj/item/clothing/suit/storage/jacket/portuguese_captain
+	name = "Portuguese Captain jacket"
+	desc = "A standard Captain jacket of the Portuguese Navy. Blue with golden buttons, white laces and golden cuffs."
+	icon_state = "british_captain"
+	item_state = "british_captain"
+	worn_state = "british_captain"
+
+/obj/item/clothing/suit/storage/jacket/portuguese_officer
+	name = "Portuguese Officer jacket"
+	desc = "A standard Officer jacket of the Portuguese Navy. Blue with golden buttons."
+	icon_state = "british_officer"
+	item_state = "british_officer"
+	worn_state = "british_officer"
 
 /obj/item/clothing/under/portuguese_sailor1
 	name = "portuguese sailor clothes"
@@ -330,28 +337,188 @@
 	worn_state = "portuguese_sailor1"
 
 /obj/item/clothing/under/portuguese_sailor2
-	name = "open british sailor clothes"
+	name = "open portuguese sailor clothes"
 	desc = "A set of portuguese navy sailor clothes, with an unbuttoned white shirt and pink trousers."
 	icon_state = "portuguese_sailor2"
 	item_state = "portuguese_sailor2"
 	worn_state = "portuguese_sailor2"
 
 /obj/item/clothing/under/portuguese_sailor3
-	name = "british sailor trousers"
+	name = "portuguese sailor trousers"
 	desc = "Pink portuguese sailor trousers. For when it's too hot to wear a shirt."
 	icon_state = "portuguese_sailor3"
 	item_state = "portuguese_sailor3"
 	worn_state = "portuguese_sailor3"
 
 /obj/item/clothing/under/portuguese_sailor4
-	name = "grey british sailor clothes"
-	desc = "A set of portuguese navy sailor clothes, with a white shirt and pink trousers. There is a red scarf attatched."
+	name = "portuguese sailor clothes with scarf"
+	desc = "A set of portuguese navy sailor clothes, with a white shirt and pink trousers. There's a pink scarf attached."
 	icon_state = "portuguese_sailor4"
 	item_state = "portuguese_sailor4"
 	worn_state = "portuguese_sailor4"
 
+
+/////////Spanish/////////
+/obj/item/clothing/head/tricorne_spanish
+	name = "Spanish Navy tricorne"
+	desc = "A yellow tricorne, used by the Spanish Navy."
+	icon_state = "tricorne_british"
+	item_state = "tricorne_british"
+
+/obj/item/clothing/suit/storage/jacket/spanish_captain
+	name = "Spanish Captain jacket"
+	desc = "A standard Captain jacket of the Spanish Navy. Yellow with golden buttons, white laces and golden cuffs."
+	icon_state = "british_captain"
+	item_state = "british_captain"
+	worn_state = "british_captain"
+
+/obj/item/clothing/suit/storage/jacket/spanish_officer
+	name = "Spanish Officer jacket"
+	desc = "A standard Officer jacket of the Spanish Navy. Yellow with golden buttons."
+	icon_state = "british_officer"
+	item_state = "british_officer"
+	worn_state = "british_officer"
+
+/obj/item/clothing/under/spanish_sailor1
+	name = "spanish sailor clothes"
+	desc = "A set of spanish navy sailor clothes, with brown shirt and trousers."
+	icon_state = "spanish_sailor1"
+	item_state = "spanish_sailor1"
+	worn_state = "spanish_sailor1"
+
+/obj/item/clothing/under/spanish_sailor2
+	name = "open spanish sailor clothes"
+	desc = "A set of spanish navy sailor clothes, with an unbuttoned brown shirt and trousers."
+	icon_state = "spanish_sailor2"
+	item_state = "spanish_sailor2"
+	worn_state = "spanish_sailor2"
+
+/obj/item/clothing/under/spanish_sailor3
+	name = "spanish sailor trousers"
+	desc = "Brown spanish sailor trousers. For when it's too hot to wear a shirt."
+	icon_state = "spanish_sailor3"
+	item_state = "spanish_sailor3"
+	worn_state = "spanish_sailor3"
+
+
+/////////French/////////
+/obj/item/clothing/head/tricorne_french
+	name = "French Navy tricorne"
+	desc = "A white and blue tricorne, used by the French Navy."
+	icon_state = "tricorne_british"
+	item_state = "tricorne_british"
+
+/obj/item/clothing/suit/storage/jacket/french_captain
+	name = "French Captain jacket"
+	desc = "A standard Captain jacket of the French Navy. White with golden buttons, blue laces and golden cuffs."
+	icon_state = "british_captain"
+	item_state = "british_captain"
+	worn_state = "british_captain"
+
+/obj/item/clothing/suit/storage/jacket/french_officer
+	name = "French Officer jacket"
+	desc = "A standard Officer jacket of the French Navy. White with golden buttons."
+	icon_state = "british_officer"
+	item_state = "british_officer"
+	worn_state = "british_officer"
+
+/obj/item/clothing/under/french_officer
+	name = "french officer clothes"
+	desc = "A set of french officer clothes, with a light blue shirt and black trousers, both with golden buttons."
+	icon_state = "french_officer"
+	item_state = "french_officer"
+	worn_state = "french_officer"
+
+/obj/item/clothing/under/french_sailor1
+	name = "french sailor clothes"
+	desc = "A set of french navy sailor clothes, with light blue shirt and trousers."
+	icon_state = "french_sailor1"
+	item_state = "french_sailor1"
+	worn_state = "french_sailor1"
+
+/obj/item/clothing/under/french_sailor2
+	name = "open french sailor clothes"
+	desc = "A set of french navy sailor clothes, with an unbuttoned light blue shirt and trousers."
+	icon_state = "french_sailor2"
+	item_state = "french_sailor2"
+	worn_state = "french_sailor2"
+
+/obj/item/clothing/under/french_sailor3
+	name = "french sailor trousers"
+	desc = "Light blue french sailor trousers. For when it's too hot to wear a shirt."
+	icon_state = "french_sailor3"
+	item_state = "french_sailor3"
+	worn_state = "french_sailor3"
+
+/////////Dutch/////////
+/obj/item/clothing/head/tricorne_dutch
+	name = "United Provinces Navy tricorne"
+	desc = "An orange tricorne, used by the United Provinces Navy."
+	icon_state = "tricorne_british"
+	item_state = "tricorne_british"
+
+/obj/item/clothing/suit/storage/jacket/dutch_captain
+	name = "United Provinces Captain jacket"
+	desc = "A standard Captain jacket of the United Provinces Navy. Orange with golden buttons, white laces and golden cuffs."
+	icon_state = "british_captain"
+	item_state = "british_captain"
+	worn_state = "british_captain"
+
+/obj/item/clothing/suit/storage/jacket/dutch_officer
+	name = "United Provinces Officer jacket"
+	desc = "A standard Officer jacket of the United Provinces Navy. Orange with golden buttons."
+	icon_state = "british_officer"
+	item_state = "british_officer"
+	worn_state = "british_officer"
+
+/obj/item/clothing/under/dutch_sailor1
+	name = "dutch sailor clothes"
+	desc = "A set of dutch navy sailor clothes, with a white shirt and orange trousers."
+	icon_state = "dutch_sailor1"
+	item_state = "dutch_sailor1"
+	worn_state = "dutch_sailor1"
+
+/obj/item/clothing/under/dutch_sailor2
+	name = "open dutch sailor clothes"
+	desc = "A set of dutch navy sailor clothes, with an unbuttoned white shirt and orange trousers."
+	icon_state = "dutch_sailor2"
+	item_state = "dutch_sailor2"
+	worn_state = "dutch_sailor2"
+
+/obj/item/clothing/under/dutch_sailor3
+	name = "dutch sailor trousers"
+	desc = "Orange dutch sailor trousers. For when it's too hot to wear a shirt."
+	icon_state = "dutch_sailor3"
+	item_state = "dutch_sailor3"
+	worn_state = "dutch_sailor3"
+/////////GENERIC/////////
 /obj/item/clothing/head/red_beret
 	name = "red sailor berret"
-	desc = "A red berret, worn by portuguese sailors."
+	desc = "A red berret, worn by portuguese and spanish sailors."
 	icon_state = "redberet"
 	item_state = "redberet"
+
+/obj/item/clothing/head/blue_berret
+	name = "blue sailor berret"
+	desc = "A red berret, worn by french sailors."
+	icon_state = "blueberet"
+	item_state = "blueberet"
+
+/obj/item/clothing/under/generic_officer
+	name = "officer clothes"
+	desc = "A set of officer clothes, with a white shirt and black trousers, both with golden buttons."
+	icon_state = "officer"
+	item_state = "officer"
+	worn_state = "officer"
+
+/obj/item/clothing/head/tarred_hat
+	name = "tarred hat"
+	desc = "A tarred hat, used by sailors."
+	icon_state = "tarred_hat"
+	item_state = "tarred_hat"
+
+/obj/item/clothing/head/tricorne_black
+	name = "black tricorne"
+	desc = "A black tricorne. Commonly used by navy officers."
+	icon_state = "tricorne_black"
+	item_state = "tricorne_black"
