@@ -216,4 +216,11 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/cannon_ball = 15)
+
+/obj/structure/closet/crate/webbings
+	name = "bandolier crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/clothing/accessory/storage/webbing = 10)
 #undef DYNAMIC_AMT
