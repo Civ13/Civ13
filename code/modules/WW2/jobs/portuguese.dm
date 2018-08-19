@@ -4,7 +4,7 @@
 /datum/job/portuguese/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_portuguese_name(H.gender)
 	H.real_name = H.name
-/*
+
 /datum/job/portuguese/captain
 	title = "Capitão"
 	en_meaning = "Ship Captain"
@@ -26,7 +26,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer, slot_w_uniform)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_captain(H), slot_wear_suit)
 //head
@@ -34,7 +34,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the Captain of the Royal Navy ship!</big></b>"
+	world << "<b><big>[H.real_name] is the Captain of the Portuguese Navy ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
@@ -68,14 +68,14 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer, slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer, slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_portuguese(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the Quartermaster of the Royal Navy ship!</big></b>"
+	world << "<b><big>[H.real_name] is the Quartermaster of the Portuguese Navy ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Capitão</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
@@ -110,15 +110,15 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer, slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer, slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_portuguese(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	world << "<b><big>[H.real_name] is the Boatswain of the Royal Navy ship!</big></b>"
+	world << "<b><big>[H.real_name] is the Boatswain of the Portuguese Navy ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the crew and their job allocation. The whole ship relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("engineering", STAT_NORMAL)
@@ -152,7 +152,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/portuguese_sailor1(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer, slot_wear_suit)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
@@ -233,10 +233,6 @@
 	else if (randcloth == 4)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/portuguese_sailor4(H), slot_w_uniform)
 
-	var/obj/item/clothing/accessory/armband/portuguese_scarf/portuguese_scarf_a = new /obj/item/clothing/accessory/armband/portuguese_scarf(null)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	uniform.attackby(portuguese_scarf_a, H)
-
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/boarding_axe(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Imediato</b> to ensure everyting is in good conditions!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -282,9 +278,6 @@
 	else if (randcloth == 4)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/portuguese_sailor4(H), slot_w_uniform)
 
-	var/obj/item/clothing/accessory/armband/portuguese_scarf/portuguese_scarf_a = new /obj/item/clothing/accessory/armband/portuguese_scarf(null)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	uniform.attackby(portuguese_scarf_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
 
 	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Imediato</b> orders!")
@@ -302,7 +295,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
+
 /datum/job/portuguese/seaman
 	title = "Marinheiro"
 	en_meaning = "Seaman"
