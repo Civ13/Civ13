@@ -47,6 +47,13 @@
 /obj/structure/closet/crate
 	icon = 'icons/obj/crate.dmi'*/
 
+obj/structure/closet/crate/chest
+	name = "wood chest"
+	desc = "Maybe there's a treasure insde?"
+	icon_state = "wood_chest"
+	icon_opened = "wood_chest_opened"
+	icon_closed = "wood_chest"
+
 obj/structure/closet/crate/empty
 	name = "wood crate"
 	desc = "A wooden crate."

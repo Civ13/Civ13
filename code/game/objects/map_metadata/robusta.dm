@@ -9,18 +9,18 @@
 	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
-		BRITISH,
-		PIRATES,
+		PORTUGUESE,
+		SPANISH,
 		INDIANS)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british/land,
-		list(PIRATES) = /area/caribbean/pirates/land,
+		list(PORTUGUESE) = /area/caribbean/british/land,
+		list(SPANISH) = /area/caribbean/pirates/land,
 		list(INDIANS) = /area/caribbean/indians,
 		)
 	front = "Pacific"
-	faction_distribution_coeffs = list(BRITISH = 0.4, PIRATES = 0.4, INDIANS = 0.2)
+	faction_distribution_coeffs = list(PORTUGUESE = 0.4, SPANISH = 0.4, INDIANS = 0.2)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE

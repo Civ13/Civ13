@@ -298,7 +298,7 @@
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRN" //for testing!
+	spawn_location = "JoinLateSP"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE

@@ -138,14 +138,12 @@ var/list/charge_sounds_pir = list(
 var/list/charge_sounds_ind = list(
 	'sound/effects/emotes/charge_ind.ogg',)
 var/list/charge_sounds_pt = list(
-	'sound/effects/emotes/charge_eng.ogg',
-	'sound/effects/emotes/god_save_the_king.ogg',)
+	'sound/effects/emotes/charge_pt.ogg',)
 var/list/charge_sounds_fr = list(
 	'sound/effects/emotes/charge_eng.ogg',
 	'sound/effects/emotes/god_save_the_king.ogg',)
 var/list/charge_sounds_sp = list(
-	'sound/effects/emotes/charge_eng.ogg',
-	'sound/effects/emotes/god_save_the_king.ogg',)
+	'sound/effects/emotes/charge_sp.ogg',)
 // pain, etc sounds from Interbay
 
 

@@ -8,29 +8,37 @@
 	desc = "This is rubbish."
 
 
-/obj/item/trash/plate
+/obj/item/kitchen/plate
 	name = "plate"
+	desc = "a common plate."
+	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "plate"
 	dropsound = 'sound/effects/drop_glass.ogg'
 
-/obj/item/trash/snack_bowl
+/obj/item/kitchen/snack_bowl
 	name = "bowl"
+	desc = "a common bowl."
+	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "snack_bowl"
 	dropsound = 'sound/effects/drop_glass.ogg'
 
-/obj/item/trash/wood_bowl
+/obj/item/kitchen/wood_bowl
 	name = "wood bowl"
+	desc = "a common wood bowl."
+	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "wood_bowl"
 
-/obj/item/trash/snack_bowl/New()
+/obj/item/kitchen/snack_bowl/New()
 	..()
 	pixel_x = rand(-5,5)
 
-/obj/item/trash/wood_bowl/New()
+/obj/item/kitchen/wood_bowl/New()
 	..()
 	pixel_x = rand(-5,5)
 /obj/item/trash/tray
 	name = "tray"
+	desc = "a common tray."
+	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "tray"
 
 /obj/item/trash/candle

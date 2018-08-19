@@ -29,8 +29,8 @@ var/global/list/random_junk
 		random_junk = subtypesof(/obj/item/trash)
 		random_junk += typesof(/obj/item/weapon/cigbutt)
 		random_junk += /obj/item/remains/mouse
-		random_junk -= /obj/item/trash/plate
-		random_junk -= /obj/item/trash/snack_bowl
+		random_junk -= /obj/item/kitchen/plate
+		random_junk -= /obj/item/kitchen/snack_bowl
 		random_junk -= /obj/item/trash/tray
 	return spick(random_junk)
 

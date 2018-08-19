@@ -134,6 +134,12 @@
 	glass_type = "flute"
 	volume = 20
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood
+	name = "wood mug"
+	icon_state = "wood_cup"
+	glass_type = "highball"
+	volume = 50
+
 // for /obj/machinery/vending/piratesoda
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda
 	New()

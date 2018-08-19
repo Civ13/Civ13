@@ -12,9 +12,8 @@
 	additional_languages = list("French" = 25, "Spanish" = 35, "English" = 10)
 
 /datum/job/civilian/spanish
-	default_language = "Portuguese"
+	default_language = "Spanish"
 	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
-
 
 /datum/job/pirates
 	default_language = "English"
@@ -27,6 +26,14 @@
 /datum/job/indians
 	default_language = "Carib"
 	additional_languages = list("French" = 25, "Spanish" = 25, "Portuguese" = 25, "English" = 25)
+
+/datum/job/portuguese
+	default_language = "Portuguese"
+	additional_languages = list("French" = 25, "Spanish" = 35, "English" = 10)
+
+/datum/job/spanish
+	default_language = "Spanish"
+	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
 
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
