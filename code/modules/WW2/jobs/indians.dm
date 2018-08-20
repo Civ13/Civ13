@@ -18,7 +18,7 @@
 
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 10
+	max_positions = 20
 /datum/job/indians/carib_chief/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //head
@@ -59,7 +59,7 @@
 
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 10
+	max_positions = 30
 /datum/job/indians/carib_shaman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //clothes
@@ -104,7 +104,7 @@
 
 	// AUTOBALANCE
 	min_positions = 20
-	max_positions = 100
+	max_positions = 300
 
 /datum/job/indians/carib/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

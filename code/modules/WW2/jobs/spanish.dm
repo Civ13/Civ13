@@ -144,7 +144,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 5
+	max_positions = 10
 
 /datum/job/spanish/midshipman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -180,7 +180,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 2
+	max_positions = 10
 
 /datum/job/spanish/surgeon/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -216,7 +216,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 3
+	max_positions = 10
 
 /datum/job/spanish/carpenter/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -256,7 +256,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 3
+	max_positions = 10
 
 /datum/job/spanish/cook/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -303,7 +303,7 @@
 
 	// AUTOBALANCE
 	min_positions = 6
-	max_positions = 20
+	max_positions = 200
 
 /datum/job/spanish/seaman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
