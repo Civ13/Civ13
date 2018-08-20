@@ -194,9 +194,9 @@ Current Defines (_defines/attachment.dm)
   G.bayonet = null
 
 /obj/item/weapon/attachment/bayonet/military
-	force = WEAPON_FORCE_DANGEROUS
-	weakens = 2
-	weight = 0.419
+	force = WEAPON_FORCE_DANGEROUS/2
+	weakens = 1
+	weight = 0.450
 
 /obj/item/weapon/attachment/scope/iron_sights
 	name = "iron sights"

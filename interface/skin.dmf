@@ -362,11 +362,34 @@ menu "menu"
 		command = ""
 		category = "&Icons"
 		saved-params = "is-checked"
-	elem "textmode"
-		name = "&Text"
-		command = ".winset \"menu.textmode.is-checked=true?mapwindow.map.text-mode=true:mapwindow.map.text-mode=false\""
-		category = "&Icons"
-		can-check = true
+	elem 
+		name = "Links"
+		command = ""
+		saved-params = "is-checked"
+	elem 
+		name = "Discord"
+		command = "discord"
+		category = "Links"
+		saved-params = "is-checked"
+	elem 
+		name = "Wiki"
+		command = "wiki"
+		category = "Links"
+		saved-params = "is-checked"
+	elem 
+		name = "Rules"
+		command = "rules"
+		category = "Links"
+		saved-params = "is-checked"
+	elem 
+		name = "Github"
+		command = "github"
+		category = "Links"
+		saved-params = "is-checked"
+	elem 
+		name = "Site"
+		command = "website"
+		category = "Links"
 		saved-params = "is-checked"
 	elem 
 		name = "&Help"
@@ -391,30 +414,6 @@ menu "menu"
 		name = "Report Bugs"
 		command = "reportabug"
 		category = "&Help"
-		saved-params = "is-checked"
-	elem 
-		name = "Links"
-		command = ""
-		saved-params = "is-checked"
-	elem 
-		name = "Discord"
-		command = "discord"
-		category = "Links"
-		saved-params = "is-checked"
-	elem 
-		name = "Wiki"
-		command = "wiki"
-		category = "Links"
-		saved-params = "is-checked"
-	elem 
-		name = "Rules"
-		command = "rules"
-		category = "Links"
-		saved-params = "is-checked"
-	elem 
-		name = "Github"
-		command = "github"
-		category = "Links"
 		saved-params = "is-checked"
 
 
@@ -546,7 +545,6 @@ window "mainwindow"
 		size = 640x440
 		anchor1 = none
 		anchor2 = none
-		background-color = none
 		is-default = true
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Space Station 13"
@@ -559,7 +557,6 @@ window "mainwindow"
 		size = 80x20
 		anchor1 = 100,100
 		anchor2 = none
-		background-color = none
 		saved-params = ""
 		text = "Hotkey Toggle"
 		command = ".winset \"mainwindow.macro!=macro ? mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true : mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
@@ -591,7 +588,6 @@ window "mainwindow"
 		size = 40x20
 		anchor1 = 100,100
 		anchor2 = none
-		background-color = none
 		saved-params = "is-checked"
 		text = "Chat"
 		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" macrobutton.is-checked=false:input.command=\""
@@ -604,7 +600,6 @@ window "mapwindow"
 		size = 640x480
 		anchor1 = none
 		anchor2 = none
-		background-color = none
 		saved-params = "pos;size;is-minimized;is-maximized"
 		titlebar = false
 		statusbar = false
