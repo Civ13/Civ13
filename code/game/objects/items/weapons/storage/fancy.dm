@@ -193,6 +193,7 @@
 	desc = "a jar filled with pickles and vinegar"
 	icon = 'icons/obj/food.dmi'
 	icon_state = "picklejar"
+	icon_type = "pickles"
 	throwforce = WEAPON_FORCE_NORMAL
 	storage_slots = 7
 
