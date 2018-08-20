@@ -158,6 +158,12 @@
 			for (var/obj/structure/multiz/M in get_turf(H))
 				H << "<span class = 'danger'>You can't build a structure here.</span>"
 				return
+	if (recipe.result_type == /obj/item/weapon/key)
+		var/mob/living/carbon/human/US = user
+		var/texttype = lowertext("[US.faction_text]")
+		var/keybasepath = "/obj/item/weapon/key/"
+		var/keypath = text2path("[keybasepath][texttype]")
+		build_override_object = new keypath()
 
 	if (recipe.result_type == /obj/structure/noose)
 		var/structurecheck = 0

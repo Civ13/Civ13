@@ -44,11 +44,9 @@ var/list/engineer_exclusive_recipe_types = null
 
 	recipes += new/datum/stack_recipe("table", /obj/structure/table, 4, _time = 7, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("rack", /obj/structure/table/rack, 2, _time = 5, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("metal rod", /obj/item/stack/rods, TRUE, 2, 60)
-	recipes += new/datum/stack_recipe("railing", /obj/structure/railing, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
-
 	recipes += new/datum/stack_recipe("unlocked door", /obj/structure/simple_door/key_door/anyone, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("locked door", /obj/structure/simple_door/key_door/anyone, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("key", /obj/item/weapon/key, 2, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/wood/generate_recipes()
 	..()

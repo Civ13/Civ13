@@ -1,3 +1,83 @@
+////////1713 stuff//////////
+#define PI_CODE 995
+/datum/keyslot/pirates
+	code = PI_CODE
+
+/obj/item/weapon/key/pirates
+	code = PI_CODE
+	name = "Pirate key"
+
+/obj/structure/simple_door/key_door/pirates
+	keyslot_type = /datum/keyslot/pirates
+	unique_door_name = "Pirate locked door"
+#undef PI_CODE
+
+#define RN_CODE 995 * 2
+/datum/keyslot/british
+	code = RN_CODE
+
+/obj/item/weapon/key/british
+	code = RN_CODE
+	name = "British key"
+
+/obj/structure/simple_door/key_door/british
+	keyslot_type = /datum/keyslot/british
+	unique_door_name = "British locked door"
+#undef RN_CODE
+
+#define SP_CODE 995 * 3
+/datum/keyslot/spanish
+	code = SP_CODE
+
+/obj/item/weapon/key/spanish
+	code = SP_CODE
+	name = "Spanish Key"
+
+/obj/structure/simple_door/key_door/spanish
+	keyslot_type = /datum/keyslot/spanish
+	unique_door_name = "Spanish locked door"
+#undef SP_CODE
+
+#define FR_CODE 995 * 4
+/datum/keyslot/french
+	code = FR_CODE
+
+/obj/item/weapon/key/french
+	code = FR_CODE
+	name = "French key"
+
+/obj/structure/simple_door/key_door/french
+	keyslot_type = /datum/keyslot/french
+	unique_door_name = "French locked door"
+#undef FR_CODE
+
+#define PT_CODE 995 * 5
+/datum/keyslot/portuguese
+	code = PT_CODE
+
+/obj/item/weapon/key/portuguese
+	code = PT_CODE
+	name = "Portuguese key"
+
+/obj/structure/simple_door/key_door/portuguese
+	keyslot_type = /datum/keyslot/portuguese
+	unique_door_name = "Portuguese locked door"
+#undef PT_CODE
+
+#define NL_CODE 995 * 6
+/datum/keyslot/dutch
+	code = NL_CODE
+
+/obj/item/weapon/key/dutch
+	code = NL_CODE
+	name = "Dutch key"
+
+/obj/structure/simple_door/key_door/dutch
+	keyslot_type = /datum/keyslot/dutch
+	unique_door_name = "Dutch locked door"
+#undef NL_CODE
+
+
 // all allies
 #define ALLIED_CODE 995 * 4
 /datum/keyslot/allied
