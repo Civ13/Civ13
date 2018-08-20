@@ -190,7 +190,7 @@
 						if (NORTH)
 							target = locate(target.x + (prob(20) && skew ? pick(1,-1) : 0), target.y+1, z)
 						if (SOUTH)
-							target = locate(target.y + (prob(20) && skew ? pick(1,-1) : 0), target.y-1, z)
+							target = locate(target.x + (prob(20) && skew ? pick(1,-1) : 0), target.y-1, z)
 
 					var/highcheck = high
 					var/area/target_area = get_area(target)
