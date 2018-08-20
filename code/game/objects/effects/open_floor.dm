@@ -39,9 +39,9 @@ var/process/open_floor/OS2_controller = null
 //	var/mob/shadow/shadowcover = new/mob/shadow(src)
 	spawn(5)
 		update_icon()
-		var/obj/effect/overlay/overfloor/OF
+/*		var/obj/effect/overlay/overfloor/OF
 		if (!(OF in src.loc))
-			new/obj/effect/overlay/overfloor(src)
+			new/obj/effect/overlay/overfloor(src)*/
 	for(var/atom/movable/AM in src.contents)
 		Entered(AM)
 
@@ -109,16 +109,18 @@ var/process/open_floor/OS2_controller = null
 				// ignore objects that have any form of invisibility
 				if (o.invisibility) continue
 				var/image/temp2 = image(o, dir=o.dir, layer = o.layer)
-				temp2.plane = plane
+				temp2.plane = FLOOR_PLANE
 				temp2.color = o.color//rgb(127,127,127)
 				temp2.overlays += o.overlays
 				o_img += temp2
 			overlays += o_img
 
 			var/image/over_OS2_darkness = image('icons/turf/floors.dmi', "black_open")
-			over_OS2_darkness.plane = OVER_OPENSPACE_PLANE
+			over_OS2_darkness.plane = FLOOR_PLANE
 			over_OS2_darkness.layer = MOB_LAYER + 0.1
 			overlays += over_OS2_darkness
+
+
 
 /turf/floor/broken_floor/attackby(mob/user)
 	var/your_dir = "NORTH"
