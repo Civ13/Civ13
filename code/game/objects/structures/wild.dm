@@ -268,3 +268,14 @@ obj/structure/wild/rock
 		dropwood.amount = 6
 		qdel(src)
 		return
+
+obj/structure/wild/largejungle
+	name = "large jungle bush"
+	icon = 'icons/obj/flora/largejungleflora.dmi'
+	icon_state = "bush1"
+	opacity = FALSE
+	density = FALSE
+
+ /obj/structure/wild/largejungle/New()
+	..()
+ 	icon_state = "bush[rand(1,6)]"
