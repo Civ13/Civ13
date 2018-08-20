@@ -52,7 +52,7 @@ var/list/engineer_exclusive_recipe_types = null
 
 /material/wood/generate_recipes()
 	..()
-	recipes += new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, TRUE)
+//	recipes += new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, TRUE)
 	recipes += new/datum/stack_recipe("floor tile", /obj/item/stack/tile/wood, TRUE, 4, 20)
 	recipes += new/datum/stack_recipe("chair", /obj/structure/bed/chair/wood, 3, _time = 7, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("coffin", /obj/structure/closet/coffin, 4, _time = 10, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -63,6 +63,7 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe("horizontal wood barrier", /obj/structure/barricade/horizontal, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("vertical wood barrier", /obj/structure/barricade/vertical, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("wood palisade", 	/obj/structure/grille/logfence, 7, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("arrow", /obj/item/ammo_casing/arrow, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("bow", /obj/item/weapon/gun/projectile/bow, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
 

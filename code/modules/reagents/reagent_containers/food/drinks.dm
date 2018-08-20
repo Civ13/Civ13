@@ -141,7 +141,8 @@
 	center_of_mass = list("x"=16, "y"=14)
 	New()
 		..()
-		reagents.add_reagent("tea", 30)
+		reagents.add_reagent("tea", 20)
+		reagents.add_reagent("anti_toxin", 10)
 
 /obj/item/weapon/reagent_containers/food/drinks/ice
 	name = "Ice Cup"
@@ -204,7 +205,8 @@
 /obj/item/weapon/reagent_containers/food/drinks/teapot/filled
 	New()
 		..()
-		reagents.add_reagent("tea", 120)
+		reagents.add_reagent("tea", 80)
+		reagents.add_reagent("anti_toxin", 40)
 
 /obj/item/weapon/reagent_containers/food/drinks/flask
 	name = "Officer's Flask"
