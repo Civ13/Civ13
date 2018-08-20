@@ -150,7 +150,7 @@
 	name = "large cultivated bush"
 	icon_state = "big_bush"
 
-obj/structure/wild/burnedbush
+/obj/structure/wild/burnedbush
 	name = "burned bush"
 	icon_state = "burnedbush1"
 	opacity = FALSE
@@ -162,7 +162,7 @@ obj/structure/wild/burnedbush
 	opacity = FALSE
 	density = FALSE
 */
-obj/structure/wild/junglebush
+/obj/structure/wild/junglebush
 	name = "jungle vegetation"
 	icon = 'icons/obj/flora/jungleflora.dmi'
 	icon_state = "1"
@@ -170,13 +170,13 @@ obj/structure/wild/junglebush
 	density = FALSE
 	var/healthamount = 1
 
-obj/structure/wild/burnedtree
+/obj/structure/wild/burnedtree
 	name = "burned tree"
 	icon_state = "burnedtree1"
 	opacity = FALSE
 	density = FALSE
 
-obj/structure/wild/rock
+/obj/structure/wild/rock
 	name = "rock"
 	icon_state = "rock1"
 	opacity = FALSE
@@ -269,13 +269,13 @@ obj/structure/wild/rock
 		qdel(src)
 		return
 
-obj/structure/wild/largejungle
+/obj/structure/wild/largejungle
 	name = "large jungle bush"
 	icon = 'icons/obj/flora/largejungleflora.dmi'
 	icon_state = "bush1"
 	opacity = FALSE
 	density = FALSE
 
- /obj/structure/wild/largejungle/New()
+/obj/structure/wild/largejungle/New()
 	..()
- 	icon_state = "bush[rand(1,6)]"
+	icon_state = "bush[rand(1,6)]"
