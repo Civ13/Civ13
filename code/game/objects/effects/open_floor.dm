@@ -39,7 +39,10 @@ var/process/open_floor/OS2_controller = null
 //	var/mob/shadow/shadowcover = new/mob/shadow(src)
 	spawn(5)
 		update_icon()
-		new/obj/effect/overlay/overfloor(src)
+		if (!(var/obj/effect/overlay/overfloor/OF in src.loc))
+			new/obj/effect/overlay/overfloor(src)
+	for(var/atom/movable/AM in src.contents)
+		Entered(AM)
 
 /turf/floor/broken_floor/Entered(atom/movable/A)
 	. = ..()
