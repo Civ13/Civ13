@@ -187,14 +187,14 @@
 "dE" = (/obj/structure/closet/crate/empty,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dF" = (/obj/item/flashlight/lantern,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dG" = (/obj/structure/reagent_dispensers/barrel/water,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
-"dH" = (/obj/structure/closet/crate/steel,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
+"dH" = (/obj/structure/closet/crate/rations/fruits,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dI" = (/obj/structure/closet/crate/wood,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dJ" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dK" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dL" = (/obj/structure/reagent_dispensers/barrel/gunpowder,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dM" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dN" = (/obj/structure/closet/crate/musketball,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
-"dO" = (/obj/structure/closet/crate/rations/british_meat,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
+"dO" = (/obj/structure/closet/crate/rations/meat,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dP" = (/obj/structure/closet/crate/empty,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dQ" = (/obj/item/flashlight/lantern,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dR" = (/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
@@ -202,8 +202,8 @@
 "dT" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dU" = (/obj/structure/closet/crate/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dV" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
-"dW" = (/obj/structure/closet/crate/steel,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
-"dX" = (/obj/structure/closet/crate/rations/british_meat,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
+"dW" = (/obj/structure/closet/crate/rations/biscuits,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
+"dX" = (/obj/structure/closet/crate/rations/meat,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dY" = (/obj/structure/reagent_dispensers/barrel/gunpowder,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dZ" = (/obj/structure/closet/crate/musketball,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "ea" = (/obj/structure/vending/muskets,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
@@ -254,6 +254,10 @@
 "eT" = (/obj/structure/closet/crate/webbings,/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
 "eU" = (/obj/structure/closet/crate/webbings,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eV" = (/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
+"eW" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
+"eX" = (/obj/structure/closet/crate/rations/fruits,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
+"eY" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
+"eZ" = (/obj/structure/closet/crate/rations/biscuits,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -371,13 +375,13 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbUbUbUbUdDdDdDdDazazdEdEbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUdFdFbUdGdEdEdEdGeaeaeadHdHdHbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbUbUdFdFbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUdIdIdIdIdIbUbUbUbUbUbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUbUbUbUbUbUbUazdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbWbWbUbUbUdLdLdLdLbWbWbUbUdOdOdOdOdObUbWbWdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUbUbUbUbUbUbUazdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUdFdFbUdGdEdEdEdGeaeaeabUbUbUbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbUbUdFdFbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUdOdOdOdOdHbUbUbUbUbUbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUdWdWeWeWeWbUazdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbWbWbUbUbUdLdLdLdLbWbWbUbUbUbUbUbUbUbUbWbWdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUdIdIdIdIdIbUazdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUdIdIdIdIdIbUbUbUbUbUbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUbUbUbUdGdEdEdEdGeaeaeadHdHdHbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUbUbUbUdGdEdEdEdGeaeaeabUbUbUbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbUbUbUbUdDdDdDdDazazdEdEbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -390,10 +394,10 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXdPdPdPbYbYbYbYbYbTbTbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYdQdRbYbYdSdSbYdTdTdTdTebebebbYbYdUdUdUdUbYbYbYbYbYbYbYbYbYbYbYbYbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbVbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYdVdVdVdVdVbYbYbVbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYdWdWdWdWbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbecbYbYbYbYbYbYcbcbecbYdXdXdXdXdXbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbecbYbYbYbYbYbYcbcbecbYdXdXdXdXdXbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYdWdWdWdWbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbecbYbYbYbYbYbYcbcbecbYeXeXeYeYeYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbecbYbYbYbYbYbYcbcbecbYeZeZdXdXdXbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbVbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYdVdVdVdVdVbYbYbVbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYdQbYbYdSdSbYdZdZdZdZebebebbYbYdUdUdUdUbYbYbYbYbYbYbYbYbYbYbYbYbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXdPdPdPbYbYbYbYbYbTbTbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

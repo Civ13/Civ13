@@ -282,7 +282,7 @@
 "fv" = (/obj/structure/table/wood,/obj/item/weapon/haircomb,/turf/floor/wood,/area/caribbean/british/land/inside)
 "fw" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/material/knife/butcher,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/british/land/inside)
 "fx" = (/obj/effect/landmark{name = "JoinLateRNCook"},/turf/floor/wood,/area/caribbean/british/land/inside)
-"fy" = (/obj/structure/closet/crate/rations/british_meat,/turf/floor/wood,/area/caribbean/british/land/inside)
+"fy" = (/obj/structure/closet/crate/rations/meat,/turf/floor/wood,/area/caribbean/british/land/inside)
 "fz" = (/obj/structure/closet/crate/musketball,/turf/floor/wood_broken,/area/caribbean/british/land/inside)
 "fA" = (/obj/structure/bed,/obj/item/weapon/bedsheet/green,/turf/floor/wood,/area/caribbean/houses/nml_one)
 "fB" = (/obj/structure/bed,/obj/item/weapon/bedsheet/ce,/turf/floor/wood,/area/caribbean/houses/nml_one)

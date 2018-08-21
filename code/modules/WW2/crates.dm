@@ -112,80 +112,44 @@ obj/structure/closet/crate/empty
 	for (var/stack in contents)
 		var/obj/item/stack/S = stack
 		S.amount = 20
+
 /obj/structure/closet/crate/rations/
 	name = "Rations"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 
-/obj/structure/closet/crate/rations/New()
-	..()
-	update_capacity(30)
-	var/textpath = "[type]"
-	if (findtext(textpath, BRITISH))
-		if (findtext(textpath, "solids"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration(BRITISH, "solid")
-		if (findtext(textpath, "liquids"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration(BRITISH, "liquid")
-		if (findtext(textpath, "desserts"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration(BRITISH, "dessert")
-		if (findtext(textpath, "meat"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration(BRITISH, "meat")
-	else if (findtext(textpath, "pirates"))
-		if (findtext(textpath, "solids"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration(PIRATES, "solid")
-		if (findtext(textpath, "liquids"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration(PIRATES, "liquid")
-	/*	if (findtext(textpath, "desserts"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration("PIRATES", "dessert")*/
-		if (findtext(textpath, "meat"))
-			for (var/v in 1 to rand(10,15))
-				contents += new_ration(PIRATES, "meat")
+/obj/structure/closet/crate/rations/vegetables
+	name = "Rations: vegetables"
+	paths = list(/obj/item/weapon/reagent_containers/food/snacks/grown/potato = 4,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/beans = 4,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 4,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 4,)
 
+/obj/structure/closet/crate/rations/fruits
+	name = "Rations: fruits"
+	paths = list(/obj/item/weapon/reagent_containers/food/snacks/grown/lemon = 3,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/lime = 3,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/apple = 3,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/orange = 3,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/banana = 3,
+				/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 3,)
 
-	update_capacity(min(30, contents.len+5))
+/obj/structure/closet/crate/rations/biscuits
+	name = "Rations: biscuits"
+	paths = list(/obj/item/weapon/reagent_containers/food/snacks/hardtack = 20,)
 
+/obj/structure/closet/crate/rations/beer
+	name = "Rations: beer"
+	paths = list(/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer = 10,)
 
-/obj/structure/closet/crate/rations/british_solids
-	name = "Rations: solids"
+/obj/structure/closet/crate/rations/ale
+	name = "Rations: ale"
+	paths = list(/obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale = 10,)
 
-/obj/structure/closet/crate/rations/british_liquids
-	name = "Rations: liquids"
-
-/obj/structure/closet/crate/rations/british_desserts
-	name = "Rations: dessert"
-
-/obj/structure/closet/crate/rations/british_meat
+/obj/structure/closet/crate/rations/meat
 	name = "Rations: meat"
-
-/obj/structure/closet/crate/rations/british_alcohol
-	name = "Rations: bier"
-
-/obj/structure/closet/crate/rations/pirates_solids
-	name = "Rations: solids"
-
-/obj/structure/closet/crate/rations/pirates_liquids
-	name = "Rations: liquids"
-
-/*
-/obj/structure/closet/crate/rations/pirates_desserts
-	name = "Rations: dessert"*/
-
-/obj/structure/closet/crate/rations/pirates_meat
-	name = "Rations: meat"
-
-/obj/structure/closet/crate/rations/pirates_alcohol
-	name = "Rations: vodka"
-
-/obj/structure/closet/crate/rations/water
-	name = "Rations: water"
+	paths = list(/obj/item/weapon/reagent_containers/food/snacks/meat = 7,)
 
 ///WEAPONS///
 

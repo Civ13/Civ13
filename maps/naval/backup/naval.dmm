@@ -7,7 +7,7 @@
 "ag" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
 "ah" = (/turf/wall/wood,/area/caribbean/pirates/ship/office)
 "ai" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
-"aj" = (/obj/structure/closet/cabinet,/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
+"aj" = (/obj/structure/closet/cabinet,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
 "ak" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
 "al" = (/turf/wall/wood{name = "mast"},/area/caribbean/pirates/ship/main_deck)
 "am" = (/obj/effect/landmark{name = "JoinLatePirate"},/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
@@ -57,9 +57,9 @@
 "be" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
 "bf" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bg" = (/obj/structure/bed{material = "wood"},/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
-"bh" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
+"bh" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bi" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
-"bj" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
+"bj" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bk" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bl" = (/obj/effect/landmark{name = "JoinLatePirateSurgeon"},/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "bm" = (/obj/structure/reagent_dispensers/barrel/beer,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
@@ -132,8 +132,8 @@
 "cB" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "cC" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "cD" = (/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
-"cE" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
-"cF" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
+"cE" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
+"cF" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "cG" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "cH" = (/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "cI" = (/obj/structure/table/wood,/obj/item/trash/candle,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
@@ -144,7 +144,7 @@
 "cN" = (/obj/structure/reagent_dispensers/barrel/water,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "cO" = (/obj/structure/bookcase,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "cP" = (/obj/item/flashlight/lantern,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
-"cQ" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
+"cQ" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "cR" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "cS" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "cT" = (/obj/structure/bed,/obj/item/weapon/bedsheet/blue,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
@@ -158,7 +158,7 @@
 "db" = (/obj/structure/table/iron,/obj/item/weapon/paper,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dc" = (/obj/structure/table/iron,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dd" = (/obj/structure/table/iron,/obj/item/weapon/book,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
-"de" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
+"de" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "df" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dg" = (/obj/item/weapon/surgery/scalpel,/obj/item/weapon/surgery/retractor,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dh" = (/obj/structure/table/iron,/obj/item/weapon/pen,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
@@ -175,7 +175,7 @@
 "ds" = (/obj/effect/decal/cleanable/blood,/obj/structure/bed{material = "wood"},/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dt" = (/obj/structure/table/wood,/obj/item/trash/candle,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "du" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
-"dv" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/trash/wood_bowl,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
+"dv" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dw" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dx" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "dy" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
@@ -187,7 +187,6 @@
 "dE" = (/obj/structure/closet/crate/empty,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dF" = (/obj/item/flashlight/lantern,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dG" = (/obj/structure/reagent_dispensers/barrel/water,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
-"dH" = (/obj/structure/closet/crate/steel,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dI" = (/obj/structure/closet/crate/wood,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dJ" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
 "dK" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood_ship,/area/caribbean/pirates/ship/orlop)
@@ -202,7 +201,6 @@
 "dT" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dU" = (/obj/structure/closet/crate/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dV" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
-"dW" = (/obj/structure/closet/crate/steel,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dX" = (/obj/structure/closet/crate/rations/british_meat,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dY" = (/obj/structure/reagent_dispensers/barrel/gunpowder,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
 "dZ" = (/obj/structure/closet/crate/musketball,/turf/floor/wood_ship,/area/caribbean/british/ship/orlop)
@@ -233,7 +231,7 @@
 "ey" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "ez" = (/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/structure/table/wood,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eA" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
-"eB" = (/obj/structure/table/wood,/obj/item/trash/wood_bowl,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
+"eB" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood_ship,/area/caribbean/pirates/ship/lower)
 "eC" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/wood_ship,/area/caribbean/british/ship/office)
 "eD" = (/obj/structure/table/iron,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
 "eE" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood_ship,/area/caribbean/british/ship/lower)
@@ -253,6 +251,7 @@
 "eS" = (/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "eT" = (/obj/structure/closet/crate/webbings,/turf/floor/wood_ship,/area/caribbean/pirates/ship/office)
 "eU" = (/obj/structure/closet/crate/webbings,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
+"eV" = (/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/obj/item/weapon/attachment/bayonet/military,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -370,13 +369,13 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbUbUbUbUdDdDdDdDazazdEdEbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUdFdFbUdGdEdEdEdGeaeaeadHdHdHbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUdFdFbUdGdEdEdEdGeaeaeabUbUbUbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbUbUdFdFbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUdIdIdIdIdIbUbUbUbUbUbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUbUbUbUbUbUbUazdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbWbWbUbUbUdLdLdLdLbWbWbUbUdOdOdOdOdObUbWbWdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUbUbUbUbUbUbUazdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUdIdIdIdIdIbUbUbUbUbUbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUbUbUbUdGdEdEdEdGeaeaeadHdHdHbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUbUbUbUdGdEdEdEdGeaeaeabUbUbUbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbUbUbUbUdDdDdDdDazazdEdEbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -389,10 +388,10 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXdPdPdPbYbYbYbYbYbTbTbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYdQdRbYbYdSdSbYdTdTdTdTebebebbYbYdUdUdUdUbYbYbYbYbYbYbYbYbYbYbYbYbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbVbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYdVdVdVdVdVbYbYbVbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYdWdWdWdWbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbecbYbYbYbYbYbYcbcbecbYdXdXdXdXdXbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbecbYbYbYbYbYbYcbcbecbYdXdXdXdXdXbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYdWdWdWdWbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbVbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYdVdVdVdVdVbYbYbVbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYdQbYbYdSdSbYdZdZdZdZebebebbYbYdUdUdUdUbYbYbYbYbYbYbYbYbYbYbYbYbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXdPdPdPbYbYbYbYbYbTbTbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -552,7 +551,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWaWaWbeaVauatatatatatatatateyeyeyat
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbaeCaWaWaWaWaWaWbdatatatatatbxatatatatatatbxatatatatatatbCatatbEatatatbwatbwatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWeCaWaWaWaWbDaWaVatatatatatatatatatatatatatatatatatatatatatataqatatatatatataxaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWeCaWaWaWaWaWaWaVeeeeatauatauatatauatauatatauatauatatatatateOaqaqatbwatateuaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVararararaCararararaCararararaCararareeeeaueSaqaqatateUeUaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVararararaCararararaCararararaCararareeeeaueSaqaqeVeVeUeUaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarararararaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
