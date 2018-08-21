@@ -5,7 +5,7 @@
 
 /obj/item/violin
 	name = "Violin"
-	desc = "Labeled, \"No. 6, Made by Rudolf Olsen, Violin & Bow Maker, 651 Third Avenue, New York City, anno 1918.\" "
+	desc = "A classic violin. "
 	icon = 'icons/obj/musician.dmi'
 	icon_state = "violin"
 	item_state = "violin"

@@ -172,5 +172,5 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 				defense_intent = input
 
 	if (HUDneed.Find("mode"))
-		var/obj/screen/intent/I = HUDneed["mode"]
+		var/obj/screen/mode/I = HUDneed["mode"]
 		I.update_icon()
