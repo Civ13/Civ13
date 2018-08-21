@@ -171,9 +171,9 @@
 	return TRUE
 
 /datum/job/spanish/surgeon
-	title = "Médico"
+	title = "Cirujano"
 	en_meaning = "Medic"
-	rank_abbreviation = "Médico"
+	rank_abbreviation = "Cirujano"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSPSurgeon"
 	SL_check_independent = TRUE
