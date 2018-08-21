@@ -9,38 +9,32 @@
 	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
-		BRITISH,
-		PIRATES)
+		DUTCH,
+		FRENCH)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british/ship/lower,
-		list(PIRATES) = /area/caribbean/pirates/ship/lower
+		list(DUTCH) = /area/caribbean/british/ship/lower,
+		list(FRENCH) = /area/caribbean/pirates/ship/lower
 		)
 	front = "Pacific"
-	faction_distribution_coeffs = list(BRITISH = 0.4, PIRATES = 0.6)
+	faction_distribution_coeffs = list(DUTCH = 0.5, FRENCH = 0.5)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
 	battle_name = "Naval boarding"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
-/*	var/done = FALSE
-/obj/map_metadata/naval/check_events()
-	if ((world.time >= 300) && !done)
-		world << "Pirates are approaching!"
-		for (var/obj/effect/area_teleporter/AT)
-			AT.Activated()
-			world << "Pirates are trying to board the ship!"
-			done = TRUE
-			return TRUE
-	else return FALSE
-*/
+
 obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else
 		. = TRUE
 	return .
+
+/obj/map_metadata/robusta/cross_message(faction)
+	return "<font size = 4>All factions may cross the grace wall now!</font>"
+
 /obj/map_metadata/naval/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
