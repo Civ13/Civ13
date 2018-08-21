@@ -307,7 +307,8 @@ var/global/obj/map_metadata/map = null
 		SPANISH = 0,
 		FRENCH = 0,
 		INDIANS = 0,
-		PIRATES = 0)
+		PIRATES = 0,
+		DUTCH = 0)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
