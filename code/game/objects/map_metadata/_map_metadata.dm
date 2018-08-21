@@ -362,7 +362,7 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 10
+		return 600
 	else
 		if (clients.len >= 20)
 			return 3000 // 5 minutes
@@ -371,7 +371,7 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 10
+		return 600
 	else
 		if (clients.len >= 20)
 			return 4200 // 7 minutes

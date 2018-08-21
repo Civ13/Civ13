@@ -9,7 +9,7 @@
 
 /obj/structure/simple_door/key_door/pirates
 	keyslot_type = /datum/keyslot/pirates
-	unique_door_name = "Pirate locked door"
+	unique_door_name = "Pirate locked"
 #undef PI_CODE
 
 #define RN_CODE 995 * 2
@@ -22,7 +22,7 @@
 
 /obj/structure/simple_door/key_door/british
 	keyslot_type = /datum/keyslot/british
-	unique_door_name = "British locked door"
+	unique_door_name = "British locked"
 #undef RN_CODE
 
 #define SP_CODE 995 * 3
@@ -35,7 +35,7 @@
 
 /obj/structure/simple_door/key_door/spanish
 	keyslot_type = /datum/keyslot/spanish
-	unique_door_name = "Spanish locked door"
+	unique_door_name = "Spanish locked"
 #undef SP_CODE
 
 #define FR_CODE 995 * 4
@@ -48,7 +48,7 @@
 
 /obj/structure/simple_door/key_door/french
 	keyslot_type = /datum/keyslot/french
-	unique_door_name = "French locked door"
+	unique_door_name = "French locked"
 #undef FR_CODE
 
 #define PT_CODE 995 * 5
@@ -61,7 +61,7 @@
 
 /obj/structure/simple_door/key_door/portuguese
 	keyslot_type = /datum/keyslot/portuguese
-	unique_door_name = "Portuguese locked door"
+	unique_door_name = "Portuguese locked"
 #undef PT_CODE
 
 #define NL_CODE 995 * 6
@@ -74,7 +74,7 @@
 
 /obj/structure/simple_door/key_door/dutch
 	keyslot_type = /datum/keyslot/dutch
-	unique_door_name = "Dutch locked door"
+	unique_door_name = "Dutch locked"
 #undef NL_CODE
 
 
