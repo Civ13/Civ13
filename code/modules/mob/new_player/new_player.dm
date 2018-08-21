@@ -560,7 +560,7 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
+	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"

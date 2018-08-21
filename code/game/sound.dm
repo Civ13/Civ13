@@ -281,6 +281,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("woodfootsteps") soundin = pick(woodfootsteps)
 			if ("carpetfootsteps") soundin = pick(carpetfootsteps)
 			if ("doorknock") soundin = pick(doorknock_sounds)
+			if ("artillery_out") soundin = pick(artillery_out)
+			if ("artillery_in") soundin = pick(artillery_in)
+			if ("artillery_out_distance") soundin = pick(artillery_out_distance)
+			if ("artillery_in_distance") soundin = pick(artillery_in_distance)
 
 			// emote sounds from InterBay
 			if ("cough_male")

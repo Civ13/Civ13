@@ -27,6 +27,8 @@
 	battle_name = "Isla Robusta"
 	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the combat starts.</font>"
 	ambience = list('sound/ambience/jungle1.ogg')
+	faction1 = PORTUGUESE
+	faction2 = SPANISH
 
 obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
@@ -39,6 +41,9 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/robusta/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/proc/cross_message(faction)
+	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/robusta/reinforcements_ready()
 	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
