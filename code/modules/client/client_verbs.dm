@@ -67,18 +67,14 @@
 
 			entry += " - [age]"
 
-			if (is_special_character(C.mob))
-				entry += " - <b><font color='red'>Antagonist</font></b>"
 			if (C.is_afk())
 				entry += " (AFK - [C.inactivity2text()])"
 			entry += " (<A HREF='?_src_=holder;adminmoreinfo=\ref[C.mob]'>?</A>)"
 			Lines += entry
 	else
 		for (var/client/C in clients)
-			if (C.holder && C.holder.fakekey)
-				Lines += C.holder.fakekey
-			else
-				Lines += C.key
+			var/entry = "Player <b>[C.key]</b> - Playing as <i>[C.mob.real_name]</i>"
+			Lines += entry
 
 	for (var/line in sortList(Lines))
 		msg += "[line]\n"
