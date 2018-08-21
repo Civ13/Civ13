@@ -201,7 +201,7 @@
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
-	H.setStat("medical", STAT_HIGH)
+	H.setStat("medical", STAT_VERY_HIGH)
 	H.setStat("shotgun", STAT_MEDIUM_LOW)
 
 	return TRUE

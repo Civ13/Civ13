@@ -682,6 +682,7 @@
 #include "code\modules\WW2\jobs\_languages.dm"
 #include "code\modules\WW2\jobs\_special.dm"
 #include "code\modules\WW2\jobs\british.dm"
+#include "code\modules\WW2\jobs\dutch.dm"
 #include "code\modules\WW2\jobs\faction.dm"
 #include "code\modules\WW2\jobs\french.dm"
 #include "code\modules\WW2\jobs\helpers.dm"

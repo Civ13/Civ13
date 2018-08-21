@@ -361,6 +361,8 @@ var/list/vocal_emotes = list(
 							playsound(get_turf(src), "charge_PORTUGUESE", 100)
 						if (faction_text == INDIANS)
 							playsound(get_turf(src), "charge_INDIANS", 100)
+						if (faction_text == DUTCH)
+							playsound(get_turf(src), "charge_DUTCH", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2

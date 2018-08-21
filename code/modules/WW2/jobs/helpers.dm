@@ -44,6 +44,12 @@
 					if (H.original_job.base_type_flag() == INDIANS)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (DUTCH)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == DUTCH)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 
 // get every single mob of x faction: useful for counting deceased & gibbed mobs. More efficient than n_of_side()
 // currently does not support undead/pillarmen faction
@@ -62,5 +68,6 @@
 			return dead_french.len + heavily_injured_french.len + alive_french.len
 		if (INDIANS)
 			return dead_indians.len + heavily_injured_indians.len + alive_indians.len
-
+		if (DUTCH)
+			return dead_dutch.len + heavily_injured_dutch.len + alive_dutch.len
 

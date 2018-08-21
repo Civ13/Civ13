@@ -41,6 +41,10 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	if (!pref.french_name)
 		pref.french_name	= random_french_name(pref.gender, pref.species)
 
+	pref.dutch_name		= sanitize_name(pref.dutch_name, pref.species)
+	if (!pref.dutch_name)
+		pref.dutch_name	= random_dutch_name(pref.gender, pref.species)
+
 	pref.carib_name		= sanitize_name(pref.carib_name, pref.species)
 	if (!pref.carib_name)
 		pref.carib_name	= random_carib_name(pref.gender, pref.species)
@@ -54,6 +58,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	pref.be_random_name_spanish	= sanitize_integer(pref.be_random_name_spanish, FALSE, TRUE, initial(pref.be_random_name_spanish))
 	pref.be_random_name_portuguese	= sanitize_integer(pref.be_random_name_portuguese, FALSE, TRUE, initial(pref.be_random_name_portuguese))
 	pref.be_random_name_carib	= sanitize_integer(pref.be_random_name_carib, FALSE, TRUE, initial(pref.be_random_name_carib))
+	pref.be_random_name_dutch	= sanitize_integer(pref.be_random_name_dutch, FALSE, TRUE, initial(pref.be_random_name_dutch))
 
 /datum/category_item/player_setup_item/general/basic/content()
 	// name
@@ -82,6 +87,11 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<a href='?src=\ref[src];rename_french=1'><b>[pref.french_name]</b></a><br>"
 	. += "(<a href='?src=\ref[src];random_name_french=1'>Random Name</A>) "
 	. += "(<a href='?src=\ref[src];always_random_name_french=1'>Always Random Name: [pref.be_random_name_french ? "Yes" : "No"]</a>)"
+	. += "<br><br>"
+	. += "<b>Dutch Name:</b> "
+	. += "<a href='?src=\ref[src];rename_dutch=1'><b>[pref.dutch_name]</b></a><br>"
+	. += "(<a href='?src=\ref[src];random_name_dutch=1'>Random Name</A>) "
+	. += "(<a href='?src=\ref[src];always_random_name_dutch=1'>Always Random Name: [pref.be_random_name_dutch ? "Yes" : "No"]</a>)"
 	. += "<br><br>"
 	. += "<b>Carib Name:</b> "
 	. += "<a href='?src=\ref[src];rename_carib=1'><b>[pref.carib_name]</b></a><br>"
@@ -182,6 +192,26 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 		pref.be_random_name_portuguese = !pref.be_random_name_portuguese
 		return TOPIC_REFRESH
 
+	//dutch names
+	if (href_list["rename_dutch"])
+		var/raw_name = input(user, "Choose your character's Dutch name:", "Character Name")  as text|null
+		if (!isnull(raw_name) && CanUseTopic(user))
+			var/new_name = sanitize_name(raw_name, pref.species)
+			if (new_name)
+				pref.dutch_name = new_name
+				return TOPIC_REFRESH
+			else
+				user << "<span class='warning'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and .</span>"
+				return TOPIC_NOACTION
+
+	else if (href_list["random_name_dutch"])
+		pref.dutch_name = random_dutch_name(pref.gender, pref.species)
+		return TOPIC_REFRESH
+
+	else if (href_list["always_random_name_dutch"])
+		pref.be_random_name_dutch = !pref.be_random_name_dutch
+		return TOPIC_REFRESH
+
 	//french names
 	if (href_list["rename_french"])
 		var/raw_name = input(user, "Choose your character's French name:", "Character Name")  as text|null
@@ -227,7 +257,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 		return TOPIC_REFRESH
 
 	else if (href_list["ethnicity_pirate"])
-		pref.pirate_ethnicity = next_in_list(pref.pirate_ethnicity, list(ENGLISH, SPANISH, PORTUGUESE, FRENCH))
+		pref.pirate_ethnicity = next_in_list(pref.pirate_ethnicity, list(ENGLISH, SPANISH, PORTUGUESE, FRENCH, DUTCH))
 		return TOPIC_REFRESH
 
 	else if (href_list["body_build"])

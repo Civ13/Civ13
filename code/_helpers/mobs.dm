@@ -99,6 +99,20 @@ proc/random_spanish_name(gender, species = "Human")
 		return current_species.get_random_spanish_name(gender)
 
 
+proc/random_dutch_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_dutch)) + " " + capitalize(pick(last_names_dutch))
+		else
+			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch))
+	else
+		return current_species.get_random_dutch_name(gender)
+
+
 proc/random_portuguese_name(gender, species = "Human")
 	var/datum/species/current_species
 	if (species)
@@ -434,6 +448,23 @@ Proc for attack log creation, because really why not
 
 	return spanish
 
+/proc/getdutchmobs(var/alive = FALSE)
+	var/list/dutch = list()
+	for (var/mob/living/carbon/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/dutch))
+			continue
+		if (istype(H, /mob/living/carbon/human/corpse))
+			continue
+		dutch += H
+
+	return dutch
+
 /proc/getfrenchmobs(var/alive = FALSE)
 	var/list/french = list()
 	for (var/mob/living/carbon/human/H in mob_list)
@@ -515,6 +546,8 @@ Proc for attack log creation, because really why not
 			mobs = getspanishmobs(0)
 		if (PORTUGUESE)
 			mobs = getportuguesemobs(0)
+		if (DUTCH)
+			mobs = getdutchmobs(0)
 
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)

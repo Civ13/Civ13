@@ -1198,6 +1198,8 @@
 					holder.icon_state = officer_faction.icon_state
 				if (INDIANS)
 					holder.icon_state = officer_faction.icon_state
+				if (DUTCH)
+					holder.icon_state = officer_faction.icon_state
 				if (CIVILIAN)
 					holder.icon_state = ""
 			hud_list[OFFICER_FACTION] = holder
@@ -1217,6 +1219,8 @@
 				if (PORTUGUESE)
 					holder.icon_state = base_faction.icon_state
 				if (INDIANS)
+					holder.icon_state = base_faction.icon_state
+				if (DUTCH)
 					holder.icon_state = base_faction.icon_state
 				if (CIVILIAN)
 					holder.icon_state = ""

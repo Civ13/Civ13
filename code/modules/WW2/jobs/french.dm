@@ -200,7 +200,7 @@
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
-	H.setStat("medical", STAT_HIGH)
+	H.setStat("medical", STAT_VERY_HIGH)
 	H.setStat("shotgun", STAT_MEDIUM_LOW)
 
 	return TRUE
@@ -320,7 +320,7 @@
 
 //head
 	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
 	var/randweapon = rand(1,2)
 	if (randweapon == 1)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)

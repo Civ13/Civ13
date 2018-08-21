@@ -48,6 +48,8 @@
 		. = SPANISH
 	else if (istype(src, /datum/job/indians))
 		. = INDIANS
+	else if (istype(src, /datum/job/dutch))
+		. = DUTCH
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -74,6 +76,9 @@
 	else if (istype(src, /datum/job/indians))
 		user.faction_text = "INDIANS"
 		user.base_faction = new/datum/faction/indians(user, src)
+	else if (istype(src, /datum/job/dutch))
+		user.faction_text = "DUTCH"
+		user.base_faction = new/datum/faction/dutch(user, src)
 
 
 /datum/job/proc/opposite_faction_name()

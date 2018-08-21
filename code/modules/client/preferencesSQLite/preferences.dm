@@ -26,13 +26,15 @@ var/list/preferences_datums = list()
 	var/spanish_name = "Juan Garcia"
 	var/french_name = "Mathieu Bertrand"
 	var/portuguese_name = "Pedro Alves"
-	var/carib_name = "Mojowai Karukera"
+	var/dutch_name = "Daan Visser"
+	var/carib_name = "Mojowai"
 	var/be_random_name = FALSE				//whether we are a random name every round
 	var/be_random_name_pirate = FALSE
 	var/be_random_name_carib = FALSE
 	var/be_random_name_spanish = FALSE
 	var/be_random_name_french = FALSE
 	var/be_random_name_portuguese = FALSE
+	var/be_random_name_dutch = FALSE
 	var/be_random_name_english = FALSE
 	var/gender = MALE					//gender of character (well duh)
 	var/pirate_ethnicity = ENGLISH
@@ -146,6 +148,7 @@ var/list/preferences_datums = list()
 			french_name = random_french_name(gender, species)
 			portuguese_name = random_portuguese_name(gender, species)
 			spanish_name = random_spanish_name(gender, species)
+			dutch_name = random_dutch_name(gender, species)
 			carib_name = random_carib_name(gender, species)
 			remember_preference("real_name", real_name)
 			remember_preference("english_name", english_name)
@@ -153,6 +156,7 @@ var/list/preferences_datums = list()
 			remember_preference("spanish_name", spanish_name)
 			remember_preference("portuguese_name", portuguese_name)
 			remember_preference("carib_name", carib_name)
+			remember_preference("dutch_name", dutch_name)
 			save_preferences(1)
 
 		spawn (1)

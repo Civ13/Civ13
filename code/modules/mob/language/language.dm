@@ -111,6 +111,25 @@
 
 	return "[trim(full_name)]"
 
+
+/datum/language/proc/get_random_dutch_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_dutch)) + " " + capitalize(pick(last_names_dutch))
+		else
+			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch))
+
+	var/full_name = ""
+	var/new_name = ""
+
+	for (var/i = 0;i<name_count;i++)
+		new_name = ""
+		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
+			new_name += pick(syllables)
+		full_name += " [capitalize(lowertext(new_name))]"
+
+	return "[trim(full_name)]"
+
 /datum/language/proc/get_random_carib_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -273,6 +292,8 @@
 				cname_check = FALSE
 			else if (istype(l, /datum/language/french))
 				cname_check = FALSE
+			else if (istype(l, /datum/language/dutch))
+				cname_check = FALSE
 
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
@@ -315,6 +336,17 @@
 						H.real_name = H.species.get_random_french_name(H.gender, FALSE)
 					else
 						H.real_name = H.client.prefs.french_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/dutch))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_dutch)
+						H.real_name = H.species.get_random_dutch_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.dutch_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 

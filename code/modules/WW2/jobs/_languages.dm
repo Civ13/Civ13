@@ -35,6 +35,10 @@
 	default_language = "Spanish"
 	additional_languages = list("Portuguese" = 15, "French" = 25, "English" = 10)
 
+/datum/job/dutch
+	default_language = "Dutch"
+	additional_languages = list("French" = 15, "Spanish" = 10, "English" = 25)
+
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 
@@ -57,6 +61,10 @@
 					H.add_language(FRENCH, TRUE)
 					H.add_note("Known Languages", "French")
 					notes += "French"
+				if (FRENCH)
+					H.add_language(DUTCH, TRUE)
+					H.add_note("Known Languages", "Dutch")
+					notes += "Dutch"
 
 	if (!H.languages.len)
 		H.add_language(default_language, TRUE)
@@ -97,4 +105,8 @@
 		if (INDIANS)
 			for (var/datum/language/carib/C in H.languages)
 				H.default_language = C
+				break
+		if (DUTCH)
+			for (var/datum/language/dutch/D in H.languages)
+				H.default_language = D
 				break

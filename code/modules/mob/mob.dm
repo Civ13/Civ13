@@ -685,7 +685,7 @@
 			if (map)
 				var/grace_period_string = ""
 				for (var/faction in map.faction_organization)
-					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH).Find(faction))
+					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH).Find(faction))
 						continue
 					if (grace_period_string)
 						grace_period_string += ", "

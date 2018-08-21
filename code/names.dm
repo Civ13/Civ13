@@ -23,6 +23,10 @@ var/list/first_names_male_spanish = file2list("config/names/first_male_spanish.t
 var/list/first_names_female_spanish = file2list("config/names/first_female_spanish.txt")
 var/list/last_names_spanish = file2list("config/names/last_spanish.txt")
 
+var/list/first_names_male_dutch = file2list("config/names/first_male_dutch.txt")
+var/list/first_names_female_dutch = file2list("config/names/first_female_dutch.txt")
+var/list/last_names_dutch = file2list("config/names/last_dutch.txt")
+
 var/list/first_names_male_carib = file2list("config/names/first_carib.txt")
 var/list/first_names_female_carib = file2list("config/names/first_carib.txt")
 var/list/last_names_carib = file2list("config/names/last_carib.txt")

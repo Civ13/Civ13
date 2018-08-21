@@ -234,6 +234,23 @@
 			reinforcements_master.add(src, BRITISH)
 		else
 			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
+	if (href_list["re_dutch"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!reinforcements_master.is_permalocked(DUTCH))
+			if (client.prefs.s_tone < -25)
+				usr << "<span class='danger'>You are too dark to be a Dutch soldier.</span>"
+				return
+			reinforcements_master.add(src, DUTCH)
+		else
+			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
 
 	if (href_list["re_portuguese"])
 
@@ -339,6 +356,8 @@
 		reinforcements_master.remove(src, FRENCH)
 	if (href_list["unre_indians"])
 		reinforcements_master.remove(src, INDIANS)
+	if (href_list["unre_dutch"])
+		reinforcements_master.remove(src, DUTCH)
 	if (href_list["late_join"])
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -560,7 +579,7 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
+	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_french.len] French, [alive_dutch.len] Dutch, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -574,6 +593,7 @@
 		FRENCH = FALSE,
 		INDIANS = FALSE,
 		PORTUGUESE = FALSE,
+		DUTCH = FALSE,
 		BRITISH = FALSE)
 
 	var/prev_side = FALSE

@@ -25,6 +25,7 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[PORTUGUESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FRENCH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[INDIANS]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[DUTCH]
 	else
 		for (var/faction in map.faction_organization)
 			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
@@ -306,6 +307,8 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateFR"
 				if (SPANISH)
 					spawn_location = "JoinLateSP"
+				if (DUTCH)
+					spawn_location = "JoinLateNL"
 
 		// fixes spawning at 1,1,1
 
@@ -322,6 +325,8 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateSP"
 			else if (findtext(H.original_job.spawn_location, "JoinLateFR"))
 				spawn_location = "JoinLateFR"
+			else if (findtext(H.original_job.spawn_location, "JoinLateNL"))
+				spawn_location = "JoinLateNL"
 		H.job_spawn_location = spawn_location
 
 		#ifdef SPAWNLOC_DEBUG
@@ -445,6 +450,7 @@ var/global/datum/controller/occupations/job_master
 	var/french = alive_n_of_side(FRENCH)
 	var/indians = alive_n_of_side(INDIANS)
 	var/spanish = alive_n_of_side(SPANISH)
+	var/dutch = alive_n_of_side(DUTCH)
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
 	var/max_pirates = INFINITY
@@ -453,6 +459,7 @@ var/global/datum/controller/occupations/job_master
 	var/max_french = INFINITY
 	var/max_portuguese = INFINITY
 	var/max_indians = INFINITY
+	var/max_dutch = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -481,14 +488,8 @@ var/global/datum/controller/occupations/job_master
 		if (map.faction_distribution_coeffs.Find(INDIANS))
 			max_indians = ceil(relevant_clients * map.faction_distribution_coeffs[INDIANS])
 
-	// fixes pirates-biased autobalance on verylow pop - Kachnov
-	if (map && relevant_clients <= 7)
-		if (map.faction_distribution_coeffs[PIRATES] > map.faction_distribution_coeffs[BRITISH])
-			max_pirates = max_british
-		else if (map.faction_distribution_coeffs[BRITISH] > map.faction_distribution_coeffs[PIRATES])
-			max_british = max_pirates
-		while ((max_british+max_pirates) < relevant_clients)
-			++max_pirates
+		if (map.faction_distribution_coeffs.Find(DUTCH))
+			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
 
 	switch (side)
 		if (CIVILIAN)
@@ -530,6 +531,12 @@ var/global/datum/controller/occupations/job_master
 			if (portuguese_forceEnabled)
 				return FALSE
 			if (portuguese >= max_portuguese)
+				return TRUE
+
+		if (DUTCH)
+			if (dutch_forceEnabled)
+				return FALSE
+			if (dutch >= max_dutch)
 				return TRUE
 
 	return FALSE

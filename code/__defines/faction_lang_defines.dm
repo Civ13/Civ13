@@ -12,6 +12,7 @@
 #define SPANISH "SPANISH"
 #define PORTUGUESE "PORTUGUESE"
 #define FRENCH "FRENCH"
+#define DUTCH "DUTCH"
 
 /proc/faction_const2name(constant)
 
@@ -35,3 +36,6 @@
 
 	if (constant == FRENCH)
 		return "French Navy"
+
+	if (constant == DUTCH)
+		return "Dutch Navy"

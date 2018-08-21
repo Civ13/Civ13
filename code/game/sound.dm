@@ -144,6 +144,8 @@ var/list/charge_sounds_fr = list(
 	'sound/effects/emotes/god_save_the_king.ogg',)
 var/list/charge_sounds_sp = list(
 	'sound/effects/emotes/charge_sp.ogg',)
+var/list/charge_sounds_nl = list(
+	'sound/effects/emotes/charge_sp.ogg',)
 // pain, etc sounds from Interbay
 
 
@@ -331,5 +333,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_fr)
 			if ("charge_SPANISH")
 				soundin = pick(charge_sounds_sp)
+			if ("charge_DUTCH")
+				soundin = pick(charge_sounds_nl)
 
 	return soundin

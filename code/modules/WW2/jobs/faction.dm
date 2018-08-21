@@ -15,11 +15,12 @@
 #define TEAM_PT 4
 #define TEAM_FR 5
 #define TEAM_IN 6
+#define TEAM_NL 7
 
-var/global/officers[6]
-var/global/commanders[6]
-var/global/soldiers[6]
-var/global/squad_members[6]
+var/global/officers[7]
+var/global/commanders[7]
+var/global/soldiers[7]
+var/global/squad_members[7]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -89,6 +90,14 @@ var/global/squad_members[6]
 /datum/faction/british/base_type()
 	return "/datum/faction/british"
 
+// you appear to be a dutch soldier to all other brits
+/datum/faction/dutch
+	icon_state = "nl_basic"
+	title = "Dutch Sailor"
+	team = TEAM_NL
+
+/datum/faction/dutch/base_type()
+	return "/datum/faction/dutch"
 
 // CODE
 /datum/faction/New(var/mob/living/carbon/human/H, var/datum/job/J)
@@ -167,28 +176,20 @@ var/global/squad_members[6]
 	else if (istype(J, /datum/job/british))
 		if ("[type]" == "/datum/faction/british")
 			soldiers[BRITISH]++
+	else if (istype(J, /datum/job/spanish))
+		if ("[type]" == "/datum/faction/spanish")
+			soldiers[SPANISH]++
+	else if (istype(J, /datum/job/portuguese))
+		if ("[type]" == "/datum/faction/portuguese")
+			soldiers[PORTUGUESE]++
+	else if (istype(J, /datum/job/french))
+		if ("[type]" == "/datum/faction/french")
+			soldiers[FRENCH]++
+	else if (istype(J, /datum/job/dutch))
+		if ("[type]" == "/datum/faction/dutch")
+			soldiers[DUTCH]++
+	else if (istype(J, /datum/job/indians))
+		if ("[type]" == "/datum/faction/indians")
+			soldiers[INDIANS]++
 	H.all_factions += src
 	..()
-
-/* HELPER FUNCTIONS */
-/*
-/proc/issquadleader(var/mob/living/carbon/human/H)
-	if (H.squad_faction && H.squad_faction.is_leader)
-		return TRUE
-	return FALSE
-
-/proc/issquadmember(var/mob/living/carbon/human/H)
-	if (H.squad_faction && !H.squad_faction.is_leader)
-		return TRUE
-	return FALSE
-
-/proc/getsquad(var/mob/living/carbon/human/H)
-	if (H.squad_faction)
-		return H.squad_faction.squad
-	return null
-*/
-/proc/isbritishsquadmember_or_leader(var/mob/living/carbon/human/H)
-	return (istype(H.original_job, /datum/job/british))
-
-/proc/ispiratequadmember_or_leader(var/mob/living/carbon/human/H)
-	return (istype(H.original_job, /datum/job/pirates))

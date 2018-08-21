@@ -12,6 +12,8 @@
 				H.name = H.species.get_random_portuguese_name(H.gender)
 			if (FRENCH)
 				H.name = H.species.get_random_french_name(H.gender)
+			if (DUTCH)
+				H.name = H.species.get_random_dutch_name(H.gender)
 	else
 		H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
@@ -213,7 +215,7 @@
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
-	H.setStat("medical", STAT_HIGH)
+	H.setStat("medical", STAT_VERY_HIGH)
 	H.setStat("shotgun", STAT_MEDIUM_LOW)
 
 	return TRUE

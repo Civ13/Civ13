@@ -500,13 +500,13 @@
 	worn_state = "dutch_sailor3"
 /////////GENERIC/////////
 /obj/item/clothing/head/red_beret
-	name = "red sailor berret"
+	name = "red sailor beret"
 	desc = "A red berret, worn by portuguese and spanish sailors."
 	icon_state = "redberet"
 	item_state = "redberet"
 
-/obj/item/clothing/head/blue_berret
-	name = "blue sailor berret"
+/obj/item/clothing/head/blue_beret
+	name = "blue sailor beret"
 	desc = "A red berret, worn by french sailors."
 	icon_state = "blueberet"
 	item_state = "blueberet"

@@ -3,6 +3,7 @@
 #define SPANISH_SYLLABLES list ("ad", "al", "an", "ar", "as", "ci", "co", "de", "do", "el", "en", "er", "es", "ie", "in", "la", "lo", "me", "na", "no", "nt", "on", "or", "os", "pa", "qu", "ra", "re", "ro", "se", "st", "ta", "te", "to", "ue", "un", "en", "de", "er", "es", "ue", "la", "ra", "os", "nt", "te", "ar", "qu", "el", "ta", "do", "co", "re", "as", "on", "an", "to", "lo", "st", "un", "or", "ad", "ie", "se", "ci", "al", "pa", "na", "ro", "no", "me", "in", "aci", "ada", "ado", "ant", "ara", "ció", "com", "con", "des", "dos", "ent", "era", "ero", "est", "ido", "ien", "ier", "ión", "las", "los", "men", "nte", "nto", "par", "per", "por", "que", "res", "sta", "ste", "ten", "tra", "una", "ver", "que", "ent", "nte", "con", "est", "ado", "par", "los", "era", "ien", "men", "per", "sta", "ara", "una", "por", "ión", "tra", "ant", "nto", "ero", "ció", "aci", "las", "com", "ste", "res", "ten", "ier", "ver", "dos", "des", "ido", "ada")
 #define ENGLISH_SYLLABLES list("ing", "ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "light", "es", "lar", "car", "out", "main", "re", "ad", "pa", "of", "tion", "ar", "ture", "mo", "pos", "ro", "in", "ers", "for", "an", "tain", "my", "e", "ment", "is", "side", "nal", "con", "ings", "ness", "y", "tions", "pe", "se", "ning", "ments", "ties", "so", "tor", "set", "ward" , "ence", "up")
 #define CARIB_SYLLABLES list("mo", "ro", "ani", "me", "ropo", "ka", "re", "ta", "sa", "po’i", "poto", "’me", "ta", "’wa", "’po", "re", "wa", "aje", "kary", "kon", "eta", "ry", "ra", "’a", "wata", "moi", "waty")
+#define DUTCH_SYLLABLES list("eek", "ti", "po", "aar", "aag", "van", "en", "mo", "gis", "ka", "de", "uur", "ok", "nen", "ken", "ge", "er", "ooi", "ijk", "le", "cht", "ij", "ont", "ond", "ag", "het", "hoe", "wel", "nee", "ens", "ijf", "ofd", "per")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -44,6 +45,14 @@
 		/datum/language/spanish = 25,
 		/datum/language/portuguese = 10)
 
+/datum/language/dutch
+	name = "Dutch"
+	desc = "Erg goed."
+	key = "d"
+	colour = "Dutch"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = DUTCH_SYLLABLES
+	mutual_intelligibility = list(/datum/language/english = 10,)
 
 /datum/language/carib
 	name = "Carib"
