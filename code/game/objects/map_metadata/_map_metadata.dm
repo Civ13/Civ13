@@ -362,15 +362,15 @@ var/global/obj/map_metadata/map = null
 
 /obj/map_metadata/proc/short_win_time(faction)
 	if (clients.len >= 20)
-		return 6000 // 10 minutes
-	else
 		return 3000 // 5 minutes
+	else
+		return 1200 // 2 minutes
 
 /obj/map_metadata/proc/long_win_time(faction)
 	if (clients.len >= 20)
-		return 9000 // 15 minutes
+		return 4200 // 7 minutes
 	else
-		return 6000 // 10 minutes
+		return 2400 // 4 minutes
 
 /obj/map_metadata/proc/win_condition_specialcheck()
 	return TRUE
