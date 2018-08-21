@@ -4,9 +4,9 @@
 		MAP_NAVAL = 0,
 		MAP_ISLAND = 0,
 //		MAP_VOYAGE = 10,
-		MAP_ROBUSTA = 10,
+		MAP_ROBUSTA = 14,
 //		MAP_BATTLEROYALE = 20,
-		MAP_SUPPLY_RAID = 0,
+		MAP_SUPPLY_RAID = 8,
 	)
 
 	var/ready = TRUE
