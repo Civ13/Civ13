@@ -568,18 +568,6 @@
 		/*if (pullin)
 			pullin.icon_state = "pull0"*/
 
-/mob/verb/switch_defense_mode()
-
-	set name = "Switch defense mode"
-	set category = "IC"
-
-	if (defense_intent == I_DODGE)
-		defense_intent = I_PARRY
-		src << "<span class='warning'>You will now parry.</span>"
-	else
-		defense_intent = I_DODGE
-		src << "<span class='warning'>You will now dodge.</span>"
-
 /mob/proc/start_pulling(var/atom/movable/AM)
 
 	if ( !AM || !usr || src==AM || !isturf(loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
