@@ -761,7 +761,7 @@ var/list/rank_prefix = list(\
 		self = TRUE
 	if (!self)
 		usr.visible_message("<span class='notice'>[usr] kneels down, puts \his hand on [src]'s wrist and begins counting their pulse.</span>",\
-		"You begin counting [src]'s pulse")
+		"You begin counting [src]'s pulse.")
 	else
 		usr.visible_message("<span class='notice'>[usr] begins counting their pulse.</span>",\
 		"You begin counting your pulse.")

@@ -140,8 +140,8 @@
 			// sound
 			spawn (rand(1,2))
 				var/turf/t1 = get_turf(src)
-				playsound(t1, "artillery_out", 50, TRUE)
-				playsound(t1, "artillery_out_distant", 50, TRUE)
+				playsound(t1, "artillery_out", 100, TRUE)
+				playsound(t1, "artillery_out_distant", 100, TRUE)
 
 			// actual hit somewhere (or not)
 			var/turf/target = get_turf(src)
