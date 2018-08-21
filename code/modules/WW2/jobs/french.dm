@@ -11,7 +11,7 @@
 	rank_abbreviation = "Capitaine"
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateFRCap"
+	spawn_location = "JoinLatePirateCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -53,7 +53,7 @@
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Qua.-Maî."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateFRQM"
+	spawn_location = "JoinLatePirateQM"
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -95,7 +95,7 @@
 	rank_abbreviation = "Chef d'eq."
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateFRBoatswain"
+	spawn_location = "JoinLatePirateBoatswain"
 	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_commander = TRUE
@@ -137,7 +137,7 @@
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Aspirant"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateFRMidshipman"
+	spawn_location = "JoinLatePirateMidshipman"
 	is_officer = TRUE
 	SL_check_independent = TRUE
 
@@ -174,7 +174,7 @@
 	en_meaning = "Medic"
 	rank_abbreviation = "Chirurgien"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateFRSurgeon"
+	spawn_location = "JoinLatePirateSurgeon"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -211,7 +211,7 @@
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Charpentier"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateFRCarpenter"
+	spawn_location = "JoinLatePirateCarpenter"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -251,7 +251,7 @@
 	en_meaning = "Cook"
 	rank_abbreviation = "Cuisinier"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateFRCook"
+	spawn_location = "JoinLatePirateCook"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -298,7 +298,7 @@
 	en_meaning = "Seaman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRN" //for testing!
+	spawn_location = "JoinLatePirate" //for testing!
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE

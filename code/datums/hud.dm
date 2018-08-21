@@ -55,7 +55,7 @@
 		"allow movement"   = list("type" = /obj/screen/gun/move,       "loc" = "15,4"),
 		"allow item use"   = list("type" = /obj/screen/gun/item,       "loc" = "14,3"),
 		"allow radio use"   = list("type" = /obj/screen/gun/radio,       "loc" = "14,4"),
-		"toggle invetory"   = list("type" = /obj/screen/toggle_invetory,       "loc" = "1,1")
+		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,       "loc" = "1,1")
 		)
 
 	slot_data = list (

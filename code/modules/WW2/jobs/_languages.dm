@@ -39,6 +39,10 @@
 	default_language = "Dutch"
 	additional_languages = list("French" = 15, "Spanish" = 10, "English" = 25)
 
+/datum/job/french
+	default_language = "French"
+	additional_languages = list("English" = 10, "Spanish" = 15)
+
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 

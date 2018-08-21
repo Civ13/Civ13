@@ -11,7 +11,7 @@
 	rank_abbreviation = "Kapitein"
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateNLCap"
+	spawn_location = "JoinLateRNCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -53,7 +53,7 @@
 	en_meaning = "2IC / Supplies Officer"
 	rank_abbreviation = "Onderofficier"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateNLQM"
+	spawn_location = "JoinLateRNQM"
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
@@ -95,7 +95,7 @@
 	rank_abbreviation = "Kwartiermeester"
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateNLBoatswain"
+	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_commander = TRUE
@@ -137,7 +137,7 @@
 	en_meaning = "Petty Officer"
 	rank_abbreviation = "Adelborst"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateNLMidshipman"
+	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
 	SL_check_independent = TRUE
 
@@ -174,7 +174,7 @@
 	en_meaning = "Medic"
 	rank_abbreviation = "Chirurg"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateNLSurgeon"
+	spawn_location = "JoinLateRNSurgeon"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -211,7 +211,7 @@
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Timmerman"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateNLCarpenter"
+	spawn_location = "JoinLateRNCarpenter"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -251,7 +251,7 @@
 	en_meaning = "Cook"
 	rank_abbreviation = "Kok"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateNLCook"
+	spawn_location = "JoinLateRNCook"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE

@@ -338,28 +338,28 @@
 
 /obj/item/clothing/under/portuguese_sailor1
 	name = "portuguese sailor clothes"
-	desc = "A set of portuguese navy sailor clothes, with a white shirt and pink trousers."
+	desc = "A set of portuguese navy sailor clothes, with a white shirt and green trousers."
 	icon_state = "portuguese_sailor1"
 	item_state = "portuguese_sailor1"
 	worn_state = "portuguese_sailor1"
 
 /obj/item/clothing/under/portuguese_sailor2
 	name = "open portuguese sailor clothes"
-	desc = "A set of portuguese navy sailor clothes, with an unbuttoned white shirt and pink trousers."
+	desc = "A set of portuguese navy sailor clothes, with an unbuttoned white shirt and geen trousers."
 	icon_state = "portuguese_sailor2"
 	item_state = "portuguese_sailor2"
 	worn_state = "portuguese_sailor2"
 
 /obj/item/clothing/under/portuguese_sailor3
 	name = "portuguese sailor trousers"
-	desc = "Pink portuguese sailor trousers. For when it's too hot to wear a shirt."
+	desc = "Green portuguese sailor trousers. For when it's too hot to wear a shirt."
 	icon_state = "portuguese_sailor3"
 	item_state = "portuguese_sailor3"
 	worn_state = "portuguese_sailor3"
 
 /obj/item/clothing/under/portuguese_sailor4
 	name = "portuguese sailor clothes with scarf"
-	desc = "A set of portuguese navy sailor clothes, with a white shirt and pink trousers. There's a pink scarf attached."
+	desc = "A set of portuguese navy sailor clothes, with a white shirt and green trousers. There's a green scarf attached."
 	icon_state = "portuguese_sailor4"
 	item_state = "portuguese_sailor4"
 	worn_state = "portuguese_sailor4"

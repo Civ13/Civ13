@@ -77,10 +77,10 @@
 	var/mob/living/carbon/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	for (var/gear_slot in species.hud.gear)//Добавляем Элементы ХУДа (инвентарь)
+	for (var/gear_slot in species.hud.gear)
 		if (!HUDdatum.slot_data.Find(gear_slot))
-			log_debug("[usr] try take inventory data for [gear_slot], but HUDdatum not have it!")
-			src << "Sorry, but something wrong witch creating a inventory slots, we recomendend chance a HUD type or call admins"
+			log_debug("[usr] tring to make inventory data for [gear_slot], but HUDdatum does not have it!")
+			src << "Sorry, but something went wrong while creating the inventory slots, we recomendend that you change the HUD type or contact the admins."
 			return
 		else
 			var/HUDtype
