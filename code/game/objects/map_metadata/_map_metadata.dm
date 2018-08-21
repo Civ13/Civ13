@@ -361,16 +361,22 @@ var/global/obj/map_metadata/map = null
 	world << "<font size = 3>[current_stat_message()]</font>"
 
 /obj/map_metadata/proc/short_win_time(faction)
-	if (clients.len >= 20)
-		return 3000 // 5 minutes
+	if (alive_n_of_side(faction1) || alive_n_of_side(faction2))
+		return 10
 	else
-		return 1200 // 2 minutes
+		if (clients.len >= 20)
+			return 3000 // 5 minutes
+		else
+			return 1200 // 2 minutes
 
 /obj/map_metadata/proc/long_win_time(faction)
-	if (clients.len >= 20)
-		return 4200 // 7 minutes
+	if (alive_n_of_side(faction1) || alive_n_of_side(faction2))
+		return 10
 	else
-		return 2400 // 4 minutes
+		if (clients.len >= 20)
+			return 4200 // 7 minutes
+		else
+			return 2400 // 4 minutes
 
 /obj/map_metadata/proc/win_condition_specialcheck()
 	return TRUE

@@ -42,7 +42,7 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/robusta/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/proc/cross_message(faction)
+/obj/map_metadata/robusta/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/robusta/reinforcements_ready()
