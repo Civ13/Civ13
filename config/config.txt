@@ -15,7 +15,7 @@ HUB_FEATURES XVIII Century Naval Combat
 HUB_BODY <i>1713 A.D.</i>, <b>Caribbean Sea, TIME_OF_DAY</b><br>
 
 ## Use a link to a banner on your hub message? Comment out if not
-HUB_BANNER_URL <img src='i.imgur.com/Ouxiybj.png'></img>
+HUB_BANNER_URL http://i.imgur.com/Ouxiybj.png
 
 ## Open the hub discord link in a new window? 1 = yes, 0 = no
 OPEN_HUB_DISCORD_IN_NEW_WINDOW 1
