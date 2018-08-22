@@ -314,9 +314,9 @@ var/world_topic_spam_protect_time = world.timeofday
 	var/s = ""
 
 	if (config.open_hub_discord_in_new_window)
-		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[station_name()]</b></center><br>"
+		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[station_name()]</b></center><br></a>"
 	else
-		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br>"
+		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br></a>"
 
 	// for the custom 1713 hub only!
 
