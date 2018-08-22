@@ -144,9 +144,12 @@ var/list/charge_sounds_fr = list(
 var/list/charge_sounds_sp = list(
 	'sound/effects/emotes/charge_sp.ogg',)
 var/list/charge_sounds_nl = list(
-	'sound/effects/emotes/charge_nl.ogg',)
-// pain, etc sounds from Interbay
+	'sound/effects/emotes/charge_nl.ogg',
+	'sound/effects/emotes/charge_nl2.ogg',
+	'sound/effects/emotes/charge_nl3.ogg',
+	'sound/effects/emotes/charge_nl4.ogg',)
 
+// pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
 
