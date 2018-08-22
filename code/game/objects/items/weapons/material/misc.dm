@@ -10,7 +10,7 @@
 	throw_range = 7
 	allow_spin = FALSE
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
-	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
+	thrown_force_divisor = 1 // 20 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 
 
@@ -26,7 +26,7 @@
 	throw_range = 11
 	allow_spin = FALSE
 	force_divisor = 0.4 // 24 with hardness 60 (steel)
-	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
+	thrown_force_divisor = 10 // 20 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 
 /obj/item/weapon/material/hatchet

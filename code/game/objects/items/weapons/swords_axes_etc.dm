@@ -35,7 +35,7 @@
 	desc = "One of the oldest weapons in the world. Good for when you need to knock people down."
 	icon_state = "club"
 	item_state = "club"
-	var/weakens = 2
+	var/weakens = 1
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_NORMAL
 
