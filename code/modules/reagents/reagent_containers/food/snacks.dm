@@ -785,221 +785,7 @@
 		reagents.add_reagent("water", 15)
 		bitesize = 5
 
-/*
-/obj/item/weapon/reagent_containers/food/snacks/nettlesoup
-	name = "Nettle soup"
-	desc = "To think, the botanist would've beat you to death with one of these."
-	icon_state = "nettlesoup"
-	trash = /obj/item/kitchen/snack_bowl
-	filling_color = "#AFC4B5"
-	center_of_mass = list("x"=16, "y"=7)
-	nutriment_desc = list("salad" = 4, "egg" = 2, "potato" = 2)
-	nutriment_amt = 8
-	New()
-		..()
-		reagents.add_reagent("water", 5)
-		reagents.add_reagent("tricordrazine", 5)
-		bitesize = 5
 
-/obj/item/weapon/reagent_containers/food/snacks/mysterysoup
-	name = "Mystery soup"
-	desc = "The mystery is, why aren't you eating it?"
-	icon_state = "mysterysoup"
-	trash = /obj/item/kitchen/snack_bowl
-	filling_color = "#F082FF"
-	center_of_mass = list("x"=16, "y"=6)
-	nutriment_desc = list("backwash" = 1)
-	nutriment_amt = 1
-	New()
-		..()
-		var/mysteryselect = pick(1,2,3,4,5,6,7,8,9,10)
-		switch(mysteryselect)
-			if (1)
-				reagents.add_reagent("nutriment", 6)
-				reagents.add_reagent("capsaicin", 3)
-				reagents.add_reagent("tomatojuice", 2)
-			if (2)
-				reagents.add_reagent("nutriment", 6)
-				reagents.add_reagent("frostoil", 3)
-				reagents.add_reagent("tomatojuice", 2)
-			if (3)
-				reagents.add_reagent("nutriment", 5)
-				reagents.add_reagent("water", 5)
-				reagents.add_reagent("tricordrazine", 5)
-			if (4)
-				reagents.add_reagent("nutriment", 5)
-				reagents.add_reagent("water", 10)
-			if (5)
-				reagents.add_reagent("nutriment", 2)
-				reagents.add_reagent("banana", 10)
-			if (6)
-				reagents.add_reagent("nutriment", 6)
-				reagents.add_reagent("blood", 10)
-			if (7)
-				reagents.add_reagent("slimejelly", 10)
-				reagents.add_reagent("water", 10)
-			if (8)
-				reagents.add_reagent("carbon", 10)
-				reagents.add_reagent("toxin", 10)
-			if (9)
-				reagents.add_reagent("nutriment", 5)
-				reagents.add_reagent("tomatojuice", 10)
-			if (10)
-				reagents.add_reagent("nutriment", 6)
-				reagents.add_reagent("tomatojuice", 5)
-				reagents.add_reagent("imidazoline", 5)
-		bitesize = 5
-
-/obj/item/weapon/reagent_containers/food/snacks/wishsoup
-	name = "Wish Soup"
-	desc = "I wish this was soup."
-	icon_state = "wishsoup"
-	trash = /obj/item/kitchen/snack_bowl
-	filling_color = "#D1F4FF"
-	center_of_mass = list("x"=16, "y"=11)
-	New()
-		..()
-		reagents.add_reagent("water", 10)
-		bitesize = 5
-		if (prob(25))
-			desc = "A wish come true!"
-			reagents.add_reagent("nutriment", 8, list("something good" = 8))
-
-/obj/item/weapon/reagent_containers/food/snacks/hotchili
-	name = "Hot Chili"
-	desc = "A five alarm Texan Chili!"
-	icon_state = "hotchili"
-	trash = /obj/item/kitchen/snack_bowl
-	filling_color = "#FF3C00"
-	center_of_mass = list("x"=15, "y"=9)
-	nutriment_desc = list("chilli peppers" = 3)
-	nutriment_amt = 3
-	New()
-		..()
-		reagents.add_reagent("protein", 3)
-		reagents.add_reagent("capsaicin", 3)
-		reagents.add_reagent("tomatojuice", 2)
-		bitesize = 5
-
-/obj/item/weapon/reagent_containers/food/snacks/coldchili
-	name = "Cold Chili"
-	desc = "This slush is barely a liquid!"
-	icon_state = "coldchili"
-	filling_color = "#2B00FF"
-	center_of_mass = list("x"=15, "y"=9)
-	nutriment_desc = list("ice peppers" = 3)
-	nutriment_amt = 3
-	trash = /obj/item/kitchen/snack_bowl
-	New()
-		..()
-		reagents.add_reagent("protein", 3)
-		reagents.add_reagent("frostoil", 3)
-		reagents.add_reagent("tomatojuice", 2)
-		bitesize = 5
-
-/obj/item/weapon/reagent_containers/food/snacks/monkeycube
-	name = "monkey cube"
-	desc = "Just add water!"
-	flags = OPENCONTAINER
-	icon_state = "monkeycube"
-	bitesize = 12
-	filling_color = "#ADAC7F"
-	center_of_mass = list("x"=16, "y"=14)
-
-	var/wrapped = FALSE
-	var/monkey_type = "Monkey"
-
-	New()
-		..()
-		reagents.add_reagent("protein", 10)
-
-	attack_self(mob/user as mob)
-		if (wrapped)
-			Unwrap(user)
-
-	proc/Expand()
-		visible_message("<span class='notice'>\The [src] expands!</span>")
-		var/mob/living/carbon/human/H = new(get_turf(src))
-		H.set_species(monkey_type)
-		H.real_name = H.species.get_random_name()
-		H.name = H.real_name
-		loc = null
-		qdel(src)
-		return TRUE
-
-	proc/Unwrap(mob/user as mob)
-		icon_state = "monkeycube"
-		desc = "Just add water!"
-		user << "You unwrap the cube."
-		wrapped = FALSE
-		flags |= OPENCONTAINER
-		return
-
-/obj/item/weapon/reagent_containers/food/snacks/monkeycube/on_reagent_change()
-	if (reagents.has_reagent("water"))
-		Expand()
-
-/obj/item/weapon/reagent_containers/food/snacks/monkeycube/wrapped
-	desc = "Still wrapped in some paper."
-	icon_state = "monkeycubewrap"
-	flags = FALSE
-	wrapped = TRUE
-
-/obj/item/weapon/reagent_containers/food/snacks/spellburger
-	name = "Spell Burger"
-	desc = "This is absolutely Ei Nath."
-	icon_state = "spellburger"
-	filling_color = "#D505FF"
-	nutriment_desc = list("magic" = 3, "buns" = 3)
-	nutriment_amt = 6
-	New()
-		..()
-		bitesize = 2
-
-/obj/item/weapon/reagent_containers/food/snacks/bigbiteburger
-	name = "Big Bite Burger"
-	desc = "Forget the Big Mac. THIS is the future!"
-	icon_state = "bigbiteburger"
-	filling_color = "#E3D681"
-	center_of_mass = list("x"=16, "y"=11)
-	nutriment_desc = list("buns" = 4)
-	nutriment_amt = 4
-	New()
-		..()
-		reagents.add_reagent("protein", 10)
-		bitesize = 3
-
-/obj/item/weapon/reagent_containers/food/snacks/enchiladas
-	name = "Enchiladas"
-	desc = "Viva La Mexico!"
-	icon_state = "enchiladas"
-	trash = /obj/item/trash/tray
-	filling_color = "#A36A1F"
-	center_of_mass = list("x"=16, "y"=13)
-	nutriment_desc = list("tortilla" = 3, "corn" = 3)
-	nutriment_amt = 2
-	New()
-		..()
-		reagents.add_reagent("protein", 6)
-		reagents.add_reagent("capsaicin", 6)
-		bitesize = 4
-
-/obj/item/weapon/reagent_containers/food/snacks/monkeysdelight
-	name = "monkey's Delight"
-	desc = "Eeee Eee!"
-	icon_state = "monkeysdelight"
-	trash = /obj/item/trash/tray
-	filling_color = "#5C3C11"
-	center_of_mass = list("x"=16, "y"=13)
-
-	New()
-		..()
-		reagents.add_reagent("protein", 10)
-		reagents.add_reagent("banana", 5)
-		reagents.add_reagent("blackpepper", 1)
-		reagents.add_reagent("sodiumchloride", 1)
-		bitesize = 6
-*/
 /obj/item/weapon/reagent_containers/food/snacks/baguette
 	name = "Baguette"
 	desc = "Bon appetit!"
@@ -1105,13 +891,12 @@
 	filling_color = "#9E673A"
 	center_of_mass = list("x"=16, "y"=5)
 	nutriment_desc = list("tomato" = 2, "potato" = 2, "carrot" = 2, "eggplant" = 2, "mushroom" = 2)
-	nutriment_amt = 6
+	nutriment_amt = 5
 	trash = /obj/item/kitchen/snack_bowl
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
 		reagents.add_reagent("tomatojuice", 5)
-		reagents.add_reagent("imidazoline", 5)
 		reagents.add_reagent("water", 30)
 		bitesize = 2
 
@@ -1122,13 +907,12 @@
 	filling_color = "#9E673A"
 	center_of_mass = list("x"=16, "y"=5)
 	nutriment_desc = list("tomato" = 2, "potato" = 2, "carrot" = 2, "meat" = 2, "mushroom" = 2)
-	nutriment_amt = 6
+	nutriment_amt = 5
 	trash = /obj/item/kitchen/wood_bowl
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
 		reagents.add_reagent("tomatojuice", 5)
-		reagents.add_reagent("imidazoline", 5)
 		reagents.add_reagent("water", 30)
 		bitesize = 2
 
@@ -1474,6 +1258,21 @@
 		reagents.add_reagent("protein", 4)
 		reagents.add_reagent("tomatojuice", 5)
 		reagents.add_reagent("imidazoline", 5)
+		reagents.add_reagent("water", 15)
+		bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/caldoverde
+	name = "caldo verde"
+	desc = "A typical Portuguese soup, made with cabbages and potatoes."
+	icon_state = "caldoverde"
+	trash = /obj/item/kitchen/wood_bowl
+	filling_color = "#FAC9FF"
+	center_of_mass = list("x"=15, "y"=8)
+	nutriment_desc = list("cabbage" = 4, "potato" = 2, "olive oil" = 1)
+	nutriment_amt = 4
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
 		reagents.add_reagent("water", 15)
 		bitesize = 2
 
