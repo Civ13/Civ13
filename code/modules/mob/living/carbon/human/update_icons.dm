@@ -222,7 +222,7 @@ var/global/list/damage_icon_parts = list()
 	var/skeleton = (SKELETON in mutations)
 
 	//CACHING: Generate an index key from visible bodyparts.
-	//0 = destroyed, TRUE = normal, 2 = robotic, 3 = necrotic.
+	//0 = destroyed, TRUE = normal, 2 = necrotic.
 
 	//Create a new, blank icon for our mob to use.
 	if (stand_icon)
@@ -248,10 +248,8 @@ var/global/list/damage_icon_parts = list()
 		var/obj/item/organ/external/part = organs_by_name[organ_tag]
 		if (isnull(part) || part.is_stump())
 			icon_key += "0"
-		else if (part.status & ORGAN_ROBOT)
-			icon_key += "2[part.model ? "-[part.model]": ""]"
 		else if (part.status & ORGAN_DEAD)
-			icon_key += "3"
+			icon_key += "2"
 		else
 			icon_key += "1"
 		if (part)

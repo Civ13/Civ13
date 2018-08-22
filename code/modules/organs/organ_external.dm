@@ -886,8 +886,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return rval
 
 /obj/item/organ/external/proc/fracture()
-	if (status & ORGAN_ROBOT)
-		return	//ORGAN_BROKEN doesn't have the same meaning for robot limbs
 	if ((status & ORGAN_BROKEN) || cannot_break)
 		return
 
@@ -979,7 +977,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (!owner)
 		return
 
-	var/is_robotic = status & ORGAN_ROBOT
 	var/mob/living/carbon/human/victim = owner
 
 	..()
@@ -1018,20 +1015,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	victim.organs -= src
 	victim.organs_by_name[limb_name] = null // Remove from owner's vars.
 
-	//Robotic limbs explode if sabotaged.
-	if (is_robotic && sabotaged)
-		victim.visible_message(
-			"<span class='danger'>\The [victim]'s [name] explodes violently!</span>",\
-			"<span class='danger'>Your [name] explodes!</span>",\
-			"<span class='danger'>You hear an explosion!</span>")
-		explosion(get_turf(owner),-1,-1,2,3)
-		var/datum/effect/effect/system/spark_spread/spark_system = new /datum/effect/effect/system/spark_spread()
-		spark_system.set_up(5, FALSE, victim)
-		spark_system.attach(owner)
-		spark_system.start()
-		spawn(10)
-			qdel(spark_system)
-		qdel(src)
 
 /obj/item/organ/external/proc/disfigure(var/type = "brute")
 	if (disfigured)

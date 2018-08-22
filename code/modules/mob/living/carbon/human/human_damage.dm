@@ -11,8 +11,6 @@
 	var/total_burn  = FALSE
 	var/total_brute = FALSE
 	for (var/obj/item/organ/external/O in organs)	//hardcoded to streamline things a bit
-		if ((O.status & ORGAN_ROBOT) && !O.vital)
-			continue //*non-vital* robot limbs don't count towards shock and crit
 		total_brute += O.brute_dam
 		total_burn  += O.burn_dam
 
@@ -74,8 +72,6 @@
 /mob/living/carbon/human/getBruteLoss()
 	var/amount = FALSE
 	for (var/obj/item/organ/external/O in organs)
-		if (O.status & ORGAN_ROBOT)
-			continue //robot limbs don't count towards shock and crit
 		amount += O.brute_dam
 	return amount
 

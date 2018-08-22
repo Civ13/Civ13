@@ -926,9 +926,6 @@ var/list/rank_prefix = list(\
 	if (!affecting)
 		. = FALSE
 		fail_msg = "They are missing that limb."
-	else if (affecting.status & ORGAN_ROBOT)
-		. = FALSE
-		fail_msg = "That limb is robotic."
 	else
 		switch(target_zone)
 			if ("head")

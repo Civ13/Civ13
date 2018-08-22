@@ -168,7 +168,6 @@
 #define TANK_FRAGMENT_SCALE    (10.*ONE_ATMOSPHERE) // +1 for each SCALE kPa above threshold. Was 2 atm.
 
 #define HUMAN_STRIP_DELAY        40   // Takes 40ds = 4s to strip someone.
-#define ALIEN_SELECT_AFK_BUFFER  TRUE    // How many minutes that a person can be AFK before not being allowed to be an alien.
 #define NORMPIPERATE             30   // Pipe-insulation rate divisor.
 #define HEATPIPERATE             8    // Heat-exchange pipe insulation.
 #define FLOWFRAC                 0.99 // Fraction of gas transfered per process.

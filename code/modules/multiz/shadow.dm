@@ -8,7 +8,6 @@
 	name = "shadow"
 	desc = "Z-level shadow"
 	anchored = TRUE
-	unacidable = TRUE
 	density = FALSE
 	var/mob/owner = null
 

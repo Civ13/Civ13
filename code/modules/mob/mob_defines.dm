@@ -82,7 +82,7 @@
 	var/canmove = TRUE
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.
 	var/incorporeal_move = FALSE //0 is off, TRUE is normal, 2 is for ninjas.
-	var/unacidable = FALSE
+	var/
 	var/list/pinned = list()            // List of things pinning this creature to walls (see living_defense.dm)
 	var/list/embedded = list()          // Embedded items, since simple mobs don't have organs.
 	var/list/languages = list()         // For speaking/listening.

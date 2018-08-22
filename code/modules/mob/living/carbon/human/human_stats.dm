@@ -89,7 +89,7 @@
 		stats[statname][1] *= (1 + round(multiplier/100, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/100, increase_multiple))
 
-	else if (list("rifle", "pistol", "heavy", "shotgun").Find(statname))
+	else if (list("rifle", "pistol", "bows" ).Find(statname))
 		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
 

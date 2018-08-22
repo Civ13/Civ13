@@ -17,7 +17,7 @@
 	icon = 'icons/mob/screen/1713Style.dmi'
 	layer = 20.0
 	plane = HUD_PLANE
-//	unacidable = TRUE
+
 	var/obj/master = null //A reference to the object in the slot. Grabs or items, generally.
 	var/mob/living/parentmob
 	var/process_flag = FALSE

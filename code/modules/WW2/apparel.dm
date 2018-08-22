@@ -75,6 +75,12 @@
 		new /obj/item/ammo_casing/arrow(src)
 		new /obj/item/ammo_casing/arrow(src)
 		new /obj/item/ammo_casing/arrow(src)
+
+/obj/item/weapon/storage/backpack/quiver/empty
+	..()
+/obj/item/weapon/storage/backpack/quiver/empty/New()
+	can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)
+
 //pirate stuff
 
 /obj/item/clothing/suit/storage/jacket/piratejacket1

@@ -5,4 +5,3 @@
 	anchored = TRUE
 	layer = 99
 	mouse_opacity = FALSE
-//	unacidable = TRUE//Just to be sure.

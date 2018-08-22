@@ -4,7 +4,7 @@
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	anchored = 1.0
-//	unacidable = TRUE
+
 	simulated = FALSE
 	invisibility = 101
 	layer = 100

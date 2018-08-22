@@ -74,19 +74,12 @@
 #define ui_oxygen "EAST-1:28,NORTH-4:23"
 #define ui_pressure "EAST-1:28,NORTH-5:21"
 
-#define ui_alien_toxin "EAST-1:28,NORTH-2:25"
-#define ui_alien_fire "EAST-1:28,NORTH-3:25"
-#define ui_alien_oxygen "EAST-1:28,NORTH-4:25"
-
 //Middle right (status indicators)
 #define ui_nutrition "EAST-1:28,CENTER-2:11"
 #define ui_temp "EAST-1:28,CENTER-1:13"
 #define ui_health "EAST-1:28,CENTER:15"
 #define ui_internal "EAST-1:28,CENTER+1:17"
 									//borgs
-#define ui_borg_health "EAST-1:28,CENTER-1:13" //borgs have the health display where humans have the pressure damage indicator.
-#define ui_alien_health "EAST-1:28,CENTER-1:13" //aliens have the health display where humans have the pressure damage indicator.
-
 //Pop-up inventory
 #define ui_shoes "WEST+1:8,SOUTH:5"
 

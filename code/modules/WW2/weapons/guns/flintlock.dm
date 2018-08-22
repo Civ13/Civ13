@@ -302,7 +302,7 @@
 	force = 14
 	load_delay = 120
 	caliber = "blunderbuss"
-	stat = "shotgun"
+	stat = "rifle"
 	weight = 4.5
 	effectiveness_mod = 0.7
 	attachment_slots = ATTACH_IRONSIGHTS

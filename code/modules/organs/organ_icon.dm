@@ -16,8 +16,6 @@ var/global/list/limb_icon_cache = list()
 	s_tone = null
 	s_col = null
 	h_col = null
-	if (status & ORGAN_ROBOT)
-		return
 	if (species && human.species && species.name != human.species.name)
 		return
 	if (!isnull(human.s_tone) && (human.species.appearance_flags & HAS_SKIN_TONE))
@@ -30,8 +28,6 @@ var/global/list/limb_icon_cache = list()
 	s_tone = null
 	s_col = null
 	h_col = null
-	if (status & ORGAN_ROBOT)
-		return
 	if (!isnull(dna.GetUIValue(DNA_UI_SKIN_TONE)) && (species.appearance_flags & HAS_SKIN_TONE))
 		s_tone = dna.GetUIValue(DNA_UI_SKIN_TONE)
 	if (species.appearance_flags & HAS_SKIN_COLOR)

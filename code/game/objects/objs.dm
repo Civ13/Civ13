@@ -2,7 +2,7 @@
 	//Used to store information about the contents of the object.
 	var/list/matter
 	var/w_class // Size of the object.
-//	var/unacidable = FALSE //universal "unacidabliness" var, here so you can use it in any obj.
+//	var/ //universal "unacidabliness" var, here so you can use it in any obj.
 	animate_movement = 2
 	var/throwforce = TRUE
 	var/sharp = FALSE		// whether this object cuts
