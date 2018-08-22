@@ -10,7 +10,7 @@
 	throw_range = 7
 	allow_spin = FALSE
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
-	thrown_force_divisor = 1 // 20 with weight 20 (steel)
+	thrown_force_divisor = 0.9 // 18 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 
 
@@ -26,7 +26,7 @@
 	throw_range = 11
 	allow_spin = FALSE
 	force_divisor = 0.4 // 24 with hardness 60 (steel)
-	thrown_force_divisor = 10 // 20 with weight 20 (steel)
+	thrown_force_divisor = 1 // 20 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 
 /obj/item/weapon/material/hatchet
@@ -34,7 +34,7 @@
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "hatchet"
-	force_divisor = 0.2 // 12 with hardness 60 (steel)
+	force_divisor = 0.25 // 15 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
 	w_class = 2
 	sharp = TRUE

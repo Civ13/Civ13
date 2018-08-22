@@ -134,9 +134,15 @@ var/list/charge_sounds_eng = list(
 	'sound/effects/emotes/god_save_the_king.ogg',)
 var/list/charge_sounds_pir = list(
 	'sound/effects/emotes/charge_pir.ogg',
-	'sound/effects/emotes/charge_pir2.ogg',)
+	'sound/effects/emotes/charge_pir2.ogg',
+	'sound/effects/emotes/charge_pir3.ogg',
+	'sound/effects/emotes/charge_pir4.ogg',)
 var/list/charge_sounds_ind = list(
-	'sound/effects/emotes/charge_ind.ogg',)
+	'sound/effects/emotes/charge_ind.ogg',
+	'sound/effects/emotes/charge_ind2.ogg',
+	'sound/effects/emotes/charge_ind3.ogg',
+	'sound/effects/emotes/charge_ind4.ogg',
+	'sound/effects/emotes/charge_ind5.ogg',)
 var/list/charge_sounds_pt = list(
 	'sound/effects/emotes/charge_pt.ogg',)
 var/list/charge_sounds_fr = list(

@@ -43,7 +43,7 @@
 
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
 		if (I_HURT)
-			force*=1.5
+			force*=1.2
 		if (I_HELP, I_GRAB, I_DISARM)
 			force/=3
 
