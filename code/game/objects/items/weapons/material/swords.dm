@@ -13,28 +13,19 @@
 	sharp = 1
 	edge = 1
 	var/atk_mode = SLASH
-	var/block_chance = 25
+	var/block_chance = 35
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	drawsound = 'sound/items/unholster_sword01.ogg'
 	sharpness = 25
 	var/stat = "swords"
 
-/*
-/obj/item/weapon/material/sword/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
-
-	if (default_parry_check(user, attacker, damage_source) && prob(50))
-		user.visible_message("<span class='danger'>\The [user] parries [attack_text] with \the [src]!</span>")
-		playsound(user.loc, 'sound/weapons/punchmiss.ogg', 50, TRUE)
-		return TRUE
-	return FALSE
-*/
 
 /obj/item/weapon/material/sword/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
 	//and also pass the prob which is your melee skill devided by two + the swords block chance. Complicated, I know, but hopefully it'll balance out.
 	var/mob/living/carbon/human/H_user = user
-	if(default_parry_check(user, attacker, damage_source) && prob(min((block_chance + (H_user.getStatCoeff("swords") / 2)),92)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
+	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (H_user.getStatCoeff("swords")),92)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
 		user.visible_message("<span class='danger'>\The [user] parries [attack_text] with \the [src]!</span>")
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		health -= 0.5
@@ -93,7 +84,7 @@
 	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
-	block_chance = 15
+	block_chance = 25
 
 /obj/item/weapon/material/sword/spadroon
 	name = "spadroon"
@@ -105,7 +96,7 @@
 	force_divisor = 0.8 // 48 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
-	block_chance = 25
+	block_chance = 40
 
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
@@ -117,4 +108,4 @@
 	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
-	block_chance = 20
+	block_chance = 28

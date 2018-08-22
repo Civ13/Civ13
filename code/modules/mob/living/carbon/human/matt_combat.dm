@@ -16,7 +16,7 @@
 
 /mob/living/proc/attempt_dodge()//Handle parry is an object proc and it's, its own thing.
 	if(combat_mode && (defense_intent == I_DODGE) && !lying)//Todo, make use of the check_shield_arc proc to make sure you can't dodge from behind.
-		if(prob(15))
+		if(prob(25))
 			do_dodge()
 			return	1
 
