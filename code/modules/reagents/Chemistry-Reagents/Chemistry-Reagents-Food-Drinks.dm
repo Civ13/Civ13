@@ -603,7 +603,7 @@
 	description = "A dark alchoholic beverage made by malted barley and yeast."
 	taste_description = "hearty barley ale"
 	color = "#664300"
-	strength = 20
+	strength = 10
 
 /datum/reagent/ethanol/beer
 	name = "Beer"
@@ -611,7 +611,7 @@
 	description = "An alcoholic beverage made from malted grains, hops, yeast, and water."
 	taste_description = "beer"
 	color = "#664300"
-	strength = 20
+	strength = 10
 	nutriment_factor = 1
 
 /datum/reagent/ethanol/beer/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
@@ -695,7 +695,7 @@
 	taste_description = "sweet"
 	taste_mult = 1.1
 	color = "#664300"
-	strength = 15
+	strength = 20
 
 /datum/reagent/ethanol/sake
 	name = "Sake"
