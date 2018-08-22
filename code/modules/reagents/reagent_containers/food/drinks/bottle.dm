@@ -475,7 +475,8 @@
 	center_of_mass = list("x"=16, "y"=4)
 	New()
 		..()
-		reagents.add_reagent("wine", 100)
+		reagents.add_reagent("wine", 90)
+		reagents.add_reagent("tramadol", 90)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/wine/empty
 	name = "Doublebeard Bearded Special Wine"
