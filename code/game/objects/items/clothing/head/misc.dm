@@ -109,11 +109,6 @@
 	icon_state = "beaver_hat"
 	desc = "Soft felt makes this hat both comfortable and elegant."
 
-/obj/item/clothing/head/boaterhat
-	name = "boater hat"
-	icon_state = "boater_hat"
-	desc = "The ultimate in summer fashion."
-
 /obj/item/clothing/head/fedora
 	name = "fedora"
 	icon_state = "fedora"

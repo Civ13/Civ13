@@ -398,6 +398,8 @@ var/global/obj/map_metadata/map = null
 			return "Portuguese"
 		if (SPANISH)
 			return "Spanish"
+		if (DUTCH)
+			return "Dutch"
 
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
@@ -415,6 +417,8 @@ var/global/obj/map_metadata/map = null
 			return "Portuguese Navy"
 		if (SPANISH)
 			return "Spanish Navy"
+		if (DUTCH)
+			return "Dutch Navy"
 
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
@@ -432,6 +436,8 @@ var/global/obj/map_metadata/map = null
 			return "Portuguese"
 		if ("Spanish Navy")
 			return "Spanish"
+		if ("Dutch Navy")
+			return "Dutch"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

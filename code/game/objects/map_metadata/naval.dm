@@ -24,6 +24,8 @@
 //	meme = TRUE
 	battle_name = "Naval boarding"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
+	faction1 = DUTCH
+	faction2 = FRENCH
 
 obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))

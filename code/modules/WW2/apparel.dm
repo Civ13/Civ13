@@ -501,13 +501,13 @@
 /////////GENERIC/////////
 /obj/item/clothing/head/red_beret
 	name = "red sailor beret"
-	desc = "A red berret, worn by portuguese and spanish sailors."
+	desc = "A red berret, worn by sailors."
 	icon_state = "redberet"
 	item_state = "redberet"
 
 /obj/item/clothing/head/blue_beret
 	name = "blue sailor beret"
-	desc = "A red berret, worn by french sailors."
+	desc = "A red berret, worn by sailors."
 	icon_state = "blueberet"
 	item_state = "blueberet"
 
@@ -523,6 +523,11 @@
 	desc = "A tarred hat, used by sailors."
 	icon_state = "tarred_hat"
 	item_state = "tarred_hat"
+
+/obj/item/clothing/head/strawhat
+	name = "straw hat"
+	icon_state = "boater_hat"
+	desc = "A straw hat, used by sailors."
 
 /obj/item/clothing/head/tricorne_black
 	name = "black tricorne"
