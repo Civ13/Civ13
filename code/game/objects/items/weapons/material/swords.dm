@@ -23,7 +23,7 @@
 
 /obj/item/weapon/material/sword/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
-	//and also pass the prob which is your melee skill devided by two + the swords block chance. Complicated, I know, but hopefully it'll balance out.
+	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
 	var/mob/living/carbon/human/H_user = user
 	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (H_user.getStatCoeff("swords")),92)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
 		user.visible_message("<span class='danger'>\The [user] parries [attack_text] with \the [src]!</span>")

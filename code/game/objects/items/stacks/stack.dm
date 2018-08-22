@@ -21,6 +21,8 @@
 	var/uses_charge = FALSE
 	var/list/charge_costs = null
 	var/list/datum/matter_synth/synths = null
+	var/real_value = 1
+	var/value = 1
 
 /obj/item/stack/New(var/loc, var/_amount=0)
 	..()
