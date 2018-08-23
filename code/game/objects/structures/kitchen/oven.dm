@@ -79,3 +79,16 @@
 
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)
+
+/obj/structure/oven/fireplace
+	name = "fireplace"
+	desc = "A fireplace mad with wood logs."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "fireplace"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "fireplace"
+	on = FALSE
+	max_space = 7

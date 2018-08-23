@@ -392,7 +392,7 @@
 "hB" = (/obj/structure/pot,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
 "hC" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
 "hD" = (/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
-"hE" = (/obj/structure/wild/burnedtree,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
+"hE" = (/obj/structure/oven/fireplace,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
 "hF" = (/obj/structure/sink/puddle,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
 "hG" = (/obj/item/stack/medical/advanced/bruise_pack/herbs,/obj/item/stack/medical/advanced/bruise_pack/herbs,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
 "hH" = (/obj/structure/impaledskull,/turf/floor/plating/grass/wild,/area/caribbean/indians/camp)
