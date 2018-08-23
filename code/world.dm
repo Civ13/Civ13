@@ -318,7 +318,8 @@ var/world_topic_spam_protect_time = world.timeofday
 	else
 		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br></a>"
 
-	// for the custom 1713 hub only!
+	if (config.hub_banner_url)
+		s += "<img src='[config.hub_banner_url]'><br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "TIME_OF_DAY", capitalize(lowertext(time_of_day)))
@@ -333,8 +334,6 @@ var/world_topic_spam_protect_time = world.timeofday
 	if (map)
 		s += "<b>Map:</b> [map.title]<br>"
 
-	if (config.hub_banner_url)
-		s += "<img src=\"[config.hub_banner_url]\"><br>"
 
 	status = s
 
