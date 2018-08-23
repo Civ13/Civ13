@@ -329,7 +329,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (config.hub_body)
 		s += config.hub_body
-		s += "<br><b>XVIII century combat</b>
+		s += "<br><b>XVIII century combat</b>"
 //	if (config.hub_features)
 //		s += "<b>[config.hub_features]</b><br>"
 
