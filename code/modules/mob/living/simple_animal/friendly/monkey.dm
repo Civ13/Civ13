@@ -11,6 +11,7 @@
 	emote_see = list("walks around", "waves his hands", "scratches its head")
 	health = 55
 	maxHealth = 55
+	meat_amount = 2
 	attacktext = "bitten"
 	melee_damage_lower = 6
 	melee_damage_upper = 9
