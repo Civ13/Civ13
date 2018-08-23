@@ -320,19 +320,19 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	if (config.hub_banner_url)
 		s += "<img src=\"https://i.imgur.com/Ouxiybj.png\">"
+	if (map)
+		s += "<b>Map:</b> [map.title]<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "TIME_OF_DAY", capitalize(lowertext(time_of_day)))
-	config.hub_body = replacetext(config.hub_body, "SEASON", get_season())
-
+	config.hub_body = replacetext(config.hub_body, "WEATHER", capitalize(lowertext(time_of_day)))
+	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(time_of_day)))
 	if (config.hub_body)
 		s += config.hub_body
 
-	if (config.hub_features)
-		s += "<b>[config.hub_features]</b><br>"
+//	if (config.hub_features)
+//		s += "<b>[config.hub_features]</b><br>"
 
-	if (map)
-		s += "<b>Map:</b> [map.title]<br>"
 
 
 	status = s
