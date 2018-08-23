@@ -410,7 +410,7 @@ var/global/obj/map_metadata/map = null
 		if (CIVILIAN)
 			return "Civilians"
 		if (INDIANS)
-			return "Natives"
+			return "Native Tribe"
 		if (FRENCH)
 			return "French Navy"
 		if (PORTUGUESE)
@@ -428,7 +428,7 @@ var/global/obj/map_metadata/map = null
 			return "Pirate"
 		if ("Civilians")
 			return "Civilian"
-		if ("Natives")
+		if ("Native Tribe")
 			return "Native"
 		if ("French Navy")
 			return "French"

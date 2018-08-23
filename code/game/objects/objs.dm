@@ -15,6 +15,7 @@
 	var/scoped_invisible = FALSE
 	var/is_teleporter = FALSE
 	var/is_cover = FALSE
+	var/cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
 
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)

@@ -26,7 +26,7 @@
 		return "Civilians"
 
 	if (constant == INDIANS)
-		return "Natives"
+		return "Native Tribe"
 
 	if (constant == PORTUGUESE)
 		return "Portuguese Navy"

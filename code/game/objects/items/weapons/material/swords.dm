@@ -19,6 +19,7 @@
 	drawsound = 'sound/items/unholster_sword01.ogg'
 	sharpness = 25
 	var/stat = "swords"
+	cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
 
 
 /obj/item/weapon/material/sword/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
@@ -87,6 +88,7 @@
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
+	cooldownw = 6
 
 /obj/item/weapon/material/sword/spadroon
 	name = "spadroon"
@@ -99,6 +101,7 @@
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
+	cooldownw = 10
 
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
@@ -111,3 +114,4 @@
 	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 28
+	cooldownw = 8
