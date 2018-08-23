@@ -321,7 +321,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	if (config.hub_banner_url)
 		s += "<img src=\"https://i.imgur.com/Ouxiybj.png\">"
 	if (map)
-		s += "<b>Map:</b> [map.title]<br>"
+		s += "<br><b>Map:</b> [map.title]<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "TIME_OF_DAY", capitalize(lowertext(time_of_day)))

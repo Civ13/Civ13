@@ -12,7 +12,7 @@ SERVER_NAME 1713 Alpha
 HUB_FEATURES XVIII Century Naval Combat
 
 ## The main content of your hub message
-HUB_BODY <b>TIME_OF_DAY, WEATHER. Roundtime: ROUNDTIME</b><br>
+HUB_BODY <b>TIME_OF_DAY, WEATHER. Duration: ROUNDTIME</b><br>
 
 ## Use a link to a banner on your hub message? Comment out if not
 HUB_BANNER_URL http://i.imgur.com/Ouxiybj.png
