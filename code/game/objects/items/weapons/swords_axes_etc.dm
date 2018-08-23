@@ -51,7 +51,7 @@
 	user.a_intent = I_HURT // so we actually hit people right
 
 	..(M, user)
-	if (prob(60))
+	if (prob(30))
 		M.Weaken(weakens) // decent
 
 	user.a_intent = user_last_intent
