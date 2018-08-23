@@ -161,7 +161,6 @@ var/list/gamemode_cache = list()
 	var/hub_features = ""
 	var/hub_banner_url = "https://i.imgur.com/Ouxiybj.png"
 
-
 	//WW2
 
 	var/lighting_is_rustic = FALSE
