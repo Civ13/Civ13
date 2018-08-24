@@ -307,15 +307,21 @@
 
 /obj/item/clothing/accessory/armband/indian2
 	name = "indian acessories"
-	desc = "gold indian necklaces."
+	desc = "Gold indian necklaces."
 	icon_state = "indian2"
 	item_state = "indian2"
 
 /obj/item/clothing/accessory/armband/indianshaman
 	name = "indian shaman bodypaint"
-	desc = "red and white bodypaint, worn by native shamans."
+	desc = "Red and white bodypaint, worn by native shamans."
 	icon_state = "indianshaman"
 	item_state = "indianshaman"
+
+/obj/item/clothing/head/skullmask
+	name = "skull mask"
+	desc = "A skull mask, used by native shamans."
+	icon_state = "skull_mask"
+	item_state = "skull_mask"
 
 /obj/item/clothing/head/chief_hat
 	name = "Chief hat"
