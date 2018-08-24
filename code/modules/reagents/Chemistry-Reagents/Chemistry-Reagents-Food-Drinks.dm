@@ -603,7 +603,8 @@
 	description = "A dark alchoholic beverage made by malted barley and yeast."
 	taste_description = "hearty barley ale"
 	color = "#664300"
-	strength = 10
+	strength = 7
+		nutriment_factor = 2
 
 /datum/reagent/ethanol/beer
 	name = "Beer"
@@ -611,10 +612,14 @@
 	description = "An alcoholic beverage made from malted grains, hops, yeast, and water."
 	taste_description = "beer"
 	color = "#664300"
-	strength = 10
+	strength = 5
 	nutriment_factor = 1
 
 /datum/reagent/ethanol/beer/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.jitteriness = max(M.jitteriness - 3, FALSE)
+
+/datum/reagent/ethanol/ale/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.jitteriness = max(M.jitteriness - 3, FALSE)
 
@@ -765,7 +770,7 @@
 	description = "An premium alchoholic beverage made from distilled grape juice."
 	taste_description = "bitter sweetness"
 	color = "#7E4043" // rgb: 126, 64, 67
-	strength = 30
+	strength = 10
 	nutriment_factor = 1
 
 // Cocktails

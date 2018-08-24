@@ -20,8 +20,8 @@
 	edge = TRUE
 	desc = "A crude, yet effective weapon."
 	slot_flags = SLOT_BACK | SLOT_BELT
-	icon_state = "spear"
-	item_state = "harpoon"
+	icon_state = "spear_old"
+	item_state = "spear"
 	throw_speed = 6
 	throw_range = 11
 	allow_spin = FALSE

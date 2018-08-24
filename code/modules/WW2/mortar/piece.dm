@@ -297,21 +297,25 @@
 				bound_height = 64
 				bound_width = 32
 				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
 				bound_height = 64
 				bound_width = 32
 				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
 				bound_height = 32
 				bound_width = 64
 				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
 				bound_height = 32
 				bound_width = 64
 				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
 	return
 
 /obj/structure/cannon/verb/rotate_right()
