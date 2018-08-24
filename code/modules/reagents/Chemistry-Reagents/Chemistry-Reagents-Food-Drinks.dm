@@ -604,7 +604,7 @@
 	taste_description = "hearty barley ale"
 	color = "#664300"
 	strength = 7
-		nutriment_factor = 2
+	nutriment_factor = 2
 
 /datum/reagent/ethanol/beer
 	name = "Beer"
@@ -614,14 +614,6 @@
 	color = "#664300"
 	strength = 5
 	nutriment_factor = 1
-
-/datum/reagent/ethanol/beer/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.jitteriness = max(M.jitteriness - 3, FALSE)
-
-/datum/reagent/ethanol/ale/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-	M.jitteriness = max(M.jitteriness - 3, FALSE)
 
 /datum/reagent/ethanol/bluecuracao
 	name = "Blue Curacao"
