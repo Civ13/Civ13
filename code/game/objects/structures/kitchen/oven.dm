@@ -27,18 +27,18 @@
 		return
 	H.remove_from_mob(I)
 	I.loc = src
-	visible_message("<span class = 'notice'>[H] puts [I] in the oven.</span>")
+	visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
 
 // todo: fix eggs not roasting & roasted meat sandwiches turning to burnt mess
 /obj/structure/oven/attack_hand(var/mob/living/carbon/human/H)
 	if (!on)
-		visible_message("<span class = 'notice'>[H] turns the oven on.</span>")
+		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
 		update_icon()
 		spawn (50)
 			on = FALSE
 			update_icon()
-			visible_message("<span class = 'notice'>The oven finishes cooking.</span>")
+			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
 			process()
 
 /obj/structure/oven/process()
