@@ -205,7 +205,6 @@
 #include "code\game\objects\items\clothing\under\accessories\holster.dm"
 #include "code\game\objects\items\clothing\under\accessories\lockets.dm"
 #include "code\game\objects\items\clothing\under\accessories\storage.dm"
-#include "code\game\objects\items\clothing\under\jobs\engineering.dm"
 #include "code\game\objects\items\clothing\under\jobs\medsci.dm"
 #include "code\game\objects\items\clothing\under\jobs\security.dm"
 #include "code\game\objects\items\devices\flashlight.dm"

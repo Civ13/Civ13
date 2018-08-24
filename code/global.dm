@@ -54,9 +54,6 @@ var/max_explosion_range = 14
 // Announcer intercom, because too much stuff creates an intercom for one message then hard del()s it.
 //var/global/obj/item/radio/intercom/global_announcer = new(null)
 
-//var/list/station_departments = list("Command", "Medical", "Engineering", "Science", "Security", "Cargo", "Civilian")
-
-
 // "convenient" (shitcode) way to make normal windows look like nanoUI, since BYOND won't load stylesheets normally - Kachnov
 var/common_browser_style = {"
 

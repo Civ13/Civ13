@@ -84,7 +84,7 @@
 	if (ishuman(user))
 		var/mob/living/carbon/human/H = user
 		covers_time /= H.getStatCoeff("strength")
-		covers_time /= (H.getStatCoeff("engineering") * H.getStatCoeff("engineering"))
+		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc))
@@ -93,5 +93,5 @@
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 			if (ishuman(user))
 				var/mob/living/carbon/human/H = user
-				H.adaptStat("engineering", 3)
+				H.adaptStat("crafting", 3)
 		return

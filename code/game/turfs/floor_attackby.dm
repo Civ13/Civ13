@@ -69,7 +69,7 @@
 		if (ishuman(user))
 			var/mob/living/carbon/human/H = user
 			sandbag_time /= H.getStatCoeff("strength")
-			sandbag_time /= (H.getStatCoeff("engineering") * H.getStatCoeff("engineering"))
+			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
 			if (WWinput(user, "This will start building a dirt wall [your_dir] of you.", "Dirt Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
@@ -83,7 +83,7 @@
 					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt wall. Anyone can now add to it.</span>")
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user
-						H.adaptStat("engineering", 3)
+						H.adaptStat("crafting", 3)
 				return
 
 	else if (istype(C, /obj/item/weapon/covers))
@@ -105,7 +105,7 @@
 		if (ishuman(user))
 			var/mob/living/carbon/human/H = user
 			covers_time /= H.getStatCoeff("strength")
-			covers_time /= (H.getStatCoeff("engineering") * H.getStatCoeff("engineering"))
+			covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
 			if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
@@ -116,7 +116,7 @@
 					visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user
-						H.adaptStat("engineering", 3)
+						H.adaptStat("crafting", 3)
 				return
 
 

@@ -216,7 +216,7 @@
 		var/buildtime = recipe.time
 		if (H)
 			buildtime /= H.getStatCoeff("strength")
-			buildtime /= (H.getStatCoeff("engineering") * H.getStatCoeff("engineering"))
+			buildtime /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		buildtime = round(buildtime)
 
@@ -225,7 +225,7 @@
 			return
 
 		if (H)
-			H.adaptStat("engineering", 1*recipe.req_amount)
+			H.adaptStat("crafting", 1*recipe.req_amount)
 
 	if (use(required))
 		var/atom/O

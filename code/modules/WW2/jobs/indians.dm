@@ -38,7 +38,7 @@
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are the <b>Chief</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_LOW) //muskets
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_HIGH)
@@ -84,7 +84,7 @@
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Shaman</b>, the healer and religious leader of your tribe. Keep your fellow tribesmen healthy and motivated!")
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("engineering", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW) //muskets
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
@@ -136,7 +136,7 @@
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)

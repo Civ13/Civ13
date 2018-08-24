@@ -41,7 +41,7 @@
 	world << "<b><big>[H.real_name] is the Captain of the Royal Navy ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_HIGH)
@@ -81,7 +81,7 @@
 	world << "<b><big>[H.real_name] is the Quartermaster of the Royal Navy ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Captain</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
@@ -123,7 +123,7 @@
 	world << "<b><big>[H.real_name] is the Boatswain of the Royal Navy ship!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the crew and their job allocation. The whole ship relies on you!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
@@ -160,7 +160,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Boatswain</b>'s orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_HIGH)
@@ -197,7 +197,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the sailors healthy.")
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("engineering", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW)
@@ -243,7 +243,7 @@
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/boarding_axe(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Quartermaster</b> to ensure everyting is in good conditions!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_HIGH)
+	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
@@ -292,7 +292,7 @@
 
 	H.add_note("Role", "You are the cook of the ship. Feed the whole crew according to the <b>Quartermaster</b>'s orders!")
 	H.setStat("strength", STAT_NORMAL)
-	H.setStat("engineering", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW) //not used
@@ -348,7 +348,7 @@
 
 	H.add_note("Role", "You are a <b>[title]</b>, a simple seaman employed by the Royal Navy. Follow your Captain's orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("engineering", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL) //not used

@@ -7,9 +7,6 @@
 /mob/living/carbon/human/proc/getStatCoeff(statname)
 	return stats[lowertext(statname)][1]/100
 
-/* if strength were '1.5' and engineering '1.6', then
- * getLesserStatCombinedCoeff(list("strength", "engineering")) would
- * return 1.31 */
 
 /mob/living/carbon/human/proc/getLesserStatCombinedCoeff(var/list/statnames = list())
 	. = 1 - (statnames.len/10)
@@ -33,8 +30,8 @@
 			else
 				statval += pick(round(15/stats.len), ceil(15/stats.len))
 
-	// engineering, medical: more age benefits you
-	if (list("engineering", "medical").Find(statname))
+	// crafting, medical: more age benefits you
+	if (list("crafting", "medical").Find(statname))
 		switch (age)
 			if (0 to 15) // how did you even get here?
 				statval -= 3
@@ -97,7 +94,7 @@
 		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
 
-	else if (statname == "engineering")
+	else if (statname == "crafting")
 		stats[statname][1] *= (1 + round(multiplier/500, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/500, increase_multiple))
 

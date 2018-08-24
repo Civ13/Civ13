@@ -24,7 +24,6 @@
 	force = WEAPON_FORCE_NORMAL
 	throwforce = WEAPON_FORCE_NORMAL
 	w_class = 2.0
-//	origin_tech = list(TECH_MATERIAL = TRUE, TECH_ENGINEERING = TRUE)
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 
@@ -98,7 +97,6 @@
 	throw_speed = 2
 	throw_range = 9
 	w_class = 2.0
-//	origin_tech = list(TECH_MATERIAL = TRUE, TECH_ENGINEERING = TRUE)
 	matter = list(DEFAULT_WALL_MATERIAL = 80)
 	attack_verb = list("pinched", "nipped")
 	sharp = TRUE
@@ -129,7 +127,6 @@
 	throwforce = WEAPON_FORCE_NORMAL
 	item_state = "crowbar"
 	w_class = 2.0
-//	origin_tech = list(TECH_ENGINEERING = TRUE)
 	matter = list(DEFAULT_WALL_MATERIAL = 50)
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 

@@ -126,7 +126,7 @@
 
 	var/list/stats = list(
 		"strength" = list(100,100),
-		"engineering" = list(100,100),
+		"crafting" = list(100,100),
 		"rifle" = list(100,100),
 		"dexterity" = list(100,100),
 		"swords" = list(100,100),
