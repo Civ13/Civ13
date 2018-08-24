@@ -7,7 +7,6 @@ var/list/engineer_exclusive_recipe_types = null
 
 /material/proc/generate_recipes()
 	recipes = list()
-
 	if (hardness>50)
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork/plastic, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name] knife", /obj/item/weapon/material/kitchen/utensil/knife/plastic, TRUE, _on_floor = TRUE, _supplied_material = "[name]")
@@ -17,9 +16,9 @@ var/list/engineer_exclusive_recipe_types = null
 	..()
 
 	recipes += new/datum/stack_recipe("comfy chair", /obj/structure/bed/chair/comfy/brown, 6, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("quiver", /obj/item/weapon/storage/backpack/quiver/empty, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("quiver", /obj/item/weapon/storage/backpack/quiver, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
 
-/material/steel/generate_recipes()
+/material/iron/generate_recipes()
 	..()
 
 	recipes += new/datum/stack_recipe("table", /obj/structure/table, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -45,16 +44,18 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe_list("weapons", list(
 		new/datum/stack_recipe("arrow", /obj/item/ammo_casing/arrow, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("bow", /obj/item/weapon/gun/projectile/bow, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
-		new/datum/stack_recipe("spear", /obj/item/weapon/material/spear, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
+		new/datum/stack_recipe("punji sticks trap", /obj/item/weapon/punji_sticks, 4, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("wood shield", /obj/item/weapon/shield,8, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("wood spear", /obj/item/weapon/material/spear, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	recipes += new/datum/stack_recipe_list("furniture", list(
 		new/datum/stack_recipe("stool", /obj/item/weapon/stool, 3, _time = 35,_one_per_turf = TRUE, _on_floor = TRUE,),
 		new/datum/stack_recipe("chair", /obj/structure/bed/chair/wood, 3, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("bed", /obj/structure/bed, 4, _time = 60,_one_per_turf = TRUE, _on_floor = TRUE,),
 		new/datum/stack_recipe("coffin", /obj/structure/closet/coffin, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
-		new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 7, _one_per_turf = TRUE, _on_floor = TRUE),))
+		new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 
-	recipes += new/datum/stack_recipe_list("kitchen stuff", list(
+	recipes += new/datum/stack_recipe_list("kitchen & food", list(
 		new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("fireplace",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("wood bowl",/obj/item/kitchen/wood_bowl, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
@@ -62,3 +63,7 @@ var/list/engineer_exclusive_recipe_types = null
 /material/rope/generate_recipes()
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))
 	recipes += list(new/datum/stack_recipe("rope handcuffs", /obj/item/weapon/handcuffs/rope, _time = 30))
+
+
+/material/stone/stone/generate_recipes()
+	..()

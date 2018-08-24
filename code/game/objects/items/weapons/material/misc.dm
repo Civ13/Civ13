@@ -43,6 +43,14 @@
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = FALSE
 
+/obj/item/weapon/material/hatchet/tribal
+	name = "stone hatchet"
+	desc = "A crude hatchet, made with wood and stone."
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "tribalaxe"
+	force_divisor = 0.20 // 12 with hardness 60 (steel)
+	thrown_force_divisor = 0.65 // 13 with weight 20 (steel)
+
 /obj/item/weapon/material/hatchet/New()
 	name = "hatchet"
 

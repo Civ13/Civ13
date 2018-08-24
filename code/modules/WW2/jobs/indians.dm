@@ -29,8 +29,8 @@
 	var/obj/item/clothing/accessory/armband/indian2_a = new /obj/item/clothing/accessory/armband/indian2(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indian2_a, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet(H), slot_r_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_r_hand)
 
 	if (H.h_style == "Bald")
 		H.h_style = "Skinhead"
@@ -72,7 +72,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_belt)
 	//todo: poisonous arrows
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_r_store)
@@ -125,7 +125,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_back)
 	else if (randweapon == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
-		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 	else if (randweapon == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_l_hand)
 

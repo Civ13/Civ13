@@ -82,7 +82,7 @@
 
 /obj/item/stack/material/iron
 	name = "iron"
-	icon_state = "sheet-silver"
+	icon_state = "sheet-iron"
 	default_type = "iron"
 	apply_colour = TRUE
 
@@ -90,6 +90,11 @@
 	name = "sandstone brick"
 	icon_state = "sheet-sandstone"
 	default_type = "sandstone"
+
+/obj/item/stack/material/stone
+	name = "stone block"
+	icon_state = "sheet-stone"
+	default_type = "stone"
 
 /obj/item/stack/material/marble
 	name = "marble brick"
@@ -139,12 +144,6 @@
 	name = "silver"
 	icon_state = "sheet-silver"
 	default_type = "silver"
-
-//Valuable resource, cargo can sell it.
-/obj/item/stack/material/platinum
-	name = "platinum"
-	icon_state = "sheet-adamantine"
-	default_type = "platinum"
 
 /obj/item/stack/material/steel
 	name = DEFAULT_WALL_MATERIAL

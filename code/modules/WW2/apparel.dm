@@ -66,20 +66,21 @@
 	icon_state = "quiver"
 	item_state = "quiver"
 
-	New()
+/obj/item/weapon/storage/backpack/quiver/New()
 		..()
 		can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)
-		new /obj/item/ammo_casing/arrow(src)
-		new /obj/item/ammo_casing/arrow(src)
-		new /obj/item/ammo_casing/arrow(src)
-		new /obj/item/ammo_casing/arrow(src)
-		new /obj/item/ammo_casing/arrow(src)
-		new /obj/item/ammo_casing/arrow(src)
 
-/obj/item/weapon/storage/backpack/quiver/empty
+/obj/item/weapon/storage/backpack/quiver/full
 	..()
-/obj/item/weapon/storage/backpack/quiver/empty/New()
+/obj/item/weapon/storage/backpack/quiver/full/New()
+	..()
 	can_hold = list(/obj/item/ammo_casing/arrow, /obj/item/weapon/gun/projectile/bow)
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
 
 //pirate stuff
 

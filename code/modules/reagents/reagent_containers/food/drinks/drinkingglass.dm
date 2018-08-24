@@ -137,7 +137,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood
 	name = "wood mug"
 	icon_state = "wood_cup"
-	glass_type = "highball"
+	glass_type = "mug"
 	volume = 50
 
 // for /obj/machinery/vending/piratesoda

@@ -283,6 +283,8 @@ var/list/name_to_material
 /material/stone/stone
 	name = "stone"
 	icon_colour = "#808080"
+	sheet_singular_name = "block"
+	sheet_plural_name = "blocks"
 
 /material/stone/stonebrick
 	name = "brick"
@@ -328,15 +330,6 @@ var/list/name_to_material
 /material/glass/proc/is_reinforced()
 	return (hardness > 35) //todo
 
-/material/platinum
-	name = "platinum"
-	stack_type = /obj/item/stack/material/platinum
-	icon_colour = "#9999FF"
-	weight = 27
-	stack_origin_tech = list(TECH_MATERIAL = 2)
-	sheet_singular_name = "ingot"
-	sheet_plural_name = "ingots"
-
 /material/iron
 	name = "iron"
 	icon_base = "metal"
@@ -354,16 +347,6 @@ var/list/name_to_material
 	integrity = 1000000
 	hardness = 1000000
 	melting_point = 1000000
-
-/material/morgue
-	name = "morgue"
-	icon_base = "morgue"
-	door_icon_base = "morgue"
-	stack_type = /obj/item/stack/material/iron
-	weight = 22
-	sheet_singular_name = "ingot"
-	sheet_plural_name = "ingots"
-	hitsound = 'sound/weapons/smash.ogg'
 
 /material/wood
 	name = "wood"
@@ -391,6 +374,13 @@ var/list/name_to_material
 	integrity = 175
 	hardness = 200
 
+/material/wood/straw
+	hardness = 10
+	icon_colour = "#665e4b"
+	integrity = 35
+	name = "straw"
+	icon_base = "straw"
+
 /material/cloth //todo
 	name = "cloth"
 	stack_origin_tech = list(TECH_MATERIAL = 2)
@@ -407,6 +397,7 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+300
 	melting_point = T0C+300
+	hardness = 25
 
 /material/carpet
 	name = "carpet"

@@ -120,6 +120,10 @@
 			return
 
 		var/mob/living/carbon/human/H = user
+		if (H.faction_text == INDIANS)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+
 		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
 			user << "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>"
 			return
@@ -156,6 +160,9 @@
 		H = user
 
 	if (ispath(recipe.result_type, /obj/structure))
+		if (H.faction_text == INDIANS)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
 		if (!ispath(recipe.result_type, /obj/structure/noose))
 			for (var/obj/structure/multiz/M in get_turf(H))
 				H << "<span class = 'danger'>You can't build a structure here.</span>"

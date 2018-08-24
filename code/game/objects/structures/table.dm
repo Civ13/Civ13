@@ -430,6 +430,3 @@
 	desc = "A seedy table for seedy dealings in seedy places."
 	icon_state = "pokertable"
 	buildstack = /obj/item/stack/tile/carpet
-
-
-/* Reinforced tables */
