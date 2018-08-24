@@ -358,7 +358,7 @@
 	if (sql_ip == null)
 		sql_ip = "HOST"
 
-	#define SQLDEBUG
+//	#define SQLDEBUG
 
 	#ifdef SQLDEBUG
 //	world << "sql_ip: [sql_ip]"
