@@ -355,6 +355,7 @@
 			return*/
 
 	var/admin_rank = "Player"
+	var/xp_points = FALSE
 	if (holder)
 		admin_rank = holder.rank
 
@@ -373,6 +374,7 @@
 	world << "sql_admin_rank: [sql_admin_rank]"
 	world << "sql_id: [sql_id]"
 	world << "sql_age: [player_age]"
+	world << "sql_points: [xp_points]"
 	#endif
 
 	if (sql_id)
@@ -380,7 +382,7 @@
 		world << "prev. player [src]"
 		#endif
 		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]', age = '[player_age]' WHERE id = '[sql_id]';")
+		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
 	else
 		#ifdef SQLDEBUG
 		world << "new player [src]"
