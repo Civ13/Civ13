@@ -547,6 +547,10 @@
 		if (client.prefs.s_tone < -65)
 			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 100.</span>"
 			return
+	if (istype(job, /datum/job/dutch))
+		if (client.prefs.s_tone < -25)
+			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 60.</span>"
+			return
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
