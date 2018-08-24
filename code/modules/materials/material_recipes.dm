@@ -61,3 +61,4 @@ var/list/engineer_exclusive_recipe_types = null
 
 /material/rope/generate_recipes()
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))
+	recipes = list(new/datum/stack_recipe("rope handcuffs", /obj/item/weapon/handcuffs/rope, _time = 30))
