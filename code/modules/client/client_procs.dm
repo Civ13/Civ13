@@ -379,7 +379,7 @@
 		world << "prev. player [src]"
 		#endif
 		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]' WHERE id = '[sql_id]';")
+		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]', age = [player_age] WHERE id = '[sql_id]';")
 	else
 		#ifdef SQLDEBUG
 		world << "new player [src]"
