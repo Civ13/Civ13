@@ -372,6 +372,7 @@
 	world << "sql_computerid: [sql_computerid]"
 	world << "sql_admin_rank: [sql_admin_rank]"
 	world << "sql_id: [sql_id]"
+	world << "sql_age: [player_age]"
 	#endif
 
 	if (sql_id)
@@ -379,7 +380,7 @@
 		world << "prev. player [src]"
 		#endif
 		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]', age = [player_age] WHERE id = '[sql_id]';")
+		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]', age = '[player_age]' WHERE id = '[sql_id]';")
 	else
 		#ifdef SQLDEBUG
 		world << "new player [src]"
@@ -389,7 +390,7 @@
 
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
-	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
+	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid,age) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]','[player_age]');")
 	//#undef SQLDEBUG
 
 #undef TOPIC_SPAM_DELAY
