@@ -346,16 +346,8 @@
 	related_accounts_cid = ""
 	if (islist(rowdata) && !isemptylist(rowdata))
 		related_accounts_cid += "[rowdata["ckey"]], "
-/*
-	//Just the standard check to see if it's actually a number
-	if (sql_id)
-		if (istext(sql_id))
-			sql_id = text2num(sql_id)
-		if (!isnum(sql_id))
-			return*/
 
 	var/admin_rank = "Player"
-	var/xp_points = FALSE
 	if (holder)
 		admin_rank = holder.rank
 
@@ -369,9 +361,9 @@
 	#define SQLDEBUG
 
 	#ifdef SQLDEBUG
-	world << "sql_ip: [sql_ip]"
-	world << "sql_computerid: [sql_computerid]"
-	world << "sql_admin_rank: [sql_admin_rank]"
+//	world << "sql_ip: [sql_ip]"
+//	world << "sql_computerid: [sql_computerid]"
+//	world << "sql_admin_rank: [sql_admin_rank]"
 	world << "sql_id: [sql_id]"
 	world << "sql_age: [player_age]"
 	world << "sql_points: [xp_points]"
