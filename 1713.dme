@@ -265,6 +265,7 @@
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
+#include "code\game\objects\map_metadata\tribes.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\structures\barricades.dm"
 #include "code\game\objects\structures\bedsheet_bin.dm"
@@ -752,5 +753,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\robusta.dmm"
+#include "maps\naval\naval.dmm"
 // END_INCLUDE

@@ -21,6 +21,29 @@
  * to slow down dramatically. The forest area reached this limit, but only
  * when there were snow objects, so its been split into 9 separate areas.
 */
+
+/area/caribbean/tribes
+	name = "Jungle"
+	base_turf = /turf/floor/dirt
+	icon_state = "red3"
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/tribes/beach
+	name = "Beach"
+	base_turf = /turf/floor/plating/beach/sand
+	icon_state = "red1"
+	ambience = list("sound/ambience/jungle1.ogg")
+/area/caribbean/tribes/swamp
+	name = "Swamp"
+	base_turf = /turf/floor/plating/beach/sand
+	icon_state = "purple1"
+	ambience = list("sound/ambience/jungle1.ogg")
+/area/caribbean/tribes/grasslands
+	name = "Grasslands"
+	base_turf = /turf/floor/plating/grass/wild
+	icon_state = "purple1"
+	ambience = list("sound/ambience/jungle1.ogg")
+
 /area/caribbean/island
 	name = "Island"
 	base_turf = /turf/floor/plating/beach/sand

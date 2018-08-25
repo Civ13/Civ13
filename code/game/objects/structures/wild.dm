@@ -170,6 +170,17 @@
 	density = FALSE
 	var/healthamount = 1
 
+/obj/structure/wild/smallbush
+	name = "small vegetation"
+	icon = 'icons/obj/flora/ausflora.dmi'
+	icon_state = "smallbush1"
+	opacity = FALSE
+	density = FALSE
+
+/obj/structure/wild/smallbush/New()
+	..()
+	icon_state = "smallbush[rand(1,42)]"
+
 /obj/structure/wild/burnedtree
 	name = "burned tree"
 	icon_state = "burnedtree1"
@@ -201,7 +212,6 @@
 
 /obj/structure/wild/burnedbush/New()
 	..()
-
 	icon_state = "burnedbush[rand(1,5)]"
 
 /*/obj/structure/wild/junglebush/New()
@@ -231,12 +241,10 @@
 
 /obj/structure/wild/burnedtree/New()
 	..()
-
 	icon_state = "burnedtree[rand(1,5)]"
 
 /obj/structure/wild/rock/New()
 	..()
-
 	icon_state = "rock[rand(1,5)]"
 
 /obj/structure/wild/jungle

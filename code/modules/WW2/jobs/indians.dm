@@ -146,3 +146,47 @@
 
 
 	return TRUE
+/////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////TRIBES//RP//STUFF//////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/indians/tribes/worker
+	title = "Tribesman Worker"
+	en_meaning = "Tribe Worker"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 20
+	max_positions = 300
+
+/datum/job/indians/tribes/worker/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//clothes
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/indian1_a = new /obj/item/clothing/accessory/armband/indian1(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(indian1_a, H)
+
+	if (H.h_style == "Bald")
+		H.h_style = "Skinhead"
+	H.f_style = "Shaved"
+	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
