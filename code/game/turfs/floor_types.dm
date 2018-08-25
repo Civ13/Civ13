@@ -1,3 +1,8 @@
+#define NORTH_EDGING	"north"
+#define SOUTH_EDGING	"south"
+#define EAST_EDGING		"east"
+#define WEST_EDGING		"west"
+
 /turf/floor/plating/under
 	name = "underplating"
 	icon_state = "un"
@@ -238,6 +243,8 @@
 			if (prob(chance))
 				wild = new/obj/structure/wild/bush(src)
 
+var/global/list/GrassEdgeCache
+
 /turf/floor/plating/grass/wild
 	name = "wild grass"
 
@@ -245,6 +252,24 @@
 	..()
 	icon = 'icons/turf/flooring/grass.dmi'
 	icon_state = "grass[rand(0,3)]"
+	if(!GrassEdgeCache || !GrassEdgeCache.len)
+		GrassEdgeCache = list()
+		GrassEdgeCache.len = 10
+		GrassEdgeCache[NORTH] = image('icons/turf/flooring/grass.dmi', "north", layer = src.layer + 0.1)
+		GrassEdgeCache[SOUTH] = image('icons/turf/flooring/grass.dmi', "south", layer = src.layer + 0.1)
+		GrassEdgeCache[EAST] = image('icons/turf/flooring/grass.dmi', "east", layer = src.layer + 0.1)
+		GrassEdgeCache[WEST] = image('icons/turf/flooring/grass.dmi', "west", layer = src.layer + 0.1)
+
+	spawn(1)
+		var/turf/T
+		for(var/i = 0, i <= 3, i++)
+			if(!get_step(src, 2**i))
+				continue
+			if(overlay_priority > get_step(src, 2**i).overlay_priority)
+				T = get_step(src, 2**i)
+				if(T)
+					T.overlays += GrassEdgeCache[2**i]
+	return
 
 /turf/floor/plating/beach
 	name = "Beach"
