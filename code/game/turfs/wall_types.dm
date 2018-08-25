@@ -21,7 +21,6 @@
 /turf/wall/wood/straw/New(var/newloc)
 	..(newloc,"staw")
 
-	opacity = FALSE
 /turf/wall/indestructable
 	icon_state = "rgeneric" // so we look better on the map
 /turf/wall/indestructable/black

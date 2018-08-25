@@ -247,7 +247,7 @@ var/global/list/GrassEdgeCache
 
 /turf/floor/plating/grass/wild
 	name = "wild grass"
-	overlay_priority = 1
+	overlay_priority = 0
 
 /turf/floor/plating/grass/wild/New()
 	..()

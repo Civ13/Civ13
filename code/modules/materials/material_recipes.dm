@@ -50,7 +50,7 @@ var/list/engineer_exclusive_recipe_types = null
 
 	recipes += new/datum/stack_recipe_list("furniture", list(
 		new/datum/stack_recipe("stool", /obj/item/weapon/stool, 3, _time = 35,_one_per_turf = TRUE, _on_floor = TRUE,),
-		new/datum/stack_recipe("chair", /obj/structure/bed/chair/wood, 3, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+		new/datum/stack_recipe("chair", /obj/structure/bed/chair/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("bed", /obj/structure/bed, 4, _time = 60,_one_per_turf = TRUE, _on_floor = TRUE,),
 		new/datum/stack_recipe("coffin", /obj/structure/closet/coffin, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
@@ -62,7 +62,7 @@ var/list/engineer_exclusive_recipe_types = null
 
 /material/rope/generate_recipes()
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))
-	recipes += list(new/datum/stack_recipe("rope handcuffs", /obj/item/weapon/handcuffs/rope, _time = 30))
+	recipes += list(new/datum/stack_recipe("rope handcuffs", /obj/item/weapon/handcuffs/rope, _time = 50))
 
 
 /material/stone/stone/generate_recipes()

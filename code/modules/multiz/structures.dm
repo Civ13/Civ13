@@ -252,6 +252,12 @@
 	icon_state = "rampup"
 	layer = 2.4
 
+/obj/structure/multiz/stairs_wood
+	name = "Wood Stairs"
+	icon_state = "wood2_stairs"
+	layer = 2.4
+
+
 /obj/structure/multiz/stairs/enter
 	icon_state = "ramptop"
 
