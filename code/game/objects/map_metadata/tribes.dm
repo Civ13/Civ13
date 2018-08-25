@@ -9,36 +9,34 @@
 	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
-		INDIANS,
-		PIRATES)
+		INDIANS,)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/indians,
-		list(INDIANS) = /area/caribbean/pirates,
 		)
 	front = "Pacific"
-	faction_distribution_coeffs = list(INDIANS = 0.6, PIRATES = 0.3)
+	faction_distribution_coeffs = list(INDIANS = 1)
 	battle_name = "Tribal village"
-	mission_start_message = "A ship of europeans has reached the shores! The <b>Natives</b> must fortify their village and the <b>Pirates</b> must establish a base inland. The ship will depart after 25 minutes, and the gracewall will be up by then." // to be replaced with the round's main event
+	var/targetnr = 2
+	var/targetnr_text= "2"
+	mission_start_message = "<big>A villager, apparently possessed by a demmonic force, has been murdering his fellow tribesmen! He must be caught before he manages to kill 2 tribesmen!</big><br>Bonus objective: He must steal the leader's crown."
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
-	faction2 = PIRATES
 	single_faction = TRUE
-	var/first_event_done = FALSE
-	var/do_first_event = 600//25 mins
+	var/message = ""
+
 obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
-	if ((istype(J, /datum/job/indians)))
-		if (!(istype(J, /datum/job/indians/tribes)))
-			. = FALSE
+	if (!(istype(J, /datum/job/indians/tribes)))
+		. = FALSE
 	else
 		. = TRUE
 	return .
 /obj/map_metadata/tribes/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/tribes/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/tribes/cross_message(faction)
 	return ""
@@ -46,21 +44,26 @@ obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/tribes/reinforcements_ready()
 	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
-/obj/map_metadata/tribes/check_events()
-	if ((world.time >= do_first_event) && !first_event_done)
-		world << "The ship will depart in <b>5</b> minutes! Finish unloading it and get ashore!"
-		first_event_done = TRUE
-		spawn(3000)
-			for (var/obj/effect/area_teleporter/AT)
-				if (AT.id == "one")
-					AT.Activated()
-					world << "The ship is departing!"
-					return TRUE
-	else return FALSE
-
-
-/obj/map_metadata/tribes/New() // since DM doesn't want to attribute random vars at the beggining...
+/obj/map_metadata/tribes/New()
 	..()
-	do_first_event = 600
+	targetnr = max(1,round(clients.len/3))
+	targetnr_text = num2text(targetnr)
+	mission_start_message = "<big>A villager, apparently possessed by a demmonic force, has been murdering his fellow tribesmen! He must be caught before he manages to kill <b>[targetnr_text]</b> more people. <b>Attention</b>, people killed by others besides the possessed also count!</big><br>Bonus objective: He must steal the leader's crown."
 
+/obj/map_metadata/tribes/update_win_condition()
+	if (processes.ticker.playtime_elapsed >= 1200)
+		if (dead_indians.len >= targetnr)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD && H.is_murderer == TRUE)
+					message = "The possessed villager has managed to kill enough tribesmen! He has won the round!"
+					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					return FALSE
+		else
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat == DEAD && H.is_murderer == TRUE)
+					message = "The possessed villager has been killed! The tribe won!"
+					world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+					return FALSE
+		ticker.finished = TRUE
+		return FALSE
 #undef NO_WINNER

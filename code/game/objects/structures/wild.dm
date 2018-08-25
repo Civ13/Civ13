@@ -286,4 +286,7 @@
 
 /obj/structure/wild/largejungle/New()
 	..()
-	icon_state = "bush[rand(1,6)]"
+	if (prob(75))
+		icon_state = "bush[rand(1,6)]"
+	else
+		icon_state = "rocks[rand(1,3)]"

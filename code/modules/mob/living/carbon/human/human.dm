@@ -4,6 +4,7 @@
 	voice_name = "unknown"
 	icon = 'icons/mob/human.dmi'
 	icon_state = "human_m_s"
+	var/is_murderer = FALSE // for the "find the murderer" gamemode
 
 /mob/living/carbon/human/New(var/new_loc, var/new_species = null)
 

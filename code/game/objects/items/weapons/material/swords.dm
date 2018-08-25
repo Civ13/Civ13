@@ -27,13 +27,13 @@
 	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
 	var/mob/living/carbon/human/H_user = user
 	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (H_user.getStatCoeff("swords")),92)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
-		user.visible_message("<span class='danger'>\The [user] parries [attack_text] with \the [src]!</span>")
+		user.visible_message("<span class='danger'><big>\The [user] parries [attack_text] with \the [src]!</big></span>")
 		var/mob/living/carbon/human/H = user
 		H.adaptStat("swords", 1)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		health -= 0.5
 		if(prob(15))
-			user.visible_message("<span class='danger'>\The [src] flies out of \the [user]'s hand!</span>")
+			user.visible_message("<span class='danger'><big>\The [src] flies out of \the [user]'s hand!</big></span>")
 			user.drop_from_inventory(src)
 			throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
 

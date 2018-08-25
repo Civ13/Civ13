@@ -181,7 +181,7 @@
 		return
 	if (!stat)
 		amount_grown += rand(1,2)
-		if (amount_grown >= 100)
+		if (amount_grown >= 3000)
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
 

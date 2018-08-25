@@ -150,7 +150,7 @@
 //////////////////////////TRIBES//RP//STUFF//////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/indians/tribes/worker
-	title = "Tribesman Worker"
+	title = "Tribesman"
 	en_meaning = "Tribe Worker"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -158,7 +158,7 @@
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
-	min_positions = 20
+	min_positions = 60
 	max_positions = 300
 
 /datum/job/indians/tribes/worker/equip(var/mob/living/carbon/human/H)
@@ -178,7 +178,7 @@
 	if (H.h_style == "Bald")
 		H.h_style = "Skinhead"
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")
+	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets

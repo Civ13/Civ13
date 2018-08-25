@@ -345,7 +345,7 @@ var/global/list/GrassEdgeCache
 /turf/floor/plating/dust
 	name = "dust"
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "dust2"
+	icon_state = "dust"
 	interior = FALSE
 	stepsound = "dirt"
 	uses_winter_overlay = FALSE

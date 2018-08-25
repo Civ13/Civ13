@@ -27,5 +27,5 @@
 	step(src,lol)//move them
 	var/mob/living/carbon/human/H = src
 	H.adaptStat("dexterity", 1)
-	visible_message("<b><big>[src.name] dodges out of the way!!</big></b>")//send a message
+	visible_message("<b><big>[src.name] dodges out of the way!</big></b>")//send a message
 	//be on our way
