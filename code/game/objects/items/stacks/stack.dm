@@ -109,6 +109,16 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
+	var/mob/living/carbon/human/H = user
+	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel"))
+		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
+			user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/weapon/material/handle))
+				qdel(H.l_hand)
+			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
+				qdel(H.r_hand)
 
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 
@@ -119,7 +129,6 @@
 		if (!ishuman(user))
 			return
 
-		var/mob/living/carbon/human/H = user
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
@@ -155,7 +164,6 @@
 		user << "<span class='warning'>\The [recipe.title] must be constructed on the floor!</span>"
 		return
 
-	var/mob/living/carbon/human/H = null
 	if (ishuman(user))
 		H = user
 

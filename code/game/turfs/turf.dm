@@ -42,6 +42,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 //	var/blessed = FALSE             // Has the turf been blessed?
 
 	var/list/decals
+	var/move_delay = 0
 
 	var/wet = FALSE
 	var/image/wet_overlay = null

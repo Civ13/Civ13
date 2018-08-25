@@ -30,7 +30,6 @@
 	var/muddy = FALSE
 	var/may_become_muddy = FALSE
 
-	var/move_delay = 0
 	plane = FLOOR_PLANE
 
 /turf/floor/proc/get_move_delay()

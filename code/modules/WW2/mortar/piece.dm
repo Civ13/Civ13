@@ -383,27 +383,26 @@
 	// bug abusers btfo
 	if (map.check_caribbean_block(mob, get_turf(mob)))
 		return FALSE
-	switch(dir)
-		if (SOUTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (NORTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (EAST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
-		if (WEST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
+	if (dir==SOUTH)
+		bound_height = 64
+		bound_width = 32
+		icon = 'icons/obj/cannon_v.dmi'
+		icon_state = "cannon"
+	if (dir==NORTH)
+		bound_height = 64
+		bound_width = 32
+		icon = 'icons/obj/cannon_v.dmi'
+		icon_state = "cannon"
+	if (dir==EAST)
+		bound_height = 32
+		bound_width = 64
+		icon = 'icons/obj/cannon_h.dmi'
+		icon_state = "cannon"
+	if (dir==WEST)
+		bound_height = 32
+		bound_width = 64
+		icon = 'icons/obj/cannon_h.dmi'
+		icon_state = "cannon"
 	return TRUE
 
 

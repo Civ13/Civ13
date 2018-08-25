@@ -6,6 +6,7 @@
 	var/passable = TRUE
 	var/origin_density = FALSE
 	var/origin_water_level = 0
+	var/origin_move_delay = 0
 	is_cover = TRUE
 	anchored = TRUE
 	opacity = FALSE
@@ -27,6 +28,8 @@
 		if (passable)
 			origin_density = T.density
 			T.density = FALSE
+			spawn(15)
+				updateturf()
 		return TRUE
 /*
 	for(var/obj/Ob in get_turf(src))
@@ -40,7 +43,11 @@
 	var/turf/T = get_turf(loc)
 	if (passable)
 		origin_density = T.density
+		origin_move_delay = T.move_delay
+		origin_water_level = T.water_level
 		T.density = FALSE
+		T.water_level = 0
+		T.move_delay = 0
 	return TRUE
 
 
@@ -48,6 +55,7 @@
 	var/turf/T = get_turf(loc)
 	if (origin_density)
 		T.density = origin_density
+		T.water_level = origin_water_level
 	..()
 	return TRUE
 

@@ -282,6 +282,7 @@ var/list/name_to_material
 
 /material/stone/stone
 	name = "stone"
+	hardness = 50
 	icon_colour = "#808080"
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
@@ -336,7 +337,7 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/iron
 	icon_colour = "#5C5454"
 	weight = 22
-	hardness = 45
+	hardness = 60
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 	hitsound = 'sound/weapons/smash.ogg'
@@ -357,7 +358,7 @@ var/list/name_to_material
 	explosion_resistance = 2
 	shard_type = SHARD_SPLINTER
 	shard_can_repair = FALSE // you can't weld splinters back into planks
-	hardness = 15
+	hardness = 40
 	weight = 18
 	melting_point = T0C+300 //okay, not melting in this case, but hot enough to destroy wood
 	ignition_point = T0C+288

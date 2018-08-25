@@ -31,9 +31,10 @@
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
+	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
 	else
 		. = TRUE
-	return .
 /obj/map_metadata/supply_raid/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 

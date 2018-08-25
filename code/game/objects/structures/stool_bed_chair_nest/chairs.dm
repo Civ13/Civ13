@@ -191,7 +191,7 @@
 	icon_state = "wooden_chair"
 	applies_material_colour = FALSE
 
-/obj/structure/bed/chair/wood
+/obj/structure/bed/chair/stone
 	name = "stone chair"
 	desc = "Old is never too old to not be in fashion."
 	icon_state = "wooden_chair"

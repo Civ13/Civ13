@@ -9,10 +9,26 @@
 	throw_speed = 3
 	throw_range = 7
 	allow_spin = FALSE
+	material = "wood"
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
 	thrown_force_divisor = 0.9 // 18 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 
+/obj/item/weapon/material/handle
+	name = "handle"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A basic stick with a hole on top to attach something. Can be made into a veriety of weapons and tools."
+	slot_flags = SLOT_BACK | SLOT_BELT
+	icon_state = "handle"
+	item_state = "spear"
+	material = "wood"
+	throw_speed = 7
+	throw_range = 7
+	allow_spin = FALSE
+	force_divisor = 0.2 // 12 with hardness 60 (steel)
+	thrown_force_divisor = 0.4 // 8 with weight 20 (steel)
+	attack_verb = list("jabbed","hit","bashed")
 
 /obj/item/weapon/material/spear
 	name = "spear"
@@ -22,6 +38,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "spear_old"
 	item_state = "spear"
+	material = "wood"
 	throw_speed = 6
 	throw_range = 11
 	allow_spin = FALSE
@@ -39,6 +56,7 @@
 	w_class = 2
 	sharp = TRUE
 	edge = TRUE
+	material = "iron"
 //	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = FALSE
@@ -48,6 +66,7 @@
 	desc = "A crude hatchet, made with wood and stone."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"
+	material = "stone"
 	force_divisor = 0.20 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.65 // 13 with weight 20 (steel)
 

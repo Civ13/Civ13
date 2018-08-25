@@ -30,9 +30,10 @@
 obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
+	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
 	else
 		. = TRUE
-	return .
 
 /obj/map_metadata/robusta/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
