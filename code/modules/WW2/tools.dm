@@ -50,23 +50,25 @@
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
 	if ((TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
-		var/digging_tunnel_time = 200
-		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
-			digging_tunnel_time /= H.getStatCoeff("strength")
-			digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-		if (WWinput(user, "This will start digging a tunnel entrance here.", "Tunnel Digging", "Continue", list("Continue", "Stop")) == "Continue")
-			visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
-			if (do_after(user, digging_tunnel_time, user.loc))
-				new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
-				var/obj/structure/multiz/ladder/ww2/tunnelbottom/bottomS = new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
-				bottomS.z = bottomS.z-1
-				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
-				if (ishuman(user))
-					var/mob/living/carbon/human/H = user
-					H.adaptStat("crafting", 1)
-					H.adaptStat("strength", 1)
-			return
+		if (user.z < 2)
+			user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+		else
+			var/digging_tunnel_time = 200
+			if (ishuman(user))
+				var/mob/living/carbon/human/H = user
+				digging_tunnel_time /= H.getStatCoeff("strength")
+				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+			if (WWinput(user, "This will start digging a tunnel entrance here.", "Tunnel Digging", "Continue", list("Continue", "Stop")) == "Continue")
+				visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+				if (do_after(user, digging_tunnel_time, user.loc))
+					new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
+					new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
+					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+					if (ishuman(user))
+						var/mob/living/carbon/human/H = user
+						H.adaptStat("crafting", 1)
+						H.adaptStat("strength", 1)
+				return
 	else if (locate(/obj/structure/multiz/) in user.loc)
 		user << "<span class='warning'>There already is something here.</span>"
 		return
