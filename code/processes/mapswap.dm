@@ -7,7 +7,7 @@
 		MAP_ROBUSTA = 14,
 //		MAP_BATTLEROYALE = 20,
 		MAP_SUPPLY_RAID = 8,
-		MAP_COLONY = 22,
+		MAP_COLONY = 5,
 	)
 
 	var/ready = TRUE
