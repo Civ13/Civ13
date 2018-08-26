@@ -51,9 +51,8 @@
 
 		for (var/obj/item/organ/I in affected.internal_organs)
 			if (I && I.damage > 0)
-				if (I.robotic < 2)
-					user.visible_message("[user] starts treating damage to [target]'s [I.name] with [tool_name].", \
-					"You start treating damage to [target]'s [I.name] with [tool_name]." )
+				user.visible_message("[user] starts treating damage to [target]'s [I.name] with [tool_name].", \
+				"You start treating damage to [target]'s [I.name] with [tool_name]." )
 
 		target.custom_pain("The pain in your [affected.name] is living hell!",1)
 		..()
@@ -71,10 +70,9 @@
 
 		for (var/obj/item/organ/I in affected.internal_organs)
 			if (I && I.damage > 0)
-				if (I.robotic < 2)
-					user.visible_message("<span class='notice'>[user] treats damage to [target]'s [I.name] with [tool_name].</span>", \
-					"<span class='notice'>You treat damage to [target]'s [I.name] with [tool_name].</span>" )
-					I.damage = FALSE
+				user.visible_message("<span class='notice'>[user] treats damage to [target]'s [I.name] with [tool_name].</span>", \
+				"<span class='notice'>You treat damage to [target]'s [I.name] with [tool_name].</span>" )
+				I.damage = FALSE
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 

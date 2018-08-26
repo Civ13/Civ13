@@ -21,6 +21,9 @@
 /turf/wall/wood/straw/New(var/newloc)
 	..(newloc,"staw")
 
+/turf/wall/wood/soft/New(var/newloc)
+	..(newloc,"softwood")
+
 /turf/wall/indestructable
 	icon_state = "rgeneric" // so we look better on the map
 /turf/wall/indestructable/black

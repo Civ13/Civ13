@@ -38,6 +38,8 @@
 
 	else if (istype(src, /datum/job/pirates))
 		. = PIRATES
+	else if (istype(src, /datum/job/civilian))
+		. = CIVILIAN
 	else if (istype(src, /datum/job/british))
 		. = BRITISH
 	else if (istype(src, /datum/job/french))
@@ -79,6 +81,9 @@
 	else if (istype(src, /datum/job/dutch))
 		user.faction_text = "DUTCH"
 		user.base_faction = new/datum/faction/dutch(user, src)
+	else if (istype(src, /datum/job/civilian))
+		user.faction_text = "CIVILIAN"
+		user.base_faction = new/datum/faction/civilian(user, src)
 
 
 /datum/job/proc/opposite_faction_name()

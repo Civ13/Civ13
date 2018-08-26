@@ -37,7 +37,7 @@ var/list/preferences_datums = list()
 	var/be_random_name_dutch = FALSE
 	var/be_random_name_english = FALSE
 	var/gender = MALE					//gender of character (well duh)
-	var/pirate_ethnicity = ENGLISH
+	var/civ_ethnicity = ENGLISH
 
 	var/body_build = "Default"			//character body build name
 	var/age = 25						//age of character

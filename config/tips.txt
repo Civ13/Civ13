@@ -1,19 +1,18 @@
 Drag yourself to a ladder to look up or down it.
-Ran out of food? Hunt some mice.
+Ran out of food? Hunt some animals.
 Cannibalism is a feature, but eating other people makes you valid.
 Ship officers are allowed to execute sailors for insubordination.
 Trees provide good cover, but they go down very quickly.
 You can build locked doors in the same way as regular doors. You have to have a key in one hand and metal/wood in the other (active) hand.
 Use a rifle's 'Field Strip' verb to remove its attachments.
 Use the *surrender emote to surrender.
-You can use rope to build nooses.
+You can use rope to build nooses and rope handcuffs.
 Everyone dies eventually; don't get too salty about it. As they say, war is heck.
 You are twice as likely to hit someone if you shoot them from behind.
-Drag a keychain to your hand and use it on a door, instead of using individual keys.
 Civilians who carry guns in a combat area are a valid target for the Navy.
 Use the Emote tab to surrender at 2x speed.
 You can ping people using the format "@key". This is case insensitive.
 If you are a sharpshooter, aim for the head. Otherwise, aim for the chest to kill and the feet to cripple.
 Dogs can be named by clicking on them.
 Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout, but does less damage. Slash will easily make your enemy bleed. Stabbing gives an higher probability of internal bleeding.
-You can switch between Parry mode and Dodge mode under the IC tab.
+You can switch between Parry mode and Dodge mode in the HUD.

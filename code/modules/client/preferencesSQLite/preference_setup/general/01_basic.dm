@@ -102,7 +102,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<b>Default Gender:</b> <a href='?src=\ref[src];gender=1'><b>[capitalize(lowertext(pref.gender))]</b></a><br>"
 	. += "<br>"
 	. += "<br><br>"
-	. += "<b>Pirate Ethnicity:</b> <a href='?src=\ref[src];ethnicity_pirate=1'><b>[capitalize(lowertext(pref.pirate_ethnicity))]</b></a><br>"
+	. += "<b>Pirate/Civilian Ethnicity:</b> <a href='?src=\ref[src];ethnicity_civ=1'><b>[capitalize(lowertext(pref.civ_ethnicity))]</b></a><br>"
 	. += "<br><br>"
 
 //	var/client/client = pref.client
@@ -256,8 +256,8 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 		pref.gender = next_in_list(pref.gender, valid_player_genders)
 		return TOPIC_REFRESH
 
-	else if (href_list["ethnicity_pirate"])
-		pref.pirate_ethnicity = next_in_list(pref.pirate_ethnicity, list(ENGLISH, SPANISH, PORTUGUESE, FRENCH, DUTCH))
+	else if (href_list["ethnicity_civ"])
+		pref.civ_ethnicity = next_in_list(pref.civ_ethnicity, list(ENGLISH, SPANISH, PORTUGUESE, FRENCH, DUTCH))
 		return TOPIC_REFRESH
 
 	else if (href_list["body_build"])

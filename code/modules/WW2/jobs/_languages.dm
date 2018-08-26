@@ -52,7 +52,7 @@
 
 	if (base_type_flag() == PIRATES)
 		if (H.client && H.client.prefs)
-			switch (H.client.prefs.pirate_ethnicity)
+			switch (H.client.prefs.civ_ethnicity)
 				if (SPANISH)
 					H.add_language(SPANISH, TRUE)
 					H.add_note("Known Languages", "Spanish")
@@ -90,7 +90,7 @@
 				H.add_note("Known Languages", language_name)
 
 	switch (base_type_flag())
-		if (PIRATES, BRITISH)
+		if (PIRATES, BRITISH, CIVILIAN)
 			for (var/datum/language/english/E in H.languages)
 				H.default_language = E
 				break

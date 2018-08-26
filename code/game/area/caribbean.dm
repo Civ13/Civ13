@@ -173,6 +173,7 @@
 	name = "the void"
 	location = AREA_INSIDE
 	is_void_area = TRUE
+	base_turf = /turf/floor/dirt
 
 /area/caribbean/void/caves
 	icon_state = "blue1"

@@ -22,11 +22,6 @@
 
 	if (istype(C, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = C
-		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
-
-		if (affecting.status & ORGAN_ROBOT)
-			user << "<span class='warning'>This isn't useful at all on a robotic limb..</span>"
-			return TRUE
 
 		H.UpdateDamageIcon()
 

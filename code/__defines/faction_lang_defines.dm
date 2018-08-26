@@ -23,7 +23,7 @@
 		return "Royal Navy"
 
 	if (constant == CIVILIAN)
-		return "Civilians"
+		return "Colonists"
 
 	if (constant == INDIANS)
 		return "Native Tribe"

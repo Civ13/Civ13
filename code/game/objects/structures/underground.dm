@@ -2,7 +2,7 @@
 
 /obj/structure/underground
 	name = "Soft Earth"
-	desc = "This space is blocked off by soft earth and rocks. Probably diggable."
+	desc = "This space is blocked off by soft earth and rocks. Can be digged."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "rock"
 	anchored = TRUE
@@ -18,7 +18,10 @@
 		if ("fire")
 			health -= W.force * 0.25
 		if ("brute")
-			health -= W.force * 1
+			if (istype(W, /obj/item/weapon/shovel))
+				health -= W.force * 2.5
+			else
+				health -= W.force * 1
 
 	playsound(get_turf(src), 'sound/weapons/slash.ogg', 100)
 

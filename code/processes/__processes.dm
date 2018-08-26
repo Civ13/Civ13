@@ -25,7 +25,6 @@ var/datum/process_list/processes = new
 	var/process/obj/obj = null
 	var/process/ping_track/ping_track = null
 	var/process/projectile/projectile = null
-	var/process/reinforcements/reinforcements = null
 	var/process/RNG/RNG = null
 	var/process/scheduler/scheduler = null
 	var/process/throwing/throwing = null

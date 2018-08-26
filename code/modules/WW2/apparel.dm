@@ -23,29 +23,47 @@
 
 
 // civs
+/obj/item/clothing/under/civ4
+	name = "Fancy Colonial Clothing"
+	desc = "A set composed of a quality white linen shirt and black trousers."
+	icon_state = "civuni4"
+	item_state = "civuni4"
+	worn_state = "civuni4"
 
 /obj/item/clothing/under/civ1
-	name = "Civilian Clothing"
-	desc = "A nice set of threads for civilians. Smells of sweat and resentment."
+	name = "Blue Colonial Clothing"
+	desc = "A set composed of a light blue linen shirt and short trousers."
 	icon_state = "civuni1"
 	item_state = "civuni1"
 	worn_state = "civuni1"
 
 /obj/item/clothing/under/civ2
-	name = "Civilian Clothing"
-	desc = "A nice set of threads for civilians. Smells of sweat and resentment."
+	name = "White Colonial Clothing"
+	desc = "A set composed of a white linen shirt and black trousers."
 	icon_state = "civuni2"
 	item_state = "civuni2"
 	worn_state = "civuni2"
 
 /obj/item/clothing/under/civ3
-	name = "Civilian Clothing"
-	desc = "A nice set of threads for civilians. Smells of sweat and resentment."
+	name = "Short-sleeved Colonial Clothing"
+	desc = "A set composed of a light white linen shirt with short sleeves and black trousers."
 	icon_state = "civuni3"
 	item_state = "civuni3"
 	worn_state = "civuni3"
 
+/obj/item/clothing/under/civ5
+	name = "Black Trousers"
+	desc = "Black trousers. That's it."
+	icon_state = "civuni5"
+	item_state = "civuni5"
+	worn_state = "civuni5"
 
+/obj/item/clothing/under/civ6
+	name = "Pink Colonial Clothing"
+	desc = "A set composed of a pink linen shirt and black trousers."
+	icon_state = "civuni6"
+	item_state = "civuni6"
+	worn_state = "civuni6"
 // WEBBING - can hold everything but clothing
 
 /obj/item/clothing/accessory/storage/webbing
@@ -113,8 +131,8 @@
 	worn_state = "piratejacket4"
 
 /obj/item/clothing/suit/storage/jacket/piratejacket5
-	name = "fancy pirate jacket"
-	desc = "A fancy pirate jacket. This one is red."
+	name = "fancy jacket"
+	desc = "A fancy jacket. This one is red."
 	icon_state = "piratejacket5"
 	item_state = "piratejacket5"
 	worn_state = "piratejacket5"
@@ -514,13 +532,13 @@
 /////////GENERIC/////////
 /obj/item/clothing/head/red_beret
 	name = "red sailor beret"
-	desc = "A red berret, worn by sailors."
+	desc = "A red berret."
 	icon_state = "redberet"
 	item_state = "redberet"
 
 /obj/item/clothing/head/blue_beret
 	name = "blue sailor beret"
-	desc = "A red berret, worn by sailors."
+	desc = "A red berret."
 	icon_state = "blueberet"
 	item_state = "blueberet"
 
@@ -533,17 +551,39 @@
 
 /obj/item/clothing/head/tarred_hat
 	name = "tarred hat"
-	desc = "A tarred hat, used by sailors."
+	desc = "A tarred hat, commonly used by sailors."
 	icon_state = "tarred_hat"
 	item_state = "tarred_hat"
 
 /obj/item/clothing/head/strawhat
 	name = "straw hat"
 	icon_state = "boater_hat"
-	desc = "A straw hat, used by sailors."
+	desc = "A straw hat, commonly used by sailors."
 
 /obj/item/clothing/head/tricorne_black
 	name = "black tricorne"
-	desc = "A black tricorne. Commonly used by navy officers."
+	desc = "A black tricorne. In fashion."
 	icon_state = "tricorne_black"
 	item_state = "tricorne_black"
+
+/obj/item/clothing/shoes/blackboots1
+	name = "black sailor boots"
+	desc = "Classic black boots."
+	icon_state = "sailorboots1"
+	item_state = "sailorboots1"
+	worn_state = "sailorboots1"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 600, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+
+/obj/item/clothing/shoes/leatherboots1
+	name = "leather boots"
+	desc = "Classic leather boots."
+	icon_state = "sailorboots2"
+	item_state = "sailorboots2"
+	worn_state = "sailorboots2"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6

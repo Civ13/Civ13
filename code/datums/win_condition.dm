@@ -6,11 +6,6 @@
 	if (sethash)
 		set_hash(areas, attackers, defenders, threshold)
 
-	if (lowertext(areas[1]) == "reinforcements")
-		if (reinforcements_master)
-			return reinforcements_master.finished()
-		return FALSE
-
 	var/attacker_count = 0
 	var/defender_count = 0
 

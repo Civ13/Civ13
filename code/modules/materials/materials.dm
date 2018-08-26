@@ -375,12 +375,19 @@ var/list/name_to_material
 	integrity = 175
 	hardness = 200
 
+/material/wood/soft
+	name = "softwood"
+	integrity = 80
+	hardness = 90
+	icon_colour = "#D2BA9C"
+
+
 /material/wood/straw
-	hardness = 10
-	icon_colour = "#665e4b"
-	integrity = 35
+	hardness = 35
+	icon_colour = "#BCB9B4"
+	integrity = 55
 	name = "straw"
-	icon_base = "straw"
+//	icon_base = "straw"
 
 /material/cloth //todo
 	name = "cloth"

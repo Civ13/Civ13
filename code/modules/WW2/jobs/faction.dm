@@ -16,11 +16,9 @@
 #define TEAM_FR 5
 #define TEAM_IN 6
 #define TEAM_NL 7
+#define TEAM_CV 8
 
-var/global/officers[7]
-var/global/commanders[7]
-var/global/soldiers[7]
-var/global/squad_members[7]
+var/global/soldiers[8]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -36,6 +34,14 @@ var/global/squad_members[7]
 /datum/faction/proc/base_type()
 	return "/datum/faction"
 
+// you appear to be a civilian to other civilians
+/datum/faction/civilian
+	icon_state = "civilian_basic"
+	title = "Civilian"
+	team = TEAM_CV
+
+/datum/faction/pirates/base_type()
+	return "/datum/faction/pirates"
 
 // you appear to be a pirate to other pirates
 /datum/faction/pirates
@@ -106,70 +112,6 @@ var/global/squad_members[7]
 		return
 
 	holder = H
-
-/*	if (findtext("[type]", "leader"))
-		if (istype(J, /datum/job/pirates))
-			squad_leaders[PIRATES]++
-		else if (istype(J, /datum/job/british))
-			squad_leaders[BRITISH]++
-	else if (findtext("[type]", "officer"))
-		if (istype(J, /datum/job/german))
-			officers[GERMAN]++
-		else if (istype(J, /datum/job/soviet))
-			officers[SOVIET]++
-		else if (istype(J, /datum/job/partisan))
-			officers[PARTISAN]++
-		else if (istype(J, /datum/job/polish))
-			officers[POLISH_INSURGENTS]++
-		else if (istype(J, /datum/job/japanese))
-			officers[JAPAN]++
-		else if (istype(J, /datum/job/usa))
-			officers[USA]++
-	else if (findtext("[type]", "commander"))
-		if (istype(J, /datum/job/german))
-			commanders[GERMAN]++
-		else if (istype(J, /datum/job/soviet))
-			commanders[SOVIET]++
-		else if (istype(J, /datum/job/partisan))
-			commanders[PARTISAN]++
-		else if (istype(J, /datum/job/polish))
-			commanders[POLISH_INSURGENTS]++
-		else if (istype(J, /datum/job/japanese))
-			commanders[JAPAN]++
-		else if (istype(J, /datum/job/usa))
-			commanders[USA]++
-	else if (!J.is_officer && !J.is_commander && !J.is_squad_leader)
-		if (istype(J, /datum/job/german))
-			if ("[type]" == "/datum/faction/german")
-				soldiers[GERMAN]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[GERMAN]++
-		else if (istype(J, /datum/job/soviet))
-			if ("[type]" == "/datum/faction/soviet")
-				soldiers[SOVIET]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[SOVIET]++
-		else if (istype(J, /datum/job/partisan))
-			if ("[type]" == "/datum/faction/partisan")
-				soldiers[PARTISAN]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[PARTISAN]++
-		else if (istype(J, /datum/job/polish))
-			if ("[type]" == "/datum/faction/polish")
-				soldiers[POLISH_INSURGENTS]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[POLISH_INSURGENTS]++
-		else if (istype(J, /datum/job/usa))
-			if ("[type]" == "/datum/faction/usa")
-				soldiers[USA]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[USA]++
-		else if (istype(J, /datum/job/japanese))
-			if ("[type]" == "/datum/faction/japanese")
-				soldiers[JAPAN]++
-			else if (findtext("[type]", "squad") && !src:is_leader)
-				squad_members[JAPAN]++
-			*/
 	if (istype(J, /datum/job/pirates))
 		if ("[type]" == "/datum/faction/pirates")
 			soldiers[PIRATES]++
@@ -191,5 +133,8 @@ var/global/squad_members[7]
 	else if (istype(J, /datum/job/indians))
 		if ("[type]" == "/datum/faction/indians")
 			soldiers[INDIANS]++
+	else if (istype(J, /datum/job/civilian))
+		if ("[type]" == "/datum/faction/civilian")
+			soldiers[CIVILIAN]++
 	H.all_factions += src
 	..()

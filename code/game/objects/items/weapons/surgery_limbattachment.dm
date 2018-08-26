@@ -32,10 +32,6 @@
 			M.visible_message( \
 				"<span class='notice'>\The [user] is beginning to attach \the [src] where [H]'s [S.display_name] used to be.</span>", \
 				"<span class='notice'>\The [user] begins to attach \the [src] where your [S.display_name] used to be.</span>")
-		else
-			M.visible_message( \
-				"<span class='notice'>\The [user] begins to attach a robotic limb where \his [S.display_name] used to be with [src].</span>", \
-				"<span class='notice'>You begin to attach \the [src] where your [S.display_name] used to be.</span>")
 
 		if(do_mob(user, H, 100))
 			if(M != user)

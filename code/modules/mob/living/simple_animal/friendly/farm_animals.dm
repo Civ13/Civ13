@@ -181,7 +181,7 @@
 		return
 	if (!stat)
 		amount_grown += rand(1,2)
-		if (amount_grown >= 3000)
+		if (amount_grown >= 150)
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
 
@@ -232,14 +232,15 @@ var/global/chicken_count = FALSE
 	. =..()
 	if (!.)
 		return
-	if (!stat && prob(3) && eggsleft > 0)
-		visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
-		eggsleft--
-		var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
-		E.pixel_x = rand(-6,6)
-		E.pixel_y = rand(-6,6)
-		if (chicken_count < MAX_CHICKENS && prob(10))
-			processing_objects.Add(E)
+	if (!stat && eggsleft > 0)
+		spawn(2400)
+			visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
+			eggsleft--
+			var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
+			E.pixel_x = rand(-6,6)
+			E.pixel_y = rand(-6,6)
+			if (chicken_count < MAX_CHICKENS && prob(10))
+				processing_objects.Add(E)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/process()

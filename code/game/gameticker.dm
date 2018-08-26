@@ -132,7 +132,6 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 		// todo: make these hooks. Apparently they all fail on /hook/roundstart
 		setup_autobalance()
-		reinforcements_master = new
 
 
 	//close_jobs()//Makes certain jobs unselectable past roundstart. Unneeded atm.

@@ -70,4 +70,5 @@
 			return dead_indians.len + heavily_injured_indians.len + alive_indians.len
 		if (DUTCH)
 			return dead_dutch.len + heavily_injured_dutch.len + alive_dutch.len
-
+		if (CIVILIAN)
+			return dead_civilians.len + heavily_injured_civilians.len + alive_civilians.len

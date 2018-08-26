@@ -20,11 +20,18 @@
 
 /obj/item/stack/money/real
 	name = "spanish reales"
-	desc = "A small, silver coin."
+	desc = "A small silver coin."
 	singular_name = "real"
 	icon_state = "silvercoin_pile"
 	amount = 1
 	value = 1
+
+/obj/item/stack/money/real/pocketmoney1/New()
+	amount = rand(45,62)
+/obj/item/stack/money/real/pocketmoney2/New()
+	amount = rand(60,81)
+/obj/item/stack/money/real/pocketmoney3/New()
+	amount =  rand(93,114)
 
 /obj/item/stack/money/dollar
 	name = "spanish dollars"
@@ -85,7 +92,7 @@
 	name = "gems"
 	desc = "Assorted precious gems."
 	singular_name = "gem"
-	icon_state = "money"
+	icon_state = "gem1"
 	force = WEAPON_FORCE_WEAK
 	throwforce = WEAPON_FORCE_WEAK
 	throw_speed = 5

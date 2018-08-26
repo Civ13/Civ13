@@ -44,6 +44,13 @@
 			qdel(src)
 			return
 
+		// CIVILIAN LANDMARKS
+		if ("JoinLateCiv")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		// PIRATE LANDMARKS
 		if ("JoinLateDM")
 			if (!latejoin_turfs[name])

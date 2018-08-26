@@ -278,7 +278,7 @@
 		var/mob/living/carbon/human/H = M
 
 		for (var/obj/item/organ/I in H.internal_organs)
-			if ((I.damage > 0) && (I.robotic != 2)) //Peridaxon heals only non-robotic organs
+			if (I.damage > 0)
 				I.damage = max(I.damage - removed, FALSE)
 
 /datum/reagent/ryetalyn

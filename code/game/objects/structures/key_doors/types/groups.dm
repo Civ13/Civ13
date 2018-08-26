@@ -1,4 +1,13 @@
 ////////1713 stuff//////////
+#define CV_CODE 1000
+/datum/keyslot/civ
+	code = CV_CODE
+
+/obj/item/weapon/key/civ
+	code = CV_CODE
+	name = "Key"
+#undef CV_CODE
+
 #define PI_CODE 995
 /datum/keyslot/pirates
 	code = PI_CODE

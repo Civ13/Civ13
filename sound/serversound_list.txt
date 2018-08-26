@@ -2,3 +2,4 @@ sound/music/hes_a_pirate.ogg
 sound/music/shanties/irish_rovers.ogg
 sound/music/shanties/spanish_ladies.ogg
 sound/music/shanties/fish_in_the_sea.ogg
+sound/music/nassau_shores.ogg

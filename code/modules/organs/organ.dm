@@ -15,7 +15,6 @@ var/list/organ_cache = list()
 	var/organ_tag = "organ"
 
 	var/parent_organ = "chest"
-	var/robotic = FALSE //For being a robot
 	var/rejecting   // Is this organ already being rejected?
 
 	var/list/transplant_data
@@ -287,8 +286,6 @@ var/list/organ_cache = list()
 	target.internal_organs |= src
 	affected.internal_organs |= src
 	target.internal_organs_by_name[organ_tag] = src
-	if (robotic)
-		status |= ORGAN_ROBOT
 
 /obj/item/organ/eyes/replaced(var/mob/living/carbon/human/target)
 
@@ -302,8 +299,6 @@ var/list/organ_cache = list()
 
 /obj/item/organ/proc/bitten(mob/user)
 
-	if (robotic)
-		return
 
 	user << "<span class = 'notice'>You take an experimental bite out of \the [src].</span>"
 	var/datum/reagent/blood/B = locate(/datum/reagent/blood) in reagents.reagent_list
@@ -328,7 +323,7 @@ var/list/organ_cache = list()
 /obj/item/organ/attack_self(mob/user as mob)
 
 	// Convert it to an edible form, yum yum.
-	if (!robotic && user.a_intent == I_HELP && user.targeted_organ == "mouth")
+	if (user.a_intent == I_HELP && user.targeted_organ == "mouth")
 		bitten(user)
 		return
 

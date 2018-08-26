@@ -5,7 +5,7 @@
 /datum/job/pirates/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
 	if (H.client && H.client.prefs)
-		switch (H.client.prefs.pirate_ethnicity)
+		switch (H.client.prefs.civ_ethnicity)
 			if (SPANISH)
 				H.name = H.species.get_random_spanish_name(H.gender)
 			if (PORTUGUESE)

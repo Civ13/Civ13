@@ -55,10 +55,6 @@ var/list/special_globalobjects = list("processScheduler", "Master", "Ticker", "C
 			if (W && istype(W))
 				debug_variables(W)
 
-		if ("Reinforcements Master")
-			if (reinforcements_master)
-				debug_variables(reinforcements_master)
-
 		if ("Job Master")
 			if (job_master)
 				debug_variables(job_master)

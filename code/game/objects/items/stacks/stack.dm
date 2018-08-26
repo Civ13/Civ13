@@ -109,6 +109,8 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
+	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
+	build_override_key.code = -1
 	var/mob/living/carbon/human/H = user
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -120,8 +122,15 @@
 			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 				qdel(H.r_hand)
 
-	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
+	if (findtext(recipe.title, "wall"))
+		if (H.getStatCoeff("crafting") < 1.25)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
 
+	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
+		if (H.getStatCoeff("crafting") < 1)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
 		var/material = null
 		if (findtext(recipe.title, "wood"))
 			material = "wood"
@@ -176,6 +185,15 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+		else if (H.faction_text == CIVILIAN)
+			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999)") as num
+			keycode = Clamp(keycode, 1000, 9999)
+			var/keyname = input(user, "Choose a name for the key") as text|null
+			if (keyname == null)
+				keyname = "Key"
+			build_override_key.name = keyname
+			build_override_key.code = keycode
+
 		else
 			var/mob/living/carbon/human/US = user
 			var/texttype = lowertext("[US.faction_text]")
@@ -241,6 +259,14 @@
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+
+		if (build_override_key.code != -1)
+			build_override_key.loc = get_turf(O)
+			build_override_key.set_dir(user.dir)
+			build_override_key.add_fingerprint(user)
+			qdel(O)
+			return
+
 
 		if (build_override_object)
 			build_override_object.loc = get_turf(O)

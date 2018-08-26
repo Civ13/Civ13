@@ -118,39 +118,11 @@
 		totalPlayers = 0
 
 		for (var/player in new_player_mob_list)
-			if (reinforcements_master)
-				if (reinforcements_master.reinforcement_pool[BRITISH]:Find(player))
-					stat("[player:key] - joining as Axis")
-				else if (reinforcements_master.reinforcement_pool[PIRATES]:Find(player))
-					stat("[player:key] - joining as Allies")
-				else
-					stat(player:key)
-			else
-				stat(player:key)
+			stat(player:key)
 			++totalPlayers
 
 		stat("")
 
-	if (reinforcements_master && reinforcements_master.is_ready())
-		stat("")
-		stat(stat_header("Reinforcements"))
-		stat("")
-		var/list/reinforcements_info = reinforcements_master.get_status_addendums()
-		for (var/v in reinforcements_info)
-			if (findtext(v, ":")) // because apparently splittext doesn't work how I thought it did, this failed when we didn't have a ":" anywhere
-				var/split = splittext(v, ":")
-				if (split[2])
-					stat(split[1], split[2])
-				else
-					stat(split[1])
-			else if (findtext(v, ";"))
-				var/split = splittext(v, ";")
-				if (split[2])
-					stat("[split[1]];", split[2])
-				else
-					stat(split[1])
-			else
-				stat(v, "")
 	..()
 
 
@@ -186,7 +158,7 @@
 
 			observer.started_as_observer = TRUE
 			close_spawn_windows()
-			var/obj/O = locate("landmark*Observer-Start")
+			var/obj/O = locate("landmark/Observer-Start")
 			if (istype(O))
 				src << "<span class='notice'>Now teleporting.</span>"
 				observer.loc = O.loc
@@ -216,149 +188,6 @@
 			qdel(src)
 
 			return TRUE
-
-	if (href_list["re_british"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			src << "<span class = 'danger'>You're banned from playing.</span>"
-			return TRUE
-
-		if (!ticker.players_can_join)
-			src << "<span class = 'danger'>You can't join the game yet.</span>"
-			return TRUE
-
-		if (!reinforcements_master.is_permalocked(BRITISH))
-			if (client.prefs.s_tone < -35)
-				usr << "<span class='danger'>You are too dark to be a British soldier.</span>"
-				return
-			reinforcements_master.add(src, BRITISH)
-		else
-			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-	if (href_list["re_dutch"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			src << "<span class = 'danger'>You're banned from playing.</span>"
-			return TRUE
-
-		if (!ticker.players_can_join)
-			src << "<span class = 'danger'>You can't join the game yet.</span>"
-			return TRUE
-
-		if (!reinforcements_master.is_permalocked(DUTCH))
-			if (client.prefs.s_tone < -25)
-				usr << "<span class='danger'>You are too dark to be a Dutch soldier.</span>"
-				return
-			reinforcements_master.add(src, DUTCH)
-		else
-			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-
-	if (href_list["re_portuguese"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			src << "<span class = 'danger'>You're banned from playing.</span>"
-			return TRUE
-
-		if (!ticker.players_can_join)
-			src << "<span class = 'danger'>You can't join the game yet.</span>"
-			return TRUE
-
-		if (!reinforcements_master.is_permalocked(PORTUGUESE))
-			if (client.prefs.s_tone < -65)
-				usr << "<span class='danger'>You are too dark to be a Portuguese soldier.</span>"
-				return
-			reinforcements_master.add(src, PORTUGUESE)
-		else
-			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-
-
-	if (href_list["re_spanish"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			src << "<span class = 'danger'>You're banned from playing.</span>"
-			return TRUE
-
-		if (!ticker.players_can_join)
-			src << "<span class = 'danger'>You can't join the game yet.</span>"
-			return TRUE
-
-		if (!reinforcements_master.is_permalocked(SPANISH))
-			if (client.prefs.s_tone < -65)
-				usr << "<span class='danger'>You are too dark to be a Spanish soldier.</span>"
-				return
-			reinforcements_master.add(src, SPANISH)
-		else
-			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-
-
-	if (href_list["re_french"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			src << "<span class = 'danger'>You're banned from playing.</span>"
-			return TRUE
-
-		if (!ticker.players_can_join)
-			src << "<span class = 'danger'>You can't join the game yet.</span>"
-			return TRUE
-
-		if (!reinforcements_master.is_permalocked(FRENCH))
-			if (client.prefs.s_tone < -45)
-				usr << "<span class='danger'>You are too dark to be a French soldier.</span>"
-				return
-			reinforcements_master.add(src, FRENCH)
-		else
-			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-
-	if (href_list["re_indians"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			src << "<span class = 'danger'>You're banned from playing.</span>"
-			return TRUE
-
-		if (!ticker.players_can_join)
-			src << "<span class = 'danger'>You can't join the game yet.</span>"
-			return TRUE
-
-		if (!reinforcements_master.is_permalocked(INDIANS))
-			if (client.prefs.s_tone < -195)
-				usr << "<span class='danger'>You are too dark to be a Native.</span>"
-				return
-			if (client.prefs.s_tone > -100)
-				usr << "<span class='danger'>Your skin is too light for you to be a Native.</span>"
-				return
-			reinforcements_master.add(src, INDIANS)
-		else
-			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-
-
-	if (href_list["re_pirate"])
-
-		if (client && client.quickBan_isbanned("Playing"))
-			src << "<span class = 'danger'>You're banned from playing.</span>"
-			return TRUE
-
-		if (!ticker.players_can_join)
-			src << "<span class = 'danger'>You can't join the game yet.</span>"
-			return TRUE
-
-		if (!reinforcements_master.is_permalocked(PIRATES))
-			reinforcements_master.add(src, PIRATES)
-		else
-			src << "<span class = 'danger'>Sorry, this side already has too many reinforcements deployed!</span>"
-	if (href_list["unre_british"])
-		reinforcements_master.remove(src, BRITISH)
-	if (href_list["unre_pirate"])
-		reinforcements_master.remove(src, PIRATES)
-	if (href_list["unre_portuguese"])
-		reinforcements_master.remove(src, PORTUGUESE)
-	if (href_list["unre_spanish"])
-		reinforcements_master.remove(src, SPANISH)
-	if (href_list["unre_french"])
-		reinforcements_master.remove(src, FRENCH)
-	if (href_list["unre_indians"])
-		reinforcements_master.remove(src, INDIANS)
-	if (href_list["unre_dutch"])
-		reinforcements_master.remove(src, DUTCH)
-	if (href_list["late_join"])
 
 		if (client && client.quickBan_isbanned("Playing"))
 			src << "<span class = 'danger'>You're banned from playing.</span>"
@@ -551,6 +380,10 @@
 		if (client.prefs.s_tone < -25)
 			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 60.</span>"
 			return
+	if (istype(job, /datum/job/civilian))
+		if (client.prefs.s_tone < -65)
+			usr << "<span class='danger'>You are too dark to be a colonist. Choose a value lower than 100.</span>"
+			return
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -705,7 +538,7 @@
 					replaced_faction_title = TRUE
 
 	if (!any_available_jobs)
-		src << "<span class = 'danger'><font size = 3>All roles are disabled by autobalance! Please join a reinforcements queue to play.</font></span>"
+		src << "<span class = 'danger'><font size = 3>All roles are disabled by autobalance!</font></span>"
 		return
 
 	var/data = ""
