@@ -78,8 +78,6 @@
 /mob/living/carbon/human/getFireLoss()
 	var/amount = FALSE
 	for (var/obj/item/organ/external/O in organs)
-		if (O.status & ORGAN_ROBOT)
-			continue //robot limbs don't count towards shock and crit
 		amount += O.burn_dam
 	return amount
 
@@ -115,7 +113,7 @@
 			O.take_damage(amount, 0, sharp=is_sharp(damage_source), edge = damage_source ? damage_source.edge : 0, used_weapon=damage_source)
 		else
 			//if you don't want to heal robot organs, they you will have to check that yourself before using this proc.
-			O.heal_damage(-amount, 0, internal=0, robo_repair=(O.status & ORGAN_ROBOT))
+			O.heal_damage(-amount, 0, internal=0,)
 
 /mob/living/carbon/human/proc/adjustFireLossByPart(var/amount, var/organ_name, var/obj/damage_source = null)
 	amount = amount*species.burn_mod
@@ -126,7 +124,7 @@
 			O.take_damage(amount, amount, sharp=is_sharp(damage_source), edge=damage_source ? damage_source.edge : 0, used_weapon=damage_source)
 		else
 			//if you don't want to heal robot organs, they you will have to check that yourself before using this proc.
-			O.heal_damage(-amount, -amount, internal=0, robo_repair=(O.status & ORGAN_ROBOT))
+			O.heal_damage(-amount, -amount, internal=0,)
 
 /mob/living/carbon/human/Stun(amount)
 	handle_zoom_stuff(1)

@@ -6,7 +6,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
-	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
 		PIRATES)
@@ -45,8 +44,6 @@
 
 /obj/map_metadata/battleroyale/cross_message(faction)
 	return "<font size = 4><b>The round has started!</b> Players may now cross the invisible wall!</font>"
-/obj/map_metadata/battleroyale/reinforcements_ready()
-	return (faction1_can_cross_blocks())
 /*
 /obj/map_metadata/robusta/win_condition_specialcheck()
 	if (alive_n_of_side(PIRATES) <= 1 && processes.ticker.playtime_elapsed >= 1200)

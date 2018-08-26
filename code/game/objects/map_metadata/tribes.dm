@@ -6,7 +6,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
 	squad_spawn_locations = FALSE
-	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
 		INDIANS,)
@@ -40,9 +39,6 @@ obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/tribes/cross_message(faction)
 	return ""
-
-/obj/map_metadata/tribes/reinforcements_ready()
-	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 /obj/map_metadata/tribes/New()
 	..()

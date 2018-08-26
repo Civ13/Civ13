@@ -22,7 +22,6 @@ var/global/obj/map_metadata/map = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
 	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW)
-	var/reinforcements = TRUE
 	var/custom_loadout = TRUE // set to false to prevent people to spawn with guns and ammo on POW Camp map
 	var/squad_spawn_locations = TRUE
 
@@ -58,7 +57,6 @@ var/global/obj/map_metadata/map = null
 	var/current_winner = null
 	var/current_loser = null
 	var/next_win = -1
-	var/last_reinforcements_next_win = -1
 	var/win_condition_spam_check = FALSE
 	var/single_faction = FALSE //for games vs NPCs
 
@@ -106,35 +104,19 @@ var/global/obj/map_metadata/map = null
 	if (last_crossing_block_status[faction1] == FALSE)
 		if (faction1_can_cross_blocks())
 			world << cross_message(faction1)
-			// let new players see the reinforcements links
-			for (var/np in new_player_mob_list)
-				if (np:client)
-					np:new_player_panel_proc()
 
 	else if (last_crossing_block_status[faction1] == TRUE)
 		if (!faction1_can_cross_blocks())
 			world << reverse_cross_message(faction1)
-			// let new players see the reinforcements links
-			for (var/np in new_player_mob_list)
-				if (np:client)
-					np:new_player_panel_proc()
 
 
 	if (last_crossing_block_status[faction2] == FALSE)
 		if (faction2_can_cross_blocks())
 			world << cross_message(faction2)
-			// let new players see the reinforcements links
-			for (var/np in new_player_mob_list)
-				if (np:client)
-					np:new_player_panel_proc()
 
 	else if (last_crossing_block_status[faction2] == TRUE)
 		if (!faction2_can_cross_blocks())
 			world << reverse_cross_message(faction2)
-			// let new players see the reinforcements links
-			for (var/np in new_player_mob_list)
-				if (np:client)
-					np:new_player_panel_proc()
 
 	if (last_crossing_block_status[event_faction] == FALSE)
 		if (specialfaction_can_cross_blocks())
@@ -192,8 +174,6 @@ var/global/obj/map_metadata/map = null
 /obj/map_metadata/proc/reverse_cross_message(faction)
 	return "<span class = 'userdanger'>The [faction_const2name(faction)] may no longer cross the invisible wall!</span>"
 
-/obj/map_metadata/proc/reinforcements_ready()
-	return game_started
 
 // old game mode stuff
 /obj/map_metadata/proc/can_start()
@@ -265,24 +245,7 @@ var/global/obj/map_metadata/map = null
 					announce_current_win_condition()
 					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-		else if (win_condition.check(list("REINFORCEMENTS"), list(), list(), 1.0, TRUE))
-			if (last_win_condition != win_condition.hash)
 
-				// let us know why we're changing to this win condition
-				if (current_win_condition != NO_WINNER && current_winner && current_loser)
-					world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>"
-
-				current_win_condition = "Both sides are out of reinforcements; the round will end in {time} minute{s}."
-
-				if (last_reinforcements_next_win != -1)
-					next_win = last_reinforcements_next_win
-				else
-					next_win = world.time + long_win_time(null)
-					last_reinforcements_next_win = next_win
-
-				announce_current_win_condition()
-				current_winner = null
-				current_loser = null
 		else
 			if (current_win_condition != NO_WINNER && current_winner && current_loser)
 				world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>"

@@ -2,11 +2,10 @@
 /obj/map_metadata/colony
 	ID = MAP_COLONY
 	title = "Colony (225x225x2)"
-	lobby_icon_state = "colony"
+	lobby_icon_state = "colony2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 3000 // 5 minutes!
 	squad_spawn_locations = FALSE
-	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
 		INDIANS,
@@ -26,7 +25,8 @@
 	faction2 = CIVILIAN
 	single_faction = FALSE
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg')
+		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
+		"Black Sails:1" = 'sound/music/black_sails.ogg')
 	var/first_event_done = FALSE
 	var/do_first_event = 600//25 mins
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
@@ -45,8 +45,6 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/colony/cross_message(faction)
 	return ""
 
-/obj/map_metadata/colony/reinforcements_ready()
-	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 /obj/map_metadata/colony/check_events()
 	if ((world.time >= do_first_event) && !first_event_done)

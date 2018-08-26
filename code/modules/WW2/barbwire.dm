@@ -102,8 +102,6 @@
 
 					user << "<span class = 'red'><b>Your hand slips, causing \the [src] to cut your [affecting.name] open!</b></span>"
 					playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
-					if (affecting.status & ORGAN_ROBOT)
-						return
 					if (affecting.take_damage(10, FALSE))
 						H.UpdateDamageIcon()
 					H.updatehealth()

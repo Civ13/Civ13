@@ -286,12 +286,12 @@
 		return TRUE
 	return FALSE
 
-/mob/new_player/proc/LateSpawnForced(rank, needs_random_name = FALSE, var/reinforcements = FALSE)
+/mob/new_player/proc/LateSpawnForced(rank, needs_random_name = FALSE)
 
 	spawning = TRUE
 	close_spawn_windows()
 
-	job_master.AssignRole(src, rank, TRUE, reinforcements)
+	job_master.AssignRole(src, rank, TRUE)
 	var/mob/living/character = create_character(job2mobtype(rank))	//creates the human and transfers vars and mind
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
 

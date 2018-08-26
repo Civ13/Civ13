@@ -519,7 +519,6 @@
 #define ORGAN_BLEEDING   8
 #define ORGAN_BROKEN     32
 #define ORGAN_DESTROYED  64
-#define ORGAN_ROBOT      128
 #define ORGAN_SPLINTED   256
 #define SALVED           512
 #define ORGAN_DEAD       1024
@@ -784,10 +783,6 @@
 #ifndef CUSTOM_ITEM_MOB
 #define CUSTOM_ITEM_MOB 'icons/mob/custom_items_mob.dmi'
 #endif
-/*
-#ifndef CUSTOM_ITEM_ROBOT
-#define CUSTOM_ITEM_ROBOT 'icons/mob/custom_synthetic.dmi'
-#endif*/
 
 //default item on-mob icons
 #define INV_HEAD_DEF_ICON 'icons/mob/head.dmi'

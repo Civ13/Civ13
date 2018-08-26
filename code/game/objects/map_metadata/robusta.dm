@@ -6,7 +6,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 90
 	squad_spawn_locations = FALSE
-	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
 		PORTUGUESE,
@@ -46,8 +45,5 @@ obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/robusta/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
-
-/obj/map_metadata/robusta/reinforcements_ready()
-	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 #undef NO_WINNER

@@ -237,54 +237,6 @@
 			return
 		holder.Topic(href, list("monkeyone"=href_list["makemonkey"]))
 
-	else if (href_list["makerobot"])
-		if (!check_rights(R_SPAWN))	return
-
-		var/mob/living/carbon/human/H = locate(href_list["makerobot"])
-		if (!istype(H))
-			usr << "This can only be done to instances of type /mob/living/carbon/human"
-			return
-
-		if (WWinput(usr, "Confirm mob type change?", "Transform", "Transform", list("Transform","Cancel")) != "Transform")
-			return
-
-		if (!H)
-			usr << "Mob doesn't exist anymore"
-			return
-
-		holder.Topic(href, list("makerobot"=href_list["makerobot"]))
-
-	else if (href_list["makeslime"])
-		if (!check_rights(R_SPAWN))	return
-
-		var/mob/living/carbon/human/H = locate(href_list["makeslime"])
-		if (!istype(H))
-			usr << "This can only be done to instances of type /mob/living/carbon/human"
-			return
-
-		if (WWinput(usr, "Confirm mob type change?", "Transform", "Transform", list("Transform","Cancel")) != "Transform")
-			return
-
-		if (!H)
-			usr << "Mob doesn't exist anymore"
-			return
-		holder.Topic(href, list("makeslime"=href_list["makeslime"]))
-
-	else if (href_list["makeai"])
-		if (!check_rights(R_SPAWN))	return
-
-		var/mob/living/carbon/human/H = locate(href_list["makeai"])
-		if (!istype(H))
-			usr << "This can only be done to instances of type /mob/living/carbon/human"
-			return
-
-		if (WWinput(usr, "Confirm mob type change?", "Transform", "Transform", list("Transform","Cancel")) != "Transform")
-			return
-
-		if (!H)
-			usr << "Mob doesn't exist anymore"
-			return
-		holder.Topic(href, list("makeai"=href_list["makeai"]))
 
 	else if (href_list["setspecies"])
 		if (!check_rights(R_SPAWN))	return

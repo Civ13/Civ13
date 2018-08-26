@@ -6,7 +6,6 @@
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
-	reinforcements = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
 		BRITISH)
@@ -87,9 +86,6 @@
 
 /obj/map_metadata/voyage/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 100000 || admin_ended_all_grace_periods)
-
-/obj/map_metadata/voyage/reinforcements_ready()
-	return (faction2_can_cross_blocks() && faction1_can_cross_blocks())
 
 /obj/map_metadata/voyage/New() // since DM doesn't want to attribute random vars at the beggining...
 	..()
