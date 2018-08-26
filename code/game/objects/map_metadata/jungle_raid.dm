@@ -19,8 +19,8 @@
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(INDIANS = 0.6, PIRATES = 0.3)
-	battle_name = "Tribal village"
-	mission_start_message = "<big>A ship of europeans has reached the shores! The <b>Natives</b> must fortify their village and the <b>Pirates</b> must establish a base inland. The ship will depart after 25 minutes, and the gracewall will be up by then.</big>" // to be replaced with the round's main event
+	battle_name = "jungle raid"
+	mission_start_message = "<big>An european ship has reached the shores! The <b>Natives</b> must fortify their village and the <b>Pirates</b> must establish a base inland. The ship will depart after 25 minutes, and the gracewall will be up by then.</big>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = PIRATES
@@ -30,9 +30,10 @@
 obj/map_metadata/jungle_raid/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
+	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
 	else
 		. = TRUE
-	return .
 /obj/map_metadata/jungle_raid/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
