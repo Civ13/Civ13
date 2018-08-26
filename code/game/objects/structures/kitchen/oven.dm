@@ -81,8 +81,8 @@
 		I.loc = get_turf(src)
 
 /obj/structure/oven/fireplace
-	name = "fireplace"
-	desc = "A fireplace mad with wood logs."
+	name = "campfire"
+	desc = "A campfire made with wood logs."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "fireplace"
 	layer = 2.9

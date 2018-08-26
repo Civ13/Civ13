@@ -64,6 +64,35 @@
 	icon_state = "civuni6"
 	item_state = "civuni6"
 	worn_state = "civuni6"
+
+/obj/item/clothing/head/kerchief
+	name = "kerchief"
+	icon_state = "kerchief"
+	item_state = "kerchief"
+	worn_state = "kerchief"
+	desc = "A kerchief, won by women over the hair."
+
+/obj/item/clothing/under/civf1
+	name = "Dark dress"
+	desc = "A dark dress, used by peasant women."
+	icon_state = "dress1"
+	item_state = "dress1"
+	worn_state = "dress1"
+
+/obj/item/clothing/under/civf2
+	name = "Blue dress"
+	desc = "A blue dress."
+	icon_state = "dress2"
+	item_state = "dress2"
+	worn_state = "dress2"
+
+/obj/item/clothing/under/civf3
+	name = "Brown dress"
+	desc = "A brown dress."
+	icon_state = "dress3"
+	item_state = "dress3"
+	worn_state = "dress3"
+
 // WEBBING - can hold everything but clothing
 
 /obj/item/clothing/accessory/storage/webbing

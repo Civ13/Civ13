@@ -759,12 +759,20 @@
 /datum/reagent/ethanol/wine
 	name = "Wine"
 	id = "wine"
-	description = "An premium alchoholic beverage made from distilled grape juice."
+	description = "An alchoholic beverage made from distilled grape juice."
 	taste_description = "bitter sweetness"
 	color = "#7E4043" // rgb: 126, 64, 67
 	strength = 10
 	nutriment_factor = 1
 
+/datum/reagent/ethanol/palmwine
+	name = "Palmwine"
+	id = "palmwine"
+	description = "Made from fermented palm sap."
+	taste_description = "sourness and acidity"
+	color = "#E0E0E0" // rgb: 126, 64, 67
+	strength = 13
+	nutriment_factor = 1
 // Cocktails
 
 /datum/reagent/ethanol/acid_spit

@@ -140,6 +140,14 @@
 	glass_type = "mug"
 	volume = 50
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
+	name = "tribal pot"
+	desc = "A tribal clay pot."
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "tribalpot"
+	glass_type = "pot"
+	volume = 50
+
 // for /obj/machinery/vending/piratesoda
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda
 	New()

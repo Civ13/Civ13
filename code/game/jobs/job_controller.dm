@@ -44,7 +44,6 @@ var/global/datum/controller/occupations/job_master
 	var/british_count = 0
 	var/civilian_count = 0
 */
-	var/civilians_were_enabled = FALSE
 
 	var/admin_expected_clients = 0
 
@@ -76,16 +75,6 @@ var/global/datum/controller/occupations/job_master
 
 	if (map && map.subfaction_is_main_faction)
 		announce = FALSE
-
-
-	if (!is_side_locked(CIVILIAN) && map && map.faction_organization.Find(CIVILIAN))
-		if (autobalance_for_players >= PLAYER_THRESHOLD_HIGHEST-10)
-			if (announce)
-				world << "<font size = 3><span class = 'notice'>Civilian faction is enabled.</span></font>"
-			civilians_were_enabled = TRUE
-		else
-			if (map)
-				map.faction_organization -= list(CIVILIAN)
 
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job

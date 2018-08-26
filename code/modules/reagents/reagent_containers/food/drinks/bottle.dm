@@ -469,14 +469,24 @@
 		reagents.del_reagent()
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/wine
-	name = "Doublebeard Bearded Special Wine"
-	desc = "A faint aura of unease and asspainery surrounds the bottle."
+	name = "Red Wine"
+	desc = "Typical red wine."
 	icon_state = "winebottle"
 	center_of_mass = list("x"=16, "y"=4)
 	New()
 		..()
 		reagents.add_reagent("wine", 90)
-		reagents.add_reagent("tramadol", 90)
+		reagents.add_reagent("tramadol", 10)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/palmwine
+	name = "Palm Wine"
+	desc = "A crude drink, made from fermented palm sap."
+	icon_state = "tribalpot"
+	center_of_mass = list("x"=16, "y"=4)
+	New()
+		..()
+		reagents.add_reagent("palmwine", 85)
+		reagents.add_reagent("tramadol", 15)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/wine/empty
 	name = "Doublebeard Bearded Special Wine"

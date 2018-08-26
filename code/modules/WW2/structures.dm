@@ -37,6 +37,16 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "impaledskull"
 
+/obj/structure/tribalmask
+	name = "native wood mask"
+	desc = "A decorative wood mask."
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "tribalmask1"
+
+/obj/structure/tribalmask/New()
+	..()
+	icon_state = "tribalmask[rand(1,2)]"
+
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
 	icon_state = "black"
