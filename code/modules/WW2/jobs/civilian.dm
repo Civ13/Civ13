@@ -231,7 +231,7 @@
 
 	H.add_note("Role", "You are a <b>Carpenter</b>. Organize the supplies and help the colonists build the Village!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("crafting", STAT_VERY_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_LOW)
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_MEDIUM_LOW)
