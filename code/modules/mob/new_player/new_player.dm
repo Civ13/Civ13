@@ -424,7 +424,7 @@
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)
 
-	if (character.mind && character.mind.assigned_role != "Cyborg")
+	if (character.mind)
 	//	data_core.manifest_inject(character)
 		ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
 
@@ -499,6 +499,23 @@
 		if (istype(job, /datum/job/pirates) && !pirates_toggled)
 			job_is_available = FALSE
 
+		if (istype(job, /datum/job/indians) && !indians_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/civilian) && !civilians_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/portuguese) && !portuguese_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/french) && !french_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/spanish) && !spanish_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/dutch) && !dutch_toggled)
+			job_is_available = FALSE
 		// check if the job is admin-locked or disabled codewise
 
 		if (!job.enabled)

@@ -209,7 +209,6 @@
 
 			for (var/name in list("r_arm","r_hand","r_leg","r_foot","l_leg","l_foot","l_arm","l_hand"))
 				if (organ_data[name] == "amputated") continue
-				if (organ_data[name] == "cyborg") continue
 
 				I.Blend(new /icon(icobase, "[name][g][body.index]"), ICON_OVERLAY)
 

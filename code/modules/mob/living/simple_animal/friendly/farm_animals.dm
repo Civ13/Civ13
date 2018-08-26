@@ -1,88 +1,3 @@
-/*
-//goat
-/mob/living/simple_animal/hostile/retaliate/goat
-	name = "goat"
-	desc = "Not known for their pleasant disposition."
-	icon_state = "goat"
-	icon_living = "goat"
-	icon_dead = "goat_dead"
-	speak = list("EHEHEHEHEH","eh?")
-	speak_emote = list("brays")
-	emote_hear = list("brays")
-	emote_see = list("shakes its head", "stamps a foot", "glares around")
-	speak_chance = TRUE
-	turns_per_move = 5
-	see_in_dark = 6
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
-	meat_amount = 4
-	response_help  = "pets"
-	response_disarm = "gently pushes aside"
-	response_harm   = "kicks"
-	faction = "goat"
-	attacktext = "kicked"
-	health = 40
-	melee_damage_lower = TRUE
-	melee_damage_upper = 5
-	var/datum/reagents/udder = null
-
-/mob/living/simple_animal/hostile/retaliate/goat/New()
-	udder = new(50)
-	udder.my_atom = src
-	..()
-
-/mob/living/simple_animal/hostile/retaliate/goat/Life()
-	. = ..()
-	if (.)
-		//chance to go crazy and start wacking stuff
-		if (!enemies.len && prob(1))
-			Retaliate()
-
-		if (enemies.len && prob(10))
-			enemies = list()
-			LoseTarget()
-			visible_message("\blue [src] calms down.")
-
-		if (stat == CONSCIOUS)
-			if (udder && prob(5))
-				udder.add_reagent("milk", rand(5, 10))
-
-		if (locate(/obj/effect/plant) in loc)
-			var/obj/effect/plant/SV = locate() in loc
-			SV.die_off(1)
-
-		if (locate(/obj/machinery/portable_atmospherics/hydroponics/soil/invisible) in loc)
-			var/obj/machinery/portable_atmospherics/hydroponics/soil/invisible/SP = locate() in loc
-			qdel(SP)
-
-		if (!pulledby)
-			var/obj/effect/plant/food
-			food = locate(/obj/effect/plant) in oview(5,loc)
-			if (food)
-				var/step = get_step_to(src, food, FALSE)
-				Move(step)
-
-/mob/living/simple_animal/hostile/retaliate/goat/Retaliate()
-	..()
-	if (stat == CONSCIOUS)
-		visible_message("<span class='warning'>[src] gets an evil-looking gleam in their eye.</span>")
-
-/mob/living/simple_animal/hostile/retaliate/goat/Move()
-	..()
-	if (!stat)
-		for (var/obj/effect/plant/SV in loc)
-			SV.die_off(1)
-
-/mob/living/simple_animal/hostile/retaliate/goat/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	var/obj/item/weapon/reagent_containers/glass/G = O
-	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
-			user << "\red The [O] is full."
-		if (!transfered)
-			user << "\red The udder is dry. Wait a bit longer..."
-	else
-		..()*/
 //cow
 /mob/living/simple_animal/cow
 	name = "cow"
@@ -181,7 +96,7 @@
 		return
 	if (!stat)
 		amount_grown += rand(1,2)
-		if (amount_grown >= 150)
+		if (amount_grown >= 250)
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
 
@@ -209,6 +124,7 @@ var/global/chicken_count = FALSE
 	health = 10
 	var/eggsleft = 5
 	var/body_color
+	var/egg_timer = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
 
@@ -232,21 +148,23 @@ var/global/chicken_count = FALSE
 	. =..()
 	if (!.)
 		return
-	if (!stat && eggsleft > 0)
-		spawn(2400)
-			visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
-			eggsleft--
-			var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
-			E.pixel_x = rand(-6,6)
-			E.pixel_y = rand(-6,6)
-			if (chicken_count < MAX_CHICKENS && prob(10))
-				processing_objects.Add(E)
+	if (!stat)
+		egg_timer += 1
+		if (egg_timer >= 120)
+			if (!stat && eggsleft > 0)
+				visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
+				eggsleft--
+				var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
+				E.pixel_x = rand(-6,6)
+				E.pixel_y = rand(-6,6)
+				if (chicken_count < MAX_CHICKENS && prob(10))
+					processing_objects.Add(E)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/process()
 	if (isturf(loc))
 		amount_grown += rand(1,2)
-		if (amount_grown >= 100)
+		if (amount_grown >= 150)
 			visible_message("[src] hatches with a quiet cracking sound.")
 			new /mob/living/simple_animal/chick(get_turf(src))
 			processing_objects.Remove(src)

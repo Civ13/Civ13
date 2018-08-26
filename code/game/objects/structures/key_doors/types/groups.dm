@@ -6,6 +6,10 @@
 /obj/item/weapon/key/civ
 	code = CV_CODE
 	name = "Key"
+
+/obj/structure/simple_door/key_door/civ
+	keyslot_type = /datum/keyslot/civ
+	unique_door_name = "Locked"
 #undef CV_CODE
 
 #define PI_CODE 995

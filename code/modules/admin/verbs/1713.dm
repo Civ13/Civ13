@@ -45,6 +45,11 @@
 var/civilians_toggled = TRUE
 var/british_toggled = TRUE
 var/pirates_toggled = TRUE
+var/indians_toggled = TRUE
+var/french_toggled = TRUE
+var/spanish_toggled = TRUE
+var/portuguese_toggled = TRUE
+var/dutch_toggled = TRUE
 
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
@@ -59,6 +64,11 @@ var/pirates_toggled = TRUE
 	choices += "CIVILIAN ([civilians_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "BRITISH ([british_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "PIRATES ([pirates_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "PORTUGUESE ([portuguese_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "FRENCH ([french_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "SPANISH ([spanish_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "DUTCH ([dutch_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "INDIANS ([indians_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -72,13 +82,32 @@ var/pirates_toggled = TRUE
 		message_admins("[key_name(src)] changed the Civilian faction 'enabled' setting to [civilians_toggled].")
 	else if (findtext(choice, "BRITISH"))
 		british_toggled = !british_toggled
-		world << "<span class = 'warning'>The German faction (not SS) has been [british_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the German faction 'enabled' setting to [british_toggled].")
+		world << "<span class = 'warning'>The British has been [british_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the British faction 'enabled' setting to [british_toggled].")
 	else if (findtext(choice, "PIRATES"))
 		pirates_toggled = !pirates_toggled
-		world << "<span class = 'warning'>The Soviet faction has been [pirates_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
-		message_admins("[key_name(src)] changed the Soviet faction 'enabled' setting to [pirates_toggled].")
-
+		world << "<span class = 'warning'>The Pirate faction has been [pirates_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Pirate faction 'enabled' setting to [pirates_toggled].")
+	else if (findtext(choice, "INDIANS"))
+		indians_toggled = !indians_toggled
+		world << "<span class = 'warning'>The Native faction has been [indians_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Native faction 'enabled' setting to [indians_toggled].")
+	else if (findtext(choice, "PORTUGUESE"))
+		portuguese_toggled = !portuguese_toggled
+		world << "<span class = 'warning'>The Portuguese faction has been [portuguese_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Portuguese faction 'enabled' setting to [portuguese_toggled].")
+	else if (findtext(choice, "SPANISH"))
+		spanish_toggled = !spanish_toggled
+		world << "<span class = 'warning'>The Spanish faction has been [spanish_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Spanish faction 'enabled' setting to [spanish_toggled].")
+	else if (findtext(choice, "FRENCH"))
+		french_toggled = !french_toggled
+		world << "<span class = 'warning'>The French faction has been [french_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the French faction 'enabled' setting to [french_toggled].")
+	else if (findtext(choice, "DUTCH"))
+		dutch_toggled = !dutch_toggled
+		world << "<span class = 'warning'>The Dutch faction has been [dutch_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Dutch faction 'enabled' setting to [dutch_toggled].")
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE

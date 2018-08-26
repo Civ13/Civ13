@@ -11,7 +11,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = 3
+	layer = 2.8
 	level = 2
 //	invisibility = 101 //starts invisible
 

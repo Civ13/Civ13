@@ -35,7 +35,8 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 		new/datum/stack_recipe("door", /obj/structure/simple_door/key_door/anyone/wood, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("softwood wall", /turf/wall/wood/soft, 10, _time = 170, _one_per_turf = TRUE, _on_floor = TRUE),
-		new/datum/stack_recipe("floor tile", /obj/item/stack/tile/wood, TRUE, 4, 20),
+		new/datum/stack_recipe("window", /obj/structure/window_frame, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+		new/datum/stack_recipe("floor tile", /turf/floor/wood, TRUE, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	recipes += new/datum/stack_recipe_list("barricades", list(
@@ -77,3 +78,4 @@ var/list/engineer_exclusive_recipe_types = null
 /material/stone/stone/generate_recipes()
 	..()
 	recipes += new/datum/stack_recipe("tribal hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("cobblestone floor", /turf/floor/plating/cobblestone, 2, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)

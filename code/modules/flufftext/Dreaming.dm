@@ -1,6 +1,6 @@
 
 var/list/dreams = list(
-	"A-Force", "A4", "Anvil", "ANZAC", "Germany", "Atilla", "Stalin", "Adolf Hitler", "Winter", "America", "Bomb", "Blackout",
+	"Eggs", "Home", "Homeland",
 	)
 
 /mob/living/carbon/proc/dream()

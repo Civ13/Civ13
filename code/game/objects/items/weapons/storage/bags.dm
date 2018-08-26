@@ -225,15 +225,6 @@
 		return ..(S,new_location)
 
 // -----------------------------
-//    Sheet Snatcher (Cyborg)
-// -----------------------------
-
-/obj/item/weapon/storage/bag/sheetsnatcher/borg
-	name = "sheet snatcher 9000"
-	desc = ""
-	capacity = 500//Borgs get more because >specialization
-
-// -----------------------------
 //           Cash Bag
 // -----------------------------
 /*

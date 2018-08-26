@@ -135,28 +135,12 @@ proc/admin_notice(var/message, var/rights)
 				\[ Admin Memery: <A href='?src=\ref[src];simplemake=mechahitler;mob=\ref[M]'>Mecha Hitler</A>,
 				<A href='?src=\ref[src];simplemake=megastalin;mob=\ref[M]'>Mega Stalin</A>"}
 
-/*
-	\[ Xenos: <A href='?src=\ref[src];simplemake=larva;mob=\ref[M]'>Larva</A>
-	<A href='?src=\ref[src];simplemake=human;species=Xenomorph Drone;mob=\ref[M]'>Drone</A>
-	<A href='?src=\ref[src];simplemake=human;species=Xenomorph Hunter;mob=\ref[M]'>Hunter</A>
-	<A href='?src=\ref[src];simplemake=human;species=Xenomorph Sentinel;mob=\ref[M]'>Sentinel</A>
-	<A href='?src=\ref[src];simplemake=human;species=Xenomorph Queen;mob=\ref[M]'>Queen</A> \] |
-				*/
-//	<A href='?src=\ref[src];simplemake=nazicyborg;mob=\ref[M]'>Nazi Cyborg</A>
 			if (check_rights(R_PERMISSIONS,FALSE))
 				body += {"
-				<A href='?src=\ref[src];simplemake=pillarman;mob=\ref[M]'>Pillar Man</A>"}
-
 			body += {"
-				<A href='?src=\ref[src];simplemake=vampire;mob=\ref[M]'>Vampire</A> \]
-				<A href='?src=\ref[src];simplemake=nymph;mob=\ref[M]'>Nymph</A>
 				<A href='?src=\ref[src];simplemake=monkey;mob=\ref[M]'>Monkey</A> |
 				<A href='?src=\ref[src];simplemake=cat;mob=\ref[M]'>Cat</A> |
 				<A href='?src=\ref[src];simplemake=runtime;mob=\ref[M]'>Runtime</A> |
-				<A href='?src=\ref[src];simplemake=corgi;mob=\ref[M]'>Corgi</A> |
-				<A href='?src=\ref[src];simplemake=ian;mob=\ref[M]'>Ian</A> |
-				<A href='?src=\ref[src];simplemake=crab;mob=\ref[M]'>Crab</A> |
-				<A href='?src=\ref[src];simplemake=coffee;mob=\ref[M]'>Coffee</A>
 				<br>"}
 
 				/*
