@@ -232,7 +232,8 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/dutch_sailor3(H), slot_w_uniform)
 
-	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/boarding_axe(H), slot_belt)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/hatchet(H), slot_belt)
+	H.equip_to_slot_or_del(new 	/obj/item/weapon/wrench(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the ship in good condition. Work with the <b>Quartier-maître</b> to ensure everyting is in good conditions!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_HIGH)
