@@ -20,7 +20,7 @@
 	front = "Pacific"
 	faction_distribution_coeffs = list(INDIANS = 0.6, PIRATES = 0.3)
 	battle_name = "jungle raid"
-	mission_start_message = "<big>An european ship has reached the shores! The <b>Natives</b> must fortify their village and the <b>Pirates</b> must establish a base inland. The ship will depart after 25 minutes, and the gracewall will be up by then.</big>" // to be replaced with the round's main event
+	mission_start_message = "<big>An european ship has reached the shore! The <b>Natives</b> must fortify their village and the <b>Pirates</b> must establish a base inland. The ship will depart after 25 minutes, and the gracewall will be up by then.</big>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = PIRATES

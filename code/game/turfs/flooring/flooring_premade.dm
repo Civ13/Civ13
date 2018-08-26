@@ -51,6 +51,7 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "grass0"
 	initial_flooring = /decl/flooring/grass
+	is_diggable = TRUE
 
 /turf/floor/dirt
 	name = "dirt"
@@ -59,6 +60,7 @@
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE
 	available_dirt = 3
+	is_diggable = TRUE
 
 /turf/floor/tiled
 	name = "floor"

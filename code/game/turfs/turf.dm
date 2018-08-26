@@ -34,12 +34,10 @@ var/list/interior_areas = list(/area/caribbean/houses,
 
 	//Properties for both
 	var/temperature = T20C      // Initial turf temperature.
-//	var/blocks_air = FALSE          // Does this turf contain air/let air through?
 
 	// General properties.
 	var/icon_old = null
 	var/pathweight = TRUE          // How much does it cost to pathfind over this turf?
-//	var/blessed = FALSE             // Has the turf been blessed?
 
 	var/list/decals
 	var/move_delay = 0
@@ -48,6 +46,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/image/wet_overlay = null
 	var/floorbelowz = FALSE
 	var/water_level = 0 // For flooding
+	var/is_diggable = FALSE //can be digged with a shovel?
 
 	//Mining resources (for the large drills).
 //	var/has_resources

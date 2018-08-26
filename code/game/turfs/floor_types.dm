@@ -196,6 +196,7 @@
 	name = "snow"
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "snow"
+	is_diggable = TRUE
 
 /turf/floor/plating/snow/ex_act(severity)
 	return
@@ -209,6 +210,7 @@
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE
 	var/obj/structure/wild/wild = null
+	is_diggable = TRUE
 
 /turf/floor/plating/grass/ex_act(severity)
 	return
@@ -279,6 +281,7 @@ var/global/list/GrassEdgeCache
 /turf/floor/plating/beach/sand
 	name = "Sand"
 	icon_state = "sand"
+	is_diggable = TRUE
 
 /turf/floor/plating/beach/coastline
 	name = "Coastline"
@@ -341,16 +344,17 @@ var/global/list/GrassEdgeCache
 	stepsound = "dirt"
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE
+	is_diggable = TRUE
 
 /turf/floor/plating/dust
-	name = "dust"
+	name = "dry dirt"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dust"
 	interior = FALSE
 	stepsound = "dirt"
 	uses_winter_overlay = FALSE
 	may_become_muddy = TRUE
-
+	is_diggable = TRUE
 
 /turf/floor/plating/sand
 	name = "sand"
@@ -358,6 +362,7 @@ var/global/list/GrassEdgeCache
 	icon_state = "sand1"
 	interior = FALSE
 	stepsound = "dirt"
+	is_diggable = TRUE
 
 /turf/floor/plating/sand/New()
 	..()
