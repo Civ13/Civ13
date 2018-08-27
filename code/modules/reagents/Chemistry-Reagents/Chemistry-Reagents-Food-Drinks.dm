@@ -603,7 +603,7 @@
 	description = "A dark alchoholic beverage made by malted barley and yeast."
 	taste_description = "hearty barley ale"
 	color = "#664300"
-	strength = 7
+	strength = 45
 	nutriment_factor = 2
 
 /datum/reagent/ethanol/beer
@@ -612,7 +612,7 @@
 	description = "An alcoholic beverage made from malted grains, hops, yeast, and water."
 	taste_description = "beer"
 	color = "#664300"
-	strength = 5
+	strength = 50
 	nutriment_factor = 1
 
 /datum/reagent/ethanol/bluecuracao
@@ -651,7 +651,7 @@
 	description = "It's gin. In space. I say, good sir."
 	taste_description = "an alcoholic christmas tree"
 	color = "#664300"
-	strength = 40
+	strength = 20
 
 //Base type for alchoholic drinks containing coffee
 /datum/reagent/ethanol/coffee
@@ -762,7 +762,7 @@
 	description = "An alchoholic beverage made from distilled grape juice."
 	taste_description = "bitter sweetness"
 	color = "#7E4043" // rgb: 126, 64, 67
-	strength = 10
+	strength = 35
 	nutriment_factor = 1
 
 /datum/reagent/ethanol/palmwine
@@ -771,7 +771,7 @@
 	description = "Made from fermented palm sap."
 	taste_description = "acidity"
 	color = "#E0E0E0" // rgb: 126, 64, 67
-	strength = 13
+	strength = 30
 	nutriment_factor = 1
 // Cocktails
 
