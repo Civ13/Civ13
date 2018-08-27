@@ -239,7 +239,7 @@
 	min_positions = 1
 	max_positions = 20
 
-/datum/job/civilian/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/prospector/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -296,7 +296,7 @@
 	min_positions = 1
 	max_positions = 12
 
-/datum/job/civilian/merchant/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/farmer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 
 //shoes
@@ -326,7 +326,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/reagent_containers/glass/bucket(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney1(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")

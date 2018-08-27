@@ -11,14 +11,20 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	layer = 3.5
 	w_class = 3
 	invisibility = 0
+	var/do_once = FALSE
 
 
 /obj/structure/teleporter_controller1/attackby(obj/item/C, mob/user)
-	for (var/obj/effect/area_teleporter/AT)
-		if (AT.id == "one")
-			AT.Activated()
-			world << "<big>The ship is arriving!</big>"
-			return TRUE
+	if (do_once == FALSE)
+		for (var/obj/effect/area_teleporter/AT)
+			world << "<big>A ship will arrive at the island in 1 minute!</big>"
+			do_once = TRUE
+			spawn(600)
+				AT.Simple_Down()
+				do_once = FALSE
+				return TRUE
+	else
+		return FALSE
 
 
 /obj/structure/teleporter_controller2
@@ -32,13 +38,19 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	layer = 3.5
 	w_class = 3
 	invisibility = 0
+	var/do_once = FALSE
 
 /obj/structure/teleporter_controller2/attackby(obj/item/C, mob/user)
-	for (var/obj/effect/area_teleporter/AT)
-		if (AT.id == "one")
-			AT.Activated()
-			world << "<big>The ship is departing!</big>"
-			return TRUE
+	if (do_once == FALSE)
+		for (var/obj/effect/area_teleporter/AT)
+			world << "<big>A ship will arrive at the island in 1 minute!</big>"
+			do_once = TRUE
+			spawn(600)
+				AT.Simple_Up()
+				do_once = FALSE
+				return TRUE
+	else
+		return FALSE
 
 /obj/effect/area_teleporter
 	name = "area-teleporter"
@@ -53,6 +65,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	var/active = TRUE
 	is_teleporter = TRUE
 	var/timer = 0			//immediate by default
+	var/movement_location = "UP" //so it can only move 1 time down and 1 time up. Default start is up.
 
 /obj/effect/area_teleporter/New()
 	..()
@@ -77,18 +90,28 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 					M.z = BT.z	//Teleport to destination's z level.
 				return
 
-/obj/effect/area_teleporter/proc/Reverse_Activated()
-	if (!id)
-		//user.loc = loc	//Stop at teleporter location, there is nowhere to teleport to.
+/obj/effect/area_teleporter/proc/Simple_Up()
+	if (movement_location == "UP")
 		return
-	spawn(20)
-		for (var/obj/effect/area_teleporter/BT)
-			if (BT.id_target == id)
-				for(var/obj/O in get_area(src))
-					if (!O.is_teleporter)
-						O.z = BT.z	//Teleport to destination's z level.
-						if (O.is_cover == TRUE)
-							O.updateturf()
-				for(var/mob/M in get_area(src))
-					M.z = BT.z	//Teleport to destination's z level.
-				return
+	else
+		spawn(20)
+			for(var/obj/O in get_area(src))
+				O.z = O.z+1	//Teleport to destination's z level.
+				if (O.is_cover == TRUE)
+					O.updateturf()
+			for(var/mob/M in get_area(src))
+				M.z = M.z+1	//Teleport to destination's z level.
+		return
+
+/obj/effect/area_teleporter/proc/Simple_Down()
+	if (movement_location == "DOWN")
+		return
+	else
+		spawn(20)
+			for(var/obj/O in get_area(src))
+				O.z = O.z-1	//Teleport to destination's z level.
+				if (O.is_cover == TRUE)
+					O.updateturf()
+			for(var/mob/M in get_area(src))
+				M.z = M.z-1	//Teleport to destination's z level.
+		return
