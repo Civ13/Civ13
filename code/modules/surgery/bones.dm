@@ -29,7 +29,12 @@
 		if (affected.status & ORGAN_BROKEN)
 			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name] in place with \the [tool].</span>", \
 				"<span class = 'notice'>You set the bone in [target]'s [affected.name] in place with \the [tool].</span>")
-			affected.stage = 2
+			affected.status &= ~ORGAN_BROKEN
+			affected.status &= ~ORGAN_SPLINTED
+			affected.stage = 0
+			affected.perma_injury = 0
+			affected.damage = 0
+			affected.stage = TRUE
 		else
 			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name]<span class = 'red'>in the WRONG place with \the [tool].</span></span>", \
 				"<span class = 'notice'>You set the bone in [target]'s [affected.name]<span class = 'red'> in the WRONG place with \the [tool].</span></span>")
@@ -65,7 +70,12 @@
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] sets [target]'s skull with \the [tool].</span>" , \
 			"<span class = 'notice'>You set [target]'s skull with \the [tool].</span>")
-		affected.stage = 2
+		affected.status &= ~ORGAN_BROKEN
+		affected.status &= ~ORGAN_SPLINTED
+		affected.stage = 0
+		affected.perma_injury = 0
+		affected.damage = 0
+		affected.stage = TRUE
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
