@@ -1,18 +1,22 @@
 /obj/covers
 
 	name = "floor covers"
+	desc = "A floor cover."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship"
 	var/passable = TRUE
 	var/origin_density = FALSE
 	var/origin_water_level = 0
 	var/origin_move_delay = 0
+	var/not_movable = FALSE //if it can be removed by wrenches
+	var/health = 50
 	is_cover = TRUE
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
 	layer = 2.1
 	level = 2
+	var/amount = FALSE
 //	invisibility = 101 //starts invisible
 
 
@@ -21,11 +25,38 @@
 	icon = 'icons/turf/flooring/wood.dmi'
 	icon_state = "wood"
 	passable = TRUE
+	amount = 1
+
+/obj/covers/cobblestone
+	name = "cobblestone floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "cobble_vertical_dark"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
 
 /obj/covers/wood_ship
 	name = "wood floor"
 	icon_state = "wood_ship"
 	passable = TRUE
+	not_movable = TRUE
+	amount = 1
+
+/obj/covers/wood_wall
+	name = "soft wood wall"
+	desc = "A wood wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "b_wood_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 4
+
+/obj/covers/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
+		return
+	..()
 
 /obj/covers/New()
 	..()
@@ -62,6 +93,9 @@
 	if (origin_density)
 		T.density = origin_density
 		T.water_level = origin_water_level
+	if (amount > 0)
+		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
+		wooddrop.amount = amount
 	..()
 	return TRUE
 
@@ -78,7 +112,7 @@
 	desc = "a repaired wood floor."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
-	var/wood_ammount = FALSE
+	layer = 2.11
 
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
@@ -109,3 +143,47 @@
 				var/mob/living/carbon/human/H = user
 				H.adaptStat("crafting", 3)
 		return
+
+
+/obj/covers/fire_act(temperature)
+	if (prob(35 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
+
+
+/obj/covers/CanPass(var/atom/movable/mover)
+	if (istype(mover, /obj/effect/effect/smoke))
+		return TRUE
+	else if (istype(mover, /obj/item/projectile))
+		if (prob(75) && density)
+			visible_message("<span class = 'warning'>The [mover.name] hits \the [src]!</span>")
+			return FALSE
+		else
+			return TRUE
+	else
+		return ..()
+
+/obj/covers/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	switch(W.damtype)
+		if ("fire")
+			health -= W.force * 0.75
+		if ("brute")
+			health -= W.force * 0.1
+
+	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+	user.do_attack_animation(src)
+	try_destroy()
+	..()
+
+/obj/covers/proc/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		qdel(src)
+		return
+
+
+/obj/covers/bullet_act(var/obj/item/projectile/proj)
+	if (prob(proj.damage - 30)) // makes shrapnel unable to take down trees
+		visible_message("<span class = 'danger'>[src] collapses!</span>")
+		qdel(src)
