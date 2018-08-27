@@ -17,6 +17,17 @@
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
 
+/obj/item/weapon/shovel/pickaxe
+	name = "pickaxe"
+	desc = "Miner's favorite."
+	icon_state = "pickaxe"
+	force = 9.0
+	item_state = "pickaxe"
+	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	slot_flags = SLOT_BACK|SLOT_BELT
+
 /obj/item/weapon/shovel/spade
 	name = "spade"
 	desc = "A small tool for digging and moving dirt."
@@ -63,6 +74,8 @@
 				if (do_after(user, digging_tunnel_time, user.loc))
 					new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
 					new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
+					for (var/obj/structure/underground/U in locate(user.x, user.y, user.z-1))
+						qdel(U)
 					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user
