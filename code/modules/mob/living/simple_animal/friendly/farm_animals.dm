@@ -154,6 +154,7 @@ var/global/chicken_count = FALSE
 			if (!stat && eggsleft > 0)
 				visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
 				eggsleft--
+				egg_timer = 0
 				var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
 				E.pixel_x = rand(-6,6)
 				E.pixel_y = rand(-6,6)

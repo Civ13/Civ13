@@ -7,14 +7,11 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	icon_state = "n1"
 	anchored = TRUE
 	opacity = FALSE
-	density = FALSE
+	density = TRUE
 	layer = 3.5
 	w_class = 3
+	invisibility = 0
 
-/obj/structure/teleporter_controller1/attackby(obj/item/C, mob/user)
-	. = ..()
-	attack_hand(user)
-	return
 
 /obj/structure/teleporter_controller1/attackby(obj/item/C, mob/user)
 	for (var/obj/effect/area_teleporter/AT)
@@ -31,9 +28,10 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	icon_state = "n2"
 	anchored = TRUE
 	opacity = FALSE
-	density = FALSE
+	density = TRUE
 	layer = 3.5
 	w_class = 3
+	invisibility = 0
 
 /obj/structure/teleporter_controller2/attackby(obj/item/C, mob/user)
 	for (var/obj/effect/area_teleporter/AT)
