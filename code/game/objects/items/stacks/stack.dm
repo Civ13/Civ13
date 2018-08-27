@@ -123,7 +123,7 @@
 				qdel(H.r_hand)
 
 	if (findtext(recipe.title, "wall"))
-		if (H.getStatCoeff("crafting") < 1.25)
+		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
