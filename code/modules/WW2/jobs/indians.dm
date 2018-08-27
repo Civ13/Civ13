@@ -8,8 +8,8 @@
 	H.real_name = H.name
 
 /datum/job/indians/carib_chief
-	title = "Carib Chief"
-	en_meaning = "Native Leader"
+	title = "Carib Elder"
+	en_meaning = "Native Elder/Leader"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND"
@@ -36,7 +36,7 @@
 		H.h_style = "Skinhead"
 	H.s_tone = 140
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are the <b>Chief</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
+	H.add_note("Role", "You are a <b>Elder</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_LOW) //muskets
