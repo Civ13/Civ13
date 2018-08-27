@@ -745,7 +745,6 @@ window "rpane"
 		background-color = #271a0c
 		saved-params = ""
 		text = "1713"
-		align = top
 
 window "text_editor"
 	elem "text_editor"

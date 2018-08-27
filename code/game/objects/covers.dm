@@ -22,6 +22,11 @@
 	icon_state = "wood"
 	passable = TRUE
 
+/obj/covers/wood_ship
+	name = "wood floor"
+	icon_state = "wood_ship"
+	passable = TRUE
+
 /obj/covers/New()
 	..()
 	spawn(15)

@@ -119,7 +119,7 @@
 // admin zone
 
 /area/caribbean/admin
-	icon_state = "purple1"
+	icon_state = "blue1"
 	name = "Admin Zone"
 	location = AREA_INSIDE
 	artillery_integrity = INFINITY

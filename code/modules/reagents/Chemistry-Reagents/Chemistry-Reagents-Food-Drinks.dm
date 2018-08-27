@@ -769,7 +769,7 @@
 	name = "Palmwine"
 	id = "palmwine"
 	description = "Made from fermented palm sap."
-	taste_description = "sourness and acidity"
+	taste_description = "acidity"
 	color = "#E0E0E0" // rgb: 126, 64, 67
 	strength = 13
 	nutriment_factor = 1

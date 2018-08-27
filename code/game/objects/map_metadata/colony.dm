@@ -28,7 +28,7 @@
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
 		"Black Sails:1" = 'sound/music/black_sails.ogg')
 	var/first_event_done = FALSE
-	var/do_first_event = 600//25 mins
+	var/do_first_event = 12000//25 mins
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE

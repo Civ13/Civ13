@@ -50,7 +50,12 @@
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/hatchet))
-		health -= 25
+		visible_message("<span class='danger'>[user] begins to chop down the [src]!</span>")
+		playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+		user.do_attack_animation(src)
+		if (do_after(user, 50, user.loc))
+			health = 0
+			try_destroy()
 	else
 		switch(W.damtype)
 			if ("fire")
