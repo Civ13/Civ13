@@ -11,14 +11,15 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = 2.8
+	layer = 2.1
 	level = 2
 //	invisibility = 101 //starts invisible
 
 
 /obj/covers/wood
 	name = "wood floor"
-	icon_state = "wood_ship"
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "wood"
 	passable = TRUE
 
 /obj/covers/New()
