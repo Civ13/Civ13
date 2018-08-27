@@ -76,6 +76,13 @@ var/global/datum/controller/occupations/job_master
 	if (map && map.subfaction_is_main_faction)
 		announce = FALSE
 
+	if (!is_side_locked(INDIANS) && map && map.faction_organization.Find(INDIANS) && map.ID == MAP_COLONY)
+		if (autobalance_for_players < 45)
+			if (map)
+				if (announce)
+					world << "<font size = 3><span class = 'notice'>Due to lowpop, the <B>Native</B> faction has been disabled.</span></font>"
+					map.faction_organization -= list(INDIANS)
+
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job
 	// and lock up one job position while np is spawning
