@@ -92,7 +92,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney2(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b> of past wars. Your job is to organize the colony defense and hunting parties.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -154,7 +154,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney2(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the newly founded colony healthy.")
 	H.setStat("strength", STAT_NORMAL)
@@ -211,8 +211,8 @@
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney3(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney3(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a trader who decided to move in to the new colony to get rich. Establish your trading post and deal with both the Natives and the Colonists!")
 	H.setStat("strength", STAT_NORMAL)
@@ -270,7 +270,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/weapon/shovel/pickaxe(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/shovel(H), slot_back)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney1(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a former miner who decided to move into the New World to find riches. Explore the area, mine, and sell to the <b>Merchant</b> what you find!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -327,7 +327,7 @@
 
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
 	H.equip_to_slot_or_del(new/obj/item/weapon/reagent_containers/glass/bucket(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney1(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -399,7 +399,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/hatchet(H), slot_belt)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/wrench(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney1(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>Carpenter</b>. Organize the supplies and help the colonists build the Village!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -471,7 +471,7 @@
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney1(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a simple <b>Colonist</b>. Build your village!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
