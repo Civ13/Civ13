@@ -23,15 +23,8 @@
 	desc = "A small silver coin."
 	singular_name = "real"
 	icon_state = "silvercoin_pile"
-	amount = 1
+	amount = 50
 	value = 1
-
-/obj/item/stack/money/real/pocketmoney1/New()
-	amount = rand(45,62)
-/obj/item/stack/money/real/pocketmoney2/New()
-	amount = rand(60,81)
-/obj/item/stack/money/real/pocketmoney3/New()
-	amount =  rand(93,114)
 
 /obj/item/stack/money/dollar
 	name = "spanish dollars"

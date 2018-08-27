@@ -47,8 +47,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/pocketmoney3(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	world << "<b><big>[H.real_name] is the Mayor of the Colony!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony. Organize your men and build a village!")

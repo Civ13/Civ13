@@ -80,8 +80,8 @@ var/global/datum/controller/occupations/job_master
 		if (autobalance_for_players < 45)
 			if (map)
 				if (announce)
-					world << "<font size = 3><span class = 'notice'>Due to lowpop, the <B>Native</B> faction has been disabled.</span></font>"
-					indians_toggled = FALSE
+					world << "<font size = 3><span class = 'notice'>Due to lowpop, the <B>Colonist</B> faction has been disabled.</span></font>"
+					civilians_toggled = FALSE
 
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job
