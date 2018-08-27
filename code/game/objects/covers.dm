@@ -52,6 +52,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 4
+	layer = 2.12
 
 /obj/covers/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
