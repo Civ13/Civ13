@@ -10,18 +10,21 @@
 	density = TRUE
 	var/health = 270
 	var/maxhealth = 270
-
+	var/attby = FALSE //TRUE if its being dug with a pickaxe - easier to find minerals
 
 /obj/structure/underground/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(W.damtype)
 		if ("fire")
 			health -= W.force * 0.25
+			attby = FALSE
 		if ("brute")
-			if (istype(W, /obj/item/weapon/shovel))
+			if (istype(W, /obj/item/weapon/shovel) || istype(W, /obj/item/weapon/shovel/pickaxe))
 				health -= W.force * 2.5
+				attby = TRUE
 			else
 				health -= W.force * 1
+				attby = FALSE
 
 	playsound(get_turf(src), 'sound/weapons/slash.ogg', 100)
 
@@ -34,6 +37,33 @@
 /obj/structure/underground/proc/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>The hole gets bigger!</span>")
+		if (attby == TRUE)
+			if (prob(20))
+				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+				mineral.amount = rand(1,4)
+				dismantle()
+				qdel(src)
+				return
+			if (prob(20))
+				new/obj/item/weapon/ore/iron(src)
+				dismantle()
+				qdel(src)
+				return
+			if (prob(5))
+				new/obj/item/weapon/ore/silver(src)
+				dismantle()
+				qdel(src)
+				return
+			if (prob(2))
+				new/obj/item/weapon/ore/gold(src)
+				dismantle()
+				qdel(src)
+				return
+			if (prob(1))
+				new/obj/item/weapon/ore/diamond(src)
+				dismantle()
+				qdel(src)
+				return
 		dismantle()
 		qdel(src)
 		return

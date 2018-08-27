@@ -112,7 +112,7 @@
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
 	var/mob/living/carbon/human/H = user
-	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel"))
+	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 			user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
 			return

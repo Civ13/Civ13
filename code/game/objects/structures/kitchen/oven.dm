@@ -23,7 +23,7 @@
 	for (var/obj/item/II in contents)
 		space -= II.w_class
 	if (space <= 0 || space - I.w_class < 0)
-		H << "<span class = 'warning'>The oven is full.</span>"
+		H << "<span class = 'warning'>The [name] is full.</span>"
 		return
 	H.remove_from_mob(I)
 	I.loc = src
@@ -43,7 +43,29 @@
 
 /obj/structure/oven/process()
 	for (var/obj/item/I in contents)
-		if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
+		if (istype(I, /obj/item/weapon/ore))
+			if (istype(I, /obj/item/weapon/ore/coal))
+				contents -= I
+				qdel(I)
+			else if (istype(I, /obj/item/weapon/ore/diamond))
+				contents += new/obj/item/stack/material/diamond(src)
+				contents -= I
+				qdel(I)
+			else if (istype(I, /obj/item/weapon/ore/glass))
+				var/obj/item/stack/material/glass/glass = new/obj/item/stack/material/glass(src)
+				glass.amount = 3
+				contents += glass
+				contents -= I
+				qdel(I)
+			else if (istype(I, /obj/item/weapon/ore/gold))
+				contents += new/obj/item/stack/material/gold(src)
+				contents -= I
+				qdel(I)
+			else if (istype(I, /obj/item/weapon/ore/silver))
+				contents += new/obj/item/stack/material/silver(src)
+				contents -= I
+				qdel(I)
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
 			qdel(I)

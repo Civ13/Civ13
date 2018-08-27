@@ -28,6 +28,7 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe("key", /obj/item/weapon/key, 2, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("shovel", /obj/item/weapon/shovel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("pickaxe", /obj/item/weapon/shovel/pickaxe, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/wood/generate_recipes()
 	..()
