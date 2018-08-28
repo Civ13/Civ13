@@ -18,7 +18,7 @@
 		H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 
-/datum/job/civilian/mayor
+/datum/job/civilian/governor
 	title = "Governor"
 	en_meaning = "Colony Leader"
 	rank_abbreviation = "Governo"
@@ -34,7 +34,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/civilian/mayor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/governor/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
@@ -45,13 +45,12 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 
-//	H.equip_to_slot_or_del(new /obj/item/key/civ/gov(H), slot_r_store)
-//	H.equip_to_slot_or_del(new /obj/item/key/civ/hall(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 //	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	world << "<b><big>[H.real_name] is the Governor of the new colony!</big></b>"
-
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony. Organize your men and build a village!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -95,7 +94,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-//	H.equip_to_slot_or_del(new /obj/item/key/civ/hall(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b> of past wars. Your job is to organize the colony defense and hunting parties.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
