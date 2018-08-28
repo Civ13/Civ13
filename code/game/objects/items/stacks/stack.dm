@@ -111,6 +111,8 @@
 	var/atom/movable/build_override_object = null
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
+	var/obj/structure/simple_door/key_door/civ/build_override_door = new/obj/structure/simple_door/key_door/civ
+	build_override_door.keyslot.code = -1
 	var/mob/living/carbon/human/H = user
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -141,7 +143,16 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+		if (H.faction_text == CIVILIAN)
+			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999)") as num
+			keycode = Clamp(keycode, 1000, 9999)
+			var/keyname = input(user, "Choose a name for the key") as text|null
+			if (keyname == null)
+				keyname = "Key"
+			build_override_door.name = keyname
+			build_override_door.keyslot.code = keycode
 
+			return
 		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
 			user << "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>"
 			return
