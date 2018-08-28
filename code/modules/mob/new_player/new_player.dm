@@ -421,9 +421,12 @@
 	job_master.relocate(character)
 	if (map)
 		if (map.ID == MAP_COLONY && (istype(job, /datum/job/civilian/governor)))
-//	var/colonyname = input(usr, "Greetings, Governor! Choose the name of this colony:")
-//	colonyname = capitalize(colonyname)
-//	world << "<b><big>The Governor has named the colony [colonyname]!</big></b>"
+			var/colonyname = input(usr, "Greetings, Governor! Choose the name of this colony:")
+			if (colonyname == null)
+				colonyname = pick("New Belfast", "New Manchester", "New Cork", "New Birmingham")
+			else
+				colonyname = capitalize(colonyname)
+			world << "<b><big>The Governor has named the colony [colonyname]!</big></b>"
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)
