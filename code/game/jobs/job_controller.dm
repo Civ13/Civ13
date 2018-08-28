@@ -81,6 +81,8 @@ var/global/datum/controller/occupations/job_master
 			if (announce)
 				world << "<font size = 3><span class = 'notice'><i>The <B>Native</B> faction starts disabled by default. Admins can enable it.</i></span></font>"
 				indians_toggled = FALSE
+				pirates_toggled = FALSE
+				spanish_toggled = FALSE
 				civilians_forceEnabled = TRUE
 
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)

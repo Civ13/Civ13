@@ -267,6 +267,9 @@
 		if (actual_job.is_officer)
 			if ((input(src, "This is an officer position. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
 				return
+		if (actual_job.is_governor)
+			if ((input(src, "This is an officer position. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
+				return
 
 		if (actual_job.spawn_delay)
 

@@ -9,15 +9,19 @@
 //	min_autobalance_players = 90
 	faction_organization = list(
 		INDIANS,
-		CIVILIAN)
+		CIVILIAN,
+		PIRATES,
+		SPANISH)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british,
 		list(CIVILIAN) = /area/caribbean/british,
+		list(PIRATES) = /area/caribbean/british,
+		list(SPANISH) = /area/caribbean/british,
 		)
 	front = "Pacific"
-	faction_distribution_coeffs = list(INDIANS = 0.5, CIVILIAN = 0.5)
+	faction_distribution_coeffs = list(INDIANS = 0.4, CIVILIAN = 0.4, PIRATE = 0.1, SPANISH = 0.1)
 	battle_name = "jungle raid"
 	mission_start_message = "<big>An European ship has reached the shore! The <b>Natives</b> and the <b>Colonists</b> must build their villages. The ship will depart after 25 minutes, and the gracewall will be up by then.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND COLONISTS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
