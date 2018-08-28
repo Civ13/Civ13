@@ -64,9 +64,10 @@
 				dismantle()
 				qdel(src)
 				return
-		dismantle()
-		qdel(src)
-		return
+		else
+			dismantle()
+			qdel(src)
+			return
 
 /obj/structure/underground/proc/dismantle()
 	return
