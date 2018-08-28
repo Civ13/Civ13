@@ -11,7 +11,30 @@
 	keyslot_type = /datum/keyslot/civ
 	unique_door_name = "Locked"
 #undef CV_CODE
+#define CV_CODE2 1546
+/datum/keyslot/civ/hall
+	code = CV_CODE2
 
+/obj/item/weapon/key/civ/hall
+	code = CV_CODE2
+	name = "Colony Hall Key"
+
+/obj/structure/simple_door/key_door/civ/hall
+	keyslot_type = /datum/keyslot/civ/hall
+	unique_door_name = "Colony Hall"
+#undef CV_CODE2
+#define CV_CODE3 1311
+/datum/keyslot/civ/gov
+	code = CV_CODE3
+
+/obj/item/weapon/key/civ/gov
+	code = CV_CODE3
+	name = "Governor's Office Key"
+
+/obj/structure/simple_door/key_door/civ/gov
+	keyslot_type = /datum/keyslot/civ/gov
+	unique_door_name = "Governor's Office"
+#undef CV_CODE3
 #define PI_CODE 995
 /datum/keyslot/pirates
 	code = PI_CODE

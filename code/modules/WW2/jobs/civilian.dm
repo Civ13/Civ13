@@ -45,9 +45,10 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+//	H.equip_to_slot_or_del(new /obj/item/key/civ/gov(H), slot_r_store)
+//	H.equip_to_slot_or_del(new /obj/item/key/civ/hall(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+//	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	world << "<b><big>[H.real_name] is the Governor of the new colony!</big></b>"
 
@@ -94,6 +95,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+//	H.equip_to_slot_or_del(new /obj/item/key/civ/hall(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b> of past wars. Your job is to organize the colony defense and hunting parties.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
