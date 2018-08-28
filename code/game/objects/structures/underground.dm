@@ -36,35 +36,43 @@
 
 /obj/structure/underground/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The hole gets bigger!</span>")
 		if (attby == TRUE)
 			if (prob(20))
-				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(loc)
 				mineral.amount = rand(1,4)
+				visible_message("<span class='danger'>You found some usable stone blocks!</span>")
 				dismantle()
 				qdel(src)
 				return
 			if (prob(20))
-				new/obj/item/weapon/ore/iron(src)
+				new/obj/item/weapon/ore/iron(loc)
+				visible_message("<span class='danger'>You found some iron ore!</span>")
 				dismantle()
 				qdel(src)
 				return
 			if (prob(5))
-				new/obj/item/weapon/ore/silver(src)
+				new/obj/item/weapon/ore/silver(loc)
+				visible_message("<span class='danger'>You found some silver ore!</span>")
 				dismantle()
 				qdel(src)
 				return
 			if (prob(2))
-				new/obj/item/weapon/ore/gold(src)
+				new/obj/item/weapon/ore/gold(loc)
+				visible_message("<span class='danger'>You found some gold ore!</span>")
 				dismantle()
 				qdel(src)
 				return
 			if (prob(1))
-				new/obj/item/weapon/ore/diamond(src)
+				new/obj/item/weapon/ore/diamond(loc)
+				visible_message("<span class='danger'>You found some raw diamonds!</span>")
 				dismantle()
 				qdel(src)
 				return
+			dismantle()
+			qdel(src)
+			return
 		else
+			visible_message("<span class='danger'>The hole gets bigger!</span>")
 			dismantle()
 			qdel(src)
 			return

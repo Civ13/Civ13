@@ -19,7 +19,7 @@
 	front = "Pacific"
 	faction_distribution_coeffs = list(INDIANS = 0.5, CIVILIAN = 0.5)
 	battle_name = "jungle raid"
-	mission_start_message = "<big>An European ship has reached the shore! The <b>Natives</b> and the <b>Colonists</b> must build their villages. The ship will depart after 25 minutes, and the gracewall will be up by then.</big><br><B>THIS IS A RP MAP - NATIVES AND COLONISTS ARE FRIENDLY BY DEFAULT. No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!</B>" // to be replaced with the round's main event
+	mission_start_message = "<big>An European ship has reached the shore! The <b>Natives</b> and the <b>Colonists</b> must build their villages. The ship will depart after 25 minutes, and the gracewall will be up by then.</big><br><B><i>THIS IS A RP MAP - NATIVES AND COLONISTS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = CIVILIAN
