@@ -9,7 +9,7 @@ RESOURCE_WEBSITE nil
 SERVER_NAME 1713 Alpha
 
 ## What features do you want to advertise on your hub message?
-HUB_FEATURES XVIII Century Naval Combat
+HUB_FEATURES XVIII Century Naval Combat (RP)
 
 ## The main content of your hub message
 HUB_BODY <b>1713, TIME_OF_DAY, WEATHER<br>

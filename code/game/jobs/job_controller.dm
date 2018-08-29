@@ -79,7 +79,7 @@ var/global/datum/controller/occupations/job_master
 	if (!is_side_locked(INDIANS) && map && map.faction_organization.Find(INDIANS) && map.ID == MAP_COLONY)
 		if (map)
 			if (announce)
-				world << "<font size = 3><span class = 'notice'><i>The <B>Native</B> faction starts disabled by default. Admins can enable it.</i></span></font>"
+				world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"
 				indians_toggled = FALSE
 				pirates_toggled = FALSE
 				spanish_toggled = FALSE

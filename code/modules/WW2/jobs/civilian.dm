@@ -50,12 +50,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 //	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-	var/colonyname = input(src, "Greetings, Governor! Choose the name of this colony:")
-	if (colonyname == "")
-		colonyname = pick("New Belfast", "New Manchester", "New Cork", "New Birmingham")
-	else
-		colonyname = capitalize(colonyname)
-	world << "<b><big>The Governor has named the colony [colonyname]!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony. Organize your men and build a village!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)

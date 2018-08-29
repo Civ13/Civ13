@@ -86,7 +86,7 @@
 	opacity = TRUE
 	density = TRUE
 	sways = TRUE
-	amount = 4
+	amount = 5
 
 
 /obj/structure/wild/tree/fire_act(temperature)
@@ -108,7 +108,7 @@
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
-	amount = 3
+	amount = 4
 
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -250,7 +250,7 @@
 	sways = FALSE
 	bound_height = 64
 	bound_width = 32
-	amount = 7
+	amount = 9
 	health = 200
 	maxhealth = 200
 
