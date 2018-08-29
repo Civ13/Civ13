@@ -145,13 +145,33 @@
 		if (istype(T, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
 			if (locate(/obj/structure/farming/plant) in user.loc)
 				user << "<span class='notice'>There already is something planted here.</span>"
-			else
+				return
+			else if (istype(C, /obj/item/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
-				var/texttype = C.plant
-				var/plantpath = "/obj/structure/farming/plant/"
-				var/finalpath = text2path("[plantpath][texttype]")
-				new finalpath(loc)
+				new/obj/structure/farming/plant/potato(user.loc)
 				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/tomato))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/tomato(user.loc)
+				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/hemp))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/hemp(user.loc)
+				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/corn))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/corn(user.loc)
+				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/wheat))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/wheat(user.loc)
+				qdel(C)
+				return
+
 /*					if (ishuman(user)) todo: farming skills
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3) */
