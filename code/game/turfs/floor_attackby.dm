@@ -147,10 +147,9 @@
 				user << "<span class='notice'>There already is something planted here.</span>"
 			else
 				visible_message("[user] places the seeds in the ploughed field.")
-				var/texttype = "[C.name]"
-				var/uniquepart = replacetext(texttype, "/obj/item/farming/seeds/", "")
+				var/texttype = C.plant
 				var/plantpath = "/obj/structure/farming/plant/"
-				var/finalpath = text2path("[plantpath][uniquepart]")
+				var/finalpath = text2path("[plantpath][texttype]")
 				new finalpath(loc)
 				qdel(C)
 /*					if (ishuman(user)) todo: farming skills

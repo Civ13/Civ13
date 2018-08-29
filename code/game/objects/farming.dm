@@ -4,7 +4,6 @@
 	icon = 'icons/farming/plants.dmi'
 	icon_state = "seeds"
 	w_class = 1
-	var/plant = null
 
 /obj/item/farming/seeds/tomato
 	name = "tomato seeds"
@@ -52,7 +51,6 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	var/plant = FALSE
 	var/stage = 1
 	var/counter = 0
 

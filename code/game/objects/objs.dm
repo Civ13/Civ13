@@ -16,7 +16,7 @@
 	var/is_teleporter = FALSE
 	var/is_cover = FALSE
 	var/cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
-
+	var/plant = "tomato"
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)
