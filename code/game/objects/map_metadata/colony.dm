@@ -4,7 +4,7 @@
 	title = "Colony (155x225x2)"
 	lobby_icon_state = "colony2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 3000 // 5 minutes!
+	respawn_delay = 7200 // 12 minutes!
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
