@@ -61,6 +61,26 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
+/turf/floor/dirt/underground
+	name = "underground rock"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "rock"
+	uses_winter_overlay = FALSE
+	may_become_muddy = TRUE
+	available_dirt = 0
+	is_diggable = FALSE
+	is_mineable = TRUE
+	opacity = TRUE
+	density = TRUE
+	desc = "This space is blocked off by soft earth and rocks. Can be digged."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "rocky"
+
+/turf/floor/dirt/ploughed
+	name = "ploughed field"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dirt_ploughed"
+	is_plowed = TRUE
 
 /turf/floor/tiled
 	name = "floor"

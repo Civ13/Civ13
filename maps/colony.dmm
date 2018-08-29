@@ -1,4 +1,4 @@
-"aa" = (/obj/structure/underground,/turf/floor/plating/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"aa" = (/turf/floor/plating/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "ab" = (/turf/floor/plating/grass/wild,/area/caribbean/tribes)
 "ac" = (/obj/structure/wild/junglebush,/turf/floor/plating/grass/wild,/area/caribbean/tribes)
 "ad" = (/obj/structure/wild/palm,/turf/floor/plating/grass/wild,/area/caribbean/tribes)

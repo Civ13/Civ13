@@ -20,13 +20,13 @@
 			attby = FALSE
 		if ("brute")
 			if (istype(W, /obj/item/weapon/shovel) || istype(W, /obj/item/weapon/shovel/pickaxe))
-				health -= W.force * 2.5
+				health -= W.force * 5
 				attby = TRUE
 			else
 				health -= W.force * 1
 				attby = FALSE
 
-	playsound(get_turf(src), 'sound/weapons/slash.ogg', 100)
+	playsound(get_turf(src), 'sound/effects/shovelling.ogg', 100)
 
 	user.do_attack_animation(src)
 

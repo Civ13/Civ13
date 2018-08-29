@@ -106,9 +106,13 @@
 		else
 			if (istype(src, /obj/structure/multiz/ladder/ww2/tunneltop))
 				M.z = M.z-1
+				M.x = src.x
+				M.y = src.y
 				return
 			if (istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom))
 				M.z = M.z+1
+				M.x = src.x
+				M.y = src.y
 				return
 
 	var/turf/T = target.loc

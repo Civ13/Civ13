@@ -1,4 +1,19 @@
 /*****************************Shovel********************************/
+/obj/item/weapon/plough
+	name = "plough"
+	desc = "A simple wood plough. Use it on dirt to create farming areas."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "plough"
+	flags = CONDUCT
+	force = 4.0
+	throwforce = 3.0
+	item_state = "plough"
+	w_class = 3.0
+	matter = list(DEFAULT_WALL_MATERIAL = 50)
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = FALSE
+	slot_flags = SLOT_BELT
 
 /obj/item/weapon/shovel
 	name = "shovel"
@@ -6,7 +21,6 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "shovel"
 	flags = CONDUCT
-	slot_flags = SLOT_BELT
 	force = 8.0
 	throwforce = 4.0
 	item_state = "shovel"

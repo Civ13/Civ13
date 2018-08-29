@@ -47,6 +47,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/floorbelowz = FALSE
 	var/water_level = 0 // For flooding
 	var/is_diggable = FALSE //can be digged with a shovel?
+	var/is_plowed = FALSE // ready to be farmed?
+	var/is_mineable = FALSE //can be mined with a pickaxe?
 
 	//Mining resources (for the large drills).
 //	var/has_resources

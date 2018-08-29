@@ -30,9 +30,13 @@
 	name = "orange seeds"
 	plant = "orange"
 
+/obj/item/farming/seeds/hemp
+	name = "hemp seeds"
+	plant = "hemp"
+
 /obj/item/farming/seeds/potato
 	name = "seed potato"
-	desc = "a potato selected for its characteristics."
+	desc = "a potato selected for breeding because of its characteristics."
 	plant = "potato"
 	icon_state = "potato"
 
@@ -44,27 +48,94 @@
 	name = "plant"
 	desc = "a generic plant."
 	icon = 'icons/farming/plants.dmi'
-	icon_state = "tomato_grow1"
+	icon_state = "tomato-grow1"
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
 	var/plant = FALSE
 	var/stage = 1
+	var/counter = 0
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
 	desc = "a tomato plant."
-	icon_state = "tomato_grow1"
+	icon_state = "tomato-grow1"
 	plant = "tomato"
+
+/obj/structure/farming/plant/hemp
+	name = "hemp plant"
+	desc = "a hemp plant."
+	icon_state = "hemp-grow1"
+	plant = "hemp"
 
 /obj/structure/farming/plant/corn
-	name = "tomato plant"
-	desc = "a tomato plant."
-	icon_state = "tomato_grow1"
-	plant = "tomato"
+	name = "corn plant"
+	desc = "a corn plant."
+	icon_state = "corn-grow1"
+	plant = "corn"
 
 /obj/structure/farming/plant/wheat
-	name = "tomato plant"
-	desc = "a tomato plant."
-	icon_state = "tomato_grow1"
-	plant = "tomato"
+	name = "wheat plant"
+	desc = "a wheat plant."
+	icon_state = "wheat-grow1"
+	plant = "wheat"
+
+/obj/structure/farming/plant/potato
+	name = "potato plant"
+	desc = "a potato plant."
+	icon_state = "potato-grow1"
+	plant = "potato"
+
+//stages: 1-6 growth, 7 harvest, 8 dead
+/obj/structure/farming/plant/New()
+	..()
+	growth()
+
+/obj/structure/farming/plant/proc/growth()
+	if (stage < 10)
+		if (stage <= 6)
+			icon_state = "[plant]-grow[stage]"
+			desc = "A young [name]."
+			name = "young [plant] plant"
+		else if (stage == 7 || stage == 8)
+			icon_state = "[plant]-harvest"
+			desc = "A ready to harvest [name]."
+			name = "ready [plant] plant"
+		else if (stage >= 9)
+			icon_state = "[plant]-dead"
+			desc = "A dead [name]."
+			name = "dead [plant] plant"
+		spawn(600)
+			stage += 1
+			growth()
+
+/obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (stage <=6) // destroy
+			user << "<span class = 'warning'>You uproot the [name].</span>"
+			qdel(src)
+		else if (stage == 7) // harvest
+			var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
+			new fruitpath(loc)
+			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			new seedpath(loc)
+			user << "<span class = 'warning'>You harvest the [name].</span>"
+			qdel(src)
+		else // destroy
+			user << "<span class = 'warning'>You uproot the dead [name].</span>"
+			qdel(src)
+
+/obj/structure/farming/plant/hemp/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (stage <=6) // destroy
+			user << "<span class = 'warning'>You uproot the [name].</span>"
+			qdel(src)
+		else if (stage == 7) // harvest
+			new/obj/item/stack/material/rope(src)
+			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			new seedpath(loc)
+			user << "<span class = 'warning'>You harvest the [name].</span>"
+			qdel(src)
+		else // destroy
+			user << "<span class = 'warning'>You uproot the dead [name].</span>"
+			qdel(src)

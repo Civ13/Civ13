@@ -18,7 +18,7 @@
 			C.update_icon()
 		return
 
-	else if (istype(C, /obj/item/weapon/shovel))
+	else if (istype(C, /obj/item/weapon/shovel) && !(istype(C, /obj/item/weapon/shovel/pickaxe)))
 		var/obj/snow/S = has_snow()
 		var/turf/T = get_turf(user)
 		var/mob/living/carbon/human/H = user
@@ -47,6 +47,52 @@
 					H.shoveling_dirt = FALSE
 			else
 				user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
+		else
+			return ..(C, user)
+
+	else if (istype(C, /obj/item/weapon/shovel/pickaxe))
+		var/turf/T = get_turf(user)
+		var/mob/living/carbon/human/H = user
+		if (istype(T, /turf/floor/dirt/underground) && istype(H) && T.is_mineable)
+			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
+			playsound(src,'sound/effects/shovelling.ogg',100,1)
+			if (do_after(user, rand(80)/H.getStatCoeff("strength")))
+				if (prob(20))
+					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(loc)
+					mineral.amount = rand(1,4)
+					visible_message("<span class='danger'>You found some usable stone blocks!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					return
+				if (prob(20))
+					new/obj/item/weapon/ore/iron(loc)
+					visible_message("<span class='danger'>You found some iron ore!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					return
+				if (prob(5))
+					new/obj/item/weapon/ore/silver(loc)
+					visible_message("<span class='danger'>You found some silver ore!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					return
+				if (prob(2))
+					new/obj/item/weapon/ore/gold(loc)
+					visible_message("<span class='danger'>You found some gold ore!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					return
+				if (prob(1))
+					new/obj/item/weapon/ore/diamond(loc)
+					visible_message("<span class='danger'>You found some raw diamonds!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					return
+				T.ChangeTurf(/turf/floor/dirt)
+				T.is_mineable = FALSE
+				return
+			else
+				user << "<span class='notice'>This spot has already been mined to exhaustion.</span>"
 		else
 			return ..(C, user)
 
@@ -85,6 +131,36 @@
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3)
 				return
+
+	else if (istype(C, /obj/item/farming/seeds))
+		var/turf/T = get_turf(user)
+		var/mob/living/carbon/human/H = user
+		if (istype(T, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
+			visible_message("[user] places the seeds in the ploughed field.")
+//			var/plantpath = "/obj/structure/farming/plant/[C.plant]"
+//			new plantpath(loc)
+			qdel(C)
+/*					if (ishuman(user)) todo: farming skills
+						var/mob/living/carbon/human/H = user
+						H.adaptStat("crafting", 3) */
+			return
+
+		else
+			user << "<span class='danger'>You can't plant here. Find a ploughed plot.</span>"
+			return
+	else if (istype(C, /obj/item/weapon/plough))
+		var/turf/T = get_turf(src)
+		if (istype(T, /turf/floor/plating/grass))
+			if (do_after(user, 50, user.loc))
+				ChangeTurf(/turf/floor/dirt)
+				return
+		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)))
+			if (do_after(user, 70, user.loc))
+				ChangeTurf(/turf/floor/dirt/ploughed)
+				return
+		else
+			user << "<span class='danger'>You can't plough this type of terrain.</span>"
+			return
 
 	else if (istype(C, /obj/item/weapon/covers))
 

@@ -326,8 +326,8 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/reagent_containers/glass/bucket(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, specialized in plant growth, animal husbandry, and cooking. Keep the colony fed!")
