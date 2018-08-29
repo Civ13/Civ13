@@ -266,6 +266,26 @@
 		bitesize = 2
 		icon_state = "hardtack[rand(1,2)]"
 
+/obj/item/weapon/reagent_containers/food/snacks/driedmeat
+	name = "dried meat"
+	desc = "Dried meat. Probably pork. Or mice."
+	icon_state = "driedmeat"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 3
+	nutriment_desc = list("salt" = 4, "meat" = 2)
+	New()
+		..()
+		bitesize = 2
+/obj/item/weapon/reagent_containers/food/snacks/driedfish
+	name = "salted fish"
+	desc = "Some kind of fish. Very salty, wash it down with something,"
+	icon_state = "driedfish"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 3
+	nutriment_desc = list("salt" = 6, "fish" = 1)
+	New()
+		..()
+		bitesize = 2
 
 /obj/item/weapon/reagent_containers/food/snacks/pickle
 	name = "pickle"

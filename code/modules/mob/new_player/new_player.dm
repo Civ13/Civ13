@@ -267,9 +267,6 @@
 		if (actual_job.is_officer)
 			if ((input(src, "This is an officer position. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
 				return
-		if (actual_job.is_governor)
-			if ((input(src, "This is an officer position. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
-				return
 
 		if (actual_job.spawn_delay)
 
@@ -422,14 +419,7 @@
 
 	character = job_master.EquipRank(character, rank, TRUE)					//equips the human
 	job_master.relocate(character)
-	if (map)
-		if (map.ID == MAP_COLONY && (istype(job, /datum/job/civilian/governor)))
-			var/colonyname = input(usr, "Greetings, Governor! Choose the name of this colony:")
-			if (colonyname == null)
-				colonyname = pick("New Belfast", "New Manchester", "New Cork", "New Birmingham")
-			else
-				colonyname = capitalize(colonyname)
-			world << "<b><big>The Governor has named the colony [colonyname]!</big></b>"
+
 	if (character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)

@@ -332,18 +332,18 @@
 "gt" = (/turf/floor/wood,/area/caribbean/admin)
 "gu" = (/obj/structure/teleporter_controller1,/turf/floor/wood,/area/caribbean/admin)
 "gv" = (/obj/structure/teleporter_controller2,/turf/floor/wood,/area/caribbean/admin)
-"gw" = (/obj/structure/simple_door/key_door/civ/hall{name = "Town Militia Armory"},/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
+"gw" = (/obj/structure/simple_door/key_door/civ/hall{name = "Town Militia Armory"},/obj/covers/wood,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "gx" = (/obj/structure/window/classic,/obj/covers/wood,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "gy" = (/obj/structure/window/classic,/obj/covers/wood,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "gz" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "gA" = (/obj/covers/wood,/obj/covers/wood,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "gB" = (/obj/covers/wood,/obj/structure/barricade/steel,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
-"gC" = (/obj/structure/simple_door/key_door/civ/gov{name = "Governor's Office"},/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
-"gD" = (/obj/structure/simple_door/key_door/civ/hall{name = "Prison"},/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
+"gC" = (/obj/structure/simple_door/key_door/civ/gov{name = "Governor's Office"},/obj/covers/wood,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
+"gD" = (/obj/structure/simple_door/key_door/civ/hall{name = "Prison"},/obj/covers/wood,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "gE" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "gF" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "gG" = (/obj/covers/wood_wall,/obj/structure/sign/kiddieplaque{desc = "Colony Hall Area. Access Restricted."; name = "Colony Hall Building"},/turf/floor/plating/sand,/area/caribbean/tribes/beach)
-"gH" = (/obj/structure/simple_door/key_door/civ/hall{name = "Colony Hall"},/turf/floor/plating/sand,/area/caribbean/tribes/beach)
+"gH" = (/obj/structure/simple_door/key_door/civ/hall{name = "Colony Hall"},/obj/covers/wood,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "gI" = (/obj/structure/window/sandbag,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "gJ" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "gK" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
@@ -836,7 +836,7 @@ abadababababababagabahababacababaoabababagabahacacababababababadadadabababacacab
 abababababababababababahabbxbxabababababababababababababababadabababababababababababababadababababababababaiaiaiayaAaxaxaiaibxarabbxbxahabadababababababbMbxabababbIbLbxabababbxadababababahagababababababababababadadadababagabababadababbVbWbTbTbTbgfWdjfYfQgmgAgobggrgrgrgrbTajajakdbdcdcdcdcdcdcdcdddddddddddeakak
 aFabababababapababababababbEababababapababababababacababadabababahadababababaiabababababapabadababababababaiaiaiayaAaxaxaiaiabababbxbMabababacabababapabbxbxababadbxbxacabadbxbxaiaiaiaiadabaiacabadabababagabaeabababababababababadapababbVbfbfbhbfbgbfbfbfgwbgbgbgbggBgBgBgBgzbTajakdfdgdhdkdkdkdldldmdmdndodpdqakak
 aiapababababababababababapbxabababababababababababababababagababababababababaiaBababadadadabababahababagabaiaiaiayaAaxaxaiaibxbQabadababababeEbxbxbxbxbxbxacabadabbxabababababaoaiavaiaFababababababababababababababapabababaiamabababapabbVbfgVgWgXbfdjbnhdbAhehbdjgBgYbAbAgBgzajajakdfdrdkdkdkdsdtdudvdmdmdmdwdzakak
-abababadababababababababababababababababababababapababababahabababapabababababababadabababababababababababaiaiaiaxaAaxaxaibxbxabababagabababbxbYbxbxbIbxbxabababagbxbxababacababababababagababababacababababababacabababababacababazadabbBbVbhgZhabAgCbAbAbAbAbAbAbAgDbAbAbAgBgzbTajakdfdAdkdkdkdkdkdkdmdmdmdmdBdzakak
+abababadababababababababababababababababababababapababababahabababapabababababababadabababababababababababaiaiaiaxaAaxaxaibxbxabababagabababbxbYbxbxbIbxbxabababagbxbxababacababababababagababababacababababababacabababababacababazadabbBbVbhgZhabAgCbAbAbAbAbAbAbAgDfQbAbAgBgzbTajakdfdAdkdkdkdkdkdkdmdmdmdmdBdzakak
 abaiadadacababapababadahaeababagabbxabapababadadabaiabababababapabadababababababaiaiabahadabababababacabababaiaiaxaAaxaxaibxababacabababababababababababagabacabababababababababagabacababababababababababababaiaiaFaiaiababababababacababbVbfbAbAbAbghfhgbnbAhhhihigBbAbAbAgBgzajajakdCdDdmdmdmdmdmdmdmdmdmdmdBdzakak
 abbxababadahabababababababababababababababababababaiaBababadadadabababahababagabaBaiababababababababadadababaiaiaxaAaxaxaiaiabababababacababababababababaiababababacacabababaoababababababacacaoababababagabadaiaiaifnfobVbVbVfpfrbVfpbVbVbVbgbfbhbgbggQgQbAbAhghjhgbfgBgBgBgBgzajakakdCdpdEdmdmdmdmdmdmdmdEdmdpdzakak
 bxabababarababapadabababababexabababababababeyabababababadabababababababababababahabababapabababababababababaiaxaxafaxaxaiaiaiababadababababababadadadaiaiababadabababababadadababababadabababababadadababababababagbWbVbVfvbWbVbVbVbTbVfRbWbTbWbWbTbgdjbnbnbnbnbnhcbfgEgEgFgFbTajakakdFdGdHdGdHdGdGdGdGdHdGdHdGdIakak
