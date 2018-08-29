@@ -61,6 +61,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
+
 /turf/floor/dirt/underground
 	name = "underground rock"
 	icon = 'icons/turf/walls.dmi'

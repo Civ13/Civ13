@@ -31,11 +31,15 @@
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
 
-/obj/item/weapon/shovel/pickaxe
+/obj/item/weapon/pickaxe
 	name = "pickaxe"
 	desc = "Miner's favorite."
+	icon = 'icons/obj/items.dmi'
 	icon_state = "pickaxe"
 	force = 9.0
+	flags = CONDUCT
+	throwforce = 4.0
+	w_class = 3.0
 	item_state = "pickaxe"
 	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
 	sharp = FALSE
@@ -88,8 +92,9 @@
 				if (do_after(user, digging_tunnel_time, user.loc))
 					new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
 					new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
-					for (var/obj/structure/underground/U in locate(user.x, user.y, user.z-1))
-						qdel(U)
+					var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
+					if (istype(BL, /turf/floor/dirt/underground))
+						BL.ChangeTurf(/turf/floor/dirt)
 					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user

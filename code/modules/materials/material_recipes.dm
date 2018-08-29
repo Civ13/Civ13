@@ -17,6 +17,7 @@ var/list/engineer_exclusive_recipe_types = null
 
 	recipes += new/datum/stack_recipe("comfy chair", /obj/structure/bed/chair/comfy/brown, 6, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("quiver", /obj/item/weapon/storage/backpack/quiver, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("leather satchel", /obj/item/weapon/storage/belt/leather, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/iron/generate_recipes()
 	..()
@@ -30,7 +31,7 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe_list("tools", list(
 		new/datum/stack_recipe("hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("shovel", /obj/item/weapon/shovel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
-		new/datum/stack_recipe("pickaxe", /obj/item/weapon/shovel/pickaxe, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),))
+		new/datum/stack_recipe("pickaxe", /obj/item/weapon/pickaxe, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 /material/wood/generate_recipes()
 	..()

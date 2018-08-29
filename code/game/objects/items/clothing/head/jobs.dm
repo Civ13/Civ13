@@ -41,6 +41,16 @@
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
 
+/obj/item/clothing/under/chaplain
+	name = "preacher's clothing"
+	desc = "Typical priest clothing."
+	icon_state = "chaplain"
+
+/obj/item/clothing/suit/storage/jacket/chaplain
+	name = "preacher's hood"
+	desc = "Typical priest hood."
+	icon_state = "chaplain_hoodie"
+
 //Chaplain
 /obj/item/clothing/head/nun_hood
 	name = "nun hood"
@@ -48,6 +58,12 @@
 	icon_state = "nun_hood"
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
+
+/obj/item/clothing/under/nun
+	name = "nun clothing"
+	desc = "A typical nun clothing."
+	icon_state = "nun"
+
 
 //Mime
 /obj/item/clothing/head/beret

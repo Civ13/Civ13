@@ -85,3 +85,22 @@
 	icon_state = "swatbelt"
 	item_state = "swatbelt"
 	storage_slots = 9
+
+/obj/item/weapon/storage/belt/leather
+	name = "leather satchel"
+	desc = "Can hold some small stuff, like utensils, seeds, and food."
+	icon_state = "belt_satchel"
+	item_state = "belt_holster"
+	storage_slots = 9
+	max_w_class = 2
+
+/obj/item/weapon/storage/belt/leather/farmer
+	..()
+/obj/item/weapon/storage/belt/leather/farmer/New()
+	..()
+	new /obj/item/farming/seeds/tomato(src)
+	new /obj/item/farming/seeds/tomato(src)
+	new /obj/item/farming/seeds/potato(src)
+	new /obj/item/farming/seeds/potato(src)
+	new /obj/item/farming/seeds/potato(src)
+	new /obj/item/farming/seeds/hemp(src)

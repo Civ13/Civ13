@@ -18,7 +18,7 @@
 			C.update_icon()
 		return
 
-	else if (istype(C, /obj/item/weapon/shovel) && !(istype(C, /obj/item/weapon/shovel/pickaxe)))
+	else if (istype(C, /obj/item/weapon/shovel))
 		var/obj/snow/S = has_snow()
 		var/turf/T = get_turf(user)
 		var/mob/living/carbon/human/H = user
@@ -30,6 +30,7 @@
 			if (do_after(user, rand(9*time_modifier,12*time_modifier)))
 				visible_message("<span class = 'notice'>[user] shovels the [S.descriptor()] from [src].</span>", "<span class = 'notice'>You shovel the snow from [src].</span>")
 				H.shoveling_snow = FALSE
+				H.adaptStat("strength", 1)
 				qdel(S)
 			else
 				H.shoveling_snow = FALSE
@@ -41,6 +42,7 @@
 				if (do_after(user, rand(45,60)))
 					visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
 					H.shoveling_dirt = FALSE
+					H.adaptStat("strength", 1)
 					T.available_dirt -= 1
 					new /obj/item/weapon/sandbag(T)
 				else
@@ -50,49 +52,54 @@
 		else
 			return ..(C, user)
 
-	else if (istype(C, /obj/item/weapon/shovel/pickaxe))
-		var/turf/T = get_turf(user)
+	else if (istype(C, /obj/item/weapon/pickaxe))
+		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
-		if (istype(T, /turf/floor/dirt/underground) && istype(H) && T.is_mineable)
+		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
-			if (do_after(user, rand(80)/H.getStatCoeff("strength")))
+			if (do_after(user, 80/(H.getStatCoeff("strength")*H.getStatCoeff("strength"))))
 				if (prob(20))
-					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(loc)
+					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 					mineral.amount = rand(1,4)
 					visible_message("<span class='danger'>You found some usable stone blocks!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
 					return
 				if (prob(20))
-					new/obj/item/weapon/ore/iron(loc)
+					new/obj/item/weapon/ore/iron(src)
 					visible_message("<span class='danger'>You found some iron ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
 					return
 				if (prob(5))
-					new/obj/item/weapon/ore/silver(loc)
+					new/obj/item/weapon/ore/silver(src)
 					visible_message("<span class='danger'>You found some silver ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
 					return
 				if (prob(2))
-					new/obj/item/weapon/ore/gold(loc)
+					new/obj/item/weapon/ore/gold(src)
 					visible_message("<span class='danger'>You found some gold ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
 					return
 				if (prob(1))
-					new/obj/item/weapon/ore/diamond(loc)
+					new/obj/item/weapon/ore/diamond(src)
 					visible_message("<span class='danger'>You found some raw diamonds!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
 					return
 				T.ChangeTurf(/turf/floor/dirt)
 				T.is_mineable = FALSE
+				H.adaptStat("strength", 1)
+				visible_message("<span class='danger'>You didn't find anything worthy.</span>")
 				return
-			else
-				user << "<span class='notice'>This spot has already been mined to exhaustion.</span>"
 		else
 			return ..(C, user)
 
@@ -136,10 +143,16 @@
 		var/turf/T = get_turf(user)
 		var/mob/living/carbon/human/H = user
 		if (istype(T, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
-			visible_message("[user] places the seeds in the ploughed field.")
-//			var/plantpath = "/obj/structure/farming/plant/[C.plant]"
-//			new plantpath(loc)
-			qdel(C)
+			if (locate(/obj/structure/farming/plant) in user.loc)
+				user << "<span class='notice'>There already is something planted here.</span>"
+			else
+				visible_message("[user] places the seeds in the ploughed field.")
+				var/texttype = "[C.name]"
+				var/uniquepart = replacetext(texttype, "/obj/item/farming/seeds/", "")
+				var/plantpath = "/obj/structure/farming/plant/"
+				var/finalpath = text2path("[plantpath][uniquepart]")
+				new finalpath(loc)
+				qdel(C)
 /*					if (ishuman(user)) todo: farming skills
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3) */

@@ -19,7 +19,7 @@
 			health -= W.force * 0.25
 			attby = FALSE
 		if ("brute")
-			if (istype(W, /obj/item/weapon/shovel) || istype(W, /obj/item/weapon/shovel/pickaxe))
+			if (istype(W, /obj/item/weapon/shovel) || istype(W, /obj/item/weapon/pickaxe))
 				health -= W.force * 5
 				attby = TRUE
 			else
