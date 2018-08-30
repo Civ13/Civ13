@@ -117,6 +117,7 @@
 			new fruitpath(loc)
 			var/seedpath = "/obj/item/farming/seeds/[plant]"
 			new seedpath(loc)
+			new seedpath(loc)
 			user << "<span class = 'warning'>You harvest the [name].</span>"
 			qdel(src)
 		else // destroy
@@ -131,6 +132,7 @@
 		else if (stage == 7) // harvest
 			new/obj/item/stack/material/rope(loc)
 			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			new seedpath(loc)
 			new seedpath(loc)
 			user << "<span class = 'warning'>You harvest the [name].</span>"
 			qdel(src)

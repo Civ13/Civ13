@@ -410,7 +410,6 @@ proc/admin_notice(var/message, var/rights)
 	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))  as message
 	if (message)
 		if (!check_rights(R_SERVER,0))
-			messaget = sanitize(message, 500, extra = FALSE)
 			message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 		world << "<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>"

@@ -35,9 +35,6 @@
 	if (ready)
 		if (admin_triggered)
 			. = TRUE
-		// 60 minutes have passed
-		else if (ticks >= 720)
-			. = TRUE
 		// round will end soon (tm)
 		else if (map && map.next_win_time() <= ((map.short_win_time() / 600) * 0.60) && map.next_win != -1)
 			. = TRUE

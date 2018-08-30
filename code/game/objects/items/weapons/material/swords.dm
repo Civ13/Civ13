@@ -103,6 +103,18 @@
 	block_chance = 40
 	cooldownw = 10
 
+/obj/item/weapon/material/sword/vangar
+	name = "Vangar's sword"
+	desc = "A special, customized sword with 'Vangar' engraved on the hilt."
+	icon_state = "vangar"
+	item_state = "vangar"
+	throw_speed = 4
+	throw_range = 4
+	force_divisor = 0.75 // 45 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 35
+	cooldownw = 7
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
 	desc = "A small, slightly curved sword, preferred by pirates."

@@ -561,13 +561,13 @@
 /////////GENERIC/////////
 /obj/item/clothing/head/red_beret
 	name = "red sailor beret"
-	desc = "A red berret."
+	desc = "A red beret."
 	icon_state = "redberet"
 	item_state = "redberet"
 
 /obj/item/clothing/head/blue_beret
 	name = "blue sailor beret"
-	desc = "A red berret."
+	desc = "A blue beret."
 	icon_state = "blueberet"
 	item_state = "blueberet"
 
