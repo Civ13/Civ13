@@ -256,8 +256,6 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	save_all_whitelists()
 	serverswap_pre_close_server()
-	spawn (20)
-		serverswap_close_server()
 
 	/* Wait for serverswap to do its magic
 	 * this was 50 but now it's 70 to let the entire JOJO meme play even when the server restarts quickly
@@ -361,12 +359,6 @@ var/setting_up_db_connection = FALSE
 		return TRUE
 
 
-//#define SERVERSWAP_DEBUGGING
-/proc/DEBUG_SERVERSWAP(var/x)
-	#ifdef SERVERSWAP_DEBUGGING
-	world.log << "SERVERSWAP DEBUG: [x]"
-	#endif
-
 /proc/setup_database_connection()
 
 	if (setting_up_db_connection)
@@ -379,69 +371,7 @@ var/setting_up_db_connection = FALSE
 		return FALSE
 
 	if (!database)
-		if (fexists("config/serverswap.txt"))
-			DEBUG_SERVERSWAP(3)
-			var/list/lines = file2list("config/serverswap.txt")
-			for (var/line in lines)
-				var/split = splittext(line, " = ")
-				var/p1 = split[1]
-				var/p2 = split[2]
-				var/numcheck = text2num(p2)
-				if (isnum(numcheck) && !isnull(numcheck))
-					// "s1" = 2000
-					serverswap[p1] = text2num(p2)
-				else if (p1 == "this" || p1 == "sfinal" || p1 == "snext")
-					// "this" = "s1" or "sfinal" = "s2" or "snext" = "s2"
-					serverswap[p1] = p2
-				else if (p1 == "masterdir")
-					// "masterdir" = "server/1713/.../"
-					if (p2 == "nil")
-						serverswap.Cut()
-						goto end_serverswap
-					else
-						serverswap[p1] = p2
-				else if (p1 == "enabled")
-					if (p2 == "false")
-						serverswap.Cut()
-						goto end_serverswap
-
-			end_serverswap
-
-			for (var/x in serverswap)
-				DEBUG_SERVERSWAP("4.5: [x] = [serverswap[x]]")
-
-			DEBUG_SERVERSWAP(5)
-
-			if (serverswap.Find("this"))
-				if (serverswap["this"] == "s1")
-
-					DEBUG_SERVERSWAP(5.1)
-					if (fexists("[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_closed.txt"))
-						serverswap_open_status = FALSE
-						DEBUG_SERVERSWAP(5.11)
-					else
-						serverswap_open_status = TRUE
-						DEBUG_SERVERSWAP(5.12)
-				else
-					DEBUG_SERVERSWAP(5.2)
-					serverswap_open_status = FALSE
-
-			DEBUG_SERVERSWAP(6)
-			if (serverswap.Find("masterdir") && serverswap["masterdir"] != "nil")
-				DEBUG_SERVERSWAP(7.1)
-				database = new("[serverswap["masterdir"]]SQL/database.db")
-				if (!database)
-					DEBUG_SERVERSWAP(7.15)
-			else
-				DEBUG_SERVERSWAP(7.2)
-				database = new("SQL/database.db")
-				if (!database)
-					DEBUG_SERVERSWAP(7.25)
-
-			if (serverswap.len)
-				serverswap["ready"] = TRUE
-		else
-			database = new("SQL/database.db")
+		database = new("SQL/database.db")
 
 	. = TRUE
 	if ( . )
@@ -512,86 +442,20 @@ var/setting_up_db_connection = FALSE
 				global_game_schedule = new
 
 			global_game_schedule.update()
+			serverswap["master_data_dir"] = "data/"
+			serverswap["master_log_dir"] = "data/logs/"
+			serverswap["runtime_log_dir"] = "data/logs/runtime/"
+			serverswap["attack_log_dir"] = "data/logs/attack/"
+			break
 
-			DEBUG_SERVERSWAP(8)
-			if (!serverswap.len)
-				serverswap["master_data_dir"] = "data/"
-				serverswap["master_log_dir"] = "data/logs/"
-				serverswap["runtime_log_dir"] = "data/logs/runtime/"
-				serverswap["attack_log_dir"] = "data/logs/attack/"
-				break
-			DEBUG_SERVERSWAP(9)
-			if (!serverswap.Find("masterdir")) // we can't do anything without this!
-				serverswap["master_data_dir"] = "data/"
-				serverswap["master_log_dir"] = "data/logs/"
-				serverswap["runtime_log_dir"] = "data/logs/runtime/"
-				serverswap["attack_log_dir"] = "data/logs/attack/"
-				break
-			DEBUG_SERVERSWAP(10)
-			if (!serverswap.Find("this")) // ditto
-				break
-			DEBUG_SERVERSWAP(11)
-			if (!serverswap.Find("sfinal")) // ditto
-				break
-			serverswap["master_data_dir"] = "[serverswap["masterdir"]]sharedinfo/data/"
-			serverswap["master_log_dir"] = "[serverswap["masterdir"]]sharedinfo/data/logs/"
-			serverswap["runtime_log_dir"] = "[serverswap["masterdir"]]sharedinfo/data/logs/runtime/"
-			serverswap["attack_log_dir"] = "[serverswap["masterdir"]]sharedinfo/data/logs/attack/"
-			DEBUG_SERVERSWAP(12)
-			var/wdir = ""
-			var/F = ""
-			DEBUG_SERVERSWAP("13 = [serverswap_open_status]")
 			switch (serverswap_open_status)
 				if (0) // we're waiting for the server before us or the very last server to tell us its ok to go up
 					world.visibility = FALSE
-					var/our_server_id = serverswap["this"] // "s1"
-					var/our_number = text2num(replacetext(our_server_id, "s", "")) // '1'
-					var/waiting_on_id = null
-					if (our_number > 1)
-						waiting_on_id = "s[our_number-1]" // "s2" waits on "s1", "s3" waits on "s2"
-					else if (our_number == TRUE)
-						waiting_on_id = serverswap["sfinal"]
 
-					DEBUG_SERVERSWAP("13.01 = [waiting_on_id]")
-					DEBUG_SERVERSWAP("13.02 = [serverswap["masterdir"]]sharedinfo/[waiting_on_id]_closed.txt")
-					DEBUG_SERVERSWAP("13.03 = [serverswap_open_status]")
-					DEBUG_SERVERSWAP("13.04 = [serverswap_closed]")
-
-					if (fexists("[serverswap["masterdir"]]sharedinfo/[waiting_on_id]_closed.txt"))
-						// other server is closed, time to open (if we aren't already open)
-						serverswap_open_status = TRUE
-						serverswap_closed = FALSE
-						if (ticker)
-							// reset the pregame timer
-							ticker.pregame_timeleft = 90
-							// recreate the database, may or may not fix a DB bug
-							database = new("[serverswap["masterdir"]]SQL/database.db")
-
-						DEBUG_SERVERSWAP("13.1")
-
-						// make sure we aren't marked as closed anymore
-						wdir = "[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_closed.txt"
-						if (fexists(wdir))
-							fdel(wdir)
-				/*	else
-						F = file("test_[waiting_on_id].txt")
-						fdel(F)
-						F << "hello world!"*/
 				if (1) // we're going to send updates every second in the form of text files telling the server after us what to do
 					if (config.hub)
 						world.visibility = TRUE
-			/*		if (!serverswap_closed)
-						// delete the other file, if it exists
-						if (fexists("[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_closed.txt"))
-							DEBUG_SERVERSWAP("13.29")
-							fdel("[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_closed.txt")*/
 
-					wdir = "[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_normal.txt"
-					F = file(wdir)
-					fdel(F)
-					F << "testing"
-					DEBUG_SERVERSWAP("13.3: [wdir]")
-					// otherwise do nothing - code moved to serverswap_close_server()
 		catch(var/exception/e)
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
 
@@ -601,13 +465,3 @@ var/setting_up_db_connection = FALSE
 	// don't let the loop delete any file we create or make any new files
 	serverswap_closed = TRUE
 	serverswap_open_status = FALSE
-
-/proc/serverswap_close_server()
-
-	if (fexists("[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_normal.txt"))
-		DEBUG_SERVERSWAP("13.39")
-		fdel("[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_normal.txt")
-
-	var/F = file("[serverswap["masterdir"]]sharedinfo/[serverswap["this"]]_closed.txt")
-	fdel(F)
-	F << "testing"
