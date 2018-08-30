@@ -15,6 +15,7 @@
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_PAINFUL
+	var/weakens = 1
 
 /obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))
@@ -35,7 +36,6 @@
 	desc = "One of the oldest weapons in the world. Good for when you need to knock people down."
 	icon_state = "club"
 	item_state = "club"
-	var/weakens = 1
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_NORMAL
 
@@ -49,10 +49,6 @@
 
 	var/user_last_intent = user.a_intent
 	user.a_intent = I_HURT // so we actually hit people right
-
-	..(M, user)
-	if (prob(30))
-		M.Weaken(weakens) // decent
 
 	user.a_intent = user_last_intent
 

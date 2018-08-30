@@ -401,6 +401,21 @@ proc/admin_notice(var/message, var/rights)
 		world << "<big><span class=notice><b>[usr.client.holder.fakekey ? "Administrator" : usr.key] Announces:</b></big><p style='text-indent: 50px'>[message]</p></span>"
 		log_admin("Announce: [key_name(usr)] : [message]")
 
+/datum/admins/proc/ic_announce()
+	set category = "Special"
+	set name = "IC Announcement"
+	set desc="Announce events"
+	if (!check_rights(0))	return
+	var/messaget = russian_to_cp1251(input("Message Title:", "IC Announcement", null, null))  as message
+	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))  as message
+	if (message)
+		if (!check_rights(R_SERVER,0))
+			messaget = sanitize(message, 500, extra = FALSE)
+			message = sanitize(message, 500, extra = FALSE)
+		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
+		world << "<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>"
+		log_admin("Announce: [key_name(usr)] - [messaget] : [message]")
+
 
 /datum/admins/proc/toggleooc()
 	set category = "Server"

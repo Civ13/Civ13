@@ -1,14 +1,12 @@
 /mob/observer/ghost/verb/moveup()
 	set name = "Move Upwards"
 	set category = "Ghost"
-	var/turf/T = GetAbove(get_turf(src))
-	if (T)
-		Move(T)
+	if (z < world.maxz)
+		z = z+1
 
 
 /mob/observer/ghost/verb/movedown()
 	set name = "Move Downwards"
 	set category = "Ghost"
-	var/turf/T = GetBelow(get_turf(src))
-	if (T)
-		Move(T)
+	if (z > 1)
+		z = z-1

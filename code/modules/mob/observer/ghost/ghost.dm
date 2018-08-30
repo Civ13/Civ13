@@ -327,26 +327,53 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if (mobs[input])
 			ManualFollow(mobs[input])
 
-/proc/getdogs()
-	var/list/dogs = list()
-	for (var/mob/living/simple_animal/complex_animal/canine/dog/D in living_mob_list)
-		var/name = D.name
-		var/nameinc = TRUE
-		var/oname = name
-		while (dogs.Find(name))
-			name = "[oname] ([++nameinc])"
-		dogs[name] = D
-	return dogs
-
-/mob/observer/ghost/verb/follow_dog(input in getdogs()+"Cancel")
+/mob/observer/ghost/verb/follow_portuguese(input in getfitmobs(PORTUGUESE)+"Cancel")
 	set category = "Ghost"
-	set name = "Follow a Dog"
-	set desc = "Follow and haunt a living dog."
+	set name = "Follow a Portuguese"
+	set desc = "Follow and haunt a living Portuguese."
 
 	if (input != "Cancel")
-		ManualFollow(getdogs()[input])
+		var/list/mobs = getfitmobs(PORTUGUESE)
+		if (mobs[input])
+			ManualFollow(mobs[input])
 
+/mob/observer/ghost/verb/follow_spanish(input in getfitmobs(SPANISH)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a Spanish"
+	set desc = "Follow and haunt a living Spanish."
 
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(SPANISH)
+		if (mobs[input])
+			ManualFollow(mobs[input])
+/mob/observer/ghost/verb/follow_french(input in getfitmobs(FRENCH)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a French"
+	set desc = "Follow and haunt a living French."
+
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(FRENCH)
+		if (mobs[input])
+			ManualFollow(mobs[input])
+
+/mob/observer/ghost/verb/follow_dutch(input in getfitmobs(DUTCH)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a Dutch"
+	set desc = "Follow and haunt a living Dutch."
+
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(DUTCH)
+		if (mobs[input])
+			ManualFollow(mobs[input])
+/mob/observer/ghost/verb/follow_indians(input in getfitmobs(INDIANS)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a Native"
+	set desc = "Follow and haunt a living Native."
+
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(INDIANS)
+		if (mobs[input])
+			ManualFollow(mobs[input])
 /mob/observer/ghost/verb/toggle_visibility()
 	set category = "Ghost"
 	set name = "Toggle Visibility"

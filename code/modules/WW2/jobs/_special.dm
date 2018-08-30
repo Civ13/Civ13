@@ -113,6 +113,8 @@
 	if (is_officer)
 		H.make_artillery_officer()
 		H.add_note("Officer", "As an officer, you can check coordinates.</span>")
+	if (is_commander)
+		H.make_commander()
 
 	// hack to make scope icons immediately appear - Kachnov
 	spawn (20)

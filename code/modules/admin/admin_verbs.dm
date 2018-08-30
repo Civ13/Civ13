@@ -58,7 +58,7 @@ var/list/admin_verbs_admin = list(
 	///client/proc/check_customitem_activity,
 	/client/proc/allow_character_respawn,    // Allows a ghost to respawn ,
 	/client/proc/reset_roundstart_autobalance,
-
+	/datum/admins/proc/ic_announce,
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
 	/client/proc/change_human_appearance_self,	// Allows the human-based mob itself change its basic appearance ,
 	/client/proc/view_chemical_reaction_logs,
@@ -91,6 +91,7 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/Jump,
 	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
+	/datum/admins/proc/ic_announce,
 	)
 
 var/list/admin_verbs_sounds = list(
@@ -182,6 +183,7 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/toggleenter,
 	/datum/admins/proc/toggleguests,
 	/datum/admins/proc/announce,
+	/datum/admins/proc/ic_announce,
 	/client/proc/colorooc,
 	/client/proc/admin_ghost,
 	/client/proc/toggle_view_range,
