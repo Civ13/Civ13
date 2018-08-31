@@ -34,7 +34,7 @@
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (locked)
 
-			if (istype(W, /obj/item/weapon/screwdriver))
+			if (istype(W, /obj/item/weapon/hammer))
 				if (do_after(user, 20, src))
 					open =! open
 					user.show_message(text("<span class='notice'>You [] the service panel.</span>", (open ? "open" : "close")))

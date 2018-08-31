@@ -243,7 +243,7 @@
 				return
 			playsound(src, 'sound/items/Crowbar.ogg', 80, TRUE)
 			return
-		else if (istype(C, /obj/item/weapon/screwdriver) && (flooring.flags & TURF_REMOVE_SCREWDRIVER))
+		else if (istype(C, /obj/item/weapon/hammer) && (flooring.flags & TURF_REMOVE_SCREWDRIVER))
 			if (broken || burnt)
 				return
 			user << "<span class='notice'>You unscrew and remove the [flooring.descriptor].</span>"

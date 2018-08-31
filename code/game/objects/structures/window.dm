@@ -234,7 +234,7 @@
 
 	if (W.flags & NOBLUDGEON) return
 
-	if (istype(W, /obj/item/weapon/screwdriver))
+	if (istype(W, /obj/item/weapon/hammer))
 		if (reinf && state >= 1)
 			state = 3 - state
 			update_nearby_icons()

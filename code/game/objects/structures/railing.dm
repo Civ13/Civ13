@@ -171,7 +171,7 @@
 
 
 	// Install
-	if (istype(W, /obj/item/weapon/screwdriver))
+	if (istype(W, /obj/item/weapon/hammer))
 		user.visible_message(anchored ? "<span class='notice'>\The [user] begins unscrew \the [src].</span>" : "<span class='notice'>\The [user] begins fasten \the [src].</span>" )
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		if (do_after(user, 10, src))

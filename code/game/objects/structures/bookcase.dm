@@ -27,7 +27,7 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
-	else if (istype(O,/obj/item/weapon/screwdriver))
+	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		user << "<span class='notice'>You begin dismantling \the [src].</span>"
 		if (do_after(user,25,src))

@@ -960,7 +960,7 @@ proc/get_mob_with_client_list()
 //Quick type checks for some tools
 var/global/list/common_tools = list(
 /obj/item/weapon/wrench,
-/obj/item/weapon/screwdriver,
+/obj/item/weapon/hammer,
 /obj/item/weapon/wirecutters,
 ///obj/item/multitool,
 /obj/item/weapon/crowbar)
@@ -981,7 +981,7 @@ var/global/list/common_tools = list(
 	return FALSE
 
 /proc/isscrewdriver(O)
-	if (istype(O, /obj/item/weapon/screwdriver))
+	if (istype(O, /obj/item/weapon/hammer))
 		return TRUE
 	return FALSE
 /*
@@ -1039,7 +1039,7 @@ proc/is_hot(obj/item/W as obj)
 	if (W.sharp) return TRUE
 	return ( \
 		W.sharp													  || \
-		istype(W, /obj/item/weapon/screwdriver)                   || \
+		istype(W, /obj/item/weapon/hammer)                   || \
 		istype(W, /obj/item/weapon/pen)                           || \
 		istype(W, /obj/item/weapon/flame/lighter/zippo)			  || \
 		istype(W, /obj/item/weapon/flame/match)            		  || \

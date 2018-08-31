@@ -23,7 +23,7 @@
 
 	New()
 		..()
-		new /obj/item/weapon/screwdriver(src)
+		new /obj/item/weapon/hammer(src)
 		new /obj/item/weapon/wrench(src)
 		new /obj/item/weapon/crowbar/prybar(src)
 	//	new /obj/item/analyzer(src)

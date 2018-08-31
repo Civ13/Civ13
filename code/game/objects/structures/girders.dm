@@ -69,7 +69,7 @@
 				user << "<span class='notice'>You secured the girder!</span>"
 				reset_girder()
 
-	else if (istype(W, /obj/item/weapon/screwdriver))
+	else if (istype(W, /obj/item/weapon/hammer))
 		if (state == 2)
 			playsound(loc, 'sound/items/Screwdriver.ogg', 100, TRUE)
 			user << "<span class='notice'>Now unsecuring support struts...</span>"

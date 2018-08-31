@@ -305,7 +305,7 @@
 		tablepush(I, user)
 		return
 
-	if (istype(I, /obj/item/weapon/screwdriver))
+	if (istype(I, /obj/item/weapon/hammer))
 		table_destroy(2, user)
 		return
 
