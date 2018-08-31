@@ -135,7 +135,7 @@
 				affecting.Weaken(2)
 
 	if (state >= GRAB_NECK)
-		affecting.Stun(3)
+		affecting.Stun(2)
 		if (isliving(affecting))
 			var/mob/living/L = affecting
 			L.adjustOxyLoss(1)
@@ -249,7 +249,7 @@
 		msg_admin_attack("[key_name(assailant)] grabbed the neck of [key_name(affecting)]")
 		hud.icon_state = "kill"
 		hud.name = "kill"
-		affecting.Stun(10) //10 ticks of ensured grab
+		affecting.Stun(7) //7 ticks of ensured grab
 	else if (state < GRAB_UPGRADING)
 		assailant.visible_message("<span class='danger'>[assailant] starts to tighten \his grip on [affecting]'s neck!</span>")
 		hud.icon_state = "kill1"

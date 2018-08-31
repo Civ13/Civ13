@@ -336,14 +336,14 @@ bullet_act
 		if (!stat)
 			if (headcheck(hit_zone))
 				//Harder to score a stun but if you do it lasts a bit longer
-				if (prob(effective_force/5))
+				if (prob(effective_force/8))
 					visible_message("<span class='danger'>[src] [species.knockout_message]</span>")
-					apply_effect(10, PARALYZE, blocked)
+					apply_effect(7, PARALYZE, blocked)
 			else
 				//Easier to score a stun but lasts less time
-				if (prob(effective_force/4))
+				if (prob(effective_force/5))
 					visible_message("<span class='danger'>[src] has been knocked down!</span>")
-					apply_effect(2, WEAKEN, blocked)
+					apply_effect(1, WEAKEN, blocked)
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
 	if (prob(I.force * (hit_zone == "mouth" ? 5 : 0)) && O) //Will the teeth fly out?
 		if (O.knock_out_teeth(get_dir(user, src), round(rand(28, 38) * ((I.force*1.5)/100))))
@@ -434,8 +434,8 @@ bullet_act
 
 		if (istype(AM, /obj/item))
 			var/obj/item/I = AM
-			if (I.throwforce >= 15 && prob(I.throwforce * 2))
-				Weaken(ceil(I.throwforce/6))
+			if (I.throwforce >= 15 && prob(I.throwforce))
+				Weaken(ceil(I.throwforce/8))
 
 		O.throwing = FALSE		//it hit, so stop moving
 

@@ -643,7 +643,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			else
 				brute_dam += W.damage
 
-		if (!(status & ORGAN_ROBOT) && W.bleeding() && (H && !(H.species.flags & NO_BLOOD)))
+		if (W.bleeding() && (H && !(H.species.flags & NO_BLOOD)))
 			W.bleed_timer--
 			status |= ORGAN_BLEEDING
 
@@ -656,7 +656,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		status |= ORGAN_BLEEDING
 
 	//Bone fractures
-	if (config.bones_can_break && brute_dam >= min_broken_damage * config.organ_health_multiplier && !(status & ORGAN_ROBOT))
+	if (config.bones_can_break && brute_dam >= min_broken_damage * config.organ_health_multiplier && !buckled && !resting)
 		fracture()
 
 	if (!(brute_dam+burn_dam) || !number_wounds)

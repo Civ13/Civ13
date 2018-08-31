@@ -63,6 +63,7 @@ var/process/open_floor/OS2_controller = null
 			if (istype(A, /mob/living/carbon/human))
 				playsound(A.loc, 'sound/effects/gore/fallsmash.ogg', 50, TRUE)
 				var/mob/living/carbon/human/H = A
+				H.Stun(2)
 				var/damage = 10
 				H.apply_damage(rand(0, damage), BRUTE, "head")
 				H.apply_damage(rand(0, damage), BRUTE, "chest")
@@ -70,7 +71,6 @@ var/process/open_floor/OS2_controller = null
 				H.apply_damage(rand(0, damage), BRUTE, "r_leg")
 				H.apply_damage(rand(0, damage), BRUTE, "l_arm")
 				H.apply_damage(rand(0, damage), BRUTE, "r_arm")
-				H.Stun(3)
 				H.updatehealth()
 
 		if (istype(A, /obj))
