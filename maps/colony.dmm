@@ -372,7 +372,7 @@
 "hh" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/pen,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "hi" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "hj" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
-"hk" = (/obj/structure/wild/smallbush,/obj/structure/flag/black,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
+"hk" = (/obj/structure/wild/smallbush,/obj/structure/flag/british,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "hl" = (/obj/covers/wood_wall,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "hm" = (/obj/covers/wood_wall,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "hn" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/trash/candle,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
@@ -421,6 +421,7 @@
 "ie" = (/obj/item/farming/seeds/apple,/obj/item/farming/seeds/apple,/obj/item/farming/seeds/apple,/obj/item/farming/seeds/apple,/obj/item/farming/seeds/apple,/obj/item/farming/seeds/apple,/turf/floor/plating/grass/wild,/area/caribbean/tribes)
 "if" = (/obj/item/farming/seeds/potato,/obj/item/farming/seeds/potato,/obj/item/farming/seeds/potato,/obj/item/farming/seeds/potato,/obj/item/farming/seeds/potato,/obj/item/farming/seeds/potato,/obj/item/farming/seeds/potato,/turf/floor/plating/grass/wild,/area/caribbean/tribes)
 "ig" = (/obj/item/farming/seeds/tomato,/obj/item/farming/seeds/tomato,/obj/item/farming/seeds/tomato,/obj/item/farming/seeds/tomato,/obj/item/farming/seeds/tomato,/obj/item/farming/seeds/tomato,/obj/item/farming/seeds/tomato,/turf/floor/dirt,/area/caribbean/tribes)
+"ih" = (/obj/structure/flag/british,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -847,7 +848,7 @@ abbxababadahabababababababababababababababababababaiaBababadadadabababahababagab
 bxabababarababapadabababababexabababababababeyabababababadabababababababababababahabababapabababababababababaiaxaxafaxaxaiaiaiababadababababababadadadaiaiababadabababababadadababababadabababababadadababababababagbWbVbVfvbWbVbVbVbTbVfRbWbTbWbWbTbgdjbnbnbnbnbnhcbfgEgEgFgFbTajakakdFdGdHdGdHdGdGdGdGdHdGdHdGdIakak
 ababababababababababababababababababababababababababaiaiaiabahadabababababacabababababacabababababapababadaiaiaiaiafaiaiaiaiaiadababacadabagababapababaiaFadababacadababababadabadadababacadababababadabababababbBamfSbTbTbTbTbTbTbWbTbTbWbWbWbSbTbTbgbhbhgGgHgGbhbhbfbWbWbTajajakakakakdJdkdkdkdkdkdkdkdkdkdkdKakakak
 apabadababababababagababababadabadaeababababababababaFaBaiababababababababadadababacacababababadabadabababaiaiaxafafaxaxaxaiaiababababababacadababapabadababababababadababapababababababababadababapabababambBamambTbTbWbTbWbTbTbTbTbTbTfTbWbWbWbTbTgrgIgIgJbWgKgIgIgIbWbSbTajajajakakakdLdkdkdkdMdNdOdQdkdkdRdSakakak
-acabababababababababababacabababadababababababababababahabababapababababababababababababababadabababagababaiaiaxafaxaxaxaxaiaiacabapabababababababbxadapabacabapababahabababaoaiabacabapababahabababababbBabamamambWbTbTbTbTbWbWbWbTbTbTbTbXbTbTbTbWbWbWbWhkbWhkbWbWbXbWfUbTajajajakakakdTdkdkdkdkdkdkdUdkdkdkdVakakak
+acabababababababababababacabababadababababababababababahabababapababababababababababababababadabababagababaiaiaxafaxaxaxaxaiaiacabapabababababababbxadapabacabapababahabababaoaiabacabapababahabababababbBabamamambWbTbTbTbTbWbWbWbTbTbTbTbXbTbTbTbWbWbWbWhkbWihbWbWbXbWfUbTajajajakakakdTdkdkdkdkdkdkdUdkdkdkdVakakak
 abababapabapadabababaeabababababababababababapabapapababababacabababababapababadapabadagababababababahababaiaiaxafayaxaxaxaiababababababababahababababaiabababababababababaiaiababababababababababababababbBbBamambTbTbTbTbWbWbWbTbTbTbTbTbWbTbTbWbWbWbWbWbWbWbWbWbSbWfUbWbTajajajajdWdWdWdkdkdkdkdXdYdZeadkdkdVakakak
 abababacababababababaeabababababababababababacabababababacadababahacabababababababababapabahabadadabababaieFaiaxafayaxaxaxaiabababagabababababababagaeaiabababagababadacabababababababagababadacabababababbBbBamambTbTbWbWbWbTbTbTbTbTbWbTbTbTbTbWgpbWbWbSbWbWbWbWbWfUfUfUfVbTajajajakakdTdkdkdkecededefeadkdkdVakakak
 abapabababababababababababapababababapabababababababababababababaeabababababababababacabacacababababababaiaiaiaxafayaxaxaxaiababadababababababbxababadabababadababababababapababaoaoadababababababapababababamambBbWbSbTbTbTbTbWbWbWbWbTbTbTbWbTbWbWbWbWbXbWfUfUfUbTbTfVbTfVfVajajajajakegdkdkdkdkdkdkeheadkdkdSakakak

@@ -79,7 +79,30 @@
 	name = "Black Flag"
 	desc = "A black flag. That's it."
 
+/obj/structure/flag/french
+	icon_state = "french"
+	name = "French Flag"
+	desc = "The French flag, white with golden fleur-de-lys"
 
+/obj/structure/flag/spanish
+	icon_state = "spanish"
+	name = "Spanish Flag"
+	desc = "The Spanish flag, white with a red cross of Burgundry."
+
+/obj/structure/flag/british
+	icon_state = "british"
+	name = "British Flag"
+	desc = "The Union Jack."
+
+/obj/structure/flag/portuguese
+	icon_state = "portuguese"
+	name = "Portuguese Flag"
+	desc = "A white flag with the Portuguese Coat of Arms in the middle."
+
+/obj/structure/flag/dutch
+	icon_state = "dutch"
+	name = "Dutch Flag"
+	desc = "The tricolor Dutch flag."
 /obj/structure/noose
 	icon = 'icons/obj/noose.dmi'
 	icon_state = ""
