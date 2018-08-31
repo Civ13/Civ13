@@ -21,8 +21,6 @@
 	if (!default_type)
 		default_type = DEFAULT_WALL_MATERIAL
 	material = get_material_by_name("[default_type]")
-	if (!material)
-		qdel(src)
 		return FALSE
 
 	recipes = material.get_recipes()
@@ -105,7 +103,6 @@
 	name = "diamond"
 	icon_state = "sheet-diamond"
 	default_type = "diamond"
-
 
 /obj/item/stack/material/rope
 	name = "Rope"

@@ -247,10 +247,10 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/tobacco
 	flags = MATERIAL_UNMELTABLE
 	cut_delay = 5
-	icon_colour = "#FFFFFF"
+	icon_colour = "#FFFFFE"
 	shard_type = null
 	tableslam_noise = null
-	hardness = 8
+	hardness = 10
 	stack_origin_tech = list(TECH_MATERIAL = 6)
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
