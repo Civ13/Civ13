@@ -111,8 +111,12 @@
 	name = "Rope"
 	icon_state = "rope"
 	default_type = "rope"
-	anchored = TRUE
 
+/obj/item/stack/material/tobacco
+	name = "tobacco leaves"
+	icon = 'icons/obj/food.dmi'
+	icon_state = "tobacco_leaves"
+	default_type = "tobacco"
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)
 		return FALSE

@@ -58,7 +58,7 @@
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
-			if (do_after(user, 80/(H.getStatCoeff("strength")*H.getStatCoeff("strength"))))
+			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(20))
 					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 					mineral.amount = rand(1,4)
@@ -140,35 +140,54 @@
 				return
 
 	else if (istype(C, /obj/item/farming/seeds))
-		var/turf/T = get_turf(user)
 		var/mob/living/carbon/human/H = user
-		if (istype(T, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
-			if (locate(/obj/structure/farming/plant) in user.loc)
+		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
+			if (locate(/obj/structure/farming/plant) in src.loc)
 				user << "<span class='notice'>There already is something planted here.</span>"
 				return
 			else if (istype(C, /obj/item/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
-				new/obj/structure/farming/plant/potato(user.loc)
+				new/obj/structure/farming/plant/potato(src.loc)
 				qdel(C)
 				return
 			else if (istype(C, /obj/item/farming/seeds/tomato))
 				visible_message("[user] places the seeds in the ploughed field.")
-				new/obj/structure/farming/plant/tomato(user.loc)
+				new/obj/structure/farming/plant/tomato(src.loc)
 				qdel(C)
 				return
 			else if (istype(C, /obj/item/farming/seeds/hemp))
 				visible_message("[user] places the seeds in the ploughed field.")
-				new/obj/structure/farming/plant/hemp(user.loc)
+				new/obj/structure/farming/plant/hemp(src.loc)
 				qdel(C)
 				return
 			else if (istype(C, /obj/item/farming/seeds/corn))
 				visible_message("[user] places the seeds in the ploughed field.")
-				new/obj/structure/farming/plant/corn(user.loc)
+				new/obj/structure/farming/plant/corn(src.loc)
 				qdel(C)
 				return
 			else if (istype(C, /obj/item/farming/seeds/wheat))
 				visible_message("[user] places the seeds in the ploughed field.")
-				new/obj/structure/farming/plant/wheat(user.loc)
+				new/obj/structure/farming/plant/wheat(src.loc)
+				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/apple))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/apple(src.loc)
+				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/orange))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/orange(src.loc)
+				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/sugarcane))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/sugarcane(src.loc)
+				qdel(C)
+				return
+			else if (istype(C, /obj/item/farming/seeds/tobacco))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/tobacco(src.loc)
 				qdel(C)
 				return
 

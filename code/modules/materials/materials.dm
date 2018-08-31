@@ -242,6 +242,19 @@ var/list/name_to_material
 	sheet_singular_name = "coil"
 	sheet_plural_name = "coils"
 
+/material/tobacco
+	name = "tobacco leaves"
+	stack_type = /obj/item/stack/material/tobacco
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 5
+	icon_colour = "#FFFFFF"
+	shard_type = null
+	tableslam_noise = null
+	hardness = 8
+	stack_origin_tech = list(TECH_MATERIAL = 6)
+	sheet_singular_name = "leave"
+	sheet_plural_name = "leaves"
+
 /material/gold
 	name = "gold"
 	stack_type = /obj/item/stack/material/gold

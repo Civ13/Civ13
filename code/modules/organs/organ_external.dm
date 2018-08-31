@@ -656,7 +656,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		status |= ORGAN_BLEEDING
 
 	//Bone fractures
-	if (config.bones_can_break && brute_dam >= min_broken_damage * config.organ_health_multiplier && !buckled && !resting)
+	if (config.bones_can_break && brute_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
 		fracture()
 
 	if (!(brute_dam+burn_dam) || !number_wounds)

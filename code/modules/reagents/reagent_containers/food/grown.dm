@@ -42,7 +42,6 @@
 /obj/item/weapon/reagent_containers/food/snacks/grown/coconut
 	name = "coconut"
 	icon_state = "coconut"
-
 // misc crops
 /obj/item/weapon/reagent_containers/food/snacks/grown/rice
 	name = "rice stalk"
@@ -51,10 +50,20 @@
 	nutriment_desc = list("rice" = TRUE)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/wheat
-	name = "wheat stalk"
-	icon_state = "rice"
+	name = "wheat"
+	icon_state = "wheat"
+	desc = "wheat. Can be milled."
 	color = "#fffaf0"
 	nutriment_desc = list("wheat" = TRUE)
+/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/attack_self(mob/user)
+	user.visible_message("You start to mill the [name].")
+	if (do_after(user, 20, user.loc))
+		user.visible_message("You finish milling the [name].")
+		var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(user.loc)
+		flour.reagents.remove_reagent("flour", 30)
+		flour.reagents.add_reagent("flour", 5)
+		qdel(src)
+
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/tomato
 	name = "tomato"

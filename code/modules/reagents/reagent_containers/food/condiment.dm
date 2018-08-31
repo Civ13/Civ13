@@ -104,7 +104,7 @@
 					center_of_mass = list("x"=16, "y"=6)
 				if ("sugar")
 					name = "Sugar"
-					desc = "Tastey space sugar!"
+					desc = "Sweet!"
 					center_of_mass = list("x"=16, "y"=6)
 				else
 					name = "Misc Condiment Bottle"
@@ -165,5 +165,17 @@
 	New()
 		..()
 		reagents.add_reagent("flour", 30)
+		pixel_x = rand(-10.0, 10)
+		pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/reagent_containers/food/condiment/bsugar
+	name = "sugarcane sugar"
+	desc = "a pile of unrefined brown sugar."
+	icon = 'icons/obj/food.dmi'
+	icon_state = "sugar"
+	item_state = "flour"
+	New()
+		..()
+		reagents.add_reagent("sugar", 30)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)

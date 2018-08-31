@@ -114,9 +114,15 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "fireplace"
 	layer = 2.9
-	density = TRUE
+	density = FALSE
 	anchored = TRUE
 	flags = OPENCONTAINER | NOREACT
 	base_state = "fireplace"
 	on = FALSE
-	max_space = 7
+	max_space = 5
+
+/obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
+	if (icon_state == "[base_state]_on")
+		M.apply_damage(rand(1,2), BURN, "l_leg")
+		M.apply_damage(rand(1,2), BURN, "r_leg")
+		visible_message("<span class = 'notice'>[M] gets burnt by the [name]!</span>")

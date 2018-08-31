@@ -163,15 +163,7 @@
 		if (T.density)
 			return FALSE
 	return forceMove(destination, special_event)
-/*
-/atom/movable/proc/forceMoveOld(atom/destination)
-	if (destination)
-		if (loc)
-			loc.Exited(src)
-		loc = destination
-		loc.Entered(src)
-		return TRUE
-	return FALSE*/
+
 
 //called when src is thrown into hit_atom
 /atom/movable/proc/throw_impact(atom/hit_atom, var/speed)
