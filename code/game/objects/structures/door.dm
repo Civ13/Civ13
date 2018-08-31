@@ -11,6 +11,7 @@
 	var/isSwitchingStates = FALSE
 	var/hardness = TRUE
 	var/oreAmount = 7
+	var/basic_icon = "metal"
 
 	var/override_material_state = null
 
@@ -59,6 +60,7 @@
 		return
 	hardness = max(1,round(material.integrity/10))
 	icon_state = material.door_icon_base
+	basic_icon = material.door_icon_base
 	name = "[material.display_name] door"
 	color = material.icon_colour
 	if (material.opacity < 0.5)
@@ -125,7 +127,7 @@
 /obj/structure/simple_door/proc/Open()
 	isSwitchingStates = TRUE
 	playsound(loc, material.dooropen_noise, 100, TRUE)
-	flick("[material.door_icon_base]opening",src)
+	flick("[basic_icon]opening",src)
 	spawn (10)
 		density = FALSE
 		opacity = FALSE
@@ -139,7 +141,7 @@
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
 	playsound(loc, material.dooropen_noise, 100, TRUE)
-	flick("[material.door_icon_base]closing",src)
+	flick("[basic_icon]closing",src)
 	spawn (10)
 		density = TRUE
 		opacity = TRUE
@@ -157,9 +159,9 @@
 
 /obj/structure/simple_door/update_icon()
 	if (state)
-		icon_state = "[material.door_icon_base]open"
+		icon_state = "[basic_icon]open"
 	else
-		icon_state = material.door_icon_base
+		icon_state = basic_icon
 
 /obj/structure/simple_door/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon)) //not sure, can't not just weapons get passed to this proc?
@@ -201,6 +203,11 @@
 
 /obj/structure/simple_door/iron/New(var/newloc,var/material_name)
 	..(newloc, "iron")
+	basic_icon = "cell"
+	name = "Cell"
+/obj/structure/simple_door/cell/New(var/newloc,var/material_name)
+	..(newloc, "iron")
+
 
 /obj/structure/simple_door/silver/New(var/newloc,var/material_name)
 	..(newloc, "silver")
@@ -213,6 +220,9 @@
 
 /obj/structure/simple_door/wood/New(var/newloc,var/material_name)
 	..(newloc, "wood")
-
+/obj/structure/simple_door/wood2/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	basic_icon = "wood2"
+	name = "Windowed"
 /obj/structure/simple_door/resin/New(var/newloc,var/material_name)
 	..(newloc, "resin")

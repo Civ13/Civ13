@@ -4,7 +4,7 @@
 	title = "Isla Robusta (125x125x1)"
 //	lobby_icon_state = "pirates"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 90
+	respawn_delay = 900
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
