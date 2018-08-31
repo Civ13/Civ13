@@ -114,9 +114,9 @@
 
 /obj/item/stack/material/tobacco
 	name = "tobacco leaves"
-	icon = 'icons/obj/food.dmi'
-	icon_state = "tobacco_leaves"
+	icon_state = "tobacco"
 	default_type = "tobacco"
+
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)
 		return FALSE
