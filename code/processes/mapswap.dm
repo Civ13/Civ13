@@ -36,8 +36,6 @@
 		if (admin_triggered)
 			. = TRUE
 		// round will end soon (tm)
-		else if (map && map.next_win_time() <= ((map.short_win_time() / 600) * 0.60) && map.next_win != -1)
-			. = TRUE
 		else if (map && map.admins_triggered_roundend)
 			. = TRUE
 		else if (ticker.finished)
