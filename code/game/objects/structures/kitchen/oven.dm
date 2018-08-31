@@ -91,6 +91,8 @@
 				organ.roasted = TRUE
 				contents -= I
 				qdel(I)
+		else if (istype(I, /obj/item/weapon/wrench))
+			return
 		else
 			I.name = replacetext(I.name, "raw ", "")
 			I.desc = replacetext(I.desc, "raw", "roasted")
