@@ -197,6 +197,7 @@ Current Defines (_defines/attachment.dm)
 	force = WEAPON_FORCE_DANGEROUS/2
 //	weakens = 1
 	weight = 0.450
+	value = 12
 
 /obj/item/weapon/attachment/scope/iron_sights
 	name = "iron sights"

@@ -372,6 +372,7 @@
 	name = "bottle of rum"
 	desc = "Pirate's favourite."
 	icon_state = "oldstyle_rum"
+	value = 25
 	center_of_mass = list("x"=16, "y"=8)
 	New()
 		..()
@@ -382,6 +383,7 @@
 	name = "empty bottle of rum"
 	desc = "Pirate's favourite. When full, of course."
 	icon_state = "oldstyle_rum_empty"
+	value = 1
 	center_of_mass = list("x"=16, "y"=8)
 	New()
 		..()
@@ -473,6 +475,7 @@
 	desc = "Typical red wine."
 	icon_state = "winebottle"
 	center_of_mass = list("x"=16, "y"=4)
+	value = 16
 	New()
 		..()
 		reagents.add_reagent("wine", 90)
@@ -483,6 +486,7 @@
 	desc = "A crude drink, made from fermented palm sap."
 	icon_state = "tribalpot"
 	center_of_mass = list("x"=16, "y"=4)
+	value = 18
 	New()
 		..()
 		reagents.add_reagent("palmwine", 85)
@@ -493,6 +497,7 @@
 	desc = "A faint aura of unease and asspainery surrounds the bottle."
 	icon_state = "winebottle"
 	center_of_mass = list("x"=16, "y"=4)
+	value = 1
 	New()
 		..()
 		reagents.del_reagents()
@@ -520,7 +525,7 @@
 
 //Small bottles
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small
-	volume = 50
+	volume = 30
 	shatter_duration = TRUE
 	flags = FALSE //starts closed
 	rag_underlay = "rag_small"
@@ -533,6 +538,7 @@
 	icon_state = "oldstyle_beer"
 	item_state = "beer"
 	center_of_mass = list("x"=16, "y"=12)
+	value = 5
 	New()
 		..()
 		reagents.add_reagent("beer", 47)
@@ -544,6 +550,7 @@
 	icon_state = "oldstyle_beer"
 	item_state = "beer"
 	center_of_mass = list("x"=16, "y"=10)
+	value = 6
 	New()
 		..()
 		reagents.add_reagent("ale", 45)

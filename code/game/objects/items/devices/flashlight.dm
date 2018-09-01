@@ -108,6 +108,7 @@
 	var/on_damage = 7
 	var/produce_heat = 1500
 	turn_on_sound = 'sound/effects/Custom_flare.ogg'
+	value = 4
 
 /obj/item/flashlight/flare/nighttime
 /obj/item/flashlight/flare/nighttime/New()

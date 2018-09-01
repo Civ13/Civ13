@@ -76,6 +76,7 @@
 	item_state = "katana"
 	block_chance = 30
 	slot_flags = SLOT_BELT | SLOT_BACK
+	value = 40
 
 /obj/item/weapon/material/sword/smallsword
 	name = "small sword"
@@ -89,6 +90,7 @@
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
 	cooldownw = 6
+	value = 35
 
 /obj/item/weapon/material/sword/spadroon
 	name = "spadroon"
@@ -102,6 +104,7 @@
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
 	cooldownw = 10
+	value = 50
 
 /obj/item/weapon/material/sword/vangar
 	name = "Vangar's sword"
@@ -127,3 +130,4 @@
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 28
 	cooldownw = 8
+	value = 40

@@ -13,6 +13,7 @@ Parts of code courtesy of Super3222
 	var/datum/action/toggle_scope/azoom
 	attachment_type = ATTACH_SCOPE
 	slot_flags = SLOT_POCKET|SLOT_BELT
+	value = 15
 
 /obj/item/weapon/attachment/scope/New()
 	..()
@@ -48,6 +49,7 @@ Parts of code courtesy of Super3222
 	desc = "A naval telescope."
 	max_zoom = ZOOM_CONSTANT*3
 	attachable = FALSE
+	value = 15
 
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"

@@ -5,6 +5,7 @@
 	name = "some magical supertype of all grown foods. Why is this even here"
 	nutriment_amt = 1
 	nutriment_desc = list("fruit" = TRUE)
+	value = 3
 
 // fruit
 /obj/item/weapon/reagent_containers/food/snacks/grown/grapes
@@ -94,3 +95,10 @@
 	icon_state = "carrot"
 	color = "#ff8c00"
 	nutriment_desc = list("carrot" = TRUE)
+
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/corn
+	name = "corn"
+	icon_state = "corn"
+	color = "#8b7355"
+	nutriment_desc = list("corn" = TRUE)

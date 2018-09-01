@@ -23,6 +23,7 @@
 		reagents.add_reagent("nutriment",nutriment_amt,nutriment_desc)
 	spawn (1)
 		bitesize = max(bitesize, ceil(reagents.total_volume/5))
+	value = 2*nutriment_amt
 
 	//Placeholder for effect that trigger on eating that aren't tied to reagents.
 /obj/item/weapon/reagent_containers/food/snacks/proc/On_Consume(var/mob/M)

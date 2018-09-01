@@ -154,6 +154,7 @@
 	weight = 6.0
 	effectiveness_mod = 0.97
 	ammo_type = /obj/item/ammo_casing/musketball
+	value = 60
 
 
 /obj/item/weapon/gun/projectile/flintlock/musketoon
@@ -167,6 +168,7 @@
 	weight = 4.0
 	effectiveness_mod = 0.87
 	ammo_type = /obj/item/ammo_casing/musketball
+	value = 45
 
 /obj/item/weapon/gun/projectile/flintlock/pistol
 	// less accurate than rifles against still targets, but better against moving targets
@@ -187,6 +189,7 @@
 	move_delay = 3
 	fire_delay = 3
 	load_delay = 100
+	value = 35
 	stat = "pistol"
 	accuracy_list = list(
 
@@ -304,6 +307,7 @@
 	caliber = "blunderbuss"
 	stat = "rifle"
 	weight = 4.5
+	value = 50
 	effectiveness_mod = 0.7
 	attachment_slots = ATTACH_IRONSIGHTS
 	ammo_type = /obj/item/ammo_casing/blunderbuss

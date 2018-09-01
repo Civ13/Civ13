@@ -11,8 +11,9 @@
 	allow_spin = FALSE
 	material = "wood"
 	force_divisor = 0.3 // 18 with hardness 60 (steel)
-	thrown_force_divisor = 0.9 // 18 with weight 20 (steel)
+	thrown_force_divisor = 0.7 // 14 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
+	value = 8
 
 /obj/item/weapon/material/handle
 	name = "handle"
@@ -29,7 +30,7 @@
 	force_divisor = 0.2 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.4 // 8 with weight 20 (steel)
 	attack_verb = list("jabbed","hit","bashed")
-
+	value = 3
 /obj/item/weapon/material/spear
 	name = "spear"
 	sharp = TRUE
@@ -45,6 +46,7 @@
 	force_divisor = 0.4 // 24 with hardness 60 (steel)
 	thrown_force_divisor = 1 // 20 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
+	value = 6
 
 /obj/item/weapon/material/hatchet
 	name = "hatchet"
@@ -60,6 +62,7 @@
 //	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = FALSE
+	value = 15
 
 /obj/item/weapon/material/hatchet/tribal
 	name = "stone hatchet"
@@ -69,6 +72,7 @@
 	material = "stone"
 	force_divisor = 0.20 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.65 // 13 with weight 20 (steel)
+	value = 12
 
 /obj/item/weapon/material/hatchet/New()
 	name = "hatchet"
@@ -87,6 +91,7 @@
 	attack_verb = list("chopped", "torn", "cut")
 	slot_flags = SLOT_BELT
 	applies_material_colour = FALSE
+	value = 20
 
 
 /obj/item/weapon/material/minihoe // -- Numbers

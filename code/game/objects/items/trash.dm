@@ -21,12 +21,14 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "snack_bowl"
 	dropsound = 'sound/effects/drop_glass.ogg'
+	value = 4
 
 /obj/item/kitchen/wood_bowl
 	name = "wood bowl"
 	desc = "a common wood bowl."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "wood_bowl"
+	value = 2
 
 /obj/item/kitchen/snack_bowl/New()
 	..()

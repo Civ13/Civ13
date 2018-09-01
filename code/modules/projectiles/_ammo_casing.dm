@@ -6,6 +6,7 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/musketball
 	weight = 0.02
 	caliber = "musketball"
+	value = 3
 
 /obj/item/ammo_casing/musketball_pistol
 	name = "pistol projectile"
@@ -14,6 +15,7 @@
 	icon_state = "musketball_pistol_gunpowder"
 	spent_icon = null
 	caliber = "musketball_pistol"
+	value = 2
 
 /obj/item/ammo_casing/blunderbuss
 	name = "some blunderbuss projectiles"
@@ -22,6 +24,7 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/blunderbuss
 	weight = 0.035
 	caliber = "blunderbuss"
+	value = 3
 
 /obj/item/ammo_casing/arrow
 	name = "arrow"
@@ -33,3 +36,4 @@
 	weight = 0.15
 	caliber = "arrow"
 	slot_flags = SLOT_BELT
+	value = 2

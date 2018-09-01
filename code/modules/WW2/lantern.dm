@@ -6,6 +6,7 @@
 	light_color = rgb(200, 255, 200) // green tint
 	on_state = "lantern-on"
 	off_state = "lantern"
+	value = 12
 
 /obj/item/flashlight/lantern/on
 	icon_state = "lantern-on"
@@ -31,6 +32,7 @@
 	light_color = rgb(254, 200, 200) // red tint
 	on_state = "torch-on"
 	off_state = "torch"
+	value = 6
 
 /obj/item/flashlight/torch/on
 	icon_state = "torch-on"

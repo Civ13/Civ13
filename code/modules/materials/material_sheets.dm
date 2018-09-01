@@ -82,42 +82,50 @@
 	icon_state = "sheet-iron"
 	default_type = "iron"
 	apply_colour = TRUE
+	value = 3
 
 /obj/item/stack/material/sandstone
 	name = "sandstone brick"
 	icon_state = "sheet-sandstone"
 	default_type = "sandstone"
+	value = 2
 
 /obj/item/stack/material/stone
 	name = "stone block"
 	icon_state = "sheet-stone"
 	default_type = "stone"
+	value = 2
 
 /obj/item/stack/material/marble
 	name = "marble brick"
 	icon_state = "sheet-marble"
 	default_type = "marble"
+	value = 3
 
 /obj/item/stack/material/diamond
 	name = "diamond"
 	icon_state = "sheet-diamond"
 	default_type = "diamond"
+	value = 40
 
 /obj/item/stack/material/rope
 	name = "Rope"
 	icon_state = "rope"
 	default_type = "rope"
+	value = 2
 
 /obj/item/stack/material/tobacco
 	name = "tobacco leaves"
 	icon_state = "tobacco"
 	default_type = "tobacco"
+	value = 3
 
 /obj/item/stack/material/poppy
 	name = "poppy"
 	desc = "dried opium poppies. Opium can be extracted."
 	icon_state = "poppy"
 	default_type = "poppy"
+	value = 6
 
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)
@@ -145,27 +153,32 @@
 	name = "gold"
 	icon_state = "sheet-gold"
 	default_type = "gold"
+	value = 40
 
 /obj/item/stack/material/silver
 	name = "silver"
 	icon_state = "sheet-silver"
 	default_type = "silver"
+	value = 20
 
 /obj/item/stack/material/steel
 	name = DEFAULT_WALL_MATERIAL
 	icon_state = "sheet-metal"
 	default_type = DEFAULT_WALL_MATERIAL
+	value = 5
 
 /obj/item/stack/material/wood
 	name = "wooden plank"
 	icon_state = "sheet-wood"
 	default_type = "wood"
 	dropsound = 'sound/effects/drop_wood.ogg'
+	value = 1
 
 /obj/item/stack/material/cloth
 	name = "cloth"
 	icon_state = "sheet-cloth"
 	default_type = "cloth"
+	value = 3
 
 
 /obj/item/stack/material/leather
@@ -173,14 +186,17 @@
 	desc = "The by-product of mob grinding."
 	icon_state = "sheet-leather"
 	default_type = "leather"
+	value = 2
 
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"
 	default_type = "glass"
 	dropsound = 'sound/effects/drop_glass.ogg'
+	value = 3
 
 /obj/item/stack/material/glass/reinforced
 	name = "reinforced glass"
 	icon_state = "sheet-rglass"
 	default_type = "rglass"
+	value = 6
