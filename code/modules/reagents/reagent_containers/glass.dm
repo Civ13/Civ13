@@ -23,17 +23,8 @@
 		/obj/structure/closet,
 		/obj/structure/sink,
 		/obj/item/weapon/storage,
-//		/obj/machinery/atmospherics/unary/cryo_cell,
-	//	/obj/machinery/dna_scannernew,
 		/obj/item/weapon/storage/secure/safe,
-	//	/obj/machinery/disease2/incubator,
-	//	/obj/machinery/disposal,
 		/mob/living/simple_animal/cow,
-	//	/obj/machinery/computer/centrifuge,
-//		/obj/machinery/sleeper,
-	//	/obj/machinery/smartfridge/,
-	//	/obj/machinery/biogenerator,
-	//	/obj/machinery/constructable_frame
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -139,34 +130,82 @@
 		var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
 		overlays += lid
 
-/*
-/obj/item/weapon/reagent_containers/glass/blender_jug
-	name = "Blender Jug"
-	desc = "A blender jug, part of a blender."
-	icon = 'icons/obj/kitchen.dmi'
-	icon_state = "blender_jug_e"
-	volume = 100
-
-	on_reagent_change()
-		switch(reagents.total_volume)
-			if (0)
-				icon_state = "blender_jug_e"
-			if (1 to 75)
-				icon_state = "blender_jug_h"
-			if (76 to 100)
-				icon_state = "blender_jug_f"
-
-/obj/item/weapon/reagent_containers/glass/canister		//not used apparantly
-	desc = "It's a canister. Mainly used for transporting fuel."
-	name = "canister"
-	icon = 'icons/obj/tank.dmi'
-	icon_state = "canister"
-	item_state = "canister"
-	m_amt = 300
-	g_amt = FALSE
+/obj/item/weapon/reagent_containers/glass/fermenterbarrel
+	desc = "A fermenter barrel, use it to make alcoholic drinks like ale, beer and cider."
+	name = "fermenter barrel"
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "wood_barrel1"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 200)
 	w_class = 4.0
-
 	amount_per_transfer_from_this = 20
-	possible_transfer_amounts = list(10,20,30,60)
-	volume = 120
-*/
+	possible_transfer_amounts = list(10,20,30,60,120)
+	volume = 150
+	density = TRUE
+	flags = OPENCONTAINER
+
+
+/obj/item/weapon/reagent_containers/glass/barrel/water
+	name = "water barrel"
+	desc = "A wood barrel, filled with drinking water."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	New()
+		..()
+		reagents.add_reagent("water",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/beer
+	name = "beer barrel"
+	desc = "A barrel of beer. Keep it secured!"
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	New()
+		..()
+		reagents.add_reagent("beer",200)
+
+/obj/item/weapon/reagent_containers/glass/barrel/rum
+	name = "rum barrel"
+	desc = "A barrel of rum. You better keep it locked and away from the crew!"
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	New()
+		..()
+		reagents.add_reagent("rum",140)
+		reagents.add_reagent("tramadol", 60)
+
+/obj/item/weapon/reagent_containers/glass/barrel/gunpowder
+	name = "gunpowder barrel"
+	desc = "A barrel of gunpowder. Don't light it on fire."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_gunpowder"
+	amount_per_transfer_from_this = 10
+	New()
+		..()
+		reagents.add_reagent("gunpowder",200)
+
+/obj/item/weapon/reagent_containers/glass/barrel/gunpowder/bullet_act(var/obj/item/projectile/proj)
+	if (proj && !proj.nodamage)
+		if (prob(30))
+			visible_message("<span class = 'warning'>\The [src] is hit by \the [proj] and explodes!</span>")
+			return explode()
+	return FALSE
+
+/obj/item/weapon/reagent_containers/glass/barrel/gunpowder/ex_act()
+	explode()
+
+/obj/item/weapon/reagent_containers/glass/barrel/gunpowder/proc/explode()
+	if (reagents.total_volume > 500)
+		explosion(loc,1,2,4,2)
+	else if (reagents.total_volume > 100)
+		explosion(loc,0,1,3,1)
+	else if (reagents.total_volume > 50)
+		explosion(loc,-1,1,2,1)
+	if (src) qdel(src)
+
+/obj/item/weapon/reagent_containers/glass/barrel/gunpowder/fire_act(temperature)
+	if (temperature > T0C+500)
+		explode()
+	return ..()

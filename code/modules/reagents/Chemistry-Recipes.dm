@@ -1668,3 +1668,33 @@
 	result = "luminol"
 	required_reagents = list("hydrogen" = 2, "carbon" = 2, "ammonia" = 2)
 	result_amount = 6
+
+
+//fermentation
+/datum/chemical_reaction/rum
+	name = "rum"
+	id = "rum"
+	result = "rum"
+	required_reagents = list("sugar" = 3, "water" = 1)
+	result_amount = 1
+
+/datum/chemical_reaction/beer
+	name = "beer"
+	id = "beer"
+	result = "beer"
+	required_reagents = list("flour" = 2, "water" = 2)
+	result_amount = 2
+
+/datum/chemical_reaction/ale
+	name = "ale"
+	id = "ale"
+	result = "ale"
+	required_reagents = list("barleyflour" = 2, "water" = 2)
+	result_amount = 2
+
+/datum/chemical_reaction/mead
+	name = "mead"
+	id = "mead"
+	result = "mead"
+	required_reagents = list("honey" = 2, "water" = 2)
+	result_amount = 2

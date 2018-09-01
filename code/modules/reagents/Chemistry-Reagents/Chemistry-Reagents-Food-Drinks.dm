@@ -85,9 +85,19 @@
 	nutriment_factor = TRUE
 	color = "#FFFFFF"
 
+/datum/reagent/nutriment/barleyflour
+	name = "barleyflour"
+	id = "barleyflour"
+	description = "You can eat it, but the main use is to make beer."
+	taste_description = "toasted cereal"
+	reagent_state = SOLID
+	nutriment_factor = TRUE
+	color = "#666666"
+
 /datum/reagent/nutriment/flour/touch_turf(var/turf/T)
 	new /obj/effect/decal/cleanable/flour(T)
-
+/datum/reagent/nutriment/barleyflour/touch_turf(var/turf/T)
+	new /obj/effect/decal/cleanable/flour(T)
 /datum/reagent/nutriment/coco
 	name = "Coco Powder"
 	id = "coco"
