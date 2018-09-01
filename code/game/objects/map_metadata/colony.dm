@@ -30,6 +30,9 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
 		"Black Sails:1" = 'sound/music/black_sails.ogg')
+	var/first_event_done = FALSE
+	var/do_first_event = 600//20 mins
+
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
@@ -45,5 +48,37 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/colony/cross_message(faction)
 	return ""
+/obj/map_metadata/colony/check_events()
+	if ((world.time >= do_first_event) && !first_event_done)
+		first_event_done = TRUE
+//		world << "Deleting unused stuff..."
+		var/area1 = /area/caribbean/transport/one
+		for (var/obj/A in area1)
+			if (!civilians_toggled)
+				if (!istype(A, /obj/structure/railing))
+					if (!istype(A, /obj/covers))
+//						world << "Deleting brit stuff..."
+						qdel(A)
+		var/area2 = /area/caribbean/transport/two
+		for (var/obj/A in area2)
+			if (!spanish_toggled)
+				if (!istype(A, /obj/structure/railing))
+					if (!istype(A, /obj/covers))
+//						world << "Deleting spanish stuff..."
+						qdel(A)
 
+		var/area3 = /area/caribbean/transport/three
+		for (var/obj/A in area3)
+			if (!pirates_toggled)
+				if (!istype(A, /obj/structure/railing))
+					if (!istype(A, /obj/covers))
+//						world << "Deleting pirate stuff..."
+						qdel(A)
+		return TRUE
+	else
+		return FALSE
+
+/obj/map_metadata/colony/New() // since DM doesn't want to attribute random vars at the beggining...
+	..()
+	do_first_event = 600
 #undef NO_WINNER
