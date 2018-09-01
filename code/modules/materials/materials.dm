@@ -243,7 +243,7 @@ var/list/name_to_material
 	sheet_plural_name = "coils"
 
 /material/tobacco
-	name = "tobacco leaves"
+	name = "tobacco"
 	stack_type = /obj/item/stack/material/tobacco
 	flags = MATERIAL_UNMELTABLE
 	cut_delay = 5

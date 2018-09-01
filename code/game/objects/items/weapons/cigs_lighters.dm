@@ -257,7 +257,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME with the power of science.</span>"
 
 /obj/item/clothing/mask/smokable/cigarette/cigar/havana
-	name = "premium Havanian cigar"
+	name = "Cuban cigar"
 	desc = "A cigar fit for only the best of the best."
 	icon_state = "cigar2off"
 	icon_on = "cigar2on"
