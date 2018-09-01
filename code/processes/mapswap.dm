@@ -48,4 +48,4 @@
 	if (!maps.Find(winner))
 		winner = maps[1]
 	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
-	processes.python.execute("sudo mapswap.py", list(winner))
+	processes.python.execute("mapswap.py", list(winner))
