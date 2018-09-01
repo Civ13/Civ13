@@ -128,7 +128,7 @@
 	// Job information: this goes here because it copies the mind.assigned_job
 	// from a new_player mob
 	var/datum/job/original_job
-	var/original_job_title = "Soldat"
+	var/original_job_title = "Sailor"
 	var/special_job_title = -1
 
 	var/can_pull_size = 10              // Maximum w_class the mob can pull.

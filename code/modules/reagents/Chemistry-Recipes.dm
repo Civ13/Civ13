@@ -1698,3 +1698,4 @@
 	result = "mead"
 	required_reagents = list("honey" = 2, "water" = 2)
 	result_amount = 2
+

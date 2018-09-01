@@ -8,7 +8,7 @@
 	throw_speed = 3
 	throw_range = 7
 	layer = OBJ_LAYER - 0.1
-	var/amount = 30					//How much paper is in the bin.
+	amount = 30					//How much paper is in the bin.
 	var/list/papers = new/list()	//List of papers put in the bin for reference.
 
 

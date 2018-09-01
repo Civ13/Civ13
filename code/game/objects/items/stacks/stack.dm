@@ -14,7 +14,7 @@
 //	origin_tech = list(TECH_MATERIAL = TRUE)
 	var/list/datum/stack_recipe/recipes
 	var/singular_name
-	var/amount = TRUE
+	amount = TRUE
 	var/max_amount //also see stack recipes initialisation, param "max_res_amount" must be equal to this max_amount
 	var/stacktype //determines whether different stack types can merge
 	var/build_type = null //used when directly applied to a turf
@@ -22,7 +22,7 @@
 	var/list/charge_costs = null
 	var/list/datum/matter_synth/synths = null
 	var/real_value = 1
-	var/value = 1
+	value = 1
 
 /obj/item/stack/New(var/loc, var/_amount=0)
 	..()

@@ -170,7 +170,7 @@
 		if ("fire")
 			health -= W.force * 0.75
 		if ("brute")
-			health -= W.force * 0.1
+			health -= W.force * 0.3
 
 	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
 	user.do_attack_animation(src)

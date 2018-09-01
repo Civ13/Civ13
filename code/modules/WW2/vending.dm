@@ -49,4 +49,5 @@
 		/obj/item/clothing/accessory/armband/british_scarf = 25,
 
 	)
+
 //	idle_power_usage = 0
