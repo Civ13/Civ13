@@ -94,7 +94,6 @@ macro "macro"
 		command = ".southwest"
 	elem 
 		name = "CTRL+S"
-		command = "Say \"*scream"
 	elem 
 		name = "CTRL+X"
 		command = ".northeast"
