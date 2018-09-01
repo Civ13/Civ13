@@ -51,28 +51,26 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/colony/check_events()
 	if ((world.time >= do_first_event) && !first_event_done)
 		first_event_done = TRUE
-//		world << "Deleting unused stuff..."
-
-		for (var/obj/A)
+		for (var/obj/effect/area_teleporter/A)
 			var/area/src_area = get_area(A)
 			if (src_area && src_area.type == /area/caribbean/transport/one)
-				if (!civilians_toggled)
-					if (!istype(A, /obj/structure/railing))
-						if (!istype(A, /obj/covers))
-							world << "Deleting brit stuff..."
-							qdel(A)
+				for (var/obj/O in src_area)
+					if (!civilians_toggled)
+						if (!istype(O, /obj/structure/railing))
+							if (!istype(O, /obj/covers))
+								qdel(O)
 			else if (src_area && src_area.type == /area/caribbean/transport/two)
-				if (!spanish_toggled)
-					if (!istype(A, /obj/structure/railing))
-						if (!istype(A, /obj/covers))
-							world << "Deleting spanish stuff..."
-							qdel(A)
+				for (var/obj/O in src_area)
+					if (!spanish_toggled)
+						if (!istype(O, /obj/structure/railing))
+							if (!istype(O, /obj/covers))
+								qdel(O)
 			else if (src_area && src_area.type == /area/caribbean/transport/three)
-				if (!pirates_toggled)
-					if (!istype(A, /obj/structure/railing))
-						if (!istype(A, /obj/covers))
-							world << "Deleting pirate stuff..."
-							qdel(A)
+				for (var/obj/O in src_area)
+					if (!pirates_toggled)
+						if (!istype(O, /obj/structure/railing))
+							if (!istype(O, /obj/covers))
+								qdel(O)
 		return TRUE
 	else
 		return FALSE
