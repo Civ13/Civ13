@@ -255,6 +255,19 @@ var/list/name_to_material
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
 
+/material/opium
+	name = "opium"
+	stack_type = /obj/item/stack/material/opium
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 5
+	icon_colour = "#2b1d0e"
+	shard_type = null
+	tableslam_noise = null
+	hardness = 10
+	stack_origin_tech = list(TECH_MATERIAL = 6)
+	sheet_singular_name = "ball"
+	sheet_plural_name = "balls"
+
 /material/gold
 	name = "gold"
 	stack_type = /obj/item/stack/material/gold

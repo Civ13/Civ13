@@ -151,6 +151,29 @@ obj/structure/closet/crate/empty
 	name = "Rations: meat"
 	paths = list(/obj/item/weapon/reagent_containers/food/snacks/meat = 7,)
 
+/obj/structure/closet/crate/rations/seeds/trees
+	name = "Seeds: Trees"
+	paths = list(/obj/item/farming/seeds/apple = 5,
+				/obj/item/farming/seeds/orange = 5,)
+
+/obj/structure/closet/crate/rations/seeds/cereals
+	name = "Seeds: Cereals"
+	paths = list(/obj/item/farming/seeds/wheat = 5,
+				/obj/item/farming/seeds/corn = 5,)
+
+/obj/structure/closet/crate/rations/seeds/vegetables
+	name = "Seeds: Vegetables"
+	paths = list(/obj/item/farming/seeds/tomato = 4,
+				/obj/item/farming/seeds/potato = 4,
+				/obj/item/farming/seeds/cabbage = 4,)
+
+/obj/structure/closet/crate/rations/seeds/cashcrops
+	name = "Seeds: Cash Crops"
+	paths = list(/obj/item/farming/seeds/tobacco = 4,
+				/obj/item/farming/seeds/sugarcane = 4,
+				/obj/item/farming/seeds/hemp = 4,)
+
+
 ///WEAPONS///
 
 /obj/structure/closet/crate/grenades

@@ -11,7 +11,7 @@
 	keyslot_type = /datum/keyslot/civ
 	unique_door_name = "Locked"
 #undef CV_CODE
-#define CV_CODE2 1546
+#define CV_CODE2 11546
 /datum/keyslot/civ/hall
 	code = CV_CODE2
 
@@ -23,7 +23,7 @@
 	keyslot_type = /datum/keyslot/civ/hall
 	unique_door_name = "Colony Hall"
 #undef CV_CODE2
-#define CV_CODE3 1311
+#define CV_CODE3 11311
 /datum/keyslot/civ/gov
 	code = CV_CODE3
 

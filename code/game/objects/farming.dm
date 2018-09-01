@@ -29,6 +29,10 @@
 	name = "orange seeds"
 	plant = "orange"
 
+/obj/item/farming/seeds/cabbage
+	name = "cabbage seeds"
+	plant = "cabbage"
+
 /obj/item/farming/seeds/hemp
 	name = "hemp seeds"
 	plant = "hemp"
@@ -42,6 +46,11 @@
 /obj/item/farming/seeds/corn
 	name = "corn seeds"
 	plant = "corn"
+
+/obj/item/farming/seeds/poppy
+	name = "poppy seeds"
+	desc = "Seeds of the opium poppy."
+	plant = "poppy"
 
 /obj/structure/farming/plant
 	name = "plant"
@@ -84,6 +93,18 @@
 	icon_state = "potato-grow1"
 	plant = "potato"
 
+/obj/structure/farming/plant/poppy
+	name = "poppy plant"
+	desc = "a opium poppy plant."
+	icon_state = "poppy-grow1"
+	plant = "poppy"
+
+/obj/structure/farming/plant/cabbage
+	name = "cabbage plant"
+	desc = "a cabbage plant."
+	icon_state = "cabbage-grow1"
+	plant = "cabbage"
+
 /obj/structure/farming/plant/apple
 	name = "apple tree"
 	desc = "an apple tree."
@@ -93,8 +114,8 @@
 /obj/structure/farming/plant/orange
 	name = "orange tree"
 	desc = "an orange tree."
-	icon_state = "orange-grow1"
-	plant = "orange"
+	icon_state = "citrine-grow1"
+	plant = "citrine"
 
 /obj/structure/farming/plant/tobacco
 	name = "tobacco plant"
@@ -190,6 +211,24 @@
 			qdel(src)
 		else if (stage == 7) // harvest
 			new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			new seedpath(loc)
+			new seedpath(loc)
+			user << "<span class = 'warning'>You harvest the [name].</span>"
+			qdel(src)
+		else // destroy
+			user << "<span class = 'warning'>You uproot the dead [name].</span>"
+			qdel(src)
+
+
+
+/obj/structure/farming/plant/poppy/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (stage <=6) // destroy
+			user << "<span class = 'warning'>You uproot the [name].</span>"
+			qdel(src)
+		else if (stage == 7) // harvest
+			new/obj/item/stack/material/opium(loc)
 			var/seedpath = "/obj/item/farming/seeds/[plant]"
 			new seedpath(loc)
 			new seedpath(loc)
