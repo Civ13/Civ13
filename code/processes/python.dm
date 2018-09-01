@@ -24,4 +24,4 @@
 		return config.scripts_directory
 	if (serverswap && serverswap.Find("masterdir"))
 		return "[serverswap["masterdir"]]scripts"
-	return "/home/customer/1713/scripts"
+	return "/home/1713/1713/scripts"
