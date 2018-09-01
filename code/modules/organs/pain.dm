@@ -162,7 +162,7 @@ mob/living/carbon/human/proc/custom_pain(var/message, var/flash_strength)
 		return
 	if (reagents.has_reagent("oxycodone"))
 		return
-	if (reagents.has_reagent("morphine"))
+	if (reagents.has_reagent("opium"))
 		return
 	if (analgesic)
 		return

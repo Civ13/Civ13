@@ -113,11 +113,11 @@
 	icon_state = "tobacco"
 	default_type = "tobacco"
 
-/obj/item/stack/material/opium
-	name = "opium"
+/obj/item/stack/material/poppy
+	name = "poppy"
 	desc = "dried opium poppies. Opium can be extracted."
-	icon_state = "opium"
-	default_type = "opium"
+	icon_state = "poppy"
+	default_type = "poppy"
 
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)

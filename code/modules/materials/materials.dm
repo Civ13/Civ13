@@ -255,9 +255,9 @@ var/list/name_to_material
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
 
-/material/opium
-	name = "opium"
-	stack_type = /obj/item/stack/material/opium
+/material/poppy
+	name = "poppy"
+	stack_type = /obj/item/stack/material/poppy
 	flags = MATERIAL_UNMELTABLE
 	cut_delay = 5
 	icon_colour = "#2b1d0e"
@@ -265,8 +265,8 @@ var/list/name_to_material
 	tableslam_noise = null
 	hardness = 10
 	stack_origin_tech = list(TECH_MATERIAL = 6)
-	sheet_singular_name = "ball"
-	sheet_plural_name = "balls"
+	sheet_singular_name = "poppy"
+	sheet_plural_name = "poppies"
 
 /material/gold
 	name = "gold"

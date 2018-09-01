@@ -228,7 +228,7 @@
 			user << "<span class = 'warning'>You uproot the [name].</span>"
 			qdel(src)
 		else if (stage == 7) // harvest
-			new/obj/item/stack/material/opium(loc)
+			new/obj/item/stack/material/poppy(loc)
 			var/seedpath = "/obj/item/farming/seeds/[plant]"
 			new seedpath(loc)
 			new seedpath(loc)

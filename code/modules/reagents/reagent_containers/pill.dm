@@ -146,6 +146,16 @@
 		..()
 		reagents.add_reagent("tramadol", 15)
 
+/obj/item/weapon/reagent_containers/pill/opium
+	name = "opium ball"
+	desc = "A ball of dried opium. A great painkiller."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "opium_extracted"
+	New()
+		..()
+		reagents.add_reagent("opium", 5)
+
+
 
 /obj/item/weapon/reagent_containers/pill/methylphenidate
 	name = "Methylphenidate pill"

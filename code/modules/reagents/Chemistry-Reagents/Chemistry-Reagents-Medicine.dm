@@ -504,20 +504,20 @@
 		M.make_dizzy(5)
 		M.make_jittery(5)
 
-/datum/reagent/morphine
-	name = "Morphine"
-	id = "morphine"
-	description = "A powerful sedative and painkiller"
+/datum/reagent/opium
+	name = "Opium"
+	id = "opium"
+	description = "A powerful sedative and painkiller."
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#000067"
 	metabolism = REM * 0.10
 	overdose = 9
 
-/datum/reagent/morphine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/opium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 200)
 
-/datum/reagent/morphine/overdose(var/mob/living/carbon/M, var/alien)
+/datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 250)
