@@ -282,6 +282,7 @@ var/global/list/GrassEdgeCache
 	name = "Sand"
 	icon_state = "sand"
 	is_diggable = TRUE
+	available_sand = 2
 
 /turf/floor/plating/beach/coastline
 	name = "Coastline"
@@ -363,6 +364,7 @@ var/global/list/GrassEdgeCache
 	interior = FALSE
 	stepsound = "dirt"
 	is_diggable = TRUE
+	available_sand = 2
 
 /turf/floor/plating/sand/New()
 	..()

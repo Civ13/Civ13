@@ -9,6 +9,7 @@
 	var/base_state = "oven"
 	var/on = FALSE
 	var/max_space = 7
+	var/fuel = 0
 
 /obj/structure/oven/update_icon()
 	if (on)
@@ -31,20 +32,24 @@
 
 // todo: fix eggs not roasting & roasted meat sandwiches turning to burnt mess
 /obj/structure/oven/attack_hand(var/mob/living/carbon/human/H)
-	if (!on)
+	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
+		fuel -=1
 		update_icon()
 		spawn (50)
 			on = FALSE
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
 			process()
+	else
+		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
 
 /obj/structure/oven/process()
 	for (var/obj/item/I in contents)
 		if (istype(I, /obj/item/weapon/ore))
 			if (istype(I, /obj/item/weapon/ore/coal))
+				fuel += 1
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/weapon/ore/diamond))
@@ -69,6 +74,10 @@
 				contents += new/obj/item/stack/material/iron(src)
 				contents -= I
 				qdel(I)
+			else if (istype(I, /obj/item/weapon/ore/glass))
+				contents += new/obj/item/stack/material/glass(src)
+				contents -= I
+				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
@@ -91,7 +100,11 @@
 				organ.roasted = TRUE
 				contents -= I
 				qdel(I)
-		else if (istype(I, /obj/item/weapon/wrench))
+		else if (istype(I, /obj/item/stack/material/wood))
+			fuel += I.amount
+			contents -= I
+			qdel(I)
+		else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 			return
 		else
 			I.name = replacetext(I.name, "raw ", "")
@@ -120,9 +133,10 @@
 	base_state = "fireplace"
 	on = FALSE
 	max_space = 5
+	fuel = 4
 
 /obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
 	if (icon_state == "[base_state]_on")
-		M.apply_damage(rand(1,2), BURN, "l_leg")
-		M.apply_damage(rand(1,2), BURN, "r_leg")
-		visible_message("<span class = 'notice'>[M] gets burnt by the [name]!</span>")
+		M.apply_damage(rand(2,4), BURN, "l_leg")
+		M.apply_damage(rand(2,4), BURN, "r_leg")
+		visible_message("<span class = 'warning'>[M] gets burnt by the [name]!</span>")

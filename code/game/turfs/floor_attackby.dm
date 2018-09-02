@@ -49,6 +49,20 @@
 					H.shoveling_dirt = FALSE
 			else
 				user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
+		else if (istype(T, /turf/floor/plating/beach/sand) && istype(H) && !H.shoveling_sand)
+			if (T.available_sand >= 1)
+				H.shoveling_sand = TRUE
+				visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (do_after(user, rand(45,60)))
+					visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
+					H.shoveling_sand = FALSE
+					H.adaptStat("strength", 1)
+					T.available_sand -= 1
+					new /obj/item/weapon/ore/glass(T)
+				else
+					H.shoveling_sand = FALSE
+
 		else
 			return ..(C, user)
 

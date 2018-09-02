@@ -155,7 +155,7 @@
 "cY" = (/turf/floor/plating/dust{name = "dry dirt"},/area/caribbean/indians/camp)
 "cZ" = (/obj/item/flashlight/torch/on,/turf/floor/dirt,/area/caribbean/houses/nml_one{name = "Priest"})
 "da" = (/obj/structure/wild/junglebush,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND"},/turf/floor/plating/grass/wild,/area/caribbean/tribes)
-"db" = (/obj/structure/railing,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
+"db" = (/obj/structure/railing,/obj/structure/exportbook,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "dc" = (/obj/structure/railing,/turf/floor/plating/beach/water,/area/caribbean/sea/sea)
 "dd" = (/obj/structure/railing,/turf/floor/plating/beach/water/deep,/area/caribbean/sea/sea)
 "de" = (/obj/covers/wood_ship{name = "pier"},/turf/floor/plating/beach/water,/area/caribbean/transport/one)

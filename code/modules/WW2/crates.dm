@@ -169,9 +169,10 @@ obj/structure/closet/crate/empty
 
 /obj/structure/closet/crate/rations/seeds/cashcrops
 	name = "Seeds: Cash Crops"
-	paths = list(/obj/item/farming/seeds/tobacco = 4,
-				/obj/item/farming/seeds/sugarcane = 4,
-				/obj/item/farming/seeds/hemp = 4,)
+	paths = list(/obj/item/farming/seeds/tobacco = 3,
+				/obj/item/farming/seeds/sugarcane = 3,
+				/obj/item/farming/seeds/poppy = 3,
+				/obj/item/farming/seeds/hemp = 3,)
 
 
 ///WEAPONS///
