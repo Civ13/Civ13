@@ -143,31 +143,29 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
-		if (H.faction_text == CIVILIAN)
-			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999)") as num
-			keycode = Clamp(keycode, 1000, 9999)
-			var/keyname = input(user, "Choose a name for the key") as text|null
-			if (keyname == null)
-				keyname = "Key"
-			build_override_door.name = keyname
-			build_override_door.keyslot.code = keycode
+
 
 			return
 		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
 			user << "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>"
 			return
 
-		var/obj/item/weapon/key = H.l_hand
+		var/obj/item/weapon/key/key = H.l_hand
 		if (!key || !istype(key))
 			key = H.r_hand
 		if (!key || !istype(key))
 			return // should never happen
 
-		var/texttype = "[key.type]"
-		var/uniquepart = replacetext(texttype, "/obj/item/weapon/key/", "")
-		var/doorbasepath = "/obj/structure/simple_door/key_door/"
-		var/doorpath = text2path("[doorbasepath][uniquepart]")
-		build_override_object = new doorpath(null, material)
+		if (key && H.faction_text == CIVILIAN)
+			var/keyname = input(user, "Choose a name for the key") as text|null
+			if (keyname == null)
+				keyname = "Key"
+			build_override_door = new /obj/structure/simple_door/key_door/civ(null, material)
+			build_override_door.name = keyname
+			var/datum/keyslot/civ/keyslot_coding = new/datum/keyslot/civ(null)
+			keyslot_coding.code = key.code
+			build_override_door.keyslot_type = keyslot_coding
+			build_override_door.keyslot = keyslot_coding
 
 	if (!can_use(required))
 		if (produced>1)

@@ -20,6 +20,16 @@
 /obj/structure/oven/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))
 		return
+	if (istype(I, /obj/item/stack/material/wood))
+		fuel += I.amount
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
+		return
+	else if (istype(I, /obj/item/weapon/ore/coal))
+		fuel += 3
+		qdel(I)
+		return
 	var/space = max_space
 	for (var/obj/item/II in contents)
 		space -= II.w_class
@@ -48,18 +58,12 @@
 /obj/structure/oven/process()
 	for (var/obj/item/I in contents)
 		if (istype(I, /obj/item/weapon/ore))
-			if (istype(I, /obj/item/weapon/ore/coal))
-				fuel += 1
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/weapon/ore/diamond))
+			if (istype(I, /obj/item/weapon/ore/diamond))
 				contents += new/obj/item/stack/material/diamond(src)
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/weapon/ore/glass))
-				var/obj/item/stack/material/glass/glass = new/obj/item/stack/material/glass(src)
-				glass.amount = 3
-				contents += glass
+				contents += new/obj/item/stack/material/glass(src)
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/weapon/ore/gold))
@@ -100,12 +104,7 @@
 				organ.roasted = TRUE
 				contents -= I
 				qdel(I)
-		else if (istype(I, /obj/item/stack/material/wood))
-			fuel += I.amount
-			contents -= I
-			qdel(I)
-		else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			return
+
 		else
 			I.name = replacetext(I.name, "raw ", "")
 			I.desc = replacetext(I.desc, "raw", "roasted")

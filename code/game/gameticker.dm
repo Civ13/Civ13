@@ -220,7 +220,10 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 
 			if (!delay_end)
-				world << "<span class='notice'><big>Restarting in <b>60</b> seconds. Next map: <b>[next_map]</b></big></span>"
+				world << "<span class='notice'><big>Restarting in <b>90</b> seconds. Next map: <b>[next_map]</b></big></span>"
+				spawn(150)
+					save_all_whitelists()
+					serverswap_pre_close_server()
 				if (restart_after > restart_timeout)
 					restarting_is_very_bad = TRUE
 					spawn (restart_after - restart_timeout)

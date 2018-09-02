@@ -279,6 +279,7 @@
 #include "code\game\objects\structures\grille.dm"
 #include "code\game\objects\structures\kitchen_spike.dm"
 #include "code\game\objects\structures\mirror.dm"
+#include "code\game\objects\structures\noticeboard.dm"
 #include "code\game\objects\structures\optable.dm"
 #include "code\game\objects\structures\piano.dm"
 #include "code\game\objects\structures\railing.dm"
