@@ -68,12 +68,12 @@ var/movementMachine/movementMachine = null
 				world.Error(e)
 
 
-		collect_stats()
+		collect_stats(initial_tick_usage)
 		sleep(interval)
 
 #undef SECONDS
 
-/movementMachine/proc/collect_stats()
+/movementMachine/proc/collect_stats(var/initial_tick_usage = 0)
 	set waitfor = FALSE
 	++ticks
 	last_run = world.time
