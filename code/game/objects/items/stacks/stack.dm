@@ -111,8 +111,7 @@
 	var/atom/movable/build_override_object = null
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
-	var/obj/structure/simple_door/key_door/civ/build_override_door = new/obj/structure/simple_door/key_door/civ
-	build_override_door.keyslot.code = -1
+	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
 	var/mob/living/carbon/human/H = user
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -157,12 +156,12 @@
 			return // should never happen
 
 		if (key && H.faction_text == CIVILIAN)
-			var/keyname = input(user, "Choose a name for the key") as text|null
+			var/keyname = input(user, "Choose a name for the door") as text|null
 			if (keyname == null)
-				keyname = "Key"
-			build_override_door = new /obj/structure/simple_door/key_door/civ(null, material)
+				keyname = "Locked"
+			build_override_door = new /obj/structure/simple_door/key_door/custom(null, material)
 			build_override_door.name = keyname
-			var/datum/keyslot/civ/keyslot_coding = new/datum/keyslot/civ(null)
+			var/datum/keyslot/custom/keyslot_coding = new/datum/keyslot/custom(null)
 			keyslot_coding.code = key.code
 			build_override_door.keyslot_type = keyslot_coding
 			build_override_door.keyslot = keyslot_coding

@@ -1,4 +1,13 @@
 ////////1713 stuff//////////
+#define CV_CUSTOM 999
+/datum/keyslot/custom
+	code = CV_CUSTOM
+
+/obj/structure/simple_door/key_door/custom
+	keyslot_type = /datum/keyslot/custom
+	unique_door_name = "Private"
+#undef CV_CUSTOM
+
 #define CV_CODE 1000
 /datum/keyslot/civ
 	code = CV_CODE

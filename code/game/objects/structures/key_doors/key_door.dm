@@ -21,6 +21,10 @@ var/list/nonbreaking_types = list(
 	material = "iron"
 	icon = 'icons/obj/doors/material_doors_leonister.dmi'
 
+/obj/structure/simple_door/key_door/custom
+	keyslot_type = /datum/keyslot/custom
+
+
 /obj/structure/simple_door/key_door/New(_loc, _material = null)
 
 	var/map_door_name = name
@@ -51,6 +55,12 @@ var/list/nonbreaking_types = list(
 	spawn (7)
 		if (starts_open)
 			Open()
+
+/obj/structure/simple_door/key_door/custom/New(_loc, _material = null)
+	health = 300
+	initial_health = health
+	spawn(15)
+		keyslot = new()
 
 /obj/structure/simple_door/key_door/Open()
 	..()
