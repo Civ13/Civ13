@@ -860,63 +860,47 @@
 /client/verb/startmovingup()
 	set name = ".startmovingup"
 	set instant = TRUE
-	if (mob)
-		mob.movement_northsouth = NORTH
-		try
-			Move(get_step(mob, NORTH), NORTH)
-		catch (var/E)
-			pass(E)
+	Move(get_step(mob, NORTH), NORTH)
+	mob.movement_northsouth = NORTH
 
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
 	set instant = TRUE
-	if (mob)
-		mob.movement_northsouth = SOUTH
-		try
-			Move(get_step(mob, SOUTH), SOUTH)
-		catch (var/E)
-			pass(E)
+	Move(get_step(mob, SOUTH), SOUTH)
+	mob.movement_northsouth = SOUTH
 
 /client/verb/startmovingright()
 	set name = ".startmovingright"
 	set instant = TRUE
-	if (mob)
-		mob.movement_eastwest = EAST
-		try
-			Move(get_step(mob, EAST), EAST)
-		catch (var/E)
-			pass(E)
+	Move(get_step(mob, EAST), EAST)
+	mob.movement_eastwest = EAST
 
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
 	set instant = TRUE
-	if (mob)
-		mob.movement_eastwest = WEST
-		try
-			Move(get_step(mob, WEST), WEST)
-		catch (var/E)
-			pass(E)
+	Move(get_step(mob, WEST), WEST)
+	mob.movement_eastwest = WEST
 
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"
 	set instant = TRUE
-	if (mob && mob.movement_northsouth == NORTH)
+	if (mob.movement_northsouth == NORTH)
 		mob.movement_northsouth = null
 
 /client/verb/stopmovingdown()
 	set name = ".stopmovingdown"
 	set instant = TRUE
-	if (mob && mob.movement_northsouth == SOUTH)
+	if (mob.movement_northsouth == SOUTH)
 		mob.movement_northsouth = null
 
 /client/verb/stopmovingright()
 	set name = ".stopmovingright"
 	set instant = TRUE
-	if (mob && mob.movement_eastwest == EAST)
+	if (mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
 	set instant = TRUE
-	if (mob && mob.movement_eastwest == WEST)
+	if (mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
