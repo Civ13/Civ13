@@ -102,3 +102,11 @@
 	icon_state = "corn"
 	color = "#8b7355"
 	nutriment_desc = list("corn" = TRUE)
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/corn/attack_self(mob/user as mob)
+	if (do_after(user, 120, user.loc))
+		new/obj/item/clothing/mask/smokable/pipe/cobpipe(user.loc)
+		qdel(src)
+		return
+	else
+		return

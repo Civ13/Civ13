@@ -256,7 +256,7 @@ var/list/name_to_material
 	sheet_plural_name = "leaves"
 
 /material/poppy
-	name = "poppy"
+	name = "dried"
 	stack_type = /obj/item/stack/material/poppy
 	flags = MATERIAL_UNMELTABLE
 	cut_delay = 5

@@ -361,6 +361,27 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			G.reagents.trans_to_obj(src, G.reagents.total_volume)
 		name = "[G.name]-packed [initial(name)]"
 		qdel(G)
+	else if (istype(W, /obj/item/stack/material/tobacco))
+		var/obj/item/stack/material/tobacco/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already packed.</span>"
+			return
+		smoketime = 1000
+		G.reagents.add_reagent("nicotine",15)
+		name = "tobacco-packed [initial(name)]"
+		if (G.amount > 1)
+			G.amount -= 1
+		else
+			qdel(G)
+	else if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
+		var/obj/item/stack/material/tobacco/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already packed.</span>"
+			return
+		smoketime = 500
+		G.reagents.add_reagent("opium",5)
+		name = "opium-packed [initial(name)]"
+		qdel(G)
 
 	else if (istype(W, /obj/item/weapon/flame/lighter))
 		var/obj/item/weapon/flame/lighter/L = W
@@ -379,7 +400,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/clothing/mask/smokable/pipe/cobpipe
 	name = "corn cob pipe"
-	desc = "A nicotine delivery system popularized by folksy backwoodsmen, kept popular in the modern age and beyond by space hipsters."
+	desc = "A nicotine delivery system popularized by folksy backwoodsmen, kept popular in the current age."
 	icon_state = "cobpipeoff"
 	item_state = "cobpipeoff"
 	icon_on = "cobpipeon"  //Note - these are in masks.dmi
