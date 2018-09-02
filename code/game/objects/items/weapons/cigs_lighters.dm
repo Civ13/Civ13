@@ -174,7 +174,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/clothing/mask/smokable/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	..()
-	if (isflamesource(W))
+	if (isflamesource(W) ||istype(W, /obj/item/flashlight))
 		var/text = matchmes
 		if (istype(W, /obj/item/weapon/flame/match))
 			text = matchmes
@@ -345,8 +345,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		name = "empty [initial(name)]"
 
 /obj/item/clothing/mask/smokable/pipe/attackby(obj/item/weapon/W as obj, mob/user as mob)
-/*	if (istype(W, /obj/item/weapon/melee/energy/sword))
-		return*/
 
 	..()
 
@@ -372,7 +370,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	else if (istype(W, /obj/item/weapon/flame/match))
 		var/obj/item/weapon/flame/match/M = W
 		if (M.lit)
-			light("<span class='notice'>[user] lights their [name] with their [W].</span>")
+			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
+	else if (istype(W, /obj/item/flashlight))
+		light("<span class='notice'>[user] lights their [name] with the [W].</span>")
 	user.update_inv_wear_mask(0)
 	user.update_inv_l_hand(0)
 	user.update_inv_r_hand(1)
