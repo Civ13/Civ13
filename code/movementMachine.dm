@@ -22,8 +22,8 @@ var/movementMachine/movementMachine = null
 	return TRUE
 
 /movementMachine/proc/start()
-	spawn (0)
-		process()
+	set waitfor = FALSE
+	process()
 
 /movementMachine/proc/process()
 
