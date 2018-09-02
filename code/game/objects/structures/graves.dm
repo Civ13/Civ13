@@ -23,9 +23,9 @@
 	anchored = TRUE
 
 /obj/structure/grave
-	name = "open_grave
+	name = "open_grave"
 	desc = "An opened grave."
 	icon = 'icons/obj/cross.dmi'
-	icon_state = "grave_overlay
+	icon_state = "grave_overlay"
 	density = FALSE
 	anchored = TRUE
