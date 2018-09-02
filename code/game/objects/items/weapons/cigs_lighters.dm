@@ -347,8 +347,28 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/smokable/pipe/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 	..()
-
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
+	if (istype(W, /obj/item/stack/material/tobacco))
+		var/obj/item/stack/material/tobacco/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already packed.</span>"
+			return
+		smoketime = 1000
+		reagents.add_reagent("nicotine",15)
+		name = "tobacco-packed [initial(name)]"
+		if (G.amount > 1)
+			G.amount -= 1
+		else
+			qdel(G)
+	else if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
+		var/obj/item/weapon/reagent_containers/pill/opium/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already packed.</span>"
+			return
+		smoketime = 500
+		reagents.add_reagent("opium",5)
+		name = "opium-packed [initial(name)]"
+		qdel(G)
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		var/obj/item/weapon/reagent_containers/food/snacks/grown/G = W
 		if (!G.dry)
 			user << "<span class='notice'>[G] must be dried before you stuff it into [src].</span>"
@@ -360,27 +380,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if (G.reagents)
 			G.reagents.trans_to_obj(src, G.reagents.total_volume)
 		name = "[G.name]-packed [initial(name)]"
-		qdel(G)
-	else if (istype(W, /obj/item/stack/material/tobacco))
-		var/obj/item/stack/material/tobacco/G = W
-		if (smoketime)
-			user << "<span class='notice'>[src] is already packed.</span>"
-			return
-		smoketime = 1000
-		G.reagents.add_reagent("nicotine",15)
-		name = "tobacco-packed [initial(name)]"
-		if (G.amount > 1)
-			G.amount -= 1
-		else
-			qdel(G)
-	else if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
-		var/obj/item/stack/material/tobacco/G = W
-		if (smoketime)
-			user << "<span class='notice'>[src] is already packed.</span>"
-			return
-		smoketime = 500
-		G.reagents.add_reagent("opium",5)
-		name = "opium-packed [initial(name)]"
 		qdel(G)
 
 	else if (istype(W, /obj/item/weapon/flame/lighter))
