@@ -22,8 +22,8 @@ var/movementMachine/movementMachine = null
 	return TRUE
 
 /movementMachine/proc/start()
-	spawn (0)
-		process()
+	set waitfor = FALSE
+	process()
 
 /movementMachine/proc/process()
 
@@ -67,29 +67,33 @@ var/movementMachine/movementMachine = null
 			catch(var/exception/e)
 				world.Error(e)
 
-		++ticks
-		last_run = world.time
-		var/final_tick_usage = world.tick_usage
 
-		// get average/last tick usage: cpu stats are based on this, since cpu doesn't update in real time it's the best we can do - Kachnov
-		last_twenty_tick_usage_times += ((final_tick_usage-initial_tick_usage) * (world.tick_lag/interval))
-		if (last_twenty_tick_usage_times.len >= 20)
-			var/list/old = last_twenty_tick_usage_times.Copy()
-			last_twenty_tick_usage_times.Cut()
-			last_twenty_tick_usage_times.len = 10
-			for (var/v in 11 to 20)
-				last_twenty_tick_usage_times[v-10] = old[v]
-
-		average_tick_usage = average_tick_usage()
-		last_tick_usage = last_twenty_tick_usage_times[last_twenty_tick_usage_times.len]
-
-		// I'm not confident that this is the best way to "calculate" average/last cpu, but oh well - Kachnov
-		average_cpu = (average_tick_usage/100) * world.cpu
-		last_cpu = (last_tick_usage/100) * world.cpu
-
+		collect_stats(initial_tick_usage)
 		sleep(interval)
+
 #undef SECONDS
 
+/movementMachine/proc/collect_stats(var/initial_tick_usage = 0)
+	set waitfor = FALSE
+	++ticks
+	last_run = world.time
+	var/final_tick_usage = world.tick_usage
+
+	// get average/last tick usage: cpu stats are based on this, since cpu doesn't update in real time it's the best we can do - Kachnov
+	last_twenty_tick_usage_times += ((final_tick_usage-initial_tick_usage) * (world.tick_lag/interval))
+	if (last_twenty_tick_usage_times.len >= 20)
+		var/list/old = last_twenty_tick_usage_times.Copy()
+		last_twenty_tick_usage_times.Cut()
+		last_twenty_tick_usage_times.len = 10
+		for (var/v in 11 to 20)
+			last_twenty_tick_usage_times[v-10] = old[v]
+
+	average_tick_usage = average_tick_usage()
+	last_tick_usage = last_twenty_tick_usage_times[last_twenty_tick_usage_times.len]
+
+	// I'm not confident that this is the best way to "calculate" average/last cpu, but oh well - Kachnov
+	average_cpu = (average_tick_usage/100) * world.cpu
+	last_cpu = (last_tick_usage/100) * world.cpu
 
 /movementMachine/proc/do_movement(var/mob/M, movedir, diag)
 	set waitfor = FALSE
