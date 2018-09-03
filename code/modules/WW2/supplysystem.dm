@@ -1,6 +1,6 @@
 /obj/structure/supplybook
 	name = "supply orders book"
-	desc = "Use this to request supplies to be delivered to the colony."
+	desc = "Use this to request supplies to be delivered to the colony. Only merchants have access to it and only the governor can order ammunition."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "supplybook"
 	var/money = 0
@@ -14,6 +14,29 @@
 	var/money = 0
 	var/marketval = 0
 	var/moneyin = 0
+	var/list/itemstobuy = (/obj/structure/closet/crate/wood, 
+				/obj/structure/closet/crate/steel, 
+				/obj/structure/closet/crate/iron, 
+				/obj/structure/closet/crate/glass,
+				/obj/structure/closet/crate/rations/vegetables,
+				/obj/structure/closet/crate/rations/fruits,
+				/obj/structure/closet/crate/rations/biscuits,
+				/obj/structure/closet/crate/rations/beer,
+				/obj/structure/closet/crate/rations/ale,
+				/obj/structure/closet/crate/rations/meat, 
+				/obj/structure/closet/crate/rations/seeds/trees,
+				/obj/structure/closet/crate/rations/seeds/cereals,
+				/obj/structure/closet/crate/rations/seeds/vegetables,
+				/obj/structure/closet/crate/rations/seeds/cashcrops,
+				/obj/structure/closet/crate/grenades)
+				
+	var/list/governoritem = (/obj/structure/closet/crate/musketball, 
+				/obj/structure/closet/crate/musketball_pistol, 
+				/obj/structure/closet/crate/blunderbuss_ammo, 
+				/obj/structure/closet/crate/cannonball)
+
+/obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
+	if(
 
 /obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (W.amount && istype(W, /obj/item/stack/money))
