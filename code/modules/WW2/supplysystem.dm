@@ -5,26 +5,26 @@
 	icon_state = "supplybook"
 	var/money = 0
 	var/marketval = 0
-	var/list/itemstobuy = (/obj/structure/closet/crate/wood, 
-				/obj/structure/closet/crate/steel, 
-				/obj/structure/closet/crate/iron, 
+	var/list/itemstobuy = list(/obj/structure/closet/crate/wood,
+				/obj/structure/closet/crate/steel,
+				/obj/structure/closet/crate/iron,
 				/obj/structure/closet/crate/glass,
 				/obj/structure/closet/crate/rations/vegetables,
 				/obj/structure/closet/crate/rations/fruits,
 				/obj/structure/closet/crate/rations/biscuits,
 				/obj/structure/closet/crate/rations/beer,
 				/obj/structure/closet/crate/rations/ale,
-				/obj/structure/closet/crate/rations/meat, 
+				/obj/structure/closet/crate/rations/meat,
 				/obj/structure/closet/crate/rations/seeds/trees,
 				/obj/structure/closet/crate/rations/seeds/cereals,
 				/obj/structure/closet/crate/rations/seeds/vegetables,
-				/obj/structure/closet/crate/rations/seeds/cashcrops,
-				/obj/structure/closet/crate/grenades)
-				
-	var/list/governoritem = (/obj/structure/closet/crate/musketball, 
-				/obj/structure/closet/crate/musketball_pistol, 
-				/obj/structure/closet/crate/blunderbuss_ammo, 
-				/obj/structure/closet/crate/cannonball)
+				/obj/structure/closet/crate/rations/seeds/cashcrops,)
+
+	var/list/governoritem = list(/obj/structure/closet/crate/musketball,
+				/obj/structure/closet/crate/musketball_pistol,
+				/obj/structure/closet/crate/blunderbuss_ammo,
+				/obj/structure/closet/crate/grenades,
+				/obj/structure/closet/crate/cannonball,)
 
 /obj/structure/exportbook
 	name = "exporting book"

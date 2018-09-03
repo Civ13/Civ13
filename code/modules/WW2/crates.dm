@@ -46,7 +46,6 @@
 /* todo: turn some crates into CARTS and re-enable this
 /obj/structure/closet/crate
 	icon = 'icons/obj/crate.dmi'*/
-	var/cratevalue = 99999 //How much the crate costs when importing
 
 obj/structure/closet/crate/chest
 	name = "wood chest"
