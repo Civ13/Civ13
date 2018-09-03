@@ -256,7 +256,7 @@ var/list/name_to_material
 	sheet_plural_name = "leaves"
 
 /material/poppy
-	name = "dried"
+	name = "poppy"
 	stack_type = /obj/item/stack/material/poppy
 	flags = MATERIAL_UNMELTABLE
 	cut_delay = 5
@@ -265,8 +265,8 @@ var/list/name_to_material
 	tableslam_noise = null
 	hardness = 10
 	stack_origin_tech = list(TECH_MATERIAL = 6)
-	sheet_singular_name = "poppy"
-	sheet_plural_name = "poppies"
+	sheet_singular_name = "plant"
+	sheet_plural_name = "plants"
 
 /material/gold
 	name = "gold"
