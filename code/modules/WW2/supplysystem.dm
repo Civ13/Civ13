@@ -1,10 +1,30 @@
 /obj/structure/supplybook
 	name = "supply orders book"
-	desc = "Use this to request supplies to be delivered to the colony."
+	desc = "Use this to request supplies to be delivered to the colony. Only merchants have access to it and only the governor can order ammunition."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "supplybook"
 	var/money = 0
 	var/marketval = 0
+	var/list/itemstobuy = (/obj/structure/closet/crate/wood, 
+				/obj/structure/closet/crate/steel, 
+				/obj/structure/closet/crate/iron, 
+				/obj/structure/closet/crate/glass,
+				/obj/structure/closet/crate/rations/vegetables,
+				/obj/structure/closet/crate/rations/fruits,
+				/obj/structure/closet/crate/rations/biscuits,
+				/obj/structure/closet/crate/rations/beer,
+				/obj/structure/closet/crate/rations/ale,
+				/obj/structure/closet/crate/rations/meat, 
+				/obj/structure/closet/crate/rations/seeds/trees,
+				/obj/structure/closet/crate/rations/seeds/cereals,
+				/obj/structure/closet/crate/rations/seeds/vegetables,
+				/obj/structure/closet/crate/rations/seeds/cashcrops,
+				/obj/structure/closet/crate/grenades)
+				
+	var/list/governoritem = (/obj/structure/closet/crate/musketball, 
+				/obj/structure/closet/crate/musketball_pistol, 
+				/obj/structure/closet/crate/blunderbuss_ammo, 
+				/obj/structure/closet/crate/cannonball)
 
 /obj/structure/exportbook
 	name = "exporting book"
@@ -14,6 +34,35 @@
 	var/money = 0
 	var/marketval = 0
 	var/moneyin = 0
+
+/obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
+	var/list/someitems
+	switch(user.original_job_title)
+		if("Merchant")
+			someitems = itemstobuy.Copy()
+		if("Governor")
+			someitems = itemstobuy.Copy()
+			someitems += governoritem.Copy()
+			user << "Because you're the Governor, you can also purchase ammunition for various weapons and cannons!"
+	if(!someitems)
+		user << "Only the merchants have access to the internation shipping companies. Sell it to one."
+	var/list/display //The products to be displayed, includes name of crate and price
+	for(var/obj/structure/closet/crate/crate2 in someitems)
+//Since I put the typepath of the item itself in the list, it must be init or else it's considered a file and not a object
+		var/obj/structure/closet/crate/crate3 = new(crate2)
+		crate3.name = "[crate3.name] for [crate3.cratevalue] reals" //Simplicity so the crate's name can be shown in the list
+		display += crate3
+	var/obj/structure/closet/crate/choice = input(user, "What do you want to purchase?") in list(display, "Cancel")
+	if(choice == "Cancel")
+		return
+	else
+		if(choice.cratevalue < money)
+			user << "You don't have enough money to buy that crate!"
+			return
+		else
+			money -= choice.cratevalue
+			user << "You have successfully purchased the crate."
+			new choice(src.loc)
 
 /obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (W.amount && istype(W, /obj/item/stack/money))
