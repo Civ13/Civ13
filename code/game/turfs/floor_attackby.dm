@@ -208,7 +208,11 @@
 				new/obj/structure/farming/plant/poppy(src)
 				qdel(C)
 				return
-
+			else if (istype(C, /obj/item/farming/seeds/cabbage))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/cabbage(src)
+				qdel(C)
+				return
 /*					if (ishuman(user)) todo: farming skills
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3) */

@@ -11,6 +11,27 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 60)
 	attack_verb = list("stamped")
 
+/obj/item/weapon/stamp/rn
+	name = "British Governor stamp"
+	icon_state = "stamp-rn"
+
+/obj/item/weapon/stamp/fr
+	name = "French Governor stamp"
+	icon_state = "stamp-fr"
+
+/obj/item/weapon/stamp/pt
+	name = "Portuguese Governor stamp"
+	icon_state = "stamp-pt"
+
+/obj/item/weapon/stamp/es
+	name = "Spanish Governor stamp"
+	icon_state = "stamp-es"
+
+/obj/item/weapon/stamp/nl
+	name = "Dutch Governor stamp"
+	icon_state = "stamp-nl"
+
+
 /obj/item/weapon/stamp/captain
 	name = "captain's rubber stamp"
 	icon_state = "stamp-cap"
@@ -54,26 +75,3 @@
 /obj/item/weapon/stamp/qm
 	name = "quartermaster's stamp"
 	icon_state = "stamp-qm"
-
-// Syndicate stamp to forge documents.
-/obj/item/weapon/stamp/chameleon/attack_self(mob/user as mob)
-
-	var/list/stamp_types = typesof(/obj/item/weapon/stamp) - type // Get all stamp types except our own
-	var/list/stamps = list()
-
-	// Generate them into a list
-	for (var/stamp_type in stamp_types)
-		var/obj/item/weapon/stamp/S = new stamp_type
-		stamps[capitalize(S.name)] = S
-
-	var/list/show_stamps = list("EXIT" = null) + sortList(stamps) // the list that will be shown to the user to pick from
-
-	var/input_stamp = WWinput(user, "Choose a stamp to disguise as.", "Choose a stamp.", show_stamps[1], show_stamps)
-
-	if (user && src in user.contents)
-
-		var/obj/item/weapon/stamp/chosen_stamp = stamps[capitalize(input_stamp)]
-
-		if (chosen_stamp)
-			name = chosen_stamp.name
-			icon_state = chosen_stamp.icon_state

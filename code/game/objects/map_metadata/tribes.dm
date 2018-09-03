@@ -26,6 +26,8 @@
 	var/message = ""
 
 obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
+	if (J.is_RP == TRUE)
+		. = FALSE
 	if (!(istype(J, /datum/job/indians/tribes)))
 		. = FALSE
 	else

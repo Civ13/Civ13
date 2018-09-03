@@ -13,6 +13,8 @@
 /datum/job/var/is_target = FALSE //for VIP modes
 /datum/job/var/rank_abbreviation = null
 /datum/job/var/is_governor = FALSE
+/datum/job/var/is_merchant = FALSE
+/datum/job/var/is_RP = FALSE //to enable civilian jobs per faction
 
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold

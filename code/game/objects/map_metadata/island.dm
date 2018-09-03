@@ -25,6 +25,8 @@
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 	var/done = FALSE
 obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
+	if (J.is_RP == TRUE)
+		. = FALSE
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))

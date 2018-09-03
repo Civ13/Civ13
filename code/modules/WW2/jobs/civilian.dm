@@ -111,10 +111,9 @@
 
 	//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
-	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/hatchet(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_hand)
+	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
@@ -288,6 +287,7 @@
 	rank_abbreviation = "Merchant"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
+	is_merchant = TRUE
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE

@@ -207,7 +207,7 @@
 	return TRUE
 
 /datum/job/french/carpenter
-	title = "Charpentier"
+	title = "Charpentier Naval"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Charpentier"
 	selection_color = "#2d2d63"

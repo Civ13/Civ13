@@ -170,7 +170,7 @@
 	return TRUE
 
 /datum/job/portuguese/surgeon
-	title = "Médico"
+	title = "Médico Naval"
 	en_meaning = "Medic"
 	rank_abbreviation = "Médico"
 	selection_color = "#2d2d63"
@@ -207,7 +207,7 @@
 	return TRUE
 
 /datum/job/portuguese/carpenter
-	title = "Carpinteiro"
+	title = "Carpinteiro Naval"
 	en_meaning = "Carpenter"
 	rank_abbreviation = "Carpinteiro"
 	selection_color = "#2d2d63"

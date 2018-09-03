@@ -269,9 +269,15 @@
 	icon_state = "tricorne_british"
 	item_state = "tricorne_british"
 
+/obj/item/clothing/head/tricorne_british_army
+	name = "British Army tricorne"
+	desc = "A red tricorne, used by the British Army."
+	icon_state = "tricorne_british2"
+	item_state = "tricorne_british2"
+
 /obj/item/clothing/head/bicorne_british_soldier
-	name = "British Army bicorne"
-	desc = "A back bicorne, used by the British Army and Marines."
+	name = "black bicorne"
+	desc = "A black bicorne, commonly used by the armed forces."
 	icon_state = "tricorne_british_soldier"
 	item_state = "tricorne_british_soldier"
 
@@ -296,7 +302,7 @@
 	worn_state = "british_officer"
 
 /obj/item/clothing/suit/storage/jacket/british_soldier
-	name = "British soldier jacket"
+	name = "British red jacket"
 	desc = "The british redcoat, used by the British Army and Marines."
 	icon_state = "british_soldier_jacket"
 	item_state = "british_soldier_jacket"
@@ -378,7 +384,13 @@
 /////////Portuguese/////////
 /obj/item/clothing/head/tricorne_portuguese
 	name = "Portuguese Navy tricorne"
-	desc = "A blue tricorne, used by the Portuguese Navy."
+	desc = "A green tricorne, used by the Portuguese Navy."
+	icon_state = "tricorne_portuguese"
+	item_state = "tricorne_portuguese"
+
+/obj/item/clothing/head/portuguese_army
+	name = "Portuguese Army tricorne"
+	desc = "A green tricorne, used by the Portuguese Army"
 	icon_state = "tricorne_portuguese"
 	item_state = "tricorne_portuguese"
 
@@ -432,6 +444,12 @@
 	icon_state = "tricorne_spanish"
 	item_state = "tricorne_spanish"
 
+/obj/item/clothing/head/spanish_army
+	name = "Spanish Army tricorne"
+	desc = "A yellow tricorne, used by the Spanish Army."
+	icon_state = "tricorne_spanish"
+	item_state = "tricorne_spanish"
+
 /obj/item/clothing/suit/storage/jacket/spanish_captain
 	name = "Spanish Captain jacket"
 	desc = "A standard Captain jacket of the Spanish Navy. Yellow with golden buttons, white laces and golden cuffs."
@@ -474,6 +492,12 @@
 	desc = "A white and blue tricorne, used by the French Navy."
 	icon_state = "tricorne_french"
 	item_state = "tricorne_french"
+
+/obj/item/clothing/head/french_army
+	name = "French Army tricorne"
+	desc = "A blue tricorne, used by the French Army."
+	icon_state = "tricorne_british"
+	item_state = "tricorne_british"
 
 /obj/item/clothing/suit/storage/jacket/french_captain
 	name = "French Captain jacket"
@@ -521,6 +545,12 @@
 /obj/item/clothing/head/tricorne_dutch
 	name = "United Provinces Navy tricorne"
 	desc = "An orange tricorne, used by the United Provinces Navy."
+	icon_state = "tricorne_dutch"
+	item_state = "tricorne_dutch"
+
+/obj/item/clothing/head/dutch_army
+	name = "United Provinces Army tricorne"
+	desc = "An orange tricorne, used by the Dutch United Provinces Army."
 	icon_state = "tricorne_dutch"
 	item_state = "tricorne_dutch"
 
@@ -616,3 +646,33 @@
 	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
+
+
+/////Army stuff
+/obj/item/clothing/suit/storage/jacket/dutch_officer_army
+	name = "United Provinces Army jacket"
+	desc = "A standard armyr jacket of the United Provinces Army. Orange with golden buttons."
+	icon_state = "dutch_officer"
+	item_state = "dutch_officer"
+	worn_state = "dutch_officer"
+
+/obj/item/clothing/suit/storage/jacket/spanish_officer_army
+	name = "Spanish Army jacket"
+	desc = "A standard armyr jacket of the Spanish Army. Orange with golden buttons."
+	icon_state = "spanish_officer"
+	item_state = "spanish_officer"
+	worn_state = "spanish_officer"
+
+/obj/item/clothing/suit/storage/jacket/portuguese_officer_army
+	name = "Portuguese Army jacket"
+	desc = "A standard armyr jacket of the Portuguese Army. Orange with golden buttons."
+	icon_state = "portuguese_officer"
+	item_state = "portuguese_officer"
+	worn_state = "portuguese_officer"
+
+/obj/item/clothing/suit/storage/jacket/french_officer_army
+	name = "French Army jacket"
+	desc = "A standard armyr jacket of the French Army. Orange with golden buttons."
+	icon_state = "french_officer"
+	item_state = "french_officer"
+	worn_state = "french_officer"

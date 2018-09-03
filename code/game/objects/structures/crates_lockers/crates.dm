@@ -10,7 +10,6 @@
 	climbable = TRUE
 //	mouse_drag_pointer = MOUSE_ACTIVE_POINTER	//???
 	var/rigged = FALSE
-	var/cratevalue = 99999 //How much the crate costs when importing
 
 // climbing crates - Kachnov
 /obj/structure/closet/crate/MouseDrop_T(mob/target, mob/user)

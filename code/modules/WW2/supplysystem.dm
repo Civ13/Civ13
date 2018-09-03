@@ -1,3 +1,23 @@
+/*
+ * Product datum
+ */
+/datum/product_import
+	var/title = "ERROR"
+	var/result_type = null
+	var/cratevalue = 1
+	var/nr = 1
+
+	New(_title, _result_type, _cratevalue = 1, _nr)
+		title = _title
+		result_type = _result_type
+		cratevalue = _cratevalue
+		nr = _nr
+
+
+////////////////////////////////////////////////////////////////////////////////////
+
+
+
 /obj/structure/supplybook
 	name = "supply orders book"
 	desc = "Use this to request supplies to be delivered to the colony. Only merchants have access to it and only the governor can order ammunition."
@@ -5,30 +25,30 @@
 	icon_state = "supplybook"
 	var/money = 0
 	var/marketval = 0
-	var/list/itemstobuy = list(/obj/structure/closet/crate/wood,
-				/obj/structure/closet/crate/steel,
-				/obj/structure/closet/crate/iron,
-				/obj/structure/closet/crate/glass,
-				/obj/structure/closet/crate/rations/vegetables,
-				/obj/structure/closet/crate/rations/fruits,
-				/obj/structure/closet/crate/rations/biscuits,
-				/obj/structure/closet/crate/rations/beer,
-				/obj/structure/closet/crate/rations/ale,
-				/obj/structure/closet/crate/rations/meat,
-				/obj/structure/closet/crate/rations/seeds/trees,
-				/obj/structure/closet/crate/rations/seeds/cereals,
-				/obj/structure/closet/crate/rations/seeds/vegetables,
-				/obj/structure/closet/crate/rations/seeds/cashcrops,)
+	var/list/itemstobuy = list(
+		new/datum/product_import("wood crate","/obj/structure/closet/crate/wood", 120, 1),
+		new/datum/product_import("iron crate","/obj/structure/closet/crate/iron", 330, 2),
+		new/datum/product_import("glass crate","/obj/structure/closet/crate/glass", 330, 3),
+		new/datum/product_import("vegetables crate","/obj/structure/closet/crate/rations/vegetables", 60, 4),
+		new/datum/product_import("fruits crate","/obj/structure/closet/crate/rations/fruits", 66, 5),
+		new/datum/product_import("biscuits crate","/obj/structure/closet/crate/rations/biscuits", 50, 6),
+		new/datum/product_import("beer crate","/obj/structure/closet/crate/rations/beer", 60, 7),
+		new/datum/product_import("ale crate","/obj/structure/closet/crate/rations/ale", 70, 8),
+		new/datum/product_import("meat crate","/obj/structure/closet/crate/rations/meat", 70, 9),
+		new/datum/product_import("tree seeds crate","/obj/structure/closet/crate/rations/seeds/trees", 20, 10),
+		new/datum/product_import("vegetable seeds crate","/obj/structure/closet/crate/rations/seeds/vegetables", 30, 11),
+		new/datum/product_import("cereal seeds crate","/obj/structure/closet/crate/rations/seeds/cereals", 20, 12),
+		new/datum/product_import("cash crops crate","/obj/structure/closet/crate/rations/seeds/cashcrops", 40, 13),
+		new/datum/product_import("musket ammo crate (25)","/obj/structure/closet/crate/musketball",100, 14),
+		new/datum/product_import("pistol ammo crate (25)","/obj/structure/closet/crate/musketball_pistol",60, 15),
+		new/datum/product_import("blunderbuss crate (15)","/obj/structure/closet/crate/blunderbuss_ammo",60, 16),
+		new/datum/product_import("grenade crate (10)","/obj/structure/closet/crate/grenades",110, 17),
+		new/datum/product_import("cannonball crate (10)","/obj/structure/closet/crate/cannonball",175, 18),)
 
-	var/list/governoritem = list(/obj/structure/closet/crate/musketball,
-				/obj/structure/closet/crate/musketball_pistol,
-				/obj/structure/closet/crate/blunderbuss_ammo,
-				/obj/structure/closet/crate/grenades,
-				/obj/structure/closet/crate/cannonball,)
 
 /obj/structure/exportbook
 	name = "exporting book"
-	desc = "Use this to export colony products and exchange money. Only merchants have access to it."
+	desc = "Use this to export colony products and exchange money. Only merchants and governors have access to it."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "supplybook2"
 	var/money = 0
@@ -36,33 +56,75 @@
 	var/moneyin = 0
 
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
-	var/list/someitems
-	switch(user.original_job_title)
-		if("Merchant")
-			someitems = itemstobuy.Copy()
-		if("Governor")
-			someitems = itemstobuy.Copy()
-			someitems += governoritem.Copy()
-			user << "Because you're the Governor, you can also purchase ammunition for various weapons and cannons!"
-	if(!someitems)
-		user << "Only the merchants have access to the internation shipping companies. Sell it to one."
+	if (!(user.original_job.is_governor) || !(user.original_job.is_merchant))
+		user << "Only the merchants have access to the internation shipping companies. Negotiate with one."
+		return
+
 	var/list/display //The products to be displayed, includes name of crate and price
-	for(var/obj/structure/closet/crate/crate2 in someitems)
-//Since I put the typepath of the item itself in the list, it must be init or else it's considered a file and not a object
-		var/obj/structure/closet/crate/crate3 = new(crate2)
-		crate3.name = "[crate3.name] for [crate3.cratevalue] reals" //Simplicity so the crate's name can be shown in the list
-		display += crate3
-	var/obj/structure/closet/crate/choice = input(user, "What do you want to purchase?") in list(display, "Cancel")
+	for (var/i=1;i<=itemstobuy.len,i++)
+		display += "[itemstobuy[i].nr]: [itemstobuy[i].title] : [itemstobuy[i].cratevalue]" //Simplicity so the crate's name can be shown in the list
+	var/choice = input(user, "What do you want to purchase?") in display + "Cancel"
 	if(choice == "Cancel")
 		return
 	else
-		if(choice.cratevalue < money)
-			user << "You don't have enough money to buy that crate!"
+		var/list/choicename = splittext(choice, " : ")
+		var/finalnr = choicename[3]
+
+		if (!(user.original_job.is_governor) && finalnr > 13)
+			user << "Only Governors can order military supplies!"
 			return
+		if(itemstobuy[finalnr].cratevalue < money)
+			user << "You don't have enough money to buy that crate!"
+// giving change back
+			if (money <= 50 && money > 0)
+				new/obj/item/stack/money/real(loc, money)
+				money = 0
+				return
+			else if (money > 50 && money <= 400)
+				new/obj/item/stack/money/dollar(loc, money/8)
+				money = 0
+				return
+			else if (money > 400 && money <= 800)
+				new/obj/item/stack/money/escudo(loc, money/16)
+				money = 0
+				return
+			else if (money > 800 && money <= 1600)
+				new/obj/item/stack/money/doubloon(loc, money/32)
+				money = 0
+				return
+			else if (money == 0)
+				return
+			else if (money > 1600)
+				user << "Too much money to pay you back! Buy something else to reduce the money deposited."
+				return
 		else
-			money -= choice.cratevalue
-			user << "You have successfully purchased the crate."
-			new choice(src.loc)
+			money -= itemstobuy[finalnr].cratevalue
+			user << "You have successfully purchased the crate. It will arrive soon."
+			spawn(600)
+				var/keypath = text2path("[itemstobuy[finalnr].result_type]")
+				new keypath()
+// giving change back
+			if (money <= 50 && money > 0)
+				new/obj/item/stack/money/real(loc, money)
+				money = 0
+				return
+			else if (money > 50 && money <= 400)
+				new/obj/item/stack/money/dollar(loc, money/8)
+				money = 0
+				return
+			else if (money > 400 && money <= 800)
+				new/obj/item/stack/money/escudo(loc, money/16)
+				money = 0
+				return
+			else if (money > 800 && money <= 1600)
+				new/obj/item/stack/money/doubloon(loc, money/32)
+				money = 0
+				return
+			else if (money == 0)
+				return
+			else if (money > 1600)
+				user << "Too much money to pay you back! Buy something else to reduce the money deposited."
+				return
 
 /obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (W.amount && istype(W, /obj/item/stack/money))
@@ -70,12 +132,12 @@
 		qdel(W)
 		return
 	else
-		H << "You need to use either money or other form of currency (gold, pearls, valuable items)."
+		H << "You need to use either money or another form of currency (gold, pearls, valuable items)."
 		return
 
 /obj/structure/exportbook/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (H.original_job_title != "Merchant")
-		H << "Only the merchants have access to the international shipping companies. Sell it to one."
+		H << "Only the merchants have access to the international shipping companies. Negotiate with one."
 		return
 	else
 		if (W.value == 0)
