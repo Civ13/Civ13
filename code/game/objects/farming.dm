@@ -4,6 +4,7 @@
 	icon = 'icons/farming/plants.dmi'
 	icon_state = "seeds"
 	w_class = 1
+	value = 1
 
 /obj/item/farming/seeds/tomato
 	name = "tomato seeds"

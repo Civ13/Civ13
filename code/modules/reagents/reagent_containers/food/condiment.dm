@@ -73,8 +73,8 @@
 					icon_state = "hotsauce"
 					center_of_mass = list("x"=16, "y"=6)
 				if ("enzyme")
-					name = "Universal Enzyme"
-					desc = "Used in cooking various dishes."
+					name = "Yeast"
+					desc = "Used in fermentation of food and drinks."
 					icon_state = "enzyme"
 					center_of_mass = list("x"=16, "y"=6)
 				if ("soysauce")
@@ -119,11 +119,12 @@
 			name = "Condiment Bottle"
 			desc = "An empty condiment bottle."
 			center_of_mass = list("x"=16, "y"=6)
+			qdel(src)
 			return
 
 /obj/item/weapon/reagent_containers/food/condiment/enzyme
-	name = "Universal Enzyme"
-	desc = "Used in cooking various dishes."
+	name = "Yeast"
+	desc = "Used in fermentation of food and drinks."
 	icon_state = "enzyme"
 	New()
 		..()
@@ -136,7 +137,7 @@
 
 /obj/item/weapon/reagent_containers/food/condiment/saltshaker		//Seperate from above since it's a small shaker rather then
 	name = "Salt Shaker"											//	a large one.
-	desc = "Salt. From space oceans, presumably."
+	desc = "Salt. From the oceans, presumably."
 	icon_state = "saltshakersmall"
 	possible_transfer_amounts = list(1,20) //for clown turning the lid off
 	amount_per_transfer_from_this = TRUE

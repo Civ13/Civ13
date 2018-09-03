@@ -21,6 +21,9 @@
 	var/base_icon = "bed"
 	var/applies_material_colour = TRUE
 
+/obj/structure/bed/wood
+	material/material = /material/wood
+
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
 	color = null
