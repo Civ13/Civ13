@@ -5,15 +5,6 @@
 	icon_state = "supplybook"
 	var/money = 0
 	var/marketval = 0
-
-/obj/structure/exportbook
-	name = "exporting book"
-	desc = "Use this to export colony products and exchange money. Only merchants have access to it."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "supplybook2"
-	var/money = 0
-	var/marketval = 0
-	var/moneyin = 0
 	var/list/itemstobuy = (/obj/structure/closet/crate/wood, 
 				/obj/structure/closet/crate/steel, 
 				/obj/structure/closet/crate/iron, 
@@ -35,8 +26,33 @@
 				/obj/structure/closet/crate/blunderbuss_ammo, 
 				/obj/structure/closet/crate/cannonball)
 
+/obj/structure/exportbook
+	name = "exporting book"
+	desc = "Use this to export colony products and exchange money. Only merchants have access to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "supplybook2"
+	var/money = 0
+	var/marketval = 0
+	var/moneyin = 0
+
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
-	if(
+	var/list/someitems
+	switch(user.original_job_title)
+		if("Merchant")
+			someitems = itemstobuy.Copy()
+		if("Governor")
+			someitems = itemstobuy.Copy()
+			someitems += governoritem.Copy()
+	if(!someitems)
+		user << "Only the merchants have access to the internation shipping companies. Sell it to one."
+	var/list/display //The products to be displayed, includes name of crate and price
+	for(var/obj/structure/closet/crate/crate2 in someitems)
+//Since I put the typepath of the item itself in the list, it must be init or else it's considered a file and not a object
+		var/obj/structure/closet/crate/crate3 = new(crate2)
+		crate3.name = "[crate3.name] for [crate3.cratevalue] //Simplicity so the crate's name can be shown in the list
+		display += crate3
+	
+		
 
 /obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (W.amount && istype(W, /obj/item/stack/money))
