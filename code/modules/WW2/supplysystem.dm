@@ -56,8 +56,8 @@
 	var/moneyin = 0
 
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
-	if (!(user.original_job.is_governor) || !(user.original_job.is_merchant))
-		user << "Only the merchants have access to the internation shipping companies. Negotiate with one."
+	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
+		user << "Only the merchants have access to the international shipping companies. Negotiate with one."
 		return
 
 	var/list/display //The products to be displayed, includes name of crate and price
@@ -70,7 +70,7 @@
 		var/list/choicename = splittext(choice, " : ")
 		var/finalnr = choicename[3]
 
-		if (!(user.original_job.is_governor) && finalnr > 13)
+		if ((user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor") && finalnr > 13)
 			user << "Only Governors can order military supplies!"
 			return
 		if(itemstobuy[finalnr].cratevalue < money)
@@ -136,7 +136,8 @@
 		return
 
 /obj/structure/exportbook/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
-	if (H.original_job_title != "Merchant")
+	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
+
 		H << "Only the merchants have access to the international shipping companies. Negotiate with one."
 		return
 	else

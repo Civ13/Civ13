@@ -143,50 +143,35 @@
 					if (B.faction == faction)
 						delivered = TRUE
 						H << "Your message has been sent and will be delivered soon."
-						W.invisibility = 101
 						W.loc = get_turf(B)
-						spawn(600)
-							W.invisibility = 0
 						return
 			else if (faction == "french" && delivered == FALSE)
 				for (var/obj/structure/mailbox/received/F)
 					if (F.faction == faction)
 						delivered = TRUE
 						H << "Your message has been sent and will be delivered soon."
-						W.invisibility = 101
 						W.loc = get_turf(F)
-						spawn(600)
-							W.invisibility = 0
 						return
 			else if (faction == "spanish" && delivered == FALSE)
 				for (var/obj/structure/mailbox/received/S)
 					if (S.faction == faction)
 						delivered = TRUE
 						H << "Your message has been sent and will be delivered soon."
-						W.invisibility = 101
 						W.loc = get_turf(S)
-						spawn(600)
-							W.invisibility = 0
 						return
 			else if (faction == "portuguese" && delivered == FALSE)
 				for (var/obj/structure/mailbox/received/P)
 					if (P.faction == faction)
 						delivered = TRUE
 						H << "Your message has been sent and will be delivered soon."
-						W.invisibility = 101
 						W.loc = get_turf(P)
-						spawn(600)
-							W.invisibility = 0
 						return
 			else if (faction == "dutch" && delivered == FALSE)
 				for (var/obj/structure/mailbox/received/D)
 					if (D.faction == faction)
 						delivered = TRUE
 						H << "Your message has been sent and will be delivered soon."
-						W.invisibility = 101
 						W.loc = get_turf(D)
-						spawn(600)
-							W.invisibility = 0
 						return
 			else
 				H << "Your message can't be delivered! There is no destination!"
