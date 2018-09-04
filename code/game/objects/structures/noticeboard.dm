@@ -139,7 +139,7 @@
 		else
 			for (var/obj/structure/mailbox/received/B)
 				if (B.faction == faction)
-					W.loc = get_turf(B)
+					W.forceMove(get_turf(B))
 					H << "Your message has been sent and will be delivered soon."
-					return
+			return
 	..()

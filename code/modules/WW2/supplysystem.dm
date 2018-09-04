@@ -1,23 +1,3 @@
-/*
- * Product datum
- */
-/datum/product_import
-	var/title = "ERROR"
-	var/result_type = null
-	var/cratevalue = 1
-	var/nr = 1
-
-	New(_title, _result_type, _cratevalue = 1, _nr)
-		title = _title
-		result_type = _result_type
-		cratevalue = _cratevalue
-		nr = _nr
-
-
-////////////////////////////////////////////////////////////////////////////////////
-
-
-
 /obj/structure/supplybook
 	name = "supply orders book"
 	desc = "Use this to request supplies to be delivered to the colony. Only merchants have access to it and only the governor can order ammunition."
@@ -25,25 +5,26 @@
 	icon_state = "supplybook"
 	var/money = 0
 	var/marketval = 0
+	density = TRUE
 	var/list/itemstobuy = list(
-		new/datum/product_import("wood crate","/obj/structure/closet/crate/wood", 120, 1),
-		new/datum/product_import("iron crate","/obj/structure/closet/crate/iron", 330, 2),
-		new/datum/product_import("glass crate","/obj/structure/closet/crate/glass", 330, 3),
-		new/datum/product_import("vegetables crate","/obj/structure/closet/crate/rations/vegetables", 60, 4),
-		new/datum/product_import("fruits crate","/obj/structure/closet/crate/rations/fruits", 66, 5),
-		new/datum/product_import("biscuits crate","/obj/structure/closet/crate/rations/biscuits", 50, 6),
-		new/datum/product_import("beer crate","/obj/structure/closet/crate/rations/beer", 60, 7),
-		new/datum/product_import("ale crate","/obj/structure/closet/crate/rations/ale", 70, 8),
-		new/datum/product_import("meat crate","/obj/structure/closet/crate/rations/meat", 70, 9),
-		new/datum/product_import("tree seeds crate","/obj/structure/closet/crate/rations/seeds/trees", 20, 10),
-		new/datum/product_import("vegetable seeds crate","/obj/structure/closet/crate/rations/seeds/vegetables", 30, 11),
-		new/datum/product_import("cereal seeds crate","/obj/structure/closet/crate/rations/seeds/cereals", 20, 12),
-		new/datum/product_import("cash crops crate","/obj/structure/closet/crate/rations/seeds/cashcrops", 40, 13),
-		new/datum/product_import("musket ammo crate (25)","/obj/structure/closet/crate/musketball",100, 14),
-		new/datum/product_import("pistol ammo crate (25)","/obj/structure/closet/crate/musketball_pistol",60, 15),
-		new/datum/product_import("blunderbuss crate (15)","/obj/structure/closet/crate/blunderbuss_ammo",60, 16),
-		new/datum/product_import("grenade crate (10)","/obj/structure/closet/crate/grenades",110, 17),
-		new/datum/product_import("cannonball crate (10)","/obj/structure/closet/crate/cannonball",175, 18),)
+		list("wood crate","/obj/structure/closet/crate/wood", 120, 1),
+		list("iron crate","/obj/structure/closet/crate/iron", 330, 2),
+		list("glass crate","/obj/structure/closet/crate/glass", 330, 3),
+		list("vegetables crate","/obj/structure/closet/crate/rations/vegetables", 60, 4),
+		list("fruits crate","/obj/structure/closet/crate/rations/fruits", 66, 5),
+		list("biscuits crate","/obj/structure/closet/crate/rations/biscuits", 50, 6),
+		list("beer crate","/obj/structure/closet/crate/rations/beer", 60, 7),
+		list("ale crate","/obj/structure/closet/crate/rations/ale", 70, 8),
+		list("meat crate","/obj/structure/closet/crate/rations/meat", 70, 9),
+		list("tree seeds crate","/obj/structure/closet/crate/rations/seeds/trees", 20, 10),
+		list("vegetable seeds crate","/obj/structure/closet/crate/rations/seeds/vegetables", 30, 11),
+		list("cereal seeds crate","/obj/structure/closet/crate/rations/seeds/cereals", 20, 12),
+		list("cash crops crate","/obj/structure/closet/crate/rations/seeds/cashcrops", 40, 13),
+		list("musket ammo crate (25)","/obj/structure/closet/crate/musketball",100, 14),
+		list("pistol ammo crate (25)","/obj/structure/closet/crate/musketball_pistol",60, 15),
+		list("blunderbuss crate (15)","/obj/structure/closet/crate/blunderbuss_ammo",60, 16),
+		list("grenade crate (10)","/obj/structure/closet/crate/grenades",110, 17),
+		list("cannonball crate (10)","/obj/structure/closet/crate/cannonball",175, 18),)
 
 
 /obj/structure/exportbook
@@ -54,6 +35,7 @@
 	var/money = 0
 	var/marketval = 0
 	var/moneyin = 0
+	density = TRUE
 
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
@@ -62,19 +44,21 @@
 
 	var/list/display //The products to be displayed, includes name of crate and price
 	for (var/i=1;i<=itemstobuy.len,i++)
-		display += "[itemstobuy[i].nr]: [itemstobuy[i].title] - [itemstobuy[i].cratevalue] reales" //Simplicity so the crate's name can be shown in the list
+		display += "[i]: [itemstobuy[i][1]] - [itemstobuy[i][3]] reales" //Simplicity so the crate's name can be shown in the list
 		var/choice = input(user, "What do you want to purchase?") in display + "Cancel"
 		var/finalnr = 1
+		var/finalcost = 1
 		if(choice == "Cancel")
 			return
 		else
-			var/list/choicename = splittext(choice, ":")
+			var/list/choicename = list(splittext(choice, ":"))
 			finalnr = text2num(choicename[1])
-
+			world << "[finalnr]"
+			finalcost = itemstobuy[finalnr][3]
 		if ((user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor") && finalnr > 13)
 			user << "Only Governors can order military supplies!"
 			return
-		if(itemstobuy[finalnr].cratevalue < money)
+		if(finalcost < money)
 			user << "You don't have enough money to buy that crate!"
 // giving change back
 			if (money <= 50 && money > 0)
@@ -99,10 +83,10 @@
 				user << "Too much money to pay you back! Buy something else to reduce the money deposited."
 				return
 		else
-			money -= itemstobuy[finalnr].cratevalue
+			money -= finalcost
 			user << "You have successfully purchased the crate. It will arrive soon."
 			spawn(600)
-				var/keypath = text2path("[itemstobuy[finalnr].result_type]")
+				var/keypath = text2path("[itemstobuy[finalnr][2]]")
 				new keypath()
 // giving change back
 			if (money <= 50 && money > 0)

@@ -30,7 +30,9 @@
 	faction2 = SPANISH
 
 obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
-	if (J.is_RP == TRUE)
+	if (istype(J, /datum/job/portuguese/civilian))
+		. = FALSE
+	if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
