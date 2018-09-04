@@ -139,7 +139,7 @@
 		else
 			for (var/obj/structure/mailbox/received/B)
 				if (B.faction == faction)
-					W.forceMove(locate(B))
+					W.loc = B.loc
 					H << "Your message has been sent and will be delivered soon."
 					return
 	..()
