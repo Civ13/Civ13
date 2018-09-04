@@ -68,7 +68,7 @@
 		return
 	else
 		var/list/choicename = splittext(choice, " : ")
-		var/finalnr = choicename[2]
+		var/finalnr = choicename[1]
 
 		if ((user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor") && finalnr > 13)
 			user << "Only Governors can order military supplies!"
