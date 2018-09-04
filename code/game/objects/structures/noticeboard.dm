@@ -105,27 +105,27 @@
 
 /obj/structure/mailbox/spanish
 	name = "Spanish mail bag"
-	desc = "A bag of mail, to be distributed to the Spanish colonial administration."
+	desc = "A bag of mail, to be delivered to the Spanish colonial administration."
 	faction = "spanish"
 
 /obj/structure/mailbox/dutch
 	name = "Dutch mail bag"
-	desc = "A bag of mail, to be distributed to the Dutch colonial administration."
+	desc = "A bag of mail, to be delivered to the Dutch colonial administration."
 	faction = "dutch"
 
 /obj/structure/mailbox/portuguese
 	name = "Portuguese mail bag"
-	desc = "A bag of mail, to be distributed to the Dutch colonial administration."
+	desc = "A bag of mail, to be delivered to the Dutch colonial administration."
 	faction = "portuguese"
 
 /obj/structure/mailbox/french
 	name = "French mail bag"
-	desc = "A bag of mail, to be distributed to the French colonial administration."
+	desc = "A bag of mail, to be delivered to the French colonial administration."
 	faction = "french"
 
 /obj/structure/mailbox/british
 	name = "British mail bag"
-	desc = "A bag of mail, to be distributed to the British colonial administration."
+	desc = "A bag of mail, to be delivered to the British colonial administration."
 	faction = "british"
 
 /obj/structure/mailbox/attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
