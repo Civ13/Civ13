@@ -62,13 +62,13 @@
 
 	var/list/display //The products to be displayed, includes name of crate and price
 	for (var/i=1;i<=itemstobuy.len,i++)
-		display += "[itemstobuy[i].nr] : [itemstobuy[i].title] - [itemstobuy[i].cratevalue] reales" //Simplicity so the crate's name can be shown in the list
+		display += "[itemstobuy[i].nr]: [itemstobuy[i].title] - [itemstobuy[i].cratevalue] reales" //Simplicity so the crate's name can be shown in the list
 	var/choice = input(user, "What do you want to purchase?") in display + "Cancel"
 	if(choice == "Cancel")
 		return
 	else
-		var/list/choicename = splittext(choice, " : ")
-		var/finalnr = choicename[0]
+		var/list/choicename = splittext(choice, ":")
+		var/finalnr = text2num(choicename[1])
 
 		if ((user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor") && finalnr > 13)
 			user << "Only Governors can order military supplies!"
