@@ -211,7 +211,7 @@ obj/structure/closet/crate/empty
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_casing/musketball = 5)
+	paths = list(/obj/item/weapon/gun/projectile/flintlock/musket = 5)
 	cratevalue = 550 //100*5
 /obj/structure/closet/crate/musketball_pistol
 	name = "Pistol ammunition crate"
