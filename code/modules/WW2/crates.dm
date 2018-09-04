@@ -213,21 +213,21 @@ obj/structure/closet/crate/empty
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/weapon/gun/projectile/flintlock/musket = 5)
 	cratevalue = 550 //100*5
-	/obj/structure/closet/crate/musketoons
+/obj/structure/closet/crate/musketoons
 	name = "Musketoon crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/weapon/gun/projectile/flintlock/musketoon = 5)
 	cratevalue = 440 //80*5
-	/obj/structure/closet/crate/pistols
+/obj/structure/closet/crate/pistols
 	name = "Pistol crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/weapon/gun/projectile/flintlock/pistol = 5)
 	cratevalue = 385 //70*5
-	/obj/structure/closet/crate/blunderbusses
+/obj/structure/closet/crate/blunderbusses
 	name = "Muskets crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
