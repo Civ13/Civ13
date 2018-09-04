@@ -137,43 +137,9 @@
 			H << "You cannot send this by mail. Only paper is accepted."
 			return
 		else
-			var/delivered = FALSE
-			if (faction == "british" && delivered == FALSE)
-				for (var/obj/structure/mailbox/received/B)
-					if (B.faction == faction)
-						delivered = TRUE
-						H << "Your message has been sent and will be delivered soon."
-						W.loc = get_turf(B)
-						return
-			else if (faction == "french" && delivered == FALSE)
-				for (var/obj/structure/mailbox/received/F)
-					if (F.faction == faction)
-						delivered = TRUE
-						H << "Your message has been sent and will be delivered soon."
-						W.loc = get_turf(F)
-						return
-			else if (faction == "spanish" && delivered == FALSE)
-				for (var/obj/structure/mailbox/received/S)
-					if (S.faction == faction)
-						delivered = TRUE
-						H << "Your message has been sent and will be delivered soon."
-						W.loc = get_turf(S)
-						return
-			else if (faction == "portuguese" && delivered == FALSE)
-				for (var/obj/structure/mailbox/received/P)
-					if (P.faction == faction)
-						delivered = TRUE
-						H << "Your message has been sent and will be delivered soon."
-						W.loc = get_turf(P)
-						return
-			else if (faction == "dutch" && delivered == FALSE)
-				for (var/obj/structure/mailbox/received/D)
-					if (D.faction == faction)
-						delivered = TRUE
-						H << "Your message has been sent and will be delivered soon."
-						W.loc = get_turf(D)
-						return
-			else
-				H << "Your message can't be delivered! There is no destination!"
-				return
+			for (var/obj/structure/mailbox/received/B)
+				if (B.faction == faction)
+					W.loc = get_turf(B)
+					H << "Your message has been sent and will be delivered soon."
+					return
 	..()
