@@ -23,7 +23,7 @@ var/movementMachine/movementMachine = null
 
 /movementMachine/proc/start()
 	set waitfor = FALSE
-	//process()
+	process()
 
 /movementMachine/proc/process()
 
