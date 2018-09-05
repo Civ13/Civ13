@@ -111,7 +111,6 @@
 	var/atom/movable/build_override_object = null
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
-	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
 	var/mob/living/carbon/human/H = user
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -132,9 +131,7 @@
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-		var/material = null
-		if (findtext(recipe.title, "wood"))
-			material = "wood"
+
 
 		if (!ishuman(user))
 			return
@@ -155,15 +152,14 @@
 		if (!key || !istype(key))
 			return // should never happen
 
-		if (key && H.faction_text == CIVILIAN)
+		if (key)
 			var/keyname = input(user, "Choose a name for the door") as text|null
 			if (keyname == null)
 				keyname = "Locked"
-			build_override_door = new /obj/structure/simple_door/key_door/custom(null, material)
-			spawn(5)
-				build_override_door.name = keyname
-				build_override_door.custom_code = key.code
-				return
+			var/obj/structure/simple_door/key_door/custom/NEWDOOR = new /obj/structure/simple_door/key_door/custom(H.loc)
+			NEWDOOR.name = keyname
+			NEWDOOR.custom_code = key.code
+			return
 
 	if (!can_use(required))
 		if (produced>1)

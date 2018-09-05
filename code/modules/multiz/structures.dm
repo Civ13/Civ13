@@ -104,21 +104,9 @@
 			M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"
 			return
 
-	var/turf/T = target.loc
-	if (!istop)
-		for (var/atom/movable/AM in T)
-			if (AM.density)
-				M << "<span class='notice'>\A [AM] is blocking \the [src].</span>"
-				return
-
 	M.visible_message(
 		"<span class='notice'>\A [M] starts to climb [istop ? "down" : "up"] \a [src].</span>",
 		"<span class='notice'>You start to climb [istop ? "down" : "up"] \the [src].</span>",
-		"You hear the grunting and clanging of a metal ladder being used."
-	)
-
-	T.visible_message(
-		"<span class='warning'>Someone starts to climb [istop ? "down" : "up"] \a [src].</span>",
 		"You hear the grunting and clanging of a metal ladder being used."
 	)
 
