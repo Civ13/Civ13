@@ -1446,7 +1446,7 @@
 	return TRUE
 
 /datum/job/portuguese/civilian/architect
-	title = "Arquitetot"
+	title = "Arquiteto"
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Arquiteto"
 	selection_color = "#2d2d63"
