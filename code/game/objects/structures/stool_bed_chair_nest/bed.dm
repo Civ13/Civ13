@@ -22,13 +22,16 @@
 	var/applies_material_colour = TRUE
 
 /obj/structure/bed/wood
-	material/material = /material/wood
+	material = "wood"
 
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
 	color = null
 	if (!new_material)
-		new_material = DEFAULT_WALL_MATERIAL
+		if (!material)
+			new_material = DEFAULT_WALL_MATERIAL
+		else
+			new_material = material
 	material = get_material_by_name(new_material)
 	if (!istype(material))
 		qdel(src)
