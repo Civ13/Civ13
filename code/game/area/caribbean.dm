@@ -87,6 +87,25 @@
 	icon_state = "purple1"
 	base_turf = /turf/floor/plating/grass/wild
 
+/area/caribbean/supply
+	name = "Supply Arrival"
+	icon_state = "blue1"
+
+/area/caribbean/supply/british
+	name = "British Supply Arrival"
+
+/area/caribbean/supply/spanish
+	name = "Spanish Supply Arrival"
+
+/area/caribbean/supply/portuguese
+	name = "PortugueseSupply Arrival"
+
+/area/caribbean/supply/french
+	name = "French Supply Arrival"
+
+/area/caribbean/supply/dutch
+	name = "Dutch Supply Arrival"
+
 /area/caribbean/transport
 	name = "Boat"
 	icon_state = "red1"
@@ -185,6 +204,37 @@
 
 // british areas
 
+/area/caribbean/colonies
+
+/area/caribbean/colonies/british
+	name = "British Colony Hall"
+	icon_state = "green2"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/portuguese
+	name = "Portuguese Colony Hall"
+	icon_state = "green2"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/spanish
+	name = "Spanish Colony Hall"
+	icon_state = "green2"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/french
+	name = "French Colony Hall"
+	icon_state = "green2"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/dutch
+	name = "Dutch Colony Hall"
+	icon_state = "green2"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/british
 
 /area/caribbean/british/land

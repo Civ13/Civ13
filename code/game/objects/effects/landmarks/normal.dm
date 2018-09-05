@@ -43,7 +43,37 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
-
+		// SUPPLY LANDMARKS
+		if ("SupplyFR")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("SupplyRN")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("SupplySP")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("SupplyPT")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("SupplyNL")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		// CIVILIAN LANDMARKS
 		if ("JoinLateCiv")
 			if (!latejoin_turfs[name])

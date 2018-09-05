@@ -151,9 +151,12 @@
 	icon = 'icons/obj/barrel.dmi'
 	icon_state = "barrel_wood_drinks"
 	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
 	New()
 		..()
 		reagents.add_reagent("water",250)
+
 
 /obj/item/weapon/reagent_containers/glass/barrel/beer
 	name = "beer barrel"
@@ -161,6 +164,8 @@
 	icon = 'icons/obj/barrel.dmi'
 	icon_state = "barrel_wood_drinks"
 	amount_per_transfer_from_this = 10
+	density = TRUE
+	volume = 250
 	New()
 		..()
 		reagents.add_reagent("beer",200)
@@ -171,6 +176,8 @@
 	icon = 'icons/obj/barrel.dmi'
 	icon_state = "barrel_wood_drinks"
 	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
 	New()
 		..()
 		reagents.add_reagent("rum",140)
@@ -182,6 +189,8 @@
 	icon = 'icons/obj/barrel.dmi'
 	icon_state = "barrel_wood_gunpowder"
 	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
 	New()
 		..()
 		reagents.add_reagent("gunpowder",200)

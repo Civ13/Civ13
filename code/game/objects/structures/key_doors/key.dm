@@ -1,5 +1,5 @@
 /obj/item/weapon/key
-	var/code = -1
+	code = -1
 	icon = 'icons/obj/key.dmi'
 	icon_state = "key"
 	name = "random fucking key that should NOT exist"

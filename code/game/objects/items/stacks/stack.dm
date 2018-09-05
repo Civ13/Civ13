@@ -111,8 +111,6 @@
 	var/atom/movable/build_override_object = null
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
-	var/obj/structure/simple_door/key_door/civ/build_override_door = new/obj/structure/simple_door/key_door/civ
-	build_override_door.keyslot.code = -1
 	var/mob/living/carbon/human/H = user
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -133,9 +131,7 @@
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-		var/material = null
-		if (findtext(recipe.title, "wood"))
-			material = "wood"
+
 
 		if (!ishuman(user))
 			return
@@ -143,31 +139,27 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
-		if (H.faction_text == CIVILIAN)
-			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999)") as num
-			keycode = Clamp(keycode, 1000, 9999)
-			var/keyname = input(user, "Choose a name for the key") as text|null
-			if (keyname == null)
-				keyname = "Key"
-			build_override_door.name = keyname
-			build_override_door.keyslot.code = keycode
+
 
 			return
 		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
 			user << "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>"
 			return
 
-		var/obj/item/weapon/key = H.l_hand
+		var/obj/item/weapon/key/key = H.l_hand
 		if (!key || !istype(key))
 			key = H.r_hand
 		if (!key || !istype(key))
 			return // should never happen
 
-		var/texttype = "[key.type]"
-		var/uniquepart = replacetext(texttype, "/obj/item/weapon/key/", "")
-		var/doorbasepath = "/obj/structure/simple_door/key_door/"
-		var/doorpath = text2path("[doorbasepath][uniquepart]")
-		build_override_object = new doorpath(null, material)
+		if (key)
+			var/keyname = input(user, "Choose a name for the door") as text|null
+			if (keyname == null)
+				keyname = "Locked"
+			var/obj/structure/simple_door/key_door/custom/NEWDOOR = new /obj/structure/simple_door/key_door/custom(H.loc)
+			NEWDOOR.name = keyname
+			NEWDOOR.custom_code = key.code
+			return
 
 	if (!can_use(required))
 		if (produced>1)

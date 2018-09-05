@@ -9,7 +9,7 @@
 	var/origin_water_level = 0
 	var/origin_move_delay = 0
 	var/not_movable = FALSE //if it can be removed by wrenches
-	var/health = 50
+	var/health = 100
 	is_cover = TRUE
 	anchored = TRUE
 	opacity = FALSE
@@ -53,11 +53,7 @@
 	opacity = TRUE
 	amount = 4
 	layer = 2.12
-
-/obj/covers/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
-		return
-	..()
+	health = 150
 
 /obj/covers/New()
 	..()
@@ -165,6 +161,8 @@
 		return ..()
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
+		return
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(W.damtype)
 		if ("fire")

@@ -34,6 +34,8 @@
 	var/do_first_event = 600//20 mins
 
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
+	if (istype(J, /datum/job/spanish/civilian))
+		. = FALSE
 	if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))

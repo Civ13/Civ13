@@ -174,7 +174,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/clothing/mask/smokable/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	..()
-	if (isflamesource(W))
+	if (isflamesource(W) ||istype(W, /obj/item/flashlight))
 		var/text = matchmes
 		if (istype(W, /obj/item/weapon/flame/match))
 			text = matchmes
@@ -304,6 +304,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "pipeoff"
 	smoketime = FALSE
 	chem_volume = 50
+	w_class = 2.0
 	matchmes = "<span class='notice'>USER lights their NAME with their FLAME.</span>"
 	lightermes = "<span class='notice'>USER manages to light their NAME with FLAME.</span>"
 	zippomes = "<span class='rose'>With much care, USER lights their NAME with their FLAME.</span>"
@@ -345,12 +346,30 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		name = "empty [initial(name)]"
 
 /obj/item/clothing/mask/smokable/pipe/attackby(obj/item/weapon/W as obj, mob/user as mob)
-/*	if (istype(W, /obj/item/weapon/melee/energy/sword))
-		return*/
 
 	..()
-
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
+	if (istype(W, /obj/item/stack/material/tobacco))
+		var/obj/item/stack/material/tobacco/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already packed.</span>"
+			return
+		smoketime = 1000
+		reagents.add_reagent("nicotine",15)
+		name = "tobacco-packed [initial(name)]"
+		if (G.amount > 1)
+			G.amount -= 1
+		else
+			qdel(G)
+	else if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
+		var/obj/item/weapon/reagent_containers/pill/opium/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already packed.</span>"
+			return
+		smoketime = 500
+		reagents.add_reagent("opium",5)
+		name = "opium-packed [initial(name)]"
+		qdel(G)
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		var/obj/item/weapon/reagent_containers/food/snacks/grown/G = W
 		if (!G.dry)
 			user << "<span class='notice'>[G] must be dried before you stuff it into [src].</span>"
@@ -372,14 +391,16 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	else if (istype(W, /obj/item/weapon/flame/match))
 		var/obj/item/weapon/flame/match/M = W
 		if (M.lit)
-			light("<span class='notice'>[user] lights their [name] with their [W].</span>")
+			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
+	else if (istype(W, /obj/item/flashlight))
+		light("<span class='notice'>[user] lights their [name] with the [W].</span>")
 	user.update_inv_wear_mask(0)
 	user.update_inv_l_hand(0)
 	user.update_inv_r_hand(1)
 
 /obj/item/clothing/mask/smokable/pipe/cobpipe
 	name = "corn cob pipe"
-	desc = "A nicotine delivery system popularized by folksy backwoodsmen, kept popular in the modern age and beyond by space hipsters."
+	desc = "A nicotine delivery system popularized by folksy backwoodsmen, kept popular in the current age."
 	icon_state = "cobpipeoff"
 	item_state = "cobpipeoff"
 	icon_on = "cobpipeon"  //Note - these are in masks.dmi

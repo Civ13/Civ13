@@ -1,4 +1,11 @@
 ////////1713 stuff//////////
+#define CV_CUSTOM 999
+/obj/structure/simple_door/key_door/custom
+	custom = TRUE
+	custom_code = 999
+	unique_door_name = "Private"
+#undef CV_CUSTOM
+
 #define CV_CODE 1000
 /datum/keyslot/civ
 	code = CV_CODE
@@ -35,6 +42,123 @@
 	keyslot_type = /datum/keyslot/civ/gov
 	unique_door_name = "Governor's Office"
 #undef CV_CODE3
+#define CV_ROOM1 12311
+/datum/keyslot/civ/room1
+	code = CV_ROOM1
+
+/obj/item/weapon/key/civ/room1
+	code = CV_ROOM1
+	name = "Room #1 Key"
+
+/obj/structure/simple_door/key_door/civ/room1
+	keyslot_type = /datum/keyslot/civ/room1
+	unique_door_name = "Room #1"
+#undef CV_ROOM1
+
+#define CV_ROOM2 22322
+/datum/keyslot/civ/room2
+	code = CV_ROOM2
+
+/obj/item/weapon/key/civ/room2
+	code = CV_ROOM2
+	name = "Room #2 Key"
+
+/obj/structure/simple_door/key_door/civ/room2
+	keyslot_type = /datum/keyslot/civ/room2
+	unique_door_name = "Room #2"
+#undef CV_ROOM2
+
+#define CV_ROOM3 32333
+/datum/keyslot/civ/room3
+	code = CV_ROOM3
+
+/obj/item/weapon/key/civ/room3
+	code = CV_ROOM3
+	name = "Room #3 Key"
+
+/obj/structure/simple_door/key_door/civ/room3
+	keyslot_type = /datum/keyslot/civ/room3
+	unique_door_name = "Room #3"
+#undef CV_ROOM3
+
+#define CV_ROOM4 42344
+/datum/keyslot/civ/room4
+	code = CV_ROOM4
+
+/obj/item/weapon/key/civ/room4
+	code = CV_ROOM4
+	name = "Room #4 Key"
+
+/obj/structure/simple_door/key_door/civ/room4
+	keyslot_type = /datum/keyslot/civ/room4
+	unique_door_name = "Room #4"
+#undef CV_ROOM5
+
+#define CV_ROOM5 52355
+/datum/keyslot/civ/room5
+	code = CV_ROOM5
+
+/obj/item/weapon/key/civ/room5
+	code = CV_ROOM5
+	name = "Room #5 Key"
+
+/obj/structure/simple_door/key_door/civ/room5
+	keyslot_type = /datum/keyslot/civ/room5
+	unique_door_name = "Room #5"
+#undef CV_ROOM5
+
+#define CV_ROOM6 62366
+/datum/keyslot/civ/room6
+	code = CV_ROOM6
+
+/obj/item/weapon/key/civ/room6
+	code = CV_ROOM6
+	name = "Room #6 Key"
+
+/obj/structure/simple_door/key_door/civ/room6
+	keyslot_type = /datum/keyslot/civ/room6
+	unique_door_name = "Room #6"
+#undef CV_ROOM6
+
+#define CV_ROOM7 72377
+/datum/keyslot/civ/room7
+	code = CV_ROOM7
+
+/obj/item/weapon/key/civ/room7
+	code = CV_ROOM7
+	name = "Room #7 Key"
+
+/obj/structure/simple_door/key_door/civ/room7
+	keyslot_type = /datum/keyslot/civ/room7
+	unique_door_name = "Room #7"
+#undef CV_ROOM7
+
+#define CV_ROOM8 82388
+/datum/keyslot/civ/room8
+	code = CV_ROOM8
+
+/obj/item/weapon/key/civ/room8
+	code = CV_ROOM8
+	name = "Room #8 Key"
+
+/obj/structure/simple_door/key_door/civ/room8
+	keyslot_type = /datum/keyslot/civ/room8
+	unique_door_name = "Room #8"
+#undef CV_ROOM8
+
+#define CV_INN 82111
+/datum/keyslot/civ/inn
+	code = CV_INN
+
+/obj/item/weapon/key/civ/inn
+	code = CV_INN
+	name = "staff only area"
+
+/obj/structure/simple_door/key_door/civ/inn
+	keyslot_type = /datum/keyslot/civ/inn
+	unique_door_name = "Private Inn Key"
+#undef CV_INN
+
 #define PI_CODE 995
 /datum/keyslot/pirates
 	code = PI_CODE

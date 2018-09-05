@@ -6,6 +6,7 @@
 #define MAP_SUPPLY_RAID "SUPPLY_RAID"
 #define MAP_COLONY "COLONY"
 #define MAP_TRIBES "TRIBES"
+#define MAP_FOUR_COLONIES "FOUR_COLONIES"
 // ideas:
 // ship sailing through the ocean, High-rp
 // pirates boarding a ship

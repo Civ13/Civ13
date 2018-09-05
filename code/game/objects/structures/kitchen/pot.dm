@@ -104,6 +104,8 @@
 				if (state == STATE_WATER)
 					state = STATE_BOILING
 					update_icon()
+	else
+		return
 	if (state != STATE_STEWING)
 		return
 	var/obj/item/weapon/reagent_containers/food/snacks/stew_wood/w_stew = new

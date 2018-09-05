@@ -734,7 +734,7 @@ var/global/list/global_colour_matrix = null
 	set name = "Color Filter"
 	set category = "Debug"
 	set desc = "Apply cool colour filter to players' screens."
-	var/input = input("Choose filter", "Filter") in list("normal", "black and white", "bloody", "bloody2", "special")
+	var/input = input("Choose filter", "Filter") in list("normal", "black and white", "bloody", "bloody2", "sepia", "special")
 	switch(input)
 		if("normal")
 			global_colour_matrix = null
@@ -750,6 +750,10 @@ var/global/list/global_colour_matrix = null
 			global_colour_matrix = list(1, 0, 0,\
 										0, 0.5, 0.5,\
 										0, 0.5, 0.5)
+		if("sepia")
+			global_colour_matrix = list(1.3, -0.3, 1.1,\
+										0, 1.3, 0.2,\
+										0, 0, 0.8)
 		if("special")
 			global_colour_matrix = list()
 			var/global_colour_matrix_temp = list()

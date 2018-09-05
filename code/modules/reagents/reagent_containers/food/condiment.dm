@@ -73,8 +73,8 @@
 					icon_state = "hotsauce"
 					center_of_mass = list("x"=16, "y"=6)
 				if ("enzyme")
-					name = "Universal Enzyme"
-					desc = "Used in cooking various dishes."
+					name = "Yeast"
+					desc = "Used in fermentation of food and drinks."
 					icon_state = "enzyme"
 					center_of_mass = list("x"=16, "y"=6)
 				if ("soysauce")
@@ -119,11 +119,12 @@
 			name = "Condiment Bottle"
 			desc = "An empty condiment bottle."
 			center_of_mass = list("x"=16, "y"=6)
+			qdel(src)
 			return
 
 /obj/item/weapon/reagent_containers/food/condiment/enzyme
-	name = "Universal Enzyme"
-	desc = "Used in cooking various dishes."
+	name = "Yeast"
+	desc = "Used in fermentation of food and drinks."
 	icon_state = "enzyme"
 	New()
 		..()
@@ -136,7 +137,7 @@
 
 /obj/item/weapon/reagent_containers/food/condiment/saltshaker		//Seperate from above since it's a small shaker rather then
 	name = "Salt Shaker"											//	a large one.
-	desc = "Salt. From space oceans, presumably."
+	desc = "Salt. From the oceans, presumably."
 	icon_state = "saltshakersmall"
 	possible_transfer_amounts = list(1,20) //for clown turning the lid off
 	amount_per_transfer_from_this = TRUE
@@ -158,7 +159,7 @@
 
 /obj/item/weapon/reagent_containers/food/condiment/flour
 	name = "flour sack"
-	desc = "A big bag of flour. Good for baking!"
+	desc = "A bag of flour. Good for baking!"
 	icon = 'icons/obj/food.dmi'
 	icon_state = "flour"
 	item_state = "flour"
@@ -167,6 +168,29 @@
 		reagents.add_reagent("flour", 30)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/reagent_containers/food/condiment/flour/attack_self(mob/user)
+	var/obj/item/weapon/reagent_containers/glass/WW
+	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
+		if(!istype(user.r_hand, /obj/item/weapon/reagent_containers/glass))
+			user << "<span class = 'warning'>You need to be holding water in the other hand to make dough.</span>"
+			return
+		else
+			WW = user.r_hand
+	else
+		WW = user.l_hand
+	if (WW.reagents.has_reagent("water", 5))
+		if (src.reagents.has_reagent("flour", 5))
+			WW.reagents.remove_reagent("water", 5)
+			src.reagents.remove_reagent("flour", 5)
+			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
+			return
+		else
+			user << "<span class = 'warning'>You need more flour.</span>"
+			return
+	else
+		user << "<span class = 'warning'>You need more water.</span>"
+		return
 
 /obj/item/weapon/reagent_containers/food/condiment/bsugar
 	name = "sugarcane sugar"

@@ -27,7 +27,9 @@
 	faction2 = FRENCH
 
 obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
-	if (istype(J, /datum/job/pirates/battleroyale))
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
 		. = FALSE

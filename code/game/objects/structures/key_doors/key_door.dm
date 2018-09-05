@@ -52,9 +52,55 @@ var/list/nonbreaking_types = list(
 		if (starts_open)
 			Open()
 
+/obj/structure/simple_door/key_door/custom/New(_loc, _material = null)
+	health = 300
+	initial_health = health
+	material = "iron"
+
 /obj/structure/simple_door/key_door/Open()
 	..()
 	keyslot.locked = FALSE
+
+/obj/structure/simple_door/key_door/custom/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/key))
+		if (W.code == custom_code)
+			locked = !locked
+			if (locked == 1)
+				visible_message("<span class = 'notice'>[user] locks the door.</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+			else if (locked == 0)
+				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+				return
+		if (W.code != custom_code)
+			user << "This key does not match this lock!"
+	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
+		for (var/obj/item/weapon/key/KK in W.contents)
+			if (KK.code == custom_code)
+				if (locked == 1)
+					visible_message("<span class = 'notice'>[user] locks the door.</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+				else if (locked == 0)
+					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
+					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+					return
+		if (W.code != custom_code)
+			user << "This key does not match this lock!"
+	else
+		if ((W.force > WEAPON_FORCE_WEAK || user.a_intent == I_HURT) && check_can_break_doors(W))
+			if (!user.hitting_key_door)
+				user.hitting_key_door = TRUE
+				visible_message("<span class = 'danger'>[user] hits the door with [W]!</span>")
+				if (istype(material, /material/wood))
+					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
+				else
+					playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
+				update_damage(-W.force)
+				spawn (7)
+					user.hitting_key_door = FALSE
+				return
 
 /obj/structure/simple_door/key_door/attackby(obj/item/W as obj, mob/user as mob)
 
@@ -92,6 +138,35 @@ var/list/nonbreaking_types = list(
 		else
 			visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 		playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+/obj/structure/simple_door/key_door/custom/attack_hand(mob/user as mob)
+
+	if (!locked)
+		return ..(user)
+	else
+		if (world.time < next_attack_hand)
+			return
+
+		if (user.a_intent == I_HELP)
+			user.visible_message("<span class = 'notice'>[user] knocks at the door.</span>")
+			for (var/mob/living/L in view(world.view, src))
+				if (!viewers(world.view, L).Find(user))
+					L << "<span class = 'notice'>You hear a knock at the door.</span>"
+			playsound(get_turf(src), "doorknock", 75, TRUE)
+		else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
+			user.visible_message("<span class = 'warning'>[user] bangs on the door.</span>")
+			for (var/mob/living/L in view(world.view, src))
+				if (!viewers(world.view, L).Find(user))
+					L << "<span class = 'notice'>You hear a knock at the door.</span>"
+			playsound(get_turf(src), "doorknock", 100, TRUE)
+		else
+			user.visible_message("<span class = 'danger'>[user] kicks the door!</span>")
+			if (istype(material, /material/wood))
+				playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
+			else
+				playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
+			update_damage(-10)
+
+		next_attack_hand = world.time + 10
 
 /obj/structure/simple_door/key_door/attack_hand(mob/user as mob)
 
@@ -122,6 +197,12 @@ var/list/nonbreaking_types = list(
 			update_damage(-10)
 
 		next_attack_hand = world.time + 10
+
+/obj/structure/simple_door/key_door/custom/Bumped(atom/user)
+	if (!locked || istype(src, /obj/structure/simple_door/key_door/anyone))
+		return ..(user)
+	else
+		return FALSE
 
 /obj/structure/simple_door/key_door/Bumped(atom/user)
 

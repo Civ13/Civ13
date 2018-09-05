@@ -60,7 +60,7 @@ var/world_is_open = TRUE
 	view = "15x15"
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
 
-#define RECOMMENDED_VERSION 509
+#define RECOMMENDED_VERSION 512
 /world/New()
 
 	config.post_load()

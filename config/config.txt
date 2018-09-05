@@ -175,19 +175,19 @@ SERVER 192.210.161.174:23999
 FORUMURL 
 
 ## donation address
-DONATIONURL 
+DONATIONURL https://www.patreon.com/1713ad
 
 ## rules address
-RULESURL http://1713.co.nf/wiki/index.php?title=Rules
+RULESURL http://1713.eu/wiki/index.php?title=Rules
 
 ## discord address
 DISCORDURL https://discord.gg/hBEtg4x
 
 ## Wiki address
-WIKIURL http://1713.co.nf/wiki/
+WIKIURL http://1713.eu/wiki/
 
 ## Website address
-WEBSITEURL http://1713.co.nf/
+WEBSITEURL http://1713.eu/
 
 ##Github address
 GITHUBURL https://github.com/1713-SS13/1713/

@@ -67,6 +67,7 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/wood = 5)
+	cratevalue = 120 //100 base value from 100 planks of wood
 
 /obj/structure/closet/crate/wood/New()
 	..()
@@ -80,6 +81,7 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/steel = 5)
+	cratevalue = 550 //500 base value from 100 steel sheets
 
 /obj/structure/closet/crate/steel/New()
 	..()
@@ -93,6 +95,7 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/iron = 5)
+	cratevalue = 330 //300 base value from 100 iron sheets
 
 /obj/structure/closet/crate/iron/New()
 	..()
@@ -106,6 +109,7 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/stack/material/glass = 5)
+	cratevalue = 330 //300 base value from 100 glass sheets
 
 /obj/structure/closet/crate/glass/New()
 	..()
@@ -125,6 +129,7 @@ obj/structure/closet/crate/empty
 				/obj/item/weapon/reagent_containers/food/snacks/grown/beans = 4,
 				/obj/item/weapon/reagent_containers/food/snacks/grown/cabbage = 4,
 				/obj/item/weapon/reagent_containers/food/snacks/grown/carrot = 4,)
+	cratevalue = 60 //48 base, 16 grown stuff x 3
 
 /obj/structure/closet/crate/rations/fruits
 	name = "Rations: fruits"
@@ -134,38 +139,46 @@ obj/structure/closet/crate/empty
 				/obj/item/weapon/reagent_containers/food/snacks/grown/orange = 3,
 				/obj/item/weapon/reagent_containers/food/snacks/grown/banana = 3,
 				/obj/item/weapon/reagent_containers/food/snacks/grown/coconut = 3,)
+	cratevalue = 66 //54, 18 x 3
 
 /obj/structure/closet/crate/rations/biscuits
 	name = "Rations: biscuits"
 	paths = list(/obj/item/weapon/reagent_containers/food/snacks/hardtack = 20,)
+	cratevalue = 50 //Nutrient amt = 2, 2 x 2 for value so 20 x 2 = 40 base
 
 /obj/structure/closet/crate/rations/beer
 	name = "Rations: beer"
 	paths = list(/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer = 10,)
+	cratevalue = 60 //50 base
 
 /obj/structure/closet/crate/rations/ale
 	name = "Rations: ale"
 	paths = list(/obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale = 10,)
+	cratevalue = 70 //60 base
 
 /obj/structure/closet/crate/rations/meat
 	name = "Rations: meat"
 	paths = list(/obj/item/weapon/reagent_containers/food/snacks/meat = 7,)
+	cratevalue = 70 //just putting this here
 
 /obj/structure/closet/crate/rations/seeds/trees
 	name = "Seeds: Trees"
 	paths = list(/obj/item/farming/seeds/apple = 5,
 				/obj/item/farming/seeds/orange = 5,)
+	cratevalue = 20 //seeds don't have a value, effort into farming harvesting and exporting is already lots of work
 
 /obj/structure/closet/crate/rations/seeds/cereals
 	name = "Seeds: Cereals"
 	paths = list(/obj/item/farming/seeds/wheat = 5,
 				/obj/item/farming/seeds/corn = 5,)
+	cratevalue = 20
 
 /obj/structure/closet/crate/rations/seeds/vegetables
 	name = "Seeds: Vegetables"
 	paths = list(/obj/item/farming/seeds/tomato = 4,
 				/obj/item/farming/seeds/potato = 4,
 				/obj/item/farming/seeds/cabbage = 4,)
+	cratevalue = 30
 
 /obj/structure/closet/crate/rations/seeds/cashcrops
 	name = "Seeds: Cash Crops"
@@ -173,6 +186,7 @@ obj/structure/closet/crate/empty
 				/obj/item/farming/seeds/sugarcane = 3,
 				/obj/item/farming/seeds/poppy = 3,
 				/obj/item/farming/seeds/hemp = 3,)
+	cratevalue = 40
 
 
 ///WEAPONS///
@@ -183,6 +197,7 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/weapon/grenade/old_grenade = 10)
+	cratevalue = 110 //assuming value = 10 as no value yet
 
 /obj/structure/closet/crate/musketball
 	name = "Musket ammunition crate"
@@ -190,13 +205,42 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_casing/musketball = 25)
-
+	cratevalue = 100 //base 75, 25 x 3
+/obj/structure/closet/crate/muskets
+	name = "Musket crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/gun/projectile/flintlock/musket = 5)
+	cratevalue = 550 //100*5
+/obj/structure/closet/crate/musketoons
+	name = "Musketoon crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/gun/projectile/flintlock/musketoon = 5)
+	cratevalue = 440 //80*5
+/obj/structure/closet/crate/pistols
+	name = "Pistol crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/gun/projectile/flintlock/pistol = 5)
+	cratevalue = 385 //70*5
+/obj/structure/closet/crate/blunderbusses
+	name = "Muskets crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/gun/projectile/flintlock/blunderbuss = 5)
+	cratevalue = 495 //90*5
 /obj/structure/closet/crate/musketball_pistol
 	name = "Pistol ammunition crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_casing/musketball_pistol = 25)
+	cratevalue = 60 //base value 50
 
 /obj/structure/closet/crate/blunderbuss_ammo
 	name = "Blunderbuss ammunition crate"
@@ -204,6 +248,7 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_casing/blunderbuss = 15)
+	cratevalue = 60 //base value 45
 
 /obj/structure/closet/crate/cannonball
 	name = "Cannonball crate"
@@ -211,6 +256,7 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/cannon_ball = 15)
+	cratevalue = 175 //assuming 10 value
 
 /obj/structure/closet/crate/webbings
 	name = "bandolier crate"
@@ -218,4 +264,5 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/clothing/accessory/storage/webbing = 10)
+	cratevalue = 110 //assuming 10 value
 #undef DYNAMIC_AMT

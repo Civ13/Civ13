@@ -2,6 +2,9 @@
 	name = "door"
 	density = TRUE
 	anchored = TRUE
+	var/custom = FALSE //for customized locks in RP
+	var/custom_code = 0 //for customized locks in RP
+	var/locked = FALSE //for customized locks in RP
 
 	icon = 'icons/obj/doors/material_doors.dmi'
 	icon_state = "metal"
