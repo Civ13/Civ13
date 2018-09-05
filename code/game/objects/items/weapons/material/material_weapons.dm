@@ -24,7 +24,10 @@
 /obj/item/weapon/material/New(var/newloc, var/material_key)
 	..(newloc)
 	if (!material_key)
-		material_key = default_material
+		if (!material)
+			material_key = default_material
+		else
+			material_key = material
 	set_material(material_key)
 	if (!material)
 		qdel(src)
