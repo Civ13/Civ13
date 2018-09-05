@@ -27,10 +27,10 @@
 		16 = "blunderbuss ammo crate (15)",
 		17 = "grenade crate (10)",
 		18 = "cannonball crate (10)",
-		15 = "pistol crate (5)",
-		16 = "musket crate (5)",
-		17 = "musketoon crate (5)",
-		18 = "blunderbuss crate (5)",)
+		19 = "pistol crate (5)",
+		20 = "musket crate (5)",
+		21 = "musketoon crate (5)",
+		22 = "blunderbuss crate (5)",)
 	var/list/itemstobuy = list(
 		"wood crate" = /obj/structure/closet/crate/wood,
 		"iron crate" = /obj/structure/closet/crate/iron,
@@ -99,26 +99,25 @@
 	var/finalpath
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" )
-		for (var/i=1;i<=itemstobuy.len,i++)
+		for (var/i=1;i<=13,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
 	else
-		for (var/i=1;i<=13,i++)
+		for (var/i=1;i<=22,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
 	display += "Cancel"
 	var/choice = WWinput(user, "What do you want to purchase?", "Imports", "Cancel", display)
 	if (choice == "Cancel")
 		return
-	var/list/choicename = list(splittext(choice, " - "))
-	finalnr = choicename[1]
-	world << "finalnr - [finalnr]"
-	finalcost = itemprices[finalnr]
-	world << "finalcost - [finalcost]"
-	finalpath = itemstobuy[finalnr]
-	world << "finalpath - [finalpath]"
-//		if ((user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor") && finalnr > 13)
-//			user << "Only Governors can order military supplies!"
-//			return
-	if(finalcost < money)
+	else
+		var/list/choicename = splittext(choice, " - ")
+		finalnr = choicename[1]
+		world << "finalnr - [finalnr]"
+		finalcost = itemprices[finalnr]
+		world << "finalcost - [finalcost]"
+		finalpath = itemstobuy[finalnr]
+		world << "finalpath - [finalpath]"
+
+	if(finalcost > money)
 		user << "You don't have enough money to buy that crate!"
 // giving change back
 		if (money <= 50 && money > 0)
@@ -142,7 +141,7 @@
 		else if (money > 1600)
 			user << "Too much money to pay you back! Buy something else to reduce the money deposited."
 			return
-	else if (finalcost >= money)
+	else if (finalcost <= money)
 		money -= finalcost
 		user << "You have successfully purchased the crate. It will arrive soon."
 		spawn(600)

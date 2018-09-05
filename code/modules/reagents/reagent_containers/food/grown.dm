@@ -5,6 +5,7 @@
 	name = "some magical supertype of all grown foods. Why is this even here"
 	nutriment_amt = 1
 	nutriment_desc = list("fruit" = TRUE)
+	w_class = 1.0
 	value = 3
 
 // fruit

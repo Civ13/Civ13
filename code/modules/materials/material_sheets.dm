@@ -119,6 +119,7 @@
 	icon_state = "tobacco"
 	default_type = "tobacco"
 	value = 3
+	w_class = 1.0
 
 /obj/item/stack/material/poppy
 	name = "poppy"
