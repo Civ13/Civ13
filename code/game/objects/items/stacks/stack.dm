@@ -188,7 +188,7 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
-		else if (H.faction_text == CIVILIAN)
+		else
 			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999)") as num
 			keycode = Clamp(keycode, 1000, 9999)
 			var/keyname = input(user, "Choose a name for the key") as text|null
@@ -196,13 +196,6 @@
 				keyname = "Key"
 			build_override_key.name = keyname
 			build_override_key.code = keycode
-
-		else
-			var/mob/living/carbon/human/US = user
-			var/texttype = lowertext("[US.faction_text]")
-			var/keybasepath = "/obj/item/weapon/key/"
-			var/keypath = text2path("[keybasepath][texttype]")
-			build_override_object = new keypath()
 
 	if (recipe.result_type == /obj/structure/noose)
 		var/structurecheck = 0

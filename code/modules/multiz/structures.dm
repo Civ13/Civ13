@@ -100,7 +100,7 @@
 		return
 
 	if (!target || !istype(target.loc, /turf))
-		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && (!istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom)))
+		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && !istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom) && !istype(src, /obj/structure/multiz/ladder/ww2) && !istype(src, /obj/structure/multiz/ladder/ww2/up))
 			M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"
 			return
 
@@ -130,7 +130,25 @@
 			M.z = M.z+1
 			M.x = src.x
 			M.y = src.y
-
+			return
+		else if (istype(src, /obj/structure/multiz/ladder/ww2/up))
+			if (M.pulling != null)
+				M.pulling.z = M.pulling.z+1
+				M.pulling.x = src.x
+				M.pulling.y = src.y
+			M.z = M.z+1
+			M.x = src.x
+			M.y = src.y
+			return
+		else if (istype(src, /obj/structure/multiz/ladder/ww2))
+			if (M.pulling != null)
+				M.pulling.z = M.pulling.z-1
+				M.pulling.x = src.x
+				M.pulling.y = src.y
+			M.z = M.z-1
+			M.x = src.x
+			M.y = src.y
+			return
 		M.visible_message(
 			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
 			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",

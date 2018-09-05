@@ -198,18 +198,17 @@ var/list/nonbreaking_types = list(
 
 		next_attack_hand = world.time + 10
 
-/obj/structure/simple_door/key_door/custom/Bumped(atom/user)
-	if (!locked || istype(src, /obj/structure/simple_door/key_door/anyone))
-		return ..(user)
-	else
-		return FALSE
-
 /obj/structure/simple_door/key_door/Bumped(atom/user)
-
-	if (!keyslot.locked || istype(src, /obj/structure/simple_door/key_door/anyone))
-		return ..(user)
+	if (istype(src, /obj/structure/simple_door/key_door/custom))
+		if (!locked)
+			return ..(user)
+		else
+			return FALSE
 	else
-		return FALSE
+		if (!keyslot.locked || istype(src, /obj/structure/simple_door/key_door/anyone))
+			return ..(user)
+		else
+			return FALSE
 
 
 /obj/structure/simple_door/key_door/proc/update_damage(amt)
