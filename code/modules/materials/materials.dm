@@ -178,10 +178,6 @@ var/list/name_to_material
 /material/proc/get_edge_damage()
 	return hardness //todo
 
-// Snowflakey, only checked for alien doors at the moment.
-/material/proc/can_open_material_door(var/mob/living/user)
-	return TRUE
-
 // Currently used for weapons and objects made of uranium to irradiate things.
 /material/proc/products_need_process()
 	return (radioactivity>0) //todo
