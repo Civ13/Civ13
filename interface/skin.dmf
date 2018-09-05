@@ -21,14 +21,17 @@ macro "macro"
 		name = "Northwest"
 		command = ".northwest"
 	elem 
-		name = "West+REP"
-		command = ".moveleft"
+		name = "West"
+		command = ".startmovingleft"
 	elem 
 		name = "CTRL+West"
 		command = "westface"
 	elem 
-		name = "North+REP"
-		command = ".moveup"
+		name = "West+UP"
+		command = ".stopmovingleft"
+	elem 
+		name = "North"
+		command = ".startmovingup"
 	elem 
 		name = "CTRL+North"
 		command = "northface"
@@ -36,17 +39,23 @@ macro "macro"
 		name = "North+UP"
 		command = ".stopmovingup"
 	elem 
-		name = "East+REP"
-		command = ".moveright"
+		name = "East"
+		command = ".startmovingright"
 	elem 
 		name = "CTRL+East"
 		command = "eastface"
 	elem 
-		name = "South+REP"
-		command = ".movedown"
+		name = "East+UP"
+		command = ".stopmovingright"
+	elem 
+		name = "South"
+		command = ".startmovingdown"
 	elem 
 		name = "CTRL+South"
 		command = "southface"
+	elem 
+		name = "South+UP"
+		command = ".stopmovingdown"
 	elem 
 		name = "Insert"
 		command = "a-intent right"
