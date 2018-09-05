@@ -372,10 +372,6 @@
 
 /obj/item/weapon/paper/attackby(obj/item/weapon/P as obj, mob/user as mob)
 	..()
-	var/clown = FALSE
-	if (user.mind && (user.mind.assigned_role == "Clown"))
-		clown = TRUE
-
 	if (istype(P, /obj/item/weapon/paper))
 		if (istype(P, /obj/item/weapon/paper/carbon))
 			var/obj/item/weapon/paper/carbon/C = P
@@ -440,25 +436,17 @@
 		if ((!in_range(src, usr) && loc != user && loc.loc != user && user.get_active_hand() != P))
 			return
 		playsound(src,'sound/effects/Stamp.ogg',40,1)
-		stamps += (stamps=="" ? "<HR>" : "<BR>") + "<i>This paper has been stamped with the [P.name].</i>"
+		stamps += (stamps=="" ? "<HR>" : "<BR>") + "<i>This paper is marked with the [P.name].</i>"
 
 		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
 		var/{x; y;}
-		if (istype(P, /obj/item/weapon/stamp/captain) || istype(P, /obj/item/weapon/stamp/centcomm))
-			x = rand(-2, FALSE)
-			y = rand(-1, 2)
-		else
-			x = rand(-2, 2)
-			y = rand(-3, 2)
+		x = rand(-2, 2)
+		y = rand(-3, 2)
 		offset_x += x
 		offset_y += y
 		stampoverlay.pixel_x = x
 		stampoverlay.pixel_y = y
 
-		if (istype(P, /obj/item/weapon/stamp/clown))
-			if (!clown)
-				user << "<span class='notice'>You are totally unable to use the stamp. HONK!</span>"
-				return
 
 		if (!ico)
 			ico = new
@@ -470,7 +458,7 @@
 		stamped += P.type
 		overlays += stampoverlay
 
-		user << "<span class='notice'>You stamp the paper with your rubber stamp.</span>"
+		user << "<span class='notice'>You stamp the paper with your hot wax seal.</span>"
 
 	else if (istype(P, /obj/item/weapon/flame))
 		burnpaper(P, user)

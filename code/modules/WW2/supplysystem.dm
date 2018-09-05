@@ -6,27 +6,78 @@
 	var/money = 0
 	var/marketval = 0
 	density = TRUE
+	anchored = TRUE
+
+	var/list/itemsnr = list(
+		1 = "wood crate",
+		2 = "iron crate",
+		3 = "glass crate",
+		4 = "vegetables crate",
+		5 = "fruits crate",
+		6 = "biscuits crate",
+		7 = "beer crate",
+		8 = "ale crate",
+		9 = "meat crate",
+		10 = "tree seeds crate",
+		11 = "vegetable seeds crate",
+		12 = "cereal seeds crate",
+		13 = "cash crops crate",
+		14 = "musket ammo crate (25)",
+		15 = "pistol ammo crate (25)",
+		16 = "blunderbuss ammo crate (15)",
+		17 = "grenade crate (10)",
+		18 = "cannonball crate (10)",
+		15 = "pistol crate (5)",
+		16 = "musket crate (5)",
+		17 = "musketoon crate (5)",
+		18 = "blunderbuss crate (5)",)
 	var/list/itemstobuy = list(
-		list("wood crate","/obj/structure/closet/crate/wood", 120, 1),
-		list("iron crate","/obj/structure/closet/crate/iron", 330, 2),
-		list("glass crate","/obj/structure/closet/crate/glass", 330, 3),
-		list("vegetables crate","/obj/structure/closet/crate/rations/vegetables", 60, 4),
-		list("fruits crate","/obj/structure/closet/crate/rations/fruits", 66, 5),
-		list("biscuits crate","/obj/structure/closet/crate/rations/biscuits", 50, 6),
-		list("beer crate","/obj/structure/closet/crate/rations/beer", 60, 7),
-		list("ale crate","/obj/structure/closet/crate/rations/ale", 70, 8),
-		list("meat crate","/obj/structure/closet/crate/rations/meat", 70, 9),
-		list("tree seeds crate","/obj/structure/closet/crate/rations/seeds/trees", 20, 10),
-		list("vegetable seeds crate","/obj/structure/closet/crate/rations/seeds/vegetables", 30, 11),
-		list("cereal seeds crate","/obj/structure/closet/crate/rations/seeds/cereals", 20, 12),
-		list("cash crops crate","/obj/structure/closet/crate/rations/seeds/cashcrops", 40, 13),
-		list("musket ammo crate (25)","/obj/structure/closet/crate/musketball",100, 14),
-		list("pistol ammo crate (25)","/obj/structure/closet/crate/musketball_pistol",60, 15),
-		list("blunderbuss crate (15)","/obj/structure/closet/crate/blunderbuss_ammo",60, 16),
-		list("grenade crate (10)","/obj/structure/closet/crate/grenades",110, 17),
-		list("cannonball crate (10)","/obj/structure/closet/crate/cannonball",175, 18),)
+		"wood crate" = /obj/structure/closet/crate/wood,
+		"iron crate" = /obj/structure/closet/crate/iron,
+		"glass crate" = /obj/structure/closet/crate/glass,
+		"vegetables crate" = /obj/structure/closet/crate/rations/vegetables,
+		"fruits crate" = /obj/structure/closet/crate/rations/fruits,
+		"biscuits crate" = /obj/structure/closet/crate/rations/biscuits,
+		"beer crate" = /obj/structure/closet/crate/rations/beer,
+		"ale crate" = /obj/structure/closet/crate/rations/ale,
+		"meat crate" = /obj/structure/closet/crate/rations/meat,
+		"tree seeds crate" = /obj/structure/closet/crate/rations/seeds/trees,
+		"vegetable seeds crate" = /obj/structure/closet/crate/rations/seeds/vegetables,
+		"cereal seeds crate" = /obj/structure/closet/crate/rations/seeds/cereals,
+		"cash crops crate" = /obj/structure/closet/crate/rations/seeds/cashcrops,
+		"musket ammo crate (25)" = /obj/structure/closet/crate/musketball,
+		"pistol ammo crate (25)" = /obj/structure/closet/crate/musketball_pistol,
+		"blunderbuss ammo crate (15)" = /obj/structure/closet/crate/blunderbuss_ammo,
+		"grenade crate (10)" = /obj/structure/closet/crate/grenades,
+		"cannonball crate (10)"= /obj/structure/closet/crate/cannonball,
+		"pistol crate (5)" = /obj/structure/closet/crate/pistols,
+		"musket crate (5)" = /obj/structure/closet/crate/muskets,
+		"musketoon crate (5)" = /obj/structure/closet/crate/musketoons,
+		"blunderbuss crate (5)"= /obj/structure/closet/crate/blunderbusses,)
 
-
+	var/list/itemprices = list(
+		"wood crate" = 120,
+		"iron crate" = 330,
+		"glass crate" = 330,
+		"vegetables crate" = 60,
+		"fruits crate" = 66,
+		"biscuits crate" = 50,
+		"beer crate" = 60,
+		"ale crate" = 70,
+		"meat crate" = 70,
+		"tree seeds crate" = 20,
+		"vegetable seeds crate" = 30,
+		"cereal seeds crate" = 20,
+		"cash crops crate" = 40,
+		"musket ammo crate (25)" = 100,
+		"pistol ammo crate (25)" = 60,
+		"blunderbuss crate (15)" = 60,
+		"grenade crate (10)" = 110,
+		"cannonball crate (10)" = 175,
+		"pistol crate (5)" = 385,
+		"musket crate (5)" = 550,
+		"musketoon crate (5)" = 440,
+		"blunderbuss crate(5)" = 495)
 /obj/structure/exportbook
 	name = "exporting book"
 	desc = "Use this to export colony products and exchange money. Only merchants and governors have access to it."
@@ -36,80 +87,93 @@
 	var/marketval = 0
 	var/moneyin = 0
 	density = TRUE
+	anchored = TRUE
 
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
 		user << "Only the merchants have access to the international shipping companies. Negotiate with one."
 		return
 
-	var/list/display //The products to be displayed, includes name of crate and price
-	for (var/i=1;i<=itemstobuy.len,i++)
-		display += "[i]: [itemstobuy[i][1]] - [itemstobuy[i][3]] reales" //Simplicity so the crate's name can be shown in the list
-		var/choice = input(user, "What do you want to purchase?") in display + "Cancel"
-		var/finalnr = 1
-		var/finalcost = 1
-		if(choice == "Cancel")
-			return
-		else
-			var/list/choicename = list(splittext(choice, ":"))
-			finalnr = text2num(choicename[1])
-			world << "[finalnr]"
-			finalcost = itemstobuy[finalnr][3]
-		if ((user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor") && finalnr > 13)
-			user << "Only Governors can order military supplies!"
-			return
-		if(finalcost < money)
-			user << "You don't have enough money to buy that crate!"
+	var/finalnr = 1
+	var/finalcost = 1
+	var/finalpath
+	var/list/display = list ()//The products to be displayed, includes name of crate and price
+	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" )
+		for (var/i=1;i<=itemstobuy.len,i++)
+			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
+	else
+		for (var/i=1;i<=13,i++)
+			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
+	display += "Cancel"
+	var/choice = WWinput(user, "What do you want to purchase?", "Imports", "Cancel", display)
+	if (choice == "Cancel")
+		return
+	var/list/choicename = list(splittext(choice, " - "))
+	finalnr = choicename[1]
+	world << "finalnr - [finalnr]"
+	finalcost = itemprices[finalnr]
+	world << "finalcost - [finalcost]"
+	finalpath = itemstobuy[finalnr]
+	world << "finalpath - [finalpath]"
+//		if ((user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor") && finalnr > 13)
+//			user << "Only Governors can order military supplies!"
+//			return
+	if(finalcost < money)
+		user << "You don't have enough money to buy that crate!"
 // giving change back
-			if (money <= 50 && money > 0)
-				new/obj/item/stack/money/real(loc, money)
-				money = 0
-				return
-			else if (money > 50 && money <= 400)
-				new/obj/item/stack/money/dollar(loc, money/8)
-				money = 0
-				return
-			else if (money > 400 && money <= 800)
-				new/obj/item/stack/money/escudo(loc, money/16)
-				money = 0
-				return
-			else if (money > 800 && money <= 1600)
-				new/obj/item/stack/money/doubloon(loc, money/32)
-				money = 0
-				return
-			else if (money == 0)
-				return
-			else if (money > 1600)
-				user << "Too much money to pay you back! Buy something else to reduce the money deposited."
-				return
-		else
-			money -= finalcost
-			user << "You have successfully purchased the crate. It will arrive soon."
-			spawn(600)
-				var/keypath = text2path("[itemstobuy[finalnr][2]]")
-				new keypath()
+		if (money <= 50 && money > 0)
+			new/obj/item/stack/money/real(loc, money)
+			money = 0
+			return
+		else if (money > 50 && money <= 400)
+			new/obj/item/stack/money/dollar(loc, money/8)
+			money = 0
+			return
+		else if (money > 400 && money <= 800)
+			new/obj/item/stack/money/escudo(loc, money/16)
+			money = 0
+			return
+		else if (money > 800 && money <= 1600)
+			new/obj/item/stack/money/doubloon(loc, money/32)
+			money = 0
+			return
+		else if (money == 0)
+			return
+		else if (money > 1600)
+			user << "Too much money to pay you back! Buy something else to reduce the money deposited."
+			return
+	else if (finalcost >= money)
+		money -= finalcost
+		user << "You have successfully purchased the crate. It will arrive soon."
+		spawn(600)
+			var/areatospawn = get_area(src)
+			var/done = FALSE
+			for(var/obj/O in areatospawn)
+				if(!istype(O, /obj/structure/supplybook) && !done)
+					new finalpath(areatospawn)
+					done = TRUE
 // giving change back
-			if (money <= 50 && money > 0)
-				new/obj/item/stack/money/real(loc, money)
-				money = 0
-				return
-			else if (money > 50 && money <= 400)
-				new/obj/item/stack/money/dollar(loc, money/8)
-				money = 0
-				return
-			else if (money > 400 && money <= 800)
-				new/obj/item/stack/money/escudo(loc, money/16)
-				money = 0
-				return
-			else if (money > 800 && money <= 1600)
-				new/obj/item/stack/money/doubloon(loc, money/32)
-				money = 0
-				return
-			else if (money == 0)
-				return
-			else if (money > 1600)
-				user << "Too much money to pay you back! Buy something else to reduce the money deposited."
-				return
+		if (money <= 50 && money > 0)
+			new/obj/item/stack/money/real(loc, money)
+			money = 0
+			return
+		else if (money > 50 && money <= 400)
+			new/obj/item/stack/money/dollar(loc, money/8)
+			money = 0
+			return
+		else if (money > 400 && money <= 800)
+			new/obj/item/stack/money/escudo(loc, money/16)
+			money = 0
+			return
+		else if (money > 800 && money <= 1600)
+			new/obj/item/stack/money/doubloon(loc, money/32)
+			money = 0
+			return
+		else if (money == 0)
+			return
+		else if (money > 1600)
+			user << "Too much money to pay you back! Buy something else to reduce the money deposited."
+			return
 
 /obj/structure/supplybook/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (W.amount && istype(W, /obj/item/stack/money))

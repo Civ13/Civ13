@@ -106,6 +106,29 @@
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing/musketball,/obj/item/ammo_casing/musketball_pistol,/obj/item/ammo_casing/blunderbuss)
 
+/obj/item/clothing/under/doctor
+	name = "doctor's uniform"
+	desc = "A sterile, nicely pressed suit for doctors."
+	icon_state = "ba_suit"
+	item_state = "ba_suit"
+
+/obj/item/clothing/accessory/storage/coinpouch
+	name = "coin pouch"
+	desc = "A small pouch, where you can carry your coins."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "coinpouch1"
+	slot_flags = SLOT_ID
+	slots = 2
+
+/obj/item/clothing/accessory/storage/coinpouch/New()
+	..()
+	hold.max_storage_space = 2
+	hold.can_hold = list(/obj/item/stack/money/real,\
+	/obj/item/stack/money/dollar,\
+	/obj/item/stack/money/escudo,\
+	/obj/item/stack/money/doubloon,\
+	/obj/item/weapon/key)
+
 /obj/item/weapon/storage/backpack/quiver
 	name = "quiver"
 	desc = "The best way to carry a bow and arrows."
