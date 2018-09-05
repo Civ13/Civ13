@@ -15,6 +15,7 @@
 	var/scoped_invisible = FALSE
 	var/is_teleporter = FALSE
 	var/is_cover = FALSE
+	var/code = 0
 	var/cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
 	var/plant = "tomato"
 	var/cratevalue = 0 //How much the crate costs when importing

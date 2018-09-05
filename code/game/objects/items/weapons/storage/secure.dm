@@ -16,7 +16,7 @@
 	var/icon_sparking = "securespark"
 	var/icon_opened = "secure0"
 	var/locked = TRUE
-	var/code = ""
+	code = ""
 	var/l_code = null
 	var/l_set = FALSE
 	var/l_setshort = FALSE

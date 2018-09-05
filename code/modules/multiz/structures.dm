@@ -103,17 +103,6 @@
 		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && (!istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom)))
 			M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"
 			return
-		else
-			if (istype(src, /obj/structure/multiz/ladder/ww2/tunneltop))
-				M.z = M.z-1
-				M.x = src.x
-				M.y = src.y
-				return
-			if (istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom))
-				M.z = M.z+1
-				M.x = src.x
-				M.y = src.y
-				return
 
 	var/turf/T = target.loc
 	if (!istop)
@@ -135,47 +124,25 @@
 
 	if (do_after(M, 10, src))
 		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
-
 		// pulling/grabbing people with you
-		var/atom/movable/was_pulling = null
-		var/grabbing = FALSE
+		if (istype(src, /obj/structure/multiz/ladder/ww2/tunneltop))
+			if (M.pulling != null)
+				M.pulling.z = M.pulling.z-1
+				M.pulling.x = src.x
+				M.pulling.y = src.y
+			M.z = M.z-1
+			M.x = src.x
+			M.y = src.y
+			return
+		else if (istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom))
+			if (M.pulling != null)
+				M.pulling.z = M.pulling.z+1
+				M.pulling.x = src.x
+				M.pulling.y = src.y
+			M.z = M.z+1
+			M.x = src.x
+			M.y = src.y
 
-		if (M.pulling)
-			was_pulling = M.pulling
-			M.stop_pulling(was_pulling)
-		else
-			for (var/obj/item/weapon/grab/G in M.contents)
-				if (G.affecting)
-					was_pulling = G.affecting
-					grabbing = TRUE
-					break
-
-		if (was_pulling)
-			var/turf/move_pulling = get_step(T, M.dir)
-			if (move_pulling.density)
-				move_pulling = get_step(T, NORTH)
-			if (move_pulling.density)
-				move_pulling = get_step(T, SOUTH)
-			if (move_pulling.density)
-				move_pulling = get_step(T, EAST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, WEST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, NORTHEAST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, NORTHWEST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, SOUTHEAST)
-			if (move_pulling.density)
-				move_pulling = get_step(T, SOUTHWEST)
-
-			was_pulling.Move(move_pulling)
-			M.Move(T)
-
-			if (was_pulling && !grabbing)
-				M.start_pulling(was_pulling)
-		else
-			M.Move(T)
 		M.visible_message(
 			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
 			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
@@ -262,6 +229,7 @@
 	name = "tunnel entrance"
 	desc = "A hole dug in the floor, leads to an underground tunnel."
 	icon_state = "hole_top"
+	istop = TRUE
 
 /obj/structure/multiz/ladder/ww2/tunnelbottom
 	name = "tunnel exit"

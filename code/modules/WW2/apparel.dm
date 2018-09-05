@@ -127,7 +127,8 @@
 	/obj/item/stack/money/dollar,\
 	/obj/item/stack/money/escudo,\
 	/obj/item/stack/money/doubloon,\
-	/obj/item/weapon/key)
+	/obj/item/weapon/key,\
+	/obj/item/weapon/storage/belt/keychain)
 
 /obj/item/weapon/storage/backpack/quiver
 	name = "quiver"

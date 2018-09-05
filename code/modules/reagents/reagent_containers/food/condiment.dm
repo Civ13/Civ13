@@ -159,7 +159,7 @@
 
 /obj/item/weapon/reagent_containers/food/condiment/flour
 	name = "flour sack"
-	desc = "A big bag of flour. Good for baking!"
+	desc = "A bag of flour. Good for baking!"
 	icon = 'icons/obj/food.dmi'
 	icon_state = "flour"
 	item_state = "flour"
@@ -168,6 +168,29 @@
 		reagents.add_reagent("flour", 30)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/reagent_containers/food/condiment/flour/attack_self(mob/user)
+	var/obj/item/weapon/reagent_containers/glass/WW
+	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
+		if(!istype(user.r_hand, /obj/item/weapon/reagent_containers/glass))
+			user << "<span class = 'warning'>You need to be holding water in the other hand to make dough.</span>"
+			return
+		else
+			WW = user.r_hand
+	else
+		WW = user.l_hand
+	if (WW.reagents.has_reagent("water", 5))
+		if (src.reagents.has_reagent("flour", 5))
+			WW.reagents.remove_reagent("water", 5)
+			src.reagents.remove_reagent("flour", 5)
+			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
+			return
+		else
+			user << "<span class = 'warning'>You need more flour.</span>"
+			return
+	else
+		user << "<span class = 'warning'>You need more water.</span>"
+		return
 
 /obj/item/weapon/reagent_containers/food/condiment/bsugar
 	name = "sugarcane sugar"

@@ -160,11 +160,10 @@
 			if (keyname == null)
 				keyname = "Locked"
 			build_override_door = new /obj/structure/simple_door/key_door/custom(null, material)
-			build_override_door.name = keyname
-			var/datum/keyslot/custom/keyslot_coding = new/datum/keyslot/custom(null)
-			keyslot_coding.code = key.code
-			build_override_door.keyslot_type = keyslot_coding
-			build_override_door.keyslot = keyslot_coding
+			spawn(5)
+				build_override_door.name = keyname
+				build_override_door.custom_code = key.code
+				return
 
 	if (!can_use(required))
 		if (produced>1)

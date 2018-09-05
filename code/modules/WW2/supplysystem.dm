@@ -7,6 +7,7 @@
 	var/marketval = 0
 	density = TRUE
 	anchored = TRUE
+	var/factionarea = "SupplyRN"
 
 	var/list/itemsnr = list(
 		1 = "wood crate",
@@ -105,18 +106,14 @@
 		for (var/i=1;i<=22,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
 	display += "Cancel"
-	var/choice = WWinput(user, "What do you want to purchase?", "Imports", "Cancel", display)
+	var/choice = WWinput(user, "Order a crate: (Current Money: [money] reales)", "Imports", "Cancel", display)
 	if (choice == "Cancel")
 		return
 	else
 		var/list/choicename = splittext(choice, " - ")
 		finalnr = choicename[1]
-		world << "finalnr - [finalnr]"
 		finalcost = itemprices[finalnr]
-		world << "finalcost - [finalcost]"
 		finalpath = itemstobuy[finalnr]
-		world << "finalpath - [finalpath]"
-
 	if(finalcost > money)
 		user << "You don't have enough money to buy that crate!"
 // giving change back
@@ -145,12 +142,14 @@
 		money -= finalcost
 		user << "You have successfully purchased the crate. It will arrive soon."
 		spawn(600)
-			var/areatospawn = get_area(src)
-			var/done = FALSE
-			for(var/obj/O in areatospawn)
-				if(!istype(O, /obj/structure/supplybook) && !done)
-					new finalpath(areatospawn)
-					done = TRUE
+			var/list/turfs = latejoin_turfs[factionarea]
+			var/spawnpoint = pick(turfs)
+			new finalpath(get_turf(spawnpoint))
+			user << "A shipment has arrived."
+/*			if (done == FALSE)
+				money += finalcost
+				user << "The arrival area is too crowded, clear it first and reorder!"
+				return*/
 // giving change back
 		if (money <= 50 && money > 0)
 			new/obj/item/stack/money/real(loc, money)
