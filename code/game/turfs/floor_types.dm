@@ -305,8 +305,8 @@ var/global/list/GrassEdgeCache
 	density = TRUE
 	water_level = 200
 
-/turf/floor/plating/beach/water/sewage
-	name = "Sewage Water"
+/turf/floor/plating/beach/water/swamp
+	name = "Swamp Water"
 	move_delay = 3
 	color = "#94B21C"
 
@@ -321,7 +321,7 @@ var/global/list/GrassEdgeCache
 /turf/floor/plating/beach/water/New()
 	..()
 	if (!istype(src, /turf/floor/plating/beach/water/ice))
-		if (!istype(src, /turf/floor/plating/beach/water/sewage))
+		if (!istype(src, /turf/floor/plating/beach/water/swamp))
 			overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.1)
 		else
 			var/image/I = image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.1)

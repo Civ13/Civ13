@@ -202,32 +202,60 @@
 
 // end of wormhole areas
 
-// british areas
 
 /area/caribbean/colonies
+
+/area/caribbean/colonies/jungle
+	name = "Jungle"
+	icon_state = "red2"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/beach
+	name = "Beach"
+	icon_state = "red1"
+	base_turf = /turf/floor/plating/beach/sand
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/caves
+	name = "Caves"
+	icon_state = "red3"
+	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/swamp
+	name = "Swamp"
+	icon_state = "red4"
+	base_turf = /turf/floor/plating/beach/water/swamp
+	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/british
 	name = "British Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/portuguese
 	name = "Portuguese Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/spanish
 	name = "Spanish Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/french
 	name = "French Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/dutch
@@ -235,6 +263,7 @@
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
+	location = AREA_INSIDE
 /area/caribbean/british
 
 /area/caribbean/british/land
