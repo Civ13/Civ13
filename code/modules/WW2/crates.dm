@@ -171,8 +171,8 @@ obj/structure/closet/crate/empty
 	name = "Seeds: Cereals (+yeast)"
 	paths = list(/obj/item/farming/seeds/wheat = 5,
 				/obj/item/farming/seeds/corn = 5,
-				/obj/item/weapon/reagent_containers/food/condiment/enzyme,
-				/obj/item/weapon/reagent_containers/food/condiment/enzyme)
+				/obj/item/weapon/reagent_containers/food/condiment/enzyme = 1,
+				/obj/item/weapon/reagent_containers/food/condiment/enzyme = 1)
 	cratevalue = 50
 
 /obj/structure/closet/crate/rations/seeds/vegetables
