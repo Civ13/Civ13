@@ -143,6 +143,14 @@
 	volume = 150
 	density = TRUE
 	flags = OPENCONTAINER
+/obj/item/weapon/reagent_containers/glass/barrel/empty
+	name = "wood barrel"
+	desc = "A wood barrel. You can put liquids inside."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
 
 
 /obj/item/weapon/reagent_containers/glass/barrel/water

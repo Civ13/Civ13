@@ -876,7 +876,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/spanish_officer_army(H), slot_wear_suit)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
