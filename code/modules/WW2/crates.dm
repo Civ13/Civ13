@@ -168,10 +168,12 @@ obj/structure/closet/crate/empty
 	cratevalue = 20 //seeds don't have a value, effort into farming harvesting and exporting is already lots of work
 
 /obj/structure/closet/crate/rations/seeds/cereals
-	name = "Seeds: Cereals"
+	name = "Seeds: Cereals (+yeast)"
 	paths = list(/obj/item/farming/seeds/wheat = 5,
-				/obj/item/farming/seeds/corn = 5,)
-	cratevalue = 20
+				/obj/item/farming/seeds/corn = 5,
+				/obj/item/weapon/reagent_containers/food/condiment/enzyme,
+				/obj/item/weapon/reagent_containers/food/condiment/enzyme)
+	cratevalue = 50
 
 /obj/structure/closet/crate/rations/seeds/vegetables
 	name = "Seeds: Vegetables"

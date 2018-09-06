@@ -1676,6 +1676,7 @@
 	id = "rum"
 	result = "rum"
 	required_reagents = list("sugar" = 3, "water" = 1)
+	catalysts = list("enzyme" = 5)
 	result_amount = 1
 
 /datum/chemical_reaction/beer

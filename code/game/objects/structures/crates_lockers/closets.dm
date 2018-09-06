@@ -199,6 +199,16 @@
 	return
 
 /obj/structure/closet/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HURT)
+		if (contents != null)
+			user << "You need to empty the crate first."
+		else
+			visible_message("<span class='danger'>[user] begins to deconstruct the [src]!</span>")
+			playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+			user.do_attack_animation(src)
+			if (do_after(user, 50, user.loc))
+				qdel(src)
+				return
 	if (opened)
 		if (istype(W, /obj/item/weapon/grab))
 			var/obj/item/weapon/grab/G = W
