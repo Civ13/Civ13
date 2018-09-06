@@ -106,10 +106,10 @@
 	var/finalpath
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" )
-		for (var/i=1;i<=13,i++)
+		for (var/i=1;i<=16,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
 	else
-		for (var/i=1;i<=22,i++)
+		for (var/i=1;i<=24,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
 	display += "Cancel"
 	var/choice = WWinput(user, "Order a crate: (Current Money: [money] reales)", "Imports", "Cancel", display)
