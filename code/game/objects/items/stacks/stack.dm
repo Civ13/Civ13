@@ -122,6 +122,17 @@
 			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 				qdel(H.r_hand)
 
+	if (findtext(recipe.title, "custom sign"))
+		var/customname = input(user, "Choose a name for this sign:") as text|null
+		if (customname == null)
+			customname = "Sign"
+		var/customdesc = input(user, "Choose a description for this sign:") as text|null
+		if (customdesc == null)
+			customdesc = "An empty sign."
+		build_override_object.name = customname
+		build_override_object.desc = customdesc
+		return
+
 	if (findtext(recipe.title, "wall"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"

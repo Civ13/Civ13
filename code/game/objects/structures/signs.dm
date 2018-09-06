@@ -88,6 +88,11 @@
 	desc = "Next to the extremely long list of names and job titles, there is a drawing of a little child. The child appears to be retarded. Beneath the image, someone has scratched the word \"PACKETS\""
 	icon_state = "kiddieplaque"
 
+/obj/structure/sign/custom
+	name = "Sign"
+	desc = "Signs something."
+	icon_state = "woodsign2"
+
 //numbers
 /obj/structure/sign/n1
 	desc = "A silver sign which reads 'I'."

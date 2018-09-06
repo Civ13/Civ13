@@ -200,7 +200,7 @@
 
 /obj/structure/closet/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HURT)
-		if (contents != null)
+		if (!opened)
 			user << "You need to empty the crate first."
 		else
 			visible_message("<span class='danger'>[user] begins to deconstruct the [src]!</span>")
