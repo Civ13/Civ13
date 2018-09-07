@@ -109,9 +109,7 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
-	var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
-	var/obj/structure/simple_door/key_door/custom/NEWDOOR = new /obj/structure/simple_door/key_door/custom
 	build_override_key.code = -1
 	var/mob/living/carbon/human/H = user
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
@@ -131,6 +129,7 @@
 		var/customdesc = input(user, "Choose a description for this sign:") as text|null
 		if (customdesc == null)
 			customdesc = "An empty sign."
+		var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
 		build_override_sign.name = customname
 		build_override_sign.desc = customdesc
 		return
@@ -169,6 +168,7 @@
 			var/keyname = input(user, "Choose a name for the door") as text|null
 			if (keyname == null)
 				keyname = "Locked"
+			var/obj/structure/simple_door/key_door/custom/NEWDOOR = new /obj/structure/simple_door/key_door/custom
 			NEWDOOR.name = keyname
 			NEWDOOR.custom_code = key.code
 			return
