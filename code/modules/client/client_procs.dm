@@ -353,8 +353,8 @@
 	world << "sql_age: [player_age]"
 	world << "sql_points: [xp_points]"
 	#endif
-
-	if (sql_id)
+	var/sql_alreadyexists = database.execute("SELECT id FROM player WHERE ckey = '[sql_ckey]' ")
+	if (sql_id == sql_alreadyexists)
 		#ifdef SQLDEBUG
 		world << "prev. player [src]"
 		#endif
@@ -370,7 +370,7 @@
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
 	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid,age) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]','[player_age]');")
-	//#undef SQLDEBUG
+	#undef SQLDEBUG
 
 #undef TOPIC_SPAM_DELAY
 #undef UPLOAD_LIMIT
