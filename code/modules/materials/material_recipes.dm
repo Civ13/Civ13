@@ -40,9 +40,9 @@ var/list/engineer_exclusive_recipe_types = null
 
 	recipes += new/datum/stack_recipe_list("bullets", list(
 		new/datum/stack_recipe("musket ball (x2)", /obj/item/weapon/ammopart/musketball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-		new/datum/stack_recipe("small musket ball (x3)", /obj/item/weapon/ammopart/musketball_small, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("small musket ball (x3)", /obj/item/weapon/ammopart/musketball_pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("blunderbuss balls (x2)", /obj/item/weapon/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-		new/datum/stack_recipe("cannon ball (x1)", /obj/item/cannon_ball, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("cannon ball (x1)", /obj/item/cannon_ball, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 /material/wood/generate_recipes()
 	..()

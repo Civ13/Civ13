@@ -761,5 +761,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\recife.dmm"
+#include "maps\island\island.dmm"
 // END_INCLUDE
