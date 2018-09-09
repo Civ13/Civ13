@@ -356,6 +356,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePTCap"
 	is_officer = TRUE
+	is_commander = TRUE
 	SL_check_independent = TRUE
 	is_army = TRUE
 

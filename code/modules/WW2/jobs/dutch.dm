@@ -352,6 +352,7 @@
 	is_officer = TRUE
 	SL_check_independent = TRUE
 	is_army = TRUE
+	is_commander = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1

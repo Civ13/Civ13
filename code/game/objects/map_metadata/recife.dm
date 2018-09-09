@@ -22,7 +22,7 @@
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
 	battle_name = "Battle of Recife"
-	mission_start_message = "<font size=4>Dutch forces are sieging the Portuguese town of Recife! They have <b>40 minutes</b> to capture it. Dutch may attack after <b>10 minutes</b>.</font><br><font size=2>The key points that need to be captured are: <b>Governors Office, Army Barracks (Fortress)</b></font>"
+	mission_start_message = "<font size=4>Dutch forces are sieging the Portuguese town of Recife! They have <b>40 minutes</b> to capture it. Dutch may attack after <b>15 minutes</b>.</font><br><font size=2>The key points that need to be captured are: <b>Governors Office, Army Barracks (Fortress)</b></font>"
 	faction1 = DUTCH
 	faction2 = PORTUGUESE
 	ambience = list('sound/ambience/jungle1.ogg')
@@ -33,10 +33,10 @@ obj/map_metadata/recife/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = FALSE
 /obj/map_metadata/recife/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 9000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/recife/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 9000 || admin_ended_all_grace_periods)
 
 
 var/no_loop = FALSE
