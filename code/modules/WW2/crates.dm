@@ -61,6 +61,15 @@ obj/structure/closet/crate/empty
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 
+/obj/structure/closet/crate/bayonets
+	name = "Bayonets crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/attachment/bayonet/military = 10)
+	cratevalue = 132//100 base value from 100 planks of wood
+
+
 /obj/structure/closet/crate/wood
 	name = "Wood planks crate"
 	icon_state = "wood_crate"
