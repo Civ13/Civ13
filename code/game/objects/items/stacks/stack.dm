@@ -109,8 +109,12 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
+	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
+	build_override_door.custom_code = -1
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
+	var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
+	build_override_sign.desc = "A sign."
 	var/mob/living/carbon/human/H = user
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -129,10 +133,8 @@
 		var/customdesc = input(user, "Choose a description for this sign:") as text|null
 		if (customdesc == null)
 			customdesc = "An empty sign."
-		var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
 		build_override_sign.name = customname
 		build_override_sign.desc = customdesc
-		return
 
 	if (findtext(recipe.title, "wall"))
 		if (H.getStatCoeff("crafting") < 1.1)
@@ -168,10 +170,8 @@
 			var/keyname = input(user, "Choose a name for the door") as text|null
 			if (keyname == null)
 				keyname = "Locked"
-			var/obj/structure/simple_door/key_door/custom/NEWDOOR = new /obj/structure/simple_door/key_door/custom
-			NEWDOOR.name = keyname
-			NEWDOOR.custom_code = key.code
-			return
+			build_override_door.name = keyname
+			build_override_door.custom_code = key.code
 
 	if (!can_use(required))
 		if (produced>1)
@@ -275,11 +275,24 @@
 			qdel(O)
 			return
 
+		if (build_override_sign.desc != "A sign.")
+			build_override_sign.loc = get_turf(O)
+			build_override_sign.set_dir(user.dir)
+			build_override_sign.add_fingerprint(user)
+			qdel(O)
+			return
 
 		if (build_override_object)
 			build_override_object.loc = get_turf(O)
 			build_override_object.set_dir(user.dir)
 			build_override_object.add_fingerprint(user)
+			qdel(O)
+			return
+
+		if (build_override_door.custom_code != -1)
+			build_override_door.loc = get_turf(O)
+			build_override_door.set_dir(user.dir)
+			build_override_door.add_fingerprint(user)
 			qdel(O)
 			return
 

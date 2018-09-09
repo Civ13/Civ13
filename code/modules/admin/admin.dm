@@ -143,29 +143,12 @@ proc/admin_notice(var/message, var/rights)
 				<A href='?src=\ref[src];simplemake=runtime;mob=\ref[M]'>Runtime</A> |
 				<br>"}
 
-				/*
-				<A href='?src=\ref[src];simplemake=robot;mob=\ref[M]'>Cyborg</A> |*/
-				/*
-								\[ Construct: <A href='?src=\ref[src];simplemake=constructarmoured;mob=\ref[M]'>Armoured</A> ,
-				<A href='?src=\ref[src];simplemake=constructbuilder;mob=\ref[M]'>Builder</A> ,
-				<A href='?src=\ref[src];simplemake=constructwraith;mob=\ref[M]'>Wraith</A> \]
-				<A href='?src=\ref[src];simplemake=shade;mob=\ref[M]'>Shade</A>*/
-				/*
-								\[ slime: <A href='?src=\ref[src];simplemake=slime;mob=\ref[M]'>Baby</A>,
-				<A href='?src=\ref[src];simplemake=adultslime;mob=\ref[M]'>Adult</A> \]*/
-
 	body += {"<br><br>
 			<b>Other actions:</b>
 			<br>
 			<A href='?src=\ref[src];forcespeech=\ref[M]'>Forcesay</A>
 			"}
-	/*if (M.client)
-		body += {" |
-			<A href='?src=\ref[src];tdome1=\ref[M]'>Thunderdome 1</A> |
-			<A href='?src=\ref[src];tdome2=\ref[M]'>Thunderdome 2</A> |
-			<A href='?src=\ref[src];tdomeadmin=\ref[M]'>Thunderdome Admin</A> |
-			<A href='?src=\ref[src];tdomeobserve=\ref[M]'>Thunderdome Observer</A> |
-		"}*/
+
 	// language toggles
 	body += "<br><br><b>Languages:</b><br>"
 	var/f = TRUE
@@ -205,7 +188,7 @@ proc/admin_notice(var/message, var/rights)
 
 /datum/admins/proc/PlayerNotesPage(page)
 	var/dat = "<b>Player notes</b><HR>"
-	var/savefile/S=new("[(serverswap && serverswap.Find("master_data_dir")) ? serverswap["master_data_dir"] : "data/"]player_notes.sav")
+	var/savefile/S=new("/home/1713/1713/1713-1/data/player_notes.sav")
 	var/list/note_keys
 	S >> note_keys
 	if (!note_keys)
@@ -243,9 +226,7 @@ proc/admin_notice(var/message, var/rights)
 	usr << browse(dat, "window=player_notes;size=400x400")
 
 /proc/get_player_notes_file_dir()
-	if (serverswap && serverswap.Find("master_data_dir"))
-		return "[serverswap["master_data_dir"]]player_saves/"
-	return "data/player_saves/"
+	return "/home/1713/1713/1713-1/data/player_saves/"
 
 /datum/admins/proc/player_has_info(var/key as text)
 	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")
@@ -377,7 +358,7 @@ proc/admin_notice(var/message, var/rights)
 	var/confirm = WWinput(usr, "Restart the game world?", "Restart", "Yes", list("Yes", "Cancel"))
 	if (confirm == "Cancel")
 		return
-	if (processes.mapswap && ticker.restarting_is_very_bad && serverswap.Find("snext"))
+	if (processes.mapswap && ticker.restarting_is_very_bad)
 		var/unconfirm = WWinput(usr, "Mapswap is in progress. Restarting now may break the linked server. Continue?", "Warning", "No", list("No", "Yes"))
 		if (unconfirm == "No")
 			return

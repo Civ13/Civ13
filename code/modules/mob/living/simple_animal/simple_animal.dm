@@ -148,60 +148,6 @@
 						audible_emote("[pick(emote_hear)].")
 
 
-	//Atmos
-	var/atmos_suitable = TRUE
-
-	var/atom/A = loc
-
-	if (istype(A,/turf))
-		var/turf/T = A
-
-		var/datum/gas_mixture/Environment = T.return_air()
-
-		if (Environment)
-
-			if ( abs(Environment.temperature - bodytemperature) > 40 )
-				bodytemperature += ((Environment.temperature - bodytemperature) / 5)
-
-			if (min_oxy)
-				if (Environment.gas["oxygen"] < min_oxy)
-					atmos_suitable = FALSE
-			if (max_oxy)
-				if (Environment.gas["oxygen"] > max_oxy)
-					atmos_suitable = FALSE
-			if (min_tox)
-				if (Environment.gas["plasma"] < min_tox)
-					atmos_suitable = FALSE
-			if (max_tox)
-				if (Environment.gas["plasma"] > max_tox)
-					atmos_suitable = FALSE
-			if (min_n2)
-				if (Environment.gas["nitrogen"] < min_n2)
-					atmos_suitable = FALSE
-			if (max_n2)
-				if (Environment.gas["nitrogen"] > max_n2)
-					atmos_suitable = FALSE
-			if (min_co2)
-				if (Environment.gas["carbon_dioxide"] < min_co2)
-					atmos_suitable = FALSE
-			if (max_co2)
-				if (Environment.gas["carbon_dioxide"] > max_co2)
-					atmos_suitable = FALSE
-
-	//Atmos effect
-	if (bodytemperature < minbodytemp)
-		fire_alert = 2
-		adjustBruteLoss(cold_damage_per_tick)
-	else if (bodytemperature > maxbodytemp)
-		fire_alert = TRUE
-		adjustBruteLoss(heat_damage_per_tick)
-	else
-		fire_alert = FALSE
-
-	if (!atmos_suitable)
-		adjustBruteLoss(unsuitable_atoms_damage)
-	return TRUE
-
 /mob/living/simple_animal/proc/handle_supernatural()
 	if (purge)
 		purge -= 1

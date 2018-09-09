@@ -9,6 +9,5 @@
 // faction huds
 
 #define FACTION_TO_ENEMIES 7
-#define OFFICER_FACTION 8
-#define BASE_FACTION 9
-#define SQUAD_FACTION 10
+#define BASE_FACTION 8
+#define SQUAD_FACTION 9

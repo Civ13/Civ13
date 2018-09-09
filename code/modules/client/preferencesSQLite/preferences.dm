@@ -76,7 +76,7 @@ var/list/preferences_datums = list()
 	//Keeps track of preferrence for not getting any wanted jobs
 	var/alternate_option = FALSE
 
-	// maps each organ to either null(intact), "cyborg" or "amputated"
+	// maps each organ to either null(intact) or "amputated"
 	// will probably not be able to do this for head and torso ;)
 	var/list/organ_data = list()
 	var/list/rlimb_data = list()
@@ -349,7 +349,6 @@ var/list/preferences_datums = list()
 
 	character.h_style = h_style
 	character.f_style = f_style
-	// Destroy/cyborgize organs
 
 	for (var/name in organ_data)
 

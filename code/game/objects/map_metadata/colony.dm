@@ -36,7 +36,9 @@
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
-	if (istype(J, /datum/job/pirates/battleroyale))
+	else if (istype(J, /datum/job/pirates/battleroyale))
+		. = FALSE
+	else if (J.is_army == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
 		. = FALSE

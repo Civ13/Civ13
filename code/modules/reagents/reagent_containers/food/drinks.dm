@@ -95,6 +95,21 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// Drinks. END
 ////////////////////////////////////////////////////////////////////////////////
+/obj/item/weapon/reagent_containers/food/drinks/gunpowder
+	name = "gunpowder pouch"
+	desc = "A small pouch, used to carry gunpowder."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "gunpowder"
+	volume = 10
+	center_of_mass = list("x"=16, "y"=14)
+	value = 5
+
+/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full
+	value = 5
+
+	New()
+		..()
+		reagents.add_reagent("gunpowder", 10)
 
 /obj/item/weapon/reagent_containers/food/drinks/golden_cup
 	desc = "A golden cup"

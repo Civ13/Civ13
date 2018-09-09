@@ -30,6 +30,8 @@
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_RP == TRUE)
 		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))

@@ -327,7 +327,7 @@
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)
 
-	ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
+	ticker.minds += character.mind
 
 	character.lastarea = get_area(loc)
 
@@ -425,8 +425,7 @@
 		character.buckled.set_dir(character.dir)
 
 	if (character.mind)
-	//	data_core.manifest_inject(character)
-		ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
+		ticker.minds += character.mind
 
 	character.lastarea = get_area(loc)
 

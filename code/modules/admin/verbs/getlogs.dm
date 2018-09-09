@@ -48,7 +48,7 @@
 		src << "<font color='red'>Only Admins may use this command.</font>"
 		return
 
-	var/path = browse_files(serverswap["runtime_log_dir"])
+	var/path = browse_files("/home/1713/1713/1713-1/data/logs/runtime/")
 	if (!path)
 		return
 
@@ -68,7 +68,7 @@
 	set desc = "Fetch logfiles from data/logs"
 	set category = null
 
-	var/path = browse_files(serverswap["master_log_dir"])
+	var/path = browse_files("/home/1713/1713/1713-1/data/logs/")
 	if (!path)
 		return
 
@@ -89,7 +89,7 @@
 	set name = "Show Server Log"
 	set desc = "Shows today's server log."
 
-	var/path = "[serverswap["master_log_dir"]][time2text(world.realtime,"YYYY/MM-Month/DD-Day")].log"
+	var/path = "/home/1713/1713/1713-1/data/logs/[time2text(world.realtime,"YYYY/MM-Month/DD-Day")].log"
 	if ( fexists(path) )
 		src << run( file(path) )
 	else
@@ -104,7 +104,7 @@
 	set name = "Show Server Attack Log"
 	set desc = "Shows today's server attack log."
 
-	var/path = "[serverswap["master_log_dir"]][time2text(world.realtime,"YYYY/MM-Month/DD-Day")] Attack.log"
+	var/path = "/home/1713/1713/1713-1/data/logs/[time2text(world.realtime,"YYYY/MM-Month/DD-Day")] Attack.log"
 	if ( fexists(path) )
 		src << run( file(path) )
 	else

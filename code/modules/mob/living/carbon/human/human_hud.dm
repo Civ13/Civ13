@@ -7,9 +7,9 @@
 	var/recreate_flag = FALSE
 
 	if (!check_HUDdatum())//проверка настроек клиента на правильность
-		log_debug("[H] try check a HUD, but HUDdatums not have \"[H.client.prefs.UI_style]!\"")
-		H << "Some problem hase accure, use default HUD type"
-		H.defaultHUD = "ErisStyle"
+		log_debug("[H] trying to check a HUD, but HUDdatums does not have \"[H.client.prefs.UI_style]!\"")
+		H << "Some problem has occured, use default HUD type."
+		H.defaultHUD = "1713Style"
 		++recreate_flag
 	else if (H.client.prefs.UI_style != H.defaultHUD)//Если стиль у МОБА не совпадает со стилем у клинета
 		H.defaultHUD = H.client.prefs.UI_style
@@ -137,19 +137,18 @@
 	var/mob/living/carbon/human/H = src
 	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 
-	//Добавляем технические элементы(damage,flash,pain... оверлеи)
 	for (var/techobject in HUDdatum.HUDoverlays)
 		var/HUDtype = HUDdatum.HUDoverlays[techobject]["type"]
 		var/obj/screen/HUD = new HUDtype(techobject, HUDdatum.HUDoverlays[techobject]["loc"], H)
-		if (HUDdatum.HUDoverlays[techobject]["icon"])//Анализ на овверайд icon
+		if (HUDdatum.HUDoverlays[techobject]["icon"])
 			HUD.icon = HUDdatum.HUDoverlays[techobject]["icon"]
 		else
 			HUD.icon = HUDdatum.icon
-		if (HUDdatum.HUDoverlays[techobject]["icon_state"])//Анализ на овверайд icon_state
+		if (HUDdatum.HUDoverlays[techobject]["icon_state"])
 			HUD.icon_state = HUDdatum.HUDoverlays[techobject]["icon_state"]
-		H.HUDtech[HUD.name] += HUD//Добавляем в список худов
-		if (HUD.process_flag)//Если худ нужно процессить
-			H.HUDprocess += HUD//Вливаем в соотвествующий список
+		H.HUDtech[HUD.name] += HUD
+		if (HUD.process_flag)
+			H.HUDprocess += HUD
 	return
 
 /* Using the HUD procs is simple. Call these procs in the life.dm of the intended mob.
@@ -159,8 +158,6 @@ the HUD updates properly! */
 // faction HUDs processing and stuff
 
 /mob/living/carbon/human/proc/most_important_faction_hud_constant()
-	if (officer_faction)
-		return OFFICER_FACTION
 	return BASE_FACTION
 
 /mob/living/carbon/human/proc/base_faction_hud_constant()

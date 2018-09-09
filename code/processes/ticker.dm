@@ -20,7 +20,6 @@
 		if (ticker)
 			ticker.pregame()
 		start_serverswap_loop()
-		start_serverdata_loop()
 
 	processes.ticker = src
 

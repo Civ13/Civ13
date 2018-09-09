@@ -2,7 +2,7 @@
 	//SECURITY//
 	////////////
 #define UPLOAD_LIMIT		10485760	//Restricts client uploads to the server to 10MB //Boosted this thing. What's the worst that can happen?
-#define ABSOLUTE_MIN_CLIENT_VERSION 400
+#define ABSOLUTE_MIN_CLIENT_VERSION 511
 #define REAL_MIN_CLIENT_VERSION 512
 #define PLAYERCAP 200
 	/*
@@ -145,13 +145,6 @@
 
 	. = ..()	//calls mob.Login()
 
-	if (!serverswap_open_status)
-		if (serverswap.Find("snext"))
-			var/linked = "byond://[world.internet_address]:[serverswap[serverswap["snext"]]]"
-			src << "<span class = 'notice'><font size = 1>This server is not open, so you will be automatically redirected to the linked server - if it doesn't automatically take you there, click this: <b>[linked]</b>.</font></span>"
-			src << link(linked)
-		del(src)
-		return FALSE
 
 	if (quickBan_rejected("Server"))
 		del(src)
@@ -320,7 +313,7 @@
 
 /client/proc/log_to_db()
 
-	if ( IsGuestKey(key) )
+	if (IsGuestKey(key))
 		return
 
 	if (!database)
@@ -336,36 +329,28 @@
 			sql_id = rowdata["id"]
 		player_age = rowdata["age"]
 
-	rowdata = database.execute("SELECT ckey FROM player WHERE ip = '[address]';")
+	rowdata = database.execute("SELECT ckey FROM connection_log WHERE ip = '[address]';")
 	related_accounts_ip = ""
 
 	if (islist(rowdata) && !isemptylist(rowdata))
 		related_accounts_ip += "[rowdata["ckey"]], "
 
-	rowdata = database.execute("SELECT ckey FROM player WHERE computerid = '[computer_id]';")
+	rowdata = database.execute("SELECT ckey FROM connection_log WHERE computerid = '[computer_id]';")
 	related_accounts_cid = ""
 	if (islist(rowdata) && !isemptylist(rowdata))
 		related_accounts_cid += "[rowdata["ckey"]], "
 
-	var/admin_rank = "Player"
-	if (holder)
-		admin_rank = holder.rank
-
 	var/sql_ip = sql_sanitize_text(address)
 	var/sql_computerid = sql_sanitize_text(computer_id)
-	var/sql_admin_rank = sql_sanitize_text(admin_rank)
 
 	if (sql_ip == null)
 		sql_ip = "HOST"
 
-//	#define SQLDEBUG
+	#define SQLDEBUG
 
 	#ifdef SQLDEBUG
-//	world << "sql_ip: [sql_ip]"
-//	world << "sql_computerid: [sql_computerid]"
-//	world << "sql_admin_rank: [sql_admin_rank]"
 	world << "sql_id: [sql_id]"
-	world << "sql_age: [player_age]"
+	world << "sql_age: get_player_age([rowdata["ckey"]])"
 	world << "sql_points: [xp_points]"
 	#endif
 
@@ -374,13 +359,13 @@
 		world << "prev. player [src]"
 		#endif
 		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
+		database.execute("UPDATE player SET lastseen = '[database.Now()]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
 	else
 		#ifdef SQLDEBUG
 		world << "new player [src]"
 		#endif
 		//New player!! Need to insert all the stuff
-		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, ip, computerid, lastadminrank) VALUES ('[sql_id]', '[sql_ckey]', '[database.Now()]', '[database.Now()]', '[sql_ip]', '[sql_computerid]', '[sql_admin_rank]');")
+		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[database.Now()]', '[database.Now()]', '[player_age]', '[xp_points]');")
 
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"

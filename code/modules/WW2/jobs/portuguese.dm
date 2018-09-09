@@ -347,3 +347,44 @@
 
 
 	return TRUE
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/datum/job/portuguese/soldier
+	title = "Soldado"
+	en_meaning = "Infantry Soldier"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLatePT"
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 6
+	max_positions = 200
+
+/datum/job/portuguese/soldier/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/portuguese_soldier(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer_army(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a basic infantry soldier of the Portuguese Colonial Army. Follow your Officer's orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE

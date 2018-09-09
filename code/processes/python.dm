@@ -20,8 +20,4 @@
 	return FALSE
 
 /process/python/proc/getScriptDir()
-	if (config.scripts_directory)
-		return config.scripts_directory
-	if (serverswap && serverswap.Find("masterdir"))
-		return "[serverswap["masterdir"]]scripts"
 	return "/home/1713/1713/scripts"

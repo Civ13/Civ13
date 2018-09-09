@@ -24,7 +24,7 @@ var/database/database = null
 
 		// where we store player data
 		if (!execute("TABLE player EXISTS;"))
-			execute("CREATE TABLE player (id STRING, ckey STRING, firstseen STRING, lastseen STRING, ip STRING, computerid STRING, lastadminrank STRING);")
+			execute("CREATE TABLE player (id STRING, ckey STRING, firstseen STRING, lastseen STRING, age STRING, points STRING);")
 
 		// where we store connection logs
 		if (!execute("TABLE connection_log EXISTS;"))

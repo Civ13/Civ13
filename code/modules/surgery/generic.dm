@@ -17,8 +17,6 @@
 			return FALSE
 		if (affected.is_stump())
 			return FALSE
-		if (affected.status & ORGAN_ROBOT)
-			return FALSE
 		return TRUE
 
 /datum/surgery_step/generic/cut_open

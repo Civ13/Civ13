@@ -235,6 +235,17 @@
 	icon_state = "piratebandana1"
 	item_state = "piratebandana1"
 
+/obj/item/clothing/shoes/soldiershoes
+	name = "infantry shoes"
+	desc = "Low black infantry shoes."
+	icon_state = "italian_boots"
+	item_state = "italian_boots"
+	worn_state = "italian_boots"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 30, bullet = 20, laser = 20,energy = 15, bomb = 30, bio = 10, rad = FALSE)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+
 /obj/item/clothing/shoes/sailorboots1
 	name = "black sailor boots"
 	desc = "Classic black sailor boots."
@@ -675,28 +686,42 @@
 /////Army stuff
 /obj/item/clothing/suit/storage/jacket/dutch_officer_army
 	name = "United Provinces Army jacket"
-	desc = "A standard armyr jacket of the United Provinces Army. Orange with golden buttons."
-	icon_state = "dutch_officer"
-	item_state = "dutch_officer"
-	worn_state = "dutch_officer"
+	desc = "A standard army jacket of the United Provinces Army. Orange with golden buttons."
+	icon_state = "dutch_army"
+	item_state = "dutch_army"
+	worn_state = "dutch_army"
 
 /obj/item/clothing/suit/storage/jacket/spanish_officer_army
 	name = "Spanish Army jacket"
-	desc = "A standard armyr jacket of the Spanish Army. Orange with golden buttons."
+	desc = "A standard army jacket of the Spanish Army. Yellow with golden buttons."
 	icon_state = "spanish_officer"
 	item_state = "spanish_officer"
 	worn_state = "spanish_officer"
 
 /obj/item/clothing/suit/storage/jacket/portuguese_officer_army
 	name = "Portuguese Army jacket"
-	desc = "A standard armyr jacket of the Portuguese Army. Orange with golden buttons."
-	icon_state = "portuguese_officer"
-	item_state = "portuguese_officer"
-	worn_state = "portuguese_officer"
+	desc = "A standard army jacket of the Portuguese Army. Green with golden buttons."
+	icon_state = "portuguese_army"
+	item_state = "portuguese_army"
+	worn_state = "portuguese_army"
 
 /obj/item/clothing/suit/storage/jacket/french_officer_army
 	name = "French Army jacket"
-	desc = "A standard armyr jacket of the French Army. Orange with golden buttons."
+	desc = "A standard army jacket of the French Army. Blue with golden buttons."
 	icon_state = "french_officer"
 	item_state = "french_officer"
 	worn_state = "french_officer"
+
+/obj/item/clothing/under/dutch_soldier
+	name = "Dutch Army uniform"
+	desc = "A set of United Provinces army clothes. Yellow shirts and trousers."
+	icon_state = "dutch_army"
+	item_state = "dutch_army"
+	worn_state = "dutch_army"
+
+/obj/item/clothing/under/portuguese_soldier
+	name = "Portuguese Army uniform"
+	desc = "A set of Portuguese army clothes. Red shirt with black and white trousers."
+	icon_state = "portuguese_army"
+	item_state = "portuguese_army"
+	worn_state = "portuguese_army"

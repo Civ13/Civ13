@@ -29,7 +29,9 @@
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_RP == TRUE)
 		. = FALSE
-	if (istype(J, /datum/job/pirates/battleroyale))
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale))
 		J.total_positions = 32
 		J.min_positions = 32
 		J.max_positions = 32

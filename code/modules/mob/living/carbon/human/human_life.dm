@@ -363,7 +363,6 @@
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
 
-//		if (!istype(loc, /obj/machinery/atmospherics/unary/cryo_cell))
 		var/burn_dam = FALSE
 		switch(bodytemperature)
 			if (-INFINITY to species.cold_level_3)
@@ -1182,83 +1181,26 @@
 
 		never_set_faction_huds = FALSE
 
-		if (officer_faction)
-			var/image/holder = hud_list[OFFICER_FACTION]
-			holder.icon = 'icons/mob/hud_WW2.dmi'
-			switch (original_job.base_type_flag())
-				if (PIRATES)
-					holder.icon_state = officer_faction.icon_state
-				if (BRITISH)
-					holder.icon_state = officer_faction.icon_state
-				if (FRENCH)
-					holder.icon_state = officer_faction.icon_state
-				if (SPANISH)
-					holder.icon_state = officer_faction.icon_state
-				if (PORTUGUESE)
-					holder.icon_state = officer_faction.icon_state
-				if (INDIANS)
-					holder.icon_state = officer_faction.icon_state
-				if (DUTCH)
-					holder.icon_state = officer_faction.icon_state
-				if (CIVILIAN)
-					holder.icon_state = ""
-			hud_list[OFFICER_FACTION] = holder
-
-		if (base_faction)
-			var/image/holder = hud_list[BASE_FACTION]
-			holder.icon = 'icons/mob/hud_WW2.dmi'
-			switch (original_job.base_type_flag())
-				if (PIRATES)
-					holder.icon_state = base_faction.icon_state
-				if (BRITISH)
-					holder.icon_state = base_faction.icon_state
-				if (FRENCH)
-					holder.icon_state = base_faction.icon_state
-				if (SPANISH)
-					holder.icon_state = base_faction.icon_state
-				if (PORTUGUESE)
-					holder.icon_state = base_faction.icon_state
-				if (INDIANS)
-					holder.icon_state = base_faction.icon_state
-				if (DUTCH)
-					holder.icon_state = base_faction.icon_state
-				if (CIVILIAN)
-					holder.icon_state = ""
-			hud_list[BASE_FACTION] = holder
-
-
-	if (stat != life_hud_check["stat"] || health != life_hud_check["health"])
-		var/image/holder = hud_list[HEALTH_HUD]
-		if (stat == DEAD)
-			holder.icon_state = "hudhealth-100"
-		else
-			var/percentage_health = RoundHealth((health-config.health_threshold_crit)/(maxHealth-config.health_threshold_crit)*100)
-			holder.icon_state = "hud[percentage_health]"
-		hud_list[HEALTH_HUD] = holder
-
-		holder = hud_list[LIFE_HUD]
-		if (stat == DEAD)
-			holder.icon_state = "huddead"
-		else
-			holder.icon_state = "hudhealthy"
-		hud_list[LIFE_HUD] = holder
-
-		holder = hud_list[STATUS_HUD]
-		if (stat == DEAD)
-			holder.icon_state = "huddead"
-		else
-			holder.icon_state = "hudhealthy"
-		hud_list[STATUS_HUD] = holder
-
-		holder = hud_list[STATUS_HUD_OOC]
-		if (stat == DEAD)
-			holder.icon_state = "huddead"
-		else
-			holder.icon_state = "hudhealthy"
-		hud_list[STATUS_HUD_OOC] = holder
-
-	life_hud_check["stat"] = stat
-	life_hud_check["health"] = health
+		var/image/holder = hud_list[BASE_FACTION]
+		holder.icon = 'icons/mob/hud_1713.dmi'
+		switch (original_job.base_type_flag())
+			if (PIRATES)
+				holder.icon_state = "pirate_basic"
+			if (BRITISH)
+				holder.icon_state = "rn_basic"
+			if (FRENCH)
+				holder.icon_state = "fr_basic"
+			if (SPANISH)
+				holder.icon_state = "sp_basic"
+			if (PORTUGUESE)
+				holder.icon_state = "pt_basic"
+			if (INDIANS)
+				holder.icon_state = "ind_basic"
+			if (DUTCH)
+				holder.icon_state = "nl_basic"
+			if (CIVILIAN)
+				holder.icon_state = ""
+		hud_list[BASE_FACTION] = holder
 
 /mob/living/carbon/human/handle_silent()
 	if (..())

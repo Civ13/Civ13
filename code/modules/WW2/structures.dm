@@ -16,7 +16,7 @@
 	desc = "An old wooden fence."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "oldfence"
-	health = 22
+	health = 32
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 
 /obj/structure/wallclock

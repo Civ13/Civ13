@@ -38,6 +38,12 @@ var/list/engineer_exclusive_recipe_types = null
 		new/datum/stack_recipe("wrench", /obj/item/weapon/wrench, 4, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("pickaxe", /obj/item/weapon/pickaxe, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),))
 
+	recipes += new/datum/stack_recipe_list("bullets", list(
+		new/datum/stack_recipe("musket ball (x2)", /obj/item/weapon/ammopart/musketball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("small musket ball (x3)", /obj/item/weapon/ammopart/musketball_small, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("blunderbuss balls (x2)", /obj/item/weapon/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("cannon ball (x1)", /obj/item/cannon_ball, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
+
 /material/wood/generate_recipes()
 	..()
 
@@ -45,14 +51,15 @@ var/list/engineer_exclusive_recipe_types = null
 		new/datum/stack_recipe("door", /obj/structure/simple_door/key_door/anyone/wood, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("soft wood wall", /obj/covers/wood_wall, 8, _time = 170, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("window", /obj/structure/window_frame, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
-//		new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+		new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("floor tile", /obj/covers/wood, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	recipes += new/datum/stack_recipe_list("barricades", list(
 		new/datum/stack_recipe("horizontal wood barrier", /obj/structure/barricade/horizontal, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("vertical wood barrier", /obj/structure/barricade/vertical, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE),
-		new/datum/stack_recipe("wood palisade", 	/obj/structure/grille/logfence, 7, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+		new/datum/stack_recipe("wood palisade", 	/obj/structure/grille/logfence, 6, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+		new/datum/stack_recipe("wood fence", 	/obj/structure/grille/fence, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("barricade", /obj/structure/barricade, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE,),))
 
 

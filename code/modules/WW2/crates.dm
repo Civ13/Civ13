@@ -230,7 +230,7 @@ obj/structure/closet/crate/empty
 	paths = list(/obj/item/weapon/gun/projectile/flintlock/pistol = 5)
 	cratevalue = 385 //70*5
 /obj/structure/closet/crate/blunderbusses
-	name = "Muskets crate"
+	name = "blunderbuss crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"

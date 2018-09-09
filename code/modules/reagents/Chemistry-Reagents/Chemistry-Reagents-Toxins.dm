@@ -306,14 +306,6 @@
 	if (effective_dose > 1)
 		M.adjustToxLoss(removed)
 
-/datum/reagent/chloralhydrate/beer2 //disguised as normal beer for use by emagged brobots
-	name = "Beer"
-	id = "beer2"
-	description = "An alcoholic beverage made from malted grains, hops, yeast, and water. The fermentation appears to be incomplete." //If the players manage to analyze this, they deserve to know something is wrong.
-	taste_description = "shitty piss water"
-	reagent_state = LIQUID
-	color = "#664300"
-
 /* Drugs */
 
 /datum/reagent/space_drugs

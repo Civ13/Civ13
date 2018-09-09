@@ -100,7 +100,6 @@
 
 	var/list/all_factions = list()
 	var/datum/faction/base_faction = null
-	var/datum/faction/officer_faction = null
 	var/datum/faction/squad/squad_faction = null
 	var/faction_text = null
 

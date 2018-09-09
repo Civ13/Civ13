@@ -10,7 +10,7 @@
 		if (!hasorgans(target))
 			return FALSE
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		if (!affected || (affected.status & ORGAN_ROBOT))
+		if (!affected)
 			return FALSE
 		return target_zone == "mouth"
 

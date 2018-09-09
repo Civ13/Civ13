@@ -4,9 +4,7 @@
 #define TOR_UPDATE_INTERVAL 216000	//~6 hours
 
 /proc/get_tor_file_dir()
-	if (serverswap && serverswap.Find("master_data_dir"))
-		return "[serverswap["master_data_dir"]]ToR_ban.bdb"
-	return "data/ToR_ban.bdb"
+	return "/home/1713/1713/1713-1/data/ToR_ban.bdb"
 
 /proc/ToRban_isbanned(var/ip_address)
 	var/savefile/F = new(get_tor_file_dir())

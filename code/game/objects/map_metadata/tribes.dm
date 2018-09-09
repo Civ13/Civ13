@@ -28,7 +28,9 @@
 obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_RP == TRUE)
 		. = FALSE
-	if (!(istype(J, /datum/job/indians/tribes)))
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (!(istype(J, /datum/job/indians/tribes)))
 		. = FALSE
 	else
 		. = TRUE
