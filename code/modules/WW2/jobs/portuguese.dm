@@ -349,6 +349,124 @@
 	return TRUE
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/portuguese/army_commander
+	title = "Tenente"
+	en_meaning = "Infantry Commander"
+	rank_abbreviation = "Ten."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLatePTCap"
+	is_officer = TRUE
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/portuguese/army_commander/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_portuguese(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_r_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, the commander or this company. Organize your <b>Sargentos</b> and lead your country to victory!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_VERY_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+/datum/job/portuguese/army_officer
+	title = "Sargento"
+	en_meaning = "Infantry Squad Leader"
+	rank_abbreviation = "Srg."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLatePTMidshipman"
+	is_officer = TRUE
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 20
+
+/datum/job/portuguese/army_officer/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/portuguese_soldier(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>, squad leader. Organize your group of <b>Soldados</b> according to your <b>Tenente</b>'s orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+/datum/job/portuguese/field_medic
+	title = "Médico de Campo"
+	en_meaning = "Infantry Field Medic"
+	rank_abbreviation = "Dr."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLatePTSurgeon"
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 6
+
+/datum/job/portuguese/field_medic/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the infantry healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+
+
+	return TRUE
 
 /datum/job/portuguese/soldier
 	title = "Soldado"
@@ -360,8 +478,8 @@
 	is_army = TRUE
 
 	// AUTOBALANCE
-	min_positions = 6
-	max_positions = 200
+	min_positions = 12
+	max_positions = 100
 
 /datum/job/portuguese/soldier/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -382,6 +500,46 @@
 	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/portuguese/chasseur
+	title = "Caçador"
+	en_meaning = "Light Infantry"
+	rank_abbreviation = "Caç."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLatePT"
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 4
+	max_positions = 20
+
+/datum/job/portuguese/chasseur/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/portuguese_soldier(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/portuguese_officer_army(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chasseur_portuguese(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/cutlass(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_VERY_HIGH)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)

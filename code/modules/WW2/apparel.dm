@@ -423,6 +423,13 @@
 	icon_state = "tricorne_portuguese"
 	item_state = "tricorne_portuguese"
 
+
+/obj/item/clothing/head/chasseur_portuguese
+	name = "Portuguese feathered hat"
+	desc = "A feathered black bicorne, used by the Portuguese Light Infantry."
+	icon_state = "chasseur_pt"
+	item_state = "chasseur_pt"
+
 /obj/item/clothing/head/portuguese_army
 	name = "Portuguese Army tricorne"
 	desc = "A green tricorne, used by the Portuguese Army"
@@ -582,6 +589,13 @@
 	desc = "An orange tricorne, used by the United Provinces Navy."
 	icon_state = "tricorne_dutch"
 	item_state = "tricorne_dutch"
+
+/obj/item/clothing/head/chasseur_dutch
+	name = "United Provinces feathered hat"
+	desc = "A feathered black bicorne, used by the United Provinces Light Infantry."
+	icon_state = "chasseur_nl"
+	item_state = "chasseur_nl"
+
 
 /obj/item/clothing/head/dutch_army
 	name = "United Provinces Army tricorne"
