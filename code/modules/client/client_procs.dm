@@ -323,7 +323,7 @@
 	var/list/rowdata = database.execute("SELECT id, datediff(Now(),firstseen) as age FROM player WHERE ckey = '[sql_ckey]';")
 	var/sql_id = getSQL_id()
 	player_age = FALSE	// New players won't have an entry so knowing we have a connection we set this to zero to be updated if their is a record.
-
+	xp_points = FALSE
 	if (islist(rowdata) && !isemptylist(rowdata))
 		if (rowdata["id"] != null)
 			sql_id = rowdata["id"]
