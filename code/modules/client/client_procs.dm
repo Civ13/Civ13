@@ -350,7 +350,7 @@
 
 	#ifdef SQLDEBUG
 	world << "sql_id: [sql_id]"
-	world << "sql_age: [get_player_age([rowdata["ckey"]])]"
+	world << "sql_age: [player_age]"
 	world << "sql_points: [xp_points]"
 	#endif
 
