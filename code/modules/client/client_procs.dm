@@ -158,9 +158,6 @@
 	if (config.resource_website)
 		preload_rsc = config.resource_website
 
-	if (!mob || istype(mob, /mob/new_player))
-		src << "<span class = 'red'>If the title screen is black, resources are still downloading. Please be patient until the title screen appears.</span>"
-
 	/*Admin Authorisation: */
 
 	load_admins()
@@ -353,7 +350,7 @@
 	world << "sql_age: [player_age]"
 	world << "sql_points: [xp_points]"
 	#endif
-	var/sql_alreadyexists = database.execute("SELECT id FROM player WHERE ckey = '[sql_ckey]' ")
+	var/sql_alreadyexists = database.execute("SELECT id FROM player WHERE ckey = '[sql_ckey]';")
 	if (sql_id == sql_alreadyexists)
 		#ifdef SQLDEBUG
 		world << "prev. player [src]"
@@ -366,10 +363,12 @@
 		#endif
 		//New player!! Need to insert all the stuff
 		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[database.Now()]', '[database.Now()]', '[player_age]', '[xp_points]');")
-
+		world << "INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[database.Now()]', '[database.Now()]', '[player_age]', '[xp_points]');"
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
-	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid,age) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]','[player_age]');")
+	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
+	world << "INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','REDACTED','REDACTED');"
+
 	#undef SQLDEBUG
 
 #undef TOPIC_SPAM_DELAY
