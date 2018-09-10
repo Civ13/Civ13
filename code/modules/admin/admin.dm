@@ -188,7 +188,7 @@ proc/admin_notice(var/message, var/rights)
 
 /datum/admins/proc/PlayerNotesPage(page)
 	var/dat = "<b>Player notes</b><HR>"
-	var/savefile/S=new("/home/1713/1713/1713-1/data/player_notes.sav")
+	var/savefile/S=new("data/player_notes.sav")
 	var/list/note_keys
 	S >> note_keys
 	if (!note_keys)
@@ -226,7 +226,7 @@ proc/admin_notice(var/message, var/rights)
 	usr << browse(dat, "window=player_notes;size=400x400")
 
 /proc/get_player_notes_file_dir()
-	return "/home/1713/1713/1713-1/data/player_saves/"
+	return "data/player_saves/"
 
 /datum/admins/proc/player_has_info(var/key as text)
 	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")

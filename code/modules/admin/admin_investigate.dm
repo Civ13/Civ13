@@ -6,7 +6,7 @@
 //Secondly, they are usually stored in an object. This means that they aren't centralised. It also means that
 //the data is lost when the object is deleted! This is especially annoying for things like the singulo engine!
 /proc/get_investigate_file_dir()
-	return "/home/1713/1713/1713-1/data/investigate/"
+	return "data/investigate/"
 
 
 //SYSTEM

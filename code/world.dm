@@ -108,16 +108,16 @@ var/world_is_open = TRUE
 			load_unit_test_changes()
 		#endif
 
-		world.log = file("/home/1713/1713/1713-1/data/logs/runtime/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-runtime.txt")
+		world.log = file("data/logs/runtime/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-runtime.txt")
 		world.log << "STARTED RUNTIME LOGGING"
 
-		attack_log = file("/home/1713/1713/1713-1/data/logs/attack/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-attack.log")
+		attack_log = file("data/logs/attack/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-attack.log")
 		attack_log << "STARTED ATTACK LOGGING"
 
 		//logs
 		var/date_string = time2text(world.realtime, "YYYY/MM-Month/DD-Day")
-		href_logfile = file("/home/1713/1713/1713-1/data/logs/[date_string]-hrefs.htm")
-		diary = file("/home/1713/1713/1713-1/data/logs/[date_string].log")
+		href_logfile = file("data/logs/[date_string]-hrefs.htm")
+		diary = file("data/logs/[date_string].log")
 		diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
 		changelog_hash = md5('html/changelog.html')					//used for telling if the changelog has changed recently
 
@@ -356,7 +356,7 @@ var/setting_up_db_connection = FALSE
 		return FALSE
 
 	if (!database)
-		database = new("/home/1713/1713/1713-1/SQL/database.db")
+		database = new("SQL/database.db")
 
 	. = TRUE
 	if ( . )
