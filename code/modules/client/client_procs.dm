@@ -350,8 +350,7 @@
 	world << "sql_age: [player_age]"
 	world << "sql_points: [xp_points]"
 	#endif
-	var/sql_alreadyexists = database.execute("SELECT ckey FROM player WHERE ckey = '[sql_ckey]';")
-	if (sql_id == sql_alreadyexists)
+	if (sql_id)
 		#ifdef SQLDEBUG
 		world << "prev. player [src]"
 		#endif
@@ -363,7 +362,7 @@
 		#endif
 		//New player!! Need to insert all the stuff
 		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[world.realtime]', '[world.realtime]', '[player_age]', '[xp_points]');")
-		world << "[time2text(world.realtime,"YYYY/MM-Month/DD-Day")]"
+		world << "[time2text(world.realtime,"YYYY-MM-Month-DD-Day")]"
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
 	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
