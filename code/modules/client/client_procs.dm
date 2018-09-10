@@ -339,6 +339,7 @@
 
 	var/sql_ip = sql_sanitize_text(address)
 	var/sql_computerid = sql_sanitize_text(computer_id)
+	var/currenttimesql = world.realtime
 
 	if (sql_ip == null)
 		sql_ip = "HOST"
@@ -356,18 +357,18 @@
 		world << "prev. player [src]"
 		#endif
 		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		database.execute("UPDATE player SET lastseen = '[database.Now()]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
+		database.execute("UPDATE player SET lastseen = '', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
 	else
 		#ifdef SQLDEBUG
 		world << "new player [src]"
 		#endif
 		//New player!! Need to insert all the stuff
-		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[database.Now()]', '[database.Now()]', '[player_age]', '[xp_points]');")
+		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[currenttimesql]', '[currenttimesql]', '[player_age]', '[xp_points]');")
 		world << "INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[database.Now()]', '[database.Now()]', '[player_age]', '[xp_points]');"
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
-	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
-	world << "INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','REDACTED','REDACTED');"
+	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[currenttimesql]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
+	world << "INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[currenttimesql]','[serverip]','[sql_ckey]','REDACTED','REDACTED');"
 
 	#undef SQLDEBUG
 
