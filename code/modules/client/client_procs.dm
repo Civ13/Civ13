@@ -368,7 +368,7 @@
 	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
 	world << "Insert into playerlist.txt:  (serverip;ckey;ip;computerid;serverip;datetime)"
 	var/F = file("SQL/playerlist.txt")
-	F << "[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 20)]\r\n"
+	F << "[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 20)]|"
 
 
 	#undef SQLDEBUG
