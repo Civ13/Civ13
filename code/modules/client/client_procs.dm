@@ -358,19 +358,19 @@
 		text2file("[sql_ckey];[num2text(world.realtime, 20)];[num2text(world.realtime, 20)];[player_age];[xp_ponts]","SQL/playerlist.txt")
 
 		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-//		database.execute("UPDATE player SET lastseen = '[world.realtime]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
+		database.execute("UPDATE player SET lastseen = '[world.realtime]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
 	else
 		#ifdef SQLDEBUG
 		world << "new player [src]"
-		#endif
-		//New player!! Need to insert all the stuff
-//		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[world.realtime]', '[world.realtime]', '[player_age]', '[xp_points]');")
 		world << "Insert into playerlist.txt:  (ckey;firstseen;lastseen;age;points)"
 		#endif
+		//New player!! Need to insert all the stuff
+		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[world.realtime]', '[world.realtime]', '[player_age]', '[xp_points]');")
+
 		text2file("[sql_ckey];[num2text(world.realtime, 20)];[num2text(world.realtime, 20)];[player_age];[xp_ponts]","SQL/playerlist.txt")
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
-//	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
+	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
 	#ifdef SQLDEBUG
 	world << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime)"
 	#endif
