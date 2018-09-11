@@ -146,6 +146,17 @@
 						visible_emote("[pick(emote_see)].")
 					else
 						audible_emote("[pick(emote_hear)].")
+	if (bodytemperature < minbodytemp)
+		fire_alert = 2
+		adjustBruteLoss(cold_damage_per_tick)
+
+	else if (bodytemperature > maxbodytemp)
+		fire_alert = TRUE
+		adjustBruteLoss(heat_damage_per_tick)
+
+	else
+		fire_alert = FALSE
+	return TRUE
 
 
 /mob/living/simple_animal/proc/handle_supernatural()
