@@ -321,10 +321,13 @@
 	for (var/v = TRUE, v < full_list_split.len, v++)
 		var/list/addin = list(splittext(full_list_split[v], ";"))
 		full_list_split_vars += addin
+	var/F = file("SQL/playerlist.txt")
+	if (fexists("SQL/playerlist.txt"))
+		fdel(F)
 	//checking for existing logs of current ckey
 	var/found = TRUE
 	//it exists, just update the values (ckey;firstseen;lastseen;age;points)
-	for (var/v = TRUE, v < full_list_split_vars.len, v++)
+	for (var/v = TRUE, v <= full_list_split_vars.len, v++)
 		if (full_list_split_vars[v][1] == ckey && found == TRUE)
 			world << "DEBUG: This key is on the list! ckey: [ckey]"
 			full_list_split_vars[v][3] = num2text(world.realtime, 10)
@@ -334,14 +337,10 @@
 	//it doesnt exist, create an entry
 	if (found == TRUE)
 		world << "DEBUG: New player, adding to the list! ckey: [ckey]"
-		full_list_split_vars += list(ckey,num2text(world.realtime, 10),num2text(world.realtime, 10),0,0)
-//		text2file("[ckey];[num2text(world.realtime, 10)];[num2text(world.realtime, 10)];0;0|","SQL/playerlist.txt")
+		text2file("[ckey];[num2text(world.realtime, 10)];[num2text(world.realtime, 10)];0;0|","SQL/playerlist.txt")
 
 	//copy the changes to the registry
-	var/F = file("SQL/playerlist.txt")
-	if (fexists("SQL/playerlist.txt"))
-		fdel(F)
-	for (var/k = TRUE, k < full_list_split_vars.len, k++)
+	for (var/k = TRUE, k <= full_list_split_vars.len, k++)
 		var/var1 = num2text(full_list_split_vars[k][1])
 		var/var2 = num2text(full_list_split_vars[k][2])
 		var/var3 = num2text(full_list_split_vars[k][3])
