@@ -309,37 +309,48 @@
 	return md5(ckey)
 
 /client/proc/log_to_db()
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// loading the "database"
 	var/full_list = file2text("SQL/playerlist.txt")
 //	var/full_logs = file2text("SQL/playerlogs.txt")
 	var/list/full_list_split = splittext(full_list, "|")
 //	var/list/full_logs_split = splittext(full_logs, "|")
 	var/list/full_list_split_vars = list()
-
+	world << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
 	//splitting the player database, so we can check the values individually:
-	for (var/v in 1 to full_list_split.len)
+	for (var/v = TRUE, v <= full_list_split.len, v++)
 		var/list/addin = list(splittext(full_list_split[v], ";"))
 		full_list_split_vars += addin
 	//checking for existing logs of current ckey
-	var/found = FALSE
+	var/found = TRUE
 	//it exists, just update the values (ckey;firstseen;lastseen;age;points)
 	for (var/v = TRUE, v <= full_list_split.len, v++)
-		if (full_list_split_vars[v][1] == ckey && found == FALSE)
+		if (full_list_split_vars[v][1] == ckey && found == TRUE)
 			world << "DEBUG: This key is on the list! ckey: [ckey]"
-			full_list_split_vars[v][3] = num2text(world.realtime, 20)
-			full_list_split_vars[v][4] = num2text(text2num(full_list_split_vars[v][3])-text2num(full_list_split_vars[v][2]))
-			found = TRUE
+			full_list_split_vars[v][3] = num2text(world.realtime, 10)
+			full_list_split_vars[v][4] = num2text(round((text2num(full_list_split_vars[v][3])-text2num(full_list_split_vars[v][2]))/864000)) //in days
+			found = FALSE
+
+	//it doesnt exist, create an entry
+	if (found == TRUE)
+		world << "DEBUG: New player, adding to the list! ckey: [ckey]"
+		full_list_split_vars += list(ckey,num2text(world.realtime, 10),num2text(world.realtime, 10),0,0)
+//		text2file("[ckey];[num2text(world.realtime, 10)];[num2text(world.realtime, 10)];0;0|","SQL/playerlist.txt")
+
 	//copy the changes to the registry
 	var/F = file("SQL/playerlist.txt")
 	if (fexists("SQL/playerlist.txt"))
 		fdel(F)
-	for (var/k = TRUE, k <= full_list_split.len, k++)
-		text2file("[full_list_split_vars[k][1]];[full_list_split_vars[k][2]];[full_list_split_vars[k][3]];[full_list_split_vars[k][4]];[full_list_split_vars[k][5]]|","SQL/playerlist.txt")
-	//it doesnt exist, create an entry
-	if (found == FALSE)
-		world << "DEBUG: New player, adding to the list! ckey: [ckey]"
-		full_list_split_vars += list(ckey,num2text(world.realtime, 20),num2text(world.realtime, 20),0,0)
-		text2file("[ckey];[num2text(world.realtime, 20)];[num2text(world.realtime, 20)];0;0|","SQL/playerlist.txt")
+	for (var/k = TRUE, k <= full_list_split.len+found, k++)
+		var/var1 = num2text(full_list_split_vars[k][1])
+		var/var2 = num2text(full_list_split_vars[k][2])
+		var/var3 = num2text(full_list_split_vars[k][3])
+		var/var4 = num2text(full_list_split_vars[k][4])
+		var/var5 = num2text(full_list_split_vars[k][5])
+		text2file("[var1];[var2];[var3];[var4];[var5];|","SQL/playerlist.txt")
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	if (IsGuestKey(key))
 		return
 
@@ -400,7 +411,7 @@
 	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
 	//adding to player logs (ckey;ip;computerid;serverip;datetime)
 	world << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime)"
-	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 20)]|","SQL/playerlogs.txt")
+	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 10)]|","SQL/playerlogs.txt")
 
 
 //	#undef SQLDEBUG
