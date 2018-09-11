@@ -319,8 +319,9 @@
 	world.log << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
 	//splitting the player database, so we can check the values individually:
 	for (var/v = TRUE, v < full_list_split.len, v++)
-		var/list/addin = list(splittext(full_list_split[v], ";"))
-		full_list_split_vars += addin
+		if (full_list_split[v][1] != "0" && full_list_split[v][1] != 0)
+			var/list/addin = list(splittext(full_list_split[v], ";"))
+			full_list_split_vars += addin
 	var/F = file("SQL/playerlist.txt")
 	if (fexists("SQL/playerlist.txt"))
 		fdel(F)
@@ -341,13 +342,13 @@
 
 	//copy the changes to the registry
 	for (var/k = TRUE, k <= full_list_split_vars.len, k++)
-		var/var1 = num2text(full_list_split_vars[k][1])
-		var/var2 = num2text(full_list_split_vars[k][2])
-		var/var3 = num2text(full_list_split_vars[k][3])
-		var/var4 = num2text(full_list_split_vars[k][4])
-		var/var5 = num2text(full_list_split_vars[k][5])
+		var/var1 = full_list_split_vars[k][1]
+		var/var2 = full_list_split_vars[k][2]
+		var/var3 = full_list_split_vars[k][3]
+		var/var4 = full_list_split_vars[k][4]
+		var/var5 = full_list_split_vars[k][5]
 		text2file("[var1];[var2];[var3];[var4];[var5];|","SQL/playerlist.txt")
-
+		world.log << "[var1];[var2];[var3];[var4];[var5];|"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (IsGuestKey(key))
