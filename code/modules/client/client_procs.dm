@@ -316,7 +316,7 @@
 	var/list/full_list_split = splittext(full_list, "|")
 //	var/list/full_logs_split = splittext(full_logs, "|")
 	var/list/full_list_split_vars = list()
-	world << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
+//	world << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
 	//splitting the player database, so we can check the values individually:
 	for (var/v = TRUE, v < full_list_split.len, v++)
 		var/list/addin = list(splittext(full_list_split[v], ";"))
@@ -329,14 +329,14 @@
 	//it exists, just update the values (ckey;firstseen;lastseen;age;points)
 	for (var/v = TRUE, v <= full_list_split_vars.len, v++)
 		if (full_list_split_vars[v][1] == ckey && found == TRUE)
-			world << "DEBUG: This key is on the list! ckey: [ckey]"
+//			world << "DEBUG: This key is on the list! ckey: [ckey]"
 			full_list_split_vars[v][3] = num2text(world.realtime, 10)
 			full_list_split_vars[v][4] = num2text(round((text2num(full_list_split_vars[v][3])-text2num(full_list_split_vars[v][2]))/864000)) //in days
 			found = FALSE
 
 	//it doesnt exist, create an entry
 	if (found == TRUE)
-		world << "DEBUG: New player, adding to the list! ckey: [ckey]"
+//		world << "DEBUG: New player, adding to the list! ckey: [ckey]"
 		text2file("[ckey];[num2text(world.realtime, 10)];[num2text(world.realtime, 10)];0;0|","SQL/playerlist.txt")
 
 	//copy the changes to the registry
