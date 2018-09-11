@@ -318,13 +318,13 @@
 	var/list/full_list_split_vars = list()
 	world << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
 	//splitting the player database, so we can check the values individually:
-	for (var/v = TRUE, v <= full_list_split.len, v++)
+	for (var/v = TRUE, v < full_list_split.len, v++)
 		var/list/addin = list(splittext(full_list_split[v], ";"))
 		full_list_split_vars += addin
 	//checking for existing logs of current ckey
 	var/found = TRUE
 	//it exists, just update the values (ckey;firstseen;lastseen;age;points)
-	for (var/v = TRUE, v <= full_list_split.len, v++)
+	for (var/v = TRUE, v < full_list_split_vars.len, v++)
 		if (full_list_split_vars[v][1] == ckey && found == TRUE)
 			world << "DEBUG: This key is on the list! ckey: [ckey]"
 			full_list_split_vars[v][3] = num2text(world.realtime, 10)
@@ -341,7 +341,7 @@
 	var/F = file("SQL/playerlist.txt")
 	if (fexists("SQL/playerlist.txt"))
 		fdel(F)
-	for (var/k = TRUE, k <= full_list_split.len+found, k++)
+	for (var/k = TRUE, k < full_list_split_vars.len, k++)
 		var/var1 = num2text(full_list_split_vars[k][1])
 		var/var2 = num2text(full_list_split_vars[k][2])
 		var/var3 = num2text(full_list_split_vars[k][3])
@@ -409,9 +409,9 @@
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
 	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
-	//adding to player logs (ckey;ip;computerid;serverip;datetime)
-	world << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime)"
-	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 10)]|","SQL/playerlogs.txt")
+	//adding to player logs (ckey;ip;computerid;serverip;datetime,realtime)
+	world << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime,realtime)"
+	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 10)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
 
 
 //	#undef SQLDEBUG
