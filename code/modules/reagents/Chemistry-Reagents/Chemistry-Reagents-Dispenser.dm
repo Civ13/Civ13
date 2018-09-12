@@ -175,10 +175,6 @@
 	M.adjust_fire_stacks(removed / 12)
 	M.adjustToxLoss(0.2 * removed)
 
-/datum/reagent/hydrazine/touch_turf(var/turf/T)
-	new /obj/effect/decal/cleanable/liquid_fuel(T, volume)
-	remove_self(volume)
-	return
 
 /datum/reagent/iron
 	name = "Iron"

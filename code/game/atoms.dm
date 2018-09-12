@@ -225,15 +225,6 @@
 		if (!fingerprintshidden)
 			fingerprintshidden = list()
 
-		//Fibers~
-	//	add_fibers(M)
-
-		//He has no prints!
-		if (mFingerprints in M.mutations)
-			if (fingerprintslast != M.key)
-				fingerprintshidden += "(Has no fingerprints) Real name: [M.real_name], Key: [M.key]"
-				fingerprintslast = M.key
-			return FALSE		//Now, lets get to the dirty work.
 		//First, make sure their DNA makes sense.
 		var/mob/living/carbon/human/H = M
 		if (!istype(H.dna, /datum/dna) || !H.dna.uni_identity || (length(H.dna.uni_identity) != 32))

@@ -1183,6 +1183,7 @@
 
 		var/image/holder = hud_list[BASE_FACTION]
 		holder.icon = 'icons/mob/hud_1713.dmi'
+		holder.plane = HUD_PLANE
 		switch (original_job.base_type_flag())
 			if (PIRATES)
 				holder.icon_state = "pirate_basic"
@@ -1251,17 +1252,6 @@
 				reset_view(null, FALSE)
 			else if (viewflags)
 				sight |= viewflags
-	/*	else if (eyeobj)
-			if (eyeobj.owner != src)
-				reset_view(null)*/
-		else
-			var/isRemoteObserve = FALSE
-			if ((mRemote in mutations) && remoteview_target)
-				if (remoteview_target.stat==CONSCIOUS)
-					isRemoteObserve = TRUE
-			if (!isRemoteObserve && client && !client.adminobs)
-				remoteview_target = null
-				reset_view(null, FALSE)
 	else if (client)
 		client.perspective = EYE_PERSPECTIVE
 		client.eye = laddervision

@@ -113,22 +113,7 @@ Works together with spawning an observer, noted above.
 		for (var/image/hud in client.images)
 			if (copytext(hud.icon_state,1,4) == "hud")
 				client.images.Remove(hud)
-/*
-	if (antagHUD)
-		var/list/target_list = list()
-		for (var/mob/living/target in oview(src, 14))
-			if (target.mind && target.mind.special_role)
-				target_list += target
-		if (target_list.len)
-			assess_targets(target_list)
-			*/
-	if (medHUD)
-		process_medHUD()
 
-/mob/observer/ghost/proc/process_medHUD()
-	for (var/mob/living/carbon/human/patient in oview(src, 14))
-		client.images += patient.hud_list[HEALTH_HUD]
-		client.images += patient.hud_list[STATUS_HUD_OOC]
 
 /mob/observer/ghost/proc/assess_targets(list/target_list)
 	for (var/mob/living/carbon/human/target in target_list)

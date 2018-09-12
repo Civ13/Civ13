@@ -163,9 +163,6 @@ the HUD updates properly! */
 /mob/living/carbon/human/proc/base_faction_hud_constant()
 	return BASE_FACTION
 
-/mob/living/carbon/human/proc/squad_faction_hud_constant()
-	return SQUAD_FACTION
-
 /proc/process_faction_hud(var/mob/M, var/mob/Alt)
 
 	if (!can_process_hud(M))

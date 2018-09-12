@@ -41,18 +41,6 @@
 	var/cold_damage_per_tick = 2	//same as heat_damage_per_tick, only if the bodytemperature it's lower than minbodytemp
 	var/fire_alert = FALSE
 
-	//Atmos effect - Yes, you can make creatures that require plasma or co2 to survive. N2O is a trace gas and handled separately, hence why it isn't here. It'd be hard to add it. Hard and me don't mix (Yes, yes make all the dick jokes you want with that.) - Errorage
-	var/min_oxy = 5
-	var/max_oxy = FALSE					//Leaving something at FALSE means it's off - has no maximum
-	var/min_tox = FALSE
-	var/max_tox = TRUE
-	var/min_co2 = FALSE
-	var/max_co2 = 5
-	var/min_n2 = FALSE
-	var/max_n2 = FALSE
-	var/unsuitable_atoms_damage = 2	//This damage is taken when atmos doesn't fit all the requirements above
-//	var/speed = FALSE //LETS SEE IF I CAN SET SPEEDS FOR SIMPLE MOBS WITHOUT DESTROYING EVERYTHING. Higher speed is slower, negative speed is faster
-
 	//LETTING SIMPLE ANIMALS ATTACK? WHAT COULD GO WRONG. Defaults to zero so Ian can still be cuddly
 	var/melee_damage_lower = FALSE
 	var/melee_damage_upper = FALSE

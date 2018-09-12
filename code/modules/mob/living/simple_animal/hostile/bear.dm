@@ -23,16 +23,6 @@
 	melee_damage_lower = 20
 	melee_damage_upper = 30
 
-	//Space bears aren't affected by atmos.
-	min_oxy = FALSE
-	max_oxy = FALSE
-	min_tox = FALSE
-	max_tox = FALSE
-	min_co2 = FALSE
-	max_co2 = FALSE
-	min_n2 = FALSE
-	max_n2 = FALSE
-	minbodytemp = FALSE
 	var/stance_step = FALSE
 
 	faction = PIRATES

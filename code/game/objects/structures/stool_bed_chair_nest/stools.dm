@@ -16,10 +16,6 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/weapon/stool/prison
 	force = 0
 
-/obj/item/weapon/stool/wood
-	force = 0
-	material = /material/wood
-
 /obj/item/weapon/stool/padded
 	icon_state = "stool_padded_preview" //set for the map
 

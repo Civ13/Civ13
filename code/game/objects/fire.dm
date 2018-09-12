@@ -23,10 +23,6 @@ turf/proc/hotspot_expose(exposed_temperature, exposed_volume, soh = FALSE)
 		return FALSE
 
 	var/igniting = FALSE
-	//var/obj/effect/decal/cleanable/liquid_fuel/liquid = locate() in src
-
-/*	if (air_contents.check_combustability(liquid))
-		igniting = TRUE*/
 
 	//	create_fire(exposed_temperature)
 	return igniting
@@ -72,11 +68,6 @@ var/list/fire_pool = list()
 	fire.temperature = temp
 
 	fire.setup(src, fl)
-
-	var/obj/effect/decal/cleanable/liquid_fuel/fuel = locate() in src
-
-	if (fuel)
-		fire.time_limit += rand(10,20)
 
 	processes.callproc.queue(fire, /datum/proc/qdeleted, null, fire.time_limit)
 

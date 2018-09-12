@@ -85,9 +85,6 @@
 	handle_stance()
 	tally += max(2 * stance_damage, FALSE) //damaged/missing feet or legs is slow
 
-	if (mRun in mutations)
-		tally = max(tally, 0)
-
 	if (chem_effects.Find(CE_SPEEDBOOST))
 		tally -= 0.10
 
