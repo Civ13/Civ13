@@ -1,19 +1,15 @@
-/obj/item/clothing/accessory/badge/WW2
+/obj/item/clothing/accessory/medal/bronze
 	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "bronze"
+	name = "Bronze Medal"
 
-/obj/item/clothing/accessory/badge/WW2/bronze
-	icon = 'icons/obj/clothing/badges.dmi'
-	icon_state = "bronze"
 
-/obj/item/clothing/accessory/badge/WW2/bronze_heart
-	icon = 'icons/obj/clothing/badges.dmi'
-	icon_state = "bronze_heart"
-
-/obj/item/clothing/accessory/badge/WW2/silver
+/obj/item/clothing/accessory/medal/silver
 	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "silver"
+	name = "Silver Medal"
 
-/obj/item/clothing/accessory/badge/WW2/gold
+/obj/item/clothing/accessory/medal/gold
 	icon = 'icons/obj/clothing/badges.dmi'
 	icon_state = "gold"
+	name = "Gold Medal"

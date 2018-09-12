@@ -7,7 +7,7 @@
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
-	speak = list("ARRR!","AaarGH!")
+	speak = list("ARRR!","Landlubber!")
 	speak_emote = list("grumbles", "screams")
 	emote_hear = list("curses","grumbles","screams")
 	emote_see = list("stares ferociously", "stomps")
@@ -24,7 +24,7 @@
 	attack_sound = 'sound/weapons/bladeslice.ogg'
 
 
-	var/corpse = /mob/living/carbon/human/corpse
+	var/corpse = /mob/living/carbon/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
 
 	faction = "pirate"
@@ -35,20 +35,24 @@
 	icon_living = icon_pick
 	icon_state = icon_pick
 
-/*
+
 /mob/living/simple_animal/hostile/pirate/ranged
 	name = "Pirate Gunner"
 	icon_state = "pirateranged"
 	icon_living = "pirateranged"
-	icon_dead = "piratemelee_dead"
-	projectilesound = 'sound/weapons/laser.ogg'
+	icon_dead = "pirateranged_dead"
+	projectilesound = 'sound/weapons/mosin_shot.ogg'
 	ranged = 1
-	rapid = 1
-	projectiletype = /obj/item/projectile/beam
-	corpse = /obj/effect/landmark/mobcorpse/pirate/ranged
-	weapon1 = /obj/item/weapon/gun/energy/laser
+	rapid = 0
+	projectiletype = /obj/item/projectile/bullet/rifle/musketball
+	corpse = /mob/living/carbon/human/corpse/pirate
+	weapon1 = /obj/item/weapon/gun/projectile/flintlock/musketoon
 
-*/
+/mob/living/simple_animal/hostile/pirate/ranged/New()
+	..()
+	icon_living = "pirateranged"
+	icon_state = "pirateranged"
+
 /mob/living/simple_animal/hostile/pirate/death()
 	..()
 	if(corpse)

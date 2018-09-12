@@ -6,15 +6,15 @@
 	..()
 	death()
 
-/mob/living/carbon/human/corpse/Pirate
+/mob/living/carbon/human/corpse/pirate
 	gender = MALE
 
-/mob/living/carbon/human/corpse/Pirate/New()
+/mob/living/carbon/human/corpse/pirate/New()
 	..()
 	icon_state = "human_m_s"
 	var/spawntime = 0
 	if (!job_master)
-		spawntime = 300
+		spawntime = 5
 	spawn (spawntime)
 		if (!job_master)
 			qdel(src)
@@ -29,4 +29,5 @@
 /mob/living/carbon/human/corpse/Giant/New()
 	..()
 	icon_state = "body_m_giant"
-	death()
+	spawn (50) // must be here or they won't spawn, it seems - Kachnov
+		death()

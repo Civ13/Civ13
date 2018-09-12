@@ -137,20 +137,12 @@
 	if (rapid)
 		spawn(1)
 			Shoot(target, loc, src)
-			if (casingtype)
-				new casingtype(get_turf(src))
 		spawn(4)
 			Shoot(target, loc, src)
-			if (casingtype)
-				new casingtype(get_turf(src))
 		spawn(6)
 			Shoot(target, loc, src)
-			if (casingtype)
-				new casingtype(get_turf(src))
 	else
 		Shoot(target, loc, src)
-		if (casingtype)
-			new casingtype
 
 	stance = HOSTILE_STANCE_IDLE
 	target_mob = null
@@ -161,9 +153,10 @@
 	if (target == start)
 		return
 
-	var/obj/item/projectile/A = new projectiletype(user:loc)
+	var/obj/item/projectile/A = new projectiletype(loc)
 	playsound(user, projectilesound, 100, TRUE)
-	if (!A)	return
+	if (!A)
+		return
 	var/def_zone = get_exposed_defense_zone(target)
 	A.launch(target, def_zone)
 

@@ -243,9 +243,9 @@
 		//Deal with gloves the pass finger/palm prints.
 		if (!ignoregloves)
 			if (H.gloves != src)
-				if (prob(75) && istype(H.gloves, /obj/item/clothing/gloves/latex))
+				if (prob(75) && istype(H.gloves))
 					return FALSE
-				else if (H.gloves && !istype(H.gloves, /obj/item/clothing/gloves/latex))
+				else if (H.gloves)
 					return FALSE
 
 		//More adminstuffz

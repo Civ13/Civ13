@@ -41,28 +41,3 @@
 	for (var/obj/item/I in hold.contents)
 		hold.remove_from_storage(I, T)
 	add_fingerprint(user)
-
-/obj/item/clothing/accessory/storage/black_vest
-	name = "black webbing vest"
-	desc = "Robust black synthcotton vest with lots of pockets to hold whatever you need, but cannot hold in hands."
-	icon_state = "vest_black"
-	slots = 8
-
-/obj/item/clothing/accessory/storage/brown_vest
-	name = "brown webbing vest"
-	desc = "Worn brownish synthcotton vest with lots of pockets to unload your hands."
-	icon_state = "vest_brown"
-	slots = 8
-
-/obj/item/clothing/accessory/storage/knifeharness
-	name = "decorated harness"
-	desc = "A heavily decorated harness of sinew and leather with two knife-loops."
-	icon_state = "unathiharness2"
-	slots = 2
-
-/obj/item/clothing/accessory/storage/knifeharness/New()
-	..()
-	hold.max_storage_space = 4
-	hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil/knife,\
-	/obj/item/weapon/material/kitchen/utensil/knife/plastic,\
-	/obj/item/weapon/material/knife,)

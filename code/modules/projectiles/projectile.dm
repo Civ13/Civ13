@@ -143,11 +143,7 @@
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 
-	if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
-		if (prob(80))
-			def_zone = "chest"
-	else
-		def_zone = target_zone
+	def_zone = target_zone
 
 	if (!def_zone)
 		def_zone = "chest"
