@@ -1,19 +1,3 @@
-/obj/item/clothing/shoes/syndigaloshes
-	desc = "A pair of brown shoes. They seem to have extra grip."
-	name = "brown shoes"
-	icon_state = "brown"
-	item_state = "brown"
-	permeability_coefficient = 0.05
-	item_flags = NOSLIP
-//	origin_tech = list(TECH_ILLEGAL = 3)
-	var/list/clothing_choices = list()
-	siemens_coefficient = 0.8
-	species_restricted = null
-
-/obj/item/clothing/shoes/mime
-	name = "mime shoes"
-	icon_state = "mime"
-
 /obj/item/clothing/shoes/black
 	name = "black shoes"
 	icon_state = "black"
@@ -24,17 +8,8 @@
 	heat_protection = FEET
 	max_heat_protection_temperature = SHOE_MAX_HEAT_PROTECTION_TEMPERATURE
 
-/obj/item/clothing/shoes/swat
+/obj/item/clothing/shoes/heavyboots
 	name = "\improper German military boots"
-	desc = "When you want to turn up the heat."
-	icon_state = "swat"
-	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
-	item_flags = NOSLIP
-	siemens_coefficient = 0.6
-
-/obj/item/clothing/shoes/usboots
-	name = "US Army military boots"
 	desc = "When you want to turn up the heat."
 	icon_state = "swat"
 	force = WEAPON_FORCE_WEAK
@@ -69,26 +44,6 @@
 	icon_state = "black"
 	body_parts_covered = FEET
 
-/obj/item/clothing/shoes/clown_shoes
-	desc = "The prankster's standard-issue clowning shoes. Damn they're huge!"
-	name = "clown shoes"
-	icon_state = "clown"
-	item_state = "clown_shoes"
-	slowdown = SHOES_SLOWDOWN+1
-	force = FALSE
-	var/footstep = TRUE	//used for squeeks whilst walking
-	species_restricted = null
-
-/obj/item/clothing/shoes/clown_shoes/handle_movement(var/turf/walking, var/running)
-	if (running)
-		if (footstep >= 2)
-			footstep = FALSE
-			playsound(src, "clownstep", 50, TRUE) // this will get annoying very fast.
-		else
-			footstep++
-	else
-		playsound(src, "clownstep", 20, TRUE)
-
 /obj/item/clothing/shoes/slippers
 	name = "bunny slippers"
 	desc = "Fluffy!"
@@ -110,14 +65,6 @@
 	name = "laceup shoes"
 	desc = "The height of fashion, and they're pre-polished!"
 	icon_state = "laceups"
-
-/obj/item/clothing/shoes/swimmingfins
-	desc = "Help you swim good."
-	name = "swimming fins"
-	icon_state = "flippers"
-	item_flags = NOSLIP
-	slowdown = SHOES_SLOWDOWN+1
-	species_restricted = null
 
 /obj/item/clothing/shoes/leather
 	name = "leather shoes"

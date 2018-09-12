@@ -288,17 +288,6 @@
 	qdel(src)
 	..()
 
-/obj/item/cocktail_stuff/umbrella
-	name = "drink umbrella"
-	desc = "It's a tiny little umbrella, for drinks!"
-	var/umbrella_color = null
-
-/obj/item/cocktail_stuff/umbrella/New()
-	..()
-	umbrella_color = rand(1,6)
-	icon_state = "highball-umbrella[umbrella_color]"
-	update_icon()
-
 /obj/item/cocktail_stuff/maraschino_cherry
 	name = "maraschino cherry"
 	desc = "A maraschino cherry, or cocktail cherry, is a preserved, artificially colored and sweetened cherry. Very common to see in many cocktails."

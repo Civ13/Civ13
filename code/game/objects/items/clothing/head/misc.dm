@@ -29,14 +29,6 @@
 	body_parts_covered = FALSE
 
 
-/obj/item/clothing/head/nursehat
-	name = "nurse's hat"
-	desc = "It allows quick identification of trained medical personnel."
-	icon_state = "nursehat"
-	siemens_coefficient = 0.9
-	body_parts_covered = FALSE
-
-
 /obj/item/clothing/head/flatcap
 	name = "flat cap"
 	desc = "A working man's cap."
@@ -51,12 +43,6 @@
 	name = "pirate hat"
 	desc = "Yarr."
 	icon_state = "pirate"
-	body_parts_covered = FALSE
-
-/obj/item/clothing/head/hgpiratecap
-	name = "pirate hat"
-	desc = "Yarr."
-	icon_state = "hgpiratecap"
 	body_parts_covered = FALSE
 
 /obj/item/clothing/head/bandana
@@ -83,13 +69,6 @@
 	desc = "You should wear a fez. Fezzes are cool."
 
 //end bs12 hats
-
-/obj/item/clothing/head/witchwig
-	name = "witch costume wig"
-	desc = "Eeeee~heheheheheheh!"
-	icon_state = "witch"
-	flags_inv = BLOCKHAIR
-	siemens_coefficient = 2.0
 
 /obj/item/clothing/head/bearpelt
 	name = "bear pelt hat"

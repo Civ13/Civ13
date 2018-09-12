@@ -88,14 +88,6 @@
 // Straight copy from space.
 /turf/open/attackby(obj/item/C as obj, mob/user as mob)
 
-	if (istype(C, /obj/item/stack/tile/floor))
-		var/obj/item/stack/tile/floor/S = C
-		if (S.get_amount() < 1)
-			return
-		S.use(1)
-		return
-	return
-
 /turf/open/attack_hand(mob/user)//Climbing down.
 	if (!istype(below)) //make sure that there is actually something below
 		below = GetBelow(src)

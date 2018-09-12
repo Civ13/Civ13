@@ -5,15 +5,9 @@
 	var/swapped = FALSE
 
 
-/obj/item/clothing/under/doctor
-	name = "doctor's uniform"
-	desc = "A sterile, nicely pressed suit for doctors."
-	icon_state = "ba_suit"
-	item_state = "ba_suit"
-
 // pirates
 
-/obj/item/clothing/shoes/swat/wrappedboots
+/obj/item/clothing/shoes/heavyboots/wrappedboots
 	name = "\improper wrapped boots"
 	icon_state = "wrappedboots"
 	force = WEAPON_FORCE_WEAK

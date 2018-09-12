@@ -270,7 +270,7 @@
 /datum/job/british/cook/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef/classic(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
 
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)

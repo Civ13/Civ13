@@ -50,12 +50,3 @@
 			usr << "You attempt to button-up the velcro on your [src], before promptly realising how silly you are."
 			return
 		update_clothing_icon()	//so our overlays update
-
-
-/obj/item/clothing/suit/storage/vest/merc/New()
-	..()
-	pockets = new/obj/item/weapon/storage/internal(src)
-	pockets.storage_slots = 4
-	pockets.max_w_class = 2
-	pockets.max_storage_space = 8
-

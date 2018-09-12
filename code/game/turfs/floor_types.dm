@@ -112,13 +112,11 @@
 /turf/floor/wood
 	name = "floor"
 	icon_state = "wood"
-	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
 /turf/floor/wood_ship
 	name = "floor"
 	icon_state = "wood_ship"
-	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
 
@@ -129,7 +127,6 @@
 	name = "floor"
 	icon = 'icons/turf/flooring/wood.dmi'
 	icon_state = "broken0"
-	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
 /turf/floor/wood_broken/New()
@@ -154,7 +151,6 @@
 /turf/floor/grass
 	name = "Grass patch"
 	icon_state = "grass1"
-	floor_type = /obj/item/stack/tile/grass
 
 	New()
 		icon_state = "grass[pick("1","2","3","4")]"
@@ -170,7 +166,6 @@
 /turf/floor/carpet
 	name = "Carpet"
 	icon_state = "carpet"
-	floor_type = /obj/item/stack/tile/carpet
 
 	New()
 		if (!icon_state)

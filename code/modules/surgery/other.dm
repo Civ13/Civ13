@@ -101,7 +101,6 @@
 	allowed_tools = list(
 		/obj/item/weapon/reagent_containers/dropper = 100,
 		/obj/item/weapon/reagent_containers/glass/bottle = 75,
-		/obj/item/weapon/reagent_containers/glass/beaker = 75,
 		/obj/item/weapon/reagent_containers/glass/bucket = 50,
 	)
 

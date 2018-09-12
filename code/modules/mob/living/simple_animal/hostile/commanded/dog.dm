@@ -1,17 +1,17 @@
-/mob/living/simple_animal/hostile/commanded/bear
-	name = "bear"
-	desc = "A large brown bear."
+/mob/living/simple_animal/hostile/commanded/dog
+	name = "dog"
+	desc = "A friendly white dog."
 
-	icon_state = "brownbear"
-	icon_living = "brownbear"
-	icon_dead = "brownbear_dead"
-	icon_gib = "brownbear_gib"
+	icon_state = "samoyed"
+	icon_living = "samoyed"
+	icon_dead = "samoyed_dead"
+	icon_gib = "samoyed_dead"
 
-	health = 75
-	maxHealth = 75
+	health = 55
+	maxHealth = 55
 
-	melee_damage_lower = 45
-	melee_damage_upper = 55
+	melee_damage_lower = 25
+	melee_damage_upper = 35
 
 
 	response_help = "pets"
@@ -23,9 +23,9 @@
 /mob/living/simple_animal/hostile/commanded/bear/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 	. = ..()
 	if (!.)
-		emote("roars in rage!")
+		emote("barks and shows its teeth!")
 
 /mob/living/simple_animal/hostile/commanded/bear/attack_hand(mob/living/carbon/human/M as mob)
 	..()
 	if (M.a_intent == I_HURT)
-		emote("roars in rage!")
+		emote("barks and shows its teeth!")

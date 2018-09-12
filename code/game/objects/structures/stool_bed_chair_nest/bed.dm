@@ -109,9 +109,7 @@
 			qdel(C)
 			return
 		var/padding_type //This is awful but it needs to be like this until tiles are given a material var.
-		if (istype(W,/obj/item/stack/tile/carpet))
-			padding_type = "carpet"
-		else if (istype(W,/obj/item/stack/material))
+		if (istype(W,/obj/item/stack/material))
 			var/obj/item/stack/material/M = W
 			if (M.material && (M.material.flags & MATERIAL_PADDING))
 				padding_type = "[M.material.name]"

@@ -219,8 +219,6 @@ var/list/coefflist = list()
 /mob/living/carbon/human/restrained()
 	if (handcuffed)
 		return TRUE
-	if (istype(wear_suit, /obj/item/clothing/suit/straight_jacket))
-		return TRUE
 	return FALSE
 
 /mob/living/carbon/human/var/co2overloadtime = null

@@ -46,7 +46,6 @@ var/list/flooring_types
 	has_base_range = 3
 	damage_temperature = T0C+80
 	flags = TURF_REMOVE_SHOVEL
-	build_type = /obj/item/stack/tile/grass
 
 /decl/flooring/asteroid
 	name = "coarse sand"
@@ -62,44 +61,8 @@ var/list/flooring_types
 	desc = "Imported and comfy."
 	icon = 'icons/turf/flooring/carpet.dmi'
 	icon_base = "carpet"
-	build_type = /obj/item/stack/tile/carpet
 	damage_temperature = T0C+200
 	flags = TURF_HAS_EDGES | TURF_HAS_CORNERS | TURF_REMOVE_CROWBAR | TURF_CAN_BURN | SMOOTH_ONLY_WITH_ITSELF
-
-/decl/flooring/carpet/bcarpet
-	name = "black carpet"
-	icon_base = "bcarpet"
-	build_type = /obj/item/stack/tile/carpet/bcarpet
-
-/decl/flooring/carpet/blucarpet
-	name = "blue carpet"
-	icon_base = "blucarpet"
-	build_type = /obj/item/stack/tile/carpet/blucarpet
-
-/decl/flooring/carpet/turcarpet
-	name = "tur carpet"
-	icon_base = "turcarpet"
-	build_type = /obj/item/stack/tile/carpet/turcarpet
-
-/decl/flooring/carpet/sblucarpet
-	name = "silver blue carpet"
-	icon_base = "sblucarpet"
-	build_type = /obj/item/stack/tile/carpet/sblucarpet
-
-/decl/flooring/carpet/gaycarpet
-	name = "clown carpet"
-	icon_base = "gaycarpet"
-	build_type = /obj/item/stack/tile/carpet/gaycarpet
-
-/decl/flooring/carpet/purcarpet
-	name = "purple carpet"
-	icon_base = "purcarpet"
-	build_type = /obj/item/stack/tile/carpet/purcarpet
-
-/decl/flooring/carpet/oracarpet
-	name = "orange carpet"
-	icon_base = "oracarpet"
-	build_type = /obj/item/stack/tile/carpet/oracarpet
 
 /decl/flooring/tiling
 	name = "floor"
@@ -109,7 +72,6 @@ var/list/flooring_types
 	has_damage_range = 2 //RECHECK THIS. MAYBE MISTAKE
 	damage_temperature = T0C+1400
 	flags = TURF_REMOVE_CROWBAR | TURF_CAN_BREAK | TURF_CAN_BURN
-	build_type = /obj/item/stack/tile/floor
 	can_paint = TRUE
 
 /decl/flooring/tiling/new_tile
@@ -150,19 +112,16 @@ var/list/flooring_types
 /decl/flooring/tiling/steel
 	name = "floor"
 	icon_base = "steel"
-	build_type = /obj/item/stack/tile/floor/steel
 
 /decl/flooring/tiling/white
 	name = "floor"
 	desc = "How sterile."
 	icon_base = "white"
-	build_type = /obj/item/stack/tile/floor/white
 
 /decl/flooring/tiling/dark
 	name = "floor"
 	desc = "How ominous."
 	icon_base = "dark"
-	build_type = /obj/item/stack/tile/floor/dark
 
 
 /decl/flooring/wood
@@ -173,5 +132,4 @@ var/list/flooring_types
 	has_damage_range = 6
 	damage_temperature = T0C+200
 	descriptor = "planks"
-	build_type = /obj/item/stack/tile/wood
 	flags = TURF_CAN_BREAK | TURF_IS_FRAGILE | TURF_REMOVE_SCREWDRIVER

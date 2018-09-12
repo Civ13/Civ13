@@ -304,7 +304,6 @@ BLIND     // can't see anything
 
 /obj/item/clothing/shoes/attackby(var/obj/item/I, var/mob/user)
 	if (can_hold_knife && istype(I, /obj/item/weapon/material/shard) || \
-	 istype(I, /obj/item/weapon/material/butterfly) || \
 	 istype(I, /obj/item/weapon/material/kitchen/utensil) || \
 	 istype(I, /obj/item/weapon/material/knife) || \
 	 istype(I, /obj/item/weapon/attachment/bayonet))
@@ -414,8 +413,3 @@ BLIND     // can't see anything
 
 /obj/item/clothing/under/examine(mob/user)
 	..(user)
-
-
-/obj/item/clothing/under/rank/New()
-//	sensor_mode = 3
-	..()

@@ -45,10 +45,7 @@
 			user << "<span class='warning'>There's not enough room to add [W.name]!</span>"
 			return
 		user << "<span class='notice'>You add [W.name] to [name].</span>"
-		if (istype(W, /obj/item/cocktail_stuff/umbrella))
-			var/obj/item/cocktail_stuff/umbrella/C = W
-			umbrella = "[C.umbrella_color]"
-		else if (istype(W, /obj/item/cocktail_stuff/maraschino_cherry))
+		if (istype(W, /obj/item/cocktail_stuff/maraschino_cherry))
 			cocktail_food = "cherry"
 		else if (istype(W, /obj/item/cocktail_stuff/cocktail_olive))
 			cocktail_food = "olive"
@@ -77,8 +74,6 @@
 	var/mob/living/carbon/human/H = user
 	var/list/actions = list()
 
-	if (umbrella)
-		actions += "Remove the umbrella"
 	if (cocktail_food)
 		actions += "Remove the [cocktail_food]"
 	if (!actions.len)
@@ -87,10 +82,6 @@
 
 	var/action = input(user, "What do you want to do with [src]?") as null|anything in actions
 	switch(action)
-		if ("Remove the umbrella")
-			var/obj/item/cocktail_stuff/umbrella/U = new(H.loc)
-			U.umbrella_color = umbrella
-			umbrella = null
 		if ("Remove the cherry")
 			new /obj/item/cocktail_stuff/maraschino_cherry(H.loc)
 			cocktail_food = null
