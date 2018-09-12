@@ -153,7 +153,7 @@
 	if (target == start)
 		return
 
-	var/obj/item/projectile/A = new projectiletype(loc)
+	var/obj/item/projectile/A = new projectiletype(src.loc)
 	playsound(user, projectilesound, 100, TRUE)
 	if (!A)
 		return
