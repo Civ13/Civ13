@@ -15,7 +15,7 @@
 	if (!..())
 		return FALSE
 
-	usr.visible_message("<b>[src]</b> points to [A]")
+	usr.visible_message("<b>[src]</b> points to [A].")
 	return TRUE
 
 /*one proc, four uses

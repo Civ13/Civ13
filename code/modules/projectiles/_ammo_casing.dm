@@ -77,20 +77,28 @@
 	weight = 0.1
 
 /obj/item/weapon/ammopart/attack_self(mob/user)
-	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers) && !istype(user.r_hand, /obj/item/weapon/reagent_containers))
-		return
-	else
-		if (!user.l_hand.reagents.has_reagent("gunpowder",1) && !user.r_hand.reagents.has_reagent("gunpowder",1))
+	if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+		if (!user.l_hand.reagents.has_reagent("gunpowder",1))
 			user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
 			return
-		else
-			if (user.l_hand.reagents.has_reagent("gunpowder",1))
-				user.l_hand.reagents.remove_reagent("gunpowder",1)
-				qdel(user.r_hand)
-				new resultpath(user.r_hand)
-				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",1))
-				user.r_hand.reagents.remove_reagent("gunpowder",1)
-				qdel(user.l_hand)
-				new resultpath(user.l_hand)
-				return
+		else if (user.l_hand.reagents.has_reagent("gunpowder",1))
+			user.l_hand.reagents.remove_reagent("gunpowder",1)
+			user << "You make a paper cartridge with the gunpowder and projectile."
+			qdel(user.r_hand)
+			new resultpath(user.loc)
+			return
+
+	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+		if (!user.r_hand.reagents.has_reagent("gunpowder",1))
+			user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
+			return
+		else if (user.r_hand.reagents.has_reagent("gunpowder",1))
+			user.r_hand.reagents.remove_reagent("gunpowder",1)
+			user << "You make a paper cartridge with the gunpowder and projectile."
+			qdel(user.l_hand)
+			new resultpath(user.loc)
+			return
+
+	else
+		user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
+		return

@@ -24,6 +24,8 @@
 	single_faction = TRUE
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
+	faction1 = PIRATES
+	faction2 = PIRATES
 	var/message = ""
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
@@ -41,7 +43,7 @@
 	return .
 
 /obj/map_metadata/battleroyale/faction2_can_cross_blocks()
-	return FALSE
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/battleroyale/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)

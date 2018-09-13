@@ -27,13 +27,13 @@
 	var/corpse = /mob/living/carbon/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass
 
-	faction = "pirate"
+	faction = PIRATES
 
 /mob/living/simple_animal/hostile/pirate/New()
-	..()
-	var/icon_pick = pick("piratemelee","piratemelee1","piratemelee2")
-	icon_living = icon_pick
-	icon_state = icon_pick
+//	..()
+//	var/icon_pick = pick("piratemelee","piratemelee1","piratemelee2")
+//	icon_living = icon_pick
+//	icon_state = icon_pick
 
 
 /mob/living/simple_animal/hostile/pirate/ranged

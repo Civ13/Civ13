@@ -453,7 +453,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/observer/ghost/verb/pointed(atom/A as mob|obj|turf in view())
 	set category = "Ghost"
 	set name = "Point To"
-	usr.visible_message("<span class='deadsay'><b>[src]</b> points to [A]</span>")
+	usr.visible_message("<span class='deadsay'><b>[src]</b> points to [A].</span>")
 	return TRUE
 
 
