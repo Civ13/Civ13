@@ -47,7 +47,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 10)
 					user << "You begin crafting a small sword..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,90,src))
+					if (do_after(user,90,src) && iron_amt >= 10)
 						user << "You craft a small sword."
 						iron_amt -= 10
 						if (iron_amt <= 0)
@@ -61,7 +61,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 15)
 					user << "You begin crafting a sabre..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,120,src))
+					if (do_after(user,120,src) && iron_amt >= 15)
 						user << "You craft a sabre."
 						iron_amt -= 15
 						if (iron_amt <= 0)
@@ -75,7 +75,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 12)
 					user << "You begin crafting a cutlass..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,100,src))
+					if (do_after(user,100,src) && iron_amt >= 12)
 						user << "You craft a cutlass."
 						iron_amt -= 12
 						if (iron_amt <= 0)
@@ -89,7 +89,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 18)
 					user << "You begin crafting a rapier..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src))
+					if (do_after(user,150,src) && iron_amt >= 18)
 						user << "You craft a rapier."
 						iron_amt -= 18
 						if (iron_amt <= 0)
@@ -103,7 +103,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 15)
 					user << "You begin crafting a spadroon..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,120,src))
+					if (do_after(user,120,src) && iron_amt >= 15)
 						user << "You craft a spadroon."
 						iron_amt -= 15
 						if (iron_amt <= 0)
@@ -117,7 +117,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 18)
 					user << "You begin crafting a longsword..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src))
+					if (do_after(user,150,src) && iron_amt >= 18)
 						user << "You craft a longsword."
 						iron_amt -= 18
 						if (iron_amt <= 0)
@@ -135,7 +135,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 15)
 					user << "You begin crafting a crude musket..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src))
+					if (do_after(user,150,src) && iron_amt >= 15)
 						user << "You craft a crude musket."
 						iron_amt -= 15
 						if (iron_amt <= 0)
@@ -149,7 +149,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 30)
 					user << "You begin crafting a musket..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,200,src))
+					if (do_after(user,200,src) && iron_amt >= 30)
 						user << "You craft a musket."
 						iron_amt -= 30
 						if (iron_amt <= 0)
@@ -163,7 +163,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 25)
 					user << "You begin crafting a musketoon..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,170,src))
+					if (do_after(user,170,src) && iron_amt >= 25)
 						user << "You craft a musketoon."
 						iron_amt -= 25
 						if (iron_amt <= 0)
@@ -177,7 +177,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 25)
 					user << "You begin crafting a blunderbuss..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,170,src))
+					if (do_after(user,170,src) && iron_amt >= 25)
 						user << "You craft a blunderbuss."
 						iron_amt -= 25
 						if (iron_amt <= 0)
@@ -191,7 +191,7 @@ obj/structure/anvil/New()
 				if (iron_amt >= 20)
 					user << "You begin crafting a pistol..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,130,src))
+					if (do_after(user,130,src) && iron_amt >= 20)
 						user << "You craft a pistol."
 						iron_amt -= 20
 						if (iron_amt <= 0)

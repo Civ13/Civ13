@@ -233,3 +233,19 @@
 	if (temperature > T0C+500)
 		explode()
 	return ..()
+
+
+/obj/item/weapon/reagent_containers/glass/barrel/attackby(var/obj/item/I, var/mob/user)
+	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/sulphur))
+		reagents.add_reagent("sulfur",3)
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/saltpeter))
+		reagents.add_reagent("potassium",3)
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/coal))
+		reagents.add_reagent("carbon",3)
+		qdel(I)
+		return
+	..()
