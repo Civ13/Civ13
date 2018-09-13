@@ -170,6 +170,62 @@
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 80
 
+/obj/item/weapon/gun/projectile/flintlock/crude
+	name = "crude musket"
+	desc = "A crude, homemade version of a musket. Not very reliable and accurate."
+	icon_state = "crude"
+	item_state = "musketoon"
+	force = 8
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "musketball"
+	weight = 4.0
+	effectiveness_mod = 0.65
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 45
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 40,
+
+			MEDIUM_RANGE_STILL = 53,
+			MEDIUM_RANGE_MOVING = 35,
+
+			LONG_RANGE_STILL = 45,
+			LONG_RANGE_MOVING = 30,
+
+			VERY_LONG_RANGE_STILL = 38,
+			VERY_LONG_RANGE_MOVING = 25),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 64,
+			SHORT_RANGE_MOVING = 42,
+
+			MEDIUM_RANGE_STILL = 60,
+			MEDIUM_RANGE_MOVING = 38,
+
+			LONG_RANGE_STILL = 55,
+			LONG_RANGE_MOVING = 32,
+
+			VERY_LONG_RANGE_STILL = 48,
+			VERY_LONG_RANGE_MOVING = 27),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 68,
+			SHORT_RANGE_MOVING = 44,
+
+			MEDIUM_RANGE_STILL = 63,
+			MEDIUM_RANGE_MOVING = 40,
+
+			LONG_RANGE_STILL = 58,
+			LONG_RANGE_MOVING = 35,
+
+			VERY_LONG_RANGE_STILL = 51,
+			VERY_LONG_RANGE_MOVING = 30),
+	)
 /obj/item/weapon/gun/projectile/flintlock/pistol
 	// less accurate than rifles against still targets, but better against moving targets
 	// less accurate than semiautos but with the same ratios

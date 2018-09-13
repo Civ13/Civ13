@@ -84,6 +84,9 @@
 	apply_colour = TRUE
 	value = 3
 
+/obj/item/stack/material/iron/twentyfive
+	amount = 25
+
 /obj/item/stack/material/sandstone
 	name = "sandstone brick"
 	icon_state = "sheet-sandstone"
