@@ -143,6 +143,13 @@
 	volume = 150
 	density = TRUE
 	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/barrel
+	w_class = 4.0
+	throw_speed = 1
+	throw_range = 1
+	nothrow = TRUE
+
 /obj/item/weapon/reagent_containers/glass/barrel/empty
 	name = "wood barrel"
 	desc = "A wood barrel. You can put liquids inside."

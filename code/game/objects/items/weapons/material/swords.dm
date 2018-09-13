@@ -94,9 +94,9 @@
 
 /obj/item/weapon/material/sword/spadroon
 	name = "spadroon"
-	desc = "A light sword with a straight blade. Common among the military."
+	desc = "A medium sword with a straight blade. Common among the military."
 	icon_state = "spadroon"
-	item_state = "spadroon"
+	item_state = "longsword2"
 	throw_speed = 3
 	throw_range = 3
 	force_divisor = 0.8 // 48 when wielded with hardnes 60 (steel)
@@ -110,7 +110,7 @@
 	name = "Vangar's sword"
 	desc = "A special, customized sword with 'Vangar' engraved on the hilt."
 	icon_state = "vangar"
-	item_state = "vangar"
+	item_state = "longsword2"
 	throw_speed = 4
 	throw_range = 4
 	force_divisor = 0.75 // 45 when wielded with hardnes 60 (steel)
@@ -120,7 +120,7 @@
 	cooldownw = 7
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
-	desc = "A small, slightly curved sword, preferred by pirates."
+	desc = "A medium-sized, curved sword, preferred by pirates."
 	icon_state = "cutlass"
 	item_state = "cutlass"
 	throw_speed = 2
@@ -131,3 +131,45 @@
 	block_chance = 28
 	cooldownw = 8
 	value = 40
+
+/obj/item/weapon/material/sword/sabre
+	name = "sabre"
+	desc = "A small, slightly curved sword, favored by cavalry and light infantry units."
+	icon_state = "sabre"
+	item_state = "sabre"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.75 // 45 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 32
+	cooldownw = 9
+	value = 50
+
+/obj/item/weapon/material/sword/longsword
+	name = "longsword"
+	desc = "A large sword, with a long blade. Commonly used in the medieval era, it's rarely used now."
+	icon_state = "longsword"
+	item_state = "longsword"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 1 // 60 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 47
+	cooldownw = 13
+	value = 60
+
+/obj/item/weapon/material/sword/rapier
+	name = "rapier"
+	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
+	icon_state = "rapier"
+	item_state = "longsword2"
+	throw_speed = 4
+	throw_range = 4
+	force_divisor = 0.65 // 40 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 30
+	cooldownw = 5
+	value = 60
