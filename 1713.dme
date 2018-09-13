@@ -258,6 +258,7 @@
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\structures\barricades.dm"
 #include "code\game\objects\structures\bedsheet_bin.dm"
+#include "code\game\objects\structures\blacksmithing.dm"
 #include "code\game\objects\structures\bookcase.dm"
 #include "code\game\objects\structures\curtains.dm"
 #include "code\game\objects\structures\door.dm"
