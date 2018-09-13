@@ -65,6 +65,8 @@
 	item_state = "kerchief"
 	worn_state = "kerchief"
 	desc = "A kerchief, won by women over the hair."
+	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD
 
 /obj/item/clothing/under/civf1
 	name = "Dark dress"
@@ -228,6 +230,7 @@
 	name = "Pirate bandana"
 	icon_state = "piratebandana1"
 	item_state = "piratebandana1"
+	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/shoes/soldiershoes
 	name = "infantry shoes"
@@ -410,6 +413,7 @@
 	desc = "A hat made with withe feathers. Worn by tribal leaders."
 	icon_state = "chief_hat"
 	item_state = "chief_hat"
+	flags_inv = BLOCKHAIR
 /////////Portuguese/////////
 /obj/item/clothing/head/tricorne_portuguese
 	name = "Portuguese Navy tricorne"
@@ -656,11 +660,13 @@
 	desc = "A tarred hat, commonly used by sailors."
 	icon_state = "tarred_hat"
 	item_state = "tarred_hat"
+	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/strawhat
 	name = "straw hat"
 	icon_state = "boater_hat"
 	desc = "A straw hat, commonly used by sailors."
+	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/tricorne_black
 	name = "black tricorne"
