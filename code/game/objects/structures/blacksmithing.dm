@@ -35,12 +35,12 @@ obj/structure/anvil/New()
 		return
 	else if (iron_amt > 0)
 		var/list/display = list("Swords","Guns", "Cancel")
-		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", display)
+		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display)
 		if (choice == "Cancel")
 			return
 		else if (choice == "Swords")
 			var/list/display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Cancel")
-			var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", display2)
+			var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display2)
 			if (choice2 == "Cancel")
 				return
 			if (choice2 == "Small Sword (10)")
@@ -55,7 +55,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/material/sword/smallsword(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice2 == "Sabre (15)")
 				if (iron_amt >= 15)
@@ -69,7 +69,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/material/sword/sabre(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice2 == "Cutlass (12)")
 				if (iron_amt >= 12)
@@ -83,7 +83,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/material/sword/cutlass(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice2 == "Rapier (18)")
 				if (iron_amt >= 18)
@@ -97,7 +97,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/material/sword/rapier(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice2 == "Spadroon (15)")
 				if (iron_amt >= 15)
@@ -111,7 +111,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/material/sword/spadroon(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice2 == "Longsword (18)")
 				if (iron_amt >= 18)
@@ -125,12 +125,12 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/material/sword/longsword(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
 		else if (choice == "Guns")
 			var/list/display3 = list("Crude Musket (15)", "Flintlock Pistol (20)", "Flintlock Musketoon (25)", "Flintlock Musket (30)", "Flintlock Blunderbuss (25)", "Cancel")
-			var/choice3 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", display3)
+			var/choice3 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display3)
 			if (choice3 == "Crude Musket (15)")
 				if (iron_amt >= 15)
 					user << "You begin crafting a crude musket..."
@@ -143,7 +143,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/gun/projectile/flintlock/crude(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice3 == "Flintlock Musket (30)")
 				if (iron_amt >= 30)
@@ -157,7 +157,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/gun/projectile/flintlock/musket(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice3 == "Flintlock Musketoon (25)")
 				if (iron_amt >= 25)
@@ -171,7 +171,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/gun/projectile/flintlock/musketoon(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice3 == "Flintlock Blunderbuss (25)")
 				if (iron_amt >= 25)
@@ -185,7 +185,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/gun/projectile/flintlock/blunderbuss(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice3 == "Flintlock Pistol (20)")
 				if (iron_amt >= 20)
@@ -199,7 +199,7 @@ obj/structure/anvil/New()
 						new/obj/item/weapon/gun/projectile/flintlock/pistol(user.loc)
 						return
 				else
-					user << "span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice3 == "Cancel")
 				return

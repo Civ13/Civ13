@@ -536,7 +536,7 @@
 	id = "gunpowder"
 	result = "gunpowder"
 	required_reagents = list("sulfur" = 1, "carbon" = 1, "potassium" = 1)
-	result_amount = 2
+	result_amount = 3
 	log_is_important = TRUE
 
 /datum/chemical_reaction/ngunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)

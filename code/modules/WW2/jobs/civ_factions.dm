@@ -553,8 +553,9 @@
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Blacksmith"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
+	is_RP = TRUE
 
 	// AUTOBALANCE
 	min_positions = 2
@@ -1323,8 +1324,9 @@
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferrero"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateSP"
 	SL_check_independent = TRUE
+	is_RP = TRUE
 
 	// AUTOBALANCE
 	min_positions = 2
@@ -2096,8 +2098,9 @@
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Ferreiro"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLatePT"
 	SL_check_independent = TRUE
+	is_RP = TRUE
 
 	// AUTOBALANCE
 	min_positions = 2
@@ -2868,8 +2871,9 @@
 	en_meaning = "Colony Blacksmith"
 	rank_abbreviation = "Forgeron"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLatePirate"
 	SL_check_independent = TRUE
+	is_RP = TRUE
 
 	// AUTOBALANCE
 	min_positions = 2

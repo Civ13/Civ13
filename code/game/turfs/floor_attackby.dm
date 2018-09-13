@@ -88,6 +88,27 @@
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
+				if (prob(10))
+					new/obj/item/weapon/reagent_containers/food/snacks/coal(src)
+					visible_message("<span class='danger'>You found some coal!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
+					return
+				if (prob(10))
+					new/obj/item/weapon/reagent_containers/food/snacks/saltpeter(src)
+					visible_message("<span class='danger'>You found some saltpeter!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
+					return
+				if (prob(10))
+					new/obj/item/weapon/reagent_containers/food/snacks/sulphur(src)
+					visible_message("<span class='danger'>You found some sulphur!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
+					return
 				if (prob(5))
 					new/obj/item/weapon/ore/silver(src)
 					visible_message("<span class='danger'>You found some silver ore!</span>")
