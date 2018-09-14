@@ -26,7 +26,7 @@
 		return
 	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 		return
-	else if (istype(I, /obj/item/weapon/ore/coal))
+	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/coal))
 		fuel += 3
 		qdel(I)
 		return
