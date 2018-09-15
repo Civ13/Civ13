@@ -31,7 +31,7 @@
 	move_delay = 5
 	fire_delay = 5
 	muzzle_flash = FALSE
-	value = 18
+	value = 10
 
 	accuracy_list = list(
 
