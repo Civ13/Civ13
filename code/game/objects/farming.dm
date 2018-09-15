@@ -115,8 +115,8 @@
 /obj/structure/farming/plant/orange
 	name = "orange tree"
 	desc = "an orange tree."
-	icon_state = "citrine-grow1"
-	plant = "citrine"
+	icon_state = "orange-grow1"
+	plant = "orange"
 
 /obj/structure/farming/plant/tobacco
 	name = "tobacco plant"
