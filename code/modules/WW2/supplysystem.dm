@@ -25,7 +25,7 @@
 		13 = "cash crops crate",
 		14 = "cow",
 		15 = "chicken",
-		16 = "medical supplies"
+		16 = "medical supplies",
 		17 = "gunpowder barrel",
 		18 = "musket ammo crate (25)",
 		19 = "pistol ammo crate (25)",
