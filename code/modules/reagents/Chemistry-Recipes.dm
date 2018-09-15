@@ -868,7 +868,7 @@
 	name = "Sweet Dough"
 	id = "sweet_dough"
 	result = null
-	required_reagents = list("egg" = 3, "flour" = 10)
+	required_reagents = list("egg" = 3, "flour" = 10, "sugar" = 2)
 	result_amount = TRUE
 /datum/chemical_reaction/dough/on_reaction(var/datum/reagents/holder, var/created_volume = 1)
 	var/location = get_turf(holder.my_atom)

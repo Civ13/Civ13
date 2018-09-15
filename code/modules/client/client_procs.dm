@@ -319,7 +319,7 @@
 	world.log << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
 	//splitting the player database, so we can check the values individually:
 	for (var/v = TRUE, v < full_list_split.len, v++)
-		if (full_list_split[v][1] != "0" && full_list_split[v][1] != 0)
+		if (full_list_split[v][1] != "0" && full_list_split[v][1] != 0 && full_list_split[v][1] != "\n")
 			var/list/addin = list(splittext(full_list_split[v], ";"))
 			full_list_split_vars += addin
 	var/F = file("SQL/playerlist.txt")

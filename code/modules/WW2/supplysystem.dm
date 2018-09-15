@@ -25,16 +25,17 @@
 		13 = "cash crops crate",
 		14 = "cow",
 		15 = "chicken",
-		16 = "gunpowder barrel",
-		17 = "musket ammo crate (25)",
-		18 = "pistol ammo crate (25)",
-		19 = "blunderbuss ammo crate (15)",
-		20 = "grenade crate (10)",
-		21 = "cannonball crate (10)",
-		22 = "pistol crate (5)",
-		23 = "musket crate (5)",
-		24 = "musketoon crate (5)",
-		25 = "blunderbuss crate (5)",)
+		16 = "medical supplies"
+		17 = "gunpowder barrel",
+		18 = "musket ammo crate (25)",
+		19 = "pistol ammo crate (25)",
+		20 = "blunderbuss ammo crate (15)",
+		21 = "grenade crate (10)",
+		22 = "cannonball crate (10)",
+		23 = "pistol crate (5)",
+		24 = "musket crate (5)",
+		25 = "musketoon crate (5)",
+		26 = "blunderbuss crate (5)",)
 	var/list/itemstobuy = list(
 		"wood crate" = /obj/structure/closet/crate/wood,
 		"iron crate" = /obj/structure/closet/crate/iron,
@@ -51,6 +52,7 @@
 		"cash crops crate" = /obj/structure/closet/crate/rations/seeds/cashcrops,
 		"cow" = /mob/living/simple_animal/cow,
 		"chicken" = /mob/living/simple_animal/chicken,
+		"medical supplies" = /obj/item/weapon/storage/firstaid/adv,
 		"gunpowder barrel" = /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,
 		"musket ammo crate (25)" = /obj/structure/closet/crate/musketball,
 		"pistol ammo crate (25)" = /obj/structure/closet/crate/musketball_pistol,
@@ -78,6 +80,7 @@
 		"cash crops crate" = 40,
 		"cow" = 90,
 		"chicken" = 30,
+		"medical supplies" = 150,
 		"gunpowder barrel" = 230,
 		"musket ammo crate (25)" = 100,
 		"pistol ammo crate (25)" = 60,
@@ -87,7 +90,7 @@
 		"pistol crate (5)" = 385,
 		"musket crate (5)" = 550,
 		"musketoon crate (5)" = 440,
-		"blunderbuss crate(5)" = 495)
+		"blunderbuss crate(5)" = 495,)
 /obj/structure/exportbook
 	name = "exporting book"
 	desc = "Use this to export colony products and exchange money. Only merchants and governors have access to it."
@@ -109,10 +112,10 @@
 	var/finalpath
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" )
-		for (var/i=1;i<=15,i++)
+		for (var/i=1;i<=16,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
 	else
-		for (var/i=1;i<=25,i++)
+		for (var/i=1;i<=26,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
 	display += "Cancel"
 	var/choice = WWinput(user, "Order a crate: (Current Money: [money] reales)", "Imports", "Cancel", display)
