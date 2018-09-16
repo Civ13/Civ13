@@ -74,16 +74,16 @@
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(20))
-					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-					mineral.amount = rand(1,4)
-					visible_message("<span class='danger'>You found some usable stone blocks!</span>")
+					new/obj/item/weapon/ore/iron(src)
+					visible_message("<span class='danger'>You found some iron ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
-				if (prob(20))
-					new/obj/item/weapon/ore/iron(src)
-					visible_message("<span class='danger'>You found some iron ore!</span>")
+				if (prob(15))
+					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+					mineral.amount = rand(1,4)
+					visible_message("<span class='danger'>You found some usable stone blocks!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
