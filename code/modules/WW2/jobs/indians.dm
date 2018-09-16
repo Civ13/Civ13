@@ -32,9 +32,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_r_hand)
 
-	if (H.h_style == "Bald")
-		H.h_style = "Skinhead"
-	H.s_tone = 140
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Elder</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -78,9 +75,6 @@
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_r_store)
 
-	if (H.h_style == "Bald")
-		H.h_style = "Skinhead"
-	H.s_tone = 140
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Shaman</b>, the healer and religious leader of your tribe. Keep your fellow tribesmen healthy and motivated!")
 	H.setStat("strength", STAT_NORMAL)
@@ -130,9 +124,6 @@
 	else if (randweapon == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_l_hand)
 
-	if (H.h_style == "Bald")
-		H.h_style = "Skinhead"
-	H.s_tone = 140
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -175,8 +166,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianr_a, H)
 
-	if (H.h_style == "Bald")
-		H.h_style = "Skinhead"
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -217,8 +206,6 @@ datum/job/indians/tribes/blue
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indianb_a, H)
 
-	if (H.h_style == "Bald")
-		H.h_style = "Skinhead"
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -259,8 +246,128 @@ datum/job/indians/tribes/green
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(indiang_a, H)
 
+	H.f_style = "Shaved"
+	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+datum/job/indians/tribes/yellow
+	title = "Yello Bear Tribesman"
+	en_meaning = "Yellow Bear Tribe Member"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 60
+	max_positions = 300
+
+/datum/job/indians/tribes/yellow/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//clothes
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/indiany_a = new /obj/item/clothing/accessory/armband/indiany(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(indiany_a, H)
+
+	H.f_style = "Shaved"
+	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+datum/job/indians/tribes/white
+	title = "White Mouse Tribesman"
+	en_meaning = "White Mouse Tribe Member"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND5"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 60
+	max_positions = 300
+
+/datum/job/indians/tribes/white/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//clothes
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/indianw_a = new /obj/item/clothing/accessory/armband/indianw(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(indianw_a, H)
+
 	if (H.h_style == "Bald")
 		H.h_style = "Skinhead"
+	H.f_style = "Shaved"
+	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+datum/job/indians/tribes/black
+	title = "Black Wolf Tribesman"
+	en_meaning = "Black Wolf Tribe Member"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND6"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 60
+	max_positions = 300
+
+/datum/job/indians/tribes/black/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//clothes
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/indianbl_a = new /obj/item/clothing/accessory/armband/indianbl(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(indianbl_a, H)
+
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
