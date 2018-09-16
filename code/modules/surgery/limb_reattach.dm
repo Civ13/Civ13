@@ -45,6 +45,7 @@
 /datum/surgery_step/limb/connect
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
+	/obj/item/stack/material/rope = 50, 	\
 	)
 	can_infect = TRUE
 

@@ -101,8 +101,8 @@
 /datum/surgery_step/face/cauterize
 	allowed_tools = list(
 	/obj/item/weapon/surgery/cautery = 100,			\
-	/obj/item/clothing/mask/smokable/cigarette = 75,	\
-	/obj/item/weapon/flame/lighter = 50,			\
+	/obj/item/clothing/mask/smokable/cigarette/cigar = 75,	\
+	/obj/item/flashlight/torch = 75,
 	)
 
 	min_duration = 70

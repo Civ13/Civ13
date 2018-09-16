@@ -161,7 +161,6 @@
 
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
-	/obj/item/weapon/wirecutters = 75,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 20, \
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
 	)
@@ -288,19 +287,3 @@
 		var/obj/item/organ/I = tool
 		if (istype(I))
 			I.take_damage(rand(3,5),0)
-//////////////////////////////////////////////////////////////////
-//						HEART SURGERY							//
-//////////////////////////////////////////////////////////////////
-// To be finished after some tests.
-// /datum/surgery_step/ribcage/heart/cut
-//	allowed_tools = list(
-//	/obj/item/weapon/surgery/scalpel = 100,		\
-//	/obj/item/weapon/material/knife = 75,	\
-//	/obj/item/weapon/material/shard = 50, 		\
-//	)
-
-//	min_duration = 30
-//	max_duration = 40
-
-//	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-//		return ..() && target.op_stage.ribcage == 2
