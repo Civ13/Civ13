@@ -81,8 +81,8 @@ var/list/engineer_exclusive_recipe_types = null
 		new/datum/stack_recipe("wood crate", /obj/structure/closet/crate/empty, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("wood chest", /obj/structure/closet/crate/chest, 7, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
-		new/datum/stack_recipe("small cross", /obj/structure/woodcross1, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
-		new/datum/stack_recipe("cross", /obj/structure/woodcross2, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
+		new/datum/stack_recipe("small cross", /obj/structure/religious/woodcross1, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+		new/datum/stack_recipe("cross", /obj/structure/religious/woodcross2, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	recipes += new/datum/stack_recipe_list("kitchen & tools", list(
 		new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -109,8 +109,8 @@ var/list/engineer_exclusive_recipe_types = null
 	..()
 	recipes += new/datum/stack_recipe("tribal hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 2, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("gravestone", /obj/structure/gravestone, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("totem", /obj/structure/totem, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("gravestone", /obj/structure/religious/gravestone, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("totem", /obj/structure/religious/totem, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/tobacco/generate_recipes()
 	recipes = list(new/datum/stack_recipe("cigar", /obj/item/clothing/mask/smokable/cigarette/cigar, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))

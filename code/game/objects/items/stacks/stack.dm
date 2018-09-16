@@ -109,7 +109,7 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
-	var/obj/structure/totem/newtotem = new/obj/structure/totem
+	var/obj/structure/religious/totem/newtotem = new/obj/structure/religious/totem
 	newtotem.desc = "none"
 	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
 	build_override_door.custom_code = -1
@@ -134,7 +134,7 @@
 			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 				qdel(H.r_hand)
 
-	if (recipe.result_type == /obj/structure/totem)
+	if (recipe.result_type == /obj/structure/religious/totem)
 		if (!H.faction_text == INDIANS)
 			H << "<span class = 'danger'>Uh? You aren't a native!</span>"
 			return
