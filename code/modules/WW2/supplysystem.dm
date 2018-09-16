@@ -8,6 +8,8 @@
 	density = TRUE
 	anchored = TRUE
 	var/factionarea = "SupplyRN"
+	var/import_tax_rate = 0
+	var/faction = "civilian"
 
 	var/list/itemsnr = list(
 		1 = "wood crate",
@@ -101,6 +103,8 @@
 	var/moneyin = 0
 	density = TRUE
 	anchored = TRUE
+	var/export_tax_rate = 0
+	var/faction = "civilian"
 
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
@@ -113,18 +117,19 @@
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" )
 		for (var/i=1;i<=16,i++)
-			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
+			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]+(itemprices[itemsnr[i]]*(import_tax_rate/100))] reales" //Simplicity so the crate's name can be shown in the list
 	else
+		import_tax_rate = input(user, "Set the import tax rate: (0%-100%)") as num
+		import_tax_rate = Clamp(import_tax_rate, 0, 100)
 		for (var/i=1;i<=26,i++)
-			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]] reales" //Simplicity so the crate's name can be shown in the list
-	display += "Cancel"
-	var/choice = WWinput(user, "Order a crate: (Current Money: [money] reales)", "Imports", "Cancel", display)
+			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]+(itemprices[itemsnr[i]]*(import_tax_rate/100))] reales"
+	var/choice = WWinput(user, "Order a crate: (Current Money: [money] reales; included IT: [import_tax_rate]%)", "Imports", "Cancel", display)
 	if (choice == "Cancel")
 		return
 	else
 		var/list/choicename = splittext(choice, " - ")
 		finalnr = choicename[1]
-		finalcost = itemprices[finalnr]
+		finalcost = itemprices[finalnr]+(itemprices[finalnr]*(import_tax_rate/100))
 		finalpath = itemstobuy[finalnr]
 	if(finalcost > money)
 		user << "You don't have enough money to buy that crate!"
@@ -132,18 +137,30 @@
 		if (money <= 50 && money > 0)
 			new/obj/item/stack/money/real(loc, money)
 			money = 0
+			for (var/obj/structure/closet/crate/chest/treasury/TRS)
+				if (TRS.faction == faction)
+					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 50 && money <= 400)
 			new/obj/item/stack/money/dollar(loc, money/8)
 			money = 0
+			for (var/obj/structure/closet/crate/chest/treasury/TRS)
+				if (TRS.faction == faction)
+					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 400 && money <= 800)
 			new/obj/item/stack/money/escudo(loc, money/16)
 			money = 0
+			for (var/obj/structure/closet/crate/chest/treasury/TRS)
+				if (TRS.faction == faction)
+					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 800 && money <= 1600)
 			new/obj/item/stack/money/doubloon(loc, money/32)
 			money = 0
+			for (var/obj/structure/closet/crate/chest/treasury/TRS)
+				if (TRS.faction == faction)
+					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money == 0)
 			return
@@ -166,18 +183,22 @@
 		if (money <= 50 && money > 0)
 			new/obj/item/stack/money/real(loc, money)
 			money = 0
+
 			return
 		else if (money > 50 && money <= 400)
 			new/obj/item/stack/money/dollar(loc, money/8)
 			money = 0
+
 			return
 		else if (money > 400 && money <= 800)
 			new/obj/item/stack/money/escudo(loc, money/16)
 			money = 0
+
 			return
 		else if (money > 800 && money <= 1600)
 			new/obj/item/stack/money/doubloon(loc, money/32)
 			money = 0
+
 			return
 		else if (money == 0)
 			return
@@ -196,9 +217,13 @@
 
 /obj/structure/exportbook/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
-
-		H << "Only the merchants have access to the international shipping companies. Negotiate with one."
-		return
+		if (H.original_job_title != "Gobernador" && H.original_job_title != "Governador" && H.original_job_title != "Governeur" && H.original_job_title != "Governor" && H.original_job_title != "British Governor" && H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
+			H << "Only the merchants have access to the international shipping companies. Negotiate with one."
+			return
+		else
+			export_tax_rate = input(H, "Set the export tax rate: (0%-100%)") as num
+			export_tax_rate = Clamp(export_tax_rate, 0, 100)
+			return
 	else
 		if (W.value == 0)
 			H << "There is no demand for this item."
@@ -211,18 +236,22 @@
 					if (moneyin <= 50)
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
+
 						return
 					else if (moneyin > 50 && moneyin <= 400)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
+
 						return
 					else if (moneyin > 400 && moneyin <= 800)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
+
 						return
 					else if (moneyin > 800 && moneyin <= 1600)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
+
 						return
 					else if (moneyin > 1600)
 						H << "Too much money! Split it into smaller stacks first."
@@ -232,23 +261,35 @@
 					return
 			if (istype(W, /obj/item/stack))
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
-				moneyin = marketval*W.amount
-				if (WWinput(H, "Sell the whole stack for [moneyin] reales?", "Exporting", "Yes", list("Yes", "No")) == "Yes")
+				moneyin = marketval*W.amount+((marketval*W.amount)*(export_tax_rate/100))
+				if (WWinput(H, "Sell the whole stack for [moneyin] reales? Included ET: [export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes")
 					if (moneyin <= 50)
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 50 && moneyin <= 400)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 400 && moneyin <= 800)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 800 && moneyin <= 1600)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 1600)
 						H << "This item is too expensive! You can't find a buyer for it."
@@ -258,29 +299,52 @@
 					return
 			else
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
-				if (WWinput(H, "Sell this for [marketval] reales?", "Exporting", "Yes", list("Yes", "No")) == "Yes")
-					if (marketval <= 50)
-						new/obj/item/stack/money/real(loc, marketval)
+				moneyin = marketval+(marketval*(export_tax_rate/100))
+				if (WWinput(H, "Sell this for [marketval] reales? Included ET:[export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes")
+					if (moneyin <= 50)
+						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
 						return
-					else if (marketval > 50 && marketval <= 400)
-						new/obj/item/stack/money/dollar(loc, marketval/8)
+					else if (moneyin > 50 && moneyin <= 400)
+						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
 						return
-					else if (marketval > 400 && marketval <= 800)
-						new/obj/item/stack/money/escudo(loc, marketval/16)
+					else if (moneyin > 400 && moneyin <= 800)
+						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
 						return
-					else if (marketval > 800 && marketval <= 1600)
-						new/obj/item/stack/money/doubloon(loc, marketval/32)
+					else if (moneyin > 800 && moneyin <= 1600)
+						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
+						for (var/obj/structure/closet/crate/chest/treasury/TRS)
+							if (TRS.faction == faction)
+								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
 						return
-					else if (marketval > 1600)
+					else if (moneyin > 1600)
 						H << "This item is too expensive! You can't find a buyer for it."
 						return
 				else
 					marketval = 0
 					return
+
+/obj/structure/exportbook/attack_hand(var/mob/living/carbon/human/H as mob)
+	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
+		if (H.original_job_title != "Gobernador" && H.original_job_title != "Governador" && H.original_job_title != "Governeur" && H.original_job_title != "Governor" && H.original_job_title != "British Governor" && H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
+			H << "Only the merchants have access to the international shipping companies. Negotiate with one."
+			return
+		else
+			export_tax_rate = input(H, "Set the export tax rate: (0%-100%)") as num
+			export_tax_rate = Clamp(export_tax_rate, 0, 100)
+			return
 
 /* For reference
 /obj/item/stack/money/real

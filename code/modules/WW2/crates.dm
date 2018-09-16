@@ -54,6 +54,15 @@ obj/structure/closet/crate/chest
 	icon_opened = "wood_chest_opened"
 	icon_closed = "wood_chest"
 
+obj/structure/closet/crate/chest/treasury
+	name = "colony treasury"
+	desc = "Where the colony treasury is stored."
+	icon_state = "wood_chest"
+	icon_opened = "wood_chest_opened"
+	icon_closed = "wood_chest"
+	anchored = TRUE
+	var/faction = "civilian"
+
 obj/structure/closet/crate/empty
 	name = "wood crate"
 	desc = "A wooden crate."
