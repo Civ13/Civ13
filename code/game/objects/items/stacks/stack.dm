@@ -109,6 +109,8 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
+	var/obj/structure/totem/newtotem = new/obj/structure/totem
+	newtotem.desc = "none"
 	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
 	build_override_door.custom_code = -1
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
@@ -138,25 +140,32 @@
 			return
 		else
 			if (H.original_job_title == "Red Goose Tribesman")
-				build_override_object.name = "Stone Goose Totem"
-				build_override_object.icon_state = "goose"
+				newtotem.name = "Stone Goose Totem"
+				newtotem.icon_state = "goose"
+				newtotem.desc = "A stone goose totem."
 			else if (H.original_job_title == "Blue Turkey Tribesman")
-				build_override_object.name = "Stone Turkey Totem"
-				build_override_object.icon_state = "turkey"
+				newtotem.name = "Stone Turkey Totem"
+				newtotem.icon_state = "turkey"
+				newtotem.desc = "A stone turkey totem."
 			else if (H.original_job_title == "Blue Monkey Tribesman")
-				build_override_object.name = "Stone Monekey Totem"
-				build_override_object.icon_state = "monkey"
+				newtotem.name = "Stone Monkey Totem"
+				newtotem.icon_state = "monkey"
+				newtotem.desc = "A stone monkey totem."
 			else if (H.original_job_title == "Yellow Mouse Tribesman")
-				build_override_object.name = "Yellow Mouse Totem"
-				build_override_object.icon_state = "mouse"
+				newtotem.name = "Yellow Mouse Totem"
+				newtotem.icon_state = "mouse"
+				newtotem.desc = "A stone mouse totem."
 			else if (H.original_job_title == "White Wolf Tribesman")
-				build_override_object.name = "White Wolf Totem"
-				build_override_object.icon_state = "wolf"
+				newtotem.name = "White Wolf Totem"
+				newtotem.icon_state = "wolf"
+				newtotem.desc = "A stone wolf totem."
 			else if (H.original_job_title == "Black Bear Tribesman")
-				build_override_object.name = "Black Bear Totem"
-				build_override_object.icon_state = "bear"
+				newtotem.name = "Black Bear Totem"
+				newtotem.icon_state = "bear"
+				newtotem.desc = "A stone bear totem."
 			else
-				build_override_object.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
+				newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
+				newtotem.desc = "A stone totem."
 
 
 	if (findtext(recipe.title, "custom sign"))
@@ -328,7 +337,12 @@
 			build_override_door.add_fingerprint(user)
 			qdel(O)
 			return
-
+		if (newtotem.desc != "none")
+			newtotem.loc = get_turf(O)
+			newtotem.set_dir(user.dir)
+			newtotem.add_fingerprint(user)
+			qdel(O)
+			return
 		O.set_dir(user.dir)
 		O.add_fingerprint(user)
 
