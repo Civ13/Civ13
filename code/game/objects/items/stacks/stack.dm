@@ -116,6 +116,12 @@
 	var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
 	build_override_sign.desc = "A sign."
 	var/mob/living/carbon/human/H = user
+
+	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "wrench") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet"))
+		if (H.faction_text == INDIANS)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 			user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
