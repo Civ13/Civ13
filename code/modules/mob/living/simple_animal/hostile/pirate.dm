@@ -13,10 +13,9 @@
 	emote_see = list("stares ferociously", "stomps")
 	speak_chance = TRUE
 	speed = 4
-	stop_automated_movement_when_pulled = 0
 	maxHealth = 100
 	health = 100
-
+	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 5
 	melee_damage_lower = 30
 	melee_damage_upper = 40
@@ -29,7 +28,7 @@
 
 	faction = PIRATES
 
-/mob/living/simple_animal/hostile/pirate/New()
+///mob/living/simple_animal/hostile/pirate/New()
 //	..()
 //	var/icon_pick = pick("piratemelee","piratemelee1","piratemelee2")
 //	icon_living = icon_pick

@@ -230,29 +230,30 @@
 			if (istype(W, /obj/item/stack/money))
 				marketval = W.value
 				moneyin = marketval*W.amount
-				if (WWinput(H, "Exchange this amount into other coins?", "Exporting", "Yes", list("Yes", "No")) == "Yes")
-					if (moneyin <= 50)
+				if ((WWinput(H, "Exchange this amount into other coins?", "Exporting", "Yes", list("Yes", "No")) == "Yes") && W)
+					if (moneyin <= 50 && W && marketval > 0)
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
-
+						marketval = 0
 						return
-					else if (moneyin > 50 && moneyin <= 400)
+					else if (moneyin > 50 && moneyin <= 400 && W && marketval > 0)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
-
+						marketval = 0
 						return
-					else if (moneyin > 400 && moneyin <= 800)
+					else if (moneyin > 400 && moneyin <= 800 && W && marketval > 0)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
-
+						marketval = 0
 						return
-					else if (moneyin > 800 && moneyin <= 1600)
+					else if (moneyin > 800 && moneyin <= 1600 && W && marketval > 0)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
-
+						marketval = 0
 						return
-					else if (moneyin > 1600)
+					else if (moneyin > 1600 && W && marketval > 0)
 						H << "Too much money! Split it into smaller stacks first."
+						marketval = 0
 						return
 				else
 					marketval = 0
@@ -260,37 +261,42 @@
 			if (istype(W, /obj/item/stack))
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
 				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
-				if (WWinput(H, "Sell the whole stack for [moneyin] reales? Included ET: [export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes")
-					if (moneyin <= 50)
+				if ((WWinput(H, "Sell the whole stack for [moneyin] reales? Included ET: [export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes") && W)
+					if (moneyin <= 50 && W && marketval > 0)
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 50 && moneyin <= 400)
+					else if (moneyin > 50 && moneyin <= 400 && W && marketval > 0)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 400 && moneyin <= 800)
+					else if (moneyin > 400 && moneyin <= 800 && W && marketval > 0)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 800 && moneyin <= 1600)
+					else if (moneyin > 800 && moneyin <= 1600 && W && marketval > 0)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 1600)
+					else if (moneyin > 1600 && W && marketval > 0)
 						H << "This item is too expensive! You can't find a buyer for it."
+						marketval = 0
 						return
 				else
 					marketval = 0
@@ -298,37 +304,42 @@
 			else
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
 				moneyin = marketval+(marketval*(export_tax_rate/100))
-				if (WWinput(H, "Sell this for [marketval] reales? Included ET:[export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes")
-					if (moneyin <= 50)
+				if ((WWinput(H, "Sell this for [marketval] reales? Included ET:[export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes") && W)
+					if (moneyin <= 50 && W && marketval > 0)
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 50 && moneyin <= 400)
+					else if (moneyin > 50 && moneyin <= 400 && W && marketval > 0)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 400 && moneyin <= 800)
+					else if (moneyin > 400 && moneyin <= 800 && W && marketval > 0)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 800 && moneyin <= 1600)
+					else if (moneyin > 800 && moneyin <= 1600 && W && marketval > 0)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
 						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+						marketval = 0
 						return
-					else if (moneyin > 1600)
+					else if (moneyin > 1600 && W && marketval > 0)
 						H << "This item is too expensive! You can't find a buyer for it."
+						marketval = 0
 						return
 				else
 					marketval = 0
