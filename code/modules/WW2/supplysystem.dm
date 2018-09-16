@@ -259,7 +259,7 @@
 					return
 			if (istype(W, /obj/item/stack))
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
-				moneyin = marketval*W.amount+((marketval*W.amount)*(export_tax_rate/100))
+				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
 				if (WWinput(H, "Sell the whole stack for [moneyin] reales? Included ET: [export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes")
 					if (moneyin <= 50)
 						new/obj/item/stack/money/real(loc, moneyin)
