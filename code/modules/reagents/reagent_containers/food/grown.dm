@@ -8,6 +8,15 @@
 	w_class = 1.0
 	value = 3
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/peyote
+	name = "peyote cactus"
+	icon_state = "peyote"
+	desc = "A potent hallucinogenic."
+	color = "#6AAF6A"
+	New()
+		..()
+		reagents.add_reagent("peyote", 5)
+
 // fruit
 /obj/item/weapon/reagent_containers/food/snacks/grown/grapes
 	name = "bunch of grapes"

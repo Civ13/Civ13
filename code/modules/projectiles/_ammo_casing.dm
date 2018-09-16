@@ -40,10 +40,12 @@
 
 
 ///////TO MAKE AMMO WITH GUNPOWDER
-/obj/item/weapon/ammopart
+/obj/item/stack/ammopart
 	var/resultpath = /obj/item/ammo_casing/musketball
+	amount = 1
+	max_amount = 20
 
-/obj/item/weapon/ammopart/musketball
+/obj/item/stack/ammopart/musketball
 	name = "musketball projectile"
 	desc = "A round musketball, to be used in flintlock muskets."
 	icon = 'icons/obj/ammo.dmi'
@@ -54,7 +56,7 @@
 	value = 2
 	weight = 0.08
 
-/obj/item/weapon/ammopart/musketball_pistol
+/obj/item/stack/ammopart/musketball_pistol
 	name = "pistol projectile"
 	desc = "A small, round musketball, to be used in flintlock pistols."
 	icon = 'icons/obj/ammo.dmi'
@@ -65,7 +67,7 @@
 	value = 1
 	weight = 0.05
 
-/obj/item/weapon/ammopart/blunderbuss
+/obj/item/stack/ammopart/blunderbuss
 	name = "blunderbuss projectiles"
 	desc = "A bunch of small iron projectiles. Can fill blunderbusses."
 	icon = 'icons/obj/ammo.dmi'
@@ -76,7 +78,7 @@
 	value = 2
 	weight = 0.1
 
-/obj/item/weapon/ammopart/attack_self(mob/user)
+/obj/item/stack/ammopart/attack_self(mob/user)
 	if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
 		if (!user.l_hand.reagents.has_reagent("gunpowder",1))
 			user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
@@ -84,7 +86,10 @@
 		else if (user.l_hand.reagents.has_reagent("gunpowder",1))
 			user.l_hand.reagents.remove_reagent("gunpowder",1)
 			user << "You make a paper cartridge with the gunpowder and projectile."
-			qdel(user.r_hand)
+			if (user.r_hand.amount>1)
+				user.r_hand.amount -= 1
+			else
+				qdel(user.r_hand)
 			new resultpath(user.loc)
 			return
 
@@ -95,7 +100,10 @@
 		else if (user.r_hand.reagents.has_reagent("gunpowder",1))
 			user.r_hand.reagents.remove_reagent("gunpowder",1)
 			user << "You make a paper cartridge with the gunpowder and projectile."
-			qdel(user.l_hand)
+			if (user.l_hand.amount>1)
+				user.l_hand.amount -= 1
+			else
+				qdel(user.l_hand)
 			new resultpath(user.loc)
 			return
 

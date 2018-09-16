@@ -1,3 +1,9 @@
+/obj/structure/religious
+	name = "gravestone"
+	desc = "A gravestone made with polished stone."
+	icon = 'icons/obj/cross.dmi'
+	icon_state = "gravestone"
+	var/health = 100
 /obj/structure/religious/gravestone
 	name = "gravestone"
 	desc = "A gravestone made with polished stone."
@@ -5,7 +11,6 @@
 	icon_state = "gravestone"
 	density = FALSE
 	anchored = TRUE
-	var/health = 100
 
 /obj/structure/religious/totem
 	name = "stone totem"
@@ -16,7 +21,6 @@
 	anchored = TRUE
 	var/tribe = "goose"
 	layer = 3.2
-	var/health = 100
 
 /obj/structure/religious/woodcross1
 	name = "small wood cross"
@@ -25,7 +29,7 @@
 	icon_state = "cross1"
 	density = FALSE
 	anchored = TRUE
-	var/health = 50
+	health = 50
 
 /obj/structure/religious/woodcross2
 	name = "wood cross"
@@ -34,7 +38,7 @@
 	icon_state = "cross2"
 	density = FALSE
 	anchored = TRUE
-	var/health = 50
+	health = 50
 
 /obj/structure/religious/grave
 	name = "open_grave"
@@ -46,7 +50,7 @@
 
 
 /obj/structure/religious/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
+	if (istype(W, /obj/item/weapon/wrench))
 		return
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(W.damtype)

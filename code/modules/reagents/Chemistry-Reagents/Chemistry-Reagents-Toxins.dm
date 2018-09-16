@@ -308,18 +308,18 @@
 
 /* Drugs */
 
-/datum/reagent/space_drugs
-	name = "Space drugs"
-	id = "space_drugs"
-	description = "An illegal chemical compound used as drug."
+/datum/reagent/peyote
+	name = "Peyote"
+	id = "peyote"
+	description = "A hallucinogen extracted from the Peyote cactus."
 	taste_description = "bitterness"
 	taste_mult = 0.4
 	reagent_state = LIQUID
-	color = "#60A584"
+	color = "#6AAF6A"
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/space_drugs/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/peyote/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.druggy = max(M.druggy, 15)
 	if (prob(10) && isturf(M.loc) && M.canmove && !M.restrained())
 		step(M, pick(cardinal))

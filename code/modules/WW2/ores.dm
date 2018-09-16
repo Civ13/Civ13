@@ -35,33 +35,26 @@
 	pixel_x = rand(0,16)-8
 	pixel_y = rand(0,8)-8
 
+/obj/item/stack/ore
+	name = "ore"
+	amount = 1
+	max_amount = 20
 
-////Yeah, not food, i know. But i need the reagents...
-/obj/item/weapon/reagent_containers/food/snacks/saltpeter
+
+/obj/item/stack/ore/saltpeter
 	name = "saltpeter"
 	desc = "A yellowish cristal, consisting of potassium nitrate. A common precursor to many explosives, including gunpowder."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_saltpeter"
-	filling_color = "#FEFCED"
-	New()
-		..()
-		reagents.add_reagent("potassium", 3)
 
-/obj/item/weapon/reagent_containers/food/snacks/coal
+/obj/item/stack/ore/coal
 	name = "mineral coal"
 	desc = "A bunch of mineral coal. Very dense."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_coal"
-	filling_color = "#271F22"
-	New()
-		..()
-		reagents.add_reagent("carbon", 3)
-/obj/item/weapon/reagent_containers/food/snacks/sulphur
+
+/obj/item/stack/ore/sulphur
 	name = "sulphur"
 	desc = "Yellow and smelly."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_sulphur"
-	filling_color = "#F5E44C"
-	New()
-		..()
-		reagents.add_reagent("sulfur", 3)
