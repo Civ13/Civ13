@@ -53,7 +53,7 @@
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "hatchet"
-	force_divisor = 0.25 // 15 with hardness 60 (steel)
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
 	w_class = 2
 	sharp = TRUE
@@ -70,8 +70,8 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"
 	material = "stone"
-	force_divisor = 0.20 // 12 with hardness 60 (steel)
-	thrown_force_divisor = 0.65 // 13 with weight 20 (steel)
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
 
 /obj/item/weapon/material/hatchet/New()
@@ -82,7 +82,7 @@
 	desc = "A short axe, useful for breaking wood and boarding enemy ships."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "combat_axe"
-	force_divisor = 0.4 // 12 with hardness 60 (steel)
+	force_divisor = 0.6 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
 	w_class = 2
 	sharp = TRUE
