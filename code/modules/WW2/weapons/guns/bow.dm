@@ -88,7 +88,7 @@
 
 /obj/item/weapon/gun/projectile/bow/handle_post_fire()
 	..()
-	loaded -= chambered
+	loaded = list()
 	chambered = null
 
 /obj/item/weapon/gun/projectile/bow/load_ammo(var/obj/item/A, mob/user)

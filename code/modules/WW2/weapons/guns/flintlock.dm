@@ -24,7 +24,7 @@
 	accuracy = TRUE
 //	scoped_accuracy = 2
 	gun_type = GUN_TYPE_RIFLE
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_BARREL
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH
@@ -87,6 +87,11 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 
+/obj/item/weapon/gun/projectile/flintlock/New()
+	..()
+	loaded = list()
+	chambered = null
+
 /obj/item/weapon/gun/projectile/flintlock/attack_self(mob/user)
 	var/mob/living/carbon/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
@@ -139,7 +144,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/handle_post_fire()
 	..()
-	loaded -= chambered
+	loaded = list()
 	chambered = null
 	cocked = FALSE
 	spawn (1)
