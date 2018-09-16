@@ -10,6 +10,7 @@
 	var/factionarea = "SupplyRN"
 	var/import_tax_rate = 0
 	var/faction = "civilian"
+	var/faction_treasury = "TreasuryRN"
 
 	var/list/itemsnr = list(
 		1 = "wood crate",
@@ -92,7 +93,7 @@
 		"pistol crate (5)" = 385,
 		"musket crate (5)" = 550,
 		"musketoon crate (5)" = 440,
-		"blunderbuss crate(5)" = 495,)
+		"blunderbuss crate (5)" = 495,)
 /obj/structure/exportbook
 	name = "exporting book"
 	desc = "Use this to export colony products and exchange money. Only merchants and governors have access to it."
@@ -105,6 +106,7 @@
 	anchored = TRUE
 	var/export_tax_rate = 0
 	var/faction = "civilian"
+	var/faction_treasury = "TreasuryRN"
 
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
@@ -137,30 +139,18 @@
 		if (money <= 50 && money > 0)
 			new/obj/item/stack/money/real(loc, money)
 			money = 0
-			for (var/obj/structure/closet/crate/chest/treasury/TRS)
-				if (TRS.faction == faction)
-					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 50 && money <= 400)
 			new/obj/item/stack/money/dollar(loc, money/8)
 			money = 0
-			for (var/obj/structure/closet/crate/chest/treasury/TRS)
-				if (TRS.faction == faction)
-					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 400 && money <= 800)
 			new/obj/item/stack/money/escudo(loc, money/16)
 			money = 0
-			for (var/obj/structure/closet/crate/chest/treasury/TRS)
-				if (TRS.faction == faction)
-					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 800 && money <= 1600)
 			new/obj/item/stack/money/doubloon(loc, money/32)
 			money = 0
-			for (var/obj/structure/closet/crate/chest/treasury/TRS)
-				if (TRS.faction == faction)
-					new/obj/item/stack/money/real(TRS.loc, itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money == 0)
 			return
@@ -183,22 +173,30 @@
 		if (money <= 50 && money > 0)
 			new/obj/item/stack/money/real(loc, money)
 			money = 0
-
+			var/list/fturfs = latejoin_turfs[faction_treasury]
+			var/spawnpointa = pick(fturfs)
+			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 50 && money <= 400)
 			new/obj/item/stack/money/dollar(loc, money/8)
 			money = 0
-
+			var/list/fturfs = latejoin_turfs[faction_treasury]
+			var/spawnpointa = pick(fturfs)
+			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 400 && money <= 800)
 			new/obj/item/stack/money/escudo(loc, money/16)
 			money = 0
-
+			var/list/fturfs = latejoin_turfs[faction_treasury]
+			var/spawnpointa = pick(fturfs)
+			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 800 && money <= 1600)
 			new/obj/item/stack/money/doubloon(loc, money/32)
 			money = 0
-
+			var/list/fturfs = latejoin_turfs[faction_treasury]
+			var/spawnpointa = pick(fturfs)
+			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money == 0)
 			return
@@ -266,30 +264,30 @@
 					if (moneyin <= 50)
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 50 && moneyin <= 400)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 400 && moneyin <= 800)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 800 && moneyin <= 1600)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, (marketval*W.amount)*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						return
 					else if (moneyin > 1600)
 						H << "This item is too expensive! You can't find a buyer for it."
@@ -304,30 +302,30 @@
 					if (moneyin <= 50)
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
 						return
 					else if (moneyin > 50 && moneyin <= 400)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
 						return
 					else if (moneyin > 400 && moneyin <= 800)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
 						return
 					else if (moneyin > 800 && moneyin <= 1600)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
-						for (var/obj/structure/closet/crate/chest/treasury/TRS)
-							if (TRS.faction == faction)
-								new/obj/item/stack/money/real(TRS.loc, marketval*(export_tax_rate/100))
+						var/list/fturfs = latejoin_turfs[faction_treasury]
+						var/spawnpointa = pick(fturfs)
+						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
 						return
 					else if (moneyin > 1600)
 						H << "This item is too expensive! You can't find a buyer for it."

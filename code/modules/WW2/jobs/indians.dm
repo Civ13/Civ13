@@ -43,7 +43,7 @@
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_NORMAL)
 
 
@@ -89,7 +89,7 @@
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH) //not used
+	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_VERY_HIGH)
 
 
@@ -141,7 +141,7 @@
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
 
@@ -149,19 +149,19 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////TRIBES//RP//STUFF//////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-/datum/job/indians/tribes/worker
-	title = "Tribesman"
-	en_meaning = "Tribe Worker"
+/datum/job/indians/tribes/red
+	title = "Red Goose Tribesman"
+	en_meaning = "Red Goose Tribe Member"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateIND"
+	spawn_location = "JoinLateIND1"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
 	min_positions = 60
 	max_positions = 300
 
-/datum/job/indians/tribes/worker/equip(var/mob/living/carbon/human/H)
+/datum/job/indians/tribes/red/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //clothes
 	var/randcloth = rand(1,3)
@@ -171,9 +171,9 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
-	var/obj/item/clothing/accessory/armband/indian1_a = new /obj/item/clothing/accessory/armband/indian1(null)
+	var/obj/item/clothing/accessory/armband/indianr_a = new /obj/item/clothing/accessory/armband/indianr(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	uniform.attackby(indian1_a, H)
+	uniform.attackby(indianr_a, H)
 
 	if (H.h_style == "Bald")
 		H.h_style = "Skinhead"
@@ -185,7 +185,91 @@
 	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_VERY_HIGH) //not used
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+datum/job/indians/tribes/blue
+	title = "Blue Turkey Tribesman"
+	en_meaning = "Blue Turkey Tribe Member"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND2"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 60
+	max_positions = 300
+
+/datum/job/indians/tribes/blue/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//clothes
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/indianb_a = new /obj/item/clothing/accessory/armband/indianb(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(indianb_a, H)
+
+	if (H.h_style == "Bald")
+		H.h_style = "Skinhead"
+	H.f_style = "Shaved"
+	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+datum/job/indians/tribes/green
+	title = "Green Monkey Tribesman"
+	en_meaning = "Green Monkey Tribe Member"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND3"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 60
+	max_positions = 300
+
+/datum/job/indians/tribes/green/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//clothes
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	var/obj/item/clothing/accessory/armband/indiang_a = new /obj/item/clothing/accessory/armband/indiang(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(indiang_a, H)
+
+	if (H.h_style == "Bald")
+		H.h_style = "Skinhead"
+	H.f_style = "Shaved"
+	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
 

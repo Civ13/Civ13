@@ -402,6 +402,24 @@
 	icon_state = "indianshaman"
 	item_state = "indianshaman"
 
+/obj/item/clothing/accessory/armband/indianr
+	name = "red indian acessories"
+	desc = "red face paint and indian necklaces."
+	icon_state = "indianr"
+	item_state = "indianr"
+
+/obj/item/clothing/accessory/armband/indiang
+	name = "green indian acessories"
+	desc = "green face paint and indian necklaces."
+	icon_state = "indiang"
+	item_state = "indiang"
+
+/obj/item/clothing/accessory/armband/indianb
+	name = "blue indian acessories"
+	desc = "blue face paint and indian necklaces."
+	icon_state = "indianb"
+	item_state = "indianb"
+
 /obj/item/clothing/head/skullmask
 	name = "skull mask"
 	desc = "A skull mask, used by native shamans."

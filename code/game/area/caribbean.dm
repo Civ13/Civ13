@@ -21,6 +21,30 @@
  * to slow down dramatically. The forest area reached this limit, but only
  * when there were snow objects, so its been split into 9 separate areas.
 */
+/area/caribbean/treasury
+	name = "Colony Treasury"
+	base_turf = /turf/floor/dirt
+	icon_state = "red3"
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/treasury/civilian
+	name = "Colony Treasury"
+
+/area/caribbean/treasury/french
+	name = "French Treasury"
+
+/area/caribbean/treasury/british
+	name = "British Treasury"
+
+/area/caribbean/treasury/spanish
+	name = "Spanish Treasury"
+
+/area/caribbean/treasury/portuguese
+	name = "Portuguese Treasury"
+
+/area/caribbean/treasury/dutch
+	name = "Dutch Treasury"
+
 
 /area/caribbean/tribes
 	name = "Jungle"

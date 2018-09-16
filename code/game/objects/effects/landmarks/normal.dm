@@ -43,6 +43,37 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
+		// TREASURY LANDMARKS
+		if ("TreasuryFR")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("TreasuryRN")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("TreasurySP")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("TreasuryPT")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("TreasuryNL")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		// SUPPLY LANDMARKS
 		if ("SupplyFR")
 			if (!latejoin_turfs[name])
@@ -415,6 +446,24 @@
 			qdel(src)
 			return
 
+		if ("JoinLateIND1")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("JoinLateIND2")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("JoinLateIND3")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 /////////////////
 
 		if ("endgame_exit")
