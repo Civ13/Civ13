@@ -132,6 +132,33 @@
 			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 				qdel(H.r_hand)
 
+	if (recipe.result_type == /obj/structure/totem)
+		if (!H.faction_text == INDIANS)
+			H << "<span class = 'danger'>Uh? You aren't a native!</span>"
+			return
+		else
+			if (H.original_job_title == "Red Goose Tribesman")
+				build_override_object.name = "Stone Goose Totem"
+				build_override_object.icon_state = "goose"
+			else if (H.original_job_title == "Blue Turkey Tribesman")
+				build_override_object.name = "Stone Turkey Totem"
+				build_override_object.icon_state = "turkey"
+			else if (H.original_job_title == "Blue Monkey Tribesman")
+				build_override_object.name = "Stone Monekey Totem"
+				build_override_object.icon_state = "monkey"
+			else if (H.original_job_title == "Yellow Mouse Tribesman")
+				build_override_object.name = "Yellow Mouse Totem"
+				build_override_object.icon_state = "mouse"
+			else if (H.original_job_title == "White Wolf Tribesman")
+				build_override_object.name = "White Wolf Totem"
+				build_override_object.icon_state = "wolf"
+			else if (H.original_job_title == "Black Bear Tribesman")
+				build_override_object.name = "Black Bear Totem"
+				build_override_object.icon_state = "bear"
+			else
+				build_override_object.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
+
+
 	if (findtext(recipe.title, "custom sign"))
 		var/customname = input(user, "Choose a name for this sign:") as text|null
 		if (customname == null)

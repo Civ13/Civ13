@@ -261,8 +261,8 @@ datum/job/indians/tribes/green
 	return TRUE
 
 datum/job/indians/tribes/yellow
-	title = "Yello Bear Tribesman"
-	en_meaning = "Yellow Bear Tribe Member"
+	title = "Yellow Mouse Tribesman"
+	en_meaning = "Yellow Mouse Tribe Member"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
@@ -301,8 +301,8 @@ datum/job/indians/tribes/yellow
 	return TRUE
 
 datum/job/indians/tribes/white
-	title = "White Mouse Tribesman"
-	en_meaning = "White Mouse Tribe Member"
+	title = "White Wolf Tribesman"
+	en_meaning = "White Wolf Tribe Member"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND5"
@@ -343,8 +343,8 @@ datum/job/indians/tribes/white
 	return TRUE
 
 datum/job/indians/tribes/black
-	title = "Black Wolf Tribesman"
-	en_meaning = "Black Wolf Tribe Member"
+	title = "Black Bear Tribesman"
+	en_meaning = "Black Bear Tribe Member"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND6"
