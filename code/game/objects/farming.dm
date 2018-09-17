@@ -7,6 +7,7 @@
 	value = 1
 	amount = 1
 	max_amount = 100
+	singular_name = "seed"
 
 /obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"

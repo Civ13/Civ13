@@ -19,6 +19,7 @@
 	allowed_tools = list(
 	/obj/item/weapon/surgery/bone_saw = 100, \
 	/obj/item/weapon/material/hatchet = 75, \
+	/obj/item/weapon/material/hatchet/tribal = 75, \
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100 \
 	)
 

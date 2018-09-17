@@ -204,3 +204,12 @@
 	icon_state = "sheet-rglass"
 	default_type = "rglass"
 	value = 6
+
+/obj/item/stack/material/bone
+	name = "bones"
+	icon_state = "sheet-bone"
+	default_type = "bone"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	w_class = 2.0
+	value = 0
+	singular_name = "bone"

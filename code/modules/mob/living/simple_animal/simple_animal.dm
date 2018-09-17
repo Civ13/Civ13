@@ -244,6 +244,7 @@
 				for (var/v in TRUE to rand(1,2))
 					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 					leather.name = "[name] leather"
+				new/obj/item/stack/material/bone(get_turf(src))
 				crush()
 				qdel(src)
 		else

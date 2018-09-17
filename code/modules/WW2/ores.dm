@@ -42,19 +42,22 @@
 
 
 /obj/item/stack/ore/saltpeter
-	name = "saltpeter"
+	name = "saltpeter rock"
 	desc = "A yellowish cristal, consisting of potassium nitrate. A common precursor to many explosives, including gunpowder."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_saltpeter"
+	singular_name = "rock"
 
 /obj/item/stack/ore/coal
 	name = "mineral coal"
 	desc = "A bunch of mineral coal. Very dense."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_coal"
+	singular_name = "rock"
 
 /obj/item/stack/ore/sulphur
-	name = "sulphur"
+	name = "sulphur rock"
 	desc = "Yellow and smelly."
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore_sulphur"
+	singular_name = "rock"

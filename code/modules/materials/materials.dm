@@ -309,6 +309,13 @@ var/list/name_to_material
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 
+/material/bone
+	name = "bone"
+	hardness = 45
+	icon_colour = "#ccd1c4"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+
 /material/stone/stonebrick
 	name = "brick"
 	icon_base = "newbrick"

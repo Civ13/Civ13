@@ -384,6 +384,12 @@
 	item_state = "giant_leopard_pelt"
 	worn_state = "giant_leopard_pelt"
 
+/obj/item/clothing/accessory/armband/talisman
+	name = "bone talisman"
+	desc = "A human bone talisman."
+	icon_state = "talisman"
+	item_state = "talisman"
+
 /obj/item/clothing/accessory/armband/indian1
 	name = "indian acessories"
 	desc = "red face paint and indian necklaces."

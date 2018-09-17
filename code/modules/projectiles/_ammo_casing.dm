@@ -44,9 +44,10 @@
 	var/resultpath = /obj/item/ammo_casing/musketball
 	amount = 1
 	max_amount = 20
+	singular_name = "projectile"
 
 /obj/item/stack/ammopart/musketball
-	name = "musketball projectile"
+	name = "musketball projectiles"
 	desc = "A round musketball, to be used in flintlock muskets."
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "musketball"
@@ -57,7 +58,7 @@
 	weight = 0.08
 
 /obj/item/stack/ammopart/musketball_pistol
-	name = "pistol projectile"
+	name = "pistol projectiles"
 	desc = "A small, round musketball, to be used in flintlock pistols."
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "musketball_pistol"
