@@ -121,10 +121,13 @@
 			var/done = FALSE
 			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
 				if (do_after(user, 50, user.loc) && done == FALSE)
-
+					qdel(W)
+					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.l_hand)
 				done = TRUE
 			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
 				if (do_after(user, 50, user.loc) && done == FALSE)
+					qdel(W)
+					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.r_hand)
 
 	else
 		..()
