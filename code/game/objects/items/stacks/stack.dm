@@ -111,6 +111,8 @@
 	var/atom/movable/build_override_object = null
 	var/obj/structure/religious/totem/newtotem = new/obj/structure/religious/totem
 	newtotem.desc = "none"
+	var/obj/structure/religious/impaledskull/newskull = new/obj/structure/religious/impaledskull
+	newskull.name = "none"
 	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
 	build_override_door.custom_code = -1
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
@@ -174,8 +176,16 @@
 				return
 			else
 				if (istype(H.l_hand, /obj/item/organ/external/head))
+					var/targetskull = H.l_hand
+					targetskull = replacetext(targetskull, " head", "")
+					targetskull = "impaled [targetskull] skull"
+					newskull.name = targetskull
 					qdel(H.l_hand)
 				else if (istype(H.r_hand, /obj/item/organ/external/head))
+					var/targetskull = H.r_hand
+					targetskull = replacetext(targetskull, " head", "")
+					targetskull = "impaled [targetskull] skull"
+					newskull.name = targetskull
 					qdel(H.r_hand)
 
 	if (findtext(recipe.title, "custom sign"))
@@ -347,12 +357,21 @@
 			build_override_door.add_fingerprint(user)
 			qdel(O)
 			return
+
 		if (newtotem.desc != "none")
 			newtotem.loc = get_turf(O)
 			newtotem.set_dir(user.dir)
 			newtotem.add_fingerprint(user)
 			qdel(O)
 			return
+
+		if (newskull.name != "none")
+			newskull.loc = get_turf(O)
+			newskull.set_dir(user.dir)
+			newskull.add_fingerprint(user)
+			qdel(O)
+			return
+
 		O.set_dir(user.dir)
 		O.add_fingerprint(user)
 

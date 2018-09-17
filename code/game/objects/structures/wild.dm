@@ -120,14 +120,18 @@
 		else
 			var/done = FALSE
 			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+				user << "You start extracting the palm sap..."
 				if (do_after(user, 50, user.loc) && done == FALSE)
-					qdel(W)
-					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.l_hand)
+					user << "You finish extracting the palm sap."
+					qdel(user.l_hand)
+					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
 				done = TRUE
 			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+				user << "You start extracting the palm sap..."
 				if (do_after(user, 50, user.loc) && done == FALSE)
-					qdel(W)
-					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.r_hand)
+					user << "You finish extracting the palm sap."
+					qdel(user.r_hand)
+					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
 
 	else
 		..()

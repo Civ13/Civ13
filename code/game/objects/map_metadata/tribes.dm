@@ -26,8 +26,11 @@
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
-	if (istype(J, /datum/job/indians/tribes))
-		. = TRUE
+	if (istype(J, /datum/job/indians))
+		if (istype(J, /datum/job/indians/tribes))
+			. = TRUE
+		else
+			. = FALSE
 	else
 		. = FALSE
 /obj/map_metadata/colony/faction2_can_cross_blocks()
