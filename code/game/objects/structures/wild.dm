@@ -258,9 +258,7 @@
 	if (istype(src, /obj/structure/wild/bush/tame))
 		return
 
-	if (prob(35))
-		icon_state = "tall_grass_[rand(1,4)]"
-	else if (prob(25))
+	if (prob(25))
 		icon_state = "grassybush_[rand(1,4)]"
 	else if (prob(25))
 		icon_state = "leafybush_[rand(1,3)]"
