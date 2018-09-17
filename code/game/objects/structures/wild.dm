@@ -181,7 +181,7 @@
 	icon_state = "big_bush"
 
 /obj/structure/wild/burnedbush
-	name = "burned bush"
+	name = "dead twigs"
 	icon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
@@ -218,6 +218,18 @@
 	density = FALSE
 	amount = 0
 
+/obj/structure/wild/tallgrass
+	name = "tall grass"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "tall_grass_1"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+
+/obj/structure/wild/tallgrass/New()
+	..()
+	icon_state = "tall_grass_[rand(1,12)]"
+
 /obj/structure/wild/bush/New()
 	..()
 
@@ -236,7 +248,7 @@
 
 /obj/structure/wild/burnedbush/New()
 	..()
-	icon_state = "burnedbush[rand(1,5)]"
+	icon_state = "burnedbush[rand(1,9)]"
 
 /obj/structure/wild/junglebush/New()
 	..()
