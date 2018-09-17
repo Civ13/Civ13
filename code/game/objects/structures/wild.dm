@@ -111,6 +111,23 @@
 	sways = FALSE
 	amount = 4
 
+/obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && !istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+			user << "<span class = 'warning'>You need to have a pot in one of your hands in order to extract palm sap.</span>"
+			return
+		else
+			var/done = FALSE
+			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+				if (do_after(user, 50, user.loc) && done == FALSE)
+
+				done = TRUE
+			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+				if (do_after(user, 50, user.loc) && done == FALSE)
+
+	else
+		..()
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")

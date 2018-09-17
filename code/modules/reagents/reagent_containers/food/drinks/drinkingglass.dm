@@ -139,6 +139,30 @@
 	glass_type = "pot"
 	volume = 60
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap
+	name = "tribal pot"
+	desc = "A tribal clay pot."
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "tribalpot"
+	glass_type = "pot"
+	volume = 60
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap/New()
+	..()
+	name = "tribal pot with sap"
+	desc = "A tribal pot filled with palm sap. Wait until it ferments to produce palm wine."
+	volume = 0
+	icon_state = "tribalpot_sap"
+	spawn(1200)
+		name = "tribal pot"
+		icon_state = "tribalpot"
+		desc = "A tribal clay pot."
+		volume = 60
+		reagents.add_reagent("palmwine", 12)
+		reagents.add_reagent("tramadol", 3)
+		visible_message("The palm sap ferments into palm wine.")
+		return
+
 // for /obj/machinery/vending/piratesoda
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda
 	New()

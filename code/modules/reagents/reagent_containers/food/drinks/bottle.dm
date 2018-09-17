@@ -489,8 +489,8 @@
 	value = 18
 	New()
 		..()
-		reagents.add_reagent("palmwine", 85)
-		reagents.add_reagent("tramadol", 15)
+		reagents.add_reagent("palmwine", 43)
+		reagents.add_reagent("tramadol", 7)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/wine/empty
 	name = "Doublebeard Bearded Special Wine"
