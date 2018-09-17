@@ -323,6 +323,12 @@
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 
+	if (recipe.result_type == /obj/item/stack/ammopart/musketball)
+		produced = 2
+	if (recipe.result_type == /obj/item/stack/ammopart/musketball_pistol)
+		produced = 3
+	if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
+		produced = 2
 	if (use(required))
 		var/atom/O
 		if (recipe.use_material)

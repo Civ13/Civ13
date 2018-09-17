@@ -110,6 +110,7 @@
 	density = TRUE
 	sways = FALSE
 	amount = 4
+	var/cooldown_sap = FALSE
 
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone))
@@ -119,19 +120,29 @@
 			return
 		else
 			var/done = FALSE
-			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+			if (cooldown_sap == TRUE)
+				user << "Sap was extracted from this palm recently, you need to wait before collecting it again."
+				return
+			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
 				user << "You start extracting the palm sap..."
 				if (do_after(user, 50, user.loc) && done == FALSE)
 					user << "You finish extracting the palm sap."
 					qdel(user.l_hand)
 					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
+					cooldown_sap = TRUE
+					spawn(3000)
+						cooldown_sap = FALSE
 				done = TRUE
-			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
 				user << "You start extracting the palm sap..."
 				if (do_after(user, 50, user.loc) && done == FALSE)
 					user << "You finish extracting the palm sap."
 					qdel(user.r_hand)
 					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
+					cooldown_sap = TRUE
+					spawn(3000)
+						cooldown_sap = FALSE
+				done = TRUE
 
 	else
 		..()

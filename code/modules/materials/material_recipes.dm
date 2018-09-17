@@ -41,9 +41,9 @@ var/list/engineer_exclusive_recipe_types = null
 		new/datum/stack_recipe("pickaxe", /obj/item/weapon/pickaxe, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	recipes += new/datum/stack_recipe_list("bullets", list(
-		new/datum/stack_recipe("musket ball (x2)", /obj/item/stack/ammopart/musketball, 1, _res_amount = 2, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-		new/datum/stack_recipe("small musket ball (x3)", /obj/item/stack/ammopart/musketball_pistol, 1, _res_amount = 3, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-		new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _res_amount = 2, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("musket ball (x2)", /obj/item/stack/ammopart/musketball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("small musket ball (x3)", /obj/item/stack/ammopart/musketball_pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 /material/wood/generate_recipes()
@@ -90,6 +90,7 @@ var/list/engineer_exclusive_recipe_types = null
 
 
 	recipes += new/datum/stack_recipe_list("kitchen & tools", list(
+		new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, TRUE),
 		new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("campfire",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("torch",/obj/item/flashlight/torch, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE),
