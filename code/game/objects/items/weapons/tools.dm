@@ -117,6 +117,7 @@
 /obj/item/weapon/horn/attack_self(mob/user as mob)
 	if (cooldown_horn == FALSE)
 		playsound(loc, 'sound/effects/blowing_horn.ogg', 100, FALSE, 25)
+		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
 		cooldown_horn = TRUE
 		spawn(600)
 			cooldown_horn = FALSE

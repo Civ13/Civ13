@@ -17,7 +17,7 @@
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 
-/obj/item/clothing/shoes/combat //Basically SWAT shoes combined with galoshes.
+/obj/item/clothing/shoes/combat
 	name = "combat boots"
 	desc = "When you REALLY want to turn up the heat"
 	icon_state = "swat"

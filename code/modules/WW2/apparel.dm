@@ -377,6 +377,14 @@
 	item_state = "indianshaman"
 	worn_state = "indianshaman"
 
+/obj/item/clothing/suit/storage/jacket/bonearmor
+	name = "bone armor"
+	desc = "A spooky armor, made of human bones."
+	icon_state = "bonearmor"
+	item_state = "bonearmor"
+	worn_state = "bonearmor"
+	armor = list(melee = 50, bullet = 0, laser = 0,energy = 0, bomb = 10, bio = 0, rad = FALSE)
+
 /obj/item/clothing/under/indianhuge
 	name = "big leopard pelt"
 	desc = "A massive leopard pelt."
