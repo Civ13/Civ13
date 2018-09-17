@@ -237,17 +237,30 @@
 	density = FALSE
 	layer = 5.1
 
+/obj/structure/wild/tallgrass2
+	name = "tall grass"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "tall_grass_5"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+
 /obj/structure/wild/tallgrass/New()
 	..()
-	icon_state = "tall_grass_[rand(1,12)]"
+	icon_state = "tall_grass_[rand(1,4)]"
 
+/obj/structure/wild/tallgrass2/New()
+	..()
+	icon_state = "tall_grass_[rand(5,8)]"
 /obj/structure/wild/bush/New()
 	..()
 
 	if (istype(src, /obj/structure/wild/bush/tame))
 		return
 
-	if (prob(25))
+	if (prob(35))
+		icon_state = "tall_grass_[rand(1,4)]"
+	else if (prob(25))
 		icon_state = "grassybush_[rand(1,4)]"
 	else if (prob(25))
 		icon_state = "leafybush_[rand(1,3)]"
