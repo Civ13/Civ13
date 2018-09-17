@@ -119,7 +119,7 @@
 	build_override_sign.desc = "A sign."
 	var/mob/living/carbon/human/H = user
 
-	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet"))
+	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle"))
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
@@ -134,11 +134,12 @@
 			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 				qdel(H.r_hand)
 
-	if (recipe.result_type == /obj/structure/religious/totem)
+	if (recipe.result_type == /obj/structure/religious/totem || recipe.result_type == /obj/structure/religious/impaledskull || recipe.result_type == /obj/structure/religious/tribalmask || recipe.result_type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot)
 		if (!H.faction_text == INDIANS)
-			H << "<span class = 'danger'>Uh? You aren't a native!</span>"
+			H << "<span class = 'danger'>Only natives can make this!</span>"
 			return
-		else
+
+		if (recipe.result_type == /obj/structure/religious/totem)
 			if (H.original_job_title == "Red Goose Tribesman")
 				newtotem.name = "Stone Goose Totem"
 				newtotem.icon_state = "goose"
@@ -152,21 +153,30 @@
 				newtotem.icon_state = "monkey"
 				newtotem.desc = "A stone monkey totem."
 			else if (H.original_job_title == "Yellow Mouse Tribesman")
-				newtotem.name = "Yellow Mouse Totem"
+				newtotem.name = "Stone Mouse Totem"
 				newtotem.icon_state = "mouse"
 				newtotem.desc = "A stone mouse totem."
 			else if (H.original_job_title == "White Wolf Tribesman")
-				newtotem.name = "White Wolf Totem"
+				newtotem.name = "Stone Wolf Totem"
 				newtotem.icon_state = "wolf"
 				newtotem.desc = "A stone wolf totem."
 			else if (H.original_job_title == "Black Bear Tribesman")
-				newtotem.name = "Black Bear Totem"
+				newtotem.name = "Stone Bear Totem"
 				newtotem.icon_state = "bear"
 				newtotem.desc = "A stone bear totem."
 			else
 				newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
 				newtotem.desc = "A stone totem."
 
+		if (recipe.result_type == /obj/structure/religious/impaledskull)
+			if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
+				user << "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>"
+				return
+			else
+				if (istype(H.l_hand, /obj/item/organ/external/head))
+					qdel(H.l_hand)
+				else if (istype(H.r_hand, /obj/item/organ/external/head))
+					qdel(H.r_hand)
 
 	if (findtext(recipe.title, "custom sign"))
 		var/customname = input(user, "Choose a name for this sign:") as text|null

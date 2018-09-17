@@ -137,7 +137,7 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalpot"
 	glass_type = "pot"
-	volume = 50
+	volume = 60
 
 // for /obj/machinery/vending/piratesoda
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda
