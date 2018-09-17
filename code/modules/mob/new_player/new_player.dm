@@ -88,7 +88,10 @@
 	if (!ticker || ticker.current_state <= GAME_STATE_PREGAME)
 		output += "<p><a href='byond://?src=\ref[src];ready=0'>The game has not started yet.</a></p>"
 	else
-		output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
+		if (map.ID == MAP_TRIBES)
+			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
+		else
+			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
 
@@ -214,6 +217,42 @@
 			return FALSE
 		LateChoices()
 		return TRUE
+
+	if (href_list["tribes"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
+			return
+
+		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
+			if (check_rights(R_ADMIN, FALSE, src))
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+					log_admin(msg)
+					message_admins(msg)
+					LateChoices()
+					return TRUE
+			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			return FALSE
+
+		if (map.ID == MAP_TRIBES)
+			var/randomfaction = pick("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
+			close_spawn_windows()
+			AttemptLateSpawn(randomfaction)
+		else
+			return
+		LateChoices()
+		return TRUE
+
 	if (href_list["late_join"])
 
 		if (client && client.quickBan_isbanned("Playing"))

@@ -167,7 +167,8 @@
 	uniform.attackby(indianr_a, H)
 
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>Red Goose</b> tribe. You should wear red clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
@@ -207,7 +208,8 @@ datum/job/indians/tribes/blue
 	uniform.attackby(indianb_a, H)
 
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>Blue Turkey</b> tribe. You should wear blue clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
@@ -247,7 +249,8 @@ datum/job/indians/tribes/green
 	uniform.attackby(indiang_a, H)
 
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>Green Monkey</b> tribe. You should wear green clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
@@ -287,7 +290,8 @@ datum/job/indians/tribes/yellow
 	uniform.attackby(indiany_a, H)
 
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>Yellow Mouse/b> tribe. You should wear yellow clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
@@ -329,7 +333,8 @@ datum/job/indians/tribes/white
 	if (H.h_style == "Bald")
 		H.h_style = "Skinhead"
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>White Wolf</b> tribe. You should wear white clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
@@ -369,7 +374,8 @@ datum/job/indians/tribes/black
 	uniform.attackby(indianbl_a, H)
 
 	H.f_style = "Shaved"
-	H.add_note("Role", "You are a simple tribesmen, trying to live your life. Build a house, hunt for food, and survive!")
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>Black Bear</b> tribe. You should wear black clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
