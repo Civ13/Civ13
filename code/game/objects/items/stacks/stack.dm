@@ -176,13 +176,13 @@
 				return
 			else
 				if (istype(H.l_hand, /obj/item/organ/external/head))
-					var/targetskull = H.l_hand
+					var/targetskull = H.l_hand.name
 					targetskull = replacetext(targetskull, " head", "")
 					targetskull = "impaled [targetskull] skull"
 					newskull.name = targetskull
 					qdel(H.l_hand)
 				else if (istype(H.r_hand, /obj/item/organ/external/head))
-					var/targetskull = H.r_hand
+					var/targetskull = H.r_hand.name
 					targetskull = replacetext(targetskull, " head", "")
 					targetskull = "impaled [targetskull] skull"
 					newskull.name = targetskull

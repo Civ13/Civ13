@@ -57,7 +57,7 @@ var/global/datum/controller/occupations/job_master
 	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 150))
 
 	if (announce == TRUE)
-		world << "<span class = 'notice'>Setting up roundstart autobalance for [max(_clients, autobalance_for_players)] players.</span>"
+		world << ""
 	else if (announce == 2)
 		if (!roundstart_time)
 			world << "<span class = 'warning'>An admin has changed autobalance to be set up for [max(_clients, autobalance_for_players)] players.</span>"

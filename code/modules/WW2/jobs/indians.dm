@@ -142,7 +142,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 /datum/job/indians/tribes/red
 	title = "Red Goose Tribesman"
-	en_meaning = "Red Goose Tribe Member"
+	en_meaning = FALSE
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND1"
@@ -182,7 +182,7 @@
 
 datum/job/indians/tribes/blue
 	title = "Blue Turkey Tribesman"
-	en_meaning = "Blue Turkey Tribe Member"
+	en_meaning = FALSE
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND2"
@@ -222,7 +222,7 @@ datum/job/indians/tribes/blue
 
 datum/job/indians/tribes/green
 	title = "Green Monkey Tribesman"
-	en_meaning = "Green Monkey Tribe Member"
+	en_meaning = FALSE
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND3"
@@ -262,7 +262,7 @@ datum/job/indians/tribes/green
 
 datum/job/indians/tribes/yellow
 	title = "Yellow Mouse Tribesman"
-	en_meaning = "Yellow Mouse Tribe Member"
+	en_meaning = FALSE
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND4"
@@ -302,7 +302,7 @@ datum/job/indians/tribes/yellow
 
 datum/job/indians/tribes/white
 	title = "White Wolf Tribesman"
-	en_meaning = "White Wolf Tribe Member"
+	en_meaning = FALSE
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND5"
@@ -344,7 +344,7 @@ datum/job/indians/tribes/white
 
 datum/job/indians/tribes/black
 	title = "Black Bear Tribesman"
-	en_meaning = "Black Bear Tribe Member"
+	en_meaning = FALSE
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateIND6"

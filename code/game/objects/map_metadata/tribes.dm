@@ -25,18 +25,17 @@
 	single_faction = TRUE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
-obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
-	if (istype(J, /datum/job/indians))
-		if (istype(J, /datum/job/indians/tribes))
-			. = TRUE
-		else
-			. = FALSE
+obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
+	if (istype(J, /datum/job/indians/tribes))
+		. = TRUE
+	else if (istype(J, /datum/job/indians/carib) || istype(J, /datum/job/indians/carib_chief) || istype(J, /datum/job/indians/carib_shaman))
+		. = FALSE
 	else
 		. = FALSE
-/obj/map_metadata/colony/faction2_can_cross_blocks()
+/obj/map_metadata/tribes/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/colony/faction1_can_cross_blocks()
+/obj/map_metadata/tribes/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/tribes/cross_message(faction)
