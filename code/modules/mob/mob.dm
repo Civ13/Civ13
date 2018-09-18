@@ -778,9 +778,11 @@
 		else
 			lying = FALSE
 			canmove = TRUE
+			anchored = FALSE
 
 	if (lying)
 		density = FALSE
+		anchored = FALSE
 	//	if (l_hand) unEquip(l_hand)
 	//	if (r_hand) unEquip(r_hand)
 	else
