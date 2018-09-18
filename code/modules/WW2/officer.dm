@@ -23,7 +23,7 @@ var/global/list/valid_coordinates = list()
 	return (!map || (map.faction2_can_cross_blocks() && map.faction1_can_cross_blocks()))
 /mob/living/carbon/human/proc/Commander_Announcement()
 	set category = "Officer"
-	set name = "Announcement"
+	set name = "Faction Announcement"
 	set desc="Announce to everyone in your faction."
 	var/messaget = "Governor Announcement"
 	var/message = russian_to_cp1251(input("Global message to send:", "IC Announcement", null, null))  as message

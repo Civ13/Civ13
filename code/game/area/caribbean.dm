@@ -51,7 +51,12 @@
 	base_turf = /turf/floor/dirt
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
-
+/area/caribbean/tribes/caves
+	name = "Caves"
+	base_turf = /turf/floor/dirt
+	icon_state = "red3"
+	location = AREA_INSIDE
+	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/beach
 	name = "Beach"
 	base_turf = /turf/floor/plating/beach/sand
