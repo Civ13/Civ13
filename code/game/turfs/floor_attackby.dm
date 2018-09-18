@@ -59,7 +59,7 @@
 					H.shoveling_sand = FALSE
 					H.adaptStat("strength", 1)
 					T.available_sand -= 1
-					new /obj/item/weapon/ore/glass(T)
+					new /obj/item/stack/ore/glass(T)
 				else
 					H.shoveling_sand = FALSE
 
@@ -74,7 +74,7 @@
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(20))
-					new/obj/item/weapon/ore/iron(src)
+					new/obj/item/stack/ore/iron(src)
 					visible_message("<span class='danger'>You found some iron ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
@@ -110,21 +110,21 @@
 					H.adaptStat("strength", 1)
 					return
 				if (prob(5))
-					new/obj/item/weapon/ore/silver(src)
+					new/obj/item/stack/ore/silver(src)
 					visible_message("<span class='danger'>You found some silver ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(2))
-					new/obj/item/weapon/ore/gold(src)
+					new/obj/item/stack/ore/gold(src)
 					visible_message("<span class='danger'>You found some gold ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(1))
-					new/obj/item/weapon/ore/diamond(src)
+					new/obj/item/stack/ore/diamond(src)
 					visible_message("<span class='danger'>You found some raw diamonds!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE

@@ -74,7 +74,7 @@
 	w_class = 3
 	max_storage_space = 100
 	max_w_class = 3
-	can_hold = list(/obj/item/weapon/ore)
+	can_hold = list(/obj/item/stack/ore)
 */
 // -----------------------------
 //          Plant bag

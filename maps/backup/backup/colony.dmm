@@ -249,7 +249,7 @@
 "fs" = (/obj/covers/wood,/obj/structure/vending/muskets,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "fv" = (/obj/structure/wild/bush,/turf/floor/plating/grass/wild,/area/caribbean/tribes/beach)
 "fx" = (/obj/structure/window/classic,/obj/covers/wood,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
-"fK" = (/obj/structure/religious/impaledskull,/turf/floor/dirt,/area/caribbean/tribes)
+"fK" = (/obj/structure/impaledskull,/turf/floor/dirt,/area/caribbean/tribes)
 "fP" = (/obj/covers/wood_wall,/obj/structure/sign/goldenplaque{name = "Tavern"},/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "fQ" = (/obj/covers/wood,/obj/covers/wood,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "fR" = (/obj/structure/wild/jungle,/turf/floor/plating/sand,/area/caribbean/tribes/beach)

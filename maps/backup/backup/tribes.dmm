@@ -127,7 +127,7 @@
 "cR" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND5"},/turf/floor/dirt,/area/caribbean/tribes)
 "cS" = (/obj/structure/wild/jungle,/turf/floor/plating/grass/wild,/area/caribbean/no_mans_land/invisible_wall)
 "cT" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND5"},/turf/floor/plating/dust{name = "dry dirt"},/area/caribbean/tribes)
-"cV" = (/obj/structure/religious/impaledskull,/turf/floor/dirt,/area/caribbean/tribes)
+"cV" = (/obj/structure/impaledskull,/turf/floor/dirt,/area/caribbean/tribes)
 "cW" = (/obj/structure/wild/rock,/turf/floor/plating/grass/wild,/area/caribbean/no_mans_land/invisible_wall)
 "cX" = (/turf/floor/plating/beach/water,/area/caribbean)
 "dK" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND4"},/turf/floor/plating/grass/wild,/area/caribbean/tribes)
