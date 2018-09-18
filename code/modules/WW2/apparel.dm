@@ -118,7 +118,7 @@
 
 /obj/item/clothing/accessory/storage/coinpouch/New()
 	..()
-	hold.max_storage_space = 2
+	hold.max_storage_space = 10
 	hold.can_hold = list(/obj/item/stack/money/real,\
 	/obj/item/stack/money/dollar,\
 	/obj/item/stack/money/escudo,\
@@ -457,6 +457,7 @@
 	desc = "A skull mask, used by native shamans."
 	icon_state = "skull_mask"
 	item_state = "skull_mask"
+	armor = list(melee = 25, bullet = 10, laser = 0,energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/head/chief_hat
 	name = "Chief hat"
