@@ -652,7 +652,7 @@
 						for (var/mob/living/L in mob.loc)
 							if (L.lying && L != H) // you could step on yourself, this fixes it - Kachnov
 								H.visible_message("<span class = 'danger'>[H] steps on [L]!</span>")
-								playsound(mob.loc, 'sound/effects/gore/fallsmash.ogg', 100, TRUE)
+								playsound(mob.loc, 'sound/effects/gore/fallsmash.ogg', 35, TRUE)
 								L.adjustBruteLoss(rand(6,7))
 								if (ishuman(L))
 									L.emote("scream")

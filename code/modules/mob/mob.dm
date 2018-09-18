@@ -1002,10 +1002,6 @@ mob/proc/yank_out_object()
 		AdjustParalysis(-1)
 	return paralysis
 
-//Check for brain worms in head.
-/mob/proc/has_brain_worms()
-
-	return FALSE
 
 /mob/proc/updateicon()
 	return

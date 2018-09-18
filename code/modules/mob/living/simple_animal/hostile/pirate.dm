@@ -3,7 +3,7 @@
 	desc = "Does what he wants cause a pirate is free."
 	icon_state = "piratemelee"
 	icon_dead = "piratemelee_dead"
-	turns_per_move = 5
+	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -16,7 +16,7 @@
 	maxHealth = 100
 	health = 100
 	stop_automated_movement_when_pulled = FALSE
-	harm_intent_damage = 5
+	harm_intent_damage = 15
 	melee_damage_lower = 30
 	melee_damage_upper = 40
 	attacktext = "slashed"
