@@ -55,6 +55,19 @@
 	layer = 2.12
 	health = 150
 
+/obj/covers/stone_wall
+	name = "stone wall"
+	desc = "A stone wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "b_stone_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 4
+	layer = 2.12
+	health = 300
+
 /obj/covers/New()
 	..()
 	spawn(15)

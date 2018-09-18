@@ -47,8 +47,13 @@
 		on = TRUE
 		fuel -=1
 		update_icon()
+		if (name == "campfire")
+			set_light(5)
+		else
+			set_light(2)
 		spawn (50)
 			on = FALSE
+			set_light(0)
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
 			process()

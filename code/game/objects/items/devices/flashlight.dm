@@ -44,9 +44,6 @@
 	add_fingerprint(user)
 	if (on && user.targeted_organ == "eyes")
 
-		if ((CLUMSY in user.mutations) && prob(50))	//too dumb to use flashlight properly
-			return ..()	//just hit them in the head
-
 		var/mob/living/carbon/human/H = M	//mob has protective eyewear
 		if (istype(H))
 			for (var/obj/item/clothing/C in list(H.head,H.wear_mask,H.glasses))
