@@ -291,7 +291,7 @@ datum/job/indians/tribes/yellow
 
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>[title]</b>. Stick with your tribe, build your village, and honor the Gods!")
-	H.add_note("Tribe", "You are a member of the <b>Yellow Mouse/b> tribe. You should wear yellow clothes.")
+	H.add_note("Tribe", "You are a member of the <b>Yellow Mouse</b> tribe. You should wear yellow clothes.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW) //muskets
