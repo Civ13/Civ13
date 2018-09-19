@@ -379,24 +379,26 @@
 		if (!nomsg)
 			usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 		return FALSE
 	if (!config.enter_allowed)
 		if (!nomsg)
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 		return FALSE
 	if (jobBanned(rank))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this role!</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
 
 		return FALSE
 	if (!IsJobAvailable(rank))
 		if (!nomsg)
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 		return FALSE
 
 	var/datum/job/job = job_master.GetJob(rank)
@@ -405,14 +407,14 @@
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this faction!</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 		return FALSE
 
 	if (officerBanned() && job.is_officer)
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from officer positions!</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 		return FALSE
 
 	if (penalBanned())
@@ -420,7 +422,7 @@
 			if (!nomsg)
 				usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 			return FALSE
 
 	else
@@ -428,14 +430,14 @@
 			if (!nomsg)
 				usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 			return FALSE
 
 	if (job_master.is_side_locked(job.base_type_flag()))
 		if (!nomsg)
 			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 		return
 
 	if (job.is_deathmatch)
@@ -446,13 +448,12 @@
 		if (client.prefs.s_tone < -145)
 			usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
+				abandon_mob()
 			return
 		if (client.prefs.s_tone > -100)
 			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
 			if (map.ID == MAP_TRIBES)
-				src << browse(null, "window=latechoices")
-				client.screen.Cut()
+				abandon_mob()
 			return
 	if (istype(job, /datum/job/british) || istype(job, /datum/job/french))
 		if (client.prefs.s_tone < -45)
