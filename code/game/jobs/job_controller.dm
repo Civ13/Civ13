@@ -96,7 +96,7 @@ var/global/datum/controller/occupations/job_master
 
 	_clients = max(max(_clients, (map ? map.min_autobalance_players : 0)), clients.len, admin_expected_clients)
 
-	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 150))
+	var/autobalance_for_players = round(max(_clients, (clients.len/config.max_expected_players) * 50))
 
 	if (announce == TRUE)
 		world << ""
