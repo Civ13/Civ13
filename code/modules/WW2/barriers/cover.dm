@@ -1,7 +1,7 @@
 #define SANDBAG_BLOCK_ITEMS_CHANCE 90
 
 /obj/structure/window/sandbag/incomplete/check_cover(obj/item/projectile/P, turf/from)
-	return prob(..() * round(progress/maxProgress))
+	return prob(..() * round(progress/3))
 
 // how much do we cover mobs behind full sandbags?
 /obj/structure/window/sandbag/proc/check_cover(obj/item/projectile/P, turf/from)
@@ -40,7 +40,7 @@
 	var/base = 100
 	if (!istype(proj))
 		return base
-	return base - min(15, proj.accuracy) // > scoped kars have 143 accuracy
+	return base - min(15, proj.accuracy)
 
 // procedure for both incomplete and complete sandbags
 /obj/structure/window/sandbag/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)

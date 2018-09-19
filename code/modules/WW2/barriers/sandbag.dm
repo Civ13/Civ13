@@ -77,7 +77,6 @@
 	name = "incomplete dirt barricade"
 	icon_state = "dirt_wall_33%"
 	var/progress = FALSE
-	var/maxProgress = 5
 
 
 /obj/structure/window/sandbag/incomplete/ex_act(severity)
@@ -86,11 +85,10 @@
 /obj/structure/window/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
 	if (istype(O, /obj/item/weapon/sandbag))
-		var/obj/item/weapon/sandbag/sandbag = O
-		progress += (sandbag.sand_amount + 1)
-		if (progress >= maxProgress/2)
+		progress += 1
+		if (progress == 2)
 			icon_state = "dirt_wall_66%"
-			if (progress >= maxProgress)
+			if (progress == 3)
 				icon_state = "dirt_wall"
 				new/obj/structure/window/sandbag(loc, dir)
 				qdel(src)
@@ -173,3 +171,11 @@
 	icon = 'icons/obj/items.dmi'
 	w_class = TRUE
 	var/sand_amount = FALSE
+
+/obj/structure/window/sandbag/rock
+	name = "rock wall"
+	icon_state = "rock_barricade"
+	layer = MOB_LAYER + 0.01 //just above mobs
+	anchored = TRUE
+	climbable = TRUE
+	health = 30
