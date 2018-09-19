@@ -39,13 +39,55 @@ var/global/datum/controller/occupations/job_master
 	var/list/unassigned = list()
 		//Debug info
 	var/list/job_debug = list()
-/*
-	var/pirates_count = 0
-	var/british_count = 0
-	var/civilian_count = 0
-*/
 
 	var/admin_expected_clients = 0
+
+/datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
+	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
+	var/randomfaction_spawn = "Red Goose Tribesman"
+	//sets 2 factions for >=10ppl, 3 factions for >=15, 4 factions for >=20, 5 factions for >=25 and 6 factions for >=30
+	if (map.availablefactions_run == TRUE)
+		if (autobalance_nr < 10)
+			randomfaction_spawn = pick(randomfaction)
+			map.availablefactions = list(randomfaction_spawn)
+			world << "Only one tribe is enabled: <b>[randomfaction_spawn]</b>."
+		else if (autobalance_nr >= 10 && autobalance_nr < 15)
+			var/a = pick(randomfaction)
+			var/b = pick(randomfaction-a)
+			randomfaction_spawn = pick(a, b)
+			map.availablefactions = list(a,b)
+			world << "Two tribes are enabled: <b>[a],[b]</b>."
+		else if (autobalance_nr >= 15 && autobalance_nr < 20)
+			var/a = pick(randomfaction)
+			var/b = pick(randomfaction-a)
+			var/c = pick(randomfaction-a-b)
+			randomfaction_spawn = pick(a, b, c)
+			map.availablefactions = list(a,b,c)
+			world << "Two tribes are enabled: <b>[a],[b],[c]</b>."
+		else if (autobalance_nr >= 20 && autobalance_nr < 25)
+			var/a = pick(randomfaction)
+			var/b = pick(randomfaction-a)
+			var/c = pick(randomfaction-a-b)
+			var/d = pick(randomfaction-a-b-c)
+			randomfaction_spawn = pick(a, b, c, d)
+			map.availablefactions = list(a,b,c,d)
+			world << "Two tribes are enabled: <b>[a],[b],[c],[d]</b>."
+		else if (autobalance_nr >= 25 && autobalance_nr < 30)
+			var/a = pick(randomfaction)
+			var/b = pick(randomfaction-a)
+			var/c = pick(randomfaction-a-b)
+			var/d = pick(randomfaction-a-b-c)
+			var/e = pick(randomfaction-a-b-c-d)
+			randomfaction_spawn = pick(a, b, c, d, e)
+			map.availablefactions = list(a,b,c,d,e)
+			world << "Two tribes are enabled: <b>[a],[b],[c],[d],[e]</b>."
+		else if (autobalance_nr >= 30)
+			randomfaction_spawn = pick(randomfaction)
+			map.availablefactions = randomfaction
+			world << "All the 6 tribes are enabled."
+
+	map.availablefactions_run = FALSE
+	return
 
 /datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0, var/announce = TRUE)
 
@@ -63,6 +105,9 @@ var/global/datum/controller/occupations/job_master
 			world << "<span class = 'warning'>An admin has changed autobalance to be set up for [max(_clients, autobalance_for_players)] players.</span>"
 		else
 			world << "<span class = 'warning'>An admin has reset autobalance for [max(_clients, autobalance_for_players)] players.</span>"
+
+	if (map && map.ID == MAP_TRIBES)
+		set_factions(autobalance_for_players)
 
 	for (var/datum/job/J in occupations)
 		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")

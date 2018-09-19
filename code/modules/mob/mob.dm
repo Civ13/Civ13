@@ -381,10 +381,6 @@
 
 	src << browse(null, "window=memory")
 
-/*	if (ticker.mode && ticker.mode.deny_respawn)
-		usr << "<span class='notice'>Respawn is disabled for this roundtype.</span>"
-		return*/
-
 	src << "You can respawn now, enjoy your new life!"
 	stop_ambience(usr)
 

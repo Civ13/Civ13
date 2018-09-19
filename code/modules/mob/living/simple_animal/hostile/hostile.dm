@@ -34,15 +34,27 @@
 
 		if (isliving(A))
 			var/mob/living/L = A
-			if (L.faction == faction && !attack_same)
-				continue
-			else if (L in friends)
-				continue
+			if (istype(L, /mob/living/carbon/human))
+				var/mob/living/carbon/human/RH = L
+				if (RH.faction_text == faction && !attack_same)
+					continue
+				else if (RH in friends)
+					continue
+				else
+					if (!RH.stat)
+						stance = HOSTILE_STANCE_ATTACK
+						T = RH
+						break
 			else
-				if (!L.stat)
-					stance = HOSTILE_STANCE_ATTACK
-					T = L
-					break
+				if (L.faction == faction && !attack_same)
+					continue
+				else if (L in friends)
+					continue
+				else
+					if (!L.stat)
+						stance = HOSTILE_STANCE_ATTACK
+						T = L
+						break
 
 	return T
 
