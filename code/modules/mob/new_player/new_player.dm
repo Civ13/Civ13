@@ -380,18 +380,24 @@
 			usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 		return FALSE
 	if (!config.enter_allowed)
 		if (!nomsg)
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 		return FALSE
 	if (jobBanned(rank))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this role!</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're banned from this role!</span>"
 
 		return FALSE
 	if (!IsJobAvailable(rank))
@@ -399,6 +405,8 @@
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
 		return FALSE
 
 	var/datum/job/job = job_master.GetJob(rank)
@@ -408,6 +416,8 @@
 			usr << "<span class = 'warning'>You're banned from this faction!</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're banned from this faction!</span>"
 		return FALSE
 
 	if (officerBanned() && job.is_officer)
@@ -415,6 +425,8 @@
 			usr << "<span class = 'warning'>You're banned from officer positions!</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're banned from officer positions!</span>"
 		return FALSE
 
 	if (penalBanned())
@@ -423,6 +435,8 @@
 				usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
 			return FALSE
 
 	else
@@ -431,6 +445,8 @@
 				usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
 			return FALSE
 
 	if (job_master.is_side_locked(job.base_type_flag()))
@@ -438,6 +454,8 @@
 			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					src << "<span class = 'red'>Currently this side is locked for joining.</span>"
 		return
 
 	if (job.is_deathmatch)
@@ -449,11 +467,15 @@
 			usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
 			return
 		if (client.prefs.s_tone > -100)
 			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
 			if (map.ID == MAP_TRIBES)
 				abandon_mob()
+				spawn(10)
+					usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
 			return
 	if (istype(job, /datum/job/british) || istype(job, /datum/job/french))
 		if (client.prefs.s_tone < -45)

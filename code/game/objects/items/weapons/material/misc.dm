@@ -43,7 +43,7 @@
 	throw_speed = 6
 	throw_range = 11
 	allow_spin = FALSE
-	force_divisor = 0.4 // 24 with hardness 60 (steel)
+	force_divisor = 0.7 // 42 with hardness 60 (steel)
 	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 6

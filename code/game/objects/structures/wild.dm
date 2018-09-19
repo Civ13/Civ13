@@ -71,7 +71,7 @@
 
 /obj/structure/wild/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		qdel(src)
 		return
 
@@ -153,7 +153,7 @@
 
 /obj/structure/wild/tree/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 4
 		qdel(src)
@@ -161,7 +161,7 @@
 
 /obj/structure/wild/palm/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 3
 		qdel(src)
@@ -324,7 +324,7 @@
 
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
 		qdel(src)
