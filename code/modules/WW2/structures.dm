@@ -12,10 +12,10 @@
 	color = "#c8c8c8"
 
 /obj/structure/grille/logfence
-	name = "fence"
-	desc = "An old wooden fence."
+	name = "palisade"
+	desc = "A wooden palisade."
 	icon = 'icons/obj/structures.dmi'
-	icon_state = "oldfence"
+	icon_state = "palisade"
 	health = 32
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 
