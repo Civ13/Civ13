@@ -1068,13 +1068,6 @@
 	required_reagents = list("beer" = 5, "ice" = 1)
 	result_amount = 6
 
-/datum/chemical_reaction/grog
-	name = "Grog"
-	id = "grog"
-	result = "grog"
-	required_reagents = list("rum" = 1, "water" = 1)
-	result_amount = 2
-
 /datum/chemical_reaction/cafe_latte
 	name = "Cafe Latte"
 	id = "cafe_latte"

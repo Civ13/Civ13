@@ -995,15 +995,6 @@
 	color = "#664300"
 	strength = 30
 
-/datum/reagent/ethanol/grog
-	name = "Grog"
-	id = "grog"
-	description = "Watered-down rum, pirate approved!"
-	taste_description = "a poor excuse for alcohol"
-	reagent_state = LIQUID
-	color = "#664300"
-	strength = 100
-
 /datum/reagent/ethanol/erikasurprise
 	name = "Erika Surprise"
 	id = "erikasurprise"
