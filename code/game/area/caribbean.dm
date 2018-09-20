@@ -72,6 +72,11 @@
 	base_turf = /turf/floor/plating/grass/wild
 	icon_state = "purple1"
 	ambience = list("sound/ambience/jungle1.ogg")
+/area/caribbean/tribes/lostcity
+	name = "Lost City"
+	base_turf = /turf/floor/dirt
+	icon_state = "purple2"
+	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/island
 	name = "Island"

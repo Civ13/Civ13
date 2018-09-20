@@ -400,6 +400,12 @@ var/global/list/GrassEdgeCache
 	icon_state = "cobble_horizontal"
 	interior = FALSE
 
+/turf/floor/plating/stone_old
+	name = "stone floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "stone_old"
+	interior = FALSE
+
 /turf/floor/plating/cobblestone/dark
 	name = "road"
 	icon = 'icons/turf/floors.dmi'

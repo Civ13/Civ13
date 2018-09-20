@@ -25,7 +25,8 @@
 	..(newloc,"softwood")
 
 /turf/wall/indestructable
-	icon_state = "rgeneric" // so we look better on the map
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "black" // so we look better on the map
 /turf/wall/indestructable/black
 	color = "#000000"
 	density = TRUE
