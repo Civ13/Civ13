@@ -111,6 +111,7 @@
 	M.nutrition += nutriment_factor * removed
 	var/strength_mod = 2
 
+	M.add_chemical_effect(CE_PAINKILLER, 20)
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 40

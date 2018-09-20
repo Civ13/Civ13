@@ -487,7 +487,9 @@
 
 /datum/reagent/drink/tea/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
-	M.adjustToxLoss(-0.5 * removed)
+	M.adjustToxLoss(-1.5 * removed)
+	M.drowsyness = max(0, M.drowsyness - 4 * removed)
+	M.hallucination = max(0, M.hallucination - 6 * removed)
 
 /datum/reagent/drink/coffee
 	name = "Coffee"
@@ -594,9 +596,6 @@
 /* Alcohol */
 
 // Basic
-
-/datum/reagent/ethanol/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 5 * removed)
 
 /datum/reagent/ethanol/absinthe
 	name = "Absinthe"

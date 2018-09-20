@@ -195,8 +195,7 @@
 	density = TRUE
 	New()
 		..()
-		reagents.add_reagent("rum",140)
-		reagents.add_reagent("tramadol", 60)
+		reagents.add_reagent("rum",200)
 
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
 	name = "gunpowder barrel"

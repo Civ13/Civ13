@@ -80,7 +80,7 @@
 		"tree seeds crate" = 20,
 		"vegetable seeds crate" = 30,
 		"cereal seeds crate" = 20,
-		"cash crops crate" = 40,
+		"cash crops crate" = 50,
 		"cow" = 90,
 		"chicken" = 30,
 		"medical supplies" = 150,

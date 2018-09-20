@@ -158,8 +158,7 @@
 		icon_state = "tribalpot"
 		desc = "A tribal clay pot."
 		volume = 60
-		reagents.add_reagent("palmwine", 12)
-		reagents.add_reagent("tramadol", 3)
+		reagents.add_reagent("palmwine", 15)
 		visible_message("The palm sap ferments into palm wine.")
 		return
 

@@ -321,7 +321,7 @@
 
 /datum/reagent/peyote/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.druggy = max(M.druggy, 15)
-	if (prob(10) && isturf(M.loc) && M.canmove && !M.restrained())
+	if (prob(25) && isturf(M.loc) && M.canmove && !M.restrained())
 		step(M, pick(cardinal))
 	if (prob(7))
 		M.emote(pick("twitch", "drool", "moan", "giggle"))
@@ -432,3 +432,4 @@
 /datum/reagent/nicotine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, TRUE)
+	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)

@@ -41,6 +41,10 @@
 	name = "hemp seeds"
 	plant = "hemp"
 
+/obj/item/stack/farming/seeds/tea
+	name = "tea seeds"
+	plant = "tea"
+
 /obj/item/stack/farming/seeds/potato
 	name = "seed potato"
 	desc = "a potato selected for breeding because of its characteristics."
@@ -133,6 +137,12 @@
 	icon_state = "sugarcane-grow1"
 	plant = "sugarcane"
 
+/obj/structure/farming/plant/tea
+	name = "tea"
+	desc = "a tea plant."
+	icon_state = "tea-grow1"
+	plant = "tea"
+
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
 	..()
@@ -224,6 +234,21 @@
 			user << "<span class = 'warning'>You uproot the dead [name].</span>"
 			qdel(src)
 
+/obj/structure/farming/plant/tea/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (stage <=6) // destroy
+			user << "<span class = 'warning'>You uproot the [name].</span>"
+			qdel(src)
+		else if (stage == 7) // harvest
+			new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
+			new seedpath(loc)
+			new seedpath(loc)
+			user << "<span class = 'warning'>You harvest the [name].</span>"
+			qdel(src)
+		else // destroy
+			user << "<span class = 'warning'>You uproot the dead [name].</span>"
+			qdel(src)
 
 
 /obj/structure/farming/plant/poppy/attackby(obj/item/weapon/W as obj, mob/user as mob)

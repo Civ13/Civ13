@@ -106,6 +106,10 @@
 					name = "Sugar"
 					desc = "Sweet!"
 					center_of_mass = list("x"=16, "y"=6)
+				if ("tea")
+					name = "Tea Leaves"
+					desc = "Mix with hot water."
+					center_of_mass = list("x"=16, "y"=6)
 				else
 					name = "Misc Condiment Bottle"
 					if (reagents.reagent_list.len==1)
@@ -201,5 +205,17 @@
 	New()
 		..()
 		reagents.add_reagent("sugar", 30)
+		pixel_x = rand(-10.0, 10)
+		pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/reagent_containers/food/condiment/tealeaves
+	name = "tea leaves"
+	desc = "some tea leaves. mix with hot water."
+	icon = 'icons/obj/food.dmi'
+	icon_state = "tea_leaves_dried"
+	item_state = "flour"
+	New()
+		..()
+		reagents.add_reagent("tea", 10)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
