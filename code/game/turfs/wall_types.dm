@@ -23,7 +23,9 @@
 
 /turf/wall/wood/soft/New(var/newloc)
 	..(newloc,"softwood")
-
+/turf/wall/old_stone
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "old_stone_wall"
 /turf/wall/indestructable
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "black" // so we look better on the map
