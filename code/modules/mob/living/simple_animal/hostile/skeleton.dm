@@ -25,7 +25,8 @@
 
 	faction = PIRATES
 
-/mob/living/simple_animal/hostile/skeleton/New()
+/mob/living/simple_animal/hostile/skeleton/New()~
+	..()
 	attack_sound = pick('sound/weapons/genhit1.ogg', 'sound/weapons/genhit2.ogg', 'sound/weapons/genhit3.ogg')
 	icon_dead = pick("skeleton_remains1","skeleton_remains2","skeleton_remains3",)
 

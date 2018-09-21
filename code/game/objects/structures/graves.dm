@@ -61,7 +61,7 @@
 	icon_state = "tribalmask1"
 
 /obj/structure/religious/remains
-	name = "homan remains"
+	name = "human remains"
 	desc = "A bunch of human bones. Spooky."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "remains"
