@@ -28,3 +28,13 @@
 	var/weapon1 = /obj/item/weapon/material/sword/sabre
 
 	faction = BRITISH
+
+
+/mob/living/simple_animal/hostile/british/death()
+	..()
+	if(corpse)
+		new corpse (src.loc)
+	if(weapon1)
+		new weapon1 (src.loc)
+	qdel(src)
+	return
