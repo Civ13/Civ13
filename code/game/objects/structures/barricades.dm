@@ -1,6 +1,6 @@
 /obj/structure/barricade
-	name = "barricade"
-	desc = "This space is blocked off by a barricade."
+	name = "wood structure"
+	desc = "A wooden frame."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "barricade"
 	anchored = TRUE

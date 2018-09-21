@@ -131,16 +131,11 @@ proc/admin_notice(var/message, var/rights)
 				<b>Rudimentary transformation:</b><font size=2><br>These transformations only create a new mob type and copy stuff over. They do not take into account MMIs and similar mob-specific things. The buttons in 'Transformations' are preferred, when possible.</font><br>
 				<A href='?src=\ref[src];simplemake=observer;mob=\ref[M]'>Observer</A> |
 				\[ Default: <A href='?src=\ref[src];simplemake=human;mob=\ref[M]'>Human</A>
-
-				\[ Admin Memery: <A href='?src=\ref[src];simplemake=mechahitler;mob=\ref[M]'>Mecha Hitler</A>,
-				<A href='?src=\ref[src];simplemake=megastalin;mob=\ref[M]'>Mega Stalin</A>"}
-
 			if (check_rights(R_PERMISSIONS,FALSE))
 				body += {"
 			body += {"
 				<A href='?src=\ref[src];simplemake=monkey;mob=\ref[M]'>Monkey</A> |
 				<A href='?src=\ref[src];simplemake=cat;mob=\ref[M]'>Cat</A> |
-				<A href='?src=\ref[src];simplemake=runtime;mob=\ref[M]'>Runtime</A> |
 				<br>"}
 
 	body += {"<br><br>
