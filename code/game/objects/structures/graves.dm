@@ -60,6 +60,12 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalmask1"
 
+/obj/structure/religious/remains
+	name = "homan remains"
+	desc = "A bunch of human bones. Spooky."
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "remains"
+
 /obj/structure/tribalmask/New()
 	..()
 	icon_state = "tribalmask[rand(1,2)]"

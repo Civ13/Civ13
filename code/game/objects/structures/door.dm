@@ -208,7 +208,8 @@
 	name = "Cell"
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
-
+/obj/structure/simple_door/stone/New(var/newloc,var/material_name)
+	..(newloc, "stone")
 
 /obj/structure/simple_door/silver/New(var/newloc,var/material_name)
 	..(newloc, "silver")
