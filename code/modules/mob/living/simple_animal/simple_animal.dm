@@ -49,7 +49,7 @@
 	var/friendly = "nuzzles"
 	var/environment_smash = FALSE
 	var/resistance		  = FALSE	// Damage reduction
-
+	var/origin = FALSE
 	//Null rod stuff
 	var/supernatural = FALSE
 	var/purge = FALSE

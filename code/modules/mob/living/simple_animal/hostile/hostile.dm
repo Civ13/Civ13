@@ -17,7 +17,6 @@
 
 	var/shuttletarget = null
 	var/enroute = FALSE
-
 /mob/living/simple_animal/hostile/proc/FindTarget()
 
 	var/atom/T = null

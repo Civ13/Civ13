@@ -27,12 +27,11 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "old_stone_wall"
 
+/turf/wall/old_stone/update_icon()
+	return
+
 /turf/wall/old_stone/New()
-	var/area/my_area = get_area(src)
-	if (prob(10) && !istype(src, /turf/wall/indestructable) && my_area.type != /area/caribbean/void)
-		new /obj/effect/decal/cleanable/dirt (src)
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-		L.update_overlay(TRUE)
+	return
 
 /turf/wall/indestructable
 	icon = 'icons/turf/walls.dmi'
