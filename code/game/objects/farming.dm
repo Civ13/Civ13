@@ -64,6 +64,11 @@
 	name = "peyote seeds"
 	plant = "peyote"
 
+
+/obj/item/stack/farming/seeds/coffee
+	name = "coffee seeds"
+	plant = "coffee"
+
 /obj/structure/farming/plant
 	name = "plant"
 	desc = "a generic plant."
@@ -152,6 +157,12 @@
 	desc = "a peyote cactus plant."
 	icon_state = "peyote-grow1"
 	plant = "peyote"
+
+/obj/structure/farming/plant/coffee
+	name = "coffee"
+	desc = "a coffee plant."
+	icon_state = "coffee-grow1"
+	plant = "coffee"
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()

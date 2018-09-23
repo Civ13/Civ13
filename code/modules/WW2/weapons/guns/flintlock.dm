@@ -24,7 +24,7 @@
 	accuracy = TRUE
 //	scoped_accuracy = 2
 	gun_type = GUN_TYPE_RIFLE
-	attachment_slots = ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS | ATTACH_BARREL
 	accuracy_increase_mod = 2.00
 	accuracy_decrease_mod = 6.00
 	KD_chance = KD_CHANCE_HIGH

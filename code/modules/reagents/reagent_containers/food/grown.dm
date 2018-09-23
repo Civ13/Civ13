@@ -17,6 +17,13 @@
 		..()
 		reagents.add_reagent("peyote", 5)
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/coffee
+	name = "green coffee"
+	icon_state = "coffee"
+	color = "#a5201d"
+	New()
+		..()
+		reagents.add_reagent("coffee", 15)
 // fruit
 /obj/item/weapon/reagent_containers/food/snacks/grown/grapes
 	name = "bunch of grapes"
