@@ -60,6 +60,10 @@
 	desc = "Seeds of the opium poppy."
 	plant = "poppy"
 
+/obj/item/stack/farming/seeds/peyote
+	name = "peyote seeds"
+	plant = "peyote"
+
 /obj/structure/farming/plant
 	name = "plant"
 	desc = "a generic plant."
@@ -142,6 +146,12 @@
 	desc = "a tea plant."
 	icon_state = "tea-grow1"
 	plant = "tea"
+
+/obj/structure/farming/plant/peyote
+	name = "peyote"
+	desc = "a peyote cactus plant."
+	icon_state = "peyote-grow1"
+	plant = "peyote"
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()

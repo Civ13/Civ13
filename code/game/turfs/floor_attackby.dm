@@ -272,6 +272,14 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/peyote))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/peyote(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 /*					if (ishuman(user)) todo: farming skills
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3) */

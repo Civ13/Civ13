@@ -326,6 +326,8 @@
 	if (prob(7))
 		M.emote(pick("twitch", "drool", "moan", "giggle"))
 	M.add_chemical_effect(CE_PULSE, -1)
+	M.add_chemical_effect(CE_STABLE)
+	M.add_chemical_effect(CE_PAINKILLER, 15)
 
 /datum/reagent/serotrotium
 	name = "Serotrotium"
