@@ -10,7 +10,7 @@
 		MAP_RECIFE = 10,
 		MAP_COLONY = 10,
 		MAP_FOUR_COLONIES = 25,
-		MAP_TRIBES = 0,
+		MAP_TRIBES = 8,
 	)
 
 	var/ready = TRUE

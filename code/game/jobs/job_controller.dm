@@ -50,20 +50,20 @@ var/global/datum/controller/occupations/job_master
 		if (autobalance_nr < 10)
 			randomfaction_spawn = pick(randomfaction)
 			map.availablefactions = list(randomfaction_spawn)
-			world << "Only one tribe is enabled: <b>[randomfaction_spawn]</b>."
+			world << "Only one tribe is enabled: <b>[replacetext(randomfaction_spawn, "sman", "")]</b>."
 		else if (autobalance_nr >= 10 && autobalance_nr < 15)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
 			randomfaction_spawn = pick(a, b)
 			map.availablefactions = list(a,b)
-			world << "Two tribes are enabled: <b>[a],[b]</b>."
+			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")]</b>."
 		else if (autobalance_nr >= 15 && autobalance_nr < 20)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
 			var/c = pick(randomfaction-a-b)
 			randomfaction_spawn = pick(a, b, c)
 			map.availablefactions = list(a,b,c)
-			world << "Two tribes are enabled: <b>[a],[b],[c]</b>."
+			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")]</b>."
 		else if (autobalance_nr >= 20 && autobalance_nr < 25)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
@@ -71,7 +71,7 @@ var/global/datum/controller/occupations/job_master
 			var/d = pick(randomfaction-a-b-c)
 			randomfaction_spawn = pick(a, b, c, d)
 			map.availablefactions = list(a,b,c,d)
-			world << "Two tribes are enabled: <b>[a],[b],[c],[d]</b>."
+			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")]</b>."
 		else if (autobalance_nr >= 25 && autobalance_nr < 30)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
@@ -80,7 +80,7 @@ var/global/datum/controller/occupations/job_master
 			var/e = pick(randomfaction-a-b-c-d)
 			randomfaction_spawn = pick(a, b, c, d, e)
 			map.availablefactions = list(a,b,c,d,e)
-			world << "Two tribes are enabled: <b>[a],[b],[c],[d],[e]</b>."
+			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")],[replacetext(e, "sman", "")]</b>."
 		else if (autobalance_nr >= 30)
 			randomfaction_spawn = pick(randomfaction)
 			map.availablefactions = randomfaction

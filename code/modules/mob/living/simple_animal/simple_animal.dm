@@ -49,7 +49,7 @@
 	var/friendly = "nuzzles"
 	var/environment_smash = FALSE
 	var/resistance		  = FALSE	// Damage reduction
-	var/origin = FALSE
+	var/obj/effect/spawner/mobspawner/origin = FALSE
 	//Null rod stuff
 	var/supernatural = FALSE
 	var/purge = FALSE
@@ -286,6 +286,8 @@
 /mob/living/simple_animal/death(gibbed, deathmessage = "dies!")
 	icon_state = icon_dead
 	density = FALSE
+	if (origin != 0)
+		origin.current_number -= 1
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)
