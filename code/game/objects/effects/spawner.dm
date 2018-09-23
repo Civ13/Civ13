@@ -3,7 +3,7 @@
 
 /obj/effect/spawner/mobspawner
 	name = "mob spawner"
-	//invisibility = 101
+	invisibility = 101
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/activated = 1
