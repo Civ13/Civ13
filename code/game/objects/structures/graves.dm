@@ -66,11 +66,11 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "remains1"
 
-/obj/structure/tribalmask/New()
+/obj/structure/religious/remains/New()
 	..()
-	icon_state = "remains[rand(1,4)]"
+	icon_state = "remains[rand(1,6)]"
 
-/obj/structure/tribalmask/New()
+/obj/structure/religious/tribalmask/New()
 	..()
 	icon_state = "tribalmask[rand(1,2)]"
 
