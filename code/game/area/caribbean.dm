@@ -317,6 +317,7 @@
 
 
 /area/caribbean/british/ship
+	name = "British Ship"
 	icon_state = "blue1"
 	base_turf = /turf/floor/plating/beach/water
 	ambience = list("sound/ambience/ship1.ogg")

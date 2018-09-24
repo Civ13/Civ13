@@ -30,10 +30,10 @@
 	icon_state = "x2"
 	var/activated = 1
 	var/current_number = 0
-	var/max_number = 25
+	var/max_number = 10
 	var/max_range = 10
 	var/create_path = /mob/living/simple_animal/hostile/skeleton
-	var/timer = 200
+	var/timer = 400
 	var/scalable = 0 // when 1, it will only get active above x players
 	var/scalable_nr = 10
 	var/scalable_multiplyer = 1 //after how many times the scalable_nr it activates
