@@ -35,4 +35,15 @@
 /obj/map_metadata/cursed_island/cross_message(faction)
 	return ""
 
+/obj/map_metadata/cursed_island/update_win_condition()
+	var/treasure_location = get_area(locate(/obj/item/cursedtreasure))
+	if (win_condition_spam_check)
+		return FALSE
+	if (istype(treasure_location, /area/caribbean/british/ship/main_deck))
+		ticker.finished = TRUE
+		var/message = "The treasure was retrieved! The curse is broken!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		show_global_battle_report(null)
+		win_condition_spam_check = TRUE
+		return FALSE
 #undef NO_WINNER

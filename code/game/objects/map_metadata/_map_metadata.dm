@@ -196,18 +196,7 @@ var/global/obj/map_metadata/map = null
 	return FALSE
 
 /obj/map_metadata/proc/update_win_condition()
-	if (map.ID == MAP_CURSED_ISLAND)
-		var/done = FALSE
-		var/destiny_area = /area/caribbean/british/ship/main_deck
-		for (var/obj/item/cursedtreasure/CT in destiny_area)
-			done = TRUE
-		if (done == TRUE)
-			ticker.finished = TRUE
-			var/message = "The treasure was retrieved! The curse is broken!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-			win_condition_spam_check = TRUE
-			return FALSE
-	else if (single_faction && !(map.ID == MAP_CURSED_ISLAND))
+	if (single_faction)
 		return TRUE
 	else
 		if (!win_condition_specialcheck())

@@ -81,6 +81,7 @@
 						winner_ckey = H.ckey
 						message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
 						world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
 			return FALSE
 

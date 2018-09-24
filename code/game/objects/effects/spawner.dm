@@ -46,8 +46,8 @@
 				newmob.origin = src
 				newmob.x=src.x+(rand(-max_range,max_range))
 				newmob.y=src.y+(rand(-max_range,max_range))
-				if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground))
-					while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground))
+				if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
+					while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
 						newmob.x=src.x+(rand(-max_range,max_range))
 						newmob.y=src.y+(rand(-max_range,max_range))
 					current_number += 1
