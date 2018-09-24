@@ -25,7 +25,19 @@
 	availablefactions_run = TRUE
 	songs = list(
 		"Spooky Tunes:1" = 'sound/ambience/spooky1.ogg',)
-	//times_of_day = list("Night")
+
+obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)
+	if (J.is_RP == TRUE)
+		. = FALSE
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale))
+		. = FALSE
+	else if (istype(J, /datum/job/indians/tribes))
+		. = FALSE
+	else
+		. = TRUE
+
 /obj/map_metadata/cursed_island/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
