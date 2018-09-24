@@ -1,0 +1,347 @@
+"aa" = (/turf/floor/plating/beach/water/deep,/area/caribbean/island)
+"ab" = (/turf/floor/plating/beach/sand,/area/caribbean/island)
+"ac" = (/turf/floor/plating/dirt,/area/caribbean/island)
+"ad" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/dirt,/area/caribbean/island)
+"ae" = (/turf/floor/plating/dust,/area/caribbean/island)
+"af" = (/obj/structure/wild/burnedbush,/turf/floor/plating/dirt,/area/caribbean/island)
+"ag" = (/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/island)
+"ah" = (/obj/structure/wild/burnedtree,/turf/floor/plating/dirt,/area/caribbean/island)
+"ai" = (/obj/structure/wild/rock,/turf/floor/plating/dirt,/area/caribbean/island)
+"aj" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/island)
+"ak" = (/turf/floor/plating/beach/water/swamp{color = "#746e60"},/area/caribbean/island)
+"al" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/dust,/area/caribbean/island)
+"am" = (/obj/structure/wild/burnedtree,/turf/floor/plating/dust,/area/caribbean/island)
+"an" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/island)
+"ao" = (/obj/effect/decal/cleanable/ash,/turf/floor/plating/dirt,/area/caribbean/island)
+"ap" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/dirt,/area/caribbean/island)
+"aq" = (/obj/structure/wild/tallgrass2,/obj/effect/decal/cleanable/dirt,/turf/floor/plating/dirt,/area/caribbean/island)
+"ar" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/plating/dirt,/area/caribbean/island)
+"as" = (/obj/effect/decal/cleanable/blood,/turf/floor/plating/dirt,/area/caribbean/island)
+"at" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/dirt,/area/caribbean/island)
+"au" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/beach/water/swamp{color = "#746e60"},/area/caribbean/island)
+"av" = (/obj/structure/oven/fireplace,/turf/floor/plating/dirt,/area/caribbean/island)
+"aw" = (/obj/structure/wild/rock,/obj/effect/decal/cleanable/blood/drip,/turf/floor/plating/dirt,/area/caribbean/island)
+"ax" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/dust,/area/caribbean/island)
+"ay" = (/obj/effect/decal/cleanable/dirt,/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/island)
+"az" = (/turf/floor/plating/beach/water,/area/caribbean/island)
+"aA" = (/obj/structure/wild/tallgrass,/turf/floor/plating/sand,/area/caribbean/island)
+"aB" = (/turf/floor/plating/sand,/area/caribbean/island)
+"aC" = (/obj/structure/wild/tallgrass,/turf/floor/plating/beach/sand,/area/caribbean/island)
+"aD" = (/obj/effect/spawner/mobspawner{max_number = 12},/turf/floor/plating/beach/sand,/area/caribbean/island)
+"aE" = (/obj/structure/religious/impaledskull,/turf/floor/plating/dirt,/area/caribbean/island)
+"aF" = (/turf/wall/old_stone,/area/caribbean/tribes/caves)
+"aG" = (/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/tribes/caves)
+"aH" = (/turf/floor/dirt,/area/caribbean/island)
+"aI" = (/obj/structure/simple_door/stone,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aJ" = (/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aK" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aL" = (/obj/item/stack/material/bone,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aM" = (/obj/item/weapon/material/kitchen/utensil/knife/bone,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aN" = (/obj/effect/decal/cleanable/blood/splatter,/obj/effect/decal/cleanable/cobweb2,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"aO" = (/obj/structure/simple_door/stone,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"aP" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 1},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aQ" = (/obj/effect/decal/cleanable/blood,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aR" = (/turf/floor/dirt,/area/caribbean/tribes/caves)
+"aS" = (/obj/effect/spawner/mobspawner{max_number = 12},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aT" = (/obj/effect/decal/cleanable/dirt,/obj/item/stack/material/bone,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aU" = (/obj/effect/decal/cleanable/cobweb2,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"aV" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"aW" = (/obj/effect/spawner/mobspawner{max_number = 12},/turf/floor/plating/dirt,/area/caribbean/island)
+"aX" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 1},/turf/floor/dirt,/area/caribbean/tribes/caves)
+"aY" = (/obj/structure/religious/totem{icon_state = "bear"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"aZ" = (/obj/effect/decal/cleanable/dirt,/obj/structure/religious/totem{icon_state = "bear"},/turf/floor/dirt,/area/caribbean/tribes/caves)
+"ba" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/island)
+"bb" = (/obj/item/weapon/horn,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bc" = (/obj/item/weapon/material/spear,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bd" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"be" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bf" = (/obj/effect/decal/cleanable/dirt,/obj/structure/religious/remains,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bg" = (/obj/structure/religious/tribalmask,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"bh" = (/obj/structure/wild/rock,/turf/floor/plating/dust,/area/caribbean/island)
+"bi" = (/obj/item/weapon/material/handle,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bj" = (/obj/structure/religious/totem{icon_state = "bear"},/turf/floor/dirt,/area/caribbean/tribes/caves)
+"bk" = (/obj/item/clothing/head/skullmask,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bl" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 4},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bm" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 4},/turf/floor/dirt,/area/caribbean/tribes/caves)
+"bn" = (/obj/item/clothing/suit/storage/jacket/bonearmor,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bo" = (/obj/structure/religious/totem{icon_state = "turkey"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bp" = (/obj/effect/decal/cleanable/dirt,/turf/wall/old_stone,/area/caribbean/tribes/caves)
+"bq" = (/obj/structure/wild/burnedbush,/turf/floor/plating/beach/water/swamp{color = "#746e60"},/area/caribbean/island)
+"br" = (/turf/floor/plating/beach/water,/area/caribbean/british/land/outside)
+"bs" = (/obj/effect/decal/cleanable/cobweb2,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bt" = (/obj/structure/religious/totem{icon_state = "wolf"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bu" = (/obj/effect/decal/cleanable/dirt,/obj/item/stack/material/bone,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"bv" = (/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bw" = (/obj/structure/sink/puddle,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bx" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"by" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/obj/structure/closet/crate/rations/meat,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"bz" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/obj/structure/closet/crate/rations/vegetables,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bA" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bB" = (/obj/structure/barricade/vertical,/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bC" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bD" = (/obj/structure/pot,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bE" = (/obj/structure/cannon{dir = 4; icon = 'icons/obj/cannon_h.dmi'},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bF" = (/obj/structure/barricade/vertical,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bG" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/beach/sand,/area/caribbean/island)
+"bH" = (/obj/item/stack/material/bone,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"bI" = (/obj/item/stack/material/wood,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"bJ" = (/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"bK" = (/obj/structure/table/wood,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bL" = (/obj/effect/decal/cleanable/dirt,/obj/effect/landmark{icon_state = "x3"; name = "treasure-mark"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bM" = (/obj/item/stack/material/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bN" = (/obj/item/weapon/shovel,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bO" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bP" = (/obj/structure/closet/crate/cannonball,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bQ" = (/obj/structure/religious/tribalmask,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bR" = (/obj/item/weapon/hammer,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"bS" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bT" = (/obj/item/weapon/wrench,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"bU" = (/obj/item/flashlight/lantern/on,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bV" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bW" = (/obj/structure/barricade/horizontal,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"bX" = (/obj/covers/repairedfloor,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"bY" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"bZ" = (/obj/effect/decal/cleanable/blood/splatter,/mob/living/carbon/human/corpse/british_sailor,/turf/floor/plating/dirt,/area/caribbean/island)
+"ca" = (/obj/effect/decal/cleanable/ash,/obj/effect/decal/cleanable/blood,/turf/floor/plating/dirt,/area/caribbean/island)
+"cb" = (/obj/effect/decal/cleanable/blood/drip,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/dirt,/area/caribbean/island)
+"cc" = (/obj/effect/decal/cleanable/blood/splatter,/mob/living/carbon/human/corpse/british_sailor,/turf/floor/plating/beach/water/swamp{color = "#746e60"},/area/caribbean/island)
+"cd" = (/obj/structure/barricade/ship/wood/a4,/obj/structure/flag/british,/turf/floor/wood,/area/caribbean/british/ship/office)
+"ce" = (/obj/structure/barricade/ship/wood/a7,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cf" = (/obj/structure/barricade/ship/wood/a8,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cg" = (/obj/structure/barricade/ship/wood/port2,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"ch" = (/obj/structure/barricade/ship/wood/port0,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"ci" = (/obj/structure/barricade/ship/wood/port0,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cj" = (/obj/structure/barricade/ship/wood/a3,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"ck" = (/obj/structure/barricade/ship/wood/a7,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cl" = (/obj/structure/barricade/ship/wood/a2,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cm" = (/obj/structure/closet/crate/musketball_pistol,/obj/effect/floor_decal/spline/fancy/wood{dir = 9},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cn" = (/obj/item/flashlight/lantern/on/anchored,/obj/effect/floor_decal/spline/fancy/wood{dir = 1},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"co" = (/obj/structure/bookcase,/obj/effect/floor_decal/spline/fancy/wood{dir = 5},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cp" = (/obj/structure/barricade/ship/wood/a12,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cq" = (/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cr" = (/turf/floor/wood_broken,/area/caribbean/british/ship/main_deck)
+"cs" = (/obj/structure/cannon{dir = 1},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"ct" = (/obj/structure/multiz/stairs_wood{icon_state = "wood2_stairs"; dir = 4},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cu" = (/obj/item/violin,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cv" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cw" = (/obj/effect/landmark{icon_state = "x3"; name = "treasure-mark"},/turf/floor/dirt,/area/caribbean/tribes/caves)
+"cx" = (/obj/structure/table/marble,/obj/item/weapon/book,/obj/item/weapon/pen,/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cy" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 4},/obj/structure/potted_plant,/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cz" = (/obj/covers/repairedfloor,/turf/floor/plating/sand,/area/caribbean/british/ship/main_deck)
+"cA" = (/obj/structure/barricade/ship/wood/a5,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cB" = (/obj/structure/barricade/ship/wood/a9,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cC" = (/obj/effect/landmark{icon_state = "x3"; name = "treasure-mark"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"cD" = (/obj/structure/table/marble,/obj/item/weapon/flame/candle,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cE" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 4},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cF" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cG" = (/obj/structure/barricade/ship/mast,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cH" = (/obj/structure/bed{material = "wood"},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"cI" = (/obj/structure/barricade/ship/wood/a6,/obj/structure/flag/british,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cJ" = (/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cK" = (/obj/structure/barricade/ship/blue/b18,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cL" = (/obj/structure/barricade/ship/blue/b10,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cM" = (/obj/effect/decal/cleanable/dirt,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"cN" = (/obj/structure/barricade/ship/wood/a2,/obj/structure/flag/british,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cO" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/effect/floor_decal/spline/fancy/wood{dir = 10},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cP" = (/obj/item/flashlight/lantern/on/anchored,/obj/effect/floor_decal/spline/fancy/wood,/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cQ" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/effect/floor_decal/spline/fancy/wood{dir = 6},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"cR" = (/obj/structure/barricade/ship/wood/a6,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cS" = (/obj/structure/barricade/ship/blue/b19,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cT" = (/obj/structure/barricade/ship/blue/b17,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cU" = (/obj/structure/barricade/ship/blue/b9,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cV" = (/obj/structure/barricade/ship/blue/b8,/turf/floor/wood,/area/caribbean/british/ship/office)
+"cW" = (/obj/structure/barricade/ship/blue/bport3,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cX" = (/obj/structure/barricade/ship/blue/bport0,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cY" = (/obj/structure/barricade/ship/blue/bport0,/obj/item/flashlight/lantern/on/anchored,/obj/structure/railing{dir = 4},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"cZ" = (/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
+"da" = (/obj/structure/barricade/ship/blue/bport3,/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"db" = (/obj/structure/barricade/ship/blue/bport0,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"dc" = (/obj/structure/barricade/ship/blue/b16,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"dd" = (/obj/structure/barricade/ship/blue/b9,/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"de" = (/turf/floor/plating/dirt,/area/caribbean/tribes/caves)
+"df" = (/obj/structure/railing{dir = 4},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dg" = (/turf/floor/wood_ship,/area/caribbean/british/land/outside)
+"dh" = (/obj/structure/railing{dir = 8},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"di" = (/obj/item/weapon/pickaxe,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"dj" = (/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"dk" = (/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"dl" = (/obj/item/weapon/hammer,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dm" = (/obj/item/weapon/wrench,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dn" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"do" = (/obj/structure/barricade/vertical,/obj/structure/barricade/horizontal,/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dp" = (/obj/structure/religious/impaledskull,/turf/floor/plating/dust,/area/caribbean/island)
+"dq" = (/obj/structure/wild/burnedbush,/obj/structure/religious/impaledskull,/turf/floor/plating/dirt,/area/caribbean/island)
+"dr" = (/obj/structure/closet/crate/muskets,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"ds" = (/obj/structure/closet/crate/musketball,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dt" = (/obj/structure/oven/fireplace,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"du" = (/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/sword/sabre,/obj/structure/table/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dv" = (/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/smallsword,/obj/structure/table/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dw" = (/obj/item/weapon/material/sword/spadroon,/obj/item/weapon/material/sword/spadroon,/obj/item/weapon/material/sword/spadroon,/obj/structure/table/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dx" = (/obj/structure/closet/crate/musketoons,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dy" = (/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/obj/structure/table/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dz" = (/obj/item/weapon/material/sword/longsword,/obj/item/weapon/material/sword/longsword,/obj/structure/table/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dA" = (/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/structure/table/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dB" = (/obj/structure/flag/british,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dC" = (/obj/structure/barricade/vertical,/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"dD" = (/obj/effect/decal/cleanable/cobweb{icon_state = "cobweb1"; dir = 4},/turf/floor/plating/dirt,/area/caribbean/tribes/caves)
+"dE" = (/obj/structure/religious/remains,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"dF" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 8},/turf/floor/dirt,/area/caribbean/tribes/caves)
+"dG" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dH" = (/obj/structure/window/sandbag/rock,/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dI" = (/obj/structure/window/sandbag/rock,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dJ" = (/obj/structure/window/sandbag/rock,/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dK" = (/obj/item/clothing/suit/storage/jacket/bonearmor,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"dL" = (/obj/structure/religious/totem{icon_state = "monkey"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"dM" = (/obj/structure/religious/totem,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"dN" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 8},/obj/item/stack/material/bone,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"dO" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dP" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"dQ" = (/obj/structure/bed{material = "wood"},/turf/floor/plating/sand,/area/caribbean/british/land/outside)
+"dR" = (/obj/effect/landmark{name = "JoinLateRNBoatswain"},/turf/floor/wood_broken,/area/caribbean/british/ship/main_deck)
+"dS" = (/obj/effect/landmark{name = "JoinLateRNCook"},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"dT" = (/obj/effect/landmark{name = "JoinLateRNSurgeon"},/turf/floor/wood_broken,/area/caribbean/british/ship/main_deck)
+"dU" = (/obj/effect/landmark{name = "JoinLateRNSurgeon"},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"dV" = (/obj/effect/landmark{name = "JoinLateRNCarpenter"},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"dW" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"dX" = (/obj/effect/floor_decal/spline/fancy/wood{dir = 8},/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"dY" = (/obj/effect/landmark{name = "JoinLateRNBoatswain"},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"dZ" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/wood_broken,/area/caribbean/british/ship/main_deck)
+"ea" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"eb" = (/obj/structure/bed/chair/wood/red{dir = 4},/obj/effect/floor_decal/spline/fancy/wood{dir = 8},/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/carpet,/area/caribbean/british/ship/office)
+"ec" = (/obj/effect/landmark{name = "JoinLateRNQM"},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"ed" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/plating/sand,/area/caribbean/british/ship/main_deck)
+"ee" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/wood_broken,/area/caribbean/british/ship/main_deck)
+"ef" = (/obj/structure/religious/remains,/obj/effect/landmark{icon_state = "x3"; name = "treasure-mark"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"eg" = (/obj/map_metadata/cursed_island,/turf/floor/plating/beach/water/deep,/area/caribbean/island)
+"eh" = (/turf/wall/old_stone,/area/caribbean/no_mans_land/invisible_wall/inside)
+"ei" = (/obj/structure/simple_door/stone,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"ej" = (/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
+"ek" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/inside)
+"el" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
+"em" = (/obj/structure/simple_door/stone,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
+"en" = (/obj/effect/decal/cleanable/dirt,/turf/wall/old_stone,/area/caribbean/no_mans_land/invisible_wall/inside)
+"eo" = (/obj/effect/spawner/objective_spawner,/turf/floor/plating/beach/water/deep,/area/caribbean/island)
+"ep" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood/drip,/obj/item/weapon/shield,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"eq" = (/obj/item/flashlight/torch,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"er" = (/obj/effect/decal/cleanable/blood/drip,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"es" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"et" = (/obj/effect/decal/cleanable/cobweb2,/obj/structure/religious/tribalmask,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"eu" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"ev" = (/obj/effect/decal/cleanable/blood,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"ew" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood,/mob/living/carbon/human/corpse/british_sailor,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"ex" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood/drip,/obj/item/weapon/material/sword/smallsword,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"ey" = (/obj/item/clothing/accessory/armband/talisman,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"ez" = (/obj/item/clothing/accessory/armband/indianshaman,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"eA" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"eB" = (/obj/item/clothing/accessory/armband/talisman,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"eC" = (/obj/effect/decal/cleanable/dirt,/obj/structure/religious/tribalmask,/turf/wall/old_stone,/area/caribbean/tribes/caves)
+"eD" = (/obj/item/clothing/accessory/armband/indianr,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"eE" = (/obj/item/flashlight/torch,/turf/floor/dirt,/area/caribbean/tribes/caves)
+"eF" = (/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"eG" = (/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
+"eH" = (/obj/effect/decal/cleanable/cobweb2,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"eI" = (/obj/item/clothing/accessory/armband/indiang,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"eJ" = (/obj/structure/wild/tree/dead_tree,/turf/floor/plating/dirt,/area/caribbean/island)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaazazabababababaAaBabababababaBababaDababababacacacagagagagagagagagagagagagagacacacacacacacacacacacadacacacacacacacacacaEaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaGaGaGaGaGaGaGaGaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaazazazabababababaBaBaAaBabababaBaBababababababacacacagagagagagagagagagagagagagacacacaeacaeaeacacacacadacafacacacacacaHaHaHaIaJaJaKaJaJaJaJaJaJaLaJaMaJaNaFaGaGaGaGaGaGaGaGaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaazazazabababababababaBaBababababaAaBababababababacacagagagagagagagagagagagagagacacacacacacacaeacaiafafacacacaealalaeaeaHaHaOaPaJaKaJaJaQaKaKaRaRaRaJaJaRaFaGaGaGaGaGaGaGaGaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaaaazabazazabababababababababababababaBaBabababababacagagagagagagagagagagagagagagagacacacacacaeacacacacacacacacacacacacacaEaFaFaFaFaFaFaFaFaFaFaFaFaRaSaJaFaGaGaGaGaGaGaGaGaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaaaazazazazazazazazazababababababababaAaBaBaBabababacagagagagagagagagagagagagagagagagagacacacacacacacacadalaeacacacadacacacacagagaGaGaGaGaGaGaGaGaFaJaRaJaFaGaGaGaGaGaGaGaGaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaazazazaaaaazazazazazababababababaBaAaBabababacacacagagagagagacaeacagagagagagagagacagagafacacacacadadacacacacacacacacacacagaGaGaGaGaGaGaGaGaFaJaJaRaFaGaGaGaGaGaGaGaGaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazabababababababababababacaeacagagagacagacacacacagagagagagagacagagacaeaeacahacacacacaiacadadacacacacagaGaGaGaGaGaGaGaGaFaJaJaRaFaFaFaFaFaFaFaFaFaFaFaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazababababababababababababacacacagagacacagagagagagagagagagagagacacacaeaeacacacacadacacacadadacacacacagaGaGaGaGaGaGaGaGaFaRaRaJaOaRaRaTepeqeraJesaJetaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazababababababababababababacaeacacacacagagacacagagagagagagagagacagacaeaeacacacacacacacacacacacacacacagaGaGaGaGaGaGaGaGaFaRaJaRaIaVeuevaQewexaRaJeyaJaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazababababababababababacacacacacagagagagagagagagagagagagagagagagagacacacacacacacafacacacacacafafacacagaGaGaGaGaGaGaGaGaFaJaJaVaFaFaFaFaFaFaFaFaRaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazabababaBaBabababababacacacacacacacacacacacagagagagagagagagagagagacaWacacacacaeacaeaeaeaeaeacacacacagaGaGaGaGaGaGaGaGaFaJaJaKaFaGaGaGaGaGaGaFaXaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazabababaBaAabababacacacabacacacaeaeacacacacacacafacacacagagagagacacacacacacacacacacaeacahacaeacacagaGaGaGaGaGaGaGaGaFaKaTaRaFaGaGaGaGeheheheheieheheheh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazabababaBaBababababacacabacaeaeacacacacacacacacafacacacacagagacacacacadaceJacacacacacacacacaeacacagagagagaGaGaGaGaGaFaJaJaJaFaGaGaGaGehesaJaYaRaZaJaUeh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazabababaBabababababacacacahacacadadacagagagacacadacacacbaagagacacacacacacacahacacacacacacacacacacacacagaGaGaGaGaGaFaRaJaRaJaGaGaGaGeheqaJaRaRaJaJbbeh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazabababaBabababababacacafacadadadacacacacacacacacacagacacagagagacacacacacacacacacacacacacacacacacacagagaGaGaGaGaGaFaJaJaJaFaGaGaGaGehaJbcaVbdaJbeaJeh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazababaBaAababababacacafacacacadacacacafacaiacahacacagacacagagagacacacacacacadacacacacacadacadacacacagagaGaGaGaGaGaFaJaJaRaFaGaGaGaGehaJaJbfbLaKaJaReh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazabababaBaAababababacacagacacacacacacacadacacacacacacacacacagagagacacacacaiacacacaeaeacacacacadacacagagagaGaGaGaGaGaFaJaRaJaFaGaGaGaGehbgaRaJaRaJaJaJeh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazababababaBaAabababababacagacadadacadahacacacacacacaeacacacacacagagacaeaeaebhadacacafafacacacacacacacacacagaGaGaGaGaGaFaRbiaRaFaGaGaGaGehaPaJaYaRbjaMaReh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazababababaBaAabababababacagacacacacadacacacacaeacafafacafacadacagagacaeaeaealadacacacaiacacaeacacacacacacagaGaGaGaGaGaFaRaJaJaFaGaGaGaGeheheheheieheheheh
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazabababababababababababababababacacacagagacacacacaeacafacafafacacacaeaeacacacacacacacacacacacacacacacafafacacagagagaGaGaGaGaGaFaJaJaJaFaGaGaGaGaGaGaFaRaKaRaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazabababababababababababababababacacacacaceJacacacaWacacacacacacaeacacacagacacagagagacacacacacacacacacacacagagaGaGaGaGaGaGaGaFaRaJaRaFaGaGaGaGaGaGaFbkaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazabababababababababababababababababacagaeaeacacacacacacacakakacadacacacacagagacacagagagacacagagacagagagacacagagaGaGaGaGaGaGaGaGaFaRaJaJaFaGaGaGaGaGaGaFaKaKaLaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazabababababababababababaBababacacacacagagaiaiacacacacacacacacadaiagagacagagagagagagagagagagagagagagagagagagagaGaGaGaGaGaGaGaGaFaRaJaRaFaGaGaGaGaGaGaJaRaSaRaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazazababababababababababaBaAababacacafacacacacacacagacacacaeacafacacacagagagagagagagaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaFaJaRaJaFaGaGaGaGaGaGaFaRaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaazazazababazababababababababababababaBaBababacacacacacagagagagagagacacacacacacacacagagacagagaGaGehehehehehehehehaFaFaFaFaFaFaFaFaFaFaFaJaFaFaFblaJaJaFaGaGaGaGaGaGaFaJaRaRaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaazababababababababababababababababababababababacacacafacacacacacacagagacacacacacacacagagagaGaGaGehbmaJaRaJaJejekbnezaJaJaRaJeAaRaRaJaJaJaJeBaFaJaJaJaFaGaGaGaGaGaGaFaJaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaazazazazazazazabababababababababababaBabababababacacacacacacacacadacacacagaeacacacacagagagaGaGaGehaJboboboaLaJelaJaRaRaFaFbcaKaJaLaRaFaFaJaJaOaJaSaJeCaFaFaFaFaFaFaFaFaIbpaFaFaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazababababaBaBaBabababaBaBababababababacaeacacacacafacacacacacacafacacaeacagagaGaGaGehaJaJcwaJaJaJejaJaJaJaFaFaJbdaRaKaRaFaFaJaRaIaJaJaQaRaJaJaJaJaJaJaJaRaRaJaUaFaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazababaBaAaBabababaAaBabababababacacakakacacacafacaeacacacacacaceJaeacagagaGaGaGehaRboboboaJaJejaJaJaJaJaRaJaRaJaJaRaJaJaJaJaFaRaJaJaJaJaJaJaJaJaRbeaJaJaJaJaFaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazababaBaAaBabababaAaBabababababacacakakacacadacacaeacaiacagacacacacacagagaGaGaGehaMaJaJaJbnekehaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaIaFaFaFaIaFaFaFbpbpaFaFaOaFaFaFaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazabababaBabababababaBaBababababababakbqacacadadacacaeacacakacadacacaeaeacagagagaGehehehehehehehehaGaGaGaGaGaGaGaGaGaGaGaGaGaGaFaIaFaFaFaOaFaFaFbpaFaFaJaJeDaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazababababaAabababaBaBaBababababababacacacacacacacacacacayacacacacacacacacacagagagagagagagaGagagagagagaGaGaGaGaGaGehehehehehehehehaJaJaRaJaJaRaJaRaJaJaFaJbdaJaFaGaG
+aaaaaaaaaaaaaaaaaaaabrbrbraaaaaaazazazabababaAaCabababaAaAaBababababacacadacacacacacacacacacakacaoacagacacacacacacafafafagacagagagacacagagagagagaGaGaGehaJbkaRaJaJbsehaJaJaJaJbbaKbfaKaKaJaFaJaJesaFaGaG
+aaaaaaaaaaaaaaaabrbrbrbrbrbrbrbrbrbrabababaBaAababababaAaBaBababababacacacacapaeacagacacadacakacafacaeacacadacacacafafafacacagagagagagagagagagagagagagehaRaJbtbtaJaJehaRaJaJaRaJaJaJaJbuaKaFaJaJaJaFaGaG
+aaaaaaaaaaaaaabrbrbrbrbvbrbrbrbrbrbvbvbwbxbybzbvbvbAbBaBaBaBababababacacacaiacacacacagacadacakacacacacacacacacadadacacacacacagaeacagacacacacacacacacagehaJaJcCaJaRaJemaJaJaJaFaFaFaFaFaOaFaFaRaJaRaFaGaG
+aaaaaaaaaaaaaabrbvbvbvbvbvbrbrbvbvbvbvbCbDbvbvbvbvbEbFababababababababbGadacacaoacagacagacacacakacaeamacacacacadadacadacacacacaeaeaeacacacagacacacagagehaRaJbtbtbHaRehaRaJaRaFaGaGaFblaJaJaFaJaKaJaFaGaG
+aaaaaaaaaaaaaabrbrbvbIbJcHcHbvbKdOdPbvbMbNbvbvbObvbPbBababababababababbGadacacacadajacagacacacacacaeaeacacacacacacacacacacacacacacacaiacacacacacagagagehaJaRaJaRaJaJehaJaJaJaFaGaGaFbQaJbQaFaJaKaRaFaGaG
+aaaaaaaaaaaabrbrbrbRbMbvdQdQbJbJbSbvbvbMbJbTbvbObvbUbVbWbVababababababbGbGacakakacacacagagacadakakaeaeacacacacaeaeacacacacacacacacacacacacacacagagagagehehehehehehehehaRaJaJaJaGaGaFaRaRaJaFaRaJaJaFaGaG
+aaaaaaaaaaaabrbrbrbJbXbXcHcHbvbvbJbJbvbvbvbvbJbYbJbvbvbvbFabababababababacacacacacacacacafacacakacafaeacacaWacacacacacacacacadadacacacaeaeacacagagagagaGaGaGaGaGaGaGaFaRaJaJaJaGaGaFaJaJaRaFaJbHaJaFaGaG
+aaaaaacdcecececfcgchcgchcgchcgcicgchcgchcgcicjckckckbJbvbFabababababababacacacadacacacacacacacacacacaeacaeaeaeacacacacacaeadadacacacafacacaeacacacagagaGaGaGaGaGaGaGaJaRaJaJaFaGaGaFaJaJaRaFaJaRaRaFaGaG
+aaaaaaclcmcncocpcqdRcrdScsdSdTdSdUdVdWcqdWcqctcqcucvbJbJbVbVababababababacadacaceJacacacaeaeaeacacaeacacaeaeacacacaceJacacadadacacacacacacaeacacacagagagaGaGaGaGaGaGaFaJaJaJaFaGaGaFaRaRaJaFaRaJaJaFaGaG
+aaaaaacldXcxcycpcvdYdWdScqdWdUdVdWdZeacrdVdVctcqdWcqczcAcBbFababababababacadacacacacacacaeaeacacacaeacacacacacacafacacacacacacacacacacacacaeaeacacacacagaGaGaGaGaGaGaFaJaJaRaFaGaGaFbgaJbQaFaJaSaJaFaGaG
+aaaaaaclebcDcEcFcqeccGcqczedcrdWdVeadWcGeadWctcreedWcqcqcIbFababababacacacacacapacacadacaeacacacacacacacacaiacacaeacacadacacacacacacacacacaeaeacagagacagaGaGaGaGaGaGaFaRaJaRaFaGaGaFaJaLaJaFaQaJaJaFaGaG
+aaaaaacldXcJcEcpcvececdWcqdZedcrdWdSdVdUeecqctdWcqcrcqcKcLbFababababacacacacagagacacacacacacacacacacacacacaiacacacacacadacacaeaeacacacacacacacagagagagagaGaGaGaGaGaGaFaPaRaJaFaGaGaFaJaJaRaFaJcMaJaJaGaG
+aaaaaacNcOcPcQcRcqdRcqcqdWcqdVeaeadUeeeadWdVctcqcqcvcKcSbVbVababababababagacacacafacacacacacacacacacacacacacacacacacacacacacaeaeacacacagagacacagagagagagaGaGaGaGaGaGaFaFaRaJaFaGaGaFeEaJaJaFaRaKaRaFaGaG
+aaaaaacTcUcUcUcVcWcXcWcXcWcXczcYcZcZdacXcWdbdcddddddcSbvbFababababababacababacacafacacacacacadaeacacafacacacadadacacacacafafaeaeacacacagagacacagagagaGaGdeaGaGaGaGaGaGaFaRaJaFaGaGaFaRaJaJaFaJaJaJaFaGaG
+aaaaaaaaaaaabrbrbJbJbvbvbJbJbvdfdgdgdheFeGbJbMbvbvbvbvbvbBabababababacacacacacacacacahacaWacadacacacacacacacacacacacacaiafafacacaFaFaFaFaFaFaFaFaGagaGaGaGaGaGaGaGaGaGaFaJaRaFaGaGaFaJaJaJaFaJaQaRaFaGaG
+aaaaaaaaaaaabrbrbrbvbvbvbTdibvdfdgdgdhdjdkbJdldmbvdnbWbWdoabababababadadacacacacacacacacacacagagaceJacacacacacacaeaeaeaeaeacacacaFblaJdedeaJeHaFaGaGaGaGaGaGaGaGaGaGaGaFaRaJaFaGaGaFaRaJaRaFbcaJaJaFaGaG
+aaaaaaaaaaaabrbrbrbrbrbJbvbvbvbJbvbvbJbJbJbvbvbvbUbFaBababababababacbGadacaceJacalalacacacacagagapacacacaiacacacaeaeaeaedpdqdqaEaFaJaJaJeIaJbQaFaFaFaFaFaFaFaFaFaFaFaFaFaIaIaFaGaGaFaRaJaJaFaJaJaRaFaGaG
+aaaaaaaaaaaabrbraaaabrbrbvdrdrbvbvbJbJdsdsbvbvbvbEbFaAabababababacacacacacaeacacaeaeacacagagagagapacacacacadadacaeaeaeaeaeacacacaIbcaRaKaLaLaJaJaRaRaJaJbdaRaRaRcMcMbfaJaJaJaFaGaGaFaJaRaJaFaJaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaabrbrbvbvbvbvbvbvbvdtbvbvbvbvbvbFaAababababacacacacacacacacafacacacagagagacacacacacacaeacacacaeaeacacacacacacaIdeaJaKaJaKaJaJaJaJaJaJaRaJaJaJaSaJaJaRaJeBaFaGaGaFaRaJaJaFaJaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaabrbrbrdudvdwbvbvbvdxdsbvbvbvbPbFaBababababababacabacacacacacacacagagagacaeacacacacacacacacacacacacacaEaEaEdpaFaJaJaJaRaJaRaFaFaFaFaFaFaFaFaFaFaFaJaFaFaFaFaGaGaJaRaJaJaFaKaJaJaFaGaG
+aaaaaaaaaaaaaaaaaaaabrbrbrdydzdAbvbvbvbvdBbvbvbvbvdCaAaCabababababacabacadacadacacacacacadaiacacacacafacacacacacacacacacacacacaeaFdDaJaJaJaJeEaFaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaFaJaJaJaFaJaJdEaFaGaG
+aaaaaaaaaaaaaaaaaaaaaabrbrbrbvbvbvbvbvbvbvbvbvbvbEbFaBababababababababacadacacacacacagagagacacacacacacacacacacafacacacacacacacacaFaFaFaFaFaFaFaFaGagagagagagagaGaGaGaGaGaGaGaGaGaGaFaRaJaRaFaRaJdFaFaGaG
+aaaaaaaaaaaaaaaaaaaaaaaabrbrbvbvbvbAbvbvbvbvbvbvbvbFaAabababababababababacacacadadacagagagacacadacaceJacacacacaeacacacaeacacacacacacacaeacacacacagacacagagagagagaGaGaGaGaGaGaGaGaGaFaJaJaRaFeheiemeheheh
+aaaaaaaaaaaaaaaaaaaaaaaabrbrbvbWbWbWbWbvbvbvbvdGbvbvaAaBababababababacacacadadadacacacacacacacacacagacacacacacaeacacacacacacacacacacacacaiacacacagacacacagagagagagagaGaGaGaGaGaGaGaFaRaJaRaFehaJaJaRbseh
+aaaaaaaaaaaaaaaaaaaaaaazazazabababababababdHdIdJababaBaBababababacabacacacacadacacacaoacaiacacacacagacacacacacadacacacadadadadacacacacacacacacacacacagagagagagagagagagaGaGaGaGehehehehemehenehaRaJaJbkeh
+aaaaaaaaaaaaaaaaaaaaaaazazazazababababababababababababababababababacacafacacacacacacadacacacacacacacacacacacacacacacacadadadadacacacacaeacacacacacacagagacacacagagagagagaGaGaGehaJdKaJaJaUehehdLaKaKdLeh
+aaaaaaaaaaaaaaaaaaaaaaaaazazazabababababababababababababababababababacacacacacadahacacacacacacaeacacacacacacadacacacacacaeacadadacacacacadacacacacacacacacacacagagagacagagagaGehaJbbefaQaLehehdLaJcCdLeh
+aaaaaaaaaaaaaaaaaaaaaaaaazazazabababababababababababababababababababacacacacacadacacacacaiacacacacafadacacacacacacacacacacacadadacacacacacadacaceJacacagagagagacacagagagagacacehaRaJdMdMaJehehbQaJdNaXeh
+aaaaaaaaaaaaaaaaaaaaaaazazazababababaBaBababababababababababababababacacagagacacacacaeacacacacacacacadacacaceJacacaeacacacacacacacacacacacacacacacacacacacacacaWacagagacagagageheheheheheheheheheheheheh
+aaaaaaaaaaaaaaaaaaaaaaazazazazababababaBababababababababababababababababacacacacacacacacacacacacacacacadadacacacacacacacacacacacacafacacadacacacacacacacacacacacacacacacacacacagagagaGaGaGaGaGaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaaaaaazazabababababaAaBabababababababababaBaBabababababacacacacacacacadacacacacacacacacacacacacacacacacadacacacafacacacacacacacacacacacacaeaeacacacacacacafacacagagagagagagaGaGaGaGaG
+aaaaaaaaaaaaaaaaaaaaaaazazazabababababaAaAabababababababababaBaBababababacacacacacacacacacacacacacacacacacacacalacacacacacacacadacacacacadacacacadacadacaeaeaeaeacacacacacacacacacacacacacacagagagagagag
+aaaaaaaaaaaaaaaaaaaaaaazazabababababababaBaBababababababababaBaAababababacacacafacacacacacacacacacacacaWacacacalacacacacacacacadacafacacadacacacadacadacacacacaeacacacacaeaeacacacacacacacacacacadacacac
+aaaaaaaaaaaaaaaaaaaaazazazazababababababaAaBababababababababaAaAababababacacacafeJacacacaeacadacacacacacacacacacacacadadadacacadacafacacacacacacacacadacacacacaeacacacacacacacacacacacacaoacacacafacacac
+aaaaaaaaaaaaaaaaaaazazazazabababababababaBaAababababababababaAaAababacacacacacacacacacacacacadacacacaeacacacacacacacadadadacacacacacacacacacacacacacadacacacacacacacacacacacacacacacadacacacacafafacacac
+aaaaaaaaaaaaaaaaaaaaazazazababababababababaBabababababababababaAaBababacacacacacacacacacacadadacacadacacacaeacadacacacaeapacacacacacacacacacacaeacacacacadadacacacacaeacacacacacacadadacapacacacacacacac
+aaaaaaaaaaaaaaaaaaaaazazazazazabababababababaAaCababababababaCaAaBababacacacacacacacacacacadacacacacacacacacacacadacaoacacacacacagacacacacagagacagagacacadadacacafacacacacacacacacacacacacacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaazazazazazabababababababaAaAaBababababaCaBaBabababacacacacaeacaWacacacacaeacacacacacacaeacacacacacacacacahacacacacacagagacagagacacacacacacacacacacacagacacacacacacacacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaazazazazababababababababaBaBaBabababababaAabababababadacacacacacacacacadacacacacacacacacacacacacacacacacacacacacacacagagacacacacacacadacacadacacacacacacagagagagacadadacacagacadac
+aaaaaaaaaaaaaaaaaaaaaaaaazazazababababababababababababababababaBababababacacacacacacacafacacacacaceJacacacacacacacacafacacacaceJacacacadacacacacacacacacadadacacadadacacacacacacacacacagacacacacagacacac
+aaaaaaaaaaaaaaaaaaaaaaaaazazabababababababababababababababababaBababababacacacacacacacaoacacacacacapacacacacacacacacacacacaoacacacacacacacadacacapacacacadaceJacacacacacacacacaoacacacagacacacacagagacac
+aaaaaaaaaaaaaaaaaaaaaaazazazazabababazabababababababababababaBaBababababacacacacacacacacacacacacadadacacacacafahacacacacacacafacacacacacacadadacacadacacacacacacacacacacadacacacafadacagagadacacagagacac
+aaaaaaaaaaaaaaaaaaaaaaazazazazazababazazazabababababababababaBaAababababacacafacacacacacacadacaeacacacacacacacacacacagagagacacadacacacacacacacacadadacacacacapacacacacacadadacaiacacacagagacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazazazazazabababababababaBaBababababacacacacacacacacacacacacacacacapacacacacacacagagagacacadacacacacacaeaeaeaeaeacacacaWacaeacafacacacacacacacacacagagacacacacajagac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazazazazabababababababababababacacacacacafafacacaeacacacacacacaeaeacacaeacaeaeacacacacacacacacacacacacacacacacacacacacaeacacacacacacacacacacacacacacacacacacagagac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazazazabababababababababababababacacacacafafacacaeacacacacacacaeaeacacacacaeaeacaeagagacacacafacacacacacacacagacacacakacacacacacacagacacagagacacapacacadacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazababababababababababababababacacafacacacacacaeaeaeacacaeacacacacacacapacacacacacacacagacaiacacacacacacacagacaeacacakacacaeaeacagaeaeacacacacacakacacakacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazabababababababaBaBabababababababacacafacacacacacaeaeacacacaeacacacacacacacacacacacacacacacacacacadacadacacacagagaeacacakakakacacadacagaeacacacacacakacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazabababababababaAaBabababababababacacacapacacadacaeacacacacacacacadacacacacacacacacacacacacacacacacacacacacacagagadacacacacacacacacaeagacaeacacacahacacadakakacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazabababababababaAaAaBabababababababacacagagacacacacacacacacacacacacacacacacacacacadaiadadalaeaeaeacacacacacacagacagaceJacacacacaoacacagagaeaeacacacacacacacakakacadac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazababababaBaBaBabababababababababagacacacacacacacacacacacacacacagacacacaeacacapalaeaeacadacacafacacacaeacacagacaeaeacacacaoafacacagacacagagaiaiacacacacacacacacadac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazabababababaBaAababababababababababababacacacacacacacacadaeacacafacagacacaeacacaqadacagagacacacacacacacacahacagacaeaeacacakacacacacacacacacacacacacagacacacaeacafacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazababababaBaBabababababababababababacacacacacacahacacacadacacacacacagacacacacacacacagagagacagagacacaracacacagagacacacacacakacacaeacacacacacagagagagagagacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaazazabazabababababaAaAabababababababababababacacacacacacacacacacagagaceJacacacacacacacacacacagagagagagagacafacacacacagagaeacacacacacacakakacacacacafacacacacacacagagacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaazazazababababababaBaBababababacacacacacacacacacacacacalalacacacacagagapacacacadadacacacapacacacararasacacacatacadacacacacacacacacadacacaeacakacacacacacacacacacadacacacagaeacac
+aaaaaaaaaaaaaaaaaaaaaaaaazazababababababaAaBaBababababacacacacacacacacacaeacacaeaeacacagagagagapacacacacacacacacadadadacacaracafbZacacacacacacaracacaracaradadacaeauacacaiacaeacacacacafacacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaazazazazabababababaAaBabababababababacacacacacacacacacafacacacagagagacacacacaWacacacacaeaeacacacacacaradcaasavapasatacarakakakacadacaracacacauacacacacakakacacacafacaeacacacacacac
+aaaaaaaaaaaaaaaaaaaaazazazazabababababaBaBabababababababacacacacacacacacacacacacacagagagacaeacacacacagacacacacacacacaeacacacaeaeacacaccbawacacacacacakacacahacacakakafacacacakakacacadacacaeacaiacagacac
+aaaaaaaaaaaaaaaaaaaaazazazababababababaBaBababababababacacacacacacacacacacadacacacacacadaiacacacacafagacacacacapacaoacacahacaeaeacasbZacacagacacaeacacacacacaracatakacakakakakacacadadacacaeacacakacadaf
+aaaaaaaaaaaaaaaaaaaaazazazabababababababababababababacacacacacagaWacacacacacacacacagagagacacacacacacacacagagagaeacacacacacacacacacacacacacagacacaxapagagacacacaccbccakacacacacacacacacacacacayacacacacac
+aaaaaaaaaaaaaaaaaaaaazazazazababababababababababababacacacacacacacacacacacacadadacagagagacacadacacacahacagagagaeacacacacacacakakacaradadacagagacaeacagagagacaeaeacakakaeaeacacacacacacacacacakacaoacagac
+aaaaaaaaaaaaaaaaaaaaazazazabababababababababababababacacacacacacacacacacadadadacacacacacacacacacagacacacacacacacacagaceJacagakakacacacadacagagacaeakacagagagaeaeacacakacacacapaeacagacacadacakacafacacac
+aaaaaaaaaaaaaaaaaaazazazazazabababababababababababababacacacacacacacacacacadacacacaoacaiacacacacagacacacacadadacacacacadagagakacakacacacagagacacaeacacacagagacadacacakakaiaiacacacacagacadacakacacacacac
+aaaaaaaaaaaaaaaaaaazazazazazazababababaBaBabababacacacacacaeaeacagagacacacacacacacadacacacacacacacacacacagacadacacacacacagagacapakacacacagagacacaiacakaWagagagacadaeaeacacacacaoacagacagacacacakacaeamac
+aaaaaaaaaaaaaaaaaaazazazazazazababababaAaBabababacacacacaeaeaeacanagacacacacadahacacacacacacaeacacacacacagacacacacacacacagacagacakacacaeagagacacacafakacagagagacacacacacacacacacadajacagacacacacacaeaeac
+aaaaaaaaaaaaaaaaaaazazazazazabababababaAaBababacacacacacaeacacacagagacacacacadacacacacacacacacacafacadacacagacacadacadacagagacahacacacaeaeacapeJacakakacacacakacakakacacakacakakacacacagagacadakakaeaeac
+aaaaaaaaaaaaaaaaaaazazazazazababababaBaAaBababacacacacacacacacacacacacagagacacacacaeacacacacacacacacacacacagacacacacafacagagacacacacacaeaeacacacacakakacahacakacakakacafacacacacacacacacafacacakacafaeae
+egeoaaaaaaaaaaaaaaazazazazazababababaAababababacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacagacacacacacagagacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaeae
+"}

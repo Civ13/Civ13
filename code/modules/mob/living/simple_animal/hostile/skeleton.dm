@@ -1,6 +1,6 @@
 /mob/living/simple_animal/hostile/skeleton
-	name = "Skeleton"
-	desc = "Scary spooky skeletons"
+	name = "\improper Skeleton"
+	desc = "Scary, spooky skeletons!"
 	icon_state = "skeleton"
 	icon_dead = "skeleton_remains1"
 	turns_per_move = 2
@@ -10,8 +10,8 @@
 	speak = list("...")
 	speak_emote = list("rattles")
 	emote_hear = list("spooks")
-	emote_see = list("stares", "stomps")
-	speak_chance = FALSE
+	emote_see = list("stares", "spooks","rattles")
+	speak_chance = TRUE
 	speed = 5
 	maxHealth = 100
 	health = 100

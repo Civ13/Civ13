@@ -1,6 +1,27 @@
 /obj/effect/spawner
 	name = "object spawner"
 
+/obj/effect/spawner/objective_spawner
+	name = "objective spawner"
+	invisibility = 101
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x2"
+	var/activated = 1
+/obj/effect/spawner/objective_spawner/New()
+	..()
+	spawnerproc()
+
+/obj/effect/spawner/objective_spawner/proc/spawnerproc()
+	if (activated)
+		spawn(100)
+			var/obj/item/cursedtreasure/targetobjective = new/obj/item/cursedtreasure(src.loc)
+			var/locationtomove = pick(latejoin_turfs["treasure-mark"])
+			targetobjective.loc = locationtomove
+			world.log << "DEBUG: Created treasure at [targetobjective.x], [targetobjective.y]"
+			activated = 0
+			qdel(src)
+			return
+
 /obj/effect/spawner/mobspawner
 	name = "mob spawner"
 	invisibility = 101
@@ -25,10 +46,14 @@
 				newmob.origin = src
 				newmob.x=src.x+(rand(-max_range,max_range))
 				newmob.y=src.y+(rand(-max_range,max_range))
-				while (get_turf(newmob).opacity == TRUE)
-					newmob.x=src.x+(rand(-max_range,max_range))
-					newmob.y=src.y+(rand(-max_range,max_range))
-				current_number += 1
+				if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground))
+					while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground))
+						newmob.x=src.x+(rand(-max_range,max_range))
+						newmob.y=src.y+(rand(-max_range,max_range))
+					current_number += 1
+				spawnerproc()
+		else
+			spawn(rand(timer,timer + (timer/2)))
 				spawnerproc()
 
 

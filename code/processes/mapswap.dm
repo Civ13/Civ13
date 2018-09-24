@@ -1,16 +1,18 @@
 /process/mapswap
 	// map = required players
 	var/list/maps = list(
+		MAP_CURSED_ISLAND = 0,
 		MAP_NAVAL = 0,
 		MAP_ISLAND = 0,
+		MAP_TRIBES = 8,
 //		MAP_VOYAGE = 10,
-		MAP_ROBUSTA = 20,
 //		MAP_BATTLEROYALE = 20,
 		MAP_SUPPLY_RAID = 8,
 		MAP_RECIFE = 10,
 		MAP_COLONY = 10,
+		MAP_ROBUSTA = 20,
 		MAP_FOUR_COLONIES = 25,
-		MAP_TRIBES = 8,
+
 	)
 
 	var/ready = TRUE

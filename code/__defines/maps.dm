@@ -8,6 +8,7 @@
 #define MAP_TRIBES "TRIBES"
 #define MAP_FOUR_COLONIES "FOUR_COLONIES"
 #define MAP_RECIFE "RECIFE"
+#define MAP_CURSED_ISLAND "CURSED_ISLAND"
 // ideas:
 // ship sailing through the ocean, High-rp
 // pirates boarding a ship

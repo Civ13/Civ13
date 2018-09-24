@@ -37,6 +37,13 @@
 			qdel(src)
 			return
 
+		if ("treasure-mark")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
 		if ("Observer-Start")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()

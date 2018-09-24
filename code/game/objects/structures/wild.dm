@@ -89,6 +89,14 @@
 	sways = TRUE
 	amount = 5
 
+/obj/structure/wild/tree/dead_tree
+	name = "dead tree"
+	icon = 'icons/obj/flora/deadtrees.dmi'
+	icon_state = "dtree_1"
+	opacity = TRUE
+	density = TRUE
+	sways = FALSE
+	amount = 5
 
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -243,7 +251,6 @@
 	icon_state = "tall_grass_5"
 	opacity = FALSE
 	density = FALSE
-	layer = 5.1
 
 /obj/structure/wild/tallgrass/New()
 	..()

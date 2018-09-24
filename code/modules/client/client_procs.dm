@@ -316,7 +316,7 @@
 	var/list/full_list_split = splittext(full_list, "|")
 //	var/list/full_logs_split = splittext(full_logs, "|")
 	var/list/full_list_split_vars = list()
-	world.log << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
+//	world.log << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
 	//splitting the player database, so we can check the values individually:
 	for (var/v = TRUE, v < full_list_split.len, v++)
 		if (full_list_split[v][1] != "0" && full_list_split[v][1] != 0 && full_list_split[v][1] != "\n")
@@ -330,14 +330,14 @@
 	//it exists, just update the values (ckey;firstseen;lastseen;age;points)
 	for (var/v = TRUE, v <= full_list_split_vars.len, v++)
 		if (full_list_split_vars[v][1] == ckey && found == TRUE)
-			world.log << "DEBUG: This key is on the list! ckey: [ckey]"
+//			world.log << "DEBUG: This key is on the list! ckey: [ckey]"
 			full_list_split_vars[v][3] = num2text(world.realtime, 10)
 			full_list_split_vars[v][4] = num2text(round((text2num(full_list_split_vars[v][3])-text2num(full_list_split_vars[v][2]))/864000)) //in days
 			found = FALSE
 
 	//it doesnt exist, create an entry
 	if (found == TRUE)
-		world.log << "DEBUG: New player, adding to the list! ckey: [ckey]"
+//		world.log << "DEBUG: New player, adding to the list! ckey: [ckey]"
 		text2file("[ckey];[num2text(world.realtime, 10)];[num2text(world.realtime, 10)];0;0|","SQL/playerlist.txt")
 
 	//copy the changes to the registry
@@ -348,7 +348,7 @@
 		var/var4 = full_list_split_vars[k][4]
 		var/var5 = full_list_split_vars[k][5]
 		text2file("[var1];[var2];[var3];[var4];[var5];|","SQL/playerlist.txt")
-		world.log << "[var1];[var2];[var3];[var4];[var5];|"
+//		world.log << "[var1];[var2];[var3];[var4];[var5];|"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (IsGuestKey(key))
@@ -410,7 +410,7 @@
 	var/serverip = "[world.internet_address]:[world.port]"
 	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
 	//adding to player logs (ckey;ip;computerid;serverip;datetime,realtime)
-	world.log << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime,realtime)"
+//	world.log << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime,realtime)"
 	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 10)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
 
 
