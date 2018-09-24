@@ -24,7 +24,7 @@
 	single_faction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
-		"Spooky Tunes" = 'sound/ambience/spooky1.ogg',)
+		"Spooky Tunes:1" = 'sound/ambience/spooky1.ogg',)
 	//times_of_day = list("Night")
 /obj/map_metadata/cursed_island/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)

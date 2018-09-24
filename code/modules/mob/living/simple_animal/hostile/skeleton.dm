@@ -1,7 +1,7 @@
 /mob/living/simple_animal/hostile/skeleton
 	name = "\improper Skeleton"
 	desc = "Scary, spooky skeletons!"
-	icon_state = "skeleton"
+	icon_state = "skeleton1"
 	icon_dead = "skeleton_remains1"
 	turns_per_move = 2
 	response_help = "pushes"
@@ -26,6 +26,7 @@
 
 /mob/living/simple_animal/hostile/skeleton/New()
 	..()
+	icon_state = pick("skeleton1","skeleton2","skeleton3",)
 	attack_sound = pick('sound/weapons/genhit1.ogg', 'sound/weapons/genhit2.ogg', 'sound/weapons/genhit3.ogg')
 	icon_dead = pick("skeleton_remains1","skeleton_remains2","skeleton_remains3",)
 

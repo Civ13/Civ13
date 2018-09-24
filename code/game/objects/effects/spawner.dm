@@ -7,6 +7,7 @@
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/activated = 1
+
 /obj/effect/spawner/objective_spawner/New()
 	..()
 	spawnerproc()
@@ -33,6 +34,9 @@
 	var/max_range = 10
 	var/create_path = /mob/living/simple_animal/hostile/skeleton
 	var/timer = 200
+	var/scalable = 0 // when 1, it will only get active above x players
+	var/scalable_nr = 10
+	var/scalable_multiplyer = 1 //after how many times the scalable_nr it activates
 
 /obj/effect/spawner/mobspawner/New()
 	..()
@@ -40,7 +44,7 @@
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
 	if (activated)
-		if (current_number < max_number)
+		if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
 			spawn(rand(timer,timer + (timer/2)))
 				var/mob/living/simple_animal/newmob = new create_path(src.loc)
 				newmob.origin = src
