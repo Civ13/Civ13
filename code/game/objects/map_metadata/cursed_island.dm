@@ -51,7 +51,7 @@ obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)
 	var/treasure_location = get_area(locate(/obj/item/cursedtreasure))
 	if (win_condition_spam_check)
 		return FALSE
-	if (istype(treasure_location, /area/caribbean/british/ship/main_deck))
+	if (istype(treasure_location, /area/caribbean/british/ship))
 		ticker.finished = TRUE
 		var/message = "The treasure was retrieved! The curse is broken!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
