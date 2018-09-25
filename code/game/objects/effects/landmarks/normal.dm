@@ -523,6 +523,13 @@
 	tag = "start*[name]"
 	return TRUE
 
+/obj/effect/landmark/npctarget
+	name = "npc target"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x"
+	anchored = 1.0
+	invisibility = 101
+
 //Costume spawner landmarks
 /obj/effect/landmark/costume/New() //costume spawner, selects a random subclass and disappears
 

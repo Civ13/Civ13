@@ -38,6 +38,10 @@
 	var/scalable_nr = 10
 	var/scalable_multiplyer = 1 //after how many times the scalable_nr it activates
 
+/obj/effect/spawner/mobspawner/attacker
+	name = "attacking skeleton spawner"
+	create_path = /mob/living/simple_animal/hostile/skeleton/attacker
+
 /obj/effect/spawner/mobspawner/New()
 	..()
 	spawnerproc()

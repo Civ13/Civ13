@@ -19,11 +19,14 @@
 	harm_intent_damage = 15
 	melee_damage_lower = 15
 	melee_damage_upper = 20
+	move_to_delay = 3
+	break_stuff_probability = 25
 	attacktext = "scratched"
 	attack_sound = 'sound/weapons/genhit1.ogg'
 
 	faction = PIRATES
-
+/mob/living/simple_animal/hostile/skeleton/attacker
+	name = "\improper Skeleton"
 /mob/living/simple_animal/hostile/skeleton/New()
 	..()
 	icon_state = pick("skeleton1","skeleton2","skeleton3",)
