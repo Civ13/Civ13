@@ -50,11 +50,11 @@
 				newmob.origin = src
 				newmob.x=src.x+(rand(-max_range,max_range))
 				newmob.y=src.y+(rand(-max_range,max_range))
+				current_number += 1
 				if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
 					while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
 						newmob.x=src.x+(rand(-max_range,max_range))
 						newmob.y=src.y+(rand(-max_range,max_range))
-					current_number += 1
 				spawnerproc()
 		else
 			spawn(rand(timer,timer + (timer/2)))
