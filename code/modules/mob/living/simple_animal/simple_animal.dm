@@ -90,13 +90,13 @@
 	handle_supernatural()
 
 	//Movement
-	if (!client && !stop_automated_movement && wander && !anchored)
+	if (!client && !stop_automated_movement && wander && !anchored && clients.len > 0)
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
 			if (turns_since_move >= turns_per_move)
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
-						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 4)
+						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 					moving_to = pick(cardinal)

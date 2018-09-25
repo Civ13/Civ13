@@ -286,7 +286,7 @@
 "fz" = (/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
 "fA" = (/mob/living/simple_animal/hostile/skeleton,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "fB" = (/mob/living/simple_animal/hostile/skeleton,/turf/floor/dirt,/area/caribbean/tribes/caves)
-"fC" = (/obj/effect/landmark/npctarget,/turf/floor/plating/beach/sand,/area/caribbean/island)
+"fC" = (/obj/structure/barricade/ship/mast,/obj/effect/landmark/npctarget,/turf/floor/wood,/area/caribbean/british/ship{base_turf = /turf/floor/plating/beach/sand})
 "fD" = (/obj/effect/spawner/mobspawner/attacker{scalable = 1; scalable_nr = 13},/turf/floor/plating/beach/sand,/area/caribbean/island)
 "fE" = (/obj/effect/spawner/mobspawner/attacker{max_number = 6},/turf/floor/plating/beach/sand,/area/caribbean/island)
 "fF" = (/obj/effect/spawner/mobspawner/attacker{max_number = 6},/turf/floor/plating/dirt,/area/caribbean/island)
@@ -338,7 +338,7 @@ aaaaaaaaaaaabrbrbrePbXbXcHcHbvedbJbJbveKbvedbJbYbJedbvedbFabababababababacacacac
 aaaaaacdcecececfcgchcicjckclckcmckcncnclckcmcocpcpcpbJbvbFabababababababacacacadacacacacacacacacacacaeacaeaeaeacacacacacaeadadacacacafacacaeacacacagagaGaGaGaGaGaGaGaJaRaJaJaFaGaGaFaJaJaRaFaJaRaRaFaGaG
 aaaaaacqcrcsctcucvcxcyczcAczcBczcDcEcFcGcFcGcIcGcJcKcLePbVbVababababababacadacaceJacacacaeaeaeacacaeacacaeaeacacacaceJacacadadacacacacacacaeacacacagagagaGaGaGaGaGaGaFaJaJaJaFaGaGaFaRaRaJaFaRaJaJaFaGaG
 aaaaaacqcNcOcPcucQcRcFczcGcFcDcEcFcScTcUcEcEcIcGcFcGcLcVcWbFababababababacadacacacacacacaeaeacacacaeacacacacacacafacacacacacacacfFacacacacaeaeacacacacagaGaGaGaGaGaGaFaJfpaRaFaGaGaFbgaJbQaFaJbiaJaFaGaG
-aaaaaacqcXcYcZdacvdbdccGddddcScFcEcTcFdccTcFcIcUdRcFdSdTdUbFabfCababacacacacacapacacadacaeacaceJacacacacacaiacacaeacacadacacacacacacacacacaeaeacagagacagaGaGaGaGaGaGaFaRaJaRaFaGaGaFaJaLaJaFaQaJaJaFaGaG
+aaaaaacqcXcYcZdacvdbdccGddddcScFcEcTcFfCcTcFcIcUdRcFdSdTdUbFababababacacacacacapacacadacaeacaceJacacacacacaiacacaeacacadacacacacacacacacacaeaeacagagacagaGaGaGaGaGaGaFaRaJaRaFaGaGaFaJaLaJaFaQaJaJaFaGaG
 aaaaaacqcNdVcZcucQdbdbcFcGcSddcScFczcEcDdRcGcIcFcGdWdXdYdZbFababababacacacacagagacacacacacacacacacacacacacaiacacacacacadacacaeaeacacacacacacacagagagagagaGaGaGaGaGaGaFaPaRaJaFaGaGehehemehehehemehenaGaG
 aaaaaaeaebeceeeQcvcxcGcGcFcGcEcTcTcDdRcTcFcEcIcGeRcKdYeSbVbVababababababagacacacafacacacacacacacacacacacacacacacacacacacacacaeaeacacacagagacacagagagagagaGaGaGaGaGaGaFaFaRfAaFaGaGehaUdKdAaJdAaJaUehaGaG
 aaaaaaeTeUeUeUeVeWeXeYeXeYeXcLeZfqfqfueXeYfvfwfxfxfxfybvbFababababababacababacacafacacacacacadaeacacafacacacadadacacacacafafaeaeacacacagagacacagagagaGaGdeaGaGaGaGaGaGaFaRaJaFaGaGehaJaJbbefaQaLaJehaGaG
