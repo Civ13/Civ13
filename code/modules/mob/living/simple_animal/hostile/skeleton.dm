@@ -19,7 +19,7 @@
 	harm_intent_damage = 15
 	melee_damage_lower = 15
 	melee_damage_upper = 20
-	move_to_delay = 3
+	move_to_delay = 5
 	break_stuff_probability = 25
 	attacktext = "scratched"
 	attack_sound = 'sound/weapons/genhit1.ogg'

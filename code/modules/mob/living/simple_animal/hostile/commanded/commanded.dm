@@ -15,6 +15,7 @@
 
 /mob/living/simple_animal/hostile/commanded/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "", var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol)
 	if ((speaker in friends) || speaker == master)
+//		world.log << "DEBUG: The command was recognized"
 		command_buffer.Add(speaker)
 		command_buffer.Add(lowertext(html_decode(message)))
 	return FALSE

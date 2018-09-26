@@ -15,6 +15,7 @@
 	speed = 4
 	maxHealth = 100
 	health = 100
+	move_to_delay = 6
 	stop_automated_movement_when_pulled = FALSE
 	harm_intent_damage = 15
 	melee_damage_lower = 30

@@ -3,7 +3,7 @@
 	desc = "A british soldier."
 	icon_state = "britishmelee"
 	icon_dead = "britishmelee_dead"
-	turns_per_move = 5
+	turns_per_move = 2
 	response_help = "pushes"
 	response_disarm = "shoves"
 	response_harm = "hits"
@@ -16,7 +16,7 @@
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 100
 	health = 100
-
+	move_to_delay = 6
 	harm_intent_damage = 5
 	melee_damage_lower = 30
 	melee_damage_upper = 40
