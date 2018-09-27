@@ -16,9 +16,9 @@
 	maxHealth = 100
 	health = 100
 	stop_automated_movement_when_pulled = FALSE
-	harm_intent_damage = 15
-	melee_damage_lower = 15
-	melee_damage_upper = 20
+	harm_intent_damage = 14
+	melee_damage_lower = 8
+	melee_damage_upper = 14
 	move_to_delay = 5
 	break_stuff_probability = 25
 	attacktext = "scratched"
