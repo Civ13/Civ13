@@ -11,6 +11,7 @@
 		SK.activated = 1
 	for (var/obj/effect/spawner/mobspawner/attacker/SKA)
 		SKA.activated = 1
+	user << "Skeleton spawners are now ENABLED."
 	return
 
 /obj/structure/skeleton_deactivator
@@ -24,8 +25,7 @@
 /obj/structure/skeleton_deactivator/attack_hand(mob/living/user)
 	for (var/obj/effect/spawner/mobspawner/skeletons/SK)
 		SK.activated = 0
-		SK.spawnerproc()
 	for (var/obj/effect/spawner/mobspawner/attacker/SKA)
 		SKA.activated = 0
-		SKA.spawnerproc()
+	user << "Skeleton spawners are now DISABLED."
 	return

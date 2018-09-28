@@ -48,7 +48,7 @@
 
 /obj/effect/spawner/mobspawner/New()
 	..()
-	invisibility = 101
+	//invisibility = 101
 	spawnerproc()
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
@@ -68,6 +68,9 @@
 		else
 			spawn(rand(timer,timer + (timer/2)))
 				spawnerproc()
+	else
+		spawn(rand(timer,timer + (timer/2)))
+			spawnerproc()
 
 
 /obj/effect/spawner/mobspawner/turkeys

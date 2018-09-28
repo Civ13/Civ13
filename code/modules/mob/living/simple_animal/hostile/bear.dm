@@ -25,7 +25,7 @@
 
 	var/stance_step = FALSE
 
-	faction = PIRATES
+	faction = "neutral"
 
 /mob/living/simple_animal/hostile/bear/Life()
 	. =..()
@@ -94,7 +94,7 @@
 /mob/living/simple_animal/hostile/bear/FindTarget()
 	. = ..()
 	if (.)
-		custom_emote(1,"stares alertly at [.]")
+		custom_emote(1,"stares alertly at [.].")
 		stance = HOSTILE_STANCE_ALERT
 
 /mob/living/simple_animal/hostile/bear/LoseTarget()
