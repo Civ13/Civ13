@@ -48,7 +48,7 @@
 
 /obj/effect/spawner/mobspawner/New()
 	..()
-	//invisibility = 101
+	invisibility = 101
 	spawnerproc()
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
