@@ -3,13 +3,13 @@
 
 /obj/effect/spawner/objective_spawner
 	name = "objective spawner"
-	invisibility = 101
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/activated = 1
 
 /obj/effect/spawner/objective_spawner/New()
 	..()
+	invisibility = 101
 	spawnerproc()
 
 /obj/effect/spawner/objective_spawner/proc/spawnerproc()
@@ -25,7 +25,6 @@
 
 /obj/effect/spawner/mobspawner
 	name = "mob spawner"
-	invisibility = 101
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/activated = 1
@@ -38,12 +37,18 @@
 	var/scalable_nr = 10
 	var/scalable_multiplyer = 1 //after how many times the scalable_nr it activates
 
+/obj/effect/spawner/mobspawner/skeletons
+	name = "skeleton spawner"
+	create_path = /mob/living/simple_animal/hostile/skeleton
+	timer = 400
+
 /obj/effect/spawner/mobspawner/attacker
 	name = "attacking skeleton spawner"
 	create_path = /mob/living/simple_animal/hostile/skeleton/attacker
 
 /obj/effect/spawner/mobspawner/New()
 	..()
+	invisibility = 101
 	spawnerproc()
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
@@ -67,7 +72,27 @@
 
 /obj/effect/spawner/mobspawner/turkeys
 	name = "turkey spawner"
-	max_number = 5
+	max_number = 3
 	max_range = 13
 	create_path = /mob/living/simple_animal/turkey_m
-	timer = 900
+	timer = 1000
+
+/obj/effect/spawner/mobspawner/bears
+	name = "bear spawner"
+	max_number = 2
+	max_range = 20
+	create_path = /mob/living/simple_animal/hostile/bear
+	timer = 1400
+
+/obj/effect/spawner/mobspawner/monkeys
+	name = "monkey spawner"
+	max_number = 2
+	max_range = 20
+	create_path = /mob/living/simple_animal/monkey
+	timer = 1400
+
+
+/obj/effect/spawner/mobspawner/pirates
+	name = "pirate spawner"
+	create_path = /mob/living/simple_animal/hostile/pirate
+	timer = 750

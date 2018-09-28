@@ -26,19 +26,20 @@
 		11 = "vegetable seeds crate",
 		12 = "cereal seeds crate",
 		13 = "cash crops crate",
-		14 = "cow",
-		15 = "chicken",
-		16 = "medical supplies",
-		17 = "gunpowder barrel",
-		18 = "musket ammo crate (25)",
-		19 = "pistol ammo crate (25)",
-		20 = "blunderbuss ammo crate (15)",
-		21 = "grenade crate (10)",
-		22 = "cannonball crate (10)",
-		23 = "pistol crate (5)",
-		24 = "musket crate (5)",
-		25 = "musketoon crate (5)",
-		26 = "blunderbuss crate (5)",)
+		14 = "medicinal seeds crate",
+		15 = "cow",
+		16 = "chicken",
+		17 = "medical supplies",
+		18 = "gunpowder barrel",
+		19 = "musket ammo crate (25)",
+		20 = "pistol ammo crate (25)",
+		21 = "blunderbuss ammo crate (15)",
+		22 = "grenade crate (10)",
+		23 = "cannonball crate (10)",
+		24 = "pistol crate (5)",
+		25 = "musket crate (5)",
+		26 = "musketoon crate (5)",
+		27 = "blunderbuss crate (5)",)
 	var/list/itemstobuy = list(
 		"wood crate" = /obj/structure/closet/crate/wood,
 		"iron crate" = /obj/structure/closet/crate/iron,
@@ -53,6 +54,7 @@
 		"vegetable seeds crate" = /obj/structure/closet/crate/rations/seeds/vegetables,
 		"cereal seeds crate" = /obj/structure/closet/crate/rations/seeds/cereals,
 		"cash crops crate" = /obj/structure/closet/crate/rations/seeds/cashcrops,
+		"medicinal seeds crate" = /obj/structure/closet/crate/rations/seeds/medicinal,
 		"cow" = /mob/living/simple_animal/cow,
 		"chicken" = /mob/living/simple_animal/chicken,
 		"medical supplies" = /obj/item/weapon/storage/firstaid/adv,
@@ -81,6 +83,7 @@
 		"vegetable seeds crate" = 30,
 		"cereal seeds crate" = 20,
 		"cash crops crate" = 50,
+		"medicinal seeds crate" = 50,
 		"cow" = 90,
 		"chicken" = 30,
 		"medical supplies" = 150,
@@ -118,12 +121,12 @@
 	var/finalpath
 	var/list/display = list ()//The products to be displayed, includes name of crate and price
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" )
-		for (var/i=1;i<=16,i++)
+		for (var/i=1;i<=17,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]+(itemprices[itemsnr[i]]*(import_tax_rate/100))] reales" //Simplicity so the crate's name can be shown in the list
 	else
 		import_tax_rate = input(user, "Set the import tax rate: (0%-100%)") as num
 		import_tax_rate = Clamp(import_tax_rate, 0, 100)
-		for (var/i=1;i<=26,i++)
+		for (var/i=1;i<=27,i++)
 			display += "[itemsnr[i]] - [itemprices[itemsnr[i]]+(itemprices[itemsnr[i]]*(import_tax_rate/100))] reales"
 	var/choice = WWinput(user, "Order a crate: (Current Money: [money] reales; included IT: [import_tax_rate]%)", "Imports", "Cancel", display)
 	if (choice == "Cancel")

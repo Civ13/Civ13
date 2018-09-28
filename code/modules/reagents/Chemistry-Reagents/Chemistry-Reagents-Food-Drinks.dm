@@ -509,6 +509,7 @@
 	if (adj_temp > 0)
 		holder.remove_reagent("frostoil", 10 * removed)
 	M.add_chemical_effect(CE_PULSE, TRUE)
+	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 
 /datum/reagent/drink/coffee/overdose(var/mob/living/carbon/M, var/alien)
 	M.make_jittery(5)

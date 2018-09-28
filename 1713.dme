@@ -267,6 +267,7 @@
 #include "code\game\objects\structures\graves.dm"
 #include "code\game\objects\structures\grille.dm"
 #include "code\game\objects\structures\kitchen_spike.dm"
+#include "code\game\objects\structures\levers.dm"
 #include "code\game\objects\structures\mirror.dm"
 #include "code\game\objects\structures\noticeboard.dm"
 #include "code\game\objects\structures\optable.dm"
@@ -744,5 +745,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\cursed_island.dmm"
+#include "maps\colony.dmm"
 // END_INCLUDE

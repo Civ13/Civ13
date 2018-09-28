@@ -1,4 +1,4 @@
-//Space bears!
+
 /mob/living/simple_animal/hostile/bear
 	name = "bear"
 	desc = "Rawr Rawr!!"
