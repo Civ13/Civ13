@@ -210,7 +210,7 @@
 "eb" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/effect/floor_decal/spline/fancy/wood{dir = 10},/turf/floor/carpet,/area/caribbean/british/ship)
 "ec" = (/obj/item/flashlight/lantern/on/anchored,/obj/effect/floor_decal/spline/fancy/wood,/turf/floor/carpet,/area/caribbean/british/ship)
 "ed" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
-"ee" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/effect/floor_decal/spline/fancy/wood{dir = 6},/turf/floor/carpet,/area/caribbean/british/ship)
+"ee" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/effect/floor_decal/spline/fancy/wood{dir = 6},/obj/item/weapon/reagent_containers/food/drinks/bottle/rum,/turf/floor/carpet,/area/caribbean/british/ship)
 "ef" = (/obj/structure/religious/remains,/obj/effect/landmark{icon_state = "x3"; name = "treasure-mark"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "eg" = (/obj/map_metadata/cursed_island,/turf/floor/plating/beach/water/deep,/area/caribbean/island)
 "eh" = (/turf/wall/old_stone,/area/caribbean/no_mans_land/invisible_wall/inside)
@@ -347,7 +347,7 @@ aaaaaacqcrcsctcucvcxcyczcAczcBczcDcEcFcGcFcGcIcGcJcKcLePbVbVababababababacadacac
 aaaaaacqcNcOcPcucQcRcFczcGcFcDcEcFcScTcUcEcEcIcGcFcGcLcVcWbFababababababacadacacacacacacaeaeacacacaeacacacacacacafacacacacacacacfFacacacacaeaeacacacacagaGaGaGaGaGaGaFaJfpaRaFaGaGaFbgaJbQaFaJbiaJaFaGaG
 aaaaaacqcXcYcZdacvdbdccGddddcScFcEcTcFfCcTcFcIcUdRcFdSdTdUbFababababacacacacacapacacadacaeacaceJacacacacacaiacacaeacacadacacacacacacacacacaeaeacagagacagaGaGaGaGaGaGaFaRaJaRaFaGaGaFaJaLaJaFaQaJaJaFaGaG
 aaaaaacqcNdVcZcucQdbdbcFcGcSddcScFczcEcDdRcGcIcFcGdWdXdYdZbFababababacacacacagagacacacacacacacacacacacacacaiacacacacacadacacaeaeacacacacacacacagagagagagaGaGaGaGaGaGaFaPaRaJaFaGaGehehemehehehemehenaGaG
-aaaaaaeaebeceeeQcvcxcGcGcFcGcEcTcTcDdRcTcFcEcIcGeRcKdYeSbVbVababababababagacacacafacacacacacacacacacacacacacacacacacacacacacaeaeacacacagagacacagagagagagaGaGaGaGaGaGaFaFaRfAaFaGaGehaUdKdAaJdAaJaUehaGaG
+aaaaaaeaebeceeeQcvcxcGcGcFcGcEcTcTcDdRcTcFcEcIdXeRcKdYeSbVbVababababababagacacacafacacacacacacacacacacacacacacacacacacacacacaeaeacacacagagacacagagagagagaGaGaGaGaGaGaFaFaRfAaFaGaGehaUdKdAaJdAaJaUehaGaG
 aaaaaaeTeUeUeUeVeWeXeYeXeYeXcLeZfqfqfueXeYfvfwfxfxfxfybvbFababababababacababacacafacacacacacadaeacacafacacacadadacacacacafafaeaeacacacagagacacagagagaGaGdeaGaGaGaGaGaGaFaRaJaFaGaGehaJaJbbefaQaLaJehaGaG
 aaaaaaaaaaaabrbrbJePbvfcbJbJbvdfdgdgdheFeGbJbMfebvbvbvbvbBabababababacacacacacacacacahacduacadacacacacacacacacacacacacaiafafacacehaFaFaFaFaFaFaFaGagaGaGaGaGaGaGaGaGaGaFaJaRaFaGaGehaJaRdAaJdAaJaUehaGaG
 aaaaaaaaaaaabrbrbrbvedbvbTdibvdfdgdgdhdjdkbJdldmbvdnbWbWdoabababababadadacacacacacacacacacacagagaceJacacacacacacaeaeaeaeaeacacacehblfrdedeaJeHaFaGaGaGaGaGaGaGaGaGaGaGaFaRaJaFaGaGehehemehehehemehehaGaG
