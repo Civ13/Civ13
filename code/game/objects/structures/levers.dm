@@ -55,50 +55,50 @@
 
 //BRITISH
 
-/obj/structure/redcoat_activator
-	name = "Activate redcoats"
-	desc = "Activate the redcoats."
+/obj/structure/townmilitia_activator
+	name = "Activate town militias"
+	desc = "Activate the town militias."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "woodsign"
 	anchored = TRUE
 	density = TRUE
 
-/obj/structure/redcoat_activator/attack_hand(mob/living/user)
-	for (var/obj/effect/spawner/mobspawner/british/RC)
+/obj/structure/townmilitia_activator/attack_hand(mob/living/user)
+	for (var/obj/effect/spawner/mobspawner/townmilitia/RC)
 		RC.activated = 1
-	user << "Redcoat spawners are now ENABLED."
+	user << "Town militia spawners are now ENABLED."
 	return
 
-/obj/structure/redcoat_deactivator
-	name = "Deactivate redcoats"
-	desc = "Deactivate the redcoats."
+/obj/structure/townmilitia_deactivator
+	name = "Deactivate town militias"
+	desc = "Deactivate the town militias."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "woodsign"
 	anchored = TRUE
 	density = TRUE
 
-/obj/structure/redcoat_deactivator/attack_hand(mob/living/user)
-	for (var/obj/effect/spawner/mobspawner/british/RC)
+/obj/structure/townmilitia_deactivator/attack_hand(mob/living/user)
+	for (var/obj/effect/spawner/mobspawner/townmilitia/RC)
 		RC.activated = 0
-	user << "Redcoat spawners are now DISABLED."
+	user << "Town militia spawners are now DISABLED."
 	return
 
-/obj/structure/redcoat_configurator
-	name = "Configure redcoats"
-	desc = "Configure the spawn points for redcoats."
+/obj/structure/townmilitia_configurator
+	name = "Configure town militias"
+	desc = "Configure the spawn points for town militias."
 	icon = 'icons/obj/decals.dmi'
 	icon_state = "woodsign"
 	anchored = TRUE
 	density = TRUE
 
-/obj/structure/redcoat_configurator/attack_hand(mob/living/user)
-	var/maxamount = input(user, "What is the maximum ammount of redcoats that can be alive, per spawn point? 1 to 50. Default 5.") as num
+/obj/structure/townmilitia_configurator/attack_hand(mob/living/user)
+	var/maxamount = input(user, "What is the maximum ammount of town militias that can be alive, per spawn point? 1 to 50. Default 5.") as num
 	maxamount = Clamp(maxamount, 1, 50)
 	var/timer = input(user, "What is the delay between spawnings, in seconds? The real value will vary between 100% and 150% of the value you put here. 5 to 300. Default 75.") as num
 	timer = Clamp(timer, 5, 300)
 	timer *= 10
-	for (var/obj/effect/spawner/mobspawner/british/RC)
+	for (var/obj/effect/spawner/mobspawner/townmilitia/RC)
 		RC.max_number = maxamount
 		RC.timer = timer
-	user << "Redcoat spawners have been configured to [timer/10] seconds, [maxamount] maximum number."
+	user << "Town militia spawners have been configured to [timer/10] seconds, [maxamount] maximum number."
 	return

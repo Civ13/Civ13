@@ -106,3 +106,10 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/british
 	timer = 750
+
+/obj/effect/spawner/mobspawner/townmilitia
+	name = "townmilitia spawner"
+	max_number = 5
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/townmilitia
+	timer = 750
