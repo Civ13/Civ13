@@ -27,7 +27,7 @@
 	var/corpse = /mob/living/carbon/human/corpse/british
 	var/weapon1 = /obj/item/weapon/material/sword/sabre
 
-	faction = BRITISH
+	faction = CIVILIAN
 
 
 /mob/living/simple_animal/hostile/british/death()
