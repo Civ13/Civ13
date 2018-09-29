@@ -97,7 +97,7 @@
 	var/timer = input(user, "What is the delay between spawnings, in seconds? The real value will vary between 100% and 150% of the value you put here. 5 to 300. Default 75.") as num
 	timer = Clamp(timer, 5, 300)
 	timer *= 10
-	for (var/obj/effect/spawner/mobspawner/redcoats/RC)
+	for (var/obj/effect/spawner/mobspawner/british/RC)
 		RC.max_number = maxamount
 		RC.timer = timer
 	user << "Redcoat spawners have been configured to [timer/10] seconds, [maxamount] maximum number."
