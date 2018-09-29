@@ -64,27 +64,28 @@
 	for (var/obj/item/I in contents)
 		if (istype(I, /obj/item/stack/ore))
 			if (istype(I, /obj/item/stack/ore/diamond))
-				contents += new/obj/item/stack/material/diamond(src)
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/diamond(src)
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/glass))
-				contents += new/obj/item/stack/material/glass(src)
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/glass(src)
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/gold))
-				contents += new/obj/item/stack/material/gold(src)
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/gold(src)
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/silver))
-				contents += new/obj/item/stack/material/silver(src)
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/silver(src)
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/iron))
-				contents += new/obj/item/stack/material/iron(src)
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/stack/ore/glass))
-				contents += new/obj/item/stack/material/glass(src)
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/iron(src)
 				contents -= I
 				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
