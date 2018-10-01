@@ -745,5 +745,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\colony.dmm"
+#include "maps\cursed_island.dmm"
 // END_INCLUDE
