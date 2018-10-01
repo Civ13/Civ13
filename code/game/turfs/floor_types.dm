@@ -297,9 +297,18 @@ var/global/list/GrassEdgeCache
 	name = "Deep Water"
 	icon_state = "seadeep"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
-	density = TRUE
 	water_level = 200
+	density = FALSE
 
+/turf/floor/plating/beach/water/deep/CanPass(atom/movable/mover)
+	if (istype(mover, /obj/effect/effect/smoke))
+		return TRUE
+	else if (istype(mover, /obj/item/projectile))
+		return TRUE
+	else if (istype(mover, /mob))
+		return FALSE
+	else
+		return ..()
 /turf/floor/plating/beach/water/swamp
 	name = "Swamp Water"
 	move_delay = 3
