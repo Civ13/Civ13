@@ -299,13 +299,14 @@ var/global/list/GrassEdgeCache
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
 	density = FALSE
+	iscovered = FALSE
 
 /turf/floor/plating/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
 		return TRUE
-	else if (istype(mover, /mob))
+	else if ((istype(mover, /mob)) && !iscovered)
 		return FALSE
 	else
 		return ..()

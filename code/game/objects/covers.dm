@@ -95,6 +95,8 @@
 		T.density = FALSE
 		T.water_level = 0
 		T.move_delay = 0
+		if (istype(T, /turf/floor/plating/beach/water/deep))
+			T.iscovered = TRUE
 	return TRUE
 
 
