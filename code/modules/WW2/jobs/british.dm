@@ -356,3 +356,208 @@
 
 
 	return TRUE
+
+//////////////////////////////ARMY////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/datum/job/british/army_commander
+	title = "British Lieutenant"
+	en_meaning = "Infantry Commander"
+	rank_abbreviation = "Lt."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRNCap"
+	is_officer = TRUE
+	SL_check_independent = TRUE
+	is_army = TRUE
+	is_commander = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/british/army_commander/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_officer_army(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_r_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, the commander or this company. Organize your <b>Sergeant</b> and lead your country to victory!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_VERY_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+/datum/job/british/army_officer
+	title = "British Sergeant"
+	en_meaning = "Infantry Squad Leader"
+	rank_abbreviation = "Sgt."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRNMidshipman"
+	is_officer = TRUE
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 20
+
+/datum/job/british/army_officer/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>, squad leader. Organize your group of <b>Soldiers</b> according to your <b>Lieutenant</b>'s orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/british/field_medic
+	title = "British Army Doctor"
+	en_meaning = "Infantry Field Medic"
+	rank_abbreviation = "Doc."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRNSurgeon"
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 6
+
+/datum/job/british/field_medic/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the infantry healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+
+
+	return TRUE
+
+/datum/job/british/soldier
+	title = "British Army Soldier"
+	en_meaning = "Infantry Soldier"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 12
+	max_positions = 100
+
+/datum/job/british/soldier/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a basic infantry soldier of the British Colonial Army. Follow your Officer's orders!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+
+	return TRUE
+
+/datum/job/british/chasseur
+	title = "British Light Infantry"
+	en_meaning = "Light Infantry"
+	rank_abbreviation = "Cha."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_army = TRUE
+
+	// AUTOBALANCE
+	min_positions = 4
+	max_positions = 20
+
+/datum/job/british/chasseur/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chasseur_british(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/sabre(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_VERY_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE

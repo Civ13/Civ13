@@ -369,7 +369,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_french(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_r_store)
@@ -411,7 +411,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>[title]</b>, squad leader. Organize your group of <b>Soldat</b> according to your <b>Lieutenant</b>'s orders!")
 	H.setStat("strength", STAT_NORMAL)
@@ -530,7 +530,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/chasseur_french(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/cutlass(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/sabre(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")

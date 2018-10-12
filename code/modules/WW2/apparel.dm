@@ -340,6 +340,12 @@
 	item_state = "british_soldier_jacket"
 	worn_state = "british_soldier_jacket"
 
+/obj/item/clothing/head/chasseur_british
+	name = "British feathered hat"
+	desc = "A feathered black bicorne, used by the British Light Infantry."
+	icon_state = "chasseur_br"
+	item_state = "chasseur_br"
+
 /////////indian stuff/////////
 
 /obj/item/clothing/under/indian1
@@ -783,10 +789,17 @@
 
 /obj/item/clothing/suit/storage/jacket/french_officer_army
 	name = "French Army jacket"
-	desc = "A standard army jacket of the French Army. Withe with blue trimmings."
+	desc = "A standard army jacket of the French Army. White with blue trimmings."
 	icon_state = "french_army"
 	item_state = "french_army"
 	worn_state = "french_army"
+
+/obj/item/clothing/suit/storage/jacket/british_officer_army
+	name = "British Army jacket"
+	desc = "A standard army jacket of the French Army. Red and White."
+	icon_state = "british_officer"
+	item_state = "british_officer"
+	worn_state = "british_officer"
 
 /obj/item/clothing/under/dutch_soldier
 	name = "Dutch Army uniform"
