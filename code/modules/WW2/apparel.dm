@@ -632,6 +632,17 @@
 	item_state = "french_sailor3"
 	worn_state = "french_sailor3"
 
+/obj/item/clothing/head/french_army
+	name = "French Army tricorne"
+	desc = "A white and blue tricorne, used by the French Army."
+	icon_state = "tricorne_french"
+	item_state = "tricorne_french"
+
+/obj/item/clothing/head/chasseur_french
+	name = "French feathered hat"
+	desc = "A feathered black bicorne, used by the French Light Infantry."
+	icon_state = "chasseur_fr"
+	item_state = "chasseur_fr"
 /////////Dutch/////////
 /obj/item/clothing/head/tricorne_dutch
 	name = "United Provinces Navy tricorne"
@@ -772,10 +783,10 @@
 
 /obj/item/clothing/suit/storage/jacket/french_officer_army
 	name = "French Army jacket"
-	desc = "A standard army jacket of the French Army. Blue with golden buttons."
-	icon_state = "french_officer"
-	item_state = "french_officer"
-	worn_state = "french_officer"
+	desc = "A standard army jacket of the French Army. Withe with blue trimmings."
+	icon_state = "french_army"
+	item_state = "french_army"
+	worn_state = "french_army"
 
 /obj/item/clothing/under/dutch_soldier
 	name = "Dutch Army uniform"
@@ -790,3 +801,10 @@
 	icon_state = "portuguese_army"
 	item_state = "portuguese_army"
 	worn_state = "portuguese_army"
+
+/obj/item/clothing/under/french_soldier
+	name = "French Army uniform"
+	desc = "A set of French army clothes. White shirt with blue and white trousers."
+	icon_state = "french_army"
+	item_state = "french_army"
+	worn_state = "french_army"

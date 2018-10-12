@@ -9,6 +9,7 @@
 #define MAP_FOUR_COLONIES "FOUR_COLONIES"
 #define MAP_RECIFE "RECIFE"
 #define MAP_CURSED_ISLAND "CURSED_ISLAND"
+#define MAP_FIELDS "FIELDS"
 // ideas:
 // ship sailing through the ocean, High-rp
 // pirates boarding a ship

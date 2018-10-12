@@ -90,7 +90,7 @@
 /mob/living/simple_animal/hostile/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	if (isliving(target_mob))
+	if (target_mob.bruteloss<200)
 		var/mob/living/L = target_mob
 		L.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 		return L
