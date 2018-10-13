@@ -168,6 +168,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			log_game("Ending the round due to restart vote.")
 			if (map)
 				map.next_win = world.time - 100
+				processes.mapswap.admin_triggered = FALSE
+				processes.mapswap.ready = TRUE
+				processes.mapswap.fire()
+				log_admin("Map vote triggered by restart vote.")
 			else
 				ticker.finished = TRUE
 
