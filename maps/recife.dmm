@@ -508,7 +508,7 @@
 "jN" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/tribes/swamp)
 "jO" = (/obj/structure/closet/crate/musketball,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/colonies/portuguese{name = "Portuguese Fort"})
 "jP" = (/obj/structure/sink/well,/turf/floor/plating/beach/sand,/area/caribbean/colonies/dutch{location = 1; name = "Dutch Base"})
-"jQ" = (/obj/structure/closet/crate/rations/seeds/vegetables,/turf/floor/plating/grass/wild,/area/caribbean/tribes/swamp)
+"jQ" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/plating/grass/wild,/area/caribbean/tribes/swamp)
 "jR" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood,/area/caribbean/houses/nml_five{name = "Hospital"})
 "jS" = (/turf/floor/wood_broken,/area/caribbean/houses/nml_five{name = "Hospital"})
 "jT" = (/obj/structure/closet/crate/rations/biscuits,/turf/floor/wood,/area/caribbean/houses/nml_six{name = "Storage Area"})

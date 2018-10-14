@@ -124,7 +124,7 @@
 	desc = "a repaired wood floor."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
-	layer = 2.11
+	layer = 2.09
 
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
