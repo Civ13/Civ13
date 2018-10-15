@@ -156,7 +156,7 @@
 "cZ" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/dirt,/area/caribbean/tribes)
 "da" = (/obj/structure/window/sandbag{dir = 8},/obj/structure/window/sandbag,/turf/floor/dirt,/area/caribbean/tribes)
 "db" = (/obj/covers/wood_ship{name = "pier"},/obj/structure/closet/crate/wood,/obj/effect/landmark{name = "SupplyRN"},/turf/floor/dirt,/area/caribbean/transport/one)
-"dc" = (/obj/covers/wood_ship{name = "pier"},/obj/item/weapon/storage/firstaid/surgery,/obj/effect/landmark{name = "SupplyRN"},/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt,/area/caribbean/transport/one)
+"dc" = (/obj/covers/wood_ship{name = "pier"},/obj/item/weapon/storage/firstaid/surgery,/obj/effect/landmark{name = "SupplyRN"},/obj/item/weapon/storage/firstaid/adv,/turf/floor/dirt,/area/caribbean/transport/one)
 "dd" = (/obj/covers/wood_ship{name = "pier"},/obj/structure/closet/crate/rations/seeds/vegetables,/obj/effect/landmark{name = "SupplyRN"},/turf/floor/dirt,/area/caribbean/transport/one)
 "de" = (/obj/covers/wood_ship{name = "pier"},/obj/structure/closet/crate/iron,/obj/effect/landmark{name = "SupplyRN"},/turf/floor/dirt,/area/caribbean/transport/one)
 "df" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/obj/structure/railing,/turf/floor/dirt,/area/caribbean/tribes)
