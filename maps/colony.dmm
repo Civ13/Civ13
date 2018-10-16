@@ -56,12 +56,13 @@
 "bd" = (/turf/floor/dirt,/area/caribbean/tribes/grasslands{icon_state = "purple3"; location = 0; name = "Caves"})
 "be" = (/obj/structure/wild/burnedbush,/turf/floor/plating/beach/water/swamp{name = "Swamp Water"},/area/caribbean/tribes/swamp)
 "bf" = (/obj/item/weapon/material/hatchet,/obj/item/weapon/material/hatchet,/obj/item/weapon/pickaxe,/obj/item/weapon/pickaxe,/obj/item/weapon/hammer,/obj/item/weapon/hammer,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/structure/closet/crate/empty{name = "tool crate"},/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/dirt,/area/caribbean/tribes)
-"bg" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/dirt,/area/caribbean/tribes)
+"bg" = (/obj/effect/landmark{name = "JoinLateCiv"},/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean/tribes)
 "bi" = (/obj/structure/wild/burnedtree,/turf/floor/plating/grass/wild,/area/caribbean/tribes/swamp)
 "bj" = (/obj/structure/wild/burnedtree,/turf/floor/plating/beach/water/swamp{name = "Swamp Water"},/area/caribbean/tribes/swamp)
 "bk" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/tribes/swamp)
 "bl" = (/obj/structure/wild/palm,/turf/floor/dirt,/area/caribbean/tribes/swamp)
 "bm" = (/obj/structure/wild/junglebush,/turf/floor/plating/grass/wild,/area/caribbean/sea/shallow)
+"bn" = (/obj/effect/spawner/mobspawner/townmilitia{activated = 0; max_range = 2},/obj/effect/landmark{name = "JoinLateCiv"},/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean/tribes)
 "bo" = (/turf/floor/plating/grass/wild,/area/caribbean/sea/shallow)
 "bp" = (/obj/structure/wild/junglebush,/turf/floor/plating/beach/water,/area/caribbean/tribes/swamp)
 "bq" = (/turf/floor/plating/beach/water,/area/caribbean/tribes/swamp)
@@ -74,6 +75,7 @@
 "bx" = (/turf/floor/plating/dirt,/area/caribbean/tribes)
 "by" = (/obj/structure/wild/rock,/turf/floor/dirt,/area/caribbean/tribes/swamp)
 "bz" = (/turf/floor/plating/beach/sand,/area/caribbean/tribes/swamp)
+"bA" = (/obj/effect/landmark/npctarget,/obj/effect/landmark{name = "JoinLateCiv"},/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean/tribes)
 "bB" = (/turf/floor/plating/sand,/area/caribbean/tribes)
 "bC" = (/obj/structure/wild/junglebush,/turf/floor/plating/beach/sand,/area/caribbean/tribes/swamp)
 "bD" = (/obj/structure/wild/rock,/turf/floor/plating/grass/wild,/area/caribbean/tribes/swamp)
@@ -90,6 +92,7 @@
 "bO" = (/obj/structure/wild/rock,/turf/floor/plating/beach/water/swamp{name = "Swamp Water"},/area/caribbean/tribes)
 "bP" = (/turf/floor/dirt/underground,/area/caribbean/tribes)
 "bQ" = (/obj/structure/wild/junglebush,/turf/floor/plating/dirt,/area/caribbean/tribes)
+"bR" = (/obj/effect/landmark{name = "JoinLateCiv"},/obj/covers/cobblestone,/turf/floor/plating/grass/wild,/area/caribbean/tribes)
 "bS" = (/obj/structure/wild/smallbush,/turf/floor/plating/sand,/area/caribbean/tribes/beach)
 "bT" = (/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
 "bU" = (/obj/structure/wild/burnedbush,/turf/floor/plating/beach/sand,/area/caribbean/tribes/beach)
@@ -134,11 +137,6 @@
 "dn" = (/obj/structure/sink/well,/obj/covers/cobblestone,/turf/floor/dirt,/area/caribbean/tribes)
 "do" = (/turf/floor/plating/beach/water,/area/caribbean)
 "dp" = (/obj/structure/noticeboard{layer = 3.5; name = "OFFICIAL ANNOUNCEMENTS"},/obj/structure/barricade/ship/mast{name = "announcements pole"},/turf/floor/dirt,/area/caribbean/tribes)
-"dA" = (/obj/effect/landmark{name = "JoinLateCiv"},/turf/floor/plating/grass/wild,/area/caribbean/tribes)
-"dC" = (/obj/effect/landmark{name = "JoinLateCiv"},/turf/floor/dirt,/area/caribbean/tribes)
-"dG" = (/obj/structure/wild/smallbush,/obj/effect/landmark{name = "JoinLateCiv"},/turf/floor/dirt,/area/caribbean/tribes)
-"dH" = (/obj/effect/spawner/mobspawner/townmilitia{activated = 0; max_range = 2},/obj/effect/landmark{name = "JoinLateCiv"},/turf/floor/dirt,/area/caribbean/tribes)
-"dI" = (/obj/effect/landmark/npctarget,/obj/effect/landmark{name = "JoinLateCiv"},/turf/floor/dirt,/area/caribbean/tribes)
 "ev" = (/mob/living/simple_animal/turkey_m,/turf/floor/plating/grass/wild,/area/caribbean/tribes)
 "ex" = (/mob/living/simple_animal/parrot,/turf/floor/plating/grass/wild,/area/caribbean/tribes)
 "ey" = (/mob/living/simple_animal/turkey_f,/turf/floor/plating/grass/wild,/area/caribbean/tribes)
@@ -493,13 +491,13 @@ abadababaxaxayaxaxabababahahababagababababhTababababahahababagababababababababab
 ababababaxaxayaxaxadabababaeabababababababhTabababababaeabababaeacababapabababababababababababababagababacacababababababababababababadabababababacabababacabababadaiaibsbscBbsbsaiaiabababapababababababababaiababababadadadababababagabababababababababababababababamamamamamajajajakakakakakakakakakakakakakakakakak
 abababadabaxayaxaxababababababababababababhXadababababababaiaiababababababagababababapabababababababababacabababababababapabapababacababababacabapababaiababababababaiaCaCaCaCdpaiaiabahadacabadabagabapacabaFabababadababababababababahababababababahagabababababamabamamajajajajajakakakakajajakakakakakakakakakakak
 axaxaxaxaxaxaxaxaxababaiabababapababababaphTabababababababapababababadabababadabababababacabadabapabababapababababababaoabahabadabababababababacabadabaiaiaiaiababadaiaCaCaCaCaiabababababababababaiaiaiaiaiababababababahadabababadabababababababababababababagababamamamajajajajakakakakajajajakakakakakakakakakakak
-axaxaxaxaxayaxaxababagababababababababababhTababagababababababababagababababahadagababababababababababababababababababababagababacacabapabadababababababapaiababaiabaidhaibfdlaiabagabaiabbgbgadaiaiaiabaiadadababagababababababababababababababadadabababababababamamaqamamajajajajajajajajajajajakakakakakakakakakak
-ayayaxaxaxaxaxaxabababapabapabababaiaiaiaihYabarabababababababababababadabababaiababababababababababagabababahabaoabababababababacabababababababadabababaeababaiaiababaiaiaiaiabdAaiabdCabdCdCdCaiaiaiaiaiababababababaeababababababababagapababababacababababababababacamamamamamajajajamamamajajajajajakakakakakakak
-axaxaxaxaxaxaxaxababababaBabababababababadhTabababagababababababagabababababagababagagababacababababababadabababababadabapabababapabadababapabababababagabababababababababacaiaidAdCdCdCdCdCdGdCaiaiabapababadababababababapabapababababababababababahabaeababababababababamamamamamaqamamamamamamamajajajajajakakakak
-axaxababababadabababababaiabababaeaeabababibabadabababapadadabababababababababababababagabababababacacababacababaoababababababababababadababababadababababaoaoababababaiadababaidCdHdCdCdIdCdCdHaiabababababagababababababagabababacabababababababadababababababababababagadadamamamamamamamamamamamamajajajajakakakak
-axaxaxaxabagabababapababaiababababababadadhXabababacabababababababababababababagababababadabababababababababababababababagabahahababababagacabababababababapabababacabaiabababagdAdAdCdCdCdAdAdAabababagabacababapababababbxabababababapababababapababagabababapabababababababamamamamamamamamamamamamajajajajajakakak
-axaxaxaxababababababaeacaiababagabaeabababhTababahabagabababababababapabababaoaoababacababadababababababacababababababadabababababaeabababababababababadababababaeabababababadabdAdCdCdCdCdAdAdAaoaoadabababagabababacababababababababababababababababababapabababababagababababamamamamamamamamamamamajajajajajakakak
-ayayaxaxababababbxabababababadabababababaphTababaeabababababababababababababababaoababababababababababbxbMadadababadababababababagabababacadadabababagabababababababababababacabdAdAdCdCdCdAdndAababacabadababababababababababababababababababababagabababababababababaoapabababamamamamamamamamamamamamamajajajakakak
+axaxaxaxaxayaxaxababagababababababababababhTababagababababababababagababababahadagababababababababababababababababababababagababacacabapabadababababababapaiababaiabaidhaibfdlaiabagabaiabababadaiaiaiabaiadadababagababababababababababababababadadabababababababamamaqamamajajajajajajajajajajajakakakakakakakakakak
+ayayaxaxaxaxaxaxabababapabapabababaiaiaiaihYabarabababababababababababadabababaiababababababababababagabababahabaoabababababababacabababababababadabababaeababaiaiababaiaiaiaiabaiaiabaiabaiaiabaiaiaiaiaiababababababaeababababababababagapababababacababababababababacamamamamamajajajamamamajajajajajakakakakakakak
+axaxaxaxaxaxaxaxababababaBabababababababadhTabababagababababababagabababababagababagagababacababababababadabababababadabapabababapabadababapabababababagababababababbgbgbgbgbgaiaiaiaiaiaiaiaiaiaiaiabapababadababababababapabapababababababababababahabaeababababababababamamamamamaqamamamamamamamajajajajajakakakak
+axaxababababadabababababaiabababaeaeabababibabadabababapadadabababababababababababababagabababababacacababacababaoababababababababababadababababadababababaoaoabababbnbgdnbAbgaiaiaiaiaiaiaiaiaiaiabababababagababababababagabababacabababababababadababababababababababagadadamamamamamamamamamamamamajajajajakakakak
+axaxaxaxabagabababapababaiababababababadadhXabababacabababababababababababababagababababadabababababababababababababababagabahahababababagacabababababababapabababacbRbgbgbgbgagaiaiaiaiaiaiaiababababagabacababapababababbxabababababapababababapababagabababapabababababababamamamamamamamamamamamamajajajajajakakak
+axaxaxaxababababababaeacaiababagabaeabababhTababahabagabababababababapabababaoaoababacababadababababababacababababababadabababababaeabababababababababadababababaeabababababadababaiaiaiaiaiaiabaoaoadabababagabababacababababababababababababababababababapabababababagababababamamamamamamamamamamamajajajajajakakak
+ayayaxaxababababbxabababababadabababababaphTababaeabababababababababababababababaoababababababababababbxbMadadababadababababababagabababacadadabababagabababababababababababacabaiaiaiaiaiaiaoabababacabadababababababababababababababababababababagabababababababababaoapabababamamamamamamamamamamamamamajajajakakak
 ayayaxaxapababababadabapacabagabababacababhTabababababababababadadabababababababababababababababababahahbxabagabababababababababadababababadababaoabababababadababadadapabacababacaeacaeabababagabacabababababababababeyabapababadabababababababadababababababababacapabababababababamamamaqamamamamamajamajajakakakak
 axayaxaxabababagabababababababababababadabhTababababababababapabababababababababarababababababababababaeabababababababababacababababababapabababababadabababababapababababacaiaeababacaiabacadabaiacababapabababababaeabababababababababaeaeabababababababacababababagabagadadababamamamamaqamamamamamajajajajakakakak
 axaxaxaxabababahadababababababapabababacachTabadababababababababababababababaxaxaxabababababapababababababababababababahababacabababababacabababababababababababacapabaoaoabababapababababapabacababababababababababababababababababadabababababababababapababadabababababababapabamamamamamamamamamajajajajajakakakak
