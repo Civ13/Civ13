@@ -298,7 +298,7 @@
 
 /obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone))
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		user.do_attack_animation(src)
 		if (healthamount == 1)
 			if (prob(25))
