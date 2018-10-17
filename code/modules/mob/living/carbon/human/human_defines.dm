@@ -133,7 +133,6 @@
 		"pistol" = list(100,100),
 		"bows" = list(100,100),
 		"medical" = list(100,100),
-		"survival" = list(100,100),
 		"stamina" = list(100,100))
 
 	var/has_hunger_and_thirst = TRUE

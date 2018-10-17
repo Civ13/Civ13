@@ -22,6 +22,21 @@
 	var/tribe = "goose"
 	layer = 3.2
 
+/obj/structure/religious/animal_statue
+	name = "statue"
+	desc = "A stone statue."
+	icon = 'icons/obj/cross.dmi'
+	icon_state = "goose"
+	density = TRUE
+	anchored = TRUE
+	layer = 3.2
+
+/obj/structure/religious/animal_statue/New()
+	..()
+	var/randimg = pick("bear","mouse","goose","wolf","turkey","monkey")
+	icon_state = randimg
+	name = "[randimg] statue"
+
 /obj/structure/religious/woodcross1
 	name = "small wood cross"
 	desc = "A small engraved wood cross."

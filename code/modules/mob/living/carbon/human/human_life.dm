@@ -62,13 +62,17 @@
 	#define HUNGER_THIRST_MULTIPLIER 0.80
 
 	if (has_hunger_and_thirst)
-		switch (stat)
-			if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-				nutrition -= ((0.27/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.27/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
-			if (UNCONSCIOUS) // takes over an hour to starve
-				nutrition -= ((0.18/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.18/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
+		if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+			nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+			water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+		else
+			switch (stat)
+				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+					nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+				if (UNCONSCIOUS) // takes over an hour to starve
+					nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
 
 	#undef HUNGER_THIRST_MULTIPLIER
 
@@ -92,8 +96,6 @@
 	switch (stat)
 		if (CONSCIOUS)
 			adjustOxyLoss(-5)
-		if (UNCONSCIOUS) // approx 22 minutes for 100 oxyloss, with a lot of randomness thrown in
-			adjustOxyLoss(pick(0.1, 0.2))
 
 	..()
 

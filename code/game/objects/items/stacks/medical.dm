@@ -221,7 +221,7 @@
 					user << "<span class='notice'>You must stand still to salve wounds.</span>"
 					return TRUE
 				user.visible_message( 	"<span class='notice'>[user] covers wounds on [M]'s [affecting.name] with a healing ointment.</span>", \
-										"<span class='notice'>You cover wounds on [M]'s [affecting.name] with a healing ointment .</span>" )
+										"<span class='notice'>You cover wounds on [M]'s [affecting.name] with a healing ointment.</span>" )
 				affecting.heal_damage(0,heal_burn)
 				use(1)
 				affecting.salve()

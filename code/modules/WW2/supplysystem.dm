@@ -203,7 +203,7 @@
 			return
 		else if (money == 0)
 			return
-		else if (money > 1600)
+		else if (money > 10000)
 			user << "Too much money to pay you back! Buy something else to reduce the money deposited."
 			return
 

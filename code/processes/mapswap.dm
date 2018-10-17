@@ -1,6 +1,7 @@
 /process/mapswap
 	// map = required players
 	var/list/maps = list(
+	/*
 		MAP_CURSED_ISLAND = 0,
 		MAP_NAVAL = 0,
 		MAP_ISLAND = 0,
@@ -13,13 +14,16 @@
 		MAP_COLONY = 10,
 		MAP_ROBUSTA = 15,
 		MAP_FOUR_COLONIES = 20,
-
+	*/
+		MAP_TRIBES = 0,
+		MAP_COLONY = 0,
+		MAP_FOUR_COLONIES = 35,
 	)
 
 	var/ready = TRUE
 	var/admin_triggered = FALSE
 	var/finished_at = -1
-	var/next_map_title = "Naval"
+	var/next_map_title = "Colony"
 
 /process/mapswap/setup()
 	name = "mapswap"

@@ -98,7 +98,7 @@ bullet_act
 				var/graze_chance_multiplier = 5
 				if (list("head", "mouth", "eyes").Find(def_zone))
 					++graze_chance_multiplier
-				graze_chance_multiplier += (1 * getStatCoeff("survival"))
+				graze_chance_multiplier += 1
 
 				if (lastMovedRecently(accuracy_check = TRUE))
 					if (prob(graze_chance_multiplier * max(distcheck - 7, 0)))
