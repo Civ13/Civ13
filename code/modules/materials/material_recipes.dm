@@ -145,7 +145,8 @@ var/list/engineer_exclusive_recipe_types = null
 
 
 /material/cloth/generate_recipes()
-	recipes = new/datum/stack_recipe_list("hats", list(
+	..()
+	recipes += new/datum/stack_recipe_list("hats", list(
 		new/datum/stack_recipe("kerchief", /obj/item/clothing/head/kerchief, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("black bicorne", /obj/item/clothing/head/bicorne_british_soldier, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("black tricorne", /obj/item/clothing/head/tricorne_black, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
