@@ -110,6 +110,7 @@
 	icon_state = "sheet-diamond"
 	default_type = "diamond"
 	value = 40
+	w_class = 1.0
 
 /obj/item/stack/material/rope
 	name = "Rope"
@@ -129,7 +130,8 @@
 	desc = "dried opium poppies. Opium can be extracted."
 	icon_state = "poppy"
 	default_type = "poppy"
-	value = 6
+	value = 5
+	w_class = 1.0
 
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)
@@ -183,7 +185,7 @@
 	name = "cotton pile"
 	icon_state = "sheet-cotton"
 	default_type = "cotton"
-	value = 1
+	value = 2
 
 /obj/item/stack/material/cloth
 	name = "cloth"

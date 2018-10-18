@@ -181,14 +181,15 @@ obj/structure/closet/crate/empty
 
 /obj/structure/closet/crate/rations/seeds/trees
 	name = "Seeds: Trees"
-	paths = list(/obj/item/stack/farming/seeds/apple = 5,
-				/obj/item/stack/farming/seeds/orange = 5,)
-	cratevalue = 20 //seeds don't have a value, effort into farming harvesting and exporting is already lots of work
+	paths = list(/obj/item/stack/farming/seeds/apple = 4,
+				/obj/item/stack/farming/seeds/tree = 4,
+				/obj/item/stack/farming/seeds/orange = 4,)
+	cratevalue = 30 //seeds don't have a value, effort into farming harvesting and exporting is already lots of work
 
 /obj/structure/closet/crate/rations/seeds/cereals
 	name = "Seeds: Cereals (+yeast)"
-	paths = list(/obj/item/stack/farming/seeds/wheat = 5,
-				/obj/item/stack/farming/seeds/corn = 5,
+	paths = list(/obj/item/stack/farming/seeds/wheat = 6,
+				/obj/item/stack/farming/seeds/corn = 6,
 				/obj/item/weapon/reagent_containers/food/condiment/enzyme = 1,
 				/obj/item/weapon/reagent_containers/food/condiment/enzyme = 1)
 	cratevalue = 50
@@ -202,10 +203,11 @@ obj/structure/closet/crate/empty
 
 /obj/structure/closet/crate/rations/seeds/cashcrops
 	name = "Seeds: Cash Crops"
-	paths = list(/obj/item/stack/farming/seeds/tobacco = 4,
-				/obj/item/stack/farming/seeds/sugarcane = 4,
-				/obj/item/stack/farming/seeds/hemp = 4,)
-	cratevalue = 50
+	paths = list(/obj/item/stack/farming/seeds/tobacco = 3,
+				/obj/item/stack/farming/seeds/sugarcane = 3,
+				/obj/item/stack/farming/seeds/hemp = 3,
+				/obj/item/stack/farming/seeds/cotton = 3,)
+	cratevalue = 60
 
 /obj/structure/closet/crate/rations/seeds/medicinal
 	name = "Seeds: Medicinal"
