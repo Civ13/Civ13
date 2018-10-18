@@ -655,6 +655,7 @@
 #include "code\modules\WW2\noghost.dm"
 #include "code\modules\WW2\officer.dm"
 #include "code\modules\WW2\ores.dm"
+#include "code\modules\WW2\production.dm"
 #include "code\modules\WW2\roundstart_etc.dm"
 #include "code\modules\WW2\signs_portraits_propaganda.dm"
 #include "code\modules\WW2\snacks.dm"

@@ -46,8 +46,8 @@
 	worn_state = "civuni3"
 
 /obj/item/clothing/under/civ5
-	name = "Black Trousers"
-	desc = "Black trousers. That's it."
+	name = "Green Colonial Clothing"
+	desc = "A set composed of a green linen shirt and black trousers."
 	icon_state = "civuni5"
 	item_state = "civuni5"
 	worn_state = "civuni5"
@@ -152,35 +152,35 @@
 //pirate stuff
 
 /obj/item/clothing/suit/storage/jacket/piratejacket1
-	name = "black pirate jacket"
+	name = "black jacket"
 	desc = "A long black jacket."
 	icon_state = "piratejacket1"
 	item_state = "piratejacket1"
 	worn_state = "piratejacket1"
 
 /obj/item/clothing/suit/storage/jacket/piratejacket2
-	name = "fancy pirate jacket"
-	desc = "A fancy pirate jacket. This one is brown."
+	name = "fancy brown jacket"
+	desc = "A fancy jacket. This one is brown."
 	icon_state = "piratejacket2"
 	item_state = "piratejacket2"
 	worn_state = "piratejacket2"
 
 /obj/item/clothing/suit/storage/jacket/piratejacket3
-	name = "blue pirate vest"
-	desc = "A sleeveless pirate vest. This one is blue."
+	name = "blue vest"
+	desc = "A sleeveless vest. This one is blue."
 	icon_state = "piratejacket3"
 	item_state = "piratejacket3"
 	worn_state = "piratejacket3"
 
 /obj/item/clothing/suit/storage/jacket/piratejacket4
-	name = "black pirate vest"
-	desc = "A sleeveless pirate vest. This one is black."
+	name = "black vest"
+	desc = "A sleeveless vest. This one is black."
 	icon_state = "piratejacket4"
 	item_state = "piratejacket4"
 	worn_state = "piratejacket4"
 
 /obj/item/clothing/suit/storage/jacket/piratejacket5
-	name = "fancy jacket"
+	name = "fancy red jacket"
 	desc = "A fancy jacket. This one is red."
 	icon_state = "piratejacket5"
 	item_state = "piratejacket5"
@@ -227,7 +227,7 @@
 	item_state = "piratehat"
 
 /obj/item/clothing/head/piratebandana1
-	name = "Pirate bandana"
+	name = "bandana"
 	icon_state = "piratebandana1"
 	item_state = "piratebandana1"
 	flags_inv = BLOCKHAIR
@@ -743,7 +743,7 @@
 	item_state = "tricorne_black"
 
 /obj/item/clothing/shoes/blackboots1
-	name = "black sailor boots"
+	name = "black boots"
 	desc = "Classic black boots."
 	icon_state = "sailorboots1"
 	item_state = "sailorboots1"

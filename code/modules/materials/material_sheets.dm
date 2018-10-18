@@ -178,6 +178,13 @@
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
 
+
+/obj/item/stack/material/cotton
+	name = "cotton pile"
+	icon_state = "sheet-cotton"
+	default_type = "cotton"
+	value = 1
+
 /obj/item/stack/material/cloth
 	name = "cloth"
 	icon_state = "sheet-cloth"
