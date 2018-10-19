@@ -22,13 +22,16 @@
 	var/applies_material_colour = TRUE
 
 /obj/structure/bed/wood
-	material/material = /material/wood
+	material = "wood"
 
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
 	color = null
 	if (!new_material)
-		new_material = DEFAULT_WALL_MATERIAL
+		if (!material)
+			new_material = DEFAULT_WALL_MATERIAL
+		else
+			new_material = material
 	material = get_material_by_name(new_material)
 	if (!istype(material))
 		qdel(src)
@@ -106,9 +109,7 @@
 			qdel(C)
 			return
 		var/padding_type //This is awful but it needs to be like this until tiles are given a material var.
-		if (istype(W,/obj/item/stack/tile/carpet))
-			padding_type = "carpet"
-		else if (istype(W,/obj/item/stack/material))
+		if (istype(W,/obj/item/stack/material))
 			var/obj/item/stack/material/M = W
 			if (M.material && (M.material.flags & MATERIAL_PADDING))
 				padding_type = "[M.material.name]"

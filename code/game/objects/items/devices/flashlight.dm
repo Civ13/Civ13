@@ -44,9 +44,6 @@
 	add_fingerprint(user)
 	if (on && user.targeted_organ == "eyes")
 
-		if ((CLUMSY in user.mutations) && prob(50))	//too dumb to use flashlight properly
-			return ..()	//just hit them in the head
-
 		var/mob/living/carbon/human/H = M	//mob has protective eyewear
 		if (istype(H))
 			for (var/obj/item/clothing/C in list(H.head,H.wear_mask,H.glasses))
@@ -76,7 +73,7 @@
 					user << "<span class='notice'>There's visible lag between left and right pupils' reactions.</span>"
 
 				var/list/pinpoint = list("oxycodone"=1,"tramadol"=5)
-				var/list/dilating = list("space_drugs"=5,"mindbreaker"=1)
+				var/list/dilating = list("peyote"=5,"mindbreaker"=1)
 				if (M.reagents.has_any_reagent(pinpoint) || H.ingested.has_any_reagent(pinpoint))
 					user << "<span class='notice'>\The [M]'s pupils are already pinpoint and cannot narrow any more.</span>"
 				else if (M.reagents.has_any_reagent(dilating) || H.ingested.has_any_reagent(dilating))
@@ -89,69 +86,3 @@
 				flick("flash", M.HUDtech["flash"])
 	else
 		return ..()
-
-// FLARES
-
-/obj/item/flashlight/flare
-	name = "torch"
-	desc = "A stick of wood with grease on one end."
-	w_class = 2.0
-	brightness_on = 4 // Pretty bright.
-	light_power = 2
-	light_color = "#e58775"
-	icon_state = "flare"
-	off_state = "flare"
-	on_state = "flare-on"
-	item_state = "flare"
-	action_button_name = null //just pull it manually, neckbeard.
-	var/fuel = 0
-	var/on_damage = 7
-	var/produce_heat = 1500
-	turn_on_sound = 'sound/effects/Custom_flare.ogg'
-	value = 4
-
-/obj/item/flashlight/flare/nighttime
-/obj/item/flashlight/flare/nighttime/New()
-	..()
-	fuel = INFINITY
-	turn_on()
-
-/obj/item/flashlight/flare/New()
-	fuel = rand(800, 1000) // Sorry for changing this so much but I keep under-estimating how long X number of ticks last in seconds.
-	..()
-
-/obj/item/flashlight/flare/process()
-	var/turf/pos = get_turf(src)
-	if (pos)
-		pos.hotspot_expose(produce_heat, 5)
-	fuel = max(fuel - 1, FALSE)
-	if (!fuel || !on)
-		turn_off()
-		if (!fuel)
-			icon_state = "[initial(icon_state)]-empty"
-		processing_objects -= src
-
-/obj/item/flashlight/flare/proc/turn_off()
-	on = FALSE
-	force = initial(force)
-	damtype = initial(damtype)
-	update_icon()
-
-/obj/item/flashlight/flare/attack_self(mob/user)
-	if (turn_on(user))
-		playsound(loc, turn_on_sound, 75, TRUE)
-		user.visible_message("<span class='notice'>\The [user] lights \the [src].</span>", "<span class='notice'>You ignite the torch!</span>")
-
-/obj/item/flashlight/flare/proc/turn_on(var/mob/user)
-	if (on)
-		return FALSE
-	if (!fuel)
-		if (user)
-			user << "<span class='notice'>The torch is out.</span>"
-		return FALSE
-	on = TRUE
-	force = on_damage
-	damtype = "fire"
-	processing_objects += src
-	update_icon()
-	return TRUE

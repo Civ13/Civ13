@@ -624,32 +624,13 @@ var/list/vocal_emotes = list(
 					if (r_hand) unEquip(r_hand)
 					next_emote["surrender"] = world.time + 600
 
-			if ("dab")
-				if (config.allow_dabbing && !restrained())
-					m_type = 1
-					message = "dabs."
-					for (var/mob/living/L in get_step(src, dir))
-						message = "dabs on [L]."
-						goto enddab
-					for (var/obj/O in get_step(src, dir))
-						if (istype(O, /obj/structure/noose))
-							var/obj/structure/noose/N = O
-							if (N.hanging)
-								message = "dabs on [N.hanging]."
-								goto enddab
-						else if (!O.density)
-							if (!istype(O, /atom/movable/lighting_overlay) && !isitem(O) && !istype(O, /obj/effect))
-								if (O.name)
-									message = "dabs on \the [O]."
-									goto enddab
-					enddab
 
 			if ("help")
 				src << {"blink, blink_r, blush, bow-(none)/mob, burp, choke, chuckle, clap, collapse, cough,
-	cry, dab, drool, eyebrow, frown, gasp, giggle, groan, grumble, handshake, hug-(none)/mob,
+	cry, drool, eyebrow, frown, gasp, giggle, groan, grumble, handshake, hug-(none)/mob,
 	grin, laugh, look-(none)/mob, moan, mumble, nod, point-atom, raise, salute, shake, shiver, shrug,
 	sigh, signal-#1-10, smile, sneeze, sniff, snore, stare-(none)/mob, scream, surrender, tremble, twitch,
-	wink, yawn, dab, charge"}
+	wink, yawn, charge"}
 
 			else
 				src << "<span class = 'notice'>Unusable emote '[act]'. Say *help for a list.</span>"

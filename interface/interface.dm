@@ -134,7 +134,6 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 	else
 		src << "<span class='warning'>The rules URL is not set in the server configuration.</span>"
 	return
-//	src << browse(/*file(RULES_FILE)*/"https://discord.gg/3zjPhfb", "window=rules;size=480x320")
 #undef RULES_FILE
 
 /client/verb/hotkeys_help()

@@ -5,8 +5,25 @@
 	name = "some magical supertype of all grown foods. Why is this even here"
 	nutriment_amt = 1
 	nutriment_desc = list("fruit" = TRUE)
+	w_class = 1.0
 	value = 3
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/peyote
+	name = "peyote cactus"
+	icon_state = "peyote"
+	desc = "A potent hallucinogenic."
+	color = "#6AAF6A"
+	New()
+		..()
+		reagents.add_reagent("peyote", 5)
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/coffee
+	name = "green coffee"
+	icon_state = "coffee"
+	color = "#a5201d"
+	New()
+		..()
+		reagents.add_reagent("coffee", 15)
 // fruit
 /obj/item/weapon/reagent_containers/food/snacks/grown/grapes
 	name = "bunch of grapes"
@@ -56,15 +73,6 @@
 	desc = "wheat. Can be milled."
 	color = "#fffaf0"
 	nutriment_desc = list("wheat" = TRUE)
-/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/attack_self(mob/user)
-	user.visible_message("You start to mill the [name].")
-	if (do_after(user, 20, user.loc))
-		user.visible_message("You finish milling the [name].")
-		var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(user.loc)
-		flour.reagents.remove_reagent("flour", 30)
-		flour.reagents.add_reagent("flour", 5)
-		qdel(src)
-
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/tomato
 	name = "tomato"

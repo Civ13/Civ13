@@ -41,18 +41,6 @@
 	var/cold_damage_per_tick = 2	//same as heat_damage_per_tick, only if the bodytemperature it's lower than minbodytemp
 	var/fire_alert = FALSE
 
-	//Atmos effect - Yes, you can make creatures that require plasma or co2 to survive. N2O is a trace gas and handled separately, hence why it isn't here. It'd be hard to add it. Hard and me don't mix (Yes, yes make all the dick jokes you want with that.) - Errorage
-	var/min_oxy = 5
-	var/max_oxy = FALSE					//Leaving something at FALSE means it's off - has no maximum
-	var/min_tox = FALSE
-	var/max_tox = TRUE
-	var/min_co2 = FALSE
-	var/max_co2 = 5
-	var/min_n2 = FALSE
-	var/max_n2 = FALSE
-	var/unsuitable_atoms_damage = 2	//This damage is taken when atmos doesn't fit all the requirements above
-//	var/speed = FALSE //LETS SEE IF I CAN SET SPEEDS FOR SIMPLE MOBS WITHOUT DESTROYING EVERYTHING. Higher speed is slower, negative speed is faster
-
 	//LETTING SIMPLE ANIMALS ATTACK? WHAT COULD GO WRONG. Defaults to zero so Ian can still be cuddly
 	var/melee_damage_lower = FALSE
 	var/melee_damage_upper = FALSE
@@ -61,7 +49,7 @@
 	var/friendly = "nuzzles"
 	var/environment_smash = FALSE
 	var/resistance		  = FALSE	// Damage reduction
-
+	var/obj/effect/spawner/mobspawner/origin = FALSE
 	//Null rod stuff
 	var/supernatural = FALSE
 	var/purge = FALSE
@@ -102,11 +90,14 @@
 	handle_supernatural()
 
 	//Movement
-	if (!client && !stop_automated_movement && wander && !anchored)
+	if (!client && !stop_automated_movement && wander && !anchored && clients.len > 0 && !istype(src, /mob/living/simple_animal/hostile))
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
 			turns_since_move++
 			if (turns_since_move >= turns_per_move)
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
+					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
+						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
+							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 					moving_to = pick(cardinal)
 					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
@@ -146,61 +137,18 @@
 						visible_emote("[pick(emote_see)].")
 					else
 						audible_emote("[pick(emote_hear)].")
-
-
-	//Atmos
-	var/atmos_suitable = TRUE
-
-	var/atom/A = loc
-
-	if (istype(A,/turf))
-		var/turf/T = A
-
-		var/datum/gas_mixture/Environment = T.return_air()
-
-		if (Environment)
-
-			if ( abs(Environment.temperature - bodytemperature) > 40 )
-				bodytemperature += ((Environment.temperature - bodytemperature) / 5)
-
-			if (min_oxy)
-				if (Environment.gas["oxygen"] < min_oxy)
-					atmos_suitable = FALSE
-			if (max_oxy)
-				if (Environment.gas["oxygen"] > max_oxy)
-					atmos_suitable = FALSE
-			if (min_tox)
-				if (Environment.gas["plasma"] < min_tox)
-					atmos_suitable = FALSE
-			if (max_tox)
-				if (Environment.gas["plasma"] > max_tox)
-					atmos_suitable = FALSE
-			if (min_n2)
-				if (Environment.gas["nitrogen"] < min_n2)
-					atmos_suitable = FALSE
-			if (max_n2)
-				if (Environment.gas["nitrogen"] > max_n2)
-					atmos_suitable = FALSE
-			if (min_co2)
-				if (Environment.gas["carbon_dioxide"] < min_co2)
-					atmos_suitable = FALSE
-			if (max_co2)
-				if (Environment.gas["carbon_dioxide"] > max_co2)
-					atmos_suitable = FALSE
-
-	//Atmos effect
 	if (bodytemperature < minbodytemp)
 		fire_alert = 2
 		adjustBruteLoss(cold_damage_per_tick)
+
 	else if (bodytemperature > maxbodytemp)
 		fire_alert = TRUE
 		adjustBruteLoss(heat_damage_per_tick)
+
 	else
 		fire_alert = FALSE
-
-	if (!atmos_suitable)
-		adjustBruteLoss(unsuitable_atoms_damage)
 	return TRUE
+
 
 /mob/living/simple_animal/proc/handle_supernatural()
 	if (purge)
@@ -299,6 +247,7 @@
 				for (var/v in TRUE to rand(1,2))
 					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 					leather.name = "[name] leather"
+				new/obj/item/stack/material/bone(get_turf(src))
 				crush()
 				qdel(src)
 		else
@@ -340,6 +289,8 @@
 /mob/living/simple_animal/death(gibbed, deathmessage = "dies!")
 	icon_state = icon_dead
 	density = FALSE
+	if (origin != 0)
+		origin.current_number -= 1
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)

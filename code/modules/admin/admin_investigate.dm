@@ -6,8 +6,6 @@
 //Secondly, they are usually stored in an object. This means that they aren't centralised. It also means that
 //the data is lost when the object is deleted! This is especially annoying for things like the singulo engine!
 /proc/get_investigate_file_dir()
-	if (serverswap && serverswap.Find("master_data_dir"))
-		return "[serverswap["master_data_dir"]]investigate/"
 	return "data/investigate/"
 
 

@@ -24,12 +24,16 @@
 	single_faction = TRUE
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
+	faction1 = PIRATES
+	faction2 = PIRATES
 	var/message = ""
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_RP == TRUE)
 		. = FALSE
-	if (istype(J, /datum/job/pirates/battleroyale))
+	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (istype(J, /datum/job/pirates/battleroyale))
 		J.total_positions = 32
 		J.min_positions = 32
 		J.max_positions = 32
@@ -39,7 +43,7 @@
 	return .
 
 /obj/map_metadata/battleroyale/faction2_can_cross_blocks()
-	return FALSE
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/battleroyale/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
@@ -77,6 +81,7 @@
 						winner_ckey = H.ckey
 						message = "The battle is over! [winner_name] ([winner_ckey]) was the winner!"
 						world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+						win_condition_spam_check = TRUE
 			ticker.finished = TRUE
 			return FALSE
 

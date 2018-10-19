@@ -91,8 +91,6 @@ var/list/organ_cache = list()
 		species = all_species[new_dna.species]
 
 /obj/item/organ/proc/die()
-	if (status & ORGAN_ROBOT)
-		return
 	damage = max_damage
 	status |= ORGAN_DEAD
 	processing_objects -= src
@@ -113,7 +111,7 @@ var/list/organ_cache = list()
 //	if (istype(loc,/obj/item/mmi))
 	//	return
 	//Process infections
-	if ((status & ORGAN_ROBOT) || (owner && owner.species && (owner.species.flags & IS_PLANT)))
+	if (owner && owner.species && (owner.species.flags & IS_PLANT))
 		germ_level = FALSE
 		return
 

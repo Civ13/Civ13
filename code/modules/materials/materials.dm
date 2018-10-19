@@ -178,10 +178,6 @@ var/list/name_to_material
 /material/proc/get_edge_damage()
 	return hardness //todo
 
-// Snowflakey, only checked for alien doors at the moment.
-/material/proc/can_open_material_door(var/mob/living/user)
-	return TRUE
-
 // Currently used for weapons and objects made of uranium to irradiate things.
 /material/proc/products_need_process()
 	return (radioactivity>0) //todo
@@ -313,6 +309,13 @@ var/list/name_to_material
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
 
+/material/bone
+	name = "bone"
+	hardness = 45
+	icon_colour = "#ccd1c4"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+
 /material/stone/stonebrick
 	name = "brick"
 	icon_base = "newbrick"
@@ -417,6 +420,7 @@ var/list/name_to_material
 
 /material/cloth //todo
 	name = "cloth"
+	hardness = 10
 	stack_origin_tech = list(TECH_MATERIAL = 2)
 	door_icon_base = "wood"
 	ignition_point = T0C+232
@@ -443,14 +447,19 @@ var/list/name_to_material
 	melting_point = T0C+300
 	sheet_singular_name = "tile"
 	sheet_plural_name = "tiles"
+	hardness = 12
 
 /material/cotton
 	name = "cotton"
+	hardness = 6
+	stack_type = /obj/item/stack/material/cotton
 	display_name ="cotton"
 	icon_colour = "#FFFFFF"
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	sheet_singular_name = "stack"
+	sheet_plural_name = "stacks"
 
 /material/cloth_teal
 	name = "teal"
@@ -460,6 +469,7 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	hardness = 6
 
 /material/cloth_black
 	name = "black"
@@ -469,6 +479,7 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	hardness = 6
 
 /material/cloth_green
 	name = "green"
@@ -478,6 +489,7 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	hardness = 6
 
 /material/cloth_puple
 	name = "purple"
@@ -487,6 +499,7 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	hardness = 6
 
 /material/cloth_blue
 	name = "blue"
@@ -496,6 +509,7 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	hardness = 6
 
 /material/cloth_beige
 	name = "beige"
@@ -505,6 +519,7 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	hardness = 6
 
 /material/cloth_lime
 	name = "lime"
@@ -514,3 +529,4 @@ var/list/name_to_material
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+232
 	melting_point = T0C+300
+	hardness = 6

@@ -101,7 +101,6 @@ var/list/admin_verbs_sounds = list(
 	)
 var/list/admin_verbs_fun = list(
 	/client/proc/object_talk,
-	/client/proc/cmd_admin_dress,
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
@@ -198,7 +197,6 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/play_sound,
 	/client/proc/play_server_sound,
 	/client/proc/object_talk,
-	/client/proc/cmd_admin_dress,
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
@@ -734,7 +732,7 @@ var/global/list/global_colour_matrix = null
 	set name = "Color Filter"
 	set category = "Debug"
 	set desc = "Apply cool colour filter to players' screens."
-	var/input = input("Choose filter", "Filter") in list("normal", "black and white", "bloody", "bloody2", "special")
+	var/input = input("Choose filter", "Filter") in list("normal", "black and white", "bloody", "bloody2", "sepia", "special")
 	switch(input)
 		if("normal")
 			global_colour_matrix = null
@@ -750,6 +748,10 @@ var/global/list/global_colour_matrix = null
 			global_colour_matrix = list(1, 0, 0,\
 										0, 0.5, 0.5,\
 										0, 0.5, 0.5)
+		if("sepia")
+			global_colour_matrix = list(1.3, -0.3, 1.1,\
+										0, 1.3, 0.2,\
+										0, 0, 0.8)
 		if("special")
 			global_colour_matrix = list()
 			var/global_colour_matrix_temp = list()

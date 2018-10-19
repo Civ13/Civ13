@@ -17,8 +17,6 @@
 			return FALSE
 		if (affected.is_stump())
 			return FALSE
-		if (affected.status & ORGAN_ROBOT)
-			return FALSE
 		return TRUE
 
 /datum/surgery_step/generic/cut_open
@@ -65,6 +63,7 @@
 /datum/surgery_step/generic/clamp_bleeders
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
+	/obj/item/stack/material/rope = 50, 	\
 	)
 
 	min_duration = 40
@@ -99,6 +98,7 @@
 	allowed_tools = list(
 	/obj/item/weapon/surgery/retractor = 100, 	\
 	/obj/item/weapon/crowbar = 75,	\
+	/obj/item/weapon/material/handle = 75,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 50
 	)
 
@@ -153,8 +153,8 @@
 /datum/surgery_step/generic/cauterize
 	allowed_tools = list(
 	/obj/item/weapon/surgery/cautery = 100,			\
-	/obj/item/clothing/mask/smokable/cigarette = 75,	\
-	/obj/item/weapon/flame/lighter = 50,			\
+	/obj/item/clothing/mask/smokable/cigarette/cigar = 75,	\
+	/obj/item/flashlight/torch = 75,
 	)
 
 	min_duration = 70

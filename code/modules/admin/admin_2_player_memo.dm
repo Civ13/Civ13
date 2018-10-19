@@ -1,7 +1,5 @@
 #define ENABLE_MEMOS 1				//using a define because screw making a config variable for it. This is more efficient and purty.
 /proc/get_player_memo_file_dir()
-	if (serverswap && serverswap.Find("master_data_dir"))
-		return "[serverswap["master_data_dir"]]memo2.sav"
 	return "data/memo2.sav"
 //switch verb so we don't spam up the verb lists with like, 3 verbs for this feature.
 /client/proc/player_memo(task in list("write","show","delete"))

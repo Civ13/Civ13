@@ -193,8 +193,6 @@
 		if (o && o.status & ORGAN_SPLINTED)
 			msg += "<span class='warning'>[T.He] [T.has] a splint on [T.his] [o.name]!</span>\n"
 
-	if (mSmallsize in mutations)
-		msg += "[T.He] [T.is] small halfling!\n"
 
 	var/distance = get_dist(usr,src)
 	if (isghost(usr) || usr.stat == DEAD) // ghosts can see anything

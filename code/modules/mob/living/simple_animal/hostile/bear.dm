@@ -1,4 +1,4 @@
-//Space bears!
+
 /mob/living/simple_animal/hostile/bear
 	name = "bear"
 	desc = "Rawr Rawr!!"
@@ -23,19 +23,9 @@
 	melee_damage_lower = 20
 	melee_damage_upper = 30
 
-	//Space bears aren't affected by atmos.
-	min_oxy = FALSE
-	max_oxy = FALSE
-	min_tox = FALSE
-	max_tox = FALSE
-	min_co2 = FALSE
-	max_co2 = FALSE
-	min_n2 = FALSE
-	max_n2 = FALSE
-	minbodytemp = FALSE
 	var/stance_step = FALSE
 
-	faction = PIRATES
+	faction = "neutral"
 
 /mob/living/simple_animal/hostile/bear/Life()
 	. =..()
@@ -66,7 +56,7 @@
 					set_dir(get_dir(src,target_mob))	//Keep staring at the mob
 
 					if (stance_step in list(1,4,7)) //every 3 ticks
-						var/action = pick( list( "growls at [target_mob]", "stares angrily at [target_mob]", "prepares to attack [target_mob]", "closely watches [target_mob]" ) )
+						var/action = pick( list( "growls at [target_mob].", "stares angrily at [target_mob].", "prepares to attack [target_mob].", "closely watches [target_mob]." ) )
 						if (action)
 							custom_emote(1,action)
 			if (!found_mob)
@@ -101,13 +91,10 @@
 		target_mob = M
 	..()
 
-/mob/living/simple_animal/hostile/bear/Process_Spacemove(var/check_drift = FALSE)
-	return	//No drifting in space for space bears!
-
 /mob/living/simple_animal/hostile/bear/FindTarget()
 	. = ..()
 	if (.)
-		custom_emote(1,"stares alertly at [.]")
+		custom_emote(1,"stares alertly at [.].")
 		stance = HOSTILE_STANCE_ALERT
 
 /mob/living/simple_animal/hostile/bear/LoseTarget()
@@ -116,7 +103,7 @@
 /mob/living/simple_animal/hostile/bear/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	custom_emote(1, pick( list("slashes at [target_mob]", "bites [target_mob]") ) )
+	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
 
 	var/damage = rand(20,30)
 

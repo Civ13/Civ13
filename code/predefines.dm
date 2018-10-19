@@ -133,39 +133,12 @@
 #define CARBON_LIFEFORM_FIRE_RESISTANCE (T0C + 200)
 #define CARBON_LIFEFORM_FIRE_DAMAGE     4
 
-// Phoron fire properties.
-#define PHORON_MINIMUM_BURN_TEMPERATURE    (T0C +  126) //400 K - autoignite temperature in tanks and canisters - enclosed environments I guess
-#define PHORON_FLASHPOINT                  (T0C +  246) //519 K - autoignite temperature in air if that ever gets implemented.
-
-//These control the mole ratio of oxidizer and fuel used in the combustion reaction
-#define FIRE_REACTION_OXIDIZER_AMOUNT	3 //should be greater than the fuel amount if fires are going to spread much
-#define FIRE_REACTION_FUEL_AMOUNT		2
-
-//These control the speed at which fire burns
-#define FIRE_GAS_BURNRATE_MULT			1
-#define FIRE_LIQUID_BURNRATE_MULT		1
-
-//If the fire is burning slower than this rate then the reaction is going too slow to be self sustaining and the fire burns itself out.
-//This ensures that fires don't grind to a near-halt while still remaining active forever.
-#define FIRE_GAS_MIN_BURNRATE			0.01
-#define FIRE_LIQUD_MIN_BURNRATE			0.01
-
 //How many moles of fuel are contained within one solid/liquid fuel volume unit
 #define LIQUIDFUEL_AMOUNT_TO_MOL		1  //mol/volume unit
 
 #define T0C  273.15 //    0.0 degrees celcius
 #define T20C 293.15 //   20.0 degrees celcius
 #define TCMB 2.7    // -270.3 degrees celcius
-
-// XGM gas flags.
-#define XGM_GAS_FUEL        TRUE
-#define XGM_GAS_OXIDIZER    2
-#define XGM_GAS_CONTAMINANT 4
-
-#define TANK_LEAK_PRESSURE     (30.*ONE_ATMOSPHERE) // Tank starts leaking.
-#define TANK_RUPTURE_PRESSURE  (40.*ONE_ATMOSPHERE) // Tank spills all contents into atmosphere.
-#define TANK_FRAGMENT_PRESSURE (50.*ONE_ATMOSPHERE) // Boom 3x3 base explosion.
-#define TANK_FRAGMENT_SCALE    (10.*ONE_ATMOSPHERE) // +1 for each SCALE kPa above threshold. Was 2 atm.
 
 #define HUMAN_STRIP_DELAY        40   // Takes 40ds = 4s to strip someone.
 #define NORMPIPERATE             30   // Pipe-insulation rate divisor.
@@ -336,18 +309,6 @@
 #define SKELETON      29
 #define PLANT         30
 
-// Other Mutations:
-#define mNobreath      100 // No need to breathe.
-#define mRemote        101 // Remote viewing.
-#define mRegen         102 // Health regeneration.
-#define mRun           103 // No slowdown.
-#define mRemotetalk    104 // Remote talking.
-#define mMorph         105 // Hanging appearance.
-#define mBlend         106 // Nothing. (seriously nothing)
-#define mHallucination 107 // Hallucinations.
-#define mFingerprints  108 // No fingerprints.
-#define mShock         109 // Insulated hands.
-#define mSmallsize     110 // Table climbing.
 
 // disabilities
 #define NEARSIGHTED TRUE
@@ -621,7 +582,7 @@
 #define INNATE      64  // All mobs can be assumed to speak and understand this language. (audible emotes)
 #define NO_TALK_MSG 128 // Do not show the "\The [speaker] talks into \the [radio]" message
 #define NO_STUTTER  256 // No stuttering, slurring, or other speech problems
-#define COMMON_VERBS 512 // Robots will apply regular verbs to this.
+#define COMMON_VERBS 512
 //Flags for zone sleeping
 #define ZONE_ACTIVE   TRUE
 #define ZONE_SLEEPING FALSE
@@ -655,32 +616,8 @@
 
 #define MAX_GEAR_COST 5 // Used in chargen for accessory loadout limit.
 
-/*
- *	Atmospherics Machinery.
-*/
-#define MAX_SIPHON_FLOWRATE   2500 // L/s. This can be used to balance how fast a room is siphoned. Anything higher than CELL_VOLUME has no effect.
-#define MAX_SCRUBBER_FLOWRATE 200  // L/s. Max flow rate when scrubbing from a turf.
-
-// These balance how easy or hard it is to create huge pressure gradients with pumps and filters.
-// Lower values means it takes longer to create large pressures differences.
-// Has no effect on pumping gasses from high pressure to low, only from low to high.
-#define ATMOS_PUMP_EFFICIENCY   2.5
-#define ATMOS_FILTER_EFFICIENCY 2.5
-
-// Will not bother pumping or filtering if the gas source as fewer than this amount of moles, to help with performance.
-#define MINIMUM_MOLES_TO_PUMP   0.01
-#define MINIMUM_MOLES_TO_FILTER 0.1
-
-// The flow rate/effectiveness of various atmos devices is limited by their internal volume,
-// so for many atmos devices these will control maximum flow rates in L/s.
-#define ATMOS_DEFAULT_VOLUME_PUMP   200 // Liters.
-#define ATMOS_DEFAULT_VOLUME_FILTER 200 // L.
-#define ATMOS_DEFAULT_VOLUME_MIXER  200 // L.
-#define ATMOS_DEFAULT_VOLUME_PIPE   70  // L.
 
 // Chemistry.
-#define CHEM_SYNTH_ENERGY 500 // How much energy does it take to synthesize TRUE unit of chemical, in Joules.
-
 #define SPEED_OF_LIGHT       3e8    // Approximate.
 #define SPEED_OF_LIGHT_SQ    9e16
 #define FIRE_DAMAGE_MODIFIER 0.0215 // Higher values result in more external fire damage to the skin. (default 0.0215)
@@ -710,13 +647,7 @@
 
 //General-purpose life speed define for plants.
 #define HYDRO_SPEED_MULTIPLIER TRUE
-/*
 
-#define BOMBCAP_DVSTN_RADIUS (max_explosion_range/4)
-#define BOMBCAP_HEAVY_RADIUS (max_explosion_range/2)
-#define BOMBCAP_LIGHT_RADIUS max_explosion_range
-#define BOMBCAP_FLASH_RADIUS (max_explosion_range*1.5)
-*/
 #define DEFAULT_JOB_TYPE /datum/job/civilian
 
 // Appearance change flags
@@ -809,3 +740,13 @@
 	dview_mob.see_invisible = invis_flags; \
 	for (type in view(range, dview_mob))
 #define END_FOR_DVIEW dview_mob.loc = null
+
+//Gun loading types
+#define SINGLE_CASING 	1	//The gun only accepts ammo_casings. ammo_magazines should never have this as their mag_type.
+#define SPEEDLOADER 	2	//Transfers casings from the mag to the gun when used.
+#define MAGAZINE 		4	//The magazine item itself goes inside the gun
+
+#define HOLD_CASINGS	0 //do not do anything after firing. Manual action, like pump shotguns, or guns that want to define custom behaviour
+#define EJECT_CASINGS	1 //drop spent casings on the ground after firing
+#define CYCLE_CASINGS 	2 //experimental: cycle casings, like a revolver. Also works for multibarrelled guns
+#define REMOVE_CASINGS	3

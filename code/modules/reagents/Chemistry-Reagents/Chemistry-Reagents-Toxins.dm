@@ -306,34 +306,28 @@
 	if (effective_dose > 1)
 		M.adjustToxLoss(removed)
 
-/datum/reagent/chloralhydrate/beer2 //disguised as normal beer for use by emagged brobots
-	name = "Beer"
-	id = "beer2"
-	description = "An alcoholic beverage made from malted grains, hops, yeast, and water. The fermentation appears to be incomplete." //If the players manage to analyze this, they deserve to know something is wrong.
-	taste_description = "shitty piss water"
-	reagent_state = LIQUID
-	color = "#664300"
-
 /* Drugs */
 
-/datum/reagent/space_drugs
-	name = "Space drugs"
-	id = "space_drugs"
-	description = "An illegal chemical compound used as drug."
+/datum/reagent/peyote
+	name = "Peyote"
+	id = "peyote"
+	description = "A hallucinogen extracted from the Peyote cactus."
 	taste_description = "bitterness"
 	taste_mult = 0.4
 	reagent_state = LIQUID
-	color = "#60A584"
+	color = "#6AAF6A"
 	metabolism = REM * 0.5
 	overdose = REAGENTS_OVERDOSE
 
-/datum/reagent/space_drugs/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/peyote/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.druggy = max(M.druggy, 15)
-	if (prob(10) && isturf(M.loc) && M.canmove && !M.restrained())
+	if (prob(25) && isturf(M.loc) && M.canmove && !M.restrained())
 		step(M, pick(cardinal))
 	if (prob(7))
 		M.emote(pick("twitch", "drool", "moan", "giggle"))
 	M.add_chemical_effect(CE_PULSE, -1)
+	M.add_chemical_effect(CE_STABLE)
+	M.add_chemical_effect(CE_PAINKILLER, 15)
 
 /datum/reagent/serotrotium
 	name = "Serotrotium"
@@ -440,3 +434,4 @@
 /datum/reagent/nicotine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.add_chemical_effect(CE_PULSE, TRUE)
+	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)

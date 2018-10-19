@@ -22,22 +22,3 @@
 			if (findtext(datum, ckey) && findtext(datum, desired_job_title))
 				return TRUE
 	return FALSE
-
-/datum/whitelist/super
-	name = "super"
-
-/datum/whitelist/super/validate(_arg, var/desired_job_title)
-	if (!enabled)
-		return TRUE
-	var/list/datalist = splittext(data, "&")
-	if (isclient(_arg))
-		var/client/C = _arg
-		for (var/datum in datalist)
-			if (findtext(datum, C.ckey) && findtext(datum, desired_job_title))
-				return TRUE
-	else if (istext(_arg))
-		var/ckey = ckey(_arg)
-		for (var/datum in datalist)
-			if (findtext(datum, ckey) && findtext(datum, desired_job_title))
-				return TRUE
-	return FALSE

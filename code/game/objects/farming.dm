@@ -1,57 +1,81 @@
-/obj/item/farming/seeds
+/obj/item/stack/farming/seeds
 	name = "seeds"
 	desc = "Some seeds."
 	icon = 'icons/farming/plants.dmi'
 	icon_state = "seeds"
 	w_class = 1
 	value = 1
+	amount = 1
+	max_amount = 100
+	singular_name = "seed"
 
-/obj/item/farming/seeds/tomato
+/obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"
 	plant = "tomato"
 
-/obj/item/farming/seeds/tobacco
+/obj/item/stack/farming/seeds/tobacco
 	name = "tobacco seeds"
 	plant = "tobacco"
 
-/obj/item/farming/seeds/sugarcane
+/obj/item/stack/farming/seeds/sugarcane
 	name = "sugarcane seeds"
 	plant = "sugarcane"
 
-/obj/item/farming/seeds/wheat
+/obj/item/stack/farming/seeds/wheat
 	name = "wheat seeds"
 	plant = "wheat"
 
-/obj/item/farming/seeds/apple
+/obj/item/stack/farming/seeds/apple
 	name = "apple seeds"
 	plant = "apple"
 
-/obj/item/farming/seeds/orange
+/obj/item/stack/farming/seeds/orange
 	name = "orange seeds"
 	plant = "orange"
 
-/obj/item/farming/seeds/cabbage
+/obj/item/stack/farming/seeds/cabbage
 	name = "cabbage seeds"
 	plant = "cabbage"
 
-/obj/item/farming/seeds/hemp
+/obj/item/stack/farming/seeds/hemp
 	name = "hemp seeds"
 	plant = "hemp"
 
-/obj/item/farming/seeds/potato
+/obj/item/stack/farming/seeds/tea
+	name = "tea seeds"
+	plant = "tea"
+
+/obj/item/stack/farming/seeds/potato
 	name = "seed potato"
 	desc = "a potato selected for breeding because of its characteristics."
 	plant = "potato"
 	icon_state = "potato"
 
-/obj/item/farming/seeds/corn
+/obj/item/stack/farming/seeds/corn
 	name = "corn seeds"
 	plant = "corn"
 
-/obj/item/farming/seeds/poppy
+/obj/item/stack/farming/seeds/poppy
 	name = "poppy seeds"
 	desc = "Seeds of the opium poppy."
 	plant = "poppy"
+
+/obj/item/stack/farming/seeds/peyote
+	name = "peyote seeds"
+	plant = "peyote"
+
+
+/obj/item/stack/farming/seeds/coffee
+	name = "coffee seeds"
+	plant = "coffee"
+
+/obj/item/stack/farming/seeds/tree
+	name = "tree seeds"
+	plant = "tree"
+
+/obj/item/stack/farming/seeds/cotton
+	name = "cotton seeds"
+	plant = "cotton"
 
 /obj/structure/farming/plant
 	name = "plant"
@@ -115,8 +139,8 @@
 /obj/structure/farming/plant/orange
 	name = "orange tree"
 	desc = "an orange tree."
-	icon_state = "citrine-grow1"
-	plant = "citrine"
+	icon_state = "orange-grow1"
+	plant = "orange"
 
 /obj/structure/farming/plant/tobacco
 	name = "tobacco plant"
@@ -130,6 +154,36 @@
 	icon_state = "sugarcane-grow1"
 	plant = "sugarcane"
 
+/obj/structure/farming/plant/tea
+	name = "tea"
+	desc = "a tea plant."
+	icon_state = "tea-grow1"
+	plant = "tea"
+
+/obj/structure/farming/plant/peyote
+	name = "peyote"
+	desc = "a peyote cactus plant."
+	icon_state = "peyote-grow1"
+	plant = "peyote"
+
+/obj/structure/farming/plant/coffee
+	name = "coffee"
+	desc = "a coffee plant."
+	icon_state = "coffee-grow1"
+	plant = "coffee"
+
+/obj/structure/farming/plant/cotton
+	name = "cotton"
+	desc = "a cotton plant."
+	icon_state = "cotton-grow1"
+	plant = "cotton"
+
+/obj/structure/farming/plant/tree
+	name = "tree"
+	desc = "a tree, grown for wood."
+	icon_state = "tree-grow1"
+	plant = "tree"
+
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
 	..()
@@ -139,15 +193,15 @@
 	if (stage < 10)
 		if (stage <= 6)
 			icon_state = "[plant]-grow[stage]"
-			desc = "A young [name]."
+			desc = "A young [plant] plant."
 			name = "young [plant] plant"
 		else if (stage == 7 || stage == 8)
 			icon_state = "[plant]-harvest"
-			desc = "A ready to harvest [name]."
+			desc = "A ready to harvest [plant] plant."
 			name = "ready [plant] plant"
 		else if (stage >= 9)
 			icon_state = "[plant]-dead"
-			desc = "A dead [name]."
+			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600)
 			stage += 1
@@ -161,7 +215,7 @@
 		else if (stage == 7) // harvest
 			var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 			new fruitpath(loc)
-			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
 			new seedpath(loc)
 			new seedpath(loc)
 			user << "<span class = 'warning'>You harvest the [name].</span>"
@@ -178,7 +232,7 @@
 			qdel(src)
 		else if (stage == 7) // harvest
 			new/obj/item/stack/material/rope(loc)
-			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
 			new seedpath(loc)
 			new seedpath(loc)
 			user << "<span class = 'warning'>You harvest the [name].</span>"
@@ -196,7 +250,7 @@
 			qdel(src)
 		else if (stage == 7) // harvest
 			new/obj/item/stack/material/tobacco(loc)
-			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
 			new seedpath(loc)
 			new seedpath(loc)
 			user << "<span class = 'warning'>You harvest the [name].</span>"
@@ -212,7 +266,7 @@
 			qdel(src)
 		else if (stage == 7) // harvest
 			new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
-			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
 			new seedpath(loc)
 			new seedpath(loc)
 			user << "<span class = 'warning'>You harvest the [name].</span>"
@@ -221,6 +275,21 @@
 			user << "<span class = 'warning'>You uproot the dead [name].</span>"
 			qdel(src)
 
+/obj/structure/farming/plant/tea/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (stage <=6) // destroy
+			user << "<span class = 'warning'>You uproot the [name].</span>"
+			qdel(src)
+		else if (stage == 7) // harvest
+			new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
+			new seedpath(loc)
+			new seedpath(loc)
+			user << "<span class = 'warning'>You harvest the [name].</span>"
+			qdel(src)
+		else // destroy
+			user << "<span class = 'warning'>You uproot the dead [name].</span>"
+			qdel(src)
 
 
 /obj/structure/farming/plant/poppy/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -230,11 +299,45 @@
 			qdel(src)
 		else if (stage == 7) // harvest
 			new/obj/item/stack/material/poppy(loc)
-			var/seedpath = "/obj/item/farming/seeds/[plant]"
+			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
 			new seedpath(loc)
 			new seedpath(loc)
 			user << "<span class = 'warning'>You harvest the [name].</span>"
 			qdel(src)
 		else // destroy
 			user << "<span class = 'warning'>You uproot the dead [name].</span>"
+			qdel(src)
+
+
+/obj/structure/farming/plant/tree/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (stage <=6) // destroy
+			user << "<span class = 'warning'>You uproot the tree.</span>"
+			qdel(src)
+		else if (stage == 7) // harvest
+			new/obj/item/stack/material/wood(loc)
+			var/seedpath = "/obj/item/stack/farming/seeds/tree"
+			new seedpath(loc)
+			new seedpath(loc)
+			user << "<span class = 'warning'>You cut some logs from the tree.</span>"
+			qdel(src)
+		else // destroy
+			user << "<span class = 'warning'>You uproot the dead tree.</span>"
+			qdel(src)
+
+
+/obj/structure/farming/plant/cotton/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (stage <=6) // destroy
+			user << "<span class = 'warning'>You uproot the cotton plant.</span>"
+			qdel(src)
+		else if (stage == 7) // harvest
+			new/obj/item/stack/material/cotton(loc)
+			var/seedpath = "/obj/item/stack/farming/seeds/cotton"
+			new seedpath(loc)
+			new seedpath(loc)
+			user << "<span class = 'warning'>You pick the cotton.</span>"
+			qdel(src)
+		else // destroy
+			user << "<span class = 'warning'>You uproot the dead cotton plant.</span>"
 			qdel(src)

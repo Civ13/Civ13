@@ -112,13 +112,11 @@
 /turf/floor/wood
 	name = "floor"
 	icon_state = "wood"
-	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
 /turf/floor/wood_ship
 	name = "floor"
 	icon_state = "wood_ship"
-	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
 
@@ -129,7 +127,6 @@
 	name = "floor"
 	icon = 'icons/turf/flooring/wood.dmi'
 	icon_state = "broken0"
-	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
 /turf/floor/wood_broken/New()
@@ -154,7 +151,6 @@
 /turf/floor/grass
 	name = "Grass patch"
 	icon_state = "grass1"
-	floor_type = /obj/item/stack/tile/grass
 
 	New()
 		icon_state = "grass[pick("1","2","3","4")]"
@@ -170,7 +166,6 @@
 /turf/floor/carpet
 	name = "Carpet"
 	icon_state = "carpet"
-	floor_type = /obj/item/stack/tile/carpet
 
 	New()
 		if (!icon_state)
@@ -302,11 +297,21 @@ var/global/list/GrassEdgeCache
 	name = "Deep Water"
 	icon_state = "seadeep"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
-	density = TRUE
 	water_level = 200
+	density = FALSE
+	iscovered = FALSE
 
-/turf/floor/plating/beach/water/sewage
-	name = "Sewage Water"
+/turf/floor/plating/beach/water/deep/CanPass(atom/movable/mover)
+	if (istype(mover, /obj/effect/effect/smoke))
+		return TRUE
+	else if (istype(mover, /obj/item/projectile))
+		return TRUE
+	else if ((istype(mover, /mob)) && !iscovered)
+		return FALSE
+	else
+		return ..()
+/turf/floor/plating/beach/water/swamp
+	name = "Swamp Water"
 	move_delay = 3
 	color = "#94B21C"
 
@@ -321,7 +326,7 @@ var/global/list/GrassEdgeCache
 /turf/floor/plating/beach/water/New()
 	..()
 	if (!istype(src, /turf/floor/plating/beach/water/ice))
-		if (!istype(src, /turf/floor/plating/beach/water/sewage))
+		if (!istype(src, /turf/floor/plating/beach/water/swamp))
 			overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.1)
 		else
 			var/image/I = image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.1)
@@ -403,6 +408,12 @@ var/global/list/GrassEdgeCache
 	name = "road"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "cobble_horizontal"
+	interior = FALSE
+
+/turf/floor/plating/stone_old
+	name = "stone floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "stone_old"
 	interior = FALSE
 
 /turf/floor/plating/cobblestone/dark

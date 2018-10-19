@@ -14,3 +14,27 @@
 		else
 			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]", layer = 5)
 	return mob_overlay
+
+/obj/item/clothing/accessory/armband/british
+	name = "red armband"
+	desc = "A fancy red armband!"
+	icon_state = "british"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/spanish
+	name = "yellow armband"
+	desc = "A fancy yellow armband!"
+	icon_state = "spanish"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/french
+	name = "blue armband"
+	desc = "A fancy blue armband!"
+	icon_state = "french"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/portuguese
+	name = "green armband"
+	desc = "A fancy green armband!"
+	icon_state = "portuguese"
+	slot = "armband"

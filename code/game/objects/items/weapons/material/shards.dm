@@ -72,8 +72,6 @@
 				var/picked = pick(check)
 				var/obj/item/organ/external/affecting = H.get_organ(picked)
 				if (affecting)
-					if (affecting.status & ORGAN_ROBOT)
-						return
 					if (affecting.take_damage(5, FALSE))
 						H.UpdateDamageIcon()
 					H.updatehealth()

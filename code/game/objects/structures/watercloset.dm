@@ -481,6 +481,11 @@
 	icon_state = "puddle"
 	sound = 'sound/effects/watersplash.ogg'
 
+/obj/structure/sink/well	//splishy splashy ^_^
+	name = "well"
+	icon_state = "well1"
+	sound = 'sound/effects/watersplash.ogg'
+
 /obj/structure/sink/puddle/attack_hand(mob/M as mob)
 	icon_state = "puddle-splash"
 	..()

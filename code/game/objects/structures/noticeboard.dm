@@ -128,18 +128,33 @@
 	desc = "A bag of mail, to be delivered to the British colonial administration."
 	faction = "british"
 
-/obj/structure/mailbox/attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/mailbox/attackby(var/obj/item/weapon/paper/W as obj, var/mob/living/carbon/human/H as mob)
 	if (receive_only == TRUE)
 		H << "This is only for received letters! It wont be delivered if you put it here!"
 		return
 	else
-		if (!istype(W, /obj/item/weapon/paper))
-			H << "You cannot send this by mail. Only paper is accepted."
-			return
-		else
+		if (istype(W, /obj/item/weapon/paper))
 			for (var/obj/structure/mailbox/received/B)
 				if (B.faction == faction)
-					W.forceMove(get_turf(B))
+					var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(B.loc)
+
+					if(W.info)
+						NP.info = W.info
+					if(W.name)
+						NP.name = W.name
+					if(W.stamps)
+						NP.stamps = W.stamps
+					if(W.fields)
+						NP.fields = W.fields
+					if(W.stamped)
+						NP.stamped = W.stamped
+					if(W.ico)
+						NP.ico = W.ico
+					qdel(W)
 					H << "Your message has been sent and will be delivered soon."
 			return
+		else
+			H << "You cannot send this by mail. Only paper is accepted."
+			return
+
 	..()

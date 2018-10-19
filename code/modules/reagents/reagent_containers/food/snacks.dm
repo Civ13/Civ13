@@ -174,7 +174,7 @@
 			if (contents.len)
 				user << "<span class='danger'>There's already something inside \the [src].</span>"
 				return
-			if (W.w_class >= w_class || is_robot_module(W))
+			if (W.w_class >= w_class)
 				user << "<span class='warning'>\the [W] is too big to hide inside \the [src].</span>"
 				return
 
@@ -1108,21 +1108,6 @@
 		..()
 		reagents.add_reagent("imidazoline", 3)
 		bitesize = 2
-
-/*
-/obj/item/weapon/reagent_containers/food/snacks/superbiteburger
-	name = "Super Bite Burger"
-	desc = "This is a mountain of a burger. FOOD!"
-	icon_state = "superbiteburger"
-	filling_color = "#CCA26A"
-	center_of_mass = list("x"=16, "y"=3)
-	nutriment_desc = list("buns" = 25)
-	nutriment_amt = 25
-	New()
-		..()
-		reagents.add_reagent("protein", 25)
-		bitesize = 10
-*/
 
 /obj/item/weapon/reagent_containers/food/snacks/candiedapple
 	name = "Candied Apple"

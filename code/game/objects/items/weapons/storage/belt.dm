@@ -54,31 +54,6 @@
 	new /obj/item/weapon/wirecutters/boltcutters(src)
 
 
-/obj/item/weapon/storage/belt/medical
-	name = "medical belt"
-	desc = "Can hold various medical equipment."
-	icon_state = "medicalbelt"
-	item_state = "medical"
-	can_hold = list(
-		/obj/item/weapon/reagent_containers/dropper,
-		/obj/item/weapon/reagent_containers/glass/beaker,
-		/obj/item/weapon/reagent_containers/glass/bottle,
-		/obj/item/weapon/reagent_containers/pill,
-		/obj/item/weapon/flame/lighter/zippo,
-		/obj/item/weapon/storage/pill_bottle,
-		/obj/item/stack/medical,
-		/obj/item/clothing/mask/surgical,
-		/obj/item/clothing/gloves/latex,
-		/obj/item/weapon/crowbar/prybar,
-		/obj/item/flashlight,
-		)
-
-/obj/item/weapon/storage/belt/medical/emt
-	name = "EMT utility belt"
-	desc = "A sturdy black webbing belt with attached pouches."
-	icon_state = "emsbelt"
-	item_state = "emsbelt"
-
 /obj/item/weapon/storage/belt/security/tactical
 	name = "combat belt"
 	desc = "Can hold security gear like handcuffs and flashes, with more pouches for more storage."
@@ -98,9 +73,6 @@
 	..()
 /obj/item/weapon/storage/belt/leather/farmer/New()
 	..()
-	new /obj/item/farming/seeds/tomato(src)
-	new /obj/item/farming/seeds/tomato(src)
-	new /obj/item/farming/seeds/potato(src)
-	new /obj/item/farming/seeds/potato(src)
-	new /obj/item/farming/seeds/potato(src)
-	new /obj/item/farming/seeds/hemp(src)
+	new /obj/item/stack/farming/seeds/tomato(src)
+	new /obj/item/stack/farming/seeds/potato(src)
+	new /obj/item/stack/farming/seeds/hemp(src)

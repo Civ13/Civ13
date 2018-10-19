@@ -17,7 +17,6 @@
 
 	var/shuttletarget = null
 	var/enroute = FALSE
-
 /mob/living/simple_animal/hostile/proc/FindTarget()
 
 	var/atom/T = null
@@ -34,15 +33,27 @@
 
 		if (isliving(A))
 			var/mob/living/L = A
-			if (L.faction == faction && !attack_same)
-				continue
-			else if (L in friends)
-				continue
+			if (istype(L, /mob/living/carbon/human))
+				var/mob/living/carbon/human/RH = L
+				if (RH.faction_text == faction && !attack_same)
+					continue
+				else if (RH in friends)
+					continue
+				else
+					if (!RH.stat)
+						stance = HOSTILE_STANCE_ATTACK
+						T = RH
+						break
 			else
-				if (!L.stat)
-					stance = HOSTILE_STANCE_ATTACK
-					T = L
-					break
+				if (L.faction == faction && !attack_same)
+					continue
+				else if (L in friends)
+					continue
+				else
+					if (!L.stat)
+						stance = HOSTILE_STANCE_ATTACK
+						T = L
+						break
 
 	return T
 
@@ -79,7 +90,7 @@
 /mob/living/simple_animal/hostile/proc/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	if (isliving(target_mob))
+	if (target_mob.bruteloss<200)
 		var/mob/living/L = target_mob
 		L.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 		return L
@@ -115,6 +126,7 @@
 	if (client)
 		return FALSE
 
+/* Moved to tickproc
 	if (!stat)
 		switch(stance)
 			if (HOSTILE_STANCE_IDLE)
@@ -129,7 +141,7 @@
 				if (destroy_surroundings)
 					DestroySurroundings()
 				AttackTarget()
-
+*/
 /mob/living/simple_animal/hostile/proc/OpenFire(target_mob)
 	var/target = target_mob
 	visible_message("<span class = 'red'><b>[src]</b> fires at [target]!</span>", TRUE)
@@ -137,20 +149,12 @@
 	if (rapid)
 		spawn(1)
 			Shoot(target, loc, src)
-			if (casingtype)
-				new casingtype(get_turf(src))
 		spawn(4)
 			Shoot(target, loc, src)
-			if (casingtype)
-				new casingtype(get_turf(src))
 		spawn(6)
 			Shoot(target, loc, src)
-			if (casingtype)
-				new casingtype(get_turf(src))
 	else
 		Shoot(target, loc, src)
-		if (casingtype)
-			new casingtype
 
 	stance = HOSTILE_STANCE_IDLE
 	target_mob = null
@@ -161,9 +165,10 @@
 	if (target == start)
 		return
 
-	var/obj/item/projectile/A = new projectiletype(user:loc)
+	var/obj/item/projectile/A = new projectiletype(src.loc)
 	playsound(user, projectilesound, 100, TRUE)
-	if (!A)	return
+	if (!A)
+		return
 	var/def_zone = get_exposed_defense_zone(target)
 	A.launch(target, def_zone)
 
@@ -179,30 +184,40 @@
 				obstacle.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 
 
-/mob/living/simple_animal/hostile/proc/check_horde()
-	return FALSE
-	/*if (emergency_shuttle.shuttle.location)
-		if (!enroute && !target_mob)	//The shuttle docked, all monsters rush for the escape hallway
-			if (!shuttletarget && escape_list.len) //Make sure we didn't already assign it a target, and that there are targets to pick
-				shuttletarget = pick(escape_list) //Pick a shuttle target
-			enroute = TRUE
-			stop_automated_movement = TRUE
-			spawn()
-				if (!stat)
-					horde()
+/mob/living/simple_animal/hostile/proc/tickproc() //for AI stuff. Life process only runs every 2 seconds
+	spawn(10)
+		if (health <= 0)
+			death()
+			return
+		if (!stat)
+			switch(stance)
+				if (HOSTILE_STANCE_IDLE)
+					target_mob = FindTarget()
 
-		if (get_dist(src, shuttletarget) <= 2)		//The monster reached the escape hallway
-			enroute = FALSE
-			stop_automated_movement = FALSE*/
+				if (HOSTILE_STANCE_ATTACK)
+					if (destroy_surroundings)
+						DestroySurroundings()
+					MoveToTarget()
 
-/mob/living/simple_animal/hostile/proc/horde()
-	var/turf/T = get_step_to(src, shuttletarget)
-	for (var/atom/A in T)
-		if (istype(A, /obj/structure/window) || istype(A, /obj/structure/closet) || istype(A, /obj/structure/table) || istype(A, /obj/structure/grille))
-			A.attack_generic(src, rand(melee_damage_lower, melee_damage_upper))
-	Move(T)
-	FindTarget()
-	if (!target_mob || enroute)
-		spawn(10)
-			if (!stat)
-				horde()
+				if (HOSTILE_STANCE_ATTACKING)
+					if (destroy_surroundings)
+						DestroySurroundings()
+					spawn(10)
+						AttackTarget()
+		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+			turns_since_move++
+			if (turns_since_move >= turns_per_move)
+				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
+					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
+						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
+							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
+					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+					moving_to = pick(cardinal)
+					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+					Move(get_step(src,moving_to))
+					turns_since_move = FALSE
+		tickproc()
+
+/mob/living/simple_animal/hostile/New()
+	..()
+	tickproc()

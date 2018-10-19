@@ -1,6 +1,6 @@
 /obj/structure/grille
 	name = "grille"
-	desc = "A flimsy lattice of metal rods, with screws to secure it to the floor."
+	desc = "Flimsy wood rods, with screws to secure it to the floor."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "grille"
 	density = TRUE
@@ -169,21 +169,13 @@
 /obj/structure/grille/proc/healthcheck()
 	if (health <= 0)
 		if (!destroyed)
-			density = FALSE
-			destroyed = TRUE
-			update_icon()
-			PoolOrNew(/obj/item/stack/rods, get_turf(src))
-
-		else
-			if (health <= -6)
-				PoolOrNew(/obj/item/stack/rods, get_turf(src))
-				qdel(src)
-				return
+			qdel(src)
+			return
 	return
 
 /obj/structure/grille/fire_act(temperature)
 	if (prob((temperature/500) * 30))
-		visible_message("<span class = 'warning'>[src] melts.</span>")
+		visible_message("<span class = 'warning'>[src] burns.</span>")
 		health = 0
 		healthcheck()
 

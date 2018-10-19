@@ -236,7 +236,7 @@
 	icon_state = "pill18"
 	New()
 		..()
-		reagents.add_reagent("space_drugs", 15)
+		reagents.add_reagent("peyote", 15)
 		reagents.add_reagent("sugar", 15)
 
 /obj/item/weapon/reagent_containers/pill/zoom

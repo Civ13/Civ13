@@ -62,13 +62,17 @@
 	#define HUNGER_THIRST_MULTIPLIER 0.80
 
 	if (has_hunger_and_thirst)
-		switch (stat)
-			if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-				nutrition -= ((0.27/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.27/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
-			if (UNCONSCIOUS) // takes over an hour to starve
-				nutrition -= ((0.18/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.18/getStatCoeff("survival")) * HUNGER_THIRST_MULTIPLIER)
+		if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+			nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+			water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+		else
+			switch (stat)
+				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+					nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+				if (UNCONSCIOUS) // takes over an hour to starve
+					nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
 
 	#undef HUNGER_THIRST_MULTIPLIER
 
@@ -92,8 +96,6 @@
 	switch (stat)
 		if (CONSCIOUS)
 			adjustOxyLoss(-5)
-		if (UNCONSCIOUS) // approx 22 minutes for 100 oxyloss, with a lot of randomness thrown in
-			adjustOxyLoss(pick(0.1, 0.2))
 
 	..()
 
@@ -363,7 +365,6 @@
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
 
-//		if (!istype(loc, /obj/machinery/atmospherics/unary/cryo_cell))
 		var/burn_dam = FALSE
 		switch(bodytemperature)
 			if (-INFINITY to species.cold_level_3)
@@ -1182,83 +1183,27 @@
 
 		never_set_faction_huds = FALSE
 
-		if (officer_faction)
-			var/image/holder = hud_list[OFFICER_FACTION]
-			holder.icon = 'icons/mob/hud_WW2.dmi'
-			switch (original_job.base_type_flag())
-				if (PIRATES)
-					holder.icon_state = officer_faction.icon_state
-				if (BRITISH)
-					holder.icon_state = officer_faction.icon_state
-				if (FRENCH)
-					holder.icon_state = officer_faction.icon_state
-				if (SPANISH)
-					holder.icon_state = officer_faction.icon_state
-				if (PORTUGUESE)
-					holder.icon_state = officer_faction.icon_state
-				if (INDIANS)
-					holder.icon_state = officer_faction.icon_state
-				if (DUTCH)
-					holder.icon_state = officer_faction.icon_state
-				if (CIVILIAN)
-					holder.icon_state = ""
-			hud_list[OFFICER_FACTION] = holder
-
-		if (base_faction)
-			var/image/holder = hud_list[BASE_FACTION]
-			holder.icon = 'icons/mob/hud_WW2.dmi'
-			switch (original_job.base_type_flag())
-				if (PIRATES)
-					holder.icon_state = base_faction.icon_state
-				if (BRITISH)
-					holder.icon_state = base_faction.icon_state
-				if (FRENCH)
-					holder.icon_state = base_faction.icon_state
-				if (SPANISH)
-					holder.icon_state = base_faction.icon_state
-				if (PORTUGUESE)
-					holder.icon_state = base_faction.icon_state
-				if (INDIANS)
-					holder.icon_state = base_faction.icon_state
-				if (DUTCH)
-					holder.icon_state = base_faction.icon_state
-				if (CIVILIAN)
-					holder.icon_state = ""
-			hud_list[BASE_FACTION] = holder
-
-
-	if (stat != life_hud_check["stat"] || health != life_hud_check["health"])
-		var/image/holder = hud_list[HEALTH_HUD]
-		if (stat == DEAD)
-			holder.icon_state = "hudhealth-100"
-		else
-			var/percentage_health = RoundHealth((health-config.health_threshold_crit)/(maxHealth-config.health_threshold_crit)*100)
-			holder.icon_state = "hud[percentage_health]"
-		hud_list[HEALTH_HUD] = holder
-
-		holder = hud_list[LIFE_HUD]
-		if (stat == DEAD)
-			holder.icon_state = "huddead"
-		else
-			holder.icon_state = "hudhealthy"
-		hud_list[LIFE_HUD] = holder
-
-		holder = hud_list[STATUS_HUD]
-		if (stat == DEAD)
-			holder.icon_state = "huddead"
-		else
-			holder.icon_state = "hudhealthy"
-		hud_list[STATUS_HUD] = holder
-
-		holder = hud_list[STATUS_HUD_OOC]
-		if (stat == DEAD)
-			holder.icon_state = "huddead"
-		else
-			holder.icon_state = "hudhealthy"
-		hud_list[STATUS_HUD_OOC] = holder
-
-	life_hud_check["stat"] = stat
-	life_hud_check["health"] = health
+		var/image/holder = hud_list[BASE_FACTION]
+		holder.icon = 'icons/mob/hud_1713.dmi'
+		holder.plane = HUD_PLANE
+		switch (original_job.base_type_flag())
+			if (PIRATES)
+				holder.icon_state = "pirate_basic"
+			if (BRITISH)
+				holder.icon_state = "rn_basic"
+			if (FRENCH)
+				holder.icon_state = "fr_basic"
+			if (SPANISH)
+				holder.icon_state = "sp_basic"
+			if (PORTUGUESE)
+				holder.icon_state = "pt_basic"
+			if (INDIANS)
+				holder.icon_state = "ind_basic"
+			if (DUTCH)
+				holder.icon_state = "nl_basic"
+			if (CIVILIAN)
+				holder.icon_state = ""
+		hud_list[BASE_FACTION] = holder
 
 /mob/living/carbon/human/handle_silent()
 	if (..())
@@ -1309,17 +1254,6 @@
 				reset_view(null, FALSE)
 			else if (viewflags)
 				sight |= viewflags
-	/*	else if (eyeobj)
-			if (eyeobj.owner != src)
-				reset_view(null)*/
-		else
-			var/isRemoteObserve = FALSE
-			if ((mRemote in mutations) && remoteview_target)
-				if (remoteview_target.stat==CONSCIOUS)
-					isRemoteObserve = TRUE
-			if (!isRemoteObserve && client && !client.adminobs)
-				remoteview_target = null
-				reset_view(null, FALSE)
 	else if (client)
 		client.perspective = EYE_PERSPECTIVE
 		client.eye = laddervision

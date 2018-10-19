@@ -2,7 +2,6 @@
 	name = "floor"
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat_floor1"
-	floor_type = /obj/item/stack/tile/wood
 	stepsound = "wood"
 
 /turf/floor/ship/wood_ship/north

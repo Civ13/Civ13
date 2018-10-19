@@ -4,42 +4,6 @@
 	icon_state = "carpet"
 	initial_flooring = /decl/flooring/carpet
 
-/turf/floor/carpet/bcarpet
-	name = "black carpet"
-	icon_state = "bcarpet"
-	initial_flooring = /decl/flooring/carpet/bcarpet
-
-/turf/floor/carpet/blucarpet
-	name = "blue carpet"
-	icon_state = "blucarpet"
-	initial_flooring = /decl/flooring/carpet/blucarpet
-
-/turf/floor/carpet/turcarpet
-	name = "tur carpet"
-	icon_state = "turcarpet"
-	initial_flooring = /decl/flooring/carpet/turcarpet
-
-/turf/floor/carpet/sblucarpet
-	name = "sblue carpet"
-	icon_state = "sblucarpet"
-	initial_flooring = /decl/flooring/carpet/sblucarpet
-
-/turf/floor/carpet/gaycarpet
-	name = "clown carpet"
-	icon_state = "gaycarpet"
-	initial_flooring = /decl/flooring/carpet/gaycarpet
-
-/turf/floor/carpet/purcarpet
-	name = "purple carpet"
-	icon_state = "purcarpet"
-	initial_flooring = /decl/flooring/carpet/purcarpet
-
-/turf/floor/carpet/oracarpet
-	name = "orange carpet"
-	icon_state = "oracarpet"
-	initial_flooring = /decl/flooring/carpet/oracarpet
-
-
 /turf/floor/wood
 	name = "wooden floor"
 	icon = 'icons/turf/floors.dmi'

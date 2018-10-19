@@ -1,5 +1,5 @@
 /obj/item/weapon/storage/bible
-	name = "Testament of Terra"
+	name = "The Holy Bible"
 	desc = "Apply to head repeatedly."
 	icon_state ="bible"
 	item_state = "bible"

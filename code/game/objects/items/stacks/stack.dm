@@ -109,10 +109,23 @@
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
+	var/obj/structure/religious/totem/newtotem = new/obj/structure/religious/totem
+	newtotem.desc = "none"
+	var/obj/structure/religious/impaledskull/newskull = new/obj/structure/religious/impaledskull
+	newskull.name = "none"
+	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
+	build_override_door.custom_code = -1
 	var/obj/item/weapon/key/civ/build_override_key = new/obj/item/weapon/key/civ
 	build_override_key.code = -1
-	var/obj/structure/simple_door/key_door/custom/build_override_door = new/obj/structure/simple_door/key_door/custom
+	var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
+	build_override_sign.desc = "A sign."
 	var/mob/living/carbon/human/H = user
+
+	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle"))
+		if (H.faction_text == INDIANS)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+
 	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 			user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
@@ -123,6 +136,68 @@
 			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 				qdel(H.r_hand)
 
+	if (recipe.result_type == /obj/structure/religious/totem || recipe.result_type == /obj/structure/religious/impaledskull || recipe.result_type == /obj/structure/religious/tribalmask || recipe.result_type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot || recipe.result_type == /obj/item/clothing/accessory/armband/talisman || recipe.result_type == /obj/item/clothing/head/skullmask || recipe.result_type == /obj/item/weapon/material/kitchen/utensil/knife/bone)
+		if (!H.faction_text == INDIANS)
+			H << "<span class = 'danger'>Only natives can make this!</span>"
+			return
+
+		if (recipe.result_type == /obj/structure/religious/totem)
+			if (H.original_job_title == "Red Goose Tribesman")
+				newtotem.name = "Stone Goose Totem"
+				newtotem.icon_state = "goose"
+				newtotem.desc = "A stone goose totem."
+			else if (H.original_job_title == "Blue Turkey Tribesman")
+				newtotem.name = "Stone Turkey Totem"
+				newtotem.icon_state = "turkey"
+				newtotem.desc = "A stone turkey totem."
+			else if (H.original_job_title == "Blue Monkey Tribesman")
+				newtotem.name = "Stone Monkey Totem"
+				newtotem.icon_state = "monkey"
+				newtotem.desc = "A stone monkey totem."
+			else if (H.original_job_title == "Yellow Mouse Tribesman")
+				newtotem.name = "Stone Mouse Totem"
+				newtotem.icon_state = "mouse"
+				newtotem.desc = "A stone mouse totem."
+			else if (H.original_job_title == "White Wolf Tribesman")
+				newtotem.name = "Stone Wolf Totem"
+				newtotem.icon_state = "wolf"
+				newtotem.desc = "A stone wolf totem."
+			else if (H.original_job_title == "Black Bear Tribesman")
+				newtotem.name = "Stone Bear Totem"
+				newtotem.icon_state = "bear"
+				newtotem.desc = "A stone bear totem."
+			else
+				newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
+				newtotem.desc = "A stone totem."
+
+		if (recipe.result_type == /obj/structure/religious/impaledskull)
+			if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
+				user << "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>"
+				return
+			else
+				if (istype(H.l_hand, /obj/item/organ/external/head))
+					var/targetskull = H.l_hand.name
+					targetskull = replacetext(targetskull, " head", "")
+					targetskull = "impaled [targetskull] skull"
+					newskull.name = targetskull
+					qdel(H.l_hand)
+				else if (istype(H.r_hand, /obj/item/organ/external/head))
+					var/targetskull = H.r_hand.name
+					targetskull = replacetext(targetskull, " head", "")
+					targetskull = "impaled [targetskull] skull"
+					newskull.name = targetskull
+					qdel(H.r_hand)
+
+	if (findtext(recipe.title, "custom sign"))
+		var/customname = input(user, "Choose a name for this sign:") as text|null
+		if (customname == null)
+			customname = "Sign"
+		var/customdesc = input(user, "Choose a description for this sign:") as text|null
+		if (customdesc == null)
+			customdesc = "An empty sign."
+		build_override_sign.name = customname
+		build_override_sign.desc = customdesc
+
 	if (findtext(recipe.title, "wall"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -132,9 +207,7 @@
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-		var/material = null
-		if (findtext(recipe.title, "wood"))
-			material = "wood"
+
 
 		if (!ishuman(user))
 			return
@@ -155,16 +228,12 @@
 		if (!key || !istype(key))
 			return // should never happen
 
-		if (key && H.faction_text == CIVILIAN)
+		if (key)
 			var/keyname = input(user, "Choose a name for the door") as text|null
 			if (keyname == null)
 				keyname = "Locked"
-			build_override_door = new /obj/structure/simple_door/key_door/custom(null, material)
 			build_override_door.name = keyname
-			var/datum/keyslot/custom/keyslot_coding = new/datum/keyslot/custom(null)
-			keyslot_coding.code = key.code
-			build_override_door.keyslot_type = keyslot_coding
-			build_override_door.keyslot = keyslot_coding
+			build_override_door.custom_code = key.code
 
 	if (!can_use(required))
 		if (produced>1)
@@ -193,7 +262,7 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
-		else if (H.faction_text == CIVILIAN)
+		else
 			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999)") as num
 			keycode = Clamp(keycode, 1000, 9999)
 			var/keyname = input(user, "Choose a name for the key") as text|null
@@ -201,13 +270,6 @@
 				keyname = "Key"
 			build_override_key.name = keyname
 			build_override_key.code = keycode
-
-		else
-			var/mob/living/carbon/human/US = user
-			var/texttype = lowertext("[US.faction_text]")
-			var/keybasepath = "/obj/item/weapon/key/"
-			var/keypath = text2path("[keybasepath][texttype]")
-			build_override_object = new keypath()
 
 	if (recipe.result_type == /obj/structure/noose)
 		var/structurecheck = 0
@@ -261,6 +323,12 @@
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 
+	if (recipe.result_type == /obj/item/stack/ammopart/musketball)
+		produced = 2
+	if (recipe.result_type == /obj/item/stack/ammopart/musketball_pistol)
+		produced = 3
+	if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
+		produced = 2
 	if (use(required))
 		var/atom/O
 		if (recipe.use_material)
@@ -275,11 +343,38 @@
 			qdel(O)
 			return
 
+		if (build_override_sign.desc != "A sign.")
+			build_override_sign.loc = get_turf(O)
+			build_override_sign.set_dir(user.dir)
+			build_override_sign.add_fingerprint(user)
+			qdel(O)
+			return
 
 		if (build_override_object)
 			build_override_object.loc = get_turf(O)
 			build_override_object.set_dir(user.dir)
 			build_override_object.add_fingerprint(user)
+			qdel(O)
+			return
+
+		if (build_override_door.custom_code != -1)
+			build_override_door.loc = get_turf(O)
+			build_override_door.set_dir(user.dir)
+			build_override_door.add_fingerprint(user)
+			qdel(O)
+			return
+
+		if (newtotem.desc != "none")
+			newtotem.loc = get_turf(O)
+			newtotem.set_dir(user.dir)
+			newtotem.add_fingerprint(user)
+			qdel(O)
+			return
+
+		if (newskull.name != "none")
+			newskull.loc = get_turf(O)
+			newskull.set_dir(user.dir)
+			newskull.add_fingerprint(user)
 			qdel(O)
 			return
 

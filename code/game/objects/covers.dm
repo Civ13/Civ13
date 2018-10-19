@@ -9,7 +9,7 @@
 	var/origin_water_level = 0
 	var/origin_move_delay = 0
 	var/not_movable = FALSE //if it can be removed by wrenches
-	var/health = 50
+	var/health = 100
 	is_cover = TRUE
 	anchored = TRUE
 	opacity = FALSE
@@ -53,11 +53,20 @@
 	opacity = TRUE
 	amount = 4
 	layer = 2.12
+	health = 150
 
-/obj/covers/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
-		return
-	..()
+/obj/covers/stone_wall
+	name = "stone wall"
+	desc = "A stone wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "b_stone_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 4
+	layer = 2.12
+	health = 300
 
 /obj/covers/New()
 	..()
@@ -86,6 +95,8 @@
 		T.density = FALSE
 		T.water_level = 0
 		T.move_delay = 0
+		if (istype(T, /turf/floor/plating/beach/water/deep))
+			T.iscovered = TRUE
 	return TRUE
 
 
@@ -113,7 +124,7 @@
 	desc = "a repaired wood floor."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
-	layer = 2.11
+	layer = 2.09
 
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
@@ -165,6 +176,8 @@
 		return ..()
 
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
+		return
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(W.damtype)
 		if ("fire")

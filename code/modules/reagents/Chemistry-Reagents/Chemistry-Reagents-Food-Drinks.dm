@@ -487,7 +487,9 @@
 
 /datum/reagent/drink/tea/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
-	M.adjustToxLoss(-0.5 * removed)
+	M.adjustToxLoss(-1.5 * removed)
+	M.drowsyness = max(0, M.drowsyness - 4 * removed)
+	M.hallucination = max(0, M.hallucination - 6 * removed)
 
 /datum/reagent/drink/coffee
 	name = "Coffee"
@@ -507,6 +509,7 @@
 	if (adj_temp > 0)
 		holder.remove_reagent("frostoil", 10 * removed)
 	M.add_chemical_effect(CE_PULSE, TRUE)
+	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 
 /datum/reagent/drink/coffee/overdose(var/mob/living/carbon/M, var/alien)
 	M.make_jittery(5)
@@ -594,9 +597,6 @@
 /* Alcohol */
 
 // Basic
-
-/datum/reagent/ethanol/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 5 * removed)
 
 /datum/reagent/ethanol/absinthe
 	name = "Absinthe"
@@ -994,15 +994,6 @@
 	taste_description = "dry, tart lemons"
 	color = "#664300"
 	strength = 30
-
-/datum/reagent/ethanol/grog
-	name = "Grog"
-	id = "grog"
-	description = "Watered-down rum, pirate approved!"
-	taste_description = "a poor excuse for alcohol"
-	reagent_state = LIQUID
-	color = "#664300"
-	strength = 100
 
 /datum/reagent/ethanol/erikasurprise
 	name = "Erika Surprise"

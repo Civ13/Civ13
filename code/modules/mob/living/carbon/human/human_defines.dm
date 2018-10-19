@@ -100,7 +100,6 @@
 
 	var/list/all_factions = list()
 	var/datum/faction/base_faction = null
-	var/datum/faction/officer_faction = null
 	var/datum/faction/squad/squad_faction = null
 	var/faction_text = null
 
@@ -134,7 +133,6 @@
 		"pistol" = list(100,100),
 		"bows" = list(100,100),
 		"medical" = list(100,100),
-		"survival" = list(100,100),
 		"stamina" = list(100,100))
 
 	var/has_hunger_and_thirst = TRUE

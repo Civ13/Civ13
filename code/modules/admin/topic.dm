@@ -434,7 +434,7 @@
 		switch(where)
 			if ("inhand")
 				if (!iscarbon(usr))
-					usr << "Can only spawn in hand when you're a carbon mob or cyborg."
+					usr << "Can only spawn in hand when you're a carbon mob."
 					where = "onfloor"
 				target = usr
 

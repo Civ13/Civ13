@@ -163,7 +163,7 @@
 		insert_rag(W, user)
 		update_icon()
 		return
-	else if (rag && (istype(W, /obj/item/weapon/flame) || istype(W, /obj/item/clothing/mask/smokable/cigarette) || (istype(W, /obj/item/flashlight/flare) && W:on)))
+	else if (rag && (istype(W, /obj/item/weapon/flame) || istype(W, /obj/item/clothing/mask/smokable/cigarette) && W:on))
 		rag.attackby(W, user)
 		update_icon()
 		return
@@ -376,8 +376,7 @@
 	center_of_mass = list("x"=16, "y"=8)
 	New()
 		..()
-		reagents.add_reagent("rum", 70)
-		reagents.add_reagent("tramadol", 30)
+		reagents.add_reagent("rum", 80)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/rum/empty
 	name = "empty bottle of rum"
@@ -478,9 +477,7 @@
 	value = 16
 	New()
 		..()
-		reagents.add_reagent("wine", 90)
-		reagents.add_reagent("tramadol", 10)
-
+		reagents.add_reagent("wine", 100)
 /obj/item/weapon/reagent_containers/food/drinks/bottle/palmwine
 	name = "Palm Wine"
 	desc = "A crude drink, made from fermented palm sap."
@@ -489,8 +486,7 @@
 	value = 18
 	New()
 		..()
-		reagents.add_reagent("palmwine", 85)
-		reagents.add_reagent("tramadol", 15)
+		reagents.add_reagent("palmwine", 40)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/wine/empty
 	name = "Doublebeard Bearded Special Wine"
@@ -541,8 +537,7 @@
 	value = 5
 	New()
 		..()
-		reagents.add_reagent("beer", 47)
-		reagents.add_reagent("tramadol", 3)
+		reagents.add_reagent("beer", 40)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/small/ale
 	name = "ale"
@@ -553,5 +548,4 @@
 	value = 6
 	New()
 		..()
-		reagents.add_reagent("ale", 45)
-		reagents.add_reagent("tramadol", 5)
+		reagents.add_reagent("ale", 40)

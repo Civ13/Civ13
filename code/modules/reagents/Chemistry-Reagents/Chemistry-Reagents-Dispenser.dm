@@ -111,6 +111,7 @@
 	M.nutrition += nutriment_factor * removed
 	var/strength_mod = 2
 
+	M.add_chemical_effect(CE_PAINKILLER, 20)
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 40
@@ -175,10 +176,6 @@
 	M.adjust_fire_stacks(removed / 12)
 	M.adjustToxLoss(0.2 * removed)
 
-/datum/reagent/hydrazine/touch_turf(var/turf/T)
-	new /obj/effect/decal/cleanable/liquid_fuel(T, volume)
-	remove_self(volume)
-	return
 
 /datum/reagent/iron
 	name = "Iron"

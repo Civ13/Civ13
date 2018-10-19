@@ -21,13 +21,42 @@
  * to slow down dramatically. The forest area reached this limit, but only
  * when there were snow objects, so its been split into 9 separate areas.
 */
+/area/caribbean/treasury
+	name = "Colony Treasury"
+	base_turf = /turf/floor/dirt
+	icon_state = "red3"
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/treasury/civilian
+	name = "Colony Treasury"
+
+/area/caribbean/treasury/french
+	name = "French Treasury"
+
+/area/caribbean/treasury/british
+	name = "British Treasury"
+
+/area/caribbean/treasury/spanish
+	name = "Spanish Treasury"
+
+/area/caribbean/treasury/portuguese
+	name = "Portuguese Treasury"
+
+/area/caribbean/treasury/dutch
+	name = "Dutch Treasury"
+
 
 /area/caribbean/tribes
 	name = "Jungle"
 	base_turf = /turf/floor/dirt
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
-
+/area/caribbean/tribes/caves
+	name = "Caves"
+	base_turf = /turf/floor/dirt
+	icon_state = "red3"
+	location = AREA_INSIDE
+	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/beach
 	name = "Beach"
 	base_turf = /turf/floor/plating/beach/sand
@@ -42,6 +71,11 @@
 	name = "Grasslands"
 	base_turf = /turf/floor/plating/grass/wild
 	icon_state = "purple1"
+	ambience = list("sound/ambience/jungle1.ogg")
+/area/caribbean/tribes/lostcity
+	name = "Lost City"
+	base_turf = /turf/floor/dirt
+	icon_state = "purple2"
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/island
@@ -202,32 +236,60 @@
 
 // end of wormhole areas
 
-// british areas
 
 /area/caribbean/colonies
+
+/area/caribbean/colonies/jungle
+	name = "Jungle"
+	icon_state = "red2"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/beach
+	name = "Beach"
+	icon_state = "red1"
+	base_turf = /turf/floor/plating/beach/sand
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/caves
+	name = "Caves"
+	icon_state = "red3"
+	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/colonies/swamp
+	name = "Swamp"
+	icon_state = "red4"
+	base_turf = /turf/floor/plating/beach/water/swamp
+	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/british
 	name = "British Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/portuguese
 	name = "Portuguese Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/spanish
 	name = "Spanish Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/french
 	name = "French Colony Hall"
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/dutch
@@ -235,6 +297,7 @@
 	icon_state = "green2"
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
+	location = AREA_INSIDE
 /area/caribbean/british
 
 /area/caribbean/british/land
@@ -254,6 +317,7 @@
 
 
 /area/caribbean/british/ship
+	name = "British Ship"
 	icon_state = "blue1"
 	base_turf = /turf/floor/plating/beach/water
 	ambience = list("sound/ambience/ship1.ogg")

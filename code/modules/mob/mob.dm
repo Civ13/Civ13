@@ -381,10 +381,6 @@
 
 	src << browse(null, "window=memory")
 
-/*	if (ticker.mode && ticker.mode.deny_respawn)
-		usr << "<span class='notice'>Respawn is disabled for this roundtype.</span>"
-		return*/
-
 	src << "You can respawn now, enjoy your new life!"
 	stop_ambience(usr)
 
@@ -667,7 +663,7 @@
 			stat("")
 			stat(stat_header("Server"))
 			stat("")
-			stat("Players Online (Playing, Observing, Lobby):", "[clients.len] ([human_clients_mob_list.len], [observer_mob_list.len], [new_player_mob_list.len])")
+			stat("Players Online (Playing, Observing, Lobby):", "[clients.len] ([human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len])")
 			stat("Round Duration:", roundduration2text())
 
 			if (map)
@@ -778,9 +774,11 @@
 		else
 			lying = FALSE
 			canmove = TRUE
+			anchored = FALSE
 
 	if (lying)
 		density = FALSE
+		anchored = FALSE
 	//	if (l_hand) unEquip(l_hand)
 	//	if (r_hand) unEquip(r_hand)
 	else
@@ -1000,10 +998,6 @@ mob/proc/yank_out_object()
 		AdjustParalysis(-1)
 	return paralysis
 
-//Check for brain worms in head.
-/mob/proc/has_brain_worms()
-
-	return FALSE
 
 /mob/proc/updateicon()
 	return

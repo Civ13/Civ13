@@ -7,7 +7,7 @@
 	break_tile()
 
 /turf/floor/proc/break_tile(rust)
-	if (!flooring || !(flooring.flags & TURF_CAN_BREAK) || !isnull(broken) || floor_type == /obj/item/stack/tile/wood)
+	if (!flooring || !(flooring.flags & TURF_CAN_BREAK) || !isnull(broken))
 		return
 	if (rust)
 		broken = flooring.has_damage_range + 1

@@ -88,7 +88,10 @@
 	if (!ticker || ticker.current_state <= GAME_STATE_PREGAME)
 		output += "<p><a href='byond://?src=\ref[src];ready=0'>The game has not started yet.</a></p>"
 	else
-		output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
+		if (map.ID == MAP_TRIBES)
+			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
+		else
+			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
 	var/height = 250
 
@@ -214,6 +217,41 @@
 			return FALSE
 		LateChoices()
 		return TRUE
+
+	if (href_list["tribes"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
+			return
+
+		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
+			if (check_rights(R_ADMIN, FALSE, src))
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+					log_admin(msg)
+					message_admins(msg)
+					LateChoices()
+					return TRUE
+			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			return FALSE
+
+		if (map && map.ID == MAP_TRIBES)
+			close_spawn_windows()
+			AttemptLateSpawn(pick(map.availablefactions))
+		else
+			return
+		LateChoices()
+		return TRUE
+
 	if (href_list["late_join"])
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -327,7 +365,7 @@
 		character.buckled.loc = character.loc
 		character.buckled.set_dir(character.dir)
 
-	ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
+	ticker.minds += character.mind
 
 	character.lastarea = get_area(loc)
 
@@ -340,18 +378,35 @@
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
 		if (!nomsg)
 			usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
 		return FALSE
 	if (!config.enter_allowed)
 		if (!nomsg)
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 		return FALSE
 	if (jobBanned(rank))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this role!</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're banned from this role!</span>"
+
 		return FALSE
 	if (!IsJobAvailable(rank))
 		if (!nomsg)
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
 		return FALSE
 
 	var/datum/job/job = job_master.GetJob(rank)
@@ -359,28 +414,48 @@
 	if (factionBanned(job.base_type_flag(1)))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this faction!</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're banned from this faction!</span>"
 		return FALSE
 
 	if (officerBanned() && job.is_officer)
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from officer positions!</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're banned from officer positions!</span>"
 		return FALSE
 
 	if (penalBanned())
 		if (job.blacklisted == FALSE)
 			if (!nomsg)
 				usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
 			return FALSE
 
 	else
 		if (job.blacklisted == TRUE)
 			if (!nomsg)
 				usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
 			return FALSE
 
 	if (job_master.is_side_locked(job.base_type_flag()))
 		if (!nomsg)
 			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					src << "<span class = 'red'>Currently this side is locked for joining.</span>"
 		return
 
 	if (job.is_deathmatch)
@@ -390,9 +465,17 @@
 	if (istype(job, /datum/job/indians))
 		if (client.prefs.s_tone < -145)
 			usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
 			return
 		if (client.prefs.s_tone > -100)
 			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
+			if (map.ID == MAP_TRIBES)
+				abandon_mob()
+				spawn(10)
+					usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
 			return
 	if (istype(job, /datum/job/british) || istype(job, /datum/job/french))
 		if (client.prefs.s_tone < -45)
@@ -425,8 +508,7 @@
 		character.buckled.set_dir(character.dir)
 
 	if (character.mind)
-	//	data_core.manifest_inject(character)
-		ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
+		ticker.minds += character.mind
 
 	character.lastarea = get_area(loc)
 

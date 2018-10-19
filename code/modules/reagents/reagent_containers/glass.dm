@@ -144,6 +144,21 @@
 	density = TRUE
 	flags = OPENCONTAINER
 
+/obj/item/weapon/reagent_containers/glass/barrel
+	w_class = 4.0
+	throw_speed = 1
+	throw_range = 1
+	nothrow = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/empty
+	name = "wood barrel"
+	desc = "A wood barrel. You can put liquids inside."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+
 
 /obj/item/weapon/reagent_containers/glass/barrel/water
 	name = "water barrel"
@@ -180,8 +195,7 @@
 	density = TRUE
 	New()
 		..()
-		reagents.add_reagent("rum",140)
-		reagents.add_reagent("tramadol", 60)
+		reagents.add_reagent("rum",200)
 
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
 	name = "gunpowder barrel"
@@ -218,3 +232,30 @@
 	if (temperature > T0C+500)
 		explode()
 	return ..()
+
+
+/obj/item/weapon/reagent_containers/glass/barrel/attackby(var/obj/item/I, var/mob/user)
+	if (istype(I, /obj/item/stack/ore/sulphur))
+		reagents.add_reagent("sulfur",3)
+		if (I.amount>1)
+			I.amount -= 1
+		else
+			qdel(I)
+		return
+		return
+	else if (istype(I, /obj/item/stack/ore/saltpeter))
+		reagents.add_reagent("potassium",3)
+		if (I.amount>1)
+			I.amount -= 1
+		else
+			qdel(I)
+		return
+	else if (istype(I, /obj/item/stack/ore/coal))
+		reagents.add_reagent("carbon",3)
+		if (I.amount>1)
+			I.amount -= 1
+		else
+			qdel(I)
+		return
+		return
+	..()

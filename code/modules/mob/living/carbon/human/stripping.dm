@@ -39,7 +39,7 @@
 			if (!A || suit.loc != src || !(A in suit.accessories))
 				return
 
-			if (istype(A, /obj/item/clothing/accessory/badge)) // || istype(A, /obj/item/clothing/accessory/medal))
+			if (istype(A, /obj/item/clothing/accessory/medal))
 				user.visible_message("<span class='danger'>\The [user] tears off \the [A] from [src]'s [suit.name]!</span>")
 			attack_log += "\[[time_stamp()]\] <font color='orange'>Has had \the [A] removed by [user.name] ([user.ckey])</font>"
 			user.attack_log += "\[[time_stamp()]\] <font color='red'>Attempted to remove [name]'s ([ckey]) [A.name]</font>"

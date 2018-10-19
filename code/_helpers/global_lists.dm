@@ -121,7 +121,7 @@ var/global/list/skin_styles_female_list = list()		//unused
 
 
 var/global/list/backbaglist = list("Nothing", "Backpack", "Satchel", "Satchel Alt")
-var/global/list/exclude_jobs = list(/*/datum/job/ai,/datum/job/cyborg*/)
+var/global/list/exclude_jobs = list()
 
 // Visual nets
 //var/list/datum/visualnet/visual_nets = list()

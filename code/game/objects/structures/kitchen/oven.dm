@@ -26,8 +26,8 @@
 		return
 	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 		return
-	else if (istype(I, /obj/item/weapon/ore/coal))
-		fuel += 3
+	else if (istype(I, /obj/item/stack/ore/coal))
+		fuel += I.amount*3
 		qdel(I)
 		return
 	var/space = max_space
@@ -47,8 +47,13 @@
 		on = TRUE
 		fuel -=1
 		update_icon()
+		if (name == "campfire")
+			set_light(5)
+		else
+			set_light(2)
 		spawn (50)
 			on = FALSE
+			set_light(0)
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
 			process()
@@ -57,29 +62,30 @@
 
 /obj/structure/oven/process()
 	for (var/obj/item/I in contents)
-		if (istype(I, /obj/item/weapon/ore))
-			if (istype(I, /obj/item/weapon/ore/diamond))
-				contents += new/obj/item/stack/material/diamond(src)
+		if (istype(I, /obj/item/stack/ore))
+			if (istype(I, /obj/item/stack/ore/diamond))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/diamond(src)
 				contents -= I
 				qdel(I)
-			else if (istype(I, /obj/item/weapon/ore/glass))
-				contents += new/obj/item/stack/material/glass(src)
+			else if (istype(I, /obj/item/stack/ore/glass))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/glass(src)
 				contents -= I
 				qdel(I)
-			else if (istype(I, /obj/item/weapon/ore/gold))
-				contents += new/obj/item/stack/material/gold(src)
+			else if (istype(I, /obj/item/stack/ore/gold))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/gold(src)
 				contents -= I
 				qdel(I)
-			else if (istype(I, /obj/item/weapon/ore/silver))
-				contents += new/obj/item/stack/material/silver(src)
+			else if (istype(I, /obj/item/stack/ore/silver))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/silver(src)
 				contents -= I
 				qdel(I)
-			else if (istype(I, /obj/item/weapon/ore/iron))
-				contents += new/obj/item/stack/material/iron(src)
-				contents -= I
-				qdel(I)
-			else if (istype(I, /obj/item/weapon/ore/glass))
-				contents += new/obj/item/stack/material/glass(src)
+			else if (istype(I, /obj/item/stack/ore/iron))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/iron(src)
 				contents -= I
 				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))

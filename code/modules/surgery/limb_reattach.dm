@@ -1,4 +1,4 @@
-//Procedures in this file: Robotic limbs attachment, meat limbs attachment
+//Procedures in this file: limbs attachment
 //////////////////////////////////////////////////////////////////
 //						LIMB SURGERY							//
 //////////////////////////////////////////////////////////////////
@@ -45,6 +45,7 @@
 /datum/surgery_step/limb/connect
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
+	/obj/item/stack/material/rope = 50, 	\
 	)
 	can_infect = TRUE
 

@@ -2,7 +2,7 @@
 	//SECURITY//
 	////////////
 #define UPLOAD_LIMIT		10485760	//Restricts client uploads to the server to 10MB //Boosted this thing. What's the worst that can happen?
-#define ABSOLUTE_MIN_CLIENT_VERSION 400
+#define ABSOLUTE_MIN_CLIENT_VERSION 511
 #define REAL_MIN_CLIENT_VERSION 512
 #define PLAYERCAP 200
 	/*
@@ -145,13 +145,6 @@
 
 	. = ..()	//calls mob.Login()
 
-	if (!serverswap_open_status)
-		if (serverswap.Find("snext"))
-			var/linked = "byond://[world.internet_address]:[serverswap[serverswap["snext"]]]"
-			src << "<span class = 'notice'><font size = 1>This server is not open, so you will be automatically redirected to the linked server - if it doesn't automatically take you there, click this: <b>[linked]</b>.</font></span>"
-			src << link(linked)
-		del(src)
-		return FALSE
 
 	if (quickBan_rejected("Server"))
 		del(src)
@@ -164,9 +157,6 @@
 
 	if (config.resource_website)
 		preload_rsc = config.resource_website
-
-	if (!mob || istype(mob, /mob/new_player))
-		src << "<span class = 'red'>If the title screen is black, resources are still downloading. Please be patient until the title screen appears.</span>"
 
 	/*Admin Authorisation: */
 
@@ -319,8 +309,49 @@
 	return md5(ckey)
 
 /client/proc/log_to_db()
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// loading the "database"
+	var/full_list = file2text("SQL/playerlist.txt")
+//	var/full_logs = file2text("SQL/playerlogs.txt")
+	var/list/full_list_split = splittext(full_list, "|")
+//	var/list/full_logs_split = splittext(full_logs, "|")
+	var/list/full_list_split_vars = list()
+//	world.log << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
+	//splitting the player database, so we can check the values individually:
+	for (var/v = TRUE, v < full_list_split.len, v++)
+		if (full_list_split[v][1] != "0" && full_list_split[v][1] != 0 && full_list_split[v][1] != "\n")
+			var/list/addin = list(splittext(full_list_split[v], ";"))
+			full_list_split_vars += addin
+	var/F = file("SQL/playerlist.txt")
+	if (fexists("SQL/playerlist.txt"))
+		fdel(F)
+	//checking for existing logs of current ckey
+	var/found = TRUE
+	//it exists, just update the values (ckey;firstseen;lastseen;age;points)
+	for (var/v = TRUE, v <= full_list_split_vars.len, v++)
+		if (full_list_split_vars[v][1] == ckey && found == TRUE)
+//			world.log << "DEBUG: This key is on the list! ckey: [ckey]"
+			full_list_split_vars[v][3] = num2text(world.realtime, 10)
+			full_list_split_vars[v][4] = num2text(round((text2num(full_list_split_vars[v][3])-text2num(full_list_split_vars[v][2]))/864000)) //in days
+			found = FALSE
 
-	if ( IsGuestKey(key) )
+	//it doesnt exist, create an entry
+	if (found == TRUE)
+//		world.log << "DEBUG: New player, adding to the list! ckey: [ckey]"
+		text2file("[ckey];[num2text(world.realtime, 10)];[num2text(world.realtime, 10)];0;0|","SQL/playerlist.txt")
+
+	//copy the changes to the registry
+	for (var/k = TRUE, k <= full_list_split_vars.len, k++)
+		var/var1 = full_list_split_vars[k][1]
+		var/var2 = full_list_split_vars[k][2]
+		var/var3 = full_list_split_vars[k][3]
+		var/var4 = full_list_split_vars[k][4]
+		var/var5 = full_list_split_vars[k][5]
+		text2file("[var1];[var2];[var3];[var4];[var5];|","SQL/playerlist.txt")
+//		world.log << "[var1];[var2];[var3];[var4];[var5];|"
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	if (IsGuestKey(key))
 		return
 
 	if (!database)
@@ -330,30 +361,26 @@
 	var/list/rowdata = database.execute("SELECT id, datediff(Now(),firstseen) as age FROM player WHERE ckey = '[sql_ckey]';")
 	var/sql_id = getSQL_id()
 	player_age = FALSE	// New players won't have an entry so knowing we have a connection we set this to zero to be updated if their is a record.
-
+	xp_points = FALSE
 	if (islist(rowdata) && !isemptylist(rowdata))
 		if (rowdata["id"] != null)
 			sql_id = rowdata["id"]
 		player_age = rowdata["age"]
+		xp_points = rowdata["points"]
 
-	rowdata = database.execute("SELECT ckey FROM player WHERE ip = '[address]';")
+	rowdata = database.execute("SELECT ckey FROM connection_log WHERE ip = '[address]';")
 	related_accounts_ip = ""
 
 	if (islist(rowdata) && !isemptylist(rowdata))
 		related_accounts_ip += "[rowdata["ckey"]], "
 
-	rowdata = database.execute("SELECT ckey FROM player WHERE computerid = '[computer_id]';")
+	rowdata = database.execute("SELECT ckey FROM connection_log WHERE computerid = '[computer_id]';")
 	related_accounts_cid = ""
 	if (islist(rowdata) && !isemptylist(rowdata))
 		related_accounts_cid += "[rowdata["ckey"]], "
 
-	var/admin_rank = "Player"
-	if (holder)
-		admin_rank = holder.rank
-
 	var/sql_ip = sql_sanitize_text(address)
 	var/sql_computerid = sql_sanitize_text(computer_id)
-	var/sql_admin_rank = sql_sanitize_text(admin_rank)
 
 	if (sql_ip == null)
 		sql_ip = "HOST"
@@ -361,31 +388,33 @@
 //	#define SQLDEBUG
 
 	#ifdef SQLDEBUG
-//	world << "sql_ip: [sql_ip]"
-//	world << "sql_computerid: [sql_computerid]"
-//	world << "sql_admin_rank: [sql_admin_rank]"
 	world << "sql_id: [sql_id]"
 	world << "sql_age: [player_age]"
 	world << "sql_points: [xp_points]"
 	#endif
-
 	if (sql_id)
 		#ifdef SQLDEBUG
 		world << "prev. player [src]"
 		#endif
+
 		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		database.execute("UPDATE player SET lastseen = '[database.Now()]', ip = '[sql_ip]', computerid = '[sql_computerid]', lastadminrank = '[sql_admin_rank]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
+		database.execute("UPDATE player SET lastseen = '[world.realtime]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
 	else
 		#ifdef SQLDEBUG
 		world << "new player [src]"
 		#endif
 		//New player!! Need to insert all the stuff
-		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, ip, computerid, lastadminrank) VALUES ('[sql_id]', '[sql_ckey]', '[database.Now()]', '[database.Now()]', '[sql_ip]', '[sql_computerid]', '[sql_admin_rank]');")
+		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[world.realtime]', '[world.realtime]', '[player_age]', '[xp_points]');")
 
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
-	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid,age) VALUES('[database.newUID()]','[database.Now()]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]','[player_age]');")
-	//#undef SQLDEBUG
+	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
+	//adding to player logs (ckey;ip;computerid;serverip;datetime,realtime)
+//	world.log << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime,realtime)"
+	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 10)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+
+
+//	#undef SQLDEBUG
 
 #undef TOPIC_SPAM_DELAY
 #undef UPLOAD_LIMIT

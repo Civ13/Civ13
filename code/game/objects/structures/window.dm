@@ -416,6 +416,7 @@
 	icon_state = "windownew_frame"
 	layer = MOB_LAYER + 0.01
 	anchored = TRUE
+	var/health = 20
 
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/material/glass))
@@ -429,7 +430,15 @@
 				qdel(src)
 		else
 			user << "<span class = 'warning'>You need at least 3 sheets of glass.</span>"
-
+	else
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (W.damtype == BRUTE || W.damtype == BURN)
+			user.do_attack_animation(src)
+			health -= (W.force * 0.2)
+	if (health <= 0)
+		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
+		qdel(src)
+		return
 /obj/structure/window/classic
 	desc = "A good old window."
 	icon_state = "windownew"

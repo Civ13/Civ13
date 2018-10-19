@@ -238,7 +238,7 @@
 		if (!(owner.species && (owner.species.flags & NO_PAIN)))
 			owner.emote("scream")	//getting hit on broken hand hurts
 
-	var/can_cut = (prob(brute*2) || sharp) && !(status & ORGAN_ROBOT)
+	var/can_cut = (prob(brute*2) || sharp)
 
 	// If the limbs can break, make sure we don't exceed the maximum damage a limb can take before breaking
 	// Non-vital organs are limited to max_damage. You can't kill someone by bludeonging their arm all the way to 200 -- you can
@@ -320,8 +320,6 @@
 	return update_damstate()
 
 /obj/item/organ/external/proc/heal_damage(brute, burn, internal = FALSE, robo_repair = FALSE)
-	if (status & ORGAN_ROBOT && !robo_repair)
-		return
 
 	//Heal damage on the individual wounds
 	for (var/datum/wound/W in wounds)
@@ -381,7 +379,7 @@ This function completely restores a damaged organ to perfect condition.
 	//moved this before the open_wound check so that having many small wounds for example doesn't somehow protect you from taking internal damage (because of the return)
 	//Possibly trigger an internal wound, too.
 	var/local_damage = brute_dam + burn_dam + damage
-	if (damage > 15 && type != BURN && local_damage > 30 && prob(damage) && !(status & ORGAN_ROBOT))
+	if (damage > 15 && type != BURN && local_damage > 30 && prob(damage))
 		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15))
 		wounds += I
 		owner.custom_pain("You feel something rip in your [name]!", TRUE)
@@ -398,15 +396,6 @@ This function completely restores a damaged organ to perfect condition.
 			if (compatible_wounds.len)
 				var/datum/wound/W = pick(compatible_wounds)
 				W.open_wound(damage)
-				//if (prob(25))
-				//	if (status & ORGAN_ROBOT)
-				//		owner.visible_message("\red The damage to [owner.name]'s [name] worsens.",\
-				//		"\red The damage to your [name] worsens.",\
-				//		"You hear the screech of abused metal.")
-				//	else
-				//		owner.visible_message("\red The wound on [owner.name]'s [name] widens with a nasty ripping noise.",\
-				//		"\red The wound on your [name] widens with a nasty ripping noise.",\
-				//		"You hear a nasty ripping noise, as if flesh is being torn apart.")
 				return
 
 	//Creating wound
@@ -496,10 +485,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 */
 /obj/item/organ/external/proc/update_germs()
 
-	if (status & (ORGAN_ROBOT) || (owner.species && owner.species.flags & IS_PLANT)) //Robotic limbs shouldn't be infected, nor should nonexistant limbs.
-		germ_level = FALSE
-		return
-
 	if (owner.bodytemperature >= 170)	//cryo stops germs from moving and doing their bad stuffs
 		//** Syncing germ levels with external wounds
 		handle_germ_sync()
@@ -554,12 +539,12 @@ Note that amputating the affected organ does in fact remove the infection from t
 		//spread the infection to child and parent organs
 		if (children)
 			for (var/obj/item/organ/external/child in children)
-				if (child.germ_level < germ_level && !(child.status & ORGAN_ROBOT))
+				if (child.germ_level < germ_level)
 					if (child.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
 						child.germ_level++
 
 		if (parent)
-			if (parent.germ_level < germ_level && !(parent.status & ORGAN_ROBOT))
+			if (parent.germ_level < germ_level)
 				if (parent.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
 					parent.germ_level++
 
@@ -709,22 +694,22 @@ Note that amputating the affected organ does in fact remove the infection from t
 	switch(disintegrate)
 		if (DROPLIMB_EDGE)
 			if (!clean)
-				var/gore_sound = "[(status & ORGAN_ROBOT) ? "tortured metal" : "ripping tendons and flesh"]"
+				var/gore_sound = "ripping tendons and flesh"
 				owner.visible_message(
 					"<span class='danger'>\The [owner]'s [name] flies off in an arc!</span>",\
 					"<span class='moderate'><b>Your [name] goes flying off!</b></span>",\
 					"<span class='danger'>You hear a terrible sound of [gore_sound].</span>")
 			playsound(owner, 'sound/effects/gore/severed.ogg', 100, FALSE)//Pay the sound whether or not it's being amputated cleanly. Because I ilke that sound.
 		if (DROPLIMB_BURN)
-			var/gore = "[(status & ORGAN_ROBOT) ? "": " of burning flesh"]"
+			var/gore = " of burning flesh"
 			owner.visible_message(
 				"<span class='danger'>\The [owner]'s [name] flashes away into ashes!</span>",\
 				"<span class='moderate'><b>Your [name] flashes away into ashes!</b></span>",\
 				"<span class='danger'>You hear a crackling sound[gore].</span>")
 		if (DROPLIMB_BLUNT)
 			if (!istype(src, /obj/item/organ/external/head))
-				var/gore = "[(status & ORGAN_ROBOT) ? "": " in shower of gore"]"
-				var/gore_sound = "[(status & ORGAN_ROBOT) ? "rending sound of tortured metal" : "sickening splatter of gore"]"
+				var/gore = " in shower of gore"
+				var/gore_sound = "sickening splatter of gore"
 				owner.visible_message(
 					"<span class='danger'>\The [owner]'s [name] explodes[gore]!</span>",\
 					"<span class='moderate'><b>Your [name] explodes[gore]!</b></span>",\
@@ -942,8 +927,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/is_usable()
 	return !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD))
 
-/obj/item/organ/external/proc/is_malfunctioning()
-	return ((status & ORGAN_ROBOT) && (brute_dam + burn_dam) >= 10 && prob(brute_dam + burn_dam))
 
 /obj/item/organ/external/proc/embed(var/obj/item/weapon/W, var/silent = FALSE, var/supplied_message)
 
@@ -1032,23 +1015,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	. = ""
 	if (status & ORGAN_DESTROYED && !is_stump())
 		. += "tear at [amputation_point] so severe that it hangs by a scrap of flesh"
-
-	if (status & ORGAN_ROBOT)
-		if (brute_dam)
-			switch(brute_dam)
-				if (0 to 20)
-					. += " some dents"
-				if (21 to INFINITY)
-					. += pick(" a lot of dents"," severe denting")
-		if (brute_dam && burn_dam)
-			. += " and"
-		if (burn_dam)
-			switch(burn_dam)
-				if (0 to 20)
-					. += " some burns"
-				if (21 to INFINITY)
-					. += pick(" a lot of burns"," severe melting")
-		return
 
 	var/list/wound_descriptors = list()
 	if (open > 1)

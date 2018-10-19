@@ -30,36 +30,6 @@
 	if (..()) return
 
 
-/obj/item/weapon/storage/box/gloves
-	name = "box of latex gloves"
-	desc = "Contains white gloves."
-	icon_state = "latex"
-
-	New()
-		..()
-		new /obj/item/clothing/gloves/latex(src)
-		new /obj/item/clothing/gloves/latex(src)
-		new /obj/item/clothing/gloves/latex(src)
-		new /obj/item/clothing/gloves/latex(src)
-		new /obj/item/clothing/gloves/latex(src)
-		new /obj/item/clothing/gloves/latex(src)
-		new /obj/item/clothing/gloves/latex(src)
-
-/obj/item/weapon/storage/box/masks
-	name = "box of sterile masks"
-	desc = "This box contains masks of sterility."
-	icon_state = "sterile"
-
-	New()
-		..()
-		new /obj/item/clothing/mask/surgical(src)
-		new /obj/item/clothing/mask/surgical(src)
-		new /obj/item/clothing/mask/surgical(src)
-		new /obj/item/clothing/mask/surgical(src)
-		new /obj/item/clothing/mask/surgical(src)
-		new /obj/item/clothing/mask/surgical(src)
-		new /obj/item/clothing/mask/surgical(src)
-
 
 /obj/item/weapon/storage/box/rxglasses
 	name = "box of prescription glasses"

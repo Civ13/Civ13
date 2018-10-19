@@ -21,7 +21,7 @@
 	var/economic_modifier = 2			  // With how much does this job modify the initial account amount?
 
 	//job equipment
-	var/uniform = /obj/item/clothing/under/color/grey
+	var/uniform = /obj/item/clothing/under/pirate1
 	var/shoes = /obj/item/clothing/shoes/black
 	var/hat = null
 	var/suit = null

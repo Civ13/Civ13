@@ -1,16 +1,3 @@
-
-
-/obj/item/clothing/head/centhat
-	name = "\improper CentComm. hat"
-	icon_state = "centcom"
-	item_state_slots = list(
-		slot_l_hand_str = "centhat",
-		slot_r_hand_str = "centhat",
-		)
-	desc = "It's good to be emperor."
-	siemens_coefficient = 0.9
-	body_parts_covered = FALSE
-
 /obj/item/clothing/head/hairflower
 	name = "hair flower pin"
 	icon_state = "hairflower"
@@ -41,27 +28,6 @@
 	siemens_coefficient = 0.9
 	body_parts_covered = FALSE
 
-/obj/item/clothing/head/hasturhood
-	name = "hastur's hood"
-	desc = "It's unspeakably stylish"
-	icon_state = "hasturhood"
-	flags_inv = BLOCKHAIR
-	body_parts_covered = HEAD|FACE|EYES
-
-/obj/item/clothing/head/nursehat
-	name = "nurse's hat"
-	desc = "It allows quick identification of trained medical personnel."
-	icon_state = "nursehat"
-	siemens_coefficient = 0.9
-	body_parts_covered = FALSE
-
-/obj/item/clothing/head/greenbandana
-	name = "green bandana"
-	desc = "It's a green bandana with some fine nanotech lining."
-	icon_state = "greenbandana"
-	item_state = "greenbandana"
-	flags_inv = FALSE
-	body_parts_covered = FALSE
 
 /obj/item/clothing/head/flatcap
 	name = "flat cap"
@@ -79,40 +45,18 @@
 	icon_state = "pirate"
 	body_parts_covered = FALSE
 
-/obj/item/clothing/head/hgpiratecap
-	name = "pirate hat"
-	desc = "Yarr."
-	icon_state = "hgpiratecap"
-	body_parts_covered = FALSE
-
 /obj/item/clothing/head/bandana
 	name = "pirate bandana"
 	desc = "Yarr."
 	icon_state = "bandana"
 
-/obj/item/clothing/head/bowler
-	name = "bowler-hat"
-	desc = "Gentleman, elite aboard!"
-	icon_state = "bowler"
-	body_parts_covered = FALSE
 
 //stylish bs12 hats
-
-/obj/item/clothing/head/bowlerhat
-	name = "bowler hat"
-	icon_state = "bowler_hat"
-	desc = "For the gentleman of distinction."
-	body_parts_covered = FALSE
 
 /obj/item/clothing/head/beaverhat
 	name = "beaver hat"
 	icon_state = "beaver_hat"
 	desc = "Soft felt makes this hat both comfortable and elegant."
-
-/obj/item/clothing/head/fedora
-	name = "fedora"
-	icon_state = "fedora"
-	desc = "A sharp, stylish hat."
 
 /obj/item/clothing/head/feathertrilby
 	name = "feather trilby"
@@ -125,25 +69,6 @@
 	desc = "You should wear a fez. Fezzes are cool."
 
 //end bs12 hats
-
-/obj/item/clothing/head/witchwig
-	name = "witch costume wig"
-	desc = "Eeeee~heheheheheheh!"
-	icon_state = "witch"
-	flags_inv = BLOCKHAIR
-	siemens_coefficient = 2.0
-
-/obj/item/clothing/head/chicken
-	name = "chicken suit head"
-	desc = "Bkaw!"
-	icon_state = "chickenhead"
-	item_state_slots = list(
-		slot_l_hand_str = "chickensuit",
-		slot_r_hand_str = "chickensuit",
-		)
-	flags_inv = BLOCKHAIR
-	siemens_coefficient = 0.7
-	body_parts_covered = HEAD|FACE|EYES
 
 /obj/item/clothing/head/bearpelt
 	name = "bear pelt hat"

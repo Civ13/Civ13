@@ -71,7 +71,7 @@
 
 /obj/structure/wild/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		qdel(src)
 		return
 
@@ -82,13 +82,34 @@
 		qdel(src)
 
 /obj/structure/wild/tree
-	name = "tree"
+	name = "small tree"
 	icon_state = "tree"
 	opacity = TRUE
 	density = TRUE
 	sways = TRUE
 	amount = 5
 
+/obj/structure/wild/tree/dead_tree
+	name = "dead tree"
+	icon = 'icons/obj/flora/deadtrees.dmi'
+	icon_state = "tree_1"
+	opacity = TRUE
+	density = TRUE
+	sways = FALSE
+	amount = 5
+
+/obj/structure/wild/tree/live_tree
+	name = "tree"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	icon_state = "tree_1"
+	opacity = TRUE
+	density = TRUE
+	sways = FALSE
+	amount = 5
+
+/obj/structure/wild/tree/live_tree/New()
+	..()
+	icon_state = "tree_[rand(1,5)]"
 
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -110,7 +131,42 @@
 	density = TRUE
 	sways = FALSE
 	amount = 4
+	var/cooldown_sap = FALSE
 
+/obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && !istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
+			user << "<span class = 'warning'>You need to have a pot in one of your hands in order to extract palm sap.</span>"
+			return
+		else
+			var/done = FALSE
+			if (cooldown_sap == TRUE)
+				user << "Sap was extracted from this palm recently, you need to wait before collecting it again."
+				return
+			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
+				user << "You start extracting the palm sap..."
+				if (do_after(user, 50, user.loc) && done == FALSE)
+					user << "You finish extracting the palm sap."
+					qdel(user.l_hand)
+					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
+					cooldown_sap = TRUE
+					spawn(3000)
+						cooldown_sap = FALSE
+				done = TRUE
+			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
+				user << "You start extracting the palm sap..."
+				if (do_after(user, 50, user.loc) && done == FALSE)
+					user << "You finish extracting the palm sap."
+					qdel(user.r_hand)
+					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
+					cooldown_sap = TRUE
+					spawn(3000)
+						cooldown_sap = FALSE
+				done = TRUE
+
+	else
+		..()
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
@@ -118,7 +174,7 @@
 
 /obj/structure/wild/tree/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 4
 		qdel(src)
@@ -126,7 +182,7 @@
 
 /obj/structure/wild/palm/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 3
 		qdel(src)
@@ -157,7 +213,7 @@
 	icon_state = "big_bush"
 
 /obj/structure/wild/burnedbush
-	name = "burned bush"
+	name = "dead twigs"
 	icon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
@@ -194,6 +250,28 @@
 	density = FALSE
 	amount = 0
 
+/obj/structure/wild/tallgrass
+	name = "tall grass"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "tall_grass_1"
+	opacity = FALSE
+	density = FALSE
+	layer = 5.1
+
+/obj/structure/wild/tallgrass2
+	name = "tall grass"
+	icon = 'icons/obj/wild.dmi'
+	icon_state = "tall_grass_5"
+	opacity = FALSE
+	density = FALSE
+
+/obj/structure/wild/tallgrass/New()
+	..()
+	icon_state = "tall_grass_[rand(1,4)]"
+
+/obj/structure/wild/tallgrass2/New()
+	..()
+	icon_state = "tall_grass_[rand(5,8)]"
 /obj/structure/wild/bush/New()
 	..()
 
@@ -212,7 +290,7 @@
 
 /obj/structure/wild/burnedbush/New()
 	..()
-	icon_state = "burnedbush[rand(1,5)]"
+	icon_state = "burnedbush[rand(1,9)]"
 
 /obj/structure/wild/junglebush/New()
 	..()
@@ -220,7 +298,7 @@
 
 /obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone))
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		user.do_attack_animation(src)
 		if (healthamount == 1)
 			if (prob(25))
@@ -266,7 +344,7 @@
 
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
 		qdel(src)

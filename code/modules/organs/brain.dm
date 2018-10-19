@@ -39,7 +39,7 @@
 		H.mind.transfer_to(brainmob)
 
 	brainmob << "<span class='notice'>You feel slightly disoriented. That's normal when you're just a [initial(name)].</span>"
-	callHook("debrain", list(brainmob))
+//	callHook("debrain", list(brainmob))
 
 	if (brainmob.client)
 		brainmob.ghostize() // gibbed people now automatically ghost - Kachnov

@@ -143,11 +143,7 @@
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 
-	if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
-		if (prob(80))
-			def_zone = "chest"
-	else
-		def_zone = target_zone
+	def_zone = target_zone
 
 	if (!def_zone)
 		def_zone = "chest"
@@ -390,7 +386,7 @@
 	if (silenced)
 		target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
 	else
-		visible_message("<span class='danger'>\The [target_mob] is hit by \the [src] in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
+		visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
 
 	//admin logs
 	if (!no_attack_log)

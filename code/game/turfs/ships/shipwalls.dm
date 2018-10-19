@@ -259,6 +259,26 @@
 	icon_state = "boat_port0"
 	cover = 40
 
+/obj/structure/barricade/ship/wood/portl1
+	name = "wall"
+	desc = "A thin wood ship wall."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat_portl1"
+	cover = 40
+/obj/structure/barricade/ship/wood/portl2
+	name = "wall"
+	desc = "A thin wood ship wall."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat_portl2"
+	cover = 40
+/obj/structure/barricade/ship/wood/portl3
+	name = "wall"
+	desc = "A thin wood ship wall."
+	icon = 'icons/turf/boat.dmi'
+	icon_state = "boat_portl3"
+	cover = 40
+
+
 /obj/structure/barricade/ship/wood/port1
 	name = "holed wall"
 	desc = "A thin wood ship wall, with a hole to fire through."

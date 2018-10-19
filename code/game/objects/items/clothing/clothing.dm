@@ -123,6 +123,7 @@ BLIND     // can't see anything
 	gender = PLURAL //Carn: for grammarically correct text-parsing
 	w_class = 2.0
 	icon = 'icons/obj/clothing/gloves.dmi'
+	icon_state = "leather"
 	siemens_coefficient = 0.75
 	var/wired = FALSE
 	var/obj/item/weapon/cell/cell = FALSE
@@ -303,7 +304,6 @@ BLIND     // can't see anything
 
 /obj/item/clothing/shoes/attackby(var/obj/item/I, var/mob/user)
 	if (can_hold_knife && istype(I, /obj/item/weapon/material/shard) || \
-	 istype(I, /obj/item/weapon/material/butterfly) || \
 	 istype(I, /obj/item/weapon/material/kitchen/utensil) || \
 	 istype(I, /obj/item/weapon/material/knife) || \
 	 istype(I, /obj/item/weapon/attachment/bayonet))
@@ -413,8 +413,3 @@ BLIND     // can't see anything
 
 /obj/item/clothing/under/examine(mob/user)
 	..(user)
-
-
-/obj/item/clothing/under/rank/New()
-//	sensor_mode = 3
-	..()

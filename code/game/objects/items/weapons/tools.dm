@@ -98,3 +98,27 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "red_crowbar"
 	item_state = "crowbar_red"
+
+/obj/item/weapon/horn
+	name = "blowing horn"
+	desc = "Good for long range communication."
+	icon = 'icons/misc/tribal.dmi'
+	icon_state = "tribalhorn"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	item_state = "zippo"
+	w_class = 2.0
+	matter = list(DEFAULT_WALL_MATERIAL = 50)
+	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
+	var/cooldown_horn = FALSE
+
+/obj/item/weapon/horn/attack_self(mob/user as mob)
+	if (cooldown_horn == FALSE)
+		playsound(loc, 'sound/effects/blowing_horn.ogg', 100, FALSE, 25)
+		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
+		cooldown_horn = TRUE
+		spawn(600)
+			cooldown_horn = FALSE
+		return

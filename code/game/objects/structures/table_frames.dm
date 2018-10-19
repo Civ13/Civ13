@@ -79,14 +79,3 @@
 			new /obj/structure/table/wood(loc)
 			qdel(src)
 		return
-	if (istype(I, /obj/item/stack/tile/carpet))
-		var/obj/item/stack/tile/carpet/C = I
-		if (C.get_amount() < 1)
-			user << "<span class='warning'>You need one carpet sheet to do this!</span>"
-			return
-		user << "<span class='notice'>You start adding [C] to [src]...</span>"
-		if (do_after(user, 20, target = src))
-			C.use(1)
-			new /obj/structure/table/wood/poker(loc)
-			qdel(src)
-		return

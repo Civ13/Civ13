@@ -102,25 +102,22 @@ var/world_is_open = TRUE
 
 	spawn (2)
 
-		while (!serverswap || !serverswap["master_log_dir"])
-			sleep(1)
-
 		// removed the 'sleep_offline' = TRUE here, it interferes with serverswap - kachnov
 		#ifdef UNIT_TEST
 			log_unit_test("Unit Tests Enabled.  This will destroy the world when testing is complete.")
 			load_unit_test_changes()
 		#endif
 
-		world.log = file("[serverswap["runtime_log_dir"]][time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-runtime.txt")
+		world.log = file("data/logs/runtime/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-runtime.txt")
 		world.log << "STARTED RUNTIME LOGGING"
 
-		attack_log = file("[serverswap["attack_log_dir"]][time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-attack.log")
+		attack_log = file("data/logs/attack/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-attack.log")
 		attack_log << "STARTED ATTACK LOGGING"
 
 		//logs
 		var/date_string = time2text(world.realtime, "YYYY/MM-Month/DD-Day")
-		href_logfile = file("[serverswap["master_log_dir"]][date_string]-hrefs.htm")
-		diary = file("[serverswap["master_log_dir"]][date_string].log")
+		href_logfile = file("data/logs/[date_string]-hrefs.htm")
+		diary = file("data/logs/[date_string].log")
 		diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
 		changelog_hash = md5('html/changelog.html')					//used for telling if the changelog has changed recently
 
@@ -263,19 +260,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	spawn (150)
 
 		var/sleeptime = 0
-
-		if (serverswap.Find("snext"))
-			if (serverswap.Find(serverswap["snext"]))
-				var/new_address = "byond://[world.internet_address]:[serverswap[serverswap["snext"]]]"
-				world << "<span class = 'danger'>Rebooting!</span> <span class='notice'>If you aren't taken there automatically, click here to join the linked server: <b>[new_address]</b></span>"
-				sleeptime = 100
-				for (var/C in clients)
-					winset(C, null, "mainwindow.flash=1")
-					C << link(new_address)
-			else
-				world << "<span class = 'danger'>Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b></span>"
-		else
-			world << "<span class = 'danger'>Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b></span>"
+		world << "<span class = 'danger'>Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[world.internet_address]:[port]</b></span>"
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
 		if (processScheduler) // just in case
@@ -379,7 +364,7 @@ var/setting_up_db_connection = FALSE
 	else
 		failed_db_connections++		//If it failed, increase the failed connections counter.
 		world.log << "The database failed to start up for the [failed_db_connections == TRUE ? "1st" : "[failed_db_connections]st"] time."
-
+		world << "DEBUG: Database has not been conected."
 	setting_up_db_connection = FALSE
 	return .
 
@@ -399,7 +384,6 @@ var/setting_up_db_connection = FALSE
 		. += "<b>Whitelist</b>: Enabled"
 	. += ";"
 	. += "realtime=[num2text(world.realtime, 20)]"
-
 /proc/start_serverdata_loop()
 	spawn while (1)
 		var/F = file("serverdata.txt")
@@ -408,7 +392,6 @@ var/setting_up_db_connection = FALSE
 		if (!serverswap.len || !serverswap.Find("masterdir") || serverswap_open_status)
 			F << get_packaged_server_status_data()
 		sleep (100)
-
 /proc/start_serverswap_loop()
 	spawn while (1)
 
@@ -442,19 +425,7 @@ var/setting_up_db_connection = FALSE
 				global_game_schedule = new
 
 			global_game_schedule.update()
-			serverswap["master_data_dir"] = "data/"
-			serverswap["master_log_dir"] = "data/logs/"
-			serverswap["runtime_log_dir"] = "data/logs/runtime/"
-			serverswap["attack_log_dir"] = "data/logs/attack/"
-			break
 
-			switch (serverswap_open_status)
-				if (0) // we're waiting for the server before us or the very last server to tell us its ok to go up
-					world.visibility = FALSE
-
-				if (1) // we're going to send updates every second in the form of text files telling the server after us what to do
-					if (config.hub)
-						world.visibility = TRUE
 
 		catch(var/exception/e)
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")

@@ -95,6 +95,21 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// Drinks. END
 ////////////////////////////////////////////////////////////////////////////////
+/obj/item/weapon/reagent_containers/food/drinks/gunpowder
+	name = "gunpowder pouch"
+	desc = "A small pouch, used to carry gunpowder."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "gunpowder"
+	volume = 10
+	center_of_mass = list("x"=16, "y"=14)
+	value = 5
+
+/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full
+	value = 5
+
+	New()
+		..()
+		reagents.add_reagent("gunpowder", 10)
 
 /obj/item/weapon/reagent_containers/food/drinks/golden_cup
 	desc = "A golden cup"
@@ -141,8 +156,7 @@
 	center_of_mass = list("x"=16, "y"=14)
 	New()
 		..()
-		reagents.add_reagent("tea", 20)
-		reagents.add_reagent("anti_toxin", 10)
+		reagents.add_reagent("tea", 15)
 
 /obj/item/weapon/reagent_containers/food/drinks/ice
 	name = "Ice Cup"
@@ -205,8 +219,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/teapot/filled
 	New()
 		..()
-		reagents.add_reagent("tea", 80)
-		reagents.add_reagent("anti_toxin", 40)
+		reagents.add_reagent("tea", 100)
 
 /obj/item/weapon/reagent_containers/food/drinks/flask
 	name = "Officer's Flask"
@@ -272,17 +285,6 @@
 	playsound(usr.loc,"sound/items/eatfood.ogg", rand(10,50), TRUE)
 	qdel(src)
 	..()
-
-/obj/item/cocktail_stuff/umbrella
-	name = "drink umbrella"
-	desc = "It's a tiny little umbrella, for drinks!"
-	var/umbrella_color = null
-
-/obj/item/cocktail_stuff/umbrella/New()
-	..()
-	umbrella_color = rand(1,6)
-	icon_state = "highball-umbrella[umbrella_color]"
-	update_icon()
 
 /obj/item/cocktail_stuff/maraschino_cherry
 	name = "maraschino cherry"

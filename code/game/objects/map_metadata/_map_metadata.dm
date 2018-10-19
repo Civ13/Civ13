@@ -24,6 +24,8 @@ var/global/obj/map_metadata/map = null
 	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW)
 	var/custom_loadout = TRUE // set to false to prevent people to spawn with guns and ammo on POW Camp map
 	var/squad_spawn_locations = TRUE
+	var/availablefactions_run = FALSE
+	var/list/availablefactions = list("Red Goose Tribesman")
 
 //faction stuff
 	var/faction1 = BRITISH

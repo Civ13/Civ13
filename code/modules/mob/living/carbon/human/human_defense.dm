@@ -18,7 +18,7 @@ bullet_act
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
 
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && istype(W, /obj/item/weapon/material/knife/butcher))
+	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W, /obj/item/weapon/material/knife/butcher) || istype(W, /obj/item/weapon/material/hatchet)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user
 			if (istype(H))
@@ -28,6 +28,8 @@ bullet_act
 					for (var/v in 1 to rand(5,7))
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 						meat.name = "[real_name] meatsteak"
+					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
+					bonedrop.amount = 2
 					for (var/obj/item/clothing/I in contents)
 						drop_from_inventory(I)
 					crush()
@@ -96,7 +98,7 @@ bullet_act
 				var/graze_chance_multiplier = 5
 				if (list("head", "mouth", "eyes").Find(def_zone))
 					++graze_chance_multiplier
-				graze_chance_multiplier += (1 * getStatCoeff("survival"))
+				graze_chance_multiplier += 1
 
 				if (lastMovedRecently(accuracy_check = TRUE))
 					if (prob(graze_chance_multiplier * max(distcheck - 7, 0)))
@@ -460,21 +462,20 @@ bullet_act
 		//thrown weapon embedded object code.
 		if (dtype == BRUTE && istype(O,/obj/item))
 			var/obj/item/I = O
-			if (!is_robot_module(I))
-				var/sharp = is_sharp(I)
-				var/damage = throw_damage
-				if (armor)
-					damage /= armor+1
+			var/sharp = is_sharp(I)
+			var/damage = throw_damage
+			if (armor)
+				damage /= armor+1
 
-				//blunt objects should really not be embedding in things unless a huge amount of force is involved
-				var/embed_chance = sharp? damage/I.w_class : damage/(I.w_class*3)
-				var/embed_threshold = sharp? 5*I.w_class : 15*I.w_class
+			//blunt objects should really not be embedding in things unless a huge amount of force is involved
+			var/embed_chance = sharp? damage/I.w_class : damage/(I.w_class*3)
+			var/embed_threshold = sharp? 5*I.w_class : 15*I.w_class
 
-				//Sharp objects will always embed if they do enough damage.
-				//Thrown sharp objects have some momentum already and have a small chance to embed even if the damage is below the threshold
-				if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
-					if (I.w_class <= 2.0)
-						affecting.embed(I)
+			//Sharp objects will always embed if they do enough damage.
+			//Thrown sharp objects have some momentum already and have a small chance to embed even if the damage is below the threshold
+			if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
+				if (I.w_class <= 2.0)
+					affecting.embed(I)
 
 		// Begin BS12 momentum-transfer code.
 		var/mass = 1.5

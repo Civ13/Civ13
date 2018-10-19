@@ -31,12 +31,6 @@
 	icon_state = "red"
 	item_state = "redgloves"
 
-/obj/item/clothing/gloves/color/rainbow
-	name = "rainbow gloves"
-	initial_name = "rainbow gloves"
-	icon_state = "rainbow"
-	item_state = "rainbowgloves"
-
 /obj/item/clothing/gloves/color/blue
 	name = "blue gloves"
 	initial_name = "blue gloves"

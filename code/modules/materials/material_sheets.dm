@@ -84,6 +84,9 @@
 	apply_colour = TRUE
 	value = 3
 
+/obj/item/stack/material/iron/twentyfive
+	amount = 25
+
 /obj/item/stack/material/sandstone
 	name = "sandstone brick"
 	icon_state = "sheet-sandstone"
@@ -107,6 +110,7 @@
 	icon_state = "sheet-diamond"
 	default_type = "diamond"
 	value = 40
+	w_class = 1.0
 
 /obj/item/stack/material/rope
 	name = "Rope"
@@ -119,13 +123,15 @@
 	icon_state = "tobacco"
 	default_type = "tobacco"
 	value = 3
+	w_class = 1.0
 
 /obj/item/stack/material/poppy
 	name = "poppy"
 	desc = "dried opium poppies. Opium can be extracted."
 	icon_state = "poppy"
 	default_type = "poppy"
-	value = 6
+	value = 5
+	w_class = 1.0
 
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)
@@ -174,6 +180,13 @@
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
 
+
+/obj/item/stack/material/cotton
+	name = "cotton pile"
+	icon_state = "sheet-cotton"
+	default_type = "cotton"
+	value = 2
+
 /obj/item/stack/material/cloth
 	name = "cloth"
 	icon_state = "sheet-cloth"
@@ -200,3 +213,12 @@
 	icon_state = "sheet-rglass"
 	default_type = "rglass"
 	value = 6
+
+/obj/item/stack/material/bone
+	name = "bones"
+	icon_state = "sheet-bone"
+	default_type = "bone"
+	dropsound = 'sound/effects/drop_wood.ogg'
+	w_class = 2.0
+	value = 0
+	singular_name = "bone"

@@ -225,15 +225,6 @@
 		if (!fingerprintshidden)
 			fingerprintshidden = list()
 
-		//Fibers~
-	//	add_fibers(M)
-
-		//He has no prints!
-		if (mFingerprints in M.mutations)
-			if (fingerprintslast != M.key)
-				fingerprintshidden += "(Has no fingerprints) Real name: [M.real_name], Key: [M.key]"
-				fingerprintslast = M.key
-			return FALSE		//Now, lets get to the dirty work.
 		//First, make sure their DNA makes sense.
 		var/mob/living/carbon/human/H = M
 		if (!istype(H.dna, /datum/dna) || !H.dna.uni_identity || (length(H.dna.uni_identity) != 32))
@@ -252,9 +243,9 @@
 		//Deal with gloves the pass finger/palm prints.
 		if (!ignoregloves)
 			if (H.gloves != src)
-				if (prob(75) && istype(H.gloves, /obj/item/clothing/gloves/latex))
+				if (prob(75) && istype(H.gloves))
 					return FALSE
-				else if (H.gloves && !istype(H.gloves, /obj/item/clothing/gloves/latex))
+				else if (H.gloves)
 					return FALSE
 
 		//More adminstuffz

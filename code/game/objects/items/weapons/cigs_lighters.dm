@@ -304,6 +304,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "pipeoff"
 	smoketime = FALSE
 	chem_volume = 50
+	w_class = 2.0
 	matchmes = "<span class='notice'>USER lights their NAME with their FLAME.</span>"
 	lightermes = "<span class='notice'>USER manages to light their NAME with FLAME.</span>"
 	zippomes = "<span class='rose'>With much care, USER lights their NAME with their FLAME.</span>"
@@ -368,6 +369,17 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		reagents.add_reagent("opium",5)
 		name = "opium-packed [initial(name)]"
 		qdel(G)
+
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/peyote))
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/peyote/G = W
+		if (smoketime)
+			user << "<span class='notice'>[src] is already packed.</span>"
+			return
+		smoketime = 200
+		reagents.add_reagent("peyote", 5)
+		name = "peyote-packed [initial(name)]"
+		qdel(G)
+
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		var/obj/item/weapon/reagent_containers/food/snacks/grown/G = W
 		if (!G.dry)

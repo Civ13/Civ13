@@ -42,7 +42,7 @@
 	del(info) // savefile, so NOT qdel
 
 	//Updating list of keys with notes on them
-	var/savefile/note_list = new("[(serverswap && serverswap.Find("master_data_dir")) ? serverswap["master_data_dir"] : "data/"]/player_notes.sav")
+	var/savefile/note_list = "data/player_notes.sav"
 	var/list/note_keys
 	note_list >> note_keys
 	if (!note_keys) note_keys = list()

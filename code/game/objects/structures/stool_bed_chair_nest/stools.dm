@@ -16,17 +16,16 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/weapon/stool/prison
 	force = 0
 
-/obj/item/weapon/stool/wood
-	force = 0
-	material = /material/wood
-
 /obj/item/weapon/stool/padded
 	icon_state = "stool_padded_preview" //set for the map
 
 /obj/item/weapon/stool/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
 	if (!new_material)
-		new_material = DEFAULT_WALL_MATERIAL
+		if (!material)
+			new_material = DEFAULT_WALL_MATERIAL
+		else
+			new_material = material
 	material = get_material_by_name(new_material)
 	if (new_padding_material)
 		padding_material = get_material_by_name(new_padding_material)
@@ -127,9 +126,7 @@ var/global/list/stool_cache = list() //haha stool
 			qdel(C)
 			return
 		var/padding_type //This is awful but it needs to be like this until tiles are given a material var.
-		if (istype(W,/obj/item/stack/tile/carpet))
-			padding_type = "carpet"
-		else if (istype(W,/obj/item/stack/material))
+		if (istype(W,/obj/item/stack/material))
 			var/obj/item/stack/material/M = W
 			if (M.material && (M.material.flags & MATERIAL_PADDING))
 				padding_type = "[M.material.name]"

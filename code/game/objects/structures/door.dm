@@ -2,6 +2,9 @@
 	name = "door"
 	density = TRUE
 	anchored = TRUE
+	var/custom = FALSE //for customized locks in RP
+	var/custom_code = 0 //for customized locks in RP
+	var/locked = FALSE //for customized locks in RP
 
 	icon = 'icons/obj/doors/material_doors.dmi'
 	icon_state = "metal"
@@ -96,8 +99,6 @@
 	if (isSwitchingStates) return FALSE
 	if (ismob(user) && canOpen(user))
 		var/mob/M = user
-		if (!material.can_open_material_door(user))
-			return FALSE
 		if (world.time - user.last_bumped <= 60)
 			return FALSE
 		if (M.client)
@@ -126,7 +127,7 @@
 
 /obj/structure/simple_door/proc/Open()
 	isSwitchingStates = TRUE
-	playsound(loc, material.dooropen_noise, 100, TRUE)
+	playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
 	flick("[basic_icon]opening",src)
 	spawn (10)
 		density = FALSE
@@ -140,7 +141,7 @@
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
-	playsound(loc, material.dooropen_noise, 100, TRUE)
+	playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
 	flick("[basic_icon]closing",src)
 	spawn (10)
 		density = TRUE
@@ -207,7 +208,8 @@
 	name = "Cell"
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
-
+/obj/structure/simple_door/stone/New(var/newloc,var/material_name)
+	..(newloc, "stone")
 
 /obj/structure/simple_door/silver/New(var/newloc,var/material_name)
 	..(newloc, "silver")

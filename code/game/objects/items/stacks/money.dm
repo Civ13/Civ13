@@ -63,6 +63,19 @@
 	max_amount = 3
 	value = 96
 
+/obj/item/cursedtreasure
+	name = "cursed treasure"
+	desc = "A piece of native jewelry, with a strange glow..."
+	icon_state = "goldstuff1"
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_NORMAL
+	throw_speed = 5
+	throw_range = 7
+	value = 0
+/obj/item/cursedtreasure/New()
+	..()
+	icon_state = "goldstuff[rand(1,3)]"
+
 /obj/item/stack/money/goldvaluables
 	name = "gold valuables"
 	desc = "A bunch of valuables."
@@ -76,7 +89,7 @@
 	max_amount = 5
 	value = 48
 
-/obj/item/stack/money/goldnugget/New()
+/obj/item/stack/money/goldvaluables/New()
 	..()
 	icon_state = "goldstuff[rand(1,3)]"
 

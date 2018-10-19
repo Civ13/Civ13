@@ -54,5 +54,5 @@
 		client.eye = src
 		client.perspective = MOB_PERSPECTIVE
 
-	//set macro to normal incase it was overriden (like cyborg currently does)
+	//set macro to normal incase it was overriden.
 	winset(src, null, "mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true input.background-color=#D3B5B5")
