@@ -69,8 +69,8 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/paralyze_mob,
 	/client/proc/toggle_jobs,
 	/client/proc/toggle_factions,
-	/client/proc/forcibly_enable_faction
-
+	/client/proc/forcibly_enable_faction,
+	/client/proc/start_mapswap_vote
 )
 var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_search,
@@ -92,6 +92,7 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
 	/datum/admins/proc/ic_announce,
+	/client/proc/start_mapswap_vote,
 	)
 
 var/list/admin_verbs_sounds = list(
