@@ -565,8 +565,8 @@
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
-	H.equip_to_slot_or_del(new 	/obj/item/weapon/material/hatchet(H), slot_belt)
-	H.equip_to_slot_or_del(new 	/obj/item/weapon/wrench(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/hatchet(H), slot_belt)
+	H.equip_to_slot_or_del(new/obj/item/weapon/wrench(H), slot_r_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>Carpenter</b>. Organize the supplies and help the colonists build the Village!")

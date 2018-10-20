@@ -15,7 +15,6 @@
 	var/destroy_surroundings = TRUE
 	a_intent = I_HURT
 
-	var/shuttletarget = null
 	var/enroute = FALSE
 /mob/living/simple_animal/hostile/proc/FindTarget()
 

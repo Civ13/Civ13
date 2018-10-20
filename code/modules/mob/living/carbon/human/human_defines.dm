@@ -70,8 +70,6 @@
 	var/last_dam = -1	//Used for determining if we need to process all organs or just some or even none.
 	var/list/bad_external_organs = list()// organs we check until they are good.
 
-	var/xylophone = FALSE //For the spoooooooky xylophone cooldown
-
 	var/mob/remoteview_target = null
 	var/hand_blood_color
 
@@ -89,11 +87,6 @@
 	var/equipment_see_invis					// Max see invibility level granted by equipped items
 	var/equipment_prescription				// Eye prescription granted by equipped items
 	var/list/equipment_overlays = list()	// Extra overlays from equipped items
-
-	var/med_record = ""
-	var/sec_record = ""
-	var/gen_record = ""
-	var/exploit_record = ""
 
 	var/stance_damage = FALSE //Whether this mob's ability to stand has been affected
 	var/identifying_gender // In case the human identifies as another gender than it's biological

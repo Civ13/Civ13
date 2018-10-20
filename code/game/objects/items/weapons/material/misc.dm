@@ -63,6 +63,7 @@
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = FALSE
 	value = 15
+	slot_flags = SLOT_BELT
 
 /obj/item/weapon/material/hatchet/tribal
 	name = "stone hatchet"
