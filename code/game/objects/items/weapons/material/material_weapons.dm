@@ -18,6 +18,7 @@
 	var/default_material = DEFAULT_WALL_MATERIAL
 	var/material/material
 	var/drops_debris = TRUE
+	var/block_chance = 15
 
 	dropsound = 'sound/effects/drop_knife.ogg'
 
@@ -91,3 +92,24 @@
 	playsound(src, "shatter", 70, TRUE)
 	if (!consumed && drops_debris) material.place_shard(T)
 	qdel(src)
+
+/obj/item/weapon/material/handle_shield(mob/living/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
+	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
+	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
+	var/mob/living/carbon/human/H_user = user
+	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (0.66*H_user.getStatCoeff("strength")+0.34*H_user.getStatCoeff("dexterity")),87)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
+		user.visible_message("<span class='danger'><big>\The [user] parries [attack_text] with \the [src]!</big></span>")
+		var/mob/living/carbon/human/H = user
+		if (prob(50))
+			H.adaptStat("dexterity", 1)
+		else
+			H.adaptStat("strength", 1)
+		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
+		health -= 0.5
+		if(prob(15))
+			user.visible_message("<span class='danger'><big>\The [src] flies out of \the [user]'s hand!</big></span>")
+			user.drop_from_inventory(src)
+			throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
+
+		return 1
+	return 0

@@ -159,10 +159,17 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_back)
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
-
+	var/obj/item/clothing/accessory/storage/webbing/filled_a = new /obj/item/clothing/accessory/storage/webbing(null)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(filled_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the <b>Veterans</b> and keep the colonists safe, reporting to the <b>Governor</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -203,9 +210,16 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_back)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
+	var/obj/item/clothing/accessory/storage/webbing/filled_a = new /obj/item/clothing/accessory/storage/webbing(null)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	filled_a.attackby(new/obj/item/ammo_casing/musketball, H)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(filled_a, H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -267,7 +281,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of keeping the newly founded colony healthy.")
 	H.setStat("strength", STAT_NORMAL)

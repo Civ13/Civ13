@@ -13,7 +13,7 @@
 	sharp = 1
 	edge = 1
 	var/atk_mode = SLASH
-	var/block_chance = 35
+	block_chance = 35
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	drawsound = 'sound/items/unholster_sword01.ogg'
