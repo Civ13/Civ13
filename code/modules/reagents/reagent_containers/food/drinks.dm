@@ -157,6 +157,15 @@
 	New()
 		..()
 		reagents.add_reagent("tea", 15)
+/obj/item/weapon/reagent_containers/food/drinks/tea/empty
+	name = "teacup"
+	desc = "A teacup. Warm."
+	icon_state = "teacup"
+	item_state = "coffee"
+	center_of_mass = list("x"=16, "y"=14)
+	New()
+		..()
+		reagents.del_reagents()
 
 /obj/item/weapon/reagent_containers/food/drinks/ice
 	name = "Ice Cup"
