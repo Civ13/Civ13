@@ -163,8 +163,6 @@
 
 	var/area/lastarea = null
 
-	var/digitalcamo = FALSE // Can they be tracked by the AI?
-
 	var/obj/control_object //Used by admins to possess objects. All mobs should have this var
 
 	//Whether or not mobs can understand other mobtypes. These stay in /mob so that ghosts can hear everything.

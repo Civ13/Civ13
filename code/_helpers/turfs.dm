@@ -35,4 +35,4 @@
 	return !turf_contains_dense_objects(T)
 
 /proc/is_station_turf(var/turf/T)
-	return T && isStationLevel(T.z)
+	return T

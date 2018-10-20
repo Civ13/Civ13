@@ -292,8 +292,6 @@
 	return
 
 /atom/movable/proc/touch_map_edge()
-	if (z in config.sealed_levels)
-		return
 
 	var/move_to_z = get_transit_zlevel()
 	if (move_to_z)

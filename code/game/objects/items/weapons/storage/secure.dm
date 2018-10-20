@@ -121,33 +121,6 @@
 
 
 // -----------------------------
-//        Secure Briefcase
-// -----------------------------
-/obj/item/weapon/storage/secure/briefcase
-	name = "secure briefcase"
-	icon = 'icons/obj/storage.dmi'
-	icon_state = "secure"
-	item_state = "sec-case"
-	desc = "A large briefcase with a digital locking system."
-	force = WEAPON_FORCE_NORMAL
-	throw_speed = TRUE
-	throw_range = 4
-	w_class = 4.0
-
-	attack_hand(mob/user as mob)
-		if ((loc == user) && (locked == TRUE))
-			usr << "<span class='warning'>[src] is locked and cannot be opened!</span>"
-		else if ((loc == user) && (!locked))
-			open(usr)
-		else
-			..()
-			for (var/mob/M in range(1))
-				if (M.s_active == src)
-					close(M)
-		add_fingerprint(user)
-		return
-
-// -----------------------------
 //        Secure Safe
 // -----------------------------
 
@@ -163,7 +136,6 @@
 	max_w_class = 8
 	anchored = 1.0
 	density = FALSE
-	cant_hold = list(/obj/item/weapon/storage/secure/briefcase)
 
 	New()
 		..()

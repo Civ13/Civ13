@@ -180,24 +180,10 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	if (current_state != GAME_STATE_PLAYING)
 		return FALSE
 
-//		mode.process()
-
-//		emergency_shuttle.process() //handled in scheduler
-/*
-	var/game_finished = FALSE
-	var/mode_finished = FALSE
-	if (config.continous_rounds)
-		game_finished = (mode.station_was_nuked)
-		mode_finished = (!post_game && mode.check_finished())
-	else
-		game_finished = (mode.check_finished())
-		mode_finished = game_finished
-*/
 	if (finished)
 		current_state = GAME_STATE_FINISHED
 
-/*		spawn
-			declare_completion()*/
+
 
 		spawn(50)
 

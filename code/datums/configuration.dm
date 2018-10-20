@@ -130,12 +130,6 @@ var/list/gamemode_cache = list()
 
 	var/enter_allowed = TRUE
 
-	var/list/station_levels = list(1, 2, 3, 4, 5)	// Defines which Z-levels the station exists on.
-	var/list/admin_levels= list(6)					// Defines which Z-levels which are for admin functionality, for example including such areas as Central Command and the Syndicate Shuttle
-	var/list/contact_levels = list(1, 2, 3, 4, 5)	// Defines which Z-levels which, for example, a Code Red announcement may affect
-	var/list/player_levels = list(1, 2, 3, 4, 5)	// Defines all Z-levels a character can typically reach
-	var/list/sealed_levels = list() 				// Defines levels that do not allow random transit at the edges.
-
 	var/abandon_allowed = TRUE
 	var/ooc_allowed = TRUE
 	var/looc_allowed = TRUE
@@ -553,17 +547,6 @@ var/list/gamemode_cache = list()
 				if ("character_slots")
 					config.character_slots = text2num(value)
 
-				if ("station_levels")
-					config.station_levels = text2numlist(value, ";")
-
-				if ("admin_levels")
-					config.admin_levels = text2numlist(value, ";")
-
-				if ("contact_levels")
-					config.contact_levels = text2numlist(value, ";")
-
-				if ("player_levels")
-					config.player_levels = text2numlist(value, ";")
 
 				if ("allow_extra_antags")
 					config.allow_extra_antags = TRUE

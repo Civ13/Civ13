@@ -233,67 +233,6 @@ Ccomp's first proc.
 	log_admin("[key_name(usr)] allowed [key_name(G)] to bypass the 30 minute respawn limit")
 	message_admins("Admin [key_name_admin(usr)] allowed [key_name_admin(G)] to bypass the 30 minute respawn limit", TRUE)
 
-
-/client/proc/toggle_antagHUD_use()
-	set category = "Server"
-	set name = "Toggle antagHUD usage"
-	set desc = "Toggles antagHUD usage for observers"
-
-	if (!holder)
-		src << "Only administrators may use this command."
-	var/action=""
-	if (config.antag_hud_allowed)
-		for (var/mob/observer/ghost/g in get_ghosts())
-		//	if (!g.client.holder)						//Remove the verb from non-admin ghosts
-		//		g.verbs -= /mob/observer/ghost/verb/toggle_antagHUD
-			if (g.antagHUD)
-				g.antagHUD = FALSE						// Disable it on those that have it enabled
-				g.has_enabled_antagHUD = 2				// We'll allow them to respawn
-				g << "<span class = 'red'><b>An administrator has disabled AntagHUD.</b></span>"
-		config.antag_hud_allowed = FALSE
-		src << "<span class = 'red'><b>AntagHUD usage has been disabled.</b></span>"
-		action = "disabled"
-	else
-		for (var/mob/observer/ghost/g in get_ghosts())
-		//	if (!g.client.holder)						// Add the verb back for all non-admin ghosts
-			//	g.verbs += /mob/observer/ghost/verb/toggle_antagHUD
-			g << "<span class = 'notice'><b>The Administrator has enabled AntagHUD </b></span>"	// Notify all observers they can now use AntagHUD
-		config.antag_hud_allowed = TRUE
-		action = "enabled"
-		src << "<span class = 'notice'><b>AntagHUD usage has been enabled</b></span>"
-
-
-	log_admin("[key_name(usr)] has [action] antagHUD usage for observers")
-	message_admins("Admin [key_name_admin(usr)] has [action] antagHUD usage for observers", TRUE)
-
-
-
-/client/proc/toggle_antagHUD_restrictions()
-	set category = "Server"
-	set name = "Toggle antagHUD Restrictions"
-	set desc = "Restricts players that have used antagHUD from being able to join this round."
-	if (!holder)
-		src << "Only administrators may use this command."
-	var/action=""
-	if (config.antag_hud_restricted)
-		for (var/mob/observer/ghost/g in get_ghosts())
-			g << "<span class = 'notice'><b>The administrator has lifted restrictions on joining the round if you use AntagHUD</b></span>"
-		action = "lifted restrictions"
-		config.antag_hud_restricted = FALSE
-		src << "<span class = 'notice'><b>AntagHUD restrictions have been lifted</b></span>"
-	else
-		for (var/mob/observer/ghost/g in get_ghosts())
-			g << "<span class = 'red'><b>The administrator has placed restrictions on joining the round if you use AntagHUD</b></span>"
-			g << "<span class = 'red'><b>Your AntagHUD has been disabled, you may choose to re-enabled it but will be under restrictions</b></span>"
-			g.antagHUD = FALSE
-			g.has_enabled_antagHUD = FALSE
-		action = "placed restrictions"
-		config.antag_hud_restricted = TRUE
-		src << "<span class = 'red'><b>AntagHUD restrictions have been enabled</b></span>"
-
-	log_admin("[key_name(usr)] has [action] on joining the round if they use AntagHUD")
-	message_admins("Admin [key_name_admin(usr)] has [action] on joining the round if they use AntagHUD", TRUE)
-
 /*
 If a guy was gibbed and you want to revive him, this is a good way to do so.
 Works kind of like entering the game with a new character. Character receives a new mind if they didn't have one.
@@ -542,37 +481,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		usr << "[t]"
 
 
-/* This proc is DEFERRED. Does not do anything.
-/client/proc/cmd_admin_remove_plasma()
-	set category = "Debug"
-	set name = "Stabilize Atmos."
-	if (!holder)
-		src << "Only administrators may use this command."
-		return
-
-// DEFERRED
-	spawn(0)
-		for (var/turf/T in view())
-			T.poison = FALSE
-			T.oldpoison = FALSE
-			T.tmppoison = FALSE
-			T.oxygen = 755985
-			T.oldoxy = 755985
-			T.tmpoxy = 755985
-			T.co2 = 14.8176
-			T.oldco2 = 14.8176
-			T.tmpco2 = 14.8176
-			T.n2 = 2.844e+006
-			T.on2 = 2.844e+006
-			T.tn2 = 2.844e+006
-			T.tsl_gas = FALSE
-			T.osl_gas = FALSE
-			T.sl_gas = FALSE
-			T.temp = 293.15
-			T.otemp = 293.15
-			T.ttemp = 293.15
-*/
-
 /client/proc/toggle_view_range()
 	set category = "Special"
 	set name = "Change View Range"
@@ -586,26 +494,6 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	log_admin("[key_name(usr)] changed their view range to [view].")
 	//message_admins("\blue [key_name_admin(usr)] changed their view range to [view].", TRUE)	//why? removed by order of XSI
 
-
-
-/client/proc/admin_call_shuttle()
-
-	set category = "Admin"
-	set name = "Call Shuttle"
-
-	return FALSE
-
-/client/proc/admin_cancel_shuttle()
-	set category = "Admin"
-	set name = "Cancel Shuttle"
-
-	return FALSE
-
-/client/proc/admin_deny_shuttle()
-	set category = "Admin"
-	set name = "Toggle Deny Shuttle"
-
-	return FALSE
 
 /client/proc/cmd_admin_attack_log(mob/M as mob in mob_list)
 	set category = "Special"
