@@ -145,3 +145,11 @@
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
 		visible_message("<span class = 'warning'>[M] gets burnt by the [name]!</span>")
+
+
+/obj/structure/oven/verb/empty()
+	set category = null
+	set name = "Empty"
+	set src in range(1, usr)
+	for (var/obj/item/I in contents)
+		I.loc = get_turf(src)
