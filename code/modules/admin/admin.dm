@@ -498,19 +498,6 @@ proc/admin_notice(var/message, var/rights)
 	world.update_status()
 
 
-/datum/admins/proc/toggleAI()
-	set category = "Server"
-	set desc="People can't be AI"
-	set name="Toggle AI"
-	config.allow_ai = !( config.allow_ai )
-	if (!( config.allow_ai ))
-		world << "<b>The AI job is no longer chooseable.</b>"
-	else
-		world << "<b>The AI job is chooseable now.</b>"
-	log_admin("[key_name(usr)] toggled AI allowed.")
-	world.update_status()
-
-
 /datum/admins/proc/toggleaban()
 	set category = "Server"
 	set desc="Respawn basically"

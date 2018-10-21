@@ -519,10 +519,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if (feedback)
 			src << "<span class='warning'>Your non-dead body prevent you from respawning.</span>"
 		return FALSE
-	if (config.antag_hud_restricted && has_enabled_antagHUD == TRUE)
-		if (feedback)
-			src << "<span class='warning'>antagHUD restrictions prevent you from respawning.</span>"
-		return FALSE
 
 	var/timedifference = world.time - timeofdeath
 	if (respawn_time && timeofdeath && timedifference < respawn_time MINUTES)

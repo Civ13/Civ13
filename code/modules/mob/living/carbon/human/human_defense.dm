@@ -18,7 +18,7 @@ bullet_act
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
 
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W, /obj/item/weapon/material/knife/butcher) || istype(W, /obj/item/weapon/material/hatchet)))
+	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W, /obj/item/weapon/material/knife/butcher)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user
 			if (istype(H))
@@ -34,9 +34,23 @@ bullet_act
 						drop_from_inventory(I)
 					crush()
 					qdel(src)
+	else if ((stat == DEAD) && user.a_intent == I_HURT && !grabbed_by_user && istype(W, /obj/item/weapon/material/hatchet))
+		var/mob/living/carbon/human/H = user
+		if (istype(H))
+			user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
+			if (do_after(user, 30, src))
+				user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
+				for (var/v in 1 to rand(5,7))
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
+					meat.name = "[real_name] meatsteak"
+				var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
+				bonedrop.amount = 2
+				for (var/obj/item/clothing/I in contents)
+					drop_from_inventory(I)
+				crush()
+				qdel(src)
 	else
 		return ..(W, user)
-
 /mob/living/carbon/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug

@@ -52,15 +52,12 @@ var/list/gamemode_cache = list()
 	var/Tickcomp = FALSE
 //	var/socket_talk	= FALSE					// use socket_talk to communicate with other processes
 	var/list/resource_urls = null
-	var/antag_hud_allowed = FALSE			// Ghosts can turn on Antagovision to see a HUD of who is the bad guys this round.
-	var/antag_hud_restricted = FALSE                    // Ghosts that turn on Antagovision cannot rejoin the round.
 	var/list/mode_names = list()
 	var/list/modes = list()				// allowed modes
 	var/list/votable_modes = list()		// votable modes
 	var/list/probabilities = list()		// relative probability of each mode
 	var/humans_need_surnames = FALSE
 	var/allow_random_events = FALSE			// enables random events mid-round when set to TRUE
-	var/allow_ai = TRUE					// allow ai job
 	var/hostedby = null
 	var/guest_jobban = TRUE
 	var/usewhitelist = FALSE
@@ -377,9 +374,6 @@ var/list/gamemode_cache = list()
 				if ("ert_admin_only")
 					config.ert_admin_call_only = TRUE
 
-				if ("allow_ai")
-					config.allow_ai = TRUE
-
 				if ("server_name")
 					config.server_name = value
 
@@ -513,12 +507,6 @@ var/list/gamemode_cache = list()
 
 				if ("ticklag")
 					Ticklag = text2num(value)
-
-				if ("allow_antag_hud")
-					config.antag_hud_allowed = TRUE
-
-				if ("antag_hud_restricted")
-					config.antag_hud_restricted = TRUE
 
 				if ("tickcomp")
 					Tickcomp = TRUE
