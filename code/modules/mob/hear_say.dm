@@ -72,8 +72,10 @@
 		if (!H.languages.Find(language))
 			var/lname = capitalize(language.name)
 			H.partial_languages[lname] += 1
-			if (H.partial_languages[lname] > rand(100,150))
-				H.add_language(language)
+			if (H.partial_languages[lname] > rand(200,250))
+				H.add_language(language, TRUE)
+				H.add_note("Known Languages", "[language.name]")
+				notes += "[language.name]"
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
 
 /mob/proc/on_hear_say(var/message)
