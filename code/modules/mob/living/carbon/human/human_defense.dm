@@ -34,6 +34,7 @@ bullet_act
 						drop_from_inventory(I)
 					crush()
 					qdel(src)
+/*
 	else if ((stat == DEAD) && user.a_intent == I_HURT && !grabbed_by_user && istype(W, /obj/item/weapon/material/hatchet))
 		var/mob/living/carbon/human/H = user
 		if (istype(H))
@@ -49,8 +50,10 @@ bullet_act
 					drop_from_inventory(I)
 				crush()
 				qdel(src)
+*/
 	else
 		return ..(W, user)
+
 /mob/living/carbon/human/bullet_act(var/obj/item/projectile/P, var/def_zone)
 	if (P.damage == 0)
 		return // fix for strange bug

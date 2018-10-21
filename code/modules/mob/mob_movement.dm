@@ -457,7 +457,8 @@
 				F.muddy = TRUE
 			else
 				F.muddy = FALSE
-
+			for (var/obj/covers/CV in get_turf(F))
+				F.muddy = FALSE
 			var/obj/snow/S = F.has_snow()
 			var/snow_message = ""
 			var/snow_span = "notice"
