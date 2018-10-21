@@ -33,6 +33,8 @@
 		. = FALSE
 	else if (J.is_army == TRUE)
 		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		J.total_positions = 32
 		J.min_positions = 32

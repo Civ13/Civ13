@@ -30,7 +30,7 @@ obj/structure/anvil/New()
 					qdel(P)
 
 /obj/structure/anvil/attack_hand(var/mob/user as mob)
-	if (user.original_job_title != "Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith")
+	if (user.original_job_title != "Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew")
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 	else if (iron_amt > 0)

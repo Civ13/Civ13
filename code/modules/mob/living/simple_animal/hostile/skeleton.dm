@@ -24,7 +24,7 @@
 	attacktext = "scratched"
 	attack_sound = 'sound/weapons/genhit1.ogg'
 
-	faction = PIRATES
+	faction = "neutral"
 /mob/living/simple_animal/hostile/skeleton/attacker
 	name = "\improper Skeleton"
 /mob/living/simple_animal/hostile/skeleton/New()

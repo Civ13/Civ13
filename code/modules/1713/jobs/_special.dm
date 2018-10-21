@@ -16,6 +16,7 @@
 /datum/job/var/is_merchant = FALSE
 /datum/job/var/is_RP = FALSE //to enable civilian jobs per faction
 /datum/job/var/is_army = FALSE //land troops
+/datum/job/var/is_marooned = FALSE //marooned pirate
 
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold

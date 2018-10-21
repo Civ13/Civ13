@@ -44,7 +44,7 @@ var/list/preferences_datums = list()
 
 	var/b_type = "A+"					//blood type (not-chooseable)
 	var/backbag = 2						//backpack type
-	var/h_style = "Short Hair"				//Hair type
+	var/h_style = "Bald"				//Hair type
 	var/r_hair = FALSE						//Hair color
 	var/g_hair = FALSE						//Hair color
 	var/b_hair = FALSE						//Hair color

@@ -29,6 +29,8 @@ obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (J.is_army == TRUE)
 		. = FALSE
+	else if (J.is_marooned == TRUE)
+		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE
 	else if (istype(J, /datum/job/indians/tribes))
