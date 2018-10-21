@@ -151,6 +151,7 @@
 	desc = "A ball of dried opium. A great painkiller."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "opium_extracted"
+	value = 17
 	New()
 		..()
 		reagents.add_reagent("opium", 5)

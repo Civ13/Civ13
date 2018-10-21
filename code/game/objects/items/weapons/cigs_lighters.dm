@@ -255,7 +255,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	zippomes = "<span class='rose'>With a flick of their wrist, USER lights their NAME with their FLAME.</span>"
 	weldermes = "<span class='notice'>USER insults NAME by lighting it with FLAME.</span>"
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME with the power of science.</span>"
-
+	value = 17
 /obj/item/clothing/mask/smokable/cigarette/cigar/havana
 	name = "Cuban cigar"
 	desc = "A cigar fit for only the best of the best."
@@ -264,6 +264,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_off = "cigar2off"
 	smoketime = 7200
 	chem_volume = 30
+	value = 24
 
 /obj/item/weapon/cigbutt
 	name = "cigarette butt"
