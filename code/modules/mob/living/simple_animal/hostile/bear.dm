@@ -32,7 +32,7 @@
 	if (!.)
 		return
 
-	icon_state = "bearfloor"
+	icon_state = "bear"
 
 	switch(stance)
 
