@@ -125,16 +125,16 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
-
-	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || (findtext(recipe.title, "spear" && !findtext(recipe.title, "wood spear") )))
-		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
-			user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
-			return
-		else
-			if (istype(H.l_hand, /obj/item/weapon/material/handle))
-				qdel(H.l_hand)
-			else if (istype(H.r_hand, /obj/item/weapon/material/handle))
-				qdel(H.r_hand)
+	if (!findtext(recipe.title, "wood spear"))
+		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear"))
+			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
+				user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
+				return
+			else
+				if (istype(H.l_hand, /obj/item/weapon/material/handle))
+					qdel(H.l_hand)
+				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
+					qdel(H.r_hand)
 
 	if (recipe.result_type == /obj/structure/religious/totem || recipe.result_type == /obj/structure/religious/impaledskull || recipe.result_type == /obj/structure/religious/tribalmask || recipe.result_type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot || recipe.result_type == /obj/item/clothing/accessory/armband/talisman || recipe.result_type == /obj/item/clothing/head/skullmask || recipe.result_type == /obj/item/weapon/material/kitchen/utensil/knife/bone)
 		if (!H.faction_text == INDIANS)
