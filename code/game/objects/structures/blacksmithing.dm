@@ -23,8 +23,8 @@ obj/structure/anvil/New()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 			if (do_after(user,30,src))
 				user << "<span class='notice'>You smite the iron.</span>"
-				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
 				iron_amt += 1
+				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
 				icon_state = "anvil3"
 				if (P.amount > 1)
 					P.amount -= 1
@@ -39,8 +39,8 @@ obj/structure/anvil/New()
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 			if (do_after(user,35,src))
 				user << "<span class='notice'>You smite the steel.</span>"
-				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [steel_amt] hot steel bars on it."
 				steel_amt += 1
+				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [steel_amt] hot steel bars on it."
 				icon_state = "anvil3"
 				if (P.amount > 1)
 					P.amount -= 1
