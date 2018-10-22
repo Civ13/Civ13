@@ -6,6 +6,7 @@
 	density = TRUE
 	anchored = TRUE
 	var/iron_amt = 0
+	var/steel_amt = 0
 
 obj/structure/anvil/New()
 	..()
@@ -16,23 +17,134 @@ obj/structure/anvil/New()
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 	else
-		if (istype(P, /obj/item/stack/material/iron))
+		if (istype(P, /obj/item/stack/material/iron) && steel_amt == 0)
 			user << "You begin smithing the iron..."
 			icon_state = "anvil2"
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 			if (do_after(user,30,src))
 				user << "<span class='notice'>You smite the iron.</span>"
+				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
 				iron_amt += 1
 				icon_state = "anvil3"
 				if (P.amount > 1)
 					P.amount -= 1
 				else
 					qdel(P)
+		else if (istype(P, /obj/item/stack/material/iron) && steel_amt > 0)
+			user << "<span class='notice'>You can't smelt iron while there is steel on the anvil! Finish the steel first.</span>"
+			return
+		else if (istype(P, /obj/item/stack/material/steel) && iron_amt == 0)
+			user << "You begin smithing the steel..."
+			icon_state = "anvil2"
+			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+			if (do_after(user,35,src))
+				user << "<span class='notice'>You smite the steel.</span>"
+				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [steel_amt] hot steel bars on it."
+				steel_amt += 1
+				icon_state = "anvil3"
+				if (P.amount > 1)
+					P.amount -= 1
+				else
+					qdel(P)
+		else if (istype(P, /obj/item/stack/material/steel) && iron_amt > 0)
+			user << "<span class='notice'>You can't smelt steel while there is iron on the anvil! Finish the iron first.</span>"
+			return
 
 /obj/structure/anvil/attack_hand(var/mob/user as mob)
 	if (user.original_job_title != "Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew")
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
+
+	else if (steel_amt > 0)
+		var/list/display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Cancel")
+		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
+		if (choice2 == "Cancel")
+			return
+		if (choice2 == "Small Sword (10)")
+			if (steel_amt >= 10)
+				user << "You begin crafting a small sword..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,90,src) && steel_amt >= 10)
+					user << "You craft a small sword."
+					steel_amt -= 10
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/smallsword(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more iron to make this!</span>"
+				return
+		if (choice2 == "Sabre (15)")
+			if (steel_amt >= 15)
+				user << "You begin crafting a sabre..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,120,src) && steel_amt >= 15)
+					user << "You craft a sabre."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/sabre(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more iron to make this!</span>"
+				return
+		if (choice2 == "Cutlass (12)")
+			if (steel_amt >= 12)
+				user << "You begin crafting a cutlass..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,100,src) && steel_amt >= 12)
+					user << "You craft a cutlass."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/cutlass(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more iron to make this!</span>"
+				return
+		if (choice2 == "Rapier (18)")
+			if (steel_amt >= 18)
+				user << "You begin crafting a rapier..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 18)
+					user << "You craft a rapier."
+					steel_amt -= 18
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/rapier(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more iron to make this!</span>"
+				return
+		if (choice2 == "Spadroon (15)")
+			if (steel_amt >= 15)
+				user << "You begin crafting a spadroon..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,120,src) && steel_amt >= 15)
+					user << "You craft a spadroon."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/spadroon(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more iron to make this!</span>"
+				return
+		if (choice2 == "Longsword (18)")
+			if (steel_amt >= 18)
+				user << "You begin crafting a longsword..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 18)
+					user << "You craft a longsword."
+					steel_amt -= 18
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/longsword(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more iron to make this!</span>"
+				return
+
 	else if (iron_amt > 0)
 		var/list/display = list("Swords","Guns", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display)
@@ -204,6 +316,20 @@ obj/structure/anvil/New()
 			if (choice3 == "Cancel")
 				return
 
-	else if (iron_amt <= 0)
-		user << "There is no hot iron on top of this anvil. Smite some first."
+	else if (iron_amt <= 0 || steel_amt <= 0)
+		user << "There is no hot iron or steel on top of this anvil. Smite some first."
 		return
+
+
+/obj/structure/anvil/verb/empty()
+	set category = null
+	set name = "Empty"
+	set src in range(1, usr)
+	if (iron_amt > 0)
+		var/obj/item/stack/material/iron/emptyediron = new/obj/item/stack/material/iron(src.loc)
+		emptyediron.amount = iron_amt
+		iron_amt = 0
+	if (steel_amt > 0)
+		var/obj/item/stack/material/steel/emptyedsteel = new/obj/item/stack/material/steel(src.loc)
+		emptyedsteel.amount = steel_amt
+		steel_amt = 0

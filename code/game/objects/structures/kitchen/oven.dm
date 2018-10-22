@@ -251,10 +251,10 @@
 		emptyediron.amount = iron
 		iron = 0
 	if (copper > 0)
-		var/obj/item/stack/material/iron/emptyedcopper = new/obj/item/stack/material/copper(src.loc)
+		var/obj/item/stack/material/copper/emptyedcopper = new/obj/item/stack/material/copper(src.loc)
 		emptyedcopper.amount = copper
 		copper = 0
 	if (tin > 0)
-		var/obj/item/stack/material/iron/emptyedtin = new/obj/item/stack/material/tin(src.loc)
+		var/obj/item/stack/material/tin/emptyedtin = new/obj/item/stack/material/tin(src.loc)
 		emptyedtin.amount = tin
 		tin = 0

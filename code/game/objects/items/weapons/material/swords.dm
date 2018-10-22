@@ -95,6 +95,12 @@
 obj/item/weapon/material/sword/smallsword/iron
 	default_material = "iron"
 
+obj/item/weapon/material/sword/smallsword/copper
+	default_material = "copper"
+
+obj/item/weapon/material/sword/smallsword/bronze
+	default_material = "bronze"
+
 /obj/item/weapon/material/sword/spadroon
 	name = "spadroon"
 	desc = "A medium sword with a straight blade. Common among the military."
@@ -111,6 +117,12 @@ obj/item/weapon/material/sword/smallsword/iron
 
 obj/item/weapon/material/sword/spadroon/iron
 	default_material = "iron"
+
+obj/item/weapon/material/sword/spadroon/copper
+	default_material = "copper"
+
+obj/item/weapon/material/sword/spadroon/bronze
+	default_material = "bronze"
 
 /obj/item/weapon/material/sword/vangar
 	name = "Vangar's sword"
@@ -175,6 +187,9 @@ obj/item/weapon/material/sword/sabre/iron
 
 obj/item/weapon/material/sword/longsword/iron
 	default_material = "iron"
+
+obj/item/weapon/material/sword/longsword/bronze
+	default_material = "bronze"
 
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
