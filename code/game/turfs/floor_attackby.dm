@@ -73,14 +73,6 @@
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
-				if (prob(20))
-					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-					mineral.amount = rand(1,2)
-					visible_message("<span class='danger'>You found some iron ore!</span>")
-					T.ChangeTurf(/turf/floor/dirt)
-					T.is_mineable = FALSE
-					H.adaptStat("strength", 1)
-					return
 				if (prob(25))
 					if (prob(50))
 						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
@@ -98,6 +90,14 @@
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
+				if (prob(20))
+					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
+					mineral.amount = rand(1,2)
+					visible_message("<span class='danger'>You found some iron ore!</span>")
+					T.ChangeTurf(/turf/floor/dirt)
+					T.is_mineable = FALSE
+					H.adaptStat("strength", 1)
+					return
 				if (prob(25))
 					var/pickperc = pick(1,2,3)
 					if (pickperc == 1)

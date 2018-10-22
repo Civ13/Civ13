@@ -221,10 +221,8 @@
 		on = TRUE
 		fuel -=2
 		update_icon()
-		set_light(4)
 		spawn (110)
 			on = FALSE
-			set_light(0)
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes smelting.</span>")
 			process()
@@ -234,11 +232,11 @@
 
 /obj/structure/furnace/process()
 	if (iron > 0)
-		var/obj/item/stack/material/steel/newsteel = new/obj/item/stack/material/steel(src)
+		var/obj/item/stack/material/steel/newsteel = new/obj/item/stack/material/steel(src.loc)
 		newsteel.amount = iron
 		iron = 0
 	if (tin > 0 && copper > 0)
-		var/obj/item/stack/material/bronze/newbronze = new/obj/item/stack/material/bronze(src)
+		var/obj/item/stack/material/bronze/newbronze = new/obj/item/stack/material/bronze(src.loc)
 		newbronze.amount = min(tin,copper)
 		tin -= newbronze.amount
 		copper -= newbronze.amount
@@ -248,14 +246,14 @@
 	set name = "Empty"
 	set src in range(1, usr)
 	if (iron > 0)
-		var/obj/item/stack/material/iron/emptyediron = new/obj/item/stack/material/iron(src)
+		var/obj/item/stack/material/iron/emptyediron = new/obj/item/stack/material/iron(src.loc)
 		emptyediron.amount = iron
 		iron = 0
 	if (copper > 0)
-		var/obj/item/stack/material/iron/emptyedcopper = new/obj/item/stack/material/copper(src)
+		var/obj/item/stack/material/iron/emptyedcopper = new/obj/item/stack/material/copper(src.loc)
 		emptyedcopper.amount = copper
 		copper = 0
 	if (tin > 0)
-		var/obj/item/stack/material/iron/emptyedtin = new/obj/item/stack/material/tin(src)
+		var/obj/item/stack/material/iron/emptyedtin = new/obj/item/stack/material/tin(src.loc)
 		emptyedtin.amount = tin
 		tin = 0
