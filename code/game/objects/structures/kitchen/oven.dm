@@ -237,9 +237,10 @@
 		iron = 0
 	if (tin > 0 && copper > 0)
 		var/obj/item/stack/material/bronze/newbronze = new/obj/item/stack/material/bronze(src.loc)
-		newbronze.amount = min(tin,copper)*2
-		tin -= newbronze.amount/2
-		copper -= newbronze.amount/2
+		var/amountconsumed = min(tin,copper)
+		newbronze.amount = min(tin,copper)*3
+		tin -= amountconsumed
+		copper -= amountconsumed
 
 /obj/structure/furnace/verb/empty()
 	set category = null
