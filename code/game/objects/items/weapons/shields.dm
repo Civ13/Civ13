@@ -53,7 +53,7 @@
 	base_block_chance = 30
 
 /obj/item/weapon/shield/iron
-	name = "bronze shield"
+	name = "iron shield"
 	icon_state = "iron_shield"
 	item_state = "iron_shield"
 	slot_flags = SLOT_BACK

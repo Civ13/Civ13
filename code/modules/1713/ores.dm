@@ -32,6 +32,14 @@
 	name = "gold ore"
 	icon_state = "ore_gold"
 
+/obj/item/stack/ore/copper
+	name = "copper ore"
+	icon_state = "ore_copper"
+
+/obj/item/stack/ore/tin
+	name = "tin ore"
+	icon_state = "ore_tin"
+
 /obj/item/stack/ore/diamond
 	name = "diamonds"
 	icon_state = "ore_diamond"

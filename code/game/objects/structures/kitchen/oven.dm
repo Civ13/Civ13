@@ -153,3 +153,109 @@
 	set src in range(1, usr)
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)
+
+
+/obj/structure/furnace
+	name = "furnace"
+	desc = "An industrial furnace, used to smelter minerals."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "brick_furnace"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	var/base_state = "brick_furnace"
+	var/on = FALSE
+	var/max_space = 6
+	var/fuel = 0
+	var/iron = 0
+	var/copper = 0
+	var/tin = 0
+
+/obj/structure/furnace/update_icon()
+	if (on)
+		icon_state = "[base_state]_on"
+	else
+		icon_state = base_state
+
+/obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (!istype(H))
+		return
+	if (istype(I, /obj/item/stack/material/wood))
+		fuel += I.amount
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/stack/ore/coal))
+		fuel += I.amount*3
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/stack/ore/iron))
+		iron += I.amount
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/stack/ore/copper))
+		copper += I.amount
+		qdel(I)
+		return
+	else if (istype(I, /obj/item/stack/ore/tin))
+		tin += I.amount
+		qdel(I)
+		return
+	else
+		H << "<span class = 'warning'>You can't smelt this.</span>"
+		return
+	var/space = max_space
+	for (var/obj/item/II in contents)
+		space -= II.w_class
+	if (space <= 0 || space - I.w_class < 0)
+		H << "<span class = 'warning'>The [name] is full.</span>"
+		return
+	H.remove_from_mob(I)
+	I.loc = src
+	visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
+
+
+/obj/structure/furnace/attack_hand(var/mob/living/carbon/human/H)
+	if (!on && fuel > 1)
+		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
+		on = TRUE
+		fuel -=2
+		update_icon()
+		set_light(4)
+		spawn (110)
+			on = FALSE
+			set_light(0)
+			update_icon()
+			visible_message("<span class = 'notice'>The [name] finishes smelting.</span>")
+			process()
+	else
+		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
+
+
+/obj/structure/furnace/process()
+	if (iron > 0)
+		var/obj/item/stack/material/steel/newsteel = new/obj/item/stack/material/steel(src)
+		newsteel.amount = iron
+		iron = 0
+	if (tin > 0 && copper > 0)
+		var/obj/item/stack/material/bronze/newbronze = new/obj/item/stack/material/bronze(src)
+		newbronze.amount = min(tin,copper)
+		tin -= newbronze.amount
+		copper -= newbronze.amount
+
+/obj/structure/furnace/verb/empty()
+	set category = null
+	set name = "Empty"
+	set src in range(1, usr)
+	if (iron > 0)
+		var/obj/item/stack/material/iron/emptyediron = new/obj/item/stack/material/iron(src)
+		emptyediron.amount = iron
+		iron = 0
+	if (copper > 0)
+		var/obj/item/stack/material/iron/emptyedcopper = new/obj/item/stack/material/copper(src)
+		emptyedcopper.amount = copper
+		copper = 0
+	if (tin > 0)
+		var/obj/item/stack/material/iron/emptyedtin = new/obj/item/stack/material/tin(src)
+		emptyedtin.amount = tin
+		tin = 0

@@ -74,41 +74,53 @@
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(20))
-					new/obj/item/stack/ore/iron(src)
+					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
+					mineral.amount = rand(1,2)
 					visible_message("<span class='danger'>You found some iron ore!</span>")
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
-				if (prob(15))
-					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-					mineral.amount = rand(1,4)
-					visible_message("<span class='danger'>You found some usable stone blocks!</span>")
-					T.ChangeTurf(/turf/floor/dirt)
-					T.is_mineable = FALSE
-					H.adaptStat("strength", 1)
-					return
-				if (prob(10))
-					new/obj/item/stack/ore/coal(src)
-					visible_message("<span class='danger'>You found some coal!</span>")
-					T.ChangeTurf(/turf/floor/dirt)
-					T.is_mineable = FALSE
-					H.adaptStat("strength", 1)
-					return
-				if (prob(10))
-					new/obj/item/stack/ore/saltpeter(src)
-					visible_message("<span class='danger'>You found some saltpeter!</span>")
-					T.ChangeTurf(/turf/floor/dirt)
-					T.is_mineable = FALSE
-					H.adaptStat("strength", 1)
-					return
-				if (prob(10))
-					new/obj/item/stack/ore/sulphur(src)
-					visible_message("<span class='danger'>You found some sulphur!</span>")
-					T.ChangeTurf(/turf/floor/dirt)
-					T.is_mineable = FALSE
-					H.adaptStat("strength", 1)
-					return
+				if (prob(25))
+					if (prob(50))
+						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
+						mineral.amount = rand(1,3)
+						visible_message("<span class='danger'>You found some copper ore!</span>")
+						T.ChangeTurf(/turf/floor/dirt)
+						T.is_mineable = FALSE
+						H.adaptStat("strength", 1)
+						return
+					else
+						var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
+						mineral.amount = rand(1,3)
+						visible_message("<span class='danger'>You found some tin ore!</span>")
+						T.ChangeTurf(/turf/floor/dirt)
+						T.is_mineable = FALSE
+						H.adaptStat("strength", 1)
+						return
+				if (prob(25))
+					var/pickperc = pick(1,2,3)
+					if (pickperc == 1)
+						new/obj/item/stack/ore/coal(src)
+						visible_message("<span class='danger'>You found some coal!</span>")
+						T.ChangeTurf(/turf/floor/dirt)
+						T.is_mineable = FALSE
+						H.adaptStat("strength", 1)
+						return
+					else if (pickperc == 2)
+						new/obj/item/stack/ore/saltpeter(src)
+						visible_message("<span class='danger'>You found some saltpeter!</span>")
+						T.ChangeTurf(/turf/floor/dirt)
+						T.is_mineable = FALSE
+						H.adaptStat("strength", 1)
+						return
+					else if (pickperc == 3)
+						new/obj/item/stack/ore/sulphur(src)
+						visible_message("<span class='danger'>You found some sulphur!</span>")
+						T.ChangeTurf(/turf/floor/dirt)
+						T.is_mineable = FALSE
+						H.adaptStat("strength", 1)
+						return
 				if (prob(5))
 					new/obj/item/stack/ore/silver(src)
 					visible_message("<span class='danger'>You found some silver ore!</span>")
@@ -130,10 +142,12 @@
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
+				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+				mineral.amount = rand(1,2)
+				visible_message("<span class='danger'>You found some usable stone blocks!</span>")
 				T.ChangeTurf(/turf/floor/dirt)
 				T.is_mineable = FALSE
 				H.adaptStat("strength", 1)
-				visible_message("<span class='danger'>You didn't find anything worthy.</span>")
 				return
 		else
 			return ..(C, user)
