@@ -92,6 +92,9 @@
 	cooldownw = 6
 	value = 35
 
+obj/item/weapon/material/sword/smallsword/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/sword/spadroon
 	name = "spadroon"
 	desc = "A medium sword with a straight blade. Common among the military."
@@ -106,6 +109,9 @@
 	cooldownw = 10
 	value = 50
 
+obj/item/weapon/material/sword/spadroon/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/sword/vangar
 	name = "Vangar's sword"
 	desc = "A special, customized sword with 'Vangar' engraved on the hilt."
@@ -118,6 +124,7 @@
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 35
 	cooldownw = 7
+
 /obj/item/weapon/material/sword/cutlass
 	name = "cutlass"
 	desc = "A medium-sized, curved sword, preferred by pirates."
@@ -131,6 +138,9 @@
 	block_chance = 28
 	cooldownw = 8
 	value = 40
+
+obj/item/weapon/material/sword/cutlass/iron
+	default_material = "iron"
 
 /obj/item/weapon/material/sword/sabre
 	name = "sabre"
@@ -146,6 +156,9 @@
 	cooldownw = 9
 	value = 50
 
+obj/item/weapon/material/sword/sabre/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/sword/longsword
 	name = "longsword"
 	desc = "A large sword, with a long blade. Commonly used in the medieval era, it's rarely used now."
@@ -160,6 +173,9 @@
 	cooldownw = 13
 	value = 60
 
+obj/item/weapon/material/sword/longsword/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
@@ -173,3 +189,6 @@
 	block_chance = 30
 	cooldownw = 5
 	value = 60
+
+obj/item/weapon/material/sword/rapier/iron
+	default_material = "iron"

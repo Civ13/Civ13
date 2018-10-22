@@ -9,7 +9,7 @@
 	throw_speed = 3
 	throw_range = 7
 	allow_spin = FALSE
-	material = "wood"
+	default_material = "wood"
 	force_divisor = 0.4 // 24 with hardness 60 (steel)
 	thrown_force_divisor = 1.1 // 22 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
@@ -23,7 +23,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "handle"
 	item_state = "spear"
-	material = "wood"
+	default_material = "wood"
 	throw_speed = 7
 	throw_range = 7
 	allow_spin = FALSE
@@ -39,7 +39,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "spear_old"
 	item_state = "spear"
-	material = "wood"
+	default_material = "wood"
 	throw_speed = 6
 	throw_range = 11
 	allow_spin = FALSE
@@ -75,14 +75,12 @@
 	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
 
-/obj/item/weapon/material/hatchet/New()
-	name = "hatchet"
-
 /obj/item/weapon/material/boarding_axe
 	name = "boarding axe"
 	desc = "A short axe, useful for breaking wood and boarding enemy ships."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "combat_axe"
+	default_material = "steel"
 	force_divisor = 0.6 // 12 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 15 with weight 20 (steel)
 	w_class = 2

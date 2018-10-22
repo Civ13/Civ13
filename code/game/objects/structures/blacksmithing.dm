@@ -12,7 +12,7 @@ obj/structure/anvil/New()
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
 
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
-	if (user.original_job_title != "Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith")
+	if (user.original_job_title != "Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew")
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 	else
@@ -52,7 +52,7 @@ obj/structure/anvil/New()
 						iron_amt -= 10
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/smallsword(user.loc)
+						new/obj/item/weapon/material/sword/smallsword/iron(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -66,7 +66,7 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/sabre(user.loc)
+						new/obj/item/weapon/material/sword/sabre/iron(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -80,7 +80,7 @@ obj/structure/anvil/New()
 						iron_amt -= 12
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/cutlass(user.loc)
+						new/obj/item/weapon/material/sword/cutlass/iron(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -94,7 +94,7 @@ obj/structure/anvil/New()
 						iron_amt -= 18
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/rapier(user.loc)
+						new/obj/item/weapon/material/sword/rapier/iron(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -108,7 +108,7 @@ obj/structure/anvil/New()
 						iron_amt -= 15
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/spadroon(user.loc)
+						new/obj/item/weapon/material/sword/spadroon/iron(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -122,7 +122,7 @@ obj/structure/anvil/New()
 						iron_amt -= 18
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/longsword(user.loc)
+						new/obj/item/weapon/material/sword/longsword/iron(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
