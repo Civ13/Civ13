@@ -291,7 +291,7 @@ var/list/name_to_material
 
 /material/bronze
 	name = "bronze"
-	icon_colour = "#cd7f32"
+	icon_colour = "#7c4611"
 	stack_type = /obj/item/stack/material/bronze
 	weight = 17
 	hardness = 47

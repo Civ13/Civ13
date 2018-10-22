@@ -222,7 +222,6 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe("bronze shield", /obj/item/weapon/shield/bronze, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("[display_name] small sword", /obj/item/weapon/material/sword/smallsword/bronze, 10, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("[display_name] spadroon", /obj/item/weapon/material/sword/spadroon/bronze, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
-	recipes += new/datum/stack_recipe("[display_name] longsword", /obj/item/weapon/material/sword/longsword/bronze, 18, _time = 165, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 
 /material/steel/generate_recipes()
 	..()
