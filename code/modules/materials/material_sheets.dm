@@ -94,9 +94,16 @@
 	value = 2
 
 /obj/item/stack/material/copper
-	name = "iron"
+	name = "copper"
 	icon_state = "sheet-copper"
 	default_type = "copper"
+	apply_colour = TRUE
+	value = 1
+
+/obj/item/stack/material/tin
+	name = "tin"
+	icon_state = "sheet-tin"
+	default_type = "tin"
 	apply_colour = TRUE
 	value = 1
 

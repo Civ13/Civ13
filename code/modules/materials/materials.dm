@@ -280,6 +280,15 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
+/material/tin
+	name = "tin"
+	icon_colour = "#d3d4d5"
+	stack_type = /obj/item/stack/material/tin
+	weight = 11
+	hardness = 30
+	sheet_singular_name = "ingot"
+	sheet_plural_name = "ingots"
+
 /material/bronze
 	name = "bronze"
 	icon_colour = "#cd7f32"
