@@ -83,7 +83,6 @@ var/list/name_to_material
 	var/icon_base = "metal"                              // Wall and table base icon tag. See header.
 	var/door_icon_base = "metal"                         // Door base icon tag. See header.
 	var/icon_reinf = "reinf_metal"                       // Overlay used
-	var/list/stack_origin_tech = list(TECH_MATERIAL = TRUE) // Research level for stacks.
 
 	// Attributes
 	var/cut_delay = FALSE            // Delay in ticks when cutting through this wall.
@@ -223,7 +222,6 @@ var/list/name_to_material
 	shard_type = SHARD_SHARD
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
 	hardness = 100
-	stack_origin_tech = list(TECH_MATERIAL = 6)
 
 /material/rope
 	name = "rope"
@@ -234,7 +232,7 @@ var/list/name_to_material
 	shard_type = null
 	tableslam_noise = null
 	hardness = 10
-	stack_origin_tech = list(TECH_MATERIAL = 6)
+
 	sheet_singular_name = "coil"
 	sheet_plural_name = "coils"
 
@@ -247,7 +245,7 @@ var/list/name_to_material
 	shard_type = null
 	tableslam_noise = null
 	hardness = 10
-	stack_origin_tech = list(TECH_MATERIAL = 6)
+
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
 
@@ -260,7 +258,7 @@ var/list/name_to_material
 	shard_type = null
 	tableslam_noise = null
 	hardness = 10
-	stack_origin_tech = list(TECH_MATERIAL = 6)
+
 	sheet_singular_name = "plant"
 	sheet_plural_name = "plants"
 
@@ -269,22 +267,35 @@ var/list/name_to_material
 	stack_type = /obj/item/stack/material/gold
 	icon_colour = "#EDD12F"
 	weight = 24
-	hardness = 40
-	stack_origin_tech = list(TECH_MATERIAL = 4)
+	hardness = 70
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
-/material/gold/bronze //placeholder for ashtrays
+/material/copper
+	name = "copper"
+	icon_colour = "#b87333"
+	stack_type = /obj/item/stack/material/copper
+	weight = 14
+	hardness = 42
+	sheet_singular_name = "ingot"
+	sheet_plural_name = "ingots"
+
+/material/bronze
 	name = "bronze"
-	icon_colour = "#EDD12F"
+	icon_colour = "#cd7f32"
+	stack_type = /obj/item/stack/material/bronze
+	weight = 17
+	hardness = 48
+	sheet_singular_name = "ingot"
+	sheet_plural_name = "ingots"
 
 /material/silver
 	name = "silver"
 	stack_type = /obj/item/stack/material/silver
 	icon_colour = "#D1E6E3"
 	weight = 22
-	hardness = 50
-	stack_origin_tech = list(TECH_MATERIAL = 3)
+	hardness = 65
+
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
@@ -392,7 +403,7 @@ var/list/name_to_material
 	weight = 18
 	melting_point = T0C+300 //okay, not melting in this case, but hot enough to destroy wood
 	ignition_point = T0C+288
-	stack_origin_tech = list(TECH_MATERIAL = TRUE, TECH_BIO = TRUE)
+
 	dooropen_noise = 'sound/effects/doorcreaky.ogg'
 	door_icon_base = "wood"
 	destruction_desc = "splinters"
@@ -422,7 +433,7 @@ var/list/name_to_material
 /material/cloth //todo
 	name = "cloth"
 	hardness = 10
-	stack_origin_tech = list(TECH_MATERIAL = 2)
+
 	door_icon_base = "wood"
 	ignition_point = T0C+232
 	melting_point = T0C+300
@@ -432,7 +443,7 @@ var/list/name_to_material
 /material/leather
 	name = "leather"
 	icon_colour = "#5C4831"
-	stack_origin_tech = list(TECH_MATERIAL = 2)
+
 	flags = MATERIAL_PADDING
 	ignition_point = T0C+300
 	melting_point = T0C+300

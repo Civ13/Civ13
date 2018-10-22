@@ -126,7 +126,7 @@
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
 
-	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe"))
+	if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || (findtext(recipe.title, "spear" && !findtext(recipe.title, "wood spear") )))
 		if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 			user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
 			return

@@ -24,8 +24,7 @@
 
 	recipes = material.get_recipes()
 	stacktype = material.stack_type
-/*	if (islist(material.stack_origin_tech))
-		origin_tech = material.stack_origin_tech.Copy()*/
+
 
 	if (apply_colour)
 		color = material.icon_colour
@@ -86,6 +85,20 @@
 
 /obj/item/stack/material/iron/twentyfive
 	amount = 25
+
+/obj/item/stack/material/bronze
+	name = "bronze"
+	icon_state = "sheet-bronze"
+	default_type = "bronze"
+	apply_colour = TRUE
+	value = 2
+
+/obj/item/stack/material/copper
+	name = "iron"
+	icon_state = "sheet-copper"
+	default_type = "copper"
+	apply_colour = TRUE
+	value = 1
 
 /obj/item/stack/material/sandstone
 	name = "sandstone brick"
