@@ -33,12 +33,44 @@
 	return TRUE
 
 /obj/item/weapon/shield
-	name = "shield"
+	name = "wood shield"
 	icon_state = "buckler"
 	item_state = "buckler"
 	var/base_block_chance = 25
 	w_class = 2.0
 	slot_flags = SLOT_BACK
+	var/material = "wood"
+	health = 40 // hardness of wood
+
+/obj/item/weapon/shield/steel
+	name = "steel shield"
+	icon_state = "steel_shield"
+	item_state = "steel_shield"
+	slot_flags = SLOT_BACK
+	material = "steel"
+	health = 60
+	w_class = 3.0
+	base_block_chance = 30
+
+/obj/item/weapon/shield/iron
+	name = "bronze shield"
+	icon_state = "iron_shield"
+	item_state = "iron_shield"
+	slot_flags = SLOT_BACK
+	material = "iron"
+	health = 50
+	w_class = 3.0
+	base_block_chance = 30
+
+/obj/item/weapon/shield/bronze
+	name = "bronze shield"
+	icon_state = "bronze_shield"
+	item_state = "bronze_shield"
+	slot_flags = SLOT_BACK
+	material = "bronze"
+	health = 47
+	w_class = 3.0
+	base_block_chance = 30
 
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
@@ -49,8 +81,23 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<span class='danger'>\The [user] blocks [attack_text] with \the [src]!</span>")
+			health--
+			check_health()
 			return TRUE
 	return FALSE
 
 /obj/item/weapon/shield/proc/get_block_chance(mob/user, var/damage, atom/damage_source = null, mob/attacker = null)
 	return base_block_chance
+
+/obj/item/weapon/shield/proc/check_health(var/consumed)
+	if (health<=0)
+		shatter(consumed)
+
+/obj/item/weapon/shield/proc/shatter(var/consumed)
+	var/turf/T = get_turf(src)
+	T.visible_message("<span class='danger'>\The [src] is broken apart!</span>")
+	if (istype(loc, /mob/living))
+		var/mob/living/M = loc
+		M.drop_from_inventory(src)
+	playsound(src, "shatter", 70, TRUE)
+	qdel(src)

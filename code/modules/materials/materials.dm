@@ -294,7 +294,7 @@ var/list/name_to_material
 	icon_colour = "#cd7f32"
 	stack_type = /obj/item/stack/material/bronze
 	weight = 17
-	hardness = 48
+	hardness = 47
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
