@@ -51,10 +51,11 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 
 	pref.roman_name		= sanitize_name(pref.roman_name, pref.species)
 	if (!pref.roman_name)
-		pref.roman_name	= random_roman_name(pref.gender, pref.species)
+		pref.roman_name	= random_roman_name(pref.species)
+
 	pref.greek_name		= sanitize_name(pref.greek_name, pref.species)
 	if (!pref.greek_name)
-		pref.greek_name	= random_greek_name(pref.gender, pref.species)
+		pref.greek_name	= random_greek_name(pref.species)
 
 
 	/*										*/
@@ -107,6 +108,16 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<a href='?src=\ref[src];rename_carib=1'><b>[pref.carib_name]</b></a><br>"
 	. += "(<a href='?src=\ref[src];random_name_carib=1'>Random Name</A>) "
 	. += "(<a href='?src=\ref[src];always_random_name_carib=1'>Always Random Name: [pref.be_random_name_carib ? "Yes" : "No"]</a>)"
+	. += "<br><br>"
+	. += "<b>Roman Name:</b> "
+	. += "<a href='?src=\ref[src];rename_roman=1'><b>[pref.roman_name]</b></a><br>"
+	. += "(<a href='?src=\ref[src];random_name_roman=1'>Random Name</A>) "
+	. += "(<a href='?src=\ref[src];always_random_name_roman=1'>Always Random Name: [pref.be_random_name_roman ? "Yes" : "No"]</a>)"
+	. += "<br><br>"
+	. += "<b>Greek Name:</b> "
+	. += "<a href='?src=\ref[src];rename_greek=1'><b>[pref.greek_name]</b></a><br>"
+	. += "(<a href='?src=\ref[src];random_name_greek=1'>Random Name</A>) "
+	. += "(<a href='?src=\ref[src];always_random_name_greek=1'>Always Random Name: [pref.be_random_name_greek ? "Yes" : "No"]</a>)"
 	. += "<br><br>"
 	// gender
 	. += "<b>Default Gender:</b> <a href='?src=\ref[src];gender=1'><b>[capitalize(lowertext(pref.gender))]</b></a><br>"
@@ -261,6 +272,49 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	else if (href_list["always_random_name_carib"])
 		pref.be_random_name_carib = !pref.be_random_name_carib
 		return TOPIC_REFRESH
+
+
+	//greek names
+	if (href_list["rename_greek"])
+		var/raw_name = input(user, "Choose your character's greek name:", "Character Name")  as text|null
+		if (!isnull(raw_name) && CanUseTopic(user))
+			var/new_name = sanitize_name(raw_name, pref.species)
+			if (new_name)
+				pref.greek_name = new_name
+				return TOPIC_REFRESH
+			else
+				user << "<span class='warning'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and .</span>"
+				return TOPIC_NOACTION
+
+	else if (href_list["random_name_greek"])
+		pref.greek_name = random_greek_name(pref.gender, pref.species)
+		return TOPIC_REFRESH
+
+	else if (href_list["always_random_name_greek"])
+		pref.be_random_name_greek = !pref.be_random_name_greek
+		return TOPIC_REFRESH
+
+
+	//roman names
+	if (href_list["rename_roman"])
+		var/raw_name = input(user, "Choose your character's roman name:", "Character Name")  as text|null
+		if (!isnull(raw_name) && CanUseTopic(user))
+			var/new_name = sanitize_name(raw_name, pref.species)
+			if (new_name)
+				pref.roman_name = new_name
+				return TOPIC_REFRESH
+			else
+				user << "<span class='warning'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and .</span>"
+				return TOPIC_NOACTION
+
+	else if (href_list["random_name_roman"])
+		pref.roman_name = random_roman_name(pref.gender, pref.species)
+		return TOPIC_REFRESH
+
+	else if (href_list["always_random_name_roman"])
+		pref.be_random_name_roman = !pref.be_random_name_roman
+		return TOPIC_REFRESH
+
 
 	else if (href_list["gender"])
 		pref.gender = next_in_list(pref.gender, valid_player_genders)
