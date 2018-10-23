@@ -148,7 +148,7 @@
 
 	return "[trim(full_name)]"
 
-/datum/language/proc/get_random_greek_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
+/datum/language/proc/get_random_greek_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
 	if (!syllables || !syllables.len)
 		return capitalize(pick(first_names_male_greek))
 
@@ -162,8 +162,8 @@
 		full_name += " [capitalize(lowertext(new_name))]"
 
 	return "[trim(full_name)]"
-
-/datum/language/proc/get_random_roman_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+											////removed var/gender \/
+/datum/language/proc/get_random_roman_name(name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 

@@ -49,6 +49,14 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	if (!pref.carib_name)
 		pref.carib_name	= random_carib_name(pref.gender, pref.species)
 
+	pref.roman_name		= sanitize_name(pref.roman_name, pref.species)
+	if (!pref.roman_name)
+		pref.roman_name	= random_roman_name(pref.gender, pref.species)
+	pref.greek_name		= sanitize_name(pref.greek_name, pref.species)
+	if (!pref.greek_name)
+		pref.greek_name	= random_greek_name(pref.gender, pref.species)
+
+
 	/*										*/
 
 //	pref.spawnpoint		= sanitize_inlist(pref.spawnpoint, spawntypes, initial(pref.spawnpoint))
@@ -59,6 +67,8 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	pref.be_random_name_portuguese	= sanitize_integer(pref.be_random_name_portuguese, FALSE, TRUE, initial(pref.be_random_name_portuguese))
 	pref.be_random_name_carib	= sanitize_integer(pref.be_random_name_carib, FALSE, TRUE, initial(pref.be_random_name_carib))
 	pref.be_random_name_dutch	= sanitize_integer(pref.be_random_name_dutch, FALSE, TRUE, initial(pref.be_random_name_dutch))
+	pref.be_random_name_greek	= sanitize_integer(pref.be_random_name_greek, FALSE, TRUE, initial(pref.be_random_name_greek))
+	pref.be_random_name_roman	= sanitize_integer(pref.be_random_name_roman, FALSE, TRUE, initial(pref.be_random_name_roman))
 
 /datum/category_item/player_setup_item/general/basic/content()
 	// name

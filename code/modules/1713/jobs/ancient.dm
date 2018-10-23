@@ -5,7 +5,7 @@
 	faction = "Station"
 
 /datum/job/roman/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_roman_name(H.gender)
+	H.name = H.species.get_random_roman_name()
 	H.real_name = H.name
 
 /datum/job/roman/soldier
@@ -52,7 +52,7 @@
 	faction = "Station"
 
 /datum/job/greek/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_greek_name(H.gender)
+	H.name = H.species.get_random_greek_name()
 	H.real_name = H.name
 
 
