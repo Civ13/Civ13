@@ -346,6 +346,16 @@
 		else
 			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch, gender))
 
+/datum/species/proc/get_random_greek_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_male_greek))
+
+/datum/species/proc/get_random_roman_name(var/gender, var/jew)
+	if (!name_language)
+		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+
+
 	var/datum/language/species_language = all_languages[name_language]
 	if (!species_language)
 		species_language = all_languages[default_language]
