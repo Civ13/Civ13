@@ -478,3 +478,10 @@
 	icon_state = "red1"
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/roman
+	name = "Roman Camp"
+	icon_state = "red3"
+/area/caribbean/greek
+	name = "Greek Camp"
+	icon_state = "blue1"

@@ -4,6 +4,8 @@
 #define ENGLISH_SYLLABLES list("ing", "ti", "po", "tle", "fa", "li", "ern", "er", "ri", "sion", "day", "fe", "lo", "eve", "a", "be", "vi", "ny", "gen", "men", "ly", "per", "el", "pen", "min", "ies", "ed", "to", "est", "pre", "land", "i", "pro", "la", "tive", "light", "es", "lar", "car", "out", "main", "re", "ad", "pa", "of", "tion", "ar", "ture", "mo", "pos", "ro", "in", "ers", "for", "an", "tain", "my", "e", "ment", "is", "side", "nal", "con", "ings", "ness", "y", "tions", "pe", "se", "ning", "ments", "ties", "so", "tor", "set", "ward" , "ence", "up")
 #define CARIB_SYLLABLES list("mo", "ro", "ani", "me", "ropo", "ka", "re", "ta", "sa", "po’i", "poto", "’me", "ta", "’wa", "’po", "re", "wa", "aje", "kary", "kon", "eta", "ry", "ra", "’a", "wata", "moi", "waty")
 #define DUTCH_SYLLABLES list("eek", "ti", "po", "aar", "aag", "van", "en", "mo", "gis", "ka", "de", "uur", "ok", "nen", "ken", "ge", "er", "ooi", "ijk", "le", "cht", "ij", "ont", "ond", "ag", "het", "hoe", "wel", "nee", "ens", "ijf", "ofd", "per")
+#define GREEK_SYLLABLES list("do", "rik", "ev", "ti", "on", "tí", "ka", "phi", "oú", "en", "et", "tn", "pn", "kó", "ev", "aí", "óo", "sé", "pa", "ná", "tes", "pan", "hé", "wíd", "póm", "mé", "ée", "wói", "s")
+#define LATIN_SYLLABLES list("fe", "de", "mi", "na", "be", "a", "ca", "tae", "ae", "ter", "num", "tum", "put", "ux", "tib", "dom", "er", "el", "la", "sum", "su", "per", "mem", "di", "us")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -62,3 +64,26 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = CARIB_SYLLABLES
 	mutual_intelligibility = list()
+
+
+/datum/language/greek
+    name = "Greek"
+    desc = "Old and rational."
+    key = "g"
+    colour = "Greek"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = GREEK_SYLLABLES
+    mutual_intelligibility = list()
+
+/datum/language/latin
+	name = "Latin"
+    desc = "Sacred and violent."
+    key = "l"
+    colour = "Latin"
+    flags = RESTRICTED | COMMON_VERBS
+    syllables = LATIN_SYLLABLES
+    mutual_intelligibility = list(/datum/language/portuguese = 30,
+        /datum/language/french = 30,
+        /datum/language/spanish = 30,
+        /datum/language/english = 10,
+        /datum/language/dutch = 10)

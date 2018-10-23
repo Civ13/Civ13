@@ -154,7 +154,10 @@ var/list/charge_sounds_nl = list(
 	'sound/effects/emotes/charge_nl2.ogg',
 	'sound/effects/emotes/charge_nl3.ogg',
 	'sound/effects/emotes/charge_nl4.ogg',)
-
+var/list/charge_sounds_ro = list(
+	'sound/effects/emotes/charge_ro.ogg',)
+var/list/charge_sounds_gr = list(
+	'sound/effects/emotes/charge_gr.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -343,5 +346,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_sp)
 			if ("charge_DUTCH")
 				soundin = pick(charge_sounds_nl)
+			if ("charge_GREEN")
+				soundin = pick(charge_sounds_gr)
+			if ("charge_ROMAN")
+				soundin = pick(charge_sounds_ro)
+
 
 	return soundin

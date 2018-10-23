@@ -43,6 +43,14 @@
 	default_language = "French"
 	additional_languages = list("English" = 10, "Spanish" = 15)
 
+/datum/job/roman
+	default_language = "Latin"
+	additional_languages = list("Greek" = 10)
+
+/datum/job/greek
+	default_language = "Greek"
+	additional_languages = list("Latin" = 10)
+
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 
@@ -65,7 +73,7 @@
 					H.add_language(FRENCH, TRUE)
 					H.add_note("Known Languages", "French")
 					notes += "French"
-				if (FRENCH)
+				if (DUTCH)
 					H.add_language(DUTCH, TRUE)
 					H.add_note("Known Languages", "Dutch")
 					notes += "Dutch"
@@ -113,4 +121,12 @@
 		if (DUTCH)
 			for (var/datum/language/dutch/D in H.languages)
 				H.default_language = D
+				break
+		if (ROMAN)
+			for (var/datum/language/latin/L in H.languages)
+				H.default_language = L
+				break
+		if (GREEK)
+			for (var/datum/language/greek/G in H.languages)
+				H.default_language = G
 				break

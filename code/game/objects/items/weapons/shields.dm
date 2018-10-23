@@ -72,6 +72,16 @@
 	w_class = 3.0
 	base_block_chance = 30
 
+/obj/item/weapon/shield/roman
+	name = "roman shield"
+	icon_state = "roman_shield"
+	item_state = "roman_shield"
+	slot_flags = SLOT_BACK
+	material = "bronze"
+	health = 47
+	w_class = 3.0
+	base_block_chance = 35
+
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
 		return FALSE

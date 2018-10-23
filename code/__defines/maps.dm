@@ -11,6 +11,7 @@
 #define MAP_CURSED_ISLAND "CURSED_ISLAND"
 #define MAP_FIELDS "FIELDS"
 #define MAP_HUNT "HUNT"
+#define MAP_HERACLEA "HERACLEA"
 // ideas:
 // ship sailing through the ocean, High-rp
 // pirates boarding a ship
