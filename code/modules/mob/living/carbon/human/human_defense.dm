@@ -95,7 +95,7 @@ bullet_act
 			SH = l_hand
 		else
 			SH = r_hand
-		if (istype(P, /obj/item/weapon/gun/projectile/bow))
+		if (istype(P, /obj/item/projectile/bullet/arrow))
 			if (prob(min(SH.base_block_chance*2,92)))
 				visible_message("<span class = 'warning'>[src] blocks the [P.name] with the [SH.name]!</span>")
 				return
