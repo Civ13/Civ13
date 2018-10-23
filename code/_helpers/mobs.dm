@@ -152,6 +152,24 @@ proc/random_carib_name(gender, species = "Human")
 			return capitalize(pick(first_names_male_carib))
 	else
 		return current_species.get_random_carib_name(gender)
+		
+proc/random_greek_name(gender, species = "Human")                           // Creates the proc for Greek Names
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		return capitalize(pick(first_names_male_greek))
+
+proc/random_roman_name(gender, species = "Human")                         // Creates the proc for Roman names
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+
+		
 proc/random_skin_tone()
 
 	var/skin_tone = "caucasian"
