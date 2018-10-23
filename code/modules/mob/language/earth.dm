@@ -67,22 +67,22 @@
 
 
 /datum/language/greek
-    name = "Greek"
-    desc = "Old and rational."
-    key = "g"
-    colour = "Greek"
-    flags = RESTRICTED | COMMON_VERBS
-    syllables = GREEK_SYLLABLES
-    mutual_intelligibility = list()
+	name = "Greek"
+	desc = "Old and rational."
+	key = "g"
+	colour = "Greek"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = GREEK_SYLLABLES
+	mutual_intelligibility = list()
 
 /datum/language/latin
 	name = "Latin"
-    desc = "Sacred and violent."
-    key = "l"
-    colour = "Latin"
-    flags = RESTRICTED | COMMON_VERBS
-    syllables = LATIN_SYLLABLES
-    mutual_intelligibility = list(/datum/language/portuguese = 30,
+	desc = "Sacred and violent."
+	key = "l"
+	colour = "Latin"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = LATIN_SYLLABLES
+	mutual_intelligibility = list(/datum/language/portuguese = 30,
         /datum/language/french = 30,
         /datum/language/spanish = 30,
         /datum/language/english = 10,

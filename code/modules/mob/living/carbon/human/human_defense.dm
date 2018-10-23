@@ -89,6 +89,17 @@ bullet_act
 	//Shields
 	var/shield_check = check_shields(P.damage*5, P, null, def_zone, "the [P.name]")
 
+	if (istype(l_hand, /obj/item/weapon/shield) || istype(r_hand, /obj/item/weapon/shield))
+		var/obj/item/weapon/shield/SH
+		if (istype(l_hand, /obj/item/weapon/shield))
+			SH = l_hand
+		else
+			SH = r_hand
+		if (istype(P, /obj/item/weapon/gun/projectile/bow))
+			if (prob(min(SH.base_block_chance*2,92)))
+				visible_message("<span class = 'warning'>[src] blocks the [P.name] with the [SH.name]!</span>")
+				return
+
 	if (shield_check)
 		if (shield_check < 0)
 			return shield_check
