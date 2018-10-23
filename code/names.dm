@@ -34,11 +34,11 @@ var/list/last_names_carib = file2list("config/names/last_carib.txt")
 var/list/verbs = file2list("config/names/verbs.txt")
 var/list/adjectives = file2list("config/names/adjectives.txt")
 
-var/list/first_names_male_greek = file2list("config/names/first_male_greek")		//Add greek names to names vars
+var/list/first_names_male_greek = file2list("config/names/first_male_greek.txt")		//Add greek names to names vars
 
-var/list/first_names_male_roman = file2list("config/names/first_male_roman")
-var/list/middle_names_roman = file2list("config/names/middle_roman")                 //Add roman names to names vars
-var/list/last_names_roman = file2list("config/names/last_roman")
+var/list/first_names_male_roman = file2list("config/names/first_male_roman.txt")
+var/list/middle_names_roman = file2list("config/names/middle_roman.txt")                 //Add roman names to names vars
+var/list/last_names_roman = file2list("config/names/last_roman.txt")
 
 //loaded on startup because of "
 //would include in rsc if ' was used

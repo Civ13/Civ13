@@ -97,7 +97,8 @@ bullet_act
 			SH = r_hand
 		if (istype(P, /obj/item/projectile/bullet/arrow))
 			if (prob(min(SH.base_block_chance*2,92)))
-				visible_message("<span class = 'warning'>[src] blocks the [P.name] with the [SH.name]!</span>")
+				visible_message("<span class = 'warning'>[src] blocks the arrow with the [SH.name]!</span>")
+				SH.health -= 2
 				return
 
 	if (shield_check)
