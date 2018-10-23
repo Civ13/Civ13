@@ -346,7 +346,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_sp)
 			if ("charge_DUTCH")
 				soundin = pick(charge_sounds_nl)
-			if ("charge_GREEN")
+			if ("charge_GREEK")
 				soundin = pick(charge_sounds_gr)
 			if ("charge_ROMAN")
 				soundin = pick(charge_sounds_ro)
