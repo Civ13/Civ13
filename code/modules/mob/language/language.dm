@@ -148,6 +148,36 @@
 
 	return "[trim(full_name)]"
 
+/datum/language/proc/get_random_greek_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_male_greek))
+
+	var/full_name = ""
+	var/new_name = ""
+
+	for (var/i = 0;i<name_count;i++)
+		new_name = ""
+		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
+			new_name += pick(syllables)
+		full_name += " [capitalize(lowertext(new_name))]"
+
+	return "[trim(full_name)]"
+
+/datum/language/proc/get_random_roman_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+
+	var/full_name = ""
+	var/new_name = ""
+
+	for (var/i = 0;i<name_count;i++)
+		new_name = ""
+		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
+			new_name += pick(syllables)
+		full_name += " [capitalize(lowertext(new_name))]"
+
+	return "[trim(full_name)]"
+
 /datum/language
 	var/list/scramble_cache = list()
 

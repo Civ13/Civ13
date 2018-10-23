@@ -127,11 +127,29 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "pilum"
 	item_state = "pilum"
-	default_material = "iron"
+	default_material = "wood"
 	throw_speed = 6
 	throw_range = 14
 	allow_spin = FALSE
 	force_divisor = 0.7 // 42 with hardness 60 (steel)
 	thrown_force_divisor = 1.5 // 30 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 10
+
+
+/obj/item/weapon/material/spear/dory
+	name = "dory"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A 2 meter long spear, used by soldiers of the Hellenic culture."
+	slot_flags = SLOT_BACK | SLOT_BELT
+	icon_state = "dory"
+	item_state = "dory"
+	default_material = "wood"
+	throw_speed = 4
+	throw_range = 8
+	allow_spin = FALSE
+	force_divisor = 0.85 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 1.1 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10

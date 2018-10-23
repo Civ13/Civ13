@@ -217,10 +217,25 @@ obj/item/weapon/material/sword/rapier/iron
 	item_state = "gladius"
 	default_material = "iron"
 	throw_speed = 2
-	throw_range = 4
+	throw_range = 6
 	force_divisor = 0.6 // 36 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 25
 	cooldownw = 6
 	value = 35
+
+/obj/item/weapon/material/sword/xiphos
+	name = "xiphos"
+	desc = "A small sword, used by Hellenic soldiers."
+	icon_state = "xiphos"
+	item_state = "gladius"
+	default_material = "iron"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.75 // 36 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 28
+	cooldownw = 7
+	value = 40

@@ -1,6 +1,7 @@
 
 /obj/item/clothing/shoes/roman
-	name = "roman sandals"
+	name = "sandals"
+	desc = "basic leather sandals, going up to the knee."
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
@@ -10,10 +11,17 @@
 //roman memes
 /obj/item/clothing/under/roman
 	name = "Roman legionary uniform"
-	desc = "A red tunic with covered with a leather armored suit. Used by the Roman Army."
+	desc = "A red tunic with covered with iron armor. Used by the Roman Army."
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
+
+/obj/item/clothing/under/athens
+	name = "Athenian uniform"
+	desc = "A blue and red tunic, covered with bronze armor. Used by the Athenians."
+	icon_state = "athens"
+	item_state = "athens"
+	worn_state = "athens"
 
 /obj/item/clothing/suit/cape
 	name = "red cape"
@@ -31,7 +39,7 @@
 
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "Roman centurion helmet"
-	desc = "A Roman helmet, used by Centurions."
+	desc = "An iron Roman helmet, used by Centurions."
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"
@@ -50,3 +58,10 @@
 	icon_state = "viking"
 	item_state = "viking"
 	worn_state = "viking"
+
+/obj/item/clothing/head/helmet/greek
+	name = "greek helmet"
+	desc = "A bronze Greek helmet, covering most of the face."
+	icon_state = "greek"
+	item_state = "greek"
+	worn_state = "greek"

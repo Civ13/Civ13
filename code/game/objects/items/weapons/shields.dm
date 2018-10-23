@@ -72,8 +72,20 @@
 	w_class = 3.0
 	base_block_chance = 30
 
+/obj/item/weapon/shield/athens
+	name = "athenian aspis"
+	desc = "a round, slightly curved greek shield, with the Athenian gorgon."
+	icon_state = "athenian_shield"
+	item_state = "athenian_shield"
+	slot_flags = SLOT_BACK
+	material = "bronze"
+	health = 47
+	w_class = 3.0
+	base_block_chance = 33
+
 /obj/item/weapon/shield/roman
 	name = "roman shield"
+	desc = "a rectangular shield, with Roman motifs."
 	icon_state = "roman_shield"
 	item_state = "roman_shield"
 	slot_flags = SLOT_BACK
