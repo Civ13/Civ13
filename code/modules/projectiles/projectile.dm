@@ -23,7 +23,7 @@
 	var/turf/starting = null // the projectile's starting turf
 	var/list/permutated = list() // we've passed through these atoms, don't try to hit them again
 
-	var/blocked = FALSE //If blocked by shield/armor/etc
+	var/blockedhit = FALSE //If blocked by shield/armor/etc
 
 	var/p_x = 16
 	var/p_y = 16 // the pixel location of the tile that the player clicked. Default is the center
@@ -270,12 +270,12 @@
 						return
 
 		do_bullet_act(target_mob, hit_zone)
-		if (blocked == TRUE)
+		if (blockedhit == FALSE)
 			if (silenced)
 				target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by the shrapnel!</span>"
 			else
 				visible_message("<span class='danger'>\The [target_mob] is hit by the shrapnel in the [parse_zone(hit_zone)]!</span>")
-			return
+		return
 
 	if (!istype(target_mob))
 		return
@@ -385,11 +385,11 @@
 			target_mob.Paralyse(5)
 
 	//hit messages
-	if (silenced)
-		target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
-	else
-
-		visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
+	if (blockedhit == FALSE)
+		if (silenced)
+			target_mob << "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>"
+		else
+			visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter
 
 	//admin logs
 	if (!no_attack_log)
