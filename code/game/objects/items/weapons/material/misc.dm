@@ -175,6 +175,7 @@
 	var/ownerdir_x = 0
 	var/ownerdir_y = 0
 	var/ownerdir_z = 1
+	var/ownerdir
 	var/turf/targetturf
 	var/deployed = FALSE
 
@@ -182,21 +183,20 @@
 	if (deployed)
 		deployed = FALSE
 		user << "<span class='notice'>You lift your [name] up, falling out of formation.</span>"
-	if (!deployed)
+		return
+	else if (!deployed)
 		deployed = TRUE
 		user << "<span class='notice'>You turn your [name] down, forming a spear wall!</span>"
+		return
 
 /obj/item/weapon/material/spear/sarissa/proc/check_dmg()
 	if (deployed)
 		targetturf = locate(ownerdir_x,ownerdir_y,ownerdir_z)
 
-		for (var/mob/living/TARGETMOB in src.loc)
-			health -= rand(9,14)
-			visible_message("[TARGETMOB.name] crashes into the [name]!")
 		for (var/mob/living/TARGETMOB in targetturf)
-			health -= rand(2,6)
+			TARGETMOB.health -= rand(2,6)
 			visible_message("[TARGETMOB.name] is pushed back by the spear wall!")
-			TARGETMOB.forceMove(targetturf)
+			TARGETMOB.Move(get_step(src.loc, ownerdir), ownerdir)
 	spawn(10)
 		check_dmg()
 /obj/item/weapon/material/spear/sarissa/update_icon()
@@ -214,6 +214,7 @@
 				ownerdir_x = US.x
 				ownerdir_y = US.y+32
 				ownerdir_z = US.z
+				ownerdir = NORTH
 			else if (US.dir == SOUTH)
 				img_state = 'icons/obj/weapons_2t_v.dmi'
 				standing = image(icon = img_state, icon_state = "sarissa")
@@ -222,6 +223,7 @@
 				ownerdir_x = US.x
 				ownerdir_y = US.y-32
 				ownerdir_z = US.z
+				ownerdir = SOUTH
 			else if (US.dir == EAST)
 				img_state = 'icons/obj/weapons_2t.dmi'
 				standing = image(icon = img_state, icon_state = "sarissa")
@@ -230,6 +232,7 @@
 				ownerdir_x = US.x+32
 				ownerdir_y = US.y
 				ownerdir_z = US.z
+				ownerdir = EAST
 			else if (US.dir == WEST)
 				img_state = 'icons/obj/weapons_2t.dmi'
 				standing = image(icon = img_state, icon_state = "sarissa")
@@ -238,9 +241,10 @@
 				ownerdir_x = US.x-32
 				ownerdir_y = US.y
 				ownerdir_z = US.z
+				ownerdir = WEST
 			//apply img
 			US.overlays += standing
-	else
+	else if (!deployed)
 		if (istype(loc, /mob/living/carbon/human))
 			var/img_state
 			var/mob/living/carbon/human/US = loc
