@@ -31,6 +31,7 @@
 	thrown_force_divisor = 0.4 // 8 with weight 20 (steel)
 	attack_verb = list("jabbed","hit","bashed")
 	value = 3
+
 /obj/item/weapon/material/spear
 	name = "spear"
 	sharp = TRUE
@@ -153,3 +154,105 @@
 	thrown_force_divisor = 1.1 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
+
+/obj/item/weapon/material/spear/sarissa
+	name = "sarissa"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A 5 meter long spear, used by phalanx soldiers."
+	slot_flags = SLOT_BACK | SLOT_BELT
+	icon_state = "sarissa"
+	item_state = "sarissa"
+	default_material = "wood"
+	throw_speed = 4
+	throw_range = 8
+	allow_spin = FALSE
+	force_divisor = 0.85
+	thrown_force_divisor = 0.4
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 18
+	var/image/standing
+	var/ownerdir_x = 0
+	var/ownerdir_y = 0
+	var/ownerdir_z = 1
+	var/turf/targetturf
+	var/deployed = FALSE
+
+/obj/item/weapon/material/spear/sarissa/attack_self(mob/user)
+	if (deployed)
+		deployed = FALSE
+		user << "<span class='notice'>You lift your [name] up, falling out of formation.</span>"
+	if (!deployed)
+		deployed = TRUE
+		user << "<span class='notice'>You turn your [name] down, forming a spear wall!</span>"
+
+/obj/item/weapon/material/spear/sarissa/proc/check_dmg()
+	if (deployed)
+		targetturf = locate(ownerdir_x,ownerdir_y,ownerdir_z)
+
+		for (var/mob/living/TARGETMOB in src.loc)
+			health -= rand(9,14)
+			visible_message("[TARGETMOB.name] crashes into the [name]!")
+		for (var/mob/living/TARGETMOB in targetturf)
+			health -= rand(2,6)
+			visible_message("[TARGETMOB.name] is pushed back by the spear wall!")
+			TARGETMOB.forceMove(targetturf)
+	spawn(10)
+		check_dmg()
+/obj/item/weapon/material/spear/sarissa/update_icon()
+// yes, i know this is horrible shitcode. Pls no bully
+	if (deployed)
+		if (istype(loc, /mob/living/carbon/human))
+			var/img_state
+			var/mob/living/carbon/human/US = loc
+			US.overlays -= standing
+			if (US.dir == NORTH)
+				img_state = 'icons/obj/weapons_2t_v.dmi'
+				standing = image(icon = img_state, icon_state = "sarissa")
+				standing.pixel_x = 0
+				standing.pixel_y = 0
+				ownerdir_x = US.x
+				ownerdir_y = US.y+32
+				ownerdir_z = US.z
+			else if (US.dir == SOUTH)
+				img_state = 'icons/obj/weapons_2t_v.dmi'
+				standing = image(icon = img_state, icon_state = "sarissa")
+				standing.pixel_x = 0
+				standing.pixel_y = -32
+				ownerdir_x = US.x
+				ownerdir_y = US.y-32
+				ownerdir_z = US.z
+			else if (US.dir == EAST)
+				img_state = 'icons/obj/weapons_2t.dmi'
+				standing = image(icon = img_state, icon_state = "sarissa")
+				standing.pixel_x = 0
+				standing.pixel_y = 0
+				ownerdir_x = US.x+32
+				ownerdir_y = US.y
+				ownerdir_z = US.z
+			else if (US.dir == WEST)
+				img_state = 'icons/obj/weapons_2t.dmi'
+				standing = image(icon = img_state, icon_state = "sarissa")
+				standing.pixel_x = -32
+				standing.pixel_y = 0
+				ownerdir_x = US.x-32
+				ownerdir_y = US.y
+				ownerdir_z = US.z
+			//apply img
+			US.overlays += standing
+	else
+		if (istype(loc, /mob/living/carbon/human))
+			var/img_state
+			var/mob/living/carbon/human/US = loc
+			US.overlays -= standing
+			img_state = 'icons/obj/weapons_2t_v.dmi'
+			standing = image(icon = img_state, icon_state = "sarissa")
+			standing.pixel_x = 0
+			standing.pixel_y = 0
+	spawn(1)
+		update_icon()
+
+/obj/item/weapon/material/spear/sarissa/New()
+	..()
+	update_icon()
+	check_dmg()

@@ -11,13 +11,34 @@
 //roman memes
 /obj/item/clothing/under/roman
 	name = "Roman legionary uniform"
-	desc = "A red tunic with covered with iron armor. Used by the Roman Army."
+	desc = "A red tunic covered with iron armor. Used by the Roman Army."
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
 
+/obj/item/clothing/under/roman_centurion
+	name = "Roman centurion uniform"
+	desc = "A red tunic covered with iron armor, with added golden plates. Used by the Roman Army's Centurions."
+	icon_state = "roman_centurion"
+	item_state = "roman_centurion"
+	worn_state = "roman_centurion"
+
 /obj/item/clothing/under/athens
 	name = "Athenian uniform"
+	desc = "A blue and red tunic, covered with bronze armor. Used by the Athenians."
+	icon_state = "athens"
+	item_state = "athens"
+	worn_state = "athens"
+
+/obj/item/clothing/under/toxotai
+	name = "white tunic"
+	desc = "A light white tunic."
+	icon_state = "toxotai"
+	item_state = "toxotai"
+	worn_state = "toxotai"
+
+/obj/item/clothing/under/sparta
+	name = "Spartan uniform"
 	desc = "A blue and red tunic, covered with bronze armor. Used by the Athenians."
 	icon_state = "athens"
 	item_state = "athens"
@@ -30,12 +51,26 @@
 	item_state = "redcape"
 	worn_state = "redcape"
 
+/obj/item/clothing/suit/cape/blue
+	name = "blue cape"
+	desc = "A long blue cape."
+	icon_state = "bluecape"
+	item_state = "bluecape"
+	worn_state = "bluecape"
+
 /obj/item/clothing/head/helmet/roman
 	name = "Roman legionary helmet"
 	desc = "The typical helmet of the Roman Army."
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
+
+/obj/item/clothing/head/helmet/roman_decurion
+	name = "Roman decurion helmet"
+	desc = "An iron Roman helmet, used by Decurions."
+	icon_state = "roman_d"
+	item_state = "roman_d"
+	worn_state = "roman_d"
 
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "Roman centurion helmet"
@@ -65,3 +100,40 @@
 	icon_state = "greek"
 	item_state = "greek"
 	worn_state = "greek"
+
+/obj/item/clothing/head/helmet/greek_commander
+	name = "Lochagos helmet"
+	desc = "A bronze Greek helmet, covering most of the face, with red plummage on top. Worn by Hellenic Lochagos."
+	icon_state = "greek_c"
+	item_state = "greek_c"
+	worn_state = "greek_c"
+
+/obj/item/clothing/head/helmet/greek_sl
+	name = "Dimoerites helmet"
+	desc = "A bronze Greek helmet, covering most of the face, with blue plummage on top. Worn by Hellenic Dimoerites."
+	icon_state = "greek_sl"
+	item_state = "greek_sl"
+	worn_state = "greek_sl"
+
+/obj/item/clothing/head/bearpelt
+	name = "bearpelt"
+	desc = "a bear pelt turned into a headcover."
+	icon_state = "bearpelt"
+	item_state = "bearpelt"
+	worn_state = "bearpelt"
+	flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/wolfpelt
+	name = "wolfpelt"
+	desc = "a wolf pelt turned into a headcover."
+	icon_state = "wolfpelt"
+	item_state = "wolfpelt"
+	worn_state = "wolfpelt"
+	flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/toxotai
+	name = "toxotai hat"
+	desc = "a wide brim hat, used by the toxotai."
+	icon_state = "toxotai"
+	item_state = "toxotai"
+	worn_state = "toxotai"

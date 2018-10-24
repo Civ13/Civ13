@@ -94,6 +94,15 @@
 	w_class = 3.0
 	base_block_chance = 35
 
+/obj/item/weapon/shield/roman_buckler
+	name = "roman parma shield"
+	icon_state = "roman_buckler"
+	item_state = "roman_buckler"
+	base_block_chance = 27
+	w_class = 2.0
+	slot_flags = SLOT_BACK
+	material = "wood"
+	health = 40 // hardness of wood
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
 		return FALSE
