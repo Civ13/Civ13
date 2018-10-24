@@ -156,7 +156,7 @@
 
 
 /datum/job/roman/velites
-	title = "Legionarius"
+	title = "Saggitarius"
 	en_meaning = "Light Archer"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -270,7 +270,7 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
 /datum/job/greek/soldier
-	title = "Hoplitai"
+	title = "Hoplites"
 	en_meaning = "Greek Spear Infantry"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
