@@ -18,9 +18,6 @@
 		)
 	front = "Pacific"
 	faction_distribution_coeffs = list(ROMAN = 0.5, GREEK = 0.5)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Heraclea"
 	mission_start_message = "<font size=4>The <b>Greek</b> and <b>Roman</b> armies are facing each other in southern Italy! Get ready for the line battle! It will start in <b>5 minutes</b></font>"
 	faction1 = ROMAN

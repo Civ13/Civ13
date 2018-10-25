@@ -106,6 +106,7 @@
 		//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman_buckler(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/roman_standard(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the Legion's standard bearer. Lead your soldiers to battle and keep troops organized! Use your horn!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

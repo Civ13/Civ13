@@ -137,6 +137,26 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 
+/obj/item/weapon/material/roman_standard
+	name = "Roman Standard"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A golden standard of a Roman Legion, with the Aquila on top."
+	slot_flags = SLOT_BACK
+	icon_state = "roman_standard"
+	item_state = "roman_standard"
+	default_material = "wood"
+	throw_speed = 3
+	throw_range = 5
+	allow_spin = FALSE
+	force_divisor = 0.4 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 0
+
+/obj/item/weapon/material/roman_standard/New()
+	..()
+	name = "Roman Standard"
 
 /obj/item/weapon/material/spear/dory
 	name = "dory"
@@ -162,7 +182,8 @@
 	desc = "A 5 meter long spear, used by phalanx soldiers."
 	slot_flags = SLOT_BACK
 	icon_state = "sarissa"
-	item_state = "sarissa"
+	item_state = "dory"
+	worn_state = "dory"
 	default_material = "wood"
 	throw_speed = 1
 	throw_range = 1
@@ -193,6 +214,32 @@
 
 /obj/item/weapon/material/spear/sarissa/proc/check_dmg()
 	if (deployed)
+		for (var/mob/living/TARGETMOB in get_step(loc, ownerdir))
+			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
+				if (N.hanging == TARGETMOB)
+					break
+
+			for (var/obj/structure/bed/B in get_turf(TARGETMOB))
+				if (B.buckled_mob == TARGETMOB)
+					break
+			if (prob(60))
+				var/turf/behind = get_turf(get_step(TARGETMOB, ownerdir))
+				if (behind)
+					if (behind.density || locate(/obj/structure) in behind)
+						var/turf/slammed_into = behind
+						if (!slammed_into.density)
+							for (var/obj/structure/S in slammed_into.contents)
+								if (S.density)
+									slammed_into = S
+									break
+						if (slammed_into.density)
+							visible_message("<span class = 'danger'>[TARGETMOB] is pushed back into \the [slammed_into]!</span>")
+							TARGETMOB.adjustBruteLoss(rand(3,6))
+							for (var/obj/structure/window/W in get_turf(slammed_into))
+								W.shatter()
+					else
+						if (!map || !map.check_caribbean_block(TARGETMOB, behind))
+							TARGETMOB.forceMove(behind)
 
 		for (var/mob/living/TARGETMOB in get_step(get_step(loc, ownerdir),ownerdir))
 			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
@@ -214,24 +261,27 @@
 									break
 						if (slammed_into.density)
 							visible_message("<span class = 'danger'>[TARGETMOB] is pushed back into \the [slammed_into]!</span>")
-							TARGETMOB.adjustBruteLoss(rand(10,13))
+							TARGETMOB.adjustBruteLoss(rand(3,6))
 							for (var/obj/structure/window/W in get_turf(slammed_into))
 								W.shatter()
 					else
 						if (!map || !map.check_caribbean_block(TARGETMOB, behind))
 							TARGETMOB.forceMove(behind)
-							visible_message("<span class = 'danger'>[TARGETMOB] is pushed back by the [name]!</span>")
-							TARGETMOB.adjustBruteLoss(rand(7,10))
+							TARGETMOB.adjustBruteLoss(rand(2,4))
 
-		spawn(10)
+		spawn(3)
 			check_dmg()
 /obj/item/weapon/material/spear/sarissa/update_icon()
 // yes, i know this is horrible shitcode. Pls no bully
 	if (!istype(loc, /mob/living/carbon/human))
 		deployed = FALSE
+		item_state = "dory"
+		worn_state = "dory"
 	else
 		var/mob/living/carbon/human/US = loc
 		if (deployed)
+			item_state = ""
+			worn_state = ""
 			var/img_state
 			US.overlays -= standing
 			if (US.dir == NORTH)
@@ -274,5 +324,7 @@
 			US.overlays += standing
 		else if (!deployed)
 			US.overlays -= standing
+			item_state = "dory"
+			worn_state = "dory"
 		spawn(1)
 			update_icon()
