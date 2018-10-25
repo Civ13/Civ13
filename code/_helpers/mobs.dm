@@ -152,23 +152,32 @@ proc/random_carib_name(gender, species = "Human")
 			return capitalize(pick(first_names_male_carib))
 	else
 		return current_species.get_random_carib_name(gender)
-		
-proc/random_greek_name(gender, species = "Human")                           // Creates the proc for Greek Names
+
+proc/random_greek_name(gender, species = "Human")
 	var/datum/species/current_species
 	if (species)
 		current_species = all_species[species]
 
 	if (!current_species || current_species.name_language == null)
-		return capitalize(pick(first_names_male_greek))
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_male_greek))
+		else
+			return capitalize(pick(first_names_male_greek))
+	else
+		return current_species.get_random_greek_name(gender)
 
-proc/random_roman_name(gender, species = "Human")                         // Creates the proc for Roman names
+proc/random_roman_name(gender, species = "Human")
 	var/datum/species/current_species
 	if (species)
 		current_species = all_species[species]
 
 	if (!current_species || current_species.name_language == null)
-		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
-
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+		else
+			return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+	else
+		return current_species.get_random_roman_name(gender)		
 		
 proc/random_skin_tone()
 
