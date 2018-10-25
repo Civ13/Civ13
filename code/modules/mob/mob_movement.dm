@@ -526,6 +526,14 @@
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
+		if (istype(mob.l_hand, /obj/item/weapon/material/spear/sarissa))
+			var/obj/item/weapon/material/spear/sarissa/sari = mob.l_hand
+			if (sari.deployed == TRUE)
+				move_delay += 6
+		if (istype(mob.r_hand, /obj/item/weapon/material/spear/sarissa))
+			var/obj/item/weapon/material/spear/sarissa/sari = mob.r_hand
+			if (sari.deployed == TRUE)
+				move_delay += 6
 		if (mob.pulling)
 
 			if (!mob.pulling.Adjacent(mob))
