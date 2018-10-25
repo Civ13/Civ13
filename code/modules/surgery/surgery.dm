@@ -83,7 +83,8 @@ proc/do_surgery(mob/living/carbon/M, mob/living/user, obj/item/tool)
 	if (!istype(M))
 		return FALSE
 	if (user.a_intent == I_HURT)	//check for Hippocratic Oath
-		return FALSE
+		if (!istype(tool, /obj/item/weapon/material/kitchen/utensil/knife/bone)) 
+			return FALSE
 	var/zone = user.targeted_organ
 	if (zone in M.op_stage.in_progress) //Can't operate on someone repeatedly.
 		user << "<span class='warning'>You can't operate on this area while surgery is already in progress.</span>"
