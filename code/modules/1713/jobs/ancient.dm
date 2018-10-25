@@ -217,13 +217,13 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/athens(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/greek_commander(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/cape/blue(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek_commander(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/xiphos(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/athens(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/aspis(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a commander in charge of a <b>Lochos</b>, a group of Hoplites in a Phalanx. Give orders to your <b>Dimoerites</b> and lead your troops to victory!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -251,13 +251,19 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/athens(H), slot_w_uniform)
+	var/randcloth = pick(1,2,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek3(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek_sl(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/xiphos(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/dory(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/athens(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/aspis(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, a squad leader in charge of a <b>Stichos</b>, a squad of Hoplites in a Phalanx. Receive orders from the <b>Lochagos</b> and lead your squad to victory!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -286,12 +292,18 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/athens(H), slot_w_uniform)
+	var/randcloth = pick(1,2,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/greek3(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/xiphos(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/athens(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/aspis(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier from the city-state of Athens. You have your <b>Sarissa</b> spear, your round <b>Aspis</b> shield and your <b>Xiphos</b> sword.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

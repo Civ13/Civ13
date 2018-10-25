@@ -175,8 +175,7 @@
 	var/ownerdir_x = 0
 	var/ownerdir_y = 0
 	var/ownerdir_z = 1
-	var/ownerdir
-	var/turf/targetturf
+	var/ownerdir = NORTH
 	var/deployed = FALSE
 
 /obj/item/weapon/material/spear/sarissa/attack_self(mob/user)
@@ -191,20 +190,22 @@
 
 /obj/item/weapon/material/spear/sarissa/proc/check_dmg()
 	if (deployed)
-		targetturf = locate(ownerdir_x,ownerdir_y,ownerdir_z)
 
-		for (var/mob/living/TARGETMOB in targetturf)
+		for (var/mob/living/TARGETMOB in get_step(loc, ownerdir))
 			TARGETMOB.health -= rand(2,6)
-			visible_message("[TARGETMOB.name] is pushed back by the spear wall!")
-			TARGETMOB.Move(get_step(src.loc, ownerdir), ownerdir)
+			visible_message("[TARGETMOB.name] is pushed back by the [name]!")
+			TARGETMOB.forceMove(get_step(loc, ownerdir), ownerdir)
 	spawn(10)
 		check_dmg()
 /obj/item/weapon/material/spear/sarissa/update_icon()
 // yes, i know this is horrible shitcode. Pls no bully
-	if (deployed)
-		if (istype(loc, /mob/living/carbon/human))
+	if (!istype(loc, /mob/living/carbon/human))
+		deployed = FALSE
+	else if (istype(loc, /mob/living/carbon/human))
+		var/mob/living/carbon/human/US = loc
+		if (deployed)
 			var/img_state
-			var/mob/living/carbon/human/US = loc
+			item_state = ""
 			US.overlays -= standing
 			if (US.dir == NORTH)
 				img_state = 'icons/obj/weapons_2t_v.dmi'
@@ -244,19 +245,13 @@
 				ownerdir = WEST
 			//apply img
 			US.overlays += standing
-	else if (!deployed)
-		if (istype(loc, /mob/living/carbon/human))
-			var/img_state
-			var/mob/living/carbon/human/US = loc
+		else if (!deployed)
 			US.overlays -= standing
-			img_state = 'icons/obj/weapons_2t_v.dmi'
-			standing = image(icon = img_state, icon_state = "sarissa")
-			standing.pixel_x = 0
-			standing.pixel_y = 0
+			item_state = "dory"
 	spawn(1)
 		update_icon()
 
 /obj/item/weapon/material/spear/sarissa/New()
-	..()
 	update_icon()
 	check_dmg()
+	..()

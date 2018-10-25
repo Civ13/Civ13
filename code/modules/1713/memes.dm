@@ -23,12 +23,33 @@
 	item_state = "roman_centurion"
 	worn_state = "roman_centurion"
 
-/obj/item/clothing/under/athens
-	name = "Athenian uniform"
-	desc = "A blue and red tunic, covered with bronze armor. Used by the Athenians."
+/obj/item/clothing/under/greek1
+	name = "Greek uniform"
+	desc = "A light tunic, covered with bronze and leather armor. Used by the Hellenic armies."
 	icon_state = "athens"
 	item_state = "athens"
 	worn_state = "athens"
+
+/obj/item/clothing/under/greek2
+	name = "Greek uniform"
+	desc = "A light tunic, covered with bronze and leather armor. Used by the Hellenic armies."
+	icon_state = "thebes"
+	item_state = "thebes"
+	worn_state = "thebes"
+
+/obj/item/clothing/under/greek3
+	name = "Greek uniform"
+	desc = "A light tunic, covered with bronze and leather armor. Used by the Hellenic armies."
+	icon_state = "corinthia"
+	item_state = "corinthia"
+	worn_state = "corinthia"
+
+/obj/item/clothing/under/greek_commander
+	name = "Greek Commander uniform"
+	desc = "A light blue tunic covered by a bronze coirass. Used by Hellenic Commanders."
+	icon_state = "greek_commander"
+	item_state = "greek_commander"
+	worn_state = "greek_commander"
 
 /obj/item/clothing/under/toxotai
 	name = "white tunic"
@@ -37,12 +58,6 @@
 	item_state = "toxotai"
 	worn_state = "toxotai"
 
-/obj/item/clothing/under/sparta
-	name = "Spartan uniform"
-	desc = "A blue and red tunic, covered with bronze armor. Used by the Athenians."
-	icon_state = "athens"
-	item_state = "athens"
-	worn_state = "athens"
 
 /obj/item/clothing/suit/cape
 	name = "red cape"

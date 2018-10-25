@@ -72,9 +72,9 @@
 	w_class = 3.0
 	base_block_chance = 30
 
-/obj/item/weapon/shield/athens
-	name = "athenian aspis"
-	desc = "a round, slightly curved greek shield, with the Athenian gorgon."
+/obj/item/weapon/shield/aspis
+	name = "aspis"
+	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "athenian_shield"
 	item_state = "athenian_shield"
 	slot_flags = SLOT_BACK
@@ -82,6 +82,12 @@
 	health = 47
 	w_class = 3.0
 	base_block_chance = 33
+
+/obj/item/weapon/shield/aspis/New()
+	..()
+	icon_state = pick("athenian_shield", "spartan_shield")
+	item_state = icon_state
+	update_icon()
 
 /obj/item/weapon/shield/roman
 	name = "roman shield"
