@@ -390,6 +390,28 @@
 						H.real_name = H.client.prefs.carib_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+					
+		if (istype(new_language, /datum/language/latin))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_roman)
+						H.real_name = H.species.get_random_roman_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.roman_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+		
+		if (istype(new_language, /datum/language/greek))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_greek)
+						H.real_name = H.species.get_random_greek_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.greek_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
 
 	if (!istype(new_language) || (new_language in languages))
 		return FALSE
