@@ -390,6 +390,7 @@
 #include "code\modules\1713\lift\hooks.dm"
 #include "code\modules\1713\lift\lever.dm"
 #include "code\modules\1713\lift\pseudoturf.dm"
+#include "code\modules\1713\mortar\catapult.dm"
 #include "code\modules\1713\mortar\piece.dm"
 #include "code\modules\1713\mortar\shell.dm"
 #include "code\modules\1713\weapons\attachment.dm"

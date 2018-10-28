@@ -48,6 +48,8 @@ var/global/list/artillery_list = list()
 
 var/global/list/cannon_piece_list = list()
 
+var/global/list/catapult_piece_list = list()
+
 var/global/list/door_list = list()
 
 var/global/list/vending_machine_list = list()

@@ -85,7 +85,7 @@
 
 /obj/item/weapon/shield/aspis/New()
 	..()
-	icon_state = pick("athenian_shield", "spartan_shield")
+	icon_state = pick("athenian_shield", "spartan_shield", "pegasus_shield", "owl_shield")
 	item_state = icon_state
 	update_icon()
 
