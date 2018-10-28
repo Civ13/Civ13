@@ -238,7 +238,7 @@
 								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
 							message_admins("Catapult projectile hit at [target.x], [target.y], [target.z].")
 							log_admin("Catapult projectile hit at [target.x], [target.y], [target.z].")
-							explosion(target, 1, 2, 3, 4)
+							explosion(target, 1, 2, 2, 0)
 						break
 
 					sleep(0.5)

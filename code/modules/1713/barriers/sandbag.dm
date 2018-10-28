@@ -179,3 +179,16 @@
 	anchored = TRUE
 	climbable = TRUE
 	health = 30
+
+/obj/structure/window/sandbag/railing
+	name = "railing"
+	icon = 'icons/obj/railing.dmi'
+	icon_state = "railing0"
+	layer = MOB_LAYER + 0.01 //just above mobs
+	anchored = TRUE
+	climbable = FALSE
+	health = 10000000
+
+/obj/structure/window/sandbag/railing/New()
+	..()
+	invisibility = 101

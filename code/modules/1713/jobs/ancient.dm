@@ -176,7 +176,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/wolfpelt(H), slot_head)
 		//weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman_buckler(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman_buckler(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a skirmisher in the Roman Army. Your job is to harass the enemy frontline before the <b>Legionaries</b> charge.")

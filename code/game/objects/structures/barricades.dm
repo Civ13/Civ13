@@ -164,13 +164,17 @@
 /obj/structure/barricade/sandstone_h/New()
 	..()
 	icon_state = "sandstone_brick"
+	name = "sandstone wall"
 /obj/structure/barricade/sandstone_v/New()
 	..()
 	icon_state = "sandstone_brick2"
+	name = "sandstone wall"
 
 /obj/structure/barricade/sandstone_h/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c"
+	name = "crenelated sandstone wall"
 /obj/structure/barricade/sandstone_v/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c2"
+	name = "crenelated sandstone wall"
