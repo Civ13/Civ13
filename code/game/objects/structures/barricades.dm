@@ -128,3 +128,49 @@
 
 /obj/structure/barricade/steel/New(_loc)
 	..(_loc, DEFAULT_WALL_MATERIAL)
+
+/obj/structure/barricade/sandstone_h
+	name = "sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_v
+	name = "sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick2"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_h/crenelated
+	name = "crenelated sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick_c"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_v/crenelated
+	name = "crenelated sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick_c2"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_h/New()
+	..()
+	icon_state = "sandstone_brick"
+/obj/structure/barricade/sandstone_v/New()
+	..()
+	icon_state = "sandstone_brick2"
+
+/obj/structure/barricade/sandstone_h/crenelated/New()
+	..()
+	icon_state = "sandstone_brick_c"
+/obj/structure/barricade/sandstone_v/crenelated/New()
+	..()
+	icon_state = "sandstone_brick_c2"

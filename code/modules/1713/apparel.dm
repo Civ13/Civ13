@@ -149,7 +149,10 @@
 	new /obj/item/ammo_casing/arrow(src)
 	new /obj/item/ammo_casing/arrow(src)
 	new /obj/item/ammo_casing/arrow(src)
-
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
+	new /obj/item/ammo_casing/arrow(src)
 //pirate stuff
 
 /obj/item/clothing/suit/storage/jacket/piratejacket1

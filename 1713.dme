@@ -257,6 +257,7 @@
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
+#include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
 #include "code\game\objects\map_metadata\tribes.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
@@ -752,5 +753,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\heraclea.dmm"
+#include "maps\siege.dmm"
 // END_INCLUDE

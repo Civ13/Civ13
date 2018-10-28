@@ -19,7 +19,7 @@
 	front = "Pacific"
 	faction_distribution_coeffs = list(ROMAN = 0.5, GREEK = 0.5)
 	battle_name = "Heraclea"
-	mission_start_message = "<font size=4>The <b>Greek</b> and <b>Roman</b> armies are facing each other in southern Italy! Get ready for the line battle! It will start in <b>5 minutes</b></font>"
+	mission_start_message = "<font size=4>The <b>Greek</b> and <b>Roman</b> armies are facing each other in southern Italy! Get ready for the battle! It will start in <b>5 minutes</b>.</font>"
 	faction1 = ROMAN
 	faction2 = GREEK
 	ambience = list('sound/ambience/jungle1.ogg')
