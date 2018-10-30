@@ -121,6 +121,12 @@
 	icon_state = "purple1"
 	base_turf = /turf/floor/plating/grass/wild
 
+/area/caribbean/forest/dirt
+	name = "The Forest"
+	icon_state = "purple1"
+	base_turf = /turf/floor/dirt
+
+
 /area/caribbean/supply
 	name = "Supply Arrival"
 	icon_state = "blue1"

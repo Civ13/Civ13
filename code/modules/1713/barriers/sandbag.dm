@@ -183,7 +183,7 @@
 /obj/structure/window/sandbag/railing
 	name = "railing"
 	icon = 'icons/obj/railing.dmi'
-	icon_state = "railing0"
+	icon_state = "sandstone"
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = FALSE
@@ -191,4 +191,4 @@
 
 /obj/structure/window/sandbag/railing/New()
 	..()
-	invisibility = 101
+	//invisibility = 101

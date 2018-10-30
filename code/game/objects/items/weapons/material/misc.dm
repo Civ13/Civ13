@@ -214,14 +214,20 @@
 
 /obj/item/weapon/material/spear/sarissa/proc/check_dmg()
 	if (deployed)
+		spawn(3)
+			check_dmg()
+		var/mob/living/H = loc
+		if (H.stat == DEAD || H.stat == UNCONSCIOUS)
+			deployed = FALSE
+			return
 		for (var/mob/living/TARGETMOB in get_step(loc, ownerdir))
 			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
 				if (N.hanging == TARGETMOB)
-					break
+					return
 
 			for (var/obj/structure/bed/B in get_turf(TARGETMOB))
 				if (B.buckled_mob == TARGETMOB)
-					break
+					return
 			if (prob(60))
 				var/turf/behind = get_turf(get_step(TARGETMOB, ownerdir))
 				if (behind)
@@ -242,13 +248,21 @@
 							TARGETMOB.forceMove(behind)
 
 		for (var/mob/living/TARGETMOB in get_step(get_step(loc, ownerdir),ownerdir))
+			for (var/obj/structure/ST in get_step(loc, ownerdir))
+				if (ST.density == TRUE)
+					return
+			for (var/obj/covers/CV in get_step(loc, ownerdir))
+				if (CV.density == TRUE)
+					return
+			for (var/turf/wall/TS in get_step(loc, ownerdir))
+				if (TS.density == TRUE)
+					return
 			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
 				if (N.hanging == TARGETMOB)
-					break
-
+					return
 			for (var/obj/structure/bed/B in get_turf(TARGETMOB))
 				if (B.buckled_mob == TARGETMOB)
-					break
+					return
 			if (prob(80))
 				var/turf/behind = get_turf(get_step(TARGETMOB, ownerdir))
 				if (behind)
@@ -269,8 +283,6 @@
 							TARGETMOB.forceMove(behind)
 							TARGETMOB.adjustBruteLoss(rand(2,4))
 
-		spawn(3)
-			check_dmg()
 /obj/item/weapon/material/spear/sarissa/update_icon()
 // yes, i know this is horrible shitcode. Pls no bully
 	if (!istype(loc, /mob/living/carbon/human))
