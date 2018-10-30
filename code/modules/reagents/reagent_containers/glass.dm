@@ -197,6 +197,18 @@
 		..()
 		reagents.add_reagent("rum",200)
 
+/obj/item/weapon/reagent_containers/glass/barrel/wine
+	name = "wine barrel"
+	desc = "A barrel of wine."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("wine",200)
+
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
 	name = "gunpowder barrel"
 	desc = "A barrel of gunpowder. Don't light it on fire."

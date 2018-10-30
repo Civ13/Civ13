@@ -28,6 +28,8 @@ var/list/preferences_datums = list()
 	var/portuguese_name = "Pedro Alves"
 	var/dutch_name = "Daan Visser"
 	var/carib_name = "Mojowai"
+	var/greek_name = "Philokrates"
+	var/roman_name = "Decius Salvius Primulus"
 	var/be_random_name = FALSE				//whether we are a random name every round
 	var/be_random_name_pirate = FALSE
 	var/be_random_name_carib = FALSE
@@ -36,6 +38,8 @@ var/list/preferences_datums = list()
 	var/be_random_name_portuguese = FALSE
 	var/be_random_name_dutch = FALSE
 	var/be_random_name_english = FALSE
+	var/be_random_name_roman = TRUE
+	var/be_random_name_greek = TRUE
 	var/gender = MALE					//gender of character (well duh)
 	var/civ_ethnicity = ENGLISH
 
@@ -150,6 +154,8 @@ var/list/preferences_datums = list()
 			spanish_name = random_spanish_name(gender, species)
 			dutch_name = random_dutch_name(gender, species)
 			carib_name = random_carib_name(gender, species)
+			roman_name = random_roman_name(gender, species)
+			greek_name = random_greek_name(gender, species)
 			remember_preference("real_name", real_name)
 			remember_preference("english_name", english_name)
 			remember_preference("french_name", french_name)
@@ -157,6 +163,8 @@ var/list/preferences_datums = list()
 			remember_preference("portuguese_name", portuguese_name)
 			remember_preference("carib_name", carib_name)
 			remember_preference("dutch_name", dutch_name)
+			remember_preference("greek_name", greek_name)
+			remember_preference("roman_name", roman_name)
 			save_preferences(1)
 
 		spawn (1)

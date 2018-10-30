@@ -72,6 +72,43 @@
 	w_class = 3.0
 	base_block_chance = 30
 
+/obj/item/weapon/shield/aspis
+	name = "aspis"
+	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
+	icon_state = "athenian_shield"
+	item_state = "athenian_shield"
+	slot_flags = SLOT_BACK
+	material = "bronze"
+	health = 47
+	w_class = 3.0
+	base_block_chance = 33
+
+/obj/item/weapon/shield/aspis/New()
+	..()
+	icon_state = pick("athenian_shield", "spartan_shield", "pegasus_shield", "owl_shield")
+	item_state = icon_state
+	update_icon()
+
+/obj/item/weapon/shield/roman
+	name = "roman shield"
+	desc = "a rectangular shield, with Roman motifs."
+	icon_state = "roman_shield"
+	item_state = "roman_shield"
+	slot_flags = SLOT_BACK
+	material = "bronze"
+	health = 47
+	w_class = 3.0
+	base_block_chance = 35
+
+/obj/item/weapon/shield/roman_buckler
+	name = "roman parma shield"
+	icon_state = "roman_buckler"
+	item_state = "roman_buckler"
+	base_block_chance = 27
+	w_class = 2.0
+	slot_flags = SLOT_BACK
+	material = "wood"
+	health = 40 // hardness of wood
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
 		return FALSE

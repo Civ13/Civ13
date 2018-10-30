@@ -354,6 +354,14 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set category = "Ghost"
 	set name = "Follow a Native"
 	set desc = "Follow and haunt a living Native."
+/mob/observer/ghost/verb/follow_roman(input in getfitmobs(ROMAN)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a Roman"
+	set desc = "Follow and haunt a living Roman."
+/mob/observer/ghost/verb/follow_greek(input in getfitmobs(GREEK)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a Greek"
+	set desc = "Follow and haunt a living Greek."
 
 	if (input != "Cancel")
 		var/list/mobs = getfitmobs(INDIANS)

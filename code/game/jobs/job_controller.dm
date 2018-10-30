@@ -26,6 +26,8 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[FRENCH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[INDIANS]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[DUTCH]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ROMAN]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[GREEK]
 	else
 		for (var/faction in map.faction_organization)
 			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
@@ -352,7 +354,10 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateSP"
 				if (DUTCH)
 					spawn_location = "JoinLateNL"
-
+				if (ROMAN)
+					spawn_location = "JoinLateRO"
+				if (GREEK)
+					spawn_location = "JoinLateGR"
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
@@ -370,6 +375,10 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateFR"
 			else if (findtext(H.original_job.spawn_location, "JoinLateNL"))
 				spawn_location = "JoinLateNL"
+			else if (findtext(H.original_job.spawn_location, "JoinLateRO"))
+				spawn_location = "JoinLateRO"
+			else if (findtext(H.original_job.spawn_location, "JoinLateGR"))
+				spawn_location = "JoinLateGR"
 		H.job_spawn_location = spawn_location
 
 		#ifdef SPAWNLOC_DEBUG
@@ -494,6 +503,8 @@ var/global/datum/controller/occupations/job_master
 	var/indians = alive_n_of_side(INDIANS)
 	var/spanish = alive_n_of_side(SPANISH)
 	var/dutch = alive_n_of_side(DUTCH)
+	var/roman = alive_n_of_side(ROMAN)
+	var/greek = alive_n_of_side(GREEK)
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
 	var/max_pirates = INFINITY
@@ -503,6 +514,8 @@ var/global/datum/controller/occupations/job_master
 	var/max_portuguese = INFINITY
 	var/max_indians = INFINITY
 	var/max_dutch = INFINITY
+	var/max_roman = INFINITY
+	var/max_greek = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -533,6 +546,13 @@ var/global/datum/controller/occupations/job_master
 
 		if (map.faction_distribution_coeffs.Find(DUTCH))
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
+
+		if (map.faction_distribution_coeffs.Find(ROMAN))
+			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[ROMAN])
+
+		if (map.faction_distribution_coeffs.Find(GREEK))
+			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[GREEK])
+
 
 	switch (side)
 		if (CIVILIAN)
@@ -580,6 +600,18 @@ var/global/datum/controller/occupations/job_master
 			if (dutch_forceEnabled)
 				return FALSE
 			if (dutch >= max_dutch)
+				return TRUE
+
+		if (ROMAN)
+			if (roman_forceEnabled)
+				return FALSE
+			if (roman >= max_roman)
+				return TRUE
+
+		if (GREEK)
+			if (greek_forceEnabled)
+				return FALSE
+			if (greek >= max_greek)
 				return TRUE
 
 	return FALSE

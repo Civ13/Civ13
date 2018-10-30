@@ -128,3 +128,114 @@
 
 /obj/structure/barricade/steel/New(_loc)
 	..(_loc, DEFAULT_WALL_MATERIAL)
+
+/obj/structure/barricade/sandstone_h
+	name = "sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_v
+	name = "sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick2"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_h/crenelated
+	name = "crenelated sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick_c"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_v/crenelated
+	name = "crenelated sandstone wall"
+	desc = "A wall of sandstone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick_c2"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_h/New()
+	..()
+	icon_state = "sandstone_brick"
+	name = "sandstone wall"
+	health = 600
+	maxhealth = 600
+/obj/structure/barricade/sandstone_v/New()
+	..()
+	icon_state = "sandstone_brick2"
+	name = "sandstone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_h/crenelated/New()
+	..()
+	icon_state = "sandstone_brick_c"
+	name = "crenelated sandstone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_v/crenelated/New()
+	..()
+	icon_state = "sandstone_brick_c2"
+	name = "crenelated sandstone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/sandstone_h/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/sandstone_v/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/sandstone_h/crenelated/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/sandstone_v/crenelated/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return

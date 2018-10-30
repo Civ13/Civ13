@@ -51,7 +51,8 @@ var/french_toggled = TRUE
 var/spanish_toggled = TRUE
 var/portuguese_toggled = TRUE
 var/dutch_toggled = TRUE
-
+var/roman_toggled = TRUE
+var/greek_toggled = TRUE
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
 	set category = "Special"
@@ -70,6 +71,8 @@ var/dutch_toggled = TRUE
 	choices += "SPANISH ([spanish_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "DUTCH ([dutch_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "INDIANS ([indians_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "ROMAN ([roman_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "GREEK ([greek_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -109,6 +112,14 @@ var/dutch_toggled = TRUE
 		dutch_toggled = !dutch_toggled
 		world << "<span class = 'warning'>The Dutch faction has been [dutch_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Dutch faction 'enabled' setting to [dutch_toggled].")
+	else if (findtext(choice, "ROMAN"))
+		roman_toggled = !roman_toggled
+		world << "<span class = 'warning'>The Roman faction has been [roman_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Roman faction 'enabled' setting to [roman_toggled].")
+	else if (findtext(choice, "GREEK"))
+		greek_toggled = !greek_toggled
+		world << "<span class = 'warning'>The Greek faction has been [greek_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Greek faction 'enabled' setting to [greek_toggled].")
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -117,6 +128,8 @@ var/spanish_forceEnabled = FALSE
 var/french_forceEnabled = FALSE
 var/indians_forceEnabled = FALSE
 var/dutch_forceEnabled = FALSE
+var/roman_forceEnabled = FALSE
+var/greek_forceEnabled = FALSE
 
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"
@@ -136,6 +149,8 @@ var/dutch_forceEnabled = FALSE
 	choices += "INDIANS ([indians_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "PORTUGUESE ([portuguese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "SPANISH ([spanish_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "GREEK ([greek_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "ROMAN ([roman_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -176,6 +191,15 @@ var/dutch_forceEnabled = FALSE
 		indians_forceEnabled = !indians_forceEnabled
 		world << "<span class = 'notice'>The Native faction [indians_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Native faction 'forceEnabled' setting to [indians_forceEnabled].")
+	else if (findtext(choice, "ROMAN"))
+		roman_forceEnabled = !roman_forceEnabled
+		world << "<span class = 'notice'>The Roman faction [roman_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Roman faction 'forceEnabled' setting to [roman_forceEnabled].")
+
+	else if (findtext(choice, "GREEK"))
+		greek_forceEnabled = !greek_forceEnabled
+		world << "<span class = 'notice'>The Greek faction [greek_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Greek faction 'forceEnabled' setting to [greek_forceEnabled].")
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"
@@ -221,6 +245,8 @@ var/dutch_forceEnabled = FALSE
 	var/total_french = alive_french.len + dead_french.len + heavily_injured_french.len
 	var/total_portuguese = alive_portuguese.len + dead_portuguese.len + heavily_injured_portuguese.len
 	var/total_dutch = alive_dutch.len + dead_dutch.len + heavily_injured_dutch.len
+	var/total_roman = alive_roman.len + dead_roman.len + heavily_injured_roman.len
+	var/total_greek = alive_greek.len + dead_greek.len + heavily_injured_greek.len
 
 	var/mortality_coefficient_pirates = 0
 	var/mortality_coefficient_british = 0
@@ -229,8 +255,9 @@ var/dutch_forceEnabled = FALSE
 	var/mortality_coefficient_french = 0
 	var/mortality_coefficient_indians = 0
 	var/mortality_coefficient_civilian = 0
+	var/mortality_coefficient_greek = 0
 	var/mortality_coefficient_dutch = 0
-
+	var/mortality_coefficient_roman = 0
 	if (dead_british.len > 0)
 		mortality_coefficient_british = dead_british.len/total_british
 
@@ -255,6 +282,12 @@ var/dutch_forceEnabled = FALSE
 	if (dead_dutch.len > 0)
 		mortality_coefficient_dutch = dead_dutch.len/total_dutch
 
+	if (dead_greek.len > 0)
+		mortality_coefficient_greek = dead_greek.len/total_greek
+
+	if (dead_roman.len > 0)
+		mortality_coefficient_roman = dead_roman.len/total_roman
+
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
@@ -263,7 +296,8 @@ var/dutch_forceEnabled = FALSE
 	var/mortality_portuguese = round(mortality_coefficient_portuguese*100)
 	var/mortality_indians = round(mortality_coefficient_indians*100)
 	var/mortality_dutch = round(mortality_coefficient_dutch*100)
-
+	var/mortality_roman = round(mortality_coefficient_roman*100)
+	var/mortality_greek = round(mortality_coefficient_greek*100)
 	var/msg1 = "British: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
 	var/msg2 = "Pirates: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
 	var/msg3 = "Civilians: [alive_civilians.len] alive, [heavily_injured_civilians.len] heavily injured or unconscious, [dead_civilians.len] deceased. Mortality rate: [mortality_civilian]%"
@@ -272,6 +306,8 @@ var/dutch_forceEnabled = FALSE
 	var/msg6 = "French: [alive_french.len] alive, [heavily_injured_french.len] heavily injured or unconscious, [dead_french.len] deceased. Mortality rate: [mortality_french]%"
 	var/msg8 = "Dutch: [alive_dutch.len] alive, [heavily_injured_dutch.len] heavily injured or unconscious, [dead_dutch.len] deceased. Mortality rate: [mortality_dutch]%"
 	var/msg7 = "Natives: [alive_indians.len] alive, [heavily_injured_indians.len] heavily injured or unconscious, [dead_indians.len] deceased. Mortality rate: [mortality_indians]%"
+	var/msg9 = "Romans: [alive_roman.len] alive, [heavily_injured_roman.len] heavily injured or unconscious, [dead_roman.len] deceased. Mortality rate: [mortality_roman]%"
+	var/msg10 = "Greeks: [alive_greek.len] alive, [heavily_injured_greek.len] heavily injured or unconscious, [dead_greek.len] deceased. Mortality rate: [mortality_greek]%"
 
 
 
@@ -291,6 +327,10 @@ var/dutch_forceEnabled = FALSE
 		msg7 = null
 	if (map && !map.faction_organization.Find(DUTCH))
 		msg8 = null
+	if (map && !map.faction_organization.Find(ROMAN))
+		msg9 = null
+	if (map && !map.faction_organization.Find(GREEK))
+		msg10 = null
 
 	var/public = "Yes"
 
@@ -319,6 +359,10 @@ var/dutch_forceEnabled = FALSE
 				world << "<font size=3>[msg7]</font>"
 			if (msg8)
 				world << "<font size=3>[msg8]</font>"
+			if (msg9)
+				world << "<font size=3>[msg9]</font>"
+			if (msg10)
+				world << "<font size=3>[msg10]</font>"
 
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
@@ -341,3 +385,7 @@ var/dutch_forceEnabled = FALSE
 			shower << msg7
 		if (msg8)
 			shower << msg8
+		if (msg9)
+			shower << msg9
+		if (msg10)
+			shower << msg10

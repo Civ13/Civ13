@@ -57,6 +57,10 @@
 		. = INDIANS
 	else if (istype(src, /datum/job/dutch))
 		. = DUTCH
+	else if (istype(src, /datum/job/roman))
+		. = ROMAN
+	else if (istype(src, /datum/job/greek))
+		. = GREEK
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -89,7 +93,12 @@
 	else if (istype(src, /datum/job/civilian))
 		user.faction_text = "CIVILIAN"
 		user.base_faction = new/datum/faction/civilian(user, src)
-
+	else if (istype(src, /datum/job/roman))
+		user.faction_text = "ROMAN"
+		user.base_faction = new/datum/faction/roman(user, src)
+	else if (istype(src, /datum/job/greek))
+		user.faction_text = "GREEK"
+		user.base_faction = new/datum/faction/greek(user, src)
 
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
@@ -105,12 +114,6 @@
 	if (side == PIRATES)
 		return "Pirate crew"
 	return null
-
-// here's a story
-// the lines to give people radios and harnesses are really long and go off screen like this one
-// and I got tired of constantly having to readd radios because merge conflicts
-// so now there's this magical function that equips a human with a radio and harness
-//	- Kachnov
 
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	..()

@@ -3,16 +3,19 @@
 #define CIVILIAN "CIVILIAN"
 #define INDIANS "INDIANS"
 #define BRITISH "BRITISH"
+#define ROMAN "ROMAN"
 
 // used for languages only
 #define ENGLISH "ENGLISH"
 #define CARIB "CARIB"
+#define LATIN "LATIN"
 
 //used for languages & factions
 #define SPANISH "SPANISH"
 #define PORTUGUESE "PORTUGUESE"
 #define FRENCH "FRENCH"
 #define DUTCH "DUTCH"
+#define GREEK "GREEK"
 
 /proc/faction_const2name(constant)
 
@@ -39,3 +42,9 @@
 
 	if (constant == DUTCH)
 		return "Dutch Navy"
+
+	if (constant == ROMAN)
+		return "Roman Republic"
+
+	if (constant == GREEK)
+		return "Greek States"

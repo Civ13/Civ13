@@ -121,6 +121,12 @@
 	icon_state = "purple1"
 	base_turf = /turf/floor/plating/grass/wild
 
+/area/caribbean/forest/dirt
+	name = "The Forest"
+	icon_state = "purple1"
+	base_turf = /turf/floor/dirt
+
+
 /area/caribbean/supply
 	name = "Supply Arrival"
 	icon_state = "blue1"
@@ -478,3 +484,10 @@
 	icon_state = "red1"
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/roman
+	name = "Roman Camp"
+	icon_state = "red3"
+/area/caribbean/greek
+	name = "Greek Camp"
+	icon_state = "blue1"

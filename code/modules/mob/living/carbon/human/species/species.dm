@@ -346,13 +346,15 @@
 		else
 			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_dutch_name(gender)
+/datum/species/proc/get_random_greek_name(var/jew) //gender removed
+	if (!name_language)
 
+		return capitalize(pick(first_names_male_greek))
+
+/datum/species/proc/get_random_roman_name(var/jew) //gender removed
+	if (!name_language)
+		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+							//some useless code removed
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)

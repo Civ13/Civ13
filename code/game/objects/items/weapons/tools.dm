@@ -122,3 +122,54 @@
 		spawn(600)
 			cooldown_horn = FALSE
 		return
+
+/obj/item/weapon/siegeladder
+	name = "siege ladder"
+	desc = "A wood ladder, used to climb over walls."
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "siege_ladder"
+	flags = CONDUCT
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	w_class = 4.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+	var/deployed = FALSE
+	nothrow = TRUE
+
+/obj/item/weapon/siegeladder/attackby(obj/item/weapon/O as obj, mob/user as mob)
+	if (deployed)
+		user.visible_message(
+			"<span class='danger'>\The [user] starts removing \the [src]!</span>",
+			"<span class='danger'>You start removing \the [src]!</span>")
+		if (do_after(user, 80, src))
+			user.visible_message(
+				"<span class='danger'>\The [user] has removed \the [src]!</span>",
+				"<span class='danger'>You have removed \the [src]!</span>")
+			anchored = FALSE
+			deployed = FALSE
+			icon_state = "siege_ladder"
+			for (var/obj/structure/barricade/ST in src.loc)
+				ST.climbable = FALSE
+	else
+		..()
+
+/obj/structure/barricade/attackby(obj/item/weapon/siegeladder/O as obj, mob/living/user as mob)
+	if (istype(O, /obj/item/weapon/siegeladder))
+		visible_message(
+			"<span class='danger'>\The [user] starts deploying \the [O.name].</span>",
+			"<span class='danger'>You start deploying \the [O.name].</span>")
+		if (do_after(user, 80, src))
+			visible_message(
+				"<span class='danger'>\The [user] has deployed \the [O.name]!</span>",
+				"<span class='danger'>You have deployed \the [O.name]!</span>")
+			qdel(O)
+			var/obj/item/weapon/siegeladder/ANCH = new/obj/item/weapon/siegeladder(src.loc)
+			ANCH.anchored = TRUE
+			src.climbable = TRUE
+			ANCH.deployed = TRUE
+			ANCH.icon_state = "siege_ladder_dep"
+			ANCH.dir = src.dir
+			return
+	else
+		..()

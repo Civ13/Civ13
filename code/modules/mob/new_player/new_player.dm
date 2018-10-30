@@ -493,6 +493,14 @@
 		if (client.prefs.s_tone < -65)
 			usr << "<span class='danger'>You are too dark to be a colonist. Choose a value lower than 100.</span>"
 			return
+
+	if (istype(job, /datum/job/greek) || istype(job, /datum/job/roman))
+		if (client.prefs.s_tone < -65)
+			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 100.</span>"
+			return
+		if (client.prefs.gender == FEMALE)
+			usr << "<span class='danger'>You must be male to play as this faction.</span>"
+			return
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -539,7 +547,9 @@
 		INDIANS = FALSE,
 		PORTUGUESE = FALSE,
 		DUTCH = FALSE,
-		BRITISH = FALSE)
+		BRITISH = FALSE,
+		ROMAN = FALSE,
+		GREEK = FALSE,)
 
 	var/prev_side = FALSE
 

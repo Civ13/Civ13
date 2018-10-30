@@ -116,7 +116,7 @@
 	name = "floor cover"
 	desc = "Use this to cover holes."
 	icon = 'icons/turf/floors.dmi'
-	icon_state = "wood_ship_repaired"
+	icon_state = "wood_ship_repaired2"
 	w_class = 2.0
 
 /obj/covers/repairedfloor

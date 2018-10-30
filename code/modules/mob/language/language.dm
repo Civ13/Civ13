@@ -148,6 +148,36 @@
 
 	return "[trim(full_name)]"
 
+/datum/language/proc/get_random_greek_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_male_greek))
+
+	var/full_name = ""
+	var/new_name = ""
+
+	for (var/i = 0;i<name_count;i++)
+		new_name = ""
+		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
+			new_name += pick(syllables)
+		full_name += " [capitalize(lowertext(new_name))]"
+
+	return "[trim(full_name)]"
+											////removed var/gender \/
+/datum/language/proc/get_random_roman_name(name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+
+	var/full_name = ""
+	var/new_name = ""
+
+	for (var/i = 0;i<name_count;i++)
+		new_name = ""
+		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
+			new_name += pick(syllables)
+		full_name += " [capitalize(lowertext(new_name))]"
+
+	return "[trim(full_name)]"
+
 /datum/language
 	var/list/scramble_cache = list()
 
@@ -358,6 +388,28 @@
 						H.real_name = H.species.get_random_carib_name(H.gender, FALSE)
 					else
 						H.real_name = H.client.prefs.carib_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+					
+		if (istype(new_language, /datum/language/latin))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_roman)
+						H.real_name = H.species.get_random_roman_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.roman_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+		
+		if (istype(new_language, /datum/language/greek))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_greek)
+						H.real_name = H.species.get_random_greek_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.greek_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
