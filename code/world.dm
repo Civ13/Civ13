@@ -302,7 +302,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br></a>"
 
 	if (config.hub_banner_url)
-		s += "<img src=\"https://i.imgur.com/Ouxiybj.png\">"
+		s += "<img src=\"https://i.imgur.com/nQxkWmn.png\">"
 	if (map)
 		s += "<br><b>Map:</b> [map.title] ([roundduration2text()])<br>"
 
@@ -312,7 +312,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (config.hub_body)
 		s += config.hub_body
-		s += "XVIII century combat"
+		s += "IV centvry B.C. combat"
 //	if (config.hub_features)
 //		s += "<b>[config.hub_features]</b><br>"
 
