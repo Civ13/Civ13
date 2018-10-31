@@ -267,15 +267,15 @@
 "fg" = (/obj/structure/closet/crate/wood,/turf/floor/dirt,/area/caribbean/roman)
 "fh" = (/obj/structure/closet/crate/wood,/turf/floor/dirt,/area/caribbean/greek)
 "fi" = (/turf/floor/dirt/ploughed,/area/caribbean/greek)
-"fj" = (/obj/item/stack/farming/seeds/cabbage{amount = 5},/obj/item/stack/farming/seeds/wheat{amount = 5},/turf/floor/dirt,/area/caribbean/greek)
+"fj" = (/obj/item/stack/farming/seeds/cabbage{amount = 5},/obj/item/stack/farming/seeds/wheat{amount = 5},/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/dirt,/area/caribbean/greek)
 "fk" = (/obj/item/weapon/plough,/turf/floor/dirt,/area/caribbean/greek)
 "fl" = (/turf/floor/dirt/ploughed,/area/caribbean/roman)
-"fm" = (/obj/item/stack/farming/seeds/cabbage{amount = 5},/obj/item/stack/farming/seeds/wheat{amount = 5},/turf/floor/dirt,/area/caribbean/roman)
+"fm" = (/obj/item/stack/farming/seeds/cabbage{amount = 5},/obj/item/stack/farming/seeds/wheat{amount = 5},/obj/item/weapon/material/kitchen/utensil/knife,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/dirt,/area/caribbean/roman)
 "fn" = (/obj/item/weapon/plough,/turf/floor/dirt,/area/caribbean/roman)
 
 (1,1,1) = {"
 aeabababanababababaeabababaeababababababababafacababababababababababababaeagabafababababababababababagabaeababafacabababahababagabacaaaaddaQaQaQaRaRaRaRaRaRaRaRaRaQaQaQaQaideababacaeababababacacababababanabababababababababababababababababababababababajabababababababaeababaeabababababababacababaeabab
-abababababaeababababababababababababababababababaeabababababagabafababababababababaeabababagaeababababahabababababababababaeaoabacacacaaddaiaQaQaQaRaRaRaRaRaRaRaRaQaQaibhbhdeabacacababababababaeababababababajaUacabababababaeaeababababababagabaeabababababagaeababaeabacabamababababababaeabababababaeab
+abababababaeababababababababababababababababababaeabababababagabafababababababababaeabababagaeababababahabababababababababaeaoabacacacaaddaiaQaQaQaRaRaRaRaRaRaRaRaQaQaibhbhdeabacacababababababaeababababababajaUacabababababaeaeababababababagabababababababagaeababaeabacabamababababababaeabababababaeab
 ababababababababagagababababababaeababafahabaeabababababababagababagagababababagababababababagababababababababagaeagababagakabababacacaiddaQaQaQaQaQaRaRaRaRaRaRaQaQaiaiaiacdeabababababababafabababababababababaeabababababaeababaeababababababababaeabahababababababababacabababababababababababajabacacac
 afababaeagababababagababafababababababababagabababababaeagaoababababaeababababagababababababagaeabaeafabcDabaeabababababagabababacacacaidfaiaiaQaQaQaRaRaRaRaRaRaQaQaQaiacacdgacacaeabababaeabababaoabaeaeabababababaoabamabababagabababaeabaeabababaoaoaoabaoabafabagagababafababababababanabafafababamaeab
 ababagagagabafafabababababababagabababababababababagababababababababaoaoahabaeabababanabababababababababaoabababababahagagabaeabacacaaacdeaiaiaQaQaQaRaRaRaRaQaQaQaQaQbhaiacdhacacabababaoaoababababababababababababababaeababababababababaoabagabababababagagagabaeababaeabababababaeababababababababababab
