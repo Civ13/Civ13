@@ -488,6 +488,8 @@
 /area/caribbean/roman
 	name = "Roman Camp"
 	icon_state = "red3"
+	base_turf = /turf/floor/dirt
 /area/caribbean/greek
 	name = "Greek Camp"
 	icon_state = "blue1"
+	base_turf = /turf/floor/dirt
