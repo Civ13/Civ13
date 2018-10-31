@@ -548,10 +548,10 @@ var/global/datum/controller/occupations/job_master
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
 
 		if (map.faction_distribution_coeffs.Find(ROMAN))
-			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[ROMAN])
+			max_roman = ceil(relevant_clients * map.faction_distribution_coeffs[ROMAN])
 
 		if (map.faction_distribution_coeffs.Find(GREEK))
-			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[GREEK])
+			max_greek = ceil(relevant_clients * map.faction_distribution_coeffs[GREEK])
 
 
 	switch (side)
