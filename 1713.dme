@@ -755,5 +755,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\heraclea.dmm"
+#include "maps\naval\naval.dmm"
 // END_INCLUDE
