@@ -18,8 +18,8 @@
 		MAP_HUNT = 8,
 		MAP_FOUR_COLONIES = 35,
 
-//		MAP_HERACLEA = 0,
-//		MAP_SIEGE = 0,
+		MAP_HERACLEA = 0,
+		MAP_SIEGE = 0,
 	)
 
 	var/ready = TRUE
