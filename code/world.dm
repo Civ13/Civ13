@@ -302,7 +302,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br></a>"
 
 	if (config.hub_banner_url)
-		s += "<img src=\"https://i.imgur.com/nQxkWmn.png\">"
+		s += "<img src=\"https://i.imgur.com/Ouxiybj.png\">"
 	if (map)
 		s += "<br><b>Map:</b> [map.title] ([roundduration2text()])<br>"
 
