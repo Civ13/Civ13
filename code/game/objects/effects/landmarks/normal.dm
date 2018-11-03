@@ -50,6 +50,12 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
+		if ("JoinLateFR")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 
 		if ("JoinLateRO")
 			if (!latejoin_turfs[name])

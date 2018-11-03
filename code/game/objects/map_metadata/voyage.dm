@@ -14,7 +14,7 @@
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/british/ship/lower,
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(BRITISH = 1)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')

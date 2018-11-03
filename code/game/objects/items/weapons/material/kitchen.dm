@@ -92,19 +92,6 @@
 	scoop_food = FALSE
 	slot_flags = SLOT_BELT|SLOT_POCKET
 
-// Identical to the tactical knife but nowhere near as stabby.
-// Kind of like the toy esword compared to the real thing.
-/obj/item/weapon/material/kitchen/utensil/knife/boot
-	name = "boot knife"
-	desc = "A small fixed-blade knife for putting inside a boot."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "tacknife"
-	item_state = "knife"
-	applies_material_colour = FALSE
-	unbreakable = TRUE
-	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
-
 /obj/item/weapon/material/kitchen/utensil/knife/boot/makeshift_knife
 	name = "boot knife"
 	desc = "A small self made knife used a lot in jail."
@@ -140,7 +127,8 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/plastic
 	default_material = "plastic"
-
+/obj/item/weapon/material/kitchen/utensil/knife/iron
+	default_material = "iron"
 /*
  * Rolling Pins
  */

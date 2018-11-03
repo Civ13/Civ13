@@ -14,7 +14,7 @@
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(INDIANS = 1)
 	battle_name = "the tribes"
 	var/targetnr = 2
@@ -27,6 +27,7 @@
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (istype(J, /datum/job/indians/tribes))
 		. = TRUE
 	else if (istype(J, /datum/job/indians/carib) || istype(J, /datum/job/indians/carib_chief) || istype(J, /datum/job/indians/carib_shaman))

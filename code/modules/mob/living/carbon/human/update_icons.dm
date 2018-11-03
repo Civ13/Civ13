@@ -739,7 +739,7 @@ var/global/list/damage_icon_parts = list()
 
 
 /mob/living/carbon/human/update_inv_wear_suit(var/update_icons=1)
-
+	update_surgery(0)
 	if ( wear_suit && istype(wear_suit, /obj/item/) )
 		/*var/new_screen_loc = find_inv_position(slot_wear_suit)
 		if (new_screen_loc)
@@ -768,8 +768,14 @@ var/global/list/damage_icon_parts = list()
 		if (istype(suit) && suit.accessories.len)
 			for (var/obj/item/clothing/accessory/A in suit.accessories)
 				standing.overlays |= A.get_mob_overlay()
+		if (!istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
+			overlays_standing[SUIT_LAYER]	= standing
 
-		overlays_standing[SUIT_LAYER]	= standing
+///chainmail stuff, so it goes under the uniform
+
+		if ( wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
+			overlays_standing[SURGERY_LEVEL] = standing
+///
 
 	else
 		overlays_standing[SUIT_LAYER]	= null
@@ -1000,6 +1006,7 @@ var/global/list/damage_icon_parts = list()
 		if (E.open)
 			var/image/I = image("icon"='icons/mob/surgery.dmi', "icon_state"="[E.name][round(E.open)]", "layer"=-SURGERY_LEVEL)
 			total.overlays += I
+
 	overlays_standing[SURGERY_LEVEL] = total
 	if (update_icons)   update_icons()
 

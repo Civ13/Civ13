@@ -174,6 +174,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				log_admin("Map vote triggered by restart vote.")
 			else
 				ticker.finished = TRUE
+				processes.mapswap.admin_triggered = FALSE
+				processes.mapswap.ready = TRUE
+				processes.mapswap.fire()
+				log_admin("Map vote triggered by restart vote.")
 
 		return .
 

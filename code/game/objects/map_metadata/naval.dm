@@ -16,7 +16,7 @@
 		list(FRENCH) = /area/caribbean/british/ship/lower,
 		list(PIRATES) = /area/caribbean/pirates/ship/lower
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(FRENCH = 0.5, PIRATES = 0.5)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
@@ -27,9 +27,12 @@
 	faction2 = PIRATES
 
 obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE

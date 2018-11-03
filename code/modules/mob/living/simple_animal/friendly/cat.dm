@@ -1,7 +1,7 @@
 //Cat
 /mob/living/simple_animal/cat
 	name = "cat"
-	desc = "A domesticated, feline pet. Has a tendency to adopt crewmembers."
+	desc = "A domesticated, feline pet. Has a tendency to adopt humans."
 	icon_state = "cat2"
 	item_state = "cat2"
 	icon_living = "cat2"

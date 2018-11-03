@@ -15,7 +15,7 @@
 	roundend_condition_sides = list(
 		list(BRITISH) = /area/caribbean/british
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(BRITISH = 1)
 	battle_name = "battle of the cursed island"
 	mission_start_message = "<big>After a storm, your battered ship had to dock at this island for repairs. Only then did the crew notice something was wrong about this place...<br><b>Retrieve the cursed treasure and bring it back to the ship to break the curse!</b></big>"
@@ -27,9 +27,12 @@
 		"Spooky Tunes:1" = 'sound/ambience/spooky1.ogg',)
 
 obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE

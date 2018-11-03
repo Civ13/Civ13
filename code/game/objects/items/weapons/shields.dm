@@ -138,3 +138,34 @@
 		M.drop_from_inventory(src)
 	playsound(src, "shatter", 70, TRUE)
 	qdel(src)
+
+
+/obj/item/weapon/shield/iron/semioval
+	name = "semioval iron shield"
+	icon_state = "semioval_shield"
+	item_state = "semioval_shield"
+	slot_flags = SLOT_BACK
+	material = "iron"
+	health = 50
+	w_class = 3.0
+	base_block_chance = 40
+
+obj/item/weapon/shield/red_buckler
+	name = "red buckler shield"
+	icon_state = "red_buckler"
+	item_state = "red_buckler"
+	base_block_chance = 25
+	w_class = 2.0
+	slot_flags = SLOT_BACK
+	material = "wood"
+	health = 40 // hardness of wood
+
+obj/item/weapon/shield/blue_buckler
+	name = "blue buckler shield"
+	icon_state = "blue_buckler"
+	item_state = "blue_buckler"
+	base_block_chance = 25
+	w_class = 2.0
+	slot_flags = SLOT_BACK
+	material = "wood"
+	health = 40 // hardness of wood

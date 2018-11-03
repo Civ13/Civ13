@@ -19,7 +19,7 @@
 		list(PIRATES) = /area/caribbean/british,
 		list(SPANISH) = /area/caribbean/british,
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(INDIANS = 0.4, CIVILIAN = 0.4, PIRATE = 0.1, SPANISH = 0.1)
 	battle_name = "new colony"
 	mission_start_message = "<big>Europeans</b> has reached the shore! The <b>Colonists</b> must build their villages. The gracewall will be up after 25 minutes.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND COLONISTS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
@@ -32,7 +32,10 @@
 		"Black Sails:1" = 'sound/music/black_sails.ogg')
 
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (istype(J, /datum/job/spanish/civilian))
+		. = FALSE
+	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE

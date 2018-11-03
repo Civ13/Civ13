@@ -71,8 +71,8 @@ var/global/obj/map_metadata/map = null
 	var/meme = FALSE
 	var/battle_name = null
 
-	//front (western europe, eastern europe, pacific, etc)
-	var/front = "Eastern"
+	//age (313bc, 1013, 1713, etc)
+	var/age = "1713"
 
 /obj/map_metadata/New()
 	..()
@@ -168,7 +168,16 @@ var/global/obj/map_metadata/map = null
 	return (faction1_can_cross_blocks() && faction2_can_cross_blocks())
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
-	return TRUE
+	if (age == "1013")
+		if (J.is_medieval == TRUE)
+			. = TRUE
+		else
+			. = FALSE
+	else
+		if (J.is_medieval == FALSE)
+			. = TRUE
+		else
+			. = FALSE
 
 /obj/map_metadata/proc/cross_message(faction)
 	return "<font size = 4>The [faction_const2name(faction)] may now cross the invisible wall!</font>"

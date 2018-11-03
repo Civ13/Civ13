@@ -239,9 +239,9 @@
 /obj/item/clothing/shoes/soldiershoes
 	name = "infantry shoes"
 	desc = "Low black infantry shoes."
-	icon_state = "italian_boots"
-	item_state = "italian_boots"
-	worn_state = "italian_boots"
+	icon_state = "soldier_shoes"
+	item_state = "soldier_shoes"
+	worn_state = "soldier_shoes"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 30, bullet = 20, laser = 20,energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
