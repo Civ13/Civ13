@@ -1,8 +1,8 @@
 #define NO_WINNER "The fighting for the countryside is still going on."
 /obj/map_metadata/camp
 	ID = MAP_CAMP
-	title = "CAMP (140x60x1)"
-//	lobby_icon_state = "pirates"
+	title = "Camp (140x60x1)"
+	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 	squad_spawn_locations = FALSE
@@ -18,8 +18,8 @@
 		)
 	age = "1013"
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
+	songs = list(
+		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	battle_name = "battle of Normandy"
 	mission_start_message = "<font size=4>The <b>French</b> and <b>British</b> armies are facing each other in Northern France! Get ready for battle! It will start in <b>8 minutes</b></font>"
 	faction1 = BRITISH
