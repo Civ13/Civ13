@@ -141,13 +141,15 @@ var/list/global_whitelists[50]
 	if (isclient(client_or_ckey))
 		client_or_ckey = client_or_ckey:ckey
 	var/path = "/home/1713/1713/whitelist.txt"
-	for (var/ckey2discord_id in file2list(path))
-		var/_ckey = splittext(ckey2discord_id, "=")[1]
-		if (_ckey == client_or_ckey)
+	var/full_list = file2text(path)
+	var/list/full_list_split = splittext(full_list, "\n")
+	for (var/v = TRUE, v < full_list_split.len, v++)
+		var/list/linesplit = splittext(full_list_split[v], "=")
+		if (linesplit[1] == client_or_ckey)
 			return TRUE
-		if (ckey(_ckey) == client_or_ckey)
+		if (ckey(linesplit[1]) == client_or_ckey)
 			return TRUE
-		if (lowertext(_ckey) == client_or_ckey)
+		if (lowertext(linesplit[1]) == client_or_ckey)
 			return TRUE
 	return FALSE
 

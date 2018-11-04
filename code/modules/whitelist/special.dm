@@ -7,7 +7,7 @@
 /datum/whitelist/jobs
 	name = "jobs"
 
-/datum/whitelist/jobs/validate(_arg, var/desired_job_title)
+/datum/whitelist/jobs/validate(_arg)
 	if (!enabled)
 		return TRUE
 	var/path = "/home/1713/1713/whitelist.txt"
@@ -15,10 +15,10 @@
 	var/list/full_list_split = splittext(full_list, "\n")
 	for (var/v = TRUE, v < full_list_split.len, v++)
 		var/list/linesplit = splittext(full_list_split[v], "=")
-		if (linesplit[1] == _arg)
+		if (linesplit[1] == _arg.ckey)
 			return TRUE
-		if (ckey(linesplit[1]) == _arg)
+		if (ckey(linesplit[1]) == _arg.ckey)
 			return TRUE
-		if (lowertext(linesplit[1]) == _arg)
+		if (lowertext(linesplit[1]) == _arg.ckey)
 			return TRUE
 	return FALSE
