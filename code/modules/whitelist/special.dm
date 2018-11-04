@@ -13,17 +13,14 @@
 	if (isclient(_arg))
 		_arg = _arg:ckey
 	var/path = "/home/1713/1713/whitelist.txt"
-	world << "importing whitelist..."
 	var/full_list = file2text(path)
-	var/list/full_list_split = splittext(full_list, "=")
+	var/list/full_list_split = splittext(full_list, "/n")
 	for (var/v = TRUE, v < full_list_split.len, v++)
-		if (full_list_split[v][1] == _arg)
-			world << "[full_list_split[v][1]]"
+		var/list/linesplit = splittext(full_list_split[v], "=")
+		if (linesplit[1] == _arg)
 			return TRUE
-		if (ckey(full_list_split[v][1]) == _arg)
-			world << "[full_list_split[v][1]]"
+		if (ckey(linesplit[1]) == _arg)
 			return TRUE
-		if (lowertext(full_list_split[v][1]) == _arg)
-			world << "[full_list_split[v][1]]"
+		if (lowertext(linesplit[1]) == _arg)
 			return TRUE
 	return FALSE
