@@ -303,7 +303,7 @@
 			return
 
 		if (actual_job.whitelisted)
-			if (!(actual_job.validate(ckey) == TRUE))
+			if (!(actual_job.validate(client.ckey) == TRUE))
 				usr << "<span class = 'notice'>You need to be whitelisted to play this job. Apply in the Discord.</span>"
 				return
 		if (actual_job.is_officer)
