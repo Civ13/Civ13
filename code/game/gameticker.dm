@@ -199,11 +199,6 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 					if (n <= 900)
 						restart_after = 1200 - n
 
-			var/next_map = processes.mapswap ? processes.mapswap.next_map_title : "TBD"
-			if (vote && vote.mode == "map" && vote.time_remaining > 0)
-				next_map = "TBD"
-
-
 			if (!delay_end)
 				world << "<span class='notice'><big>Restarting in <b>90</b> seconds. Next map: <b>TBD</b></big></span>"
 				spawn(150)

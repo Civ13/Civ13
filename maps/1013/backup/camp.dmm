@@ -97,7 +97,7 @@
 "bS" = (/obj/item/weapon/shovel,/obj/item/weapon/material/hatchet,/turf/floor/plating/grass/wild,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bT" = (/obj/structure/wild/tree/dead_tree,/turf/floor/plating/dirt,/area/caribbean/colonies/british{location = 1; name = "British Base"})
 "bU" = (/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/wheat,/obj/item/stack/farming/seeds/wheat,/turf/floor/plating/grass/wild,/area/caribbean/forest)
-"bV" = (/obj/item/weapon/material/pitchfork,/turf/floor/dirt/ploughed,/area/caribbean/forest)
+"bV" = (/obj/item/weapon/material/rake,/turf/floor/dirt/ploughed,/area/caribbean/forest)
 "bW" = (/obj/structure/flag/french,/turf/floor/plating/grass/wild,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "bX" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/dirt/ploughed,/area/caribbean/no_mans_land/invisible_wall)
 "bY" = (/obj/structure/wild/tree,/turf/floor/plating/grass/wild,/area/caribbean/no_mans_land/invisible_wall)
