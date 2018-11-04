@@ -85,7 +85,7 @@
 	return TRUE
 
 /datum/job/french/medieval_swordsman
-	title = "Homme d'Arme"
+	title = "Homme dArme"
 	en_meaning = "Swordsman"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
