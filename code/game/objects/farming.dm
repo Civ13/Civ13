@@ -190,16 +190,16 @@
 	growth()
 
 /obj/structure/farming/plant/proc/growth()
-	if (stage < 10)
+	if (stage < 12)
 		if (stage <= 6)
 			icon_state = "[plant]-grow[stage]"
 			desc = "A young [plant] plant."
 			name = "young [plant] plant"
-		else if (stage == 7 || stage == 8)
+		else if (stage == 7 || stage == 8 || stage == 9 || stage == 10)
 			icon_state = "[plant]-harvest"
 			desc = "A ready to harvest [plant] plant."
 			name = "ready [plant] plant"
-		else if (stage >= 9)
+		else if (stage >= 11)
 			icon_state = "[plant]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"

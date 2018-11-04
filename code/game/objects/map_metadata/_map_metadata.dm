@@ -71,7 +71,7 @@ var/global/obj/map_metadata/map = null
 	var/meme = FALSE
 	var/battle_name = null
 
-	//age (313bc, 1013, 1713, etc)
+	//age (313 B.C., 1013, 1713, etc)
 	var/age = "1713"
 
 /obj/map_metadata/New()

@@ -506,6 +506,10 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
+	if (map.age == "1013" && !istype(job, /datum/job/civilian))
+		if (client.prefs.gender == FEMALE)
+			usr << "<span class='danger'>You must be male to play as this faction.</span>"
+			return
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -537,7 +541,28 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_french.len] French, [alive_dutch.len] Dutch, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
+//	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_french.len] French, [alive_dutch.len] Dutch, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
+	dat += "<b>Current Autobalance Status</b>: "
+	if (BRITISH in map.faction_organization)
+		dat += "[alive_british.len] British "
+	if (PORTUGUESE in map.faction_organization)
+		dat += "[alive_portuguese.len] Portuguese "
+	if (FRENCH in map.faction_organization)
+		dat += "[alive_french.len] French "
+	if (SPANISH in map.faction_organization)
+		dat += "[alive_spanish.len] Spanish "
+	if (DUTCH in map.faction_organization)
+		dat += "[alive_dutch.len] Dutch "
+	if (PIRATES in map.faction_organization)
+		dat += "[alive_pirates.len] Pirates "
+	if (INDIANS in map.faction_organization)
+		dat += "[alive_indians.len] Natives "
+	if (CIVILIAN in map.faction_organization)
+		dat += "[alive_civilians.len] Civilians "
+	if (GREEK in map.faction_organization)
+		dat += "[alive_greek.len] Greeks "
+	if (ROMAN in map.faction_organization)
+		dat += "[alive_roman.len] Romans "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -557,8 +582,6 @@
 		GREEK = FALSE,)
 
 	var/prev_side = FALSE
-
-	dat += "<b>Choose from the following open positions:</b>"
 
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 
@@ -612,6 +635,12 @@
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/dutch) && !dutch_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/roman) && !roman_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/greek) && !greek_toggled)
 			job_is_available = FALSE
 		// check if the job is admin-locked or disabled codewise
 

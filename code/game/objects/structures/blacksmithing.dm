@@ -146,7 +146,7 @@ obj/structure/anvil/New()
 				return
 
 	else if (iron_amt > 0)
-		var/list/display = list("Swords","Guns", "Cancel")
+		var/list/display = list("Swords","Guns", "Armor", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display)
 		if (choice == "Cancel")
 			return
@@ -315,7 +315,51 @@ obj/structure/anvil/New()
 					return
 			if (choice3 == "Cancel")
 				return
-
+		else if (choice == "Armor")
+			var/list/display4 = list("Chainmail (6)", "Iron Chestplate (10)", "Plated Armor (16)", "Cancel")
+			var/choice4 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display4)
+			if (choice4 == "Chainmail (6)")
+				if (iron_amt >= 6)
+					user << "You begin crafting the chainmail..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 6)
+						user << "You craft the chainmail."
+						iron_amt -= 6
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/medieval/chainmail(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Iron Chestplate (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the iron chestplate..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,160,src) && iron_amt >= 10)
+						user << "You craft the iron chestplate."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/medieval/iron_chestplate(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Plated Armor (16)")
+				if (iron_amt >= 15)
+					user << "You begin crafting the plated armor..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,210,src) && iron_amt >= 16)
+						user << "You craft the plated armor."
+						iron_amt -= 16
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/medieval(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
 	else if (iron_amt <= 0 || steel_amt <= 0)
 		user << "There is no hot iron or steel on top of this anvil. Smite some first."
 		return

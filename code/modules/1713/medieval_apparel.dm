@@ -81,7 +81,7 @@
 	worn_state = "knight_simple"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
-
+	value = 50
 /obj/item/clothing/suit/armor/medieval/blue
 	name = "blue plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
@@ -122,7 +122,7 @@
 	worn_state = "bronze_chestplate"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, bullet = 30, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
-
+	value = 25
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
 	name = "iron chestplate"
 	desc = "An iron chestplate."
@@ -131,6 +131,7 @@
 	worn_state = "iron_chestplate"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, bullet = 40, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	value = 32
 
 /obj/item/clothing/suit/armor/medieval/leather
 	name = "leather armor"
@@ -140,7 +141,7 @@
 	worn_state = "leather_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, bullet = 15, laser = 10,energy = 15, bomb = 20, bio = 20, rad = FALSE)
-
+	value = 15
 /obj/item/clothing/suit/armor/medieval/chainmail
 	name = "chainmail"
 	desc = "Wearable armor made of several small interlinked chains."
@@ -149,7 +150,7 @@
 	worn_state = "chainmail"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 50, bullet = 35, laser = 15,energy = 15, bomb = 30, bio = 20, rad = FALSE)
-
+	value = 20
 
 /obj/item/clothing/head/helmet/medieval
 	name = "knight helmet"

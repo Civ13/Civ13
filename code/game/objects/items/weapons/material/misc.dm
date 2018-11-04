@@ -34,8 +34,8 @@
 	value = 3
 	block_chance = 10
 
-/obj/item/weapon/material/rake
-	name = "rake"
+/obj/item/weapon/material/pitchfork
+	name = "pitchfork"
 	desc = "It's used for removing weeds or scratching your back."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "rake"

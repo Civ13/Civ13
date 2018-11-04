@@ -150,6 +150,19 @@
 	w_class = 3.0
 	base_block_chance = 40
 
+
+/obj/item/weapon/shield/iron/semioval/templar
+	name = "semioval iron templar shield"
+	icon_state = "semioval_shield_templar"
+	item_state = "semioval_shield_templar"
+	slot_flags = SLOT_BACK
+
+/obj/item/weapon/shield/iron/semioval/templar2
+	name = "semioval iron templar shield"
+	icon_state = "semioval_shield_templar2"
+	item_state = "semioval_shield_templar2"
+	slot_flags = SLOT_BACK
+
 obj/item/weapon/shield/red_buckler
 	name = "red buckler shield"
 	icon_state = "red_buckler"
