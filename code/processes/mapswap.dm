@@ -3,7 +3,7 @@
 
 	var/list/epochs = list(
 		"313 B.C." = 0,
-//		"1013" = 0,
+		"1013" = 0,
 		"1713" = 0,
 	)
 	var/ready = TRUE
