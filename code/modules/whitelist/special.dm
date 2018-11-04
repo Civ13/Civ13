@@ -10,15 +10,15 @@
 /datum/whitelist/jobs/validate(_arg, var/desired_job_title)
 	if (!enabled)
 		return TRUE
-	var/list/datalist = splittext(data, "&")
 	if (isclient(_arg))
-		var/client/C = _arg
-		for (var/datum in datalist)
-			if (findtext(datum, C.ckey) && findtext(datum, desired_job_title))
-				return TRUE
-	else if (istext(_arg))
-		var/ckey = ckey(_arg)
-		for (var/datum in datalist)
-			if (findtext(datum, ckey) && findtext(datum, desired_job_title))
-				return TRUE
+		_arg = _arg:ckey
+	var/path = "/home/1713/1713/whitelist.txt"
+	for (var/ckey2discord_id in file2list(path))
+		var/_ckey = splittext(ckey2discord_id, "=")[1]
+		if (_ckey == _arg)
+			return TRUE
+		if (ckey(_ckey) == _arg)
+			return TRUE
+		if (lowertext(_ckey) == _arg)
+			return TRUE
 	return FALSE
