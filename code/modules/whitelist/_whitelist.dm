@@ -110,16 +110,18 @@ var/list/global_whitelists[50]
 /datum/whitelist/proc/validate(_arg, return_real_val_even_if_whitelist_disabled = FALSE)
 	if (!enabled && !return_real_val_even_if_whitelist_disabled)
 		return TRUE
-	var/list/datalist = splittext(data, "&")
 	if (isclient(_arg))
 		var/client/C = _arg
-		for (var/ckey in datalist)
-			if (ckey == C.ckey)
+		var/path = "/home/1713/1713/whitelist.txt"
+		var/full_list = file2text(path)
+		var/list/full_list_split = splittext(full_list, "\n")
+		for (var/v = TRUE, v < full_list_split.len, v++)
+			var/list/linesplit = splittext(full_list_split[v], "=")
+			if (linesplit[1] == C.ckey)
 				return TRUE
-	else if (istext(_arg))
-		_arg = ckey(_arg)
-		for (var/ckey in datalist)
-			if (ckey == _arg)
+			if (ckey(linesplit[1]) == C.ckey)
+				return TRUE
+			if (lowertext(linesplit[1]) == C.ckey)
 				return TRUE
 	return FALSE
 
@@ -156,12 +158,4 @@ var/list/global_whitelists[50]
 /datum/whitelist/server/New()
 	..()
 	if (config.usewhitelist)
-		enabled = TRUE
-
-/datum/whitelist/teststaff
-	name = "teststaff"
-
-/datum/whitelist/teststaff/New()
-	..()
-	if (config.allow_testing_staff)
 		enabled = TRUE

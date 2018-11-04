@@ -1,9 +1,3 @@
-/* the jobs whitelist has special behavior for validate() and must be called
-   with two args. Job datums have their own validate() proc, which is a wrapper
-   for the whitelist procedure (ie it calls this datum's validate()) and only
-   takes one arg. Therefore, you never need to call whitelist/jobs.validate()
-   directly, you only need to call job.validate(new_player). */
-
 /datum/whitelist/jobs
 	name = "jobs"
 

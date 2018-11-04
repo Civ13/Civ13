@@ -62,7 +62,7 @@ var/list/gamemode_cache = list()
 	var/guest_jobban = TRUE
 	var/usewhitelist = FALSE
 	var/allow_testing_staff = FALSE
-	var/use_job_whitelist =  TRUE
+	var/use_job_whitelist =  FALSE
 	var/kick_inactive = FALSE				//force disconnect for inactive players after this many minutes, if non-0
 	var/show_mods = FALSE
 	var/show_mentors = FALSE
@@ -112,8 +112,6 @@ var/list/gamemode_cache = list()
 	var/bones_can_break = FALSE
 	var/limbs_can_break = FALSE
 
-	var/revival_brain_life = -1
-
 
 //	var/welder_vision = TRUE
 	var/generate_asteroid = FALSE
@@ -144,7 +142,6 @@ var/list/gamemode_cache = list()
 	// hub stuff
 
 	var/hub = FALSE
-	var/jojoreference = FALSE
 	var/testing_port = -1
 	var/hubtesting_port = -2
 	var/open_hub_discord_in_new_window = TRUE

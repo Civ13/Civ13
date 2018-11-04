@@ -307,12 +307,13 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "<br><b>Map:</b> [map.title] ([roundduration2text()])<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
+	config.hub_body = replacetext(config.hub_body, "EPOCH", capitalize(lowertext(map.age)))
 	config.hub_body = replacetext(config.hub_body, "TIME_OF_DAY", capitalize(lowertext(time_of_day)))
 	config.hub_body = replacetext(config.hub_body, "WEATHER", capitalize(lowertext(get_weather())))
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (config.hub_body)
 		s += config.hub_body
-		s += "IV centvry B.C. combat"
+		s += "Pre-modern combat"
 //	if (config.hub_features)
 //		s += "<b>[config.hub_features]</b><br>"
 

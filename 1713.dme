@@ -461,7 +461,6 @@
 #include "code\modules\admin\verbs\warn.dm"
 #include "code\modules\admin\verbs\weather.dm"
 #include "code\modules\admin\verbs\whitelist.dm"
-#include "code\modules\admin\verbs\whitelist_teststaff.dm"
 #include "code\modules\admin\verbs\world.dm"
 #include "code\modules\admin\view_variables\helpers.dm"
 #include "code\modules\admin\view_variables\topic.dm"
