@@ -46,7 +46,7 @@
 
 /obj/item/clothing/under/greek_commander
 	name = "Greek Commander uniform"
-	desc = "A light blue tunic covered by a bronze coirass. Used by Hellenic Commanders."
+	desc = "A light blue tunic covered by a bronze plate armor. Used by Hellenic Commanders."
 	icon_state = "greek_commander"
 	item_state = "greek_commander"
 	worn_state = "greek_commander"
@@ -79,6 +79,9 @@
 	icon_state = "roman"
 	item_state = "roman"
 	worn_state = "roman"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/roman_decurion
 	name = "Roman decurion helmet"
@@ -86,6 +89,9 @@
 	icon_state = "roman_d"
 	item_state = "roman_d"
 	worn_state = "roman_d"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "Roman centurion helmet"
@@ -93,6 +99,9 @@
 	icon_state = "roman_c"
 	item_state = "roman_c"
 	worn_state = "roman_c"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/gladiator
 	name = "gladiator helmet"
@@ -100,6 +109,9 @@
 	icon_state = "gladiator"
 	item_state = "gladiator"
 	worn_state = "gladiator"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 60, bullet = 45, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 
 /obj/item/clothing/head/helmet/horned
@@ -108,6 +120,8 @@
 	icon_state = "viking"
 	item_state = "viking"
 	worn_state = "viking"
+	body_parts_covered = HEAD
+	armor = list(melee = 45, bullet = 30, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek
 	name = "greek helmet"
@@ -115,6 +129,9 @@
 	icon_state = "greek"
 	item_state = "greek"
 	worn_state = "greek"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 62, bullet = 44, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek_commander
 	name = "Lochagos helmet"
@@ -122,6 +139,9 @@
 	icon_state = "greek_c"
 	item_state = "greek_c"
 	worn_state = "greek_c"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 62, bullet = 44, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek_sl
 	name = "Dimoerites helmet"
@@ -129,6 +149,9 @@
 	icon_state = "greek_sl"
 	item_state = "greek_sl"
 	worn_state = "greek_sl"
+	body_parts_covered = HEAD|FACE|EYES
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 62, bullet = 44, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/bearpelt
 	name = "bearpelt"
@@ -136,7 +159,7 @@
 	icon_state = "bearpelt"
 	item_state = "bearpelt"
 	worn_state = "bearpelt"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/wolfpelt
 	name = "wolfpelt"
@@ -144,7 +167,7 @@
 	icon_state = "wolfpelt"
 	item_state = "wolfpelt"
 	worn_state = "wolfpelt"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/toxotai
 	name = "toxotai hat"

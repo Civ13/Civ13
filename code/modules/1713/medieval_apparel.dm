@@ -15,6 +15,7 @@
 	icon_state = "knight"
 	item_state = "knight"
 	worn_state = "knight"
+	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
 	armor = list(melee = 75, bullet = 60, laser = 10,energy = 8, bomb = 25, bio = 15, rad = FALSE)
 
@@ -78,6 +79,7 @@
 	icon_state = "knight_simple"
 	item_state = "knight_simple"
 	worn_state = "knight_simple"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
 
 /obj/item/clothing/suit/armor/medieval/blue
@@ -118,6 +120,7 @@
 	icon_state = "bronze_chestplate"
 	item_state = "bronze_chestplate"
 	worn_state = "bronze_chestplate"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, bullet = 30, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
@@ -126,6 +129,7 @@
 	icon_state = "iron_chestplate"
 	item_state = "iron_chestplate"
 	worn_state = "iron_chestplate"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, bullet = 40, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/suit/armor/medieval/leather
@@ -134,15 +138,17 @@
 	icon_state = "leather_armor"
 	item_state = "leather_armor"
 	worn_state = "leather_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, bullet = 15, laser = 10,energy = 15, bomb = 20, bio = 20, rad = FALSE)
 
 /obj/item/clothing/suit/armor/medieval/chainmail
 	name = "chainmail"
-	desc = "Wearable armor made of several small interlinked chains. Good against arrows."
+	desc = "Wearable armor made of several small interlinked chains."
 	icon_state = "chainmail"
 	item_state = "chainmail"
 	worn_state = "chainmail"
-	armor = list(melee = 50, bullet = 60, laser = 15,energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 50, bullet = 35, laser = 15,energy = 15, bomb = 30, bio = 20, rad = FALSE)
 
 
 /obj/item/clothing/head/helmet/medieval
@@ -151,7 +157,9 @@
 	icon_state = "knight_simple"
 	item_state = "knight_simple"
 	worn_state = "knight_simple"
+	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/helmet/medieval/templar
 	name = "templar knight helmet"
@@ -159,6 +167,7 @@
 	icon_state = "knight_templar"
 	item_state = "knight_templar"
 	worn_state = "knight_templar"
+	flags_inv = BLOCKHAIR
 	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/helmet1
@@ -167,6 +176,8 @@
 	icon_state = "medieval_helmet1"
 	item_state = "medieval_helmet1"
 	worn_state = "medieval_helmet1"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/helmet2
@@ -175,6 +186,8 @@
 	icon_state = "medieval_helmet2"
 	item_state = "medieval_helmet2"
 	worn_state = "medieval_helmet2"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 65, bullet = 50, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/helmet3
@@ -183,6 +196,8 @@
 	icon_state = "medieval_helmet3"
 	item_state = "medieval_helmet3"
 	worn_state = "medieval_helmet3"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, bullet = 30, laser = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/structure/closet/crate/equipment
