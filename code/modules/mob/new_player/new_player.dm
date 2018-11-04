@@ -275,7 +275,7 @@
 					message_admins(msg)
 					LateChoices()
 					return TRUE
-			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 		LateChoices()
 		return TRUE
@@ -299,9 +299,13 @@
 			return
 
 		if (map && map.has_occupied_base(job_flag))
-			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now."
+			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now.</span>"
 			return
 
+		if (actual_job.whitelisted)
+			if (!(actual_job.validate(ckey) == TRUE))
+				usr << "<span class = 'notice'>You need to be whitelisted to play this job. Apply in the Discord.</span>"
+				return
 		if (actual_job.is_officer)
 			if ((input(src, "This is an officer position. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
 				return
