@@ -19,6 +19,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	var/win_threshold = 0.00
 	var/list/callback = null
 	var/list/disabled[10]
+	var/voted_epoch = "1713"
 
 	New()
 		if (vote != src)
@@ -143,25 +144,14 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if ("restart")
 					if (. == "Restart Round")
 						restart = TRUE
+				if ("epoch")
+					ticker.finished = TRUE
+					processes.mapswap.admin_triggered = FALSE
+					processes.mapswap.ready = TRUE
+					processes.mapswap.fire()
 				if ("map")
+					ticker.finished = TRUE
 					processes.mapswap.finished_at = world.time
-/*				if ("gamemode")
-					if (master_mode != .)
-						world.save_mode(.)
-						if (ticker && ticker.mode)
-							restart = TRUE
-						else
-							master_mode = .*/
-			/*	if ("add_antagonist")
-					if (isnull(.) || . == "None")
-						antag_add_failed = TRUE
-					else
-						additional_antag_types |= antag_names_to_ids[.]*/
-
-/*		if (mode == "gamemode") //fire this even if the vote fails.
-			if (!round_progressing)
-				round_progressing = TRUE
-				world << "<font color='red'><b>The round will start soon.</b></font>"*/
 
 		if (restart)
 			world << "Round ending due to vote."
@@ -209,6 +199,15 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if ("restart")
 					choices.Add("Restart Round","Continue Playing")
 					win_threshold = 0.67
+				if ("epoch")
+					for (var/epoch in processes.epochswap.epochs)
+						if (!default)
+							default = epoch
+						choices.Add(epoch)
+						choices[epoch] = 0
+					for (var/epoch in processes.epochswap.epochs)
+						if (clients.len < processes.epochswap.epochs[epoch])
+							disabled[epoch] = "[processes.epochswap.epochs[epoch]] players needed"
 				if ("map")
 					for (var/map in processes.mapswap.maps)
 						if (!default)
