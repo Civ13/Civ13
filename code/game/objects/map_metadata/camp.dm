@@ -72,7 +72,6 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		if ("Kingdom of France")
 			return "French"
 
-	#undef NO_WINNER
 
 /obj/map_metadata/camp/cross_message(faction)
 	if (faction == BRITISH)
@@ -153,3 +152,5 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 			win_condition.hash = 0
 		last_win_condition = win_condition.hash
 		return TRUE
+
+	#undef NO_WINNER
