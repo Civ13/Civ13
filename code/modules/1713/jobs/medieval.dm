@@ -113,7 +113,10 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif_helmet(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
@@ -156,10 +159,13 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/leather(H), slot_wear_suit)
 
 //head
-	if (prob(50))
+	var/randhead = pick(1,2,3)
+	if (randhead == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet2(H), slot_head)
-	else
+	if (randhead == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet3(H), slot_head)
+	if (randhead == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
 	var/randspear = pick(1,2,3)
 	if (randspear == 1)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_belt)
@@ -183,7 +189,7 @@
 	return TRUE
 
 /datum/job/french/medieval_archer
-	title = "Paysan avec Fourche"
+	title = "Paysan Archer"
 	en_meaning = "Levy Archer"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
@@ -409,7 +415,10 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
 
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif_helmet(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
@@ -452,10 +461,13 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/leather(H), slot_wear_suit)
 
 //head
-	if (prob(50))
+	var/randhead = pick(1,2,3)
+	if (randhead == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet2(H), slot_head)
-	else
+	if (randhead == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet3(H), slot_head)
+	if (randhead == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
 	var/randspear = pick(1,2,3)
 	if (randspear == 1)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear(H), slot_belt)

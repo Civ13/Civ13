@@ -199,7 +199,7 @@
 	worn_state = "medieval_helmet2"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 65, bullet = 50, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 45, bullet = 35, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/helmet3
 	name = "conical helmet"
@@ -219,7 +219,17 @@
 	worn_state = "coif"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, bullet = 35, laser = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 45, bullet = 40, laser = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/medieval/coif_helmet
+	name = "iron coif and helmet"
+	desc = "A chainmail headcover, with a conical helmet on top."
+	icon_state = "coif"
+	item_state = "coif"
+	worn_state = "coif"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
 
 /obj/structure/closet/crate/equipment
