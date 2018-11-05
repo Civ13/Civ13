@@ -298,7 +298,7 @@
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 			return
 
-		if (map && map.has_occupied_base(job_flag))
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP)
 			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now.</span>"
 			return
 

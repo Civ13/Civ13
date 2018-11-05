@@ -89,3 +89,67 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		return "<span class = 'userdanger'>The French may no longer cross the invisible wall!</span>"
 	else
 		return ""
+
+/obj/map_metadata/camp/update_win_condition()
+	if (single_faction)
+		return TRUE
+	else
+		if (!win_condition_specialcheck())
+			return FALSE
+		if (world.time >= next_win && next_win != -1)
+			if (win_condition_spam_check)
+				return FALSE
+			ticker.finished = TRUE
+			var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+			if (current_winner && current_loser)
+				message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
+			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			win_condition_spam_check = TRUE
+			return FALSE
+		// German major
+		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+				if (last_win_condition != win_condition.hash)
+					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the Castle! They will win in {time} minute{s}."
+					next_win = world.time + short_win_time(roundend_condition_sides[2][1])
+					announce_current_win_condition()
+					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+					current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+		// German minor
+		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+				if (last_win_condition != win_condition.hash)
+					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the Castle! They will win in {time} minute{s}."
+					next_win = world.time + long_win_time(roundend_condition_sides[2][1])
+					announce_current_win_condition()
+					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+					current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+		// Soviet major
+		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+				if (last_win_condition != win_condition.hash)
+					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Castle! They will win in {time} minute{s}."
+					next_win = world.time + short_win_time(roundend_condition_sides[1][1])
+					announce_current_win_condition()
+					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+		// Soviet minor
+		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+				if (last_win_condition != win_condition.hash)
+					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Castle! They will win in {time} minute{s}."
+					next_win = world.time + long_win_time(roundend_condition_sides[1][1])
+					announce_current_win_condition()
+					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+
+		else
+			if (current_win_condition != NO_WINNER && current_winner && current_loser)
+				world << "<font size = 3>The [current_winner] has lost control of the Castle!</font>"
+				current_winner = null
+				current_loser = null
+			next_win = -1
+			current_win_condition = NO_WINNER
+			win_condition.hash = 0
+		last_win_condition = win_condition.hash
+		return TRUE
