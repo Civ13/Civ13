@@ -41,6 +41,7 @@
 	slot_flags = SLOT_BACK
 	var/material = "wood"
 	health = 40 // hardness of wood
+	var/cooldown = 0
 
 /obj/item/weapon/shield/steel
 	name = "steel shield"
@@ -182,3 +183,9 @@ obj/item/weapon/shield/blue_buckler
 	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 40 // hardness of wood
+
+obj/item/weapon/shield/attack_self(mob/user as mob)
+	if (cooldown < world.time - 25)
+		user.visible_message("<span class='warning'>[user] bashes the shield!</span>")
+		playsound(user.loc, 'sound/effects/shieldbash2.ogg', 100, TRUE)
+		cooldown = world.time
