@@ -21,10 +21,10 @@
 
 /obj/item/clothing/under/medieval
 	name = "white tunic"
-	desc = "A light white tunic."
-	icon_state = "white_tunic"
-	item_state = "white_tunic"
-	worn_state = "white_tunic"
+	desc = "A long white tunic, with golden trimmings."
+	icon_state = "white_tunic_long"
+	item_state = "white_tunic_long"
+	worn_state = "white_tunic_long"
 
 /obj/item/clothing/under/medieval/yellow
 	name = "yellow tunic"
@@ -133,6 +133,16 @@
 	armor = list(melee = 60, bullet = 40, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 32
 
+/obj/item/clothing/suit/armor/medieval/iron_chestplate/red
+	..()
+	icon_state = "iron_chestplater"
+	item_state = "iron_chestplater"
+	worn_state = "iron_chestplater"
+/obj/item/clothing/suit/armor/medieval/iron_chestplate/blue
+	..()
+	icon_state = "iron_chestplateb"
+	item_state = "iron_chestplateb"
+	worn_state = "iron_chestplateb"
 /obj/item/clothing/suit/armor/medieval/leather
 	name = "leather armor"
 	desc = "Several pressed sheets of leather, making a reasonable armor plate."
@@ -201,6 +211,17 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, bullet = 30, laser = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/medieval/coif
+	name = "iron coif"
+	desc = "A chainmail headcover."
+	icon_state = "coif"
+	item_state = "coif"
+	worn_state = "coif"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 45, bullet = 35, laser = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+
 /obj/structure/closet/crate/equipment
 	name = "wood crate"
 	icon_state = "wood_crate"
@@ -217,3 +238,14 @@
 				/obj/item/weapon/shield/iron/semioval = 1,)
 
 
+
+
+/obj/item/clothing/head/noblehat1
+	name = "red noble hat"
+	icon_state = "noblehat1"
+	item_state = "noblehat1"
+
+/obj/item/clothing/head/noblehat2
+	name = "purple noble hat"
+	icon_state = "noblehat2"
+	item_state = "noblehat2"

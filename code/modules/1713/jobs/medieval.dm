@@ -23,10 +23,12 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/blue(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_french(H), slot_head)
-
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
@@ -317,9 +319,12 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/red(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
