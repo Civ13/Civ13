@@ -21,7 +21,7 @@
 	songs = list(
 		"Crusaders:1" = 'sound/music/crusaders.ogg')
 	battle_name = "battle of Normandy"
-	mission_start_message = "<font size=4>The <b>French</b> and <b>British</b> armies are facing each other in Northern France! There is a <b>Castle</b> in the middle of the map, that must be captured and held for 8 minutes! The battle will start in <b>8 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>French</b> and <b>English</b> armies are facing each other in Northern France! There is a <b>Castle</b> in the middle of the map, that must be captured and held for 8 minutes! The battle will start in <b>8 minutes</b>.</font>"
 	faction1 = BRITISH
 	faction2 = FRENCH
 	ambience = list('sound/ambience/jungle1.ogg')
@@ -37,7 +37,6 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/camp/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
-
 
 /obj/map_metadata/camp/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
@@ -74,3 +73,19 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 			return "French"
 
 	#undef NO_WINNER
+
+/obj/map_metadata/camp/cross_message(faction)
+	if (faction == BRITISH)
+		return "<font size = 4>The English may now cross the invisible wall!</font>"
+	else if (faction == FRENCH)
+		return "<font size = 4>The French may now cross the invisible wall!</font>"
+	else
+		return ""
+
+/obj/map_metadata/camp/reverse_cross_message(faction)
+	if (faction == ENGLISH)
+		return "<span class = 'userdanger'>The English may no longer cross the invisible wall!</span>"
+	else if (faction == FRENCH)
+		return "<span class = 'userdanger'>The French may no longer cross the invisible wall!</span>"
+	else
+		return ""
