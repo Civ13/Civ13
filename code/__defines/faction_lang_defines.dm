@@ -23,7 +23,7 @@
 		return "Pirates"
 
 	if (constant == BRITISH)
-		return "Royal Navy"
+		return "British Empire"
 
 	if (constant == CIVILIAN)
 		return "Colonists"
@@ -32,16 +32,16 @@
 		return "Native Tribe"
 
 	if (constant == PORTUGUESE)
-		return "Portuguese Navy"
+		return "Portuguese Empire"
 
 	if (constant == SPANISH)
-		return "Spanish Navy"
+		return "Spanish Empire"
 
 	if (constant == FRENCH)
-		return "French Navy"
+		return "French Empire"
 
 	if (constant == DUTCH)
-		return "Dutch Navy"
+		return "Dutch Republic"
 
 	if (constant == ROMAN)
 		return "Roman Republic"

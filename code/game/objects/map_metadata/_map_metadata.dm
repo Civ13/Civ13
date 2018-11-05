@@ -383,7 +383,7 @@ var/global/obj/map_metadata/map = null
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
-			return "Royal Navy"
+			return "British Empire"
 		if (PIRATES)
 			return "Pirate crew"
 		if (CIVILIAN)
@@ -391,20 +391,20 @@ var/global/obj/map_metadata/map = null
 		if (INDIANS)
 			return "Native Tribe"
 		if (FRENCH)
-			return "French Navy"
+			return "French Empire"
 		if (PORTUGUESE)
-			return "Portuguese Navy"
+			return "Portuguese Empire"
 		if (SPANISH)
-			return "Spanish Navy"
+			return "Spanish Empire"
 		if (DUTCH)
-			return "Dutch Navy"
+			return "Dutch Republic"
 		if (ROMAN)
 			return "Roman Republic"
 		if (GREEK)
 			return "Greek States"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
-		if ("Royal Navy")
+		if ("British Empire")
 			return "British"
 		if ("Pirate crew")
 			return "Pirate"
@@ -412,13 +412,13 @@ var/global/obj/map_metadata/map = null
 			return "Colonist"
 		if ("Native Tribe")
 			return "Native"
-		if ("French Navy")
+		if ("French Empire")
 			return "French"
-		if ("Portuguese Navy")
+		if ("Portuguese Empire")
 			return "Portuguese"
-		if ("Spanish Navy")
+		if ("Spanish Empire")
 			return "Spanish"
-		if ("Dutch Navy")
+		if ("Dutch Republic")
 			return "Dutch"
 		if ("Roman Republic")
 			return "Roman"

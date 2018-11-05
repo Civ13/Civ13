@@ -103,7 +103,7 @@
 
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
-		return "Royal Navy"
+		return "British Empire"
 	else
 		return "Pirate crew"
 		/*
@@ -111,7 +111,7 @@
 */
 /proc/get_side_name(var/side, var/datum/job/j)
 	if (side == BRITISH)
-		return "Royal Navy"
+		return "British Empire"
 	if (side == PIRATES)
 		return "Pirate crew"
 	return null
