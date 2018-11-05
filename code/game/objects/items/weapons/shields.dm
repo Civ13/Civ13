@@ -185,7 +185,7 @@ obj/item/weapon/shield/blue_buckler
 	health = 40 // hardness of wood
 
 obj/item/weapon/shield/attack_self(mob/user as mob)
-	if (cooldown < world.time - 25)
+	if (cooldown < world.time - 10)
 		user.visible_message("<span class='warning'>[user] bashes the shield!</span>")
 		playsound(user.loc, 'sound/effects/shieldbash2.ogg', 100, TRUE)
 		cooldown = world.time
