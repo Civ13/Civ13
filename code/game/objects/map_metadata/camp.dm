@@ -1,7 +1,7 @@
 #define NO_WINNER "The fighting for the countryside is still going on."
 /obj/map_metadata/camp
 	ID = MAP_CAMP
-	title = "Camp (140x60x1)"
+	title = "Camp (200x45x1)"
 	lobby_icon_state = "medieval"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300

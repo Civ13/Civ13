@@ -239,3 +239,115 @@
 		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
 		qdel(src)
 		return
+
+
+/obj/structure/barricade/stone_h
+	name = "stone wall"
+	desc = "A wall of stone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "stone_brick"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/stone_v
+	name = "stone wall"
+	desc = "A wall of stone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "stone_brick2"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/stone_h/crenelated
+	name = "crenelated stone wall"
+	desc = "A wall of stone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "stone_brick_c"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/stone_v/crenelated
+	name = "crenelated stone wall"
+	desc = "A wall of stone blocks."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "stone_brick_c2"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/stone_h/New()
+	..()
+	icon_state = "stone_brick"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+/obj/structure/barricade/stone_v/New()
+	..()
+	icon_state = "stone_brick2"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/stone_h/crenelated/New()
+	..()
+	icon_state = "stone_brick_c"
+	name = "crenelated stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/stone_v/crenelated/New()
+	..()
+	icon_state = "stone_brick_c2"
+	name = "crenelated stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/stone_h/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/stone_v/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/stone_h/crenelated/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/stone_v/crenelated/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
