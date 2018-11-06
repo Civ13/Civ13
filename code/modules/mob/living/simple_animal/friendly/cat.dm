@@ -34,7 +34,7 @@
 				if (!M.stat)
 					M.splat()
 					visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
-					M.health -= 1
+					M.apply_damage(1, BRUTE)
 					movement_target = null
 					stop_automated_movement = FALSE
 					break
