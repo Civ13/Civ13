@@ -316,15 +316,15 @@ obj/structure/anvil/New()
 			if (choice3 == "Cancel")
 				return
 		else if (choice == "Armor")
-			var/list/display4 = list("Chainmail (6)", "Iron Chestplate (10)", "Plated Armor (16)", "Cancel")
+			var/list/display4 = list("Chainmail (10)", "Iron Chestplate (10)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Cancel")
 			var/choice4 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display4)
-			if (choice4 == "Chainmail (6)")
+			if (choice4 == "Chainmail (10)")
 				if (iron_amt >= 6)
 					user << "You begin crafting the chainmail..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,130,src) && iron_amt >= 6)
+					if (do_after(user,130,src) && iron_amt >= 10)
 						user << "You craft the chainmail."
-						iron_amt -= 6
+						iron_amt -= 10
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/suit/armor/medieval/chainmail(user.loc)
@@ -332,13 +332,13 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice4 == "Iron Chestplate (10)")
-				if (iron_amt >= 10)
+			if (choice4 == "Iron Chestplate (12)")
+				if (iron_amt >= 12)
 					user << "You begin crafting the iron chestplate..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,160,src) && iron_amt >= 10)
+					if (do_after(user,160,src) && iron_amt >= 12)
 						user << "You craft the iron chestplate."
-						iron_amt -= 10
+						iron_amt -= 12
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/suit/armor/medieval/iron_chestplate(user.loc)
@@ -347,7 +347,7 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 			if (choice4 == "Plated Armor (16)")
-				if (iron_amt >= 15)
+				if (iron_amt >= 16)
 					user << "You begin crafting the plated armor..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 					if (do_after(user,210,src) && iron_amt >= 16)
@@ -356,6 +356,90 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/suit/armor/medieval(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Conical Helmet (6)")
+				if (iron_amt >= 6)
+					user << "You begin crafting the conical helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 6)
+						user << "You craft the conical helmet."
+						iron_amt -= 6
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/medieval/helmet3(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Kettle Helmet (8)")
+				if (iron_amt >= 8)
+					user << "You begin crafting the kettle helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 8)
+						user << "You craft the kettle helmet."
+						iron_amt -= 8
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/medieval/helmet2(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Kettle Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the protective conical helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 10)
+						user << "You craft the protective conical helmet."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/medieval/helmet1(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Coif (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the iron coif..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 10)
+						user << "You craft the iron coif."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/medieval/coif(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Coif and Helmet (12)")
+				if (iron_amt >= 12)
+					user << "You begin crafting the iron coif and helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 12)
+						user << "You craft the iron coif."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/medieval/coif_helmet(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Knight Helmet (15)")
+				if (iron_amt >= 15)
+					user << "You begin crafting the knight helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 15)
+						user << "You craft the knight helmet."
+						iron_amt -= 15
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/medieval(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
