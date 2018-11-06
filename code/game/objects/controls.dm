@@ -4,7 +4,7 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "gate_control"
 	anchored = TRUE
-	var/open = FALSE
+	var/open = TRUE
 	var/cooldown = 0
 	density = TRUE
 
@@ -36,7 +36,7 @@
 	name = "gate"
 	desc = "An iron gate."
 	icon = 'icons/obj/doors/material_doors.dmi'
-	icon_state = "gate1"
+	icon_state = "gate0"
 	anchored = TRUE
 	density = TRUE
 	var/health = 600
@@ -46,7 +46,7 @@
 	name = "gate"
 	desc = "An iron gate."
 	icon = 'icons/obj/doors/material_doors.dmi'
-	icon_state = "gate0"
+	icon_state = "gate1"
 	anchored = TRUE
 	density = FALSE
 
