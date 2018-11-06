@@ -21,15 +21,12 @@ obj/structure/anvil/New()
 			user << "You begin smithing the iron..."
 			icon_state = "anvil2"
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-			if (do_after(user,30,src))
+			if (do_after(user,30*P.amount,src))
 				user << "<span class='notice'>You smite the iron.</span>"
-				iron_amt += 1
+				iron_amt += P.amount
 				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
 				icon_state = "anvil3"
-				if (P.amount > 1)
-					P.amount -= 1
-				else
-					qdel(P)
+				qdel(P)
 		else if (istype(P, /obj/item/stack/material/iron) && steel_amt > 0)
 			user << "<span class='notice'>You can't smelt iron while there is steel on the anvil! Finish the steel first.</span>"
 			return
@@ -37,15 +34,12 @@ obj/structure/anvil/New()
 			user << "You begin smithing the steel..."
 			icon_state = "anvil2"
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-			if (do_after(user,35,src))
+			if (do_after(user,35*P.amount,src))
 				user << "<span class='notice'>You smite the steel.</span>"
-				steel_amt += 1
+				steel_amt += P.amount
 				desc = "A heavy iron anvil. The blacksmith's main work tool. It has [steel_amt] hot steel bars on it."
 				icon_state = "anvil3"
-				if (P.amount > 1)
-					P.amount -= 1
-				else
-					qdel(P)
+				qdel(P)
 		else if (istype(P, /obj/item/stack/material/steel) && iron_amt > 0)
 			user << "<span class='notice'>You can't smelt steel while there is iron on the anvil! Finish the iron first.</span>"
 			return
