@@ -133,6 +133,7 @@
 #include "code\game\jobs\job_controller.dm"
 #include "code\game\jobs\jobs.dm"
 #include "code\game\objects\buckling.dm"
+#include "code\game\objects\controls.dm"
 #include "code\game\objects\covers.dm"
 #include "code\game\objects\explosion.dm"
 #include "code\game\objects\farming.dm"
@@ -757,5 +758,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\naval.dmm"
+#include "maps\1013\camp.dmm"
 // END_INCLUDE
