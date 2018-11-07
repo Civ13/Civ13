@@ -251,11 +251,11 @@
 
 
 /obj/item/clothing/head/noblehat1
-	name = "red noble hat"
+	name = "brown noble hat"
 	icon_state = "noblehat1"
 	item_state = "noblehat1"
 
 /obj/item/clothing/head/noblehat2
-	name = "purple noble hat"
+	name = "black noble hat"
 	icon_state = "noblehat2"
 	item_state = "noblehat2"
