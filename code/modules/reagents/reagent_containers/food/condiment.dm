@@ -58,7 +58,7 @@
 		user << "<span class='notice'>You swallow some of contents of \the [src].</span>"
 
 	on_reagent_change()
-		if (icon_state == "saltshakersmall" || icon_state == "peppermillsmall" || icon_state == "flour")
+		if (icon_state == "saltshakersmall" || icon_state == "peppermillsmall")
 			return
 		if (reagents.reagent_list.len > 0)
 			switch(reagents.get_master_reagent_id())
