@@ -16,6 +16,7 @@
 #define FRENCH "FRENCH"
 #define DUTCH "DUTCH"
 #define GREEK "GREEK"
+#define ARAB "ARAB"
 
 /proc/faction_const2name(constant)
 
@@ -48,3 +49,6 @@
 
 	if (constant == GREEK)
 		return "Greek States"
+
+	if (constant == ARAB)
+		return "Arabic Caliphate"

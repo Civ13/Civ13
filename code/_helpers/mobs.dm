@@ -177,8 +177,22 @@ proc/random_roman_name(gender, species = "Human")
 		else
 			return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 	else
-		return current_species.get_random_roman_name(gender)		
-		
+		return current_species.get_random_roman_name(gender)
+
+
+proc/random_arab_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
+		else
+			return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
+	else
+		return current_species.get_random_arab_name(gender)
+
 proc/random_skin_tone()
 
 	var/skin_tone = "caucasian"

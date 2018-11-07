@@ -36,6 +36,9 @@ var/list/adjectives = file2list("config/names/adjectives.txt")
 
 var/list/first_names_male_greek = file2list("config/names/first_male_greek.txt")		//Add greek names to names vars
 
+var/list/first_names_male_arab = file2list("config/names/first_male_arab.txt")		//Add greek names to names vars
+
+
 var/list/first_names_male_roman = file2list("config/names/first_male_roman.txt")
 var/list/middle_names_roman = file2list("config/names/middle_roman.txt")                 //Add roman names to names vars
 var/list/last_names_roman = file2list("config/names/last_roman.txt")

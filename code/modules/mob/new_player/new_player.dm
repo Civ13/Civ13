@@ -510,6 +510,14 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
+	if (istype(job, /datum/job/arab))
+		if (client.prefs.s_tone < -115)
+			usr << "<span class='danger'>Your skin is too dark for you to be an Arab. Choose a value between 100 and 150.</span>"
+			return
+		if (client.prefs.s_tone > -65)
+			usr << "<span class='danger'>Your skin is too light for you to be an Arab. Choose a value between 100 and 150.</span>"
+
+			return
 	spawning = TRUE
 	close_spawn_windows()
 	job_master.AssignRole(src, rank, TRUE)
@@ -563,6 +571,8 @@
 		dat += "[alive_greek.len] Greeks "
 	if (ROMAN in map.faction_organization)
 		dat += "[alive_roman.len] Romans "
+	if (ARAB in map.faction_organization)
+		dat += "[alive_arab.len] Arabs "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -579,7 +589,8 @@
 		DUTCH = FALSE,
 		BRITISH = FALSE,
 		ROMAN = FALSE,
-		GREEK = FALSE,)
+		GREEK = FALSE,
+		ARAB = FALSE,)
 
 	var/prev_side = FALSE
 

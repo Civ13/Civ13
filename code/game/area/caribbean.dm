@@ -493,3 +493,7 @@
 	name = "Greek Camp"
 	icon_state = "blue1"
 	base_turf = /turf/floor/dirt
+/area/caribbean/arab
+	name = "Arab Camp"
+	icon_state = "blue1"
+	base_turf = /turf/floor/dirt

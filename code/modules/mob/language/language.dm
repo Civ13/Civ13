@@ -178,6 +178,21 @@
 
 	return "[trim(full_name)]"
 
+/datum/language/proc/get_random_arab_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
+
+	var/full_name = ""
+	var/new_name = ""
+
+	for (var/i = 0;i<name_count;i++)
+		new_name = ""
+		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
+			new_name += pick(syllables)
+		full_name += " [capitalize(lowertext(new_name))]"
+
+	return "[trim(full_name)]"
+											////removed var/gender \/
 /datum/language
 	var/list/scramble_cache = list()
 
@@ -390,7 +405,7 @@
 						H.real_name = H.client.prefs.carib_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
-					
+
 		if (istype(new_language, /datum/language/latin))
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
@@ -401,7 +416,7 @@
 						H.real_name = H.client.prefs.roman_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
-		
+
 		if (istype(new_language, /datum/language/greek))
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
@@ -412,6 +427,18 @@
 						H.real_name = H.client.prefs.greek_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/arab))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_arab)
+						H.real_name = H.species.get_random_arab_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.arab_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
 
 	if (!istype(new_language) || (new_language in languages))
 		return FALSE

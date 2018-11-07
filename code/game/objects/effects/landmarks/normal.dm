@@ -71,7 +71,12 @@
 			qdel(src)
 			return
 
-
+		if ("JoinLateAR")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		// TREASURY LANDMARKS
 		if ("TreasuryFR")
 			if (!latejoin_turfs[name])

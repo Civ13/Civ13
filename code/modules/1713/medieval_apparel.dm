@@ -73,6 +73,13 @@
 	item_state = "red_tunic2"
 	worn_state = "red_tunic2"
 
+/obj/item/clothing/under/medieval/arab
+	name = "arab tunic"
+	desc = "A light, loose fitting tunic."
+	icon_state = "arab"
+	item_state = "arab"
+	worn_state = "arab"
+
 /obj/item/clothing/suit/armor/medieval
 	name = "plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
@@ -231,6 +238,22 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
+/obj/item/clothing/head/helmet/medieval/arab
+	name = "helmet and turban"
+	desc = "An iron helmet, covered with a turban."
+	icon_state = "turhelm1"
+	item_state = "turhelm1"
+	worn_state = "turhelm1"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/medieval/arab/New()
+	..()
+	var/pickcolor = pick("turhelm1", "turhelm2", "turhelm3", "turhelm4")
+	icon_state = pickcolor
+	item_state = pickcolor
+	worn_state = pickcolor
 
 /obj/structure/closet/crate/equipment
 	name = "wood crate"
@@ -259,3 +282,17 @@
 	name = "black noble hat"
 	icon_state = "noblehat2"
 	item_state = "noblehat2"
+
+/obj/item/clothing/head/turban
+	name = "turban"
+	desc = "a colored, light fabric turban."
+	icon_state = "turban1"
+	item_state = "turban1"
+	worn_state = "turban1"
+
+/obj/item/clothing/head/turban/New()
+	..()
+	var/pickcolor = pick("turban1", "turban2", "turban3", "turban4")
+	icon_state = pickcolor
+	item_state = pickcolor
+	worn_state = pickcolor

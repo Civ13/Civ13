@@ -151,7 +151,7 @@ var/global/obj/map_metadata/map = null
 			switch (H.original_job.base_type_flag())
 				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN)
 					return !faction1_can_cross_blocks()
-				if (PIRATES, INDIANS, CIVILIAN, GREEK)
+				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB)
 					return !faction2_can_cross_blocks()
 	return FALSE
 
@@ -284,7 +284,8 @@ var/global/obj/map_metadata/map = null
 		PIRATES = 0,
 		DUTCH = 0,
 		ROMAN = 0,
-		GREEK = 0,)
+		GREEK = 0,
+		ARAB = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -380,6 +381,8 @@ var/global/obj/map_metadata/map = null
 			return "Roman"
 		if (GREEK)
 			return "Greek"
+		if (ARAB)
+			return "Arab"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -402,6 +405,8 @@ var/global/obj/map_metadata/map = null
 			return "Roman Republic"
 		if (GREEK)
 			return "Greek States"
+		if (ARAB)
+			return "Arabic Caliphate"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -424,6 +429,8 @@ var/global/obj/map_metadata/map = null
 			return "Roman"
 		if ("Greek States")
 			return "Greek"
+		if ("Arabic Caliphate")
+			return "Arab"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

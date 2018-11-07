@@ -154,6 +154,23 @@ obj/item/weapon/material/sword/spadroon/bronze
 obj/item/weapon/material/sword/cutlass/iron
 	default_material = "iron"
 
+/obj/item/weapon/material/sword/scimitar
+	name = "scimitar"
+	desc = "A medium-sized, curved sword, preferred by arabs."
+	icon_state = "cutlass"
+	item_state = "cutlass"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.8 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 30
+	cooldownw = 8
+	value = 45
+
+obj/item/weapon/material/sword/scimitar/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/sword/sabre
 	name = "sabre"
 	desc = "A small, slightly curved sword, favored by cavalry and light infantry units."

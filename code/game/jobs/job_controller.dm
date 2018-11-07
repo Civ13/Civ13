@@ -28,6 +28,7 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[DUTCH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ROMAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[GREEK]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ARAB]
 	else
 		for (var/faction in map.faction_organization)
 			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
@@ -358,6 +359,8 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateRO"
 				if (GREEK)
 					spawn_location = "JoinLateGR"
+				if (ARAB)
+					spawn_location = "JoinLateAR"
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
@@ -379,6 +382,8 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateRO"
 			else if (findtext(H.original_job.spawn_location, "JoinLateGR"))
 				spawn_location = "JoinLateGR"
+			else if (findtext(H.original_job.spawn_location, "JoinLateAR"))
+				spawn_location = "JoinLateAR"
 		H.job_spawn_location = spawn_location
 
 		#ifdef SPAWNLOC_DEBUG
@@ -505,6 +510,7 @@ var/global/datum/controller/occupations/job_master
 	var/dutch = alive_n_of_side(DUTCH)
 	var/roman = alive_n_of_side(ROMAN)
 	var/greek = alive_n_of_side(GREEK)
+	var/arab = alive_n_of_side(ARAB)
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
 	var/max_pirates = INFINITY
@@ -516,6 +522,7 @@ var/global/datum/controller/occupations/job_master
 	var/max_dutch = INFINITY
 	var/max_roman = INFINITY
 	var/max_greek = INFINITY
+	var/max_arab = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -553,6 +560,8 @@ var/global/datum/controller/occupations/job_master
 		if (map.faction_distribution_coeffs.Find(GREEK))
 			max_greek = ceil(relevant_clients * map.faction_distribution_coeffs[GREEK])
 
+		if (map.faction_distribution_coeffs.Find(ARAB))
+			max_arab = ceil(relevant_clients * map.faction_distribution_coeffs[ARAB])
 
 	switch (side)
 		if (CIVILIAN)
@@ -612,6 +621,12 @@ var/global/datum/controller/occupations/job_master
 			if (greek_forceEnabled)
 				return FALSE
 			if (greek >= max_greek)
+				return TRUE
+
+		if (ARAB)
+			if (arab_forceEnabled)
+				return FALSE
+			if (arab >= max_arab)
 				return TRUE
 
 	return FALSE
