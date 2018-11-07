@@ -310,7 +310,7 @@ obj/structure/anvil/New()
 			if (choice3 == "Cancel")
 				return
 		else if (choice == "Armor")
-			var/list/display4 = list("Chainmail (10)", "Iron Chestplate (10)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Cancel")
+			var/list/display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Cancel")
 			var/choice4 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display4)
 			if (choice4 == "Chainmail (10)")
 				if (iron_amt >= 6)
@@ -382,7 +382,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice4 == "Kettle Helmet (10)")
+			if (choice4 == "Protective Conical Helmet (10)")
 				if (iron_amt >= 10)
 					user << "You begin crafting the protective conical helmet..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -455,3 +455,4 @@ obj/structure/anvil/New()
 		var/obj/item/stack/material/steel/emptyedsteel = new/obj/item/stack/material/steel(src.loc)
 		emptyedsteel.amount = steel_amt
 		steel_amt = 0
+	return
