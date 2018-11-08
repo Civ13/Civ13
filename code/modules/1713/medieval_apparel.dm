@@ -227,6 +227,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 50, bullet = 35, laser = 15,energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	value = 30
+
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
 	desc = "A longer version of the chainmail, worn as a coat. Offers greater protection."

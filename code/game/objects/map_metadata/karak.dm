@@ -19,7 +19,7 @@
 	age = "1013"
 	faction_distribution_coeffs = list(ARAB = 0.5, FRENCH = 0.5)
 	battle_name = "karak of Karak"
-	mission_start_message = "<font size=4>The <b>Caliphate</b> troops are sieging the <b>Crusader</b> fortress of Karak! The Crusaders will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Caliphate</b> troops are besieging the <b>Crusader</b> fortress of Karak! The Crusaders will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
 	faction1 = ARAB
 	faction2 = FRENCH
 	ambience = list('sound/ambience/desert.ogg')

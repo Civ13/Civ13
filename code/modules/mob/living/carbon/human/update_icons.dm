@@ -773,9 +773,8 @@ var/global/list/damage_icon_parts = list()
 
 ///chainmail stuff, so it goes under the uniform
 
-		if ( wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
 			overlays_standing[SURGERY_LEVEL] = standing
-///
 
 	else
 		overlays_standing[SUIT_LAYER]	= null

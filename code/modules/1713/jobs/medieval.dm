@@ -338,7 +338,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
-	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
+	H.add_note("Role", "You are a <b>[title]</b>, the Leader of the Templar Knights in the Holy Land. Defend Christianity!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -383,7 +383,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar2(H), slot_back)
-	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
+	H.add_note("Role", "You are a <b>[title]</b>, a Knight who joined the Templars. Lead your bretheren to victory!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -429,7 +429,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar(H), slot_back)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar2(H), slot_back)
-	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
+	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman and heavy infantry of the order. Fight the infidels!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -479,7 +479,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant spearman. You have basic armor and a shield. You are in charge of fighting in the frontlines!")
+	H.add_note("Role", "You are a <b>[title]</b>, newly arrived member of the Templar Order. Assist your fellow members in defending the faith!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW)
