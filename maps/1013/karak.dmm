@@ -294,7 +294,6 @@
 "fH" = (/obj/structure/wild/tallgrass2,/obj/effect/decal/cleanable/blood/drip,/turf/floor/plating/sand,/area/caribbean/forest/dirt)
 "fI" = (/obj/structure/barricade,/obj/structure/sign/flag/jihad3,/turf/floor/plating/sand,/area/caribbean/forest/dirt)
 "fJ" = (/obj/structure/wild/tallgrass2,/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/dust,/area/caribbean/arab/sand)
-"fK" = (/obj/item/weapon/reagent_containers/glass/barrel/wine,/turf/floor/plating/dust,/area/caribbean/arab/sand)
 "fL" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/sand,/area/caribbean/arab/sand)
 "fM" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/plating/dust,/area/caribbean/arab/sand)
 "fN" = (/obj/item/flashlight/torch,/obj/item/flashlight/torch,/turf/floor/plating/dust,/area/caribbean/arab/sand)
@@ -406,7 +405,7 @@ aaadaaaaaaaaaaadaaaaababaaaaaaaaabaaaaaaaaabaaaaaeaaaaaeaaadaaaacucucmalalcmcuaa
 aaaaaaaaaaababaaaaaaaaaaaaadaaaaaaaaaaadaaabaaaaaeaaababacaaaaaacucUcualalcucuaacuevcucuejezezeyeyeybreSbrbpdXbseKeKfcbrbrbsfdfeeSeabrejeTbweTbweTbreTemaaaaadaa
 ababaaaaabaaaaadaaacaaaaaaafaaaaaaaaaaaaaaaafkabfnaaaafnaaaaaacuaacualalalcmcufffgfgfhfifjflbpbrbrbrbreJepbrbrelbrbreKbrfpbrfqfebrbrfrejbrelfsftbrbrbremcuaaaaaa
 aaaaaaadaaaaaeaaaaaaababaaaaaaaaaaabaaaaaaaafIaaaaabaaaaaaabaacucucmalalalcmcubrfufufubrbrbrbrbreadXdXdXbrbrbrbrdXbAbrbwbrbpfvfebrbrbpfwbrbpbrbrdXfxfyfzaaacaaaa
-aaaaabaaaaaaaaaaaaaaahaaaaaeaeaaaaaaaaaaaaadfkaafnaaaafnaaabaacucucmalalcmcuaabrfAfBfBbrbrfCfDfEfFfFfGbrfDfDfEdXfDfDfJfEbrbrfKfebrbrdXdXeSdXbpdXfLbrdXbrahaaaeaa
+aaaaabaaaaaaaaaaaaaaahaaaaaeaeaaaaaaaaaaaaadfkaafnaaaafnaaabaacucucmalalcmcuaabrfAfBfBbrbrfCfDfEfFfFfGbrfDfDfEdXfDfDfJfEbrbrbrfebrbrdXdXeSdXbpdXfLbrdXbrahaaaeaa
 aaaaabaaaeaaaaaeaaaaaaaaaaadaaaeaaaaaadEaaaafIaaaaadaaaaaaaaaacmcucmalalcmcucufMfNfNfNfefOfCfFfDfFfFfFbrfFfFfFdYfDfDfJfFbrbrfPewcucuaaaaaifHaaafaaaaaaabababaaaa
 aaaaaaadaaaaaaaeaeadaaaaaaaaaaaaaaaaaaabaaaafkaafnaaaafnaaaaaaaacucmalalcmcucmfMfQfQbrfebrfJfFfCfCfFfDdXfDfDfDbrfJfCfDfDdXdXfPfRaaadaaaaaeaaababaeaaaaadaaaaaaae
 aaadaaaaabaaaaabaaaaaaaaaaaaadaaaaaaaeaeacaaaaadaaaaadaaaaaacucucucmalalcUcucufTfUfUfUfVbrfWdXdXfXeSeSdXdXdXdXeSdXdXdXfXfXaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaa
