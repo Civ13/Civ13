@@ -41,6 +41,26 @@
 	desc = "A white banner with the red cross of the templars in the middle."
 	icon_state = "templar_banner2"
 
+/obj/structure/sign/flag/jihad1
+	name = "\improper black islamic flag"
+	desc = "A black flag with Allah written in Arabic."
+	icon_state = "jihad1"
+
+/obj/structure/sign/flag/jihad2
+	name = "\improper green islamic flag"
+	desc = "A green flag with Allah written in Arabic."
+	icon_state = "jihad2"
+
+/obj/structure/sign/flag/jihad3
+	name = "\improper red islamic banner"
+	desc = "A red banner with three moons."
+	icon_state = "jihad3"
+
+/obj/structure/sign/flag/jihad4
+	name = "\improper green islamic banner"
+	desc = "A greeb banner with the shadada."
+	icon_state = "jihad4"
+
 /obj/structure/sign/clock
 	name = "\improper Broken clock"
 	desc = "Stopped at 5 o'clock."

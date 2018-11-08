@@ -380,6 +380,17 @@
 	item_state = "turban1"
 	worn_state = "turban1"
 
+/obj/item/clothing/head/turban/imam
+	name = "white turban"
+	desc = "a simple white turban."
+	icon_state = "turban_w"
+	item_state = "turban_w"
+	worn_state = "turban_w"
+/obj/item/clothing/head/turban/imam/New()
+	..()
+	icon_state = "turban_w"
+	item_state = "turban_w"
+	worn_state = "turban_w"
 /obj/item/clothing/head/turban/New()
 	..()
 	var/pickcolor = pick("turban1", "turban2", "turban3", "turban4")

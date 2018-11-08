@@ -492,6 +492,44 @@
 
 	return TRUE
 
+/datum/job/french/crusader_priest
+	title = "Templar Priest"
+	en_meaning = "Priest"
+	rank_abbreviation = "Father"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateFR"
+	SL_check_independent = TRUE
+	is_medieval = TRUE
+	is_crusader = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/french/crusader_priest/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/chaplain(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/chaplain_hood(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/chaplain(H), slot_wear_suit)
+
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, an annointed member of the Templar Order. Take care of the injured soldiers and keep the morale up!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+
+
+	return TRUE
+
 /////////////BRITISH//////////////////////////
 /datum/job/british/medieval_lord
 	title = "Lord"
@@ -1043,3 +1081,41 @@
 
 	return TRUE
 
+
+/datum/job/arab/imam
+	title = "Imam"
+	en_meaning = "Priest"
+	rank_abbreviation = "Imam"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateAR"
+	SL_check_independent = TRUE
+	is_medieval = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/arab/imam/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban/imam(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+
+	H.add_note("Role", "You are an <b>[title]</b>, an islamic religious leader.  Take care of the injured soldiers and keep the morale up!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+
+	return TRUE
