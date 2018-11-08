@@ -32,6 +32,9 @@ obj/map_metadata/camp/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else
 		. = FALSE
+	if (J.is_crusader == TRUE)
+		. = FALSE
+
 /obj/map_metadata/camp/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 

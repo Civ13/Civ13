@@ -30,6 +30,17 @@
 	name = "\improper blue banner"
 	desc = "A blue linen banner, with golden trims."
 	icon_state = "blue_banner2"
+
+/obj/structure/sign/flag/templar1
+	name = "\improper templar banner"
+	desc = "A white banner with the red cross of the templars in the middle."
+	icon_state = "templar_banner1"
+
+/obj/structure/sign/flag/templar2
+	name = "\improper templar banner"
+	desc = "A white banner with the red cross of the templars in the middle."
+	icon_state = "templar_banner2"
+
 /obj/structure/sign/clock
 	name = "\improper Broken clock"
 	desc = "Stopped at 5 o'clock."

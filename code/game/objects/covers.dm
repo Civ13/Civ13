@@ -35,6 +35,14 @@
 	not_movable = TRUE
 	amount = 0
 
+/obj/covers/sandstone
+	name = "sandstone floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "sandstone_floor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+
 /obj/covers/wood_ship
 	name = "wood floor"
 	icon_state = "wood_ship"

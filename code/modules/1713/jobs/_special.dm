@@ -18,6 +18,7 @@
 /datum/job/var/is_army = FALSE //land troops
 /datum/job/var/is_marooned = FALSE //marooned pirate
 /datum/job/var/is_medieval = FALSE //self explanatory
+/datum/job/var/is_crusader = FALSE //self explanatory
 
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold

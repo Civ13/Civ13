@@ -512,10 +512,10 @@
 			return
 	if (istype(job, /datum/job/arab))
 		if (client.prefs.s_tone < -115)
-			usr << "<span class='danger'>Your skin is too dark for you to be an Arab. Choose a value between 100 and 150.</span>"
+			usr << "<span class='danger'>Your skin is too dark for you to be an Arab. Choose a value between 110 and 150.</span>"
 			return
-		if (client.prefs.s_tone > -65)
-			usr << "<span class='danger'>Your skin is too light for you to be an Arab. Choose a value between 100 and 150.</span>"
+		if (client.prefs.s_tone > -75)
+			usr << "<span class='danger'>Your skin is too light for you to be an Arab. Choose a value between 110 and 150.</span>"
 
 			return
 	spawning = TRUE

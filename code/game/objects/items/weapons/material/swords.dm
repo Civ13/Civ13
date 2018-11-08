@@ -161,7 +161,7 @@ obj/item/weapon/material/sword/cutlass/iron
 	item_state = "cutlass"
 	throw_speed = 2
 	throw_range = 4
-	force_divisor = 0.8 // 42 when wielded with hardnes 60 (steel)
+	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 30
@@ -169,6 +169,23 @@ obj/item/weapon/material/sword/cutlass/iron
 	value = 45
 
 obj/item/weapon/material/sword/scimitar/iron
+	default_material = "iron"
+
+/obj/item/weapon/material/sword/saif
+	name = "saif"
+	desc = "A medium sword, original from the arab peninsula."
+	icon_state = "umar_sword"
+	item_state = "umar_sword"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.8 // 45 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 34
+	cooldownw = 9
+	value = 60
+
+obj/item/weapon/material/sword/saif/iron
 	default_material = "iron"
 
 /obj/item/weapon/material/sword/sabre

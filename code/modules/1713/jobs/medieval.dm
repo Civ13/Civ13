@@ -300,6 +300,198 @@
 	H.setStat("medical", STAT_NORMAL)
 
 	return TRUE
+
+
+///////////////////////////////////////////////FRENCH//CRUSADERS/////////////////////////////////////////
+
+/datum/job/french/crusader_lord
+	title = "Grand Master"
+	en_meaning = "Crusader Leader"
+	rank_abbreviation = "Grand Master"
+	head_position = TRUE
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateFR"
+	is_officer = TRUE
+	is_commander = TRUE
+	whitelisted = TRUE
+	SL_check_independent = TRUE
+	is_medieval = TRUE
+	is_crusader = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/french/crusader_lord/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader(H), slot_wear_suit)
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat1(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
+	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/french/crusader_templar
+	title = "Templar Knight"
+	en_meaning = "Crusader Noble Knight"
+	rank_abbreviation = "Templar Knight"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateFR"
+	is_officer = TRUE
+	whitelisted = TRUE
+	SL_check_independent = TRUE
+	is_medieval = TRUE
+	is_crusader = TRUE
+
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 10
+
+/datum/job/french/crusader_templar/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/templar(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/templar(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword(H), slot_belt)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar(H), slot_back)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar2(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, a landed citizen of the Realm. You are a heavy soldier, so protect the Lord!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/french/crusader_heavy
+	title = "Crusader Sergeant"
+	en_meaning = "Crusader Heavy Infantry"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateFR"
+	whitelisted = TRUE
+	SL_check_independent = TRUE
+	is_medieval = TRUE
+	is_crusader = TRUE
+
+	// AUTOBALANCE
+	min_positions = 8
+	max_positions = 50
+
+/datum/job/french/crusader_heavy/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/crusader(H), slot_w_uniform)
+
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif_helmet(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/longsword(H), slot_belt)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar(H), slot_back)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval/templar2(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/french/crusader_light
+	title = "Crusader Squire"
+	en_meaning = "Crusader Light Infantry"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateFR"
+	SL_check_independent = TRUE
+	is_medieval = TRUE
+	is_crusader = TRUE
+	// AUTOBALANCE
+	min_positions = 12
+	max_positions = 80
+
+/datum/job/french/crusader_light/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/crusader(H), slot_w_uniform)
+
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/helmet1(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif(H), slot_head)
+
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_belt)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/halberd(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant spearman. You have basic armor and a shield. You are in charge of fighting in the frontlines!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
 /////////////BRITISH//////////////////////////
 /datum/job/british/medieval_lord
 	title = "Lord"
@@ -634,23 +826,23 @@
 /datum/job/arab/medieval_lord/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/iron_chestplate/red(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/arabic_robe(H), slot_wear_suit)
 //head
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/turban(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/scimitar(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/saif(H), slot_belt)
 	world << "<b><big>[H.real_name] is the British Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the military leader of this group of soldiers. Defeat the crusaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
@@ -660,7 +852,7 @@
 
 /datum/job/arab/medieval_knight
 	title = "Mamluk"
-	en_meaning = "Elite Military Caste"
+	en_meaning = "Heavy Infantry"
 	rank_abbreviation = "Mamluk"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
@@ -670,29 +862,32 @@
 	is_medieval = TRUE
 
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 5
+	min_positions = 2
+	max_positions = 10
 
 /datum/job/arab/medieval_knight/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arabic_tunic(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/hauberk(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif_helmet(H), slot_head)
+	if (prob(65))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/arab2(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/arab3(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pike(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/scimitar(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/saif(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/arab_buckler(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the slave-soldier caste of the Caliphate. Assist the <b>Emir</b> organize the troops!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_VERY_HIGH)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
@@ -710,15 +905,21 @@
 	is_medieval = TRUE
 
 	// AUTOBALANCE
-	min_positions = 5
-	max_positions = 25
+	min_positions = 12
+	max_positions = 80
 
 /datum/job/arab/medieval_swordsman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/knight(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab(H), slot_w_uniform)
+	var/randcloth = pick(1,2,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
 
@@ -726,13 +927,13 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/arab(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/scimitar(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
-	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/arab_buckler(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, an arabic swordsman. Use hit-and-run tactics to defeat the infidels!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_VERY_HIGH)
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
@@ -756,10 +957,15 @@
 /datum/job/arab/medieval_spearman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
 //clothes
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab(H), slot_w_uniform)
+	var/randcloth = pick(1,2,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
 
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
@@ -775,13 +981,13 @@
 	if (randspear == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/halberd(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/red_buckler(H), slot_back)
-	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant spearman. You have basic armor and a shield. You are in charge of fighting in the frontlines!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/arab_buckler(H), slot_back)
+	H.add_note("Role", "You are a <b>[title]</b>, an arabic pikeman. Use hit-and-run tactics to defeat the infidels!")
+	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
@@ -805,10 +1011,15 @@
 /datum/job/arab/medieval_archer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval/arab(H), slot_shoes)
 //clothes
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab(H), slot_w_uniform)
+	var/randcloth = pick(1,2,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/arab3(H), slot_w_uniform)
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/chainmail(H), slot_wear_suit)
 
@@ -818,16 +1029,16 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_belt)
-
-	H.add_note("Role", "You are a <b>[title]</b>, a levied peasant archer. You have basic armor and a bow and arrow. You are in charge of harassing the enemy troops from a safe distance!")
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/arab_buckler(H), slot_r_hand)
+	H.add_note("Role", "You are a <b>[title]</b>, an arabic archer. Use hit-and-run tactics to defeat the infidels!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("dexterity", STAT_VERY_HIGH)
 	H.setStat("swords", STAT_MEDIUM_LOW)
 	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
 	return TRUE

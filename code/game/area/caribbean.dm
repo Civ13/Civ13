@@ -497,3 +497,13 @@
 	name = "Arab Camp"
 	icon_state = "blue1"
 	base_turf = /turf/floor/dirt
+
+/area/caribbean/crusader
+	name = "Crusader Camp"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+
+/area/caribbean/crusader/sand
+	base_turf = /turf/floor/plating/sand
+/area/caribbean/arab/sand
+	base_turf = /turf/floor/plating/sand

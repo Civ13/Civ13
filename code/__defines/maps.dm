@@ -16,5 +16,6 @@
 #define MAP_SIEGE "SIEGE"
 
 #define MAP_CAMP "CAMP"
+#define MAP_KARAK "KARAK"
 
 #define MODE_WAR 1

@@ -8,6 +8,17 @@
 	armor = list(melee = 15, bullet = 10, laser = 10,energy = 8, bomb = 15, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
+/obj/item/clothing/shoes/medieval/arab
+	name = "arabic leather shoes"
+	desc = "A pair of simple, thin leather shoes. Loose at the tip."
+	icon_state = "arab"
+	item_state = "arab"
+	worn_state = "arab"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 10, bullet = 8, laser = 8,energy = 6, bomb = 12, bio = 10, rad = FALSE)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+
 
 /obj/item/clothing/shoes/medieval/knight
 	name = "armored shoes"
@@ -25,6 +36,20 @@
 	icon_state = "white_tunic_long"
 	item_state = "white_tunic_long"
 	worn_state = "white_tunic_long"
+
+/obj/item/clothing/under/medieval/crusader
+	name = "crusader tunic"
+	desc = "A white tunic with a red cross in the middle."
+	icon_state = "crusader1"
+	item_state = "crusader1"
+	worn_state = "crusader1"
+
+/obj/item/clothing/under/medieval/crusader/New()
+	..()
+	var/randcloth = pick("crusader1","crusader2")
+	icon_state = randcloth
+	item_state = randcloth
+	worn_state = randcloth
 
 /obj/item/clothing/under/medieval/yellow
 	name = "yellow tunic"
@@ -73,12 +98,40 @@
 	item_state = "red_tunic2"
 	worn_state = "red_tunic2"
 
-/obj/item/clothing/under/medieval/arab
-	name = "arab tunic"
-	desc = "A light, loose fitting tunic."
-	icon_state = "arab"
-	item_state = "arab"
-	worn_state = "arab"
+/obj/item/clothing/under/medieval/arabic_tunic
+	name = "fancy arabic tunic"
+	desc = "A light fitting tunic with arabic motifs."
+	icon_state = "arabw_tunic"
+	item_state = "arabw_tunic"
+	worn_state = "arabw_tunic"
+
+/obj/item/clothing/suit/storage/jacket/arabic_robe
+	name = "arabic robe"
+	desc = "A light, loose fitting arabic robe."
+	icon_state = "arabw_robe"
+	item_state = "arabw_robe"
+	worn_state = "arabw_robe"
+
+/obj/item/clothing/under/medieval/arab1
+	name = "light brown arabic tunic"
+	desc = "A light, loose fitting arabic tunic."
+	icon_state = "arab1"
+	item_state = "arab1"
+	worn_state = "arab1"
+
+/obj/item/clothing/under/medieval/arab2
+	name = "light white arabic tunic"
+	desc = "A light, loose fitting arabic tunic."
+	icon_state = "arab1"
+	item_state = "arab1"
+	worn_state = "arab1"
+
+/obj/item/clothing/under/medieval/arab3
+	name = "white arabic tunic"
+	desc = "A loose fitting arabic tunic."
+	icon_state = "arab3"
+	item_state = "arab3"
+	worn_state = "arab3"
 
 /obj/item/clothing/suit/armor/medieval
 	name = "plated armor"
@@ -145,6 +198,12 @@
 	icon_state = "iron_chestplater"
 	item_state = "iron_chestplater"
 	worn_state = "iron_chestplater"
+
+/obj/item/clothing/suit/armor/medieval/iron_chestplate/crusader
+	..()
+	icon_state = "iron_chestplatec"
+	item_state = "iron_chestplatec"
+	worn_state = "iron_chestplatec"
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/blue
 	..()
 	icon_state = "iron_chestplateb"
@@ -158,7 +217,7 @@
 	worn_state = "leather_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, bullet = 15, laser = 10,energy = 15, bomb = 20, bio = 20, rad = FALSE)
-	value = 15
+	value = 20
 /obj/item/clothing/suit/armor/medieval/chainmail
 	name = "chainmail"
 	desc = "Wearable armor made of several small interlinked chains."
@@ -167,7 +226,16 @@
 	worn_state = "chainmail"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 50, bullet = 35, laser = 15,energy = 15, bomb = 30, bio = 20, rad = FALSE)
-	value = 20
+	value = 30
+/obj/item/clothing/suit/armor/medieval/hauberk
+	name = "hauberk"
+	desc = "A longer version of the chainmail, worn as a coat. Offers greater protection."
+	icon_state = "hauberk"
+	item_state = "hauberk"
+	worn_state = "hauberk"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 60, bullet = 55, laser = 20,energy = 20, bomb = 40, bio = 30, rad = FALSE)
+	value = 40
 
 /obj/item/clothing/head/helmet/medieval
 	name = "knight helmet"
@@ -231,15 +299,15 @@
 /obj/item/clothing/head/helmet/medieval/coif_helmet
 	name = "iron coif and helmet"
 	desc = "A chainmail headcover, with a conical helmet on top."
-	icon_state = "coif"
-	item_state = "coif"
-	worn_state = "coif"
+	icon_state = "coif_helmet"
+	item_state = "coif_helmet"
+	worn_state = "coif_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/arab
-	name = "helmet and turban"
+	name = "conical arabic helmet and turban"
 	desc = "An iron helmet, covered with a turban."
 	icon_state = "turhelm1"
 	item_state = "turhelm1"
@@ -247,6 +315,27 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/medieval/arab2
+	name = "long arabic helmet and turban"
+	desc = "An iron helmet, covered with a turban, with side protections for the face."
+	icon_state = "arabw_helmet1"
+	item_state = "arabw_helmet1"
+	worn_state = "arabw_helmet1"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+
+/obj/item/clothing/head/helmet/medieval/arab3
+	name = "long arabic helmet"
+	desc = "An iron helmet, covered with a turban, with side protections for the face."
+	icon_state = "arabw_helmet"
+	item_state = "arabw_helmet"
+	worn_state = "arabw_helmet"
+	body_parts_covered = HEAD|FACE
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+
 
 /obj/item/clothing/head/helmet/medieval/arab/New()
 	..()
@@ -296,3 +385,4 @@
 	icon_state = pickcolor
 	item_state = pickcolor
 	worn_state = pickcolor
+

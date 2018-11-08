@@ -6,7 +6,10 @@
 	anchored = TRUE
 	var/open = TRUE
 	var/cooldown = 0
+	var/distance = 6
 	density = TRUE
+/obj/structure/gatecontrol/sandstone
+	name = "gate control"
 
 /obj/structure/gatecontrol/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time - 60)
@@ -14,7 +17,7 @@
 			visible_message("[user] closes the gates!")
 			open = FALSE
 			cooldown = world.time
-			for (var/obj/structure/gate/G in range(6,src.loc))
+			for (var/obj/structure/gate/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
 				G.icon_state = "gate_closing"
 				spawn(30)
@@ -25,10 +28,36 @@
 			visible_message("[user] opens the gates!")
 			open = TRUE
 			cooldown = world.time
-			for (var/obj/structure/gate/G in range(6,src.loc))
+			for (var/obj/structure/gate/G in range(distance,src.loc))
 				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+				G.icon_state = "gate_opening"
 				spawn(30)
 					G.icon_state = "gate1"
+					G.density = FALSE
+			return
+
+/obj/structure/gatecontrol/sandstone/attack_hand(var/mob/user as mob)
+	if (cooldown <= world.time - 60)
+		if (open)
+			visible_message("[user] closes the gates!")
+			open = FALSE
+			cooldown = world.time
+			for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
+				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+				G.icon_state = "s_gate_closing"
+				spawn(30)
+					G.icon_state = "s_gate0"
+					G.density = TRUE
+			return
+		else
+			visible_message("[user] opens the gates!")
+			open = TRUE
+			cooldown = world.time
+			for (var/obj/structure/gate/sandstone/G in range(distance,src.loc))
+				playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+				G.icon_state = "s_gate_opening"
+				spawn(30)
+					G.icon_state = "s_gate1"
 					G.density = FALSE
 			return
 
@@ -49,6 +78,17 @@
 	icon_state = "gate1"
 	anchored = TRUE
 	density = FALSE
+
+/obj/structure/gate/sandstone
+	icon_state = "s_gate0"
+	anchored = TRUE
+	density = TRUE
+
+/obj/structure/gate/sandstone/open
+	icon_state = "s_gate1"
+	anchored = TRUE
+	density = FALSE
+
 
 /obj/structure/gate/ex_act(severity)
 	switch(severity)
