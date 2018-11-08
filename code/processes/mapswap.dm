@@ -92,6 +92,7 @@
 	//	1013 - TDM
 			maps = list(
 				MAP_CAMP = 0,
+				MAP_KARAK = 0,
 			)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
