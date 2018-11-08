@@ -13,8 +13,8 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(ARAB) = /area/caribbean/colonies,
-		list(FRENCH) = /area/caribbean/arab,
+		list(ARAB) = /area/caribbean/arab,
+		list(FRENCH) = /area/caribbean/crusader,
 		)
 	age = "1013"
 	faction_distribution_coeffs = list(ARAB = 0.5, FRENCH = 0.5)
