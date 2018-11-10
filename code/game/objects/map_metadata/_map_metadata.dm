@@ -46,7 +46,7 @@ var/global/obj/map_metadata/map = null
 		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
 	var/mission_start_message = "Round will start soon!"
 
-	var/required_players = 2
+	var/required_players = 1
 	var/time_both_sides_locked = -1
 	var/time_to_end_round_after_both_sides_locked = 6000
 	var/admins_triggered_roundend = FALSE
