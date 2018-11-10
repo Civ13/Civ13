@@ -2,6 +2,7 @@
 	// epoch = required players
 
 	var/list/epochs = list(
+		"5000 B.C." = 0,
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
@@ -77,9 +78,8 @@
 				MAP_ROBUSTA = 15,
 
 			// 1713 - RP
-				MAP_TRIBES = 0,
 				MAP_COLONY = 0,
-				MAP_HUNT = 8,
+				MAP_HUNT = 0,
 				MAP_FOUR_COLONIES = 35,
 			)
 		if (epoch == "313 B.C.")
@@ -93,6 +93,10 @@
 			maps = list(
 				MAP_CAMP = 0,
 				MAP_KARAK = 0,
+			)
+		if (epoch == "5000 B.C.")
+			maps = list(
+				MAP_TRIBES = 0,
 			)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
