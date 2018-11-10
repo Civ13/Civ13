@@ -110,6 +110,7 @@
 	var/export_tax_rate = 0
 	var/faction = "civilian"
 	var/faction_treasury = "TreasuryRN"
+	var/done = FALSE
 
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
@@ -172,34 +173,38 @@
 				money += finalcost
 				user << "The arrival area is too crowded, clear it first and reorder!"
 				return*/
-// giving change back
+// giving change back, and taxes
 		if (money <= 50 && money > 0)
 			new/obj/item/stack/money/real(loc, money)
 			money = 0
 			var/list/fturfs = latejoin_turfs[faction_treasury]
 			var/spawnpointa = pick(fturfs)
-			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
+			if ((itemprices[finalnr]*(import_tax_rate/100) >= 1) && import_tax_rate > 0)
+				new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 50 && money <= 400)
 			new/obj/item/stack/money/dollar(loc, money/8)
 			money = 0
 			var/list/fturfs = latejoin_turfs[faction_treasury]
 			var/spawnpointa = pick(fturfs)
-			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
+			if ((itemprices[finalnr]*(import_tax_rate/100) >= 1) && import_tax_rate > 0)
+				new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 400 && money <= 800)
 			new/obj/item/stack/money/escudo(loc, money/16)
 			money = 0
 			var/list/fturfs = latejoin_turfs[faction_treasury]
 			var/spawnpointa = pick(fturfs)
-			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
+			if ((itemprices[finalnr]*(import_tax_rate/100) >= 1) && import_tax_rate > 0)
+				new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money > 800 && money <= 1600)
 			new/obj/item/stack/money/doubloon(loc, money/32)
 			money = 0
 			var/list/fturfs = latejoin_turfs[faction_treasury]
 			var/spawnpointa = pick(fturfs)
-			new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
+			if ((itemprices[finalnr]*(import_tax_rate/100) >= 1) && import_tax_rate > 0)
+				new/obj/item/stack/money/real(get_turf(spawnpointa), itemprices[finalnr]*(import_tax_rate/100))
 			return
 		else if (money == 0)
 			return
@@ -230,7 +235,8 @@
 			H << "There is no demand for this item."
 			return
 		else
-			if (istype(W, /obj/item/stack/money))
+			if (istype(W, /obj/item/stack/money) && done == FALSE)
+				done = TRUE
 				marketval = W.value
 				moneyin = marketval*W.amount
 				if ((WWinput(H, "Exchange this amount into other coins?", "Exporting", "Yes", list("Yes", "No")) == "Yes") && W)
@@ -238,30 +244,37 @@
 						new/obj/item/stack/money/real(loc, moneyin)
 						qdel(W)
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 50 && moneyin <= 400 && W && marketval > 0)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 400 && moneyin <= 800 && W && marketval > 0)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 800 && moneyin <= 1600 && W && marketval > 0)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 1600 && W && marketval > 0)
 						H << "Too much money! Split it into smaller stacks first."
 						marketval = 0
+						done = FALSE
 						return
 				else
 					marketval = 0
+					done = FALSE
 					return
-			if (istype(W, /obj/item/stack))
+			if (istype(W, /obj/item/stack) && done == FALSE)
+				done = TRUE
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
 				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
 				if ((WWinput(H, "Sell the whole stack for [moneyin] reales? Included ET: [export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes") && W)
@@ -270,83 +283,105 @@
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						if (((marketval*W.amount)*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+							new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 50 && moneyin <= 400 && W && marketval > 0)
 						new/obj/item/stack/money/dollar(loc, moneyin/8)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						if (((marketval*W.amount)*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+							new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 400 && moneyin <= 800 && W && marketval > 0)
 						new/obj/item/stack/money/escudo(loc, moneyin/16)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						if (((marketval*W.amount)*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+							new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 800 && moneyin <= 1600 && W && marketval > 0)
 						new/obj/item/stack/money/doubloon(loc, moneyin/32)
 						qdel(W)
 						var/list/fturfs = latejoin_turfs[faction_treasury]
 						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
+						if (((marketval*W.amount)*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+							new/obj/item/stack/money/real(get_turf(spawnpointa), (marketval*W.amount)*(export_tax_rate/100))
 						marketval = 0
+						done = FALSE
 						return
 					else if (moneyin > 1600 && W && marketval > 0)
 						H << "This item is too expensive! You can't find a buyer for it."
 						marketval = 0
+						done = FALSE
 						return
 				else
 					marketval = 0
+					done = FALSE
 					return
 			else
-				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
-				moneyin = marketval+(marketval*(export_tax_rate/100))
-				if ((WWinput(H, "Sell this for [marketval] reales? Included ET:[export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes") && W)
-					if (moneyin <= 50 && W && marketval > 0)
-						new/obj/item/stack/money/real(loc, moneyin)
-						qdel(W)
-						var/list/fturfs = latejoin_turfs[faction_treasury]
-						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+				if (done == FALSE)
+					done = TRUE
+					marketval = W.value + rand(-round(W.value/10),round(W.value/10))
+					moneyin = marketval+(marketval*(export_tax_rate/100))
+					if ((WWinput(H, "Sell this for [marketval] reales? Included ET:[export_tax_rate]%", "Exporting", "Yes", list("Yes", "No")) == "Yes") && W)
+						if (moneyin <= 50 && W && marketval > 0)
+							new/obj/item/stack/money/real(loc, moneyin)
+							qdel(W)
+							var/list/fturfs = latejoin_turfs[faction_treasury]
+							var/spawnpointa = pick(fturfs)
+							if ((marketval*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+								new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+							marketval = 0
+							done = FALSE
+							return
+						else if (moneyin > 50 && moneyin <= 400 && W && marketval > 0)
+							new/obj/item/stack/money/dollar(loc, moneyin/8)
+							qdel(W)
+							var/list/fturfs = latejoin_turfs[faction_treasury]
+							var/spawnpointa = pick(fturfs)
+							if ((marketval*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+								new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+							marketval = 0
+							done = FALSE
+							return
+						else if (moneyin > 400 && moneyin <= 800 && W && marketval > 0)
+							new/obj/item/stack/money/escudo(loc, moneyin/16)
+							qdel(W)
+							var/list/fturfs = latejoin_turfs[faction_treasury]
+							var/spawnpointa = pick(fturfs)
+							if ((marketval*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+								new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+							marketval = 0
+							done = FALSE
+							return
+						else if (moneyin > 800 && moneyin <= 1600 && W && marketval > 0)
+							new/obj/item/stack/money/doubloon(loc, moneyin/32)
+							qdel(W)
+							var/list/fturfs = latejoin_turfs[faction_treasury]
+							var/spawnpointa = pick(fturfs)
+							if ((marketval*(export_tax_rate/100) >= 1) && export_tax_rate > 0)
+								new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
+							marketval = 0
+							done = FALSE
+							return
+						else if (moneyin > 1600 && W && marketval > 0)
+							H << "This item is too expensive! You can't find a buyer for it."
+							marketval = 0
+							done = FALSE
+							return
+					else
 						marketval = 0
+						done = FALSE
 						return
-					else if (moneyin > 50 && moneyin <= 400 && W && marketval > 0)
-						new/obj/item/stack/money/dollar(loc, moneyin/8)
-						qdel(W)
-						var/list/fturfs = latejoin_turfs[faction_treasury]
-						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
-						marketval = 0
-						return
-					else if (moneyin > 400 && moneyin <= 800 && W && marketval > 0)
-						new/obj/item/stack/money/escudo(loc, moneyin/16)
-						qdel(W)
-						var/list/fturfs = latejoin_turfs[faction_treasury]
-						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
-						marketval = 0
-						return
-					else if (moneyin > 800 && moneyin <= 1600 && W && marketval > 0)
-						new/obj/item/stack/money/doubloon(loc, moneyin/32)
-						qdel(W)
-						var/list/fturfs = latejoin_turfs[faction_treasury]
-						var/spawnpointa = pick(fturfs)
-						new/obj/item/stack/money/real(get_turf(spawnpointa), marketval*(export_tax_rate/100))
-						marketval = 0
-						return
-					else if (moneyin > 1600 && W && marketval > 0)
-						H << "This item is too expensive! You can't find a buyer for it."
-						marketval = 0
-						return
-				else
-					marketval = 0
-					return
 
 /obj/structure/exportbook/attack_hand(var/mob/living/carbon/human/H as mob)
 	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
