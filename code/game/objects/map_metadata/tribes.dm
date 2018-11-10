@@ -14,7 +14,7 @@
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british
 		)
-	age = "1713"
+	age = "5000 B.C."
 	faction_distribution_coeffs = list(INDIANS = 1)
 	battle_name = "the tribes"
 	var/targetnr = 2

@@ -16,8 +16,6 @@ var/global/obj/map_metadata/map = null
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]
 	var/admin_ended_all_grace_periods = FALSE
-	var/uses_supply_train = FALSE
-	var/uses_main_train = FALSE
 	var/event_faction = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
@@ -73,7 +71,7 @@ var/global/obj/map_metadata/map = null
 
 	//age (313 B.C., 1013, 1713, etc)
 	var/age = "1713"
-
+	var/ordinal_age = 3
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -100,6 +98,19 @@ var/global/obj/map_metadata/map = null
 
 	// makes win condition helper datum
 	win_condition = new
+	set_ordinal_age()
+
+/obj/map_metadata/proc/set_ordinal_age()
+	if (age == "5000 B.C.")
+		ordinal_age = 0
+	else if (age == "313 B.C.")
+		ordinal_age = 1
+	else if (age == "1013")
+		ordinal_age = 2
+	else if (age == "1713")
+		ordinal_age = 3
+	return
+
 // called from the map process
 /obj/map_metadata/proc/tick()
 

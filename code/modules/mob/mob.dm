@@ -682,7 +682,7 @@
 				stat("Round End Condition:", map.current_stat_message())
 
 				stat("Map:", map.title)
-
+			stat("Epoch:", map.age)
 			stat("Season:", get_season())
 			stat("Weather:", get_weather())
 			stat("Time of Day:", time_of_day)
