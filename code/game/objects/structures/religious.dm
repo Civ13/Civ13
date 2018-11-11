@@ -118,7 +118,7 @@
 	health = 100000000
 /obj/structure/religious/totem/offerings/proc/create_mobs()
 	var/I = 0
-	while(I < human_clients_mob_list.len)
+	while(I < round(human_clients_mob_list.len/2))
 
 		var/mob/living/simple_animal/newmob = new /mob/living/simple_animal/hostile/skeleton/attacker(src.loc)
 		var/randdir = pick(1,2,3,4)
@@ -204,7 +204,7 @@
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600)
 		if (power > 0)
-			power = power-(4*human_clients_mob_list.len)
+			power = power-(2*human_clients_mob_list.len)
 		check_power()
 		var/pleasedval = "very angry!"
 		if (power >= 50 && power < 100)
