@@ -88,6 +88,11 @@
 					contents += new/obj/item/stack/material/iron(src)
 				contents -= I
 				qdel(I)
+			else if (istype(I, /obj/item/stack/ore/copper))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/copper(src)
+				contents -= I
+				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
