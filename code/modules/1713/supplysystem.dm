@@ -112,6 +112,12 @@
 	var/faction_treasury = "TreasuryRN"
 	var/done = FALSE
 
+/obj/structure/supplybook/craftable
+	faction_treasury = "craftable"
+	factionarea = "craftable"
+	icon = 'icons/misc/support.dmi'
+	icon_state = "supplybook"
+
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
 		user << "Only the merchants have access to the international shipping companies. Negotiate with one."
@@ -165,7 +171,11 @@
 		money -= finalcost
 		user << "You have successfully purchased the crate. It will arrive soon."
 		spawn(600)
-			var/list/turfs = latejoin_turfs[factionarea]
+			var/list/turfs = list()
+			if (faction_treasury != "craftable")
+				turfs = latejoin_turfs[factionarea]
+			else
+				turfs = list(get_turf(locate(x,y+1,z)))
 			var/spawnpoint = pick(turfs)
 			new finalpath(get_turf(spawnpoint))
 			user << "A shipment has arrived."

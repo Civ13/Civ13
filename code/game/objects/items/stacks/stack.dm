@@ -535,7 +535,7 @@
 	return
 
 /obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/stack))
+	if (istype(W, type))
 		var/obj/item/stack/S = W
 		if (user.get_inactive_hand()==src)
 			transfer_to(S, TRUE)
