@@ -360,7 +360,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
-
+	is_religious = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 20

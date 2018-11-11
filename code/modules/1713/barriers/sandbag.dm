@@ -85,15 +85,16 @@
 /obj/structure/window/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
 	if (istype(O, /obj/item/weapon/sandbag))
-		progress += 1
-		if (progress == 2)
-			icon_state = "dirt_wall_66%"
-			if (progress == 3)
+		if (progress < 3)
+			progress += 1
+			if (progress == 2)
+				icon_state = "dirt_wall_66%"
+			if (progress >= 3)
 				icon_state = "dirt_wall"
 				new/obj/structure/window/sandbag(loc, dir)
 				qdel(src)
-		visible_message("<span class='danger'>[user] shovels dirt into [src].</span>")
-		qdel(O)
+			visible_message("<span class='danger'>[user] shovels dirt into [src].</span>")
+			qdel(O)
 	else
 		return
 

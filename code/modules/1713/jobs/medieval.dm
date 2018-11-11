@@ -501,6 +501,7 @@
 	SL_check_independent = TRUE
 	is_medieval = TRUE
 	is_crusader = TRUE
+	is_religious = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 4
@@ -1090,6 +1091,7 @@
 	spawn_location = "JoinLateAR"
 	SL_check_independent = TRUE
 	is_medieval = TRUE
+	is_religious = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1

@@ -327,6 +327,7 @@
 	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
 	is_RP = TRUE
+	is_religious = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 20
@@ -1099,6 +1100,7 @@
 	spawn_location = "JoinLateSP"
 	SL_check_independent = TRUE
 	is_RP = TRUE
+	is_religious = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 20
@@ -1871,6 +1873,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
 	SL_check_independent = TRUE
+	is_religious = TRUE
 	is_RP = TRUE
 	// AUTOBALANCE
 	min_positions = 1
@@ -2645,6 +2648,7 @@
 	spawn_location = "JoinLatePirate"
 	SL_check_independent = TRUE
 	is_RP = TRUE
+	is_religious = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 20

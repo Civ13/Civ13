@@ -82,7 +82,7 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 /obj/item/weapon/material/hatchet/tribal
-	name = "stone hatchet"
+	name = "hatchet"
 	desc = "A crude hatchet, made with wood and stone."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"

@@ -198,6 +198,9 @@ steam.start() -- spawns the effect
 		return FALSE
 	return TRUE
 
+/obj/effect/effect/smoke/fast
+	..()
+	time_to_live = 30
 /////////////////////////////////////////////
 // Illumination
 /////////////////////////////////////////////

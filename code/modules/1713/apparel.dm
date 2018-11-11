@@ -732,13 +732,13 @@
 	desc = "A tarred hat, commonly used by sailors."
 	icon_state = "tarred_hat"
 	item_state = "tarred_hat"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/strawhat
 	name = "straw hat"
 	icon_state = "boater_hat"
 	desc = "A straw hat, commonly used by sailors."
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/tricorne_black
 	name = "black tricorne"
