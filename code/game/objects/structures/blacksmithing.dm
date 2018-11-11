@@ -30,7 +30,7 @@ obj/structure/anvil/New()
 		else if (istype(P, /obj/item/stack/material/iron) && steel_amt > 0)
 			user << "<span class='notice'>You can't smelt iron while there is steel on the anvil! Finish the steel first.</span>"
 			return
-		else if (istype(P, /obj/item/stack/material/steel) && iron_amt == 0)
+		else if (istype(P, /obj/item/stack/material/steel) && iron_amt == 0 && map.ordinal_age >= 2)
 			user << "You begin smithing the steel..."
 			icon_state = "anvil2"
 			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
@@ -66,7 +66,7 @@ obj/structure/anvil/New()
 					new/obj/item/weapon/material/sword/smallsword(user.loc)
 					return
 			else
-				user << "<span class='notice'>You need more iron to make this!</span>"
+				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 		if (choice2 == "Sabre (15)")
 			if (steel_amt >= 15)
@@ -80,7 +80,7 @@ obj/structure/anvil/New()
 					new/obj/item/weapon/material/sword/sabre(user.loc)
 					return
 			else
-				user << "<span class='notice'>You need more iron to make this!</span>"
+				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 		if (choice2 == "Cutlass (12)")
 			if (steel_amt >= 12)
@@ -94,7 +94,7 @@ obj/structure/anvil/New()
 					new/obj/item/weapon/material/sword/cutlass(user.loc)
 					return
 			else
-				user << "<span class='notice'>You need more iron to make this!</span>"
+				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 		if (choice2 == "Rapier (18)")
 			if (steel_amt >= 18)
@@ -108,7 +108,7 @@ obj/structure/anvil/New()
 					new/obj/item/weapon/material/sword/rapier(user.loc)
 					return
 			else
-				user << "<span class='notice'>You need more iron to make this!</span>"
+				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 		if (choice2 == "Spadroon (15)")
 			if (steel_amt >= 15)
@@ -122,7 +122,7 @@ obj/structure/anvil/New()
 					new/obj/item/weapon/material/sword/spadroon(user.loc)
 					return
 			else
-				user << "<span class='notice'>You need more iron to make this!</span>"
+				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 		if (choice2 == "Longsword (18)")
 			if (steel_amt >= 18)
@@ -136,16 +136,29 @@ obj/structure/anvil/New()
 					new/obj/item/weapon/material/sword/longsword(user.loc)
 					return
 			else
-				user << "<span class='notice'>You need more iron to make this!</span>"
+				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 
 	else if (iron_amt > 0)
-		var/list/display = list("Swords","Guns", "Armor", "Cancel")
+		var/list/display = list("Swords", "Armor", "Cancel")
+		if (map.ordinal_age >= 3)
+			display = list("Swords","Guns", "Armor", "Cancel")
+		else
+			display = list("Swords", "Armor", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display)
 		if (choice == "Cancel")
 			return
 		else if (choice == "Swords")
-			var/list/display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Cancel")
+			var/list/display2 = list("Cancel")
+			if (map.ordinal_age == 3)
+				display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Cancel")
+			else if (map.ordinal_age == 2)
+				display2 = list("Small Sword (10)", "Spadroon (15)", "Longsword (18)", "Cancel")
+			else if (map.ordinal_age == 1)
+				display2 = list("Gladius (10)", "Xiphos (14)", "Cancel")
+			else if (map.ordinal_age == 0)
+				display2 = list("Cancel")
+
 			var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display2)
 			if (choice2 == "Cancel")
 				return
@@ -159,6 +172,34 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/weapon/material/sword/smallsword/iron(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice2 == "Gladius (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting a gladius..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,90,src) && iron_amt >= 10)
+						user << "You craft a gladius."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/sword/gladius(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice2 == "Xiphos (10)")
+				if (iron_amt >= 14)
+					user << "You begin crafting a xiphos..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,110,src) && iron_amt >= 14)
+						user << "You craft a xiphos."
+						iron_amt -= 14
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/sword/xiphos(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
@@ -310,10 +351,72 @@ obj/structure/anvil/New()
 			if (choice3 == "Cancel")
 				return
 		else if (choice == "Armor")
-			var/list/display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Cancel")
+			var/list/display4 = list("Cancel")
+			if (map.ordinal_age >= 2)
+				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Cancel")
+			else
+				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Roman Helmet (10)", "Greek Helmet (13)", "Gladiator Helmet (12)", "Horned Helmet (9)", "Cancel")
 			var/choice4 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display4)
+			if (choice4 == "Roman Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the roman helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the roman helmet."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/roman(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Greek Helmet (13)")
+				if (iron_amt >= 13)
+					user << "You begin crafting the greek helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 13)
+						user << "You craft the greek helmet."
+						iron_amt -= 13
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/greek(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Horned Helmet (9)")
+				if (iron_amt >= 9)
+					user << "You begin crafting the horned helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 9)
+						user << "You craft the horned helmet."
+						iron_amt -= 9
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/horned(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Gladiator Helmet (12)")
+				if (iron_amt >= 12)
+					user << "You begin crafting the gladiator helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 12)
+						user << "You craft the gladiator helmet."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/gladiator(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+
 			if (choice4 == "Chainmail (10)")
-				if (iron_amt >= 6)
+				if (iron_amt >= 10)
 					user << "You begin crafting the chainmail..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
 					if (do_after(user,130,src) && iron_amt >= 10)
