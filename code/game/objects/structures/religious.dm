@@ -204,7 +204,7 @@
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600)
 		if (power > 0)
-			power -= 5*human_clients_mob_list.len
+			power = power-(4*human_clients_mob_list.len)
 		check_power()
 		var/pleasedval = "very angry!"
 		if (power >= 50 && power < 100)
