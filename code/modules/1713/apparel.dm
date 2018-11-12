@@ -467,6 +467,7 @@
 	desc = "A skull mask, used by native shamans."
 	icon_state = "skull_mask"
 	item_state = "skull_mask"
+	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 25, bullet = 10, laser = 0,energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/head/chief_hat
@@ -474,7 +475,7 @@
 	desc = "A hat made with withe feathers. Worn by tribal leaders."
 	icon_state = "chief_hat"
 	item_state = "chief_hat"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 /////////Portuguese/////////
 /obj/item/clothing/head/tricorne_portuguese
 	name = "Portuguese Navy tricorne"

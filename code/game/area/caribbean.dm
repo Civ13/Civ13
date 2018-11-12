@@ -51,6 +51,20 @@
 	base_turf = /turf/floor/dirt
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/tribes/goose
+	name = "Red Goose Tribe"
+/area/caribbean/tribes/monkey
+	name = "Green Monkey Tribe"
+/area/caribbean/tribes/turkey
+	name = "Blue Turkey Tribe"
+/area/caribbean/tribes/mouse
+	name = "Yellow Mouse Tribe"
+/area/caribbean/tribes/wolf
+	name = "White Wolf Tribe"
+/area/caribbean/tribes/bear
+	name = "Black Bear Tribe"
+
 /area/caribbean/tribes/caves
 	name = "Caves"
 	base_turf = /turf/floor/dirt

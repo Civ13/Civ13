@@ -116,7 +116,6 @@
 	bound_height = 64
 	var/power = 175
 	health = 100000000
-	var/datum/job/tribe_job = "/datum/job/indians/tribes/red"
 	var/current_tribesmen = 0
 /obj/structure/religious/totem/offerings/proc/create_mobs()
 	var/I = 0
@@ -154,6 +153,7 @@
 		I += 1
 /obj/structure/religious/totem/offerings/proc/check_favours()
 	spawn(1800)
+		world << "favours checked"
 		//very angry
 		if (power < 50)
 			if (weather == WEATHER_NONE)
@@ -204,12 +204,27 @@
 
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600)
-		for (var/datum/job/job in job_master.faction_organized_occupations)
-			if (istype(job, text2path(tribe_job)))
-				current_tribesmen = processes.job_data.get_active_positions(job)
+		world << "power checked"
+		if (tribe == "goose")
+			for (var/datum/job/indians/tribes/red/R in job_master.faction_organized_occupations)
+				current_tribesmen = R.current_positions
+		else if (tribe == "turkey")
+			for (var/datum/job/indians/tribes/blue/R in job_master.faction_organized_occupations)
+				current_tribesmen = R.current_positions
+		else if (tribe == "bear")
+			for (var/datum/job/indians/tribes/black/R in job_master.faction_organized_occupations)
+				current_tribesmen = R.current_positions
+		else if (tribe == "wolf")
+			for (var/datum/job/indians/tribes/white/R in job_master.faction_organized_occupations)
+				current_tribesmen = R.current_positions
+		else if (tribe == "monkey")
+			for (var/datum/job/indians/tribes/green/R in job_master.faction_organized_occupations)
+				current_tribesmen = R.current_positions
+		else if (tribe == "mouse")
+			for (var/datum/job/indians/tribes/yellow/R in job_master.faction_organized_occupations)
+				current_tribesmen = R.current_positions
 		if (power > 0)
-			power = power-(2*current_tribesmen)
-		check_power()
+			power = (power-(2*current_tribesmen))
 		var/pleasedval = "very angry!"
 		if (power >= 50 && power < 100)
 			pleasedval = "somewhat angry."
@@ -228,44 +243,28 @@
 	icon_state = tribe
 	name = "[tribe] totem"
 	desc = "A stone [tribe] totem."
-
-	if (tribe == "goose")
-		tribe_job = "/datum/job/indians/tribes/red"
-	else if (tribe == "turkey")
-		tribe_job = "/datum/job/indians/tribes/blue"
-	else if (tribe == "bear")
-		tribe_job = "/datum/job/indians/tribes/black"
-	else if (tribe == "wolf")
-		tribe_job = "/datum/job/indians/tribes/white"
-	else if (tribe == "monkey")
-		tribe_job = "/datum/job/indians/tribes/green"
-	else if (tribe == "mouse")
-		tribe_job = "/datum/job/indians/tribes/yellow"
-
-	for (var/datum/job/job in job_master.faction_organized_occupations)
-		if (istype(job, text2path(tribe_job)))
-			current_tribesmen = processes.job_data.get_active_positions(job)
-	check_power()
-	check_favours()
+	spawn(10)
+		check_power()
+		check_favours()
 
 
 /obj/structure/religious/totem/offerings/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/organ))
-		power += 75
+		power = (power + 75)
 		if (istype(I, /obj/item/organ/heart))
-			power += 25
+			power = (power + 25)
 		visible_message("The gods take [user]'s offering! They are very pleased!")
 		new /obj/effect/effect/smoke/fast(loc)
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/stack/teeth) || istype(I, /obj/item/stack/material/tobacco))
-		power += I.amount*12
+		power = (power + (I.amount*12))
 		visible_message("The gods take [user]'s offering! They are pleased!")
 		new /obj/effect/effect/smoke/fast(loc)
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks))
-		power += 10
+		power = (power + 10)
 		visible_message("The gods take [user]'s offering! They are pleased!")
 		new /obj/effect/effect/smoke/fast(loc)
 		qdel(I)
@@ -289,7 +288,7 @@
 				if (power >= 120)
 					var/mob/living/healed = choice2
 					healed.revive()
-					power -= 120
+					power = (power - 120)
 					return
 				else
 					user << "Not enough favour points."
