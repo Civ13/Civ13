@@ -204,7 +204,9 @@
 
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600)
-		current_tribesmen = processes.job_data.get_active_positions(text2path(tribe_job))
+		for (var/datum/job/job in job_master.faction_organized_occupations)
+			if (istype(job, text2path(tribe_job)))
+				current_tribesmen = processes.job_data.get_active_positions(job)
 		if (power > 0)
 			power = power-(2*current_tribesmen)
 		check_power()
@@ -226,6 +228,7 @@
 	icon_state = tribe
 	name = "[tribe] totem"
 	desc = "A stone [tribe] totem."
+
 	if (tribe == "goose")
 		tribe_job = "/datum/job/indians/tribes/red"
 	else if (tribe == "turkey")
@@ -238,7 +241,10 @@
 		tribe_job = "/datum/job/indians/tribes/green"
 	else if (tribe == "mouse")
 		tribe_job = "/datum/job/indians/tribes/yellow"
-	current_tribesmen = processes.job_data.get_active_positions(text2path(tribe_job))
+
+	for (var/datum/job/job in job_master.faction_organized_occupations)
+		if (istype(job, text2path(tribe_job)))
+			current_tribesmen = processes.job_data.get_active_positions(job)
 	check_power()
 	check_favours()
 
