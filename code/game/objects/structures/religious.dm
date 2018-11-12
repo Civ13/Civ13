@@ -153,7 +153,6 @@
 		I += 1
 /obj/structure/religious/totem/offerings/proc/check_favours()
 	spawn(1800)
-		world << "favours checked"
 		//very angry
 		if (power < 50)
 			if (weather == WEATHER_NONE)
@@ -204,7 +203,6 @@
 
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600)
-		world << "power checked"
 		if (tribe == "goose")
 			for (var/datum/job/indians/tribes/red/R in job_master.faction_organized_occupations)
 				current_tribesmen = R.current_positions

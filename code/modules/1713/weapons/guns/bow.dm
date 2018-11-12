@@ -16,12 +16,10 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/arrow
-//	magazine_type = /obj/item/ammo_magazine/musketball
 	load_shell_sound = 'sound/weapons/pull_bow.ogg'
 	bulletinsert_sound = 'sound/weapons/pull_bow.ogg'
 	//+2 accuracy over the LWAP because only one shot
 	accuracy = TRUE
-//	scoped_accuracy = 2
 	gun_type = GUN_TYPE_BOW
 	attachment_slots = null
 	accuracy_increase_mod = 3.00

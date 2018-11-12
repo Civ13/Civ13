@@ -112,6 +112,7 @@
 				organ.reagents.multiply_reagent("nutriment", 5)
 				organ.reagents.multiply_reagent("protein", 3)
 				organ.reagents.del_reagent("toxin")
+				organ.reagents.del_reagent("food_poisoning")
 				organ.roasted = TRUE
 				contents -= I
 				qdel(I)

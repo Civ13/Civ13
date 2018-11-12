@@ -50,6 +50,7 @@
 	var/eyeblur = FALSE
 	var/drowsy = FALSE
 	var/agony = FALSE
+	var/poisonous = FALSE
 	var/embed = FALSE // whether or not the projectile can embed itself in the mob
 
 	var/did_muzzle_effect = FALSE
@@ -87,7 +88,7 @@
 	if (!isliving(target))	return FALSE
 	if (isanimal(target))	return FALSE
 	var/mob/living/L = target
-	L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, blocked) // add in AGONY!
+	L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked) // add in AGONY!
 	return TRUE
 
 /obj/item/projectile/proc/on_impact(var/atom/A)

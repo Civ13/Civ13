@@ -38,6 +38,11 @@
 	slot_flags = SLOT_BELT
 	value = 2
 
+/obj/item/ammo_casing/arrow/poisonous
+	name = "poisonous arrow"
+	icon_state = "arrowp"
+	projectile_type = /obj/item/projectile/bullet/arrow/poisonous
+	value = 5
 
 ///////TO MAKE AMMO WITH GUNPOWDER
 /obj/item/stack/ammopart

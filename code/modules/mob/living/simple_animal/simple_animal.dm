@@ -242,18 +242,27 @@
 			O.attack(src, user, user.targeted_organ)
 	else if (O.sharp)
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
-			user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
-			if (do_after(user, 30, src))
-				user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-				for (var/v in TRUE to rand(2,3))
-					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-					meat.name = "[name] meatsteak"
-				for (var/v in TRUE to rand(1,2))
-					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
-					leather.name = "[name] leather"
-				new/obj/item/stack/material/bone(get_turf(src))
-				crush()
-				qdel(src)
+			if (istype(src, /mob/living/simple_animal/frog/poisonous))
+				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
+				if (do_after(user, 30, src))
+					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
+					new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					crush()
+					qdel(src)
+			else
+				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
+				if (do_after(user, 30, src))
+					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
+					for (var/v in TRUE to rand(2,3))
+						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+						meat.name = "[name] meatsteak"
+					for (var/v in TRUE to rand(1,2))
+						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+						leather.name = "[name] leather"
+					new/obj/item/stack/material/bone(get_turf(src))
+					crush()
+					qdel(src)
+
 		else
 			O.attack(src, user, user.targeted_organ)
 

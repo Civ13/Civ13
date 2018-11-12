@@ -76,6 +76,30 @@
 	layer = 2.12
 	health = 300
 
+/obj/covers/dirt_wall
+	name = "dirt wall"
+	desc = "A dirt wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "drydirt_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 3
+	layer = 2.12
+	health = 90
+/obj/covers/dirt_wall/blocks
+	name = "dirt blocks wall"
+	desc = "A dirt blocks wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "drysod_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 3
+	layer = 2.12
+	health = 110
 /obj/covers/New()
 	..()
 	spawn(15)
