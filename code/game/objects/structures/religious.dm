@@ -116,12 +116,14 @@
 	bound_height = 64
 	var/power = 175
 	health = 100000000
+	var/datum/job/tribe_job = "/datum/job/indians/tribes/red"
+	var/current_tribesmen = 0
 /obj/structure/religious/totem/offerings/proc/create_mobs()
 	var/I = 0
-	while(I < round(human_clients_mob_list.len/2))
+	while(I < round(current_tribesmen/2))
 
 		var/mob/living/simple_animal/hostile/skeleton/attacker_gods/newmob = new /mob/living/simple_animal/hostile/skeleton/attacker_gods(src.loc)
-		newmob.target_loc = get_turf(loc)
+		newmob.target_loc = loc
 		var/randdir = pick(1,2,3,4)
 		if (randdir == 1)
 			newmob.x=src.x+(rand(-15,15))
@@ -154,18 +156,16 @@
 	spawn(1800)
 		//very angry
 		if (power < 50)
-			//TODO: Spawn skellies / bears
 			if (weather == WEATHER_NONE)
 				change_weather_somehow()
-			world << "The gods are angry, sending heavy rains!"
+			visible_message("The gods are angry, sending heavy rains!")
 			if (prob(100-power))
 				world << "You feel a shill down your spine, something evil is close by..."
-				new /obj/effect/landmark/npctarget(loc)
 				create_mobs()
 		//angry
 		else if (power >= 50 && power < 100)
 			if (prob(100-power))
-				world << "Heavy winds and rain have destroyed the crops!"
+				visible_message("Heavy winds and rain have destroyed the crops!")
 				if (weather == WEATHER_NONE)
 					change_weather_somehow()
 				for (var/obj/structure/farming/plant/P in range(30,loc))
@@ -184,12 +184,12 @@
 			if (prob(power/250))
 				if (weather == WEATHER_RAIN)
 					change_weather_somehow()
-					world << "The gods have blessed us with good weather!"
+					visible_message("The gods have blessed us with good weather!")
 		//very pleased
 		else if (power >= 250)
 			if (weather == WEATHER_RAIN)
 				change_weather_somehow()
-			world << "The gods have blessed us with good weather!"
+			visible_message("The gods have blessed us with good weather!")
 			if (prob(50) && human_clients_mob_list.len>0)
 				if (prob(75))
 					new /obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
@@ -204,8 +204,9 @@
 
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600)
+		current_tribesmen = processes.job_data.get_active_positions(text2path(tribe_job))
 		if (power > 0)
-			power = power-(2*human_clients_mob_list.len)
+			power = power-(2*current_tribesmen)
 		check_power()
 		var/pleasedval = "very angry!"
 		if (power >= 50 && power < 100)
@@ -222,9 +223,22 @@
 
 /obj/structure/religious/totem/offerings/New()
 	..()
-	icon_state = pick("bear", "goose", "turkey", "monkey", "mouse", "wolf")
-	name = "[icon_state] totem"
-	desc = "A [icon_state] stone totem."
+	icon_state = tribe
+	name = "[tribe] totem"
+	desc = "A stone [tribe] totem."
+	if (tribe == "goose")
+		tribe_job = "/datum/job/indians/tribes/red"
+	else if (tribe == "turkey")
+		tribe_job = "/datum/job/indians/tribes/blue"
+	else if (tribe == "bear")
+		tribe_job = "/datum/job/indians/tribes/black"
+	else if (tribe == "wolf")
+		tribe_job = "/datum/job/indians/tribes/white"
+	else if (tribe == "monkey")
+		tribe_job = "/datum/job/indians/tribes/green"
+	else if (tribe == "mouse")
+		tribe_job = "/datum/job/indians/tribes/yellow"
+	current_tribesmen = processes.job_data.get_active_positions(text2path(tribe_job))
 	check_power()
 	check_favours()
 

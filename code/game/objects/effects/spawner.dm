@@ -78,21 +78,29 @@
 	max_number = 3
 	max_range = 10
 	create_path = /mob/living/simple_animal/turkey_m
-	timer = 1000
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/turkeys_f
+	name = "turkey spawner"
+	max_number = 3
+	max_range = 10
+	create_path = /mob/living/simple_animal/turkey_f
+	timer = 3000
+
 
 /obj/effect/spawner/mobspawner/bears
 	name = "bear spawner"
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/bear
-	timer = 1400
+	timer = 3000
 
 /obj/effect/spawner/mobspawner/monkeys
 	name = "monkey spawner"
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/monkey
-	timer = 1400
+	timer = 3000
 
 
 /obj/effect/spawner/mobspawner/pirates
