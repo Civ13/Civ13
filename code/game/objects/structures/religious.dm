@@ -120,7 +120,7 @@
 	var/I = 0
 	while(I < round(human_clients_mob_list.len/2))
 
-		var/mob/living/simple_animal/newmob = new /mob/living/simple_animal/hostile/skeleton/attacker_gods(src.loc)
+		var/mob/living/simple_animal/hostile/skeleton/attacker_gods/newmob = new /mob/living/simple_animal/hostile/skeleton/attacker_gods(src.loc)
 		newmob.target_loc = get_turf(loc)
 		var/randdir = pick(1,2,3,4)
 		if (randdir == 1)
