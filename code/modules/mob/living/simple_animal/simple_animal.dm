@@ -98,6 +98,10 @@
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
+					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker_gods))
+						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
+						if (prob(20) && get_dist(src, A.target_loc) > 11)
+							walk_towards(src, A.target_loc,4)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 					moving_to = pick(cardinal)
 					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.

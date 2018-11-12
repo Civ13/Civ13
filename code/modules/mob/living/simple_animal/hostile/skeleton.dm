@@ -27,6 +27,10 @@
 	faction = "neutral"
 /mob/living/simple_animal/hostile/skeleton/attacker
 	name = "\improper Skeleton"
+
+/mob/living/simple_animal/hostile/skeleton/attacker_gods
+	name = "\improper Skeleton"
+	var/obj/structure/religious/totem/offerings/target_loc
 /mob/living/simple_animal/hostile/skeleton/New()
 	..()
 	icon_state = pick("skeleton1","skeleton2","skeleton3",)
