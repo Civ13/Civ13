@@ -265,7 +265,7 @@
 "fe" = (/obj/structure/flag/french,/turf/wall/wood,/area/caribbean/british/ship/main_deck)
 "ff" = (/obj/structure/closet/crate/chest,/obj/item/clothing/head/red_beret,/obj/item/clothing/head/red_beret,/obj/item/clothing/head/red_beret,/obj/item/clothing/head/red_beret,/obj/item/clothing/head/red_beret,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "fg" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/baguette,/obj/item/weapon/reagent_containers/food/snacks/baguette,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
-"fh" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/baguette,/obj/item/weapon/reagent_containers/food/snacks/baguette,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine{name = "Vin Français"},/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
+"fh" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/baguette,/obj/item/weapon/reagent_containers/food/snacks/baguette,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine{name = "Vin Francais"},/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "fi" = (/obj/item/weapon/shield,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "fj" = (/obj/item/weapon/shield,/obj/item/weapon/shield,/turf/floor/wood_ship,/area/caribbean/british/ship/main_deck)
 "fk" = (/obj/item/stack/material/rope{amount = 10},/turf/floor/wood_ship,/area/caribbean/pirates/ship/main_deck)
