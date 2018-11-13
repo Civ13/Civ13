@@ -37,7 +37,7 @@
 	desc = "Tastes like... something."
 
 /obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog
-	name = "poisononous frog meat"
+	name = "poisonous frog meat"
 	desc = "Probably not a good idea to put it in the stew."
 	var/uses = 4
 	New()
@@ -49,7 +49,7 @@
 
 	if (user.l_hand == src && istype(user.r_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
 		var/obj/item/ammo_casing/arrow/CURRENT = user.r_hand
-		user << "You dip the arrow into the poison frog's skin."
+		user << "You dip the arrow into the poisonous frog's skin."
 		CURRENT.name = "poisonous arrow"
 		CURRENT.icon_state = "arrowp"
 		CURRENT.projectile_type = /obj/item/projectile/bullet/arrow/poisonous
@@ -57,7 +57,7 @@
 		return
 	else if (user.r_hand == src && istype(user.l_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
 		var/obj/item/ammo_casing/arrow/CURRENT = user.l_hand
-		user << "You dip the arrow into the poison frog's skin."
+		user << "You dip the arrow into the poisonous frog's skin."
 		CURRENT.name = "poisonous arrow"
 		CURRENT.icon_state = "arrowp"
 		CURRENT.projectile_type = /obj/item/projectile/bullet/arrow/poisonous
