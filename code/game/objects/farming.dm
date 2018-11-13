@@ -212,7 +212,7 @@
 		if (stage <=6) // destroy
 			user << "<span class = 'warning'>You uproot the [name].</span>"
 			qdel(src)
-		else if (stage == 7) // harvest
+		else if (stage == 7 || stage == 8 || stage == 9 || stage == 10) // harvest
 			var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 			new fruitpath(loc)
 			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
