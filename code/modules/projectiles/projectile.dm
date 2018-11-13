@@ -88,7 +88,7 @@
 	if (!isliving(target))	return FALSE
 	if (isanimal(target))	return FALSE
 	var/mob/living/L = target
-	L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked) // add in AGONY!
+	L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
 	return TRUE
 
 /obj/item/projectile/proc/on_impact(var/atom/A)

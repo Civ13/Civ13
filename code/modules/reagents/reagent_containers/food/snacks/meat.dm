@@ -44,3 +44,24 @@
 		..()
 		reagents.add_reagent("food_poisoning", 15)
 		reagents.add_reagent("cyanide", 25)
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/attack_self(mob/user as mob)
+
+	if (user.l_hand == src && istype(user.r_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+		var/obj/item/ammo_casing/arrow/CURRENT = user.r_hand
+		user << "You dip the arrow into the poison frog's skin."
+		CURRENT.name = "poisonous arrow"
+		CURRENT.icon_state = "arrowp"
+		CURRENT.projectile_type = /obj/item/projectile/bullet/arrow/poisonous
+		uses = (uses - 1)
+		return
+	else if (user.r_hand == src && istype(user.l_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
+		var/obj/item/ammo_casing/arrow/CURRENT = user.l_hand
+		user << "You dip the arrow into the poison frog's skin."
+		CURRENT.name = "poisonous arrow"
+		CURRENT.icon_state = "arrowp"
+		CURRENT.projectile_type = /obj/item/projectile/bullet/arrow/poisonous
+		uses = (uses - 1)
+		return
+	else
+		return

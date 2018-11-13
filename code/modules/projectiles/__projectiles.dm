@@ -26,7 +26,7 @@
 	penetrating = 1
 	armor_penetration = 35
 	icon_state = "arrow"
-	poisonous = TRUE
+	poisonous = 15
 
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"

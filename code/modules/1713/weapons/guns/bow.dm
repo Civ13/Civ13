@@ -1,6 +1,6 @@
 /obj/item/weapon/gun/projectile/bow
 	name = "bow"
-	desc = "A simple and crude bow. Outdated but faster than muskets."
+	desc = "A simple and crude bow."
 	icon_state = "bow"
 	item_state = "bow"
 	w_class = 4

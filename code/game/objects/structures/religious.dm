@@ -191,9 +191,11 @@
 			visible_message("The gods have blessed us with good weather!")
 			if (prob(50) && human_clients_mob_list.len>0)
 				if (prob(75))
+					visible_message("The gods send us offerings!")
 					new /obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
 					new /obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
 				else
+					visible_message("The gods send us offerings!")
 					new /obj/item/stack/medical/splint(loc)
 		if (power > 50)
 			for (var/obj/effect/landmark/npctarget/TG in loc)
@@ -247,25 +249,29 @@
 
 
 /obj/structure/religious/totem/offerings/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, /obj/item/organ))
-		power = (power + 75)
-		if (istype(I, /obj/item/organ/heart))
-			power = (power + 25)
-		visible_message("The gods take [user]'s offering! They are very pleased!")
-		new /obj/effect/effect/smoke/fast(loc)
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/teeth) || istype(I, /obj/item/stack/material/tobacco))
-		power = (power + (I.amount*12))
-		visible_message("The gods take [user]'s offering! They are pleased!")
-		new /obj/effect/effect/smoke/fast(loc)
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks))
-		power = (power + 10)
-		visible_message("The gods take [user]'s offering! They are pleased!")
-		new /obj/effect/effect/smoke/fast(loc)
-		qdel(I)
+	if (power <= 1000)
+		if (istype(I, /obj/item/organ))
+			power = (power + 75)
+			if (istype(I, /obj/item/organ/heart))
+				power = (power + 25)
+			visible_message("The gods take [user]'s offering of the [I]! They are very pleased!")
+			new /obj/effect/effect/smoke/fast(loc)
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/teeth) || istype(I, /obj/item/stack/material/tobacco))
+			power = (power + (I.amount*12))
+			visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+			new /obj/effect/effect/smoke/fast(loc)
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks))
+			power = (power + 10)
+			visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+			new /obj/effect/effect/smoke/fast(loc)
+			qdel(I)
+			return
+	else
+		visible_message("The gods reject [user]'s offering of the [I]. They are satiated for now.")
 		return
 	..()
 
