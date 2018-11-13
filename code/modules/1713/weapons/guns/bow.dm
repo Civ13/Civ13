@@ -25,7 +25,7 @@
 	accuracy_increase_mod = 3.00
 	accuracy_decrease_mod = 7.00
 	KD_chance = KD_CHANCE_HIGH
-	stat = "bow"
+	stat = "bows"
 	move_delay = 5
 	fire_delay = 5
 	muzzle_flash = FALSE
