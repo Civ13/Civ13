@@ -52,7 +52,7 @@
 		user << "You dip the arrow into the poisonous frog's skin."
 		CURRENT.name = "poisonous arrow"
 		CURRENT.icon_state = "arrowp"
-		CURRENT.projectile_type = /obj/item/projectile/bullet/arrow/poisonous
+		CURRENT.projectile_type = /obj/item/projectile/arrow/arrow/poisonous
 		uses = (uses - 1)
 		return
 	else if (user.r_hand == src && istype(user.l_hand, /obj/item/ammo_casing/arrow) && uses >= 1)
@@ -60,7 +60,7 @@
 		user << "You dip the arrow into the poisonous frog's skin."
 		CURRENT.name = "poisonous arrow"
 		CURRENT.icon_state = "arrowp"
-		CURRENT.projectile_type = /obj/item/projectile/bullet/arrow/poisonous
+		CURRENT.projectile_type = /obj/item/projectile/arrow/arrow/poisonous
 		uses = (uses - 1)
 		return
 	else

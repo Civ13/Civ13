@@ -32,7 +32,7 @@
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "arrow"
 	spent_icon = null
-	projectile_type = /obj/item/projectile/bullet/arrow
+	projectile_type = /obj/item/projectile/arrow/arrow
 	weight = 0.15
 	caliber = "arrow"
 	slot_flags = SLOT_BELT

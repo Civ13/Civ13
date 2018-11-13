@@ -11,17 +11,17 @@
 	armor_penetration = 40
 
 /obj/item/projectile/bullet/rifle/blunderbuss
-	damage = DAMAGE_HIGH + 6
+	damage = DAMAGE_HIGH + 10
 	penetrating = 3
 	armor_penetration = 100
 
-/obj/item/projectile/bullet/arrow
+/obj/item/projectile/arrow/arrow
 	damage = DAMAGE_MEDIUM
 	penetrating = 1
 	armor_penetration = 35
 	icon_state = "arrow"
 
-/obj/item/projectile/bullet/arrow/poisonous
+/obj/item/projectile/arrow/arrow/poisonous
 	damage = DAMAGE_MEDIUM
 	penetrating = 1
 	armor_penetration = 35
