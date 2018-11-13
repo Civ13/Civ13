@@ -203,6 +203,17 @@
 	var/ladder_id = null
 	var/area_id = "defaultareaid"
 
+/obj/structure/multiz/ladder/ww2/tunneltop/Crossed(var/atom/movable/AM)
+	if (find_target() && istop)
+		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
+			var/obj/item/I = AM
+			if (I.w_class <= 2.0) // fixes maxim bug and probably some others - Kachnov
+				I.z = I.z-1
+				visible_message("\The [I] falls down the ladder.")
+		else if (!AM.pulledby && istype(AM, /obj/structure/closet))
+			visible_message("\The [AM] falls down the ladder.")
+			AM.z = AM.z-1
+
 /obj/structure/multiz/ladder/ww2/Crossed(var/atom/movable/AM)
 	if (find_target() && istop)
 		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))

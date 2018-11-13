@@ -190,11 +190,13 @@
 				change_weather_somehow()
 			visible_message("The gods have blessed us with good weather!")
 			if (prob(50) && human_clients_mob_list.len>0)
-				if (prob(75))
+				if (prob(30))
 					visible_message("The gods send us offerings!")
 					new /obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
-					new /obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
-				else
+				else if (prob(20))
+					visible_message("The gods send us offerings!")
+					new /obj/item/weapon/reagent_containers/pill/opium(loc)
+				else if (prob(20))
 					visible_message("The gods send us offerings!")
 					new /obj/item/stack/medical/splint(loc)
 		if (power > 50)
@@ -250,10 +252,8 @@
 
 /obj/structure/religious/totem/offerings/attackby(obj/item/I as obj, mob/user as mob)
 	if (power <= 1000)
-		if (istype(I, /obj/item/organ))
+		if (istype(I, /obj/item/organ/heart))
 			power = (power + 75)
-			if (istype(I, /obj/item/organ/heart))
-				power = (power + 25)
 			visible_message("The gods take [user]'s offering of the [I]! They are very pleased!")
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
@@ -277,11 +277,11 @@
 
 /obj/structure/religious/totem/offerings/attack_hand(mob/user as mob)
 	if (user.druggy > 10)
-		var/list/display1 = list("Heal (120)", "Cancel")
+		var/list/display1 = list("Heal (150)", "Cancel")
 		var/choice1 = WWinput(user, "Your tribe has [power] favour points. What power do you request?", "Communicating with the Gods", "Cancel", display1)
 		if (choice1 == "Cancel")
 			return
-		if (choice1 == "Heal (120)")
+		if (choice1 == "Heal (150)")
 			var/list/closemobs = list("Cancel")
 			for (var/mob/living/M in range(3,loc))
 				closemobs += M
@@ -289,10 +289,10 @@
 			if (choice2 == "Cancel")
 				return
 			else
-				if (power >= 120)
+				if (power >= 150)
 					var/mob/living/healed = choice2
 					healed.revive()
-					power = (power - 120)
+					power = (power - 150)
 					return
 				else
 					user << "Not enough favour points."
