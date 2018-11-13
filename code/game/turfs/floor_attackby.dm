@@ -74,7 +74,7 @@
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(25))
-					if (prob(50))
+					if (prob(30))
 						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 						mineral.amount = rand(1,3)
 						visible_message("<span class='danger'>You found some copper ore!</span>")
@@ -90,7 +90,7 @@
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
-				if (prob(20))
+				if (prob(20) && map.age != "5000 B.C.")
 					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
 					mineral.amount = rand(1,2)
 					visible_message("<span class='danger'>You found some iron ore!</span>")
@@ -100,7 +100,7 @@
 					return
 				if (prob(25))
 					var/pickperc = pick(1,2,3)
-					if (pickperc == 1)
+					if (pickperc == 1 || map.age != "1713")
 						new/obj/item/stack/ore/coal(src)
 						visible_message("<span class='danger'>You found some coal!</span>")
 						T.ChangeTurf(/turf/floor/dirt)

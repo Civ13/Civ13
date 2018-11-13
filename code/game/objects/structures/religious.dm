@@ -117,6 +117,7 @@
 	var/power = 175
 	health = 100000000
 	var/current_tribesmen = 0
+	var/reltype = "tribal" //tribal or colony
 /obj/structure/religious/totem/offerings/proc/create_mobs()
 	var/I = 0
 	while(I < round(current_tribesmen/2))
@@ -159,7 +160,7 @@
 				change_weather_somehow()
 			visible_message("The gods are angry, sending heavy rains!")
 			if (prob(100-power))
-				world << "You feel a shill down your spine, something evil is close by..."
+				world << "You feel a chill down your spine, something evil is close by..."
 				create_mobs()
 		//angry
 		else if (power >= 50 && power < 100)
@@ -207,71 +208,107 @@
 
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600)
-		if (tribe == "goose")
-			for (var/datum/job/indians/tribes/red/R in job_master.faction_organized_occupations)
-				current_tribesmen = R.current_positions
-		else if (tribe == "turkey")
-			for (var/datum/job/indians/tribes/blue/R in job_master.faction_organized_occupations)
-				current_tribesmen = R.current_positions
-		else if (tribe == "bear")
-			for (var/datum/job/indians/tribes/black/R in job_master.faction_organized_occupations)
-				current_tribesmen = R.current_positions
-		else if (tribe == "wolf")
-			for (var/datum/job/indians/tribes/white/R in job_master.faction_organized_occupations)
-				current_tribesmen = R.current_positions
-		else if (tribe == "monkey")
-			for (var/datum/job/indians/tribes/green/R in job_master.faction_organized_occupations)
-				current_tribesmen = R.current_positions
-		else if (tribe == "mouse")
-			for (var/datum/job/indians/tribes/yellow/R in job_master.faction_organized_occupations)
-				current_tribesmen = R.current_positions
-		if (power > 0)
-			power = (power-(2*current_tribesmen))
-		var/pleasedval = "very angry!"
-		if (power >= 50 && power < 100)
-			pleasedval = "somewhat angry."
-		if (power >= 100 && power < 150)
-			pleasedval = "neutral."
-		if (power >= 150 && power < 250)
-			pleasedval = "somewhat pleased."
-		if (power >= 250)
-			pleasedval = "very pleased!"
-		desc = "A [icon_state] stone totem. The gods seem to be [pleasedval]"
-		check_power()
-		return
+		if (reltype == "tribal")
+			if (tribe == "goose")
+				for (var/datum/job/indians/tribes/red/R in job_master.faction_organized_occupations)
+					current_tribesmen = R.current_positions
+			else if (tribe == "turkey")
+				for (var/datum/job/indians/tribes/blue/R in job_master.faction_organized_occupations)
+					current_tribesmen = R.current_positions
+			else if (tribe == "bear")
+				for (var/datum/job/indians/tribes/black/R in job_master.faction_organized_occupations)
+					current_tribesmen = R.current_positions
+			else if (tribe == "wolf")
+				for (var/datum/job/indians/tribes/white/R in job_master.faction_organized_occupations)
+					current_tribesmen = R.current_positions
+			else if (tribe == "monkey")
+				for (var/datum/job/indians/tribes/green/R in job_master.faction_organized_occupations)
+					current_tribesmen = R.current_positions
+			else if (tribe == "mouse")
+				for (var/datum/job/indians/tribes/yellow/R in job_master.faction_organized_occupations)
+					current_tribesmen = R.current_positions
+			if (power > 0)
+				power = (power-(2*current_tribesmen))
+			var/pleasedval = "very angry!"
+			if (power >= 50 && power < 100)
+				pleasedval = "somewhat angry."
+			if (power >= 100 && power < 150)
+				pleasedval = "neutral."
+			if (power >= 150 && power < 250)
+				pleasedval = "somewhat pleased."
+			if (power >= 250)
+				pleasedval = "very pleased!"
+			desc = "A [icon_state] stone totem. The gods seem to be [pleasedval]"
+			check_power()
+			return
+		else
+			current_tribesmen = human_clients_mob_list.len
+			if (power > 0)
+				power = (power-(2*current_tribesmen))
+			var/pleasedval = "very angry!"
+			if (power >= 50 && power < 100)
+				pleasedval = "somewhat angry."
+			if (power >= 100 && power < 150)
+				pleasedval = "neutral."
+			if (power >= 150 && power < 250)
+				pleasedval = "somewhat pleased."
+			if (power >= 250)
+				pleasedval = "very pleased!"
+			desc = "A big stone cross. God seem to be [pleasedval]"
+			check_power()
+			return
 
 /obj/structure/religious/totem/offerings/New()
 	..()
-	icon_state = tribe
-	name = "[tribe] totem"
-	desc = "A stone [tribe] totem."
-	spawn(10)
-		check_power()
-		check_favours()
-
+	if (reltype == "tribal")
+		icon_state = tribe
+		name = "[tribe] totem"
+		desc = "A stone [tribe] totem."
+		spawn(10)
+			check_power()
+			check_favours()
+	else
+		icon_state = "cross"
+		name = "big stone cross"
+		desc = "A stone cross."
+		spawn(10)
+			check_power()
+			check_favours()
 
 /obj/structure/religious/totem/offerings/attackby(obj/item/I as obj, mob/user as mob)
 	if (power <= 1000)
 		if (istype(I, /obj/item/organ/heart))
 			power = (power + 75)
-			visible_message("The gods take [user]'s offering of the [I]! They are very pleased!")
+			if (reltype == "tribal")
+				visible_message("The gods take [user]'s offering of the [I]! They are very pleased!")
+			else
+				visible_message("God takes [user]'s offering of the [I]! He is very pleased!")
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
 			return
 		else if (istype(I, /obj/item/stack/teeth) || istype(I, /obj/item/stack/material/tobacco))
 			power = (power + (I.amount*12))
-			visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+			if (reltype == "tribal")
+				visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+			else
+				visible_message("God takes [user]'s offering of the [I]! He is pleased!")
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
 			return
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks))
 			power = (power + 10)
-			visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+			if (reltype == "tribal")
+				visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+			else
+				visible_message("God takes [user]'s offering of the [I]! He is pleased!")
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
 			return
 	else
-		visible_message("The gods reject [user]'s offering of the [I]. They are satiated for now.")
+		if (reltype == "tribal")
+			visible_message("The gods reject [user]'s offering of the [I]. They are satiated for now.")
+		else
+			visible_message("God rejects [user]'s offering of the [I]. He is satisfied for now.")
 		return
 	..()
 

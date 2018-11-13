@@ -173,6 +173,13 @@
 	w_class = TRUE
 	var/sand_amount = FALSE
 
+/obj/item/weapon/sandbag/attack_self(mob/user)
+	user << "You start building the dirt blocks wall..."
+	if (do_after(user, 25, src))
+		user << "You finish the placement of the dirt blocks wall foundation."
+		new /obj/covers/dirt_wall/blocks/incomplete(loc)
+		qdel(src)
+		return
 /obj/structure/window/sandbag/rock
 	name = "rock wall"
 	icon_state = "rock_barricade"
