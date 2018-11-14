@@ -88,6 +88,20 @@
 	amount = 3
 	layer = 2.12
 	health = 90
+
+/obj/covers/straw_wall
+	name = "straw wall"
+	desc = "A straw wall. Looks flimsy."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "straw_wallh"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 2.12
+	health = 75
+
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
@@ -246,9 +260,9 @@
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(W.damtype)
 		if ("fire")
-			health -= W.force * 0.75
+			health -= W.force * 0.7
 		if ("brute")
-			health -= W.force * 0.3
+			health -= W.force * 0.2
 
 	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
 	user.do_attack_animation(src)
@@ -263,6 +277,6 @@
 
 
 /obj/covers/bullet_act(var/obj/item/projectile/proj)
-	if (prob(proj.damage - 30)) // makes shrapnel unable to take down trees
-		visible_message("<span class = 'danger'>[src] collapses!</span>")
-		qdel(src)
+	health -= proj.damage * 0.25
+	try_destroy()
+	return

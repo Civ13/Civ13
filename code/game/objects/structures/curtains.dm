@@ -61,6 +61,14 @@
 	color = "#ACD1E9"
 	alpha = 200
 
+/obj/structure/curtain/leather
+	name = "leather curtain"
+	color = "#624a2e"
+
+/obj/structure/curtain/leather/open
+	icon_state = "open"
+	opacity = FALSE
+
 /obj/structure/curtain/open/shower/engineering
 	color = "#FFA500"
 
