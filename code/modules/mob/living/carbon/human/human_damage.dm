@@ -129,8 +129,6 @@
 	..()
 
 /mob/living/carbon/human/Weaken(amount)
-	if (HULK in mutations)	return
-	// 60% chance Vampires won't be affected; 96% Pillar Men won't be
 	if (takes_less_damage && prob(15 + ceil(getStatCoeff("strength") * 9)))
 		return
 	// failing that, addition 50%/77% chance to get less weakened
@@ -140,8 +138,6 @@
 	..()
 
 /mob/living/carbon/human/Paralyse(amount)
-	if (HULK in mutations)	return
-	// Notify our AI if they can now control the suit.
 	..()
 
 // Defined here solely to take species flags into account without having to recast at mob/living level.

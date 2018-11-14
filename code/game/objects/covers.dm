@@ -130,23 +130,25 @@
 	var/stage = 1
 
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/sandbag && stage == 4))
-		user << "You start adding dirt to the wall..."
-		if (do_after(user, 20, src))
-			user << "You finish adding dirt to the wall, completing it."
-			qdel(W)
-			new /obj/covers/dirt_wall/blocks(loc)
-			qdel(src)
-			return
-	else if (istype(W, /obj/item/weapon/sandbag && stage <= 3))
-		user << "You start adding dirt to the wall..."
-		if (do_after(user, 20, src))
-			user << "You finish adding dirt to the wall."
-			stage = (stage+1)
-			icon_state = "drysod_wall_inc[stage]"
-			health = (20*stage)
-			qdel(W)
-			return
+	if (istype(W, /obj/item/weapon/sandbag))
+		if (stage == 4)
+			user << "You start adding dirt to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish adding dirt to the wall, completing it."
+				qdel(W)
+				new /obj/covers/dirt_wall/blocks(loc)
+				qdel(src)
+				return
+		else if (stage <= 3)
+			user << "You start adding dirt to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish adding dirt to the wall."
+				stage = (stage+1)
+				icon_state = "drysod_wall_inc[stage]"
+				health = (20*stage)
+				qdel(W)
+				return
+	..()
 /obj/covers/New()
 	..()
 	spawn(15)

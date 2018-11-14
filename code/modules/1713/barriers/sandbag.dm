@@ -177,7 +177,7 @@
 	user << "You start building the dirt blocks wall..."
 	if (do_after(user, 25, src))
 		user << "You finish the placement of the dirt blocks wall foundation."
-		new /obj/covers/dirt_wall/blocks/incomplete(loc)
+		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
 		qdel(src)
 		return
 /obj/structure/window/sandbag/rock
