@@ -33,8 +33,8 @@
 	if (blocked >= 2)	return FALSE
 	if (brute)	apply_damage(brute, BRUTE, def_zone, blocked)
 	if (burn)	apply_damage(burn, BURN, def_zone, blocked)
-	if (tox)		apply_damage(tox, TOX, def_zone, blocked)
-	if (oxy)		apply_damage(oxy, OXY, def_zone, blocked)
+	if (tox)	apply_damage(tox, TOX, def_zone, blocked)
+	if (oxy)	apply_damage(oxy, OXY, def_zone, blocked)
 	if (clone)	apply_damage(clone, CLONE, def_zone, blocked)
 	if (halloss) apply_damage(halloss, HALLOSS, def_zone, blocked)
 	return TRUE
@@ -63,10 +63,7 @@
 		if (DROWSY)
 			drowsyness = max(drowsyness,(effect/(blocked+1)))
 		if (POISONOUS)
-			Paralyse(effect/(blocked+1))
-			Weaken(effect/(blocked+1))
-			eye_blurry = max(eye_blurry,(effect/(blocked+1)))
-			halloss += effect
+			adjustToxLoss(25)
 	updatehealth()
 	return TRUE
 

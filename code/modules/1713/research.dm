@@ -112,7 +112,7 @@
 				update_icon()
 				return
 	else
-		if (author == user)
+		if (author == "[user]")
 			user << "<span class='notice'>This book was written by you! You will not learn anything from reading it...</span>"
 			return
 		else
