@@ -10,11 +10,11 @@
 /obj/item/weapon/book/research/New()
 	..()
 	if (map.ordinal_age >= 3)
-	name = "blank research book"
-	icon_state = "research0"
-	title = "Blank Book"
-	desc = "A blank scientific book."
-	styleb = "book"
+		name = "blank research book"
+		icon_state = "research0"
+		title = "Blank Book"
+		desc = "A blank scientific book."
+		styleb = "book"
 
 
 
@@ -112,26 +112,30 @@
 				update_icon()
 				return
 	else
-		var/choice = input("This is a book by [author] on [k_class]. Do you want to study it?") in list("Yes", "No")
-		if (choice == "No")
+		if (author == user)
+			user << "<span class='notice'>This book was written by you! You will not learn anything from reading it...</span>"
 			return
-		else if (choice == "Yes")
-			user << "<span class='notice'>You begin reading the [styleb] attently...</span>"
-			if (do_after(user, (600*k_level), src))
-				user << "<span class='notice'>You finish studying the [styleb]. You feel smarter already.</span>"
-				if (k_class == "industry")
-					user.adaptStat("crafting", (10*k_level))
-				if (k_class == "medicine")
-					user.adaptStat("medical", (10*k_level))
-				if (k_class == "archery")
-					user.adaptStat("bows", (10*k_level))
-				if (k_class == "fencing")
-					user.adaptStat("swords", (10*k_level))
-				if (k_class == "anatomy")
-					user.adaptStat("strength", (5*k_level))
-					user.adaptStat("dexterity", (5*k_level))
-				if (k_class == "gunpowder")
-					user.adaptStat("pistol", (5*k_level))
-					user.adaptStat("rifle", (5*k_level))
-				qdel(src)
+		else
+			var/choice = input("This is a book by [author] on [k_class]. Do you want to study it?") in list("Yes", "No")
+			if (choice == "No")
 				return
+			else if (choice == "Yes")
+				user << "<span class='notice'>You begin reading the [styleb] attently...</span>"
+				if (do_after(user, (600*k_level), src))
+					user << "<span class='notice'>You finish studying the [styleb]. You feel smarter already.</span>"
+					if (k_class == "industry")
+						user.adaptStat("crafting", (10*k_level))
+					if (k_class == "medicine")
+						user.adaptStat("medical", (10*k_level))
+					if (k_class == "archery")
+						user.adaptStat("bows", (10*k_level))
+					if (k_class == "fencing")
+						user.adaptStat("swords", (10*k_level))
+					if (k_class == "anatomy")
+						user.adaptStat("strength", (5*k_level))
+						user.adaptStat("dexterity", (5*k_level))
+					if (k_class == "gunpowder")
+						user.adaptStat("pistol", (5*k_level))
+						user.adaptStat("rifle", (5*k_level))
+					qdel(src)
+					return
