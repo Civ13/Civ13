@@ -66,7 +66,7 @@
 	return TRUE
 
 
-/mob/living/proc/apply_effects(var/stun = FALSE, var/weaken = FALSE, var/paralyze = FALSE, var/irradiate = FALSE, var/stutter = FALSE, var/eyeblur = FALSE, var/drowsy = FALSE, var/agony = FALSE, var/poisonous = FALSE, var/blocked = FALSE)
+/mob/living/proc/apply_effects(var/stun = FALSE, var/weaken = FALSE, var/paralyze = FALSE, var/irradiate = FALSE, var/stutter = FALSE, var/eyeblur = FALSE, var/drowsy = FALSE, var/agony = FALSE, var/blocked = FALSE)
 	if (blocked >= 2)	return FALSE
 	if (stun)		apply_effect(stun, STUN, blocked)
 	if (weaken)		apply_effect(weaken, WEAKEN, blocked)
@@ -76,7 +76,6 @@
 	if (eyeblur)	apply_effect(eyeblur, EYE_BLUR, blocked)
 	if (drowsy)		apply_effect(drowsy, DROWSY, blocked)
 	if (agony)		apply_effect(agony, AGONY, blocked)
-	if (poisonous)	adjustToxLoss(25)
 	return TRUE
 
 /mob/living/proc/updatehealth()
