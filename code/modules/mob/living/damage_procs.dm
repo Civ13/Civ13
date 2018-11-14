@@ -62,8 +62,6 @@
 			eye_blurry = max(eye_blurry,(effect/(blocked+1)))
 		if (DROWSY)
 			drowsyness = max(drowsyness,(effect/(blocked+1)))
-		if (POISONOUS)
-			adjustToxLoss(25)
 	updatehealth()
 	return TRUE
 
@@ -78,7 +76,7 @@
 	if (eyeblur)	apply_effect(eyeblur, EYE_BLUR, blocked)
 	if (drowsy)		apply_effect(drowsy, DROWSY, blocked)
 	if (agony)		apply_effect(agony, AGONY, blocked)
-	if (poisonous)	apply_effect(poisonous, POISONOUS, blocked)
+	if (poisonous)	adjustToxLoss(25)
 	return TRUE
 
 /mob/living/proc/updatehealth()
