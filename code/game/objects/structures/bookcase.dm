@@ -76,7 +76,21 @@
 	return
 
 /obj/structure/bookcase/update_icon()
-	if (contents.len < 5)
-		icon_state = "book-[contents.len]"
+	if (map.ordinal_age >= 3)
+		if (contents.len < 5)
+			icon_state = "book-[contents.len]"
+		else
+			icon_state = "book-5"
 	else
-		icon_state = "book-5"
+		if (contents.len > 8)
+			icon_state = "books-5"
+		else if (contents.len <= 8 && contents.len > 6)
+			icon_state = "books-4"
+		else if (contents.len <= 6 && contents.len > 4)
+			icon_state = "books-3"
+		else if (contents.len <= 4 && contents.len > 2)
+			icon_state = "books-2"
+		else if (contents.len <= 2 && contents.len > 0)
+			icon_state = "books-1"
+		else if (contents.len == 0)
+			icon_state = "books-0"
