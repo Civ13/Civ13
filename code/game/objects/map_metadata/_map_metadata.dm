@@ -194,7 +194,7 @@ var/global/obj/map_metadata/map = null
 			. = TRUE
 		else
 			. = FALSE
-	else
+	else if (!civilizations)
 		if (J.is_civilizations == FALSE)
 			. = TRUE
 		else
