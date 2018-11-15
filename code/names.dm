@@ -43,5 +43,13 @@ var/list/first_names_male_roman = file2list("config/names/first_male_roman.txt")
 var/list/middle_names_roman = file2list("config/names/middle_roman.txt")                 //Add roman names to names vars
 var/list/last_names_roman = file2list("config/names/last_roman.txt")
 
+var/list/country_names = file2list("config/names/countries.txt")
+var/civname_a = pick(country_names)
+var/civname_b = pick(country_names-civname_a)
+var/civname_c = pick(country_names-civname_a-civname_b)
+var/civname_d = pick(country_names-civname_a-civname_b-civname_c)
+var/civname_e = pick(country_names-civname_a-civname_b-civname_c-civname_d)
+var/civname_f = pick(country_names-civname_a-civname_b-civname_c-civname_d-civname_e)
+var/list/civnames = list(civname_a,civname_b,civname_c,civname_d,civname_e,civname_f)
 //loaded on startup because of "
 //would include in rsc if ' was used

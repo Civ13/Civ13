@@ -21,7 +21,7 @@
 /datum/job/var/is_medieval = FALSE //self explanatory
 /datum/job/var/is_crusader = FALSE //self explanatory
 
-
+/datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold

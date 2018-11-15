@@ -20,6 +20,13 @@
 /obj/structure/oven/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))
 		return
+	if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
+		var/obj/item/weapon/reagent_containers/glass/small_pot/POT = I
+		H << "You place the [POT] on top of the [src]."
+		H.remove_from_mob(POT)
+		POT.loc = src.loc
+		POT.on_stove = TRUE
+		return
 	if (istype(I, /obj/item/stack/material/wood))
 		fuel += I.amount
 		qdel(I)
@@ -57,6 +64,11 @@
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
 			process()
+			for (var/obj/item/weapon/reagent_containers/glass/small_pot/I in get_turf(src))
+				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
+					I.on_stove = FALSE
+					I.reagents.del_reagent("food_poisoning")
+					return
 	else
 		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
 

@@ -130,12 +130,56 @@
 				disease_progression = 0
 				src << "You feel much better now! The disease is finally gone!"
 				disease_immunity += "plague"
+				bodytemperature = 310.055
+		else if (disease_type == "flu")
+			disease_progression += 1
+			// first 2 minutes
+			if (disease_progression == 25)
+				src << "You feel a little feverish."
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			//4 more minutes
+			if (prob(1))
+				emote("sniff")
+				apply_effect(5, DROWSY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 312.15 && prob(10))
+				src << "You feel like your fever is getting worse!"
+				apply_effect(5, AGONY, FALSE)
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough","sneeze"))
+				bodytemperature = 312.15
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1))
+				adjustBrainLoss(rand(7,10))
+				src << "You feel your body burning up from fever!"
+				apply_effect(10, AGONY, FALSE)
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough","sneeze"))
+				Weaken(5)
+				bodytemperature = 313.15
+			// 2 more minutes
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 313.15 && prob(8))
+				src << "You feel your fever going down."
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough","sneeze"))
+				bodytemperature = 312.35
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
+				src << "You feel your fever going down."
+				emote(pick("cough","sneeze"))
+				bodytemperature = 310.055
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				if (prob(25))
+					disease_immunity += "flu"
 	else if (disease == FALSE)
 		for (var/mob/living/simple_animal/mouse/M in range(2,src))
-			//0.05% prob
+			//0.1% prob
 			if (!"plague" in disease_immunity)
 				if (prob(1))
-					if (prob(5))
+					if (prob(10))
 						disease = TRUE
 						disease_type = "plague"
 						disease_progression = 0
@@ -151,6 +195,14 @@
 					if (prob(3))
 						disease = TRUE
 						disease_type = H.disease_type
+						disease_progression = 0
+		if (disease == FALSE)
+			//0.005%
+			if (prob(1))
+				if (prob(1))
+					if (prob(50))
+						disease = TRUE
+						disease_type = "flu"
 						disease_progression = 0
 	..()
 

@@ -17,8 +17,6 @@
 	age = "5000 B.C."
 	faction_distribution_coeffs = list(INDIANS = 1)
 	battle_name = "the tribes"
-	var/targetnr = 2
-	var/targetnr_text= "2"
 	mission_start_message = "<big>Six tribes have been inhabiting this area for generations. Will they be able to get along?</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS

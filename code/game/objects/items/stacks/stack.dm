@@ -203,6 +203,15 @@
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
+	if (findtext(recipe.title, "well"))
+		if (H.getStatCoeff("crafting") < 1.1)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+		var/obj/structure/sink/puddle/P
+		if (!(P) in get_turf(H))
+			H << "<span class = 'danger'>You need to build this over a puddle.</span>"
+			return
+
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -355,6 +364,9 @@
 			build_override_object.set_dir(user.dir)
 			build_override_object.add_fingerprint(user)
 			qdel(O)
+			if (istype(build_override_object, /obj/structure/sink/well))
+				for (var/obj/structure/sink/puddle/P in get_turf(H))
+					qdel(P)
 			return
 
 		if (build_override_door.custom_code != -1)

@@ -416,12 +416,20 @@
 		return
 
 	var/obj/item/weapon/reagent_containers/RG = O
-	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
+	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && !(istype(src, /obj/structure/sink/puddle)))
 		RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 		user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
 		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		user.setClickCooldown(5)
 		return TRUE
+	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && (istype(src, /obj/structure/sink/puddle)))
+		RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+		if (prob(10))
+			RG.reagents.add_reagent("food_poisoning", 1)
+			user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+			user.setClickCooldown(5)
+			return TRUE
 /*
 	else if (istype(O, /obj/item/weapon/melee/baton))
 		var/obj/item/weapon/melee/baton/B = O
