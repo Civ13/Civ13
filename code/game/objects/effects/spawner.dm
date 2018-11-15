@@ -75,14 +75,14 @@
 
 /obj/effect/spawner/mobspawner/turkeys
 	name = "turkey spawner"
-	max_number = 3
+	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/turkey_m
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/turkeys_f
 	name = "turkey spawner"
-	max_number = 3
+	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/turkey_f
 	timer = 3000
@@ -121,3 +121,17 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/townmilitia
 	timer = 750
+
+/obj/effect/spawner/mobspawner/frogpoisonous
+	name = "poisonous frog spawner"
+	max_number = 1
+	max_range = 12
+	create_path = /mob/living/simple_animal/frog/poisonous
+	timer = 4800
+
+/obj/effect/spawner/mobspawner/mouse
+	name = "mouse spawner"
+	max_number = 2
+	max_range = 12
+	create_path = /mob/living/simple_animal/mouse/gray
+	timer = 3600
