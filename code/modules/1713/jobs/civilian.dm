@@ -803,3 +803,243 @@
 
 	return TRUE
 
+/////////////////////////CIVS////////////////////////
+
+/datum/job/civilian/civa
+	title = "Civilization A Citizen"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCivA"
+	SL_check_independent = TRUE
+	is_civilizations = TRUE
+	// AUTOBALANCE
+	min_positions = 10
+	max_positions = 150
+/datum/job/civilian/civa/New()
+	..()
+	title = "[civname_a] Citizen"
+/datum/job/civilian/civa/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>[civname_a]</b> civilization.")
+
+	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/civb
+	title = "Civilization B Citizen"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCivB"
+	SL_check_independent = TRUE
+	is_civilizations = TRUE
+	// AUTOBALANCE
+	min_positions = 10
+	max_positions = 150
+/datum/job/civilian/civb/New()
+	..()
+	title = "[civname_b] Citizen"
+/datum/job/civilian/civb/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>[civname_b]</b> civilization.")
+
+	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/civc
+	title = "Civilization C Citizen"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCivC"
+	SL_check_independent = TRUE
+	is_civilizations = TRUE
+	// AUTOBALANCE
+	min_positions = 10
+	max_positions = 150
+/datum/job/civilian/civc/New()
+	..()
+	title = "[civname_c] Citizen"
+/datum/job/civilian/civc/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>[civname_c]</b> civilization.")
+
+	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/civd
+	title = "Civilization D Citizen"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCivD"
+	SL_check_independent = TRUE
+	is_civilizations = TRUE
+	// AUTOBALANCE
+	min_positions = 10
+	max_positions = 150
+/datum/job/civilian/civd/New()
+	..()
+	title = "[civname_d] Citizen"
+/datum/job/civilian/civd/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>[civname_d]</b> civilization.")
+
+	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/cive
+	title = "Civilization E Citizen"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCivE"
+	SL_check_independent = TRUE
+	is_civilizations = TRUE
+	// AUTOBALANCE
+	min_positions = 10
+	max_positions = 150
+/datum/job/civilian/cive/New()
+	..()
+	title = "[civname_e] Citizen"
+/datum/job/civilian/cive/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>[civname_e]</b> civilization.")
+
+	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/civf
+	title = "Civilization F Citizen"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCivF"
+	SL_check_independent = TRUE
+	is_civilizations = TRUE
+	// AUTOBALANCE
+	min_positions = 10
+	max_positions = 150
+/datum/job/civilian/civf/New()
+	..()
+	title = "[civname_f] Citizen"
+/datum/job/civilian/civf/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+	var/randcloth = rand(1,3)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Tribe", "You are a member of the <b>[civname_f]</b> civilization.")
+
+	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE

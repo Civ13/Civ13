@@ -90,6 +90,8 @@
 	else
 		if (map.ID == MAP_TRIBES)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
+		else if (map.civilizations == TRUE)
+			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
@@ -252,6 +254,40 @@
 		LateChoices()
 		return TRUE
 
+	if (href_list["civilizations"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
+			return
+
+		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
+			if (check_rights(R_ADMIN, FALSE, src))
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+					log_admin(msg)
+					message_admins(msg)
+					LateChoices()
+					return TRUE
+			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			return FALSE
+
+		if (map && map.civilizations == TRUE)
+			close_spawn_windows()
+			AttemptLateSpawn(pick(map.availablefactions))
+		else
+			return
+		LateChoices()
+		return TRUE
+
 	if (href_list["late_join"])
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -383,7 +419,7 @@
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
 		if (!nomsg)
 			usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
@@ -391,7 +427,7 @@
 	if (!config.enter_allowed)
 		if (!nomsg)
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
@@ -399,7 +435,7 @@
 	if (jobBanned(rank))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this role!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're banned from this role!</span>"
@@ -408,7 +444,7 @@
 	if (!IsJobAvailable(rank))
 		if (!nomsg)
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
@@ -419,7 +455,7 @@
 	if (factionBanned(job.base_type_flag(1)))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this faction!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're banned from this faction!</span>"
@@ -428,7 +464,7 @@
 	if (officerBanned() && job.is_officer)
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from officer positions!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're banned from officer positions!</span>"
@@ -438,7 +474,7 @@
 		if (job.blacklisted == FALSE)
 			if (!nomsg)
 				usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
@@ -448,7 +484,7 @@
 		if (job.blacklisted == TRUE)
 			if (!nomsg)
 				usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
@@ -457,7 +493,7 @@
 	if (job_master.is_side_locked(job.base_type_flag()))
 		if (!nomsg)
 			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					src << "<span class = 'red'>Currently this side is locked for joining.</span>"
@@ -494,7 +530,7 @@
 		if (client.prefs.s_tone < -25)
 			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 60.</span>"
 			return
-	if (istype(job, /datum/job/civilian))
+	if (istype(job, /datum/job/civilian) && !map.civilizations)
 		if (client.prefs.s_tone < -65)
 			usr << "<span class='danger'>You are too dark to be a colonist. Choose a value lower than 100.</span>"
 			return
@@ -506,7 +542,7 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
-	if (map.age == "1013" && !istype(job, /datum/job/civilian))
+	if (map.age == "1013" && !map.civilizations && !istype(job, /datum/job/civilian))
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return

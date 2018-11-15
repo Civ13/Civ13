@@ -71,6 +71,7 @@ var/global/obj/map_metadata/map = null
 	//age (313 B.C., 1013, 1713, etc)
 	var/age = "1713"
 	var/ordinal_age = 3
+	var/civilizations = FALSE
 /obj/map_metadata/New()
 	..()
 	map = src

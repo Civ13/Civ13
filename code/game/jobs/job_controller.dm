@@ -66,7 +66,7 @@ var/global/datum/controller/occupations/job_master
 			var/c = pick(randomfaction-a-b)
 			randomfaction_spawn = pick(a, b, c)
 			map.availablefactions = list(a,b,c)
-			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")]</b>."
+			world << "Three tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")]</b>."
 		else if (autobalance_nr >= 20 && autobalance_nr < 25)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
@@ -74,7 +74,7 @@ var/global/datum/controller/occupations/job_master
 			var/d = pick(randomfaction-a-b-c)
 			randomfaction_spawn = pick(a, b, c, d)
 			map.availablefactions = list(a,b,c,d)
-			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")]</b>."
+			world << "Four tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")]</b>."
 		else if (autobalance_nr >= 25 && autobalance_nr < 30)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
@@ -83,11 +83,36 @@ var/global/datum/controller/occupations/job_master
 			var/e = pick(randomfaction-a-b-c-d)
 			randomfaction_spawn = pick(a, b, c, d, e)
 			map.availablefactions = list(a,b,c,d,e)
-			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")],[replacetext(e, "sman", "")]</b>."
+			world << "Five tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")],[replacetext(e, "sman", "")]</b>."
 		else if (autobalance_nr >= 30)
 			randomfaction_spawn = pick(randomfaction)
 			map.availablefactions = randomfaction
 			world << "All the 6 tribes are enabled."
+
+	map.availablefactions_run = FALSE
+	return
+
+/datum/controller/occupations/proc/set_factions2(var/autobalance_nr = 0)
+	var/list/randomfaction = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen","Civilization F Citizen")
+	if (map.availablefactions_run == TRUE)
+		if (autobalance_nr <= 8)
+			map.availablefactions = list("Civilization A Citizen")
+			world << "Only one civilization is enabled: <b>[civname_a]</b>."
+		else if (autobalance_nr > 8 && autobalance_nr <= 16)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen")
+			world << "Two civilizations are enabled: <b>[civname_a], [civname_b]</b>."
+		else if (autobalance_nr > 16 && autobalance_nr <= 24)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen")
+			world << "Three civilizations are enabled: <b>[civname_a], [civname_b], [civname_c]</b>."
+		else if (autobalance_nr > 24 && autobalance_nr <= 30)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen")
+			world << "Four civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d]</b>."
+		else if (autobalance_nr > 30 && autobalance_nr <= 36)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen")
+			world << "Five civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e]</b>."
+		else if (autobalance_nr > 36)
+			map.availablefactions = randomfaction
+			world << "All the 6 civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e], [civname_f]</b>."
 
 	map.availablefactions_run = FALSE
 	return
@@ -111,6 +136,9 @@ var/global/datum/controller/occupations/job_master
 
 	if (map && map.ID == MAP_TRIBES)
 		set_factions(autobalance_for_players)
+
+	if (map && map.civilizations)
+		set_factions2(autobalance_for_players)
 
 	for (var/datum/job/J in occupations)
 		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
