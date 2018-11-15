@@ -179,7 +179,7 @@ var/global/obj/map_metadata/map = null
 	return (faction1_can_cross_blocks() && faction2_can_cross_blocks())
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
-	if (age == "1013")
+	if (age == "1013" && !civilizations)
 		if (J.is_medieval == TRUE)
 			. = TRUE
 		else
@@ -189,7 +189,16 @@ var/global/obj/map_metadata/map = null
 			. = TRUE
 		else
 			. = FALSE
-
+	if (civilizations)
+		if (J.is_civilizations == TRUE)
+			. = TRUE
+		else
+			. = FALSE
+	else
+		if (J.is_civilizations == FALSE)
+			. = TRUE
+		else
+			. = FALSE
 /obj/map_metadata/proc/cross_message(faction)
 	return "<font size = 4>The [faction_const2name(faction)] may now cross the invisible wall!</font>"
 
