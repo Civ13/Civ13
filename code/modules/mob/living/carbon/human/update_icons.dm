@@ -1006,6 +1006,15 @@ var/global/list/damage_icon_parts = list()
 			var/image/I = image("icon"='icons/mob/surgery.dmi', "icon_state"="[E.name][round(E.open)]", "layer"=-SURGERY_LEVEL)
 			total.overlays += I
 
+		if (disease == TRUE)
+			if (disease_type == "plague")
+				if (disease_progression >= 1 && disease_progression < 90)
+					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence1")
+				else if (disease_progression >= 90 && disease_progression < 180)
+					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence2")
+				else if (disease_progression >= 180)
+					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence3")
+
 	overlays_standing[SURGERY_LEVEL] = total
 	if (update_icons)   update_icons()
 

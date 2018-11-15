@@ -145,3 +145,8 @@
 	var/life_hud_check = list(
 		"stat" = -1,
 		"health" = -1)
+
+	var/disease = FALSE
+	var/disease_type = "none"
+	var/disease_progression = 0
+	var/list/disease_immunity = list()

@@ -110,6 +110,13 @@
 	Destroy()
 		..()
 
+/obj/effect/decal/cleanable/vomit/bloody
+	name = "bloody vomit"
+	icon_state = "vomit_b1"
+	random_icon_states = list("vomit_b1", "vomit_b2", "vomit_b3", "vomit_b4")
+
+	Destroy()
+		..()
 /obj/effect/decal/cleanable/tomato_smudge
 	name = "tomato smudge"
 	desc = "It's red."

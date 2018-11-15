@@ -97,6 +97,61 @@
 		if (CONSCIOUS)
 			adjustOxyLoss(-5)
 
+// disease stuff
+	if (disease == TRUE)
+		if (disease_type == "none")
+			disease = FALSE
+		else if (disease_type == "plague")
+			if (disease_progression == 1 || disease_progression == 90 || disease_progression == 180)
+				update_surgery(1)
+			disease_progression += 1
+			// first 3 minutes
+			if (prob(7))
+				src << "You feel painful lumps on your skin."
+				adjustToxLoss(rand(8,12))
+			//3 more minutes
+			else if (disease_progression >= 90 && prob(10))
+				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
+				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
+				var/turf/location = loc
+				if (istype(location, /turf))
+					new /obj/effect/decal/cleanable/vomit/bloody(location)
+				nutrition -= 40
+			// 3 more minutes
+			else if (disease_progression >= 180 && disease_progression <= 300 && prob(15))
+				adjustBrainLoss(rand(7,10))
+				src << "You feel your body burning up from fever!"
+				Weaken(5)
+				bodytemperature = 313.15
+			// 4 more minutes
+			else if (disease_progression >= 360 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				src << "You feel much better now! The disease is finally gone!"
+				disease_immunity += "plague"
+	else if (disease == FALSE)
+		for (var/mob/living/simple_animal/mouse/M in range(2,src))
+			//0.05% prob
+			if (!"plague" in disease_immunity)
+				if (prob(1))
+					if (prob(5))
+						disease = TRUE
+						disease_type = "plague"
+						disease_progression = 0
+
+		for (var/mob/living/carbon/human/H in range(2,src))
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity))
+				if (stat != DEAD)
+					if (prob(1))
+						disease = TRUE
+						disease_type = H.disease_type
+						disease_progression = 0
+				else if (stat == DEAD)
+					if (prob(3))
+						disease = TRUE
+						disease_type = H.disease_type
+						disease_progression = 0
 	..()
 
 	// recover stamina
@@ -166,43 +221,6 @@
 		eye_blind =  1
 		blinded =    1
 		eye_blurry = 1
-	else
-		//blindness
-		if (!(sdisabilities & BLIND))
-			if (equipment_tint_total >= TINT_BLIND)	// Covered eyes, heal faster
-				eye_blurry = max(eye_blurry-2, 0)
-
-	if (disabilities & EPILEPSY)
-		if ((prob(1) && paralysis < 1))
-			src << "<span class = 'red'>You have a seizure!</span>"
-			for (var/mob/O in viewers(src, null))
-				if (O == src)
-					continue
-				O.show_message(text("<span class='danger'>[src] starts having a seizure!</span>"), TRUE)
-			Paralyse(10)
-			make_jittery(1000)
-	if (disabilities & COUGHING)
-		if ((prob(5) && paralysis <= 1))
-			drop_item()
-			spawn( FALSE )
-				emote("cough")
-				return
-	if (disabilities & TOURETTES)
-		speech_problem_flag = TRUE
-		if ((prob(10) && paralysis <= 1))
-			Stun(10)
-			spawn( FALSE )
-				switch(rand(1, 3))
-					if (1)
-						emote("twitch")
-					if (2 to 3)
-						say("[prob(50) ? ";" : ""][pick("SHIT", "PISS", "FUCK", "CUNT", "COCKSUCKER", "MOTHERFUCKER", "TITS")]")
-				make_jittery(100)
-				return
-	if (disabilities & NERVOUS)
-		speech_problem_flag = TRUE
-		if (prob(10))
-			stuttering = max(10, stuttering)
 
 	if (stat != DEAD)
 		var/rn = rand(0, 200)
@@ -227,11 +245,6 @@
 					Weaken(10)
 
 
-/*
-/mob/living/carbon/human/handle_mutations_and_radiation()
-	return*/
-
-	/** breathing **/
 
 /mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
 	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
