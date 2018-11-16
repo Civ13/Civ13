@@ -96,7 +96,7 @@
 /obj/structure/multiz/ladder/attack_hand(var/mob/M)
 
 	if (M.restrained())
-		M << "<span class='warning'>You can't use /the [src] while you're restrained.</span>"
+		M << "<span class='warning'>You can't use \the [src] while you're restrained.</span>"
 		return
 
 	if (!target || !istype(target.loc, /turf))

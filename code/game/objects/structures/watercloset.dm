@@ -430,6 +430,11 @@
 			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 			user.setClickCooldown(5)
 			return TRUE
+		else
+			user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+			user.setClickCooldown(5)
+			return TRUE
 /*
 	else if (istype(O, /obj/item/weapon/melee/baton))
 		var/obj/item/weapon/melee/baton/B = O

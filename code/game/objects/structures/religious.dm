@@ -280,35 +280,35 @@
 		if (istype(I, /obj/item/organ/heart))
 			power = (power + 75)
 			if (reltype == "tribal")
-				visible_message("The gods take [user]'s offering of the [I]! They are very pleased!")
+				visible_message("The gods take [user]'s offering of \the [I]! They are very pleased!")
 			else
-				visible_message("God takes [user]'s offering of the [I]! He is very pleased!")
+				visible_message("God takes [user]'s offering of \the [I]! He is very pleased!")
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
 			return
 		else if (istype(I, /obj/item/stack/teeth) || istype(I, /obj/item/stack/material/tobacco))
 			power = (power + (I.amount*12))
 			if (reltype == "tribal")
-				visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+				visible_message("The gods take [user]'s offering of \the [I]! They are pleased!")
 			else
-				visible_message("God takes [user]'s offering of the [I]! He is pleased!")
+				visible_message("God takes [user]'s offering of \the [I]! He is pleased!")
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
 			return
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks))
 			power = (power + 10)
 			if (reltype == "tribal")
-				visible_message("The gods take [user]'s offering of the [I]! They are pleased!")
+				visible_message("The gods take [user]'s offering of \the [I]! They are pleased!")
 			else
-				visible_message("God takes [user]'s offering of the [I]! He is pleased!")
+				visible_message("God takes [user]'s offering of \the [I]! He is pleased!")
 			new /obj/effect/effect/smoke/fast(loc)
 			qdel(I)
 			return
 	else
 		if (reltype == "tribal")
-			visible_message("The gods reject [user]'s offering of the [I]. They are satiated for now.")
+			visible_message("The gods reject [user]'s offering of \the [I]. They are satiated for now.")
 		else
-			visible_message("God rejects [user]'s offering of the [I]. He is satisfied for now.")
+			visible_message("God rejects [user]'s offering of \the [I]. He is satisfied for now.")
 		return
 	..()
 
