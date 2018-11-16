@@ -132,7 +132,7 @@
 
 /obj/item/weapon/reagent_containers/glass/small_pot
 	desc = "A small pot."
-	name = "small pot"
+	name = "small tin pot"
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "small_pot"
 	item_state = "bucket"
