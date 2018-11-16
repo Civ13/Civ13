@@ -29,7 +29,7 @@
 
 
 /obj/map_metadata/civilizations/New()
-
+	..()
 	if (clients.len <= 8)
 		tribes_nr = 1
 	if (clients.len > 8 && clients.len <= 16)
@@ -44,6 +44,7 @@
 		tribes_nr = 6
 	if (tribes_nr >= 2)
 		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big>"
+
 /obj/map_metadata/civilizations/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 

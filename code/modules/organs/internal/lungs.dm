@@ -15,7 +15,7 @@
 	var/safe_toxins_max = 0.2
 	var/SA_para_min = TRUE
 	var/SA_sleep_min = 5
-
+	w_class = 2
 /obj/item/organ/lungs/set_dna(var/datum/dna/new_dna)
 	..()
 	/*
