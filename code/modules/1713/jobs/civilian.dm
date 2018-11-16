@@ -827,7 +827,7 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -865,7 +865,7 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -903,7 +903,7 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_c]</b> civilization.")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -941,7 +941,7 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_d]</b> civilization.")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -979,7 +979,7 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_e]</b> civilization.")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -1017,7 +1017,7 @@
 	else if (randcloth == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
+	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_f]</b> civilization.")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))

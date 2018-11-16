@@ -40,8 +40,18 @@
 	return TRUE
 
 
-/obj/item/flashlight/attack(mob/living/M as mob, mob/living/user as mob)
+/obj/item/flashlight/attack(mob/living/carbon/human/M as mob, mob/living/carbon/human/user as mob)
 	add_fingerprint(user)
+	if (istype(src, /obj/item/flashlight/torch) && user.a_intent == I_HURT)
+		if (on)
+			M.adjustFireLoss(rand(7,10))
+			user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
+			user.do_attack_animation(src)
+			if (prob(5))
+				M.IgniteMob()
+				M.fire_stacks += 1
+			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
+
 	if (on && user.targeted_organ == "eyes")
 
 		var/mob/living/carbon/human/H = M	//mob has protective eyewear
@@ -85,4 +95,5 @@
 			if (M.HUDtech.Find("flash"))
 				flick("flash", M.HUDtech["flash"])
 	else
+
 		return ..()

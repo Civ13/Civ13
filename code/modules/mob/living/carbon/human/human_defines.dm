@@ -126,6 +126,7 @@
 		"pistol" = list(100,100),
 		"bows" = list(100,100),
 		"medical" = list(100,100),
+		"philosophy" = list(100,100),
 		"stamina" = list(100,100))
 
 	var/has_hunger_and_thirst = TRUE
@@ -150,3 +151,5 @@
 	var/disease_type = "none"
 	var/disease_progression = 0
 	var/list/disease_immunity = list()
+
+	var/civilization = "none" //what civilization this person belongs to

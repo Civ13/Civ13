@@ -71,7 +71,16 @@ var/global/obj/map_metadata/map = null
 	//age (313 B.C., 1013, 1713, etc)
 	var/age = "1713"
 	var/ordinal_age = 3
+
+	//civ stuff
 	var/civilizations = FALSE
+	//1st value: industrial (crafting, philosophy) 3rd value: military (gunpowder, fencing, archery), 4th value: health (anatomy, medical)
+	var/civa_research = list(0,0,0)
+	var/civb_research = list(0,0,0)
+	var/civc_research = list(0,0,0)
+	var/civd_research = list(0,0,0)
+	var/cive_research = list(0,0,0)
+	var/civf_research = list(0,0,0)
 /obj/map_metadata/New()
 	..()
 	map = src

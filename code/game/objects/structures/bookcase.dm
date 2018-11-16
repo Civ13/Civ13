@@ -5,40 +5,15 @@
 	anchored = TRUE
 	density = TRUE
 	opacity = TRUE
-
+	var/current_research = 0
+	var/sum_i = 0
+	var/sum_m = 0
+	var/sum_h = 0
 /obj/structure/bookcase/initialize()
 	for (var/obj/item/I in loc)
 		if (istype(I, /obj/item/weapon/book))
 			I.loc = src
 	update_icon()
-
-/obj/structure/bookcase/attackby(obj/O as obj, mob/user as mob)
-	if (istype(O, /obj/item/weapon/book))
-		user.drop_item()
-		O.loc = src
-		update_icon()
-	else if (istype(O, /obj/item/weapon/pen))
-		var/newname = sanitizeSafe(input("What would you like to title this bookshelf?"), MAX_NAME_LEN)
-		if (!newname)
-			return
-		else
-			name = ("bookcase ([newname])")
-	else if (istype(O,/obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
-		anchored = !anchored
-	else if (istype(O,/obj/item/weapon/hammer))
-		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
-		user << "<span class='notice'>You begin dismantling \the [src].</span>"
-		if (do_after(user,25,src))
-			user << "<span class='notice'>You dismantle \the [src].</span>"
-			new /obj/item/stack/material/wood(get_turf(src), amount = 3)
-			for (var/obj/item/weapon/book/b in contents)
-				b.loc = (get_turf(src))
-			qdel(src)
-
-	else
-		..()
 
 /obj/structure/bookcase/attack_hand(var/mob/user as mob)
 	if (contents.len)
@@ -94,3 +69,79 @@
 			icon_state = "books-1"
 		else if (contents.len == 0)
 			icon_state = "books-0"
+
+//for civ mode
+/obj/structure/bookcase/proc/check_research()
+	if (!map.civilizations)
+		return
+	else
+		for (var/obj/item/weapon/book/research/RB in contents)
+			if (RB.completed)
+				if (RB.k_class == "medicine" || RB.k_class == "anatomy")
+					sum_h += RB.k_level
+				if (RB.k_class == "gunpowder" || RB.k_class == "fencing" || RB.k_class == "archery")
+					sum_m += RB.k_level
+				if (RB.k_class == "industrial" || RB.k_class == "philosophy")
+					sum_i += RB.k_level
+		current_research = sum_i+sum_m+sum_h
+
+
+/obj/structure/bookcase/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (istype(O, /obj/item/weapon/book))
+		user.drop_item()
+		O.loc = src
+		update_icon()
+	else if (istype(O, /obj/item/weapon/pen))
+		var/newname = sanitizeSafe(input("What would you like to title this bookshelf?"), MAX_NAME_LEN)
+		if (!newname)
+			return
+		else
+			name = ("bookcase ([newname])")
+	else if (istype(O,/obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+	else if (istype(O,/obj/item/weapon/hammer))
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(get_turf(src), amount = 3)
+			for (var/obj/item/weapon/book/b in contents)
+				b.loc = (get_turf(src))
+			qdel(src)
+	else if (istype(O, /obj/item/weapon/researchkit))
+		if (!map.civilizations)
+			return
+		else
+			check_research()
+			user << "Studying these documents..."
+			if (do_after(user,(300*current_research)/user.getStatCoeff("philosophy"),src))
+				user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
+				user.adaptStat("philosophy", 1*current_research)
+				if (user.civilization == civname_a)
+					map.civa_research[1] += sum_i
+					map.civa_research[2] += sum_m
+					map.civa_research[3] += sum_h
+				else if (user.civilization == civname_b)
+					map.civb_research[1] += sum_i
+					map.civb_research[2] += sum_m
+					map.civb_research[3] += sum_h
+				else if (user.civilization == civname_c)
+					map.civc_research[1] += sum_i
+					map.civc_research[2] += sum_m
+					map.civc_research[3] += sum_h
+				else if (user.civilization == civname_d)
+					map.civd_research[1] += sum_i
+					map.civd_research[2] += sum_m
+					map.civd_research[3] += sum_h
+				else if (user.civilization == civname_e)
+					map.cive_research[1] += sum_i
+					map.cive_research[2] += sum_m
+					map.cive_research[3] += sum_h
+				else if (user.civilization == civname_f)
+					map.civf_research[1] += sum_i
+					map.civf_research[2] += sum_m
+					map.civf_research[3] += sum_h
+	else
+		..()
