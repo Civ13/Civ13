@@ -207,8 +207,10 @@
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-		var/obj/structure/sink/puddle/P
-		if (!(P) in get_turf(H))
+		var/puddly = FALSE
+		for (var/obj/structure/sink/puddle/P in get_turf(H))
+			puddly = TRUE
+		if (puddly == FALSE)
 			H << "<span class = 'danger'>You need to build this over a puddle.</span>"
 			return
 
@@ -338,6 +340,9 @@
 		produced = 3
 	if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
+	if (recipe.result_type == /obj/structure/sink/well)
+		for (var/obj/structure/sink/puddle/P in get_turf(H))
+			qdel(P)
 	if (use(required))
 		var/atom/O
 		if (recipe.use_material)
@@ -364,9 +369,6 @@
 			build_override_object.set_dir(user.dir)
 			build_override_object.add_fingerprint(user)
 			qdel(O)
-			if (istype(build_override_object, /obj/structure/sink/well))
-				for (var/obj/structure/sink/puddle/P in get_turf(H))
-					qdel(P)
 			return
 
 		if (build_override_door.custom_code != -1)
