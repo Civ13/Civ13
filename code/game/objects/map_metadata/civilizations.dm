@@ -26,11 +26,11 @@
 	availablefactions_run = TRUE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
-	var/age1_lim = 1000
+	var/age1_lim = 90
 	var/age1_done = 0
-	var/age2_lim = 3500
+	var/age2_lim = 140
 	var/age2_done = 0
-	var/age3_lim = 5500
+	var/age3_lim = 250
 	var/age3_done = 0
 
 /obj/map_metadata/civilizations/New()

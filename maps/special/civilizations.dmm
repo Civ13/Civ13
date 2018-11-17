@@ -13,7 +13,7 @@
 "am" = (/turf/floor/dirt,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "an" = (/turf/wall/indestructable/black,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "ao" = (/turf/floor/dirt,/area/caribbean/admin)
-"ap" = (/obj/map_metadata/civilizations,/turf/floor/dirt,/area/caribbean/admin)
+"ap" = (/obj/map_metadata/civilizations{icon = 'icons/obj/decals.dmi'; icon_state = "woodsign"; invisibility = 0; name = "control"},/turf/floor/dirt,/area/caribbean/admin)
 "aq" = (/obj/structure/wild/tallgrass,/turf/floor/plating/grass/wild,/area/caribbean/tribes/bear)
 "ar" = (/obj/structure/wild/tree/live_tree,/turf/floor/plating/grass/wild,/area/caribbean/tribes/bear)
 "as" = (/turf/floor/plating/grass/wild,/area/caribbean/tribes/bear)

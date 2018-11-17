@@ -2,7 +2,8 @@ var/list/engineer_exclusive_recipe_types = null
 
 /material/proc/get_recipes()
 	if (!recipes)
-		generate_recipes()
+		if (!map.civilizations)
+			generate_recipes()
 	return recipes
 
 /material/proc/generate_recipes()
