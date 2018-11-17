@@ -829,6 +829,13 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
+	if (map.ordinal_age >= 2)
+		if (prob(85))
+			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
+		else
+			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
+	else
+		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -838,6 +845,7 @@
 	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 
 
 	return TRUE
@@ -867,6 +875,13 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")
+	if (map.ordinal_age >= 2)
+		if (prob(85))
+			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
+		else
+			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
+	else
+		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -876,6 +891,7 @@
 	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 
 
 	return TRUE
@@ -905,6 +921,13 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_c]</b> civilization.")
+	if (map.ordinal_age >= 2)
+		if (prob(85))
+			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
+		else
+			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
+	else
+		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -914,6 +937,7 @@
 	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 
 
 	return TRUE
@@ -943,6 +967,13 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_d]</b> civilization.")
+	if (map.ordinal_age >= 2)
+		if (prob(85))
+			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
+		else
+			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
+	else
+		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -952,6 +983,7 @@
 	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 
 
 	return TRUE
@@ -981,6 +1013,13 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_e]</b> civilization.")
+	if (map.ordinal_age >= 2)
+		if (prob(85))
+			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
+		else
+			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
+	else
+		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -990,6 +1029,7 @@
 	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 
 
 	return TRUE
@@ -1019,6 +1059,13 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_f]</b> civilization.")
+	if (map.ordinal_age >= 2)
+		if (prob(85))
+			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
+		else
+			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
+	else
+		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -1028,6 +1075,7 @@
 	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 
 
 	return TRUE

@@ -32,10 +32,18 @@
 	light_color = rgb(254, 200, 200) // red tint
 	on_state = "torch-on"
 	off_state = "torch"
+	item_state = "torch"
 	value = 6
+/obj/item/flashlight/torch/update_icon()
+	..()
+	if (on)
+		item_state = "torch-on"
+	else
+		item_state = "torch"
 
 /obj/item/flashlight/torch/on
 	icon_state = "torch-on"
+	item_state = "torch-on"
 	on = TRUE
 
 /obj/item/flashlight/lantern/anchored

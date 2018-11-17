@@ -74,7 +74,7 @@ var/global/obj/map_metadata/map = null
 
 	//civ stuff
 	var/civilizations = FALSE
-	//1st value: industrial (crafting, philosophy) 3rd value: military (gunpowder, fencing, archery), 4th value: health (anatomy, medical)
+	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical)
 	var/civa_research = list(0,0,0)
 	var/civb_research = list(0,0,0)
 	var/civc_research = list(0,0,0)

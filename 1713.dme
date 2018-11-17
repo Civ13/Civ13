@@ -200,6 +200,7 @@
 #include "code\game\objects\items\paper\bundle.dm"
 #include "code\game\objects\items\paper\carbon.dm"
 #include "code\game\objects\items\paper\paper.dm"
+#include "code\game\objects\items\stacks\civ_recipes.dm"
 #include "code\game\objects\items\stacks\medical.dm"
 #include "code\game\objects\items\stacks\money.dm"
 #include "code\game\objects\items\stacks\recipe.dm"

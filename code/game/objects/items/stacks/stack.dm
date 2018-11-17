@@ -11,7 +11,6 @@
 
 /obj/item/stack
 	gender = PLURAL
-//	origin_tech = list(TECH_MATERIAL = TRUE)
 	var/list/datum/stack_recipe/recipes
 	var/singular_name
 	amount = TRUE
