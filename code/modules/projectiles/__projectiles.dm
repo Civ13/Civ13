@@ -28,6 +28,13 @@
 	icon_state = "arrow"
 	damage_type = TOX
 
+/obj/item/projectile/arrow/arrow/fire
+	damage = DAMAGE_MEDIUM
+	penetrating = 1
+	armor_penetration = 25
+	icon_state = "arrow"
+	damage_type = BURN
+
 /obj/item/projectile/grenade/smoke
 	name = "smoke grenade"
 

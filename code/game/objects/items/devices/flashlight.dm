@@ -17,6 +17,8 @@
 	var/brightness_on = 5 //luminosity when on
 	var/turn_on_sound = 'sound/effects/Custom_flashlight.ogg'
 
+	var/cooloff = 0
+
 /obj/item/flashlight/initialize()
 	..()
 	update_icon()
@@ -43,14 +45,16 @@
 /obj/item/flashlight/attack(mob/living/carbon/human/M as mob, mob/living/carbon/human/user as mob)
 	add_fingerprint(user)
 	if (istype(src, /obj/item/flashlight/torch) && user.a_intent == I_HURT)
-		if (on)
+		if (on && world.time > cooloff)
 			M.adjustFireLoss(rand(7,10))
 			user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
 			user.do_attack_animation(src)
 			if (prob(5))
 				M.IgniteMob()
 				M.fire_stacks += 1
-			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
+			playsound(loc, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
+			cooloff = world.time+10
+			return
 
 	if (on && user.targeted_organ == "eyes")
 

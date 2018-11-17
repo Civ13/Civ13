@@ -111,6 +111,15 @@
 	..()
 	icon_state = "tree_[rand(1,5)]"
 
+/obj/structure/wild/tree/live_tree/update_icon()
+	..()
+	if (season == "WINTER")
+		icon = 'icons/obj/flora/deadtrees.dmi'
+		icon_state = "tree_1"
+	else
+		icon = 'icons/obj/flora/bigtrees.dmi'
+		icon_state = "tree_[rand(1,5)]"
+
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")

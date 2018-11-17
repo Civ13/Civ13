@@ -212,6 +212,11 @@ bullet_act
 						Paralyse(60)
 						eye_blurry += 50
 						src << "<span class='danger'><big>You fade out...</big></span>"
+
+	if (istype(P, /obj/item/projectile/arrow/arrow/fire))
+		if (prob(10))
+			IgniteMob()
+			fire_stacks += 1
 	..(P, def_zone)
 
 	spawn (0.01)
