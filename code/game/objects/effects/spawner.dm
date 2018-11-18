@@ -140,6 +140,12 @@
 	create_path = /mob/living/simple_animal/mouse/gray
 	timer = 3600
 
+/obj/effect/spawner/mobspawner/snake
+	name = "snake spawner"
+	max_number = 1
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/poison/snake
+	timer = 5000
 /obj/effect/spawner/mobspawner/deer_m
 	name = "stag spawner"
 	max_number = 2

@@ -206,51 +206,64 @@
 		if (!map.civilizations)
 			return
 		else
+			var/current_tribesmen = 0
 			user << "Studying this document..."
 			if (do_after(user,(300*k_level)/user.getStatCoeff("philosophy"),src))
 				user << "You finish studying this document. The knowledge gained will be useful in the development of our society."
 				user.adaptStat("philosophy", 1*k_level)
 				if (user.civilization == civname_a)
+					for (var/datum/job/civilian/civa/R in job_master.faction_organized_occupations)
+						current_tribesmen = R.current_positions
 					if (k_class == "medicine" || k_class == "anatomy")
-						map.civa_research[3] += k_level
+						map.civa_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-						map.civa_research[2] += k_level
+						map.civa_research[2] += k_level/current_tribesmen
 					if (k_class == "industrial" || k_class == "philosophy")
-						map.civa_research[1] += k_level
+						map.civa_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_b)
+					for (var/datum/job/civilian/civb/R in job_master.faction_organized_occupations)
+						current_tribesmen = R.current_positions
 					if (k_class == "medicine" || k_class == "anatomy")
-						map.civb_research[3] += k_level
+						map.civb_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-						map.civb_research[2] += k_level
+						map.civb_research[2] += k_level/current_tribesmen
 					if (k_class == "industrial" || k_class == "philosophy")
-						map.civb_research[1] += k_level
+						map.civb_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_c)
+					for (var/datum/job/civilian/civc/R in job_master.faction_organized_occupations)
+						current_tribesmen = R.current_positions
 					if (k_class == "medicine" || k_class == "anatomy")
-						map.civc_research[3] += k_level
+						map.civc_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-						map.civc_research[2] += k_level
+						map.civc_research[2] += k_level/current_tribesmen
 					if (k_class == "industrial" || k_class == "philosophy")
-						map.civc_research[1] += k_level
+						map.civc_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_d)
+					for (var/datum/job/civilian/civd/R in job_master.faction_organized_occupations)
+						current_tribesmen = R.current_positions
 					if (k_class == "medicine" || k_class == "anatomy")
-						map.civd_research[3] += k_level
+						map.civd_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-						map.civd_research[2] += k_level
+						map.civd_research[2] += k_level/current_tribesmen
 					if (k_class == "industrial" || k_class == "philosophy")
-						map.civd_research[1] += k_level
+						map.civd_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_e)
+					for (var/datum/job/civilian/cive/R in job_master.faction_organized_occupations)
+						current_tribesmen = R.current_positions
 					if (k_class == "medicine" || k_class == "anatomy")
-						map.cive_research[3] += k_level
+						map.cive_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-						map.cive_research[2] += k_level
+						map.cive_research[2] += k_level/current_tribesmen
 					if (k_class == "industrial" || k_class == "philosophy")
-						map.cive_research[1] += k_level
+						map.cive_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_f)
+					for (var/datum/job/civilian/civf/R in job_master.faction_organized_occupations)
+						current_tribesmen = R.current_positions
 					if (k_class == "medicine" || k_class == "anatomy")
-						map.civf_research[3] += k_level
+						map.civf_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-						map.civf_research[2] += k_level
+						map.civf_research[2] += k_level/current_tribesmen
 					if (k_class == "industrial" || k_class == "philosophy")
-						map.civf_research[1] += k_level
+						map.civf_research[1] += k_level/current_tribesmen
 	else
 		..()
