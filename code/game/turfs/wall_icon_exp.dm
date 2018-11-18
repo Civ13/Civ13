@@ -16,10 +16,10 @@
 
 	if (reinf_material)
 		name = "reinforced [material.display_name] wall"
-		desc = "It seems to be a section of hull reinforced with [reinf_material.display_name] and plated with [material.display_name]."
+		desc = "It seems to be a  [reinf_material.display_name] wall with a core of [material.display_name]."
 	else
 		name = "[material.display_name] wall"
-		desc = "It seems to be a section of hull plated with [material.display_name]."
+		desc = "It seems to be a [material.display_name] wall."
 
 	set_wall_state("[material.icon_base]0")
 

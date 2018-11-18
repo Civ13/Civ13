@@ -14,7 +14,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = 2.1
+	layer = TURF_LAYER + 0.01
 	level = 2
 	var/amount = FALSE
 //	invisibility = 101 //starts invisible

@@ -246,6 +246,16 @@ var/global/list/GrassEdgeCache
 	name = "wild grass"
 	overlay_priority = 0
 
+/turf/floor/winter/grass
+	name = "snowy grass"
+	icon = 'icons/turf/snow.dmi'
+
+/turf/floor/winter/grass/New()
+	..()
+	icon = 'icons/turf/snow.dmi'
+	icon_state = "grass[rand(0,3)]"
+
+
 /turf/floor/plating/grass/wild/New()
 	..()
 	icon = 'icons/turf/flooring/grass.dmi'

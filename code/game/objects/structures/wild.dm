@@ -6,6 +6,7 @@
 	var/amount = 0 //how much wood to drop. 0 = none
 	var/health = 100
 	var/maxhealth = 100
+	layer = 3.2
 /*
 /obj/structure/wild/New()
 	..()*/
@@ -114,21 +115,21 @@
 /obj/structure/wild/tree/live_tree/update_icon()
 	..()
 	if (season == "WINTER")
-		icon = 'icons/obj/flora/deadtrees.dmi'
-		icon_state = "tree_1"
+		icon = 'icons/obj/flora/bigtrees_winter.dmi'
 
 	else if (season == "SUMMER")
 		icon = 'icons/obj/flora/bigtrees.dmi'
-		icon_state = "tree_[rand(1,5)]"
 
 	else if (season == "FALL")
 		if (prob(40))
 			icon = 'icons/obj/flora/deadtrees.dmi'
-			icon_state = "tree_1"
+		else
+			icon = 'icons/obj/flora/bigtrees.dmi'
 	else if (season == "SPRING")
 		if (prob(40))
 			icon = 'icons/obj/flora/bigtrees.dmi'
-			icon_state = "tree_[rand(1,5)]"
+		else
+			icon = 'icons/obj/flora/deadtrees.dmi'
 
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))

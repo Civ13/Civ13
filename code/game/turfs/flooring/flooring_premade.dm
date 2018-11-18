@@ -26,6 +26,15 @@
 	available_dirt = 3
 	is_diggable = TRUE
 
+/turf/floor/dirt/winter
+	name = "snowy dirt"
+	icon = 'icons/turf/snow.dmi'
+	icon_state = "dirt"
+	uses_winter_overlay = TRUE
+	may_become_muddy = TRUE
+	available_dirt = 3
+	is_diggable = TRUE
+
 /turf/floor/dirt/underground
 	name = "underground rock"
 	icon = 'icons/turf/walls.dmi'
