@@ -107,8 +107,8 @@
 			spawn(1200)
 				for (var/turf/floor/dirt/D)
 					var/area/A = get_area(D)
-					if (!istype(D,/turf/floor/dirt/winter)
-						if (prob(50) && A.location != AREA_INSIDE))
+					if (!istype(D,/turf/floor/dirt/winter))
+						if (prob(50) && A.location != AREA_INSIDE)
 							D.ChangeTurf(/turf/floor/dirt/winter)
 				for (var/turf/floor/plating/grass/wild/G)
 					if (prob(50))
@@ -117,7 +117,7 @@
 		season = "WINTER"
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
 		for (var/turf/floor/dirt/D)
-			if (!istype(D,/turf/floor/dirt/winter)
+			if (!istype(D,/turf/floor/dirt/winter))
 				var/area/A = get_area(D)
 				if  (A.location != AREA_INSIDE)
 					D.ChangeTurf(/turf/floor/dirt/winter)
