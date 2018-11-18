@@ -49,7 +49,8 @@
 		tribes_nr = 6
 	if (tribes_nr >= 2)
 		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big>"
-
+	spawn(18000)
+		seasons()
 /obj/map_metadata/civilizations/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
@@ -59,25 +60,48 @@
 /obj/map_metadata/civilizations/cross_message(faction)
 	return ""
 
+/obj/map_metadata/civilizations/proc/seasons()
+	if (season == "WINTER")
+		season = "SPRING"
+		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
+		for (var/obj/structure/wild/tree/live_tree/TREES)
+			TREES.update_icon()
+	else if (season == "SUMMER")
+		season = "FALL"
+		world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>.</big>"
+		for (var/obj/structure/wild/tree/live_tree/TREES)
+			TREES.update_icon()
+	else if (season == "FALL")
+		season = "WINTER"
+		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
+		for (var/obj/structure/wild/tree/live_tree/TREES)
+			TREES.update_icon()
+	else if (season == "SPRING")
+		season = "SUMMER"
+		world << "<big>The weather is warm. It is now <b>Summer</b>.</big>"
+		for (var/obj/structure/wild/tree/live_tree/TREES)
+			TREES.update_icon()
+	spawn(18000)
+		seasons()
+
 /obj/map_metadata/civilizations/tick()
 	..()
 	if (age1_done == FALSE)
 		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age1_lim || (civb_research[1]+civb_research[2]+civb_research[3]) >= age1_lim   || (civc_research[1]+civc_research[2]+civc_research[3]) >= age1_lim   || (civd_research[1]+civd_research[2]+civd_research[3]) >= age1_lim   || (cive_research[1]+cive_research[2]+cive_research[3]) >= age1_lim   || (civf_research[1]+civf_research[2]+civf_research[3]) >= age1_lim )
-			world << "The world has advanced into the Bronze Age!"
+			world << "<big>The world has advanced into the Bronze Age!</big>"
 			age = "313 B.C."
 			set_ordinal_age()
 			age1_done = TRUE
 	if (age2_done == FALSE)
 		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age2_lim || (civb_research[1]+civb_research[2]+civb_research[3]) >= age2_lim    || (civc_research[1]+civc_research[2]+civc_research[3]) >= age2_lim    || (civd_research[1]+civd_research[2]+civd_research[3]) >= age2_lim    || (cive_research[1]+cive_research[2]+cive_research[3]) >= age2_lim    || (civf_research[1]+civf_research[2]+civf_research[3]) >= age2_lim  )
-			world << "The world has advanced into the Medieval Age!"
+			world << "<big>The world has advanced into the Medieval Age!</big>"
 			age = "1013"
 			set_ordinal_age()
 			age2_done = TRUE
 	if (age3_done == FALSE)
 		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age3_lim|| (civb_research[1]+civb_research[2]+civb_research[3]) >= age3_lim    || (civc_research[1]+civc_research[2]+civc_research[3]) >= age3_lim    || (civd_research[1]+civd_research[2]+civd_research[3]) >= age3_lim    || (cive_research[1]+cive_research[2]+cive_research[3]) >= age3_lim    || (civf_research[1]+civf_research[2]+civf_research[3]) >= age3_lim  )
-			world << "The world has advanced into the Imperial Age!"
+			world << "<big>The world has advanced into the Imperial Age!</big>"
 			age = "1713"
 			set_ordinal_age()
 			age3_done = TRUE
-
 #undef NO_WINNER

@@ -160,8 +160,18 @@
 				change_weather_somehow()
 			visible_message("The gods are angry, sending heavy rains!")
 			if (prob(100-power))
-				world << "You feel a chill down your spine, something evil is close by..."
-				create_mobs()
+				var/diseasedone = FALSE
+				for (var/mob/living/carbon/human/HH in range(10,loc))
+					if (diseasedone == FALSE)
+						HH.disease = TRUE
+						if (99)
+							HH.disease_type = "flu"
+						else
+							HH.disease_type = "plague"
+						HH.disease_progression = 0
+						diseasedone = TRUE
+//				world << "You feel a chill down your spine, something evil is close by..."
+//				create_mobs()
 		//angry
 		else if (power >= 50 && power < 100)
 			if (prob(100-power))
@@ -228,7 +238,7 @@
 				for (var/datum/job/indians/tribes/yellow/R in job_master.faction_organized_occupations)
 					current_tribesmen = R.current_positions
 			if (power > 0)
-				power = (power-(2*current_tribesmen))
+				power = (power-(current_tribesmen))
 			var/pleasedval = "very angry!"
 			if (power >= 50 && power < 100)
 				pleasedval = "somewhat angry."

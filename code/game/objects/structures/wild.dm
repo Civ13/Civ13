@@ -116,9 +116,19 @@
 	if (season == "WINTER")
 		icon = 'icons/obj/flora/deadtrees.dmi'
 		icon_state = "tree_1"
-	else
+
+	else if (season == "SUMMER")
 		icon = 'icons/obj/flora/bigtrees.dmi'
 		icon_state = "tree_[rand(1,5)]"
+
+	else if (season == "FALL")
+		if (prob(40))
+			icon = 'icons/obj/flora/deadtrees.dmi'
+			icon_state = "tree_1"
+	else if (season == "SPRING")
+		if (prob(40))
+			icon = 'icons/obj/flora/bigtrees.dmi'
+			icon_state = "tree_[rand(1,5)]"
 
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
