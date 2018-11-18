@@ -28,6 +28,8 @@
 	else if (season == "FALL")
 		if (weather == WEATHER_NONE)
 			weather = WEATHER_RAIN
+		else if (weather == WEATHER_SNOW)
+			weather = WEATHER_RAIN
 		else
 			weather = WEATHER_NONE
 	var/area_icon = 'icons/effects/weather.dmi'
@@ -96,6 +98,7 @@
 			possibilities += WEATHER_RAIN
 		if ("FALL")
 			possibilities += WEATHER_RAIN
+			possibilities += WEATHER_SNOW
 	possibilities -= non_possibilities
 
 	if (possibilities.len)
