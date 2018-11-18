@@ -204,7 +204,8 @@
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600)
-			stage += 1
+			if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
+				stage += 1
 			growth()
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)

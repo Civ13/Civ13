@@ -62,10 +62,6 @@ var/GRACE_PERIOD_LENGTH = 7
 	season = "SPRING"
 	return TRUE
 
-
-	// snow is disabled because it breaks the game
-	var/use_snow = FALSE
-
 	for (var/grass in grass_turf_list)
 
 		var/turf/floor/plating/grass/G = grass
@@ -85,20 +81,16 @@ var/GRACE_PERIOD_LENGTH = 7
 
 		if (G.uses_winter_overlay || locate(/obj/snow_maker) in G)
 			if (G.season == "WINTER")
-
 				if (G.uses_winter_overlay)
 					G.color = DEAD_COLOR
-
-				if (use_snow)
-					new/obj/snow(G)
+				new/obj/snow(G)
 
 				for (var/obj/structure/wild/W in G.contents)
 					if (istype(W))
 						W.color = DEAD_COLOR
 						var/icon/W_icon = icon(W.icon, W.icon_state)
-						if (use_snow)
-							W_icon.Blend(icon('icons/turf/snow.dmi', (istype(W, /obj/structure/wild/tree) ? "wild_overlay" : "tree_overlay")), ICON_MULTIPLY)
-							W.icon = W_icon
+						W_icon.Blend(icon('icons/turf/snow.dmi', (istype(W, /obj/structure/wild/tree) ? "wild_overlay" : "tree_overlay")), ICON_MULTIPLY)
+						W.icon = W_icon
 
 			else if (G.season == "SUMMER")
 				if (G.uses_winter_overlay)

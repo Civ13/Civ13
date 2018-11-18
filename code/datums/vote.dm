@@ -138,12 +138,20 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/result()
 		. = announce_result()
-		var/restart = FALSE
 		if (.)
 			switch(mode)
 				if ("restart")
 					if (. == "Restart Round")
-						restart = TRUE
+						world << "Round ending due to vote."
+						log_game("Ending the round due to restart vote.")
+						if (processes.epochswap)
+							processes.epochswap.admin_triggered = TRUE
+							processes.epochswap.ready = TRUE
+							processes.epochswap.fire()
+							log_admin("[key_name(usr)] triggered am epoch vote.")
+							message_admins("[key_name(usr)] triggered an epoch vote.")
+						else
+							src << "<span class = 'notice'>There is no processes.epochswap datum, or it is not ready.</span>"
 				if ("epoch")
 					ticker.finished = TRUE
 					processes.mapswap.admin_triggered = FALSE
@@ -152,22 +160,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if ("map")
 					ticker.finished = TRUE
 					processes.mapswap.finished_at = world.time
-
-		if (restart)
-			world << "Round ending due to vote."
-			log_game("Ending the round due to restart vote.")
-			if (map)
-				map.next_win = world.time - 100
-				processes.mapswap.admin_triggered = FALSE
-				processes.mapswap.ready = TRUE
-				processes.mapswap.fire()
-				log_admin("Map vote triggered by restart vote.")
-			else
-				ticker.finished = TRUE
-				processes.mapswap.admin_triggered = FALSE
-				processes.mapswap.ready = TRUE
-				processes.mapswap.fire()
-				log_admin("Map vote triggered by restart vote.")
 
 		return .
 

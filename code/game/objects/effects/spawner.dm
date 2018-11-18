@@ -53,18 +53,22 @@
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
 	if (activated)
-		if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
-			spawn(rand(timer,timer + (timer/2)))
-				var/mob/living/simple_animal/newmob = new create_path(src.loc)
-				newmob.origin = src
-				newmob.x=src.x+(rand(-max_range,max_range))
-				newmob.y=src.y+(rand(-max_range,max_range))
-				current_number += 1
-				if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
-					while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
-						newmob.x=src.x+(rand(-max_range,max_range))
-						newmob.y=src.y+(rand(-max_range,max_range))
-				spawnerproc()
+		if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
+			if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
+				spawn(rand(timer,timer + (timer/2)))
+					var/mob/living/simple_animal/newmob = new create_path(src.loc)
+					newmob.origin = src
+					newmob.x=src.x+(rand(-max_range,max_range))
+					newmob.y=src.y+(rand(-max_range,max_range))
+					current_number += 1
+					if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
+						while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
+							newmob.x=src.x+(rand(-max_range,max_range))
+							newmob.y=src.y+(rand(-max_range,max_range))
+					spawnerproc()
+			else
+				spawn(rand(timer,timer + (timer/2)))
+					spawnerproc()
 		else
 			spawn(rand(timer,timer + (timer/2)))
 				spawnerproc()
