@@ -139,3 +139,25 @@
 	max_range = 12
 	create_path = /mob/living/simple_animal/mouse/gray
 	timer = 3600
+
+/obj/effect/spawner/mobspawner/deer_m
+	name = "stag spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/deer/male
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/deer_f
+	name = "doe spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/deer/female
+	timer = 3000
+
+
+/obj/effect/spawner/mobspawner/alligator
+	name = "alligator spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/hostile/alligator
+	timer = 5000

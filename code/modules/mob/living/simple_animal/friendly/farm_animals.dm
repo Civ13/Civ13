@@ -172,3 +172,58 @@ var/global/chicken_count = FALSE
 			qdel(src)
 	else
 		processing_objects.Remove(src)
+
+//goat
+/mob/living/simple_animal/goat
+	name = "goat"
+	desc = "Not known for their pleasant disposition."
+	icon_state = "goat"
+	icon_living = "goat"
+	icon_dead = "goat_dead"
+	speak = list("EHEHEHEHEH","eh?")
+	speak_emote = list("brays")
+	emote_hear = list("brays.")
+	emote_see = list("shakes its head.", "stamps a foot.", "glares around.")
+	speak_chance = 1
+	turns_per_move = 5
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	faction = list("neutral")
+	attacktext = "kicks"
+	attack_sound = 'sound/weapons/punch1.ogg'
+	health = 40
+	maxHealth = 40
+	melee_damage_lower = 2
+	melee_damage_upper = 6
+	stop_automated_movement_when_pulled = 1
+	var/datum/reagents/udder = null
+
+/mob/living/simple_animal/goat/New()
+	udder = new(50)
+	udder.my_atom = src
+	..()
+
+/mob/living/simple_animal/goat/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	var/obj/item/weapon/reagent_containers/glass/G = O
+	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
+		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
+		if (G.reagents.total_volume >= G.volume)
+			user << "<span class = 'red'>The [O] is full.</span>"
+		if (!transfered)
+			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+	else
+		..()
+
+/mob/living/simple_animal/goat/Life()
+	. = ..()
+	if (stat == CONSCIOUS)
+		if (udder && prob(5))
+			udder.add_reagent("milk", rand(3, 5))
+
+
+
