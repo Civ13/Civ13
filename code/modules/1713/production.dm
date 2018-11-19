@@ -30,6 +30,38 @@
 			H.visible_message("You finish milling the [W.name].")
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/flour = new/obj/item/weapon/reagent_containers/food/condiment/flour(H.loc)
 			flour.reagents.remove_reagent("flour", 20)
+			icon_state = "flour_mill"
 			qdel(W)
 		else
 			icon_state = "flour_mill"
+
+/obj/structure/dehydrator
+	name = "dehydrator"
+	desc = "A wood structure used to dry meat, fish, tobacco, and so on."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "wood_drier0"
+	var/filled = 0
+	var/stage = 0
+	var/obj_type = /obj/item/weapon/reagent_containers/food/snacks/rawcutlet
+
+/obj/structure/dehydrator/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+	if (filled >= 4)
+		H << "<span class='notice'>\The [src] is full!</span>"
+		return
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) && filled < 4)
+		H << "You hang the [W.name] to dry."
+		filled += 1
+		obj_type = W.type
+		icon_state = "wood_drier[filled]"
+		qdel(W)
+		dry_obj(obj_type)
+		return
+
+/obj/structure/dehydrator/proc/dry_obj(var/obj_type = null)
+	spawn(1200) //2 minutes
+		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/rawcutlet)
+			new/obj/item/weapon/reagent_containers/food/snacks/driedmeat(src.loc)
+			visible_message("The meat finishes drying.")
+			filled -= 1
+			icon_state = "wood_drier[filled]"
+			return

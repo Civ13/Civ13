@@ -379,9 +379,9 @@
 					if (1.0)
 						loc_temp *= 0.99
 					if (2.0)
-						loc_temp *= 0.985
+						loc_temp *= 0.97
 					if (3.0)
-						loc_temp *= 0.98
+						loc_temp *= 0.95
 
 		loc_temp = round(loc_temp)
 

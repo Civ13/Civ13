@@ -191,6 +191,7 @@
 	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/suit/coat/fur/New()
 	..()

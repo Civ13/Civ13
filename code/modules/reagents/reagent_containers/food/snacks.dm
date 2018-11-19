@@ -273,7 +273,7 @@
 	icon_state = "driedmeat"
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
-	nutriment_desc = list("salt" = 4, "meat" = 2)
+	nutriment_desc = list("salt" = 4, "meat" = 1)
 	New()
 		..()
 		bitesize = 2
@@ -283,7 +283,7 @@
 	icon_state = "driedfish"
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
-	nutriment_desc = list("salt" = 6, "fish" = 1)
+	nutriment_desc = list("salt" = 5, "fish" = 1)
 	New()
 		..()
 		bitesize = 2
@@ -534,7 +534,7 @@
 		bitesize = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/bearmeat/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && istype(W,/obj/item/weapon/material/knife))
+	if (!roasted && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		var/atom/A = new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		A.name = "bear meat cutlet"
 		A.desc = replacetext(desc, "slab", "cutlet")
@@ -1799,6 +1799,11 @@
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
+		spawn(2400) //4 minutes
+			icon_state = "rottencutlet"
+			name = "rotten [name]"
+			reagents.remove_reagent("protein", 1)
+			reagents.add_reagent("food_poisoning", 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/cutlet
 	name = "cutlet"
