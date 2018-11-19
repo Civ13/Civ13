@@ -331,6 +331,13 @@ var/global/list/damage_icon_parts = list()
 
 		if (update_icons)   update_icons()
 		return
+	if (wear_suit)
+		if (istype(wear_suit, /obj/item/clothing/suit/coat/fur))
+			var/obj/item/clothing/suit/coat/fur/F = wear_suit
+			if (F.hood == TRUE)
+				overlays_standing[HAIR_LAYER]	= null
+				if (update_icons)   update_icons()
+				return
 	//base icons
 	var/icon/face_standing	= new /icon('icons/mob/human_face.dmi',"bald_s")
 
@@ -353,11 +360,6 @@ var/global/list/damage_icon_parts = list()
 			face_standing.Blend(hair_s, ICON_OVERLAY)
 
 	overlays_standing[HAIR_LAYER]	= image(face_standing)
-	if (wear_suit)
-		if (istype(wear_suit, /obj/item/clothing/suit/coat/fur))
-			var/obj/item/clothing/suit/coat/fur/F = wear_suit
-			if (F.hood == TRUE)
-				overlays_standing[HAIR_LAYER]	= null
 
 	if (update_icons)   update_icons()
 

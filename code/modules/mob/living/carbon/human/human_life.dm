@@ -1094,34 +1094,35 @@
 			holder.icon = null
 			holder.icon_state = null
 			hud_list[FACTION_TO_ENEMIES] = holder
-		if (base_faction)
-			var/image/holder = hud_list[BASE_FACTION]
-			holder.icon = 'icons/mob/hud_1713.dmi'
-			holder.plane = HUD_PLANE
+
+			var/image/holder2 = hud_list[BASE_FACTION]
+			holder2.icon = 'icons/mob/hud_1713.dmi'
+			holder2.plane = HUD_PLANE
 			switch (original_job.base_type_flag())
 				if (PIRATES)
-					holder.icon_state = "pirate_basic"
+					holder2.icon_state = "pirate_basic"
 				if (BRITISH)
-					holder.icon_state = "rn_basic"
+					holder2.icon_state = "rn_basic"
 				if (FRENCH)
-					holder.icon_state = "fr_basic"
+					holder2.icon_state = "fr_basic"
 				if (SPANISH)
-					holder.icon_state = "sp_basic"
+					holder2.icon_state = "sp_basic"
 				if (PORTUGUESE)
-					holder.icon_state = "pt_basic"
+					holder2.icon_state = "pt_basic"
 				if (INDIANS)
-					holder.icon_state = "ind_basic"
+					holder2.icon_state = "ind_basic"
 				if (DUTCH)
-					holder.icon_state = "nl_basic"
+					holder2.icon_state = "nl_basic"
 				if (ARAB)
-					holder.icon_state = "arab_basic"
+					holder2.icon_state = "arab_basic"
 				if (GREEK)
-					holder.icon_state = "greek_basic"
+					holder2.icon_state = "greek_basic"
 				if (ROMAN)
-					holder.icon_state = "roman_basic"
+					holder2.icon_state = "roman_basic"
 				if (CIVILIAN)
-					holder.icon_state = "ind_basic"
-			hud_list[BASE_FACTION] = holder
+					holder2.icon_state = "ind_basic"
+
+			hud_list[BASE_FACTION] = holder2
 
 /mob/living/carbon/human/handle_silent()
 	if (..())
