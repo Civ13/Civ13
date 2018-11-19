@@ -17,6 +17,11 @@
 	heat_protection = HANDS
 	max_heat_protection_temperature = GLOVES_MAX_HEAT_PROTECTION_TEMPERATURE
 
+/obj/item/clothing/gloves/thick/leather
+	desc = "These leather gloves are cold and fire-resistant."
+	name = "leather gloves"
+	icon_state = "leather"
+	item_state = "leather"
 
 /obj/item/clothing/gloves/thick/combat //Combined effect of SWAT gloves and insulated gloves
 	desc = "These tactical gloves are somewhat fire and impact resistant."

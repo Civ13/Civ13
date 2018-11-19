@@ -328,11 +328,11 @@ var/global/list/damage_icon_parts = list()
 
 	//masks and helmets can obscure our hair.
 	if ( (head && (head.flags_inv & BLOCKHAIR)) || (wear_mask && (wear_mask.flags_inv & BLOCKHAIR)))
+
 		if (update_icons)   update_icons()
 		return
-
 	//base icons
-	var/icon/face_standing	= new /icon('icons/mob/human_face.dmi',"hair_a_s")
+	var/icon/face_standing	= new /icon('icons/mob/human_face.dmi',"bald_s")
 
 	if (f_style)
 		var/datum/sprite_accessory/facial_hair_style = facial_hair_styles_list[f_style]
@@ -353,53 +353,17 @@ var/global/list/damage_icon_parts = list()
 			face_standing.Blend(hair_s, ICON_OVERLAY)
 
 	overlays_standing[HAIR_LAYER]	= image(face_standing)
+	if (wear_suit)
+		if (istype(wear_suit, /obj/item/clothing/suit/coat/fur))
+			var/obj/item/clothing/suit/coat/fur/F = wear_suit
+			if (F.hood == TRUE)
+				overlays_standing[HAIR_LAYER]	= null
 
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_mutations(var/update_icons=1)
 	return
-	/*
-	var/fat = body_build ? body_build.index : ""
 
-	var/image/standing	= image("icon" = 'icons/effects/genetics.dmi')
-	var/add_image = FALSE
-	var/g = "m"
-	if (gender == FEMALE)	g = "f"
-	// DNA2 - Drawing underlays.
-	for (var/datum/dna/gene/gene in dna_genes)
-		if (!gene.block)
-			continue
-		if (gene.is_active(src))
-			var/underlay=gene.OnDrawUnderlays(src,g,fat)
-			if (underlay)
-				standing.underlays += underlay
-				add_image = TRUE
-	for (var/mut in mutations)
-		switch(mut)
-			/*
-			if (HULK)
-				if (fat)
-					standing.underlays	+= "hulk_[fat]_s"
-				else
-					standing.underlays	+= "hulk_[g]_s"
-				add_image = TRUE
-			if (COLD_RESISTANCE)
-				standing.underlays	+= "fire[fat]_s"
-				add_image = TRUE
-			if (TK)
-				standing.underlays	+= "telekinesishead[fat]_s"
-				add_image = TRUE
-			*/
-			if (LASER)
-				standing.overlays	+= "lasereyes_s"
-				add_image = TRUE
-	if (add_image)
-		overlays_standing[MUTATIONS_LAYER]	= standing
-	else
-		overlays_standing[MUTATIONS_LAYER]	= null
-	if (update_icons)   update_icons()
-*/
-/* --------------------------------------- */
 //For legacy support.
 /mob/living/carbon/human/regenerate_icons()
 	..()
@@ -691,6 +655,18 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays |= light_overlay_cache[cache_key]
 
 		standing.color = head.color
+		/*
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/coat/fur))
+			var/obj/item/clothing/suit/coat/fur/WS = wear_suit
+			if  (WS.hood == TRUE)
+				overlays_standing[HEAD_LAYER] = null
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/coat/fur))
+			var/obj/item/clothing/suit/coat/fur/WS = wear_suit
+			if  (WS.hood == FALSE)
+				overlays_standing[HEAD_LAYER] = null
+		else if (!wear_suit || (!istype(wear_suit, /obj/item/clothing/suit/coat/fur)))
+			overlays_standing[HEAD_LAYER]	= null
+			*/
 		overlays_standing[HEAD_LAYER] = standing
 
 	else
@@ -776,6 +752,13 @@ var/global/list/damage_icon_parts = list()
 		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
 			overlays_standing[SURGERY_LEVEL] = standing
 
+//fur coat hood
+/*
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/coat/fur))
+			var/obj/item/clothing/suit/coat/fur/WS = wear_suit
+			if  (WS.hood == TRUE)
+				overlays_standing[HEAD_LAYER] = standing
+*/
 	else
 		overlays_standing[SUIT_LAYER]	= null
 		update_inv_shoes(0)

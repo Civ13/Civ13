@@ -160,7 +160,7 @@
 	item_state = "bearpelt"
 	worn_state = "bearpelt"
 	flags_inv = BLOCKHEADHAIR
-
+	cold_protection = HEAD
 /obj/item/clothing/head/wolfpelt
 	name = "wolfpelt"
 	desc = "a wolf pelt turned into a headcover."
@@ -168,10 +168,85 @@
 	item_state = "wolfpelt"
 	worn_state = "wolfpelt"
 	flags_inv = BLOCKHEADHAIR
-
+	cold_protection = HEAD
 /obj/item/clothing/head/toxotai
 	name = "toxotai hat"
 	desc = "a wide brim hat, used by the toxotai."
 	icon_state = "toxotai"
 	item_state = "toxotai"
 	worn_state = "toxotai"
+
+/obj/item/clothing/suit/coat
+	var/hood = FALSE
+	min_cold_protection_temperature = COAT_MIN_COLD_PROTECTION_TEMPERATURE
+
+/obj/item/clothing/suit/coat/fur
+	name = "fur coat"
+	desc = "A thick fur coat, great for the winter."
+	icon_state = "fur_jacket1"
+	item_state = "fur_jacket1"
+	worn_state = "fur_jacket1"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+	var/colorn = 1
+
+/obj/item/clothing/suit/coat/fur/New()
+	..()
+	colorn = pick(1,2,3)
+	icon_state = "fur_jacket[colorn]"
+	item_state = "fur_jacket[colorn]"
+	worn_state = "fur_jacket[colorn]"
+
+/obj/item/clothing/suit/coat/fur/verb/toggle_hood()
+	set category = null
+	set src in usr
+	set name = "Toggle Hood"
+	if (hood)
+		icon_state = "fur_jacket[colorn]"
+		item_state = "fur_jacket[colorn]"
+		worn_state = "fur_jacket[colorn]"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+		item_state_slots["slot_wear_suit"] = "fur_jacket[colorn]"
+		usr << "<span class = 'danger'>You take off your coat's hood.</span>"
+		update_icon()
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		hood = FALSE
+		return
+	else if (!hood)
+		icon_state = "fur_jacket[colorn]h"
+		item_state = "fur_jacket[colorn]h"
+		worn_state = "fur_jacket[colorn]h"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
+		item_state_slots["slot_wear_suit"] = "fur_jacket[colorn]h"
+		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
+		update_icon()
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		hood = TRUE
+		return
+
+/obj/item/clothing/shoes/fur
+	name = "fur boots"
+	desc = "Dense fur boots."
+	icon_state = "fur"
+	item_state = "fur"
+	worn_state = "fur"
+	force = WEAPON_FORCE_WEAK
+	armor = list(melee = 600, bullet = 30, laser = 50,energy = 25, bomb = 50, bio = 20, rad = FALSE)
+	item_flags = NOSLIP
+	siemens_coefficient = 0.6
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	var/colorn = 1
+
+/obj/item/clothing/shoes/fur/New()
+	..()
+	colorn = pick(1,2,3)
+	icon_state = "fur[colorn]"
+	item_state = "fur[colorn]"
+	worn_state = "fur[colorn]"

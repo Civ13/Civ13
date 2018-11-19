@@ -154,6 +154,8 @@
 #define        ARMOR_MIN_COLD_PROTECTION_TEMPERATURE 160 // For armor.
 #define       GLOVES_MIN_COLD_PROTECTION_TEMPERATURE 2.0 // For some gloves.
 #define         SHOE_MIN_COLD_PROTECTION_TEMPERATURE 2.0 // For shoes.
+#define         COAT_MIN_COLD_PROTECTION_TEMPERATURE 200 // For coats
+
 
 #define  SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE 5000  // These need better heat protect, but not as good heat protect as firesuits.
 #define    FIRESUIT_MAX_HEAT_PROTECTION_TEMPERATURE 30000 // What max_heat_protection_temperature is set to for firesuit quality headwear. MUST NOT BE 0.

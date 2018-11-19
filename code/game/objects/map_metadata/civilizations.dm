@@ -116,6 +116,8 @@
 	else if (season == "FALL")
 		season = "WINTER"
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
+		for (var/obj/structure/wild/tree/live_tree/TREES)
+			TREES.update_icon()
 		for (var/turf/floor/dirt/D)
 			if (!istype(D,/turf/floor/dirt/winter))
 				var/area/A = get_area(D)

@@ -256,7 +256,7 @@
 					for (var/v in TRUE to rand(2,3))
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 						meat.name = "[name] meatsteak"
-					for (var/v in TRUE to rand(1,2))
+					for (var/v in TRUE to rand(1,3))
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 						leather.name = "[name] leather"
 					new/obj/item/stack/material/bone(get_turf(src))

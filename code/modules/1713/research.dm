@@ -23,7 +23,7 @@
 		icon_state = "research_rock0"
 		title = "Blank Slate"
 		desc = "A blank slate, where you can carve scientific information."
-		styleb = "research_rock"
+		styleb = "engraving slate"
 
 
 
@@ -45,7 +45,10 @@
 				k_class = "industry"
 				k_level = (user.getStatCoeff("crafting"))
 				completed = TRUE
-				icon_state = "[styleb]1"
+				if (name == "blank slate")
+					icon_state = "research_rock1"
+				else
+					icon_state = "[styleb]1"
 				name = pick("Woodcutting Basics, by [user]", "Mining and Industrialization, by [user]", "Furniture: How to Complete a Home, by [user]", "Building and Construction Basics, by [user]")
 				desc = "A scientific [styleb], with knowledge in crafting."
 				author = "[user]"
@@ -91,7 +94,7 @@
 				k_level = (user.getStatCoeff("bows"))
 				completed = TRUE
 				icon_state = "[styleb]1"
-				name = pick("Bows & Longbows, by [user]", "On Archery Phisics, by [user]", "Archery and Accuracy, by [user]", "The Archer's Guide, by [user]")
+				name = pick("Bows & Longbows, by [user]", "On Archery Physics, by [user]", "Archery and Accuracy, by [user]", "The Archer's Guide, by [user]")
 				desc = "A scientific [styleb], with knowledge in archery."
 				author = "[user]"
 				update_icon()
@@ -129,11 +132,11 @@
 
 		if (choice == "Philosophy")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
-			if (do_after(user, (300*(user.getStatCoeff("philoshophy"))), src))
+			if (do_after(user, (300*(user.getStatCoeff("philosophy"))), src))
 				user << "<span class='notice'>You finish the [styleb].</span>"
 				user.adaptStat("philosophy", 1)
-				k_class = "philoshophy"
-				k_level = (user.getStatCoeff("philoshophy"))
+				k_class = "philosophy"
+				k_level = (user.getStatCoeff("philosophy"))
 				completed = TRUE
 				icon_state = "[styleb]1"
 				name = pick("Discourse Rethoric, by [user]", "Metaphysics of Religion, by [user]", "Politics, by [user]", "Human Ethics, by [user]")
@@ -167,8 +170,8 @@
 					if (k_class == "gunpowder")
 						user.adaptStat("pistol", (8*k_level))
 						user.adaptStat("rifle", (8*k_level))
-					if (k_class == "philoshophy")
-						user.adaptStat("philoshophy", (16*k_level))
+					if (k_class == "philosophy")
+						user.adaptStat("philosophy", (16*k_level))
 					qdel(src)
 					return
 

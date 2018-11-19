@@ -818,7 +818,7 @@
 
 /datum/job/civilian/civa/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-
+	H.civilization = civname_a
 	var/randcloth = rand(1,3)
 	if (randcloth == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
@@ -864,7 +864,7 @@
 
 /datum/job/civilian/civb/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-
+	H.civilization = civname_b
 	var/randcloth = rand(1,3)
 	if (randcloth == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
@@ -910,7 +910,7 @@
 
 /datum/job/civilian/civc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-
+	H.civilization = civname_c
 	var/randcloth = rand(1,3)
 	if (randcloth == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
@@ -956,7 +956,7 @@
 
 /datum/job/civilian/civd/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-
+	H.civilization = civname_d
 	var/randcloth = rand(1,3)
 	if (randcloth == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
@@ -1002,7 +1002,7 @@
 
 /datum/job/civilian/cive/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-
+	H.civilization = civname_e
 	var/randcloth = rand(1,3)
 	if (randcloth == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
@@ -1048,7 +1048,7 @@
 
 /datum/job/civilian/civf/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-
+	H.civilization = civname_f
 	var/randcloth = rand(1,3)
 	if (randcloth == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)

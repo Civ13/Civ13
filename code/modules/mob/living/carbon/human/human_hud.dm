@@ -186,6 +186,17 @@ the HUD updates properly! */
 		if (!perp.original_job)
 			continue
 
+		var/shared_job_check = FALSE
+
+		if (viewer == perp)
+			shared_job_check = TRUE
+		else if (viewer.original_job.base_type_flag() == perp.original_job.base_type_flag())
+			shared_job_check = TRUE
+
+		if (shared_job_check)
+			P.Client.images += perp.hud_list[perp.most_important_faction_hud_constant()]
+		else
+			P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 
 /datum/arranged_hud_process
 	var/client/Client

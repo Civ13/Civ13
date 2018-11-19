@@ -30,6 +30,9 @@ var/list/engineer_exclusive_recipe_types = null
 		recipes += new/datum/stack_recipe("leather boots", /obj/item/clothing/shoes/leatherboots1, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather armor", /obj/item/clothing/suit/armor/medieval/leather, 6, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather curtain", /obj/structure/curtain/leather, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/coat/fur, 8, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/gloves/thick/leather, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/iron/generate_recipes()
 	..()
@@ -45,6 +48,7 @@ var/list/engineer_exclusive_recipe_types = null
 		recipes += new/datum/stack_recipe("anvil", /obj/structure/anvil, 25, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("iron-tipped spear", /obj/item/weapon/material/spear, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("iron shield", /obj/item/weapon/shield/iron, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe(" brazier",	/obj/structure/brazier, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe_list("tools", list(
 			new/datum/stack_recipe("hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
 			new/datum/stack_recipe("shovel", /obj/item/weapon/shovel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -57,7 +61,6 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("small musket ball (x3)", /obj/item/stack/ammopart/musketball_pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
-
 /material/wood/generate_recipes()
 	..()
 	if (map.ordinal_age >= 1)
@@ -191,6 +194,8 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe("totem", /obj/structure/religious/totem, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone wall", /obj/covers/stone_wall, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("rock barrier wall", /obj/structure/window/sandbag/rock, 3, _time = 70, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("stone brazier",	/obj/structure/brazier/stone, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
+
 	if (map.ordinal_age >= 1)
 		recipes += new/datum/stack_recipe("furnace", /obj/structure/furnace/, 10, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("well", /obj/structure/sink/well, 10, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)

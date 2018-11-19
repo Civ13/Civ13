@@ -55,3 +55,29 @@
 		on = FALSE
 		icon_state = "brazier0"
 		return
+
+/obj/structure/brazier/stone
+	name = "stone brazier"
+	desc = "Where you keep warm or light arrows on fire."
+	icon_state = "s_brazier0"
+
+/obj/structure/brazier/stone/do_light()
+	if (on)
+		fuel = (fuel-1)
+		if (fuel <= 0)
+			on = FALSE
+			icon_state = "s_brazier0"
+	spawn(10)
+		do_light()
+
+/obj/structure/brazier/stone/attack_hand(mob/user as mob)
+	if (!on && fuel > 0)
+		user << "You light the stone brazier."
+		on = TRUE
+		icon_state = "s_brazier1"
+		return
+	else
+		user << "You put out the stone brazier."
+		on = FALSE
+		icon_state = "s_brazier0"
+		return

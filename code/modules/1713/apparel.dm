@@ -14,7 +14,8 @@
 	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 // civs
 /obj/item/clothing/under/civ4
@@ -257,7 +258,8 @@
 	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 /obj/item/clothing/shoes/sailorboots2
 	name = "leather sailor boots"
 	desc = "Classic leather sailor boots."
@@ -268,7 +270,8 @@
 	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 /////////british stuff/////////
 
 /obj/item/clothing/under/british_sailor1
@@ -757,7 +760,8 @@
 	armor = list(melee = 600, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 /obj/item/clothing/shoes/leatherboots1
 	name = "leather boots"
 	desc = "Classic leather boots."
@@ -768,7 +772,8 @@
 	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 /////Army stuff
 /obj/item/clothing/suit/storage/jacket/dutch_officer_army

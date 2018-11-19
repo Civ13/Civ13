@@ -29,6 +29,8 @@
 	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
 	armor = list(melee = 75, bullet = 60, laser = 10,energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 /obj/item/clothing/under/medieval
 	name = "white tunic"
