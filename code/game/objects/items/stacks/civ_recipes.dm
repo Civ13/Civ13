@@ -217,6 +217,12 @@
 			new/datum/stack_recipe("small mill",/obj/structure/mill, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty, 5, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),))
+	if (current_res[1] >= 24 && current_res[2] >= 33)
+		recipes += new/datum/stack_recipe_list("siege weapons", list(
+			new/datum/stack_recipe("catapult",/obj/structure/catapult, 50, _time = 450, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("siege ladder",/obj/item/weapon/siegeladder, 8, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+
+
 /material/rope/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))
@@ -250,6 +256,16 @@
 		recipes += new/datum/stack_recipe("furnace", /obj/structure/furnace/, 10, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 21)
 		recipes += new/datum/stack_recipe("well", /obj/structure/sink/well, 10, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 24 && current_res[2] >= 33)
+		recipes += new/datum/stack_recipe("catapult projectile", /obj/item/catapult_ball, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
+
+	if (current_res[1] >= 29)
+		recipes += new/datum/stack_recipe_list("fortifications", list(
+			new/datum/stack_recipe("fortified wall (horizontal)", /obj/structure/barricade/stone_h, 8, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("fortified wall (vertical)", /obj/structure/barricade/stone_v, 8, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("fortified crenelated wall (horizontal)", /obj/structure/barricade/stone_h/crenelated, 8, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("fortified crenelated wall (vertical)", /obj/structure/barricade/stone_v/crenelated, 8, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
+
 /material/tobacco/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[3] >= 23)
@@ -384,7 +400,8 @@
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("steel shield", /obj/item/weapon/shield/steel, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
-
+	if (current_res[1] >= 71 && current_res[2] >= 89)
+		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()

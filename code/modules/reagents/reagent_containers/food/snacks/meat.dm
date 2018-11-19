@@ -22,7 +22,7 @@
 		..()
 /obj/item/weapon/reagent_containers/food/snacks/meat/New()
 	..()
-	spawn(2400) //4 minutes
+	spawn(3000) //5 minutes
 		icon_state = "rottenmeat"
 		name = "rotten [name]"
 		reagents.remove_reagent("protein", 2)

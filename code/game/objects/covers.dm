@@ -72,7 +72,7 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
-	amount = 4
+	amount = 0
 	layer = 2.12
 	health = 300
 
@@ -85,7 +85,7 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
-	amount = 3
+	amount = 0
 	layer = 2.12
 	health = 90
 
@@ -111,7 +111,7 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
-	amount = 3
+	amount = 0
 	layer = 2.12
 	health = 110
 
@@ -124,7 +124,7 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = FALSE
-	amount = 3
+	amount = 0
 	layer = 2.12
 	health = 30
 	var/stage = 1
