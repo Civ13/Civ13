@@ -1120,7 +1120,20 @@
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
 				if (CIVILIAN)
-					holder2.icon_state = "ind_basic"
+					if (original_job_title == "Civilization A Citizen")
+						holder2.icon_state = "civ1"
+					else if (original_job_title == "Civilization B Citizen")
+						holder2.icon_state = "civ2"
+					else if (original_job_title == "Civilization C Citizen")
+						holder2.icon_state = "civ3"
+					else if (original_job_title == "Civilization D Citizen")
+						holder2.icon_state = "civ4"
+					else if (original_job_title == "Civilization E Citizen")
+						holder2.icon_state = "civ5"
+					else if (original_job_title == "Civilization F Citizen")
+						holder2.icon_state = "civ6"
+					else
+						holder2.icon_state = ""
 
 			hud_list[BASE_FACTION] = holder2
 
