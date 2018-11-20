@@ -293,18 +293,18 @@
 /material/cloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[3] >= 34)
-		recipes = list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 56)
-		recipes = list(new/datum/stack_recipe("trauma kit", /obj/item/stack/medical/advanced/bruise_pack, 5, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("trauma kit", /obj/item/stack/medical/advanced/bruise_pack, 5, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 43)
-		recipes = list(new/datum/stack_recipe("burn kit", /obj/item/stack/medical/advanced/ointment, 4, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("burn kit", /obj/item/stack/medical/advanced/ointment, 4, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 
-	if (current_res[1] >= 22 && current_res[3] >= 25)
+	if ((current_res[1] >= 22 && current_res[3] >= 25)&& !(current_res[1] >= 45 && current_res[3] >= 35))
 		recipes += new/datum/stack_recipe_list("hats", list(
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red beret", /obj/item/clothing/head/red_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue beret", /obj/item/clothing/head/blue_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[1] >= 45 && current_res[3] >= 35)
+	if ((current_res[1] >= 45 && current_res[3] >= 35) && !(current_res[1] >= 76 && current_res[3] >= 48))
 		recipes += new/datum/stack_recipe_list("hats", list(
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red beret", /obj/item/clothing/head/red_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
