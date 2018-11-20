@@ -227,9 +227,9 @@
 		item_state_slots["slot_wear_suit"] = "fur_jacket[colorn]"
 		usr << "<span class = 'danger'>You take off your coat's hood.</span>"
 		update_icon()
+		hood = FALSE
 		usr.update_inv_head(1)
 		usr.update_inv_wear_suit(1)
-		hood = FALSE
 		return
 	else if (!hood)
 		icon_state = "fur_jacket[colorn]h"
@@ -240,9 +240,9 @@
 		item_state_slots["slot_wear_suit"] = "fur_jacket[colorn]h"
 		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
 		update_icon()
+		hood = TRUE
 		usr.update_inv_head(1)
 		usr.update_inv_wear_suit(1)
-		hood = TRUE
 		return
 
 /obj/item/clothing/shoes/fur
@@ -252,7 +252,7 @@
 	item_state = "fur"
 	worn_state = "fur"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 600, bullet = 30, laser = 50,energy = 25, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 20, bullet = 20, laser = 50,energy = 25, bomb = 50, bio = 20, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET

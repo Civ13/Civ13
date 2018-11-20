@@ -382,7 +382,8 @@
 						loc_temp *= 0.97
 					if (3.0)
 						loc_temp *= 0.95
-
+		if (map.blizzard)
+			loc_temp = 190
 		loc_temp = round(loc_temp)
 
 	for (var/obj/snow/S in get_turf(src))

@@ -54,16 +54,27 @@
 
 /area/caribbean/tribes/goose
 	name = "Red Goose Tribe"
+/area/caribbean/tribes/goose/supplies
+
 /area/caribbean/tribes/monkey
 	name = "Green Monkey Tribe"
+/area/caribbean/tribes/monkey/supplies
+
 /area/caribbean/tribes/turkey
 	name = "Blue Turkey Tribe"
+/area/caribbean/tribes/turkey/supplies
+
 /area/caribbean/tribes/mouse
 	name = "Yellow Mouse Tribe"
+/area/caribbean/tribes/mouse/supplies
+
 /area/caribbean/tribes/wolf
 	name = "White Wolf Tribe"
+/area/caribbean/tribes/wolf/supplies
+
 /area/caribbean/tribes/bear
 	name = "Black Bear Tribe"
+/area/caribbean/tribes/bear/supplies
 
 /area/caribbean/tribes/caves
 	name = "Caves"

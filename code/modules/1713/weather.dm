@@ -81,6 +81,8 @@
 		++weather_intensity
 	else if (weather_intensity > 1.0)
 		--weather_intensity
+	if (map.blizzard)
+		weather_intensity = 3.0
 	change_weather(weather, TRUE)
 
 	if (old_intensity != weather_intensity)

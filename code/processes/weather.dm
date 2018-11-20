@@ -34,3 +34,16 @@
 		if (world.realtime >= next_can_change_weather)
 			change_weather_somehow()
 			next_can_change_weather = world.realtime + minimum_change_weather_delay
+	if (season == "WINTER")
+		if (prob(1))
+			if(prob(50))
+				world << "<big>A huge blizzard is approaching!</big>"
+				spawn(600)
+					map.blizzard = TRUE
+					change_weather(WEATHER_SNOW)
+					modify_weather_somehow()
+					world << "<big>The blizzard is in full force!</big>"
+					spawn(rand(2400,3600))
+						map.blizzard = FALSE
+						change_weather(WEATHER_NONE)
+						world << "<big>The blizzard has passed.</big>"

@@ -72,6 +72,8 @@ var/global/obj/map_metadata/map = null
 	var/age = "1713"
 	var/ordinal_age = 3
 
+	//weather
+	var/blizzard = FALSE
 	//civ stuff
 	var/civilizations = FALSE
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical)

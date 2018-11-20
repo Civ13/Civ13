@@ -779,12 +779,14 @@ var/global/list/damage_icon_parts = list()
 			overlays_standing[SURGERY_LEVEL] = standing
 
 //fur coat hood
-/*
+
 		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/coat/fur))
 			var/obj/item/clothing/suit/coat/fur/WS = wear_suit
-			if  (WS.hood == TRUE)
-				overlays_standing[HEAD_LAYER] = standing
-*/
+			if (WS.hood == TRUE)
+				update_hair(1)
+			else
+				update_hair(1)
+
 	else
 		overlays_standing[SUIT_LAYER]	= null
 		update_inv_shoes(0)

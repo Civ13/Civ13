@@ -25,7 +25,7 @@
 	single_faction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
-		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
 	var/age1_lim = 90
 	var/age1_done = 0
 	var/age2_lim = 140
@@ -48,9 +48,41 @@
 	if (clients.len > 36)
 		tribes_nr = 6
 	if (tribes_nr >= 2)
-		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big>"
+		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
 	spawn(18000)
 		seasons()
+	spawn(9000)
+		for (var/datum/job/civilian/civa/J in job_master.occupations)
+			if (J.current_positions == 0)
+				for (var/area/caribbean/tribes/goose/supplies/A)
+					for(var/obj/K in A)
+						qdel(K)
+		for (var/datum/job/civilian/civb/J in job_master.occupations)
+			if (J.current_positions == 0)
+				for (var/area/caribbean/tribes/turkey/supplies/A)
+					for(var/obj/K in A)
+						qdel(K)
+		for (var/datum/job/civilian/civc/J in job_master.occupations)
+			if (J.current_positions == 0)
+				for (var/area/caribbean/tribes/monkey/supplies/A)
+					for(var/obj/K in A)
+						qdel(K)
+		for (var/datum/job/civilian/civd/J in job_master.occupations)
+			if (J.current_positions == 0)
+				for (var/area/caribbean/tribes/mouse/supplies/A)
+					for(var/obj/K in A)
+						qdel(K)
+		for (var/datum/job/civilian/cive/J in job_master.occupations)
+			if (J.current_positions == 0)
+				for (var/area/caribbean/tribes/wolf/supplies/A)
+					for(var/obj/K in A)
+						qdel(K)
+		for (var/datum/job/civilian/civf/J in job_master.occupations)
+			if (J.current_positions == 0)
+				for (var/area/caribbean/tribes/bear/supplies/A)
+					for(var/obj/K in A)
+						qdel(K)
+
 /obj/map_metadata/civilizations/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
