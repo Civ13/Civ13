@@ -77,7 +77,7 @@
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if (current_res[1] >= 35 && current_res[3]>= 44)
-		recipes = list(new/datum/stack_recipe("splints", /obj/item/stack/medical/splint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += new/datum/stack_recipe("splints", /obj/item/stack/medical/splint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	else if (current_res[1] >= 35 && current_res[3]>= 55)
 		recipes += new/datum/stack_recipe_list("medical tools", list(

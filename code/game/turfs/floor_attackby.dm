@@ -194,6 +194,10 @@
 			if (locate(/obj/structure/farming/plant) in src)
 				user << "<span class='notice'>There already is something planted here.</span>"
 				return
+			var/area/A = get_area(C)
+			if (istype(A, /area/caribbean/void/caves))
+				user << "<span class='notice'>You can't farm underground.</span>"
+				return
 			else if (istype(C, /obj/item/stack/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/potato(src)

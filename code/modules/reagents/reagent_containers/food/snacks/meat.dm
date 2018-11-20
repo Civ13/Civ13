@@ -27,6 +27,8 @@
 		name = "rotten [name]"
 		reagents.remove_reagent("protein", 2)
 		reagents.add_reagent("food_poisoning", 1)
+		spawn(3600)
+			qdel(src)
 
 // Seperate definitions because some food likes to know if it's human.
 // TODO: rewrite kitchen code to check a var on the meat item so we can remove

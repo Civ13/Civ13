@@ -1804,7 +1804,8 @@
 			name = "rotten [name]"
 			reagents.remove_reagent("protein", 1)
 			reagents.add_reagent("food_poisoning", 1)
-
+			spawn(3000)
+				qdel(src)
 /obj/item/weapon/reagent_containers/food/snacks/cutlet
 	name = "cutlet"
 	desc = "A tasty meat slice."
