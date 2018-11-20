@@ -6,6 +6,7 @@
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
+		"Civilization 13" = 0
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -97,6 +98,9 @@
 		if (epoch == "5000 B.C.")
 			maps = list(
 				MAP_TRIBES = 0,
+			)
+		if (epoch == "Civilization 13")
+			maps = list(
 				MAP_CIVILIZATIONS = 0,
 			)
 		spawn(10)
