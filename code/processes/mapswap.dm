@@ -97,7 +97,7 @@
 		if (epoch == "5000 B.C.")
 			maps = list(
 				MAP_TRIBES = 0,
-				//MAP_CIVILIZATIONS = 0,
+				MAP_CIVILIZATIONS = 0,
 			)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
