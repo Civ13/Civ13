@@ -245,10 +245,12 @@ var/global/list/GrassEdgeCache
 /turf/floor/plating/grass/wild
 	name = "wild grass"
 	overlay_priority = 0
+	is_diggable = TRUE
 
 /turf/floor/winter/grass
 	name = "snowy grass"
 	icon = 'icons/turf/snow.dmi'
+	is_diggable = TRUE
 
 /turf/floor/winter/grass/New()
 	..()
