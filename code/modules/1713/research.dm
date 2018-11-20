@@ -224,7 +224,7 @@
 						map.civa_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_b)
 					for (var/datum/job/civilian/civb/R in job_master.faction_organized_occupations)
-						current_tribesmen = R.current_positions/map.availablefactions.len
+						current_tribesmen = (alive_civilians.len/map.availablefactions.len)/2
 					if (k_class == "medicine" || k_class == "anatomy")
 						map.civb_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
