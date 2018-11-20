@@ -680,9 +680,9 @@
 							grace_period_string += "[faction_const2name(faction)] may not cross"
 					else
 						if (map.last_crossing_block_status[faction])
-							grace_period_string += "The grace wall is in effect."
-						else
 							grace_period_string += "The grace wall has been removed."
+						else
+							grace_period_string += "The grace wall is in effect."
 				stat("Grace Period Status:", grace_period_string)
 				if (!map.civilizations)
 					stat("Round End Condition:", map.current_stat_message())
