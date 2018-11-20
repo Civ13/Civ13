@@ -3,7 +3,7 @@
 	desc = "Provides some nice meat, if you can catch it."
 	icon_state = "deer_m"
 	icon_living = "deer_m"
-	icon_dead = "deer_dead_m"
+	icon_dead = "deer_m_dead"
 	icon_gib = "deer_gib_m"
 	speak = list("rrrw","meew","MEEEW")
 	speak_emote = list("bellows","bleats")
@@ -24,7 +24,7 @@
 	name = "doe"
 	icon_state = "deer_f"
 	icon_living = "deer_f"
-	icon_dead = "deer_dead_f"
+	icon_dead = "deer_f_dead"
 	icon_gib = "deer_gib_f"
 
 /mob/living/simple_animal/deer/Life()

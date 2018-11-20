@@ -23,7 +23,7 @@
 		icon_state = "research_rock0"
 		title = "Blank Slate"
 		desc = "A blank slate, where you can carve scientific information."
-		styleb = "engraving slate"
+		styleb = "research_rock"
 
 
 

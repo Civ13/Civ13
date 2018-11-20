@@ -41,9 +41,9 @@
 	if (current_res[2] >= 15)
 		recipes += new/datum/stack_recipe("leather armor", /obj/item/clothing/suit/armor/medieval/leather, 6, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather curtain", /obj/structure/curtain/leather, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/coat/fur, 8, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/coat/fur, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/gloves/thick/leather, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/iron/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -189,8 +189,7 @@
 			new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("campfire",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("torch",/obj/item/flashlight/torch, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("wood bowl",/obj/item/kitchen/wood_bowl, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("rock slab",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("wood bowl",/obj/item/kitchen/wood_bowl, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (current_res[1] >= 19 && current_res[1] <= 45)
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, TRUE),
