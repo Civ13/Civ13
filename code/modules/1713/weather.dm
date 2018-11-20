@@ -96,6 +96,8 @@
 			possibilities += WEATHER_SNOW
 		if ("SPRING")
 			possibilities += WEATHER_RAIN
+		if ("SUMMER")
+			possibilities = list(WEATHER_NONE)
 		if ("FALL")
 			possibilities += WEATHER_RAIN
 			possibilities += WEATHER_SNOW

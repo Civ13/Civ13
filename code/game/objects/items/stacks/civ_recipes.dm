@@ -192,6 +192,7 @@
 			new/datum/stack_recipe("wood bowl",/obj/item/kitchen/wood_bowl, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (current_res[1] >= 19 && current_res[1] <= 45)
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
+			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, TRUE),
 			new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("campfire",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
