@@ -36,6 +36,7 @@
 	var/scalable = 0 // when 1, it will only get active above x players
 	var/scalable_nr = 10
 	var/scalable_multiplyer = 1 //after how many times the scalable_nr it activates
+	invisibility = 101
 
 /obj/effect/spawner/mobspawner/skeletons
 	name = "skeleton spawner"
@@ -49,6 +50,7 @@
 /obj/effect/spawner/mobspawner/New()
 	..()
 	invisibility = 101
+	icon_state = "invisible"
 	spawnerproc()
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()

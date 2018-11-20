@@ -214,9 +214,8 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += list(new/datum/stack_recipe("blowing horn", /obj/item/weapon/horn, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("bone armor", /obj/item/clothing/suit/storage/jacket/bonearmor, 10, _time = 170, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("bone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"))
-	recipes += list(new/datum/stack_recipe("bone pickaxe", /obj/item/weapon/material/hatchet/tribal, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE))
-	recipes += list(new/datum/stack_recipe("bone shovel", /obj/item/weapon/pickaxe/bone, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE))
-
+	recipes += list(new/datum/stack_recipe("bone pickaxe", /obj/item/weapon/pickaxe/bone, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE))
+	recipes += list(new/datum/stack_recipe("bone shovel", /obj/item/weapon/shovel/bone, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE))
 
 /material/cloth/generate_recipes()
 	..()
