@@ -131,7 +131,7 @@
 
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/sandbag))
-		if (stage == 4)
+		if (stage == 3)
 			user << "You start adding dirt to the wall..."
 			if (do_after(user, 20, src))
 				user << "You finish adding dirt to the wall, completing it."
@@ -139,7 +139,7 @@
 				new /obj/covers/dirt_wall/blocks(loc)
 				qdel(src)
 				return
-		else if (stage <= 3)
+		else if (stage <= 2)
 			user << "You start adding dirt to the wall..."
 			if (do_after(user, 20, src))
 				user << "You finish adding dirt to the wall."

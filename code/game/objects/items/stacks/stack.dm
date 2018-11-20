@@ -197,13 +197,13 @@
 		build_override_sign.name = customname
 		build_override_sign.desc = customdesc
 
-	if (findtext(recipe.title, "wall"))
+	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
-	if (findtext(recipe.title, "well"))
-		if (H.getStatCoeff("crafting") < 1.1)
+	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "small sword"))
+		if (H.getStatCoeff("crafting") < 1.8)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 		var/puddly = FALSE

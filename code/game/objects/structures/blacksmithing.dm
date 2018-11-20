@@ -13,6 +13,10 @@ obj/structure/anvil/New()
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
 
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
+	var/mob/living/carbon/human/H = user
+	if (H.getStatCoeff("crafting") < 1.7 && map.civilizations)
+		user << "You don't have the skills to use this."
+		return
 	if (!map.civilizations && (user.original_job_title != "Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
@@ -45,17 +49,21 @@ obj/structure/anvil/New()
 			return
 
 /obj/structure/anvil/attack_hand(var/mob/user as mob)
+	var/mob/living/carbon/human/H = user
+	if (H.getStatCoeff("crafting") < 1.7 && map.civilizations)
+		user << "You don't have the skills to use this."
+		return
 	if (!map.civilizations && (user.original_job_title != "Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 
 	else if (steel_amt > 0)
- 		if (map.ordinal_age >= 3)
-			var/list/display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Cancel")
+		var/list/display2 = list("Cancel")
+		if (map.ordinal_age >= 3)
+			display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Cancel")
 		else if (map.ordinal_age <= 2)
-			var/list/display2 = list("Small Sword (10)", "Spadroon (15)", "Cancel")
-		else
-			var/list/display2 = list("Cancel")
+			display2 = list("Small Sword (10)", "Spadroon (15)", "Cancel")
+
 		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
 		if (choice2 == "Cancel")
 			return

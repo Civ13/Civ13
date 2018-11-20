@@ -16,6 +16,20 @@
 	item_state = "roman"
 	worn_state = "roman"
 
+/obj/item/clothing/under/toga
+	name = "white toga"
+	desc = "A simple cloth toga."
+	icon_state = "toga"
+	item_state = "toga"
+	worn_state = "toga"
+
+/obj/item/clothing/under/toga2
+	name = "half-shoulder white toga"
+	desc = "A simple cloth toga, covering just one of the shoulders."
+	icon_state = "toga2"
+	item_state = "toga2"
+	worn_state = "toga2"
+
 /obj/item/clothing/under/roman_centurion
 	name = "Roman centurion uniform"
 	desc = "A red tunic covered with iron armor, with added golden plates. Used by the Roman Army's Centurions."
