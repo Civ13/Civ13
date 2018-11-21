@@ -192,18 +192,6 @@
 	icon_state = "scrolls[map.ordinal_age]"
 
 
-/obj/item/weapon/book/research/proc/check_research()
-	if (!map.civilizations)
-		return
-	else
-		if (k_class == "medicine" || k_class == "anatomy")
-			map.civa_research[3] += k_level
-		if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
-			map.civa_research[2] += k_level
-		if (k_class == "industrial" || k_class == "philosophy")
-			map.civa_research[1] += k_level
-
-
 /obj/item/weapon/book/research/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
 	if (istype(O, /obj/item/weapon/researchkit))
 		if (!map.civilizations)
@@ -220,16 +208,15 @@
 						map.civa_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
 						map.civa_research[2] += k_level/current_tribesmen
-					if (k_class == "industrial" || k_class == "philosophy")
+					if (k_class == "industry" || k_class == "philosophy")
 						map.civa_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_b)
-					for (var/datum/job/civilian/civb/R in job_master.faction_organized_occupations)
-						current_tribesmen = (alive_civilians.len/map.availablefactions.len)/2
+					current_tribesmen = (alive_civilians.len/map.availablefactions.len)/2
 					if (k_class == "medicine" || k_class == "anatomy")
 						map.civb_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
 						map.civb_research[2] += k_level/current_tribesmen
-					if (k_class == "industrial" || k_class == "philosophy")
+					if (k_class == "industry" || k_class == "philosophy")
 						map.civb_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_c)
 					current_tribesmen = (alive_civilians.len/map.availablefactions.len)/2
@@ -237,7 +224,7 @@
 						map.civc_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
 						map.civc_research[2] += k_level/current_tribesmen
-					if (k_class == "industrial" || k_class == "philosophy")
+					if (k_class == "industry" || k_class == "philosophy")
 						map.civc_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_d)
 					current_tribesmen = (alive_civilians.len/map.availablefactions.len)/2
@@ -245,7 +232,7 @@
 						map.civd_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
 						map.civd_research[2] += k_level/current_tribesmen
-					if (k_class == "industrial" || k_class == "philosophy")
+					if (k_class == "industry" || k_class == "philosophy")
 						map.civd_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_e)
 					current_tribesmen = (alive_civilians.len/map.availablefactions.len)/2
@@ -253,7 +240,7 @@
 						map.cive_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
 						map.cive_research[2] += k_level/current_tribesmen
-					if (k_class == "industrial" || k_class == "philosophy")
+					if (k_class == "industry" || k_class == "philosophy")
 						map.cive_research[1] += k_level/current_tribesmen
 				else if (user.civilization == civname_f)
 					current_tribesmen = (alive_civilians.len/map.availablefactions.len)/2
@@ -261,7 +248,7 @@
 						map.civf_research[3] += k_level/current_tribesmen
 					if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")
 						map.civf_research[2] += k_level/current_tribesmen
-					if (k_class == "industrial" || k_class == "philosophy")
+					if (k_class == "industry" || k_class == "philosophy")
 						map.civf_research[1] += k_level/current_tribesmen
 	else
 		..()
