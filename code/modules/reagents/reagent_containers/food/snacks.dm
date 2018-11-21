@@ -1795,6 +1795,7 @@
 	bitesize = 1
 	center_of_mass = list("x"=17, "y"=20)
 	raw = TRUE
+	var/rotten = FALSE
 
 	New()
 		..()
@@ -1802,6 +1803,7 @@
 		spawn(2400) //4 minutes
 			icon_state = "rottencutlet"
 			name = "rotten [name]"
+			rotten = TRUE
 			reagents.remove_reagent("protein", 1)
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(3000)

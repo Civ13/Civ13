@@ -49,13 +49,18 @@
 		H << "<span class='notice'>\The [src] is full!</span>"
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) && filled < 4)
-		H << "You hang the [W.name] to dry."
-		filled += 1
-		obj_type = W.type
-		icon_state = "wood_drier[filled]"
-		qdel(W)
-		dry_obj(obj_type)
-		return
+		var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/RC = W
+		if (RC.rotten == TRUE)
+			H << "This [src] is rotten."
+			return
+		else
+			H << "You hang the [W.name] to dry."
+			filled += 1
+			obj_type = W.type
+			icon_state = "wood_drier[filled]"
+			qdel(W)
+			dry_obj(obj_type)
+			return
 
 /obj/structure/dehydrator/proc/dry_obj(var/obj_type = null)
 	spawn(1200) //2 minutes
