@@ -75,7 +75,7 @@ var/global/obj/map_metadata/map = null
 	//weather
 	var/blizzard = FALSE
 	var/heat_wave = FALSE
-	var/triggered_heat_wave = FALSE
+	var/triggered_heatwave = FALSE
 	var/triggered_blizzard = FALSE
 	//civ stuff
 	var/civilizations = FALSE
