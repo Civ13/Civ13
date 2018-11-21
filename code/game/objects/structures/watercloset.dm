@@ -416,7 +416,7 @@
 		user << "<span class='warning'>Someone's already washing here.</span>"
 		return
 	if (dry)
-		user << "<span class='warning'>This [src] is dry!</span>"
+		user << "<span class='warning'>\The [src] is dry!</span>"
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && !(istype(src, /obj/structure/sink/puddle)))
@@ -503,14 +503,18 @@
 	sound = 'sound/effects/watersplash.ogg'
 
 /obj/structure/sink/puddle/attack_hand(mob/M as mob)
-	icon_state = "puddle-splash"
+	if (!dry)
+		icon_state = "puddle-splash"
 	..()
-	icon_state = "puddle"
+	if (!dry)
+		icon_state = "puddle"
 
 /obj/structure/sink/puddle/attackby(obj/item/O as obj, mob/user as mob)
-	icon_state = "puddle-splash"
+	if (!dry)
+		icon_state = "puddle-splash"
 	..()
-	icon_state = "puddle"
+	if (!dry)
+		icon_state = "puddle"
 
 /obj/structure/sink/update_icon()
 	..()
@@ -521,6 +525,6 @@
 			icon_state = "puddle"
 	else if  (istype(src, /obj/structure/sink/well))
 		if (dry)
-			icon_state = "well1"
-		else
 			icon_state = "well_dry"
+		else
+			icon_state = "well1"
