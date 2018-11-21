@@ -74,6 +74,9 @@ var/global/obj/map_metadata/map = null
 
 	//weather
 	var/blizzard = FALSE
+	var/heat_wave = FALSE
+	var/triggered_heat_wave = FALSE
+	var/triggered_blizzard = FALSE
 	//civ stuff
 	var/civilizations = FALSE
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical)

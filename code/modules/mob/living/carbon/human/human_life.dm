@@ -62,17 +62,30 @@
 	#define HUNGER_THIRST_MULTIPLIER 0.80
 
 	if (has_hunger_and_thirst)
-		if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-			nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+		if (map.heat_wave)
+			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
+			else
+				switch (stat)
+					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
+					if (UNCONSCIOUS) // takes over an hour to starve
+						nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.5/1) * HUNGER_THIRST_MULTIPLIER)
 		else
-			switch (stat)
-				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
+			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+			else
+				switch (stat)
+					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+					if (UNCONSCIOUS) // takes over an hour to starve
+						nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
 
 	#undef HUNGER_THIRST_MULTIPLIER
 

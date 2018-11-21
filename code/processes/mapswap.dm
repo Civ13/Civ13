@@ -6,7 +6,7 @@
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
-//		"Civilization 13" = 0,
+		"Civilization 13" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE

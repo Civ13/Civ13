@@ -34,10 +34,11 @@
 		if (world.realtime >= next_can_change_weather)
 			change_weather_somehow()
 			next_can_change_weather = world.realtime + minimum_change_weather_delay
-	if (season == "WINTER")
-		if (prob(1))
-			if(prob(50))
+	if (season == "WINTER" || map.triggered_blizzard)
+		if (prob(1) || map.triggered_blizzard)
+			if(prob(50) || map.triggered_blizzard)
 				world << "<big>A huge blizzard is approaching!</big>"
+				map.triggered_blizzard = FALSE
 				spawn(600)
 					map.blizzard = TRUE
 					change_weather(WEATHER_SNOW)
@@ -47,3 +48,23 @@
 						map.blizzard = FALSE
 						change_weather(WEATHER_NONE)
 						world << "<big>The blizzard has passed.</big>"
+	if (season == "SUMMER" || map.triggered_heatwave)
+		if (prob(1) || map.triggered_heatwave)
+			if(prob(80)|| map.triggered_heatwave)
+				world << "<big>The weather starts to get hotter than normal...</big>"
+				map.triggered_heatwave = FALSE
+				spawn(600)
+					map.heat_wave = TRUE
+					change_weather(WEATHER_NONE)
+					world << "<big>A heat wave has arrived in this area!</big>"
+					for(var/obj/structure/sink/S)
+						if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
+							S.dry = TRUE
+							S.update_icon()
+					spawn(rand(3000,3600))
+						map.heat_wave = FALSE
+						world << "<big>The heat wave has subsided.</big>"
+						for(var/obj/structure/sink/S)
+							if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
+								S.dry = FALSE
+								S.update_icon()

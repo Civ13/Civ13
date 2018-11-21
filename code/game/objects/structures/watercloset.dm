@@ -348,6 +348,7 @@
 	anchored = TRUE
 	var/busy = FALSE 	//Something's being washed at the moment
 	var/sound = 'sound/effects/sink.ogg'
+	var/dry = FALSE
 
 /obj/structure/sink/ex_act(severity)
 	switch(severity)
@@ -414,7 +415,9 @@
 	if (busy && busy != user)
 		user << "<span class='warning'>Someone's already washing here.</span>"
 		return
-
+	if (dry)
+		user << "<span class='warning'>This [src] is dry!</span>"
+		return
 	var/obj/item/weapon/reagent_containers/RG = O
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && !(istype(src, /obj/structure/sink/puddle)))
 		RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
@@ -508,3 +511,16 @@
 	icon_state = "puddle-splash"
 	..()
 	icon_state = "puddle"
+
+/obj/structure/sink/update_icon()
+	..()
+	if (istype(src, /obj/structure/sink/puddle))
+		if (dry)
+			icon_state = "puddle_dry"
+		else
+			icon_state = "puddle"
+	else if  (istype(src, /obj/structure/sink/well))
+		if (dry)
+			icon_state = "well1"
+		else
+			icon_state = "well_dry"
