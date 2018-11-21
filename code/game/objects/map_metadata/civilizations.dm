@@ -26,11 +26,11 @@
 	availablefactions_run = TRUE
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
-	var/age1_lim = 90
+	var/age1_lim = 60
 	var/age1_done = 0
-	var/age2_lim = 140
+	var/age2_lim = 120
 	var/age2_done = 0
-	var/age3_lim = 250
+	var/age3_lim = 230
 	var/age3_done = 0
 
 /obj/map_metadata/civilizations/New()
