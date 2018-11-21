@@ -399,7 +399,7 @@
 						loc_temp *= 0.95
 		if (map.blizzard)
 			loc_temp = 190
-		if (map.heatwave)
+		if (map.heat_wave)
 			loc_temp = 321
 		loc_temp = round(loc_temp)
 

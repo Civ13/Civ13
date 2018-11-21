@@ -19,7 +19,7 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>After ages as hunter-gatherers, one tribe has settled in this area and started farming. Will it advance through the ages, or be forgotten forever?</big>"
+	mission_start_message = "<big>After ages as hunter-gatherers, one tribe has settled in this area and started farming. Will it advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	single_faction = TRUE
@@ -34,7 +34,6 @@
 	var/age3_done = 0
 
 /obj/map_metadata/civilizations/New()
-	..()
 	if (clients.len <= 8)
 		tribes_nr = 1
 	if (clients.len > 8 && clients.len <= 16)
@@ -49,6 +48,7 @@
 		tribes_nr = 6
 	if (tribes_nr >= 2)
 		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
+	..()
 	spawn(18000)
 		seasons()
 	spawn(9000)
