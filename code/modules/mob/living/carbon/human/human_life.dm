@@ -35,7 +35,7 @@
 	var/in_stasis = FALSE
 	var/heartbeat = FALSE
 	var/global/list/overlays_cache = null
-
+	var/lastcoatmessage = 0
 /mob/living/carbon/human/Life()
 
 
@@ -396,7 +396,6 @@
 		if (BR.on == TRUE)
 			loc_temperature = 295
 	// todo: wind adjusting effective loc_temp
-	var/lastcoatmessage = 0
 	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && world.time > lastcoatmessage)
 		src << "<span class = 'warning'><big>You are sweating inside your coat. It's way too warm to wear one.</big></span>"
 		lastcoatmessage = world.time+1200
