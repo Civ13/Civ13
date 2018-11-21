@@ -490,7 +490,8 @@
 	M.adjustToxLoss(-1.5 * removed)
 	M.drowsyness = max(0, M.drowsyness - 4 * removed)
 	M.hallucination = max(0, M.hallucination - 6 * removed)
-
+	if (M.bodytemperature > 310.7)
+		M.bodytemperature = (M.bodytemperature-0.1)
 /datum/reagent/drink/coffee
 	name = "Coffee"
 	id = "coffee"

@@ -346,6 +346,8 @@
 				loc_temp = 285
 			if ("SUMMER")
 				loc_temp = 303
+			if ("SPRING")
+				loc_temp = 290
 
 		switch (time_of_day)
 			if ("Midday")
@@ -394,6 +396,14 @@
 		if (BR.on == TRUE)
 			loc_temperature = 295
 	// todo: wind adjusting effective loc_temp
+	var/lastcoatmessage = 0
+	if (istype(wear_suit, /obj/item/clothing/suit/storage/coat) && world.time > lastcoatmessage)
+		src << "<span class = 'warning'><big>You are sweating inside your coat. It's way too warm to wear one.</big></span>"
+		lastcoatmessage = world.time+1200
+		spawn(600)
+			if (istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
+				H.adjustFireLoss(2)
 
 	if (abs(loc_temperature - bodytemperature) < 0.5 && bodytemperature < species.heat_level_1 && bodytemperature > species.cold_level_1)
 		return // Temperatures are within normal ranges, fuck all this processing. ~Ccomp

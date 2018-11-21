@@ -332,8 +332,8 @@ var/global/list/damage_icon_parts = list()
 		if (update_icons)   update_icons()
 		return
 	if (wear_suit)
-		if (istype(wear_suit, /obj/item/clothing/suit/coat/fur))
-			var/obj/item/clothing/suit/coat/fur/F = wear_suit
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/F = wear_suit
 			if (F.hood == TRUE)
 				overlays_standing[HAIR_LAYER]	= null
 				if (update_icons)   update_icons()
@@ -351,8 +351,8 @@ var/global/list/damage_icon_parts = list()
 			face_standing.Blend(facial_s, ICON_OVERLAY)
 
 	if (h_style && !(head && (head.flags_inv & BLOCKHEADHAIR && wear_suit)))
-		if (istype(wear_suit, /obj/item/clothing/suit/coat/fur))
-			var/obj/item/clothing/suit/coat/fur/C = wear_suit
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/C = wear_suit
 			if ( C.hood == FALSE)
 				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
 				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
@@ -682,15 +682,15 @@ var/global/list/damage_icon_parts = list()
 
 		standing.color = head.color
 		/*
-		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/coat/fur))
-			var/obj/item/clothing/suit/coat/fur/WS = wear_suit
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/WS = wear_suit
 			if  (WS.hood == TRUE)
 				overlays_standing[HEAD_LAYER] = null
-		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/coat/fur))
-			var/obj/item/clothing/suit/coat/fur/WS = wear_suit
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/WS = wear_suit
 			if  (WS.hood == FALSE)
 				overlays_standing[HEAD_LAYER] = null
-		else if (!wear_suit || (!istype(wear_suit, /obj/item/clothing/suit/coat/fur)))
+		else if (!wear_suit || (!istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur)))
 			overlays_standing[HEAD_LAYER]	= null
 			*/
 		overlays_standing[HEAD_LAYER] = standing
@@ -780,8 +780,8 @@ var/global/list/damage_icon_parts = list()
 
 //fur coat hood
 
-		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/coat/fur))
-			var/obj/item/clothing/suit/coat/fur/WS = wear_suit
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/WS = wear_suit
 			if (WS.hood == TRUE)
 				update_hair(1)
 			else

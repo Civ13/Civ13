@@ -190,11 +190,11 @@
 	item_state = "toxotai"
 	worn_state = "toxotai"
 
-/obj/item/clothing/suit/coat
+/obj/item/clothing/suit/storage/coat
 	var/hood = FALSE
 	min_cold_protection_temperature = COAT_MIN_COLD_PROTECTION_TEMPERATURE
 
-/obj/item/clothing/suit/coat/fur
+/obj/item/clothing/suit/storage/coat/fur
 	name = "fur coat"
 	desc = "A thick fur coat, great for the winter."
 	icon_state = "fur_jacket1"
@@ -207,14 +207,14 @@
 	var/colorn = 1
 	flags_inv = BLOCKHEADHAIR
 
-/obj/item/clothing/suit/coat/fur/New()
+/obj/item/clothing/suit/storage/coat/fur/New()
 	..()
 	colorn = pick(1,2,3)
 	icon_state = "fur_jacket[colorn]"
 	item_state = "fur_jacket[colorn]"
 	worn_state = "fur_jacket[colorn]"
 
-/obj/item/clothing/suit/coat/fur/verb/toggle_hood()
+/obj/item/clothing/suit/storage/coat/fur/verb/toggle_hood()
 	set category = null
 	set src in usr
 	set name = "Toggle Hood"
