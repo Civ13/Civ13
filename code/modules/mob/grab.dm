@@ -323,7 +323,7 @@
 /obj/item/weapon/grab/dropped()
 	if (ismob(loc))
 		var/mob/M = loc
-		M.grab_list -= src
+		M.grab_list = list()
 	loc = null
 	if (!destroying)
 		qdel(src)
