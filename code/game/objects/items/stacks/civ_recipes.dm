@@ -297,7 +297,7 @@
 	recipes += list(new/datum/stack_recipe("bone pickaxe", /obj/item/weapon/pickaxe/bone, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("bone shovel", /obj/item/weapon/shovel/bone, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[1] >= 15)
-	recipes += list(new/datum/stack_recipe("dice", /obj/item/weapon/dice, 2, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("dice", /obj/item/weapon/dice, 2, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 
 /material/cloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
