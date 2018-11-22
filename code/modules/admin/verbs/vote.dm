@@ -1,7 +1,8 @@
+//dont use this! use epoch vote
 /client/proc/start_mapswap_vote()
 	set category = "Server"
 	set name = "Start Map Vote"
-	if (!check_rights(R_PERMISSIONS))
+	if (!check_rights(R_ADMIN))
 		return
 	if (processes.mapswap)
 		processes.mapswap.admin_triggered = TRUE
@@ -15,7 +16,7 @@
 /client/proc/start_epochswap_vote()
 	set category = "Server"
 	set name = "Start Epoch Vote"
-	if (!check_rights(R_PERMISSIONS))
+	if (!check_rights(R_ADMIN))
 		return
 	if (processes.epochswap)
 		processes.epochswap.admin_triggered = TRUE

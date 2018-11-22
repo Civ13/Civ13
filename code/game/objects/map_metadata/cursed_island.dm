@@ -21,7 +21,6 @@
 	mission_start_message = "<big>After a storm, your battered ship had to dock at this island for repairs. Only then did the crew notice something was wrong about this place...<br><b>Retrieve the cursed treasure and bring it back to the ship to break the curse!</b></big>"
 	ambience = list('sound/ambience/spooky1.ogg')
 	faction1 = BRITISH
-	single_faction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
 		"Spooky Tunes:1" = 'sound/ambience/spooky1.ogg',)

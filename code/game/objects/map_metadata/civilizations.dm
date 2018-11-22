@@ -22,7 +22,6 @@
 	mission_start_message = "<big>After ages as hunter-gatherers, one tribe has settled in this area and started farming. Will it advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
-	single_faction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)

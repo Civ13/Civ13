@@ -20,7 +20,6 @@
 	mission_start_message = "<big>Six tribes have been inhabiting this area for generations. Will they be able to get along?</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
-	single_faction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)

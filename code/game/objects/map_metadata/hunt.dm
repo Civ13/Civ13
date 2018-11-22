@@ -22,7 +22,6 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = PIRATES
-	single_faction = FALSE
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
 		"Black Sails:1" = 'sound/music/black_sails.ogg')

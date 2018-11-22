@@ -21,7 +21,6 @@
 //	meme = TRUE
 	battle_name = "Isla Robusta"
 	mission_start_message = "<font size=4>You and several other pirates were abandoned at this forsaken island. Only one can survive! <b>Last standing player wins!</b></font>"
-	single_faction = TRUE
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	faction1 = PIRATES
