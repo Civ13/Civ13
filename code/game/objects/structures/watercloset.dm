@@ -497,11 +497,16 @@
 	icon_state = "puddle"
 	sound = 'sound/effects/watersplash.ogg'
 
-/obj/structure/sink/well	//splishy splashy ^_^
+/obj/structure/sink/well
 	name = "well"
 	icon_state = "well1"
 	sound = 'sound/effects/watersplash.ogg'
 
+/obj/structure/sink/well/attackby(obj/item/O as obj, mob/user as mob)
+	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/wrench))
+		return
+	else
+		..()
 /obj/structure/sink/puddle/attack_hand(mob/M as mob)
 	if (!dry)
 		icon_state = "puddle-splash"

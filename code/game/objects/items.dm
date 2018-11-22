@@ -229,7 +229,9 @@
 			if (!istype(src, /obj/item/clothing/mask/smokable) && !istype(src, /obj/item/weapon/paper) && !istype(src, /obj/item/weapon/pen))
 				if (istype(loc, /turf) && (w_class > 1 || dropsound != 'sound/effects/drop_default.ogg'))
 					playsound(loc, dropsound, 100, TRUE)
-
+		if (istype(src, /obj/item/weapon/leech))
+			new/mob/living/simple_animal/leech(src.loc)
+			qdel(src)
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
 	return

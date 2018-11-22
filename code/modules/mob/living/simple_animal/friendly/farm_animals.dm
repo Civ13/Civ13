@@ -20,13 +20,60 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 50
+	var/calf = FALSE
 	var/datum/reagents/udder = null
+
+/mob/living/simple_animal/bull
+	name = "bull"
+	desc = "Good for meat."
+	icon_state = "bull"
+	icon_living = "bull"
+	icon_dead = "bull_dead"
+	icon_gib = "cow_gib"
+	speak = list("moo?","moo","MOOOOOO")
+	speak_emote = list("moos","moos hauntingly")
+	emote_hear = list("brays")
+	emote_see = list("shakes its head")
+	speak_chance = TRUE
+	turns_per_move = 5
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 6
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	var/calf = FALSE
+	health = 65
+/mob/living/simple_animal/bull/New()
+	spawn(1)
+		if (calf)
+			icon_state = "calf"
+			icon_living = "calf"
+			icon_dead = "calf_dead"
+			meat_amount = 2
+			spawn(3000)
+				calf = FALSE
+				icon_state = "bull"
+				icon_living = "bull"
+				icon_dead = "bull_dead"
 
 /mob/living/simple_animal/cow/New()
 	udder = new(50)
 	udder.my_atom = src
 	..()
-
+	spawn(1)
+		if (calf)
+			icon_state = "calf"
+			icon_living = "calf"
+			icon_dead = "calf_dead"
+			meat_amount = 2
+			udder.remove_reagent("milk")
+			spawn(3000)
+				calf = FALSE
+				icon_state = "cow"
+				icon_living = "cow"
+				icon_dead = "cow_dead"
 /mob/living/simple_animal/cow/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	var/obj/item/weapon/reagent_containers/glass/G = O
 	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
@@ -42,8 +89,18 @@
 /mob/living/simple_animal/cow/Life()
 	. = ..()
 	if (stat == CONSCIOUS)
-		if (udder && prob(5))
+		if (udder && prob(5) && !calf)
 			udder.add_reagent("milk", rand(5, 10))
+	for(var/mob/living/simple_animal/bull/BULL in range(2,src))
+		if (prob(1))
+			if (prob(3)) // should happen around every 10 mins or so
+				if (prob(50))
+					var/mob/living/simple_animal/cow/C = new/mob/living/simple_animal/cow(loc)
+					C.calf = TRUE
+				else
+					var/mob/living/simple_animal/bull/B = new/mob/living/simple_animal/bull(loc)
+					B.calf = TRUE
+				visible_message("A calf has been born!")
 
 /mob/living/simple_animal/cow/attack_hand(mob/living/carbon/M as mob)
 	if (!stat && M.a_intent == I_DISARM && icon_state != icon_dead)

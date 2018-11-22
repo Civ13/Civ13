@@ -41,6 +41,7 @@
 		if (fuel <= 0)
 			on = FALSE
 			icon_state = "brazier0"
+			set_light(0)
 	spawn(10)
 		do_light()
 
@@ -49,11 +50,13 @@
 		user << "You light the brazier."
 		on = TRUE
 		icon_state = "brazier1"
+		set_light(5)
 		return
 	else
 		user << "You put out the brazier."
 		on = FALSE
 		icon_state = "brazier0"
+		set_light(0)
 		return
 
 /obj/structure/brazier/stone
@@ -66,6 +69,7 @@
 		fuel = (fuel-1)
 		if (fuel <= 0)
 			on = FALSE
+			set_light(0)
 			icon_state = "s_brazier0"
 	spawn(10)
 		do_light()
@@ -74,10 +78,12 @@
 	if (!on && fuel > 0)
 		user << "You light the stone brazier."
 		on = TRUE
+		set_light(5)
 		icon_state = "s_brazier1"
 		return
 	else
 		user << "You put out the stone brazier."
 		on = FALSE
+		set_light(0)
 		icon_state = "s_brazier0"
 		return
