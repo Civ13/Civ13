@@ -160,7 +160,8 @@ var/global/datum/controller/occupations/job_master
 				pirates_toggled = FALSE
 				spanish_toggled = FALSE
 				civilians_forceEnabled = TRUE
-
+	if (map.civilizations)
+		civilians_forceEnabled = TRUE
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job
 	// and lock up one job position while np is spawning

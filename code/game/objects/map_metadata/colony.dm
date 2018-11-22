@@ -49,9 +49,9 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (istype(J, /datum/job/indians))
 		if (istype(J, /datum/job/indians/tribes))
-			. = TRUE
-		else
 			. = FALSE
+		else
+			. = TRUE
 	else
 		. = TRUE
 /obj/map_metadata/colony/faction2_can_cross_blocks()

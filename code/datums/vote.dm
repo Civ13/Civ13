@@ -144,14 +144,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					if (. == "Restart Round")
 						world << "Round ending due to vote."
 						log_game("Ending the round due to restart vote.")
-						if (processes.epochswap)
-							processes.epochswap.admin_triggered = TRUE
-							processes.epochswap.ready = TRUE
-							processes.epochswap.fire()
-							log_admin("[key_name(usr)] triggered am epoch vote.")
-							message_admins("[key_name(usr)] triggered an epoch vote.")
-						else
-							src << "<span class = 'notice'>There is no processes.epochswap datum, or it is not ready.</span>"
+						vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
+						log_admin("Restart Vote triggered am epoch vote.")
+						message_admins("Restart Vote triggered an epoch vote.")
 				if ("epoch")
 					ticker.finished = TRUE
 					processes.mapswap.admin_triggered = FALSE
@@ -190,7 +185,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(vote_type)
 				if ("restart")
 					choices.Add("Restart Round","Continue Playing")
-					win_threshold = 0.67
+					win_threshold = 0.6
 				if ("epoch")
 					for (var/epoch in processes.epochswap.epochs)
 						if (!default)
