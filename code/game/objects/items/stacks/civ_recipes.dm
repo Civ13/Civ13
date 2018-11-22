@@ -301,7 +301,7 @@
 
 /material/cloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
-	if (current_res[3] >= 34)
+	if (current_res[3] >= 19)
 		recipes += list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 56)
 		recipes += list(new/datum/stack_recipe("trauma kit", /obj/item/stack/medical/advanced/bruise_pack, 5, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
