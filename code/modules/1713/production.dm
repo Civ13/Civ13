@@ -51,7 +51,7 @@
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) && filled < 4)
 		var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/RC = W
 		if (RC.rotten == TRUE)
-			H << "This [src] is rotten."
+			H << "This is rotten."
 			return
 		else
 			H << "You hang the [W.name] to dry."
@@ -59,14 +59,34 @@
 			obj_type = W.type
 			icon_state = "wood_drier[filled]"
 			qdel(W)
+			obj_type = /obj/item/weapon/reagent_containers/food/snacks/rawcutlet
 			dry_obj(obj_type)
 			return
-
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet) && filled < 4)
+		var/obj/item/weapon/reagent_containers/food/snacks/fishfillet/FF = W
+		if (FF.rotten == TRUE)
+			H << "This is rotten."
+			return
+		else
+			H << "You hang the [W.name] to dry."
+			filled += 1
+			obj_type = W.type
+			icon_state = "wood_drier[filled]"
+			qdel(W)
+			obj_type = /obj/item/weapon/reagent_containers/food/snacks/fishfillet
+			dry_obj(obj_type)
+			return
 /obj/structure/dehydrator/proc/dry_obj(var/obj_type = null)
 	spawn(1200) //2 minutes
 		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/rawcutlet)
 			new/obj/item/weapon/reagent_containers/food/snacks/driedmeat(src.loc)
 			visible_message("The meat finishes drying.")
+			filled -= 1
+			icon_state = "wood_drier[filled]"
+			return
+		else if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/fishfillet)
+			new/obj/item/weapon/reagent_containers/food/snacks/driedfish(src.loc)
+			visible_message("The fish finishes drying.")
 			filled -= 1
 			icon_state = "wood_drier[filled]"
 			return

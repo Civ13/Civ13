@@ -273,7 +273,7 @@
 	icon_state = "driedmeat"
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
-	nutriment_desc = list("salt" = 4, "meat" = 1)
+	nutriment_desc = list("salt" = 3, "meat" = 1)
 	New()
 		..()
 		bitesize = 2
@@ -283,7 +283,7 @@
 	icon_state = "driedfish"
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
-	nutriment_desc = list("salt" = 5, "fish" = 1)
+	nutriment_desc = list("salt" = 3, "fish" = 1)
 	New()
 		..()
 		bitesize = 2
@@ -468,18 +468,25 @@
 		..()
 		bitesize = 1
 
-/obj/item/weapon/reagent_containers/food/snacks/carpmeat
-	name = "carp fillet"
-	desc = "A fillet of spess carp meat"
+/obj/item/weapon/reagent_containers/food/snacks/fishfillet
+	name = "fish fillet"
+	desc = "A fillet of fish."
 	icon_state = "fishfillet"
 	filling_color = "#FFDEFE"
 	center_of_mass = list("x"=17, "y"=13)
-
+	var/rotten = FALSE
 	New()
 		..()
-		reagents.add_reagent("protein", 3)
-		reagents.add_reagent("carpotoxin", 3)
+		reagents.add_reagent("protein", 1)
+		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 6
+		spawn(2400) //4 minutes
+			icon_state = "rottenfillet"
+			name = "rotten [name]"
+			rotten = TRUE
+			reagents.add_reagent("food_poisoning", 1)
+			spawn(3000)
+				qdel(src)
 
 /obj/item/weapon/reagent_containers/food/snacks/fishfingers
 	name = "Fish Fingers"

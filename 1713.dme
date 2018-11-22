@@ -594,6 +594,7 @@
 #include "code\modules\mob\living\simple_animal\friendly\crab.dm"
 #include "code\modules\mob\living\simple_animal\friendly\deer.dm"
 #include "code\modules\mob\living\simple_animal\friendly\farm_animals.dm"
+#include "code\modules\mob\living\simple_animal\friendly\fish.dm"
 #include "code\modules\mob\living\simple_animal\friendly\lizard.dm"
 #include "code\modules\mob\living\simple_animal\friendly\monkey.dm"
 #include "code\modules\mob\living\simple_animal\friendly\mouse.dm"

@@ -80,3 +80,37 @@
 		return
 	else
 		return
+
+/obj/item/weapon/reagent_containers/food/snacks/rawfish
+	name = "fish"
+	desc = "A fresh fish. Should probably cook it first."
+	icon_state = "rawfish"
+	health = 180
+	filling_color = "#606060"
+	center_of_mass = list("x"=16, "y"=14)
+	raw = TRUE
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("food_poisoning", 1)
+		bitesize = 3
+
+/obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (!roasted && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
+		user << "You cut the fish into thin fillets."
+		qdel(src)
+	else
+		..()
+
+/obj/item/weapon/reagent_containers/food/snacks/rawfish/New()
+	..()
+	spawn(3000) //5 minutes
+		icon_state = "rottenfish"
+		name = "rotten [name]"
+		reagents.remove_reagent("protein", 2)
+		reagents.add_reagent("food_poisoning", 1)
+		spawn(3600)
+			qdel(src)
