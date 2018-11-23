@@ -46,6 +46,7 @@
 	var/calf = FALSE
 	health = 65
 /mob/living/simple_animal/bull/New()
+	..()
 	spawn(1)
 		if (calf)
 			icon_state = "calf"
@@ -91,6 +92,7 @@
 	if (stat == CONSCIOUS)
 		if (udder && prob(5) && !calf)
 			udder.add_reagent("milk", rand(5, 10))
+
 	for(var/mob/living/simple_animal/bull/BULL in range(2,src))
 		if (prob(1))
 			if (prob(3)) // should happen around every 10 mins or so
