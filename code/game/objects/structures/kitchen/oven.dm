@@ -141,6 +141,7 @@
 			I.color = "#E59400"
 			I.reagents.multiply_reagent("nutriment", 5)
 			I.reagents.multiply_reagent("protein", 3)
+			I.reagents.del_reagent("food_poisoning")
 			if (istype(I, /obj/item/weapon/reagent_containers/food))
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE

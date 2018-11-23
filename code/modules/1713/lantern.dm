@@ -34,6 +34,7 @@
 	off_state = "torch"
 	item_state = "torch"
 	value = 6
+	var/fuel = 300 // 5 mins
 /obj/item/flashlight/torch/update_icon()
 	..()
 	if (on)
@@ -51,3 +52,17 @@
 
 /obj/item/flashlight/lantern/on/anchored
 	anchored = TRUE
+
+/obj/item/flashlight/torch/New()
+	..()
+	do_torch()
+
+/obj/item/flashlight/torch/proc/do_torch()
+	spawn(10)
+		if (fuel > 0)
+			if (on)
+				fuel -= 1
+			do_torch()
+		else
+			visible_message("The torch goes off.")
+			qdel(src)
