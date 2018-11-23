@@ -6,16 +6,16 @@ RESOURCE_WEBSITE nil
 
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Remove the # infront of SERVERNAME and replace 'tgstation' with the name of your choice.
 ## IMPORTANT: Don't include special characters such as ' in here
-SERVER_NAME 1713 Beta
+SERVER_NAME Civilization 13 (1713)
 
 ## What features do you want to advertise on your hub message?
-HUB_FEATURES Pre-modern combat
+HUB_FEATURES HFrom the Stone Age to the Industrial Age
 
 ## The main content of your hub message
 HUB_BODY <b>EPOCH, TIME_OF_DAY, WEATHER</b><br>
 
 ## Use a link to a banner on your hub message? Comment out if not
-HUB_BANNER_URL http://i.imgur.com/Ouxiybj.png
+HUB_BANNER_URL https://i.imgur.com/napac0L.png
 
 ## Open the hub discord link in a new window? 1 = yes, 0 = no
 OPEN_HUB_DISCORD_IN_NEW_WINDOW 1
