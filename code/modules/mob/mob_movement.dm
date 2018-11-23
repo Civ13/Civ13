@@ -603,7 +603,7 @@
 			for (var/datum in mob.grab_list)
 				var/datum/D = datum
 				if (D.gcDestroyed)
-					mob.grab_list -= D
+					mob.grab_list = list()
 
 			//Something with grabbing things
 			if (mob.grab_list.len)
