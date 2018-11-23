@@ -80,6 +80,7 @@
 	desc = "A bunch of human bones. Spooky."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "remains1"
+	anchored = FALSE
 
 /obj/structure/religious/remains/New()
 	..()

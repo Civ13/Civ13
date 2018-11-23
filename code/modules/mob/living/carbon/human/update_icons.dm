@@ -1025,7 +1025,11 @@ var/global/list/damage_icon_parts = list()
 					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence2")
 				else if (disease_progression >= 180)
 					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence3")
-
+		if (start_to_rot == TRUE)
+			if (rotting_stage == 1)
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting1")
+			else if (rotting_stage == 2)
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting2")
 	overlays_standing[SURGERY_LEVEL] = total
 	if (update_icons)   update_icons()
 

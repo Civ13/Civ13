@@ -17,17 +17,7 @@ bullet_act
 	for (var/obj/item/weapon/grab/G in grabbed_by)
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
-	if (istype(W,/obj/item/weapon/leech))
-		visible_message("[user] starts to attatch the leech to [src]...")
-		if (do_after(user,150,src))
-			visible_message("[user] has finished leeching [src].")
-			var/obj/item/weapon/leech/L = W
-			L.fill = 1
-			adjustToxLoss(-7)
-//			blood_volume *= 0.85
-			L.desc = "A bloodsucking leech. It's full of blood!"
-			L.emptyit()
-			return
+
 	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W, /obj/item/weapon/material/knife/butcher)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user

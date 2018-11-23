@@ -36,6 +36,8 @@
 	var/heartbeat = FALSE
 	var/global/list/overlays_cache = null
 	var/lastcoatmessage = 0
+	var/start_to_rot = FALSE
+	var/rotting_stage = 0
 /mob/living/carbon/human/Life()
 
 
@@ -60,6 +62,9 @@
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
 	#define HUNGER_THIRST_MULTIPLIER 0.80
+	if (stat == DEAD && start_to_rot == FALSE)
+		do_rotting()
+		start_to_rot = TRUE
 
 	if (has_hunger_and_thirst)
 		if (map.heat_wave)
@@ -1224,3 +1229,17 @@
 		return
 	if (XRAY in mutations)
 		sight |= SEE_TURFS|SEE_MOBS|SEE_OBJS
+
+/mob/living/carbon/human/proc/do_rotting()
+	if (stat == DEAD)
+		spawn(3000)
+			visible_message("[src]'s body starts to rot.")
+			rotting_stage = 1
+			spawn(3000)
+				visible_message("[src]'s body is visibly rotten!")
+				rotting_stage = 2
+				spawn(2000)
+					var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+					HR.name = "[src]'s remains"
+					qdel(src)
+					return

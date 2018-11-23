@@ -44,3 +44,14 @@
 			fill = 0
 			desc = "A bloodsucking leech."
 			return
+
+/obj/item/weapon/leech/attack(var/mob/living/carbon/human/C, var/mob/living/user)
+	visible_message("[user] starts to attatch the leech to [C]...")
+	if (do_after(user,150,src))
+		visible_message("[user] has finished leeching [C].")
+		fill = 1
+		C.adjustToxLoss(-7)
+		C.vessel.remove_reagent("blood", 85)
+		desc = "A bloodsucking leech. It's full of blood!"
+		emptyit()
+		return
