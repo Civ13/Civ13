@@ -9,7 +9,7 @@ RESOURCE_WEBSITE nil
 SERVER_NAME Civilization 13 (1713)
 
 ## What features do you want to advertise on your hub message?
-HUB_FEATURES HFrom the Stone Age to the Industrial Age
+HUB_FEATURES From the Stone Age to the Industrial Age
 
 ## The main content of your hub message
 HUB_BODY <b>EPOCH, TIME_OF_DAY, WEATHER</b><br>
