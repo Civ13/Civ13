@@ -22,6 +22,7 @@
 	health = 50
 	var/calf = FALSE
 	var/datum/reagents/udder = null
+	mob_size = MOB_LARGE
 
 /mob/living/simple_animal/bull
 	name = "bull"
@@ -45,6 +46,8 @@
 	attacktext = "kicked"
 	var/calf = FALSE
 	health = 65
+	mob_size = MOB_LARGE
+
 /mob/living/simple_animal/bull/New()
 	..()
 	spawn(1)
@@ -53,11 +56,13 @@
 			icon_living = "calf"
 			icon_dead = "calf_dead"
 			meat_amount = 2
+			mob_size = MOB_SMALL
 			spawn(3000)
 				calf = FALSE
 				icon_state = "bull"
 				icon_living = "bull"
 				icon_dead = "bull_dead"
+				mob_size = MOB_LARGE
 
 /mob/living/simple_animal/cow/New()
 	udder = new(50)
@@ -70,11 +75,13 @@
 			icon_dead = "calf_dead"
 			meat_amount = 2
 			udder.remove_reagent("milk")
+			mob_size = MOB_SMALL
 			spawn(3000)
 				calf = FALSE
 				icon_state = "cow"
 				icon_living = "cow"
 				icon_dead = "cow_dead"
+				mob_size = MOB_LARGE
 /mob/living/simple_animal/cow/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	var/obj/item/weapon/reagent_containers/glass/G = O
 	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
@@ -260,7 +267,7 @@ var/global/chicken_count = FALSE
 	melee_damage_upper = 6
 	stop_automated_movement_when_pulled = 1
 	var/datum/reagents/udder = null
-
+	mob_size = MOB_MEDIUM
 /mob/living/simple_animal/goat/New()
 	udder = new(50)
 	udder.my_atom = src

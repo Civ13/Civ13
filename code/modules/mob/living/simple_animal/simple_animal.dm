@@ -253,13 +253,29 @@
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-					for (var/v in TRUE to rand(2,3))
+					var/amt = 0
+					if (mob_size == MOB_MINISCULE)
+						amt = 1
+					if (mob_size == MOB_TINY)
+						amt = 2
+					if (mob_size == MOB_SMALL)
+						amt = 3
+					if (mob_size == MOB_MEDIUM)
+						amt = 5
+					if (mob_size == MOB_LARGE)
+						amt = 7
+
+					for (var/v in TRUE to amt)
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 						meat.name = "[name] meatsteak"
-					for (var/v in TRUE to rand(1,3))
-						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
-						leather.name = "[name] leather"
-					new/obj/item/stack/material/bone(get_turf(src))
+					if ((amt-1) >= 1)
+						for (var/v in TRUE to (amt-1))
+							var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+							leather.name = "[name] leather"
+					if ((amt-2) >= 1)
+						for (var/v in TRUE to (amt-2))
+							var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+							bone.name = "[name] bone"
 					crush()
 					qdel(src)
 

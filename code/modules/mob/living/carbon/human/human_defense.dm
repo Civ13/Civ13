@@ -18,7 +18,7 @@ bullet_act
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
 
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W, /obj/item/weapon/material/knife/butcher)))
+	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user
 			if (istype(H))
@@ -27,7 +27,10 @@ bullet_act
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
 					for (var/v in 1 to rand(5,7))
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "[real_name] meatsteak"
+						meat.name = "human meatsteak"
+					for (var/v in 1 to rand(3,5))
+						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+						leather.name = "human leather"
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
 					for (var/obj/item/clothing/I in contents)

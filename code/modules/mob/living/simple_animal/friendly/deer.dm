@@ -19,14 +19,14 @@
 	response_harm   = "kicks"
 	attacktext = "kicked"
 	health = 50
-
+	mob_size = MOB_LARGE
 /mob/living/simple_animal/deer/female
 	name = "doe"
 	icon_state = "deer_f"
 	icon_living = "deer_f"
 	icon_dead = "deer_f_dead"
 	icon_gib = "deer_gib_f"
-
+	mob_size = MOB_LARGE
 /mob/living/simple_animal/deer/Life()
 	..()
 	var/done = FALSE
