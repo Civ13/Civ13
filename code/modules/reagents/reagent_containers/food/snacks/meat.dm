@@ -6,13 +6,14 @@
 	filling_color = "#FF1C1C"
 	center_of_mass = list("x"=16, "y"=14)
 	raw = TRUE
+	var/rotten = FALSE
 	New()
 		..()
 		reagents.add_reagent("protein", 5)
 		bitesize = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/meat/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
@@ -27,6 +28,7 @@
 		name = "rotten [name]"
 		reagents.remove_reagent("protein", 2)
 		reagents.add_reagent("food_poisoning", 1)
+		rotten = TRUE
 		spawn(3600)
 			qdel(src)
 
@@ -89,6 +91,7 @@
 	filling_color = "#606060"
 	center_of_mass = list("x"=16, "y"=14)
 	raw = TRUE
+	var/rotten = FALSE
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
@@ -96,7 +99,7 @@
 		bitesize = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!roasted && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
@@ -112,5 +115,6 @@
 		name = "rotten [name]"
 		reagents.remove_reagent("protein", 2)
 		reagents.add_reagent("food_poisoning", 1)
+		rotten = TRUE
 		spawn(3600)
 			qdel(src)

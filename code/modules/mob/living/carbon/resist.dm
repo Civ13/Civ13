@@ -106,11 +106,9 @@
 		update_inv_legcuffed()
 
 /mob/living/carbon/proc/can_break_cuffs()
-	if (HULK in mutations)
-		return TRUE
 	if (ishuman(src))
 		var/mob/living/carbon/human/H = src
-		return H.getStatCoeff("strength") >= 3.0
+		return H.getStatCoeff("strength") >= 2.3
 
 /mob/living/carbon/proc/break_handcuffs()
 	visible_message(

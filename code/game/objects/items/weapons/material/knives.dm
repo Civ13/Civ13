@@ -32,10 +32,3 @@
 	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
 	attack_verb = list("cleaved", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	drawsound = 'sound/items/unholster_knife.ogg'
-
-/obj/item/weapon/material/knife/attack(target as mob, mob/living/user as mob)
-	if ((CLUMSY in user.mutations) && prob(50))
-		user << "<span class='warning'>You accidentally cut yourself with \the [src].</span>"
-		user.take_organ_damage(20)
-		return
-	return ..()

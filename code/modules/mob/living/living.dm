@@ -97,19 +97,6 @@ default behaviour is:
 			if (a_intent == I_HELP || restrained())
 				now_pushing = FALSE
 				return
-			if (istype(tmob, /mob/living/carbon/human) && (FAT in tmob.mutations))
-				if (prob(40) && !(FAT in mutations))
-					src << "<span class='danger'>You fail to push [tmob]'s fat ass out of the way.</span>"
-					now_pushing = FALSE
-					return
-			/*if (tmob.r_hand && istype(tmob.r_hand, /obj/item/weapon/shield/riot))
-				if (prob(99))
-					now_pushing = FALSE
-					return
-			if (tmob.l_hand && istype(tmob.l_hand, /obj/item/weapon/shield/riot))
-				if (prob(99))
-					now_pushing = FALSE
-					return*/
 			if (!(tmob.status_flags & CANPUSH))
 				now_pushing = FALSE
 				return
@@ -185,8 +172,6 @@ default behaviour is:
 /mob/living/proc/burn_skin(burn_amount)
 	if (istype(src, /mob/living/carbon/human))
 		//world << "DEBUG: burn_skin(), mutations=[mutations]"
-		if (COLD_RESISTANCE in mutations) //fireproof
-			return FALSE
 		var/mob/living/carbon/human/H = src	//make this damage method divide the damage to be done among all the body parts, then burn each body part for that much damage. will have better effect then just randomly picking a body part
 		var/divided_damage = (burn_amount)/(H.organs.len)
 		var/extradam = FALSE	//added to when organ is at max dam

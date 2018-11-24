@@ -1227,8 +1227,6 @@
 	..()
 	if (stat == DEAD)
 		return
-	if (XRAY in mutations)
-		sight |= SEE_TURFS|SEE_MOBS|SEE_OBJS
 
 /mob/living/carbon/human/proc/do_rotting()
 	if (stat == DEAD)

@@ -227,10 +227,6 @@
 	throw_source = get_turf(src)	//store the origin turf
 	last_throw_source = throw_source
 
-	if (usr)
-		if (HULK in usr.mutations)
-			throwing = 2 // really strong throw!
-
 	dist_x = abs(target.x - x)
 	dist_y = abs(target.y - y)
 

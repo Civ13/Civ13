@@ -602,7 +602,7 @@
 
 			for (var/datum in mob.grab_list)
 				var/datum/D = datum
-				if (D.gcDestroyed)
+				if (isDeleted(D))
 					mob.grab_list = list()
 
 			//Something with grabbing things

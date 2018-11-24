@@ -849,14 +849,6 @@
 
 	new_character.sync_organ_dna()
 
-	if (client && client.prefs.disabilities)
-		// Set defer to TRUE if you add more crap here so it only recalculates struc_enzymes once. - N3X
-		new_character.dna.SetSEState(GLASSESBLOCK,1,0)
-		new_character.disabilities |= NEARSIGHTED
-
-	// And uncomment this, too.
-	//new_character.dna.UpdateSE()
-
 	// Do the initial caching of the player's body icons.
 	new_character.force_update_limbs()
 	new_character.update_eyes()

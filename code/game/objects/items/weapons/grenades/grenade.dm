@@ -13,17 +13,6 @@
 	var/det_time = 50
 	var/loadable = TRUE
 
-/obj/item/weapon/grenade/proc/clown_check(var/mob/living/user)
-	if ((CLUMSY in user.mutations) && prob(50))
-		user << "<span class='warning'>Huh? How does this thing work?</span>"
-
-		activate(user)
-		add_fingerprint(user)
-		spawn(5)
-			prime()
-		return FALSE
-	return TRUE
-
 
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))
@@ -34,11 +23,9 @@
 
 /obj/item/weapon/grenade/attack_self(mob/user as mob)
 	if (!active)
-		if (clown_check(user))
-			user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
-
-			activate(user)
-			add_fingerprint(user)
+		user << "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>"
+		activate(user)
+		add_fingerprint(user)
 
 	// clicking a grenade a second time turned throw mode off, this fixes that
 	if (iscarbon(user))
