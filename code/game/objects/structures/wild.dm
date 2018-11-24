@@ -239,7 +239,7 @@
 	density = FALSE
 
 /obj/structure/wild/junglebush
-	name = "jungle vegetation"
+	name = "small vegetation"
 	icon = 'icons/obj/flora/jungleflora.dmi'
 	icon_state = "1"
 	opacity = FALSE
@@ -247,7 +247,7 @@
 	var/healthamount = 1
 
 /obj/structure/wild/smallbush
-	name = "small vegetation"
+	name = "small bush"
 	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "smallbush1"
 	opacity = FALSE

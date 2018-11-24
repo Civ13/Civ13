@@ -167,11 +167,12 @@ default behaviour is:
 	return can_move_mob(tmob, TRUE, FALSE)
 
 /mob/living/verb/succumb()
-	set hidden = TRUE
-	if ((health < 0 && health > (5-maxHealth))) // Health below Zero but above 5-away-from-death, as before, but variable
-		adjustOxyLoss(health + maxHealth * 2) // Deal 2x health in OxyLoss damage, as before but variable.
-		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
-		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
+	set name = "Succumb"
+	set desc = "Succumb to death."
+	set category = "IC"
+	adjustBrainLoss(300)
+	health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
+	src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
 
 
 //This proc is used for mobs which are affected by pressure to calculate the amount of pressure that actually
