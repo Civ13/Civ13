@@ -876,7 +876,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/saif(H), slot_belt)
-	world << "<b><big>[H.real_name] is the British Lord!</big></b>"
+	world << "<b><big>[H.real_name] is the Emir!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the military leader of this group of soldiers. Defeat the crusaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
