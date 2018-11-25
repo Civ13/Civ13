@@ -1231,13 +1231,22 @@
 /mob/living/carbon/human/proc/do_rotting()
 	if (stat == DEAD)
 		spawn(3000)
-			visible_message("[src]'s body starts to rot.")
-			rotting_stage = 1
-			spawn(3000)
-				visible_message("[src]'s body is visibly rotten!")
-				rotting_stage = 2
-				spawn(2000)
-					var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
-					HR.name = "[src]'s remains"
-					qdel(src)
-					return
+			if (stat == DEAD)
+				visible_message("[src]'s body starts to rot.")
+				rotting_stage = 1
+				spawn(3000)
+					if (stat == DEAD)
+						visible_message("[src]'s body is visibly rotten!")
+						rotting_stage = 2
+						spawn(2000)
+							if (stat == DEAD)
+								var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+								HR.name = "[src]'s remains"
+								qdel(src)
+								return
+							else
+								return
+					else
+						return
+			else
+				return

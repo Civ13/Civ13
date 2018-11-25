@@ -755,6 +755,9 @@
 		reagents.add_reagent("carbon", 3)
 		bitesize = 2
 
+/obj/item/weapon/reagent_containers/food/snacks/badrecipe/New()
+	spawn(3000)
+		qdel(src)
 /obj/item/weapon/reagent_containers/food/snacks/meatsteak
 	name = "Meat steak"
 	desc = "A piece of hot spicy meat."
