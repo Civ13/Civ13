@@ -16,7 +16,7 @@
 	message_admins("Admin [key_name_admin(usr)] has restarted the [process] process.")
 	return
 
-var/list/special_globalobjects = list("movementMachine", "processScheduler", "Master", "Ticker", "Configuration", "Observation","Whitelists", "Job Master")
+var/list/special_globalobjects = list("processScheduler", "Master", "Ticker", "Configuration", "Observation","Whitelists", "Job Master")
 /client/proc/debug_controller()
 	set category = "Debug"
 	set name = "Debug Controller/GlobalObjects"
@@ -32,10 +32,6 @@ var/list/special_globalobjects = list("movementMachine", "processScheduler", "Ma
 	var/datum = input("Which datum?") in globals
 
 	switch(datum)
-
-		if ("movementMachine")
-			if (movementMachine)
-				debug_variables(movementMachine)
 
 		if ("processScheduler")
 			if (processScheduler)

@@ -2,11 +2,11 @@
 var/movementMachine/movementMachine = null
 
 /movementMachine
-	var/interval = 0 SECONDS
+	var/interval = 0.01 SECONDS // 100 FPS
 	var/ticks = 0
 	var/last_run = -1
 
-	var/list/last_twenty_tick_usage_times = null
+	var/list/last_twenty_tick_usage_times = list()
 
 	var/last_tick_usage = 0
 	var/last_cpu = 0
@@ -14,10 +14,15 @@ var/movementMachine/movementMachine = null
 	var/average_tick_usage = 0
 	var/average_cpu = 0
 
+/movementMachine/New()
+	..()
+	if (movementMachine && movementMachine != src)
+		del(src)
+		return FALSE
+	return TRUE
+
 /movementMachine/proc/start()
 	set waitfor = FALSE
-	interval = world.tick_lag
-	last_twenty_tick_usage_times = list()
 	process()
 
 /movementMachine/proc/process()
@@ -62,6 +67,7 @@ var/movementMachine/movementMachine = null
 			catch(var/exception/e)
 				world.Error(e)
 
+
 		collect_stats(initial_tick_usage)
 		sleep(interval)
 
@@ -93,19 +99,22 @@ var/movementMachine/movementMachine = null
 	set waitfor = FALSE
 	if (M && M.client)
 		M.client.movement_busy = TRUE
+		M.client.Move(get_step(M, movedir), movedir, diag)
+		// remove this client from movementMachine_clients until it needs to be in it again. This makes the amount of loops to be done the absolute minimum
+		movementMachine_clients -= M.client
+		do_movement_continued(M)
 
-		try
-			M.client.Move(get_step(M, movedir), movedir, diag)
-		catch (var/exception/E)
-			pass(E)
-
-		sleep(M.client.move_delay - world.time)
-		if (M && M.client)
-			M.client.movement_busy = FALSE
+/movementMachine/proc/do_movement_continued(var/mob/M)
+	set waitfor = FALSE
+	sleep(M.client.move_delay - world.time)
+	if (M && M.client)
+		M.client.movement_busy = FALSE
+		movementMachine_clients += M.client
 
 /movementMachine/proc/average_tick_usage()
+	if (!last_twenty_tick_usage_times.len)
+		return 0
 	. = 0
-	if (length(last_twenty_tick_usage_times))
-		for (var/n in last_twenty_tick_usage_times)
-			. += n
-		. /= length(last_twenty_tick_usage_times)
+	for (var/n in last_twenty_tick_usage_times)
+		. += n
+	. /= last_twenty_tick_usage_times.len
