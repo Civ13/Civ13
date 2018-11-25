@@ -77,8 +77,8 @@
 						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
 						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.5/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
 		else
 			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
@@ -89,8 +89,8 @@
 						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
 						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
 
 	#undef HUNGER_THIRST_MULTIPLIER
 
@@ -1112,6 +1112,8 @@
 
 	if (shock_stage >= 150)
 		Weaken(20)
+		if (prob(1))
+			adjustOxyLoss(10)
 
 /mob/living/carbon/human/proc/handle_hud_list()
 

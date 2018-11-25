@@ -90,7 +90,7 @@
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
-				if (prob(20) && map.age != "5000 B.C.")
+				if (prob(40) && map.age != "5000 B.C.")
 					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
 					mineral.amount = rand(1,2)
 					visible_message("<span class='danger'>You found some iron ore!</span>")
