@@ -53,6 +53,11 @@
 	if (!isnewplayer(src))
 		src << browse(null, "window=playersetup;")
 
+	spawn (10)
+		if (client)
+			if (!isnewplayer(src))
+				movementMachine_clients |= client
+
 
 /mob/proc/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
 

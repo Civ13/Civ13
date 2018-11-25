@@ -866,59 +866,50 @@
 	movement_northsouth = null
 	..()
 
-#define REMOVE_FROM_MOVE_LOOP if (mob.movement_northsouth == null && mob.movement_eastwest == null) {movementMachine_clients -= src;}
 /client/verb/startmovingup()
 	set name = ".startmovingup"
 	set instant = TRUE
 	Move(get_step(mob, NORTH), NORTH)
 	mob.movement_northsouth = NORTH
-	movementMachine_clients[src] = TRUE
 
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
 	set instant = TRUE
 	Move(get_step(mob, SOUTH), SOUTH)
 	mob.movement_northsouth = SOUTH
-	movementMachine_clients[src] = TRUE
 
 /client/verb/startmovingright()
 	set name = ".startmovingright"
 	set instant = TRUE
 	Move(get_step(mob, EAST), EAST)
 	mob.movement_eastwest = EAST
-	movementMachine_clients[src] = TRUE
 
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
 	set instant = TRUE
 	Move(get_step(mob, WEST), WEST)
 	mob.movement_eastwest = WEST
-	movementMachine_clients[src] = TRUE
 
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"
 	set instant = TRUE
 	if (mob.movement_northsouth == NORTH)
 		mob.movement_northsouth = null
-	REMOVE_FROM_MOVE_LOOP
 
 /client/verb/stopmovingdown()
 	set name = ".stopmovingdown"
 	set instant = TRUE
 	if (mob.movement_northsouth == SOUTH)
 		mob.movement_northsouth = null
-	REMOVE_FROM_MOVE_LOOP
 
 /client/verb/stopmovingright()
 	set name = ".stopmovingright"
 	set instant = TRUE
 	if (mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
-	REMOVE_FROM_MOVE_LOOP
 
 /client/verb/stopmovingleft()
 	set name = ".stopmovingleft"
 	set instant = TRUE
 	if (mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
-	REMOVE_FROM_MOVE_LOOP
