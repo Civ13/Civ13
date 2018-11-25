@@ -77,6 +77,7 @@
 	block_chance = 30
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 40
+	cooldownw = 7
 
 /obj/item/weapon/material/sword/smallsword
 	name = "small sword"

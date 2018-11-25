@@ -401,7 +401,6 @@
 #include "code\modules\1713\siege\piece.dm"
 #include "code\modules\1713\siege\shell.dm"
 #include "code\modules\1713\weapons\attachment.dm"
-#include "code\modules\1713\weapons\melee.dm"
 #include "code\modules\1713\weapons\zoom.dm"
 #include "code\modules\1713\weapons\guns\__readme.dm"
 #include "code\modules\1713\weapons\guns\_gun.dm"

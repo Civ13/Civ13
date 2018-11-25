@@ -15,6 +15,7 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 8
 	block_chance = 12
+	cooldownw = 7
 
 /obj/item/weapon/material/handle
 	name = "handle"
@@ -33,6 +34,7 @@
 	attack_verb = list("jabbed","hit","bashed")
 	value = 3
 	block_chance = 10
+	cooldownw = 7
 
 /obj/item/weapon/material/pitchfork
 	name = "pitchfork"
@@ -45,6 +47,7 @@
 	thrown_force_divisor = 0.35 // as above
 	w_class = 3
 	attack_verb = list("slashed", "clawed")
+	cooldownw = 9
 
 /obj/item/weapon/material/spear
 	name = "spear"
@@ -63,7 +66,7 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 6
 	block_chance = 15
-
+	cooldownw = 9
 /obj/item/weapon/material/hatchet
 	name = "hatchet"
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."
@@ -81,6 +84,7 @@
 	value = 15
 	slot_flags = SLOT_BELT
 	block_chance = 15
+	cooldownw = 5
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
 	desc = "A crude hatchet, made with wood and stone."
@@ -91,6 +95,7 @@
 	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
 	block_chance = 15
+	cooldownw = 5
 
 /obj/item/weapon/material/boarding_axe
 	name = "boarding axe"
@@ -109,6 +114,7 @@
 	applies_material_colour = FALSE
 	value = 20
 	block_chance = 12
+	cooldownw = 6
 
 /obj/item/weapon/material/minihoe // -- Numbers
 	name = "mini hoe"
@@ -120,6 +126,7 @@
 	thrown_force_divisor = 0.25 // as above
 	w_class = 2
 	attack_verb = list("slashed", "sliced", "cut", "clawed")
+	cooldownw = 5
 
 /obj/item/weapon/material/scythe
 	icon_state = "scythe0"
@@ -135,6 +142,7 @@
 	slot_flags = SLOT_BACK
 //	origin_tech = "materials=2;combat=2"
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
+	cooldownw = 5
 
 /obj/item/weapon/material/pilum
 	name = "pilum"
@@ -153,6 +161,7 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 10
+	cooldownw = 7
 
 /obj/item/weapon/material/roman_standard
 	name = "Roman Standard"
@@ -171,6 +180,7 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 0
 	block_chance = 15
+	cooldownw = 10
 
 /obj/item/weapon/material/roman_standard/New()
 	..()
@@ -193,7 +203,7 @@
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
 	block_chance = 15
-
+	cooldownw = 10
 /obj/item/weapon/material/spear/sarissa
 	name = "sarissa"
 	sharp = TRUE
@@ -219,6 +229,7 @@
 	var/ownerdir = NORTH
 	var/deployed = FALSE
 	block_chance = 5
+	cooldownw = 12
 
 /obj/item/weapon/material/spear/sarissa/attack_self(mob/user)
 	if (deployed)
@@ -378,6 +389,7 @@
 	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 15
+	cooldownw = 12
 
 /obj/item/weapon/material/pike
 	name = "pike"
@@ -392,10 +404,11 @@
 	throw_range = 5
 	allow_spin = FALSE
 	block_chance = 12
-	force_divisor = 0.9 // 42 with hardness 60 (steel)
+	force_divisor = 0.85 // 42 with hardness 60 (steel)
 	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 18
+	cooldownw = 13
 
 /obj/item/weapon/material/battleaxe
 	name = "battle axe"
@@ -416,3 +429,4 @@
 	value = 20
 	slot_flags = SLOT_BELT
 	block_chance = 15
+	cooldownw = 11

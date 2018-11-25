@@ -65,7 +65,7 @@
 	icon_state = "kerchief"
 	item_state = "kerchief"
 	worn_state = "kerchief"
-	desc = "A kerchief, won by women over the hair."
+	desc = "A kerchief, worn by women over the hair."
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
 
