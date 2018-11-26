@@ -77,12 +77,13 @@
 	else
 		for (var/obj/item/weapon/book/research/RB in contents)
 			if (RB.completed)
+				var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
 				if (RB.k_class == "medicine" || RB.k_class == "anatomy")
-					sum_h += RB.k_level
+					sum_h += RB.k_level/current_tribesmen
 				if (RB.k_class == "gunpowder" || RB.k_class == "fencing" || RB.k_class == "archery")
-					sum_m += RB.k_level
+					sum_m += RB.k_level/current_tribesmen
 				if (RB.k_class == "industrial" || RB.k_class == "philosophy")
-					sum_i += RB.k_level
+					sum_i += RB.k_level/current_tribesmen
 		current_research = sum_i+sum_m+sum_h
 
 
