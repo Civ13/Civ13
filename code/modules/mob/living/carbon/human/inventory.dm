@@ -93,6 +93,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			drop_from_inventory(s_store)
 		wear_suit = null
 		update_inv_wear_suit()
+		update_hair()
 	else if (W == w_uniform)
 		if (r_store)
 			drop_from_inventory(r_store)

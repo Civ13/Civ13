@@ -492,6 +492,10 @@
 	M.hallucination = max(0, M.hallucination - 6 * removed)
 	if (M.bodytemperature > 310.7)
 		M.bodytemperature = (M.bodytemperature-0.1)
+	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/HH = M
+		if (HH.disease == 1 && HH.disease_type == "flu")
+			HH.disease_treatment = TRUE
 /datum/reagent/drink/coffee
 	name = "Coffee"
 	id = "coffee"

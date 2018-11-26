@@ -150,6 +150,7 @@
 	var/disease = FALSE
 	var/disease_type = "none"
 	var/disease_progression = 0
+	var/disease_treatment = 0
 	var/list/disease_immunity = list()
 
 	var/civilization = "none" //what civilization this person belongs to

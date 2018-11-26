@@ -148,12 +148,17 @@
 				disease_progression = 0
 				src << "You feel much better now! The disease is finally gone!"
 				disease_immunity += "plague"
+				disease_treatment = 0
 				bodytemperature = 310.055
 		else if (disease_type == "flu")
-			disease_progression += 1
+			if (disease_treatment)
+				disease_progression += 1
+			else
+				disease_progression += 4
 			// first 2 minutes
 			if (disease_progression == 25)
 				src << "You feel a little feverish."
+				disease_treatment = 0
 				apply_effect(10, DROWSY, FALSE)
 				bodytemperature = 311.35
 			//4 more minutes
@@ -190,6 +195,7 @@
 				disease_progression = 0
 				bodytemperature = 310.055
 				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
 				if (prob(25))
 					disease_immunity += "flu"
 	else if (disease == FALSE)
@@ -201,6 +207,7 @@
 						disease = TRUE
 						disease_type = "plague"
 						disease_progression = 0
+						disease_treatment = 0
 
 		for (var/mob/living/carbon/human/H in range(2,src))
 			if (H.disease == TRUE && !(H.disease_type in disease_immunity))
@@ -209,11 +216,13 @@
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
+						disease_treatment = 0
 				else if (stat == DEAD)
 					if (prob(3))
 						disease = TRUE
 						disease_type = H.disease_type
 						disease_progression = 0
+						disease_treatment = 0
 		if (disease == FALSE)
 			//0.005%
 			if (prob(1))
@@ -222,6 +231,7 @@
 						disease = TRUE
 						disease_type = "flu"
 						disease_progression = 0
+						disease_treatment = 0
 	..()
 
 	// recover stamina
