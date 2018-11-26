@@ -34,7 +34,7 @@
 		if (world.realtime >= next_can_change_weather)
 			change_weather_somehow()
 			next_can_change_weather = world.realtime + minimum_change_weather_delay
-	if (season == "WINTER" || map.triggered_blizzard)
+	if ((season == "WINTER" || map.triggered_blizzard) && !map.blizzard)
 		if (prob(1) || map.triggered_blizzard)
 			if(prob(50) || map.triggered_blizzard)
 				world << "<big>A huge blizzard is approaching!</big>"
@@ -42,15 +42,14 @@
 				spawn(600)
 					map.blizzard = TRUE
 					change_weather(WEATHER_SNOW)
-					modify_weather_somehow()
 					world << "<big>The blizzard is in full force!</big>"
 					spawn(rand(2400,3600))
 						map.blizzard = FALSE
 						change_weather(WEATHER_NONE)
 						world << "<big>The blizzard has passed.</big>"
-	if (season == "SUMMER" || map.triggered_heatwave)
+	if ((season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
 		if (prob(1) || map.triggered_heatwave)
-			if(prob(80)|| map.triggered_heatwave)
+			if(prob(50)|| map.triggered_heatwave)
 				world << "<big>The weather starts to get hotter than normal...</big>"
 				map.triggered_heatwave = FALSE
 				spawn(600)
