@@ -418,9 +418,6 @@
 	recipes += new/datum/stack_recipe("silver coins", /obj/item/stack/money/silvercoin, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/diamond/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
-	if (current_res[1] >= 24 && current_res[2] >= 30)
-		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
-		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 
 /material/copper/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()

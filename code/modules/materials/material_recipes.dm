@@ -291,8 +291,6 @@ var/list/engineer_exclusive_recipe_types = null
 
 /material/diamond/generate_recipes()
 	..()
-	recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
-	recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 
 /material/copper/generate_recipes()
 	..()
