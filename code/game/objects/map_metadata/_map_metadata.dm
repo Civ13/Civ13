@@ -212,6 +212,8 @@ var/global/obj/map_metadata/map = null
 			. = TRUE
 		else
 			. = FALSE
+	if (J.is_nomad == TRUE)
+		. = FALSE
 /obj/map_metadata/proc/cross_message(faction)
 	return "<font size = 4>The [faction_const2name(faction)] may now cross the invisible wall!</font>"
 

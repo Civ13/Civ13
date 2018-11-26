@@ -20,7 +20,7 @@
 /datum/job/var/is_marooned = FALSE //marooned pirate
 /datum/job/var/is_medieval = FALSE //self explanatory
 /datum/job/var/is_crusader = FALSE //self explanatory
-
+/datum/job/var/is_nomad = FALSE //self explanatory
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 
 // new autobalance stuff - Kachnov

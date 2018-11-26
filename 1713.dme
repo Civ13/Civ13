@@ -257,6 +257,7 @@
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\karak.dm"
 #include "code\game\objects\map_metadata\naval.dm"
+#include "code\game\objects\map_metadata\nomads.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
 #include "code\game\objects\map_metadata\siege.dm"

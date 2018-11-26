@@ -1123,3 +1123,91 @@
 
 
 	return TRUE
+
+
+/datum/job/civilian/civnomad
+	title = "Nomad"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+	SL_check_independent = TRUE
+	is_nomad = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/civnomad/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+	if (map.ordinal_age == 0)
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+
+	else if (map.ordinal_age == 1)
+		var/randcloth = rand(1,2)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/toga(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/toga2(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
+
+	else if (map.ordinal_age == 2)
+		var/randcloth = rand(1,2)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
+	else
+		if (prob(30))
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+		if (H.gender == "male")
+			var/randcloth = rand(1,5)
+			if (randcloth == 1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
+			else if (randcloth == 2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+			else if (randcloth == 3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
+			else if (randcloth == 4)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
+			else if (randcloth == 5)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		else
+			var/randcloth = rand(1,3)
+			if (randcloth == 1)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+			else if (randcloth == 2)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+			else if (randcloth == 3)
+				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+
+	H.add_note("Role", "You are a <b>Nomad</b>. Form a tribe and survive!")
+	if (prob(80))
+		H.add_note("Religion", "You worship the <b>Ancients</b>. This is a low-key religion that teaches you to respect others. Other violent religions, however, are not to be accepted...")
+	else if (prob(50))
+		H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the world! The Lord of Light is your natural enemy.")
+	else
+		H.add_note("Religion", "You worship the <b>Lord of Light</b>. Find your brothers in faith, and take over the world! The Dark Lord is your natural enemy.")
+
+
+	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE

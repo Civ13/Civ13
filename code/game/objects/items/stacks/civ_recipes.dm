@@ -49,7 +49,12 @@
 	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-
+	recipes += new/datum/stack_recipe_list("armbands", list(
+		new/datum/stack_recipe("red armband", /obj/item/clothing/accessory/armband/british, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("orange armband", /obj/item/clothing/accessory/armband/dutch, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("blue armband", /obj/item/clothing/accessory/armband/french, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("yellow armband", /obj/item/clothing/accessory/armband/spanish, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
+		new/datum/stack_recipe("green armband", /obj/item/clothing/accessory/armband/portuguese, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/iron/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 33)
