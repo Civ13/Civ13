@@ -4,6 +4,7 @@
 	icon = 'icons/mob/animal.dmi'
 	icon_state = "fish1"
 	var/counter = 2
+	anchored = TRUE
 
 /obj/structure/fish/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/fishing) && counter > 0)
