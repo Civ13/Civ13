@@ -319,16 +319,16 @@
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
 			if (H.civilization == civilization) // when you ghost, mind.assigned_job is set to null
-				msg += "<br><i>You recognize [T.him] as a member of your civilization, <b>[civilization]</b>.</i>"
+				msg += "<br><i>You recognize [T.him] as a member of your group, <b>[civilization]</b>.</i>"
 			else // examining someone on another team
-				msg += "<br><span class='warning'><i>You do <b>not</b> recognize [T.him] as a member of your civilization!.</i>"
+				msg += "<br><span class='warning'><i>[T.him] seems to be a member of [civilization].</i>"
 		else if (isobserver(user))
-			msg += "<br><i>[T.He] [T.is] a member of the <b>[civilization]</b> civilization.</i>"
+			msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
 
 		else if (ishuman(user) && user == src)
 			var/mob/living/carbon/human/H = user
 			if (H.civilization != "none")
-				msg += "<br><i>You belong to the <b>[H.civilization] civilization</b>.</i>"
+				msg += "<br><i>You belong to <b>[H.civilization]</b>.</i>"
 
 
 	for (var/v in TRUE to embedded.len)
