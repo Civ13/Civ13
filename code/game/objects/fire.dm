@@ -312,3 +312,22 @@ var/obj/burning_overlay_turf = null
 		H.apply_damage(damage*0.2*legs_exposure, BURN, "r_leg", FALSE, FALSE, "Fire")
 		H.apply_damage(damage*0.15*arms_exposure, BURN, "l_arm", FALSE, FALSE, "Fire")
 		H.apply_damage(damage*0.15*arms_exposure, BURN, "r_arm", FALSE, FALSE, "Fire")
+
+/obj/small_fire
+	anchored = TRUE
+	name = "fire"
+	desc = "it's burning!"
+	icon = 'icons/effects/fire.dmi'
+	icon_state = "fire"
+	layer = 2.13
+
+/obj/small_fire/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		var/obj/item/weapon/reagent_containers/CT = W
+		for (var/datum/reagent/R in CT.reagents.reagent_list)
+			if (istype(R, /datum/reagent/water))
+				visible_message("[user] empties \the [CT] into the fire!")
+				if (prob(max(R.volume, 100)))
+					qdel(src)
+					visible_message("The fire is put out!")
+				CT.reagents.clear_reagents()

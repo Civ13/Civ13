@@ -1,6 +1,3 @@
-/* Uniform Metadata: Soviet, German, Italian */
-
-
 /obj/item/clothing/under
 	var/swapped = FALSE
 

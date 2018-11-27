@@ -78,6 +78,8 @@ var/global/obj/map_metadata/map = null
 	var/triggered_blizzard = FALSE
 	//civ stuff
 	var/civilizations = FALSE
+	var/custom_faction_nr = 0
+	var/list/custom_civs = list()
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical)
 	var/civa_research = list(0,0,0)
 	var/civb_research = list(0,0,0)
