@@ -19,27 +19,6 @@
 		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
 		return
 
-/mob/verb/create_faction()
-	set name = "Create Faction"
-	set category = "IC"
-	var/mob/living/carbon/human/U
-
-	if (istype(src, /mob/living/carbon/human))
-		U = src
-	else
-		return
-	if (map.ID == MAP_NOMADS)
-		if (U.civilization != "none")
-			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
-			return
-		else
-			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
-			create_faction_pr(choosename)
-			return
-	else
-		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
-		return
-
 /mob/proc/create_faction_pr(var/newname = "none")
 	if (!ishuman(src))
 		return
