@@ -12,7 +12,7 @@
 	gender = PLURAL
 	organ_tag = "kidneys"
 	parent_organ = "groin"
-
+	w_class = 1
 /obj/item/organ/kidneys/process()
 
 	..()
@@ -67,7 +67,7 @@
 	icon_state = "liver"
 	organ_tag = "liver"
 	parent_organ = "groin"
-
+	w_class = 1
 /obj/item/organ/liver/process()
 
 	..()
@@ -122,7 +122,7 @@
 	parent_organ = "groin"
 	organ_tag = "appendix"
 	var/inflamed = FALSE
-
+	w_class = 1
 /obj/item/organ/appendix/update_icon()
 	..()
 	if (inflamed)

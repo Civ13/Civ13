@@ -85,15 +85,16 @@
 /obj/structure/window/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
 	user.dir = get_dir(user, src)
 	if (istype(O, /obj/item/weapon/sandbag))
-		progress += 1
-		if (progress == 2)
-			icon_state = "dirt_wall_66%"
-			if (progress == 3)
+		if (progress < 3)
+			progress += 1
+			if (progress == 2)
+				icon_state = "dirt_wall_66%"
+			if (progress >= 3)
 				icon_state = "dirt_wall"
 				new/obj/structure/window/sandbag(loc, dir)
 				qdel(src)
-		visible_message("<span class='danger'>[user] shovels dirt into [src].</span>")
-		qdel(O)
+			visible_message("<span class='danger'>[user] shovels dirt into [src].</span>")
+			qdel(O)
 	else
 		return
 
@@ -172,6 +173,13 @@
 	w_class = TRUE
 	var/sand_amount = FALSE
 
+/obj/item/weapon/sandbag/attack_self(mob/user)
+	user << "You start building the dirt blocks wall..."
+	if (do_after(user, 25, src))
+		user << "You finish the placement of the dirt blocks wall foundation."
+		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
+		qdel(src)
+		return
 /obj/structure/window/sandbag/rock
 	name = "rock wall"
 	icon_state = "rock_barricade"
@@ -184,6 +192,15 @@
 	name = "railing"
 	icon = 'icons/obj/railing.dmi'
 	icon_state = "sandstone"
+	layer = MOB_LAYER + 0.01 //just above mobs
+	anchored = TRUE
+	climbable = FALSE
+	health = 10000000
+
+/obj/structure/window/sandbag/railing/stone
+	name = "railing"
+	icon = 'icons/obj/railing.dmi'
+	icon_state = "stone"
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = FALSE

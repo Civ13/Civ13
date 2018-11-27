@@ -14,7 +14,6 @@
 		if (BRUTE)
 			adjustBruteLoss(damage/(blocked+1))
 		if (BURN)
-			if (COLD_RESISTANCE in mutations)	damage = 0
 			adjustFireLoss(damage/(blocked+1))
 		if (TOX)
 			adjustToxLoss(damage/(blocked+1))
@@ -33,8 +32,8 @@
 	if (blocked >= 2)	return FALSE
 	if (brute)	apply_damage(brute, BRUTE, def_zone, blocked)
 	if (burn)	apply_damage(burn, BURN, def_zone, blocked)
-	if (tox)		apply_damage(tox, TOX, def_zone, blocked)
-	if (oxy)		apply_damage(oxy, OXY, def_zone, blocked)
+	if (tox)	apply_damage(tox, TOX, def_zone, blocked)
+	if (oxy)	apply_damage(oxy, OXY, def_zone, blocked)
 	if (clone)	apply_damage(clone, CLONE, def_zone, blocked)
 	if (halloss) apply_damage(halloss, HALLOSS, def_zone, blocked)
 	return TRUE
@@ -72,8 +71,8 @@
 	if (weaken)		apply_effect(weaken, WEAKEN, blocked)
 	if (paralyze)	apply_effect(paralyze, PARALYZE, blocked)
 	if (irradiate)	apply_effect(irradiate, IRRADIATE, blocked)
-	if (stutter)		apply_effect(stutter, STUTTER, blocked)
-	if (eyeblur)		apply_effect(eyeblur, EYE_BLUR, blocked)
+	if (stutter)	apply_effect(stutter, STUTTER, blocked)
+	if (eyeblur)	apply_effect(eyeblur, EYE_BLUR, blocked)
 	if (drowsy)		apply_effect(drowsy, DROWSY, blocked)
 	if (agony)		apply_effect(agony, AGONY, blocked)
 	return TRUE

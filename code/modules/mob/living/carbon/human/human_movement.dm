@@ -74,9 +74,6 @@
 
 	if (aiming && aiming.aiming_at) tally += 5 // Iron sights make you slower, it's a well-known fact.
 
-	if (FAT in mutations)
-		tally += 1.5
-
 	/* this is removed until coats protect from the cold, instead of ignoring it.
 	   also, I'm reasonably sure that in real life being cold does not make you vastly slower - Kachnov
 	if (bodytemperature < 283.222)

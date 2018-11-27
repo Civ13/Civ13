@@ -173,3 +173,15 @@
 			return
 	else
 		..()
+
+/obj/item/weapon/fishing
+	name = "fishing pole"
+	desc = "A classic fishing pole."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "fishing"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 3.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "whacked")

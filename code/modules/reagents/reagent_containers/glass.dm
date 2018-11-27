@@ -73,7 +73,7 @@
 		if (standard_pour_into(user, target))
 			return
 
-		if (reagents.total_volume)
+		if (reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
 			reagents.splash(target, reagents.total_volume)
@@ -129,6 +129,20 @@
 	if (!is_open_container())
 		var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
 		overlays += lid
+
+/obj/item/weapon/reagent_containers/glass/small_pot
+	desc = "A small pot."
+	name = "small tin pot"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "small_pot"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 200)
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 100
+	var/on_stove = FALSE
+	flags = OPENCONTAINER
 
 /obj/item/weapon/reagent_containers/glass/fermenterbarrel
 	desc = "A fermenter barrel, use it to make alcoholic drinks like ale, beer and cider."

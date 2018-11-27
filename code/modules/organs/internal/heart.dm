@@ -8,7 +8,7 @@
 	var/heartbeat = FALSE
 	var/beat_sound = 'sound/effects/singlebeat.ogg'
 	var/efficiency = 1.0
-
+	w_class = 2
 /obj/item/organ/heart/process()
 	if (owner)
 		handle_pulse()

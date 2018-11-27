@@ -70,7 +70,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/toggle_jobs,
 	/client/proc/toggle_factions,
 	/client/proc/forcibly_enable_faction,
-	/client/proc/start_mapswap_vote
+	/client/proc/start_epochswap_vote,
 )
 var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_search,
@@ -92,7 +92,7 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
 	/datum/admins/proc/ic_announce,
-	/client/proc/start_mapswap_vote,
+	/client/proc/start_epochswap_vote,
 	)
 
 var/list/admin_verbs_sounds = list(
@@ -269,7 +269,7 @@ var/list/admin_verbs_manager = list(
 	/client/proc/reset_roundstart_autobalance,
 	/client/proc/toggle_BYOND_hub_visibility,
 	/client/proc/toggle_playing,
-	/client/proc/start_mapswap_vote
+	/client/proc/start_epochswap_vote,
 )
 
 var/list/admin_verbs_host = list(

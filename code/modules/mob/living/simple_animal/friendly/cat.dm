@@ -1,7 +1,7 @@
 //Cat
 /mob/living/simple_animal/cat
 	name = "cat"
-	desc = "A domesticated, feline pet. Has a tendency to adopt crewmembers."
+	desc = "A domesticated, feline pet. Has a tendency to adopt humans."
 	icon_state = "cat2"
 	item_state = "cat2"
 	icon_living = "cat2"
@@ -34,6 +34,7 @@
 				if (!M.stat)
 					M.splat()
 					visible_emote(pick("bites \the [M]!","toys with \the [M].","chomps on \the [M]!"))
+					M.apply_damage(1, BRUTE)
 					movement_target = null
 					stop_automated_movement = FALSE
 					break

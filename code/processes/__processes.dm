@@ -19,6 +19,7 @@ var/datum/process_list/processes = new
 	var/process/lighting_overlays/lighting_overlays = null
 	var/process/map/map = null
 	var/process/mapswap/mapswap = null
+	var/process/epochswap/epochswap = null
 	var/process/mob/mob = null
 	var/process/movement/movement = null
 	var/process/nanoUI/nanoUI = null

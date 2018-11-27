@@ -14,9 +14,13 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = 2.1
+	layer = TURF_LAYER + 0.01
 	level = 2
 	var/amount = FALSE
+	var/wall = FALSE
+	var/wood = TRUE
+	var/onfire = FALSE
+
 //	invisibility = 101 //starts invisible
 
 
@@ -34,6 +38,16 @@
 	passable = TRUE
 	not_movable = TRUE
 	amount = 0
+	wood = FALSE
+
+/obj/covers/sandstone
+	name = "sandstone floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "sandstone_floor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
 
 /obj/covers/wood_ship
 	name = "wood floor"
@@ -54,7 +68,7 @@
 	amount = 4
 	layer = 2.12
 	health = 150
-
+	wall = TRUE
 /obj/covers/stone_wall
 	name = "stone wall"
 	desc = "A stone wall."
@@ -64,10 +78,91 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = TRUE
-	amount = 4
+	amount = 0
 	layer = 2.12
 	health = 300
+	wood = FALSE
+	wall = TRUE
 
+/obj/covers/dirt_wall
+	name = "dirt wall"
+	desc = "A dirt wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "drydirt_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 2.12
+	health = 90
+	wood = FALSE
+	wall = TRUE
+
+/obj/covers/straw_wall
+	name = "straw wall"
+	desc = "A straw wall. Looks flimsy."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "straw_wallh"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 2.12
+	health = 75
+	wood = TRUE
+	wall = TRUE
+/obj/covers/dirt_wall/blocks
+	name = "dirt blocks wall"
+	desc = "A dirt blocks wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "drysod_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 2.12
+	health = 110
+	wood = FALSE
+	wall = TRUE
+/obj/covers/dirt_wall/blocks/incomplete
+	name = "dirt blocks wall"
+	desc = "A dirt blocks wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "drysod_wall_inc1"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = FALSE
+	amount = 0
+	layer = 2.12
+	health = 30
+	var/stage = 1
+	wood = FALSE
+	wall = TRUE
+
+/obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/sandbag))
+		if (stage == 3)
+			user << "You start adding dirt to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish adding dirt to the wall, completing it."
+				qdel(W)
+				new /obj/covers/dirt_wall/blocks(loc)
+				qdel(src)
+				return
+		else if (stage <= 2)
+			user << "You start adding dirt to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish adding dirt to the wall."
+				stage = (stage+1)
+				icon_state = "drysod_wall_inc[stage]"
+				health = (20*stage)
+				qdel(W)
+				return
+	..()
 /obj/covers/New()
 	..()
 	spawn(15)
@@ -158,9 +253,10 @@
 
 
 /obj/covers/fire_act(temperature)
-	if (prob(35 * (temperature/500)))
+	if (prob(35 * (temperature/500)) && wood == TRUE)
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
 		qdel(src)
+
 
 
 /obj/covers/CanPass(var/atom/movable/mover)
@@ -178,12 +274,21 @@
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
 		return
+
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	switch(W.damtype)
-		if ("fire")
-			health -= W.force * 0.75
-		if ("brute")
-			health -= W.force * 0.3
+
+	if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
+		var/obj/item/flashlight/torch/T = W
+		if (prob(33) && T.on)
+			onfire = TRUE
+			visible_message("<span class='danger'>\The [src] catches fire!</span>")
+			start_fire()
+	else
+		switch(W.damtype)
+			if ("fire")
+				health -= W.force * 0.7
+			if ("brute")
+				health -= W.force * 0.2
 
 	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
 	user.do_attack_animation(src)
@@ -198,6 +303,32 @@
 
 
 /obj/covers/bullet_act(var/obj/item/projectile/proj)
-	if (prob(proj.damage - 30)) // makes shrapnel unable to take down trees
-		visible_message("<span class = 'danger'>[src] collapses!</span>")
-		qdel(src)
+	if (istype(proj, /obj/item/projectile/arrow/arrow/fire) && wood == TRUE)
+		health -= proj.damage * 0.25
+		if (prob(25))
+			onfire = TRUE
+			visible_message("<span class='danger'>\The [src] catches fire!</span>")
+			start_fire()
+		try_destroy()
+	else
+		health -= proj.damage * 0.1
+		try_destroy()
+		return
+
+/obj/covers/proc/start_fire()
+	if (onfire && wood)
+		var/obj/small_fire/NF = new/obj/small_fire(src.loc)
+		NF.set_light(3)
+		start_fire_dmg(NF)
+		spawn(400)
+			NF.icon_state = "fire_big"
+			NF.set_light(4)
+/obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
+	spawn(80)
+		if (health > 0)
+			health -= 10
+			return
+		else
+			try_destroy()
+			qdel(SF)
+			return

@@ -6,16 +6,16 @@ RESOURCE_WEBSITE nil
 
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Remove the # infront of SERVERNAME and replace 'tgstation' with the name of your choice.
 ## IMPORTANT: Don't include special characters such as ' in here
-SERVER_NAME 1713 Alpha
+SERVER_NAME Civilization 13 (1713)
 
 ## What features do you want to advertise on your hub message?
-HUB_FEATURES XVIII Century Naval Combat (RP)
+HUB_FEATURES From the Stone Age to the Industrial Age
 
 ## The main content of your hub message
-HUB_BODY <b>1713, TIME_OF_DAY, WEATHER<br>
+HUB_BODY <b>EPOCH, TIME_OF_DAY, WEATHER</b><br>
 
 ## Use a link to a banner on your hub message? Comment out if not
-HUB_BANNER_URL http://i.imgur.com/Ouxiybj.png
+HUB_BANNER_URL https://i.imgur.com/napac0L.png
 
 ## Open the hub discord link in a new window? 1 = yes, 0 = no
 OPEN_HUB_DISCORD_IN_NEW_WINDOW 1
@@ -28,9 +28,6 @@ HUBTESTING_PORT 11001
 
 ## Put on byond hub: uncomment this to put your server on the byond hub.
 HUB
-
-## Allow roundend jojo memes 
-#JOJOREFERENCE
 
 # Lobby time: This is the amount of time between rounds that players have to setup their characters and be ready.
 LOBBY_COUNTDOWN 90
@@ -304,7 +301,7 @@ SHOW_MODS 1
 #show mentors in staff who
 SHOW_MENTORS 1
 
-##WW2 stuff
+##Oldtimer stuff
 
 LIGHTING_IS_RUSTIC 0
 MACHINERY_DOES_NOT_USE_POWER 1
@@ -317,27 +314,8 @@ MACHINERY_DOES_NOT_USE_POWER 1
 ENABLED_SEASONS ALL 
 ENABLED_WEATHER RAIN
 
-## Train stuff
-
-GERMAN_TRAIN_CARS_OFFICER 1
-GERMAN_TRAIN_CARS_STORAGE 2
-GERMAN_TRAIN_CARS_SOLDIER 2
-GERMAN_TRAIN_CARS_CONDUCTOR 1
-GERMAN_SUPPLYTRAIN_CARS 4
-
-##WW2 job stuff
-
-PARATROOPER_DROP_TIME 3000
-
-## Dumb memes
-
-ALLOW_DABBING 1
-
 ## Testing stuff 
 
 USE_HUNGER 1
 USE_THIRST 1
 ALLOW_SELFHEAL 0
-
-## Python stuff 
-SCRIPTS_DIRECTORY nil

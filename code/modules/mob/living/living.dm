@@ -97,19 +97,6 @@ default behaviour is:
 			if (a_intent == I_HELP || restrained())
 				now_pushing = FALSE
 				return
-			if (istype(tmob, /mob/living/carbon/human) && (FAT in tmob.mutations))
-				if (prob(40) && !(FAT in mutations))
-					src << "<span class='danger'>You fail to push [tmob]'s fat ass out of the way.</span>"
-					now_pushing = FALSE
-					return
-			/*if (tmob.r_hand && istype(tmob.r_hand, /obj/item/weapon/shield/riot))
-				if (prob(99))
-					now_pushing = FALSE
-					return
-			if (tmob.l_hand && istype(tmob.l_hand, /obj/item/weapon/shield/riot))
-				if (prob(99))
-					now_pushing = FALSE
-					return*/
 			if (!(tmob.status_flags & CANPUSH))
 				now_pushing = FALSE
 				return
@@ -167,11 +154,12 @@ default behaviour is:
 	return can_move_mob(tmob, TRUE, FALSE)
 
 /mob/living/verb/succumb()
-	set hidden = TRUE
-	if ((health < 0 && health > (5-maxHealth))) // Health below Zero but above 5-away-from-death, as before, but variable
-		adjustOxyLoss(health + maxHealth * 2) // Deal 2x health in OxyLoss damage, as before but variable.
-		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
-		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
+	set name = "Succumb"
+	set desc = "Succumb to death."
+	set category = "IC"
+	adjustBrainLoss(300)
+	health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
+	src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
 
 
 //This proc is used for mobs which are affected by pressure to calculate the amount of pressure that actually
@@ -184,8 +172,6 @@ default behaviour is:
 /mob/living/proc/burn_skin(burn_amount)
 	if (istype(src, /mob/living/carbon/human))
 		//world << "DEBUG: burn_skin(), mutations=[mutations]"
-		if (COLD_RESISTANCE in mutations) //fireproof
-			return FALSE
 		var/mob/living/carbon/human/H = src	//make this damage method divide the damage to be done among all the body parts, then burn each body part for that much damage. will have better effect then just randomly picking a body part
 		var/divided_damage = (burn_amount)/(H.organs.len)
 		var/extradam = FALSE	//added to when organ is at max dam

@@ -34,6 +34,7 @@
 			mind.name = real_name
 
 	hud_list[BASE_FACTION]      = image('icons/mob/hud_1713.dmi', src, "")
+	hud_list[FACTION_TO_ENEMIES]      = image('icons/mob/hud_1713.dmi', src, "")
 	human_mob_list |= src
 
 	..()
@@ -81,16 +82,41 @@ var/list/coefflist = list()
 			stat("")
 			stat("Attack Intent:", a_intent)
 			stat("Move Mode:", m_intent)
-/*			if (internal)
-				if (!internal.air_contents)
-					qdel(internal)
-				else
-					stat("Internal Atmosphere Info", internal.name)
-					stat("Tank Pressure", internal.air_contents.return_pressure())
-					stat("Distribution Pressure", internal.distribute_pressure)*/
-
 			stat("Stamina: ", "[round((getStat("stamina")/stats["stamina"][2]) * 100)]%")
-
+			stat("")
+			stat(stat_header("Research"))
+			stat("")
+			stat("Civilization:", civilization)
+			stat("Epoch:", map.age)
+			if (original_job_title == "Civilization A Citizen")
+				stat("Industrial Research:","[map.civa_research[1]]/[civmax_research[1]]")
+				stat("Military Research:","[map.civa_research[2]]/[civmax_research[2]]")
+				stat("Health Research:","[map.civa_research[3]]/[civmax_research[3]]")
+			else if (original_job_title == "Civilization B Citizen")
+				stat("Industrial Research:","[map.civb_research[1]]/[civmax_research[1]]")
+				stat("Military Research:","[map.civb_research[2]]/[civmax_research[2]]")
+				stat("Health Research:","[map.civb_research[3]]/[civmax_research[3]]")
+			else if (original_job_title == "Civilization C Citizen")
+				stat("Industrial Research:","[map.civc_research[1]]/[civmax_research[1]]")
+				stat("Military Research:","[map.civc_research[2]]/[civmax_research[2]]")
+				stat("Health Research:", "[map.civc_research[3]]/[civmax_research[3]]")
+			else if (original_job_title == "Civilization D Citizen")
+				stat("Industrial Research:","[map.civd_research[1]]/[civmax_research[1]]")
+				stat("Military Research:","[map.civd_research[2]]/[civmax_research[2]]")
+				stat("Health Research:","[map.civd_research[3]]/[civmax_research[3]]")
+			else if (original_job_title == "Civilization E Citizen")
+				stat("Industrial Research:","[map.cive_research[1]]/[civmax_research[1]]")
+				stat("Military Research:","[map.cive_research[2]]/[civmax_research[2]]")
+				stat("Health Research:","[map.cive_research[3]]/[civmax_research[3]]")
+			else if (original_job_title == "Civilization F Citizen")
+				stat("Industrial Research:","[map.civf_research[1]]/[civmax_research[1]]")
+				stat("Military Research:","[map.civf_research[2]]/[civmax_research[2]]")
+				stat("Health Research:","[map.civf_research[3]]/[civmax_research[3]]")
+			else if (original_job_title == "Nomad")
+				if (civilization != null && civilization != "none")
+					stat("Industrial Research:", "[map.custom_civs[civilization][1]]/[civmax_research[1]]")
+					stat("Military Research:", "[map.custom_civs[civilization][2]]/[civmax_research[2]]")
+					stat("Health Research:",  "[map.custom_civs[civilization][3]]/[civmax_research[3]]")
 			stat("")
 			stat(stat_header("Stats"))
 			stat("")
@@ -311,10 +337,6 @@ var/list/rank_prefix = list(\
 
 //Returns "Unknown" if facially disfigured and real_name if not. Useful for setting name when polyacided or when updating a human's name variable
 /mob/living/carbon/human/proc/get_face_name()
-	var/obj/item/organ/external/head = get_organ("head")
-	// disabled the disfigured checks because people's heads weren't updated the variable, may change back later - Kachnov
-	if (!head /*|| head.disfigured*/ || head.is_stump() || !real_name || (HUSK in mutations) )	//disfigured. use id-name if possible
-		return "Unknown"
 	return real_name
 
 //gets name from ID or PDA itself, ID inside PDA doesn't matter

@@ -38,7 +38,7 @@
 	attacktext = "kicked"
 	health = 12
 	pass_flags = PASSTABLE
-	mob_size = MOB_SMALL
+	mob_size = MOB_MEDIUM
 
 /mob/living/simple_animal/turkey_m
 	name = "\improper turkey"
@@ -61,7 +61,7 @@
 	health = 12
 	harm_intent_damage = 4
 	pass_flags = PASSTABLE
-	mob_size = MOB_SMALL
+	mob_size = MOB_MEDIUM
 
 /mob/living/simple_animal/goose
 	name = "\improper goose"
@@ -84,4 +84,4 @@
 	health = 12
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
-	mob_size = MOB_SMALL
+	mob_size = MOB_MEDIUM

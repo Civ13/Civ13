@@ -26,3 +26,11 @@
 	if (user.wear_mask == src && !user.IsAdvancedToolUser())
 		return FALSE
 	..()
+
+/obj/item/clothing/mask/plaguedoctor
+	name = "plague doctor's mask"
+	desc = "To stop that awful noise."
+	icon_state = "plaguedoctor"
+	item_state = "plaguedoctor"
+	body_parts_covered = FACE
+	w_class = 2

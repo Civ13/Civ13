@@ -6,6 +6,7 @@
 	var/amount = 0 //how much wood to drop. 0 = none
 	var/health = 100
 	var/maxhealth = 100
+	layer = 3.2
 /*
 /obj/structure/wild/New()
 	..()*/
@@ -56,6 +57,10 @@
 		if (do_after(user, 50, user.loc))
 			health = 0
 			try_destroy()
+			if (prob(50))
+				if (istype(user, /mob/living/carbon/human))
+					var/mob/living/carbon/human/H = user
+					H.adaptStat("strength", 1)
 			return
 	else
 		switch(W.damtype)
@@ -110,6 +115,25 @@
 /obj/structure/wild/tree/live_tree/New()
 	..()
 	icon_state = "tree_[rand(1,5)]"
+
+/obj/structure/wild/tree/live_tree/update_icon()
+	..()
+	if (season == "WINTER")
+		icon = 'icons/obj/flora/bigtrees_winter.dmi'
+
+	else if (season == "SUMMER")
+		icon = 'icons/obj/flora/bigtrees.dmi'
+
+	else if (season == "FALL")
+		if (prob(40))
+			icon = 'icons/obj/flora/deadtrees.dmi'
+		else
+			icon = 'icons/obj/flora/bigtrees.dmi'
+	else if (season == "SPRING")
+		if (prob(40))
+			icon = 'icons/obj/flora/bigtrees.dmi'
+		else
+			icon = 'icons/obj/flora/deadtrees.dmi'
 
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
@@ -219,7 +243,7 @@
 	density = FALSE
 
 /obj/structure/wild/junglebush
-	name = "jungle vegetation"
+	name = "small vegetation"
 	icon = 'icons/obj/flora/jungleflora.dmi'
 	icon_state = "1"
 	opacity = FALSE
@@ -227,7 +251,7 @@
 	var/healthamount = 1
 
 /obj/structure/wild/smallbush
-	name = "small vegetation"
+	name = "small bush"
 	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "smallbush1"
 	opacity = FALSE

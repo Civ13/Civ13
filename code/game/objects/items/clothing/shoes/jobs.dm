@@ -8,6 +8,8 @@
 	armor = list(melee = 30, bullet = 10, laser = 10, energy = 15, bomb = 20, bio = FALSE, rad = FALSE)
 	siemens_coefficient = 0.7
 	can_hold_knife = TRUE
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 /obj/item/clothing/shoes/workboots
 	name = "workboots"
@@ -17,3 +19,5 @@
 	armor = list(melee = 40, bullet = FALSE, laser = FALSE, energy = 15, bomb = 20, bio = FALSE, rad = 20)
 	siemens_coefficient = 0.7
 	can_hold_knife = TRUE
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE

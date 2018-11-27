@@ -14,14 +14,13 @@
 	roundend_condition_sides = list(
 		list(PIRATES) = /area/caribbean/british/ship, //it isnt in the map so nobody wins by capture
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(PIRATES = 1)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
 //	meme = TRUE
 	battle_name = "Isla Robusta"
 	mission_start_message = "<font size=4>You and several other pirates were abandoned at this forsaken island. Only one can survive! <b>Last standing player wins!</b></font>"
-	single_faction = TRUE
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"
 	faction1 = PIRATES
@@ -29,9 +28,13 @@
 	var/message = ""
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
+
+	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE

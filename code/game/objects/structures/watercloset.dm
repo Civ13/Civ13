@@ -348,6 +348,7 @@
 	anchored = TRUE
 	var/busy = FALSE 	//Something's being washed at the moment
 	var/sound = 'sound/effects/sink.ogg'
+	var/dry = FALSE
 
 /obj/structure/sink/ex_act(severity)
 	switch(severity)
@@ -414,14 +415,29 @@
 	if (busy && busy != user)
 		user << "<span class='warning'>Someone's already washing here.</span>"
 		return
-
+	if (dry)
+		user << "<span class='warning'>\The [src] is dry!</span>"
+		return
 	var/obj/item/weapon/reagent_containers/RG = O
-	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
+	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && !(istype(src, /obj/structure/sink/puddle)))
 		RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 		user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
 		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 		user.setClickCooldown(5)
 		return TRUE
+	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && (istype(src, /obj/structure/sink/puddle)))
+		RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+		if (prob(10))
+			RG.reagents.add_reagent("food_poisoning", 1)
+			user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+			user.setClickCooldown(5)
+			return TRUE
+		else
+			user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+			user.setClickCooldown(5)
+			return TRUE
 /*
 	else if (istype(O, /obj/item/weapon/melee/baton))
 		var/obj/item/weapon/melee/baton/B = O
@@ -481,17 +497,39 @@
 	icon_state = "puddle"
 	sound = 'sound/effects/watersplash.ogg'
 
-/obj/structure/sink/well	//splishy splashy ^_^
+/obj/structure/sink/well
 	name = "well"
 	icon_state = "well1"
 	sound = 'sound/effects/watersplash.ogg'
 
+/obj/structure/sink/well/attackby(obj/item/O as obj, mob/user as mob)
+	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/wrench))
+		return
+	else
+		..()
 /obj/structure/sink/puddle/attack_hand(mob/M as mob)
-	icon_state = "puddle-splash"
+	if (!dry)
+		icon_state = "puddle-splash"
 	..()
-	icon_state = "puddle"
+	if (!dry)
+		icon_state = "puddle"
 
 /obj/structure/sink/puddle/attackby(obj/item/O as obj, mob/user as mob)
-	icon_state = "puddle-splash"
+	if (!dry)
+		icon_state = "puddle-splash"
 	..()
-	icon_state = "puddle"
+	if (!dry)
+		icon_state = "puddle"
+
+/obj/structure/sink/update_icon()
+	..()
+	if (istype(src, /obj/structure/sink/puddle))
+		if (dry)
+			icon_state = "puddle_dry"
+		else
+			icon_state = "puddle"
+	else if  (istype(src, /obj/structure/sink/well))
+		if (dry)
+			icon_state = "well_dry"
+		else
+			icon_state = "well1"

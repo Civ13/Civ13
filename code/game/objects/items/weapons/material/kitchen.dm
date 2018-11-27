@@ -29,8 +29,6 @@
 
 	if (user.a_intent != I_HELP || !scoop_food)
 		if (user.targeted_organ == "eyes")
-			if ((CLUMSY in user.mutations) && prob(50))
-				M = user
 			return eyestab(M,user)
 		else if (user.targeted_organ == "head" && (sharp || edge) && ishuman(M))
 			M.resolve_item_attack(src, user, user.targeted_organ)
@@ -92,19 +90,6 @@
 	scoop_food = FALSE
 	slot_flags = SLOT_BELT|SLOT_POCKET
 
-// Identical to the tactical knife but nowhere near as stabby.
-// Kind of like the toy esword compared to the real thing.
-/obj/item/weapon/material/kitchen/utensil/knife/boot
-	name = "boot knife"
-	desc = "A small fixed-blade knife for putting inside a boot."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "tacknife"
-	item_state = "knife"
-	applies_material_colour = FALSE
-	unbreakable = TRUE
-	drawsound = 'sound/items/unholster_knife.ogg'
-	force_divisor = 0.3
-
 /obj/item/weapon/material/kitchen/utensil/knife/boot/makeshift_knife
 	name = "boot knife"
 	desc = "A small self made knife used a lot in jail."
@@ -132,15 +117,12 @@
 
 
 /obj/item/weapon/material/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
-	if ((CLUMSY in user.mutations) && prob(50))
-		user << "<span class='warning'>You accidentally cut yourself with \the [src].</span>"
-		user.take_organ_damage(20)
-		return
 	return ..()
 
 /obj/item/weapon/material/kitchen/utensil/knife/plastic
 	default_material = "plastic"
-
+/obj/item/weapon/material/kitchen/utensil/knife/iron
+	default_material = "iron"
 /*
  * Rolling Pins
  */
@@ -156,10 +138,4 @@
 	hitsound = "swing_hit"
 
 /obj/item/weapon/material/kitchen/rollingpin/attack(mob/living/M as mob, mob/living/user as mob)
-	if ((CLUMSY in user.mutations) && prob(50))
-		user << "<span class='warning'>\The [src] slips out of your hand and hits your head.</span>"
-		user.drop_from_inventory(src)
-		user.take_organ_damage(10)
-		user.Paralyse(2)
-		return
 	return ..()

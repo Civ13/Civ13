@@ -98,6 +98,10 @@
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
+					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker_gods))
+						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
+						if (prob(20) && get_dist(src, A.target_loc) > 11)
+							walk_towards(src, A.target_loc,4)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 					moving_to = pick(cardinal)
 					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
@@ -238,18 +242,43 @@
 			O.attack(src, user, user.targeted_organ)
 	else if (O.sharp)
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
-			user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
-			if (do_after(user, 30, src))
-				user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-				for (var/v in TRUE to rand(2,3))
-					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-					meat.name = "[name] meatsteak"
-				for (var/v in TRUE to rand(1,2))
-					var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
-					leather.name = "[name] leather"
-				new/obj/item/stack/material/bone(get_turf(src))
-				crush()
-				qdel(src)
+			if (istype(src, /mob/living/simple_animal/frog/poisonous))
+				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
+				if (do_after(user, 30, src))
+					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
+					new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					crush()
+					qdel(src)
+			else
+				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
+				if (do_after(user, 30, src))
+					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
+					var/amt = 0
+					if (mob_size == MOB_MINISCULE)
+						amt = 1
+					if (mob_size == MOB_TINY)
+						amt = 2
+					if (mob_size == MOB_SMALL)
+						amt = 3
+					if (mob_size == MOB_MEDIUM)
+						amt = 5
+					if (mob_size == MOB_LARGE)
+						amt = 7
+
+					for (var/v in TRUE to amt)
+						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+						meat.name = "[name] meatsteak"
+					if ((amt-1) >= 1)
+						for (var/v in TRUE to (amt-1))
+							var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+							leather.name = "[name] leather"
+					if ((amt-2) >= 1)
+						for (var/v in TRUE to (amt-2))
+							var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+							bone.name = "[name] bone"
+					crush()
+					qdel(src)
+
 		else
 			O.attack(src, user, user.targeted_organ)
 
@@ -313,7 +342,7 @@
 /mob/living/simple_animal/proc/SA_attackable(target_mob)
 	if (isliving(target_mob))
 		var/mob/living/L = target_mob
-		if (!L.stat && L.health >= 0)
+		if (!L.stat)
 			return (0)
 	return TRUE
 

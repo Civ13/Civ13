@@ -170,15 +170,17 @@
 				if (prob(15) && hit_zone != "chest") // Missed!
 					if (!lying)
 						attack_message = "[H] attempted to strike [src], but missed!"
+						adaptStat("dexterity", 1)
 					else
 						attack_message = "[H] attempted to strike [src], but \he rolled out of the way!"
+						adaptStat("dexterity", 1)
 						set_dir(pick(cardinal))
 					miss_type = TRUE
 
 			if (!miss_type && block)
 				attack_message = "[H] went for [src]'s [affecting.name] but was blocked!"
 				miss_type = 2
-
+				adaptStat("dexterity", 1)
 			var/hitcheck = rand(0, 9)
 			if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
 				var/obj/item/organ/external/head/U = affecting
@@ -210,9 +212,6 @@
 			real_damage *= damage_multiplier
 			rand_damage *= damage_multiplier
 
-			if (HULK in H.mutations)
-				real_damage *= 2 // Hulks do twice the damage
-				rand_damage *= 2
 			real_damage = max(1, real_damage)
 
 			// Apply stat effects

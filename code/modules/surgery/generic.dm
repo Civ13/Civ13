@@ -204,6 +204,8 @@
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		if (affected == null)
 			return FALSE
+		if (istype(tool, /obj/item/weapon/material/kitchen/utensil/knife/bone) && user.a_intent != I_HURT)
+			return FALSE
 		return !affected.cannot_amputate
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)

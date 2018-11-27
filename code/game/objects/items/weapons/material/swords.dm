@@ -77,6 +77,7 @@
 	block_chance = 30
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 40
+	cooldownw = 7
 
 /obj/item/weapon/material/sword/smallsword
 	name = "small sword"
@@ -154,6 +155,40 @@ obj/item/weapon/material/sword/spadroon/bronze
 obj/item/weapon/material/sword/cutlass/iron
 	default_material = "iron"
 
+/obj/item/weapon/material/sword/scimitar
+	name = "scimitar"
+	desc = "A medium-sized, curved sword, preferred by arabs."
+	icon_state = "cutlass"
+	item_state = "cutlass"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.7 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 30
+	cooldownw = 8
+	value = 45
+
+obj/item/weapon/material/sword/scimitar/iron
+	default_material = "iron"
+
+/obj/item/weapon/material/sword/saif
+	name = "saif"
+	desc = "A medium sword, original from the arab peninsula."
+	icon_state = "umar_sword"
+	item_state = "umar_sword"
+	throw_speed = 2
+	throw_range = 4
+	force_divisor = 0.8 // 45 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.6 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 34
+	cooldownw = 9
+	value = 60
+
+obj/item/weapon/material/sword/saif/iron
+	default_material = "iron"
+
 /obj/item/weapon/material/sword/sabre
 	name = "sabre"
 	desc = "A small, slightly curved sword, favored by cavalry and light infantry units."
@@ -178,7 +213,7 @@ obj/item/weapon/material/sword/sabre/iron
 	item_state = "longsword"
 	throw_speed = 2
 	throw_range = 2
-	force_divisor = 1 // 60 when wielded with hardnes 60 (steel)
+	force_divisor = 1 // 60 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 47
@@ -191,6 +226,9 @@ obj/item/weapon/material/sword/longsword/iron
 obj/item/weapon/material/sword/longsword/bronze
 	default_material = "bronze"
 
+obj/item/weapon/material/sword/longsword/diamond
+	default_material = "diamond"
+
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
@@ -198,7 +236,7 @@ obj/item/weapon/material/sword/longsword/bronze
 	item_state = "longsword2"
 	throw_speed = 4
 	throw_range = 4
-	force_divisor = 0.65 // 40 when wielded with hardnes 60 (steel)
+	force_divisor = 0.65 // 40 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 30

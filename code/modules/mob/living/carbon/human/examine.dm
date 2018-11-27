@@ -301,25 +301,34 @@
 		if ( findtext(pose,".",lentext(pose)) == FALSE && findtext(pose,"!",lentext(pose)) == FALSE && findtext(pose,"?",lentext(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
+	if (!map.civilizations)
+		if (original_job)
+			if (ishuman(user) && user != src)
+				var/mob/living/carbon/human/H = user
+				if (H.original_job)
+					if (H.original_job.base_type_flag() == original_job.base_type_flag()) // when you ghost, mind.assigned_job is set to null
+						if (original_job.en_meaning)
+							msg += "<br><i>You recognize [T.him] as a <b>[original_job.title] ([original_job.en_meaning])</b>.</i>"
+						else
+							msg += "<br><i>You recognize [T.him] as a <b>[original_job.title]</b>.</i>"
+					else // examining someone on another team
 
-	if (original_job)
+			else if (isobserver(user))
+				msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
+	else
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
-			if (H.original_job)
-				if (H.original_job.base_type_flag() == original_job.base_type_flag()) // when you ghost, mind.assigned_job is set to null
-					if (original_job.en_meaning)
-						msg += "<br><i>You recognize [T.him] as a <b>[original_job.title] ([original_job.en_meaning])</b>.</i>"
-					else
-						msg += "<br><i>You recognize [T.him] as a <b>[original_job.title]</b>.</i>"
-				else // examining someone on another team
-
+			if (H.civilization == civilization) // when you ghost, mind.assigned_job is set to null
+				msg += "<br><i>You recognize [T.him] as a member of your civilization, <b>[civilization]</b>.</i>"
+			else // examining someone on another team
+				msg += "<br><span class='warning'><i>You do <b>not</b> recognize [T.him] as a member of your civilization!.</i>"
 		else if (isobserver(user))
-			msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
+			msg += "<br><i>[T.He] [T.is] a member of the <b>[civilization]</b> civilization.</i>"
 
 		else if (ishuman(user) && user == src)
 			var/mob/living/carbon/human/H = user
-			if (H.original_job)
-				msg += "<br><i>You are a <b>[H.original_job.title]</b>.</i>"
+			if (H.civilization != "none")
+				msg += "<br><i>You belong to the <b>[H.civilization] civilization</b>.</i>"
 
 
 	for (var/v in TRUE to embedded.len)

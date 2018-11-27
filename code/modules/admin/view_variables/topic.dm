@@ -94,18 +94,6 @@
 			return
 
 		cmd_admin_gib(M)
-/*
-	else if (href_list["build_mode"])
-		if (!check_rights(R_BUILDMODE))	return
-
-		var/mob/M = locate(href_list["build_mode"])
-		if (!istype(M))
-			usr << "This can only be used on instances of type /mob"
-			return
-
-		togglebuildmode(M)
-		href_list["datumrefresh"] = href_list["build_mode"]
-*/
 	else if (href_list["drop_everything"])
 		if (!check_rights(R_DEBUG|R_ADMIN))	return
 
@@ -127,17 +115,6 @@
 
 		if (usr.client)
 			usr.client.cmd_assume_direct_control(M)
-
-	else if (href_list["make_skeleton"])
-		if (!check_rights(R_FUN))	return
-
-		var/mob/living/carbon/human/H = locate(href_list["make_skeleton"])
-		if (!istype(H))
-			usr << "This can only be used on instances of type /mob/living/carbon/human"
-			return
-
-		H.ChangeToSkeleton()
-		href_list["datumrefresh"] = href_list["make_skeleton"]
 
 	else if (href_list["delall"])
 		if (!check_rights(R_DEBUG|R_SERVER))	return

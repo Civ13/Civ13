@@ -90,6 +90,10 @@
 	else
 		if (map.ID == MAP_TRIBES)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
+		else if (map.civilizations == TRUE && !(map.ID == MAP_NOMADS))
+			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
+		else if (map.ID == MAP_NOMADS)
+			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
 
@@ -252,6 +256,75 @@
 		LateChoices()
 		return TRUE
 
+	if (href_list["civilizations"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
+			return
+
+		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
+			if (check_rights(R_ADMIN, FALSE, src))
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+					log_admin(msg)
+					message_admins(msg)
+					LateChoices()
+					return TRUE
+			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			return FALSE
+
+		if (map && map.civilizations == TRUE)
+			close_spawn_windows()
+			AttemptLateSpawn(pick(map.availablefactions))
+		else
+			return
+		LateChoices()
+		return TRUE
+
+	if (href_list["nomads"])
+
+		if (client && client.quickBan_isbanned("Playing"))
+			src << "<span class = 'danger'>You're banned from playing.</span>"
+			return TRUE
+
+		if (!ticker.players_can_join)
+			src << "<span class = 'danger'>You can't join the game yet.</span>"
+			return TRUE
+
+		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			src << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
+			return
+
+		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
+			if (check_rights(R_ADMIN, FALSE, src))
+				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "Yes", list("Yes", "No"))) == "Yes")
+					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
+					log_admin(msg)
+					message_admins(msg)
+					LateChoices()
+					return TRUE
+			WWalert(src, "Because you died, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			return FALSE
+
+		if (map && map.civilizations == TRUE)
+			close_spawn_windows()
+			AttemptLateSpawn("Nomad")
+		else
+			return
+		LateChoices()
+		return TRUE
+
+
 	if (href_list["late_join"])
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -275,7 +348,7 @@
 					message_admins(msg)
 					LateChoices()
 					return TRUE
-			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn. You can still join as a reinforcement.", "Error")
+			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 		LateChoices()
 		return TRUE
@@ -298,9 +371,14 @@
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 			return
 
-		if (map && map.has_occupied_base(job_flag))
-			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now."
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP)
+			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now.</span>"
 			return
+
+		if (actual_job.whitelisted)
+			if (!actual_job.validate(client))
+				usr << "<span class = 'notice'>You need to be whitelisted to play this job. Apply in the Discord.</span>"
+				return
 
 		if (actual_job.is_officer)
 			if ((input(src, "This is an officer position. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
@@ -378,7 +456,7 @@
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
 		if (!nomsg)
 			usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'red'>The round is either not ready, or has already finished.</span>"
@@ -386,7 +464,7 @@
 	if (!config.enter_allowed)
 		if (!nomsg)
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
@@ -394,7 +472,7 @@
 	if (jobBanned(rank))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this role!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're banned from this role!</span>"
@@ -403,7 +481,7 @@
 	if (!IsJobAvailable(rank))
 		if (!nomsg)
 			WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					WWalert(src, "'[rank]' has already been taken by someone else.", "Error")
@@ -414,7 +492,7 @@
 	if (factionBanned(job.base_type_flag(1)))
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from this faction!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're banned from this faction!</span>"
@@ -423,7 +501,7 @@
 	if (officerBanned() && job.is_officer)
 		if (!nomsg)
 			usr << "<span class = 'warning'>You're banned from officer positions!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're banned from officer positions!</span>"
@@ -433,7 +511,7 @@
 		if (job.blacklisted == FALSE)
 			if (!nomsg)
 				usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're under a Penal ban, you can only play as that role!</span>"
@@ -443,7 +521,7 @@
 		if (job.blacklisted == TRUE)
 			if (!nomsg)
 				usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>This job is reserved as a punishment for those who break server rules.</span>"
@@ -452,7 +530,7 @@
 	if (job_master.is_side_locked(job.base_type_flag()))
 		if (!nomsg)
 			src << "<span class = 'red'>Currently this side is locked for joining.</span>"
-			if (map.ID == MAP_TRIBES)
+			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
 				abandon_mob()
 				spawn(10)
 					src << "<span class = 'red'>Currently this side is locked for joining.</span>"
@@ -489,7 +567,7 @@
 		if (client.prefs.s_tone < -25)
 			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 60.</span>"
 			return
-	if (istype(job, /datum/job/civilian))
+	if (istype(job, /datum/job/civilian) && !map.civilizations)
 		if (client.prefs.s_tone < -65)
 			usr << "<span class='danger'>You are too dark to be a colonist. Choose a value lower than 100.</span>"
 			return
@@ -500,6 +578,18 @@
 			return
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
+			return
+	if (map.age == "1013" && !map.civilizations && !istype(job, /datum/job/civilian))
+		if (client.prefs.gender == FEMALE)
+			usr << "<span class='danger'>You must be male to play as this faction.</span>"
+			return
+	if (istype(job, /datum/job/arab))
+		if (client.prefs.s_tone < -115)
+			usr << "<span class='danger'>Your skin is too dark for you to be an Arab. Choose a value between 110 and 150.</span>"
+			return
+		if (client.prefs.s_tone > -75)
+			usr << "<span class='danger'>Your skin is too light for you to be an Arab. Choose a value between 110 and 150.</span>"
+
 			return
 	spawning = TRUE
 	close_spawn_windows()
@@ -532,7 +622,30 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_french.len] French, [alive_dutch.len] Dutch, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
+//	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_french.len] French, [alive_dutch.len] Dutch, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
+	dat += "<b>Current Autobalance Status</b>: "
+	if (BRITISH in map.faction_organization)
+		dat += "[alive_british.len] British "
+	if (PORTUGUESE in map.faction_organization)
+		dat += "[alive_portuguese.len] Portuguese "
+	if (FRENCH in map.faction_organization)
+		dat += "[alive_french.len] French "
+	if (SPANISH in map.faction_organization)
+		dat += "[alive_spanish.len] Spanish "
+	if (DUTCH in map.faction_organization)
+		dat += "[alive_dutch.len] Dutch "
+	if (PIRATES in map.faction_organization)
+		dat += "[alive_pirates.len] Pirates "
+	if (INDIANS in map.faction_organization)
+		dat += "[alive_indians.len] Natives "
+	if (CIVILIAN in map.faction_organization)
+		dat += "[alive_civilians.len] Civilians "
+	if (GREEK in map.faction_organization)
+		dat += "[alive_greek.len] Greeks "
+	if (ROMAN in map.faction_organization)
+		dat += "[alive_roman.len] Romans "
+	if (ARAB in map.faction_organization)
+		dat += "[alive_arab.len] Arabs "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -549,11 +662,10 @@
 		DUTCH = FALSE,
 		BRITISH = FALSE,
 		ROMAN = FALSE,
-		GREEK = FALSE,)
+		GREEK = FALSE,
+		ARAB = FALSE,)
 
 	var/prev_side = FALSE
-
-	dat += "<b>Choose from the following open positions:</b>"
 
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 
@@ -607,6 +719,12 @@
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/dutch) && !dutch_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/roman) && !roman_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/greek) && !greek_toggled)
 			job_is_available = FALSE
 		// check if the job is admin-locked or disabled codewise
 
@@ -767,14 +885,6 @@
 		new_character.dna.b_type = client.prefs.b_type
 
 	new_character.sync_organ_dna()
-
-	if (client && client.prefs.disabilities)
-		// Set defer to TRUE if you add more crap here so it only recalculates struc_enzymes once. - N3X
-		new_character.dna.SetSEState(GLASSESBLOCK,1,0)
-		new_character.disabilities |= NEARSIGHTED
-
-	// And uncomment this, too.
-	//new_character.dna.UpdateSE()
 
 	// Do the initial caching of the player's body icons.
 	new_character.force_update_limbs()

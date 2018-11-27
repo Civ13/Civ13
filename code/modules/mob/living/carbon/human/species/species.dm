@@ -355,6 +355,12 @@
 	if (!name_language)
 		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 							//some useless code removed
+
+/datum/species/proc/get_random_arab_name(var/jew) //gender removed
+	if (!name_language)
+
+		return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
+
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)

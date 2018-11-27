@@ -18,7 +18,7 @@ bullet_act
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
 
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W, /obj/item/weapon/material/knife/butcher)))
+	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user
 			if (istype(H))
@@ -27,30 +27,17 @@ bullet_act
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
 					for (var/v in 1 to rand(5,7))
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "[real_name] meatsteak"
+						meat.name = "human meatsteak"
+					for (var/v in 1 to rand(3,5))
+						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+						leather.name = "human leather"
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
 					for (var/obj/item/clothing/I in contents)
 						drop_from_inventory(I)
 					crush()
 					qdel(src)
-/*
-	else if ((stat == DEAD) && user.a_intent == I_HURT && !grabbed_by_user && istype(W, /obj/item/weapon/material/hatchet))
-		var/mob/living/carbon/human/H = user
-		if (istype(H))
-			user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
-			if (do_after(user, 30, src))
-				user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-				for (var/v in 1 to rand(5,7))
-					var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-					meat.name = "[real_name] meatsteak"
-				var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
-				bonedrop.amount = 2
-				for (var/obj/item/clothing/I in contents)
-					drop_from_inventory(I)
-				crush()
-				qdel(src)
-*/
+
 	else
 		return ..(W, user)
 
@@ -95,7 +82,7 @@ bullet_act
 			SH = l_hand
 		else
 			SH = r_hand
-		if (istype(P, /obj/item/projectile/bullet/arrow))
+		if (istype(P, /obj/item/projectile/arrow/arrow))
 			if (prob(min(SH.base_block_chance*2,92)))
 				visible_message("<span class = 'warning'>[src] blocks the arrow with the [SH.name]!</span>")
 				P.blockedhit = TRUE
@@ -202,7 +189,37 @@ bullet_act
 		gib()
 	else if (P.crushes)
 		crush()
+	if (istype(P, /obj/item/projectile/arrow/arrow/poisonous))
+		//yeah, he is fucked
+		apply_damage(15, BRUTE, def_zone)
+		spawn(350)
+			apply_damage(30, TOX, def_zone)
+			eye_blurry += 20
+			src << "<span class='danger'><big>You start to feel numb...</big></span>"
+			spawn(300)
+				eye_blurry += 20
+				adjustOxyLoss(10)
+				adjustBrainLoss(10)
+				src << "<span class='danger'><big>You feel numb... You can barely feel your legs and arms!</big></span>"
+				spawn(300)
+					Weaken(30)
+					adjustOxyLoss(20)
+					adjustBrainLoss(20)
+					eye_blurry += 30
+					src << "<span class='danger'><big>You start losing control of your muscles...</big></span>"
+					spawn(300)
+						Paralyse(60)
+					spawn(500)
+						adjustBrainLoss(40)
+						adjustOxyLoss(40)
+						Paralyse(60)
+						eye_blurry += 50
+						src << "<span class='danger'><big>You fade out...</big></span>"
 
+	if (istype(P, /obj/item/projectile/arrow/arrow/fire))
+		if (prob(10))
+			IgniteMob()
+			fire_stacks += 1
 	..(P, def_zone)
 
 	spawn (0.01)
@@ -302,8 +319,6 @@ bullet_act
 	return null
 
 /mob/living/carbon/human/proc/check_shields(var/damage = FALSE, var/atom/damage_source = null, var/mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
-	if (istype(damage_source, /obj/item/projectile/bullet/arrow))
-		return FALSE
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue
 		. = shield.handle_shield(src, damage, damage_source, attacker, def_zone, attack_text)

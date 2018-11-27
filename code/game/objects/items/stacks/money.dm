@@ -127,3 +127,20 @@
 /obj/item/stack/money/pearls/New()
 	..()
 	icon_state = "pearls[rand(1,2)]"
+
+
+/obj/item/stack/money/silvercoin
+	name = "silver coins"
+	desc = "A small silver coin. Worth 1/4 of a gold coin."
+	singular_name = "silver coin"
+	icon_state = "silvercoin_pile"
+	amount = 200
+	value = 0.1
+
+/obj/item/stack/money/goldcoin
+	name = "gold coins"
+	desc = "A small gold coin. Worth 4 silver coins."
+	singular_name = "gold coin"
+	icon_state = "goldcoin_pile"
+	amount = 100
+	value = 0.4

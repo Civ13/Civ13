@@ -16,7 +16,7 @@
 		list(ROMAN) = /area/caribbean/colonies,
 		list(GREEK) = /area/caribbean/greek
 		)
-	front = "Pacific"
+	age = "313 B.C."
 	faction_distribution_coeffs = list(ROMAN = 0.5, GREEK = 0.5)
 	battle_name = "Syracusan siege"
 	mission_start_message = "<font size=4>The <b>Roman</b> troops are sieging a <b>Greek</b> fortress near Syracuse! The Greeks will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"

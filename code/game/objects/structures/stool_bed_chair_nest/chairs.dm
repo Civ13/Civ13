@@ -1,7 +1,7 @@
 /obj/structure/bed/chair	//YES, chairs are a type of bed, which are a type of stool. This works, believe me.	-Pete
 	name = "chair"
 	desc = "You sit in this. Either by will or force."
-	icon_state = "chair_preview"
+	icon_state = "chair"
 	color = "#666666"
 	base_icon = "chair"
 	buckle_dir = FALSE
@@ -91,7 +91,7 @@
 // Leaving this in for the sake of compilation.
 /obj/structure/bed/chair/comfy
 	desc = "It's a chair. It looks comfy."
-	icon_state = "comfychair_preview"
+	icon_state = "chair_padding"
 
 /obj/structure/bed/chair/comfy/brown/New(var/newloc,var/newmaterial)
 	..(newloc,"steel","leather")

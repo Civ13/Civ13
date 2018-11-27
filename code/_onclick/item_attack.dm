@@ -73,8 +73,7 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		M.attack_log += "\[[time_stamp()]\]<font color='orange'> Attacked by [user.name] ([user.ckey]) with [name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(damtype)])</font>"
 		msg_admin_attack("[key_name(user)] attacked [key_name(M)] with [name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(damtype)])" )
 	/////////////////////////
-
-	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	user.setClickCooldown(cooldownw)
 	user.do_attack_animation(M)
 
 	var/hit_zone = M.resolve_item_attack(src, user, target_zone)
@@ -89,6 +88,4 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		playsound(loc, hitsound, 50, TRUE, -1)
 
 	var/power = force
-	if (HULK in user.mutations)
-		power *= 2
 	return target.hit_with_weapon(src, user, power, hit_zone)

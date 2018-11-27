@@ -11,7 +11,6 @@
 
 /obj/item/stack
 	gender = PLURAL
-//	origin_tech = list(TECH_MATERIAL = TRUE)
 	var/list/datum/stack_recipe/recipes
 	var/singular_name
 	amount = TRUE
@@ -126,7 +125,7 @@
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
 	if (!findtext(recipe.title, "wood spear"))
-		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear"))
+		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe"))
 			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
 				user << "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>"
 				return
@@ -198,9 +197,20 @@
 		build_override_sign.name = customname
 		build_override_sign.desc = customdesc
 
-	if (findtext(recipe.title, "wall"))
+	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
+	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "small sword"))
+		if (H.getStatCoeff("crafting") < 1.8)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+		var/puddly = FALSE
+		for (var/obj/structure/sink/puddle/P in get_turf(H))
+			puddly = TRUE
+		if (puddly == FALSE)
+			H << "<span class = 'danger'>You need to build this over a puddle.</span>"
 			return
 
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
@@ -329,6 +339,9 @@
 		produced = 3
 	if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
+	if (recipe.result_type == /obj/structure/sink/well)
+		for (var/obj/structure/sink/puddle/P in get_turf(H))
+			qdel(P)
 	if (use(required))
 		var/atom/O
 		if (recipe.use_material)
@@ -535,7 +548,7 @@
 	return
 
 /obj/item/stack/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/stack))
+	if (istype(W, type))
 		var/obj/item/stack/S = W
 		if (user.get_inactive_hand()==src)
 			transfer_to(S, TRUE)

@@ -114,8 +114,8 @@
 */
 
 /obj/item/stack/medical/advanced/bruise_pack
-	name = "advanced trauma kit"
-	singular_name = "advanced trauma kit"
+	name = "trauma kit"
+	singular_name = "trauma kit"
 	desc = "An advanced trauma kit for severe injuries."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "trauma_kit"
@@ -192,8 +192,8 @@
 	item_state = null
 
 /obj/item/stack/medical/advanced/ointment
-	name = "advanced burn kit"
-	singular_name = "advanced burn kit"
+	name = "burn kit"
+	singular_name = "burn kit"
 	desc = "An advanced treatment kit for severe burns."
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "burn_kit"

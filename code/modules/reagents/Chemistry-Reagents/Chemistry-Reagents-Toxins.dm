@@ -328,7 +328,7 @@
 	M.add_chemical_effect(CE_PULSE, -1)
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 15)
-
+	M.adjustBrainLoss(-0.5 * removed)
 /datum/reagent/serotrotium
 	name = "Serotrotium"
 	id = "serotrotium"

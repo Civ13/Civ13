@@ -191,22 +191,16 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 			var/restart_after = restart_timeout
 
-			// give time for the other server to restart
-			if (processes.mapswap)
-				if (processes.mapswap.finished_at == -1)
+			if (processes.epochswap)
+				if (processes.epochswap.finished_at == -1)
 					restart_after = 1200 + (vote.time_remaining * 10)
 				else
-					var/n = world.time - processes.mapswap.finished_at
+					var/n = world.time - processes.epochswap.finished_at
 					if (n <= 900)
 						restart_after = 1200 - n
 
-			var/next_map = processes.mapswap ? processes.mapswap.next_map_title : "TBD"
-			if (vote && vote.mode == "map" && vote.time_remaining > 0)
-				next_map = "TBD"
-
-
 			if (!delay_end)
-				world << "<span class='notice'><big>Restarting in <b>90</b> seconds. Next map: <b>[next_map]</b></big></span>"
+				world << "<span class='notice'><big>Restarting in <b>90</b> seconds. Next map: <b>TBD</b></big></span>"
 				spawn(150)
 					save_all_whitelists()
 					serverswap_pre_close_server()

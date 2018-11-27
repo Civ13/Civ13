@@ -12,21 +12,26 @@
 	if (map && !(_weather in map.valid_weather_types) && _weather != WEATHER_NONE)
 		return
 
-	if (config)
-		if (config.allowed_weather && config.allowed_weather.len)
-			switch (config.allowed_weather[1])
-				if (0)
-					return
-				if (1)
-					// pass
-				else
-					if (!(WEATHER_CONST2TEXT(_weather) in config.allowed_weather) && _weather != WEATHER_NONE)
-						return
-
 	var/old_weather = weather
+	if (season == "WINTER")
+		if (weather == WEATHER_NONE)
+			weather = WEATHER_SNOW
+		else
+			weather = WEATHER_NONE
 
-	weather = _weather
+	else if (season == "SPRING")
+		if (weather == WEATHER_NONE)
+			weather = WEATHER_RAIN
+		else
+			weather = WEATHER_NONE
 
+	else if (season == "FALL")
+		if (weather == WEATHER_NONE)
+			weather = WEATHER_RAIN
+		else if (weather == WEATHER_SNOW)
+			weather = WEATHER_RAIN
+		else
+			weather = WEATHER_NONE
 	var/area_icon = 'icons/effects/weather.dmi'
 	var/area_icon_state = ""
 	var/area_alpha = 255
@@ -76,6 +81,8 @@
 		++weather_intensity
 	else if (weather_intensity > 1.0)
 		--weather_intensity
+	if (map.blizzard)
+		weather_intensity = 3.0
 	change_weather(weather, TRUE)
 
 	if (old_intensity != weather_intensity)
@@ -91,7 +98,11 @@
 			possibilities += WEATHER_SNOW
 		if ("SPRING")
 			possibilities += WEATHER_RAIN
-
+		if ("SUMMER")
+			possibilities = list(WEATHER_NONE)
+		if ("FALL")
+			possibilities += WEATHER_RAIN
+			possibilities += WEATHER_SNOW
 	possibilities -= non_possibilities
 
 	if (possibilities.len)

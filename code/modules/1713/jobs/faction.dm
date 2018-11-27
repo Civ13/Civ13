@@ -19,8 +19,8 @@
 #define TEAM_CV 8
 #define TEAM_RO 9
 #define TEAM_GR 10
-
-var/global/soldiers[10]
+#define TEAM_AR 11
+var/global/soldiers[11]
 
 /datum/faction
 	// redefine these since they don't exist in /datum
@@ -119,13 +119,19 @@ var/global/soldiers[10]
 
 /datum/faction/greek
 	icon_state = ""
-	title = "Greel Soldier"
+	title = "Greek Soldier"
 	team = TEAM_GR
 
 /datum/faction/greek/base_type()
 	return "/datum/faction/greek"
 
+/datum/faction/arab
+	icon_state = ""
+	title = "Arab Soldier"
+	team = TEAM_AR
 
+/datum/faction/arab/base_type()
+	return "/datum/faction/arab"
 // CODE
 /datum/faction/New(var/mob/living/carbon/human/H, var/datum/job/J)
 
@@ -163,5 +169,8 @@ var/global/soldiers[10]
 	else if (istype(J, /datum/job/greek))
 		if ("[type]" == "/datum/faction/greek")
 			soldiers[GREEK]++
+	else if (istype(J, /datum/job/arab))
+		if ("[type]" == "/datum/faction/arab")
+			soldiers[ARAB]++
 	H.all_factions += src
 	..()

@@ -1,6 +1,6 @@
 /obj/structure/sign/flag
 	var/ripped = FALSE
-
+	icon = 'icons/obj/decals.dmi'
 /obj/structure/sign/flag/attack_hand(mob/user as mob)
 	if (!ripped)
 		playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
@@ -13,20 +13,53 @@
 		icon_state += "_ripped"
 		ripped = TRUE
 
-/obj/structure/sign/flag/russian
-	name = "\improper Russian flag"
-	desc = "Just like new and very dense. Holds a point blank pistol shot "
-	icon_state = "ru_flag"
+/obj/structure/sign/flag/red
+	name = "\improper red banner"
+	desc = "A red linen banner."
+	icon_state = "red_banner"
+/obj/structure/sign/flag/red2
+	name = "\improper red banner"
+	desc = "A red linen banner, with golden trims."
+	icon_state = "red_banner2"
 
-/obj/structure/sign/flag/usa
-	name = "\improper USA flag"
-	desc = "Democracy! Freedom! U! S! A!"
-	icon_state = "usa_flag"
+/obj/structure/sign/flag/blue
+	name = "\improper blue banner"
+	desc = "A blue linen banner."
+	icon_state = "blue_banner"
+/obj/structure/sign/flag/blue2
+	name = "\improper blue banner"
+	desc = "A blue linen banner, with golden trims."
+	icon_state = "blue_banner2"
 
-/obj/structure/sign/flag/local
-	name = "\improper Local flag"
-	desc = "I don't even remember to which country Slatino belongs."
-	icon_state = "local_flag"
+/obj/structure/sign/flag/templar1
+	name = "\improper templar banner"
+	desc = "A white banner with the red cross of the templars in the middle."
+	icon_state = "templar_banner1"
+
+/obj/structure/sign/flag/templar2
+	name = "\improper templar banner"
+	desc = "A white banner with the red cross of the templars in the middle."
+	icon_state = "templar_banner2"
+
+/obj/structure/sign/flag/jihad1
+	name = "\improper black islamic flag"
+	desc = "A black flag with Allah written in Arabic."
+	icon_state = "jihad1"
+
+/obj/structure/sign/flag/jihad2
+	name = "\improper green islamic flag"
+	desc = "A green flag with Allah written in Arabic."
+	icon_state = "jihad2"
+
+/obj/structure/sign/flag/jihad3
+	name = "\improper red islamic banner"
+	desc = "A red banner with three moons."
+	icon_state = "jihad3"
+
+/obj/structure/sign/flag/jihad4
+	name = "\improper green islamic banner"
+	desc = "A greeb banner with the shadada."
+	icon_state = "jihad4"
 
 /obj/structure/sign/clock
 	name = "\improper Broken clock"
@@ -44,60 +77,8 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
-/obj/structure/sign/wide/loc_name_sign
-	name = "Slatino sign"
-	desc = "Heeey! That's not Prishtina! That's Slatino!"
-	icon_state = "slatino"
-	density = TRUE
-
-/obj/structure/sign/flag/germany
-	name = "Third Reich flag"
-	desc = "Ein Volk, ein Reich, ein Fuhrer!"
-	icon_state = "ger_flag"
-
-/obj/structure/sign/flag/pirates
-	name = "Pirate flag"
-	desc = "A skull and bones flag."
-	icon_state = "pir_flag"
-
-/obj/structure/sign/flag/germany2
-	name = "Third Reich flag"
-	desc = "Ein Volk, ein Reich, ein Fuhrer!"
-	icon_state = "ger_flag"
-
-/obj/structure/sign/flag/pirates2
-	name = "Soviet Union flag"
-	desc = "Soyuz nerushimy respublik svobodnyh!"
-	icon_state = "sov_flag"
-
-/obj/structure/sign/flag/japanese
-	name = "Japanese Empire flag"
-	desc = "BANZAI! BANZAI! BANZAI!"
-	icon_state = "japan_flag"
-
 
 /obj/structure/sign/flag/medical
 	name = "Medical flag"
 	desc = "A flag witht the universally recognized symbol for medicine."
 	icon_state = "medical_flag"
-
-/obj/structure/sign/flag/germanybanner
-	name = "Third Reich banner"
-	desc = "Ein Volk, ein Reich, ein Fuhrer!"
-	icon_state = "ger_banner"
-
-/obj/structure/sign/flag/piratesbanner
-	name = "Soviet Union banner"
-	desc = "Soyuz nerushimy respublik svobodnyh!"
-	icon_state = "sov_banner"
-
-
-/obj/structure/sign/flag/germanycerflag
-	name = "Third Reich flag"
-	desc = "Ein Volk, ein Reich, ein Fuhrer!"
-	icon_state = "ger_cerflag"
-
-/obj/structure/sign/flag/piratescerflag
-	name = "Soviet Union flag"
-	desc = "Soyuz nerushimy respublik svobodnyh!"
-	icon_state = "sov_cerflag"

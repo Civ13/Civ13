@@ -190,21 +190,22 @@
 	growth()
 
 /obj/structure/farming/plant/proc/growth()
-	if (stage < 10)
+	if (stage < 12)
 		if (stage <= 6)
 			icon_state = "[plant]-grow[stage]"
 			desc = "A young [plant] plant."
 			name = "young [plant] plant"
-		else if (stage == 7 || stage == 8)
+		else if (stage == 7 || stage == 8 || stage == 9 || stage == 10)
 			icon_state = "[plant]-harvest"
 			desc = "A ready to harvest [plant] plant."
 			name = "ready [plant] plant"
-		else if (stage >= 9)
+		else if (stage >= 11)
 			icon_state = "[plant]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600)
-			stage += 1
+			if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
+				stage += 1
 			growth()
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -212,7 +213,7 @@
 		if (stage <=6) // destroy
 			user << "<span class = 'warning'>You uproot the [name].</span>"
 			qdel(src)
-		else if (stage == 7) // harvest
+		else if (stage == 7 || stage == 8 || stage == 9 || stage == 10) // harvest
 			var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 			new fruitpath(loc)
 			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"

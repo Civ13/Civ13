@@ -6,6 +6,7 @@
 #define DUTCH_SYLLABLES list("eek", "ti", "po", "aar", "aag", "van", "en", "mo", "gis", "ka", "de", "uur", "ok", "nen", "ken", "ge", "er", "ooi", "ijk", "le", "cht", "ij", "ont", "ond", "ag", "het", "hoe", "wel", "nee", "ens", "ijf", "ofd", "per")
 #define GREEK_SYLLABLES list("do", "rik", "ev", "ti", "on", "tí", "ka", "phi", "oú", "en", "et", "tn", "pn", "kó", "ev", "aí", "óo", "sé", "pa", "ná", "tes", "pan", "hé", "wíd", "póm", "mé", "ée", "wói", "s")
 #define LATIN_SYLLABLES list("fe", "de", "mi", "na", "be", "a", "ca", "tae", "ae", "ter", "num", "tum", "put", "ux", "tib", "dom", "er", "el", "la", "sum", "su", "per", "mem", "di", "us")
+#define ARAB_SYLLABLES list("kama", "'ana", "lah", "'ana", "hu", "kan", "'iilaa", "fi", "hi", "mae", "hum", "yakun", "fi", "wahid", "dik", "hadha", "min", "bwast", "har", "kalima", "lkn", "ma", "bed", "hu", "hu", "'ant", "'aw", "kan", "w", "min", "'iilaa", "w", "w", "fi", "nahn", "eulba", "kharij", "albaed", "w", "alty", "alqiam", "min", "alwaqt", "'iidha", "sawf", "kayf", "qal", "w", "kl", "'aqul", "la", "thlath", "turid", "hawa'", "jayid", "laeib", "saghir", "nihaya", "wade", "almanzil", "qara", "yd", "mina'", "kabir", "tahjaa", "hataa", "al'ard", "huna", "yjb", "kabir", "airtifae", "mathal", "tabie", "faeal", "limadha", "tatlub", "alrijal", "taghyir", "dhahab", "daw'", "nawe", "tahtaj", "manzil", "sur", "lana", "nuqta", "'um", "alealam", "qurb", "bina'", "alnafs", "'ard", "al'ab", "'aya", "jadida", "aleamal", "juz'", "makan", "masnue", "hayi", "hayth", "baed", "zahar", "alqlyl", "faqat", "jawla", "rajul", "eam", "ja'", "kl", "jayid", "'ana", "manh", "taht", "aism", "jiddaan", "faqat")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -87,3 +88,12 @@
         /datum/language/spanish = 30,
         /datum/language/english = 10,
         /datum/language/dutch = 10)
+
+/datum/language/arab
+	name = "Arabic"
+	desc = "Allahu Ackbar!"
+	key = "a"
+	colour = "Arabic"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = ARAB_SYLLABLES
+	mutual_intelligibility = list()

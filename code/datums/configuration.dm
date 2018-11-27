@@ -112,8 +112,6 @@ var/list/gamemode_cache = list()
 	var/bones_can_break = FALSE
 	var/limbs_can_break = FALSE
 
-	var/revival_brain_life = -1
-
 
 //	var/welder_vision = TRUE
 	var/generate_asteroid = FALSE
@@ -144,7 +142,6 @@ var/list/gamemode_cache = list()
 	// hub stuff
 
 	var/hub = FALSE
-	var/jojoreference = FALSE
 	var/testing_port = -1
 	var/hubtesting_port = -2
 	var/open_hub_discord_in_new_window = TRUE
@@ -176,7 +173,6 @@ var/list/gamemode_cache = list()
 
 	// seasons and weather
 	var/list/allowed_seasons = list(1)
-	var/list/allowed_weather = list(1)
 
 	var/list/slog = list()
 	var/list/wlog = list()
@@ -568,21 +564,6 @@ var/list/gamemode_cache = list()
 							for (var/season in seasons)
 								allowed_seasons += season
 
-
-				if ("enabled_weather")
-					if (value)
-						var/list/weathers = splittext(value, ",")
-						wlog = weathers.Copy()
-						for (var/v in 1 to weathers.len)
-							weathers[v] = uppertext(ckey(weathers[v]))
-						if (weathers[1] == "ALL")
-							allowed_weather = list(1)
-						else if (weathers[1] == "NONE")
-							allowed_weather = list(0)
-						else
-							allowed_weather.Cut()
-							for (var/weather in weathers)
-								allowed_weather += weather
 
 				if ("use_hunger")
 					config.use_hunger = text2num(value)

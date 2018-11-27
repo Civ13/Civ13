@@ -38,10 +38,6 @@
 	return
 
 /obj/structure/optable/attack_hand(mob/user as mob)
-	if (HULK in usr.mutations)
-		visible_message("<span class='danger'>\The [usr] destroys \the [src]!</span>")
-		density = FALSE
-		qdel(src)
 	return
 
 /obj/structure/optable/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)

@@ -74,10 +74,10 @@
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(25))
-					if (prob(50))
+					if (prob(30))
 						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 						mineral.amount = rand(1,3)
-						visible_message("<span class='danger'>You found some copper ore!</span>")
+						H << "<span class='danger'>You found some copper ore!</span>"
 						T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
@@ -85,66 +85,66 @@
 					else
 						var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
 						mineral.amount = rand(1,3)
-						visible_message("<span class='danger'>You found some tin ore!</span>")
+						H << "<span class='danger'>You found some tin ore!</span>"
 						T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
-				if (prob(20))
+				if (prob(40) && map.age != "5000 B.C.")
 					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
 					mineral.amount = rand(1,2)
-					visible_message("<span class='danger'>You found some iron ore!</span>")
+					H << "<span class='danger'>You found some iron ore!</span>"
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(25))
 					var/pickperc = pick(1,2,3)
-					if (pickperc == 1)
+					if (pickperc == 1 || map.age != "1713")
 						new/obj/item/stack/ore/coal(src)
-						visible_message("<span class='danger'>You found some coal!</span>")
+						H << "<span class='danger'>You found some coal!</span>"
 						T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 					else if (pickperc == 2)
 						new/obj/item/stack/ore/saltpeter(src)
-						visible_message("<span class='danger'>You found some saltpeter!</span>")
+						H << "<span class='danger'>You found some saltpeter!</span>"
 						T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 					else if (pickperc == 3)
 						new/obj/item/stack/ore/sulphur(src)
-						visible_message("<span class='danger'>You found some sulphur!</span>")
+						H << "<span class='danger'>You found some sulphur!</span>"
 						T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 				if (prob(5))
 					new/obj/item/stack/ore/silver(src)
-					visible_message("<span class='danger'>You found some silver ore!</span>")
+					H << "<span class='danger'>You found some silver ore!</span>"
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(2))
 					new/obj/item/stack/ore/gold(src)
-					visible_message("<span class='danger'>You found some gold ore!</span>")
+					H << "<span class='danger'>You found some gold ore!</span>"
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(1))
 					new/obj/item/stack/ore/diamond(src)
-					visible_message("<span class='danger'>You found some raw diamonds!</span>")
+					H << "<span class='danger'>You found some raw diamonds!</span>"
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 				mineral.amount = rand(1,2)
-				visible_message("<span class='danger'>You found some usable stone blocks!</span>")
+				H << "<span class='danger'>You found some usable stone blocks!</span>"
 				T.ChangeTurf(/turf/floor/dirt)
 				T.is_mineable = FALSE
 				H.adaptStat("strength", 1)
@@ -193,6 +193,10 @@
 		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
 			if (locate(/obj/structure/farming/plant) in src)
 				user << "<span class='notice'>There already is something planted here.</span>"
+				return
+			var/area/A = get_area(C)
+			if (istype(A, /area/caribbean/void/caves))
+				user << "<span class='notice'>You can't farm underground.</span>"
 				return
 			else if (istype(C, /obj/item/stack/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")

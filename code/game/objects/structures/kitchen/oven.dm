@@ -20,6 +20,13 @@
 /obj/structure/oven/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))
 		return
+	if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
+		var/obj/item/weapon/reagent_containers/glass/small_pot/POT = I
+		H << "You place the [POT] on top of the [src]."
+		H.remove_from_mob(POT)
+		POT.loc = src.loc
+		POT.on_stove = TRUE
+		return
 	if (istype(I, /obj/item/stack/material/wood))
 		fuel += I.amount
 		qdel(I)
@@ -57,6 +64,11 @@
 			update_icon()
 			visible_message("<span class = 'notice'>The [name] finishes cooking.</span>")
 			process()
+			for (var/obj/item/weapon/reagent_containers/glass/small_pot/I in get_turf(src))
+				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
+					I.on_stove = FALSE
+					I.reagents.del_reagent("food_poisoning")
+					return
 	else
 		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
 
@@ -88,6 +100,16 @@
 					contents += new/obj/item/stack/material/iron(src)
 				contents -= I
 				qdel(I)
+			else if (istype(I, /obj/item/stack/ore/copper))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/copper(src)
+				contents -= I
+				qdel(I)
+			else if (istype(I, /obj/item/stack/ore/tin))
+				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
+					contents += new/obj/item/stack/material/tin(src)
+				contents -= I
+				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
@@ -107,6 +129,7 @@
 				organ.reagents.multiply_reagent("nutriment", 5)
 				organ.reagents.multiply_reagent("protein", 3)
 				organ.reagents.del_reagent("toxin")
+				organ.reagents.del_reagent("food_poisoning")
 				organ.roasted = TRUE
 				contents -= I
 				qdel(I)
@@ -118,6 +141,7 @@
 			I.color = "#E59400"
 			I.reagents.multiply_reagent("nutriment", 5)
 			I.reagents.multiply_reagent("protein", 3)
+			I.reagents.del_reagent("food_poisoning")
 			if (istype(I, /obj/item/weapon/reagent_containers/food))
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE
@@ -181,39 +205,41 @@
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))
 		return
-	if (istype(I, /obj/item/stack/material/wood))
-		fuel += I.amount
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/coal))
-		fuel += I.amount*3
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/iron))
-		iron += I.amount
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/copper))
-		copper += I.amount
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/tin))
-		tin += I.amount
-		qdel(I)
-		return
+	if (istype(I, /obj/item/stack/))
+		if (istype(I, /obj/item/stack/material/wood))
+			fuel += I.amount
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/coal))
+			fuel += I.amount*3
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/iron))
+			iron += I.amount
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/copper))
+			copper += I.amount
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/tin))
+			tin += I.amount
+			qdel(I)
+			return
+		else
+			H << "<span class = 'warning'>You can't smelt this.</span>"
+			return
+		var/space = max_space
+		for (var/obj/item/II in contents)
+			space -= II.w_class
+		if (space <= 0 || space - I.w_class < 0)
+			H << "<span class = 'warning'>The [name] is full.</span>"
+			return
+		H.remove_from_mob(I)
+		I.loc = src
+		visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
 	else
-		H << "<span class = 'warning'>You can't smelt this.</span>"
-		return
-	var/space = max_space
-	for (var/obj/item/II in contents)
-		space -= II.w_class
-	if (space <= 0 || space - I.w_class < 0)
-		H << "<span class = 'warning'>The [name] is full.</span>"
-		return
-	H.remove_from_mob(I)
-	I.loc = src
-	visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
-
+		..()
 
 /obj/structure/furnace/attack_hand(var/mob/living/carbon/human/H)
 	if (!on && fuel > 1)

@@ -31,6 +31,10 @@
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
 
+/obj/item/weapon/shovel/bone
+	name = "bone shovel"
+	icon_state = "shovel_bone"
+
 /obj/item/weapon/pickaxe
 	name = "pickaxe"
 	desc = "Miner's favorite."
@@ -45,6 +49,10 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
+
+/obj/item/weapon/pickaxe/bone
+	name = "bone pickaxe"
+	icon_state = "pickaxe_bone"
 
 /obj/item/weapon/shovel/spade
 	name = "spade"

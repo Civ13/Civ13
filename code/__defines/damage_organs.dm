@@ -20,6 +20,7 @@
 #define STUTTER   "stutter"
 #define EYE_BLUR  "eye_blur"
 #define DROWSY    "drowsy"
+#define POISONOUS    "poisonous"
 
 #define DAM_SHARP (1<<0)
 #define DAM_EDGE  (1<<1)

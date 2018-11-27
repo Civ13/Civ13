@@ -14,9 +14,14 @@
 /datum/job/var/rank_abbreviation = null
 /datum/job/var/is_governor = FALSE
 /datum/job/var/is_merchant = FALSE
+/datum/job/var/is_religious = FALSE
 /datum/job/var/is_RP = FALSE //to enable civilian jobs per faction
 /datum/job/var/is_army = FALSE //land troops
 /datum/job/var/is_marooned = FALSE //marooned pirate
+/datum/job/var/is_medieval = FALSE //self explanatory
+/datum/job/var/is_crusader = FALSE //self explanatory
+/datum/job/var/is_nomad = FALSE //self explanatory
+/datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
@@ -61,6 +66,8 @@
 		. = ROMAN
 	else if (istype(src, /datum/job/greek))
 		. = GREEK
+	else if (istype(src, /datum/job/arab))
+		. = ARAB
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -99,10 +106,12 @@
 	else if (istype(src, /datum/job/greek))
 		user.faction_text = "GREEK"
 		user.base_faction = new/datum/faction/greek(user, src)
-
+	else if (istype(src, /datum/job/arab))
+		user.faction_text = "ARAB"
+		user.base_faction = new/datum/faction/arab(user, src)
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
-		return "Royal Navy"
+		return "British Empire"
 	else
 		return "Pirate crew"
 		/*
@@ -110,7 +119,7 @@
 */
 /proc/get_side_name(var/side, var/datum/job/j)
 	if (side == BRITISH)
-		return "Royal Navy"
+		return "British Empire"
 	if (side == PIRATES)
 		return "Pirate crew"
 	return null

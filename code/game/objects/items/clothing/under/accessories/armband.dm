@@ -38,3 +38,9 @@
 	desc = "A fancy green armband!"
 	icon_state = "portuguese"
 	slot = "armband"
+
+/obj/item/clothing/accessory/armband/dutch
+	name = "orange armband"
+	desc = "A fancy orange armband!"
+	icon_state = "dutch"
+	slot = "armband"

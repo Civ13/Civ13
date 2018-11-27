@@ -1,6 +1,8 @@
 #define NO_WINNER "Neither side has captured the other side's base."
 
 var/global/obj/map_metadata/map = null
+//Max levels showing players how far to advance, appears on the Character tab
+var/civmax_research = list(85,89,67)
 
 /obj/map_metadata
 	name = ""
@@ -16,13 +18,10 @@ var/global/obj/map_metadata/map = null
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]
 	var/admin_ended_all_grace_periods = FALSE
-	var/uses_supply_train = FALSE
-	var/uses_main_train = FALSE
 	var/event_faction = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
 	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW)
-	var/custom_loadout = TRUE // set to false to prevent people to spawn with guns and ammo on POW Camp map
 	var/squad_spawn_locations = TRUE
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
@@ -46,7 +45,7 @@ var/global/obj/map_metadata/map = null
 		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
 	var/mission_start_message = "Round will start soon!"
 
-	var/required_players = 2
+	var/required_players = 1
 	var/time_both_sides_locked = -1
 	var/time_to_end_round_after_both_sides_locked = 6000
 	var/admins_triggered_roundend = FALSE
@@ -60,7 +59,6 @@ var/global/obj/map_metadata/map = null
 	var/current_loser = null
 	var/next_win = -1
 	var/win_condition_spam_check = FALSE
-	var/single_faction = FALSE //for games vs NPCs
 
 	// lighting
 	var/list/times_of_day = list("Early Morning", "Morning", "Afternoon", "Midday", "Evening", "Night", "Midnight")
@@ -71,9 +69,26 @@ var/global/obj/map_metadata/map = null
 	var/meme = FALSE
 	var/battle_name = null
 
-	//front (western europe, eastern europe, pacific, etc)
-	var/front = "Eastern"
+	//age (313 B.C., 1013, 1713, etc)
+	var/age = "1713"
+	var/ordinal_age = 3
 
+	//weather
+	var/blizzard = FALSE
+	var/heat_wave = FALSE
+	var/triggered_heatwave = FALSE
+	var/triggered_blizzard = FALSE
+	//civ stuff
+	var/civilizations = FALSE
+	var/list/custom_faction_nr = list()
+	var/list/custom_civs = list()
+	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical)
+	var/civa_research = list(0,0,0,null)
+	var/civb_research = list(0,0,0,null)
+	var/civc_research = list(0,0,0,null)
+	var/civd_research = list(0,0,0,null)
+	var/cive_research = list(0,0,0,null)
+	var/civf_research = list(0,0,0,null)
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -100,6 +115,19 @@ var/global/obj/map_metadata/map = null
 
 	// makes win condition helper datum
 	win_condition = new
+	set_ordinal_age()
+
+/obj/map_metadata/proc/set_ordinal_age()
+	if (age == "5000 B.C.")
+		ordinal_age = 0
+	else if (age == "313 B.C.")
+		ordinal_age = 1
+	else if (age == "1013")
+		ordinal_age = 2
+	else if (age == "1713")
+		ordinal_age = 3
+	return
+
 // called from the map process
 /obj/map_metadata/proc/tick()
 
@@ -151,7 +179,7 @@ var/global/obj/map_metadata/map = null
 			switch (H.original_job.base_type_flag())
 				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN)
 					return !faction1_can_cross_blocks()
-				if (PIRATES, INDIANS, CIVILIAN, GREEK)
+				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB)
 					return !faction2_can_cross_blocks()
 	return FALSE
 
@@ -168,8 +196,28 @@ var/global/obj/map_metadata/map = null
 	return (faction1_can_cross_blocks() && faction2_can_cross_blocks())
 
 /obj/map_metadata/proc/job_enabled_specialcheck(var/datum/job/J)
-	return TRUE
-
+	if (age == "1013" && !civilizations)
+		if (J.is_medieval == TRUE)
+			. = TRUE
+		else
+			. = FALSE
+	else
+		if (J.is_medieval == FALSE)
+			. = TRUE
+		else
+			. = FALSE
+	if (civilizations)
+		if (J.is_civilizations == TRUE)
+			. = TRUE
+		else
+			. = FALSE
+	else if (!civilizations)
+		if (J.is_civilizations == FALSE)
+			. = TRUE
+		else
+			. = FALSE
+	if (J.is_nomad == TRUE)
+		. = FALSE
 /obj/map_metadata/proc/cross_message(faction)
 	return "<font size = 4>The [faction_const2name(faction)] may now cross the invisible wall!</font>"
 
@@ -196,23 +244,21 @@ var/global/obj/map_metadata/map = null
 	return FALSE
 
 /obj/map_metadata/proc/update_win_condition()
-	if (single_faction)
-		return TRUE
-	else
-		if (!win_condition_specialcheck())
+	if (!win_condition_specialcheck())
+		return FALSE
+	if (world.time >= next_win && next_win != -1)
+		if (win_condition_spam_check)
 			return FALSE
-		if (world.time >= next_win && next_win != -1)
-			if (win_condition_spam_check)
-				return FALSE
-			ticker.finished = TRUE
-			var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-			if (current_winner && current_loser)
-				message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
-			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
-			win_condition_spam_check = TRUE
-			return FALSE
-		// German major
-		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		ticker.finished = TRUE
+		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		if (current_winner && current_loser)
+			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
+		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+		win_condition_spam_check = TRUE
+		return FALSE
+	// German major
+	else if (roundend_condition_sides.len > 1)
+		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 				if (last_win_condition != win_condition.hash)
 					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] base! They will win in {time} minute{s}."
@@ -248,16 +294,16 @@ var/global/obj/map_metadata/map = null
 					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 
-		else
-			if (current_win_condition != NO_WINNER && current_winner && current_loser)
-				world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>"
-				current_winner = null
-				current_loser = null
-			next_win = -1
-			current_win_condition = NO_WINNER
-			win_condition.hash = 0
-		last_win_condition = win_condition.hash
-		return TRUE
+	else
+		if (current_win_condition != NO_WINNER && current_winner && current_loser)
+			world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>"
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = NO_WINNER
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+	return TRUE
 
 /obj/map_metadata/proc/has_occupied_base(side)
 
@@ -275,7 +321,8 @@ var/global/obj/map_metadata/map = null
 		PIRATES = 0,
 		DUTCH = 0,
 		ROMAN = 0,
-		GREEK = 0,)
+		GREEK = 0,
+		ARAB = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -371,10 +418,12 @@ var/global/obj/map_metadata/map = null
 			return "Roman"
 		if (GREEK)
 			return "Greek"
+		if (ARAB)
+			return "Arab"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
-			return "Royal Navy"
+			return "British Empire"
 		if (PIRATES)
 			return "Pirate crew"
 		if (CIVILIAN)
@@ -382,20 +431,22 @@ var/global/obj/map_metadata/map = null
 		if (INDIANS)
 			return "Native Tribe"
 		if (FRENCH)
-			return "French Navy"
+			return "French Empire"
 		if (PORTUGUESE)
-			return "Portuguese Navy"
+			return "Portuguese Empire"
 		if (SPANISH)
-			return "Spanish Navy"
+			return "Spanish Empire"
 		if (DUTCH)
-			return "Dutch Navy"
+			return "Dutch Republic"
 		if (ROMAN)
 			return "Roman Republic"
 		if (GREEK)
 			return "Greek States"
+		if (ARAB)
+			return "Arabic Caliphate"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
-		if ("Royal Navy")
+		if ("British Empire")
 			return "British"
 		if ("Pirate crew")
 			return "Pirate"
@@ -403,18 +454,20 @@ var/global/obj/map_metadata/map = null
 			return "Colonist"
 		if ("Native Tribe")
 			return "Native"
-		if ("French Navy")
+		if ("French Empire")
 			return "French"
-		if ("Portuguese Navy")
+		if ("Portuguese Empire")
 			return "Portuguese"
-		if ("Spanish Navy")
+		if ("Spanish Empire")
 			return "Spanish"
-		if ("Dutch Navy")
+		if ("Dutch Republic")
 			return "Dutch"
 		if ("Roman Republic")
 			return "Roman"
 		if ("Greek States")
 			return "Greek"
+		if ("Arabic Caliphate")
+			return "Arab"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

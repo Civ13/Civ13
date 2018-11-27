@@ -15,19 +15,19 @@
 		list(INDIANS) = /area/caribbean/british,
 		list(PIRATES) = /area/caribbean/british,
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(INDIANS = 0.5, PIRATE = 0.5)
 	battle_name = "marooned pirates"
 	mission_start_message = "<big>After a major storm, a Pirate shipwreck has come ashore in an unknown Island. However, they are not alone...<br> The gracewall will be up after <b>45 minutes</b>.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND PIRATES ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
 	faction2 = PIRATES
-	single_faction = FALSE
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
 		"Black Sails:1" = 'sound/music/black_sails.ogg')
 
 obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (istype(J, /datum/job/pirates))
 		if (istype(J, /datum/job/pirates/marooned))
 			. = TRUE

@@ -51,13 +51,6 @@
 
 /mob/living/bullet_act(var/obj/item/projectile/P, var/def_zone)
 
-	//Stun Beams
-	if (P.taser_effect)
-		stun_effect_act(0, P.agony, def_zone, P)
-		src <<"<span class = 'red'>You have been hit by [P]!</span>"
-		qdel(P)
-		return
-
 	//Armor
 	var/absorb = run_armor_check(def_zone, P.check_armour, P.armor_penetration)
 	var/proj_sharp = is_sharp(P)
@@ -72,9 +65,7 @@
 		var/mob/living/carbon/human/H = src
 		if (H.takes_less_damage)
 			damage /= H.getStatCoeff("strength")
-/* // too meme so removed
-	if (check_zone(def_zone) == "head")
-		damage *= 2.0*/
+
 
 	if (!P.nodamage)
 		apply_damage(damage, P.damage_type, def_zone, absorb, FALSE, P, sharp=proj_sharp, edge=proj_edge)
@@ -124,10 +115,6 @@
 /mob/living/proc/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)
 	if (!effective_force || blocked >= 2)
 		return FALSE
-
-	//Hulk modifier
-	if (HULK in user.mutations)
-		effective_force *= 2
 
 	//Apply weapon damage
 	var/weapon_sharp = is_sharp(I)

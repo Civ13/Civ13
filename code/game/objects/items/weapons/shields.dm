@@ -41,6 +41,7 @@
 	slot_flags = SLOT_BACK
 	var/material = "wood"
 	health = 40 // hardness of wood
+	var/cooldown = 0
 
 /obj/item/weapon/shield/steel
 	name = "steel shield"
@@ -138,3 +139,63 @@
 		M.drop_from_inventory(src)
 	playsound(src, "shatter", 70, TRUE)
 	qdel(src)
+
+
+/obj/item/weapon/shield/iron/semioval
+	name = "semioval iron shield"
+	icon_state = "semioval_shield"
+	item_state = "semioval_shield"
+	slot_flags = SLOT_BACK
+	material = "iron"
+	health = 50
+	w_class = 3.0
+	base_block_chance = 40
+
+
+/obj/item/weapon/shield/iron/semioval/templar
+	name = "semioval iron templar shield"
+	icon_state = "semioval_shield_templar"
+	item_state = "semioval_shield_templar"
+	slot_flags = SLOT_BACK
+
+/obj/item/weapon/shield/iron/semioval/templar2
+	name = "semioval iron templar shield"
+	icon_state = "semioval_shield_templar2"
+	item_state = "semioval_shield_templar2"
+	slot_flags = SLOT_BACK
+
+obj/item/weapon/shield/red_buckler
+	name = "red buckler shield"
+	icon_state = "red_buckler"
+	item_state = "red_buckler"
+	base_block_chance = 25
+	w_class = 2.0
+	slot_flags = SLOT_BACK
+	material = "wood"
+	health = 40 // hardness of wood
+
+obj/item/weapon/shield/blue_buckler
+	name = "blue buckler shield"
+	icon_state = "blue_buckler"
+	item_state = "blue_buckler"
+	base_block_chance = 25
+	w_class = 2.0
+	slot_flags = SLOT_BACK
+	material = "wood"
+	health = 40 // hardness of wood
+
+obj/item/weapon/shield/attack_self(mob/user as mob)
+	if (cooldown < world.time - 10)
+		user.visible_message("<span class='warning'>[user] bashes the shield!</span>")
+		playsound(user.loc, 'sound/effects/shieldbash2.ogg', 100, TRUE)
+		cooldown = world.time
+
+/obj/item/weapon/shield/arab_buckler
+	name = "arabic round shield"
+	icon_state = "arabic_shield"
+	item_state = "arabic_shield"
+	base_block_chance = 30
+	w_class = 2.0
+	slot_flags = SLOT_BACK
+	material = "wood"
+	health = 40 // hardness of wood

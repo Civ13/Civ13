@@ -14,6 +14,8 @@
 	thrown_force_divisor = 1.1 // 22 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 8
+	block_chance = 12
+	cooldownw = 7
 
 /obj/item/weapon/material/handle
 	name = "handle"
@@ -31,6 +33,21 @@
 	thrown_force_divisor = 0.4 // 8 with weight 20 (steel)
 	attack_verb = list("jabbed","hit","bashed")
 	value = 3
+	block_chance = 10
+	cooldownw = 7
+
+/obj/item/weapon/material/pitchfork
+	name = "pitchfork"
+	desc = "It's used for removing weeds or scratching your back."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "rake"
+	item_state = "rake"
+	default_material = "iron"
+	force_divisor = 0.35 // 5 with weight 20 (steel)
+	thrown_force_divisor = 0.35 // as above
+	w_class = 3
+	attack_verb = list("slashed", "clawed")
+	cooldownw = 9
 
 /obj/item/weapon/material/spear
 	name = "spear"
@@ -39,7 +56,7 @@
 	desc = "A crude, yet effective weapon."
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "spear_old"
-	item_state = "spear"
+	item_state = "dory"
 	default_material = "wood"
 	throw_speed = 6
 	throw_range = 11
@@ -48,7 +65,8 @@
 	thrown_force_divisor = 1.2 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 6
-
+	block_chance = 15
+	cooldownw = 9
 /obj/item/weapon/material/hatchet
 	name = "hatchet"
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."
@@ -65,9 +83,10 @@
 	applies_material_colour = FALSE
 	value = 15
 	slot_flags = SLOT_BELT
-
+	block_chance = 15
+	cooldownw = 5
 /obj/item/weapon/material/hatchet/tribal
-	name = "stone hatchet"
+	name = "hatchet"
 	desc = "A crude hatchet, made with wood and stone."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalaxe"
@@ -75,6 +94,8 @@
 	force_divisor = 0.5 // 30 with hardness 60 (steel)
 	thrown_force_divisor = 0.75 // 13 with weight 20 (steel)
 	value = 12
+	block_chance = 15
+	cooldownw = 5
 
 /obj/item/weapon/material/boarding_axe
 	name = "boarding axe"
@@ -92,7 +113,8 @@
 	slot_flags = SLOT_BELT
 	applies_material_colour = FALSE
 	value = 20
-
+	block_chance = 12
+	cooldownw = 6
 
 /obj/item/weapon/material/minihoe // -- Numbers
 	name = "mini hoe"
@@ -104,6 +126,7 @@
 	thrown_force_divisor = 0.25 // as above
 	w_class = 2
 	attack_verb = list("slashed", "sliced", "cut", "clawed")
+	cooldownw = 5
 
 /obj/item/weapon/material/scythe
 	icon_state = "scythe0"
@@ -119,6 +142,7 @@
 	slot_flags = SLOT_BACK
 //	origin_tech = "materials=2;combat=2"
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
+	cooldownw = 5
 
 /obj/item/weapon/material/pilum
 	name = "pilum"
@@ -132,10 +156,12 @@
 	throw_speed = 6
 	throw_range = 14
 	allow_spin = FALSE
-	force_divisor = 0.7 // 42 with hardness 60 (steel)
-	thrown_force_divisor = 1.5 // 30 with weight 20 (steel)
+	force_divisor = 0.7 // 28 with hardness 40 (wood)
+	thrown_force_divisor = 1.5 // 27 with weight 18 (wood)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
+	block_chance = 10
+	cooldownw = 7
 
 /obj/item/weapon/material/roman_standard
 	name = "Roman Standard"
@@ -153,6 +179,8 @@
 	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 0
+	block_chance = 15
+	cooldownw = 10
 
 /obj/item/weapon/material/roman_standard/New()
 	..()
@@ -174,7 +202,8 @@
 	thrown_force_divisor = 1.1 // 24 with weight 20 (steel)
 	attack_verb = list("jabbed","impaled","ripped")
 	value = 10
-
+	block_chance = 15
+	cooldownw = 10
 /obj/item/weapon/material/spear/sarissa
 	name = "sarissa"
 	sharp = TRUE
@@ -199,6 +228,8 @@
 	var/ownerdir_z = 1
 	var/ownerdir = NORTH
 	var/deployed = FALSE
+	block_chance = 5
+	cooldownw = 12
 
 /obj/item/weapon/material/spear/sarissa/attack_self(mob/user)
 	if (deployed)
@@ -340,3 +371,62 @@
 			worn_state = "dory"
 		spawn(1)
 			update_icon()
+
+/obj/item/weapon/material/halberd
+	name = "halberd"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A spear topped by an axe blade."
+	slot_flags = SLOT_BACK | SLOT_BELT
+	icon_state = "halberd"
+	item_state = "halberd"
+	default_material = "iron"
+	throw_speed = 3
+	throw_range = 4
+	allow_spin = FALSE
+	block_chance = 18
+	force_divisor = 0.8 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 15
+	cooldownw = 12
+
+/obj/item/weapon/material/pike
+	name = "pike"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A long spear."
+	slot_flags = SLOT_BACK | SLOT_BELT
+	icon_state = "pike"
+	item_state = "pike"
+	default_material = "iron"
+	throw_speed = 4
+	throw_range = 5
+	allow_spin = FALSE
+	block_chance = 12
+	force_divisor = 0.85 // 42 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 24 with weight 20 (steel)
+	attack_verb = list("jabbed","impaled","ripped")
+	value = 18
+	cooldownw = 13
+
+/obj/item/weapon/material/battleaxe
+	name = "battle axe"
+	desc = "A very sharp axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "battleaxe"
+	item_state = "battleaxe"
+	default_material = "iron"
+	force_divisor = 0.6 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
+	w_class = 3
+	sharp = TRUE
+	edge = TRUE
+	material = "iron"
+//	origin_tech = "materials=2;combat=1"
+	attack_verb = list("chopped", "torn", "cut")
+	applies_material_colour = TRUE
+	value = 20
+	slot_flags = SLOT_BELT
+	block_chance = 15
+	cooldownw = 11

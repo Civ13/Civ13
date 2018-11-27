@@ -51,6 +51,11 @@
 	desc = "Typical priest hood."
 	icon_state = "chaplain_hoodie"
 
+/obj/item/clothing/suit/storage/jacket/plaguedoctor
+	name = "plague doctor suit"
+	desc = "Used by plague doctors. Doesn't seem to be very effective."
+	icon_state = "plaguedoctor"
+
 //Chaplain
 /obj/item/clothing/head/nun_hood
 	name = "nun hood"

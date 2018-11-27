@@ -32,10 +32,19 @@
 	light_color = rgb(254, 200, 200) // red tint
 	on_state = "torch-on"
 	off_state = "torch"
+	item_state = "torch"
 	value = 6
+	var/fuel = 300 // 5 mins
+/obj/item/flashlight/torch/update_icon()
+	..()
+	if (on)
+		item_state = "torch-on"
+	else
+		item_state = "torch"
 
 /obj/item/flashlight/torch/on
 	icon_state = "torch-on"
+	item_state = "torch-on"
 	on = TRUE
 
 /obj/item/flashlight/lantern/anchored
@@ -43,3 +52,21 @@
 
 /obj/item/flashlight/lantern/on/anchored
 	anchored = TRUE
+
+/obj/item/flashlight/torch/New()
+	..()
+	do_torch()
+
+/obj/item/flashlight/torch/proc/do_torch()
+	spawn(10)
+		if (fuel == 50)
+			visible_message("<span class='warning'>The torch is about to run out!</span>")
+			fuel -= 1
+			do_torch()
+		else if (fuel > 0)
+			if (on)
+				fuel -= 1
+			do_torch()
+		else
+			visible_message("The torch goes off.")
+			qdel(src)

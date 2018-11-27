@@ -1,3 +1,43 @@
+/////////313 stuff//////////
+
+#define AN_CODE 1000
+/datum/keyslot/ancient
+	code = AN_CODE
+
+/obj/item/weapon/key/ancient
+	code = AN_CODE
+	name = "Key"
+
+/obj/structure/simple_door/key_door/ancient
+	keyslot_type = /datum/keyslot/ancient
+	unique_door_name = "Locked"
+#undef AN_CODE
+#define AN_CODE2 11546
+/datum/keyslot/ancient/roman
+	code = AN_CODE2
+
+/obj/item/weapon/key/ancient/roman
+	code = AN_CODE2
+	name = "Roman Fortress Key"
+
+/obj/structure/simple_door/key_door/ancient/roman
+	keyslot_type = /datum/keyslot/ancient/roman
+	unique_door_name = "Roman Fortress"
+#undef AN_CODE2
+#define AN_CODE3 11311
+/datum/keyslot/ancient/greek
+	code = AN_CODE3
+
+/obj/item/weapon/key/ancient/greek
+	code = AN_CODE3
+	name = "Greek Fortress Key"
+
+/obj/structure/simple_door/key_door/ancient/greek
+	keyslot_type = /datum/keyslot/ancient/greek
+	unique_door_name = "Greek Fortress"
+#undef AN_CODE3
+
+
 ////////1713 stuff//////////
 #define CV_CUSTOM 999
 /obj/structure/simple_door/key_door/custom

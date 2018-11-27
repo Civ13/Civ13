@@ -62,7 +62,12 @@
 					if (H.original_job.base_type_flag() == GREEK)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
-
+		if (ARAB)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == ARAB)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 // get every single mob of x faction: useful for counting deceased & gibbed mobs. More efficient than n_of_side()
 // currently does not support undead/pillarmen faction
 /proc/total_n_of_side(x)
@@ -88,4 +93,5 @@
 			return dead_roman.len + heavily_injured_roman.len + alive_roman.len
 		if (GREEK)
 			return dead_greek.len + heavily_injured_greek.len + alive_greek.len
-
+		if (ARAB)
+			return dead_arab.len + heavily_injured_arab.len + alive_arab.len

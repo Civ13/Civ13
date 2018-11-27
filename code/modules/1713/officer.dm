@@ -31,7 +31,7 @@ var/global/list/valid_coordinates = list()
 		message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 	for (var/mob/living/carbon/human/M)
-		if (faction_text)
+		if (faction_text == M.faction_text)
 			messaget = "[name] announces:"
 			M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
 		log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")

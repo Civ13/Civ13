@@ -35,7 +35,9 @@
 	var/in_stasis = FALSE
 	var/heartbeat = FALSE
 	var/global/list/overlays_cache = null
-
+	var/lastcoatmessage = 0
+	var/start_to_rot = FALSE
+	var/rotting_stage = 0
 /mob/living/carbon/human/Life()
 
 
@@ -60,19 +62,35 @@
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
 	#define HUNGER_THIRST_MULTIPLIER 0.80
+	if (stat == DEAD && start_to_rot == FALSE)
+		do_rotting()
+		start_to_rot = TRUE
 
 	if (has_hunger_and_thirst)
-		if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-			nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+		if (map.heat_wave)
+			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
+			else
+				switch (stat)
+					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
+					if (UNCONSCIOUS) // takes over an hour to starve
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
 		else
-			switch (stat)
-				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.18/1) * HUNGER_THIRST_MULTIPLIER)
+			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+			else
+				switch (stat)
+					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+					if (UNCONSCIOUS) // takes over an hour to starve
+						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
 
 	#undef HUNGER_THIRST_MULTIPLIER
 
@@ -97,6 +115,123 @@
 		if (CONSCIOUS)
 			adjustOxyLoss(-5)
 
+// disease stuff
+	if (disease == TRUE)
+		if (disease_type == "none")
+			disease = FALSE
+		else if (disease_type == "plague")
+			if (disease_progression == 1 || disease_progression == 90 || disease_progression == 180)
+				update_surgery(1)
+			disease_progression += 1
+			// first 3 minutes
+			if (prob(7))
+				src << "You feel painful lumps on your skin."
+				adjustToxLoss(rand(8,12))
+			//3 more minutes
+			else if (disease_progression >= 90 && prob(10))
+				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
+				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
+				var/turf/location = loc
+				if (istype(location, /turf))
+					new /obj/effect/decal/cleanable/vomit/bloody(location)
+				nutrition -= 40
+			// 3 more minutes
+			else if (disease_progression >= 180 && disease_progression <= 300 && prob(15))
+				adjustBrainLoss(rand(7,10))
+				src << "You feel your body burning up from fever!"
+				Weaken(5)
+				bodytemperature = 313.15
+			// 4 more minutes
+			else if (disease_progression >= 360 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				src << "You feel much better now! The disease is finally gone!"
+				disease_immunity += "plague"
+				disease_treatment = 0
+				bodytemperature = 310.055
+		else if (disease_type == "flu")
+			if (disease_treatment)
+				disease_progression += 1
+			else
+				disease_progression += 4
+			// first 2 minutes
+			if (disease_progression == 25)
+				src << "You feel a little feverish."
+				disease_treatment = 0
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			//4 more minutes
+			if (prob(1))
+				emote("sniff")
+				apply_effect(5, DROWSY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 312.15 && prob(10))
+				src << "You feel like your fever is getting worse!"
+				apply_effect(5, AGONY, FALSE)
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough","sneeze"))
+				bodytemperature = 312.15
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1))
+				adjustBrainLoss(rand(7,10))
+				src << "You feel your body burning up from fever!"
+				apply_effect(10, AGONY, FALSE)
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough","sneeze"))
+				Weaken(5)
+				bodytemperature = 313.15
+			// 2 more minutes
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 313.15 && prob(8))
+				src << "You feel your fever going down."
+				apply_effect(5, DROWSY, FALSE)
+				emote(pick("cough","sneeze"))
+				bodytemperature = 312.35
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
+				src << "You feel your fever going down."
+				emote(pick("cough","sneeze"))
+				bodytemperature = 310.055
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+				if (prob(25))
+					disease_immunity += "flu"
+	else if (disease == FALSE)
+		for (var/mob/living/simple_animal/mouse/M in range(2,src))
+			//0.1% prob
+			if (!"plague" in disease_immunity)
+				if (prob(1))
+					if (prob(10))
+						disease = TRUE
+						disease_type = "plague"
+						disease_progression = 0
+						disease_treatment = 0
+
+		for (var/mob/living/carbon/human/H in range(2,src))
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity))
+				if (stat != DEAD)
+					if (prob(1))
+						disease = TRUE
+						disease_type = H.disease_type
+						disease_progression = 0
+						disease_treatment = 0
+				else if (stat == DEAD)
+					if (prob(3))
+						disease = TRUE
+						disease_type = H.disease_type
+						disease_progression = 0
+						disease_treatment = 0
+		if (disease == FALSE)
+			//0.005%
+			if (prob(1))
+				if (prob(1))
+					if (prob(50))
+						disease = TRUE
+						disease_type = "flu"
+						disease_progression = 0
+						disease_treatment = 0
 	..()
 
 	// recover stamina
@@ -166,43 +301,6 @@
 		eye_blind =  1
 		blinded =    1
 		eye_blurry = 1
-	else
-		//blindness
-		if (!(sdisabilities & BLIND))
-			if (equipment_tint_total >= TINT_BLIND)	// Covered eyes, heal faster
-				eye_blurry = max(eye_blurry-2, 0)
-
-	if (disabilities & EPILEPSY)
-		if ((prob(1) && paralysis < 1))
-			src << "<span class = 'red'>You have a seizure!</span>"
-			for (var/mob/O in viewers(src, null))
-				if (O == src)
-					continue
-				O.show_message(text("<span class='danger'>[src] starts having a seizure!</span>"), TRUE)
-			Paralyse(10)
-			make_jittery(1000)
-	if (disabilities & COUGHING)
-		if ((prob(5) && paralysis <= 1))
-			drop_item()
-			spawn( FALSE )
-				emote("cough")
-				return
-	if (disabilities & TOURETTES)
-		speech_problem_flag = TRUE
-		if ((prob(10) && paralysis <= 1))
-			Stun(10)
-			spawn( FALSE )
-				switch(rand(1, 3))
-					if (1)
-						emote("twitch")
-					if (2 to 3)
-						say("[prob(50) ? ";" : ""][pick("SHIT", "PISS", "FUCK", "CUNT", "COCKSUCKER", "MOTHERFUCKER", "TITS")]")
-				make_jittery(100)
-				return
-	if (disabilities & NERVOUS)
-		speech_problem_flag = TRUE
-		if (prob(10))
-			stuttering = max(10, stuttering)
 
 	if (stat != DEAD)
 		var/rn = rand(0, 200)
@@ -227,11 +325,6 @@
 					Weaken(10)
 
 
-/*
-/mob/living/carbon/human/handle_mutations_and_radiation()
-	return*/
-
-	/** breathing **/
 
 /mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
 	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
@@ -276,11 +369,13 @@
 
 		switch (season)
 			if ("WINTER")
-				loc_temp = 264 - 20
+				loc_temp = 244
 			if ("FALL")
 				loc_temp = 285
 			if ("SUMMER")
 				loc_temp = 303
+			if ("SPRING")
+				loc_temp = 290
 
 		switch (time_of_day)
 			if ("Midday")
@@ -304,28 +399,40 @@
 			if (WEATHER_SNOW)
 				switch (mob_area.weather_intensity)
 					if (1.0)
-						loc_temp *= 0.97
+						loc_temp *= 0.87
 					if (2.0)
-						loc_temp *= 0.96
+						loc_temp *= 0.86
 					if (3.0)
-						loc_temp *= 0.95
+						loc_temp *= 0.85
 			if (WEATHER_RAIN)
 				switch (mob_area.weather_intensity)
 					if (1.0)
 						loc_temp *= 0.99
 					if (2.0)
-						loc_temp *= 0.985
+						loc_temp *= 0.97
 					if (3.0)
-						loc_temp *= 0.98
-
+						loc_temp *= 0.95
+		if (map.blizzard)
+			loc_temp = 190
+		if (map.heat_wave)
+			loc_temp = 321
 		loc_temp = round(loc_temp)
 
 	for (var/obj/snow/S in get_turf(src))
 		loc_temp -= (S.amount * 20)
 
 	loc_temperature = loc_temp
-
+	for (var/obj/structure/brazier/BR in range(3, src))
+		if (BR.on == TRUE)
+			loc_temperature = 295
 	// todo: wind adjusting effective loc_temp
+	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && world.time > lastcoatmessage)
+		src << "<span class = 'warning'><big>You are sweating inside your coat. It's way too warm to wear one.</big></span>"
+		lastcoatmessage = world.time+1200
+		spawn(600)
+			if (istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
+				adjustFireLoss(2)
 
 	if (abs(loc_temperature - bodytemperature) < 0.5 && bodytemperature < species.heat_level_1 && bodytemperature > species.cold_level_1)
 		return // Temperatures are within normal ranges, fuck all this processing. ~Ccomp
@@ -460,8 +567,6 @@
 	return get_thermal_protection(thermal_protection_flags)
 
 /mob/living/carbon/human/get_cold_protection(temperature)
-	if (COLD_RESISTANCE in mutations)
-		return TRUE //Fully protected from the cold.
 
 	temperature = max(temperature, 2.7) //There is an occasional bug where the temperature is miscalculated in ares with a small amount of gas on them, so this is necessary to ensure that that bug does not affect this calculation. Space's temperature is 2.7K and most suits that are intended to protect against any cold, protect down to 2.0K.
 	var/thermal_protection_flags = get_cold_protection_flags(temperature)
@@ -674,165 +779,6 @@
 	if (!..())
 		return
 
-//	if (damageoverlay.overlays)
-//		damageoverlay.overlays = list()
-
-/*	if (stat == UNCONSCIOUS)
-		//Critical damage passage overlay
-		if (health <= 0)
-			var/image/I
-			switch(health)
-				if (-20 to -10)
-					I = overlays_cache[1]
-				if (-30 to -20)
-					I = overlays_cache[2]
-				if (-40 to -30)
-					I = overlays_cache[3]
-				if (-50 to -40)
-					I = overlays_cache[4]
-				if (-60 to -50)
-					I = overlays_cache[5]
-				if (-70 to -60)
-					I = overlays_cache[6]
-				if (-80 to -70)
-					I = overlays_cache[7]
-				if (-90 to -80)
-					I = overlays_cache[8]
-				if (-95 to -90)
-					I = overlays_cache[9]
-				if (-INFINITY to -95)
-					I = overlays_cache[10]
-			damageoverlay.overlays += I
-	else
-		//Oxygen damage overlay
-		if (oxyloss)
-			var/image/I
-			switch(oxyloss)
-				if (10 to 20)
-					I = overlays_cache[11]
-				if (20 to 25)
-					I = overlays_cache[12]
-				if (25 to 30)
-					I = overlays_cache[13]
-				if (30 to 35)
-					I = overlays_cache[14]
-				if (35 to 40)
-					I = overlays_cache[15]
-				if (40 to 45)
-					I = overlays_cache[16]
-				if (45 to INFINITY)
-					I = overlays_cache[17]
-			damageoverlay.overlays += I
-
-		//Fire and Brute damage overlay (BSSR)
-		var/hurtdamage = getBruteLoss() + getFireLoss() + damageoverlaytemp
-		damageoverlaytemp = FALSE // We do this so we can detect if someone hits us or not.
-		if (hurtdamage)
-			var/image/I
-			switch(hurtdamage)
-				if (10 to 25)
-					I = overlays_cache[18]
-				if (25 to 40)
-					I = overlays_cache[19]
-				if (40 to 55)
-					I = overlays_cache[20]
-				if (55 to 70)
-					I = overlays_cache[21]
-				if (70 to 85)
-					I = overlays_cache[22]
-				if (85 to INFINITY)
-					I = overlays_cache[23]
-			damageoverlay.overlays += I*/
-
-/*		if (healths  && stat != DEAD) // They are dead, let death() handle their hud update on this.
-			if (analgesic > 100)
-				healths.icon_state = "health_numb"
-			else
-				switch(hal_screwyhud)
-					if (1)	healths.icon_state = "health6"
-					if (2)	healths.icon_state = "health7"
-					else
-						//switch(health - halloss)
-						switch(100 - ((species.flags & NO_PAIN) ? FALSE : traumatic_shock))
-							if (100 to INFINITY)		healths.icon_state = "health0"
-							if (80 to 100)			healths.icon_state = "health1"
-							if (60 to 80)			healths.icon_state = "health2"
-							if (40 to 60)			healths.icon_state = "health3"
-							if (20 to 40)			healths.icon_state = "health4"
-							if (0 to 20)				healths.icon_state = "health5"
-							else					healths.icon_state = "health6"
-
-		if (nutrition_icon)
-			switch(nutrition)
-				if (450 to INFINITY)				nutrition_icon.icon_state = "nutrition0"
-				if (350 to 450)					nutrition_icon.icon_state = "nutrition1"
-				if (250 to 350)					nutrition_icon.icon_state = "nutrition2"
-				if (150 to 250)					nutrition_icon.icon_state = "nutrition3"
-				else							nutrition_icon.icon_state = "nutrition4"
-
-		if (pressure)
-			pressure.icon_state = "pressure[pressure_alert]"
-
-//			if (rest)	//Not used with new UI
-//				if (resting || lying || sleeping)		rest.icon_state = "rest1"
-//				else									rest.icon_state = "rest0"
-		if (toxin)
-			if (hal_screwyhud == 4 || plasma_alert)	toxin.icon_state = "tox1"
-			else									toxin.icon_state = "tox0"
-		if (oxygen)
-			if (hal_screwyhud == 3 || oxygen_alert)	oxygen.icon_state = "oxy1"
-			else									oxygen.icon_state = "oxy0"
-		if (fire)
-			if (fire_alert)							fire.icon_state = "fire[fire_alert]" //fire_alert is either FALSE if no alert, TRUE for cold and 2 for heat.
-			else									fire.icon_state = "fire0"
-
-		if (bodytemp)
-			if (!species)
-				switch(bodytemperature) //310.055 optimal body temp
-					if (370 to INFINITY)		bodytemp.icon_state = "temp4"
-					if (350 to 370)			bodytemp.icon_state = "temp3"
-					if (335 to 350)			bodytemp.icon_state = "temp2"
-					if (320 to 335)			bodytemp.icon_state = "temp1"
-					if (300 to 320)			bodytemp.icon_state = "temp0"
-					if (295 to 300)			bodytemp.icon_state = "temp-1"
-					if (280 to 295)			bodytemp.icon_state = "temp-2"
-					if (260 to 280)			bodytemp.icon_state = "temp-3"
-					else					bodytemp.icon_state = "temp-4"
-			else
-				//TODO: precalculate all of this stuff when the species datum is created
-				var/base_temperature = species.body_temperature
-				if (base_temperature == null) //some species don't have a set metabolic temperature
-					base_temperature = (species.heat_level_1 + species.cold_level_1)/2
-
-				var/temp_step
-				if (bodytemperature >= base_temperature)
-					temp_step = (species.heat_level_1 - base_temperature)/4
-
-					if (bodytemperature >= species.heat_level_1)
-						bodytemp.icon_state = "temp4"
-					else if (bodytemperature >= base_temperature + temp_step*3)
-						bodytemp.icon_state = "temp3"
-					else if (bodytemperature >= base_temperature + temp_step*2)
-						bodytemp.icon_state = "temp2"
-					else if (bodytemperature >= base_temperature + temp_step*1)
-						bodytemp.icon_state = "temp1"
-					else
-						bodytemp.icon_state = "temp0"
-
-				else if (bodytemperature < base_temperature)
-					temp_step = (base_temperature - species.cold_level_1)/4
-
-					if (bodytemperature <= species.cold_level_1)
-						bodytemp.icon_state = "temp-4"
-					else if (bodytemperature <= base_temperature - temp_step*3)
-						bodytemp.icon_state = "temp-3"
-					else if (bodytemperature <= base_temperature - temp_step*2)
-						bodytemp.icon_state = "temp-2"
-					else if (bodytemperature <= base_temperature - temp_step*1)
-						bodytemp.icon_state = "temp-1"
-					else
-						bodytemp.icon_state = "temp0"
-*/
 	return TRUE
 
 /mob/living/carbon/human/handle_random_events()
@@ -1176,6 +1122,8 @@
 
 	if (shock_stage >= 150)
 		Weaken(20)
+		if (prob(1))
+			adjustOxyLoss(10)
 
 /mob/living/carbon/human/proc/handle_hud_list()
 
@@ -1183,27 +1131,53 @@
 
 		never_set_faction_huds = FALSE
 
-		var/image/holder = hud_list[BASE_FACTION]
-		holder.icon = 'icons/mob/hud_1713.dmi'
-		holder.plane = HUD_PLANE
-		switch (original_job.base_type_flag())
-			if (PIRATES)
-				holder.icon_state = "pirate_basic"
-			if (BRITISH)
-				holder.icon_state = "rn_basic"
-			if (FRENCH)
-				holder.icon_state = "fr_basic"
-			if (SPANISH)
-				holder.icon_state = "sp_basic"
-			if (PORTUGUESE)
-				holder.icon_state = "pt_basic"
-			if (INDIANS)
-				holder.icon_state = "ind_basic"
-			if (DUTCH)
-				holder.icon_state = "nl_basic"
-			if (CIVILIAN)
-				holder.icon_state = ""
-		hud_list[BASE_FACTION] = holder
+		if (base_faction)
+			var/image/holder = hud_list[FACTION_TO_ENEMIES]
+			holder.icon = null
+			holder.icon_state = null
+			hud_list[FACTION_TO_ENEMIES] = holder
+
+			var/image/holder2 = hud_list[BASE_FACTION]
+			holder2.icon = 'icons/mob/hud_1713.dmi'
+			holder2.plane = HUD_PLANE
+			switch (original_job.base_type_flag())
+				if (PIRATES)
+					holder2.icon_state = "pirate_basic"
+				if (BRITISH)
+					holder2.icon_state = "rn_basic"
+				if (FRENCH)
+					holder2.icon_state = "fr_basic"
+				if (SPANISH)
+					holder2.icon_state = "sp_basic"
+				if (PORTUGUESE)
+					holder2.icon_state = "pt_basic"
+				if (INDIANS)
+					holder2.icon_state = "ind_basic"
+				if (DUTCH)
+					holder2.icon_state = "nl_basic"
+				if (ARAB)
+					holder2.icon_state = "arab_basic"
+				if (GREEK)
+					holder2.icon_state = "greek_basic"
+				if (ROMAN)
+					holder2.icon_state = "roman_basic"
+				if (CIVILIAN)
+					if (original_job_title == "Civilization A Citizen")
+						holder2.icon_state = "civ1"
+					else if (original_job_title == "Civilization B Citizen")
+						holder2.icon_state = "civ2"
+					else if (original_job_title == "Civilization C Citizen")
+						holder2.icon_state = "civ3"
+					else if (original_job_title == "Civilization D Citizen")
+						holder2.icon_state = "civ4"
+					else if (original_job_title == "Civilization E Citizen")
+						holder2.icon_state = "civ5"
+					else if (original_job_title == "Civilization F Citizen")
+						holder2.icon_state = "civ6"
+					else
+						holder2.icon_state = ""
+
+			hud_list[BASE_FACTION] = holder2
 
 /mob/living/carbon/human/handle_silent()
 	if (..())
@@ -1265,5 +1239,26 @@
 	..()
 	if (stat == DEAD)
 		return
-	if (XRAY in mutations)
-		sight |= SEE_TURFS|SEE_MOBS|SEE_OBJS
+
+/mob/living/carbon/human/proc/do_rotting()
+	if (stat == DEAD)
+		spawn(3000)
+			if (stat == DEAD)
+				visible_message("[src]'s body starts to rot.")
+				rotting_stage = 1
+				spawn(3000)
+					if (stat == DEAD)
+						visible_message("[src]'s body is visibly rotten!")
+						rotting_stage = 2
+						spawn(2000)
+							if (stat == DEAD)
+								var/obj/structure/religious/remains/HR = new/obj/structure/religious/remains(src.loc)
+								HR.name = "[src]'s remains"
+								qdel(src)
+								return
+							else
+								return
+					else
+						return
+			else
+				return

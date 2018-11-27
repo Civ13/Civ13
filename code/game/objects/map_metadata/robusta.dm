@@ -18,7 +18,7 @@
 		list(SPANISH) = /area/caribbean/pirates/land,
 		list(INDIANS) = /area/caribbean/indians,
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(PORTUGUESE = 0.4, SPANISH = 0.4, INDIANS = 0.2)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
@@ -30,9 +30,12 @@
 	faction2 = SPANISH
 
 obj/map_metadata/robusta/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE

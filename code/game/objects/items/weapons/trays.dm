@@ -31,17 +31,6 @@
 						sleep(rand(2,4))
 
 
-	if ((CLUMSY in user.mutations) && prob(50))              //What if he's a clown?
-		M << "<span class='warning'>You accidentally slam yourself with the [src]!</span>"
-		M.Weaken(1)
-		user.take_organ_damage(2)
-		if (prob(50))
-			playsound(M, 'sound/items/trayhit1.ogg', 50, TRUE)
-			return
-		else
-			playsound(M, 'sound/items/trayhit2.ogg', 50, TRUE) //sound playin'
-			return //it always returns, but I feel like adding an extra return just for safety's sakes. EDIT; Oh well I won't :3
-
 	var/mob/living/carbon/human/H = M      ///////////////////////////////////// /Let's have this ready for later.
 
 

@@ -14,19 +14,17 @@
 	roundend_condition_sides = list(
 		list(INDIANS) = /area/caribbean/british
 		)
-	front = "Pacific"
+	age = "5000 B.C."
 	faction_distribution_coeffs = list(INDIANS = 1)
 	battle_name = "the tribes"
-	var/targetnr = 2
-	var/targetnr_text= "2"
 	mission_start_message = "<big>Six tribes have been inhabiting this area for generations. Will they be able to get along?</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = INDIANS
-	single_faction = TRUE
 	availablefactions_run = TRUE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (istype(J, /datum/job/indians/tribes))
 		. = TRUE
 	else if (istype(J, /datum/job/indians/carib) || istype(J, /datum/job/indians/carib_chief) || istype(J, /datum/job/indians/carib_shaman))

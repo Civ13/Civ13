@@ -354,7 +354,10 @@ var/list/vocal_emotes = list(
 						if (faction_text == BRITISH)
 							playsound(get_turf(src), "charge_BRITISH", 100)
 						if (faction_text == FRENCH)
-							playsound(get_turf(src), "charge_FRENCH", 100)
+							if (original_job.is_crusader)
+								playsound(get_turf(src), "charge_CRUSADER", 100)
+							else
+								playsound(get_turf(src), "charge_FRENCH", 100)
 						if (faction_text == SPANISH)
 							playsound(get_turf(src), "charge_SPANISH", 100)
 						if (faction_text == PORTUGUESE)
@@ -367,6 +370,8 @@ var/list/vocal_emotes = list(
 							playsound(get_turf(src), "charge_ROMAN", 100)
 						if (faction_text == GREEK)
 							playsound(get_turf(src), "charge_GREEK", 100)
+						if (faction_text == ARAB)
+							playsound(get_turf(src), "charge_ARAB", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2

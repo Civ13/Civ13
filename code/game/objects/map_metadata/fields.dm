@@ -16,7 +16,7 @@
 		list(BRITISH) = /area/caribbean/colonies/british,
 		list(FRENCH) = /area/caribbean/colonies/french
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
@@ -28,6 +28,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 
 obj/map_metadata/fields/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (J.is_army == TRUE)
 		. = TRUE
 	else

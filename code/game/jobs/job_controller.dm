@@ -28,6 +28,7 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[DUTCH]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ROMAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[GREEK]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ARAB]
 	else
 		for (var/faction in map.faction_organization)
 			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
@@ -65,7 +66,7 @@ var/global/datum/controller/occupations/job_master
 			var/c = pick(randomfaction-a-b)
 			randomfaction_spawn = pick(a, b, c)
 			map.availablefactions = list(a,b,c)
-			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")]</b>."
+			world << "Three tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")]</b>."
 		else if (autobalance_nr >= 20 && autobalance_nr < 25)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
@@ -73,7 +74,7 @@ var/global/datum/controller/occupations/job_master
 			var/d = pick(randomfaction-a-b-c)
 			randomfaction_spawn = pick(a, b, c, d)
 			map.availablefactions = list(a,b,c,d)
-			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")]</b>."
+			world << "Four tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")]</b>."
 		else if (autobalance_nr >= 25 && autobalance_nr < 30)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
@@ -82,11 +83,36 @@ var/global/datum/controller/occupations/job_master
 			var/e = pick(randomfaction-a-b-c-d)
 			randomfaction_spawn = pick(a, b, c, d, e)
 			map.availablefactions = list(a,b,c,d,e)
-			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")],[replacetext(e, "sman", "")]</b>."
+			world << "Five tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")],[replacetext(e, "sman", "")]</b>."
 		else if (autobalance_nr >= 30)
 			randomfaction_spawn = pick(randomfaction)
 			map.availablefactions = randomfaction
 			world << "All the 6 tribes are enabled."
+
+	map.availablefactions_run = FALSE
+	return
+
+/datum/controller/occupations/proc/set_factions2(var/autobalance_nr = 0)
+	var/list/randomfaction = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen","Civilization F Citizen")
+	if (map.availablefactions_run == TRUE)
+		if (autobalance_nr <= 8)
+			map.availablefactions = list("Civilization A Citizen")
+			world << "Only one civilization is enabled: <b>[civname_a]</b>."
+		else if (autobalance_nr > 8 && autobalance_nr <= 16)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen")
+			world << "Two civilizations are enabled: <b>[civname_a], [civname_b]</b>."
+		else if (autobalance_nr > 16 && autobalance_nr <= 24)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen")
+			world << "Three civilizations are enabled: <b>[civname_a], [civname_b], [civname_c]</b>."
+		else if (autobalance_nr > 24 && autobalance_nr <= 30)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen")
+			world << "Four civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d]</b>."
+		else if (autobalance_nr > 30 && autobalance_nr <= 36)
+			map.availablefactions = list("Civilization A Citizen","Civilization B Citizen","Civilization C Citizen","Civilization D Citizen","Civilization E Citizen")
+			world << "Five civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e]</b>."
+		else if (autobalance_nr > 36)
+			map.availablefactions = randomfaction
+			world << "All the 6 civilizations are enabled: <b>[civname_a], [civname_b], [civname_c], [civname_d], [civname_e], [civname_f]</b>."
 
 	map.availablefactions_run = FALSE
 	return
@@ -111,6 +137,9 @@ var/global/datum/controller/occupations/job_master
 	if (map && map.ID == MAP_TRIBES)
 		set_factions(autobalance_for_players)
 
+	if (map && map.civilizations)
+		set_factions2(autobalance_for_players)
+
 	for (var/datum/job/J in occupations)
 		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
 			var/positions = round((autobalance_for_players/J.scale_to_players) * J.max_positions)
@@ -131,7 +160,8 @@ var/global/datum/controller/occupations/job_master
 				pirates_toggled = FALSE
 				spanish_toggled = FALSE
 				civilians_forceEnabled = TRUE
-
+	if (map.civilizations)
+		civilians_forceEnabled = TRUE
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job
 	// and lock up one job position while np is spawning
@@ -358,6 +388,8 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateRO"
 				if (GREEK)
 					spawn_location = "JoinLateGR"
+				if (ARAB)
+					spawn_location = "JoinLateAR"
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
@@ -379,6 +411,8 @@ var/global/datum/controller/occupations/job_master
 				spawn_location = "JoinLateRO"
 			else if (findtext(H.original_job.spawn_location, "JoinLateGR"))
 				spawn_location = "JoinLateGR"
+			else if (findtext(H.original_job.spawn_location, "JoinLateAR"))
+				spawn_location = "JoinLateAR"
 		H.job_spawn_location = spawn_location
 
 		#ifdef SPAWNLOC_DEBUG
@@ -505,6 +539,7 @@ var/global/datum/controller/occupations/job_master
 	var/dutch = alive_n_of_side(DUTCH)
 	var/roman = alive_n_of_side(ROMAN)
 	var/greek = alive_n_of_side(GREEK)
+	var/arab = alive_n_of_side(ARAB)
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
 	var/max_pirates = INFINITY
@@ -516,6 +551,7 @@ var/global/datum/controller/occupations/job_master
 	var/max_dutch = INFINITY
 	var/max_roman = INFINITY
 	var/max_greek = INFINITY
+	var/max_arab = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -548,11 +584,13 @@ var/global/datum/controller/occupations/job_master
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
 
 		if (map.faction_distribution_coeffs.Find(ROMAN))
-			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[ROMAN])
+			max_roman = ceil(relevant_clients * map.faction_distribution_coeffs[ROMAN])
 
 		if (map.faction_distribution_coeffs.Find(GREEK))
-			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[GREEK])
+			max_greek = ceil(relevant_clients * map.faction_distribution_coeffs[GREEK])
 
+		if (map.faction_distribution_coeffs.Find(ARAB))
+			max_arab = ceil(relevant_clients * map.faction_distribution_coeffs[ARAB])
 
 	switch (side)
 		if (CIVILIAN)
@@ -612,6 +650,12 @@ var/global/datum/controller/occupations/job_master
 			if (greek_forceEnabled)
 				return FALSE
 			if (greek >= max_greek)
+				return TRUE
+
+		if (ARAB)
+			if (arab_forceEnabled)
+				return FALSE
+			if (arab >= max_arab)
 				return TRUE
 
 	return FALSE

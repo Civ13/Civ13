@@ -16,7 +16,7 @@
 		list(BRITISH) = /area/caribbean/british/land,
 		list(INDIANS) = /area/caribbean/pirates/land
 		)
-	front = "Pacific"
+	age = "1713"
 	faction_distribution_coeffs = list(BRITISH = 0.35, INDIANS = 0.65)
 //	songs = list(
 //		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
@@ -28,9 +28,12 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
+	..()
 	if (J.is_RP == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/pirates/battleroyale))
 		. = FALSE

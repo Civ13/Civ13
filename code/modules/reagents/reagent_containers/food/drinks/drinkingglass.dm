@@ -139,6 +139,14 @@
 	glass_type = "pot"
 	volume = 60
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora
+	name = "amphora"
+	desc = "A clay amphora."
+	icon = 'icons/obj/drinks.dmi'
+	icon_state = "amphora"
+	glass_type = "amphora"
+	volume = 150
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap
 	name = "tribal pot"
 	desc = "A tribal clay pot."

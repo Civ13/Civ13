@@ -22,7 +22,7 @@
 	melee_damage_upper = 40
 	attacktext = "slashed"
 	attack_sound = 'sound/weapons/bladeslice.ogg'
-
+	mob_size = MOB_MEDIUM
 
 	var/corpse = /mob/living/carbon/human/corpse/pirate
 	var/weapon1 = /obj/item/weapon/material/sword/cutlass

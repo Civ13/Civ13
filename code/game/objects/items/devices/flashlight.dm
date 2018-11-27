@@ -17,6 +17,8 @@
 	var/brightness_on = 5 //luminosity when on
 	var/turn_on_sound = 'sound/effects/Custom_flashlight.ogg'
 
+	var/cooloff = 0
+
 /obj/item/flashlight/initialize()
 	..()
 	update_icon()
@@ -40,8 +42,20 @@
 	return TRUE
 
 
-/obj/item/flashlight/attack(mob/living/M as mob, mob/living/user as mob)
+/obj/item/flashlight/attack(mob/living/carbon/human/M as mob, mob/user as mob)
 	add_fingerprint(user)
+	if (istype(src, /obj/item/flashlight/torch) && user.a_intent == I_HURT)
+		if (on && world.time > cooloff)
+			M.adjustFireLoss(rand(7,10))
+			user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
+			user.do_attack_animation(M)
+			if (prob(5))
+				M.IgniteMob()
+				M.fire_stacks += 1
+			playsound(loc, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
+			cooloff = world.time+10
+			return
+
 	if (on && user.targeted_organ == "eyes")
 
 		var/mob/living/carbon/human/H = M	//mob has protective eyewear
@@ -63,8 +77,6 @@
 				if (M.stat == DEAD || M.blinded)	//mob is dead or fully blind
 					user << "<span class='warning'>\The [M]'s pupils do not react to the light!</span>"
 					return
-				if (XRAY in M.mutations)
-					user << "<span class='notice'>\The [M] pupils give an eerie glow!</span>"
 				if (vision.damage)
 					user << "<span class='warning'>There's visible damage to [M]'s [vision.name]!</span>"
 				else if (M.eye_blurry)
@@ -85,4 +97,5 @@
 			if (M.HUDtech.Find("flash"))
 				flick("flash", M.HUDtech["flash"])
 	else
+
 		return ..()

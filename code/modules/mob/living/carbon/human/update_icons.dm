@@ -213,13 +213,7 @@ var/global/list/damage_icon_parts = list()
 //BASE MOB SPRITE
 /mob/living/carbon/human/proc/update_body(var/update_icons=1)
 
-	var/husk_color_mod = rgb(96,88,80)
-	var/hulk_color_mod = rgb(48,224,40)
 
-	var/husk = (HUSK in mutations)
-	var/fat = body_build ? body_build.index : ""
-	var/hulk = (HULK in mutations)
-	var/skeleton = (SKELETON in mutations)
 
 	//CACHING: Generate an index key from visible bodyparts.
 	//0 = destroyed, TRUE = normal, 2 = necrotic.
@@ -261,8 +255,6 @@ var/global/list/damage_icon_parts = list()
 			else
 				icon_key += "#000000"
 
-	icon_key = "[icon_key][husk ? TRUE : FALSE][fat ? TRUE : FALSE][hulk ? TRUE : FALSE][skeleton ? TRUE : FALSE]"
-
 	var/icon/base_icon
 	if (human_icon_cache[icon_key])
 		base_icon = human_icon_cache[icon_key]
@@ -271,7 +263,7 @@ var/global/list/damage_icon_parts = list()
 		base_icon = new('icons/mob/human.dmi',"blank")
 
 		for (var/obj/item/organ/external/part in organs)
-			var/icon/temp = part.get_icon(skeleton)
+			var/icon/temp = part.get_icon()
 			//That part makes left and right legs drawn topmost and lowermost when human looks WEST or EAST
 			//And no change in rendering for other parts (they icon_position is FALSE, so goes to 'else' part)
 			if (part.icon_position&(LEFT|RIGHT))
@@ -290,21 +282,6 @@ var/global/list/damage_icon_parts = list()
 				base_icon.Blend(temp2, ICON_UNDERLAY)
 			else
 				base_icon.Blend(temp, ICON_OVERLAY)
-
-		if (!skeleton)
-			if (husk)
-				base_icon.ColorTone(husk_color_mod)
-			else if (hulk)
-				var/list/tone = ReadRGB(hulk_color_mod)
-				base_icon.MapColors(rgb(tone[1],0,0),rgb(0,tone[2],0),rgb(0,0,tone[3]))
-
-		//Handle husk overlay.
-		if (husk && ("overlay_husk" in icon_states(species.icobase)))
-			var/icon/mask = new(base_icon)
-			var/icon/husk_over = new(species.icobase,"overlay_husk")
-			mask.MapColors(0,0,0,1, FALSE,0,0,1, FALSE,0,0,1, FALSE,0,0,1, FALSE,0,0,0)
-			husk_over.Blend(mask, ICON_ADD)
-			base_icon.Blend(husk_over, ICON_OVERLAY)
 
 		human_icon_cache[icon_key] = base_icon
 
@@ -328,11 +305,18 @@ var/global/list/damage_icon_parts = list()
 
 	//masks and helmets can obscure our hair.
 	if ( (head && (head.flags_inv & BLOCKHAIR)) || (wear_mask && (wear_mask.flags_inv & BLOCKHAIR)))
+
 		if (update_icons)   update_icons()
 		return
-
+	if (wear_suit)
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/F = wear_suit
+			if (F.hood == TRUE)
+				overlays_standing[HAIR_LAYER]	= null
+				if (update_icons)   update_icons()
+				return
 	//base icons
-	var/icon/face_standing	= new /icon('icons/mob/human_face.dmi',"hair_a_s")
+	var/icon/face_standing	= new /icon('icons/mob/human_face.dmi',"bald_s")
 
 	if (f_style)
 		var/datum/sprite_accessory/facial_hair_style = facial_hair_styles_list[f_style]
@@ -343,7 +327,31 @@ var/global/list/damage_icon_parts = list()
 
 			face_standing.Blend(facial_s, ICON_OVERLAY)
 
-	if (h_style && !(head && (head.flags_inv & BLOCKHEADHAIR)))
+	if (h_style && !(head && (head.flags_inv & BLOCKHEADHAIR && wear_suit)))
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/C = wear_suit
+			if ( C.hood == FALSE)
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
+					var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
+					if (hair_style.do_colouration)
+						hair_s.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
+
+					face_standing.Blend(hair_s, ICON_OVERLAY)
+			else
+				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "bald_s")
+				face_standing.Blend(hair_s, ICON_OVERLAY)
+		else
+			var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
+			if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
+				var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
+				if (hair_style.do_colouration)
+					hair_s.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
+
+				face_standing.Blend(hair_s, ICON_OVERLAY)
+
+	else if (h_style && !(head && (head.flags_inv & BLOCKHEADHAIR && !wear_suit)))
 		var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
 		if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
 			var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
@@ -358,48 +366,7 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_mutations(var/update_icons=1)
 	return
-	/*
-	var/fat = body_build ? body_build.index : ""
 
-	var/image/standing	= image("icon" = 'icons/effects/genetics.dmi')
-	var/add_image = FALSE
-	var/g = "m"
-	if (gender == FEMALE)	g = "f"
-	// DNA2 - Drawing underlays.
-	for (var/datum/dna/gene/gene in dna_genes)
-		if (!gene.block)
-			continue
-		if (gene.is_active(src))
-			var/underlay=gene.OnDrawUnderlays(src,g,fat)
-			if (underlay)
-				standing.underlays += underlay
-				add_image = TRUE
-	for (var/mut in mutations)
-		switch(mut)
-			/*
-			if (HULK)
-				if (fat)
-					standing.underlays	+= "hulk_[fat]_s"
-				else
-					standing.underlays	+= "hulk_[g]_s"
-				add_image = TRUE
-			if (COLD_RESISTANCE)
-				standing.underlays	+= "fire[fat]_s"
-				add_image = TRUE
-			if (TK)
-				standing.underlays	+= "telekinesishead[fat]_s"
-				add_image = TRUE
-			*/
-			if (LASER)
-				standing.overlays	+= "lasereyes_s"
-				add_image = TRUE
-	if (add_image)
-		overlays_standing[MUTATIONS_LAYER]	= standing
-	else
-		overlays_standing[MUTATIONS_LAYER]	= null
-	if (update_icons)   update_icons()
-*/
-/* --------------------------------------- */
 //For legacy support.
 /mob/living/carbon/human/regenerate_icons()
 	..()
@@ -691,6 +658,18 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays |= light_overlay_cache[cache_key]
 
 		standing.color = head.color
+		/*
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/WS = wear_suit
+			if  (WS.hood == TRUE)
+				overlays_standing[HEAD_LAYER] = null
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/WS = wear_suit
+			if  (WS.hood == FALSE)
+				overlays_standing[HEAD_LAYER] = null
+		else if (!wear_suit || (!istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur)))
+			overlays_standing[HEAD_LAYER]	= null
+			*/
 		overlays_standing[HEAD_LAYER] = standing
 
 	else
@@ -739,7 +718,7 @@ var/global/list/damage_icon_parts = list()
 
 
 /mob/living/carbon/human/update_inv_wear_suit(var/update_icons=1)
-
+	update_surgery(0)
 	if ( wear_suit && istype(wear_suit, /obj/item/) )
 		/*var/new_screen_loc = find_inv_position(slot_wear_suit)
 		if (new_screen_loc)
@@ -768,8 +747,22 @@ var/global/list/damage_icon_parts = list()
 		if (istype(suit) && suit.accessories.len)
 			for (var/obj/item/clothing/accessory/A in suit.accessories)
 				standing.overlays |= A.get_mob_overlay()
+		if (!istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
+			overlays_standing[SUIT_LAYER]	= standing
 
-		overlays_standing[SUIT_LAYER]	= standing
+///chainmail stuff, so it goes under the uniform
+
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
+			overlays_standing[SURGERY_LEVEL] = standing
+
+//fur coat hood
+
+		if (wear_suit && istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
+			var/obj/item/clothing/suit/storage/coat/fur/WS = wear_suit
+			if (WS.hood == TRUE)
+				update_hair(1)
+			else
+				update_hair(1)
 
 	else
 		overlays_standing[SUIT_LAYER]	= null
@@ -1000,6 +993,20 @@ var/global/list/damage_icon_parts = list()
 		if (E.open)
 			var/image/I = image("icon"='icons/mob/surgery.dmi', "icon_state"="[E.name][round(E.open)]", "layer"=-SURGERY_LEVEL)
 			total.overlays += I
+
+		if (disease == TRUE)
+			if (disease_type == "plague")
+				if (disease_progression >= 1 && disease_progression < 90)
+					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence1")
+				else if (disease_progression >= 90 && disease_progression < 180)
+					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence2")
+				else if (disease_progression >= 180)
+					total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence3")
+		if (start_to_rot == TRUE)
+			if (rotting_stage == 1)
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting1")
+			else if (rotting_stage == 2)
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting2")
 	overlays_standing[SURGERY_LEVEL] = total
 	if (update_icons)   update_icons()
 

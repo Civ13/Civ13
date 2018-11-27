@@ -18,15 +18,6 @@
 	var/weakens = 1
 
 /obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
-	if ((CLUMSY in user.mutations) && prob(50))
-		user << "<span class='warning'>You club yourself over the head.</span>"
-		user.Weaken(3 * force)
-		if (ishuman(user))
-			var/mob/living/carbon/human/H = user
-			H.apply_damage(2*force, BRUTE, "head")
-		else
-			user.take_organ_damage(2*force)
-		return
 	return ..()
 
 // the parent for this is in swords_axes_etc.dm

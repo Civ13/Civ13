@@ -1,6 +1,3 @@
-/* Uniform Metadata: Soviet, German, Italian */
-
-
 /obj/item/clothing/under
 	var/swapped = FALSE
 
@@ -14,7 +11,8 @@
 	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 // civs
 /obj/item/clothing/under/civ4
@@ -64,7 +62,7 @@
 	icon_state = "kerchief"
 	item_state = "kerchief"
 	worn_state = "kerchief"
-	desc = "A kerchief, won by women over the hair."
+	desc = "A kerchief, worn by women over the hair."
 	flags_inv = BLOCKHAIR
 	body_parts_covered = HEAD
 
@@ -239,9 +237,9 @@
 /obj/item/clothing/shoes/soldiershoes
 	name = "infantry shoes"
 	desc = "Low black infantry shoes."
-	icon_state = "italian_boots"
-	item_state = "italian_boots"
-	worn_state = "italian_boots"
+	icon_state = "soldier_shoes"
+	item_state = "soldier_shoes"
+	worn_state = "soldier_shoes"
 	force = WEAPON_FORCE_WEAK
 	armor = list(melee = 30, bullet = 20, laser = 20,energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
@@ -257,7 +255,8 @@
 	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 /obj/item/clothing/shoes/sailorboots2
 	name = "leather sailor boots"
 	desc = "Classic leather sailor boots."
@@ -268,7 +267,8 @@
 	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 /////////british stuff/////////
 
 /obj/item/clothing/under/british_sailor1
@@ -467,6 +467,7 @@
 	desc = "A skull mask, used by native shamans."
 	icon_state = "skull_mask"
 	item_state = "skull_mask"
+	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 25, bullet = 10, laser = 0,energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/head/chief_hat
@@ -474,7 +475,7 @@
 	desc = "A hat made with withe feathers. Worn by tribal leaders."
 	icon_state = "chief_hat"
 	item_state = "chief_hat"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 /////////Portuguese/////////
 /obj/item/clothing/head/tricorne_portuguese
 	name = "Portuguese Navy tricorne"
@@ -732,13 +733,13 @@
 	desc = "A tarred hat, commonly used by sailors."
 	icon_state = "tarred_hat"
 	item_state = "tarred_hat"
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/strawhat
 	name = "straw hat"
 	icon_state = "boater_hat"
 	desc = "A straw hat, commonly used by sailors."
-	flags_inv = BLOCKHAIR
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/tricorne_black
 	name = "black tricorne"
@@ -753,10 +754,11 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 600, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 /obj/item/clothing/shoes/leatherboots1
 	name = "leather boots"
 	desc = "Classic leather boots."
@@ -767,7 +769,8 @@
 	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
-
+	cold_protection = FEET
+	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 /////Army stuff
 /obj/item/clothing/suit/storage/jacket/dutch_officer_army
