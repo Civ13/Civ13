@@ -278,8 +278,10 @@
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
 	if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
-		if (prob(33))
+		var/obj/item/flashlight/torch/T = W
+		if (prob(33) && T.on)
 			onfire = TRUE
+			visible_message("<span class='danger'>\The [src] catches fire!</span>")
 			start_fire()
 	else
 		switch(W.damtype)
