@@ -245,5 +245,5 @@
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
 	if (map.civilizations)
 		var/mob/living/carbon/human/U = user
-		recipes = material.get_recipes_civs(U.original_job_title)
+		recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()

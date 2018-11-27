@@ -39,3 +39,47 @@
 	if (usr.unEquip(I))
 		target.put_in_hands(I) // If this fails it will just end up on the floor, but that's fitting for things like dionaea.
 		target.visible_message("<span class='notice'>\The [usr] handed \the [I] to \the [target].</span>")
+
+/mob/living/carbon/human/verb/recruit()
+	set category = null
+	set name = "Recruit"
+	set desc = "Invite into your faction."
+
+	set src in view(1)
+
+	var/mob/living/carbon/human/user
+
+	if (!ishuman(src))
+		return
+
+	if (!ishuman(usr))
+		return
+	else
+		user = usr
+
+	if (user.stat || user.restrained() || !isliving(user))
+		return
+
+	if (user == src)
+		user << "You cannot recruit yourself."
+		return
+
+	if (user.original_job_title != "Nomad" || user.civilization == "none" || user.civilization == null)
+		user << "You are not part of a faction."
+		return
+
+	if (!istype(src) || src.incapacitated() || src.client == null)
+		user << "The target does not seem to respond..."
+		return
+
+	var/answer = WWinput(src, "[usr] wants to recruit you into his faction, [civilization]. Will you accept?", null, "Yes", list("Yes","No"))
+	if (answer == "Yes")
+		usr << "[src] accepts your offer. They are now part of [civilization]."
+		src << "You accept [usr]'s offer. You are now part of [civilization]."
+		src.civilization = civilization
+		return
+	else if (answer == "No")
+		usr << "[src] has rejected your offer."
+		return
+	else
+		return

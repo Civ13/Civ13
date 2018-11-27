@@ -10,7 +10,7 @@
 "aj" = (/obj/structure/wild/smallbush,/turf/floor/plating/grass/wild,/area/caribbean/tribes/grasslands)
 "ak" = (/obj/structure/wild/bush,/turf/floor/plating/grass/wild,/area/caribbean/tribes/grasslands)
 "al" = (/obj/structure/wild/bush,/turf/floor/dirt,/area/caribbean/tribes/grasslands)
-"am" = (/obj/map_metadata/nomads,/turf/floor/dirt,/area/caribbean/admin)
+"am" = (/obj/map_metadata/nomads{icon = 'icons/obj/decals.dmi'; icon_state = "woodsign"; invisibility = 0; name = "control"},/turf/floor/dirt,/area/caribbean/admin)
 "an" = (/turf/wall/indestructable/black,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "ao" = (/turf/floor/dirt,/area/caribbean/admin)
 "ap" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/plating/grass/wild,/area/caribbean/tribes/goose)

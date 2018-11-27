@@ -1,17 +1,20 @@
-/material/proc/get_recipes_civs(var/civ = "none")
+/material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
 	var/list/current_res = list(0,0,0)
-	if (civ == "Civilization A Citizen")
-		current_res = map.civa_research
-	else if (civ == "Civilization B Citizen")
-		current_res = map.civb_research
-	else if (civ == "Civilization C Citizen")
-		current_res = map.civc_research
-	else if (civ == "Civilization D Citizen")
-		current_res = map.civd_research
-	else if (civ == "Civilization E Citizen")
-		current_res = map.cive_research
-	else if (civ == "Civilization F Citizen")
-		current_res = map.civf_research
+	if (civ == "Nomad")
+		current_res = map.custom_civs[user.civilization]
+	else
+		if (civ == "Civilization A Citizen")
+			current_res = map.civa_research
+		else if (civ == "Civilization B Citizen")
+			current_res = map.civb_research
+		else if (civ == "Civilization C Citizen")
+			current_res = map.civc_research
+		else if (civ == "Civilization D Citizen")
+			current_res = map.civd_research
+		else if (civ == "Civilization E Citizen")
+			current_res = map.cive_research
+		else if (civ == "Civilization F Citizen")
+			current_res = map.civf_research
 	generate_recipes_civs(current_res)
 	return recipes
 

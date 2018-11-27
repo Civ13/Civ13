@@ -505,6 +505,7 @@
 #include "code\modules\mob\bloody_hands.dm"
 #include "code\modules\mob\death.dm"
 #include "code\modules\mob\emote.dm"
+#include "code\modules\mob\factions.dm"
 #include "code\modules\mob\gender.dm"
 #include "code\modules\mob\grab.dm"
 #include "code\modules\mob\hear_say.dm"
