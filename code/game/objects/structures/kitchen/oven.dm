@@ -205,39 +205,41 @@
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))
 		return
-	if (istype(I, /obj/item/stack/material/wood))
-		fuel += I.amount
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/coal))
-		fuel += I.amount*3
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/iron))
-		iron += I.amount
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/copper))
-		copper += I.amount
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/tin))
-		tin += I.amount
-		qdel(I)
-		return
+	if (istype(I, /obj/item/stack/))
+		if (istype(I, /obj/item/stack/material/wood))
+			fuel += I.amount
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/coal))
+			fuel += I.amount*3
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/iron))
+			iron += I.amount
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/copper))
+			copper += I.amount
+			qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/tin))
+			tin += I.amount
+			qdel(I)
+			return
+		else
+			H << "<span class = 'warning'>You can't smelt this.</span>"
+			return
+		var/space = max_space
+		for (var/obj/item/II in contents)
+			space -= II.w_class
+		if (space <= 0 || space - I.w_class < 0)
+			H << "<span class = 'warning'>The [name] is full.</span>"
+			return
+		H.remove_from_mob(I)
+		I.loc = src
+		visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
 	else
-		H << "<span class = 'warning'>You can't smelt this.</span>"
-		return
-	var/space = max_space
-	for (var/obj/item/II in contents)
-		space -= II.w_class
-	if (space <= 0 || space - I.w_class < 0)
-		H << "<span class = 'warning'>The [name] is full.</span>"
-		return
-	H.remove_from_mob(I)
-	I.loc = src
-	visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
-
+		..()
 
 /obj/structure/furnace/attack_hand(var/mob/living/carbon/human/H)
 	if (!on && fuel > 1)

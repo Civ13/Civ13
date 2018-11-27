@@ -14,12 +14,12 @@
 
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/ore/coal))
-		fuel = (180)*W.amount
+		fuel += (180)*W.amount
 		user << "You refuel the [src]."
 		qdel(W)
 		return
 	else if (istype(W, /obj/item/stack/material/wood))
-		fuel = (60)*W.amount
+		fuel += (60)*W.amount
 		user << "You refuel the [src]."
 		qdel(W)
 		return
@@ -35,6 +35,7 @@
 			WW.BB = new/obj/item/projectile/arrow/arrow/fire(WW)
 			WW.contents = list(WW.BB)
 			return
+	..()
 /obj/structure/brazier/proc/do_light()
 	if (on)
 		fuel = (fuel-1)

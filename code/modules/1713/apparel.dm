@@ -754,7 +754,7 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 600, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
