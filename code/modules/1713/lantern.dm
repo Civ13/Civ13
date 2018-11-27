@@ -59,7 +59,11 @@
 
 /obj/item/flashlight/torch/proc/do_torch()
 	spawn(10)
-		if (fuel > 0)
+		if (fuel == 50)
+			visible_message("<span class='warning'>The torch is about to run out!</span>")
+			fuel -= 1
+			do_torch()
+		else if (fuel > 0)
 			if (on)
 				fuel -= 1
 			do_torch()
