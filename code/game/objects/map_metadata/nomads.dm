@@ -145,23 +145,34 @@
 /obj/map_metadata/nomads/tick()
 	..()
 	if (age1_done == FALSE)
-		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age1_lim || (civb_research[1]+civb_research[2]+civb_research[3]) >= age1_lim   || (civc_research[1]+civc_research[2]+civc_research[3]) >= age1_lim   || (civd_research[1]+civd_research[2]+civd_research[3]) >= age1_lim   || (cive_research[1]+cive_research[2]+cive_research[3]) >= age1_lim   || (civf_research[1]+civf_research[2]+civf_research[3]) >= age1_lim )
-			world << "<big>The world has advanced into the Bronze Age!</big>"
-			age = "313 B.C."
-			set_ordinal_age()
-			age1_done = TRUE
-	if (age2_done == FALSE)
-		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age2_lim || (civb_research[1]+civb_research[2]+civb_research[3]) >= age2_lim    || (civc_research[1]+civc_research[2]+civc_research[3]) >= age2_lim    || (civd_research[1]+civd_research[2]+civd_research[3]) >= age2_lim    || (cive_research[1]+cive_research[2]+cive_research[3]) >= age2_lim    || (civf_research[1]+civf_research[2]+civf_research[3]) >= age2_lim  )
-			world << "<big>The world has advanced into the Medieval Age!</big>"
-			age = "1013"
-			set_ordinal_age()
-			age2_done = TRUE
-	if (age3_done == FALSE)
-		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age3_lim|| (civb_research[1]+civb_research[2]+civb_research[3]) >= age3_lim    || (civc_research[1]+civc_research[2]+civc_research[3]) >= age3_lim    || (civd_research[1]+civd_research[2]+civd_research[3]) >= age3_lim    || (cive_research[1]+cive_research[2]+cive_research[3]) >= age3_lim    || (civf_research[1]+civf_research[2]+civf_research[3]) >= age3_lim  )
-			world << "<big>The world has advanced into the Imperial Age!</big>"
-			age = "1713"
-			set_ordinal_age()
-			age3_done = TRUE
+		var/count = 0
+		for(var/i = 1, i <= custom_faction_nr.len, i++)
+			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
+			if (count > age1_lim)
+				age = "313 B.C."
+				set_ordinal_age()
+				age1_done = TRUE
+				break
+
+	else if (age2_done == FALSE)
+		var/count = 0
+		for(var/i = 1, i <= custom_faction_nr.len, i++)
+			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
+			if (count > age1_lim)
+				age = "1013"
+				set_ordinal_age()
+				age2_done = TRUE
+				break
+
+	else if (age3_done == FALSE)
+		var/count = 0
+		for(var/i = 1, i <= custom_faction_nr.len, i++)
+			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
+			if (count > age1_lim)
+				age = "1713"
+				set_ordinal_age()
+				age3_done = TRUE
+				break
 
 /obj/map_metadata/nomads/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)

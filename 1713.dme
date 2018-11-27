@@ -767,5 +767,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\civilizations.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE
