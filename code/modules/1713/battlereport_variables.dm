@@ -92,6 +92,9 @@ var/list/recently_died = list()
 	return list(alive, dead, injured)
 
 /mob/living/carbon/human/death()
+	if (original_job_title == "Nomad")
+		if (map.custom_civs[civilization][4].real_name == real_name)
+			map.custom_civs[civilization][4] = null
 
 	BATTLEREPORT_VARIABLE_CHECK(src)
 		if (!istype(src, /mob/living/carbon/human/corpse))

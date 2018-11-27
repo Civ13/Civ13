@@ -30,7 +30,7 @@
 	if (newname != null && newname != "none")
 		H.civilization = newname
 		map.custom_faction_nr += newname
-		var/newnamev = list("[newname]" = list(0,0,0))
+		var/newnamev = list("[newname]" = list(0,0,0,H))
 		map.custom_civs += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> faction.</big>"
 		return
@@ -52,6 +52,8 @@
 			usr << "You are not part of any faction."
 			return
 		else
+			if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+				map.custom_civs[U.civilization][4] = null
 			U.civilization = "none"
 			usr << "You left your faction. You are now a Nomad."
 	else

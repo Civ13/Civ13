@@ -20,6 +20,58 @@
 		H.name = H.species.get_random_english_name(H.gender)
 	H.real_name = H.name
 
+/mob/living/carbon/human/proc/give_clothes()
+	if (map.ordinal_age == 0)
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			equip_to_slot_or_del(new /obj/item/clothing/under/indian1(src), slot_w_uniform)
+		else if (randcloth == 2)
+			equip_to_slot_or_del(new /obj/item/clothing/under/indian2(src), slot_w_uniform)
+		else if (randcloth == 3)
+			equip_to_slot_or_del(new /obj/item/clothing/under/indian3(src), slot_w_uniform)
+
+	else if (map.ordinal_age == 1)
+		var/randcloth = rand(1,2)
+		if (randcloth == 1)
+			equip_to_slot_or_del(new /obj/item/clothing/under/toga(src), slot_w_uniform)
+		else if (randcloth == 2)
+			equip_to_slot_or_del(new /obj/item/clothing/under/toga2(src), slot_w_uniform)
+		equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
+
+	else if (map.ordinal_age == 2)
+		var/randcloth = rand(1,2)
+		if (randcloth == 1)
+			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(src), slot_w_uniform)
+		else if (randcloth == 2)
+			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
+		equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+	else
+		if (prob(30))
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(src), slot_shoes)
+		else
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+		if (gender == "male")
+			var/randcloth = rand(1,5)
+			if (randcloth == 1)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civ1(src), slot_w_uniform)
+			else if (randcloth == 2)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+			else if (randcloth == 3)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civ3(src), slot_w_uniform)
+			else if (randcloth == 4)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civ5(src), slot_w_uniform)
+			else if (randcloth == 5)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civ6(src), slot_w_uniform)
+		else
+			var/randcloth = rand(1,3)
+			if (randcloth == 1)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+			else if (randcloth == 2)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf2(src), slot_w_uniform)
+			else if (randcloth == 3)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf3(src), slot_w_uniform)
+			equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+
 /datum/job/civilian/governor
 	title = "Governor"
 	en_meaning = "Colony Leader"
@@ -819,13 +871,7 @@
 /datum/job/civilian/civa/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_a
-	var/randcloth = rand(1,3)
-	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	H.give_clothes()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
@@ -865,13 +911,7 @@
 /datum/job/civilian/civb/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_b
-	var/randcloth = rand(1,3)
-	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	H.give_clothes()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")
@@ -911,13 +951,7 @@
 /datum/job/civilian/civc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_c
-	var/randcloth = rand(1,3)
-	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	H.give_clothes()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_c]</b> civilization.")
@@ -957,13 +991,7 @@
 /datum/job/civilian/civd/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_d
-	var/randcloth = rand(1,3)
-	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	H.give_clothes()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_d]</b> civilization.")
@@ -1003,13 +1031,7 @@
 /datum/job/civilian/cive/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_e
-	var/randcloth = rand(1,3)
-	if (randcloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-	else if (randcloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-	else if (randcloth == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
+	H.give_clothes()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_e]</b> civilization.")
@@ -1049,57 +1071,7 @@
 /datum/job/civilian/civf/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.civilization = civname_f
-
-	if (map.ordinal_age == 0)
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
-
-	else if (map.ordinal_age == 1)
-		var/randcloth = rand(1,2)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/toga(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/toga2(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-
-	else if (map.ordinal_age == 2)
-		var/randcloth = rand(1,2)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-	else
-		if (prob(30))
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
-		else
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
-		if (H.gender == "male")
-			var/randcloth = rand(1,5)
-			if (randcloth == 1)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-			else if (randcloth == 2)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-			else if (randcloth == 3)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-			else if (randcloth == 4)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-			else if (randcloth == 5)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
-		else
-			var/randcloth = rand(1,3)
-			if (randcloth == 1)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-			else if (randcloth == 2)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-			else if (randcloth == 3)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+	H.give_clothes()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_f]</b> civilization.")
@@ -1138,57 +1110,9 @@
 
 /datum/job/civilian/civnomad/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	H.give_clothes()
 
-	if (map.ordinal_age == 0)
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/indian3(H), slot_w_uniform)
-
-	else if (map.ordinal_age == 1)
-		var/randcloth = rand(1,2)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/toga(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/toga2(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-
-	else if (map.ordinal_age == 2)
-		var/randcloth = rand(1,2)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(H), slot_w_uniform)
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(H), slot_shoes)
-	else
-		if (prob(30))
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
-		else
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
-		if (H.gender == "male")
-			var/randcloth = rand(1,5)
-			if (randcloth == 1)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-			else if (randcloth == 2)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-			else if (randcloth == 3)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-			else if (randcloth == 4)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-			else if (randcloth == 5)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
-		else
-			var/randcloth = rand(1,3)
-			if (randcloth == 1)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-			else if (randcloth == 2)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-			else if (randcloth == 3)
-				H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Nomad</b>. Form a tribe and survive!")
 	if (prob(80))
