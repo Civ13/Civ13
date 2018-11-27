@@ -1111,7 +1111,7 @@
 /datum/job/civilian/civnomad/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_clothes()
-
+	H.make_nomad()
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Nomad</b>. Form a tribe and survive!")
