@@ -57,6 +57,10 @@
 		if (do_after(user, 50, user.loc))
 			health = 0
 			try_destroy()
+			if (prob(50))
+				if (istype(user, /mob/living/carbon/human))
+					var/mob/living/carbon/human/H = user
+					H.adaptStat("strength", 1)
 			return
 	else
 		switch(W.damtype)
