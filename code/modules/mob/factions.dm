@@ -1,4 +1,10 @@
-/mob/verb/create_faction()
+/mob/living/carbon/human/proc/make_nomad()
+	verbs += /mob/living/carbon/human/proc/create_faction
+	verbs += /mob/living/carbon/human/proc/abandon_faction
+	verbs += /mob/living/carbon/human/proc/transfer_faction
+	verbs += /mob/living/carbon/human/proc/become_leader
+
+/mob/living/carbon/human/proc/create_faction()
 	set name = "Create Faction"
 	set category = "Faction"
 	var/mob/living/carbon/human/U
@@ -19,7 +25,7 @@
 		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
 		return
 
-/mob/proc/create_faction_pr(var/newname = "none")
+/mob/living/carbon/human/proc/create_faction_pr(var/newname = "none")
 	if (!ishuman(src))
 		return
 	var/mob/living/carbon/human/H = src
@@ -38,7 +44,7 @@
 		return
 
 
-/mob/verb/abandon_faction()
+/mob/living/carbon/human/proc/abandon_faction()
 	set name = "Abandon Faction"
 	set category = "Faction"
 	var/mob/living/carbon/human/U
@@ -61,7 +67,7 @@
 		return
 
 
-/mob/verb/transfer_faction()
+/mob/living/carbon/human/proc/transfer_faction()
 	set name = "Transfer Leadership"
 	set category = "Faction"
 	var/mob/living/carbon/human/U
@@ -94,7 +100,7 @@
 		usr << "<span class='danger'>You cannot transfer leadership of a faction in this map.</span>"
 		return
 
-/mob/verb/become_leader()
+/mob/living/carbon/human/proc/become_leader()
 	set name = "Become Leader"
 	set category = "Faction"
 	var/mob/living/carbon/human/U
