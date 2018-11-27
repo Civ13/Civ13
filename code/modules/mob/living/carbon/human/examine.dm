@@ -318,10 +318,12 @@
 	else
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
-			if (H.civilization == civilization) // when you ghost, mind.assigned_job is set to null
+			if (H.civilization == civilization && civilization != "none") // when you ghost, mind.assigned_job is set to null
 				msg += "<br><i>You recognize [T.him] as a member of your group, <b>[civilization]</b>.</i>"
-			else // examining someone on another team
+			else if (civilization != "none") // examining someone on another team
 				msg += "<br><span class='warning'><i>[T.him] seems to be a member of [civilization].</i>"
+			else
+				msg += "<br><i>[T.him] is a nomad. He has no group</b>.</i>"
 		else if (isobserver(user))
 			msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
 
