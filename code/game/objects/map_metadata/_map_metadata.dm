@@ -1,6 +1,8 @@
 #define NO_WINNER "Neither side has captured the other side's base."
 
 var/global/obj/map_metadata/map = null
+//Max levels showing players how far to advance, appears on the Character tab
+var/civmax_research = list(85,89,67)
 
 /obj/map_metadata
 	name = ""
