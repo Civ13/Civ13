@@ -204,7 +204,12 @@
 				user.adaptStat("philosophy", 1*k_level)
 				if (user.original_job_title == "Nomad")
 					if (user.civilization != null && user.civilization != "none")
-						current_tribesmen = (alive_civilians.len)
+						if (alive_civilians.len <= 12)
+							current_tribesmen = alive_civilians.len
+						else if (alive_civilians.len > 12 && alive_civilians.len <= 30)
+							current_tribesmen = alive_civilians.len/2
+						else
+							current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
 						if (k_class == "medicine" || k_class == "anatomy")
 							map.custom_civs[user.civilization][3] += k_level/current_tribesmen
 						if (k_class == "gunpowder" || k_class == "fencing" || k_class == "archery")

@@ -78,6 +78,13 @@
 		for (var/obj/item/weapon/book/research/RB in contents)
 			if (RB.completed)
 				var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (map.ID == MAP_NOMADS)
+					if (alive_civilians.len <= 12)
+						current_tribesmen = alive_civilians.len
+					else if (alive_civilians.len > 12 && alive_civilians.len <= 30)
+						current_tribesmen = alive_civilians.len/2
+					else
+						current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
 				if (RB.k_class == "medicine" || RB.k_class == "anatomy")
 					sum_h += RB.k_level/current_tribesmen
 				if (RB.k_class == "gunpowder" || RB.k_class == "fencing" || RB.k_class == "archery")
@@ -144,5 +151,9 @@
 					map.civf_research[1] += sum_i
 					map.civf_research[2] += sum_m
 					map.civf_research[3] += sum_h
+				else if (user.civilization != "none" && user.civilization != null)
+					map.custom_civs[user.civilization][1] += sum_i
+					map.custom_civs[user.civilization][2] += sum_m
+					map.custom_civs[user.civilization][3] += sum_h
 	else
 		..()
