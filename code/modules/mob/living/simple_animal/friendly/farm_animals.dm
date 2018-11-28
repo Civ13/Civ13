@@ -101,15 +101,14 @@
 			udder.add_reagent("milk", rand(5, 10))
 
 	for(var/mob/living/simple_animal/bull/BULL in range(2,src))
-		if (prob(1))
-			if (prob(3)) // should happen around every 10 mins or so
-				if (prob(50))
-					var/mob/living/simple_animal/cow/C = new/mob/living/simple_animal/cow(loc)
-					C.calf = TRUE
-				else
-					var/mob/living/simple_animal/bull/B = new/mob/living/simple_animal/bull(loc)
-					B.calf = TRUE
-				visible_message("A calf has been born!")
+		if (prob(0.5))
+			if (prob(50))
+				var/mob/living/simple_animal/cow/C = new/mob/living/simple_animal/cow(loc)
+				C.calf = TRUE
+			else
+				var/mob/living/simple_animal/bull/B = new/mob/living/simple_animal/bull(loc)
+				B.calf = TRUE
+			visible_message("A calf has been born!")
 
 /mob/living/simple_animal/cow/attack_hand(mob/living/carbon/M as mob)
 	if (!stat && M.a_intent == I_DISARM && icon_state != icon_dead)
