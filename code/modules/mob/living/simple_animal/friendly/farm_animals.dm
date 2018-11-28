@@ -102,6 +102,8 @@
 	if (stat == CONSCIOUS)
 		if (udder && prob(5) && !calf)
 			udder.add_reagent("milk", rand(5, 10))
+	else
+		return
 
 	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
 		overpopulationCountdown--
@@ -111,8 +113,9 @@
 		var/nearbyObjects = range(2,src) //5x5 area around cow
 		var/cowCount = 0
 		for(var/mob/living/simple_animal/bull/M in nearbyObjects)
-			pregnant = TRUE
-			birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+			if (M.stat == CONSCIOUS)
+				pregnant = TRUE
+				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
 			cowCount++
 
 		for(var/mob/living/simple_animal/cow/M in nearbyObjects)
