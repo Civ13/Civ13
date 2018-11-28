@@ -24,6 +24,7 @@
 	var/datum/reagents/udder = null
 	var/pregnant = FALSE
 	var/birthCountdown = 0
+	var/overpopulationCountdown = 0
 	mob_size = MOB_LARGE
 
 /mob/living/simple_animal/bull
@@ -102,11 +103,24 @@
 		if (udder && prob(5) && !calf)
 			udder.add_reagent("milk", rand(5, 10))
 
+	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
+		overpopulationCountdown--
+		return
+
 	if (!pregnant)
-		for(var/mob/living/simple_animal/bull/BULL in range(2,src))
+		var/nearbyObjects = range(2,src) //5x5 area around cow
+		var/cowCount = 0
+		for(var/mob/living/simple_animal/bull/M in nearbyObjects)
 			pregnant = TRUE
 			birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
-			break
+			cowCount++
+
+		for(var/mob/living/simple_animal/cow/M in nearbyObjects)
+			cowCount++
+
+		if (cowCount > 5) // max 5 cows/bulls in a 5x5 area around cow
+			overpopulationCountdown = 30 // 1 minute
+			pregnant = FALSE
 	else
 		birthCountdown--
 		if (birthCountdown <= 0)
@@ -217,6 +231,15 @@ var/global/chicken_count = FALSE
 	..()
 	chicken_count -= 1
 
+/mob/living/simple_animal/chicken/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	if (stat == CONSCIOUS && istype(O, /obj/item/stack/farming/seeds))
+		var/obj/item/stack/S = O
+		if (eggsleft < 5)
+			user.visible_message("<span class='notice'>[user] feeds [src] \the [O].</span>")
+			eggsleft++
+			S.use(1)
+		else
+			user << "<span class = 'red'>The [src] is not hungry.</span>"
 
 /mob/living/simple_animal/chicken/Life()
 	. =..()
@@ -232,8 +255,17 @@ var/global/chicken_count = FALSE
 				var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
 				E.pixel_x = rand(-6,6)
 				E.pixel_y = rand(-6,6)
-				if (chicken_count < MAX_CHICKENS && prob(10))
-					processing_objects.Add(E)
+				if (prob(10))
+					var/nearbyObjects = range(2,src) //5x5 area
+					var/chickenCount = 0
+					for(var/mob/living/simple_animal/chicken/M in nearbyObjects)
+						chickenCount++
+
+					for(var/mob/living/simple_animal/chick/M in nearbyObjects)
+						chickenCount++
+
+					if (chickenCount <= 5) // max 5 chickens/chicks in a 5x5 area for eggs to start hatching
+						processing_objects.Add(E)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/process()
