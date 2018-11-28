@@ -247,7 +247,7 @@
 /obj/structure/farming/plant/tobacco/spawnProduce()
 	new/obj/item/stack/material/tobacco(loc)
 
-/obj/structure/farming/plant/tobacco/spawnProduce()
+/obj/structure/farming/plant/sugarcane/spawnProduce()
 	new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
 
 /obj/structure/farming/plant/tea/spawnProduce()
