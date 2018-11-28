@@ -87,6 +87,9 @@
 	density = FALSE
 	var/stage = 1
 	var/counter = 0
+	var/harvest_verb = "harvest"
+	var/readyStageMin = 7
+	var/readyStageMax = 10
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
@@ -177,29 +180,44 @@
 	desc = "a cotton plant."
 	icon_state = "cotton-grow1"
 	plant = "cotton"
+	harvest_verb = "pick"
 
 /obj/structure/farming/plant/tree
 	name = "tree"
 	desc = "a tree, grown for wood."
 	icon_state = "tree-grow1"
 	plant = "tree"
+	harvest_verb = "cut some logs from"
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
 	..()
 	growth()
 
+/obj/structure/farming/plant/proc/readyHarvest()
+	if (stage >= readyStageMin && stage <= readyStageMax)
+		return TRUE
+
+/obj/structure/farming/plant/proc/spawnSeeds()
+	var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
+	new seedpath(loc)
+	new seedpath(loc)
+
+/obj/structure/farming/plant/proc/spawnProduce()
+	var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
+	new fruitpath(loc)
+
 /obj/structure/farming/plant/proc/growth()
 	if (stage < 12)
-		if (stage <= 6)
+		if (stage < readyStageMin)
 			icon_state = "[plant]-grow[stage]"
 			desc = "A young [plant] plant."
 			name = "young [plant] plant"
-		else if (stage == 7 || stage == 8 || stage == 9 || stage == 10)
+		else if (readyHarvest())
 			icon_state = "[plant]-harvest"
 			desc = "A ready to harvest [plant] plant."
 			name = "ready [plant] plant"
-		else if (stage >= 11)
+		else
 			icon_state = "[plant]-dead"
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
@@ -210,135 +228,36 @@
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
+		if (stage < readyStageMin) // destroy
 			user << "<span class = 'warning'>You uproot the [name].</span>"
 			qdel(src)
-		else if (stage == 7 || stage == 8 || stage == 9 || stage == 10) // harvest
-			var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
-			new fruitpath(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You harvest the [name].</span>"
+		else if (readyHarvest()) // harvest
+			spawnSeeds()
+			spawnProduce()
+			user << "<span class = 'warning'>You [harvest_verb] the [name].</span>"
 			qdel(src)
 		else // destroy
 			user << "<span class = 'warning'>You uproot the dead [name].</span>"
 			qdel(src)
 
 //some specific, non-food plants
-/obj/structure/farming/plant/hemp/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
-			user << "<span class = 'warning'>You uproot the [name].</span>"
-			qdel(src)
-		else if (stage == 7 || stage == 8 || stage == 9 || stage == 10)  // harvest
-			new/obj/item/stack/material/rope(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You harvest the [name].</span>"
-			qdel(src)
-		else // destroy
-			user << "<span class = 'warning'>You uproot the dead [name].</span>"
-			qdel(src)
+/obj/structure/farming/plant/hemp/spawnProduce()
+	new/obj/item/stack/material/rope(loc)
 
+/obj/structure/farming/plant/tobacco/spawnProduce()
+	new/obj/item/stack/material/tobacco(loc)
 
+/obj/structure/farming/plant/tobacco/spawnProduce()
+	new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
 
-/obj/structure/farming/plant/tobacco/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
-			user << "<span class = 'warning'>You uproot the [name].</span>"
-			qdel(src)
-		else if (stage == 7) // harvest
-			new/obj/item/stack/material/tobacco(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You harvest the [name].</span>"
-			qdel(src)
-		else // destroy
-			user << "<span class = 'warning'>You uproot the dead [name].</span>"
-			qdel(src)
+/obj/structure/farming/plant/tea/spawnProduce()
+	new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
 
-/obj/structure/farming/plant/sugarcane/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
-			user << "<span class = 'warning'>You uproot the [name].</span>"
-			qdel(src)
-		else if (stage == 7) // harvest
-			new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You harvest the [name].</span>"
-			qdel(src)
-		else // destroy
-			user << "<span class = 'warning'>You uproot the dead [name].</span>"
-			qdel(src)
+/obj/structure/farming/plant/poppy/spawnProduce()
+	new/obj/item/stack/material/poppy(loc)
 
-/obj/structure/farming/plant/tea/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
-			user << "<span class = 'warning'>You uproot the [name].</span>"
-			qdel(src)
-		else if (stage == 7) // harvest
-			new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You harvest the [name].</span>"
-			qdel(src)
-		else // destroy
-			user << "<span class = 'warning'>You uproot the dead [name].</span>"
-			qdel(src)
+/obj/structure/farming/plant/tree/spawnProduce()
+	new/obj/item/stack/material/wood(loc)
 
-
-/obj/structure/farming/plant/poppy/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
-			user << "<span class = 'warning'>You uproot the [name].</span>"
-			qdel(src)
-		else if (stage == 7) // harvest
-			new/obj/item/stack/material/poppy(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You harvest the [name].</span>"
-			qdel(src)
-		else // destroy
-			user << "<span class = 'warning'>You uproot the dead [name].</span>"
-			qdel(src)
-
-
-/obj/structure/farming/plant/tree/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
-			user << "<span class = 'warning'>You uproot the tree.</span>"
-			qdel(src)
-		else if (stage == 7) // harvest
-			new/obj/item/stack/material/wood(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/tree"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You cut some logs from the tree.</span>"
-			qdel(src)
-		else // destroy
-			user << "<span class = 'warning'>You uproot the dead tree.</span>"
-			qdel(src)
-
-
-/obj/structure/farming/plant/cotton/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
-		if (stage <=6) // destroy
-			user << "<span class = 'warning'>You uproot the cotton plant.</span>"
-			qdel(src)
-		else if (stage == 7) // harvest
-			new/obj/item/stack/material/cotton(loc)
-			var/seedpath = "/obj/item/stack/farming/seeds/cotton"
-			new seedpath(loc)
-			new seedpath(loc)
-			user << "<span class = 'warning'>You pick the cotton.</span>"
-			qdel(src)
-		else // destroy
-			user << "<span class = 'warning'>You uproot the dead cotton plant.</span>"
-			qdel(src)
+/obj/structure/farming/plant/cotton/spawnProduce()
+	new/obj/item/stack/material/cotton(loc)
