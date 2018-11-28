@@ -147,6 +147,14 @@
 	if (!istype(src, /obj/structure/wild/tree/anchored))
 		pixel_x = rand(-8,8)
 
+/obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		health -= 10
+		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
+		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+		user.do_attack_animation(src)
+	else
+		..()
 /obj/structure/wild/palm
 	name = "palm tree"
 	icon = 'icons/misc/beach2.dmi'
