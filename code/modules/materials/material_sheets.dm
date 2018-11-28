@@ -212,7 +212,7 @@
 	icon_state = "sheet-cloth"
 	default_type = "cloth"
 	value = 3
-
+	w_class = 2.0
 
 /obj/item/stack/material/leather
 	name = "leather"
@@ -220,7 +220,7 @@
 	icon_state = "sheet-leather"
 	default_type = "leather"
 	value = 2
-
+	w_class = 2.0
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"

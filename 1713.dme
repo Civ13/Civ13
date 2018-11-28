@@ -168,7 +168,6 @@
 #include "code\game\objects\items\cards.dm"
 #include "code\game\objects\items\glassjar.dm"
 #include "code\game\objects\items\pen.dm"
-#include "code\game\objects\items\shooting_range.dm"
 #include "code\game\objects\items\soap.dm"
 #include "code\game\objects\items\stamp.dm"
 #include "code\game\objects\items\trash.dm"

@@ -5,7 +5,7 @@
 	icon_state = "ore2"
 	w_class = 2
 	amount = 1
-	max_amount = 20
+	max_amount = 50
 
 /obj/item/stack/ore/New()
 	pixel_x = rand(0,16)-8
