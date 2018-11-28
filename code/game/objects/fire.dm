@@ -331,3 +331,17 @@ var/obj/burning_overlay_turf = null
 					qdel(src)
 					visible_message("The fire is put out!")
 				CT.reagents.clear_reagents()
+
+/obj/small_fire/New()
+	..()
+	fire_check()
+
+/obj/small_fire/proc/fire_check()
+	spawn(50)
+		var/obj/covers/CV
+		if (!(CV in src.loc))
+			visible_message("The fire goes out.")
+			qdel(src)
+		else
+			fire_check()
+			return
