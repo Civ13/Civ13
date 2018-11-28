@@ -319,6 +319,7 @@
 	if (onfire && wood)
 		var/obj/small_fire/NF = new/obj/small_fire(src.loc)
 		NF.set_light(3)
+		NF.origin = src
 		start_fire_dmg(NF)
 		spawn(400)
 			NF.icon_state = "fire_big"
@@ -327,6 +328,7 @@
 	spawn(80)
 		if (health > 0)
 			health -= 10
+			start_fire_dmg()
 			return
 		else
 			try_destroy()
