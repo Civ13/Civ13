@@ -147,7 +147,7 @@
 	if (age1_done == FALSE)
 		var/count = 0
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 			if (count > age1_lim)
 				age = "313 B.C."
 				set_ordinal_age()
@@ -157,7 +157,7 @@
 	else if (age2_done == FALSE)
 		var/count = 0
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 			if (count > age1_lim)
 				age = "1013"
 				set_ordinal_age()
@@ -167,7 +167,7 @@
 	else if (age3_done == FALSE)
 		var/count = 0
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 			if (count > age1_lim)
 				age = "1713"
 				set_ordinal_age()
