@@ -200,7 +200,7 @@ the HUD updates properly! */
 		else
 			P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 
-		var/image/holderf = perp.hud_list[SQUAD_FACTION]
+		var/image/holderf = perp.hud_list[BASE_FACTION]
 		holderf.icon = 'icons/mob/hud_1713.dmi'
 		holderf.plane = HUD_PLANE
 		holderf.icon_state = ""
