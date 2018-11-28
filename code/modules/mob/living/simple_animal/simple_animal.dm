@@ -322,12 +322,20 @@
 	if (statpanel("Status") && show_stat_health)
 		stat(null, "Health: [round((health / maxHealth) * 100)]%")
 
+/mob/living/simple_animal/proc/unregisterSpawner()
+	if (origin)
+		origin.current_number -= 1
+
+/mob/living/simple_animal/Destroy()
+	unregisterSpawner()
+	. = ..()
+
 /mob/living/simple_animal/death(gibbed, deathmessage = "dies!")
 	icon_state = icon_dead
 	density = FALSE
-	if (origin != 0)
-		origin.current_number -= 1
+
 	walk_to(src,0) // stops movement
+	unregisterSpawner()
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)
