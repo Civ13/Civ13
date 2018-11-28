@@ -68,7 +68,7 @@
 
 	return
 
-/obj/structure/target_practice/check_health()
+/obj/structure/target_practice/proc/check_health()
 	if (health <= 0)
 		visible_message("<span class='notice'>The dummy is broken apart!</span>")
 		qdel(src)
