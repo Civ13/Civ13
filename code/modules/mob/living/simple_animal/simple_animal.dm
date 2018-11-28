@@ -63,6 +63,15 @@
 		client.screen = null
 	..()
 
+/mob/living/simple_animal/proc/checkDeath()
+	if (health <= 0)
+		death()
+		return TRUE
+
+/mob/living/simple_animal/adjustBruteLoss(var/amount)
+	. = ..()
+	checkDeath()
+
 /mob/living/simple_animal/Life()
 	..()
 
@@ -76,9 +85,7 @@
 			density = TRUE
 		return FALSE
 
-
-	if (health <= 0)
-		death()
+	if (checkDeath())
 		return
 
 	if (health > maxHealth)
@@ -320,6 +327,7 @@
 	density = FALSE
 	if (origin != 0)
 		origin.current_number -= 1
+	walk_to(src,0) // stops movement
 	return ..(gibbed,deathmessage)
 
 /mob/living/simple_animal/ex_act(severity)
