@@ -103,6 +103,7 @@
 		if (epoch == "Civilization 13")
 			maps = list(
 				MAP_CIVILIZATIONS = 0,
+				MAP_NOMADS = 0,
 			)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))

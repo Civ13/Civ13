@@ -157,12 +157,6 @@ the HUD updates properly! */
 
 // faction HUDs processing and stuff
 
-/mob/living/carbon/human/proc/most_important_faction_hud_constant()
-	return BASE_FACTION
-
-/mob/living/carbon/human/proc/base_faction_hud_constant()
-	return BASE_FACTION
-
 /proc/process_faction_hud(var/mob/M, var/mob/Alt)
 
 	if (!can_process_hud(M))
@@ -192,16 +186,15 @@ the HUD updates properly! */
 			shared_job_check = TRUE
 		else if (viewer.original_job.base_type_flag() == perp.original_job.base_type_flag())
 			shared_job_check = TRUE
-			if (istype(src, /mob/living/carbon/human))
-				var/mob/living/carbon/human/HM = src
-				if (HM.original_job_title != perp.original_job_title && map.civilizations == TRUE)
-					shared_job_check = FALSE
-				if (HM.original_job_title == "Nomad")
-					if (HM.civilization != perp.civilization)
-						shared_job_check = FALSE
-					else
-						shared_job_check = TRUE
-				else
+		if (istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HM = src
+			if (HM.original_job_title != perp.original_job_title && map.civilizations == TRUE)
+				shared_job_check = FALSE
+			if (perp.original_job_title == "Nomad" && HM.original_job_title == perp.original_job_title)
+				shared_job_check = FALSE
+			if (((perp.original_job_title == "Nomad" && HM.civilization == perp.civilization)) && !perp.civilization == "none")
+				shared_job_check = TRUE
+
 		if (shared_job_check)
 			P.Client.images += perp.hud_list[BASE_FACTION]
 		else
