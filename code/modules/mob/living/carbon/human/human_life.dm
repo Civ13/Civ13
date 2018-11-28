@@ -35,7 +35,7 @@
 	var/in_stasis = FALSE
 	var/heartbeat = FALSE
 	var/global/list/overlays_cache = null
-	var/lastcoatmessage = 0
+	var/heatDamageFromClothingTimer = 0
 	var/start_to_rot = FALSE
 	var/rotting_stage = 0
 /mob/living/carbon/human/Life()
@@ -357,7 +357,6 @@
 		failed_last_breath = TRUE
 	return TRUE
 
-/mob/living/carbon/human/var/loc_temperature = -1 // for debugging.
 /mob/living/carbon/human/handle_environment()
 
 	//Moved pressure calculations here for use in skip-processing check.
@@ -420,33 +419,39 @@
 
 	for (var/obj/snow/S in get_turf(src))
 		loc_temp -= (S.amount * 20)
+		break
 
-	loc_temperature = loc_temp
 	for (var/obj/structure/brazier/BR in range(3, src))
 		if (BR.on == TRUE)
-			loc_temperature = 295
-	// todo: wind adjusting effective loc_temp
-	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && world.time > lastcoatmessage)
-		src << "<span class = 'warning'><big>You are sweating inside your coat. It's way too warm to wear one.</big></span>"
-		lastcoatmessage = world.time+1200
-		spawn(600)
-			if (istype(wear_suit, /obj/item/clothing/suit/storage/coat))
-				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
-				adjustFireLoss(2)
+			loc_temp = 295
+			break
 
-	if (abs(loc_temperature - bodytemperature) < 0.5 && bodytemperature < species.heat_level_1 && bodytemperature > species.cold_level_1)
-		return // Temperatures are within normal ranges, fuck all this processing. ~Ccomp
+	// todo: wind adjusting effective loc_temp
+	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+		heatDamageFromClothingTimer++
+
+		if (heatDamageFromClothingTimer == 5)
+			src << "<span class = 'warning'><big>You are sweating inside your coat. It's way too warm to wear one.</big></span>"
+
+		if (heatDamageFromClothingTimer >= 35)
+			if (prob(50))
+				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
+			heatDamageFromClothingTimer = 6
+			adjustFireLoss(2)
+
+	else if (heatDamageFromClothingTimer > 0)
+		heatDamageFromClothingTimer--
 
 	//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection (convection)
 	var/temp_adj = 0
-	if (loc_temperature < bodytemperature)			//Place is colder than we are
-		var/thermal_protection = get_cold_protection(loc_temperature) //This returns a FALSE - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
-		if (thermal_protection < 0 || season == "WINTER")
-			temp_adj = (1-thermal_protection) * ((loc_temperature - bodytemperature) / BODYTEMP_COLD_DIVISOR)	//this will be negative
-	else if (loc_temperature > bodytemperature)			//Place is hotter than we are
-		var/thermal_protection = get_heat_protection(loc_temperature) //This returns a FALSE - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
-		if (thermal_protection < 0)
-			temp_adj = (1-thermal_protection) * ((loc_temperature - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
+	if (loc_temp < bodytemperature) //Place is colder than we are
+		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
+		if (thermal_protection < 1)
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_COLD_DIVISOR) //this will be negative
+	else if (loc_temp > bodytemperature) //Place is hotter than we are
+		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
+		if (thermal_protection < 1)
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
 
 	//Use heat transfer as proportional to the gas density. However, we only care about the relative density vs standard 101 kPa/20 C air. Therefore we can use mole ratios
 //	var/relative_density = environment.total_moles / MOLES_CELLSTANDARD
@@ -484,14 +489,8 @@
 		fire_alert = max(fire_alert, TRUE)
 
 	// tell src they're dying
-	species.get_environment_discomfort(src, "cold")
-	species.get_environment_discomfort(src, "heat")
+	species.get_environment_discomfort(src)
 
-	// Account for massive pressure differences.  Done by Polymorph
-	// Made it possible to actually have something that can protect against high pressure... Done by Errorage. Polymorph now has an axe sticking from his head for his previous hardcoded nonsense!
-	if (status_flags & GODMODE)	return TRUE	//godmode
-
-	return
 /*
 /mob/living/carbon/human/proc/adjust_body_temperature(current, loc_temp, boost = 0)
 	var/temperature = current
