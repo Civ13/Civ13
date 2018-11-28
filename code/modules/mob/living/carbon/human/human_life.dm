@@ -1174,6 +1174,8 @@
 						holder2.icon_state = "civ5"
 					else if (original_job_title == "Civilization F Citizen")
 						holder2.icon_state = "civ6"
+					else if (original_job_title == "Nomad" && civilization)
+						holder2.icon_state = "civ2"
 					else
 						holder2.icon_state = ""
 

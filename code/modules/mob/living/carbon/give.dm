@@ -74,16 +74,16 @@
 
 	//is there a leader?
 	if (!(map.custom_civs[user.civilization][4] == null))
-		if (!(map.custom_civs[user.civilization][4].real_name == user.real_name))
+		if (!(map.custom_civs[user.civilization][4].real_name == real_name))
 			if (map.custom_civs[user.civilization][4] && map.custom_civs[user.civilization][4].stat > 0)
 				user << "You are not the leader of the faction."
 				return
 
-	var/answer = WWinput(src, "[usr] wants to recruit you into his faction, [civilization]. Will you accept?", null, "Yes", list("Yes","No"))
+	var/answer = WWinput(src, "[usr] wants to recruit you into his faction, [user.civilization]. Will you accept?", null, "Yes", list("Yes","No"))
 	if (answer == "Yes")
-		usr << "[src] accepts your offer. They are now part of [civilization]."
-		src << "You accept [usr]'s offer. You are now part of [civilization]."
-		src.civilization = civilization
+		usr << "[src] accepts your offer. They are now part of [user.civilization]."
+		src << "You accept [usr]'s offer. You are now part of [user.civilization]."
+		src.civilization = user.civilization
 		return
 	else if (answer == "No")
 		usr << "[src] has rejected your offer."

@@ -195,7 +195,11 @@ the HUD updates properly! */
 			if (istype(src, /mob/living/carbon/human))
 				var/mob/living/carbon/human/HM = src
 				if (HM.original_job_title != perp.original_job_title && map.civilizations == TRUE)
-					shared_job_check = FALSE
+					if (HM.original_job_title == "Nomad")
+						if (HM.civilization != perp.civilization)
+							shared_job_check = FALSE
+					else
+						shared_job_check = FALSE
 
 		if (shared_job_check)
 			P.Client.images += perp.hud_list[perp.most_important_faction_hud_constant()]
