@@ -22,6 +22,8 @@
 	health = 50
 	var/calf = FALSE
 	var/datum/reagents/udder = null
+	var/pregnant = FALSE
+	var/birthCountdown = 0
 	mob_size = MOB_LARGE
 
 /mob/living/simple_animal/bull
@@ -100,8 +102,15 @@
 		if (udder && prob(5) && !calf)
 			udder.add_reagent("milk", rand(5, 10))
 
-	for(var/mob/living/simple_animal/bull/BULL in range(2,src))
-		if (prob(0.5))
+	if (!pregnant)
+		for(var/mob/living/simple_animal/bull/BULL in range(2,src))
+			pregnant = TRUE
+			birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+			break
+	else
+		birthCountdown--
+		if (birthCountdown <= 0)
+			pregnant = FALSE
 			if (prob(50))
 				var/mob/living/simple_animal/cow/C = new/mob/living/simple_animal/cow(loc)
 				C.calf = TRUE
