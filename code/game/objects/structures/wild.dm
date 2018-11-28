@@ -154,6 +154,7 @@
 		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
+		try_destroy()
 	else
 		..()
 /obj/structure/wild/palm
