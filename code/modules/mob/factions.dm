@@ -58,8 +58,9 @@
 			usr << "You are not part of any faction."
 			return
 		else
-			if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-				map.custom_civs[U.civilization][4] = null
+			if (map.custom_civs[U.civilization][4] != null)
+				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+					map.custom_civs[U.civilization][4] = null
 			U.civilization = "none"
 			usr << "You left your faction. You are now a Nomad."
 	else
@@ -81,20 +82,23 @@
 			usr << "You are not part of any faction."
 			return
 		else
-			if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-				var/list/closemobs = list("Cancel")
-				for (var/mob/living/carbon/human/M in range(4,loc))
-					if (M.civilization == U.civilization)
-						closemobs += M
-				var/choice2 = WWinput(usr, "Who to nominate as the new Leader?", "Faction Leadership", "Cancel", closemobs)
-				if (choice2 == "Cancel")
-					return
+			if (map.custom_civs[U.civilization][4] != null)
+				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+					var/list/closemobs = list("Cancel")
+					for (var/mob/living/carbon/human/M in range(4,loc))
+						if (M.civilization == U.civilization)
+							closemobs += M
+					var/choice2 = WWinput(usr, "Who to nominate as the new Leader?", "Faction Leadership", "Cancel", closemobs)
+					if (choice2 == "Cancel")
+						return
+					else
+						map.custom_civs[U.civilization][4] = choice2
+						visible_message("<big>[choice2] is the new leader of [U.civilization]!</big>")
 				else
-					map.custom_civs[U.civilization][4] = choice2
-					visible_message("<big>[choice2] is the new leader of [U.civilization]!</big>")
+					usr << "<span class='danger'You are not the Leader, so you can't transfer the faction's leadership.</span>"
+					return
 			else
-				usr << "<span class='danger'You are not the Leader, so you can't transfer the faction's leadership.</span>"
-				return
+				usr << "<span class='danger'There is no Leader, so you can't transfer the faction's leadership.</span>"
 
 	else
 		usr << "<span class='danger'>You cannot transfer leadership of a faction in this map.</span>"
@@ -114,13 +118,11 @@
 			usr << "You are not part of any faction."
 			return
 		else
-			if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-				usr << "<span class='danger'>You are already the Leader of the faction.</span>"
-				return
-			else if (map.custom_civs[U.civilization][4].real_name != U.real_name && map.custom_civs[U.civilization][4].real_name != null)
+			if (map.custom_civs[U.civilization][4] != null)
 				usr << "<span class='danger'>There already is a Leader of the faction. He must transfer the leadership of be removed first.</span>"
 				return
-			else if (map.custom_civs[U.civilization][4].real_name == null)
+
+			else if (map.custom_civs[U.civilization][4] == null)
 				map.custom_civs[U.civilization][4] = U
 				visible_message("<big>[U] is now the Leader of [U.civilization]!</big>")
 	else
