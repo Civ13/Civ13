@@ -36,6 +36,7 @@
 	var/scalable = 0 // when 1, it will only get active above x players
 	var/scalable_nr = 10
 	var/scalable_multiplyer = 1 //after how many times the scalable_nr it activates
+	var/spawning = FALSE
 	invisibility = 101
 
 /obj/effect/spawner/mobspawner/skeletons
@@ -53,31 +54,36 @@
 	icon_state = "invisible"
 	spawnerproc()
 
+/obj/effect/spawner/mobspawner/proc/getEmptyTurf()
+	var/nearbyObjects = range(max_range,src)
+	var/list/turf/emptyTurfs = new
+	for(var/turf/T in nearbyObjects)
+		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/plating/beach/water/deep))
+			continue //bad turf
+
+		emptyTurfs += T
+	if (emptyTurfs.len)
+		return pick(emptyTurfs)
+
+/obj/effect/spawner/mobspawner/proc/spawnTarget()
+	var/turf/emptyTurf = getEmptyTurf()
+	if (emptyTurf)
+		var/mob/living/simple_animal/spawnedMob = new create_path(emptyTurf)
+		spawnedMob.origin = src
+		current_number += 1
+
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
 	if (activated)
+		if (spawning)
+			spawning = FALSE
+			spawnTarget()
+
 		if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
 			if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
-				spawn(rand(timer,timer + (timer/2)))
-					var/mob/living/simple_animal/newmob = new create_path(src.loc)
-					newmob.origin = src
-					newmob.x=src.x+(rand(-max_range,max_range))
-					newmob.y=src.y+(rand(-max_range,max_range))
-					current_number += 1
-					if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
-						while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
-							newmob.x=src.x+(rand(-max_range,max_range))
-							newmob.y=src.y+(rand(-max_range,max_range))
-					spawnerproc()
-			else
-				spawn(rand(timer,timer + (timer/2)))
-					spawnerproc()
-		else
-			spawn(rand(timer,timer + (timer/2)))
-				spawnerproc()
-	else
-		spawn(rand(timer,timer + (timer/2)))
-			spawnerproc()
+				spawning = TRUE
 
+	spawn(rand(timer,timer*1.5))
+		spawnerproc()
 
 /obj/effect/spawner/mobspawner/turkeys
 	name = "turkey spawner"
