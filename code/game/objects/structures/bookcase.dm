@@ -92,7 +92,9 @@
 				if (RB.k_class == "industrial" || RB.k_class == "philosophy")
 					sum_i += RB.k_level/current_tribesmen
 		current_research = sum_i+sum_m+sum_h
-
+		sum_h = null
+		sum_m = null
+		sum_i = null
 
 /obj/structure/bookcase/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
 	if (istype(O, /obj/item/weapon/book))
@@ -121,10 +123,15 @@
 	else if (istype(O, /obj/item/weapon/researchkit))
 		if (!map.civilizations)
 			return
+		else if(!contents.len)
+			user << "The [name] is empty."
+			return
 		else
 			check_research()
-			user << "Studying these documents..."
-			if (do_after(user,(300*current_research)/user.getStatCoeff("philosophy"),src))
+			var/studytime = 300*current_research
+			var/displaytime = convert_to_textminute(studytime)
+			user << "Studying these documents... This will take [displaytime] to finish."
+			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))
 				user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 				user.adaptStat("philosophy", 1*current_research)
 				if (user.civilization == civname_a)
