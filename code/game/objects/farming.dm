@@ -8,74 +8,90 @@
 	amount = 1
 	max_amount = 100
 	singular_name = "seed"
+	color = "#543200"
 
 /obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"
 	plant = "tomato"
+	color = "#fba032"
 
 /obj/item/stack/farming/seeds/tobacco
 	name = "tobacco seeds"
 	plant = "tobacco"
+	color = "#d88046"
 
 /obj/item/stack/farming/seeds/sugarcane
 	name = "sugarcane seeds"
 	plant = "sugarcane"
+	color = "#f8ed8b"
 
 /obj/item/stack/farming/seeds/wheat
 	name = "wheat seeds"
 	plant = "wheat"
+	color = "#fdb14e"
 
 /obj/item/stack/farming/seeds/apple
 	name = "apple seeds"
 	plant = "apple"
+	color = "#b14b0b"
 
 /obj/item/stack/farming/seeds/orange
 	name = "orange seeds"
 	plant = "orange"
+	color = "#fbe151"
 
 /obj/item/stack/farming/seeds/cabbage
 	name = "cabbage seeds"
 	plant = "cabbage"
+	color = "#682a03"
 
 /obj/item/stack/farming/seeds/hemp
 	name = "hemp seeds"
 	plant = "hemp"
+	color = "#b7542a"
 
 /obj/item/stack/farming/seeds/tea
 	name = "tea seeds"
 	plant = "tea"
+	color = "#995b0b"
 
 /obj/item/stack/farming/seeds/potato
 	name = "seed potato"
 	desc = "a potato selected for breeding because of its characteristics."
 	plant = "potato"
 	icon_state = "potato"
+	color = null
 
 /obj/item/stack/farming/seeds/corn
 	name = "corn seeds"
 	plant = "corn"
+	color = "#eec41b"
 
 /obj/item/stack/farming/seeds/poppy
 	name = "poppy seeds"
 	desc = "Seeds of the opium poppy."
 	plant = "poppy"
+	color = "#5f5c54"
 
 /obj/item/stack/farming/seeds/peyote
 	name = "peyote seeds"
 	plant = "peyote"
-
+	color = "#26241d"
 
 /obj/item/stack/farming/seeds/coffee
 	name = "coffee seeds"
 	plant = "coffee"
+	color = "#713b09"
 
 /obj/item/stack/farming/seeds/tree
 	name = "tree seeds"
 	plant = "tree"
+	color = "#c86d1e"
 
 /obj/item/stack/farming/seeds/cotton
 	name = "cotton seeds"
 	plant = "cotton"
+	color = "#e4e0dc"
 
 /obj/structure/farming/plant
 	name = "plant"
