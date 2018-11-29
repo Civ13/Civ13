@@ -92,9 +92,6 @@
 				if (RB.k_class == "industrial" || RB.k_class == "philosophy")
 					sum_i += RB.k_level/current_tribesmen
 		current_research = sum_i+sum_m+sum_h
-		sum_h = null
-		sum_m = null
-		sum_i = null
 
 /obj/structure/bookcase/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
 	if (istype(O, /obj/item/weapon/book))
@@ -162,5 +159,8 @@
 					map.custom_civs[user.civilization][1] += sum_i
 					map.custom_civs[user.civilization][2] += sum_m
 					map.custom_civs[user.civilization][3] += sum_h
-	else
-		..()
+				else
+					..()
+		sum_i = null
+		sum_m = null
+		sum_h = null
