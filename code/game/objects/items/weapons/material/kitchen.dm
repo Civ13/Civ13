@@ -102,7 +102,7 @@
 	force_divisor = 0.3
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
-	name = "cerimonial bone knife"
+	name = "ceremonial bone knife"
 	desc = "A small knife with a bone blade and obsidian handle."
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "boneknife"
@@ -113,8 +113,8 @@
 	force_divisor = 0.3
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone/New()
-	name = "cerimonial bone knife"
-
+	..()
+	name = "ceremonial bone knife"
 
 /obj/item/weapon/material/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	return ..()
