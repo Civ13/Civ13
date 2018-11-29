@@ -34,13 +34,13 @@
 			display = list("Cancel", "Industry", "Anatomy", "Fencing", "Archery", "Medicine", "Philosophy")
 		else
 			display = list("Cancel", "Industry", "Anatomy", "Fencing", "Archery", "Gunpowder", "Medicine", "Philosophy")
-		var/choice = WWinput(user, "Which subject do you wish to write about?", "Scientific [styleb] production", "Cancel", display)
+		var/choice = WWinput(user, "Which subject do you wish to write about?", "Scientific [name] production", "Cancel", display)
 		if (choice == "Cancel")
 			return
 		if (choice == "Industry")
-			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
+			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
 			if (do_after(user, (300*(user.getStatCoeff("crafting"))), src))
-				user << "<span class='notice'>You finish the [styleb].</span>"
+				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "industry"
 				k_level = (user.getStatCoeff("crafting"))
@@ -50,97 +50,97 @@
 				else
 					icon_state = "[styleb]1"
 				name = pick("Woodcutting Basics, by [user]", "Mining and Industrialization, by [user]", "Furniture: How to Complete a Home, by [user]", "Building and Construction Basics, by [user]")
-				desc = "A scientific [styleb], with knowledge in crafting."
+				desc = "A scientific [name], with knowledge in crafting."
 				author = "[user]"
 				update_icon()
 				return
 
 		if (choice == "Anatomy")
-			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
+			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
 			if (do_after(user, (300*((user.getStatCoeff("dexterity")+user.getStatCoeff("strength")))), src))
-				user << "<span class='notice'>You finish the [styleb].</span>"
+				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "anatomy"
 				k_level = ((user.getStatCoeff("dexterity")+user.getStatCoeff("strength")))
 				completed = TRUE
 				icon_state = "[styleb]1"
 				name = pick("Human Body Limits, by [user]", "Increasing Muscular Mass, by [user]", "Complete Guide to Human Anatomy, by [user]", "Athletics Guide, by [user]")
-				desc = "A scientific [styleb], with knowledge in strength and dexterity."
+				desc = "A scientific [name], with knowledge in strength and dexterity."
 				author = "[user]"
 				update_icon()
 				return
 
 		if (choice == "Fencing")
-			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
+			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
 			if (do_after(user, (300*(user.getStatCoeff("swords"))), src))
-				user << "<span class='notice'>You finish the [styleb].</span>"
+				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "fencing"
 				k_level = (user.getStatCoeff("swords"))
 				completed = TRUE
 				icon_state = "[styleb]1"
 				name = pick("Swords & Swordfighting, by [user]", "Fencing: The Human Art, by [user]", "Introduction to Swordfighting, by [user]", "From Spears to Pikes, by [user]")
-				desc = "A scientific [styleb], with knowledge in swords."
+				desc = "A scientific [name], with knowledge in swords."
 				author = "[user]"
 				update_icon()
 				return
 
 		if (choice == "Archery")
-			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
+			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
 			if (do_after(user, (300*(user.getStatCoeff("bows"))), src))
-				user << "<span class='notice'>You finish the [styleb].</span>"
+				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "archery"
 				k_level = (user.getStatCoeff("bows"))
 				completed = TRUE
 				icon_state = "[styleb]1"
 				name = pick("Bows & Longbows, by [user]", "On Archery Physics, by [user]", "Archery and Accuracy, by [user]", "The Archer's Guide, by [user]")
-				desc = "A scientific [styleb], with knowledge in archery."
+				desc = "A scientific [name], with knowledge in archery."
 				author = "[user]"
 				update_icon()
 				return
 
 		if (choice == "Gunpowder")
-			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
+			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
 			if (do_after(user, (300*((user.getStatCoeff("pistol")+user.getStatCoeff("rifle")))), src))
-				user << "<span class='notice'>You finish the [styleb].</span>"
+				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "gunpowder"
 				k_level = ((user.getStatCoeff("pistol")+user.getStatCoeff("rifle")))
 				completed = TRUE
 				icon_state = "[styleb]1"
 				name = pick("Muskets and Pistols: The Complete Guide, by [user]", "Gun Rifling, by [user]", "Cannons, Muskets & Blunderbusses, by [user]", "The Soldiers Companion, by [user]")
-				desc = "A scientific [styleb], with knowledge in gunpowder weapons."
+				desc = "A scientific [name], with knowledge in gunpowder weapons."
 				author = "[user]"
 				update_icon()
 				return
 
 		if (choice == "Medicine")
-			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
+			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
 			if (do_after(user, (300*(user.getStatCoeff("medical"))), src))
-				user << "<span class='notice'>You finish the [styleb].</span>"
+				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "medicine"
 				k_level = (user.getStatCoeff("medical"))
 				completed = TRUE
 				icon_state = "[styleb]1"
 				name = pick("Diseases of the Blood, by [user]", "Religion & Cures, by [user]", "Surgery Guide, by [user]", "Amputation: A Beginners Guide, by [user]")
-				desc = "A scientific [styleb], with knowledge in medicine."
+				desc = "A scientific [name], with knowledge in medicine."
 				author = "[user]"
 				update_icon()
 				return
 
 		if (choice == "Philosophy")
-			user << "<span class='notice'>You begin to transpose your knowledge to the [styleb].</span>"
+			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
 			if (do_after(user, (300*(user.getStatCoeff("philosophy"))), src))
-				user << "<span class='notice'>You finish the [styleb].</span>"
+				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "philosophy"
 				k_level = (user.getStatCoeff("philosophy"))
 				completed = TRUE
 				icon_state = "[styleb]1"
 				name = pick("Discourse Rethoric, by [user]", "Metaphysics of Religion, by [user]", "Politics, by [user]", "Human Ethics, by [user]")
-				desc = "A scientific [styleb], with knowledge in philosophy."
+				desc = "A scientific [name], with knowledge in philosophy."
 				author = "[user]"
 				update_icon()
 				return
@@ -153,9 +153,9 @@
 			if (choice == "No")
 				return
 			else if (choice == "Yes")
-				user << "<span class='notice'>You begin reading the [styleb] attently...</span>"
+				user << "<span class='notice'>You begin reading the [name] attently...</span>"
 				if (do_after(user, (600*k_level), src))
-					user << "<span class='notice'>You finish studying the [styleb]. You feel smarter already.</span>"
+					user << "<span class='notice'>You finish studying the [name]. You feel smarter already.</span>"
 					if (k_class == "industry")
 						user.adaptStat("crafting", (16*k_level))
 					if (k_class == "medicine")
@@ -196,10 +196,15 @@
 	if (istype(O, /obj/item/weapon/researchkit))
 		if (!map.civilizations)
 			return
+		else if(!completed)
+			user << "The book is blank."
+			return
 		else
 			var/current_tribesmen = 0
-			user << "Studying this document..."
-			if (do_after(user,(300*k_level)/user.getStatCoeff("philosophy"),src))
+			var/studytime = 300*k_level
+			var/displaytime = convert_to_textminute(studytime)
+			user << "Studying this document... This will take [displaytime] to finish."
+			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))
 				user << "You finish studying this document. The knowledge gained will be useful in the development of our society."
 				user.adaptStat("philosophy", 1*k_level)
 				if (user.original_job_title == "Nomad")
