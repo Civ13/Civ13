@@ -110,20 +110,28 @@
 		return
 
 	if (!pregnant)
-		var/nearbyObjects = range(2,src) //5x5 area around cow
-		var/cowCount = 0
+		var/nearbyObjects = range(1,src) //3x3 area around cow
 		for(var/mob/living/simple_animal/bull/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
 				pregnant = TRUE
 				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
-			cowCount++
+				break
 
-		for(var/mob/living/simple_animal/cow/M in nearbyObjects)
-			cowCount++
+		if (pregnant)
+			nearbyObjects = range(7,src) //15x15 area around cow
 
-		if (cowCount > 5) // max 5 cows/bulls in a 5x5 area around cow
-			overpopulationCountdown = 30 // 1 minute
-			pregnant = FALSE
+			var/cowCount = 0
+			for(var/mob/living/simple_animal/cow/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					cowCount++
+
+			for(var/mob/living/simple_animal/bull/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					cowCount++
+
+			if (cowCount > 5) // max 5 cows/bulls in a 15x15 area around cow
+				overpopulationCountdown = 150 // 5 minutes
+				pregnant = FALSE
 	else
 		birthCountdown--
 		if (birthCountdown <= 0)
