@@ -190,6 +190,8 @@ the HUD updates properly! */
 			var/mob/living/carbon/human/HM = src
 			if (HM.original_job_title != perp.original_job_title && map.civilizations == TRUE)
 				shared_job_check = FALSE
+			else if (HM.original_job_title == perp.original_job_title && map.civilizations == TRUE && perp.original_job_title != "Nomad")
+				shared_job_check = TRUE
 			if (perp.original_job_title == "Nomad" && HM.original_job_title == perp.original_job_title)
 				shared_job_check = FALSE
 			if (((perp.original_job_title == "Nomad" && HM.civilization == perp.civilization)) && !perp.civilization == "none")

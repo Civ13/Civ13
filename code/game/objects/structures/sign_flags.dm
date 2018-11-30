@@ -125,8 +125,7 @@
 
 	var/choice2 = WWinput(user, "Add a left-half color?", "Flag Maker", "No", display2)
 	if (choice2 == "No")
-		var/image/none = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "")
-		overlays += none
+		icon_state = new_icon_state
 	if (choice2 == "White")
 		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fl_white")
 		overlays += flag_left
@@ -149,8 +148,7 @@
 
 	var/choice3 = WWinput(user, "Add a right-half color?", "Flag Maker", "No", display3)
 	if (choice3 == "No")
-		var/image/none = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "")
-		overlays += none
+		icon_state = new_icon_state
 	if (choice3 == "White")
 		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "fr_white")
 		overlays += flag_left
@@ -173,8 +171,7 @@
 
 	var/choice4 = WWinput(user, "Add a left-third color?", "Flag Maker", "No", display4)
 	if (choice4 == "No")
-		var/image/none = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "")
-		overlays += none
+		icon_state = new_icon_state
 	if (choice4 == "White")
 		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f1_white")
 		overlays += flag_left
@@ -198,8 +195,7 @@
 
 	var/choice5 = WWinput(user, "Add a center-third color?", "Flag Maker", "No", display5)
 	if (choice5 == "No")
-		var/image/none = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "")
-		overlays += none
+		icon_state = new_icon_state
 	if (choice5 == "White")
 		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f2_white")
 		overlays += flag_left
@@ -223,8 +219,7 @@
 
 	var/choice6 = WWinput(user, "Add a right-third color?", "Flag Maker", "No", display6)
 	if (choice6 == "No")
-		var/image/none = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "")
-		overlays += none
+		icon_state = new_icon_state
 	if (choice6 == "White")
 		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_white")
 		overlays += flag_left
@@ -248,8 +243,7 @@
 
 	var/choice7 = WWinput(user, "Add a symbol?", "Flag Maker", "No", display7)
 	if (choice7 == "No")
-		var/image/none = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "")
-		overlays += none
+		icon_state = new_icon_state
 	if (choice7 == "White Star")
 		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_star0")
 		overlays += flag_symbol
