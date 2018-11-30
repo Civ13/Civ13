@@ -239,7 +239,7 @@
 		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_green")
 		overlays += flag_left
 
-	var/list/display7 = list("White Star", "Black Star", "Golden Star", "White Moon", "Black Moon", "Golder Moon", "White Cross", "Black Cross", "Golden Cross", "No")
+	var/list/display7 = list("White Star", "Black Star", "Golden Star", "White Moon", "Black Moon", "Golder Moon", "White Cross", "Black Cross", "Golden Cross","Red Circle","Red Sun", "No")
 
 	var/choice7 = WWinput(user, "Add a symbol?", "Flag Maker", "No", display7)
 	if (choice7 == "No")
@@ -271,7 +271,12 @@
 	if (choice7 == "Golden Cross")
 		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_cross1")
 		overlays += flag_symbol
-
+	if (choice7 == "Red Circle")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_circle0")
+		overlays += flag_symbol
+	if (choice7 == "Red Sun")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_sun1")
+		overlays += flag_symbol
 	var/obj/structure/sign/flag/custom/CF = new/obj/structure/sign/flag/custom(user.loc)
 	CF.overlays = overlays
 	CF.icon_state = new_icon_state

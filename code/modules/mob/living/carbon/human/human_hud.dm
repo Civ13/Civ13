@@ -201,19 +201,19 @@ the HUD updates properly! */
 			P.Client.images += perp.hud_list[BASE_FACTION]
 		else
 			P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
-
-		var/image/holderf = perp.hud_list[BASE_FACTION]
-		holderf.icon = 'icons/mob/hud_1713.dmi'
-		holderf.plane = HUD_PLANE
-		holderf.icon_state = ""
-		if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
-			if (perp.civilization == viewer.civilization && viewer.civilization != "none")
-				holderf.icon_state = "civ2"
-			else if (viewer == perp)
-				holderf.icon_state = "civ2"
-			else
-				holderf.icon_state = "civ1"
-		P.Client.images += holderf
+		if (map.ID == MAP_NOMADS)
+			var/image/holderf = perp.hud_list[BASE_FACTION]
+			holderf.icon = 'icons/mob/hud_1713.dmi'
+			holderf.plane = HUD_PLANE
+			holderf.icon_state = ""
+			if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
+				if (perp.civilization == viewer.civilization && viewer.civilization != "none")
+					holderf.icon_state = "civ2"
+				else if (viewer == perp)
+					holderf.icon_state = "civ2"
+				else
+					holderf.icon_state = "civ1"
+				P.Client.images += holderf
 /datum/arranged_hud_process
 	var/client/Client
 	var/mob/Mob
