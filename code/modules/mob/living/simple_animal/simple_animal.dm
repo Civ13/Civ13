@@ -63,14 +63,9 @@
 		client.screen = null
 	..()
 
-/mob/living/simple_animal/proc/checkDeath()
-	if (health <= 0)
-		death()
-		return TRUE
-
 /mob/living/simple_animal/adjustBruteLoss(var/amount)
 	. = ..()
-	checkDeath()
+	updatehealth()
 
 /mob/living/simple_animal/Life()
 	..()
@@ -84,9 +79,6 @@
 			stat = CONSCIOUS
 			density = TRUE
 		return FALSE
-
-	if (checkDeath())
-		return
 
 	if (health > maxHealth)
 		health = maxHealth
