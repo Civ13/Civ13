@@ -251,7 +251,7 @@ var/global/chicken_count = FALSE
 			S.use(1)
 		else
 			user << "<span class = 'red'>The [src] is not hungry.</span>"
-
+	..()
 /mob/living/simple_animal/chicken/Life()
 	. =..()
 	if (!.)
