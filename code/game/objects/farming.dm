@@ -273,7 +273,7 @@
 	new/obj/item/stack/material/poppy(loc)
 
 /obj/structure/farming/plant/tree/spawnProduce()
-	new/obj/item/stack/material/wood(loc)
-
+	var/obj/item/stack/material/wood/NW = new/obj/item/stack/material/wood(loc)
+	NW.amount = 3
 /obj/structure/farming/plant/cotton/spawnProduce()
 	new/obj/item/stack/material/cotton(loc)

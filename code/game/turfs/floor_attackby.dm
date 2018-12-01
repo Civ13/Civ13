@@ -92,7 +92,7 @@
 						return
 				if (prob(40) && map.age != "5000 B.C.")
 					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-					mineral.amount = rand(1,2)
+					mineral.amount = rand(1,4)
 					H << "<span class='danger'>You found some iron ore!</span>"
 					T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
@@ -143,7 +143,7 @@
 					H.adaptStat("strength", 1)
 					return
 				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-				mineral.amount = rand(1,2)
+				mineral.amount = rand(2,4)
 				H << "<span class='danger'>You found some usable stone blocks!</span>"
 				T.ChangeTurf(/turf/floor/dirt)
 				T.is_mineable = FALSE
