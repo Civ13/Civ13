@@ -89,6 +89,17 @@ var/civmax_research = list(85,89,67)
 	var/civd_research = list(0,0,0,null)
 	var/cive_research = list(0,0,0,null)
 	var/civf_research = list(0,0,0,null)
+
+	var/age1_lim = 110
+	var/age1_done = 0
+	var/age1_top = 35
+	var/age2_lim = 170
+	var/age2_done = 0
+	var/age2_timer = 40000
+	var/age2_top = 65
+	var/age3_lim = 300
+	var/age3_done = 0
+	var/age3_timer = 42000
 /obj/map_metadata/New()
 	..()
 	map = src
