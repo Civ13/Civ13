@@ -5,7 +5,8 @@
 /datum/surgery_step/set_bone
 	allowed_tools = list(
 	/obj/item/weapon/surgery/bonesetter = 100,	\
-	/obj/item/weapon/wrench = 75		\
+	/obj/item/weapon/wrench = 75,		\
+	/obj/item/weapon/hammer = 50		\
 	)
 
 	min_duration = 60
@@ -49,7 +50,8 @@
 /datum/surgery_step/mend_skull
 	allowed_tools = list(
 	/obj/item/weapon/surgery/bonesetter = 100,	\
-	/obj/item/weapon/wrench = 75		\
+	/obj/item/weapon/wrench = 75,
+	/obj/item/weapon/hammer = 50		\
 	)
 
 	min_duration = 60

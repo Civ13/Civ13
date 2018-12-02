@@ -14,7 +14,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = TURF_LAYER + 0.01
+	layer = 2.1
 	level = 2
 	var/amount = FALSE
 	var/wall = FALSE
@@ -30,6 +30,7 @@
 	icon_state = "wood"
 	passable = TRUE
 	amount = 1
+	layer = 2.1
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -39,6 +40,7 @@
 	not_movable = TRUE
 	amount = 0
 	wood = FALSE
+	layer = 2.1
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -48,6 +50,7 @@
 	not_movable = TRUE
 	amount = 0
 	wood = FALSE
+	layer = 2.1
 
 /obj/covers/wood_ship
 	name = "wood floor"
@@ -55,6 +58,7 @@
 	passable = TRUE
 	not_movable = TRUE
 	amount = 1
+	layer = 2.1
 
 /obj/covers/wood_wall
 	name = "soft wood wall"
