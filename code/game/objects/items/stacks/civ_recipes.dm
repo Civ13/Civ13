@@ -52,6 +52,7 @@
 	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += list(new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += new/datum/stack_recipe_list("armbands", list(
 		new/datum/stack_recipe("red armband", /obj/item/clothing/accessory/armband/british, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 		new/datum/stack_recipe("orange armband", /obj/item/clothing/accessory/armband/dutch, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -417,6 +418,7 @@
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("gold coins", /obj/item/stack/money/goldcoin, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("gold crown", /obj/item/clothing/head/helmet/gold_crown, 5, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/silver/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
