@@ -8,6 +8,7 @@
 	priority = 2
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100, 	\
+	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
 	/obj/item/stack/material/rope = 50, 	\
 	)
 	can_infect = TRUE
@@ -56,6 +57,7 @@
 	priority = 2
 	allowed_tools = list(
 		/obj/item/weapon/surgery/scalpel = 100,		\
+	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
 		/obj/item/weapon/material/knife = 75,	\
 		/obj/item/weapon/material/shard = 50, 		\
 	)

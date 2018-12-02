@@ -100,6 +100,7 @@
 
 	allowed_tools = list(
 	/obj/item/weapon/surgery/scalpel = 100,		\
+	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
@@ -161,6 +162,7 @@
 
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
+	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 20, \
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
 	)

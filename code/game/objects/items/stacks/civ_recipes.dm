@@ -112,7 +112,9 @@
 			new/datum/stack_recipe("hemostat", /obj/item/weapon/surgery/hemostat, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cautery",/obj/item/weapon/surgery/cautery, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bone saw",/obj/item/weapon/surgery/bone_saw, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bone setter",/obj/item/weapon/surgery/bonesetter, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("scalpel", /obj/item/weapon/surgery/scalpel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 /material/wood/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 33 && current_res[3]>= 48)
@@ -448,7 +450,14 @@
 		recipes += new/datum/stack_recipe("[display_name] spadroon", /obj/item/weapon/material/sword/spadroon/bronze, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	if (current_res[1] >= 34 && current_res[2] >= 21)
 		recipes += new/datum/stack_recipe("bronze chestplate", /obj/item/clothing/suit/armor/medieval/bronze_chestplate, 6, _time = 165, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
-
+	if (current_res[1] >= 18 && current_res[3]>= 26)
+		recipes += new/datum/stack_recipe_list("bronze medical tools", list(
+			new/datum/stack_recipe("bronze retractor", /obj/item/weapon/surgery/retractor/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bronze hemostat", /obj/item/weapon/surgery/hemostat/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bronze cautery",/obj/item/weapon/surgery/cautery/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bronze bone saw",/obj/item/weapon/surgery/bone_saw/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bronze bone setter",/obj/item/weapon/surgery/bonesetter/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bronze scalpel", /obj/item/weapon/surgery/scalpel/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/steel/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 50 && current_res[2] >= 44)
