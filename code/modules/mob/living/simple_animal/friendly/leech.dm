@@ -46,7 +46,7 @@
 			return
 
 /obj/item/weapon/leech/attack(var/mob/living/carbon/human/C, var/mob/living/user)
-	visible_message("[user] starts to attatch the leech to [C]...")
+	visible_message("[user] starts to attach the leech to [C]...")
 	if (do_after(user,150,src))
 		visible_message("[user] has finished leeching [C].")
 		fill = 1

@@ -124,7 +124,7 @@
 		recipes += new/datum/stack_recipe("operating table",/obj/structure/optable, 9, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.ordinal_age > 0 && map.research_active == TRUE)
 		recipes += new/datum/stack_recipe("research kit",/obj/item/weapon/researchkit, 10, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 18)
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 			new/datum/stack_recipe("door", /obj/structure/simple_door/key_door/anyone/wood, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -281,7 +281,7 @@
 	recipes += new/datum/stack_recipe("stone brazier",	/obj/structure/brazier/stone, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age == 0 && map.research_active == TRUE)
 		recipes += new/datum/stack_recipe("research kit",/obj/item/weapon/researchkit, 10, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("scientific rock slate",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("scientific rock slate",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 43)

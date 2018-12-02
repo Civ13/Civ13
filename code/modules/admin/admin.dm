@@ -541,13 +541,13 @@ proc/admin_notice(var/message, var/rights)
 	if (!map.civilizations)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
-	if (map.research_active)
-		map.research_active = FALSE
+	if (!(map.research_active))
+		map.research_active = TRUE
 		world << "<big>Research has been <b>activated.</b></big>"
 		log_admin("[key_name(usr)] has activated the Research.")
 		return
 	else
-		map.research_active = TRUE
+		map.research_active = FALSE
 		world << "<big>Research has been <b>deactivated.</b></big>"
 		log_admin("[key_name(usr)] has deactivated the Research.")
 		return
