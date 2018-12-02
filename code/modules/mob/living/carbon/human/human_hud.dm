@@ -207,9 +207,9 @@ the HUD updates properly! */
 			holderf.plane = HUD_PLANE
 			holderf.icon_state = ""
 			if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
-				if (perp.civilization == viewer.civilization && viewer.civilization != "none")
+				if (viewer == perp)
 					holderf.icon_state = "civ2"
-				else if (viewer == perp)
+				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.civilization != "none")
 					holderf.icon_state = "civ2"
 				else
 					holderf.icon_state = "civ1"
