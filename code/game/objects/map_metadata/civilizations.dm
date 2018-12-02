@@ -48,6 +48,12 @@
 		tribes_nr = 6
 	if (tribes_nr >= 2)
 		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
+	civa_research = list(default_research,default_research,default_research,null)
+	civb_research = list(default_research,default_research,default_research,null)
+	civc_research = list(default_research,default_research,default_research,null)
+	civd_research = list(default_research,default_research,default_research,null)
+	cive_research = list(default_research,default_research,default_research,null)
+	civf_research = list(default_research,default_research,default_research,null)
 	..()
 	spawn(18000)
 		seasons()

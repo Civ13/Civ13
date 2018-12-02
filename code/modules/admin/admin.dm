@@ -534,8 +534,88 @@ proc/admin_notice(var/message, var/rights)
 	world << "<span class = 'red'><b>Rebooting world!</b> <span class = 'notice'>Initiated by [usr.client.holder.fakekey ? "Admin" : usr.key]!</span></span>"
 	log_admin("[key_name(usr)] initiated an immediate reboot.")
 	world.Reboot()
+/datum/admins/proc/set_research()
+	set category = "Special"
+	set desc="Activates or Deactivates research."
+	set name="Toggle Research"
+	if (!map.civilizations)
+		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
+		return
+	if (map.research_active)
+		map.research_active = FALSE
+		world << "<big>Research has been <b>activated.</b></big>"
+		log_admin("[key_name(usr)] has activated the Research.")
+		return
+	else
+		map.research_active = TRUE
+		world << "<big>Research has been <b>deactivated.</b></big>"
+		log_admin("[key_name(usr)] has deactivated the Research.")
+		return
+/datum/admins/proc/set_custom_research()
+	set category = "Special"
+	set desc="Changes the starting research."
+	set name="Set Custom Research"
+	if (!map.civilizations)
+		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
+		return
+	else if (!(ticker.current_state == GAME_STATE_PREGAME))
+		usr << "<font color='red'>Error: The game as already started.</font>"
+		return
+	else
+		var/customresearch = input("What do you want the starting research to be?", "Custom Research") as num|null
+		if (customresearch == null)
+			return
+		if (customresearch <= 0)
+			customresearch = 0
+		if (customresearch >= 100)
+			customresearch = 100
 
-
+		map.default_research = customresearch
+		return
+/datum/admins/proc/set_custom_age()
+	set category = "Special"
+	set desc="Changes the starting age."
+	set name="Set Custom Age"
+	if (!map.civilizations)
+		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
+		return
+	else if (!(ticker.current_state == GAME_STATE_PREGAME))
+		usr << "<font color='red'>Error: The game as already started.</font>"
+		return
+	else
+		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "Cancel"))
+		if (customage == "Cancel")
+			return
+		else if (customage == "5000 B.C.")
+			map.ordinal_age = 0
+			map.age = "5000 B.C."
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "313 B.C.")
+			map.ordinal_age = 1
+			map.age = "313 B.C."
+			map.age1_done = TRUE
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1013")
+			map.ordinal_age = 2
+			map.age = "1013"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1713")
+			map.ordinal_age = 3
+			map.age = "1713"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
 ////////////////////////////////////////////////////////////////////////////////////////////////ADMIN HELPER PROCS
 
 /proc/is_special_character(mob/M as mob) // returns TRUE for specail characters and 2 for heroes of gamemode
