@@ -153,6 +153,13 @@
 	value = 5
 	w_class = 1.0
 
+/obj/item/stack/material/straw
+	name = "straw"
+	icon_state = "sheet-straw"
+	default_type = "straw"
+	value = 3
+	w_class = 2.0
+
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)
 		return FALSE

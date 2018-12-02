@@ -120,13 +120,13 @@
 	else if (istype(O, /obj/item/weapon/researchkit))
 		if (user.original_job_title == "Nomad")
 			if (map.age1_done == FALSE)
-				if (world.time > 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
+				if (world.time < 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
 					user << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
 					return
-				else if (world.time > 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
+				else if (world.time < 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
 					user << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
 					return
-				else if (world.time > 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
+				else if (world.time < 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
 					user << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
 					return
 			else if (map.age1_done == TRUE && map.age2_done == FALSE)

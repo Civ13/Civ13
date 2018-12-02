@@ -134,7 +134,20 @@
 			icon = 'icons/obj/flora/bigtrees.dmi'
 		else
 			icon = 'icons/obj/flora/deadtrees.dmi'
-
+/obj/structure/wild/tree/live_tree/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 7
+		qdel(src)
+		return
+/obj/structure/wild/tree/dead_tree/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 7
+		qdel(src)
+		return
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
