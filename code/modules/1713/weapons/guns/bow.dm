@@ -146,3 +146,10 @@
 	else
 		visible_message("")
 	return
+
+
+/obj/item/weapon/gun/projectile/bow/special_check(mob/user)
+	if (!(user.has_empty_hand(both = FALSE)))
+		user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+		return FALSE
+	return ..()
