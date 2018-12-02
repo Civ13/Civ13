@@ -201,16 +201,15 @@
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-
-	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "small sword"))
-		if (H.getStatCoeff("crafting") < 1.8)
-			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
-			return
 		var/puddly = FALSE
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			puddly = TRUE
 		if (puddly == FALSE)
 			H << "<span class = 'danger'>You need to build this over a puddle.</span>"
+			return
+	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "small sword"))
+		if (H.getStatCoeff("crafting") < 1.8)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))

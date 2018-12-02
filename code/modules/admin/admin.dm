@@ -571,6 +571,12 @@ proc/admin_notice(var/message, var/rights)
 			customresearch = 100
 
 		map.default_research = customresearch
+		civa_research = list(customresearch,customresearch,customresearch,null)
+		civb_research = list(customresearch,customresearch,customresearch,null)
+		civc_research = list(customresearch,customresearch,customresearch,null)
+		civd_research = list(customresearch,customresearch,customresearch,null)
+		cive_research = list(customresearch,customresearch,customresearch,null)
+		civf_research = list(customresearch,customresearch,customresearch,null)
 		return
 /datum/admins/proc/set_custom_age()
 	set category = "Special"
