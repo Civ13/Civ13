@@ -25,6 +25,7 @@
 	availablefactions = list("Nomad")
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
+	research_active = TRUE
 	age1_lim = 110
 	age1_done = 0
 	age1_top = 35

@@ -90,6 +90,8 @@ var/civmax_research = list(85,89,67)
 	var/cive_research = list(0,0,0,null)
 	var/civf_research = list(0,0,0,null)
 
+	var/research_active = FALSE //if research can be done
+	var/default_research = 0 //the starting research level
 	var/age1_lim = 110
 	var/age1_done = 0
 	var/age1_top = 35
