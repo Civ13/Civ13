@@ -445,6 +445,8 @@
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("bronze shield", /obj/item/weapon/shield/bronze, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("aspis shield", /obj/item/weapon/shield/aspis, 5, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("roman shield", /obj/item/weapon/shield/roman, 6, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 27 && current_res[2] >= 34)
 		recipes += new/datum/stack_recipe("[display_name] small sword", /obj/item/weapon/material/sword/smallsword/bronze, 10, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	if (current_res[1] >= 27 && current_res[2] >= 42)
