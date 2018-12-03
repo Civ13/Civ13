@@ -37,6 +37,8 @@
 			affected.perma_injury = 0
 			affected.damage = 0
 			affected.stage = TRUE
+			if (config.bones_can_break && affected.brute_dam >= affected.min_broken_damage * config.organ_health_multiplier)
+				affected.brute_dam = (affected.min_broken_damage * config.organ_health_multiplier)-5
 		else
 			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name]<span class = 'red'>in the WRONG place with \the [tool].</span></span>", \
 				"<span class = 'notice'>You set the bone in [target]'s [affected.name]<span class = 'red'> in the WRONG place with \the [tool].</span></span>")

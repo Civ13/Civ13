@@ -10,8 +10,7 @@
 			else
 				return
 		visible_message("<span class='warning'>[user] rips [src]!</span>" )
-		icon_state += "_ripped"
-		ripped = TRUE
+		qdel(src)
 
 /obj/structure/sign/flag/red
 	name = "\improper red banner"
