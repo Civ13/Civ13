@@ -12,7 +12,7 @@
 
 	if (istype(W, /obj/item/weapon/material))
 		user.setClickCooldown(W.cooldownw)
-		visible_message("<span class='notice'>[user] [W.attack_verb] the training dummy with the [W]!</span>","<span class='notice'>You have [W.attack_verb] the training dummy with the [W]!</span>")
+		visible_message("<span class='notice'>[user] [pick(W.attack_verb)] the training dummy with the [W]!</span>","<span class='notice'>You have [W.attack_verb] the training dummy with the [W]!</span>")
 		playsound(get_turf(src), W.hitsound, 100)
 		user.do_attack_animation(src)
 		health -= 5
