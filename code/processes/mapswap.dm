@@ -169,7 +169,7 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic","Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)")
+		vote.voted_gamemode = pick("Classic", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Bronze Age Start")
 
 	if (vote.voted_gamemode == "Classic")
 		world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
@@ -180,6 +180,21 @@
 		map.age = "313 B.C."
 		map.age1_done = TRUE
 		map.research_active = FALSE
+		var/customresearch = 35
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return
+	else if (vote.voted_gamemode == "Bronze Age Start")
+		world << "<big>Starting Classic mode with<b>Bronze Age</b> start. Starting epoch is the Bronze Age, research active.</big>"
+		map.ordinal_age = 1
+		map.age = "313 B.C."
+		map.age1_done = TRUE
+		map.research_active = TRUE
 		var/customresearch = 35
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
