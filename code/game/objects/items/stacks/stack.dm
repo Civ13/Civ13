@@ -208,7 +208,7 @@
 			H << "<span class = 'danger'>You need to build this over a puddle.</span>"
 			return
 	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "small sword"))
-		if (H.getStatCoeff("crafting") < 1.8)
+		if (H.getStatCoeff("crafting") < 1.8 && !findtext(recipe.title, "catapult projectile"))
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
