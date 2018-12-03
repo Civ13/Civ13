@@ -577,6 +577,8 @@ proc/admin_notice(var/message, var/rights)
 		map.civd_research = list(customresearch,customresearch,customresearch,null)
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		world << "<big>The initial research has been set to  <b>[customresearch]</b>.</big>"
+		log_admin("[key_name(usr)] set the initial research to [customresearch].")
 		return
 /datum/admins/proc/set_custom_age()
 	set category = "Special"
@@ -595,14 +597,14 @@ proc/admin_notice(var/message, var/rights)
 		else if (customage == "5000 B.C.")
 			map.ordinal_age = 0
 			map.age = "5000 B.C."
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
 		else if (customage == "313 B.C.")
 			map.ordinal_age = 1
 			map.age = "313 B.C."
 			map.age1_done = TRUE
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
 		else if (customage == "1013")
@@ -610,7 +612,7 @@ proc/admin_notice(var/message, var/rights)
 			map.age = "1013"
 			map.age1_done = TRUE
 			map.age2_done = TRUE
-			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			world << "<big>The Epoch has been changed to <b>[map.age]</b>.</big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return
 		else if (customage == "1713")
