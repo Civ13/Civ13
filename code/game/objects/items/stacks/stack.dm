@@ -201,6 +201,7 @@
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
+	if (findtext(recipe.title, "well"))
 		var/puddly = FALSE
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			puddly = TRUE
