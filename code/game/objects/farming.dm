@@ -62,6 +62,13 @@
 	icon_state = "potato"
 	color = null
 
+/obj/item/stack/farming/seeds/rice
+	name = "rice seeds"
+	desc = "rice seeds selected for their characteristics."
+	plant = "rice"
+	icon_state = "riceseeds"
+	color = null
+
 /obj/item/stack/farming/seeds/corn
 	name = "corn seeds"
 	plant = "corn"
@@ -204,6 +211,13 @@
 	icon_state = "tree-grow1"
 	plant = "tree"
 	harvest_verb = "cut some logs from"
+
+/obj/structure/farming/plant/rice
+	name = "rice"
+	desc = "a rice plant."
+	icon_state = "rice-grow1"
+	plant = "rice"
+	harvest_verb = "harvest"
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()
