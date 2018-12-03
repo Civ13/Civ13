@@ -129,3 +129,96 @@
 		winner = maps[1]
 	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
 	processes.python.execute("mapswap.py", list(winner))
+
+
+
+/process/gamemode
+	var/ready = TRUE
+	var/admin_triggered = FALSE
+	var/finished_at = -1
+
+/process/gamemode/setup()
+	name = "gamemode"
+	schedule_interval = 5 SECONDS
+	start_delay = 5 SECONDS
+	fires_at_gamestates = list()
+	priority = PROCESS_PRIORITY_IRRELEVANT
+	processes.gamemode = src
+/process/gamemode/fire()
+	// no SCHECK here
+	if (is_ready())
+		ready = FALSE
+		vote.initiate_vote("gamemode", "Gamemode Process", TRUE, list(src, "swap"))
+
+/process/gamemode/proc/is_ready()
+	. = FALSE
+
+	if (ready)
+		if (admin_triggered)
+			. = TRUE
+		// round will end soon (tm)
+		else if (map && map.admins_triggered_roundend)
+			. = TRUE
+		else if (ticker.finished)
+			. = FALSE
+	return .
+
+/process/gamemode/proc/swap(var/winner = "Classic")
+	vote.voted_gamemode = winner
+	round_progressing = TRUE
+	ticker.delay_end = FALSE
+	ticker.pregame_timeleft = 10
+	if (vote.voted_gamemode == "Random")
+		vote.voted_gamemode = pick("Classic","Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)")
+
+	if (vote.voted_gamemode == "Classic")
+		world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
+		return
+	else if (vote.voted_gamemode == "Bronze Age (No Research)")
+		world << "<big>Starting <b>Bronze Age</b> mode. Game epoch is the Bronze Age, research inactive.</big>"
+		map.ordinal_age = 1
+		map.age = "313 B.C."
+		map.age1_done = TRUE
+		map.research_active = FALSE
+		var/customresearch = 35
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return
+	else if (vote.voted_gamemode == "Medieval (No Research)")
+		world << "<big>Starting <b>Medieval Age</b> mode. Game Epoch is the Medieval Age, research inactive.</big>"
+		map.ordinal_age = 2
+		map.age = "1013"
+		map.age1_done = TRUE
+		map.age2_done = TRUE
+		map.research_active = FALSE
+		var/customresearch = 50
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return
+	else if (vote.voted_gamemode == "Imperial Age (No Research)")
+		world << "<big>Starting <b>Medieval Age</b> mode. Game Epoch is the Imperial Age, research inactive.</big>"
+		map.ordinal_age = 3
+		map.age = "1713"
+		map.age1_done = TRUE
+		map.age2_done = TRUE
+		map.age3_done = TRUE
+		map.research_active = FALSE
+		var/customresearch = 100
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return

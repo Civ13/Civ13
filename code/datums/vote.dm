@@ -20,7 +20,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	var/list/callback = null
 	var/list/disabled[10]
 	var/voted_epoch = "1713"
-
+	var/voted_gamemode = "Classic"
+	var/autogamemode_triggered = FALSE
 	New()
 		if (vote != src)
 			if (istype(vote))
@@ -53,9 +54,14 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						C << browse(vote.interface(C),"window=vote")
 
 	proc/autogamemode()
-		return//I hate autogamemode vote.
-		//initiate_vote("gamemode","the server", TRUE)
-		//log_debug("The server has called a gamemode vote")
+		if (map.civilizations && autogamemode_triggered == FALSE)
+			initiate_vote("gamemode","the server", TRUE)
+			log_debug("The server has called a gamemode vote")
+			autogamemode_triggered = TRUE
+			return
+		else
+			return
+
 
 	proc/reset()
 		initiator = null
@@ -81,21 +87,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 		var/vote_threshold = total_votes * win_threshold
 
-		/* // no more - kachnov
-		//default-vote for everyone who didn't vote
-		if (!config.vote_no_default && choices.len)
-			var/non_voters = (clients.len - total_votes)
-			if (non_voters > 0)
-				if (mode == "restart")
-					choices["Continue Playing"] += non_voters
-					if (choices["Continue Playing"] >= greatest_votes)
-						greatest_votes = choices["Continue Playing"]
-				else if (mode == "gamemode")
-					if (master_mode in choices)
-						choices[master_mode] += non_voters
-						if (choices[master_mode] >= greatest_votes)
-							greatest_votes = choices[master_mode]
-		*/
 
 		//get all options with that many votes and return them in a list
 		. = list()
@@ -123,15 +114,13 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if (choices[current_votes[key]] == .)
 					round_voters += key // Keep track of who voted for the winning round.
 			text += "<b>Vote Result: <span class = 'ping'>[.]</span></b><br>"
-			text += "<b>The vote has ended. </b>" // What will be shown if it is a gamemode vote that isn't extended
+			text += "<b>The vote has ended. </b>"
 			if (callback)
 				if (callback.len == 2)
 					call(callback[1], callback[2])(.)
 				callback = null
 		else
 			text += "<b>Vote Result: Inconclusive - Neither option had enough votes!</b>"
-		/*	if (mode == "add_antagonist")
-				antag_add_failed = TRUE*/
 		log_vote(text)
 		world << "<font color='purple'>[text]</font>"
 		return .
@@ -158,7 +147,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if ("map")
 					ticker.finished = TRUE
 					processes.mapswap.finished_at = world.time
-
+				if ("gamemode")
+					processes.gamemode.swap(.)
 		return .
 
 	proc/submit_vote(var/ckey, var/vote)
@@ -218,6 +208,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					if (!choices.len)
 						choices.Add("Yes")
 						choices.Add("No")
+				if ("gamemode")
+					var/list/options = list("Classic", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Random")
+					if (!default)
+						default = "Classic"
+					choices.Add(options)
 				else
 					return FALSE
 			mode = vote_type
@@ -229,14 +224,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 			log_vote(text)
 			world << "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>"
-		/*	switch(vote_type)
-				if ("gamemode")
-					world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
-				if ("custom")
-					world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
-				if ("restart")
-					world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
-*/
+
 			world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 			if (mode == "gamemode" && round_progressing)
 				round_progressing = FALSE
@@ -260,8 +248,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			else			. += "<h2>Vote: [capitalize(mode)]</h2>"
 			. += "Time Left: [time_remaining] s<hr>"
 			. += "<table width = '100%'><tr><td align = 'center'><b>Choices</b></td><td align = 'center'><b>Votes</b></td>"
-			if (capitalize(mode) == "Gamemode") .+= "<td align = 'center'><b>Minimum Players</b></td></tr>"
-
 			for (var/i = 1, i <= choices.len, i++)
 				var/votes = choices[choices[i]]
 				if (!votes)	votes = 0
@@ -290,11 +276,14 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			. += "</li><li>"
 			if (admin)
 				. += "\t(<a href='?src=\ref[src];vote=toggle_restart'>[config.allow_vote_restart?"Allowed":"Disallowed"]</a>)"
+				. += "</li><li>"
+				. += "<a href='?src=\ref[src];vote=gamemode'>Gamemode</a></li>"
 			//custom
 			if (admin)
 				. += "<li><a href='?src=\ref[src];vote=custom'>Custom</a></li>"
 			. += "</ul><hr>"
 		. += "<a href='?src=\ref[src];vote=close' style='position:absolute;right:50px'>Close</a></body></html>"
+
 		return .
 
 
@@ -320,6 +309,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if ("custom")
 				if (usr.client.holder)
 					initiate_vote("custom",usr.key)
+			if ("gamemode")
+				if (usr.client.holder)
+					initiate_vote("gamemode",usr.key)
 			else
 				var/t = round(text2num(href_list["vote"]))
 				if (t) // It starts from TRUE, so there's no problem
