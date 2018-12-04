@@ -43,7 +43,7 @@
 	..()
 	spawn(50)
 		season = "Wet Season"
-	spawn(180)
+	spawn(18000)
 		seasons()
 
 /obj/map_metadata/nomads_desert/faction2_can_cross_blocks()
@@ -79,7 +79,7 @@
 			D.ChangeTurf(/turf/floor/plating/beach/drywater)
 		real_season = "dry"
 
-	spawn(180)
+	spawn(18000)
 		seasons()
 
 /obj/map_metadata/nomads_desert/tick()
