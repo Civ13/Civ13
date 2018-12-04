@@ -333,6 +333,7 @@ var/global/chicken_count = FALSE
 			user << "<span class = 'red'>The [O] is full.</span>"
 		if (!transfered)
 			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+		return
 	else
 		..()
 
