@@ -41,8 +41,9 @@
 	var/real_season = "wet"
 /obj/map_metadata/nomads_desert/New()
 	..()
-	spawn(50)
-		season = "Wet Season"
+	spawn(1800)
+		if (season == "Spring") //fixes game setting the season as spring
+			season = "Wet Season"
 	spawn(18000)
 		seasons()
 

@@ -168,15 +168,15 @@
 			. = FALSE
 	return .
 
-/process/gamemode/proc/swap(var/winner = "Classic")
+/process/gamemode/proc/swap(var/winner = "Classic (Stone Age Start)")
 	vote.voted_gamemode = winner
 	round_progressing = TRUE
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Bronze Age Start")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Bronze Age Start")
 
-	if (vote.voted_gamemode == "Classic")
+	if (vote.voted_gamemode == "Classic (Stone Age Start)")
 		world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
 		return
 	else if (vote.voted_gamemode == "Bronze Age (No Research)")

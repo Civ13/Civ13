@@ -20,7 +20,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	var/list/callback = null
 	var/list/disabled[10]
 	var/voted_epoch = "1713"
-	var/voted_gamemode = "Classic"
+	var/voted_gamemode = "Classic (Stone Age Start)"
 	var/autogamemode_triggered = FALSE
 	New()
 		if (vote != src)
@@ -209,9 +209,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("Yes")
 						choices.Add("No")
 				if ("gamemode")
-					var/list/options = list("Classic", "Bronze Age Start", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Random")
+					var/list/options = list("Classic (Stone Age Start)", "Bronze Age Start", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Random")
 					if (!default)
-						default = "Classic"
+						default = "Classic (Stone Age Start)"
 					choices.Add(options)
 				else
 					return FALSE

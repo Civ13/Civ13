@@ -1138,3 +1138,61 @@
 
 
 	return TRUE
+
+/datum/job/civilian/civnomad/give_random_name(var/mob/living/carbon/human/H)
+	if (map.ID == MAP_NOMADS_DESERT)
+		H.name = H.species.get_random_arab_name()
+		H.real_name = H.name
+		return
+	else
+		if (map.ordinal_age == 0)
+			if (prob(50))
+				H.name = H.species.get_random_roman_name()
+				H.real_name = H.name
+				return
+			else
+				H.name = H.species.get_random_roman_name()
+				H.real_name = H.name
+				return
+		else if (map.ordinal_age == 1)
+			if (prob(50))
+				H.name = H.species.get_random_roman_name()
+				H.real_name = H.name
+				return
+			else
+				H.name = H.species.get_random_roman_name()
+				H.real_name = H.name
+				return
+		else if (map.ordinal_age == 2)
+			if (prob(50))
+				H.name = H.species.get_random_english_name()
+				H.real_name = H.name
+				return
+			else
+				H.name = H.species.get_random_french_name(H.gender)
+				H.real_name = H.name
+				return
+		else if (map.ordinal_age == 3)
+			var/randname = pick(1,2,3,4,5)
+			if (randname == 1)
+				H.name = H.species.get_random_english_name()
+				H.real_name = H.name
+				return
+			if (randname == 2)
+				H.name = H.species.get_random_french_name()
+				H.real_name = H.name
+				return
+			if (randname == 3)
+				H.name = H.species.get_random_dutch_name()
+				H.real_name = H.name
+				return
+			if (randname == 4)
+				H.name = H.species.get_random_spanish_name()
+				H.real_name = H.name
+				return
+			if (randname == 5)
+				H.name = H.species.get_random_portuguese_name()
+				H.real_name = H.name
+				return
+		else
+			..()
