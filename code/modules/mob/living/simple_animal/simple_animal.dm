@@ -277,7 +277,8 @@
 							bone.name = "[name] bone"
 					crush()
 					qdel(src)
-
+		else if (istype(O, /obj/item/weapon/reagent_containers/glass))
+			return
 		else
 			O.attack(src, user, user.targeted_organ)
 

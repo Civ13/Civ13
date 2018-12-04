@@ -128,6 +128,10 @@
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
 			qdel(I)
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough))
+			contents += new /obj/item/weapon/reagent_containers/food/snacks/flatbread(src)
+			contents -= I
+			qdel(I)
 		else if (!istype(I, /obj/item/weapon/reagent_containers/food) || istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/badrecipe) || I.name == "Stew" || findtext(I.name, "soup") || (I.vars.Find("roasted") && I:roasted))
 			if (!istype(I, /obj/item/organ))
 				contents += new /obj/item/weapon/reagent_containers/food/snacks/badrecipe(src)
