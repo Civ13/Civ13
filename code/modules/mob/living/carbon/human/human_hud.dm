@@ -201,7 +201,7 @@ the HUD updates properly! */
 			P.Client.images += perp.hud_list[BASE_FACTION]
 		else
 			P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
-		if (map.ID == MAP_NOMADS)
+		if (map.nomads == TRUE)
 			var/image/holderf = perp.hud_list[BASE_FACTION]
 			holderf.icon = 'icons/mob/hud_1713.dmi'
 			holderf.plane = HUD_PLANE

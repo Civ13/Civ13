@@ -67,7 +67,7 @@
 		start_to_rot = TRUE
 
 	if (has_hunger_and_thirst)
-		if (map.heat_wave)
+		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
 				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
@@ -375,6 +375,10 @@
 				loc_temp = 303
 			if ("SPRING")
 				loc_temp = 290
+			if ("Dry Season")
+				loc_temp = 313
+			if ("Wet Season")
+				loc_temp = 303
 
 		switch (time_of_day)
 			if ("Midday")
@@ -423,8 +427,9 @@
 
 	for (var/obj/structure/brazier/BR in range(3, src))
 		if (BR.on == TRUE)
-			loc_temp = 295
-			break
+			if (loc_temp < 295)
+				loc_temp = 295
+				break
 
 	// todo: wind adjusting effective loc_temp
 	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))

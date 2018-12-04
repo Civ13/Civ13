@@ -78,7 +78,10 @@
 						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 						mineral.amount = rand(1,3)
 						H << "<span class='danger'>You found some copper ore!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/plating/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
@@ -86,7 +89,10 @@
 						var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
 						mineral.amount = rand(1,3)
 						H << "<span class='danger'>You found some tin ore!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/plating/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
@@ -94,7 +100,10 @@
 					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
 					mineral.amount = rand(1,4)
 					H << "<span class='danger'>You found some iron ore!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/plating/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
@@ -103,49 +112,70 @@
 					if (pickperc == 1 || map.age != "1713")
 						new/obj/item/stack/ore/coal(src)
 						H << "<span class='danger'>You found some coal!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/plating/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 					else if (pickperc == 2)
 						new/obj/item/stack/ore/saltpeter(src)
 						H << "<span class='danger'>You found some saltpeter!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/plating/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 					else if (pickperc == 3)
 						new/obj/item/stack/ore/sulphur(src)
 						H << "<span class='danger'>You found some sulphur!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/plating/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 				if (prob(5))
 					new/obj/item/stack/ore/silver(src)
 					H << "<span class='danger'>You found some silver ore!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/plating/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(2))
 					new/obj/item/stack/ore/gold(src)
 					H << "<span class='danger'>You found some gold ore!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/plating/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(1))
 					new/obj/item/stack/ore/diamond(src)
 					H << "<span class='danger'>You found some raw diamonds!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/plating/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 				mineral.amount = rand(2,4)
 				H << "<span class='danger'>You found some usable stone blocks!</span>"
-				T.ChangeTurf(/turf/floor/dirt)
+				if(map.ID == MAP_NOMADS_DESERT)
+					T.ChangeTurf(/turf/floor/plating/dust)
+				else
+					T.ChangeTurf(/turf/floor/dirt)
 				T.is_mineable = FALSE
 				H.adaptStat("strength", 1)
 				return

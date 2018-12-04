@@ -104,6 +104,7 @@
 			maps = list(
 				MAP_CIVILIZATIONS = 0,
 				MAP_NOMADS = 0,
+				MAP_NOMADS_DESERT = 0,
 			)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
@@ -129,8 +130,12 @@
 		winner = maps[1]
 	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
 	processes.python.execute("mapswap.py", list(winner))
-
-
+	var/F = file("/home/1713/1713/discord/gamedata.txt")
+	if (fexists("/home/1713/1713/discord/gamedata.txt"))
+		fdel(F)
+	var/string1 = "map:[winner]\n"
+	var/string2 = "players:[clients.len]\n"
+	text2file("[string1][string2]","/home/1713/1713/discord/gamedata.txt")
 
 /process/gamemode
 	var/ready = TRUE

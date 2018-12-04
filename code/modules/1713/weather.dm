@@ -32,6 +32,21 @@
 			weather = WEATHER_RAIN
 		else
 			weather = WEATHER_NONE
+
+	else if (season == "SUMMER")
+		if (weather == WEATHER_RAIN)
+			weather = WEATHER_NONE
+
+	else if (season == "Wet Season")
+		if (weather == WEATHER_NONE)
+			weather = WEATHER_RAIN
+		else
+			weather = WEATHER_NONE
+
+	else if (season == "Dry Season")
+		if (weather == WEATHER_RAIN)
+			weather = WEATHER_NONE
+
 	var/area_icon = 'icons/effects/weather.dmi'
 	var/area_icon_state = ""
 	var/area_alpha = 255
@@ -98,6 +113,10 @@
 			possibilities += WEATHER_SNOW
 		if ("SPRING")
 			possibilities += WEATHER_RAIN
+		if ("Wet Season")
+			possibilities += WEATHER_RAIN
+		if ("Dry Season")
+			possibilities += list(WEATHER_NONE)
 		if ("SUMMER")
 			possibilities = list(WEATHER_NONE)
 		if ("FALL")

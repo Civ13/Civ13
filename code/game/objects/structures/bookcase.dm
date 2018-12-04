@@ -78,7 +78,7 @@
 		for (var/obj/item/weapon/book/research/RB in contents)
 			if (RB.completed)
 				var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-				if (map.ID == MAP_NOMADS)
+				if (map.nomads == TRUE)
 					if (alive_civilians.len <= 12)
 						current_tribesmen = alive_civilians.len
 					else if (alive_civilians.len > 12 && alive_civilians.len <= 30)

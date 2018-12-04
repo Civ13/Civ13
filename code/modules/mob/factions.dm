@@ -13,7 +13,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization != "none")
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return
@@ -53,7 +53,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -77,7 +77,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -113,7 +113,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return

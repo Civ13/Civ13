@@ -80,6 +80,7 @@ var/civmax_research = list(85,89,67)
 	var/triggered_blizzard = FALSE
 	//civ stuff
 	var/civilizations = FALSE
+	var/nomads = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/custom_civs = list()
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical)
