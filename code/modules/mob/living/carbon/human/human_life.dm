@@ -38,6 +38,8 @@
 	var/heatDamageFromClothingTimer = 0
 	var/start_to_rot = FALSE
 	var/rotting_stage = 0
+
+	var/healing_stage = 0 //for beds
 /mob/living/carbon/human/Life()
 
 
@@ -65,10 +67,19 @@
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
+	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
+		healing_stage += 1
+	else
+		healing_stage = 0
+	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
+		healing_stage = 0
+		if (getBruteLoss() >= 40)
+			adjustBruteLoss(-2)
+
 
 	if (has_hunger_and_thirst)
 		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
-			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
 				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
 			else
@@ -415,6 +426,10 @@
 						loc_temp *= 0.97
 					if (3.0)
 						loc_temp *= 0.95
+			if (WEATHER_BLIZZARD)
+				loc_temp = 190
+			if (WEATHER_SANDSTORM)
+				loc_temp = 321
 		if (map.blizzard)
 			loc_temp = 190
 		if (map.heat_wave)
@@ -430,7 +445,11 @@
 			if (loc_temp < 295)
 				loc_temp = 295
 				break
-
+	for (var/obj/item/weapon/bedroll/BRL in src.loc)
+		if (BRL.used == TRUE && BRL.deployed == TRUE)
+			if (loc_temp < 295)
+				loc_temp = 295
+				break
 	// todo: wind adjusting effective loc_temp
 	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
 		heatDamageFromClothingTimer++

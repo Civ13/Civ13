@@ -76,8 +76,10 @@ var/civmax_research = list(85,89,67)
 	//weather
 	var/blizzard = FALSE
 	var/heat_wave = FALSE
+	var/sandstorm = FALSE
 	var/triggered_heatwave = FALSE
 	var/triggered_blizzard = FALSE
+	var/triggered_sandstorm = FALSE
 	//civ stuff
 	var/civilizations = FALSE
 	var/nomads = FALSE

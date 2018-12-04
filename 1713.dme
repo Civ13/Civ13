@@ -203,6 +203,7 @@
 #include "code\game\objects\items\stacks\rods.dm"
 #include "code\game\objects\items\stacks\stack.dm"
 #include "code\game\objects\items\stacks\sheets\leather.dm"
+#include "code\game\objects\items\weapons\bedroll.dm"
 #include "code\game\objects\items\weapons\candle.dm"
 #include "code\game\objects\items\weapons\cigs_lighters.dm"
 #include "code\game\objects\items\weapons\cosmetics.dm"

@@ -16,6 +16,9 @@
 	if (season == "WINTER")
 		if (weather == WEATHER_NONE)
 			weather = WEATHER_SNOW
+
+		else if (weather == WEATHER_BLIZZARD)
+			weather = WEATHER_SNOW
 		else
 			weather = WEATHER_NONE
 
@@ -46,7 +49,10 @@
 	else if (season == "Dry Season")
 		if (weather == WEATHER_RAIN)
 			weather = WEATHER_NONE
-
+		else if (weather == WEATHER_SANDSTORM)
+			weather = WEATHER_NONE
+		else if (weather == WEATHER_NONE)
+			weather = WEATHER_SANDSTORM
 	var/area_icon = 'icons/effects/weather.dmi'
 	var/area_icon_state = ""
 	var/area_alpha = 255
@@ -74,7 +80,28 @@
 				if (3.0)
 					area_icon_state = "rain3"
 					area_alpha = 255
-
+		if (WEATHER_BLIZZARD)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "snow_storm"
+					area_alpha = 255
+				if (2.0)
+					area_icon_state = "snow_storm"
+					area_alpha = 255
+				if (3.0)
+					area_icon_state = "snow_storm"
+					area_alpha = 255
+		if (WEATHER_SANDSTORM)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "sandstorm"
+					area_alpha = 255
+				if (2.0)
+					area_icon_state = "sandstorm"
+					area_alpha = 255
+				if (3.0)
+					area_icon_state = "sandstorm"
+					area_alpha = 255
 	for (var/area/caribbean/A in area_list)
 		if (istype(A) && A.location == AREA_OUTSIDE)
 			A.icon = area_icon
@@ -111,12 +138,13 @@
 	switch (season)
 		if ("WINTER")
 			possibilities += WEATHER_SNOW
+			possibilities += WEATHER_BLIZZARD
 		if ("SPRING")
 			possibilities += WEATHER_RAIN
 		if ("Wet Season")
 			possibilities += WEATHER_RAIN
 		if ("Dry Season")
-			possibilities += list(WEATHER_NONE)
+			possibilities += WEATHER_SANDSTORM
 		if ("SUMMER")
 			possibilities = list(WEATHER_NONE)
 		if ("FALL")
@@ -146,11 +174,19 @@
 					. = ""
 				if (WEATHER_SNOW, WEATHER_RAIN)
 					. = "It's no longer <b>[get_weather_default(old)]ing</b>."
+				if (WEATHER_BLIZZARD, WEATHER_SANDSTORM)
+					. = "The <b>[get_weather_default(old)]</b> has passed."
 		if (WEATHER_SNOW, WEATHER_RAIN)
 			switch (old)
 				if (WEATHER_NONE)
 					. = "It's now <b>[get_weather_default(_new)]ing</b>."
 				if (WEATHER_SNOW,  WEATHER_RAIN)
+					. = ""
+		if (WEATHER_BLIZZARD, WEATHER_SANDSTORM)
+			switch (old)
+				if (WEATHER_NONE)
+					. = "A <b>[get_weather_default(old)]</b> has begun."
+				if (WEATHER_BLIZZARD, WEATHER_SANDSTORM)
 					. = ""
 	if (.)
 		world << "<font size=3><span class = 'notice'>[.]</span></font>"

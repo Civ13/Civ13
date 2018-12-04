@@ -599,11 +599,12 @@
 		/* this is runtiming somehow, sometimes. But no errors. Now it's in a try-catch block so the var moving is always reset
 		 * should fix the movement bug - Kachnov */
 		try
-
+			if (!mob.grab_list)
+				mob.grab_list = list()
 			for (var/datum in mob.grab_list)
 				var/datum/D = datum
-				if (isDeleted(D))
-					mob.grab_list = list()
+				if (D.gcDestroyed)
+					mob.grab_list -= D
 
 			//Something with grabbing things
 			if (mob.grab_list.len)

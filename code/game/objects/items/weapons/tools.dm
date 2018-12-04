@@ -185,3 +185,13 @@
 	w_class = 3.0
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("bashed", "whacked")
+
+/obj/item/weapon/fishing/net
+	name = "fishing net"
+	desc = "A classic fishing net, made of hemp rope."
+	w_class = 2.0
+	icon_state = "fishing_net"
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	slot_flags = null
+	attack_verb = list("slapped")
