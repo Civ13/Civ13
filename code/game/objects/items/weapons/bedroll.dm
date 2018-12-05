@@ -15,19 +15,19 @@
 		user << "You open the bedroll, extending it."
 		deployed = TRUE
 		w_class = 5.0
-		icon_state = "bedroll_w"
+		icon_state = "bedroll_o"
 		return
 
 	else if (deployed == TRUE && used == FALSE)
 		user << "You get inside the bedroll."
 		if (user.dir == NORTH)
-			icon_state = "bedroll_n"
+			icon_state = "bedroll_e"
 		else if (user.dir == WEST)
 			icon_state = "bedroll_e"
 		else if (user.dir == EAST )
 			icon_state = "bedroll_w"
 		else if (user.dir == SOUTH)
-			icon_state = "bedroll_s"
+			icon_state = "bedroll_e"
 		user.drop_item()
 		if (layer == initial(layer))
 			layer = MOB_LAYER + 0.1
