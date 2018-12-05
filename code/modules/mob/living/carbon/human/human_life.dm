@@ -445,8 +445,8 @@
 			if (loc_temp < 295)
 				loc_temp = 295
 				break
-	for (var/obj/item/weapon/bedroll/BRL in src.loc)
-		if (BRL.used == TRUE && BRL.deployed == TRUE)
+	for (var/obj/structure/bed/bedroll/BRL in src.loc)
+		if (BRL.used == TRUE)
 			if (loc_temp < 295)
 				loc_temp = 295
 				break
