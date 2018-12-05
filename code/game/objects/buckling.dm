@@ -39,7 +39,6 @@
 			BR.layer = MOB_LAYER + 0.1
 		else
 			BR.layer = initial(layer)
-		M.resting = TRUE
 		BR.used = TRUE
 		BR.check_use(M)
 	return TRUE
