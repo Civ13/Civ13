@@ -174,19 +174,27 @@
 					. = ""
 				if (WEATHER_SNOW, WEATHER_RAIN)
 					. = "It's no longer <b>[get_weather_default(old)]ing</b>."
-				if (WEATHER_BLIZZARD, WEATHER_SANDSTORM)
-					. = "The <b>[get_weather_default(old)]</b> has passed."
+				if (WEATHER_BLIZZARD)
+					. = "The <b>blizzard</b> has passed."
+				if ( WEATHER_SANDSTORM)
+					. = "The <b>sandstorm</b> has passed."
 		if (WEATHER_SNOW, WEATHER_RAIN)
 			switch (old)
 				if (WEATHER_NONE)
 					. = "It's now <b>[get_weather_default(_new)]ing</b>."
 				if (WEATHER_SNOW,  WEATHER_RAIN)
 					. = ""
-		if (WEATHER_BLIZZARD, WEATHER_SANDSTORM)
+		if (WEATHER_SANDSTORM)
 			switch (old)
 				if (WEATHER_NONE)
-					. = "A <b>[get_weather_default(old)]</b> has begun."
-				if (WEATHER_BLIZZARD, WEATHER_SANDSTORM)
+					. = "A <b>sandstorm</b> has begun."
+				if (WEATHER_SANDSTORM)
+					. = ""
+		if (WEATHER_BLIZZARD)
+			switch (old)
+				if (WEATHER_NONE)
+					. = "A <b>blizzard</b> has begun."
+				if (WEATHER_BLIZZARD)
 					. = ""
 	if (.)
 		world << "<font size=3><span class = 'notice'>[.]</span></font>"
