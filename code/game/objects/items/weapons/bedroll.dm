@@ -9,7 +9,7 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("battered","whacked")
 
-/obj/structure/bed/bedroll
+/obj/structure/bedroll
 	name = "bedroll"
 	desc = "A portable bed, made of leather and fur."
 	icon = 'icons/obj/items.dmi'
@@ -17,14 +17,16 @@
 	anchored = TRUE
 	var/used = FALSE
 	var/running = FALSE //to prevent exploits of unbuckling/bucking etc
-
+	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = TRUE
 /obj/item/weapon/bedroll/attack_self(mob/user as mob)
 	user << "You open the bedroll, extending it."
-	new/obj/structure/bed/bedroll(src.loc)
+	new/obj/structure/bedroll(src.loc)
 	qdel(src)
 	return
 
-/obj/structure/bed/bedroll/verb/fold()
+/obj/structure/bedroll/verb/fold()
 	set category = null
 	set src in usr
 	set name = "Fold Bedroll"
@@ -35,7 +37,7 @@
 		qdel(src)
 		return
 
-/obj/structure/bed/bedroll/proc/check_use(var/mob/living/carbon/human/H)
+/obj/structure/bedroll/proc/check_use(var/mob/living/carbon/human/H)
 	if ((H in src.loc) && buckled_mob == H && used == TRUE && running == FALSE)
 		running = TRUE
 		spawn(300)

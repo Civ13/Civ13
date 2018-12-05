@@ -445,7 +445,7 @@
 			if (loc_temp < 295)
 				loc_temp = 295
 				break
-	for (var/obj/structure/bed/bedroll/BRL in src.loc)
+	for (var/obj/structure/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE)
 			if (loc_temp < 295)
 				loc_temp = 295

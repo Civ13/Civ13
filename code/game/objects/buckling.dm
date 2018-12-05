@@ -31,8 +31,8 @@
 	M.update_canmove()
 	buckled_mob = M
 	post_buckle_mob(M)
-	if (istype(src, /obj/structure/bed/bedroll) && istype(M, /mob/living/carbon/human))
-		var/obj/structure/bed/bedroll/BR = src
+	if (istype(src, /obj/structure/bedroll) && istype(M, /mob/living/carbon/human))
+		var/obj/structure/bedroll/BR = src
 		M << "You get inside the bedroll."
 		BR.icon_state = "bedroll_w"
 		if (BR.layer == initial(layer))
@@ -51,8 +51,8 @@
 		buckled_mob.anchored = initial(buckled_mob.anchored)
 		buckled_mob.update_canmove()
 		buckled_mob = null
-		if (istype(src, /obj/structure/bed/bedroll) && istype(., /mob/living/carbon/human))
-			var/obj/structure/bed/bedroll/BR = src
+		if (istype(src, /obj/structure/bedroll) && istype(., /mob/living/carbon/human))
+			var/obj/structure/bedroll/BR = src
 			BR.used = FALSE
 			BR.check_use(.)
 		post_buckle_mob(.)
