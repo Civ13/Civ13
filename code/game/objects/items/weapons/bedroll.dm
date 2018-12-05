@@ -21,13 +21,13 @@
 	else if (deployed == TRUE && used == FALSE)
 		user << "You get inside the bedroll."
 		if (user.dir == NORTH)
-			icon_state = "bedroll_e"
+			icon_state = "bedroll_w"
 		else if (user.dir == WEST)
-			icon_state = "bedroll_e"
+			icon_state = "bedroll_w"
 		else if (user.dir == EAST )
 			icon_state = "bedroll_w"
 		else if (user.dir == SOUTH)
-			icon_state = "bedroll_e"
+			icon_state = "bedroll_w"
 		user.drop_item()
 		if (layer == initial(layer))
 			layer = MOB_LAYER + 0.1
@@ -54,4 +54,5 @@
 			check_use(H)
 	else
 		used = FALSE
+		icon_state = "bedroll_o"
 		return
