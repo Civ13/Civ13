@@ -189,7 +189,7 @@
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
 	else if (vote.voted_gamemode == "Bronze Age Start")
-		world << "<big>Starting Classic mode with<b>Bronze Age</b> start. Starting epoch is the Bronze Age, research active.</big>"
+		world << "<big>Starting Classic mode with <b>Bronze Age</b> start. Starting epoch is the Bronze Age, research active.</big>"
 		map.ordinal_age = 1
 		map.age = "313 B.C."
 		map.age1_done = TRUE

@@ -271,6 +271,7 @@
 	desc = "A piece of light cloth, used to protect the head and face."
 	icon_state = "shemagh0"
 	item_state = "shemagh0"
+	worn_state = "shemagh0"
 	body_parts_covered = HEAD
 	w_class = 2
 	var/toggled = FALSE
@@ -293,22 +294,22 @@
 	set category = null
 	set src in usr
 	set name = "Toggle Shemagh"
-	if (toggled)
+	if (toggled == TRUE)
 		icon_state = "shemagh0"
 		item_state = "shemagh0"
 		worn_state = "shemagh0"
 		body_parts_covered = HEAD
-		usr << "<span class = 'danger'>You uncover your face.</span>"
+		usr << "<span class = 'danger'>You adjust the shemagh.</span>"
 		update_icon()
 		toggled = FALSE
 		usr.update_inv_wear_mask(1)
 		return
-	else if (!toggled)
+	else if (toggled == FALSE)
 		icon_state = "shemagh1"
 		item_state = "shemagh1"
 		worn_state = "shemagh1"
 		body_parts_covered = FACE|HEAD|EYES
-		usr << "<span class = 'danger'>You wrap the shemagh around your face.</span>"
+		usr << "<span class = 'danger'>You adjust the shemagh.</span>"
 		update_icon()
 		toggled = TRUE
 		usr.update_inv_wear_mask(1)

@@ -10,15 +10,24 @@
 	attack_verb = list("battered","whacked")
 	var/deployed = FALSE
 	var/used = FALSE
+	var/running = FALSE //to prevent exploits of unbuckling/bucking etc
 /obj/item/weapon/bedroll/attack_self(mob/user as mob)
 	if (deployed == FALSE)
 		user << "You open the bedroll, extending it."
 		deployed = TRUE
+		used = FALSE
 		w_class = 5.0
 		icon_state = "bedroll_o"
 		return
 
 	else if (deployed == TRUE && used == FALSE)
+		user << "You fold the bedroll."
+		deployed = FALSE
+		used = FALSE
+		w_class = 3.0
+		icon_state = "bedroll_r"
+		return
+
 		user << "You get inside the bedroll."
 		if (user.dir == NORTH)
 			icon_state = "bedroll_w"
@@ -46,11 +55,14 @@
 	w_class = 3.0
 
 /obj/item/weapon/bedroll/proc/check_use(var/mob/living/carbon/human/H)
-	if ((H in src.loc) && H.resting)
-		spawn(600)
-		if ((H in src.loc) && H.resting)
+	if ((H in src.loc) && H.resting && buckled_mob == H && deployed == TRUE && used == TRUE && running == FALSE)
+		running = TRUE
+		spawn(300)
+		if ((H in src.loc) && H.resting && buckled_mob == H && deployed == TRUE && used == TRUE && running == TRUE)
 			if (H.getBruteLoss() >= 40)
-				H.adjustBruteLoss(-2)
+				H.adjustBruteLoss(-1)
+			icon_state = "bedroll_w"
+			running = FALSE
 			check_use(H)
 	else
 		used = FALSE

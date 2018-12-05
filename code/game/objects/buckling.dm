@@ -31,6 +31,10 @@
 	M.update_canmove()
 	buckled_mob = M
 	post_buckle_mob(M)
+	if (istype(src, /obj/item/weapon/bedroll) && istype(M, /mob/living/carbon/human))
+		var/obj/item/weapon/bedroll/BR = src
+		BR.used = TRUE
+		BR.check_use(M)
 	return TRUE
 
 /obj/proc/unbuckle_mob()
@@ -40,7 +44,10 @@
 		buckled_mob.anchored = initial(buckled_mob.anchored)
 		buckled_mob.update_canmove()
 		buckled_mob = null
-
+		if (istype(src, /obj/item/weapon/bedroll) && istype(., /mob/living/carbon/human))
+			var/obj/item/weapon/bedroll/BR = src
+			BR.used = FALSE
+			BR.check_use(.)
 		post_buckle_mob(.)
 
 /obj/proc/post_buckle_mob(mob/living/M)
