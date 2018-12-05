@@ -375,6 +375,7 @@
 		NEWAREA.name = "roofed building"
 		NEWAREA.base_turf = CURRENTAREA.base_turf
 		NEWAREA.location = AREA_INSIDE
+		update_light()
 /obj/roof/Destroy()
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (CURRENTAREA.location == AREA_INSIDE)
@@ -383,6 +384,7 @@
 		NEWAREA.base_turf = CURRENTAREA.base_turf
 		NEWAREA.location = AREA_OUTSIDE
 	visible_message("The roof collapses!")
+	update_light()
 	..()
 
 /obj/item/weapon/roofbuilder
@@ -411,6 +413,9 @@
 		var/mob/living/carbon/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+	for (var/obj/roof/RF in get_step(user, user.dir))
+		user << "That area is already roofed!"
+		return
 	if (WWinput(user, "This will start building a roof [your_dir] of you.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
 		if (do_after(user, covers_time, user.loc))

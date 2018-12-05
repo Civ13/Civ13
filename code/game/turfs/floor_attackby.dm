@@ -74,7 +74,7 @@
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(25))
-					if (prob(30))
+					if (prob(90))
 						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 						mineral.amount = rand(1,3)
 						H << "<span class='danger'>You found some copper ore!</span>"

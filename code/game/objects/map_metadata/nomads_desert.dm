@@ -60,7 +60,7 @@
 	if (real_season == "dry")
 		season = "Wet Season"
 		world << "<big>The <b>Wet Season</b> has started.</big>"
-			change_weather(WEATHER_RAIN, TRUE)
+			change_weather_somehow()
 		for(var/obj/structure/sink/S)
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = FALSE
@@ -71,7 +71,7 @@
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season</b> has started.</big>"
-			change_weather(WEATHER_NONE, TRUE)
+			change_weather_somehow()
 		for(var/obj/structure/sink/S)
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = TRUE

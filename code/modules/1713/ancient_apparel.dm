@@ -265,3 +265,51 @@
 	icon_state = "fur[colorn]"
 	item_state = "fur[colorn]"
 	worn_state = "fur[colorn]"
+
+/obj/item/clothing/mask/shemagh
+	name = "shemagh"
+	desc = "A piece of light cloth, used to protect the head and face."
+	icon_state = "shemagh0"
+	item_state = "shemagh0"
+	body_parts_covered = HEAD
+	w_class = 2
+	var/toggled = FALSE
+
+/obj/item/clothing/mask/shemagh/update_icon()
+	if (toggled == FALSE)
+		body_parts_covered = HEAD
+		icon_state = "shemagh0"
+		item_state = "shemagh0"
+		worn_state = "shemagh0"
+	else
+		body_parts_covered = FACE|HEAD|EYES
+		icon_state = "shemagh1"
+		item_state = "shemagh1"
+		worn_state = "shemagh1"
+	..()
+
+
+/obj/item/clothing/mask/shemagh/verb/toggle_hood()
+	set category = null
+	set src in usr
+	set name = "Toggle Shemagh"
+	if (toggled)
+		icon_state = "shemagh0"
+		item_state = "shemagh0"
+		worn_state = "shemagh0"
+		body_parts_covered = HEAD
+		usr << "<span class = 'danger'>You uncover your face.</span>"
+		update_icon()
+		toggled = FALSE
+		usr.update_inv_wear_mask(1)
+		return
+	else if (!toggled)
+		icon_state = "shemagh1"
+		item_state = "shemagh1"
+		worn_state = "shemagh1"
+		body_parts_covered = FACE|HEAD|EYES
+		usr << "<span class = 'danger'>You wrap the shemagh around your face.</span>"
+		update_icon()
+		toggled = TRUE
+		usr.update_inv_wear_mask(1)
+		return
