@@ -60,7 +60,7 @@ var/GRACE_PERIOD_LENGTH = 7
 	spawn (1)
 //		world << "<span class = 'notice'>Setting up seasons.</span>"
 	if (map.ID == MAP_NOMADS_DESERT)
-		season = "Dry Season"
+		season = "Wet Season"
 	else
 		season = "SPRING"
 	return TRUE
