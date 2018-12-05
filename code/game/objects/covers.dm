@@ -364,6 +364,7 @@
 	var/wood = TRUE
 	var/onfire = FALSE
 	invisibility = 101
+	var/oldname = "roofed building"
 
 /obj/roof/New()
 	..()
@@ -389,7 +390,6 @@
 	desc = "Use this to build roofs."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "roof_builder"
-	var/oldname = "roofed building"
 	w_class = 2.0
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
