@@ -56,6 +56,16 @@
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
 
+/turf/floor/dirt/dust
+	name = "dry dirt"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dust"
+	interior = FALSE
+	stepsound = "dirt"
+	available_dirt = 2
+	may_become_muddy = FALSE
+	is_diggable = TRUE
+
 /turf/floor/tiled
 	name = "floor"
 	icon = 'icons/turf/floors.dmi'
