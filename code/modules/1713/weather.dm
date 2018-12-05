@@ -133,24 +133,20 @@
 /proc/change_weather_somehow()
 
 	var/list/possibilities = list(WEATHER_NONE)
-	var/list/non_possibilities = list(weather)
 
 	switch (season)
 		if ("WINTER")
-			possibilities += WEATHER_SNOW
-			possibilities += WEATHER_BLIZZARD
+			possibilities = list(WEATHER_BLIZZARD,WEATHER_SNOW,WEATHER_NONE)
 		if ("SPRING")
-			possibilities += WEATHER_RAIN
+			possibilities = list(WEATHER_RAIN,WEATHER_NONE)
 		if ("Wet Season")
-			possibilities += WEATHER_RAIN
+			possibilities = list(WEATHER_RAIN,WEATHER_NONE)
 		if ("Dry Season")
-			possibilities += WEATHER_SANDSTORM
+			possibilities = list(WEATHER_NONE,WEATHER_SANDSTORM)
 		if ("SUMMER")
 			possibilities = list(WEATHER_NONE)
 		if ("FALL")
-			possibilities += WEATHER_RAIN
-			possibilities += WEATHER_SNOW
-	possibilities -= non_possibilities
+			possibilities = list(WEATHER_RAIN,WEATHER_SNOW,WEATHER_NONE)
 
 	if (possibilities.len)
 		change_weather(pick(possibilities))
@@ -163,6 +159,10 @@
 			return "snow"
 		if (WEATHER_RAIN)
 			return "rain"
+		if (WEATHER_BLIZZARD)
+			return "blizzard"
+		if (WEATHER_SANDSTORM)
+			return "sandstorm"
 	return "none"
 
 // global weather variable changed

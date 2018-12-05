@@ -375,66 +375,66 @@
 	var/loc_temp = 293
 	var/area/mob_area = get_area(src)
 
-	if (mob_area.location == AREA_OUTSIDE)
+//	if (mob_area.location == AREA_OUTSIDE)
 
-		switch (season)
-			if ("WINTER")
-				loc_temp = 244
-			if ("FALL")
-				loc_temp = 285
-			if ("SUMMER")
-				loc_temp = 303
-			if ("SPRING")
-				loc_temp = 290
-			if ("Dry Season")
-				loc_temp = 313
-			if ("Wet Season")
-				loc_temp = 303
+	switch (season)
+		if ("WINTER")
+			loc_temp = 244
+		if ("FALL")
+			loc_temp = 285
+		if ("SUMMER")
+			loc_temp = 303
+		if ("SPRING")
+			loc_temp = 290
+		if ("Dry Season")
+			loc_temp = 313
+		if ("Wet Season")
+			loc_temp = 303
 
-		switch (time_of_day)
-			if ("Midday")
-				loc_temp *= 1.03
-			if ("Afternoon")
-				loc_temp *= 1.02
-			if ("Morning")
-				loc_temp *= 1.01
-			if ("Evening")
-				loc_temp *= 1.00 // default
-			if ("Early Morning")
-				loc_temp *= 0.99
-			if ("Night")
-				loc_temp *= 0.98
-			if ("Midnight")
-				loc_temp *= 0.97
+	switch (time_of_day)
+		if ("Midday")
+			loc_temp *= 1.03
+		if ("Afternoon")
+			loc_temp *= 1.02
+		if ("Morning")
+			loc_temp *= 1.01
+		if ("Evening")
+			loc_temp *= 1.00 // default
+		if ("Early Morning")
+			loc_temp *= 0.99
+		if ("Night")
+			loc_temp *= 0.98
+		if ("Midnight")
+			loc_temp *= 0.97
 
-		switch (mob_area.weather)
-			if (WEATHER_NONE)
-				loc_temp *= 1.00
-			if (WEATHER_SNOW)
-				switch (mob_area.weather_intensity)
-					if (1.0)
-						loc_temp *= 0.87
-					if (2.0)
-						loc_temp *= 0.86
-					if (3.0)
-						loc_temp *= 0.85
-			if (WEATHER_RAIN)
-				switch (mob_area.weather_intensity)
-					if (1.0)
-						loc_temp *= 0.99
-					if (2.0)
-						loc_temp *= 0.97
-					if (3.0)
-						loc_temp *= 0.95
-			if (WEATHER_BLIZZARD)
-				loc_temp = 190
-			if (WEATHER_SANDSTORM)
-				loc_temp = 321
-		if (map.blizzard)
+	switch (mob_area.weather)
+		if (WEATHER_NONE)
+			loc_temp *= 1.00
+		if (WEATHER_SNOW)
+			switch (mob_area.weather_intensity)
+				if (1.0)
+					loc_temp *= 0.87
+				if (2.0)
+					loc_temp *= 0.86
+				if (3.0)
+					loc_temp *= 0.85
+		if (WEATHER_RAIN)
+			switch (mob_area.weather_intensity)
+				if (1.0)
+					loc_temp *= 0.99
+				if (2.0)
+					loc_temp *= 0.97
+				if (3.0)
+					loc_temp *= 0.95
+		if (WEATHER_BLIZZARD)
 			loc_temp = 190
-		if (map.heat_wave)
+		if (WEATHER_SANDSTORM)
 			loc_temp = 321
-		loc_temp = round(loc_temp)
+	if (map.blizzard)
+		loc_temp = 190
+	if (map.heat_wave)
+		loc_temp = 321
+	loc_temp = round(loc_temp)
 
 	for (var/obj/snow/S in get_turf(src))
 		loc_temp -= (S.amount * 20)
@@ -450,7 +450,12 @@
 			if (loc_temp < 295)
 				loc_temp = 295
 				break
-	// todo: wind adjusting effective loc_temp
+	//inside areas have natural insulation of 20 degrees
+	if (mob_area.location == AREA_INSIDE)
+		if (loc_temp > 293)
+			loc_temp = (min(293,loc_temp-20))
+		else if (loc_temp < 293)
+			loc_temp = (max(293,loc_temp+20))
 	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
 		heatDamageFromClothingTimer++
 
@@ -462,6 +467,7 @@
 				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
 			heatDamageFromClothingTimer = 6
 			adjustFireLoss(2)
+
 
 	else if (heatDamageFromClothingTimer > 0)
 		heatDamageFromClothingTimer--

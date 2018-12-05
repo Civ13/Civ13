@@ -12,6 +12,7 @@
 		)
 	icon_state = "backpack0"
 	item_state = "backpack"
+	worn_state = "backpack"
 	//most backpacks use the default backpack state for inhand overlays
 	item_state_slots = list(
 		slot_l_hand_str = "backpack",

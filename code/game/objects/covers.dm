@@ -167,6 +167,7 @@
 				qdel(W)
 				return
 	..()
+
 /obj/covers/New()
 	..()
 	spawn(15)
@@ -338,3 +339,86 @@
 			try_destroy()
 			qdel(SF)
 			return
+
+
+/obj/roof
+
+	name = "wood roof"
+	desc = "A wooden roof."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "roof"
+	var/passable = TRUE
+	var/origin_density = FALSE
+	var/origin_water_level = 0
+	var/origin_move_delay = 0
+	var/not_movable = TRUE //if it can be removed by wrenches
+	var/health = 100
+	is_cover = TRUE
+	anchored = TRUE
+	opacity = FALSE
+	density = FALSE
+	layer = 2.1
+	level = 2
+	var/amount = FALSE
+	var/wall = FALSE
+	var/wood = TRUE
+	var/onfire = FALSE
+	invisibility = 101
+
+/obj/roof/New()
+	..()
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (CURRENTAREA.location == AREA_OUTSIDE)
+		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
+		oldname = CURRENTAREA.name
+		NEWAREA.name = "roofed building"
+		NEWAREA.base_turf = CURRENTAREA.base_turf
+		NEWAREA.location = AREA_INSIDE
+/obj/roof/Destroy()
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (CURRENTAREA.location == AREA_INSIDE)
+		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
+		NEWAREA.name = oldname
+		NEWAREA.base_turf = CURRENTAREA.base_turf
+		NEWAREA.location = AREA_OUTSIDE
+	visible_message("The roof collapses!")
+	..()
+
+/obj/item/weapon/roofbuilder
+	name = "roof builder"
+	desc = "Use this to build roofs."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "roof_builder"
+	var/oldname = "roofed building"
+	w_class = 2.0
+
+/obj/item/weapon/roofbuilder/attack_self(mob/user)
+	var/your_dir = "NORTH"
+
+	switch (user.dir)
+		if (NORTH)
+			your_dir = "NORTH"
+		if (SOUTH)
+			your_dir = "SOUTH"
+		if (EAST)
+			your_dir = "EAST"
+		if (WEST)
+			your_dir = "WEST"
+
+	var/covers_time = 80
+
+	if (ishuman(user))
+		var/mob/living/carbon/human/H = user
+		covers_time /= H.getStatCoeff("strength")
+		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+	if (WWinput(user, "This will start building a roof [your_dir] of you.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue")
+		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
+		if (do_after(user, covers_time, user.loc))
+			qdel(src)
+			new/obj/roof(get_step(user, user.dir), user)
+			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
+			if (ishuman(user))
+				var/mob/living/carbon/human/H = user
+				H.adaptStat("crafting", 1)
+		return
+

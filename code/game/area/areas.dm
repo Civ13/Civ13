@@ -25,6 +25,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	icon_state = "unknown"
 	layer = 10
 	mouse_opacity = FALSE
+	plane = LIGHTING_PLANE
 	var/lightswitch = TRUE
 
 	var/eject = null
