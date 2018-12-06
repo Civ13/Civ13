@@ -178,13 +178,6 @@
 			spawn(15)
 				updateturf()
 		return TRUE
-/*
-	for(var/obj/Ob in get_turf(src))
-		if (Ob.invisibility == 0)
-			Ob.invisibility = 101
-	for(var/mob/Mb in get_turf(src))
-		if (Mb.invisibility == 0)
-			Mb.invisibility = 101 */
 
 /obj/covers/updateturf()
 	var/turf/T = get_turf(loc)
@@ -375,16 +368,16 @@
 		NEWAREA.name = "roofed building"
 		NEWAREA.base_turf = CURRENTAREA.base_turf
 		NEWAREA.location = AREA_INSIDE
-		update_light()
+		NEWAREA.update_light()
 /obj/roof/Destroy()
 	var/area/caribbean/CURRENTAREA = get_area(src)
-	if (CURRENTAREA.location == AREA_INSIDE)
+	if (CURRENTAREA.location == AREA_INSIDE && CURRENTAREA.name == "roofed building")
 		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
 		NEWAREA.name = oldname
 		NEWAREA.base_turf = CURRENTAREA.base_turf
 		NEWAREA.location = AREA_OUTSIDE
+		NEWAREA.update_light()
 	visible_message("The roof collapses!")
-	update_light()
 	..()
 
 /obj/item/weapon/roofbuilder

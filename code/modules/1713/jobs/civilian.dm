@@ -868,8 +868,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civa/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -908,8 +908,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civb/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -948,8 +948,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -988,8 +988,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civd/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -1028,8 +1028,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/cive/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -1068,8 +1068,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civf/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

@@ -1,3 +1,4 @@
+//BEDROLL
 /obj/item/weapon/bedroll
 	name = "bedroll"
 	desc = "A portable bed, made of leather and fur."
@@ -77,7 +78,7 @@
 	else
 		..()
 
-
+//TENT
 /obj/item/weapon/tent
 	name = "foldable tent"
 	desc = "A foldable tent."
@@ -105,6 +106,38 @@
 		visible_message("[user] finishes unfolding the tent.","You finish unfolding the tent.")
 		new/obj/structure/tent(user.loc)
 		qdel(src)
+		var/area/caribbean/CURRENTAREA1 = get_area(src)
+		var/area/caribbean/CURRENTAREA2 = get_area(locate(x+1,y,z))
+		var/area/caribbean/CURRENTAREA3 = get_area(locate(x,y+1,z))
+		var/area/caribbean/CURRENTAREA4 = get_area(locate(x+1,y+1,z))
+		if (CURRENTAREA1.location == AREA_OUTSIDE)
+			var/area/caribbean/NEWAREA1 = new/area/caribbean(src.loc)
+			NEWAREA1.oldname = CURRENTAREA1.name
+			NEWAREA1.name = "roofed tent"
+			NEWAREA1.base_turf = CURRENTAREA1.base_turf
+			NEWAREA1.location = AREA_INSIDE
+			NEWAREA1.update_light()
+		if (CURRENTAREA2.location == AREA_OUTSIDE)
+			var/area/caribbean/NEWAREA2 = new/area/caribbean(src.loc)
+			NEWAREA2.oldname = CURRENTAREA2.name
+			NEWAREA2.name = "roofed tent"
+			NEWAREA2.base_turf = CURRENTAREA2.base_turf
+			NEWAREA2.location = AREA_INSIDE
+			NEWAREA2.update_light()
+		if (CURRENTAREA3.location == AREA_OUTSIDE)
+			var/area/caribbean/NEWAREA3 = new/area/caribbean(src.loc)
+			NEWAREA3.oldname = CURRENTAREA3.name
+			NEWAREA3.name = "roofed tent"
+			NEWAREA3.base_turf = CURRENTAREA3.base_turf
+			NEWAREA3.location = AREA_INSIDE
+			NEWAREA3.update_light()
+		if (CURRENTAREA4.location == AREA_OUTSIDE)
+			var/area/caribbean/NEWAREA4 = new/area/caribbean(src.loc)
+			NEWAREA4.oldname = CURRENTAREA4.name
+			NEWAREA4.name = "roofed tent"
+			NEWAREA4.base_turf = CURRENTAREA4.base_turf
+			NEWAREA4.location = AREA_INSIDE
+			NEWAREA4.update_light()
 		return
 
 /obj/structure/tent/verb/fold()
@@ -116,4 +149,29 @@
 		visible_message("[usr] finishes folding the tent.","You finish folding the tent.")
 		new/obj/item/weapon/tent(src.loc)
 		qdel(src)
+		var/area/caribbean/CURRENTAREA1 = get_area(src)
+		var/area/caribbean/CURRENTAREA2 = get_area(locate(x+1,y,z))
+		var/area/caribbean/CURRENTAREA3 = get_area(locate(x,y+1,z))
+		var/area/caribbean/CURRENTAREA4 = get_area(locate(x+1,y+1,z))
+		if (CURRENTAREA1.location == AREA_INSIDE && CURRENTAREA1.name == "roofed tent")
+			var/area/caribbean/NEWAREA1 = new/area/caribbean(src.loc)
+			NEWAREA1.name = NEWAREA1.oldname
+			NEWAREA1.base_turf = CURRENTAREA1.base_turf
+			NEWAREA1.location = AREA_OUTSIDE
+		if (CURRENTAREA2.location == AREA_INSIDE && CURRENTAREA2.name == "roofed tent")
+			var/area/caribbean/NEWAREA2 = new/area/caribbean(src.loc)
+			NEWAREA2.name = NEWAREA2.oldname
+			NEWAREA2.base_turf = CURRENTAREA2.base_turf
+			NEWAREA2.location = AREA_OUTSIDE
+		if (CURRENTAREA3.location == AREA_INSIDE && CURRENTAREA3.name == "roofed tent")
+			var/area/caribbean/NEWAREA3 = new/area/caribbean(src.loc)
+			NEWAREA3.name = NEWAREA3.oldname
+			NEWAREA3.base_turf = CURRENTAREA3.base_turf
+			NEWAREA3.location = AREA_OUTSIDE
+		if (CURRENTAREA4.location == AREA_INSIDE && CURRENTAREA4.name == "roofed tent")
+			var/area/caribbean/NEWAREA4 = new/area/caribbean(src.loc)
+			NEWAREA4.name = NEWAREA4.oldname
+			NEWAREA4.base_turf = CURRENTAREA4.base_turf
+			NEWAREA4.location = AREA_OUTSIDE
 		return
+
