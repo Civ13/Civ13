@@ -14,6 +14,7 @@
 		name = "(British) [name]"
 	else if (istype(src, /area/caribbean/pirates))
 		name = "(Pirates) [name]"
+
 // Basic Area Definitions
 
 /* note: BYOND reaches some kind of limit when it encounters areas with massive

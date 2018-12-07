@@ -80,8 +80,8 @@
 
 //TENT
 /obj/item/weapon/tent
-	name = "foldable tent"
-	desc = "A foldable tent."
+	name = "foldable canopy"
+	desc = "A foldable canopy."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "tent_r"
 	force = WEAPON_FORCE_WEAK
@@ -91,87 +91,113 @@
 	attack_verb = list("battered","whacked")
 
 /obj/structure/tent
-	name = "tent"
-	desc = "A portable tent, assembled here."
-	icon = 'icons/obj/obj64x64.dmi'
+	name = "canopy"
+	desc = "A portable cloth canopy, assembled here."
+	icon = 'icons/obj/structures.dmi'
 	icon_state = "tent_o"
 	layer = 5
 	anchored = TRUE
 	can_buckle = FALSE
-
+	var/oldname = ""
+/obj/structure/tent/New()
+	..()
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (CURRENTAREA.location == AREA_OUTSIDE)
+		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
+		oldname = CURRENTAREA.name
+		NEWAREA.base_turf = CURRENTAREA.base_turf
+		NEWAREA.location = AREA_INSIDE
+		NEWAREA.update_light()
+		for(var/obj/structure/tent/T in range(1,src))
+			T.update_icon()
+		update_icon()
 
 /obj/item/weapon/tent/attack_self(mob/user as mob)
+	for (var/obj/O in src.loc)
+		if (istype(O, /obj/structure/tent))
+			user << "There is already a structure here."
+			return
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (CURRENTAREA.location == AREA_INSIDE)
+		user << "This location is covered already, you can't set up a tent here."
+		return
 	visible_message("[user] starts unfolding the tent...","You open the tent and start unfolding it...")
-	if (do_after(user, 110, src))
+	if (do_after(user, 35, src))
 		visible_message("[user] finishes unfolding the tent.","You finish unfolding the tent.")
 		new/obj/structure/tent(user.loc)
 		qdel(src)
-		var/area/caribbean/CURRENTAREA1 = get_area(src)
-		var/area/caribbean/CURRENTAREA2 = get_area(locate(x+1,y,z))
-		var/area/caribbean/CURRENTAREA3 = get_area(locate(x,y+1,z))
-		var/area/caribbean/CURRENTAREA4 = get_area(locate(x+1,y+1,z))
-		if (CURRENTAREA1.location == AREA_OUTSIDE)
-			var/area/caribbean/NEWAREA1 = new/area/caribbean(src.loc)
-			NEWAREA1.oldname = CURRENTAREA1.name
-			NEWAREA1.name = "roofed tent"
-			NEWAREA1.base_turf = CURRENTAREA1.base_turf
-			NEWAREA1.location = AREA_INSIDE
-			NEWAREA1.update_light()
-		if (CURRENTAREA2.location == AREA_OUTSIDE)
-			var/area/caribbean/NEWAREA2 = new/area/caribbean(src.loc)
-			NEWAREA2.oldname = CURRENTAREA2.name
-			NEWAREA2.name = "roofed tent"
-			NEWAREA2.base_turf = CURRENTAREA2.base_turf
-			NEWAREA2.location = AREA_INSIDE
-			NEWAREA2.update_light()
-		if (CURRENTAREA3.location == AREA_OUTSIDE)
-			var/area/caribbean/NEWAREA3 = new/area/caribbean(src.loc)
-			NEWAREA3.oldname = CURRENTAREA3.name
-			NEWAREA3.name = "roofed tent"
-			NEWAREA3.base_turf = CURRENTAREA3.base_turf
-			NEWAREA3.location = AREA_INSIDE
-			NEWAREA3.update_light()
-		if (CURRENTAREA4.location == AREA_OUTSIDE)
-			var/area/caribbean/NEWAREA4 = new/area/caribbean(src.loc)
-			NEWAREA4.oldname = CURRENTAREA4.name
-			NEWAREA4.name = "roofed tent"
-			NEWAREA4.base_turf = CURRENTAREA4.base_turf
-			NEWAREA4.location = AREA_INSIDE
-			NEWAREA4.update_light()
 		return
 
 /obj/structure/tent/verb/fold()
 	set category = null
 	set src in view(1)
-	set name = "Fold Tent"
+	set name = "Fold Canopy"
 	visible_message("[usr] starts folding the tent...","You start folding the tent...")
-	if (do_after(usr, 110, src))
+	if (do_after(usr, 35, src))
 		visible_message("[usr] finishes folding the tent.","You finish folding the tent.")
 		new/obj/item/weapon/tent(src.loc)
+		var/area/caribbean/CURRENTAREA = get_area(src)
+		if (CURRENTAREA.location == AREA_INSIDE)
+			var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
+			NEWAREA.name = oldname
+			NEWAREA.base_turf = CURRENTAREA.base_turf
+			NEWAREA.location = AREA_OUTSIDE
+			NEWAREA.update_light()
+		for(var/obj/structure/tent/T in range(1,src))
+			T.update_icon()
 		qdel(src)
-		var/area/caribbean/CURRENTAREA1 = get_area(src)
-		var/area/caribbean/CURRENTAREA2 = get_area(locate(x+1,y,z))
-		var/area/caribbean/CURRENTAREA3 = get_area(locate(x,y+1,z))
-		var/area/caribbean/CURRENTAREA4 = get_area(locate(x+1,y+1,z))
-		if (CURRENTAREA1.location == AREA_INSIDE && CURRENTAREA1.name == "roofed tent")
-			var/area/caribbean/NEWAREA1 = new/area/caribbean(src.loc)
-			NEWAREA1.name = NEWAREA1.oldname
-			NEWAREA1.base_turf = CURRENTAREA1.base_turf
-			NEWAREA1.location = AREA_OUTSIDE
-		if (CURRENTAREA2.location == AREA_INSIDE && CURRENTAREA2.name == "roofed tent")
-			var/area/caribbean/NEWAREA2 = new/area/caribbean(src.loc)
-			NEWAREA2.name = NEWAREA2.oldname
-			NEWAREA2.base_turf = CURRENTAREA2.base_turf
-			NEWAREA2.location = AREA_OUTSIDE
-		if (CURRENTAREA3.location == AREA_INSIDE && CURRENTAREA3.name == "roofed tent")
-			var/area/caribbean/NEWAREA3 = new/area/caribbean(src.loc)
-			NEWAREA3.name = NEWAREA3.oldname
-			NEWAREA3.base_turf = CURRENTAREA3.base_turf
-			NEWAREA3.location = AREA_OUTSIDE
-		if (CURRENTAREA4.location == AREA_INSIDE && CURRENTAREA4.name == "roofed tent")
-			var/area/caribbean/NEWAREA4 = new/area/caribbean(src.loc)
-			NEWAREA4.name = NEWAREA4.oldname
-			NEWAREA4.base_turf = CURRENTAREA4.base_turf
-			NEWAREA4.location = AREA_OUTSIDE
 		return
 
+/obj/structure/tent/update_icon()
+	..()
+
+	for (var/obj/structure/tent/TTT in locate(x,y-1,z))
+		icon_state = "tent_s"
+
+
+	for (var/obj/structure/tent/T in locate(x,y+1,z))
+		icon_state = "tent_n"
+
+		for (var/obj/structure/tent/TT in locate(x,y-1,z))
+			icon_state = "tent_ns"
+
+
+
+	for (var/obj/structure/tent/T in locate(x+1,y,z))
+		icon_state = "tent_e"
+
+		for (var/obj/structure/tent/TT in locate(x,y-1,z))
+			icon_state = "tent_es"
+
+		for (var/obj/structure/tent/TT in locate(x,y+1,z))
+			icon_state = "tent_en"
+
+			for (var/obj/structure/tent/TTT in locate(x,y-1,z))
+				icon_state = "tent_esn"
+
+
+
+
+	for (var/obj/structure/tent/T1 in locate(x-1,y,z))
+		icon_state = "tent_w"
+
+		for (var/obj/structure/tent/T2 in locate(x,y-1,z))
+			icon_state = "tent_sw"
+
+			for (var/obj/structure/tent/TT in locate(x+1,y,z))
+				icon_state = "tent_swe"
+
+		for (var/obj/structure/tent/T3 in locate(x,y+1,z))
+			icon_state = "tent_nw"
+
+			for (var/obj/structure/tent/TT in locate(x,y-1,z))
+				icon_state = "tent_nws"
+
+		for (var/obj/structure/tent/TT in locate(x+1,y,z))
+			icon_state = "tent_ew"
+
+			for (var/obj/structure/tent/TTT in locate(x,y+1,z))
+				icon_state = "tent_enw"
+
+				for (var/obj/structure/tent/TTTT in locate(x,y-1,z))
+					icon_state = "tent_c"

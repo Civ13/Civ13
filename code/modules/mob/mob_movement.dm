@@ -441,10 +441,6 @@
 
 		move_delay = world.time + mob.movement_delay()//set move delay
 
-		// removed config.run_speed, config.walk_speed from move_delays
-		// for some reason they kept defaulting to values different from
-		// the ones specified in the config.
-
 
 		var/turf/floor/F = mob_loc
 		var/F_is_valid_floor = istype(F)

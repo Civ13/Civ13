@@ -93,8 +93,6 @@ macro "macro"
 		name = "CTRL+R"
 		command = ".southwest"
 	elem 
-		name = "CTRL+S"
-	elem 
 		name = "CTRL+X"
 		command = ".northeast"
 	elem 
@@ -254,7 +252,6 @@ macro "hotkeymode"
 		command = ".startmovingdown"
 	elem 
 		name = "CTRL+S"
-		command = "Say \"*scream"
 	elem 
 		name = "S+UP"
 		command = ".stopmovingdown"

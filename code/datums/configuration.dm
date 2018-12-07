@@ -97,11 +97,11 @@ var/list/gamemode_cache = list()
 	//game_options.txt configs
 
 	var/health_threshold_softcrit = FALSE
-	var/health_threshold_crit = FALSE
+	var/health_threshold_crit = -50
 	var/health_threshold_dead = -100
 
-	var/organ_health_multiplier = 1.0
-	var/organ_regeneration_multiplier = 1.0
+	var/organ_health_multiplier = 0.5
+	var/organ_regeneration_multiplier = 0.7
 	var/organs_decay
 	var/default_brain_health = 400
 
@@ -109,12 +109,9 @@ var/list/gamemode_cache = list()
 	//so that it's similar to HALLOSS. Lowered it a bit since hitting paincrit takes much longer to wear off than a halloss stun.
 	var/organ_damage_spillover_multiplier = 0.5
 
-	var/bones_can_break = FALSE
-	var/limbs_can_break = FALSE
+	var/bones_can_break = 1
+	var/limbs_can_break = 1
 
-
-//	var/welder_vision = TRUE
-	var/generate_asteroid = FALSE
 	var/no_click_cooldown = FALSE
 
 	var/simultaneous_pm_warning_timeout = 100
@@ -154,16 +151,6 @@ var/list/gamemode_cache = list()
 	var/lighting_is_rustic = FALSE
 	var/machinery_does_not_use_power = FALSE
 	//WW2 donor shit
-
-	//1713 hub stuff
-
-	var/s1713_hub_preinfo
-	var/s1713_hub_title
-	var/s1713_hub_oocdesc
-	var/s1713_hub_icdesc
-	var/s1713_hub_rplevel
-	var/s1713_hub_hostedby
-	var/s1713_hub_postinfo
 
 	// misc
 	var/resource_website = null
@@ -328,8 +315,6 @@ var/list/gamemode_cache = list()
 				if ("log_runtimes")
 					config.log_runtimes = TRUE
 
-				if ("generate_asteroid")
-					config.generate_asteroid = TRUE
 
 				if ("no_click_cooldown")
 					config.no_click_cooldown = TRUE
@@ -576,58 +561,6 @@ var/list/gamemode_cache = list()
 
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
-
-		else if (type == "game_options")
-			if (!value)
-				log_misc("Unknown value for setting [name] in [filename].")
-			value = text2num(value)
-
-			switch(name)
-				if ("health_threshold_crit")
-					config.health_threshold_crit = value
-				if ("health_threshold_softcrit")
-					config.health_threshold_softcrit = value
-				if ("health_threshold_dead")
-					config.health_threshold_dead = value
-				if ("organ_health_multiplier")
-					config.organ_health_multiplier = value / 100
-				if ("organ_regeneration_multiplier")
-					config.organ_regeneration_multiplier = value / 100
-				if ("organ_damage_spillover_multiplier")
-					config.organ_damage_spillover_multiplier = value / 100
-				if ("organs_can_decay")
-					config.organs_decay = TRUE
-				if ("default_brain_health")
-					config.default_brain_health = text2num(value)
-					if (!config.default_brain_health || config.default_brain_health < 1.0)
-						config.default_brain_health = initial(config.default_brain_health)
-				if ("bones_can_break")
-					config.bones_can_break = value
-				if ("limbs_can_break")
-					config.limbs_can_break = value
-				else
-					log_misc("Unknown setting in game_options configuration: '[name]'")
-
-		else if (type == "hub")
-
-			if (!value)
-				log_misc("Unknown value for setting [name] in [filename].")
-
-			switch (name)
-				if ("preinfo")
-					config.s1713_hub_preinfo = value
-				if ("title")
-					config.s1713_hub_title = value
-				if ("oocdesc")
-					config.s1713_hub_oocdesc = value
-				if ("icdesc")
-					config.s1713_hub_icdesc = value
-				if ("rplevel")
-					config.s1713_hub_rplevel = value
-				if ("hostedby")
-					config.s1713_hub_hostedby = value
-				if ("postinfo")
-					config.s1713_hub_postinfo = value
 
 		else if (type == "game_schedule")
 

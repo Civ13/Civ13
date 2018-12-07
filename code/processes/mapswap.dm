@@ -220,7 +220,7 @@
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
 	else if (vote.voted_gamemode == "Imperial Age (No Research)")
-		world << "<big>Starting <b>Medieval Age</b> mode. Game Epoch is the Imperial Age, research inactive.</big>"
+		world << "<big>Starting <b>Imperial Age</b> mode. Game Epoch is the Imperial Age, research inactive.</big>"
 		map.ordinal_age = 3
 		map.age = "1713"
 		map.age1_done = TRUE

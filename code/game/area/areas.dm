@@ -28,8 +28,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	plane = LIGHTING_PLANE
 	var/lightswitch = TRUE
 
-	var/oldname = "" //for area-changing procs
-
 	var/eject = null
 
 	var/debug = FALSE
