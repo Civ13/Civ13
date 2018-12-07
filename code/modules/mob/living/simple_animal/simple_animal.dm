@@ -199,7 +199,7 @@
 
 		if (I_HELP)
 
-			if (name == initial(name))
+			if (name == initial(name) && !istype(src, /mob/living/simple_animal/hostile))
 				var/yn = input(M, "Name this [src]?") in list("Yes", "No")
 				if (yn == "Yes")
 					var/_name = input(M, "What name?") as text
