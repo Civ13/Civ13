@@ -90,7 +90,7 @@
 	handle_paralysed()
 	handle_supernatural()
 
-	if (following_mob != null)
+	if (following_mob)
 		stop_automated_movement = TRUE
 		if (get_dist(src, following_mob) > 2)
 			turns_since_move++

@@ -74,7 +74,7 @@
 	attack_verb = list("attacked", "poked")
 	edge = FALSE
 	sharp = FALSE
-	force_divisor = 0.1 //2 when wielded with weight 20 (steel)
+	force_divisor = 0 //no dmg. no more memes
 
 /obj/item/weapon/material/kitchen/utensil/spoon/plastic
 	default_material = "plastic"

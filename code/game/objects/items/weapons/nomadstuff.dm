@@ -26,15 +26,21 @@
 
 /obj/structure/bed/bedroll/New()
 	..()
-	cover_overlay = image('icons/obj/items.dmi', "bedroll_w")
-	cover_overlay.layer = MOB_LAYER + 1.1
+	cover_overlay = image("icon" = 'icons/obj/items.dmi', "icon_state" = "bedroll_w", "layer" = MOB_LAYER + 1.1)
 
 /obj/item/weapon/bedroll/attack_self(mob/user as mob)
 	user << "You open the bedroll, extending it."
 	new/obj/structure/bed/bedroll(user.loc)
 	qdel(src)
 	return
-
+/obj/structure/bed/bedroll/update_icon()
+	if (used)
+		overlays.Cut()
+		overlays  += cover_overlay
+		overlays  += image("icon" = 'icons/obj/items.dmi', "icon_state" = "bedroll_o")
+	else
+		overlays.Cut()
+		overlays  += image("icon" = 'icons/obj/items.dmi', "icon_state" = "bedroll_o")
 /obj/structure/bed/bedroll/verb/fold()
 	set category = null
 	set src in view(1)
@@ -53,27 +59,26 @@
 		if ((H in src.loc) && buckled_mob == H && used == TRUE && running == TRUE)
 			if (H.getBruteLoss() >= 40)
 				H.adjustBruteLoss(-1)
-				H.overlays += cover_overlay
 				running = FALSE
 				check_use(H)
+				update_icon()
 	else
 		used = FALSE
-		icon_state = "bedroll_o"
-		H.overlays -= cover_overlay
+		update_icon()
 		return
 /obj/structure/bed/bedroll/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = W
 		var/mob/living/affecting = G.affecting
-		user.visible_message("<span class='notice'>[user] attempts to buckle [affecting] into \the [src]!</span>")
+		user.visible_message("<span class='notice'>[user] attempts to tuck [affecting] into \the [src]!</span>")
 		if (do_after(user, 20, src))
 			affecting.loc = loc
 			spawn(0)
 				if (buckle_mob(affecting))
 					affecting.visible_message(\
-						"<span class='danger'>[affecting.name] is buckled to [src] by [user.name]!</span>",\
-						"<span class='danger'>You are buckled to [src] by [user.name]!</span>",\
-						"<span class='notice'>You hear metal clanking.</span>")
+						"<span class='danger'>[affecting.name] is tucked inside 1the [src] by [user.name]!</span>",\
+						"<span class='danger'>You are tucked inside 1the [src] by [user.name]!</span>",\
+						"<span class='notice'>You hear the rustling of leather.</span>")
 			qdel(W)
 	else
 		..()

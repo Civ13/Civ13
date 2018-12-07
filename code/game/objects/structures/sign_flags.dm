@@ -238,7 +238,47 @@
 		var/image/flag_left = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "f3_green")
 		overlays += flag_left
 
-	var/list/display7 = list("White Star", "Black Star", "Golden Star", "White Moon", "Black Moon", "Golder Moon", "White Cross", "Black Cross", "Golden Cross","Red Circle","Red Sun", "No")
+	var/list/display8 = list("White Cross", "Black Cross", "Blue Cross", "Red Cross", "Green Cross", "No")
+	var/choice8 = WWinput(user, "Add a cross?", "Flag Maker", "No", display8)
+	if (choice8 == "No")
+		icon_state = new_icon_state
+	if (choice8 == "White Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross2")
+		overlays += cross
+	if (choice8 == "Black Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross0")
+		overlays += cross
+	if (choice8 == "Blue Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross3")
+		overlays += cross
+	if (choice8 == "Red Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross1")
+		overlays += cross
+	if (choice8 == "Green Cross")
+		var/image/cross = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_bigcross4")
+		overlays += cross
+
+	var/list/display9 = list("White Saltire", "Black Saltire", "Blue Saltire", "Red Saltire", "Green Saltire", "No")
+	var/choice9 = WWinput(user, "Add a saltire?", "Flag Maker", "No", display9)
+	if (choice9 == "No")
+		icon_state = new_icon_state
+	if (choice9 == "White Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire2")
+		overlays += saltire
+	if (choice9 == "Black Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire0")
+		overlays += saltire
+	if (choice9 == "Blue Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire3")
+		overlays += saltire
+	if (choice9 == "Red Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire1")
+		overlays += saltire
+	if (choice9 == "Green Saltire")
+		var/image/saltire = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_saltire4")
+		overlays += saltire
+
+	var/list/display7 = list("White Star", "Black Star", "Golden Star", "White Moon", "Black Moon", "Golder Moon", "White Cross", "Black Cross", "Golden Cross","Red Circle","Red Sun","White Skull", "White Peace Sign", "Black Peace Sign", "No")
 
 	var/choice7 = WWinput(user, "Add a symbol?", "Flag Maker", "No", display7)
 	if (choice7 == "No")
@@ -275,6 +315,15 @@
 		overlays += flag_symbol
 	if (choice7 == "Red Sun")
 		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_sun1")
+		overlays += flag_symbol
+	if (choice7 == "Black Peace Sign")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace0")
+		overlays += flag_symbol
+	if (choice7 == "White Peace Sign")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_peace1")
+		overlays += flag_symbol
+	if (choice7 == "White Skull")
+		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_skull0")
 		overlays += flag_symbol
 	var/obj/structure/sign/flag/custom/CF = new/obj/structure/sign/flag/custom(user.loc)
 	CF.overlays = overlays
