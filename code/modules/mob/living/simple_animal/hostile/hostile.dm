@@ -189,7 +189,7 @@
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
+							walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 					moving_to = pick(cardinal)
 					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.

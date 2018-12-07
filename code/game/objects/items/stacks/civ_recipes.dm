@@ -234,6 +234,7 @@
 	else if (current_res[1] >= 19 && current_res[1] <= 45)
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, TRUE),
 			new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("campfire",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -269,6 +270,7 @@
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))
 	recipes += list(new/datum/stack_recipe("rope handcuffs", /obj/item/weapon/handcuffs/rope, _time = 50))
 	recipes += list(new/datum/stack_recipe("fishing net", /obj/item/weapon/fishing/net, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
+	recipes = list(new/datum/stack_recipe("leash", /obj/item/weapon/leash, _time = 20))
 /material/glass/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 22)
@@ -337,6 +339,8 @@
 	..()
 	if (current_res[3] >= 19)
 		recipes += list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
+
 	if (current_res[3] >= 56)
 		recipes += list(new/datum/stack_recipe("trauma kit", /obj/item/stack/medical/advanced/bruise_pack, 5, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 43)

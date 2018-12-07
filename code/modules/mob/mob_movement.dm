@@ -182,12 +182,6 @@
 
 
 /client/Center()
-	/* No 3D movement in 2D spessman game. dir 16 is Z Up
-	if (isobj(mob.loc))
-		var/obj/O = mob.loc
-		if (mob.canmove)
-			return O.relaymove(mob, 16)
-	*/
 	return
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
@@ -574,8 +568,6 @@
 			move_delay += tickcomp
 
 		if (mob.pulledby || mob.buckled) // Wheelchair driving!
-/*			if (istype(mob.pulledby, /obj/structure/bed/chair/wheelchair))
-				return mob.pulledby.relaymove(mob, direct)*/
 			if (istype(mob.buckled, /obj/structure/bed/chair/wheelchair))
 				if (mob_is_human)
 					var/mob/living/carbon/human/driver = mob

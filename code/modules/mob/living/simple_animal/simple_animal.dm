@@ -54,6 +54,8 @@
 	var/supernatural = FALSE
 	var/purge = FALSE
 
+	var/mob/living/following_mob = null
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -88,6 +90,19 @@
 	handle_paralysed()
 	handle_supernatural()
 
+	if (following_mob != null)
+		stop_automated_movement = TRUE
+		if (get_dist(src, following_mob) > 2)
+			turns_since_move++
+			if (turns_since_move >= turns_per_move)
+				walk_to(src, following_mob,1, 6)
+				turns_since_move = FALSE
+		if (get_dist(src, following_mob) > 6)
+			visible_message("The leash on \the [src] breaks.")
+			following_mob = null
+	else
+		stop_automated_movement = FALSE
+
 	//Movement
 	if (!client && !stop_automated_movement && wander && !anchored && clients.len > 0 && !istype(src, /mob/living/simple_animal/hostile))
 		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
@@ -96,11 +111,11 @@
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
+							walk_towards(src, locate(/obj/effect/landmark/npctarget),6)
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker_gods))
 						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
-							walk_towards(src, A.target_loc,4)
+							walk_towards(src, A.target_loc,6)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 					moving_to = pick(cardinal)
 					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
@@ -183,7 +198,13 @@
 	switch(M.a_intent)
 
 		if (I_HELP)
-			if (health > 0)
+
+			if (name == initial(name))
+				var/yn = input(M, "Name this [src]?") in list("Yes", "No")
+				if (yn == "Yes")
+					var/_name = input(M, "What name?") as text
+					name = sanitize(_name, 50)
+			else if (health > 0)
 				M.visible_message("<span class = 'notice'>[M] [response_help] \the [src].</span>")
 
 		if (I_DISARM)
@@ -218,7 +239,20 @@
 	return
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
-	if (istype(O, /obj/item/stack/medical))
+	if (istype(O, /obj/item/weapon/leash) && !(istype(src, /mob/living/simple_animal/hostile)))
+		var/obj/item/weapon/leash/L = O
+		if (L.onedefined == FALSE)
+			L.S1 = src
+			user << "You tie \the [src] with the leash."
+			L.onedefined = TRUE
+			return
+		else if (L.onedefined == TRUE && (src in range(3,L.S1)))
+			L.S2 = src
+			L.S2.following_mob = L.S1
+			user << "You tie \the [src] to \the [L.S1] with the leash. It will now follow \the [L.S1]."
+			qdel(L)
+			return
+	else if (istype(O, /obj/item/stack/medical))
 		if (stat != DEAD)
 			var/obj/item/stack/medical/MED = O
 			if (health < maxHealth)
@@ -317,7 +351,8 @@
 
 /mob/living/simple_animal/proc/unregisterSpawner()
 	if (origin)
-		origin.current_number -= 1
+		origin.current_number--
+		origin = null
 
 /mob/living/simple_animal/Destroy()
 	unregisterSpawner()
@@ -395,3 +430,19 @@
 	return
 /mob/living/simple_animal/ExtinguishMob()
 	return
+
+/mob/living/simple_animal/verb/remove_leash()
+	set category = null
+	set name = "Remove leash"
+	set desc = "Remove a leash from this animal."
+
+	set src in view(1)
+
+	if (following_mob == null)
+		usr << "This animal is not leashed."
+		return
+	else
+		following_mob = null
+		new/obj/item/weapon/leash(src.loc)
+		usr << "You free the [src]."
+		return

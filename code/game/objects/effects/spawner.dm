@@ -70,17 +70,19 @@
 	if (emptyTurf)
 		var/mob/living/simple_animal/spawnedMob = new create_path(emptyTurf)
 		spawnedMob.origin = src
-		current_number += 1
+		current_number++
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
+
+	if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
+		if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
+			spawning = TRUE
+		if (current_number < 0)
+			current_number = 0
 	if (activated)
-		if (spawning)
+		if (spawning == TRUE)
 			spawning = FALSE
 			spawnTarget()
-
-		if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
-			if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
-				spawning = TRUE
 
 	spawn(rand(timer,timer*1.5))
 		spawnerproc()
@@ -174,4 +176,11 @@
 	max_number = 2
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/alligator
+	timer = 5000
+
+/obj/effect/spawner/mobspawner/goats
+	name = "goat spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/goat
 	timer = 5000
