@@ -55,13 +55,13 @@
 /obj/structure/bed/bedroll/proc/check_use(var/mob/living/carbon/human/H)
 	if ((H in src.loc) && buckled_mob == H && used == TRUE && running == FALSE)
 		running = TRUE
+		update_icon()
 		spawn(300)
 		if ((H in src.loc) && buckled_mob == H && used == TRUE && running == TRUE)
 			if (H.getBruteLoss() >= 40)
 				H.adjustBruteLoss(-1)
 				running = FALSE
 				check_use(H)
-				update_icon()
 	else
 		used = FALSE
 		update_icon()
@@ -82,6 +82,7 @@
 			qdel(W)
 	else
 		..()
+	update_icon()
 
 //TENT
 /obj/item/weapon/tent
