@@ -53,13 +53,13 @@
 		if ((H in src.loc) && buckled_mob == H && used == TRUE && running == TRUE)
 			if (H.getBruteLoss() >= 40)
 				H.adjustBruteLoss(-1)
-				overlays += cover_overlay
+				H.overlays += cover_overlay
 				running = FALSE
 				check_use(H)
 	else
 		used = FALSE
 		icon_state = "bedroll_o"
-		overlays -= cover_overlay
+		H.overlays -= cover_overlay
 		return
 /obj/structure/bed/bedroll/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/grab))
@@ -80,7 +80,7 @@
 
 //TENT
 /obj/item/weapon/tent
-	name = "foldable canopy"
+	name = "folded canopy"
 	desc = "A foldable canopy."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "tent_r"
@@ -98,16 +98,13 @@
 	layer = 5
 	anchored = TRUE
 	can_buckle = FALSE
-	var/oldname = ""
+	var/area/oldarea
+	var/area/newarea
 /obj/structure/tent/New()
 	..()
-	var/area/caribbean/CURRENTAREA = get_area(src)
-	if (CURRENTAREA.location == AREA_OUTSIDE)
-		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
-		oldname = CURRENTAREA.name
-		NEWAREA.base_turf = CURRENTAREA.base_turf
-		NEWAREA.location = AREA_INSIDE
-		NEWAREA.update_light()
+	oldarea = get_area(src)
+	if (oldarea.location == AREA_OUTSIDE)
+		new/area/caribbean/roofed(src.loc)
 		for(var/obj/structure/tent/T in range(1,src))
 			T.update_icon()
 		update_icon()
@@ -117,13 +114,13 @@
 		if (istype(O, /obj/structure/tent))
 			user << "There is already a structure here."
 			return
-	var/area/caribbean/CURRENTAREA = get_area(src)
-	if (CURRENTAREA.location == AREA_INSIDE)
+	var/area/caribbean/oldarea = get_area(src)
+	if (oldarea.location == AREA_INSIDE)
 		user << "This location is covered already, you can't set up a tent here."
 		return
-	visible_message("[user] starts unfolding the tent...","You open the tent and start unfolding it...")
+	visible_message("[user] starts unfolding the [src]...","You open the [src] and start unfolding it...")
 	if (do_after(user, 35, src))
-		visible_message("[user] finishes unfolding the tent.","You finish unfolding the tent.")
+		visible_message("[user] finishes unfolding the [src].","You finish unfolding the [src].")
 		new/obj/structure/tent(user.loc)
 		qdel(src)
 		return
@@ -132,17 +129,12 @@
 	set category = null
 	set src in view(1)
 	set name = "Fold Canopy"
-	visible_message("[usr] starts folding the tent...","You start folding the tent...")
+	visible_message("[usr] starts folding the [src]...","You start folding the [src]...")
 	if (do_after(usr, 35, src))
-		visible_message("[usr] finishes folding the tent.","You finish folding the tent.")
+		visible_message("[usr] finishes folding the [src].","You finish folding the [src].")
 		new/obj/item/weapon/tent(src.loc)
-		var/area/caribbean/CURRENTAREA = get_area(src)
-		if (CURRENTAREA.location == AREA_INSIDE)
-			var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
-			NEWAREA.name = oldname
-			NEWAREA.base_turf = CURRENTAREA.base_turf
-			NEWAREA.location = AREA_OUTSIDE
-			NEWAREA.update_light()
+		if (oldarea.location == AREA_INSIDE)
+			new oldarea(src.loc)
 		for(var/obj/structure/tent/T in range(1,src))
 			T.update_icon()
 		qdel(src)

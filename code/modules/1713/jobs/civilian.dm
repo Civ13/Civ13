@@ -3,22 +3,81 @@
 	faction = "Station"
 
 /datum/job/civilian/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_english_name(H.gender)
-	if (H.client && H.client.prefs)
-		switch (H.client.prefs.civ_ethnicity)
-			if (SPANISH)
-				H.name = H.species.get_random_spanish_name(H.gender)
-			if (PORTUGUESE)
-				H.name = H.species.get_random_portuguese_name(H.gender)
-			if (FRENCH)
-				H.name = H.species.get_random_french_name(H.gender)
-			if (DUTCH)
-				H.name = H.species.get_random_dutch_name(H.gender)
-			if (ENGLISH)
-				H.name = H.species.get_random_english_name(H.gender)
+	H.give_random_civ_name()
+
+/mob/living/carbon/human/proc/give_random_civ_name()
+	if (map.civilizations)
+		if (map.ID == MAP_NOMADS_DESERT)
+			name = species.get_random_arab_name()
+			real_name = name
+			return
+		else
+			if (map.ordinal_age <= 0)
+				if (prob(50))
+					name = species.get_random_roman_name()
+					real_name = name
+					return
+				else
+					name = species.get_random_roman_name()
+					real_name = name
+					return
+			else if (map.ordinal_age == 1)
+				if (prob(50))
+					name = species.get_random_roman_name()
+					real_name = name
+					return
+				else
+					name = species.get_random_roman_name()
+					real_name = name
+					return
+			else if (map.ordinal_age == 2)
+				if (prob(50))
+					name = species.get_random_english_name()
+					real_name = name
+					return
+				else
+					name = species.get_random_french_name(gender)
+					real_name = name
+					return
+			else if (map.ordinal_age >= 3)
+				var/randname = pick(1,2,3,4,5)
+				if (randname == 1)
+					name = species.get_random_english_name()
+					real_name = name
+					return
+				if (randname == 2)
+					name = species.get_random_french_name()
+					real_name = name
+					return
+				if (randname == 3)
+					name = species.get_random_dutch_name()
+					real_name = name
+					return
+				if (randname == 4)
+					name = species.get_random_spanish_name()
+					real_name = name
+					return
+				if (randname == 5)
+					name = species.get_random_portuguese_name()
+					real_name = name
+					return
 	else
-		H.name = H.species.get_random_english_name(H.gender)
-	H.real_name = H.name
+		name = species.get_random_english_name(gender)
+		if (client && client.prefs)
+			switch (client.prefs.civ_ethnicity)
+				if (SPANISH)
+					name = species.get_random_spanish_name(gender)
+				if (PORTUGUESE)
+					name = species.get_random_portuguese_name(gender)
+				if (FRENCH)
+					name = species.get_random_french_name(gender)
+				if (DUTCH)
+					name = species.get_random_dutch_name(gender)
+				if (ENGLISH)
+					name = species.get_random_english_name(gender)
+		else
+			name = species.get_random_english_name(gender)
+		real_name = name
 
 /mob/living/carbon/human/proc/give_clothes()
 	if (map.ordinal_age == 0)
@@ -1138,61 +1197,3 @@
 
 
 	return TRUE
-
-/datum/job/civilian/civnomad/give_random_name(var/mob/living/carbon/human/H)
-	if (map.ID == MAP_NOMADS_DESERT)
-		H.name = H.species.get_random_arab_name()
-		H.real_name = H.name
-		return
-	else
-		if (map.ordinal_age == 0)
-			if (prob(50))
-				H.name = H.species.get_random_roman_name()
-				H.real_name = H.name
-				return
-			else
-				H.name = H.species.get_random_roman_name()
-				H.real_name = H.name
-				return
-		else if (map.ordinal_age == 1)
-			if (prob(50))
-				H.name = H.species.get_random_roman_name()
-				H.real_name = H.name
-				return
-			else
-				H.name = H.species.get_random_roman_name()
-				H.real_name = H.name
-				return
-		else if (map.ordinal_age == 2)
-			if (prob(50))
-				H.name = H.species.get_random_english_name()
-				H.real_name = H.name
-				return
-			else
-				H.name = H.species.get_random_french_name(H.gender)
-				H.real_name = H.name
-				return
-		else if (map.ordinal_age == 3)
-			var/randname = pick(1,2,3,4,5)
-			if (randname == 1)
-				H.name = H.species.get_random_english_name()
-				H.real_name = H.name
-				return
-			if (randname == 2)
-				H.name = H.species.get_random_french_name()
-				H.real_name = H.name
-				return
-			if (randname == 3)
-				H.name = H.species.get_random_dutch_name()
-				H.real_name = H.name
-				return
-			if (randname == 4)
-				H.name = H.species.get_random_spanish_name()
-				H.real_name = H.name
-				return
-			if (randname == 5)
-				H.name = H.species.get_random_portuguese_name()
-				H.real_name = H.name
-				return
-		else
-			..()

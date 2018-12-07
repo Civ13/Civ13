@@ -144,13 +144,8 @@ var/list/gamemode_cache = list()
 	var/open_hub_discord_in_new_window = TRUE
 	var/hub_body = ""
 	var/hub_features = ""
-	var/hub_banner_url = "https://i.imgur.com/Ouxiybj.png"
+	var/hub_banner_url = "https://i.imgur.com/napac0L.png"
 
-	//WW2
-
-	var/lighting_is_rustic = FALSE
-	var/machinery_does_not_use_power = FALSE
-	//WW2 donor shit
 
 	// misc
 	var/resource_website = null
@@ -246,14 +241,6 @@ var/list/gamemode_cache = list()
 					config.hub_features = value
 				if ("hub_banner_url")
 					config.hub_banner_url = value
-
-				// WW2 MISC
-				if ("machinery_does_not_use_power")
-					config.machinery_does_not_use_power = text2num(value)
-
-				if ("lighting_is_rustic")
-					config.lighting_is_rustic = text2num(value)
-
 
 				if ("resource_urls")
 					config.resource_urls = splittext(value, " ")
