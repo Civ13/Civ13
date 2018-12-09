@@ -58,10 +58,8 @@
 		update_icon()
 		spawn(300)
 		if ((H in src.loc) && buckled_mob == H && used == TRUE && running == TRUE)
-			if (H.getBruteLoss() >= 40)
-				H.adjustBruteLoss(-1)
-				running = FALSE
-				check_use(H)
+			running = FALSE
+			check_use(H)
 	else
 		used = FALSE
 		update_icon()

@@ -108,46 +108,47 @@
 		return
 	if (state != STATE_STEWING)
 		return
-	var/obj/item/weapon/reagent_containers/food/snacks/stew_wood/w_stew = new
-	if (stew_desc)
-		w_stew.name = stew_desc
-		w_stew.nutriment_desc.Cut()
+	if (istype(I, /obj/item/kitchen/snack_bowl) || istype(I, /obj/item/kitchen/wood_bowl))
+		var/obj/item/weapon/reagent_containers/food/snacks/stew_wood/w_stew = new
+		if (stew_desc)
+			w_stew.name = stew_desc
+			w_stew.nutriment_desc.Cut()
 
-		for (var/desc in stew_nutriment_desc)
-			w_stew.nutriment_desc[desc] = 1
+			for (var/desc in stew_nutriment_desc)
+				w_stew.nutriment_desc[desc] = 1
 
-	if (stew_nutriment)
-		w_stew.reagents.remove_reagent("nutriment", 500)
-		w_stew.reagents.add_reagent("nutriment", stew_nutriment)
+		if (stew_nutriment)
+			w_stew.reagents.remove_reagent("nutriment", 500)
+			w_stew.reagents.add_reagent("nutriment", stew_nutriment)
 
-	if (stew_protein)
-		w_stew.reagents.remove_reagent("protein", 500)
-		w_stew.reagents.add_reagent("protein", stew_protein)
+		if (stew_protein)
+			w_stew.reagents.remove_reagent("protein", 500)
+			w_stew.reagents.add_reagent("protein", stew_protein)
 
-	for (var/datum/reagent/R in reagents.reagent_list)
-		var/amt = ceil(R.volume/initial_bowls)
-		w_stew.reagents.maximum_volume += amt
-		w_stew.reagents.add_reagent(R.id, amt)
+		for (var/datum/reagent/R in reagents.reagent_list)
+			var/amt = ceil(R.volume/initial_bowls)
+			w_stew.reagents.maximum_volume += amt
+			w_stew.reagents.add_reagent(R.id, amt)
 
-	if (H.l_hand == I)
-		H.remove_from_mob(I)
-		H.equip_to_slot(w_stew, slot_l_hand)
+		if (H.l_hand == I)
+			H.remove_from_mob(I)
+			H.equip_to_slot(w_stew, slot_l_hand)
 
-	else if (H.r_hand == I)
-		H.remove_from_mob(I)
-		H.equip_to_slot(w_stew, slot_r_hand)
+		else if (H.r_hand == I)
+			H.remove_from_mob(I)
+			H.equip_to_slot(w_stew, slot_r_hand)
 
-	qdel(I)
-	--bowls
+		qdel(I)
+		--bowls
 
-	if (bowls <= 0)
-		state = STATE_EMPTY
-		stew_desc = ""
-		stew_nutriment_desc.Cut()
-		stew_nutriment = 0
-		stew_protein = 0
-		fullness = 0
-		update_icon()
+		if (bowls <= 0)
+			state = STATE_EMPTY
+			stew_desc = ""
+			stew_nutriment_desc.Cut()
+			stew_nutriment = 0
+			stew_protein = 0
+			fullness = 0
+			update_icon()
 
 /obj/structure/pot/attack_hand(var/mob/living/carbon/human/H)
 	if (!istype(H))

@@ -369,7 +369,7 @@ var/global/chicken_count = FALSE
 	var/packed = FALSE
 	health = 110
 	mob_size = MOB_LARGE
-	var/max_content_size = 20
+	var/max_content_size = 35
 	var/content_size = 0
 	var/list/packed_items = list()
 /mob/living/simple_animal/camel/attackby(var/obj/item/O as obj, var/mob/user as mob)
@@ -397,7 +397,7 @@ var/global/chicken_count = FALSE
 	set category = null
 	set name = "Remove Pack"
 	set src in range(2, usr)
-	if (!packed_items)
+	if (!content_size)
 		usr << "The camel is not carrying anything."
 		return
 	else
@@ -412,8 +412,9 @@ var/global/chicken_count = FALSE
 				if (ITS.name == choice1)
 					new ITS.type (usr.loc)
 					visible_message("[usr] removes \the [ITS] from the camel's back.","You remove \the [ITS] from the camel's back.")
+					content_size -= ITS.w_class
 					packed_items -= ITS
 					update_icons()
-					if (!packed_items.len)
+					if (!content_size)
 						packed = FALSE
 					return
