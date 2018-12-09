@@ -8,7 +8,7 @@
 /mob/living/carbon/human/proc/give_random_civ_name()
 	if (map.civilizations)
 		if (map.ID == MAP_NOMADS_DESERT)
-			name = species.get_random_arab_name()
+			name = species.get_random_english_name()
 			real_name = name
 			return
 		else

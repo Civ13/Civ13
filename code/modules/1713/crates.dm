@@ -53,7 +53,7 @@ obj/structure/closet/crate/chest
 	icon_state = "wood_chest"
 	icon_opened = "wood_chest_opened"
 	icon_closed = "wood_chest"
-
+	storage_capacity = 3 * MOB_MEDIUM
 obj/structure/closet/crate/chest/treasury
 	name = "colony treasury"
 	desc = "Where the colony treasury is stored."

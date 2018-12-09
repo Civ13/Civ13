@@ -345,3 +345,76 @@ var/global/chicken_count = FALSE
 
 
 
+/mob/living/simple_animal/camel
+	name = "camel"
+	desc = "Good for meat."
+	icon = 'icons/mob/animal_64.dmi'
+	icon_state = "camel"
+	icon_living = "camel"
+	icon_dead = "camel_dead"
+	icon_gib = "camel_dead"
+	speak = list("MMMMMHM","brooo","BRBRBRBRR!")
+	speak_emote = list("grunts","moos hauntingly")
+	emote_hear = list("grunts")
+	emote_see = list("shakes its head")
+	speak_chance = TRUE
+	turns_per_move = 8
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 6
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	var/packed = FALSE
+	health = 110
+	mob_size = MOB_LARGE
+	var/max_content_size = 20
+	var/content_size = 0
+	var/list/packed_items = list()
+/mob/living/simple_animal/camel/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	if (!stat && user.a_intent == I_HELP && icon_state != icon_dead)
+		if (content_size + O.w_class > max_content_size)
+			user << "The camel is too burdened already!"
+			return
+		else
+			content_size += O.w_class
+			visible_message("[user] places \the [O] on the camel's back.","You put \the [O] on the camel's back.")
+			packed_items += O
+			qdel(O)
+			packed = TRUE
+			update_icons()
+	else
+		..()
+/mob/living/simple_animal/camel/update_icons()
+	..()
+	if (packed)
+		icon_state = "pack_camel"
+	else
+		icon_state = "camel"
+
+/mob/living/simple_animal/camel/verb/remove_from_storage()
+	set category = null
+	set name = "Remove Pack"
+	set src in range(2, usr)
+	if (!packed_items)
+		usr << "The camel is not carrying anything."
+		return
+	else
+		var/list/choicelist = list("Cancel")
+		for (var/obj/item/IT in packed_items)
+			choicelist += IT.name
+		var/choice1 = WWinput(usr, "What do you want to remove from the camel's pack?", "Camel Pack", "Cancel", choicelist)
+		if (choice1 == "Cancel")
+			return
+		else
+			for (var/obj/item/ITS in packed_items)
+				if (ITS.name == choice1)
+					var/obj/item/NEWIT = new ITS
+					NEWIT.forceMove(usr.loc)
+					visible_message("[usr] removes \the [ITS] from the camel's back.","You remove \the [ITS] from the camel's back.")
+					packed_items -= ITS
+					update_icons()
+					if (!packed_items.len)
+						packed = FALSE
+					return
