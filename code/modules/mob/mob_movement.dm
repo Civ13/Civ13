@@ -233,8 +233,8 @@
 	if (istype(src, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = src
 		if (H.riding == TRUE && !isnull(H.riding_mob))
-			H.riding_mob.forceMove(locate(x-1,y-1,z))
 			H.riding_mob.dir = H.dir
+			H.riding_mob.forceMove(locate(x-1,y-1,z))
 	return
 
 /client/proc/Move_object(direct)
