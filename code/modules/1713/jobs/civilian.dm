@@ -6,78 +6,22 @@
 	H.give_random_civ_name()
 
 /mob/living/carbon/human/proc/give_random_civ_name()
-	if (map.civilizations)
-		if (map.ID == MAP_NOMADS_DESERT)
-			name = species.get_random_english_name()
-			real_name = name
-			return
-		else
-			if (map.ordinal_age <= 0)
-				if (prob(50))
-					name = species.get_random_roman_name()
-					real_name = name
-					return
-				else
-					name = species.get_random_roman_name()
-					real_name = name
-					return
-			else if (map.ordinal_age == 1)
-				if (prob(50))
-					name = species.get_random_roman_name()
-					real_name = name
-					return
-				else
-					name = species.get_random_roman_name()
-					real_name = name
-					return
-			else if (map.ordinal_age == 2)
-				if (prob(50))
-					name = species.get_random_english_name()
-					real_name = name
-					return
-				else
-					name = species.get_random_french_name(gender)
-					real_name = name
-					return
-			else if (map.ordinal_age >= 3)
-				var/randname = pick(1,2,3,4,5)
-				if (randname == 1)
-					name = species.get_random_english_name()
-					real_name = name
-					return
-				if (randname == 2)
-					name = species.get_random_french_name()
-					real_name = name
-					return
-				if (randname == 3)
-					name = species.get_random_dutch_name()
-					real_name = name
-					return
-				if (randname == 4)
-					name = species.get_random_spanish_name()
-					real_name = name
-					return
-				if (randname == 5)
-					name = species.get_random_portuguese_name()
-					real_name = name
-					return
+	name = species.get_random_english_name(gender)
+	if (client && client.prefs)
+		switch (client.prefs.civ_ethnicity)
+			if (SPANISH)
+				name = species.get_random_spanish_name(gender)
+			if (PORTUGUESE)
+				name = species.get_random_portuguese_name(gender)
+			if (FRENCH)
+				name = species.get_random_french_name(gender)
+			if (DUTCH)
+				name = species.get_random_dutch_name(gender)
+			if (ENGLISH)
+				name = species.get_random_english_name(gender)
 	else
 		name = species.get_random_english_name(gender)
-		if (client && client.prefs)
-			switch (client.prefs.civ_ethnicity)
-				if (SPANISH)
-					name = species.get_random_spanish_name(gender)
-				if (PORTUGUESE)
-					name = species.get_random_portuguese_name(gender)
-				if (FRENCH)
-					name = species.get_random_french_name(gender)
-				if (DUTCH)
-					name = species.get_random_dutch_name(gender)
-				if (ENGLISH)
-					name = species.get_random_english_name(gender)
-		else
-			name = species.get_random_english_name(gender)
-		real_name = name
+	real_name = name
 
 /mob/living/carbon/human/proc/give_clothes()
 	if (map.ordinal_age == 0)
