@@ -410,8 +410,7 @@ var/global/chicken_count = FALSE
 		else
 			for (var/obj/item/ITS in packed_items)
 				if (ITS.name == choice1)
-					var/obj/item/NEWIT = new ITS
-					NEWIT.forceMove(usr.loc)
+					new ITS.type (usr.loc)
 					visible_message("[usr] removes \the [ITS] from the camel's back.","You remove \the [ITS] from the camel's back.")
 					packed_items -= ITS
 					update_icons()
