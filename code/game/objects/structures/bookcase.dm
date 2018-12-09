@@ -106,7 +106,7 @@
 			name = ("bookcase ([newname])")
 	else if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -124,11 +124,11 @@
 					user << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
 					return
 			else if (map.age1_done == TRUE && map.age2_done == FALSE)
-				if (world.time > map.age2_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age1_top*3))
+				if (world.time < map.age2_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age1_top*3))
 					user << "You are already too advanced. You can research again in [(map.age2_timer-world.time)/600] minutes."
 					return
 			if (map.age2_done == TRUE && map.age3_done == FALSE)
-				if (world.time > map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age2_top*3))
+				if (world.time < map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age2_top*3))
 					user << "You are already too advanced. You can research again in [(map.age3_timer-world.time)/600] minutes."
 					return
 		if (!map.civilizations)
