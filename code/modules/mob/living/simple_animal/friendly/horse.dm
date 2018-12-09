@@ -30,7 +30,7 @@
 	cover_overlay = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty", "layer" = MOB_LAYER - 0.1)
 /mob/living/simple_animal/horse/update_icons()
 	..()
-	if (ride)
+	if (!ride)
 		overlays.Cut()
 		overlays  += cover_overlay
 		overlays  += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_riding")
