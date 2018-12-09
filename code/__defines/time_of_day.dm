@@ -2,7 +2,7 @@
 #define MAX_LIGHT_AMOUNT 1.00
 //#define ALWAYS_DAY
 var/time_of_day = "Morning"
-var/list/times_of_day = list("Early Morning", "Morning", "Afternoon", "Midday", "Evening", "Night")
+var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
 // from lightest to darkest: midday, afternoon, morning, early morning, evening, night
 var/list/time_of_day2luminosity = list(
 	"Early Morning" = BASIC_LIGHT_AMOUNT * 10,
