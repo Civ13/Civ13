@@ -403,8 +403,6 @@
 		if ("Early Morning")
 			loc_temp *= 0.99
 		if ("Night")
-			loc_temp *= 0.98
-		if ("Midnight")
 			loc_temp *= 0.97
 
 	switch (mob_area.weather)

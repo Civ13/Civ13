@@ -1,10 +1,5 @@
 /var/all_ui_styles = list(
 	"1713Style",
-	/*"Midnight"     = 'icons/mob/screen/midnight.dmi',
-	"Orange"       = 'icons/mob/screen/orange.dmi',
-	"old"          = 'icons/mob/screen/old.dmi',
-	"White"        = 'icons/mob/screen/white.dmi',
-	"old-noborder" = 'icons/mob/screen/old-noborder.dmi'*/
 	)
 
 

@@ -27,17 +27,17 @@
 
 /mob/living/simple_animal/horse/New()
 	..()
-	cover_overlay = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty", "layer" = MOB_LAYER - 0.1)
+	layer = MOB_LAYER - 0.01
+	cover_overlay = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty")
 /mob/living/simple_animal/horse/update_icons()
 	..()
-	if (!ride)
+	if (ride)
 		overlays.Cut()
-		overlays  += cover_overlay
-		overlays  += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_riding")
+		overlays += cover_overlay
+		overlays += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_riding", "layer" = 4.15)
 	else
 		overlays.Cut()
-		overlays  += cover_overlay
-		overlays  += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty")
+		overlays += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty")
 
 /mob/living/simple_animal/horse/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
 	if (ride == FALSE && isnull(rider) && M == user)

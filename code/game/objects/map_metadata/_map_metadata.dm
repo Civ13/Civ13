@@ -61,7 +61,7 @@ var/civmax_research = list(85,89,67)
 	var/win_condition_spam_check = FALSE
 
 	// lighting
-	var/list/times_of_day = list("Early Morning", "Morning", "Afternoon", "Midday", "Evening", "Night", "Midnight")
+	var/list/times_of_day = list("Early Morning", "Morning", "Afternoon", "Midday", "Evening", "Night")
 	var/list/zlevels_without_lighting = list()
 	var/list/areas_without_lighting = list()
 
