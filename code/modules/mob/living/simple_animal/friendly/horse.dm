@@ -20,30 +20,44 @@
 	attacktext = "kicked"
 	health = 120
 	mob_size = MOB_LARGE
+	a_intent = I_HURT
 	var/ride = FALSE
 	var/mob/living/carbon/human/rider = null
+	var/image/cover_overlay = null
 
+/mob/living/simple_animal/horse/New()
+	..()
+	cover_overlay = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty", "layer" = MOB_LAYER - 0.1)
 /mob/living/simple_animal/horse/update_icons()
 	..()
 	if (ride)
-		icon_state = "horse_riding"
+		overlays.Cut()
+		overlays  += cover_overlay
+		overlays  += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_riding")
 	else
-		icon_state = "horse_empty"
+		overlays.Cut()
+		overlays  += cover_overlay
+		overlays  += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty")
 
-/mob/living/simple_animal/horse/attack_hand(mob/living/carbon/human/M as mob)
-	if (ride == FALSE && isnull(rider))
+/mob/living/simple_animal/horse/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
+	if (ride == FALSE && isnull(rider) && M == user)
+		var/mob/living/carbon/human/MM = M
 		visible_message("<div class='notice'>[M] starts getting on the [src]'s back...</div>","<div class='notice'>You start going on the [src]'s back...</div>")
-		if (do_after(M, 40, src))
+		if (do_after(MM, 40, src))
 			visible_message("<div class='notice'>[M] sucessfully climbs into the [src]'s back.</div>","<div class='notice'>You sucessfully climb into the [src]'s back.</div>")
 			ride = TRUE
-			rider = M
-			M.forceMove(locate(x+1,y+1,z))
-			M.riding = TRUE
-			M.riding_mob = src
+			rider = MM
+			MM.forceMove(locate(x+1,y+1,z))
+			MM.riding = TRUE
+			MM.riding_mob = src
 			update_icons()
 			stop_automated_movement = TRUE
 			return
 	else
+		..()
+
+/mob/living/simple_animal/horse/attack_hand(mob/living/carbon/human/M as mob)
+	if (ride == TRUE && !isnull(rider))
 		if (rider == M)
 			visible_message("<div class='notice'>[M] starts to get off the horse...</div>","<div class='notice'>You start to get off the horse...</div>")
 			if (do_after(M, 40, src))
@@ -70,6 +84,8 @@
 				update_icons()
 				stop_automated_movement = FALSE
 				return
+	else
+		..()
 
 /mob/living/simple_animal/horse/death()
 	..()
@@ -82,3 +98,12 @@
 		rider = null
 		ride = FALSE
 		rider = null
+
+/mob/living/simple_animal/horse/proc/trample(var/mob/living/tmob)
+	if (tmob.stat != DEAD)
+		visible_message("<div class='danger'>\the [src] tramples [tmob]!</div>")
+		playsound(tmob.loc, 'sound/effects/gore/fallsmash.ogg', 35, TRUE)
+		tmob.adjustBruteLoss(rand(6,7))
+		if (prob(35))
+			tmob.Weaken(7)
+		return

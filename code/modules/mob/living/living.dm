@@ -64,12 +64,12 @@ default behaviour is:
 			for (var/mob/living/M in range(tmob, TRUE))
 				if (tmob.pinned.len ||  ((M.pulling == tmob && ( tmob.restrained() && !( M.restrained() ) && M.stat == FALSE)) || locate(/obj/item/weapon/grab, tmob.grabbed_by.len)) )
 					if ( !(world.time % 5) )
-						src << "<span class='warning'>[tmob] is restrained, you cannot push past</span>"
+						src << "<span class='warning'>[tmob] is restrained, you cannot push past.</span>"
 					now_pushing = FALSE
 					return
 				if ( tmob.pulling == M && ( M.restrained() && !( tmob.restrained() ) && tmob.stat == FALSE) )
 					if ( !(world.time % 5) )
-						src << "<span class='warning'>[tmob] is restraining [M], you cannot push past</span>"
+						src << "<span class='warning'>[tmob] is restraining [M], you cannot push past.</span>"
 					now_pushing = FALSE
 					return
 
@@ -81,15 +81,29 @@ default behaviour is:
 				return
 
 			if (can_swap_with(tmob)) // mutual brohugs all around!
-				var/turf/oldloc = loc
-				forceMove(tmob.loc)
-				tmob.forceMove(oldloc)
-				now_pushing = FALSE
-				/*
-				for (var/mob/living/carbon/slime/slime in view(1,tmob))
-					if (slime.Victim == tmob)
-						slime.UpdateFeed()*/
-				return
+				if (istype(src, /mob/living/carbon/human))
+					var/mob/living/carbon/human/H = src
+					if (H.riding)
+						var/mob/living/simple_animal/horse/HR = H.riding_mob
+						if (!tmob.anchored)
+							var/t = get_dir(H, tmob)
+							step(tmob, t)
+						if (HR.loc != H.loc)
+							HR.loc = H.loc
+							H.forceMove(locate(x+1,y+1,z))
+							HR.trample(tmob)
+						H.riding_mob.update_icons()
+				else if (istype(src, /mob/living/simple_animal/horse))
+					var/mob/living/simple_animal/horse/HR = src
+					if (!tmob.anchored)
+						var/t = get_dir(HR, tmob)
+						step(tmob, t)
+				else
+					var/turf/oldloc = loc
+					forceMove(tmob.loc)
+					tmob.forceMove(oldloc)
+					now_pushing = FALSE
+					return
 
 			if (!can_move_mob(tmob, FALSE, FALSE))
 				now_pushing = FALSE
