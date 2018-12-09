@@ -100,8 +100,7 @@
 		if (get_dist(src, following_mob) > 6)
 			visible_message("The leash on \the [src] breaks.")
 			following_mob = null
-	else
-		stop_automated_movement = FALSE
+			stop_automated_movement = FALSE
 
 	//Movement
 	if (!client && !stop_automated_movement && wander && !anchored && clients.len > 0 && !istype(src, /mob/living/simple_animal/hostile))
@@ -240,6 +239,11 @@
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/leash) && !(istype(src, /mob/living/simple_animal/hostile)))
+		if (istype(src, /mob/living/simple_animal/horse))
+			var/mob/living/simple_animal/horse/HR = src
+			if (HR.ride)
+				user << "You can't leash this horse, it is being ridden."
+				return
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)
 			L.S1 = src

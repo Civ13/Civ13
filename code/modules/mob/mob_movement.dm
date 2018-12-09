@@ -230,6 +230,11 @@
 		m_flag = TRUE
 		if ((A != loc && A && A.z == z))
 			last_move = get_dir(A, loc)
+	if (istype(src, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = src
+		if (H.riding == TRUE && !isnull(H.riding_mob))
+			H.riding_mob.forceMove(locate(x-1,y-1,z))
+			H.riding_mob.dir = H.dir
 	return
 
 /client/proc/Move_object(direct)
@@ -580,6 +585,11 @@
 					direct = pick(cardinal)
 				move_delay += 2
 				return mob.buckled.relaymove(mob,direct)
+
+		if (istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = src
+			if (HH.riding == TRUE && !isnull(HH.riding_mob))
+				move_delay = world.time + 0.5
 
 		//We are now going to move
 		moving = TRUE

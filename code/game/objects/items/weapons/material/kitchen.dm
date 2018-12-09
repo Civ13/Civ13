@@ -64,9 +64,6 @@
 	desc = "It's a fork. Sure is pointy."
 	icon_state = "fork"
 
-/obj/item/weapon/material/kitchen/utensil/fork/plastic
-	default_material = "plastic"
-
 /obj/item/weapon/material/kitchen/utensil/spoon
 	name = "spoon"
 	desc = "It's a spoon. You can see your own upside-down face in it."
@@ -75,9 +72,6 @@
 	edge = FALSE
 	sharp = FALSE
 	force_divisor = 0 //no dmg. no more memes
-
-/obj/item/weapon/material/kitchen/utensil/spoon/plastic
-	default_material = "plastic"
 
 /*
  * Knives
@@ -119,8 +113,6 @@
 /obj/item/weapon/material/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	return ..()
 
-/obj/item/weapon/material/kitchen/utensil/knife/plastic
-	default_material = "plastic"
 /obj/item/weapon/material/kitchen/utensil/knife/iron
 	default_material = "iron"
 /*
