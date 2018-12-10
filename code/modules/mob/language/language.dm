@@ -27,8 +27,7 @@
 		else
 			return capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "John Doe"
 	return full_name
 
 /datum/language/proc/get_random_english_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
@@ -38,8 +37,7 @@
 		else
 			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "John Adams"
 	return full_name
 
 /datum/language/proc/get_random_portuguese_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
@@ -49,8 +47,7 @@
 		else
 			return capitalize(pick(first_names_male_portuguese)) + " " + capitalize(pick(last_names_portuguese))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Pedro Alves"
 	return full_name
 
 /datum/language/proc/get_random_spanish_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
@@ -60,8 +57,7 @@
 		else
 			return capitalize(pick(first_names_male_spanish)) + " " + capitalize(pick(last_names_spanish))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Juan Garcia"
 	return full_name
 
 /datum/language/proc/get_random_french_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
@@ -71,8 +67,7 @@
 		else
 			return capitalize(pick(first_names_male_french)) + " " + capitalize(pick(last_names_french))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Mathieu Bertrand"
 	return full_name
 
 
@@ -84,8 +79,7 @@
 		else
 			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Daan Visser"
 	return full_name
 
 /datum/language/proc/get_random_carib_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
@@ -95,16 +89,14 @@
 		else
 			return capitalize(pick(first_names_male_carib))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Mojowai"
 	return full_name
 
 /datum/language/proc/get_random_greek_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
 	if (!syllables || !syllables.len)
 		return capitalize(pick(first_names_male_greek))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Philokrates"
 	return full_name
 
 
@@ -112,16 +104,14 @@
 	if (!syllables || !syllables.len)
 		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Decius Salvius Primulus"
 	return full_name
 
 /datum/language/proc/get_random_arab_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
 	if (!syllables || !syllables.len)
 		return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
 
-	var/full_name = ""
-	var/new_name = ""
+	var/full_name = "Ibrahim Ibn Osama"
 	return full_name
 
 
