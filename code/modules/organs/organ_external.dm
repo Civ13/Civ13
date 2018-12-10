@@ -60,7 +60,7 @@
 	var/can_grasp //It would be more appropriate if these two were named "affects_grasp" and "affects_stand" at this point
 	var/can_stand
 	var/pain = FALSE
-
+	var/fracturetimer = 0
 /obj/item/organ/external/Destroy()
 	if (parent && parent.children)
 		parent.children -= src
@@ -242,7 +242,7 @@
 	// If the limbs can break, make sure we don't exceed the maximum damage a limb can take before breaking
 	// Non-vital organs are limited to max_damage. You can't kill someone by bludeonging their arm all the way to 200 -- you can
 	// push them faster into paincrit though, as the additional damage is converted into shock.
-	if (is_damageable(brute + burn) || !config.limbs_can_break)
+	if (is_damageable(brute + burn))
 		if (brute)
 			if (can_cut)
 				if (sharp && !edge)
@@ -290,7 +290,7 @@
 
 	//If limb took enough damage, try to cut or tear it off
 	if (owner && loc == owner && !is_stump())
-		if (!cannot_amputate && config.limbs_can_break && (brute_dam + burn_dam) >= (max_damage * config.organ_health_multiplier))
+		if (!cannot_amputate && (brute_dam + burn_dam) >= (max_damage * config.organ_health_multiplier))
 			//organs can come off in three cases
 			//1. If the damage source is edge_eligible and the brute damage dealt exceeds the edge threshold, then the organ is cut off.
 			//2. If the damage amount dealt exceeds the disintegrate threshold, the organ is completely obliterated.
@@ -640,8 +640,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 		status |= ORGAN_BLEEDING
 
 	//Bone fractures
-	if (config.bones_can_break && brute_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
-		fracture()
+	if (brute_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
+		if (brute_dam > fracturetimer+20)
+			fracture()
 
 	if (!(brute_dam+burn_dam) || !number_wounds)
 		disfigured = FALSE
@@ -907,9 +908,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return
 
 /obj/item/organ/external/proc/mend_fracture()
-//	if (brute_dam >= min_broken_damage * config.organ_health_multiplier)
-//		return FALSE	//will just immediately fracture again
-// since this is the XVIII century, lets remove this for now - There's no bicaridine and we need to allow some arcade stuff if we want to make surgery useful.
 	status &= ~ORGAN_BROKEN
 	return TRUE
 

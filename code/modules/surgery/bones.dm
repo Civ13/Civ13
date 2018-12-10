@@ -17,7 +17,7 @@
 		if (!hasorgans(target))
 			return FALSE
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && affected.name != "head" && affected.open >= 2 && affected.stage == FALSE
+		return affected && affected.name != "head" && affected.open >= 2
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -31,13 +31,15 @@
 		if (affected.status & ORGAN_BROKEN)
 			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name] in place with \the [tool].</span>", \
 				"<span class = 'notice'>You set the bone in [target]'s [affected.name] in place with \the [tool].</span>")
+			for (var/datum/wound/W in affected.wounds)
+				if (!W.internal && W.damage_type != BURN)
+					affected.fracturetimer += W.damage
+			affected.fracturetimer = min(affected.fracturetimer, 90)
 			affected.status &= ~ORGAN_BROKEN
 			affected.status &= ~ORGAN_SPLINTED
 			affected.perma_injury = 0
 			affected.damage = 0
 			affected.stage = FALSE
-			if (config.bones_can_break && affected.brute_dam >= affected.min_broken_damage * config.organ_health_multiplier)
-				affected.brute_dam = (affected.min_broken_damage * config.organ_health_multiplier)-5
 		else
 			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name]<span class = 'red'>in the WRONG place with \the [tool].</span></span>", \
 				"<span class = 'notice'>You set the bone in [target]'s [affected.name]<span class = 'red'> in the WRONG place with \the [tool].</span></span>")
@@ -64,7 +66,7 @@
 		if (!hasorgans(target))
 			return FALSE
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		return affected && affected.name == "head" && affected.open >= 2 && affected.stage == FALSE
+		return affected && affected.name == "head" && affected.open >= 2
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		user.visible_message("[user] is beginning to piece together [target]'s skull with \the [tool]."  , \

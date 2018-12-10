@@ -109,9 +109,6 @@ var/list/gamemode_cache = list()
 	//so that it's similar to HALLOSS. Lowered it a bit since hitting paincrit takes much longer to wear off than a halloss stun.
 	var/organ_damage_spillover_multiplier = 0.5
 
-	var/bones_can_break = 1
-	var/limbs_can_break = 1
-
 	var/no_click_cooldown = FALSE
 
 	var/simultaneous_pm_warning_timeout = 100
