@@ -354,7 +354,7 @@ var/global/chicken_count = FALSE
 	icon_dead = "camel_dead"
 	icon_gib = "camel_dead"
 	speak = list("MMMMMHM","brooo","BRBRBRBRR!")
-	speak_emote = list("grunts","moos hauntingly")
+	speak_emote = list("grunts")
 	emote_hear = list("grunts")
 	emote_see = list("shakes its head")
 	speak_chance = TRUE
@@ -381,7 +381,8 @@ var/global/chicken_count = FALSE
 			content_size += O.w_class
 			visible_message("[user] places \the [O] on the camel's back.","You put \the [O] on the camel's back.")
 			packed_items += O
-			qdel(O)
+			user.drop_from_inventory(O)
+			O.forceMove(locate(0,0,0))
 			packed = TRUE
 			update_icons()
 	else
@@ -410,11 +411,11 @@ var/global/chicken_count = FALSE
 		else
 			for (var/obj/item/ITS in packed_items)
 				if (ITS.name == choice1)
-					new ITS.type (usr.loc)
+					ITS.loc = locate(usr.x,usr.y,usr.z)
+					packed_items -= ITS
 					visible_message("[usr] removes \the [ITS] from the camel's back.","You remove \the [ITS] from the camel's back.")
 					content_size -= ITS.w_class
-					packed_items -= ITS
-					update_icons()
 					if (!content_size)
 						packed = FALSE
+						update_icons()
 					return

@@ -38,7 +38,9 @@
 	else
 		overlays.Cut()
 		overlays += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty")
-
+	if (stat == DEAD)
+		overlays.Cut()
+		overlays += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_dead")
 /mob/living/simple_animal/horse/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
 	if (ride == FALSE && isnull(rider) && M == user)
 		var/mob/living/carbon/human/MM = M
