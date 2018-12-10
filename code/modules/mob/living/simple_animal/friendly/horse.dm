@@ -20,26 +20,28 @@
 	attacktext = "kicked"
 	health = 120
 	mob_size = MOB_LARGE
+	layer = 3.99
 	a_intent = I_HURT
 	var/ride = FALSE
 	var/mob/living/carbon/human/rider = null
 	var/image/cover_overlay = null
+	var/image/cover_overlay2 = null
 
 /mob/living/simple_animal/horse/New()
 	..()
 	cover_overlay = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty", "layer" = MOB_LAYER - 0.01)
+	cover_overlay2 = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_riding", "layer" = 4.15)
+	overlays.Cut()
+	overlays += cover_overlay
 /mob/living/simple_animal/horse/update_icons()
 	..()
-	if (ride)
-		overlays.Cut()
-		overlays += cover_overlay
-		overlays += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_riding", "layer" = 4.15)
+	if (ride && !(cover_overlay2 in overlays))
+		overlays += cover_overlay2
 	else
-		overlays.Cut()
-		overlays += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty" "layer" = MOB_LAYER - 0.01)
+		overlays -= cover_overlay2
 	if (stat == DEAD)
 		overlays.Cut()
-		overlays += image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_dead" "layer" = MOB_LAYER - 0.01)
+		overlays += cover_overlay
 /mob/living/simple_animal/horse/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
 	if (ride == FALSE && isnull(rider) && M == user)
 		var/mob/living/carbon/human/MM = M
