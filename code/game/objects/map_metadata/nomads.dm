@@ -153,6 +153,7 @@
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
 			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 			if (count > age1_lim && world.time > 36000)
+				world << "<big>The world has advanced into the Bronze Age!</big>"
 				age = "313 B.C."
 				set_ordinal_age()
 				age1_done = TRUE
@@ -164,6 +165,7 @@
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
 			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 			if (count > age2_lim && world.time >= age2_timer)
+				world << "<big>The world has advanced into the Medieval Age!</big>"
 				age = "1013"
 				set_ordinal_age()
 				age2_done = TRUE
@@ -175,6 +177,7 @@
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
 			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 			if (count > age3_lim && world.time >= age3_timer)
+				world << "<big>The world has advanced into the Imperial Age!</big>"
 				age = "1713"
 				set_ordinal_age()
 				age3_done = TRUE
