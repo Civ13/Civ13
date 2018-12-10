@@ -26,14 +26,14 @@
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
 	research_active = TRUE
-	age1_lim = 110
+	age1_lim = 90
 	age1_done = 0
 	age1_top = 35
-	age2_lim = 170
+	age2_lim = 150
 	age2_done = 0
 	age2_timer = 40000
 	age2_top = 65
-	age3_lim = 300
+	age3_lim = 240
 	age3_done = 0
 	age3_timer = 42000
 	nomads = TRUE

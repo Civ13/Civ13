@@ -28,7 +28,7 @@
 	research_active = TRUE
 	age1_lim = 90
 	age1_done = 0
-	age2_lim = 140
+	age2_lim = 150
 	age2_done = 0
 	age3_lim = 240
 	age3_done = 0
