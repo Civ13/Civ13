@@ -238,12 +238,6 @@
 		else
 			return capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_name(gender)
 
 /datum/species/proc/get_random_english_name(var/gender, var/jew)
 	if (!name_language)
@@ -252,12 +246,6 @@
 		else
 			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_english_name(gender)
 
 /datum/species/proc/get_random_carib_name(var/gender, var/jew)
 	if (!name_language)
@@ -266,12 +254,6 @@
 		else
 			return capitalize(pick(first_names_male_carib))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_carib_name(gender)
 
 /datum/species/proc/get_random_french_name(var/gender, var/jew)
 	if (!name_language)
@@ -280,12 +262,6 @@
 		else
 			return capitalize(pick(first_names_male_french)) + " " + capitalize(pick(last_names_french, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_french_name(gender)
 
 /datum/species/proc/get_random_portuguese_name(var/gender, var/jew)
 	if (!name_language)
@@ -294,12 +270,6 @@
 		else
 			return capitalize(pick(first_names_male_portuguese)) + " " + capitalize(pick(last_names_portuguese, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_portuguese_name(gender)
 
 /datum/species/proc/get_random_spanish_name(var/gender, var/jew)
 	if (!name_language)
@@ -308,12 +278,6 @@
 		else
 			return capitalize(pick(first_names_male_spanish)) + " " + capitalize(pick(last_names_spanish, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_spanish_name(gender)
 
 /datum/species/proc/get_random_dutch_name(var/gender, var/jew)
 	if (!name_language)

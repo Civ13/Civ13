@@ -3,7 +3,11 @@
 	faction = "Station"
 
 /datum/job/civilian/give_random_name(var/mob/living/carbon/human/H)
-	H.give_random_civ_name()
+	if (is_civilizations || is_nomad)
+		H.name = H.species.get_random_name(H.gender)
+		H.real_name = H.name
+	else
+		H.give_random_civ_name()
 
 /mob/living/carbon/human/proc/give_random_civ_name()
 	name = species.get_random_english_name(gender)

@@ -331,8 +331,8 @@ var/global/datum/controller/occupations/job_master
 		// get our new real name based on jobspecific language ( and more
 		job.update_character(H)
 
-//		if (names_used[H.real_name])
-		job.give_random_name(H)
+		if (names_used[H.real_name])
+			job.give_random_name(H)
 
 		names_used[H.real_name] = TRUE
 
