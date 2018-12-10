@@ -100,6 +100,11 @@
 	plant = "cotton"
 	color = "#e4e0dc"
 
+/obj/item/stack/farming/seeds/grapes
+	name = "grape seeds"
+	plant = "grapes"
+	color = "#23232d"
+
 /obj/structure/farming/plant
 	name = "plant"
 	desc = "a generic plant."
@@ -204,6 +209,12 @@
 	icon_state = "cotton-grow1"
 	plant = "cotton"
 	harvest_verb = "pick"
+
+/obj/structure/farming/plant/grapes
+	name = "grapes"
+	desc = "a grape vine plant."
+	icon_state = "grapes-grow1"
+	plant = "grapes"
 
 /obj/structure/farming/plant/tree
 	name = "tree"

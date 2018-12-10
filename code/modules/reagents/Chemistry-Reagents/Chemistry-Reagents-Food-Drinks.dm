@@ -380,7 +380,7 @@
 /datum/reagent/drink/grapejuice
 	name = "Grape Juice"
 	id = "grapejuice"
-	description = "It's grrrrrape!"
+	description = "It's grapejuice!"
 	taste_description = "grapes"
 	color = "#863333"
 

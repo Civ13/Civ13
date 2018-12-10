@@ -89,7 +89,19 @@
 				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
 				label_text = tmp_label
 				update_name_label()
+		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes))
 
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the grapes, producing grapejuice."
+			reagents.add_reagent("grapejuice", 5)
+			qdel(W)
+			return
 	proc/update_name_label()
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		if (label_text == "")

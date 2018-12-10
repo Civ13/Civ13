@@ -110,6 +110,10 @@
 					name = "Tea Leaves"
 					desc = "Mix with hot water."
 					center_of_mass = list("x"=16, "y"=6)
+				if ("flour")
+					name = "flour sack"
+					desc = "A sack of wheat flour."
+					center_of_mass = list("x"=16, "y"=6)
 				else
 					name = "Misc Condiment Bottle"
 					if (reagents.reagent_list.len==1)

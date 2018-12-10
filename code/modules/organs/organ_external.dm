@@ -52,7 +52,6 @@
 	var/stage = FALSE
 	var/cavity = FALSE
 	var/sabotaged = FALSE // If a prosthetic limb is emagged, it will detonate when it fails.
-	var/encased       // Needs to be opened with a saw to access the organs.
 	var/list/implants = list()
 	var/wound_update_accuracy = TRUE 	// how often wounds should be updated, a higher number means less often
 	var/joint = "joint"   // Descriptive string used in dislocation.
@@ -1069,7 +1068,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 //	gendered_icon = TRUE
 	cannot_amputate = TRUE
 	parent_organ = null
-	encased = "ribcage"
 
 /obj/item/organ/external/groin
 	name = "lower body"
@@ -1197,7 +1195,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "jaw"
 	amputation_point = "neck"
 //	gendered_icon = TRUE
-	encased = "skull"
 	var/list/teeth_list() = list()
 	var/max_teeth = 32
 

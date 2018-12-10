@@ -90,3 +90,68 @@
 			filled -= 1
 			icon_state = "wood_drier[filled]"
 			return
+
+/obj/item/weapon/starterjar
+	name = "fermentation starter jar"
+	icon = 'icons/obj/drinks.dmi'
+	desc = "A glass jar, used to mulitply yeast."
+	icon_state = "jar0"
+	item_state = "beaker"
+	var/fermenting = 0
+	var/fermenting_timer = 0
+	var/fermenting_contents = 0
+/obj/item/weapon/starterjar/New()
+	..()
+
+/obj/item/weapon/starterjar/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (fermenting != 0)
+		user << "This jar already has a starter culture inside!"
+		return
+	if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/flour))
+		user << "You add flour to the jar."
+		fermenting = 1
+		icon_state = "jar1"
+		fermenting_timer = world.time + 1800
+		qdel(O)
+		fermenting_process()
+		return
+
+	else if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/enzyme))
+		user << "You add some yeast to the jar."
+		fermenting = 2
+		fermenting_contents++
+		icon_state = "jar2"
+		qdel(O)
+		yeast_growth()
+		return
+	else
+		..()
+
+/obj/item/weapon/starterjar/proc/fermenting_process()
+	if (world.time >= fermenting_timer)
+		visible_message("The flour in the jar ferments.")
+		fermenting = 2
+		fermenting_contents = 1
+		icon_state = "jar2"
+		yeast_growth()
+	else
+		spawn(100)
+			fermenting_process()
+
+/obj/item/weapon/starterjar/proc/yeast_growth()
+	if (fermenting_contents > 0)
+		spawn(1800)
+			if (fermenting_contents > 0 && fermenting_contents < 5)
+				fermenting_contents++
+			yeast_growth()
+
+/obj/item/weapon/starterjar/attack_self(var/mob/living/carbon/human/user as mob)
+	if (fermenting == 2 && fermenting_contents > 0)
+		user << "You take some yeast out of the jar."
+		new/obj/item/weapon/reagent_containers/food/condiment/enzyme(user.loc)
+		fermenting_contents--
+		if (fermenting_contents == 0)
+			fermenting = 0
+			icon_state = "jar0"
+	else
+		..()
