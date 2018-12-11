@@ -49,10 +49,11 @@
 			qdel(L)
 			return
 	else if (istype(O, /obj/item/flashlight/lantern))
+		var/obj/item/flashlight/lantern/LT = O
 		user << "You tie \the [O] to \the [src]."
-		O.anchored = TRUE
-		O.icon_state = "lantern-on_pole"
-		O.on = TRUE
+		LT.anchored = TRUE
+		LT.icon_state = "lantern-on_pole"
+		LT.on = TRUE
 		attached_ob = O
 	else
 		..()
@@ -60,10 +61,12 @@
 /obj/structure/barricade/wood_pole/Destroy()
 	..()
 	if (attached_ob != null)
-		attached_ob.anchored = FALSE
-		attached_ob.icon_state = "lantern"
-		attached_ob.on = FALSE
-		attached_ob = null
+		if (istype(attached_ob, /obj/item/flashlight/lantern))
+			var/obj/item/flashlight/lantern/LT = attached_ob
+			LT.anchored = FALSE
+			LT.icon_state = "lantern"
+			LT.on = FALSE
+			attached_ob = null
 
 /obj/structure/grille/logfence
 	name = "palisade"
