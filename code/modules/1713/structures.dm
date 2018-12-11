@@ -11,6 +11,13 @@
 	var/attached = "none"
 	var/obj/attached_ob = null
 
+/obj/structure/barricade/wood_pole/New()
+	..()
+	name = "wood pole"
+	desc = "A simple wood pole. You can attack stuff to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wood_pole_good"
+
 /obj/structure/grille/fence
 	name = "fence"
 	desc = "An old wooden fence."
@@ -55,6 +62,7 @@
 		LT.icon_state = "lantern-on_pole"
 		LT.on = TRUE
 		attached_ob = O
+		O.forceMove(loc)
 	else
 		..()
 
