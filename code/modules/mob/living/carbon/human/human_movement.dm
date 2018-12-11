@@ -89,10 +89,10 @@
 
 	next_calculate_tally = world.time + 10
 
-	return tally
+	if (riding == TRUE && !isnull(riding_mob))
+		tally = 0
 
-/mob/living/carbon/human/Process_Spacemove(var/check_drift = FALSE)
-	return FALSE
+	return tally
 
 /mob/living/carbon/human/slip_chance(var/prob_slip = 5)
 	if (!..())

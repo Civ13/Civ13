@@ -703,10 +703,17 @@
 
 		if (move_delay > world.time)
 			move_delay -= world.time
+		if (istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = src
+			if (HH.riding == TRUE && !isnull(HH.riding_mob))
+				move_delay = 0.5
+			else
+				move_delay /= mob.movement_speed_multiplier
+		else
 			move_delay /= mob.movement_speed_multiplier
 			if (ordinal)
 				move_delay *= ROOT2_FAST
-			move_delay += world.time
+		move_delay += world.time
 
 		return .
 
@@ -806,31 +813,6 @@
 
 /mob/proc/Post_Incorpmove()
 	return
-
-///Process_Spacemove
-///Called by /client/Move()
-///For moving in space
-///Return TRUE for movement FALSE for none
-/mob/proc/Process_Spacemove(var/check_drift = FALSE)
-
-/*	if (!Check_Dense_Object()) //Nothing to push off of so end here
-		update_floating(0)
-		return FALSE */
-
-	update_floating(1)
-
-	if (restrained()) //Check to see if we can do things
-		return FALSE
-
-	//Check to see if we slipped
-	if (prob(slip_chance(5)) && !buckled)
-		src << "<span class='warning'>You slipped!</span>"
-		inertia_dir = last_move
-		step(src, inertia_dir)
-		return FALSE
-	//If not then we can reset inertia and move
-	inertia_dir = FALSE
-	return TRUE
 
 /mob/proc/Check_Dense_Object() //checks for anything to push off in the vicinity. also handles magboots on gravity-less floors tiles
 

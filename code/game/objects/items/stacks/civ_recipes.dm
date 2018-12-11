@@ -494,4 +494,4 @@
 
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
-	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)

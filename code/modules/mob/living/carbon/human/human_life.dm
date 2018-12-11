@@ -659,10 +659,6 @@
 			take_overall_damage(1,1)
 		else //heal in the dark
 			heal_overall_damage(1,1)
-/*
-	// nutrition decrease
-	if (nutrition > 0 && stat != 2)
-		nutrition = max (0, nutrition - species.hunger_factor)*/
 
 	// TODO: stomach and bloodstream organ.
 	handle_trace_chems()

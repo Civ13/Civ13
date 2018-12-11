@@ -2,7 +2,7 @@
 	// epoch = required players
 
 	var/list/epochs = list(
-		"5000 B.C." = 0,
+//		"5000 B.C." = 0,
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,

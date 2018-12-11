@@ -382,7 +382,7 @@
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return
-		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)))
+		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 			if (do_after(user, 70, user.loc))
 				ChangeTurf(/turf/floor/dirt/ploughed)
 				return

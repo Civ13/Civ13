@@ -34,14 +34,6 @@
 
 /mob/living/carbon/Move(NewLoc, direct)
 	..()
-	/*
-	if (.)
-		if (nutrition && stat != 2)
-			nutrition -= DEFAULT_HUNGER_FACTOR/10
-			if (m_intent == "run")
-				nutrition -= DEFAULT_HUNGER_FACTOR/10
-		if ((FAT in mutations) && m_intent == "run" && bodytemperature <= 360)
-			bodytemperature += 2*/
 
 		// Moving around increases germ_level faster
 	if (germ_level < GERM_LEVEL_MOVE_CAP && prob(8))
