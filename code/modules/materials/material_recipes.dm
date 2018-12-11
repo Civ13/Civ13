@@ -136,6 +136,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("bed", /obj/structure/bed/wood, 4, _time = 60,_one_per_turf = TRUE, _on_floor = TRUE,),
 			new/datum/stack_recipe("wood crate", /obj/structure/closet/crate/empty, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood pole", /obj/structure/barricade/wood_pole, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("coffin", /obj/structure/closet/coffin, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	if (map.ordinal_age < 2)
 		recipes += new/datum/stack_recipe_list("decoration", list(

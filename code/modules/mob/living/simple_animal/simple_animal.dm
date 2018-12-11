@@ -239,11 +239,6 @@
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/leash) && !(istype(src, /mob/living/simple_animal/hostile)))
-		if (istype(src, /mob/living/simple_animal/horse))
-			var/mob/living/simple_animal/horse/HR = src
-			if (HR.ride)
-				user << "You can't leash this horse, it is being ridden."
-				return
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == FALSE)
 			L.S1 = src
@@ -445,8 +440,17 @@
 	if (following_mob == null)
 		usr << "This animal is not leashed."
 		return
+	else if (istype(following_mob, /obj/structure/grille/fence) || istype(following_mob, /obj/structure/barricade/wood_pole))
+		following_mob = null
+		new/obj/item/weapon/leash(src.loc)
+		usr << "You free the [src]."
+		stop_automated_movement = FALSE
+
+		return
 	else
 		following_mob = null
 		new/obj/item/weapon/leash(src.loc)
 		usr << "You free the [src]."
+		stop_automated_movement = FALSE
+
 		return

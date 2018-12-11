@@ -1,3 +1,16 @@
+/obj/structure/barricade/wood_pole
+	name = "wood pole"
+	desc = "A simple wood pole. You can attack stuff to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wood_pole_good"
+	health = 50
+	maxhealth = 50
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	var/attached = "none"
+	var/obj/attached_ob = null
+
 /obj/structure/grille/fence
 	name = "fence"
 	desc = "An old wooden fence."
@@ -10,6 +23,47 @@
 	..()
 	icon_state = "[rand(1,3)]"
 	color = "#c8c8c8"
+
+/obj/structure/grille/fence/attackby(obj/O as obj, mob/user as mob)
+	if (istype(O, /obj/item/weapon/leash))
+		var/obj/item/weapon/leash/L = O
+		if (L.onedefined == TRUE && (src in range(3,L.S1)))
+			L.S2 = src
+			L.S1.following_mob = src
+			L.S1.stop_automated_movement = TRUE
+			user << "You tie \the [L.S1] to \the [src] with the leash."
+			qdel(L)
+			return
+	else
+		..()
+
+/obj/structure/barricade/wood_pole/attackby(obj/O as obj, mob/user as mob)
+	if (istype(O, /obj/item/weapon/leash))
+		var/obj/item/weapon/leash/L = O
+		if (L.onedefined == TRUE && (src in range(3,L.S1)))
+			L.S2 = src
+			L.S1.following_mob = src
+			L.S1.stop_automated_movement = TRUE
+			user << "You tie \the [L.S1] to \the [src] with the leash."
+			attached = "animal"
+			qdel(L)
+			return
+	else if (istype(O, /obj/item/flashlight/lantern))
+		user << "You tie \the [O] to \the [src]."
+		O.anchored = TRUE
+		O.icon_state = "lantern-on_pole"
+		O.on = TRUE
+		attached_ob = O
+	else
+		..()
+
+/obj/structure/barricade/wood_pole/Destroy()
+	..()
+	if (attached_ob != null)
+		attached_ob.anchored = FALSE
+		attached_ob.icon_state = "lantern"
+		attached_ob.on = FALSE
+		attached_ob = null
 
 /obj/structure/grille/logfence
 	name = "palisade"

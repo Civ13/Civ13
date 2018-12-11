@@ -201,7 +201,8 @@
 			new/datum/stack_recipe("bookcase", /obj/structure/bookcase, 6, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("target practice dummy", /obj/structure/target_practice, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("coffin", /obj/structure/closet/coffin, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("coffin", /obj/structure/closet/coffin, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood pole", /obj/structure/barricade/wood_pole, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else if (current_res[1] >= 14)
 		recipes += new/datum/stack_recipe_list("furniture", list(
 			new/datum/stack_recipe("chair", /obj/structure/bed/chair/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -210,12 +211,14 @@
 			new/datum/stack_recipe("wood crate", /obj/structure/closet/crate/empty, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("bookcase", /obj/structure/bookcase, 6, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("target practice dummy", /obj/structure/target_practice, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood pole", /obj/structure/barricade/wood_pole, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("furniture", list(
 			new/datum/stack_recipe("bed", /obj/structure/bed/wood, 4, _time = 60,_one_per_turf = TRUE, _on_floor = TRUE,),
 			new/datum/stack_recipe("wood crate", /obj/structure/closet/crate/empty, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("table", /obj/structure/table/wood, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood pole", /obj/structure/barricade/wood_pole, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	if (current_res[1] < 47)
 		recipes += new/datum/stack_recipe_list("decoration", list(
