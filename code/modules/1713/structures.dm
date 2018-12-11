@@ -59,8 +59,11 @@
 		var/obj/item/flashlight/lantern/LT = O
 		user << "You tie \the [O] to \the [src]."
 		LT.anchored = TRUE
-		LT.icon_state = "lantern-on_pole"
 		LT.on = TRUE
+		LT.update_icon()
+		LT.icon_state = "lantern-on_pole"
+		LT.on_state = "lantern-on_pole"
+		LT.off_state = "lantern_pole"
 		attached_ob = O
 		user.drop_from_inventory(O)
 		O.forceMove(loc)
@@ -75,6 +78,9 @@
 			LT.anchored = FALSE
 			LT.icon_state = "lantern"
 			LT.on = FALSE
+			LT.on_state = "lantern-on"
+			LT.off_state = "lantern"
+			LT.update_icon()
 			attached_ob = null
 
 /obj/structure/grille/logfence
