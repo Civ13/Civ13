@@ -155,3 +155,102 @@
 			icon_state = "jar0"
 	else
 		..()
+
+
+////////////////////////SEED/COLLECTOR/////////////////////////////////////
+/obj/item/weapon/storage/seed_collector
+	name = "seed collector"
+	icon = 'icons/obj/storage.dmi'
+	desc = "A glass jar, used to mulitply yeast."
+	icon_state = "seed_collector"
+	item_state = "backpack"
+	var/active = FALSE
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 2
+	max_storage_space = 45 // can hold 2 w_class 4 items. 28 let it hold 3
+	can_hold = list(
+		/obj/item/stack/farming/seeds,
+		)
+
+/obj/item/weapon/storage/seed_collector/attack_self(var/mob/living/carbon/human/user as mob)
+	active = TRUE
+	var/total_storage_space = 0
+	for (var/obj/item/I in contents)
+		total_storage_space += I.get_storage_cost() //Adds up the combined w_classes which will be in the storage item if the item is added to it.
+	if (total_storage_space+1 > max_storage_space)
+		user << "<span class='notice'>[src] is too full, make some space.</span>"
+		active = FALSE
+		return
+	if (!(src.loc == user))
+		active = FALSE
+		return
+	else
+		for (var/obj/item/stack/farming/seeds/SD in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/farming/seeds/SDC in contents)
+				if (SDC.type == SD.type)
+					SDC.amount += SD.amount
+					qdel(SD)
+					doneexisting = TRUE
+					user << "You collect the seeds."
+					return
+			if (!doneexisting)
+				SD.forceMove(src)
+				user << "You collect the seeds."
+				return
+
+////////////////////////ORE/COLLECTOR//////////////////////////////////////
+
+/obj/item/weapon/storage/ore_collector
+	name = "ore collector"
+	icon = 'icons/obj/storage.dmi'
+	desc = "A leather bag, used to collect ores."
+	icon_state = "ore_collector"
+	item_state = "backpack"
+	var/active = FALSE
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 3
+	max_storage_space = 28 // can hold 2 w_class 4 items. 28 let it hold 3
+	can_hold = list(
+		/obj/item/stack/ore,
+		/obj/item/stack/material/stone,
+		)
+
+/obj/item/weapon/storage/ore_collector/attack_self(var/mob/living/carbon/human/user as mob)
+	active = TRUE
+	var/total_storage_space = 0
+	for (var/obj/item/I in contents)
+		total_storage_space += I.get_storage_cost() //Adds up the combined w_classes which will be in the storage item if the item is added to it.
+	if (total_storage_space+3 > max_storage_space)
+		user << "<span class='notice'>[src] is too full, make some space.</span>"
+		active = FALSE
+		return
+	if (!(src.loc == user))
+		active = FALSE
+		return
+	else
+		for (var/obj/item/stack/ore/OR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/ore/ORC in contents)
+				if (ORC.type == OR.type)
+					ORC.amount += OR.amount
+					qdel(OR)
+					doneexisting = TRUE
+					user << "You collect the ore."
+			if (!doneexisting)
+				OR.forceMove(src)
+				user << "You collect the ore."
+
+		for (var/obj/item/stack/material/stone/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/stone/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the stone."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the stone."

@@ -43,7 +43,7 @@
 		overlays.Cut()
 		overlays += cover_overlay
 /mob/living/simple_animal/horse/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
-	if (ride == FALSE && isnull(rider) && M == user)
+	if (isnull(rider) && M == user)
 		var/mob/living/carbon/human/MM = M
 		visible_message("<div class='notice'>[M] starts getting on the [src]'s back...</div>","<div class='notice'>You start going on the [src]'s back...</div>")
 		if (do_after(MM, 40, src))
@@ -92,15 +92,16 @@
 
 /mob/living/simple_animal/horse/death()
 	..()
-	if (ride)
+	if (!isnull(rider))
 		visible_message("<div class='danger'>[rider] falls from the horse!</div>","<div class='danger'>You fall from the horse!</div>")
 		rider.riding = FALSE
 		rider.SpinAnimation(5,1)
 		rider.forceMove(locate(x+1,y,z))
 		rider.Weaken(5)
-		rider = null
 		ride = FALSE
 		rider = null
+		overlays.Cut()
+		overlays += cover_overlay
 
 /mob/living/simple_animal/horse/proc/trample(var/mob/living/tmob)
 	if (tmob.stat != DEAD)

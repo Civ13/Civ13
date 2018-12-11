@@ -75,7 +75,7 @@
 	//is there a leader?
 	if (!(map.custom_civs[user.civilization][4] == null))
 		if (!(map.custom_civs[user.civilization][4].real_name == real_name))
-			if (map.custom_civs[user.civilization][4] && map.custom_civs[user.civilization][4].stat > 0)
+			if (map.custom_civs[user.civilization][4] && map.custom_civs[user.civilization][4].stat == 0)
 				user << "You are not the leader of the faction."
 				return
 
