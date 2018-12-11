@@ -33,6 +33,9 @@
 	recipes += new/datum/stack_recipe("quiver", /obj/item/weapon/storage/backpack/quiver, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather satchel", /obj/item/weapon/storage/belt/leather, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather bedroll", /obj/item/weapon/bedroll, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("ore collector", /obj/item/weapon/storage/ore_collector, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("seed collector", /obj/item/weapon/storage/seed_collector, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+
 	if (current_res[1] >= 18)
 		recipes += new/datum/stack_recipe("coin pouch", /obj/item/clothing/accessory/storage/coinpouch, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("leather backpack", /obj/item/weapon/storage/backpack, 6, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -295,7 +298,7 @@
 	if (current_res[1] >= 43)
 		recipes += new/datum/stack_recipe("gravestone", /obj/structure/religious/gravestone, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("totem", /obj/structure/religious/totem, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("stone wall", /obj/covers/stone_wall, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("stone wall", /obj/covers/stone_wall, 8, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("rock barrier wall", /obj/structure/window/sandbag/rock, 3, _time = 70, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 26)
 		recipes += new/datum/stack_recipe("furnace", /obj/structure/furnace/, 10, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
