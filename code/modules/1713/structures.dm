@@ -62,6 +62,7 @@
 		LT.icon_state = "lantern-on_pole"
 		LT.on = TRUE
 		attached_ob = O
+		user.drop_from_inventory(O)
 		O.forceMove(loc)
 	else
 		..()
