@@ -32,7 +32,7 @@
 	..()
 	cover_overlay = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_empty", "layer" = MOB_LAYER - 0.01)
 	cover_overlay2 = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_riding", "layer" = 4.15)
-	cover_overlay3 = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_dead", "layer" = 4)
+	cover_overlay3 = image("icon" = 'icons/mob/animal_96.dmi', "icon_state" = "horse_dead", "layer" = 3.3)
 	overlays.Cut()
 	overlays = list(cover_overlay)
 /mob/living/simple_animal/horse/update_icons()
