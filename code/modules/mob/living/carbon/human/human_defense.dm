@@ -218,7 +218,7 @@ bullet_act
 
 	if (istype(P, /obj/item/projectile/arrow/arrow/fire))
 		if (prob(5))
-			M.fire_stacks += 1
+			fire_stacks += 1
 		IgniteMob()
 	..(P, def_zone)
 
