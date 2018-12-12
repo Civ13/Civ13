@@ -239,5 +239,6 @@ obj/structure/boiling_oil/south
 	..()
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "burning_fire"
+	alpha = 230
 	spawn(230)
 		qdel(src)
