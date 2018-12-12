@@ -9,6 +9,7 @@
 	max_amount = 100
 	singular_name = "seed"
 	color = "#543200"
+	var/plant = "tomato"
 
 /obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"
@@ -105,6 +106,11 @@
 	plant = "grapes"
 	color = "#23232d"
 
+/obj/item/stack/farming/seeds/olives
+	name = "olive seeds"
+	plant = "olives"
+	color = "#343400"
+
 /obj/structure/farming/plant
 	name = "plant"
 	desc = "a generic plant."
@@ -118,6 +124,7 @@
 	var/harvest_verb = "harvest"
 	var/readyStageMin = 7
 	var/readyStageMax = 10
+	var/plant = "tomato"
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
@@ -229,6 +236,12 @@
 	icon_state = "rice-grow1"
 	plant = "rice"
 	harvest_verb = "harvest"
+
+/obj/structure/farming/plant/olives
+	name = "olive"
+	desc = "an olive tree."
+	icon_state = "olives-grow1"
+	plant = "olives"
 
 //stages: 1-6 growth, 7 harvest, 8 dead
 /obj/structure/farming/plant/New()

@@ -30,6 +30,10 @@
 	icon_state = "grapes"
 	color = "#7a378b"
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/olives
+	name = "bunch of olives"
+	icon_state = "olives"
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/melon
 	name = "melon"
 	icon_state = "melon"

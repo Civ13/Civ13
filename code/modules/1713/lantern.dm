@@ -28,20 +28,14 @@
 			var/regamt = W.reagents.get_reagent_amount("petroleum")
 			W.reagents.remove_reagent("petroleum", regamt)
 			fuel += (regamt*60)
-			user << "You refuel the lantern."
+			user << "You refuel the lantern with petroleum."
 			return
-/*
-	if (istype(W, /obj/item/stack/ore/coal))
-		fuel += (180)*W.amount
-		user << "You refuel the [src]."
-		qdel(W)
-		return
-	else if //oliveoil
-		fuel += (60)*W.amount
-		user << "You refuel the [src]."
-		qdel(W)
-		return
-*/
+		else if (W.reagents.has_reagent("olive_oil", 1))
+			var/regamt = W.reagents.get_reagent_amount("olive_oil")
+			W.reagents.remove_reagent("olive_oil", regamt)
+			fuel += (regamt*60)
+			user << "You refuel the lantern with olive oil."
+			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)
 	if (anchored)
 		if (on)

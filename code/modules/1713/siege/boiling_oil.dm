@@ -229,8 +229,9 @@ obj/structure/boiling_oil/south
 		qdel(src)
 
 /obj/effect/burning_oil
+	name = "fire"
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "burning_fire"
+	icon_state = "burning_fire2"
 	layer = TURF_LAYER+2.2
 	anchored = TRUE
 	density = FALSE
@@ -238,7 +239,61 @@ obj/structure/boiling_oil/south
 /obj/effect/burning_oil/New()
 	..()
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "burning_fire"
+	icon_state = "burning_fire2"
 	alpha = 230
+	burningproc()
 	spawn(230)
 		qdel(src)
+
+/obj/effect/burning_oil/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		var/obj/item/weapon/reagent_containers/CT = W
+		for (var/datum/reagent/R in CT.reagents.reagent_list)
+			if (istype(R, /datum/reagent/water))
+				visible_message("[user] empties \the [CT] into the fire!")
+				if (prob(max(R.volume, 100)))
+					qdel(src)
+					visible_message("The fire is put out!")
+				CT.reagents.clear_reagents()
+
+/obj/effect/burning_oil/proc/burningproc()
+	spawn(25)
+		for (var/mob/living/L in src.loc)
+			L.IgniteMob()
+
+		for (var/obj/effect/decal/cleanable/blood/oil/O in src.loc)
+			spawn(70)
+				qdel(O)
+		for (var/turf/floor/plating/grass/G in src.loc)
+			spawn(90)
+				G.ChangeTurf(/turf/floor/dirt/burned)
+		for (var/obj/effect/decal/cleanable/blood/oil/OL in range(1, get_turf(src)))
+			if (prob(15))
+				new/obj/effect/burning_oil(OL.loc)
+		for (var/obj/OB in src.loc)
+			if (prob(35) && !istype(OB, /obj/effect/decal/cleanable/blood/oil) && OB.flammable)
+				OB.fire_act(500)
+
+		for (var/turf/floor/plating/grass/GR in range(1, get_turf(src)))
+			if (prob(5))
+				new/obj/effect/burning_oil(GR.loc)
+		burningproc()
+
+/obj/effect/decal/cleanable/blood/oil
+	name = "oil"
+	desc = "It's black and greasy."
+	basecolor="#030303"
+
+/obj/effect/decal/cleanable/blood/oil/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/flashlight))
+		var/obj/item/flashlight/OO = W
+		if (OO.on)
+			visible_message("[user] sets the [src] on fire!","You set the [src] on fire!")
+			new/obj/effect/burning_oil(src.loc)
+			return
+/obj/effect/decal/cleanable/blood/oil/dry()
+	return
+
+/obj/effect/decal/cleanable/blood/oil/streak
+	random_icon_states = list("mgibbl1", "mgibbl2", "mgibbl3", "mgibbl4", "mgibbl5")
+	amount = 2

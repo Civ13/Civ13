@@ -214,7 +214,7 @@
 			//0.1% prob
 			if (!"plague" in disease_immunity)
 				if (prob(1))
-					if (prob(10))
+					if (prob(50))
 						disease = TRUE
 						disease_type = "plague"
 						disease_progression = 0
@@ -238,11 +238,10 @@
 			//0.005%
 			if (prob(1))
 				if (prob(1))
-					if (prob(50))
-						disease = TRUE
-						disease_type = "flu"
-						disease_progression = 0
-						disease_treatment = 0
+					disease = TRUE
+					disease_type = "flu"
+					disease_progression = 0
+					disease_treatment = 0
 	..()
 
 	// recover stamina

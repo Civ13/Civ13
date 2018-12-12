@@ -14,6 +14,10 @@
 				return
 		if (C.reagents.total_volume)
 			visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
+			if (C.reagents.has_reagent("petroleum", 5))
+				new/obj/effect/decal/cleanable/blood/oil(src.loc)
+			else if (C.reagents.has_reagent("olive_oil", 10))
+				new/obj/effect/decal/cleanable/blood/oil(src.loc)
 			C.reagents.clear_reagents()
 			C.update_icon()
 		return
@@ -364,6 +368,14 @@
 			else if (istype(C, /obj/item/stack/farming/seeds/grapes))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/grapes(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/olives))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/olives(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else

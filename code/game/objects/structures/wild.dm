@@ -215,7 +215,7 @@
 	else
 		..()
 /obj/structure/wild/palm/fire_act(temperature)
-	if (prob(15 * (temperature/500)))
+	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 
@@ -381,7 +381,7 @@
 	maxhealth = 200
 
 /obj/structure/wild/jungle/fire_act(temperature)
-	if (prob(15 * (temperature/500)))
+	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 
