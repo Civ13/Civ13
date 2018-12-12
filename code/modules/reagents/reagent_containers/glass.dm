@@ -26,6 +26,8 @@
 		/obj/item/weapon/storage/secure/safe,
 		/mob/living/simple_animal/cow,
 		/mob/living/simple_animal/goat,
+		/obj/structure/oil_spring,
+		/obj/item/flashlight/lantern,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'

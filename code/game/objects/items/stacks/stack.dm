@@ -339,6 +339,10 @@
 		produced = 3
 	if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
+	if (recipe.result_type == /obj/item/stack/money/silvercoin)
+		produced = 200
+	if (recipe.result_type == /obj/item/stack/money/goldcoin)
+		produced = 100
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)

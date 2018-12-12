@@ -226,32 +226,7 @@
 	taste_description = "metal"
 	reagent_state = SOLID
 	color = "#664B63"
-/*
-/datum/reagent/thermite
-	name = "Thermite"
-	id = "thermite"
-	description = "Thermite produces an aluminothermic reaction known as a thermite reaction. Can be used to melt walls."
-	taste_description = "sweet tasting metal"
-	reagent_state = SOLID
-	color = "#673910"
-	touch_met = 50
 
-/datum/reagent/thermite/touch_turf(var/turf/T)
-	if (volume >= 5)
-		if (istype(T, /turf/wall))
-			var/turf/wall/W = T
-			W.thermite = TRUE
-			W.overlays += image('icons/effects/effects.dmi',icon_state = "#673910")
-			remove_self(5)
-	return
-
-/datum/reagent/thermite/touch_mob(var/mob/living/L, var/amount)
-	if (istype(L))
-		L.adjust_fire_stacks(amount / 5)
-
-/datum/reagent/thermite/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.adjustFireLoss(3 * removed)
-*/
 /datum/reagent/space_cleaner
 	name = "Space cleaner"
 	id = "cleaner"
@@ -396,3 +371,15 @@
 
 /datum/reagent/luminol/touch_mob(var/mob/living/L)
 	L.reveal_blood()
+
+/datum/reagent/petroleum
+	name = "Petroleoum"
+	id = "petroleum"
+	description = "Unrefined crude oil. Sticky and flammable."
+	taste_description = "oil"
+	reagent_state = LIQUID
+	color = "#2C2416"
+
+/datum/reagent/nitroglycerin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.adjustToxLoss(20)
