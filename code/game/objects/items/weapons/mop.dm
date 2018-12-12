@@ -11,7 +11,7 @@
 	attack_verb = list("mopped", "bashed", "bludgeoned", "whacked")
 	var/mopping = FALSE
 	var/mopcount = FALSE
-
+	flammable = TRUE
 
 /obj/item/weapon/mop/New()
 	create_reagents(30)

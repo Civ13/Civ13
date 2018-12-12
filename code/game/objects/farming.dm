@@ -125,6 +125,7 @@
 	var/readyStageMin = 7
 	var/readyStageMax = 10
 	var/plant = "tomato"
+	flammable = TRUE
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"

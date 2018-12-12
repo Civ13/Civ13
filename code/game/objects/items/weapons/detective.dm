@@ -19,7 +19,7 @@
 	can_be_placed_into = null
 	flags = OPENCONTAINER | NOBLUDGEON
 	dropsound = null
-
+	flammable = TRUE
 	var/on_fire = FALSE
 	var/burn_time = BURNING_RAG_LIFE_TICKS //if the rag burns for too long it turns to ashes
 

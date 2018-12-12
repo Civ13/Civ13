@@ -76,6 +76,7 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "purplecomb"
 	item_state = "purplecomb"
+	flammable = TRUE
 
 /obj/item/weapon/haircomb/attack_self(mob/user)
 	user.visible_message("<span class='notice'>[user] uses [src] to comb their hair with incredible style and sophistication. What a [user.gender == FEMALE ? "lady" : "guy"].</span>")

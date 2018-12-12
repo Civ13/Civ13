@@ -30,7 +30,7 @@
 	fire_delay = 5
 	muzzle_flash = FALSE
 	value = 10
-
+	flammable = TRUE
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet

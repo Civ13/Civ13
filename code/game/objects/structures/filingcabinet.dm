@@ -16,7 +16,7 @@
 	icon_state = "filingcabinet"
 	density = TRUE
 	anchored = TRUE
-
+	flammable = TRUE
 
 /obj/structure/filingcabinet/chestdrawer
 	name = "chest drawer"

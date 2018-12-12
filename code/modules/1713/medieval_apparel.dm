@@ -220,6 +220,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 30, bullet = 15, laser = 10,energy = 15, bomb = 20, bio = 20, rad = FALSE)
 	value = 20
+	flammable = TRUE
 /obj/item/clothing/suit/armor/medieval/chainmail
 	name = "chainmail"
 	desc = "Wearable armor made of several small interlinked chains."

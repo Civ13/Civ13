@@ -19,6 +19,7 @@
 	layer = 2.8
 	var/framestack = /obj/item/stack/rods
 	var/framestackamount = 2
+	flammable = TRUE
 
 /obj/structure/table_frame/attackby(obj/item/I, mob/user, params)
 	if (istype(I, /obj/item/weapon/wrench))

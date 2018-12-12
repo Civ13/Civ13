@@ -12,6 +12,7 @@
 	var/list/restricted_accessory_slots
 
 	dropsound = 'sound/effects/drop_clothing.ogg'
+	flammable = TRUE
 
 //Updates the icons of the mob wearing the clothing item, if any.
 /obj/item/clothing/proc/update_clothing_icon()

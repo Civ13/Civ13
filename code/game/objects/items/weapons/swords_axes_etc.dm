@@ -16,7 +16,7 @@
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_PAINFUL
 	var/weakens = 1
-
+	flammable = TRUE
 /obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
 	return ..()
 

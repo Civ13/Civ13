@@ -2,7 +2,8 @@
 	name = "petroleum spring"
 	desc = "A hole on the ground where petroleum reaches the surface. Sticky!"
 	icon = 'icons/obj/watercloset.dmi'
-	icon_state = "oil_spring"
+	icon_state = "oil_spring1"
+	anchored = TRUE
 	var/counter = 1
 	var/timeout = 0
 
@@ -20,6 +21,7 @@
 			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 			user.setClickCooldown(20)
 			counter--
+			update_icon()
 			timeout = world.time + 600
 			refill()
 			return
@@ -31,13 +33,22 @@
 			timeout = world.time + 1800
 			refill()
 			oil_explode()
+			update_icon()
 			qdel(O)
 			return
+
+/obj/structure/oil_spring/update_icon()
+	..()
+	if (counter > 0)
+		icon_state = "oil_spring1"
+	else
+		icon_state = "oil_spring0"
 
 /obj/structure/oil_spring/proc/refill()
 	if (world.time >= timeout)
 		if (counter < 1)
 			counter++
+			update_icon()
 			return
 	else
 		spawn(50)
@@ -99,3 +110,80 @@
 		LS33.IgniteMob()
 	new/obj/effect/burning_oil(locate(x+1,y-1,z))
 	return
+
+
+/obj/effect/burning_oil
+	name = "fire"
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "burning_fire2"
+	layer = TURF_LAYER+2.2
+	anchored = TRUE
+	density = FALSE
+
+/obj/effect/burning_oil/New()
+	..()
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "burning_fire2"
+	alpha = 230
+	burningproc()
+	set_light(2)
+	spawn(230)
+		set_light(0)
+		qdel(src)
+
+/obj/effect/burning_oil/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		var/obj/item/weapon/reagent_containers/CT = W
+		for (var/datum/reagent/R in CT.reagents.reagent_list)
+			if (istype(R, /datum/reagent/water))
+				visible_message("[user] empties \the [CT] into the fire!")
+				if (prob(max(R.volume, 100)))
+					qdel(src)
+					visible_message("The fire is put out!")
+				CT.reagents.clear_reagents()
+
+/obj/effect/burning_oil/proc/burningproc()
+	spawn(25)
+		for (var/mob/living/L in src.loc)
+			L.IgniteMob()
+
+		for (var/obj/effect/decal/cleanable/blood/oil/O in src.loc)
+			spawn(70)
+				qdel(O)
+
+		for (var/turf/floor/plating/grass/G in src.loc)
+			spawn(90)
+				G.ChangeTurf(/turf/floor/dirt/burned)
+
+		for (var/obj/effect/decal/cleanable/blood/oil/OL in range(1, get_turf(src)))
+			if (prob(15))
+				new/obj/effect/burning_oil(OL.loc)
+
+		for (var/obj/OB in src.loc)
+			if (prob(35) && !istype(OB, /obj/effect/decal/cleanable/blood/oil) && OB.flammable)
+				OB.fire_act(700)
+
+		for (var/turf/floor/plating/grass/GR in range(1, get_turf(src)))
+			if (prob(5))
+				new/obj/effect/burning_oil(GR.loc)
+
+		burningproc()
+
+/obj/effect/decal/cleanable/blood/oil
+	name = "oil"
+	desc = "It's black and greasy."
+	basecolor="#030303"
+
+/obj/effect/decal/cleanable/blood/oil/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/flashlight))
+		var/obj/item/flashlight/OO = W
+		if (OO.on)
+			visible_message("[user] sets the [src] on fire!","You set the [src] on fire!")
+			new/obj/effect/burning_oil(src.loc)
+			return
+/obj/effect/decal/cleanable/blood/oil/dry()
+	return
+
+/obj/effect/decal/cleanable/blood/oil/streak
+	random_icon_states = list("mgibbl1", "mgibbl2", "mgibbl3", "mgibbl4", "mgibbl5")
+	amount = 2

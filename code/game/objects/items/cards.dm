@@ -8,6 +8,7 @@
 	w_class = 2
 	icon = 'icons/obj/playing_cards.dmi'
 	var/list/cards = list()
+	flammable = TRUE
 
 /obj/item/weapon/deck/holder
 	name = "card box"

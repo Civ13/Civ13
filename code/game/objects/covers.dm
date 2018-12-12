@@ -20,7 +20,7 @@
 	var/wall = FALSE
 	var/wood = TRUE
 	var/onfire = FALSE
-
+	flammable = TRUE
 //	invisibility = 101 //starts invisible
 
 
@@ -41,7 +41,7 @@
 	amount = 0
 	wood = FALSE
 	layer = 2.1
-
+	flammable = FALSE
 /obj/covers/sandstone
 	name = "sandstone floor"
 	icon = 'icons/turf/floors.dmi'
@@ -51,7 +51,7 @@
 	amount = 0
 	wood = FALSE
 	layer = 2.1
-
+	flammable = FALSE
 /obj/covers/wood_ship
 	name = "wood floor"
 	icon_state = "wood_ship"
@@ -87,7 +87,7 @@
 	health = 300
 	wood = FALSE
 	wall = TRUE
-
+	flammable = FALSE
 /obj/covers/dirt_wall
 	name = "dirt wall"
 	desc = "A dirt wall."
@@ -102,7 +102,7 @@
 	health = 90
 	wood = FALSE
 	wall = TRUE
-
+	flammable = FALSE
 /obj/covers/straw_wall
 	name = "straw wall"
 	desc = "A straw wall. Looks flimsy."
@@ -131,6 +131,7 @@
 	health = 110
 	wood = FALSE
 	wall = TRUE
+	flammable = FALSE
 /obj/covers/dirt_wall/blocks/incomplete
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
@@ -146,7 +147,7 @@
 	var/stage = 1
 	wood = FALSE
 	wall = TRUE
-
+	flammable = FALSE
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/sandbag))
 		if (stage == 3)
@@ -211,6 +212,7 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired2"
 	w_class = 2.0
+	flammable = TRUE
 
 /obj/covers/repairedfloor
 	name = "repaired floor"
@@ -218,6 +220,7 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
 	layer = 2.09
+	flammable = TRUE
 
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
@@ -358,6 +361,7 @@
 	var/onfire = FALSE
 	invisibility = 101
 	var/oldname = "roofed building"
+	flammable = TRUE
 
 /obj/roof/New()
 	..()
@@ -386,6 +390,7 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "roof_builder"
 	w_class = 2.0
+	flammable = TRUE
 
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
 	var/your_dir = "NORTH"

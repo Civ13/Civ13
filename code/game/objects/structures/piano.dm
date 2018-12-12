@@ -21,6 +21,7 @@
 	var/help = FALSE
 	var/edit = TRUE
 	var/repeat = FALSE
+	flammable = TRUE
 
 /obj/structure/piano/New()
 	if (prob(50))

@@ -7,6 +7,7 @@
 	var/health = 100
 	var/maxhealth = 100
 	layer = 3.2
+	flammable = TRUE
 /*
 /obj/structure/wild/New()
 	..()*/

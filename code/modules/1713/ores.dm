@@ -15,10 +15,6 @@
 	name = "iron ore"
 	icon_state = "ore_iron"
 
-/obj/item/stack/ore/coal
-	name = "mineral coal"
-	icon_state = "ore_coal"
-
 /obj/item/stack/ore/glass
 	name = "sand"
 	icon_state = "ore_glass"
@@ -50,15 +46,18 @@
 	desc = "A yellowish cristal, consisting of potassium nitrate. A common precursor to many explosives, including gunpowder."
 	icon_state = "ore_saltpeter"
 	singular_name = "rock"
+	flammable = TRUE
 
 /obj/item/stack/ore/coal
 	name = "mineral coal"
 	desc = "A bunch of mineral coal. Very dense."
 	icon_state = "ore_coal"
 	singular_name = "rock"
+	flammable = TRUE
 
 /obj/item/stack/ore/sulphur
 	name = "sulphur rock"
 	desc = "Yellow and smelly."
 	icon_state = "ore_sulphur"
 	singular_name = "rock"
+	flammable = TRUE

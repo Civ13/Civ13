@@ -182,7 +182,7 @@
 	icon = 'icons/obj/library.dmi'
 	desc = "A set of instruments used to study ancient knowledge."
 	weight = 1.0
-
+	flammable = TRUE
 /obj/item/weapon/researchkit/New()
 	..()
 	icon_state = "scrolls[map.ordinal_age]"

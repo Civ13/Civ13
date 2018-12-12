@@ -3,25 +3,25 @@
 	desc = "The by-product of human farming."
 	singular_name = "human skin piece"
 	icon_state = "sheet-hide"
-
+	flammable = TRUE
 /obj/item/stack/material/animalhide/cat
 	name = "cat hide"
 	desc = "The by-product of cat farming."
 	singular_name = "cat hide piece"
 	icon_state = "sheet-cat"
-
+	flammable = TRUE
 /obj/item/stack/material/animalhide/monkey
 	name = "monkey hide"
 	desc = "The by-product of monkey farming."
 	singular_name = "monkey hide piece"
 	icon_state = "sheet-monkey"
-
+	flammable = TRUE
 /obj/item/stack/material/hairlesshide
 	name = "hairless hide"
 	desc = "This hide was stripped of it's hair, but still needs tanning."
 	singular_name = "hairless hide piece"
 	icon_state = "sheet-hairlesshide"
-
+	flammable = TRUE
 /obj/item/stack/material/wetleather
 	name = "wet leather"
 	desc = "This leather has been cleaned but still needs to be dried."
@@ -29,7 +29,7 @@
 	icon_state = "sheet-wetleather"
 	var/wetness = 30 //Reduced when exposed to high temperautres
 	var/drying_threshold_temperature = 500 //Kelvin to start drying
-
+	flammable = TRUE
 //Step one - dehairing.
 /obj/item/stack/material/animalhide/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(	istype(W, /obj/item/weapon/material/knife) || \

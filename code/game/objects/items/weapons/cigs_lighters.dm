@@ -436,7 +436,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/base_state
 	var/sound_toggleON = 'sound/items/lighter_on.ogg'
 	var/sound_toggleOFF = 'sound/items/lighter_off.ogg'
-
+	flammable = TRUE
 
 /obj/item/weapon/flame/lighter/zippo
 	name = "\improper Zippo lighter"

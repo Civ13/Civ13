@@ -14,7 +14,7 @@
 	possible_transfer_amounts = list(1,5,10)
 	center_of_mass = list("x"=16, "y"=6)
 	volume = 50
-
+	flammable = TRUE
 	attackby(var/obj/item/weapon/W as obj, var/mob/user as mob)
 		return
 

@@ -9,6 +9,7 @@
 	w_class = 3.0
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("battered","whacked")
+	flammable = TRUE
 
 /obj/structure/bed/bedroll
 	name = "bedroll"
@@ -23,6 +24,7 @@
 	buckle_dir = SOUTH
 	buckle_lying = TRUE
 	var/image/cover_overlay = null
+	flammable = TRUE
 
 /obj/structure/bed/bedroll/New()
 	..()
@@ -93,6 +95,7 @@
 	w_class = 4.0
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("battered","whacked")
+	flammable = TRUE
 
 /obj/structure/tent
 	name = "canopy"
@@ -104,6 +107,8 @@
 	can_buckle = FALSE
 	var/area/oldarea
 	var/area/newarea
+	flammable = TRUE
+
 /obj/structure/tent/New()
 	..()
 	oldarea = get_area(src)
@@ -211,3 +216,4 @@
 	var/mob/living/simple_animal/S1 = null
 	var/mob/living/simple_animal/S2 = null
 	var/onedefined = FALSE
+	flammable = TRUE

@@ -1,6 +1,7 @@
 /obj/structure/sign/flag
 	var/ripped = FALSE
 	icon = 'icons/obj/decals.dmi'
+	flammable = TRUE
 /obj/structure/sign/flag/attack_hand(mob/user as mob)
 	if (!ripped)
 		playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)

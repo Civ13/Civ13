@@ -3,6 +3,7 @@
 	desc = "A loom, used to transform cotton into cloth."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "loom"
+	flammable = TRUE
 
 /obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/stack/material/cotton))
@@ -21,6 +22,7 @@
 	desc = "A small mill, used to grind cereals into flour."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "flour_mill"
+	flammable = TRUE
 
 /obj/structure/mill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
@@ -43,6 +45,7 @@
 	var/filled = 0
 	var/stage = 0
 	var/obj_type = /obj/item/weapon/reagent_containers/food/snacks/rawcutlet
+	flammable = TRUE
 
 /obj/structure/dehydrator/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (filled >= 4)
@@ -172,6 +175,7 @@
 	can_hold = list(
 		/obj/item/stack/farming/seeds,
 		)
+	flammable = TRUE
 
 /obj/item/weapon/storage/seed_collector/attack_self(var/mob/living/carbon/human/user as mob)
 	active = TRUE
@@ -217,6 +221,7 @@
 		/obj/item/stack/ore,
 		/obj/item/stack/material/stone,
 		)
+	flammable = TRUE
 
 /obj/item/weapon/storage/ore_collector/attack_self(var/mob/living/carbon/human/user as mob)
 	active = TRUE

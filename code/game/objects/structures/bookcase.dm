@@ -9,6 +9,8 @@
 	var/sum_i = 0
 	var/sum_m = 0
 	var/sum_h = 0
+	flammable = TRUE
+
 /obj/structure/bookcase/initialize()
 	for (var/obj/item/I in loc)
 		if (istype(I, /obj/item/weapon/book))

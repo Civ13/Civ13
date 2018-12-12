@@ -10,6 +10,7 @@
 	opacity = FALSE
 	var/attached = "none"
 	var/obj/attached_ob = null
+	flammable = TRUE
 
 /obj/structure/barricade/wood_pole/New()
 	..()
@@ -25,6 +26,7 @@
 	icon_state = "1"
 	health = 16
 	hitsound = 'sound/effects/wooddoorhit.ogg'
+	flammable = TRUE
 
 /obj/structure/grille/fence/New()
 	..()
@@ -91,18 +93,21 @@
 	health = 32
 	opacity = TRUE
 	hitsound = 'sound/effects/wooddoorhit.ogg'
+	flammable = TRUE
 
 /obj/structure/wallclock
 	name = "wall clock"
 	desc = "A classic wall clock."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wall_clock"
+	flammable = TRUE
 
 /obj/structure/potted_plant
 	name = "potted plant"
 	desc = "A potted plant."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "potted_plant"
+	flammable = TRUE
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
@@ -112,6 +117,7 @@
 	bound_height = 32
 	density = TRUE
 	anchored = TRUE
+	flammable = TRUE
 
 /obj/structure/flag/ex_act(severity)
 	switch(severity)

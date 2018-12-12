@@ -12,7 +12,7 @@
 	attack_verb = list("bapped")
 	var/page = TRUE    // current page
 	var/list/pages = list()  // Ordered list of pages as they are to be displayed. Can be different order than contents.
-
+	flammable = TRUE
 
 /obj/item/weapon/paper_bundle/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	..()

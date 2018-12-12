@@ -11,7 +11,7 @@
 	var/health = 10 // 50 is waaaaaay to fucking high.
 	var/destroyed = FALSE
 	var/hitsound = 'sound/effects/grillehit.ogg'
-
+	flammable = TRUE
 /obj/structure/grille/ex_act(severity)
 	qdel(src)
 

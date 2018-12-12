@@ -412,6 +412,7 @@
 	layer = MOB_LAYER + 0.01
 	anchored = TRUE
 	var/health = 20
+	flammable = TRUE
 
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/material/glass))
@@ -444,6 +445,7 @@
 	maxhealth = 20.0
 	layer = MOB_LAYER + 0.02
 	density = FALSE // so we can touch curtains from any direction
+	flammable = TRUE
 
 /obj/structure/window/classic/reinforced
 	reinf = TRUE

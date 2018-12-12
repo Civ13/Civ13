@@ -137,6 +137,7 @@
 	icon_state = "rope"
 	default_type = "rope"
 	value = 2
+	flammable = TRUE
 
 /obj/item/stack/material/tobacco
 	name = "tobacco leaves"
@@ -144,6 +145,7 @@
 	default_type = "tobacco"
 	value = 3
 	w_class = 1.0
+	flammable = TRUE
 
 /obj/item/stack/material/poppy
 	name = "poppy"
@@ -152,6 +154,7 @@
 	default_type = "poppy"
 	value = 5
 	w_class = 1.0
+	flammable = TRUE
 
 /obj/item/stack/material/straw
 	name = "straw"
@@ -159,6 +162,7 @@
 	default_type = "straw"
 	value = 3
 	w_class = 2.0
+	flammable = TRUE
 
 /obj/item/stack/material/rope/attackby(var/obj/item/W, var/mob/M)
 	if (anchored)
@@ -206,13 +210,14 @@
 	default_type = "wood"
 	dropsound = 'sound/effects/drop_wood.ogg'
 	value = 1
-
+	flammable = TRUE
 
 /obj/item/stack/material/cotton
 	name = "cotton pile"
 	icon_state = "sheet-cotton"
 	default_type = "cotton"
 	value = 2
+	flammable = TRUE
 
 /obj/item/stack/material/cloth
 	name = "cloth"
@@ -220,6 +225,7 @@
 	default_type = "cloth"
 	value = 3
 	w_class = 2.0
+	flammable = TRUE
 
 /obj/item/stack/material/leather
 	name = "leather"
@@ -228,6 +234,7 @@
 	default_type = "leather"
 	value = 2
 	w_class = 2.0
+	flammable = TRUE
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"

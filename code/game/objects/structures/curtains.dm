@@ -8,6 +8,7 @@
 	anchored = TRUE
 	opacity = TRUE
 	density = FALSE
+	flammable = TRUE
 
 /obj/structure/curtain/open
 	icon_state = "open"
