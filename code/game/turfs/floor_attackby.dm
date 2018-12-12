@@ -19,10 +19,10 @@
 		return
 
 	else if (istype(C, /obj/item/weapon/shovel))
-		var/obj/snow/S = has_snow()
 		var/turf/T = get_turf(user)
 		var/mob/living/carbon/human/H = user
-		if (S && istype(H) && !H.shoveling_snow)
+/*
+		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
 			H.shoveling_snow = TRUE
 			var/time_modifier = S.amount/0.05
 			time_modifier = min(time_modifier, 30)
@@ -34,7 +34,8 @@
 				qdel(S)
 			else
 				H.shoveling_snow = FALSE
-		else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
+*/
+		if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
 			if (T.available_dirt >= 1)
 				H.shoveling_dirt = TRUE
 				visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")

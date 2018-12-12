@@ -456,12 +456,19 @@
 				F.muddy = FALSE
 			for (var/obj/covers/CV in get_turf(F))
 				F.muddy = FALSE
-			var/obj/snow/S = F.has_snow()
 			var/snow_message = ""
 			var/snow_span = "notice"
 
-			if (S)
+			if (F.icon == 'icons/turf/snow.dmi')
 				standing_on_snow = TRUE
+				if (prob(50))
+					standing_on_snow = 1.25
+					snow_message = "You're slowed down a bit by the snow."
+				else
+					standing_on_snow = 1.75
+					snow_message = "You're slowed down quite a bit by the snow."
+					snow_span = "warning"
+/* OLD CODE - TO BE REACTIVATED WHEN WE GET SNOW LEVELS
 				switch (S.amount)
 					if (0.01 to 0.8) // more than none and up to ~1/4 feet
 						standing_on_snow = TRUE
@@ -485,7 +492,7 @@
 						standing_on_snow = 18
 						snow_message = "There's way too much snow here to move!"
 						snow_span = "danger"
-
+*/
 				if (snow_message && world.time >= mob.next_snow_message)
 					mob << "<span class = '[snow_span]'>[snow_message]</span>"
 					mob.next_snow_message = world.time+100

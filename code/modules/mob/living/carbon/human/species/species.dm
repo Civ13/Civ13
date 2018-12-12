@@ -193,7 +193,7 @@
 
 	if (H.bodytemperature < cold_level_1)
 		var/turf/T = get_turf(H)
-		if (istype(T) && (locate(/obj/snow) in T))
+		if (istype(T) && T.icon == 'icons/turf/snow.dmi')
 			if (prob(25 - (H.shoes ? 15 : 0)))
 				H << "<span class='danger'>Your feet are freezing!</span>"
 				H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))

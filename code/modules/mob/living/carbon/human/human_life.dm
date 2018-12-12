@@ -434,10 +434,6 @@
 		loc_temp = 321
 	loc_temp = round(loc_temp)
 
-	for (var/obj/snow/S in get_turf(src))
-		loc_temp -= (S.amount * 20)
-		break
-
 	for (var/obj/structure/brazier/BR in range(3, src))
 		if (BR.on == TRUE)
 			if (loc_temp < 295)

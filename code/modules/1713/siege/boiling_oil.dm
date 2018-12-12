@@ -227,3 +227,17 @@ obj/structure/boiling_oil/south
 	icon_state = "foam-dissolve"
 	spawn(110)
 		qdel(src)
+
+/obj/effect/burning_oil
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "burning_fire"
+	layer = TURF_LAYER+2.2
+	anchored = TRUE
+	density = FALSE
+
+/obj/effect/burning_oil/New()
+	..()
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "burning_fire"
+	spawn(230)
+		qdel(src)
