@@ -380,6 +380,10 @@
 	reagent_state = LIQUID
 	color = "#2C2416"
 
-/datum/reagent/nitroglycerin/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/petroleum/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(20)
+
+/datum/reagent/petroleum/touch_mob(var/mob/living/L, var/amount)
+	if (istype(L))
+		L.adjust_fire_stacks(amount / 5)

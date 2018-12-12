@@ -49,8 +49,8 @@
 			M.adjustFireLoss(rand(7,10))
 			user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
 			user.do_attack_animation(M)
+			M.IgniteMob()
 			if (prob(5))
-				M.IgniteMob()
 				M.fire_stacks += 1
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
 			cooloff = world.time+10
