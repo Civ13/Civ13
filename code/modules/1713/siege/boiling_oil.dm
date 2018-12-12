@@ -242,7 +242,9 @@ obj/structure/boiling_oil/south
 	icon_state = "burning_fire2"
 	alpha = 230
 	burningproc()
+	set_light(2)
 	spawn(230)
+		set_light(0)
 		qdel(src)
 
 /obj/effect/burning_oil/attackby(obj/item/weapon/W as obj, mob/user as mob)

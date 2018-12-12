@@ -15,9 +15,9 @@
 		if (C.reagents.total_volume)
 			visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
 			if (C.reagents.has_reagent("petroleum", 5))
-				new/obj/effect/decal/cleanable/blood/oil(src.loc)
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			else if (C.reagents.has_reagent("olive_oil", 10))
-				new/obj/effect/decal/cleanable/blood/oil(src.loc)
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			C.reagents.clear_reagents()
 			C.update_icon()
 		return

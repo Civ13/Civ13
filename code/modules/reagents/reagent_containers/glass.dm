@@ -80,9 +80,9 @@
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
 			if (reagents.has_reagent("petroleum", 5))
-				new/obj/effect/decal/cleanable/blood/oil(src.loc)
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			else if (reagents.has_reagent("olive_oil", 10))
-				new/obj/effect/decal/cleanable/blood/oil(src.loc)
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			reagents.splash(target, reagents.total_volume)
 			return
 
