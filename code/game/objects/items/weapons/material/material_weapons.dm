@@ -24,8 +24,9 @@
 
 /obj/item/weapon/material/New(var/newloc, var/material_key)
 	..(newloc)
-	if (material.name == "wood")
-		flammable = TRUE
+	if (material)
+		if (material.name == "wood")
+			flammable = TRUE
 	if (!material_key)
 		if (!material)
 			material_key = default_material

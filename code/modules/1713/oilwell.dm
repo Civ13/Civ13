@@ -155,13 +155,13 @@
 			spawn(90)
 				G.ChangeTurf(/turf/floor/dirt/burned)
 
-		for (var/obj/effect/decal/cleanable/blood/oil/OL in range(1, get_turf(src)))
-			if (prob(15))
-				new/obj/effect/burning_oil(OL.loc)
-
 		for (var/obj/OB in src.loc)
 			if (prob(35) && !istype(OB, /obj/effect/decal/cleanable/blood/oil) && OB.flammable)
 				OB.fire_act(700)
+
+		for (var/obj/effect/decal/cleanable/blood/oil/OL in range(1, get_turf(src)))
+			if (prob(15))
+				new/obj/effect/burning_oil(OL.loc)
 
 		for (var/turf/floor/plating/grass/GR in range(1, get_turf(src)))
 			if (prob(5))
