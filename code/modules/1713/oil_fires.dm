@@ -176,7 +176,7 @@
 				if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
 					if (prob(15))
 						new/obj/effect/burning_oil(OL.loc)
-				if (istype(OL, /obj/effect/decal/cleanable/blood/tracks) && OL.basecolor == "#A10808")
+				if (istype(OL, /obj/effect/decal/cleanable/blood/tracks) && OL.color == "#030303")
 					if (prob(15))
 						new/obj/effect/burning_oil(OL.loc)
 
