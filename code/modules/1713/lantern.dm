@@ -113,6 +113,7 @@
 				return
 			else
 				on = FALSE
+				update_icon()
 				do_torch()
 		else if (on == FALSE)
 			do_torch()

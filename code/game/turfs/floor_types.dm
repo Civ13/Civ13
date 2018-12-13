@@ -114,7 +114,7 @@
 	icon_state = "wood"
 	stepsound = "wood"
 
-/turf/floor/wood_ship
+/turf/floor/wood/ship
 	name = "floor"
 	icon_state = "wood_ship"
 	stepsound = "wood"
