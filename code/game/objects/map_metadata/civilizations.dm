@@ -25,12 +25,13 @@
 	availablefactions_run = TRUE
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
-	var/age1_lim = 90
-	var/age1_done = 0
-	var/age2_lim = 140
-	var/age2_done = 0
-	var/age3_lim = 240
-	var/age3_done = 0
+	research_active = TRUE
+	age1_lim = 90
+	age1_done = 0
+	age2_lim = 150
+	age2_done = 0
+	age3_lim = 240
+	age3_done = 0
 
 /obj/map_metadata/civilizations/New()
 	if (clients.len <= 8)
@@ -47,6 +48,12 @@
 		tribes_nr = 6
 	if (tribes_nr >= 2)
 		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
+	civa_research = list(default_research,default_research,default_research,null)
+	civb_research = list(default_research,default_research,default_research,null)
+	civc_research = list(default_research,default_research,default_research,null)
+	civd_research = list(default_research,default_research,default_research,null)
+	cive_research = list(default_research,default_research,default_research,null)
+	civf_research = list(default_research,default_research,default_research,null)
 	..()
 	spawn(18000)
 		seasons()
@@ -103,6 +110,9 @@
 		for (var/turf/floor/winter/grass/G)
 			if (prob(60))
 				G.ChangeTurf(/turf/floor/plating/grass/wild)
+		for (var/turf/floor/dirt/burned/B)
+			if (prob(60))
+				B.ChangeTurf(/turf/floor/plating/grass/wild)
 		spawn(150)
 			change_weather(WEATHER_NONE)
 		spawn(1500)

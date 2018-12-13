@@ -13,6 +13,8 @@
 #define TimeOfGame (get_game_time())
 #define TimeOfTick (world.tick_usage*0.01*world.tick_lag)
 
+#define CHECK_TICK if (world.tick_usage > 80) sleep(world.tick_lag)
+
 /proc/get_game_time()
 	var/global/time_offset = 0
 	var/global/last_time = 0

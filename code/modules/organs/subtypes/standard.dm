@@ -15,7 +15,6 @@
 //	gendered_icon = TRUE
 	cannot_amputate = TRUE
 	parent_organ = null
-	encased = "ribcage"
 
 /obj/item/organ/external/groin
 	name = "lower body"
@@ -131,7 +130,6 @@
 	joint = "jaw"
 	amputation_point = "neck"
 //	gendered_icon = TRUE
-	encased = "skull"
 	var/can_intake_reagents = TRUE
 
 /obj/item/organ/external/head/removed()

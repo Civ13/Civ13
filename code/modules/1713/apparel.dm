@@ -117,11 +117,8 @@
 
 /obj/item/clothing/accessory/storage/coinpouch/New()
 	..()
-	hold.max_storage_space = 10
-	hold.can_hold = list(/obj/item/stack/money/real,\
-	/obj/item/stack/money/dollar,\
-	/obj/item/stack/money/escudo,\
-	/obj/item/stack/money/doubloon,\
+	hold.max_storage_space = 25
+	hold.can_hold = list(/obj/item/stack/money,\
 	/obj/item/weapon/key,\
 	/obj/item/weapon/storage/belt/keychain)
 

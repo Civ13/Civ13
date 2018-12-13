@@ -61,25 +61,10 @@
 
 // make this turf have a darkness level based on the time of day
 /turf/proc/adjust_lighting_overlay_to_daylight()
-
 	fix_corners_and_lighting_overlay()
+	if (lighting_overlay)
+		lighting_overlay.update_overlay()
 
-	var/changed = FALSE
-
-	for (var/datum/lighting_corner/corner in corners)
-		corner.TOD_lum_r = time_of_day2luminosity[time_of_day]
-		corner.TOD_lum_g = time_of_day2luminosity[time_of_day]
-		corner.TOD_lum_b = time_of_day2luminosity[time_of_day]
-		changed = TRUE
-
-	if (changed)
-		if (lighting_overlay)
-			lighting_overlay.update_overlay()
-/*
-		spawn (1)
-			for (var/obj/machinery/light/L in src)
-				L.fix_TOD_lights()
-*/
 // HACKCODE
 
 /turf/proc/fix_broken_daylights()
@@ -117,14 +102,15 @@
 		lighting_overlay.update_overlay()*/
 
 // Used to get a scaled lumcount.
-/turf/proc/get_lumcount(var/minlum = FALSE, var/maxlum = TRUE)
+/turf/proc/get_lumcount(var/minlum = 0, var/maxlum = 1)
 	if (!lighting_overlay)
 		return 0.5
 
-	var/totallums = FALSE
+	var/TOD_lum = time_of_day2luminosity[time_of_day] * window_coeff
+	var/totallums = 0
 	for (var/LL in corners)
 		var/datum/lighting_corner/L = LL
-		totallums += L.getLumR(src) + L.getLumB(src) + L.getLumG(src)
+		totallums += L.lum_r + L.lum_g + L.lum_b + TOD_lum*3
 
 	totallums /= 12 // 4 corners, each with 3 channels, get the average.
 
@@ -168,38 +154,32 @@
 
 	return corners
 
-// disables this buggy :mistake: - Kachnov
-#define DAYLIGHT_LIGHTING_DISABLED
-
-// cache some type info for speed
-/turf/var/iswall_check_cache = -1
 /turf/proc/calculate_window_coeff()
-
 	var/area/src_area = get_area(src)
-
-	#ifdef DAYLIGHT_LIGHTING_DISABLED
-	. = 1.00
+	var/area/temp_area
+	window_coeff = 1
 	if (src_area && src_area.location == AREA_INSIDE)
-		. = 0.0
+		window_coeff = 0
 
-		if (iswall_check_cache == -1)
-			iswall_check_cache = (iswall(src) && type != /turf/wall/rockwall)
-
-		if (iswall_check_cache || locate_type(contents, /obj/structure/window/classic) || locate_dense_type(contents, /obj/structure))
+		if ((iswall(src) && type != /turf/wall/rockwall) || locate_type(contents, /obj/structure/window/classic) || locate_dense_type(contents, /obj/structure))
 			var/counted = 0
-			// a turf found in range() of another turf can only be contained in an area: so don't use expensive get_area() checks. if (T.loc) is probably unneeded but oh well
 			for (var/turf/T in orange(1, src))
-				if (T.loc && (T.loc:location == AREA_OUTSIDE || T.loc.type == /area/caribbean/void))
-					. += 0.25
-				++counted
-			// count null turfs as outside
-			. += ((8-counted) * 0.25)
-		if (type != /turf/wall/rockwall)
-			. = max(., 0.25) // more natural than pure darkness - only lag-free solution
-	window_coeff = min(., 1.00)
-	return window_coeff
-	#endif
+				temp_area = T.loc
+				if ((temp_area.location == AREA_OUTSIDE) || (temp_area.type == /area/caribbean/void))
+					window_coeff += 0.25
+				counted++
 
+			window_coeff += ((8-counted) * 0.25) // count null turfs as outside
+
+		if (type != /turf/wall/rockwall)
+			window_coeff = max(window_coeff, 0.25) // more natural than pure darkness - only lag-free solution
+
+		window_coeff = min(window_coeff, 1)
+
+	for (var/datum/lighting_corner/C in corners)
+		C.window_coeff = window_coeff
+
+/*
 	// 100% daylight if we're outside
 	if (src_area.location == AREA_OUTSIDE)
 		window_coeff = 1.0
@@ -244,6 +224,7 @@
 	// dividing '.' by 7 returns a more reasonable number - Kachnov
 	window_coeff = max(min(1.0, (.)/7), 0.0)
 	return window_coeff
+*/
 
 // don't put this proc anywhere other than where it already is, because it checks for the lack of lighting overlays - Kachnov
 /turf/proc/supports_lighting_overlays()

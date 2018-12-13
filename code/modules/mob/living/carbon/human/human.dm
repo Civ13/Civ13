@@ -35,6 +35,7 @@
 
 	hud_list[BASE_FACTION]      = image('icons/mob/hud_1713.dmi', src, "")
 	hud_list[FACTION_TO_ENEMIES]      = image('icons/mob/hud_1713.dmi', src, "")
+	hud_list[SQUAD_FACTION]      = image('icons/mob/hud_1713.dmi', src, "")
 	human_mob_list |= src
 
 	..()

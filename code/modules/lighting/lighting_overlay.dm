@@ -58,7 +58,7 @@
 	lighting_overlay_list -= src
 	..()
 
-/atom/movable/lighting_overlay/proc/update_overlay(var/force_window_coeff_updates = FALSE)
+/atom/movable/lighting_overlay/proc/update_overlay()
 	var/turf/T = loc
 	if (!T || !istype(T)) // Erm...
 		if (loc)
@@ -70,9 +70,7 @@
 		qdel(src)
 		return
 
-	if (force_window_coeff_updates)
-		T.calculate_window_coeff()
-	//	T.next_calculate_window_coeff = world.time + 300
+	T.calculate_window_coeff()
 
 	blend_mode = BLEND_MULTIPLY
 
@@ -82,8 +80,13 @@
 
 	var/anylums = FALSE
 
+	var/TOD_lum = time_of_day2luminosity[time_of_day] * T.window_coeff
 	for (var/datum/lighting_corner/C in T.corners)
 		var/i = 0
+
+		var/adjusted_r = C.lum_r + TOD_lum
+		var/adjusted_g = C.lum_g + TOD_lum
+		var/adjusted_b = C.lum_b + TOD_lum
 
 		// Huge switch to determine i based on D.
 		switch(turn(C.masters[T], 180))
@@ -99,15 +102,15 @@
 			if (NORTHWEST)
 				i = BR
 
-		var/mx = max(C.getLumR(T), C.getLumG(T), C.getLumB(T)) // Scale it so 1 is the strongest lum, if it is above 1.
+		var/mx = max(adjusted_r, adjusted_g, adjusted_b) // Scale it so 1 is the strongest lum, if it is above 1.
 		anylums += mx
 		. = 1.0 // factor
 		if (mx > 1)
 			. = 1.0 / mx
 
-		L[i + 0]   = C.getLumR(T) * .
-		L[i + 1]   = C.getLumG(T) * .
-		L[i + 2]   = C.getLumB(T) * .
+		L[i + 0]   = adjusted_r * .
+		L[i + 1]   = adjusted_g * .
+		L[i + 2]   = adjusted_b * .
 
 	color  = L
 	luminosity = (anylums > 0)

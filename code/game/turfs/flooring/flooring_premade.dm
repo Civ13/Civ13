@@ -32,7 +32,16 @@
 	icon_state = "dirt"
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE
-	available_dirt = 3
+	available_snow = 2
+	available_dirt = 0
+	is_diggable = TRUE
+
+/turf/floor/dirt/burned
+	name = "burned ground"
+	icon_state = "burned_dirt"
+	uses_winter_overlay = TRUE
+	may_become_muddy = TRUE
+	available_dirt = 1
 	is_diggable = TRUE
 
 /turf/floor/dirt/underground
@@ -55,6 +64,16 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
+
+/turf/floor/dirt/dust
+	name = "dry dirt"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dust"
+	interior = FALSE
+	stepsound = "dirt"
+	available_dirt = 2
+	may_become_muddy = FALSE
+	is_diggable = TRUE
 
 /turf/floor/tiled
 	name = "floor"

@@ -16,6 +16,7 @@
 	//var/LeftSide = list(0,0,0)// Нужны для хранения данных
 	//var/RightSide = list(0,0,0)
 	var/check = FALSE
+	flammable = TRUE
 
 /obj/structure/railing/New(loc, constructed=0)
 	..()

@@ -35,9 +35,11 @@
 	var/in_stasis = FALSE
 	var/heartbeat = FALSE
 	var/global/list/overlays_cache = null
-	var/lastcoatmessage = 0
+	var/heatDamageFromClothingTimer = 0
 	var/start_to_rot = FALSE
 	var/rotting_stage = 0
+
+	var/healing_stage = 0 //for beds
 /mob/living/carbon/human/Life()
 
 
@@ -65,10 +67,19 @@
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
+	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
+		healing_stage += 1
+	else
+		healing_stage = 0
+	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
+		healing_stage = 0
+		if (getBruteLoss() >= 40)
+			adjustBruteLoss(-2)
+
 
 	if (has_hunger_and_thirst)
-		if (map.heat_wave)
-			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
+			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
 				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
 			else
@@ -203,7 +214,7 @@
 			//0.1% prob
 			if (!"plague" in disease_immunity)
 				if (prob(1))
-					if (prob(10))
+					if (prob(50))
 						disease = TRUE
 						disease_type = "plague"
 						disease_progression = 0
@@ -227,11 +238,10 @@
 			//0.005%
 			if (prob(1))
 				if (prob(1))
-					if (prob(50))
-						disease = TRUE
-						disease_type = "flu"
-						disease_progression = 0
-						disease_treatment = 0
+					disease = TRUE
+					disease_type = "flu"
+					disease_progression = 0
+					disease_treatment = 0
 	..()
 
 	// recover stamina
@@ -357,7 +367,6 @@
 		failed_last_breath = TRUE
 	return TRUE
 
-/mob/living/carbon/human/var/loc_temperature = -1 // for debugging.
 /mob/living/carbon/human/handle_environment()
 
 	//Moved pressure calculations here for use in skip-processing check.
@@ -365,88 +374,107 @@
 	var/loc_temp = 293
 	var/area/mob_area = get_area(src)
 
-	if (mob_area.location == AREA_OUTSIDE)
+//	if (mob_area.location == AREA_OUTSIDE)
 
-		switch (season)
-			if ("WINTER")
-				loc_temp = 244
-			if ("FALL")
-				loc_temp = 285
-			if ("SUMMER")
-				loc_temp = 303
-			if ("SPRING")
-				loc_temp = 290
+	switch (season)
+		if ("WINTER")
+			loc_temp = 244
+		if ("FALL")
+			loc_temp = 285
+		if ("SUMMER")
+			loc_temp = 303
+		if ("SPRING")
+			loc_temp = 290
+		if ("Dry Season")
+			loc_temp = 313
+		if ("Wet Season")
+			loc_temp = 303
 
-		switch (time_of_day)
-			if ("Midday")
-				loc_temp *= 1.03
-			if ("Afternoon")
-				loc_temp *= 1.02
-			if ("Morning")
-				loc_temp *= 1.01
-			if ("Evening")
-				loc_temp *= 1.00 // default
-			if ("Early Morning")
-				loc_temp *= 0.99
-			if ("Night")
-				loc_temp *= 0.98
-			if ("Midnight")
-				loc_temp *= 0.97
+	switch (time_of_day)
+		if ("Midday")
+			loc_temp *= 1.03
+		if ("Afternoon")
+			loc_temp *= 1.02
+		if ("Morning")
+			loc_temp *= 1.01
+		if ("Evening")
+			loc_temp *= 1.00 // default
+		if ("Early Morning")
+			loc_temp *= 0.99
+		if ("Night")
+			loc_temp *= 0.97
 
-		switch (mob_area.weather)
-			if (WEATHER_NONE)
-				loc_temp *= 1.00
-			if (WEATHER_SNOW)
-				switch (mob_area.weather_intensity)
-					if (1.0)
-						loc_temp *= 0.87
-					if (2.0)
-						loc_temp *= 0.86
-					if (3.0)
-						loc_temp *= 0.85
-			if (WEATHER_RAIN)
-				switch (mob_area.weather_intensity)
-					if (1.0)
-						loc_temp *= 0.99
-					if (2.0)
-						loc_temp *= 0.97
-					if (3.0)
-						loc_temp *= 0.95
-		if (map.blizzard)
+	switch (mob_area.weather)
+		if (WEATHER_NONE)
+			loc_temp *= 1.00
+		if (WEATHER_SNOW)
+			switch (mob_area.weather_intensity)
+				if (1.0)
+					loc_temp *= 0.87
+				if (2.0)
+					loc_temp *= 0.86
+				if (3.0)
+					loc_temp *= 0.85
+		if (WEATHER_RAIN)
+			switch (mob_area.weather_intensity)
+				if (1.0)
+					loc_temp *= 0.99
+				if (2.0)
+					loc_temp *= 0.97
+				if (3.0)
+					loc_temp *= 0.95
+		if (WEATHER_BLIZZARD)
 			loc_temp = 190
-		if (map.heat_wave)
+		if (WEATHER_SANDSTORM)
 			loc_temp = 321
-		loc_temp = round(loc_temp)
+	if (map.blizzard)
+		loc_temp = 190
+	if (map.heat_wave)
+		loc_temp = 321
+	loc_temp = round(loc_temp)
 
-	for (var/obj/snow/S in get_turf(src))
-		loc_temp -= (S.amount * 20)
-
-	loc_temperature = loc_temp
 	for (var/obj/structure/brazier/BR in range(3, src))
 		if (BR.on == TRUE)
-			loc_temperature = 295
-	// todo: wind adjusting effective loc_temp
-	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && world.time > lastcoatmessage)
-		src << "<span class = 'warning'><big>You are sweating inside your coat. It's way too warm to wear one.</big></span>"
-		lastcoatmessage = world.time+1200
-		spawn(600)
-			if (istype(wear_suit, /obj/item/clothing/suit/storage/coat))
-				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
-				adjustFireLoss(2)
+			if (loc_temp < 295)
+				loc_temp = 295
+				break
+	for (var/obj/structure/bed/bedroll/BRL in src.loc)
+		if (BRL.used == TRUE && BRL.buckled_mob == src)
+			if (loc_temp < 295)
+				loc_temp = 295
+				break
+	//inside areas have natural insulation of 20 degrees
+	if (mob_area.location == AREA_INSIDE)
+		if (loc_temp > 293)
+			loc_temp = (min(293,loc_temp-20))
+		else if (loc_temp < 293)
+			loc_temp = (max(293,loc_temp+20))
+	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+		heatDamageFromClothingTimer++
 
-	if (abs(loc_temperature - bodytemperature) < 0.5 && bodytemperature < species.heat_level_1 && bodytemperature > species.cold_level_1)
-		return // Temperatures are within normal ranges, fuck all this processing. ~Ccomp
+		if (heatDamageFromClothingTimer == 5)
+			src << "<span class = 'warning'><big>You are sweating inside your coat. It's way too warm to wear one.</big></span>"
+
+		if (heatDamageFromClothingTimer >= 35)
+			if (prob(50))
+				src << "<span class = 'warning'><big>You are very unconfortable. Remove the coat.</big></span>"
+			heatDamageFromClothingTimer = 6
+			adjustFireLoss(2)
+
+
+	else if (heatDamageFromClothingTimer > 0)
+		heatDamageFromClothingTimer--
 
 	//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection (convection)
 	var/temp_adj = 0
-	if (loc_temperature < bodytemperature)			//Place is colder than we are
-		var/thermal_protection = get_cold_protection(loc_temperature) //This returns a FALSE - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
-		if (thermal_protection < 0 || season == "WINTER")
-			temp_adj = (1-thermal_protection) * ((loc_temperature - bodytemperature) / BODYTEMP_COLD_DIVISOR)	//this will be negative
-	else if (loc_temperature > bodytemperature)			//Place is hotter than we are
-		var/thermal_protection = get_heat_protection(loc_temperature) //This returns a FALSE - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
-		if (thermal_protection < 0)
-			temp_adj = (1-thermal_protection) * ((loc_temperature - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
+	if (loc_temp < bodytemperature) //Place is colder than we are
+		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
+		if (thermal_protection < 1)
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_COLD_DIVISOR) //this will be negative
+	else if (loc_temp > bodytemperature) //Place is hotter than we are
+		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
+		if (thermal_protection < 1)
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
 
 	//Use heat transfer as proportional to the gas density. However, we only care about the relative density vs standard 101 kPa/20 C air. Therefore we can use mole ratios
 //	var/relative_density = environment.total_moles / MOLES_CELLSTANDARD
@@ -484,14 +512,8 @@
 		fire_alert = max(fire_alert, TRUE)
 
 	// tell src they're dying
-	species.get_environment_discomfort(src, "cold")
-	species.get_environment_discomfort(src, "heat")
+	species.get_environment_discomfort(src)
 
-	// Account for massive pressure differences.  Done by Polymorph
-	// Made it possible to actually have something that can protect against high pressure... Done by Errorage. Polymorph now has an axe sticking from his head for his previous hardcoded nonsense!
-	if (status_flags & GODMODE)	return TRUE	//godmode
-
-	return
 /*
 /mob/living/carbon/human/proc/adjust_body_temperature(current, loc_temp, boost = 0)
 	var/temperature = current
@@ -632,10 +654,6 @@
 			take_overall_damage(1,1)
 		else //heal in the dark
 			heal_overall_damage(1,1)
-/*
-	// nutrition decrease
-	if (nutrition > 0 && stat != 2)
-		nutrition = max (0, nutrition - species.hunger_factor)*/
 
 	// TODO: stomach and bloodstream organ.
 	handle_trace_chems()
@@ -1174,8 +1192,8 @@
 						holder2.icon_state = "civ5"
 					else if (original_job_title == "Civilization F Citizen")
 						holder2.icon_state = "civ6"
-					else if (original_job_title == "Nomad" && civilization)
-						holder2.icon_state = "civ2"
+					else if (original_job_title == "Nomad")
+						holder2.icon_state = ""
 					else
 						holder2.icon_state = ""
 

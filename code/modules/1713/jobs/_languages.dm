@@ -65,24 +65,24 @@
 		if (H.client && H.client.prefs)
 			switch (H.client.prefs.civ_ethnicity)
 				if (SPANISH)
-					H.add_language(SPANISH, TRUE)
+					H.add_language(SPANISH, FALSE)
 					H.add_note("Known Languages", "Spanish")
 					notes += "Spanish"
 				if (PORTUGUESE)
-					H.add_language(PORTUGUESE, TRUE)
+					H.add_language(PORTUGUESE, FALSE)
 					H.add_note("Known Languages", "Portuguese")
 					notes += "Portuguese"
 				if (FRENCH)
-					H.add_language(FRENCH, TRUE)
+					H.add_language(FRENCH, FALSE)
 					H.add_note("Known Languages", "French")
 					notes += "French"
 				if (DUTCH)
-					H.add_language(DUTCH, TRUE)
+					H.add_language(DUTCH, FALSE)
 					H.add_note("Known Languages", "Dutch")
 					notes += "Dutch"
 
 	if (!H.languages.len)
-		H.add_language(default_language, TRUE)
+		H.add_language(default_language, FALSE)
 		if (!notes.Find(default_language))
 			H.add_note("Known Languages", default_language)
 	else if (H.languages[1] != default_language)

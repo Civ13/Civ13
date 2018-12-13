@@ -134,7 +134,7 @@
 	desc = "A small silver coin. Worth 1/4 of a gold coin."
 	singular_name = "silver coin"
 	icon_state = "silvercoin_pile"
-	amount = 200
+	amount = 1
 	value = 0.1
 
 /obj/item/stack/money/goldcoin
@@ -142,5 +142,5 @@
 	desc = "A small gold coin. Worth 4 silver coins."
 	singular_name = "gold coin"
 	icon_state = "goldcoin_pile"
-	amount = 100
+	amount = 1
 	value = 0.4

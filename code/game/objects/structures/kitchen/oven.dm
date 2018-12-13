@@ -32,7 +32,21 @@
 		qdel(I)
 		return
 	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-		return
+		if (istype(I, /obj/item/weapon/wrench))
+			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(H,50,src))
+				visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+				anchored = !anchored
+				return
+		else if (istype(I, /obj/item/weapon/hammer))
+			visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(H,50,src))
+				visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
+				empty()
+				qdel(src)
+				return
 	else if (istype(I, /obj/item/stack/ore/coal))
 		fuel += I.amount*3
 		qdel(I)
@@ -114,6 +128,15 @@
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I
 			qdel(I)
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough))
+			contents += new /obj/item/weapon/reagent_containers/food/snacks/flatbread(src)
+			contents -= I
+			qdel(I)
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/rawsticks))
+			contents += new /obj/item/weapon/reagent_containers/food/snacks/fries(src)
+			contents -= I
+			qdel(I)
+
 		else if (!istype(I, /obj/item/weapon/reagent_containers/food) || istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/badrecipe) || I.name == "Stew" || findtext(I.name, "soup") || (I.vars.Find("roasted") && I:roasted))
 			if (!istype(I, /obj/item/organ))
 				contents += new /obj/item/weapon/reagent_containers/food/snacks/badrecipe(src)
@@ -205,6 +228,22 @@
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))
 		return
+	if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
+		if (istype(I, /obj/item/weapon/wrench))
+			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(H,50,src))
+				visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+				anchored = !anchored
+				return
+		else if (istype(I, /obj/item/weapon/hammer))
+			visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(H,50,src))
+				visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
+				empty()
+				qdel(src)
+				return
 	if (istype(I, /obj/item/stack/))
 		if (istype(I, /obj/item/stack/material/wood))
 			fuel += I.amount

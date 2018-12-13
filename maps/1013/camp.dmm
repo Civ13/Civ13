@@ -187,7 +187,7 @@
 "dE" = (/obj/item/weapon/plough,/turf/floor/dirt/ploughed,/area/caribbean/forest)
 "dF" = (/obj/structure/pot,/turf/floor/plating/grass/wild,/area/caribbean/colonies/french{location = 1; name = "French Base"})
 "dG" = (/obj/structure/barricade/horizontal,/turf/floor/plating/grass/wild,/area/caribbean/colonies/french{location = 1; name = "French Base"})
-"dH" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/gatecontrol,/turf/floor/wood_ship,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
+"dH" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/gatecontrol,/turf/floor/wood/ship,/area/caribbean/island{base_turf = /turf/floor/dirt; name = "Castle"})
 "dI" = (/turf/floor/plating/sand,/area/caribbean/forest)
 "dJ" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
 "dK" = (/obj/structure/window/sandbag/rock,/turf/floor/dirt,/area/caribbean/forest)

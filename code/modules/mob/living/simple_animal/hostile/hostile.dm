@@ -93,10 +93,6 @@
 		var/mob/living/L = target_mob
 		L.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
 		return L
-/*	if (istype(target_mob,/obj/machinery/bot))
-		var/obj/machinery/bot/B = target_mob
-		B.attack_generic(src,rand(melee_damage_lower,melee_damage_upper),attacktext)
-		return B*/
 
 /mob/living/simple_animal/hostile/proc/LoseTarget()
 	stance = HOSTILE_STANCE_IDLE
@@ -125,22 +121,6 @@
 	if (client)
 		return FALSE
 
-/* Moved to tickproc
-	if (!stat)
-		switch(stance)
-			if (HOSTILE_STANCE_IDLE)
-				target_mob = FindTarget()
-
-			if (HOSTILE_STANCE_ATTACK)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				MoveToTarget()
-
-			if (HOSTILE_STANCE_ATTACKING)
-				if (destroy_surroundings)
-					DestroySurroundings()
-				AttackTarget()
-*/
 /mob/living/simple_animal/hostile/proc/OpenFire(target_mob)
 	var/target = target_mob
 	visible_message("<span class = 'red'><b>[src]</b> fires at [target]!</span>", TRUE)
@@ -209,7 +189,7 @@
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
-							walk_towards(src, locate(/obj/effect/landmark/npctarget),4)
+							walk_to(src, locate(/obj/effect/landmark/npctarget),TRUE,move_to_delay)
 					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 					moving_to = pick(cardinal)
 					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.

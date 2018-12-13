@@ -22,6 +22,7 @@
 /datum/surgery_step/generic/cut_open
 	allowed_tools = list(
 	/obj/item/weapon/surgery/scalpel = 100,		\
+	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100 \
@@ -63,6 +64,7 @@
 /datum/surgery_step/generic/clamp_bleeders
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
+	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
 	/obj/item/stack/material/rope = 50, 	\
 	)
 
@@ -97,8 +99,9 @@
 /datum/surgery_step/generic/retract_skin
 	allowed_tools = list(
 	/obj/item/weapon/surgery/retractor = 100, 	\
-	/obj/item/weapon/crowbar = 75,	\
-	/obj/item/weapon/material/handle = 75,	\
+	/obj/item/weapon/surgery/retractor/bronze = 85, 	\
+	/obj/item/weapon/crowbar = 70,	\
+	/obj/item/weapon/material/handle = 60,	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 50
 	)
 
@@ -153,7 +156,8 @@
 /datum/surgery_step/generic/cauterize
 	allowed_tools = list(
 	/obj/item/weapon/surgery/cautery = 100,			\
-	/obj/item/clothing/mask/smokable/cigarette/cigar = 75,	\
+	/obj/item/weapon/surgery/cautery/bronze = 85,			\
+	/obj/item/clothing/mask/smokable/cigarette/cigar = 60,	\
 	/obj/item/flashlight/torch = 75,
 	)
 
@@ -189,6 +193,7 @@
 /datum/surgery_step/generic/amputate
 	allowed_tools = list(
 	/obj/item/weapon/surgery/bone_saw = 100, \
+	/obj/item/weapon/surgery/bone_saw/bronze = 85, \
 	/obj/item/weapon/material/hatchet = 75, \
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 75
 	)

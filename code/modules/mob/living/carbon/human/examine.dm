@@ -320,6 +320,10 @@
 			var/mob/living/carbon/human/H = user
 			if (H.civilization == civilization && civilization != "none") // when you ghost, mind.assigned_job is set to null
 				msg += "<br><i>You recognize [T.him] as a member of your group, <b>[civilization]</b>.</i>"
+				if (map.custom_civs[H.civilization][4] != null)
+					if (map.custom_civs[H.civilization][4].real_name == real_name)
+						msg += "<br><b>[T.He] is the leader of your group.</b>"
+
 			else if (civilization != "none") // examining someone on another team
 				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
 			else
@@ -331,7 +335,8 @@
 			var/mob/living/carbon/human/H = user
 			if (H.civilization != "none")
 				msg += "<br><i>You belong to <b>[H.civilization]</b>.</i>"
-
+				if (map.custom_civs[H.civilization][4].real_name == H.real_name)
+					msg += "<br><b>You are the leader of your group.</b>"
 
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"

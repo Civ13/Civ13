@@ -22,6 +22,9 @@
 	health = 50
 	var/calf = FALSE
 	var/datum/reagents/udder = null
+	var/pregnant = FALSE
+	var/birthCountdown = 0
+	var/overpopulationCountdown = 0
 	mob_size = MOB_LARGE
 
 /mob/living/simple_animal/bull
@@ -99,17 +102,47 @@
 	if (stat == CONSCIOUS)
 		if (udder && prob(5) && !calf)
 			udder.add_reagent("milk", rand(5, 10))
+	else
+		return
 
-	for(var/mob/living/simple_animal/bull/BULL in range(2,src))
-		if (prob(1))
-			if (prob(3)) // should happen around every 10 mins or so
-				if (prob(50))
-					var/mob/living/simple_animal/cow/C = new/mob/living/simple_animal/cow(loc)
-					C.calf = TRUE
-				else
-					var/mob/living/simple_animal/bull/B = new/mob/living/simple_animal/bull(loc)
-					B.calf = TRUE
-				visible_message("A calf has been born!")
+	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
+		overpopulationCountdown--
+		return
+
+	if (!pregnant)
+		var/nearbyObjects = range(1,src) //3x3 area around cow
+		for(var/mob/living/simple_animal/bull/M in nearbyObjects)
+			if (M.stat == CONSCIOUS)
+				pregnant = TRUE
+				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+				break
+
+		if (pregnant)
+			nearbyObjects = range(7,src) //15x15 area around cow
+
+			var/cowCount = 0
+			for(var/mob/living/simple_animal/cow/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					cowCount++
+
+			for(var/mob/living/simple_animal/bull/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					cowCount++
+
+			if (cowCount > 5) // max 5 cows/bulls in a 15x15 area around cow
+				overpopulationCountdown = 150 // 5 minutes
+				pregnant = FALSE
+	else
+		birthCountdown--
+		if (birthCountdown <= 0)
+			pregnant = FALSE
+			if (prob(50))
+				var/mob/living/simple_animal/cow/C = new/mob/living/simple_animal/cow(loc)
+				C.calf = TRUE
+			else
+				var/mob/living/simple_animal/bull/B = new/mob/living/simple_animal/bull(loc)
+				B.calf = TRUE
+			visible_message("A calf has been born!")
 
 /mob/living/simple_animal/cow/attack_hand(mob/living/carbon/M as mob)
 	if (!stat && M.a_intent == I_DISARM && icon_state != icon_dead)
@@ -209,7 +242,16 @@ var/global/chicken_count = FALSE
 	..()
 	chicken_count -= 1
 
-
+/mob/living/simple_animal/chicken/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	if (stat == CONSCIOUS && istype(O, /obj/item/stack/farming/seeds))
+		var/obj/item/stack/S = O
+		if (eggsleft < 5)
+			user.visible_message("<span class='notice'>[user] feeds [src] \the [O].</span>")
+			eggsleft++
+			S.use(1)
+		else
+			user << "<span class = 'red'>The [src] is not hungry.</span>"
+	..()
 /mob/living/simple_animal/chicken/Life()
 	. =..()
 	if (!.)
@@ -224,8 +266,17 @@ var/global/chicken_count = FALSE
 				var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
 				E.pixel_x = rand(-6,6)
 				E.pixel_y = rand(-6,6)
-				if (chicken_count < MAX_CHICKENS && prob(10))
-					processing_objects.Add(E)
+				if (prob(10))
+					var/nearbyObjects = range(2,src) //5x5 area
+					var/chickenCount = 0
+					for(var/mob/living/simple_animal/chicken/M in nearbyObjects)
+						chickenCount++
+
+					for(var/mob/living/simple_animal/chick/M in nearbyObjects)
+						chickenCount++
+
+					if (chickenCount <= 5) // max 5 chickens/chicks in a 5x5 area for eggs to start hatching
+						processing_objects.Add(E)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/process()
@@ -282,6 +333,7 @@ var/global/chicken_count = FALSE
 			user << "<span class = 'red'>The [O] is full.</span>"
 		if (!transfered)
 			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+		return
 	else
 		..()
 
@@ -293,3 +345,77 @@ var/global/chicken_count = FALSE
 
 
 
+/mob/living/simple_animal/camel
+	name = "camel"
+	desc = "Good for meat."
+	icon = 'icons/mob/animal_64.dmi'
+	icon_state = "camel"
+	icon_living = "camel"
+	icon_dead = "camel_dead"
+	icon_gib = "camel_dead"
+	speak = list("MMMMMHM","brooo","BRBRBRBRR!")
+	speak_emote = list("grunts")
+	emote_hear = list("grunts")
+	emote_see = list("shakes its head")
+	speak_chance = TRUE
+	turns_per_move = 8
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 6
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	var/packed = FALSE
+	health = 110
+	mob_size = MOB_LARGE
+	var/max_content_size = 35
+	var/content_size = 0
+	var/list/packed_items = list()
+/mob/living/simple_animal/camel/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	if (!stat && user.a_intent == I_HELP && icon_state != icon_dead)
+		if (content_size + O.w_class > max_content_size)
+			user << "The camel is too burdened already!"
+			return
+		else
+			content_size += O.w_class
+			visible_message("[user] places \the [O] on the camel's back.","You put \the [O] on the camel's back.")
+			packed_items += O
+			user.drop_from_inventory(O)
+			O.forceMove(locate(0,0,0))
+			packed = TRUE
+			update_icons()
+	else
+		..()
+/mob/living/simple_animal/camel/update_icons()
+	..()
+	if (packed)
+		icon_state = "pack_camel"
+	else
+		icon_state = "camel"
+
+/mob/living/simple_animal/camel/verb/remove_from_storage()
+	set category = null
+	set name = "Remove Pack"
+	set src in range(2, usr)
+	if (!content_size)
+		usr << "The camel is not carrying anything."
+		return
+	else
+		var/list/choicelist = list("Cancel")
+		for (var/obj/item/IT in packed_items)
+			choicelist += IT.name
+		var/choice1 = WWinput(usr, "What do you want to remove from the camel's pack?", "Camel Pack", "Cancel", choicelist)
+		if (choice1 == "Cancel")
+			return
+		else
+			for (var/obj/item/ITS in packed_items)
+				if (ITS.name == choice1)
+					ITS.loc = locate(usr.x,usr.y,usr.z)
+					packed_items -= ITS
+					visible_message("[usr] removes \the [ITS] from the camel's back.","You remove \the [ITS] from the camel's back.")
+					content_size -= ITS.w_class
+					if (!content_size)
+						packed = FALSE
+						update_icons()
+					return

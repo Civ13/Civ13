@@ -25,6 +25,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	icon_state = "unknown"
 	layer = 10
 	mouse_opacity = FALSE
+	plane = LIGHTING_PLANE
 	var/lightswitch = TRUE
 
 	var/eject = null
@@ -114,10 +115,9 @@ var/list/ghostteleportlocs = list()
 	layer = 10
 	uid = ++global_uid
 
-	if (!requires_power || config.machinery_does_not_use_power)
-		power_light = FALSE
-		power_equip = FALSE
-		power_environ = FALSE
+	power_light = FALSE
+	power_equip = FALSE
+	power_environ = FALSE
 
 	..()
 
@@ -130,13 +130,9 @@ var/list/ghostteleportlocs = list()
 	area_list |= src
 
 /area/proc/initialize()
-	if (config.machinery_does_not_use_power)
-		requires_power = FALSE
-	if (!requires_power/* || !apc*/)
-		power_light = FALSE
-		power_equip = FALSE
-		power_environ = FALSE
-//	power_change()		// all machines set to current power level, also updates lighting icon
+	power_light = FALSE
+	power_equip = FALSE
+	power_environ = FALSE
 
 /area/proc/get_contents()
 	return contents

@@ -19,41 +19,7 @@
 	var/lum_b = 0.0
 
 	// luminosity values based on the time of day
-	var/TOD_lum_r = 0.0
-	var/TOD_lum_g = 0.0
-	var/TOD_lum_b = 0.0
-
-// new system for handling time of day and luminosity
-// we use the reference variable to supply the same window_coeff for all corners "in" the same tile (since they're really datums) - Kachnov
-/datum/lighting_corner/proc/getLumR(var/turf/reference = null)
-	var/window_coeff = 0.0
-	if (masters.len)
-		var/turf/T = reference ? reference : masters[1]
-		if (world.time >= T.next_calculate_window_coeff)
-			T.calculate_window_coeff()
-		//	T.next_calculate_window_coeff = world.time + 300
-		window_coeff = T.window_coeff
-	return min(1.0, lum_r + (TOD_lum_r * window_coeff))
-
-/datum/lighting_corner/proc/getLumG(var/turf/reference = null)
-	var/window_coeff = 0.0
-	if (masters.len)
-		var/turf/T = reference ? reference : masters[1]
-		if (world.time >= T.next_calculate_window_coeff)
-			T.calculate_window_coeff()
-		//	T.next_calculate_window_coeff = world.time + 300
-		window_coeff = T.window_coeff
-	return min(1.0, lum_g + (TOD_lum_g * window_coeff))
-
-/datum/lighting_corner/proc/getLumB(var/turf/reference = null)
-	var/window_coeff = 0.0
-	if (masters.len)
-		var/turf/T = reference ? reference : masters[1]
-		if (world.time >= T.next_calculate_window_coeff)
-			T.calculate_window_coeff()
-		//	T.next_calculate_window_coeff = world.time + 300
-		window_coeff = T.window_coeff
-	return min(1.0, lum_b + (TOD_lum_b * window_coeff))
+	var/window_coeff = 0
 
 /datum/lighting_corner/New(var/turf/new_turf, var/diagonal)
 	. = ..()
@@ -105,7 +71,7 @@
 
 // God that was a mess, now to do the rest of the corner code! Hooray!
 /datum/lighting_corner/proc/update_lumcount(var/delta_r, var/delta_g, var/delta_b)
-
+//(time_of_day2luminosity[time_of_day] * window_coeff
 	lum_r += delta_r
 	lum_g += delta_g
 	lum_b += delta_b

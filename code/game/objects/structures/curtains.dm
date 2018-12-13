@@ -8,6 +8,7 @@
 	anchored = TRUE
 	opacity = TRUE
 	density = FALSE
+	flammable = TRUE
 
 /obj/structure/curtain/open
 	icon_state = "open"
@@ -32,11 +33,11 @@
 	else
 		icon_state = "open"
 	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-		L.update_overlay(TRUE)
+		L.update_overlay()
 
 /obj/structure/curtain/Destroy()
 	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-		L.update_overlay(TRUE)
+		L.update_overlay()
 	..()
 
 /obj/structure/curtain/black

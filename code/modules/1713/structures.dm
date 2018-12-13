@@ -1,3 +1,24 @@
+/obj/structure/barricade/wood_pole
+	name = "wood pole"
+	desc = "A simple wood pole. You can attack stuff to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wood_pole_good"
+	health = 50
+	maxhealth = 50
+	anchored = TRUE
+	density = FALSE
+	opacity = FALSE
+	var/attached = "none"
+	var/obj/attached_ob = null
+	flammable = TRUE
+
+/obj/structure/barricade/wood_pole/New()
+	..()
+	name = "wood pole"
+	desc = "A simple wood pole. You can attack stuff to it."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "wood_pole_good"
+
 /obj/structure/grille/fence
 	name = "fence"
 	desc = "An old wooden fence."
@@ -5,11 +26,64 @@
 	icon_state = "1"
 	health = 16
 	hitsound = 'sound/effects/wooddoorhit.ogg'
+	flammable = TRUE
 
 /obj/structure/grille/fence/New()
 	..()
 	icon_state = "[rand(1,3)]"
 	color = "#c8c8c8"
+
+/obj/structure/grille/fence/attackby(obj/O as obj, mob/user as mob)
+	if (istype(O, /obj/item/weapon/leash))
+		var/obj/item/weapon/leash/L = O
+		if (L.onedefined == TRUE && (src in range(3,L.S1)))
+			L.S2 = src
+			L.S1.following_mob = src
+			L.S1.stop_automated_movement = TRUE
+			user << "You tie \the [L.S1] to \the [src] with the leash."
+			qdel(L)
+			return
+	else
+		..()
+
+/obj/structure/barricade/wood_pole/attackby(obj/O as obj, mob/user as mob)
+	if (istype(O, /obj/item/weapon/leash))
+		var/obj/item/weapon/leash/L = O
+		if (L.onedefined == TRUE && (src in range(3,L.S1)))
+			L.S2 = src
+			L.S1.following_mob = src
+			L.S1.stop_automated_movement = TRUE
+			user << "You tie \the [L.S1] to \the [src] with the leash."
+			attached = "animal"
+			qdel(L)
+			return
+	else if (istype(O, /obj/item/flashlight/lantern))
+		var/obj/item/flashlight/lantern/LT = O
+		user << "You tie \the [O] to \the [src]."
+		LT.anchored = TRUE
+		LT.on = TRUE
+		LT.update_icon()
+		LT.icon_state = "lantern-on_pole"
+		LT.on_state = "lantern-on_pole"
+		LT.off_state = "lantern_pole"
+		attached_ob = O
+		user.drop_from_inventory(O)
+		O.forceMove(loc)
+	else
+		..()
+
+/obj/structure/barricade/wood_pole/Destroy()
+	..()
+	if (attached_ob != null)
+		if (istype(attached_ob, /obj/item/flashlight/lantern))
+			var/obj/item/flashlight/lantern/LT = attached_ob
+			LT.anchored = FALSE
+			LT.icon_state = "lantern"
+			LT.on = FALSE
+			LT.on_state = "lantern-on"
+			LT.off_state = "lantern"
+			LT.update_icon()
+			attached_ob = null
 
 /obj/structure/grille/logfence
 	name = "palisade"
@@ -19,18 +93,21 @@
 	health = 32
 	opacity = TRUE
 	hitsound = 'sound/effects/wooddoorhit.ogg'
+	flammable = TRUE
 
 /obj/structure/wallclock
 	name = "wall clock"
 	desc = "A classic wall clock."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wall_clock"
+	flammable = TRUE
 
 /obj/structure/potted_plant
 	name = "potted plant"
 	desc = "A potted plant."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "potted_plant"
+	flammable = TRUE
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
@@ -40,6 +117,7 @@
 	bound_height = 32
 	density = TRUE
 	anchored = TRUE
+	flammable = TRUE
 
 /obj/structure/flag/ex_act(severity)
 	switch(severity)

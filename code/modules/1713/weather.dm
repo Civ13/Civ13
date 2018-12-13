@@ -16,6 +16,9 @@
 	if (season == "WINTER")
 		if (weather == WEATHER_NONE)
 			weather = WEATHER_SNOW
+
+		else if (weather == WEATHER_BLIZZARD)
+			weather = WEATHER_SNOW
 		else
 			weather = WEATHER_NONE
 
@@ -32,6 +35,24 @@
 			weather = WEATHER_RAIN
 		else
 			weather = WEATHER_NONE
+
+	else if (season == "SUMMER")
+		if (weather == WEATHER_RAIN)
+			weather = WEATHER_NONE
+
+	else if (season == "Wet Season")
+		if (weather == WEATHER_NONE)
+			weather = WEATHER_RAIN
+		else
+			weather = WEATHER_NONE
+
+	else if (season == "Dry Season")
+		if (weather == WEATHER_RAIN)
+			weather = WEATHER_NONE
+		else if (weather == WEATHER_SANDSTORM)
+			weather = WEATHER_NONE
+		else if (weather == WEATHER_NONE)
+			weather = WEATHER_SANDSTORM
 	var/area_icon = 'icons/effects/weather.dmi'
 	var/area_icon_state = ""
 	var/area_alpha = 255
@@ -59,7 +80,28 @@
 				if (3.0)
 					area_icon_state = "rain3"
 					area_alpha = 255
-
+		if (WEATHER_BLIZZARD)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "snow_storm"
+					area_alpha = 255
+				if (2.0)
+					area_icon_state = "snow_storm"
+					area_alpha = 255
+				if (3.0)
+					area_icon_state = "snow_storm"
+					area_alpha = 255
+		if (WEATHER_SANDSTORM)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "sandstorm"
+					area_alpha = 255
+				if (2.0)
+					area_icon_state = "sandstorm"
+					area_alpha = 255
+				if (3.0)
+					area_icon_state = "sandstorm"
+					area_alpha = 255
 	for (var/area/caribbean/A in area_list)
 		if (istype(A) && A.location == AREA_OUTSIDE)
 			A.icon = area_icon
@@ -91,19 +133,20 @@
 /proc/change_weather_somehow()
 
 	var/list/possibilities = list(WEATHER_NONE)
-	var/list/non_possibilities = list(weather)
 
 	switch (season)
 		if ("WINTER")
-			possibilities += WEATHER_SNOW
+			possibilities = list(WEATHER_BLIZZARD,WEATHER_SNOW,WEATHER_NONE)
 		if ("SPRING")
-			possibilities += WEATHER_RAIN
+			possibilities = list(WEATHER_RAIN,WEATHER_NONE)
+		if ("Wet Season")
+			possibilities = list(WEATHER_RAIN,WEATHER_NONE)
+		if ("Dry Season")
+			possibilities = list(WEATHER_NONE,WEATHER_SANDSTORM)
 		if ("SUMMER")
 			possibilities = list(WEATHER_NONE)
 		if ("FALL")
-			possibilities += WEATHER_RAIN
-			possibilities += WEATHER_SNOW
-	possibilities -= non_possibilities
+			possibilities = list(WEATHER_RAIN,WEATHER_SNOW,WEATHER_NONE)
 
 	if (possibilities.len)
 		change_weather(pick(possibilities))
@@ -116,6 +159,10 @@
 			return "snow"
 		if (WEATHER_RAIN)
 			return "rain"
+		if (WEATHER_BLIZZARD)
+			return "blizzard"
+		if (WEATHER_SANDSTORM)
+			return "sandstorm"
 	return "none"
 
 // global weather variable changed
@@ -127,11 +174,27 @@
 					. = ""
 				if (WEATHER_SNOW, WEATHER_RAIN)
 					. = "It's no longer <b>[get_weather_default(old)]ing</b>."
+				if (WEATHER_BLIZZARD)
+					. = "The <b>blizzard</b> has passed."
+				if ( WEATHER_SANDSTORM)
+					. = "The <b>sandstorm</b> has passed."
 		if (WEATHER_SNOW, WEATHER_RAIN)
 			switch (old)
 				if (WEATHER_NONE)
 					. = "It's now <b>[get_weather_default(_new)]ing</b>."
 				if (WEATHER_SNOW,  WEATHER_RAIN)
+					. = ""
+		if (WEATHER_SANDSTORM)
+			switch (old)
+				if (WEATHER_NONE)
+					. = "A <b>sandstorm</b> has begun."
+				if (WEATHER_SANDSTORM)
+					. = ""
+		if (WEATHER_BLIZZARD)
+			switch (old)
+				if (WEATHER_NONE)
+					. = "A <b>blizzard</b> has begun."
+				if (WEATHER_BLIZZARD)
 					. = ""
 	if (.)
 		world << "<font size=3><span class = 'notice'>[.]</span></font>"

@@ -20,6 +20,7 @@
 	var/store_misc = TRUE
 	var/store_items = TRUE
 	var/store_mobs = TRUE
+	flammable = TRUE
 
 /obj/structure/closet/initialize()
 	..()

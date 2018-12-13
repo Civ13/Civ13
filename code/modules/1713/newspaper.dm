@@ -12,7 +12,7 @@
 	var/datum/feed_message/important_message = null
 	var/scribble=""
 	var/scribble_page = null
-
+	flammable = TRUE
 /obj/item/weapon/newspaper/attack_self(mob/user as mob)
 	return ..(user)
 

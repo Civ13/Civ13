@@ -21,7 +21,7 @@ var/civmax_research = list(85,89,67)
 	var/event_faction = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
-	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW)
+	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW, WEATHER_SANDSTORM, WEATHER_BLIZZARD)
 	var/squad_spawn_locations = TRUE
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
@@ -61,7 +61,7 @@ var/civmax_research = list(85,89,67)
 	var/win_condition_spam_check = FALSE
 
 	// lighting
-	var/list/times_of_day = list("Early Morning", "Morning", "Afternoon", "Midday", "Evening", "Night", "Midnight")
+	var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
 	var/list/zlevels_without_lighting = list()
 	var/list/areas_without_lighting = list()
 
@@ -76,10 +76,13 @@ var/civmax_research = list(85,89,67)
 	//weather
 	var/blizzard = FALSE
 	var/heat_wave = FALSE
+	var/sandstorm = FALSE
 	var/triggered_heatwave = FALSE
 	var/triggered_blizzard = FALSE
+	var/triggered_sandstorm = FALSE
 	//civ stuff
 	var/civilizations = FALSE
+	var/nomads = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/custom_civs = list()
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical)
@@ -89,6 +92,19 @@ var/civmax_research = list(85,89,67)
 	var/civd_research = list(0,0,0,null)
 	var/cive_research = list(0,0,0,null)
 	var/civf_research = list(0,0,0,null)
+
+	var/research_active = FALSE //if research can be done
+	var/default_research = 0 //the starting research level
+	var/age1_lim = 110
+	var/age1_done = 0
+	var/age1_top = 35
+	var/age2_lim = 170
+	var/age2_done = 0
+	var/age2_timer = 40000
+	var/age2_top = 65
+	var/age3_lim = 300
+	var/age3_done = 0
+	var/age3_timer = 42000
 /obj/map_metadata/New()
 	..()
 	map = src

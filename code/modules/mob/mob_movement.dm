@@ -182,12 +182,6 @@
 
 
 /client/Center()
-	/* No 3D movement in 2D spessman game. dir 16 is Z Up
-	if (isobj(mob.loc))
-		var/obj/O = mob.loc
-		if (mob.canmove)
-			return O.relaymove(mob, 16)
-	*/
 	return
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
@@ -236,6 +230,13 @@
 		m_flag = TRUE
 		if ((A != loc && A && A.z == z))
 			last_move = get_dir(A, loc)
+	if (istype(src, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = src
+		if (H.riding == TRUE && !isnull(H.riding_mob))
+			if (H.pulling)
+				H.stop_pulling()
+			H.riding_mob.forceMove(locate(x-1,y-1,z))
+			H.riding_mob.dir = H.dir
 	return
 
 /client/proc/Move_object(direct)
@@ -441,10 +442,6 @@
 
 		move_delay = world.time + mob.movement_delay()//set move delay
 
-		// removed config.run_speed, config.walk_speed from move_delays
-		// for some reason they kept defaulting to values different from
-		// the ones specified in the config.
-
 
 		var/turf/floor/F = mob_loc
 		var/F_is_valid_floor = istype(F)
@@ -459,12 +456,19 @@
 				F.muddy = FALSE
 			for (var/obj/covers/CV in get_turf(F))
 				F.muddy = FALSE
-			var/obj/snow/S = F.has_snow()
 			var/snow_message = ""
 			var/snow_span = "notice"
 
-			if (S)
+			if (F.icon == 'icons/turf/snow.dmi')
 				standing_on_snow = TRUE
+				if (prob(50))
+					standing_on_snow = 1.25
+					snow_message = "You're slowed down a bit by the snow."
+				else
+					standing_on_snow = 1.75
+					snow_message = "You're slowed down quite a bit by the snow."
+					snow_span = "warning"
+/* OLD CODE - TO BE REACTIVATED WHEN WE GET SNOW LEVELS
 				switch (S.amount)
 					if (0.01 to 0.8) // more than none and up to ~1/4 feet
 						standing_on_snow = TRUE
@@ -488,7 +492,7 @@
 						standing_on_snow = 18
 						snow_message = "There's way too much snow here to move!"
 						snow_span = "danger"
-
+*/
 				if (snow_message && world.time >= mob.next_snow_message)
 					mob << "<span class = '[snow_span]'>[snow_message]</span>"
 					mob.next_snow_message = world.time+100
@@ -578,8 +582,6 @@
 			move_delay += tickcomp
 
 		if (mob.pulledby || mob.buckled) // Wheelchair driving!
-/*			if (istype(mob.pulledby, /obj/structure/bed/chair/wheelchair))
-				return mob.pulledby.relaymove(mob, direct)*/
 			if (istype(mob.buckled, /obj/structure/bed/chair/wheelchair))
 				if (mob_is_human)
 					var/mob/living/carbon/human/driver = mob
@@ -593,17 +595,23 @@
 				move_delay += 2
 				return mob.buckled.relaymove(mob,direct)
 
+		if (istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = src
+			if (HH.riding == TRUE && !isnull(HH.riding_mob))
+				move_delay = world.time + 0.5
+
 		//We are now going to move
 		moving = TRUE
 
 		/* this is runtiming somehow, sometimes. But no errors. Now it's in a try-catch block so the var moving is always reset
 		 * should fix the movement bug - Kachnov */
 		try
-
+			if (!mob.grab_list)
+				mob.grab_list = list()
 			for (var/datum in mob.grab_list)
 				var/datum/D = datum
-				if (isDeleted(D))
-					mob.grab_list = list()
+				if (D.gcDestroyed)
+					mob.grab_list -= D
 
 			//Something with grabbing things
 			if (mob.grab_list.len)
@@ -666,6 +674,9 @@
 								if (ishuman(L))
 									L.emote("scream")
 								H.next_change_dir[num2text(opposite_direction(direct))] = world.time + (STOMP_TIME*3)
+								H.movement_northsouth = null
+								H.movement_eastwest = null
+								movementMachine_clients -= src
 								sleep(STOMP_TIME)
 								break
 					else
@@ -699,10 +710,17 @@
 
 		if (move_delay > world.time)
 			move_delay -= world.time
+		if (istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = src
+			if (HH.riding == TRUE && !isnull(HH.riding_mob))
+				move_delay = 0.5
+			else
+				move_delay /= mob.movement_speed_multiplier
+		else
 			move_delay /= mob.movement_speed_multiplier
 			if (ordinal)
 				move_delay *= ROOT2_FAST
-			move_delay += world.time
+		move_delay += world.time
 
 		return .
 
@@ -802,31 +820,6 @@
 
 /mob/proc/Post_Incorpmove()
 	return
-
-///Process_Spacemove
-///Called by /client/Move()
-///For moving in space
-///Return TRUE for movement FALSE for none
-/mob/proc/Process_Spacemove(var/check_drift = FALSE)
-
-/*	if (!Check_Dense_Object()) //Nothing to push off of so end here
-		update_floating(0)
-		return FALSE */
-
-	update_floating(1)
-
-	if (restrained()) //Check to see if we can do things
-		return FALSE
-
-	//Check to see if we slipped
-	if (prob(slip_chance(5)) && !buckled)
-		src << "<span class='warning'>You slipped!</span>"
-		inertia_dir = last_move
-		step(src, inertia_dir)
-		return FALSE
-	//If not then we can reset inertia and move
-	inertia_dir = FALSE
-	return TRUE
 
 /mob/proc/Check_Dense_Object() //checks for anything to push off in the vicinity. also handles magboots on gravity-less floors tiles
 

@@ -114,7 +114,7 @@
 	icon_state = "wood"
 	stepsound = "wood"
 
-/turf/floor/wood_ship
+/turf/floor/wood/ship
 	name = "floor"
 	icon_state = "wood_ship"
 	stepsound = "wood"
@@ -192,6 +192,7 @@
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "snow"
 	is_diggable = TRUE
+	available_snow = 3
 
 /turf/floor/plating/snow/ex_act(severity)
 	return
@@ -250,7 +251,9 @@ var/global/list/GrassEdgeCache
 /turf/floor/winter/grass
 	name = "snowy grass"
 	icon = 'icons/turf/snow.dmi'
+	icon_state = "grass2"
 	is_diggable = TRUE
+	available_snow = 2
 
 /turf/floor/winter/grass/New()
 	..()
@@ -285,8 +288,14 @@ var/global/list/GrassEdgeCache
 	name = "Beach"
 	icon = 'icons/misc/beach.dmi'
 
+/turf/floor/plating/beach/drywater
+	name = "dry riverbed"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "sand1"
+	is_diggable = FALSE
+
 /turf/floor/plating/beach/sand
-	name = "Sand"
+	name = "sand"
 	icon_state = "sand"
 	is_diggable = TRUE
 	available_sand = 2
@@ -382,6 +391,19 @@ var/global/list/GrassEdgeCache
 	stepsound = "dirt"
 	is_diggable = TRUE
 	available_sand = 2
+
+/turf/floor/plating/sand/desert
+	name = "desert sand"
+	icon = 'icons/misc/beach.dmi'
+	icon_state = "desert1"
+	interior = FALSE
+	stepsound = "dirt"
+	is_diggable = TRUE
+	available_sand = 2
+
+/turf/floor/plating/sand/desert/New()
+	..()
+	icon_state = "desert[rand(0,4)]"
 
 /turf/floor/plating/sand/New()
 	..()

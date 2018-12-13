@@ -63,11 +63,6 @@
 		overlays = null
 	return move_delay
 
-/turf/floor/proc/has_snow()
-	for (var/obj/snow/S in contents)
-		return S
-	return FALSE
-
 /turf/floor/is_plating()
 	return !flooring
 

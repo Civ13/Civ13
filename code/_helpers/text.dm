@@ -295,7 +295,19 @@
 	for (var/i = length(text); i > 0; i--)
 		new_text += copytext(text, i, i+1)
 	return new_text
-
+	
+// Converts seconds to display "less than a minute", "around 1 minute", "around x minutes"
+/proc/convert_to_textminute(displaytime)
+	displaytime = round(displaytime/600)
+	var/text = displaytime
+	if(displaytime > 1)
+		text = "around [text] minutes"
+	else if(displaytime == 1)
+		text = "around 1 minute"
+	else
+		text = "less than a minute"
+	return text
+	
 //Used in preferences' SetFlavorText and human's set_flavor verb
 //Previews a string of len or less length
 proc/TextPreview(var/string,var/len=40)

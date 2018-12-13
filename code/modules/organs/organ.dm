@@ -24,6 +24,7 @@ var/list/organ_cache = list()
 	germ_level = FALSE
 	var/datum/dna/dna
 	var/datum/species/species
+	flammable = TRUE
 
 /obj/item/organ/Destroy()
 	if (!owner)

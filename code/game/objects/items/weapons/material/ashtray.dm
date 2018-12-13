@@ -92,9 +92,6 @@ var/global/list/ashtray_cache = list()
 		update_icon()
 	return ..()
 
-/obj/item/weapon/material/ashtray/plastic/New(var/newloc)
-	..(newloc, "plastic")
-
 /obj/item/weapon/material/ashtray/bronze/New(var/newloc)
 	..(newloc, "bronze")
 

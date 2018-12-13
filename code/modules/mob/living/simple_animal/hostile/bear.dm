@@ -1,6 +1,6 @@
 
 /mob/living/simple_animal/hostile/bear
-	name = "bear"
+	name = "black bear"
 	desc = "Rawr Rawr!!"
 	icon_state = "bear"
 	icon_living = "bear"
@@ -25,6 +25,7 @@
 	mob_size = MOB_LARGE
 
 	var/stance_step = FALSE
+	var/btype = ""
 
 	faction = "neutral"
 
@@ -33,7 +34,7 @@
 	if (!.)
 		return
 
-	icon_state = "bear"
+	icon_state = "[btype]bear"
 
 	switch(stance)
 
@@ -123,27 +124,18 @@
 		//M.attack_animal(src)
 		//return M
 
+/mob/living/simple_animal/hostile/bear/brown
+	name = "brown bear"
+	icon_state = "brownbear"
+	icon_living = "brownbear"
+	icon_dead = "brownbear_dead"
+	icon_gib = "brownbear_gib"
+	btype = "brown"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/mob/living/simple_animal/hostile/bear/polar
+	name = "polar bear"
+	icon_state = "polarbear"
+	icon_living = "polarbear"
+	icon_dead = "polarbear_dead"
+	icon_gib = "polarbear_gib"
+	btype = "polar"

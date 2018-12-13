@@ -16,8 +16,9 @@
 	var/on = FALSE
 	var/brightness_on = 5 //luminosity when on
 	var/turn_on_sound = 'sound/effects/Custom_flashlight.ogg'
-
+	var/fuel = 600 // 10 mins
 	var/cooloff = 0
+	var/unlimited = FALSE
 
 /obj/item/flashlight/initialize()
 	..()
@@ -50,8 +51,8 @@
 			user.visible_message("<span class='notice'>\The [user] hits [M] with the [src]!</span>", "<span class='notice'>You hit [M] with the [src]!</span>")
 			user.do_attack_animation(M)
 			if (prob(5))
-				M.IgniteMob()
 				M.fire_stacks += 1
+			M.IgniteMob()
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 75, TRUE)
 			cooloff = world.time+10
 			return

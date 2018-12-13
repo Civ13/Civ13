@@ -19,10 +19,10 @@
 	if (!do_mob(user, H, 20))
 		user << "<span class='notice'>You must stand still to feel [E] for fractures.</span>"
 	else if (E.status & ORGAN_BROKEN)
-		user << "<span class='warning'>The [E.encased ? E.encased : "bone in the [E.name]"] moves slightly when you poke it!</span>"
+		user << "<span class='warning'>The bone in the [E.name] moves slightly when you poke it!</span>"
 		H.custom_pain("Your [E.name] hurts where it's poked.")
 	else
-		user << "<span class='notice'>The [E.encased ? E.encased : "bones in the [E.name]"] seem to be fine.</span>"
+		user << "<span class='notice'>The bones in the [E.name] seem to be fine.</span>"
 
 	user << "<span class='notice'>Checking skin now...</span>"
 	if (!do_mob(user, H, 10))

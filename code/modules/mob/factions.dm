@@ -13,7 +13,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization != "none")
 			usr << "<span class='danger'>You are already in a faction. Abandon it first.</span>"
 			return
@@ -36,7 +36,7 @@
 	if (newname != null && newname != "none")
 		H.civilization = newname
 		map.custom_faction_nr += newname
-		var/newnamev = list("[newname]" = list(0,0,0,H))
+		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H))
 		map.custom_civs += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> faction.</big>"
 		return
@@ -53,7 +53,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -77,7 +77,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -113,7 +113,7 @@
 		U = src
 	else
 		return
-	if (map.ID == MAP_NOMADS)
+	if (map.nomads == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return

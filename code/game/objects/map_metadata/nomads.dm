@@ -25,18 +25,22 @@
 	availablefactions = list("Nomad")
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
-	var/age1_lim = 110
-	var/age1_done = 0
-	var/age2_lim = 170
-	var/age2_done = 0
-	var/age3_lim = 300
-	var/age3_done = 0
-
+	research_active = TRUE
+	age1_lim = 90
+	age1_done = 0
+	age1_top = 35
+	age2_lim = 150
+	age2_done = 0
+	age2_timer = 40000
+	age2_top = 65
+	age3_lim = 240
+	age3_done = 0
+	age3_timer = 42000
+	nomads = TRUE
 /obj/map_metadata/nomads/New()
 	..()
 	spawn(18000)
 		seasons()
-
 
 /obj/map_metadata/nomads/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
@@ -59,6 +63,9 @@
 		for (var/turf/floor/winter/grass/G)
 			if (prob(60))
 				G.ChangeTurf(/turf/floor/plating/grass/wild)
+		for (var/turf/floor/dirt/burned/B)
+			if (prob(60))
+				B.ChangeTurf(/turf/floor/plating/grass/wild)
 		spawn(150)
 			change_weather(WEATHER_NONE)
 		spawn(1500)
@@ -147,28 +154,33 @@
 	if (age1_done == FALSE)
 		var/count = 0
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
-			if (count > age1_lim)
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+			if (count > age1_lim && world.time > 36000)
+				world << "<big>The world has advanced into the Bronze Age!</big>"
 				age = "313 B.C."
 				set_ordinal_age()
 				age1_done = TRUE
+				age2_timer = (world.time + age2_timer)
 				break
 
 	else if (age2_done == FALSE)
 		var/count = 0
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
-			if (count > age1_lim)
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+			if (count > age2_lim && world.time >= age2_timer)
+				world << "<big>The world has advanced into the Medieval Age!</big>"
 				age = "1013"
 				set_ordinal_age()
 				age2_done = TRUE
+				age3_timer = (world.time + age3_timer)
 				break
 
 	else if (age3_done == FALSE)
 		var/count = 0
 		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i][1]]+custom_civs[custom_faction_nr[i][2]]+custom_civs[custom_faction_nr[i][3]]
-			if (count > age1_lim)
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+			if (count > age3_lim && world.time >= age3_timer)
+				world << "<big>The world has advanced into the Imperial Age!</big>"
 				age = "1713"
 				set_ordinal_age()
 				age3_done = TRUE

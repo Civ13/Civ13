@@ -13,6 +13,7 @@
 	var/title		 // The real name of the book.
 	var/carved = FALSE	 // Has the book been hollowed out for use as a secret storage item?
 	var/obj/item/store	//What's in the book?
+	flammable = TRUE
 
 /obj/item/weapon/book/attack_self(var/mob/user as mob)
 	if (carved)

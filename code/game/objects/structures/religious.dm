@@ -45,6 +45,7 @@
 	density = FALSE
 	anchored = TRUE
 	health = 50
+	flammable = TRUE
 
 /obj/structure/religious/woodcross2
 	name = "wood cross"
@@ -54,6 +55,7 @@
 	density = FALSE
 	anchored = TRUE
 	health = 50
+	flammable = TRUE
 
 /obj/structure/religious/grave
 	name = "open_grave"
@@ -74,6 +76,7 @@
 	desc = "A decorative wood mask."
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "tribalmask1"
+	flammable = TRUE
 
 /obj/structure/religious/remains
 	name = "human remains"

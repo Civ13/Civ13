@@ -34,7 +34,7 @@
 	..()
 
 	loc = user
-	user.grab_list += src
+	user.grab_list = list(src)
 
 	assailant = user
 	affecting = victim

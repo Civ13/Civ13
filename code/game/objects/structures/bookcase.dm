@@ -9,6 +9,8 @@
 	var/sum_i = 0
 	var/sum_m = 0
 	var/sum_h = 0
+	flammable = TRUE
+
 /obj/structure/bookcase/initialize()
 	for (var/obj/item/I in loc)
 		if (istype(I, /obj/item/weapon/book))
@@ -78,14 +80,20 @@
 		for (var/obj/item/weapon/book/research/RB in contents)
 			if (RB.completed)
 				var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+				if (map.nomads == TRUE)
+					if (alive_civilians.len <= 12)
+						current_tribesmen = alive_civilians.len
+					else if (alive_civilians.len > 12 && alive_civilians.len <= 30)
+						current_tribesmen = alive_civilians.len/2
+					else
+						current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
 				if (RB.k_class == "medicine" || RB.k_class == "anatomy")
 					sum_h += RB.k_level/current_tribesmen
 				if (RB.k_class == "gunpowder" || RB.k_class == "fencing" || RB.k_class == "archery")
 					sum_m += RB.k_level/current_tribesmen
-				if (RB.k_class == "industrial" || RB.k_class == "philosophy")
+				if (RB.k_class == "industry" || RB.k_class == "philosophy")
 					sum_i += RB.k_level/current_tribesmen
 		current_research = sum_i+sum_m+sum_h
-
 
 /obj/structure/bookcase/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
 	if (istype(O, /obj/item/weapon/book))
@@ -100,7 +108,7 @@
 			name = ("bookcase ([newname])")
 	else if (istype(O,/obj/item/weapon/wrench))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 	else if (istype(O,/obj/item/weapon/hammer))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
@@ -112,12 +120,30 @@
 				b.loc = (get_turf(src))
 			qdel(src)
 	else if (istype(O, /obj/item/weapon/researchkit))
+		if (user.original_job_title == "Nomad")
+			if (map.age1_done == FALSE)
+				if (world.time < 36000 && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (19*3))
+					user << "You are already too advanced. You can research again in [(36000-world.time)/600] minutes."
+					return
+			else if (map.age1_done == TRUE && map.age2_done == FALSE)
+				if (world.time < map.age2_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age1_top*3))
+					user << "You are already too advanced. You can research again in [(map.age2_timer-world.time)/600] minutes."
+					return
+			if (map.age2_done == TRUE && map.age3_done == FALSE)
+				if (world.time < map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age2_top*3))
+					user << "You are already too advanced. You can research again in [(map.age3_timer-world.time)/600] minutes."
+					return
 		if (!map.civilizations)
+			return
+		else if(!contents.len)
+			user << "The [name] is empty."
 			return
 		else
 			check_research()
-			user << "Studying these documents..."
-			if (do_after(user,(300*current_research)/user.getStatCoeff("philosophy"),src))
+			var/studytime = 300*current_research
+			var/displaytime = convert_to_textminute(studytime)
+			user << "Studying these documents... This will take [displaytime] to finish."
+			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))
 				user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 				user.adaptStat("philosophy", 1*current_research)
 				if (user.civilization == civname_a)
@@ -144,5 +170,12 @@
 					map.civf_research[1] += sum_i
 					map.civf_research[2] += sum_m
 					map.civf_research[3] += sum_h
-	else
-		..()
+				else if (user.civilization != "none" && user.civilization != null)
+					map.custom_civs[user.civilization][1] += sum_i
+					map.custom_civs[user.civilization][2] += sum_m
+					map.custom_civs[user.civilization][3] += sum_h
+				else
+					..()
+		sum_i = null
+		sum_m = null
+		sum_h = null

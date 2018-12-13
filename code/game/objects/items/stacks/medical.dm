@@ -42,7 +42,7 @@
 	singular_name = "gauze length"
 	desc = "Some sterile gauze to wrap around bloody stumps."
 	icon_state = "brutepack"
-//	origin_tech = list(TECH_BIO = TRUE)
+	flammable = TRUE
 
 /obj/item/stack/medical/bruise_pack/attack(mob/living/M as mob, mob/user as mob)
 	if (..())
@@ -121,7 +121,7 @@
 	icon_state = "trauma_kit"
 	item_state = "trauma_kit"
 	heal_brute = 0
-//	origin_tech = list(TECH_BIO = TRUE)
+	flammable = TRUE
 
 /obj/item/stack/medical/advanced/bruise_pack/attack(mob/living/carbon/M as mob, mob/user as mob)
 	if (..())

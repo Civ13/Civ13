@@ -203,7 +203,7 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-			if (choice2 == "Xiphos (10)")
+			if (choice2 == "Xiphos (14)")
 				if (iron_amt >= 14)
 					user << "You begin crafting a xiphos..."
 					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)

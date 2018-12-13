@@ -13,6 +13,7 @@
 	organ_tag = "kidneys"
 	parent_organ = "groin"
 	w_class = 1
+	min_broken_damage = 65
 /obj/item/organ/kidneys/process()
 
 	..()

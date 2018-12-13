@@ -13,7 +13,7 @@
 	throw_speed = 5
 	throw_range = 10
 	attack_verb = list("slapped", "whacked")
-
+	flammable = TRUE
 	var/list/severity_adj = list("minor", "moderate", "serious", "severe", "critical") // do not touch this
 	var/sev_factor
 

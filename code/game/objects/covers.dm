@@ -14,13 +14,13 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	layer = TURF_LAYER + 0.01
+	layer = 2.1
 	level = 2
 	var/amount = FALSE
 	var/wall = FALSE
 	var/wood = TRUE
 	var/onfire = FALSE
-
+	flammable = TRUE
 //	invisibility = 101 //starts invisible
 
 
@@ -30,6 +30,7 @@
 	icon_state = "wood"
 	passable = TRUE
 	amount = 1
+	layer = 1.99
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -39,6 +40,8 @@
 	not_movable = TRUE
 	amount = 0
 	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -48,6 +51,8 @@
 	not_movable = TRUE
 	amount = 0
 	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
 
 /obj/covers/wood_ship
 	name = "wood floor"
@@ -55,6 +60,7 @@
 	passable = TRUE
 	not_movable = TRUE
 	amount = 1
+	layer = 1.99
 
 /obj/covers/wood_wall
 	name = "soft wood wall"
@@ -69,6 +75,7 @@
 	layer = 2.12
 	health = 150
 	wall = TRUE
+
 /obj/covers/stone_wall
 	name = "stone wall"
 	desc = "A stone wall."
@@ -83,6 +90,7 @@
 	health = 300
 	wood = FALSE
 	wall = TRUE
+	flammable = FALSE
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -98,6 +106,7 @@
 	health = 90
 	wood = FALSE
 	wall = TRUE
+	flammable = FALSE
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -113,6 +122,7 @@
 	health = 75
 	wood = TRUE
 	wall = TRUE
+
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
@@ -127,6 +137,8 @@
 	health = 110
 	wood = FALSE
 	wall = TRUE
+	flammable = FALSE
+
 /obj/covers/dirt_wall/blocks/incomplete
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
@@ -142,6 +154,7 @@
 	var/stage = 1
 	wood = FALSE
 	wall = TRUE
+	flammable = FALSE
 
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/sandbag))
@@ -163,6 +176,7 @@
 				qdel(W)
 				return
 	..()
+
 /obj/covers/New()
 	..()
 	spawn(15)
@@ -173,13 +187,6 @@
 			spawn(15)
 				updateturf()
 		return TRUE
-/*
-	for(var/obj/Ob in get_turf(src))
-		if (Ob.invisibility == 0)
-			Ob.invisibility = 101
-	for(var/mob/Mb in get_turf(src))
-		if (Mb.invisibility == 0)
-			Mb.invisibility = 101 */
 
 /obj/covers/updateturf()
 	var/turf/T = get_turf(loc)
@@ -213,13 +220,15 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired2"
 	w_class = 2.0
+	flammable = TRUE
 
 /obj/covers/repairedfloor
 	name = "repaired floor"
 	desc = "a repaired wood floor."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
-	layer = 2.09
+	layer = 1.98
+	flammable = TRUE
 
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
@@ -319,6 +328,7 @@
 	if (onfire && wood)
 		var/obj/small_fire/NF = new/obj/small_fire(src.loc)
 		NF.set_light(3)
+		NF.origin = src
 		start_fire_dmg(NF)
 		spawn(400)
 			NF.icon_state = "fire_big"
@@ -327,8 +337,99 @@
 	spawn(80)
 		if (health > 0)
 			health -= 10
+			start_fire_dmg()
 			return
 		else
 			try_destroy()
 			qdel(SF)
 			return
+
+
+/obj/roof
+
+	name = "wood roof"
+	desc = "A wooden roof."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "roof"
+	var/passable = TRUE
+	var/origin_density = FALSE
+	var/origin_water_level = 0
+	var/origin_move_delay = 0
+	var/not_movable = TRUE //if it can be removed by wrenches
+	var/health = 100
+	is_cover = TRUE
+	anchored = TRUE
+	opacity = FALSE
+	density = FALSE
+	layer = 2.1
+	level = 2
+	var/amount = FALSE
+	var/wall = FALSE
+	var/wood = TRUE
+	var/onfire = FALSE
+	invisibility = 101
+	var/oldname = "roofed building"
+	flammable = TRUE
+
+/obj/roof/New()
+	..()
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (CURRENTAREA.location == AREA_OUTSIDE)
+		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
+		oldname = CURRENTAREA.name
+		NEWAREA.name = "roofed building"
+		NEWAREA.base_turf = CURRENTAREA.base_turf
+		NEWAREA.location = AREA_INSIDE
+		NEWAREA.update_light()
+/obj/roof/Destroy()
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (CURRENTAREA.location == AREA_INSIDE && CURRENTAREA.name == "roofed building")
+		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
+		NEWAREA.name = oldname
+		NEWAREA.base_turf = CURRENTAREA.base_turf
+		NEWAREA.location = AREA_OUTSIDE
+		NEWAREA.update_light()
+	visible_message("The roof collapses!")
+	..()
+
+/obj/item/weapon/roofbuilder
+	name = "roof builder"
+	desc = "Use this to build roofs."
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "roof_builder"
+	w_class = 2.0
+	flammable = TRUE
+
+/obj/item/weapon/roofbuilder/attack_self(mob/user)
+	var/your_dir = "NORTH"
+
+	switch (user.dir)
+		if (NORTH)
+			your_dir = "NORTH"
+		if (SOUTH)
+			your_dir = "SOUTH"
+		if (EAST)
+			your_dir = "EAST"
+		if (WEST)
+			your_dir = "WEST"
+
+	var/covers_time = 80
+
+	if (ishuman(user))
+		var/mob/living/carbon/human/H = user
+		covers_time /= H.getStatCoeff("strength")
+		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+	for (var/obj/roof/RF in get_step(user, user.dir))
+		user << "That area is already roofed!"
+		return
+	if (WWinput(user, "This will start building a roof [your_dir] of you.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue")
+		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
+		if (do_after(user, covers_time, user.loc))
+			qdel(src)
+			new/obj/roof(get_step(user, user.dir), user)
+			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
+			if (ishuman(user))
+				var/mob/living/carbon/human/H = user
+				H.adaptStat("crafting", 1)
+		return
+

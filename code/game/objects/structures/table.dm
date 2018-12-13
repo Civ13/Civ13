@@ -424,6 +424,7 @@
 	frame = /obj/structure/table_frame/wood
 	framestack = /obj/item/stack/material/wood
 	buildstack = /obj/item/stack/material/wood
+	flammable = TRUE
 
 /obj/structure/table/wood/poker //No specialties, Just a mapping object.
 	name = "gambling table"

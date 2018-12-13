@@ -320,6 +320,7 @@ var/obj/burning_overlay_turf = null
 	icon = 'icons/effects/fire.dmi'
 	icon_state = "fire"
 	layer = 2.13
+	var/obj/origin
 
 /obj/small_fire/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
@@ -331,3 +332,16 @@ var/obj/burning_overlay_turf = null
 					qdel(src)
 					visible_message("The fire is put out!")
 				CT.reagents.clear_reagents()
+
+/obj/small_fire/New()
+	..()
+	fire_check()
+
+/obj/small_fire/proc/fire_check()
+	spawn(50)
+		if (!(origin in src.loc))
+			visible_message("The fire goes out.")
+			qdel(src)
+		else
+			fire_check()
+			return

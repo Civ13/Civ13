@@ -46,7 +46,7 @@
 	throw_range = 5
 	matter = list(DEFAULT_WALL_MATERIAL = 75)
 	attack_verb = list("bludgeoned", "hit")
-
+	flammable = TRUE
 /*
  * Wirecutters
  */
@@ -136,6 +136,7 @@
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
 	var/deployed = FALSE
 	nothrow = TRUE
+	flammable = TRUE
 
 /obj/item/weapon/siegeladder/attackby(obj/item/weapon/O as obj, mob/user as mob)
 	if (deployed)
@@ -185,3 +186,15 @@
 	w_class = 3.0
 	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("bashed", "whacked")
+	flammable = TRUE
+
+/obj/item/weapon/fishing/net
+	name = "fishing net"
+	desc = "A classic fishing net, made of hemp rope."
+	w_class = 2.0
+	icon_state = "fishing_net"
+	force = WEAPON_FORCE_WEAK
+	throwforce = WEAPON_FORCE_WEAK
+	slot_flags = null
+	attack_verb = list("slapped")
+	flammable = TRUE

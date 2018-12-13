@@ -29,6 +29,7 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "wood_bowl"
 	value = 2
+	flammable = TRUE
 
 /obj/item/kitchen/snack_bowl/New()
 	..()
@@ -47,11 +48,13 @@
 	name = "candle"
 	icon = 'icons/obj/candle.dmi'
 	icon_state = "candle4"
+	flammable = TRUE
 
 /obj/item/trash/money
 	name = "Money"
 	desc = "A pile of banknotes."
 	icon_state = "money"
+	flammable = TRUE
 
 /obj/item/trash/attack(mob/M as mob, mob/living/user as mob)
 	return

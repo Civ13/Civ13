@@ -71,6 +71,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	// for digging out dirt
 	var/available_dirt = 0
 	var/available_sand = 0
+	var/available_snow = 0
 
 	var/overlay_priority = 0
 //	var/uses_daylight_dynamic_lighting = FALSE
@@ -212,11 +213,6 @@ var/const/enterloopsanity = 100
 		var/mob/M = A
 		if (!M.lastarea)
 			M.lastarea = get_area(M.loc)
-		if (M.lastarea.has_gravity == FALSE)
-			inertial_drift(M)
-		else if (is_space())
-			M.inertia_dir = FALSE
-			M.make_floating(0)
 
 	var/objects = FALSE
 	if (A && (A.flags & PROXMOVE))
@@ -235,22 +231,6 @@ var/const/enterloopsanity = 100
 
 /turf/proc/is_plating()
 	return FALSE
-
-/turf/proc/inertial_drift(atom/movable/A as mob|obj)
-	if (!(A.last_move))	return
-	if ((istype(A, /mob/) && x > 2 && x < (world.maxx - 1) && y > 2 && y < (world.maxy-1)))
-		var/mob/M = A
-		if (M.Process_Spacemove(1))
-			M.inertia_dir  = FALSE
-			return
-		spawn(5)
-			if ((M && !(M.anchored) && !(M.pulledby) && (M.loc == src)))
-				if (M.inertia_dir)
-					step(M, M.inertia_dir)
-					return
-				M.inertia_dir = M.last_move
-				step(M, M.inertia_dir)
-	return
 
 /turf/proc/levelupdate()
 	for (var/obj/O in src)
