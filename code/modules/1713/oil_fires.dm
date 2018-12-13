@@ -143,9 +143,10 @@
 				CT.reagents.clear_reagents()
 
 /obj/effect/burning_oil/proc/burningproc()
-	spawn(25)
+	spawn(35)
 		for (var/mob/living/L in src.loc)
 			L.IgniteMob()
+			L.adjustFireLoss(rand(15,20))
 
 		for (var/obj/effect/decal/cleanable/blood/O in src.loc)
 			spawn(50)
@@ -169,10 +170,10 @@
 
 		for (var/turf/floor/plating/grass/GR in range(1, get_turf(src)))
 			if (prob(5))
-				new/obj/effect/burning_oil(GR)
-				spawn(50)
+				var/obj/effect/burning_oil/NB = new/obj/effect/burning_oil(GR)
+				spawn(80)
 					qdel(src)
-
+					qdel(NB)
 		for (var/obj/effect/burning_oil/OTH in src.loc)
 			if (OTH != src)
 				qdel(OTH)

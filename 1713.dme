@@ -353,7 +353,7 @@
 #include "code\modules\1713\newspaper.dm"
 #include "code\modules\1713\noghost.dm"
 #include "code\modules\1713\officer.dm"
-#include "code\modules\1713\oilwell.dm"
+#include "code\modules\1713\oil_fires.dm"
 #include "code\modules\1713\ores.dm"
 #include "code\modules\1713\production.dm"
 #include "code\modules\1713\research.dm"
