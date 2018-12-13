@@ -68,7 +68,7 @@
 		if (epoch == "1713")
 		//1713 - TDM
 			maps = list(
-				MAP_CURSED_ISLAND = 0,
+//				MAP_CURSED_ISLAND = 0,
 				MAP_NAVAL = 0,
 				MAP_ISLAND = 0,
 			//		MAP_VOYAGE = 10,
@@ -98,7 +98,6 @@
 		if (epoch == "5000 B.C.")
 			maps = list(
 				MAP_TRIBES = 0,
-				//MAP_ICE_AGE = 0,
 			)
 		if (epoch == "Civilization 13")
 			maps = list(

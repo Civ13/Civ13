@@ -184,7 +184,7 @@
 		T.ChangeTurf(/turf/floor/wood_broken)
 
 //bordering tiles
-	for (var/obj/effect/decal/cleanable/blood/OL in orange(1))
+	for (var/obj/effect/decal/cleanable/blood/OL in orange(1, src))
 		if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
 			if (prob(15))
 				new/obj/effect/burning_oil(OL.loc)
@@ -192,11 +192,11 @@
 			if (prob(15))
 				new/obj/effect/burning_oil(OL.loc)
 
-	for (var/turf/floor/plating/grass/GR in orange(1))
+	for (var/turf/floor/plating/grass/GR in orange(1, src))
 		if (prob(6))
 			new/obj/effect/burning_oil(GR)
 
-	for (var/turf/floor/wood/WF in orange(1))
+	for (var/turf/floor/wood/WF in orange(1, src))
 		if (prob(6))
 			new/obj/effect/burning_oil(WF)
 
@@ -204,8 +204,8 @@
 	for (var/obj/effect/burning_oil/OTH in src.loc)
 		if (OTH != src)
 			qdel(OTH)
-//	spawn(50)
-//		burningproc()
+	spawn(50)
+		burningproc()
 	return
 
 /obj/effect/decal/cleanable/blood/oil
