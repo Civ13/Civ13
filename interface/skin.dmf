@@ -746,7 +746,7 @@ window "rpane"
 		text-color = #e1e1d7
 		background-color = #271a0c
 		saved-params = ""
-		text = "1713"
+		text = "Civilization 13"
 
 window "text_editor"
 	elem "text_editor"
