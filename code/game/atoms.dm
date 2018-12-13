@@ -184,7 +184,18 @@
 
 
 /atom/proc/fire_act()
-	return
+	if (isobject(src))
+		var/obj/NS = src
+		if (!NS.flammable)
+			return
+		else
+			if (prob(27))
+				visible_message("<span class = 'warning'>\The [NS] is burned away.</span>")
+				if (prob(15))
+					new/obj/effect/effect/smoke(loc)
+				qdel(src)
+	else
+		return
 
 /atom/proc/melt()
 	return

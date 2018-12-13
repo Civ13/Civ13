@@ -6,6 +6,7 @@
 	anchored = TRUE
 	var/counter = 1
 	var/timeout = 0
+	flammable = TRUE
 
 /obj/structure/oil_spring/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (counter <= 0)
@@ -125,7 +126,8 @@
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "burning_fire2"
 	alpha = 230
-	burningproc()
+	spawn(20)
+		burningproc()
 	set_light(2)
 	spawn(230)
 		set_light(0)
@@ -144,6 +146,8 @@
 
 /obj/effect/burning_oil/proc/burningproc()
 //this tile
+	if (prob(10))
+		new/obj/effect/effect/smoke(loc)
 	for (var/mob/living/L in src.loc)
 		L.adjustFireLoss(rand(15,25))
 		if (prob(40))
@@ -155,11 +159,15 @@
 
 	for (var/obj/OB in src.loc)
 		if (prob(35) && !istype(OB, /obj/effect/decal/cleanable/blood) && OB.flammable)
-			OB.fire_act(900)
+			OB.fire_act(1200)
 
 	for (var/obj/effect/burning_oil/OTH in src.loc)
 		if (OTH != src)
 			qdel(OTH)
+	for (var/obj/structure/oil_spring/OS in src.loc)
+		if (OS.counter > 0)
+			OS.oil_explode()
+			OS.counter = 0
 //burn floors
 	if (istype(get_turf(src), /turf/floor/plating/grass))
 		var/turf/T = get_turf(src)
@@ -185,7 +193,7 @@
 	for (var/turf/floor/wood/WF in range(1, get_turf(src)))
 		if (prob(15))
 			var/obj/effect/burning_oil/NB = new/obj/effect/burning_oil(WF)
-			spawn(80)
+			spawn(100)
 				qdel(src)
 				qdel(NB)
 //remove duplicates

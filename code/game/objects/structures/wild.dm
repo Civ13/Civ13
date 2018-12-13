@@ -216,7 +216,7 @@
 	else
 		..()
 /obj/structure/wild/palm/fire_act(temperature)
-	if (prob(25 * (temperature/500)))
+	if (prob(45 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 
@@ -245,13 +245,10 @@
 	opacity = FALSE
 	density = FALSE
 
-/* todo: bush sounds
-/obj/structure/wild/bush/Crossed(var/atom/movable/am)
-	if (!istype(src, /obj/structure/wild/bush/tame))
-		if (istype(am, /mob/living))
-			playsound(get_turf(src), "rustle", rand(50,70))
-	..(am)
-*/
+/obj/structure/wild/bush/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 
 /obj/structure/wild/bush/tame
 	name = "cultivated bush"
@@ -273,14 +270,20 @@
 	opacity = FALSE
 	density = FALSE
 	var/healthamount = 1
-
+/obj/structure/wild/junglebush/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/smallbush
 	name = "small bush"
 	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "smallbush1"
 	opacity = FALSE
 	density = FALSE
-
+/obj/structure/wild/smallbush/fire_act(temperature)
+	if (prob(65 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/smallbush/New()
 	..()
 	icon_state = "smallbush[rand(1,42)]"
@@ -305,14 +308,20 @@
 	opacity = FALSE
 	density = FALSE
 	layer = 5.1
-
+/obj/structure/wild/tallgrass/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/tallgrass2
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
 	icon_state = "tall_grass_5"
 	opacity = FALSE
 	density = FALSE
-
+/obj/structure/wild/tallgrass2/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/tallgrass/New()
 	..()
 	icon_state = "tall_grass_[rand(1,4)]"
