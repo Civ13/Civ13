@@ -26,19 +26,22 @@
 
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
-	color = null
-	if (!new_material)
-		if (!material)
-			new_material = DEFAULT_WALL_MATERIAL
-		else
-			new_material = material
-	material = get_material_by_name(new_material)
-	if (!istype(material))
-		qdel(src)
-		return
-	if (new_padding_material)
-		padding_material = get_material_by_name(new_padding_material)
-	update_icon()
+	if (!istype(src, /obj/structure/bed/bedroll))
+		color = null
+		if (!new_material)
+			if (!material)
+				new_material = DEFAULT_WALL_MATERIAL
+			else
+				new_material = material
+		material = get_material_by_name(new_material)
+		if (!istype(material))
+			qdel(src)
+			return
+		if (new_padding_material)
+			padding_material = get_material_by_name(new_padding_material)
+		update_icon()
+		if (material == "wood")
+			flammable = TRUE
 
 /obj/structure/bed/get_material()
 	return material

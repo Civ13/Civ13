@@ -3,22 +3,29 @@
 	faction = "Station"
 
 /datum/job/civilian/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_english_name(H.gender)
-	if (H.client && H.client.prefs)
-		switch (H.client.prefs.civ_ethnicity)
-			if (SPANISH)
-				H.name = H.species.get_random_spanish_name(H.gender)
-			if (PORTUGUESE)
-				H.name = H.species.get_random_portuguese_name(H.gender)
-			if (FRENCH)
-				H.name = H.species.get_random_french_name(H.gender)
-			if (DUTCH)
-				H.name = H.species.get_random_dutch_name(H.gender)
-			if (ENGLISH)
-				H.name = H.species.get_random_english_name(H.gender)
+	if (is_civilizations || is_nomad)
+		H.name = H.species.get_random_name(H.gender)
+		H.real_name = H.name
 	else
-		H.name = H.species.get_random_english_name(H.gender)
-	H.real_name = H.name
+		H.give_random_civ_name()
+
+/mob/living/carbon/human/proc/give_random_civ_name()
+	name = species.get_random_english_name(gender)
+	if (client && client.prefs)
+		switch (client.prefs.civ_ethnicity)
+			if (SPANISH)
+				name = species.get_random_spanish_name(gender)
+			if (PORTUGUESE)
+				name = species.get_random_portuguese_name(gender)
+			if (FRENCH)
+				name = species.get_random_french_name(gender)
+			if (DUTCH)
+				name = species.get_random_dutch_name(gender)
+			if (ENGLISH)
+				name = species.get_random_english_name(gender)
+	else
+		name = species.get_random_english_name(gender)
+	real_name = name
 
 /mob/living/carbon/human/proc/give_clothes()
 	if (map.ordinal_age == 0)
@@ -71,7 +78,10 @@
 			else if (randcloth == 3)
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf3(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-
+	if (season == "WINTER")
+		equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
+		if (map.ordinal_age == 0)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
 /datum/job/civilian/governor
 	title = "Governor"
 	en_meaning = "Colony Leader"
@@ -865,8 +875,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civa/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -905,8 +915,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civb/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -945,8 +955,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -985,8 +995,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civd/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -1025,8 +1035,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/cive/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -1065,8 +1075,8 @@
 	SL_check_independent = TRUE
 	is_civilizations = TRUE
 	// AUTOBALANCE
-	min_positions = 10
-	max_positions = 150
+	min_positions = 9999
+	max_positions = 9999
 
 /datum/job/civilian/civf/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

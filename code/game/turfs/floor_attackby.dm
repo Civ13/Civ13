@@ -14,26 +14,40 @@
 				return
 		if (C.reagents.total_volume)
 			visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
+			if (C.reagents.has_reagent("petroleum", 5))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			else if (C.reagents.has_reagent("olive_oil", 10))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			C.reagents.clear_reagents()
 			C.update_icon()
 		return
 
 	else if (istype(C, /obj/item/weapon/shovel))
-		var/obj/snow/S = has_snow()
 		var/turf/T = get_turf(user)
 		var/mob/living/carbon/human/H = user
-		if (S && istype(H) && !H.shoveling_snow)
-			H.shoveling_snow = TRUE
-			var/time_modifier = S.amount/0.05
-			time_modifier = min(time_modifier, 30)
-			visible_message("<span class = 'notice'>[user] starts to shovel the [S.descriptor()] from [src].</span>", "<span class = 'notice'>You start to shovel the snow from [src].</span>")
-			if (do_after(user, rand(9*time_modifier,12*time_modifier)))
-				visible_message("<span class = 'notice'>[user] shovels the [S.descriptor()] from [src].</span>", "<span class = 'notice'>You shovel the snow from [src].</span>")
-				H.shoveling_snow = FALSE
-				H.adaptStat("strength", 1)
-				qdel(S)
+
+		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
+			if (T.available_snow >= 1)
+				H.shoveling_snow = TRUE
+				visible_message("<span class = 'notice'>[user] starts to shovel snow into a pile.</span>", "<span class = 'notice'>You start to shovel snow into a pile.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (do_after(user, rand(45,60)))
+					visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
+					H.shoveling_snow = FALSE
+					H.adaptStat("strength", 1)
+					T.available_snow -= 1
+					new /obj/item/weapon/snowwall(T)
+					if (T.available_snow <= 0)
+						if (istype(T, /turf/floor/winter/grass))
+							T.ChangeTurf(/turf/floor/plating/grass/wild)
+						else if (istype(T, /turf/floor/dirt/winter))
+							T.ChangeTurf(/turf/floor/dirt)
+
+				else
+					H.shoveling_snow = FALSE
 			else
-				H.shoveling_snow = FALSE
+				user << "<span class='notice'>All the loose snow has been shoveled out of this spot already.</span>"
+
 		else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling_dirt)
 			if (T.available_dirt >= 1)
 				H.shoveling_dirt = TRUE
@@ -74,11 +88,14 @@
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				if (prob(25))
-					if (prob(30))
+					if (prob(90))
 						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 						mineral.amount = rand(1,3)
 						H << "<span class='danger'>You found some copper ore!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/dirt/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
@@ -86,15 +103,21 @@
 						var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
 						mineral.amount = rand(1,3)
 						H << "<span class='danger'>You found some tin ore!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/dirt/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 				if (prob(40) && map.age != "5000 B.C.")
 					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-					mineral.amount = rand(1,2)
+					mineral.amount = rand(1,4)
 					H << "<span class='danger'>You found some iron ore!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/dirt/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
@@ -103,49 +126,70 @@
 					if (pickperc == 1 || map.age != "1713")
 						new/obj/item/stack/ore/coal(src)
 						H << "<span class='danger'>You found some coal!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/dirt/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 					else if (pickperc == 2)
 						new/obj/item/stack/ore/saltpeter(src)
 						H << "<span class='danger'>You found some saltpeter!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/dirt/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 					else if (pickperc == 3)
 						new/obj/item/stack/ore/sulphur(src)
 						H << "<span class='danger'>You found some sulphur!</span>"
-						T.ChangeTurf(/turf/floor/dirt)
+						if(map.ID == MAP_NOMADS_DESERT)
+							T.ChangeTurf(/turf/floor/dirt/dust)
+						else
+							T.ChangeTurf(/turf/floor/dirt)
 						T.is_mineable = FALSE
 						H.adaptStat("strength", 1)
 						return
 				if (prob(5))
 					new/obj/item/stack/ore/silver(src)
 					H << "<span class='danger'>You found some silver ore!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/dirt/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(2))
 					new/obj/item/stack/ore/gold(src)
 					H << "<span class='danger'>You found some gold ore!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/dirt/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				if (prob(1))
 					new/obj/item/stack/ore/diamond(src)
 					H << "<span class='danger'>You found some raw diamonds!</span>"
-					T.ChangeTurf(/turf/floor/dirt)
+					if(map.ID == MAP_NOMADS_DESERT)
+						T.ChangeTurf(/turf/floor/dirt/dust)
+					else
+						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
 					H.adaptStat("strength", 1)
 					return
 				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-				mineral.amount = rand(1,2)
+				mineral.amount = rand(2,4)
 				H << "<span class='danger'>You found some usable stone blocks!</span>"
-				T.ChangeTurf(/turf/floor/dirt)
+				if(map.ID == MAP_NOMADS_DESERT)
+					T.ChangeTurf(/turf/floor/dirt/dust)
+				else
+					T.ChangeTurf(/turf/floor/dirt)
 				T.is_mineable = FALSE
 				H.adaptStat("strength", 1)
 				return
@@ -197,6 +241,9 @@
 			var/area/A = get_area(C)
 			if (istype(A, /area/caribbean/void/caves))
 				user << "<span class='notice'>You can't farm underground.</span>"
+				return
+			if (A.location == AREA_INSIDE)
+				user << "<span class='notice'>You can't farm in a roofed area.</span>"
 				return
 			else if (istype(C, /obj/item/stack/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
@@ -322,6 +369,27 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/rice))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/rice(src)
+				if (C.amount>1)
+					C.amount -= 1
+			else if (istype(C, /obj/item/stack/farming/seeds/grapes))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/grapes(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/olives))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/olives(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 /*					if (ishuman(user)) todo: farming skills
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3) */
@@ -336,7 +404,7 @@
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return
-		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)))
+		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 			if (do_after(user, 70, user.loc))
 				ChangeTurf(/turf/floor/dirt/ploughed)
 				return

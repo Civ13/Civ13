@@ -8,7 +8,7 @@
 	var/opens = TRUE
 	var/base_state = ""
 	trash = null
-
+	flammable = TRUE
 /obj/item/weapon/reagent_containers/food/snacks/MRE/attack(mob/M as mob, mob/user as mob, def_zone)
 	if (!open && opens && M == user)
 		user << "<span class = 'warning'>Open it first.</span>"

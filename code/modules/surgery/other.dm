@@ -8,6 +8,7 @@
 	priority = 2
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100, 	\
+	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
 	/obj/item/stack/material/rope = 50, 	\
 	)
 	can_infect = TRUE
@@ -27,7 +28,7 @@
 			internal_bleeding = TRUE
 			break
 
-		return affected.open == (affected.encased ? 3 : 2) && internal_bleeding
+		return affected.open == 2 && internal_bleeding
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -56,6 +57,7 @@
 	priority = 2
 	allowed_tools = list(
 		/obj/item/weapon/surgery/scalpel = 100,		\
+	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
 		/obj/item/weapon/material/knife = 75,	\
 		/obj/item/weapon/material/shard = 50, 		\
 	)

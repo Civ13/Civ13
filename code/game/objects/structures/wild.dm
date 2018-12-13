@@ -7,6 +7,7 @@
 	var/health = 100
 	var/maxhealth = 100
 	layer = 3.2
+	flammable = TRUE
 /*
 /obj/structure/wild/New()
 	..()*/
@@ -134,7 +135,20 @@
 			icon = 'icons/obj/flora/bigtrees.dmi'
 		else
 			icon = 'icons/obj/flora/deadtrees.dmi'
-
+/obj/structure/wild/tree/live_tree/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 7
+		qdel(src)
+		return
+/obj/structure/wild/tree/dead_tree/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
+		dropwood.amount = 7
+		qdel(src)
+		return
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
@@ -148,11 +162,13 @@
 		pixel_x = rand(-8,8)
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife/bone))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
 		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		user.do_attack_animation(src)
+		try_destroy()
 	else
 		..()
 /obj/structure/wild/palm
@@ -200,7 +216,7 @@
 	else
 		..()
 /obj/structure/wild/palm/fire_act(temperature)
-	if (prob(15 * (temperature/500)))
+	if (prob(45 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 
@@ -229,13 +245,12 @@
 	opacity = FALSE
 	density = FALSE
 
-/* todo: bush sounds
-/obj/structure/wild/bush/Crossed(var/atom/movable/am)
-	if (!istype(src, /obj/structure/wild/bush/tame))
-		if (istype(am, /mob/living))
-			playsound(get_turf(src), "rustle", rand(50,70))
-	..(am)
-*/
+/obj/structure/wild/bush/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		if (prob(18))
+			new/obj/structure/wild/burnedbush(src.loc)
+		qdel(src)
 
 /obj/structure/wild/bush/tame
 	name = "cultivated bush"
@@ -249,6 +264,7 @@
 	icon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
+	flammable = FALSE
 
 /obj/structure/wild/junglebush
 	name = "small vegetation"
@@ -257,29 +273,56 @@
 	opacity = FALSE
 	density = FALSE
 	var/healthamount = 1
-
+/obj/structure/wild/junglebush/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/smallbush
 	name = "small bush"
 	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "smallbush1"
 	opacity = FALSE
 	density = FALSE
-
+/obj/structure/wild/smallbush/fire_act(temperature)
+	if (prob(65 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/smallbush/New()
 	..()
 	icon_state = "smallbush[rand(1,42)]"
+
+/obj/structure/wild/smallbush/winter
+	name = "small bush"
+	icon = 'icons/obj/flora/snowflora.dmi'
+	icon_state = "snowgrass1"
+	opacity = FALSE
+	density = FALSE
+
+/obj/structure/wild/smallbush/winter/fire_act(temperature)
+	if (prob(15 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
+
+/obj/structure/wild/smallbush/winter/New()
+	..()
+	if (prob(65))
+		icon_state = "snowgrass[rand(1,9)]"
+	else
+		icon_state = "snowbush[rand(1,6)]"
 
 /obj/structure/wild/burnedtree
 	name = "burned tree"
 	icon_state = "burnedtree1"
 	opacity = FALSE
 	density = FALSE
+	flammable = FALSE
 
 /obj/structure/wild/rock
 	name = "rock"
 	icon_state = "rock1"
 	opacity = FALSE
 	density = FALSE
+	flammable = FALSE
 	amount = 0
 
 /obj/structure/wild/tallgrass
@@ -289,14 +332,20 @@
 	opacity = FALSE
 	density = FALSE
 	layer = 5.1
-
+/obj/structure/wild/tallgrass/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/tallgrass2
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
 	icon_state = "tall_grass_5"
 	opacity = FALSE
 	density = FALSE
-
+/obj/structure/wild/tallgrass2/fire_act(temperature)
+	if (prob(55 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
 /obj/structure/wild/tallgrass/New()
 	..()
 	icon_state = "tall_grass_[rand(1,4)]"
@@ -366,7 +415,7 @@
 	maxhealth = 200
 
 /obj/structure/wild/jungle/fire_act(temperature)
-	if (prob(15 * (temperature/500)))
+	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 

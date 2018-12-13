@@ -25,6 +25,9 @@
 		/obj/item/weapon/storage,
 		/obj/item/weapon/storage/secure/safe,
 		/mob/living/simple_animal/cow,
+		/mob/living/simple_animal/goat,
+		/obj/structure/oil_spring,
+		/obj/item/flashlight/lantern,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -76,6 +79,10 @@
 		if (reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
+			if (reagents.has_reagent("petroleum", 5))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			else if (reagents.has_reagent("olive_oil", 10))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			reagents.splash(target, reagents.total_volume)
 			return
 
@@ -88,7 +95,32 @@
 				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
 				label_text = tmp_label
 				update_name_label()
+		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes))
 
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the grapes, producing grapejuice."
+			reagents.add_reagent("grapejuice", 5)
+			qdel(W)
+			return
+		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the olives, producing olive oil."
+			reagents.add_reagent("olive_oil", 6)
+			qdel(W)
+			return
 	proc/update_name_label()
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		if (label_text == "")

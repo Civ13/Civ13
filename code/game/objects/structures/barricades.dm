@@ -22,6 +22,7 @@
 	desc = "This space is blocked off by a barricade made of [material.display_name]."
 	if (istype(material, /material/wood))
 		icon_state = "wood_barricade"
+		flammable = TRUE
 	else
 		color = material.icon_colour
 	maxhealth = (material.integrity*2.5) + 100
@@ -110,12 +111,12 @@
 	name = "wood barrier"
 	desc = "A wood wall made of vines and logs roped together."
 	icon_state = "woodbarricade_horizontal"
-
+	flammable = TRUE
 /obj/structure/barricade/vertical
 	name = "wood barrier"
 	desc = "A wood wall made of vines and logs roped together."
 	icon_state = "woodbarricade_vertical"
-
+	flammable = TRUE
 /obj/structure/barricade/vertical/New()
 	..()
 	icon_state = "woodbarricade_vertical"
@@ -125,7 +126,7 @@
 // steel barricades
 
 /obj/structure/barricade/steel
-
+	material = "steel"
 /obj/structure/barricade/steel/New(_loc)
 	..(_loc, DEFAULT_WALL_MATERIAL)
 
@@ -136,6 +137,7 @@
 	icon_state = "sandstone_brick"
 	health = 600
 	maxhealth = 600
+	material = "stone"
 
 /obj/structure/barricade/sandstone_v
 	name = "sandstone wall"
@@ -144,6 +146,7 @@
 	icon_state = "sandstone_brick2"
 	health = 600
 	maxhealth = 600
+	material = "stone"
 
 /obj/structure/barricade/sandstone_h/crenelated
 	name = "crenelated sandstone wall"
@@ -152,6 +155,7 @@
 	icon_state = "sandstone_brick_c"
 	health = 600
 	maxhealth = 600
+	material = "stone"
 
 /obj/structure/barricade/sandstone_v/crenelated
 	name = "crenelated sandstone wall"
@@ -160,6 +164,7 @@
 	icon_state = "sandstone_brick_c2"
 	health = 600
 	maxhealth = 600
+	material = "stone"
 
 /obj/structure/barricade/sandstone_h/New()
 	..()
@@ -246,6 +251,7 @@
 	desc = "A wall of stone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick"
+	material = "stone"
 	health = 600
 	maxhealth = 600
 
@@ -254,6 +260,7 @@
 	desc = "A wall of stone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick2"
+	material = "stone"
 	health = 600
 	maxhealth = 600
 
@@ -262,6 +269,7 @@
 	desc = "A wall of stone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick_c"
+	material = "stone"
 	health = 600
 	maxhealth = 600
 
@@ -270,6 +278,7 @@
 	desc = "A wall of stone blocks."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick_c2"
+	material = "stone"
 	health = 600
 	maxhealth = 600
 

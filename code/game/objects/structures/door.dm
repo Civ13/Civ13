@@ -49,7 +49,9 @@
 	..()
 	update_material(material_name)
 	door_list += src
-
+	if (material)
+		if (material.name == "wood")
+			flammable = TRUE
 /obj/structure/simple_door/Destroy()
 	door_list -= src
 	..()
@@ -137,7 +139,7 @@
 		isSwitchingStates = FALSE
 		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-			L.update_overlay(TRUE)
+			L.update_overlay()
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
@@ -151,11 +153,11 @@
 		isSwitchingStates = FALSE
 		update_nearby_tiles()
 		for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-			L.update_overlay(TRUE)
+			L.update_overlay()
 
 /obj/structure/simple_door/Destroy()
 	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-		L.update_overlay(TRUE)
+		L.update_overlay()
 	..()
 
 /obj/structure/simple_door/update_icon()

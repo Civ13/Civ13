@@ -10,7 +10,7 @@
 		return FALSE
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return affected && affected.open == (affected.encased ? 1.5 : 1)
+	return affected && affected.open == 1
 
 //////////////////////////////////////////////////////////////////
 //				CHEST INTERNAL ORGAN SURGERY					//
@@ -100,6 +100,7 @@
 
 	allowed_tools = list(
 	/obj/item/weapon/surgery/scalpel = 100,		\
+	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
 	/obj/item/weapon/material/knife = 75,	\
 	/obj/item/weapon/material/shard = 50, 		\
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
@@ -161,6 +162,7 @@
 
 	allowed_tools = list(
 	/obj/item/weapon/surgery/hemostat = 100,	\
+	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
 	/obj/item/weapon/material/kitchen/utensil/fork = 20, \
 	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
 	)

@@ -438,20 +438,7 @@
 			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 			user.setClickCooldown(5)
 			return TRUE
-/*
-	else if (istype(O, /obj/item/weapon/melee/baton))
-		var/obj/item/weapon/melee/baton/B = O
-		if (B.bcell)
-			if (B.bcell.charge > 0 && B.status == TRUE)
-				flick("baton_active", src)
-				user.Stun(10)
-				user.stuttering = 10
-				user.Weaken(10)
-				B.deductcharge(B.hitcost)
-				user.visible_message( \
-					"<span class='danger'>[user] was stunned by \his wet [O]!</span>", \
-					"<span class='userdanger'>[user] was stunned by \his wet [O]!</span>")
-				return TRUE*/
+
 	else if (istype(O, /obj/item/weapon/mop))
 		O.reagents.add_reagent("water", 5)
 		user << "<span class='notice'>You wet \the [O] in \the [src].</span>"

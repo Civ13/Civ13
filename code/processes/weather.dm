@@ -41,13 +41,13 @@
 				map.triggered_blizzard = FALSE
 				spawn(600)
 					map.blizzard = TRUE
-					change_weather(WEATHER_SNOW)
+					change_weather(WEATHER_BLIZZARD)
 					world << "<big>The blizzard is in full force!</big>"
 					spawn(rand(2400,3600))
 						map.blizzard = FALSE
 						change_weather(WEATHER_NONE)
 						world << "<big>The blizzard has passed.</big>"
-	if ((season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
+	if ((season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave && !map.ID == MAP_NOMADS_DESERT)
 		if (prob(1) || map.triggered_heatwave)
 			if(prob(50)|| map.triggered_heatwave)
 				world << "<big>The weather starts to get hotter than normal...</big>"
@@ -67,3 +67,16 @@
 							if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 								S.dry = FALSE
 								S.update_icon()
+	if ((season == "Dry Season" || map.triggered_sandstorm) && !map.sandstorm)
+		if (prob(1) || map.triggered_sandstorm)
+			if(prob(50)|| map.triggered_sandstorm)
+				world << "<big>You start seeing dark clouds in the horizon...</big>"
+				map.triggered_sandstorm = FALSE
+				spawn(600)
+					map.sandstorm = TRUE
+					change_weather(WEATHER_SANDSTORM)
+					world << "<big>A sandstorm has arrived in this area!</big>"
+					spawn(rand(3000,3600))
+						map.sandstorm = FALSE
+						world << "<big>The sandstorm has subsided.</big>"
+						change_weather(WEATHER_NONE)

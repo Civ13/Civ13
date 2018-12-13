@@ -217,9 +217,9 @@ bullet_act
 						src << "<span class='danger'><big>You fade out...</big></span>"
 
 	if (istype(P, /obj/item/projectile/arrow/arrow/fire))
-		if (prob(10))
-			IgniteMob()
+		if (prob(5))
 			fire_stacks += 1
+		IgniteMob()
 	..(P, def_zone)
 
 	spawn (0.01)

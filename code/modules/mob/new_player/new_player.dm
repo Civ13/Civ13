@@ -90,9 +90,9 @@
 	else
 		if (map.ID == MAP_TRIBES)
 			output += "<p><a href='byond://?src=\ref[src];tribes=1'>Join a Tribe!</a></p>"
-		else if (map.civilizations == TRUE && !(map.ID == MAP_NOMADS))
+		else if (map.civilizations == TRUE && map.nomads == FALSE)
 			output += "<p><a href='byond://?src=\ref[src];civilizations=1'>Join a Civilization!</a></p>"
-		else if (map.ID == MAP_NOMADS)
+		else if (map.nomads == TRUE)
 			output += "<p><a href='byond://?src=\ref[src];nomads=1'>Join!</a></p>"
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</a></p>"
@@ -540,21 +540,21 @@
 		if (map && map.faction1_can_cross_blocks())
 			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
 			return
-	if (istype(job, /datum/job/indians))
-		if (client.prefs.s_tone < -145)
-			usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
-			if (map.ID == MAP_TRIBES)
-				abandon_mob()
-				spawn(10)
-					usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
-			return
-		if (client.prefs.s_tone > -100)
-			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
-			if (map.ID == MAP_TRIBES)
-				abandon_mob()
-				spawn(10)
-					usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
-			return
+//	if (istype(job, /datum/job/indians))
+//		if (client.prefs.s_tone < -145)
+//			usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
+//			if (map.ID == MAP_TRIBES)
+//				abandon_mob()
+//				spawn(10)
+//					usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
+//			return
+//		if (client.prefs.s_tone > -100)
+//			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
+//			if (map.ID == MAP_TRIBES)
+//				abandon_mob()
+//				spawn(10)
+//					usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
+//			return
 	if (istype(job, /datum/job/british) || istype(job, /datum/job/french))
 		if (client.prefs.s_tone < -45)
 			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 80.</span>"

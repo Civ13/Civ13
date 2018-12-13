@@ -7,6 +7,7 @@
 	slot_flags = SLOT_BELT | SLOT_EARS
 	throwforce = TRUE
 	w_class = TRUE
+	flammable = TRUE
 
 	var/leaves_residue = TRUE
 	var/caliber = ""					//Which kind of guns it can be loaded into

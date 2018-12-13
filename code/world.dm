@@ -172,32 +172,9 @@ var/world_topic_spam_protect_time = world.timeofday
 /world/Topic(T, addr, master, key)
 	diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key][log_end]"
 
-	// custom 1713 hub modules
-
-	if (T == "1713.preinfo")
-		return replace_custom_hub_text(config.s1713_hub_preinfo)
-
-	else if (T == "1713.title")
-		return replace_custom_hub_text(config.s1713_hub_title)
-
-	else if (T == "1713.oocdesc")
-		return replace_custom_hub_text(config.s1713_hub_oocdesc)
-
-	else if (T == "1713.icdesc")
-		return replace_custom_hub_text(config.s1713_hub_icdesc)
-
-	else if (T == "1713.rplevel")
-		return replace_custom_hub_text(config.s1713_hub_rplevel)
-
-	else if (T == "1713.hostedby")
-		return replace_custom_hub_text(config.s1713_hub_hostedby)
-
-	else if (T == "1713.postinfo")
-		return replace_custom_hub_text(config.s1713_hub_postinfo)
-
 	// normal ss13 stuff
 
-	else if (T == "ping")
+	if (T == "ping")
 		return clients.len + 1
 
 	else if (T == "players")
@@ -280,8 +257,6 @@ var/world_topic_spam_protect_time = world.timeofday
 /proc/load_configuration()
 	config = new /datum/configuration()
 	config.load("config/config.txt", "config")
-	config.load("config/game_options.txt","game_options")
-	config.load("config/hub.txt", "hub")
 	config.load("config/game_schedule.txt", "game_schedule")
 
 	/* config options get overwritten by global config options
@@ -307,13 +282,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "<br><b>Map:</b> [map.title] ([roundduration2text()])<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
-	config.hub_body = replacetext(config.hub_body, "EPOCH", capitalize(lowertext(map.age)))
-	config.hub_body = replacetext(config.hub_body, "TIME_OF_DAY", capitalize(lowertext(time_of_day)))
-	config.hub_body = replacetext(config.hub_body, "WEATHER", capitalize(lowertext(get_weather())))
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (config.hub_body)
 		s += config.hub_body
-		s += "Pre-Modern Civilizations Server"
 //	if (config.hub_features)
 //		s += "<b>[config.hub_features]</b><br>"
 

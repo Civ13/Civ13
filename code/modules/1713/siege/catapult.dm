@@ -14,6 +14,7 @@
 	bound_height = 64
 	bound_width = 32
 	anchored = TRUE
+	flammable = TRUE
 
 /obj/structure/catapult/New()
 	..()

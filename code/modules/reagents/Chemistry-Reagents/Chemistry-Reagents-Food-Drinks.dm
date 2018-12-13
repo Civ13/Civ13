@@ -377,10 +377,23 @@
 	..()
 	M.reagents.add_reagent("imidazoline", removed * 0.2)
 
+/datum/reagent/drink/olive_oil
+	name = "Olive Oil"
+	id = "olive_oil"
+	description = "A thick oil. Good for seasoning and lamps."
+	taste_description = "olives"
+	color = "#343400"
+
+/datum/reagent/drink/olive_oil/affect_blood(var/mob/living/carbon/human/M, var/alien, var/removed)
+	..()
+	if (prob(10))
+		M << "<span class = 'warning'>You feel sick...</span>"
+		M.vomit()
+
 /datum/reagent/drink/grapejuice
 	name = "Grape Juice"
 	id = "grapejuice"
-	description = "It's grrrrrape!"
+	description = "It's grapejuice!"
 	taste_description = "grapes"
 	color = "#863333"
 

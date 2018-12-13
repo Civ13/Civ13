@@ -42,7 +42,10 @@
 	var/material = "wood"
 	health = 40 // hardness of wood
 	var/cooldown = 0
-
+/obj/item/weapon/shield/New()
+	..()
+	if (material == "wood")
+		flammable = TRUE
 /obj/item/weapon/shield/steel
 	name = "steel shield"
 	icon_state = "steel_shield"

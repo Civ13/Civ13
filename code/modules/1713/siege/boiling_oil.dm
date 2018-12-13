@@ -200,7 +200,7 @@ obj/structure/boiling_oil/attackby(obj/item/weapon/oilbarrel/W as obj, mob/user 
 	icon_state = "barrel_wood_drinks"
 	density = TRUE
 	var/full = 3
-
+	flammable = TRUE
 obj/structure/boiling_oil/west
 	..()
 	direction = WEST

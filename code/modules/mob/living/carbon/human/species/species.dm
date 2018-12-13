@@ -187,13 +187,19 @@
 /datum/species/proc/get_bodytype()
 	return name
 
-/datum/species/proc/get_environment_discomfort(var/mob/living/carbon/human/H, var/msg_type)
+/datum/species/proc/get_environment_discomfort(var/mob/living/carbon/human/H)
+	if (H.bodytemperature > heat_level_1)
+		return //todo: ?
 
-	if ((H.bodytemperature < cold_level_1 && msg_type == "cold") || (H.bodytemperature > heat_level_1 && msg_type == "heat"))
+	if (H.bodytemperature < cold_level_1)
+		var/turf/T = get_turf(H)
+		if (istype(T) && T.icon == 'icons/turf/snow.dmi')
+			if (prob(25 - (H.shoes ? 15 : 0)))
+				H << "<span class='danger'>Your feet are freezing!</span>"
+				H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
 
-		var/showmsg = FALSE
-		if (prob(12))
-			showmsg = TRUE
+		if (istype(H.wear_suit, /obj/item/clothing/suit/storage/coat))
+			return //properly clothed for cold weather
 
 		var/covered = FALSE // Basic coverage can help.
 		for (var/obj/item/clothing/clothes in H)
@@ -203,54 +209,24 @@
 				covered = TRUE
 				break
 
-		var/properly_clothed = FALSE // Are we wearing a coat or equivalent?
-
-
-		if (properly_clothed)
-			return
-
-		var/turf/H_turf = get_turf(H)
-		if (istype(H_turf) && msg_type == "cold" && (locate(/obj/snow) in H_turf || !H.shoes))
-			if (prob(25 - (H.shoes ? 15 : 0)))
-				H << "<span class='danger'>Your feet are freezing!</span>"
-				var/base_damage = 3
-				for (var/obj/snow/S in H_turf)
-					base_damage += S.amount * 5
-				H.adjustFireLossByPart(base_damage, pick("l_foot", "r_foot"))
-
 		// if we aren't covered, take more damage + weather damage
 		if (!covered)
-			switch(msg_type)
-				if ("cold")
-					H.adjustFireLoss(3)
-					if (showmsg)
-						H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
-				if ("heat")
-					H.adjustFireLoss(3)
-					if (showmsg)
-						H << "<span class='danger'>[pick(heat_discomfort_strings)]</span>"
-
+			H.adjustFireLoss(3)
 		else
-			switch(msg_type)
-				if ("cold")
-					H.adjustFireLoss(2)
-					if (showmsg)
-						H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
-				if ("heat")
-					H.adjustFireLoss(2)
-					if (showmsg)
-						H << "<span class='danger'>[pick(heat_discomfort_strings)]</span>"
+			H.adjustFireLoss(2)
 
-		if (msg_type == "cold")
-			var/area/A = get_area(H)
-			if (A.weather == WEATHER_RAIN)
-				if (prob(15))
-					H << "<span class='danger'>The cold rain chills you to the bone.</span>"
-				H.adjustFireLoss(3) // wet is bad
-			else if (A.weather == WEATHER_SNOW)
-				if (prob(15))
-					H << "<span class='danger'>The freezing snowfall chills you to the bone.</span>"
-				H.adjustFireLoss(2)
+		if (prob(12))
+			H << "<span class='danger'>[pick(cold_discomfort_strings)]</span>"
+
+		var/area/A = get_area(H)
+		if (A.weather == WEATHER_RAIN)
+			if (prob(15))
+				H << "<span class='danger'>The cold rain chills you to the bone.</span>"
+			H.adjustFireLoss(3) // wet is bad
+		else if (A.weather == WEATHER_SNOW)
+			if (prob(15))
+				H << "<span class='danger'>The freezing snowfall chills you to the bone.</span>"
+			H.adjustFireLoss(2)
 
 /datum/species/proc/sanitize_name(var/name)
 	return sanitizeName(name)
@@ -262,12 +238,6 @@
 		else
 			return capitalize(pick(first_names_male)) + " " + capitalize(pick(last_names))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_name(gender)
 
 /datum/species/proc/get_random_english_name(var/gender, var/jew)
 	if (!name_language)
@@ -276,12 +246,6 @@
 		else
 			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_english_name(gender)
 
 /datum/species/proc/get_random_carib_name(var/gender, var/jew)
 	if (!name_language)
@@ -290,12 +254,6 @@
 		else
 			return capitalize(pick(first_names_male_carib))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_carib_name(gender)
 
 /datum/species/proc/get_random_french_name(var/gender, var/jew)
 	if (!name_language)
@@ -304,12 +262,6 @@
 		else
 			return capitalize(pick(first_names_male_french)) + " " + capitalize(pick(last_names_french, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_french_name(gender)
 
 /datum/species/proc/get_random_portuguese_name(var/gender, var/jew)
 	if (!name_language)
@@ -318,12 +270,6 @@
 		else
 			return capitalize(pick(first_names_male_portuguese)) + " " + capitalize(pick(last_names_portuguese, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_portuguese_name(gender)
 
 /datum/species/proc/get_random_spanish_name(var/gender, var/jew)
 	if (!name_language)
@@ -332,12 +278,6 @@
 		else
 			return capitalize(pick(first_names_male_spanish)) + " " + capitalize(pick(last_names_spanish, gender))
 
-	var/datum/language/species_language = all_languages[name_language]
-	if (!species_language)
-		species_language = all_languages[default_language]
-	if (!species_language)
-		return "unknown"
-	return species_language.get_random_spanish_name(gender)
 
 /datum/species/proc/get_random_dutch_name(var/gender, var/jew)
 	if (!name_language)

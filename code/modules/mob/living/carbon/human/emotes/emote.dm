@@ -35,7 +35,7 @@ var/list/vocal_emotes = list(
 		do_after = 1
 
 	spawn (do_after)
-		if (act == "scream" && stat == UNCONSCIOUS || stat == DEAD)
+		if (stat == UNCONSCIOUS || stat == DEAD)
 			return
 
 		var/param = null

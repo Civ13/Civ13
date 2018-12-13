@@ -201,16 +201,16 @@
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-
-	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "small sword"))
-		if (H.getStatCoeff("crafting") < 1.8)
-			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
-			return
+	if (findtext(recipe.title, "well"))
 		var/puddly = FALSE
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			puddly = TRUE
 		if (puddly == FALSE)
 			H << "<span class = 'danger'>You need to build this over a puddle.</span>"
+			return
+	if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "small sword"))
+		if (H.getStatCoeff("crafting") < 1.8 && !findtext(recipe.title, "catapult projectile"))
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
@@ -339,6 +339,10 @@
 		produced = 3
 	if (recipe.result_type == /obj/item/stack/ammopart/blunderbuss)
 		produced = 2
+	if (recipe.result_type == /obj/item/stack/money/silvercoin)
+		produced = 200
+	if (recipe.result_type == /obj/item/stack/money/goldcoin)
+		produced = 100
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)

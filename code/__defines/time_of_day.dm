@@ -2,16 +2,15 @@
 #define MAX_LIGHT_AMOUNT 1.00
 //#define ALWAYS_DAY
 var/time_of_day = "Morning"
-var/list/times_of_day = list("Early Morning", "Morning", "Afternoon", "Midday", "Evening", "Night", "Midnight")
-// from lightest to darkest: midday, afternoon, morning, early morning, evening, night, midnight
+var/list/times_of_day = list("Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night")
+// from lightest to darkest: midday, afternoon, morning, early morning, evening, night
 var/list/time_of_day2luminosity = list(
 	"Early Morning" = BASIC_LIGHT_AMOUNT * 10,
 	"Morning" = BASIC_LIGHT_AMOUNT * 15,
 	"Afternoon" = BASIC_LIGHT_AMOUNT * 18,
 	"Midday" = MAX_LIGHT_AMOUNT,
 	"Evening" = BASIC_LIGHT_AMOUNT * 7,
-	"Night" = BASIC_LIGHT_AMOUNT * 2,
-	"Midnight" = BASIC_LIGHT_AMOUNT)
+	"Night" = BASIC_LIGHT_AMOUNT * 2,)
 
 var/list/time_of_day2ticks = list(
 	"Early Morning" = 20*60,
@@ -19,11 +18,10 @@ var/list/time_of_day2ticks = list(
 	"Afternoon" = 20*60,
 	"Midday" = 20*60,
 	"Evening" = 20*60,
-	"Night" = 25*60,
-	"Midnight" = 15*60)
+	"Night" = 25*60,)
 
 /proc/isDarkOutside()
-	if (list("Evening", "Night", "Midnight").Find(time_of_day))
+	if (list("Evening", "Night").Find(time_of_day))
 		return 1
 	return 0
 

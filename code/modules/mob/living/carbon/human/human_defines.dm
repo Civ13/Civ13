@@ -154,3 +154,6 @@
 	var/list/disease_immunity = list()
 
 	var/civilization = "none" //what civilization this person belongs to
+
+	var/riding = FALSE // if riding a horse
+	var/mob/living/simple_animal/riding_mob = null

@@ -59,31 +59,35 @@ var/GRACE_PERIOD_LENGTH = 7
 /hook/roundstart/proc/do_seasonal_stuff()
 	spawn (1)
 //		world << "<span class = 'notice'>Setting up seasons.</span>"
-	season = "SPRING"
+	if (map.ID == MAP_NOMADS_DESERT)
+		season = "Wet Season"
+	else if (map.ID == MAP_NOMADS_ICE_AGE)
+		season = "WINTER"
+	else
+		season = "SPRING"
 	return TRUE
 
 	for (var/grass in grass_turf_list)
 
 		var/turf/floor/plating/grass/G = grass
 
-		if (!G || G.z > 1 || (!G.uses_winter_overlay && !locate_type(G.contents, /obj/snow_maker)))
+		if (!G || G.z > 1 || (!G.uses_winter_overlay))
 			continue
 
 		G.season = season
 
 		var/area/A = get_area(G)
 
-		if (A.location == AREA_INSIDE && !locate(/obj/snow_maker) in G)
+		if (A.location == AREA_INSIDE)
 			continue
 
 		if (G.season != "SPRING")
 			G.overlays.Cut()
 
-		if (G.uses_winter_overlay || locate(/obj/snow_maker) in G)
+		if (G.uses_winter_overlay)
 			if (G.season == "WINTER")
 				if (G.uses_winter_overlay)
 					G.color = DEAD_COLOR
-				new/obj/snow(G)
 
 				for (var/obj/structure/wild/W in G.contents)
 					if (istype(W))

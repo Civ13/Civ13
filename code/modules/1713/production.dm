@@ -3,6 +3,7 @@
 	desc = "A loom, used to transform cotton into cloth."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "loom"
+	flammable = TRUE
 
 /obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/stack/material/cotton))
@@ -21,6 +22,7 @@
 	desc = "A small mill, used to grind cereals into flour."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "flour_mill"
+	flammable = TRUE
 
 /obj/structure/mill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
@@ -43,6 +45,7 @@
 	var/filled = 0
 	var/stage = 0
 	var/obj_type = /obj/item/weapon/reagent_containers/food/snacks/rawcutlet
+	flammable = TRUE
 
 /obj/structure/dehydrator/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (filled >= 4)
@@ -90,3 +93,169 @@
 			filled -= 1
 			icon_state = "wood_drier[filled]"
 			return
+
+/obj/item/weapon/starterjar
+	name = "fermentation starter jar"
+	icon = 'icons/obj/drinks.dmi'
+	desc = "A glass jar, used to mulitply yeast."
+	icon_state = "jar0"
+	item_state = "beaker"
+	var/fermenting = 0
+	var/fermenting_timer = 0
+	var/fermenting_contents = 0
+/obj/item/weapon/starterjar/New()
+	..()
+
+/obj/item/weapon/starterjar/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
+	if (fermenting != 0)
+		user << "This jar already has a starter culture inside!"
+		return
+	if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/flour))
+		user << "You add flour to the jar."
+		fermenting = 1
+		icon_state = "jar1"
+		fermenting_timer = world.time + 1800
+		qdel(O)
+		fermenting_process()
+		return
+
+	else if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/enzyme))
+		user << "You add some yeast to the jar."
+		fermenting = 2
+		fermenting_contents++
+		icon_state = "jar2"
+		qdel(O)
+		yeast_growth()
+		return
+	else
+		..()
+
+/obj/item/weapon/starterjar/proc/fermenting_process()
+	if (world.time >= fermenting_timer)
+		visible_message("The flour in the jar ferments.")
+		fermenting = 2
+		fermenting_contents = 1
+		icon_state = "jar2"
+		yeast_growth()
+	else
+		spawn(100)
+			fermenting_process()
+
+/obj/item/weapon/starterjar/proc/yeast_growth()
+	if (fermenting_contents > 0)
+		spawn(1800)
+			if (fermenting_contents > 0 && fermenting_contents < 5)
+				fermenting_contents++
+			yeast_growth()
+
+/obj/item/weapon/starterjar/attack_self(var/mob/living/carbon/human/user as mob)
+	if (fermenting == 2 && fermenting_contents > 0)
+		user << "You take some yeast out of the jar."
+		new/obj/item/weapon/reagent_containers/food/condiment/enzyme(user.loc)
+		fermenting_contents--
+		if (fermenting_contents == 0)
+			fermenting = 0
+			icon_state = "jar0"
+	else
+		..()
+
+
+////////////////////////SEED/COLLECTOR/////////////////////////////////////
+/obj/item/weapon/storage/seed_collector
+	name = "seed collector"
+	icon = 'icons/obj/storage.dmi'
+	desc = "A glass jar, used to mulitply yeast."
+	icon_state = "seed_collector"
+	item_state = "backpack"
+	var/active = FALSE
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 2
+	max_storage_space = 45 // can hold 2 w_class 4 items. 28 let it hold 3
+	can_hold = list(
+		/obj/item/stack/farming/seeds,
+		)
+	flammable = TRUE
+
+/obj/item/weapon/storage/seed_collector/attack_self(var/mob/living/carbon/human/user as mob)
+	active = TRUE
+	var/total_storage_space = 0
+	for (var/obj/item/I in contents)
+		total_storage_space += I.get_storage_cost() //Adds up the combined w_classes which will be in the storage item if the item is added to it.
+	if (total_storage_space+1 > max_storage_space)
+		user << "<span class='notice'>[src] is too full, make some space.</span>"
+		active = FALSE
+		return
+	if (!(src.loc == user))
+		active = FALSE
+		return
+	else
+		for (var/obj/item/stack/farming/seeds/SD in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/farming/seeds/SDC in contents)
+				if (SDC.type == SD.type)
+					SDC.amount += SD.amount
+					qdel(SD)
+					doneexisting = TRUE
+					user << "You collect the seeds."
+					return
+			if (!doneexisting)
+				SD.forceMove(src)
+				user << "You collect the seeds."
+				return
+
+////////////////////////ORE/COLLECTOR//////////////////////////////////////
+
+/obj/item/weapon/storage/ore_collector
+	name = "ore collector"
+	icon = 'icons/obj/storage.dmi'
+	desc = "A leather bag, used to collect ores."
+	icon_state = "ore_collector"
+	item_state = "backpack"
+	var/active = FALSE
+	w_class = 4
+	slot_flags = SLOT_BACK
+	max_w_class = 3
+	max_storage_space = 28 // can hold 2 w_class 4 items. 28 let it hold 3
+	can_hold = list(
+		/obj/item/stack/ore,
+		/obj/item/stack/material/stone,
+		)
+	flammable = TRUE
+
+/obj/item/weapon/storage/ore_collector/attack_self(var/mob/living/carbon/human/user as mob)
+	active = TRUE
+	var/total_storage_space = 0
+	for (var/obj/item/I in contents)
+		total_storage_space += I.get_storage_cost() //Adds up the combined w_classes which will be in the storage item if the item is added to it.
+	if (total_storage_space+3 > max_storage_space)
+		user << "<span class='notice'>[src] is too full, make some space.</span>"
+		active = FALSE
+		return
+	if (!(src.loc == user))
+		active = FALSE
+		return
+	else
+		for (var/obj/item/stack/ore/OR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/ore/ORC in contents)
+				if (ORC.type == OR.type)
+					ORC.amount += OR.amount
+					qdel(OR)
+					doneexisting = TRUE
+					user << "You collect the ore."
+			if (!doneexisting)
+				OR.forceMove(src)
+				user << "You collect the ore."
+
+		for (var/obj/item/stack/material/stone/SR in user.loc)
+			var/doneexisting = FALSE
+			for (var/obj/item/stack/material/stone/SRC in contents)
+				if (SRC.type == SR.type)
+					SRC.amount += SR.amount
+					qdel(SR)
+					doneexisting = TRUE
+					user << "You collect the stone."
+			if (!doneexisting)
+				SR.forceMove(src)
+				user << "You collect the stone."

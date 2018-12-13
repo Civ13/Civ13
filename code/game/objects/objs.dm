@@ -17,8 +17,8 @@
 	var/is_cover = FALSE
 	var/code = 0
 	var/cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
-	var/plant = "tomato"
 	var/cratevalue = 0 //How much the crate costs when importing
+	var/flammable = FALSE
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)

@@ -7,6 +7,7 @@
 	w_class = TRUE
 	light_color = "#E09D37"
 	var/wax = 2000
+	flammable = TRUE
 
 /obj/item/weapon/flame/candle/New()
 	wax = rand(800, 1000) // Enough for 27-33 minutes. 30 minutes on average.

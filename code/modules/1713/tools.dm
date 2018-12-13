@@ -14,6 +14,7 @@
 	sharp = FALSE
 	edge = FALSE
 	slot_flags = SLOT_BELT
+	flammable = TRUE
 
 /obj/item/weapon/shovel
 	name = "shovel"

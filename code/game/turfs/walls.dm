@@ -69,12 +69,12 @@ var/list/global/wall_cache = list()
 	if (prob(10) && !istype(src, /turf/wall/indestructable) && my_area.type != /area/caribbean/void)
 		new /obj/effect/decal/cleanable/dirt (src)
 	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-		L.update_overlay(TRUE)
+		L.update_overlay()
 
 /turf/wall/Destroy()
 	dismantle_wall(null,null,1)
 	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
-		L.update_overlay(TRUE)
+		L.update_overlay()
 	..()
 
 /turf/wall/process()
@@ -180,11 +180,7 @@ var/list/global/wall_cache = list()
 	reinf_material = null
 	//update_connections(1)
 	update_icon()
-	if (material == "wood")
-		ChangeTurf(/turf/floor/plating/beach/water)
-	else
-		ChangeTurf(/turf/floor/wood_broken)
-
+	ChangeTurf(/turf/floor/wood_broken)
 /turf/wall/ex_act(severity)
 	var/area/src_area = get_area(src)
 	if (src_area && src_area.type == /area/caribbean/void)

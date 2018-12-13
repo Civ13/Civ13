@@ -42,7 +42,7 @@
 			stop_automated_movement = TRUE
 			stance_step++
 			if (stance_step >= 10) //rests for 10 ticks
-				if (target_mob && target_mob in ListTargets(10))
+				if (target_mob && target_mob in ListTargets(6))
 					stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
 				else
 					stance = HOSTILE_STANCE_IDLE
@@ -50,7 +50,7 @@
 		if (HOSTILE_STANCE_ALERT)
 			stop_automated_movement = TRUE
 			var/found_mob = FALSE
-			if (target_mob && target_mob in ListTargets(10))
+			if (target_mob && target_mob in ListTargets(6))
 				if (!(SA_attackable(target_mob)))
 					stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 					stance_step++
@@ -113,7 +113,7 @@
 		var/mob/living/carbon/human/H = target_mob
 		var/dam_zone = pick("l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
-		if (prob(90))
+		if (prob(95))
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)

@@ -25,7 +25,6 @@ Hotkey-Mode: (hotkey-mode must be on)\n \
 \tPgDwn = go down\n \
 \tCtrl = drag\n \
 \tShift = examine\n \
-\tCtrl+S = scream\n \
 \tSpace = Use-iron-sights/tank gun\n \
 Any-Mode: (hotkey doesn't need to be on)\n  \
 \tCtrl+q = drop\n \
@@ -45,7 +44,6 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 \tPGUP = swap-hand\n \
 \tPGDN = activate held object\n \
 \tEND = throw\n \
-\tCtrl+S = scream\n \
 \tSpace = Use-iron-sights/tank gun\n \
 </font>"}
 

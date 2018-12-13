@@ -109,3 +109,4 @@ var/last_chew = FALSE
 	desc = "Use this to keep prisoners in line."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "ropecuffs"
+	flammable = TRUE

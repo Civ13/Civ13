@@ -30,7 +30,7 @@
 	fire_delay = 5
 	muzzle_flash = FALSE
 	value = 10
-
+	flammable = TRUE
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -146,3 +146,10 @@
 	else
 		visible_message("")
 	return
+
+
+/obj/item/weapon/gun/projectile/bow/special_check(mob/user)
+	if (!(user.has_empty_hand(both = FALSE)))
+		user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+		return FALSE
+	return ..()
