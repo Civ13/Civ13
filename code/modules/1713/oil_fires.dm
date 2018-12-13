@@ -120,7 +120,7 @@
 	layer = TURF_LAYER+2.2
 	anchored = TRUE
 	density = FALSE
-	var/timer = 200
+	var/timer = 170
 	var/runonce = FALSE
 /obj/effect/burning_oil/New()
 	..()
@@ -149,8 +149,8 @@
 
 /obj/effect/burning_oil/proc/burningproc()
 //this tile
-	if (prob(10))
-		new/obj/effect/effect/steam(loc)
+	if (prob(3))
+		new/obj/effect/effect/smoke(loc)
 
 	for (var/mob/living/L in src.loc)
 		L.adjustFireLoss(rand(15,25))
@@ -184,7 +184,7 @@
 		T.ChangeTurf(/turf/floor/wood_broken)
 
 //bordering tiles
-	for (var/obj/effect/decal/cleanable/blood/OL in range(1, src.loc))
+	for (var/obj/effect/decal/cleanable/blood/OL in orange(1, src.loc))
 		if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
 			if (prob(15))
 				new/obj/effect/burning_oil(OL.loc)
@@ -192,11 +192,11 @@
 			if (prob(15))
 				new/obj/effect/burning_oil(OL.loc)
 
-	for (var/turf/floor/plating/grass/GR in range(1, src.loc))
+	for (var/turf/floor/plating/grass/GR in orange(1, src.loc))
 		if (prob(6))
 			new/obj/effect/burning_oil(GR)
 
-	for (var/turf/floor/wood/WF in range(1, src.loc))
+	for (var/turf/floor/wood/WF in orange(1, src.loc))
 		if (prob(6))
 			new/obj/effect/burning_oil(WF)
 

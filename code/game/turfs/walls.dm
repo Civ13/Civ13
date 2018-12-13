@@ -180,7 +180,7 @@ var/list/global/wall_cache = list()
 	reinf_material = null
 	//update_connections(1)
 	update_icon()
-
+	ChangeTurf(/turf/floor/wood_broken)
 /turf/wall/ex_act(severity)
 	var/area/src_area = get_area(src)
 	if (src_area && src_area.type == /area/caribbean/void)

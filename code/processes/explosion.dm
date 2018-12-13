@@ -156,7 +156,7 @@
 				if (data.objects_with_immunity.Find(AM))
 					continue
 				if (AM && AM.simulated)	AM.ex_act(dist)
-	if (prob(50))
+	if (prob(25))
 		new/obj/effect/burning_oil(epicenter)
 	var/took = (world.timeofday-start)/10
 	//You need to press the DebugGame verb to see these now....they were getting annoying and we've collected a fair bit of data. Just -test- changes  to explosion code using this please so we can compare
