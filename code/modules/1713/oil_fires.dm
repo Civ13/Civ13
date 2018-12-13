@@ -120,7 +120,7 @@
 	layer = TURF_LAYER+2.2
 	anchored = TRUE
 	density = FALSE
-
+	var/timer = 200
 /obj/effect/burning_oil/New()
 	..()
 	icon = 'icons/effects/effects.dmi'
@@ -129,7 +129,7 @@
 	spawn(20)
 		burningproc()
 	set_light(2)
-	spawn(230)
+	spawn(timer)
 		set_light(0)
 		qdel(src)
 
@@ -147,12 +147,14 @@
 /obj/effect/burning_oil/proc/burningproc()
 //this tile
 	if (prob(10))
-		new/obj/effect/effect/smoke(loc)
+		new/obj/effect/effect/steam(loc)
+
 	for (var/mob/living/L in src.loc)
 		L.adjustFireLoss(rand(15,25))
 		if (prob(40))
 			L.fire_stacks += rand(1,2)
 		L.IgniteMob()
+
 	for (var/obj/effect/decal/cleanable/blood/O in src.loc)
 		spawn(50)
 			qdel(O)
@@ -164,10 +166,12 @@
 	for (var/obj/effect/burning_oil/OTH in src.loc)
 		if (OTH != src)
 			qdel(OTH)
+
 	for (var/obj/structure/oil_spring/OS in src.loc)
 		if (OS.counter > 0)
 			OS.oil_explode()
 			OS.counter = 0
+
 //burn floors
 	if (istype(get_turf(src), /turf/floor/plating/grass))
 		var/turf/T = get_turf(src)
@@ -175,8 +179,9 @@
 	else if (istype(get_turf(src), /turf/floor/wood))
 		var/turf/T = get_turf(src)
 		T.ChangeTurf(/turf/floor/wood_broken)
+
 //bordering tiles
-	for (var/obj/effect/decal/cleanable/blood/OL in range(1, get_turf(src)))
+	for (var/obj/effect/decal/cleanable/blood/OL in range(1, src.loc))
 		if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
 			if (prob(15))
 				new/obj/effect/burning_oil(OL.loc)
@@ -184,18 +189,14 @@
 			if (prob(15))
 				new/obj/effect/burning_oil(OL.loc)
 
-	for (var/turf/floor/plating/grass/GR in range(1, get_turf(src)))
+	for (var/turf/floor/plating/grass/GR in range(1, src.loc))
 		if (prob(5))
-			var/obj/effect/burning_oil/NB = new/obj/effect/burning_oil(GR)
-			spawn(80)
-				qdel(src)
-				qdel(NB)
-	for (var/turf/floor/wood/WF in range(1, get_turf(src)))
+			new/obj/effect/burning_oil(GR)
+
+	for (var/turf/floor/wood/WF in range(1, src.loc))
 		if (prob(15))
-			var/obj/effect/burning_oil/NB = new/obj/effect/burning_oil(WF)
-			spawn(100)
-				qdel(src)
-				qdel(NB)
+			new/obj/effect/burning_oil(WF)
+
 //remove duplicates
 	for (var/obj/effect/burning_oil/OTH in src.loc)
 		if (OTH != src)

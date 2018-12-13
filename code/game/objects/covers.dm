@@ -30,7 +30,7 @@
 	icon_state = "wood"
 	passable = TRUE
 	amount = 1
-	layer = 2.1
+	layer = 1.99
 
 /obj/covers/cobblestone
 	name = "cobblestone floor"
@@ -40,8 +40,9 @@
 	not_movable = TRUE
 	amount = 0
 	wood = FALSE
-	layer = 2.1
+	layer = 1.99
 	flammable = FALSE
+
 /obj/covers/sandstone
 	name = "sandstone floor"
 	icon = 'icons/turf/floors.dmi'
@@ -50,15 +51,16 @@
 	not_movable = TRUE
 	amount = 0
 	wood = FALSE
-	layer = 2.1
+	layer = 1.99
 	flammable = FALSE
+
 /obj/covers/wood_ship
 	name = "wood floor"
 	icon_state = "wood_ship"
 	passable = TRUE
 	not_movable = TRUE
 	amount = 1
-	layer = 2.1
+	layer = 1.99
 
 /obj/covers/wood_wall
 	name = "soft wood wall"
@@ -73,6 +75,7 @@
 	layer = 2.12
 	health = 150
 	wall = TRUE
+
 /obj/covers/stone_wall
 	name = "stone wall"
 	desc = "A stone wall."
@@ -88,6 +91,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+
 /obj/covers/dirt_wall
 	name = "dirt wall"
 	desc = "A dirt wall."
@@ -103,6 +107,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+
 /obj/covers/straw_wall
 	name = "straw wall"
 	desc = "A straw wall. Looks flimsy."
@@ -117,6 +122,7 @@
 	health = 75
 	wood = TRUE
 	wall = TRUE
+
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
@@ -132,6 +138,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+
 /obj/covers/dirt_wall/blocks/incomplete
 	name = "dirt blocks wall"
 	desc = "A dirt blocks wall."
@@ -148,6 +155,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+
 /obj/covers/dirt_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/sandbag))
 		if (stage == 3)
@@ -219,7 +227,7 @@
 	desc = "a repaired wood floor."
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship_repaired"
-	layer = 2.09
+	layer = 1.98
 	flammable = TRUE
 
 /obj/item/weapon/covers/attack_self(mob/user)

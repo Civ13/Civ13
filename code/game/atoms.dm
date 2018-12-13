@@ -192,7 +192,7 @@
 			if (prob(27))
 				visible_message("<span class = 'warning'>\The [NS] is burned away.</span>")
 				if (prob(15))
-					new/obj/effect/effect/smoke(loc)
+					new/obj/effect/effect/steam(loc)
 				qdel(src)
 	else
 		return
