@@ -36,7 +36,7 @@
 	is_diggable = TRUE
 
 /turf/floor/dirt/burned
-	name = "burned dirt"
+	name = "burned ground"
 	icon_state = "burned_dirt"
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE

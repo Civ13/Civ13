@@ -147,25 +147,35 @@
 		for (var/mob/living/L in src.loc)
 			L.IgniteMob()
 
-		for (var/obj/effect/decal/cleanable/blood/oil/O in src.loc)
-			spawn(70)
+		for (var/obj/effect/decal/cleanable/blood/O in src.loc)
+			spawn(50)
 				qdel(O)
 
-		for (var/turf/floor/plating/grass/G in src.loc)
-			spawn(90)
-				G.ChangeTurf(/turf/floor/dirt/burned)
+		if (istype(get_turf(src), /turf/floor/plating/grass))
+			var/turf/T = get_turf(src)
+			T.ChangeTurf(/turf/floor/dirt/burned)
 
 		for (var/obj/OB in src.loc)
 			if (prob(35) && !istype(OB, /obj/effect/decal/cleanable/blood/oil) && OB.flammable)
 				OB.fire_act(700)
 
-		for (var/obj/effect/decal/cleanable/blood/oil/OL in range(1, get_turf(src)))
-			if (prob(15))
-				new/obj/effect/burning_oil(OL.loc)
+		for (var/obj/effect/decal/cleanable/blood/OL in range(1, get_turf(src)))
+			if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
+				if (prob(15))
+					new/obj/effect/burning_oil(OL.loc)
+			if (istype(OL, /obj/effect/decal/cleanable/blood/tracks) && OL.basecolor == "#A10808")
+				if (prob(15))
+					new/obj/effect/burning_oil(OL.loc)
 
 		for (var/turf/floor/plating/grass/GR in range(1, get_turf(src)))
 			if (prob(5))
-				new/obj/effect/burning_oil(GR.loc)
+				new/obj/effect/burning_oil(GR)
+				spawn(50)
+					qdel(src)
+
+		for (var/obj/effect/burning_oil/OTH in src.loc)
+			if (OTH != src)
+				qdel(OTH)
 
 		burningproc()
 
