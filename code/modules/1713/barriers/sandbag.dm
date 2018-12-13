@@ -17,13 +17,7 @@
 			if (do_after(user, 200, src))
 				visible_message("<span class='danger'>[user] finishes dismantling the dirt wall.</span>", "<span class='danger'>You finish dismantling the dirt wall.</span>")
 				var/turf = get_turf(src)
-				/* it takes 6 sandbags to make a full sandbag.
-				  * so:
-				    * give people 4 to 6 sandbags back for full sandbags
-				    * give people the amount of sandbags (-1 or -0) back
-				     * that it took them to make the structure in the first
-				     * place
-				*/
+
 				if (!istype(src, /obj/structure/window/sandbag/incomplete))
 					for (var/v in TRUE to rand(4,6))
 						new /obj/item/weapon/sandbag(turf)
@@ -107,7 +101,7 @@
 	return FALSE
 
 /obj/structure/window/sandbag/examine(mob/user)
-	user << "That's a dirt barricade."
+	user << "That's a dirt wall."
 	return TRUE
 
 /obj/structure/window/sandbag/take_damage(var/damage = FALSE, var/sound_effect = TRUE)

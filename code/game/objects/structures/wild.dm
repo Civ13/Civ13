@@ -248,6 +248,8 @@
 /obj/structure/wild/bush/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		if (prob(18))
+			new/obj/structure/wild/burnedbush(src.loc)
 		qdel(src)
 
 /obj/structure/wild/bush/tame
@@ -262,6 +264,7 @@
 	icon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
+	flammable = FALSE
 
 /obj/structure/wild/junglebush
 	name = "small vegetation"
@@ -288,17 +291,38 @@
 	..()
 	icon_state = "smallbush[rand(1,42)]"
 
+/obj/structure/wild/smallbush/winter
+	name = "small bush"
+	icon = 'icons/obj/flora/snowflora.dmi'
+	icon_state = "snowgrass1"
+	opacity = FALSE
+	density = FALSE
+
+/obj/structure/wild/smallbush/winter/fire_act(temperature)
+	if (prob(15 * (temperature/500)))
+		visible_message("<span class = 'warning'>[src] is burned away.</span>")
+		qdel(src)
+
+/obj/structure/wild/smallbush/winter/New()
+	..()
+	if (prob(65))
+		icon_state = "snowgrass[rand(1,9)]"
+	else
+		icon_state = "snowbush[rand(1,6)]"
+
 /obj/structure/wild/burnedtree
 	name = "burned tree"
 	icon_state = "burnedtree1"
 	opacity = FALSE
 	density = FALSE
+	flammable = FALSE
 
 /obj/structure/wild/rock
 	name = "rock"
 	icon_state = "rock1"
 	opacity = FALSE
 	density = FALSE
+	flammable = FALSE
 	amount = 0
 
 /obj/structure/wild/tallgrass

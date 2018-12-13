@@ -192,6 +192,7 @@
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "snow"
 	is_diggable = TRUE
+	available_snow = 3
 
 /turf/floor/plating/snow/ex_act(severity)
 	return
@@ -250,7 +251,9 @@ var/global/list/GrassEdgeCache
 /turf/floor/winter/grass
 	name = "snowy grass"
 	icon = 'icons/turf/snow.dmi'
+	icon_state = "grass2"
 	is_diggable = TRUE
+	available_snow = 2
 
 /turf/floor/winter/grass/New()
 	..()

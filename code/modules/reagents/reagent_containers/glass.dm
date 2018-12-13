@@ -118,7 +118,7 @@
 				return
 
 			user << "You smash the olives, producing olive oil."
-			reagents.add_reagent("olive_oil", 3)
+			reagents.add_reagent("olive_oil", 6)
 			qdel(W)
 			return
 	proc/update_name_label()

@@ -92,7 +92,7 @@
 "bN" = (/obj/item/stack/farming/seeds/coffee,/turf/floor/plating/sand/desert,/area/caribbean/tribes/bear)
 "bO" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
 "bP" = (/mob/living/simple_animal/chicken,/turf/floor/plating/sand/desert,/area/caribbean/tribes/wolf)
-"bQ" = (/obj/effect/spawner/mobspawner/bears{max_range = 5},/turf/floor/dirt/dust,/area/caribbean/tribes/caves)
+"bQ" = (/obj/effect/spawner/mobspawner/bears/brown,/turf/floor/dirt/dust,/area/caribbean/tribes/caves)
 "bR" = (/obj/item/stack/farming/seeds/potato{amount = 5},/turf/floor/plating/sand/desert,/area/caribbean/tribes/goose)
 "bS" = (/obj/structure/wild/burnedbush,/turf/floor/plating/sand/desert,/area/caribbean/tribes/wolf)
 "bT" = (/mob/living/simple_animal/frog,/turf/floor/plating/sand/desert,/area/caribbean/tribes/goose)
@@ -245,7 +245,6 @@
 "eK" = (/obj/item/stack/farming/seeds/coffee,/turf/floor/dirt/dust,/area/caribbean/tribes/grasslands)
 "eL" = (/obj/item/stack/farming/seeds/tea,/turf/floor/plating/sand/desert,/area/caribbean/tribes/swamp)
 "eM" = (/obj/structure/wild/tree/dead_tree,/turf/floor/plating/beach/sand,/area/caribbean/sea/shallow)
-"eN" = (/obj/effect/spawner/mobspawner/bears,/turf/floor/dirt/dust,/area/caribbean/tribes/caves)
 "eO" = (/obj/item/stack/farming/seeds/apple,/turf/floor/dirt/dust,/area/caribbean/tribes/mouse)
 "eP" = (/obj/item/stack/farming/seeds/tobacco,/turf/floor/dirt/dust,/area/caribbean/tribes/mouse)
 "eQ" = (/obj/structure/wild/tree/dead_tree,/turf/floor/plating/sand/desert,/area/caribbean/sea/shallow)
@@ -875,7 +874,7 @@ apaFaFaFaFaFaFaFaFaFaFaFaFaFaFapapaFapapapapaFapaFaFaFaFaFaFaFaFacdududududududu
 aFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFapapapapapapaFaFaFaFaFaFaFaFaFaFaFdudududududududududududududududEdudududududududududuaPdJdududududqdqdQdqdQdQdQdQdQeZdqdqdqdqdqdtdqdqdqdqdqdqfbdtdqdqdqdqdqdqdqererjVjVdrdqdtdqdqdqdtdwdqdQdrdqdqdqdqaPcDcDcDcDcDcDcDcDclclclclclclclababababaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFapaFaFaF
 aFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFapapapapapaFaFaFaFaFaFaFaFaFaFaFaFdudEdududududududududududSdududududududududSdudududuaPdudududJdudqeDdQdQdwdQdQdQdqdqdqdqdqdqdqdqdqdrdqdqdwdqdqdqdqdqdqdqererererdqjVdqdqdqdqdqdQdQdqdqdqdqdqdqdqdqdqaPcDcDcDcDcDcDclclclclclclclclclclclababaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFapaFaFaF
 aFaFaFaFaFaFaFaFaFaFaFaFaFapapapapapaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFdudududududududuacdSdudududududududududududududududMaPdudududJdudqdqdQdQdqdQdQdQdqdqdrdrdqdqdqdQdqdqdqdqdqdQdqdqdqdqdqererdqdqdqjVjVdqdqdqfcdqdqdqdqdqdqdqdLdqdqdqdqaPcDcDclclcDclclclclclclclclclclclacfHfHaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFapaFaFaF
-aFaFaFaFaFaFaFaFaFaFaFaFaFapapeNapaFaFaFaFaFaFaFaFaFaFaFaFapaFaFapdudududududSdudSdudududududSdududududududSdududududuaOdudqdudududqdqdqdqdqdQdQdQdqdqdqdqdqdqdqdqdqdrdqdqdrdqdqdqdqdqdqdqdqdqdqdqdqdqdrdqdqdqdqdqdqdqdqdrdqdqdqdqdqdQaCaPaCaCaCaCaCaCaCaCaCaCaCaGaGaGaGaGaGaGaGaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFapaFaFaF
+aFaFaFaFaFaFaFaFaFaFaFaFaFapapbQapaFaFaFaFaFaFaFaFaFaFaFaFapaFaFapdudududududSdudSdudududududSdududududududSdududududuaOdudqdudududqdqdqdqdqdQdQdQdqdqdqdqdqdqdqdqdqdrdqdqdrdqdqdqdqdqdqdqdqdqdqdqdqdqdrdqdqdqdqdqdqdqdqdrdqdqdqdqdqdQaCaPaCaCaCaCaCaCaCaCaCaCaCaGaGaGaGaGaGaGaGaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFapaFaFaF
 aFaFaFaFaFaFaFaFaFaFaFaFapapapaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFacdududududMdudJdududMdududududuacdudududududududududuaPdudqdJdududqdqdqdqdQdQdwdQdqdqdLdqdqdqdqdqdqdrdqdrdqdqdqdqdqdqdqeOdQdQdQdrdqdqdqdqdqdqdqdqdqdqdqdrdqdqePdQeTdQdQdQdQdQacacacfHfHfHacacfHfHclclclclfHfHaGaFaFaFaFaFaFaFaFaFaFaFaFaFaFapapaFaFaF
 aFaFaFaFaFaFaFaFaFaFaFapapapapaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFacdudududududuacacdudSduacfafaacduduacdudududuacaCaPaPaPdudqdqdqdqdqdqdQdQdqdqdQdQfddqdqdLdqdwdqdqdqdrdqdqdwdqdRdqiqdqdqdqdqdqdqdqdqdqdqdrdqdqdqdrdrdqdqererdqdQdQdQdQdQdQdQdQacacacacacacacacclclclclclclfHfHaCapapaFaFapaFaFaFaFaFaFaFaFaFapapaFaFaF
 aFaFaFaFaFaFaFaFaFaFaFapapapapaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFaFacdudufhduduacacacacacdYdYdddYdYacacfeacdudududuaPdudJdududqdqdqdqdqdqdQdQdqdQdQdQdqfddqdqdqdqdqdqdqdqdtdqdqdqdQdqdqdqdtdtdqdqdqdLdqdqdqdqdqdqdqdqdqdqerererdqdQffdQdQdQdQdQacfHacacclclclclclclclclclclclacacaCapapapapapapaFaFaFaFaFaFapapapaFaFaFaF

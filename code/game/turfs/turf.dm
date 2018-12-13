@@ -71,6 +71,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	// for digging out dirt
 	var/available_dirt = 0
 	var/available_sand = 0
+	var/available_snow = 0
 
 	var/overlay_priority = 0
 //	var/uses_daylight_dynamic_lighting = FALSE

@@ -109,6 +109,19 @@
 	create_path = /mob/living/simple_animal/hostile/bear
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/bears/brown
+	name = "brown bear spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/bear/brown
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/bears/polar
+	name = "polar bear spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/bear/polar
+	timer = 3000
 /obj/effect/spawner/mobspawner/monkeys
 	name = "monkey spawner"
 	max_number = 2
@@ -171,6 +184,20 @@
 	timer = 3000
 
 
+/obj/effect/spawner/mobspawner/reindeer_m
+	name = "reindeer stag spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/reindeer/male
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/reindeer_f
+	name = "reindeer doe spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/reindeer/female
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/alligator
 	name = "alligator spawner"
 	max_number = 2
@@ -184,3 +211,10 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/goat
 	timer = 5000
+
+/obj/effect/spawner/mobspawner/wolves/white
+	name = "white wolf spawner"
+	max_number = 4
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/wolf/white
+	timer = 3000

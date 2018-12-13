@@ -61,6 +61,8 @@ var/GRACE_PERIOD_LENGTH = 7
 //		world << "<span class = 'notice'>Setting up seasons.</span>"
 	if (map.ID == MAP_NOMADS_DESERT)
 		season = "Wet Season"
+	else if (map.ID == MAP_NOMADS_ICE_AGE)
+		season = "WINTER"
 	else
 		season = "SPRING"
 	return TRUE

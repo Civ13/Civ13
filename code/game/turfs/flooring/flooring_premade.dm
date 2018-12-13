@@ -32,7 +32,8 @@
 	icon_state = "dirt"
 	uses_winter_overlay = TRUE
 	may_become_muddy = TRUE
-	available_dirt = 3
+	available_snow = 2
+	available_dirt = 0
 	is_diggable = TRUE
 
 /turf/floor/dirt/burned

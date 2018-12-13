@@ -1,40 +1,40 @@
 
-/mob/living/simple_animal/hostile/bear
-	name = "black bear"
-	desc = "Rawr Rawr!!"
-	icon_state = "bear"
-	icon_living = "bear"
-	icon_dead = "bear_dead"
-	icon_gib = "bear_gib"
-	speak = list("RAWR!","Rawr!","GRR!","Growl!")
-	speak_emote = list("growls", "roars")
-	emote_hear = list("rawrs","grumbles","grawls")
-	emote_see = list("stares ferociously", "stomps")
+/mob/living/simple_animal/hostile/wolf
+	name = "wolf"
+	desc = "Better start running..."
+	icon_state = "wolf"
+	icon_living = "wolf"
+	icon_dead = "wolf_dead"
+	icon_gib = "wolf_gib"
+	speak = list("GRRR!","Wooh!","Wuuh!","HUUUUU!")
+	speak_emote = list("growls", "howls")
+	emote_hear = list("growls","howls","whimps")
+	emote_see = list("stares ferociously", "sniffs the ground")
 	speak_chance = TRUE
-	turns_per_move = 5
+	turns_per_move = 4
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/bearmeat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "pokes"
 	stop_automated_movement_when_pulled = FALSE
-	maxHealth = 60
-	health = 60
-	melee_damage_lower = 20
-	melee_damage_upper = 30
-	mob_size = MOB_LARGE
+	maxHealth = 45
+	health = 45
+	melee_damage_lower = 12
+	melee_damage_upper = 23
+	mob_size = MOB_MEDIUM
 
 	var/stance_step = FALSE
 	var/btype = ""
 
 	faction = "neutral"
 
-/mob/living/simple_animal/hostile/bear/Life()
+/mob/living/simple_animal/hostile/wolf/Life()
 	. =..()
 	if (!.)
 		return
 
-	icon_state = "[btype]bear"
+	icon_state = "[btype]wolf"
 
 	switch(stance)
 
@@ -79,30 +79,30 @@
 
 
 
-/mob/living/simple_animal/hostile/bear/attackby(var/obj/item/O as obj, var/mob/user as mob)
+/mob/living/simple_animal/hostile/wolf/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
 		stance = HOSTILE_STANCE_ALERT
 		stance_step = 6
 		target_mob = user
 	..()
 
-/mob/living/simple_animal/hostile/bear/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/hostile/wolf/attack_hand(mob/living/carbon/human/M as mob)
 	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
 		stance = HOSTILE_STANCE_ALERT
 		stance_step = 6
 		target_mob = M
 	..()
 
-/mob/living/simple_animal/hostile/bear/FindTarget()
+/mob/living/simple_animal/hostile/wolf/FindTarget()
 	. = ..()
 	if (.)
 		custom_emote(1,"stares alertly at [.].")
 		stance = HOSTILE_STANCE_ALERT
 
-/mob/living/simple_animal/hostile/bear/LoseTarget()
+/mob/living/simple_animal/hostile/wolf/LoseTarget()
 	..(5)
 
-/mob/living/simple_animal/hostile/bear/AttackingTarget()
+/mob/living/simple_animal/hostile/wolf/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
 	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
@@ -119,23 +119,12 @@
 		var/mob/living/L = target_mob
 		L.adjustBruteLoss(damage)
 		return L
-	//else if (istype(target_mob,/obj/mecha))
-		//var/obj/mecha/M = target_mob
-		//M.attack_animal(src)
-		//return M
 
-/mob/living/simple_animal/hostile/bear/brown
-	name = "brown bear"
-	icon_state = "brownbear"
-	icon_living = "brownbear"
-	icon_dead = "brownbear_dead"
-	icon_gib = "brownbear_gib"
-	btype = "brown"
 
-/mob/living/simple_animal/hostile/bear/polar
-	name = "polar bear"
-	icon_state = "polarbear"
-	icon_living = "polarbear"
-	icon_dead = "polarbear_dead"
-	icon_gib = "polarbear_gib"
-	btype = "polar"
+/mob/living/simple_animal/hostile/wolf/white
+	name = "white wolf"
+	icon_state = "whitewolf"
+	icon_living = "whitewolf"
+	icon_dead = "whitewolf_dead"
+	icon_gib = "whitewolf_gib"
+	btype = "white"
