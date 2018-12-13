@@ -8,6 +8,7 @@
 	off_state = "lantern"
 	value = 12
 	fuel = 0 //starts empty
+	unlimited = FALSE
 
 /obj/item/flashlight/lantern/attack_self(mob/user)
 	if (!isturf(user.loc))
@@ -53,19 +54,24 @@
 
 /obj/item/flashlight/New()
 	..()
-	do_torch()
+	if (!unlimited)
+		do_torch()
 
 /obj/item/flashlight/lantern/anchored
 	on_state = "lantern-on_a"
 	off_state = "lantern_a"
 	icon_state = "lantern_a"
 	anchored = TRUE
+	unlimited = TRUE
+	fuel = 10
 
 /obj/item/flashlight/lantern/on/anchored
 	on_state = "lantern-on_a"
 	off_state = "lantern_a"
 	icon_state = "lantern-on_a"
 	anchored = TRUE
+	unlimited = TRUE
+	fuel = 10
 
 /obj/item/flashlight/torch
 	name = "torch"
@@ -89,13 +95,6 @@
 	icon_state = "torch-on"
 	item_state = "torch-on"
 	on = TRUE
-
-/obj/item/flashlight/lantern/anchored
-	anchored = TRUE
-
-/obj/item/flashlight/lantern/on/anchored
-	anchored = TRUE
-
 
 /obj/item/flashlight/proc/do_torch()
 	spawn(10)

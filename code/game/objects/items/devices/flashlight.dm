@@ -18,6 +18,7 @@
 	var/turn_on_sound = 'sound/effects/Custom_flashlight.ogg'
 	var/fuel = 600 // 10 mins
 	var/cooloff = 0
+	var/unlimited = FALSE
 
 /obj/item/flashlight/initialize()
 	..()

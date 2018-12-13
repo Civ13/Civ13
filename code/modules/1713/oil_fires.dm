@@ -121,13 +121,16 @@
 	anchored = TRUE
 	density = FALSE
 	var/timer = 200
+	var/runonce = FALSE
 /obj/effect/burning_oil/New()
 	..()
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "burning_fire2"
 	alpha = 230
 	spawn(20)
-		burningproc()
+		if (runonce == 0)
+			burningproc()
+			runonce = 1
 	set_light(2)
 	spawn(timer)
 		set_light(0)
@@ -190,11 +193,11 @@
 				new/obj/effect/burning_oil(OL.loc)
 
 	for (var/turf/floor/plating/grass/GR in range(1, src.loc))
-		if (prob(5))
+		if (prob(6))
 			new/obj/effect/burning_oil(GR)
 
 	for (var/turf/floor/wood/WF in range(1, src.loc))
-		if (prob(15))
+		if (prob(6))
 			new/obj/effect/burning_oil(WF)
 
 //remove duplicates
