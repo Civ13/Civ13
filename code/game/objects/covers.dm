@@ -210,6 +210,9 @@
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount
+	if (wall == TRUE)
+		for(var/obj/roof/R in range(2,src))
+			R.collapse_check()
 	..()
 	return TRUE
 
