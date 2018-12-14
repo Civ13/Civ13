@@ -390,6 +390,13 @@
 		if ("Wet Season")
 			loc_temp = 303
 
+	if (map && map.ID == MAP_NOMADS_ICE_AGE)
+		switch (season)
+			if ("WINTER")
+				loc_temp = 213
+			if ("SUMMER")
+				loc_temp = 244
+
 	switch (time_of_day)
 		if ("Midday")
 			loc_temp *= 1.03
@@ -443,12 +450,12 @@
 			if (loc_temp < 295)
 				loc_temp = 295
 				break
-	//inside areas have natural insulation of 20 degrees
+	//inside areas have natural insulation, so the temp will be more moderate than outside.
 	if (mob_area.location == AREA_INSIDE)
-		if (loc_temp > 293)
-			loc_temp = (min(293,loc_temp-20))
-		else if (loc_temp < 293)
-			loc_temp = (max(293,loc_temp+20))
+		if (loc_temp > 295)
+			loc_temp = (max(295,loc_temp-40))
+		else if (loc_temp < 290)
+			loc_temp = (min(290,loc_temp+40))
 	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
 		heatDamageFromClothingTimer++
 

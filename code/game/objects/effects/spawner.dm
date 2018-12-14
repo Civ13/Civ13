@@ -212,6 +212,13 @@
 	create_path = /mob/living/simple_animal/goat
 	timer = 5000
 
+/obj/effect/spawner/mobspawner/wolves
+	name = "wolf spawner"
+	max_number = 4
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/wolf
+	timer = 3000
+
 /obj/effect/spawner/mobspawner/wolves/white
 	name = "white wolf spawner"
 	max_number = 4

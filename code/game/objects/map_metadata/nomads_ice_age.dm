@@ -42,7 +42,9 @@
 
 /obj/map_metadata/nomads_ice_age/New()
 	..()
-	spawn(180)
+	for (var/obj/structure/wild/tree/live_tree/TREES)
+		TREES.update_icon()
+	spawn(9000)
 		seasons()
 
 /obj/map_metadata/nomads_ice_age/faction2_can_cross_blocks()
@@ -61,6 +63,9 @@
 			change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
+		for (var/obj/structure/wild/smallbush/SB)
+			new/obj/structure/wild/smallbush/winter(SB.loc)
+			qdel(SB)
 		for (var/turf/floor/dirt/D)
 			if (!istype(D,/turf/floor/dirt/winter))
 				var/area/A = get_area(D)
@@ -82,6 +87,9 @@
 			change_weather_somehow()
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
+		for (var/obj/structure/wild/smallbush/winter/SBW)
+			new/obj/structure/wild/smallbush(SBW.loc)
+			qdel(SBW)
 		for (var/turf/floor/dirt/winter/D)
 			if (prob(50))
 				D.ChangeTurf(/turf/floor/dirt)
@@ -103,7 +111,7 @@
 		spawn(9000)
 			seasons()
 	else if (real_season == "WINTER")
-		spawn(18000)
+		spawn(27000)
 			seasons()
 
 

@@ -11,6 +11,12 @@
 	color = "#543200"
 	var/plant = "tomato"
 
+/obj/item/stack/farming/seeds/mushroom
+	name = "mushroom spores"
+	plant = "mushroom"
+	icon_state = "mushroomseeds"
+	color = null
+
 /obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"
 	plant = "tomato"
@@ -236,6 +242,13 @@
 	desc = "a rice plant."
 	icon_state = "rice-grow1"
 	plant = "rice"
+	harvest_verb = "harvest"
+
+/obj/structure/farming/plant/mushroom
+	name = "mushroom"
+	desc = "a bunch of mushrooms. Can be grown inside and underground."
+	icon_state = "mushroom-grow1"
+	plant = "mushroom"
 	harvest_verb = "harvest"
 
 /obj/structure/farming/plant/olives

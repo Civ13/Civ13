@@ -136,6 +136,7 @@
 #include "code\game\objects\fire.dm"
 #include "code\game\objects\items.dm"
 #include "code\game\objects\objs.dm"
+#include "code\game\objects\roof_stuff.dm"
 #include "code\game\objects\structures.dm"
 #include "code\game\objects\weapons.dm"
 #include "code\game\objects\effects\bump_teleporter.dm"
@@ -771,5 +772,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_desert.dmm"
+#include "maps\special\nomads_ice_age.dmm"
 // END_INCLUDE
