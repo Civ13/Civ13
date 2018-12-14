@@ -17,15 +17,16 @@
 	if (istype(O, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/RG = O
 		if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && !(istype(src, /obj/structure/sink/puddle)))
-			RG.reagents.add_reagent("petroleum", 10)
-			user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-			user.setClickCooldown(20)
-			counter--
-			update_icon()
-			timeout = world.time + 600
-			refill()
-			return
+			if (counter > 0)
+				RG.reagents.add_reagent("petroleum", 10)
+				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+				user.setClickCooldown(20)
+				counter--
+				update_icon()
+				timeout = world.time + 600
+				refill()
+				return
 	else if (istype(O, /obj/item/flashlight))
 		var/obj/item/flashlight/OO = O
 		if (counter > 0 && OO.on)

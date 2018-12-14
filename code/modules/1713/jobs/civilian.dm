@@ -78,7 +78,7 @@
 			else if (randcloth == 3)
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf3(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-	if (season == "WINTER")
+	if (season == "WINTER" || map.ID == MAP_NOMADS_ICE_AGE)
 		equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)

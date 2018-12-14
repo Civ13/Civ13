@@ -427,6 +427,8 @@
 				new/obj/structure/farming/plant/rice(src)
 				if (C.amount>1)
 					C.amount -= 1
+				else
+					qdel(C)
 			else if (istype(C, /obj/item/stack/farming/seeds/grapes))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/grapes(src)
