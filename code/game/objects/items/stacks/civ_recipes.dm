@@ -123,6 +123,8 @@
 
 /material/wood/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("roof support",/obj/structure/roof_support, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("mine support",/obj/structure/mine_support, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("roof builder",/obj/item/weapon/roofbuilder, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 33 && current_res[3]>= 48)
 		recipes += new/datum/stack_recipe("doctor handbook",/obj/item/weapon/doctor_handbook, 12, _time = 210, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -463,7 +465,7 @@
 		recipes += new/datum/stack_recipe("[display_name] small sword", /obj/item/weapon/material/sword/smallsword/copper, 10, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	if (current_res[1] >= 18 && current_res[2] >= 42)
 		recipes += new/datum/stack_recipe("[display_name] spadroon", /obj/item/weapon/material/sword/spadroon/copper, 15, _time = 115, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
-
+	recipes += new/datum/stack_recipe("copper lamp", /obj/item/flashlight/lantern/copper, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/bronze/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 21 && current_res[2] >= 16)

@@ -110,6 +110,37 @@
 	icon_state = "purple2"
 	ambience = list("sound/ambience/jungle1.ogg")
 
+/area/caribbean/nomads
+	name = "Grassland"
+	base_turf = /turf/floor/plating/grass/wild
+	icon_state = "red2"
+	ambience = list("sound/ambience/jungle1.ogg")
+
+/area/caribbean/nomads/desert
+	name = "Desert"
+	base_turf = /turf/floor/plating/sand/desert
+	icon_state = "red3"
+
+/area/caribbean/nomads/forest
+	name = "Forest"
+	base_turf = /turf/floor/plating/grass/wild
+	icon_state = "green1"
+
+/area/caribbean/nomads/forest/snow
+	name = "Forest"
+	base_turf = /turf/floor/winter/grass
+	icon_state = "green1"
+
+/area/caribbean/nomads/snow
+	name = "Snow"
+	base_turf = /turf/floor/plating/snow
+	icon_state = "red1"
+
+/area/caribbean/nomads/ice
+	name = "Ice"
+	base_turf = /turf/floor/plating/beach/water/ice
+	icon_state = "blue1"
+
 /area/caribbean/island
 	name = "Island"
 	base_turf = /turf/floor/plating/beach/sand

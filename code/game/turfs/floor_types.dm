@@ -258,7 +258,7 @@ var/global/list/GrassEdgeCache
 /turf/floor/winter/grass/New()
 	..()
 	icon = 'icons/turf/snow.dmi'
-	icon_state = "grass[rand(0,3)]"
+	icon_state = "grass[rand(0,6)]"
 
 
 /turf/floor/plating/grass/wild/New()
@@ -298,7 +298,7 @@ var/global/list/GrassEdgeCache
 	name = "sand"
 	icon_state = "sand"
 	is_diggable = TRUE
-	available_sand = 2
+	available_sand = 4
 
 /turf/floor/plating/beach/coastline
 	name = "Coastline"

@@ -82,10 +82,9 @@
 //	var/breath_type = "oxygen"                        // Non-oxygen gas breathed, if any.
 //	var/poison_type = "plasma"                        // Poisonous air.
 //	var/exhale_type = "carbon_dioxide"                // Exhaled gas type.
-	//var/cold_level_1 = 260                            // Cold damage level TRUE below this point.
-	var/cold_level_1 = 273
-	var/cold_level_2 = 265                            // Cold damage level 2 below this point.
-	var/cold_level_3 = 255                            // Cold damage level 3 below this point.
+	var/cold_level_1 = 260                            // Cold damage level TRUE below this point.
+	var/cold_level_2 = 250                            // Cold damage level 2 below this point.
+	var/cold_level_3 = 220                            // Cold damage level 3 below this point.
 	var/heat_level_1 = 315                            // Heat damage level TRUE above this point.
 	var/heat_level_2 = 323                            // Heat damage level 2 above this point.
 	var/heat_level_3 = 333                           // Heat damage level 3 above this point.
@@ -199,7 +198,9 @@
 				H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
 
 		if (istype(H.wear_suit, /obj/item/clothing/suit/storage/coat))
-			return //properly clothed for cold weather
+			var/area/mob_area = get_area(H)
+			if (mob_area.weather != WEATHER_BLIZZARD)
+				return //properly clothed for cold weather
 
 		var/covered = FALSE // Basic coverage can help.
 		for (var/obj/item/clothing/clothes in H)

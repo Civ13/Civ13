@@ -34,6 +34,10 @@
 	name = "bunch of olives"
 	icon_state = "olives"
 
+/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom
+	name = "bunch of mushrooms"
+	icon_state = "mushrooms"
+
 /obj/item/weapon/reagent_containers/food/snacks/grown/melon
 	name = "melon"
 	icon_state = "melon"

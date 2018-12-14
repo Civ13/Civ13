@@ -57,7 +57,7 @@
 			attached = "animal"
 			qdel(L)
 			return
-	else if (istype(O, /obj/item/flashlight/lantern))
+	else if (istype(O, /obj/item/flashlight/lantern) && !O.name == "copper lamp")
 		var/obj/item/flashlight/lantern/LT = O
 		user << "You tie \the [O] to \the [src]."
 		LT.anchored = TRUE
