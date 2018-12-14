@@ -10,6 +10,18 @@
 	fuel = 0 //starts empty
 	unlimited = FALSE
 
+/obj/item/flashlight/lantern/copper
+	name = "copper lamp"
+	icon_state = "copperlamp"
+	desc = "A simple copper lantern."
+	brightness_on = 6			// luminosity when on
+	light_color = rgb(200, 255, 200) // green tint
+	on_state = "copperlamp-on"
+	off_state = "copperlamp"
+	value = 9
+	fuel = 0 //starts empty
+	unlimited = FALSE
+
 /obj/item/flashlight/lantern/attack_self(mob/user)
 	if (!isturf(user.loc))
 		user << "You cannot turn the light on while in this [user.loc]." //To prevent some lighting anomalities.

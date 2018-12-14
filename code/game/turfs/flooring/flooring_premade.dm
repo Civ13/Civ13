@@ -47,7 +47,7 @@
 /turf/floor/dirt/underground
 	name = "underground rock"
 	icon = 'icons/turf/walls.dmi'
-	icon_state = "rock"
+	icon_state = "rocky"
 	uses_winter_overlay = FALSE
 	may_become_muddy = TRUE
 	available_dirt = 0
@@ -58,6 +58,14 @@
 	desc = "This space is blocked off by soft earth and rocks. Can be digged."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "rocky"
+
+/turf/floor/dirt/underground/empty
+	name = "rock debris"
+	icon_state = "rock_debris1"
+
+/turf/floor/dirt/underground/empty/New()
+	..()
+	icon_state = "rock_debris[rand(1,2)]"
 
 /turf/floor/dirt/ploughed
 	name = "ploughed field"

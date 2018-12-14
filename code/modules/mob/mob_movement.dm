@@ -447,7 +447,8 @@
 		var/F_is_valid_floor = istype(F)
 		var/standing_on_snow = FALSE
 
-		if (F && F_is_valid_floor)
+		var/mob/living/carbon/human/H = mob
+		if (F && F_is_valid_floor && isnull(H.riding_mob))
 
 			var/area/F_area = get_area(F)
 			if (F_area.weather == WEATHER_RAIN && F.may_become_muddy)
@@ -513,7 +514,6 @@
 				mob.velocity_lastdir = direct
 				move_delay += mob.get_run_delay() + standing_on_snow
 				if (mob_is_human)
-					var/mob/living/carbon/human/H = mob
 					H.nutrition -= 0.005
 					H.water -= 0.005
 					if (H.stats["stamina"][1] > 0)
@@ -523,7 +523,6 @@
 			if ("walk")
 				move_delay += mob.get_walk_delay() + standing_on_snow
 				if (mob_is_human)
-					var/mob/living/carbon/human/H = mob
 					H.nutrition -= 0.002
 					H.water -= 0.002
 
@@ -546,9 +545,9 @@
 			else if (istype(mob.pulling, /mob))
 				move_delay += 1.25
 				if (istype(mob.pulling, /mob/living/carbon/human))
-					var/mob/living/carbon/human/H = mob.pulling
-					for (var/obj/structure/noose/N in get_turf(H))
-						if (N.hanging == H)
+					var/mob/living/carbon/human/HH = mob.pulling
+					for (var/obj/structure/noose/N in get_turf(HH))
+						if (N.hanging == HH)
 							mob.stop_pulling()
 
 			else if (istype(mob.pulling, /obj/item/weapon/gun/projectile/automatic/stationary))
@@ -556,8 +555,6 @@
 
 			else if (istype(mob.pulling, /obj/structure))
 				move_delay += 0.75
-
-		var/mob/living/carbon/human/H = mob
 
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)
@@ -572,7 +569,7 @@
 				if (H.m_intent != "walk")
 					H.m_intent = "walk" // in case we don't have a m_intent HUD, somehow
 
-		if (!mob_is_observer && F_is_valid_floor)
+		if (!mob_is_observer && F_is_valid_floor && isnull(H.riding_mob))
 			move_delay += F.get_move_delay()
 
 		var/tickcomp = FALSE //moved this out here so we can use it for vehicles
