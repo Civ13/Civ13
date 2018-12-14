@@ -102,9 +102,9 @@
 		user << "That area is already roofed!"
 		return
 	var/confirm = FALSE
-	for(var/obj/structure/roof_support/RS in range(2,src))
+	for(var/obj/structure/roof_support/RS in range(2))
 		confirm = TRUE
-	for(var/obj/covers/CV in range(1,src))
+	for(var/obj/covers/CV in range(1))
 		if (CV.wall)
 			confirm = TRUE
 	if (!confirm)
