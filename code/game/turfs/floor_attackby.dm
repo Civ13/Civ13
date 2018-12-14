@@ -45,7 +45,6 @@
 					if (!istype(UT, /turf/floor/dirt/underground))
 						UT.ChangeTurf(/turf/floor/dirt/underground/empty)
 				new/obj/effect/effect/smoke(src)
-	qdel(src)
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
@@ -138,6 +137,10 @@
 			if (do_after(user, 80/(H.getStatCoeff("strength"))))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
+					if(map.ID == MAP_NOMADS_DESERT)
+						ChangeTurf(/turf/floor/dirt/dust)
+					else
+						ChangeTurf(/turf/floor/dirt)
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					if (prob(25))

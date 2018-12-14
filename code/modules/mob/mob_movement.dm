@@ -451,6 +451,9 @@
 		if (F && F_is_valid_floor && isnull(H.riding_mob))
 
 			var/area/F_area = get_area(F)
+			var/no_snow = FALSE
+			for (var/obj/covers/CV in get_turf(F))
+				no_snow = TRUE
 			if (F_area.weather == WEATHER_RAIN && F.may_become_muddy)
 				F.muddy = TRUE
 			else
@@ -460,7 +463,7 @@
 			var/snow_message = ""
 			var/snow_span = "notice"
 
-			if (F.icon == 'icons/turf/snow.dmi')
+			if (F.icon == 'icons/turf/snow.dmi' && no_snow == FALSE)
 				standing_on_snow = TRUE
 				if (prob(50))
 					standing_on_snow = 1.25
@@ -469,6 +472,7 @@
 					standing_on_snow = 1.75
 					snow_message = "You're slowed down quite a bit by the snow."
 					snow_span = "warning"
+
 /* OLD CODE - TO BE REACTIVATED WHEN WE GET SNOW LEVELS
 				switch (S.amount)
 					if (0.01 to 0.8) // more than none and up to ~1/4 feet
