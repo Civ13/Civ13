@@ -14,45 +14,53 @@
 
 	var/old_weather = weather
 	if (season == "WINTER")
-		if (weather == WEATHER_NONE)
-			weather = WEATHER_SNOW
+		if (_weather == WEATHER_NONE)
+			weather = WEATHER_NONE
 
-		else if (weather == WEATHER_BLIZZARD)
+		else if (_weather == WEATHER_BLIZZARD)
+			weather = WEATHER_BLIZZARD
+		else if (_weather == WEATHER_SNOW)
 			weather = WEATHER_SNOW
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SPRING")
-		if (weather == WEATHER_NONE)
-			weather = WEATHER_RAIN
-		else
+		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
+		else if (_weather == WEATHER_RAIN)
+			weather = WEATHER_RAIN
 
 	else if (season == "FALL")
-		if (weather == WEATHER_NONE)
-			weather = WEATHER_RAIN
-		else if (weather == WEATHER_SNOW)
+		if (_weather == WEATHER_NONE)
+			weather = WEATHER_NONE
+		else if (_weather == WEATHER_SNOW)
+			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SUMMER")
-		if (weather == WEATHER_RAIN)
+		if (_weather == WEATHER_NONE)
+			weather = WEATHER_NONE
+		else
 			weather = WEATHER_NONE
 
 	else if (season == "Wet Season")
-		if (weather == WEATHER_NONE)
+		if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
+		else if (_weather == WEATHER_NONE)
+			weather = WEATHER_NONE
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "Dry Season")
-		if (weather == WEATHER_RAIN)
-			weather = WEATHER_NONE
-		else if (weather == WEATHER_SANDSTORM)
-			weather = WEATHER_NONE
-		else if (weather == WEATHER_NONE)
+		if (_weather == WEATHER_SANDSTORM)
 			weather = WEATHER_SANDSTORM
+		else if (_weather == WEATHER_NONE)
+			weather = WEATHER_NONE
+		else
+			weather = WEATHER_NONE
 	var/area_icon = 'icons/effects/weather.dmi'
 	var/area_icon_state = ""
 	var/area_alpha = 255
