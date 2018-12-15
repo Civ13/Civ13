@@ -266,8 +266,9 @@
 	if (ispath(recipe.result_type, /obj/structure))
 		if (!ispath(recipe.result_type, /obj/structure/noose))
 			for (var/obj/structure/multiz/M in get_turf(H))
-				H << "<span class = 'danger'>You can't build a structure here.</span>"
-				return
+				if (recipe.title != "mine support")
+					H << "<span class = 'danger'>You can't build a structure here.</span>"
+					return
 	if (recipe.result_type == /obj/item/weapon/key)
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"

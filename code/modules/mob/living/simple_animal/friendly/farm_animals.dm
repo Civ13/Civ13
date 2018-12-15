@@ -373,7 +373,7 @@ var/global/chicken_count = FALSE
 	var/content_size = 0
 	var/list/packed_items = list()
 /mob/living/simple_animal/camel/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	if (!stat && user.a_intent == I_HELP && icon_state != icon_dead)
+	if (!stat && user.a_intent == I_HELP && icon_state != icon_dead && !istype(O, /obj/item/weapon/leash))
 		if (content_size + O.w_class > max_content_size)
 			user << "The camel is too burdened already!"
 			return
