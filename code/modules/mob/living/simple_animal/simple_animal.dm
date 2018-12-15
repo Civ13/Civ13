@@ -204,7 +204,13 @@
 					var/_name = input(M, "What name?") as text
 					name = sanitize(_name, 50)
 			else if (health > 0)
-				M.visible_message("<span class = 'notice'>[M] [response_help] \the [src].</span>")
+				if (istype(src, /mob/living/simple_animal/dog))
+					if (prob(30))
+						M.visible_message("<span class = 'notice'>[M] tells \the [src] that he is a good boy!</span>")
+					else
+						M.visible_message("<span class = 'notice'>[M] pats \the [src]'s head!</span>")
+				else
+					M.visible_message("<span class = 'notice'>[M] [response_help] \the [src].</span>")
 
 		if (I_DISARM)
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
