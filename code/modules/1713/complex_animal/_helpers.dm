@@ -39,8 +39,10 @@
 		var/M_faction = null
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
-			if (H.original_job)
-				M_faction = H.original_job.base_type_flag()
+			if (map.civilizations)
+				M_faction = H.civilization
+			else
+				M_faction = H.faction_text
 
 		if (friendly_factions.Find(M_faction))
 			if (!enemies.Find(M))

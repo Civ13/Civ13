@@ -170,7 +170,14 @@ called after H added to knows_about_mobs() */
 		visible_message("<span class = 'warning'>The [P.name] just grazes \the [src].</span>")
 	apply_damage(dmg)
 	if (client)
-		if (P.firer && (P.original == src || !P.firer.original_job || P.firer.original_job.base_type_flag() != faction))
+		var/m_faction = P.firer.faction
+		if (istype(P, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = P
+			if (map.civilizations)
+				m_faction = H.civilization
+			else
+				m_faction = H.faction_text
+		if (P.firer && (P.original == src || !P.firer.original_job || m_faction != faction))
 			enemies |= P.firer
 			onHumanMovement(P.firer)
 			for (var/mob/living/simple_animal/complex_animal/C in oview(7, src))

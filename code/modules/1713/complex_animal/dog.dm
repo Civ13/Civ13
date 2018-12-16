@@ -177,11 +177,7 @@
 	message = copytext(message, TRUE, lentext(message))
 //	world << "1. [message]"
 	// parse message into a command
-	var/rank = H.original_job ? lowertext(H.original_job.title) : null
-	if (!rank)
-	//	world << "1.5: bad"
-		return
-	else if (stat == CONSCIOUS)
+	if (stat == CONSCIOUS)
 	//	world << "2. [src]"
 		for (var/command in commands)
 			var/list/parts = splittext(command, ";")
@@ -227,45 +223,43 @@
 				"anything" = list("be passive", "stop everything",
 					"follow", "stop following"))
 
-			if ((rank != null && req_ranks.Find(rank)) || check_can_command(req_ranks, H))
-			//	world << "3.5"
-				if (dd_hasprefix(lowertext(message), req_word) || lowertext(message) == req_word)
-				//	world << "4. [message] v. [req_word]"
+			if (dd_hasprefix(lowertext(message), req_word) || lowertext(message) == req_word)
+			//	world << "4. [message] v. [req_word]"
 
-					var/command_type_sublist = null
-					for (var/key in command_types)
-						if (locate(req_word) in command_types[key])
-							command_type_sublist = key
+				var/command_type_sublist = null
+				for (var/key in command_types)
+					if (locate(req_word) in command_types[key])
+						command_type_sublist = key
 
-					var/command_level_to_dog = COMMAND_LEVEL_4
+				var/command_level_to_dog = COMMAND_LEVEL_4
 
-					if (H == owner)
-						command_level_to_dog = COMMAND_LEVEL_1
-					else if (H.civilization == faction && map.civilizations)
-						command_level_to_dog = COMMAND_LEVEL_3
-					else if (H.faction_text == faction && !map.civilizations)
-						command_level_to_dog = COMMAND_LEVEL_3
-					else if (!owner && !faction)
-						command_level_to_dog = COMMAND_LEVEL_4
+				if (H == owner)
+					command_level_to_dog = COMMAND_LEVEL_1
+				else if (H.civilization == faction && map.civilizations)
+					command_level_to_dog = COMMAND_LEVEL_3
+				else if (H.faction_text == faction && !map.civilizations)
+					command_level_to_dog = COMMAND_LEVEL_3
+				else if (!owner && !faction)
+					command_level_to_dog = COMMAND_LEVEL_4
 
-					// daga kotowaru
-					if (command_level_to_dog == COMMAND_LEVEL_4)
-						visible_message("<span class = 'warning'>\The [name] refuses to listen.</span>")
-						continue
+				// daga kotowaru
+				if (command_level_to_dog == COMMAND_LEVEL_4)
+					visible_message("<span class = 'warning'>\The [name] refuses to listen.</span>")
+					continue
 
-					if (command_levels[command_type_sublist] > command_level_to_dog)
-						visible_message("<span class = 'warning'>\The [name] refuses to listen, because it already has a contradicting order from its owner.</span>")
-						continue
-					else if (hascall(src, _call))
-						call(src, _call)(H)
+				if (command_levels[command_type_sublist] > command_level_to_dog)
+					visible_message("<span class = 'warning'>\The [name] refuses to listen, because it already has a contradicting order from its owner.</span>")
+					continue
+				else if (hascall(src, _call))
+					call(src, _call)(H)
 
-						switch (req_word)
-							if ("attack", "kill", "guard")
-								command_levels["attack_mode"] = command_level_to_dog
-								command_levels["anything"] = command_level_to_dog
-							if ("patrol", "stop patrolling", "follow")
-								command_levels["patrol"] = command_level_to_dog
-								command_levels["anything"] = command_level_to_dog
+					switch (req_word)
+						if ("attack", "kill", "guard")
+							command_levels["attack_mode"] = command_level_to_dog
+							command_levels["anything"] = command_level_to_dog
+						if ("patrol", "stop patrolling", "follow")
+							command_levels["patrol"] = command_level_to_dog
+							command_levels["anything"] = command_level_to_dog
 s
 /mob/living/simple_animal/complex_animal/dog/can_wander_specialcheck()
 	if (faction && pulledby && check_can_command(list("master", "team"), pulledby))
