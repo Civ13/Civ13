@@ -289,7 +289,8 @@ var/global/chicken_count = FALSE
 			qdel(src)
 			return
 		else
-			process()
+			spawn(40)
+				process()
 
 	else
 		processing_objects.Remove(src)

@@ -773,5 +773,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1713\colony.dmm"
+#include "maps\special\nomads_ice_age.dmm"
 // END_INCLUDE

@@ -21,55 +21,45 @@
 	var/wood = TRUE
 	var/onfire = FALSE
 	invisibility = 101
-	var/oldname = "roofed building"
 	flammable = TRUE
+	var/current_area_type = /area/caribbean
 
 /obj/roof/New()
 	..()
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (CURRENTAREA.location == AREA_OUTSIDE)
-		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
-		oldname = CURRENTAREA.name
-		NEWAREA.name = "roofed building"
-		NEWAREA.base_turf = CURRENTAREA.base_turf
-		NEWAREA.location = AREA_INSIDE
-		NEWAREA.update_light()
+		current_area_type = CURRENTAREA.type
+		new/area/caribbean/roofed(get_turf(src))
 /obj/roof/Destroy()
-	var/area/caribbean/CURRENTAREA = get_area(src)
-	if (CURRENTAREA.location == AREA_INSIDE && CURRENTAREA.name == "roofed building")
-		var/area/caribbean/NEWAREA = new/area/caribbean(src.loc)
-		NEWAREA.name = oldname
-		NEWAREA.base_turf = CURRENTAREA.base_turf
-		NEWAREA.location = AREA_OUTSIDE
-		NEWAREA.update_light()
+	new current_area_type(get_turf(src))
 	visible_message("The roof collapses!")
 	..()
 
 /obj/roof/proc/collapse_check()
 	var/supportfound = FALSE
-
-	for (var/obj/structure/roof_support/RS in range(2, src))
-		supportfound = TRUE
-
-	for (var/turf/wall/W in range(1, src))
-		supportfound = TRUE
-
-	for (var/obj/covers/C in range(1, src))
-		if (C.wall == TRUE)
+	spawn(12)
+		for (var/obj/structure/roof_support/RS in range(2))
 			supportfound = TRUE
 
+		for (var/turf/wall/W in range(1))
+			supportfound = TRUE
+
+		for (var/obj/covers/C in range(1))
+			if (C.wall == TRUE)
+				supportfound = TRUE
+
 	//if no support >> roof falls down
-	if (!supportfound)
-		visible_message("The roof collapses!")
-		playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
-		for (var/mob/living/carbon/human/M in range(2, src))
-			M.adjustBruteLoss(rand(17,27))
-			M.Weaken(18)
-		Destroy()
-		new/obj/effect/effect/smoke(src)
-		spawn(15)
-			qdel(src)
-	return
+		if (!supportfound)
+			visible_message("The roof collapses!")
+			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
+			for (var/mob/living/carbon/human/M in range(2))
+				M.adjustBruteLoss(rand(17,27))
+				M.Weaken(18)
+			Destroy()
+			new/obj/effect/effect/smoke(src)
+			spawn(15)
+				qdel(src)
+		return
 
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
@@ -140,7 +130,7 @@
 	density = FALSE
 
 /obj/structure/roof_support/Destroy()
-	for(var/obj/roof/R in range(2,src))
+	for(var/obj/roof/R in range(2))
 		R.collapse_check()
 	..()
 
