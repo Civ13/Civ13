@@ -2,10 +2,10 @@
 /mob/living/simple_animal/dog
 	name = "beagle"
 	desc = "A cute beagle."
-	icon_state = "george"
-	item_state = "george"
-	icon_living = "george"
-	icon_dead = "george-lying"
+	icon_state = "beagle"
+	item_state = "beagle"
+	icon_living = "beagle"
+	icon_dead = "beagle_dead"
 	speak = list("Woof!","Wip!","rrr!","WOOF!")
 	speak_emote = list("barks", "pants")
 	emote_hear = list("barks","pants")

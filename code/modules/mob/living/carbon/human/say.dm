@@ -33,7 +33,7 @@
 
 	..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html)
 
-	for (var/mob/living/simple_animal/complex_animal/canine/dog/D in view(world.view, src))
+	for (var/mob/living/simple_animal/complex_animal/dog/D in view(world.view, src))
 		D.hear_command(message_without_html, src)
 
 	message_without_html = handle_speech_problems(message_without_html)[1]

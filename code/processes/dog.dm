@@ -12,7 +12,7 @@
 	try
 		for (current in current_list)
 			if (!isDeleted(current))
-				var/mob/living/simple_animal/complex_animal/canine/dog/dog = current
+				var/mob/living/simple_animal/complex_animal/dog/dog = current
 				if (dog.stat == CONSCIOUS && dog.walking_to)
 					if (ismob(dog.walking_to))
 						var/mob/M = dog.walking_to

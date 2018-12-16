@@ -36,9 +36,9 @@
 /obj/structure/largecrate/animal/dog
 
 /obj/structure/largecrate/animal/dog/german
-	held_type = /mob/living/simple_animal/complex_animal/canine/dog/german_shepherd
+	held_type = /mob/living/simple_animal/complex_animal/dog/german_shepherd
 	name = "German Shepherd Crate"
 
 /obj/structure/largecrate/animal/dog/pirates
-	held_type = /mob/living/simple_animal/complex_animal/canine/dog/samoyed
+	held_type = /mob/living/simple_animal/complex_animal/dog/samoyed
 	name = "Samoyed Crate"

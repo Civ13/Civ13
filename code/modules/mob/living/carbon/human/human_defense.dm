@@ -523,7 +523,12 @@ bullet_act
 			if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
 				if (I.w_class <= 2.0)
 					affecting.embed(I)
-
+		if (istype(O, /obj/item/weapon/snowball))
+			O.icon_state = "snowball_hit"
+			O.update_icon()
+			spawn(6)
+				qdel(O)
+			return
 		// Begin BS12 momentum-transfer code.
 		var/mass = 1.5
 		if (istype(O, /obj/item))

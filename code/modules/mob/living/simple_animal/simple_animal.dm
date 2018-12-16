@@ -198,12 +198,7 @@
 
 		if (I_HELP)
 
-			if (name == initial(name) && !istype(src, /mob/living/simple_animal/hostile))
-				var/yn = input(M, "Name this [src]?") in list("Yes", "No")
-				if (yn == "Yes")
-					var/_name = input(M, "What name?") as text
-					name = sanitize(_name, 50)
-			else if (health > 0)
+			if (health > 0)
 				if (istype(src, /mob/living/simple_animal/dog))
 					if (prob(30))
 						M.visible_message("<span class = 'notice'>[M] tells \the [src] that he is a good boy!</span>")

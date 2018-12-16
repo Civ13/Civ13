@@ -12,8 +12,10 @@
 		var/M_faction = null
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
-			if (H.original_job)
-				M_faction = H.original_job.base_type_flag()
+			if (map.civilizations)
+				M_faction = H.civilization
+			else
+				M_faction = H.faction_text
 
 		for (var/_type in unfriendly_types)
 			if (istype(M, _type))
@@ -45,17 +47,7 @@
 				return TRUE
 		else if (friends.Find(M))
 			return TRUE
-/*
-/mob/living/simple_animal/complex_animal/proc/wander()
-	for (var/turf/T in view(1, src))
-		if (T.density)
-			continue
-		for (var/atom/movable/dense in T)
-			if (dense.density)
-				continue
-		Move(T)
-		break
-*/
+
 /mob/living/simple_animal/complex_animal/proc/nap()
 	for (var/mob/M in knows_about_mobs)
 		if (!assess_friendlyness(M)) // bad time to nap

@@ -6,7 +6,7 @@
 	var/base_type = /mob/living/simple_animal/complex_animal
 	var/stamina = 100
 	var/nutrition = 500
-
+	var/mob/owner = null
 	// from how far away can we detect others: must be below or = 30.
 	// sight is more accurate than hearing, and hearing more than smelling.
 	var/sightrange = 7
@@ -44,7 +44,10 @@
 	response_disarm = "pushes"
 	response_harm   = "punches"
 
-
+	//list of people trying to pet the animal
+	var/list/friendly_mobs = list()
+	var/tameminimum = 100 // minimum friendly value to tame an animal
+	var/tamed = FALSE
 // things we do every life tick: by default, wander every few seconds,
 // rest every ~20 minutes. Deplete nutrition over ~30 minutes
 /mob/living/simple_animal/complex_animal/proc/onEveryLifeTick()
@@ -80,8 +83,8 @@
 					if (get_area(T) != get_area(src))
 						if (!allow_moving_outside_home)
 							continue
-					if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-						var/mob/living/simple_animal/complex_animal/canine/dog/D = src
+					if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+						var/mob/living/simple_animal/complex_animal/dog/D = src
 						if (D.last_patrol_area == get_area(T))
 							continue
 
@@ -97,8 +100,8 @@
 			// patrolling dogs will always try to exit their area.
 			if (possible_wander_areas.len > 1)
 				for (var/area/A in possible_wander_areas)
-					if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-						var/mob/living/simple_animal/complex_animal/canine/dog/D = src
+					if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+						var/mob/living/simple_animal/complex_animal/dog/D = src
 						if (D.patrolling)
 							if (A != get_area(src))
 								forced_wander_area = A
@@ -107,13 +110,13 @@
 				if (!forced_wander_area || get_area(T) == forced_wander_area)
 
 					if (forced_wander_area)
-						if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-							var/mob/living/simple_animal/complex_animal/canine/dog/D = src
+						if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+							var/mob/living/simple_animal/complex_animal/dog/D = src
 							if (D.last_patrol_area == get_area(T))
 								continue
 
-					if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-						var/mob/living/simple_animal/complex_animal/canine/dog/D = src
+					if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+						var/mob/living/simple_animal/complex_animal/dog/D = src
 						D.last_patrol_area = get_area(get_turf(D))
 
 					Move(T, get_dir(loc, T))

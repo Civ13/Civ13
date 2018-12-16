@@ -203,6 +203,13 @@
 /atom/proc/hitby(atom/movable/AM as mob|obj)
 	if (density)
 		AM.throwing = FALSE
+	if (istype(AM, /obj/item/weapon/snowball))
+		var/obj/item/weapon/snowball/SB = AM
+		SB.icon_state = "snowball_hit"
+		SB.update_icon()
+		spawn(6)
+			qdel(SB)
+		return
 	return
 
 /atom/proc/add_hiddenprint(mob/living/M as mob)

@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/nomads
 	ID = MAP_NOMADS
-	title = "Nomads (225x225x2)"
+	title = "Nomads (Temperate) (225x225x2)"
 	lobby_icon_state = "civilizations"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
