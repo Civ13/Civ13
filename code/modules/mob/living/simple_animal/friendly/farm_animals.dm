@@ -287,8 +287,13 @@ var/global/chicken_count = FALSE
 			new /mob/living/simple_animal/chick(get_turf(src))
 			processing_objects.Remove(src)
 			qdel(src)
+			return
+		else
+			process()
+
 	else
 		processing_objects.Remove(src)
+		return
 
 //goat
 /mob/living/simple_animal/goat

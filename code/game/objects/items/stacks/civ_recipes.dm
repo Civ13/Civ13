@@ -461,6 +461,8 @@
 	if (current_res[1] >= 8 && current_res[2] >= 8)
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
+		recipes += new/datum/stack_recipe("copper coins", /obj/item/stack/money/coppercoin, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
+
 	if (current_res[1] >= 18 && current_res[2] >= 34)
 		recipes += new/datum/stack_recipe("[display_name] small sword", /obj/item/weapon/material/sword/smallsword/copper, 10, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	if (current_res[1] >= 18 && current_res[2] >= 42)

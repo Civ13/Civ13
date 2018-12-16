@@ -22,7 +22,10 @@
 	if (nutriment_amt)
 		reagents.add_reagent("nutriment",nutriment_amt,nutriment_desc)
 	spawn (1)
-		bitesize = max(bitesize, ceil(reagents.total_volume/5))
+		if (reagents.total_volume)
+			bitesize = max(bitesize, ceil(reagents.total_volume/5))
+		else
+			bitesize = 2
 	value = 2*nutriment_amt
 
 	//Placeholder for effect that trigger on eating that aren't tied to reagents.
@@ -327,12 +330,14 @@
 	desc = "An egg!"
 	icon_state = "egg"
 	filling_color = "#FDFFD1"
-	volume = 10
 	center_of_mass = list("x"=16, "y"=13)
+	nutriment_amt = 2
+	nutriment_desc = list("egg" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/New()
 	..()
-	reagents.add_reagent("egg", 3)
+	spawn(50)
+		process()
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/afterattack(obj/O as obj, mob/user as mob, proximity)
 /*	if (istype(O,/obj/structure/microwave))
@@ -358,12 +363,14 @@
 	name = "turkey egg"
 	desc = "An egg!"
 	icon_state = "egg_turkey"
-	volume = 10
 	center_of_mass = list("x"=16, "y"=13)
+	nutriment_amt = 2
+	nutriment_desc = list("egg" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
 	..()
-	reagents.add_reagent("egg", 4)
+	spawn(50)
+		process()
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/afterattack(obj/O as obj, mob/user as mob, proximity)
 	if (istype(O, /obj/structure/pot))

@@ -192,5 +192,10 @@ var/global/turkey_count = FALSE
 			new /mob/living/simple_animal/turkeychick(get_turf(src))
 			processing_objects.Remove(src)
 			qdel(src)
+			return
+		else
+			spawn(40)
+				process()
 	else
 		processing_objects.Remove(src)
+		return

@@ -116,6 +116,8 @@ var/global/list/limb_icon_cache = list()
 			mob_icon.Blend(rgb(-s_tone,  -s_tone,  -s_tone), ICON_SUBTRACT)
 	if (map.ID == MAP_TRIBES)
 		mob_icon.Blend(rgb(-150,  -150,  -150), ICON_SUBTRACT)
+	else if (owner.faction_text == "INDIAN")
+		mob_icon.Blend(rgb(-150,  -150,  -150), ICON_SUBTRACT)
 	else
 		if (s_col && s_col.len >= 3)
 			mob_icon.Blend(rgb(s_col[1], s_col[2], s_col[3]), ICON_ADD)

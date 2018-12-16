@@ -48,8 +48,9 @@
 
 	var/race = "samoyed"
 
-	maxHealth = 40
-	health = 40
+	maxHealth = 55
+	health = 55
+	mob_size = MOB_MEDIUM
 
 /mob/living/simple_animal/complex_animal/dog/New()
 	..()
@@ -148,7 +149,8 @@
 	attack_mode = -1
 	race = "wolf"
 	tameminimum = 200
-
+	maxHealth = 65
+	health = 65
 /mob/living/simple_animal/complex_animal/dog/beagle
 	name = "Wild Beagle"
 	faction = null
@@ -156,7 +158,9 @@
 	attack_mode = -1
 	race = "beagle"
 	tameminimum = 75
-
+	mob_size = MOB_SMALL
+	maxHealth = 50
+	health = 0
 /mob/living/simple_animal/complex_animal/dog/pug
 	name = "Wild Pug"
 	faction = null
@@ -164,6 +168,9 @@
 	attack_mode = -1
 	race = "pug"
 	tameminimum = 70
+	maxHealth = 45
+	health = 45
+	mob_size = MOB_SMALL
 // "backend" procs
 
 // parse messages that people say (WIP)
@@ -440,15 +447,16 @@ s
 /mob/living/simple_animal/complex_animal/dog/proc/hostileCheck(var/mob/living/carbon/human/H)
 	if (!H.original_job)
 		return TRUE
-	switch (H.original_job.base_type_flag())
-		if (CIVILIAN)
+	if (map.civilizations)
+		if (faction != H.civilization)
+			. = ((istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun)) || (istype(H.l_hand, /obj/item/weapon/material) || istype(H.r_hand, /obj/item/weapon/material)))
+	else
+		if (H.original_job.base_type_flag() == CIVILIAN)
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
-		if (BRITISH)
-			. = faction == PIRATES
-		if (PIRATES)
-			. = faction == BRITISH
-	if (. && H.original_job.is_nonmilitary)
-		. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
+		if (H.original_job.base_type_flag() == CIVILIAN)
+			. = (istype(H.l_hand, /obj/item/weapon/material) || istype(H.r_hand, /obj/item/weapon/material))
+		else
+			. = faction != H.original_job.base_type_flag()
 
 /* check if we should go after an enemy */
 /mob/living/simple_animal/complex_animal/dog/proc/shouldGoAfter(var/mob/living/carbon/human/H)
