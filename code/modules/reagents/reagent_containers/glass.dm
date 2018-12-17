@@ -163,7 +163,7 @@
 		overlays += lid
 
 /obj/item/weapon/reagent_containers/glass/small_pot
-	desc = "A small pot."
+	desc = "A small tin pot."
 	name = "small tin pot"
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "small_pot"
@@ -172,8 +172,36 @@
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
-	volume = 100
+	volume = 80
 	var/on_stove = FALSE
+	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/small_pot/copper_small
+	desc = "A small copper pot."
+	name = "small copper pot"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "copperpot1"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 300)
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 100
+	on_stove = FALSE
+	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/small_pot/copper_large
+	desc = "A large copper pot."
+	name = "large copper pot"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "copperpot2"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 300)
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 160
+	on_stove = FALSE
 	flags = OPENCONTAINER
 
 /obj/item/weapon/reagent_containers/glass/fermenterbarrel
