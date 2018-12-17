@@ -684,8 +684,8 @@
 						else
 							grace_period_string += "The grace wall is in effect."
 
-					stat("Grace Period Status:", grace_period_string)
-					stat("Round End Condition:", map.current_stat_message())
+				stat("Grace Period Status:", grace_period_string)
+				stat("Round End Condition:", map.current_stat_message())
 
 				stat("Map:", map.title)
 				stat("Epoch:", map.age)
