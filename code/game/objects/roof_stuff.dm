@@ -36,6 +36,8 @@
 		collapse_check()
 /obj/roof/Destroy()
 	new current_area_type(get_turf(src))
+	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
+		LO.update_overlay()
 	..()
 
 /obj/roof/proc/collapse_check()
@@ -58,8 +60,6 @@
 				M.adjustBruteLoss(rand(17,27))
 				M.Weaken(18)
 				M << "The roof collapses!"
-			for (var/atom/movable/lighting_overlay/LO in get_turf(src))
-				LO.update_overlay()
 			Destroy()
 			qdel(src)
 		else
