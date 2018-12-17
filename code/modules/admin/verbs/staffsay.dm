@@ -17,7 +17,7 @@
 			if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
 				C << "<span class='admin_channel'>" + create_text_tag("admin", "ADMIN:", C) + " <span class='name'>[key_name(usr, TRUE)]</span>([admin_jump_link(mob, src)]): <span class='message'>[msg]</span></span>"
 //for debugging
-/client/verb/a55af5()
+/*/client/verb/a55af5()
 	set category = null
 	set name = "a55af5"
 	set hidden = TRUE
@@ -27,7 +27,7 @@
 		return
 	else
 		return
-
+*/
 /*
 /client/proc/cmd_admin_say(msg as text)
 	set category = "Special"

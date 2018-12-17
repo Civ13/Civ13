@@ -76,7 +76,7 @@
 		return
 
 	else if (istype(C, /obj/item/weapon/shovel))
-		var/turf/T = get_turf(user)
+		var/turf/T = get_turf(get_step(user,user.dir))
 		var/mob/living/carbon/human/H = user
 
 		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
