@@ -93,9 +93,9 @@
 		user << "That area is already roofed!"
 		return
 	var/confirm = FALSE
-	for(var/obj/structure/roof_support/RS in range(2))
+	for(var/obj/structure/roof_support/RS in range(2, get_step(user, user.dir)))
 		confirm = TRUE
-	for(var/obj/covers/CV in range(1))
+	for(var/obj/covers/CV in range(1, get_step(user, user.dir)))
 		if (CV.wall)
 			confirm = TRUE
 	if (!confirm)
