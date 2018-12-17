@@ -131,7 +131,7 @@
 				new /mob/living/simple_animal/turkey_f(loc)
 			qdel(src)
 
-var/const/MAX_TURKEYS = 50
+var/const/MAX_TURKEYS = 35
 var/global/turkey_count = FALSE
 
 /mob/living/simple_animal/turkey_m/New()
@@ -185,7 +185,7 @@ var/global/turkey_count = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/process()
-	if (isturf(loc))
+	if (isturf(loc) && chicken_count < MAX_TURKEYS)
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")

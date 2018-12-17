@@ -280,7 +280,7 @@ var/global/chicken_count = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/process()
-	if (isturf(loc))
+	if (isturf(loc) && chicken_count < MAX_CHICKENS)
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
