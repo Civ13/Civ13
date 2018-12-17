@@ -190,6 +190,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "healing_herbs"
 	item_state = null
+	amount = 10
 
 /obj/item/stack/medical/advanced/ointment
 	name = "burn kit"
@@ -199,6 +200,7 @@
 	icon_state = "burn_kit"
 	item_state = "burn_kit"
 	heal_burn = FALSE
+	amount = 10
 //	origin_tech = list(TECH_BIO = TRUE)
 
 
@@ -282,7 +284,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bint"
 	heal_brute = 10 // for healing dogs and other animals
-
+	amount = 10
 
 /obj/item/stack/medical/bruise_pack/gauze
 	name = "roll of gauze"
@@ -290,3 +292,4 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "gauze"
 	heal_brute = 10 // for healing dogs and other animals
+	amount = 10

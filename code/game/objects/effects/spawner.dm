@@ -225,3 +225,10 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/wolf/white
 	timer = 3000
+
+/obj/effect/spawner/mobspawner/mammoth
+	name = "mammoth spawner"
+	max_number = 1
+	max_range = 11
+	create_path = /mob/living/simple_animal/hostile/mammoth
+	timer = 7200

@@ -666,7 +666,7 @@
 			stat("Players Online (Playing, Observing, Lobby):", "[clients.len] ([human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len])")
 			stat("Round Duration:", roundduration2text())
 
-			if (map)
+			if (map && !map.civilizations)
 				var/grace_period_string = ""
 				for (var/faction in map.faction_organization)
 					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, CIVILIAN, ROMAN, GREEK, ARAB).Find(faction))
@@ -683,8 +683,8 @@
 							grace_period_string += "The grace wall has been removed."
 						else
 							grace_period_string += "The grace wall is in effect."
-				stat("Grace Period Status:", grace_period_string)
-				if (!map.civilizations)
+
+					stat("Grace Period Status:", grace_period_string)
 					stat("Round End Condition:", map.current_stat_message())
 
 				stat("Map:", map.title)

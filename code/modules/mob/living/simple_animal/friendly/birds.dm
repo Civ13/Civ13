@@ -123,7 +123,7 @@
 	if (!.)
 		return
 	if (!stat)
-		amount_grown += rand(1,2)
+		amount_grown += 1
 		if (amount_grown >= 250)
 			if (prob(50))
 				new /mob/living/simple_animal/turkey_m(loc)
@@ -186,8 +186,8 @@ var/global/turkey_count = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/process()
 	if (isturf(loc))
-		amount_grown += rand(1,2)
-		if (amount_grown >= 150)
+		amount_grown += 1
+		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
 			new /mob/living/simple_animal/turkeychick(get_turf(src))
 			processing_objects.Remove(src)

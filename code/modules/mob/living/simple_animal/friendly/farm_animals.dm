@@ -194,7 +194,7 @@
 	if (!.)
 		return
 	if (!stat)
-		amount_grown += rand(1,2)
+		amount_grown += 1
 		if (amount_grown >= 250)
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
@@ -281,8 +281,8 @@ var/global/chicken_count = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/process()
 	if (isturf(loc))
-		amount_grown += rand(1,2)
-		if (amount_grown >= 150)
+		amount_grown += 1
+		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
 			new /mob/living/simple_animal/chick(get_turf(src))
 			processing_objects.Remove(src)

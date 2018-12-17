@@ -30,6 +30,8 @@
 	if (CURRENTAREA.location == AREA_OUTSIDE)
 		current_area_type = CURRENTAREA.type
 		new/area/caribbean/roofed(get_turf(src))
+	spawn(50)
+		collapse_check()
 /obj/roof/Destroy()
 	new current_area_type(get_turf(src))
 	visible_message("The roof collapses!")
@@ -37,7 +39,7 @@
 
 /obj/roof/proc/collapse_check()
 	var/supportfound = FALSE
-	spawn(12)
+	spawn(50)
 		for (var/obj/structure/roof_support/RS in range(2))
 			supportfound = TRUE
 
@@ -50,7 +52,6 @@
 
 	//if no support >> roof falls down
 		if (!supportfound)
-			visible_message("The roof collapses!")
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
 			for (var/mob/living/carbon/human/M in range(2))
 				M.adjustBruteLoss(rand(17,27))
@@ -59,7 +60,7 @@
 			new/obj/effect/effect/smoke(src)
 			spawn(15)
 				qdel(src)
-		return
+		collapse_check()
 
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
@@ -128,11 +129,6 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-
-/obj/structure/roof_support/Destroy()
-	for(var/obj/roof/R in range(2))
-		R.collapse_check()
-	..()
 
 /obj/structure/mine_support/Destroy()
 	if (istype(get_turf(src), /turf/floor))
