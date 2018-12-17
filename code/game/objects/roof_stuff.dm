@@ -20,7 +20,7 @@
 	var/wall = FALSE
 	var/wood = TRUE
 	var/onfire = FALSE
-	invisibility = 101
+//	invisibility = 101
 	flammable = TRUE
 	var/current_area_type = /area/caribbean
 
@@ -30,37 +30,40 @@
 	if (CURRENTAREA.location == AREA_OUTSIDE)
 		current_area_type = CURRENTAREA.type
 		new/area/caribbean/roofed(get_turf(src))
+	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
+		LO.update_overlay()
 	spawn(50)
 		collapse_check()
 /obj/roof/Destroy()
 	new current_area_type(get_turf(src))
-	visible_message("The roof collapses!")
 	..()
 
 /obj/roof/proc/collapse_check()
 	var/supportfound = FALSE
 	spawn(50)
-		for (var/obj/structure/roof_support/RS in range(2))
+		for (var/obj/structure/roof_support/RS in range(2, src))
 			supportfound = TRUE
-
-		for (var/turf/wall/W in range(1))
+			world << "su1"
+		for (var/turf/wall/W in range(1, src))
 			supportfound = TRUE
-
-		for (var/obj/covers/C in range(1))
+			world << "su2"
+		for (var/obj/covers/C in range(1, src))
 			if (C.wall == TRUE)
 				supportfound = TRUE
-
+				world << "su3"
 	//if no support >> roof falls down
 		if (!supportfound)
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
-			for (var/mob/living/carbon/human/M in range(2))
+			for (var/mob/living/carbon/human/M in range(1, src))
 				M.adjustBruteLoss(rand(17,27))
 				M.Weaken(18)
+				M << "The roof collapses!"
+			for (var/atom/movable/lighting_overlay/LO in get_turf(src))
+				LO.update_overlay()
 			Destroy()
-			new/obj/effect/effect/smoke(src)
-			spawn(15)
-				qdel(src)
-		collapse_check()
+			qdel(src)
+		else
+			collapse_check()
 
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
