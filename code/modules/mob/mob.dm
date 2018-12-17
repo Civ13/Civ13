@@ -686,7 +686,7 @@
 
 				stat("Grace Period Status:", grace_period_string)
 				stat("Round End Condition:", map.current_stat_message())
-
+			if (map)
 				stat("Map:", map.title)
 				stat("Epoch:", map.age)
 				stat("Season:", get_season())
