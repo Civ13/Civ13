@@ -102,7 +102,7 @@
 			new/datum/stack_recipe("small musket ball (x3)", /obj/item/stack/ammopart/musketball_pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
-
+	recipes += new/datum/stack_recipe("iron arm bangles", /obj/item/clothing/accessory/armband/armbangle, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 35 && current_res[3]>= 44)
 		recipes += new/datum/stack_recipe("splints", /obj/item/stack/medical/splint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
 
@@ -446,6 +446,7 @@
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("gold coins", /obj/item/stack/money/goldcoin, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("gold crown", /obj/item/clothing/head/helmet/gold_crown, 3, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("gold arm bangles", /obj/item/clothing/accessory/armband/armbangle/gold, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/silver/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -453,6 +454,8 @@
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("silver coins", /obj/item/stack/money/silvercoin, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("silver crown", /obj/item/clothing/head/helmet/silver_crown, 3, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("silver arm bangles", /obj/item/clothing/accessory/armband/armbangle/silver, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/diamond/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 
@@ -470,7 +473,7 @@
 	recipes += new/datum/stack_recipe("copper lamp", /obj/item/flashlight/lantern/copper, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("small copper pot", /obj/item/weapon/reagent_containers/glass/small_pot/copper_small, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("large copper pot", /obj/item/weapon/reagent_containers/glass/small_pot/copper_large, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
-
+	recipes += new/datum/stack_recipe("copper arm bangles", /obj/item/clothing/accessory/armband/armbangle/copper, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/bronze/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 21 && current_res[2] >= 16)
@@ -493,6 +496,7 @@
 			new/datum/stack_recipe("bronze bone saw",/obj/item/weapon/surgery/bone_saw/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bronze bone setter",/obj/item/weapon/surgery/bonesetter/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bronze scalpel", /obj/item/weapon/surgery/scalpel/bronze, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
+	recipes += new/datum/stack_recipe("bronze arm bangles", /obj/item/clothing/accessory/armband/armbangle/bronze, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/steel/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 50 && current_res[2] >= 44)

@@ -186,7 +186,7 @@
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
-	volume = 100
+	volume = 90
 	on_stove = FALSE
 	flags = OPENCONTAINER
 
@@ -197,7 +197,7 @@
 	icon_state = "copperpot2"
 	item_state = "bucket"
 	matter = list(DEFAULT_WALL_MATERIAL = 300)
-	w_class = 3.0
+	w_class = 4.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
 	volume = 160

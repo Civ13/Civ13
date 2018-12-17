@@ -44,3 +44,40 @@
 	desc = "A fancy orange armband!"
 	icon_state = "dutch"
 	slot = "armband"
+
+//jewelry
+
+/obj/item/clothing/accessory/armband/armbangle
+	name = "iron arm bangle"
+	desc = "Iron bangles to wear on your arms."
+	icon_state = "iron_arm"
+	icon_state = "iron_arm"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/armbangle/gold
+	name = "gold arm bangle"
+	desc = "Gold bangles to wear on your arms."
+	icon_state = "gold_arm"
+	icon_state = "gold_arm"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/armbangle/silver
+	name = "silver arm bangle"
+	desc = "Silver bangles to wear on your arms."
+	icon_state = "silver_arm"
+	icon_state = "silver_arm"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/armbangle/copper
+	name = "copper arm bangle"
+	desc = "Copper bangles to wear on your arms."
+	icon_state = "copper_arm"
+	icon_state = "copper_arm"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/armbangle/bronze
+	name = "bronze arm bangle"
+	desc = "Bronze bangles to wear on your arms."
+	icon_state = "bronze_arm"
+	icon_state = "bronze_arm"
+	slot = "armband"
