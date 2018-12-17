@@ -235,7 +235,7 @@
 
 	if (status & ORGAN_BROKEN && prob(40) && brute)
 		if (!(owner.species && (owner.species.flags & NO_PAIN)))
-			owner.emote("scream")	//getting hit on broken hand hurts
+			owner.emote("painscream")	//getting hit on broken hand hurts
 
 	var/can_cut = (prob(brute*2) || sharp)
 
@@ -878,7 +878,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		//	"\red <b>Something feels like it shattered in your [name]!</b>",\
 		//	"You hear a sickening crack.")
 		if (owner.species && !(owner.species.flags & NO_PAIN))
-			owner.emote("scream")
+			owner.emote("painscream")
 
 	status |= ORGAN_BROKEN
 	broken_description = "broken"//pick("broken","fracture","hairline fracture")

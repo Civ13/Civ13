@@ -354,7 +354,7 @@
 		visible_message("<span class = 'danger'>[user] starts to pull [embedded_obj] out of [src].</span>")
 		if (do_after(user, 15 * embedded_obj.w_class, src))
 			visible_message("<span class = 'danger'>[user] pulls [embedded_obj] out of [src]!</span>")
-			emote("scream")
+			emote("painscream")
 			adjustBruteLoss(rand(10,15))
 		embedded -= embedded_obj
 		embedded_obj.loc = get_turf(src)

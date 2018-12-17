@@ -76,7 +76,7 @@
 	G.last_action = world.time
 	flick(G.hud.icon_state, G.hud)
 
-	emote("scream")
+	emote("painscream")
 
 	user.attack_log += "\[[time_stamp()]\]<font color='red'> slit [name]'s throat ([ckey]) with [W.name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(W.damtype)])</font>"
 	attack_log += "\[[time_stamp()]\]<font color='orange'> got throatslit by [user.name] ([user.ckey]) with [W.name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(W.damtype)])</font>"

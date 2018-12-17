@@ -133,7 +133,7 @@
 						L.IgniteMob()
 						L.adjustFireLoss(rand(alcohol_power*0.004,alcohol_power*0.008))
 						if (ishuman(L))
-							L.emote("scream")
+							L.emote("painscream")
 
 	if (src)
 		if (ismob(loc))

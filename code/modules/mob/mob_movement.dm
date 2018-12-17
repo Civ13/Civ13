@@ -673,7 +673,7 @@
 								playsound(mob.loc, 'sound/effects/gore/fallsmash.ogg', 35, TRUE)
 								L.adjustBruteLoss(rand(6,7))
 								if (ishuman(L))
-									L.emote("scream")
+									L.emote("painscream")
 //								H.next_change_dir[num2text(opposite_direction(direct))] = world.time + (STOMP_TIME*3)
 //								H.movement_northsouth = null
 //								H.movement_eastwest = null

@@ -620,6 +620,19 @@ var/list/vocal_emotes = list(
 					if (!muzzled)
 						message = "screams!"
 						m_type = 2
+						warning_scream_sound(src, FALSE)
+					else
+						message = "makes a very loud noise."
+						m_type = 2
+
+			if ("painscream")
+				if (miming)
+					message = "acts out a painful scream!"
+					m_type = 1
+				else
+					if (!muzzled)
+						message = "screams in pain!"
+						m_type = 2
 						scream_sound(src, FALSE)
 					else
 						message = "makes a very loud noise."
