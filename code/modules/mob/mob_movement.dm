@@ -674,11 +674,11 @@
 								L.adjustBruteLoss(rand(6,7))
 								if (ishuman(L))
 									L.emote("scream")
-								H.next_change_dir[num2text(opposite_direction(direct))] = world.time + (STOMP_TIME*3)
-								H.movement_northsouth = null
-								H.movement_eastwest = null
-								movementMachine_clients -= src
-								sleep(STOMP_TIME)
+//								H.next_change_dir[num2text(opposite_direction(direct))] = world.time + (STOMP_TIME*3)
+//								H.movement_northsouth = null
+//								H.movement_eastwest = null
+//								movementMachine_clients -= src
+//								sleep(STOMP_TIME)
 								break
 					else
 						for (var/mob/living/L in mob.loc)
