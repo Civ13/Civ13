@@ -224,9 +224,13 @@
 			weathertype = "snow"
 		if (WEATHER_RAIN)
 			weathertype = "rain"
-
+		if (WEATHER_SANDSTORM)
+			weathertype = "sandstorm"
+		if (WEATHER_BLIZZARD)
+			weathertype = "blizzard"
 	if (weather == WEATHER_NONE)
 		. = ""
 
 	if (.)
-		world << "<font size=3><span class = 'notice'>[capitalize(weathertype)] is now coming down [.].</span></font>"
+		if (weathertype != "sandstorm" && weathertype != "blizzard")
+			world << "<font size=3><span class = 'notice'>[capitalize(weathertype)] is now coming down [.].</span></font>"

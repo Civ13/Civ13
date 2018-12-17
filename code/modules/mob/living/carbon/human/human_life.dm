@@ -139,7 +139,7 @@
 				src << "You feel painful lumps on your skin."
 				adjustToxLoss(rand(8,12))
 			//3 more minutes
-			else if (disease_progression >= 90 && prob(10))
+			else if (disease_progression >= 90 && prob(10) && stat != DEAD)
 				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
 				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
 				var/turf/location = loc
@@ -148,7 +148,7 @@
 				nutrition -= 40
 			// 3 more minutes
 			else if (disease_progression >= 180 && disease_progression <= 300 && prob(15))
-				adjustBrainLoss(rand(7,10))
+				adjustBrainLoss(rand(3,5))
 				src << "You feel your body burning up from fever!"
 				Weaken(5)
 				bodytemperature = 313.15

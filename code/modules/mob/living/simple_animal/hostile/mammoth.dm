@@ -19,6 +19,8 @@
 	density = TRUE
 	mob_size = MOB_HUGE
 	var/stance_step = FALSE
+	stop_automated_movement_when_pulled = FALSE
+	wander = FALSE
 	dir = WEST
 	bound_x = 64
 	bound_height = 96
@@ -94,6 +96,31 @@
 				return
 
 
+/mob/living/simple_animal/hostile/mammoth/tickproc() //for AI stuff. Life process only runs every 2 seconds
+	spawn(60)
+		if (health <= 0)
+			death()
+			return
+		if (!stat)
+			switch(stance)
+				if (HOSTILE_STANCE_IDLE)
+					target_mob = FindTarget()
+
+				if (HOSTILE_STANCE_ATTACK)
+					MoveToTarget()
+
+				if (HOSTILE_STANCE_ATTACKING)
+					spawn(10)
+						AttackTarget()
+		if (isturf(loc) && !resting && !buckled && canmove)		//This is so it only moves if it's not inside a closet, gentics machine, etc.
+			turns_since_move++
+			if (turns_since_move >= turns_per_move)
+				var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+				moving_to = pick(cardinal)
+				set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+				Move(get_step(src,moving_to))
+				turns_since_move = FALSE
+		tickproc()
 
 /mob/living/simple_animal/hostile/mammoth/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
