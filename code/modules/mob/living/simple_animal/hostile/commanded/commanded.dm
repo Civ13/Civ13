@@ -45,7 +45,7 @@
 	var/mode = "specific"
 	if (allowed_targets[1] == "everyone") //we have been given the golden gift of murdering everything. Except our master, of course. And our friends. So just mostly everyone.
 		mode = "everyone"
-	for (var/atom/A in ListTargets(10))
+	for (var/atom/A in ListTargets(7))
 		var/mob/M = null
 		if (A == src)
 			continue
@@ -69,7 +69,7 @@
 	stop_automated_movement = TRUE
 	if (!target_mob)
 		return
-	if (target_mob in ListTargets(10))
+	if (target_mob in ListTargets(7))
 		walk_to(src,target_mob,1,move_to_delay)
 
 /mob/living/simple_animal/hostile/commanded/proc/commanded_stop() //basically a proc that runs whenever we are asked to stay put. Probably going to remain unused.
