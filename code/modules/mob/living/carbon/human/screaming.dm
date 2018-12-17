@@ -8,6 +8,7 @@
 
 	var/mob/living/carbon/human/H = m
 	if (H.gender == MALE)
-		playsound(get_turf(H), 'sound/voice/scream_male.ogg', 100, extrarange = 50)
+		var/list/screamlist = list('sound/voice/screams/scream1.ogg','sound/voice/screams/scream2.ogg','sound/voice/screams/scream3.ogg','sound/voice/screams/scream4.ogg','sound/voice/screams/scream5.ogg','sound/voice/screams/scream6.ogg',)
+		playsound(get_turf(H), pick(screamlist), 100, extrarange = 50)
 	else
 		playsound(get_turf(H), 'sound/voice/scream_female.ogg', 100, extrarange = 50)
