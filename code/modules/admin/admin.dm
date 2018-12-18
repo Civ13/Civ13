@@ -96,9 +96,16 @@ proc/admin_notice(var/message, var/rights)
 			body += {"<br><br>
 				<b>Rudimentary transformation:</b><font size=2><br>These transformations only create a new mob type and copy stuff over. They do not take into account MMIs and similar mob-specific things. The buttons in 'Transformations' are preferred, when possible.</font><br>
 				<A href='?src=\ref[src];simplemake=observer;mob=\ref[M]'>Observer</A> |
-				\[ Default: <A href='?src=\ref[src];simplemake=human;mob=\ref[M]'>Human</A> |
 				<A href='?src=\ref[src];simplemake=monkey;mob=\ref[M]'>Monkey</A> |
 				<A href='?src=\ref[src];simplemake=cat;mob=\ref[M]'>Cat</A> |
+				<A href='?src=\ref[src];simplemake=parrot;mob=\ref[M]'>Parrot</A> |
+				<A href='?src=\ref[src];simplemake=chicken;mob=\ref[M]'>Chicken</A> |
+				<A href='?src=\ref[src];simplemake=turkey;mob=\ref[M]'>Turkey</A> |
+				<A href='?src=\ref[src];simplemake=cow;mob=\ref[M]'>Cow</A> |
+				<A href='?src=\ref[src];simplemake=bull;mob=\ref[M]'>Bull</A> |
+				<A href='?src=\ref[src];simplemake=nouse;mob=\ref[M]'>Mouse</A> |
+				<A href='?src=\ref[src];simplemake=bear;mob=\ref[M]'>Bear</A> |
+				<A href='?src=\ref[src];simplemake=velociraptor;mob=\ref[M]'>Velociraptor</A> ]
 				<br>"}
 
 	body += {"<br><br>

@@ -108,6 +108,37 @@
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
 		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", TRUE)
 		href_list["secretsadmin"] = "check_antagonist"
+	else if (href_list["simplemake"])
+
+		if (!check_rights(R_SPAWN))	return
+
+		var/mob/M = locate(href_list["mob"])
+
+		if (!istype(M))
+			usr << "This can only be used on instances of type /mob"
+			return
+
+
+		var/delmob = FALSE
+		switch(WWinput(usr, "Delete old mob?", "Delete Mob", "Yes", list("Yes","No","Cancel")))
+			if ("Cancel")	return
+			if ("Yes")		delmob = TRUE
+
+		log_admin("[key_name(usr)] has used rudimentary transformation on [key_name(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]")
+		message_admins("<span class = 'notice'>[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]</span>", TRUE)
+
+		switch(href_list["simplemake"])
+			if ("observer")			M.change_mob_type( /mob/observer/ghost , null, null, delmob )
+			if ("monkey")			M.change_mob_type( /mob/living/simple_animal/monkey , null, null, delmob )
+			if ("cat")				M.change_mob_type( /mob/living/simple_animal/cat , null, null, delmob )
+			if ("parrot")			M.change_mob_type( /mob/living/simple_animal/parrot , null, null, delmob )
+			if ("chicken")			M.change_mob_type( /mob/living/simple_animal/chicken , null, null, delmob )
+			if ("turkey")			M.change_mob_type( /mob/living/simple_animal/turkey_m , null, null, delmob )
+			if ("cow")			M.change_mob_type( /mob/living/simple_animal/cow , null, null, delmob )
+			if ("bull")			M.change_mob_type( /mob/living/simple_animal/bull , null, null, delmob )
+			if ("mouse")			M.change_mob_type( /mob/living/simple_animal/mouse , null, null, delmob )
+			if ("bear")			M.change_mob_type( /mob/living/simple_animal/hostile/bear , null, null, delmob )
+			if ("velociraptor")			M.change_mob_type( /mob/living/simple_animal/hostile/dinosaur/velociraptor , null, null, delmob )
 
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])

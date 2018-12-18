@@ -7,7 +7,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
-
+	var/progress = FALSE
 /obj/structure/window/snowwall/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
 		if (WWinput(user, "Dismantle this snow barricade?", "Dismantle snow barricade", "Yes", list("Yes", "No")) == "Yes")
@@ -68,7 +68,6 @@
 /obj/structure/window/snowwall/incomplete
 	name = "incomplete snow barricade"
 	icon_state = "snow_wall_33%"
-	var/progress = FALSE
 
 
 /obj/structure/window/snowwall/incomplete/ex_act(severity)

@@ -76,7 +76,7 @@
 		return
 
 	else if (istype(C, /obj/item/weapon/shovel))
-		var/turf/T = get_turf(get_step(user,user.dir))
+		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
 
 		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
@@ -275,20 +275,55 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a dirt wall [your_dir] of you.", "Dirt Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts constructing the base of a dirt wall.</span>", "<span class='danger'>You start constructing the base of a dirt wall.</span>")
+			if (WWinput(user, "This will start building a dirt barricade [your_dir] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/obj/item/weapon/sandbag/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
 					var/obj/structure/window/sandbag/incomplete/sandbag = new/obj/structure/window/sandbag/incomplete(src, user)
 					sandbag.progress = progress
-					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt wall. Anyone can now add to it.</span>")
+					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3)
 				return
 
+	else if (istype(C, /obj/item/weapon/snowwall))
+
+		var/your_dir = "NORTH"
+
+		switch (user.dir)
+			if (NORTH)
+				your_dir = "NORTH"
+			if (SOUTH)
+				your_dir = "SOUTH"
+			if (EAST)
+				your_dir = "EAST"
+			if (WEST)
+				your_dir = "WEST"
+
+		var/sandbag_time = 50
+
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			sandbag_time /= H.getStatCoeff("strength")
+			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+
+		if (src == get_step(user, user.dir))
+			if (WWinput(user, "This will start building a snow barricade [your_dir] of you.", "Snow Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+				visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
+				if (do_after(user, sandbag_time, user.loc))
+					var/obj/item/weapon/snowwall/bag = C
+					var/progress = bag.sand_amount
+					qdel(C)
+					var/obj/structure/window/snowwall/sandbag = new/obj/structure/window/snowwall/incomplete(src, user)
+					sandbag.progress = progress
+					visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
+					if (ishuman(user))
+						var/mob/living/carbon/human/H = user
+						H.adaptStat("crafting", 3)
+				return
 	else if (istype(C, /obj/item/stack/farming/seeds))
 		var/mob/living/carbon/human/H = user
 		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
