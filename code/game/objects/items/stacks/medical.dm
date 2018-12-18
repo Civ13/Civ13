@@ -279,12 +279,21 @@
 		return
 
 /obj/item/stack/medical/bruise_pack/bint
-	name = "roll of bint"
-	singular_name = "bint length"
+	name = "cloth bandages"
+	singular_name = "cloth bandage"
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bint"
 	heal_brute = 10 // for healing dogs and other animals
 	amount = 10
+
+/obj/item/stack/medical/bruise_pack/bint/leather
+	name = "leather bandages"
+	singular_name = "leather bandage"
+	desc = "A crude bandage, made of thin animal leather."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "leatherbandage"
+	heal_brute = 6 // for healing dogs and other animals
+	amount = 7
 
 /obj/item/stack/medical/bruise_pack/gauze
 	name = "roll of gauze"
