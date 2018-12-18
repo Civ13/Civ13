@@ -205,6 +205,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	incomplete = TRUE
 
 /obj/covers/snow_wall/blocks/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/snowwall))

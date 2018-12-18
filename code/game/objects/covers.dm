@@ -22,6 +22,7 @@
 	var/onfire = FALSE
 	flammable = TRUE
 	var/current_area_type = /area/caribbean
+	var/incomplete = FALSE
 //	invisibility = 101 //starts invisible
 
 
@@ -149,6 +150,7 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = FALSE
+	incomplete = TRUE
 	amount = 0
 	layer = 2.12
 	health = 30
@@ -180,11 +182,11 @@
 
 /obj/covers/New()
 	..()
-	if (wall)
+	if (wall && !incomplete)
 		var/area/caribbean/CURRENTAREA = get_area(src)
 		if (CURRENTAREA.location == AREA_OUTSIDE)
 			current_area_type = CURRENTAREA.type
-			new/area/caribbean/roofed(get_turf(src))
+			new/obj/roof(get_turf(src))
 
 	spawn(15)
 		var/turf/T = get_turf(loc)
@@ -196,7 +198,7 @@
 		return TRUE
 
 /obj/covers/Destroy()
-	if (wall)
+	if (wall && !incomplete)
 		new current_area_type(get_turf(src))
 		visible_message("The roof collapses!")
 	..()
