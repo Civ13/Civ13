@@ -45,14 +45,11 @@
 	spawn(50)
 		for (var/obj/structure/roof_support/RS in range(2, src))
 			supportfound = TRUE
-			world << "su1"
 		for (var/turf/wall/W in range(1, src))
 			supportfound = TRUE
-			world << "su2"
 		for (var/obj/covers/C in range(1, src))
 			if (C.wall == TRUE)
 				supportfound = TRUE
-				world << "su3"
 	//if no support >> roof falls down
 		if (!supportfound)
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
