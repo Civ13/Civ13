@@ -120,6 +120,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
+	var/health = 100
 
 /obj/structure/mine_support
 	name = "mine support"
@@ -129,6 +130,46 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
+	var/health = 100
+
+/obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		switch(W.damtype)
+			if ("fire")
+				health -= W.force * TRUE
+			if ("brute")
+				health -= W.force * 0.20
+		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+		user.do_attack_animation(src)
+		try_destroy()
+	..()
+
+/obj/structure/mine_support/proc/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		Destroy()
+		return
+
+/obj/structure/roof_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		switch(W.damtype)
+			if ("fire")
+				health -= W.force * TRUE
+			if ("brute")
+				health -= W.force * 0.20
+		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+		user.do_attack_animation(src)
+		try_destroy()
+	..()
+
+/obj/structure/roof_support/proc/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		Destroy()
+		return
+
 
 /obj/structure/mine_support/Destroy()
 	if (istype(get_turf(src), /turf/floor))
