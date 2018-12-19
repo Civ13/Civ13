@@ -573,8 +573,13 @@
 				if (H.m_intent != "walk")
 					H.m_intent = "walk" // in case we don't have a m_intent HUD, somehow
 
-		if (!mob_is_observer && F_is_valid_floor && isnull(H.riding_mob))
-			move_delay += F.get_move_delay()
+		if (!mob_is_observer && F_is_valid_floor)
+			if (istype(src, /mob/living/carbon/human))
+				var/mob/living/carbon/human/HH = src
+				if (isnull(HH.riding_mob))
+					move_delay += F.get_move_delay()
+			else
+				move_delay += F.get_move_delay()
 
 		var/tickcomp = FALSE //moved this out here so we can use it for vehicles
 		if (config.Tickcomp)

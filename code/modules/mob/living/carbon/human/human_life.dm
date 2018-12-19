@@ -242,6 +242,10 @@
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
+	//shitcode to fix the movement bug because byond hates me
+	if (grab_list.len)
+		if (grab_list[1] == null)
+			grab_list = list()
 	..()
 
 	// recover stamina

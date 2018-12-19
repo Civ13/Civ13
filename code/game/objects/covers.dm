@@ -23,6 +23,7 @@
 	flammable = TRUE
 	var/current_area_type = /area/caribbean
 	var/incomplete = FALSE
+	explosion_resistance = TRUE
 //	invisibility = 101 //starts invisible
 
 
@@ -44,6 +45,7 @@
 	wood = FALSE
 	layer = 1.99
 	flammable = FALSE
+	explosion_resistance = 2
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -55,6 +57,7 @@
 	wood = FALSE
 	layer = 1.99
 	flammable = FALSE
+	explosion_resistance = 2
 
 /obj/covers/wood_ship
 	name = "wood floor"
@@ -77,6 +80,7 @@
 	layer = 2.12
 	health = 150
 	wall = TRUE
+	explosion_resistance = 5
 
 /obj/covers/stone_wall
 	name = "stone wall"
@@ -93,6 +97,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	explosion_resistance = 10
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -109,6 +114,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	explosion_resistance = 3
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -124,6 +130,7 @@
 	health = 75
 	wood = TRUE
 	wall = TRUE
+	explosion_resistance = 2
 
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
@@ -140,6 +147,7 @@
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	explosion_resistance = 4
 
 /obj/covers/dirt_wall/blocks/incomplete
 	name = "dirt blocks wall"
@@ -247,7 +255,7 @@
 	icon_state = "wood_ship_repaired"
 	layer = 1.98
 	flammable = TRUE
-
+	explosion_resistance = FALSE
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
 
