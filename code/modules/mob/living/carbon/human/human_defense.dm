@@ -425,6 +425,16 @@ bullet_act
 						update_inv_glasses(0)
 				if ("chest")
 					bloody_body(src)
+	if (istype(I, /obj/item/weapon/material/quarterstaff))
+		if (istype(user, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = user
+			if (prob(6*HH.getStatCoeff("dexterity")))
+				visible_message("<span class='danger'>[src] has been knocked down!</span>")
+				Weaken(2)
+		else
+			if (prob(6))
+				visible_message("<span class='danger'>[src] has been knocked down!</span>")
+				Weaken(2)
 
 	return TRUE
 

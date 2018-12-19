@@ -46,7 +46,6 @@ var/list/gamemode_cache = list()
 	var/traitor_scaling = FALSE 			//if amount of traitors scales based on amount of players
 	var/objectives_disabled = FALSE 			//if objectives are disabled or not
 	var/protect_roles_from_antagonist = FALSE// If security and such can be traitor/cult/other
-	var/continous_rounds = FALSE			// Gamemodes which end instantly will instead keep on going until the round ends by escape shuttle or nuke.
 	var/popup_admin_pm = FALSE				//adminPMs to non-admins show in a pop-up 'reply' window when set to 1.
 	var/Ticklag = 0.9
 	var/Tickcomp = FALSE
@@ -56,7 +55,6 @@ var/list/gamemode_cache = list()
 	var/list/modes = list()				// allowed modes
 	var/list/votable_modes = list()		// votable modes
 	var/list/probabilities = list()		// relative probability of each mode
-	var/humans_need_surnames = FALSE
 	var/allow_random_events = FALSE			// enables random events mid-round when set to TRUE
 	var/hostedby = null
 	var/guest_jobban = TRUE
@@ -476,17 +474,11 @@ var/list/gamemode_cache = list()
 				if ("tickcomp")
 					Tickcomp = TRUE
 
-				if ("humans_need_surnames")
-					humans_need_surnames = TRUE
-
 				if ("tor_ban")
 					ToRban = TRUE
 
 				if ("automute_on")
 					automute_on = TRUE
-
-				if ("continuous_rounds")
-					config.continous_rounds = TRUE
 
 				if ("ghost_interaction")
 					config.ghost_interaction = TRUE

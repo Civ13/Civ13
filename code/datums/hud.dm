@@ -35,8 +35,6 @@
 		"health"      = list("type" = /obj/screen/health,     "loc" = "15,7"),
 		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,6"),
 		"bodytemp"    = list("type" = /obj/screen/bodytemp,   "loc" = "15,8"),
-		"toxin"       = list("type" = /obj/screen/toxin,      "loc" = "15,11"),
-		"fire"        = list("type" = /obj/screen/fire,       "loc" = "15,10"),
 		"throw"       = list("type" = /obj/screen/HUDthrow,   "loc" = "14,2"),
 		"pull"        = list("type" = /obj/screen/pull,       "loc" = "15,2"),
 		"drop"        = list("type" = /obj/screen/drop,       "loc" = "14:-16,2"),
