@@ -232,3 +232,17 @@
 	max_range = 11
 	create_path = /mob/living/simple_animal/hostile/mammoth
 	timer = 7200
+
+/obj/effect/spawner/mobspawner/penguins
+	name = "penguin spawner"
+	max_number = 2
+	max_range = 13
+	create_path = /mob/living/simple_animal/penguin
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/rabbits
+	name = "rabbit spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/rabbit
+	timer = 3000

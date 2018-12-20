@@ -32,17 +32,17 @@
 	..()
 	if (stat != DEAD)
 		var/done = FALSE
-		for (var/mob/living/carbon/human/H in range(5, src))
+		for (var/mob/living/carbon/human/H in range(7, src))
 			if (done == FALSE)
 				var/dirh = get_dir(src,H)
 				if (dirh == WEST)
-					walk_to(src, locate(x+5,y,z), TRUE, 3)
+					walk_to(src, locate(x+7,y,z), TRUE, 3)
 				else if (dirh == EAST)
-					walk_to(src, locate(x-5,y,z), TRUE, 3)
+					walk_to(src, locate(x-7,y,z), TRUE, 3)
 				else if (dirh == NORTH)
-					walk_to(src, locate(x,y-5,z), TRUE, 3)
+					walk_to(src, locate(x,y-7,z), TRUE, 3)
 				else if (dirh == SOUTH)
-					walk_to(src, locate(x,y+5,z), TRUE, 3)
+					walk_to(src, locate(x,y+7,z), TRUE, 3)
 				done = TRUE
 
 /mob/living/simple_animal/reindeer/male
@@ -79,15 +79,15 @@
 	..()
 	if (stat != DEAD)
 		var/done = FALSE
-		for (var/mob/living/carbon/human/H in range(5, src))
+		for (var/mob/living/carbon/human/H in range(7, src))
 			if (done == FALSE)
 				var/dirh = get_dir(src,H)
 				if (dirh == WEST)
-					walk_to(src, locate(x+5,y,z), TRUE, 3)
+					walk_to(src, locate(x+7,y,z), TRUE, 3)
 				else if (dirh == EAST)
-					walk_to(src, locate(x-5,y,z), TRUE, 3)
+					walk_to(src, locate(x-7,y,z), TRUE, 3)
 				else if (dirh == NORTH)
-					walk_to(src, locate(x,y-5,z), TRUE, 3)
+					walk_to(src, locate(x,y-7,z), TRUE, 3)
 				else if (dirh == SOUTH)
-					walk_to(src, locate(x,y+5,z), TRUE, 3)
+					walk_to(src, locate(x,y+7,z), TRUE, 3)
 				done = TRUE
