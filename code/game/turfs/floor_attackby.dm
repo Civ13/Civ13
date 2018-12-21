@@ -245,6 +245,8 @@
 					H << "<span class='danger'>You found some usable stone blocks!</span>"
 					if(map.ID == MAP_NOMADS_DESERT)
 						T.ChangeTurf(/turf/floor/dirt/dust)
+					else if (map.ID == MAP_NOMADS_JUNGLE)
+						T.ChangeTurf(/turf/floor/dirt/jungledirt)
 					else
 						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
@@ -502,13 +504,25 @@
 			return
 	else if (istype(C, /obj/item/weapon/plough))
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/plating/grass))
+		if (istype(T, /turf/floor/plating/grass/wild/jungle))
+			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+			return
+		if (istype(T, /turf/floor/dirt/burned))
+			user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
+			return
+		if (istype(T, /turf/floor/dirt/jungledirt))
+			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+			return
+		if (istype(T, /turf/floor/plating/grass) && !istype(T, /turf/floor/plating/grass/wild/jungle))
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return
 		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 			if (do_after(user, 70, user.loc))
-				ChangeTurf(/turf/floor/dirt/ploughed)
+				if (istype(T, /turf/floor/dirt/flooded))
+					ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+				else
+					ChangeTurf(/turf/floor/dirt/ploughed)
 				return
 		else
 			user << "<span class='danger'>You can't plough this type of terrain.</span>"

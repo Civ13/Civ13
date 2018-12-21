@@ -248,6 +248,12 @@ var/global/list/GrassEdgeCache
 	overlay_priority = 0
 	is_diggable = TRUE
 
+/turf/floor/plating/grass/wild/jungle
+	name = "jungle grass"
+	overlay_priority = 0
+	is_diggable = TRUE
+	may_become_muddy = TRUE
+
 /turf/floor/winter/grass
 	name = "snowy grass"
 	icon = 'icons/turf/snow.dmi'
@@ -285,7 +291,7 @@ var/global/list/GrassEdgeCache
 	return
 
 /turf/floor/plating/beach
-	name = "Beach"
+	name = "beach"
 	icon = 'icons/misc/beach.dmi'
 
 /turf/floor/plating/beach/drywater
@@ -301,26 +307,28 @@ var/global/list/GrassEdgeCache
 	available_sand = 4
 
 /turf/floor/plating/beach/coastline
-	name = "Coastline"
+	name = "coastline"
 	icon = 'icons/misc/beach2.dmi'
 	icon_state = "sandwater"
 
 //water level is measured in centimeters. the maximum is 200 (2 meters). up to 1.5 will make movement progressively slower, up from that you will drown if you stay for too long.
 
 /turf/floor/plating/beach/water
-	name = "Water"
+	name = "water"
 	desc = "Water. Seems to be shallow."
 	icon_state = "seashallow"
 	move_delay = 3
 	water_level = 30 // in centimeters
 
 /turf/floor/plating/beach/water/deep
-	name = "Deep Water"
+	name = "deep water"
 	icon_state = "seadeep"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
 	density = FALSE
 	iscovered = FALSE
+
+bca650
 
 /turf/floor/plating/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
@@ -332,9 +340,19 @@ var/global/list/GrassEdgeCache
 	else
 		return ..()
 /turf/floor/plating/beach/water/swamp
-	name = "Swamp Water"
+	name = "swamp water"
 	move_delay = 3
 	color = "#94B21C"
+
+/turf/floor/plating/beach/water/jungle
+	name = "river water"
+	move_delay = 5
+	color = "#BCA650"
+
+/turf/floor/plating/beach/water/flooded
+	name = "flooded riverbed"
+	move_delay = 5
+	color = "#968440"
 
 /turf/floor/plating/beach/water/proc/Extinguish(var/mob/living/L)
 	if (istype(L))
@@ -359,7 +377,7 @@ var/global/list/GrassEdgeCache
 			underlays += I
 
 /turf/floor/plating/beach/water/ice
-	name = "Ice"
+	name = "ice"
 	icon_state = "seashallow_frozen"
 	move_delay = 0
 

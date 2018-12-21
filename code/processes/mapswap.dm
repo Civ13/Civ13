@@ -79,9 +79,9 @@
 				MAP_ROBUSTA = 15,
 
 			// 1713 - RP
-				MAP_COLONY = 0,
+//				MAP_COLONY = 0,
 				MAP_HUNT = 0,
-				MAP_FOUR_COLONIES = 35,
+//				MAP_FOUR_COLONIES = 35,
 			)
 		if (epoch == "313 B.C.")
 	// 313bc - TDM
@@ -105,6 +105,7 @@
 				MAP_NOMADS = 0,
 				MAP_NOMADS_DESERT = 0,
 				MAP_NOMADS_ICE_AGE = 0,
+//				MAP_NOMADS_JUNGLE = 0,
 			)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))

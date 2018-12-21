@@ -26,6 +26,16 @@
 	available_dirt = 3
 	is_diggable = TRUE
 
+/turf/floor/dirt/flooded
+	name = "flood plains dirt"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "flood_dirt"
+	desc = "a fertile dirt patch, flooded during the wet season."
+	uses_winter_overlay = FALSE
+	may_become_muddy = TRUE
+	available_dirt = 3
+	is_diggable = TRUE
+
 /turf/floor/dirt/winter
 	name = "snowy dirt"
 	icon = 'icons/turf/snow.dmi'
@@ -73,6 +83,13 @@
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
 
+/turf/floor/dirt/ploughed/flooded
+	name = "ploughed field"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "flood_dirt_ploughed"
+	is_plowed = TRUE
+
+
 /turf/floor/dirt/dust
 	name = "dry dirt"
 	icon = 'icons/turf/floors.dmi'
@@ -81,6 +98,16 @@
 	stepsound = "dirt"
 	available_dirt = 2
 	may_become_muddy = FALSE
+	is_diggable = TRUE
+
+/turf/floor/dirt/jungledirt
+	name = "dirt"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dirt"
+	interior = FALSE
+	stepsound = "dirt"
+	available_dirt = 2
+	may_become_muddy = TRUE
 	is_diggable = TRUE
 
 /turf/floor/tiled
