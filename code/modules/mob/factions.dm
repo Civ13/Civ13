@@ -20,6 +20,7 @@
 		else
 			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
 			create_faction_pr(choosename)
+			make_commander()
 			return
 	else
 		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
@@ -63,6 +64,7 @@
 					map.custom_civs[U.civilization][4] = null
 			U.civilization = "none"
 			usr << "You left your faction. You are now a Nomad."
+			remove_commander()
 	else
 		usr << "<span class='danger'>You cannot leave a faction in this map.</span>"
 		return
@@ -94,6 +96,9 @@
 					else
 						map.custom_civs[U.civilization][4] = choice2
 						visible_message("<big>[choice2] is the new leader of [U.civilization]!</big>")
+						var/mob/living/carbon/human/CM = choice2
+						CM.make_commander()
+						remove_commander()
 				else
 					usr << "<span class='danger'You are not the Leader, so you can't transfer the faction's leadership.</span>"
 					return
@@ -125,6 +130,7 @@
 			else if (map.custom_civs[U.civilization][4] == null)
 				map.custom_civs[U.civilization][4] = U
 				visible_message("<big>[U] is now the Leader of [U.civilization]!</big>")
+				make_commander()
 	else
 		usr << "<span class='danger'>You cannot become a Leader in this map.</span>"
 		return

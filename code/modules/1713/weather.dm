@@ -47,20 +47,36 @@
 			weather = WEATHER_NONE
 
 	else if (season == "Wet Season")
-		if (_weather == WEATHER_RAIN)
-			weather = WEATHER_RAIN
-		else if (_weather == WEATHER_NONE)
-			weather = WEATHER_NONE
+		if (map.ID == MAP_NOMADS_DESERT)
+			if (_weather == WEATHER_RAIN)
+				weather = WEATHER_RAIN
+			else if (_weather == WEATHER_NONE)
+				weather = WEATHER_NONE
+			else
+				weather = WEATHER_NONE
 		else
-			weather = WEATHER_NONE
+			if (_weather == WEATHER_RAIN)
+				weather = WEATHER_RAIN
+			else if (_weather == WEATHER_STORM)
+				weather = WEATHER_STORM
+			else if (_weather == WEATHER_NONE)
+				weather = WEATHER_NONE
+			else
+				weather = WEATHER_NONE
 
 	else if (season == "Dry Season")
-		if (_weather == WEATHER_SANDSTORM)
-			weather = WEATHER_SANDSTORM
-		else if (_weather == WEATHER_NONE)
-			weather = WEATHER_NONE
+		if (map.ID == MAP_NOMADS_DESERT)
+			if (_weather == WEATHER_SANDSTORM)
+				weather = WEATHER_SANDSTORM
+			else if (_weather == WEATHER_NONE)
+				weather = WEATHER_NONE
+			else
+				weather = WEATHER_NONE
 		else
-			weather = WEATHER_NONE
+			if (_weather == WEATHER_NONE)
+				weather = WEATHER_NONE
+			else
+				weather = WEATHER_NONE
 	var/area_icon = 'icons/effects/weather.dmi'
 	var/area_icon_state = ""
 	var/area_alpha = 255
@@ -110,6 +126,17 @@
 				if (3.0)
 					area_icon_state = "sandstorm"
 					area_alpha = 255
+		if (WEATHER_STORM)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "monsoon"
+					area_alpha = 255
+				if (2.0)
+					area_icon_state = "monsoon"
+					area_alpha = 255
+				if (3.0)
+					area_icon_state = "monsoon"
+					area_alpha = 255
 	for (var/area/caribbean/A in area_list)
 		if (istype(A) && A.location == AREA_OUTSIDE)
 			A.icon = area_icon
@@ -148,9 +175,15 @@
 		if ("SPRING")
 			possibilities = list(WEATHER_RAIN,WEATHER_NONE)
 		if ("Wet Season")
-			possibilities = list(WEATHER_RAIN,WEATHER_NONE)
+			if (map.ID == MAP_NOMADS_DESERT)
+				possibilities = list(WEATHER_RAIN,WEATHER_NONE)
+			else
+				possibilities = list(WEATHER_RAIN,WEATHER_NONE, WEATHER_STORM)
 		if ("Dry Season")
-			possibilities = list(WEATHER_NONE,WEATHER_SANDSTORM)
+			if (map.ID == MAP_NOMADS_DESERT)
+				possibilities = list(WEATHER_NONE,WEATHER_SANDSTORM)
+			else
+				possibilities = list(WEATHER_NONE)
 		if ("SUMMER")
 			possibilities = list(WEATHER_NONE)
 		if ("FALL")
@@ -171,6 +204,8 @@
 			return "blizzard"
 		if (WEATHER_SANDSTORM)
 			return "sandstorm"
+		if (WEATHER_STORM)
+			return "storm"
 	return "none"
 
 // global weather variable changed
@@ -186,6 +221,8 @@
 					. = "The <b>blizzard</b> has passed."
 				if ( WEATHER_SANDSTORM)
 					. = "The <b>sandstorm</b> has passed."
+				if ( WEATHER_STORM)
+					. = "The <b>storm</b> has passed."
 		if (WEATHER_SNOW, WEATHER_RAIN)
 			switch (old)
 				if (WEATHER_NONE)
@@ -203,6 +240,12 @@
 				if (WEATHER_NONE)
 					. = "A <b>blizzard</b> has begun."
 				if (WEATHER_BLIZZARD)
+					. = ""
+		if (WEATHER_STORM)
+			switch (old)
+				if (WEATHER_NONE, WEATHER_RAIN)
+					. = "A <b>storm</b> has begun."
+				if (WEATHER_STORM)
 					. = ""
 	if (.)
 		world << "<font size=3><span class = 'notice'>[.]</span></font>"
@@ -228,9 +271,11 @@
 			weathertype = "sandstorm"
 		if (WEATHER_BLIZZARD)
 			weathertype = "blizzard"
+		if (WEATHER_STORM)
+			weathertype = "storm"
 	if (weather == WEATHER_NONE)
 		. = ""
 
 	if (.)
-		if (weathertype != "sandstorm" && weathertype != "blizzard")
+		if (weathertype != "sandstorm" && weathertype != "blizzard" && weathertype != "storm")
 			world << "<font size=3><span class = 'notice'>[capitalize(weathertype)] is now coming down [.].</span></font>"

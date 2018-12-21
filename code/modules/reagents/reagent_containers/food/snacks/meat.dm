@@ -84,7 +84,7 @@
 		return
 
 /obj/item/weapon/reagent_containers/food/snacks/rawfish
-	name = "fish"
+	name = "raw fish"
 	desc = "A fresh fish. Should probably cook it first."
 	icon_state = "rawfish"
 	health = 180
@@ -98,12 +98,27 @@
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 3
 
+/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon
+	name = "raw salmon"
+	desc = "A fresh salmon. Should probably cook it first."
+	icon_state = "salmon"
+
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		new /obj/item/weapon/reagent_containers/food/snacks/fishfillet(src)
 		user << "You cut the fish into thin fillets."
+		qdel(src)
+	else
+		..()
+
+/obj/item/weapon/reagent_containers/food/snacks/rawfish/salmon/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
+		new /obj/item/weapon/reagent_containers/food/snacks/salmonfillet(src)
+		user << "You cut the salmon into thin fillets."
 		qdel(src)
 	else
 		..()

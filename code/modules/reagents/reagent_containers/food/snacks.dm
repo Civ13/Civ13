@@ -281,12 +281,23 @@
 		..()
 		bitesize = 2
 /obj/item/weapon/reagent_containers/food/snacks/driedfish
-	name = "salted fish"
+	name = "dried fish"
 	desc = "Some kind of fish. Very salty, wash it down with something,"
 	icon_state = "driedfish"
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 3, "fish" = 1)
+	New()
+		..()
+		bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/driedsalmon
+	name = "dried salmon"
+	desc = "A dried salmon fillet. Very salty, wash it down with something,"
+	icon_state = "driedsalmon"
+	center_of_mass = list("x"=17, "y"=18)
+	nutriment_amt = 3
+	nutriment_desc = list("salt" = 2, "fish" = 2)
 	New()
 		..()
 		bitesize = 2
@@ -486,6 +497,26 @@
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(3000)
 				qdel(src)
+
+/obj/item/weapon/reagent_containers/food/snacks/salmonfillet
+	name = "salmon fillet"
+	desc = "A fillet of salmoh."
+	icon_state = "salmonfillet"
+	center_of_mass = list("x"=17, "y"=13)
+	var/rotten = FALSE
+	New()
+		..()
+		reagents.add_reagent("protein", 1)
+		reagents.add_reagent("food_poisoning", 1)
+		bitesize = 6
+		spawn(2400) //4 minutes
+			icon_state = "rottensalmonfillet"
+			name = "rotten [name]"
+			rotten = TRUE
+			reagents.add_reagent("food_poisoning", 1)
+			spawn(3000)
+				qdel(src)
+
 
 /obj/item/weapon/reagent_containers/food/snacks/fishfingers
 	name = "Fish Fingers"

@@ -79,6 +79,20 @@
 			obj_type = /obj/item/weapon/reagent_containers/food/snacks/fishfillet
 			dry_obj(obj_type)
 			return
+	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/salmonfillet) && filled < 4)
+		var/obj/item/weapon/reagent_containers/food/snacks/salmonfillet/SF = W
+		if (SF.rotten == TRUE)
+			H << "This is rotten."
+			return
+		else
+			H << "You hang the [W.name] to dry."
+			filled += 1
+			obj_type = W.type
+			icon_state = "wood_drier[filled]"
+			qdel(W)
+			obj_type = /obj/item/weapon/reagent_containers/food/snacks/driedsalmon
+			dry_obj(obj_type)
+			return
 /obj/structure/dehydrator/proc/dry_obj(var/obj_type = null)
 	spawn(1200) //2 minutes
 		if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/rawcutlet)

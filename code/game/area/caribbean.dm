@@ -131,6 +131,11 @@
 	base_turf = /turf/floor/winter/grass
 	icon_state = "green1"
 
+/area/caribbean/nomads/forest/Jungle
+	name = "Jungle"
+	base_turf = /turf/floor/plating/grass/wild/jungle
+	icon_state = "green1"
+
 /area/caribbean/nomads/snow
 	name = "Snow"
 	base_turf = /turf/floor/plating/snow

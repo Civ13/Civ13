@@ -19,6 +19,9 @@ var/global/list/valid_coordinates = list()
 /mob/living/carbon/human/proc/make_commander()
 	verbs += /mob/living/carbon/human/proc/Commander_Announcement
 
+/mob/living/carbon/human/proc/remove_commander()
+	verbs -= /mob/living/carbon/human/proc/Commander_Announcement
+
 /proc/check_coords_check()
 	return (!map || (map.faction2_can_cross_blocks() && map.faction1_can_cross_blocks()))
 /mob/living/carbon/human/proc/Commander_Announcement()
@@ -31,10 +34,16 @@ var/global/list/valid_coordinates = list()
 		message = sanitize(message, 500, extra = FALSE)
 		message = replacetext(message, "\n", "<br>") // required since we're putting it in a <p> tag
 	for (var/mob/living/carbon/human/M)
-		if (faction_text == M.faction_text)
-			messaget = "[name] announces:"
-			M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-		log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")
+		if (!map.civilizations)
+			if (faction_text == M.faction_text)
+				messaget = "[name] announces:"
+				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
+			log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")
+		else
+			if (civilization == M.civilization && civilization != "none")
+				messaget = "[name] announces:"
+				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
+			log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
 
 /mob/living/carbon/human/proc/Check_Coordinates()
 	set category = "Officer"

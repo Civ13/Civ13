@@ -61,23 +61,16 @@
 		season = "Wet Season"
 		world << "<big>The <b>Wet Season</b> has started.</big>"
 			change_weather_somehow()
-		for(var/obj/structure/sink/S)
-			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-				S.dry = FALSE
-				S.update_icon()
-		for (var/turf/floor/plating/beach/drywater/D)
-			D.ChangeTurf(/turf/floor/plating/beach/water/swamp)
+		for (var/turf/floor/dirt/flooded/D)
+			D.ChangeTurf(/turf/floor/plating/beach/water/flooded)
 		real_season = "wet"
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season</b> has started.</big>"
 			change_weather_somehow()
-		for(var/obj/structure/sink/S)
-			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-				S.dry = TRUE
-				S.update_icon()
-		for (var/turf/floor/plating/beach/water/swamp/D)
-			D.ChangeTurf(/turf/floor/plating/beach/drywater)
+
+		for (var/turf/floor/plating/beach/water/flooded/D)
+			D.ChangeTurf(/turf/floor/dirt/flooded)
 		real_season = "dry"
 
 	spawn(18000)

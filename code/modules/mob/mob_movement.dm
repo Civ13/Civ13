@@ -454,7 +454,7 @@
 			var/no_snow = FALSE
 			for (var/obj/covers/CV in get_turf(F))
 				no_snow = TRUE
-			if (F_area.weather == WEATHER_RAIN && F.may_become_muddy)
+			if ((F_area.weather == WEATHER_RAIN || F_area.weather == WEATHER_STORM) && F.may_become_muddy)
 				F.muddy = TRUE
 			else
 				F.muddy = FALSE
@@ -503,7 +503,10 @@
 					mob.next_snow_message = world.time+100
 
 			else if (F.muddy)
-				standing_on_snow = rand(2,3)
+				if (F_area.weather == WEATHER_STORM)
+					standing_on_snow = rand(4,5)
+				else
+					standing_on_snow = rand(2,3)
 				if (world.time >= mob.next_mud_message)
 					mob << "<span class = 'warning'>The mud slows you down.</span>"
 					mob.next_mud_message = world.time+100

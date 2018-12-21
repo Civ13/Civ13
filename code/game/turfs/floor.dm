@@ -34,35 +34,12 @@
 
 /turf/floor/proc/get_move_delay()
 	if (water_level != 0)
-		overlays = null
-		move_delay = round(water_level/10)
-		if (water_level >= 20)
-			desc ="There's some water here. Seems to be shallow."
-			var/image/over_water1 = image('icons/misc/beach.dmi', "seashallow")
-			over_water1.alpha = 120
-			overlays += over_water1
-		if (water_level >= 100)
-			desc ="There is water at waist level here."
-			var/image/over_water2 = image('icons/misc/beach.dmi', "seashallow")
-			over_water2.alpha = 170
-			overlays += over_water2
-		if (water_level >= 140)
-			desc ="The water here is around chest level."
-			var/image/over_water3 = image('icons/misc/beach.dmi', "seashallow")
-			over_water3.alpha = 200
-			overlays += over_water3
-		if (water_level >= 200)
-			desc = "Water. Seems to be very deep, you cant see the bottom."
-			var/image/over_water4 = image('icons/misc/beach.dmi', "seadeep")
-			over_water4.alpha = 245
-			overlays += over_water4
 		for (var/obj/covers/C in loc)
 			water_level = 0
+			return 0
+		return 2
 	else
-		move_delay = 0
-		overlays = null
-	return move_delay
-
+		return 0
 /turf/floor/is_plating()
 	return !flooring
 
