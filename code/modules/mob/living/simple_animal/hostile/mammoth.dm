@@ -6,12 +6,12 @@
 	icon_living = "mammoth"
 	icon_dead = "mammoth_dead"
 	speak_emote = list("trumpets")
-	health = 490
-	maxHealth = 490
+	health = 1200
+	maxHealth = 1200
 	move_to_delay = 12
 	attacktext = "stomps"
-	melee_damage_lower = 25
-	melee_damage_upper = 35
+	melee_damage_lower = 35
+	melee_damage_upper = 45
 	response_help  = "pets"
 	response_disarm = "punches"
 	response_harm   = "kicks"
@@ -29,7 +29,7 @@
 /mob/living/simple_animal/hostile/mammoth/FindTarget()
 	var/atom/T = null
 	stop_automated_movement = FALSE
-	for (var/atom/A in ListTargets(8))
+	for (var/atom/A in ListTargets(12))
 
 		if (A == src)
 			continue
@@ -60,7 +60,7 @@
 			stop_automated_movement = TRUE
 			stance_step++
 			if (stance_step >= 10) //rests for 10 ticks
-				if (target_mob && target_mob in ListTargets(8))
+				if (target_mob && target_mob in ListTargets(12))
 					stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
 				else
 					stance = HOSTILE_STANCE_IDLE
@@ -68,7 +68,7 @@
 		if (HOSTILE_STANCE_ALERT)
 			stop_automated_movement = TRUE
 			var/found_mob = FALSE
-			if (target_mob && target_mob in ListTargets(8))
+			if (target_mob && target_mob in ListTargets(12))
 				if (!(SA_attackable(target_mob)))
 					stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 					stance_step++
@@ -154,7 +154,7 @@
 		var/mob/living/carbon/human/H = target_mob
 		var/dam_zone = pick("l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
-		if (prob(92))
+		if (prob(88))
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 		else
 			visible_message("\The [src] crushes [H]!")
