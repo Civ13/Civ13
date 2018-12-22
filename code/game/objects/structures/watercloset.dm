@@ -349,7 +349,7 @@
 	var/busy = FALSE 	//Something's being washed at the moment
 	var/sound = 'sound/effects/sink.ogg'
 	var/dry = FALSE
-
+	var/mosquito_count = 0
 /obj/structure/sink/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -520,3 +520,15 @@
 			icon_state = "well_dry"
 		else
 			icon_state = "well1"
+
+/obj/structure/sink/New()
+	..()
+	if (map.ID == MAP_NOMADS_JUNGLE)
+		mosquito_proc()
+
+/obj/structure/sink/proc/mosquito_proc()
+	if (mosquito_count < 4)
+
+		return
+	spawn(2000)
+		mosquito_proc()

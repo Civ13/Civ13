@@ -131,9 +131,6 @@
 				new /mob/living/simple_animal/turkey_f(loc)
 			qdel(src)
 
-var/const/MAX_TURKEYS = 35
-var/global/turkey_count = FALSE
-
 /mob/living/simple_animal/turkey_m/New()
 	..()
 	turkey_count += 1
@@ -146,6 +143,10 @@ var/global/turkey_count = FALSE
 	turkey_count += 1
 
 /mob/living/simple_animal/turkey_f/death()
+	..()
+	turkey_count -= 1
+
+/mob/living/simple_animal/turkeychick/death()
 	..()
 	turkey_count -= 1
 
@@ -183,9 +184,9 @@ var/global/turkey_count = FALSE
 					if (turkeyCount <= 5) // max 5 chickens/chicks in a 5x5 area for eggs to start hatching
 						processing_objects.Add(E)
 
-/obj/item/weapon/reagent_containers/food/snacks/turkeyegg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/process()
-	if (isturf(loc) && chicken_count < MAX_TURKEYS)
+	if (isturf(loc) && turkey_count < 35)
+		turkey_count++
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")

@@ -199,8 +199,9 @@
 			new /mob/living/simple_animal/chicken(loc)
 			qdel(src)
 
-var/const/MAX_CHICKENS = 50
-var/global/chicken_count = FALSE
+/mob/living/simple_animal/chick/death()
+	..()
+	chicken_count -= 1
 
 /mob/living/simple_animal/chicken
 	name = "\improper chicken"
@@ -280,7 +281,8 @@ var/global/chicken_count = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/var/amount_grown = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/process()
-	if (isturf(loc) && chicken_count < MAX_CHICKENS)
+	if (isturf(loc) && chicken_count < 50)
+		chicken_count++
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
