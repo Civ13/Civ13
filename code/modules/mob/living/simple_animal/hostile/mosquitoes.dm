@@ -41,6 +41,6 @@
 /mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	//move them somewhere
-/mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
+/mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/leash))
 		return
