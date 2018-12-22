@@ -49,14 +49,17 @@
 	icon = 'icons/mob/fish.dmi'
 	icon_state = "piranhas"
 	anchored = TRUE
-	invisibility = 0
 
-/obj/structure/piranha/Bumped(mob/M as mob)
+/obj/structure/piranha/New()
+	..()
+	invisibility = 101
+
+/obj/structure/piranha/Crossed(mob/M as mob)
 	for (var/obj/covers/CV in src.loc)
 		if (CV.is_cover == TRUE)
 			return
 	if (istype(M, /mob/living/carbon/human))
-		invisibility = 101
+		invisibility = 0
 		visible_message("<span class='notice'>The piranhas swarm to [M]!</span>")
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
@@ -67,16 +70,30 @@
 			else
 				affecting.droplimb(FALSE, DROPLIMB_EDGE)
 				visible_message("The piranhas bite off [H]'s [affecting]!")
+			spawn(300)
+				invisibility = 101
 			return
 	else if (istype(M, /mob/living/simple_animal))
-		invisibility = 101
+		invisibility = 0
 		var/mob/living/simple_animal/SA = M
 		if (SA.mob_size <= 10) //MOB_SMALL, MOB_MINISCULE and MOB_TINY)
 			visible_message("<span class='notice'>The piranhas eat the [M] whole!</span>")
 			qdel(M)
+			spawn(300)
+				invisibility = 101
 			return
 		else
+			invisibility = 0
 			SA.health--
+			spawn(300)
+				invisibility = 101
 			return
 	else
 		return
+
+/obj/structure/anthill
+	name = "anthill"
+	desc = "A anthill of giant red ants. Keep your food away!"
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "anthill"
+	anchored = TRUE

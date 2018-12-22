@@ -121,6 +121,11 @@
 	base_turf = /turf/floor/plating/sand/desert
 	icon_state = "red3"
 
+/area/caribbean/nomads/river
+	name = "Jungle River"
+	base_turf = /turf/floor/plating/beach/water/jungle
+	icon_state = "blue1"
+
 /area/caribbean/nomads/forest
 	name = "Forest"
 	base_turf = /turf/floor/plating/grass/wild
