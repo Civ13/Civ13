@@ -167,6 +167,10 @@ var/list/charge_sounds_ar = list(
 	'sound/effects/emotes/charge_ar5.ogg',
 	'sound/effects/emotes/charge_ar6.ogg',
 	)
+var/list/charge_sounds_jp = list(
+	'sound/effects/emotes/charge_jp.ogg',
+	'sound/effects/emotes/charge_jp2.ogg',
+	)
 var/list/charge_sounds_crusader = list(
 	'sound/effects/emotes/charge_crusader.ogg',)
 // pain, etc sounds from Interbay
@@ -357,6 +361,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_sp)
 			if ("charge_DUTCH")
 				soundin = pick(charge_sounds_nl)
+			if ("charge_JAPANESE")
+				soundin = pick(charge_sounds_jp)
 			if ("charge_GREEK")
 				soundin = pick(charge_sounds_gr)
 			if ("charge_ROMAN")

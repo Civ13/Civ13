@@ -193,7 +193,7 @@ var/civmax_research = list(85,89,67)
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN)
+				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, JAPANESE)
 					return !faction1_can_cross_blocks()
 				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB)
 					return !faction2_can_cross_blocks()

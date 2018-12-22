@@ -293,3 +293,12 @@ obj/structure/closet/crate/empty
 	paths = list(/obj/item/clothing/accessory/storage/webbing = 10)
 	cratevalue = 110 //assuming 10 value
 #undef DYNAMIC_AMT
+
+/obj/structure/closet/crate/jap_pistols
+	name = "Japanese Pistol crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/gun/projectile/revolver/t26_revolver = 7,
+	/obj/item/weapon/gun/projectile/pistol/nambu = 5)
+	cratevalue = 100 //base value 50

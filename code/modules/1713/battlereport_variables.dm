@@ -11,6 +11,7 @@ var/list/alive_dutch = list()
 var/list/alive_greek = list()
 var/list/alive_roman = list()
 var/list/alive_arab = list()
+var/list/alive_japanese = list()
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
@@ -23,6 +24,7 @@ var/list/heavily_injured_dutch = list()
 var/list/heavily_injured_roman = list()
 var/list/heavily_injured_greek = list()
 var/list/heavily_injured_arab = list()
+var/list/heavily_injured_japanese = list()
 
 var/list/dead_british = list()
 var/list/dead_pirates = list()
@@ -35,6 +37,7 @@ var/list/dead_dutch = list()
 var/list/dead_greek = list()
 var/list/dead_roman = list()
 var/list/dead_arab = list()
+var/list/dead_japanese = list()
 
 var/list/recently_died = list()
 
@@ -89,6 +92,10 @@ var/list/recently_died = list()
 			dead = dead_arab
 			injured = heavily_injured_arab
 			alive = alive_arab
+		if (JAPANESE)
+			dead = dead_japanese
+			injured = heavily_injured_japanese
+			alive = alive_japanese
 	return list(alive, dead, injured)
 
 /mob/living/carbon/human/death()

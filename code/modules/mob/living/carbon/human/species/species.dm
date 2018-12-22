@@ -337,6 +337,21 @@
 
 		return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
 
+/datum/species/proc/get_random_japanese_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese, gender))
+		else
+			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese, gender))
+
+	var/datum/language/species_language = all_languages[name_language]
+	if (!species_language)
+		species_language = all_languages[default_language]
+	if (!species_language)
+		return "unknown"
+	return species_language.get_random_japanese_name(gender)
+
+
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)

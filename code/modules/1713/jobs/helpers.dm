@@ -68,6 +68,12 @@
 					if (H.original_job.base_type_flag() == ARAB)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (JAPANESE)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == JAPANESE)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 // get every single mob of x faction: useful for counting deceased & gibbed mobs. More efficient than n_of_side()
 // currently does not support undead/pillarmen faction
 /proc/total_n_of_side(x)
@@ -95,3 +101,5 @@
 			return dead_greek.len + heavily_injured_greek.len + alive_greek.len
 		if (ARAB)
 			return dead_arab.len + heavily_injured_arab.len + alive_arab.len
+		if (JAPANESE)
+			return dead_japanese.len + heavily_injured_japanese.len + alive_japanese.len

@@ -14,5 +14,7 @@ Use the Emote tab to surrender at 2x speed.
 You can ping people using the format "@key". This is case insensitive.
 If you are a sharpshooter, aim for the head. Otherwise, aim for the chest to kill and the feet to cripple.
 Dogs can be named by clicking on them.
-Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout, but does less damage. Slash will easily make your enemy bleed. Stabbing gives an higher probability of internal bleeding.
+Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout, but does less damage. Slash will easily make your enemy bleed. Stabbing gives a higher probability of internal bleeding.
 You can switch between Parry mode and Dodge mode in the HUD.
+Don't eat raw meat, unless you want to die
+Tea is useful, it can cure/get rid of toxins, and helps you get over that common flu or plague you have!

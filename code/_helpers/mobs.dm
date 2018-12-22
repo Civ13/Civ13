@@ -193,6 +193,19 @@ proc/random_arab_name(gender, species = "Human")
 	else
 		return current_species.get_random_arab_name(gender)
 
+proc/random_japanese_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese))
+		else
+			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese))
+	else
+		return current_species.get_random_japanese_name(gender)
+
 proc/random_skin_tone()
 
 	var/skin_tone = "caucasian"
@@ -553,6 +566,23 @@ Proc for attack log creation, because really why not
 
 	return pirates
 
+/proc/getjapanesemobs(var/alive = FALSE)
+	var/list/japanese = list()
+	for (var/mob/living/carbon/human/H in mob_list)
+		if (!istype(H))
+			continue
+		if (alive && H.stat == DEAD)
+			continue
+		if (!H.loc)
+			continue
+		if (!istype(H.original_job, /datum/job/japanese))
+			continue
+		if (istype(H, /mob/living/carbon/human/corpse))
+			continue
+		japanese += H
+
+	return japanese
+
 
 /proc/getcivilians(var/alive = FALSE)
 	var/list/civilians = list()
@@ -585,6 +615,8 @@ Proc for attack log creation, because really why not
 			mobs = getportuguesemobs(0)
 		if (DUTCH)
 			mobs = getdutchmobs(0)
+		if (JAPANESE)
+			mobs = getjapanesemobs(0)
 
 	// sort mobs by stat: alive, unconscious, then dead
 	for (var/v in 0 to 2)

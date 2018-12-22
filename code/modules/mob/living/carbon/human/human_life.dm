@@ -1184,6 +1184,8 @@
 					holder2.icon_state = "ind_basic"
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
+				if (JAPANESE)
+					holder2.icon_state = "jap_basic"
 				if (ARAB)
 					holder2.icon_state = "arab_basic"
 				if (GREEK)

@@ -128,6 +128,11 @@
 	desc = "A bag of mail, to be delivered to the British colonial administration."
 	faction = "british"
 
+/obj/structure/mailbox/japanese
+	name = "Japanese mail bag"
+	desc = "A bag of mail, to be delivered to the Japanese Post."
+	faction = "japanese"
+
 /obj/structure/mailbox/attackby(var/obj/item/weapon/paper/W as obj, var/mob/living/carbon/human/H as mob)
 	if (receive_only == TRUE)
 		H << "This is only for received letters! It wont be delivered if you put it here!"

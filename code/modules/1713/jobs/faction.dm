@@ -20,6 +20,7 @@
 #define TEAM_RO 9
 #define TEAM_GR 10
 #define TEAM_AR 11
+#define TEAM_JP 12
 var/global/soldiers[11]
 
 /datum/faction
@@ -132,6 +133,14 @@ var/global/soldiers[11]
 
 /datum/faction/arab/base_type()
 	return "/datum/faction/arab"
+
+/datum/faction/japanese
+	icon_state = "nl_basic"
+	title = "Japanese Infantry"
+	team = TEAM_JP
+
+/datum/faction/japanese/base_type()
+	return "/datum/faction/japanese"
 // CODE
 /datum/faction/New(var/mob/living/carbon/human/H, var/datum/job/J)
 
@@ -172,5 +181,8 @@ var/global/soldiers[11]
 	else if (istype(J, /datum/job/arab))
 		if ("[type]" == "/datum/faction/arab")
 			soldiers[ARAB]++
+	else if (istype(J, /datum/job/japanese))
+		if ("[type]" == "/datum/faction/japanese")
+			soldiers[JAPANESE]++
 	H.all_factions += src
 	..()

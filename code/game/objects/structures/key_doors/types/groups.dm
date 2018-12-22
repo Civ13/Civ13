@@ -276,3 +276,16 @@
 	keyslot_type = /datum/keyslot/dutch
 	unique_door_name = "Dutch locked"
 #undef NL_CODE
+
+#define JP_CODE 995 * 7
+/datum/keyslot/japanese
+	code = JP_CODE
+
+/obj/item/weapon/key/japanese
+	code = JP_CODE
+	name = "Japanese key"
+
+/obj/structure/simple_door/key_door/japanese
+	keyslot_type = /datum/keyslot/japanese
+	unique_door_name = "Japanese locked"
+#undef JP_CODE

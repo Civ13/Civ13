@@ -71,13 +71,17 @@
 		return
 /obj/item/weapon/material/sword/katana
 	name = "katana"
-	desc = "Woefully underpowered in D20. This one looks pretty sharp."
+	desc = "An ancient model of sword used by the Japanese."
 	icon_state = "katana"
 	item_state = "katana"
-	block_chance = 30
+	block_chance = 35
+	throw_speed = 3
+	throw_range = 3
+	force_divisor = 0.75
+	thrown_force_divisor = 0.5
 	slot_flags = SLOT_BELT | SLOT_BACK
-	value = 40
-	cooldownw = 7
+	value = 80
+	cooldownw = 6
 
 /obj/item/weapon/material/sword/smallsword
 	name = "small sword"

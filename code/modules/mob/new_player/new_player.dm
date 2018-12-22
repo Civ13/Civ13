@@ -589,7 +589,10 @@
 			return
 		if (client.prefs.s_tone > -75)
 			usr << "<span class='danger'>Your skin is too light for you to be an Arab. Choose a value between 110 and 150.</span>"
-
+			return
+	if (istype(job, /datum/job/japanese))
+		if (client.prefs.s_tone < -25)
+			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 60.</span>"
 			return
 	spawning = TRUE
 	close_spawn_windows()
@@ -646,6 +649,8 @@
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
 		dat += "[alive_arab.len] Arabs "
+	if (JAPANESE in map.faction_organization)
+		dat += "[alive_japanese.len] Japanese "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -663,7 +668,8 @@
 		BRITISH = FALSE,
 		ROMAN = FALSE,
 		GREEK = FALSE,
-		ARAB = FALSE,)
+		ARAB = FALSE,
+		JAPANESE = FALSE,)
 
 	var/prev_side = FALSE
 
@@ -726,6 +732,10 @@
 
 		if (istype(job, /datum/job/greek) && !greek_toggled)
 			job_is_available = FALSE
+
+		if (istype(job, /datum/job/japanese) && !japanese_toggled)
+			job_is_available = FALSE
+
 		// check if the job is admin-locked or disabled codewise
 
 		if (!job.enabled)

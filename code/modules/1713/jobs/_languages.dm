@@ -54,6 +54,11 @@
 /datum/job/arab
 	default_language = "Arabic"
 	additional_languages = list("French" = 10)
+
+/datum/job/japanese
+	default_language = "Japanese"
+	additional_languages = list("English" = 15)
+
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 
@@ -136,4 +141,8 @@
 		if (ARAB)
 			for (var/datum/language/arab/A in H.languages)
 				H.default_language = A
+				break
+		if (JAPANESE)
+			for (var/datum/language/japanese/J in H.languages)
+				H.default_language = J
 				break

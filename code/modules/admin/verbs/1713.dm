@@ -54,6 +54,7 @@ var/dutch_toggled = TRUE
 var/roman_toggled = TRUE
 var/greek_toggled = TRUE
 var/arab_toggled = TRUE
+var/japanese_toggled = TRUE
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
 	set category = "Special"
@@ -75,6 +76,7 @@ var/arab_toggled = TRUE
 	choices += "ROMAN ([roman_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "GREEK ([greek_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "ARAB ([arab_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "JAPANESE ([japanese_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -126,6 +128,11 @@ var/arab_toggled = TRUE
 		arab_toggled = !arab_toggled
 		world << "<span class = 'warning'>The Arabic faction has been [arab_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Arabic faction 'enabled' setting to [arab_toggled].")
+	else if (findtext(choice, "JAPANESE"))
+		japanese_toggled = !japanese_toggled
+		world << "<span class = 'warning'>The Japanese faction has been [japanese_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the Japanese faction 'enabled' setting to [japanese_toggled].")
+
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -137,6 +144,7 @@ var/dutch_forceEnabled = FALSE
 var/roman_forceEnabled = FALSE
 var/greek_forceEnabled = FALSE
 var/arab_forceEnabled = FALSE
+var/japanese_forceEnabled = FALSE
 
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"
@@ -159,6 +167,7 @@ var/arab_forceEnabled = FALSE
 	choices += "GREEK ([greek_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "ROMAN ([roman_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "ARAB ([arab_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "JAPANESE ([japanese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -212,6 +221,11 @@ var/arab_forceEnabled = FALSE
 		arab_forceEnabled = arab_forceEnabled
 		world << "<span class = 'notice'>The Arabic faction [arab_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Arabic faction 'forceEnabled' setting to [arab_forceEnabled].")
+	else if (findtext(choice, "JAPANESE"))
+		japanese_forceEnabled = !japanese_forceEnabled
+		world << "<span class = 'notice'>The Japanese faction [japanese_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the Japanese faction 'forceEnabled' setting to [japanese_forceEnabled].")
+
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"
@@ -260,6 +274,7 @@ var/arab_forceEnabled = FALSE
 	var/total_roman = alive_roman.len + dead_roman.len + heavily_injured_roman.len
 	var/total_greek = alive_greek.len + dead_greek.len + heavily_injured_greek.len
 	var/total_arab = alive_arab.len + dead_arab.len + heavily_injured_arab.len
+	var/total_japanese = alive_japanese.len + dead_japanese.len + heavily_injured_japanese.len
 
 	var/mortality_coefficient_pirates = 0
 	var/mortality_coefficient_british = 0
@@ -272,6 +287,7 @@ var/arab_forceEnabled = FALSE
 	var/mortality_coefficient_dutch = 0
 	var/mortality_coefficient_roman = 0
 	var/mortality_coefficient_arab = 0
+	var/mortality_coefficient_japanese = 0
 	if (dead_british.len > 0)
 		mortality_coefficient_british = dead_british.len/total_british
 
@@ -305,6 +321,9 @@ var/arab_forceEnabled = FALSE
 	if (dead_arab.len > 0)
 		mortality_coefficient_arab = dead_arab.len/total_arab
 
+	if (dead_japanese.len > 0)
+		mortality_coefficient_japanese = dead_japanese.len/total_japanese
+
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
@@ -316,6 +335,7 @@ var/arab_forceEnabled = FALSE
 	var/mortality_roman = round(mortality_coefficient_roman*100)
 	var/mortality_greek = round(mortality_coefficient_greek*100)
 	var/mortality_arab = round(mortality_coefficient_arab*100)
+	var/mortality_japanese = round(mortality_coefficient_japanese*100)
 
 	var/msg1 = "British: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
 	var/msg2 = "Pirates: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
@@ -328,6 +348,7 @@ var/arab_forceEnabled = FALSE
 	var/msg9 = "Romans: [alive_roman.len] alive, [heavily_injured_roman.len] heavily injured or unconscious, [dead_roman.len] deceased. Mortality rate: [mortality_roman]%"
 	var/msg10 = "Greeks: [alive_greek.len] alive, [heavily_injured_greek.len] heavily injured or unconscious, [dead_greek.len] deceased. Mortality rate: [mortality_greek]%"
 	var/msg11 = "Arabs: [alive_arab.len] alive, [heavily_injured_arab.len] heavily injured or unconscious, [dead_arab.len] deceased. Mortality rate: [mortality_arab]%"
+	var/msg12 = "Japanese: [alive_japanese.len] alive, [heavily_injured_japanese.len] heavily injured or unconscious, [dead_japanese.len] deceased. Mortality rate: [mortality_japanese]%"
 
 
 
@@ -353,6 +374,8 @@ var/arab_forceEnabled = FALSE
 		msg10 = null
 	if (map && !map.faction_organization.Find(ARAB))
 		msg11 = null
+	if (map && !map.faction_organization.Find(JAPANESE))
+		msg12 = null
 	var/public = "Yes"
 
 	if (shower && !private)
@@ -386,6 +409,8 @@ var/arab_forceEnabled = FALSE
 				world << "<font size=3>[msg10]</font>"
 			if (msg11)
 				world << "<font size=3>[msg11]</font>"
+			if (msg12)
+				world << "<font size=3>[msg12]</font>"
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
 			else
@@ -413,3 +438,5 @@ var/arab_forceEnabled = FALSE
 			shower << msg10
 		if (msg11)
 			shower << msg11
+		if (msg12)
+			shower << msg12

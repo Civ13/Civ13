@@ -60,6 +60,10 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	pref.arab_name		= sanitize_name(pref.arab_name, pref.species)
 	if (!pref.arab_name)
 		pref.arab_name	= random_arab_name(pref.species)
+
+	pref.japanese_name		= sanitize_name(pref.japanese_name, pref.species)
+	if (!pref.japanese_name)
+		pref.japanese_name	= random_japanese_name(pref.gender, pref.species)
 	/*										*/
 
 //	pref.spawnpoint		= sanitize_inlist(pref.spawnpoint, spawntypes, initial(pref.spawnpoint))
@@ -73,6 +77,7 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	pref.be_random_name_greek	= sanitize_integer(pref.be_random_name_greek, FALSE, TRUE, initial(pref.be_random_name_greek))
 	pref.be_random_name_roman	= sanitize_integer(pref.be_random_name_roman, FALSE, TRUE, initial(pref.be_random_name_roman))
 	pref.be_random_name_arab	= sanitize_integer(pref.be_random_name_arab, FALSE, TRUE, initial(pref.be_random_name_arab))
+	pref.be_random_name_japanese	= sanitize_integer(pref.be_random_name_japanese, FALSE, TRUE, initial(pref.be_random_name_japanese))
 
 /datum/category_item/player_setup_item/general/basic/content()
 	// name
@@ -126,6 +131,11 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<a href='?src=\ref[src];rename_arab=1'><b>[pref.arab_name]</b></a><br>"
 	. += "(<a href='?src=\ref[src];random_name_arab=1'>Random Name</A>) "
 	. += "(<a href='?src=\ref[src];always_random_name_arab=1'>Always Random Name: [pref.be_random_name_arab ? "Yes" : "No"]</a>)"
+	. += "<br><br>"
+	. += "<b>Japanese Name:</b> "
+	. += "<a href='?src=\ref[src];rename_japanese=1'><b>[pref.japanese_name]</b></a><br>"
+	. += "(<a href='?src=\ref[src];random_name_japanese=1'>Random Name</A>) "
+	. += "(<a href='?src=\ref[src];always_random_name_japanese=1'>Always Random Name: [pref.be_random_name_japanese ? "Yes" : "No"]</a>)"
 	. += "<br><br>"
 	// gender
 	. += "<b>Default Gender:</b> <a href='?src=\ref[src];gender=1'><b>[capitalize(lowertext(pref.gender))]</b></a><br>"
@@ -343,7 +353,25 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 		pref.be_random_name_arab = !pref.be_random_name_arab
 		return TOPIC_REFRESH
 
+	//jap names
+	if (href_list["rename_japanese"])
+		var/raw_name = input(user, "Choose your character's Japanese name:", "Character Name")  as text|null
+		if (!isnull(raw_name) && CanUseTopic(user))
+			var/new_name = sanitize_name(raw_name, pref.species)
+			if (new_name)
+				pref.japanese_name = new_name
+				return TOPIC_REFRESH
+			else
+				user << "<span class='warning'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and .</span>"
+				return TOPIC_NOACTION
 
+	else if (href_list["random_name_japanese"])
+		pref.japanese_name = random_japanese_name(pref.gender, pref.species)
+		return TOPIC_REFRESH
+
+	else if (href_list["always_random_name_japanese"])
+		pref.be_random_name_japanese = !pref.be_random_name_japanese
+		return TOPIC_REFRESH
 
 	else if (href_list["gender"])
 		pref.gender = next_in_list(pref.gender, valid_player_genders)

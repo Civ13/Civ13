@@ -64,6 +64,22 @@
 	w_class = 2.0
 	weight = 1.18
 
+/obj/item/weapon/shovel/trench
+	name = "Entrenching Tool"
+	desc = "A tool for digging and making trenches."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "german_shovel2"
+	flags = CONDUCT
+	force = 8.0
+	throwforce = 4.0
+	item_state = "german_shovel2"
+	w_class = 3.0
+	matter = list(DEFAULT_WALL_MATERIAL = 50)
+	attack_verb = list("bashed", "bludgeoned", "thrashed", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	slot_flags = SLOT_BACK|SLOT_BELT
+
 /obj/item/weapon/shovel/spade/foldable
 	name = "foldable shovel"
 	icon_state = "german_shovel2"
