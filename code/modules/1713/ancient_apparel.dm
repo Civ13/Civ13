@@ -72,6 +72,28 @@
 	item_state = "toxotai"
 	worn_state = "toxotai"
 
+//celtic
+
+/obj/item/clothing/under/celtic_green
+	name = "green celtic trousers"
+	desc = "Celtic-style trousers, in green."
+	icon_state = "celtic_green"
+	item_state = "celtic_green"
+	worn_state = "celtic_green"
+
+/obj/item/clothing/under/celtic_blue
+	name = "blue celtic trousers"
+	desc = "Celtic-style trousers, in blue."
+	icon_state = "celtic_blue"
+	item_state = "celtic_blue"
+	worn_state = "celtic_blue"
+
+/obj/item/clothing/under/celtic_red
+	name = "red celtic trousers"
+	desc = "Celtic-style trousers, in red."
+	icon_state = "celtic_red"
+	item_state = "celtic_red"
+	worn_state = "celtic_red"
 
 /obj/item/clothing/suit/cape
 	name = "red cape"

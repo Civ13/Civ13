@@ -300,11 +300,11 @@
 
 //goat
 /mob/living/simple_animal/goat
-	name = "goat"
-	desc = "Not known for their pleasant disposition."
-	icon_state = "goat"
-	icon_living = "goat"
-	icon_dead = "goat_dead"
+	name = "goat ram"
+	desc = "A male goat. Not known for their pleasant disposition."
+	icon_state = "goat_ram"
+	icon_living = "goat_ram"
+	icon_dead = "goat_ram_dead"
 	speak = list("EHEHEHEHEH","eh?")
 	speak_emote = list("brays")
 	emote_hear = list("brays")
@@ -327,12 +327,48 @@
 	stop_automated_movement_when_pulled = 1
 	var/datum/reagents/udder = null
 	mob_size = MOB_MEDIUM
+	var/lamb = FALSE
 /mob/living/simple_animal/goat/New()
+	..()
+	spawn(1)
+		if (lamb)
+			icon_state = "goat_lamb"
+			icon_living = "goat_lamb"
+			icon_dead = "goat_lamb_dead"
+			meat_amount = 2
+			mob_size = MOB_SMALL
+			spawn(3000)
+				lamb = FALSE
+				icon_state = "goat_ram"
+				icon_living = "goat_ram"
+				icon_dead = "goat_ram_dead"
+				mob_size = MOB_MEDIUM
+/mob/living/simple_animal/goat/female
+	name = "goat ewe"
+	desc = "A female goat. You can milk it."
+	icon_state = "goat_ewe"
+	icon_living = "goat_ewe"
+	icon_dead = "goat_ewe_dead"
+
+/mob/living/simple_animal/goat/female/New()
 	udder = new(50)
 	udder.my_atom = src
 	..()
-
-/mob/living/simple_animal/goat/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	spawn(1)
+		if (lamb)
+			icon_state = "goat_lamb"
+			icon_living = "goat_lamb"
+			icon_dead = "goat_lamb_dead"
+			meat_amount = 2
+			udder.remove_reagent("milk")
+			mob_size = MOB_SMALL
+			spawn(3000)
+				lamb = FALSE
+				icon_state = "goat_ewe"
+				icon_living = "goat_ewe"
+				icon_dead = "goat_ewe_dead"
+				mob_size = MOB_MEDIUM
+/mob/living/simple_animal/goat/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	var/obj/item/weapon/reagent_containers/glass/G = O
 	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
 		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
@@ -345,12 +381,101 @@
 	else
 		..()
 
-/mob/living/simple_animal/goat/Life()
+/mob/living/simple_animal/goat/female/Life()
 	. = ..()
 	if (stat == CONSCIOUS)
 		if (udder && prob(5))
 			udder.add_reagent("milk", rand(3, 5))
 
+//sheep
+/mob/living/simple_animal/sheep
+	name = "sheep ram"
+	desc = "A male sheep. Good for wool."
+	icon_state = "sheep_ram"
+	icon_living = "sheep_ram"
+	icon_dead = "sheep_ram_dead"
+	speak = list("EHEHEHEHEH","eh?")
+	speak_emote = list("brays")
+	emote_hear = list("brays")
+	emote_see = list("shakes its head", "stamps a foot", "glares around")
+	speak_chance = 1
+	turns_per_move = 5
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 3
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	faction = list("neutral")
+	attacktext = "kicks"
+	attack_sound = 'sound/weapons/punch1.ogg'
+	health = 40
+	maxHealth = 40
+	melee_damage_lower = 2
+	melee_damage_upper = 6
+	stop_automated_movement_when_pulled = 1
+	var/datum/reagents/udder = null
+	mob_size = MOB_MEDIUM
+	var/lamb = FALSE
+
+/mob/living/simple_animal/sheep/female
+	name = "sheep ewe"
+	desc = "A female sheep. You can milk it."
+	icon_state = "sheep_ewe"
+	icon_living = "sheep_ewe"
+	icon_dead = "sheep_ewe_dead"
+
+/mob/living/simple_animal/sheep/New()
+	..()
+	spawn(1)
+		if (lamb)
+			icon_state = "sheep_lamb"
+			icon_living = "sheep_lamb"
+			icon_dead = "sheep_lamb_dead"
+			meat_amount = 2
+			mob_size = MOB_SMALL
+			spawn(3000)
+				lamb = FALSE
+				icon_state = "sheep_ram"
+				icon_living = "sheep_ram"
+				icon_dead = "sheep_ram_dead"
+				mob_size = MOB_MEDIUM
+/mob/living/simple_animal/sheep/female/New()
+	udder = new(50)
+	udder.my_atom = src
+	..()
+	spawn(1)
+		if (lamb)
+			icon_state = "sheep_lamb"
+			icon_living = "sheep_lamb"
+			icon_dead = "sheep_lamb_dead"
+			meat_amount = 2
+			udder.remove_reagent("milk")
+			mob_size = MOB_SMALL
+			spawn(3000)
+				lamb = FALSE
+				icon_state = "sheep_ewe"
+				icon_living = "sheep_ewe"
+				icon_dead = "sheep_ewe_dead"
+				mob_size = MOB_MEDIUM
+/mob/living/simple_animal/sheep/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	var/obj/item/weapon/reagent_containers/glass/G = O
+	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
+		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
+		if (G.reagents.total_volume >= G.volume)
+			user << "<span class = 'red'>The [O] is full.</span>"
+		if (!transfered)
+			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+		return
+	else
+		..()
+
+/mob/living/simple_animal/sheep/female/Life()
+	. = ..()
+	if (stat == CONSCIOUS && !lamb)
+		if (udder && prob(2))
+			udder.add_reagent("milk", rand(3, 5))
 
 
 /mob/living/simple_animal/camel

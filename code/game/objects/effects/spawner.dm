@@ -205,13 +205,31 @@
 	create_path = /mob/living/simple_animal/hostile/alligator
 	timer = 5000
 
-/obj/effect/spawner/mobspawner/goats
-	name = "goat spawner"
+/obj/effect/spawner/mobspawner/goats_m
+	name = "male goat spawner"
 	max_number = 2
 	max_range = 5
 	create_path = /mob/living/simple_animal/goat
 	timer = 5000
+/obj/effect/spawner/mobspawner/goats_f
+	name = "female goat spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/goat/female
+	timer = 5000
 
+/obj/effect/spawner/mobspawner/sheep_m
+	name = "male sheep spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/sheep
+	timer = 5000
+/obj/effect/spawner/mobspawner/sheep_f
+	name = "female sheep spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/sheep/female
+	timer = 5000
 /obj/effect/spawner/mobspawner/wolves
 	name = "wolf spawner"
 	max_number = 4
