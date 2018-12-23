@@ -182,6 +182,16 @@
 	climbable = TRUE
 	health = 30
 
+/obj/structure/window/sandbag/rock/attack_hand(var/mob/user as mob)
+	if (locate(src) in get_step(user, user.dir))
+		if (WWinput(user, "Dismantle this rock wall?", "Dismantle rock wall", "Yes", list("Yes", "No")) == "Yes")
+			visible_message("<span class='danger'>[user] starts dismantling the rock wall.</span>", "<span class='danger'>You start dismantling the rock wall.</span>")
+			if (do_after(user, 200, src))
+				visible_message("<span class='danger'>[user] finishes dismantling the rock wall.</span>", "<span class='danger'>You finish dismantling the rock wall.</span>")
+				var/turf = get_turf(src)
+				new /obj/item/stack/material/stone(turf)
+				qdel(src)
+
 /obj/structure/window/sandbag/railing
 	name = "railing"
 	icon = 'icons/obj/railing.dmi'
