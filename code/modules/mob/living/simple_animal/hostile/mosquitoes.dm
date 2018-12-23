@@ -66,9 +66,8 @@
 					TG.disease = 1
 
 	if (stat == DEAD)
-		spawn(50)
-			qdel(src)
-			return
+		qdel(src)
+		return
 /mob/living/simple_animal/mosquito/bullet_act(var/obj/item/projectile/Proj)
 	return
 
