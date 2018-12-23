@@ -93,7 +93,7 @@
 			usr << "You can't name this [src], as it does not belong to you or your faction."
 			return
 	else
-		if (name == initial(name) && !istype(src, /mob/living/simple_animal/hostile))
+		if (name == initial(name) && !istype(src, /mob/living/simple_animal/hostile) && !istype(src, /mob/living/simple_animal/mosquito))
 			var/yn = input(usr, "Name this [src]?") in list("Yes", "No")
 			if (yn == "Yes")
 				var/_name = input(usr, "What name?") as text
