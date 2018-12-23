@@ -49,11 +49,10 @@
 	var/friendly = "nuzzles"
 	var/environment_smash = FALSE
 	var/resistance		  = FALSE	// Damage reduction
-	var/obj/effect/spawner/mobspawner/origin = FALSE
 	//Null rod stuff
 	var/supernatural = FALSE
 	var/purge = FALSE
-
+	var/obj/origin = null
 	var/mob/living/following_mob = null
 
 /mob/living/simple_animal/New()
@@ -351,9 +350,19 @@
 		stat(null, "Health: [round((health / maxHealth) * 100)]%")
 
 /mob/living/simple_animal/proc/unregisterSpawner()
-	if (origin)
-		origin.current_number--
-		origin = null
+	if (origin != null)
+		if (istype(origin, /obj/effect/spawner/mobspawner))
+			var/obj/effect/spawner/mobspawner/O = origin
+			O.current_number--
+			if (O.current_number < 0)
+				O.current_number = 0
+			origin = null
+		else if (istype(origin, /obj/structure/sink))
+			var/obj/structure/sink/O = origin
+			O.mosquito_count--
+			if (O.mosquito_count < 0)
+				O.mosquito_count = 0
+			origin = null
 
 /mob/living/simple_animal/Destroy()
 	unregisterSpawner()

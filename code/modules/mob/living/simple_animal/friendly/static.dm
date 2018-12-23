@@ -76,7 +76,7 @@
 	else if (istype(M, /mob/living/simple_animal))
 		invisibility = 0
 		var/mob/living/simple_animal/SA = M
-		if (SA.mob_size <= 10) //MOB_SMALL, MOB_MINISCULE and MOB_TINY)
+		if (SA.mob_size <= 10 && !istype(SA, /mob/living/simple_animal/mosquito) //MOB_SMALL, MOB_MINISCULE and MOB_TINY)
 			visible_message("<span class='notice'>The piranhas eat the [M] whole!</span>")
 			qdel(M)
 			spawn(300)

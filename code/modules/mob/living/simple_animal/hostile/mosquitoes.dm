@@ -44,7 +44,7 @@
 					walk_towards(src, H, 3)
 					done = TRUE
 			if (done == FALSE)
-				walk_rand(src,3)
+				walk_rand(src,4)
 		else if (prob(15))
 			var/done = FALSE
 			for (var/obj/structure/sink/S in range(8, src))
@@ -52,9 +52,9 @@
 					walk_towards(src, S, 3)
 					done = TRUE
 			if (done == FALSE)
-				walk_rand(src,3)
+				walk_rand(src,4)
 		else
-			walk_rand(src,3)
+			walk_rand(src,4)
 		if (prob(10))
 			for (var/mob/living/carbon/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\The [src] bite [TG]!")
