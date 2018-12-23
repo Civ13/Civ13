@@ -170,6 +170,7 @@
 #include "code\game\objects\items\pen.dm"
 #include "code\game\objects\items\soap.dm"
 #include "code\game\objects\items\stamp.dm"
+#include "code\game\objects\items\swatter.dm"
 #include "code\game\objects\items\trash.dm"
 #include "code\game\objects\items\clothing\clothing.dm"
 #include "code\game\objects\items\clothing\clothing_accessories.dm"

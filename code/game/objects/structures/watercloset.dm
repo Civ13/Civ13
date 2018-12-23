@@ -527,8 +527,15 @@
 		mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()
-	if (mosquito_count < 4)
-
+	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
+		if (mosquito_count < 4)
+			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
+			NM.origin = src
+			mosquito_count++
+			spawn(2000)
+				mosquito_proc()
+		else
+			spawn(2000)
+				mosquito_proc()
+	else
 		return
-	spawn(2000)
-		mosquito_proc()

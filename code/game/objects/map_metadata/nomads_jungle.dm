@@ -38,16 +38,20 @@
 	age3_timer = 42000
 	nomads = TRUE
 
+	var/list/arealist_r = list()
+	var/list/arealist_g = list()
 	var/real_season = "wet"
 /obj/map_metadata/nomads_jungle/New()
 	..()
-	var/list/arealist_j = get_areas(/area/caribbean/nomads/river)
-	var/piranhamax = 0
-	while (piranhamax < 100)
-		var/turf/areaspawn = get_turf(pick(arealist_j))
-		new/obj/structure/piranha(areaspawn)
-		world << "Piranha debug: [piranhamax] at [areaspawn.x], [areaspawn.y]"
-		piranhamax++
+	spawn(1200)
+		for (var/i = 1, i <= 100, i++)
+			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/river))
+			new/obj/structure/piranha(areaspawn)
+	spawn(600)
+		for (var/i = 1, i <= 23, i++)
+			var/turf/areaspawn2 = safepick(get_area_turfs(/area/caribbean/nomads/forest))
+			new/obj/structure/anthill(areaspawn2)
+
 	spawn(1800)
 		if (season == "SPRING") //fixes game setting the season as spring
 			season = "Wet Season"

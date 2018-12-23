@@ -21,6 +21,18 @@
 	health = 5
 	mob_size = MOB_MINISCULE
 	stop_automated_movement_when_pulled = FALSE
+	stop_automated_movement = TRUE
+	wander = FALSE
+	density = FALSE
+	layer = 4.1
+
+/mob/living/simple_animal/mosquito/New()
+	..()
+
+/mob/living/simple_animal/mosquito/death()
+	var/obj/structure/sink/S = origin
+	S.mosquito_count--
+	..()
 
 /mob/living/simple_animal/mosquito/Life()
 	..()
@@ -31,16 +43,26 @@
 				if (done == FALSE)
 					walk_to(src, H.loc, TRUE, 2)
 					done = TRUE
+		if (prob(5))
+			for (var/mob/living/carbon/human/TG in range(1,src))
+				visible_message("<span class = 'danger'>\the [src] bites [TG]!")
+				TG.adjustBruteLoss(1,2)
+				if (prob(20))
+					TG.disease ="malaria"
+
 	if (stat == DEAD)
 		spawn(50)
 			qdel(src)
-
+			return
 /mob/living/simple_animal/mosquito/bullet_act(var/obj/item/projectile/Proj)
 	return
 
 /mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	//move them somewhere
-/mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
-	if (istype(O, /obj/item/weapon/leash))
+/mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
+	if (istype(O, /obj/item/weapon/swatter))
+		visible_message("[user] swats away \the [src] with \the [O]!")
+		return
+	else
 		return
