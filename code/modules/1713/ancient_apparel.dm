@@ -108,6 +108,7 @@
 	icon_state = "celtic_long_braccae"
 	item_state = "celtic_long_braccae"
 	worn_state = "celtic_long_braccae"
+
 /obj/item/clothing/suit/cape
 	name = "red cape"
 	desc = "A long red cape."

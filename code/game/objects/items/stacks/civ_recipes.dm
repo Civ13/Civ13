@@ -417,6 +417,8 @@
 			new/datum/stack_recipe("blue celtic trousers", /obj/item/clothing/under/celtic_blue, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("green celtic trousers", /obj/item/clothing/under/celtic_green, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red celtic trousers", /obj/item/clothing/under/celtic_red, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("long celtic braccae", /obj/item/clothing/under/celtic_long_braccae, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("short celtic braccae", /obj/item/clothing/under/celtic_short_braccae, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue cape", /obj/item/clothing/suit/cape/blue, 2, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red cape", /obj/item/clothing/suit/cape, 2, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if ((current_res[1] >= 38 && current_res[3] >= 32) && !(current_res[1] >= 74 && current_res[3] >= 55))
