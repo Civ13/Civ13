@@ -528,7 +528,7 @@
 
 /obj/structure/sink/proc/mosquito_proc()
 	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
-		if (mosquito_count < 4)
+		if (mosquito_count < 3)
 			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
 			NM.origin = src
 			mosquito_count++

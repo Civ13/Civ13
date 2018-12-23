@@ -19,6 +19,7 @@
 	response_harm   = "slaps"
 	attacktext = "bitten"
 	health = 5
+	max_health = 5
 	mob_size = MOB_MINISCULE
 	stop_automated_movement_when_pulled = FALSE
 	stop_automated_movement = TRUE
@@ -37,7 +38,7 @@
 /mob/living/simple_animal/mosquito/Life()
 	..()
 	if (stat != DEAD)
-		if (prob(80))
+		if (prob(70))
 			var/done = FALSE
 			for (var/mob/living/carbon/human/H in range(6, src))
 				if (done == FALSE)
@@ -74,15 +75,16 @@
 /mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
+	walk_away(src, M, 3, 3)
 	if (prob(20))
-		step_away(src, M, 1)
+		health--
 
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/swatter))
 		if (prob(20))
 			visible_message("[user] swats \the [src] with \the [O]!")
 			walk(src,0)
-			step_away(src, user, 3)
+			walk_away(src, user, 5, 3)
 			health--
 			return
 		else
