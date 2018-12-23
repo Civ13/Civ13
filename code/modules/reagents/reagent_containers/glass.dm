@@ -108,6 +108,21 @@
 			reagents.add_reagent("grapejuice", 5)
 			qdel(W)
 			return
+
+		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You grind the chinchona plant, producing quinine."
+			reagents.add_reagent("quinine", 10)
+			qdel(W)
+			return
+
 		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
 
 			if (!is_open_container())

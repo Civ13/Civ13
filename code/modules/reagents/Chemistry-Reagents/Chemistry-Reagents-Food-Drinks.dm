@@ -509,6 +509,24 @@
 		var/mob/living/carbon/human/HH = M
 		if (HH.disease == 1 && HH.disease_type == "flu")
 			HH.disease_treatment = TRUE
+
+/datum/reagent/drink/quinine
+	name = "Quinine"
+	id = "quinine"
+	description = "Bitter, from the chinchona plant."
+	taste_description = "bitter"
+	color = "#f4f4f4"
+
+/datum/reagent/drink/quinine/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.drowsyness = max(0, M.drowsyness - 2 * removed)
+	if (M.bodytemperature > 310.055)
+		M.bodytemperature = (M.bodytemperature-0.15)
+	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/HH = M
+		if (HH.disease == 1 && HH.disease_type == "malaria")
+			HH.disease_treatment = TRUE
+
 /datum/reagent/drink/coffee
 	name = "Coffee"
 	id = "coffee"

@@ -7,6 +7,17 @@
 	nutriment_desc = list("fruit" = TRUE)
 	w_class = 1.0
 	value = 3
+/obj/item/weapon/reagent_containers/food/snacks/grown/chinchona
+	name = "chinchona plant"
+	icon = 'icons/obj/flora/plants.dmi'
+	icon_state = "chinchona_inhand"
+	desc = "Contains quinine."
+	nutriment_amt = 1
+	nutriment_desc = "bitter"
+	New()
+		..()
+		reagents.del_reagents()
+		reagents.add_reagent("quinine", 10)
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/peyote
 	name = "peyote cactus"

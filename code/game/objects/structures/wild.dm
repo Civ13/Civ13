@@ -444,3 +444,41 @@
 		icon_state = "bush[rand(1,6)]"
 	else
 		icon_state = "rocks[rand(1,3)]"
+
+
+/obj/structure/wild/junglebush/chinchona
+	name = "chinchona"
+	desc = "you can extract quinine from it."
+	icon = 'icons/obj/flora/plants.dmi'
+	icon_state = "chinchona"
+	opacity = FALSE
+	density = FALSE
+	healthamount = 1
+
+/obj/structure/wild/junglebush/chinchona/New()
+	..()
+	icon_state = "chinchona"
+
+/obj/structure/wild/junglebush/chinchona/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+		user.do_attack_animation(src)
+		if (healthamount == 1)
+			user << "You harvest some of the chinchona."
+			new /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona(get_turf(user))
+			healthamount = 0
+			return
+			regrow()
+		else
+			user << "There are no good parts to harvest. Wait for it to regrow."
+			return
+	..()
+
+/obj/structure/wild/junglebush/proc/regrow()
+	spawn(3000)
+		healthamount = 1
+		return
+
+/obj/structure/wild/junglebush/update_icon()
+	..()
+	icon_state = "chinchona[healthamount]"

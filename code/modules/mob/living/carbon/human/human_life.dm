@@ -162,7 +162,7 @@
 				disease_treatment = 0
 				bodytemperature = 310.055
 		else if (disease_type == "flu")
-			if (disease_treatment)
+			if (!disease_treatment)
 				disease_progression += 1
 			else
 				disease_progression += 4
@@ -209,6 +209,62 @@
 				disease_treatment = 0
 				if (prob(25))
 					disease_immunity += "flu"
+
+		else if (disease_type == "malaria")
+			if (!disease_treatment)
+				disease_progression += 1
+			else
+				disease_progression += 3
+			// first 2 minutes
+			if (disease_progression == 25)
+				src << "You feel a little feverish."
+				disease_treatment = 0
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			//4 more minutes
+			if (prob(1))
+				emote("shiver")
+				apply_effect(7, DROWSY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 312.15 && prob(10))
+				src << "You feel like your fever is getting worse!"
+				adjustBrainLoss(rand(2,3))
+				apply_effect(8, AGONY, FALSE)
+				apply_effect(6, DROWSY, FALSE)
+				if (prob(75))
+					spawn(200)
+						vomit()
+				emote("shiver")
+				bodytemperature = 312.15
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1) && !disease_treatment)
+				adjustBrainLoss(rand(7,10))
+				src << "You feel your body burning up from fever!"
+				apply_effect(12, AGONY, FALSE)
+				apply_effect(7, DROWSY, FALSE)
+				spawn(200)
+					vomit()
+				emote("shiver")
+				Weaken(5)
+				bodytemperature = 313.15
+			// 2 more minutes
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 313.15 && prob(8) && !disease_treatment)
+				src << "You feel your fever going down."
+				adjustBrainLoss(rand(4,6))
+				apply_effect(6, DROWSY, FALSE)
+				emote("shiver")
+				bodytemperature = 312.35
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
+				src << "You feel your fever going down."
+				adjustBrainLoss(rand(2,3))
+				emote("shiver")
+				bodytemperature = 310.055
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+
 	else if (disease == FALSE)
 		for (var/mob/living/simple_animal/mouse/M in range(2,src))
 			//0.1% prob
@@ -221,7 +277,7 @@
 						disease_treatment = 0
 
 		for (var/mob/living/carbon/human/H in range(2,src))
-			if (H.disease == TRUE && !(H.disease_type in disease_immunity))
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
 				if (stat != DEAD)
 					if (prob(1))
 						disease = TRUE

@@ -47,8 +47,10 @@
 			for (var/mob/living/carbon/human/TG in range(1,src))
 				visible_message("<span class = 'danger'>\the [src] bites [TG]!")
 				TG.adjustBruteLoss(1,2)
-				if (prob(20))
-					TG.disease ="malaria"
+				if (prob(20) && TG.disease == 0)
+					TG.disease_progression = 0
+					TG.disease_type ="malaria"
+					TG.disease = 1
 
 	if (stat == DEAD)
 		spawn(50)
@@ -63,6 +65,14 @@
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/swatter))
 		visible_message("[user] swats away \the [src] with \the [O]!")
-		return
+		if (prob(70))
+			var/movedir = FALSE
+			movedir = pick(cardinal)
+			set_dir(movedir)
+			Move(get_step(src,movedir))
+			return
+		else
+			death()
+			return
 	else
 		return
