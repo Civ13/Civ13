@@ -450,14 +450,14 @@
 	name = "chinchona"
 	desc = "you can extract quinine from it."
 	icon = 'icons/obj/flora/plants.dmi'
-	icon_state = "chinchona"
+	icon_state = "chinchona1"
 	opacity = FALSE
 	density = FALSE
 	healthamount = 1
 
 /obj/structure/wild/junglebush/chinchona/New()
 	..()
-	icon_state = "chinchona"
+	icon_state = "chinchona1"
 
 /obj/structure/wild/junglebush/chinchona/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -467,8 +467,9 @@
 			user << "You harvest some of the chinchona."
 			new /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona(get_turf(user))
 			healthamount = 0
-			return
 			regrow()
+			update_icon()
+			return
 		else
 			user << "There are no good parts to harvest. Wait for it to regrow."
 			return
@@ -477,6 +478,7 @@
 /obj/structure/wild/junglebush/proc/regrow()
 	spawn(3000)
 		healthamount = 1
+		update_icon()
 		return
 
 /obj/structure/wild/junglebush/update_icon()

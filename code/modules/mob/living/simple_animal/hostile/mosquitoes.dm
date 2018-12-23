@@ -37,15 +37,27 @@
 /mob/living/simple_animal/mosquito/Life()
 	..()
 	if (stat != DEAD)
-		if (prob(10))
+		if (prob(80))
 			var/done = FALSE
 			for (var/mob/living/carbon/human/H in range(6, src))
 				if (done == FALSE)
-					walk_to(src, H.loc, TRUE, 2)
+					walk_towards(src, H, 3)
 					done = TRUE
-		if (prob(5))
+			if (done == FALSE)
+				walk_rand(src,3)
+		else if (prob(15))
+			var/done = FALSE
+			for (var/obj/structure/sink/S in range(8, src))
+				if (done == FALSE)
+					walk_towards(src, S, 3)
+					done = TRUE
+			if (done == FALSE)
+				walk_rand(src,3)
+		else
+			walk_rand(src,3)
+		if (prob(10))
 			for (var/mob/living/carbon/human/TG in range(1,src))
-				visible_message("<span class = 'danger'>\the [src] bites [TG]!")
+				visible_message("<span class = 'danger'>\The [src] bite [TG]!")
 				TG.adjustBruteLoss(1,2)
 				if (prob(20) && TG.disease == 0)
 					TG.disease_progression = 0
@@ -64,15 +76,20 @@
 	//move them somewhere
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/swatter))
-		visible_message("[user] swats away \the [src] with \the [O]!")
-		if (prob(70))
-			var/movedir = FALSE
-			movedir = pick(cardinal)
-			set_dir(movedir)
-			Move(get_step(src,movedir))
+		if (prob(20))
+			visible_message("[user] swats \the [src] with \the [O]!")
+			walk_away(src, user, 3, 3)
+			health--
 			return
 		else
-			death()
+			visible_message("[user]misses \the [src]!")
 			return
 	else
 		return
+
+/obj/structure/curtain/Crossed(var/mob/living/simple_animal/mosquito/M)
+	if (icon_state != "open" && istype(M, /mob/living/simple_animal/mosquito))
+		walk(M,0)
+		walk_away(M, src, 1, 3)
+	else
+		..()

@@ -7,6 +7,7 @@
 	nutriment_desc = list("fruit" = TRUE)
 	w_class = 1.0
 	value = 3
+	bitesize = 2
 /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona
 	name = "chinchona plant"
 	icon = 'icons/obj/flora/plants.dmi'

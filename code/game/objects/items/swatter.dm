@@ -1,6 +1,6 @@
 /obj/item/weapon/swatter
 	name = "bug swatter"
-	desc = "To get rid of those pesky bugs."
+	desc = "A wood handle with animal fur on top. To get rid of those pesky bugs."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "swatter"
 	item_state = "swatter"
