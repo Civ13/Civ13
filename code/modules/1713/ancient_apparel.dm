@@ -95,6 +95,19 @@
 	item_state = "celtic_red"
 	worn_state = "celtic_red"
 
+/obj/item/clothing/under/celtic_short_braccae
+	name = "short celtic braccae"
+	desc = "Short, celtic-style wool trousers."
+	icon_state = "celtic_short_braccae"
+	item_state = "celtic_short_braccae"
+	worn_state = "celtic_short_braccae"
+
+/obj/item/clothing/under/celtic_long_braccae
+	name = "long celtic braccae"
+	desc = "Long, celtic-style wool trousers."
+	icon_state = "celtic_long_braccae"
+	item_state = "celtic_long_braccae"
+	worn_state = "celtic_long_braccae"
 /obj/item/clothing/suit/cape
 	name = "red cape"
 	desc = "A long red cape."

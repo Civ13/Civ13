@@ -74,8 +74,8 @@
 /mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
-	walk_away(src, M, 3, 3)
 	if (prob(20))
+		walk_away(src, M, 3, 3)
 		health--
 
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
@@ -95,6 +95,6 @@
 /obj/structure/curtain/Crossed(var/mob/living/simple_animal/mosquito/M)
 	if (icon_state != "open" && istype(M, /mob/living/simple_animal/mosquito))
 		walk(M,0)
-		walk_away(M, src, 1, 3)
+		walk(M,turn(dir,180),3)
 	else
 		..()
