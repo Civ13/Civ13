@@ -19,7 +19,7 @@
 	response_harm   = "slaps"
 	attacktext = "bitten"
 	health = 5
-	max_health = 5
+	maxHealth = 5
 	mob_size = MOB_MINISCULE
 	stop_automated_movement_when_pulled = FALSE
 	stop_automated_movement = TRUE
