@@ -44,7 +44,7 @@
 /obj/map_metadata/nomads_jungle/New()
 	..()
 	spawn(1200)
-		for (var/i = 1, i <= 100, i++)
+		for (var/i = 1, i <= 180, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/river))
 			new/obj/structure/piranha(areaspawn)
 	spawn(600)
@@ -74,15 +74,21 @@
 			change_weather_somehow()
 		for (var/turf/floor/dirt/flooded/D)
 			D.ChangeTurf(/turf/floor/plating/beach/water/flooded)
+		for (var/turf/floor/dirt/ploughed/flooded/D)
+			for(var/obj/OB in src.loc)
+				if ( istype(OB, /obj/item) || istype(OB, /obj/structure) || istype(OB, /obj/effect) || istype(OB, /obj/small_fire) )
+					qdel(OB)
+			D.ChangeTurf(/turf/floor/plating/beach/water/flooded)
 		real_season = "wet"
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season</b> has started.</big>"
 			change_weather_somehow()
-
 		for (var/turf/floor/plating/beach/water/flooded/D)
 			D.ChangeTurf(/turf/floor/dirt/flooded)
 		real_season = "dry"
+		spawn(12000)
+			world << "<big>The sky starts to get cloudy... The <b>Wet Season</b> is coming in 10 minutes.</big>"
 
 	spawn(18000)
 		seasons()
