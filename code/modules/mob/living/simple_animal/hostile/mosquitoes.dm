@@ -72,13 +72,17 @@
 	return
 
 /mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
+	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
-	//move them somewhere
+	if (prob(20))
+		step_away(src, M, 1)
+
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/swatter))
 		if (prob(20))
 			visible_message("[user] swats \the [src] with \the [O]!")
-			walk_away(src, user, 3, 3)
+			walk(src,0)
+			step_away(src, user, 3)
 			health--
 			return
 		else
