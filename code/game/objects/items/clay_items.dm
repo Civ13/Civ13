@@ -18,7 +18,7 @@
 	result = "/obj/item/weapon/roofbuilder/clay"
 /obj/item/weapon/clay/vase
 	name = "unfired clay vase"
-	icon_state = "unfired_vase"
+	icon_state = "unfired_clayvase"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/clayvase
 
 /obj/item/weapon/clay/winecup
