@@ -119,6 +119,13 @@
 	default_type = "stone"
 	value = 2
 
+/obj/item/stack/material/clay
+	name = "clay lump"
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "claylump"
+	default_type = "clay"
+	value = 2
+
 /obj/item/stack/material/marble
 	name = "marble brick"
 	icon_state = "sheet-marble"

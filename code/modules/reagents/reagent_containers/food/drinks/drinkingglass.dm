@@ -129,7 +129,7 @@
 	name = "wood mug"
 	icon_state = "wood_cup"
 	glass_type = "mug"
-	volume = 50
+	volume = 40
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
 	name = "tribal pot"

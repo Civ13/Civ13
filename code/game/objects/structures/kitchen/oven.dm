@@ -136,6 +136,11 @@
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/fries(src)
 			contents -= I
 			qdel(I)
+		else if (istype(I, /obj/item/weapon/clay))
+			var/obj/item/weapon/clay/CL = I
+			contents += new CL.result(src)
+			contents -= I
+			qdel(I)
 
 		else if (!istype(I, /obj/item/weapon/reagent_containers/food) || istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/badrecipe) || I.name == "Stew" || findtext(I.name, "soup") || (I.vars.Find("roasted") && I:roasted))
 			if (!istype(I, /obj/item/organ))

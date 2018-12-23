@@ -431,6 +431,11 @@ var/list/name_to_material
 	hardness = 90
 	icon_colour = "#D2BA9C"
 
+/material/clay
+	name = "clay"
+	integrity = 60
+	hardness = 90
+	icon_colour = "#734222"
 
 /material/wood/straw
 	hardness = 35

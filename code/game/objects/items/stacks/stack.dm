@@ -346,6 +346,8 @@
 		produced = 100
 	if (recipe.result_type == /obj/item/stack/money/coppercoin)
 		produced = 100
+	if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
+		produced = 2
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)

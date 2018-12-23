@@ -70,6 +70,14 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/weapon/roofbuilder/clay
+	name = "clay roofing"
+	desc = "Use this to build roofs."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "clayroofing"
+	w_class = 2.0
+	flammable = FALSE
+
 /obj/item/weapon/roofbuilder/attack_self(mob/user)
 	var/your_dir = "NORTH"
 
