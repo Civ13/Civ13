@@ -30,6 +30,8 @@
 	..()
 	if (current_res[1] >= 25 && current_res[3] >= 25)
 		recipes += new/datum/stack_recipe("comfy chair", /obj/structure/bed/chair/comfy/brown, 6, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("bug swatter", /obj/item/weapon/swatter, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE)
+		/obj/item/weapon/swatter
 	recipes += new/datum/stack_recipe("quiver", /obj/item/weapon/storage/backpack/quiver, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather satchel", /obj/item/weapon/storage/belt/leather, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather bedroll", /obj/item/weapon/bedroll, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)

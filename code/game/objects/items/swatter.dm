@@ -5,6 +5,7 @@
 	icon_state = "swatter"
 	item_state = "swatter"
 	throwforce = TRUE
+	force = WEAPON_FORCE_HARMLESS
 	w_class = 1
 	throw_speed = 3
 	throw_range = 9

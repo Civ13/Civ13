@@ -82,7 +82,7 @@
 			health--
 			return
 		else
-			visible_message("[user]misses \the [src]!")
+			visible_message("[user] misses \the [src]!")
 			return
 	else
 		return
