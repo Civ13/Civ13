@@ -431,6 +431,16 @@
 		qdel(src)
 		return
 
+/obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife/bone))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		health -= 10
+		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
+		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+		user.do_attack_animation(src)
+		try_destroy()
+	else
+		..()
 /obj/structure/wild/largejungle
 	name = "large jungle bush"
 	icon = 'icons/obj/flora/largejungleflora.dmi'

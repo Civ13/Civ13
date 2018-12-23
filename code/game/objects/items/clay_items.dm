@@ -22,7 +22,7 @@
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/clayvase
 
 /obj/item/weapon/clay/winecup
-	name = "unfired clay winecup"
+	name = "unfired clay wine cup"
 	icon_state = "unfired_winecup"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/claywinecup
 
@@ -39,19 +39,19 @@
 	result = /obj/item/weapon/clay/claybricks/fired
 
 /obj/item/weapon/clay/claybowl
-	name = "unfired clay claybowl"
+	name = "unfired clay bowl"
 	icon_state = "unfired_claybowl"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/claybowl
 
 /obj/item/weapon/clay/clayjug
-	name = "unfired clay clayjug"
+	name = "unfired clay jug"
 	icon_state = "unfired_clayjug"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	New()
 		..()
 		icon_state = "unfired_clayjug[pick(1,2)]"
 /obj/item/weapon/clay/claycup
-	name = "unfired clay claycup"
+	name = "unfired clay cup"
 	icon_state = "unfired_claycup"
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/claycup
 
