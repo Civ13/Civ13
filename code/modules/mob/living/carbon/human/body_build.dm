@@ -13,7 +13,6 @@
 	var/shoes_icon		= 'icons/mob/feet.dmi'
 	var/misk_icon		= 'icons/mob/mob.dmi'
 	var/belt_icon		= 'icons/mob/belt.dmi'
-	var/s_store_icon	= 'icons/mob/belt_mirror.dmi'
 	var/backpack_icon	= 'icons/mob/back.dmi'
 
 /datum/body_build/female
@@ -32,10 +31,7 @@
 	mask_icon		= 'icons/mob/mask.dmi'
 	hat_icon		= 'icons/mob/head.dmi'
 	shoes_icon		= 'icons/mob/feet.dmi'
-//	misk_icon		= 'icons/mob/mob.dmi'
 	belt_icon		= 'icons/mob/belt.dmi'
-	s_store_icon	= 'icons/mob/belt_mirror.dmi'
-	backpack_icon	= 'icons/mob/back.dmi'
 
 /datum/body_build/slim/female
 	gender 			= FEMALE
@@ -53,9 +49,7 @@
 	mask_icon		= 'icons/mob/mask.dmi'
 	hat_icon		= 'icons/mob/head.dmi'
 	shoes_icon		= 'icons/mob/feet.dmi'
-//	misk_icon		= 'icons/mob/mob.dmi'
 	belt_icon		= 'icons/mob/belt.dmi'
-	s_store_icon	= 'icons/mob/belt_mirror.dmi'
 	backpack_icon	= 'icons/mob/back.dmi'
 
 /datum/body_build/fat/female

@@ -54,7 +54,6 @@
 	var/obj/item/wear_id = null
 	var/obj/item/r_store = null
 	var/obj/item/l_store = null
-	var/obj/item/s_store = null
 
 	var/icon/stand_icon = null
 	var/icon/lying_icon = null

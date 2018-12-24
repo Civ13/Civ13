@@ -102,7 +102,6 @@
 	if (shoes)		H.equip_to_slot_or_del(new shoes (H), slot_shoes)
 	if (uniform)		H.equip_to_slot_or_del(new uniform (H), slot_w_uniform)
 	if (suit)		H.equip_to_slot_or_del(new suit (H), slot_wear_suit)
-	if (suit_store)	H.equip_to_slot_or_del(new suit_store (H), slot_s_store)
 	if (mask)		H.equip_to_slot_or_del(new mask (H), slot_wear_mask)
 	if (hat)			H.equip_to_slot_or_del(new hat (H), slot_head)
 	if (gloves)		H.equip_to_slot_or_del(new gloves (H), slot_gloves)
@@ -110,7 +109,7 @@
 	if (belt)		H.equip_to_slot_or_del(new belt (H), slot_belt)
 
 	if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack))
-		var/list/slots = list( slot_belt, slot_r_store, slot_l_store, slot_r_hand, slot_l_hand, slot_s_store )
+		var/list/slots = list( slot_belt, slot_r_store, slot_l_store, slot_r_hand, slot_l_hand )
 		for ( var/path in put_in_backpack )
 			if ( !slots.len ) break
 			var/obj/item/I = new path(H)

@@ -1039,7 +1039,6 @@
 	update_inv_glasses(0)
 	update_inv_ears(0)
 	update_inv_shoes(0)
-	update_inv_s_store(0)
 	update_inv_wear_mask(0)
 	update_inv_head(0)
 	update_inv_belt(0)

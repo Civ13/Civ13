@@ -56,7 +56,6 @@ There are several things that need to be remembered:
 		update_inv_belt()
 		update_inv_wear_id()
 		update_inv_ears()
-		update_inv_s_store()
 		update_inv_pockets()
 		update_inv_back()
 		update_inv_handcuffed()
@@ -384,7 +383,6 @@ var/global/list/damage_icon_parts = list()
 	update_inv_glasses(0)
 	update_inv_ears(0)
 	update_inv_shoes(0)
-	update_inv_s_store(0)
 	update_inv_wear_mask(0)
 	update_inv_head(0)
 	update_inv_belt(0)
@@ -598,20 +596,6 @@ var/global/list/damage_icon_parts = list()
 		else
 			overlays_standing[SHOES_LAYER] = null
 	if (update_icons)   update_icons()
-
-/mob/living/carbon/human/update_inv_s_store(var/update_icons=1)
-	if (s_store)
-		var/t_state = s_store.item_state
-		if (!t_state)	t_state = s_store.icon_state
-		overlays_standing[SUIT_STORE_LAYER]	= image(icon = body_build.s_store_icon, icon_state = t_state)
-		/*var/new_screen_loc = find_inv_position(slot_s_store)
-		if (new_screen_loc)
-			s_store.screen_loc = new_screen_loc		*/
-		s_store.screen_loc = find_inv_position(slot_s_store)
-	else
-		overlays_standing[SUIT_STORE_LAYER]	= null
-	if (update_icons)   update_icons()
-
 
 /mob/living/carbon/human/update_inv_head(var/update_icons=1)
 	if (head)

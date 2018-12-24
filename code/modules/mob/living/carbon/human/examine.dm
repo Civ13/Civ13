@@ -78,13 +78,6 @@
 		else
 			msg += "[T.He] [T.is] wearing \icon[wear_suit] \a [wear_suit].\n"
 
-		//suit/armour storage
-		if (s_store && !skipsuitstorage)
-			if (s_store.blood_DNA)
-				msg += "<span class='warning'>[T.He] [T.is] carrying \icon[s_store] [s_store.gender==PLURAL?"some":"a"] [(s_store.blood_color != "#030303") ? "blood" : "oil"]-stained [s_store.name] on [T.his] [wear_suit.name]!</span>\n"
-			else
-				msg += "[T.He] [T.is] carrying \icon[s_store] \a [s_store] on [T.his] [wear_suit.name].\n"
-
 	//back
 	if (back)
 		if (back.blood_DNA)

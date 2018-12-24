@@ -55,9 +55,6 @@
 /mob/proc/update_inv_glasses()
 	return
 
-/mob/proc/update_inv_s_store()
-	return
-
 /mob/proc/update_inv_pockets()
 	return
 

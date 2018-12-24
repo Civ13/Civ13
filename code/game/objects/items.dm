@@ -337,11 +337,6 @@ var/list/global/slot_flags_enumeration = list(
 				return FALSE
 			if ( w_class > 2 && !(slot_flags & SLOT_POCKET) )
 				return FALSE
-		if (slot_s_store)
-			if (!H.wear_suit && (slot_wear_suit in mob_equip))
-				if (!disable_warning)
-					H << "<span class='warning'>You need a suit before you can attach this [name].</span>"
-				return FALSE
 		if (slot_handcuffed)
 			if (!istype(src, /obj/item/weapon/handcuffs))
 				return FALSE

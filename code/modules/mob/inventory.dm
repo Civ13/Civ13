@@ -80,7 +80,6 @@ var/list/slot_equipment_priority = list( \
 		slot_r_ear,\
 		slot_glasses,\
 		slot_belt,\
-		slot_s_store,\
 		slot_tie,\
 		slot_l_store,\
 		slot_r_store\

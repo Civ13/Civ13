@@ -78,8 +78,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 			return has_organ("chest")
 		if (slot_r_store)
 			return has_organ("chest")
-		if (slot_s_store)
-			return has_organ("chest")
 		if (slot_in_backpack)
 			return TRUE
 		if (slot_tie)
@@ -89,8 +87,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!W)	return FALSE
 
 	if (W == wear_suit)
-		if (s_store)
-			drop_from_inventory(s_store)
 		wear_suit = null
 		update_inv_wear_suit()
 		update_hair()
@@ -149,9 +145,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else if (W == l_store)
 		l_store = null
 		update_inv_pockets()
-	else if (W == s_store)
-		s_store = null
-		update_inv_s_store()
 	else if (W == back)
 		back = null
 		update_inv_back()
@@ -283,10 +276,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 			r_store = W
 			W.equipped(src, slot)
 			update_inv_pockets(redraw_mob)
-		if (slot_s_store)
-			s_store = W
-			W.equipped(src, slot)
-			update_inv_s_store(redraw_mob)
 		if (slot_in_backpack)
 			if (get_active_hand() == W)
 				remove_from_mob(W)
@@ -350,7 +339,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (slot_belt)       return belt
 		if (slot_wear_suit)  return wear_suit
 		if (slot_w_uniform)  return w_uniform
-		if (slot_s_store)    return s_store
 		if (slot_l_ear)      return l_ear
 		if (slot_r_ear)      return r_ear
 	return ..()
@@ -378,6 +366,5 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (slot_r_store)    items += r_store
 		if (slot_legcuffed)  items += legcuffed
 		if (slot_handcuffed) items += handcuffed
-		if (slot_s_store)    items += s_store
 
 	return items
