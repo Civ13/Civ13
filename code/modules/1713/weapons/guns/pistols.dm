@@ -95,8 +95,10 @@
 	w_class = 2
 	caliber = "c8mmnambu"
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
-	magazine_type = /obj/item/ammo_magazine/projectile/c8mmnambu
+	magazine_type = /obj/item/ammo_magazine/c8mmnambu
+	handle_casings = HOLD_CASINGS
 	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/c8mmnambu
 
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
@@ -112,8 +114,9 @@
 	icon_state = "t26revolver"
 	item_state = "t26revolver"
 	w_class = 2
-	caliber = "9mm"
-	handle_casings = CYCLE_CASINGS
+	caliber = "c9mm_jap_revolver"
+	handle_casings = CYCLE_CASINGS | HOLD_CASINGS
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/projectile/c9mm_jap_revolver
 	weight = 0.8
+	ammo_type = /obj/item/ammo_casing/projectile/c9mm_jap_revolver

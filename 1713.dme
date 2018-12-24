@@ -392,6 +392,7 @@
 #include "code\modules\1713\jobs\medieval.dm"
 #include "code\modules\1713\jobs\pirates.dm"
 #include "code\modules\1713\jobs\portuguese.dm"
+#include "code\modules\1713\jobs\russian.dm"
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\whitelist.dm"
@@ -774,5 +775,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_desert.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE

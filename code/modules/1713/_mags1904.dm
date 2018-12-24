@@ -3,11 +3,11 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 ***********************************/
 
 /obj/item/ammo_magazine/projectile/mosin
-	name = "Clip (7.62x54mm)"
+	name = "Clip (7.92x54mm)"
 	icon_state = "clip"
-	caliber = "a762x54"
+	caliber = "a792x54"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
-	ammo_type = /obj/item/projectile/bullet/rifle/a762x54
+	ammo_type = /obj/item/ammo_casing/projectile/a792x54
 	max_ammo = 5
 	weight = 0.04
 	multiple_sprites = FALSE
@@ -20,7 +20,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	caliber = "a762x54"
 	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/projectile/a762x54
+	ammo_type = /obj/item/ammo_casing/projectile/a792x54
 	max_ammo = 50
 	multiple_sprites = FALSE
 	is_box = TRUE
@@ -38,7 +38,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine/projectile/arisakabox
 	name = "magazine box (6.5x50mm)"
 	icon_state = "arisaka_ammo"
-	mag_type = MAGAZINE
 //	origin_tech = "combat=2"
 	caliber = "a65x50mm"
 	w_class = 3
@@ -71,14 +70,14 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	caliber = "a77x58"
 	ammo_type = /obj/item/projectile/bullet/rifle/a762x38
 
-/obj/item/ammo_magazine/projectile/c8mmnambu
+/obj/item/ammo_magazine/c8mmnambu
 	name = "Nambu magazine"
 	icon_state = "lugermag"
 //	origin_tech = "combat=2"
 	mag_type = MAGAZINE
 	matter = list(DEFAULT_WALL_MATERIAL = 600)
 	caliber = "c8mmnambu"
-	ammo_type = /obj/item/projectile/bullet/pistol/c8mmnambu
+	ammo_type = /obj/item/ammo_casing/c8mmnambu
 	max_ammo = 8
 	weight = 0.0143
 	multiple_sprites = TRUE
@@ -101,13 +100,14 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 21
 	weight = 0.4
 	multiple_sprites = TRUE
-
+	mag_type = SPEEDLOADER
 /obj/item/ammo_magazine/projectile/c9mm_jap_revolver
 	name = "pouch of bullets (9mm)"
 	icon_state = "7.62x38mmRPouch"
-	ammo_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
-	caliber = "9mm"
+	ammo_type = /obj/item/ammo_casing/projectile/c9mm_jap_revolver
+	caliber = "c9mm_jap_revolver"
 	max_ammo = 21
 	weight = 0.4
 	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
 

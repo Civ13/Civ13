@@ -393,6 +393,16 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if (mobs[input])
 			ManualFollow(mobs[input])
 
+/mob/observer/ghost/verb/follow_russian(input in getfitmobs(RUSSIAN)+"Cancel")
+	set category = "Ghost"
+	set name = "Follow a Russian"
+	set desc = "Follow and haunt a living Russian."
+
+	if (input != "Cancel")
+		var/list/mobs = getfitmobs(RUSSIAN)
+		if (mobs[input])
+			ManualFollow(mobs[input])
+
 /mob/observer/ghost/verb/toggle_visibility()
 	set category = "Ghost"
 	set name = "Toggle Visibility"

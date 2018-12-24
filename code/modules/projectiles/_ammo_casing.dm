@@ -124,13 +124,13 @@
 	multiple_sprites = TRUE
 	is_box = TRUE
 
-/obj/item/ammo_casing/projectile/a762x54
+/obj/item/ammo_casing/projectile/a792x54
 	desc = "A 7.62x54mm bullet casing."
 	caliber = "a762x54"
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
 	weight = 0.012
-	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
+	projectile_type = /obj/item/projectile/bullet/rifle/a792x54
 
 /obj/item/ammo_casing/projectile/a65x50mm
 	desc = "A 65x50mm bullet casing."
@@ -144,7 +144,7 @@
 	desc = "A 7.62x38mmR bullet casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistol_bullet_casing"
-	caliber = "a762x38"
+	caliber = "7.62x38mmR"
 	weight = 0.0056
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x38
 
@@ -158,6 +158,14 @@
 	weight = 0.0095
 	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 
+/obj/item/ammo_casing/c8mmnambu
+	desc = "A 8mm Nambu bullet casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistol_bullet_casing"
+	caliber = "c8mmnambu"
+	weight = 0.0095
+	projectile_type = /obj/item/projectile/bullet/pistol/c8mmnambu
+
 /************************
 		OTHER
 ************************/
@@ -168,9 +176,9 @@
 	weight = 0.0136
 	caliber = "a65x50mm"
 
-/obj/item/ammo_casing/projectile/a762x54
+/obj/item/ammo_casing/projectile/a792x54
 	name = "a 7.62x54 bullet casing"
-	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
+	projectile_type = /obj/item/projectile/bullet/rifle/a792x54
 	caliber = "a762x54"
 
 /obj/item/ammo_casing/projectile/a127x108

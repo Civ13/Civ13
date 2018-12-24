@@ -30,15 +30,15 @@
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/armycoat/japcoat2(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new .obj/item/clothing/head/japoffcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/japoffcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/projectile/c8mmnambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
 	world << "<b><big>[H.real_name] is the Captain of the Japanese Forces!</big></b>"
-	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
+	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the company.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -79,7 +79,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/japoffcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/projectile/c8mmnambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
@@ -113,7 +113,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/lieutenant2/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
@@ -125,7 +125,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/japoffcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/projectile/c8mmnambu(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)

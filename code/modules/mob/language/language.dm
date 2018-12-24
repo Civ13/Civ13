@@ -210,6 +210,24 @@
 		full_name += " [capitalize(lowertext(new_name))]"
 
 	return "[trim(full_name)]"
+
+/datum/language/proc/get_random_russian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian))
+		else
+			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
+
+	var/full_name = ""
+	var/new_name = ""
+
+	for (var/i = 0;i<name_count;i++)
+		new_name = ""
+		for (var/x = rand(Floor(syllable_count/syllable_divisor),syllable_count);x>0;x--)
+			new_name += pick(syllables)
+		full_name += " [capitalize(lowertext(new_name))]"
+
+	return "[trim(full_name)]"
 											////removed var/gender \/
 /datum/language
 	var/list/scramble_cache = list()
@@ -359,6 +377,8 @@
 				cname_check = FALSE
 			else if (istype(l, /datum/language/japanese))
 				cname_check = FALSE
+			else if (istype(l, /datum/language/russian))
+				cname_check = FALSE
 
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
@@ -467,6 +487,17 @@
 						H.real_name = H.species.get_random_japanese_name(H.gender, FALSE)
 					else
 						H.real_name = H.client.prefs.japanese_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/russian))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_russian)
+						H.real_name = H.species.get_random_russian_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.russian_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 

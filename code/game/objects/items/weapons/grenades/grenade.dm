@@ -120,3 +120,20 @@
 	if(explosion_size)
 		explosion(O,1,2,3,1)
 		qdel(src)
+
+/obj/item/weapon/grenade/russian_grenade
+	name = "Russian grenade"
+	icon_state = "grenade_rus"
+	desc = "A hand held grenade, with a 5 second fuse."
+	var/explosion_size = 2
+
+/obj/item/weapon/grenade/russian_grenade/prime()
+	set waitfor = 0
+	..()
+
+	var/turf/O = get_turf(src)
+	if(!O) return
+
+	if(explosion_size)
+		explosion(O,0,1,3,1)
+		qdel(src)

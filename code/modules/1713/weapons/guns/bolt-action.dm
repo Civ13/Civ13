@@ -16,7 +16,7 @@
 	//fire_sound = 'sound/weapons/sniper.ogg'
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	ammo_type = /obj/item/projectile/bullet/rifle/a762x54
+	ammo_type = /obj/item/ammo_casing/projectile/a792x54
 	magazine_type = /obj/item/ammo_magazine/projectile/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	//+2 accuracy over the LWAP because only one shot
@@ -170,13 +170,13 @@
 
 /obj/item/weapon/gun/projectile/boltaction/mosin
 	name = "Mosin-Nagant"
-	desc = "Soviet bolt-action rifle chambered in 7.62x54mmR cartridges."
+	desc = "Soviet bolt-action rifle chambered in 7.92x54mmR cartridges."
 	icon = 'icons/obj/rifles.dmi'
 	icon_state ="mosin"
 	item_state ="mosin"
 	force = 12
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
-	caliber = "a762x54"
+	caliber = "a792x54"
 	weight = 4.0
 	effectiveness_mod = 0.97
 	bolt_safety = FALSE
@@ -186,7 +186,7 @@
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	ammo_type = /obj/item/projectile/bullet/rifle/a762x54
+	ammo_type = /obj/item/ammo_casing/projectile/a792x54
 	magazine_type = /obj/item/ammo_magazine/projectile/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 
@@ -222,10 +222,10 @@
 	caliber = "a65x50mm"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/projectile/bullet/rifle/a65x50mm
+	ammo_type = /obj/item/ammo_casing/projectile/a65x50mm
 	magazine_type = /obj/item/ammo_magazine/projectile/arisaka
 	bolt_safety = FALSE
-	effectiveness_mod = 0.99
+	effectiveness_mod = 0.96
 	value = 100
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -256,9 +256,9 @@
 	caliber = "a65x50mm"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/projectile/bullet/rifle/a65x50mm
+	ammo_type = /obj/item/ammo_casing/projectile/a65x50mm
 	bolt_safety = FALSE
-	effectiveness_mod = 1.05
+	effectiveness_mod = 1.00
 	value = 120
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -297,7 +297,7 @@
 	//fire_sound = 'sound/weapons/sniper.ogg'
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
-	ammo_type = /obj/item/projectile/bullet/rifle/a762x54
+	ammo_type = /obj/item/projectile/bullet/rifle/a792x54
 	magazine_type = /obj/item/ammo_magazine/projectile/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	//+2 accuracy over the LWAP because only one shot
@@ -370,7 +370,7 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 
-/obj/item/weapon/gun/projectile/boltaction/attack_self(mob/user)
+/obj/item/weapon/gun/projectile/murata/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
 		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
@@ -404,25 +404,25 @@
 	update_icon()
 	check_bolt--
 
-/obj/item/weapon/gun/projectile/boltaction/special_check(mob/user)
+/obj/item/weapon/gun/projectile/murata/special_check(mob/user)
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the bolt is open!</span>"
 		return FALSE
 	return ..()
 
-/obj/item/weapon/gun/projectile/boltaction/load_ammo(var/obj/item/A, mob/user)
+/obj/item/weapon/gun/projectile/murata/load_ammo(var/obj/item/A, mob/user)
 	if (!bolt_open)
 		return
 	if (check_bolt_lock)
 		--check_bolt_lock // preincrement is superior
 	..()
 
-/obj/item/weapon/gun/projectile/boltaction/unload_ammo(mob/user, var/allow_dump=1)
+/obj/item/weapon/gun/projectile/murata/unload_ammo(mob/user, var/allow_dump=1)
 	if (!bolt_open)
 		return
 	..()
 
-/obj/item/weapon/gun/projectile/boltaction/handle_post_fire()
+/obj/item/weapon/gun/projectile/murata/handle_post_fire()
 	..()
 
 	if (last_fire != -1)
@@ -458,9 +458,9 @@
 	caliber = "a65x50mm"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/projectile/bullet/rifle/a65x50mm
+	ammo_type = /obj/item/ammo_casing/projectile/a65x50mm
 	bolt_safety = FALSE
-	effectiveness_mod = 1.05
+	effectiveness_mod = 0.93
 	value = 120
 	slot_flags = SLOT_BACK
 	recoil = 2

@@ -181,6 +181,9 @@
 /area/caribbean/supply/japanese
 	name = "Japanese Supply Arrival"
 
+/area/caribbean/supply/russian
+	name = "Russian Supply Arrival"
+
 /area/caribbean/transport
 	name = "Boat"
 	icon_state = "red1"
@@ -542,3 +545,35 @@
 	base_turf = /turf/floor/plating/sand
 /area/caribbean/arab/sand
 	base_turf = /turf/floor/plating/sand
+
+/area/caribbean/japanese
+
+/area/caribbean/japanese/land
+	name = "Land Base"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+
+
+/area/caribbean/japanese/land/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+
+/area/caribbean/japanese/land/outside
+	icon_state = "red3"
+
+/area/caribbean/russian
+
+/area/caribbean/russian/land
+	name = "Land Base"
+	icon_state = "green1"
+	base_turf = /turf/floor/dirt
+
+
+/area/caribbean/russian/land/inside
+	location = AREA_INSIDE
+	icon_state = "green2"
+
+
+/area/caribbean/russian/land/outside
+	icon_state = "green3"

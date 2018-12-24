@@ -289,3 +289,16 @@
 	keyslot_type = /datum/keyslot/japanese
 	unique_door_name = "Japanese locked"
 #undef JP_CODE
+
+#define RU_CODE 995 * 8
+/datum/keyslot/russian
+	code = RU_CODE
+
+/obj/item/weapon/key/russian
+	code = RU_CODE
+	name = "Russian key"
+
+/obj/structure/simple_door/key_door/russian
+	keyslot_type = /datum/keyslot/russian
+	unique_door_name = "Russian locked"
+#undef RU_CODE

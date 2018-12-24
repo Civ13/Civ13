@@ -46,6 +46,10 @@ var/list/last_names_roman = file2list("config/names/last_roman.txt")
 var/list/first_names_male_japanese = file2list("config/names/first_male_japanese.txt")
 var/list/first_names_female_japanese = file2list("config/names/first_female_japanese.txt")
 var/list/last_names_japanese = file2list("config/names/last_japanese.txt")
+
+var/list/first_names_male_russian = file2list("config/names/first_male_russian.txt")
+var/list/first_names_female_russian = file2list("config/names/first_female_russian.txt")
+var/list/last_names_russian = file2list("config/names/last_russian.txt")
 /* NOT USED FOR NOW!
 var/list/country_names = file2list("config/names/countries.txt")
 var/civname_a = pick(country_names)

@@ -315,7 +315,7 @@
 					var/nothrow = FALSE
 					if (map && !map.faction1_can_cross_blocks() && list(CIVILIAN, PIRATES, INDIANS, GREEK, ARAB).Find(H.original_job.base_type_flag()))
 						nothrow = TRUE
-					else if (map && !map.faction2_can_cross_blocks() && list(BRITISH, FRENCH, PORTUGUESE, SPANISH, DUTCH, ROMAN, JAPANESE).Find(H.original_job.base_type_flag()))
+					else if (map && !map.faction2_can_cross_blocks() && list(BRITISH, FRENCH, PORTUGUESE, SPANISH, DUTCH, ROMAN, JAPANESE, RUSSIAN).Find(H.original_job.base_type_flag()))
 						nothrow = TRUE
 					if (nothrow)
 						src << "<span class = 'danger'>You can't throw a molotov yet.</span>"
