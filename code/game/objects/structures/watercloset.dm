@@ -350,6 +350,7 @@
 	var/sound = 'sound/effects/sink.ogg'
 	var/dry = FALSE
 	var/mosquito_count = 0
+	var/mosquito_limit = 3
 /obj/structure/sink/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -528,7 +529,7 @@
 
 /obj/structure/sink/proc/mosquito_proc()
 	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
-		if (mosquito_count < 3)
+		if (mosquito_count < mosquito_limit)
 			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
 			NM.origin = src
 			mosquito_count++

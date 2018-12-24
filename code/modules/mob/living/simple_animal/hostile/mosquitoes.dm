@@ -30,10 +30,6 @@
 /mob/living/simple_animal/mosquito/New()
 	..()
 
-/mob/living/simple_animal/mosquito/death()
-	var/obj/structure/sink/S = origin
-	S.mosquito_count--
-	..()
 
 /mob/living/simple_animal/mosquito/Life()
 	..()
@@ -73,15 +69,19 @@
 	if (prob(40))
 		walk_away(src, M, 3, 3)
 		return
-	if (prob(5))
-		death()
+	if (prob(10))
+		var/obj/structure/sink/S = origin
+		S.mosquito_count--
+		qdel(src)
 		return
 
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/swatter))
 		if (prob(20))
 			visible_message("[user] swats \the [src] with \the [O]!")
-			death()
+			var/obj/structure/sink/S = origin
+			S.mosquito_count--
+			qdel(src)
 			return
 		else
 			visible_message("[user] misses \the [src]!")
