@@ -169,11 +169,47 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Bronze Age Start")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Bronze Age Start")
 
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
 		world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
 		return
+
+	if (vote.voted_gamemode == "Chad Mode")
+		world << "<font color=#CECE00><big>Starting <b>Chad Mode</b>. Game epoch is the Stone Age, research inactive. Reduced starting items and more hostile conditions.</big></font>"
+		map.research_active = FALSE
+		map.chad_mode = TRUE
+		for (var/obj/effect/spawner/mobspawner/MS)
+			MS.buff()
+		for (var/obj/structure/wild/tree/T)
+			if (prob(50))
+				qdel(T)
+		for (var/obj/structure/wild/jungle/J)
+			if (prob(50))
+				qdel(J)
+		for (var/obj/structure/wild/palm/P)
+			if (prob(50))
+				qdel(P)
+		for (var/obj/structure/wild/junglebush/V)
+			if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
+				qdel(V)
+		spawn(10)
+			if (map.ID == MAP_NOMADS_ICE_AGE)
+				for (var/turf/floor/dirt/winter/W)
+					if (prob(40))
+						W.ChangeTurf(/turf/floor/plating/snow)
+				for (var/turf/floor/winter/grass/WW)
+					if (prob(40))
+						WW.ChangeTurf(/turf/floor/plating/snow)
+			else if (map.ID == MAP_NOMADS_JUNGLE)
+				for (var/turf/floor/dirt/winter/W)
+					if (prob(40))
+						W.ChangeTurf(/turf/floor/plating/snow)
+				for (var/turf/floor/winter/grass/WW)
+					if (prob(40))
+						WW.ChangeTurf(/turf/floor/plating/snow)
+		return
+
 	else if (vote.voted_gamemode == "Bronze Age (No Research)")
 		world << "<big>Starting <b>Bronze Age</b> mode. Game epoch is the Bronze Age, research inactive.</big>"
 		map.ordinal_age = 1

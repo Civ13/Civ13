@@ -54,6 +54,10 @@
 	icon_state = "invisible"
 	spawnerproc()
 
+/obj/effect/spawner/mobspawner/proc/buff()
+	if (map.chad_mode)
+		max_number *= 2
+
 /obj/effect/spawner/mobspawner/proc/getEmptyTurf()
 	var/nearbyObjects = range(max_range,src)
 	var/list/turf/emptyTurfs = new

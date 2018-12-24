@@ -93,6 +93,8 @@ var/civmax_research = list(85,89,67)
 	var/cive_research = list(0,0,0,null)
 	var/civf_research = list(0,0,0,null)
 
+	var/chad_mode = FALSE //Virgins BTFO
+
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
 	var/age1_lim = 110
@@ -266,7 +268,11 @@ var/civmax_research = list(85,89,67)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		var/message = ""
+		if (!map.civilizations)
+			message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		else
+			message = "The round has ended!"
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"

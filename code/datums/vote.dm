@@ -215,7 +215,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("Yes")
 						choices.Add("No")
 				if ("gamemode")
-					var/list/options = list("Classic (Stone Age Start)", "Bronze Age Start", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Random")
+					var/list/options = list("Classic (Stone Age Start)", "Chad Mode", "Bronze Age Start", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Random")
 					if (!default)
 						default = "Classic (Stone Age Start)"
 					choices.Add(options)

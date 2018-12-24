@@ -494,3 +494,9 @@
 /obj/structure/wild/junglebush/update_icon()
 	..()
 	icon_state = "chinchona[healthamount]"
+
+/obj/structure/wild/attack_hand(mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	visible_message("[user] punches \the [src]!")
+	health = (health-5)
+	try_destroy()
