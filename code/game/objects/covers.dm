@@ -190,10 +190,10 @@
 
 
 /obj/covers/clay_wall
-	name = "dirt blocks wall"
-	desc = "A dirt blocks wall."
-	icon = 'icons/turf/walls.dmi'
-	icon_state = "drysod_wall"
+	name = "clay bricks wall"
+	desc = "A clay bricks wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "claybrickwall"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
@@ -207,10 +207,10 @@
 	explosion_resistance = 6
 
 /obj/covers/clay_wall/incomplete
-	name = "clay blocks wall"
-	desc = "A clay blocks wall."
+	name = "clay bricks wall"
+	desc = "A clay bricks wall."
 	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "claybrickwall_inc1"
+	icon_state = "claybrickwall"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
