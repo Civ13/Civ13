@@ -25,8 +25,8 @@
 		/obj/item/weapon/storage,
 		/obj/item/weapon/storage/secure/safe,
 		/mob/living/simple_animal/cow,
-		/mob/living/simple_animal/goat,
-		/mob/living/simple_animal/sheep,
+		/mob/living/simple_animal/goat/female,
+		/mob/living/simple_animal/sheep/female,
 		/obj/structure/oil_spring,
 		/obj/item/flashlight/lantern,
 		)

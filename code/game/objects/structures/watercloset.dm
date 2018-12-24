@@ -351,6 +351,22 @@
 	var/dry = FALSE
 	var/mosquito_count = 0
 	var/mosquito_limit = 3
+	var/volume = 2000
+	var/max_volume = 2000
+
+/obj/structure/sink/New()
+	..()
+	refill()
+
+/obj/structure/sink/proc/refill()
+	if (volume < max_volume)
+		if (volume < max_volume)
+			volume += 10
+		if (volume > max_volume)
+			volume = max_volume
+	spawn(60)
+		refill()
+
 /obj/structure/sink/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -416,29 +432,46 @@
 	if (busy && busy != user)
 		user << "<span class='warning'>Someone's already washing here.</span>"
 		return
-	if (dry)
+	if (dry || volume <= 0)
 		user << "<span class='warning'>\The [src] is dry!</span>"
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
-	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && !(istype(src, /obj/structure/sink/puddle)))
-		RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-		user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-		user.setClickCooldown(5)
-		return TRUE
-	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && (istype(src, /obj/structure/sink/puddle)))
-		RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-		if (prob(10))
-			RG.reagents.add_reagent("food_poisoning", 1)
-			user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-			user.setClickCooldown(5)
-			return TRUE
-		else
-			user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-			playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-			user.setClickCooldown(5)
-			return TRUE
+	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
+		if  (volume > 0)
+			if (min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this) > volume)
+				if (istype(src, /obj/structure/sink/puddle))
+					if (prob(10))
+						RG.reagents.add_reagent("food_poisoning", 1)
+						RG.reagents.add_reagent("water", volume-1)
+					else
+						RG.reagents.add_reagent("water", volume)
+				else
+					RG.reagents.add_reagent("water", volume)
+				volume = 0
+				spawn(3)
+					update_icon()
+				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+				user.setClickCooldown(5)
+				return TRUE
+
+			else
+				if (istype(src, /obj/structure/sink/puddle))
+					if (prob(10))
+						RG.reagents.add_reagent("food_poisoning", 1)
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-1)
+					else
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+				else
+					RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+				volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
+				spawn(3)
+					update_icon()
+				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+				user.setClickCooldown(5)
+				return TRUE
+
 
 	else if (istype(O, /obj/item/weapon/mop))
 		O.reagents.add_reagent("water", 5)
@@ -484,11 +517,15 @@
 	name = "puddle"
 	icon_state = "puddle"
 	sound = 'sound/effects/watersplash.ogg'
+	max_volume = 500
+	volume = 500
 
 /obj/structure/sink/well
 	name = "well"
 	icon_state = "well1"
 	sound = 'sound/effects/watersplash.ogg'
+	max_volume = 750
+	volume = 750
 
 /obj/structure/sink/well/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O, /obj/item/weapon/hammer) || istype(O, /obj/item/weapon/wrench))
@@ -512,20 +549,23 @@
 /obj/structure/sink/update_icon()
 	..()
 	if (istype(src, /obj/structure/sink/puddle))
-		if (dry)
+		if (dry || volume <= 0)
 			icon_state = "puddle_dry"
 		else
 			icon_state = "puddle"
 	else if  (istype(src, /obj/structure/sink/well))
-		if (dry)
+		if (dry || volume <= 0)
 			icon_state = "well_dry"
 		else
 			icon_state = "well1"
 
 /obj/structure/sink/New()
 	..()
-	if (map.ID == MAP_NOMADS_JUNGLE || map.chad_mode)
+	if (map.ID == MAP_NOMADS_JUNGLE)
 		mosquito_proc()
+	spawn(2000)
+		if (map.chad_mode && map.ID != MAP_NOMADS_JUNGLE)
+			mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()
 	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
