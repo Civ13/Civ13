@@ -8,7 +8,6 @@
 			H.next_look_at[getRoundUID(TRUE)] = world.time + 100
 
 	var/skipgloves = FALSE
-	var/skipsuitstorage = FALSE
 	var/skipjumpsuit = FALSE
 	var/skipshoes = FALSE
 	var/skipmask = FALSE
@@ -19,7 +18,6 @@
 	//exosuits and helmets obscure our view and stuff.
 	if (wear_suit)
 		skipgloves = wear_suit.flags_inv & HIDEGLOVES
-		skipsuitstorage = wear_suit.flags_inv & HIDESUITSTORAGE
 		skipjumpsuit = wear_suit.flags_inv & HIDEJUMPSUIT
 		skipshoes = wear_suit.flags_inv & HIDESHOES
 
