@@ -265,7 +265,7 @@
 	var/list/protection
 	if (istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
-		protection = list(H.head, H.glasses, H.wear_mask)
+		protection = list(H.head, H.wear_mask)
 		if (H.species && (H.species.flags & NO_PAIN))
 			no_pain = TRUE //TODO: living-level can_feel_pain() proc
 	else

@@ -109,7 +109,13 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/turkey_f
 	timer = 3000
-
+/obj/effect/spawner/mobspawner/panthers
+	name = "panther spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 12
+	create_path = /mob/living/simple_animal/hostile/panther
+	timer = 3000
 
 /obj/effect/spawner/mobspawner/bears
 	name = "bear spawner"

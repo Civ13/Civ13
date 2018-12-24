@@ -439,7 +439,7 @@ var/list/rank_prefix = list(\
 	return FALSE
 
 /mob/living/carbon/human/abiotic(var/full_body = FALSE)
-	if (full_body && ((l_hand && !( l_hand.abstract )) || (r_hand && !( r_hand.abstract )) || (back || wear_mask || head || shoes || w_uniform || wear_suit || glasses || l_ear || r_ear || gloves)))
+	if (full_body && ((l_hand && !( l_hand.abstract )) || (r_hand && !( r_hand.abstract )) || (back || wear_mask || head || shoes || w_uniform || wear_suit || l_ear || r_ear || gloves)))
 		return TRUE
 
 	if ( (l_hand && !l_hand.abstract) || (r_hand && !r_hand.abstract) )
@@ -871,7 +871,7 @@ var/list/rank_prefix = list(\
 
 
 /mob/living/carbon/human/print_flavor_text(var/shrink = TRUE)
-	var/list/equipment = list(head,wear_mask,glasses,w_uniform,wear_suit,gloves,shoes)
+	var/list/equipment = list(head,wear_mask,w_uniform,wear_suit,gloves,shoes)
 
 	for (var/obj/item/clothing/C in equipment)
 		if (C.body_parts_covered & FACE)

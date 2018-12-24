@@ -63,7 +63,7 @@
 
 
 	var/protected = FALSE
-	for (var/slot in list(slot_head, slot_wear_mask, slot_glasses))
+	for (var/slot in list(slot_head, slot_wear_mask))
 		var/obj/item/protection = M.get_equipped_item(slot)
 		if (istype(protection) && (protection.body_parts_covered & FACE))
 			protected = TRUE
@@ -77,8 +77,6 @@
 				H.wear_mask.add_blood(H)
 			if (H.head)
 				H.head.add_blood(H)
-			if (H.glasses && prob(33))
-				H.glasses.add_blood(H)
 			var/turf/location = H.loc
 			if (istype(location, /turf))     //Addin' blood! At least on the floor and item :v
 				location.add_blood(H)

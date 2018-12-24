@@ -250,71 +250,7 @@
 			if (clothes)
 				I.Blend(clothes, ICON_OVERLAY)
 
-		/*	if (job_civilian_low & ASSISTANT)//This gives the preview icon clothes depending on which job(if any) is set to 'high'
-				clothes = new /icon('icons/mob/uniform.dmi', "grey_s")
-				clothes.Blend(new /icon('icons/mob/feet.dmi', "black"), ICON_UNDERLAY)
-				if (backbag == 2)
-					clothes.Blend(new /icon('icons/mob/back.dmi', "backpack"), ICON_OVERLAY)
-				else if (backbag == 3 || backbag == 4)
-					clothes.Blend(new /icon('icons/mob/back.dmi', "satchel"), ICON_OVERLAY)
-
-			else*/
-			/*
-			if (isnull(job_master))
-				usr << "<span class='warning'>Job Controller is null, contact a coder and tell them details.</span>"
-				return
-
-			var/datum/job/J = job_master.GetJob(high_job_title)
-			if (J)
-
-				var/obj/item/clothing/under/UF = J.uniform
-				var/UF_state = initial(UF.icon_state)
-				if (!UF_state) UF_state = initial(UF.item_state)
-				clothes = new /icon(body.uniform_icon, UF_state)
-
-				var/obj/item/clothing/shoes/SH = J.shoes
-				clothes.Blend(new /icon(body.shoes_icon, initial(SH.icon_state)), ICON_UNDERLAY)
-
-				var/obj/item/clothing/gloves/GL = J.gloves
-				if (GL)
-					var/GL_state = initial(GL.item_state)
-					if (!GL_state) GL_state = initial(GL.icon_state)
-					clothes.Blend(new /icon(body.gloves_icon, ), ICON_UNDERLAY)
-				var/obj/item/weapon/storage/belt/BT = J.belt
-				if (BT)
-					var/BT_state = initial(BT.item_state)
-					if (!BT_state) BT_state = initial(BT.icon_state)
-					clothes.Blend(new /icon(body.belt_icon, BT_state), ICON_OVERLAY)
-
-
-				var/obj/item/clothing/suit/ST = J.suit
-				if (ST) clothes.Blend(new /icon(body.suit_icon, initial(ST.icon_state)), ICON_OVERLAY)
-
-				var/obj/item/clothing/head/HT = J.hat
-				if (HT) clothes.Blend(new /icon(body.hat_icon, initial(HT.icon_state)), ICON_OVERLAY)
-
-				if ( backbag > 1 )
-					var/obj/item/weapon/storage/backpack/BP = J.backpacks[backbag-1]
-					clothes.Blend(new /icon(body.backpack_icon, initial(BP.icon_state)), ICON_OVERLAY)
-
-*/
-			if (disabilities & NEARSIGHTED)
-				I.Blend(new /icon('icons/mob/eyes.dmi', "glasses"), ICON_OVERLAY)
-
 			I.Blend(eyes, ICON_OVERLAY)
-
-		/*
-			if (current_species.appearance_flags & HAS_UNDERWEAR)
-				for (var/underwear_category_name in all_underwear)
-					var/datum/category_group/underwear/underwear_category = global_underwear.categories_by_name[underwear_category_name]
-					if (underwear_category)
-						var/underwear_item_name = all_underwear[underwear_category_name]
-						var/datum/category_item/underwear/underwear_item = underwear_category.items_by_name[underwear_item_name]
-						if (underwear_item.icon_state)
-							I.Blend(icon(body.underwear_icon, underwear_item.icon_state), ICON_OVERLAY)
-					else
-						all_underwear -= underwear_category_name
-	*/
 
 			preview_icons += I
 			preview_icons_front += icon(I, dir = SOUTH)

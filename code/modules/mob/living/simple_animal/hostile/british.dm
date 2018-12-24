@@ -13,6 +13,7 @@
 	emote_see = list("stares ferociously", "stomps")
 	speak_chance = TRUE
 	speed = 4
+	move_to_delay = 6
 	stop_automated_movement_when_pulled = 0
 	maxHealth = 100
 	health = 100

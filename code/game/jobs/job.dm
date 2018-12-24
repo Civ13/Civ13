@@ -30,7 +30,6 @@
 	var/belt = null
 	var/ear = null
 	var/hand = null
-	var/glasses = null
 	var/suit_store = null
 
 	var/list/backpacks = list(
@@ -58,7 +57,6 @@
 	mask =
 	belt =
 	hand =
-	glasses =
 	hat =
 
 	put_in_backpack = list(
@@ -105,7 +103,6 @@
 	if (mask)		H.equip_to_slot_or_del(new mask (H), slot_wear_mask)
 	if (hat)			H.equip_to_slot_or_del(new hat (H), slot_head)
 	if (gloves)		H.equip_to_slot_or_del(new gloves (H), slot_gloves)
-	if (glasses)		H.equip_to_slot_or_del(new glasses (H), slot_glasses)
 	if (belt)		H.equip_to_slot_or_del(new belt (H), slot_belt)
 
 	if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack))

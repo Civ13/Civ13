@@ -616,6 +616,7 @@
 #include "code\modules\mob\living\simple_animal\hostile\hostile.dm"
 #include "code\modules\mob\living\simple_animal\hostile\mammoth.dm"
 #include "code\modules\mob\living\simple_animal\hostile\mosquitoes.dm"
+#include "code\modules\mob\living\simple_animal\hostile\panther.dm"
 #include "code\modules\mob\living\simple_animal\hostile\pirate.dm"
 #include "code\modules\mob\living\simple_animal\hostile\skeleton.dm"
 #include "code\modules\mob\living\simple_animal\hostile\snake.dm"

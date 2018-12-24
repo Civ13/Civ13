@@ -1,41 +1,40 @@
 
-/mob/living/simple_animal/hostile/alligator
-	name = "alligator"
-	desc = "probably not safe to get close to it..."
+/mob/living/simple_animal/hostile/panther
+	name = "panther"
+	desc = "Better start running..."
 	icon = 'icons/mob/animal_big.dmi'
-	icon_state = "alligator"
-	icon_living = "alligator"
-	icon_dead = "alligator_dead"
-	icon_gib = "alligator_gib"
-	speak = list("hisss","rrrww!","FFFF!","krrrr")
-	speak_emote = list("bellow", "hiss")
-	emote_hear = list("bellows","hisses","snaps")
-	emote_see = list("stares ferociously", "stomps")
+	icon_state = "panther"
+	icon_living = "panther"
+	icon_dead = "panther_dead"
+	icon_gib = "panther_gib"
+	speak = list("GRRR!","rawrr","RAWR!","RRRRR!")
+	speak_emote = list("growls", "roars")
+	emote_hear = list("growls","roars","buffs")
+	emote_see = list("stares ferociously", "sniffs the ground")
 	speak_chance = TRUE
-	turns_per_move = 12
-	move_to_delay = 8
+	turns_per_move = 5
+	move_to_delay = 3
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "pokes"
 	stop_automated_movement_when_pulled = FALSE
-	maxHealth = 120
-	health = 120
-	melee_damage_lower = 20
-	melee_damage_upper = 30
-	mob_size = MOB_LARGE
+	maxHealth = 45
+	health = 45
+	melee_damage_lower = 12
+	melee_damage_upper = 23
+	mob_size = MOB_MEDIUM
 
 	var/stance_step = FALSE
 
 	faction = "neutral"
 
-/mob/living/simple_animal/hostile/alligator/Life()
+/mob/living/simple_animal/hostile/panther/Life()
 	. =..()
 	if (!.)
 		return
 
-	icon_state = "alligator"
 
 	switch(stance)
 
@@ -43,7 +42,7 @@
 			stop_automated_movement = TRUE
 			stance_step++
 			if (stance_step >= 10) //rests for 10 ticks
-				if (target_mob && target_mob in ListTargets(6))
+				if (target_mob && target_mob in ListTargets(7))
 					stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
 				else
 					stance = HOSTILE_STANCE_IDLE
@@ -51,7 +50,7 @@
 		if (HOSTILE_STANCE_ALERT)
 			stop_automated_movement = TRUE
 			var/found_mob = FALSE
-			if (target_mob && target_mob in ListTargets(6))
+			if (target_mob && target_mob in ListTargets(7))
 				if (!(SA_attackable(target_mob)))
 					stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 					stance_step++
@@ -75,50 +74,46 @@
 				custom_emote(1, "is worn out and needs to rest." )
 				stance = HOSTILE_STANCE_TIRED
 				stance_step = FALSE
-				walk(src, FALSE) //This stops the alligator's walking
+				walk(src, FALSE) //This stops the bear's walking
 				return
 
 
 
-/mob/living/simple_animal/hostile/alligator/attackby(var/obj/item/O as obj, var/mob/user as mob)
+/mob/living/simple_animal/hostile/panther/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
 		stance = HOSTILE_STANCE_ALERT
 		stance_step = 6
 		target_mob = user
 	..()
 
-/mob/living/simple_animal/hostile/alligator/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/hostile/panther/attack_hand(mob/living/carbon/human/M as mob)
 	if (stance != HOSTILE_STANCE_ATTACK && stance != HOSTILE_STANCE_ATTACKING)
 		stance = HOSTILE_STANCE_ALERT
 		stance_step = 6
 		target_mob = M
 	..()
 
-/mob/living/simple_animal/hostile/alligator/FindTarget()
+/mob/living/simple_animal/hostile/panther/FindTarget()
 	. = ..()
 	if (.)
 		custom_emote(1,"stares alertly at [.].")
 		stance = HOSTILE_STANCE_ALERT
 
-/mob/living/simple_animal/hostile/alligator/LoseTarget()
+/mob/living/simple_animal/hostile/panther/LoseTarget()
 	..(5)
 
-/mob/living/simple_animal/hostile/alligator/AttackingTarget()
+/mob/living/simple_animal/hostile/panther/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
-	custom_emote(1, pick( list("bites [target_mob]!") ) )
+	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
 
 	var/damage = pick(melee_damage_lower,melee_damage_upper)
 
 	if (ishuman(target_mob))
 		var/mob/living/carbon/human/H = target_mob
-		var/dam_zone = pick("l_hand", "r_hand", "l_leg", "r_leg")
+		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
-		if (prob(95))
-			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
-		else
-			affecting.droplimb(FALSE, DROPLIMB_EDGE)
-			visible_message("\The [src] bites off [H]'s limb!")
+		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
 		return H
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob

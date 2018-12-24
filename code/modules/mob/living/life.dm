@@ -207,7 +207,6 @@
 
 /mob/living/proc/handle_hud_icons()
 	handle_hud_icons_health()
-	handle_hud_glasses()
 
 /mob/living/proc/handle_hud_icons_health()
 	return

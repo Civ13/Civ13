@@ -12,7 +12,6 @@
 	var/skipshoes = FALSE
 	var/skipmask = FALSE
 	var/skipears = FALSE
-	var/skipeyes = FALSE
 	var/skipface = FALSE
 
 	//exosuits and helmets obscure our view and stuff.
@@ -23,7 +22,6 @@
 
 	if (head)
 		skipmask = head.flags_inv & HIDEMASK
-		skipeyes = head.flags_inv & HIDEEYES
 		skipears = head.flags_inv & HIDEEARS
 		skipface = head.flags_inv & HIDEFACE
 
@@ -139,13 +137,6 @@
 			msg += "<span class='warning'>[T.He] [T.has] \icon[wear_mask] [wear_mask.gender==PLURAL?"some":"a"] [(wear_mask.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_mask.name] [descriptor]!</span>\n"
 		else
 			msg += "[T.He] [T.has] \icon[wear_mask] \a [wear_mask] [descriptor].\n"
-
-	//eyes
-	if (glasses && !skipeyes)
-		if (glasses.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.has] \icon[glasses] [glasses.gender==PLURAL?"some":"a"] [(glasses.blood_color != "#030303") ? "blood" : "oil"]-stained [glasses] covering [T.his] eyes!</span>\n"
-		else
-			msg += "[T.He] [T.has] \icon[glasses] \a [glasses] covering [T.his] eyes.\n"
 
 	//left ear
 	if (l_ear && !skipears)

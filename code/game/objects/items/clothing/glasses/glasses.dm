@@ -1,16 +1,12 @@
 /obj/item/clothing/glasses
 	name = "glasses"
 	icon = 'icons/obj/clothing/glasses.dmi'
-	//w_class = 2.0
-	//slot_flags = SLOT_EYES
-	//var/vision_flags = FALSE
-	//var/darkness_view = FALSE//Base human is 2
+	w_class = 1.0
+	slot_flags = SLOT_MASK
 	var/prescription = FALSE
-	var/toggleable = FALSE
 	var/off_state = "degoggles"
 	var/active = TRUE
 	var/obj/screen/overlay = null
-	var/obj/item/clothing/glasses/hud/hud = null	// Hud glasses, if any
 
 /obj/item/clothing/glasses/eyepatch
 	name = "eyepatch"

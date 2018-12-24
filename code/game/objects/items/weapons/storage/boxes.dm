@@ -1,24 +1,3 @@
-/*
- *	Everything derived from the common cardboard box.
- *	Basically everything except the original is a kit (starts full).
- *
- *	Contains:
- *		Empty box, starter boxes (survival/engineer),
- *		Latex glove and sterile mask boxes,
- *		Syringe, beaker, dna injector boxes,
- *		Blanks, flashbangs, and EMP grenade boxes,
- *		Tracking and chemical implant boxes,
- *		Prescription glasses and drinking glass boxes,
- *		Condiment bottle and silly cup boxes,
- *		Donkpocket and monkeycube boxes,
- *		ID and security PDA cart boxes,
- *		Handcuff, mousetrap, and pillbottle boxes,
- *		Snap-pops and matchboxes,
- *		Replacement light boxes.
- *
- *		For syndicate call-ins see uplink_kits.dm
- */
-
 /obj/item/weapon/storage/box
 	name = "box"
 	desc = "It's just an ordinary box."
@@ -29,22 +8,6 @@
 /obj/item/weapon/storage/box/attack_self(mob/user as mob)
 	if (..()) return
 
-
-
-/obj/item/weapon/storage/box/rxglasses
-	name = "box of prescription glasses"
-	desc = "This box contains nerd glasses."
-	icon_state = "glasses"
-
-	New()
-		..()
-		new /obj/item/clothing/glasses/regular(src)
-		new /obj/item/clothing/glasses/regular(src)
-		new /obj/item/clothing/glasses/regular(src)
-		new /obj/item/clothing/glasses/regular(src)
-		new /obj/item/clothing/glasses/regular(src)
-		new /obj/item/clothing/glasses/regular(src)
-		new /obj/item/clothing/glasses/regular(src)
 
 /obj/item/weapon/storage/box/drinkingglasses
 	name = "box of drinking glasses"

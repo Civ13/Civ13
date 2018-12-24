@@ -52,9 +52,6 @@
 /mob/proc/update_inv_shoes()
 	return
 
-/mob/proc/update_inv_glasses()
-	return
-
 /mob/proc/update_inv_pockets()
 	return
 

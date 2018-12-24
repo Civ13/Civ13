@@ -107,7 +107,7 @@ BLIND     // can't see anything
 	icon = 'icons/obj/clothing/glasses.dmi'
 	w_class = 2.0
 	body_parts_covered = EYES
-	slot_flags = SLOT_EYES
+	slot_flags = SLOT_MASK
 	var/vision_flags = FALSE
 	var/darkness_view = FALSE//Base human is 2
 	var/see_invisible = -1
@@ -115,7 +115,7 @@ BLIND     // can't see anything
 /obj/item/clothing/glasses/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc
-		M.update_inv_glasses()
+		M.update_inv_wear_mask()
 
 ///////////////////////////////////////////////////////////////////////
 //Gloves

@@ -380,7 +380,6 @@ var/global/list/damage_icon_parts = list()
 	update_inv_w_uniform(0)
 	update_inv_wear_id(0)
 	update_inv_gloves(0)
-	update_inv_glasses(0)
 	update_inv_ears(0)
 	update_inv_shoes(0)
 	update_inv_wear_mask(0)
@@ -515,22 +514,6 @@ var/global/list/damage_icon_parts = list()
 			overlays_standing[GLOVES_LAYER]	= null
 	if (update_icons)   update_icons()
 
-
-/mob/living/carbon/human/update_inv_glasses(var/update_icons=1)
-	if (glasses)
-/*		var/new_screen_loc = find_inv_position(slot_glasses)
-		if (new_screen_loc)
-			glasses.screen_loc = new_screen_loc	*/
-		glasses.screen_loc = find_inv_position(slot_glasses)
-		if (glasses.icon_override)
-			overlays_standing[GLASSES_LAYER] = image(icon = glasses.icon_override,   icon_state = glasses.icon_state)
-
-		else
-			overlays_standing[GLASSES_LAYER] = image(icon = body_build.glasses_icon, icon_state = glasses.icon_state)
-
-	else
-		overlays_standing[GLASSES_LAYER]	= null
-	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_ears(var/update_icons=1)
 	overlays_standing[EARS_LAYER] = null

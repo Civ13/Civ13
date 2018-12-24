@@ -25,7 +25,6 @@
 		"o_clothing" =   slot_wear_suit,
 		"mask" =         slot_wear_mask,
 		"gloves" =       slot_gloves,
-		"eyes" =         slot_glasses,
 		"l_ear" =        slot_l_ear,
 		"r_ear" =        slot_r_ear,
 		"head" =         slot_head,

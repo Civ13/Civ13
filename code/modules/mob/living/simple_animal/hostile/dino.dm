@@ -13,6 +13,7 @@
 	emote_see = list("stares ferociously", "grunts")
 	speak_chance = TRUE
 	turns_per_move = 3
+	move_to_delay = 3
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"

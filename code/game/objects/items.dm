@@ -272,7 +272,6 @@ var/list/global/slot_flags_enumeration = list(
 	"[slot_gloves]" = SLOT_GLOVES,
 	"[slot_shoes]" = SLOT_FEET,
 	"[slot_belt]" = SLOT_BELT,
-	"[slot_glasses]" = SLOT_EYES,
 	"[slot_head]" = SLOT_HEAD,
 	"[slot_l_ear]" = SLOT_EARS|SLOT_TWOEARS,
 	"[slot_r_ear]" = SLOT_EARS|SLOT_TWOEARS,
@@ -422,7 +421,7 @@ var/list/global/slot_flags_enumeration = list(
 
 	var/mob/living/carbon/human/H = M
 	if (istype(H))
-		for (var/obj/item/protection in list(H.head, H.wear_mask, H.glasses))
+		for (var/obj/item/protection in list(H.head, H.wear_mask))
 			if (protection && (protection.body_parts_covered & EYES))
 				// you can't stab someone in the eyes wearing a mask!
 				user << "<span class='warning'>You're going to need to remove the eye covering first.</span>"

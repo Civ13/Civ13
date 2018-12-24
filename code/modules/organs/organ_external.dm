@@ -1199,7 +1199,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/head/removed()
 	if (owner)
 		name = "[owner.real_name]'s head"
-		owner.u_equip(owner.glasses)
 		owner.u_equip(owner.head)
 		owner.u_equip(owner.l_ear)
 		owner.u_equip(owner.r_ear)

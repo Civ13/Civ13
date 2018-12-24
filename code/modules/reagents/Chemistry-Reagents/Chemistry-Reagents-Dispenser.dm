@@ -265,16 +265,7 @@
 		if (removed <= 0)
 			return
 
-		if (H.glasses)
-		/*	if (H.glasses.unacidable)
-				H << "<span class='danger'>Your [H.glasses] partially protect you from the acid!</span>"
-				removed /= 2
-			else */
-			if (removed > meltdose)
-				H << "<span class='danger'>Your [H.glasses] melt away!</span>"
-				qdel(H.glasses)
-				H.update_inv_glasses(1)
-				removed -= meltdose / 2
+
 		if (removed <= 0)
 			return
 
