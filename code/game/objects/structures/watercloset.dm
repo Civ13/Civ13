@@ -524,7 +524,7 @@
 
 /obj/structure/sink/New()
 	..()
-	if (map.ID == MAP_NOMADS_JUNGLE)
+	if (map.ID == MAP_NOMADS_JUNGLE || map.chad_mode)
 		mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()

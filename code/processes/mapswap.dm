@@ -190,8 +190,6 @@
 		for (var/obj/structure/wild/palm/P)
 			if (prob(50))
 				qdel(P)
-		for (var/obj/structure/sink/S)
-			S.mosquito_limit *= 2
 		for (var/obj/structure/wild/junglebush/V)
 			if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
 				qdel(V)

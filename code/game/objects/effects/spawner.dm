@@ -6,6 +6,7 @@
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/activated = 1
+	var/hostile = FALSE
 
 /obj/effect/spawner/objective_spawner/New()
 	..()
@@ -38,6 +39,7 @@
 	var/scalable_multiplyer = 1 //after how many times the scalable_nr it activates
 	var/spawning = FALSE
 	invisibility = 101
+	var/hostile = FALSE
 
 /obj/effect/spawner/mobspawner/skeletons
 	name = "skeleton spawner"
@@ -56,7 +58,10 @@
 
 /obj/effect/spawner/mobspawner/proc/buff()
 	if (map.chad_mode)
-		max_number *= 2
+		if (hostile)
+			max_number *= 2
+		if (istype(src, /obj/effect/spawner/mobspawner/velociraptor))
+			activated = 1
 
 /obj/effect/spawner/mobspawner/proc/getEmptyTurf()
 	var/nearbyObjects = range(max_range,src)
@@ -108,6 +113,7 @@
 
 /obj/effect/spawner/mobspawner/bears
 	name = "bear spawner"
+	hostile = TRUE
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/bear
@@ -115,6 +121,7 @@
 
 /obj/effect/spawner/mobspawner/bears/brown
 	name = "brown bear spawner"
+	hostile = TRUE
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/bear/brown
@@ -122,6 +129,7 @@
 
 /obj/effect/spawner/mobspawner/bears/polar
 	name = "polar bear spawner"
+	hostile = TRUE
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/bear/polar
@@ -155,6 +163,7 @@
 
 /obj/effect/spawner/mobspawner/frogpoisonous
 	name = "poisonous frog spawner"
+	hostile = TRUE
 	max_number = 1
 	max_range = 12
 	create_path = /mob/living/simple_animal/frog/poisonous
@@ -169,6 +178,7 @@
 
 /obj/effect/spawner/mobspawner/snake
 	name = "snake spawner"
+	hostile = TRUE
 	max_number = 1
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/poison/snake
@@ -204,6 +214,7 @@
 
 /obj/effect/spawner/mobspawner/alligator
 	name = "alligator spawner"
+	hostile = TRUE
 	max_number = 2
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/alligator
@@ -236,6 +247,7 @@
 	timer = 5000
 /obj/effect/spawner/mobspawner/wolves
 	name = "wolf spawner"
+	hostile = TRUE
 	max_number = 4
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/wolf
@@ -243,6 +255,7 @@
 
 /obj/effect/spawner/mobspawner/wolves/white
 	name = "white wolf spawner"
+	hostile = TRUE
 	max_number = 4
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/wolf/white
@@ -268,3 +281,12 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/rabbit
 	timer = 3000
+
+/obj/effect/spawner/mobspawner/velociraptor
+	name = "raptor spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/dinosaur/velociraptor
+	timer = 3000
+	activated = 0

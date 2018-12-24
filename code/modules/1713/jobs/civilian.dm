@@ -29,6 +29,8 @@
 
 /mob/living/carbon/human/proc/give_clothes()
 	if (!map.chad_mode)
+		if (map.civilizations)
+			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
 		if (map.ordinal_age == 0)
 			var/randcloth = rand(1,3)
 			if (randcloth == 1)
@@ -1123,7 +1125,6 @@
 	if (!H)	return FALSE
 	H.give_clothes()
 	H.make_nomad()
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_belt)
 
 	H.add_note("Role", "You are a <b>Nomad</b>. Form a tribe and survive!")
 	if (prob(80))

@@ -133,6 +133,15 @@
 		fermenting_process()
 		return
 
+	if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
+		user << "You add wheat to the jar."
+		fermenting = 1
+		icon_state = "jar1"
+		fermenting_timer = world.time + 2400
+		qdel(O)
+		fermenting_process()
+		return
+
 	else if (istype(O, /obj/item/weapon/reagent_containers/food/condiment/enzyme))
 		user << "You add some yeast to the jar."
 		fermenting = 2
