@@ -900,28 +900,6 @@
 		icon_state = "no_items1"
 //			owner.item_use_icon.name = "Disallow Item Use"
 
-/obj/screen/gun/radio
-	name = "Allow Radio Use"
-	icon_state = "no_radio0"
-	screen_loc = "14,3"
-
-/obj/screen/gun/radio/Click(location, control, params)
-	if (..())
-		var/mob/living/user = parentmob
-		if (istype(user))
-			if (!user.aiming) user.aiming = new(user)
-			user.aiming.toggle_permission(TARGET_CAN_RADIO)
-			update_icon()
-		return TRUE
-	return FALSE
-
-/obj/screen/gun/radio/update_icon()
-	if (!(parentmob.aiming.target_permissions & TARGET_CAN_RADIO))
-		icon_state = "no_radio0"
-//			owner.radio_use_icon.name = "Allow Radio Use"
-	else
-		icon_state = "no_radio1"
-//			owner.radio_use_icon.name = "Disallow Radio Use"
 //-----------------------Gun Mod End------------------------------
 
 //-----------------------toggle_inventory------------------------------

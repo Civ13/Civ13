@@ -52,7 +52,6 @@
 		"toggle gun mode"   = list("type" = /obj/screen/gun/mode,       "loc" = "15,3"),
 		"allow movement"   = list("type" = /obj/screen/gun/move,       "loc" = "15,4"),
 		"allow item use"   = list("type" = /obj/screen/gun/item,       "loc" = "14,3"),
-		"allow radio use"   = list("type" = /obj/screen/gun/radio,       "loc" = "14,4"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,       "loc" = "1,1")
 		)
 
