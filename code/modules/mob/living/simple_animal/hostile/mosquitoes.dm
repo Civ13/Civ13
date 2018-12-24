@@ -64,27 +64,24 @@
 					TG.disease_progression = 0
 					TG.disease_type ="malaria"
 					TG.disease = 1
-
-	if (stat == DEAD)
-		qdel(src)
-		return
 /mob/living/simple_animal/mosquito/bullet_act(var/obj/item/projectile/Proj)
 	return
 
 /mob/living/simple_animal/mosquito/attack_hand(mob/living/carbon/human/M as mob)
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
-	if (prob(20))
+	if (prob(40))
 		walk_away(src, M, 3, 3)
-		health--
+		return
+	if (prob(5))
+		death()
+		return
 
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/swatter))
 		if (prob(20))
 			visible_message("[user] swats \the [src] with \the [O]!")
-			walk(src,0)
-			walk_away(src, user, 5, 3)
-			health--
+			death()
 			return
 		else
 			visible_message("[user] misses \the [src]!")
