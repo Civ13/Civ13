@@ -349,6 +349,9 @@
 	icon_state = "goat_ewe"
 	icon_living = "goat_ewe"
 	icon_dead = "goat_ewe_dead"
+	var/pregnant = FALSE
+	var/birthCountdown = 0
+	var/overpopulationCountdown = 0
 
 /mob/living/simple_animal/goat/female/New()
 	udder = new(50)
@@ -387,6 +390,42 @@
 		if (udder && prob(5))
 			udder.add_reagent("milk", rand(3, 5))
 
+	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
+		overpopulationCountdown--
+		return
+
+	if (!pregnant)
+		var/nearbyObjects = range(1,src) //3x3 area around animal
+		for(var/mob/living/simple_animal/goat/M in nearbyObjects)
+			if (M.stat == CONSCIOUS)
+				pregnant = TRUE
+				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+				break
+
+		if (pregnant)
+			nearbyObjects = range(7,src) //15x15 area around animal
+
+			var/goatCount = 0
+			for(var/mob/living/simple_animal/goat/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					goatCount++
+
+
+			if (goatCount > 5) // max 5 cows/bulls in a 15x15 area around
+				overpopulationCountdown = 150 // 5 minutes
+				pregnant = FALSE
+	else
+		birthCountdown--
+		if (birthCountdown <= 0)
+			pregnant = FALSE
+			if (prob(50))
+				var/mob/living/simple_animal/goat/C = new/mob/living/simple_animal/goat(loc)
+				C.lamb = TRUE
+			else
+				var/mob/living/simple_animal/goat/female/B = new/mob/living/simple_animal/goat/female(loc)
+				B.lamb = TRUE
+			visible_message("A goat lamb has been born!")
+
 //sheep
 /mob/living/simple_animal/sheep
 	name = "sheep ram"
@@ -424,6 +463,9 @@
 	icon_state = "sheep_ewe"
 	icon_living = "sheep_ewe"
 	icon_dead = "sheep_ewe_dead"
+	var/pregnant = FALSE
+	var/birthCountdown = 0
+	var/overpopulationCountdown = 0
 
 /mob/living/simple_animal/sheep/New()
 	..()
@@ -477,7 +519,41 @@
 		if (udder && prob(2))
 			udder.add_reagent("milk", rand(3, 5))
 
+	if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
+		overpopulationCountdown--
+		return
 
+	if (!pregnant)
+		var/nearbyObjects = range(1,src) //3x3 area around animal
+		for(var/mob/living/simple_animal/sheep/M in nearbyObjects)
+			if (M.stat == CONSCIOUS)
+				pregnant = TRUE
+				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+				break
+
+		if (pregnant)
+			nearbyObjects = range(7,src) //15x15 area around animal
+
+			var/sheepCount = 0
+			for(var/mob/living/simple_animal/sheep/M in nearbyObjects)
+				if (M.stat == CONSCIOUS)
+					sheepCount++
+
+
+			if (sheepCount > 5) // max 5 cows/bulls in a 15x15 area around
+				overpopulationCountdown = 150 // 5 minutes
+				pregnant = FALSE
+	else
+		birthCountdown--
+		if (birthCountdown <= 0)
+			pregnant = FALSE
+			if (prob(50))
+				var/mob/living/simple_animal/sheep/C = new/mob/living/simple_animal/sheep(loc)
+				C.lamb = TRUE
+			else
+				var/mob/living/simple_animal/sheep/female/B = new/mob/living/simple_animal/sheep/female(loc)
+				B.lamb = TRUE
+			visible_message("A sheep lamb has been born!")
 /mob/living/simple_animal/camel
 	name = "camel"
 	desc = "Good for meat."

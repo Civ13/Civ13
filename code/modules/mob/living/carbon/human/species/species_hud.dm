@@ -30,7 +30,7 @@
 		"r_ear" =        slot_r_ear,
 		"head" =         slot_head,
 		"shoes" =        slot_shoes,
-		"suit storage" = slot_s_store,
+//		"suit storage" = slot_s_store,
 		"back" =         slot_back,
 		"id" =           slot_wear_id,
 		"storage1" =     slot_l_store,

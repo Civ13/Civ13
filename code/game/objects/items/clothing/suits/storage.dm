@@ -1,6 +1,5 @@
 /obj/item/clothing/suit/storage
 	var/obj/item/weapon/storage/internal/pockets
-	allowed = list(/obj/item)
 /obj/item/clothing/suit/storage/New()
 	..()
 	pockets = new/obj/item/weapon/storage/internal(src)
