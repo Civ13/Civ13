@@ -1,0 +1,83 @@
+"a" = (/turf/floor/dirt/winter,/area/caribbean/russian/land/outside)
+"b" = (/turf/floor/winter/grass,/area/caribbean/russian/land/outside)
+"c" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall)
+"d" = (/turf/floor/winter/grass,/area/caribbean)
+"e" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land)
+"f" = (/turf/floor/winter/grass,/area/caribbean/japanese/land)
+"g" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRU"},/turf/floor/dirt/winter,/area/caribbean/russian/land/outside)
+"h" = (/obj/effect/area_teleporter{name = "russian base"},/turf/floor/winter/grass,/area/caribbean/russian/land/outside)
+"i" = (/obj/structure/window/classic,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"j" = (/obj/structure/vending/japaneseapparel,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"k" = (/obj/structure/vending/japweapons,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"l" = (/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"m" = (/turf/floor/dirt/winter,/area/caribbean/japanese/land)
+"n" = (/turf/wall/wood/low,/area/caribbean/japanese/land/inside)
+"o" = (/obj/structure/sink/well,/turf/floor/winter/grass,/area/caribbean/japanese/land)
+"p" = (/obj/structure/flag/japanese,/turf/floor/dirt/winter,/area/caribbean/japanese/land)
+"q" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"r" = (/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"s" = (/obj/structure/filingcabinet/filingcabinet,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"t" = (/obj/effect/area_teleporter{name = "no man's land"},/turf/floor/winter/grass,/area/caribbean/no_mans_land)
+"u" = (/turf/floor/winter/grass,/area/caribbean/japanese/land/outside)
+"v" = (/obj/structure/simple_door/key_door/japanese,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"w" = (/obj/effect/area_teleporter{name = "japanese base"},/turf/floor/winter/grass,/area/caribbean/japanese/land)
+"x" = (/obj/map_metadata/hill203,/turf/floor/dirt/winter,/area/caribbean/japanese/land)
+"y" = (/obj/structure/flag/japanese,/turf/floor/winter/grass,/area/caribbean/japanese/land/outside)
+"z" = (/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"A" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"B" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"C" = (/turf/floor/plating/beach/water,/area/caribbean/japanese/land/outside)
+"D" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+
+(1,1,1) = {"
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbba
+agaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa
+aaaaaaaaaaaaaaaaaabbbbbaaaaaaaaaaaabbbbbbbbbbaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaagaaabbbbhbbbbaaaaaaaaaaabbbaaa
+aaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbba
+aaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+aaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+aaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+cccccccccccccccccccccccccccccccccccccccccccccccccc
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddd
+cccccccccccccccccccccccccccccccccccccccccccccccccc
+fffffffffffffffffuuuuuuuuuuuuuuuuuuuuuufffffffffff
+fffffwfffffffffffuuuuuuuuuuuuuuuuuuuuuufffffffffff
+fffuuuuuuuuuuuuuuuuuuuynninnninnyuuuuuufffffffffff
+fffuuuuuuuuuuuuuuuuuuunjkljkjlkjnuuuuuufffffffffff
+mffuuuuyninnuuuuuuuuuunlllllllllnuuuuuufoffffmpmmm
+mmmzuuunqqrsnzzzzzzzzznlllllllllnuuuuuufmmmmmmmmmm
+mmmzzuunqlllnzzzzzzzzznlllAAAlllnuuzzzzmmmmmmmmmmm
+mmmzzzznBlllnzzzzzzzzznlllllllllnCzzzzzmmmmmmmmmmm
+mmmzzzzznvnnzzzzzDzzzznAlllllllAnCzzzzDmmmmmmmmmmm
+mmmzzzzzzzzzzuuzzzzzzzznnnnlnnnnzzzzuuufffmmmmmmmm
+xmmzzuuuuuuuuuuuuuzzzzzuuuuuuuuuuuuuuuuffffffmmmmm
+"}

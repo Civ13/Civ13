@@ -253,6 +253,7 @@
 #include "code\game\objects\map_metadata\fields.dm"
 #include "code\game\objects\map_metadata\four_colonies.dm"
 #include "code\game\objects\map_metadata\heraclea.dm"
+#include "code\game\objects\map_metadata\hill_203.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\karak.dm"
@@ -775,5 +776,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads.dmm"
+#include "maps\special\nomads_desert.dmm"
 // END_INCLUDE

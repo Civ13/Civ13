@@ -273,7 +273,7 @@
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateJP" //for testing!
+	spawn_location = "JoinLateJP"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -319,14 +319,14 @@
 	en_meaning = "Soldier First-class"
 	rank_abbreviation = "Itto."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateJP" //for testing!
+	spawn_location = "JoinLateJP"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
 	min_positions = 3
 	max_positions = 200
 
-/datum/job/japanese/infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/sniper/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)

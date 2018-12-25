@@ -77,6 +77,35 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
+	/////JAPANESE LANDMARKS/////
+		if ("JoinLateJP")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
+		if ("JoinLateJPCap")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
+	/////RUSSIAN LANDMARKS/////
+		if ("JoinLateRU")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
+		if ("JoinLateRUCap")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		// TREASURY LANDMARKS
 		if ("TreasuryFR")
 			if (!latejoin_turfs[name])

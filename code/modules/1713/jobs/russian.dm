@@ -11,7 +11,7 @@
 	rank_abbreviation = "Kpt."
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRUCap"
+	spawn_location = "LateJoinRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -56,7 +56,7 @@
 	rank_abbreviation = "1lt."
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRUCap"
+	spawn_location = "LateJoinRUCap"
 	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_commander = TRUE
@@ -99,7 +99,7 @@
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Szt."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU"
+	spawn_location = "LateJoinRU"
 	is_officer = TRUE
 	SL_check_independent = TRUE
 
@@ -142,7 +142,7 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Kpt."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU"
+	spawn_location = "LateJoinRU"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -183,7 +183,7 @@
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU" //for testing!
+	spawn_location = "LateJoinRU" //for testing!
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
