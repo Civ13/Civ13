@@ -6,8 +6,6 @@
 	icon_state = "roof"
 	var/passable = TRUE
 	var/origin_density = FALSE
-	var/origin_water_level = 0
-	var/origin_move_delay = 0
 	var/not_movable = TRUE //if it can be removed by wrenches
 	var/health = 100
 	is_cover = TRUE

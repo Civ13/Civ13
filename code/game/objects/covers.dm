@@ -5,9 +5,8 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship"
 	var/passable = TRUE
-	var/origin_density = FALSE
+	var/origin_covered = FALSE
 	var/origin_water_level = 0
-	var/origin_move_delay = 0
 	var/not_movable = FALSE //if it can be removed by wrenches
 	var/health = 100
 	is_cover = TRUE
@@ -253,40 +252,30 @@
 			current_area_type = CURRENTAREA.type
 			new/obj/roof(get_turf(src))
 
-	spawn(15)
-		var/turf/T = get_turf(loc)
-		if (passable)
-			origin_density = T.density
-			T.density = FALSE
-			spawn(15)
-				updateturf()
-		return TRUE
+	spawn(5)
+		updateturf()
+	return TRUE
+
+
+/obj/covers/updateturf()
+	..()
+	var/turf/T = get_turf(src)
+	origin_water_level = T.water_level
+	T.water_level = 0
+	T.move_delay = 0
+	origin_covered = T.iscovered
+	T.iscovered = TRUE
+	return TRUE
+
 
 /obj/covers/Destroy()
 	if (wall && !incomplete)
 		new current_area_type(get_turf(src))
 		visible_message("The roof collapses!")
-	..()
-
-/obj/covers/updateturf()
-	var/turf/T = get_turf(loc)
-	if (passable)
-		origin_density = T.density
-		origin_move_delay = T.move_delay
-		origin_water_level = T.water_level
-		T.density = FALSE
-		T.water_level = 0
-		T.move_delay = 0
-		if (istype(T, /turf/floor/plating/beach/water/deep))
-			T.iscovered = TRUE
-	return TRUE
-
-
-/obj/covers/Destroy()
-	var/turf/T = get_turf(loc)
-	if (origin_density)
-		T.density = origin_density
-		T.water_level = origin_water_level
+	var/turf/floor/T = get_turf(loc)
+	T.iscovered = origin_covered
+	T.water_level = origin_water_level
+	T.move_delay = T.get_move_delay()
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount
@@ -356,7 +345,7 @@
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
 		if (prob(75) && density)
-			visible_message("<span class = 'warning'>The [mover.name] hits \the [src]!</span>")
+			visible_message("<span class = 'warning'>\The [mover.name] hits \the [src]!</span>")
 			return FALSE
 		else
 			return TRUE
@@ -389,7 +378,7 @@
 
 /obj/covers/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 		qdel(src)
 		return
 
