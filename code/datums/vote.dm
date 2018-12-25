@@ -120,7 +120,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					call(callback[1], callback[2])(.)
 				callback = null
 		else
-			text += "<b>Vote Result: Inconclusive - Neither option had enough votes!</b>"
+			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (75% is needed)</b>"
 		log_vote(text)
 		world << "<font color='purple'>[text]</font>"
 		return .
@@ -184,7 +184,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(vote_type)
 				if ("restart")
 					choices.Add("Restart Round","Continue Playing")
-					win_threshold = 0.6
+					win_threshold = 0.75
 				if ("epoch")
 					for (var/epoch in processes.epochswap.epochs)
 						if (!default)

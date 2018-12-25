@@ -825,3 +825,18 @@
 	icon_state = "french_army"
 	item_state = "french_army"
 	worn_state = "french_army"
+
+/obj/item/clothing/under/chad
+	name = "chad clothing"
+	desc = "wow!"
+	icon_state = "chad"
+	item_state = "chad"
+	worn_state = "chad"
+
+/obj/item/clothing/shoes/chad
+	name = "chad shoes"
+	desc = "ouch!"
+	icon_state = "chad"
+	item_state = "chad"
+	worn_state = "chad"
+	force = WEAPON_FORCE_WEAK

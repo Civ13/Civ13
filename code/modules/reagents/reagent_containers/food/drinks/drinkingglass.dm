@@ -131,6 +131,16 @@
 	glass_type = "mug"
 	volume = 40
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin
+	name = "waterskin"
+	desc = "A leather waterskin."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "waterskin"
+	glass_type = "waterskin"
+	slot_flags = SLOT_ID
+	w_class = 2.0
+	volume = 70
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
 	name = "tribal pot"
 	desc = "A tribal clay pot."

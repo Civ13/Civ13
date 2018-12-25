@@ -70,6 +70,7 @@
 			else
 				affecting.droplimb(FALSE, DROPLIMB_EDGE)
 				visible_message("The piranhas bite off [H]'s [affecting]!")
+				qdel(affecting)
 			spawn(300)
 				invisibility = 101
 			return

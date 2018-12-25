@@ -455,6 +455,12 @@
 		icon_state = "hair_jewlocks"
 		gender = MALE
 
+//BANG!
+	chad
+		name = "Chad"
+		icon_state = "hair_chad"
+		gender = MALE
+
 
 /*
 ///////////////////////////////////
