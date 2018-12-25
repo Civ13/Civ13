@@ -306,6 +306,13 @@ var/global/list/GrassEdgeCache
 	is_diggable = TRUE
 	available_sand = 4
 
+/turf/floor/plating/beach/sand/dark
+	name = "dark sand"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "dust"
+	is_diggable = TRUE
+	available_sand = 4
+
 /turf/floor/plating/beach/coastline
 	name = "coastline"
 	icon = 'icons/misc/beach2.dmi'

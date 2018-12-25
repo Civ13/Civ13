@@ -75,7 +75,7 @@
 			//		MAP_BATTLEROYALE = 20,
 				MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
-				MAP_FIELDS = 10,
+//				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
 
 			// 1713 - RP
