@@ -317,14 +317,14 @@
 	set name = "Empty"
 	set src in range(1, usr)
 	if (iron > 0)
-		var/obj/item/stack/material/iron/emptyediron = new/obj/item/stack/material/iron(src.loc)
+		var/obj/item/stack/ore/iron/emptyediron = new/obj/item/stack/ore/iron(src.loc)
 		emptyediron.amount = iron
 		iron = 0
 	if (copper > 0)
-		var/obj/item/stack/material/copper/emptyedcopper = new/obj/item/stack/material/copper(src.loc)
+		var/obj/item/stack/ore/copper/emptyedcopper = new/obj/item/stack/ore/copper(src.loc)
 		emptyedcopper.amount = copper
 		copper = 0
 	if (tin > 0)
-		var/obj/item/stack/material/tin/emptyedtin = new/obj/item/stack/material/tin(src.loc)
+		var/obj/item/stack/ore/tin/emptyedtin = new/obj/item/stack/ore/tin(src.loc)
 		emptyedtin.amount = tin
 		tin = 0
