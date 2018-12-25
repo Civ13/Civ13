@@ -171,6 +171,7 @@
 	if (vote.voted_gamemode == "Random")
 		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Bronze Age Start")
 
+	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
 		world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
 		return
@@ -182,14 +183,14 @@
 		for (var/obj/effect/spawner/mobspawner/MS)
 			MS.buff()
 		for (var/obj/structure/wild/tree/T)
-			if (prob(50))
-				qdel(T)
+			T.amount *= 0.5
+			T.amount = round(T.amount)
 		for (var/obj/structure/wild/jungle/J)
-			if (prob(50))
-				qdel(J)
+			J.amount *= 0.5
+			J.amount = round(J.amount)
 		for (var/obj/structure/wild/palm/P)
-			if (prob(50))
-				qdel(P)
+			P.amount *= 0.5
+			P.amount = round(P.amount)
 		for (var/obj/structure/wild/junglebush/V)
 			if (prob(75) && !istype(V,/obj/structure/wild/junglebush/chinchona))
 				qdel(V)

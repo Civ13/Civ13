@@ -94,7 +94,7 @@ var/civmax_research = list(85,89,67)
 	var/civf_research = list(0,0,0,null)
 
 	var/chad_mode = FALSE //Virgins BTFO
-
+	var/gamemode = "Classic (Stone Age Start)"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
 	var/age1_lim = 110

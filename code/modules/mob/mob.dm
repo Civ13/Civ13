@@ -688,6 +688,8 @@
 				stat("Round End Condition:", map.current_stat_message())
 			if (map)
 				stat("Map:", map.title)
+				if (map.civilizations)
+					stat("Mode:", map.gamemode)
 				stat("Epoch:", map.age)
 				stat("Season:", get_season())
 				stat("Weather:", get_weather())
