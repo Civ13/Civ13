@@ -286,7 +286,7 @@
 			else
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
-					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
+					user.visible_message("<span class = 'notice'>[user] butchers [src].</span>")
 					var/amt = 0
 					if (mob_size == MOB_MINISCULE)
 						amt = 1
@@ -313,6 +313,50 @@
 							bone.name = "[name] bone"
 					crush()
 					qdel(src)
+		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_GRAB && stat == DEAD)
+			user.visible_message("<span class = 'notice'>[user] starts to skin and butcher [src].</span>")
+			if (do_after(user, 100, src))
+				user.visible_message("<span class = 'notice'>[user] skins and butchers [src].</span>")
+				var/amt = 0
+				if (mob_size == MOB_MINISCULE)
+					amt = 1
+				if (mob_size == MOB_TINY)
+					amt = 2
+				if (mob_size == MOB_SMALL)
+					amt = 3
+				if (mob_size == MOB_MEDIUM)
+					amt = 4
+				if (mob_size == MOB_LARGE)
+					amt = 5
+				if (mob_size == MOB_HUGE)
+					amt = 8
+				for (var/v in TRUE to amt)
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+					meat.name = "[name] meatsteak"
+				if ((amt-2) >= 1)
+					for (var/v in TRUE to (amt-2))
+						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+						bone.name = "[name] bone"
+				if (istype(src, /mob/living/simple_animal/hostile/bear))
+					var/obj/item/stack/material/bearpelt/NP = new/obj/item/stack/material/bearpelt(get_turf(src))
+					NP.amount = 9
+				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
+					var/obj/item/stack/material/bearpelt/white/NP = new/obj/item/stack/material/bearpelt/white(get_turf(src))
+					NP.amount = 9
+				else if (istype(src, /mob/living/simple_animal/hostile/bear/brown))
+					var/obj/item/stack/material/bearpelt/brown/NP = new/obj/item/stack/material/bearpelt/brown(get_turf(src))
+					NP.amount = 9
+				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
+					var/obj/item/stack/material/wolfpelt/NP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+					NP.amount = 6
+				else if (istype(src, /mob/living/simple_animal/monkey))
+					var/obj/item/stack/material/monkeypelt/NP = new/obj/item/stack/material/monkeypelt(get_turf(src))
+					NP.amount = 4
+				else if (istype(src, /mob/living/simple_animal/cat))
+					var/obj/item/stack/material/catpelt/NP = new/obj/item/stack/material/catpelt(get_turf(src))
+					NP.amount = 3
+				crush()
+				qdel(src)
 		else if (istype(O, /obj/item/weapon/reagent_containers/glass))
 			return
 		else

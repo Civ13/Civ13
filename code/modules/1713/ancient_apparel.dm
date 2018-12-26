@@ -204,21 +204,24 @@
 	armor = list(melee = 62, bullet = 44, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/bearpelt
-	name = "bearpelt"
+	name = "bearpelt headcover"
 	desc = "a bear pelt turned into a headcover."
 	icon_state = "bearpelt"
 	item_state = "bearpelt"
 	worn_state = "bearpelt"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
+	var/colortype = "black"
 /obj/item/clothing/head/wolfpelt
-	name = "wolfpelt"
+	name = "wolfpelt headcover"
 	desc = "a wolf pelt turned into a headcover."
 	icon_state = "wolfpelt"
 	item_state = "wolfpelt"
 	worn_state = "wolfpelt"
 	flags_inv = BLOCKHEADHAIR
 	cold_protection = HEAD
+	var/colortype = "grey"
+
 /obj/item/clothing/head/toxotai
 	name = "toxotai hat"
 	desc = "a wide brim hat, used by the toxotai."
@@ -241,14 +244,47 @@
 	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
+	var/specific = FALSE
 	flags_inv = BLOCKHEADHAIR
 
+/obj/item/clothing/suit/storage/coat/fur/black
+	name = "brown fur coat"
+	desc = "A thick brown fur coat, great for the winter."
+	icon_state = "fur_jacket1"
+	item_state = "fur_jacket1"
+	worn_state = "fur_jacket1"
+	specific = TRUE
+
+/obj/item/clothing/suit/storage/coat/fur/white
+	name = "white fur coat"
+	desc = "A thick white fur coat, great for the winter."
+	icon_state = "fur_jacket2"
+	item_state = "fur_jacket2"
+	worn_state = "fur_jacket2"
+	specific = TRUE
+
+/obj/item/clothing/suit/storage/coat/fur/black
+	name = "black fur coat"
+	desc = "A thick black fur coat, great for the winter."
+	icon_state = "fur_jacket3"
+	item_state = "fur_jacket3"
+	worn_state = "fur_jacket3"
+	specific = TRUE
+
+/obj/item/clothing/suit/storage/coat/fur/grey
+	name = "grey fur coat"
+	desc = "A thick grey fur coat, great for the winter."
+	icon_state = "fur_jacket4"
+	item_state = "fur_jacket4"
+	worn_state = "fur_jacket4"
+	specific = TRUE
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
-	colorn = pick(1,2,3)
-	icon_state = "fur_jacket[colorn]"
-	item_state = "fur_jacket[colorn]"
-	worn_state = "fur_jacket[colorn]"
+	if (!specific)
+		colorn = pick(1,2,3,4)
+		icon_state = "fur_jacket[colorn]"
+		item_state = "fur_jacket[colorn]"
+		worn_state = "fur_jacket[colorn]"
 
 /obj/item/clothing/suit/storage/coat/fur/verb/toggle_hood()
 	set category = null
@@ -294,13 +330,47 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	var/colorn = 1
+	var/specific = FALSE
 
+/obj/item/clothing/shoes/fur/black
+	name = "black fur boots"
+	desc = "Dense fur boots."
+	icon_state = "fur3"
+	item_state = "fur3"
+	worn_state = "fur3"
+	specific = TRUE
+
+/obj/item/clothing/shoes/fur/brown
+	name = "brown fur boots"
+	desc = "Dense fur boots."
+	icon_state = "fur1"
+	item_state = "fur1"
+	worn_state = "fur1"
+	specific = TRUE
+
+/obj/item/clothing/shoes/fur/white
+	name = "white fur boots"
+	desc = "Dense fur boots."
+	icon_state = "fur2"
+	item_state = "fur2"
+	worn_state = "fur2"
+	specific = TRUE
+
+/obj/item/clothing/shoes/fur/grey
+	name = "grey fur boots"
+	desc = "Dense fur boots."
+	icon_state = "fur4"
+	item_state = "fur4"
+	worn_state = "fur4"
+	specific = TRUE
 /obj/item/clothing/shoes/fur/New()
 	..()
-	colorn = pick(1,2,3)
-	icon_state = "fur[colorn]"
-	item_state = "fur[colorn]"
-	worn_state = "fur[colorn]"
+	if (!specific)
+		colorn = pick(1,2,3,4)
+		icon_state = "fur[colorn]"
+		item_state = "fur[colorn]"
+		worn_state = "fur[colorn]"
+
 
 /obj/item/clothing/mask/shemagh
 	name = "shemagh"

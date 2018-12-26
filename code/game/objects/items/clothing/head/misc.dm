@@ -77,6 +77,19 @@
 	flags_inv = BLOCKHAIR
 	siemens_coefficient = 0.7
 
+/obj/item/clothing/head/bearpelt/black
+	name = "black bear pelt hat"
+	icon_state = "bearpelt"
+
+/obj/item/clothing/head/bearpelt/brown
+	name = "brown bear pelt hat"
+	icon_state = "brownbearpelt"
+
+/obj/item/clothing/head/bearpelt/white
+	name = "polar bear pelt hat"
+	icon_state = "whitebearpelt"
+
+
 /obj/item/clothing/head/philosopher_wig
 	name = "natural philosopher's wig"
 	desc = "A stylish monstrosity unearthed from Earth's Renaissance period. With this most distinguish'd wig, you'll be ready for your next soiree!"

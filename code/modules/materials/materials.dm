@@ -463,6 +463,83 @@ var/list/name_to_material
 	melting_point = T0C+300
 	hardness = 25
 
+/material/pelt
+	name = "pelt"
+	use_name = "pelt"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/pelt
+
+/material/bearpelt
+	name = "bearpelt"
+	use_name = "bear pelt"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/bearpelt
+
+/material/bearpelt/white
+	name = "whitebearpelt"
+	use_name = "white bear pelt"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/bearpelt/white
+
+/material/bearpelt/brown
+	name = "brownbearpelt"
+	use_name = "brown bear pelt"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/bearpelt/brown
+
+/material/wolfpelt
+	name = "wolfpelt"
+	use_name = "wolf pelt"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/wolfpelt
+
+/material/catpelt
+	name = "catpelt"
+	use_name = "cat pelt"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/catpelt
+
+/material/monkeypelt
+	name = "monkeypelt"
+	use_name = "monkey pelt"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/monkeypelt
+
 /material/carpet
 	name = "carpet"
 	display_name = "comfy"

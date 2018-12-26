@@ -23,6 +23,30 @@
 	icon_state = "leather"
 	item_state = "leather"
 
+/obj/item/clothing/gloves/thick/leather/black
+	desc = "These fur gloves are cold and fire-resistant."
+	name = "black fur gloves"
+	icon_state = "blackfur"
+	item_state = "blackfur"
+
+/obj/item/clothing/gloves/thick/leather/brown
+	desc = "These fur gloves are cold and fire-resistant."
+	name = "brown fur gloves"
+	icon_state = "brownfur"
+	item_state = "brownfur"
+
+/obj/item/clothing/gloves/thick/leather/white
+	desc = "These fur gloves are cold and fire-resistant."
+	name = "white fur gloves"
+	icon_state = "whitefur"
+	item_state = "whitefur"
+
+/obj/item/clothing/gloves/thick/leather/grey
+	desc = "These fur gloves are cold and fire-resistant."
+	name = "grey fur gloves"
+	icon_state = "greyfur"
+	item_state = "greyfur"
+
 /obj/item/clothing/gloves/thick/combat //Combined effect of SWAT gloves and insulated gloves
 	desc = "These tactical gloves are somewhat fire and impact resistant."
 	name = "combat gloves"

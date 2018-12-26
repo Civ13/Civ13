@@ -242,6 +242,64 @@
 	value = 2
 	w_class = 2.0
 	flammable = TRUE
+
+/obj/item/stack/material/pelt
+	name = "animal pelt"
+	desc = "A pelt from a skinned animal."
+	icon_state = "sheet-bearpelt"
+	default_type = "pelt"
+	value = 4
+	w_class = 2.0
+	flammable = TRUE
+
+/obj/item/stack/material/bearpelt
+	name = "black bear pelt"
+	desc = "A pelt from a skinned bear."
+	icon_state = "sheet-bearpelt"
+	default_type = "bearpelt"
+	value = 8
+	w_class = 2.0
+	flammable = TRUE
+
+/obj/item/stack/material/bearpelt/brown
+	name = "brown bear pelt"
+	desc = "A pelt from a skinned bear."
+	icon_state = "sheet-brownbearpelt"
+	default_type = "brownbearpelt"
+
+/obj/item/stack/material/bearpelt/white
+	name = "white bear pelt"
+	desc = "A pelt from a skinned bear."
+	icon_state = "sheet-whitebearpelt"
+	default_type = "whitebearpelt"
+
+/obj/item/stack/material/wolfpelt
+	name = "wolf pelt"
+	desc = "A pelt from a skinned wolf."
+	icon_state = "sheet-wolfpelt"
+	default_type = "wolfpelt"
+	value = 8
+	w_class = 2.0
+	flammable = TRUE
+
+/obj/item/stack/material/catpelt
+	name = "cat pelt"
+	desc = "A pelt from a skinned cat."
+	icon_state = "sheet-catpelt"
+	default_type = "catpelt"
+	value = 4
+	w_class = 2.0
+	flammable = TRUE
+
+/obj/item/stack/material/monkeypelt
+	name = "monkey pelt"
+	desc = "A pelt from a skinned monkey."
+	icon_state = "sheet-monkeypelt"
+	default_type = "monkeypelt"
+	value = 4
+	w_class = 2.0
+	flammable = TRUE
+
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"

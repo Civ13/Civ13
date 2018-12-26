@@ -73,9 +73,6 @@
 	if (current_res[2] >= 15)
 		recipes += new/datum/stack_recipe("leather armor", /obj/item/clothing/suit/armor/medieval/leather, 6, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather curtain", /obj/structure/curtain/leather, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += list(new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += new/datum/stack_recipe_list("armbands", list(
 		new/datum/stack_recipe("red armband", /obj/item/clothing/accessory/armband/british, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -536,3 +533,44 @@
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/bearpelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/black, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/black, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/black, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("bear pelt headcover", /obj/item/clothing/head/bearpelt/black, 4, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/bearpelt/brown/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/brown, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/brown, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/brown, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("bear pelt headcover", /obj/item/clothing/head/bearpelt/brown, 4, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/bearpelt/white/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/white, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/white, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/white, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("bear pelt headcover", /obj/item/clothing/head/bearpelt/white, 4, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+
+
+/material/wolfpelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/grey, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/grey, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/grey, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("wolf pelt headcover", /obj/item/clothing/head/wolfpelt, 4, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/catpelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/monkeypelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/brown, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/brown, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/brown, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
