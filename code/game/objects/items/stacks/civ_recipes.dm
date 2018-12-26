@@ -212,7 +212,6 @@
 		recipes += new/datum/stack_recipe_list("tools", list(
 			new/datum/stack_recipe("wood handle", /obj/item/weapon/material/handle, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
 			new/datum/stack_recipe("wood cane", /obj/item/weapon/cane, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
-			/obj/item/weapon/cane
 			new/datum/stack_recipe("bucket",/obj/item/weapon/reagent_containers/glass/bucket, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("plough",/obj/item/weapon/plough, 4, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("fishing pole",/obj/item/weapon/fishing, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
