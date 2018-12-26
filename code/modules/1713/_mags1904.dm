@@ -72,7 +72,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 /obj/item/ammo_magazine/c8mmnambu
 	name = "Nambu magazine"
-	icon_state = "lugermag"
+	icon_state = "nambumag"
 //	origin_tech = "combat=2"
 	mag_type = MAGAZINE
 	matter = list(DEFAULT_WALL_MATERIAL = 600)
