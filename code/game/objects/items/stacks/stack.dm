@@ -210,12 +210,12 @@
 				customname = "[H.civilization]'s copper coins"
 			else
 				customname = "[H.civilization]'s copper [customname]"
-			var/customdesc = "copper coins, minted by the [H.civilization]"
+			var/customdesc = "copper coins, minted by the [H.civilization]."
 			build_override_coins_copper.name = customname
 			build_override_coins_copper.desc = customdesc
 		else
-			build_override_coins_copper.name = "copper coins"
-			build_override_coins_copper.desc = "copper coins, minted by [H]"
+			build_override_coins_copper.name = "copper [customname]"
+			build_override_coins_copper.desc = "copper coins, minted by [H]."
 
 	if (findtext(recipe.title, "silver coins"))
 		var/customname = input(user, "Choose a name for these coins:") as text|null
@@ -224,12 +224,12 @@
 				customname = "[H.civilization]'s silver coins"
 			else
 				customname = "[H.civilization]'s silver [customname]"
-			var/customdesc = "silver coins, minted by the [H.civilization]"
+			var/customdesc = "silver coins, minted by the [H.civilization]."
 			build_override_coins_silver.name = customname
 			build_override_coins_silver.desc = customdesc
 		else
-			build_override_coins_silver.name = "silver coins"
-			build_override_coins_silver.desc = "silver coins, minted by [H]"
+			build_override_coins_silver.name = "silver [customname]"
+			build_override_coins_silver.desc = "silver coins, minted by [H]."
 
 	if (findtext(recipe.title, "gold coins"))
 		var/customname = input(user, "Choose a name for these coins:") as text|null
@@ -238,12 +238,12 @@
 				customname = "[H.civilization]'s gold coins"
 			else
 				customname = "[H.civilization]'s gold [customname]"
-			var/customdesc = "gold coins, minted by the [H.civilization]"
+			var/customdesc = "gold coins, minted by the [H.civilization]."
 			build_override_coins_gold.name = customname
 			build_override_coins_gold.desc = customdesc
 		else
-			build_override_coins_gold.name = "gold coins"
-			build_override_coins_gold.desc = "gold coins, minted by [H]"
+			build_override_coins_gold.name = "gold [customname]"
+			build_override_coins_gold.desc = "gold coins, minted by [H]."
 
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)

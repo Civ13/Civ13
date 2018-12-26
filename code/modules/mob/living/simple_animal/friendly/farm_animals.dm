@@ -206,9 +206,9 @@
 /mob/living/simple_animal/chicken
 	name = "\improper chicken"
 	desc = "Hopefully the eggs are good this season."
-	icon_state = "chicken_brown"
-	icon_living = "chicken_brown"
-	icon_dead = "chicken_dead"
+	icon_state = "brownhen"
+	icon_living = "brownhen"
+	icon_dead = "brownhen_dead"
 	speak = list("Cluck!","BWAAAAARK BWAK BWAK BWAK!","Bwaak bwak.")
 	speak_emote = list("clucks","croons")
 	emote_hear = list("clucks")
@@ -223,6 +223,7 @@
 	attacktext = "kicked"
 	health = 10
 	var/eggsleft = 5
+	var/roosting_icon = "brownhen_roosting"
 	var/body_color
 	var/egg_timer = FALSE
 	pass_flags = PASSTABLE
@@ -231,10 +232,11 @@
 /mob/living/simple_animal/chicken/New()
 	..()
 	if (!body_color)
-		body_color = pick( list("brown","black","white") )
-	icon_state = "chicken_[body_color]"
-	icon_living = "chicken_[body_color]"
-	icon_dead = "chicken_[body_color]_dead"
+		body_color = pick( list("brown","black","white","grey") )
+	icon_state = "[body_color]hen"
+	icon_living = "[body_color]hen"
+	roosting_icon = "[body_color]hen_roosting"
+	icon_dead = "[body_color]hen_dead"
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
 	chicken_count += 1
@@ -262,13 +264,25 @@
 		if (egg_timer >= 120)
 			if (!stat && eggsleft > 0)
 				visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
+				stop_automated_movement = TRUE
+				icon_state = roosting_icon
+				icon_living = roosting_icon
+				update_icons()
+				spawn(250)
+					icon_state = "[body_color]hen"
+					icon_living = "[body_color]hen"
+					update_icons()
 				eggsleft--
 				egg_timer = 0
 				var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
 				E.pixel_x = rand(-6,6)
 				E.pixel_y = rand(-6,6)
-				if (prob(10))
-					var/nearbyObjects = range(2,src) //5x5 area
+				var/malearound = FALSE
+				var/nearbyObjects = range(1,src) //3x3 area around chicken
+				for(var/mob/living/simple_animal/rooster/M in nearbyObjects)
+					if (M.stat == CONSCIOUS)
+						malearound = TRUE
+				if (prob(20) && malearound)
 					var/chickenCount = 0
 					for(var/mob/living/simple_animal/chicken/M in nearbyObjects)
 						chickenCount++
@@ -297,6 +311,43 @@
 	else
 		processing_objects.Remove(src)
 		return
+
+/mob/living/simple_animal/rooster
+	name = "\improper rooster"
+	desc = "Hopefully the eggs are good this season."
+	icon_state = "brownrooster"
+	icon_living = "brownrooster"
+	icon_dead = "brownrooster_dead"
+	speak = list("Cluck!","BWAAAAARK BWAK BWAK BWAK!","Cock-a-doodle-doo!")
+	speak_emote = list("clucks","croons")
+	emote_hear = list("clucks")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	turns_per_move = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 2
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 15
+	var/roosting_icon = "brownrooster_roosting"
+	var/body_color
+	var/egg_timer = FALSE
+	pass_flags = PASSTABLE
+	mob_size = MOB_SMALL
+
+/mob/living/simple_animal/rooster/New()
+	..()
+	if (!body_color)
+		body_color = pick( list("brown","black","white","grey") )
+	icon_state = "[body_color]rooster"
+	icon_living = "[body_color]rooster"
+	roosting_icon = "[body_color]rooster_roosting"
+	icon_dead = "[body_color]rooster_dead"
+	pixel_x = rand(-6, 6)
+	pixel_y = rand(0, 10)
+	chicken_count += 1
 
 //goat
 /mob/living/simple_animal/goat
