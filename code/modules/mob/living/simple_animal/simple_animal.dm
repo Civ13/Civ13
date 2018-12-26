@@ -304,13 +304,13 @@
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 						meat.name = "[name] meatsteak"
 					if ((amt-2) >= 1)
-						for (var/v in TRUE to (amt-2))
-							var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
-							leather.name = "[name] leather"
+						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+						leather.name = "[name] leather"
+						leather.amount = (amt-2)
 					if ((amt-2) >= 1)
-						for (var/v in TRUE to (amt-2))
-							var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
-							bone.name = "[name] bone"
+						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+						bone.name = "[name] bone"
+						bone.amount = (amt-2)
 					crush()
 					qdel(src)
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_GRAB && stat == DEAD)
@@ -334,9 +334,9 @@
 					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 					meat.name = "[name] meatsteak"
 				if ((amt-2) >= 1)
-					for (var/v in TRUE to (amt-2))
-						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
-						bone.name = "[name] bone"
+					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+					bone.name = "[name] bone"
+					bone.amount = amt
 				if (istype(src, /mob/living/simple_animal/hostile/bear))
 					var/obj/item/stack/material/bearpelt/NP = new/obj/item/stack/material/bearpelt(get_turf(src))
 					NP.amount = 9
@@ -420,8 +420,30 @@
 
 	walk_to(src,0) // stops movement
 	unregisterSpawner()
+	decay()
 	return ..(gibbed,deathmessage)
 
+/mob/living/simple_animal/proc/decay()
+	spawn(7200)
+		if (stat == DEAD)
+			var/amt = 0
+			if (mob_size == MOB_MINISCULE)
+				amt = 0
+			if (mob_size == MOB_TINY)
+				amt = 0
+			if (mob_size == MOB_SMALL)
+				amt = 1
+			if (mob_size == MOB_MEDIUM)
+				amt = 2
+			if (mob_size == MOB_LARGE)
+				amt = 3
+			if (mob_size == MOB_HUGE)
+				amt = 6
+			if (amt >= 1)
+				var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+				bone.name = "[name] bone"
+				bone.amount = amt
+			qdel(src)
 /mob/living/simple_animal/ex_act(severity)
 	if (!blinded)
 		if (HUDtech.Find("flash"))

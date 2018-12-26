@@ -317,6 +317,8 @@ proc/is_blind(A)
 		var/mob/living/carbon/C = A
 		if (C.sdisabilities & BLIND || C.blinded)
 			return TRUE
+		if (istype(C.wear_mask, /obj/item/clothing/mask/glasses/sunglasses/blindfold))
+			return TRUE
 	return FALSE
 
 /proc/mobs_in_area(var/area/A)
