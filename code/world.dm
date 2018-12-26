@@ -283,7 +283,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
-		s += "Gamemode: [map.gamemode]"
+	s += "<br>Gamemode: [map.gamemode]"
 	if (config.hub_body)
 		s += config.hub_body
 //	if (config.hub_features)

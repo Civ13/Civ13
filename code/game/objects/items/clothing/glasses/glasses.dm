@@ -3,8 +3,6 @@
 	icon = 'icons/obj/clothing/glasses.dmi'
 	w_class = 1.0
 	slot_flags = SLOT_MASK
-	var/prescription = FALSE
-	var/off_state = "degoggles"
 	var/active = TRUE
 	var/obj/screen/overlay = null
 
@@ -27,7 +25,6 @@
 	desc = "Made by Nerd. Co."
 	icon_state = "glasses"
 	item_state = "glasses"
-	prescription = TRUE
 	body_parts_covered = FALSE
 
 /obj/item/clothing/glasses/regular/hipster
@@ -57,7 +54,3 @@
 	icon_state = "blindfold"
 	item_state = "blindfold"
 	tint = TINT_BLIND
-
-/obj/item/clothing/glasses/sunglasses/prescription
-	name = "prescription sunglasses"
-	prescription = TRUE

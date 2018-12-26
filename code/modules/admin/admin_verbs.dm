@@ -73,6 +73,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/start_epochswap_vote,
 	/datum/admins/proc/set_research,
 	/datum/admins/proc/set_custom_research,
+	/datum/admins/proc/set_research_speed,
 	/datum/admins/proc/set_custom_age,
 )
 var/list/admin_verbs_trialadmin = list(
@@ -224,6 +225,7 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/enable_debug_verbs,
 	/datum/admins/proc/set_research,
 	/datum/admins/proc/set_custom_research,
+	/datum/admins/proc/set_research_speed,
 	/datum/admins/proc/set_custom_age,
 //	/client/proc/roll_dices,
 	/proc/possess,

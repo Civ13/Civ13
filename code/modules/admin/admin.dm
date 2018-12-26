@@ -558,6 +558,30 @@ proc/admin_notice(var/message, var/rights)
 		world << "<big>Research has been <b>deactivated.</b></big>"
 		log_admin("[key_name(usr)] has deactivated the Research.")
 		return
+
+/datum/admins/proc/set_research_speed()
+	set category = "Special"
+	set desc="Changes research speed in Auto-Research mode."
+	set name="Set Research Speed"
+	if (!map.civilizations)
+		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
+		return
+	if (!(map.autoresearch))
+		usr << "<font color='red'>Error: This is only available within the Auto-Research Gamemode.</font>"
+		return
+	else
+		var/customresearchsp = input("How many Research Points to increase per minute?", "Auto-Research Multiplier") as num|null
+		if (customresearchsp == null)
+			return
+		if (customresearchsp < 0)
+			customresearchsp = 0
+		if (customresearchsp > 200)
+			customresearchsp = 200
+		map.autoresearch_mult = customresearchsp
+		world << "<big>Research increase per minute has been changed to <b>[map.autoresearch_mult]</b></big>"
+		log_admin("[key_name(usr)] has changed the research modifier to [map.autoresearch_mult].")
+		return
+
 /datum/admins/proc/set_custom_research()
 	set category = "Special"
 	set desc="Changes the starting research."
