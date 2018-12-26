@@ -1,6 +1,6 @@
 /obj/structure/barricade/wood_pole
 	name = "wood pole"
-	desc = "A simple wood pole. You can attack stuff to it."
+	desc = "A simple wood pole. You can attach stuff to it."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wood_pole_good"
 	health = 50
@@ -15,7 +15,7 @@
 /obj/structure/barricade/wood_pole/New()
 	..()
 	name = "wood pole"
-	desc = "A simple wood pole. You can attack stuff to it."
+	desc = "A simple wood pole. You can attach stuff to it."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wood_pole_good"
 

@@ -179,8 +179,7 @@
 						H.adaptStat("strength", 1)
 						return
 					if (prob(25))
-						var/pickperc = pick(1,2,3)
-						if (pickperc == 1 || map.age != "1713")
+						if (map.age != "1713")
 							new/obj/item/stack/ore/coal(src)
 							H << "<span class='danger'>You found some coal!</span>"
 							if(map.ID == MAP_NOMADS_DESERT)
@@ -190,26 +189,38 @@
 							T.is_mineable = FALSE
 							H.adaptStat("strength", 1)
 							return
-						else if (pickperc == 2)
-							new/obj/item/stack/ore/saltpeter(src)
-							H << "<span class='danger'>You found some saltpeter!</span>"
-							if(map.ID == MAP_NOMADS_DESERT)
-								T.ChangeTurf(/turf/floor/dirt/dust)
-							else
-								T.ChangeTurf(/turf/floor/dirt)
-							T.is_mineable = FALSE
-							H.adaptStat("strength", 1)
-							return
-						else if (pickperc == 3)
-							new/obj/item/stack/ore/sulphur(src)
-							H << "<span class='danger'>You found some sulphur!</span>"
-							if(map.ID == MAP_NOMADS_DESERT)
-								T.ChangeTurf(/turf/floor/dirt/dust)
-							else
-								T.ChangeTurf(/turf/floor/dirt)
-							T.is_mineable = FALSE
-							H.adaptStat("strength", 1)
-							return
+						else
+							var/pickperc = pick(1,2,3)
+							if (pickperc == 1)
+								new/obj/item/stack/ore/coal(src)
+								H << "<span class='danger'>You found some coal!</span>"
+								if(map.ID == MAP_NOMADS_DESERT)
+									T.ChangeTurf(/turf/floor/dirt/dust)
+								else
+									T.ChangeTurf(/turf/floor/dirt)
+								T.is_mineable = FALSE
+								H.adaptStat("strength", 1)
+								return
+							else if (pickperc == 2)
+								new/obj/item/stack/ore/saltpeter(src)
+								H << "<span class='danger'>You found some saltpeter!</span>"
+								if(map.ID == MAP_NOMADS_DESERT)
+									T.ChangeTurf(/turf/floor/dirt/dust)
+								else
+									T.ChangeTurf(/turf/floor/dirt)
+								T.is_mineable = FALSE
+								H.adaptStat("strength", 1)
+								return
+							else if (pickperc == 3)
+								new/obj/item/stack/ore/sulphur(src)
+								H << "<span class='danger'>You found some sulphur!</span>"
+								if(map.ID == MAP_NOMADS_DESERT)
+									T.ChangeTurf(/turf/floor/dirt/dust)
+								else
+									T.ChangeTurf(/turf/floor/dirt)
+								T.is_mineable = FALSE
+								H.adaptStat("strength", 1)
+								return
 					if (prob(5))
 						new/obj/item/stack/ore/silver(src)
 						H << "<span class='danger'>You found some silver ore!</span>"
