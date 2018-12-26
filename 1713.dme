@@ -415,6 +415,8 @@
 #include "code\modules\1713\weapons\guns\bow.dm"
 #include "code\modules\1713\weapons\guns\flintlock.dm"
 #include "code\modules\1713\weapons\guns\pistols.dm"
+#include "code\modules\1713\weapons\guns\mg\lmg.dm"
+#include "code\modules\1713\weapons\guns\mg\stationary\_stationary.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\climbing.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\mg.dm"
 #include "code\modules\admin\admin.dm"
@@ -776,5 +778,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_desert.dmm"
+#include "maps\special\hill_203.dmm"
 // END_INCLUDE

@@ -175,6 +175,7 @@ var/list/charge_sounds_jp = list(
 var/list/charge_sounds_ru = list(
 'sound/effects/emotes/charge_ru.ogg',
 'sound/effects/emotes/charge_ru2.ogg',
+'sound/effects/emotes/charge_ru3.ogg',
 	)
 var/list/charge_sounds_crusader = list(
 	'sound/effects/emotes/charge_crusader.ogg',)

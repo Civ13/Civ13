@@ -45,7 +45,7 @@
 
 	var/turf/target = null
 
-	if (istype(src, /obj/structure/window/sandbag))
+	if (istype(src, /obj/structure/window/sandbag || /obj/structure/window/sandbag))
 		target = get_step(src, user.dir)
 	else
 		target = get_turf(src)

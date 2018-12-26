@@ -88,3 +88,61 @@ mob/living/carbon/human/corpse/british_sailor
 	icon_state = "body_m_giant"
 	spawn (50) // must be here or they won't spawn, it seems - Kachnov
 		death()
+
+mob/living/carbon/human/corpse/jap_soldier
+	gender = MALE
+
+/mob/living/carbon/human/corpse/jap_soldier/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Nitohei")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		apply_damage(rand(0, 35), BRUTE, "head")
+		apply_damage(rand(0, 35), BRUTE, "chest")
+		apply_damage(rand(0, 35), BRUTE, "l_leg")
+		apply_damage(rand(0, 35), BRUTE, "r_leg")
+		apply_damage(rand(0, 35), BRUTE, "l_arm")
+		apply_damage(rand(0, 35), BRUTE, "r_arm")
+		updatehealth()//.
+		name = "Japanese Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+mob/living/carbon/human/corpse/jap_sashsoldier
+	gender = MALE
+
+/mob/living/carbon/human/corpse/jap_sashsoldier/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Sash Nitohei")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		apply_damage(rand(0, 35), BRUTE, "head")
+		apply_damage(rand(0, 35), BRUTE, "chest")
+		apply_damage(rand(0, 35), BRUTE, "l_leg")
+		apply_damage(rand(0, 35), BRUTE, "r_leg")
+		apply_damage(rand(0, 35), BRUTE, "l_arm")
+		apply_damage(rand(0, 35), BRUTE, "r_arm")
+		updatehealth()//.
+		name = "White Sash Brigade Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()

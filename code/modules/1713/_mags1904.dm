@@ -10,14 +10,14 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/projectile/a792x54
 	max_ammo = 5
 	weight = 0.04
-	multiple_sprites = FALSE
+	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/projectile/mosinbox
-	name = "magazine box (7.62x54mm)"
+	name = "magazine box (7.92x54mm)"
 	icon_state = "mosin_ammo"
 //	origin_tech = "combat=2"
 	mag_type = MAGAZINE
-	caliber = "a762x54"
+	caliber = "a792x54"
 	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/projectile/a792x54
@@ -33,30 +33,30 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/projectile/a65x50mm
 	max_ammo = 5
 	weight = 0.038
-	multiple_sprites = FALSE
+	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/projectile/arisakabox
 	name = "magazine box (6.5x50mm)"
 	icon_state = "arisaka_ammo"
 //	origin_tech = "combat=2"
+	mag_type = MAGAZINE
 	caliber = "a65x50mm"
 	w_class = 3
-	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/projectile/a65x50mm
 	max_ammo = 50
 	multiple_sprites = FALSE
 	is_box = TRUE
 
-
-/obj/item/ammo_magazine/projectile/maxim
+/obj/item/ammo_magazine/maxim
 	name = "Maxim ammo belt"
 	icon_state = "maximbelt"
 //	origin_tech = "combat=2"
 	mag_type = MAGAZINE
-	caliber = "a762x54"
+	caliber = "a792x54"
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/projectile/bullet/mg/a127x108
+	ammo_type = /obj/item/ammo_casing/a792x54
 	max_ammo = 250
 	multiple_sprites = TRUE
 	var/slot = "decor"

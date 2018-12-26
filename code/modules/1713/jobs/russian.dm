@@ -11,7 +11,7 @@
 	rank_abbreviation = "Kpt."
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "LateJoinRUCap"
+	spawn_location = "JoinLateRUCap"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -52,11 +52,11 @@
 
 /datum/job/russian/lieutenant
 	title = "Leytenant"
-	en_meaning = "1st Lieutenant"
-	rank_abbreviation = "1lt."
+	en_meaning = "Lieutenant"
+	rank_abbreviation = "Lt."
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "LateJoinRUCap"
+	spawn_location = "JoinLateRUCap"
 	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_commander = TRUE
@@ -99,7 +99,7 @@
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Szt."
 	selection_color = "#2d2d63"
-	spawn_location = "LateJoinRU"
+	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	SL_check_independent = TRUE
 
@@ -123,7 +123,6 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>Captain or Leiutenant's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -142,7 +141,7 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Kpt."
 	selection_color = "#2d2d63"
-	spawn_location = "LateJoinRU"
+	spawn_location = "JoinLateRU"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -183,7 +182,7 @@
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
-	spawn_location = "LateJoinRU" //for testing!
+	spawn_location = "JoinLateRU" //for testing!
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE

@@ -1,7 +1,6 @@
 /obj/item/clothing/shoes/japboots
 	name = "Winter wrapped boots"
 	desc = "A pair of simple, thin leather boots. Covers up to the lower leg."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japboots"
 	item_state = "japboots"
 	worn_state = "japboots"
@@ -16,12 +15,11 @@
 /obj/item/clothing/under/japuni
 	name = "Japanese Army Uniform"
 	desc = "A standard imperial japanese army uniform."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japuni"
 	item_state = "japuni"
 	worn_state = "japuni"
 
-/obj/item/clothing/accessory/armband/white_sash
+/obj/item/clothing/accessory/white_sash
 	name = "White Sash"
 	desc = "A white sash, used by the Japanese White Sash Brigade."
 	icon_state = "sash"
@@ -30,7 +28,6 @@
 /obj/item/clothing/under/rusuni
 	name = "Russian Army Uniform"
 	desc = "A standard imperial russian army uniform."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "rusuni"
 	item_state = "rusuni"
 	worn_state = "rusuni"
@@ -41,7 +38,6 @@
 /obj/item/clothing/suit/storage/armycoat/japcoat
 	name = "Japanese Coat"
 	desc = "A japanese army coat."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japcoat"
 	item_state = "japcoat"
 	worn_state = "japcoat"
@@ -55,7 +51,6 @@
 /obj/item/clothing/suit/storage/armycoat/japcoat2
 	name = "Japanese Coat"
 	desc = "A japanese army coat."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japcoat2"
 	item_state = "japcoat2"
 	worn_state = "japcoat2"
@@ -68,7 +63,6 @@
 /obj/item/clothing/suit/storage/armycoat/ruscoat
 	name = "Russian Coat"
 	desc = "A russian army coat."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "ruscoat1"
 	item_state = "ruscoat1"
 	worn_state = "ruscoat1"
@@ -81,7 +75,6 @@
 /obj/item/clothing/suit/storage/armycoat/rusoffcoat
 	name = "Russian Officer Coat."
 	desc = "A russian army  officer coat. Worn by officers, acknowledge their rank."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "rusoffcoat"
 	item_state = "rusoffcoat"
 	worn_state = "rusoffcoat"
@@ -97,7 +90,6 @@
 /obj/item/clothing/suit/armor/japmisc/japvest
 	name = "Matagi Vest"
 	desc = "A warm, fur lined vest made of leather."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japvest"
 	item_state = "japvest"
 	worn_state = "japvest"
@@ -109,34 +101,29 @@
 /obj/item/clothing/head/japcap
 	name = "Japanese Cap"
 	desc = "A cap worn by japanese soldiers."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japcap"
 	item_state = "japcap"
 
 /obj/item/clothing/head/japcap2
 	name = "Japanese Cap"
 	desc = "A cap worn by japanese soldiers."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japcap2"
 	item_state = "japcap2"
 
 /obj/item/clothing/head/japoffcap
 	name = "Japanese Officer Cap"
 	desc = "A cap worn by japanese officers."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "japoffcap"
 	item_state = "japoffcap"
 
 /obj/item/clothing/head/ruscap
 	name = "Russian Cap"
 	desc = "A cap worn by russian soldiers."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "ruscap1"
 	item_state = "ruscap1"
 
 /obj/item/clothing/head/rusoffcap
 	name = "Russian Officer Cap"
 	desc = "A cap worn by russian army officers."
-	icon = 'icons/mob/russo-jap_uni.dmi'
 	icon_state = "rusoffcap"
 	item_state = "rusoffcap"

@@ -47,11 +47,6 @@
 		/obj/item/ammo_magazine/projectile/arisakabox = 10,
 		/obj/item/ammo_magazine/projectile/arisaka = 50, /obj/item/ammo_magazine/projectile/c9mm_jap_revolver = 5,
 		/obj/item/weapon/attachment/bayonet/military = 15,
-		/obj/item/weapon/gun/projectile/revolver/t26_revolver = 5,
-		/obj/item/weapon/gun/projectile/pistol/nambu = 2,
-		/obj/item/ammo_magazine/c8mmnambu = 4,
-		/obj/item/ammo_magazine/projectile/c9mm_jap_revolver = 6,
-
 	)
 
 /obj/structure/vending/flintlock

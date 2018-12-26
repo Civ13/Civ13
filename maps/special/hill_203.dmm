@@ -26,40 +26,53 @@
 "z" = (/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
 "A" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "B" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"C" = (/turf/floor/plating/beach/water,/area/caribbean/japanese/land/outside)
+"C" = (/turf/wall/wood/low,/area/caribbean/russian/land/outside)
 "D" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt/winter,/area/caribbean/japanese/land/outside)
+"E" = (/obj/item/weapon/gun/projectile/automatic/stationary/maximstat{dir = 1},/turf/floor/winter/grass,/area/caribbean/japanese/land/outside)
+"F" = (/obj/structure/vending/russianapparel,/turf/floor/wood,/area/caribbean/russian/land/outside)
+"G" = (/obj/structure/vending/rusweapons,/turf/floor/wood,/area/caribbean/russian/land/outside)
+"H" = (/turf/floor/wood,/area/caribbean/russian/land/outside)
+"I" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/outside)
+"J" = (/obj/structure/flag/russian,/turf/floor/dirt/winter,/area/caribbean/russian/land/outside)
+"K" = (/obj/structure/window/classic,/turf/floor/wood,/area/caribbean/russian/land/outside)
+"L" = (/obj/structure/flag/russian,/turf/floor/winter/grass,/area/caribbean/russian/land/outside)
+"M" = (/mob/living/carbon/human/corpse/jap_sashsoldier,/turf/floor/winter/grass,/area/caribbean/russian/land/outside)
+"N" = (/mob/living/carbon/human/corpse/jap_sashsoldier,/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall)
+"O" = (/mob/living/carbon/human/corpse/jap_sashsoldier,/turf/floor/winter/grass,/area/caribbean)
+"P" = (/mob/living/carbon/human/corpse/jap_sashsoldier,/turf/floor/winter/grass,/area/caribbean/no_mans_land)
+"Q" = (/turf/floor/plating/snow,/area/caribbean/japanese/land/outside)
 
 (1,1,1) = {"
-abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbba
-agaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa
-aaaaaaaaaaaaaaaaaabbbbbaaaaaaaaaaaabbbbbbbbbbaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaagaaabbbbhbbbbaaaaaaaaaaabbbaaa
-aaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbba
+abbbbbbbbbbbbbbbbbbbCCCCCCCbbbbbbbbbbbbbbbbbbbbbba
+agaabbbbbbbbbbbbbbbCFGHHHGFCbbbbbbbbbbbbbbbbbbbaaa
+aaaaaaaaaaaaaaaaaabCHHHHHHHCaaaaaaabbbbbbbbbbaaaaa
+aaaaaaaaaaaaaaaaaaaHHHHHHHHCaaaaaaaaaaaaabbaaaaaaa
+aaaaaaaaaaaaaaaaaaaCHHHHHHHCaaaaaaaaagaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaCHHHHHHHCaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaCIHHHHHHChbbbbaaaaaaaaaaabbbaaa
+aaaaaaaaaaaaaaaaaaaJCCKCCKCLbbbbbbbbbbbbbbbbbbbbba
 aaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 aaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 aaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 aaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-cccccccccccccccccccccccccccccccccccccccccccccccccc
-dddddddddddddddddddddddddddddddddddddddddddddddddd
-dddddddddddddddddddddddddddddddddddddddddddddddddd
-dddddddddddddddddddddddddddddddddddddddddddddddddd
-dddddddddddddddddddddddddddddddddddddddddddddddddd
-dddddddddddddddddddddddddddddddddddddddddddddddddd
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-eeeeeeeeeeeeeeeeteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbLbbbbbbbbb
+bbbbbbbbbMbbLbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbMbbbbbb
+MbbbbbbbbMbbbbbbbbbbbbbbbbbbbbbbbMbbbbbbbbbbbbbbbb
+cccccccccNccccccccccccccccccccccccccccccccccccccNc
+dddddOdddddddddddddddddddddddddddddOdddddddddddddd
+dddddddddddddddddddddddddddddddddddOdddddddddddddd
+ddddddddddddOddddOddddddddddddddddddddOddddOdddddd
+ddOddOdddddddddddddddddddOdddOOddddddddddddddOdddd
+ddddddddddddddddddddddddddddddddddddddddOddddddddd
+ePeeeeeePeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeePeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeePeeeeePeeeeeeeeeeeeeeeePeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeePeeeeeePeeeeeeeeeeeeePeeeeePe
+eeeeeePeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeePeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeePeeeeeeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeePeeeeeeeeeeeeeeeeeee
+eePeeeePeeeeeeePteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeP
 eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
@@ -71,13 +84,13 @@ dddddddddddddddddddddddddddddddddddddddddddddddddd
 cccccccccccccccccccccccccccccccccccccccccccccccccc
 fffffffffffffffffuuuuuuuuuuuuuuuuuuuuuufffffffffff
 fffffwfffffffffffuuuuuuuuuuuuuuuuuuuuuufffffffffff
-fffuuuuuuuuuuuuuuuuuuuynninnninnyuuuuuufffffffffff
+fffuuuuuuuuuuuuEuuuuuuynninnninnyuuuuuufffffffffff
 fffuuuuuuuuuuuuuuuuuuunjkljkjlkjnuuuuuufffffffffff
 mffuuuuyninnuuuuuuuuuunlllllllllnuuuuuufoffffmpmmm
 mmmzuuunqqrsnzzzzzzzzznlllllllllnuuuuuufmmmmmmmmmm
 mmmzzuunqlllnzzzzzzzzznlllAAAlllnuuzzzzmmmmmmmmmmm
-mmmzzzznBlllnzzzzzzzzznlllllllllnCzzzzzmmmmmmmmmmm
-mmmzzzzznvnnzzzzzDzzzznAlllllllAnCzzzzDmmmmmmmmmmm
+mmmzzzznBlllnzzzzzzzzznlllllllllnQzzzzzmmmmmmmmmmm
+mmmzzzzznvnnzzzzzDzzzznAlllllllAnQzzzzDmmmmmmmmmmm
 mmmzzzzzzzzzzuuzzzzzzzznnnnlnnnnzzzzuuufffmmmmmmmm
 xmmzzuuuuuuuuuuuuuzzzzzuuuuuuuuuuuuuuuuffffffmmmmm
 "}

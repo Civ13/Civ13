@@ -244,7 +244,8 @@
 
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-
+//head//
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/japcap(H), slot_head)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/japuni(H), slot_w_uniform)
 //back
@@ -354,6 +355,54 @@
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL) //not used
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/japanese/white_sash
+	title = "Sash Nitohei"
+	en_meaning = "Soldier Second-class"
+	rank_abbreviation = "Ni."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateJP"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 6
+	max_positions = 200
+
+/datum/job/japanese/white_sash/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/japuni(H), slot_w_uniform)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/japcap(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka30(H), slot_back)
+
+	var/obj/item/clothing/accessory/white_sash = new /obj/item/clothing/accessory/white_sash(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(white_sash, H)
+
+	var/randweapon = rand(1,2)
+	if (randweapon == 1)
+		H.equip_to_slot_or_del(new /obj/item/ammo_magazine/projectile/arisakabox(H), slot_belt)
+	else if (randweapon == 2)
+		H.equip_to_slot_or_del(new 	/obj/item/ammo_magazine/projectile/arisaka(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
