@@ -113,7 +113,7 @@
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "coinpouch1"
 	slot_flags = SLOT_ID
-	slots = 2
+	slots = 5
 
 /obj/item/clothing/accessory/storage/coinpouch/New()
 	..()

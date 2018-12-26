@@ -118,6 +118,12 @@
 	build_override_key.code = -1
 	var/obj/structure/sign/custom/build_override_sign = new/obj/structure/sign/custom
 	build_override_sign.desc = "A sign."
+	var/obj/item/stack/money/coppercoin/build_override_coins_copper = new/obj/item/stack/money/coppercoin
+	build_override_coins_copper.desc = "Some coins."
+	var/obj/item/stack/money/silvercoin/build_override_coins_silver = new/obj/item/stack/money/silvercoin
+	build_override_coins_silver.desc = "Some coins."
+	var/obj/item/stack/money/goldcoin/build_override_coins_gold = new/obj/item/stack/money/goldcoin
+	build_override_coins_gold.desc = "Some coins."
 	var/mob/living/carbon/human/H = user
 
 	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle") || findtext(recipe.title, "drinking glass") || findtext(recipe.title, "teapot") || findtext(recipe.title, "teacup") || findtext(recipe.title, "wine glass") || findtext(recipe.title, "black leather shoes") || findtext(recipe.title, "black leather boots") || findtext(recipe.title, "leather boots"))
@@ -196,6 +202,48 @@
 			customdesc = "An empty sign."
 		build_override_sign.name = customname
 		build_override_sign.desc = customdesc
+
+	if (findtext(recipe.title, "copper coins"))
+		var/customname = input(user, "Choose a name for these coins:") as text|null
+		if (H.civilization != "none")
+			if (customname == null)
+				customname = "[H.civilization]'s copper coins"
+			else
+				customname = "[H.civilization]'s copper [customname]"
+			var/customdesc = "copper coins, minted by the [H.civilization]"
+			build_override_coins_copper.name = customname
+			build_override_coins_copper.desc = customdesc
+		else
+			build_override_coins_copper.name = "copper coins"
+			build_override_coins_copper.desc = "copper coins, minted by [H]"
+
+	if (findtext(recipe.title, "silver coins"))
+		var/customname = input(user, "Choose a name for these coins:") as text|null
+		if (H.civilization != "none")
+			if (customname == null)
+				customname = "[H.civilization]'s silver coins"
+			else
+				customname = "[H.civilization]'s silver [customname]"
+			var/customdesc = "silver coins, minted by the [H.civilization]"
+			build_override_coins_silver.name = customname
+			build_override_coins_silver.desc = customdesc
+		else
+			build_override_coins_silver.name = "silver coins"
+			build_override_coins_silver.desc = "silver coins, minted by [H]"
+
+	if (findtext(recipe.title, "gold coins"))
+		var/customname = input(user, "Choose a name for these coins:") as text|null
+		if (H.civilization != "none")
+			if (customname == null)
+				customname = "[H.civilization]'s gold coins"
+			else
+				customname = "[H.civilization]'s gold [customname]"
+			var/customdesc = "gold coins, minted by the [H.civilization]"
+			build_override_coins_gold.name = customname
+			build_override_coins_gold.desc = customdesc
+		else
+			build_override_coins_gold.name = "gold coins"
+			build_override_coins_gold.desc = "gold coins, minted by [H]"
 
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
@@ -369,6 +417,27 @@
 			build_override_sign.loc = get_turf(O)
 			build_override_sign.set_dir(user.dir)
 			build_override_sign.add_fingerprint(user)
+			qdel(O)
+			return
+
+		if (build_override_coins_copper.desc != "Some coins.")
+			build_override_coins_copper.loc = get_turf(O)
+			build_override_coins_copper.set_dir(user.dir)
+			build_override_coins_copper.add_fingerprint(user)
+			qdel(O)
+			return
+
+		if (build_override_coins_silver.desc != "Some coins.")
+			build_override_coins_silver.loc = get_turf(O)
+			build_override_coins_silver.set_dir(user.dir)
+			build_override_coins_silver.add_fingerprint(user)
+			qdel(O)
+			return
+
+		if (build_override_coins_gold.desc != "Some coins.")
+			build_override_coins_gold.loc = get_turf(O)
+			build_override_coins_gold.set_dir(user.dir)
+			build_override_coins_gold.add_fingerprint(user)
 			qdel(O)
 			return
 
