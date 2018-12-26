@@ -97,6 +97,7 @@ var/civmax_research = list(85,89,67)
 	var/gamemode = "Classic (Stone Age Start)"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
+	var/autoresearch = FALSE //if autoresearch is active
 	var/age1_lim = 110
 	var/age1_done = 0
 	var/age1_top = 35
@@ -146,6 +147,25 @@ var/civmax_research = list(85,89,67)
 		ordinal_age = 3
 	return
 
+
+/obj/map_metadata/proc/autoresearch_proc()
+	if (autoresearch == TRUE && default_research < 200)
+		spawn(600) //1 minute = 0.4 points
+			default_research += 0.4
+			if (map.ID == MAP_CIVILIZATIONS)
+				civa_research = list(default_research,default_research,default_research,null)
+				civb_research = list(default_research,default_research,default_research,null)
+				civc_research = list(default_research,default_research,default_research,null)
+				civd_research = list(default_research,default_research,default_research,null)
+				cive_research = list(default_research,default_research,default_research,null)
+				civf_research = list(default_research,default_research,default_research,null)
+			else
+				for(var/i = 1, i <= map.custom_civs.len, i++)
+					var/key = map.custom_civs[i]
+					map.custom_civs[key][1] = default_research
+					map.custom_civs[key][2] = default_research
+					map.custom_civs[key][3] = default_research
+			autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
 
@@ -182,7 +202,9 @@ var/civmax_research = list(85,89,67)
 
 	update_win_condition()
 	check_events()
-
+	spawn(2400)
+		if (map.autoresearch)
+			autoresearch_proc()
 /obj/map_metadata/proc/check_events()
 	return TRUE
 

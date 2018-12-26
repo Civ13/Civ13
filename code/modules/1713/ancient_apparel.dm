@@ -254,6 +254,7 @@
 	item_state = "fur_jacket1"
 	worn_state = "fur_jacket1"
 	specific = TRUE
+	colorn = 1
 
 /obj/item/clothing/suit/storage/coat/fur/white
 	name = "white fur coat"
@@ -262,6 +263,7 @@
 	item_state = "fur_jacket2"
 	worn_state = "fur_jacket2"
 	specific = TRUE
+	colorn = 2
 
 /obj/item/clothing/suit/storage/coat/fur/black
 	name = "black fur coat"
@@ -270,6 +272,7 @@
 	item_state = "fur_jacket3"
 	worn_state = "fur_jacket3"
 	specific = TRUE
+	colorn = 3
 
 /obj/item/clothing/suit/storage/coat/fur/grey
 	name = "grey fur coat"
@@ -278,6 +281,7 @@
 	item_state = "fur_jacket4"
 	worn_state = "fur_jacket4"
 	specific = TRUE
+	colorn = 4
 
 /obj/item/clothing/suit/storage/coat/fur/pink
 	name = "human skin coat"
@@ -286,6 +290,7 @@
 	item_state = "fur_jacket5"
 	worn_state = "fur_jacket5"
 	specific = TRUE
+	colorn = 5
 
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
