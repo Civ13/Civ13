@@ -574,3 +574,9 @@
 	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/brown, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/brown, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/brown, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/humanpelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("skin coat", /obj/item/clothing/suit/storage/coat/fur/pink, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("skin boots", /obj/item/clothing/shoes/fur/pink, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("skin gloves", /obj/item/clothing/gloves/thick/leather/pink, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)

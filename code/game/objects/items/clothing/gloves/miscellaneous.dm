@@ -47,6 +47,12 @@
 	icon_state = "greyfur"
 	item_state = "greyfur"
 
+/obj/item/clothing/gloves/thick/leather/pink
+	desc = "Gloves made of human skin. Barbaric."
+	name = "human skin gloves"
+	icon_state = "pinkfur"
+	item_state = "pinkfur"
+
 /obj/item/clothing/gloves/thick/combat //Combined effect of SWAT gloves and insulated gloves
 	desc = "These tactical gloves are somewhat fire and impact resistant."
 	name = "combat gloves"

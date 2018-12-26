@@ -300,6 +300,15 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/stack/material/humanpelt
+	name = "human pelt"
+	desc = "A skin from a dead person."
+	icon_state = "sheet-humanpelt"
+	default_type = "humanpelt"
+	value = 4
+	w_class = 2.0
+	flammable = TRUE
+
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"

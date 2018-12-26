@@ -278,6 +278,15 @@
 	item_state = "fur_jacket4"
 	worn_state = "fur_jacket4"
 	specific = TRUE
+
+/obj/item/clothing/suit/storage/coat/fur/pink
+	name = "human skin coat"
+	desc = "A coat made of human skin. Spooky..."
+	icon_state = "fur_jacket5"
+	item_state = "fur_jacket5"
+	worn_state = "fur_jacket5"
+	specific = TRUE
+
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
 	if (!specific)
@@ -362,6 +371,14 @@
 	icon_state = "fur4"
 	item_state = "fur4"
 	worn_state = "fur4"
+	specific = TRUE
+
+/obj/item/clothing/shoes/fur/pink
+	name = "human skin boots"
+	desc = "Human skin boots."
+	icon_state = "fur5"
+	item_state = "fur5"
+	worn_state = "fur5"
 	specific = TRUE
 /obj/item/clothing/shoes/fur/New()
 	..()

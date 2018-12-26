@@ -476,7 +476,7 @@ var/list/name_to_material
 
 /material/bearpelt
 	name = "bearpelt"
-	use_name = "bear pelt"
+	use_name = "bear"
 	icon_colour = "#8C7E6E"
 	ignition_point = T0C+400
 	melting_point = T0C+400
@@ -487,7 +487,7 @@ var/list/name_to_material
 
 /material/bearpelt/white
 	name = "whitebearpelt"
-	use_name = "white bear pelt"
+	use_name = "white bear"
 	icon_colour = "#8C7E6E"
 	ignition_point = T0C+400
 	melting_point = T0C+400
@@ -498,7 +498,7 @@ var/list/name_to_material
 
 /material/bearpelt/brown
 	name = "brownbearpelt"
-	use_name = "brown bear pelt"
+	use_name = "brown bear"
 	icon_colour = "#8C7E6E"
 	ignition_point = T0C+400
 	melting_point = T0C+400
@@ -509,7 +509,7 @@ var/list/name_to_material
 
 /material/wolfpelt
 	name = "wolfpelt"
-	use_name = "wolf pelt"
+	use_name = "wolf"
 	icon_colour = "#8C7E6E"
 	ignition_point = T0C+400
 	melting_point = T0C+400
@@ -520,7 +520,7 @@ var/list/name_to_material
 
 /material/catpelt
 	name = "catpelt"
-	use_name = "cat pelt"
+	use_name = "cat"
 	icon_colour = "#8C7E6E"
 	ignition_point = T0C+400
 	melting_point = T0C+400
@@ -531,7 +531,7 @@ var/list/name_to_material
 
 /material/monkeypelt
 	name = "monkeypelt"
-	use_name = "monkey pelt"
+	use_name = "monkey"
 	icon_colour = "#8C7E6E"
 	ignition_point = T0C+400
 	melting_point = T0C+400
@@ -539,6 +539,17 @@ var/list/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/monkeypelt
+
+/material/humanpelt
+	name = "humanpelt"
+	use_name = "human"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "skin"
+	sheet_plural_name = "skins"
+	stack_type = /obj/item/stack/material/humanpelt
 
 /material/carpet
 	name = "carpet"
