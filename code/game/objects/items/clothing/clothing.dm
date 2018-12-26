@@ -104,7 +104,6 @@ BLIND     // can't see anything
 */
 /obj/item/clothing/mask/glasses
 	name = "glasses"
-	icon = 'icons/obj/clothing/glasses.dmi'
 	w_class = 1.0
 	body_parts_covered = EYES
 	slot_flags = SLOT_MASK
