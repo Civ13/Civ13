@@ -135,6 +135,9 @@ var/civmax_research = list(85,89,67)
 	// makes win condition helper datum
 	win_condition = new
 	set_ordinal_age()
+	spawn(2400)
+		if (map.autoresearch)
+			autoresearch_proc()
 
 /obj/map_metadata/proc/set_ordinal_age()
 	if (age == "5000 B.C.")
@@ -202,9 +205,7 @@ var/civmax_research = list(85,89,67)
 
 	update_win_condition()
 	check_events()
-	spawn(2400)
-		if (map.autoresearch)
-			autoresearch_proc()
+
 /obj/map_metadata/proc/check_events()
 	return TRUE
 
