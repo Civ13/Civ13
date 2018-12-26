@@ -247,7 +247,7 @@
 	var/specific = FALSE
 	flags_inv = BLOCKHEADHAIR
 
-/obj/item/clothing/suit/storage/coat/fur/black
+/obj/item/clothing/suit/storage/coat/fur/brown
 	name = "brown fur coat"
 	desc = "A thick brown fur coat, great for the winter."
 	icon_state = "fur_jacket1"
