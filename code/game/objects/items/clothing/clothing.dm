@@ -102,17 +102,19 @@ SEE_PIXELS// if an object is located on an unlit area, but some of its pixels ar
           // in a lit area (via pixel_x,y or smooth movement), can see those pixels
 BLIND     // can't see anything
 */
-/obj/item/clothing/glasses
+/obj/item/clothing/mask/glasses
 	name = "glasses"
 	icon = 'icons/obj/clothing/glasses.dmi'
-	w_class = 2.0
+	w_class = 1.0
 	body_parts_covered = EYES
 	slot_flags = SLOT_MASK
 	var/vision_flags = FALSE
 	var/darkness_view = FALSE//Base human is 2
 	var/see_invisible = -1
+	var/active = TRUE
+	var/obj/screen/overlay = null
 
-/obj/item/clothing/glasses/update_clothing_icon()
+/obj/item/clothing/mask/glasses/update_clothing_icon()
 	if (ismob(loc))
 		var/mob/M = loc
 		M.update_inv_wear_mask()

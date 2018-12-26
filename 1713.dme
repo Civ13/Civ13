@@ -783,5 +783,5 @@
 #include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_jungle.dmm"
+#include "maps\special\nomads_desert.dmm"
 // END_INCLUDE
