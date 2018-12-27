@@ -233,8 +233,8 @@
 		map.autoresearch = TRUE
 		return
 
-	else if (vote.voted_gamemode == "Auto-Research Mode")
-		world << "<big>Starting <b>Resource Research Mode</b>. Starting epoch is the Stone Age, research active and requires the sale of items through <b>Research Desks</b>.</big>"
+	else if (vote.voted_gamemode == "Resource-Based Research")
+		world << "<big>Starting <b>Resource-Based Research</b>. Starting epoch is the Stone Age, research active and requires the sale of items through <b>Research Desks</b>.</big>"
 		map.research_active = FALSE //well, it is, but we dont get research kits.
 		map.resourceresearch = TRUE
 		return
