@@ -231,6 +231,8 @@
 		world << "<big>Starting <b>Auto-Research mode</b>. Starting epoch is the Stone Age, research active but automatic.</big>"
 		map.research_active = FALSE //well, it is, but we dont get research kits.
 		map.autoresearch = TRUE
+		spawn(100)
+			map.autoresearch_proc()
 		return
 
 	else if (vote.voted_gamemode == "Resource-Based Research")
