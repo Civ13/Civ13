@@ -169,7 +169,7 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)")
 
 	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
@@ -231,6 +231,12 @@
 		world << "<big>Starting <b>Auto-Research mode</b>. Starting epoch is the Stone Age, research active but automatic.</big>"
 		map.research_active = FALSE //well, it is, but we dont get research kits.
 		map.autoresearch = TRUE
+		return
+
+	else if (vote.voted_gamemode == "Auto-Research Mode")
+		world << "<big>Starting <b>Resource Research Mode</b>. Starting epoch is the Stone Age, research active and requires the sale of items through <b>Research Desks</b>.</big>"
+		map.research_active = FALSE //well, it is, but we dont get research kits.
+		map.resourceresearch = TRUE
 		return
 
 	else if (vote.voted_gamemode == "Bronze Age Start")
