@@ -351,6 +351,8 @@ var/setting_up_db_connection = FALSE
 	. += ";"
 	. += "<b>Map</b>: [map ? map.title : "???"]"
 	. += ";"
+	. += "<b>Gamemode</b>: [map ? map.gamemode : "???"]"
+	. += ";"
 	. += "<b>Players</b>: [clients.len]" // turns out the bot only considers itself a player sometimes? its weird. Maybe it was fixed, not sure - Kachnov
 	if (config.usewhitelist)
 		. += ";"
