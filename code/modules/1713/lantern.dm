@@ -96,6 +96,7 @@
 	item_state = "torch"
 	value = 6
 	fuel = 300 // 5 mins
+
 /obj/item/flashlight/torch/update_icon()
 	..()
 	if (on)
@@ -107,6 +108,10 @@
 	icon_state = "torch-on"
 	item_state = "torch-on"
 	on = TRUE
+
+/obj/item/flashlight/torch/on/unlimited
+	unlimited = TRUE
+	anchored = TRUE
 
 /obj/item/flashlight/proc/do_torch()
 	spawn(10)
