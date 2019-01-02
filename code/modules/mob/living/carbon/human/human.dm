@@ -64,7 +64,7 @@
 			if (config.allow_selfheal)
 				verbs |= /mob/living/carbon/human/proc/selfheal
 				verbs |= /mob/living/carbon/human/proc/selfrevive
-	spawn(15)
+	spawn(5)
 		if (faction_text == ARAB)
 			s_tone = -90
 			force_update_limbs()
