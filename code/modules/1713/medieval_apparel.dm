@@ -246,7 +246,6 @@
 	icon_state = "gold_crown"
 	item_state = "gold_crown"
 	worn_state = "gold_crown"
-	body_parts_covered = HEAD
 	armor = list(melee = 20, bullet = 15, laser = 10,energy = 15, bomb = 15, bio = 10, rad = FALSE)
 
 /obj/item/clothing/head/helmet/silver_crown
@@ -255,7 +254,6 @@
 	icon_state = "silver_crown"
 	item_state = "silver_crown"
 	worn_state = "silver_crown"
-	body_parts_covered = HEAD
 	armor = list(melee = 20, bullet = 15, laser = 10,energy = 15, bomb = 15, bio = 10, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval
