@@ -64,7 +64,16 @@
 			if (config.allow_selfheal)
 				verbs |= /mob/living/carbon/human/proc/selfheal
 				verbs |= /mob/living/carbon/human/proc/selfrevive
-
+	spawn(15)
+		if (faction_text == ARAB)
+			s_tone = -90
+			change_skin_tone(-90)
+		else if (faction_text == INDIANS)
+			s_tone = -115
+			change_skin_tone(-115)
+		else if (s_tone < -65)
+			s_tone = -65
+			change_skin_tone(-65)
 /mob/living/carbon/human/Destroy()
 	human_mob_list -= src
 	human_clients_mob_list -= src

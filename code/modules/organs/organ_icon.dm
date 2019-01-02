@@ -24,16 +24,6 @@ var/global/list/limb_icon_cache = list()
 		s_col = list(human.r_skin, human.g_skin, human.b_skin)
 	h_col = list(human.r_hair, human.g_hair, human.b_hair)
 
-/obj/item/organ/external/proc/sync_colour_to_dna()
-	s_tone = null
-	s_col = null
-	h_col = null
-	if (!isnull(dna.GetUIValue(DNA_UI_SKIN_TONE)) && (species.appearance_flags & HAS_SKIN_TONE))
-		s_tone = dna.GetUIValue(DNA_UI_SKIN_TONE)
-	if (species.appearance_flags & HAS_SKIN_COLOR)
-		s_col = list(dna.GetUIValue(DNA_UI_SKIN_R), dna.GetUIValue(DNA_UI_SKIN_G), dna.GetUIValue(DNA_UI_SKIN_B))
-	h_col = list(dna.GetUIValue(DNA_UI_HAIR_R),dna.GetUIValue(DNA_UI_HAIR_G),dna.GetUIValue(DNA_UI_HAIR_B))
-
 /obj/item/organ/external/head/sync_colour_to_human(var/mob/living/carbon/human/human)
 	..()
 	var/obj/item/organ/eyes/eyes = owner.internal_organs_by_name["eyes"]
@@ -114,10 +104,6 @@ var/global/list/limb_icon_cache = list()
 			mob_icon.Blend(rgb(s_tone, s_tone, s_tone), ICON_ADD)
 		else
 			mob_icon.Blend(rgb(-s_tone,  -s_tone,  -s_tone), ICON_SUBTRACT)
-	if (map.ID == MAP_TRIBES)
-		mob_icon.Blend(rgb(-150,  -150,  -150), ICON_SUBTRACT)
-	else if (owner.faction_text == "INDIAN")
-		mob_icon.Blend(rgb(-150,  -150,  -150), ICON_SUBTRACT)
 	else
 		if (s_col && s_col.len >= 3)
 			mob_icon.Blend(rgb(s_col[1], s_col[2], s_col[3]), ICON_ADD)

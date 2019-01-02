@@ -15,6 +15,15 @@
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 // civs
+
+/obj/item/clothing/suit/storage/jacket/kool_kids_klub
+	name = "white robe with hood"
+	desc = "A white robe with a white hood, covering the whole body."
+	icon_state = "kool_kids_klub"
+	item_state = "kool_kids_klub"
+	worn_state = "kool_kids_klub"
+	body_parts_covered = FULL_BODY
+
 /obj/item/clothing/under/civ4
 	name = "Fancy Colonial Clothing"
 	desc = "A set composed of a quality white linen shirt and black trousers."
