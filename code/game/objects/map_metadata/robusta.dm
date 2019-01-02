@@ -20,9 +20,6 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(PORTUGUESE = 0.4, SPANISH = 0.4, INDIANS = 0.2)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Battle of Isla Robusta"
 	mission_start_message = "<font size=4>All factions have <b>12 minutes</b> to prepare before the combat starts.</font>"
 	ambience = list('sound/ambience/jungle1.ogg')

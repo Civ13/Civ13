@@ -16,9 +16,6 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(PIRATES = 1)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Isla Robusta"
 	mission_start_message = "<font size=4>You and several other pirates were abandoned at this forsaken island. Only one can survive! <b>Last standing player wins!</b></font>"
 	var/winner_name = "Unknown"

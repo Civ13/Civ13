@@ -18,9 +18,6 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(FRENCH = 0.5, PIRATES = 0.5)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Naval boarding"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = FRENCH

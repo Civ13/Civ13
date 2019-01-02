@@ -16,9 +16,6 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(BRITISH = 1)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Transatlantic Voyage"
 	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"
 

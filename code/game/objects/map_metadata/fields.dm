@@ -18,9 +18,6 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Canadian Fields"
 	mission_start_message = "<font size=4>The <b>French</b> and <b>British</b> armies are facing each other in Canada! Get ready for the line battle! It will start in <b>5 minutes</b></font>"
 	faction1 = BRITISH

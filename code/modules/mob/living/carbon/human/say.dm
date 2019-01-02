@@ -81,28 +81,9 @@
 	if (!speaking)
 		if (istype(other, /mob/living/carbon/brain))
 			return TRUE
-
-	//This is already covered by mob/say_understands()
-	//if (istype(other, /mob/living/simple_animal))
-	//	if ((other.universal_speak && !speaking) || universal_speak || universal_understand)
-	//		return TRUE
-	//	return FALSE
-
 	return ..()
 
 /mob/living/carbon/human/GetVoice()
-/*
-	var/voice_sub
-	for (var/obj/item/gear in list(wear_mask,wear_suit,head))
-		if (!gear)
-			continue
-		var/obj/item/voice_changer/changer = locate() in gear
-		if (changer && changer.active && changer.voice)
-			voice_sub = changer.voice
-	if (voice_sub)
-		return voice_sub
-	if (GetSpecialVoice())
-		return GetSpecialVoice()*/
 	return real_name
 
 /mob/living/carbon/human/proc/SetSpecialVoice(var/new_voice)
