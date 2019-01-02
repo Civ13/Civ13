@@ -785,4 +785,5 @@
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "maps\1713\Supply_Raid.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE
