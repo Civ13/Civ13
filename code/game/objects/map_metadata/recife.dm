@@ -26,7 +26,7 @@
 	faction1 = DUTCH
 	faction2 = PORTUGUESE
 	ambience = list('sound/ambience/jungle1.ogg')
-
+	gamemode = "Siege"
 obj/map_metadata/recife/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_army == TRUE)

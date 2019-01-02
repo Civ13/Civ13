@@ -37,7 +37,7 @@
 	age3_done = 0
 	age3_timer = 42000
 	nomads = TRUE
-
+	gamemode = "Classic (Stone Age Start)"
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
 	var/real_season = "wet"

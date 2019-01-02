@@ -29,7 +29,7 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
 		"Black Sails:1" = 'sound/music/black_sails.ogg')
-
+	gamemode = "Colony Building RP"
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian))

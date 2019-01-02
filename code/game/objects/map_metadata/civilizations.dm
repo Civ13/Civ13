@@ -32,6 +32,7 @@
 	age2_done = 0
 	age3_lim = 240
 	age3_done = 0
+	gamemode = "Classic (Stone Age Start)"
 
 /obj/map_metadata/civilizations/New()
 	if (clients.len <= 8)

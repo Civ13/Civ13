@@ -37,7 +37,7 @@
 	age3_done = 0
 	age3_timer = 42000
 	nomads = TRUE
-
+	gamemode = "Classic (Stone Age Start)"
 	var/real_season = "WINTER"
 
 /obj/map_metadata/nomads_ice_age/New()

@@ -26,6 +26,7 @@
 	faction1 = PIRATES
 	faction2 = PIRATES
 	var/message = ""
+	gamemode = "Battleroyale"
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 

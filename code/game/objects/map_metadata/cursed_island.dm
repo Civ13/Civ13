@@ -24,7 +24,7 @@
 	availablefactions_run = TRUE
 	songs = list(
 		"Spooky Tunes:1" = 'sound/ambience/spooky1.ogg',)
-
+	gamemode = "Player vs NPCs"
 obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_RP == TRUE)

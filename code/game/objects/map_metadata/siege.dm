@@ -25,7 +25,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	songs = list(
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
-
+	gamemode = "Siege"
 /obj/map_metadata/siege/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
