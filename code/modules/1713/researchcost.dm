@@ -40,20 +40,28 @@
 		var/list/display = list("Industrial", "Military", "Health", "Cancel")
 		var/choice = WWinput(H, "This is worth [moneyin] research points. Which category to research?", "Research Desk", "Cancel", display)
 		if (choice == "Cancel")
+			done = FALSE
 			return
 		else if (choice == "Industrial")
 			map.custom_civs[H.civilization][1] += (moneyin)
 			qdel(W)
+			done = FALSE
 			return
 		else if (choice == "Military")
 			map.custom_civs[H.civilization][2] += (moneyin)
 			qdel(W)
+			done = FALSE
 			return
 		else if (choice == "Health")
 			map.custom_civs[H.civilization][3] += (moneyin)
 			qdel(W)
+			done = FALSE
 			return
 		else
+			done = FALSE
 			return
 	else
+		done = FALSE
+		marketval = 0
+		moneyin = 0
 		return
