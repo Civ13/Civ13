@@ -736,6 +736,7 @@
 #include "code\modules\surgery\limb_reattach.dm"
 #include "code\modules\surgery\organs_internal.dm"
 #include "code\modules\surgery\other.dm"
+#include "code\modules\surgery\prosthesis.dm"
 #include "code\modules\surgery\surgery.dm"
 #include "code\modules\surgery\~defines.dm"
 #include "code\modules\whitelist\_whitelist.dm"

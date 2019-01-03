@@ -102,6 +102,28 @@
 		stance_damage -= 2
 	if (r_hand && istype(r_hand, /obj/item/weapon/cane))
 		stance_damage -= 2
+	var/obj/item/organ/external/LL = get_organ("l_leg")
+	if (LL && LL.prosthesis)
+		if (LL.prosthesis_type == "pegleg")
+			stance_damage -= 3
+		if (LL.prosthesis_type == "woodleg")
+			stance_damage -= 4
+	var/obj/item/organ/external/RL = get_organ("r_leg")
+	if (RL && RL.prosthesis)
+		if (RL.prosthesis_type == "pegleg")
+			stance_damage -= 3
+		if (RL.prosthesis_type == "woodleg")
+			stance_damage -= 4
+	var/obj/item/organ/external/LF = get_organ("l_foot")
+	if (LF && LF.prosthesis)
+		if (LF.prosthesis_type == "woodfoot")
+			stance_damage -= 3
+
+	var/obj/item/organ/external/RF = get_organ("r_foot")
+	if (RF && RF.prosthesis)
+		if (RF.prosthesis_type == "woodfoot")
+			stance_damage -= 3
+
 	// standing is poor
 	if (stance_damage >= 4 || (stance_damage >= 2 && prob(5)))
 		if (!(lying || resting))

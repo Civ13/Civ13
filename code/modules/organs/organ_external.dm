@@ -61,6 +61,9 @@
 	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
+
+	var/prosthesis = FALSE
+	var/prosthesis_type = "none"
 /obj/item/organ/external/Destroy()
 	if (parent && parent.children)
 		parent.children -= src
@@ -729,14 +732,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 		if (parent_organ)
 			var/datum/wound/lost_limb/W = new (src, disintegrate, clean)
-			if (clean)
-				parent_organ.wounds |= W
-				parent_organ.update_damages()
-			else
-				var/obj/item/organ/external/stump/stump = new (victim, FALSE, src)
-				stump.wounds |= W
-				victim.organs |= stump
-				stump.update_damages()
+			var/obj/item/organ/external/stump/stump = new (victim, FALSE, src)
+			stump.wounds |= W
+			victim.organs |= stump
+			stump.update_damages()
 
 	spawn(1)
 		victim.updatehealth()

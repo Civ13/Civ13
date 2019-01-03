@@ -289,7 +289,6 @@ var/global/list/damage_icon_parts = list()
 	//END CACHED ICON GENERATION.
 	stand_icon.Blend(base_icon,ICON_OVERLAY)
 
-
 	if (update_icons)
 		update_icons()
 
@@ -376,7 +375,39 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_mutations(var/update_icons=1)
-	return
+	var/obj/item/organ/external/LL = get_organ("l_leg")
+	var/obj/item/organ/external/RL = get_organ("r_leg")
+	var/obj/item/organ/external/LF = get_organ("l_foot")
+	var/obj/item/organ/external/RF = get_organ("r_foot")
+	var/image/standing
+	if (LL)
+		if (LL.prosthesis)
+			if (LL.prosthesis_type == "none")
+				return
+			else
+				standing = image(icon = 'icons/mob/human_races/masks/prosthesis.dmi', icon_state = "[LL.prosthesis_type]_l")
+	if (RL)
+		if  (RL.prosthesis)
+			if (RL.prosthesis_type == "none")
+				return
+			else
+				standing = image(icon = 'icons/mob/human_races/masks/prosthesis.dmi', icon_state = "[RL.prosthesis_type]_r")
+	if (LF)
+		if  (LF.prosthesis)
+			if (LF.prosthesis_type == "none")
+				return
+			else
+				standing = image(icon = 'icons/mob/human_races/masks/prosthesis.dmi', icon_state = "[LF.prosthesis_type]_l")
+	if (RF)
+		if  (RF.prosthesis)
+			if (RF.prosthesis_type == "none")
+				return
+			else
+				standing = image(icon = 'icons/mob/human_races/masks/prosthesis.dmi', icon_state = "[RF.prosthesis_type]_l")
+
+	overlays_standing[MUTATIONS_LAYER] = standing
+
+	if (update_icons)   update_icons()
 
 //For legacy support.
 /mob/living/carbon/human/regenerate_icons()

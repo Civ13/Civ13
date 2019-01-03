@@ -94,11 +94,6 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 50)
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 
-/obj/item/weapon/crowbar/red
-	icon = 'icons/obj/items.dmi'
-	icon_state = "red_crowbar"
-	item_state = "crowbar_red"
-
 /obj/item/weapon/horn
 	name = "blowing horn"
 	desc = "Good for long range communication."
