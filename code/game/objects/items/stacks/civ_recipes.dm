@@ -54,7 +54,9 @@
 	recipes += new/datum/stack_recipe("ore collector", /obj/item/weapon/storage/ore_collector, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("seed collector", /obj/item/weapon/storage/seed_collector, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather bandages", /obj/item/stack/medical/bruise_pack/bint/leather, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += list(new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
+	recipes += new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (map.ordinal_age <= 0)
+		recipes += new/datum/stack_recipe("leather loincloth", /obj/item/clothing/under/loinleather, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 18)
 		recipes += new/datum/stack_recipe("coin pouch", /obj/item/clothing/accessory/storage/coinpouch, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("leather backpack", /obj/item/weapon/storage/backpack, 6, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -427,6 +429,10 @@
 			new/datum/stack_recipe("black tricorne", /obj/item/clothing/head/tricorne_black, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("tarred hat", /obj/item/clothing/head/tarred_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bandana", /obj/item/clothing/head/piratebandana1, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[1] < 18 || current_res[3] < 15)
+		recipes += new/datum/stack_recipe_list("clothing", list(
+			new/datum/stack_recipe("cotton loincloth", /obj/item/clothing/under/loincotton, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 	if ((current_res[1] >= 18 && current_res[3] >= 15) && !(current_res[1] >= 38 && current_res[3] >= 32))
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("white tunic", /obj/item/clothing/under/toxotai, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -555,13 +561,6 @@
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
-
-/material/bearpelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
-	..()
-	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/black, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/black, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/black, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("bear pelt headcover", /obj/item/clothing/head/bearpelt/black, 4, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/bearpelt/brown/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
