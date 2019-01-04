@@ -3,11 +3,7 @@
 	priority = 2
 	can_infect = TRUE
 	blood_level = TRUE
-	allowed_tools = list(
-		1 = list("/obj/item/stack/medical/advanced/bruise_pack",100),
-		2 = list("/obj/item/stack/medical/advanced/bruise_pack/herbs",70),
-		3 = list("/obj/item/stack/medical/bruise_pack",50),
-	)
+
 /datum/surgery_step/internal/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 
 	if (!hasorgans(target))

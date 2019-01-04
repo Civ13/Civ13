@@ -5,12 +5,6 @@
 
 /datum/surgery_step/generic/
 	can_infect = TRUE
-	allowed_tools = list(
-		1 = list("/obj/item/weapon/surgery/scalpel",100),
-		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
-		3 = list("/obj/item/weapon/material/knife",75),
-		4 = list("/obj/item/weapon/material/shard",50),
-	)
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		if (user == target)
 			return FALSE

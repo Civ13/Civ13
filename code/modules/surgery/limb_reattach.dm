@@ -14,7 +14,6 @@
 			return FALSE
 		var/list/organ_data = target.species.has_limbs["[target_zone]"]
 		return !isnull(organ_data)
-	allowed_tools = list(1 = list("/obj/item/organ/external",100))
 
 /datum/surgery_step/limb/attach
 	allowed_tools = list(1 = list("/obj/item/organ/external",100))
