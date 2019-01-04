@@ -338,7 +338,7 @@
 					bone.name = "[name] bone"
 					bone.amount = amt
 				if (istype(src, /mob/living/simple_animal/hostile/bear))
-					var/obj/item/stack/material/bearpelt/NP = new/obj/item/stack/material/bearpelt(get_turf(src))
+					var/obj/item/stack/material/bearpelt/black/NP = new/obj/item/stack/material/bearpelt/black(get_turf(src))
 					NP.amount = 9
 				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
 					var/obj/item/stack/material/bearpelt/white/NP = new/obj/item/stack/material/bearpelt/white(get_turf(src))

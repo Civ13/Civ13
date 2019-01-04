@@ -474,7 +474,7 @@ var/list/name_to_material
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/pelt
 
-/material/bearpelt
+/material/bearpelt/black
 	name = "bearpelt"
 	use_name = "bear"
 	icon_colour = "#8C7E6E"
@@ -483,7 +483,7 @@ var/list/name_to_material
 	hardness = 30
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
-	stack_type = /obj/item/stack/material/bearpelt
+	stack_type = /obj/item/stack/material/bearpelt/black
 
 /material/bearpelt/white
 	name = "whitebearpelt"

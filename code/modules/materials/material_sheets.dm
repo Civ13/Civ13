@@ -252,7 +252,7 @@
 	w_class = 2.0
 	flammable = TRUE
 
-/obj/item/stack/material/bearpelt
+/obj/item/stack/material/bearpelt/black
 	name = "black bear pelt"
 	desc = "A pelt from a skinned bear."
 	icon_state = "sheet-bearpelt"
