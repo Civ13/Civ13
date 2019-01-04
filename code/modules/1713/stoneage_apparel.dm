@@ -3,9 +3,16 @@
 /obj/item/clothing/under/loinleather
 	name = "leather loincloth"
 	desc = "A wrap of leather cloth, worn around the waist."
-	icon_state = "leatherloincloth"
-	item_state = "leatherloincloth"
-	worn_state = "leatherloincloth"
+	icon_state = "leatherloincloth1"
+	item_state = "leatherloincloth1"
+	worn_state = "leatherloincloth1"
+
+/obj/item/clothing/under/loinleather/New()
+	..()
+	var/randcloth = pick(1,2,3,4)
+	icon_state = "leatherloincloth[randcloth]"
+	item_state = "leatherloincloth[randcloth]"
+	worn_state = "leatherloincloth[randcloth]"
 
 /obj/item/clothing/under/indian1
 	name = "short leather loincloth"
