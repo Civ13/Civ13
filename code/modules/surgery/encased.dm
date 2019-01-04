@@ -7,7 +7,13 @@
 	can_infect = TRUE
 	blood_level = TRUE
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-
+	allowed_tools = list(
+		1 = list("/obj/item/weapon/surgery/bone_saw",100),
+		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
+		3 = list("/obj/item/weapon/material/hatchet",75),
+		4 = list("/obj/item/weapon/material/hatchet/tribal",75),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",100),
+	)
 		if (!hasorgans(target))
 			return FALSE
 
@@ -17,11 +23,11 @@
 
 /datum/surgery_step/open_encased/saw
 	allowed_tools = list(
-	/obj/item/weapon/surgery/bone_saw = 100, \
-	/obj/item/weapon/surgery/bone_saw/bronze = 85, \
-	/obj/item/weapon/material/hatchet = 75, \
-	/obj/item/weapon/material/hatchet/tribal = 75, \
-	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100 \
+		1 = list("/obj/item/weapon/surgery/bone_saw",100),
+		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
+		3 = list("/obj/item/weapon/material/hatchet",75),
+		4 = list("/obj/item/weapon/material/hatchet/tribal",75),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",100),
 	)
 
 	min_duration = 50
@@ -69,10 +75,10 @@
 
 /datum/surgery_step/open_encased/retract
 	allowed_tools = list(
-	/obj/item/weapon/surgery/retractor = 100, 	\
-	/obj/item/weapon/surgery/retractor/bronze = 85, 	\
-	/obj/item/weapon/crowbar = 70, 	\
-	/obj/item/weapon/material/handle = 60,
+		1 = list("/obj/item/weapon/surgery/retractor",100),
+		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
+		3 = list("/obj/item/weapon/crowbar",70),
+		4 = list("/obj/item/weapon/material/handle",60),
 	)
 
 	min_duration = 30
@@ -127,10 +133,10 @@
 
 /datum/surgery_step/open_encased/close
 	allowed_tools = list(
-	/obj/item/weapon/surgery/retractor = 100, 	\
-	/obj/item/weapon/surgery/retractor/bronze = 85, 	\
-	/obj/item/weapon/crowbar = 70, 	\
-	/obj/item/weapon/material/handle = 60,
+		1 = list("/obj/item/weapon/surgery/retractor",100),
+		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
+		3 = list("/obj/item/weapon/crowbar",70),
+		4 = list("/obj/item/weapon/material/handle",60)
 	)
 
 	min_duration = 20

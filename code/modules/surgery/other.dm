@@ -7,9 +7,9 @@
 /datum/surgery_step/fix_vein
 	priority = 2
 	allowed_tools = list(
-	/obj/item/weapon/surgery/hemostat = 100, 	\
-	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
-	/obj/item/stack/material/rope = 50, 	\
+		1 = list("/obj/item/weapon/surgery/hemostat",100),
+		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
+		3 = list("/obj/item/stack/material/rope",50),
 	)
 	can_infect = TRUE
 	blood_level = TRUE
@@ -56,10 +56,10 @@
 /datum/surgery_step/fix_dead_tissue		//Debridement
 	priority = 2
 	allowed_tools = list(
-		/obj/item/weapon/surgery/scalpel = 100,		\
-	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
-		/obj/item/weapon/material/knife = 75,	\
-		/obj/item/weapon/material/shard = 50, 		\
+		1 = list("/obj/item/weapon/surgery/scalpel",100),
+		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
+		3 = list("/obj/item/weapon/material/knife",75),
+		4 = list("/obj/item/weapon/material/shard",50),
 	)
 
 	can_infect = TRUE
@@ -102,9 +102,9 @@
 /datum/surgery_step/treat_necrosis
 	priority = 2
 	allowed_tools = list(
-		/obj/item/weapon/reagent_containers/dropper = 100,
-		/obj/item/weapon/reagent_containers/glass/bottle = 75,
-		/obj/item/weapon/reagent_containers/glass/bucket = 50,
+		1 = list("/obj/item/weapon/reagent_containers/dropper",100),
+		2 = list("/obj/item/weapon/reagent_containers/glass/bottle",75),
+		3 = list("/obj/item/weapon/reagent_containers/glass/bucket",50),
 	)
 
 	can_infect = FALSE
