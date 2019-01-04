@@ -259,11 +259,11 @@
 /obj/item/clothing/suit/storage/coat/fur/white
 	name = "white fur coat"
 	desc = "A thick white fur coat, great for the winter."
-	icon_state = "fur_jacket2"
-	item_state = "fur_jacket2"
-	worn_state = "fur_jacket2"
+	icon_state = "fur_jacket4"
+	item_state = "fur_jacket4"
+	worn_state = "fur_jacket4"
 	specific = TRUE
-	colorn = 2
+	colorn = 4
 
 /obj/item/clothing/suit/storage/coat/fur/black
 	name = "black fur coat"
@@ -277,11 +277,11 @@
 /obj/item/clothing/suit/storage/coat/fur/grey
 	name = "grey fur coat"
 	desc = "A thick grey fur coat, great for the winter."
-	icon_state = "fur_jacket4"
-	item_state = "fur_jacket4"
-	worn_state = "fur_jacket4"
+	icon_state = "fur_jacket2"
+	item_state = "fur_jacket2"
+	worn_state = "fur_jacket2"
 	specific = TRUE
-	colorn = 4
+	colorn = 2
 
 /obj/item/clothing/suit/storage/coat/fur/pink
 	name = "human skin coat"
@@ -365,17 +365,17 @@
 /obj/item/clothing/shoes/fur/white
 	name = "white fur boots"
 	desc = "Dense fur boots."
-	icon_state = "fur2"
-	item_state = "fur2"
-	worn_state = "fur2"
+	icon_state = "fur4"
+	item_state = "fur4"
+	worn_state = "fur4"
 	specific = TRUE
 
 /obj/item/clothing/shoes/fur/grey
 	name = "grey fur boots"
 	desc = "Dense fur boots."
-	icon_state = "fur4"
-	item_state = "fur4"
-	worn_state = "fur4"
+	icon_state = "fur2"
+	item_state = "fur2"
+	worn_state = "fur2"
 	specific = TRUE
 
 /obj/item/clothing/shoes/fur/pink
