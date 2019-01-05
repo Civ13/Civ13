@@ -378,7 +378,7 @@ BLIND     // can't see anything
 
 	//convenience var for defining the icon state for the overlay used when the clothing is worn.
 
-	valid_accessory_slots = list("utility","armband","decor")
+	valid_accessory_slots = list("utility","armband","decor", "sash", "cape", "overcloth")
 	restricted_accessory_slots = list("utility", "armband")
 
 

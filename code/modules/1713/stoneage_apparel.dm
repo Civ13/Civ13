@@ -76,6 +76,7 @@
 	desc = "A human bone talisman."
 	icon_state = "talisman"
 	item_state = "talisman"
+	slot = "decor"
 
 /obj/item/clothing/accessory/armband/indian1
 	name = "indian acessories"

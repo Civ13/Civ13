@@ -493,7 +493,11 @@ var/global/list/damage_icon_parts = list()
 		var/obj/item/clothing/under/under = w_uniform
 		if (under.accessories.len)
 			for (var/obj/item/clothing/accessory/A in under.accessories)
-				standing.overlays |= A.get_mob_overlay()
+				var/image/NI = A.get_mob_overlay()
+				if (istype(A, /obj/item/clothing/accessory/custom))
+					NI.color = A.color
+				standing.overlays |= NI
+
 
 		overlays_standing[UNIFORM_LAYER]	= standing
 	else
@@ -745,7 +749,10 @@ var/global/list/damage_icon_parts = list()
 		var/obj/item/clothing/suit/suit = wear_suit
 		if (istype(suit) && suit.accessories.len)
 			for (var/obj/item/clothing/accessory/A in suit.accessories)
-				standing.overlays |= A.get_mob_overlay()
+				var/image/NI = A.get_mob_overlay()
+				if (istype(A, /obj/item/clothing/accessory/custom))
+					NI.color = A.color
+				standing.overlays |= NI
 		if (!istype(wear_suit, /obj/item/clothing/suit/armor/medieval/chainmail))
 			overlays_standing[SUIT_LAYER]	= standing
 

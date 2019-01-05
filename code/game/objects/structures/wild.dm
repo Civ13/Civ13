@@ -94,6 +94,7 @@
 	density = TRUE
 	sways = TRUE
 	amount = 5
+	layer = 5.11
 
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
@@ -180,7 +181,7 @@
 	sways = FALSE
 	amount = 4
 	var/cooldown_sap = FALSE
-
+	layer = 5.11
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone) && user.a_intent == I_HELP)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -413,7 +414,7 @@
 	amount = 9
 	health = 200
 	maxhealth = 200
-
+	layer = 5.11
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")

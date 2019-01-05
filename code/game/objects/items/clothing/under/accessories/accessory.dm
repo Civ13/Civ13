@@ -21,11 +21,7 @@
 	if (!inv_overlay)
 		if (!mob_overlay)
 			get_mob_overlay()
-
 		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
-		if (icon_override)
-			if ("[tmp_icon_state]_tie" in icon_states(icon_override))
-				tmp_icon_state = "[tmp_icon_state]_tie"
 		inv_overlay = image(icon = mob_overlay.icon, icon_state = tmp_icon_state, dir = SOUTH)
 	return inv_overlay
 

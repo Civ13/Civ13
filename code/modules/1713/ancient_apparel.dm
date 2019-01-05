@@ -442,3 +442,42 @@
 		toggled = TRUE
 		usr.update_inv_wear_mask(1)
 		return
+/obj/item/clothing/under/custom
+	var/uncolored = FALSE
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+/obj/item/clothing/under/custom/toga
+	name = "toga"
+	desc = "A simple cloth toga."
+	icon_state = "customtoga"
+	item_state = "customtoga"
+	worn_state = "customtoga"
+
+/obj/item/clothing/under/custom/attack_self(mob/user as mob)
+	if (uncolored)
+		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (lentext(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			color = addtext("#",input)
+//			user << "Color: [color]"
+			uncolored = FALSE
+			return
+	else
+		..()

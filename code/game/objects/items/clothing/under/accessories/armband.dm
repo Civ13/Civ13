@@ -10,9 +10,9 @@
 		if (icon_override)
 			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
 				tmp_icon_state = "[tmp_icon_state]_mob"
-			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]", layer = 5)
+			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]", layer = 4.1)
 		else
-			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]", layer = 5)
+			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]", layer = 4.1)
 	return mob_overlay
 
 /obj/item/clothing/accessory/armband/british
@@ -81,3 +81,96 @@
 	icon_state = "bronze_arm"
 	icon_state = "bronze_arm"
 	slot = "decor"
+
+//customizable
+/obj/item/clothing/accessory/custom
+	var/uncolored = FALSE
+	var/icon/customoverlay = null
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+/obj/item/clothing/accessory/custom/armband
+	name = "armband"
+	desc = "A cloth armband."
+	icon_state = "customarmband"
+	item_state = "customarmband"
+	worn_state = "customarmband"
+	slot = "armband"
+
+/obj/item/clothing/accessory/custom/sash
+	name = "sash"
+	desc = "A cloth sash."
+	icon_state = "customsash"
+	item_state = "customsash"
+	worn_state = "customsash"
+	slot = "sash"
+
+/obj/item/clothing/accessory/custom/tabard
+	name = "tabard"
+	desc = "A cloth tabard."
+	icon_state = "customtabard"
+	item_state = "customtabard"
+	worn_state = "customtabard"
+	slot = "overcloth"
+
+/obj/item/clothing/accessory/custom/cape
+	name = "cape"
+	desc = "A cloth cape."
+	icon_state = "customcape"
+	item_state = "customcape"
+	worn_state = "customcape"
+	slot = "cape"
+
+/obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
+	if (uncolored)
+		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (lentext(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			color = addtext("#",input)
+//			user << "Color: [color]"
+			uncolored = FALSE
+			return
+	else
+		..()
+
+/obj/item/clothing/accessory/custom/get_mob_overlay()
+	if (!mob_overlay)
+		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+		if (icon_override)
+			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
+				tmp_icon_state = "[tmp_icon_state]_mob"
+			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]", layer = 4.11)
+		else
+			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]", layer = 4.11)
+
+		var/image/NI =  mob_overlay
+		NI.color = color
+		return NI
+	return mob_overlay
+
+/obj/item/clothing/accessory/custom/get_inv_overlay()
+	if (!inv_overlay)
+		if (!mob_overlay)
+			get_mob_overlay()
+		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+		inv_overlay = image(icon = mob_overlay.icon, icon_state = tmp_icon_state, dir = SOUTH)
+		var/image/NI =  inv_overlay
+		NI.color = color
+		return NI
+	return inv_overlay
