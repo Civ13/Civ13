@@ -29,56 +29,43 @@
 
 /mob/living/carbon/human/proc/give_clothes()
 	if (!map.chad_mode)
+
+//knives/////////////////////////////////////////////////
 		if (map.civilizations)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
+			if (map.ordinal_age == 0)
+				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
+			else if (map.ordinal_age == 1)
+				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_belt)
+			else if (map.ordinal_age == 2)
+				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_belt)
+			else
+				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_belt)
+
+//clothes/////////////////////////////////////////////////
 		if (map.ordinal_age == 0)
 			equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
 
 		else if (map.ordinal_age == 1)
-			var/randcloth = rand(1,2)
-			if (randcloth == 1)
-				equip_to_slot_or_del(new /obj/item/clothing/under/toga(src), slot_w_uniform)
-			else if (randcloth == 2)
-				equip_to_slot_or_del(new /obj/item/clothing/under/toga2(src), slot_w_uniform)
+			equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 
 		else if (map.ordinal_age == 2)
-			var/randcloth = rand(1,2)
-			if (randcloth == 1)
-				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/yellow(src), slot_w_uniform)
-			else if (randcloth == 2)
-				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
+			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 		else
-			if (prob(30))
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(src), slot_shoes)
-			else
-				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (gender == "male")
-				var/randcloth = rand(1,5)
-				if (randcloth == 1)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civ1(src), slot_w_uniform)
-				else if (randcloth == 2)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
-				else if (randcloth == 3)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civ3(src), slot_w_uniform)
-				else if (randcloth == 4)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civ5(src), slot_w_uniform)
-				else if (randcloth == 5)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civ6(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
 			else
-				var/randcloth = rand(1,3)
-				if (randcloth == 1)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				else if (randcloth == 2)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civf2(src), slot_w_uniform)
-				else if (randcloth == 3)
-					equip_to_slot_or_del(new /obj/item/clothing/under/civf3(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+
+//coats/////////////////////////////////////////////////
 		if (season == "WINTER" || map.ID == MAP_NOMADS_ICE_AGE)
 			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+
 /datum/job/civilian/governor
 	title = "Governor"
 	en_meaning = "Colony Leader"
