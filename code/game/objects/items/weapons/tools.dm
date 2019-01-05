@@ -193,3 +193,16 @@
 	slot_flags = null
 	attack_verb = list("slapped")
 	flammable = TRUE
+
+/obj/item/weapon/goldsceptre
+	name = "gold sceptre"
+	desc = "A sceptre made of gold."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "goldsceptre"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL+4
+	throwforce = WEAPON_FORCE_NORMAL-1
+	w_class = 2.0
+	matter = list(DEFAULT_WALL_MATERIAL = 250)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")

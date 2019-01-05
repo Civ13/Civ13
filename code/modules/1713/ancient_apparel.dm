@@ -109,6 +109,13 @@
 	item_state = "celtic_long_braccae"
 	worn_state = "celtic_long_braccae"
 
+/obj/item/clothing/under/pharaoh
+	name = "fancy shendyt"
+	desc = "A fancy, decorated shendyt."
+	icon_state = "pharaoh"
+	item_state = "pharaoh"
+	worn_state = "pharaoh"
+
 /obj/item/clothing/suit/cape
 	name = "red cape"
 	desc = "A long red cape."
@@ -131,7 +138,7 @@
 	worn_state = "roman"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, bullet = 40, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/roman_decurion
 	name = "Roman decurion helmet"
@@ -141,7 +148,7 @@
 	worn_state = "roman_d"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, bullet = 40, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "Roman centurion helmet"
@@ -151,7 +158,7 @@
 	worn_state = "roman_c"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, bullet = 40, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/gladiator
 	name = "gladiator helmet"
@@ -161,7 +168,7 @@
 	worn_state = "gladiator"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, bullet = 45, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 60, bullet = 45, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 
 /obj/item/clothing/head/helmet/horned
@@ -171,7 +178,7 @@
 	item_state = "viking"
 	worn_state = "viking"
 	body_parts_covered = HEAD
-	armor = list(melee = 45, bullet = 30, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 45, bullet = 30, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek
 	name = "greek helmet"
@@ -181,7 +188,7 @@
 	worn_state = "greek"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 62, bullet = 44, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 62, bullet = 44, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek_commander
 	name = "Lochagos helmet"
@@ -191,7 +198,7 @@
 	worn_state = "greek_c"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 62, bullet = 44, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 62, bullet = 44, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek_sl
 	name = "Dimoerites helmet"
@@ -201,7 +208,24 @@
 	worn_state = "greek_sl"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 62, bullet = 44, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 62, bullet = 44, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/leather
+	name = "leather helmet"
+	desc = "A simple leather helmet."
+	icon_state = "leatherhelmet"
+	item_state = "leatherhelmet"
+	worn_state = "leatherhelmet"
+	body_parts_covered = HEAD
+	armor = list(melee = 27, bullet = 8, laser = 10, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/nemes
+	name = "nemes headdress"
+	desc = "a fancy, golden headdress."
+	icon_state = "nemes_headdress"
+	item_state = "nemes_headdress"
+	worn_state = "nemes_headdress"
+	flags_inv = BLOCKHEADHAIR
 
 /obj/item/clothing/head/bearpelt
 	name = "bearpelt headcover"
@@ -456,6 +480,34 @@
 	icon_state = "customtoga"
 	item_state = "customtoga"
 	worn_state = "customtoga"
+
+/obj/item/clothing/under/custom/roman
+	name = "tunic"
+	desc = "A simple cloth tunic, with a brass and leather belt."
+	icon_state = "customroman"
+	item_state = "customroman"
+	worn_state = "customroman"
+
+/obj/item/clothing/under/custom/spartan
+	name = "short loincloth"
+	desc = "A simple, small loincloth."
+	icon_state = "customspartan"
+	item_state = "customspartan"
+	worn_state = "customspartan"
+
+/obj/item/clothing/under/custom/shendyt
+	name = "shendyt"
+	desc = "A kilt-like cloth used around the waist."
+	icon_state = "customshendyt"
+	item_state = "customshendyt"
+	worn_state = "customshendyt"
+
+/obj/item/clothing/under/custom/celtic
+	name = "celtic trousers"
+	desc = "Thick cloth celtic trousers."
+	icon_state = "customceltic"
+	item_state = "customceltic"
+	worn_state = "customceltic"
 
 /obj/item/clothing/under/custom/attack_self(mob/user as mob)
 	if (uncolored)

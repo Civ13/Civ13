@@ -57,15 +57,19 @@
 	recipes += new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.ordinal_age <= 0)
 		recipes += new/datum/stack_recipe("leather loincloth", /obj/item/clothing/under/loinleather, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (map.ordinal_age <= 1)
+		recipes += new/datum/stack_recipe("small customizable loincloth", /obj/item/clothing/under/custom/spartan, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 18)
 		recipes += new/datum/stack_recipe("coin pouch", /obj/item/clothing/accessory/storage/coinpouch, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("leather backpack", /obj/item/weapon/storage/backpack, 6, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[2] >= 19)
+	if (current_res[2] >= 19 && map.ordinal_age <= 1)
 		recipes += new/datum/stack_recipe("roman-style sandals", /obj/item/clothing/shoes/roman, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[2] >= 39)
+		recipes += new/datum/stack_recipe("long celtic braccae", /obj/item/clothing/under/celtic_long_braccae, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes +=  new/datum/stack_recipe("short celtic braccae", /obj/item/clothing/under/celtic_short_braccae, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[2] >= 39 && map.ordinal_age <= 2)
 		recipes += new/datum/stack_recipe("medieval shoes", /obj/item/clothing/shoes/medieval, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("arabic-style shoes", /obj/item/clothing/shoes/medieval/arab, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[2] >= 85)
+	if (current_res[2] >= 85&& map.ordinal_age >= 3)
 		recipes += new/datum/stack_recipe("gunpowder pouch", /obj/item/weapon/reagent_containers/food/drinks/gunpowder, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("bandolier", /obj/item/clothing/accessory/storage/webbing, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 55 && current_res[3] >= 25)
@@ -74,6 +78,8 @@
 		recipes += new/datum/stack_recipe("leather boots", /obj/item/clothing/shoes/leatherboots1, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 15)
 		recipes += new/datum/stack_recipe("leather armor", /obj/item/clothing/suit/armor/medieval/leather, 6, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("leather helmet", /obj/item/clothing/head/helmet/leather, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE)
+
 	recipes += new/datum/stack_recipe("leather curtain", /obj/structure/curtain/leather, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += list(new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += new/datum/stack_recipe_list("accessories", list(
@@ -391,6 +397,7 @@
 
 	if ((current_res[1] >= 22 && current_res[3] >= 25)&& !(current_res[1] >= 45 && current_res[3] >= 35))
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
+			new/datum/stack_recipe("nemes headdress", /obj/item/clothing/head/nemes, 6, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("eyepatch", /obj/item/clothing/mask/glasses/eyepatch, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blindfold", /obj/item/clothing/mask/glasses/sunglasses/blindfold, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -431,15 +438,12 @@
 
 	if ((current_res[1] >= 18 && current_res[3] >= 15) && !(current_res[1] >= 38 && current_res[3] >= 32))
 		recipes += new/datum/stack_recipe_list("clothing", list(
-			new/datum/stack_recipe("white tunic", /obj/item/clothing/under/toxotai, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("fancy shendyt", /obj/item/clothing/under/pharaoh, 8, _time = 145, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable tunic", /obj/item/clothing/under/custom/roman, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable toga", /obj/item/clothing/under/custom/toga, 3, _time = 65, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("roman-style tunic", /obj/item/clothing/under/roman, 5, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("greek-style tunic", /obj/item/clothing/under/greek2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("blue celtic trousers", /obj/item/clothing/under/celtic_blue, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("green celtic trousers", /obj/item/clothing/under/celtic_green, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("red celtic trousers", /obj/item/clothing/under/celtic_red, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("long celtic braccae", /obj/item/clothing/under/celtic_long_braccae, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("short celtic braccae", /obj/item/clothing/under/celtic_short_braccae, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("customizable shendyt", /obj/item/clothing/under/custom/shendyt, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable celtic trousers", /obj/item/clothing/under/custom/celtic, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 	if ((current_res[1] >= 38 && current_res[3] >= 32) && !(current_res[1] >= 74 && current_res[3] >= 55))
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("yellow tunic", /obj/item/clothing/under/medieval/yellow, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -502,6 +506,7 @@
 	recipes += new/datum/stack_recipe("gold coins", /obj/item/stack/money/goldcoin, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("gold crown", /obj/item/clothing/head/helmet/gold_crown, 3, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("gold arm bangles", /obj/item/clothing/accessory/armband/armbangle/gold, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("gold sceptre",  /obj/item/weapon/goldsceptre, 3, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/silver/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
