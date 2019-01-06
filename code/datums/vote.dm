@@ -247,7 +247,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if (C.holder.rights & R_ADMIN)
 				admin = TRUE
 		voting |= C
-
+		if (!admin && C.next_normal_respawn > world.realtime)
+			C << "You can't start restart votes if you are in the respawn queue."
+			return
 		. = "<html><head><title>Voting Panel</title></head><body>"
 		if (mode)
 			if (question)	. += "<h2>Vote: '[question]'</h2>"
@@ -275,11 +277,14 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		else
 			. += "<h2>Start a vote:</h2><hr><ul><li>"
 			//restart
-			if (admin || (config.allow_vote_restart && !map.ID == MAP_NOMADS_EXTENDED))
-				. += "<a href='?src=\ref[src];vote=restart'>Restart</a>"
-			else
+			if (!admin && C.next_normal_respawn > world.realtime)
 				. += "<font color='grey'>Restart (Disallowed)</font>"
-			. += "</li><li>"
+			else
+				if (admin || (config.allow_vote_restart && !map.ID == MAP_NOMADS_EXTENDED))
+					. += "<a href='?src=\ref[src];vote=restart'>Restart</a>"
+				else
+					. += "<font color='grey'>Restart (Disallowed)</font>"
+				. += "</li><li>"
 			if (admin)
 				. += "\t(<a href='?src=\ref[src];vote=toggle_restart'>[config.allow_vote_restart?"Allowed":"Disallowed"]</a>)"
 				. += "</li><li>"
