@@ -10,4 +10,4 @@ obj/item/weapon/snowball
 	throw_range = 7
 	w_class = 1.0
 	matter = list(DEFAULT_WALL_MATERIAL = 50)
-
+	flammable = FALSE

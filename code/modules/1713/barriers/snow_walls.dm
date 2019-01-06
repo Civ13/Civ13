@@ -7,6 +7,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
+	flammable = FALSE
 	var/progress = FALSE
 /obj/structure/window/snowwall/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
@@ -68,7 +69,7 @@
 /obj/structure/window/snowwall/incomplete
 	name = "incomplete snow barricade"
 	icon_state = "snow_wall_33%"
-
+	flammable = FALSE
 
 /obj/structure/window/snowwall/incomplete/ex_act(severity)
 	qdel(src)
@@ -163,6 +164,7 @@
 	icon = 'icons/obj/items.dmi'
 	w_class = TRUE
 	var/sand_amount = FALSE
+	flammable = FALSE
 
 /obj/item/weapon/snowwall/attack_self(mob/user)
 	user << "You start building the snow blocks wall..."
