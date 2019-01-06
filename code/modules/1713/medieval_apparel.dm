@@ -416,3 +416,24 @@
 	item_state = pickcolor
 	worn_state = pickcolor
 
+//mesoamerican stuff
+/obj/item/clothing/head/mayan_headdress
+	name = "mayan headdress"
+	desc = "a mayan style headdress."
+	icon_state = "mayan_headdress"
+	item_state = "mayan_headdress"
+	worn_state = "mayan_headdress"
+
+/obj/item/clothing/under/huipil
+	name = "huipil"
+	desc = "a light cloth, with blue trimmings."
+	icon_state = "huipil"
+	item_state = "huipil"
+	worn_state = "huipil"
+
+/obj/item/clothing/under/halfhuipil
+	name = "half huipil"
+	desc = "a light cloth, covering the lower part of the body. With red trimmings."
+	icon_state = "halfhuipil"
+	item_state = "halfhuipil"
+	worn_state = "halfhuipil"
