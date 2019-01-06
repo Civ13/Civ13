@@ -34,6 +34,11 @@
 	amount = 1
 	layer = 1.99
 
+/obj/covers/wood/stairs
+	name = "wood stairs"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "wood2_stairs"
+
 /obj/covers/cobblestone
 	name = "cobblestone floor"
 	icon = 'icons/turf/floors.dmi'
@@ -45,6 +50,12 @@
 	layer = 1.99
 	flammable = FALSE
 	explosion_resistance = 2
+
+/obj/covers/cobblestone/stairs
+	name = "stone stairs"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "rampup"
+
 
 /obj/covers/sandstone
 	name = "sandstone floor"
