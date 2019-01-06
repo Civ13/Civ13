@@ -40,7 +40,7 @@
 		if (new_padding_material)
 			padding_material = get_material_by_name(new_padding_material)
 		update_icon()
-		if (material == "wood")
+		if (get_material_name() == "wood")
 			flammable = TRUE
 
 /obj/structure/bed/get_material()
