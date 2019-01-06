@@ -196,6 +196,7 @@
 	if (hanging)
 		hanging.forceMove(loc)
 		density = TRUE
+		hanging.lying = 0
 		hanging.dir = SOUTH
 		hanging.pixel_y = 3 // because getting punched resets it
 		icon_state = "noose-hanging"
@@ -244,6 +245,9 @@
 			target.loc = get_turf(src)
 			target.dir = SOUTH
 			fire()
+			target.anchored = TRUE
+			spawn(10)
+				target.update_icons()
 
 /obj/structure/noose/attack_hand(var/mob/living/carbon/human/H)
 	if (!istype(H))
@@ -261,6 +265,7 @@
 			visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 			hanging.pixel_x = 0
 			hanging.pixel_y = 0
+			hanging.anchored = TRUE
 			hanging = null
 
 
@@ -294,6 +299,7 @@
 	if (hanging)
 		hanging.forceMove(loc)
 		density = TRUE
+		hanging.lying = 0
 		hanging.dir = SOUTH
 		hanging.pixel_y = 3 // because getting punched resets it
 		icon_state = "gallows2"
@@ -353,6 +359,9 @@
 				target.loc = get_turf(src)
 				target.dir = SOUTH
 				fire()
+				spawn(10)
+					target.update_icons()
+					target.anchored = 1
 
 /obj/structure/gallows/attack_hand(var/mob/living/carbon/human/H)
 	if (!istype(H))
@@ -379,6 +388,7 @@
 				visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 				hanging.pixel_x = 0
 				hanging.pixel_y = 0
+				hanging.anchored = 0
 				hanging = null
 				icon_state = "gallows1"
 
@@ -391,6 +401,7 @@
 					visible_message("<span class = 'danger'>[H] frees [hanging] from the noose!</span>")
 					hanging.pixel_x = 0
 					hanging.pixel_y = 0
+					hanging.anchored = 0
 					hanging = null
 					icon_state = "gallows0"
 					roped = FALSE

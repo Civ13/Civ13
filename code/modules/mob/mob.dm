@@ -752,14 +752,22 @@
 /mob/proc/update_canmove()
 
 	var/noose = FALSE
+	var/gallows = FALSE
 	for (var/obj/structure/noose/N in get_turf(src))
 		if (N.hanging == src)
 			lying = FALSE
 			canmove = FALSE
 			anchored = TRUE
 			noose = TRUE
-
-	if (!noose)
+			update_icons()
+	for (var/obj/structure/gallows/G in get_turf(src))
+		if (G.hanging == src)
+			lying = FALSE
+			canmove = FALSE
+			anchored = TRUE
+			gallows = TRUE
+			update_icons()
+	if (!noose && !gallows)
 		if (buckled)
 			anchored = TRUE
 			canmove = FALSE
