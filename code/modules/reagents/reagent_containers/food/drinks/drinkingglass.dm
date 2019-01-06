@@ -130,6 +130,7 @@
 	icon_state = "wood_cup"
 	glass_type = "mug"
 	volume = 40
+	flammable = TRUE
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin
 	name = "waterskin"
@@ -140,6 +141,7 @@
 	slot_flags = SLOT_ID
 	w_class = 2.0
 	volume = 70
+	flammable = TRUE
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
 	name = "tribal pot"

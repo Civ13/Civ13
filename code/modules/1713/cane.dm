@@ -10,3 +10,4 @@
 	w_class = 2.0
 	matter = list(DEFAULT_WALL_MATERIAL = 50)
 	attack_verb = list("bludgeoned", "whacked", "disciplined")
+	flammable = TRUE

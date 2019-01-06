@@ -16,12 +16,14 @@
 	desc = "A simple wood pegleg, used to replace a missing leg."
 	icon_state = "pegleg"
 	limb_type = "leg"
+	flammable = TRUE
 
 /obj/item/weapon/prosthesis/woodfoot
 	name = "wooden foot"
 	desc = "A simple wood shoe, used to replace a missing foot."
 	icon_state = "woodfoot"
 	limb_type = "foot"
+	flammable = TRUE
 
 /obj/item/weapon/prosthesis/attack(mob/living/carbon/human/C as mob, mob/living/carbon/human/user as mob)
 	if (user.a_intent == I_HELP)

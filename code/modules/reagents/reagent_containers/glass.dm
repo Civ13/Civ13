@@ -159,7 +159,7 @@
 	possible_transfer_amounts = list(10,20,30,60,120)
 	volume = 120
 	flags = OPENCONTAINER
-
+	flammable = TRUE
 /obj/item/weapon/reagent_containers/glass/bucket/attackby(var/obj/D, mob/user as mob)
 
 	if (istype(D, /obj/item/weapon/mop))

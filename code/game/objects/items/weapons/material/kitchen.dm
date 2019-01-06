@@ -134,6 +134,6 @@
 	force_divisor = 0.7 // 10 when wielded with weight 15 (wood)
 	thrown_force_divisor = TRUE // as above
 	hitsound = "swing_hit"
-
+	flammable = TRUE
 /obj/item/weapon/material/kitchen/rollingpin/attack(mob/living/M as mob, mob/living/user as mob)
 	return ..()

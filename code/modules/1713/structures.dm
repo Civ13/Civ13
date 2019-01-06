@@ -172,6 +172,7 @@
 	layer = MOB_LAYER + 1.0
 	anchored = TRUE
 	var/mob/living/carbon/human/hanging = null
+	flammable = TRUE
 
 /obj/structure/noose/New()
 	..()
