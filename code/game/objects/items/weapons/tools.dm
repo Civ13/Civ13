@@ -197,7 +197,7 @@
 /obj/item/weapon/goldsceptre
 	name = "gold sceptre"
 	desc = "A sceptre made of gold."
-	icon = 'icons/obj/items.dmi'
+	icon = 'icons/obj/weapons.dmi'
 	icon_state = "goldsceptre"
 	flags = CONDUCT
 	slot_flags = SLOT_BELT

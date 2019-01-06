@@ -275,7 +275,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		else
 			. += "<h2>Start a vote:</h2><hr><ul><li>"
 			//restart
-			if (admin || config.allow_vote_restart)
+			if (admin || (config.allow_vote_restart && !map.ID == MAP_NOMADS_EXTENDED))
 				. += "<a href='?src=\ref[src];vote=restart'>Restart</a>"
 			else
 				. += "<font color='grey'>Restart (Disallowed)</font>"
@@ -310,7 +310,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if (usr.client.holder)
 					config.allow_vote_mode = !config.allow_vote_mode
 			if ("restart")
-				if (config.allow_vote_restart || usr.client.holder)
+				if ((config.allow_vote_restart && !map.ID == MAP_NOMADS_EXTENDED) || usr.client.holder)
 					initiate_vote("restart",usr.key)
 			if ("custom")
 				if (usr.client.holder)

@@ -1,10 +1,10 @@
 #define NO_WINNER "The round is proceeding normally."
-/obj/map_metadata/nomads
-	ID = MAP_NOMADS
-	title = "Nomads (Temperate) (155x155x2)"
+/obj/map_metadata/nomads_extended
+	ID = MAP_NOMADS_EXTENDED
+	title = "Nomads Extended (Temperate) (225x225x3)"
 	lobby_icon_state = "civilizations"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 6000 // 10 minutes!
+	respawn_delay = 12000 // 20 minutes!
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
@@ -38,21 +38,21 @@
 	age3_timer = 42000
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
-/obj/map_metadata/nomads/New()
+/obj/map_metadata/nomads_extended/New()
 	..()
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads/faction2_can_cross_blocks()
+/obj/map_metadata/nomads_extended/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads/faction1_can_cross_blocks()
+/obj/map_metadata/nomads_extended/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads/cross_message(faction)
+/obj/map_metadata/nomads_extended/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads/proc/seasons()
+/obj/map_metadata/nomads_extended/proc/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
@@ -165,7 +165,7 @@
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads/tick()
+/obj/map_metadata/nomads_extended/tick()
 	..()
 	if (age1_done == FALSE)
 		var/count = 0
@@ -202,7 +202,7 @@
 				age3_done = TRUE
 				break
 
-/obj/map_metadata/nomads/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/nomads_extended/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
 	else

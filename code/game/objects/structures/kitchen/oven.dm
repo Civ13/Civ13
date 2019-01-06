@@ -306,7 +306,7 @@
 				new/obj/item/stack/material/iron(src.loc)
 				qdel(I)
 			else if (MT.get_material_name() == "steel")
-				H << "You smelt \the [MT] into steel ingots."
+				H << "You smelt \the [MT] into steel sheets."
 				new/obj/item/stack/material/steel(src.loc)
 				qdel(I)
 		else
