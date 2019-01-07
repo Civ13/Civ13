@@ -140,7 +140,7 @@
 			return
 		else
 			check_research()
-			var/studytime = 300*current_research
+			var/studytime = 300*current_research*current_tribesmen
 			var/displaytime = convert_to_textminute(studytime)
 			user << "Studying these documents... This will take [displaytime] to finish."
 			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))
