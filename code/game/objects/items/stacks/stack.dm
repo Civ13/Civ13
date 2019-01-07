@@ -424,6 +424,7 @@
 			build_override_coins_copper.loc = get_turf(O)
 			build_override_coins_copper.set_dir(user.dir)
 			build_override_coins_copper.add_fingerprint(user)
+			build_override_coins_copper.amount = produced
 			qdel(O)
 			return
 
@@ -431,6 +432,7 @@
 			build_override_coins_silver.loc = get_turf(O)
 			build_override_coins_silver.set_dir(user.dir)
 			build_override_coins_silver.add_fingerprint(user)
+			build_override_coins_silver.amount = produced
 			qdel(O)
 			return
 
@@ -438,6 +440,7 @@
 			build_override_coins_gold.loc = get_turf(O)
 			build_override_coins_gold.set_dir(user.dir)
 			build_override_coins_gold.add_fingerprint(user)
+			build_override_coins_gold.amount = produced
 			qdel(O)
 			return
 
