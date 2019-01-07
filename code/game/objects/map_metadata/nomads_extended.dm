@@ -40,6 +40,7 @@
 	gamemode = "Classic (Stone Age Start)"
 /obj/map_metadata/nomads_extended/New()
 	..()
+	config.allow_vote_restart = FALSE
 	spawn(18000)
 		seasons()
 
