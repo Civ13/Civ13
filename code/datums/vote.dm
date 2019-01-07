@@ -247,7 +247,13 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if (C.holder.rights & R_ADMIN)
 				admin = TRUE
 		voting |= C
-
+		if (!admin && C.mob)
+			if (C.mob.stat == DEAD)
+				C << "You can't start restart votes if you are not playing."
+				return
+			if (map.ID == MAP_NOMADS_EXTENDED)
+				C << "Only admins can restart a extended map."
+				return
 		. = "<html><head><title>Voting Panel</title></head><body>"
 		if (mode)
 			if (question)	. += "<h2>Vote: '[question]'</h2>"
