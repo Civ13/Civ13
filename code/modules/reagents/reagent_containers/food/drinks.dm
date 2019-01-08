@@ -103,6 +103,7 @@
 	volume = 10
 	center_of_mass = list("x"=16, "y"=14)
 	value = 5
+	slot_flags = SLOT_ID
 
 /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full
 	value = 5

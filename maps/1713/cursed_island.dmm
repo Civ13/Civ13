@@ -1,4 +1,4 @@
-"aa" = (/turf/floor/plating/beach/water/deep,/area/caribbean/island)
+"aa" = (/turf/floor/plating/beach/water/deep/saltwater,/area/caribbean/island)
 "ab" = (/turf/floor/plating/beach/sand,/area/caribbean/island)
 "ac" = (/turf/floor/plating/dirt,/area/caribbean/island)
 "ad" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/dirt,/area/caribbean/island)
@@ -23,7 +23,7 @@
 "aw" = (/obj/structure/wild/rock,/obj/effect/decal/cleanable/blood/drip,/turf/floor/plating/dirt,/area/caribbean/island)
 "ax" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/dust,/area/caribbean/island)
 "ay" = (/obj/effect/decal/cleanable/dirt,/turf/floor/dirt/underground{name = "rocks"},/area/caribbean/island)
-"az" = (/turf/floor/plating/beach/water,/area/caribbean/island)
+"az" = (/turf/floor/plating/beach/water/shallowsaltwater,/area/caribbean/island)
 "aA" = (/obj/structure/wild/tallgrass,/turf/floor/plating/sand,/area/caribbean/island)
 "aB" = (/turf/floor/plating/sand,/area/caribbean/island)
 "aC" = (/obj/structure/wild/tallgrass,/turf/floor/plating/beach/sand,/area/caribbean/island)
@@ -67,7 +67,7 @@
 "bo" = (/obj/structure/religious/totem{icon_state = "turkey"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "bp" = (/obj/effect/decal/cleanable/dirt,/turf/wall/old_stone,/area/caribbean/tribes/caves)
 "bq" = (/obj/structure/wild/burnedbush,/turf/floor/plating/beach/water/swamp{color = "#746e60"},/area/caribbean/island)
-"br" = (/turf/floor/plating/beach/water,/area/caribbean/british/land/outside)
+"br" = (/turf/floor/plating/beach/water/shallowsaltwater,/area/caribbean/british/land/outside)
 "bs" = (/obj/effect/decal/cleanable/cobweb2,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "bt" = (/obj/structure/religious/totem{icon_state = "wolf"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "bu" = (/obj/effect/decal/cleanable/dirt,/obj/item/stack/material/bone,/turf/floor/dirt,/area/caribbean/tribes/caves)
@@ -212,7 +212,7 @@
 "ed" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
 "ee" = (/obj/structure/closet/cabinet,/obj/item/clothing/head/powdered_wig,/obj/item/clothing/head/powdered_wig,/obj/effect/floor_decal/spline/fancy/wood{dir = 6},/obj/item/weapon/reagent_containers/food/drinks/bottle/rum,/turf/floor/carpet,/area/caribbean/british/ship)
 "ef" = (/obj/structure/religious/remains,/obj/effect/landmark{icon_state = "x3"; name = "treasure-mark"},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
-"eg" = (/obj/map_metadata/cursed_island,/turf/floor/plating/beach/water/deep,/area/caribbean/island)
+"eg" = (/obj/structure/barricade/horizontal,/turf/floor/plating/beach/water/shallowsaltwater,/area/caribbean/british/land/outside)
 "eh" = (/turf/wall/old_stone,/area/caribbean/no_mans_land/invisible_wall/inside)
 "ei" = (/obj/structure/simple_door/stone,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall/inside)
 "ej" = (/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
@@ -220,7 +220,7 @@
 "el" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
 "em" = (/obj/structure/simple_door/stone,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/invisible_wall/inside)
 "en" = (/obj/effect/decal/cleanable/dirt,/turf/wall/old_stone,/area/caribbean/no_mans_land/invisible_wall/inside)
-"eo" = (/obj/effect/spawner/objective_spawner,/turf/floor/plating/beach/water/deep,/area/caribbean/island)
+"eo" = (/mob/living/simple_animal/hostile/british,/turf/floor/plating/beach/water/shallowsaltwater,/area/caribbean/british/land/outside)
 "ep" = (/obj/effect/decal/cleanable/dirt,/obj/effect/decal/cleanable/blood/drip,/obj/item/weapon/shield,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "eq" = (/obj/item/flashlight/torch,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "er" = (/obj/effect/decal/cleanable/blood/drip,/obj/effect/decal/cleanable/blood/splatter,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
@@ -243,10 +243,10 @@
 "eI" = (/obj/item/clothing/accessory/armband/indiang,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "eJ" = (/obj/structure/wild/tree/dead_tree,/turf/floor/plating/dirt,/area/caribbean/island)
 "eK" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
-"eL" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/plating/beach/water,/area/caribbean/british/land/outside)
+"eL" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/plating/beach/water/shallowsaltwater,/area/caribbean/british/land/outside)
 "eM" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/plating/sand,/area/caribbean/british/land/outside)
-"eN" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/plating/beach/water/deep,/area/caribbean/island)
-"eO" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/plating/beach/water,/area/caribbean/british/land/outside)
+"eN" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/plating/beach/water/deep/saltwater,/area/caribbean/island)
+"eO" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/plating/beach/water/shallowsaltwater,/area/caribbean/british/land/outside)
 "eP" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/plating/sand,/area/caribbean/british/land/outside)
 "eQ" = (/obj/structure/barricade/ship/wood/a6,/turf/floor/wood,/area/caribbean/british/ship)
 "eR" = (/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/turf/floor/wood,/area/caribbean/british/ship{base_turf = /turf/floor/plating/beach/sand})
@@ -294,12 +294,12 @@
 "fH" = (/turf/floor/plating/stone_old,/area/caribbean/island)
 "fI" = (/obj/effect/decal/cleanable/dirt,/turf/wall/old_stone,/area/caribbean/island)
 "fJ" = (/obj/structure/wild/tallgrass2,/turf/floor/plating/stone_old,/area/caribbean/island)
-"fK" = (/obj/structure/barricade/horizontal,/turf/floor/plating/beach/water,/area/caribbean/british/land/outside)
+"fK" = (/obj/map_metadata/cursed_island,/turf/floor/plating/beach/water/deep/saltwater,/area/caribbean/island)
 "fL" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/beach/sand,/area/caribbean/island)
 "fM" = (/obj/structure/barricade/horizontal,/turf/floor/plating/beach/sand,/area/caribbean/island)
 "fN" = (/obj/structure/barricade/horizontal,/obj/structure/barricade/vertical,/turf/floor/plating/beach/sand,/area/caribbean/island)
 "fO" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
-"fP" = (/mob/living/simple_animal/hostile/british,/turf/floor/plating/beach/water,/area/caribbean/british/land/outside)
+"fP" = (/obj/effect/spawner/objective_spawner,/turf/floor/plating/beach/water/deep/saltwater,/area/caribbean/island)
 "fQ" = (/mob/living/simple_animal/hostile/british,/turf/floor/plating/beach/sand,/area/caribbean/british/land/outside)
 
 (1,1,1) = {"
@@ -336,8 +336,8 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazababaBaAaBabababaAaBabababababacacakak
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazabababaBabababababaBaBababababababakbqacacadadacacaeacacakacadacacaeaeacagagagaGehehehehehehehehaGaGaGaGaGaGaGaGaGaGaGaGaGaGaFaIaFaFaFaOaFaFaFbpaFaFaJaJeDaFaGaG
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazababababaAabababaBaBaBababababababacacacacacacaceJacacayacacacacacacacacacagagagagagagagaGagagagagagaGaGaGaGaGaGehehehehehehehehaJaJaRaJaJaRaJaRaJaJaFaJbdaJaFaGaG
 aaaaaaaaaaaaaaaaaaaabrbrbraaaaaaazazazabababaAaCabababaAaAaBababababacacadacacacacacacacacacakacaoacagacacacacacacafafafagacagagagacacagagagagagaGaGaGehaJbkaRaJaJbsehaJaJaJaJbbaKbfaKaKaJaFaJaJesaFaGaG
-aaaaaaaaaaaaaaaabrbrbrbrbrbrbrfKfKfKfLfMabaBaAfMfMfMfNaAaBaBababababacacacacapaeacagacacadacakacafacaeacacadacacacafafafacacagagagagagagagagagagagagagehaRaJbtbtaJaJehaRdwaJaRaJaJaJaJbuaKaFaJaJaJaFaGaG
-aaaaaaaaaaaaaabrbrbrbrbvbrfPbrbrfPbvbvbwbxbybzbvfQbAbBaBaBaBababababacacacaiacacacacagacadacakacacacacacacacacadadacacacacacagaeacagacacacacacacacacagehaJaJcCaJaRaJemaJaJaJaFaFaFaFaFaOaFaFaRdzaRaFaGaG
+aaaaaaaaaaaaaaaabrbrbrbrbrbrbregegegfLfMabaBaAfMfMfMfNaAaBaBababababacacacacapaeacagacacadacakacafacaeacacadacacacafafafacacagagagagagagagagagagagagagehaRaJbtbtaJaJehaRdwaJaRaJaJaJaJbuaKaFaJaJaJaFaGaG
+aaaaaaaaaaaaaabrbrbrbrbvbreobrbreobvbvbwbxbybzbvfQbAbBaBaBaBababababacacacaiacacacacagacadacakacacacacacacacacadadacacacacacagaeacagacacacacacacacacagehaJaJcCaJaRaJemaJaJaJaFaFaFaFaFaOaFaFaRdzaRaFaGaG
 aaaaaaaaaaaaaabrbvbvbvbvedbrbrbvbvbvbvbCbDbvbvbvbvbEbFababababababababbGadacacaoacagacagacacacakacaeamaceJacacadadacadacacacacaeaeaeacacacagacacacagagehaRaJbtbtbHaRehaRaJaRaFaGaGaFblaJaJaFaJaKaJaFaGaG
 aaaaaaaaaaaaaaeLbrbvbIbJcHcHbvbKdOdPbvbMbNbvbvbObvbPbBababababababababbGadacacacadajacagacacacacacaeaeacacacacacacacacacacacacacacacaiacacacacacagagagehaJaRaJaRaJaJehaJaJaJaFaGaGaFbQaJbQaFaJaKaRaFaGaG
 aaaaaaeNaaaabrbreOfbbMbvdQdQbJbJbSbvbvbMbJbTbvbObvbUbVbWbVababababababbGbGacakakacacacagagacadakakaeaeacacacacaeaeacacacacacacacacacacacacacacagagagagehehehehehehehehaRaJaJaJaGaGaFaRaRaJaFaRaJfAaFaGaG
@@ -357,8 +357,8 @@ aaaaaaaaaaaaaaaaaaaabrbrbvbvbvbvbvbvbvdtbvbvbvbvbvbFaAababababacacacacacacacacaf
 aaaaaaaaaaaaaaaaaaaabrbrbrfffgfhbvbvbvdxdsbvbvbvbPbFaBababababababacabacacacacacacacagagagacaeacacacacacacacacacacacacacaEaEaEdpehaJaJaJaRfpaRaFaFaFaFaFaFaFaFaFaFaFaJaFaFaFaFaGaGaJaRaJaJaFaKaJaJaFaGaG
 aaaaaaaaaaaaaaaaaaaabrbrbrfifjfzbvbvbvbvdBbvbvbvbvdCaAaCabababababacabacadacadacacacacacadaiacacacacafacacacacacaceJacacacacacaeehdDaJfmaJaJeEaFaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaGaFaJdzaJaFaJaJdEaFaGaG
 aaaaaaaaaaaaaaaaaaaaaabrbrbrbvbvbvbvbvbvbvbvbvbvbEbFaBababababababababacadacacacacacagagagacacacacacacacacacacafacacacacacacacacehaFaFaFaFaFaFaFaGagagagagagagaGaGaGaGaGaGaGaGaGaGaFaRaJaRaFaRaJdFaFaGaG
-aaaaaaaaaaaaaaaaaaaaaaaabrfPbvbvbvbAbvfQbvbvbvbvbvbFaAabababababababababacacacadadacagagagacacadacaceJacacacacaeacacacaeacacacacacacacaeacacacacagacacagagagagagaGaGaGaGaGaGaGaGaGaFaJaJaRaFeheiemeheheh
-aaaaaaaaaaaaaaaaaaaaaaaafKfKbWfObWbWbWbWbWbvfQdGbWdnaAaBababababababacacacadadadacacacacacacacacacagacacacfkacaeacacacacacacacacacacacacaiacacacagacacacagagagagagagaGaGaGaGaGaGaGaFaRaJaRaFehaJaJaRbseh
+aaaaaaaaaaaaaaaaaaaaaaaabreobvbvbvbAbvfQbvbvbvbvbvbFaAabababababababababacacacadadacagagagacacadacaceJacacacacaeacacacaeacacacacacacacaeacacacacagacacagagagagagaGaGaGaGaGaGaGaGaGaFaJaJaRaFeheiemeheheh
+aaaaaaaaaaaaaaaaaaaaaaaaegegbWfObWbWbWbWbWbvfQdGbWdnaAaBababababababacacacadadadacacacacacacacacacagacacacfkacaeacacacacacacacacacacacacaiacacacagacacacagagagagagagaGaGaGaGaGaGaGaFaRaJaRaFehaJaJaRbseh
 aaaaaaaaaaaaaaaaaaaaaaazazazabababababababdHdIdJababaBaBababababacabacacacacadacacacaoacaiacacacacagacacacacacadacacacadadadadacacacacacacacacacacacagagagagagagagagagaGaGaGaGaGaGaFaRaJaJaFehaRaJaJbkeh
 aaaaaaaaaaaaaaaaaaaaaaazazazazababababababababababababababababababacacafacacacacacacadacacacacacacacacacacacacacacacacadadadadacacacacaeacacacacacacagagacacacagagagagagaGaGaGaGaGaFaJaRaJaFehdLaKaKdLeh
 aaaaaaaaaaaaaaaaaaaaaaaaazazazabababababababababababababababababababacacacacacadahacacacacacacaeacacacacacacadacacacacacaeacadadacacacacadacacacacacacacacacacagagagacagagagaGaGaGaFaRaJaJaFehdLaJcCdLeh
@@ -402,5 +402,5 @@ aaaaaaaaaaaaaaaaaaazazazazazazababababaBaBabababacacacacacaeaeacagagaceJacacacac
 aaaaaaaaaaaaaaaaaaazazazazazazababababaAaBabababacacacacaeaeaeacanagacacacacadahacacacacacacaeacacacacacagacacacacacacacagacagacakacacaeagagacacacafakacagagagacacacacacacacacacadajacagacacacacacaeaeac
 aaaaaaaaaaaaaaaaaaazazazazazabababababaAaBababacacacacacaeacacacagagacacacacadacacacacacacacacacafacadacacagacacadacadacagagacahacacacaeaeacapeJacakakacacacakacakakacacakacakakacacacagagacadakakaeaeac
 aaaaaaaaaaaaaaaaaaazazazazazababababaBaAaBababacacacacacacacacacacacacagagacacacacaeacacacacacacacacacacacagacacacacafacagagacacacacacaeaeacacacacakakacahacakacakakacafacacacacacacacacafacacakacafaeae
-egeoaaaaaaaaaaaaaaazazazazazababababaAababababacacacacacacacacacacacacacacacacacacacacaceJacacacacacacacacacagacacacacacagagacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaeae
+fKfPaaaaaaaaaaaaaaazazazazazababababaAababababacacacacacacacacacacacacacacacacacacacacaceJacacacacacacacacacagacacacacacagagacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaeae
 "}

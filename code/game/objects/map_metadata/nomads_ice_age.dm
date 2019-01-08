@@ -78,8 +78,8 @@
 		spawn(100)
 			change_weather(WEATHER_SNOW)
 		spawn(800)
-		for (var/turf/floor/plating/beach/water/W)
-			W.ChangeTurf(/turf/floor/plating/beach/water/ice)
+		for (var/turf/floor/plating/beach/water/shallowsaltwater/W)
+			W.ChangeTurf(/turf/floor/plating/beach/water/ice/salty)
 		real_season = "WINTER"
 	else
 		season = "SUMMER"
@@ -102,9 +102,9 @@
 		spawn(150)
 			change_weather(WEATHER_NONE)
 		spawn(1500)
-		for (var/turf/floor/plating/beach/water/ice/W)
+		for (var/turf/floor/plating/beach/water/ice/salty/W)
 			if (prob(65) && W.water_level >= 50)
-				W.ChangeTurf(/turf/floor/plating/beach/water)
+				W.ChangeTurf(/turf/floor/plating/beach/water/shallowsaltwater)
 		real_season = "SUMMER"
 
 	if (real_season == "SUMMER")

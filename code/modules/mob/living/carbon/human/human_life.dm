@@ -265,6 +265,38 @@
 				src << "You feel much better now! The disease is finally gone!"
 				disease_treatment = 0
 
+		else if (disease_type == "cholera")
+			if (!disease_treatment)
+				disease_progression += 1
+			else
+				disease_progression += 3
+			// first 3 minutes
+			if (disease_progression == 90)
+				src << "You feel nauseous."
+				disease_treatment = 0
+				apply_effect(5, AGONY, FALSE)
+			//5 more minutes
+			if (prob(1))
+				emote("shiver")
+				apply_effect(7, DROWSY, FALSE)
+			else if (disease_progression >= 90 && disease_progression < 240 && prob(10))
+				src << "You feel very nauseous!"
+				apply_effect(8, AGONY, FALSE)
+				spawn(200)
+					water -= 55
+					vomit()
+				custom_emote(1, "looks very dehydrated.")
+				if (prob(40))
+					apply_effect(4, WEAKEN, FALSE)
+			// 2 more minutes
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+
 	else if (disease == FALSE)
 		for (var/mob/living/simple_animal/mouse/M in range(2,src))
 			//0.1% prob

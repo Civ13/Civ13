@@ -82,6 +82,7 @@
 				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
+					I.reagents.del_reagent("cholera")
 					return
 	else
 		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
@@ -157,6 +158,7 @@
 				organ.reagents.multiply_reagent("nutriment", 5)
 				organ.reagents.multiply_reagent("protein", 3)
 				organ.reagents.del_reagent("toxin")
+				organ.reagents.del_reagent("cholera")
 				organ.reagents.del_reagent("food_poisoning")
 				organ.roasted = TRUE
 				contents -= I
@@ -170,6 +172,7 @@
 			I.reagents.multiply_reagent("nutriment", 5)
 			I.reagents.multiply_reagent("protein", 3)
 			I.reagents.del_reagent("food_poisoning")
+			I.reagents.del_reagent("cholera")
 			if (istype(I, /obj/item/weapon/reagent_containers/food))
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE

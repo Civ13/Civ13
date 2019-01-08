@@ -450,9 +450,9 @@
 
 			else
 				if (istype(src, /obj/structure/sink/puddle))
-					if (prob(10))
-						RG.reagents.add_reagent("food_poisoning", 1)
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-1)
+					if (prob(15))
+						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				else
