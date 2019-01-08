@@ -96,6 +96,8 @@
 		recipes += new/datum/stack_recipe("mechanical trap", /obj/item/weapon/beartrap, 5, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 61)
 		recipes += new/datum/stack_recipe("monocle", /obj/item/clothing/mask/glasses/monocle, 3, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[2] >= 46)
+		recipes += new/datum/stack_recipe("telescope", /obj/item/weapon/attachment/scope/adjustable/binoculars, 5, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 28)
 		recipes += new/datum/stack_recipe("lantern", /obj/item/flashlight/lantern, 4, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("unlocked door", /obj/structure/simple_door/key_door/anyone, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE)
