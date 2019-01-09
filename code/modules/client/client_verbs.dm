@@ -235,6 +235,10 @@
 		src << "<span class='warning'>You have OOC muted.</span>"
 		return
 
+	if (quickBan_isbanned("OOC"))
+		src << "<span class = 'danger'>You're banned from OOC.</span>"
+		return
+
 	var/msg_prefix = ""
 
 
@@ -358,6 +362,10 @@
 
 	if (!is_preference_enabled(/datum/client_preference/show_looc))
 		src << "<span class='danger'>You have LOOC muted.</span>"
+		return
+
+	if (quickBan_isbanned("OOC"))
+		src << "<span class = 'danger'>You're banned from OOC.</span>"
 		return
 
 	if (!holder)
