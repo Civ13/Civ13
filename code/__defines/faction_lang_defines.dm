@@ -15,6 +15,8 @@
 #define PORTUGUESE "PORTUGUESE"
 #define FRENCH "FRENCH"
 #define DUTCH "DUTCH"
+#define JAPANESE "JAPANESE"
+#define RUSSIAN "RUSSIAN"
 #define GREEK "GREEK"
 #define ARAB "ARAB"
 
@@ -43,6 +45,12 @@
 
 	if (constant == DUTCH)
 		return "Dutch Republic"
+
+	if (constant == JAPANESE)
+		return "Japanese Empire"
+
+	if (constant == RUSSIAN)
+		return "Russian Empire"
 
 	if (constant == ROMAN)
 		return "Roman Republic"

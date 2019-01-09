@@ -110,3 +110,64 @@
 	else
 		user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
 		return
+
+
+/obj/item/ammo_casing/a65x50mm
+	name = "6.5x50mm ammo casing"
+	desc = "A brass casing containing powder and a lead bullet."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a65x50mm
+	caliber = "a65x50mm"
+	value = 5
+
+/obj/item/ammo_casing/a11x60mm
+	name = "11x60mm ammo casing"
+	desc = "A brass casing containing powder and a lead bullet."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a11x60mm
+	caliber = "a11x60mm"
+	value = 5
+
+/obj/item/ammo_casing/c9mm_jap_revolver
+	name = "9mm bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
+	caliber = "a11x60mm"
+	value = 5
+
+/obj/item/ammo_casing/a762x54
+	name = "7.62x54mm ammo casing"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
+	caliber = "a762x54mm"
+	value = 5
+
+/obj/item/ammo_casing/a762x38
+	name = "7.62x38mmR bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x38
+	caliber = "a11x60mm"
+	value = 5
+
+/obj/item/ammo_casing/c8mmnambu
+	name = "8mm bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/c8mmnambu
+	caliber = "c8mmnambu"
+	value = 5
