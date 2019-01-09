@@ -366,26 +366,35 @@
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
 		return
+	if (istype(W, /obj/item/weapon/hammer))
+		if (!wall)
+			user << "You start removing \the [src]..."
+			if (do_after(user, 70, src))
+				user << "You removed \the [src] from the floor."
+				qdel(src)
+				return
+	if (wall)
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
-	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
+			var/obj/item/flashlight/torch/T = W
+			if (prob(33) && T.on)
+				onfire = TRUE
+				visible_message("<span class='danger'>\The [src] catches fire!</span>")
+				start_fire()
+		else
+			switch(W.damtype)
+				if ("fire")
+					health -= W.force * 0.7
+				if ("brute")
+					health -= W.force * 0.2
 
-	if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
-		var/obj/item/flashlight/torch/T = W
-		if (prob(33) && T.on)
-			onfire = TRUE
-			visible_message("<span class='danger'>\The [src] catches fire!</span>")
-			start_fire()
+		playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+		user.do_attack_animation(src)
+		try_destroy()
+		..()
 	else
-		switch(W.damtype)
-			if ("fire")
-				health -= W.force * 0.7
-			if ("brute")
-				health -= W.force * 0.2
-
-	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
-	user.do_attack_animation(src)
-	try_destroy()
-	..()
+		return
 
 /obj/covers/proc/try_destroy()
 	if (health <= 0)

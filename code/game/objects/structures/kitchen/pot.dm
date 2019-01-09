@@ -181,6 +181,7 @@
 						F.reagents.multiply_reagent("nutriment", 4)
 						F.reagents.multiply_reagent("protein", 2)
 						F.reagents.del_reagent("food_poisoning")
+						F.reagents.del_reagent("cholera")
 						F.boiled = TRUE
 						F.raw = FALSE
 				else
@@ -205,6 +206,7 @@
 							var/obj/item/weapon/reagent_containers/food/F = I
 							if (F.reagents)
 								F.reagents.del_reagent("food_poisoning")
+								F.reagents.del_reagent("cholera")
 								stew_nutriment += round(F.reagents.get_reagent_amount("nutriment")/bowls)
 								stew_protein += round(F.reagents.get_reagent_amount("protein")/bowls)
 								stew_nutriment_desc |= F.name

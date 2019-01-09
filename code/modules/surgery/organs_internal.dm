@@ -18,8 +18,8 @@
 /datum/surgery_step/internal/fix_organ
 	allowed_tools = list(
 		1 = list("/obj/item/stack/medical/advanced/bruise_pack",100),
-		2 = list("/obj/item/stack/medical/advanced/bruise_pack/herbs",70),
-		3 = list("/obj/item/stack/medical/bruise_pack",50),
+		2 = list("/obj/item/stack/medical/advanced/bruise_pack/herbs",100),
+		3 = list("/obj/item/stack/medical/bruise_pack",100),
 	)
 
 	min_duration = 70

@@ -40,6 +40,7 @@
 	gamemode = "Classic (Stone Age Start)"
 /obj/map_metadata/nomads_extended/New()
 	..()
+	config.allow_vote_restart = FALSE
 	spawn(18000)
 		seasons()
 
@@ -79,6 +80,8 @@
 				if (prob(60))
 					qdel(SW3)
 		spawn(1500)
+		for (var/turf/floor/plating/beach/water/ice/salty/SW)
+			SW.ChangeTurf(/turf/floor/plating/beach/water/shallowsaltwater)
 		for (var/turf/floor/plating/beach/water/ice/W)
 			W.ChangeTurf(/turf/floor/plating/beach/water)
 		spawn(3000)
@@ -138,6 +141,9 @@
 		spawn(100)
 			change_weather(WEATHER_SNOW)
 		spawn(800)
+		for (var/turf/floor/plating/beach/water/shallowsaltwater/SW)
+			if (SW.water_level <= 50 && SW.z > 1)
+				SW.ChangeTurf(/turf/floor/plating/beach/water/ice/salty)
 		for (var/turf/floor/plating/beach/water/W)
 			if (W.water_level <= 50 && W.z > 1)
 				W.ChangeTurf(/turf/floor/plating/beach/water/ice)

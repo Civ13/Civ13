@@ -104,6 +104,14 @@
 
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 		self_feed_message(user)
+		if (reagents.has_reagent("cholera") && istype(user, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = user
+			var/probcholera = reagents.get_reagent_amount("cholera")
+			if (prob(min(probcholera*25,100)))
+				if (HH.disease == 0)
+					HH.disease_progression = 0
+					HH.disease_type ="cholera"
+					HH.disease = 1
 		reagents.trans_to_mob(user, issmall(user) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
 		user.bladder += amount_per_transfer_from_this
 		feed_sound(user)
@@ -133,7 +141,14 @@
 		target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]). Reagents: [contained]</font>")
 		user.attack_log += text("\[[time_stamp()]\] <font color='red'>Fed [name] by [target.name] ([target.ckey]). Reagents: [contained]</font>")
 		msg_admin_attack("[key_name(user)] fed [key_name(target)] with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
-
+		if (reagents.has_reagent("cholera") && istype(target, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = target
+			var/probcholera = reagents.get_reagent_amount("cholera")
+			if (prob(min(probcholera*25,100)))
+				if (HH.disease == 0)
+					HH.disease_progression = 0
+					HH.disease_type ="cholera"
+					HH.disease = 1
 		reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
 		target.bladder += amount_per_transfer_from_this
 		feed_sound(user)

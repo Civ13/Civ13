@@ -326,6 +326,12 @@ var/global/list/GrassEdgeCache
 	icon_state = "seashallow"
 	move_delay = 3
 	water_level = 30 // in centimeters
+	var/salty = FALSE
+	var/sickness = 1 //amount of toxins, from 0 to 3
+
+/turf/floor/plating/beach/water/shallowsaltwater
+	name = "saltwater"
+	salty = TRUE
 
 /turf/floor/plating/beach/water/deep
 	name = "deep water"
@@ -335,8 +341,9 @@ var/global/list/GrassEdgeCache
 	density = FALSE
 	iscovered = FALSE
 
-bca650
-
+/turf/floor/plating/beach/water/deep/saltwater
+	name = "deep saltwater"
+	salty = TRUE
 /turf/floor/plating/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
@@ -350,16 +357,17 @@ bca650
 	name = "swamp water"
 	move_delay = 3
 	color = "#94B21C"
-
+	sickness = 3
 /turf/floor/plating/beach/water/jungle
 	name = "river water"
 	move_delay = 5
 	color = "#BCA650"
-
+	sickness = 2
 /turf/floor/plating/beach/water/flooded
 	name = "flooded riverbed"
 	move_delay = 5
 	color = "#968440"
+	sickness = 2
 
 /turf/floor/plating/beach/water/proc/Extinguish(var/mob/living/L)
 	if (istype(L))
@@ -387,6 +395,9 @@ bca650
 	name = "ice"
 	icon_state = "seashallow_frozen"
 	move_delay = 0
+
+/turf/floor/plating/beach/water/ice/salty
+	name = "saltwater ice"
 
 /turf/floor/plating/dirt
 	name = "dirt"

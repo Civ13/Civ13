@@ -56,6 +56,25 @@
 	if (!C || !user)
 		return FALSE
 
+	if (istype(src, /turf/floor/plating/beach/water))
+		var/turf/floor/plating/beach/water/WT = src
+		if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+			var/obj/item/weapon/reagent_containers/RG = C
+			if (istype(RG) && RG.is_open_container())
+				if (do_after(user, 15, src, check_for_repeats = FALSE))
+					var/sumex = 0
+					if (WT.sickness > 0)
+						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05))
+						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05)
+					if (WT.salty)
+						RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
+						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
+					RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+					user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
+					user.setClickCooldown(5)
+				return
+
 
 	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)

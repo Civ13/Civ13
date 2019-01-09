@@ -89,7 +89,7 @@
 					center_of_mass = list("x"=16, "y"=6)
 				if ("sodiumchloride")
 					name = "Salt Shaker"
-					desc = "Salt. From space oceans, presumably."
+					desc = "Salt. From the oceans, presumably."
 					icon_state = "saltshaker"
 					center_of_mass = list("x"=16, "y"=10)
 				if ("blackpepper")

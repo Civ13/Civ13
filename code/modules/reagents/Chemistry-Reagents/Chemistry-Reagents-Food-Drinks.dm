@@ -190,7 +190,11 @@
 	taste_description = "salt"
 	reagent_state = SOLID
 	color = "#FFFFFF"
+	taste_mult = 2
 	overdose = REAGENTS_OVERDOSE
+//salt will make you thirsty
+/datum/reagent/sodiumchloride/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.water -= (removed * 360 * 1.5) //basically, it removes the saltwater you drink plus dehydrates you in the same amount
 
 /datum/reagent/blackpepper
 	name = "Black Pepper"
