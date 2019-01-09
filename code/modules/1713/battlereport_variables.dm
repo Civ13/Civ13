@@ -95,6 +95,14 @@ var/list/recently_died = list()
 			dead = dead_arab
 			injured = heavily_injured_arab
 			alive = alive_arab
+		if (RUSSIAN)
+			dead = dead_russian
+			injured = heavily_injured_russian
+			alive = alive_russian
+		if (JAPANESE)
+			dead = dead_japanese
+			injured = heavily_injured_japanese
+			alive = alive_japanese
 	return list(alive, dead, injured)
 
 /mob/living/carbon/human/death()

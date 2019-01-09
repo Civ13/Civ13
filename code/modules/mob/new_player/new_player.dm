@@ -624,7 +624,10 @@
 		BRITISH = FALSE,
 		ROMAN = FALSE,
 		GREEK = FALSE,
-		ARAB = FALSE,)
+		ARAB = FALSE,
+		RUSSIAN = FALSE,
+		JAPANESE = FALSE,
+		)
 
 	var/prev_side = FALSE
 
