@@ -27,6 +27,8 @@ var/list/preferences_datums = list()
 	var/french_name = "Mathieu Bertrand"
 	var/portuguese_name = "Pedro Alves"
 	var/dutch_name = "Daan Visser"
+	var/japanese_name = "Hideki Tojo"
+	var/russian_name = "Victor Reznof"
 	var/carib_name = "Mojowai"
 	var/greek_name = "Philokrates"
 	var/roman_name = "Decius Salvius Primulus"
@@ -38,6 +40,8 @@ var/list/preferences_datums = list()
 	var/be_random_name_french = FALSE
 	var/be_random_name_portuguese = FALSE
 	var/be_random_name_dutch = FALSE
+	var/be_random_name_japanese = FALSE
+	var/be_random_name_russian = FALSE
 	var/be_random_name_english = FALSE
 	var/be_random_name_roman = TRUE
 	var/be_random_name_greek = TRUE
@@ -155,6 +159,8 @@ var/list/preferences_datums = list()
 			portuguese_name = random_portuguese_name(gender, species)
 			spanish_name = random_spanish_name(gender, species)
 			dutch_name = random_dutch_name(gender, species)
+			japanese_name = random_japanese_name(gender, species)
+			russian_name = random_russian_name(gender, species)
 			carib_name = random_carib_name(gender, species)
 			roman_name = random_roman_name(gender, species)
 			greek_name = random_greek_name(gender, species)
@@ -166,6 +172,8 @@ var/list/preferences_datums = list()
 			remember_preference("portuguese_name", portuguese_name)
 			remember_preference("carib_name", carib_name)
 			remember_preference("dutch_name", dutch_name)
+			remember_preference("japanese_name", russian_name)
+			remember_preference("russian_name", dutch_name)
 			remember_preference("greek_name", greek_name)
 			remember_preference("arab_name", arab_name)
 			remember_preference("roman_name", roman_name)

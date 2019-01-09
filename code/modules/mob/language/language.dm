@@ -82,6 +82,26 @@
 	var/full_name = "Daan Visser"
 	return full_name
 
+/datum/language/proc/get_random_japanese_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese))
+		else
+			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese))
+
+	var/full_name = "Hideki Tojo"
+	return full_name
+
+/datum/language/proc/get_random_russian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian))
+		else
+			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
+
+	var/full_name = "Victor Reznof"
+	return full_name
+
 /datum/language/proc/get_random_carib_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -314,6 +334,28 @@
 						H.real_name = H.species.get_random_dutch_name(H.gender, FALSE)
 					else
 						H.real_name = H.client.prefs.dutch_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/japanese))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_japanese)
+						H.real_name = H.species.get_random_japanese_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.japanese_name
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/russian))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					if (H.client.prefs.be_random_name_russian)
+						H.real_name = H.species.get_random_russian_name(H.gender, FALSE)
+					else
+						H.real_name = H.client.prefs.russian_name
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 

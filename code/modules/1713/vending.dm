@@ -51,3 +51,50 @@
 	)
 
 //	idle_power_usage = 0
+
+/obj/structure/vending/rusweapons
+	name = "Russian Weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "equipment_soviet"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
+		/obj/item/ammo_magazine/mosin = 50,
+		/obj/item/ammo_magazine/mosinbox = 10,
+	)
+
+/obj/structure/vending/japweapons
+	name = "Japanese Weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "equipment_japanese"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/arisaka30 = 15,
+		/obj/item/ammo_magazine/arisakabox = 10,
+		/obj/item/ammo_magazine/arisaka = 50,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+
+/obj/structure/vending/japaneseapparel
+	name = "Imperial Japanese Army apparel rack"
+	desc = "Basic wear for soldiers of the Imperial Japanese Army."
+	icon_state = "apparel_japan"
+	products = list(
+		/obj/item/clothing/shoes/japboots = 15,
+		/obj/item/clothing/under/japuni = 15,
+		/obj/item/clothing/suit/storage/armycoat/japcoat = 15,
+		/obj/item/clothing/suit/storage/armycoat/japcoat2 = 15,
+		/obj/item/clothing/suit/armor/japmisc/japvest = 5,
+		/obj/item/clothing/head/japcap = 15,
+		/obj/item/clothing/head/japcap2 = 15,
+	)
+
+/obj/structure/vending/russianapparel
+	name = "Russian Army apparel rack"
+	desc = "Basic wear for russian soldiers."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/rusuni = 15,
+		/obj/item/clothing/suit/storage/armycoat/ruscoat = 15,
+		/obj/item/clothing/head/ruscap = 15,
+
+	)

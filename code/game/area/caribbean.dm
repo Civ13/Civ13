@@ -377,6 +377,40 @@
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
 	location = AREA_INSIDE
+
+/area/caribbean/japanese
+
+/area/caribbean/japanese/land
+	name = "Land Base"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+
+
+/area/caribbean/japanese/land/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+
+/area/caribbean/japanese/land/outside
+	icon_state = "red3"
+
+/area/caribbean/russian
+
+/area/caribbean/russian/land
+	name = "Land Base"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+
+/area/caribbean/russian/land/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+
+/area/caribbean/russian/land/outside
+	icon_state = "red3"
+
 /area/caribbean/british
 
 /area/caribbean/british/land

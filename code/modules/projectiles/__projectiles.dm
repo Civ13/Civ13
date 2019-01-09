@@ -62,3 +62,43 @@
 
 	on_impact(atom/hit_atom)
 		on_hit(hit_atom)
+
+/obj/item/projectile/bullet/rifle/a65x50mm
+	damage = DAMAGE_HIGH
+	penetrating = 2
+	armor_penetration = 40
+
+/obj/item/projectile/bullet/rifle/a11x60mm
+	damage = DAMAGE_HIGH
+	penetrating = 3
+	armor_penetration = 48
+
+/obj/item/projectile/bullet/rifle/a762x54
+	damage = DAMAGE_HIGH
+	penetrating = 2
+	armor_penetration = 45
+
+/obj/item/projectile/bullet/rifle/a762x38
+	damage = DAMAGE_HIGH
+	penetrating = 2
+	armor_penetration = 40
+
+/obj/item/projectile/bullet/pistol/c9mm_jap_revolver
+	damage = DAMAGE_MEDIUM +2
+	penetrating = 1
+	armor_penetration = 30
+
+/obj/item/projectile/bullet/mg/a127x108
+	damage = DAMAGE_HIGH + 2
+	penetrating = 2
+	armor_penetration = 42
+
+/obj/item/projectile/bullet/mg/a77x58_weaker
+	damage = DAMAGE_HIGH + 2
+	penetrating = 2
+	armor_penetration = 40
+
+/obj/item/projectile/bullet/pistol/c8mmnambu
+	damage = DAMAGE_HIGH +3
+	penetrating = 1
+	armor_penetration = 35

@@ -44,6 +44,12 @@
 	desc = "A fancy orange armband!"
 	icon_state = "dutch"
 	slot = "armband"
+/obj/item/clothing/accessory/armband/japanese
+	name = "Japanese armband"
+	desc = "An armband with japan's flag on it!"
+	icon_state = "jap"
+	slot = "armband"
+
 
 //jewelry
 
