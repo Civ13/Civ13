@@ -166,6 +166,17 @@
 	icon_state = "dutch"
 	name = "Dutch Flag"
 	desc = "The tricolor Dutch flag."
+
+/obj/structure/flag/japanese
+	icon_state = "japanese"
+	name = "Imperial Japanese Flag"
+	desc = "The Imperial Japanese flag."
+
+/obj/structure/flag/russian
+	icon_state = "russian"
+	name = "Russian Flag"
+	desc = "The tricolor Russian flag."
+
 /obj/structure/noose
 	icon = 'icons/obj/noose.dmi'
 	icon_state = ""

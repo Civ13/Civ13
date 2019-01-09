@@ -603,6 +603,10 @@
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
 		dat += "[alive_arab.len] Arabs "
+	if (JAPANESE in map.faction_organization)
+		dat += "[alive_japanese.len] Japanese "
+	if (RUSSIAN in map.faction_organization)
+		dat += "[alive_russian.len] Russian "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"

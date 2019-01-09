@@ -7,7 +7,8 @@
 #define GREEK_SYLLABLES list("do", "rik", "ev", "ti", "on", "tí", "ka", "phi", "oú", "en", "et", "tn", "pn", "kó", "ev", "aí", "óo", "sé", "pa", "ná", "tes", "pan", "hé", "wíd", "póm", "mé", "ée", "wói", "s")
 #define LATIN_SYLLABLES list("fe", "de", "mi", "na", "be", "a", "ca", "tae", "ae", "ter", "num", "tum", "put", "ux", "tib", "dom", "er", "el", "la", "sum", "su", "per", "mem", "di", "us")
 #define ARAB_SYLLABLES list("kama", "'ana", "lah", "'ana", "hu", "kan", "'iilaa", "fi", "hi", "mae", "hum", "yakun", "fi", "wahid", "dik", "hadha", "min", "bwast", "har", "kalima", "lkn", "ma", "bed", "hu", "hu", "'ant", "'aw", "kan", "w", "min", "'iilaa", "w", "w", "fi", "nahn", "eulba", "kharij", "albaed", "w", "alty", "alqiam", "min", "alwaqt", "'iidha", "sawf", "kayf", "qal", "w", "kl", "'aqul", "la", "thlath", "turid", "hawa'", "jayid", "laeib", "saghir", "nihaya", "wade", "almanzil", "qara", "yd", "mina'", "kabir", "tahjaa", "hataa", "al'ard", "huna", "yjb", "kabir", "airtifae", "mathal", "tabie", "faeal", "limadha", "tatlub", "alrijal", "taghyir", "dhahab", "daw'", "nawe", "tahtaj", "manzil", "sur", "lana", "nuqta", "'um", "alealam", "qurb", "bina'", "alnafs", "'ard", "al'ab", "'aya", "jadida", "aleamal", "juz'", "makan", "masnue", "hayi", "hayth", "baed", "zahar", "alqlyl", "faqat", "jawla", "rajul", "eam", "ja'", "kl", "jayid", "'ana", "manh", "taht", "aism", "jiddaan", "faqat")
-
+#define JAPANESE_SYLLABLES list("da", "do", "de", "ra", "ri", "ro", "re", "tsu", "me", "mi", "ma", "ka", "ki", "ko", "ke", "shi", "sho", "sha", "sa", "se", "su", "si", "ou", "na", "no", "ni", "ne", "te", "ta", "to", "ti", "wa", "wo", "wi", "we", "ho", "ga", "ge", "go", "gi")
+#define RUSSIAN_SYLLABLES list("al", "an", "bi", "vye", "vo", "go", "dye", "yel", "?n", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nye", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "rye", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "vyer", "yego", "yeny", "yenn", "yest", "kak", "ln", "ova", "ogo", "?l", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto")
 /datum/language/portuguese
 	name = "Portuguese"
 	desc = "Muito bom."
@@ -97,3 +98,21 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
 	mutual_intelligibility = list()
+
+/datum/language/japanese
+	name = "Japanese"
+	desc = "Ohio Gozaimasu."
+	key = "j"
+	colour = "Japanese"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = JAPANESE_SYLLABLES
+	mutual_intelligibility = list(/datum/language/portuguese = 10,)
+
+/datum/language/russian
+	name = "Russian"
+	desc = "Za Rodinu!."
+	key = "r"
+	colour = "Russian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = JAPANESE_SYLLABLES
+	mutual_intelligibility = list(/datum/language/arab = 5,)

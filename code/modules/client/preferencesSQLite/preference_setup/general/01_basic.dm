@@ -45,6 +45,14 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	if (!pref.dutch_name)
 		pref.dutch_name	= random_dutch_name(pref.gender, pref.species)
 
+	pref.japanese_name		= sanitize_name(pref.japanese_name, pref.species)
+	if (!pref.japanese_name)
+		pref.japanese_name	= random_japanese_name(pref.gender, pref.species)
+
+	pref.russian_name		= sanitize_name(pref.russian_name, pref.species)
+	if (!pref.russian_name)
+		pref.russian_name	= random_russian_name(pref.gender, pref.species)
+
 	pref.carib_name		= sanitize_name(pref.carib_name, pref.species)
 	if (!pref.carib_name)
 		pref.carib_name	= random_carib_name(pref.gender, pref.species)
@@ -73,7 +81,8 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	pref.be_random_name_greek	= sanitize_integer(pref.be_random_name_greek, FALSE, TRUE, initial(pref.be_random_name_greek))
 	pref.be_random_name_roman	= sanitize_integer(pref.be_random_name_roman, FALSE, TRUE, initial(pref.be_random_name_roman))
 	pref.be_random_name_arab	= sanitize_integer(pref.be_random_name_arab, FALSE, TRUE, initial(pref.be_random_name_arab))
-
+	pref.be_random_name_japanese	= sanitize_integer(pref.be_random_name_japanese, FALSE, TRUE, initial(pref.be_random_name_japanese))
+	pref.be_random_name_russian	= sanitize_integer(pref.be_random_name_russian, FALSE, TRUE, initial(pref.be_random_name_russian))
 /datum/category_item/player_setup_item/general/basic/content()
 	// name
 	. = "<b>Name:</b> "
@@ -106,6 +115,16 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	. += "<a href='?src=\ref[src];rename_dutch=1'><b>[pref.dutch_name]</b></a><br>"
 	. += "(<a href='?src=\ref[src];random_name_dutch=1'>Random Name</A>) "
 	. += "(<a href='?src=\ref[src];always_random_name_dutch=1'>Always Random Name: [pref.be_random_name_dutch ? "Yes" : "No"]</a>)"
+	. += "<br><br>"
+	. += "<b>Japanese Name:</b> "
+	. += "<a href='?src=\ref[src];rename_japanese=1'><b>[pref.japanese_name]</b></a><br>"
+	. += "(<a href='?src=\ref[src];random_name_japanese=1'>Random Name</A>) "
+	. += "(<a href='?src=\ref[src];always_random_name_japanese=1'>Always Random Name: [pref.be_random_name_japanese ? "Yes" : "No"]</a>)"
+	. += "<br><br>"
+	. += "<b>Russian Name:</b> "
+	. += "<a href='?src=\ref[src];rename_russian=1'><b>[pref.russian_name]</b></a><br>"
+	. += "(<a href='?src=\ref[src];random_name_russian=1'>Random Name</A>) "
+	. += "(<a href='?src=\ref[src];always_random_name_russian=1'>Always Random Name: [pref.be_random_name_russian ? "Yes" : "No"]</a>)"
 	. += "<br><br>"
 	. += "<b>Carib Name:</b> "
 	. += "<a href='?src=\ref[src];rename_carib=1'><b>[pref.carib_name]</b></a><br>"
@@ -239,6 +258,45 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 
 	else if (href_list["always_random_name_dutch"])
 		pref.be_random_name_dutch = !pref.be_random_name_dutch
+		return TOPIC_REFRESH
+	//jap names
+	if (href_list["rename_japanese"])
+		var/raw_name = input(user, "Choose your character's Japanese name:", "Character Name")  as text|null
+		if (!isnull(raw_name) && CanUseTopic(user))
+			var/new_name = sanitize_name(raw_name, pref.species)
+			if (new_name)
+				pref.dutch_name = new_name
+				return TOPIC_REFRESH
+			else
+				user << "<span class='warning'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and .</span>"
+				return TOPIC_NOACTION
+
+	else if (href_list["random_name_japanese"])
+		pref.dutch_name = random_japanese_name(pref.gender, pref.species)
+		return TOPIC_REFRESH
+
+	else if (href_list["always_random_name_japanese"])
+		pref.be_random_name_japanese = !pref.be_random_name_japanese
+		return TOPIC_REFRESH
+
+	//russian
+	if (href_list["rename_russian"])
+		var/raw_name = input(user, "Choose your character's Russian name:", "Character Name")  as text|null
+		if (!isnull(raw_name) && CanUseTopic(user))
+			var/new_name = sanitize_name(raw_name, pref.species)
+			if (new_name)
+				pref.russian_name = new_name
+				return TOPIC_REFRESH
+			else
+				user << "<span class='warning'>Invalid name. Your name should be at least 2 and at most [MAX_NAME_LEN] characters long. It may only contain the characters A-Z, a-z, -, ' and .</span>"
+				return TOPIC_NOACTION
+
+	else if (href_list["random_name_dutch"])
+		pref.dutch_name = random_russian_name(pref.gender, pref.species)
+		return TOPIC_REFRESH
+
+	else if (href_list["always_random_name_dutch"])
+		pref.be_random_name_russian = !pref.be_random_name_russian
 		return TOPIC_REFRESH
 
 	//french names

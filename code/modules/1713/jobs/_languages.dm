@@ -54,6 +54,14 @@
 /datum/job/arab
 	default_language = "Arabic"
 	additional_languages = list("French" = 10)
+
+/datum/job/japanese
+	default_language = "Japanese"
+	additional_languages = list("English" = 15, "Russian" = 10)
+
+/datum/job/russian
+	default_language = "Russian"
+	additional_languages = list("English" = 15, "Japanese" = 5)
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 
@@ -124,6 +132,14 @@
 		if (DUTCH)
 			for (var/datum/language/dutch/D in H.languages)
 				H.default_language = D
+				break
+		if (JAPANESE)
+			for (var/datum/language/japanese/J in H.languages)
+				H.default_language = J
+				break
+		if (RUSSIAN)
+			for (var/datum/language/russian/R in H.languages)
+				H.default_language = R
 				break
 		if (ROMAN)
 			for (var/datum/language/latin/L in H.languages)

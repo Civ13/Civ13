@@ -50,6 +50,18 @@
 					if (H.original_job.base_type_flag() == DUTCH)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+		if (JAPANESE)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == JAPANESE)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
+		if (RUSSIAN)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == RUSSIAN)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 		if (ROMAN)
 			for (var/mob/living/carbon/human/H in player_list)
 				if (H.original_job && H.stat != DEAD)
@@ -87,6 +99,10 @@
 			return dead_indians.len + heavily_injured_indians.len + alive_indians.len
 		if (DUTCH)
 			return dead_dutch.len + heavily_injured_dutch.len + alive_dutch.len
+		if (JAPANESE)
+			return dead_japanese.len + heavily_injured_japanese.len + alive_japanese.len
+		if (RUSSIAN)
+			return dead_russian.len + heavily_injured_russian.len + alive_russian.len
 		if (CIVILIAN)
 			return dead_civilians.len + heavily_injured_civilians.len + alive_civilians.len
 		if (ROMAN)

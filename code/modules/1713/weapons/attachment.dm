@@ -180,7 +180,7 @@ Current Defines (_defines/attachment.dm)
 	edge = TRUE
 	attack_verb = list("slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
 	attachment_type = ATTACH_BARREL
-	force = 5
+	force = 6
 	var/attack_sound = 'sound/weapons/slice.ogg'
 	var/weakens = 0
 	//var/datum/action/bayonet/amelee
@@ -194,7 +194,7 @@ Current Defines (_defines/attachment.dm)
   G.bayonet = null
 
 /obj/item/weapon/attachment/bayonet/military
-	force = WEAPON_FORCE_DANGEROUS/2
+	force = WEAPON_FORCE_DANGEROUS/3
 //	weakens = 1
 	weight = 0.450
 	value = 12
