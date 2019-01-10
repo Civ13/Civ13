@@ -396,12 +396,6 @@ var/setting_up_db_connection = FALSE
 				if (movementMachine.last_run != -1 && world.time - movementMachine.last_run >= movementMachine.interval*300)
 					movementMachine.start()
 
-			if (!global_game_schedule)
-				global_game_schedule = new
-
-			global_game_schedule.update()
-
-
 		catch(var/exception/e)
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
 

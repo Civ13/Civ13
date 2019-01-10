@@ -1,73 +1,16 @@
 var/database/database = null
 
-/database/New(filename)
-	..(filename)
+/database/New()
+	..()
 
-	// lets make some tables
-	spawn (1)
-
-		/* 1713 has 11 tables. ALL data should be stored in one of these tables,
-	     * It is fine to make new tables - Kachnov */
-
-		if (!execute("TABLE misc EXISTS;"))
-			execute("CREATE TABLE misc (key STRING, val STRING);")
-
-		if (!execute("TABLE preferences EXISTS;"))
-			execute("CREATE TABLE preferences (ckey STRING, slot STRING, prefs STRING)")
-
-		if (!execute("TABLE quick_bans EXISTS;"))
-			execute("CREATE TABLE quick_bans (ckey STRING, cID STRING, ip STRING, type STRING, type_specific_info STRING, UID STRING, reason STRING, banned_by STRING, ban_date STRING, expire_realtime STRING, expire_info STRING);")
-
-		// where we store admin data
-		if (!execute("TABLE admin EXISTS;"))
-			execute("CREATE TABLE admin (id STRING, ckey STRING, rank STRING, flags INTEGER);")
-
-		// where we store player data
-		if (!execute("TABLE player EXISTS;"))
-			execute("CREATE TABLE player (id STRING, ckey STRING, firstseen STRING, lastseen STRING, age STRING, points STRING);")
-
-		// where we store connection logs
-		if (!execute("TABLE connection_log EXISTS;"))
-			execute("CREATE TABLE connection_log (id STRING, datetime STRING, serverip STRING, ckey STRING, ip STRING, computerid STRING);")
-
-		// where we store bug reports
-		if (!execute("TABLE bug_reports EXISTS;"))
-			execute("CREATE TABLE bug_reports (name STRING, desc STRING, steps STRING, other STRING);")
-
-		// where we store suggestions
-		if (!execute("TABLE suggestions EXISTS;"))
-			execute("CREATE TABLE suggestions (name STRING, desc STRING);")
-
-		// where we store all the whitelists
-		if (!execute("TABLE whitelists EXISTS;"))
-			execute("CREATE TABLE whitelists (key STRING, val STRING);")
-
-		// where we store player tip input
-		if (!execute("TABLE player_tips EXISTS;"))
-			execute("CREATE TABLE player_tips (UID STRING, submitter STRING, tip STRING);")
 
 /database/proc/newUID()
 	return num2text(rand(1, 1000*1000*1000), 20)
-
-/database/proc/Now()
-	if (!global_game_schedule)
-		global_game_schedule = new
-	return global_game_schedule.getNewRealtime()
-
-/database/proc/After(minutes = TRUE, hours = FALSE)
-	return Now()+(minutes*600)+(hours*600*60)
 
 /* only_execute_once = FALSE is only safe when this is called from a verb
  * or proc behaving like a verb, otherwise it can bog down other procs */
 /database/proc/execute(querytext, var/only_execute_once = TRUE)
 	. = FALSE
-
-/*
-	if (world.system_type == UNIX && SQLite_process)
-		for (var/Q in list("INSERT INTO", "UPDATE", "DELETE", "MERGE", "DROP TABLE"))
-			if (findtext(querytext, Q))
-				SQLite_process.queries += querytext
-				return TRUE*/
 
 	// fixes a common SQL typo
 	querytext = replacetext(querytext, " == ", " = ")

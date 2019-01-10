@@ -84,11 +84,13 @@
 					var/full_banlist_new = file2text("SQL/admins.txt")
 					full_banlist_new = replacetext(full_banlist_new,"\n","")
 					text2file(full_banlist_new,"SQL/admins.txt")
-
 		return
 
-	var/list/rowdata = database.execute("SELECT id FROM admin WHERE ckey = '[adm_ckey]';")
-
+	var/list/rowdata = list()
+	for(var/i=1;i<admincheck.len;i++)
+		var/list/admincheck_two = splittext(admincheck[i], ";")
+		if (admincheck_two[1] == "[adm_ckey]")
+			rowdata += list(admincheck_two[1])
 	var/new_admin = TRUE
 	var/admin_id = 0
 

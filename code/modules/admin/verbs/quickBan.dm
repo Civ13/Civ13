@@ -377,6 +377,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 /* checking if we're banned */
 /client/proc/quickBan_isbanned(var/ban_type = "Server", var/type_specific_info = "nil")
 	var/list/bans = list()
+	var/
 	var/full_banlist = file2text("SQL/bans.txt")
 	var/list/full_list_split = splittext(full_banlist, "|||")
 	for(var/i=1;i<full_list_split.len;i++)
