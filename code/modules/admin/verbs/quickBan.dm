@@ -388,21 +388,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 			bans += list(full_list_split_two)
 	if (islist(bans) && !isemptylist(bans))
 		for (var/x=1;x<=bans.len;x++)
-			var/key1 = bans[x]
-			if (bans[key1][10])
-				if (bans[key1][10] != "nil")
-					if (bans[key1][10] == type_specific_info)
-						return list("reason" = bans[key1][7],
-							"ban_date" = bans[key1][9],
-							"expire_info" = bans[key1][11])
-				else
-					return list("reason" = bans[key1][7],
-						"ban_date" = bans[key1][9],
-						"expire_info" = bans[key1][11])
-			else
-				return list("reason" = bans[key1][7],
-					"ban_date" = bans[key1][9],
-					"expire_info" = bans[key1][11])
+			return list("reason" = bans[x][7],"ban_date" = bans[x][9], "expire_info" = bans[x][11])
 	return FALSE
 
 /* check if we're banned and tell us why we're banned */
