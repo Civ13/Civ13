@@ -1614,7 +1614,6 @@
 	name = "Bread slice"
 	desc = "A slice of home."
 	icon_state = "breadslice"
-	trash = /obj/item/kitchen/plate
 	filling_color = "#D27332"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=4)

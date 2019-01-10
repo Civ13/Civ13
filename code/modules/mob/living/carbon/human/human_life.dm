@@ -1273,6 +1273,10 @@
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
+				if (JAPANESE)
+					holder2.icon_state = "jp_basic"
+				if (RUSSIAN)
+					holder2.icon_state = "ru_basic"
 				if (CIVILIAN)
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"

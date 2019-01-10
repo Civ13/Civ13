@@ -106,13 +106,13 @@
 	colour = "Japanese"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = JAPANESE_SYLLABLES
-	mutual_intelligibility = list(/datum/language/portuguese = 10,)
+	mutual_intelligibility = list()
 
 /datum/language/russian
 	name = "Russian"
-	desc = "Za Rodinu!."
+	desc = "Za Rodinu!"
 	key = "r"
 	colour = "Russian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = JAPANESE_SYLLABLES
-	mutual_intelligibility = list(/datum/language/arab = 5,)
+	mutual_intelligibility = list()

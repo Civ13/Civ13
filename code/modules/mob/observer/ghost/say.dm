@@ -13,7 +13,9 @@
 
 		if (client.handle_spam_prevention(message,MUTE_DEADCHAT))
 			return
-
+		if (client && client.quickBan_isbanned("OOC"))
+			src << "<span class = 'danger'>You're banned from OOC.</span>"
+			return
 	. = say_dead(message)
 
 

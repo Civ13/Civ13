@@ -2,8 +2,8 @@
  * not nearly as fancy as old banning, and it wasn't worth making an interface
  * for this rather small amount of code, so its all done via BYOND's input() */
 
-// 7 ways to ban people (8 now - Taislin)
-var/list/ban_types = list("Job Ban", "Faction Ban", "Officer Ban", "Server Ban", "Observe Ban", "Playing Ban", "Penal Ban")
+// bantypes
+var/list/ban_types = list("Job Ban", "Officer Ban", "Server Ban", "Playing Ban", "OOC Ban")
 
 /datum/quickBan_handler
 /datum/quickBan_handler/Topic(href,href_list[])
@@ -14,14 +14,32 @@ var/list/ban_types = list("Job Ban", "Faction Ban", "Officer Ban", "Server Ban",
 		var/ckey = href_list["quickBan_removeBan_ckey"]
 		var/cID = href_list["quickBan_removeBan_cID"]
 		var/ip = href_list["quickBan_removeBan_ip"]
-		database.execute("DELETE FROM quick_bans WHERE (UID = '[UID]' OR ckey = '[ckey]' OR cID = '[cID]' OR ip = '[ip]');")
-		var/M = "[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'."
-		log_admin(M)
-		message_admins(M)
 
+		var/full_banlist = file2text("SQL/bans.txt")
+		var/list/full_list_split = splittext(full_banlist, "|||")
+		for(var/i=1;i<full_list_split.len;i++)
+			var/list/full_list_split_two = splittext(full_list_split[i], ";")
+			if (full_list_split_two[2] == "[ckey]" || full_list_split_two[3] == "[cID]" || full_list_split_two[4] == "[ip]" || full_list_split_two[7] == "[UID]")
+				full_list_split_two[11] = 0
+				log_admin("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+				message_admins("[key_name(caller)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
+		//rewrite the banfiles, remove expired bans
+		fcopy("SQL/bans.txt","SQL/bans_backup.txt")
+		var/F = file("SQL/bans.txt")
+		if (fexists(F))
+			fdel(F)
+		spawn(1)
+			for(var/i=1;i<full_list_split.len;i++)
+				var/list/full_list_split_two = splittext(full_list_split[i], ";")
+				if (text2num(full_list_split_two[11]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasn't been reached yet
+					text2file("[full_list_split[i]]|||","SQL/bans.txt")
+			spawn(1)
+				var/full_banlist_new = file2text("SQL/bans.txt")
+				full_banlist_new = replacetext(full_banlist_new,"\n","")
+				text2file(full_banlist_new,"SQL/bans.txt")
 		for (var/client/C in clients)
 			if (C.ckey == ckey)
-				C << "<span class = 'good'>href_list["quickBan_unbanned_message"]</span>"
+				C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
 
 
 var/datum/quickBan_handler/quickBan_handler = null
@@ -32,41 +50,50 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	if (!quickBan_handler)
 		quickBan_handler = new
+	var/full_banlist = file2text("SQL/bans.txt")
+	var/list/full_list_split = splittext(full_banlist, "|||")
+	var/list/result = list()
+	var/list/possibilities = list()
 
-	var/option = input(src, "Search for a ban?") in list("Yes", "No")
+	var/option = input(src, "Search for a ban?") in list("Yes","Show All","Cancel")
 	if (option == "No")
 		return
+	else if (option == "Yes")
+		var/option2 = input(src, "What to search for?") in list("ckey","cID","ip","Cancel")
+		if (option2 == "Cancel")
+			return
+		else if (option2 == "ckey")
+			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
+			for(var/i=1;i<full_list_split.len;i++)
+				var/list/full_list_split_two = splittext(full_list_split[i], ";")
+				if (full_list_split_two[2] == _ckey)
+					result += full_list_split_two
 
-	var/_ckey = ckey(input(src, "What ckey will you search for? (optional)") as null|text)
-	var/cID = input(src, "What cID will you search for? (optional)") as null|text
-	var/ip = input(src, "What address will you search for? (optional)") as null|text
-	var/ban_type = input(src, "What type of ban do you want to search for?") in ban_types + "All"
+		else if (option2 == "cID")
+			var/cID = input(src, "What cID will you search for?") as null|text
+			for(var/i=1;i<full_list_split.len;i++)
+				var/list/full_list_split_two = splittext(full_list_split[i], ";")
+				if (full_list_split_two[3] == cID)
+					result += full_list_split_two
+
+		else if (option2 == "ip")
+			var/ip = input(src, "What address will you search for?") as null|text
+			for(var/i=1;i<full_list_split.len;i++)
+				var/list/full_list_split_two = splittext(full_list_split[i], ";")
+				if (full_list_split_two[4] == ip)
+					result += full_list_split_two
+
+	else if (option == "Show All")
+		for(var/i=1;i<full_list_split.len;i++)
+			var/list/full_list_split_two = splittext(full_list_split[i], ";")
+			result += list(full_list_split_two)
 
 	var/html = "<center><big>List of Quick Bans</big></center>"
 
-	var/list/result = list()
-
-	if (ban_type == "All")
-		result = database.execute("SELECT * FROM quick_bans;", FALSE)
-	else
-		ban_type = replacetext(ban_type, " Ban", "")
-		result = database.execute("SELECT * FROM quick_bans WHERE type = '[ban_type]';", FALSE)
-
-	var/list/possibilities = list()
-
 	if (islist(result) && !isemptylist(result))
-		for (var/v in 1 to 100)
-			if (_ckey && result.Find("ckey_[v]") && result["ckey_[v]"] != _ckey)
-				continue
-			if (cID && result.Find("cID_[v]") && result["cID_[v]"] != cID)
-				continue
-			if (ip && result.Find("ip_[v]") && result["ip_[v]"] != ip)
-				continue
-			if (text2num(result["expire_realtime_[v]"]) <= world.realtime)
-				database.execute("DELETE * FROM quick_bans WHERE UID = '[result["UID_v"]]';")
-				continue
-			var/quickBan_unbanned_message = "Your ban [result["ban_type"]] ([result["type_specific_info"]]) has been lifted by an admin."
-			possibilities += "<big><b>UID [result["UID_[v]"]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[result["UID_[v]"]];quickBan_removeBan_ckey=[result["ckey_[v]"]];quickBan_removeBan_cID=[result["cID_[v]"]];quickBan_removeBan_ip=[result["ip_[v]"]];quickBan_unbanned_message=[quickBan_unbanned_message]'>DELETE</a>)</big>: [result["ckey_[v]"]]/[result["cID_[v]"]]/[result["ip_[v]"]], type '[result["type_[v]"]]' ([result["type_specific_info_[v]"]]): banned for '[result["reason_[v]"]]' by [result["banned_by_[v]"]] on [result["ban_date_[v]"]]. <b>[result["expire_info_[v]"]]</b>. (After assigned date)"
+		for (var/v = 1; v <= result.len; v++)
+			if (islist(result[v]))
+				possibilities += "<big><b>UID [result[v][7]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[result[v][7]];quickBan_removeBan_ckey=[result[v][2]];quickBan_removeBan_cID=[result[v][3]];quickBan_removeBan_ip=[result[v][4]]'>DELETE</a>)</big>: [result[v][2]]/[result[v][3]]/[result[v][4]], type '[result[v][5]]' ([result[v][6]]): banned for '[result[v][8]]' by [result[v][9]] on [result[v][10]]. <b>[result[v][12]]</b>. (After assigned date)"
 
 	for (var/possibility in possibilities)
 		html += "<br>"
@@ -281,21 +308,13 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/cID = fields["cID"]
 	var/ip = fields["ip"]
 	var/expire_info = fields["expire_info"]
-/*
-	for (var/x in fields)
-	//	world << "[x] = [fields[x]]"
-		if (!istext(fields[x]))
-	//		world << "ERROR! [x] is not a text field!!!!"
 
-	if (database.execute("INSERT INTO qbans (ckey, cID, ip, type, UID, reason, banned_by, ban_date, expire_realtime) VALUES ('[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]');"))
-	//	world << "Test #0 succeeded"
+	//txt database
+	var/full_banlist = file2text("SQL/bans.txt")
+	var/list/full_list_split = splittext(full_banlist, "|||")
+	var/newnr = full_list_split.len
+	text2file("[newnr];[fields["ckey"]];[fields["cID"]];[fields["ip"]];[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]]|||","SQL/bans.txt")
 
-	if (database.execute("INSERT INTO qbans (ckey, cID, ip, type, UID, reason, banned_by, ban_date, expire_realtime) VALUES ('[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]');"))
-	//	world << "Test #1 succeeded"
-
-	if (database.execute("INSERT INTO quick_bans (ckey, cID, ip, type, UID, reason, banned_by, ban_date, expire_realtime) VALUES ('[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]', '[fields["test"]]');"))
-	//	world << "Test #2 succeeded"
-		*/
 	if (database.execute("INSERT INTO quick_bans (ckey, cID, ip, type, type_specific_info, UID, reason, banned_by, ban_date, expire_realtime, expire_info) VALUES ('[fields["ckey"]]', '[fields["cID"]]', '[fields["ip"]]', '[fields["type"]]', '[fields["type_specific_info"]]', '[fields["UID"]]', '[fields["reason"]]', '[fields["banned_by"]]', '[fields["ban_date"]]', '[fields["expire_realtime"]]', '[fields["expire_info"]]');"))
 		if (banner)
 			banner << "<span class = 'notice'>You have successfully banned [ckey]/[cID]/[ip]. This ban [lowertext(expire_info)]."
@@ -329,12 +348,12 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (islist(bans) && !isemptylist(bans))
 		for (var/x in bans)
 		//	world << "[x] = [bans[x]]"
-			if (x == "expire_realtime" && text2num(bans[x]) <= world.realtime)
+			if (x == "expire_realtime" && text2num(bans[x]) <= text2num(num2text(world.realtime,20)))
 				if (bans.Find("UID"))
 					database.execute("DELETE FROM quick_bans WHERE UID = '[bans["UID"]]';")
 				continue
 			else if (x == "reason")
-				if (bans.Find("expire_realtime") && text2num(bans["expire_realtime"]) <= world.realtime)
+				if (bans.Find("expire_realtime") && text2num(bans["expire_realtime"]) <= text2num(num2text(world.realtime,20)))
 					database.execute("DELETE FROM quick_bans WHERE UID = '[bans["UID"]]';")
 					continue
 				if (bans.Find("type_specific_info"))

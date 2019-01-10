@@ -293,7 +293,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "leatherbandage"
 	heal_brute = 6 // for healing dogs and other animals
-	amount = 7
+	amount = 6
 
 /obj/item/stack/medical/bruise_pack/gauze
 	name = "roll of gauze"

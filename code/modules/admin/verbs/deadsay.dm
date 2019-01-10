@@ -18,6 +18,10 @@
 	if (handle_spam_prevention(msg,MUTE_DEADCHAT))
 		return
 
+	if (quickBan_isbanned("OOC"))
+		src << "<span class = 'danger'>You're banned from OOC.</span>"
+		return
+
 	var/stafftype = uppertext(holder.rank)
 
 	msg = sanitize(msg)

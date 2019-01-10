@@ -189,5 +189,11 @@ var/global/soldiers[11]
 	else if (istype(J, /datum/job/arab))
 		if ("[type]" == "/datum/faction/arab")
 			soldiers[ARAB]++
+	else if (istype(J, /datum/job/japanese))
+		if ("[type]" == "/datum/faction/japanese")
+			soldiers[JAPANESE]++
+	else if (istype(J, /datum/job/russian))
+		if ("[type]" == "/datum/faction/russian")
+			soldiers[RUSSIAN]++
 	H.all_factions += src
 	..()
