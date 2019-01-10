@@ -281,7 +281,16 @@
 				cname_check = FALSE
 			else if (istype(l, /datum/language/dutch))
 				cname_check = FALSE
-
+			else if (istype(l, /datum/language/arab))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/latin))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/greek))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/russian))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/japanese))
+				cname_check = FALSE
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
 			if (ishuman(src))

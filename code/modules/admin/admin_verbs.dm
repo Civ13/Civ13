@@ -9,8 +9,6 @@ var/list/admin_verbs_default = list(
 	/client/proc/debug_variables,		//allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify,
 	/client/proc/cmd_mentor_check_new_players,
 	/client/proc/see_soldiers,
-	/client/proc/see_bug_reports,
-	/client/proc/see_suggestions,
 	/client/proc/see_world_realtime,
 	/client/proc/see_processes,
 	/client/proc/giveruntimelog,		//allows us to give access to runtime logs to somebody,
@@ -21,7 +19,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/add_to_server_whitelist,
 	/client/proc/remove_from_server_whitelist,
 	/client/proc/view_server_whitelist,
-	/client/proc/eject_unwhitelisted,
+//	/client/proc/eject_unwhitelisted,
 	/client/proc/enable_disable_server_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
@@ -281,9 +279,7 @@ var/list/admin_verbs_manager = list(
 )
 
 var/list/admin_verbs_host = list(
-	/client/proc/forceClose_game_schedule,
-	/client/proc/forceOpen_game_schedule,
-	/client/proc/eject_unwhitelisted,
+//	/client/proc/eject_unwhitelisted,
 	/client/proc/toggle_pingability
 )
 

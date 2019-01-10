@@ -257,7 +257,6 @@ var/world_topic_spam_protect_time = world.timeofday
 /proc/load_configuration()
 	config = new /datum/configuration()
 	config.load("config/config.txt", "config")
-	config.load("config/game_schedule.txt", "game_schedule")
 
 	/* config options get overwritten by global config options
 	 * only useful for serverswap memery - Kachnov */
@@ -395,12 +394,6 @@ var/setting_up_db_connection = FALSE
 				// some sanity for the movementMachine
 				if (movementMachine.last_run != -1 && world.time - movementMachine.last_run >= movementMachine.interval*300)
 					movementMachine.start()
-
-			if (!global_game_schedule)
-				global_game_schedule = new
-
-			global_game_schedule.update()
-
 
 		catch(var/exception/e)
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")

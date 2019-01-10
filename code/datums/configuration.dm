@@ -540,39 +540,6 @@ var/list/gamemode_cache = list()
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
 
-		else if (type == "game_schedule")
-
-			if (!value)
-				log_misc("Unknown value for setting [name] in [filename].")
-			value = text2num(value)
-
-			if (!global_game_schedule)
-				global_game_schedule = new
-
-			switch (name)
-				if ("game_schedule_enabled")
-					if (value)
-						global_game_schedule.enabled = text2num(value)
-				if ("game_schedule_starttime")
-					if (value)
-						global_game_schedule.starttime = text2num(value)
-				if ("game_schedule_endtime")
-					if (value)
-						global_game_schedule.endtime = text2num(value)
-				if ("game_schedule_days_closed")
-					if (value)
-						var/list/days_closed = splittext(value, ",")
-						for (var/day in days_closed)
-							global_game_schedule.days_closed += capitalize(ckey(day))
-				if ("game_schedule_days_always_open")
-					if (value)
-						var/list/days_always_open = splittext(value, ",")
-						for (var/day in days_always_open)
-							global_game_schedule.days_always_open += capitalize(ckey(day))
-
-			global_game_schedule.update()
-			global_game_schedule.loadFromDB()
-
 	if (config.hub)
 		world.visibility = TRUE
 	else

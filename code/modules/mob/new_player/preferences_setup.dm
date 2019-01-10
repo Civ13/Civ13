@@ -208,7 +208,6 @@
 			I.Blend(new /icon(icobase, "head[g][body.index]"), ICON_OVERLAY)
 
 			for (var/name in list("r_arm","r_hand","r_leg","r_foot","l_leg","l_foot","l_arm","l_hand"))
-				if (organ_data[name] == "amputated") continue
 
 				I.Blend(new /icon(icobase, "[name][g][body.index]"), ICON_OVERLAY)
 

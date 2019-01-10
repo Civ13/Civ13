@@ -60,7 +60,7 @@
 				if (fexists(F))
 					fcopy("SQL/bans.txt","SQL/bans_backup.txt")
 					fdel(F)
-				var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the database. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
+				var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the ban list. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
 				spawn(1)
 					var/full_banlist = null
 					full_banlist = file2text("SQL/bans.txt")
@@ -207,11 +207,21 @@
 
 	var/host_file_text = file2text("config/host.txt")
 	if (ckey(host_file_text) == ckey && !holder)
-		var/list/admins = database.execute("SELECT * FROM admin;")
-		if ((!islist(admins) || isemptylist(admins)))
-			holder = new("Host", FALSE, ckey)
-			text2file("0;[ckey];[holder.rank];[holder.rights]|||","SQL/admins.txt")
-
+		holder = new("Host", FALSE, ckey)
+		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
+		if (directory[ckey])
+			A.associate(directory[ckey])
+/*		var/islisted = FALSE
+		var/F = file("SQL/admins.txt")
+		var/list/admincheck = splittext(file2text(F),"|||")
+		if (islist(admincheck) && !isemptylist(admincheck))
+			for(var/i=1;i<admincheck.len;i++)
+				var/list/admincheck_two = splittext(admincheck[i], ";")
+				if (admincheck_two[2] == ckey)
+					islisted = TRUE
+		if (!islisted)
+			text2file("99;[ckey];[holder.rank];[holder.rights]|||","SQL/admins.txt")
+*/
 	/* let us profile if we're hosting on our computer OR if we have host perms */
 	if (world.host == key || (holder && (holder.rights & R_HOST)))
 		control_freak = 0
@@ -219,7 +229,7 @@
 	if (!holder)
 
 		if (!world_is_open)
-			src << "<span class = 'userdanger'>The server is currently closed to non-admins. The game is open [global_game_schedule.getScheduleAsString()].</span>"
+			src << "<span class = 'userdanger'>The server is currently closed to non-admins.</span>"
 			message_admins("[src] tried to log in, but was rejected, the server is closed to non-admins.")
 			del(src)
 			return

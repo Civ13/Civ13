@@ -260,8 +260,6 @@
 			var/variable = pref.vars[varname]
 			if (isdatum(variable) || isclient(variable))
 				continue // prevent infinite loops on VV
-			if (islist(variable) && !pref.saved_lists.Find(varname))
-				continue
 			if (pref_initial_vars[varname] != variable) // variable changed!
 				pref.remember_preference(varname, variable)
 			else if (pref_initial_vars[varname] == variable) // variable set back to default!
