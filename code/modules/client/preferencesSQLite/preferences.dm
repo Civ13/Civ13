@@ -83,26 +83,13 @@ var/list/preferences_datums = list()
 	var/list/preview_icons_east = list()
 	var/list/preview_icons_west = list()
 
-	//Keeps track of preferrence for not getting any wanted jobs
-	var/alternate_option = FALSE
-
-	// maps each organ to either null(intact) or "amputated"
-	// will probably not be able to do this for head and torso ;)
-	var/list/organ_data = list()
-	var/list/rlimb_data = list()
-	var/list/player_alt_titles = new()		// the default name of a job like "Medical Doctor"
-
 	var/disabilities = 0
-
-	var/list/pockets = list("Knife", "Food")
 
 	var/client/client = null
 	var/client_ckey = null
 	var/client_isguest = FALSE
 
 	var/list/internal_table = list()
-
-	var/list/saved_lists = list("pockets")
 
 	var/datum/category_collection/player_setup_collection/player_setup
 
@@ -151,11 +138,6 @@ var/list/preferences_datums = list()
 			loadGlobalSettings()
 			ready = TRUE
 
-		// otherwise, keep using our default values
-
-	for (var/i in 1 to 8)
-		internal_table[num2text(i)] = list()
-
 /datum/preferences/Del()
 	save_preferences(current_slot)
 	..()
@@ -168,7 +150,6 @@ var/list/preferences_datums = list()
 
 	if (!get_mob_by_key(client_ckey))
 		user << "<span class='danger'>No mob exists for the given client!</span>"
-		close_load_dialog(user)
 		return
 
 	var/dat = {"
@@ -179,33 +160,22 @@ var/list/preferences_datums = list()
 	[common_browser_style]
 	</style>
 	</head>
-	<body><center>
+	<body><center><big><b>PREFERENCES<br><br>
 	"}
-
-	if (!IsGuestKey(user.key))
-		dat += "<big><b>"
-		dat += "<a href='?src=\ref[src];load=1'>Load Slot</a> - "
-		dat += "<a href='?src=\ref[src];save=1'>Save to Slot</a> - "
-		dat += "<a href='?src=\ref[src];del=1'>Delete Slot</a>"
-		dat += "</big></b>"
-	else
-		dat += "Please create an account to save your preferences."
-
-	dat += "<br><br>"
 	dat += player_setup.header()
-	dat += "<br><HR></center>"
+	dat += "</big></b><br><HR></center>"
 	dat += player_setup.content(user)
 
 	var/datlist = splittext(dat, "<br>")
 	var/datlist2 = list()
 	for (var/line in datlist)
-		datlist2 += "<small>[line]</small><br>"
+		datlist2 += "[line]<br>"
 	dat = ""
 	for (var/line in datlist2)
 		dat += line
 
 	dat += "</body></html>"
-	user << browse(dat, "window=preferences;size=980x800")
+	user << browse(dat, "window=preferences;size=800x800")
 
 
 
@@ -275,65 +245,6 @@ var/list/preferences_datums = list()
 			message_admins("[character] ([character.ckey]) has spawned with their gender as plural or neuter. Please notify coders.")
 			character.gender = MALE
 
-/datum/preferences/proc/open_load_dialog(mob/user)
-	var/dat = "<body>"
-	dat += "<tt><center>"
-
-	dat += "<b>Select a character slot to load from</b><hr>"
-	for (var/i in 1 to config.character_slots)
-		if (preferences_exist(i))
-			dat += "<a href='?src=\ref[src];loadfromslot=[i]'>[i]. [get_DB_preference_value("real_name", i)]</a><br>"
-		else
-			dat += "[i]. Empty Slot<br>"
-
-	dat += "<hr>"
-	dat += "</center></tt>"
-	user << browse(dat, "window=load_dialog;size=300x390")
-
-/datum/preferences/proc/close_load_dialog(mob/user)
-	user << browse(null, "window=load_dialog")
-
-// save
-
-/datum/preferences/proc/open_save_dialog(mob/user)
-	var/dat = "<body>"
-	dat += "<tt><center>"
-
-	dat += "<b>Select a character slot to save to</b><hr>"
-	for (var/i in 1 to config.character_slots)
-		if (preferences_exist(i))
-			dat += "<a href='?src=\ref[src];savetoslot=[i]'>[i]. [get_DB_preference_value("real_name", i)]</a><br>"
-		else
-			dat += "<a href='?src=\ref[src];savetoslot=[i]'>[i]. Empty Slot</a><br>"
-
-	dat += "<hr>"
-	dat += "</center></tt>"
-	user << browse(dat, "window=save_dialog;size=300x390")
-
-/datum/preferences/proc/close_save_dialog(mob/user)
-	user << browse(null, "window=save_dialog")
-
-// del
-
-/datum/preferences/proc/open_del_dialog(mob/user)
-	var/dat = "<body>"
-	dat += "<tt><center>"
-
-	dat += "<b>Select a character save to delete</b><hr>"
-	for (var/i in 1 to config.character_slots)
-		if (preferences_exist(i))
-			dat += "<a href='?src=\ref[src];delslot=[i]'>[i]. [get_DB_preference_value("real_name", i)]</a><br>"
-		else
-			dat += "<i>[i]. Empty Slot</i><br>"
-
-	dat += "<hr>"
-	dat += "</center></tt>"
-	user << browse(dat, "window=del_dialog;size=300x390")
-
-/datum/preferences/proc/close_del_dialog(mob/user)
-	user << browse(null, "window=del_dialog")
-
-
 /proc/globalprefsanitize(str)
 	if (islist(str))
 		return ""
@@ -341,22 +252,25 @@ var/list/preferences_datums = list()
 
 // global preferences handling
 /datum/preferences/proc/loadGlobalPreferences()
-	var/list/tables = database.execute("SELECT prefs FROM preferences WHERE ckey = '[client_ckey]' AND slot = 'glob1';")
+	var/F = file("SQL/globalpreferences.txt")
+	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/tables = list()
+	for (var/i;i<globalprefs.len;i++)
+		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+		if (globalprefs2[1] == client_ckey)
+			tables = globalprefs2[2]
 	if (!islist(tables) || isemptylist(tables))
 		return
-	var/prefstring = tables["prefs"]
-//	log_debug(prefstring)
-	if (length(prefstring))
-		var/list/keyvals_list = splittext(prefstring, "&")
-		for (var/keyval in keyvals_list)
-			var/keyval_pair = splittext(keyval, "=")
-			var/key = keyval_pair[1]
-			var/val = keyval_pair[2]
-			if (isnum(text2num(val)))
-				val = text2num(val)
-			if (val != vars[key])
-				if (vars[key])
-					vars[key] = val
+	var/list/keyvals_list = splittext(tables, "&")
+	for (var/keyval in keyvals_list)
+		var/keyval_pair = splittext(keyval, "=")
+		var/key = keyval_pair[1]
+		var/val = keyval_pair[2]
+		if (isnum(text2num(val)))
+			val = text2num(val)
+		if (val != vars[key])
+			if (vars[key])
+				vars[key] = val
 
 /datum/preferences/proc/saveGlobalPreferences()
 	var/prefstring = ""
@@ -368,48 +282,45 @@ var/list/preferences_datums = list()
 	prefstring += "UI_style_color=[globalprefsanitize(UI_style_color)]&"
 	prefstring += "UI_style_alpha=[globalprefsanitize(UI_style_alpha)]&"
 	prefstring += "lobby_music_volume=[globalprefsanitize(lobby_music_volume)]"
-
-	var/list/prefs_exist_check = database.execute("SELECT * FROM preferences WHERE ckey = '[client_ckey]' AND slot = 'glob1';")
-	if (islist(prefs_exist_check) && !isemptylist(prefs_exist_check))
-		database.execute("UPDATE preferences SET prefs = '[prefstring]' WHERE ckey = '[client_ckey]' AND slot = 'glob1';")
-	else
-		database.execute("INSERT INTO preferences (ckey, slot, prefs) VALUES ('[client_ckey]', 'glob1', '[prefstring]');")
-
+	var/F = file("SQL/globalpreferences.txt")
+	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/done1 = FALSE
+	for (var/i;i<globalprefs.len;i++)
+		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+		if (globalprefs2[1] == client_ckey)
+			globalprefs2[2] = prefstring
+			done1 = TRUE
+	if (!done1)
+		text2file(F, "[client_ckey];[prefstring]|||")
 // global settings handling
-#define ONLY_LOAD_DISABLED_SETTINGS
 /datum/preferences/proc/loadGlobalSettings()
 	if (!client)
 		return
-	// enabled
-	var/list/tables = database.execute("SELECT prefs FROM preferences WHERE ckey = '[client_ckey]' AND slot = 'glob2_enabled';")
 
-	#ifndef ONLY_LOAD_DISABLED_SETTINGS
-	if (islist(tables) && !isemptylist(tables))
-		var/prefstring = tables["prefs"]
-		if (length(prefstring))
-			var/list/vals_list = splittext(prefstring, "&")
+	var/F = file("SQL/globalsettings.txt")
+	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/tables = list()
+	var/list/tables2 = list()
+	for (var/i;i<globalprefs.len;i++)
+		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+		if (globalprefs2[1] == client_ckey)
+			tables = globalprefs2[2]
+		if (islist(tables) && !isemptylist(tables))
+			// enabled
+			var/list/vals_list = splittext(tables, "&")
 			for (var/val in vals_list)
 				if (isnum(text2num(val)))
 					val = text2num(val)
 				client.set_preference(val, TRUE)
-	#else
-	for (var/pref in preferences_enabled)
-		client.set_preference(pref, TRUE)
-	#endif
-	// disabled
-	tables = database.execute("SELECT prefs FROM preferences WHERE ckey = '[client_ckey]' AND slot = 'glob2_disabled';")
-	if (islist(tables) && !isemptylist(tables))
-		var/prefstring = tables["prefs"]
-		if (length(prefstring))
-			var/list/vals_list = splittext(prefstring, "&")
-			for (var/val in vals_list)
-				if (isnum(text2num(val)))
-					val = text2num(val)
-				client.set_preference(val, FALSE)
-/*
-	for (var/mob/M in player_list)
-		if (M.client && M.client.ckey == client_ckey)
-			ShowChoices(M)*/
+
+			// disabled
+			tables2 = globalprefs2[3]
+			var/list/vals_list2 = splittext(tables2, "&")
+			for (var/val2 in vals_list2)
+				if (isnum(text2num(val2)))
+					val2 = text2num(val2)
+				client.set_preference(val2, FALSE)
+
 
 /datum/preferences/proc/saveGlobalSettings()
 	var/prefstring = ""
@@ -417,25 +328,30 @@ var/list/preferences_datums = list()
 		prefstring += preferences_enabled[v]
 		if (v != preferences_enabled.len)
 			prefstring += "&"
-	if (prefstring)
-		var/list/prefs_exist_check = database.execute("SELECT * FROM preferences WHERE ckey = '[client_ckey]' AND slot = 'glob2_enabled';")
-		if (islist(prefs_exist_check) && !isemptylist(prefs_exist_check))
-			database.execute("UPDATE preferences SET prefs = '[prefstring]' WHERE ckey = '[client_ckey]' AND slot = 'glob2_enabled';")
-		else
-			database.execute("INSERT INTO preferences (ckey, slot, prefs) VALUES ('[client_ckey]', 'glob2_enabled', '[prefstring]');")
-
-	prefstring = ""
+	var/prefstring2 = ""
 	for (var/v in 1 to preferences_disabled.len)
-		prefstring += preferences_disabled[v]
+		prefstring2 += preferences_disabled[v]
 		if (v != preferences_disabled.len)
-			prefstring += "&"
+			prefstring2 += "&"
+	var/F = file("SQL/globalsettings.txt")
+	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/done1 = FALSE
+	var/done2 = FALSE
 	if (prefstring)
-		var/list/prefs_exist_check = database.execute("SELECT * FROM preferences WHERE ckey = '[client_ckey]' AND slot = 'glob2_disabled';")
-		if (islist(prefs_exist_check) && !isemptylist(prefs_exist_check))
-			database.execute("UPDATE preferences SET prefs = '[prefstring]' WHERE ckey = '[client_ckey]' AND slot = 'glob2_disabled';")
-		else
-			database.execute("INSERT INTO preferences (ckey, slot, prefs) VALUES ('[client_ckey]', 'glob2_disabled', '[prefstring]');")
-#undef ONLY_LOAD_DISABLED_SETTINGS
+		for (var/i;i<globalprefs.len;i++)
+			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+			if (globalprefs2[1] == client_ckey)
+				globalprefs2[2] = prefstring
+				done1 = TRUE
+	if (prefstring2)
+		for (var/i;i<globalprefs.len;i++)
+			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+			if (globalprefs2[1] == client_ckey)
+				globalprefs2[3] = prefstring2
+				done2 = TRUE
+		if (!done1 && !done2)
+			text2file(F, "[client_ckey];[prefstring];[prefstring2]|||")
+
 
 /client/proc/is_preference_enabled(var/preference)
 
