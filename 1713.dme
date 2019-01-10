@@ -791,7 +791,6 @@
 #include "code\processes\lighting\sources.dm"
 #include "code\processes\zoom\zoom_mobs.dm"
 #include "code\processes\zoom\zoom_scopes.dm"
-#include "interface\bugs&suggs.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "maps\special\nomads.dmm"

@@ -54,12 +54,6 @@
 		usr << "<span class = 'red'>You do not have permission to do this!</span>"
 		return
 
-	establish_db_connection()
-
-	if (!database)
-		usr << "<span class = 'red'>Failed to establish database connection.</span>"
-		return
-
 	if (!adm_ckey || !new_rank)
 		return
 
@@ -71,8 +65,26 @@
 	if (!istext(adm_ckey) || !istext(new_rank))
 		return
 
+	var/F = file("SQL/admins.txt")
+	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||")
+
 	if (new_rank == "Removed")
-		database.execute("DELETE FROM admin WHERE ckey = '[adm_ckey]';")
+		if (islist(admincheck) && !isemptylist(admincheck))
+			for(var/i=1;i<admincheck.len;i++)
+				var/list/admincheck_two = splittext(admincheck[i], ";")
+				if (admincheck_two[2] == "[adm_ckey]")
+					admincheck_two[3] = "NONE"
+			fdel(F)
+			spawn(1)
+				for(var/i=1;i<admincheck.len;i++)
+					var/list/admincheck_two = splittext(admincheck[i], ";")
+					if (admincheck_two[3] != "NONE")
+						text2file("[admincheck[i]]|||","SQL/admins.txt")
+				spawn(1)
+					var/full_banlist_new = file2text("SQL/admins.txt")
+					full_banlist_new = replacetext(full_banlist_new,"\n","")
+					text2file(full_banlist_new,"SQL/admins.txt")
+
 		return
 
 	var/list/rowdata = database.execute("SELECT id FROM admin WHERE ckey = '[adm_ckey]';")
@@ -85,7 +97,7 @@
 		admin_id = text2num(rowdata["id"])
 
 	if (new_admin)
-		database.execute("INSERT INTO admin (id, ckey, rank, flags) VALUES ('[database.newUID()]', '[adm_ckey]', '[new_rank]', '[num2text(admin_ranks[ckeyEx(new_rank)])]');", FALSE)
+		text2file("[database.newUID()];[adm_ckey];[new_rank];[num2text(admin_ranks[ckeyEx(new_rank)])]|||","SQL/admins.txt")
 		message_admins("[key_name_admin(usr)] made '[adm_ckey]' an admin with the rank [new_rank].")
 		log_admin("[key_name(usr)] made '[adm_ckey]' an admin with the rank [new_rank].")
 		usr << "<span class = 'good'>New admin successfully added.</span>"
@@ -94,7 +106,14 @@
 			admin_id = database.newUID()
 		else
 			admin_id = num2text(admin_id)
-		database.execute("UPDATE admin SET rank = '[new_rank]', flags = '[num2text(admin_ranks[ckeyEx(new_rank)])]' WHERE id = '[admin_id]'", FALSE)
+		for(var/i=1;i<admincheck.len;i++)
+			var/list/admincheck_two = splittext(admincheck[i], ";")
+			if (admincheck_two[1] == "[admin_id]")
+				admincheck_two[3] = "[new_rank]"
+				admincheck_two[3] = "[num2text(admin_ranks[ckeyEx(new_rank)])]"
+				text2file("[admincheck[i]]|||","SQL/admins.txt")
+
+
 		message_admins("[key_name_admin(usr)] changed '[adm_ckey]''s admin rank to [new_rank].")
 		log_admin("[key_name(usr)] changed '[adm_ckey]''s  admin rank to [new_rank].")
 		usr << "<span class = 'good'>Admin rank successfully changed.</span>"
@@ -107,12 +126,6 @@
 
 	if (!usr.client.holder || !(usr.client.holder.rights & R_PERMISSIONS))
 		usr << "<span class = 'red'>You do not have permission to do this!</span>"
-		return
-
-	establish_db_connection()
-
-	if (!database)
-		usr << "<span class = 'red'>Failed to establish database connection.</span>"
 		return
 
 	if (!adm_ckey || !new_permission)
@@ -129,25 +142,62 @@
 	if (!istext(adm_ckey) || !isnum(new_permission))
 		return
 
-	var/list/rowdata = database.execute("SELECT id, flags FROM admin WHERE ckey = '[adm_ckey]';")
+	var/list/rowdata = list()
+	var/F = file("SQL/admins.txt")
+	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||")
+	if (islist(admincheck) && !isemptylist(admincheck))
+		for(var/i=1;i<admincheck.len;i++)
+			var/list/admincheck_two = splittext(admincheck[i], ";")
+			if (admincheck_two[2] == "[adm_ckey]")
+				rowdata = list(admincheck_two)
 
 	var/admin_id
 	var/admin_rights
 
 	if (islist(rowdata) && !isemptylist(rowdata))
-		admin_id = text2num(rowdata["id"])
-		admin_rights = text2num(rowdata["flags"])
+		admin_id = text2num(rowdata[1])
+		admin_rights = text2num(rowdata[4])
 
 	if (!admin_id)
 		return
 
 	if (admin_rights & new_permission) //This admin already has this permission, so we are removing it.
-		database.execute("UPDATE admin SET flags = '[admin_rights & ~new_permission]' WHERE id = '[admin_id]'")
+		if (islist(admincheck) && !isemptylist(admincheck))
+			for(var/i=1;i<admincheck.len;i++)
+				var/list/admincheck_two = splittext(admincheck[i], ";")
+				if (admincheck_two[2] == "[adm_ckey]")
+					admincheck_two[4] = "[admin_rights & ~new_permission]"
 		message_admins("[key_name_admin(usr)] removed the [nominal] permission of [key_name_admin(adm_ckey)]")
 		log_admin("[key_name(usr)] removed the [nominal] permission of [key_name(adm_ckey)]")
 		usr << "<span class = 'notice'>Permission removed.</span>"
 	else //This admin doesn't have this permission, so we are adding it.
-		database.execute("UPDATE admin SET flags = '[admin_rights | new_permission]' WHERE id = '[admin_id]'")
+		if (islist(admincheck) && !isemptylist(admincheck))
+			for(var/i=1;i<admincheck.len;i++)
+				var/list/admincheck_two = splittext(admincheck[i], ";")
+				if (admincheck_two[2] == "[adm_ckey]")
+					admincheck_two[4] = "[admin_rights | new_permission]"
+			spawn(1)
+				fdel(F)
+				spawn(1)
+					for(var/i=1;i<admincheck.len;i++)
+						var/list/admincheck_three = splittext(admincheck[i], ";")
+						if (admincheck_three[3] != "NONE")
+							text2file("[admincheck[i]]|||","SQL/admins.txt")
+					spawn(1)
+						var/full_banlist_new = file2text("SQL/admins.txt")
+						full_banlist_new = replacetext(full_banlist_new,"\n","")
+						text2file(full_banlist_new,"SQL/admins.txt")
 		message_admins("[key_name_admin(usr)] added the [nominal] permission of [key_name_admin(adm_ckey)]")
 		log_admin("[key_name(usr)] added the [nominal] permission of [key_name(adm_ckey)]")
 		usr << "<span class = 'notice'>Permission added.</span>"
+	spawn(1)
+		fdel(F)
+		spawn(1)
+			for(var/i=1;i<admincheck.len;i++)
+				var/list/admincheck_three = splittext(admincheck[i], ";")
+				if (admincheck_three[3] != "NONE")
+					text2file("[admincheck[i]]|||","SQL/admins.txt")
+			spawn(1)
+				var/full_banlist_new = file2text("SQL/admins.txt")
+				full_banlist_new = replacetext(full_banlist_new,"\n","")
+				text2file(full_banlist_new,"SQL/admins.txt")
