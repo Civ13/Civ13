@@ -56,13 +56,16 @@
 
 			var/age
 			if (isnum(C.player_age))
-				age = C.player_age
+				if (player_age >= 864000)
+					age = "[round(player_age/864000)] days"
+				else
+					age = "[round(player_age/360000)] hours"
 			else
 				age = FALSE
 
-			if (age <= 1)
+			if (player_age <= (864000*2))
 				age = "<font color='#ff0000'><b>[age]</b></font>"
-			else if (age < 10)
+			else
 				age = "<font color='#ff8c00'><b>[age]</b></font>"
 
 			entry += " - [age]"

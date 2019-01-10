@@ -87,7 +87,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 4
-	layer = 2.12
+	layer = 3
 	health = 150
 	wall = TRUE
 	explosion_resistance = 5
@@ -102,7 +102,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 300
 	wood = FALSE
 	wall = TRUE
@@ -119,7 +119,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 90
 	wood = FALSE
 	wall = TRUE
@@ -136,7 +136,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 1
-	layer = 2.12
+	layer = 3
 	health = 75
 	wood = TRUE
 	wall = TRUE
@@ -152,7 +152,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 110
 	wood = FALSE
 	wall = TRUE
@@ -170,7 +170,7 @@
 	opacity = FALSE
 	incomplete = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 30
 	var/stage = 1
 	wood = FALSE
@@ -209,7 +209,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 150
 	wood = FALSE
 	wall = TRUE
@@ -220,14 +220,14 @@
 	name = "clay bricks wall"
 	desc = "A clay bricks wall."
 	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "claybrickwall"
+	icon_state = "claybrickwall_inc1"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
 	opacity = FALSE
 	incomplete = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 40
 	var/stage = 1
 	wood = FALSE
@@ -236,7 +236,7 @@
 
 /obj/covers/clay_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
-		if (stage == 2)
+		if (stage >= 2)
 			user << "You start adding clay bricks to the wall..."
 			if (do_after(user, 20, src))
 				user << "You finish adding clay bricks to the wall, completing it."
@@ -248,7 +248,7 @@
 			user << "You start adding clay bricks to the wall..."
 			if (do_after(user, 20, src))
 				user << "You finish clay bricks to the wall."
-				stage = (stage+1)
+				stage += 1
 				icon_state = "claybrickwall_inc[stage]"
 				health = (30*stage)
 				qdel(W)
