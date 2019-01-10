@@ -61,21 +61,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 					key_val_pairs[key] += something
 			else
 				key_val_pairs[key] = val
-	/*	else
-			switch (key)
-				if ("clientprefs_enabled")
-					var/list/clientprefs_enabled = splittext(val, ";")
-					if (clientprefs_enabled.len) // will return false if new char
-						preferences_enabled.Cut()
-						for (var/pref in clientprefs_enabled)
-							preferences_enabled += pref
-				if ("clientprefs_disabled")
-					var/list/clientprefs_disabled = splittext(val, ";")
-					if (clientprefs_disabled.len)
-						preferences_disabled.Cut()
-						for (var/pref in clientprefs_disabled)
-							preferences_disabled += pref
-*/
+
 
 	for (var/varname in vars)
 		if (key_val_pairs.Find(varname))
@@ -128,9 +114,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 			internal_table[slot] = list()
 		remember_preference("real_name", name_to_remember, FALSE) // don't save or inf. loop
 	else
-	//	world << "0: [prevslot]"
 		var/internal_table_prev_slot = internal_table["[prevslot]"]
-	//	world << "#1: [internal_table_prev_slot]["german_name"]"
 		internal_table[slot] = copylist(internal_table_prev_slot)
 		remember_preference("real_name", name_to_remember, FALSE)
 
@@ -154,27 +138,9 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 		else
 			params += "[key]=[val]"
 
-/*	// client_preferences have to be saved separately
-	if (preferences_enabled.len)
-		if (params)
-			params += "&"
-		params += "clientprefs_enabled="
-		for (var/pref in preferences_enabled)
-			if (!pref) continue
-			params += pref
-			params += ";"*/
-
 	if (dd_hassuffix(params, ";"))
 		params = copytext(params, 1, lentext(params))
-/*
-	if (preferences_disabled.len)
-		if (params)
-			params += "&"
-		params += "clientprefs_disabled="
-		for (var/pref in preferences_disabled)
-			if (!pref) continue
-			params += pref
-			params += ";"*/
+
 
 	if (dd_hassuffix(params, ";"))
 		params = copytext(params, 1, lentext(params))

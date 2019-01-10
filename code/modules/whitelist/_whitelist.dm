@@ -45,7 +45,7 @@ var/list/global_whitelists[50]
 
 // load the whitelist from the database
 /datum/whitelist/proc/load()
-	var/F = file("/home/1713/1713/whitelist.txt")
+	var/F = file("SQL/whitelist.txt")
 	if (!F)
 		return
 	var/list/_data = list()
@@ -58,7 +58,7 @@ var/list/global_whitelists[50]
 
 // save the whitelist to the database
 /datum/whitelist/proc/save()
-	var/F = file("/home/1713/1713/whitelist.txt")
+	var/F = file("SQL/whitelist.txt")
 	if (!F)
 		return
 /*

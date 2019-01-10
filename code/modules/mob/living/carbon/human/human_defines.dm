@@ -87,7 +87,6 @@
 	var/list/equipment_overlays = list()	// Extra overlays from equipped items
 
 	var/stance_damage = FALSE //Whether this mob's ability to stand has been affected
-	var/identifying_gender // In case the human identifies as another gender than it's biological
 
 	var/list/all_factions = list()
 	var/datum/faction/base_faction = null

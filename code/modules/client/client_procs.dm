@@ -207,17 +207,21 @@
 
 	var/host_file_text = file2text("config/host.txt")
 	if (ckey(host_file_text) == ckey && !holder)
-		var/list/admins = list()
+		holder = new("Host", FALSE, ckey)
+		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
+		if (directory[ckey])
+			A.associate(directory[ckey])
+/*		var/islisted = FALSE
 		var/F = file("SQL/admins.txt")
 		var/list/admincheck = splittext(file2text(F),"|||")
 		if (islist(admincheck) && !isemptylist(admincheck))
 			for(var/i=1;i<admincheck.len;i++)
 				var/list/admincheck_two = splittext(admincheck[i], ";")
-				admins += list(admincheck_two[1])
-			if ((!islist(admins) || isemptylist(admins)))
-				holder = new("Host", FALSE, ckey)
-				text2file("99;[ckey];[holder.rank];[holder.rights]|||","SQL/admins.txt")
-
+				if (admincheck_two[2] == ckey)
+					islisted = TRUE
+		if (!islisted)
+			text2file("99;[ckey];[holder.rank];[holder.rights]|||","SQL/admins.txt")
+*/
 	/* let us profile if we're hosting on our computer OR if we have host perms */
 	if (world.host == key || (holder && (holder.rights & R_HOST)))
 		control_freak = 0
