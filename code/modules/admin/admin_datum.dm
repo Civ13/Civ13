@@ -14,8 +14,8 @@ var/list/admin_datums = list()
 			return "Admiral"
 		if ("Captain")
 			return "Captain"
-		if ("Master")
-			return "Master"
+		if ("Sergeant")
+			return "Sergeant"
 		if ("HeadAdmin")
 			return "Headmin"
 		if ("DebugHost")

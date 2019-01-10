@@ -47,7 +47,7 @@
 			if (admin_ranks.len)
 				new_rank = input("Please select a rank", "New rank", null, null) as null|anything in (admin_ranks|"*New Rank*")
 			else
-				new_rank = input("Please select a rank", "New rank", null, null) as null|anything in list("Game Master","Game Admin", "Trial Admin", "Admin Observer","*New Rank*")
+				new_rank = input("Please select a rank", "New rank", null, null) as null|anything in list("Host","Sergeant", "Trial Sergeant", "Mentor","*New Rank*")
 
 	/*		var/rights = FALSE
 			if (D)
@@ -514,19 +514,6 @@
 	else if (href_list["admin_secrets"])
 		var/datum/admin_secret_item/item = locate(href_list["admin_secrets"]) in admin_secrets.items
 		item.execute(usr)
-/*
-	else if (href_list["populate_inactive_customitems"])
-		if (check_rights(R_ADMIN|R_SERVER))
-			populate_inactive_customitems_list(owner)*/
-/*
-	else if (href_list["vsc"])
-		if (check_rights(R_ADMIN|R_SERVER))
-			if (href_list["vsc"] == "airflow")
-				vsc.ChangeSettingsDialog(usr,vsc.settings)
-			if (href_list["vsc"] == "plasma")
-				vsc.ChangeSettingsDialog(usr,vsc.plc.settings)
-			if (href_list["vsc"] == "default")
-				vsc.SetDefault(usr)*/
 
 	else if (href_list["toglang"])
 		if (check_rights(R_SPAWN))

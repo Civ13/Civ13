@@ -407,16 +407,6 @@ menu "menu"
 		command = "hotkeys-help"
 		category = "&Help"
 		saved-params = "is-checked"
-	elem 
-		name = "Suggestion"
-		command = "makeasugg"
-		category = "&Help"
-		saved-params = "is-checked"
-	elem 
-		name = "Report Bugs"
-		command = "reportabug"
-		category = "&Help"
-		saved-params = "is-checked"
 
 
 window "chemdispenser"
