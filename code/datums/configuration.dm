@@ -81,6 +81,8 @@ var/list/gamemode_cache = list()
 	var/guests_allowed = TRUE
 	var/debugparanoid = FALSE
 
+	var/ssd_invisibility_timer = 10
+
 	var/serverurl
 	var/server
 	var/banappeals

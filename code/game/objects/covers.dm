@@ -220,7 +220,7 @@
 	name = "clay bricks wall"
 	desc = "A clay bricks wall."
 	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "claybrickwall"
+	icon_state = "claybrickwall_inc1"
 	passable = TRUE
 	not_movable = TRUE
 	density = TRUE
@@ -236,7 +236,7 @@
 
 /obj/covers/clay_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
-		if (stage == 2)
+		if (stage >= 2)
 			user << "You start adding clay bricks to the wall..."
 			if (do_after(user, 20, src))
 				user << "You finish adding clay bricks to the wall, completing it."
@@ -248,7 +248,7 @@
 			user << "You start adding clay bricks to the wall..."
 			if (do_after(user, 20, src))
 				user << "You finish clay bricks to the wall."
-				stage = (stage+1)
+				stage += 1
 				icon_state = "claybrickwall_inc[stage]"
 				health = (30*stage)
 				qdel(W)

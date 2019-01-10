@@ -28,7 +28,7 @@
 
 /obj/structure/bed/bedroll/New()
 	..()
-	cover_overlay = image("icon" = 'icons/obj/items.dmi', "icon_state" = "bedroll_w", "layer" = MOB_LAYER + 1.1)
+	cover_overlay = image("icon" = 'icons/obj/items.dmi', "icon_state" = "bedroll_w", "layer" = MOB_LAYER + 2.1)
 
 /obj/item/weapon/bedroll/attack_self(mob/user as mob)
 	user << "You open the bedroll, extending it."

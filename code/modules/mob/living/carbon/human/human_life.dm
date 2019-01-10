@@ -69,6 +69,7 @@
 		start_to_rot = TRUE
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 1
+		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	else
 		healing_stage = 0
 	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
@@ -1380,3 +1381,15 @@
 						return
 			else
 				return
+
+/mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
+	if (timer <= 0)
+		return
+	timer *= 600 //convert minutes to deciseconds
+	spawn(timer)
+		if (has_brain() && stat!=DEAD && (!key || !client))
+			invisibility = 101
+			return
+		else
+			invisibility = 0
+			return
