@@ -87,7 +87,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 4
-	layer = 2.12
+	layer = 3
 	health = 150
 	wall = TRUE
 	explosion_resistance = 5
@@ -102,7 +102,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 300
 	wood = FALSE
 	wall = TRUE
@@ -119,7 +119,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 90
 	wood = FALSE
 	wall = TRUE
@@ -136,7 +136,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 1
-	layer = 2.12
+	layer = 3
 	health = 75
 	wood = TRUE
 	wall = TRUE
@@ -152,7 +152,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 110
 	wood = FALSE
 	wall = TRUE
@@ -170,7 +170,7 @@
 	opacity = FALSE
 	incomplete = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 30
 	var/stage = 1
 	wood = FALSE
@@ -209,7 +209,7 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 150
 	wood = FALSE
 	wall = TRUE
@@ -227,7 +227,7 @@
 	opacity = FALSE
 	incomplete = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 40
 	var/stage = 1
 	wood = FALSE

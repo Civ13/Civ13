@@ -57,8 +57,8 @@ var/datum/quickBan_handler/quickBan_handler = null
 		quickBan_handler = new
 	var/full_banlist = file2text("SQL/bans.txt")
 	var/list/full_list_split = splittext(full_banlist, "|||")
+	world << "[full_list_split.len]"
 	var/list/result = list()
-	var/list/possibilities = list()
 
 	var/option = input(src, "Search for a ban?") in list("Yes","Show All","Cancel")
 	if (option == "No")
@@ -69,37 +69,37 @@ var/datum/quickBan_handler/quickBan_handler = null
 			return
 		else if (option2 == "ckey")
 			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
-			for(var/i=1;i<=full_list_split.len;i++)
+			for(var/i=1;i<full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (full_list_split_two[1] == _ckey)
-					result += full_list_split_two
+					result += list(full_list_split_two)
 
 		else if (option2 == "cID")
 			var/cID = input(src, "What cID will you search for?") as null|text
-			for(var/i=1;i<=full_list_split.len;i++)
+			for(var/i=1;i<full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (full_list_split_two[2] == cID)
-					result += full_list_split_two
+					result += list(full_list_split_two)
 
 		else if (option2 == "ip")
 			var/ip = input(src, "What address will you search for?") as null|text
-			for(var/i=1;i<=full_list_split.len;i++)
+			for(var/i=1;i<full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (full_list_split_two[3] == ip)
-					result += full_list_split_two
+					result += list(full_list_split_two)
 
 	else if (option == "Show All")
-		for(var/i=1;i<=full_list_split.len;i++)
+		for(var/i=1;i<full_list_split.len;i++)
 			var/list/full_list_split_two = splittext(full_list_split[i], ";")
 			result += list(full_list_split_two)
-
+			world << "one found: [full_list_split.len]"
 	var/html = "<center><big>List of Quick Bans</big></center>"
-
+	var/list/possibilities = list()
 	if (islist(result) && !isemptylist(result))
+		world << "[result.len]"
 		for (var/v = 1; v<=result.len; v++)
 			if (islist(result[v]))
-				var/vkey = result[v]
-				possibilities += "<big><b>UID [result[vkey][7]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[result[vkey][7]];quickBan_removeBan_ckey=[result[vkey][2]];quickBan_removeBan_cID=[result[vkey][3]];quickBan_removeBan_ip=[result[vkey][4]]'>DELETE</a>)</big>: [result[vkey][2]]/[result[vkey][3]]/[result[vkey][4]], type '[result[vkey][5]]' ([result[vkey][6]]): banned for '[result[vkey][8]]' by [result[vkey][9]] on [result[vkey][10]]. <b>[result[vkey][12]]</b>. (After assigned date)"
+				possibilities += "<big><b>UID [result[v][1]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[result[v][6]];quickBan_removeBan_ckey=[result[v][1]];quickBan_removeBan_cID=[result[v][2]];quickBan_removeBan_ip=[result[v][3]]'>DELETE</a>)</big>: [result[v][1]]/[result[v][2]]/[result[v][3]], type '[result[v][4]]' ([result[v][5]]): banned for '[result[v][7]]' by [result[v][8]] on [result[v][9]]. <b>[result[v][11]]</b>. (After assigned date)"
 
 	for (var/possibility in possibilities)
 		html += "<br>"

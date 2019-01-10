@@ -60,6 +60,7 @@
 				if (fexists(F))
 					fcopy("SQL/bans.txt","SQL/bans_backup.txt")
 					fdel(F)
+				var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the database. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
 				spawn(1)
 					var/full_banlist = null
 					full_banlist = file2text("SQL/bans.txt")
@@ -73,7 +74,6 @@
 						full_banlist_new = replacetext(full_banlist_new,"\n","")
 						text2file(full_banlist_new,"SQL/bans.txt")
 						recompile_banlist()
-					var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the database. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
 					log_admin(M)
 					message_admins(M)
 
