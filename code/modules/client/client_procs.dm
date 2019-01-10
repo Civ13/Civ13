@@ -56,7 +56,23 @@
 		if (UID)
 			var/confirm = input("Are you sure you want to remove the ban with the UID '[UID]' ?") in list("Yes", "No")
 			if (confirm == "Yes")
-				if (database.execute("REMOVE * FROM quick_bans WHERE UID == '[UID]';"))
+				var/F = file("SQL/bans.txt")
+				if (fexists(F))
+					fcopy("SQL/bans.txt","SQL/bans_backup.txt")
+					fdel(F)
+				spawn(1)
+					var/full_banlist = null
+					full_banlist = file2text("SQL/bans.txt")
+					var/list/full_list_split = splittext(full_banlist, "|||")
+					for(var/i=1;i<full_list_split.len;i++)
+						var/list/full_list_split_two = splittext(full_list_split[i], ";")
+						if (full_list_split_two[6] == UID) //if the ban expiration hasn't been reached yet
+							full_list_split_two[10] = 0
+					spawn(1)
+						var/full_banlist_new = file2text("SQL/bans.txt")
+						full_banlist_new = replacetext(full_banlist_new,"\n","")
+						text2file(full_banlist_new,"SQL/bans.txt")
+						recompile_banlist()
 					var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the database. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
 					log_admin(M)
 					message_admins(M)
@@ -292,16 +308,18 @@
 // Returns null if no DB connection can be established, or -1 if the requested key was not found in the database
 
 /proc/get_player_age(key)
-	establish_db_connection()
-	if (!database)
-		return null
+	var/full_logs = file2text("SQL/playerlogs.txt")
+	var/list/full_logs_split = splittext(full_logs, "|")
+	var/done = FALSE
+	var/currentage = 0
+	for(var/i=1;i<full_logs_split.len;i++)
+		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
+		if (full_logs_split_two[1] == key)
+			currentage = text2num(num2text(world.realtime,20)) - text2num(full_logs_split_two[4])
+			done = TRUE
 
-	var/sql_ckey = sql_sanitize_text(ckey(key))
-
-	var/list/rowdata = database.execute("SELECT datediff(Now(),firstseen) as age FROM player WHERE ckey = '[sql_ckey]'")
-
-	if (islist(rowdata) && !isemptylist(rowdata))
-		return text2num(rowdata["age"])
+	if (done)
+		return currentage
 	else
 		return -1
 
@@ -310,6 +328,7 @@
 
 /client/proc/log_to_db()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
 	// loading the "database"
 	var/full_list = file2text("SQL/playerlist.txt")
 //	var/full_logs = file2text("SQL/playerlogs.txt")
@@ -349,6 +368,7 @@
 		var/var5 = full_list_split_vars[k][5]
 		text2file("[var1];[var2];[var3];[var4];[var5];|","SQL/playerlist.txt")
 //		world.log << "[var1];[var2];[var3];[var4];[var5];|"
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (IsGuestKey(key))
@@ -409,9 +429,12 @@
 	//Logging player access
 	var/serverip = "[world.internet_address]:[world.port]"
 	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
-	//adding to player logs (ckey;ip;computerid;serverip;datetime,realtime)
-//	world.log << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime,realtime)"
-	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 10)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+	if (get_player_age(ckey) <= -1)
+		//adding to player logs (ckey;ip;computerid;serverip;datetime,realtime)
+		text2file("[sql_ckey];[sql_ip];[sql_computerid];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+		player_age = "NEW"
+	else
+		player_age = get_player_age(ckey)
 
 
 //	#undef SQLDEBUG

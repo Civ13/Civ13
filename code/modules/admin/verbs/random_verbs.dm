@@ -59,14 +59,11 @@
 		highlight_special_characters = FALSE
 
 	for (var/client/C in clients)
-		if (C.player_age == "Requires database")
-			missing_ages = TRUE
-			continue
 		if (C.player_age < age)
-			msg += "[key_name(C, TRUE, TRUE, highlight_special_characters)]: account is [C.player_age] days old<br>"
+			msg += "[key_name(C, TRUE, TRUE, highlight_special_characters)]: account is [C.player_age] days old.<br>"
 
 	if (missing_ages)
-		src << "Some accounts did not have proper ages set in their clients.  This function requires database to be present"
+		src << "Some accounts did not have proper ages set in their clients.  This function requires database to be present."
 
 	if (msg != "")
 		src << browse(msg, "window=Player_age_check")
