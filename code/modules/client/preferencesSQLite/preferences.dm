@@ -89,19 +89,19 @@ var/list/preferences_datums = list()
 			client_isguest = TRUE
 
 		// load our first slot, if we have one
-		if (preferences_exist(1))
-			load_preferences(1)
+		if (preferences_exist())
+			load_preferences()
 		else
 			real_name = random_name(gender, species)
-			save_preferences(1)
+			save_preferences()
 
 		spawn (1)
-			loadGlobalPreferences()
+//			loadGlobalPreferences()
 			loadGlobalSettings()
 			ready = TRUE
 
 /datum/preferences/Del()
-	save_preferences(current_slot)
+	save_preferences()
 	..()
 
 /datum/preferences/proc/update_setup()
@@ -217,7 +217,7 @@ var/list/preferences_datums = list()
 	var/F = file("SQL/globalpreferences.txt")
 	var/list/globalprefs = splittext(file2text(F), "|||")
 	var/list/tables = list()
-	for (var/i;i<globalprefs.len;i++)
+	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 		if (globalprefs2[1] == client_ckey)
 			tables = globalprefs2[2]
@@ -243,7 +243,7 @@ var/list/preferences_datums = list()
 	var/F = file("SQL/globalpreferences.txt")
 	var/list/globalprefs = splittext(file2text(F), "|||")
 	var/done1 = FALSE
-	for (var/i;i<globalprefs.len;i++)
+	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 		if (globalprefs2[1] == client_ckey)
 			globalprefs[i] = "[client_ckey];[prefstring]"
@@ -253,7 +253,7 @@ var/list/preferences_datums = list()
 	else
 		fdel(F)
 		var/sum2 = 0
-		for (var/i;i<globalprefs.len;i++)
+		for (var/i=1;i<globalprefs.len;i++)
 			sum2 += "[globalprefs[i]]|||"
 		text2file("[sum2]", F)
 // global settings handling
@@ -265,7 +265,7 @@ var/list/preferences_datums = list()
 	var/list/globalprefs = splittext(file2text(F), "|||")
 	var/list/tables = list()
 	var/list/tables2 = list()
-	for (var/i;i<globalprefs.len;i++)
+	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 		if (globalprefs2[1] == client_ckey)
 			tables = globalprefs2[2]
@@ -300,25 +300,17 @@ var/list/preferences_datums = list()
 	var/F = file("SQL/globalsettings.txt")
 	var/list/globalprefs = splittext(file2text(F), "|||")
 	var/done1 = FALSE
-	var/done2 = FALSE
-	if (prefstring != "")
-		for (var/i;i<globalprefs.len;i++)
-			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
-			if (globalprefs2[1] == client_ckey)
-				globalprefs[i] = "[client_ckey];[prefstring];[globalprefs2[3]]"
-				done1 = TRUE
-	if (prefstring2 != "")
-		for (var/i;i<globalprefs.len;i++)
-			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
-			if (globalprefs2[1] == client_ckey)
-				globalprefs[i] = "[client_ckey];[globalprefs2[2]];[prefstring2]"
-				done2 = TRUE
-	if (!done1 && !done2) // if it doesnt exist, just add a new line
+	for (var/i=1;i<globalprefs.len;i++)
+		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+		if (globalprefs2[1] == client_ckey)
+			globalprefs[i] = "[client_ckey];[globalprefs2[2]];[globalprefs2[3]]"
+			done1 = TRUE
+	if (!done1) // if it doesnt exist, just add a new line
 		text2file("[client_ckey];[prefstring];[prefstring2]|||",F)
 	else //rewrite the file
 		fdel(F)
-		var/sum2 = 0
-		for (var/i;i<globalprefs.len;i++)
+		var/sum2 = ""
+		for (var/i=1;i<globalprefs.len;i++)
 			sum2 += "[globalprefs[i]]|||"
 		text2file("[sum2]", F)
 

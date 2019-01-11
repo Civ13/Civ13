@@ -2,17 +2,18 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 /datum/preferences/proc/preferences_exist()
 	var/F = file("SQL/charprefs.txt")
-	var/list/charprefs = splittext(file2text(F), "|||")
+	var/fulltext = file2text(F)
+	var/list/charprefs = splittext(fulltext, "|||")
 	var/done1 = FALSE
-	for (var/i;i<charprefs.len;i++)
-		var/list/charprefs2 = list(splittext(charprefs[i], ";"))
+	for (var/i=1;i<charprefs.len;i++)
+		var/list/charprefs2 = splittext(charprefs[i], ";")
 		if (charprefs2[1] == client_ckey)
+			world << "YES!"
 			done1 = TRUE
 	if (!done1)
 		return FALSE
 	else
 		return TRUE
-	return FALSE
 
 /datum/preferences/proc/load_preferences()
 
@@ -20,11 +21,12 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 		return FALSE
 
 	var/F = file("SQL/charprefs.txt")
-	var/list/charprefs = splittext(file2text(F), "|||")
+	var/fulltext = file2text(F)
+	var/list/charprefs = splittext(fulltext, "|||")
 	var/done1 = FALSE
 	var/table = 0
-	for (var/i;i<charprefs.len;i++)
-		var/list/charprefs2 = list(splittext(charprefs[i], ";"))
+	for (var/i=1;i<charprefs.len;i++)
+		var/list/charprefs2 = splittext(charprefs[i], ";")
 		if (charprefs2[1] == client_ckey)
 			done1 = TRUE
 			table = charprefs2[2]
@@ -114,7 +116,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	var/F = file("SQL/charprefs.txt")
 	var/list/charprefs = splittext(file2text(F), "|||")
 	var/done1 = FALSE
-	for (var/i;i<charprefs.len;i++)
+	for (var/i=1;i<charprefs.len;i++)
 		var/list/charprefs2 = list(splittext(charprefs[i], ";"))
 		if (charprefs2[1] == client_ckey)
 			charprefs[i] = "[client_ckey];[params]"
@@ -124,11 +126,11 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	else
 		fdel(F)
 		var/sum2 = 0
-		for (var/i;i<charprefs.len;i++)
+		for (var/i=1;i<charprefs.len;i++)
 			sum2 += "[charprefs[i]]|||"
 		text2file("[sum2]", F)
 
-/datum/preferences/proc/remember_preference(pref, value, var/save = FALSE)
+/datum/preferences/proc/remember_preference(pref, value, var/save = TRUE)
 	if (!vars.Find(pref))
 		return FALSE
 	if (value == initial(vars[pref]))
@@ -145,7 +147,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 	return TRUE
 
-/datum/preferences/proc/forget_preference(pref, var/save = FALSE, var/glob = FALSE)
+/datum/preferences/proc/forget_preference(pref, var/save = TRUE, var/glob = FALSE)
 	if (!vars.Find(pref))
 		return FALSE
 	if (forbidden_pref_save_varnames.Find(pref))
