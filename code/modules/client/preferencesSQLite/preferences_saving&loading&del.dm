@@ -8,7 +8,6 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	for (var/i=1;i<charprefs.len;i++)
 		var/list/charprefs2 = splittext(charprefs[i], ";")
 		if (charprefs2[1] == client_ckey)
-			world << "YES!"
 			done1 = TRUE
 	if (!done1)
 		return FALSE

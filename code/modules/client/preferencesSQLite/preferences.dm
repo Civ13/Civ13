@@ -266,11 +266,10 @@ var/list/preferences_datums = list()
 	var/list/tables = list()
 	var/list/tables2 = list()
 	for (var/i=1;i<globalprefs.len;i++)
-		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+		var/list/globalprefs2 = splittext(globalprefs[i], ";")
 		if (globalprefs2[1] == client_ckey)
+			//enabled
 			tables = globalprefs2[2]
-		if (islist(tables) && !isemptylist(tables))
-			// enabled
 			var/list/vals_list = splittext(tables, "&")
 			for (var/val in vals_list)
 				if (isnum(text2num(val)))
@@ -301,7 +300,7 @@ var/list/preferences_datums = list()
 	var/list/globalprefs = splittext(file2text(F), "|||")
 	var/done1 = FALSE
 	for (var/i=1;i<globalprefs.len;i++)
-		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
+		var/list/globalprefs2 = splittext(globalprefs[i], ";")
 		if (globalprefs2[1] == client_ckey)
 			globalprefs[i] = "[client_ckey];[globalprefs2[2]];[globalprefs2[3]]"
 			done1 = TRUE
