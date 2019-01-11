@@ -8,7 +8,7 @@
 	pref.lobby_music_volume		= sanitize_integer(pref.ooccolor, 1, 100, initial(pref.ooccolor))
 
 /datum/category_item/player_setup_item/player_global/ui/content(var/mob/user)
-	. += "<b>UI Settings</b><br><br>"
+//	. += "<b>UI Settings</b><br><br>"
 //	. += "<b>UI Style:</b> <a href='?src=\ref[src];select_style=1'><b>[pref.UI_style]</b></a><br>"
 /*
 	if (can_select_ooc_color(user))
@@ -18,8 +18,8 @@
 		else
 			. += "<a href='?src=\ref[src];select_ooc_color=1'><b>[pref.ooccolor]</b></a> <table style='display:inline;' bgcolor='[pref.ooccolor]'><tr><td>__</td></tr></table> <a href='?src=\ref[src];reset=ooc'>reset</a><br>" // only one linebreak needed here
 */
-	. += "<b>Lobby Music Volume:</b> <a href='?src=\ref[src];change_lobby_music_volume=1'><b>[pref.lobby_music_volume]%</b></a><br>"
-	. += "<br>"
+//	. += "<b>Lobby Music Volume:</b> <a href='?src=\ref[src];change_lobby_music_volume=1'><b>[pref.lobby_music_volume]%</b></a><br>"
+//	. += "<br>"
 
 /datum/category_item/player_setup_item/player_global/ui/OnTopic(var/href,var/list/href_list, var/mob/user)
 	if (href_list["select_style"])

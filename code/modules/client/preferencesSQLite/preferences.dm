@@ -287,12 +287,12 @@ var/list/preferences_datums = list()
 
 
 /datum/preferences/proc/saveGlobalSettings()
-	var/prefstring = 0
+	var/prefstring = ""
 	for (var/v in 1 to preferences_enabled.len)
 		prefstring += preferences_enabled[v]
 		if (v != preferences_enabled.len)
 			prefstring += "&"
-	var/prefstring2 = 0
+	var/prefstring2 = ""
 	for (var/v in 1 to preferences_disabled.len)
 		prefstring2 += preferences_disabled[v]
 		if (v != preferences_disabled.len)
@@ -301,13 +301,13 @@ var/list/preferences_datums = list()
 	var/list/globalprefs = splittext(file2text(F), "|||")
 	var/done1 = FALSE
 	var/done2 = FALSE
-	if (prefstring)
+	if (prefstring != "")
 		for (var/i;i<globalprefs.len;i++)
 			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 			if (globalprefs2[1] == client_ckey)
 				globalprefs[i] = "[client_ckey];[prefstring];[globalprefs2[3]]"
 				done1 = TRUE
-	if (prefstring2)
+	if (prefstring2 != "")
 		for (var/i;i<globalprefs.len;i++)
 			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 			if (globalprefs2[1] == client_ckey)
