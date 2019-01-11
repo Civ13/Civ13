@@ -185,8 +185,6 @@
 		if (ticker && ticker.current_state == GAME_STATE_PLAYING) //Only report this stuff if we are currently playing.
 			message_admins("Staff login: [key_name(src)]")
 
-	establish_db_connection()
-
 	if (holder)
 		holder.associate(src)
 		admins |= src

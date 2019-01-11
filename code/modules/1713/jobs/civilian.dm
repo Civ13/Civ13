@@ -11,20 +11,6 @@
 
 /mob/living/carbon/human/proc/give_random_civ_name()
 	name = species.get_random_english_name(gender)
-	if (client && client.prefs)
-		switch (client.prefs.civ_ethnicity)
-			if (SPANISH)
-				name = species.get_random_spanish_name(gender)
-			if (PORTUGUESE)
-				name = species.get_random_portuguese_name(gender)
-			if (FRENCH)
-				name = species.get_random_french_name(gender)
-			if (DUTCH)
-				name = species.get_random_dutch_name(gender)
-			if (ENGLISH)
-				name = species.get_random_english_name(gender)
-	else
-		name = species.get_random_english_name(gender)
 	real_name = name
 
 /mob/living/carbon/human/proc/give_clothes()

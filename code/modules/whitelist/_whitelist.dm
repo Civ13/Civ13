@@ -52,7 +52,7 @@ var/list/global_whitelists[50]
 	var/list/WWcheck = splittext(file2text(F),"|")
 	if (islist(WWcheck) && !isemptylist(WWcheck))
 		for(var/i=1;i<WWcheck.len;i++)
-			var/list/WWcheck_two = splittext(WWcheck[i], "=")
+			var/list/WWcheck_two = list(splittext(WWcheck[i], "="))
 			_data += WWcheck_two[1]
 
 

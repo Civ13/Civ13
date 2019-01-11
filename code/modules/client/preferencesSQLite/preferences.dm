@@ -13,7 +13,6 @@ var/list/preferences_datums = list()
 
 	//game-preferences
 	var/ooccolor = "#010000"			//Whatever this is set to acts as 'reset' color and is thus unusable as an actual custom color
-	var/list/be_special_role = list()		//Special role selection
 	var/UI_style = "1713Style"
 	var/UI_useborder = FALSE
 	var/UI_style_color = "#FFFFFF"
@@ -22,32 +21,8 @@ var/list/preferences_datums = list()
 
 	//character preferences
 	var/real_name = "John Doe"						//our character's name
-	var/english_name = "John Adams"
-	var/spanish_name = "Juan Garcia"
-	var/french_name = "Mathieu Bertrand"
-	var/portuguese_name = "Pedro Alves"
-	var/dutch_name = "Daan Visser"
-	var/japanese_name = "Hideki Tojo"
-	var/russian_name = "Victor Reznof"
-	var/carib_name = "Mojowai"
-	var/greek_name = "Philokrates"
-	var/roman_name = "Decius Salvius Primulus"
-	var/arab_name = "Ibrahim ibn Osama"
 	var/be_random_name = FALSE				//whether we are a random name every round
-	var/be_random_name_pirate = TRUE
-	var/be_random_name_carib = TRUE
-	var/be_random_name_spanish = TRUE
-	var/be_random_name_french = TRUE
-	var/be_random_name_portuguese = TRUE
-	var/be_random_name_dutch = TRUE
-	var/be_random_name_japanese = TRUE
-	var/be_random_name_russian = TRUE
-	var/be_random_name_english = TRUE
-	var/be_random_name_roman = TRUE
-	var/be_random_name_greek = TRUE
-	var/be_random_name_arab = TRUE
 	var/gender = MALE					//gender of character (well duh)
-	var/civ_ethnicity = ENGLISH
 
 	var/body_build = "Default"			//character body build name
 	var/age = 25						//age of character
@@ -73,8 +48,6 @@ var/list/preferences_datums = list()
 	var/b_eyes = FALSE						//Eye color
 	var/species = "Human"               //Species datum to use.
 	var/species_preview                 //Used for the species selection window.
-	var/list/alternate_languages = list() //Secondary language(s)
-	var/list/language_prefixes = list() //Kanguage prefix keys
 
 	//Mob preview
 	var/list/preview_icons = list()
@@ -120,17 +93,6 @@ var/list/preferences_datums = list()
 			load_preferences(1)
 		else
 			real_name = random_name(gender, species)
-			english_name = random_english_name(gender, species)
-			french_name = random_french_name(gender, species)
-			portuguese_name = random_portuguese_name(gender, species)
-			spanish_name = random_spanish_name(gender, species)
-			dutch_name = random_dutch_name(gender, species)
-			japanese_name = random_japanese_name(gender, species)
-			russian_name = random_russian_name(gender, species)
-			carib_name = random_carib_name(gender, species)
-			roman_name = random_roman_name(gender, species)
-			greek_name = random_greek_name(gender, species)
-			arab_name = random_arab_name(gender, species)
 			save_preferences(1)
 
 		spawn (1)
@@ -275,12 +237,8 @@ var/list/preferences_datums = list()
 /datum/preferences/proc/saveGlobalPreferences()
 	var/prefstring = ""
 
-	prefstring += "ooccolor=[globalprefsanitize(ooccolor)]&"
-	prefstring += "be_special_role=[globalprefsanitize(be_special_role)]&"
-	prefstring += "UI_style=[globalprefsanitize(UI_style)]&"
-	prefstring += "UI_useborder=[globalprefsanitize(UI_useborder)]&"
-	prefstring += "UI_style_color=[globalprefsanitize(UI_style_color)]&"
-	prefstring += "UI_style_alpha=[globalprefsanitize(UI_style_alpha)]&"
+//	prefstring += "ooccolor=[globalprefsanitize(ooccolor)]&"
+//	prefstring += "UI_useborder=[globalprefsanitize(UI_useborder)]&"
 	prefstring += "lobby_music_volume=[globalprefsanitize(lobby_music_volume)]"
 	var/F = file("SQL/globalpreferences.txt")
 	var/list/globalprefs = splittext(file2text(F), "|||")
@@ -288,10 +246,16 @@ var/list/preferences_datums = list()
 	for (var/i;i<globalprefs.len;i++)
 		var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 		if (globalprefs2[1] == client_ckey)
-			globalprefs2[2] = prefstring
+			globalprefs[i] = "[client_ckey];[prefstring]"
 			done1 = TRUE
 	if (!done1)
-		text2file(F, "[client_ckey];[prefstring]|||")
+		text2file("[client_ckey];[prefstring]|||", F)
+	else
+		fdel(F)
+		var/sum2 = 0
+		for (var/i;i<globalprefs.len;i++)
+			sum2 += "[globalprefs[i]]|||"
+		text2file("[sum2]", F)
 // global settings handling
 /datum/preferences/proc/loadGlobalSettings()
 	if (!client)
@@ -323,12 +287,12 @@ var/list/preferences_datums = list()
 
 
 /datum/preferences/proc/saveGlobalSettings()
-	var/prefstring = ""
+	var/prefstring = 0
 	for (var/v in 1 to preferences_enabled.len)
 		prefstring += preferences_enabled[v]
 		if (v != preferences_enabled.len)
 			prefstring += "&"
-	var/prefstring2 = ""
+	var/prefstring2 = 0
 	for (var/v in 1 to preferences_disabled.len)
 		prefstring2 += preferences_disabled[v]
 		if (v != preferences_disabled.len)
@@ -341,16 +305,22 @@ var/list/preferences_datums = list()
 		for (var/i;i<globalprefs.len;i++)
 			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 			if (globalprefs2[1] == client_ckey)
-				globalprefs2[2] = prefstring
+				globalprefs[i] = "[client_ckey];[prefstring];[globalprefs2[3]]"
 				done1 = TRUE
 	if (prefstring2)
 		for (var/i;i<globalprefs.len;i++)
 			var/list/globalprefs2 = list(splittext(globalprefs[i], ";"))
 			if (globalprefs2[1] == client_ckey)
-				globalprefs2[3] = prefstring2
+				globalprefs[i] = "[client_ckey];[globalprefs2[2]];[prefstring2]"
 				done2 = TRUE
-		if (!done1 && !done2)
-			text2file(F, "[client_ckey];[prefstring];[prefstring2]|||")
+	if (!done1 && !done2) // if it doesnt exist, just add a new line
+		text2file("[client_ckey];[prefstring];[prefstring2]|||",F)
+	else //rewrite the file
+		fdel(F)
+		var/sum2 = 0
+		for (var/i;i<globalprefs.len;i++)
+			sum2 += "[globalprefs[i]]|||"
+		text2file("[sum2]", F)
 
 
 /client/proc/is_preference_enabled(var/preference)
