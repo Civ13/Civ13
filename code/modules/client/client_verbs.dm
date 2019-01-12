@@ -56,18 +56,18 @@
 
 			var/age
 			if (isnum(C.player_age))
+				player_age = world.realtime - player_age
 				if (player_age >= 864000)
 					age = "[round(player_age/864000)] days"
 				else
 					age = "[round(player_age/360000)] hours"
+
+				if (player_age <= (864000*2))
+					age = "<font color='#ff0000'><b>[age]</b></font>"
+				else
+					age = "<font color='#ff8c00'><b>[age]</b></font>"
 			else
 				age = FALSE
-
-			if (player_age <= (864000*2))
-				age = "<font color='#ff0000'><b>[age]</b></font>"
-			else
-				age = "<font color='#ff8c00'><b>[age]</b></font>"
-
 			entry += " - [age]"
 
 			if (C.is_afk())
