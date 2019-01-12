@@ -329,9 +329,10 @@
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if (full_logs_split_two[1] == ckey)
+			currentage = 0
 			currentage = text2num(full_logs_split_two[4])
 	//Logging player access
-	if (currentage <= -1)
+	if (currentage != -1)
 		//adding to player logs (ckey;ip;computerid;datetime;realtime|)
 		text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
 		player_age = 0
