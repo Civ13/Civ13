@@ -324,12 +324,11 @@
 		sql_ip = "HOST"
 	var/F = file("SQL/playerlogs.txt")
 	var/full_logs = file2text(F)
-	var/list/full_logs_split = splittext(full_logs, "|")
+	var/list/full_logs_split = splittext(full_logs, "|\n")
 	var/currentage = -1
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
-		if (full_logs_split_two[1] == ckey)
-			currentage = 0
+		if ("[full_logs_split_two[1]]" == ckey)
 			currentage = text2num(full_logs_split_two[4])
 	//Logging player access
 	if (currentage == -1)
@@ -337,7 +336,7 @@
 		text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
 		player_age = 0
 	else
-		player_age = currentage
+		player_age = (text2num(num2text(world.realtime,20)) - currentage)
 
 
 #undef TOPIC_SPAM_DELAY
