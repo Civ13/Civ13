@@ -92,11 +92,9 @@ var/datum/quickBan_handler/quickBan_handler = null
 		for(var/i=1;i<full_list_split.len;i++)
 			var/list/full_list_split_two = splittext(full_list_split[i], ";")
 			result += list(full_list_split_two)
-			world << "one found: [full_list_split.len]"
 	var/html = "<center><big>List of Quick Bans</big></center>"
 	var/list/possibilities = list()
 	if (islist(result) && !isemptylist(result))
-		world << "[result.len]"
 		for (var/v = 1; v<=result.len; v++)
 			if (islist(result[v]))
 				possibilities += "<big><b>UID [result[v][1]]</b> (<a href='byond://?src=\ref[quickBan_handler];caller=\ref[src];quickBan_removeBan=1;quickBan_removeBan_UID=[result[v][6]];quickBan_removeBan_ckey=[result[v][1]];quickBan_removeBan_cID=[result[v][2]];quickBan_removeBan_ip=[result[v][3]]'>DELETE</a>)</big>: [result[v][1]]/[result[v][2]]/[result[v][3]], type '[result[v][4]]' ([result[v][5]]): banned for '[result[v][7]]' by [result[v][8]] on [result[v][9]]. <b>[result[v][11]]</b>. (After assigned date)"
