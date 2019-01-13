@@ -1,3 +1,20 @@
+/*
+/////////////////////////////AGES///////////////////////
+0-15 Stone Age (<5000 BC)
+15-20 Copper Age (2-3k BC)
+20-30 Bronze Age (1000 BC)
+30-40 Iron age/Ancient Age (500 BC to 300 AC)
+40-50 Early Medieval Age (500 to 1200)
+50-60 Late Medieval (1400-1500)
+60-80 Renaissance (1500-1600)
+80-90 Imperial Age (1700s)
+90-100 Napoleonic Age (early 1800s)
+100-110 Early Industrial Age (1850-1870)
+110-120 Industrial Age (1870-1900)
+120-130 Early Modern Age (1900-1910)
+///////////////////////////////////////////////////////
+*/
+
 /obj/item/weapon/book/research
 	name = "blank scroll"
 	icon_state = "scroll0"

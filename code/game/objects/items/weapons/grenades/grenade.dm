@@ -13,6 +13,7 @@
 	var/det_time = 50
 	var/loadable = TRUE
 	flammable = TRUE
+	value = 5
 
 /obj/item/weapon/grenade/examine(mob/user)
 	if (..(user, FALSE))

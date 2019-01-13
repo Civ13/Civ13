@@ -28,9 +28,9 @@
 		if (decay == 0)
 			return
 		if (isturf(loc)) //if on the floor (i.e. not stored inside something), decay faster
-			decaytimer += 1
+			decaytimer += 600
 		else
-			decaytimer += 0.5
+			decaytimer += 300
 		if (decaytimer >= decay)
 			qdel(src)
 			return

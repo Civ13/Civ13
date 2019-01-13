@@ -166,7 +166,7 @@
 	icon = 'icons/obj/items.dmi'
 	w_class = TRUE
 	var/sand_amount = FALSE
-
+	value = 0
 /obj/item/weapon/sandbag/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		if (W.reagents.has_reagent("water", 10))

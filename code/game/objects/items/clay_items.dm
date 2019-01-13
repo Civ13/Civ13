@@ -11,6 +11,7 @@
 	throw_speed = 3
 	throw_range = 5
 	var/result = "none"
+	value = 1
 
 /obj/item/weapon/clay/roofing
 	name = "unfired clay roof tiles"

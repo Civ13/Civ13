@@ -304,7 +304,7 @@
 	icon_state = "wood_ship_repaired2"
 	w_class = 2.0
 	flammable = TRUE
-
+	value = 0
 /obj/covers/repairedfloor
 	name = "repaired floor"
 	desc = "a repaired wood floor."
@@ -313,6 +313,7 @@
 	layer = 1.98
 	flammable = TRUE
 	explosion_resistance = FALSE
+
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
 

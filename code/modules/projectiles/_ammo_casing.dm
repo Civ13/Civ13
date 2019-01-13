@@ -44,7 +44,7 @@
 	amount = 1
 	max_amount = 20
 	singular_name = "projectile"
-
+	value = 0
 /obj/item/stack/ammopart/musketball
 	name = "musketball projectiles"
 	desc = "A round musketball, to be used in flintlock muskets."
