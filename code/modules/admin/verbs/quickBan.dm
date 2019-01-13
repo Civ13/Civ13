@@ -106,7 +106,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	src << browse(html, "window=quick_bans_search;")
 /client/proc/find_cID(var/current = "ckey")
 	var/full_logs = file2text("SQL/playerlogs.txt")
-	var/list/full_logs_split = splittext(full_logs, "|")
+	var/list/full_logs_split = splittext(full_logs, "|\n")
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if (current == "ckey")
@@ -119,7 +119,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 /client/proc/find_ip(var/current = "ckey")
 	var/full_logs = file2text("SQL/playerlogs.txt")
-	var/list/full_logs_split = splittext(full_logs, "|")
+	var/list/full_logs_split = splittext(full_logs, "|\n")
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if (current == "ckey")
@@ -132,7 +132,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 /client/proc/find_ckey(var/current = "ip")
 	var/full_logs = file2text("SQL/playerlogs.txt")
-	var/list/full_logs_split = splittext(full_logs, "|")
+	var/list/full_logs_split = splittext(full_logs, "|\n")
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if (current == "ip")
