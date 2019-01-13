@@ -77,6 +77,10 @@
 		if (getBruteLoss() >= 40)
 			adjustBruteLoss(-2)
 
+	// fixes invisibility while alive (from ssd?)
+	if (invisibility == 101)
+		if (client.holder == null) //exclude admins, as they can be invisible. Also they should be able to fix it themselves if need be :shrug:
+			invisibility = 0
 
 	if (has_hunger_and_thirst)
 		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
@@ -1387,7 +1391,7 @@
 		return
 	timer *= 600 //convert minutes to deciseconds
 	spawn(timer)
-		if (has_brain() && stat!=DEAD && (!key || !client))
+		if (stat!=DEAD && (!key || !client))
 			invisibility = 101
 			return
 		else

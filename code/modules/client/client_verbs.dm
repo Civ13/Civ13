@@ -56,7 +56,7 @@
 
 			var/age
 			if (isnum(C.player_age))
-				player_age = world.realtime - player_age
+				player_age = text2num(num2text(world.realtime,20)) - player_age
 				if (player_age >= 864000)
 					age = "[round(player_age/864000)] days"
 				else

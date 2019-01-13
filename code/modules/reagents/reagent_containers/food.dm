@@ -13,12 +13,30 @@
 	var/roasted = FALSE
 	var/boiled = FALSE
 	var/raw = FALSE
-
+	var/decay = 0 //Decay time limit, in deciseconds. 0 means it doesn't decay.
+	var/decaytimer = 0
 /obj/item/weapon/reagent_containers/food/New()
 	..()
+	if (decay > 0)
+		food_decay()
 	if (center_of_mass.len && !pixel_x && !pixel_y)
 		pixel_x = rand(-6.0, 6) //Randomizes postion
 		pixel_y = rand(-6.0, 6)
+
+/obj/item/weapon/reagent_containers/food/proc/food_decay()
+	spawn(600)
+		if (decay == 0)
+			return
+		if (isturf(loc)) //if on the floor (i.e. not stored inside something), decay faster
+			decaytimer += 1
+		else
+			decaytimer += 0.5
+		if (decaytimer >= decay)
+			qdel(src)
+			return
+		else
+			food_decay()
+			return
 
 /obj/item/weapon/reagent_containers/food/afterattack(atom/A, mob/user, proximity, params)
 	if (center_of_mass.len && proximity && params && istype(A, /obj/structure/table))
