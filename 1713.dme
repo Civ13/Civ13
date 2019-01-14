@@ -424,6 +424,7 @@
 #include "code\modules\1713\weapons\guns\bow.dm"
 #include "code\modules\1713\weapons\guns\flintlock.dm"
 #include "code\modules\1713\weapons\guns\pistols.dm"
+#include "code\modules\1713\weapons\guns\revolvers.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\climbing.dm"
 #include "code\modules\admin\admin.dm"
 #include "code\modules\admin\admin_2_player_memo.dm"
