@@ -424,11 +424,8 @@
 #include "code\modules\1713\weapons\guns\bow.dm"
 #include "code\modules\1713\weapons\guns\flintlock.dm"
 #include "code\modules\1713\weapons\guns\pistols.dm"
-<<<<<<< HEAD
-#include "code\modules\1713\weapons\guns\shotguns.dm"
-=======
 #include "code\modules\1713\weapons\guns\revolvers.dm"
->>>>>>> 9a0ba04d0acfa10d9807c36282dc2b1baead9711
+#include "code\modules\1713\weapons\guns\shotguns.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\climbing.dm"
 #include "code\modules\admin\admin.dm"
 #include "code\modules\admin\admin_2_player_memo.dm"
