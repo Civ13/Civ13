@@ -29,15 +29,16 @@
 		w_class = max(w_class, holstered.w_class)
 		user.visible_message("<span class='notice'>[user] holsters \the [holstered].</span>", "<span class='notice'>You holster \the [holstered].</span>")
 		name = "occupied [initial(name)]"
-	else
-		if (holstered)
+	else if (capacity == 2)
+		if (holstered && !holstered2)
 			holstered2 = I
 			user.drop_from_inventory(holstered2)
 			holstered2.loc = src
 			holstered2.add_fingerprint(user)
 			w_class = max(w_class, holstered2.w_class)
 			user.visible_message("<span class='notice'>[user] holsters \the [holstered2].</span>", "<span class='notice'>You holster \the [holstered2].</span>")
-		else
+			name = "occupied [initial(name)]"
+		else if (!holstered)
 			holstered = I
 			user.drop_from_inventory(holstered)
 			holstered.loc = src
@@ -45,6 +46,8 @@
 			w_class = max(w_class, holstered.w_class)
 			user.visible_message("<span class='notice'>[user] holsters \the [holstered].</span>", "<span class='notice'>You holster \the [holstered].</span>")
 			name = "occupied [initial(name)]"
+		else //this really shouldnt happen
+			return
 
 /obj/item/clothing/accessory/holster/proc/clear_holster()
 	if (capacity == 1)
@@ -52,10 +55,11 @@
 		name = initial(name)
 
 /obj/item/clothing/accessory/holster/proc/unholster(mob/user as mob)
-	if (!holstered)
-		return
+	if (capacity == 1)
+		if (!holstered)
+			return
 
-	if (!capacity == 2)
+	else if (capacity == 2)
 		if (!holstered && !holstered2)
 			return
 
@@ -99,19 +103,19 @@
 
 	else if (holstered && capacity == 2)
 		if (istype(user.get_active_hand(),/obj) && istype(user.get_inactive_hand(),/obj))
-			user << "<span class='warning'>You need an empty hand to draw \the [holstered2]!</span>"
+			user << "<span class='warning'>You need an empty hand to draw \the [holstered]!</span>"
 		else
 			if (user.a_intent == I_HURT)
 				usr.visible_message(
-					"<span class='danger'>[user] draws \the [holstered2], ready to shoot!</span>",
-					"<span class='warning'>You draw \the [holstered2], ready to shoot!</span>"
+					"<span class='danger'>[user] draws \the [holstered], ready to shoot!</span>",
+					"<span class='warning'>You draw \the [holstered], ready to shoot!</span>"
 					)
 			else
 				user.visible_message(
-					"<span class='notice'>[user] draws \the [holstered2], pointing it at the ground.</span>",
-					"<span class='notice'>You draw \the [holstered2], pointing it at the ground.</span>"
+					"<span class='notice'>[user] draws \the [holstered], pointing it at the ground.</span>",
+					"<span class='notice'>You draw \the [holstered], pointing it at the ground.</span>"
 					)
-			user.put_in_hands(holstered2)
+			user.put_in_hands(holstered)
 			holstered.add_fingerprint(user)
 			w_class = initial(w_class)
 			holstered = null
