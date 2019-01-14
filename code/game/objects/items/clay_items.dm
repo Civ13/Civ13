@@ -11,6 +11,7 @@
 	throw_speed = 3
 	throw_range = 5
 	var/result = "none"
+	value = 1
 
 /obj/item/weapon/clay/roofing
 	name = "unfired clay roof tiles"
@@ -218,7 +219,7 @@
 	w_class = 2.0
 	New()
 		..()
-		icon_state = "bigclaypot[pick(1,2,3)]"
+		icon_state = "bigclaypot[pick(1,2)]"
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	name = "clay jug"

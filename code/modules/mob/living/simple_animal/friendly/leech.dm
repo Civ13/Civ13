@@ -30,7 +30,7 @@
 	icon = 'icons/mob/critter.dmi'
 	icon_state = "leech_h"
 	var/fill = 0
-
+	value = 0
 /obj/item/weapon/leech/New()
 	..()
 	if (fill)

@@ -9,7 +9,7 @@
 	throw_range = 20
 	var/heal_brute = 0
 	var/heal_burn = 0
-
+	value = 0
 /obj/item/stack/medical/attack(mob/living/carbon/C as mob, mob/user as mob)
 	if (!istype(C) )
 		if (!istype(C, /mob/living/simple_animal))

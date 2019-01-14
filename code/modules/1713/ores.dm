@@ -6,7 +6,7 @@
 	w_class = 2
 	amount = 1
 	max_amount = 50
-
+	value = 1
 /obj/item/stack/ore/New()
 	pixel_x = rand(0,16)-8
 	pixel_y = rand(0,8)-8

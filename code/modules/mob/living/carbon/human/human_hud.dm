@@ -213,6 +213,8 @@ the HUD updates properly! */
 					holderf.icon_state = "civ2"
 				else
 					holderf.icon_state = "civ1"
+				if (perp.stat!=DEAD && (!perp.key || !perp.client) && perp.invisibility == 101)
+					holderf.icon_state = ""
 				P.Client.images += holderf
 /datum/arranged_hud_process
 	var/client/Client

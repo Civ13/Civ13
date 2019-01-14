@@ -304,7 +304,7 @@
 	icon_state = "wood_ship_repaired2"
 	w_class = 2.0
 	flammable = TRUE
-
+	value = 0
 /obj/covers/repairedfloor
 	name = "repaired floor"
 	desc = "a repaired wood floor."
@@ -313,6 +313,7 @@
 	layer = 1.98
 	flammable = TRUE
 	explosion_resistance = FALSE
+
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
 
@@ -334,7 +335,7 @@
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
-		if (do_after(user, covers_time, user.loc))
+		if (do_after(user, covers_time, user.loc) && src)
 			qdel(src)
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")

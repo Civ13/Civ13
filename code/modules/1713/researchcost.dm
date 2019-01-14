@@ -29,30 +29,28 @@
 
 	if  (done == FALSE)
 		if (istype(W, /obj/item/stack))
-			done = TRUE
 			marketval = W.value
 			moneyin = ((marketval*W.amount)/100)
 		else
-			done = TRUE
 			marketval = W.value
 			moneyin = (marketval/100)
-
+		done = TRUE
 		var/list/display = list("Industrial", "Military", "Health", "Cancel")
 		var/choice = WWinput(H, "This is worth [moneyin] research points. Which category to research?", "Research Desk", "Cancel", display)
-		if (choice == "Cancel")
+		if (choice == "Cancel" && W)
 			done = FALSE
 			return
-		else if (choice == "Industrial")
+		else if (choice == "Industrial" && W)
 			map.custom_civs[H.civilization][1] += (moneyin)
 			qdel(W)
 			done = FALSE
 			return
-		else if (choice == "Military")
+		else if (choice == "Military" && W)
 			map.custom_civs[H.civilization][2] += (moneyin)
 			qdel(W)
 			done = FALSE
 			return
-		else if (choice == "Health")
+		else if (choice == "Health" && W)
 			map.custom_civs[H.civilization][3] += (moneyin)
 			qdel(W)
 			done = FALSE

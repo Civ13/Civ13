@@ -4,29 +4,34 @@
 	singular_name = "human skin piece"
 	icon_state = "sheet-hide"
 	flammable = TRUE
+	value = 0
 /obj/item/stack/material/animalhide/cat
 	name = "cat hide"
 	desc = "The by-product of cat farming."
 	singular_name = "cat hide piece"
 	icon_state = "sheet-cat"
 	flammable = TRUE
+	value = 0
 /obj/item/stack/material/animalhide/monkey
 	name = "monkey hide"
 	desc = "The by-product of monkey farming."
 	singular_name = "monkey hide piece"
 	icon_state = "sheet-monkey"
 	flammable = TRUE
+	value = 0
 /obj/item/stack/material/hairlesshide
 	name = "hairless hide"
 	desc = "This hide was stripped of it's hair, but still needs tanning."
 	singular_name = "hairless hide piece"
 	icon_state = "sheet-hairlesshide"
 	flammable = TRUE
+	value = 0
 /obj/item/stack/material/wetleather
 	name = "wet leather"
 	desc = "This leather has been cleaned but still needs to be dried."
 	singular_name = "wet leather piece"
 	icon_state = "sheet-wetleather"
+	value = 0
 	var/wetness = 30 //Reduced when exposed to high temperautres
 	var/drying_threshold_temperature = 500 //Kelvin to start drying
 	flammable = TRUE

@@ -16,6 +16,7 @@
 	var/edit = TRUE
 	var/repeat = FALSE
 	flammable = TRUE
+	value = 0
 
 /obj/item/violin/proc/playnote(var/note as text)
 	//world << "Note: [note]"

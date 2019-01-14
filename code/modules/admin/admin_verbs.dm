@@ -464,7 +464,7 @@ var/list/admin_verbs_host = list(
 	if (!holder)	return
 	var/response = WWinput(src, "Please choose a distinct color that is easy to read and doesn't mix with all the other chat and radio frequency colors.", "Change own OOC color", "Pick new color", list("Pick new color", "Reset to default", "Cancel"))
 	if (response == "Pick new color")
-		prefs.ooccolor = WWinput(src, "Please select your OOC colour.", "OOC colour", null, "color")
+		prefs.ooccolor = WWinput(src, "Please select your OOC color.", "OOC color", null, "color")
 	else if (response == "Reset to default")
 		prefs.ooccolor = initial(prefs.ooccolor)
 	prefs.save_preferences()

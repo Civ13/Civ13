@@ -185,8 +185,6 @@
 		if (ticker && ticker.current_state == GAME_STATE_PLAYING) //Only report this stuff if we are currently playing.
 			message_admins("Staff login: [key_name(src)]")
 
-	establish_db_connection()
-
 	if (holder)
 		holder.associate(src)
 		admins |= src
@@ -312,48 +310,33 @@
 
 	return ..()
 
-
-// here because it's similar to below
-
-// Returns null if no DB connection can be established, or -1 if the requested key was not found in the database
-
-/proc/get_player_age(key)
-	var/full_logs = file2text("SQL/playerlogs.txt")
-	var/list/full_logs_split = splittext(full_logs, "|")
-	var/done = FALSE
-	var/currentage = 0
-	for(var/i=1;i<full_logs_split.len;i++)
-		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
-		if (full_logs_split_two[1] == key)
-			currentage = text2num(num2text(world.realtime,20)) - text2num(full_logs_split_two[4])
-			done = TRUE
-
-	if (done)
-		return currentage
-	else
-		return -1
-
 /client/proc/getSQL_id()
 	return md5(ckey)
 
 /client/proc/log_to_db()
 
-	if (IsGuestKey(key))
+	if (IsGuestKey(ckey))
 		return
-	var/sql_ckey = sql_sanitize_text(key)
+
 	var/sql_ip = sql_sanitize_text(address)
-	var/sql_computerid = sql_sanitize_text(computer_id)
 
 	if (sql_ip == null)
 		sql_ip = "HOST"
-
+	var/F = file("SQL/playerlogs.txt")
+	var/full_logs = file2text(F)
+	var/list/full_logs_split = splittext(full_logs, "|\n")
+	var/currentage = -1
+	for(var/i=1;i<full_logs_split.len;i++)
+		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
+		if ("[full_logs_split_two[1]]" == ckey)
+			currentage = text2num(full_logs_split_two[4])
 	//Logging player access
-	if (get_player_age(sql_ckey) <= -1)
+	if (currentage == -1)
 		//adding to player logs (ckey;ip;computerid;datetime;realtime|)
-		text2file("[ckey];[sql_ip];[sql_computerid];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
-		player_age = "NEW"
+		text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+		player_age = 0
 	else
-		player_age = get_player_age(ckey)
+		player_age = (text2num(num2text(world.realtime,20)) - currentage)
 
 
 #undef TOPIC_SPAM_DELAY

@@ -67,7 +67,7 @@
 	icon_state = "roof_builder"
 	w_class = 2.0
 	flammable = TRUE
-
+	var/done = FALSE
 /obj/item/weapon/roofbuilder/clay
 	name = "clay roofing"
 	desc = "Use this to build roofs."
@@ -109,13 +109,14 @@
 		return
 	if (WWinput(user, "This will start building a roof [your_dir] of you.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts building the roof.</span>", "<span class='danger'>You start building the roof.</span>")
-		if (do_after(user, covers_time, user.loc))
-			qdel(src)
+		if (do_after(user, covers_time, user.loc) && src && !done)
+			done = TRUE
 			new/obj/roof(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes building the roof.</span>")
 			if (ishuman(user))
 				var/mob/living/carbon/human/H = user
 				H.adaptStat("crafting", 1)
+			qdel(src)
 		return
 
 /obj/structure/roof_support

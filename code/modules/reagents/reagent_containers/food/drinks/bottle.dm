@@ -262,7 +262,7 @@
 	edge = FALSE
 	dropsound = 'sound/effects/drop_glass.ogg'
 	var/icon/broken_outline = icon('icons/obj/drinks.dmi', "broken")
-
+	value = 0
 /obj/item/weapon/broken_bottle/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
 	if (M != user || M.a_intent != I_HELP)
 		playsound(loc, 'sound/weapons/bladeslice.ogg', 50, TRUE, -1)

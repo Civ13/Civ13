@@ -55,7 +55,7 @@
 /obj/structure/vending/rusweapons
 	name = "Russian Weapon rack"
 	desc = "A rack of war equipment."
-	icon_state = "equipment_soviet"
+	icon_state = "equipment_russia"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
 		/obj/item/ammo_magazine/mosin = 50,
@@ -65,7 +65,7 @@
 /obj/structure/vending/japweapons
 	name = "Japanese Weapon rack"
 	desc = "A rack of war equipment."
-	icon_state = "equipment_japanese"
+	icon_state = "equipment_japan"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/arisaka30 = 15,
 		/obj/item/ammo_magazine/arisakabox = 10,

@@ -251,6 +251,7 @@
 
 	update_setup()
 
+/*
 	if (istype(src, /datum/category_item/player_setup_item/player_global))
 		pref.saveGlobalPreferences()
 	else
@@ -265,7 +266,7 @@
 			else if (pref_initial_vars[varname] == variable) // variable set back to default!
 				pref.forget_preference(varname)
 			//	world << "test #2: [varname] = [pref.vars[varname]]"
-
+*/
 /datum/category_item/player_setup_item/CanUseTopic(var/mob/user)
 	return TRUE
 
