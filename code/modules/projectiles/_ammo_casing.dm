@@ -122,14 +122,14 @@
 	caliber = "a65x50mm"
 	value = 5
 
-/obj/item/ammo_casing/a11x60mm
-	name = "11x60mm ammo casing"
+/obj/item/ammo_casing/a8x53mm
+	name = "8x53mm ammo casing"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/rifle/a11x60mm
-	caliber = "a11x60mm"
+	projectile_type = /obj/item/projectile/bullet/rifle/a8x53mm
+	caliber = "a8x53mm"
 	value = 5
 
 /obj/item/ammo_casing/c9mm_jap_revolver
@@ -170,11 +170,11 @@
 	weight = 0.05
 <<<<<<< HEAD
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x38
-	caliber = "7.62x38mmR"
+	caliber = "7.62x38"
 	value = 2
 =======
 	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
-	caliber = "a762x38mmR"
+	caliber = "a762x38m"
 	value = 5
 >>>>>>> b1694061716168c1c61dfb88e90dfc8063330864
 
@@ -188,33 +188,23 @@
 	caliber = "c8mmnambu"
 	value = 2
 
-/obj/item/ammo_casing/colt
-	name = ".45 bullet casing"
-	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
-	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/colt
-	caliber = "colt"
-	value = 2
-
-/obj/item/ammo_casing/fourtyfour
+/obj/item/ammo_casing/a44
 	name = ".44 bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/fortyfour
+	projectile_type = /obj/item/projectile/bullet/pistol/a44
 	caliber = "44"
 	value = 2
 
-/obj/item/ammo_casing/thirtyeight
+/obj/item/ammo_casing/a38
 	name = ".38 bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/thrityeight
+	projectile_type = /obj/item/projectile/bullet/pistol/a38
 	caliber = "38"
 	value = 2
 

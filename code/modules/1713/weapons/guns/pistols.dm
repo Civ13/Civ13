@@ -190,8 +190,6 @@
 	else
 		return ..()
 
-<<<<<<< HEAD
-=======
 /obj/item/weapon/gun/projectile/revolver/nagant_revolver
 	name = "Nagant Revolver"
 	desc = "Russian officer's revolver."
@@ -221,9 +219,6 @@
 	else
 		icon_state = "nagant"
 	return
-
->>>>>>> b1694061716168c1c61dfb88e90dfc8063330864
-
 
 /obj/item/weapon/gun/projectile/pistol/nambu
 	name = "Nambu Pistol"
@@ -265,23 +260,10 @@
 	icon_state = "nagant"
 	item_state = "nagant"
 	w_class = 2
-	caliber = "7.62x38mmR"
+	caliber = "7.62x38"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
-	weight = 0.8
-	load_method = SINGLE_CASING
-
-/obj/item/weapon/gun/projectile/revolver/peacemaker
-	name = "Peacemaker Revolver"
-	desc = "a revolver that creates peace through violence."
-	icon_state = "peacemaker"
-	item_state = "peacemaker"
-	w_class = 2
-	caliber = "colt"
-	handle_casings = CYCLE_CASINGS
-	max_shells = 7
-	magazine_type = /obj/item/ammo_magazine/colt
 	weight = 0.8
 	load_method = SINGLE_CASING
 
@@ -294,11 +276,11 @@
 	caliber = "44"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
-	magazine_type = /obj/item/ammo_magazine/fourtyfour
+	magazine_type = /obj/item/ammo_magazine/c44
 	weight = 0.8
 	load_method = SINGLE_CASING
 
-/obj/item/weapon/gun/projectile/revolver/thrityeight
+/obj/item/weapon/gun/projectile/revolver/c38
 	name = ".38 Revolver"
 	desc = "a .38 caliber revolver."
 	icon_state = "revolver"
@@ -307,6 +289,6 @@
 	caliber = "38"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
-	magazine_type = /obj/item/ammo_magazine/thrityeight
+	magazine_type = /obj/item/ammo_magazine/c38
 	weight = 0.8
 	load_method = SINGLE_CASING
