@@ -159,7 +159,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/submit_vote(var/ckey, var/vote)
 		if (mode)
-			if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
+			if (ticker.current_state == GAME_STATE_PLAYING && (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder))
 				return FALSE
 			if (vote && vote >= 1 && vote <= choices.len)
 				if (current_votes[ckey])
