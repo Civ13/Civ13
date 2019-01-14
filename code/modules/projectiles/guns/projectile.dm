@@ -125,6 +125,19 @@
 
 	#define DISABLE_CASINGS // goodbye lag (EXPERIMENTAL) - Kachnov
 
+	switch(handle_casings)
+		if (EJECT_CASINGS) //eject casing onto ground.
+			#ifndef DISABLE_CASINGS
+			var/area/src_area = get_area(src)
+			if (!src_area.lift_master())
+				chambered.loc = get_turf(src)
+			#endif
+		if (CYCLE_CASINGS) //cycle the casing back to the end.
+			if (ammo_magazine)
+				ammo_magazine.stored_ammo += chambered
+			else
+				loaded += chambered
+
 	if (handle_casings != HOLD_CASINGS)
 		chambered = null
 

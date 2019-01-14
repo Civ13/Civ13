@@ -65,26 +65,6 @@
 	else
 		return ..()
 
-/obj/item/weapon/gun/projectile/revolver/nagant_revolver
-	name = "Nagant Revolver"
-	desc = "Russian officer's revolver."
-	icon_state = "nagant"
-	item_state = "nagant"
-	w_class = 2
-	caliber = "7.62x38mmR"
-	handle_casings = CYCLE_CASINGS
-	max_shells = 7
-	magazine_type = /obj/item/ammo_magazine/c762x38mmR
-	weight = 0.8
-
-/obj/item/weapon/gun/projectile/revolver/nagant_revolver/update_icon()
-	..()
-	if (loaded.len)
-		icon_state = "nagant"
-	else
-		icon_state = "nagant"
-	return
-
 
 
 /obj/item/weapon/gun/projectile/pistol/nambu
@@ -116,9 +96,61 @@
 	item_state = "t26revolver"
 	w_class = 2
 	caliber = "c9mm_jap_revolver"
-	max_shells = 7
+	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
 	weight = 0.8
 	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	handle_casings = CYCLE_CASINGS
-	load_method = SPEEDLOADER
+	load_method = SINGLE_CASING
+
+/obj/item/weapon/gun/projectile/revolver/nagant_revolver
+	name = "Nagant Revolver"
+	desc = "Russian officer's revolver."
+	icon_state = "nagant"
+	item_state = "nagant"
+	w_class = 2
+	caliber = "7.62x38mmR"
+	handle_casings = CYCLE_CASINGS
+	max_shells = 7
+	magazine_type = /obj/item/ammo_magazine/c762x38mmR
+	weight = 0.8
+	load_method = SINGLE_CASING
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker
+	name = "Peacemaker Revolver"
+	desc = "a revolver that creates peace through violence."
+	icon_state = "peacemaker"
+	item_state = "peacemaker"
+	w_class = 2
+	caliber = "colt"
+	handle_casings = CYCLE_CASINGS
+	max_shells = 7
+	magazine_type = /obj/item/ammo_magazine/colt
+	weight = 0.8
+	load_method = SINGLE_CASING
+
+/obj/item/weapon/gun/projectile/revolver/panther
+	name = "Panther Revolver"
+	desc = "a .44 caliber revolver."
+	icon_state = "panther"
+	item_state = "panther"
+	w_class = 2
+	caliber = "44"
+	handle_casings = CYCLE_CASINGS
+	max_shells = 7
+	magazine_type = /obj/item/ammo_magazine/fourtyfour
+	weight = 0.8
+	load_method = SINGLE_CASING
+
+/obj/item/weapon/gun/projectile/revolver/thrityeight
+	name = ".38 Revolver"
+	desc = "a .38 caliber revolver."
+	icon_state = "revolver"
+	item_state = "revolver"
+	w_class = 2
+	caliber = "38"
+	handle_casings = CYCLE_CASINGS
+	max_shells = 7
+	magazine_type = /obj/item/ammo_magazine/thrityeight
+	weight = 0.8
+	load_method = SINGLE_CASING

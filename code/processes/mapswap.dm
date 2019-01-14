@@ -6,6 +6,8 @@
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
+//		"1873" = 0,
+//		"1904" = 0,
 		"Civilization 13" = 0,
 	)
 	var/ready = TRUE
@@ -169,7 +171,7 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Modern Age (No Research)")
 
 	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
@@ -281,6 +283,44 @@
 		map.age3_done = TRUE
 		map.research_active = FALSE
 		var/customresearch = 100
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return
+	else if (vote.voted_gamemode == "Idustrial Age (No Research)")
+		world << "<big>Starting <b>Industrial Age</b> mode. Game Epoch is the Industrial Age, research inactive.</big>"
+		map.ordinal_age = 4
+		map.age = "1873"
+		map.age1_done = TRUE
+		map.age2_done = TRUE
+		map.age3_done = TRUE
+		map.age4_done = TRUE
+		map.research_active = FALSE
+		var/customresearch = 130
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return
+
+	else if (vote.voted_gamemode == "Modern Age (No Research)")
+		world << "<big>Starting <b>Modern Age</b> mode. Game Epoch is the Modern Age, research inactive.</big>"
+		map.ordinal_age = 5
+		map.age = "1903"
+		map.age1_done = TRUE
+		map.age2_done = TRUE
+		map.age3_done = TRUE
+		map.age4_done = TRUE
+		map.age5_done = TRUE
+		map.research_active = FALSE
+		var/customresearch = 180
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)

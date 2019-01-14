@@ -355,6 +355,68 @@
 		usr.update_inv_wear_suit(1)
 		return
 
+/obj/item/clothing/suit/storage/coat/kozhanka
+	name = "fur coat"
+	desc = "A thick fur coat, great for the winter."
+	icon_state = "kozhanka"
+	item_state = "kozhanka"
+	worn_state = "kozhanka"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+	var/colorn = 1
+	var/specific = FALSE
+	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/suit/storage/coat/kozhanka/New()
+	..()
+	if (!specific)
+		colorn = pick(1,2,)
+		icon_state = "kozhanka[colorn]"
+		item_state = "kozhanka[colorn]"
+		worn_state = "kozhanka[colorn]"
+
+/obj/item/clothing/suit/storage/coat/kozhanka/verb/toggle_hood()
+	set category = null
+	set src in usr
+	set name = "Toggle Hood"
+	if (hood)
+		icon_state = "kozhanka[colorn]"
+		item_state = "kozhanka[colorn]"
+		worn_state = "kozhanka[colorn]"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]"
+		usr << "<span class = 'danger'>You take off your coat's hood.</span>"
+		update_icon()
+		hood = FALSE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
+	else if (!hood)
+		icon_state = "kozhanka[colorn]h"
+		item_state = "kozhanka[colorn]h"
+		worn_state = "kozhanka[colorn]h"
+		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
+		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]h"
+		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
+		update_icon()
+		hood = TRUE
+		usr.update_inv_head(1)
+		usr.update_inv_wear_suit(1)
+		return
+
+/obj/item/clothing/suit/storage/coat/kozhanka/white
+	name = "white fur coat"
+	desc = "A thick white fur coat, great for the winter."
+	icon_state = "kozhanka_w"
+	item_state = "kozhanka_w"
+	worn_state = "kozhanka_w"
+	specific = TRUE
+	colorn = 2
+
 /obj/item/clothing/shoes/fur
 	name = "fur boots"
 	desc = "Dense fur boots."

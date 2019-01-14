@@ -208,6 +208,14 @@
 				if (world.time < map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age2_top*3))
 					user << "You are already too advanced. You can research again in [(map.age3_timer-world.time)/600] minutes."
 					return
+			else if (map.age3_done == TRUE && map.age4_done == FALSE)
+				if (world.time < map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age3_top*3))
+					user << "You are already too advanced. You can research again in [(map.age4_timer-world.time)/600] minutes."
+					return
+			else if (map.age4_done == TRUE && map.age5_done == FALSE)
+				if (world.time < map.age5_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age4_top*3))
+					user << "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600] minutes."
+					return
 		if (!map.civilizations)
 			return
 		else if(!completed)

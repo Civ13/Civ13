@@ -114,5 +114,5 @@
 	key = "r"
 	colour = "Russian"
 	flags = RESTRICTED | COMMON_VERBS
-	syllables = JAPANESE_SYLLABLES
+	syllables = RUSSIAN_SYLLABLES
 	mutual_intelligibility = list()

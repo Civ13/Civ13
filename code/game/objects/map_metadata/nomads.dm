@@ -36,6 +36,12 @@
 	age3_lim = 240
 	age3_done = 0
 	age3_timer = 42000
+	age4_lim = 300
+	age4_done = 0
+	age4_timer = 42000
+	age5_lim = 350
+	age5_done = 0
+	age5_timer = 42000
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
 /obj/map_metadata/nomads/New()
@@ -204,6 +210,30 @@
 				age = "1713"
 				set_ordinal_age()
 				age3_done = TRUE
+				age4_timer = (world.time + age4_timer)
+				break
+
+	else if (age4_done == FALSE)
+		var/count = 0
+		for(var/i = 1, i <= custom_faction_nr.len, i++)
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+			if (count > age4_lim && world.time >= age4_timer)
+				world << "<big>The world has advanced into the Industrial Age!</big>"
+				age = "1713"
+				set_ordinal_age()
+				age4_done = TRUE
+				age5_timer = (world.time + age5_timer)
+				break
+
+	else if (age5_done == FALSE)
+		var/count = 0
+		for(var/i = 1, i <= custom_faction_nr.len, i++)
+			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+			if (count > age5_lim && world.time >= age5_timer)
+				world << "<big>The world has advanced into the Modern Age!</big>"
+				age = "1903"
+				set_ordinal_age()
+				age5_done = TRUE
 				break
 
 /obj/map_metadata/nomads/job_enabled_specialcheck(var/datum/job/J)

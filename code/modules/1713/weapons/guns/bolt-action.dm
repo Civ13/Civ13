@@ -169,14 +169,14 @@
 
 /obj/item/weapon/gun/projectile/boltaction/mosin
 	name = "Mosin-Nagant"
-	desc = "Soviet bolt-action rifle chambered in 7.62x54mmR cartridges."
+	desc = "Russian bolt-action rifle chambered in 7.62x54mmR cartridges."
 	icon_state ="mosin"
 	item_state ="mosin"
 	force = 12
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 4.0
-	effectiveness_mod = 0.97
+	effectiveness_mod = 0.96
 	bolt_safety = FALSE
 	value = 100
 	recoil = 2
@@ -222,12 +222,12 @@
 	ammo_type = /obj/item/ammo_casing/a65x50mm
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
-	effectiveness_mod = 0.96
+	effectiveness_mod = 0.85
 	value = 100
 	slot_flags = SLOT_BACK
 	recoil = 2
-	force = 12
-	throwforce = 20
+	force = 11
+	throwforce = 25
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
@@ -254,7 +254,7 @@
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a65x50mm
 	bolt_safety = FALSE
-	effectiveness_mod = 1.00
+	effectiveness_mod = 0.98
 	value = 120
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -454,7 +454,7 @@
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a11x60mm
 	bolt_safety = FALSE
-	effectiveness_mod = 0.93
+	effectiveness_mod = 0.75
 	value = 120
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -464,4 +464,35 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/murata
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+
+	/////need to add:
+	///Springfield Model
+	///1861,Pattern
+	//1853 Enfield,
+	//Frank Wesson Rifle,
+	//Colt Revolving Rifle,
+	//Sharps & Hankins Carbine,
+	///Volcanic Carbine,
+	///M1817 Common Rifle (All Rifles used during the civil war)
+
+	/obj/item/weapon/gun/projectile/boltaction/berdan
+	name = "Mosin-Nagant"
+	desc = "Russian bolt-action rifle chambered in 7.62x54mmR cartridges."
+	icon_state ="berdan"
+	item_state ="berdan"
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a762x54"
+	weight = 4.0
+	effectiveness_mod = 0.96
+	bolt_safety = FALSE
+	value = 100
+	recoil = 2
+	slot_flags = SLOT_BACK
+	throwforce = 20
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	ammo_type = /obj/item/ammo_casing/a762x54
+	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'

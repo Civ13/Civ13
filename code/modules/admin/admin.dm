@@ -622,7 +622,7 @@ proc/admin_notice(var/message, var/rights)
 		usr << "<font color='red'>Error: The game as already started.</font>"
 		return
 	else
-		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "Cancel"))
+		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "Cancel"))
 		if (customage == "Cancel")
 			return
 		else if (customage == "5000 B.C.")
@@ -652,6 +652,27 @@ proc/admin_notice(var/message, var/rights)
 			map.age1_done = TRUE
 			map.age2_done = TRUE
 			map.age3_done = TRUE
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1873")
+			map.ordinal_age = 4
+			map.age = "1873"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1903")
+			map.ordinal_age = 5
+			map.age = "1903"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			map.age5_done = TRUE
 			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return

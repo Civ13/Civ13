@@ -80,8 +80,13 @@
 
 /obj/structure/sign/flag/medical
 	name = "Medical flag"
-	desc = "A flag witht the universally recognized symbol for medicine."
+	desc = "A flag with the universally recognized symbol for medicine."
 	icon_state = "medical_flag"
+
+/obj/structure/sign/flag/japanese
+	name = "Imperial Japanese Flag"
+	desc = "A flag with the imperial japanese flag."
+	icon_state = "japanese"
 
 
 /obj/structure/sign/flag/custom

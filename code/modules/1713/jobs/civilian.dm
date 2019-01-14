@@ -65,7 +65,12 @@
 			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
-
+		else if (map.ordinal_age == 4)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kozhanka(src), slot_wear_suit)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+		else if (map.ordinal_age == 5)
+			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kozhanka(src), slot_wear_suit)
+			equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
 /datum/job/civilian/governor
 	title = "Governor"
 	en_meaning = "Colony Leader"
