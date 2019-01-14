@@ -343,6 +343,7 @@
 #include "code\modules\1713\_mags1904.dm"
 #include "code\modules\1713\ancient_apparel.dm"
 #include "code\modules\1713\apparel.dm"
+#include "code\modules\1713\apparel_industrial.dm"
 #include "code\modules\1713\armor.dm"
 #include "code\modules\1713\barbwire.dm"
 #include "code\modules\1713\battlereport_variables.dm"

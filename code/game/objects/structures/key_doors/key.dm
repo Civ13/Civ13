@@ -5,3 +5,4 @@
 	name = "random fucking key that should NOT exist"
 	w_class = 1
 	dropsound = 'sound/effects/drop_knife.ogg'
+	value = 0

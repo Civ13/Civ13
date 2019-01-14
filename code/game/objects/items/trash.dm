@@ -6,7 +6,7 @@
 	icon = 'icons/obj/trash.dmi'
 	w_class = 2.0
 	desc = "This is rubbish."
-
+	value = 0
 
 /obj/item/kitchen/plate
 	name = "plate"

@@ -39,7 +39,7 @@
 	icon = 'icons/obj/decals.dmi'
 	w_class = 3		//big
 	var/sign_state = ""
-
+	value = 0
 /obj/item/sign/attackby(obj/item/tool as obj, mob/user as mob)	//construction
 	if (istype(tool, /obj/item/weapon/hammer) && isturf(user.loc))
 		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))

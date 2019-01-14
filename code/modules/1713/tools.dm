@@ -96,20 +96,21 @@
 				var/mob/living/carbon/human/H = user
 				digging_tunnel_time /= H.getStatCoeff("strength")
 				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-			if (WWinput(user, "This will start digging a tunnel entrance here.", "Tunnel Digging", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
-				if (do_after(user, digging_tunnel_time, user.loc))
-					new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
-					new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
-					var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
-					if (istype(BL, /turf/floor/dirt/underground))
-						BL.ChangeTurf(/turf/floor/dirt)
-					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
-					if (ishuman(user))
-						var/mob/living/carbon/human/H = user
-						H.adaptStat("crafting", 1)
-						H.adaptStat("strength", 1)
-				return
+			visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+			if (do_after(user, digging_tunnel_time, user.loc))
+				if (!TB.is_diggable)
+					return
+				new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
+				new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
+				var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
+				if (istype(BL, /turf/floor/dirt/underground))
+					BL.ChangeTurf(/turf/floor/dirt)
+				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+				if (ishuman(user))
+					var/mob/living/carbon/human/H = user
+					H.adaptStat("crafting", 1)
+					H.adaptStat("strength", 1)
+			return
 	else if (locate(/obj/structure/multiz/) in user.loc)
 		user << "<span class='warning'>There already is something here.</span>"
 		return

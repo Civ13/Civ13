@@ -3,6 +3,7 @@ var/list/organ_cache = list()
 /obj/item/organ
 	name = "organ"
 	icon = 'icons/obj/surgery.dmi'
+	value = 0
 	var/dead_icon
 	var/mob/living/carbon/human/owner = null
 	var/status = 0

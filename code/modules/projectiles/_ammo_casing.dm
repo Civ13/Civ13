@@ -44,7 +44,7 @@
 	amount = 1
 	max_amount = 20
 	singular_name = "projectile"
-
+	value = 0
 /obj/item/stack/ammopart/musketball
 	name = "musketball projectiles"
 	desc = "A round musketball, to be used in flintlock muskets."
@@ -142,6 +142,16 @@
 	caliber = "c9mm_jap_revolver"
 	value = 5
 
+/obj/item/ammo_casing/a45
+	name = ".45 colt bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a45
+	caliber = "a45"
+	value = 5
+
 /obj/item/ammo_casing/a762x54
 	name = "7.62x54mm ammo casing"
 	desc = "A brass casing."
@@ -158,9 +168,15 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
 	weight = 0.05
+<<<<<<< HEAD
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x38
 	caliber = "7.62x38mmR"
 	value = 2
+=======
+	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
+	caliber = "a762x38mmR"
+	value = 5
+>>>>>>> b1694061716168c1c61dfb88e90dfc8063330864
 
 /obj/item/ammo_casing/c8mmnambu
 	name = "8mm bullet casing"
