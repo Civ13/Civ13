@@ -169,17 +169,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	desc = "A pouch containing 18 .44 pistol rounds."
 
-/obj/item/ammo_magazine/c38
-	name = "pouch of bullets (.38)"
-	icon_state = "pouch"
-	ammo_type = /obj/item/ammo_casing/a38
-	caliber = "38"
-	max_ammo = 18
-	weight = 0.4
-	multiple_sprites = TRUE
-	mag_type = SPEEDLOADER
-	desc = "A pouch containing 18 .38 pistol rounds."
-
 /obj/item/ammo_magazine/shellbox
 	name = "shotgun shell box (.12 guage)"
 	icon_state = "shellbox"

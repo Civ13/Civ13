@@ -113,11 +113,6 @@
 	penetrating = 1
 	armor_penetration = 38
 
-/obj/item/projectile/bullet/pistol/a38
-	damage = DAMAGE_MEDIUM
-	penetrating = 1
-	armor_penetration = 28
-
 /obj/item/projectile/bullet/shotgun/buckshot
 	damage = DAMAGE_MEDIUM + 8
 	penetrating = 1

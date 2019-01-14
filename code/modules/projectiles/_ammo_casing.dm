@@ -192,16 +192,6 @@
 	caliber = "44"
 	value = 2
 
-/obj/item/ammo_casing/a38
-	name = ".38 bullet casing"
-	desc = "A brass casing."
-	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
-	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/a38
-	caliber = "38"
-	value = 2
-
 /obj/item/ammo_casing/shotgun
 	name = "shotgun shell"
 	desc = "A shotgun shell casing."
