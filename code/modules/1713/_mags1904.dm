@@ -1,6 +1,41 @@
 /***********************************
 RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 ***********************************/
+/obj/item/ammo_magazine
+	name = "ammo magazine"
+	var/pouch = FALSE
+
+/obj/item/ammo_magazine/attack_hand(mob/user as mob)
+	if (user.get_inactive_hand() == src)
+		unload_ammo(user, allow_dump=0)
+	else
+		return ..()
+
+/obj/item/ammo_magazine/proc/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+	if (stored_ammo.len > 0)
+		if (allow_dump)
+			var/count = FALSE
+			var/turf/T = get_turf(user)
+			if (T)
+				for (var/obj/item/ammo_casing/C in stored_ammo)
+					C.loc = T
+					count++
+				stored_ammo.Cut()
+			if (count)
+				visible_message("[user] empties \the [src].", "<span class='notice'>You remove [count] round\s from [src].</span>")
+			update_icon()
+			return
+		else
+			var/obj/item/ammo_casing/C = stored_ammo[stored_ammo.len]
+			stored_ammo.len--
+			user.put_in_hands(C)
+			visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
+			update_icon()
+			return
+	else
+		user << "<span class='warning'>[src] is empty.</span>"
+		update_icon()
+		return
 
 /obj/item/ammo_magazine/mosin
 	name = "Clip (7.92x54mm)"
@@ -76,25 +111,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.02
 	multiple_sprites = TRUE
 
-//obj/item/ammo_magazine/c9x19mm_stenmk3
-	//name = "magazine (9x19mm)"
-	//icon_state = "stenmag"
-	//mag_type = MAGAZINE
-	//ammo_type = /obj/item/ammo_casing/c9x19mm_stenmk3
-	//caliber = "9x19mm"
-	//max_ammo = 32
-	//multiple_sprites = TRUE
 
 ////////// NAGANT REVOLVER ///////////////
 /obj/item/ammo_magazine/c762x38mmR
 	name = "pouch of bullets (7.62x38mmR)"
-	icon_state = "7.62x38mmRPouch"
+	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a762x38
-	caliber = "7.62x38mmR"
+	caliber = "a762x38mmR"
 	max_ammo = 21
 	weight = 0.4
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
+	pouch = TRUE
 
 /obj/item/ammo_magazine/c9mm_jap_revolver
 	name = "pouch of bullets (9mm)"
@@ -105,8 +133,19 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.4
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
+	pouch = TRUE
 
-/obj/item/ammo_magazine/murata
+/obj/item/ammo_magazine/c45
+	name = "pouch of bullets (.45 Colt)"
+	desc = "a pouch of 11.43×33mmR bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a45
+	caliber = "a45"
+	max_ammo = 24
+	weight = 0.4
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
 
 /obj/item/ammo_magazine/murata
 	name = "Clip (11x60mm)"

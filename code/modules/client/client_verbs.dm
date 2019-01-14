@@ -67,7 +67,7 @@
 					age = "<font color='#ff8c00'><b>[age]</b></font>"
 			else
 				age = FALSE
-			entry += " - [age]"
+//			entry += " - [age]"
 
 			if (C.is_afk())
 				entry += " (AFK - [C.inactivity2text()])"

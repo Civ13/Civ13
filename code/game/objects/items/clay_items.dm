@@ -219,7 +219,7 @@
 	w_class = 2.0
 	New()
 		..()
-		icon_state = "bigclaypot[pick(1,2,3)]"
+		icon_state = "bigclaypot[pick(1,2)]"
 
 /obj/item/weapon/reagent_containers/food/drinks/clay/clayjug
 	name = "clay jug"
