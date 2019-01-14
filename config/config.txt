@@ -6,7 +6,7 @@ RESOURCE_WEBSITE nil
 
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Remove the # infront of SERVERNAME and replace 'tgstation' with the name of your choice.
 ## IMPORTANT: Don't include special characters such as ' in here
-SERVER_NAME Civilization 13 (1713)
+SERVER_NAME Civilization 13
 
 ## What features do you want to advertise on your hub message?
 HUB_FEATURES From the Stone Age to the Industrial Age
@@ -33,15 +33,10 @@ HUB
 LOBBY_COUNTDOWN 90
 
 # Round End Time: This is the amount of time after the round ends that players have to murder death kill each other.
-ROUND_END_COUNTDOWN 45
-
-## MAJOR CONFIG TODO: all of this database and log stuff
+ROUND_END_COUNTDOWN 90
 
 ## Unhash this entry to have certain jobs require your account to be at least a certain number of days old to select. You can configure the exact age requirement for different jobs by editing
 ## the minimal_player_age variable in the files in folder /code/game/jobs/job/.. for the job you want to edit. Set minimal_player_age to 0 to disable age requirement for that job.
-## REQUIRES the database set up to work. Keep it hashed if you don't have a database set up.
-## NOTE: If you have just set-up the database keep this DISABLED, as player age is determined from the first time they connect to the server with the database up. If you just set it up, it means
-## you have noone older than 0 days, since noone has been logged yet. Only turn this on once you have had the database up for 30 days.
 #USE_AGE_RESTRICTION_FOR_JOBS
 
 # Uncomment this to have the job system use the player's account creation date, rather than the when they first joined the server for job timers.
@@ -108,19 +103,13 @@ VOTE_DELAY 6000
 VOTE_PERIOD 600
 
 ## prevents dead players from voting or starting votes
-# NO_DEAD_VOTE
+NO_DEAD_VOTE
 
 ## players' votes default to "No vote" (otherwise,  default to "No change")
 # DEFAULT_NO_VOTE
 
-## disable abandon mob
-NORESPAWN
-
 ## disables calling del(src) on newmobs if they logout before spawnin in
 # DONT_DEL_NEWMOB
-
-## set a hosted by name for unix platforms
-HOSTEDBY The Admiralship
 
 ## Set to jobban "Guest-" accounts from Captain, HoS, HoP, CE, RD, CMO, Warden, Security, Detective, and AI positions.
 ## Set to 1 to jobban them from those positions, set to 0 to allow them.
@@ -168,9 +157,6 @@ ALLOW_TESTING_STAFF
 # Don't set this to the same server, BYOND will automatically restart players to the server when it has restarted.
 SERVER 192.210.161.174:23999
 
-## forum address
-FORUMURL 
-
 ## donation address
 DONATIONURL https://www.patreon.com/1713ad
 
@@ -201,9 +187,6 @@ GITHUBURL https://github.com/1713-SS13/1713/
 ## The intention is to make adminPMs more visible. (although I fnd popups annoying so this defaults to off)
 #POPUP_ADMIN_PM
 
-## Remove the # to allow special 'Easter-egg' events on special holidays such as seasonal holidays and stuff like 'Talk Like a Pirate Day' :3 YAARRR
-#ALLOW_HOLIDAYS
-
 ##Defines the ticklimit for subsystem initialization (In percents of a byond tick). Lower makes world start smoother. Higher makes it faster.
 ##This is currently a testing optimized setting. A good value for production would be 98.
 TICK_LIMIT_MC_INIT 500
@@ -222,10 +205,6 @@ TICKLAG 0.3
 
 ## TODO
 
-## Notify admins when a new player connects for the first x days a player's been around. (0 for first connection only, -1 for never)
-##	Requres database
-NOTIFY_NEW_PLAYER_AGE 0
-
 ## Deny all new connections by ckeys we haven't seen before (exempts admins and only denies the connection if the database is enabled and connected)
 ##	Requires database
 #PANIC_BUNKER
@@ -237,38 +216,8 @@ PANIC_SERVER_ADDRESS byond://address:port
 ##Name of the place to send people rejected by the bunker
 PANIC_SERVER_NAME [Put the name here]
 
-## Uncomment to have the changelog file automatically open when a user connects and hasn't seen the latest changelog
-#AGGRESSIVE_CHANGELOG
-
 ## Uncomment to have the game log runtimes to the log folder. (Note: this disables normal output in dd/ds, so it should be left off for testing.
 LOG_RUNTIMES
-
-## TODO
-
-## Comment this out if you've used the mass conversion sql proc for notes or want to stop converting notes
-AUTOCONVERT_NOTES
-
-## TODO
-
-## Comment this out to stop admin messages sent anytime an admin disconnects from a round in play, you can edit the messages in admin.dm
-#ANNOUNCE_ADMIN_LOGOUT
-
-## Uncomment to have an admin message sent anytime an admin connects to a round in play, you can edit the messages in admin.dm
-#ANNOUNCE_ADMIN_LOGIN
-
-
-## TODO
-
-## CLIENT VERSION CONTROL
-## This allows you to configure the minimum required client version, as well as a warning version, and message for both.
-## These trigger for any version below (non-inclusive) the given version, so 510 triggers on 509 or lower.
-## These messages will be followed by one stating the clients current version and the required version for clarity.
-#CLIENT_WARN_VERSION 510
-#CLIENT_WARN_MESSAGE Byond is really close to releasing 510 beta as the stable release, please take this time to try it out. Reports are that the client preforms better then the version you are using, and also handles network lag better. Shortly after it's release we will end up using 510 client features and you will be forced to update.
-#CLIENT_ERROR_VERSION 509
-#CLIENT_ERROR_MESSAGE Your version of byond is not supported. Please upgrade.
-
-## TODO:
 
 ## TOPIC RATE LIMITING
 ## This allows you to limit how many topic calls (clicking on a interface window) the client can do in any given game second and/or game minute.
@@ -281,16 +230,6 @@ MINUTE_TOPIC_LIMIT 100
 
 ## TODO
 
-##Error handling related options
-## The "cooldown" time for each occurence of an unique error
-#ERROR_COOLDOWN 600
-## How many occurences before the next will silence them
-#ERROR_LIMIT 90
-## How long an unique error will be silenced for
-#ERROR_SILENCE_TIME 6000
-##How long to wait between messaging admins about occurences of an unique error
-#ERROR_MSG_DELAY 50
-
 NO_RESPAWN_DELAYS 0
 
 MAX_EXPECTED_PLAYERS 50
@@ -300,22 +239,3 @@ SHOW_MODS 1
 
 #show mentors in staff who
 SHOW_MENTORS 1
-
-##Oldtimer stuff
-
-LIGHTING_IS_RUSTIC 0
-MACHINERY_DOES_NOT_USE_POWER 1
-
-## Use one of three formats here: 'VALUE1, VALUE2, VALUE3', 'ALL', or 'NONE'
-## Valid seasons are 'SUMMER', 'SPRING', 'FALL', 'WINTER'
-## Valid weathers are 'RAIN', 'SNOW'
-## Having a value of 'NONE' for seasons means the only available season is Spring
-
-ENABLED_SEASONS ALL 
-ENABLED_WEATHER RAIN
-
-## Testing stuff 
-
-USE_HUNGER 1
-USE_THIRST 1
-ALLOW_SELFHEAL 0

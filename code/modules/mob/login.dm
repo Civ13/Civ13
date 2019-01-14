@@ -31,7 +31,7 @@
 						log_access("Notice: [key_name(src)] has the same [matches] as [key_name(M)] (no longer logged in).")
 
 /mob/Login()
-	winset(src, null, "mainwindow.title='[station_name()]'")
+	winset(src, null, "mainwindow.title='[customserver_name()]'")
 	player_list |= src
 	update_Login_details()
 	world.update_status()

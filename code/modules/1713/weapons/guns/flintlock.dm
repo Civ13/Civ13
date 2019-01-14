@@ -121,10 +121,10 @@
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked)
-		user << "<span class='warning'>You can't fire the [src] while the weapon is uncocked!</span>"
+		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
 	if (!(user.has_empty_hand(both = FALSE)) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/pistol))
-		user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	return ..()
 
