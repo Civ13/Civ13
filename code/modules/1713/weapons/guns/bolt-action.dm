@@ -452,7 +452,7 @@
 	caliber = "a11x60mm"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a11x60mm
+	ammo_type = /obj/item/ammo_casing/a8x53mm
 	bolt_safety = FALSE
 	effectiveness_mod = 0.75
 	value = 120

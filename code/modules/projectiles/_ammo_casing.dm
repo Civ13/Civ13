@@ -168,15 +168,9 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
 	weight = 0.05
-<<<<<<< HEAD
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x38
-	caliber = "7.62x38"
-	value = 2
-=======
-	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
-	caliber = "a762x38m"
+	caliber = "a762x38"
 	value = 5
->>>>>>> b1694061716168c1c61dfb88e90dfc8063330864
 
 /obj/item/ammo_casing/c8mmnambu
 	name = "8mm bullet casing"
