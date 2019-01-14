@@ -9,8 +9,8 @@ var/list/gamemode_cache = list()
 
 	var/list/lobby_screens = list("1") // Which lobby screens are available
 
-	var/lobby_countdown = 120
-	var/round_end_countdown = 60
+	var/lobby_countdown = 90
+	var/round_end_countdown = 90
 
 	var/log_ooc = FALSE						// log OOC channel
 	var/log_access = FALSE					// log login/logout
@@ -56,7 +56,6 @@ var/list/gamemode_cache = list()
 	var/list/votable_modes = list()		// votable modes
 	var/list/probabilities = list()		// relative probability of each mode
 	var/allow_random_events = FALSE			// enables random events mid-round when set to TRUE
-	var/hostedby = null
 	var/guest_jobban = TRUE
 	var/usewhitelist = FALSE
 	var/allow_testing_staff = FALSE
@@ -88,7 +87,6 @@ var/list/gamemode_cache = list()
 	var/banappeals
 	var/wikiurl
 	var/websiteurl
-	var/forumurl
 	var/donationurl
 	var/rulesurl
 	var/discordurl
@@ -345,9 +343,6 @@ var/list/gamemode_cache = list()
 				if ("serversuffix")
 					config.server_suffix = TRUE
 
-				if ("hostedby")
-					config.hostedby = value
-
 				if ("serverurl")
 					config.serverurl = value
 
@@ -362,9 +357,6 @@ var/list/gamemode_cache = list()
 
 				if ("websiteurl")
 					config.websiteurl = value
-
-				if ("forumurl")
-					config.forumurl = value
 
 				if ("donationurl")
 					config.donationurl = value
@@ -511,31 +503,6 @@ var/list/gamemode_cache = list()
 
 				if ("round_end_countdown")
 					config.round_end_countdown = text2num(value)
-
-				if ("enabled_seasons")
-					if (value)
-						var/list/seasons = splittext(value, ",")
-						slog = seasons.Copy()
-						for (var/v in 1 to seasons.len)
-							seasons[v] = uppertext(ckey(seasons[v]))
-						if (seasons[1] == "ALL")
-							allowed_seasons = list(1)
-						else if (seasons[1] == "NONE")
-							allowed_seasons = list(0)
-						else
-							allowed_seasons.Cut()
-							for (var/season in seasons)
-								allowed_seasons += season
-
-
-				if ("use_hunger")
-					config.use_hunger = text2num(value)
-
-				if ("use_thirst")
-					config.use_thirst = text2num(value)
-
-				if ("allow_selfheal")
-					config.allow_selfheal = text2num(value)
 
 				else
 					log_misc("Unknown setting in configuration: '[name]'")

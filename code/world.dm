@@ -268,14 +268,14 @@ var/world_topic_spam_protect_time = world.timeofday
 	var/s = ""
 
 	if (config.open_hub_discord_in_new_window)
-		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[station_name()]</b></center><br></a>"
+		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[customserver_name()]</b></a></center><br>"
 	else
-		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br></a>"
+		s += "<center><a href=\"[config.discordurl]\"><b>[customserver_name()]</b></a></center><br>"
 
 	if (config.hub_banner_url)
-		s += "<img src=\"https://i.imgur.com/napac0L.png\">"
+		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
 	if (map)
-		s += "<br><b>Map:</b> [map.title] ([roundduration2text()])<br>"
+		s += "<b>Map:</b> [map.title] ([roundduration2text()])<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
