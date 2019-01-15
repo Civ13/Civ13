@@ -63,7 +63,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 
 /datum/category_item/player_setup_item/general/body/OnTopic(var/href,var/list/href_list, var/mob/user)
 	var/datum/species/mob_species = all_species[pref.species]
-
+	var/list/valid_player_genders = list(MALE, FEMALE)
 	if (href_list["random"])
 		pref.randomize_appearance_for ()
 		return TOPIC_REFRESH
@@ -158,4 +158,14 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 			pref.f_style = new_f_style
 			return TOPIC_REFRESH
 
+	else if (href_list["gender"])
+		pref.gender = next_in_list(pref.gender, valid_player_genders)
+		return TOPIC_REFRESH
+
+	else if (href_list["age"])
+		var/datum/species/S = all_species[pref.species]
+		var/new_age = input(user, "Choose your character's age:\n([S.min_age]-[S.max_age])", "Character Preference", pref.age) as num|null
+		if (new_age && CanUseTopic(user))
+			pref.age = max(min(round(text2num(new_age)), S.max_age), S.min_age)
+			return TOPIC_REFRESH
 	return ..()

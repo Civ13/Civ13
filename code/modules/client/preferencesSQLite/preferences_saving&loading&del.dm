@@ -3,7 +3,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 /datum/preferences/proc/preferences_exist()
 	var/F = file("SQL/charprefs.txt")
 	var/fulltext = file2text(F)
-	var/list/charprefs = splittext(fulltext, "|||")
+	var/list/charprefs = splittext(fulltext, "|||\n")
 	var/done1 = FALSE
 	for (var/i=1;i<charprefs.len;i++)
 		var/list/charprefs2 = splittext(charprefs[i], ";")
@@ -21,7 +21,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 	var/F = file("SQL/charprefs.txt")
 	var/fulltext = file2text(F)
-	var/list/charprefs = splittext(fulltext, "|||")
+	var/list/charprefs = splittext(fulltext, "|||\n")
 	var/done1 = FALSE
 	var/table = 0
 	for (var/i=1;i<charprefs.len;i++)
@@ -113,7 +113,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 
 	var/F = file("SQL/charprefs.txt")
-	var/list/charprefs = splittext(file2text(F), "|||")
+	var/list/charprefs = splittext(file2text(F), "|||\n")
 	var/done1 = FALSE
 	for (var/i=1;i<charprefs.len;i++)
 		var/list/charprefs2 = list(splittext(charprefs[i], ";"))

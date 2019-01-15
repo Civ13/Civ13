@@ -78,7 +78,7 @@ var/loaded_admins = FALSE
 		loaded_admins = TRUE
 		return
 
-	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||")
+	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||\n")
 	if (islist(admincheck) && !isemptylist(admincheck))
 		for(var/i=1;i<admincheck.len;i++)
 			var/list/admincheck_two = splittext(admincheck[i], ";")

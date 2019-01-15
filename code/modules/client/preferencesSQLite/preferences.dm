@@ -215,7 +215,7 @@ var/list/preferences_datums = list()
 // global preferences handling
 /datum/preferences/proc/loadGlobalPreferences()
 	var/F = file("SQL/globalpreferences.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/list/tables = list()
 	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = splittext(globalprefs[i], ";")
@@ -241,7 +241,7 @@ var/list/preferences_datums = list()
 //	prefstring += "UI_useborder=[globalprefsanitize(UI_useborder)]&"
 	prefstring += "lobby_music_volume=[globalprefsanitize(lobby_music_volume)]"
 	var/F = file("SQL/globalpreferences.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/done1 = FALSE
 	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = splittext(globalprefs[i], ";")
@@ -262,7 +262,7 @@ var/list/preferences_datums = list()
 		return
 
 	var/F = file("SQL/globalsettings.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/list/tables = list()
 	var/list/tables2 = list()
 	for (var/i=1;i<globalprefs.len;i++)
@@ -297,7 +297,7 @@ var/list/preferences_datums = list()
 		if (v != preferences_disabled.len)
 			prefstring2 += "&"
 	var/F = file("SQL/globalsettings.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/done1 = FALSE
 	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = splittext(globalprefs[i], ";")

@@ -6,12 +6,12 @@
 //	var/datum/hud/human/HUDdatum = global.HUDdatums[H.defaultHUD]
 	var/recreate_flag = FALSE
 
-	if (!check_HUDdatum())//проверка настроек клиента на правильность
+	if (!check_HUDdatum())
 		log_debug("[H] trying to check a HUD, but HUDdatums does not have \"[H.client.prefs.UI_style]!\"")
 		H << "Some problem has occured, use default HUD type."
 		H.defaultHUD = "1713Style"
 		++recreate_flag
-	else if (H.client.prefs.UI_style != H.defaultHUD)//Если стиль у МОБА не совпадает со стилем у клинета
+	else if (H.client.prefs.UI_style != H.defaultHUD)
 		H.defaultHUD = H.client.prefs.UI_style
 		++recreate_flag
 

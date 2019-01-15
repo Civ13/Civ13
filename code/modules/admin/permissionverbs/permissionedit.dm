@@ -66,7 +66,7 @@
 		return
 
 	var/F = file("SQL/admins.txt")
-	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||")
+	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||\n")
 
 	if (new_rank == "Removed")
 		if (islist(admincheck) && !isemptylist(admincheck))
@@ -146,7 +146,7 @@
 
 	var/list/rowdata = list()
 	var/F = file("SQL/admins.txt")
-	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||")
+	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||\n")
 	if (islist(admincheck) && !isemptylist(admincheck))
 		for(var/i=1;i<admincheck.len;i++)
 			var/list/admincheck_two = splittext(admincheck[i], ";")
