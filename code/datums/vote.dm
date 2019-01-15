@@ -159,9 +159,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/submit_vote(var/ckey, var/vote)
 		if (mode)
-			if (mode == "restart")
-				if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
-					return FALSE
 			if (vote && vote >= 1 && vote <= choices.len)
 				if (current_votes[ckey])
 					choices[choices[current_votes[ckey]]]--
@@ -248,13 +245,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if (C.holder.rights & R_ADMIN)
 				admin = TRUE
 		voting |= C
-		if (!admin && C.mob)
-			if (C.mob.stat == DEAD)
-				C << "You can't start restart votes if you are not playing."
-				return
-			if (map.ID == MAP_NOMADS_EXTENDED)
-				C << "Only admins can restart a extended map."
-				return
 		. = "<html><head><title>Voting Panel</title></head><body>"
 		if (mode)
 			if (question)	. += "<h2>Vote: '[question]'</h2>"
@@ -318,6 +308,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					config.allow_vote_mode = !config.allow_vote_mode
 			if ("restart")
 				if (config.allow_vote_restart || usr.client.holder)
+					if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
+						usr << "You cann't start restart votes if you are not playing."
+						return FALSE
 					initiate_vote("restart",usr.key)
 			if ("custom")
 				if (usr.client.holder)
