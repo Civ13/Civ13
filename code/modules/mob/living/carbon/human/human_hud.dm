@@ -192,15 +192,15 @@ the HUD updates properly! */
 				shared_job_check = FALSE
 			else if (HM.original_job_title == perp.original_job_title && map.civilizations == TRUE && perp.original_job_title != "Nomad")
 				shared_job_check = TRUE
-			if (perp.original_job_title == "Nomad" && HM.original_job_title == perp.original_job_title)
-				shared_job_check = FALSE
 			if (((perp.original_job_title == "Nomad" && HM.civilization == perp.civilization)) && !perp.civilization == "none")
 				shared_job_check = TRUE
-
-		if (shared_job_check)
-			P.Client.images += perp.hud_list[BASE_FACTION]
-		else
-			P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
+			else
+				shared_job_check = FALSE
+		if(!map.nomads)
+			if (shared_job_check)
+				P.Client.images += perp.hud_list[BASE_FACTION]
+			else
+				P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 		if (map.nomads == TRUE)
 			var/image/holderf = perp.hud_list[BASE_FACTION]
 			holderf.icon = 'icons/mob/hud_1713.dmi'
@@ -208,13 +208,15 @@ the HUD updates properly! */
 			holderf.icon_state = ""
 			if (perp.original_job_title == "Nomad" && viewer.original_job_title == "Nomad")
 				if (viewer == perp)
-					holderf.icon_state = "civ2"
-				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.civilization != "none")
-					holderf.icon_state = "civ2"
+					holderf.icon_state = "civp" //player hud
+				else if (perp.civilization == "none")
+					holderf.icon_state = "civ4" //nomads are yellow
+				else if (perp.civilization == viewer.civilization && viewer.civilization != "none")
+					holderf.icon_state = "civ2" //same faction is green
 				else
-					holderf.icon_state = "civ1"
+					holderf.icon_state = "civ1" //other factions are red
 				if (perp.stat!=DEAD && (!perp.key || !perp.client) && perp.invisibility == 101)
-					holderf.icon_state = ""
+					holderf.icon_state = "" // ssd's dont have huds
 				P.Client.images += holderf
 /datum/arranged_hud_process
 	var/client/Client
