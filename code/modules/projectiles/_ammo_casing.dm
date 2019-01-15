@@ -150,7 +150,17 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a45
 	caliber = "a45"
-	value = 5
+	value = 7
+
+/obj/item/ammo_casing/a44
+	name = ".44-40 winchester bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a44
+	caliber = "a45"
+	value = 8
 
 /obj/item/ammo_casing/a762x54
 	name = "7.62x54mm ammo casing"

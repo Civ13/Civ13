@@ -405,6 +405,7 @@
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("mayan headdress", /obj/item/clothing/head/mayan_headdress, 4, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("nemes headdress", /obj/item/clothing/head/nemes, 6, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("double crown", /obj/item/clothing/head/doublecrown, 5, _time = 65, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("eyepatch", /obj/item/clothing/mask/glasses/eyepatch, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blindfold", /obj/item/clothing/mask/glasses/sunglasses/blindfold, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -439,6 +440,7 @@
 			new/datum/stack_recipe("black bicorne", /obj/item/clothing/head/bicorne_british_soldier, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black tricorne", /obj/item/clothing/head/tricorne_black, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("tarred hat", /obj/item/clothing/head/tarred_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("rice hat", /obj/item/clothing/head/rice_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bandana", /obj/item/clothing/head/piratebandana1, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 98 && (current_res[3] < 109))
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
@@ -446,23 +448,21 @@
 			new/datum/stack_recipe("blindfold", /obj/item/clothing/mask/glasses/sunglasses/blindfold, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cowboy hat", /obj/item/clothing/head/cowboyhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("red beret", /obj/item/clothing/head/red_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("blue beret", /obj/item/clothing/head/blue_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("colored turban", /obj/item/clothing/head/turban, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("white turban", /obj/item/clothing/head/turban/imam, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("shemagh", /obj/item/clothing/mask/shemagh, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("kerchief", /obj/item/clothing/head/kerchief, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("black bicorne", /obj/item/clothing/head/bicorne_british_soldier, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("black tricorne", /obj/item/clothing/head/tricorne_black, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("tarred hat", /obj/item/clothing/head/tarred_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("bandana", /obj/item/clothing/head/piratebandana1, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("rice hat", /obj/item/clothing/head/rice_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("sombrero", /obj/item/clothing/head/sombrero, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if ( current_res[3] < 15)
 		recipes += new/datum/stack_recipe_list("clothing", list(
-			new/datum/stack_recipe("cotton loincloth", /obj/item/clothing/under/loincotton, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("cotton loincloth", /obj/item/clothing/under/loincotton, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("mayan loincloth", /obj/item/clothing/under/mayan_loincloth, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if ((current_res[3] >= 15) && (current_res[3] < 38))
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("fancy shendyt", /obj/item/clothing/under/pharaoh, 8, _time = 145, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("great shendyt", /obj/item/clothing/under/pharaoh2, 10, _time = 185, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("mayan loincloth", /obj/item/clothing/under/mayan_loincloth, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("huipil", /obj/item/clothing/under/huipil, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("half huipil", /obj/item/clothing/under/halfhuipil, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable tunic", /obj/item/clothing/under/custom/roman, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),

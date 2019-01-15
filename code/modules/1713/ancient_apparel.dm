@@ -109,12 +109,26 @@
 	item_state = "celtic_long_braccae"
 	worn_state = "celtic_long_braccae"
 
+/obj/item/clothing/under/mayan_loincloth
+	name = "mayan loincloth"
+	desc = "Mayan-style loincloth."
+	icon_state = "mayan_loincloth"
+	item_state = "mayan_loincloth"
+	worn_state = "mayan_loincloth"
+
 /obj/item/clothing/under/pharaoh
 	name = "fancy shendyt"
 	desc = "A fancy, decorated shendyt."
 	icon_state = "pharaoh"
 	item_state = "pharaoh"
 	worn_state = "pharaoh"
+
+/obj/item/clothing/under/pharaoh2
+	name = "great shendyt"
+	desc = "A fancy, decorated shendyt."
+	icon_state = "greatshendyt"
+	item_state = "greatshendyt"
+	worn_state = "greatshendyt"
 
 /obj/item/clothing/suit/cape
 	name = "red cape"
@@ -226,6 +240,13 @@
 	item_state = "nemes_headdress"
 	worn_state = "nemes_headdress"
 	flags_inv = BLOCKHEADHAIR
+
+/obj/item/clothing/head/doublecrown
+	name = "double crown"
+	desc = "a double-coloured cloth crown."
+	icon_state = "doublecrown"
+	item_state = "doublecrown"
+	worn_state = "doublecrown"
 
 /obj/item/clothing/head/bearpelt
 	name = "bearpelt headcover"
