@@ -83,7 +83,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 	if (isemptylist(internal_table))
 		internal_table = list()
-	remember_preference("real_name", name_to_remember, FALSE) // don't save or inf. loop
+	remember_preference("real_name", name_to_remember) // don't save or inf. loop
 
 	var/params = ""
 	for (var/key in internal_table)
@@ -116,7 +116,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	var/list/charprefs = splittext(file2text(F), "|||\n")
 	var/done1 = FALSE
 	for (var/i=1;i<charprefs.len;i++)
-		var/list/charprefs2 = list(splittext(charprefs[i], ";"))
+		var/list/charprefs2 = splittext(charprefs[i], ";")
 		if (charprefs2[1] == client_ckey)
 			charprefs[i] = "[client_ckey];[params]"
 			done1 = TRUE
@@ -124,12 +124,10 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 		text2file("[client_ckey];[params]|||",F)
 	else
 		fdel(F)
-		var/sum2 = 0
 		for (var/i=1;i<charprefs.len;i++)
-			sum2 += "[charprefs[i]]|||"
-		text2file("[sum2]", F)
-
-/datum/preferences/proc/remember_preference(pref, value, var/save = TRUE)
+			text2file("[charprefs[i]]|||", F)
+	return
+/datum/preferences/proc/remember_preference(pref, value)
 	if (!vars.Find(pref))
 		return FALSE
 	if (value == initial(vars[pref]))
@@ -141,12 +139,9 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 		internal_table = list()
 	internal_table[pref] = value
 
-	if (save)
-		save_preferences()
-
 	return TRUE
 
-/datum/preferences/proc/forget_preference(pref, var/save = TRUE, var/glob = FALSE)
+/datum/preferences/proc/forget_preference(pref, var/glob = FALSE)
 	if (!vars.Find(pref))
 		return FALSE
 	if (forbidden_pref_save_varnames.Find(pref))
@@ -155,8 +150,5 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	if (isemptylist(internal_table))
 		internal_table = list()
 	internal_table -= pref
-
-	if (save)
-		save_preferences()
 
 	return TRUE

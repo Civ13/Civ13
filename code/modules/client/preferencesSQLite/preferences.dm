@@ -97,7 +97,7 @@ var/list/preferences_datums = list()
 
 		spawn (1)
 //			loadGlobalPreferences()
-			loadGlobalSettings()
+//			loadGlobalSettings()
 			ready = TRUE
 
 /datum/preferences/Del()
@@ -211,7 +211,8 @@ var/list/preferences_datums = list()
 	if (islist(str))
 		return ""
 	return str
-
+/*
+//////////////Included in charprefs////////////////////////
 // global preferences handling
 /datum/preferences/proc/loadGlobalPreferences()
 	var/F = file("SQL/globalpreferences.txt")
@@ -256,6 +257,7 @@ var/list/preferences_datums = list()
 		for (var/i=1;i<globalprefs.len;i++)
 			sum2 += "[globalprefs[i]]|||"
 		text2file("[sum2]", F)
+
 // global settings handling
 /datum/preferences/proc/loadGlobalSettings()
 	if (!client)
@@ -312,8 +314,8 @@ var/list/preferences_datums = list()
 		for (var/i=1;i<globalprefs.len;i++)
 			sum2 += "[globalprefs[i]]|||"
 		text2file("[sum2]", F)
-
-
+////////////////////////////////////////////////////////////
+*/
 /client/proc/is_preference_enabled(var/preference)
 
 	if (ispath(preference))
@@ -350,7 +352,7 @@ var/list/preferences_datums = list()
 		if (C.ckey == prefs.client_ckey)
 			C.onload_preferences(preference)
 
-	prefs.saveGlobalSettings()
+	prefs.save_preferences()
 
 /mob/proc/is_preference_enabled(var/preference)
 	if (!client)
