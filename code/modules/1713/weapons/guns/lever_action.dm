@@ -15,7 +15,6 @@
 	slot_flags = SLOT_BACK
 	caliber = "a44"
 	recoil = 2 //extra kickback
-	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a44
 //	magazine_type = /obj/item/ammo_magazine/musketball
@@ -33,7 +32,7 @@
 	move_delay = 2
 	fire_delay = 2
 	var/blackpowder = FALSE
-	handle_casings = EJECT_CASINGS
+	handle_casings = HOLD_CASINGS
 
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
@@ -127,9 +126,12 @@
 	return null
 
 /obj/item/weapon/gun/projectile/leveraction/attack_self(mob/living/user as mob)
-	if (world.time >= recentpump + 10)
+	if (world.time >= recentpump + 8)
 		pump(user)
 		recentpump = world.time
+		return
+	else
+		return
 
 /obj/item/weapon/gun/projectile/leveraction/handle_post_fire()
 	..()
@@ -141,6 +143,8 @@
 	playsound(M, cocked_sound, 60, TRUE)
 	if (!chambered)
 		visible_message("<span class='warning'>[M] cycles the [src]!</span>","<span class='warning'>You cycle the [src]!</span>")
+	else if (chambered && chambered.BB != null)
+		visible_message("<span class='warning'>[M] cycles the [src], ejecting a spent casing!</span>","<span class='warning'>You cycle the [src], ejecting a spent casing!</span>")
 	else
 		visible_message("<span class='warning'>[M] cycles the [src], ejecting an unused casing!</span>","<span class='warning'>You cycle the [src], ejecting an unused casing!</span>")
 

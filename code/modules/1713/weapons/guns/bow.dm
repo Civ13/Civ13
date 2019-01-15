@@ -13,7 +13,7 @@
 	caliber = "arrow"
 	recoil = 0 //no shaking
 	fire_sound = 'sound/weapons/arrow_fly.ogg'
-	handle_casings = HOLD_CASINGS
+	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/arrow
 	load_shell_sound = 'sound/weapons/pull_bow.ogg'
