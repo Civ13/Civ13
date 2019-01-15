@@ -143,7 +143,7 @@
 	playsound(M, cocked_sound, 60, TRUE)
 	if (!chambered)
 		visible_message("<span class='warning'>[M] cycles the [src]!</span>","<span class='warning'>You cycle the [src]!</span>")
-	else if (chambered && chambered.BB != null)
+	else if (chambered && chambered.BB == null)
 		visible_message("<span class='warning'>[M] cycles the [src], ejecting a spent casing!</span>","<span class='warning'>You cycle the [src], ejecting a spent casing!</span>")
 	else
 		visible_message("<span class='warning'>[M] cycles the [src], ejecting an unused casing!</span>","<span class='warning'>You cycle the [src], ejecting an unused casing!</span>")
