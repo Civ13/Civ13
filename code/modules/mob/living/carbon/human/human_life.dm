@@ -67,9 +67,10 @@
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
+	if (stat != DEAD)
+		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 1
-		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	else
 		healing_stage = 0
 	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
@@ -79,9 +80,7 @@
 
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
-		if (client.holder == null) //exclude admins, as they can be invisible. Also they should be able to fix it themselves if need be :shrug:
-			invisibility = 0
-
+		invisibility = 0
 	if (has_hunger_and_thirst)
 		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
@@ -1392,8 +1391,9 @@
 	timer *= 600 //convert minutes to deciseconds
 	spawn(timer)
 		if (stat!=DEAD && (!key || !client))
-			invisibility = 101
-			return
-		else
-			invisibility = 0
-			return
+			if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
+				invisibility = 101
+				return
+			else
+				invisibility = 0
+				return
