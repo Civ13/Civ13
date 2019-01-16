@@ -77,8 +77,130 @@
 	resultpath = /obj/item/ammo_casing/blunderbuss
 	value = 2
 	weight = 0.1
+/obj/item/stack/ammopart/casing
+	max_amount = 40
+	singular_name = "casing"
+	value = 1
+	weight = 0.05
+	var/gunpowder = 0
+	var/gunpowder_max = 2
+	var/bulletn = FALSE
+
+/obj/item/stack/ammopart/casing/rifle
+	name = "empty rifle casing"
+	desc = "An empty brass casing."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "riflecasing"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	resultpath = null
+	gunpowder_max = 1.5
+
+/obj/item/stack/ammopart/casing/pistol
+	name = "empty pistol casing"
+	desc = "A small empty brass casing."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "pistolcasing"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	resultpath = null
+	gunpowder_max = 1
+
+/obj/item/stack/ammopart/bullet
+	name = "iron bullet"
+	desc = "A molded iron bullet, made to fit in a casing."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "ironbullet"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	resultpath = null
+	max_amount = 60
+	singular_name = "bullet"
+	value = 1
+	weight = 0.08
+/obj/item/stack/ammopart/casing/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+		if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+			return
+		else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+			user << "You fill the casings with gunpowder."
+			gunpowder = gunpowder_max*amount
+			return
+	if (istype(W, /obj/item/stack/ammopart/bullet))
+		if (!(gunpowder >= gunpowder_max*amount))
+			user << "<span class = 'notice'>You need to fill the casings with gunpowder before putting the bullet.</span>"
+			return
+		else if (W.amount < amount)
+			user << "<span class = 'notice'>Not enough bullets. reduce the casings stack or add more bullets.</span>"
+		else if (W.amount >= amount)
+			bulletn = amount
+			W.amount -= amount
+			if (W.amount <= 0)
+				qdel(W)
+	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
+		var/list/listing = list("Cancel")
+		if (istype(src, /obj/item/stack/ammopart/casing/pistol))
+			if (map.ordinal_age >= 4)
+				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+			else if (map.ordinal_age >= 5)
+				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+		if (input == "Cancel")
+			return
+		else if (input == ".45 Colt")
+			resultpath = /obj/item/ammo_casing/a45
+		else if (input == ".44-40 Winchester")
+			resultpath = /obj/item/ammo_casing/a44
+		if (resultpath != null)
+			new resultpath(user.loc)
+			for(var/i=1;i<=amount;i++)
+				new resultpath(user.loc)
+			qdel(src)
+			return
+
+		else
+			return
+
+/obj/item/stack/ammopart/casing/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		var/list/listing = list("Cancel")
+		if (map.ordinal_age >= 4)
+			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+		else if (map.ordinal_age >= 5)
+			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+		if (input == "Cancel")
+			return
+		else if (input == ".45 Colt")
+			resultpath = /obj/item/ammo_casing/a45
+		else if (input == ".44-40 Winchester")
+			resultpath = /obj/item/ammo_casing/a44
+		if (resultpath != null)
+			for(var/i=1;i<=amount;i++)
+				new resultpath(user.loc)
+			qdel(src)
+			return
+		else
+			return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
+		return
 
 /obj/item/stack/ammopart/attack_self(mob/user)
+	if (istype(src, /obj/item/stack/ammopart/bullet) || istype(src, /obj/item/stack/ammopart/casing/pistol) || istype(src, /obj/item/stack/ammopart/casing/rifle))
+		return
 	if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
 		if (!user.l_hand.reagents.has_reagent("gunpowder",1))
 			user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
