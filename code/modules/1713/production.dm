@@ -437,11 +437,11 @@
 				if (!isemptylist(base) && !isemptylist(copy))
 					visible_message("The printing press finishes copying.")
 					icon_state = "printingpress0"
-					for(var/obj/item/weapon/C in copy)
-						C.loc = get_turf(src)
-						copy -= C
-						if (istype(C, /obj/item/weapon/book))
-							var/obj/item/weapon/book/NC = C
+					for(var/obj/item/weapon/B in base)
+						B.loc = get_turf(src)
+						base -= B
+						if (istype(B, /obj/item/weapon/book))
+							var/obj/item/weapon/book/NC = B
 							var/obj/item/weapon/book/NB = new/obj/item/weapon/book(src.loc)
 							NB.dat = NC.dat
 							NB.due_date = NC.due_date
@@ -449,8 +449,8 @@
 							NB.unique = NC.unique
 							NB.title = NC.title
 
-						else if (istype(C, /obj/item/weapon/paper))
-							var/obj/item/weapon/paper/NC = C
+						else if (istype(B, /obj/item/weapon/paper))
+							var/obj/item/weapon/paper/NC = B
 							var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(src.loc)
 							NP.info = NC.info
 							NP.info_links = NC.info_links
@@ -458,11 +458,11 @@
 							NP.free_space = NC.free_space
 							NP.rigged = NC.rigged
 							NP.spam_flag = NC.spam_flag
-
-					for(var/obj/item/weapon/B in base)
-						B.loc = get_turf(src)
-						base -= B
+					for(var/obj/item/weapon/C in copy)
+						copy -= C
+						qdel(C)
 					copying = FALSE
+
 					return
 			else
 				icon_state = "printingpress0"
