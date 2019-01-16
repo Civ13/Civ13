@@ -1,6 +1,6 @@
 /obj/item/weapon/gun/projectile/shotgun
 	gun_type = GUN_TYPE_SHOTGUN
-	fire_sound = 'sound/weapons/guns/fire/shotgunp_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
 
 	// 15% more accurate than SMGs
 	accuracy_list = list(

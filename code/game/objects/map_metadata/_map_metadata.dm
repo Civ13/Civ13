@@ -115,7 +115,8 @@ var/civmax_research = list(85,89,67)
 	var/age3_top = 85
 	var/age4_lim = 315
 	var/age4_done = 0
-	var/age4_timer = 44000
+//	var/age4_timer = 44000
+	var/age4_timer = 9999999
 	var/age4_top = 120
 	var/age5_lim = 360
 	var/age5_done = 0
@@ -183,8 +184,6 @@ var/civmax_research = list(85,89,67)
 					map.custom_civs[key][1] = default_research
 					map.custom_civs[key][2] = default_research
 					map.custom_civs[key][3] = default_research
-					map.custom_civs[key][4] = default_research
-					map.custom_civs[key][5] = default_research
 			autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
