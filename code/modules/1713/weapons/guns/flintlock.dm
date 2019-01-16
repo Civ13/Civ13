@@ -15,7 +15,7 @@
 	caliber = "musketball"
 	recoil = 3 //extra kickback
 	//fire_sound = 'sound/weapons/sniper.ogg'
-	handle_casings = HOLD_CASINGS
+	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/musketball
 //	magazine_type = /obj/item/ammo_magazine/musketball
@@ -306,7 +306,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
 	gun_type = GUN_TYPE_SHOTGUN
-	fire_sound = 'sound/weapons/guns/fire/shotgunp_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
 
 	// 15% more accurate than SMGs
 	accuracy_list = list(

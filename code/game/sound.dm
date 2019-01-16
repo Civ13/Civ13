@@ -47,6 +47,7 @@ var/list/page_sound = list('sound/effects/pageturn1.ogg', 'sound/effects/pagetur
 var/list/miss_sound = list ('sound/weapons/guns/misc/miss.ogg','sound/weapons/guns/misc/miss2.ogg','sound/weapons/guns/misc/miss3.ogg','sound/weapons/guns/misc/miss4.ogg')
 var/list/ric_sound = list ('sound/weapons/guns/misc/ric1.ogg','sound/weapons/guns/misc/ric2.ogg','sound/weapons/guns/misc/ric3.ogg','sound/weapons/guns/misc/ric4.ogg','sound/weapons/guns/misc/ric5.ogg')
 var/list/bullet_hit_object_sound = list('sound/weapons/guns/misc/bullethit.ogg')
+var/list/casing_sound = list ('sound/weapons/guns/misc/casingfall1.ogg','sound/weapons/guns/misc/casingfall2.ogg','sound/weapons/guns/misc/casingfall3.ogg')
 var/list/trauma_sound = list('sound/effects/gore/trauma1.ogg', 'sound/effects/gore/trauma2.ogg', 'sound/effects/gore/trauma3.ogg')
 var/list/platingfootsteps = list('sound/effects/footsteps/plating/plating1.ogg','sound/effects/footsteps/plating/plating2.ogg','sound/effects/footsteps/plating/plating3.ogg','sound/effects/footsteps/plating/plating4.ogg')
 var/list/erikafootsteps = list('sound/effects/footsteps/tile1.ogg','sound/effects/footsteps/tile2.ogg','sound/effects/footsteps/tile3.ogg','sound/effects/footsteps/tile4.ogg')

@@ -343,7 +343,7 @@
 	var/sound = 'sound/effects/sink.ogg'
 	var/dry = FALSE
 	var/mosquito_count = 0
-	var/mosquito_limit = 3
+	var/mosquito_limit = 2
 	var/volume = 2000
 	var/max_volume = 2000
 

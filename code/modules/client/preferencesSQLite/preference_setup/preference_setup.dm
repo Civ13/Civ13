@@ -8,24 +8,7 @@
 	name = "Character"
 	sort_order = 1
 	category_item_type = /datum/category_item/player_setup_item/general
-/*
-/datum/category_group/player_setup_category/occupation_preferences
-	name = "Occupation"
-	sort_order = 3
-	category_item_type = /datum/category_item/player_setup_item/occupation
-*/
-/*
-/datum/category_group/player_setup_category/appearance_preferences
-	name = "Roles"
-	sort_order = 4
-	category_item_type = /datum/category_item/player_setup_item/antagonism
-*/
-/*
-/datum/category_group/player_setup_category/loadout_preferences
-	name = "Loadout"
-	sort_order = 5
-	category_item_type = /datum/category_item/player_setup_item/loadout
-*/
+
 /datum/category_group/player_setup_category/global_preferences
 	name = "Global"
 	sort_order = 2
@@ -158,12 +141,7 @@
 			. += "</td><td></td><td style='width:50%'>"
 		. += "[PI.content(user)]<br>"
 	. += "</td></tr></table>"
-/*
-	if (istype(src, /datum/category_group/player_setup_category/general_preferences_german))
-		user.client.prefs.current_character_type = BRITISH
-	else if (istype(src, /datum/category_group/player_setup_category/general_preferences_pirate))
-		user.client.prefs.current_character_type = PIRATES
-*/
+
 /datum/category_group/player_setup_category/occupation_preferences/content(var/mob/user)
 	for (var/datum/category_item/player_setup_item/PI in items)
 		. += "[PI.content(user)]<br>"
@@ -242,20 +220,13 @@
 	for (var/varname in pref.vars)
 		pref_initial_vars[varname] = initial(pref.vars[varname])
 
-//	for (var/x in pref_initial_vars)
-//		world << "1. [x] = [pref_initial_vars[x]]"
-
 	. = OnTopic(href, href_list, usr)
 	if (. == TOPIC_REFRESH)
 		pref_mob.client.prefs.ShowChoices(usr)
 
 	update_setup()
 
-/*
-	if (istype(src, /datum/category_item/player_setup_item/player_global))
-		pref.saveGlobalPreferences()
-	else
-	//	world << "test #1"
+	if (istype(src, /datum/category_item/player_setup_item/general))
 
 		for (var/varname in pref_initial_vars)
 			var/variable = pref.vars[varname]
@@ -265,8 +236,9 @@
 				pref.remember_preference(varname, variable)
 			else if (pref_initial_vars[varname] == variable) // variable set back to default!
 				pref.forget_preference(varname)
-			//	world << "test #2: [varname] = [pref.vars[varname]]"
-*/
+
+		pref.save_preferences()
+
 /datum/category_item/player_setup_item/CanUseTopic(var/mob/user)
 	return TRUE
 

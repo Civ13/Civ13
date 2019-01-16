@@ -57,18 +57,28 @@
 		updateinfolinks()
 
 	paper_list += src
+	if (map.ordinal_age <= 1)
+		name = "papyrus"
+		icon_state = "scrollpaper"
+		desc = "A blank parchement scroll."
 
 /obj/item/weapon/paper/Destroy()
 	paper_list -= src
 	..()
 
 /obj/item/weapon/paper/update_icon()
-	if (icon_state == "paper_talisman")
-		return
-	if (info)
-		icon_state = "paper_words"
-		return
-	icon_state = "paper"
+	if (map.ordinal_age <= 1)
+		if (info)
+			icon_state = "scrollpaper1"
+		else
+			icon_state = "scrollpaper0"
+	else
+		if (icon_state == "paper_talisman")
+			return
+		if (info)
+			icon_state = "paper_words"
+			return
+		icon_state = "paper"
 
 /obj/item/weapon/paper/proc/update_space(var/new_text)
 	if (!new_text)
@@ -117,7 +127,13 @@
 		//crumple dat paper
 		info = stars(info,85)
 		user.visible_message("\The [user] crumples \the [src] into a ball!")
-		icon_state = "scrap"
+		if (map.ordinal_age <= 1)
+			if (info)
+				icon_state = "scrollpaper1_scrap"
+			else
+				icon_state = "scrollpaper0_scrap"
+		else
+			icon_state = "scrap"
 		return
 	user.examinate(src)
 	return

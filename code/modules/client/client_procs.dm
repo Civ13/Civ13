@@ -64,7 +64,7 @@
 				spawn(1)
 					var/full_banlist = null
 					full_banlist = file2text("SQL/bans.txt")
-					var/list/full_list_split = splittext(full_banlist, "|||")
+					var/list/full_list_split = splittext(full_banlist, "|||\n")
 					for(var/i=1;i<full_list_split.len;i++)
 						var/list/full_list_split_two = splittext(full_list_split[i], ";")
 						if (full_list_split_two[6] == UID) //if the ban expiration hasn't been reached yet
@@ -209,17 +209,7 @@
 		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
 		if (directory[ckey])
 			A.associate(directory[ckey])
-/*		var/islisted = FALSE
-		var/F = file("SQL/admins.txt")
-		var/list/admincheck = splittext(file2text(F),"|||")
-		if (islist(admincheck) && !isemptylist(admincheck))
-			for(var/i=1;i<admincheck.len;i++)
-				var/list/admincheck_two = splittext(admincheck[i], ";")
-				if (admincheck_two[2] == ckey)
-					islisted = TRUE
-		if (!islisted)
-			text2file("99;[ckey];[holder.rank];[holder.rights]|||","SQL/admins.txt")
-*/
+
 	/* let us profile if we're hosting on our computer OR if we have host perms */
 	if (world.host == key || (holder && (holder.rights & R_HOST)))
 		control_freak = 0

@@ -66,6 +66,7 @@
 	icon_state = "customceltic"
 	item_state = "customceltic"
 	worn_state = "customceltic"
+
 ///////////////MEDIEVAL//////////////////////////////////////
 /obj/item/clothing/under/custom/tunic
 	name = "tunic"

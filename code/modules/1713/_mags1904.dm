@@ -130,19 +130,32 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
 	max_ammo = 18
-	weight = 0.4
+	weight = 0.70
+
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c45
 	name = "pouch of bullets (.45 Colt)"
-	desc = "a pouch of 11.43×33mmR bullets."
+	desc = "a pouch of 11.43Ã—33mmR bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a45
 	caliber = "a45"
 	max_ammo = 24
-	weight = 0.4
+	weight = 0.9
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
+/obj/item/ammo_magazine/c44
+	name = "pouch of bullets (.44-40 Winchester)"
+	desc = "a pouch of .44-40 bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a44
+	caliber = "a44"
+	max_ammo = 30
+	weight = 1.1
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
 	pouch = TRUE

@@ -16,7 +16,7 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Officer Ban", "Server Ban",
 		var/ip = href_list["quickBan_removeBan_ip"]
 
 		var/full_banlist = file2text("SQL/bans.txt")
-		var/list/full_list_split = splittext(full_banlist, "|||")
+		var/list/full_list_split = splittext(full_banlist, "|||\n")
 		for(var/i=1;i<full_list_split.len;i++)
 			var/list/full_list_split_two = splittext(full_list_split[i], ";")
 			if (full_list_split_two[1] == "[ckey]" || full_list_split_two[2] == "[cID]" || full_list_split_two[3] == "[ip]" || full_list_split_two[6] == "[UID]")
@@ -32,7 +32,7 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Officer Ban", "Server Ban",
 			full_banlist = null
 			full_banlist = file2text("SQL/bans.txt")
 			full_list_split = list()
-			full_list_split = splittext(full_banlist, "|||")
+			full_list_split = splittext(full_banlist, "|||\n")
 			for(var/i=1;i<full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasn't been reached yet
@@ -56,7 +56,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (!quickBan_handler)
 		quickBan_handler = new
 	var/full_banlist = file2text("SQL/bans.txt")
-	var/list/full_list_split = splittext(full_banlist, "|||")
+	var/list/full_list_split = splittext(full_banlist, "|||\n")
 	world << "[full_list_split.len]"
 	var/list/result = list()
 
@@ -377,7 +377,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/list/bans = list()
 	var/
 	var/full_banlist = file2text("SQL/bans.txt")
-	var/list/full_list_split = splittext(full_banlist, "|||")
+	var/list/full_list_split = splittext(full_banlist, "|||\n")
 	for(var/i=1;i<full_list_split.len;i++)
 		var/list/full_list_split_two = splittext(full_list_split[i], ";")
 		if (text2num(full_list_split_two[10]) < text2num(num2text(world.realtime,20)))
@@ -423,7 +423,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	// check to see if we're trying to ban an admin by ckey
 	var/F = file("SQL/admins.txt")
 	if (fexists(F))
-		var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||")
+		var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||\n")
 		if (islist(admincheck) && !isemptylist(admincheck))
 			for(var/i=1;i<admincheck.len;i++)
 				var/list/admincheck_two = splittext(admincheck[i], ";")
@@ -440,7 +440,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 		fdel(F)
 	spawn(1)
 		var/full_banlist = file2text("SQL/bans.txt")
-		var/list/full_list_split = splittext(full_banlist, "|||")
+		var/list/full_list_split = splittext(full_banlist, "|||\n")
 		for(var/i=1;i<full_list_split.len;i++)
 			var/list/full_list_split_two = splittext(full_list_split[i], ";")
 			if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasn't been reached yet

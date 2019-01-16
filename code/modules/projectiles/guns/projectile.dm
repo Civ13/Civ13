@@ -132,6 +132,9 @@
 			if (!src_area.lift_master())
 				chambered.loc = get_turf(src)
 			#endif
+      
+			playsound(loc, casing_sound, 50, TRUE)
+
 		if (CYCLE_CASINGS) //cycle the casing back to the end.
 			if (ammo_magazine)
 				ammo_magazine.stored_ammo += chambered

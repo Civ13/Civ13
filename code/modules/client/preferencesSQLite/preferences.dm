@@ -97,7 +97,7 @@ var/list/preferences_datums = list()
 
 		spawn (1)
 //			loadGlobalPreferences()
-			loadGlobalSettings()
+//			loadGlobalSettings()
 			ready = TRUE
 
 /datum/preferences/Del()
@@ -211,11 +211,12 @@ var/list/preferences_datums = list()
 	if (islist(str))
 		return ""
 	return str
-
+/*
+//////////////Included in charprefs////////////////////////
 // global preferences handling
 /datum/preferences/proc/loadGlobalPreferences()
 	var/F = file("SQL/globalpreferences.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/list/tables = list()
 	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = splittext(globalprefs[i], ";")
@@ -241,7 +242,7 @@ var/list/preferences_datums = list()
 //	prefstring += "UI_useborder=[globalprefsanitize(UI_useborder)]&"
 	prefstring += "lobby_music_volume=[globalprefsanitize(lobby_music_volume)]"
 	var/F = file("SQL/globalpreferences.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/done1 = FALSE
 	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = splittext(globalprefs[i], ";")
@@ -256,13 +257,14 @@ var/list/preferences_datums = list()
 		for (var/i=1;i<globalprefs.len;i++)
 			sum2 += "[globalprefs[i]]|||"
 		text2file("[sum2]", F)
+
 // global settings handling
 /datum/preferences/proc/loadGlobalSettings()
 	if (!client)
 		return
 
 	var/F = file("SQL/globalsettings.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/list/tables = list()
 	var/list/tables2 = list()
 	for (var/i=1;i<globalprefs.len;i++)
@@ -297,7 +299,7 @@ var/list/preferences_datums = list()
 		if (v != preferences_disabled.len)
 			prefstring2 += "&"
 	var/F = file("SQL/globalsettings.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||")
+	var/list/globalprefs = splittext(file2text(F), "|||\n")
 	var/done1 = FALSE
 	for (var/i=1;i<globalprefs.len;i++)
 		var/list/globalprefs2 = splittext(globalprefs[i], ";")
@@ -312,8 +314,8 @@ var/list/preferences_datums = list()
 		for (var/i=1;i<globalprefs.len;i++)
 			sum2 += "[globalprefs[i]]|||"
 		text2file("[sum2]", F)
-
-
+////////////////////////////////////////////////////////////
+*/
 /client/proc/is_preference_enabled(var/preference)
 
 	if (ispath(preference))
@@ -350,7 +352,7 @@ var/list/preferences_datums = list()
 		if (C.ckey == prefs.client_ckey)
 			C.onload_preferences(preference)
 
-	prefs.saveGlobalSettings()
+	prefs.save_preferences()
 
 /mob/proc/is_preference_enabled(var/preference)
 	if (!client)

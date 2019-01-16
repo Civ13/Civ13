@@ -36,6 +36,15 @@
 	age3_lim = 240
 	age3_done = 0
 	age3_timer = 42000
+	age3_top = 85
+	age4_lim = 315
+	age4_done = 0
+	age4_timer = 42000
+	age4_top = 120
+	age5_lim = 360
+	age5_done = 0
+	age5_timer = 42000
+	age5_top = 140
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
 	var/real_season = "wet"
@@ -83,42 +92,6 @@
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_desert/tick()
-	..()
-	if (age1_done == FALSE)
-		var/count = 0
-		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-			if (count > age1_lim && world.time > 36000)
-				world << "<big>The world has advanced into the Bronze Age!</big>"
-				age = "313 B.C."
-				set_ordinal_age()
-				age1_done = TRUE
-				age2_timer = (world.time + age2_timer)
-				break
-
-	else if (age2_done == FALSE)
-		var/count = 0
-		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-			if (count > age2_lim && world.time >= age2_timer)
-				world << "<big>The world has advanced into the Medieval Age!</big>"
-				age = "1013"
-				set_ordinal_age()
-				age2_done = TRUE
-				age3_timer = (world.time + age3_timer)
-				break
-
-	else if (age3_done == FALSE)
-		var/count = 0
-		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-			if (count > age3_lim && world.time >= age3_timer)
-				world << "<big>The world has advanced into the Imperial Age!</big>"
-				age = "1713"
-				set_ordinal_age()
-				age3_done = TRUE
-				break
 
 /obj/map_metadata/nomads_desert/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)

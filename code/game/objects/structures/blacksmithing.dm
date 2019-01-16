@@ -58,15 +58,42 @@ obj/structure/anvil/New()
 		return
 
 	else if (steel_amt > 0)
+		var/list/display = list("Swords", "Cancel")
+		if (map.ordinal_age >= 4)
+			display = list("Swords","Guns", "Cancel")
+		else
+			display = list("Swords", "Cancel")
+		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display)
 		var/list/display2 = list("Cancel")
-		if (map.ordinal_age >= 3)
-			display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Cancel")
-		else if (map.ordinal_age <= 2)
-			display2 = list("Small Sword (10)", "Spadroon (15)", "Cancel")
-
+		if (choice == "Cancel")
+			return
+		else if (choice == "Swords")
+			if (map.ordinal_age >= 3)
+				display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Cancel")
+			else if (map.ordinal_age <= 2)
+				display2 = list("Small Sword (10)", "Spadroon (15)", "Cancel")
+		else if (choice == "Guns")
+			if (map.ordinal_age >= 4)
+				display2 = list("Colt Peacemaker Revolver (25)", "Cancel")
+			else
+				display2 = list("Cancel")
 		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
 		if (choice2 == "Cancel")
 			return
+		if (choice2 == "Colt Peacemaker Revolver (25)")
+			if (steel_amt >= 25)
+				user << "You begin crafting a Colt Peacemaker..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,220,src) && steel_amt >= 25)
+					user << "You craft a Colt Peacemaker."
+					steel_amt -= 25
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/revolver/peacemaker(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
 		if (choice2 == "Small Sword (10)")
 			if (steel_amt >= 10)
 				user << "You begin crafting a small sword..."

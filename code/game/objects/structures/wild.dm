@@ -96,6 +96,17 @@
 	amount = 5
 	layer = 5.11
 
+
+/obj/structure/wild/tree/cactus
+	name = "cactus"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	icon_state = "cactus"
+	opacity = TRUE
+	density = TRUE
+	sways = TRUE
+	amount = 0
+	layer = 5.11
+
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
 	icon = 'icons/obj/flora/deadtrees.dmi'

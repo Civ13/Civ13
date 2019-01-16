@@ -16,9 +16,9 @@
 		return
 	if (istype(O, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/RG = O
-		if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE) && !(istype(src, /obj/structure/sink/puddle)))
+		if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
 			if (counter > 0)
-				RG.reagents.add_reagent("petroleum", 10)
+				RG.reagents.add_reagent("petroleum", min(RG.volume - RG.reagents.total_volume, 10))
 				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
 				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 				user.setClickCooldown(20)

@@ -77,6 +77,30 @@
 	amount = 1
 	layer = 1.99
 
+/obj/covers/saloon_door
+	name = "saloon door"
+	desc = "A wood door."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "saloon"
+	passable = TRUE
+	not_movable = TRUE
+	density = FALSE
+	opacity = FALSE
+	amount = 2
+	layer = 3
+	health = 90
+	wall = FALSE
+	explosion_resistance = 3
+
+
+/obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
+	visible_message("[M] pushes \the [src].","You push \the [src]")
+	icon_state = "saloon_opening"
+	update_icon()
+	spawn(20)
+		icon_state = "saloon"
+		update_icon()
+
 /obj/covers/wood_wall
 	name = "soft wood wall"
 	desc = "A wood wall."

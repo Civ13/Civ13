@@ -102,25 +102,26 @@ var/civmax_research = list(85,89,67)
 	var/autoresearch = FALSE //if autoresearch is active
 	var/autoresearch_mult = 0.4 // the amount research goes up per minute. Can be edited by admins.
 	var/resourceresearch = FALSE
-	var/age1_lim = 110
+	var/age1_lim = 75
 	var/age1_done = 0
 	var/age1_top = 35
-	var/age2_lim = 170
+	var/age2_lim = 150
 	var/age2_done = 0
 	var/age2_timer = 40000
 	var/age2_top = 65
-	var/age3_lim = 300
+	var/age3_lim = 240
 	var/age3_done = 0
 	var/age3_timer = 42000
-	var/age3_top = 95
-	var/age4_top = 120
-	var/age4_lim = 380
+	var/age3_top = 85
+	var/age4_lim = 315
 	var/age4_done = 0
 	var/age4_timer = 44000
-	var/age5_top = 150
-	var/age5_lim = 430
+	var/age4_top = 120
+	var/age5_lim = 360
 	var/age5_done = 0
 	var/age5_timer = 46000
+	var/age5_top = 140
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -221,7 +222,62 @@ var/civmax_research = list(85,89,67)
 
 	update_win_condition()
 	check_events()
+	if (nomads)
+		if (age1_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age1_lim && world.time > 36000)
+					world << "<big>The world has advanced into the Bronze Age!</big>"
+					age = "313 B.C."
+					set_ordinal_age()
+					age1_done = TRUE
+					age2_timer = (world.time + age2_timer)
+					break
 
+		else if (age2_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age2_lim && world.time >= age2_timer)
+					world << "<big>The world has advanced into the Medieval Age!</big>"
+					age = "1013"
+					set_ordinal_age()
+					age2_done = TRUE
+					age3_timer = (world.time + age3_timer)
+					break
+
+		else if (age3_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age3_lim && world.time >= age3_timer)
+					world << "<big>The world has advanced into the Imperial Age!</big>"
+					age = "1713"
+					set_ordinal_age()
+					age3_done = TRUE
+					break
+
+		else if (age4_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age4_lim && world.time >= age4_timer)
+					world << "<big>The world has advanced into the Industrial Age!</big>"
+					age = "1873"
+					set_ordinal_age()
+					age4_done = TRUE
+					break
+		else if (age5_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age5_lim && world.time >= age5_timer)
+					world << "<big>The world has advanced into the Early Modern Age!</big>"
+					age = "1903"
+					set_ordinal_age()
+					age5_done = TRUE
+					break
 /obj/map_metadata/proc/check_events()
 	return TRUE
 

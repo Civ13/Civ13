@@ -1,18 +1,12 @@
 /datum/preferences
-	var/identifying_gender = MALE
 
 /datum/category_item/player_setup_item/general/basic
 	name = "Basic"
 	sort_order = 1
-	var/list/valid_player_genders = list(MALE, FEMALE)
 	var/list/valid_second_languages = list(ENGLISH, FRENCH, SPANISH, PORTUGUESE)
 
-datum/preferences/proc/set_biological_gender(var/set_gender)
-	gender = set_gender
-	identifying_gender = set_gender
-
 /datum/category_item/player_setup_item/general/basic/sanitize_character()
-
+	var/list/valid_player_genders = list(MALE, FEMALE)
 	var/datum/species/S = all_species[pref.species ? pref.species : "Human"]
 	pref.age			= sanitize_integer(pref.age, S.min_age, S.max_age, initial(pref.age))
 	pref.gender 		= sanitize_inlist(pref.gender, valid_player_genders, pick(valid_player_genders))
@@ -70,16 +64,5 @@ datum/preferences/proc/set_biological_gender(var/set_gender)
 	else if (href_list["always_random_name"])
 		pref.be_random_name = !pref.be_random_name
 		return TOPIC_REFRESH
-
-	else if (href_list["gender"])
-		pref.gender = next_in_list(pref.gender, valid_player_genders)
-		return TOPIC_REFRESH
-
-	else if (href_list["age"])
-		var/datum/species/S = all_species[pref.species]
-		var/new_age = input(user, "Choose your character's age:\n([S.min_age]-[S.max_age])", "Character Preference", pref.age) as num|null
-		if (new_age && CanUseTopic(user))
-			pref.age = max(min(round(text2num(new_age)), S.max_age), S.min_age)
-			return TOPIC_REFRESH
 
 	return ..()
