@@ -382,6 +382,12 @@
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 
+	if (recipe.result_type == /obj/item/stack/ammopart/bullet)
+		produced = 3
+	if (recipe.result_type == /obj/item/stack/ammopart/casing/rifle)
+		produced = 3
+	if (recipe.result_type == /obj/item/stack/ammopart/casing/pistol)
+		produced = 3
 	if (recipe.result_type == /obj/item/stack/ammopart/musketball)
 		produced = 2
 	if (recipe.result_type == /obj/item/stack/ammopart/musketball_pistol)
