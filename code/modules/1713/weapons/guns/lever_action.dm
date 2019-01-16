@@ -174,7 +174,7 @@
 */
 /obj/item/weapon/gun/projectile/leveraction/winchester
 	name = "Winchester M1873"
-	desc = "A lever-action shotgun with a 15-round tube, chambered in .44-40 rounds."
+	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
 	force = 9
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
 	caliber = "a44"

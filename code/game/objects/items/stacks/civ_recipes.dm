@@ -1,3 +1,20 @@
+/*
+/////////////////////////////AGES///////////////////////
+0-15 Stone Age (<5000 BC)
+15-20 Copper Age (2-3k BC)
+20-30 Bronze Age (1000 BC)
+30-40 Iron age/Ancient Age (500 BC to 300 AC)
+40-50 Early Medieval Age (500 to 1200)
+50-60 Late Medieval (1400-1500)
+60-80 Renaissance (1500-1600)
+80-90 Imperial Age (1700s)
+90-100 Napoleonic Age (early 1800s)
+100-110 Early Industrial Age (1850-1870)
+110-120 Industrial Age (1870-1900)
+120-130 Early Modern Age (1900-1910)
+///////////////////////////////////////////////////////
+*/
+
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
 	var/list/current_res = list(0,0,0)
 	if (civ == "Nomad")
@@ -150,7 +167,10 @@
 	..()
 	if (map.resourceresearch == TRUE)
 		recipes += new/datum/stack_recipe("research desk",/obj/structure/researchdesk, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
-
+	if (current_res[1] >= 105)
+		recipes += new/datum/stack_recipe("oil well",/obj/structure/oilwell, 40, _time = 270, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 52)
+		recipes += new/datum/stack_recipe("printing press",/obj/structure/printingpress, 12, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("roof support",/obj/structure/roof_support, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("mine support",/obj/structure/mine_support, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("roof builder",/obj/item/weapon/roofbuilder, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -282,6 +302,7 @@
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("campfire",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -306,6 +327,7 @@
 			new/datum/stack_recipe("small mill",/obj/structure/mill, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty, 5, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("violin",/obj/item/violin, 10, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("piano",/obj/structure/piano, 18, _time = 195, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),))
 	if (current_res[1] >= 24 && current_res[2] >= 33)
 		recipes += new/datum/stack_recipe_list("siege weapons", list(
