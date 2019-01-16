@@ -124,12 +124,44 @@
 	build_override_coins_silver.desc = "Some coins."
 	var/obj/item/stack/money/goldcoin/build_override_coins_gold = new/obj/item/stack/money/goldcoin
 	build_override_coins_gold.desc = "Some coins."
+	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = new/obj/item/weapon/gun/projectile/ancient/firelance
+	build_override_firelance.desc = "A simple firelance."
 	var/mob/living/carbon/human/H = user
-
 	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle") || findtext(recipe.title, "drinking glass") || findtext(recipe.title, "teapot") || findtext(recipe.title, "teacup") || findtext(recipe.title, "wine glass") || findtext(recipe.title, "black leather shoes") || findtext(recipe.title, "black leather boots") || findtext(recipe.title, "leather boots"))
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
+		if (H.getStatCoeff("crafting") < 1.1)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
+		if (H.getStatCoeff("crafting") < 1.55)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	if (findtext(recipe.title, "fire lance"))
+		if (H.getStatCoeff("crafting") < 1.25)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	if (findtext(recipe.title, "hand cannon"))
+		if (H.getStatCoeff("crafting") < 1.35)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	if (findtext(recipe.title, "fire lance"))
+		if (!istype(H.l_hand, /obj/item/weapon/material/spear) && !istype(H.r_hand, /obj/item/weapon/material/spear))
+			user << "<span class = 'warning'>You need to have a spear in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/weapon/material/spear))
+				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
+				build_override_firelance.force = round(H.l_hand.force*0.9)
+				build_override_firelance.throwforce = round(H.l_hand.throwforce*0.65)
+				qdel(H.l_hand)
+			else if (istype(H.r_hand, /obj/item/weapon/material/spear))
+				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
+				build_override_firelance.force = round(H.r_hand.force*0.9)
+				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
+				qdel(H.r_hand)
 	if (!findtext(recipe.title, "wood spear"))
 		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe"))
 			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -247,6 +279,18 @@
 
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
+		if (H.getStatCoeff("crafting") < 1.55)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	if (findtext(recipe.title, "fire lance"))
+		if (H.getStatCoeff("crafting") < 1.25)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+	if (findtext(recipe.title, "hand cannon"))
+		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
 	if (findtext(recipe.title, "well"))
@@ -381,7 +425,8 @@
 
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
-
+	if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
+		produced = 2
 	if (recipe.result_type == /obj/item/stack/ammopart/bullet)
 		produced = 3
 	if (recipe.result_type == /obj/item/stack/ammopart/casing/rifle)
@@ -411,7 +456,12 @@
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
-
+		if (build_override_firelance.desc != "A simple firelance.")
+			build_override_firelance.loc = get_turf(O)
+			build_override_firelance.set_dir(user.dir)
+			build_override_firelance.add_fingerprint(user)
+			qdel(O)
+			return
 		if (build_override_key.code != -1)
 			build_override_key.loc = get_turf(O)
 			build_override_key.set_dir(user.dir)

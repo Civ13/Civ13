@@ -8,6 +8,15 @@
 	caliber = "musketball"
 	value = 3
 
+/obj/item/ammo_casing/stoneball
+	name = "stone ball projectile"
+	icon_state = "stoneball"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/bullet/rifle/stoneball
+	weight = 0.03
+	caliber = "stoneball"
+	value = 3
+
 /obj/item/ammo_casing/musketball_pistol
 	name = "pistol cartridge"
 	projectile_type = /obj/item/projectile/bullet/rifle/musketball_pistol
@@ -45,6 +54,19 @@
 	max_amount = 20
 	singular_name = "projectile"
 	value = 0
+
+/obj/item/stack/ammopart/stoneball
+	name = "stone projectile"
+	desc = "A round stone ball, to be used in handcannons, arquebuses and matchlock muskets."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "stoneball"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_WEAK
+	resultpath = null
+	value = 1
+	weight = 0.15
+	max_amount = 5
+
 /obj/item/stack/ammopart/musketball
 	name = "musketball projectiles"
 	desc = "A round musketball, to be used in flintlock muskets."

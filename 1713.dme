@@ -420,6 +420,7 @@
 #include "code\modules\1713\weapons\zoom.dm"
 #include "code\modules\1713\weapons\guns\__readme.dm"
 #include "code\modules\1713\weapons\guns\_gun.dm"
+#include "code\modules\1713\weapons\guns\ancientguns.dm"
 #include "code\modules\1713\weapons\guns\bolt-action.dm"
 #include "code\modules\1713\weapons\guns\bow.dm"
 #include "code\modules\1713\weapons\guns\flintlock.dm"

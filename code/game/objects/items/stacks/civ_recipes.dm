@@ -171,6 +171,25 @@
 			new/datum/stack_recipe("bone setter",/obj/item/weapon/surgery/bonesetter, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("scalpel", /obj/item/weapon/surgery/scalpel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
 
+	if (current_res[2] >= 70)
+		recipes += new/datum/stack_recipe_list("firearms", list(
+			new/datum/stack_recipe("fire lance", /obj/item/weapon/gun/projectile/ancient/firelance, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("hand cannon", /obj/item/weapon/gun/projectile/ancient/handcannon, 14, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("arquebus", /obj/item/weapon/gun/projectile/ancient/arquebus, 15, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("matchlock musket", /obj/item/weapon/gun/projectile/ancient/matchlock, 18, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[2] >= 62 && current_res[2] < 70)
+		recipes += new/datum/stack_recipe_list("firearms", list(
+			new/datum/stack_recipe("fire lance", /obj/item/weapon/gun/projectile/ancient/firelance, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("hand cannon", /obj/item/weapon/gun/projectile/ancient/handcannon, 14, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("arquebus", /obj/item/weapon/gun/projectile/ancient/arquebus, 15, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[2] >= 56 && current_res[2] < 62)
+		recipes += new/datum/stack_recipe_list("firearms", list(
+			new/datum/stack_recipe("fire lance", /obj/item/weapon/gun/projectile/ancient/firelance, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("hand cannon", /obj/item/weapon/gun/projectile/ancient/handcannon, 14, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[2] >= 49 && current_res[2] < 56)
+		recipes += new/datum/stack_recipe_list("firearms", list(
+			new/datum/stack_recipe("fire lance", /obj/item/weapon/gun/projectile/ancient/firelance, 6, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 /material/wood/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (map.resourceresearch == TRUE)
@@ -386,6 +405,8 @@
 		recipes += new/datum/stack_recipe("well", /obj/structure/sink/well, 7, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 24 && current_res[2] >= 33)
 		recipes += new/datum/stack_recipe("catapult projectile", /obj/item/catapult_ball, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[1] >= 48)
+		recipes += new/datum/stack_recipe("stone projectile (x2)", /obj/item/stack/ammopart/stoneball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (current_res[1] >= 29)
 		recipes += new/datum/stack_recipe_list("fortifications", list(

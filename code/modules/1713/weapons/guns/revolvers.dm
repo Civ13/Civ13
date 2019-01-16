@@ -70,7 +70,10 @@
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
-
+/obj/item/weapon/gun/projectile/revolver/New()
+	..()
+	loaded = list()
+	chambered = null
 /obj/item/weapon/gun/projectile/revolver/verb/spin_cylinder()
 	set name = "Spin cylinder"
 	set desc = "Fun when you're bored out of your skull."

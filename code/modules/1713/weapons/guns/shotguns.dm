@@ -52,7 +52,10 @@
 	accuracy_decrease_mod = 1.00
 	KD_chance = KD_CHANCE_HIGH
 	stat = "heavy"
-
+/obj/item/weapon/gun/projectile/shotgun/New()
+	..()
+	loaded = list()
+	chambered = null
 /obj/item/weapon/gun/projectile/shotgun/pump
 	name = "shotgun"
 	desc = "Useful for sweeping alleys."

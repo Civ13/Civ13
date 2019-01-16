@@ -1,4 +1,8 @@
-
+//ancient stuff
+/obj/item/projectile/bullet/rifle/stoneball
+	damage = DAMAGE_HIGH + 8
+	penetrating = 1
+	armor_penetration = 30
 // XVIII Century stuff
 /obj/item/projectile/bullet/rifle/musketball
 	damage = DAMAGE_HIGH + 4
