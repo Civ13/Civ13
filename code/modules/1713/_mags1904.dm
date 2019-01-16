@@ -117,7 +117,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	name = "pouch of bullets (7.62x38mmR)"
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a762x38
-	caliber = "a762x38mmR"
+	caliber = "a762x38"
 	max_ammo = 21
 	weight = 0.4
 	multiple_sprites = TRUE
@@ -129,15 +129,16 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
-	max_ammo = 21
-	weight = 0.75
+	max_ammo = 18
+	weight = 0.70
+
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c45
 	name = "pouch of bullets (.45 Colt)"
-	desc = "a pouch of 11.43×33mmR bullets."
+	desc = "a pouch of 11.43Ã—33mmR bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a45
 	caliber = "a45"
@@ -159,12 +160,37 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+
 /obj/item/ammo_magazine/murata
-	name = "Clip (11x60mm)"
+	name = "Clip (8x53mm)"
 	icon_state = "kclip"
-	caliber = "a11x60mm"
+	caliber = "a8x53mm"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
-	ammo_type = /obj/item/ammo_casing/a11x60mm
+	ammo_type = /obj/item/ammo_casing/a8x53mm
 	max_ammo = 5
 	weight = 0.038
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/c44
+	name = "pouch of bullets (.44)"
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a44
+	caliber = "44"
+	max_ammo = 18
+	weight = 0.4
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	desc = "A pouch containing 18 .44 pistol rounds."
+
+/obj/item/ammo_magazine/shellbox
+	name = "shotgun shell box (.12 guage)"
+	icon_state = "shellbox"
+//	origin_tech = "combat=2"
+	mag_type = MAGAZINE
+	caliber = "12guage"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/shotgun
+	max_ammo = 12
+	multiple_sprites = FALSE
+	is_box = TRUE

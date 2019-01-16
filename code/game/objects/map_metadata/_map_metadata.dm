@@ -115,12 +115,13 @@ var/civmax_research = list(85,89,67)
 	var/age3_top = 85
 	var/age4_lim = 315
 	var/age4_done = 0
-	var/age4_timer = 42000
+	var/age4_timer = 44000
 	var/age4_top = 120
 	var/age5_lim = 360
 	var/age5_done = 0
-	var/age5_timer = 42000
+	var/age5_timer = 46000
 	var/age5_top = 140
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -182,6 +183,8 @@ var/civmax_research = list(85,89,67)
 					map.custom_civs[key][1] = default_research
 					map.custom_civs[key][2] = default_research
 					map.custom_civs[key][3] = default_research
+					map.custom_civs[key][4] = default_research
+					map.custom_civs[key][5] = default_research
 			autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
@@ -436,7 +439,9 @@ var/civmax_research = list(85,89,67)
 		DUTCH = 0,
 		ROMAN = 0,
 		GREEK = 0,
-		ARAB = 0,)
+		ARAB = 0,
+		JAPANESE = 0,
+		RUSSIAN = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -534,6 +539,10 @@ var/civmax_research = list(85,89,67)
 			return "Greek"
 		if (ARAB)
 			return "Arab"
+		if (JAPANESE)
+			return "Japanese"
+		if (RUSSIAN)
+			return "Russian"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -558,6 +567,10 @@ var/civmax_research = list(85,89,67)
 			return "Greek States"
 		if (ARAB)
 			return "Arabic Caliphate"
+		if (JAPANESE)
+			return "Japanese Empire"
+		if (RUSSIAN)
+			return "Russian Empire"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -582,6 +595,10 @@ var/civmax_research = list(85,89,67)
 			return "Greek"
 		if ("Arabic Caliphate")
 			return "Arab"
+		if ("Japanese Empire")
+			return "Japanese"
+		if ("Russian Empire")
+			return "Russian"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

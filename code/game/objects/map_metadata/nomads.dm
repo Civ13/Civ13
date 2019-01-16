@@ -26,25 +26,6 @@
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
 	research_active = TRUE
-	age1_lim = 75
-	age1_done = 0
-	age1_top = 35
-	age2_lim = 150
-	age2_done = 0
-	age2_timer = 40000
-	age2_top = 65
-	age3_lim = 240
-	age3_done = 0
-	age3_timer = 42000
-	age3_top = 85
-	age4_lim = 315
-	age4_done = 0
-	age4_timer = 42000
-	age4_top = 120
-	age5_lim = 360
-	age5_done = 0
-	age5_timer = 42000
-	age5_top = 140
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
 /obj/map_metadata/nomads/New()

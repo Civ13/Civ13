@@ -122,14 +122,14 @@
 	caliber = "a65x50mm"
 	value = 5
 
-/obj/item/ammo_casing/a11x60mm
-	name = "11x60mm ammo casing"
+/obj/item/ammo_casing/a8x53mm
+	name = "8x53mm ammo casing"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/rifle/a11x60mm
-	caliber = "a11x60mm"
+	projectile_type = /obj/item/projectile/bullet/rifle/a8x53mm
+	caliber = "a8x53mm"
 	value = 5
 
 /obj/item/ammo_casing/c9mm_jap_revolver
@@ -139,7 +139,7 @@
 	spent_icon = null
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
-	caliber = "a11x60mm"
+	caliber = "c9mm_jap_revolver"
 	value = 5
 
 /obj/item/ammo_casing/a45
@@ -169,8 +169,8 @@
 	spent_icon = "clip-casing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
-	caliber = "a762x54mm"
-	value = 5
+	caliber = "a762x54"
+	value = 2
 
 /obj/item/ammo_casing/a762x38
 	name = "7.62x38mmR bullet casing"
@@ -178,8 +178,8 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
-	caliber = "a762x38mmR"
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x38
+	caliber = "a762x38"
 	value = 5
 
 /obj/item/ammo_casing/c8mmnambu
@@ -190,4 +190,24 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c8mmnambu
 	caliber = "c8mmnambu"
-	value = 5
+	value = 2
+
+/obj/item/ammo_casing/a44
+	name = ".44 bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a44
+	caliber = "44"
+	value = 2
+
+/obj/item/ammo_casing/shotgun
+	name = "shotgun shell"
+	desc = "A shotgun shell casing."
+	icon_state = "shell-bullet"
+	spent_icon = "shell-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/shotgun/buckshot
+	caliber = "12gauge"
+	value = 2
