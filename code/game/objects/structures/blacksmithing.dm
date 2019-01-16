@@ -221,8 +221,6 @@ obj/structure/anvil/New()
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 
-		if (choice3 == "Cancel")
-			return
 		if (choice2 == "Small Sword (10)")
 			if (steel_amt >= 10)
 				user << "You begin crafting a small sword..."
