@@ -138,7 +138,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 /obj/item/ammo_magazine/c45
 	name = "pouch of bullets (.45 Colt)"
-	desc = "a pouch of 11.43×33mmR bullets."
+	desc = "a pouch of 11.43xmmR bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a45
 	caliber = "a45"

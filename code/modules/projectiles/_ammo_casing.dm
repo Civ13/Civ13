@@ -178,7 +178,7 @@
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/rifle/a762x38
+	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
 	caliber = "a762x38"
 	value = 5
 

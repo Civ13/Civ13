@@ -71,7 +71,7 @@
 		return
 /obj/item/weapon/material/sword/katana
 	name = "katana"
-	desc = "A sword used by the japanese for cenrturies. Made to slice and slash, not chop or saw."
+	desc = "A sword used by the japanese for centuries. Made to slice and slash, not chop or saw."
 	icon_state = "katana"
 	item_state = "katana"
 	block_chance = 33
