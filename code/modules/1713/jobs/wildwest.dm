@@ -73,8 +73,8 @@
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
-	min_positions = 4
-	max_positions = 30
+	min_positions = 3
+	max_positions = 14
 
 /datum/job/civilian/deputy/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -251,7 +251,7 @@
 	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 3
-	max_positions = 20
+	max_positions = 10
 
 /datum/job/civilian/outlaw/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
