@@ -29,15 +29,15 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 		. = TRUE
 	else
 		. = FALSE
-/obj/map_metadata/fields/faction2_can_cross_blocks()
+/obj/map_metadata/little_creek/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/fields/faction1_can_cross_blocks()
+/obj/map_metadata/little_creek/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/colony/cross_message(faction)
 	return "The grace wall is lifted!"
-/obj/map_metadata/cursed_island/update_win_condition()
+/obj/map_metadata/little_creek/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
 	for(var/obj/structure/carriage/C in world)
