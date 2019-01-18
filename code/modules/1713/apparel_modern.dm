@@ -18,6 +18,27 @@
 	icon_state = "japuni"
 	item_state = "japuni"
 	worn_state = "japuni"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/japuni/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/japuni)
+		return
+	else
+		if (rolled)
+			item_state = "japuni"
+			worn_state = "japuni"
+			item_state_slots["slot_w_uniform"] = "japuni"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "japunirolled"
+			worn_state = "japunirolled"
+			item_state_slots["slot_w_uniform"] = "japunirolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/under/japoffuni
 	name = "Japanese Officer Uniform"
@@ -25,6 +46,28 @@
 	icon_state = "japoffuni"
 	item_state = "japoffuni"
 	worn_state = "japoffuni"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/japoffuni/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/japoffuni)
+		return
+	else
+		if (rolled)
+			item_state = "japoffuni"
+			worn_state = "japoffuni"
+			item_state_slots["slot_w_uniform"] = "japoffuni"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "japoffunirolled"
+			worn_state = "japoffunirolled"
+			item_state_slots["slot_w_uniform"] = "japoffunirolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
 
 /obj/item/clothing/accessory/white_sash
 	name = "White Sash"
@@ -38,6 +81,27 @@
 	icon_state = "rusuni"
 	item_state = "rusuni"
 	worn_state = "rusuni"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/rusuni/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/rusuni)
+		return
+	else
+		if (rolled)
+			item_state = "rusuni"
+			worn_state = "rusuni"
+			item_state_slots["slot_w_uniform"] = "rusuni"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "rusunirolled"
+			worn_state = "rusunirolled"
+			item_state_slots["slot_w_uniform"] = "rusunirolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/suit/storage/armycoat
 	min_cold_protection_temperature = COAT_MIN_COLD_PROTECTION_TEMPERATURE
@@ -110,18 +174,81 @@
 	desc = "A cap worn by japanese soldiers."
 	icon_state = "japcap"
 	item_state = "japcap"
+	var/adjusted = FALSE
+
+/obj/item/clothing/head/japcap/verb/adjust_band()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/japcap)
+		return
+	else
+		if (adjusted)
+			item_state = "japcap"
+			worn_state = "japcap"
+			item_state_slots["slot_head"] = "japcap"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "japcapad"
+			worn_state = "japcapad"
+			item_state_slots["slot_head"] = "japcapad"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/head/japcap2
 	name = "Japanese Cap"
 	desc = "A cap worn by japanese soldiers."
 	icon_state = "japcap2"
 	item_state = "japcap2"
+	var/adjusted = FALSE
+
+/obj/item/clothing/head/japcap2/verb/adjust_band()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/japcap2)
+		return
+	else
+		if (adjusted)
+			item_state = "japcap2"
+			worn_state = "japcap2"
+			item_state_slots["slot_head"] = "japcap2"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "japcap2ad"
+			worn_state = "japcap2ad"
+			item_state_slots["slot_head"] = "japcap2ad"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/head/japoffcap
 	name = "Japanese Officer Cap"
 	desc = "A cap worn by japanese officers."
 	icon_state = "japoffcap"
 	item_state = "japoffcap"
+	var/adjusted = FALSE
+
+/obj/item/clothing/head/japoffcap/verb/adjust_band()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/japoffcap)
+		return
+	else
+		if (adjusted)
+			item_state = "japoffcap"
+			worn_state = "japoffcap"
+			item_state_slots["slot_head"] = "japoffcap"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "japoffcapad"
+			worn_state = "japoffcapad"
+			item_state_slots["slot_head"] = "japoffcapad"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/head/ruscap
 	name = "Russian Cap"
