@@ -20,7 +20,7 @@
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
 	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Nomads</b>"
-	ambience = list('sound/ambience/jungle1.ogg')
+	ambience = list('sound/ambience/desert.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(

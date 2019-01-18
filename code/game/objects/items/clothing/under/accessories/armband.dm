@@ -88,6 +88,19 @@
 	icon_state = "bronze_arm"
 	slot = "decor"
 
+/obj/item/clothing/accessory/armband/sheriff
+	name = "Sheriff Star"
+	desc = "a golden star of the town's Sheriff."
+	icon_state = "sheriff"
+	icon_state = "sheriff"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/deputy
+	name = "deputy armband"
+	desc = "A yellow armband, used to identify the Sheriff's deputies."
+	icon_state = "spanish"
+	slot = "armband"
+
 //customizable
 /obj/item/clothing/accessory/custom
 	var/uncolored = FALSE
@@ -97,6 +110,14 @@
 		..()
 		spawn(5)
 			uncolored = TRUE
+
+/obj/item/clothing/accessory/custom/scarf
+	name = "scarf"
+	desc = "A cloth scarf."
+	icon_state = "customscarf"
+	item_state = "customscarf"
+	worn_state = "customscarf"
+	slot = "decor"
 
 /obj/item/clothing/accessory/custom/armband
 	name = "armband"

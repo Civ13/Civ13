@@ -13,7 +13,7 @@
 	throwforce = 10
 	max_shells = 15
 	slot_flags = SLOT_BACK
-	caliber = "44"
+	caliber = "a44"
 	recoil = 2 //extra kickback
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a44
@@ -31,7 +31,7 @@
 	stat = "rifle"
 	move_delay = 2
 	fire_delay = 2
-	var/blackpowder = FALSE
+	blackpowder = FALSE
 	handle_casings = HOLD_CASINGS
 
 	// 5x as accurate as MGs for now
@@ -80,10 +80,16 @@
 			VERY_LONG_RANGE_MOVING = 32),
 	)
 
-	load_delay = 8 //15 seconds for rifles, 12 seconds for pistols & blunderbuss
+	load_delay = 8
 	aim_miss_chance_divider = 2.50
 
 	var/recentpump = FALSE
+
+/obj/item/weapon/gun/projectile/leveraction/New()
+	..()
+	loaded = list()
+	chambered = null
+
 /obj/item/weapon/gun/projectile/leveraction/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
 		unload_ammo(user, allow_dump=0)
@@ -118,6 +124,9 @@
 		user << "<span class='warning'>You can't fire \the [src] while the chamber is empty!</span>"
 		return FALSE
 */
+	if (!(user.has_empty_hand(both = FALSE)))
+		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		return FALSE
 	return ..()
 
 /obj/item/weapon/gun/projectile/leveraction/consume_next_projectile()
@@ -177,8 +186,8 @@
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
 	force = 9
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
-	icon_state = "winchester1873"
-	caliber = "44"
+	icon_state = "winchester"
+	caliber = "a44"
 	max_shells = 15
 	weight = 5.0
 	effectiveness_mod = 0.96

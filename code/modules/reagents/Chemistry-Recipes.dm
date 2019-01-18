@@ -989,13 +989,6 @@
 	required_reagents = list("blackrussian" = 2, "cream" = 1)
 	result_amount = 3
 
-/datum/chemical_reaction/whiskey_cola
-	name = "Whiskey Cola"
-	id = "whiskeycola"
-	result = "whiskeycola"
-	required_reagents = list("whiskey" = 2, "cola" = 1)
-	result_amount = 3
-
 /datum/chemical_reaction/screwdriver
 	name = "Screwdriver"
 	id = "screwdrivercocktail"

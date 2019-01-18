@@ -198,7 +198,7 @@
 						H.adaptStat("strength", 1)
 						return
 					if (prob(25))
-						if (map.age != "1713")
+						if (map.ordinal_age <= 1)
 							new/obj/item/stack/ore/coal(src)
 							H << "<span class='danger'>You found some coal!</span>"
 							if(map.ID == MAP_NOMADS_DESERT)

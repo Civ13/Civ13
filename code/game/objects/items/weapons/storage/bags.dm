@@ -227,14 +227,13 @@
 // -----------------------------
 //           Cash Bag
 // -----------------------------
-/*
+
 /obj/item/weapon/storage/bag/cash
 	name = "cash bag"
 	icon = 'icons/obj/storage.dmi'
-	icon_state = "cashbag"
+	icon_state = "moneybag"
 	desc = "A bag for carrying lots of cash. It's got a big dollar sign printed on the front."
-	max_storage_space = 100
+	max_storage_space = 15
 	max_w_class = 3
 	w_class = 2
-	can_hold = list(/obj/item/weapon/coin,/obj/item/weapon/spacecash)
-*/
+	can_hold = list(/obj/item/stack/money, /obj/item/stack/material/gold, /obj/item/stack/material/silver, /obj/item/stack/material/diamond)
