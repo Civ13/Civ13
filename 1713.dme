@@ -259,6 +259,7 @@
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\karak.dm"
+#include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
 #include "code\game\objects\map_metadata\nomads_desert.dm"
@@ -406,6 +407,7 @@
 #include "code\modules\1713\jobs\spanish.dm"
 #include "code\modules\1713\jobs\superiors.dm"
 #include "code\modules\1713\jobs\whitelist.dm"
+#include "code\modules\1713\jobs\wildwest.dm"
 #include "code\modules\1713\lift\__defines.dm"
 #include "code\modules\1713\lift\controller.dm"
 #include "code\modules\1713\lift\hooks.dm"
@@ -795,5 +797,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_jungle.dmm"
+#include "maps\1873\little_creek.dmm"
 // END_INCLUDE

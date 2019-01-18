@@ -2,7 +2,7 @@
 
 var/global/obj/map_metadata/map = null
 //Max levels showing players how far to advance, appears on the Character tab
-var/civmax_research = list(85,89,67)
+var/civmax_research = list(130,130,130)
 
 /obj/map_metadata
 	name = ""
@@ -168,7 +168,7 @@ var/civmax_research = list(85,89,67)
 
 
 /obj/map_metadata/proc/autoresearch_proc()
-	if (autoresearch == TRUE && default_research < 200)
+	if (autoresearch == TRUE && default_research < 130)
 		spawn(600) //1 minute = 0.4 points (by default)
 			default_research += autoresearch_mult
 			if (map.ID == MAP_CIVILIZATIONS)
@@ -232,6 +232,7 @@ var/civmax_research = list(85,89,67)
 					set_ordinal_age()
 					age1_done = TRUE
 					age2_timer = (world.time + age2_timer)
+					default_research = 25
 					break
 
 		else if (age2_done == FALSE)
@@ -244,6 +245,7 @@ var/civmax_research = list(85,89,67)
 					set_ordinal_age()
 					age2_done = TRUE
 					age3_timer = (world.time + age3_timer)
+					default_research = 50
 					break
 
 		else if (age3_done == FALSE)
@@ -255,6 +257,7 @@ var/civmax_research = list(85,89,67)
 					age = "1713"
 					set_ordinal_age()
 					age3_done = TRUE
+					default_research = 80
 					break
 
 		else if (age4_done == FALSE)
@@ -266,6 +269,7 @@ var/civmax_research = list(85,89,67)
 					age = "1873"
 					set_ordinal_age()
 					age4_done = TRUE
+					default_research = 105
 					break
 		else if (age5_done == FALSE)
 			var/count = 0
@@ -276,6 +280,7 @@ var/civmax_research = list(85,89,67)
 					age = "1903"
 					set_ordinal_age()
 					age5_done = TRUE
+					default_research = 120
 					break
 /obj/map_metadata/proc/check_events()
 	return TRUE

@@ -120,7 +120,7 @@
 	name = "Desert"
 	base_turf = /turf/floor/plating/sand/desert
 	icon_state = "red3"
-
+	ambience = list("sound/ambience/desert.ogg")
 /area/caribbean/nomads/river
 	name = "Jungle River"
 	base_turf = /turf/floor/plating/beach/water/jungle
@@ -188,6 +188,19 @@
 /area/caribbean/no_mans_land/invisible_wall/inside
 	location = AREA_INSIDE
 
+/area/caribbean/desert
+	name = "The Desert"
+	icon_state = "red1"
+	base_turf = /turf/floor/plating/sand/desert
+	ambience = list("sound/ambience/desert.ogg")
+/area/caribbean/desert/town
+	name = "Little Creek"
+	icon_state = "blue1"
+
+/area/caribbean/desert/buildings
+	name = "Little Creek Buildings"
+	icon_state = "green1"
+	base_turf = /turf/floor/dirt
 
 /area/caribbean/forest
 	name = "The Forest"

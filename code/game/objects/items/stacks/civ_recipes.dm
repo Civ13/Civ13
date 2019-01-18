@@ -405,7 +405,7 @@
 		recipes += new/datum/stack_recipe("well", /obj/structure/sink/well, 7, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 24 && current_res[2] >= 33)
 		recipes += new/datum/stack_recipe("catapult projectile", /obj/item/catapult_ball, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[1] >= 48)
+	if (current_res[1] >= 49)
 		recipes += new/datum/stack_recipe("stone projectile (x2)", /obj/item/stack/ammopart/stoneball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (current_res[1] >= 29)

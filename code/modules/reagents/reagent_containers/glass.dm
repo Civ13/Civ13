@@ -239,6 +239,10 @@
 	flags = OPENCONTAINER
 
 /obj/item/weapon/reagent_containers/glass/barrel
+	name = "wood barrel"
+	desc = "A wood barrel. You can put liquids inside."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
 	w_class = 4.0
 	throw_speed = 1
 	throw_range = 1
@@ -302,6 +306,18 @@
 	New()
 		..()
 		reagents.add_reagent("wine",200)
+
+/obj/item/weapon/reagent_containers/glass/barrel/oil
+	name = "oil barrel"
+	desc = "A barrel filled with petroleum."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("petroleum",200)
 
 /obj/item/weapon/reagent_containers/glass/barrel/gunpowder
 	name = "gunpowder barrel"
