@@ -6,7 +6,7 @@
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
-//		"1873" = 0,
+		"1873" = 0,
 //		"1904" = 0,
 		"Civilization 13" = 0,
 	)
@@ -67,6 +67,11 @@
 	if (is_ready())
 		ready = FALSE
 		epoch = vote.voted_epoch
+		if (epoch == "1873")
+	// 1873 - TDM
+			maps = list(
+				MAP_LITTLE_CREEK = 0,
+			)
 		if (epoch == "1713")
 		//1713 - TDM
 			maps = list(
