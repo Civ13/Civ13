@@ -42,7 +42,7 @@ var/no_loop = FALSE
 /obj/map_metadata/recife/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (world.time >= 24000)
+	if (processes.ticker.playtime_elapsed >= 24000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE

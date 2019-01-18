@@ -245,7 +245,7 @@
 	title = "Outlaw"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLatePirate"
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
 	whitelisted = TRUE
@@ -310,7 +310,7 @@
 			var/obj/item/clothing/accessory/armband/grey_scarf/scarf_a = new /obj/item/clothing/accessory/armband/grey_scarf(null)
 			uniform.attackby(scarf_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
-	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! You can either force your way in, dig a tunnel, bribe the <b>bankers</b>, kidnap the <b>Sheriff</b>, and so on. Don't get discovered! Get the gold and escape!")
+	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)

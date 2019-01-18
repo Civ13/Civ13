@@ -33,13 +33,13 @@
 "aG" = (/obj/structure/multiz/ladder/ww2/up,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "aH" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "aI" = (/obj/structure/simple_door/key_door/civ/bank,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
-"aJ" = (/obj/item/stack/material/gold{amount = 25},/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
-"aK" = (/obj/item/stack/money/silvercoin{amount = 150; name = "silver dollars"},/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
+"aJ" = (/obj/item/stack/material/gold{amount = 4; max_amount = 4},/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
+"aK" = (/obj/item/stack/money/silvercoin{amount = 500; name = "silver dollars"},/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "aL" = (/obj/item/stack/money/gems,/obj/item/stack/money/gems,/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "aM" = (/obj/item/stack/money/pearls,/obj/item/stack/money/pearls,/obj/item/stack/money/pearls,/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "aN" = (/obj/item/stack/money/goldvaluables,/obj/item/stack/money/goldvaluables,/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
-"aO" = (/obj/item/stack/money/goldcoin{amount = 100; name = "gold dollars"},/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
-"aP" = (/obj/item/stack/material/silver{amount = 30},/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
+"aO" = (/obj/item/stack/money/goldcoin{amount = 100; max_amount = 100; name = "gold dollars"},/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
+"aP" = (/obj/item/stack/material/silver{amount = 5; max_amount = 5},/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "aQ" = (/obj/item/stack/material/diamond,/obj/structure/closet/crate/chest,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/void/caves)
 "aR" = (/obj/structure/sink/well,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/town)
 "aS" = (/obj/structure/barricade/steel,/obj/structure/window/classic,/obj/structure/curtain/leather/open,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
@@ -585,6 +585,16 @@
 "lm" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/shotgun/coachgun,/obj/item/weapon/gun/projectile/boltaction/singleshot,/obj/item/weapon/gun/projectile/boltaction/singleshot,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "ln" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/sharps,/obj/item/ammo_magazine/sharps,/obj/item/ammo_magazine/sharps,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "lo" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/shotgun/coachgun,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lp" = (/obj/structure/barricade/ship/blue/bwest,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lq" = (/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lr" = (/obj/structure/barricade/ship/blue/beast,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"ls" = (/obj/structure/barricade/ship/blue/bwest2,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lt" = (/obj/structure/barricade/ship/blue/beast2,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lu" = (/obj/structure/barricade/ship/blue/b17,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lv" = (/obj/structure/barricade/ship/blue/bport3,/obj/structure/carriage,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lw" = (/obj/structure/barricade/ship/blue/b10,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lx" = (/obj/item/weapon/storage/bag/cash,/turf/floor/plating/sand/desert,/area/caribbean/desert)
+"lz" = (/obj/item/weapon/storage/bag/cash,/turf/floor/plating/dirt,/area/caribbean/desert)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -690,13 +700,13 @@ abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
 
 (1,1,2) = {"
-acacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaskPkPkPkQkQkQkPkPkPascyczktkudgdhacacacacacacacbpbpbpbpbpacacacacacacacbpacacacacacacacacacacacacacacac
-acacacacacacacacacacacacacacacacacacacacacacacacacacacbqbqacacacacacacbpbpbrbracacacacacacacacacaskPkPkPkQkQkQkPkPkPasacacacbqbqacacaTacacacacacacacacacacacacacbqacacacacacacbqbqacacacbpacacbpacacacac
-acbrbracacacacacbpacacacacacacacacacacacacacbpbpacacacacacacacacacacacacbpaUbrbrbrbracbqacbracacasasaskRkRkRkRkRaskSaskvkwkxkxdgjTacacacacacacacacacacacacbqbpacacacacacacacacbracbqacbsbpacacacacacacac
-acacacacaTacacaTacacacacbsacacacacacacacacacacacaTacacacacacacacacacaqacacaUacacacacacacacacacaUacacacacaeaeaekTacacacacacacacacacacacacacaVacacacaVaVacbrbrbtacacacacaTacbrbracacacaTaTacacacaXbpbpacac
-acacacbracacacacacacbpbubracacacacaVacacacacacacacacacacbpbpbpacacacacacacacacacacacbqbqacacacacaVaVacacacaeaekTacaVacacacaXacacacacacacacaVaVacacacacacacaVacacaVaVacacacacacacacacacacacacacacbpacacac
-acacacbraTacacacacacbpacacacacacacaVacacacacacacacacacbracaVaVacacacacacacacacacacacacacacacacacacacacacaVaeaeacaVaVacacacacacacaTaVacacacacaUacaVaVaVaVaVaVaVacaVaVacacacacaVaVbpacacacacacacbqacacacac
-acacacacaXacacacacacbracacacacaTacacacacaVaVbrbrbrbrbrbrbracbsbraVaYacacaXaVaVacaVaVacacaTacacacacacacacacaeaeaVacacacacacaVaVacacaUacacaVaVaVaVaVaVaZaVaVaVaVaVaVacacacacacacacacacacaVaVacacacacacacac
+acacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaclplqlracaskPkPkPkQkQkQkPkPkPascyczktkudgdhacacacacacacacbpbpbpbpbpacacacacacacacbpacacacacacacacacacacacacacacac
+acacacacacacacacacacacacacacacacacacacacacacacacacacacbqbqacacacacacacbpbpbrbracacacacaclplqlracaskPkPkPkQkQkQkPkPkPasacacacbqbqacacaTacacacacacacacacacacacacacbqacacacacacacbqbqacacacbpacacbpacacacac
+acbrbracacacacacbpacacacacacacacacacacacacacbpbpacacacacacacacacacacacacbpaUbrbrbrbracbqlslqltacasasaskRkRkRkRkRaskSaskvkwkxkxdgjTacacacacacacacacacacacacbqbpacacacacacacacacbracbqacbsbpacacacacacacac
+acacacacaTacacaTacacacacbsacacacacacacacacacacacaTacacacacacacacacacaqacacaUacacacacacaclulvlwaUlxlxlxacaeaeaekTacacacacacacacacacacacacacaVacacacaVaVacbrbrbtacacacacaTacbrbracacacaTaTacacacaXbpbpacac
+acacacbracacacacacacbpbubracacacacaVacacacacacacacacacacbpbpbpacacacacacacacacacacacbqbqafacafaclzlzlxacacaeaekTacaVacacacaXacacacacacacacaVaVacacacacacacaVacacaVaVacacacacacacacacacacacacacacbpacacac
+acacacbraTacacacacacbpacacacacacacaVacacacacacacacacacbracaVaVacacacacacacacacacacacacacafacacaflxlxlxacaVaeaeacaVaVacacacacacacaTaVacacacacaUacaVaVaVaVaVaVaVacaVaVacacacacaVaVbpacacacacacacbqacacacac
+acacacacaXacacacacacbracacacacaTacacacacaVaVbrbrbrbrbrbrbracbsbraVaYacacaXaVaVacaVaVacacaTafacacafacacacacaeaeaVacacacacacaVaVacacaUacacaVaVaVaVaVaVaZaVaVaVaVaVaVacacacacacacacacacacaVaVacacacacacacac
 acacacacacacacacbpbrbracacacacacaTacaVaVacbrbraVbrbrbrbrbrbrbrbrbrbvbracaVaVaVaVaVaVaVaVaVaYaVaVaVaVacacacaeaeaVacacacaVacaVacacacacaVaVaVkykzkzkykzkzkykykAbfbfbbaVacacacacacacacacacaVaVacbpacacacaVac
 acacacacbqacacacacacacacaVacacacacacaVaVaVaVbfkykzkzkBkykykykzkykCbrbraVblkykykykzkzaVaVbfaVaVaVaVaVaVaVaZaVaeaeacaVaVaVaVaVaVaVaVblaVkzkzkybcbcbcbcbcbcbckykBkzkykDaVaVaVaVaVacacacacacacacacacacbpbpac
 acacacacbqacacbracacacacaTacacacacacaVkzkzkykzkybcbcbcbcbcbcbcbckykzkzkzkykybcbcbckykykykykykyaVaVaVbbaVbdaVaeaeaVaVkykykEkzkzkFkGkykzkybcbcbcbcbcbcbcbcbcbcbcbckykzkzkykykFaVaVaxacaVaVacacacaVacacacac
