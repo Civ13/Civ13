@@ -287,6 +287,12 @@
 
 			else if (isobserver(user))
 				msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
+	else if (map.ID == MAP_LITTLE_CREEK)
+		if (ishuman(user) && user != src)
+			var/mob/living/carbon/human/H = user
+			if (H.original_job)
+				if (H.original_job.base_type_flag() == original_job.base_type_flag() && original_job.title == "Outlaw") // when you ghost, mind.assigned_job is set to null
+					msg += "<br><i>You recognize [T.him] as an <b>[original_job.title]</b>!</i>"
 	else
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
