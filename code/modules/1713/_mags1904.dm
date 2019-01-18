@@ -171,11 +171,11 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.038
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/c44
+/obj/item/ammo_magazine/c44p
 	name = "pouch of bullets (.44)"
 	icon_state = "pouch"
-	ammo_type = /obj/item/ammo_casing/a44
-	caliber = "44"
+	ammo_type = /obj/item/ammo_casing/a44p
+	caliber = "a44p"
 	max_ammo = 18
 	weight = 0.4
 	multiple_sprites = TRUE

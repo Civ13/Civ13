@@ -336,14 +336,14 @@
 	caliber = "c8mmnambu"
 	value = 2
 
-/obj/item/ammo_casing/a44
+/obj/item/ammo_casing/a44p
 	name = ".44 bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/a44
-	caliber = "44"
+	projectile_type = /obj/item/projectile/bullet/pistol/a44p
+	caliber = "a44p"
 	value = 2
 
 /obj/item/ammo_casing/shotgun

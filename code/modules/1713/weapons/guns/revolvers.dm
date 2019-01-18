@@ -168,7 +168,7 @@
 	desc = "Russian officer's revolver."
 	icon_state = "nagant"
 	w_class = 2
-	caliber = "7.62x38"
+	caliber = "a762x38"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
@@ -215,9 +215,9 @@
 	icon_state = "panther"
 	item_state = "panther"
 	w_class = 2
-	caliber = "44"
+	caliber = "a44p"
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
-	magazine_type = /obj/item/ammo_magazine/c44
+	magazine_type = /obj/item/ammo_magazine/c44p
 	weight = 0.8
 	load_method = SINGLE_CASING
