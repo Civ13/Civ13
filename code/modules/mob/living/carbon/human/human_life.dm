@@ -1296,10 +1296,10 @@
 						holder2.icon_state = "civ6"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
-					else if (original_job_title == "Outlaw")
-						holder2.icon_state = "civ1"
-					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )
-						holder2.icon_state = "civ3"
+//					else if (original_job_title == "Outlaw")
+//						holder2.icon_state = "civ1"
+//					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )
+//						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = ""
 
