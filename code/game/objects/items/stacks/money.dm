@@ -99,12 +99,15 @@
 		desc = "There are [storedvalue] dollars inside."
 		user << "You place \the [W] inside \the [src]."
 		qdel(W)
-	if (storedvalue >= 500 && !done1)
-		world << "<big>The Outlaws have managed to steal <b>500 dollars</b>so far!</big>"
-		return
-	if (storedvalue >= 100 && !done2)
-		world << "<big>The Outlaws have managed to steal <b>1000 dollars</b> so far!</big>"
-		return
+		if (storedvalue >= 500 && !done1)
+			world << "<big>The Outlaws have managed to steal <b>500 dollars</b> so far!</big>"
+			done1 = TRUE
+
+		if (storedvalue >= 1000 && !done2)
+			world << "<big>The Outlaws have managed to steal <b>1000 dollars</b> so far!</big>"
+			done2 = TRUE
+		if (storedvalue >= 1500)
+			map.update_win_condition()
 	else
 		return
 /obj/item/stack/money/goldvaluables

@@ -278,9 +278,9 @@
 	if (randcloth3 == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
 	else if (randcloth3 == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/tarred_hat(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
 	else if (randcloth3 == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/strawhat(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 
 //jacket
 	var/randcloth2 = rand(1,5)

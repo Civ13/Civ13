@@ -17,7 +17,7 @@
 	age = "1873"
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "Little Creek"
-	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff recieves a warning: A group of outlaws is about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><big><i>The grace wall will go down in <b>4 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>1500 dollars</b> before the Army arrives!</big></i>"
+	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff recieves a warning: A group of outlaws is about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><br><big><i>The grace wall will go down in <b>4 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>1500 dollars</b> before the Army arrives!</big></i>"
 	faction1 = CIVILIAN
 	ambience = list('sound/ambience/desert.ogg')
 	gamemode = "Bank Robbery"
