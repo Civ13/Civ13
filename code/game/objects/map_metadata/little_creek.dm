@@ -49,14 +49,13 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
-			return FALSE
+			ticker.finished = TRUE
+			return TRUE
 	if (processes.ticker.playtime_elapsed >= 18000)
-		if (win_condition_spam_check)
-			return FALSE
 		ticker.finished = TRUE
 		var/message = "The Sheriff's troops have sucessfully defended the Bank! With the Army arriving, the Outlaws retreat!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		return FALSE
+		return TRUE
 #undef NO_WINNER
