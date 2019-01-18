@@ -101,11 +101,11 @@
 "bW" = (/obj/structure/sign/clock{name = "\improper clock"},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bX" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/stamp/rn{name = "Little Creek Banking Co. Seal"},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "bY" = (/obj/structure/table/wood/poker{name = "fancy table"},/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"bZ" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 9},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"bZ" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "ca" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 1},/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 4},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cb" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 1},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cc" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
-"cd" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 5},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"cd" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 9},/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "ce" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 8},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cf" = (/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 "cg" = (/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
@@ -534,6 +534,9 @@
 "kn" = (/obj/item/flashlight/lantern/on/anchored,/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Inn"})
 "ko" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "kp" = (/obj/structure/multiz/ladder/ww2/tunneltop,/turf/floor/plating/sand/desert,/area/caribbean/desert/town)
+"kq" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"kr" = (/obj/effect/floor_decal/spline/fancy/wood{icon_state = "spline_fancy"; dir = 5},/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"ks" = (/obj/effect/floor_decal/spline/fancy/wood,/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -685,14 +688,14 @@ aTacacacacacadadadadadararadadadadararararararazazazazazarazazazaAarararararayay
 acacacbqacacadadadadararararararazararararararararareIaBaCaDeIararararazararararararararararararazararararararararadararararadadazazazazazadadadadagaradadadagaddHhCadadadaddIadadacacacbpacacacacacacac
 acacacbqaXacadadadadazaAazazararararayazararazarazazaCaCaRaBeJazararararararararadaradadaradadadeHadararadadadadadadeHararararadadadadadadadadadadadaradagadadaddHadadhCadaddIadadacacacacacacaXacacacac
 acacacacacacananadadarazazazarararararayararararazaAeIaCaCaDeIararararararararayadadaiaiaiaSaiaiaiaibBaSaiaiaiaSaiaiaiadararadadftftftftjujuftftftftadhDhEhDhDhEfufufugFfufufuadadacacacacacaTacacacacac
-acacacacacacadadadadararararadarararadadadararararazazazazarararararararararazararadaSbCbDbEbFbGaibHbEbIbJbJbKbLbFbGaSadarararadftjvjwftkmkmftjwjvftadhEhFhGhGhHfuhIinfwiohJhKadadacacacacacbracacbpacac
+acacacacacacadadadadararararadarararadadadararararazazazazarararararararararazararadaSbCbDbZbFbGaibHbEbIbJbJbKbLbFbGaSadarararadftjvjwftkmkmftjwjvftadhEhFhGhGhHfuhIinfwiohJhKadadacacacacacbracacbpacac
 acacacacacacadadadadadarararadarararararadararararazazazazarazarararararadarazaradadaibNbEbEbEbEbBbEbEbEbEbEbEbEbEbEaiadarararadjufvfvgDfvfvgDfvfvjuadhDhFhLhLhMfuhNfwfwfwhOfuadadacacacbpbxbracacacacac
-acacacacacaTagagadadadadadadadadaradadadadadadararararadadadadaradadadadadararararadaSbObPbEbQbRaibEbSbEbSbEbSbEbSbEaSadararadadftjxjyftfvfvftjzjAftarhDhFhPhQhRfuhSfwfyfyhTfuadadacacacbpbrbrbrbracacac
+acacacacacaTagagadadadadadadadadaradadadadadadararararadadadadaradadadadadararararadaSbObPbEbQbRaibZbSbEbSbEbSbEbSbZaSadararadadftjxjyftfvfvftjzjAftarhDhFhPhQhRfuhSfwfyfyhTfuadadacacacbpbrbrbrbracacac
 acbqacacacacadadadadadadadadadadadadadadadadadadadadahahezahahezahaheHaradaraAarareHaiaiaibBaiaiaiaibTaibVbWbXaibYaiaiadazarararftftknftfvfvftknftftadhEhUhVhVhWfuhXfwfyfyhYhKadadacacbracbrbrbrbpacacac
-acbpbpacacacacadadadfzfAfzfzfAfzfzfAfzfzfAfzfzfzadadaheQjmjSahjTeSahadadarazazaradadaibZcacbcacbcbcccbcccbcccbcccbcdaiadarararadftjwfvgDfvfvgDfvjwftadhDhUhVhZiafuibfwfwfwfwfuadadacacbracacacacacacacac
+acbpbpacacacacadadadfzfAfzfzfAfzfzfAfzfzfAfzfzfzadadaheQjmjSahjTeSahadadarazazaradadaicdcacbcacbkqcccbcccbcccbcccbkraiadarararadftjwfvgDfvfvgDfvjwftadhDhUhVhZiafuibfwfwfwfwfuadadacacbracacacacacacacac
 acbpacacacbqbqadadadfAfEfIfEfIfEfIfEfIfEfJfLfQfRadadezcLjmfaahcLcLezadadarazarazaradaicecfcfcfcfcfcgcfcgcfcgcfcgcfchaiadadazaradjujBjvftfvfvftjvjAjuadhDhUhVhVicfuidieifigfwfuadadacacbpbpacacacacacacac
 acbpbpacacbqbqadadadfzfJfIfTfIfIfIfIfIfUfIfLfJfzadadahePcLeOahfiahahadaradararaAaradaScecfcfcfcfcfcfcfcfcfcfcfcfcfchaSadarazayadftftknftgDjCftknftftadhEihjDhVijfufwfwfwfwfwhKadadacacacacbpacacacaeacac
-acbqacacacaUacadanadfzfVfWgcgdfIfIfUgegzgAfLfQfzadadezfBcLcLjUcLfCezadadararararadadaicicjcjcjcjckclclclcmcjcjcjcjcnaiadadararadftjEfvfvfvfvfvfvjFftadhDhVhVhVhVfufwfwfwfwfwfuadadacacacacacacacacacacac
+acbqacacacaUacadanadfzfVfWgcgdfIfIfUgegzgAfLfQfzadadezfBcLcLjUcLfCezadadararararadadaicicjcjcjcjckclksclcmcjcjcjcjcnaiadadararadftjEfvfvfvfvfvfvjFftadhDhVhVhVhVfufwfwfwfwfwfuadadacacacacacacacacacacac
 acbqbqacacacacadanadfAfIfIfIfUfIfIfIfIfIgBfLfIfRadadahfncLcLcLcLcLahadanadazararadadaicocpcpcpaicocsctcscoaicpcpcpcoaiadarararadftftjuftgCgDftjuftftadhDhEikilhEfuhKimgFimhKfuadadadacaeaeacacacacacacac
 acbwbqbpacacacadadadfzfAfzgGgGgHfzfAfzfzfAfzfzfzadadahezahfifiahezaheHadararararareHcubEbEbEbEcvbEbEbEbEbEcvbEbEbEbEcwaradararadauateHadararadaradarararadeHeKararareKeKcqadarareHarararaeaeaeaeaeacacac
 acacacbpacacacadadadadadadararadadeHadadadadadadadadadadadararadadauararcrazazazararcxcEcEcEcEbEbEbEbEbEbEbEcEcEcEcEcOarazazazararazazaAayararararararararararararararararaAazazararararafafafaeaeaeaeae
