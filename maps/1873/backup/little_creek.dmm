@@ -222,7 +222,7 @@
 "en" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 1},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "eo" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "ep" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/lowball,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
-"eq" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
+"eq" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/cola,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "er" = (/obj/item/weapon/reagent_containers/glass/barrel/wine,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "es" = (/obj/item/flashlight/lantern/on/anchored,/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
 "et" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Saloon"})
