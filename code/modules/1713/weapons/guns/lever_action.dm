@@ -31,7 +31,7 @@
 	stat = "rifle"
 	move_delay = 2
 	fire_delay = 2
-	var/blackpowder = FALSE
+	blackpowder = FALSE
 	handle_casings = HOLD_CASINGS
 
 	// 5x as accurate as MGs for now
@@ -80,7 +80,7 @@
 			VERY_LONG_RANGE_MOVING = 32),
 	)
 
-	load_delay = 8 //15 seconds for rifles, 12 seconds for pistols & blunderbuss
+	load_delay = 8
 	aim_miss_chance_divider = 2.50
 
 	var/recentpump = FALSE
@@ -124,6 +124,9 @@
 		user << "<span class='warning'>You can't fire \the [src] while the chamber is empty!</span>"
 		return FALSE
 */
+	if (!(user.has_empty_hand(both = FALSE)))
+		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		return FALSE
 	return ..()
 
 /obj/item/weapon/gun/projectile/leveraction/consume_next_projectile()
@@ -183,6 +186,7 @@
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
 	force = 9
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
+	icon_state = "winchester"
 	caliber = "a44"
 	max_shells = 15
 	weight = 5.0

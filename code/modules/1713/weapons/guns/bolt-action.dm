@@ -171,6 +171,70 @@
 		jamcheck = 0
 
 	last_fire = world.time
+/obj/item/weapon/gun/projectile/boltaction/singleshot
+	name = "Sharps Rifle"
+	desc = "A single-shot, falling block rifle, with a long range. Uses .45-70 cartridges."
+	icon_state ="sharps"
+	item_state ="sharps"
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a4570"
+	weight = 4.5
+	effectiveness_mod = 0.99
+	bolt_safety = FALSE
+	value = 80
+	recoil = 3
+	slot_flags = SLOT_BACK
+	throwforce = 16
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a4570
+	magazine_type = /obj/item/ammo_magazine/sharps
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 1
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "sharps_open") //closed
+		icon_state = "sharps"
+	else if (icon_state == "sharps")
+		return
+	else
+		icon_state = "sharps"
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
+	if (bolt_open)
+		user << "<span class='warning'>You can't fire [src] while the breech is open!</span>"
+		return FALSE
+	return ..()
+
+/obj/item/weapon/gun/projectile/boltaction/singleshot/attack_self(mob/user)
+	if (!check_bolt)//Keeps people from spamming the bolt
+		check_bolt++
+		if (!do_after(user, 2, src, FALSE, TRUE, INCAPACITATION_DEFAULT, TRUE))//Delays the bolt
+			check_bolt--
+			return
+	else return
+	bolt_open = !bolt_open
+	if (bolt_open)
+		if (chambered)
+			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You open the breech lever, ejecting [chambered]!</span>"
+			chambered.loc = get_turf(src)
+			loaded -= chambered
+			chambered = null
+		else
+			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
+			user << "<span class='notice'>You open the breech lever.</span>"
+	else
+		playsound(loc, 'sound/weapons/bolt_close.ogg', 50, TRUE)
+		user << "<span class='notice'>You close the breech lever.</span>"
+		bolt_open = FALSE
+	add_fingerprint(user)
+	update_icon()
+	check_bolt--
 
 /obj/item/weapon/gun/projectile/boltaction/mosin
 	name = "Mosin-Nagant"

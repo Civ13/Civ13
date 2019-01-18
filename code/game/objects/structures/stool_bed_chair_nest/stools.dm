@@ -16,6 +16,9 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/weapon/stool/prison
 	force = 0
 
+/obj/item/weapon/stool/wood
+	material = "wood"
+	icon_state = "stool_wood"
 /obj/item/weapon/stool/padded
 	icon_state = "stool_padded_preview" //set for the map
 
@@ -64,7 +67,8 @@ var/global/list/stool_cache = list() //haha stool
 	else
 		name = "[material.display_name] [initial(name)]"
 		desc = "A stool. Apply butt with care. It's made of [material.use_name]."
-
+	if (material == get_material_by_name("wood"))
+		icon_state = "stool_wood"
 /obj/item/weapon/stool/proc/add_padding(var/padding_type)
 	padding_material = get_material_by_name(padding_type)
 	update_icon()

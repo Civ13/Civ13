@@ -141,17 +141,20 @@
 	var/obj/item/weapon/gun/off_hand = null
 	if (ishuman(user) && user.a_intent == "harm")
 		var/mob/living/carbon/human/H = user
-		if (istype(H.l_hand, /obj/item/weapon/gun/projectile/flintlock/pistol))
-			if (istype(H.r_hand, /obj/item/weapon/gun/projectile/flintlock/pistol))
-				if (H.r_hand == src)
-					off_hand = H.l_hand
+		if (istype(H.l_hand, /obj/item/weapon/gun) && istype(H.r_hand, /obj/item/weapon/gun))
+			var/obj/item/weapon/gun/LH = H.l_hand
+			var/obj/item/weapon/gun/RH = H.r_hand
+			if (RH == "pistol")
+				if (LH == "pistol")
+					if (H.r_hand == src)
+						off_hand = H.l_hand
 
-				else if (H.l_hand == src)
-					off_hand = H.r_hand
+					else if (H.l_hand == src)
+						off_hand = H.r_hand
 
-				if (off_hand && off_hand.can_hit(user))
-					spawn(1)
-						off_hand.Fire(A,user,params)
+					if (off_hand && off_hand.can_hit(user))
+						spawn(1)
+							off_hand.Fire(A,user,params)
 
 	Fire(A,user,params) //Otherwise, fire normally.
 

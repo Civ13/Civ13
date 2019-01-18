@@ -10,9 +10,9 @@
 	var/tempo = 5
 
 /obj/structure/piano
-	name = "Upright Piano"
+	name = "Piano"
 	icon = 'icons/obj/musician.dmi'
-	icon_state = "minimoog"
+	icon_state = "piano"
 	anchored = TRUE
 	density = TRUE
 	climbable = TRUE
@@ -24,14 +24,6 @@
 	flammable = TRUE
 
 /obj/structure/piano/New()
-	if (prob(50))
-		name = "Pohlmann and Son Upright Piano"
-		desc = "Overstrung piano. Beautiful veneer with marquetry detail. Minor damage to veneer on legs and to edge of lid."
-		icon_state = "minimoog"
-	else
-		name = "piano"
-		desc = "This is a piano!"
-		icon_state = "piano"
 	processing_objects += src
 
 /obj/structure/piano/Del()

@@ -199,6 +199,32 @@
 	unique_door_name = "Private Inn Key"
 #undef CV_INN
 
+#define CV_BANK 82111
+/datum/keyslot/civ/bank
+	code = CV_BANK
+
+/obj/item/weapon/key/civ/bank
+	code = CV_BANK
+	name = "staff only area"
+
+/obj/structure/simple_door/key_door/civ/bank
+	keyslot_type = /datum/keyslot/civ/bank
+	unique_door_name = "Bank Key"
+#undef CV_BANK
+
+#define CV_SHERIFF 42111
+/datum/keyslot/civ/sheriff
+	code = CV_SHERIFF
+
+/obj/item/weapon/key/civ/sheriff
+	code = CV_SHERIFF
+	name = "Sheriff's Office"
+
+/obj/structure/simple_door/key_door/civ/sherif
+	keyslot_type = /datum/keyslot/civ/sheriff
+	unique_door_name = "Sheriff Office Key"
+#undef CV_BANK
+
 #define PI_CODE 995
 /datum/keyslot/pirates
 	code = PI_CODE
