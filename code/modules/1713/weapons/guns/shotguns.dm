@@ -165,7 +165,7 @@
 		return FALSE
 	return ..()
 
-/obj/item/weapon/gun/projectile/coachgun/handle_post_fire()
+/obj/item/weapon/gun/projectile/shotgun/coachgun/handle_post_fire()
 	..()
 	if (loaded.len)
 		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
