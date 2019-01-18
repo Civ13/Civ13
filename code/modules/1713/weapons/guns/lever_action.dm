@@ -80,7 +80,7 @@
 			VERY_LONG_RANGE_MOVING = 32),
 	)
 
-	load_delay = 8 //15 seconds for rifles, 12 seconds for pistols & blunderbuss
+	load_delay = 8
 	aim_miss_chance_divider = 2.50
 
 	var/recentpump = FALSE

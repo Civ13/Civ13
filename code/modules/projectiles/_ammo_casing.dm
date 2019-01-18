@@ -303,7 +303,7 @@
 	spent_icon = null
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a44
-	caliber = "a45"
+	caliber = "a44"
 	value = 8
 
 /obj/item/ammo_casing/a762x54

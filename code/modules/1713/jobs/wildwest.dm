@@ -47,11 +47,11 @@
 	var/obj/item/clothing/accessory/armband/sheriff/sheriff_a = new /obj/item/clothing/accessory/armband/sheriff(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(sheriff_a, H)
-	var/obj/item/clothing/accessory/holster/hip/double/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/hip/double/holsterh = new /obj/item/clothing/accessory/holster/hip/double(null)
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c45(H), slot_l_store)
+
 	H.add_note("Role", "You are the <b>[title]</b>, responsible for keeping the law and order in Little Creek. Organize your <b>Deputies</b> and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
@@ -110,7 +110,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c45(H), slot_l_store)
+
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)

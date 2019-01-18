@@ -70,6 +70,7 @@
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
+	load_delay = 6
 /obj/item/weapon/gun/projectile/revolver/New()
 	..()
 	loaded = list()
@@ -188,6 +189,7 @@
 	icon_state = "peacemaker"
 	w_class = 2
 	caliber = "a45"
+	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c45

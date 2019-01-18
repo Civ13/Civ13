@@ -141,7 +141,8 @@ var/global/datum/controller/occupations/job_master
 
 	if (map && map.civilizations)
 		set_factions2(autobalance_for_players)
-
+	if (map && map.ID == MAP_LITTLE_CREEK)
+		civilians_forceEnabled = TRUE
 	for (var/datum/job/J in occupations)
 		if (autobalance_for_players >= J.player_threshold && J.title != "N/A" && J.title != "generic job")
 			var/positions = round((autobalance_for_players/J.scale_to_players) * J.max_positions)
