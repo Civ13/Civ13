@@ -993,13 +993,6 @@
 	color = "#664300"
 	strength = 25
 
-/datum/reagent/ethanol/cuba_libre
-	name = "Cuba Libre"
-	id = "cubalibre"
-	description = "Rum, mixed with cola. Viva la revolucion."
-	taste_description = "cola"
-	color = "#3E1B00"
-	strength = 30
 
 /datum/reagent/ethanol/demonsblood
 	name = "Demons Blood"
