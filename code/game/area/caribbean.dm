@@ -197,6 +197,10 @@
 	name = "Little Creek"
 	icon_state = "blue1"
 
+/area/caribbean/desert/escape
+	name = "Escape Area"
+	icon_state = "blue3"
+
 /area/caribbean/desert/buildings
 	name = "Little Creek Buildings"
 	icon_state = "green1"

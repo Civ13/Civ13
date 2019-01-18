@@ -13,7 +13,7 @@
 	throwforce = 10
 	max_shells = 15
 	slot_flags = SLOT_BACK
-	caliber = "44"
+	caliber = "a44"
 	recoil = 2 //extra kickback
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/a44
@@ -186,8 +186,8 @@
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
 	force = 9
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
-	icon_state = "winchester1873"
-	caliber = "44"
+	icon_state = "winchester"
+	caliber = "a44"
 	max_shells = 15
 	weight = 5.0
 	effectiveness_mod = 0.96

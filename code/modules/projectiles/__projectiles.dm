@@ -88,14 +88,19 @@
 	armor_penetration = 38
 
 /obj/item/projectile/bullet/pistol/a45
-	damage = DAMAGE_HIGH+2
+	damage = DAMAGE_MEDIUM+5
 	penetrating = 2
-	armor_penetration = 50
+	armor_penetration = 35
 
 /obj/item/projectile/bullet/rifle/a44
-	damage = DAMAGE_HIGH+1
+	damage = DAMAGE_HIGH-6
 	penetrating = 1
 	armor_penetration = 35
+
+/obj/item/projectile/bullet/rifle/a4570
+	damage = DAMAGE_HIGH+3
+	penetrating = 2
+	armor_penetration = 55
 
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_MEDIUM + 1
@@ -124,14 +129,14 @@
 
 /obj/item/projectile/bullet/shotgun/buckshot
 	name = "buckshot"
-	damage = DAMAGE_MEDIUM + 8
-	penetrating = 1
+	damage = DAMAGE_HIGH + 5
 	armor_penetration = 20
 
 /obj/item/projectile/bullet/shotgun/slug
 	name = "shotgun slug"
-	damage = DAMAGE_HIGH + 5
+	damage = DAMAGE_MEDIUM_HIGH
 	armor_penetration = 60
+	penetrating = 1
 
 /obj/item/projectile/bullet/shotgun/beanbag
 	name = "beanbag"

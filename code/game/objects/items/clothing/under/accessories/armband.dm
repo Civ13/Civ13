@@ -111,6 +111,14 @@
 		spawn(5)
 			uncolored = TRUE
 
+/obj/item/clothing/accessory/custom/scarf
+	name = "scarf"
+	desc = "A cloth scarf."
+	icon_state = "customscarf"
+	item_state = "customscarf"
+	worn_state = "customscarf"
+	slot = "decor"
+
 /obj/item/clothing/accessory/custom/armband
 	name = "armband"
 	desc = "A cloth armband."

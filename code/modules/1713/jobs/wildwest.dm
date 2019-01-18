@@ -69,13 +69,12 @@
 	rank_abbreviation = "Dep."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	is_officer = TRUE
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 5
+	min_positions = 6
+	max_positions = 40
 
 /datum/job/civilian/deputy/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -122,7 +121,7 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
 	return TRUE
-
+/*
 /datum/job/civilian/bank
 	title = "Bank Worker"
 	rank_abbreviation = ""
@@ -241,7 +240,7 @@
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 
 	return TRUE
-
+*/
 /datum/job/civilian/outlaw
 	title = "Outlaw"
 	rank_abbreviation = ""
@@ -249,11 +248,10 @@
 	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
-	is_officer = TRUE
 	whitelisted = TRUE
 	// AUTOBALANCE
-	min_positions = 3
-	max_positions = 6
+	min_positions = 6
+	max_positions = 40
 
 /datum/job/civilian/outlaw/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -296,22 +294,22 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
 	else if (randcloth2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 	if (prob(60))
 		var/randscarf = pick(1,2,3)
 		if (randscarf == 1)
 			var/obj/item/clothing/accessory/armband/blue_scarf/scarf_a = new /obj/item/clothing/accessory/armband/blue_scarf(null)
-			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 
 		else if (randscarf == 2)
 			var/obj/item/clothing/accessory/armband/red_scarf/scarf_a = new /obj/item/clothing/accessory/armband/red_scarf(null)
-			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 		else if (randscarf == 3)
 			var/obj/item/clothing/accessory/armband/grey_scarf/scarf_a = new /obj/item/clothing/accessory/armband/grey_scarf(null)
-			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! You can either force your way in, dig a tunnel, bribe the <b>bankers</b>, kidnap the <b>Sheriff</b>, and so on. Don't get discovered! Get the gold and escape!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

@@ -287,7 +287,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a45
-	name = ".45 colt bullet casing"
+	name = ".45 Colt bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = null
@@ -297,13 +297,23 @@
 	value = 7
 
 /obj/item/ammo_casing/a44
-	name = ".44-40 winchester bullet casing"
+	name = ".44-40 Winchester bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.08
 	projectile_type = /obj/item/projectile/bullet/rifle/a44
 	caliber = "a44"
+	value = 8
+
+/obj/item/ammo_casing/a4570
+	name = ".45-70 Government bullet casing"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a4570
+	caliber = "a4570"
 	value = 8
 
 /obj/item/ammo_casing/a762x54
@@ -320,7 +330,7 @@
 	name = "7.62x38mmR bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
 	caliber = "a762x38"
@@ -330,7 +340,7 @@
 	name = "8mm bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c8mmnambu
 	caliber = "c8mmnambu"
@@ -340,7 +350,7 @@
 	name = ".44 bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a44p
 	caliber = "a44p"
