@@ -175,7 +175,7 @@
 	name = "Sharps Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .45-70 cartridges."
 	icon_state ="sharps"
-	item_state ="sharps"
+	item_state ="shotgun"
 	force = 12
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a4570"
