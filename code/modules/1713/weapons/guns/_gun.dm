@@ -106,6 +106,7 @@
 
 	var/aim_miss_chance_divider = 1.50
 	var/mob/living/carbon/human/firer = null
+	var/blackpowder = FALSE
 
 /obj/item/weapon/gun/projectile/proc/calculate_miss_chance(zone, var/mob/target)
 

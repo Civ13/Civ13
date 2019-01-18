@@ -18,7 +18,6 @@
 	magazine_based = FALSE
 	var/single_action = FALSE
 	var/cocked = FALSE
-	var/blackpowder = FALSE
 
 	accuracy_list = list(
 

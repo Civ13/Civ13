@@ -183,7 +183,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	desc = "A pouch containing 18 .44 pistol rounds."
 
 /obj/item/ammo_magazine/shellbox
-	name = "shotgun shell box (.12 guage)"
+	name = "shotgun buckshot box (.12 guage)"
 	icon_state = "shellbox"
 //	origin_tech = "combat=2"
 	mag_type = MAGAZINE
@@ -192,5 +192,15 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/shotgun
 	max_ammo = 12
-	multiple_sprites = FALSE
+	multiple_sprites = TRUE
 	is_box = TRUE
+
+/obj/item/ammo_magazine/shellbox/slug
+	name = "shotgun slugshot box (.12 guage)"
+	icon_state = "slugbox"
+	ammo_type = /obj/item/ammo_casing/shotgun/slug
+
+/obj/item/ammo_magazine/shellbox/beanbag
+	name = "shotgun beanbag box (.12 guage)"
+	icon_state = "beanbox"
+	ammo_type = /obj/item/ammo_casing/shotgun/beanbag

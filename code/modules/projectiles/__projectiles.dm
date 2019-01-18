@@ -123,6 +123,20 @@
 	armor_penetration = 38
 
 /obj/item/projectile/bullet/shotgun/buckshot
+	name = "buckshot"
 	damage = DAMAGE_MEDIUM + 8
 	penetrating = 1
 	armor_penetration = 20
+
+/obj/item/projectile/bullet/shotgun/slug
+	name = "shotgun slug"
+	damage = DAMAGE_HIGH + 5
+	armor_penetration = 60
+
+/obj/item/projectile/bullet/shotgun/beanbag
+	name = "beanbag"
+	check_armour = "melee"
+	damage = DAMAGE_LOW/2
+	agony = DAMAGE_MEDIUM_HIGH
+	embed = FALSE
+	sharp = FALSE

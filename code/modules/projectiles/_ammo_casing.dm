@@ -347,11 +347,25 @@
 	value = 2
 
 /obj/item/ammo_casing/shotgun
-	name = "shotgun shell"
-	desc = "A shotgun shell casing."
+	name = "buckshot shell"
+	desc = "A 12 gauge buckshot."
 	icon_state = "shell-bullet"
 	spent_icon = "shell-casing"
-	weight = 0.05
+	weight = 0.12
 	projectile_type = /obj/item/projectile/bullet/shotgun/buckshot
 	caliber = "12gauge"
 	value = 2
+
+/obj/item/ammo_casing/shotgun/slug
+	name = "shotgun slug"
+	desc = "A 12 gauge slug."
+	icon_state = "slshell"
+	spent_icon = "slshell_casing"
+	projectile_type = /obj/item/projectile/bullet/shotgun/slug
+
+/obj/item/ammo_casing/shotgun/beanbag
+	name = "beanbag shell"
+	desc = "A beanbag shell."
+	icon_state = "bshell"
+	spent_icon = "bshell_casing"
+	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
