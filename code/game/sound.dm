@@ -47,6 +47,7 @@ var/list/page_sound = list('sound/effects/pageturn1.ogg', 'sound/effects/pagetur
 var/list/miss_sound = list ('sound/weapons/guns/misc/miss.ogg','sound/weapons/guns/misc/miss2.ogg','sound/weapons/guns/misc/miss3.ogg','sound/weapons/guns/misc/miss4.ogg')
 var/list/ric_sound = list ('sound/weapons/guns/misc/ric1.ogg','sound/weapons/guns/misc/ric2.ogg','sound/weapons/guns/misc/ric3.ogg','sound/weapons/guns/misc/ric4.ogg','sound/weapons/guns/misc/ric5.ogg')
 var/list/bullet_hit_object_sound = list('sound/weapons/guns/misc/bullethit.ogg')
+var/list/casing_sound = list ('sound/weapons/guns/misc/casingfall1.ogg','sound/weapons/guns/misc/casingfall2.ogg','sound/weapons/guns/misc/casingfall3.ogg')
 var/list/trauma_sound = list('sound/effects/gore/trauma1.ogg', 'sound/effects/gore/trauma2.ogg', 'sound/effects/gore/trauma3.ogg')
 var/list/platingfootsteps = list('sound/effects/footsteps/plating/plating1.ogg','sound/effects/footsteps/plating/plating2.ogg','sound/effects/footsteps/plating/plating3.ogg','sound/effects/footsteps/plating/plating4.ogg')
 var/list/erikafootsteps = list('sound/effects/footsteps/tile1.ogg','sound/effects/footsteps/tile2.ogg','sound/effects/footsteps/tile3.ogg','sound/effects/footsteps/tile4.ogg')
@@ -157,6 +158,14 @@ var/list/charge_sounds_nl = list(
 	'sound/effects/emotes/charge_nl4.ogg',)
 var/list/charge_sounds_ro = list(
 	'sound/effects/emotes/charge_ro.ogg',)
+var/list/charge_sounds_jp = list(
+	'sound/effects/emotes/charge_jp.ogg',
+	'sound/effects/emotes/charge_jp2.ogg',
+	'sound/effects/emotes/charge_jp3.ogg',)
+var/list/charge_sounds_ru = list(
+	'sound/effects/emotes/charge_ru.ogg',
+	'sound/effects/emotes/charge_ru2.ogg',
+	'sound/effects/emotes/charge_ru3.ogg',)
 var/list/charge_sounds_gr = list(
 	'sound/effects/emotes/charge_gr.ogg',)
 var/list/charge_sounds_ar = list(
@@ -357,6 +366,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_sp)
 			if ("charge_DUTCH")
 				soundin = pick(charge_sounds_nl)
+			if ("charge_JAPANESE")
+				soundin = pick(charge_sounds_jp)
+			if ("charge_RUSSIAN")
+				soundin = pick(charge_sounds_ru)
 			if ("charge_GREEK")
 				soundin = pick(charge_sounds_gr)
 			if ("charge_ROMAN")

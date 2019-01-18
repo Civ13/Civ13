@@ -12,8 +12,9 @@
 	emote_see = list("stares ferociously", "sniffs the ground")
 	speak_chance = TRUE
 	turns_per_move = 4
+	move_to_delay = 3
 	see_in_dark = 6
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/bearmeat
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
 	response_disarm = "gently pushes aside"
 	response_harm   = "pokes"
@@ -42,7 +43,7 @@
 			stop_automated_movement = TRUE
 			stance_step++
 			if (stance_step >= 10) //rests for 10 ticks
-				if (target_mob && target_mob in ListTargets(10))
+				if (target_mob && target_mob in ListTargets(7))
 					stance = HOSTILE_STANCE_ATTACK //If the mob he was chasing is still nearby, resume the attack, otherwise go idle.
 				else
 					stance = HOSTILE_STANCE_IDLE
@@ -50,7 +51,7 @@
 		if (HOSTILE_STANCE_ALERT)
 			stop_automated_movement = TRUE
 			var/found_mob = FALSE
-			if (target_mob && target_mob in ListTargets(10))
+			if (target_mob && target_mob in ListTargets(7))
 				if (!(SA_attackable(target_mob)))
 					stance_step = max(0, stance_step) //If we have not seen a mob in a while, the stance_step will be negative, we need to reset it to FALSE as soon as we see a mob again.
 					stance_step++
@@ -107,7 +108,7 @@
 		return
 	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
 
-	var/damage = rand(20,30)
+	var/damage = pick(melee_damage_lower,melee_damage_upper)
 
 	if (ishuman(target_mob))
 		var/mob/living/carbon/human/H = target_mob

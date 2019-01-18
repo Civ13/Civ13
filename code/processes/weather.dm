@@ -34,7 +34,7 @@
 		if (world.realtime >= next_can_change_weather)
 			change_weather_somehow()
 			next_can_change_weather = world.realtime + minimum_change_weather_delay
-	if ((season == "WINTER" || map.triggered_blizzard) && !map.blizzard)
+	if ((season == "WINTER" && map.triggered_blizzard) && !map.blizzard)
 		if (prob(1) || map.triggered_blizzard)
 			if(prob(50) || map.triggered_blizzard)
 				world << "<big>A huge blizzard is approaching!</big>"
@@ -42,12 +42,12 @@
 				spawn(600)
 					map.blizzard = TRUE
 					change_weather(WEATHER_BLIZZARD)
-					world << "<big>The blizzard is in full force!</big>"
+					//world << "<big>The blizzard is in full force!</big>"
 					spawn(rand(2400,3600))
 						map.blizzard = FALSE
 						change_weather(WEATHER_NONE)
-						world << "<big>The blizzard has passed.</big>"
-	if ((season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave && !map.ID == MAP_NOMADS_DESERT)
+						//world << "<big>The blizzard has passed.</big>"
+	if ((season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
 		if (prob(1) || map.triggered_heatwave)
 			if(prob(50)|| map.triggered_heatwave)
 				world << "<big>The weather starts to get hotter than normal...</big>"
@@ -67,7 +67,7 @@
 							if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 								S.dry = FALSE
 								S.update_icon()
-	if ((season == "Dry Season" || map.triggered_sandstorm) && !map.sandstorm)
+	if ((season == "Dry Season" && map.triggered_sandstorm) && !map.sandstorm)
 		if (prob(1) || map.triggered_sandstorm)
 			if(prob(50)|| map.triggered_sandstorm)
 				world << "<big>You start seeing dark clouds in the horizon...</big>"
@@ -75,8 +75,8 @@
 				spawn(600)
 					map.sandstorm = TRUE
 					change_weather(WEATHER_SANDSTORM)
-					world << "<big>A sandstorm has arrived in this area!</big>"
+					//world << "<big>A sandstorm has arrived in this area!</big>"
 					spawn(rand(3000,3600))
 						map.sandstorm = FALSE
-						world << "<big>The sandstorm has subsided.</big>"
+						//world << "<big>The sandstorm has subsided.</big>"
 						change_weather(WEATHER_NONE)

@@ -53,7 +53,7 @@ var/list/nonbreaking_types = list(
 			Open()
 
 /obj/structure/simple_door/key_door/custom/New(_loc, _material = null)
-	health = 300
+	health = 600
 	initial_health = health
 	material = "iron"
 

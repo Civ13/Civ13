@@ -408,36 +408,7 @@
 	if (M.mind)
 		M.mind.reset()
 	return
-/*
-/client/verb/changes()
-	set name = "Changelog"
-	set category = "OOC"
-	getFiles(
-		'html/88x31.png',
-		'html/bug-minus.png',
-		'html/cross-circle.png',
-		'html/hard-hat-exclamation.png',
-		'html/image-minus.png',
-		'html/image-plus.png',
-		'html/map-pencil.png',
-		'html/music-minus.png',
-		'html/music-plus.png',
-		'html/tick-circle.png',
-		'html/wrench-screwdriver.png',
-		'html/spell-check.png',
-		'html/burn-exclamation.png',
-		'html/chevron.png',
-		'html/chevron-expand.png',
-		'html/changelog.css',
-		'html/changelog.js',
-		'html/changelog.html'
-		)
-	src << browse('html/changelog.html', "window=changes;size=675x650")
-	if (prefs.lastchangelog != changelog_hash)
-		prefs.lastchangelog = changelog_hash
-		prefs.save_preferences()
-		winset(src, "rpane.changelog", "background-color=none;font-style=;")
-*/
+
 /mob/verb/observe()
 	set name = "Observe"
 	set category = "OOC"
@@ -455,31 +426,6 @@
 	var/list/names = list()
 	var/list/namecounts = list()
 	var/list/creatures = list()
-/*
-	for (var/obj/O in world)				//EWWWWWWWWWWWWWWWWWWWWWWWW ~needs to be optimised
-		if (!O.loc)
-			continue*/
-
-	/*	if (istype(O, /obj/item/weapon/disk/nuclear))
-			var/name = "Nuclear Disk"
-			if (names.Find(name))
-				namecounts[name]++
-				name = "[name] ([namecounts[name]])"
-			else
-				names.Add(name)
-				namecounts[name] = TRUE
-			creatures[name] = O*/
-/*
-		if (istype(O, /obj/machinery/bot))
-			var/name = "BOT: [O.name]"
-			if (names.Find(name))
-				namecounts[name]++
-				name = "[name] ([namecounts[name]])"
-			else
-				names.Add(name)
-				namecounts[name] = TRUE
-			creatures[name] = O
-*/
 
 	for (var/mob/M in sortAtom(mob_list))
 		var/name = M.name
@@ -510,13 +456,7 @@
 			client.adminobs = TRUE
 			if (mob_eye == client.mob || client.eye == client.mob)
 				client.adminobs = FALSE
-/*
-/mob/verb/cancel_camera()
-	set name = "Cancel Camera View"
-	set category = "OOC"
-	unset_using_object()
-	reset_view(null)
-*/
+
 /mob/Topic(href, href_list)
 	if (href_list["mach_close"])
 		var/t1 = text("window=[href_list["mach_close"]]")
@@ -666,10 +606,10 @@
 			stat("Players Online (Playing, Observing, Lobby):", "[clients.len] ([human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len])")
 			stat("Round Duration:", roundduration2text())
 
-			if (map)
+			if (map && !map.civilizations)
 				var/grace_period_string = ""
 				for (var/faction in map.faction_organization)
-					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, CIVILIAN, ROMAN, GREEK, ARAB).Find(faction))
+					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, CIVILIAN, ROMAN, GREEK, ARAB, JAPANESE, RUSSIAN).Find(faction))
 						continue
 					if (grace_period_string)
 						grace_period_string += ", "
@@ -683,11 +623,13 @@
 							grace_period_string += "The grace wall has been removed."
 						else
 							grace_period_string += "The grace wall is in effect."
-				stat("Grace Period Status:", grace_period_string)
-				if (!map.civilizations)
-					stat("Round End Condition:", map.current_stat_message())
 
+				stat("Grace Period Status:", grace_period_string)
+				stat("Round End Condition:", map.current_stat_message())
+			if (map)
 				stat("Map:", map.title)
+				if (map.civilizations)
+					stat("Mode:", map.gamemode)
 				stat("Epoch:", map.age)
 				stat("Season:", get_season())
 				stat("Weather:", get_weather())
@@ -750,14 +692,22 @@
 /mob/proc/update_canmove()
 
 	var/noose = FALSE
+	var/gallows = FALSE
 	for (var/obj/structure/noose/N in get_turf(src))
 		if (N.hanging == src)
 			lying = FALSE
 			canmove = FALSE
 			anchored = TRUE
 			noose = TRUE
-
-	if (!noose)
+			update_icons()
+	for (var/obj/structure/gallows/G in get_turf(src))
+		if (G.hanging == src)
+			lying = FALSE
+			canmove = FALSE
+			anchored = TRUE
+			gallows = TRUE
+			update_icons()
+	if (!noose && !gallows)
 		if (buckled)
 			anchored = TRUE
 			canmove = FALSE
@@ -986,18 +936,6 @@ mob/proc/yank_out_object()
 
 /mob/living/proc/handle_lisp()
 	return FALSE
-/*
-	if (ishuman(src))
-		var/mob/living/carbon/human/H = src
-		var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in H.organs
-		if (O)
-			if (!O.teeth_list.len || O.get_teeth() <= 0)
-				lisp = 100 //No teeth = full lisp power
-			else
-				lisp = (1 - (O.get_teeth()/O.max_teeth)) * 100 //Less teeth = more lisp
-		else
-			lisp = FALSE //No head = no lisp.
-	return lisp*/
 
 /mob/living/proc/handle_paralysed() // Currently only used by simple_animal.dm, treated as a special case in other mobs
 	if (paralysis)
@@ -1074,21 +1012,11 @@ mob/proc/yank_out_object()
 
 /mob/proc/throw_mode_off()
 	in_throw_mode = FALSE
-	/*for (var/obj/screen/HUDthrow/HUD in client.screen.)
-		if (HUD.name == "throw") //in case we don't have the HUD and we use the hotkey
-			//throw_icon.icon_state = "act_throw_off"
-			HUD.toggle_throw_mode()
-			break*/
+
 
 /mob/proc/throw_mode_on()
 	in_throw_mode = TRUE
-	/*if (throw_icon)
-		throw_icon.icon_state = "act_throw_on"*/
-	/*for (var/obj/screen/HUDthrow/HUD in client.screen.)
-		if (HUD.name == "throw") //in case we don't have the HUD and we use the hotkey
-			//throw_icon.icon_state = "act_throw_off"
-			HUD.toggle_throw_mode()
-			break*/
+
 
 /mob/proc/swap_hand()
 	return

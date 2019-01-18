@@ -25,7 +25,8 @@
 		/obj/item/weapon/storage,
 		/obj/item/weapon/storage/secure/safe,
 		/mob/living/simple_animal/cow,
-		/mob/living/simple_animal/goat,
+		/mob/living/simple_animal/goat/female,
+		/mob/living/simple_animal/sheep/female,
 		/obj/structure/oil_spring,
 		/obj/item/flashlight/lantern,
 		)
@@ -62,6 +63,9 @@
 		if (istype(target, /obj/structure/pot))
 			return
 
+		if (istype(target, /obj/item/weapon/sandbag))
+			return
+
 		if (!is_open_container() || !flag)
 			return
 
@@ -75,7 +79,8 @@
 			return
 		if (standard_pour_into(user, target))
 			return
-
+		if (istype(target, /turf/floor/plating/beach/water))
+			return
 		if (reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
@@ -108,6 +113,21 @@
 			reagents.add_reagent("grapejuice", 5)
 			qdel(W)
 			return
+
+		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You grind the chinchona plant, producing quinine."
+			reagents.add_reagent("quinine", 10)
+			qdel(W)
+			return
+
 		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
 
 			if (!is_open_container())
@@ -140,7 +160,7 @@
 	possible_transfer_amounts = list(10,20,30,60,120)
 	volume = 120
 	flags = OPENCONTAINER
-
+	flammable = TRUE
 /obj/item/weapon/reagent_containers/glass/bucket/attackby(var/obj/D, mob/user as mob)
 
 	if (istype(D, /obj/item/weapon/mop))
@@ -163,7 +183,7 @@
 		overlays += lid
 
 /obj/item/weapon/reagent_containers/glass/small_pot
-	desc = "A small pot."
+	desc = "A small tin pot."
 	name = "small tin pot"
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "small_pot"
@@ -172,8 +192,36 @@
 	w_class = 3.0
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(10,20)
-	volume = 100
+	volume = 80
 	var/on_stove = FALSE
+	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/small_pot/copper_small
+	desc = "A small copper pot."
+	name = "small copper pot"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "copperpot1"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 300)
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 90
+	on_stove = FALSE
+	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/small_pot/copper_large
+	desc = "A large copper pot."
+	name = "large copper pot"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "copperpot2"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 300)
+	w_class = 4.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 160
+	on_stove = FALSE
 	flags = OPENCONTAINER
 
 /obj/item/weapon/reagent_containers/glass/fermenterbarrel

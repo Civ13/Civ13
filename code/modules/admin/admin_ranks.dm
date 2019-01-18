@@ -73,40 +73,32 @@ var/loaded_admins = FALSE
 
 	load_admin_ranks()
 
-	establish_db_connection()
-
-	if (!database)
+	var/F = file("SQL/admins.txt")
+	if (!F)
 		loaded_admins = TRUE
 		return
 
-	var/list/rowdata = database.execute("SELECT ckey, rank, flags FROM admin;")
-
-	if (islist(rowdata) && !isemptylist(rowdata))
-		for (var/v in TRUE to rowdata.len)
-			var/ckey = lowertext(rowdata["ckey_[v]"])
-			var/rank = rowdata["rank_[v]"]
-			if (rank == "Removed") goto deadminned	//This person was de-adminned. They are only in the admin list for archive purposes.
-			var/rights = rowdata["flags_[v]"]
-			if (istext(rights))
-				rights = text2num(rights)
-
-			if (ckey)
-
+	var/list/admincheck = splittext(file2text("SQL/admins.txt"),"|||\n")
+	if (islist(admincheck) && !isemptylist(admincheck))
+		for(var/i=1;i<admincheck.len;i++)
+			var/list/admincheck_two = splittext(admincheck[i], ";")
+			if (admincheck_two[3] != "NONE")
+				var/ckey = lowertext(admincheck_two[2])
+				var/rank = admincheck_two[3]
+				if (rank == "Removed") goto deadminned	//This person was de-adminned. They are only in the admin list for archive purposes.
+				var/rights = admincheck_two[4]
+				if (istext(rights))
+					rights = text2num(rights)
 				// make our admins datum and put us in admin_datums[]
 				var/datum/admins/A = new/datum/admins(rank, rights, ckey)
 				if (directory[ckey])
 					A.associate(directory[ckey])
-
 
 			/* moved association code to client/New(), so it works for clients
 			   created at the same time as the world */
 
 	deadminned
 	if (!admin_datums)
-		/*error("The database query in load_admins() resulted in no admins being added to the list. Reverting to legacy system.")
-		log_misc("The database query in load_admins() resulted in no admins being added to the list. Reverting to legacy system.")
-		config.admin_legacy_system = TRUE
-		load_admins()*/
 		loaded_admins = TRUE
 		return
 

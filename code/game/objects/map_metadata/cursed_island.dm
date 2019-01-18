@@ -19,12 +19,12 @@
 	faction_distribution_coeffs = list(BRITISH = 1)
 	battle_name = "battle of the cursed island"
 	mission_start_message = "<big>After a storm, your battered ship had to dock at this island for repairs. Only then did the crew notice something was wrong about this place...<br><b>Retrieve the cursed treasure and bring it back to the ship to break the curse!</b></big>"
-	ambience = list('sound/ambience/spooky1.ogg')
+	ambience = list('sound/ambience/rain.ogg')
 	faction1 = BRITISH
 	availablefactions_run = TRUE
 	songs = list(
-		"Spooky Tunes:1" = 'sound/ambience/spooky1.ogg',)
-
+		"Words Trough the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
+	gamemode = "Player vs NPCs"
 obj/map_metadata/cursed_island/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_RP == TRUE)

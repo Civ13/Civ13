@@ -1,4 +1,4 @@
-"aa" = (/turf/floor/plating/beach/water/deep,/area/caribbean/sea/sea)
+"aa" = (/turf/floor/plating/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "ab" = (/turf/wall/wood,/area/caribbean/pirates/ship/main_deck)
 "ac" = (/turf/wall/wood{opacity = 0},/area/caribbean/pirates/ship/main_deck)
 "ad" = (/obj/structure/cannon{dir = 1},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
@@ -81,7 +81,7 @@
 "bC" = (/obj/effect/landmark{name = "JoinLateRNCarpenter"},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "bD" = (/obj/effect/landmark{name = "JoinLateRNQM"},/turf/floor/wood/ship,/area/caribbean/british/ship/office)
 "bE" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
-"bF" = (/obj/map_metadata/naval,/turf/floor/plating/beach/water/deep,/area/caribbean/sea/sea)
+"bF" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/plating/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "bG" = (/turf/wall/wood,/area/caribbean/pirates/ship/lower)
 "bH" = (/obj/item/weapon/material/sword/spadroon,/obj/item/weapon/material/sword/spadroon,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
 "bI" = (/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
@@ -237,7 +237,7 @@
 "eC" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
 "eD" = (/obj/structure/table/iron,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
 "eE" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
-"eF" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/plating/beach/water/deep,/area/caribbean/sea/sea)
+"eF" = (/obj/map_metadata/naval,/turf/floor/plating/beach/water/deep/saltwater,/area/caribbean/sea/sea)
 "eG" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
 "eH" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
 "eI" = (/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
@@ -554,8 +554,8 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabiahaieTaUaUaiahaeaeemenaeaeanagaeaDaDagaeaeaeaeae
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahahahacacaceracacaoacacacaceraeaOaganaeaeaeaeagaOaeaeacaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahaaaaaaaaaaaaaaaoaaaaaaaaacapacacaoacapaceracacapacacaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaeFaaaaaaaoaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaoaaaaaaeFaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaabFaaaaaaaoaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaoaaaaaabFaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaaaaaoaaaaaaaaaaaaaaaaaoaaaaaaaaaaararararaoaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVetaraoarararararetararaoararararareteeeeauasaqaqeueoepeqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -580,5 +580,5 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-bFaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+eFaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}

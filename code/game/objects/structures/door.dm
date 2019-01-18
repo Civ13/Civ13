@@ -50,7 +50,7 @@
 	update_material(material_name)
 	door_list += src
 	if (material)
-		if (material.name == "wood")
+		if (get_material_name() == "wood")
 			flammable = TRUE
 /obj/structure/simple_door/Destroy()
 	door_list -= src

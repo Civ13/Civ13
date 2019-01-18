@@ -45,26 +45,30 @@ var/list/global_whitelists[50]
 
 // load the whitelist from the database
 /datum/whitelist/proc/load()
-	establish_db_connection()
-	if (!database)
+	var/F = file("SQL/whitelist.txt")
+	if (!F)
 		return
-	var/list/_data = database.execute("SELECT val FROM whitelists WHERE key = '[name]';")
-	if (islist(_data) && !isemptylist(_data))
-		data = _data["val"]
+	var/list/_data = list()
+	var/list/WWcheck = splittext(file2text(F),"|")
+	if (islist(WWcheck) && !isemptylist(WWcheck))
+		for(var/i=1;i<WWcheck.len;i++)
+			var/list/WWcheck_two = list(splittext(WWcheck[i], "="))
+			_data += WWcheck_two[1]
+
 
 // save the whitelist to the database
 /datum/whitelist/proc/save()
-	establish_db_connection()
-	if (!database)
+	var/F = file("SQL/whitelist.txt")
+	if (!F)
 		return
-
+/*
 	var/list/rowdata = database.execute("SELECT * FROM whitelists WHERE key = '[name]';")
 	sleep(10)
 	if (islist(rowdata) && !isemptylist(rowdata))
 		database.execute("UPDATE whitelists SET val = '[data]' WHERE key = '[name]'", FALSE)
 	else
 		database.execute("INSERT INTO whitelists (key, val) VALUES ('[name]', '[data]');", FALSE)
-
+*/
 // add a client or ckey to the whitelist
 /datum/whitelist/proc/add(_arg, var/list/extras = list())
 

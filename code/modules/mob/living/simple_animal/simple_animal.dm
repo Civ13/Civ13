@@ -49,17 +49,18 @@
 	var/friendly = "nuzzles"
 	var/environment_smash = FALSE
 	var/resistance		  = FALSE	// Damage reduction
-	var/obj/effect/spawner/mobspawner/origin = FALSE
 	//Null rod stuff
 	var/supernatural = FALSE
 	var/purge = FALSE
-
+	var/obj/origin = null
 	var/mob/living/following_mob = null
 
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
-
+	if (map.chad_mode)
+		melee_damage_lower *= 1.5
+		melee_damage_upper *= 1.5
 /mob/living/simple_animal/Login()
 	if (src && client)
 		client.screen = null
@@ -198,13 +199,14 @@
 
 		if (I_HELP)
 
-			if (name == initial(name) && !istype(src, /mob/living/simple_animal/hostile))
-				var/yn = input(M, "Name this [src]?") in list("Yes", "No")
-				if (yn == "Yes")
-					var/_name = input(M, "What name?") as text
-					name = sanitize(_name, 50)
-			else if (health > 0)
-				M.visible_message("<span class = 'notice'>[M] [response_help] \the [src].</span>")
+			if (health > 0)
+				if (istype(src, /mob/living/simple_animal/dog))
+					if (prob(30))
+						M.visible_message("<span class = 'notice'>[M] tells \the [src] that he is a good boy!</span>")
+					else
+						M.visible_message("<span class = 'notice'>[M] pats \the [src]'s head!</span>")
+				else
+					M.visible_message("<span class = 'notice'>[M] [response_help] \the [src].</span>")
 
 		if (I_DISARM)
 			M.visible_message("<span class = 'notice'>[M] [response_disarm] \the [src].</span>")
@@ -284,7 +286,7 @@
 			else
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
-					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
+					user.visible_message("<span class = 'notice'>[user] butchers [src].</span>")
 					var/amt = 0
 					if (mob_size == MOB_MINISCULE)
 						amt = 1
@@ -293,23 +295,68 @@
 					if (mob_size == MOB_SMALL)
 						amt = 3
 					if (mob_size == MOB_MEDIUM)
-						amt = 5
+						amt = 4
 					if (mob_size == MOB_LARGE)
-						amt = 7
-
+						amt = 5
+					if (mob_size == MOB_HUGE)
+						amt = 8
 					for (var/v in TRUE to amt)
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 						meat.name = "[name] meatsteak"
-					if ((amt-1) >= 1)
-						for (var/v in TRUE to (amt-1))
-							var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
-							leather.name = "[name] leather"
 					if ((amt-2) >= 1)
-						for (var/v in TRUE to (amt-2))
-							var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
-							bone.name = "[name] bone"
+						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
+						leather.name = "[name] leather"
+						leather.amount = (amt-2)
+					if ((amt-2) >= 1)
+						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+						bone.name = "[name] bone"
+						bone.amount = (amt-2)
 					crush()
 					qdel(src)
+		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_GRAB && stat == DEAD)
+			user.visible_message("<span class = 'notice'>[user] starts to skin and butcher [src].</span>")
+			if (do_after(user, 100, src))
+				user.visible_message("<span class = 'notice'>[user] skins and butchers [src].</span>")
+				var/amt = 0
+				if (mob_size == MOB_MINISCULE)
+					amt = 1
+				if (mob_size == MOB_TINY)
+					amt = 2
+				if (mob_size == MOB_SMALL)
+					amt = 3
+				if (mob_size == MOB_MEDIUM)
+					amt = 4
+				if (mob_size == MOB_LARGE)
+					amt = 5
+				if (mob_size == MOB_HUGE)
+					amt = 8
+				for (var/v in TRUE to amt)
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+					meat.name = "[name] meatsteak"
+				if ((amt-2) >= 1)
+					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+					bone.name = "[name] bone"
+					bone.amount = amt
+				if (istype(src, /mob/living/simple_animal/hostile/bear))
+					var/obj/item/stack/material/bearpelt/black/NP = new/obj/item/stack/material/bearpelt/black(get_turf(src))
+					NP.amount = 9
+				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
+					var/obj/item/stack/material/bearpelt/white/NP = new/obj/item/stack/material/bearpelt/white(get_turf(src))
+					NP.amount = 9
+				else if (istype(src, /mob/living/simple_animal/hostile/bear/brown))
+					var/obj/item/stack/material/bearpelt/brown/NP = new/obj/item/stack/material/bearpelt/brown(get_turf(src))
+					NP.amount = 9
+				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
+					var/obj/item/stack/material/wolfpelt/NP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+					NP.amount = 6
+				else if (istype(src, /mob/living/simple_animal/monkey))
+					var/obj/item/stack/material/monkeypelt/NP = new/obj/item/stack/material/monkeypelt(get_turf(src))
+					NP.amount = 4
+				else if (istype(src, /mob/living/simple_animal/cat))
+					var/obj/item/stack/material/catpelt/NP = new/obj/item/stack/material/catpelt(get_turf(src))
+					NP.amount = 3
+				crush()
+				qdel(src)
 		else if (istype(O, /obj/item/weapon/reagent_containers/glass))
 			return
 		else
@@ -349,9 +396,19 @@
 		stat(null, "Health: [round((health / maxHealth) * 100)]%")
 
 /mob/living/simple_animal/proc/unregisterSpawner()
-	if (origin)
-		origin.current_number--
-		origin = null
+	if (origin != null)
+		if (istype(origin, /obj/effect/spawner/mobspawner))
+			var/obj/effect/spawner/mobspawner/O = origin
+			O.current_number--
+			if (O.current_number < 0)
+				O.current_number = 0
+			origin = null
+		else if (istype(origin, /obj/structure/sink))
+			var/obj/structure/sink/O = origin
+			O.mosquito_count--
+			if (O.mosquito_count < 0)
+				O.mosquito_count = 0
+			origin = null
 
 /mob/living/simple_animal/Destroy()
 	unregisterSpawner()
@@ -363,8 +420,30 @@
 
 	walk_to(src,0) // stops movement
 	unregisterSpawner()
+	decay()
 	return ..(gibbed,deathmessage)
 
+/mob/living/simple_animal/proc/decay()
+	spawn(7200)
+		if (stat == DEAD)
+			var/amt = 0
+			if (mob_size == MOB_MINISCULE)
+				amt = 0
+			if (mob_size == MOB_TINY)
+				amt = 0
+			if (mob_size == MOB_SMALL)
+				amt = 1
+			if (mob_size == MOB_MEDIUM)
+				amt = 2
+			if (mob_size == MOB_LARGE)
+				amt = 3
+			if (mob_size == MOB_HUGE)
+				amt = 6
+			if (amt >= 1)
+				var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
+				bone.name = "[name] bone"
+				bone.amount = amt
+			qdel(src)
 /mob/living/simple_animal/ex_act(severity)
 	if (!blinded)
 		if (HUDtech.Find("flash"))

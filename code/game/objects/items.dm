@@ -52,7 +52,6 @@
 	var/slowdown = FALSE // How much clothing is slowing you down. Negative values speeds you up
 	var/canremove = TRUE //Mostly for Ninja code at this point but basically will not allow the item to be removed if set to 0. /N
 	var/list/armor = list(melee = FALSE, bullet = FALSE, laser = FALSE,energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
-	var/list/allowed = null //suit storage stuff.
 	var/obj/item/uplink/hidden/hidden_uplink = null // All items can have an uplink hidden inside, just remember to add the triggers.
 	var/zoomdevicename = null //name used for message when binoculars/scope is used
 
@@ -273,7 +272,6 @@ var/list/global/slot_flags_enumeration = list(
 	"[slot_gloves]" = SLOT_GLOVES,
 	"[slot_shoes]" = SLOT_FEET,
 	"[slot_belt]" = SLOT_BELT,
-	"[slot_glasses]" = SLOT_EYES,
 	"[slot_head]" = SLOT_HEAD,
 	"[slot_l_ear]" = SLOT_EARS|SLOT_TWOEARS,
 	"[slot_r_ear]" = SLOT_EARS|SLOT_TWOEARS,
@@ -327,27 +325,16 @@ var/list/global/slot_flags_enumeration = list(
 		if (slot_wear_id)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
 				if (!disable_warning)
-					H << "<span class='warning'>You need a jumpsuit before you can attach this [name].</span>"
+					H << "<span class='warning'>You need clothes before you can hang this [name].</span>"
 				return FALSE
 		if (slot_l_store, slot_r_store)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
 				if (!disable_warning)
-					H << "<span class='warning'>You need a jumpsuit before you can attach this [name].</span>"
+					H << "<span class='warning'>You need clothes to put things in your pockets.</span>"
 				return FALSE
 			if (slot_flags & SLOT_DENYPOCKET)
 				return FALSE
 			if ( w_class > 2 && !(slot_flags & SLOT_POCKET) )
-				return FALSE
-		if (slot_s_store)
-			if (!H.wear_suit && (slot_wear_suit in mob_equip))
-				if (!disable_warning)
-					H << "<span class='warning'>You need a suit before you can attach this [name].</span>"
-				return FALSE
-			if (!H.wear_suit.allowed)
-				if (!disable_warning)
-					usr << "<span class='warning'>You somehow have a suit with no defined allowed items for suit storage, stop that.</span>"
-				return FALSE
-			if ( !(istype(src, /obj/item/weapon/pen) || is_type_in_list(src, H.wear_suit.allowed)) )
 				return FALSE
 		if (slot_handcuffed)
 			if (!istype(src, /obj/item/weapon/handcuffs))
@@ -366,7 +353,7 @@ var/list/global/slot_flags_enumeration = list(
 		if (slot_tie)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
 				if (!disable_warning)
-					H << "<span class='warning'>You need a jumpsuit before you can attach this [name].</span>"
+					H << "<span class='warning'>You need clothes before you can attach this [name].</span>"
 				return FALSE
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			if (uniform.accessories.len && !uniform.can_attach_accessory(src))
@@ -434,7 +421,7 @@ var/list/global/slot_flags_enumeration = list(
 
 	var/mob/living/carbon/human/H = M
 	if (istype(H))
-		for (var/obj/item/protection in list(H.head, H.wear_mask, H.glasses))
+		for (var/obj/item/protection in list(H.head, H.wear_mask))
 			if (protection && (protection.body_parts_covered & EYES))
 				// you can't stab someone in the eyes wearing a mask!
 				user << "<span class='warning'>You're going to need to remove the eye covering first.</span>"

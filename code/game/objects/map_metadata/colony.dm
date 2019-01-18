@@ -27,9 +27,8 @@
 	faction1 = INDIANS
 	faction2 = CIVILIAN
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
-		"Black Sails:1" = 'sound/music/black_sails.ogg')
-
+		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+	gamemode = "Colony Building RP"
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian))
@@ -46,6 +45,8 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	else if (J.is_army == TRUE)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
+		. = FALSE
+	else if (J.is_nomad == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/indians))
 		if (istype(J, /datum/job/indians/tribes))

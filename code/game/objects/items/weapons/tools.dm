@@ -94,11 +94,6 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 50)
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
 
-/obj/item/weapon/crowbar/red
-	icon = 'icons/obj/items.dmi'
-	icon_state = "red_crowbar"
-	item_state = "crowbar_red"
-
 /obj/item/weapon/horn
 	name = "blowing horn"
 	desc = "Good for long range communication."
@@ -198,3 +193,16 @@
 	slot_flags = null
 	attack_verb = list("slapped")
 	flammable = TRUE
+
+/obj/item/weapon/goldsceptre
+	name = "gold sceptre"
+	desc = "A sceptre made of gold."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "goldsceptre"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL+4
+	throwforce = WEAPON_FORCE_NORMAL-1
+	w_class = 2.0
+	matter = list(DEFAULT_WALL_MATERIAL = 250)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")

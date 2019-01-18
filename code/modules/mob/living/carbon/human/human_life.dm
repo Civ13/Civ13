@@ -67,6 +67,8 @@
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
+	if (stat != DEAD)
+		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 1
 	else
@@ -76,7 +78,9 @@
 		if (getBruteLoss() >= 40)
 			adjustBruteLoss(-2)
 
-
+	// fixes invisibility while alive (from ssd?)
+	if (invisibility == 101)
+		invisibility = 0
 	if (has_hunger_and_thirst)
 		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
@@ -139,7 +143,7 @@
 				src << "You feel painful lumps on your skin."
 				adjustToxLoss(rand(8,12))
 			//3 more minutes
-			else if (disease_progression >= 90 && prob(10))
+			else if (disease_progression >= 90 && prob(10) && stat != DEAD)
 				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
 				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
 				var/turf/location = loc
@@ -148,7 +152,7 @@
 				nutrition -= 40
 			// 3 more minutes
 			else if (disease_progression >= 180 && disease_progression <= 300 && prob(15))
-				adjustBrainLoss(rand(7,10))
+				adjustBrainLoss(rand(3,5))
 				src << "You feel your body burning up from fever!"
 				Weaken(5)
 				bodytemperature = 313.15
@@ -162,7 +166,7 @@
 				disease_treatment = 0
 				bodytemperature = 310.055
 		else if (disease_type == "flu")
-			if (disease_treatment)
+			if (!disease_treatment)
 				disease_progression += 1
 			else
 				disease_progression += 4
@@ -209,6 +213,94 @@
 				disease_treatment = 0
 				if (prob(25))
 					disease_immunity += "flu"
+
+		else if (disease_type == "malaria")
+			if (!disease_treatment)
+				disease_progression += 1
+			else
+				disease_progression += 3
+			// first 2 minutes
+			if (disease_progression == 25)
+				src << "You feel a little feverish."
+				disease_treatment = 0
+				apply_effect(10, DROWSY, FALSE)
+				bodytemperature = 311.35
+			//4 more minutes
+			if (prob(1))
+				emote("shiver")
+				apply_effect(7, DROWSY, FALSE)
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 312.15 && prob(10))
+				src << "You feel like your fever is getting worse!"
+				adjustBrainLoss(rand(2,3))
+				apply_effect(8, AGONY, FALSE)
+				apply_effect(6, DROWSY, FALSE)
+				if (prob(75))
+					spawn(200)
+						vomit()
+				emote("shiver")
+				bodytemperature = 312.15
+			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1) && !disease_treatment)
+				adjustBrainLoss(rand(7,10))
+				src << "You feel your body burning up from fever!"
+				apply_effect(12, AGONY, FALSE)
+				apply_effect(7, DROWSY, FALSE)
+				spawn(200)
+					vomit()
+				emote("shiver")
+				Weaken(5)
+				bodytemperature = 313.15
+			// 2 more minutes
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 313.15 && prob(8) && !disease_treatment)
+				src << "You feel your fever going down."
+				adjustBrainLoss(rand(4,6))
+				apply_effect(6, DROWSY, FALSE)
+				emote("shiver")
+				bodytemperature = 312.35
+			else if (disease_progression >= 180 && disease_progression < 240 && bodytemperature >= 312.15 && prob(2))
+				src << "You feel your fever going down."
+				adjustBrainLoss(rand(2,3))
+				emote("shiver")
+				bodytemperature = 310.055
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+
+		else if (disease_type == "cholera")
+			if (!disease_treatment)
+				disease_progression += 1
+			else
+				disease_progression += 3
+			// first 3 minutes
+			if (disease_progression == 90)
+				src << "You feel nauseous."
+				disease_treatment = 0
+				apply_effect(5, AGONY, FALSE)
+			//5 more minutes
+			if (prob(1))
+				emote("shiver")
+				apply_effect(7, DROWSY, FALSE)
+			else if (disease_progression >= 90 && disease_progression < 240 && prob(10))
+				src << "You feel very nauseous!"
+				apply_effect(8, AGONY, FALSE)
+				spawn(200)
+					water -= 55
+					vomit()
+				custom_emote(1, "looks very dehydrated.")
+				if (prob(40))
+					apply_effect(4, WEAKEN, FALSE)
+			// 2 more minutes
+			else if (disease_progression >= 240 && prob(35))
+				disease = 0
+				disease_type = "none"
+				disease_progression = 0
+				bodytemperature = 310.055
+				src << "You feel much better now! The disease is finally gone!"
+				disease_treatment = 0
+
 	else if (disease == FALSE)
 		for (var/mob/living/simple_animal/mouse/M in range(2,src))
 			//0.1% prob
@@ -221,7 +313,7 @@
 						disease_treatment = 0
 
 		for (var/mob/living/carbon/human/H in range(2,src))
-			if (H.disease == TRUE && !(H.disease_type in disease_immunity))
+			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
 				if (stat != DEAD)
 					if (prob(1))
 						disease = TRUE
@@ -242,6 +334,10 @@
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
+	//shitcode to fix the movement bug because byond hates me
+	if (grab_list.len)
+		if (grab_list[1] == null)
+			grab_list = list()
 	..()
 
 	// recover stamina
@@ -300,14 +396,11 @@
 	if (species.vision_organ)
 		vision = internal_organs_by_name[species.vision_organ]
 
-	var/obj/item/clothing/glasses/G = glasses
-	var/blinding_glasses = (istype(G) && G.tint == TINT_BLIND)
-
 	if (!species.vision_organ) // Presumably if a species has no vision organs, they see via some other means.
 		eye_blind =  0
 		blinded =    0
 		eye_blurry = 0
-	else if (blinding_glasses || !vision || (vision && vision.is_broken()))   // Vision organs cut out or broken? Permablind.
+	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/mask/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
 		blinded =    1
 		eye_blurry = 1
@@ -338,8 +431,6 @@
 
 /mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
 	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
-		return
-	if (glasses && (glasses.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
@@ -1186,6 +1277,10 @@
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
+				if (JAPANESE)
+					holder2.icon_state = "jp_basic"
+				if (RUSSIAN)
+					holder2.icon_state = "ru_basic"
 				if (CIVILIAN)
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"
@@ -1288,4 +1383,17 @@
 					else
 						return
 			else
+				return
+
+/mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
+	if (timer <= 0)
+		return
+	timer *= 600 //convert minutes to deciseconds
+	spawn(timer)
+		if (stat!=DEAD && (!key || !client))
+			if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
+				invisibility = 101
+				return
+			else
+				invisibility = 0
 				return

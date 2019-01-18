@@ -317,21 +317,10 @@ proc/is_blind(A)
 		var/mob/living/carbon/C = A
 		if (C.sdisabilities & BLIND || C.blinded)
 			return TRUE
+		if (istype(C.wear_mask, /obj/item/clothing/mask/glasses/sunglasses/blindfold))
+			return TRUE
 	return FALSE
-/*
-/proc/broadcast_security_hud_message(var/message, var/broadcast_source)
-	broadcast_hud_message(message, broadcast_source, sec_hud_users, /obj/item/clothing/glasses/hud/security)
 
-/proc/broadcast_medical_hud_message(var/message, var/broadcast_source)
-	broadcast_hud_message(message, broadcast_source, med_hud_users, /obj/item/clothing/glasses/hud/health)
-
-/proc/broadcast_hud_message(var/message, var/broadcast_source, var/list/targets, var/icon)
-	var/turf/sourceturf = get_turf(broadcast_source)
-	for (var/mob/M in targets)
-		var/turf/targetturf = get_turf(M)
-		if ((targetturf.z == sourceturf.z))
-			M.show_message("<span class='info'>\icon[icon] [message]</span>", TRUE)
-*/
 /proc/mobs_in_area(var/area/A)
 	var/list/mobs = new
 	for (var/mob/living/M in mob_list)
@@ -349,16 +338,7 @@ proc/is_blind(A)
 		var/client/C = subject.client
 		keyname = (C.holder && C.holder.fakekey) ? C.holder.fakekey : C.key
 		if (C.mob) //Most of the time this is the dead/observer mob; we can totally use him if there is no better name
-		/*	var/mindname
-			var/realname = C.mob.real_name
-			if (C.mob.mind)
-				mindname = C.mob.mind.name
-				if (C.mob.mind.original && C.mob.mind.original.real_name)
-					realname = C.mob.mind.original.real_name
-			if (mindname && mindname != realname)
-				name = "[realname] died as [mindname]"
-			else
-				name = realname*/
+
 		//	name = realname
 			name = C.mob.real_name
 

@@ -18,15 +18,12 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(DUTCH = 0.6, PORTUGUESE = 0.4)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Battle of Recife"
 	mission_start_message = "<font size=4>Dutch forces are sieging the Portuguese town of Recife! They have <b>40 minutes</b> to capture it. Dutch may attack after <b>10 minutes</b>.</font><br><font size=2>The key points that need to be captured are: <b>Governors Office, Army Barracks (Fortress)</b></font>"
 	faction1 = DUTCH
 	faction2 = PORTUGUESE
 	ambience = list('sound/ambience/jungle1.ogg')
-
+	gamemode = "Siege"
 obj/map_metadata/recife/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_army == TRUE)

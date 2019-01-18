@@ -61,7 +61,7 @@
 
 		var/mob/living/carbon/human/H = M	//mob has protective eyewear
 		if (istype(H))
-			for (var/obj/item/clothing/C in list(H.head,H.wear_mask,H.glasses))
+			for (var/obj/item/clothing/C in list(H.head,H.wear_mask))
 				if (istype(C) && (C.body_parts_covered & EYES))
 					user << "<span class='warning'>You're going to need to remove [C.name] first.</span>"
 					return

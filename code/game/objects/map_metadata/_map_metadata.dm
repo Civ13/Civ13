@@ -21,7 +21,7 @@ var/civmax_research = list(85,89,67)
 	var/event_faction = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
-	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW, WEATHER_SANDSTORM, WEATHER_BLIZZARD)
+	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW, WEATHER_SANDSTORM, WEATHER_BLIZZARD, WEATHER_NONE, WEATHER_STORM)
 	var/squad_spawn_locations = TRUE
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
@@ -93,18 +93,36 @@ var/civmax_research = list(85,89,67)
 	var/cive_research = list(0,0,0,null)
 	var/civf_research = list(0,0,0,null)
 
+	var/chad_mode = FALSE //Virgins BTFO
+	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done
 	var/default_research = 0 //the starting research level
-	var/age1_lim = 110
+
+	//autoresearch
+	var/autoresearch = FALSE //if autoresearch is active
+	var/autoresearch_mult = 0.4 // the amount research goes up per minute. Can be edited by admins.
+	var/resourceresearch = FALSE
+	var/age1_lim = 75
 	var/age1_done = 0
 	var/age1_top = 35
-	var/age2_lim = 170
+	var/age2_lim = 150
 	var/age2_done = 0
 	var/age2_timer = 40000
 	var/age2_top = 65
-	var/age3_lim = 300
+	var/age3_lim = 240
 	var/age3_done = 0
 	var/age3_timer = 42000
+	var/age3_top = 85
+	var/age4_lim = 315
+	var/age4_done = 0
+//	var/age4_timer = 44000
+	var/age4_timer = 9999999
+	var/age4_top = 120
+	var/age5_lim = 360
+	var/age5_done = 0
+	var/age5_timer = 46000
+	var/age5_top = 140
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -142,8 +160,31 @@ var/civmax_research = list(85,89,67)
 		ordinal_age = 2
 	else if (age == "1713")
 		ordinal_age = 3
+	else if (age == "1873")
+		ordinal_age = 4
+	else if (age == "1903")
+		ordinal_age = 5
 	return
 
+
+/obj/map_metadata/proc/autoresearch_proc()
+	if (autoresearch == TRUE && default_research < 200)
+		spawn(600) //1 minute = 0.4 points (by default)
+			default_research += autoresearch_mult
+			if (map.ID == MAP_CIVILIZATIONS)
+				civa_research = list(default_research,default_research,default_research,null)
+				civb_research = list(default_research,default_research,default_research,null)
+				civc_research = list(default_research,default_research,default_research,null)
+				civd_research = list(default_research,default_research,default_research,null)
+				cive_research = list(default_research,default_research,default_research,null)
+				civf_research = list(default_research,default_research,default_research,null)
+			else
+				for(var/i = 1, i <= map.custom_civs.len, i++)
+					var/key = map.custom_civs[i]
+					map.custom_civs[key][1] = default_research
+					map.custom_civs[key][2] = default_research
+					map.custom_civs[key][3] = default_research
+			autoresearch_proc()
 // called from the map process
 /obj/map_metadata/proc/tick()
 
@@ -180,7 +221,62 @@ var/civmax_research = list(85,89,67)
 
 	update_win_condition()
 	check_events()
+	if (nomads)
+		if (age1_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age1_lim && world.time > 36000)
+					world << "<big>The world has advanced into the Bronze Age!</big>"
+					age = "313 B.C."
+					set_ordinal_age()
+					age1_done = TRUE
+					age2_timer = (world.time + age2_timer)
+					break
 
+		else if (age2_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age2_lim && world.time >= age2_timer)
+					world << "<big>The world has advanced into the Medieval Age!</big>"
+					age = "1013"
+					set_ordinal_age()
+					age2_done = TRUE
+					age3_timer = (world.time + age3_timer)
+					break
+
+		else if (age3_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age3_lim && world.time >= age3_timer)
+					world << "<big>The world has advanced into the Imperial Age!</big>"
+					age = "1713"
+					set_ordinal_age()
+					age3_done = TRUE
+					break
+
+		else if (age4_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age4_lim && world.time >= age4_timer)
+					world << "<big>The world has advanced into the Industrial Age!</big>"
+					age = "1873"
+					set_ordinal_age()
+					age4_done = TRUE
+					break
+		else if (age5_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age5_lim && world.time >= age5_timer)
+					world << "<big>The world has advanced into the Early Modern Age!</big>"
+					age = "1903"
+					set_ordinal_age()
+					age5_done = TRUE
+					break
 /obj/map_metadata/proc/check_events()
 	return TRUE
 
@@ -193,7 +289,7 @@ var/civmax_research = list(85,89,67)
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN)
+				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, JAPANESE, RUSSIAN)
 					return !faction1_can_cross_blocks()
 				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB)
 					return !faction2_can_cross_blocks()
@@ -266,7 +362,11 @@ var/civmax_research = list(85,89,67)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		var/message = ""
+		if (!map.civilizations)
+			message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+		else
+			message = "The round has ended!"
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
@@ -338,7 +438,9 @@ var/civmax_research = list(85,89,67)
 		DUTCH = 0,
 		ROMAN = 0,
 		GREEK = 0,
-		ARAB = 0,)
+		ARAB = 0,
+		JAPANESE = 0,
+		RUSSIAN = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -436,6 +538,10 @@ var/civmax_research = list(85,89,67)
 			return "Greek"
 		if (ARAB)
 			return "Arab"
+		if (JAPANESE)
+			return "Japanese"
+		if (RUSSIAN)
+			return "Russian"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -460,6 +566,10 @@ var/civmax_research = list(85,89,67)
 			return "Greek States"
 		if (ARAB)
 			return "Arabic Caliphate"
+		if (JAPANESE)
+			return "Japanese Empire"
+		if (RUSSIAN)
+			return "Russian Empire"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -484,6 +594,10 @@ var/civmax_research = list(85,89,67)
 			return "Greek"
 		if ("Arabic Caliphate")
 			return "Arab"
+		if ("Japanese Empire")
+			return "Japanese"
+		if ("Russian Empire")
+			return "Russian"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

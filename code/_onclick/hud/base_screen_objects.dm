@@ -422,188 +422,6 @@
 			icon_state = "temp0"
 //--------------------------------------------------bodytemp end---------------------------------------------------------
 
-
-//--------------------------------------------------pressure---------------------------------------------------------
-/obj/screen/pressure
-	name = "pressure"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "pressure0"
-	screen_loc = "15,13"
-	process_flag = TRUE
-
-/obj/screen/pressure/process()
-	update_icon()
-
-/obj/screen/pressure/update_icon()
-	var/mob/living/carbon/human/H = parentmob
-	icon_state = "pressure[H.pressure_alert]"
-//--------------------------------------------------pressure end---------------------------------------------------------
-
-//--------------------------------------------------toxin---------------------------------------------------------
-/obj/screen/toxin
-	name = "toxin"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "tox0"
-	screen_loc = "15,10"
-	process_flag = TRUE
-
-/obj/screen/toxin/process()
-	update_icon()
-
-/obj/screen/toxin/update_icon()
-	icon_state = "tox0"
-//--------------------------------------------------toxin end---------------------------------------------------------
-
-//--------------------------------------------------oxygen---------------------------------------------------------
-
-/obj/screen/oxygen
-	name = "oxygen"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "oxy0"
-	screen_loc = "15,12"
-	process_flag = TRUE
-
-/obj/screen/oxygen/process()
-	update_icon()
-
-/obj/screen/oxygen/update_icon()
-	icon_state = "oxy0"
-//--------------------------------------------------oxygen end---------------------------------------------------------
-
-//--------------------------------------------------fire---------------------------------------------------------
-/obj/screen/fire
-	name = "fire"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "fire0"
-	screen_loc = "15,9"
-	process_flag = TRUE
-	var/image/ovrl
-
-/obj/screen/fire/New()
-	..()
-	ovrl = new /image/no_recolor(icon = icon, icon_state ="fire1")
-//	ovrl.appearance_flags = RESET_COLOR
-
-/obj/screen/fire/process()
-	update_icon()
-
-/obj/screen/fire/update_icon()
-	var/mob/living/carbon/human/H = parentmob
-	overlays.Cut()
-	if (H.fire_alert)
-		overlays += ovrl
-//	icon_state = "fire[H.fire_alert]"
-	/*if (H.fire_alert)							icon_state = "fire[H.fire_alert]" //fire_alert is either FALSE if no alert, TRUE for cold and 2 for heat.
-	else										icon_state = "fire0"*/
-//--------------------------------------------------fire end---------------------------------------------------------
-/*/obj/screen/slot_object
-	name = "slot"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "block"
-	screen_loc = ""*/
-//-----------------------internal------------------------------
-/*
-/obj/screen/internal
-	name = "internal"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "internal0"
-	screen_loc = "15,14"
-
-/obj/screen/internal/Click()
-//	if ("internal")
-	if (iscarbon(usr))
-		var/mob/living/carbon/C = usr
-		if (!C.stat && !C.stunned && !C.paralysis && !C.restrained())
-			if (C.internal)
-				C.internal = null
-				C << "<span class='notice'>No longer running on internals.</span>"
-				icon_state = "internal0"
-			else
-
-				var/no_mask
-				if (!(C.wear_mask && C.wear_mask.item_flags & AIRTIGHT))
-					var/mob/living/carbon/human/H = C
-					if (!(H.head && H.head.item_flags & AIRTIGHT))
-						no_mask = TRUE
-
-				if (no_mask)
-					C << "<span class='notice'>You are not wearing a suitable mask or helmet.</span>"
-					return TRUE
-				else
-					var/list/nicename = null
-					var/list/tankcheck = null
-					var/breathes = "oxygen"    //default, we'll check later
-					var/list/contents = list()
-					var/from = "on"
-
-					if (ishuman(C))
-						var/mob/living/carbon/human/H = C
-						breathes = H.species.breath_type
-						nicename = list ("suit", "back", "belt", "right hand", "left hand", "left pocket", "right pocket")
-						tankcheck = list (H.s_store, C.back, H.belt, C.r_hand, C.l_hand, H.l_store, H.r_store)
-					else
-						nicename = list("right hand", "left hand", "back")
-						tankcheck = list(C.r_hand, C.l_hand, C.back)
-
-					for (var/i=1, i<tankcheck.len+1, ++i)
-						if (istype(tankcheck[i], /obj/item/weapon/tank))
-							var/obj/item/weapon/tank/t = tankcheck[i]
-							if (!isnull(t.manipulated_by) && t.manipulated_by != C.real_name && findtext(t.desc,breathes))
-								contents.Add(t.air_contents.total_moles)	//Someone messed with the tank and put unknown gasses
-								continue					//in it, so we're going to believe the tank is what it says it is
-							switch(breathes)
-																//These tanks we're sure of their contents
-								if ("nitrogen") 							//So we're a bit more picky about them.
-
-									if (t.air_contents.gas["nitrogen"] && !t.air_contents.gas["oxygen"])
-										contents.Add(t.air_contents.gas["nitrogen"])
-									else
-										contents.Add(0)
-
-								if ("oxygen")
-									if (t.air_contents.gas["oxygen"] && !t.air_contents.gas["plasma"])
-										contents.Add(t.air_contents.gas["oxygen"])
-									else
-										contents.Add(0)
-
-								// No races breath this, but never know about downstream servers.
-								if ("carbon dioxide")
-									if (t.air_contents.gas["carbon_dioxide"] && !t.air_contents.gas["plasma"])
-										contents.Add(t.air_contents.gas["carbon_dioxide"])
-									else
-										contents.Add(0)
-
-
-						else
-							//no tank so we set contents to FALSE
-							contents.Add(0)
-
-					//Alright now we know the contents of the tanks so we have to pick the best one.
-
-					var/best = FALSE
-					var/bestcontents = FALSE
-					for (var/i=1, i <  contents.len + 1 , ++i)
-						if (!contents[i])
-							continue
-						if (contents[i] > bestcontents)
-							best = i
-							bestcontents = contents[i]
-
-
-					//We've determined the best container now we set it as our internals
-
-					if (best)
-						C << "<span class='notice'>You are now running on internals from [tankcheck[best]] [from] your [nicename[best]].</span>"
-						playsound(C, 'sound/effects/Custom_internals.ogg', 50, -5)//usr should not be called here. It has no effect.
-						C.internal = tankcheck[best]
-
-
-					if (C.internal)
-						icon_state = "internal1"
-					else
-						C << "<span class='notice'>You don't have a[breathes=="oxygen" ? "n oxygen" : addtext(" ",breathes)] tank.</span>"
-//-----------------------internal END------------------------------
-*/
 /obj/screen/pull
 	name = "pull"
 	icon = 'icons/mob/screen/1713Style.dmi'
@@ -850,13 +668,6 @@
 /obj/screen/drugoverlay/update_icon()
 	underlays.Cut()
 
-	var/mob/living/carbon/human/H = parentmob
-
-
-	if (!istype(H) || !H.glasses || !istype(H.glasses, /obj/item/clothing/glasses/regular))
-		if (parentmob.disabilities & NEARSIGHTED)
-			underlays += global_hud.vimpaired
-
 	if (parentmob.eye_blurry)
 		underlays += global_hud.blurry
 	if (parentmob.druggy)
@@ -978,26 +789,6 @@
 	icon_state = _icon_state
 	dir = _dir
 
-/obj/screen/glasses_overlay
-	icon = null
-	name = "glasses"
-	screen_loc = "1,1"
-	mouse_opacity = FALSE
-	process_flag = TRUE
-	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
-
-
-/obj/screen/glasses_overlay/process()
-	update_icon()
-	return
-
-/obj/screen/glasses_overlay/update_icon()
-	overlays.Cut()
-	var/mob/living/carbon/human/H = parentmob
-	if (istype(H.glasses, /obj/item/clothing/glasses))
-		var/obj/item/clothing/glasses/G = H.glasses
-		if (G.active && G.overlay)//check here need if someone want call this func directly
-			overlays |= G.overlay
 
 //-----------------------Gun Mod------------------------------
 /obj/screen/gun
@@ -1082,28 +873,6 @@
 		icon_state = "no_items1"
 //			owner.item_use_icon.name = "Disallow Item Use"
 
-/obj/screen/gun/radio
-	name = "Allow Radio Use"
-	icon_state = "no_radio0"
-	screen_loc = "14,3"
-
-/obj/screen/gun/radio/Click(location, control, params)
-	if (..())
-		var/mob/living/user = parentmob
-		if (istype(user))
-			if (!user.aiming) user.aiming = new(user)
-			user.aiming.toggle_permission(TARGET_CAN_RADIO)
-			update_icon()
-		return TRUE
-	return FALSE
-
-/obj/screen/gun/radio/update_icon()
-	if (!(parentmob.aiming.target_permissions & TARGET_CAN_RADIO))
-		icon_state = "no_radio0"
-//			owner.radio_use_icon.name = "Allow Radio Use"
-	else
-		icon_state = "no_radio1"
-//			owner.radio_use_icon.name = "Disallow Radio Use"
 //-----------------------Gun Mod End------------------------------
 
 //-----------------------toggle_inventory------------------------------
@@ -1163,98 +932,9 @@
 			if (H.r_ear)     H.r_ear.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_gloves)
 			if (H.gloves)    H.gloves.screen_loc =    (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-		if (slot_glasses)
-			if (H.glasses)   H.glasses.screen_loc =   (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_w_uniform)
 			if (H.w_uniform) H.w_uniform.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_wear_suit)
 			if (H.wear_suit) H.wear_suit.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_wear_mask)
 			if (H.wear_mask) H.wear_mask.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-/*	for (var/obj/screen/inventory/inv_elem in parentmob.HUDinventory)
-		switch (inv_elem.slot_id)
-			if (slot_head)
-				if (H.head)      H.head.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_shoes)
-				if (H.shoes)     H.shoes.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_l_ear)
-				if (H.l_ear)     H.l_ear.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_r_ear)
-				if (H.r_ear)     H.r_ear.screen_loc =     (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_gloves)
-				if (H.gloves)    H.gloves.screen_loc =    (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_glasses)
-				if (H.glasses)   H.glasses.screen_loc =   (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_w_uniform)
-				if (H.w_uniform) H.w_uniform.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_wear_suit)
-				if (H.wear_suit) H.wear_suit.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
-			if (slot_wear_mask)
-				if (H.wear_mask) H.wear_mask.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc*/
-
-/*//	if (!mymob) return
-//	if (ishuman(mymob))
-	var/mob/living/carbon/human/H = parentmob
-	for (var/gear_slot in H.species.hud.gear)
-		var/list/hud_data = H.species.hud.gear[gear_slot]
-		if (H.inventory_shown)
-			switch(hud_data["slot"])
-				if (slot_head)
-					if (H.head)      H.head.screen_loc =      hud_data["loc"]
-				if (slot_shoes)
-					if (H.shoes)     H.shoes.screen_loc =     hud_data["loc"]
-				if (slot_l_ear)
-					if (H.l_ear)     H.l_ear.screen_loc =     hud_data["loc"]
-				if (slot_r_ear)
-					if (H.r_ear)     H.r_ear.screen_loc =     hud_data["loc"]
-				if (slot_gloves)
-					if (H.gloves)    H.gloves.screen_loc =    hud_data["loc"]
-				if (slot_glasses)
-					if (H.glasses)   H.glasses.screen_loc =   hud_data["loc"]
-				if (slot_w_uniform)
-					if (H.w_uniform) H.w_uniform.screen_loc = hud_data["loc"]
-				if (slot_wear_suit)
-					if (H.wear_suit) H.wear_suit.screen_loc = hud_data["loc"]
-				if (slot_wear_mask)
-					if (H.wear_mask) H.wear_mask.screen_loc = hud_data["loc"]
-		else
-			switch(hud_data["slot"])
-				if (slot_head)
-					if (H.head)      H.head.screen_loc =      null
-				if (slot_shoes)
-					if (H.shoes)     H.shoes.screen_loc =     null
-				if (slot_l_ear)
-					if (H.l_ear)     H.l_ear.screen_loc =     null
-				if (slot_r_ear)
-					if (H.r_ear)     H.r_ear.screen_loc =     null
-				if (slot_gloves)
-					if (H.gloves)    H.gloves.screen_loc =    null
-				if (slot_glasses)
-					if (H.glasses)   H.glasses.screen_loc =   null
-				if (slot_w_uniform)
-					if (H.w_uniform) H.w_uniform.screen_loc = null
-				if (slot_wear_suit)
-					if (H.wear_suit) H.wear_suit.screen_loc = null
-				if (slot_wear_mask)
-					if (H.wear_mask) H.wear_mask.screen_loc = null
-	update_inv_w_uniform(0)
-	update_inv_wear_id(0)
-	update_inv_gloves(0)
-	update_inv_glasses(0)
-	update_inv_ears(0)
-	update_inv_shoes(0)
-	update_inv_s_store(0)
-	update_inv_wear_mask(0)
-	update_inv_head(0)
-	update_inv_belt(0)
-	update_inv_back(0)
-	update_inv_wear_suit(0)
-	update_inv_r_hand(0)
-	update_inv_l_hand(0)
-	update_inv_handcuffed(0)
-	update_inv_legcuffed(0)
-	update_inv_pockets(0)
-	update_fire(0)
-	update_surgery(0)
-*/
-//-----------------------toggle_inventory End------------------------------

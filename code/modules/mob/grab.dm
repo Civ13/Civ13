@@ -344,9 +344,9 @@
 		if (ismob(loc))
 			var/mob/M = loc
 			M.grab_list = list()
-	animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
-	affecting.layer = 4
 	if (affecting)
+		animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
+		affecting.layer = 4
 		affecting.grabbed_by -= src
 		affecting = null
 	if (assailant)

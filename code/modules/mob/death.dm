@@ -7,7 +7,7 @@
 	if (lastgib == -1 || world.time - lastgib > 10)
 
 		if (ishuman(src))
-			emote("scream")
+			emote("painscream")
 
 		lastgib = world.time
 		death(1)
@@ -36,7 +36,7 @@
 	if (lastgib == -1 || world.time - lastgib > 10)
 
 		if (ishuman(src))
-			emote("scream")
+			emote("painscream")
 
 		lastgib = world.time
 		death(1)

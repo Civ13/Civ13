@@ -59,14 +59,11 @@
 		highlight_special_characters = FALSE
 
 	for (var/client/C in clients)
-		if (C.player_age == "Requires database")
-			missing_ages = TRUE
-			continue
 		if (C.player_age < age)
-			msg += "[key_name(C, TRUE, TRUE, highlight_special_characters)]: account is [C.player_age] days old<br>"
+			msg += "[key_name(C, TRUE, TRUE, highlight_special_characters)]: account is [C.player_age] days old.<br>"
 
 	if (missing_ages)
-		src << "Some accounts did not have proper ages set in their clients.  This function requires database to be present"
+		src << "Some accounts did not have proper ages set in their clients.  This function requires database to be present."
 
 	if (msg != "")
 		src << browse(msg, "window=Player_age_check")
@@ -484,7 +481,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set desc = "switches between 1x and custom views"
 
 	if (view == world.view)
-		view = input("Select view range:", "FUCK YE", 7) in list(1,2,3,4,5,6,7,8,9,10,11,12,13,14,128)
+		view = input("Select view range:", "FUCK YE", 7) in list(1,2,3,4,5,6,7,8,9,10,11,12,13,14,24,36,64,128,256)
 	else
 		view = world.view
 

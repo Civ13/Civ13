@@ -192,7 +192,7 @@
 
 	if (H.bodytemperature < cold_level_1)
 		var/turf/T = get_turf(H)
-		if (istype(T) && T.icon == 'icons/turf/snow.dmi')
+		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && !istype(H.shoes, /obj/item/clothing/shoes/fur))
 			if (prob(25 - (H.shoes ? 15 : 0)))
 				H << "<span class='danger'>Your feet are freezing!</span>"
 				H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
@@ -286,6 +286,20 @@
 			return capitalize(pick(first_names_female_dutch)) + " " + capitalize(pick(last_names_dutch, gender))
 		else
 			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch, gender))
+
+/datum/species/proc/get_random_japanese_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese, gender))
+		else
+			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese, gender))
+
+/datum/species/proc/get_random_russian_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian, gender))
+		else
+			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian, gender))
 
 /datum/species/proc/get_random_greek_name(var/jew) //gender removed
 	if (!name_language)

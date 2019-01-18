@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/nomads
 	ID = MAP_NOMADS
-	title = "Nomads (225x225x2)"
+	title = "Nomads (Temperate) (155x155x2)"
 	lobby_icon_state = "civilizations"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -19,24 +19,15 @@
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
+	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
 	research_active = TRUE
-	age1_lim = 90
-	age1_done = 0
-	age1_top = 35
-	age2_lim = 150
-	age2_done = 0
-	age2_timer = 40000
-	age2_top = 65
-	age3_lim = 240
-	age3_done = 0
-	age3_timer = 42000
 	nomads = TRUE
+	gamemode = "Classic (Stone Age Start)"
 /obj/map_metadata/nomads/New()
 	..()
 	spawn(18000)
@@ -78,6 +69,8 @@
 				if (prob(60))
 					qdel(SW3)
 		spawn(1500)
+		for (var/turf/floor/plating/beach/water/ice/salty/SW)
+			SW.ChangeTurf(/turf/floor/plating/beach/water/shallowsaltwater)
 		for (var/turf/floor/plating/beach/water/ice/W)
 			W.ChangeTurf(/turf/floor/plating/beach/water)
 		spawn(3000)
@@ -137,10 +130,12 @@
 		spawn(100)
 			change_weather(WEATHER_SNOW)
 		spawn(800)
+		for (var/turf/floor/plating/beach/water/shallowsaltwater/SW)
+			if (SW.water_level <= 50 && SW.z > 1)
+				SW.ChangeTurf(/turf/floor/plating/beach/water/ice/salty)
 		for (var/turf/floor/plating/beach/water/W)
 			if (W.water_level <= 50 && W.z > 1)
 				W.ChangeTurf(/turf/floor/plating/beach/water/ice)
-
 		spawn(12000)
 			for (var/turf/floor/dirt/winter/D)
 				if (prob(20))
@@ -163,43 +158,6 @@
 			change_weather(WEATHER_NONE)
 	spawn(18000)
 		seasons()
-
-/obj/map_metadata/nomads/tick()
-	..()
-	if (age1_done == FALSE)
-		var/count = 0
-		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-			if (count > age1_lim && world.time > 36000)
-				world << "<big>The world has advanced into the Bronze Age!</big>"
-				age = "313 B.C."
-				set_ordinal_age()
-				age1_done = TRUE
-				age2_timer = (world.time + age2_timer)
-				break
-
-	else if (age2_done == FALSE)
-		var/count = 0
-		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-			if (count > age2_lim && world.time >= age2_timer)
-				world << "<big>The world has advanced into the Medieval Age!</big>"
-				age = "1013"
-				set_ordinal_age()
-				age2_done = TRUE
-				age3_timer = (world.time + age3_timer)
-				break
-
-	else if (age3_done == FALSE)
-		var/count = 0
-		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
-			if (count > age3_lim && world.time >= age3_timer)
-				world << "<big>The world has advanced into the Imperial Age!</big>"
-				age = "1713"
-				set_ordinal_age()
-				age3_done = TRUE
-				break
 
 /obj/map_metadata/nomads/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)

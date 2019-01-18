@@ -93,6 +93,11 @@ default behaviour is:
 							H.forceMove(locate(x+1,y+1,z))
 							HR.trample(tmob)
 						H.riding_mob.update_icons()
+					else
+						var/turf/oldloc = loc
+						forceMove(tmob.loc)
+						tmob.forceMove(oldloc)
+						now_pushing = FALSE
 				else if (istype(src, /mob/living/simple_animal/horse))
 					var/mob/living/simple_animal/horse/HR = src
 					if (!tmob.anchored)

@@ -129,7 +129,19 @@
 	name = "wood mug"
 	icon_state = "wood_cup"
 	glass_type = "mug"
-	volume = 50
+	volume = 40
+	flammable = TRUE
+
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin
+	name = "waterskin"
+	desc = "A leather waterskin."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "waterskin"
+	glass_type = "waterskin"
+	slot_flags = SLOT_ID
+	w_class = 2.0
+	volume = 70
+	flammable = TRUE
 
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot
 	name = "tribal pot"

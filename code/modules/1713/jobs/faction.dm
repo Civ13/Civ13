@@ -20,6 +20,8 @@
 #define TEAM_RO 9
 #define TEAM_GR 10
 #define TEAM_AR 11
+#define TEAM_JP 12
+#define TEAM_RU 13
 var/global/soldiers[11]
 
 /datum/faction
@@ -107,6 +109,21 @@ var/global/soldiers[11]
 /datum/faction/dutch/base_type()
 	return "/datum/faction/dutch"
 
+/datum/faction/japanese
+	icon_state = ""
+	title = "Japanese Soldier"
+	team = TEAM_JP
+
+/datum/faction/japanese/base_type()
+	return "/datum/faction/japanese"
+
+/datum/faction/russian
+	icon_state = ""
+	title = "Russian Soldier"
+	team = TEAM_NL
+
+/datum/faction/russian/base_type()
+	return "/datum/faction/russian"
 
 /datum/faction/roman
 	icon_state = ""
@@ -172,5 +189,11 @@ var/global/soldiers[11]
 	else if (istype(J, /datum/job/arab))
 		if ("[type]" == "/datum/faction/arab")
 			soldiers[ARAB]++
+	else if (istype(J, /datum/job/japanese))
+		if ("[type]" == "/datum/faction/japanese")
+			soldiers[JAPANESE]++
+	else if (istype(J, /datum/job/russian))
+		if ("[type]" == "/datum/faction/russian")
+			soldiers[RUSSIAN]++
 	H.all_factions += src
 	..()

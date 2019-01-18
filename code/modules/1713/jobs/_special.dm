@@ -62,6 +62,10 @@
 		. = INDIANS
 	else if (istype(src, /datum/job/dutch))
 		. = DUTCH
+	else if (istype(src, /datum/job/japanese))
+		. = JAPANESE
+	else if (istype(src, /datum/job/russian))
+		. = RUSSIAN
 	else if (istype(src, /datum/job/roman))
 		. = ROMAN
 	else if (istype(src, /datum/job/greek))
@@ -97,6 +101,12 @@
 	else if (istype(src, /datum/job/dutch))
 		user.faction_text = "DUTCH"
 		user.base_faction = new/datum/faction/dutch(user, src)
+	else if (istype(src, /datum/job/japanese))
+		user.faction_text = "JAPANESE"
+		user.base_faction = new/datum/faction/japanese(user, src)
+	else if (istype(src, /datum/job/russian))
+		user.faction_text = "RUSSIAN"
+		user.base_faction = new/datum/faction/russian(user, src)
 	else if (istype(src, /datum/job/civilian))
 		user.faction_text = "CIVILIAN"
 		user.base_faction = new/datum/faction/civilian(user, src)

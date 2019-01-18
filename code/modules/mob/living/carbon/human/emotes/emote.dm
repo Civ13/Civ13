@@ -372,6 +372,10 @@ var/list/vocal_emotes = list(
 							playsound(get_turf(src), "charge_GREEK", 100)
 						if (faction_text == ARAB)
 							playsound(get_turf(src), "charge_ARAB", 100)
+						if (faction_text == JAPANESE)
+							playsound(get_turf(src), "charge_JAPANESE", 100)
+						if (faction_text == RUSSIAN)
+							playsound(get_turf(src), "charge_RUSSIAN", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2
@@ -619,6 +623,19 @@ var/list/vocal_emotes = list(
 				else
 					if (!muzzled)
 						message = "screams!"
+						m_type = 2
+						warning_scream_sound(src, FALSE)
+					else
+						message = "makes a very loud noise."
+						m_type = 2
+
+			if ("painscream")
+				if (miming)
+					message = "acts out a painful scream!"
+					m_type = 1
+				else
+					if (!muzzled)
+						message = "screams in pain!"
 						m_type = 2
 						scream_sound(src, FALSE)
 					else

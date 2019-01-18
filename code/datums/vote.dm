@@ -120,7 +120,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					call(callback[1], callback[2])(.)
 				callback = null
 		else
-			text += "<b>Vote Result: Inconclusive - Neither option had enough votes!</b>"
+			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (75% is needed)</b>"
 		log_vote(text)
 		world << "<font color='purple'>[text]</font>"
 		return .
@@ -159,8 +159,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/submit_vote(var/ckey, var/vote)
 		if (mode)
-			if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
-				return FALSE
 			if (vote && vote >= 1 && vote <= choices.len)
 				if (current_votes[ckey])
 					choices[choices[current_votes[ckey]]]--
@@ -184,7 +182,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(vote_type)
 				if ("restart")
 					choices.Add("Restart Round","Continue Playing")
-					win_threshold = 0.6
+					win_threshold = 0.75
 				if ("epoch")
 					for (var/epoch in processes.epochswap.epochs)
 						if (!default)
@@ -215,7 +213,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("Yes")
 						choices.Add("No")
 				if ("gamemode")
-					var/list/options = list("Classic (Stone Age Start)", "Bronze Age Start", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Random")
+					var/list/options = list("Classic (Stone Age Start)", "Chad Mode", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)")
 					if (!default)
 						default = "Classic (Stone Age Start)"
 					choices.Add(options)
@@ -247,7 +245,6 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			if (C.holder.rights & R_ADMIN)
 				admin = TRUE
 		voting |= C
-
 		. = "<html><head><title>Voting Panel</title></head><body>"
 		if (mode)
 			if (question)	. += "<h2>Vote: '[question]'</h2>"
@@ -311,6 +308,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					config.allow_vote_mode = !config.allow_vote_mode
 			if ("restart")
 				if (config.allow_vote_restart || usr.client.holder)
+					if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
+						usr << "You cann't start restart votes if you are not playing."
+						return FALSE
 					initiate_vote("restart",usr.key)
 			if ("custom")
 				if (usr.client.holder)

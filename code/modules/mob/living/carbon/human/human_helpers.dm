@@ -52,22 +52,5 @@
 
 	if (istype(head, /obj/item/clothing/head))
 		add_clothing_protection(head)
-	if (istype(glasses, /obj/item/clothing/glasses))
-		process_glasses(glasses)
 	if (istype(wear_mask, /obj/item/clothing/mask))
 		add_clothing_protection(wear_mask)
-
-/mob/living/carbon/human/proc/process_glasses(var/obj/item/clothing/glasses/G)
-	if (G && G.active)
-		equipment_darkness_modifier += G.darkness_view
-		equipment_vision_flags |= G.vision_flags
-		equipment_prescription = equipment_prescription || G.prescription
-
-		if (G.see_invisible >= 0)
-			if (equipment_see_invis)
-				equipment_see_invis = min(equipment_see_invis, G.see_invisible)
-			else
-				equipment_see_invis = G.see_invisible
-
-		add_clothing_protection(G)
-//		G.process_hud(src)

@@ -99,6 +99,20 @@
 	if (prob(30))
 		M << "<span class = 'warning'>You feel sick...</span>"
 
+/datum/reagent/toxin/cholera
+	name = "Cholera"
+	id = "cholera"
+	description = "A toxic bacteria."
+	taste_mult = 0.1
+	reagent_state = LIQUID
+	color = "#CF3600"
+	strength = 0
+	taste_description = "mud"
+	metabolism = REM
+
+/datum/reagent/toxin/cholera/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	return
+
 /datum/reagent/toxin/potassium_chloride
 	name = "Potassium Chloride"
 	id = "potassium_chloride"

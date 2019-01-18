@@ -17,8 +17,9 @@
 //////////////////////////////////////////////////////////////////
 /datum/surgery_step/internal/fix_organ
 	allowed_tools = list(
-	/obj/item/stack/medical/advanced/bruise_pack= 100,		\
-	/obj/item/stack/medical/bruise_pack = 20
+		1 = list("/obj/item/stack/medical/advanced/bruise_pack",100),
+		2 = list("/obj/item/stack/medical/advanced/bruise_pack/herbs",100),
+		3 = list("/obj/item/stack/medical/bruise_pack",100),
 	)
 
 	min_duration = 70
@@ -99,11 +100,11 @@
 /datum/surgery_step/internal/detatch_organ
 
 	allowed_tools = list(
-	/obj/item/weapon/surgery/scalpel = 100,		\
-	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
-	/obj/item/weapon/material/knife = 75,	\
-	/obj/item/weapon/material/shard = 50, 		\
-	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
+		1 = list("/obj/item/weapon/surgery/scalpel",100),
+		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
+		3 = list("/obj/item/weapon/material/knife",75),
+		4 = list("/obj/item/weapon/material/shard",50),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",70),
 	)
 
 	min_duration = 90
@@ -161,10 +162,10 @@
 /datum/surgery_step/internal/remove_organ
 
 	allowed_tools = list(
-	/obj/item/weapon/surgery/hemostat = 100,	\
-	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
-	/obj/item/weapon/material/kitchen/utensil/fork = 20, \
-	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100
+		1 = list("/obj/item/weapon/surgery/hemostat",100),
+		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
+		3 = list("/obj/item/weapon/material/kitchen/utensil/fork",20),
+		4 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",70),
 	)
 
 	min_duration = 60
@@ -215,9 +216,7 @@
 		affected.createwound(BRUISE, 20)
 
 /datum/surgery_step/internal/replace_organ
-	allowed_tools = list(
-	/obj/item/organ = 100
-	)
+	allowed_tools = list(1 = list("/obj/item/organ",100))
 
 	min_duration = 60
 	max_duration = 80

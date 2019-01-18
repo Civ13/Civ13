@@ -33,7 +33,7 @@
 
 	..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html)
 
-	for (var/mob/living/simple_animal/complex_animal/canine/dog/D in view(world.view, src))
+	for (var/mob/living/simple_animal/complex_animal/dog/D in view(world.view, src))
 		D.hear_command(message_without_html, src)
 
 	message_without_html = handle_speech_problems(message_without_html)[1]
@@ -81,28 +81,9 @@
 	if (!speaking)
 		if (istype(other, /mob/living/carbon/brain))
 			return TRUE
-
-	//This is already covered by mob/say_understands()
-	//if (istype(other, /mob/living/simple_animal))
-	//	if ((other.universal_speak && !speaking) || universal_speak || universal_understand)
-	//		return TRUE
-	//	return FALSE
-
 	return ..()
 
 /mob/living/carbon/human/GetVoice()
-/*
-	var/voice_sub
-	for (var/obj/item/gear in list(wear_mask,wear_suit,head))
-		if (!gear)
-			continue
-		var/obj/item/voice_changer/changer = locate() in gear
-		if (changer && changer.active && changer.voice)
-			voice_sub = changer.voice
-	if (voice_sub)
-		return voice_sub
-	if (GetSpecialVoice())
-		return GetSpecialVoice()*/
 	return real_name
 
 /mob/living/carbon/human/proc/SetSpecialVoice(var/new_voice)

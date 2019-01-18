@@ -160,7 +160,12 @@
 				M.attack_log += text("\[[time_stamp()]\] <font color='red'>Hit [name] ([ckey]) with a thrown [O]</font>")
 				if (!istype(src,/mob/living/simple_animal/mouse))
 					msg_admin_attack("[name] ([ckey]) was hit by a [O], thrown by [M.name] ([assailant.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)")
-
+		if (istype(O, /obj/item/weapon/snowball))
+			O.icon_state = "snowball_hit"
+			O.update_icon()
+			spawn(6)
+				qdel(O)
+			return
 		// Begin BS12 momentum-transfer code.
 		var/mass = 1.5
 		if (istype(O, /obj/item))

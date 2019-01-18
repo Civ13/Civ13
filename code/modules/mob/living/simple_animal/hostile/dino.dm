@@ -13,6 +13,7 @@
 	emote_see = list("stares ferociously", "grunts")
 	speak_chance = TRUE
 	turns_per_move = 3
+	move_to_delay = 3
 	see_in_dark = 6
 	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
 	response_help  = "pets"
@@ -107,7 +108,7 @@
 		return
 	custom_emote(1, pick( list("bites [target_mob]!") ) )
 
-	var/damage = rand(25,35)
+	var/damage = pick(melee_damage_lower,melee_damage_upper)
 
 	if (ishuman(target_mob))
 		var/mob/living/carbon/human/H = target_mob

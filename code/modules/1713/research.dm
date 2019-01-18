@@ -1,3 +1,20 @@
+/*
+/////////////////////////////AGES///////////////////////
+0-15 Stone Age (<5000 BC)
+15-20 Copper Age (2-3k BC)
+20-30 Bronze Age (1000 BC)
+30-40 Iron age/Ancient Age (500 BC to 300 AC)
+40-50 Early Medieval Age (500 to 1200)
+50-60 Late Medieval (1400-1500)
+60-80 Renaissance (1500-1600)
+80-90 Imperial Age (1700s)
+90-100 Napoleonic Age (early 1800s)
+100-110 Early Industrial Age (1850-1870)
+110-120 Industrial Age (1870-1900)
+120-130 Early Modern Age (1900-1910)
+///////////////////////////////////////////////////////
+*/
+
 /obj/item/weapon/book/research
 	name = "blank scroll"
 	icon_state = "scroll0"
@@ -207,6 +224,14 @@
 			else if (map.age2_done == TRUE && map.age3_done == FALSE)
 				if (world.time < map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age2_top*3))
 					user << "You are already too advanced. You can research again in [(map.age3_timer-world.time)/600] minutes."
+					return
+			else if (map.age3_done == TRUE && map.age4_done == FALSE)
+				if (world.time < map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age3_top*3))
+					user << "You are already too advanced. You can research again in [(map.age4_timer-world.time)/600] minutes."
+					return
+			else if (map.age4_done == TRUE && map.age5_done == FALSE)
+				if (world.time < map.age5_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age4_top*3))
+					user << "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600] minutes."
 					return
 		if (!map.civilizations)
 			return

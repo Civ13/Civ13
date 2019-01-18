@@ -18,9 +18,6 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(BRITISH = 0.35, INDIANS = 0.65)
-//	songs = list(
-//		"He's a Pirate:1" = 'sound/music/hes_a_pirate.ogg')
-//	meme = TRUE
 	battle_name = "Supply Raid on Port Andrew"
 	mission_start_message = "<font size=4>All factions have <b>15 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = BRITISH

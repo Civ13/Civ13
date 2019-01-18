@@ -61,6 +61,9 @@
 	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
+
+	var/prosthesis = FALSE
+	var/prosthesis_type = "none"
 /obj/item/organ/external/Destroy()
 	if (parent && parent.children)
 		parent.children -= src
@@ -235,7 +238,7 @@
 
 	if (status & ORGAN_BROKEN && prob(40) && brute)
 		if (!(owner.species && (owner.species.flags & NO_PAIN)))
-			owner.emote("scream")	//getting hit on broken hand hurts
+			owner.emote("painscream")	//getting hit on broken hand hurts
 
 	var/can_cut = (prob(brute*2) || sharp)
 
@@ -729,14 +732,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 		if (parent_organ)
 			var/datum/wound/lost_limb/W = new (src, disintegrate, clean)
-			if (clean)
-				parent_organ.wounds |= W
-				parent_organ.update_damages()
-			else
-				var/obj/item/organ/external/stump/stump = new (victim, FALSE, src)
-				stump.wounds |= W
-				victim.organs |= stump
-				stump.update_damages()
+			var/obj/item/organ/external/stump/stump = new (victim, FALSE, src)
+			stump.wounds |= W
+			victim.organs |= stump
+			stump.update_damages()
 
 	spawn(1)
 		victim.updatehealth()
@@ -878,7 +877,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		//	"\red <b>Something feels like it shattered in your [name]!</b>",\
 		//	"You hear a sickening crack.")
 		if (owner.species && !(owner.species.flags & NO_PAIN))
-			owner.emote("scream")
+			owner.emote("painscream")
 
 	status |= ORGAN_BROKEN
 	broken_description = "broken"//pick("broken","fracture","hairline fracture")
@@ -1199,7 +1198,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/head/removed()
 	if (owner)
 		name = "[owner.real_name]'s head"
-		owner.u_equip(owner.glasses)
 		owner.u_equip(owner.head)
 		owner.u_equip(owner.l_ear)
 		owner.u_equip(owner.r_ear)

@@ -12,7 +12,7 @@
 	try
 		for (current in current_list)
 			if (!isDeleted(current))
-				var/mob/living/simple_animal/complex_animal/canine/dog/dog = current
+				var/mob/living/simple_animal/complex_animal/dog/dog = current
 				if (dog.stat == CONSCIOUS && dog.walking_to)
 					if (ismob(dog.walking_to))
 						var/mob/M = dog.walking_to
@@ -20,7 +20,7 @@
 							continue
 					var/dist_x = abs(dog.x - dog.walking_to.x)
 					var/dist_y = abs(dog.y - dog.walking_to.y)
-					if (dist_x > 2 || dist_y > 2 || dog.walking_to != dog.following)
+					if (dist_x > 1 || dist_y > 1 || dog.walking_to != dog.following)
 						var/turf/target = get_step(dog.loc, get_dir(dog, dog.walking_to))
 						if (target.density)
 							continue

@@ -121,6 +121,11 @@
 	base_turf = /turf/floor/plating/sand/desert
 	icon_state = "red3"
 
+/area/caribbean/nomads/river
+	name = "Jungle River"
+	base_turf = /turf/floor/plating/beach/water/jungle
+	icon_state = "blue1"
+
 /area/caribbean/nomads/forest
 	name = "Forest"
 	base_turf = /turf/floor/plating/grass/wild
@@ -129,6 +134,11 @@
 /area/caribbean/nomads/forest/snow
 	name = "Forest"
 	base_turf = /turf/floor/winter/grass
+	icon_state = "green1"
+
+/area/caribbean/nomads/forest/Jungle
+	name = "Jungle"
+	base_turf = /turf/floor/plating/grass/wild/jungle
 	icon_state = "green1"
 
 /area/caribbean/nomads/snow
@@ -367,6 +377,40 @@
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
 	location = AREA_INSIDE
+
+/area/caribbean/japanese
+
+/area/caribbean/japanese/land
+	name = "Land Base"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+
+
+/area/caribbean/japanese/land/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+
+/area/caribbean/japanese/land/outside
+	icon_state = "red3"
+
+/area/caribbean/russian
+
+/area/caribbean/russian/land
+	name = "Land Base"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+
+/area/caribbean/russian/land/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+
+/area/caribbean/russian/land/outside
+	icon_state = "red3"
+
 /area/caribbean/british
 
 /area/caribbean/british/land

@@ -44,7 +44,7 @@
 	var/cooldown = 0
 /obj/item/weapon/shield/New()
 	..()
-	if (material == "wood")
+	if (get_material_name() == "wood")
 		flammable = TRUE
 /obj/item/weapon/shield/steel
 	name = "steel shield"

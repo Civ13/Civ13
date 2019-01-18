@@ -47,14 +47,12 @@
 	var/obj/item/shoes = null
 	var/obj/item/belt = null
 	var/obj/item/gloves = null
-	var/obj/item/glasses = null
 	var/obj/item/head = null
 	var/obj/item/l_ear = null
 	var/obj/item/r_ear = null
 	var/obj/item/wear_id = null
 	var/obj/item/r_store = null
 	var/obj/item/l_store = null
-	var/obj/item/s_store = null
 
 	var/icon/stand_icon = null
 	var/icon/lying_icon = null
@@ -89,7 +87,6 @@
 	var/list/equipment_overlays = list()	// Extra overlays from equipped items
 
 	var/stance_damage = FALSE //Whether this mob's ability to stand has been affected
-	var/identifying_gender // In case the human identifies as another gender than it's biological
 
 	var/list/all_factions = list()
 	var/datum/faction/base_faction = null

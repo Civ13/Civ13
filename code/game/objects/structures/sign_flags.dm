@@ -80,8 +80,13 @@
 
 /obj/structure/sign/flag/medical
 	name = "Medical flag"
-	desc = "A flag witht the universally recognized symbol for medicine."
+	desc = "A flag with the universally recognized symbol for medicine."
 	icon_state = "medical_flag"
+
+/obj/structure/sign/flag/japanese
+	name = "Imperial Japanese Flag"
+	desc = "A flag with the imperial japanese flag."
+	icon_state = "japanese"
 
 
 /obj/structure/sign/flag/custom
@@ -326,6 +331,13 @@
 	if (choice7 == "White Skull")
 		var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_skull0")
 		overlays += flag_symbol
+
+	var/_name = input(usr, "Name the flag:") as text|null
+	if (_name == "" || _name == null)
+		name = "flag"
+	else
+		name = sanitize(_name, 50)
+
 	var/obj/structure/sign/flag/custom/CF = new/obj/structure/sign/flag/custom(user.loc)
 	CF.overlays = overlays
 	CF.icon_state = new_icon_state

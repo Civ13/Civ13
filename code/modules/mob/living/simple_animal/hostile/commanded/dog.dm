@@ -20,12 +20,12 @@
 
 	known_commands = list("stay", "stop", "attack", "follow")
 
-/mob/living/simple_animal/hostile/commanded/bear/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
+/mob/living/simple_animal/hostile/commanded/dog/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 	. = ..()
 	if (!.)
 		emote("barks and shows its teeth!")
 
-/mob/living/simple_animal/hostile/commanded/bear/attack_hand(mob/living/carbon/human/M as mob)
+/mob/living/simple_animal/hostile/commanded/dog/attack_hand(mob/living/carbon/human/M as mob)
 	..()
 	if (M.a_intent == I_HURT)
 		emote("barks and shows its teeth!")

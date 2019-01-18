@@ -3,7 +3,7 @@
 //						LIMB SURGERY							//
 //////////////////////////////////////////////////////////////////
 
-/datum/surgery_step/limb/
+/datum/surgery_step/limb
 	priority = 3 // Must be higher than /datum/surgery_step/internal
 	can_infect = FALSE
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
@@ -16,7 +16,7 @@
 		return !isnull(organ_data)
 
 /datum/surgery_step/limb/attach
-	allowed_tools = list(/obj/item/organ/external = 100)
+	allowed_tools = list(1 = list("/obj/item/organ/external",100))
 
 	min_duration = 50
 	max_duration = 70
@@ -44,9 +44,9 @@
 
 /datum/surgery_step/limb/connect
 	allowed_tools = list(
-	/obj/item/weapon/surgery/hemostat = 100,	\
-	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
-	/obj/item/stack/material/rope = 50, 	\
+		1 = list("/obj/item/weapon/surgery/hemostat",100),
+		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
+		3 = list("/obj/item/stack/material/rope",50),
 	)
 	can_infect = TRUE
 

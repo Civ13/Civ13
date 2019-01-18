@@ -9,8 +9,8 @@ var/list/gamemode_cache = list()
 
 	var/list/lobby_screens = list("1") // Which lobby screens are available
 
-	var/lobby_countdown = 120
-	var/round_end_countdown = 60
+	var/lobby_countdown = 90
+	var/round_end_countdown = 90
 
 	var/log_ooc = FALSE						// log OOC channel
 	var/log_access = FALSE					// log login/logout
@@ -46,7 +46,6 @@ var/list/gamemode_cache = list()
 	var/traitor_scaling = FALSE 			//if amount of traitors scales based on amount of players
 	var/objectives_disabled = FALSE 			//if objectives are disabled or not
 	var/protect_roles_from_antagonist = FALSE// If security and such can be traitor/cult/other
-	var/continous_rounds = FALSE			// Gamemodes which end instantly will instead keep on going until the round ends by escape shuttle or nuke.
 	var/popup_admin_pm = FALSE				//adminPMs to non-admins show in a pop-up 'reply' window when set to 1.
 	var/Ticklag = 0.9
 	var/Tickcomp = FALSE
@@ -56,9 +55,7 @@ var/list/gamemode_cache = list()
 	var/list/modes = list()				// allowed modes
 	var/list/votable_modes = list()		// votable modes
 	var/list/probabilities = list()		// relative probability of each mode
-	var/humans_need_surnames = FALSE
 	var/allow_random_events = FALSE			// enables random events mid-round when set to TRUE
-	var/hostedby = null
 	var/guest_jobban = TRUE
 	var/usewhitelist = FALSE
 	var/allow_testing_staff = FALSE
@@ -83,12 +80,13 @@ var/list/gamemode_cache = list()
 	var/guests_allowed = TRUE
 	var/debugparanoid = FALSE
 
+	var/ssd_invisibility_timer = 10
+
 	var/serverurl
 	var/server
 	var/banappeals
 	var/wikiurl
 	var/websiteurl
-	var/forumurl
 	var/donationurl
 	var/rulesurl
 	var/discordurl
@@ -345,9 +343,6 @@ var/list/gamemode_cache = list()
 				if ("serversuffix")
 					config.server_suffix = TRUE
 
-				if ("hostedby")
-					config.hostedby = value
-
 				if ("serverurl")
 					config.serverurl = value
 
@@ -362,9 +357,6 @@ var/list/gamemode_cache = list()
 
 				if ("websiteurl")
 					config.websiteurl = value
-
-				if ("forumurl")
-					config.forumurl = value
 
 				if ("donationurl")
 					config.donationurl = value
@@ -476,17 +468,11 @@ var/list/gamemode_cache = list()
 				if ("tickcomp")
 					Tickcomp = TRUE
 
-				if ("humans_need_surnames")
-					humans_need_surnames = TRUE
-
 				if ("tor_ban")
 					ToRban = TRUE
 
 				if ("automute_on")
 					automute_on = TRUE
-
-				if ("continuous_rounds")
-					config.continous_rounds = TRUE
 
 				if ("ghost_interaction")
 					config.ghost_interaction = TRUE
@@ -518,66 +504,8 @@ var/list/gamemode_cache = list()
 				if ("round_end_countdown")
 					config.round_end_countdown = text2num(value)
 
-				if ("enabled_seasons")
-					if (value)
-						var/list/seasons = splittext(value, ",")
-						slog = seasons.Copy()
-						for (var/v in 1 to seasons.len)
-							seasons[v] = uppertext(ckey(seasons[v]))
-						if (seasons[1] == "ALL")
-							allowed_seasons = list(1)
-						else if (seasons[1] == "NONE")
-							allowed_seasons = list(0)
-						else
-							allowed_seasons.Cut()
-							for (var/season in seasons)
-								allowed_seasons += season
-
-
-				if ("use_hunger")
-					config.use_hunger = text2num(value)
-
-				if ("use_thirst")
-					config.use_thirst = text2num(value)
-
-				if ("allow_selfheal")
-					config.allow_selfheal = text2num(value)
-
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
-
-		else if (type == "game_schedule")
-
-			if (!value)
-				log_misc("Unknown value for setting [name] in [filename].")
-			value = text2num(value)
-
-			if (!global_game_schedule)
-				global_game_schedule = new
-
-			switch (name)
-				if ("game_schedule_enabled")
-					if (value)
-						global_game_schedule.enabled = text2num(value)
-				if ("game_schedule_starttime")
-					if (value)
-						global_game_schedule.starttime = text2num(value)
-				if ("game_schedule_endtime")
-					if (value)
-						global_game_schedule.endtime = text2num(value)
-				if ("game_schedule_days_closed")
-					if (value)
-						var/list/days_closed = splittext(value, ",")
-						for (var/day in days_closed)
-							global_game_schedule.days_closed += capitalize(ckey(day))
-				if ("game_schedule_days_always_open")
-					if (value)
-						var/list/days_always_open = splittext(value, ",")
-						for (var/day in days_always_open)
-							global_game_schedule.days_always_open += capitalize(ckey(day))
-
-			global_game_schedule.update()
-			global_game_schedule.loadFromDB()
 
 	if (config.hub)
 		world.visibility = TRUE

@@ -101,6 +101,7 @@
 
 
 // Defines mob sizes, used by lockers and to determine what is considered a small sized mob, etc.
+#define MOB_HUGE  		70
 #define MOB_LARGE  		40
 #define MOB_MEDIUM 		20
 #define MOB_SMALL 		10

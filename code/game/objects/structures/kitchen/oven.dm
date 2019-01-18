@@ -82,6 +82,7 @@
 				if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot) && I.on_stove == TRUE)
 					I.on_stove = FALSE
 					I.reagents.del_reagent("food_poisoning")
+					I.reagents.del_reagent("cholera")
 					return
 	else
 		H << "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>"
@@ -136,6 +137,11 @@
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/fries(src)
 			contents -= I
 			qdel(I)
+		else if (istype(I, /obj/item/weapon/clay))
+			var/obj/item/weapon/clay/CL = I
+			contents += new CL.result(src)
+			contents -= I
+			qdel(I)
 
 		else if (!istype(I, /obj/item/weapon/reagent_containers/food) || istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/badrecipe) || I.name == "Stew" || findtext(I.name, "soup") || (I.vars.Find("roasted") && I:roasted))
 			if (!istype(I, /obj/item/organ))
@@ -152,6 +158,7 @@
 				organ.reagents.multiply_reagent("nutriment", 5)
 				organ.reagents.multiply_reagent("protein", 3)
 				organ.reagents.del_reagent("toxin")
+				organ.reagents.del_reagent("cholera")
 				organ.reagents.del_reagent("food_poisoning")
 				organ.roasted = TRUE
 				contents -= I
@@ -165,6 +172,7 @@
 			I.reagents.multiply_reagent("nutriment", 5)
 			I.reagents.multiply_reagent("protein", 3)
 			I.reagents.del_reagent("food_poisoning")
+			I.reagents.del_reagent("cholera")
 			if (istype(I, /obj/item/weapon/reagent_containers/food))
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE
@@ -228,55 +236,84 @@
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
 	if (!istype(H))
 		return
-	if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-		if (istype(I, /obj/item/weapon/wrench))
-			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-			if (do_after(H,50,src))
-				visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				anchored = !anchored
+	if (H.a_intent == I_HELP)
+		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
+			if (istype(I, /obj/item/weapon/wrench))
+				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+				if (do_after(H,50,src))
+					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+					anchored = !anchored
+					return
+			else if (istype(I, /obj/item/weapon/hammer))
+				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
+				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+				if (do_after(H,50,src))
+					visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
+					empty()
+					qdel(src)
+					return
+		if (istype(I, /obj/item/stack/))
+			if (istype(I, /obj/item/stack/material/wood))
+				fuel += I.amount
+				qdel(I)
 				return
-		else if (istype(I, /obj/item/weapon/hammer))
-			visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
-			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-			if (do_after(H,50,src))
-				visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
-				empty()
-				qdel(src)
+			else if (istype(I, /obj/item/stack/ore/coal))
+				fuel += I.amount*3
+				qdel(I)
 				return
-	if (istype(I, /obj/item/stack/))
-		if (istype(I, /obj/item/stack/material/wood))
-			fuel += I.amount
-			qdel(I)
-			return
-		else if (istype(I, /obj/item/stack/ore/coal))
-			fuel += I.amount*3
-			qdel(I)
-			return
-		else if (istype(I, /obj/item/stack/ore/iron))
-			iron += I.amount
-			qdel(I)
-			return
-		else if (istype(I, /obj/item/stack/ore/copper))
-			copper += I.amount
-			qdel(I)
-			return
-		else if (istype(I, /obj/item/stack/ore/tin))
-			tin += I.amount
-			qdel(I)
-			return
+			else if (istype(I, /obj/item/stack/ore/iron) || istype(I, /obj/item/stack/material/iron))
+				iron += I.amount
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/copper) || istype(I, /obj/item/stack/material/copper))
+				copper += I.amount
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/stack/ore/tin) || istype(I, /obj/item/stack/material/tin))
+				tin += I.amount
+				qdel(I)
+				return
+			else
+				H << "<span class = 'warning'>You can't smelt this.</span>"
+				return
+			var/space = max_space
+			for (var/obj/item/II in contents)
+				space -= II.w_class
+			if (space <= 0 || space - I.w_class < 0)
+				H << "<span class = 'warning'>\The [name] is full.</span>"
+				return
+			H.remove_from_mob(I)
+			I.loc = src
+			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
+		else if (istype(I, /obj/item/weapon/material))
+			var/obj/item/weapon/material/MT = I
+			if (MT.get_material_name() == "wood")
+				fuel += 1
+				H << "You break \the [MT] and put it into the [src], using it as fuel."
+				qdel(I)
+			else if (MT.get_material_name() == "bronze")
+				H << "You smelt \the [MT] into bronze ingots."
+				new/obj/item/stack/material/bronze(src.loc)
+				qdel(I)
+			else if (MT.get_material_name() == "copper")
+				H << "You smelt \the [MT] into copper ingots."
+				new/obj/item/stack/material/copper(src.loc)
+				qdel(I)
+			else if (MT.get_material_name() == "tin")
+				H << "You smelt \the [MT] into tin ingots."
+				new/obj/item/stack/material/tin(src.loc)
+				qdel(I)
+			else if (MT.get_material_name() == "iron")
+				H << "You smelt \the [MT] into iron ingots."
+				new/obj/item/stack/material/iron(src.loc)
+				qdel(I)
+			else if (MT.get_material_name() == "steel")
+				H << "You smelt \the [MT] into steel sheets."
+				new/obj/item/stack/material/steel(src.loc)
+				qdel(I)
 		else
-			H << "<span class = 'warning'>You can't smelt this.</span>"
-			return
-		var/space = max_space
-		for (var/obj/item/II in contents)
-			space -= II.w_class
-		if (space <= 0 || space - I.w_class < 0)
-			H << "<span class = 'warning'>The [name] is full.</span>"
-			return
-		H.remove_from_mob(I)
-		I.loc = src
-		visible_message("<span class = 'notice'>[H] puts [I] in the [name].</span>")
+			..()
 	else
 		..()
 
@@ -312,14 +349,14 @@
 	set name = "Empty"
 	set src in range(1, usr)
 	if (iron > 0)
-		var/obj/item/stack/material/iron/emptyediron = new/obj/item/stack/material/iron(src.loc)
+		var/obj/item/stack/ore/iron/emptyediron = new/obj/item/stack/ore/iron(src.loc)
 		emptyediron.amount = iron
 		iron = 0
 	if (copper > 0)
-		var/obj/item/stack/material/copper/emptyedcopper = new/obj/item/stack/material/copper(src.loc)
+		var/obj/item/stack/ore/copper/emptyedcopper = new/obj/item/stack/ore/copper(src.loc)
 		emptyedcopper.amount = copper
 		copper = 0
 	if (tin > 0)
-		var/obj/item/stack/material/tin/emptyedtin = new/obj/item/stack/material/tin(src.loc)
+		var/obj/item/stack/ore/tin/emptyedtin = new/obj/item/stack/ore/tin(src.loc)
 		emptyedtin.amount = tin
 		tin = 0

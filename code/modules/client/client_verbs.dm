@@ -56,16 +56,18 @@
 
 			var/age
 			if (isnum(C.player_age))
-				age = C.player_age
+				if (player_age >= 864000)
+					age = "[round(player_age/864000)] days"
+				else
+					age = "[round(player_age/360000)] hours"
+
+				if (player_age <= (864000*2))
+					age = "<font color='#ff0000'><b>[age]</b></font>"
+				else
+					age = "<font color='#ff8c00'><b>[age]</b></font>"
 			else
 				age = FALSE
-
-			if (age <= 1)
-				age = "<font color='#ff0000'><b>[age]</b></font>"
-			else if (age < 10)
-				age = "<font color='#ff8c00'><b>[age]</b></font>"
-
-			entry += " - [age]"
+//			entry += " - [age]"
 
 			if (C.is_afk())
 				entry += " (AFK - [C.inactivity2text()])"
@@ -235,6 +237,10 @@
 		src << "<span class='warning'>You have OOC muted.</span>"
 		return
 
+	if (quickBan_isbanned("OOC"))
+		src << "<span class = 'danger'>You're banned from OOC.</span>"
+		return
+
 	var/msg_prefix = ""
 
 
@@ -358,6 +364,10 @@
 
 	if (!is_preference_enabled(/datum/client_preference/show_looc))
 		src << "<span class='danger'>You have LOOC muted.</span>"
+		return
+
+	if (quickBan_isbanned("OOC"))
+		src << "<span class = 'danger'>You're banned from OOC.</span>"
 		return
 
 	if (!holder)

@@ -72,18 +72,6 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 		src << "<span class='warning'>The wiki URL is not set in the server configuration.</span>"
 	return
 
-/client/verb/forum()
-	set name = "forum"
-	set desc = "Visit the forum"
-	set hidden = TRUE
-	if (config.forumurl)
-		if (WWinput(src, "This will open the forum in your browser. Are you sure?", "Forum", "Yes", list("Yes", "No")) == "No")
-			return
-		src << link(config.forumurl)
-	else
-		src << "<span class='warning'>The forum URL is not set in the server configuration.</span>"
-	return
-
 /client/verb/donate()
 	set name = "donate"
 	set desc = "Support the server via paypal."

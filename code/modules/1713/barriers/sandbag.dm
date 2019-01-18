@@ -166,6 +166,15 @@
 	icon = 'icons/obj/items.dmi'
 	w_class = TRUE
 	var/sand_amount = FALSE
+	value = 0
+/obj/item/weapon/sandbag/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		if (W.reagents.has_reagent("water", 10))
+			W.reagents.remove_reagent("water", 10)
+			user << "You mold the dirt and water into clay."
+			new/obj/item/stack/material/clay(user.loc)
+			qdel(src)
+			return
 
 /obj/item/weapon/sandbag/attack_self(mob/user)
 	user << "You start building the dirt blocks wall..."
@@ -181,6 +190,16 @@
 	anchored = TRUE
 	climbable = TRUE
 	health = 30
+
+/obj/structure/window/sandbag/rock/attack_hand(var/mob/user as mob)
+	if (locate(src) in get_step(user, user.dir))
+		if (WWinput(user, "Dismantle this rock wall?", "Dismantle rock wall", "Yes", list("Yes", "No")) == "Yes")
+			visible_message("<span class='danger'>[user] starts dismantling the rock wall.</span>", "<span class='danger'>You start dismantling the rock wall.</span>")
+			if (do_after(user, 200, src))
+				visible_message("<span class='danger'>[user] finishes dismantling the rock wall.</span>", "<span class='danger'>You finish dismantling the rock wall.</span>")
+				var/turf = get_turf(src)
+				new /obj/item/stack/material/stone(turf)
+				qdel(src)
 
 /obj/structure/window/sandbag/railing
 	name = "railing"

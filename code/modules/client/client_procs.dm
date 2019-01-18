@@ -56,8 +56,24 @@
 		if (UID)
 			var/confirm = input("Are you sure you want to remove the ban with the UID '[UID]' ?") in list("Yes", "No")
 			if (confirm == "Yes")
-				if (database.execute("REMOVE * FROM quick_bans WHERE UID == '[UID]';"))
-					var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the database. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
+				var/F = file("SQL/bans.txt")
+				if (fexists(F))
+					fcopy("SQL/bans.txt","SQL/bans_backup.txt")
+					fdel(F)
+				var/M = "[key_name(usr)] removed quickBan '<b>[UID]</b>' from the ban list. It belonged to [href_list["ckey"]]/[href_list["cID"]]/[href_list["ip"]]"
+				spawn(1)
+					var/full_banlist = null
+					full_banlist = file2text("SQL/bans.txt")
+					var/list/full_list_split = splittext(full_banlist, "|||\n")
+					for(var/i=1;i<full_list_split.len;i++)
+						var/list/full_list_split_two = splittext(full_list_split[i], ";")
+						if (full_list_split_two[6] == UID) //if the ban expiration hasn't been reached yet
+							full_list_split_two[10] = 0
+					spawn(1)
+						var/full_banlist_new = file2text("SQL/bans.txt")
+						full_banlist_new = replacetext(full_banlist_new,"\n","")
+						text2file(full_banlist_new,"SQL/bans.txt")
+						recompile_banlist()
 					log_admin(M)
 					message_admins(M)
 
@@ -169,8 +185,6 @@
 		if (ticker && ticker.current_state == GAME_STATE_PLAYING) //Only report this stuff if we are currently playing.
 			message_admins("Staff login: [key_name(src)]")
 
-	establish_db_connection()
-
 	if (holder)
 		holder.associate(src)
 		admins |= src
@@ -191,11 +205,10 @@
 
 	var/host_file_text = file2text("config/host.txt")
 	if (ckey(host_file_text) == ckey && !holder)
-		var/list/admins = database.execute("SELECT * FROM admin;")
-		if ((!islist(admins) || isemptylist(admins)))
-			holder = new("Host", FALSE, ckey)
-			database.execute("INSERT INTO admin (id, ckey, rank, flags) VALUES (null, '[ckey]', '[holder.rank]', '[holder.rights]');")
-			database.execute("INSERT INTO admin (id, ckey, rank, flags) VALUES (null, 'taislin', '[holder.rank]', '[holder.rights]');")
+		holder = new("Host", FALSE, ckey)
+		var/datum/admins/A = new/datum/admins(holder.rank, holder.rights, ckey)
+		if (directory[ckey])
+			A.associate(directory[ckey])
 
 	/* let us profile if we're hosting on our computer OR if we have host perms */
 	if (world.host == key || (holder && (holder.rights & R_HOST)))
@@ -204,7 +217,7 @@
 	if (!holder)
 
 		if (!world_is_open)
-			src << "<span class = 'userdanger'>The server is currently closed to non-admins. The game is open [global_game_schedule.getScheduleAsString()].</span>"
+			src << "<span class = 'userdanger'>The server is currently closed to non-admins.</span>"
 			message_admins("[src] tried to log in, but was rejected, the server is closed to non-admins.")
 			del(src)
 			return
@@ -236,12 +249,6 @@
 			winset(src, null, "command=\".configure graphics-hwmode on\"")
 
 	send_resources()
-/*
-	if (prefs.lastchangelog != changelog_hash) //bolds the changelog button on the interface so we know there are updates.
-		src << "<span class='info'>You have unread updates in the changelog.</span>"
-		winset(src, "rpane.changelog", "background-color=#eaeaea;font-style=bold")
-		if (config.aggressive_changelog)
-			changes()*/
 
 	fix_nanoUI()
 
@@ -287,135 +294,34 @@
 
 	return ..()
 
-
-// here because it's similar to below
-
-// Returns null if no DB connection can be established, or -1 if the requested key was not found in the database
-
-/proc/get_player_age(key)
-	establish_db_connection()
-	if (!database)
-		return null
-
-	var/sql_ckey = sql_sanitize_text(ckey(key))
-
-	var/list/rowdata = database.execute("SELECT datediff(Now(),firstseen) as age FROM player WHERE ckey = '[sql_ckey]'")
-
-	if (islist(rowdata) && !isemptylist(rowdata))
-		return text2num(rowdata["age"])
-	else
-		return -1
-
 /client/proc/getSQL_id()
 	return md5(ckey)
 
 /client/proc/log_to_db()
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// loading the "database"
-	var/full_list = file2text("SQL/playerlist.txt")
-//	var/full_logs = file2text("SQL/playerlogs.txt")
-	var/list/full_list_split = splittext(full_list, "|")
-//	var/list/full_logs_split = splittext(full_logs, "|")
-	var/list/full_list_split_vars = list()
-//	world.log << "DEBUG: total lines imported: [num2text(full_list_split.len)]"
-	//splitting the player database, so we can check the values individually:
-	for (var/v = TRUE, v < full_list_split.len, v++)
-		if (full_list_split[v][1] != "0" && full_list_split[v][1] != 0 && full_list_split[v][1] != "\n")
-			var/list/addin = list(splittext(full_list_split[v], ";"))
-			full_list_split_vars += addin
-	var/F = file("SQL/playerlist.txt")
-	if (fexists("SQL/playerlist.txt"))
-		fdel(F)
-	//checking for existing logs of current ckey
-	var/found = TRUE
-	//it exists, just update the values (ckey;firstseen;lastseen;age;points)
-	for (var/v = TRUE, v <= full_list_split_vars.len, v++)
-		if (full_list_split_vars[v][1] == ckey && found == TRUE)
-//			world.log << "DEBUG: This key is on the list! ckey: [ckey]"
-			full_list_split_vars[v][3] = num2text(world.realtime, 10)
-			full_list_split_vars[v][4] = num2text(round((text2num(full_list_split_vars[v][3])-text2num(full_list_split_vars[v][2]))/864000)) //in days
-			found = FALSE
 
-	//it doesnt exist, create an entry
-	if (found == TRUE)
-//		world.log << "DEBUG: New player, adding to the list! ckey: [ckey]"
-		text2file("[ckey];[num2text(world.realtime, 10)];[num2text(world.realtime, 10)];0;0|","SQL/playerlist.txt")
-
-	//copy the changes to the registry
-	for (var/k = TRUE, k <= full_list_split_vars.len, k++)
-		var/var1 = full_list_split_vars[k][1]
-		var/var2 = full_list_split_vars[k][2]
-		var/var3 = full_list_split_vars[k][3]
-		var/var4 = full_list_split_vars[k][4]
-		var/var5 = full_list_split_vars[k][5]
-		text2file("[var1];[var2];[var3];[var4];[var5];|","SQL/playerlist.txt")
-//		world.log << "[var1];[var2];[var3];[var4];[var5];|"
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	if (IsGuestKey(key))
+	if (IsGuestKey(ckey))
 		return
 
-	if (!database)
-		establish_db_connection()
-
-	var/sql_ckey = sql_sanitize_text(ckey)
-	var/list/rowdata = database.execute("SELECT id, datediff(Now(),firstseen) as age FROM player WHERE ckey = '[sql_ckey]';")
-	var/sql_id = getSQL_id()
-	player_age = FALSE	// New players won't have an entry so knowing we have a connection we set this to zero to be updated if their is a record.
-	xp_points = FALSE
-	if (islist(rowdata) && !isemptylist(rowdata))
-		if (rowdata["id"] != null)
-			sql_id = rowdata["id"]
-		player_age = rowdata["age"]
-		xp_points = rowdata["points"]
-
-	rowdata = database.execute("SELECT ckey FROM connection_log WHERE ip = '[address]';")
-	related_accounts_ip = ""
-
-	if (islist(rowdata) && !isemptylist(rowdata))
-		related_accounts_ip += "[rowdata["ckey"]], "
-
-	rowdata = database.execute("SELECT ckey FROM connection_log WHERE computerid = '[computer_id]';")
-	related_accounts_cid = ""
-	if (islist(rowdata) && !isemptylist(rowdata))
-		related_accounts_cid += "[rowdata["ckey"]], "
-
 	var/sql_ip = sql_sanitize_text(address)
-	var/sql_computerid = sql_sanitize_text(computer_id)
 
 	if (sql_ip == null)
 		sql_ip = "HOST"
-
-//	#define SQLDEBUG
-
-	#ifdef SQLDEBUG
-	world << "sql_id: [sql_id]"
-	world << "sql_age: [player_age]"
-	world << "sql_points: [xp_points]"
-	#endif
-	if (sql_id)
-		#ifdef SQLDEBUG
-		world << "prev. player [src]"
-		#endif
-
-		//Player already identified previously, we need to just update the 'lastseen', 'ip' and 'computer_id' variables
-		database.execute("UPDATE player SET lastseen = '[world.realtime]', age = '[player_age]', points = '[xp_points]' WHERE id = '[sql_id]';")
-	else
-		#ifdef SQLDEBUG
-		world << "new player [src]"
-		#endif
-		//New player!! Need to insert all the stuff
-		database.execute("INSERT INTO player (id, ckey, firstseen, lastseen, age, points) VALUES ('[sql_id]', '[sql_ckey]', '[world.realtime]', '[world.realtime]', '[player_age]', '[xp_points]');")
-
+	var/F = file("SQL/playerlogs.txt")
+	var/full_logs = file2text(F)
+	var/list/full_logs_split = splittext(full_logs, "|\n")
+	var/currentage = -1
+	for(var/i=1;i<full_logs_split.len;i++)
+		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
+		if ("[full_logs_split_two[1]]" == ckey)
+			currentage = text2num(full_logs_split_two[4])
 	//Logging player access
-	var/serverip = "[world.internet_address]:[world.port]"
-	database.execute("INSERT INTO connection_log (id,datetime,serverip,ckey,ip,computerid) VALUES('[database.newUID()]','[world.realtime]','[serverip]','[sql_ckey]','[sql_ip]','[sql_computerid]');")
-	//adding to player logs (ckey;ip;computerid;serverip;datetime,realtime)
-//	world.log << "Insert into playerlogs.txt:  (ckey;ip;computerid;serverip;datetime,realtime)"
-	text2file("[sql_ckey];[sql_ip];[sql_computerid];[serverip];[num2text(world.realtime, 10)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+	if (currentage == -1)
+		//adding to player logs (ckey;ip;computerid;datetime;realtime|)
+		text2file("[ckey];[sql_ip];[computer_id];[num2text(world.realtime, 20)];[time2text(world.realtime,"YYYY/MMM/DD-hh:mm:ss")]|","SQL/playerlogs.txt")
+		player_age = 0
+	else
+		player_age = (text2num(num2text(world.realtime,20)) - currentage)
 
-
-//	#undef SQLDEBUG
 
 #undef TOPIC_SPAM_DELAY
 #undef UPLOAD_LIMIT

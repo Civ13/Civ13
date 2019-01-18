@@ -192,6 +192,13 @@
 			var/obj/item/I = src
 			playsound(get_turf(src), I.dropsound, 100, TRUE)
 
+		if (istype(src, /obj/item/weapon/snowball))
+			var/obj/item/weapon/snowball/SB = src
+			SB.icon_state = "snowball_hit"
+			SB.update_icon()
+			spawn(6)
+				qdel(SB)
+			return
 //decided whether a movable atom being thrown can pass through the turf it is in.
 /atom/movable/proc/hit_check(var/speed)
 	if (throwing)

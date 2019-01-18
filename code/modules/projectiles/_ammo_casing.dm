@@ -8,6 +8,15 @@
 	caliber = "musketball"
 	value = 3
 
+/obj/item/ammo_casing/stoneball
+	name = "stone ball projectile"
+	icon_state = "stoneball"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/bullet/rifle/stoneball
+	weight = 0.03
+	caliber = "stoneball"
+	value = 3
+
 /obj/item/ammo_casing/musketball_pistol
 	name = "pistol cartridge"
 	projectile_type = /obj/item/projectile/bullet/rifle/musketball_pistol
@@ -44,6 +53,19 @@
 	amount = 1
 	max_amount = 20
 	singular_name = "projectile"
+	value = 0
+
+/obj/item/stack/ammopart/stoneball
+	name = "stone projectile"
+	desc = "A round stone ball, to be used in handcannons, arquebuses and matchlock muskets."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "stoneball"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_WEAK
+	resultpath = null
+	value = 1
+	weight = 0.15
+	max_amount = 5
 
 /obj/item/stack/ammopart/musketball
 	name = "musketball projectiles"
@@ -77,8 +99,130 @@
 	resultpath = /obj/item/ammo_casing/blunderbuss
 	value = 2
 	weight = 0.1
+/obj/item/stack/ammopart/casing
+	max_amount = 40
+	singular_name = "casing"
+	value = 1
+	weight = 0.05
+	var/gunpowder = 0
+	var/gunpowder_max = 2
+	var/bulletn = FALSE
+
+/obj/item/stack/ammopart/casing/rifle
+	name = "empty rifle casing"
+	desc = "An empty brass casing."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "riflecasing"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	resultpath = null
+	gunpowder_max = 1.5
+
+/obj/item/stack/ammopart/casing/pistol
+	name = "empty pistol casing"
+	desc = "A small empty brass casing."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "pistolcasing"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	resultpath = null
+	gunpowder_max = 1
+
+/obj/item/stack/ammopart/bullet
+	name = "iron bullet"
+	desc = "A molded iron bullet, made to fit in a casing."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "ironbullet"
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	resultpath = null
+	max_amount = 60
+	singular_name = "bullet"
+	value = 1
+	weight = 0.08
+/obj/item/stack/ammopart/casing/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+		if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+			return
+		else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+			user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+			user << "You fill the casings with gunpowder."
+			gunpowder = gunpowder_max*amount
+			return
+	if (istype(W, /obj/item/stack/ammopart/bullet))
+		if (!(gunpowder >= gunpowder_max*amount))
+			user << "<span class = 'notice'>You need to fill the casings with gunpowder before putting the bullet.</span>"
+			return
+		else if (W.amount < amount)
+			user << "<span class = 'notice'>Not enough bullets. reduce the casings stack or add more bullets.</span>"
+		else if (W.amount >= amount)
+			bulletn = amount
+			W.amount -= amount
+			if (W.amount <= 0)
+				qdel(W)
+	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
+		var/list/listing = list("Cancel")
+		if (istype(src, /obj/item/stack/ammopart/casing/pistol))
+			if (map.ordinal_age >= 4)
+				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+			else if (map.ordinal_age >= 5)
+				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+		if (input == "Cancel")
+			return
+		else if (input == ".45 Colt")
+			resultpath = /obj/item/ammo_casing/a45
+		else if (input == ".44-40 Winchester")
+			resultpath = /obj/item/ammo_casing/a44
+		if (resultpath != null)
+			new resultpath(user.loc)
+			for(var/i=1;i<=amount;i++)
+				new resultpath(user.loc)
+			qdel(src)
+			return
+
+		else
+			return
+
+/obj/item/stack/ammopart/casing/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		var/list/listing = list("Cancel")
+		if (map.ordinal_age >= 4)
+			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+		else if (map.ordinal_age >= 5)
+			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+		if (input == "Cancel")
+			return
+		else if (input == ".45 Colt")
+			resultpath = /obj/item/ammo_casing/a45
+		else if (input == ".44-40 Winchester")
+			resultpath = /obj/item/ammo_casing/a44
+		if (resultpath != null)
+			for(var/i=1;i<=amount;i++)
+				new resultpath(user.loc)
+			qdel(src)
+			return
+		else
+			return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
+		return
 
 /obj/item/stack/ammopart/attack_self(mob/user)
+	if (istype(src, /obj/item/stack/ammopart/bullet) || istype(src, /obj/item/stack/ammopart/casing/pistol) || istype(src, /obj/item/stack/ammopart/casing/rifle))
+		return
 	if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
 		if (!user.l_hand.reagents.has_reagent("gunpowder",1))
 			user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
@@ -110,3 +254,104 @@
 	else
 		user << "<span class = 'warning'>You need to a gunpowder container in your hands to make a cartridge.</span>"
 		return
+
+
+/obj/item/ammo_casing/a65x50mm
+	name = "6.5x50mm ammo casing"
+	desc = "A brass casing containing powder and a lead bullet."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a65x50mm
+	caliber = "a65x50mm"
+	value = 5
+
+/obj/item/ammo_casing/a8x53mm
+	name = "8x53mm ammo casing"
+	desc = "A brass casing containing powder and a lead bullet."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a8x53mm
+	caliber = "a8x53mm"
+	value = 5
+
+/obj/item/ammo_casing/c9mm_jap_revolver
+	name = "9mm bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
+	caliber = "c9mm_jap_revolver"
+	value = 5
+
+/obj/item/ammo_casing/a45
+	name = ".45 colt bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a45
+	caliber = "a45"
+	value = 7
+
+/obj/item/ammo_casing/a44
+	name = ".44-40 winchester bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a44
+	caliber = "a45"
+	value = 8
+
+/obj/item/ammo_casing/a762x54
+	name = "7.62x54mm ammo casing"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
+	caliber = "a762x54"
+	value = 2
+
+/obj/item/ammo_casing/a762x38
+	name = "7.62x38mmR bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a762x38
+	caliber = "a762x38"
+	value = 5
+
+/obj/item/ammo_casing/c8mmnambu
+	name = "8mm bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/c8mmnambu
+	caliber = "c8mmnambu"
+	value = 2
+
+/obj/item/ammo_casing/a44
+	name = ".44 bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a44
+	caliber = "44"
+	value = 2
+
+/obj/item/ammo_casing/shotgun
+	name = "shotgun shell"
+	desc = "A shotgun shell casing."
+	icon_state = "shell-bullet"
+	spent_icon = "shell-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/shotgun/buckshot
+	caliber = "12gauge"
+	value = 2

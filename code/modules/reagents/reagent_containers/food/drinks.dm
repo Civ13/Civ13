@@ -103,6 +103,7 @@
 	volume = 10
 	center_of_mass = list("x"=16, "y"=14)
 	value = 5
+	slot_flags = SLOT_ID
 
 /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full
 	value = 5
@@ -128,16 +129,6 @@
 //Notes by Darem: Drinks are simply containers that start preloaded. Unlike condiments, the contents can be ingested directly
 //	rather then having to add it to something else first. They should only contain liquids. They have a default container size of 50.
 //	Formatting is the same as food.
-
-/obj/item/weapon/reagent_containers/food/drinks/milk
-	name = "Milk"
-	desc = "It's milk. White and nutritious goodness!"
-	icon_state = "milk"
-	item_state = "carton"
-	center_of_mass = list("x"=16, "y"=9)
-	New()
-		..()
-		reagents.add_reagent("milk", 50)
 
 /obj/item/weapon/reagent_containers/food/drinks/coffee
 	name = "Robust Coffee"

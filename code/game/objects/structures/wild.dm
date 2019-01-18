@@ -94,6 +94,18 @@
 	density = TRUE
 	sways = TRUE
 	amount = 5
+	layer = 5.11
+
+
+/obj/structure/wild/tree/cactus
+	name = "cactus"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	icon_state = "cactus"
+	opacity = TRUE
+	density = TRUE
+	sways = TRUE
+	amount = 0
+	layer = 5.11
 
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
@@ -180,9 +192,9 @@
 	sways = FALSE
 	amount = 4
 	var/cooldown_sap = FALSE
-
+	layer = 5.11
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone))
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone) && user.a_intent == I_HELP)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && !istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
 			user << "<span class = 'warning'>You need to have a pot in one of your hands in order to extract palm sap.</span>"
@@ -413,7 +425,7 @@
 	amount = 9
 	health = 200
 	maxhealth = 200
-
+	layer = 5.11
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
@@ -431,6 +443,16 @@
 		qdel(src)
 		return
 
+/obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife/bone))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		health -= 10
+		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
+		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+		user.do_attack_animation(src)
+		try_destroy()
+	else
+		..()
 /obj/structure/wild/largejungle
 	name = "large jungle bush"
 	icon = 'icons/obj/flora/largejungleflora.dmi'
@@ -444,3 +466,52 @@
 		icon_state = "bush[rand(1,6)]"
 	else
 		icon_state = "rocks[rand(1,3)]"
+
+
+/obj/structure/wild/junglebush/chinchona
+	name = "chinchona"
+	desc = "you can extract quinine from it."
+	icon = 'icons/obj/flora/plants.dmi'
+	icon_state = "chinchona1"
+	opacity = FALSE
+	density = FALSE
+	healthamount = 1
+
+/obj/structure/wild/junglebush/chinchona/New()
+	..()
+	icon_state = "chinchona1"
+
+/obj/structure/wild/junglebush/chinchona/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+		user.do_attack_animation(src)
+		if (healthamount == 1)
+			user << "You harvest some of the chinchona."
+			new /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona(get_turf(user))
+			healthamount = 0
+			regrow()
+			update_icon()
+			return
+		else
+			user << "There are no good parts to harvest. Wait for it to regrow."
+			return
+	..()
+
+/obj/structure/wild/junglebush/proc/regrow()
+	spawn(3000)
+		healthamount = 1
+		update_icon()
+		return
+
+/obj/structure/wild/junglebush/update_icon()
+	..()
+	icon_state = "chinchona[healthamount]"
+
+/obj/structure/wild/attack_hand(mob/user as mob)
+	if(user.a_intent == I_HURT && map.chad_mode)
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		visible_message("[user] punches \the [src]!")
+		health -= 5
+		try_destroy()
+	else
+		..()

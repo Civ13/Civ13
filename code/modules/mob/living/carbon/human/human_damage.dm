@@ -302,7 +302,7 @@ This function restores all organs.
 	if (!stat && damagetype != BRUTE && damagetype != BURN)
 		if (damagetype == HALLOSS && !(species && (species.flags & NO_PAIN)))
 			if ((damage > 25 && prob(20)) || (damage > 50 && prob(60)))
-				emote("scream")
+				emote("painscream")
 
 		..(damage, damagetype, def_zone, blocked)
 		return TRUE

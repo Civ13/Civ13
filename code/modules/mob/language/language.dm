@@ -82,6 +82,26 @@
 	var/full_name = "Daan Visser"
 	return full_name
 
+/datum/language/proc/get_random_japanese_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese))
+		else
+			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese))
+
+	var/full_name = "Hideki Tojo"
+	return full_name
+
+/datum/language/proc/get_random_russian_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
+	if (!syllables || !syllables.len)
+		if (gender==FEMALE)
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian))
+		else
+			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
+
+	var/full_name = "Victor Reznof"
+	return full_name
+
 /datum/language/proc/get_random_carib_name(var/gender, name_count=1, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
 		if (gender==FEMALE)
@@ -261,26 +281,29 @@
 				cname_check = FALSE
 			else if (istype(l, /datum/language/dutch))
 				cname_check = FALSE
-
+			else if (istype(l, /datum/language/arab))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/latin))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/greek))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/russian))
+				cname_check = FALSE
+			else if (istype(l, /datum/language/japanese))
+				cname_check = FALSE
 	if (cname_check && allow_name_changing)
 		if (istype(new_language, /datum/language/english))
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_english)
-						H.real_name = H.species.get_random_english_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.english_name
+					H.real_name = H.species.get_random_english_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 		if (istype(new_language, /datum/language/spanish))
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_spanish)
-						H.real_name = H.species.get_random_spanish_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.spanish_name
+					H.real_name = H.species.get_random_spanish_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -288,10 +311,7 @@
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_portuguese)
-						H.real_name = H.species.get_random_portuguese_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.portuguese_name
+					H.real_name = H.species.get_random_portuguese_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -299,10 +319,7 @@
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_french)
-						H.real_name = H.species.get_random_french_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.french_name
+					H.real_name = H.species.get_random_french_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -310,10 +327,23 @@
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_dutch)
-						H.real_name = H.species.get_random_dutch_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.dutch_name
+					H.real_name = H.species.get_random_dutch_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/japanese))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_japanese_name(H.gender, FALSE)
+					H.name = H.real_name
+					H.gender = H.client.prefs.gender
+
+		if (istype(new_language, /datum/language/russian))
+			if (ishuman(src))
+				var/mob/living/carbon/human/H = src
+				if (H.species && H.client)
+					H.real_name = H.species.get_random_russian_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -321,10 +351,7 @@
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_carib)
-						H.real_name = H.species.get_random_carib_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.carib_name
+					H.real_name = H.species.get_random_carib_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -332,10 +359,7 @@
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_roman)
-						H.real_name = H.species.get_random_roman_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.roman_name
+					H.real_name = H.species.get_random_roman_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -343,10 +367,7 @@
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_greek)
-						H.real_name = H.species.get_random_greek_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.greek_name
+					H.real_name = H.species.get_random_greek_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -354,10 +375,7 @@
 			if (ishuman(src))
 				var/mob/living/carbon/human/H = src
 				if (H.species && H.client)
-					if (H.client.prefs.be_random_name_arab)
-						H.real_name = H.species.get_random_arab_name(H.gender, FALSE)
-					else
-						H.real_name = H.client.prefs.arab_name
+					H.real_name = H.species.get_random_arab_name(H.gender, FALSE)
 					H.name = H.real_name
 					H.gender = H.client.prefs.gender
 
@@ -384,15 +402,9 @@
 	return (universal_speak || (speaking && speaking.flags & INNATE) || speaking in languages)
 
 /mob/proc/get_language_prefix()
-	if (client && client.prefs.language_prefixes && client.prefs.language_prefixes.len)
-		return client.prefs.language_prefixes[1]
-
 	return config.language_prefixes[1]
 
 /mob/proc/is_language_prefix(var/prefix)
-	if (client && client.prefs.language_prefixes && client.prefs.language_prefixes.len)
-		return prefix in client.prefs.language_prefixes
-
 	return prefix in config.language_prefixes
 
 //TBD

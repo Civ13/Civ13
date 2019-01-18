@@ -80,9 +80,6 @@ var/world_is_open = TRUE
 
 	update_status()
 
-	// make the database, or connect to it
-	establish_db_connection()
-
 	..()
 
 	// This is kinda important. Set up details of what the hell things are made of.
@@ -257,7 +254,6 @@ var/world_topic_spam_protect_time = world.timeofday
 /proc/load_configuration()
 	config = new /datum/configuration()
 	config.load("config/config.txt", "config")
-	config.load("config/game_schedule.txt", "game_schedule")
 
 	/* config options get overwritten by global config options
 	 * only useful for serverswap memery - Kachnov */
@@ -272,75 +268,26 @@ var/world_topic_spam_protect_time = world.timeofday
 	var/s = ""
 
 	if (config.open_hub_discord_in_new_window)
-		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[station_name()]</b></center><br></a>"
+		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[customserver_name()]</b></a></center><br>"
 	else
-		s += "<center><a href=\"[config.discordurl]\"><b>[station_name()]</b></center><br></a>"
+		s += "<center><a href=\"[config.discordurl]\"><b>[customserver_name()]</b></a></center><br>"
 
 	if (config.hub_banner_url)
-		s += "<img src=\"https://i.imgur.com/napac0L.png\">"
+		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
 	if (map)
-		s += "<br><b>Map:</b> [map.title] ([roundduration2text()])<br>"
+		s += "<b>Map:</b> [map.title] ([roundduration2text()])<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
-	if (config.hub_body)
-		s += config.hub_body
+	s += "<b>Gamemode:</b> [map.gamemode]"
+//	if (config.hub_body)
+//		s += config.hub_body
 //	if (config.hub_features)
 //		s += "<b>[config.hub_features]</b><br>"
 
 
 
 	status = s
-
-#define FAILED_DB_CONNECTION_CUTOFF 5
-var/failed_db_connections = FALSE
-var/failed_old_db_connections = FALSE
-var/setting_up_db_connection = FALSE
-
-/hook/startup/proc/connectDB()
-	if (!setup_database_connection())
-		world.log << "Your server failed to establish a connection with the feedback database."
-	else
-		world.log << "Feedback database connection established."
-	return TRUE
-
-//This proc ensures that the connection to the feedback database (global variable dbcon) is established
-/proc/establish_db_connection()
-
-	if (failed_db_connections > FAILED_DB_CONNECTION_CUTOFF)
-		return FALSE
-
-	if (!database)
-		return setup_database_connection()
-	else
-		return TRUE
-
-
-/proc/setup_database_connection()
-
-	if (setting_up_db_connection)
-		return
-
-	setting_up_db_connection = TRUE
-
-	if (failed_db_connections > FAILED_DB_CONNECTION_CUTOFF)	//If it failed to establish a connection more than 5 times in a row, don't bother attempting to conenct anymore.
-		setting_up_db_connection = FALSE
-		return FALSE
-
-	if (!database)
-		database = new("SQL/database.db")
-
-	. = TRUE
-	if ( . )
-		failed_db_connections = FALSE	//If this connection succeeded, reset the failed connections counter.
-	else
-		failed_db_connections++		//If it failed, increase the failed connections counter.
-		world.log << "The database failed to start up for the [failed_db_connections == TRUE ? "1st" : "[failed_db_connections]st"] time."
-		world << "DEBUG: Database has not been conected."
-	setting_up_db_connection = FALSE
-	return .
-
-#undef FAILED_DB_CONNECTION_CUTOFF
 
 /proc/get_packaged_server_status_data()
 	. = ""
@@ -349,6 +296,8 @@ var/setting_up_db_connection = FALSE
 	. += "<b>Address</b>: byond://[world.internet_address]:[world.port]"
 	. += ";"
 	. += "<b>Map</b>: [map ? map.title : "???"]"
+	. += ";"
+	. += "<b>Gamemode</b>: [map ? map.gamemode : "???"]"
 	. += ";"
 	. += "<b>Players</b>: [clients.len]" // turns out the bot only considers itself a player sometimes? its weird. Maybe it was fixed, not sure - Kachnov
 	if (config.usewhitelist)
@@ -392,12 +341,6 @@ var/setting_up_db_connection = FALSE
 				// some sanity for the movementMachine
 				if (movementMachine.last_run != -1 && world.time - movementMachine.last_run >= movementMachine.interval*300)
 					movementMachine.start()
-
-			if (!global_game_schedule)
-				global_game_schedule = new
-
-			global_game_schedule.update()
-
 
 		catch(var/exception/e)
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")

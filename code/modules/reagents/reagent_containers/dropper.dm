@@ -45,9 +45,6 @@
 					if (victim.head)
 						if (victim.head.body_parts_covered & EYES)
 							safe_thing = victim.head
-					if (victim.glasses)
-						if (!safe_thing)
-							safe_thing = victim.glasses
 
 					if (safe_thing)
 						trans = reagents.trans_to_obj(safe_thing, amount_per_transfer_from_this)

@@ -45,12 +45,35 @@
 					if (!istype(UT, /turf/floor/dirt/underground))
 						UT.ChangeTurf(/turf/floor/dirt/underground/empty)
 				new/obj/effect/effect/smoke(src)
-	qdel(src)
+		if (supportfound)
+			if(map.ID == MAP_NOMADS_DESERT)
+				ChangeTurf(/turf/floor/dirt/dust)
+			else
+				ChangeTurf(/turf/floor/dirt)
 
 /turf/floor/attackby(obj/item/C as obj, mob/user as mob)
 
 	if (!C || !user)
 		return FALSE
+
+	if (istype(src, /turf/floor/plating/beach/water))
+		var/turf/floor/plating/beach/water/WT = src
+		if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+			var/obj/item/weapon/reagent_containers/RG = C
+			if (istype(RG) && RG.is_open_container())
+				if (do_after(user, 15, src, check_for_repeats = FALSE))
+					var/sumex = 0
+					if (WT.sickness > 0)
+						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05))
+						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05)
+					if (WT.salty)
+						RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
+						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
+					RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+					user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
+					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
+					user.setClickCooldown(5)
+				return
 
 
 	if ((flooring && istype(C, /obj/item/stack/rods)))
@@ -72,7 +95,7 @@
 		return
 
 	else if (istype(C, /obj/item/weapon/shovel))
-		var/turf/T = get_turf(user)
+		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
 
 		if (T.icon == 'icons/turf/snow.dmi' && istype(H) && !H.shoveling_snow)
@@ -175,8 +198,7 @@
 						H.adaptStat("strength", 1)
 						return
 					if (prob(25))
-						var/pickperc = pick(1,2,3)
-						if (pickperc == 1 || map.age != "1713")
+						if (map.ordinal_age <= 1)
 							new/obj/item/stack/ore/coal(src)
 							H << "<span class='danger'>You found some coal!</span>"
 							if(map.ID == MAP_NOMADS_DESERT)
@@ -186,26 +208,38 @@
 							T.is_mineable = FALSE
 							H.adaptStat("strength", 1)
 							return
-						else if (pickperc == 2)
-							new/obj/item/stack/ore/saltpeter(src)
-							H << "<span class='danger'>You found some saltpeter!</span>"
-							if(map.ID == MAP_NOMADS_DESERT)
-								T.ChangeTurf(/turf/floor/dirt/dust)
-							else
-								T.ChangeTurf(/turf/floor/dirt)
-							T.is_mineable = FALSE
-							H.adaptStat("strength", 1)
-							return
-						else if (pickperc == 3)
-							new/obj/item/stack/ore/sulphur(src)
-							H << "<span class='danger'>You found some sulphur!</span>"
-							if(map.ID == MAP_NOMADS_DESERT)
-								T.ChangeTurf(/turf/floor/dirt/dust)
-							else
-								T.ChangeTurf(/turf/floor/dirt)
-							T.is_mineable = FALSE
-							H.adaptStat("strength", 1)
-							return
+						else
+							var/pickperc = pick(1,2,3)
+							if (pickperc == 1)
+								new/obj/item/stack/ore/coal(src)
+								H << "<span class='danger'>You found some coal!</span>"
+								if(map.ID == MAP_NOMADS_DESERT)
+									T.ChangeTurf(/turf/floor/dirt/dust)
+								else
+									T.ChangeTurf(/turf/floor/dirt)
+								T.is_mineable = FALSE
+								H.adaptStat("strength", 1)
+								return
+							else if (pickperc == 2)
+								new/obj/item/stack/ore/saltpeter(src)
+								H << "<span class='danger'>You found some saltpeter!</span>"
+								if(map.ID == MAP_NOMADS_DESERT)
+									T.ChangeTurf(/turf/floor/dirt/dust)
+								else
+									T.ChangeTurf(/turf/floor/dirt)
+								T.is_mineable = FALSE
+								H.adaptStat("strength", 1)
+								return
+							else if (pickperc == 3)
+								new/obj/item/stack/ore/sulphur(src)
+								H << "<span class='danger'>You found some sulphur!</span>"
+								if(map.ID == MAP_NOMADS_DESERT)
+									T.ChangeTurf(/turf/floor/dirt/dust)
+								else
+									T.ChangeTurf(/turf/floor/dirt)
+								T.is_mineable = FALSE
+								H.adaptStat("strength", 1)
+								return
 					if (prob(5))
 						new/obj/item/stack/ore/silver(src)
 						H << "<span class='danger'>You found some silver ore!</span>"
@@ -241,6 +275,8 @@
 					H << "<span class='danger'>You found some usable stone blocks!</span>"
 					if(map.ID == MAP_NOMADS_DESERT)
 						T.ChangeTurf(/turf/floor/dirt/dust)
+					else if (map.ID == MAP_NOMADS_JUNGLE)
+						T.ChangeTurf(/turf/floor/dirt/jungledirt)
 					else
 						T.ChangeTurf(/turf/floor/dirt)
 					T.is_mineable = FALSE
@@ -271,20 +307,55 @@
 			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 
 		if (src == get_step(user, user.dir))
-			if (WWinput(user, "This will start building a dirt wall [your_dir] of you.", "Dirt Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
-				visible_message("<span class='danger'>[user] starts constructing the base of a dirt wall.</span>", "<span class='danger'>You start constructing the base of a dirt wall.</span>")
+			if (WWinput(user, "This will start building a dirt barricade [your_dir] of you.", "Dirt Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+				visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
 				if (do_after(user, sandbag_time, user.loc))
 					var/obj/item/weapon/sandbag/bag = C
 					var/progress = bag.sand_amount
 					qdel(C)
 					var/obj/structure/window/sandbag/incomplete/sandbag = new/obj/structure/window/sandbag/incomplete(src, user)
 					sandbag.progress = progress
-					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt wall. Anyone can now add to it.</span>")
+					visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>")
 					if (ishuman(user))
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3)
 				return
 
+	else if (istype(C, /obj/item/weapon/snowwall))
+
+		var/your_dir = "NORTH"
+
+		switch (user.dir)
+			if (NORTH)
+				your_dir = "NORTH"
+			if (SOUTH)
+				your_dir = "SOUTH"
+			if (EAST)
+				your_dir = "EAST"
+			if (WEST)
+				your_dir = "WEST"
+
+		var/sandbag_time = 50
+
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			sandbag_time /= H.getStatCoeff("strength")
+			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+
+		if (src == get_step(user, user.dir))
+			if (WWinput(user, "This will start building a snow barricade [your_dir] of you.", "Snow Barricade Construction", "Continue", list("Continue", "Stop")) == "Continue")
+				visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
+				if (do_after(user, sandbag_time, user.loc))
+					var/obj/item/weapon/snowwall/bag = C
+					var/progress = bag.sand_amount
+					qdel(C)
+					var/obj/structure/window/snowwall/sandbag = new/obj/structure/window/snowwall/incomplete(src, user)
+					sandbag.progress = progress
+					visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>")
+					if (ishuman(user))
+						var/mob/living/carbon/human/H = user
+						H.adaptStat("crafting", 3)
+				return
 	else if (istype(C, /obj/item/stack/farming/seeds))
 		var/mob/living/carbon/human/H = user
 		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
@@ -427,6 +498,8 @@
 				new/obj/structure/farming/plant/rice(src)
 				if (C.amount>1)
 					C.amount -= 1
+				else
+					qdel(C)
 			else if (istype(C, /obj/item/stack/farming/seeds/grapes))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/grapes(src)
@@ -461,13 +534,25 @@
 			return
 	else if (istype(C, /obj/item/weapon/plough))
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/plating/grass))
+		if (istype(T, /turf/floor/plating/grass/wild/jungle))
+			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+			return
+		if (istype(T, /turf/floor/dirt/burned))
+			user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
+			return
+		if (istype(T, /turf/floor/dirt/jungledirt))
+			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
+			return
+		if (istype(T, /turf/floor/plating/grass) && !istype(T, /turf/floor/plating/grass/wild/jungle))
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return
 		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 			if (do_after(user, 70, user.loc))
-				ChangeTurf(/turf/floor/dirt/ploughed)
+				if (istype(T, /turf/floor/dirt/flooded))
+					ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+				else
+					ChangeTurf(/turf/floor/dirt/ploughed)
 				return
 		else
 			user << "<span class='danger'>You can't plough this type of terrain.</span>"

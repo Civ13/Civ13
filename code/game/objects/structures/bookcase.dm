@@ -79,20 +79,12 @@
 	else
 		for (var/obj/item/weapon/book/research/RB in contents)
 			if (RB.completed)
-				var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
-				if (map.nomads == TRUE)
-					if (alive_civilians.len <= 12)
-						current_tribesmen = alive_civilians.len
-					else if (alive_civilians.len > 12 && alive_civilians.len <= 30)
-						current_tribesmen = alive_civilians.len/2
-					else
-						current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
 				if (RB.k_class == "medicine" || RB.k_class == "anatomy")
-					sum_h += RB.k_level/current_tribesmen
+					sum_h += RB.k_level
 				if (RB.k_class == "gunpowder" || RB.k_class == "fencing" || RB.k_class == "archery")
-					sum_m += RB.k_level/current_tribesmen
+					sum_m += RB.k_level
 				if (RB.k_class == "industry" || RB.k_class == "philosophy")
-					sum_i += RB.k_level/current_tribesmen
+					sum_i += RB.k_level
 		current_research = sum_i+sum_m+sum_h
 
 /obj/structure/bookcase/attackby(obj/O as obj, mob/living/carbon/human/user as mob)
@@ -133,6 +125,14 @@
 				if (world.time < map.age3_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age2_top*3))
 					user << "You are already too advanced. You can research again in [(map.age3_timer-world.time)/600] minutes."
 					return
+			if (map.age3_done == TRUE && map.age4_done == FALSE)
+				if (world.time < map.age4_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age3_top*3))
+					user << "You are already too advanced. You can research again in [(map.age4_timer-world.time)/600] minutes."
+					return
+			if (map.age4_done == TRUE && map.age5_done == FALSE)
+				if (world.time < map.age5_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age4_top*3))
+					user << "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600] minutes."
+					return
 		if (!map.civilizations)
 			return
 		else if(!contents.len)
@@ -140,7 +140,15 @@
 			return
 		else
 			check_research()
-			var/studytime = 300*current_research
+			var/current_tribesmen = (alive_civilians.len/map.availablefactions.len)
+			if (map.nomads == TRUE)
+				if (alive_civilians.len <= 12)
+					current_tribesmen = alive_civilians.len
+				else if (alive_civilians.len > 12 && alive_civilians.len <= 30)
+					current_tribesmen = alive_civilians.len/2
+				else
+					current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
+			var/studytime = 300*current_research/current_tribesmen
 			var/displaytime = convert_to_textminute(studytime)
 			user << "Studying these documents... This will take [displaytime] to finish."
 			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))

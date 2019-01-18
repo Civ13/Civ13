@@ -23,9 +23,8 @@
 	faction1 = INDIANS
 	faction2 = PIRATES
 	songs = list(
-		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',
-		"Black Sails:1" = 'sound/music/black_sails.ogg')
-
+		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
+	gamemode = "Survival RP"
 obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/pirates))

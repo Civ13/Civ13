@@ -540,42 +540,6 @@
 		if (map && map.faction1_can_cross_blocks())
 			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
 			return
-//	if (istype(job, /datum/job/indians))
-//		if (client.prefs.s_tone < -145)
-//			usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
-//			if (map.ID == MAP_TRIBES)
-//				abandon_mob()
-//				spawn(10)
-//					usr << "<span class='danger'>Your skin is too dark for you to be a Native. Choose a value between 135 and 180.</span>"
-//			return
-//		if (client.prefs.s_tone > -100)
-//			usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
-//			if (map.ID == MAP_TRIBES)
-//				abandon_mob()
-//				spawn(10)
-//					usr << "<span class='danger'>Your skin is too light for you to be a Native. Choose a value between 135 and 180.</span>"
-//			return
-	if (istype(job, /datum/job/british) || istype(job, /datum/job/french))
-		if (client.prefs.s_tone < -45)
-			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 80.</span>"
-			return
-	if (istype(job, /datum/job/portuguese) || istype(job, /datum/job/spanish))
-		if (client.prefs.s_tone < -65)
-			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 100.</span>"
-			return
-	if (istype(job, /datum/job/dutch))
-		if (client.prefs.s_tone < -25)
-			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 60.</span>"
-			return
-	if (istype(job, /datum/job/civilian) && !map.civilizations)
-		if (client.prefs.s_tone < -65)
-			usr << "<span class='danger'>You are too dark to be a colonist. Choose a value lower than 100.</span>"
-			return
-
-	if (istype(job, /datum/job/greek) || istype(job, /datum/job/roman))
-		if (client.prefs.s_tone < -65)
-			usr << "<span class='danger'>Your skin is too dark for the faction you chose. Choose a value lower than 100.</span>"
-			return
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
@@ -583,13 +547,6 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
-	if (istype(job, /datum/job/arab))
-		if (client.prefs.s_tone < -115)
-			usr << "<span class='danger'>Your skin is too dark for you to be an Arab. Choose a value between 110 and 150.</span>"
-			return
-		if (client.prefs.s_tone > -75)
-			usr << "<span class='danger'>Your skin is too light for you to be an Arab. Choose a value between 110 and 150.</span>"
-
 			return
 	spawning = TRUE
 	close_spawn_windows()
@@ -646,6 +603,10 @@
 		dat += "[alive_roman.len] Romans "
 	if (ARAB in map.faction_organization)
 		dat += "[alive_arab.len] Arabs "
+	if (JAPANESE in map.faction_organization)
+		dat += "[alive_japanese.len] Japanese "
+	if (RUSSIAN in map.faction_organization)
+		dat += "[alive_russian.len] Russian "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -663,7 +624,10 @@
 		BRITISH = FALSE,
 		ROMAN = FALSE,
 		GREEK = FALSE,
-		ARAB = FALSE,)
+		ARAB = FALSE,
+		RUSSIAN = FALSE,
+		JAPANESE = FALSE,
+		)
 
 	var/prev_side = FALSE
 
@@ -850,13 +814,6 @@
 	new_character.lastarea = get_area(loc)
 
 	if (client)
-		for (var/lang in client.prefs.alternate_languages)
-			var/datum/language/chosen_language = all_languages[lang]
-			if (chosen_language)
-				if (has_admin_rights() \
-					|| (new_character.species && (chosen_language.name in new_character.species.secondary_langs)))
-					new_character.add_language(lang)
-
 		if (ticker.random_players)
 			new_character.gender = pick(MALE, FEMALE)
 			client.prefs.real_name = random_name(new_character.gender)

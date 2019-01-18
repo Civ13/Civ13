@@ -79,7 +79,7 @@
 #define ui_temp "EAST-1:28,CENTER-1:13"
 #define ui_health "EAST-1:28,CENTER:15"
 #define ui_internal "EAST-1:28,CENTER+1:17"
-									//borgs
+
 //Pop-up inventory
 #define ui_shoes "WEST+1:8,SOUTH:5"
 

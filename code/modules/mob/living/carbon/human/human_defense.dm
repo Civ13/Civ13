@@ -27,10 +27,9 @@ bullet_act
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
 					for (var/v in 1 to rand(5,7))
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "human meatsteak"
-					for (var/v in 1 to rand(3,5))
-						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
-						leather.name = "human leather"
+						meat.name = "human meat"
+					var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
+					HP.amount = 6
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
 					for (var/obj/item/clothing/I in contents)
@@ -340,9 +339,9 @@ bullet_act
 
 	if (check_shields(I.force, I, user, target_zone, "the [I.name]"))
 		return null
-
-	if(attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
-		return null
+	if (src != user)
+		if(attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
+			return null
 
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting || affecting.is_stump())
@@ -420,11 +419,18 @@ bullet_act
 					if (head)
 						head.add_blood(src)
 						update_inv_head(0)
-					if (glasses && prob(33))
-						glasses.add_blood(src)
-						update_inv_glasses(0)
 				if ("chest")
 					bloody_body(src)
+	if (istype(I, /obj/item/weapon/material/quarterstaff))
+		if (istype(user, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = user
+			if (prob(6*HH.getStatCoeff("dexterity")))
+				visible_message("<span class='danger'>[src] has been knocked down!</span>")
+				Weaken(2)
+		else
+			if (prob(6))
+				visible_message("<span class='danger'>[src] has been knocked down!</span>")
+				Weaken(2)
 
 	return TRUE
 
@@ -523,7 +529,12 @@ bullet_act
 			if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
 				if (I.w_class <= 2.0)
 					affecting.embed(I)
-
+		if (istype(O, /obj/item/weapon/snowball))
+			O.icon_state = "snowball_hit"
+			O.update_icon()
+			spawn(6)
+				qdel(O)
+			return
 		// Begin BS12 momentum-transfer code.
 		var/mass = 1.5
 		if (istype(O, /obj/item))

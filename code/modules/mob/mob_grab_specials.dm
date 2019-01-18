@@ -67,7 +67,7 @@
 	if (state < GRAB_NECK)
 		attacker << "<span class='warning'>You require a better grab to do this.</span>"
 		return
-	for (var/obj/item/protection in list(target.head, target.wear_mask, target.glasses))
+	for (var/obj/item/protection in list(target.head, target.wear_mask))
 		if (protection && (protection.body_parts_covered & EYES))
 			attacker << "<span class='danger'>You're going to need to remove the eye covering first.</span>"
 			return

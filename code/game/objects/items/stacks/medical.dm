@@ -9,7 +9,7 @@
 	throw_range = 20
 	var/heal_brute = 0
 	var/heal_burn = 0
-
+	value = 0
 /obj/item/stack/medical/attack(mob/living/carbon/C as mob, mob/user as mob)
 	if (!istype(C) )
 		if (!istype(C, /mob/living/simple_animal))
@@ -190,6 +190,7 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "healing_herbs"
 	item_state = null
+	amount = 10
 
 /obj/item/stack/medical/advanced/ointment
 	name = "burn kit"
@@ -199,6 +200,7 @@
 	icon_state = "burn_kit"
 	item_state = "burn_kit"
 	heal_burn = FALSE
+	amount = 10
 //	origin_tech = list(TECH_BIO = TRUE)
 
 
@@ -277,12 +279,21 @@
 		return
 
 /obj/item/stack/medical/bruise_pack/bint
-	name = "roll of bint"
-	singular_name = "bint length"
+	name = "cloth bandages"
+	singular_name = "cloth bandage"
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bint"
 	heal_brute = 10 // for healing dogs and other animals
+	amount = 10
 
+/obj/item/stack/medical/bruise_pack/bint/leather
+	name = "leather bandages"
+	singular_name = "leather bandage"
+	desc = "A crude bandage, made of thin animal leather."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "leatherbandage"
+	heal_brute = 6 // for healing dogs and other animals
+	amount = 6
 
 /obj/item/stack/medical/bruise_pack/gauze
 	name = "roll of gauze"
@@ -290,3 +301,4 @@
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "gauze"
 	heal_brute = 10 // for healing dogs and other animals
+	amount = 10

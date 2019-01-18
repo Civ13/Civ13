@@ -96,9 +96,16 @@ proc/admin_notice(var/message, var/rights)
 			body += {"<br><br>
 				<b>Rudimentary transformation:</b><font size=2><br>These transformations only create a new mob type and copy stuff over. They do not take into account MMIs and similar mob-specific things. The buttons in 'Transformations' are preferred, when possible.</font><br>
 				<A href='?src=\ref[src];simplemake=observer;mob=\ref[M]'>Observer</A> |
-				\[ Default: <A href='?src=\ref[src];simplemake=human;mob=\ref[M]'>Human</A> |
 				<A href='?src=\ref[src];simplemake=monkey;mob=\ref[M]'>Monkey</A> |
 				<A href='?src=\ref[src];simplemake=cat;mob=\ref[M]'>Cat</A> |
+				<A href='?src=\ref[src];simplemake=parrot;mob=\ref[M]'>Parrot</A> |
+				<A href='?src=\ref[src];simplemake=chicken;mob=\ref[M]'>Chicken</A> |
+				<A href='?src=\ref[src];simplemake=turkey;mob=\ref[M]'>Turkey</A> |
+				<A href='?src=\ref[src];simplemake=cow;mob=\ref[M]'>Cow</A> |
+				<A href='?src=\ref[src];simplemake=bull;mob=\ref[M]'>Bull</A> |
+				<A href='?src=\ref[src];simplemake=nouse;mob=\ref[M]'>Mouse</A> |
+				<A href='?src=\ref[src];simplemake=bear;mob=\ref[M]'>Bear</A> |
+				<A href='?src=\ref[src];simplemake=velociraptor;mob=\ref[M]'>Velociraptor</A> ]
 				<br>"}
 
 	body += {"<br><br>
@@ -551,6 +558,30 @@ proc/admin_notice(var/message, var/rights)
 		world << "<big>Research has been <b>deactivated.</b></big>"
 		log_admin("[key_name(usr)] has deactivated the Research.")
 		return
+
+/datum/admins/proc/set_research_speed()
+	set category = "Special"
+	set desc="Changes research speed in Auto-Research mode."
+	set name="Set Research Speed"
+	if (!map.civilizations)
+		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
+		return
+	if (!(map.autoresearch))
+		usr << "<font color='red'>Error: This is only available within the Auto-Research Gamemode.</font>"
+		return
+	else
+		var/customresearchsp = input("How many Research Points to increase per minute?", "Auto-Research Multiplier") as num|null
+		if (customresearchsp == null)
+			return
+		if (customresearchsp < 0)
+			customresearchsp = 0
+		if (customresearchsp > 200)
+			customresearchsp = 200
+		map.autoresearch_mult = customresearchsp
+		world << "<big>Research increase per minute has been changed to <b>[map.autoresearch_mult]</b></big>"
+		log_admin("[key_name(usr)] has changed the research modifier to [map.autoresearch_mult].")
+		return
+
 /datum/admins/proc/set_custom_research()
 	set category = "Special"
 	set desc="Changes the starting research."
@@ -591,7 +622,7 @@ proc/admin_notice(var/message, var/rights)
 		usr << "<font color='red'>Error: The game as already started.</font>"
 		return
 	else
-		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "Cancel"))
+		var/customage = WWinput(src, "Choose the starting age:", "Starting Age", "5000 B.C.", list("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "Cancel"))
 		if (customage == "Cancel")
 			return
 		else if (customage == "5000 B.C.")
@@ -621,6 +652,27 @@ proc/admin_notice(var/message, var/rights)
 			map.age1_done = TRUE
 			map.age2_done = TRUE
 			map.age3_done = TRUE
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1873")
+			map.ordinal_age = 4
+			map.age = "1873"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
+			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
+			return
+		else if (customage == "1903")
+			map.ordinal_age = 5
+			map.age = "1903"
+			map.age1_done = TRUE
+			map.age2_done = TRUE
+			map.age3_done = TRUE
+			map.age4_done = TRUE
+			map.age5_done = TRUE
 			world << "<big>The Epoch has been changed to <b>[map.age]</b></big>"
 			log_admin("[key_name(usr)] changed the map's epoch to [map.age].")
 			return

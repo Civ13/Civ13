@@ -5,9 +5,8 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "wood_ship"
 	var/passable = TRUE
-	var/origin_density = FALSE
+	var/origin_covered = FALSE
 	var/origin_water_level = 0
-	var/origin_move_delay = 0
 	var/not_movable = FALSE //if it can be removed by wrenches
 	var/health = 100
 	is_cover = TRUE
@@ -21,6 +20,9 @@
 	var/wood = TRUE
 	var/onfire = FALSE
 	flammable = TRUE
+	var/current_area_type = /area/caribbean
+	var/incomplete = FALSE
+	explosion_resistance = TRUE
 //	invisibility = 101 //starts invisible
 
 
@@ -32,6 +34,11 @@
 	amount = 1
 	layer = 1.99
 
+/obj/covers/wood/stairs
+	name = "wood stairs"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "wood2_stairs"
+
 /obj/covers/cobblestone
 	name = "cobblestone floor"
 	icon = 'icons/turf/floors.dmi'
@@ -42,6 +49,13 @@
 	wood = FALSE
 	layer = 1.99
 	flammable = FALSE
+	explosion_resistance = 2
+
+/obj/covers/cobblestone/stairs
+	name = "stone stairs"
+	icon = 'icons/obj/stairs.dmi'
+	icon_state = "rampup"
+
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -53,6 +67,7 @@
 	wood = FALSE
 	layer = 1.99
 	flammable = FALSE
+	explosion_resistance = 2
 
 /obj/covers/wood_ship
 	name = "wood floor"
@@ -61,6 +76,30 @@
 	not_movable = TRUE
 	amount = 1
 	layer = 1.99
+
+/obj/covers/saloon_door
+	name = "saloon door"
+	desc = "A wood door."
+	icon = 'icons/obj/doors/material_doors.dmi'
+	icon_state = "saloon"
+	passable = TRUE
+	not_movable = TRUE
+	density = FALSE
+	opacity = FALSE
+	amount = 2
+	layer = 3
+	health = 90
+	wall = FALSE
+	explosion_resistance = 3
+
+
+/obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
+	visible_message("[M] pushes \the [src].","You push \the [src]")
+	icon_state = "saloon_opening"
+	update_icon()
+	spawn(20)
+		icon_state = "saloon"
+		update_icon()
 
 /obj/covers/wood_wall
 	name = "soft wood wall"
@@ -72,9 +111,10 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 4
-	layer = 2.12
+	layer = 3
 	health = 150
 	wall = TRUE
+	explosion_resistance = 5
 
 /obj/covers/stone_wall
 	name = "stone wall"
@@ -86,11 +126,12 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 300
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	explosion_resistance = 10
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -102,11 +143,12 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 90
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	explosion_resistance = 3
 
 /obj/covers/straw_wall
 	name = "straw wall"
@@ -118,10 +160,11 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 1
-	layer = 2.12
+	layer = 3
 	health = 75
 	wood = TRUE
 	wall = TRUE
+	explosion_resistance = 2
 
 /obj/covers/dirt_wall/blocks
 	name = "dirt blocks wall"
@@ -133,11 +176,12 @@
 	density = TRUE
 	opacity = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 110
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
+	explosion_resistance = 4
 
 /obj/covers/dirt_wall/blocks/incomplete
 	name = "dirt blocks wall"
@@ -148,8 +192,9 @@
 	not_movable = TRUE
 	density = TRUE
 	opacity = FALSE
+	incomplete = TRUE
 	amount = 0
-	layer = 2.12
+	layer = 3
 	health = 30
 	var/stage = 1
 	wood = FALSE
@@ -177,39 +222,101 @@
 				return
 	..()
 
+
+/obj/covers/clay_wall
+	name = "clay bricks wall"
+	desc = "A clay bricks wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "claybrickwall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 150
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 6
+
+/obj/covers/clay_wall/incomplete
+	name = "clay bricks wall"
+	desc = "A clay bricks wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "claybrickwall_inc1"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = FALSE
+	incomplete = TRUE
+	amount = 0
+	layer = 3
+	health = 40
+	var/stage = 1
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+
+/obj/covers/clay_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
+		if (stage >= 2)
+			user << "You start adding clay bricks to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish adding clay bricks to the wall, completing it."
+				qdel(W)
+				new /obj/covers/clay_wall(loc)
+				qdel(src)
+				return
+		else if (stage <= 1)
+			user << "You start adding clay bricks to the wall..."
+			if (do_after(user, 20, src))
+				user << "You finish clay bricks to the wall."
+				stage += 1
+				icon_state = "claybrickwall_inc[stage]"
+				health = (30*stage)
+				qdel(W)
+				return
+	..()
+
 /obj/covers/New()
 	..()
-	spawn(15)
-		var/turf/T = get_turf(loc)
-		if (passable)
-			origin_density = T.density
-			T.density = FALSE
-			spawn(15)
-				updateturf()
-		return TRUE
+	if (wall && !incomplete)
+		var/area/caribbean/CURRENTAREA = get_area(src)
+		if (CURRENTAREA.location == AREA_OUTSIDE)
+			current_area_type = CURRENTAREA.type
+			new/obj/roof(get_turf(src))
+
+	spawn(5)
+		updateturf()
+	return TRUE
+
 
 /obj/covers/updateturf()
-	var/turf/T = get_turf(loc)
-	if (passable)
-		origin_density = T.density
-		origin_move_delay = T.move_delay
-		origin_water_level = T.water_level
-		T.density = FALSE
-		T.water_level = 0
-		T.move_delay = 0
-		if (istype(T, /turf/floor/plating/beach/water/deep))
-			T.iscovered = TRUE
+	..()
+	var/turf/T = get_turf(src)
+	origin_water_level = T.water_level
+	T.water_level = 0
+	T.move_delay = 0
+	origin_covered = T.iscovered
+	T.iscovered = TRUE
 	return TRUE
 
 
 /obj/covers/Destroy()
-	var/turf/T = get_turf(loc)
-	if (origin_density)
-		T.density = origin_density
-		T.water_level = origin_water_level
+	if (wall && !incomplete)
+		new current_area_type(get_turf(src))
+		visible_message("The roof collapses!")
+	var/turf/floor/T = get_turf(loc)
+	T.iscovered = origin_covered
+	T.water_level = origin_water_level
+	T.move_delay = T.get_move_delay()
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount
+	if (wall == TRUE)
+		for(var/obj/roof/R in range(2,src))
+			R.collapse_check()
 	..()
 	return TRUE
 
@@ -221,7 +328,7 @@
 	icon_state = "wood_ship_repaired2"
 	w_class = 2.0
 	flammable = TRUE
-
+	value = 0
 /obj/covers/repairedfloor
 	name = "repaired floor"
 	desc = "a repaired wood floor."
@@ -229,6 +336,7 @@
 	icon_state = "wood_ship_repaired"
 	layer = 1.98
 	flammable = TRUE
+	explosion_resistance = FALSE
 
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/your_dir = "NORTH"
@@ -251,7 +359,7 @@
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 	if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
-		if (do_after(user, covers_time, user.loc))
+		if (do_after(user, covers_time, user.loc) && src)
 			qdel(src)
 			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
@@ -273,7 +381,7 @@
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
 		if (prob(75) && density)
-			visible_message("<span class = 'warning'>The [mover.name] hits \the [src]!</span>")
+			visible_message("<span class = 'warning'>\The [mover.name] hits \the [src]!</span>")
 			return FALSE
 		else
 			return TRUE
@@ -283,30 +391,39 @@
 /obj/covers/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench) && not_movable == TRUE)
 		return
+	if (istype(W, /obj/item/weapon/hammer))
+		if (!wall)
+			user << "You start removing \the [src]..."
+			if (do_after(user, 70, src))
+				user << "You removed \the [src] from the floor."
+				qdel(src)
+				return
+	if (wall)
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
-	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
+			var/obj/item/flashlight/torch/T = W
+			if (prob(33) && T.on)
+				onfire = TRUE
+				visible_message("<span class='danger'>\The [src] catches fire!</span>")
+				start_fire()
+		else
+			switch(W.damtype)
+				if ("fire")
+					health -= W.force * 0.7
+				if ("brute")
+					health -= W.force * 0.2
 
-	if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
-		var/obj/item/flashlight/torch/T = W
-		if (prob(33) && T.on)
-			onfire = TRUE
-			visible_message("<span class='danger'>\The [src] catches fire!</span>")
-			start_fire()
+		playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
+		user.do_attack_animation(src)
+		try_destroy()
+		..()
 	else
-		switch(W.damtype)
-			if ("fire")
-				health -= W.force * 0.7
-			if ("brute")
-				health -= W.force * 0.2
-
-	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
-	user.do_attack_animation(src)
-	try_destroy()
-	..()
+		return
 
 /obj/covers/proc/try_destroy()
 	if (health <= 0)
-		visible_message("<span class='danger'>The [src] is broken into pieces!</span>")
+		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
 		qdel(src)
 		return
 

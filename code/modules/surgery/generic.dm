@@ -17,15 +17,17 @@
 			return FALSE
 		if (affected.is_stump())
 			return FALSE
+		if (affected.is_stump())
+			return FALSE
 		return TRUE
 
 /datum/surgery_step/generic/cut_open
 	allowed_tools = list(
-	/obj/item/weapon/surgery/scalpel = 100,		\
-	/obj/item/weapon/surgery/scalpel/bronze = 85,		\
-	/obj/item/weapon/material/knife = 75,	\
-	/obj/item/weapon/material/shard = 50, 		\
-	/obj/item/weapon/material/kitchen/utensil/knife/bone = 100 \
+		1 = list("/obj/item/weapon/surgery/scalpel",100),
+		2 = list("/obj/item/weapon/surgery/scalpel/bronze",85),
+		3 = list("/obj/item/weapon/material/knife",75),
+		4 = list("/obj/item/weapon/material/shard",50),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",70),
 	)
 
 	min_duration = 90
@@ -63,9 +65,9 @@
 
 /datum/surgery_step/generic/clamp_bleeders
 	allowed_tools = list(
-	/obj/item/weapon/surgery/hemostat = 100,	\
-	/obj/item/weapon/surgery/hemostat/bronze = 85, 	\
-	/obj/item/stack/material/rope = 50, 	\
+		1 = list("/obj/item/weapon/surgery/hemostat",100),
+		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
+		3 = list("/obj/item/stack/material/rope",50),
 	)
 
 	min_duration = 40
@@ -98,11 +100,11 @@
 
 /datum/surgery_step/generic/retract_skin
 	allowed_tools = list(
-	/obj/item/weapon/surgery/retractor = 100, 	\
-	/obj/item/weapon/surgery/retractor/bronze = 85, 	\
-	/obj/item/weapon/crowbar = 70,	\
-	/obj/item/weapon/material/handle = 60,	\
-	/obj/item/weapon/material/kitchen/utensil/fork = 50
+		1 = list("/obj/item/weapon/surgery/retractor",100),
+		2 = list("/obj/item/weapon/surgery/retractor/bronze",85),
+		3 = list("/obj/item/weapon/crowbar",70),
+		4 = list("/obj/item/weapon/material/handle",60),
+		5 = list("/obj/item/weapon/material/kitchen/utensil/fork",50),
 	)
 
 	min_duration = 30
@@ -155,10 +157,10 @@
 
 /datum/surgery_step/generic/cauterize
 	allowed_tools = list(
-	/obj/item/weapon/surgery/cautery = 100,			\
-	/obj/item/weapon/surgery/cautery/bronze = 85,			\
-	/obj/item/clothing/mask/smokable/cigarette/cigar = 60,	\
-	/obj/item/flashlight/torch = 75,
+		1 = list("/obj/item/weapon/surgery/cautery",100),
+		2 = list("/obj/item/weapon/surgery/cautery/bronze",85),
+		3 = list("/obj/item/clothing/mask/smokable/cigarette/cigar",60),
+		4 = list("/obj/item/flashlight/torch",75),
 	)
 
 	min_duration = 70
@@ -192,10 +194,10 @@
 
 /datum/surgery_step/generic/amputate
 	allowed_tools = list(
-	/obj/item/weapon/surgery/bone_saw = 100, \
-	/obj/item/weapon/surgery/bone_saw/bronze = 85, \
-	/obj/item/weapon/material/hatchet = 75, \
-	/obj/item/weapon/material/kitchen/utensil/knife/bone = 75
+		1 = list("/obj/item/weapon/surgery/bone_saw",100),
+		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
+		3 = list("/obj/item/weapon/material/hatchet",75),
+		4 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",75)
 	)
 
 	min_duration = 110

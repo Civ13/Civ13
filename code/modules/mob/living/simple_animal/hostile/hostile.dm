@@ -20,7 +20,7 @@
 
 	var/atom/T = null
 	stop_automated_movement = FALSE
-	for (var/atom/A in ListTargets(10))
+	for (var/atom/A in ListTargets(7))
 
 		if (A == src)
 			continue
@@ -64,7 +64,7 @@
 	stop_automated_movement = TRUE
 	if (!target_mob || SA_attackable(target_mob))
 		stance = HOSTILE_STANCE_IDLE
-	if (target_mob in ListTargets(10))
+	if (target_mob in ListTargets(7))
 		if (ranged)
 			if (get_dist(src, target_mob) <= 6)
 				OpenFire(target_mob)
@@ -79,7 +79,7 @@
 	if (!target_mob || SA_attackable(target_mob))
 		LoseTarget()
 		return FALSE
-	if (!(target_mob in ListTargets(10)))
+	if (!(target_mob in ListTargets(7)))
 		LostTarget()
 		return FALSE
 	if (get_dist(src, target_mob) <= 1)	//Attacking

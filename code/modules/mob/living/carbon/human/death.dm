@@ -34,7 +34,7 @@
 	next_emote["vocal"] = world.time + 50
 	..()
 	next_emote["vocal"] = world.time - 1
-	emote("scream")
+	emote("painscream")
 
 /mob/living/carbon/human/death(gibbed = FALSE)
 

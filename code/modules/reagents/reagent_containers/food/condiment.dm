@@ -89,7 +89,7 @@
 					center_of_mass = list("x"=16, "y"=6)
 				if ("sodiumchloride")
 					name = "Salt Shaker"
-					desc = "Salt. From space oceans, presumably."
+					desc = "Salt. From the oceans, presumably."
 					icon_state = "saltshaker"
 					center_of_mass = list("x"=16, "y"=10)
 				if ("blackpepper")
@@ -134,15 +134,16 @@
 	name = "Yeast"
 	desc = "Used in fermentation of food and drinks."
 	icon_state = "enzyme"
+	decay = 30*600
 	New()
 		..()
 		reagents.add_reagent("enzyme", 50)
 
 /obj/item/weapon/reagent_containers/food/condiment/sugar
+	decay = 45*600
 	New()
 		..()
 		reagents.add_reagent("sugar", 50)
-
 /obj/item/weapon/reagent_containers/food/condiment/saltshaker		//Seperate from above since it's a small shaker rather then
 	name = "Salt Shaker"											//	a large one.
 	desc = "Salt. From the oceans, presumably."
@@ -171,12 +172,12 @@
 	icon = 'icons/obj/food.dmi'
 	icon_state = "flour"
 	item_state = "flour"
+	decay = 45*600
 	New()
 		..()
 		reagents.add_reagent("flour", 30)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
-
 /obj/item/weapon/reagent_containers/food/condiment/flour/attack_self(mob/user)
 	var/obj/item/weapon/reagent_containers/glass/WW
 	if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/glass))
@@ -211,13 +212,14 @@
 		reagents.add_reagent("sugar", 30)
 		pixel_x = rand(-10.0, 10)
 		pixel_y = rand(-10.0, 10)
-
+	decay = 60*00
 /obj/item/weapon/reagent_containers/food/condiment/tealeaves
 	name = "tea leaves"
 	desc = "some tea leaves. mix with hot water."
 	icon = 'icons/obj/food.dmi'
 	icon_state = "tea_leaves_dried"
 	item_state = "flour"
+	decay = 80*600
 	New()
 		..()
 		reagents.add_reagent("tea", 10)

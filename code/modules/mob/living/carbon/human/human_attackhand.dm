@@ -105,9 +105,9 @@
 			if (!istype(H))
 				attack_generic(H,rand(1,3),"punched")
 				return
-
-			if(attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
-				return 1
+			if (src != M)
+				if(attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
+					return 1
 
 			var/rand_damage = rand(1, 5)
 			var/block = FALSE

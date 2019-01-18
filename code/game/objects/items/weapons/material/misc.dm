@@ -19,8 +19,8 @@
 
 /obj/item/weapon/material/handle
 	name = "handle"
-	sharp = TRUE
-	edge = TRUE
+	sharp = FALSE
+	edge = FALSE
 	desc = "A basic stick with a hole on top to attach something. Can be made into a veriety of weapons and tools."
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "handle"
@@ -67,6 +67,26 @@
 	value = 6
 	block_chance = 15
 	cooldownw = 9
+
+
+/obj/item/weapon/material/quarterstaff
+	name = "quarterstaff"
+	sharp = FALSE
+	edge = FALSE
+	desc = "A simple wood staff, doesn't do too much damage but its fast at blocking and hitting"
+	slot_flags = SLOT_BACK | SLOT_BELT
+	icon_state = "quarterstaff"
+	item_state = "quarterstaff"
+	default_material = "wood"
+	throw_speed = 6
+	throw_range = 10
+	allow_spin = TRUE
+	force_divisor = 0.5 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","poked","beaten")
+	value = 6
+	block_chance = 20
+	cooldownw = 6
 /obj/item/weapon/material/hatchet
 	name = "hatchet"
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."

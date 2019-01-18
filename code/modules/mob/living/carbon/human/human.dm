@@ -64,7 +64,19 @@
 			if (config.allow_selfheal)
 				verbs |= /mob/living/carbon/human/proc/selfheal
 				verbs |= /mob/living/carbon/human/proc/selfrevive
-
+	spawn(5)
+		if (faction_text == ARAB)
+			s_tone = -90
+			force_update_limbs()
+			update_body()
+		else if (faction_text == INDIANS)
+			s_tone = -115
+			force_update_limbs()
+			update_body()
+		else if (s_tone < -65)
+			s_tone = -65
+			force_update_limbs()
+			update_body()
 /mob/living/carbon/human/Destroy()
 	human_mob_list -= src
 	human_clients_mob_list -= src
@@ -439,7 +451,7 @@ var/list/rank_prefix = list(\
 	return FALSE
 
 /mob/living/carbon/human/abiotic(var/full_body = FALSE)
-	if (full_body && ((l_hand && !( l_hand.abstract )) || (r_hand && !( r_hand.abstract )) || (back || wear_mask || head || shoes || w_uniform || wear_suit || glasses || l_ear || r_ear || gloves)))
+	if (full_body && ((l_hand && !( l_hand.abstract )) || (r_hand && !( r_hand.abstract )) || (back || wear_mask || head || shoes || w_uniform || wear_suit || l_ear || r_ear || gloves)))
 		return TRUE
 
 	if ( (l_hand && !l_hand.abstract) || (r_hand && !r_hand.abstract) )
@@ -871,7 +883,7 @@ var/list/rank_prefix = list(\
 
 
 /mob/living/carbon/human/print_flavor_text(var/shrink = TRUE)
-	var/list/equipment = list(head,wear_mask,glasses,w_uniform,wear_suit,gloves,shoes)
+	var/list/equipment = list(head,wear_mask,w_uniform,wear_suit,gloves,shoes)
 
 	for (var/obj/item/clothing/C in equipment)
 		if (C.body_parts_covered & FACE)

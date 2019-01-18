@@ -80,7 +80,7 @@
 "bB" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/templar2,/turf/floor/plating/dust,/area/caribbean/crusader/sand)
 "bC" = (/obj/structure/barricade/horizontal,/obj/structure/sign/custom{name = "Armory"},/turf/floor/plating/beach/sand,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bD" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
-"bE" = (/obj/item/flashlight/torch/on,/obj/structure/barricade/sandstone_h{opacity = 1},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
+"bE" = (/obj/item/flashlight/torch/on/unlimited,/obj/structure/barricade/sandstone_h{opacity = 1},/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bF" = (/obj/structure/bed/chair/comfy/red,/turf/floor/wood,/area/caribbean/crusader/sand{location = 0; name = "Crusader Camp Buildings"})
 "bG" = (/obj/structure/closet/crate/wood,/turf/floor/plating/dust,/area/caribbean/arab/sand)
 "bH" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 8},/obj/structure/window/sandbag/railing,/turf/floor/plating/dust,/area/caribbean/forest/dirt{name = "Inner Fortress"})

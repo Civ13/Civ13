@@ -1,18 +1,16 @@
 Drag yourself to a ladder to look up or down it.
-Ran out of food? Hunt some animals.
-Cannibalism is a feature, but eating other people makes you valid.
-Ship officers are allowed to execute sailors for insubordination.
+Over hunting can lead to extinction  consider taking up Animal Husbandry to ensure a long lasting supply of food and leather for your civilization.
+Cannibalism is a feature, but eating other people might make you valid.
 Trees provide good cover, but they go down very quickly.
 You can build locked doors in the same way as regular doors. You have to have a key in one hand and metal/wood in the other (active) hand.
-Use a rifle's 'Field Strip' verb to remove its attachments.
 Use the *surrender emote to surrender.
-You can use rope to build nooses and rope handcuffs.
-Everyone dies eventually; don't get too salty about it. As they say, war is heck.
+You can use rope to build nooses, rope handcuffs, and leashes.
+Everyone dies eventually; don't get too salty about it.
 You are twice as likely to hit someone if you shoot them from behind.
-Civilians who carry guns in a combat area are a valid target for the Navy.
-Use the Emote tab to surrender at 2x speed.
-You can ping people using the format "@key". This is case insensitive.
 If you are a sharpshooter, aim for the head. Otherwise, aim for the chest to kill and the feet to cripple.
-Dogs can be named by clicking on them.
 Use Z when wielding a sword or knife to switch between Stab, Slash, or Bash. Bash has a higher chance of knockout, but does less damage. Slash will easily make your enemy bleed. Stabbing gives an higher probability of internal bleeding.
-You can switch between Parry mode and Dodge mode in the HUD.
+You can switch between Parry mode and Dodge mode in the HUD. Parry takes your skill with the weapon and the weapon's stats into account, and will increase your skill. Dodge takes dexterity into account and will increase it.
+Plant seeds can be very rare, always keep some spare seeds encase you suffer from a bad harvest.
+Weather and season changes can threaten your civilization's survival. Be sure to have a shelter stocked vital supplies like food and water to survive the storms to come.
+If you defeat an enemy, consider making them a vassal or demanding a tribute of resources instead of committing genocide.
+Water hole went dry? Fill up your cups with cow or goat milk or make sap wine from extracting it from a palm tree with a knife.

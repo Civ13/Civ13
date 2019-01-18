@@ -24,9 +24,6 @@
 
 /obj/item/weapon/material/New(var/newloc, var/material_key)
 	..(newloc)
-	if (material)
-		if (material == "wood")
-			flammable = TRUE
 	if (!material_key)
 		if (!material)
 			material_key = default_material
@@ -42,7 +39,10 @@
 		for (var/material_type in matter)
 			if (!isnull(matter[material_type]))
 				matter[material_type] *= force_divisor // May require a new var instead.
-
+	spawn(20)
+		if (material)
+			if (get_material_name() == "wood")
+				flammable = TRUE
 /obj/item/weapon/material/get_material()
 	return material
 

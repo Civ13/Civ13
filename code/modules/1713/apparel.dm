@@ -15,6 +15,15 @@
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
 // civs
+
+/obj/item/clothing/suit/storage/jacket/kool_kids_klub
+	name = "white robe with hood"
+	desc = "A white robe with a white hood, covering the whole body."
+	icon_state = "kool_kids_klub"
+	item_state = "kool_kids_klub"
+	worn_state = "kool_kids_klub"
+	body_parts_covered = FULL_BODY
+
 /obj/item/clothing/under/civ4
 	name = "Fancy Colonial Clothing"
 	desc = "A set composed of a quality white linen shirt and black trousers."
@@ -113,7 +122,7 @@
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "coinpouch1"
 	slot_flags = SLOT_ID
-	slots = 2
+	slots = 5
 
 /obj/item/clothing/accessory/storage/coinpouch/New()
 	..()
@@ -347,132 +356,6 @@
 	icon_state = "chasseur_br"
 	item_state = "chasseur_br"
 
-/////////indian stuff/////////
-
-/obj/item/clothing/under/indian1
-	name = "short indian clothing"
-	desc = "A wrap of leather cloth, worn around the waist."
-	icon_state = "indian1"
-	item_state = "indian1"
-	worn_state = "indian1"
-
-/obj/item/clothing/under/indian2
-	name = "long indian clothing"
-	desc = "A wrap of leather cloth, worn around the waist."
-	icon_state = "indian2"
-	item_state = "indian2"
-	worn_state = "indian2"
-
-/obj/item/clothing/under/indian3
-	name = "covering indian clothing"
-	desc = "A wrap of leather cloth, worn around the waist and the chest."
-	icon_state = "indian3"
-	item_state = "indian3"
-	worn_state = "indian3"
-
-/obj/item/clothing/under/indianchief
-	name = "indian chief clothing"
-	desc = "An elaborate wrap of leather cloth, worn by tribal chiefs."
-	icon_state = "indianchef"
-	item_state = "indianchef"
-	worn_state = "indiancgef"
-
-/obj/item/clothing/under/indianshaman
-	name = "indian shaman clothing"
-	desc = "A white cloth, worn around the waist, painted with religious symbols."
-	icon_state = "indianshaman"
-	item_state = "indianshaman"
-	worn_state = "indianshaman"
-
-/obj/item/clothing/suit/storage/jacket/bonearmor
-	name = "bone armor"
-	desc = "A spooky armor, made of human bones."
-	icon_state = "bonearmor"
-	item_state = "bonearmor"
-	worn_state = "bonearmor"
-	armor = list(melee = 50, bullet = 0, laser = 0,energy = 0, bomb = 10, bio = 0, rad = FALSE)
-
-/obj/item/clothing/under/indianhuge
-	name = "big leopard pelt"
-	desc = "A massive leopard pelt."
-	icon_state = "giant_leopard_pelt"
-	item_state = "giant_leopard_pelt"
-	worn_state = "giant_leopard_pelt"
-
-/obj/item/clothing/accessory/armband/talisman
-	name = "bone talisman"
-	desc = "A human bone talisman."
-	icon_state = "talisman"
-	item_state = "talisman"
-
-/obj/item/clothing/accessory/armband/indian1
-	name = "indian acessories"
-	desc = "red face paint and indian necklaces."
-	icon_state = "indian1"
-	item_state = "indian1"
-
-/obj/item/clothing/accessory/armband/indian2
-	name = "indian acessories"
-	desc = "Gold indian necklaces."
-	icon_state = "indian2"
-	item_state = "indian2"
-
-/obj/item/clothing/accessory/armband/indianshaman
-	name = "indian shaman bodypaint"
-	desc = "Red and white bodypaint, worn by native shamans."
-	icon_state = "indianshaman"
-	item_state = "indianshaman"
-
-/obj/item/clothing/accessory/armband/indianr
-	name = "red indian acessories"
-	desc = "red face paint and indian necklaces."
-	icon_state = "indianr"
-	item_state = "indianr"
-
-/obj/item/clothing/accessory/armband/indiang
-	name = "green indian acessories"
-	desc = "green face paint and indian necklaces."
-	icon_state = "indiang"
-	item_state = "indiang"
-
-/obj/item/clothing/accessory/armband/indianb
-	name = "blue indian acessories"
-	desc = "blue face paint and indian necklaces."
-	icon_state = "indianb"
-	item_state = "indianb"
-
-/obj/item/clothing/accessory/armband/indiany
-	name = "yellow indian acessories"
-	desc = "yellow face paint and indian necklaces."
-	icon_state = "indiany"
-	item_state = "indiany"
-
-/obj/item/clothing/accessory/armband/indianw
-	name = "white indian acessories"
-	desc = "white face paint and indian necklaces."
-	icon_state = "indianw"
-	item_state = "indianw"
-
-/obj/item/clothing/accessory/armband/indianbl
-	name = "black indian acessories"
-	desc = "black face paint and indian necklaces."
-	icon_state = "indianbl"
-	item_state = "indianbl"
-
-/obj/item/clothing/head/skullmask
-	name = "skull mask"
-	desc = "A skull mask, used by native shamans."
-	icon_state = "skull_mask"
-	item_state = "skull_mask"
-	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 25, bullet = 10, laser = 0,energy = 0, bomb = 15, bio = 0, rad = FALSE)
-
-/obj/item/clothing/head/chief_hat
-	name = "Chief hat"
-	desc = "A hat made with withe feathers. Worn by tribal leaders."
-	icon_state = "chief_hat"
-	item_state = "chief_hat"
-	flags_inv = BLOCKHEADHAIR
 /////////Portuguese/////////
 /obj/item/clothing/head/tricorne_portuguese
 	name = "Portuguese Navy tricorne"
@@ -825,3 +708,18 @@
 	icon_state = "french_army"
 	item_state = "french_army"
 	worn_state = "french_army"
+
+/obj/item/clothing/under/chad
+	name = "chad clothing"
+	desc = "wow!"
+	icon_state = "chad"
+	item_state = "chad"
+	worn_state = "chad"
+
+/obj/item/clothing/shoes/chad
+	name = "chad shoes"
+	desc = "ouch!"
+	icon_state = "chad"
+	item_state = "chad"
+	worn_state = "chad"
+	force = WEAPON_FORCE_WEAK

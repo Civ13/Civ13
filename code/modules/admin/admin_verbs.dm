@@ -9,8 +9,6 @@ var/list/admin_verbs_default = list(
 	/client/proc/debug_variables,		//allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify,
 	/client/proc/cmd_mentor_check_new_players,
 	/client/proc/see_soldiers,
-	/client/proc/see_bug_reports,
-	/client/proc/see_suggestions,
 	/client/proc/see_world_realtime,
 	/client/proc/see_processes,
 	/client/proc/giveruntimelog,		//allows us to give access to runtime logs to somebody,
@@ -21,7 +19,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/add_to_server_whitelist,
 	/client/proc/remove_from_server_whitelist,
 	/client/proc/view_server_whitelist,
-	/client/proc/eject_unwhitelisted,
+//	/client/proc/eject_unwhitelisted,
 	/client/proc/enable_disable_server_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
@@ -73,6 +71,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/start_epochswap_vote,
 	/datum/admins/proc/set_research,
 	/datum/admins/proc/set_custom_research,
+	/datum/admins/proc/set_research_speed,
 	/datum/admins/proc/set_custom_age,
 )
 var/list/admin_verbs_trialadmin = list(
@@ -224,6 +223,7 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/enable_debug_verbs,
 	/datum/admins/proc/set_research,
 	/datum/admins/proc/set_custom_research,
+	/datum/admins/proc/set_research_speed,
 	/datum/admins/proc/set_custom_age,
 //	/client/proc/roll_dices,
 	/proc/possess,
@@ -279,9 +279,7 @@ var/list/admin_verbs_manager = list(
 )
 
 var/list/admin_verbs_host = list(
-	/client/proc/forceClose_game_schedule,
-	/client/proc/forceOpen_game_schedule,
-	/client/proc/eject_unwhitelisted,
+//	/client/proc/eject_unwhitelisted,
 	/client/proc/toggle_pingability
 )
 
@@ -466,7 +464,7 @@ var/list/admin_verbs_host = list(
 	if (!holder)	return
 	var/response = WWinput(src, "Please choose a distinct color that is easy to read and doesn't mix with all the other chat and radio frequency colors.", "Change own OOC color", "Pick new color", list("Pick new color", "Reset to default", "Cancel"))
 	if (response == "Pick new color")
-		prefs.ooccolor = WWinput(src, "Please select your OOC colour.", "OOC colour", null, "color")
+		prefs.ooccolor = WWinput(src, "Please select your OOC color.", "OOC color", null, "color")
 	else if (response == "Reset to default")
 		prefs.ooccolor = initial(prefs.ooccolor)
 	prefs.save_preferences()

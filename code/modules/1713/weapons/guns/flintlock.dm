@@ -15,7 +15,7 @@
 	caliber = "musketball"
 	recoil = 3 //extra kickback
 	//fire_sound = 'sound/weapons/sniper.ogg'
-	handle_casings = HOLD_CASINGS
+	handle_casings = REMOVE_CASINGS
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/musketball
 //	magazine_type = /obj/item/ammo_magazine/musketball
@@ -121,10 +121,10 @@
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked)
-		user << "<span class='warning'>You can't fire the [src] while the weapon is uncocked!</span>"
+		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
 	if (!(user.has_empty_hand(both = FALSE)) && !istype(src, /obj/item/weapon/gun/projectile/flintlock/pistol))
-		user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	return ..()
 
@@ -306,7 +306,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
 	gun_type = GUN_TYPE_SHOTGUN
-	fire_sound = 'sound/weapons/guns/fire/shotgunp_fire.ogg'
+	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
 
 	// 15% more accurate than SMGs
 	accuracy_list = list(

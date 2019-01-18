@@ -177,7 +177,6 @@
 		..()
 
 /obj/item/weapon/punji_sticks/proc/attack_mob(mob/living/L)
-
 	var/target_zone
 	if (L.lying)
 		target_zone = ran_zone()
@@ -209,11 +208,17 @@
 			"<span class='danger'>[L] falls into \the [src].</span>",
 			"<span class='danger'>You fall into \the [src]!</span>",
 			)
-		attack_mob(L)
-		if (!buckled_mob)
-			anchored = FALSE
-		deployed = FALSE
-		update_icon()
+		if (istype(L, /mob/living/simple_animal))
+			var/mob/living/simple_animal/SA = L
+			SA.stop_automated_movement = TRUE
+			SA.adjustBruteLoss(rand(10,20))
+			return
+		else
+			attack_mob(L)
+			if (!buckled_mob)
+				anchored = FALSE
+			deployed = FALSE
+			update_icon()
 	..()
 
 /obj/item/weapon/punji_sticks/update_icon()

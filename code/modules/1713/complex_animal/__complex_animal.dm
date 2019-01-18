@@ -6,7 +6,7 @@
 	var/base_type = /mob/living/simple_animal/complex_animal
 	var/stamina = 100
 	var/nutrition = 500
-
+	var/mob/owner = null
 	// from how far away can we detect others: must be below or = 30.
 	// sight is more accurate than hearing, and hearing more than smelling.
 	var/sightrange = 7
@@ -44,7 +44,11 @@
 	response_disarm = "pushes"
 	response_harm   = "punches"
 
-
+	//list of people trying to pet the animal
+	var/list/friendly_mobs = list()
+	var/tameminimum = 100 // minimum friendly value to tame an animal
+	var/tamed = FALSE
+	var/starving = FALSE
 // things we do every life tick: by default, wander every few seconds,
 // rest every ~20 minutes. Deplete nutrition over ~30 minutes
 /mob/living/simple_animal/complex_animal/proc/onEveryLifeTick()
@@ -66,57 +70,86 @@
 
 	nutrition -= nutrition_loss
 
+	if (nutrition <= initial(nutrition)*0.2)
+		//start starving. Will attack animals for food
+		starving = TRUE
+	else
+		starving = FALSE
+
+	if (nutrition <= 0)
+		health--
+		visible_message("\The [src] is starving!")
+
 	if (stat == UNCONSCIOUS)
 		return -1
 
 	if (!client)
-		if (prob(wander_probability) && !resting && can_wander_specialcheck())
-			var/list/possible_wander_locations = list()
-			for (var/turf/T in trange(1, src))
-				if (!T.density && !istype(T, /turf/wall))
-					for (var/atom/movable/AM in T.contents)
-						if (AM.density)
-							continue
-					if (get_area(T) != get_area(src))
-						if (!allow_moving_outside_home)
-							continue
-					if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-						var/mob/living/simple_animal/complex_animal/canine/dog/D = src
-						if (D.last_patrol_area == get_area(T))
-							continue
-
-					possible_wander_locations += T
-
-			// patrolling dogs will always exit their current area if possible
-			var/list/possible_wander_areas = list()
-			var/area/forced_wander_area = null
-
-			for (var/turf/T in possible_wander_locations)
-				possible_wander_areas |= get_area(T)
-
-			// patrolling dogs will always try to exit their area.
-			if (possible_wander_areas.len > 1)
-				for (var/area/A in possible_wander_areas)
-					if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-						var/mob/living/simple_animal/complex_animal/canine/dog/D = src
-						if (D.patrolling)
-							if (A != get_area(src))
-								forced_wander_area = A
-
-			for (var/turf/T in possible_wander_locations)
-				if (!forced_wander_area || get_area(T) == forced_wander_area)
-
-					if (forced_wander_area)
-						if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-							var/mob/living/simple_animal/complex_animal/canine/dog/D = src
+		if (starving)
+			var/targeting = FALSE
+			var/mob/living/simple_animal/targetmob = null
+			for (var/mob/living/simple_animal/SA in range(9) && !targeting)
+				if (SA.mob_size <= mob_size && !targeting && SA.faction != faction) // only attack smaller animals
+					walk_to(src, SA, TRUE, 4)
+					targeting = TRUE
+					targetmob = SA
+			if (targetmob)
+				if (get_dist(src, targetmob) <= 1)
+					if (targetmob.stat == DEAD)
+						visible_message("\The [src] eats \the [targetmob]!")
+						nutrition += targetmob.mob_size*12
+						qdel (targetmob)
+					else
+						visible_message("\The [src] attacks \the [targetmob]!")
+						do_attack_animation(targetmob)
+						targetmob.health -= rand(8,13)
+		else
+			if (prob(wander_probability) && !resting && can_wander_specialcheck())
+				var/list/possible_wander_locations = list()
+				for (var/turf/T in range(1, src))
+					if (!T.density && !istype(T, /turf/wall))
+						for (var/atom/movable/AM in T.contents)
+							if (AM.density)
+								continue
+						if (get_area(T) != get_area(src))
+							if (!allow_moving_outside_home)
+								continue
+						if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+							var/mob/living/simple_animal/complex_animal/dog/D = src
 							if (D.last_patrol_area == get_area(T))
 								continue
 
-					if (istype(src, /mob/living/simple_animal/complex_animal/canine/dog))
-						var/mob/living/simple_animal/complex_animal/canine/dog/D = src
-						D.last_patrol_area = get_area(get_turf(D))
+						possible_wander_locations += T
 
-					Move(T, get_dir(loc, T))
+				// patrolling dogs will always exit their current area if possible
+				var/list/possible_wander_areas = list()
+				var/area/forced_wander_area = null
+
+				for (var/turf/T in possible_wander_locations)
+					possible_wander_areas |= get_area(T)
+
+				// patrolling dogs will always try to exit their area.
+				if (possible_wander_areas.len > 1)
+					for (var/area/A in possible_wander_areas)
+						if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+							var/mob/living/simple_animal/complex_animal/dog/D = src
+							if (D.patrolling)
+								if (A != get_area(src))
+									forced_wander_area = A
+
+				for (var/turf/T in possible_wander_locations)
+					if (!forced_wander_area || get_area(T) == forced_wander_area)
+
+						if (forced_wander_area)
+							if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+								var/mob/living/simple_animal/complex_animal/dog/D = src
+								if (D.last_patrol_area == get_area(T))
+									continue
+
+						if (istype(src, /mob/living/simple_animal/complex_animal/dog))
+							var/mob/living/simple_animal/complex_animal/dog/D = src
+							D.last_patrol_area = get_area(get_turf(D))
+
+						Move(T, get_dir(loc, T))
 
 	return TRUE
 
@@ -167,7 +200,14 @@ called after H added to knows_about_mobs() */
 		visible_message("<span class = 'warning'>The [P.name] just grazes \the [src].</span>")
 	apply_damage(dmg)
 	if (client)
-		if (P.firer && (P.original == src || !P.firer.original_job || P.firer.original_job.base_type_flag() != faction))
+		var/m_faction = P.firer.faction
+		if (istype(P, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = P
+			if (map.civilizations)
+				m_faction = H.civilization
+			else
+				m_faction = H.faction_text
+		if (P.firer && (P.original == src || !P.firer.original_job || m_faction != faction))
 			enemies |= P.firer
 			onHumanMovement(P.firer)
 			for (var/mob/living/simple_animal/complex_animal/C in oview(7, src))

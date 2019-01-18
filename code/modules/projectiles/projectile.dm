@@ -7,7 +7,7 @@
 	anchored = TRUE //There's a reason this is here, Mport. God fucking damn it -Agouri. Find&Fix by Pete. The reason this is here is to stop the curving of emitter shots.
 	pass_flags = PASSTABLE
 	mouse_opacity = FALSE
-
+	value = 0
 	var/bumped = FALSE //Prevents it from hitting more than one guy at once
 	var/hitsound_wall = ""//"ricochet"
 	var/def_zone = ""	//Aiming at
@@ -146,7 +146,11 @@
 	firer_original_dir = firer.dir
 	firedfrom = launcher
 
-	def_zone = target_zone
+	if (istype(firedfrom, /obj/item/weapon/gun/projectile/automatic/stationary))
+		if (prob(80))
+			def_zone = "chest"
+	else
+		def_zone = target_zone
 
 	if (!def_zone)
 		def_zone = "chest"

@@ -451,7 +451,10 @@
 		if (F && F_is_valid_floor && isnull(H.riding_mob))
 
 			var/area/F_area = get_area(F)
-			if (F_area.weather == WEATHER_RAIN && F.may_become_muddy)
+			var/no_snow = FALSE
+			for (var/obj/covers/CV in get_turf(F))
+				no_snow = TRUE
+			if ((F_area.weather == WEATHER_RAIN || F_area.weather == WEATHER_STORM) && F.may_become_muddy)
 				F.muddy = TRUE
 			else
 				F.muddy = FALSE
@@ -460,7 +463,7 @@
 			var/snow_message = ""
 			var/snow_span = "notice"
 
-			if (F.icon == 'icons/turf/snow.dmi')
+			if (F.icon == 'icons/turf/snow.dmi' && no_snow == FALSE)
 				standing_on_snow = TRUE
 				if (prob(50))
 					standing_on_snow = 1.25
@@ -469,6 +472,7 @@
 					standing_on_snow = 1.75
 					snow_message = "You're slowed down quite a bit by the snow."
 					snow_span = "warning"
+
 /* OLD CODE - TO BE REACTIVATED WHEN WE GET SNOW LEVELS
 				switch (S.amount)
 					if (0.01 to 0.8) // more than none and up to ~1/4 feet
@@ -499,7 +503,10 @@
 					mob.next_snow_message = world.time+100
 
 			else if (F.muddy)
-				standing_on_snow = rand(2,3)
+				if (F_area.weather == WEATHER_STORM)
+					standing_on_snow = rand(4,5)
+				else
+					standing_on_snow = rand(2,3)
 				if (world.time >= mob.next_mud_message)
 					mob << "<span class = 'warning'>The mud slows you down.</span>"
 					mob.next_mud_message = world.time+100
@@ -569,8 +576,13 @@
 				if (H.m_intent != "walk")
 					H.m_intent = "walk" // in case we don't have a m_intent HUD, somehow
 
-		if (!mob_is_observer && F_is_valid_floor && isnull(H.riding_mob))
-			move_delay += F.get_move_delay()
+		if (!mob_is_observer && F_is_valid_floor)
+			if (istype(src, /mob/living/carbon/human))
+				var/mob/living/carbon/human/HH = src
+				if (isnull(HH.riding_mob))
+					move_delay += F.get_move_delay()
+			else
+				move_delay += F.get_move_delay()
 
 		var/tickcomp = FALSE //moved this out here so we can use it for vehicles
 		if (config.Tickcomp)
@@ -664,17 +676,17 @@
 				if (mob_is_human)
 					if (H.a_intent == I_HURT)
 						for (var/mob/living/L in mob.loc)
-							if (L.lying && L != H) // you could step on yourself, this fixes it - Kachnov
+							if (L.lying && L != H && !istype(L, /mob/living/simple_animal/mosquito)) // you could step on yourself, this fixes it - Kachnov
 								H.visible_message("<span class = 'danger'>[H] steps on [L]!</span>")
 								playsound(mob.loc, 'sound/effects/gore/fallsmash.ogg', 35, TRUE)
 								L.adjustBruteLoss(rand(6,7))
 								if (ishuman(L))
-									L.emote("scream")
-								H.next_change_dir[num2text(opposite_direction(direct))] = world.time + (STOMP_TIME*3)
-								H.movement_northsouth = null
-								H.movement_eastwest = null
-								movementMachine_clients -= src
-								sleep(STOMP_TIME)
+									L.emote("painscream")
+//								H.next_change_dir[num2text(opposite_direction(direct))] = world.time + (STOMP_TIME*3)
+//								H.movement_northsouth = null
+//								H.movement_eastwest = null
+//								movementMachine_clients -= src
+//								sleep(STOMP_TIME)
 								break
 					else
 						for (var/mob/living/L in mob.loc)

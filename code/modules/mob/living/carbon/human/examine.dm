@@ -8,24 +8,20 @@
 			H.next_look_at[getRoundUID(TRUE)] = world.time + 100
 
 	var/skipgloves = FALSE
-	var/skipsuitstorage = FALSE
 	var/skipjumpsuit = FALSE
 	var/skipshoes = FALSE
 	var/skipmask = FALSE
 	var/skipears = FALSE
-	var/skipeyes = FALSE
 	var/skipface = FALSE
 
 	//exosuits and helmets obscure our view and stuff.
 	if (wear_suit)
 		skipgloves = wear_suit.flags_inv & HIDEGLOVES
-		skipsuitstorage = wear_suit.flags_inv & HIDESUITSTORAGE
 		skipjumpsuit = wear_suit.flags_inv & HIDEJUMPSUIT
 		skipshoes = wear_suit.flags_inv & HIDESHOES
 
 	if (head)
 		skipmask = head.flags_inv & HIDEMASK
-		skipeyes = head.flags_inv & HIDEEYES
 		skipears = head.flags_inv & HIDEEARS
 		skipface = head.flags_inv & HIDEFACE
 
@@ -77,13 +73,6 @@
 			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[wear_suit] [wear_suit.gender==PLURAL?"some":"a"] [(wear_suit.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_suit.name]!</span>\n"
 		else
 			msg += "[T.He] [T.is] wearing \icon[wear_suit] \a [wear_suit].\n"
-
-		//suit/armour storage
-		if (s_store && !skipsuitstorage)
-			if (s_store.blood_DNA)
-				msg += "<span class='warning'>[T.He] [T.is] carrying \icon[s_store] [s_store.gender==PLURAL?"some":"a"] [(s_store.blood_color != "#030303") ? "blood" : "oil"]-stained [s_store.name] on [T.his] [wear_suit.name]!</span>\n"
-			else
-				msg += "[T.He] [T.is] carrying \icon[s_store] \a [s_store] on [T.his] [wear_suit.name].\n"
 
 	//back
 	if (back)
@@ -149,13 +138,6 @@
 		else
 			msg += "[T.He] [T.has] \icon[wear_mask] \a [wear_mask] [descriptor].\n"
 
-	//eyes
-	if (glasses && !skipeyes)
-		if (glasses.blood_DNA)
-			msg += "<span class='warning'>[T.He] [T.has] \icon[glasses] [glasses.gender==PLURAL?"some":"a"] [(glasses.blood_color != "#030303") ? "blood" : "oil"]-stained [glasses] covering [T.his] eyes!</span>\n"
-		else
-			msg += "[T.He] [T.has] \icon[glasses] \a [glasses] covering [T.his] eyes.\n"
-
 	//left ear
 	if (l_ear && !skipears)
 		msg += "[T.He] [T.has] \icon[l_ear] \a [l_ear] on [T.his] left ear.\n"
@@ -207,16 +189,6 @@
 	if (on_fire)
 		msg += "<span class='warning'>[T.He] [T.is] on fire!.</span>\n"
 	msg += "<span class='warning'>"
-
-	/*
-	if (nutrition < 100)
-		msg += "[T.He] [T.is] severely malnourished.\n"
-	else if (nutrition >= 500)
-		/*if (usr.nutrition < 100)
-			msg += "[T.He] [T.is] plump and delicious looking - Like a fat little piggy. A tasty piggy.\n"
-		else*/
-		msg += "[T.He] [T.is] quite chubby.\n"
-	*/
 
 	msg += "</span>"
 
@@ -354,7 +326,7 @@
 		visible_message("<span class = 'danger'>[user] starts to pull [embedded_obj] out of [src].</span>")
 		if (do_after(user, 15 * embedded_obj.w_class, src))
 			visible_message("<span class = 'danger'>[user] pulls [embedded_obj] out of [src]!</span>")
-			emote("scream")
+			emote("painscream")
 			adjustBruteLoss(rand(10,15))
 		embedded -= embedded_obj
 		embedded_obj.loc = get_turf(src)
