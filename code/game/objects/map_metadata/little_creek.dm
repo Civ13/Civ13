@@ -34,9 +34,12 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/little_creek/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
+/obj/map_metadata/little_creek/cross_message(faction)
+	return "<font size = 4>The grace wall is lifted!</font>"
 
-/obj/map_metadata/colony/cross_message(faction)
-	return "The grace wall is lifted!"
+/obj/map_metadata/little_creek/reverse_cross_message(faction)
+	return ""
+
 /obj/map_metadata/little_creek/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
