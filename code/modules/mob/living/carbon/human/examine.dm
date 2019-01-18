@@ -273,7 +273,7 @@
 		if ( findtext(pose,".",lentext(pose)) == FALSE && findtext(pose,"!",lentext(pose)) == FALSE && findtext(pose,"?",lentext(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (!map.civilizations)
+	if (!map.civilizations && !map.ID == MAP_LITTLE_CREEK)
 		if (original_job)
 			if (ishuman(user) && user != src)
 				var/mob/living/carbon/human/H = user
