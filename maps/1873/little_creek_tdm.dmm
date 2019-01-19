@@ -591,7 +591,7 @@
 "ls" = (/obj/structure/barricade/ship/blue/bwest2,/turf/floor/ship/wood_ship,/area/caribbean/desert)
 "lt" = (/obj/structure/barricade/ship/blue/beast2,/turf/floor/ship/wood_ship,/area/caribbean/desert)
 "lu" = (/obj/structure/barricade/ship/blue/b17,/turf/floor/ship/wood_ship,/area/caribbean/desert)
-"lv" = (/obj/structure/barricade/ship/blue/bport3,/obj/structure/carriage,/turf/floor/ship/wood_ship,/area/caribbean/desert)
+"lv" = (/obj/structure/barricade/ship/blue/bport3,/obj/structure/carriage_tdm,/turf/floor/ship/wood_ship,/area/caribbean/desert)
 "lw" = (/obj/structure/barricade/ship/blue/b10,/turf/floor/ship/wood_ship,/area/caribbean/desert)
 "ly" = (/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/obj/item/clothing/accessory/storage/webbing,/turf/floor/plating/sand/desert,/area/caribbean/desert)
 "lA" = (/obj/structure/closet/crate/wood,/turf/floor/plating/sand/desert,/area/caribbean/desert/town)

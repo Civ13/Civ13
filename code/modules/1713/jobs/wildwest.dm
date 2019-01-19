@@ -123,7 +123,7 @@
 	return TRUE
 
 /datum/job/civilian/deputy2
-	title = "Sheriff's Deputy"
+	title = "Sheriffs Deputy"
 	rank_abbreviation = "Dep."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
