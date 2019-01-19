@@ -289,9 +289,10 @@
 /obj/structure/oilwell
 	name = "wooden oil well"
 	desc = "An oil well, extracting petroleum to a barrel."
-	icon = 'icons/obj/structures.dmi'
+	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "oilwell"
 	flammable = TRUE
+	anchored = TRUE
 	var/obj/structure/oil_spring/base = null
 	var/list/barrel = list()
 
