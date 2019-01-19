@@ -89,24 +89,21 @@
 	var/prevent = FALSE
 	var/faction1val = 0
 	var/faction2val = 0
-/obj/structure/carriage/westside
-	faction = "west"
-/obj/structure/carriage/eastside
-	faction = "east"
+
 /obj/structure/carriage/New()
 	..()
 	desc = "West Side: [faction1val]. East Side: [faction2val]."
 	timer()
 /obj/structure/carriage/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
-		if (isHuman(user))
-		var/mob/living/carbon/human/H = user
-		if (H.original_job_title == "West Side Gang")
-			faction1val += (W.value*W.amount)
-		else if (H.original_job_title == "East Side Gang")
-			faction2val += (W.value*W.amount)
-		desc = "West Side: [faction1val]. East Side: [faction2val]."
-		user << "You place \the [W] inside \the [src]."
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			if (H.original_job_title == "West Side Gang")
+				faction1val += (W.value*W.amount)
+			else if (H.original_job_title == "East Side Gang")
+				faction2val += (W.value*W.amount)
+			desc = "West Side: [faction1val]. East Side: [faction2val]."
+			user << "You place \the [W] inside \the [src]."
 		qdel(W)
 		if (faction1val >= 750)
 			map.update_win_condition()
