@@ -291,8 +291,10 @@
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
 			if (H.original_job)
-				if (H.original_job_title == original_job_title && original_job_title == "Outlaw") // when you ghost, mind.assigned_job is set to null
-					msg += "<br><i>You recognize [T.him] as an <b>[original_job.title]</b>!</i>"
+				if (H.original_job_title == original_job_title && original_job_title == "East Side Gang")
+					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
+				else if (H.original_job_title == original_job_title && original_job_title == "West Side Gang")
+					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
 	else
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
