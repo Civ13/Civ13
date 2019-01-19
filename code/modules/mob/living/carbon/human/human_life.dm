@@ -435,28 +435,6 @@
 	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	..()
-/mob/living/carbon/human/handle_breath(datum/gas_mixture/breath)
-	if (status_flags & GODMODE)
-		return
-
-	//check if we actually need to process breath
-	if (!breath)
-		failed_last_breath = TRUE
-		if (prob(20))
-			emote("gasp")
-		if (health > config.health_threshold_crit)
-			adjustOxyLoss(HUMAN_MAX_OXYLOSS)
-		else
-			adjustOxyLoss(HUMAN_CRIT_MAX_OXYLOSS)
-
-		oxygen_alert = max(oxygen_alert, TRUE)
-		return FALSE
-	var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
-	if (L && L.handle_breath(breath))
-		failed_last_breath = FALSE
-	else
-		failed_last_breath = TRUE
-	return TRUE
 
 /mob/living/carbon/human/handle_environment()
 

@@ -678,8 +678,6 @@ Proc for attack log creation, because really why not
 		moblist.Add(M)
 	for (var/mob/living/carbon/human/M in sortmob)
 		moblist.Add(M)
-	for (var/mob/living/carbon/brain/M in sortmob)
-		moblist.Add(M)
 	for (var/mob/observer/ghost/M in sortmob)
 		moblist.Add(M)
 	for (var/mob/new_player/M in sortmob)

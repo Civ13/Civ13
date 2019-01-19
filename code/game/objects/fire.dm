@@ -18,8 +18,8 @@ turf/proc/hotspot_expose(exposed_temperature, exposed_volume, soh = FALSE)
 		return FALSE
 	if (locate(/obj/fire) in src)
 		return TRUE
-	var/datum/gas_mixture/air_contents = return_air()
-	if (!air_contents || exposed_temperature < (T0C +  126))
+
+	if (exposed_temperature < (T0C +  126))
 		return FALSE
 
 	var/igniting = FALSE
