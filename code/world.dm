@@ -255,11 +255,6 @@ var/world_topic_spam_protect_time = world.timeofday
 	config = new /datum/configuration()
 	config.load("config/config.txt", "config")
 
-	/* config options get overwritten by global config options
-	 * only useful for serverswap memery - Kachnov */
-	if (config.global_config_path)
-		config.load(config.global_config_path, "config")
-
 /world/proc/update_status()
 
 	if (world.port == config.testing_port)

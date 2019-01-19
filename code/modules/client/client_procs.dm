@@ -171,9 +171,6 @@
 		del(src)
 		return FALSE
 
-	if (config.resource_website)
-		preload_rsc = config.resource_website
-
 	/*Admin Authorisation: */
 
 	load_admins()
