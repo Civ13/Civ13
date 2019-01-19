@@ -144,7 +144,7 @@
 		return
 /obj/structure/carriage_tdm/proc/timer()
 	spawn(4000)
-		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500</b></big>."
+		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>."
 		timer()
 
 /obj/item/stack/money/goldvaluables
