@@ -28,7 +28,7 @@
 		height = nheight
 	if (nref)
 		ref = nref
-	add_stylesheet("common", 'html/browser/common.css') // this CSS sheet is common to all UIs
+	add_stylesheet("common", 'UI/css/common.css') // this CSS sheet is common to all UIs
 
 /datum/browser/proc/set_title(ntitle)
 	title = format_text(ntitle)

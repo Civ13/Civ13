@@ -41,6 +41,8 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 	return ""
 
 /obj/map_metadata/little_creek/update_win_condition()
+	if (ticker.delay_end)
+		return FALSE
 	if (win_condition_spam_check)
 		return FALSE
 	for(var/obj/structure/carriage/C in world)

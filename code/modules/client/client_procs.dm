@@ -171,9 +171,6 @@
 		del(src)
 		return FALSE
 
-	if (config.resource_website)
-		preload_rsc = config.resource_website
-
 	/*Admin Authorisation: */
 
 	load_admins()
@@ -345,11 +342,6 @@
 /client/proc/send_resources()
 
 	getFiles(
-		'html/search.js',
-		'html/panels.css',
-		'html/images/loading.gif',
-		'html/images/ntlogo.png',
-		'html/images/talisman.png',
 		'UI/templates/appearance_changer_WW13.tmpl',
 		'UI/templates/chem_disp_WW13.tmpl',
 		'UI/templates/freezer_WW13.tmpl',

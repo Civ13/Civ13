@@ -20,22 +20,22 @@
 	armor_penetration = 100
 
 /obj/item/projectile/arrow/arrow
-	damage = DAMAGE_MEDIUM
+	damage = DAMAGE_MEDIUM-2
 	penetrating = 1
-	armor_penetration = 35
+	armor_penetration = 10
 	icon_state = "arrow"
 
 /obj/item/projectile/arrow/arrow/poisonous
-	damage = DAMAGE_MEDIUM
+	damage = DAMAGE_MEDIUM-2
 	penetrating = 1
-	armor_penetration = 35
+	armor_penetration = 10
 	icon_state = "arrow"
 	damage_type = TOX
 
 /obj/item/projectile/arrow/arrow/fire
-	damage = DAMAGE_MEDIUM
+	damage = DAMAGE_MEDIUM-3
 	penetrating = 1
-	armor_penetration = 25
+	armor_penetration = 10
 	icon_state = "arrow"
 	damage_type = BURN
 

@@ -1,12 +1,9 @@
-## The path to our global configuration file, if any
-GLOBAL_CONFIG_PATH nil
-
-## The website where we get our resources from, if any 
-RESOURCE_WEBSITE nil
-
 ## Server name: This appears at the top of the screen in-game and in the BYOND hub. Remove the # infront of SERVERNAME and replace 'tgstation' with the name of your choice.
 ## IMPORTANT: Don't include special characters such as ' in here
 SERVER_NAME Civilization 13
+
+## Where is the game folder located? (If you dont use scripts, this is the same as where you put the dmb's. If you do, point this to the folder where you have 1713-1 folder, not the git folder.)
+MASTER_DIRECTORY /home/1713
 
 ## What features do you want to advertise on your hub message?
 HUB_FEATURES From the Stone Age to the Industrial Age

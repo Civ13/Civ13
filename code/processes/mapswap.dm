@@ -6,7 +6,7 @@
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
-		"1873" = 0,
+		"1873" = 10,
 //		"1904" = 0,
 		"Civilization 13" = 0,
 	)
@@ -70,7 +70,7 @@
 		if (epoch == "1873")
 	// 1873 - TDM
 			maps = list(
-				MAP_LITTLE_CREEK = 0,
+				MAP_LITTLE_CREEK = 10,
 			)
 		if (epoch == "1713")
 		//1713 - TDM
@@ -296,7 +296,7 @@
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
-	else if (vote.voted_gamemode == "Idustrial Age (No Research)")
+	else if (vote.voted_gamemode == "Industrial Age (No Research)")
 		world << "<big>Starting <b>Industrial Age</b> mode. Game Epoch is the Industrial Age, research inactive.</big>"
 		map.ordinal_age = 4
 		map.age = "1873"
