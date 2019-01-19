@@ -463,8 +463,10 @@
 						copy -= C
 						qdel(C)
 					copying = FALSE
-
 					return
+			else
+				copying = FALSE
+				return
 			else
 				icon_state = "printingpress0"
 				return
