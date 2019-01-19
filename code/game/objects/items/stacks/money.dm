@@ -115,6 +115,38 @@
 	spawn(4000)
 		world << "<big>Current status: West Side Gang: <b>[faction1val]/700</b>. East Side Gang: <b>[faction2val]/700</b>."
 		timer()
+
+/obj/structure/carriage_tdm
+	name = "Stagecoach Load"
+	desc = ""
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/prevent = FALSE
+
+/obj/structure/carriage_tdm/New()
+	..()
+	desc = "Stored Value: [storedvalue]."
+	timer()
+/obj/structure/carriage/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
+		storedvalue += (W.value*W.amount)
+		desc = "Stored Value: [storedvalue]."
+		user << "You place \the [W] inside \the [src]."
+		qdel(W)
+		if (storedvalue >= 1500)
+			map.update_win_condition()
+	else
+		return
+/obj/structure/carriage_tdm/proc/timer()
+	spawn(4000)
+		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500</b>.</b>."
+		timer()
+
 /obj/item/stack/money/goldvaluables
 	name = "gold valuables"
 	desc = "A bunch of valuables."

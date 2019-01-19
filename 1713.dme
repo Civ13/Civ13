@@ -259,6 +259,7 @@
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\karak.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
+#include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
 #include "code\game\objects\map_metadata\nomads_desert.dm"
@@ -791,4 +792,5 @@
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
 #include "maps\1713\naval.dmm"
+#include "maps\1873\little_creek_tdm.dmm"
 // END_INCLUDE

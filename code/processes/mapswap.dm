@@ -6,7 +6,7 @@
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
-		"1873" = 10,
+		"1873" = 0,
 //		"1904" = 0,
 		"Civilization 13" = 0,
 	)
@@ -71,6 +71,7 @@
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK = 10,
+				MAP_LITTLE_CREEK_TDM = 0,
 			)
 		if (epoch == "1713")
 		//1713 - TDM

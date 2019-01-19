@@ -1,10 +1,10 @@
 #define NO_WINNER "The fighting for the town is still going on."
 /obj/map_metadata/little_creek
 	ID = MAP_LITTLE_CREEK
-	title = "Big Trouble in Little Creek (100x100x2)"
+	title = "Big Trouble in Little Creek (RP) (100x100x2)"
 	lobby_icon_state = "wildwest"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 1200
+	respawn_delay = 1800
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
@@ -20,13 +20,16 @@
 	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff recieves a warning: Two groups of outlaws are about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><br><big><i>The grace wall will go down in <b>4 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>750 dollars</b>!</big></i>"
 	faction1 = CIVILIAN
 	ambience = list('sound/ambience/desert.ogg')
-	gamemode = "Bank Robbery"
+	gamemode = "Bank Robbery (RP)"
 	songs = list(
 		"The Good, the Bad, and the Ugly Theme:1" = 'sound/music/good_bad_ugly.ogg',)
 obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_cowboy == TRUE)
-		. = TRUE
+		if (J.title == "Outlaw" || J.title == "Sheriff's Deputy")
+			. = FALSE
+		else
+			. = TRUE
 	else
 		. = FALSE
 /obj/map_metadata/little_creek/faction2_can_cross_blocks()
