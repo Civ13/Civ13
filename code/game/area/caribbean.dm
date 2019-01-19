@@ -205,6 +205,7 @@
 	name = "Little Creek Buildings"
 	icon_state = "green1"
 	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
 
 /area/caribbean/forest
 	name = "The Forest"

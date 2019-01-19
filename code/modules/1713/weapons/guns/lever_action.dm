@@ -5,7 +5,7 @@
 	name = "leveraction rifle"
 	desc = "A simple rifle using a lever-action mechanism."
 	icon_state = "winchester"
-	item_state = "winchester"
+	item_state = "shotgun"
 	w_class = 4
 	throw_range = 4
 	throw_speed = 2

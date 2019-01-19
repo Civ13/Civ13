@@ -73,8 +73,8 @@
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
-	min_positions = 6
-	max_positions = 40
+	min_positions = 3
+	max_positions = 14
 
 /datum/job/civilian/deputy/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -121,7 +121,7 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
 	return TRUE
-/*
+
 /datum/job/civilian/bank
 	title = "Bank Worker"
 	rank_abbreviation = ""
@@ -133,7 +133,7 @@
 
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 4
+	max_positions = 6
 
 /datum/job/civilian/bank/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -170,8 +170,8 @@
 	is_cowboy = TRUE
 
 	// AUTOBALANCE
-	min_positions = 3
-	max_positions = 30
+	min_positions = 8
+	max_positions = 100
 
 /datum/job/civilian/townsmen/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -193,6 +193,15 @@
 	else if (randcloth == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
 
+//head
+	var/randcloth3 = rand(1,3)
+	if (randcloth3 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	else if (randcloth3 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
+	else if (randcloth3 == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+
 //jacket
 	var/randcloth2 = rand(1,5)
 	if (randcloth2 == 1)
@@ -205,29 +214,20 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
 	else if (randcloth2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-
-//head
-	var/randcloth3 = rand(1,3)
-	if (randcloth3 == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
-	else if (randcloth3 == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/tarred_hat(H), slot_head)
-	else if (randcloth3 == 3)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/strawhat(H), slot_head)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 	if (prob(60))
 		var/randscarf = pick(1,2,3)
 		if (randscarf == 1)
 			var/obj/item/clothing/accessory/armband/blue_scarf/scarf_a = new /obj/item/clothing/accessory/armband/blue_scarf(null)
-			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 
 		else if (randscarf == 2)
 			var/obj/item/clothing/accessory/armband/red_scarf/scarf_a = new /obj/item/clothing/accessory/armband/red_scarf(null)
-			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 		else if (randscarf == 3)
 			var/obj/item/clothing/accessory/armband/grey_scarf/scarf_a = new /obj/item/clothing/accessory/armband/grey_scarf(null)
-			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
 	H.setStat("strength", STAT_NORMAL)
@@ -240,18 +240,18 @@
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 
 	return TRUE
-*/
+
 /datum/job/civilian/outlaw
 	title = "Outlaw"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLatePirate"
+	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
 	whitelisted = TRUE
 	// AUTOBALANCE
-	min_positions = 6
-	max_positions = 40
+	min_positions = 4
+	max_positions = 14
 
 /datum/job/civilian/outlaw/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -309,7 +309,8 @@
 		else if (randscarf == 3)
 			var/obj/item/clothing/accessory/armband/grey_scarf/scarf_a = new /obj/item/clothing/accessory/armband/grey_scarf(null)
 			uniform.attackby(scarf_a, H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	if (prob(25))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

@@ -176,7 +176,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
 	ammo_type = /obj/item/ammo_casing/a8x53mm
 	max_ammo = 5
-	weight = 0.038
+	weight = 0.048
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/c44p

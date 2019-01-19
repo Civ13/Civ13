@@ -38,7 +38,12 @@
 	icon_state = "white_tunic_long"
 	item_state = "white_tunic_long"
 	worn_state = "white_tunic_long"
-
+/obj/item/clothing/under/renaissance
+	name = "purple renaissance clothing"
+	desc = "A baggy renaissance-style outfit."
+	icon_state = "renaissance"
+	item_state = "renaissance"
+	worn_state = "renaissance"
 /obj/item/clothing/under/medieval/crusader
 	name = "crusader tunic"
 	desc = "A white tunic with a red cross in the middle."

@@ -34,9 +34,12 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/little_creek/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 2400 || admin_ended_all_grace_periods)
+/obj/map_metadata/little_creek/cross_message(faction)
+	return "<font size = 4>The grace wall is lifted!</font>"
 
-/obj/map_metadata/colony/cross_message(faction)
-	return "The grace wall is lifted!"
+/obj/map_metadata/little_creek/reverse_cross_message(faction)
+	return ""
+
 /obj/map_metadata/little_creek/update_win_condition()
 	if (win_condition_spam_check)
 		return FALSE
@@ -46,14 +49,13 @@ obj/map_metadata/little_creek/job_enabled_specialcheck(var/datum/job/J)
 			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE
-			return FALSE
+			ticker.finished = TRUE
+			return TRUE
 	if (processes.ticker.playtime_elapsed >= 18000)
-		if (win_condition_spam_check)
-			return FALSE
 		ticker.finished = TRUE
 		var/message = "The Sheriff's troops have sucessfully defended the Bank! With the Army arriving, the Outlaws retreat!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
-		return FALSE
+		return TRUE
 #undef NO_WINNER
