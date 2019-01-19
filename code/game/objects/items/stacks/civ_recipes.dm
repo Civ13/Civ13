@@ -500,12 +500,14 @@
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cowboy hat", /obj/item/clothing/head/cowboyhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark cowboy hat", /obj/item/clothing/head/cowboyhat2, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("shemagh", /obj/item/clothing/mask/shemagh, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("shemagh", /obj/item/clothing/mask/shemagh, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("kerchief", /obj/item/clothing/head/kerchief, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("tarred hat", /obj/item/clothing/head/tarred_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bowler hat", /obj/item/clothing/head/bowler_hat, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("rice hat", /obj/item/clothing/head/rice_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("sombrero", /obj/item/clothing/head/sombrero, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("sombrero", /obj/item/clothing/head/sombrero, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("red kerchief", obj/item/clothing/mask/shemagh/redkerchief, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("grey kerchief", obj/item/clothing/mask/shemagh/greykerchief, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if ( current_res[3] < 15)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("cotton loincloth", /obj/item/clothing/under/loincotton, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -574,14 +576,16 @@
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("leather overcoat", /obj/item/clothing/suit/storage/jacket/leatherovercoat1, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black leather overcoat", /obj/item/clothing/suit/storage/jacket/leatherovercoat2, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("kozhanka", /obj/item/clothing/suit/storage/coat/kozhanka)), 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 112)
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
-			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("kozhanka", /obj/item/clothing/suit/storage/coat/kozhanka)), 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] < 38)
 		recipes += new/datum/stack_recipe_list("accessories", list(
 			new/datum/stack_recipe("customizable armband", /obj/item/clothing/accessory/custom/armband, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),

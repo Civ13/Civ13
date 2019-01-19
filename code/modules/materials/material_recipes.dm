@@ -188,18 +188,18 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes = list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 
 	if (map.ordinal_age <= 1)
-		recipes += new/datum/stack_recipe_list("hats", list(
+		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red beret", /obj/item/clothing/head/red_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue beret", /obj/item/clothing/head/blue_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age == 2)
-		recipes += new/datum/stack_recipe_list("hats", list(
+		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red beret", /obj/item/clothing/head/red_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue beret", /obj/item/clothing/head/blue_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("kerchief", /obj/item/clothing/head/kerchief, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age == 3)
-		recipes += new/datum/stack_recipe_list("hats", list(
+		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red beret", /obj/item/clothing/head/red_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue beret", /obj/item/clothing/head/blue_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
