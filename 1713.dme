@@ -401,6 +401,7 @@
 #include "code\modules\1713\jobs\indians.dm"
 #include "code\modules\1713\jobs\japanese.dm"
 #include "code\modules\1713\jobs\medieval.dm"
+#include "code\modules\1713\jobs\nomads.dm"
 #include "code\modules\1713\jobs\pirates.dm"
 #include "code\modules\1713\jobs\portuguese.dm"
 #include "code\modules\1713\jobs\russian.dm"

@@ -24,7 +24,7 @@
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_belt)
 			else if (map.ordinal_age == 2)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_belt)
-			else
+			else if (map.ordinal_age >= 3)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_belt)
 
 //clothes/////////////////////////////////////////////////
@@ -38,25 +38,31 @@
 		else if (map.ordinal_age == 2)
 			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
-		else
+		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-
+		else if (map.ordinal_age >= 4)
+			if (gender == "male")
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 //coats/////////////////////////////////////////////////
 		if (season == "WINTER" || map.ID == MAP_NOMADS_ICE_AGE)
+		if (map.ordinal_age < 4)
 			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
 		else if (map.ordinal_age == 4)
 			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kozhanka(src), slot_wear_suit)
-			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 		else if (map.ordinal_age == 5)
 			equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kozhanka(src), slot_wear_suit)
-			equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+
 /datum/job/civilian/governor
 	title = "Governor"
 	en_meaning = "Colony Leader"
