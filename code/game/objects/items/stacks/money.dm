@@ -132,7 +132,7 @@
 	..()
 	desc = "Stored Value: [storedvalue]."
 	timer()
-/obj/structure/carriage/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/carriage_tdm/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
 		storedvalue += (W.value*W.amount)
 		desc = "Stored Value: [storedvalue]."
