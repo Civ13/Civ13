@@ -172,36 +172,19 @@
 			if (W.amount <= 0)
 				qdel(W)
 	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
-		var/list/listing = list("Cancel")
-		if (istype(src, /obj/item/stack/ammopart/casing/pistol))
-			if (map.ordinal_age >= 4)
-				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
-			else if (map.ordinal_age >= 5)
-				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
-		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-		if (input == "Cancel")
-			return
-		else if (input == ".45 Colt")
-			resultpath = /obj/item/ammo_casing/a45
-		else if (input == ".44-40 Winchester")
-			resultpath = /obj/item/ammo_casing/a44
-		if (resultpath != null)
-			new resultpath(user.loc)
-			for(var/i=1;i<=amount;i++)
-				new resultpath(user.loc)
-			qdel(src)
-			return
+		attack_self(user)
+		return
 
-		else
-			return
+	else
+		return
 
-/obj/item/stack/ammopart/casing/attack_self(mob/user)
+/obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
 		if (map.ordinal_age >= 4)
-			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+			listing = list(".45 Colt", ".44-40 Winchester", ".44-70 Government", "Cancel")
 		else if (map.ordinal_age >= 5)
-			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+			listing = list(".45 Colt", ".44-40 Winchester", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -209,6 +192,12 @@
 			resultpath = /obj/item/ammo_casing/a45
 		else if (input == ".44-40 Winchester")
 			resultpath = /obj/item/ammo_casing/a44
+		else if (input == "7.62x38mmR Nagant")
+			resultpath = /obj/item/ammo_casing/a762x38
+		else if (input == "8mm Nambu")
+			resultpath = /obj/item/ammo_casing/c8mmnambu
+		else if (input == "9mm Japanese Revolver")
+			resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -220,6 +209,40 @@
 		user << "<span class = 'notice'>The casing is not complete yet.</span>"
 		return
 
+/obj/item/stack/ammopart/casing/rifle/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		var/list/listing = list("Cancel")
+		if (map.ordinal_age >= 4)
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "Cancel")
+		else if (map.ordinal_age >= 5)
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","Cancel")
+		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+		if (input == "Cancel")
+			return
+		else if (input == ".44-70 Government")
+			resultpath = /obj/item/ammo_casing/a4570
+		else if (input == "Shotgun (Buckshot)")
+			resultpath = /obj/item/ammo_casing/shotgun
+		else if (input == "Shotgun (Slugshot)")
+			resultpath = /obj/item/ammo_casing/shotgun/slug
+		else if (input == "Shotgun (Beanbag)")
+			resultpath = /obj/item/ammo_casing/shotgun/beanbag
+		else if (input == "7.62x54mmR Russian")
+			resultpath = /obj/item/ammo_casing/a762x54
+		else if (input == "8x53mm Murata")
+			resultpath = /obj/item/ammo_casing/a8x53mm
+		else if (input == "6.5x50mmSR Arisaka")
+			resultpath = /obj/item/ammo_casing/a65x50mm
+		if (resultpath != null)
+			for(var/i=1;i<=amount;i++)
+				new resultpath(user.loc)
+			qdel(src)
+			return
+		else
+			return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
+		return
 /obj/item/stack/ammopart/attack_self(mob/user)
 	if (istype(src, /obj/item/stack/ammopart/bullet) || istype(src, /obj/item/stack/ammopart/casing/pistol) || istype(src, /obj/item/stack/ammopart/casing/rifle))
 		return

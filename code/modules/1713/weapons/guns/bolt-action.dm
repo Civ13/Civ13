@@ -169,7 +169,9 @@
 	if (prob(jamcheck))
 		jammed_until = max(world.time + (jamcheck * 5), 50)
 		jamcheck = 0
-
+	if (blackpowder)
+		spawn (1)
+			new/obj/effect/effect/smoke/chem(get_step(src, dir))
 	last_fire = world.time
 /obj/item/weapon/gun/projectile/boltaction/singleshot
 	name = "Sharps Rifle"
@@ -515,10 +517,10 @@
 
 /obj/item/weapon/gun/projectile/murata/murata
 	name = "Type-22 Murata"
-	desc = "Japanese bolt-action rifle chambered in 11x60mm Murata ammunition."
+	desc = "Japanese bolt-action rifle chambered in 8x53mm Murata ammunition."
 	icon_state = "murata"
 	item_state = "murata"
-	caliber = "a11x60mm"
+	caliber = "a8x53mm"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a8x53mm
@@ -534,7 +536,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/murata
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
-
+	blackpowder = TRUE
 	/////need to add:
 	///Springfield Model
 	///1861,Pattern
