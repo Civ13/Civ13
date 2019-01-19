@@ -466,8 +466,6 @@
 					return
 			else
 				copying = FALSE
-				return
-			else
 				icon_state = "printingpress0"
 				return
 	return
