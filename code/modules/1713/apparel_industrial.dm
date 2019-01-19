@@ -158,18 +158,18 @@
 	..()
 	if (!specific)
 		colorn = pick(1,2,)
-		icon_state = "kozhanka[colorn]"
-		item_state = "kozhanka[colorn]"
-		worn_state = "kozhanka[colorn]"
+		icon_state = "kozhanka"
+		item_state = "kozhanka"
+		worn_state = "kozhanka"
 
 /obj/item/clothing/suit/storage/coat/kozhanka/verb/toggle_hood()
 	set category = null
 	set src in usr
 	set name = "Toggle Hood"
 	if (hood)
-		icon_state = "kozhanka[colorn]"
-		item_state = "kozhanka[colorn]"
-		worn_state = "kozhanka[colorn]"
+		icon_state = "kozhanka"
+		item_state = "kozhanka"
+		worn_state = "kozhanka"
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]"
@@ -180,12 +180,12 @@
 		usr.update_inv_wear_suit(1)
 		return
 	else if (!hood)
-		icon_state = "kozhanka[colorn]h"
-		item_state = "kozhanka[colorn]h"
-		worn_state = "kozhanka[colorn]h"
+		icon_state = "kozhankah"
+		item_state = "kozhankah"
+		worn_state = "kozhankah"
 		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
 		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
-		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]h"
+		item_state_slots["slot_wear_suit"] = "kozhankah"
 		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
 		update_icon()
 		hood = TRUE
