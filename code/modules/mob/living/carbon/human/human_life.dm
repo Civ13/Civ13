@@ -67,7 +67,7 @@
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
-	if (stat != DEAD)
+	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 1
@@ -1345,6 +1345,8 @@
 		return
 
 /mob/living/carbon/human/proc/do_rotting()
+	if (!map.civilizations)
+		return
 	if (stat == DEAD)
 		spawn(3000)
 			if (stat == DEAD)
@@ -1368,6 +1370,8 @@
 				return
 
 /mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
+	if (!map.civilizations)
+		return
 	if (timer <= 0)
 		return
 	timer *= 600 //convert minutes to deciseconds
