@@ -214,16 +214,15 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
 	else if (randcloth2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
 	if (prob(60))
 		var/randscarf = pick(1,2)
 		if (randscarf == 1)
 			var/obj/item/clothing/mask/shemagh/redkerchief/scarf_a = new /obj/item/clothing/mask/shemagh/redkerchief(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 		else if (randscarf == 2)
 			var/obj/item/clothing/mask/shemagh/greykerchief/scarf_a = new /obj/item/clothing/mask/shemagh/greykerchief(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
 	H.setStat("strength", STAT_NORMAL)
@@ -290,16 +289,15 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
 	else if (randcloth2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
-	uniform.attackby(holsterh, H)
 	if (prob(60))
 		var/randscarf = pick(1,2)
 		if (randscarf == 1)
 			var/obj/item/clothing/mask/shemagh/redkerchief/scarf_a = new /obj/item/clothing/mask/shemagh/redkerchief(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 		else if (randscarf == 2)
 			var/obj/item/clothing/mask/shemagh/greykerchief/scarf_a = new /obj/item/clothing/mask/shemagh/greykerchief(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(scarf_a, H)
 	if (prob(25))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)

@@ -57,7 +57,6 @@ var/datum/quickBan_handler/quickBan_handler = null
 		quickBan_handler = new
 	var/full_banlist = file2text("SQL/bans.txt")
 	var/list/full_list_split = splittext(full_banlist, "|||\n")
-	world << "[full_list_split.len]"
 	var/list/result = list()
 
 	var/option = input(src, "Search for a ban?") in list("Yes","Show All","Cancel")
