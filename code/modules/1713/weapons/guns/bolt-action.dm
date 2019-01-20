@@ -110,6 +110,8 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.pixel_y = rand(-9, 9)
+			chambered.pixel_x = rand(-9, 9)
 			loaded -= chambered
 			chambered = null
 			if (bolt_safety)
@@ -225,6 +227,8 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You open the breech lever, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.pixel_y = rand(-9, 9)
+			chambered.pixel_x = rand(-9, 9)
 			loaded -= chambered
 			chambered = null
 		else
@@ -453,6 +457,8 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.pixel_y = rand(-9, 9)
+			chambered.pixel_x = rand(-9, 9)
 			loaded -= chambered
 			chambered = null
 			if (bolt_safety)
