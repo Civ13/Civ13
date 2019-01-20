@@ -156,6 +156,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c41
+	name = "pouch of bullets (.41 Short)"
+	desc = "a pouch of .41-100 bullets, mostly used on the Derringer."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a41
+	caliber = "a41"
+	max_ammo = 10
+	weight = 0.1
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
 /obj/item/ammo_magazine/c44
 	name = "pouch of bullets (.44-40 Winchester)"
 	desc = "a pouch of .44-40 bullets."

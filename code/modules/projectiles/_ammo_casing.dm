@@ -182,12 +182,14 @@
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
 		if (map.ordinal_age >= 4)
-			listing = list(".45 Colt", ".44-40 Winchester", ".44-70 Government", "Cancel")
+			listing = list(".45 Colt", ".44-40 Winchester", ".44-70 Government", ".41 Short", "Cancel")
 		else if (map.ordinal_age >= 5)
 			listing = list(".45 Colt", ".44-40 Winchester", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
+		else if (input == ".41 Short")
+			resultpath = /obj/item/ammo_casing/a41
 		else if (input == ".45 Colt")
 			resultpath = /obj/item/ammo_casing/a45
 		else if (input == ".44-40 Winchester")
@@ -308,6 +310,16 @@
 	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
 	value = 5
+
+/obj/item/ammo_casing/a41
+	name = ".41 Short bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a41
+	caliber = "a41"
+	value = 7
 
 /obj/item/ammo_casing/a45
 	name = ".45 Colt bullet casing"

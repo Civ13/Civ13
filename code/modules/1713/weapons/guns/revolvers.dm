@@ -229,6 +229,128 @@
 	weight = 0.8
 	load_method = SINGLE_CASING
 
+/obj/item/weapon/gun/projectile/revolver/derringer
+	name = "Derringer M95 Pistol"
+	desc = "Officialy the Remington Model 95, this small pistol has two barrels."
+	icon_state = "derringer"
+	item_state = "pistol"
+	w_class = 1
+	caliber = "a41"
+	magazine_type = /obj/item/ammo_magazine/c41
+	weight = 0.31
+	load_method = SINGLE_CASING
+	max_shells = 2
+	force = 4
+	slot_flags = SLOT_HOLSTER | SLOT_POCKET | SLOT_BELT
+	handle_casings = HOLD_CASINGS
+	move_delay = 4
+	var/open = FALSE
+	var/recentpump = FALSE // to prevent spammage
+	load_delay = 6
+	blackpowder = TRUE
+
+	accuracy_list = list(
+
+		// small body parts: head, hand, feet
+		"small" = list(
+			SHORT_RANGE_STILL = 60,
+			SHORT_RANGE_MOVING = 40,
+
+			MEDIUM_RANGE_STILL = 53*0.9,
+			MEDIUM_RANGE_MOVING = 35*0.9,
+
+			LONG_RANGE_STILL = 45*0.7,
+			LONG_RANGE_MOVING = 30*0.7,
+
+			VERY_LONG_RANGE_STILL = 38*0.5,
+			VERY_LONG_RANGE_MOVING = 25*0.5),
+
+		// medium body parts: limbs
+		"medium" = list(
+			SHORT_RANGE_STILL = 64,
+			SHORT_RANGE_MOVING = 42,
+
+			MEDIUM_RANGE_STILL = 56*0.9,
+			MEDIUM_RANGE_MOVING = 38*0.9,
+
+			LONG_RANGE_STILL = 49*0.7,
+			LONG_RANGE_MOVING = 32*0.7,
+
+			VERY_LONG_RANGE_STILL = 41*0.5,
+			VERY_LONG_RANGE_MOVING = 27*0.5),
+
+		// large body parts: chest, groin
+		"large" = list(
+			SHORT_RANGE_STILL = 68,
+			SHORT_RANGE_MOVING = 44,
+
+			MEDIUM_RANGE_STILL = 60*0.9,
+			MEDIUM_RANGE_MOVING = 40*0.9,
+
+			LONG_RANGE_STILL = 53*0.7,
+			LONG_RANGE_MOVING = 35*0.7,
+
+			VERY_LONG_RANGE_STILL = 45*0.5,
+			VERY_LONG_RANGE_MOVING = 30*0.5),
+	)
+/obj/item/weapon/gun/projectile/revolver/derringer/spin_cylinder()
+	return
+/obj/item/weapon/gun/projectile/revolver/derringer/consume_next_projectile()
+	if (chambered)
+		return chambered.BB
+	return null
+/obj/item/weapon/gun/projectile/revolver/derringer/update_icon()
+	..()
+	if (open)
+		icon_state = "derringer_opened"
+	else
+		icon_state = "derringer"
+
+/obj/item/weapon/gun/projectile/revolver/derringer/attack_self(mob/living/user as mob)
+	if (world.time >= recentpump + 10)
+		if (open)
+			open = FALSE
+			user << "<span class='notice'>You close \the [src].</span>"
+			icon_state = "derringer"
+			if (loaded.len)
+				var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
+				loaded -= AC //Remove casing from loaded list.
+				chambered = AC
+		else
+			open = TRUE
+			user << "<span class='notice'>You break open \the [src].</span>"
+			icon_state = "derringer_opened"
+		recentpump = world.time
+
+/obj/item/weapon/gun/projectile/revolver/derringer/load_ammo(var/obj/item/A, mob/user)
+	if (!open)
+		user << "<span class='notice'>You need to open \the [src] first!</span>"
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/revolver/derringer/unload_ammo(mob/user, var/allow_dump=1)
+	if (!open)
+		user << "<span class='notice'>You need to open \the [src] first!</span>"
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/revolver/derringer/special_check(mob/user)
+	if (open)
+		user << "<span class='warning'>You can't fire \the [src] while it is break open!</span>"
+		return FALSE
+	return ..()
+
+/obj/item/weapon/gun/projectile/revolver/derringer/handle_post_fire()
+	..()
+	if (loaded.len)
+		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
+		loaded -= AC //Remove casing from loaded list.
+		chambered = AC
+	if (blackpowder)
+		spawn (1)
+			new/obj/effect/effect/smoke/chem(get_step(src, dir))
+
+
 /////////Revolving Rifle///////////
 /obj/item/weapon/gun/projectile/revolving
 	move_delay = 1
@@ -401,11 +523,11 @@
 	icon_state = "revolving"
 	item_state = "revolving"
 	w_class = 2
-	caliber = "a45"
+	caliber = "a44"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
-	magazine_type = /obj/item/ammo_magazine/c45
+	magazine_type = /obj/item/ammo_magazine/c44
 	weight = 5.0
 	single_action = TRUE
 	blackpowder = TRUE
