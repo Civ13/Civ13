@@ -74,9 +74,67 @@
 
 	// AUTOBALANCE
 	min_positions = 3
-	max_positions = 14
+	max_positions = 16
 
 /datum/job/civilian/deputy/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	if (prob(60))
+		var/randscarf = pick(1,2,3)
+		if (randscarf == 1)
+			var/obj/item/clothing/accessory/armband/blue_scarf/scarf_a = new /obj/item/clothing/accessory/armband/blue_scarf(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(scarf_a, H)
+
+		else if (randscarf == 2)
+			var/obj/item/clothing/accessory/armband/red_scarf/scarf_a = new /obj/item/clothing/accessory/armband/red_scarf(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(scarf_a, H)
+		else if (randscarf == 3)
+			var/obj/item/clothing/accessory/armband/grey_scarf/scarf_a = new /obj/item/clothing/accessory/armband/grey_scarf(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(scarf_a, H)
+
+	var/obj/item/clothing/accessory/armband/deputy/deputy_a = new /obj/item/clothing/accessory/armband/deputy(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(deputy_a, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/civilian/deputy2
+	title = "Sheriffs Deputy"
+	rank_abbreviation = "Dep."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_cowboy = TRUE
+
+	// AUTOBALANCE
+	min_positions = 6
+	max_positions = 100
+
+/datum/job/civilian/deputy2/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	if (prob(50))
@@ -214,16 +272,21 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
 	else if (randcloth2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-	if (prob(60))
-		var/randscarf = pick(1,2)
-		if (randscarf == 1)
-			var/obj/item/clothing/mask/shemagh/redkerchief/scarf_a = new /obj/item/clothing/mask/shemagh/redkerchief(null)
+	if (prob(80))
+		var/randcloth4 = rand(1,5)
+		if (randcloth4 == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
+		else if (randcloth4 == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
-			uniform.attackby(scarf_a, H)
-		else if (randscarf == 2)
-			var/obj/item/clothing/mask/shemagh/greykerchief/scarf_a = new /obj/item/clothing/mask/shemagh/greykerchief(null)
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
-			uniform.attackby(scarf_a, H)
+			uniform.attackby(red_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -240,13 +303,13 @@
 	title = "Outlaw"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLatePirate"
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
 	whitelisted = TRUE
 	// AUTOBALANCE
-	min_positions = 4
-	max_positions = 14
+	min_positions = 6
+	max_positions = 100
 
 /datum/job/civilian/outlaw/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -289,19 +352,187 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
 	else if (randcloth2 == 5)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
-	if (prob(60))
-		var/randscarf = pick(1,2)
-		if (randscarf == 1)
-			var/obj/item/clothing/mask/shemagh/redkerchief/scarf_a = new /obj/item/clothing/mask/shemagh/redkerchief(null)
+	if (prob(80))
+		var/randcloth4 = rand(1,5)
+		if (randcloth4 == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
+		else if (randcloth4 == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
-			uniform.attackby(scarf_a, H)
-		else if (randscarf == 2)
-			var/obj/item/clothing/mask/shemagh/greykerchief/scarf_a = new /obj/item/clothing/mask/shemagh/greykerchief(null)
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
-			uniform.attackby(scarf_a, H)
-	if (prob(25))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+			uniform.attackby(red_a, H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/civilian/outlaw1
+	title = "West Side Gang"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+	SL_check_independent = TRUE
+	is_cowboy = TRUE
+	whitelisted = TRUE
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 9
+
+/datum/job/civilian/outlaw1/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
+//clothes
+	var/randcloth = rand(1,5)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+	else if (randcloth == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+	else if (randcloth == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+
+//head
+	var/randcloth3 = rand(1,3)
+	if (randcloth3 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	else if (randcloth3 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
+	else if (randcloth3 == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+
+//jacket
+	var/randcloth2 = rand(1,5)
+	if (randcloth2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/leatherovercoat1(H), slot_wear_suit)
+	else if (randcloth2 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/leatherovercoat2(H), slot_wear_suit)
+	else if (randcloth2 == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/bluevest(H), slot_wear_suit)
+	else if (randcloth2 == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
+	else if (randcloth2 == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
+	if (prob(80))
+		var/randcloth4 = rand(1,5)
+		if (randcloth4 == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
+		else if (randcloth4 == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+/datum/job/civilian/outlaw2
+	title = "East Side Gang"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+	SL_check_independent = TRUE
+	is_cowboy = TRUE
+	whitelisted = TRUE
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 9
+
+/datum/job/civilian/outlaw2/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
+//clothes
+	var/randcloth = rand(1,5)
+	if (randcloth == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
+	else if (randcloth == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+	else if (randcloth == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial2(H), slot_w_uniform)
+	else if (randcloth == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial4(H), slot_w_uniform)
+	else if (randcloth == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
+
+//head
+	var/randcloth3 = rand(1,3)
+	if (randcloth3 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	else if (randcloth3 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat2(H), slot_head)
+	else if (randcloth3 == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
+
+//jacket
+	var/randcloth2 = rand(1,5)
+	if (randcloth2 == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/leatherovercoat1(H), slot_wear_suit)
+	else if (randcloth2 == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/leatherovercoat2(H), slot_wear_suit)
+	else if (randcloth2 == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/bluevest(H), slot_wear_suit)
+	else if (randcloth2 == 4)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
+	else if (randcloth2 == 5)
+		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
+	if (prob(80))
+		var/randcloth4 = rand(1,5)
+		if (randcloth4 == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
+		else if (randcloth4 == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+	if (prob(20))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)

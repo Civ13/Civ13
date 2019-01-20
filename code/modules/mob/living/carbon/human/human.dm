@@ -526,19 +526,6 @@ var/list/rank_prefix = list(\
 	// This will ignore any prosthetics in the prefs currently.
 	species.create_organs(src)
 
-	if (!client || !key) //Don't boot out anyone already in the mob.
-		for (var/obj/item/organ/brain/H in organ_list)
-			if (H.brainmob)
-				if (H.brainmob.real_name == real_name)
-					if (H.brainmob.mind)
-						H.brainmob.mind.transfer_to(src)
-						qdel(H)
-
-/*
-	for (var/ID in virus2)
-		var/datum/disease2/disease/V = virus2[ID]
-		V.cure(src)*/
-
 	losebreath = FALSE
 
 	shock_stage = 0

@@ -6,7 +6,7 @@
 		"313 B.C." = 0,
 		"1013" = 0,
 		"1713" = 0,
-		"1873" = 10,
+		"1873" = 0,
 //		"1904" = 0,
 		"Civilization 13" = 0,
 	)
@@ -71,6 +71,7 @@
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK = 10,
+				MAP_LITTLE_CREEK_TDM = 0,
 			)
 		if (epoch == "1713")
 		//1713 - TDM
@@ -287,7 +288,7 @@
 		map.age2_done = TRUE
 		map.age3_done = TRUE
 		map.research_active = FALSE
-		var/customresearch = 100
+		var/customresearch = 90
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)
@@ -305,7 +306,7 @@
 		map.age3_done = TRUE
 		map.age4_done = TRUE
 		map.research_active = FALSE
-		var/customresearch = 130
+		var/customresearch = 104
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)
@@ -325,7 +326,7 @@
 		map.age4_done = TRUE
 		map.age5_done = TRUE
 		map.research_active = FALSE
-		var/customresearch = 180
+		var/customresearch = 135
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)

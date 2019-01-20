@@ -15,28 +15,6 @@
 // callproc moved to code/modules/admin/callproc
 
 
-/client/proc/Cell()
-	set category = "Debug"
-	set name = "Cell"
-	if (!mob)
-		return
-	var/turf/T = mob.loc
-
-	if (!istype(T, /turf))
-		return
-
-	var/datum/gas_mixture/env = T.return_air()
-
-	var/t = "<span class = 'notice'>Coordinates: [T.x],[T.y],[T.z]\n</span>"
-	t += "<span class = 'red'>Temperature: [env.temperature]</span>\n"
-	t += "<span class = 'red'>Pressure: [env.return_pressure()]kPa</span>\n"
-	for (var/g in env.gas)
-		t += "<span class = 'notice'>[g]: [env.gas[g]] / [env.gas[g] * R_IDEAL_GAS_EQUATION * env.temperature / env.volume]kPa</span>\n"
-
-	usr.show_message(t, TRUE)
-
-
-
 //TODO: merge the vievars version into this or something maybe mayhaps
 /client/proc/cmd_debug_del_all()
 	set category = "Debug"

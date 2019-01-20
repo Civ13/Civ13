@@ -132,7 +132,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 	set name = "a-intent"
 	set hidden = TRUE
 
-	if (ishuman(src) || isbrain(src))
+	if (ishuman(src))
 		switch(input)
 			if (I_HELP,I_DISARM,I_GRAB,I_HURT)
 				a_intent = input
@@ -151,7 +151,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 	set name = "a-combat"
 	set hidden = TRUE
 
-	if (ishuman(src) || isbrain(src))
+	if (ishuman(src))
 		switch(input)
 			if (I_DODGE,I_PARRY)
 				defense_intent = input

@@ -41,15 +41,6 @@ proc/GetAbove(var/atom/atom, var/obj/lift_controller/optional_lift_master)
 
 proc/GetBelow(var/atom/atom, var/obj/lift_controller/optional_lift_master)
 
-	if (istype(atom, /obj/skybox))
-		var/obj/skybox/skybox = atom
-		return skybox.GetBelow()
-
-	else if (istype(atom, /turf/open))
-		var/turf/open/O = atom
-		if (O.skybox)
-			return O.skybox.GetBelow()
-
 	var/area/area = get_area(atom)
 	var/area_lift_master = area.lift_master()
 	if (!area_lift_master)

@@ -13,9 +13,6 @@ var/process/open_space/OS_controller = null
 	for (var/turf/open/T in open_spaces)
 		T.update_icon()
 
-/turf/open
-	var/obj/skybox/skybox = null
-
 /turf/open/New()
 	..()
 	if (OS_controller)

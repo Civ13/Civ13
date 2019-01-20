@@ -306,14 +306,14 @@
 "fT" = (/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "fU" = (/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "fV" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
-"fW" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
+"fW" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/item/stack/medical/splint,/obj/item/weapon/doctor_handbook,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "fX" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 6},/turf/floor/wood,/area/caribbean/desert/buildings)
 "fY" = (/obj/structure/wallclock,/turf/floor/wood,/area/caribbean/desert/buildings)
 "fZ" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/desert/buildings)
 "ga" = (/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/desert/buildings)
 "gb" = (/obj/structure/bed{material = "wood"},/obj/item/weapon/bedsheet/red,/turf/floor/wood,/area/caribbean/desert/buildings)
 "gc" = (/obj/structure/table/wood,/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 10},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
-"gd" = (/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
+"gd" = (/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/weapon/doctor_handbook,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "ge" = (/obj/structure/table/marble,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "gf" = (/obj/structure/table/wood,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/desert/buildings)
 "gg" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/desert/buildings)
@@ -336,7 +336,7 @@
 "gx" = (/obj/structure/bed/wood,/obj/item/weapon/bedsheet/ce,/turf/floor/wood,/area/caribbean/desert/buildings)
 "gy" = (/obj/item/ammo_magazine/c45,/obj/structure/closet/crate/chest,/turf/floor/wood,/area/caribbean/desert/buildings)
 "gz" = (/obj/structure/table/marble,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
-"gA" = (/obj/structure/table/marble,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
+"gA" = (/obj/structure/table/marble,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "gB" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 8},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Clinic"})
 "gC" = (/obj/structure/sign/custom{desc = "Taking care of our guests since 1862."; name = "The Creek Inn"},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Inn"})
 "gD" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Inn"})
@@ -755,8 +755,8 @@ acbqacacacacadadadadadadadadadadadadadadadadadadadadahahezahahezahaheHaradaraAar
 acbpbpacacacacadadadfzfAfzfzfAfzfzfAfzfzfAfzfzfzadadaheQjmjSahlleSahadadarazazaradadaicdcacbcacbkqcccbcccbcccbcccbkraiadarararadftjwfvgDfvfvgDfvjwftadhDhUhVhZiafuibfwfwfwfwfuadadacacbracacacacacacacac
 acbpacacacbqbqadadadfAfEfIfEfIfEfIfEfIfEfJfLfQfRadadezcLjmfaahcLcLezadadarazarazaradaicecfcfcfcfcfcgcfcgcfcgcfcgcfchaiadadazaradjujBjvftfvfvftjvjAjuadhDhUhVhVicfuidieifigfwfuadadacacbpbpacacacacacacac
 acbpbpacacbqbqadadadfzfJfIfTfIfIfIfIfIfUfIfLfJfzadadahePcLeOahfiahahadaradararaAaradaScecfcfcfcfcfcfcfcfcfcfcfcfcfchaSadarazayadftftknftgDjCftknftftadhEihjDhVijfufwfwfwfwfwhKadadacacacacbpacacacaeacac
-acbqacacacaUacadanadfzfVfWgcgdfIfIfUgegzgAfLfQfzadadezfBcLcLjUcLfCezadadararararadadaicicjcjcjcjckclksclcmcjcjcjcjcnaiadadararadftjEfvfvfvfvfvfvjFftadhDhVhVhVhVfufwfwfwfwfwfuadadacacacacacacacacacacac
-acbqbqacacacacadanadfAfIfIfIfUfIfIfIfIfIgBfLfIfRadadahfncLcLcLcLcLahadanadazararadadaicocpcpcpaicocsctcscoaicpcpcpcoaiadarararadftftjuftgCgDftjuftftadhDhEikilhEfuhKimgFimhKfuadadadacaeaeacacacacacacac
+acbqacacacaUacadanadfzfVfWgcgdfIfIfUgegzgAfLfIfzadadezfBcLcLjUcLfCezadadararararadadaicicjcjcjcjckclksclcmcjcjcjcjcnaiadadararadftjEfvfvfvfvfvfvjFftadhDhVhVhVhVfufwfwfwfwfwfuadadacacacacacacacacacacac
+acbqbqacacacacadanadfAfIfIfIfUfIfIfIfIfIgBfLfQfRadadahfncLcLcLcLcLahadanadazararadadaicocpcpcpaicocsctcscoaicpcpcpcoaiadarararadftftjuftgCgDftjuftftadhDhEikilhEfuhKimgFimhKfuadadadacaeaeacacacacacacac
 acbwbqbpacacacadadadfzfAfzgGgGgHfzfAfzfzfAfzfzfzadadahezahfifiahezaheHadararararareHcubEbEbEbEcvbEbEbEbEbEcvbEbEbEbEcwaradararadauateHadararadaradarararadeHeKararareKeKcqadarareHarararaeaeaeaeaeacacac
 acacacbpacacacadadadadadadararadadeHadadadadadadadadadadadararadadauararcrazazazararcxcEcEcEcEbEbEbEbEbEbEbEcEcEcEcEcOarazazazararazazaAayararararararararararararararararaAazazararararafafafaeaeaeaeae
 acacacbpaTacbpbpadadadadadaradadaradadadaradararadarararadadararararayararararararayararararararazarararararayarararararazararararararazarazazazazararararazazazazararararararcrazazazaraeaeaeaeafafafaf

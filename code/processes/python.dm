@@ -20,4 +20,4 @@
 	return FALSE
 
 /process/python/proc/getScriptDir()
-	return "[config.masterdir]/1713/scripts"
+	return "/home/1713/1713/scripts"
