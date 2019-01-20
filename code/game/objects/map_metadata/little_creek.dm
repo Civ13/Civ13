@@ -1,7 +1,7 @@
 #define NO_WINNER "The fighting for the town is still going on."
 /obj/map_metadata/little_creek
 	ID = MAP_LITTLE_CREEK
-	title = "Big Trouble in Little Creek (RP) (100x100x2)"
+	title = "Big Trouble in Little Creek (RP) (140x140x2)"
 	lobby_icon_state = "wildwest"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1800
