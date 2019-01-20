@@ -133,6 +133,13 @@
 	item_state = "worker_outfit"
 	worn_state = "worker_outfit"
 
+/obj/item/clothing/under/bartender
+	name = "Bartender Outfit"
+	desc = "A stilish bartender outfit."
+	icon_state = "bartender"
+	item_state = "bartender"
+	worn_state = "bartender"
+
 /obj/item/clothing/under/union_uniform
 	name = "Union Uniform"
 	desc = "A blue uniform worn by union soldiers."

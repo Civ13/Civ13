@@ -26,10 +26,10 @@
 obj/map_metadata/little_creek_tdm/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_cowboy == TRUE)
-		if (J.title == "West Side Gang" || J.title == "East Side Gang" || J.title == "Bank Worker" || J.title == "Townsmen" || J.title == "Deputy")
-			. = FALSE
-		else
+		if (J.title == "Outlaw" || J.title == "Sheriffs Deputy" || J.title == "Sheriff")
 			. = TRUE
+		else
+			. = FALSE
 	else
 		. = FALSE
 /obj/map_metadata/little_creek_tdm/faction2_can_cross_blocks()
