@@ -161,6 +161,19 @@
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 100
 
+/obj/item/weapon/gun/projectile/flintlock/springfield
+	name = "Springfield M1861 Musket"
+	desc = "A simple flintlock musket of the 1860's used commonly in the civil war."
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "musketball"
+	weight = 6.0
+	effectiveness_mod = 0.97
+	ammo_type = /obj/item/ammo_casing/musketball
+	value = 100
+	item_state = "springfield"
+	icon_state = "springfield"
+
 
 /obj/item/weapon/gun/projectile/flintlock/musketoon
 	name = "flintlock musketoon"

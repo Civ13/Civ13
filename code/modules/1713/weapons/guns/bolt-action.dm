@@ -537,6 +537,18 @@
 	magazine_type = /obj/item/ammo_magazine/murata
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	blackpowder = TRUE
+/obj/item/weapon/gun/projectile/murata/murata/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "murata_open") //closed
+		icon_state = "murata"
+	else if (icon_state == "murata")
+		return
+	else
+		icon_state = "murata"
+
+
 	/////need to add:
 	///Springfield Model
 	///1861,Pattern
@@ -547,7 +559,7 @@
 	///Volcanic Carbine,
 	///M1817 Common Rifle (All Rifles used during the civil war)
 
-	/obj/item/weapon/gun/projectile/boltaction/berdan
+/obj/item/weapon/gun/projectile/boltaction/berdan
 	name = "Mosin-Nagant"
 	desc = "Russian bolt-action rifle chambered in 7.62x54mmR cartridges."
 	icon_state ="berdan"
@@ -567,3 +579,13 @@
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+/obj/item/weapon/gun/projectile/boltaction/berdan/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "berdan_open") //closed
+		icon_state = "berdan"
+	else if (icon_state == "berdan")
+		return
+	else
+		icon_state = "berdan"
