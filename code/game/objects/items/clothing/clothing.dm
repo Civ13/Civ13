@@ -169,6 +169,7 @@ BLIND     // can't see anything
 		)
 	body_parts_covered = HEAD
 	slot_flags = SLOT_HEAD
+	flags_inv = BLOCKHEADHAIR
 	w_class = 2.0
 
 	var/light_overlay = "helmet_light"
