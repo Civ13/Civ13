@@ -165,7 +165,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/nagant_revolver
 	name = "Nagant Revolver"
-	desc = "Russian officer's revolver.."
+	desc = "Russian officer's revolver."
 	icon_state = "nagant"
 	w_class = 2
 	caliber = "a762x38"

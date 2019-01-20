@@ -560,7 +560,7 @@
 	///M1817 Common Rifle (All Rifles used during the civil war)
 
 /obj/item/weapon/gun/projectile/boltaction/berdan
-	name = "Mosin-Nagant"
+	name = "Berdan M1870"
 	desc = "Russian bolt-action rifle chambered in 7.62x54mmR cartridges."
 	icon_state ="berdan"
 	item_state ="berdan"
