@@ -14,6 +14,44 @@
 	desc = "a dark, curved leather hat."
 	icon_state = "cowboy2"
 	item_state = "cowboy2"
+/obj/item/clothing/head/unionhat
+	name = "dark union hat"
+	desc = "a dark, slouched leather hat worn commonly by union soldiers."
+	icon_state = "union_hat"
+	item_state = "union_hat"
+/obj/item/clothing/head/unionhatlight
+	name = "light union hat"
+	desc = "a light, slouched leather hat worn commonly by union soldiers."
+	icon_state = "union_hat2"
+	item_state = "union_hat2"
+/obj/item/clothing/head/unioncap
+	name = "Union Cap"
+	desc = "A cap worn by union soldiers."
+	icon_state = "union_cap"
+	item_state = "union_cap"
+	var/adjusted = FALSE
+
+/obj/item/clothing/head/unioncap/verb/adjust_band()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/unioncap)
+		return
+	else
+		if (adjusted)
+			item_state = "union_cap"
+			worn_state = "union_cap"
+			item_state_slots["slot_head"] = "union_cap"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "union_capad"
+			worn_state = "union_capad"
+			item_state_slots["slot_head"] = "union_capad"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
+
+
 /obj/item/clothing/head/sombrero
 	name = "cowboy hat"
 	desc = "ay caranba!"
@@ -94,6 +132,13 @@
 	icon_state = "worker_outfit"
 	item_state = "worker_outfit"
 	worn_state = "worker_outfit"
+
+/obj/item/clothing/under/union_uniform
+	name = "Union Uniform"
+	desc = "A blue uniform worn by union soldiers."
+	icon_state = "union_uniform"
+	item_state = "union_uniform"
+	worn_state = "union_uniform"
 
 /obj/item/clothing/suit/storage/jacket/leatherovercoat1
 	name = "leather overcoat"
