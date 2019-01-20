@@ -68,3 +68,12 @@
 	item_state = "ggloves"
 	permeability_coefficient = 0.05
 	siemens_coefficient = 0.50 //thick work gloves
+
+/obj/item/clothing/gloves/union_gloves
+	desc = "Gloves worn by union cavalry and other military personel."
+	name = "union gloves"
+	icon_state = "union_gloves"
+	item_state = "union_gloves"
+	permeability_coefficient = 0.05
+	siemens_coefficient = 0.50 //thick work gloves
+
