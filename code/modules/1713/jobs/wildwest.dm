@@ -278,6 +278,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
 		else if (randcloth4 == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
@@ -349,7 +358,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
 		else if (randcloth4 == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
-
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -422,6 +439,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
 		else if (randcloth4 == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
 	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")
@@ -495,7 +521,15 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/greykerchief(H), slot_wear_mask)
 		else if (randcloth4 == 2)
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh/redkerchief(H), slot_wear_mask)
-
+	if (prob(50))
+		if (prob(50))
+			var/obj/item/clothing/accessory/armband/suspenders1/red_a = new /obj/item/clothing/accessory/armband/suspenders1(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
+		else
+			var/obj/item/clothing/accessory/armband/suspenders2/red_a = new /obj/item/clothing/accessory/armband/suspenders2(null)
+			var/obj/item/clothing/under/uniform = H.w_uniform
+			uniform.attackby(red_a, H)
 	if (prob(20))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b> member. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it to the North stagecoach storage!")

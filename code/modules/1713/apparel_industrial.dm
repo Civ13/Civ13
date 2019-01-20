@@ -47,6 +47,19 @@
 	item_state = "red_scarf"
 	slot = "decor"
 
+/obj/item/clothing/accessory/armband/suspenders1
+	name = "suspenders"
+	desc = "Leather suspenders."
+	icon_state = "suspenders1"
+	item_state = "suspenders1"
+	slot = "sash"
+
+/obj/item/clothing/accessory/armband/suspenders2
+	name = "dark suspenders"
+	desc = "Dark leather suspenders."
+	icon_state = "suspenders2"
+	item_state = "suspenders2"
+	slot = "sash"
 /obj/item/clothing/under/industrial1
 	name = "pioneer outfit"
 	desc = "A red shirt with leather trousers, commonly used among pioneers."
