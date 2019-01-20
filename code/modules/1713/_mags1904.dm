@@ -71,6 +71,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/c577
+	name = "ammo box (.577/450 Martini-Henry)"
+	icon_state = "mhbox"
+	mag_type = SPEEDLOADER
+	caliber = "a577"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a577
+	max_ammo = 12
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/arisaka
 	name = "Clip (6.5x50mm)"
 	icon_state = "kclip"

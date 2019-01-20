@@ -107,6 +107,11 @@
 	penetrating = 2
 	armor_penetration = 55
 
+/obj/item/projectile/bullet/rifle/a577
+	damage = DAMAGE_HIGH+6
+	penetrating = 3
+	armor_penetration = 75
+
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_MEDIUM + 1
 	penetrating = 1
