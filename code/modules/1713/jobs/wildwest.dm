@@ -336,7 +336,7 @@
 
 //jacket
 	var/randcloth2 = rand(1,3)
-	else if (randcloth2 == 1)
+	if (randcloth2 == 1)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/bluevest(H), slot_wear_suit)
 	else if (randcloth2 == 2)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/olivevest(H), slot_wear_suit)
