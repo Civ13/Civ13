@@ -71,6 +71,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/c577
+	name = "ammo box (.577/450 Martini-Henry)"
+	icon_state = "mhbox"
+	mag_type = SPEEDLOADER
+	caliber = "a577"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a577
+	max_ammo = 12
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/arisaka
 	name = "Clip (6.5x50mm)"
 	icon_state = "kclip"
@@ -152,6 +164,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	caliber = "a45"
 	max_ammo = 24
 	weight = 0.9
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
+/obj/item/ammo_magazine/c41
+	name = "pouch of bullets (.41 Short)"
+	desc = "a pouch of .41-100 bullets, mostly used on the Derringer."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a41
+	caliber = "a41"
+	max_ammo = 10
+	weight = 0.1
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
 	pouch = TRUE

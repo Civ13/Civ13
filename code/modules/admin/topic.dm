@@ -338,6 +338,22 @@
 		var/mob/M = locate(href_list["subtlemessage"])
 		usr.client.cmd_admin_subtle_message(M)
 
+	else if (href_list["create_object"])
+		if (!check_rights(R_SPAWN))	return
+		return create_object(usr)
+
+	else if (href_list["quick_create_object"])
+		if (!check_rights(R_SPAWN))	return
+		return quick_create_object(usr)
+
+	else if (href_list["create_turf"])
+		if (!check_rights(R_SPAWN))	return
+		return create_turf(usr)
+
+	else if (href_list["create_mob"])
+		if (!check_rights(R_SPAWN))	return
+		return create_mob(usr)
+
 	else if (href_list["debug_global"])
 		if (!check_rights(R_DEBUG))	return
 		var/client/C = isclient(usr) ? usr : usr.client

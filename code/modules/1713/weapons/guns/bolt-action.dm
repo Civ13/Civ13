@@ -110,6 +110,8 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.pixel_y = rand(-9, 9)
+			chambered.pixel_x = rand(-9, 9)
 			loaded -= chambered
 			chambered = null
 			if (bolt_safety)
@@ -178,6 +180,7 @@
 	desc = "A single-shot, falling block rifle, with a long range. Uses .45-70 cartridges."
 	icon_state ="sharps"
 	item_state ="shotgun"
+	var/iconame = "sharps"
 	force = 12
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a4570"
@@ -195,16 +198,40 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 1
 
+/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry
+	name = "Martini-Henry Rifle"
+	desc = "A single-shot, falling block rifle, with a long range. Uses .577/450 cartridges."
+	icon_state ="martini_henry"
+	item_state ="shotgun"
+	iconame = "martini_henry"
+	force = 13
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a577"
+	weight = 5
+	effectiveness_mod = 0.98
+	bolt_safety = FALSE
+	value = 90
+	recoil = 4
+	slot_flags = SLOT_BACK
+	throwforce = 17
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a577
+	magazine_type = /obj/item/ammo_magazine/c577
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 1
+	load_delay = 7
+
 /obj/item/weapon/gun/projectile/boltaction/singleshot/update_icon(var/add_scope = FALSE)
 	if (bolt_open)
 		if (!findtext(icon_state, "_open"))
 			icon_state = addtext(icon_state, "_open") //open
-	else if (icon_state == "sharps_open") //closed
-		icon_state = "sharps"
-	else if (icon_state == "sharps")
+	else if (icon_state == "[iconame]_open") //closed
+		icon_state = iconame
+	else if (icon_state == iconame)
 		return
 	else
-		icon_state = "sharps"
+		icon_state = iconame
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
 	if (bolt_open)
@@ -225,6 +252,8 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You open the breech lever, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.pixel_y = rand(-9, 9)
+			chambered.pixel_x = rand(-9, 9)
 			loaded -= chambered
 			chambered = null
 		else
@@ -453,6 +482,8 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.pixel_y = rand(-9, 9)
+			chambered.pixel_x = rand(-9, 9)
 			loaded -= chambered
 			chambered = null
 			if (bolt_safety)
@@ -560,7 +591,7 @@
 	///M1817 Common Rifle (All Rifles used during the civil war)
 
 /obj/item/weapon/gun/projectile/boltaction/berdan
-	name = "Mosin-Nagant"
+	name = "Berdan M1870"
 	desc = "Russian bolt-action rifle chambered in 7.62x54mmR cartridges."
 	icon_state ="berdan"
 	item_state ="berdan"

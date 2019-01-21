@@ -182,12 +182,14 @@
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
 		if (map.ordinal_age >= 4)
-			listing = list(".45 Colt", ".44-40 Winchester", ".44-70 Government", "Cancel")
+			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 		else if (map.ordinal_age >= 5)
-			listing = list(".45 Colt", ".44-40 Winchester", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "Cancel")
+			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
+		else if (input == ".41 Short")
+			resultpath = /obj/item/ammo_casing/a41
 		else if (input == ".45 Colt")
 			resultpath = /obj/item/ammo_casing/a45
 		else if (input == ".44-40 Winchester")
@@ -213,7 +215,7 @@
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
 		if (map.ordinal_age >= 4)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "Cancel")
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry", "Cancel")
 		else if (map.ordinal_age >= 5)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
@@ -221,6 +223,8 @@
 			return
 		else if (input == ".44-70 Government")
 			resultpath = /obj/item/ammo_casing/a4570
+		else if (input == ".577/450 Martini-Henry")
+			resultpath = /obj/item/ammo_casing/a577
 		else if (input == "Shotgun (Buckshot)")
 			resultpath = /obj/item/ammo_casing/shotgun
 		else if (input == "Shotgun (Slugshot)")
@@ -309,6 +313,16 @@
 	caliber = "c9mm_jap_revolver"
 	value = 5
 
+/obj/item/ammo_casing/a41
+	name = ".41 Short bullet casing"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = null
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a41
+	caliber = "a41"
+	value = 7
+
 /obj/item/ammo_casing/a45
 	name = ".45 Colt bullet casing"
 	desc = "A brass casing."
@@ -338,6 +352,17 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/a4570
 	caliber = "a4570"
 	value = 8
+
+/obj/item/ammo_casing/a577
+	name = ".577/450 Martini-Henry bullet casing"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.11
+	projectile_type = /obj/item/projectile/bullet/rifle/a577
+	caliber = "a577"
+	value = 8
+
 
 /obj/item/ammo_casing/a762x54
 	name = "7.62x54mm ammo casing"

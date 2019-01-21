@@ -169,6 +169,7 @@ BLIND     // can't see anything
 		)
 	body_parts_covered = HEAD
 	slot_flags = SLOT_HEAD
+	flags_inv = BLOCKHEADHAIR
 	w_class = 2.0
 
 	var/light_overlay = "helmet_light"
@@ -277,8 +278,8 @@ BLIND     // can't see anything
 	else return ..(M)
 
 /obj/item/clothing/shoes/proc/draw_knife()
-	set name = "Draw Boot Knife"
-	set desc = "Pull out your boot knife."
+	set name = "Draw Hidden Weapon"
+	set desc = "Pull out your boot knife or small pistol."
 	set category = "IC"
 	set src in usr
 
@@ -291,7 +292,7 @@ BLIND     // can't see anything
 	holding.forceMove(get_turf(usr))
 
 	if (usr.put_in_hands(holding))
-		usr.visible_message("<span class='danger'>\The [usr] pulls a knife out of their boot!</span>")
+		usr.visible_message("<span class='danger'>\The [usr] pulls a [holding] out of their boot!</span>")
 		holding = null
 	else
 		usr << "<span class='warning'>Your need an empty, unbroken hand to do that.</span>"
@@ -308,6 +309,7 @@ BLIND     // can't see anything
 	if (can_hold_knife && istype(I, /obj/item/weapon/material/shard) || \
 	 istype(I, /obj/item/weapon/material/kitchen/utensil) || \
 	 istype(I, /obj/item/weapon/material/knife) || \
+	 istype(I, /obj/item/weapon/gun/projectile/revolver/derringer) || \
 	 istype(I, /obj/item/weapon/attachment/bayonet))
 		if (holding)
 			user << "<span class='warning'>\The [src] is already holding \a [holding].</span>"
@@ -315,17 +317,11 @@ BLIND     // can't see anything
 		user.unEquip(I)
 		I.forceMove(src)
 		holding = I
-		user.visible_message("<span class='notice'>\The [user] shoves \the [I] into \the [src].</span>")
+		user.visible_message("<span class='notice'>\The [user] shoves \a [I] into \the [src].</span>")
 		verbs |= /obj/item/clothing/shoes/proc/draw_knife
 		update_icon()
 	else
 		return ..()
-
-/obj/item/clothing/shoes/update_icon()
-	overlays.Cut()
-	if (holding)
-		overlays += image(icon, "[icon_state]_knife")
-	return ..()
 
 /obj/item/clothing/shoes/proc/handle_movement(var/turf/walking, var/running)
 	return
