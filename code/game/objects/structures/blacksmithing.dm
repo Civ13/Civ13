@@ -96,7 +96,7 @@ obj/structure/anvil/New()
 					steel_amt -= 15
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/gun/projectile/revolver/peacemaker(user.loc)
+					new/obj/item/weapon/gun/projectile/revolver/derringer(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"

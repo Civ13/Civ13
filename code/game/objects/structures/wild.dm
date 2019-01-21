@@ -106,7 +106,8 @@
 	sways = TRUE
 	amount = 0
 	layer = 5.11
-
+	health = 50
+	maxhealth = 50
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
 	icon = 'icons/obj/flora/deadtrees.dmi'
@@ -174,7 +175,7 @@
 		pixel_x = rand(-8,8)
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife/bone))
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
 		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")
@@ -256,7 +257,8 @@
 	icon_state = "small_bush"
 	opacity = FALSE
 	density = FALSE
-
+	health = 40
+	maxhealth = 40
 /obj/structure/wild/bush/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
@@ -277,13 +279,16 @@
 	opacity = FALSE
 	density = FALSE
 	flammable = FALSE
-
+	health = 20
+	maxhealth = 20
 /obj/structure/wild/junglebush
 	name = "small vegetation"
 	icon = 'icons/obj/flora/jungleflora.dmi'
 	icon_state = "1"
 	opacity = FALSE
 	density = FALSE
+	health = 60
+	maxhealth = 60
 	var/healthamount = 1
 /obj/structure/wild/junglebush/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
@@ -295,6 +300,8 @@
 	icon_state = "smallbush1"
 	opacity = FALSE
 	density = FALSE
+	health = 20
+	maxhealth = 20
 /obj/structure/wild/smallbush/fire_act(temperature)
 	if (prob(65 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
@@ -309,7 +316,8 @@
 	icon_state = "snowgrass1"
 	opacity = FALSE
 	density = FALSE
-
+	health = 20
+	maxhealth = 20
 /obj/structure/wild/smallbush/winter/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
@@ -328,7 +336,8 @@
 	opacity = FALSE
 	density = FALSE
 	flammable = FALSE
-
+	health = 20
+	maxhealth = 20
 /obj/structure/wild/rock
 	name = "rock"
 	icon_state = "rock1"
@@ -336,7 +345,8 @@
 	density = FALSE
 	flammable = FALSE
 	amount = 0
-
+	health = 20
+	maxhealth = 20
 /obj/structure/wild/tallgrass
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
@@ -344,6 +354,8 @@
 	opacity = FALSE
 	density = FALSE
 	layer = 5.1
+	health = 20
+	maxhealth = 20
 /obj/structure/wild/tallgrass/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
