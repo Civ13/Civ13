@@ -1,8 +1,8 @@
 /obj/item/weapon/gun/projectile/bow
 	name = "bow"
 	desc = "A simple and crude bow."
-	icon_state = "bow"
-	item_state = "bow"
+	icon_state = "bow0"
+	item_state = "bow0"
 	w_class = 4
 	throw_range = 5
 	throw_speed = 5
@@ -31,6 +31,8 @@
 	muzzle_flash = FALSE
 	value = 10
 	flammable = TRUE
+	var/projtype = "arrow"
+	var/icotype = "bow"
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -78,6 +80,34 @@
 
 	load_delay = 30
 	aim_miss_chance_divider = 3.00
+/obj/item/weapon/gun/projectile/bow/sling
+	name = "sling"
+	desc = "A simple leather sling."
+	icon_state = "sling0"
+	item_state = "sling0"
+	icotype = "sling"
+	w_class = 1
+	throw_range = 6
+	throw_speed = 2
+	force = 6
+	throwforce = 6
+	max_shells = 1 //duh
+	slot_flags = SLOT_BACK | SLOT_BELT
+	caliber = "stone"
+	ammo_type = /obj/item/ammo_casing/stone
+	accuracy = TRUE
+	gun_type = GUN_TYPE_BOW
+	attachment_slots = null
+	accuracy_increase_mod = 1.00
+	accuracy_decrease_mod = 1.00
+	stat = "strength"
+	move_delay = 5
+	fire_delay = 8
+	muzzle_flash = FALSE
+	value = 15
+	flammable = TRUE
+	load_delay = 10
+	projtype = "stone"
 
 /obj/item/weapon/gun/projectile/bow/New()
 	..()
@@ -102,14 +132,14 @@
 		if (caliber != C.caliber)
 			return //incompatible
 		if (loaded.len >= max_shells)
-			user << "<span class='warning'>the [src] already has an arrow ready!</span>"
+			user << "<span class='warning'>the [src] already has \a [projtype] ready!</span>"
 			return
 
 		user.remove_from_mob(C)
 		C.loc = src
 		loaded.Insert(1, C) //add to the head of the list
-		user.visible_message("[user] inserts \an [C] into the [src].", "<span class='notice'>You insert \an [C] into the [src].</span>")
-		icon_state = "bow_loaded"
+		user.visible_message("[user] inserts \a [C] into the [src].", "<span class='notice'>You insert \a [C] into the [src].</span>")
+		icon_state = "[icotype]1"
 		if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 
 /obj/item/weapon/gun/projectile/bow/unload_ammo(mob/user, var/allow_dump=1)
@@ -124,8 +154,8 @@
 			var/obj/item/ammo_casing/C = loaded[loaded.len]
 			loaded.len--
 			user.put_in_hands(C)
-			user.visible_message("[user] removes \an [C] from the [src].", "<span class='notice'>You remove \an [C] from the [src].</span>")
-			icon_state = "bow"
+			user.visible_message("[user] removes \a [C] from the [src].", "<span class='notice'>You remove \a [C] from the [src].</span>")
+			icon_state = "[icotype]0"
 			if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 	else
 		user << "<span class='warning'>[src] is empty.</span>"
@@ -134,22 +164,25 @@
 /obj/item/weapon/gun/projectile/bow/update_icon()
 
 	if (chambered)
-		icon_state = "bow_loaded"
+		icon_state = "[icotype]1"
+		item_state = "[icotype]1"
 		return
 	else
-		icon_state = "bow"
+		icon_state = "[icotype]0"
+		item_state = "[icotype]0"
 		return
 
 /obj/item/weapon/gun/projectile/bow/handle_click_empty(mob/user)
 	if (user)
-		user.visible_message("", "<span class='danger'>You don't have an arrow here!</span>")
+		user.visible_message("", "<span class='danger'>You don't have \a [projtype] here!</span>")
 	else
 		visible_message("")
 	return
 
 
 /obj/item/weapon/gun/projectile/bow/special_check(mob/user)
-	if (!(user.has_empty_hand(both = FALSE)))
-		user << "<span class='warning'>You need both hands to fire the [src]!</span>"
-		return FALSE
+	if (!istype(src, /obj/item/weapon/gun/projectile/bow/sling))
+		if (!(user.has_empty_hand(both = FALSE)))
+			user << "<span class='warning'>You need both hands to fire the [src]!</span>"
+			return FALSE
 	return ..()

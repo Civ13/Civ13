@@ -22,7 +22,9 @@
 	pixel_x = rand(-10, 10)
 	pixel_y = rand(-10, 10)
 	bullet_casings += src
-
+	var/matrix/M = matrix()
+	M.Turn(90) // 90 degree angle
+	transform = M
 /obj/item/ammo_casing/Destroy()
 	bullet_casings -= src
 	..()

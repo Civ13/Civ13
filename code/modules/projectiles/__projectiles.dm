@@ -19,6 +19,12 @@
 	penetrating = 3
 	armor_penetration = 100
 
+/obj/item/projectile/arrow/stone
+	damage = DAMAGE_MEDIUM-10
+	penetrating = 1
+	armor_penetration = 10
+	icon_state = "stone"
+
 /obj/item/projectile/arrow/arrow
 	damage = DAMAGE_MEDIUM-2
 	penetrating = 1
