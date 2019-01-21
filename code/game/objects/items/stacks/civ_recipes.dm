@@ -61,6 +61,7 @@
 
 /material/leather/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += new/datum/stack_recipe("sling", /obj/item/weapon/gun/projectile/bow/sling, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 25 && current_res[3] >= 25)
 		recipes += new/datum/stack_recipe("comfy chair", /obj/structure/bed/chair/comfy/brown, 6, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("bug swatter", /obj/item/weapon/swatter, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -409,6 +410,7 @@
 		recipes += new/datum/stack_recipe("well", /obj/structure/sink/well, 7, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 24 && current_res[2] >= 33)
 		recipes += new/datum/stack_recipe("catapult projectile", /obj/item/catapult_ball, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("sling projectile (x5)", /obj/item/ammo_casing/stone, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 49)
 		recipes += new/datum/stack_recipe("stone projectile (x2)", /obj/item/stack/ammopart/stoneball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 

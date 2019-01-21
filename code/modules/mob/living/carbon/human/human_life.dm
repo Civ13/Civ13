@@ -1383,3 +1383,10 @@
 			else
 				invisibility = 0
 				return
+
+/mob/living/carbon/human/proc/buried_proc()
+	if (buriedalive)
+		spawn(300)
+			if (buriedalive && stat != DEAD)
+				adjustOxyLoss(5)
+				src << "<span class='danger'>You can't breathe!</span>"

@@ -47,6 +47,17 @@
 	slot_flags = SLOT_BELT
 	value = 2
 
+/obj/item/ammo_casing/stone
+	name = "rock"
+	desc = "Use a sling to launch it."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "rock"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/arrow/stone
+	weight = 0.22
+	caliber = "stone"
+	value = 1
+
 ///////TO MAKE AMMO WITH GUNPOWDER
 /obj/item/stack/ammopart
 	var/resultpath = /obj/item/ammo_casing/musketball
