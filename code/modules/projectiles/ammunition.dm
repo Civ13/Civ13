@@ -4,7 +4,7 @@
 	icon = 'icons/obj/ammo.dmi'
 	icon_state = "s-casing"
 	flags = CONDUCT
-	slot_flags = SLOT_BELT | SLOT_EARS
+	slot_flags = SLOT_EARS
 	throwforce = TRUE
 	w_class = TRUE
 	flammable = TRUE
