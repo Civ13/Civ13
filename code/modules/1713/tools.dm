@@ -130,6 +130,7 @@
 				user << "<span class='notice'>There is already a tunnel entrance here!</span>"
 				return
 			visible_message("[user] starts digging up a grave...","You start digging up a grave...")
+			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 100, src))
 				user << "You finish digging the grave."
 				new/obj/structure/religious/grave(user.loc)
