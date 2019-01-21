@@ -24,6 +24,11 @@
 	desc = "a light, slouched leather hat worn commonly by union soldiers."
 	icon_state = "union_hat2"
 	item_state = "union_hat2"
+/obj/item/clothing/head/confederatehat
+	name = "grey confederate hat"
+	desc = "a grey, slouched leather hat worn commonly by confederate soldiers."
+	icon_state = "confederate_hat"
+	item_state = "confederate_hat"
 /obj/item/clothing/head/unioncap
 	name = "Union Cap"
 	desc = "A cap worn by union soldiers."
@@ -47,6 +52,33 @@
 			item_state = "union_capad"
 			worn_state = "union_capad"
 			item_state_slots["slot_head"] = "union_capad"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/head/confederatecap
+	name = "Confederate Cap"
+	desc = "A cap worn by confederate soldiers."
+	icon_state = "confederate_cap"
+	item_state = "confederate_cap"
+	var/adjusted = FALSE
+
+/obj/item/clothing/head/confederatecap/verb/adjust_band()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/head/confederatecap)
+		return
+	else
+		if (adjusted)
+			item_state = "confederate_cap"
+			worn_state = "confederate_cap"
+			item_state_slots["slot_head"] = "confederate_cap"
+			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "confederate_capad"
+			worn_state = "confederate_capad"
+			item_state_slots["slot_head"] = "confederate_capad"
 			usr << "<span class = 'danger'>You adjust your cap's band.</span>"
 			adjusted = TRUE
 	update_clothing_icon()
@@ -146,6 +178,43 @@
 	icon_state = "union_uniform"
 	item_state = "union_uniform"
 	worn_state = "union_uniform"
+
+obj/item/clothing/under/confederate_uniform/grey
+	name = "Confederate Uniform"
+	desc = "A grey uniform worn by confederate soldiers."
+	icon_state = "confederate_uniform1"
+	item_state = "confederate_uniform1"
+	worn_state = "confederate_uniform1"
+	colorn = 1
+	specific = TRUE
+
+obj/item/clothing/under/confederate_uniform/grey_blue
+	name = "Confederate Uniform"
+	desc = "A grey uniform worn by confederate soldiers, however this one has union pants."
+	icon_state = "confederate_uniform2"
+	item_state = "confederate_uniform2"
+	worn_state = "confederate_uniform2"
+	colorn = 2
+	specific = TRUE
+
+/obj/item/clothing/under/confederate_uniform
+	name = "confederate uniform"
+	desc = "A grey uniform worn by confederate soldiers."
+	icon_state = "confederate_uniform1"
+	item_state = "confederate_uniform1"
+	worn_state = "confederate_uniform1"
+	value = 70
+	var/colorn = 1
+	var/specific = FALSE
+
+obj/item/clothing/under/confederate_uniform/New()
+	..()
+	if (!specific)
+		colorn = pick(1,2)
+		icon_state = "confederate_uniform[colorn]"
+		item_state = "confederate_uniform[colorn]"
+		worn_state = "confederate_uniform[colorn]"
+
 
 /obj/item/clothing/suit/storage/jacket/leatherovercoat1
 	name = "leather overcoat"
