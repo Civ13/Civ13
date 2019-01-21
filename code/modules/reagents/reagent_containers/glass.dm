@@ -357,27 +357,28 @@
 
 
 /obj/item/weapon/reagent_containers/glass/barrel/attackby(var/obj/item/I, var/mob/user)
-	if (istype(I, /obj/item/stack/ore/sulphur))
-		reagents.add_reagent("sulfur",3)
-		if (I.amount>1)
-			I.amount -= 1
-		else
-			qdel(I)
-		return
-		return
-	else if (istype(I, /obj/item/stack/ore/saltpeter))
-		reagents.add_reagent("potassium",3)
-		if (I.amount>1)
-			I.amount -= 1
-		else
-			qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/coal))
-		reagents.add_reagent("carbon",3)
-		if (I.amount>1)
-			I.amount -= 1
-		else
-			qdel(I)
-		return
-		return
+	if (reagents.total_volume+3 < volume)
+		if (istype(I, /obj/item/stack/ore/sulphur))
+			reagents.add_reagent("sulfur",3)
+			if (I.amount>1)
+				I.amount -= 1
+			else
+				qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/saltpeter))
+			reagents.add_reagent("potassium",3)
+			if (I.amount>1)
+				I.amount -= 1
+			else
+				qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/coal))
+			reagents.add_reagent("carbon",3)
+			if (I.amount>1)
+				I.amount -= 1
+			else
+				qdel(I)
+			return
+	else
+		user << "The [src] is full!"
 	..()

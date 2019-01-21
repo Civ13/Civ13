@@ -351,6 +351,9 @@
 		remove_from_mob(item)
 		item.loc = loc
 		visible_message("<span class = 'warning'>[src] throws \the [item]!</span>")
+		if (istype(item, /obj/item/ammo_casing))
+			var/obj/item/ammo_casing/NI = item
+			NI.randomrotation()
 
 		if (ismob(item))
 			for (var/obj/item/weapon/grab/G in contents)

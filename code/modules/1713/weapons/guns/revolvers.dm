@@ -18,7 +18,7 @@
 	magazine_based = FALSE
 	var/single_action = FALSE
 	var/cocked = FALSE
-
+	var/base_icon = null
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -70,10 +70,18 @@
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
 	load_delay = 6
+
 /obj/item/weapon/gun/projectile/revolver/New()
 	..()
 	loaded = list()
 	chambered = null
+/obj/item/weapon/gun/projectile/revolver/update_icon()
+	..()
+	if (base_icon)
+		if (cocked)
+			icon_state = "[base_icon]_cocked"
+		else
+			icon_state = base_icon
 /obj/item/weapon/gun/projectile/revolver/verb/spin_cylinder()
 	set name = "Spin cylinder"
 	set desc = "Fun when you're bored out of your skull."
@@ -109,10 +117,12 @@
 			playsound(loc, cocked_sound, 50, TRUE)
 			visible_message("<span class='warning'>[user] cocks the [src]!</span>","<span class='warning'>You cock the [src]!</span>")
 			cocked = TRUE
+			update_icon()
 		else
 			playsound(loc, cocked_sound, 50, TRUE)
 			visible_message("<span class='notice'>[user] uncocks the [src].</span>","<span class='notice'>You uncock the [src].</span>")
 			cocked = FALSE
+			update_icon()
 
 /obj/item/weapon/gun/projectile/revolver/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
@@ -177,19 +187,13 @@
 	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
-
-/obj/item/weapon/gun/projectile/revolver/nagant_revolver/update_icon()
-	..()
-	if (loaded.len)
-		icon_state = "nagant"
-	else
-		icon_state = "nagant"
-	return
+	load_delay = 5
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peacemaker"
 	desc = "Officialy the M1873 Colt Single Action Army Revolver."
 	icon_state = "peacemaker"
+	base_icon = "peacemaker"
 	w_class = 2
 	caliber = "a45"
 	load_method = SINGLE_CASING
@@ -215,7 +219,7 @@
 	single_action = TRUE
 	blackpowder = TRUE
 	cocked = FALSE
-
+	load_delay = 5
 /obj/item/weapon/gun/projectile/revolver/panther
 	name = "Panther Revolver"
 	desc = "a .44 caliber revolver."
@@ -228,7 +232,7 @@
 	magazine_type = /obj/item/ammo_magazine/c44p
 	weight = 0.8
 	load_method = SINGLE_CASING
-
+	load_delay = 6
 /obj/item/weapon/gun/projectile/revolver/derringer
 	name = "Derringer M95 Pistol"
 	desc = "Officialy the Remington Model 95, this small pistol has two barrels."

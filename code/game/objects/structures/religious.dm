@@ -74,6 +74,8 @@
 				user << "You fill up \the [src]."
 				open = FALSE
 				icon_state = "grave_filled"
+				name = "grave"
+				desc = "a grave."
 				for (var/obj/structure/religious/remains/RMN in src.loc)
 					RMN.forceMove(src)
 				for (var/obj/item/IT in src.loc)
@@ -111,6 +113,8 @@
 				user << "You uncover \the [src]."
 				open = TRUE
 				icon_state = "grave_overlay"
+				name = "open grave"
+				desc = "An opened grave."
 				for (var/obj/structure/religious/remains/RMN in src)
 					RMN.forceMove(src.loc)
 				for (var/obj/item/IT in src)
