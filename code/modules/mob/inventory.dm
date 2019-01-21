@@ -193,6 +193,9 @@ var/list/slot_equipment_priority = list( \
 
 		if (W.loc != Target)
 			W.forceMove(Target, MOVED_DROP)
+		if (istype(W, /obj/item/ammo_casing))
+			var/obj/item/ammo_casing/NI = W
+			NI.randomrotation()
 		update_icons()
 		return TRUE
 	return FALSE
