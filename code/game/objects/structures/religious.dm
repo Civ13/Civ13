@@ -58,12 +58,80 @@
 	flammable = TRUE
 
 /obj/structure/religious/grave
-	name = "open_grave"
+	name = "open grave"
 	desc = "An opened grave."
 	icon = 'icons/obj/cross.dmi'
 	icon_state = "grave_overlay"
 	density = FALSE
 	anchored = TRUE
+	var/open = TRUE
+/obj/structure/religious/grave/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/shovel) && open)
+		visible_message("[user] starts filling up \the [src]...","You start filling up \the [src]...")
+		if (do_after(user, 100, src))
+			if (open)
+				user << "You fill up \the [src]."
+				open = FALSE
+				icon_state = "grave_filled"
+				for (var/obj/item/IT in src.loc)
+					IT.forceMove(src)
+				for (var/mob/living/ML in src.loc)
+					if (ML.stat != 0)
+						ML.forceMove(src)
+					else
+						if (istype(ML, /mob/living/carbon/human))
+							var/mob/living/carbon/human/H = ML
+							H.buriedalive = TRUE
+							H.buried_proc()
+							ML.anchored = TRUE
+							if (H.client)
+								H.client.perspective = EYE_PERSPECTIVE
+								H.client.eye = src
+						else
+							ML.stat = DEAD
+						ML.forceMove(src)
+				for (var/obj/structure/closet/coffin/CF in src.loc)
+					for (var/mob/living/carbon/human/HM in CF)
+						HM.buriedalive = TRUE
+						HM.buried_proc()
+						if (HM.client)
+							HM.client.perspective = EYE_PERSPECTIVE
+							HM.client.eye = src
+					CF.forceMove(src)
+		else
+			return
+	else if (istype(W, /obj/item/weapon/shovel) && !open)
+		visible_message("[user] starts digging up \the [src]...","You start digging up \the [src]...")
+		if (do_after(user, 100, src))
+			if (!open)
+				user << "You uncover \the [src]."
+				open = TRUE
+				icon_state = "grave_overlay"
+				for (var/obj/item/IT in src)
+					IT.forceMove(src.loc)
+				for (var/mob/living/ML in src)
+					if (ML.stat != 0)
+						ML.forceMove(src.loc)
+					else
+						if (istype(ML, /mob/living/carbon/human))
+							var/mob/living/carbon/human/H = ML
+							H.buriedalive = FALSE
+							ML.anchored = FALSE
+							if (H.client)
+								H.client.eye = H.client.mob
+								H.client.perspective = MOB_PERSPECTIVE
+						else
+							ML.stat = DEAD
+						ML.forceMove(src.loc)
+				for (var/obj/structure/closet/coffin/CF in src)
+					for (var/mob/living/carbon/human/HM in CF)
+						HM.buriedalive = FALSE
+						if (HM.client)
+							HM.client.eye = HM.client.mob
+							HM.client.perspective = MOB_PERSPECTIVE
+					CF.forceMove(src.loc)
+	else
+		return
 
 /obj/structure/religious/impaledskull
 	name = "impaled skull"

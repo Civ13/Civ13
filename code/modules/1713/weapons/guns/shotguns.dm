@@ -93,6 +93,9 @@
 		chambered.loc = get_turf(src)//Eject casing
 		chambered.pixel_y = rand(-9, 9)
 		chambered.pixel_x = rand(-9, 9)
+		var/matrix/MT = matrix()
+		MT.Turn(90) // 90 degree angle
+		chambered.transform = MT
 		chambered = null
 
 	if (loaded.len)

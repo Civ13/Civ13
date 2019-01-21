@@ -447,6 +447,8 @@
 		produced = 100
 	if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
 		produced = 2
+	if (recipe.result_type == /obj/item/ammo_casing/stone)
+		produced = 5
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
@@ -535,7 +537,11 @@
 			var/obj/item/stack/S = O
 			S.amount = produced
 			S.add_to_stacks(user)
-
+		else if (istype(O, /obj/item/ammo_casing/stone))
+			new/obj/item/ammo_casing/stone(get_turf(O))
+			new/obj/item/ammo_casing/stone(get_turf(O))
+			new/obj/item/ammo_casing/stone(get_turf(O))
+			new/obj/item/ammo_casing/stone(get_turf(O))
 		if (istype(O, /obj/item/weapon/storage)) //BubbleWrap - so newly formed boxes are empty
 			for (var/obj/item/I in O)
 				qdel(I)
