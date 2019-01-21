@@ -22,13 +22,15 @@
 	pixel_x = rand(-10, 10)
 	pixel_y = rand(-10, 10)
 	bullet_casings += src
-	var/matrix/M = matrix()
-	M.Turn(90) // 90 degree angle
-	transform = M
+	randomrotation()
 /obj/item/ammo_casing/Destroy()
 	bullet_casings -= src
 	..()
-
+/obj/item/ammo_casing/proc/randomrotation()
+	transform = matrixangle(rand(1,360))
+	spawn(1)
+		pixel_x = rand(-10, 10)
+		pixel_y = rand(-10, 10)
 //removes the projectile from the ammo casing
 /obj/item/ammo_casing/proc/expend()
 	. = BB

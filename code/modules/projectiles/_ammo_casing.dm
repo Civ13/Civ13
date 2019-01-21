@@ -123,7 +123,7 @@
 	name = "empty rifle casing"
 	desc = "An empty brass casing."
 	icon = 'icons/obj/ammo.dmi'
-	icon_state = "riflecasing"
+	icon_state = "riflecasing_empty"
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	resultpath = null
@@ -133,7 +133,7 @@
 	name = "empty pistol casing"
 	desc = "A small empty brass casing."
 	icon = 'icons/obj/ammo.dmi'
-	icon_state = "pistolcasing"
+	icon_state = "pistolcasing_empty"
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	resultpath = null
@@ -318,7 +318,7 @@
 	name = "9mm bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
@@ -328,7 +328,7 @@
 	name = ".41 Short bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.04
 	projectile_type = /obj/item/projectile/bullet/pistol/a41
 	caliber = "a41"
@@ -338,7 +338,7 @@
 	name = ".45 Colt bullet casing"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a45
 	caliber = "a45"
