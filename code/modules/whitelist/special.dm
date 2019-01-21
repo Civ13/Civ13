@@ -6,7 +6,7 @@
 		return TRUE
 	if (isclient(_arg))
 		var/client/C = _arg
-		var/path = "/home/1713/1713/whitelist.txt"
+		var/path = "SQL/whitelist.txt"
 		var/full_list = file2text(path)
 		var/list/full_list_split = splittext(full_list, "\n")
 		for (var/v = TRUE, v < full_list_split.len, v++)
