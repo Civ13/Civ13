@@ -147,12 +147,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if ("map")
 					ticker.finished = TRUE
 					processes.mapswap.finished_at = world.time
-					var/F = file("/home/1713/bot/gamedata.txt")
-					if (fexists("/home/1713/bot/gamedata.txt"))
+					var/F = file("SQL/gamedata.txt")
+					if (fexists("SQL/gamedata.txt"))
 						fdel(F)
 					var/string1 = "map:[processes.mapswap.next_map_title]\n"
 					var/string2 = "players:[clients.len]\n"
-					text2file("[string1][string2]","/home/1713/bot/gamedata.txt")
+					text2file("[string1][string2]","SQL/gamedata.txt")
 				if ("gamemode")
 					processes.gamemode.swap(.)
 		return .
