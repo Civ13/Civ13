@@ -195,3 +195,4 @@
 	ammo_type = /obj/item/ammo_casing/a44
 	value = 150
 	blackpowder = TRUE
+	load_delay = 4
