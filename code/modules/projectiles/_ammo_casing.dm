@@ -162,15 +162,15 @@
 				user << "You fill the casings with gunpowder."
 				gunpowder = gunpowder_max*amount
 				return
-	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-		if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-			user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
-			return
-		else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-			user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
-			user << "You fill the casings with gunpowder."
-			gunpowder = gunpowder_max*amount
-			return
+		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
 	if (istype(W, /obj/item/stack/ammopart/bullet))
 		if (!(gunpowder >= gunpowder_max*amount))
 			user << "<span class = 'notice'>You need to fill the casings with gunpowder before putting the bullet.</span>"
