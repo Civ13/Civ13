@@ -129,7 +129,7 @@
 "cy" = (/obj/structure/railing,/turf/floor/plating/sand/desert,/area/caribbean/desert)
 "cz" = (/obj/structure/railing,/turf/floor/plating/beach/sand,/area/caribbean/desert)
 "cA" = (/obj/item/weapon/sandbag,/turf/floor/dirt/dust,/area/caribbean/desert/town)
-"cB" = (/obj/structure/window/classic,/obj/structure/barricade,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"cB" = (/obj/structure/window/classic,/obj/structure/barricade,/obj/structure/barricade/steel,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "cC" = (/obj/structure/sign/kiddieplaque{desc = "Sheriff's Office"; name = "Sheriff's Office"},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "cD" = (/obj/effect/decal/cleanable/flour,/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
 "cE" = (/obj/structure/railing,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
