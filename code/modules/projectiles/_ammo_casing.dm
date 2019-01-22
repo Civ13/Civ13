@@ -236,11 +236,11 @@
 			resultpath = /obj/item/ammo_casing/a4570
 		else if (input == ".577/450 Martini-Henry")
 			resultpath = /obj/item/ammo_casing/a577
-		else if (input == "Shotgun (Buckshot)")
+		else if (input == "12 Gauge (Buckshot)")
 			resultpath = /obj/item/ammo_casing/shotgun
-		else if (input == "Shotgun (Slugshot)")
+		else if (input == "12 Gauge (Slugshot)")
 			resultpath = /obj/item/ammo_casing/shotgun/slug
-		else if (input == "Shotgun (Beanbag)")
+		else if (input == "12 Gauge (Beanbag)")
 			resultpath = /obj/item/ammo_casing/shotgun/beanbag
 		else if (input == "7.62x54mmR Russian")
 			resultpath = /obj/item/ammo_casing/a762x54
