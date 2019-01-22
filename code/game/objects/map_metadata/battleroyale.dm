@@ -3,7 +3,7 @@
 	ID = MAP_ROBUSTA
 	title = "Isla Robusta Battle Royale (125x125x1)"
 //	lobby_icon_state = "pirates"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
