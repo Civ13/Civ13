@@ -173,6 +173,7 @@
 	value = 100
 	item_state = "springfield"
 	icon_state = "springfield"
+	load_delay = 100
 
 
 /obj/item/weapon/gun/projectile/flintlock/musketoon

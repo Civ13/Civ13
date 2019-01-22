@@ -36,6 +36,12 @@
 	name = "bone shovel"
 	icon_state = "shovel_bone"
 
+/obj/item/weapon/shovel/trench
+	name = "Entrenching Tool"
+	desc = "A shovel used specifically for digging trenches."
+	icon_state = "german_shovel2"
+	var/dig_speed = 7
+
 /obj/item/weapon/pickaxe
 	name = "pickaxe"
 	desc = "Miner's favorite."
