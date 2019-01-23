@@ -58,8 +58,8 @@
 	chambered = null
 
 /obj/item/weapon/gun/projectile/shotgun/pump
-	name = "shotgun"
-	desc = "Useful for sweeping alleys."
+	name = "pump-action shotgun"
+	desc = "A pump-action shotgun chambered in 12 gauge rounds."
 	icon_state = "shotgun"
 	item_state = "shotgun"
 	max_shells = 6
