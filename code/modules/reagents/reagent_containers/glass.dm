@@ -29,6 +29,7 @@
 		/mob/living/simple_animal/sheep/female,
 		/obj/structure/oil_spring,
 		/obj/item/flashlight/lantern,
+		/obj/item/stack/ammopart,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'

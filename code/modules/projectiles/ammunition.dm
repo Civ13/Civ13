@@ -58,6 +58,7 @@
 /obj/item/ammo_casing/update_icon()
 	if (spent_icon && !BB)
 		icon_state = spent_icon
+		name = "empty [replacetext(name,"bullet", "casing")]"
 
 /obj/item/ammo_casing/examine(mob/user)
 	..()
@@ -109,6 +110,7 @@
 		opened=TRUE
 	update_icon()
 	return
+
 /obj/item/ammo_magazine/attack_hand(mob/user as mob)
 //	if (user.get_inactive_hand() == src)
 	if (opened)
@@ -160,6 +162,9 @@
 					icon_state = "pouch_0"
 				else
 					icon_state = "pouch_empty"
+					name = "empty bullet pouch"
+					desc = "an ammo pouch."
+					caliber = null
 	else
 		if (multiple_sprites && icon_keys.len)
 			//find the lowest key greater than or equal to stored_ammo.len
@@ -190,7 +195,7 @@
 		return
 	if (istype(W, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = W
-		if (C.caliber != caliber)
+		if (C.caliber != caliber && caliber != null)
 			user << "<span class='warning'>[C] does not fit into [src].</span>"
 			return
 		if (stored_ammo.len >= max_ammo)
@@ -199,10 +204,13 @@
 		user.remove_from_mob(C)
 		C.loc = src
 		stored_ammo.Insert(1, C) //add to the head of the list
+		if (caliber == null)
+			caliber = C.caliber
+			name = "pouch of bullets ([C])"
 		update_icon()
 	else if (istype(W, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/M = W
-		if (M.caliber != caliber)
+		if (M.caliber != caliber && caliber != null)
 			user << "<span class='warning'>[M]'s ammo type does not fit into [src].</span>"
 			return
 		if (stored_ammo.len >= max_ammo)
@@ -220,7 +228,9 @@
 			stored_ammo.Insert(1, C)
 			M.stored_ammo -= C
 			filled = TRUE
-
+			if (caliber == null)
+				caliber = C.caliber
+				name = "pouch of bullets ([C])"
 		if (filled)
 			user << "<span class = 'notice'>You fill [src] with [M]'s ammo.</span>"
 
@@ -243,6 +253,7 @@
 			C.loc = user.loc
 			C.set_dir(pick(cardinal))
 		stored_ammo.Cut()
+		caliber = null
 		update_icon()
 
 /obj/item/ammo_magazine/examine(mob/user)
