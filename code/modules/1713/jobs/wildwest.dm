@@ -382,7 +382,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/derringer(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/derringer(H), slot_l_store)
 	H.add_note("Role", "You are the <b>Saloon's Bartender</b>, living in Little Creek. Take care of the Saloon, shooting the drunkards out if need be.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
