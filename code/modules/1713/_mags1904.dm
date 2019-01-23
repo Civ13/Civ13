@@ -4,9 +4,22 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 /obj/item/ammo_magazine
 	name = "ammo magazine"
 	var/pouch = FALSE
+	var/opened = FALSE
 
+/obj/item/ammo_magazine/verb/toggle_open()
+	set category = null
+	set src in usr
+	set name = "Toggle Open"
+
+	if (opened)
+		opened=FALSE
+	else
+		opened=TRUE
+	update_icon()
+	return
 /obj/item/ammo_magazine/attack_hand(mob/user as mob)
-	if (user.get_inactive_hand() == src)
+//	if (user.get_inactive_hand() == src)
+	if (opened)
 		unload_ammo(user, allow_dump=0)
 	else
 		return ..()
@@ -36,6 +49,24 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 		user << "<span class='warning'>[src] is empty.</span>"
 		update_icon()
 		return
+
+/obj/item/ammo_magazine/update_icon()
+	if (pouch)
+		if (!opened)
+			icon_state = "pouch_closed"
+		else
+			if (multiple_sprites && icon_keys.len)
+				//find the lowest key greater than or equal to stored_ammo.len
+				var/new_state = null
+				for (var/idx in TRUE to icon_keys.len)
+					var/ammo_count = icon_keys[idx]
+					if (ammo_count >= stored_ammo.len)
+						new_state = ammo_states[idx]
+						break
+				icon_state = (new_state)? new_state : "pouch-20"
+	else
+		..()
+
 
 /obj/item/ammo_magazine/mosin
 	name = "Clip (7.92x54mm)"
