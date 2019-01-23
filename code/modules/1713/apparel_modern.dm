@@ -292,3 +292,140 @@
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//////////////CIVILIAN STUFF/////////////////////////////////////////////////////
+/obj/item/clothing/head/top_hat
+	name = "top hat"
+	desc = "A high top hat."
+	icon_state = "tophat"
+	item_state = "tophat"
+
+/obj/item/clothing/head/flatcap1
+	name = "brown flat cap"
+	desc = "A common flat cap, in brown."
+	icon_state = "flatcap1"
+	item_state = "flatcap1"
+
+/obj/item/clothing/head/flatcap2
+	name = "blue flat cap"
+	desc = "A common flat cap, in blue."
+	icon_state = "flatcap2"
+	item_state = "flatcap2"
+
+/obj/item/clothing/head/flatcap3
+	name = "grey flat cap"
+	desc = "A common flat cap, in grey."
+	icon_state = "flatcap3"
+	item_state = "flatcap3"
+
+
+/obj/item/clothing/under/modern1
+	name = "light brown outfit"
+	desc = "An outfit composed of a white shirt and light brown trousers."
+	icon_state = "modern1"
+	item_state = "modern1"
+	worn_state = "modern1"
+
+/obj/item/clothing/under/modern2
+	name = "black outfit"
+	desc = "An outfit composed of a white shirt and black trousers."
+	icon_state = "modern2"
+	item_state = "modern2"
+	worn_state = "modern2"
+
+/obj/item/clothing/under/modern3
+	name = "grey outfit"
+	desc = "An outfit composed of a white shirt and grey trousers."
+	icon_state = "modern3"
+	item_state = "modern3"
+	worn_state = "modern3"
+
+/obj/item/clothing/under/modern4
+	name = "brown outfit"
+	desc = "An outfit composed of a white shirt and brown trousers."
+	icon_state = "modern4"
+	item_state = "modern4"
+	worn_state = "modern4"
+
+/obj/item/clothing/under/farmer_outfit
+	name = "farmer outfit"
+	desc = "An outfit composed of a checkered shirt and a denim bib."
+	icon_state = "farmer_outfit"
+	item_state = "farmer_outfit"
+	worn_state = "farmer_outfit"
+
+/obj/item/clothing/under/mechanic_outfit
+	name = "mechanic outfit"
+	desc = "An outfit composed of a white shirt and a leather bib."
+	icon_state = "mechanic_outfit"
+	item_state = "mechanic_outfit"
+	worn_state = "mechanic_outfit"
+
+/obj/item/clothing/suit/storage/jacket/black_suit
+	name = "black suit"
+	desc = "A formal black suit."
+	icon_state = "black_suit"
+	item_state = "black_suit"
+	worn_state = "black_suit"
+
+/obj/item/clothing/suit/storage/jacket/really_black_suit
+	name = "dark black suit"
+	desc = "A very black formal suit."
+	icon_state = "really_black_suit"
+	item_state = "really_black_suit"
+	worn_state = "really_black_suit"
+
+/obj/item/clothing/suit/storage/jacket/charcoal_suit
+	name = "black suit"
+	desc = "A formal charcoal grey suit."
+	icon_state = "charcoal_suit"
+	item_state = "charcoal_suit"
+	worn_state = "charcoal_suit"
+
+/obj/item/clothing/suit/storage/jacket/navy_suit
+	name = "black suit"
+	desc = "A formal navy blue suit."
+	icon_state = "navy_suit"
+	item_state = "navy_suit"
+	worn_state = "navy_suit"
+
+/obj/item/clothing/suit/storage/jacket/checkered_suit
+	name = "black suit"
+	desc = "A formal grey checkered suit."
+	icon_state = "checkered_suit"
+	item_state = "checkered_suit"
+	worn_state = "checkered_suit"
+
+/obj/item/clothing/suit/storage/jacket/burgundry_suit
+	name = "black suit"
+	desc = "A formal burgundry colored suit."
+	icon_state = "burgundry_suit"
+	item_state = "burgundry_suit"
+	worn_state = "burgundry_suit"
+
+/obj/item/clothing/accessory/tie
+	name = "black tie"
+	desc = "A black tie."
+	icon_state = "black_tie"
+	item_state = "black_tie"
+	slot = "tie"
+
+/obj/item/clothing/accessory/tie/red
+	name = "red tie"
+	desc = "A red tie."
+	icon_state = "red_tie"
+	item_state = "red_tie"
+
+/obj/item/clothing/accessory/tie/blue
+	name = "blue tie"
+	desc = "A blue tie."
+	icon_state = "blue_tie"
+	item_state = "blue_tie"
+
+/obj/item/clothing/accessory/tie/bowtie
+	name = "black bowtie"
+	desc = "A black bowtie."
+	icon_state = "black_bowtie"
+	item_state = "black_bowtie"
