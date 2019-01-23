@@ -109,6 +109,7 @@
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_l_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a subordinate of the <b>Sheriff</b>. Follow his orders and prevent the <b>Outlaws</b> from robbing the bank!")
 	H.setStat("strength", STAT_NORMAL)
