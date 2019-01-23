@@ -66,7 +66,9 @@
 
 //An item that holds casings and can be used to put them inside guns
 /obj/item/ammo_magazine
-	name = "magazine"
+	name = "ammo magazine"
+	var/pouch = FALSE
+	var/opened = FALSE
 	desc = "A magazine for some kind of gun."
 	icon_state = "357"
 	icon = 'icons/obj/ammo.dmi'
@@ -95,6 +97,80 @@
 
 	// are we an ammo box
 	var/is_box = FALSE
+
+/obj/item/ammo_magazine/verb/toggle_open()
+	set category = null
+	set src in usr
+	set name = "Toggle Open"
+
+	if (opened)
+		opened=FALSE
+	else
+		opened=TRUE
+	update_icon()
+	return
+/obj/item/ammo_magazine/attack_hand(mob/user as mob)
+//	if (user.get_inactive_hand() == src)
+	if (opened)
+		unload_ammo(user, allow_dump=0)
+	else
+		return ..()
+
+/obj/item/ammo_magazine/proc/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
+	if (stored_ammo.len > 0)
+		if (allow_dump)
+			var/count = FALSE
+			var/turf/T = get_turf(user)
+			if (T)
+				for (var/obj/item/ammo_casing/C in stored_ammo)
+					C.loc = T
+					count++
+				stored_ammo.Cut()
+			if (count)
+				visible_message("[user] empties \the [src].", "<span class='notice'>You remove [count] round\s from [src].</span>")
+			update_icon()
+			return
+		else
+			var/obj/item/ammo_casing/C = stored_ammo[stored_ammo.len]
+			stored_ammo.len--
+			user.put_in_hands(C)
+			visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
+			update_icon()
+			return
+	else
+		user << "<span class='warning'>[src] is empty.</span>"
+		update_icon()
+		return
+
+/obj/item/ammo_magazine/update_icon()
+	if (pouch)
+		if (!opened)
+			icon_state = "pouch_closed"
+		else
+			if (multiple_sprites)
+				if (stored_ammo.len >= max_ammo)
+					icon_state = "pouch_full"
+				else if (stored_ammo.len >= max_ammo*0.75)
+					icon_state = "pouch_75"
+				else if (stored_ammo.len >= max_ammo*0.50)
+					icon_state = "pouch_50"
+				else if (stored_ammo.len >= max_ammo*0.25)
+					icon_state = "pouch_25"
+				else if (stored_ammo.len != FALSE)
+					icon_state = "pouch_0"
+				else
+					icon_state = "pouch_empty"
+	else
+		if (multiple_sprites && icon_keys.len)
+			//find the lowest key greater than or equal to stored_ammo.len
+			var/new_state = null
+			for (var/idx in TRUE to icon_keys.len)
+				var/ammo_count = icon_keys[idx]
+				if (ammo_count >= stored_ammo.len)
+					new_state = ammo_states[idx]
+					break
+			icon_state = (new_state)? new_state : initial(icon_state)
+
 
 /obj/item/ammo_magazine/New()
 	..()
@@ -168,18 +244,6 @@
 			C.set_dir(pick(cardinal))
 		stored_ammo.Cut()
 		update_icon()
-
-
-/obj/item/ammo_magazine/update_icon()
-	if (multiple_sprites && icon_keys.len)
-		//find the lowest key greater than or equal to stored_ammo.len
-		var/new_state = null
-		for (var/idx in TRUE to icon_keys.len)
-			var/ammo_count = icon_keys[idx]
-			if (ammo_count >= stored_ammo.len)
-				new_state = ammo_states[idx]
-				break
-		icon_state = (new_state)? new_state : initial(icon_state)
 
 /obj/item/ammo_magazine/examine(mob/user)
 	..()
