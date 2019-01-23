@@ -558,7 +558,7 @@
 "kL" = (/obj/structure/wild/burnedbush,/turf/floor/plating/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
 "kM" = (/obj/effect/landmark{icon_state = "x1"; name = "JoinLateRN"},/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "kN" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/obj/item/ammo_magazine/c45,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
-"kO" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
+"kO" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox/slug,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox/beanbag,/obj/item/ammo_magazine/shellbox/beanbag,/turf/floor/wood/ship,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Sheriff's Office"})
 "kP" = (/obj/effect/landmark{icon_state = "x2"; name = "JoinLatePirate"},/turf/floor/plating/sand/desert,/area/caribbean/desert/escape)
 "kQ" = (/obj/effect/landmark{icon_state = "x2"; name = "JoinLatePirate"},/turf/floor/dirt/dust,/area/caribbean/desert/escape)
 "kR" = (/turf/floor/dirt/dust,/area/caribbean/desert/escape)
