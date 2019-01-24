@@ -113,7 +113,7 @@
 	pouch = TRUE
 /obj/item/ammo_magazine/verb/toggle_open()
 	set category = null
-	set src in usr
+	set src in view(1)
 	set name = "Toggle Open"
 
 	if (opened)

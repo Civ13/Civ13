@@ -526,7 +526,7 @@
 			new/datum/stack_recipe("grey confederate hat", /obj/item/clothing/head/confederatehat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("confederate cap", /obj/item/clothing/head/confederatecap, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("union cap", /obj/item/clothing/head/unioncap, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[3] >= 98 && (current_res[3] < 109))
+	if (current_res[3] >= 109)
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("eyepatch", /obj/item/clothing/mask/glasses/eyepatch, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blindfold", /obj/item/clothing/mask/glasses/sunglasses/blindfold, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
