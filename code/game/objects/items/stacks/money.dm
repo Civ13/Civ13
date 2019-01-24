@@ -76,6 +76,62 @@
 	..()
 	icon_state = "goldstuff[rand(1,3)]"
 
+/obj/structure/oil_deposits
+	name = "oil deposit"
+	desc = "This deposit doesn't have a owner yet."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/faction = null
+	var/health = 200
+
+/obj/structure/oil_deposits/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	switch(W.damtype)
+		if ("fire")
+			health -= W.force * TRUE
+		if ("brute")
+			health -= W.force * 0.5
+	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+	user.do_attack_animation(src)
+	try_destroy()
+	..()
+
+/obj/structure/oil_deposits/proc/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		qdel(src)
+		return
+
+/obj/structure/oil_deposits/New()
+	..()
+	check_value()
+
+/obj/structure/oil_deposits/proc/check_value()
+	storedvalue = 0
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/BB in range(1, src))
+		storedvalue += BB.reagents.get_reagent_amount("petroleum")
+	if (faction)
+		desc = "Belongs to the [faction]. Stored oil: [storedvalue]."
+	spawn(600)
+		check_value()
+
+/obj/structure/oil_deposits/attack_hand(mob/living/carbon/human/user as mob)
+	if (user.civilization == "none")
+		user << "You are not part of a faction!"
+		return
+	else if (faction == null)
+		faction = user.civilization
+		desc = "Belongs to the [faction]. Stored oil: [storedvalue]."
+		user << "You set the oil deposit faction as [faction]."
+		return
+	else
+		..()
+
 /obj/structure/carriage
 	name = "Stagecoach Load"
 	desc = ""

@@ -37,7 +37,7 @@
 	if (newname != null && newname != "none")
 		H.civilization = newname
 		map.custom_faction_nr += newname
-		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H))
+		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0))
 		map.custom_civs += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> faction.</big>"
 		return
