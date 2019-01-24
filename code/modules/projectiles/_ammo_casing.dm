@@ -192,7 +192,7 @@
 /obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
-		if (map.ordinal_age >= 4)
+		if (map.ordinal_age == 4)
 			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 		else if (map.ordinal_age >= 5)
 			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "9x19mm Parabellum", "7.65x25mm Parabellum Borchardt", "Cancel")
