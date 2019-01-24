@@ -85,3 +85,66 @@
 	else
 		icon_state = "nambu0"
 	return
+
+/obj/item/weapon/gun/projectile/pistol/luger
+	name = "Luger P08"
+	desc = "A Luger P08 chambered in 9x19mm parabellum, german design."
+	icon_state = "luger"
+	w_class = 2
+	caliber = "9x19mm"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/luger
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19mm
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+
+/obj/item/weapon/gun/projectile/pistol/luger/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "luger"
+	else
+		icon_state = "luger0"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/mauser
+	name = "Mauser c96"
+	desc = "A Mauser c96 chambered in 9x19mm parabellum, german design."
+	icon_state = "mauser"
+	w_class = 2
+	caliber = "9x19mm"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/mauser
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19mm
+	load_method = SINGLE_CASING | SPEEDLOADER
+	handle_casings = EJECT_CASINGS
+
+/obj/item/weapon/gun/projectile/pistol/mauser/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "mauser"
+	else
+		icon_state = "mauser0"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/borchardt
+	name = "Borchardt c93"
+	desc = "A Borchardt c93 semi-automatic pistol chambered in 7.65x25mm parabellum, german design."
+	icon_state = "borchardt"
+	w_class = 2
+	caliber = "765x25mm"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/borchardt
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a765x25mm
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+
+/obj/item/weapon/gun/projectile/pistol/borchardt/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "borchardt"
+	else
+		icon_state = "borchardt0"
+	return

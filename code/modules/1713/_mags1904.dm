@@ -95,6 +95,37 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.02
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/luger
+	name = "Luger magazine"
+	icon_state = "lugermag"
+	mag_type = MAGAZINE
+	caliber = "9x19mm"
+	ammo_type = /obj/item/ammo_casing/a9x19mm
+	max_ammo = 8
+	weight = 0.02
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/borchardt
+	name = "Borchardt magazine"
+	icon_state = "borchardtmag"
+	mag_type = MAGAZINE
+	caliber = "765x25mm"
+	ammo_type = /obj/item/ammo_casing/a765x25mm
+	max_ammo = 8
+	weight = 0.02
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/mauser
+	name = "Mauser clip (9x19mm)"
+	icon_state = "mauser"
+	caliber = "9x19mm"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a9x19mm
+	max_ammo = 10
+	weight = 0.06
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+
 
 ////////// NAGANT REVOLVER ///////////////
 /obj/item/ammo_magazine/c762x38mmR
