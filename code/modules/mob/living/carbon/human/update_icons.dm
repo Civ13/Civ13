@@ -456,6 +456,11 @@ var/global/list/damage_icon_parts = list()
 
 
 /mob/living/carbon/human/update_inv_w_uniform(var/update_icons=1)
+	var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
+	var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
+	var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_over")
+	var/image/epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
+
 	if (w_uniform && istype(w_uniform, /obj/item/clothing/under))
 /*		var/new_screen_loc = find_inv_position(slot_w_uniform)
 		if (new_screen_loc)
@@ -482,7 +487,20 @@ var/global/list/damage_icon_parts = list()
 		//need to append _s to the icon state for legacy compatibility
 		var/image/standing = image(icon = under_icon, icon_state = under_state)
 		standing.color = w_uniform.color
-
+		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
+			var/obj/item/clothing/under/customuniform/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
+				pants.color = CU.pantscolor
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
+				shirt.color = CU.shirtcolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_over")
+				epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
+				epaulettes.color = CU.epaulettescolor
+				standing.overlays += pants
+				standing.overlays += shirt
+				standing.overlays += belt
+				standing.overlays += epaulettes
 		//apply blood overlay
 		if (w_uniform.blood_DNA)
 			var/image/bloodsies	= image(icon = species.blood_mask, icon_state = "uniformblood")

@@ -82,3 +82,97 @@
 	item_state = "customarabictunic"
 	worn_state = "customarabictunic"
 ///////////////IMPERIAL//////////////////////////////////////
+
+
+
+/////////////////UNIFORMS////////////////////////////////////
+/obj/item/clothing/under/customuniform
+	name = "uniform"
+	desc = "A victorian Era uniform."
+	var/uncolored = FALSE
+	var/shirtcolor = 0
+	var/pantscolor = 0
+	var/epaulettescolor = 0
+	item_state = "customuni"
+	icon_state = "customuni"
+	worn_state = "customuni"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customuniform/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!shirtcolor)
+			var/input = input(user, "Shirt - Choose a hex color (without the #):", "Shirt Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				shirtcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (!pantscolor)
+			var/input = input(user, "Pants - Choose a hex color (without the #):", "Pants Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				pantscolor = addtext("#",input)
+		if (!epaulettescolor)
+			var/input = input(user, "Epaulettes - Choose a hex color (without the #):", "Epaulettes Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				epaulettescolor = addtext("#",input)
+		if (shirtcolor && pantscolor && epaulettescolor)
+			uncolored = FALSE
+			var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
+			pants.color = pantscolor
+			var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
+			shirt.color = shirtcolor
+			var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_over")
+			var/image/epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
+			epaulettes.color = epaulettescolor
+			overlays += pants
+			overlays += shirt
+			overlays += belt
+			overlays += epaulettes
+			return
+	else
+		..()
