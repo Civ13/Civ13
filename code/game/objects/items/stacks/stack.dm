@@ -131,6 +131,15 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+
+	if (findtext(recipe.title, "oil deposit"))
+		if (H.civilization == null || H.civilization == "none")
+			user << "You need to be part of a faction to build this!"
+			return
+		for(var/obj/structure/oil_deposits/OD in range(H,4))
+			user << "You are too close to an existing deposit!"
+			return
+
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"

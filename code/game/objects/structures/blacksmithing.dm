@@ -78,7 +78,7 @@ obj/structure/anvil/New()
 				display2 = list("Small Sword (10)", "Spadroon (15)", "Cancel")
 		else if (choice == "Guns")
 			if (map.ordinal_age == 5)
-				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (35)", "Arisaka Type 35 (35)", "Murata Type 22 (35)", "Nambu Type A (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", "Cancel")
+				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (35)", "Arisaka Type 35 (35)", "Murata Type 22 (35)", "Pump-Action Shotgun (30)","Nambu Type A (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", "Cancel")
 			else if (map.ordinal_age == 4)
 				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)","Cancel")
 			else
@@ -87,6 +87,20 @@ obj/structure/anvil/New()
 		if (choice2 == "Cancel")
 			return
 
+		if (choice2 == "Pump-Action Shotgun (30)")
+			if (steel_amt >= 30)
+				user << "You begin crafting a Shotgun..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,220,src) && steel_amt >= 30)
+					user << "You craft a Shotgun."
+					steel_amt -= 30
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/shotgun/pump(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
 		if (choice2 == "Derringer M95 Pistol (15)")
 			if (steel_amt >= 15)
 				user << "You begin crafting a Derringer..."

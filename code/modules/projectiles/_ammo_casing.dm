@@ -225,7 +225,7 @@
 /obj/item/stack/ammopart/casing/rifle/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
-		if (map.ordinal_age >= 4)
+		if (map.ordinal_age == 4)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry", "Cancel")
 		else if (map.ordinal_age >= 5)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","Cancel")
@@ -295,7 +295,7 @@
 
 
 /obj/item/ammo_casing/a65x50mm
-	name = "6.5x50mm ammo casing"
+	name = "6.5x50mm bullet"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -305,7 +305,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a8x53mm
-	name = "8x53mm ammo casing"
+	name = "8x53mm bullet"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -315,7 +315,7 @@
 	value = 5
 
 /obj/item/ammo_casing/c9mm_jap_revolver
-	name = "9mm bullet casing"
+	name = "9mm bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -325,7 +325,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a41
-	name = ".41 Short bullet casing"
+	name = ".41 Short bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -335,7 +335,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a45
-	name = ".45 Colt bullet casing"
+	name = ".45 Colt bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -345,7 +345,7 @@
 	value = 7
 
 /obj/item/ammo_casing/a44
-	name = ".44-40 Winchester bullet casing"
+	name = ".44-40 Winchester bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -355,7 +355,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a4570
-	name = ".45-70 Government bullet casing"
+	name = ".45-70 Government bullet"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -365,7 +365,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a577
-	name = ".577/450 Martini-Henry bullet casing"
+	name = ".577/450 Martini-Henry bullet"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -376,7 +376,7 @@
 
 
 /obj/item/ammo_casing/a762x54
-	name = "7.62x54mm ammo casing"
+	name = "7.62x54mm bullet"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -386,7 +386,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a762x38
-	name = "7.62x38mmR bullet casing"
+	name = "7.62x38mmR bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -396,7 +396,7 @@
 	value = 5
 
 /obj/item/ammo_casing/c8mmnambu
-	name = "8mm bullet casing"
+	name = "8mm bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -406,7 +406,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a44p
-	name = ".44 bullet casing"
+	name = ".44 bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
