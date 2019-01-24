@@ -195,7 +195,7 @@
 		if (map.ordinal_age >= 4)
 			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 		else if (map.ordinal_age >= 5)
-			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "Cancel")
+			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "9x19mm Parabellum", "7.65x25mm Parabellum Borchardt", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -211,6 +211,10 @@
 			resultpath = /obj/item/ammo_casing/c8mmnambu
 		else if (input == "9mm Japanese Revolver")
 			resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
+		else if (input == "9x19mm Parabellum")
+			resultpath = /obj/item/ammo_casing/a9x19mm
+		else if (input == "7.65x25mm Parabellum Borchardt")
+			resultpath = /obj/item/ammo_casing/a765x25mm
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -403,6 +407,26 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c8mmnambu
 	caliber = "c8mmnambu"
+	value = 2
+
+/obj/item/ammo_casing/a9x19mm
+	name = "9x19mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a9x19mm
+	caliber = "9x19mm"
+	value = 2
+
+/obj/item/ammo_casing/a765x25mm
+	name = "7.65x25mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a765x25mm
+	caliber = "765x25mm"
 	value = 2
 
 /obj/item/ammo_casing/a44p
