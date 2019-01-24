@@ -99,6 +99,18 @@
 	// are we an ammo box
 	var/is_box = FALSE
 
+/obj/item/ammo_magazine/emptypouch
+	name = "empty bullet pouch"
+	pouch = TRUE
+	icon_state = "pouch_closed"
+	ammo_type = null
+	caliber = null
+	max_ammo = 20
+	weight = 0.70
+
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
 /obj/item/ammo_magazine/verb/toggle_open()
 	set category = null
 	set src in usr
@@ -182,10 +194,10 @@
 	if (multiple_sprites)
 		initialize_magazine_icondata(src)
 
-	if (isnull(initial_ammo))
+	if (isnull(initial_ammo) && ammo_type != null)
 		initial_ammo = max_ammo
 
-	if (initial_ammo)
+	if (initial_ammo && ammo_type != null)
 		for (var/i in TRUE to initial_ammo)
 			stored_ammo += new ammo_type(src)
 	update_icon()
@@ -206,7 +218,7 @@
 		stored_ammo.Insert(1, C) //add to the head of the list
 		if (caliber == null)
 			caliber = C.caliber
-			name = "pouch of bullets ([C])"
+			name = "bullet pouch ([C])"
 		update_icon()
 	else if (istype(W, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/M = W
@@ -230,7 +242,7 @@
 			filled = TRUE
 			if (caliber == null)
 				caliber = C.caliber
-				name = "pouch of bullets ([C])"
+				name = "bullet pouch ([C])"
 		if (filled)
 			user << "<span class = 'notice'>You fill [src] with [M]'s ammo.</span>"
 

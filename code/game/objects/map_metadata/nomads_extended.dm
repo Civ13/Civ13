@@ -45,7 +45,7 @@
 		seasons()
 
 /obj/map_metadata/nomads_extended/proc/check_oil()
-	if (processes.ticker.playtime_elapsed >= 600 || admin_ended_all_grace_periods)
+	if (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
 		if (custom_faction_nr.len >= 1)
 			world << "<big><b>Current Status:</b></big>"
 		for(var/i = 1, i <= custom_faction_nr.len, i++)

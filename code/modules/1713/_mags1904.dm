@@ -98,7 +98,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 ////////// NAGANT REVOLVER ///////////////
 /obj/item/ammo_magazine/c762x38mmR
-	name = "pouch of bullets (7.62x38mmR)"
+	name = "bullet pouch (7.62x38mmR)"
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a762x38
 	caliber = "a762x38"
@@ -109,7 +109,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c9mm_jap_revolver
-	name = "pouch of bullets (9mm)"
+	name = "bullet pouch (9mm)"
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
@@ -121,7 +121,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c45
-	name = "pouch of bullets (.45 Colt)"
+	name = "bullet pouch (.45 Colt)"
 	desc = "a pouch of 11.43xmmR bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a45
@@ -133,7 +133,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c41
-	name = "pouch of bullets (.41 Short)"
+	name = "bullet pouch (.41 Short)"
 	desc = "a pouch of .41-100 bullets, mostly used on the Derringer."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a41
@@ -145,7 +145,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c44
-	name = "pouch of bullets (.44-40 Winchester)"
+	name = "bullet pouch (.44-40 Winchester)"
 	desc = "a pouch of .44-40 bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a44
@@ -168,7 +168,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/c44p
-	name = "pouch of bullets (.44)"
+	name = "bullet pouch (.44)"
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a44p
 	caliber = "a44p"
