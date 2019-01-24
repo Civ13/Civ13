@@ -116,6 +116,7 @@
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
 	magazine_type = /obj/item/ammo_magazine/mauser
 	weight = 0.794
+	max_shells = 10
 	ammo_type = /obj/item/ammo_casing/a9x19mm
 	load_method = SINGLE_CASING | SPEEDLOADER
 	handle_casings = EJECT_CASINGS
