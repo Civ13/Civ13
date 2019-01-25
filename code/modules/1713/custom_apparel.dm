@@ -162,12 +162,12 @@
 				epaulettescolor = addtext("#",input)
 		if (shirtcolor && pantscolor && epaulettescolor)
 			uncolored = FALSE
-			var/image/pants = image("icon" = 'icons/mob/uniforms.dmi', "icon_state" = "customuni_pants")
+			var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_pants")
 			pants.color = pantscolor
-			var/image/shirt = image("icon" = 'icons/mob/uniforms.dmi', "icon_state" = "customuni_shirt")
+			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_shirt")
 			shirt.color = shirtcolor
-			var/image/belt = image("icon" = 'icons/mob/uniforms.dmi', "icon_state" = "customuni_over")
-			var/image/epaulettes = image("icon" = 'icons/mob/uniforms.dmi', "icon_state" = "customuni_epaulettes")
+			var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_over")
+			var/image/epaulettes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customuni_epaulettes")
 			epaulettes.color = epaulettescolor
 			overlays += pants
 			overlays += shirt
