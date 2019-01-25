@@ -69,11 +69,7 @@
 						var/list/full_list_split_two = splittext(full_list_split[i], ";")
 						if (full_list_split_two[6] == UID) //if the ban expiration hasn't been reached yet
 							full_list_split_two[10] = 0
-					spawn(1)
-						var/full_banlist_new = file2text("SQL/bans.txt")
-						full_banlist_new = replacetext(full_banlist_new,"\n","")
-						text2file(full_banlist_new,"SQL/bans.txt")
-						recompile_banlist()
+					recompile_banlist()
 					log_admin(M)
 					message_admins(M)
 

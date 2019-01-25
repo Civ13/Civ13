@@ -16,6 +16,8 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Officer Ban", "Server Ban",
 		var/ip = href_list["quickBan_removeBan_ip"]
 
 		var/full_banlist = file2text("SQL/bans.txt")
+				fcopy("SQL/bans.txt","SQL/bans_backup.txt")
+			fdel(F)
 		var/list/full_list_split = splittext(full_banlist, "|||\n")
 		for(var/i=1;i<full_list_split.len;i++)
 			var/list/full_list_split_two = splittext(full_list_split[i], ";")
@@ -37,11 +39,7 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Officer Ban", "Server Ban",
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasn't been reached yet
 					text2file("[full_list_split[i]]|||","SQL/bans.txt")
-			spawn(1)
-				var/full_banlist_new = file2text("SQL/bans.txt")
-				full_banlist_new = replacetext(full_banlist_new,"\n","")
-				text2file(full_banlist_new,"SQL/bans.txt")
-				return
+
 			for (var/client/C in clients)
 				if (C.ckey == ckey)
 					C << "<span class = 'good'>href_list["Your ban has been lifted."]</span>"
@@ -306,7 +304,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (!fields.Find("type_specific_info"))
 		fields["type_specific_info"] = "nil"
 	if (!fields.Find("UID"))
-		fields["UID"] = database.newUID()
+		fields["UID"] = "nil"
 	if (!fields.Find("reason"))
 		fields["reason"] = "nil"
 	if (!fields.Find("banned_by"))
@@ -444,8 +442,4 @@ var/datum/quickBan_handler/quickBan_handler = null
 			var/list/full_list_split_two = splittext(full_list_split[i], ";")
 			if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasn't been reached yet
 				text2file("[full_list_split[i]]|||","SQL/bans.txt")
-		spawn(1)
-			var/full_banlist_new = file2text("SQL/bans.txt")
-			full_banlist_new = replacetext(full_banlist_new,"\n","")
-			text2file(full_banlist_new,"SQL/bans.txt")
 			return
