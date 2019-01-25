@@ -121,3 +121,73 @@
 	if(explosion_size)
 		explosion(O,1,2,3,1)
 		qdel(src)
+
+
+/obj/item/weapon/grenade/dynamite
+	name = "empty dynamite stick"
+	desc = "Light it and run."
+	icon_state = "dynamite0"
+	det_time = 40
+	var/explosion_size = 2
+	var/state = 0
+
+/obj/item/weapon/grenade/dynamite/update_icon()
+	..()
+	icon_state = "dynamite[state]"
+
+/obj/item/weapon/grenade/dynamite/prime()
+	set waitfor = 0
+	..()
+
+	var/turf/O = get_turf(src)
+	if(!O) return
+
+	if(explosion_size)
+		explosion(O,0,2,4,2)
+		qdel(src)
+
+/obj/item/weapon/grenade/dynamite/attack_self(mob/user as mob)
+	return
+
+/obj/item/weapon/grenade/dynamite/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (state == 2 && istype(W, /obj/item/flashlight))
+		var/obj/item/flashlight/F = W
+		if (F.on)
+			activate(user)
+			add_fingerprint(user)
+			name = "lighted dynamite stick"
+			state = 3
+			update_icon()
+
+			// clicking a grenade a second time turned throw mode off, this fixes that
+			if (iscarbon(user))
+				var/mob/living/carbon/C = user
+				C.throw_mode_on()
+			return
+	else if (state == 1 && istype(W, /obj/item/stack/material/rope))
+		var/obj/item/stack/material/rope/R = W
+		if (R.amount == 1)
+			qdel(R)
+		else
+			R.amount -= 1
+		state = 2
+		user << "You attach the wick to \the [src]."
+		name = "dynamite stick"
+		update_icon()
+		return
+	else if (state == 0 && istype(W, /obj/item/weapon/reagent_containers))
+		var/obj/item/weapon/reagent_containers/RG = W
+		if (RG.reagents.has_reagent("nitroglycerin",2))
+			RG.reagents.remove_reagent("nitroglycerin",2)
+			user << "You fill \the [src] with the explosive charge."
+			state = 1
+			name = "filled dynamite stick"
+			update_icon()
+			return
+	else
+		return
+
+/obj/item/weapon/grenade/dynamite/ready
+	state = 2
+	name = "dynamite stick"
+	update_icon()

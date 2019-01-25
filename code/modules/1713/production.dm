@@ -300,7 +300,6 @@
 	..()
 	for (var/obj/structure/oil_spring/OS in src.loc)
 		base = OS
-		continue
 	if (base != null)
 		start_extraction()
 		return
@@ -324,6 +323,8 @@
 		if (barrel[1].reagents.total_volume < barrel[1].reagents.maximum_volume)
 			barrel[1].reagents.add_reagent("petroleum", min(barrel[1].reagents.maximum_volume - barrel[1].reagents.total_volume, 10))
 			base.counter = 0
+			spawn(1200)
+				extract()
 			return
 		else
 			return
