@@ -320,7 +320,7 @@
 	ammo_type = /obj/item/ammo_casing/a65x50mm
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
-	effectiveness_mod = 0.85
+	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_BACK
 	recoil = 2

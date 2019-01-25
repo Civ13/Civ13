@@ -142,6 +142,21 @@
 			reagents.add_reagent("olive_oil", 6)
 			qdel(W)
 			return
+
+		if (istype(W, /obj/item/stack/material/cotton))
+			var/obj/item/stack/material/cotton/CT = W
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You put the cotton inside \the [src]."
+			reagents.add_reagent("cotton", CT.amount)
+			qdel(W)
+			return
 	proc/update_name_label()
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		if (label_text == "")

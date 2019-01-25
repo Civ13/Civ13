@@ -118,8 +118,10 @@
 
 	if (opened)
 		opened=FALSE
+		usr << "You close the [src]."
 	else
 		opened=TRUE
+		usr << "You open the [src]."
 	update_icon()
 	return
 

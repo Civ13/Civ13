@@ -198,7 +198,7 @@
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "musketball"
 	weight = 4.0
-	effectiveness_mod = 0.65
+	effectiveness_mod = 0.75
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 45
 	accuracy_list = list(
