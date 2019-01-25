@@ -131,10 +131,6 @@
 	var/explosion_size = 2
 	var/state = 0
 
-/obj/item/weapon/grenade/dynamite/update_icon()
-	..()
-	icon_state = "dynamite[state]"
-
 /obj/item/weapon/grenade/dynamite/prime()
 	set waitfor = 0
 	..()
@@ -157,7 +153,7 @@
 			add_fingerprint(user)
 			name = "lighted dynamite stick"
 			state = 3
-			update_icon()
+			icon_state = "dynamite3"
 
 			// clicking a grenade a second time turned throw mode off, this fixes that
 			if (iscarbon(user))
@@ -173,7 +169,7 @@
 		state = 2
 		user << "You attach the wick to \the [src]."
 		name = "dynamite stick"
-		update_icon()
+		icon_state = "dynamite2"
 		return
 	else if (state == 0 && istype(W, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/RG = W
@@ -182,7 +178,7 @@
 			user << "You fill \the [src] with the explosive charge."
 			state = 1
 			name = "filled dynamite stick"
-			update_icon()
+			icon_state = "dynamite1"
 			return
 	else
 		return
@@ -191,3 +187,19 @@
 	state = 2
 	name = "dynamite stick"
 	update_icon()
+
+/obj/item/weapon/grenade/dynamite/activate(mob/user as mob)
+	if (active)
+		return
+
+	if (user)
+		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+
+	icon_state = "dynamite3"
+	active = TRUE
+	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+
+	spawn(det_time)
+		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		prime()
+		return
