@@ -94,6 +94,9 @@
 		recipes += new/datum/stack_recipe("suspenders", /obj/item/clothing/accessory/armband/suspenders1, 1, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("dark suspenders", /obj/item/clothing/accessory/armband/suspenders2, 1, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("bullet pouch", /obj/item/ammo_magazine/emptypouch, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("hip holster", /obj/item/clothing/accessory/holster/hip, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("double hip holster", /obj/item/clothing/accessory/holster/hip/double, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+
 	if (current_res[1] >= 55 && current_res[3] >= 25)
 		recipes += new/datum/stack_recipe("black leather shoes", /obj/item/clothing/shoes/soldiershoes, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("black leather boots", /obj/item/clothing/shoes/blackboots1, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
