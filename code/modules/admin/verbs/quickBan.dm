@@ -91,42 +91,48 @@ var/datum/quickBan_handler/quickBan_handler = null
 		html += possibility
 
 	src << browse(html, "window=quick_bans_search;")
-/client/proc/find_cID(var/current = "ckey")
+/client/proc/find_cID(var/current = "ckey", var/currentvar = null)
+	if (currentvar == null)
+		return FALSE
 	var/full_logs = file2text("SQL/playerlogs.txt")
 	var/list/full_logs_split = splittext(full_logs, "|\n")
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if (current == "ckey")
-			if (full_logs_split_two[1] == ckey)
+			if (full_logs_split_two[1] == currentvar)
 				return full_logs_split_two[3]
 		else if (current == "ip")
-			if (full_logs_split_two[2] == address)
+			if (full_logs_split_two[2] == currentvar)
 				return full_logs_split_two[3]
 	return FALSE
 
-/client/proc/find_ip(var/current = "ckey")
+/client/proc/find_ip(var/current = "ckey", var/currentvar = null)
+	if (currentvar == null)
+		return FALSE
 	var/full_logs = file2text("SQL/playerlogs.txt")
 	var/list/full_logs_split = splittext(full_logs, "|\n")
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if (current == "ckey")
-			if (full_logs_split_two[1] == ckey)
+			if (full_logs_split_two[1] == currentvar)
 				return full_logs_split_two[2]
 		else if (current == "cID")
-			if (full_logs_split_two[3] == computer_id)
+			if (full_logs_split_two[3] == currentvar)
 				return full_logs_split_two[2]
 	return FALSE
 
-/client/proc/find_ckey(var/current = "ip")
+/client/proc/find_ckey(var/current = "ip", var/currentvar = null)
+	if (currentvar == null)
+		return FALSE
 	var/full_logs = file2text("SQL/playerlogs.txt")
 	var/list/full_logs_split = splittext(full_logs, "|\n")
 	for(var/i=1;i<full_logs_split.len;i++)
 		var/list/full_logs_split_two = splittext(full_logs_split[i], ";")
 		if (current == "ip")
-			if (full_logs_split_two[2] == address)
+			if (full_logs_split_two[2] == currentvar)
 				return full_logs_split_two[1]
 		else if (current == "cID")
-			if (full_logs_split_two[3] == computer_id)
+			if (full_logs_split_two[3] == currentvar)
 				return full_logs_split_two[1]
 	return FALSE
 
@@ -150,19 +156,19 @@ var/datum/quickBan_handler/quickBan_handler = null
 			// we have one or more field, use connection logs to find the others
 			if (fields["ckey"])
 				if (!fields["cID"])
-					fields["cID"] = find_cID("ckey")
+					fields["cID"] = find_cID("ckey", fields["ckey"])
 				if (!fields["ip"])
-					fields["ip"] = find_ip("ckey")
+					fields["ip"] = find_ip("ckey", fields["ckey"])
 			else if (fields["cID"])
 				if (!fields["ckey"])
-					fields["ckey"] = find_ckey("cID")
+					fields["ckey"] = find_ckey("cID", fields["cID"])
 				if (!fields["ip"])
-					fields["ip"] = find_ip("cID")
+					fields["ip"] = find_ip("cID", fields["cID"])
 			else if (fields["ip"])
 				if (!fields["ckey"])
-					fields["ckey"] = find_ckey("ip")
+					fields["ckey"] = find_ckey("ip", fields["ip"])
 				if (!fields["cID"])
-					fields["cID"] = find_cID("ip")
+					fields["cID"] = find_cID("ip", fields["ip"])
 
 			// as a fallback, search for mobs in the world and use their lastKnownX variables instead
 
@@ -326,36 +332,37 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	if (!fields)
 		fields = list()
-
+	world << "[fields.len]"
 	quickBan_sanitize_fields(fields)
-
-	var/ckey = fields["ckey"]
-	var/cID = fields["cID"]
-	var/ip = fields["ip"]
+	world << "[fields["ckey"]]"
+	world << "[fields["ip"]]"
+	var/banckey = fields["ckey"]
+	var/bancID = fields["cID"]
+	var/banip = fields["ip"]
 	var/expire_info = fields["expire_info"]
 
 	//txt database
 	text2file("[fields["ckey"]];[fields["cID"]];[fields["ip"]];[fields["type"]];[fields["type_specific_info"]];[fields["UID"]];[fields["reason"]];[fields["banned_by"]];[fields["ban_date"]];[fields["expire_realtime"]];[fields["expire_info"]]|||","SQL/bans.txt")
 	if (banner)
-		banner << "<span class = 'notice'>You have successfully banned [ckey]/[cID]/[ip]. This ban [lowertext(expire_info)]."
-	var/M = "[key_name(banner)] banned [ckey]/[cID]/[ip] (bantype = [fields["type"]] ([fields["type_specific_info"]])) for reason '[fields["reason"]]'. This ban [lowertext(expire_info)]."
+		banner << "<span class = 'notice'>You have successfully banned [banckey]/[bancID]/[banip]. This ban [lowertext(expire_info)]."
+	var/M = "[key_name(banner)] banned [banckey]/[bancID]/[banip] (bantype = [fields["type"]] ([fields["type_specific_info"]])) for reason '[fields["reason"]]'. This ban [lowertext(expire_info)]."
 	log_admin(M)
 	message_admins(M)
 	// kick whoever got banned if they're on
 	if (lowertext(fields["type"]) == "server")
 		for (var/client/C in clients)
-			if (C.ckey == ckey)
+			if (C.ckey == banckey)
 				C.quickBan_kicked(fields["type"], fields["reason"], fields["expire_info"])
 				break
 	else
 		if (fields["type_specific_info"])
 			for (var/client/C in clients)
-				if (C.ckey == ckey)
+				if (C.ckey == banckey)
 					C << "<span class = 'userdanger'>You have been [lowertext(fields["type"])]-banned ([fields["type_specific_info"]]). Reason: '[fields["reason"]]'. This ban [lowertext(expire_info)]."
 					break
 		else
 			for (var/client/C in clients)
-				if (C.ckey == ckey)
+				if (C.ckey == banckey)
 					C << "<span class = 'userdanger'>You have been [fields["type"]]-banned. Reason: '[fields["reason"]]'. This ban [lowertext(expire_info)]."
 					break
 
