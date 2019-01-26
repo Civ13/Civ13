@@ -48,7 +48,7 @@
 	recipes += new/datum/stack_recipe("unfired clay roofing", /obj/item/weapon/clay/roofing, 2, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay vase", /obj/item/weapon/clay/vase, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay wine cup", /obj/item/weapon/clay/winecup, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("unfired clay bricks", /obj/item/weapon/clay/claybricks, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("unfired clay blocks", /obj/item/weapon/clay/claybricks, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay bowl", /obj/item/weapon/clay/claybowl, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay jug", /obj/item/weapon/clay/clayjug, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay cup", /obj/item/weapon/clay/claycup, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -58,7 +58,8 @@
 	recipes += new/datum/stack_recipe("unfired large clay pot", /obj/item/weapon/clay/bigclaypot, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay pitcher", /obj/item/weapon/clay/claypitcher, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired large clay pitcher", /obj/item/weapon/clay/largeclaypitcher, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
-
+	if (current_res[1] >= 82)
+		recipes += new/datum/stack_recipe("unfired clay bricks", /obj/item/weapon/clay/advclaybricks, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/leather/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("sling", /obj/item/weapon/gun/projectile/bow/sling, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
