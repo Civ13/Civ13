@@ -332,10 +332,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	if (!fields)
 		fields = list()
-	world << "[fields.len]"
 	quickBan_sanitize_fields(fields)
-	world << "[fields["ckey"]]"
-	world << "[fields["ip"]]"
 	var/banckey = fields["ckey"]
 	var/bancID = fields["cID"]
 	var/banip = fields["ip"]
