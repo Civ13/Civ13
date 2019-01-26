@@ -99,13 +99,13 @@
 		admin_id = text2num(rowdata["id"])
 
 	if (new_admin)
-		text2file("[database.newUID()];[adm_ckey];[new_rank];[num2text(admin_ranks[ckeyEx(new_rank)])]|||","SQL/admins.txt")
+		text2file("[num2text(rand(1, 1000*1000*1000), 20)];[adm_ckey];[new_rank];[num2text(admin_ranks[ckeyEx(new_rank)])]|||","SQL/admins.txt")
 		message_admins("[key_name_admin(usr)] made '[adm_ckey]' an admin with the rank [new_rank].")
 		log_admin("[key_name(usr)] made '[adm_ckey]' an admin with the rank [new_rank].")
 		usr << "<span class = 'good'>New admin successfully added.</span>"
 	else
 		if (admin_id == 0 || !isnum(admin_id))
-			admin_id = database.newUID()
+			admin_id = num2text(rand(1, 1000*1000*1000), 20)
 		else
 			admin_id = num2text(admin_id)
 		for(var/i=1;i<admincheck.len;i++)

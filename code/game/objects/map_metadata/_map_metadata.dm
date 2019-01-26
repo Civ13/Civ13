@@ -13,7 +13,7 @@ var/civmax_research = list(130,130,130)
 	invisibility = 101
 	var/ID = null // MUST be text, or aspects will break
 	var/title = null
-	var/lobby_icon_state = "1"
+	var/lobby_icon_state = "civ13"
 	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]

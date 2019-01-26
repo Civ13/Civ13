@@ -12,7 +12,6 @@
 // BEGIN_INCLUDE
 #include "code\_macros.dm"
 #include "code\client_macros.dm"
-#include "code\database.dm"
 #include "code\global.dm"
 #include "code\hooks.dm"
 #include "code\hub.dm"
