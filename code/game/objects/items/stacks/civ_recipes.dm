@@ -402,7 +402,7 @@
 	recipes += new/datum/stack_recipe("tribal pot", /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fermentation jar", /obj/item/weapon/starterjar, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
-/material/stone/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
+/material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("stone brazier",	/obj/structure/brazier/stone, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age == 0 && map.research_active == TRUE)

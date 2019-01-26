@@ -94,12 +94,13 @@
 
 
 /obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
-	visible_message("[M] pushes \the [src].","You push \the [src]")
-	icon_state = "saloon_opening"
-	update_icon()
-	spawn(20)
-		icon_state = "saloon"
+	if (!isghost(M))
+		visible_message("[M] pushes \the [src].","You push \the [src]")
+		icon_state = "saloon_opening"
 		update_icon()
+		spawn(20)
+			icon_state = "saloon"
+			update_icon()
 
 /obj/covers/wood_wall
 	name = "soft wood wall"
