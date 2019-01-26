@@ -2,7 +2,7 @@
 /obj/map_metadata/four_colonies
 	ID = MAP_FOUR_COLONIES
 	title = "Four Colonies (225x225x2)"
-	lobby_icon_state = "colony3"
+	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 7200 // 12 minutes!
 	squad_spawn_locations = FALSE

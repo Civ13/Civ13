@@ -4,7 +4,7 @@
 	name = "Lobby"
 	desc = ""
 	icon = 'icons/_LOBBY.dmi'
-	icon_state = "1"
+	icon_state = "civ13"
 	screen_loc = "WEST,SOUTH"
 
 /obj/effect/lobby_image/initialize()

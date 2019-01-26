@@ -2,7 +2,7 @@
 /obj/map_metadata/island
 	ID = MAP_ISLAND
 	title = "Skull Island (125x125x2)"
-//	lobby_icon_state = "pirates"
+//	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 600
 	squad_spawn_locations = FALSE

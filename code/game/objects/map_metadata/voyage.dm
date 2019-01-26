@@ -2,7 +2,7 @@
 /obj/map_metadata/voyage
 	ID = MAP_VOYAGE
 	title = "Voyage (75x75x4)"
-//	lobby_icon_state = "pirates"
+//	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
