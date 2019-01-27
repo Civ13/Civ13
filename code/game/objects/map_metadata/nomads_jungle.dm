@@ -63,18 +63,18 @@
 		world << "<big>The <b>Wet Season</b> has started.</big>"
 			change_weather_somehow()
 		for (var/turf/floor/dirt/flooded/D)
-			D.ChangeTurf(/turf/floor/plating/beach/water/flooded)
+			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		for (var/turf/floor/dirt/ploughed/flooded/D)
 			for(var/obj/OB in src.loc)
 				if ( istype(OB, /obj/item) || istype(OB, /obj/structure) || istype(OB, /obj/effect) || istype(OB, /obj/small_fire) )
 					qdel(OB)
-			D.ChangeTurf(/turf/floor/plating/beach/water/flooded)
+			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		real_season = "wet"
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season</b> has started.</big>"
 			change_weather_somehow()
-		for (var/turf/floor/plating/beach/water/flooded/D)
+		for (var/turf/floor/beach/water/flooded/D)
 			D.ChangeTurf(/turf/floor/dirt/flooded)
 		real_season = "dry"
 		spawn(12000)

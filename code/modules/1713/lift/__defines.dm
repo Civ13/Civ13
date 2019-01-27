@@ -1,3 +1,0 @@
-#define STATUS_LIFT_AWAY 0
-#define STATUS_LIFT_DOCKED 1
-//#define LIFT_DEBUG

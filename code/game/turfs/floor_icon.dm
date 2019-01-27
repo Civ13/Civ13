@@ -35,8 +35,6 @@ var/list/flooring_cache = list()
 					if (!istype(T) || !T.flooring || T.flooring.name != flooring.name)
 						has_border |= step_dir
 						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
-				if ((flooring.flags & TURF_USE0ICON) && has_border)
-					icon_state = flooring.icon_base+"0"
 
 				// There has to be a concise numerical way to do this but I am too noob.
 				if ((has_border & NORTH) && (has_border & EAST))
@@ -76,8 +74,6 @@ var/list/flooring_cache = list()
 					if (istype(T, /turf/open))
 						has_border |= step_dir
 						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
-				if ((flooring.flags & TURF_USE0ICON) && has_border)
-					icon_state = flooring.icon_base+"0"
 
 				// There has to be a concise numerical way to do this but I am too noob.
 				if ((has_border & NORTH) && (has_border & EAST))

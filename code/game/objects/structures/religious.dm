@@ -219,8 +219,8 @@
 		else
 			newmob.x=src.x+(rand(12,25))
 			newmob.y=src.y+(rand(-15,15))
-		if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
-			while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/plating/beach/water/deep))
+		if (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/beach/water/deep))
+			while (istype(get_turf(newmob), /turf/wall) || istype (get_turf(newmob), /turf/floor/dirt/underground) || istype (get_turf(newmob), /turf/floor/beach/water/deep))
 				if (randdir == 1)
 					newmob.x=src.x+(rand(-15,15))
 					newmob.y=src.y+(rand(12,25))
