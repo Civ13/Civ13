@@ -34,7 +34,7 @@
 		if (!client_ckey_check[C.ckey])
 			client_ckey_check[C.ckey] = pingtime+50
 			continue
-		if (world.time < client_ckey_check[C.ckey])
+		if (pingtime < client_ckey_check[C.ckey])
 			continue
 
 		winset(C, null, "command=.update_ping+[pingtime+world.tick_lag*world.tick_usage/100]")
