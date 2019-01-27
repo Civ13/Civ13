@@ -212,8 +212,8 @@
 
 /turf/floor/beach/water/New()
 	..()
-	if (!istype(src, /turf/floor/beach/water/ice))
-		overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.09)
+//	if (!istype(src, /turf/floor/beach/water/ice))
+//		overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.09)
 
 /turf/floor/beach/water/ice
 	name = "ice"
