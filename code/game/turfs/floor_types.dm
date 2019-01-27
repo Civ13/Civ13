@@ -44,7 +44,7 @@
 
 /turf/floor/grass
 	name = "Grass patch"
-	icon = 'icons/turf/flooring/grass.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_state = "grass1"
 
 	New()
