@@ -46,7 +46,7 @@ var/GRACE_PERIOD_LENGTH = 7
 //		world << "<span class = 'notice'>Setting up wild grasses.</span>"
 
 	for (var/grass in grass_turf_list)
-		var/turf/floor/plating/grass/G = grass
+		var/turf/floor/grass/G = grass
 		if (!G || G.z > 1)
 			continue
 
@@ -69,7 +69,7 @@ var/GRACE_PERIOD_LENGTH = 7
 
 	for (var/grass in grass_turf_list)
 
-		var/turf/floor/plating/grass/G = grass
+		var/turf/floor/grass/G = grass
 
 		if (!G || G.z > 1 || (!G.uses_winter_overlay))
 			continue

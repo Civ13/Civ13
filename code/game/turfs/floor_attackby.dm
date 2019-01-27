@@ -111,7 +111,7 @@
 					new /obj/item/weapon/snowwall(T)
 					if (T.available_snow <= 0)
 						if (istype(T, /turf/floor/winter/grass))
-							T.ChangeTurf(/turf/floor/plating/grass/wild)
+							T.ChangeTurf(/turf/floor/grass)
 						else if (istype(T, /turf/floor/dirt/winter))
 							T.ChangeTurf(/turf/floor/dirt)
 
@@ -534,7 +534,7 @@
 			return
 	else if (istype(C, /obj/item/weapon/plough))
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/plating/grass/wild/jungle))
+		if (istype(T, /turf/floor/grass/jungle))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
 		if (istype(T, /turf/floor/dirt/burned))
@@ -543,7 +543,7 @@
 		if (istype(T, /turf/floor/dirt/jungledirt))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
-		if (istype(T, /turf/floor/plating/grass) && !istype(T, /turf/floor/plating/grass/wild/jungle))
+		if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return

@@ -101,7 +101,7 @@
 	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/grasslands
 	name = "Grasslands"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 	icon_state = "purple1"
 	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/lostcity
@@ -112,7 +112,7 @@
 
 /area/caribbean/nomads
 	name = "Grassland"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 	icon_state = "red2"
 	ambience = list("sound/ambience/jungle1.ogg")
 
@@ -128,7 +128,7 @@
 
 /area/caribbean/nomads/forest
 	name = "Forest"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 	icon_state = "green1"
 
 /area/caribbean/nomads/forest/snow
@@ -138,7 +138,7 @@
 
 /area/caribbean/nomads/forest/Jungle
 	name = "Jungle"
-	base_turf = /turf/floor/plating/grass/wild/jungle
+	base_turf = /turf/floor/grass/jungle
 	icon_state = "green1"
 
 /area/caribbean/nomads/snow
@@ -210,7 +210,7 @@
 /area/caribbean/forest
 	name = "The Forest"
 	icon_state = "purple1"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 
 /area/caribbean/forest/dirt
 	name = "The Forest"

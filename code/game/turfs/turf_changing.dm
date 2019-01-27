@@ -15,7 +15,7 @@
 
 	if (ispath(N, /turf/floor))
 		var/turf/W = new N( locate(x, y, z) )
-		if (istype(W, /turf/floor/plating/grass))
+		if (istype(W, /turf/floor/grass))
 			switch (season)
 				if ("WINTER")
 					W.color = DEAD_COLOR

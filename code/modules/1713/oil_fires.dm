@@ -177,7 +177,7 @@
 			OS.counter = 0
 
 //burn floors
-	if (istype(get_turf(src), /turf/floor/plating/grass))
+	if (istype(get_turf(src), /turf/floor/grass))
 		var/turf/T = get_turf(src)
 		T.ChangeTurf(/turf/floor/dirt/burned)
 	else if (istype(get_turf(src), /turf/floor/wood))
@@ -193,7 +193,7 @@
 			if (prob(15))
 				new/obj/effect/burning_oil(OL.loc)
 
-	for (var/turf/floor/plating/grass/GR in orange(1, src))
+	for (var/turf/floor/grass/GR in orange(1, src))
 		if (prob(6))
 			new/obj/effect/burning_oil(GR)
 

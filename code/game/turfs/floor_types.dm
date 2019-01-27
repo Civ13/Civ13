@@ -3,112 +3,6 @@
 #define EAST_EDGING		"east"
 #define WEST_EDGING		"west"
 
-/turf/floor/plating/under
-	name = "underplating"
-	icon_state = "un"
-	icon = 'icons/turf/un.dmi'
-	var/icon_base = "un"
-	flags = TURF_HAS_EDGES | TURF_HAS_CORNERS
-	var/has_base_range = null
-	//style = "underplating"
-
-/turf/floor/plating/under/update_icon(var/update_neighbors)
-	// Set initial icon and strings.
-	if (!isnull(set_update_icon) && istext(set_update_icon))
-		icon_state = set_update_icon
-	else if (flooring_override)
-		icon_state = flooring_override
-	else
-		icon_state = icon_base
-		if (has_base_range)
-			icon_state = "[icon_state][rand(0,has_base_range)]"
-			flooring_override = icon_state
-	// Apply edges, corners, and inner corners.
-	overlays.Cut()
-	var/has_border = FALSE
-	if (isnull(set_update_icon) && (flags & TURF_HAS_EDGES))
-		for (var/step_dir in cardinal)
-			var/turf/floor/T = get_step(src, step_dir)
-			if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
-				has_border |= step_dir
-				overlays |= get_flooring_overlayu("[icon_base]-edge-[step_dir]", "[icon_base]_edges", step_dir)
-		if ((flags & TURF_USE0ICON) && has_border)
-			icon_state = icon_base+"0"
-
-		// There has to be a concise numerical way to do this but I am too noob.
-		if ((has_border & NORTH) && (has_border & EAST))
-			overlays |= get_flooring_overlayu("[icon_base]-edge-[NORTHEAST]", "[icon_base]_edges", NORTHEAST)
-		if ((has_border & NORTH) && (has_border & WEST))
-			overlays |= get_flooring_overlayu("[icon_base]-edge-[NORTHWEST]", "[icon_base]_edges", NORTHWEST)
-		if ((has_border & SOUTH) && (has_border & EAST))
-			overlays |= get_flooring_overlayu("[icon_base]-edge-[SOUTHEAST]", "[icon_base]_edges", SOUTHEAST)
-		if ((has_border & SOUTH) && (has_border & WEST))
-			overlays |= get_flooring_overlayu("[icon_base]-edge-[SOUTHWEST]", "[icon_base]_edges", SOUTHWEST)
-
-		if (flags & TURF_HAS_CORNERS)
-			// As above re: concise numerical way to do this.
-			if (!(has_border & NORTH))
-				if (!(has_border & EAST))
-					var/turf/floor/T = get_step(src, NORTHEAST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
-						overlays |= get_flooring_overlayu("[icon_base]-corner-[NORTHEAST]", "[icon_base]_corners", NORTHEAST)
-				if (!(has_border & WEST))
-					var/turf/floor/T = get_step(src, NORTHWEST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
-						overlays |= get_flooring_overlayu("[icon_base]-corner-[NORTHWEST]", "[icon_base]_corners", NORTHWEST)
-			if (!(has_border & SOUTH))
-				if (!(has_border & EAST))
-					var/turf/floor/T = get_step(src, SOUTHEAST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
-						overlays |= get_flooring_overlayu("[icon_base]-corner-[SOUTHEAST]", "[icon_base]_corners", SOUTHEAST)
-				if (!(has_border & WEST))
-					var/turf/floor/T = get_step(src, SOUTHWEST)
-					if ((!istype(T) || !T || T.name != name) && !istype(T, /turf/open))
-						overlays |= get_flooring_overlayu("[icon_base]-corner-[SOUTHWEST]", "[icon_base]_corners", SOUTHWEST)
-
-	if (decals && decals.len)
-		overlays |= decals
-
-	if (is_plating() && !(isnull(broken) && isnull(burnt))) //temp, todo
-		icon = 'icons/turf/floors.dmi'
-		icon_state = "dmg[rand(1,4)]"
-	else
-		if (!isnull(broken) && (flags & TURF_CAN_BREAK))
-			overlays |= get_flooring_overlayu("[icon_base]-broken-[broken]", "broken[broken]")
-		if (!isnull(burnt) && (flags & TURF_CAN_BURN))
-			overlays |= get_flooring_overlayu("[icon_base]-burned-[burnt]", "burned[burnt]")
-	if (update_neighbors)
-		for (var/turf/floor/F in range(src, TRUE))
-			if (F == src)
-				continue
-			F.update_icon()
-
-/turf/floor/plating/under/proc/get_flooring_overlayu(var/cache_key, var/icon_base, var/icon_dir = FALSE)
-	if (!flooring_cache[cache_key])
-		var/image/I = image(icon = icon, icon_state = icon_base, dir = icon_dir)
-		I.layer = layer
-		flooring_cache[cache_key] = I
-	return flooring_cache[cache_key]
-
-
-/turf/floor/plating/under/New()
-	..()
-	update_icon(1)
-
-/turf/floor/plating/under/Entered(mob/living/M as mob)
-	..()
-
-	if (!ishuman(M) || !has_gravity(src))
-		return
-	if (M.m_intent == "run")
-		if (prob(75))
-			M.adjustBruteLoss(5)
-			M.weakened += 3
-			playsound(src, 'sound/effects/bang.ogg', 50, TRUE)
-			M << "<span class='warning'>You tripped over!</span>"
-			return
-
-
 /turf/floor/wood
 	name = "floor"
 	icon_state = "wood"
@@ -150,10 +44,11 @@
 
 /turf/floor/grass
 	name = "Grass patch"
+	icon = 'icons/turf/flooring/grass.dmi'
 	icon_state = "grass1"
 
 	New()
-		icon_state = "grass[pick("1","2","3","4")]"
+		icon_state = "grass[pick("0","1","2","3")]"
 		..()
 		spawn(4)
 			if (src)
@@ -197,58 +92,7 @@
 /turf/floor/plating/snow/ex_act(severity)
 	return
 
-/turf/floor/plating/grass
-	name = "grass"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "grass_dark"
-	interior = FALSE
-	stepsound = "dirt"
-	uses_winter_overlay = TRUE
-	may_become_muddy = TRUE
-	var/obj/structure/wild/wild = null
-	is_diggable = TRUE
-
-/turf/floor/plating/grass/ex_act(severity)
-	return
-
-/turf/floor/plating/grass/New()
-	..()
-	grass_turf_list += src
-
-/turf/floor/plating/grass/proc/plant()
-	// 3x3 clumps of grass - original code
-	if (prob(1))
-		if (!locate(/obj/structure/wild/bush) in range(3, src))
-			if (!locate(/obj/item) in range(3, src))
-				for (var/turf/floor/plating/grass/G in range(3, src))
-					if (!locate(/obj/structure) in G)
-						var/dist = get_dist(src, G)
-						if (prob(100-(dist*5)))
-							G.wild = new/obj/structure/wild/bush(G)
-	// huge grassy areas - adapted from Drymouth Gulch
-	else
-		if (locate(/obj/structure) in src)
-			return
-		if (locate(/obj/item) in src)
-			return
-		if (prob(0.1)) // default is 0.1
-			wild = new/obj/structure/wild/bush(src)
-		else
-			var/chance = FALSE
-			for (var/turf/floor/plating/grass/T in range(1,src))
-				if (T.wild)
-					chance += 40 // default is 40
-			if (prob(chance))
-				wild = new/obj/structure/wild/bush(src)
-
-var/global/list/GrassEdgeCache
-
-/turf/floor/plating/grass/wild
-	name = "wild grass"
-	overlay_priority = 0
-	is_diggable = TRUE
-
-/turf/floor/plating/grass/wild/jungle
+/turf/floor/grass/jungle
 	name = "jungle grass"
 	overlay_priority = 0
 	is_diggable = TRUE
@@ -267,29 +111,6 @@ var/global/list/GrassEdgeCache
 	icon_state = "grass[rand(0,6)]"
 
 
-/turf/floor/plating/grass/wild/New()
-	..()
-	icon = 'icons/turf/flooring/grass.dmi'
-	icon_state = "grass[rand(0,3)]"
-	if(!GrassEdgeCache || !GrassEdgeCache.len)
-		GrassEdgeCache = list()
-		GrassEdgeCache.len = 10
-		GrassEdgeCache[NORTH] = image('icons/turf/flooring/grass.dmi', "north", layer = src.layer + 0.1)
-		GrassEdgeCache[SOUTH] = image('icons/turf/flooring/grass.dmi', "south", layer = src.layer + 0.1)
-		GrassEdgeCache[EAST] = image('icons/turf/flooring/grass.dmi', "east", layer = src.layer + 0.1)
-		GrassEdgeCache[WEST] = image('icons/turf/flooring/grass.dmi', "west", layer = src.layer + 0.1)
-
-	spawn(1)
-		var/turf/T
-		for(var/i = 0, i <= 3, i++)
-			if(!get_step(src, 2**i))
-				continue
-			if(overlay_priority > get_step(src, 2**i).overlay_priority)
-				T = get_step(src, 2**i)
-				if(T)
-					T.overlays += GrassEdgeCache[2**i]
-	return
-
 /turf/floor/plating/beach
 	name = "beach"
 	icon = 'icons/misc/beach.dmi'
@@ -305,6 +126,7 @@ var/global/list/GrassEdgeCache
 	icon_state = "sand"
 	is_diggable = TRUE
 	available_sand = 4
+	initial_flooring = /decl/flooring/sand_beach
 
 /turf/floor/plating/beach/sand/dark
 	name = "dark sand"
@@ -328,6 +150,7 @@ var/global/list/GrassEdgeCache
 	water_level = 30 // in centimeters
 	var/salty = FALSE
 	var/sickness = 1 //amount of toxins, from 0 to 3
+	initial_flooring = /decl/flooring/water
 
 /turf/floor/plating/beach/water/shallowsaltwater
 	name = "saltwater"
@@ -340,6 +163,7 @@ var/global/list/GrassEdgeCache
 	water_level = 200
 	density = FALSE
 	iscovered = FALSE
+	initial_flooring = /decl/flooring/water_deep
 
 /turf/floor/plating/beach/water/deep/saltwater
 	name = "deep saltwater"
@@ -399,16 +223,6 @@ var/global/list/GrassEdgeCache
 /turf/floor/plating/beach/water/ice/salty
 	name = "saltwater ice"
 
-/turf/floor/plating/dirt
-	name = "dirt"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "dirt"
-	interior = FALSE
-	stepsound = "dirt"
-	uses_winter_overlay = TRUE
-	may_become_muddy = TRUE
-	is_diggable = TRUE
-
 /turf/floor/plating/dust
 	name = "dry dirt"
 	icon = 'icons/turf/floors.dmi'
@@ -427,6 +241,7 @@ var/global/list/GrassEdgeCache
 	stepsound = "dirt"
 	is_diggable = TRUE
 	available_sand = 2
+	initial_flooring = /decl/flooring/sand
 
 /turf/floor/plating/sand/desert
 	name = "desert sand"
@@ -462,17 +277,6 @@ var/global/list/GrassEdgeCache
 	if (icon_state == "concrete10")
 		icon_state = pick("concrete10", "concrete11")
 		return
-
-/turf/floor/plating/road
-	name = "road"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "road_1"
-	interior = FALSE
-	var/icon_mode = ""
-
-/turf/floor/plating/road/New()
-	..()
-	icon_state = "road_[icon_mode][rand(1, 3)]"
 
 /turf/floor/plating/cobblestone
 	name = "road"
