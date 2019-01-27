@@ -242,7 +242,7 @@
 "eH" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 3000; unlimited = 1},/turf/floor/plating/sand/desert,/area/caribbean/desert/town)
 "eI" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 3000; unlimited = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/town)
 "eJ" = (/obj/structure/noticeboard{layer = 4},/obj/structure/barricade/ship/mast{name = "wood pole"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/town)
-"eK" = (/turf/floor/plating/dust,/area/caribbean/desert/town)
+"eK" = (/turf/floor/dirt/dust,/area/caribbean/desert/town)
 "eL" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 3000; unlimited = 1},/turf/floor/plating/sand/desert,/area/caribbean/desert)
 "eM" = (/obj/structure/bed{material = "wood"},/obj/item/weapon/bedsheet/hop,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
 "eN" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 8},/turf/floor/wood/ship,/area/caribbean/desert/buildings)

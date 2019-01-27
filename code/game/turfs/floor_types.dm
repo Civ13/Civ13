@@ -88,6 +88,7 @@
 	icon_state = "snow"
 	is_diggable = TRUE
 	available_snow = 3
+	initial_flooring = null
 
 /turf/floor/plating/snow/ex_act(severity)
 	return
@@ -97,6 +98,7 @@
 	overlay_priority = 0
 	is_diggable = TRUE
 	may_become_muddy = TRUE
+	initial_flooring = null
 
 /turf/floor/winter/grass
 	name = "snowy grass"
@@ -104,22 +106,25 @@
 	icon_state = "grass2"
 	is_diggable = TRUE
 	available_snow = 2
+	initial_flooring = null
 
 /turf/floor/winter/grass/New()
 	..()
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "grass[rand(0,6)]"
-
+	initial_flooring = null
 
 /turf/floor/plating/beach
 	name = "beach"
 	icon = 'icons/misc/beach.dmi'
+	initial_flooring = null
 
 /turf/floor/plating/beach/drywater
 	name = "dry riverbed"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "sand1"
 	is_diggable = FALSE
+	initial_flooring = null
 
 /turf/floor/plating/beach/sand
 	name = "sand"
@@ -134,6 +139,7 @@
 	icon_state = "dust"
 	is_diggable = TRUE
 	available_sand = 4
+	initial_flooring = null
 
 /turf/floor/plating/beach/coastline
 	name = "coastline"
@@ -219,19 +225,10 @@
 	name = "ice"
 	icon_state = "seashallow_frozen"
 	move_delay = 0
+	initial_flooring = null
 
 /turf/floor/plating/beach/water/ice/salty
 	name = "saltwater ice"
-
-/turf/floor/plating/dust
-	name = "dry dirt"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "dust"
-	interior = FALSE
-	stepsound = "dirt"
-	uses_winter_overlay = FALSE
-	may_become_muddy = TRUE
-	is_diggable = TRUE
 
 /turf/floor/plating/sand
 	name = "sand"
@@ -251,6 +248,7 @@
 	stepsound = "dirt"
 	is_diggable = TRUE
 	available_sand = 2
+	initial_flooring = null
 
 /turf/floor/plating/sand/desert/New()
 	..()
