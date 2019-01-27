@@ -9,6 +9,9 @@
 #define ARAB_SYLLABLES list("kama", "'ana", "lah", "'ana", "hu", "kan", "'iilaa", "fi", "hi", "mae", "hum", "yakun", "fi", "wahid", "dik", "hadha", "min", "bwast", "har", "kalima", "lkn", "ma", "bed", "hu", "hu", "'ant", "'aw", "kan", "w", "min", "'iilaa", "w", "w", "fi", "nahn", "eulba", "kharij", "albaed", "w", "alty", "alqiam", "min", "alwaqt", "'iidha", "sawf", "kayf", "qal", "w", "kl", "'aqul", "la", "thlath", "turid", "hawa'", "jayid", "laeib", "saghir", "nihaya", "wade", "almanzil", "qara", "yd", "mina'", "kabir", "tahjaa", "hataa", "al'ard", "huna", "yjb", "kabir", "airtifae", "mathal", "tabie", "faeal", "limadha", "tatlub", "alrijal", "taghyir", "dhahab", "daw'", "nawe", "tahtaj", "manzil", "sur", "lana", "nuqta", "'um", "alealam", "qurb", "bina'", "alnafs", "'ard", "al'ab", "'aya", "jadida", "aleamal", "juz'", "makan", "masnue", "hayi", "hayth", "baed", "zahar", "alqlyl", "faqat", "jawla", "rajul", "eam", "ja'", "kl", "jayid", "'ana", "manh", "taht", "aism", "jiddaan", "faqat")
 #define JAPANESE_SYLLABLES list("da", "do", "de", "ra", "ri", "ro", "re", "tsu", "me", "mi", "ma", "ka", "ki", "ko", "ke", "shi", "sho", "sha", "sa", "se", "su", "si", "ou", "na", "no", "ni", "ne", "te", "ta", "to", "ti", "wa", "wo", "wi", "we", "ho", "ga", "ge", "go", "gi")
 #define RUSSIAN_SYLLABLES list("al", "an", "bi", "vye", "vo", "go", "dye", "yel", "?n", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nye", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "rye", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "vyer", "yego", "yeny", "yenn", "yest", "kak", "ln", "ova", "ogo", "?l", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto")
+#define CHINESE_SYLLABLES list("da", "do", "de", "ra", "ri", "ro", "re", "tsu", "me", "mi", "ma", "ka", "ki", "ko", "ke", "shi", "sho", "sha", "sa", "se", "su", "si", "ou", "na", "no", "ni", "ne", "te", "ta", "to", "ti", "wa", "wo", "wi", "we", "ho", "ga", "ge", "go", "gi")
+#define GERMAN_SYLLABLES list("ich", "bin", "ein", "du", "dumm", "vat", "vor", "sch", "utz", "san", "i", "tat", "er", "eek", "ti", "po", "aar", "aag", "van", "en", "mo", "gis", "ka", "de", "uur", "ok", "nen", "ken", "ge", "er", "ooi", "ijk", "le", "cht", "ij", "ont", "ond", "ag", "het", "hoe", "wel", "nee", "ens", "ijf", "ofd", "per")
+
 /datum/language/portuguese
 	name = "Portuguese"
 	desc = "Muito bom."
@@ -106,7 +109,7 @@
 	colour = "Japanese"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = JAPANESE_SYLLABLES
-	mutual_intelligibility = list()
+	mutual_intelligibility = list(/datum/language/chinese = 10)
 
 /datum/language/russian
 	name = "Russian"
@@ -115,4 +118,22 @@
 	colour = "Russian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = RUSSIAN_SYLLABLES
+	mutual_intelligibility = list()
+
+/datum/language/chinese
+	name = "Chinese"
+	desc = "Xièxiè."
+	key = "c"
+	colour = "Chinese"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = CHINESE_SYLLABLES
+	mutual_intelligibility = list(/datum/language/japanese = 10)
+
+/datum/language/german
+	name = "German"
+	desc = "Vor uns liegt Deutschland, in uns marschiert Deutschland. und hinter uns kommt Deutschland!"
+	key = "g"
+	colour = "german"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = GERMAN_SYLLABLES
 	mutual_intelligibility = list()
