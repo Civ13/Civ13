@@ -429,3 +429,13 @@
 	desc = "A black bowtie."
 	icon_state = "black_bowtie"
 	item_state = "black_bowtie"
+
+/obj/item/clothing/head/helmet/modern/pickelhaube
+	name = "iron pickelhaube"
+	desc = "A typical pointed helmet."
+	icon_state = "pickelhaube"
+	item_state = "pickelhaube"
+	worn_state = "pickelhaube"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
