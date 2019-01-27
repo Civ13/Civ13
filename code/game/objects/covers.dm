@@ -94,12 +94,13 @@
 
 
 /obj/covers/saloon_door/Crossed(mob/living/carbon/M as mob )
-	visible_message("[M] pushes \the [src].","You push \the [src]")
-	icon_state = "saloon_opening"
-	update_icon()
-	spawn(20)
-		icon_state = "saloon"
+	if (!isghost(M))
+		visible_message("[M] pushes \the [src].","You push \the [src]")
+		icon_state = "saloon_opening"
 		update_icon()
+		spawn(20)
+			icon_state = "saloon"
+			update_icon()
 
 /obj/covers/wood_wall
 	name = "soft wood wall"
@@ -224,8 +225,8 @@
 
 
 /obj/covers/clay_wall
-	name = "clay bricks wall"
-	desc = "A clay bricks wall."
+	name = "clay block wall"
+	desc = "A clay block wall."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claybrickwall"
 	passable = TRUE
@@ -241,8 +242,8 @@
 	explosion_resistance = 6
 
 /obj/covers/clay_wall/incomplete
-	name = "clay bricks wall"
-	desc = "A clay bricks wall."
+	name = "clay block wall"
+	desc = "A clay block wall."
 	icon = 'icons/obj/claystuff.dmi'
 	icon_state = "claybrickwall_inc1"
 	passable = TRUE
@@ -261,23 +262,73 @@
 /obj/covers/clay_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/clay/claybricks/fired))
 		if (stage >= 2)
-			user << "You start adding clay bricks to the wall..."
+			user << "You start adding clay blocks to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish adding clay bricks to the wall, completing it."
+				user << "You finish adding clay blocks to the wall, completing it."
 				qdel(W)
 				new /obj/covers/clay_wall(loc)
 				qdel(src)
 				return
 		else if (stage <= 1)
-			user << "You start adding clay bricks to the wall..."
+			user << "You start adding clay blocks to the wall..."
 			if (do_after(user, 20, src))
-				user << "You finish clay bricks to the wall."
+				user << "You finish clay block to the wall."
 				stage += 1
 				icon_state = "claybrickwall_inc[stage]"
 				health = (30*stage)
 				qdel(W)
 				return
 	..()
+
+
+/obj/covers/brick_wall
+	name = "brick wall"
+	desc = "A clay brick wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "brickwall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 190
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 6
+
+/obj/covers/brick_wall/incomplete
+	name = "brick wall"
+	desc = "A clay brick wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "brickwall_inc1"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = FALSE
+	incomplete = TRUE
+	amount = 0
+	layer = 3
+	health = 80
+	var/stage = 1
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+
+/obj/covers/brick_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired))
+		user << "You start adding bricks to the wall..."
+		if (do_after(user, 20, src))
+			user << "You finish adding bricks to the wall, completing it."
+			qdel(W)
+			new /obj/covers/brick_wall(loc)
+			qdel(src)
+			return
+			return
+	..()
+
+
 
 /obj/covers/New()
 	..()

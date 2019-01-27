@@ -35,9 +35,14 @@
 		..()
 		icon_state = "unfired_claypot[pick(1,2,3)]"
 /obj/item/weapon/clay/claybricks
-	name = "unfired clay bricks"
+	name = "unfired clay blocks"
 	icon_state = "unfired_claybricks"
 	result = /obj/item/weapon/clay/claybricks/fired
+
+/obj/item/weapon/clay/advclaybricks
+	name = "unfired bricks"
+	icon_state = "unfired_advclaybricks"
+	result = /obj/item/weapon/clay/advclaybricks/fired
 
 /obj/item/weapon/clay/claybowl
 	name = "unfired clay bowl"
@@ -86,17 +91,33 @@
 	result = /obj/item/weapon/reagent_containers/food/drinks/clay/largeclaypitcher
 
 /obj/item/weapon/clay/claybricks/fired
-	name = "clay bricks"
+	name = "clay blocks"
 	icon_state = "claybricks"
-	desc = "clay bricks. Can be used to make clay walls."
+	desc = "clay blocks. Can be used to make clay walls."
 	throwforce = WEAPON_FORCE_WEAK+2
 	force = WEAPON_FORCE_WEAK+4
+
+/obj/item/weapon/clay/advclaybricks/fired
+	name = "bricks"
+	icon_state = "advclaybricks"
+	desc = "modern bricks. Can be used to make brick walls."
+	throwforce = WEAPON_FORCE_WEAK+3
+	force = WEAPON_FORCE_WEAK+5
+
 
 /obj/item/weapon/clay/claybricks/fired/attack_self(mob/user)
 	user << "You start building the clay wall..."
 	if (do_after(user, 25, src))
-		user << "You finish the placement of the clay blocks wall foundation."
+		user << "You finish the placement of the clay block wall foundation."
 		new /obj/covers/clay_wall/incomplete(user.loc)
+		qdel(src)
+		return
+
+/obj/item/weapon/clay/advclaybricks/fired/attack_self(mob/user)
+	user << "You start building the brick wall..."
+	if (do_after(user, 25, src))
+		user << "You finish the placement of the brick wall foundation."
+		new /obj/covers/brick_wall/incomplete(user.loc)
 		qdel(src)
 		return
 
