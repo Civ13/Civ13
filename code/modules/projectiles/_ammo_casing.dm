@@ -368,6 +368,26 @@
 	caliber = "a4570"
 	value = 8
 
+/obj/item/ammo_casing/a792x57
+	name = "7.92x57mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a792x57
+	caliber = "a792x57"
+	value = 8
+
+/obj/item/ammo_casing/a765x53
+	name = "7.65x53mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a765x53
+	caliber = "a765x53"
+	value = 8
+
 /obj/item/ammo_casing/a577
 	name = ".577/450 Martini-Henry bullet"
 	desc = "A brass casing."
