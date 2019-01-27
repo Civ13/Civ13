@@ -122,7 +122,7 @@
 
 /datum/language/chinese
 	name = "Chinese"
-	desc = "shi shi."
+	desc = "Xièxiè."
 	key = "c"
 	colour = "Chinese"
 	flags = RESTRICTED | COMMON_VERBS

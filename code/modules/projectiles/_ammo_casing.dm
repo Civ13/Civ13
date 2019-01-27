@@ -230,9 +230,9 @@
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
 		if (map.ordinal_age == 4)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry", "Cancel")
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
 		else if (map.ordinal_age >= 5)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","Cancel")
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.65x53 Mauser", "7.92x57 Mauser", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -252,6 +252,10 @@
 			resultpath = /obj/item/ammo_casing/a8x53mm
 		else if (input == "6.5x50mmSR Arisaka")
 			resultpath = /obj/item/ammo_casing/a65x50mm
+		else if (input == "7.65x53 Mauser")
+			resultpath = /obj/item/ammo_casing/a765x53
+		else if (input == "7.92x57 Mauser")
+			resultpath = /obj/item/ammo_casing/a792x57
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
