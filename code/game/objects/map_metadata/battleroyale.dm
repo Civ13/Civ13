@@ -2,8 +2,8 @@
 /obj/map_metadata/battleroyale
 	ID = MAP_ROBUSTA
 	title = "Isla Robusta Battle Royale (125x125x1)"
-//	lobby_icon_state = "pirates"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	lobby_icon_state = "imperial"
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
@@ -16,7 +16,9 @@
 		)
 	age = "1713"
 	faction_distribution_coeffs = list(PIRATES = 1)
-	battle_name = "Isla Robusta"
+	songs = list(
+		"Fortnite Default Dance:1" = 'sound/music/memes.ogg')
+	battle_name = "Battleroyale at Isla Robusta"
 	mission_start_message = "<font size=4>You and several other pirates were abandoned at this forsaken island. Only one can survive! <b>Last standing player wins!</b></font>"
 	var/winner_name = "Unknown"
 	var/winner_ckey = "Unknown"

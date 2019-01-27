@@ -76,6 +76,62 @@
 	..()
 	icon_state = "goldstuff[rand(1,3)]"
 
+/obj/structure/oil_deposits
+	name = "oil deposit"
+	desc = "This deposit doesn't have a owner yet."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "nboard_oil"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/faction = null
+	var/health = 200
+
+/obj/structure/oil_deposits/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	switch(W.damtype)
+		if ("fire")
+			health -= W.force * TRUE
+		if ("brute")
+			health -= W.force * 0.5
+	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+	user.do_attack_animation(src)
+	try_destroy()
+	..()
+
+/obj/structure/oil_deposits/proc/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		qdel(src)
+		return
+
+/obj/structure/oil_deposits/New()
+	..()
+	check_value()
+
+/obj/structure/oil_deposits/proc/check_value()
+	storedvalue = 0
+	for (var/obj/item/weapon/reagent_containers/glass/barrel/BB in range(1, src))
+		storedvalue += BB.reagents.get_reagent_amount("petroleum")
+	if (faction)
+		desc = "Belongs to the [faction]. Stored oil: [storedvalue]."
+	spawn(600)
+		check_value()
+
+/obj/structure/oil_deposits/attack_hand(mob/living/carbon/human/user as mob)
+	if (user.civilization == "none")
+		user << "You are not part of a faction!"
+		return
+	else if (faction == null)
+		faction = user.civilization
+		desc = "Belongs to the [faction]. Stored oil: [storedvalue]."
+		user << "You set the oil deposit faction as [faction]."
+		return
+	else
+		..()
+
 /obj/structure/carriage
 	name = "Stagecoach Load"
 	desc = ""
@@ -86,30 +142,67 @@
 	density = TRUE
 	flammable = FALSE
 	var/storedvalue = 0
-	var/done1 = FALSE
-	var/done2 = FALSE
 	var/prevent = FALSE
+	var/faction1val = 0
+	var/faction2val = 0
+
 /obj/structure/carriage/New()
 	..()
-	desc = "There are [storedvalue] dollars inside."
-
+	desc = "West Side: [faction1val]. East Side: [faction2val]."
+	timer()
 /obj/structure/carriage/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			if (H.original_job_title == "West Side Gang")
+				faction1val += (W.value*W.amount)
+			else if (H.original_job_title == "East Side Gang")
+				faction2val += (W.value*W.amount)
+			desc = "West Side: [faction1val]. East Side: [faction2val]."
+			user << "You place \the [W] inside \the [src]."
+		qdel(W)
+		if (faction1val >= 750)
+			map.update_win_condition()
+		else if (faction2val >= 750)
+			map.update_win_condition()
+	else
+		return
+/obj/structure/carriage/proc/timer()
+	spawn(4000)
+		world << "<big>Current status: West Side Gang: <b>[faction1val]/700</b>. East Side Gang: <b>[faction2val]/700</b>."
+		timer()
+
+/obj/structure/carriage_tdm
+	name = "Stagecoach Load"
+	desc = ""
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "miningcaropen"
+	anchored = TRUE
+	opacity = FALSE
+	density = TRUE
+	flammable = FALSE
+	var/storedvalue = 0
+	var/prevent = FALSE
+
+/obj/structure/carriage_tdm/New()
+	..()
+	desc = "Stored Value: [storedvalue]."
+	timer()
+/obj/structure/carriage_tdm/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/stack/money) || istype(W,/obj/item/stack/material/gold) || istype(W,/obj/item/stack/material/silver) || istype(W,/obj/item/stack/material/diamond))
 		storedvalue += (W.value*W.amount)
-		desc = "There are [storedvalue] dollars inside."
+		desc = "Stored Value: [storedvalue]."
 		user << "You place \the [W] inside \the [src]."
 		qdel(W)
-		if (storedvalue >= 500 && !done1)
-			world << "<big>The Outlaws have managed to steal <b>500 dollars</b> so far!</big>"
-			done1 = TRUE
-
-		if (storedvalue >= 1000 && !done2)
-			world << "<big>The Outlaws have managed to steal <b>1000 dollars</b> so far!</big>"
-			done2 = TRUE
 		if (storedvalue >= 1500)
 			map.update_win_condition()
 	else
 		return
+/obj/structure/carriage_tdm/proc/timer()
+	spawn(4000)
+		world << "<big>Current status: Outlaws: <b>[storedvalue]/1500 Dollars</b></big>."
+		timer()
+
 /obj/item/stack/money/goldvaluables
 	name = "gold valuables"
 	desc = "A bunch of valuables."

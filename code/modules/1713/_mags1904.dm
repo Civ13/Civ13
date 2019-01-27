@@ -1,42 +1,6 @@
 /***********************************
 RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 ***********************************/
-/obj/item/ammo_magazine
-	name = "ammo magazine"
-	var/pouch = FALSE
-
-/obj/item/ammo_magazine/attack_hand(mob/user as mob)
-	if (user.get_inactive_hand() == src)
-		unload_ammo(user, allow_dump=0)
-	else
-		return ..()
-
-/obj/item/ammo_magazine/proc/unload_ammo(var/mob/living/carbon/human/user, allow_dump=0)
-	if (stored_ammo.len > 0)
-		if (allow_dump)
-			var/count = FALSE
-			var/turf/T = get_turf(user)
-			if (T)
-				for (var/obj/item/ammo_casing/C in stored_ammo)
-					C.loc = T
-					count++
-				stored_ammo.Cut()
-			if (count)
-				visible_message("[user] empties \the [src].", "<span class='notice'>You remove [count] round\s from [src].</span>")
-			update_icon()
-			return
-		else
-			var/obj/item/ammo_casing/C = stored_ammo[stored_ammo.len]
-			stored_ammo.len--
-			user.put_in_hands(C)
-			visible_message("[user] removes \a [C] from [src].", "<span class='notice'>You remove \a [C] from [src].</span>")
-			update_icon()
-			return
-	else
-		user << "<span class='warning'>[src] is empty.</span>"
-		update_icon()
-		return
-
 /obj/item/ammo_magazine/mosin
 	name = "Clip (7.92x54mm)"
 	icon_state = "clip"
@@ -68,6 +32,18 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a4570
 	max_ammo = 15
+	multiple_sprites = FALSE
+	is_box = TRUE
+
+/obj/item/ammo_magazine/c577
+	name = "ammo box (.577/450 Martini-Henry)"
+	icon_state = "mhbox"
+	mag_type = SPEEDLOADER
+	caliber = "a577"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a577
+	max_ammo = 12
 	multiple_sprites = FALSE
 	is_box = TRUE
 
@@ -119,10 +95,41 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.02
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/luger
+	name = "Luger magazine"
+	icon_state = "lugermag"
+	mag_type = MAGAZINE
+	caliber = "9x19mm"
+	ammo_type = /obj/item/ammo_casing/a9x19mm
+	max_ammo = 8
+	weight = 0.02
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/borchardt
+	name = "Borchardt magazine"
+	icon_state = "borchardtmag"
+	mag_type = MAGAZINE
+	caliber = "765x25mm"
+	ammo_type = /obj/item/ammo_casing/a765x25mm
+	max_ammo = 8
+	weight = 0.02
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/mauser
+	name = "Mauser clip (9x19mm)"
+	icon_state = "mauser"
+	caliber = "9x19mm"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a9x19mm
+	max_ammo = 10
+	weight = 0.06
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+
 
 ////////// NAGANT REVOLVER ///////////////
 /obj/item/ammo_magazine/c762x38mmR
-	name = "pouch of bullets (7.62x38mmR)"
+	name = "bullet pouch (7.62x38mmR)"
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a762x38
 	caliber = "a762x38"
@@ -133,7 +140,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c9mm_jap_revolver
-	name = "pouch of bullets (9mm)"
+	name = "bullet pouch (9mm)"
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
@@ -145,7 +152,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	pouch = TRUE
 
 /obj/item/ammo_magazine/c45
-	name = "pouch of bullets (.45 Colt)"
+	name = "bullet pouch (.45 Colt)"
 	desc = "a pouch of 11.43xmmR bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a45
@@ -156,8 +163,20 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c41
+	name = "bullet pouch (.41 Short)"
+	desc = "a pouch of .41-100 bullets, mostly used on the Derringer."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a41
+	caliber = "a41"
+	max_ammo = 10
+	weight = 0.1
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
 /obj/item/ammo_magazine/c44
-	name = "pouch of bullets (.44-40 Winchester)"
+	name = "bullet pouch (.44-40 Winchester)"
 	desc = "a pouch of .44-40 bullets."
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a44
@@ -176,11 +195,11 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
 	ammo_type = /obj/item/ammo_casing/a8x53mm
 	max_ammo = 5
-	weight = 0.038
+	weight = 0.048
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/c44p
-	name = "pouch of bullets (.44)"
+	name = "bullet pouch (.44)"
 	icon_state = "pouch"
 	ammo_type = /obj/item/ammo_casing/a44p
 	caliber = "a44p"

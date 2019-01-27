@@ -19,23 +19,29 @@
 	penetrating = 3
 	armor_penetration = 100
 
-/obj/item/projectile/arrow/arrow
-	damage = DAMAGE_MEDIUM
+/obj/item/projectile/arrow/stone
+	damage = DAMAGE_MEDIUM-10
 	penetrating = 1
-	armor_penetration = 35
+	armor_penetration = 10
+	icon_state = "stone"
+
+/obj/item/projectile/arrow/arrow
+	damage = DAMAGE_MEDIUM-2
+	penetrating = 1
+	armor_penetration = 10
 	icon_state = "arrow"
 
 /obj/item/projectile/arrow/arrow/poisonous
-	damage = DAMAGE_MEDIUM
+	damage = DAMAGE_MEDIUM-2
 	penetrating = 1
-	armor_penetration = 35
+	armor_penetration = 10
 	icon_state = "arrow"
 	damage_type = TOX
 
 /obj/item/projectile/arrow/arrow/fire
-	damage = DAMAGE_MEDIUM
+	damage = DAMAGE_MEDIUM-3
 	penetrating = 1
-	armor_penetration = 25
+	armor_penetration = 10
 	icon_state = "arrow"
 	damage_type = BURN
 
@@ -87,6 +93,11 @@
 	penetrating = 2
 	armor_penetration = 38
 
+/obj/item/projectile/bullet/pistol/a41
+	damage = DAMAGE_MEDIUM+1
+	penetrating = 1
+	armor_penetration = 15
+
 /obj/item/projectile/bullet/pistol/a45
 	damage = DAMAGE_MEDIUM+5
 	penetrating = 2
@@ -101,6 +112,11 @@
 	damage = DAMAGE_HIGH+3
 	penetrating = 2
 	armor_penetration = 55
+
+/obj/item/projectile/bullet/rifle/a577
+	damage = DAMAGE_HIGH+6
+	penetrating = 3
+	armor_penetration = 75
 
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_MEDIUM + 1
@@ -121,6 +137,16 @@
 	damage = DAMAGE_MEDIUM + 2
 	penetrating = 1
 	armor_penetration = 25
+
+/obj/item/projectile/bullet/pistol/a9x19mm
+	damage = DAMAGE_MEDIUM + 2
+	penetrating = 1
+	armor_penetration = 30
+
+/obj/item/projectile/bullet/pistol/a765x25mm
+	damage = DAMAGE_MEDIUM + 2
+	penetrating = 2
+	armor_penetration = 38
 
 /obj/item/projectile/bullet/pistol/a44p
 	damage = DAMAGE_MEDIUM + 2

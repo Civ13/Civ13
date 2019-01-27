@@ -445,7 +445,6 @@
 
 //food and bandages
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/snacks/stew_wood(H), slot_r_store)
 
 	H.add_note("Role", "You are one of the pirates abandoned at this island. Be the last one to live!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

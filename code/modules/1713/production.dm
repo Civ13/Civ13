@@ -289,9 +289,10 @@
 /obj/structure/oilwell
 	name = "wooden oil well"
 	desc = "An oil well, extracting petroleum to a barrel."
-	icon = 'icons/obj/structures.dmi'
+	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "oilwell"
 	flammable = TRUE
+	anchored = TRUE
 	var/obj/structure/oil_spring/base = null
 	var/list/barrel = list()
 
@@ -299,7 +300,6 @@
 	..()
 	for (var/obj/structure/oil_spring/OS in src.loc)
 		base = OS
-		continue
 	if (base != null)
 		start_extraction()
 		return
@@ -323,6 +323,8 @@
 		if (barrel[1].reagents.total_volume < barrel[1].reagents.maximum_volume)
 			barrel[1].reagents.add_reagent("petroleum", min(barrel[1].reagents.maximum_volume - barrel[1].reagents.total_volume, 10))
 			base.counter = 0
+			spawn(1200)
+				extract()
 			return
 		else
 			return
@@ -462,9 +464,9 @@
 						copy -= C
 						qdel(C)
 					copying = FALSE
-
 					return
 			else
+				copying = FALSE
 				icon_state = "printingpress0"
 				return
 	return

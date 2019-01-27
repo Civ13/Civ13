@@ -70,7 +70,8 @@
 		if (epoch == "1873")
 	// 1873 - TDM
 			maps = list(
-				MAP_LITTLE_CREEK = 0,
+				MAP_LITTLE_CREEK = 10,
+				MAP_LITTLE_CREEK_TDM = 0,
 			)
 		if (epoch == "1713")
 		//1713 - TDM
@@ -287,7 +288,7 @@
 		map.age2_done = TRUE
 		map.age3_done = TRUE
 		map.research_active = FALSE
-		var/customresearch = 100
+		var/customresearch = 90
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)
@@ -296,7 +297,7 @@
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
-	else if (vote.voted_gamemode == "Idustrial Age (No Research)")
+	else if (vote.voted_gamemode == "Industrial Age (No Research)")
 		world << "<big>Starting <b>Industrial Age</b> mode. Game Epoch is the Industrial Age, research inactive.</big>"
 		map.ordinal_age = 4
 		map.age = "1873"
@@ -305,7 +306,7 @@
 		map.age3_done = TRUE
 		map.age4_done = TRUE
 		map.research_active = FALSE
-		var/customresearch = 130
+		var/customresearch = 104
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)
@@ -325,7 +326,7 @@
 		map.age4_done = TRUE
 		map.age5_done = TRUE
 		map.research_active = FALSE
-		var/customresearch = 180
+		var/customresearch = 135
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)

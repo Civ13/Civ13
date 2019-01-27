@@ -116,8 +116,6 @@ var/world_is_open = TRUE
 		href_logfile = file("data/logs/[date_string]-hrefs.htm")
 		diary = file("data/logs/[date_string].log")
 		diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
-		changelog_hash = md5('html/changelog.html')					//used for telling if the changelog has changed recently
-
 		if (byond_version < RECOMMENDED_VERSION)
 			diary << "Your server's byond version does not meet the recommended requirements for this server. Please update BYOND."
 
@@ -254,11 +252,6 @@ var/world_topic_spam_protect_time = world.timeofday
 /proc/load_configuration()
 	config = new /datum/configuration()
 	config.load("config/config.txt", "config")
-
-	/* config options get overwritten by global config options
-	 * only useful for serverswap memery - Kachnov */
-	if (config.global_config_path)
-		config.load(config.global_config_path, "config")
 
 /world/proc/update_status()
 

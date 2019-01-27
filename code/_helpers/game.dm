@@ -404,23 +404,8 @@ datum/projectile_data
 				direction = 4
 		var/turf/T=get_turf(get_step(loc,dir))
 		var/list/rstats = new /list(stats.len)
-		if (T && istype(T)/* && T.zone*/)
-			var/datum/gas_mixture/environment = T.return_air()
-			for (var/i=1;i<=stats.len;i++)
-				if (stats[i] == "pressure")
-					rstats[i] = environment.return_pressure()
-				else
-					rstats[i] = environment.vars[stats[i]]
-		else if (istype(T, /turf))
+		if (istype(T, /turf))
 			rstats = null // Exclude zone (wall, door, etc).
-		else if (istype(T, /turf))
-			// Should still work.  (/turf/return_air())
-			var/datum/gas_mixture/environment = T.return_air()
-			for (var/i=1;i<=stats.len;i++)
-				if (stats[i] == "pressure")
-					rstats[i] = environment.return_pressure()
-				else
-					rstats[i] = environment.vars[stats[i]]
 		temps[direction] = rstats
 	return temps
 

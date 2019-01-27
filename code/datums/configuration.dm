@@ -2,8 +2,6 @@ var/list/gamemode_cache = list()
 
 /datum/configuration
 
-	var/global_config_path = null
-
 	var/server_name = null				// server name (for world name / status)
 	var/server_suffix = FALSE				// generate numeric suffix based on server port
 
@@ -82,6 +80,8 @@ var/list/gamemode_cache = list()
 
 	var/ssd_invisibility_timer = 10
 
+	var/masterdir = "/home/1713"
+
 	var/serverurl
 	var/server
 	var/banappeals
@@ -141,10 +141,6 @@ var/list/gamemode_cache = list()
 	var/hub_features = ""
 	var/hub_banner_url = "https://i.imgur.com/napac0L.png"
 
-
-	// misc
-	var/resource_website = null
-
 	// dumb memes
 	var/allow_dabbing = FALSE
 
@@ -191,23 +187,14 @@ var/list/gamemode_cache = list()
 		if (type == "config")
 			switch (name)
 
+				if ("master_directory")
+					masterdir = value
+
 				if ("no_respawn_delays")
 					no_respawn_delays = text2num(value)
 
 				if ("max_expected_players")
 					max_expected_players = text2num(value)
-
-				if ("global_config_path")
-					if (list("null", "Null", "NULL", "nil", "Nil", "NILL").Find(value))
-						config.global_config_path = null
-					else
-						config.global_config_path = value
-
-				if ("resource_website")
-					if (!list("null", "Null", "NULL", "nil", "Nil", "NILL").Find(value))
-						config.resource_website = value
-					else
-						config.resource_website = null
 
 				if ("scripts_directory")
 					if (!list("null", "Null", "NULL", "nil", "Nil", "NILL").Find(value))

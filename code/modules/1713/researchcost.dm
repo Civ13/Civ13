@@ -30,10 +30,10 @@
 	if  (done == FALSE)
 		if (istype(W, /obj/item/stack))
 			marketval = W.value
-			moneyin = ((marketval*W.amount)/100)
+			moneyin = (((marketval*W.amount)/100)*2)
 		else
 			marketval = W.value
-			moneyin = (marketval/100)
+			moneyin = ((marketval/100)*2)
 		done = TRUE
 		var/list/display = list("Industrial", "Military", "Health", "Cancel")
 		var/choice = WWinput(H, "This is worth [moneyin] research points. Which category to research?", "Research Desk", "Cancel", display)

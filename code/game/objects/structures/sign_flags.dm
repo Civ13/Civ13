@@ -341,5 +341,6 @@
 	var/obj/structure/sign/flag/custom/CF = new/obj/structure/sign/flag/custom(user.loc)
 	CF.overlays = overlays
 	CF.icon_state = new_icon_state
+	CF.name = name
 	qdel(src)
 	return

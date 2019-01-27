@@ -294,6 +294,7 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 					if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
 						icon_state = "firelance1"
 					if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
+						icon_state = "matchlock_cocked"
 						lighted = TRUE
 					if (ST.amount == 1)
 						qdel(W)
@@ -358,6 +359,8 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 	bullet = FALSE
 	if (istype(src, /obj/item/weapon/gun/projectile/ancient/firelance))
 		icon_state = "firelance0"
+	if (istype(src, /obj/item/weapon/gun/projectile/ancient/matchlock))
+		icon_state = "matchlock"
 	spawn (1)
 		new/obj/effect/effect/smoke/chem(get_step(src, dir))
 	spawn (5)

@@ -131,6 +131,15 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+
+	if (findtext(recipe.title, "oil deposit"))
+		if (H.civilization == null || H.civilization == "none")
+			user << "You need to be part of a faction to build this!"
+			return
+		for(var/obj/structure/oil_deposits/OD in range(H,4))
+			user << "You are too close to an existing deposit!"
+			return
+
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -293,7 +302,7 @@
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
-	if (findtext(recipe.title, "well"))
+	if (findtext(recipe.title, "well") && !findtext(recipe.title, "oil well"))
 		var/puddly = FALSE
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			puddly = TRUE
@@ -447,6 +456,8 @@
 		produced = 100
 	if (recipe.result_type == /obj/item/weapon/clay/verysmallclaypot)
 		produced = 2
+	if (recipe.result_type == /obj/item/ammo_casing/stone)
+		produced = 5
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
@@ -535,7 +546,11 @@
 			var/obj/item/stack/S = O
 			S.amount = produced
 			S.add_to_stacks(user)
-
+		else if (istype(O, /obj/item/ammo_casing/stone))
+			new/obj/item/ammo_casing/stone(get_turf(O))
+			new/obj/item/ammo_casing/stone(get_turf(O))
+			new/obj/item/ammo_casing/stone(get_turf(O))
+			new/obj/item/ammo_casing/stone(get_turf(O))
 		if (istype(O, /obj/item/weapon/storage)) //BubbleWrap - so newly formed boxes are empty
 			for (var/obj/item/I in O)
 				qdel(I)

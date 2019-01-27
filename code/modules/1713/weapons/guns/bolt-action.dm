@@ -110,6 +110,7 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.randomrotation()
 			loaded -= chambered
 			chambered = null
 			if (bolt_safety)
@@ -169,13 +170,16 @@
 	if (prob(jamcheck))
 		jammed_until = max(world.time + (jamcheck * 5), 50)
 		jamcheck = 0
-
+	if (blackpowder)
+		spawn (1)
+			new/obj/effect/effect/smoke/chem(get_step(src, dir))
 	last_fire = world.time
 /obj/item/weapon/gun/projectile/boltaction/singleshot
 	name = "Sharps Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .45-70 cartridges."
 	icon_state ="sharps"
-	item_state ="sharps"
+	item_state ="shotgun"
+	var/iconame = "sharps"
 	force = 12
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a4570"
@@ -193,16 +197,40 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 1
 
+/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry
+	name = "Martini-Henry Rifle"
+	desc = "A single-shot, falling block rifle, with a long range. Uses .577/450 cartridges."
+	icon_state ="martini_henry"
+	item_state ="shotgun"
+	iconame = "martini_henry"
+	force = 13
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a577"
+	weight = 5
+	effectiveness_mod = 0.98
+	bolt_safety = FALSE
+	value = 90
+	recoil = 4
+	slot_flags = SLOT_BACK
+	throwforce = 17
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a577
+	magazine_type = /obj/item/ammo_magazine/c577
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 1
+	load_delay = 7
+
 /obj/item/weapon/gun/projectile/boltaction/singleshot/update_icon(var/add_scope = FALSE)
 	if (bolt_open)
 		if (!findtext(icon_state, "_open"))
 			icon_state = addtext(icon_state, "_open") //open
-	else if (icon_state == "sharps_open") //closed
-		icon_state = "sharps"
-	else if (icon_state == "sharps")
+	else if (icon_state == "[iconame]_open") //closed
+		icon_state = iconame
+	else if (icon_state == iconame)
 		return
 	else
-		icon_state = "sharps"
+		icon_state = iconame
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
 	if (bolt_open)
@@ -223,6 +251,7 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You open the breech lever, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.randomrotation()
 			loaded -= chambered
 			chambered = null
 		else
@@ -291,7 +320,7 @@
 	ammo_type = /obj/item/ammo_casing/a65x50mm
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
-	effectiveness_mod = 0.85
+	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -451,6 +480,10 @@
 			playsound(loc, 'sound/weapons/bolt_open.ogg', 50, TRUE)
 			user << "<span class='notice'>You work the bolt open, ejecting [chambered]!</span>"
 			chambered.loc = get_turf(src)
+			chambered.randomrotation()
+			var/matrix/M = matrix()
+			M.Turn(90) // 90 degree angle
+			chambered.transform = M
 			loaded -= chambered
 			chambered = null
 			if (bolt_safety)
@@ -515,10 +548,10 @@
 
 /obj/item/weapon/gun/projectile/murata/murata
 	name = "Type-22 Murata"
-	desc = "Japanese bolt-action rifle chambered in 11x60mm Murata ammunition."
+	desc = "Japanese bolt-action rifle chambered in 8x53mm Murata ammunition."
 	icon_state = "murata"
 	item_state = "murata"
-	caliber = "a11x60mm"
+	caliber = "a8x53mm"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a8x53mm
@@ -534,6 +567,18 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/murata
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	blackpowder = TRUE
+/obj/item/weapon/gun/projectile/murata/murata/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "murata_open") //closed
+		icon_state = "murata"
+	else if (icon_state == "murata")
+		return
+	else
+		icon_state = "murata"
+
 
 	/////need to add:
 	///Springfield Model
@@ -545,8 +590,8 @@
 	///Volcanic Carbine,
 	///M1817 Common Rifle (All Rifles used during the civil war)
 
-	/obj/item/weapon/gun/projectile/boltaction/berdan
-	name = "Mosin-Nagant"
+/obj/item/weapon/gun/projectile/boltaction/berdan
+	name = "Berdan M1870"
 	desc = "Russian bolt-action rifle chambered in 7.62x54mmR cartridges."
 	icon_state ="berdan"
 	item_state ="berdan"
@@ -565,3 +610,13 @@
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+/obj/item/weapon/gun/projectile/boltaction/berdan/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "berdan_open") //closed
+		icon_state = "berdan"
+	else if (icon_state == "berdan")
+		return
+	else
+		icon_state = "berdan"

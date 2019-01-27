@@ -273,7 +273,7 @@
 		if ( findtext(pose,".",lentext(pose)) == FALSE && findtext(pose,"!",lentext(pose)) == FALSE && findtext(pose,"?",lentext(pose)) == FALSE )
 			pose = addtext(pose,".") //Makes sure all emotes end with a period.
 		msg += "\n[T.He] [T.is] [pose]"
-	if (!map.civilizations)
+	if (!map.civilizations && !map.ID == MAP_LITTLE_CREEK)
 		if (original_job)
 			if (ishuman(user) && user != src)
 				var/mob/living/carbon/human/H = user
@@ -287,6 +287,14 @@
 
 			else if (isobserver(user))
 				msg += "<br><i>[T.He] [T.is] a [original_job.title].</i>"
+	else if (map.ID == MAP_LITTLE_CREEK)
+		if (ishuman(user) && user != src)
+			var/mob/living/carbon/human/H = user
+			if (H.original_job)
+				if (H.original_job_title == original_job_title && original_job_title == "East Side Gang")
+					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
+				else if (H.original_job_title == original_job_title && original_job_title == "West Side Gang")
+					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
 	else
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user

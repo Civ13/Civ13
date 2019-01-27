@@ -9,8 +9,6 @@
 /mob/living/carbon/Life()
 	..()
 
-	handle_viruses()
-
 	// Increase germ_level regularly
 	if (germ_level < GERM_LEVEL_AMBIENT && prob(30))	//if you're just standing there, you shouldn't get more germs beyond an ambient level
 		germ_level++
@@ -353,6 +351,9 @@
 		remove_from_mob(item)
 		item.loc = loc
 		visible_message("<span class = 'warning'>[src] throws \the [item]!</span>")
+		if (istype(item, /obj/item/ammo_casing))
+			var/obj/item/ammo_casing/NI = item
+			NI.randomrotation()
 
 		if (ismob(item))
 			for (var/obj/item/weapon/grab/G in contents)

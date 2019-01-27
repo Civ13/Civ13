@@ -5,7 +5,7 @@
 	name = "leveraction rifle"
 	desc = "A simple rifle using a lever-action mechanism."
 	icon_state = "winchester"
-	item_state = "winchester"
+	item_state = "shotgun"
 	w_class = 4
 	throw_range = 4
 	throw_speed = 2
@@ -159,6 +159,7 @@
 
 	if (chambered)//We have a shell in the chamber
 		chambered.loc = get_turf(src)//Eject casing
+		chambered.randomrotation()
 		chambered = null
 
 	if (loaded.len)
@@ -186,7 +187,7 @@
 	desc = "A lever-action rifle with a 15-round tube, chambered in .44-40 rounds."
 	force = 9
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
-	icon_state = "winchester"
+	icon_state = "winchester1873"
 	caliber = "a44"
 	max_shells = 15
 	weight = 5.0
@@ -194,3 +195,4 @@
 	ammo_type = /obj/item/ammo_casing/a44
 	value = 150
 	blackpowder = TRUE
+	load_delay = 4

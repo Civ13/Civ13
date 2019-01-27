@@ -54,6 +54,8 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						C << browse(vote.interface(C),"window=vote")
 
 	proc/autogamemode()
+		if (map.ID == MAP_NOMADS_EXTENDED)
+			return
 		if (map.civilizations && autogamemode_triggered == FALSE)
 			initiate_vote("gamemode","the server", TRUE)
 			log_debug("The server has called a gamemode vote.")
@@ -147,12 +149,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 				if ("map")
 					ticker.finished = TRUE
 					processes.mapswap.finished_at = world.time
-					var/F = file("/home/1713/1713/discord/gamedata.txt")
-					if (fexists("/home/1713/1713/discord/gamedata.txt"))
+					var/F = file("SQL/gamedata.txt")
+					if (fexists("SQL/gamedata.txt"))
 						fdel(F)
 					var/string1 = "map:[processes.mapswap.next_map_title]\n"
 					var/string2 = "players:[clients.len]\n"
-					text2file("[string1][string2]","/home/1713/1713/discord/gamedata.txt")
+					text2file("[string1][string2]","SQL/gamedata.txt")
 				if ("gamemode")
 					processes.gamemode.swap(.)
 		return .
@@ -213,7 +215,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 						choices.Add("Yes")
 						choices.Add("No")
 				if ("gamemode")
-					var/list/options = list("Classic (Stone Age Start)", "Chad Mode", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)")
+					var/list/options = list("Classic (Stone Age Start)", "Chad Mode", "Auto-Research Mode", "Resource-Based Research", "Bronze Age (No Research)", "Medieval (No Research)", "Imperial Age (No Research)", "Industrial Age (No Research)", "Modern Age (No Research)")
 					if (!default)
 						default = "Classic (Stone Age Start)"
 					choices.Add(options)

@@ -308,7 +308,7 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
-/material/stone
+/material/sandstone
 	name = "sandstone"
 	stack_type = /obj/item/stack/material/sandstone
 	icon_base = "stone"
@@ -317,17 +317,24 @@ var/list/name_to_material
 	shard_type = SHARD_STONE_PIECE
 	weight = 22
 	integrity = 500
-	hardness = 250
+	hardness = 45
 	door_icon_base = "stone"
 	sheet_singular_name = "brick"
 	sheet_plural_name = "bricks"
 
-/material/stone/stone
+/material/stone
 	name = "stone"
 	hardness = 50
+	weight = 22
+	integrity = 500
+	shard_type = SHARD_STONE_PIECE
+	icon_base = "stone"
+	icon_reinf = "reinf_stone"
 	icon_colour = "#808080"
 	sheet_singular_name = "block"
 	sheet_plural_name = "blocks"
+	stack_type = /obj/item/stack/material/stone
+	door_icon_base = "stone"
 
 /material/bone
 	name = "bone"

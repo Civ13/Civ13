@@ -54,9 +54,12 @@
 		sync_organ_dna()
 
 	make_blood()
-
-	nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
-	water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
+	if (map.civilizations == TRUE)
+		nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
+		water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
+	else
+		nutrition = max_nutrition
+		water = max_water
 
 	spawn (10)
 		if (client)
@@ -522,19 +525,6 @@ var/list/rank_prefix = list(\
 	// Fix up all organs.
 	// This will ignore any prosthetics in the prefs currently.
 	species.create_organs(src)
-
-	if (!client || !key) //Don't boot out anyone already in the mob.
-		for (var/obj/item/organ/brain/H in organ_list)
-			if (H.brainmob)
-				if (H.brainmob.real_name == real_name)
-					if (H.brainmob.mind)
-						H.brainmob.mind.transfer_to(src)
-						qdel(H)
-
-/*
-	for (var/ID in virus2)
-		var/datum/disease2/disease/V = virus2[ID]
-		V.cure(src)*/
 
 	losebreath = FALSE
 

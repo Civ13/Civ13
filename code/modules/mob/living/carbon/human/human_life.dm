@@ -67,7 +67,7 @@
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
-	if (stat != DEAD)
+	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
 		healing_stage += 1
@@ -435,28 +435,6 @@
 	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
 	..()
-/mob/living/carbon/human/handle_breath(datum/gas_mixture/breath)
-	if (status_flags & GODMODE)
-		return
-
-	//check if we actually need to process breath
-	if (!breath)
-		failed_last_breath = TRUE
-		if (prob(20))
-			emote("gasp")
-		if (health > config.health_threshold_crit)
-			adjustOxyLoss(HUMAN_MAX_OXYLOSS)
-		else
-			adjustOxyLoss(HUMAN_CRIT_MAX_OXYLOSS)
-
-		oxygen_alert = max(oxygen_alert, TRUE)
-		return FALSE
-	var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
-	if (L && L.handle_breath(breath))
-		failed_last_breath = FALSE
-	else
-		failed_last_breath = TRUE
-	return TRUE
 
 /mob/living/carbon/human/handle_environment()
 
@@ -1296,6 +1274,10 @@
 						holder2.icon_state = "civ6"
 					else if (original_job_title == "Nomad")
 						holder2.icon_state = ""
+//					else if (original_job_title == "Outlaw")
+//						holder2.icon_state = "civ1"
+//					else if (original_job_title == "Sheriff" || original_job_title == "Deputy" )
+//						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = ""
 
@@ -1363,6 +1345,8 @@
 		return
 
 /mob/living/carbon/human/proc/do_rotting()
+	if (!map.civilizations)
+		return
 	if (stat == DEAD)
 		spawn(3000)
 			if (stat == DEAD)
@@ -1386,6 +1370,8 @@
 				return
 
 /mob/living/carbon/human/proc/ssd_hiding(var/timer = 10)
+	if (!map.civilizations)
+		return
 	if (timer <= 0)
 		return
 	timer *= 600 //convert minutes to deciseconds
@@ -1397,3 +1383,10 @@
 			else
 				invisibility = 0
 				return
+
+/mob/living/carbon/human/proc/buried_proc()
+	if (buriedalive)
+		spawn(300)
+			if (buriedalive && stat != DEAD)
+				adjustOxyLoss(5)
+				src << "<span class='danger'>You can't breathe!</span>"

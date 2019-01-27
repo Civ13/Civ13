@@ -376,67 +376,6 @@
 		usr.update_inv_wear_suit(1)
 		return
 
-/obj/item/clothing/suit/storage/coat/kozhanka
-	name = "fur coat"
-	desc = "A thick fur coat, great for the winter."
-	icon_state = "kozhanka"
-	item_state = "kozhanka"
-	worn_state = "kozhanka"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
-	value = 65
-	var/colorn = 1
-	var/specific = FALSE
-	flags_inv = BLOCKHEADHAIR
-
-/obj/item/clothing/suit/storage/coat/kozhanka/New()
-	..()
-	if (!specific)
-		colorn = pick(1,2,)
-		icon_state = "kozhanka[colorn]"
-		item_state = "kozhanka[colorn]"
-		worn_state = "kozhanka[colorn]"
-
-/obj/item/clothing/suit/storage/coat/kozhanka/verb/toggle_hood()
-	set category = null
-	set src in usr
-	set name = "Toggle Hood"
-	if (hood)
-		icon_state = "kozhanka[colorn]"
-		item_state = "kozhanka[colorn]"
-		worn_state = "kozhanka[colorn]"
-		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]"
-		usr << "<span class = 'danger'>You take off your coat's hood.</span>"
-		update_icon()
-		hood = FALSE
-		usr.update_inv_head(1)
-		usr.update_inv_wear_suit(1)
-		return
-	else if (!hood)
-		icon_state = "kozhanka[colorn]h"
-		item_state = "kozhanka[colorn]h"
-		worn_state = "kozhanka[colorn]h"
-		body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
-		cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT|HEAD
-		item_state_slots["slot_wear_suit"] = "kozhanka[colorn]h"
-		usr << "<span class = 'danger'>You cover your head with your coat's hood.</span>"
-		update_icon()
-		hood = TRUE
-		usr.update_inv_head(1)
-		usr.update_inv_wear_suit(1)
-		return
-
-/obj/item/clothing/suit/storage/coat/kozhanka/white
-	name = "white fur coat"
-	desc = "A thick white fur coat, great for the winter."
-	icon_state = "kozhanka_w"
-	item_state = "kozhanka_w"
-	worn_state = "kozhanka_w"
-	specific = TRUE
-	colorn = 2
 
 /obj/item/clothing/shoes/fur
 	name = "fur boots"
@@ -500,6 +439,15 @@
 		item_state = "fur[colorn]"
 		worn_state = "fur[colorn]"
 
+/obj/item/clothing/mask/redkerchief
+	name = "red kerchief"
+	desc = "A piece of light cloth, worn around the neck."
+	icon_state = "redkerchief"
+	item_state = "redkerchief"
+	worn_state = "redkerchief"
+	flags_inv = 0
+	w_class = 1
+	var/toggled = FALSE
 
 /obj/item/clothing/mask/shemagh
 	name = "shemagh"
@@ -507,44 +455,72 @@
 	icon_state = "shemagh0"
 	item_state = "shemagh0"
 	worn_state = "shemagh0"
-	body_parts_covered = HEAD
+	var/usedstate = "shemagh1"
+	var/unusedstate = "shemagh0"
+	var/partscovered = FACE|HEAD
+	flags_inv = 0
 	w_class = 2
 	var/toggled = FALSE
-
+/obj/item/clothing/mask/shemagh/redkerchief
+	name = "red kerchief"
+	desc = "A piece of light cloth, worn around the neck."
+	icon_state = "redkerchief0"
+	item_state = "redkerchief0"
+	worn_state = "redkerchief0"
+	usedstate = "redkerchief1"
+	unusedstate = "redkerchief0"
+	partscovered = FACE
+	flags_inv = 0
+	w_class = 2
+/obj/item/clothing/mask/shemagh/greykerchief
+	name = "grey kerchief"
+	desc = "A piece of light cloth, worn around the neck."
+	icon_state = "greykerchief0"
+	item_state = "greykerchief0"
+	worn_state = "greykerchief0"
+	usedstate = "greykerchief1"
+	unusedstate = "greykerchief0"
+	partscovered = FACE
+	flags_inv = 0
+	w_class = 2
 /obj/item/clothing/mask/shemagh/update_icon()
 	if (toggled == FALSE)
-		body_parts_covered = HEAD
-		icon_state = "shemagh0"
-		item_state = "shemagh0"
-		worn_state = "shemagh0"
+		body_parts_covered = 0
+		flags_inv = 0
+		icon_state = unusedstate
+		item_state = unusedstate
+		worn_state = unusedstate
 	else
-		body_parts_covered = FACE|HEAD|EYES
-		icon_state = "shemagh1"
-		item_state = "shemagh1"
-		worn_state = "shemagh1"
+		body_parts_covered = partscovered
+		flags_inv = HIDEFACE
+		icon_state = usedstate
+		item_state = usedstate
+		worn_state = usedstate
 	..()
 
 
 /obj/item/clothing/mask/shemagh/verb/toggle_hood()
 	set category = null
 	set src in usr
-	set name = "Toggle Shemagh"
+	set name = "Toggle"
 	if (toggled == TRUE)
-		icon_state = "shemagh0"
-		item_state = "shemagh0"
-		worn_state = "shemagh0"
-		body_parts_covered = HEAD
-		usr << "<span class = 'danger'>You adjust the shemagh.</span>"
+		icon_state = unusedstate
+		item_state = unusedstate
+		worn_state = unusedstate
+		body_parts_covered = 0
+		flags_inv = 0
+		usr << "<span class = 'danger'>You adjust the [name].</span>"
 		update_icon()
 		toggled = FALSE
 		usr.update_inv_wear_mask(1)
 		return
 	else if (toggled == FALSE)
-		icon_state = "shemagh1"
-		item_state = "shemagh1"
-		worn_state = "shemagh1"
-		body_parts_covered = FACE|HEAD|EYES
-		usr << "<span class = 'danger'>You adjust the shemagh.</span>"
+		icon_state = usedstate
+		item_state = usedstate
+		worn_state = usedstate
+		body_parts_covered = partscovered
+		flags_inv = HIDEFACE
+		usr << "<span class = 'danger'>You adjust the [name].</span>"
 		update_icon()
 		toggled = TRUE
 		usr.update_inv_wear_mask(1)

@@ -2,7 +2,7 @@
 /obj/map_metadata/siege
 	ID = MAP_SIEGE
 	title = "Siege (80x80x1)"
-	lobby_icon_state = "ancient2"
+	lobby_icon_state = "ancient"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
 	squad_spawn_locations = FALSE

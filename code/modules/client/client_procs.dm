@@ -67,13 +67,15 @@
 					var/list/full_list_split = splittext(full_banlist, "|||\n")
 					for(var/i=1;i<full_list_split.len;i++)
 						var/list/full_list_split_two = splittext(full_list_split[i], ";")
-						if (full_list_split_two[6] == UID) //if the ban expiration hasn't been reached yet
-							full_list_split_two[10] = 0
+						if (text2num(full_list_split_two[10]) <= text2num(num2text(world.realtime,20))) //if the ban expiration has been reached
+							full_list_split[i] = "|||\n"
 					spawn(1)
-						var/full_banlist_new = file2text("SQL/bans.txt")
-						full_banlist_new = replacetext(full_banlist_new,"\n","")
-						text2file(full_banlist_new,"SQL/bans.txt")
-						recompile_banlist()
+						for(var/i=1;i<full_list_split.len;i++)
+							var/list/full_list_split_two = splittext(full_list_split[i], ";")
+							if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasnt been reached
+								if (!(full_list_split[i] = "|||\n"))
+									text2file("[full_list_split[i]]|||","SQL/bans.txt")
+							return
 					log_admin(M)
 					message_admins(M)
 
@@ -170,9 +172,6 @@
 		src << "<span class = 'danger'><font size = 4>Please upgrade to BYOND [REAL_MIN_CLIENT_VERSION] to play.</font></span>"
 		del(src)
 		return FALSE
-
-	if (config.resource_website)
-		preload_rsc = config.resource_website
 
 	/*Admin Authorisation: */
 
@@ -345,11 +344,6 @@
 /client/proc/send_resources()
 
 	getFiles(
-		'html/search.js',
-		'html/panels.css',
-		'html/images/loading.gif',
-		'html/images/ntlogo.png',
-		'html/images/talisman.png',
 		'UI/templates/appearance_changer_WW13.tmpl',
 		'UI/templates/chem_disp_WW13.tmpl',
 		'UI/templates/freezer_WW13.tmpl',

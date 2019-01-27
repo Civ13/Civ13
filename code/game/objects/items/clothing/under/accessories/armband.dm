@@ -151,6 +151,23 @@
 	worn_state = "customcape"
 	slot = "cape"
 
+/obj/item/clothing/accessory/custom/tie
+	name = "tie"
+	desc = "A cloth tie."
+	icon_state = "custom_tie"
+	item_state = "custom_tie"
+	worn_state = "custom_tie"
+	slot = "tie"
+
+/obj/item/clothing/accessory/custom/bowtie
+	name = "bowtie"
+	desc = "A cloth bowtie."
+	icon_state = "custom_bowtie"
+	item_state = "custom_bowtie"
+	worn_state = "custom_bowtie"
+	slot = "tie"
+
+
 /obj/item/clothing/accessory/custom/attack_self(mob/user as mob)
 	if (uncolored)
 		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")

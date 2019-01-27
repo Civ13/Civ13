@@ -36,6 +36,12 @@
 	name = "bone shovel"
 	icon_state = "shovel_bone"
 
+/obj/item/weapon/shovel/trench
+	name = "Entrenching Tool"
+	desc = "A shovel used specifically for digging trenches."
+	icon_state = "german_shovel2"
+	var/dig_speed = 7
+
 /obj/item/weapon/pickaxe
 	name = "pickaxe"
 	desc = "Miner's favorite."
@@ -87,33 +93,53 @@
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
-	if ((TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
-		if (user.z < 2)
-			user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
-		else
-			var/digging_tunnel_time = 200
-			if (ishuman(user))
-				var/mob/living/carbon/human/H = user
-				digging_tunnel_time /= H.getStatCoeff("strength")
-				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-			visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
-			if (do_after(user, digging_tunnel_time, user.loc))
-				if (!TB.is_diggable)
-					return
-				new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
-				new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
-				var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
-				if (istype(BL, /turf/floor/dirt/underground))
-					BL.ChangeTurf(/turf/floor/dirt)
-				visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+	var/display = list("Tunnel", "Grave", "Cancel")
+	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
+	if (input == "Cancel")
+		return
+	else if (input == "Tunnel")
+		if ((TB.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
+			if (user.z < 2)
+				user << "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>"
+			else
+				var/digging_tunnel_time = 200
 				if (ishuman(user))
 					var/mob/living/carbon/human/H = user
-					H.adaptStat("crafting", 1)
-					H.adaptStat("strength", 1)
+					digging_tunnel_time /= H.getStatCoeff("strength")
+					digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+				visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+				if (do_after(user, digging_tunnel_time, user.loc))
+					if (!TB.is_diggable)
+						return
+					new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
+					new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
+					var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
+					if (istype(BL, /turf/floor/dirt/underground))
+						BL.ChangeTurf(/turf/floor/dirt)
+					visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>")
+					if (ishuman(user))
+						var/mob/living/carbon/human/H = user
+						H.adaptStat("crafting", 1)
+						H.adaptStat("strength", 1)
+				return
+		else if (locate(/obj/structure/multiz/) in user.loc)
+			user << "<span class='warning'>There already is something here.</span>"
 			return
-	else if (locate(/obj/structure/multiz/) in user.loc)
-		user << "<span class='warning'>There already is something here.</span>"
-		return
-	else if (!TB.is_diggable)
-		user << "<span class='warning'>You cannot dig a hole here!</span>"
-		return
+		else if (!TB.is_diggable)
+			user << "<span class='warning'>You cannot dig a hole here!</span>"
+			return
+	else if  (input == "Grave")
+		if (istype(TB, /turf/open) || istype(TB, /turf/wall) || istype(TB, /turf/floor/wood) || istype(TB, /turf/floor/wood_broken) || istype(TB, /turf/floor/tiled) || istype(TB, /turf/floor/ship) || istype(TB, /turf/floor/carpet) || istype(TB, /turf/floor/broken_floor) || istype(TB, /turf/floor/plating/cobblestone) || istype(TB, /turf/floor/plating/concrete) || istype(TB, /turf/floor/plating/road) || istype(TB, /turf/floor/plating/under) || istype(TB, /turf/floor/plating/stone_old))
+			return
+		else
+			if (locate(/obj/structure/multiz) in user.loc)
+				user << "<span class='notice'>There is already a tunnel entrance here!</span>"
+				return
+			visible_message("[user] starts digging up a grave...","You start digging up a grave...")
+			playsound(src,'sound/effects/shovelling.ogg',100,1)
+			if (do_after(user, 100, src))
+				user << "You finish digging the grave."
+				new/obj/structure/religious/grave(user.loc)
+				return
+			else
+				return

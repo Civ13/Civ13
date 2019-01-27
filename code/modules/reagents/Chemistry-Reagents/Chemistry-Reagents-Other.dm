@@ -310,6 +310,14 @@
 	reagent_state = LIQUID
 	color = "#808080"
 
+/datum/reagent/cotton
+	name = "Cotton"
+	id = "cotton"
+	description = "Purified cotton."
+	taste_description = "cotton"
+	reagent_state = SOLID
+	color = "#FFFFFF"
+
 /datum/reagent/nitroglycerin
 	name = "Nitroglycerin"
 	id = "nitroglycerin"

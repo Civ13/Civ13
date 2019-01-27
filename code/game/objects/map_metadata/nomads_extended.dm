@@ -1,10 +1,10 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/nomads_extended
 	ID = MAP_NOMADS_EXTENDED
-	title = "Nomads Extended (Temperate) (225x225x3)"
-	lobby_icon_state = "civilizations"
+	title = "Nomads: Oil Rush (225x225x2)"
+	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 12000 // 20 minutes!
+	respawn_delay = 6000 // q0 minutes!
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
@@ -14,34 +14,58 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "5000 B.C."
 	civilizations = TRUE
 	var/tribes_nr = 1
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "the civilizations"
-	mission_start_message = "<big>After ages as hunter-gatherers, people are starting to form groups and settling down. Will they be able to work together?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Nomads</b>"
+	mission_start_message = "<big>To win, your faction must collect <b>3000</b> liters of Oil! The grace wall will be up for 40 minutes.</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Nomads</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
-	research_active = TRUE
 	nomads = TRUE
-	gamemode = "Classic (Stone Age Start)"
+	gamemode = "Oil Rush"
+	ordinal_age = 5
+	age = "1903"
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
+	age5_done = TRUE
+	research_active = FALSE
+	default_research = 135
+
+	var/oiltarget = 3000
 /obj/map_metadata/nomads_extended/New()
 	..()
-	config.allow_vote_restart = FALSE
+	spawn(1200)
+		check_oil()
 	spawn(18000)
 		seasons()
 
+/obj/map_metadata/nomads_extended/proc/check_oil()
+	if (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
+		if (custom_faction_nr.len >= 1)
+			world << "<big><b>Current Status:</b></big>"
+		for(var/i = 1, i <= custom_faction_nr.len, i++)
+			custom_civs[custom_faction_nr[i]][5]=0
+			for (var/obj/structure/oil_deposits/OD in world)
+				if (OD.faction == custom_faction_nr[i])
+					custom_civs[custom_faction_nr[i]][5] += OD.storedvalue
+			if (custom_civs[custom_faction_nr[i]][5] > 0)
+				world << "<b>[custom_faction_nr[i]]:</b> [custom_civs[custom_faction_nr[i]][5]] of 3000"
+
+	spawn(1200)
+		check_oil()
 /obj/map_metadata/nomads_extended/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_extended/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/nomads_extended/cross_message(faction)
-	return ""
+	return "<b><big>The grace wall is lifted!</big></b>"
 
 /obj/map_metadata/nomads_extended/proc/seasons()
 	if (season == "WINTER")
@@ -166,4 +190,15 @@
 		. = TRUE
 	else
 		. = FALSE
+/obj/map_metadata/nomads_extended/update_win_condition()
+	if (win_condition_spam_check)
+		return FALSE
+	for(var/i = 1, i <= custom_faction_nr.len, i++)
+		if (custom_civs[custom_faction_nr[i]][5] >= oiltarget)
+			var/message = "[custom_faction_nr[i]] has reached [oiltarget] liters of oil! They have won!"
+			world << "<font size = 4><span class = 'notice'>[message]</span></font>"
+			show_global_battle_report(null)
+			win_condition_spam_check = TRUE
+			ticker.finished = TRUE
+			return TRUE
 #undef NO_WINNER

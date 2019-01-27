@@ -131,8 +131,9 @@
 			var/area/src_area = get_area(src)
 			if (!src_area.lift_master())
 				chambered.loc = get_turf(src)
+				chambered.randomrotation()
 			#endif
-      
+
 			playsound(loc, casing_sound, 50, TRUE)
 
 		if (CYCLE_CASINGS) //cycle the casing back to the end.

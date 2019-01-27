@@ -29,6 +29,7 @@
 		/mob/living/simple_animal/sheep/female,
 		/obj/structure/oil_spring,
 		/obj/item/flashlight/lantern,
+		/obj/item/stack/ammopart,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -139,6 +140,21 @@
 
 			user << "You smash the olives, producing olive oil."
 			reagents.add_reagent("olive_oil", 6)
+			qdel(W)
+			return
+
+		if (istype(W, /obj/item/stack/material/cotton))
+			var/obj/item/stack/material/cotton/CT = W
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You put the cotton inside \the [src]."
+			reagents.add_reagent("cotton", CT.amount)
 			qdel(W)
 			return
 	proc/update_name_label()
@@ -357,27 +373,28 @@
 
 
 /obj/item/weapon/reagent_containers/glass/barrel/attackby(var/obj/item/I, var/mob/user)
-	if (istype(I, /obj/item/stack/ore/sulphur))
-		reagents.add_reagent("sulfur",3)
-		if (I.amount>1)
-			I.amount -= 1
-		else
-			qdel(I)
-		return
-		return
-	else if (istype(I, /obj/item/stack/ore/saltpeter))
-		reagents.add_reagent("potassium",3)
-		if (I.amount>1)
-			I.amount -= 1
-		else
-			qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/coal))
-		reagents.add_reagent("carbon",3)
-		if (I.amount>1)
-			I.amount -= 1
-		else
-			qdel(I)
-		return
-		return
+	if (reagents.total_volume+3 < volume)
+		if (istype(I, /obj/item/stack/ore/sulphur))
+			reagents.add_reagent("sulfur",3)
+			if (I.amount>1)
+				I.amount -= 1
+			else
+				qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/saltpeter))
+			reagents.add_reagent("potassium",3)
+			if (I.amount>1)
+				I.amount -= 1
+			else
+				qdel(I)
+			return
+		else if (istype(I, /obj/item/stack/ore/coal))
+			reagents.add_reagent("carbon",3)
+			if (I.amount>1)
+				I.amount -= 1
+			else
+				qdel(I)
+			return
+	else
+		user << "The [src] is full!"
 	..()

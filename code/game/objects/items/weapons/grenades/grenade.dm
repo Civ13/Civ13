@@ -121,3 +121,85 @@
 	if(explosion_size)
 		explosion(O,1,2,3,1)
 		qdel(src)
+
+
+/obj/item/weapon/grenade/dynamite
+	name = "empty dynamite stick"
+	desc = "Light it and run."
+	icon_state = "dynamite0"
+	det_time = 40
+	var/explosion_size = 2
+	var/state = 0
+
+/obj/item/weapon/grenade/dynamite/prime()
+	set waitfor = 0
+	..()
+
+	var/turf/O = get_turf(src)
+	if(!O) return
+
+	if(explosion_size)
+		explosion(O,0,2,4,2)
+		qdel(src)
+
+/obj/item/weapon/grenade/dynamite/attack_self(mob/user as mob)
+	return
+
+/obj/item/weapon/grenade/dynamite/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (state == 2 && istype(W, /obj/item/flashlight))
+		var/obj/item/flashlight/F = W
+		if (F.on)
+			activate(user)
+			add_fingerprint(user)
+			name = "lighted dynamite stick"
+			state = 3
+			icon_state = "dynamite3"
+
+			// clicking a grenade a second time turned throw mode off, this fixes that
+			if (iscarbon(user))
+				var/mob/living/carbon/C = user
+				C.throw_mode_on()
+			return
+	else if (state == 1 && istype(W, /obj/item/stack/material/rope))
+		var/obj/item/stack/material/rope/R = W
+		if (R.amount == 1)
+			qdel(R)
+		else
+			R.amount -= 1
+		state = 2
+		user << "You attach the wick to \the [src]."
+		name = "dynamite stick"
+		icon_state = "dynamite2"
+		return
+	else if (state == 0 && istype(W, /obj/item/weapon/reagent_containers))
+		var/obj/item/weapon/reagent_containers/RG = W
+		if (RG.reagents.has_reagent("nitroglycerin",2))
+			RG.reagents.remove_reagent("nitroglycerin",2)
+			user << "You fill \the [src] with the explosive charge."
+			state = 1
+			name = "filled dynamite stick"
+			icon_state = "dynamite1"
+			return
+	else
+		return
+
+/obj/item/weapon/grenade/dynamite/ready
+	state = 2
+	name = "dynamite stick"
+	update_icon()
+
+/obj/item/weapon/grenade/dynamite/activate(mob/user as mob)
+	if (active)
+		return
+
+	if (user)
+		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+
+	icon_state = "dynamite3"
+	active = TRUE
+	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+
+	spawn(det_time)
+		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		prime()
+		return

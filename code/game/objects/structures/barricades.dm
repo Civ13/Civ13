@@ -9,8 +9,9 @@
 	var/health = 100
 	var/maxhealth = 100
 	var/material/material
+	var/material_name = "wood"
 
-/obj/structure/barricade/New(var/newloc, var/material_name)
+/obj/structure/barricade/New(var/newloc)
 	..(newloc)
 	if (!material_name)
 		material_name = "wood"
@@ -127,8 +128,9 @@
 
 /obj/structure/barricade/steel
 	material = "steel"
+	material_name = "steel"
 /obj/structure/barricade/steel/New(_loc)
-	..(_loc, DEFAULT_WALL_MATERIAL)
+	..(_loc)
 
 /obj/structure/barricade/sandstone_h
 	name = "sandstone wall"
@@ -138,6 +140,7 @@
 	health = 600
 	maxhealth = 600
 	material = "stone"
+	material_name = "stone"
 
 /obj/structure/barricade/sandstone_v
 	name = "sandstone wall"
@@ -147,6 +150,7 @@
 	health = 600
 	maxhealth = 600
 	material = "stone"
+	material_name = "stone"
 
 /obj/structure/barricade/sandstone_h/crenelated
 	name = "crenelated sandstone wall"
@@ -156,6 +160,7 @@
 	health = 600
 	maxhealth = 600
 	material = "stone"
+	material_name = "stone"
 
 /obj/structure/barricade/sandstone_v/crenelated
 	name = "crenelated sandstone wall"
@@ -165,6 +170,7 @@
 	health = 600
 	maxhealth = 600
 	material = "stone"
+	material_name = "stone"
 
 /obj/structure/barricade/sandstone_h/New()
 	..()
@@ -172,12 +178,15 @@
 	name = "sandstone wall"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
+
 /obj/structure/barricade/sandstone_v/New()
 	..()
 	icon_state = "sandstone_brick2"
 	name = "sandstone wall"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
 
 /obj/structure/barricade/sandstone_h/crenelated/New()
 	..()
@@ -185,6 +194,7 @@
 	name = "crenelated sandstone wall"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
 
 /obj/structure/barricade/sandstone_v/crenelated/New()
 	..()
@@ -192,6 +202,7 @@
 	name = "crenelated sandstone wall"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
 
 /obj/structure/barricade/sandstone_h/ex_act(severity)
 	switch(severity)
@@ -254,6 +265,7 @@
 	material = "stone"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
 
 /obj/structure/barricade/stone_v
 	name = "stone wall"
@@ -263,6 +275,7 @@
 	material = "stone"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
 
 /obj/structure/barricade/stone_h/crenelated
 	name = "crenelated stone wall"
@@ -272,6 +285,7 @@
 	material = "stone"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
 
 /obj/structure/barricade/stone_v/crenelated
 	name = "crenelated stone wall"
@@ -281,6 +295,7 @@
 	material = "stone"
 	health = 600
 	maxhealth = 600
+	material_name = "stone"
 
 /obj/structure/barricade/stone_h/New()
 	..()

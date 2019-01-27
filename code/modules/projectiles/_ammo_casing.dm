@@ -47,6 +47,17 @@
 	slot_flags = SLOT_BELT
 	value = 2
 
+/obj/item/ammo_casing/stone
+	name = "rock"
+	desc = "Use a sling to launch it."
+	icon = 'icons/obj/ammo.dmi'
+	icon_state = "rock"
+	spent_icon = null
+	projectile_type = /obj/item/projectile/arrow/stone
+	weight = 0.22
+	caliber = "stone"
+	value = 1
+
 ///////TO MAKE AMMO WITH GUNPOWDER
 /obj/item/stack/ammopart
 	var/resultpath = /obj/item/ammo_casing/musketball
@@ -112,7 +123,7 @@
 	name = "empty rifle casing"
 	desc = "An empty brass casing."
 	icon = 'icons/obj/ammo.dmi'
-	icon_state = "riflecasing"
+	icon_state = "riflecasing_empty"
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	resultpath = null
@@ -122,7 +133,7 @@
 	name = "empty pistol casing"
 	desc = "A small empty brass casing."
 	icon = 'icons/obj/ammo.dmi'
-	icon_state = "pistolcasing"
+	icon_state = "pistolcasing_empty"
 	force = WEAPON_FORCE_HARMLESS
 	throwforce = WEAPON_FORCE_HARMLESS
 	resultpath = null
@@ -151,15 +162,15 @@
 				user << "You fill the casings with gunpowder."
 				gunpowder = gunpowder_max*amount
 				return
-	else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-		if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-			user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
-			return
-		else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-			user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
-			user << "You fill the casings with gunpowder."
-			gunpowder = gunpowder_max*amount
-			return
+		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
 	if (istype(W, /obj/item/stack/ammopart/bullet))
 		if (!(gunpowder >= gunpowder_max*amount))
 			user << "<span class = 'notice'>You need to fill the casings with gunpowder before putting the bullet.</span>"
@@ -172,43 +183,38 @@
 			if (W.amount <= 0)
 				qdel(W)
 	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
-		var/list/listing = list("Cancel")
-		if (istype(src, /obj/item/stack/ammopart/casing/pistol))
-			if (map.ordinal_age >= 4)
-				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
-			else if (map.ordinal_age >= 5)
-				listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
-		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
-		if (input == "Cancel")
-			return
-		else if (input == ".45 Colt")
-			resultpath = /obj/item/ammo_casing/a45
-		else if (input == ".44-40 Winchester")
-			resultpath = /obj/item/ammo_casing/a44
-		if (resultpath != null)
-			new resultpath(user.loc)
-			for(var/i=1;i<=amount;i++)
-				new resultpath(user.loc)
-			qdel(src)
-			return
+		attack_self(user)
+		return
 
-		else
-			return
+	else
+		return
 
-/obj/item/stack/ammopart/casing/attack_self(mob/user)
+/obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
-		if (map.ordinal_age >= 4)
-			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+		if (map.ordinal_age == 4)
+			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 		else if (map.ordinal_age >= 5)
-			listing = list(".45 Colt", ".44-40 Winchester", "Cancel")
+			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "9x19mm Parabellum", "7.65x25mm Parabellum Borchardt", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
+		else if (input == ".41 Short")
+			resultpath = /obj/item/ammo_casing/a41
 		else if (input == ".45 Colt")
 			resultpath = /obj/item/ammo_casing/a45
 		else if (input == ".44-40 Winchester")
 			resultpath = /obj/item/ammo_casing/a44
+		else if (input == "7.62x38mmR Nagant")
+			resultpath = /obj/item/ammo_casing/a762x38
+		else if (input == "8mm Nambu")
+			resultpath = /obj/item/ammo_casing/c8mmnambu
+		else if (input == "9mm Japanese Revolver")
+			resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
+		else if (input == "9x19mm Parabellum")
+			resultpath = /obj/item/ammo_casing/a9x19mm
+		else if (input == "7.65x25mm Parabellum Borchardt")
+			resultpath = /obj/item/ammo_casing/a765x25mm
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -220,6 +226,42 @@
 		user << "<span class = 'notice'>The casing is not complete yet.</span>"
 		return
 
+/obj/item/stack/ammopart/casing/rifle/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		var/list/listing = list("Cancel")
+		if (map.ordinal_age == 4)
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry", "Cancel")
+		else if (map.ordinal_age >= 5)
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","Cancel")
+		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
+		if (input == "Cancel")
+			return
+		else if (input == ".44-70 Government")
+			resultpath = /obj/item/ammo_casing/a4570
+		else if (input == ".577/450 Martini-Henry")
+			resultpath = /obj/item/ammo_casing/a577
+		else if (input == "12 Gauge (Buckshot)")
+			resultpath = /obj/item/ammo_casing/shotgun
+		else if (input == "12 Gauge (Slugshot)")
+			resultpath = /obj/item/ammo_casing/shotgun/slug
+		else if (input == "12 Gauge (Beanbag)")
+			resultpath = /obj/item/ammo_casing/shotgun/beanbag
+		else if (input == "7.62x54mmR Russian")
+			resultpath = /obj/item/ammo_casing/a762x54
+		else if (input == "8x53mm Murata")
+			resultpath = /obj/item/ammo_casing/a8x53mm
+		else if (input == "6.5x50mmSR Arisaka")
+			resultpath = /obj/item/ammo_casing/a65x50mm
+		if (resultpath != null)
+			for(var/i=1;i<=amount;i++)
+				new resultpath(user.loc)
+			qdel(src)
+			return
+		else
+			return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
+		return
 /obj/item/stack/ammopart/attack_self(mob/user)
 	if (istype(src, /obj/item/stack/ammopart/bullet) || istype(src, /obj/item/stack/ammopart/casing/pistol) || istype(src, /obj/item/stack/ammopart/casing/rifle))
 		return
@@ -257,7 +299,7 @@
 
 
 /obj/item/ammo_casing/a65x50mm
-	name = "6.5x50mm ammo casing"
+	name = "6.5x50mm bullet"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -267,7 +309,7 @@
 	value = 5
 
 /obj/item/ammo_casing/a8x53mm
-	name = "8x53mm ammo casing"
+	name = "8x53mm bullet"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -277,27 +319,37 @@
 	value = 5
 
 /obj/item/ammo_casing/c9mm_jap_revolver
-	name = "9mm bullet casing"
+	name = "9mm bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	caliber = "c9mm_jap_revolver"
 	value = 5
 
-/obj/item/ammo_casing/a45
-	name = ".45 Colt bullet casing"
+/obj/item/ammo_casing/a41
+	name = ".41 Short bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
-	spent_icon = null
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/pistol/a41
+	caliber = "a41"
+	value = 7
+
+/obj/item/ammo_casing/a45
+	name = ".45 Colt bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/pistol/a45
 	caliber = "a45"
 	value = 7
 
 /obj/item/ammo_casing/a44
-	name = ".44-40 Winchester bullet casing"
+	name = ".44-40 Winchester bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -307,7 +359,7 @@
 	value = 8
 
 /obj/item/ammo_casing/a4570
-	name = ".45-70 Government bullet casing"
+	name = ".45-70 Government bullet"
 	desc = "A brass casing."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
@@ -316,8 +368,19 @@
 	caliber = "a4570"
 	value = 8
 
+/obj/item/ammo_casing/a577
+	name = ".577/450 Martini-Henry bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.11
+	projectile_type = /obj/item/projectile/bullet/rifle/a577
+	caliber = "a577"
+	value = 8
+
+
 /obj/item/ammo_casing/a762x54
-	name = "7.62x54mm ammo casing"
+	name = "7.62x54mm bullet"
 	desc = "A brass casing."
 	icon_state = "clip-bullet"
 	spent_icon = "clip-casing"
@@ -327,7 +390,7 @@
 	value = 2
 
 /obj/item/ammo_casing/a762x38
-	name = "7.62x38mmR bullet casing"
+	name = "7.62x38mmR bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -337,7 +400,7 @@
 	value = 5
 
 /obj/item/ammo_casing/c8mmnambu
-	name = "8mm bullet casing"
+	name = "8mm bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
@@ -346,8 +409,28 @@
 	caliber = "c8mmnambu"
 	value = 2
 
+/obj/item/ammo_casing/a9x19mm
+	name = "9x19mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a9x19mm
+	caliber = "9x19mm"
+	value = 2
+
+/obj/item/ammo_casing/a765x25mm
+	name = "7.65x25mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a765x25mm
+	caliber = "765x25mm"
+	value = 2
+
 /obj/item/ammo_casing/a44p
-	name = ".44 bullet casing"
+	name = ".44 bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
