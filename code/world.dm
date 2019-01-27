@@ -55,7 +55,7 @@ var/world_is_open = TRUE
 
 /world
 	mob = /mob/new_player
-	turf = /turf/floor/plating/beach/water
+	turf = /turf/floor/beach/water
 	area = /area/caribbean
 	view = "15x15"
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session

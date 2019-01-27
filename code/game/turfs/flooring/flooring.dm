@@ -74,6 +74,33 @@ var/list/flooring_types
 	damage_temperature = T0C+8000
 	flags = TURF_HAS_EDGES
 
+/decl/flooring/water_swamp
+	name = "swamp water"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow_swamp"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/water_jungle1
+	name = "jungle river water"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow_jungle1"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/water_jungle2
+	name = "jungle flooded land"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow_jungle2"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
 /decl/flooring/sand
 	name = "sand"
 	desc = "Simple sand."

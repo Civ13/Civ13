@@ -319,7 +319,7 @@ var/obj/burning_overlay_turf = null
 	desc = "it's burning!"
 	icon = 'icons/effects/fire.dmi'
 	icon_state = "fire"
-	layer = 2.13
+	layer = 3.13
 	var/obj/origin
 
 /obj/small_fire/attackby(obj/item/weapon/W as obj, mob/user as mob)

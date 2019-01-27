@@ -114,26 +114,26 @@
 	icon_state = "grass[rand(0,6)]"
 	initial_flooring = null
 
-/turf/floor/plating/beach
+/turf/floor/beach
 	name = "beach"
 	icon = 'icons/misc/beach.dmi'
 	initial_flooring = null
 
-/turf/floor/plating/beach/drywater
+/turf/floor/beach/drywater
 	name = "dry riverbed"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "sand1"
 	is_diggable = FALSE
 	initial_flooring = null
 
-/turf/floor/plating/beach/sand
+/turf/floor/beach/sand
 	name = "sand"
 	icon_state = "sand"
 	is_diggable = TRUE
 	available_sand = 4
 	initial_flooring = /decl/flooring/sand_beach
 
-/turf/floor/plating/beach/sand/dark
+/turf/floor/beach/sand/dark
 	name = "dark sand"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dust"
@@ -141,14 +141,14 @@
 	available_sand = 4
 	initial_flooring = null
 
-/turf/floor/plating/beach/coastline
+/turf/floor/beach/coastline
 	name = "coastline"
 	icon = 'icons/misc/beach2.dmi'
 	icon_state = "sandwater"
 
 //water level is measured in centimeters. the maximum is 200 (2 meters). up to 1.5 will make movement progressively slower, up from that you will drown if you stay for too long.
 
-/turf/floor/plating/beach/water
+/turf/floor/beach/water
 	name = "water"
 	desc = "Water. Seems to be shallow."
 	icon_state = "seashallow"
@@ -158,11 +158,11 @@
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
 
-/turf/floor/plating/beach/water/shallowsaltwater
+/turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE
 
-/turf/floor/plating/beach/water/deep
+/turf/floor/beach/water/deep
 	name = "deep water"
 	icon_state = "seadeep"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
@@ -171,10 +171,10 @@
 	iscovered = FALSE
 	initial_flooring = /decl/flooring/water_deep
 
-/turf/floor/plating/beach/water/deep/saltwater
+/turf/floor/beach/water/deep/saltwater
 	name = "deep saltwater"
 	salty = TRUE
-/turf/floor/plating/beach/water/deep/CanPass(atom/movable/mover)
+/turf/floor/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
 	else if (istype(mover, /obj/item/projectile))
@@ -183,51 +183,45 @@
 		return FALSE
 	else
 		return ..()
-/turf/floor/plating/beach/water/swamp
+/turf/floor/beach/water/swamp
 	name = "swamp water"
 	move_delay = 3
-	color = "#94B21C"
+	icon_state = "seashallow_swamp"
 	sickness = 3
-/turf/floor/plating/beach/water/jungle
+	initial_flooring = /decl/flooring/water_swamp
+/turf/floor/beach/water/jungle
 	name = "river water"
 	move_delay = 5
-	color = "#BCA650"
+	icon_state = "seashallow_jungle1"
 	sickness = 2
-/turf/floor/plating/beach/water/flooded
+	initial_flooring = /decl/flooring/water_jungle1
+/turf/floor/beach/water/flooded
 	name = "flooded riverbed"
 	move_delay = 5
-	color = "#968440"
+	icon_state = "seashallow_jungle2"
 	sickness = 2
+	initial_flooring = /decl/flooring/water_jungle2
 
-/turf/floor/plating/beach/water/proc/Extinguish(var/mob/living/L)
+/turf/floor/beach/water/proc/Extinguish(var/mob/living/L)
 	if (istype(L))
 		L.ExtinguishMob()
 		L.fire_stacks = FALSE
 
-/turf/floor/plating/beach/water/ex_act(severity)
+/turf/floor/beach/water/ex_act(severity)
 	return
 
-/turf/floor/plating/beach/water/New()
+/turf/floor/beach/water/New()
 	..()
-	if (!istype(src, /turf/floor/plating/beach/water/ice))
-		if (!istype(src, /turf/floor/plating/beach/water/swamp))
-			overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.1)
-		else
-			var/image/I = image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.1)
-			I.color = color
-			I.alpha = 155
-			overlays += I
-			alpha = 155
-			I = image("icon"='icons/misc/beach.dmi',"icon_state"="plating","layer"=layer-0.1)
-			underlays += I
+	if (!istype(src, /turf/floor/beach/water/ice))
+		overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=layer+0.09)
 
-/turf/floor/plating/beach/water/ice
+/turf/floor/beach/water/ice
 	name = "ice"
 	icon_state = "seashallow_frozen"
 	move_delay = 0
 	initial_flooring = null
 
-/turf/floor/plating/beach/water/ice/salty
+/turf/floor/beach/water/ice/salty
 	name = "saltwater ice"
 
 /turf/floor/plating/sand

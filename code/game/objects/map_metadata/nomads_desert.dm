@@ -55,8 +55,8 @@
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = FALSE
 				S.update_icon()
-		for (var/turf/floor/plating/beach/drywater/D)
-			D.ChangeTurf(/turf/floor/plating/beach/water/swamp)
+		for (var/turf/floor/beach/drywater/D)
+			D.ChangeTurf(/turf/floor/beach/water/swamp)
 		real_season = "wet"
 	else
 		season = "Dry Season"
@@ -66,8 +66,8 @@
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = TRUE
 				S.update_icon()
-		for (var/turf/floor/plating/beach/water/swamp/D)
-			D.ChangeTurf(/turf/floor/plating/beach/drywater)
+		for (var/turf/floor/beach/water/swamp/D)
+			D.ChangeTurf(/turf/floor/beach/drywater)
 		real_season = "dry"
 
 	spawn(18000)

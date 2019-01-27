@@ -125,9 +125,9 @@ var/list/global/floor_cache = list()
 		return
 	..()
 
-/turf/floor/plating/beach/sand
+/turf/floor/beach/sand
 	var/trench_stage = 0
-/turf/floor/plating/beach/sand/attackby(obj/item/C as obj, mob/user as mob)
+/turf/floor/beach/sand/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/shovel/trench))
 		var/obj/item/weapon/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
