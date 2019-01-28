@@ -82,5 +82,14 @@
 	new /obj/item/weapon/surgery/retractor(src)
 	new /obj/item/weapon/surgery/scalpel(src)
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	
+/obj/item/weapon/storage/firstaid/surgery_empty
+	name = "surgery kit"
+	desc = "Contains tools for surgery."
+	icon_state = "firstaid2"
+	item_state = "firstaid_2"
+	storage_slots = 7
+	max_w_class = 3
+	max_storage_space = 28
 
 	make_exact_fit()

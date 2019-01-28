@@ -12,7 +12,7 @@
 
 /turf/floor/grass
 	name = "wild grass"
-	icon = 'icons/turf/flooring/grass.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_state = "grass0"
 	initial_flooring = /decl/flooring/grass
 	is_diggable = TRUE

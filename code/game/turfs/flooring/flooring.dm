@@ -41,7 +41,7 @@ var/list/flooring_types
 /decl/flooring/grass
 	name = "grass"
 	desc = "Simple grass."
-	icon = 'icons/turf/flooring/grass.dmi'
+	icon = 'icons/turf/floors.dmi'
 	icon_base = "grass"
 	has_base_range = 3
 	damage_temperature = T0C+80
