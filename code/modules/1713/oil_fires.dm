@@ -121,7 +121,7 @@
 	layer = TURF_LAYER+2.2
 	anchored = TRUE
 	density = FALSE
-	var/timer = 230
+	var/timer = 180
 	var/runonce = FALSE
 /obj/effect/burning_oil/New()
 	..()
@@ -194,7 +194,7 @@
 				new/obj/effect/burning_oil(OL.loc)
 
 	for (var/turf/floor/grass/GR in orange(1, src))
-		if (prob(14))
+		if (prob(10))
 			new/obj/effect/burning_oil(GR)
 
 	for (var/turf/floor/wood/WF in orange(1, src))

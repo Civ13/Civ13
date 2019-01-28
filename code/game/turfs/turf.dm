@@ -41,6 +41,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	var/list/decals
 	var/move_delay = 0
 
+	var/calcborders = FALSE //if borders were calculated already. To prevent both sides creating borders over each other.
+
 	var/wet = FALSE
 	var/image/wet_overlay = null
 	var/floorbelowz = FALSE
