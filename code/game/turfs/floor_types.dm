@@ -145,7 +145,7 @@
 	name = "coastline"
 	icon = 'icons/misc/beach2.dmi'
 	icon_state = "sandwater"
-
+	watertile = TRUE
 //water level is measured in centimeters. the maximum is 200 (2 meters). up to 1.5 will make movement progressively slower, up from that you will drown if you stay for too long.
 
 /turf/floor/beach/water
@@ -157,7 +157,7 @@
 	var/salty = FALSE
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
-
+	watertile = TRUE
 /turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE

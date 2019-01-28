@@ -29,7 +29,7 @@
 
 	var/muddy = FALSE
 	var/may_become_muddy = FALSE
-
+	var/watertile = FALSE
 	plane = FLOOR_PLANE
 
 /turf/floor/proc/get_move_delay()
