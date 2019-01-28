@@ -84,6 +84,32 @@
 	scoop_food = FALSE
 	slot_flags = SLOT_BELT|SLOT_POCKET
 
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade
+	name = "razor blade"
+	desc = "A folding blade, used to cut beard and hairs."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "razorblade"
+	item_state = "knife"
+	force_divisor = 0.2
+	w_class = 1.0
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
+	if (user.a_intent == I_HELP)
+		// hair
+		var/new_hstyle = WWinput(usr, "Please select a hair style.", "Grooming", WWinput_first_choice(hair_styles_list), WWinput_list_or_null(hair_styles_list))
+		if (new_hstyle)
+			M.h_style = new_hstyle
+
+	// facial hair
+		var/new_fstyle = WWinput(usr, "Please select a facial hair style.", "Grooming", WWinput_first_choice(facial_hair_styles_list), WWinput_list_or_null(facial_hair_styles_list))
+		if (new_fstyle)
+			M.f_style = new_fstyle
+		M.update_hair()
+		M.update_body()
+		return
+	else
+		return ..()
+
 /obj/item/weapon/material/kitchen/utensil/knife/boot/makeshift_knife
 	name = "boot knife"
 	desc = "A small self made knife used a lot in jail."
