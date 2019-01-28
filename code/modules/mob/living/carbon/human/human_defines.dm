@@ -5,12 +5,14 @@
 	var/g_hair = FALSE
 	var/b_hair = FALSE
 	var/h_style = "Bald"
+	var/h_growth = 0
 
 	//Facial hair colour and style
 	var/r_facial = FALSE
 	var/g_facial = FALSE
 	var/b_facial = FALSE
 	var/f_style = "Shaved"
+	var/f_growth = 0
 
 	//Eye colour
 	var/r_eyes = FALSE

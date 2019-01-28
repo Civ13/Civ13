@@ -366,6 +366,8 @@
 		handle_pain()
 
 		handle_medical_side_effects()
+		if (map.civilizations)
+			handle_hair_growth()
 
 		if (original_job && base_faction)
 			faction_hud_users |= src
@@ -379,6 +381,51 @@
 
 	//Update our name based on whether our face is obscured/disfigured
 	name = get_visible_name()
+
+/mob/living/carbon/human/proc/handle_hair_growth() //hair will increase in size every ~16.666 mins
+	if (gender == MALE)
+		var/currh = h_growth
+		var/currf = f_growth
+		if (h_growth < 4)
+			h_growth += 0.002
+		if (f_growth < 4)
+			f_growth += 0.002
+
+		if (h_growth >= 1 && currh < 1)
+			h_style = pick("Short Hair","Cut Hair","Skinhead")
+		else if (h_growth >= 2 && currh < 2)
+			h_style = pick("Parted","Bedhead","Bedhead 2","Bedhead 3","Mulder")
+		else if (h_growth >= 3 && currh < 3)
+			h_style = pick("Shoulder-length Hair","Dreadlocks","Long Emo","Gentle")
+		else if (h_growth >= 4 && currh < 4)
+			h_style = "Hime Cut"
+
+		if (f_growth >= 1 && currf < 1)
+			f_style = "Chinstrap"
+		else if (f_growth >= 2 && currf < 2)
+			f_style = "Medium Beard"
+		else if (f_growth >= 3 && currf < 3)
+			f_style = pick("Long Beard","Full Beard")
+		else if (f_growth >= 4 && currf < 4)
+			f_style = "Very Long Beard"
+		update_hair()
+
+	else if (gender == FEMALE)
+		var/currh = h_growth
+		if (h_growth < 4)
+			h_growth += 0.002
+		if (h_growth >= 1 && currh < 1)
+			h_style = pick("Short Hair")
+		else if (h_growth >= 2 && currh < 2)
+			h_style = pick("Bobcurl","Mia","Curls")
+		else if (h_growth >= 3 && currh < 3)
+			h_style = pick("Shoulder-length Hair","Flaired Hair","Ombre","Gentle")
+		else if (h_growth >= 4 && currh < 4)
+			h_style = pick("Long Hair","Long Hair Alt")
+		update_hair()
+	else
+		return
+
 
 /mob/living/carbon/human/proc/handle_some_updates()
 	if (life_tick > 5 && timeofdeath && (timeofdeath < 5 || world.time - timeofdeath > 6000))	//We are long dead, or we're junk mobs spawned
