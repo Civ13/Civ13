@@ -345,7 +345,7 @@
 	name = "Gewehr71"
 	desc = "A german bolt-action rifle chambered in 7.65x53mm Mauser ammunition."
 	icon_state = "gewehr71"
-	item_state = "gewher71"
+	item_state = "gewehr71"
 	caliber = "a765x53"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
@@ -377,7 +377,7 @@
 	name = "Gewehr98"
 	desc = "A german bolt-action rifle chambered in 7.92x57mm Mauser ammunition."
 	icon_state = "gewehr98"
-	item_state = "gewher98"
+	item_state = "gewehr98"
 	caliber = "a792x57"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
