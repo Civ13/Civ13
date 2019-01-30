@@ -80,7 +80,7 @@
 			return
 		if (standard_pour_into(user, target))
 			return
-		if (istype(target, /turf/floor/plating/beach/water))
+		if (istype(target, /turf/floor/beach/water))
 			return
 		if (reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)

@@ -60,6 +60,15 @@
 	else
 		nutrition = max_nutrition
 		water = max_water
+	for (var/hairstyle in hair_styles_list)
+		var/datum/sprite_accessory/S = hair_styles_list[hairstyle]
+		if (S.name == h_style)
+			h_growth = hair_styles_list[hairstyle].growth
+
+	for (var/facialstyle in facial_hair_styles_list)
+		var/datum/sprite_accessory/S = facial_hair_styles_list[facialstyle]
+		if (S.name == f_style)
+			f_growth = facial_hair_styles_list[facialstyle].growth
 
 	spawn (10)
 		if (client)

@@ -168,21 +168,6 @@ var/list/ghostteleportlocs = list()
 		eject = FALSE
 	return
 
-area/proc/lift_master()
-	if (last_lift_master)
-		switch (last_lift_master)
-			if (-1)
-				return null
-			else
-				return last_lift_master
-	for (var/obj/lift_controller/master in contents)
-		last_lift_master = master
-		return master
-	last_lift_master = -1 // indicate that we have no lift master in this area - saves a HUGE amount of tick usage
-	return null
-
-
-
 /*
 #define EQUIP TRUE
 #define LIGHT 2

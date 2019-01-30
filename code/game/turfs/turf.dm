@@ -1,8 +1,7 @@
-var/list/exterior_turfs = list(/turf/floor/plating/grass,
-							/turf/floor/plating/dirt,
-							/turf/floor/plating/sand,
+var/list/exterior_turfs = list(/turf/floor/grass,
+							/turf/floor/dirt,
+							/turf/floor/beach/sand,
 							/turf/floor/plating/concrete,
-							/turf/floor/plating/road,
 							)
 
 var/list/interior_areas = list(/area/caribbean/houses,
@@ -41,6 +40,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 
 	var/list/decals
 	var/move_delay = 0
+
+	var/calcborders = FALSE //if borders were calculated already. To prevent both sides creating borders over each other.
 
 	var/wet = FALSE
 	var/image/wet_overlay = null
@@ -400,12 +401,12 @@ var/const/enterloopsanity = 100
 			//Shoe sounds
 			if (type == /turf/floor/plating)
 				footstepsound = "platingfootsteps"
-			else if 		(istype(src, /turf/floor/grass))
+			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
 			//else 	if (istype(src, /turf/stalker/floor/tropa))//Not needed for now.
 			//	footstepsound = "sandfootsteps"
-			else 	if (istype(src, /turf/floor/plating/beach/water) && src.water_level > 0)
-				if (!istype(src, /turf/floor/plating/beach/water/ice))
+			else 	if (istype(src, /turf/floor/beach/water) && src.water_level > 0)
+				if (!istype(src, /turf/floor/beach/water/ice))
 					footstepsound = "waterfootsteps"
 			else 	if (istype(src, /turf/floor/wood))
 				footstepsound = "woodfootsteps"

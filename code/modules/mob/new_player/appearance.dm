@@ -33,6 +33,7 @@
 	// Whether or not the accessory can be affected by colouration
 	var/do_colouration = TRUE
 
+	var/growth = 0 // to order by lenght. 0 = bald, 1 = short, 2 = medium (covering the ears), 3 = shoulder length, 4 = mid-back
 
 /*
 ////////////////////////////
@@ -50,28 +51,34 @@
 		name = "Bald"
 		icon_state = "bald"
 		gender = MALE
+		growth = 0
 
 	short
 		name = "Short Hair"	  // try to capatilize the names please!
 		icon_state = "hair_a" // you do not need to define _s or _l sub-states, game automatically does this for you
+		growth = 1
 
 	cut
 		name = "Cut Hair"
 		icon_state = "hair_c"
+		growth = 1
 
 	flair
 		name = "Flaired Hair"
 		icon_state = "hair_flair"
 		gender = FEMALE
+		growth = 3
 
 	long
 		name = "Shoulder-length Hair"
 		icon_state = "hair_b"
+		growth = 3
 
 	longalt
 		name = "Shoulder-length Hair Alt"
 		icon_state = "hair_longfringe"
 		gender = FEMALE
+		growth = 3
 
 	/*longish
 		name = "Longer Hair"
@@ -81,11 +88,13 @@
 		name = "Long Hair"
 		icon_state = "hair_vlong"
 		gender = FEMALE
+		growth = 4
 
 	longeralt
 		name = "Long Hair Alt"
 		icon_state = "hair_vlongfringe"
 		gender = FEMALE
+		growth = 4
 
 //	longest
 //		name = "Very Long Hair"
@@ -102,106 +111,127 @@
 	halfbang
 		name = "Half-banged Hair"
 		icon_state = "hair_halfbang"
+		growth = 2
 
 	halfbangalt
 		name = "Half-banged Hair Alt"
 		icon_state = "hair_halfbang_alt"
+		growth = 2
 
 	ponytail1
 		name = "Ponytail 1"
 		icon_state = "hair_ponytail"
 		gender = FEMALE
+		growth = 2
 
 	ponytail2
 		name = "Ponytail 2"
 		icon_state = "hair_pa"
 		gender = FEMALE
+		growth = 2
 
 	ponytail3
 		name = "Ponytail 3"
 		icon_state = "hair_ponytail3"
 		gender = FEMALE
+		growth = 2
 
 	ponytail4
 		name = "Ponytail 4"
 		icon_state = "hair_ponytail4"
 		gender = FEMALE
+		growth = 3
 
 	sideponytail
 		name = "Side Ponytail"
 		icon_state = "hair_stail"
 		gender = FEMALE
+		growth = 2
 
 	parted
 		name = "Parted"
 		icon_state = "hair_parted"
+		growth = 2
 
 	pompadour
 		name = "Pompadour"
 		icon_state = "hair_pompadour"
 		gender = MALE
+		growth = 2
 
 	quiff
 		name = "Quiff"
 		icon_state = "hair_quiff"
 		gender = MALE
-
+		growth = 1
 	bedhead
 		name = "Bedhead"
 		icon_state = "hair_bedhead"
+		growth = 2
 
 	bedhead2
 		name = "Bedhead 2"
 		icon_state = "hair_bedheadv2"
+		growth = 2
 
 	bedhead3
 		name = "Bedhead 3"
 		icon_state = "hair_bedheadv3"
+		growth = 2
 
 	beehive
 		name = "Beehive"
 		icon_state = "hair_beehive"
 		gender = FEMALE
+		growth = 3
 
 	beehive2
 		name = "Beehive 2"
 		icon_state = "hair_beehive2"
 		gender = FEMALE
+		growth = 3
 
 	bobcurl
 		name = "Bobcurl"
 		icon_state = "hair_bobcurl"
 		gender = FEMALE
+		growth = 2
 
 	bob
 		name = "Bob"
 		icon_state = "hair_bobcut"
 		gender = FEMALE
+		growth = 2
 
 	bowl
 		name = "Bowl"
 		icon_state = "hair_bowlcut"
 		gender = MALE
+		growth = 1
 
 	buzz
 		name = "Buzzcut"
 		icon_state = "hair_buzzcut"
 		gender = MALE
+		growth = 1
 
 	crew
 		name = "Crewcut"
 		icon_state = "hair_crewcut"
 		gender = MALE
+		growth = 1
 
 	combover
 		name = "Combover"
 		icon_state = "hair_combover"
 		gender = MALE
+		growth = 1
 
 	father
 		name = "Father"
 		icon_state = "hair_father"
 		gender = MALE
+		growth = 1
 
 //	reversemohawk
 //		name = "Reverse Mohawk"
@@ -211,35 +241,41 @@
 	devillock
 		name = "Devil Lock"
 		icon_state = "hair_devilock"
+		growth = 1
 
 	dreadlocks
 		name = "Dreadlocks"
 		icon_state = "hair_dreads"
+		growth = 3
 
 	curls
 		name = "Curls"
 		icon_state = "hair_curls"
 		gender = FEMALE
+		growth = 2
 
-// you must be fucking kidding me
 	afro
 		name = "Afro"
 		icon_state = "hair_afro"
-
+		growth = 3
 
 	afro2
 		name = "Afro 2"
 		icon_state = "hair_afro2"
+		growth = 3
 
 	afro_large
 		name = "Big Afro"
 		icon_state = "hair_bigafro"
 		gender = MALE
+		growth = 4
 
 	sargeant
 		name = "Flat Top"
 		icon_state = "hair_sargeant"
 		gender = MALE
+		growth = 1
+
 // nope
 //	emo
 //		name = "Emo"
@@ -249,6 +285,7 @@
 		name = "Long Emo"
 		icon_state = "hair_emolong"
 		gender = FEMALE
+		growth = 3
 
 //	rightemo
 //		name = "Right Emo"
@@ -270,6 +307,8 @@
 		name = "Feather"
 		icon_state = "hair_feather"
 		gender = FEMALE
+		growth = 3
+
 // just... no
 //	hitop
 //		name = "Hitop"
@@ -279,25 +318,30 @@
 	mohawk
 		name = "Mohawk"
 		icon_state = "hair_d"
+		growth = 2
 
 	jensen
 		name = "Adam Jensen Hair"
 		icon_state = "hair_jensen"
 		gender = MALE
+		growth = 2
 
 	gelled
 		name = "Gelled Back"
 		icon_state = "hair_gelled"
 		gender = FEMALE
+		growth = 2
 
 	gentle
 		name = "Gentle"
 		icon_state = "hair_gentle"
 		gender = FEMALE
+		growth = 3
 
 	spiky
 		name = "Spiky"
 		icon_state = "hair_spikey"
+		growth = 1
 
 //	kusangi
 //		name = "Kusanagi Hair"
@@ -307,11 +351,13 @@
 		name = "Pigtails"
 		icon_state = "hair_kagami"
 		gender = FEMALE
+		growth = 3
 
 	himecut
 		name = "Hime Cut"
 		icon_state = "hair_himecut"
 		gender = FEMALE
+		growth = 4
 
 //ultra meme zone here. yeah, nope
 
@@ -344,21 +390,26 @@
 		name = "Ombre"
 		icon_state = "hair_ombre"
 		gender = FEMALE
+		growth = 3
 
 	updo
 		name = "Updo"
 		icon_state = "hair_updo"
 		gender = FEMALE
+		growth = 2
 
 //no idea why this is called skinhead :shrug:
 	skinhead
 		name = "Skinhead"
 		icon_state = "hair_skinhead"
+		growth = 1
 
 	balding
 		name = "Balding Hair"
 		icon_state = "hair_e"
 		gender = MALE // turnoff!
+		growth = 1
+
 //nonononono
 //	familyman
 //		name = "The Family Man"
@@ -394,16 +445,19 @@
 		name = "CIA"
 		icon_state = "hair_cia"
 		gender = MALE
+		growth = 2
 
 	mulder
 		name = "Mulder"
 		icon_state = "hair_mulder"
 		gender = MALE
+		growth = 2
 
 	scully
 		name = "Scully"
 		icon_state = "hair_scully"
 		gender = FEMALE
+		growth = 3
 
 //	nitori
 //		name = "Nitori"
@@ -414,6 +468,7 @@
 		name = "Joestar"
 		icon_state = "hair_joestar"
 		gender = MALE
+		growth = 1
 
 //	volaju
 //		name = "Volaju"
@@ -435,6 +490,7 @@
 	bun
 		name = "Bun"
 		icon_state = "hair_bun"
+		growth = 2
 
 //	doublebun
 //		name = "Double-Bun"
@@ -444,22 +500,26 @@
 		name = "Mia"
 		icon_state = "hair_mia"
 		gender = FEMALE
+		growth = 2
 
 	bald
 		name = "Bald"
 		icon_state = "bald"
+		growth = 0
 
 //ADL pls no bully
 	jewlocks
 		name = "Jewlocks"
 		icon_state = "hair_jewlocks"
 		gender = MALE
+		growth = 3
 
 //BANG!
 	chad
 		name = "Chad"
 		icon_state = "hair_chad"
 		gender = MALE
+		growth = 1
 
 
 /*
@@ -479,73 +539,98 @@
 		name = "Shaved"
 		icon_state = "bald"
 		gender = NEUTER
+		growth = 0
 
 	watson
 		name = "Watson Mustache"
 		icon_state = "facial_watson"
+		growth = 1
 
 	hogan
 		name = "Hulk Hogan Mustache"
 		icon_state = "facial_hogan" //-Neek
+		growth = 1
 
 	vandyke
 		name = "Van Dyke Mustache"
 		icon_state = "facial_vandyke"
+		growth = 1
 
 	chaplin
 		name = "Square Mustache"
 		icon_state = "facial_chaplin"
+		growth = 1
 
 	selleck
 		name = "Selleck Mustache"
 		icon_state = "facial_selleck"
+		growth = 1
 
 	neckbeard
 		name = "Neckbeard"
 		icon_state = "facial_neckbeard"
+		growth = 2
+
+	fullbeard
+		name = "Medium Beard"
+		icon_state = "facial_smallbeard"
+		growth = 2
 
 	fullbeard
 		name = "Full Beard"
 		icon_state = "facial_fullbeard"
+		growth = 3
 
 	longbeard
 		name = "Long Beard"
 		icon_state = "facial_longbeard"
+		growth = 3
 
 	vlongbeard
 		name = "Very Long Beard"
 		icon_state = "facial_wise"
+		growth = 4
+
 
 	elvis
 		name = "Elvis Sideburns"
 		icon_state = "facial_elvis"
+		growth = 1
+
 	abe
 		name = "Abraham Lincoln Beard"
 		icon_state = "facial_abe"
+		growth = 2
 
 	chinstrap
 		name = "Chinstrap"
 		icon_state = "facial_chin"
+		growth = 1
 
 	hip
 		name = "Hipster Beard"
 		icon_state = "facial_hip"
+		growth = 2
 
 	gt
 		name = "Goatee"
 		icon_state = "facial_gt"
+		growth = 2
 
 	jensen
 		name = "Adam Jensen Beard"
 		icon_state = "facial_jensen"
+		growth = 1
 
 	volaju
 		name = "Volaju"
 		icon_state = "facial_volaju"
+		growth = 2
 
 	dwarf
 		name = "Dwarf Beard"
 		icon_state = "facial_dwarf"
+		growth = 4
 
 //skin styles - WIP
 //going to have to re-integrate this with surgery

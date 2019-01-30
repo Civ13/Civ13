@@ -11,11 +11,49 @@
 	initial_flooring = /decl/flooring/wood
 
 /turf/floor/grass
-	name = "grass patch"
+	name = "wild grass"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "grass0"
 	initial_flooring = /decl/flooring/grass
 	is_diggable = TRUE
+	uses_winter_overlay = TRUE
+	may_become_muddy = TRUE
+	var/obj/structure/wild/wild = null
+
+/turf/floor/grass/ex_act(severity)
+	return
+
+/turf/floor/grass/New()
+	..()
+	grass_turf_list += src
+	icon_state = "grass[rand(0,3)]"
+
+/turf/floor/grass/proc/plant()
+	// 3x3 clumps of grass - original code
+	if (prob(1))
+		if (!locate(/obj/structure/wild/bush) in range(3, src))
+			if (!locate(/obj/item) in range(3, src))
+				for (var/turf/floor/grass/G in range(3, src))
+					if (!locate(/obj/structure) in G)
+						var/dist = get_dist(src, G)
+						if (prob(100-(dist*5)))
+							G.wild = new/obj/structure/wild/bush(G)
+	// huge grassy areas - adapted from Drymouth Gulch
+	else
+		if (locate(/obj/structure) in src)
+			return
+		if (locate(/obj/item) in src)
+			return
+		if (prob(0.1)) // default is 0.1
+			wild = new/obj/structure/wild/bush(src)
+		else
+			var/chance = FALSE
+			for (var/turf/floor/grass/T in range(1,src))
+				if (T.wild)
+					chance += 40 // default is 40
+			if (prob(chance))
+				wild = new/obj/structure/wild/bush(src)
+
 
 /turf/floor/dirt
 	name = "dirt"
@@ -25,6 +63,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
+	initial_flooring = /decl/flooring/dirt
 
 /turf/floor/dirt/flooded
 	name = "flood plains dirt"
@@ -35,6 +74,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
+	initial_flooring = /decl/flooring/flooded
 
 /turf/floor/dirt/winter
 	name = "snowy dirt"
@@ -45,6 +85,7 @@
 	available_snow = 2
 	available_dirt = 0
 	is_diggable = TRUE
+	initial_flooring = /decl/flooring/snow_dirt
 
 /turf/floor/dirt/burned
 	name = "burned ground"
@@ -53,6 +94,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 1
 	is_diggable = TRUE
+	initial_flooring = /decl/flooring/dirt
 
 /turf/floor/dirt/underground
 	name = "underground rock"
@@ -68,6 +110,7 @@
 	desc = "This space is blocked off by soft earth and rocks. Can be digged."
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "rocky"
+	initial_flooring = null
 
 /turf/floor/dirt/underground/empty
 	name = "rock debris"
@@ -82,13 +125,14 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "dirt_ploughed"
 	is_plowed = TRUE
+	initial_flooring = null
 
 /turf/floor/dirt/ploughed/flooded
 	name = "ploughed field"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "flood_dirt_ploughed"
 	is_plowed = TRUE
-
+	initial_flooring = null
 
 /turf/floor/dirt/dust
 	name = "dry dirt"
@@ -99,6 +143,7 @@
 	available_dirt = 2
 	may_become_muddy = FALSE
 	is_diggable = TRUE
+	initial_flooring = /decl/flooring/dirt
 
 /turf/floor/dirt/jungledirt
 	name = "dirt"
@@ -109,80 +154,4 @@
 	available_dirt = 2
 	may_become_muddy = TRUE
 	is_diggable = TRUE
-
-/turf/floor/tiled
-	name = "floor"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "steel"
-	initial_flooring = /decl/flooring/tiling
-
-
-
-/turf/floor/tiled/kafel_full
-	name = "floor"
-	icon_state = "bcarpet05"
-	initial_flooring = /decl/flooring/tiling/new_tile/kafel
-/turf/floor/tiled/kafel_full/white
-	color = "#d9d9d9"
-/turf/floor/tiled/kafel_full/blue
-	color = "#8ba7ad"
-/turf/floor/tiled/kafel_full/yellow
-	color = "#8c6d46"
-/turf/floor/tiled/kafel_full/gray
-	color = "#687172"
-/turf/floor/tiled/kafel_full/beige
-	color = "#385e60"
-/turf/floor/tiled/kafel_full/red
-	color = "#964e51"
-/turf/floor/tiled/kafel_full/purple
-	color = "#906987"
-/turf/floor/tiled/kafel_full/green
-	color = "#46725c"
-
-
-/turf/floor/tiled/dark
-	name = "floor"
-	icon_state = "dark"
-	initial_flooring = /decl/flooring/tiling/dark
-
-/turf/floor/tiled/steel
-	name = "floor"
-	icon_state = "neutralfull"
-	initial_flooring = /decl/flooring/tiling/steel
-
-/turf/floor/tiled/white
-	name = "floor"
-	icon_state = "white"
-	initial_flooring = /decl/flooring/tiling/white
-/*
-/turf/floor/beach
-	name = "beach"
-	icon = 'icons/turf/floors.dmi'
-
-/turf/floor/beach/sand
-	name = "sand"
-	icon_state = "sand"
-
-/turf/floor/beach/sand/desert
-	icon_state = "desert"
-
-/turf/floor/beach/coastline
-	name = "coastline"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "sandwater"
-
-/turf/floor/beach/water
-	name = "water"
-	icon_state = "water"
-
-/turf/floor/beach/water/update_dirt()
-	return	// Water doesn't become dirty
-
-/turf/floor/beach/water/ocean
-	icon_state = "seadeep"
-
-/turf/floor/beach/water/New()
-	..()
-	overlays += image("icon"='icons/misc/beach.dmi',"icon_state"="water5","layer"=MOB_LAYER+0.1)
-
-*/
+	initial_flooring = /decl/flooring/dirt

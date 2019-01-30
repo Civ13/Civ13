@@ -84,6 +84,43 @@
 	scoop_food = FALSE
 	slot_flags = SLOT_BELT|SLOT_POCKET
 
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade
+	name = "razor blade"
+	desc = "A folding blade, used to cut beard and hairs."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "razorblade"
+	item_state = "knife"
+	force_divisor = 0.2
+	w_class = 1.0
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
+	if (user.a_intent == I_HELP && M in range(user,1))
+		visible_message("[user] starts cutting [M]'s hair...","You start cutting [M]'s hair...")
+		if (do_after(user, 80, M))
+			var/list/hairlist = M.generate_valid_hairstyles(1,1)
+			var/new_hstyle = WWinput(usr, "Please select a hair style.", "Grooming", WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
+			if (new_hstyle)
+				M.h_style = new_hstyle
+				for (var/hairstyle in hair_styles_list)
+					var/datum/sprite_accessory/S = hair_styles_list[hairstyle]
+					if (S.name == M.h_style)
+						M.h_growth = S.growth
+			if (M.gender == MALE)
+				var/list/fhairlist = M.generate_valid_facial_hairstyles(1,1)
+				var/new_fstyle = WWinput(usr, "Please select a facial hair style.", "Grooming", WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
+				if (new_fstyle)
+					M.f_style = new_fstyle
+					for (var/hairstyle in facial_hair_styles_list)
+						var/datum/sprite_accessory/S = facial_hair_styles_list[hairstyle]
+						if (S.name == M.f_style)
+							M.f_growth = S.growth
+			M.update_hair()
+			M.update_body()
+			visible_message("[user] finishes cutting [M]'s hair.","You finish cutting [M]'s hair.")
+			return
+	else
+		return ..()
+
 /obj/item/weapon/material/kitchen/utensil/knife/boot/makeshift_knife
 	name = "boot knife"
 	desc = "A small self made knife used a lot in jail."

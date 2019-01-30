@@ -154,7 +154,7 @@
 
 	return valid_species
 
-/mob/living/carbon/human/proc/generate_valid_hairstyles(var/check_gender = TRUE)
+/mob/living/carbon/human/proc/generate_valid_hairstyles(var/check_gender = TRUE, var/growth = FALSE)
 	var/list/valid_hairstyles = new()
 	for (var/hairstyle in hair_styles_list)
 		var/datum/sprite_accessory/S = hair_styles_list[hairstyle]
@@ -163,13 +163,15 @@
 			continue
 		if (check_gender && gender == FEMALE && S.gender == MALE)
 			continue
+		if (growth && h_growth < S.growth)
+			continue
 		if (!(species.get_bodytype() in S.species_allowed))
 			continue
 		valid_hairstyles += hairstyle
 
 	return valid_hairstyles
 
-/mob/living/carbon/human/proc/generate_valid_facial_hairstyles()
+/mob/living/carbon/human/proc/generate_valid_facial_hairstyles(var/growth = FALSE)
 	var/list/valid_facial_hairstyles = new()
 	for (var/facialhairstyle in facial_hair_styles_list)
 		var/datum/sprite_accessory/S = facial_hair_styles_list[facialhairstyle]
@@ -177,6 +179,8 @@
 		if (gender == MALE && S.gender == FEMALE)
 			continue
 		if (gender == FEMALE && S.gender == MALE)
+			continue
+		if (growth && f_growth < S.growth)
 			continue
 		if (!(species.get_bodytype() in S.species_allowed))
 			continue

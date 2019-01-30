@@ -4,7 +4,7 @@
 		return
 
 	// This makes sure that turfs are not changed to space when one side is part of a zone
-
+	overlays.Cut()
 	var/obj/fire/old_fire = fire
 	var/old_opacity = opacity
 	var/old_dynamic_lighting = dynamic_lighting
@@ -13,9 +13,10 @@
 	var/list/old_lighting_corners = corners
 
 
+/*
 	if (ispath(N, /turf/floor))
 		var/turf/W = new N( locate(x, y, z) )
-		if (istype(W, /turf/floor/plating/grass))
+		if (istype(W, /turf/floor/grass))
 			switch (season)
 				if ("WINTER")
 					W.color = DEAD_COLOR
@@ -30,16 +31,17 @@
 		W.levelupdate()
 		. = W
 
+
 	else
+*/
+	var/turf/W = new N( locate(x, y, z) )
 
-		var/turf/W = new N( locate(x, y, z) )
+	if (old_fire)
+		old_fire.RemoveFire()
 
-		if (old_fire)
-			old_fire.RemoveFire()
-
-		W.levelupdate()
-		. =  W
-
+	W.levelupdate()
+	. =  W
+//end of else
 	lighting_overlay = old_lighting_overlay
 	affecting_lights = old_affecting_lights
 	corners = old_lighting_corners
@@ -63,3 +65,4 @@
 			lighting_clear_overlay()
 
 	fix_broken_daylights()
+	update_icon()

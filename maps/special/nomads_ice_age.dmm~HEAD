@@ -3,7 +3,7 @@
 "c" = (/obj/effect/spawner/mobspawner/bears/polar,/turf/floor/plating/snow,/area/caribbean)
 "d" = (/obj/effect/spawner/mobspawner/reindeer_f,/turf/floor/plating/snow,/area/caribbean)
 "e" = (/obj/effect/spawner/mobspawner/reindeer_m,/turf/floor/plating/snow,/area/caribbean)
-"f" = (/turf/floor/plating/beach/water/ice,/area/caribbean)
+"f" = (/turf/floor/beach/water/ice,/area/caribbean)
 "g" = (/turf/floor/dirt/winter,/area/caribbean)
 "h" = (/obj/item/stack/farming/seeds/peyote{amount = 2},/area/caribbean)
 "i" = (/obj/effect/spawner/mobspawner/wolves,/turf/floor/plating/snow,/area/caribbean)

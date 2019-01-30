@@ -2,7 +2,7 @@
 /process/ping_track
 	var/avg = 0
 	var/client_ckey_check[1000]
-	var/pingtime = 0
+
 /process/ping_track/setup()
 	name = "Ping Tracking"
 	schedule_interval = 0.5 SECONDS
@@ -11,9 +11,7 @@
 	processes.ping_track = src
 
 /process/ping_track/fire()
-	if (pingtime >= 99999)
-		pingtime = 0
-	pingtime += 50
+
 	if (!current_list.len)
 		return
 
@@ -32,12 +30,12 @@
 		if (!hascall(C, ".update_ping")) // BYOND treats "update_ping" and ".update_ping" the same here, for reference
 			continue
 		if (!client_ckey_check[C.ckey])
-			client_ckey_check[C.ckey] = pingtime+50
+			client_ckey_check[C.ckey] = world.time+50
 			continue
 		if (world.time < client_ckey_check[C.ckey])
 			continue
 
-		winset(C, null, "command=.update_ping+[pingtime+world.tick_lag*world.tick_usage/100]")
+		winset(C, null, "command=.update_ping+[world.time+world.tick_lag*world.tick_usage/100]")
 		avg += C.last_ping
 		++clients_checked
 

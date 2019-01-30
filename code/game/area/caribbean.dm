@@ -2,7 +2,7 @@
 	requires_power = FALSE
 	has_gravity = TRUE
 	no_air = FALSE
-	base_turf = /turf/floor/plating/beach/water //The base turf type of the area, which can be used to override the z-level's base turf
+	base_turf = /turf/floor/beach/water //The base turf type of the area, which can be used to override the z-level's base turf
 	sound_env = STANDARD_STATION
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
@@ -91,17 +91,17 @@
 	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/beach
 	name = "Beach"
-	base_turf = /turf/floor/plating/beach/sand
+	base_turf = /turf/floor/beach/sand
 	icon_state = "red1"
 	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/swamp
 	name = "Swamp"
-	base_turf = /turf/floor/plating/beach/sand
+	base_turf = /turf/floor/beach/sand
 	icon_state = "purple1"
 	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/grasslands
 	name = "Grasslands"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 	icon_state = "purple1"
 	ambience = list("sound/ambience/jungle1.ogg")
 /area/caribbean/tribes/lostcity
@@ -112,23 +112,23 @@
 
 /area/caribbean/nomads
 	name = "Grassland"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 	icon_state = "red2"
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/nomads/desert
 	name = "Desert"
-	base_turf = /turf/floor/plating/sand/desert
+	base_turf = /turf/floor/beach/sand/desert
 	icon_state = "red3"
 	ambience = list("sound/ambience/desert.ogg")
 /area/caribbean/nomads/river
 	name = "Jungle River"
-	base_turf = /turf/floor/plating/beach/water/jungle
+	base_turf = /turf/floor/beach/water/jungle
 	icon_state = "blue1"
 
 /area/caribbean/nomads/forest
 	name = "Forest"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 	icon_state = "green1"
 
 /area/caribbean/nomads/forest/snow
@@ -138,44 +138,44 @@
 
 /area/caribbean/nomads/forest/Jungle
 	name = "Jungle"
-	base_turf = /turf/floor/plating/grass/wild/jungle
+	base_turf = /turf/floor/grass/jungle
 	icon_state = "green1"
 
 /area/caribbean/nomads/snow
 	name = "Snow"
-	base_turf = /turf/floor/plating/snow
+	base_turf = /turf/floor/winter
 	icon_state = "red1"
 
 /area/caribbean/nomads/ice
 	name = "Ice"
-	base_turf = /turf/floor/plating/beach/water/ice
+	base_turf = /turf/floor/beach/water/ice
 	icon_state = "blue1"
 
 /area/caribbean/island
 	name = "Island"
-	base_turf = /turf/floor/plating/beach/sand
+	base_turf = /turf/floor/beach/sand
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/sea
 	name = "Island"
-	base_turf = /turf/floor/plating/beach/sand
+	base_turf = /turf/floor/beach/sand
 	icon_state = "purple1"
 	ambience = list("sound/ambience/ship1.ogg")
 
 /area/caribbean/sea/beach
 	name = "Beach"
-	base_turf = /turf/floor/plating/beach/sand
+	base_turf = /turf/floor/beach/sand
 	icon_state = "red4"
 
 /area/caribbean/sea/shallow
 	name = "Shallow Water"
-	base_turf = /turf/floor/plating/beach/water
+	base_turf = /turf/floor/beach/water
 	icon_state = "blue1"
 
 /area/caribbean/sea/sea
 	name = "Sea"
-	base_turf = /turf/floor/plating/beach/water/deep
+	base_turf = /turf/floor/beach/water/deep
 	icon_state = "blue2"
 
 /area/caribbean/no_mans_land
@@ -191,7 +191,7 @@
 /area/caribbean/desert
 	name = "The Desert"
 	icon_state = "red1"
-	base_turf = /turf/floor/plating/sand/desert
+	base_turf = /turf/floor/beach/sand/desert
 	ambience = list("sound/ambience/desert.ogg")
 /area/caribbean/desert/town
 	name = "Little Creek"
@@ -210,7 +210,7 @@
 /area/caribbean/forest
 	name = "The Forest"
 	icon_state = "purple1"
-	base_turf = /turf/floor/plating/grass/wild
+	base_turf = /turf/floor/grass
 
 /area/caribbean/forest/dirt
 	name = "The Forest"
@@ -345,7 +345,7 @@
 /area/caribbean/colonies/beach
 	name = "Beach"
 	icon_state = "red1"
-	base_turf = /turf/floor/plating/beach/sand
+	base_turf = /turf/floor/beach/sand
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/caves
@@ -358,7 +358,7 @@
 /area/caribbean/colonies/swamp
 	name = "Swamp"
 	icon_state = "red4"
-	base_turf = /turf/floor/plating/beach/water/swamp
+	base_turf = /turf/floor/beach/water/swamp
 	ambience = list("sound/ambience/jungle1.ogg")
 
 /area/caribbean/colonies/british
@@ -450,7 +450,7 @@
 /area/caribbean/british/ship
 	name = "British Ship"
 	icon_state = "blue1"
-	base_turf = /turf/floor/plating/beach/water
+	base_turf = /turf/floor/beach/water
 	ambience = list("sound/ambience/ship1.ogg")
 
 /area/caribbean/british/ship/main_deck
@@ -492,7 +492,7 @@
 	name = "Hold"
 	icon_state = "blue4"
 	location = AREA_INSIDE
-	base_turf = /turf/floor/plating/beach/water
+	base_turf = /turf/floor/beach/water
 
 /area/caribbean/british/ship/galley
 	name = "Prison"
@@ -536,7 +536,7 @@
 
 /area/caribbean/pirates/ship
 	icon_state = "green1"
-	base_turf = /turf/floor/plating/beach/water
+	base_turf = /turf/floor/beach/water
 	ambience = list("sound/ambience/ship1.ogg")
 
 /area/caribbean/pirates/ship/main_deck
@@ -578,7 +578,7 @@
 	name = "Hold"
 	icon_state = "green4"
 	location = AREA_INSIDE
-	base_turf = /turf/floor/plating/beach/water
+	base_turf = /turf/floor/beach/water
 
 /area/caribbean/pirates/ship/galley
 	name = "Prison"
@@ -629,6 +629,6 @@
 	base_turf = /turf/floor/dirt
 
 /area/caribbean/crusader/sand
-	base_turf = /turf/floor/plating/sand
+	base_turf = /turf/floor/beach/sand
 /area/caribbean/arab/sand
-	base_turf = /turf/floor/plating/sand
+	base_turf = /turf/floor/beach/sand
