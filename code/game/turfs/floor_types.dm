@@ -106,7 +106,7 @@
 	icon_state = "grass2"
 	is_diggable = TRUE
 	available_snow = 2
-	initial_flooring = /decl/flooring/snow
+	initial_flooring = /decl/flooring/snow_grass
 
 /turf/floor/winter/grass/New()
 	..()

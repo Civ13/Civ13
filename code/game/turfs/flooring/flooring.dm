@@ -150,12 +150,30 @@ var/list/flooring_types
 /decl/flooring/snow
 	name = "snow"
 	desc = "Simple snow."
-	icon = 'icons/turf/floors.dmi'
+	icon = 'icons/turf/snow.dmi'
 	icon_base = "snow"
 	has_base_range = 0
 	damage_temperature = T0C+30
 	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
 
+
+/decl/flooring/snow_grass
+	name = "snowy grass"
+	desc = "Simple snow."
+	icon = 'icons/turf/snow.dmi'
+	icon_base = "grass"
+	has_base_range = 0
+	damage_temperature = T0C+30
+	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
+
+/decl/flooring/snow_dirt
+	name = "snowy dirt"
+	desc = "Simple snow."
+	icon = 'icons/turf/snow.dmi'
+	icon_base = "dirt"
+	has_base_range = 0
+	damage_temperature = T0C+30
+	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
 /decl/flooring/carpet
 	name = "carpet"
 	desc = "Imported and comfy."

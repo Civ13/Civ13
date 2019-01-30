@@ -85,7 +85,7 @@
 	available_snow = 2
 	available_dirt = 0
 	is_diggable = TRUE
-	initial_flooring = /decl/flooring/snow
+	initial_flooring = /decl/flooring/snow_dirt
 
 /turf/floor/dirt/burned
 	name = "burned ground"
