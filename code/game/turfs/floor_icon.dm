@@ -26,86 +26,58 @@ var/list/flooring_cache = list()
 
 
 		// Apply edges, corners, and inner corners.
-		overlays.Cut()
+		//overlays.Cut()
 		var/has_border = FALSE
-		if (flooring.flags & SMOOTH_ONLY_WITH_ITSELF) // for carpets and stuff like that
-			if (isnull(set_update_icon) && (flooring.flags & TURF_HAS_EDGES))
-				for (var/step_dir in cardinal)
-					var/turf/floor/T = get_step(src, step_dir)
-					if (!istype(T) || !T.flooring || T.flooring.name != flooring.name)
-						has_border |= step_dir
-						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
 
-				// There has to be a concise numerical way to do this but I am too noob.
+		if (isnull(set_update_icon) && (flooring.flags & TURF_HAS_EDGES))// && !calcborders)
+			for (var/step_dir in cardinal)
+				var/turf/floor/T = get_step(src, step_dir)
+				//i suck at using operators...
+				if (!istype(src, /turf/floor/winter/grass) && !istype(src, /turf/floor/dirt) && !istype(T, /turf/wall) && !istype(T, /turf/open) && (!istype(T) || !T.flooring || T.flooring.name != flooring.name) && !(istype(T, /turf/floor/dirt) && istype(T, /turf/floor/grass)) && !(istype(T, /turf/floor/grass) && istype(src, /turf/floor/beach)) && !istype(T, /turf/floor/plating) && !(istype(src, /turf/floor/beach/sand) && istype(T, /turf/floor/beach/water)))
+					has_border |= step_dir
+					T.overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
+
+			// There has to be a concise numerical way to do this but I am too noob.
+			if (watertile == FALSE)
+
 				if ((has_border & NORTH) && (has_border & EAST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHEAST]", "[flooring.icon_base]_edges", NORTHEAST)
+					var/turf/floor/T = get_step(src, NORTHEAST)
+					if  (!istype(src, /turf/floor/winter/grass) && !istype(src, /turf/floor/dirt) && !istype(T, /turf/wall) && !istype(T, /turf/open) && !(istype(T, /turf/floor/dirt) && istype(T, /turf/floor/grass)) && !(istype(T, /turf/floor/grass) && istype(src, /turf/floor/beach)) && !istype(T, /turf/floor/plating) && !(istype(src, /turf/floor/beach/sand) && istype(T, /turf/floor/beach/water)))
+						T.overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHEAST]", "[flooring.icon_base]_edges", NORTHEAST)
 				if ((has_border & NORTH) && (has_border & WEST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHWEST]", "[flooring.icon_base]_edges", NORTHWEST)
+					var/turf/floor/T = get_step(src, NORTHWEST)
+					if  (!istype(src, /turf/floor/winter/grass) && !istype(src, /turf/floor/dirt) && !istype(T, /turf/wall) && !istype(T, /turf/open) && !(istype(T, /turf/floor/dirt) && istype(T, /turf/floor/grass)) && !(istype(T, /turf/floor/grass) && istype(src, /turf/floor/beach)) && !istype(T, /turf/floor/plating) && !(istype(src, /turf/floor/beach/sand) && istype(T, /turf/floor/beach/water)))
+						T.overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHWEST]", "[flooring.icon_base]_edges", NORTHWEST)
 				if ((has_border & SOUTH) && (has_border & EAST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHEAST]", "[flooring.icon_base]_edges", SOUTHEAST)
+					var/turf/floor/T = get_step(src, SOUTHEAST)
+					if  (!istype(src, /turf/floor/winter/grass) && !istype(src, /turf/floor/dirt) && !istype(T, /turf/wall) && !istype(T, /turf/open) && !(istype(T, /turf/floor/dirt) && istype(T, /turf/floor/grass)) && !(istype(T, /turf/floor/grass) && istype(src, /turf/floor/beach)) && !istype(T, /turf/floor/plating) && !(istype(src, /turf/floor/beach/sand) && istype(T, /turf/floor/beach/water)))
+						T.overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHEAST]", "[flooring.icon_base]_edges", SOUTHEAST)
 				if ((has_border & SOUTH) && (has_border & WEST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHWEST]", "[flooring.icon_base]_edges", SOUTHWEST)
+					var/turf/floor/T = get_step(src, SOUTHWEST)
+					if  (!istype(src, /turf/floor/winter/grass) && !istype(src, /turf/floor/dirt) && !istype(T, /turf/wall) && !istype(T, /turf/open) && !(istype(T, /turf/floor/dirt) && istype(T, /turf/floor/grass)) && !(istype(T, /turf/floor/grass) && istype(src, /turf/floor/beach)) && !istype(T, /turf/floor/plating) && !(istype(src, /turf/floor/beach/sand) && istype(T, /turf/floor/beach/water)))
+						T.overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHWEST]", "[flooring.icon_base]_edges", SOUTHWEST)
 
-				if (flooring.flags & TURF_HAS_CORNERS)
+				if (flooring.flags & TURF_HAS_CORNERS && !calcborders)
 					// As above re: concise numerical way to do this.
 					if (!(has_border & NORTH))
 						if (!(has_border & EAST))
 							var/turf/floor/T = get_step(src, NORTHEAST)
-							if (!istype(T) || !T.flooring || T.flooring.name != flooring.name)
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHEAST]", "[flooring.icon_base]_corners", NORTHEAST)
+							if (!istype(T, /turf/wall) && !istype(T, /turf/open) && !T.watertile)
+								T.overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHEAST]", "[flooring.icon_base]_corners", NORTHEAST)
 						if (!(has_border & WEST))
 							var/turf/floor/T = get_step(src, NORTHWEST)
-							if (!istype(T) || !T.flooring || T.flooring.name != flooring.name)
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHWEST]", "[flooring.icon_base]_corners", NORTHWEST)
+							if (!istype(T, /turf/wall) && !istype(T, /turf/open) && !T.watertile)
+								T.overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHWEST]", "[flooring.icon_base]_corners", NORTHWEST)
 					if (!(has_border & SOUTH))
 						if (!(has_border & EAST))
 							var/turf/floor/T = get_step(src, SOUTHEAST)
-							if (!istype(T) || !T.flooring || T.flooring.name != flooring.name)
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHEAST]", "[flooring.icon_base]_corners", SOUTHEAST)
+							if (!istype(T, /turf/wall) && !istype(T, /turf/open) && !T.watertile)
+								T.overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHEAST]", "[flooring.icon_base]_corners", SOUTHEAST)
 						if (!(has_border & WEST))
 							var/turf/floor/T = get_step(src, SOUTHWEST)
-							if (!istype(T) || !T.flooring || T.flooring.name != flooring.name)
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHWEST]", "[flooring.icon_base]_corners", SOUTHWEST)
-
-		else
-			if (isnull(set_update_icon) && (flooring.flags & TURF_HAS_EDGES))
-				for (var/step_dir in cardinal)
-					var/turf/T = get_step(src, step_dir)
-					if (istype(T, /turf/open))
-						has_border |= step_dir
-						overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[step_dir]", "[flooring.icon_base]_edges", step_dir)
-
-				// There has to be a concise numerical way to do this but I am too noob.
-				if ((has_border & NORTH) && (has_border & EAST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHEAST]", "[flooring.icon_base]_edges", NORTHEAST)
-				if ((has_border & NORTH) && (has_border & WEST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[NORTHWEST]", "[flooring.icon_base]_edges", NORTHWEST)
-				if ((has_border & SOUTH) && (has_border & EAST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHEAST]", "[flooring.icon_base]_edges", SOUTHEAST)
-				if ((has_border & SOUTH) && (has_border & WEST))
-					overlays |= get_flooring_overlay("[flooring.icon_base]-edge-[SOUTHWEST]", "[flooring.icon_base]_edges", SOUTHWEST)
-
-				if (flooring.flags & TURF_HAS_CORNERS)
-					// As above re: concise numerical way to do this.
-					if (!(has_border & NORTH))
-						if (!(has_border & EAST))
-							var/turf/floor/T = get_step(src, NORTHEAST)
-							if (istype(T, /turf/open))
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHEAST]", "[flooring.icon_base]_corners", NORTHEAST)
-						if (!(has_border & WEST))
-							var/turf/floor/T = get_step(src, NORTHWEST)
-							if (istype(T, /turf/open))
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[NORTHWEST]", "[flooring.icon_base]_corners", NORTHWEST)
-					if (!(has_border & SOUTH))
-						if (!(has_border & EAST))
-							var/turf/floor/T = get_step(src, SOUTHEAST)
-							if (istype(T, /turf/open))
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHEAST]", "[flooring.icon_base]_corners", SOUTHEAST)
-						if (!(has_border & WEST))
-							var/turf/floor/T = get_step(src, SOUTHWEST)
-							if (istype(T, /turf/open))
-								overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHWEST]", "[flooring.icon_base]_corners", SOUTHWEST)
-
+							if (!istype(T, /turf/wall) && !istype(T, /turf/open) && !T.watertile)
+								T.overlays |= get_flooring_overlay("[flooring.icon_base]-corner-[SOUTHWEST]", "[flooring.icon_base]_corners", SOUTHWEST)
+		calcborders = TRUE
 	if (decals && decals.len)
 		overlays |= decals
 
@@ -120,10 +92,9 @@ var/list/flooring_cache = list()
 			if (F == src)
 				continue
 			F.update_icon()
-
 /turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE)
 	if (!flooring_cache[cache_key])
 		var/image/I = image(icon = flooring.icon, icon_state = icon_base, dir = icon_dir)
-		I.layer = layer
+		I.layer = layer+0.1
 		flooring_cache[cache_key] = I
 	return flooring_cache[cache_key]
