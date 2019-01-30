@@ -1,6 +1,6 @@
 var/list/exterior_turfs = list(/turf/floor/grass,
 							/turf/floor/dirt,
-							/turf/floor/plating/sand,
+							/turf/floor/beach/sand,
 							/turf/floor/plating/concrete,
 							)
 

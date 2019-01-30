@@ -118,7 +118,7 @@
 
 /area/caribbean/nomads/desert
 	name = "Desert"
-	base_turf = /turf/floor/plating/sand/desert
+	base_turf = /turf/floor/beach/sand/desert
 	icon_state = "red3"
 	ambience = list("sound/ambience/desert.ogg")
 /area/caribbean/nomads/river
@@ -143,7 +143,7 @@
 
 /area/caribbean/nomads/snow
 	name = "Snow"
-	base_turf = /turf/floor/plating/snow
+	base_turf = /turf/floor/winter
 	icon_state = "red1"
 
 /area/caribbean/nomads/ice
@@ -191,7 +191,7 @@
 /area/caribbean/desert
 	name = "The Desert"
 	icon_state = "red1"
-	base_turf = /turf/floor/plating/sand/desert
+	base_turf = /turf/floor/beach/sand/desert
 	ambience = list("sound/ambience/desert.ogg")
 /area/caribbean/desert/town
 	name = "Little Creek"
@@ -629,6 +629,6 @@
 	base_turf = /turf/floor/dirt
 
 /area/caribbean/crusader/sand
-	base_turf = /turf/floor/plating/sand
+	base_turf = /turf/floor/beach/sand
 /area/caribbean/arab/sand
-	base_turf = /turf/floor/plating/sand
+	base_turf = /turf/floor/beach/sand

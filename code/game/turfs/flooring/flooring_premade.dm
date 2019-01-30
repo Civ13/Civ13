@@ -74,7 +74,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 3
 	is_diggable = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/flooded
 
 /turf/floor/dirt/winter
 	name = "snowy dirt"
@@ -85,7 +85,7 @@
 	available_snow = 2
 	available_dirt = 0
 	is_diggable = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/snow_dirt
 
 /turf/floor/dirt/burned
 	name = "burned ground"
@@ -94,7 +94,7 @@
 	may_become_muddy = TRUE
 	available_dirt = 1
 	is_diggable = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt
 
 /turf/floor/dirt/underground
 	name = "underground rock"
@@ -143,7 +143,7 @@
 	available_dirt = 2
 	may_become_muddy = FALSE
 	is_diggable = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt
 
 /turf/floor/dirt/jungledirt
 	name = "dirt"
@@ -154,4 +154,4 @@
 	available_dirt = 2
 	may_become_muddy = TRUE
 	is_diggable = TRUE
-	initial_flooring = null
+	initial_flooring = /decl/flooring/dirt
