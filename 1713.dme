@@ -788,5 +788,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_ice_age.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE

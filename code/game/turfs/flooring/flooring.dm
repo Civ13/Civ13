@@ -161,7 +161,7 @@ var/list/flooring_types
 	name = "snowy grass"
 	desc = "Simple snow."
 	icon = 'icons/turf/snow.dmi'
-	icon_base = "grass"
+	icon_base = "snowgrass"
 	has_base_range = 0
 	damage_temperature = T0C+30
 	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
