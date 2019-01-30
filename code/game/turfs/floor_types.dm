@@ -82,17 +82,6 @@
 	name = "Iron Sand"
 	icon_state = "ironsand[rand(1,15)]"
 
-/turf/floor/plating/snow
-	name = "snow"
-	icon = 'icons/turf/snow.dmi'
-	icon_state = "snow"
-	is_diggable = TRUE
-	available_snow = 3
-	initial_flooring = null
-
-/turf/floor/plating/snow/ex_act(severity)
-	return
-
 /turf/floor/grass/jungle
 	name = "jungle grass"
 	overlay_priority = 0
@@ -100,13 +89,24 @@
 	may_become_muddy = TRUE
 	initial_flooring = null
 
+/turf/floor/winter
+	name = "snow"
+	icon = 'icons/turf/snow.dmi'
+	icon_state = "snow"
+	is_diggable = TRUE
+	available_snow = 3
+	initial_flooring = /decl/flooring/snow
+
+/turf/floor/winter/ex_act(severity)
+	return
+
 /turf/floor/winter/grass
 	name = "snowy grass"
 	icon = 'icons/turf/snow.dmi'
 	icon_state = "grass2"
 	is_diggable = TRUE
 	available_snow = 2
-	initial_flooring = null
+	initial_flooring = /decl/flooring/snow
 
 /turf/floor/winter/grass/New()
 	..()
@@ -224,17 +224,7 @@
 /turf/floor/beach/water/ice/salty
 	name = "saltwater ice"
 
-/turf/floor/plating/sand
-	name = "sand"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "sand1"
-	interior = FALSE
-	stepsound = "dirt"
-	is_diggable = TRUE
-	available_sand = 2
-	initial_flooring = /decl/flooring/sand
-
-/turf/floor/plating/sand/desert
+/turf/floor/beach/sand/desert
 	name = "desert sand"
 	icon = 'icons/misc/beach.dmi'
 	icon_state = "desert1"
@@ -242,15 +232,11 @@
 	stepsound = "dirt"
 	is_diggable = TRUE
 	available_sand = 2
-	initial_flooring = null
+	initial_flooring = /decl/flooring/desert
 
-/turf/floor/plating/sand/desert/New()
+/turf/floor/beach/sand/desert/New()
 	..()
 	icon_state = "desert[rand(0,4)]"
-
-/turf/floor/plating/sand/New()
-	..()
-	icon_state = "sand[rand(1, 3)]"
 
 /turf/floor/plating/concrete
 	name = "concrete"

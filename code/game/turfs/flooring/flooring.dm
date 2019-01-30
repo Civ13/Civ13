@@ -53,8 +53,26 @@ var/list/flooring_types
 	icon = 'icons/turf/floors.dmi'
 	icon_base = "dirt"
 	has_base_range = 0
-	damage_temperature = T0C+30
-	flags = TURF_HAS_EDGES |TURF_REMOVE_SHOVEL
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
+
+/decl/flooring/dust
+	name = "dry dirt"
+	desc = "Simple dry dirt."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "dust"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
+
+/decl/flooring/flooded
+	name = "flooded plains dirt"
+	desc = "The dirt left after a flood recesses."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "flood_dirt"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
 
 /decl/flooring/water
 	name = "water"
@@ -117,6 +135,25 @@ var/list/flooring_types
 	icon_base = "sand"
 	has_base_range = 0
 	damage_temperature = T0C+200
+	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
+
+/decl/flooring/desert
+	name = "desert sand"
+	desc = "Simple desert sand."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "desert"
+	has_base_range = 0
+	damage_temperature = T0C+200
+	flags = TURF_HAS_EDGES
+
+
+/decl/flooring/snow
+	name = "snow"
+	desc = "Simple snow."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "snow"
+	has_base_range = 0
+	damage_temperature = T0C+30
 	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
 
 /decl/flooring/carpet
