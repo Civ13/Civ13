@@ -451,20 +451,20 @@ obj/structure/anvil/New()
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 
-			if (choice2 == "Katana (15)")
-				if (steel_amt >= 15)
-					user << "You begin crafting a Katana..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && steel_amt >= 15)
-						user << "You craft a Katana."
-						steel_amt -= 15
-						if (steel_amt <= 0)
-							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/katana(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more steel to make this!</span>"
+		if (choice2 == "Katana (15)")
+			if (steel_amt >= 15)
+				user << "You begin crafting a Katana..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 15)
+					user << "You craft a Katana."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/katana(user.loc)
 					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
 	else if (iron_amt > 0)
 		var/list/display = list("Swords", "Armor", "Cancel")
 		if (map.ordinal_age == 5)
