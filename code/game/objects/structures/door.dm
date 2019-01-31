@@ -20,6 +20,8 @@
 
 	var/health = 100
 	var/initial_health = 100
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/simple_door/fire_act(temperature)
 	var/dmg = round((temperature - 365)/20)

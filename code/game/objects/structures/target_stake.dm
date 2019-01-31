@@ -7,7 +7,8 @@
 	density = TRUE
 	w_class = 5
 	var/health = 100
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/target_practice/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
 
 	if (istype(W, /obj/item/weapon/material))

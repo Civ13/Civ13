@@ -124,7 +124,7 @@
 			return
 		else
 			if (map.custom_civs[U.civilization][4] != null)
-				usr << "<span class='danger'>There already is a Leader of the faction. He must transfer the leadership of be removed first.</span>"
+				usr << "<span class='danger'>There already is a Leader of the faction. He must transfer the leadership or be removed first.</span>"
 				return
 
 			else if (map.custom_civs[U.civilization][4] == null)

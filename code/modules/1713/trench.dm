@@ -32,7 +32,7 @@ var/list/global/floor_cache = list()
 	icon_base = "trench"
 	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 
-/turf/floor/plating/dirt
+/turf/floor/dirt
 	var/trench_stage = 0
 	available_dirt = 2
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
@@ -106,69 +106,6 @@ var/list/global/floor_cache = list()
 	//over_OS_darkness.layer = 25
 	//overlays += over_OS_darkness
 
-/turf/floor/plating/dirt/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/shovel/trench))
-		var/obj/item/weapon/shovel/trench/S = C
-		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
-			return
-		trench_stage++
-		switch(trench_stage)
-			if(1)
-				//icon_state = ""
-				visible_message("<span class = 'notice'>[user] digs.</span>")
-				user << ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>")
-				return
-			if(2)
-				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-				ChangeTurf(/turf/floor/trench)
-		return
-	..()
-
-/turf/floor/plating/beach/sand
-	var/trench_stage = 0
-/turf/floor/plating/beach/sand/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/shovel/trench))
-		var/obj/item/weapon/shovel/trench/S = C
-		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
-			return
-		trench_stage++
-		switch(trench_stage)
-			if(1)
-				//icon_state = ""
-				visible_message("<span class = 'notice'>[user] digs.</span>")
-				user << ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>")
-				return
-			if(2)
-				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-				ChangeTurf(/turf/floor/trench)
-		return
-	..()
-
-/turf/floor/plating/sand
-	var/trench_stage = 0
-/turf/floor/plating/sand/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype(C, /obj/item/weapon/shovel/trench))
-		var/obj/item/weapon/shovel/trench/S = C
-		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
-			return
-		trench_stage++
-		switch(trench_stage)
-			if(1)
-				//icon_state = ""
-				visible_message("<span class = 'notice'>[user] digs.</span>")
-				user << ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>")
-				return
-			if(2)
-				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-				ChangeTurf(/turf/floor/trench)
-		return
-	..()
-
-/turf/floor/dirt
-	var/trench_stage = 0
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/shovel/trench))
 		var/obj/item/weapon/shovel/trench/S = C
@@ -188,24 +125,64 @@ var/list/global/floor_cache = list()
 		return
 	..()
 
-/turf/floor/plating/grass/attackby(obj/item/C as obj, mob/user as mob)
+/turf/floor/beach/sand
+	var/trench_stage = 0
+/turf/floor/beach/sand/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype(C, /obj/item/weapon/shovel/trench))
+		var/obj/item/weapon/shovel/trench/S = C
+		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
+		if (!do_after(user, (10 - S.dig_speed)*10, src))
+			return
+		trench_stage++
+		switch(trench_stage)
+			if(1)
+				//icon_state = ""
+				visible_message("<span class = 'notice'>[user] digs.</span>")
+				user << ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>")
+				return
+			if(2)
+				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
+				ChangeTurf(/turf/floor/trench)
+		return
+	..()
+
+/turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype(C, /obj/item/weapon/shovel/trench))
+		var/obj/item/weapon/shovel/trench/S = C
+		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
+		if (!do_after(user, (10 - S.dig_speed)*10, src))
+			return
+		trench_stage++
+		switch(trench_stage)
+			if(1)
+				//icon_state = ""
+				visible_message("<span class = 'notice'>[user] digs.</span>")
+				user << ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>")
+				return
+			if(2)
+				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
+				ChangeTurf(/turf/floor/trench)
+		return
+	..()
+
+/turf/floor/grass/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/shovel/trench))
 		var/obj/item/weapon/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to remove grass layer.</span>")
 		if (!do_after(user, (10 - S.dig_speed)*10, src))
 			return
 		visible_message("<span class = 'notice'>[user] removes grass layer.</span>")
-		ChangeTurf(/turf/floor/plating/dirt)
+		ChangeTurf(/turf/floor/dirt)
 		return
 	..()
 
-/turf/floor/plating/snow/attackby(obj/item/C as obj, mob/user as mob)
+/turf/floor/winter/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/shovel/trench))
 		var/obj/item/weapon/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to remove snow layer.</span>")
 		if (!do_after(user, (10 - S.dig_speed)*10, src))
 			return
 		visible_message("<span class = 'notice'>[user] removes snow layer.</span>")
-		ChangeTurf(/turf/floor/plating/dirt)
+		ChangeTurf(/turf/floor/dirt)
 		return
 	..()

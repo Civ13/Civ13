@@ -40,22 +40,140 @@ var/list/flooring_types
 
 /decl/flooring/grass
 	name = "grass"
-	desc = "Do they smoke grass out in space, Bowie? Or do they smoke AstroTurf?"
-	icon = 'icons/turf/flooring/grass.dmi'
+	desc = "Simple grass."
+	icon = 'icons/turf/floors.dmi'
 	icon_base = "grass"
 	has_base_range = 3
 	damage_temperature = T0C+80
-	flags = TURF_REMOVE_SHOVEL
+	flags = TURF_HAS_EDGES
 
-/decl/flooring/asteroid
-	name = "coarse sand"
-	desc = "Gritty and unpleasant."
-	icon = 'icons/turf/flooring/asteroid.dmi'
-	icon_base = "asteroid"
-	flags = TURF_HAS_EDGES | TURF_REMOVE_SHOVEL
-	build_type = null
+/decl/flooring/dirt
+	name = "dirt"
+	desc = "Simple dirt."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "dirt"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/dust
+	name = "dry dirt"
+	desc = "Simple dry dirt."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "dust"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/flooded
+	name = "flooded plains dirt"
+	desc = "The dirt left after a flood recesses."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "flood_dirt"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/water
+	name = "water"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/water_deep
+	name = "deep water"
+	desc = "Deep water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seadeep"
+	has_base_range = 0
+	damage_temperature = T0C+8000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/water_swamp
+	name = "swamp water"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow_swamp"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/water_jungle1
+	name = "jungle river water"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow_jungle1"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/water_jungle2
+	name = "jungle flooded land"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow_jungle2"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/sand
+	name = "sand"
+	desc = "Simple sand."
+	icon = 'icons/turf/floors.dmi'
+	icon_base = "sand"
+	has_base_range = 0
+	damage_temperature = T0C+200
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/sand_beach
+	name = "sand"
+	desc = "Simple sand."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "sand"
+	has_base_range = 0
+	damage_temperature = T0C+200
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/desert
+	name = "desert sand"
+	desc = "Simple desert sand."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "desert"
+	has_base_range = 0
+	damage_temperature = T0C+200
+	flags = TURF_HAS_EDGES
 
 
+/decl/flooring/snow
+	name = "snow"
+	desc = "Simple snow."
+	icon = 'icons/turf/snow.dmi'
+	icon_base = "snow"
+	has_base_range = 0
+	damage_temperature = T0C+30
+	flags = TURF_HAS_EDGES
+
+
+/decl/flooring/snow_grass
+	name = "snowy grass"
+	desc = "Simple snow."
+	icon = 'icons/turf/snow.dmi'
+	icon_base = "snowgrass"
+	has_base_range = 0
+	damage_temperature = T0C+30
+	flags = TURF_HAS_EDGES
+
+/decl/flooring/snow_dirt
+	name = "snowy dirt"
+	desc = "Simple snow."
+	icon = 'icons/turf/snow.dmi'
+	icon_base = "dirt"
+	has_base_range = 0
+	damage_temperature = T0C+30
+	flags = TURF_HAS_EDGES
 /decl/flooring/carpet
 	name = "carpet"
 	desc = "Imported and comfy."
@@ -63,66 +181,6 @@ var/list/flooring_types
 	icon_base = "carpet"
 	damage_temperature = T0C+200
 	flags = TURF_HAS_EDGES | TURF_HAS_CORNERS | TURF_REMOVE_CROWBAR | TURF_CAN_BURN | SMOOTH_ONLY_WITH_ITSELF
-
-/decl/flooring/tiling
-	name = "floor"
-	desc = "Scuffed from the passage of countless greyshirts."
-	icon = 'icons/turf/flooring/tiles.dmi'
-	icon_base = "steel"
-	has_damage_range = 2 //RECHECK THIS. MAYBE MISTAKE
-	damage_temperature = T0C+1400
-	flags = TURF_REMOVE_CROWBAR | TURF_CAN_BREAK | TURF_CAN_BURN
-	can_paint = TRUE
-
-/decl/flooring/tiling/new_tile
-	name = "floor"
-	icon_base = "tile_full"
-	flags = TURF_CAN_BREAK | TURF_CAN_BURN | TURF_IS_FRAGILE
-	build_type = null
-
-/decl/flooring/tiling/new_tile/cargo_one
-//	name = "cargo one"
-	icon_base = "cargo_one_full"
-
-/decl/flooring/tiling/new_tile/kafel
-//	name = "kafel"
-	icon_base = "kafel_full"
-
-/decl/flooring/tiling/new_tile/techmaint
-//	name = "techmaint"
-	icon_base = "techmaint"
-
-/decl/flooring/tiling/new_tile/monofloor
-//	name = "monofloor"
-	icon_base = "monofloor"
-
-/decl/flooring/tiling/new_tile/monotile
-//	name = "monotile"
-	icon_base = "monotile"
-
-/decl/flooring/tiling/new_tile/steel_grid
-//	name = "steelgrid"
-	icon_base = "steel_grid"
-
-/decl/flooring/tiling/new_tile/steel_ridged
-//	name = "steelridged"
-	icon_base = "steel_ridged"
-
-
-/decl/flooring/tiling/steel
-	name = "floor"
-	icon_base = "steel"
-
-/decl/flooring/tiling/white
-	name = "floor"
-	desc = "How sterile."
-	icon_base = "white"
-
-/decl/flooring/tiling/dark
-	name = "floor"
-	desc = "How ominous."
-	icon_base = "dark"
-
 
 /decl/flooring/wood
 	name = "wooden floor"

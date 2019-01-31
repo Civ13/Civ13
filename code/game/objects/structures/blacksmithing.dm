@@ -7,7 +7,8 @@
 	anchored = TRUE
 	var/iron_amt = 0
 	var/steel_amt = 0
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 obj/structure/anvil/New()
 	..()
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."
@@ -78,9 +79,9 @@ obj/structure/anvil/New()
 				display2 = list("Small Sword (10)", "Spadroon (15)", "Cancel")
 		else if (choice == "Guns")
 			if (map.ordinal_age == 5)
-				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (30)", "Arisaka Type 35 (33)", "Murata Type 22 (30)", "Pump-Action Shotgun (30)","Nambu Type A (25)", "Borchardt C93 (25)", "Mauser C96 (25)", "Luger P08 (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", "Cancel")
+				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (30)", "Arisaka Type 35 (33)", "Murata Type 22 (30)", "Pump-Action Shotgun (30)","Nambu Type A (25)", "Borchardt C93 (25)", "Mauser C96 (25)", "Luger P08 (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", ,"Gewehr 98 (35)", "Gewehr 71 (30)", "Cancel")
 			else if (map.ordinal_age == 4)
-				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)","Cancel")
+				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (35)", "Cancel")
 			else
 				display2 = list("Cancel")
 		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
@@ -181,6 +182,36 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/gun/projectile/shotgun/coachgun(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Gewehr 71 (30)")
+			if (steel_amt >= 30)
+				user << "You begin crafting a Gewehr 71..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 30)
+					user << "You craft a Gewehr 71."
+					steel_amt -= 30
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/gewehr71(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Gewehr 98 (35)")
+			if (steel_amt >= 35)
+				user << "You begin crafting a Gewehr 98..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 35)
+					user << "You craft a Gewehr 98."
+					steel_amt -= 35
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/gewehr98(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -421,24 +452,24 @@ obj/structure/anvil/New()
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 
-			if (choice2 == "Katana (15)")
-				if (steel_amt >= 15)
-					user << "You begin crafting a Katana..."
-					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-					if (do_after(user,150,src) && steel_amt >= 15)
-						user << "You craft a Katana."
-						steel_amt -= 15
-						if (steel_amt <= 0)
-							icon_state = "anvil1"
-						new/obj/item/weapon/material/sword/katana(user.loc)
-						return
-				else
-					user << "<span class='notice'>You need more steel to make this!</span>"
+		if (choice2 == "Katana (15)")
+			if (steel_amt >= 15)
+				user << "You begin crafting a Katana..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 15)
+					user << "You craft a Katana."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/katana(user.loc)
 					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
 	else if (iron_amt > 0)
 		var/list/display = list("Swords", "Armor", "Cancel")
 		if (map.ordinal_age == 5)
-			display = list("Cancel")
+			display = list("Armor", "Cancel")
 		else if (map.ordinal_age == 4)
 			display = list("Swords","Cancel")
 		else if (map.ordinal_age == 3)
@@ -667,6 +698,9 @@ obj/structure/anvil/New()
 				return
 		else if (choice == "Armor")
 			var/list/display4 = list("Cancel")
+			if (map.ordinal_age >= 4)
+				display4 = list("Picklehaube (7)", "Pith (7)", "Cancel")
+
 			if (map.ordinal_age >= 2)
 				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Cancel")
 			else
@@ -852,6 +886,36 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/head/helmet/medieval(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice4 == "Picklehaube (7)")
+				if (steel_amt >= 7)
+					user << "You begin crafting the picklehaube..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && steel_amt >= 7)
+						user << "You craft the picklehaube."
+						steel_amt -= 7
+						if (steel_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/modern/pickelhaube(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice4 == "Pith (7)")
+				if (steel_amt >= 7)
+					user << "You begin crafting the pith helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && steel_amt >= 7)
+						user << "You craft the pith helmet."
+						steel_amt -= 7
+						if (steel_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/modern/pith(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"

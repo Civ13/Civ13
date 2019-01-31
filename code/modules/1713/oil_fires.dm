@@ -7,7 +7,8 @@
 	var/counter = 1
 	var/timeout = 0
 	flammable = TRUE
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /obj/structure/oil_spring/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (counter <= 0)
 		user << "<span class='warning'>\The [src] is dry!</span>"
@@ -121,7 +122,7 @@
 	layer = TURF_LAYER+2.2
 	anchored = TRUE
 	density = FALSE
-	var/timer = 170
+	var/timer = 180
 	var/runonce = FALSE
 /obj/effect/burning_oil/New()
 	..()
@@ -177,7 +178,7 @@
 			OS.counter = 0
 
 //burn floors
-	if (istype(get_turf(src), /turf/floor/plating/grass))
+	if (istype(get_turf(src), /turf/floor/grass))
 		var/turf/T = get_turf(src)
 		T.ChangeTurf(/turf/floor/dirt/burned)
 	else if (istype(get_turf(src), /turf/floor/wood))
@@ -187,18 +188,18 @@
 //bordering tiles
 	for (var/obj/effect/decal/cleanable/blood/OL in orange(1, src))
 		if (istype(OL, /obj/effect/decal/cleanable/blood/oil))
-			if (prob(15))
+			if (prob(35))
 				new/obj/effect/burning_oil(OL.loc)
 		if (istype(OL, /obj/effect/decal/cleanable/blood/tracks) && OL.color == "#030303")
-			if (prob(15))
+			if (prob(35))
 				new/obj/effect/burning_oil(OL.loc)
 
-	for (var/turf/floor/plating/grass/GR in orange(1, src))
-		if (prob(6))
+	for (var/turf/floor/grass/GR in orange(1, src))
+		if (prob(10))
 			new/obj/effect/burning_oil(GR)
 
 	for (var/turf/floor/wood/WF in orange(1, src))
-		if (prob(6))
+		if (prob(21))
 			new/obj/effect/burning_oil(WF)
 
 //remove duplicates

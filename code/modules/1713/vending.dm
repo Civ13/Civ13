@@ -80,8 +80,8 @@
 	products = list(
 		/obj/item/clothing/shoes/japboots = 15,
 		/obj/item/clothing/under/japuni = 15,
-		/obj/item/clothing/suit/storage/armycoat/japcoat = 15,
-		/obj/item/clothing/suit/storage/armycoat/japcoat2 = 15,
+		/obj/item/clothing/suit/storage/coat/japcoat = 15,
+		/obj/item/clothing/suit/storage/coat/japcoat2 = 15,
 		/obj/item/clothing/suit/armor/japmisc/japvest = 5,
 		/obj/item/clothing/head/japcap = 15,
 		/obj/item/clothing/head/japcap2 = 15,
@@ -94,7 +94,7 @@
 	products = list(
 		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
 		/obj/item/clothing/under/rusuni = 15,
-		/obj/item/clothing/suit/storage/armycoat/ruscoat = 15,
+		/obj/item/clothing/suit/storage/coat/ruscoat = 15,
 		/obj/item/clothing/head/ruscap = 15,
 
 	)

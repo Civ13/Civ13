@@ -108,6 +108,8 @@
 	var/area/oldarea
 	var/area/newarea
 	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/tent/New()
 	..()
@@ -142,8 +144,7 @@
 	if (do_after(usr, 35, src))
 		visible_message("[usr] finishes folding the [src].","You finish folding the [src].")
 		new/obj/item/weapon/tent(src.loc)
-		if (oldarea.location == AREA_INSIDE)
-			new oldarea(src.loc)
+		new oldarea(src.loc)
 		for(var/obj/structure/tent/T in range(1,src))
 			T.update_icon()
 		qdel(src)

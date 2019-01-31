@@ -27,25 +27,6 @@
 	universal_understand = TRUE
 	mob_size = MOB_SMALL
 
-/mob/living/simple_animal/rabbit/Life()
-	..()
-
-	if (!ckey && stat == CONSCIOUS && prob(1))
-		stat = UNCONSCIOUS
-		icon_state = "rabbit[body_color]_dead"
-		wander = FALSE
-		speak_chance = FALSE
-		//snuffles
-	else if (stat == UNCONSCIOUS)
-		if (ckey || prob(5))
-			stat = CONSCIOUS
-			icon_state = "rabbit[body_color]"
-			wander = TRUE
-
-/mob/living/simple_animal/rabbit/lay_down()
-	..()
-	icon_state = resting ? "rabbit[body_color]_dead" : "rabbit[body_color]"
-
 /mob/living/simple_animal/rabbit/New()
 	..()
 

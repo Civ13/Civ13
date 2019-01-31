@@ -341,6 +341,70 @@
 	else
 		icon_state = "arisaka30"
 
+/obj/item/weapon/gun/projectile/boltaction/gewehr71
+	name = "Gewehr71"
+	desc = "A german bolt-action rifle chambered in 7.65x53mm Mauser ammunition."
+	icon_state = "gewehr71"
+	item_state = "gewehr71"
+	caliber = "a765x53"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a765x53
+	magazine_type = /obj/item/ammo_magazine/gewehr71
+	bolt_safety = FALSE
+	effectiveness_mod = 0.85
+	value = 90
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 10
+	throwforce = 20
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr71/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "gewehr71_open") //closed
+		icon_state = "gewehr71"
+	else if (icon_state == "gewehr71")
+		return
+	else
+		icon_state = "gewehr71"
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98
+	name = "Gewehr98"
+	desc = "A german bolt-action rifle chambered in 7.92x57mm Mauser ammunition."
+	icon_state = "gewehr98"
+	item_state = "gewehr98"
+	caliber = "a792x57"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a792x57
+	magazine_type = /obj/item/ammo_magazine/gewehr98
+	bolt_safety = FALSE
+	effectiveness_mod = 0.85
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "gewehr98_open") //closed
+		icon_state = "gewehr98"
+	else if (icon_state == "gewehr98")
+		return
+	else
+		icon_state = "gewehr98"
+
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka35
 	name = "Arisaka Type 35"

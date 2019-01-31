@@ -12,6 +12,8 @@
 	var/destroyed = FALSE
 	var/hitsound = 'sound/effects/grillehit.ogg'
 	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = FALSE
 /obj/structure/grille/ex_act(severity)
 	qdel(src)
 

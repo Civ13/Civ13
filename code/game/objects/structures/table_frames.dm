@@ -20,7 +20,8 @@
 	var/framestack = /obj/item/stack/rods
 	var/framestackamount = 2
 	flammable = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/table_frame/attackby(obj/item/I, mob/user, params)
 	if (istype(I, /obj/item/weapon/wrench))
 		user << "<span class='notice'>You start disassembling [src]...</span>"

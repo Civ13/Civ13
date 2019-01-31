@@ -23,6 +23,50 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/gewehr71
+	name = "Clip (7.65x53mm)"
+	icon_state = "kclip"
+	caliber = "a765x53"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a765x53
+	max_ammo = 5
+	weight = 0.04
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/gewehr71box
+	name = "magazine box (7.65x53mm)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a765x53"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a765x53
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
+/obj/item/ammo_magazine/gewehr98
+	name = "Clip (7.92x57mm)"
+	icon_state = "kclip"
+	caliber = "a792x57"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a792x57
+	max_ammo = 5
+	weight = 0.04
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/gewehr98box
+	name = "magazine box (7.92x57mm)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a792x57"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a792x57
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/sharps
 	name = "ammo box (.45-70 Government)"
 	icon_state = "oldbox"

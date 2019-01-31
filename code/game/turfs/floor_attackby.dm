@@ -56,8 +56,8 @@
 	if (!C || !user)
 		return FALSE
 
-	if (istype(src, /turf/floor/plating/beach/water))
-		var/turf/floor/plating/beach/water/WT = src
+	if (istype(src, /turf/floor/beach/water))
+		var/turf/floor/beach/water/WT = src
 		if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
 			var/obj/item/weapon/reagent_containers/RG = C
 			if (istype(RG) && RG.is_open_container())
@@ -111,7 +111,7 @@
 					new /obj/item/weapon/snowwall(T)
 					if (T.available_snow <= 0)
 						if (istype(T, /turf/floor/winter/grass))
-							T.ChangeTurf(/turf/floor/plating/grass/wild)
+							T.ChangeTurf(/turf/floor/grass)
 						else if (istype(T, /turf/floor/dirt/winter))
 							T.ChangeTurf(/turf/floor/dirt)
 
@@ -135,7 +135,7 @@
 					H.shoveling_dirt = FALSE
 			else
 				user << "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>"
-		else if (istype(T, /turf/floor/plating/beach/sand) && istype(H) && !H.shoveling_sand)
+		else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling_sand)
 			if (T.available_sand >= 1)
 				H.shoveling_sand = TRUE
 				visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
@@ -534,7 +534,7 @@
 			return
 	else if (istype(C, /obj/item/weapon/plough))
 		var/turf/T = get_turf(src)
-		if (istype(T, /turf/floor/plating/grass/wild/jungle))
+		if (istype(T, /turf/floor/grass/jungle))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
 		if (istype(T, /turf/floor/dirt/burned))
@@ -543,7 +543,7 @@
 		if (istype(T, /turf/floor/dirt/jungledirt))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
-		if (istype(T, /turf/floor/plating/grass) && !istype(T, /turf/floor/plating/grass/wild/jungle))
+		if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return

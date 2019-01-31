@@ -10,6 +10,8 @@
 	var/sum_m = 0
 	var/sum_h = 0
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
 
 /obj/structure/bookcase/initialize()
 	for (var/obj/item/I in loc)

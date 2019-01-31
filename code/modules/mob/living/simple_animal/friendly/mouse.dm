@@ -34,30 +34,6 @@
 	can_pull_size = TRUE
 	can_pull_mobs = MOB_PULL_NONE
 
-/mob/living/simple_animal/mouse/Life()
-	..()
-
-	if (!stat && prob(speak_chance))
-		for (var/mob/M in view())
-			M << 'sound/effects/mousesqueek.ogg'
-
-	if (!ckey && stat == CONSCIOUS && prob(1))
-		stat = UNCONSCIOUS
-		icon_state = "mouse_[body_color]_sleep"
-		wander = FALSE
-		speak_chance = FALSE
-		//snuffles
-	else if (stat == UNCONSCIOUS)
-		if (ckey || prob(5))
-			stat = CONSCIOUS
-			icon_state = "mouse_[body_color]"
-			wander = TRUE
-		else if (prob(5))
-			audible_emote("snuffles.")
-
-/mob/living/simple_animal/mouse/lay_down()
-	..()
-	icon_state = resting ? "mouse_[body_color]_sleep" : "mouse_[body_color]"
 
 /mob/living/simple_animal/mouse/New()
 	..()

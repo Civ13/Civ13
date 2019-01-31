@@ -67,7 +67,7 @@
 	var/nearbyObjects = range(max_range,src)
 	var/list/turf/emptyTurfs = new
 	for(var/turf/T in nearbyObjects)
-		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/plating/beach/water/deep))
+		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water/deep))
 			continue //bad turf
 
 		emptyTurfs += T

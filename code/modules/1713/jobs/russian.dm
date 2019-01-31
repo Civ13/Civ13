@@ -28,7 +28,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni, slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/armycoat/rusoffcoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/rusoffcoat(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
@@ -73,7 +73,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/armycoat/rusoffcoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/rusoffcoat(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
@@ -114,7 +114,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/armycoat/rusoffcoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/rusoffcoat(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
@@ -157,7 +157,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/armycoat/ruscoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
@@ -200,7 +200,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/armycoat/ruscoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
 
