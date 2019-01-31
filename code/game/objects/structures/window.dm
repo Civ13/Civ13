@@ -19,7 +19,8 @@
 	var/shardtype = /obj/item/weapon/material/shard
 	var/glasstype = null // Set this in subtypes. Null is assumed strange or otherwise impossible to dismantle, such as for shuttle glass.
 	var/silicate = FALSE // number of units of silicate
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/window/examine(mob/user)
 	. = ..(user)
 
@@ -229,7 +230,7 @@
 
 	if (W.flags & NOBLUDGEON) return
 
-	if (istype(W, /obj/item/weapon/hammer))
+	if (istype(W, /obj/item/weapon/wrench))
 		if (reinf && state >= 1)
 			state = 3 - state
 			update_nearby_icons()
@@ -247,7 +248,7 @@
 		state = TRUE - state
 		playsound(loc, 'sound/items/Crowbar.ogg', 75, TRUE)
 		user << (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>")
-	else if (istype(W, /obj/item/weapon/wrench) && !anchored && (!state || !reinf))
+	else if (istype(W, /obj/item/weapon/hammer) && !anchored && (!state || !reinf))
 		if (!glasstype)
 			user << "<span class='notice'>You're not sure how to dismantle \the [src] properly.</span>"
 		else
@@ -413,6 +414,8 @@
 	anchored = TRUE
 	var/health = 20
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
 
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/material/glass))

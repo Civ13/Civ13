@@ -4,7 +4,8 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "loom"
 	flammable = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/loom/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/stack/material/cotton))
 		H.visible_message("You start to produce the cloth.")
@@ -23,7 +24,8 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "flour_mill"
 	flammable = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/mill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
 		H.visible_message("You start to mill the [W.name].")
@@ -46,6 +48,8 @@
 	var/stage = 0
 	var/obj_type = /obj/item/weapon/reagent_containers/food/snacks/rawcutlet
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
 
 /obj/structure/dehydrator/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (filled >= 4)
@@ -295,6 +299,8 @@
 	anchored = TRUE
 	var/obj/structure/oil_spring/base = null
 	var/list/barrel = list()
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/oilwell/New()
 	..()
@@ -367,6 +373,8 @@
 	var/list/base = list()
 	var/list/copy = list()
 	var/copying = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/printingpress/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper))

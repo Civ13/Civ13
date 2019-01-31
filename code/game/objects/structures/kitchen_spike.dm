@@ -12,7 +12,8 @@
 	var/occupied
 	var/meat_type
 	var/victim_name = "corpse"
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/kitchenspike/attackby(obj/item/weapon/grab/G as obj, mob/user as mob)
 	if (!istype(G, /obj/item/weapon/grab) || !G.affecting)
 		return

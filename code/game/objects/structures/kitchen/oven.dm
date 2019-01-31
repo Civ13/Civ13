@@ -10,6 +10,8 @@
 	var/on = FALSE
 	var/max_space = 7
 	var/fuel = 0
+	not_movable = FALSE
+	not_disassemblable = FALSE
 
 /obj/structure/oven/update_icon()
 	if (on)
@@ -226,6 +228,8 @@
 	var/iron = 0
 	var/copper = 0
 	var/tin = 0
+	not_movable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/furnace/update_icon()
 	if (on)

@@ -9,6 +9,8 @@
 	opacity = TRUE
 	density = FALSE
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/curtain/open
 	icon_state = "open"

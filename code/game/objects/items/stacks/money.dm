@@ -88,7 +88,8 @@
 	var/storedvalue = 0
 	var/faction = null
 	var/health = 200
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/oil_deposits/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(W.damtype)
@@ -145,7 +146,8 @@
 	var/prevent = FALSE
 	var/faction1val = 0
 	var/faction2val = 0
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /obj/structure/carriage/New()
 	..()
 	desc = "West Side: [faction1val]. East Side: [faction2val]."
@@ -183,6 +185,8 @@
 	flammable = FALSE
 	var/storedvalue = 0
 	var/prevent = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/carriage_tdm/New()
 	..()

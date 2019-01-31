@@ -8,6 +8,8 @@
 	var/maxhealth = 100
 	layer = 3.2
 	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /*
 /obj/structure/wild/New()
 	..()*/

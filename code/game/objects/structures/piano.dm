@@ -22,7 +22,8 @@
 	var/edit = TRUE
 	var/repeat = FALSE
 	flammable = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/piano/New()
 	processing_objects += src
 

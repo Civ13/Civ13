@@ -17,6 +17,8 @@
 	//var/RightSide = list(0,0,0)
 	var/check = FALSE
 	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/railing/New(loc, constructed=0)
 	..()
@@ -161,7 +163,7 @@
 
 /obj/structure/railing/attackby(obj/item/W as obj, mob/user as mob)
 	// Dismantle
-	if (istype(W, /obj/item/weapon/wrench) && !anchored)
+	if (istype(W, /obj/item/weapon/hammer) && !anchored)
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		if (do_after(user, 20, src))
 			user.visible_message("<span class='notice'>\The [user] dismantles \the [src].</span>", "<span class='notice'>You dismantle \the [src].</span>")
@@ -172,8 +174,8 @@
 
 
 	// Install
-	if (istype(W, /obj/item/weapon/hammer))
-		user.visible_message(anchored ? "<span class='notice'>\The [user] begins unscrew \the [src].</span>" : "<span class='notice'>\The [user] begins fasten \the [src].</span>" )
+	if (istype(W, /obj/item/weapon/wrench))
+		user.visible_message(anchored ? "<span class='notice'>\The [user] begins unfasten \the [src].</span>" : "<span class='notice'>\The [user] begins fasten \the [src].</span>" )
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		if (do_after(user, 10, src))
 			user << (anchored ? "<span class='notice'>You have unfastened \the [src] from the floor.</span>" : "<span class='notice'>You have fastened \the [src] to the floor.</span>")

@@ -14,7 +14,8 @@
 	bound_height = 64
 	bound_width = 32
 	anchored = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src

@@ -7,7 +7,8 @@
 	anchored = TRUE
 	var/iron_amt = 0
 	var/steel_amt = 0
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 obj/structure/anvil/New()
 	..()
 	desc = "A heavy iron anvil. The blacksmith's main work tool. It has [iron_amt] hot iron bars on it."

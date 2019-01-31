@@ -11,7 +11,8 @@
 	var/cistern = FALSE			//if the cistern bit is open
 	var/w_items = FALSE			//the combined w_class of all the items in the cistern
 	var/mob/living/swirlie = null	//the mob being given a swirlie
-
+	not_movable = TRUE
+	not_disassemblable = FALSE
 /obj/structure/toilet/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -125,6 +126,8 @@
 	var/watertemp = "normal"	//freezing, normal, or boiling
 	var/is_washing = FALSE
 	var/list/temperature_settings = list("normal" = 310, "boiling" = T0C+100, "freezing" = T0C)
+	not_movable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/shower/New()
 	..()
@@ -346,6 +349,8 @@
 	var/mosquito_limit = 2
 	var/volume = 2000
 	var/max_volume = 2000
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/sink/New()
 	..()

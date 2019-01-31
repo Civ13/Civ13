@@ -31,7 +31,8 @@
 	var/flipped = FALSE // WIP?
 	var/health = 100
 	throwpass = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/table/New()
 	..()
 	for (var/obj/structure/table/T in loc)
@@ -305,24 +306,20 @@
 		tablepush(I, user)
 		return
 
-	if (istype(I, /obj/item/weapon/hammer))
-		table_destroy(2, user)
+	if (istype(I, /obj/item/weapon/hammer) || istype(I, /obj/item/weapon/wrench))
+		..()
 		return
+	else
+		user.drop_item(loc)
+		playsound(loc, I.dropsound, 100, TRUE)
 
-	if (istype(I, /obj/item/weapon/wrench))
-		table_destroy(3, user)
-		return
-
-	user.drop_item(loc)
-	playsound(loc, I.dropsound, 100, TRUE)
-
-	//Center the icon where the user clicked if we can.
-	var/list/click_params = params2list(params)
-	if (!click_params || !click_params["icon-x"] || !click_params["icon-y"])
-		return
-	//Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
-	I.pixel_x = Clamp(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
-	I.pixel_y = Clamp(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
+		//Center the icon where the user clicked if we can.
+		var/list/click_params = params2list(params)
+		if (!click_params || !click_params["icon-x"] || !click_params["icon-y"])
+			return
+		//Clamp it so that the icon never moves more than 16 pixels in either direction (thus leaving the table turf)
+		I.pixel_x = Clamp(text2num(click_params["icon-x"]) - 16, -(world.icon_size/2), world.icon_size/2)
+		I.pixel_y = Clamp(text2num(click_params["icon-y"]) - 16, -(world.icon_size/2), world.icon_size/2)
 
 /*
  * TABLE DESTRUCTION/DECONSTRUCTION

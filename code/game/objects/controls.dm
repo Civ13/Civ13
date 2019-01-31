@@ -8,6 +8,9 @@
 	var/cooldown = 0
 	var/distance = 6
 	density = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/gatecontrol/sandstone
 	name = "gate control"
 
@@ -70,6 +73,8 @@
 	density = TRUE
 	var/health = 600
 	var/maxhealth = 600
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/gate/open
 	name = "gate"

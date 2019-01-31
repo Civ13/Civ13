@@ -11,6 +11,8 @@
 	density = TRUE
 	anchored = TRUE
 	var/done = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/researchdesk/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (!map.civilizations || map.ID == MAP_CIVILIZATIONS)

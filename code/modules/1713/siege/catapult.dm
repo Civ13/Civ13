@@ -15,6 +15,8 @@
 	bound_width = 32
 	anchored = TRUE
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/catapult/New()
 	..()
@@ -59,6 +61,8 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
+	else
+		..()
 
 
 /obj/structure/catapult/interact(var/mob/m)
