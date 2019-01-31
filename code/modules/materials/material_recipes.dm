@@ -312,10 +312,10 @@ var/list/engineer_exclusive_recipe_types = null
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/piratejacket3, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/piratejacket4, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("blue japanese coat", /obj/item/clothing/suit/storage/armycoat/japcoat, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("tan japanese coat", /obj/item/clothing/suit/storage/armycoat/japcoat2, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("grey russian coat", /obj/item/clothing/suit/storage/armycoat/rusoffcoat, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("russian officer coat", /obj/item/clothing/suit/storage/armycoat/ruscoat, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue japanese coat", /obj/item/clothing/suit/storage/coat/japcoat, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("tan japanese coat", /obj/item/clothing/suit/storage/coat/japcoat2, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("grey russian coat", /obj/item/clothing/suit/storage/coat/rusoffcoat, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("russian officer coat", /obj/item/clothing/suit/storage/coat/ruscoat, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("kozhanka coat", /obj/item/clothing/suit/storage/coat/kozhanka, 6, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	recipes += new/datum/stack_recipe_list("bedsheet", list(
