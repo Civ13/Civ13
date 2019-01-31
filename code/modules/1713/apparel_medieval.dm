@@ -60,6 +60,13 @@
 	item_state = "artisan"
 	worn_state = "artisan"
 
+/obj/item/clothing/head/feathered_hat
+	name = "feathered hat"
+	desc = "a feathered hat."
+	icon_state = "feathered_hat"
+	item_state = "feathered_hat"
+	worn_state = "feathered_hat"
+
 /obj/item/clothing/under/medieval/crusader
 	name = "crusader tunic"
 	desc = "A white tunic with a red cross in the middle."
