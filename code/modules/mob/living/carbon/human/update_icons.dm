@@ -598,9 +598,10 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_ears(var/update_icons=1)
 	overlays_standing[EARS_LAYER] = null
-	if ( (head && (head.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))) || (wear_mask && (wear_mask.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))))
-		if (update_icons)   update_icons()
-		return
+//this was causing the image to not move, so removed
+//	if ( (head && (head.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))) || (wear_mask && (wear_mask.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))))
+//		if (update_icons)   update_icons()
+//		return
 
 	if (l_ear || r_ear)
 		if (l_ear)
