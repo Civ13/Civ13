@@ -172,6 +172,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
+	slowdown = 1.2
 /obj/item/clothing/suit/armor/medieval/blue
 	name = "blue plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
@@ -211,8 +212,9 @@
 	item_state = "bronze_chestplate"
 	worn_state = "bronze_chestplate"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 50, bullet = 30, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 50, bullet = 35, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 25
+	slowdown = 0.7
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
 	name = "iron chestplate"
 	desc = "An iron chestplate."
@@ -222,7 +224,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, bullet = 40, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 32
-
+	slowdown = 0.8
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/red
 	..()
 	icon_state = "iron_chestplater"
@@ -249,6 +251,7 @@
 	armor = list(melee = 30, bullet = 15, laser = 10,energy = 15, bomb = 20, bio = 20, rad = FALSE)
 	value = 20
 	flammable = TRUE
+	slowdown = 0.2
 /obj/item/clothing/suit/armor/medieval/chainmail
 	name = "chainmail"
 	desc = "Wearable armor made of several small interlinked chains."
@@ -258,7 +261,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 50, bullet = 35, laser = 15,energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	value = 30
-
+	slowdown = 0.6
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
 	desc = "A longer version of the chainmail, worn as a coat. Offers greater protection."
@@ -268,6 +271,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 60, bullet = 55, laser = 20,energy = 20, bomb = 40, bio = 30, rad = FALSE)
 	value = 40
+	slowdown = 0.75
 /obj/item/clothing/head/helmet/gold_crown
 	name = "gold crown"
 	desc = "A crown of gold. Fancy."
