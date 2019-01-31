@@ -111,7 +111,7 @@
 /obj/item/weapon/starterjar
 	name = "fermentation starter jar"
 	icon = 'icons/obj/drinks.dmi'
-	desc = "A glass jar, used to mulitply yeast."
+	desc = "A glass jar, used to multiply yeast."
 	icon_state = "jar0"
 	item_state = "beaker"
 	var/fermenting = 0
@@ -187,7 +187,7 @@
 /obj/item/weapon/storage/seed_collector
 	name = "seed collector"
 	icon = 'icons/obj/storage.dmi'
-	desc = "A glass jar, used to mulitply yeast."
+	desc = "To store your seeds."
 	icon_state = "seed_collector"
 	item_state = "backpack"
 	var/active = FALSE
