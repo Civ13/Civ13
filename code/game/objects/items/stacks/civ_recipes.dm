@@ -470,6 +470,8 @@
 	if (current_res[3] >= 43)
 		recipes += list(new/datum/stack_recipe("burn kit", /obj/item/stack/medical/advanced/ointment, 1, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
+	if (current_res[3] >= 130)
+	recipes += list(new/datum/stack_recipe("custom camo uniform", 	/obj/item/clothing/under/customuniform_modern, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 
 	if ((current_res[3] >= 18) && (current_res[3] < 38))
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
@@ -676,7 +678,7 @@
 			new/datum/stack_recipe("blue bedsheet", /obj/item/weapon/bedsheet/blue, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("yellow bedsheet", /obj/item/weapon/bedsheet/blue, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red bedsheet", /obj/item/weapon/bedsheet/red, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
-			
+
 	if (current_res[1] >= 18 && current_res[3]>= 26) // Same level that bronze surgical tools can be made.
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 
