@@ -459,3 +459,13 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, bullet = 35, laser = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/pith
+	name = "iron pith helmet"
+	desc = "A typical pointed helmet."
+	icon_state = "pith"
+	item_state = "pith"
+	worn_state = "pith"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)

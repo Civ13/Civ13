@@ -468,7 +468,7 @@ obj/structure/anvil/New()
 	else if (iron_amt > 0)
 		var/list/display = list("Swords", "Armor", "Cancel")
 		if (map.ordinal_age == 5)
-			display = list("Cancel")
+			display = list("Armor", "Cancel")
 		else if (map.ordinal_age == 4)
 			display = list("Swords","Cancel")
 		else if (map.ordinal_age == 3)
@@ -697,6 +697,9 @@ obj/structure/anvil/New()
 				return
 		else if (choice == "Armor")
 			var/list/display4 = list("Cancel")
+			if (map.ordinal_age >= 4)
+				display4 = list("Picklehaube (7)", "Pith (7)", "Cancel")
+
 			if (map.ordinal_age >= 2)
 				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Cancel")
 			else
@@ -882,6 +885,36 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/head/helmet/medieval(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice4 == "Picklehaube (7)")
+				if (steel_amt >= 7)
+					user << "You begin crafting the picklehaube..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && steel_amt >= 7)
+						user << "You craft the picklehaube."
+						steel_amt -= 7
+						if (steel_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/modern/pickelhaube(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice4 == "Pith (7)")
+				if (steel_amt >= 7)
+					user << "You begin crafting the pith helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && steel_amt >= 7)
+						user << "You craft the pith helmet."
+						steel_amt -= 7
+						if (steel_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/modern/pith(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
