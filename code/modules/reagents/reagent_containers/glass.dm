@@ -102,7 +102,7 @@
 				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
 				label_text = tmp_label
 				update_name_label()
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes))
 
 			if (!is_open_container())
 				user << "<span class='notice'>\The [src] is closed.</span>"
@@ -116,7 +116,7 @@
 			qdel(W)
 			return
 
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
 
 			if (!is_open_container())
 				user << "<span class='notice'>\The [src] is closed.</span>"
@@ -130,7 +130,7 @@
 			qdel(W)
 			return
 
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
 
 			if (!is_open_container())
 				user << "<span class='notice'>\The [src] is closed.</span>"
@@ -144,7 +144,47 @@
 			qdel(W)
 			return
 
-		if (istype(W, /obj/item/stack/material/cotton))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the potatoes, producing potato juice."
+			reagents.add_reagent("potato", 5)
+			qdel(W)
+			return
+
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the rice, producing a rice paste."
+			reagents.add_reagent("rice", 5)
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/coffee))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You grind the coffee, producing a coffee drink."
+			reagents.add_reagent("coffee", 15)
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/stack/material/cotton))
 			var/obj/item/stack/material/cotton/CT = W
 
 			if (!is_open_container())
