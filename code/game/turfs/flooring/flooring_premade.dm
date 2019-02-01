@@ -143,7 +143,7 @@
 	available_dirt = 2
 	may_become_muddy = FALSE
 	is_diggable = TRUE
-	initial_flooring = /decl/flooring/dirt
+	initial_flooring = /decl/flooring/dust
 
 /turf/floor/dirt/jungledirt
 	name = "dirt"
