@@ -1,4 +1,17 @@
 //two main types of engines: external combustion and internal combustion.
+//
+//fossil fuels:
+//petroleum - unrefined crude oil
+//gasoline - refined from petroleum
+//diesel - refined from petroleum
+//
+//biofuels:
+// ethanol - from fermentation and destilation
+//biodiesel - using a special machine to process various farming products
+//olive oil - from olives
+//
+//from the heavyest to the lightest: petroleum > olive oil > biodiesel > diesel > gasoline > ethanol
+
 
 /obj/structure/engine
 	name = "engine"
@@ -43,6 +56,7 @@
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		update_icon()
 		return
 	else
 		turn_on(user)
@@ -56,7 +70,17 @@
 	else
 		icon_state = "[engineclass]_static"
 
-//two-stroke (gasoline), four-stroke (otto), six-stroke (experimental?), diesel (compression-ignition, two-stroke), hot-bulb/crude oil, hasselman (hybrid, low compression and spark-ignition), rotary (Wankel), Turbine
+///////////////////////INTERNAL//////////////////////////////////////////////
+
+//two-stroke (small gasoline gasoline)
+//four-stroke (otto gasoline)
+//six-stroke (experimental?)
+//diesel (compression-ignition, two-stroke)
+//hot-bulb/crude oil
+//hasselman (hybrid, low compression and spark-ignition)
+//rotary (Wankel)
+//Turbine
+
 /obj/structure/engine/internal
 	name = "internal combustion engine"
 	desc = "A basic engine."
@@ -70,7 +94,7 @@
 		user.drop_from_inventory(W)
 		fueltank = W
 		W.anchored = TRUE
-		user << "You connect \the [W] to the [src]"
+		user << "You connect \the [W] to the [src]."
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		return
 	else
@@ -79,7 +103,7 @@
 	if (fueltank != null)
 		var/done = FALSE
 		for (var/F in fuels)
-			if (fueltank.reagents.has_reagent(F, max(fuelefficiency,1)) && done == FALSE)
+			if (fueltank.reagents.has_reagent(F, fuelefficiency*5) && done == FALSE)
 				on = TRUE
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
@@ -92,36 +116,25 @@
 				return
 
 /obj/structure/engine/internal/running()
-	var/done = FALSE
-	for (var/F in fuels)
-		if (fueltank.reagents.has_reagent(F, fuelefficiency) && done == FALSE)
-			fueltank.reagents.remove_reagent(F, fuelefficiency)
-			done = TRUE
+	if (on)
+		var/done = FALSE
+		for (var/F in fuels)
+			if (fueltank.reagents.has_reagent(F, fuelefficiency) && done == FALSE)
+				fueltank.reagents.remove_reagent(F, fuelefficiency)
+				done = TRUE
 
-	if (!done)
-		visible_message("The engine stalls.")
-		playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
-		on = FALSE
-		update_icon()
-		return
+		if (!done)
+			visible_message("The engine stalls.")
+			playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+			on = FALSE
+			update_icon()
+			return
 
-	spawn(10)
-		running()
+		spawn(10)
+			running()
 	return
 
-/obj/structure/engine/internal/hotbulb
-	name = "hot bulb engine"
-	desc = "A big, somewhat inefficient engine, that can run on pretty much any liquid fuel."
-	icon = 'icons/obj/engines_64.dmi'
-	icon_state = "hotbulb_static"
-	engineclass = "hotbulb"
-
-	maxpower = 100
-	torque = 1.1
-	maxrpm = 2000
-	weight = 40
-	fuelefficiency = 2
-	fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel") //basically everything
+///////////////////////EXTERNAL/////////////////////////////////////////////
 
 //steam, sterling
 /obj/structure/engine/external
@@ -129,3 +142,19 @@
 	name = "external combustion engine"
 	desc = "A basic engine."
 	var/obj/structure/heatsource = null
+
+///////////////////////ENGINES//////////////////////////////////////////////
+
+/obj/structure/engine/internal/hotbulb
+	name = "hot bulb engine"
+	desc = "A big, somewhat inefficient engine, that can run on pretty much any liquid fuel."
+	icon = 'icons/obj/engines32.dmi'
+	icon_state = "gasoline_static"
+	engineclass = "gasoline"
+
+	maxpower = 100
+	torque = 1.1
+	maxrpm = 2000
+	weight = 40
+	fuelefficiency = 0.2
+	fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel", "olive_oil") //basically everything

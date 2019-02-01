@@ -445,7 +445,6 @@
 	id = "potato"
 	description = "Juice of the potato. Bleh."
 	taste_description = "irish sadness"
-	nutrition = 2
 	color = "#302000"
 
 /datum/reagent/drink/tomatojuice
@@ -747,10 +746,10 @@
 /datum/reagent/ethanol/sake
 	name = "Sake"
 	id = "sake"
-	description = "Anime's favorite drink."
+	description = "Japan's favorite drink."
 	taste_description = "dry alcohol"
 	color = "#664300"
-	strength = 25
+	strength = 35
 
 /datum/reagent/ethanol/tequilla
 	name = "Tequila"
