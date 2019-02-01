@@ -30,14 +30,14 @@
 	var/torque = 0 //a modifier for power and max weight. Engines like diesel have a positive modifier, meaning they can carry heavier loads with less power
 	var/maxrpm = 0 //maximum engine rpms (or "speed"). Used to calculate maximum engine strain and the vehicle speed, adjusting for torque power and weight.
 
-	var/currentweight = 0
-	var/currentpower = 0
+	var/currentweight = 0 //weight being dragged. Only used for vehicles
+	var/currentpower = 0 //power being used
 	var/currentrpm = 0
 
-	var/currentspeed = 0 //current speed
+	var/currentspeed = 0 //current speed. Mostly used for vehicles
 
 	var/enginetype = "external" //internal or external. External requires a separate combustion source.
-	var/list/connections = list() // what this engine is connected to. cam be an axis, well, etc.
+	var/list/connections = list() // what this engine is connected to. cam be an axis, oil well, etc.
 	var/on = FALSE
 
 /obj/structure/engine/proc/turn_on()
@@ -45,6 +45,15 @@
 
 /obj/structure/engine/proc/running()
 	return
+
+/obj/structure/engine/proc/process_power_output()
+	var/powerused = 0
+	if (!isemptylist(connections))
+		for (var/obj/C in connections)
+			if (C.powerneeded > 0 && C.powersource == src && (C.powerneeded <= (maxpower - powerused)))
+				powerused += C.powerneeded
+	return min(powerused, maxpower)
+	//TODO: diferentiating between "movement" connections and "static" connections, so speed and weight can be calculated.
 
 /obj/structure/engine/proc/running_sound()
 	if (on)
@@ -55,6 +64,9 @@
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
+		currentrpm = 0
+		currentspeed = 0
+		currentpower = 0
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		update_icon()
 		return
@@ -87,7 +99,7 @@
 	enginetype = "internal"
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank = null
 	var/list/fuels = list() //accepted fuels (can be more than one)
-	var/fuelefficiency = 0 //fuel consumption per power unit. the lower the better.
+	var/fuelefficiency = 0 //fuel consumption per 1000 rpms. Lower is better
 
 /obj/structure/engine/internal/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel) && fueltank == null)
@@ -108,6 +120,7 @@
 				if (user)
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
 				playsound(loc, 'sound/machines/diesel_starting.ogg', 100, FALSE, 3)
+				currentrpm = 0.1*maxrpm
 				update_icon()
 				running()
 				spawn(40)
@@ -118,17 +131,24 @@
 /obj/structure/engine/internal/running()
 	if (on)
 		var/done = FALSE
+		var/fuelconsumption = fuelefficiency*(currentrpm/1000) //fuelconsumption is based on current RPM
 		for (var/F in fuels)
-			if (fueltank.reagents.has_reagent(F, fuelefficiency) && done == FALSE)
-				fueltank.reagents.remove_reagent(F, fuelefficiency)
+			if (fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
+				fueltank.reagents.remove_reagent(F, fuelconsumption)
 				done = TRUE
 
 		if (!done)
 			visible_message("The engine stalls.")
 			playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
 			on = FALSE
+			currentrpm = 0
+			currentspeed = 0
+			currentpower = 0
 			update_icon()
 			return
+		else
+			currentpower = process_power_output()
+			currentrpm = max((0.1*maxrpm), (currentpower/maxpower)*maxrpm)
 
 		spawn(10)
 			running()
