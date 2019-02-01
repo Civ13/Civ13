@@ -42,9 +42,11 @@
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		return
 	else
 		turn_on(user)
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		return
 
 /obj/structure/engine/update_icon()
@@ -69,6 +71,7 @@
 		fueltank = W
 		W.anchored = TRUE
 		user << "You connect \the [W] to the [src]"
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		return
 	else
 		..()
@@ -105,6 +108,7 @@
 	spawn(10)
 		running()
 	return
+
 /obj/structure/engine/internal/hotbulb
 	name = "hot bulb engine"
 	desc = "A big, somewhat inefficient engine, that can run on pretty much any liquid fuel."
