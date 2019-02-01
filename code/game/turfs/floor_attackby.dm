@@ -537,17 +537,17 @@
 		if (istype(T, /turf/floor/grass/jungle))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
-		if (istype(T, /turf/floor/dirt/burned))
+		else if (istype(T, /turf/floor/dirt/burned))
 			user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
 			return
-		if (istype(T, /turf/floor/dirt/jungledirt))
+		else if (istype(T, /turf/floor/dirt/jungledirt))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
-		if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
+		else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return
-		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
+		else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 			if (do_after(user, 70, user.loc))
 				if (istype(T, /turf/floor/dirt/flooded))
 					ChangeTurf(/turf/floor/dirt/ploughed/flooded)
