@@ -20,7 +20,8 @@ FLOOR SAFES
 	var/dial = FALSE		//where is the dial pointing?
 	var/space = FALSE		//the combined w_class of everything in the safe
 	var/maxspace = 24	//the maximum combined w_class of stuff in the safe
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/safe/New()
 	tumbler_1_pos = rand(0, 72)

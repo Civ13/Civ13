@@ -6,7 +6,8 @@
 	var/counter = 2
 	anchored = TRUE
 	var/species = "fish"
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /obj/structure/fish/salmon
 	name = "salmon"
 	desc = "Salmons. Don't let bears get near!"
@@ -49,7 +50,8 @@
 	icon = 'icons/mob/fish.dmi'
 	icon_state = "piranhas"
 	anchored = TRUE
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /obj/structure/piranha/New()
 	..()
 	invisibility = 101

@@ -128,6 +128,8 @@
 	opacity = FALSE
 	density = FALSE
 	var/health = 100
+	not_movable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/mine_support
 	name = "mine support"
@@ -138,6 +140,8 @@
 	opacity = FALSE
 	density = FALSE
 	var/health = 100
+	not_movable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon))

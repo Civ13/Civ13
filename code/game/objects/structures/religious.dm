@@ -4,6 +4,9 @@
 	icon = 'icons/obj/cross.dmi'
 	icon_state = "gravestone"
 	var/health = 100
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
 /obj/structure/religious/gravestone
 	name = "gravestone"
 	desc = "A gravestone made with polished stone."
@@ -65,6 +68,8 @@
 	density = FALSE
 	anchored = TRUE
 	var/open = TRUE
+	not_disassemblable = TRUE
+	not_movable = TRUE
 /obj/structure/religious/grave/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/shovel) && open)
 		visible_message("[user] starts filling up \the [src]...","You start filling up \the [src]...")
@@ -162,7 +167,8 @@
 	icon = 'icons/misc/tribal.dmi'
 	icon_state = "remains1"
 	anchored = FALSE
-
+	not_disassemblable = TRUE
+	not_movable = TRUE
 /obj/structure/religious/remains/New()
 	..()
 	icon_state = "remains[rand(1,6)]"
@@ -172,8 +178,6 @@
 	icon_state = "tribalmask[rand(1,2)]"
 
 /obj/structure/religious/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench))
-		return
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	switch(W.damtype)
 		if ("fire")
@@ -200,6 +204,8 @@
 	health = 100000000
 	var/current_tribesmen = 0
 	var/reltype = "tribal" //tribal or colony
+	not_disassemblable = TRUE
+	not_movable = TRUE
 /obj/structure/religious/totem/offerings/proc/create_mobs()
 	var/I = 0
 	while(I < round(current_tribesmen/2))

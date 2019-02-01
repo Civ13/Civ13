@@ -17,6 +17,8 @@
 	density = TRUE
 	anchored = TRUE
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/filingcabinet/chestdrawer
 	name = "chest drawer"

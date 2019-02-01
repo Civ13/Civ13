@@ -22,6 +22,7 @@
 		/obj/structure/table,
 		/obj/structure/closet,
 		/obj/structure/sink,
+		/obj/structure/engine,
 		/obj/item/weapon/storage,
 		/obj/item/weapon/storage/secure/safe,
 		/mob/living/simple_animal/cow,

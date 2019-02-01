@@ -7,6 +7,8 @@
 	opacity = FALSE
 	var/fuel = 0
 	var/on = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/brazier/New()
 	..()

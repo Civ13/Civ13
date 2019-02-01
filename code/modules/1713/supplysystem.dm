@@ -11,7 +11,8 @@
 	var/import_tax_rate = 0
 	var/faction = "civilian"
 	var/faction_treasury = "TreasuryRN"
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 	var/list/itemsnr = list(
 		1 = "wood crate",
 		2 = "iron crate",
@@ -114,13 +115,16 @@
 	var/faction = "civilian"
 	var/faction_treasury = "TreasuryRN"
 	var/done = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/supplybook/craftable
 	faction_treasury = "craftable"
 	factionarea = "craftable"
 	icon = 'icons/misc/support.dmi'
 	icon_state = "supplybook"
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/supplybook/attack_hand(var/mob/living/carbon/human/user as mob)
 	if (user.original_job_title != "Gobernador" && user.original_job_title != "Governador" && user.original_job_title != "Governeur" && user.original_job_title != "Governor" && user.original_job_title != "British Governor" && user.original_job_title != "British Merchant"  && user.original_job_title != "Merchant" && user.original_job_title != "Mercador" && user.original_job_title != "Comerciante" && user.original_job_title != "Marchand")
 		user << "Only the merchants have access to the international shipping companies. Negotiate with one."

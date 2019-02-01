@@ -132,6 +132,8 @@
 	var/readyStageMax = 10
 	var/plant = "tomato"
 	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"

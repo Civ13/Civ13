@@ -103,10 +103,7 @@
 			rolled = TRUE
 	update_clothing_icon()
 
-/obj/item/clothing/suit/storage/armycoat
-	min_cold_protection_temperature = COAT_MIN_COLD_PROTECTION_TEMPERATURE
-
-/obj/item/clothing/suit/storage/armycoat/japcoat
+/obj/item/clothing/suit/storage/coat/japcoat
 	name = "Japanese Coat"
 	desc = "A japanese army coat."
 	icon_state = "japcoat"
@@ -119,7 +116,7 @@
 	var/colorn = 1
 
 
-/obj/item/clothing/suit/storage/armycoat/japcoat2
+/obj/item/clothing/suit/storage/coat/japcoat2
 	name = "Japanese Coat"
 	desc = "A japanese army coat."
 	icon_state = "japcoat2"
@@ -131,7 +128,7 @@
 	value = 65
 	var/colorn = 1
 
-/obj/item/clothing/suit/storage/armycoat/ruscoat
+/obj/item/clothing/suit/storage/coat/ruscoat
 	name = "Russian Coat"
 	desc = "A russian army coat."
 	icon_state = "ruscoat"
@@ -143,7 +140,15 @@
 	value = 65
 	var/colorn = 1
 
-/obj/item/clothing/suit/storage/armycoat/rusoffcoat
+/obj/item/clothing/suit/storage/coat/ruscoat/grey
+	name = "Grey Winter Coat"
+	desc = "A thick winter coat."
+
+/obj/item/clothing/suit/storage/coat/japcoat2/brown
+	name = "Brown Winter Coat"
+	desc = "A thick winter coat."
+
+/obj/item/clothing/suit/storage/coat/rusoffcoat
 	name = "Russian Officer Coat."
 	desc = "A russian army  officer coat. Worn by officers, acknowledge their rank."
 	icon_state = "rusoffcoat"

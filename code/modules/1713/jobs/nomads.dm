@@ -56,9 +56,9 @@
 				if (map.ordinal_age == 0)
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
 			else if (map.ordinal_age == 4)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kozhanka(src), slot_wear_suit)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
 			else if (map.ordinal_age == 5)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kozhanka(src), slot_wear_suit)
+				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
 
 /////////////////////////CIVS////////////////////////
 

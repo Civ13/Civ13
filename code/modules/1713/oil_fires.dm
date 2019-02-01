@@ -7,7 +7,8 @@
 	var/counter = 1
 	var/timeout = 0
 	flammable = TRUE
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /obj/structure/oil_spring/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (counter <= 0)
 		user << "<span class='warning'>\The [src] is dry!</span>"

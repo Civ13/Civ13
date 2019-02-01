@@ -7,6 +7,8 @@
 	icon_state = "barrel_wood"
 	density = TRUE
 	anchored = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 	var/amount_per_transfer_from_this = 10
 	var/possible_transfer_amounts = list(10,25,50,100)

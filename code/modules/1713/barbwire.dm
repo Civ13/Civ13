@@ -4,6 +4,8 @@
 	icon_state = "barbwire"
 	anchored = TRUE
 	var/capture = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/barbwire/ex_act(severity)
 	switch (severity)

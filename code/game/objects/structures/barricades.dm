@@ -10,6 +10,8 @@
 	var/maxhealth = 100
 	var/material/material
 	var/material_name = "wood"
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)
