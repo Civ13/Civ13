@@ -58,10 +58,6 @@
 // Cable laying procedures
 //////////////////////////////////////////////
 
-/obj/item/stack/cable_coil/proc/get_new_cable(location)
-	var/path = /obj/structure/cable
-	return new path(location, cable_color)
-
 // called when cable_coil is clicked on a turf
 /obj/item/stack/cable_coil/proc/place_turf(turf/T, mob/user, dirnew)
 	if(!isturf(user.loc))
@@ -93,12 +89,14 @@
 			user << "<span class='warning'>There's already a cable at that position!</span>"
 			return
 
-	var/obj/structure/cable/C = get_new_cable(T)
-
-	//set up the new cable
+	var/obj/structure/cable/C = new /obj/structure/cable(T)
+	C.color = color
+	C.cable_color = cable_color
+	amount -= 1
 	C.d1 = 0 //it's a O-X node cable
 	C.d2 = dirn
 	C.add_fingerprint(user)
+
 	C.update_icon()
 
 	return C
@@ -143,13 +141,18 @@
 						user << "<span class='warning'>There's already a cable at that position!</span>"
 					return
 
-			var/obj/structure/cable/NC = get_new_cable (U)
-
+			var/obj/structure/cable/NC = new /obj/structure/cable(U)
+			amount -= 1
+			C.color = color
+			C.cable_color = cable_color
 			NC.d1 = 0
 			NC.d2 = fdirn
 			NC.add_fingerprint(user)
+			NC.connections = C
+			C.connections = NC
+			if (C.connected)
+				NC.connected = TRUE
 			NC.update_icon()
-
 			return
 
 	// exisiting cable doesn't point at our position, so see if it's a stub

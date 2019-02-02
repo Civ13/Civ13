@@ -98,6 +98,8 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (!cable_color)
 		cable_color = pick(cable_colors)
 
+	update_connections()
+
 	update_icon()
 
 /obj/structure/cable/Destroy()					// called when a cable is deleted
@@ -115,9 +117,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	icon_state = "[d1]-[d2]"
 
 /obj/structure/cable/proc/handlecable(obj/item/W, mob/user, params)
-	var/turf/T = get_turf(src)
-	if(T.intact)
-		return
+
 	if(istype(W, /obj/item/weapon/material/knife))
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		stored.add_fingerprint(user)
@@ -159,15 +159,14 @@ By design, d1 is the smallest direction and d2 is the highest
 
 /obj/structure/cable/proc/get_connections()
 
-	var/turf/T1 = loc
-	if(!T1)
+	if (!isturf(loc))
 		return
 	var/turf/T
 	//get matching cables nearby
 	if(d1) //if not a node cable
 		T = get_step(src, d1)
 		if(T)
-			for (var/obj/structure/cable/CB in range(src,1))
+			for (var/obj/structure/cable/CB in range(1, src))
 				if (cable_color == CB.cable_color)
 					if (!CB in connections)
 						connections += CB
@@ -180,13 +179,9 @@ By design, d1 is the smallest direction and d2 is the highest
 	connected = FALSE
 	connections = list()
 	update_connections()
-	var/turf/T1 = loc
-	if(!T1)
-		return
 
 /obj/structure/cable/proc/update_connections()
-	var/turf/T1 = loc
-	if(!T1)
+	if (!isturf(loc))
 		return
 	for (var/obj/structure/cable/CB in connections)
 		if (color == CB.color && CB.connected && connected)
