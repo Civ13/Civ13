@@ -28,11 +28,9 @@
 
 	var/maxpower = 0 //how powerful (in kw/hp) the engine is. Both for vehicles and static engines.
 	var/torque = 0 //a modifier for power and max weight. Engines like diesel have a positive modifier, meaning they can carry heavier loads with less power
-	var/maxrpm = 0 //maximum engine rpms (or "speed"). Used to calculate maximum engine strain and the vehicle speed, adjusting for torque power and weight.
 
 	var/currentweight = 0 //weight being dragged. Only used for vehicles
 	var/currentpower = 0 //power being used
-	var/currentrpm = 0
 
 	var/currentspeed = 0 //current speed. Mostly used for vehicles
 
@@ -63,8 +61,6 @@
 						C.powered = TRUE
 				else
 					C.powered = FALSE
-		if (!load)
-			currentrpm = (min(powerused, maxpower)/maxpower)*maxrpm
 	return min(powerused, maxpower)
 	//TODO: diferentiating between "movement" connections and "static" connections, so speed and weight can be calculated.
 
@@ -85,7 +81,6 @@
 /obj/structure/engine/proc/process_load(var/obj/structure/vehicle/axis/source = null)
 	var/pullweight = process_current_weight()
 	pullweight /= torque
-	currentrpm = min((pullweight/maxpower)*maxrpm,maxrpm)
 	currentspeed += source.get_speed()*(pullweight/maxpower) //movement delay, in deciseconds per tile (higher = slower)
 	return pullweight
 
@@ -101,7 +96,6 @@
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
-		currentrpm = 0
 		currentspeed = 0
 		currentpower = 0
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
