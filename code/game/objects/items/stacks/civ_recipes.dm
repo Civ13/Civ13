@@ -60,6 +60,7 @@
 	recipes += new/datum/stack_recipe("unfired large clay pitcher", /obj/item/weapon/clay/largeclaypitcher, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 82)
 		recipes += new/datum/stack_recipe("unfired clay bricks", /obj/item/weapon/clay/advclaybricks, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+
 /material/leather/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("sling", /obj/item/weapon/gun/projectile/bow/sling, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -102,7 +103,7 @@
 		recipes += new/datum/stack_recipe("black leather shoes", /obj/item/clothing/shoes/soldiershoes, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("black leather boots", /obj/item/clothing/shoes/blackboots1, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("leather boots", /obj/item/clothing/shoes/leatherboots1, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[2] >= 15)
+	if (current_res[2] >= 15 && current_res[3] < 72)
 		recipes += new/datum/stack_recipe("leather armor", /obj/item/clothing/suit/armor/medieval/leather, 6, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("leather helmet", /obj/item/clothing/head/helmet/leather, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE)
 
@@ -110,6 +111,9 @@
 	recipes += list(new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += new/datum/stack_recipe_list("accessories", list(
 		new/datum/stack_recipe("customizable armband", /obj/item/clothing/accessory/custom/armband, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[3] >= 107)
+		recipes += new/datum/stack_recipe("pilot goggles", /obj/item/clothing/mask/glasses/pilot, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+
 	if (current_res[3] >= 98 && current_res[3] < 109)
 		recipes += new/datum/stack_recipe_list("foot wear", list(
 			new/datum/stack_recipe("black riding boots", /obj/item/clothing/shoes/riding1, 3, _time =50 , _one_per_turf = FALSE, _on_floor = TRUE),

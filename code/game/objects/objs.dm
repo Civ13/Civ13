@@ -19,9 +19,10 @@
 	var/cooldownw = DEFAULT_ATTACK_COOLDOWN //how long till you can attack again
 	var/cratevalue = 0 //How much the crate costs when importing
 	var/flammable = FALSE
+
 	var/powerneeded = 0 //how much power it draws from a nearby engine. 0 means no power needed.
 	var/obj/structure/engine/powersource = null
-
+	var/powered = FALSE
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)

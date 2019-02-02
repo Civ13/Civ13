@@ -1,0 +1,121 @@
+//two main types of engines: external combustion and internal combustion.
+//
+//fossil fuels:
+//petroleum - unrefined crude oil
+//gasoline - refined from petroleum
+//diesel - refined from petroleum
+//
+//biofuels:
+// ethanol - from fermentation and destilation
+//biodiesel - using a special machine to process various farming products
+//olive oil - from olives
+//
+//from the heavyest to the lightest: petroleum > olive oil > biodiesel > diesel > gasoline > ethanol
+
+
+/obj/structure/engine
+	name = "engine"
+	desc = "A basic engine."
+	icon = 'icons/obj/engines.dmi'
+	icon_state = "steam_static"
+	var/engineclass = "steam"
+	flammable = FALSE
+	anchored = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+
+	var/weight = 20 //how much the engine weights (duh)
+
+	var/maxpower = 0 //how powerful (in kw/hp) the engine is. Both for vehicles and static engines.
+	var/torque = 0 //a modifier for power and max weight. Engines like diesel have a positive modifier, meaning they can carry heavier loads with less power
+	var/maxrpm = 0 //maximum engine rpms (or "speed"). Used to calculate maximum engine strain and the vehicle speed, adjusting for torque power and weight.
+
+	var/currentweight = 0 //weight being dragged. Only used for vehicles
+	var/currentpower = 0 //power being used
+	var/currentrpm = 0
+
+	var/currentspeed = 0 //current speed. Mostly used for vehicles
+
+	var/enginetype = "external" //internal or external. External requires a separate combustion source.
+	var/list/connections = list() // what this engine is connected to. cam be an axis, oil well, etc.
+	var/on = FALSE
+
+/obj/structure/engine/proc/turn_on()
+	return
+
+/obj/structure/engine/proc/running()
+	return
+
+/obj/structure/engine/proc/process_power_output()
+	var/powerused = 0
+	currentspeed = 0
+	var/load = FALSE
+	if (!isemptylist(connections))
+		for (var/obj/C in connections)
+			if (C.powerneeded > 0 && C.powersource == src)
+				if (C.powerneeded <= (maxpower - powerused))
+					if (!istype(C, /obj/structure/vehicle/axis))
+						powerused += C.powerneeded
+						C.powered = TRUE
+					else
+						powerused += process_load(C)
+						load = TRUE
+						C.powered = TRUE
+				else
+					C.powered = FALSE
+		if (!load)
+			currentrpm = (min(powerused, maxpower)/maxpower)*maxrpm
+	return min(powerused, maxpower)
+	//TODO: diferentiating between "movement" connections and "static" connections, so speed and weight can be calculated.
+
+
+/obj/structure/engine/proc/process_current_weight()
+	currentweight = 0
+	if (!isemptylist(connections))
+		for (var/obj/C in connections)
+			if (weight)
+				currentweight += weight
+			else
+				currentweight += w_class
+	return currentweight
+
+//processes the engine load taking into account power, weight and torque
+
+
+/obj/structure/engine/proc/process_load(var/obj/structure/vehicle/axis/source = null)
+	var/pullweight = process_current_weight()
+	pullweight /= torque
+	currentrpm = min((pullweight/maxpower)*maxrpm,maxrpm)
+	currentspeed += source.get_speed()*(pullweight/maxpower) //movement delay, in deciseconds per tile (higher = slower)
+	return pullweight
+
+
+/obj/structure/engine/proc/running_sound()
+	if (on)
+		playsound(loc, 'sound/machines/diesel_loop.ogg', 100, FALSE, 2)
+	spawn(27)
+		running_sound()
+
+
+/obj/structure/engine/attack_hand(mob/user as mob)
+	if (on)
+		on = FALSE
+		visible_message("[user] turns the [src] off.","You turn the [src] off.")
+		currentrpm = 0
+		currentspeed = 0
+		currentpower = 0
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		update_icon()
+		return
+	else
+		turn_on(user)
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		return
+
+
+/obj/structure/engine/update_icon()
+	..()
+	if (on)
+		icon_state = "[engineclass]_on"
+	else
+		icon_state = "[engineclass]_static"
