@@ -24,12 +24,12 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 
-	var/weight = 20 //how much the engine weights (duh)
+	var/weight = 20 //how much the engine weights (duh). For ICEs, this value is per liter (1000 cc)
 
-	var/maxpower = 0 //how powerful (in kw/hp) the engine is. Both for vehicles and static engines.
+	var/maxpower = 0 //how powerful (in kw/hp) the engine is. Both for vehicles and static engines. For internal combustion engines, this value is per liter (1000 cc)
 	var/torque = 0 //a modifier for power and max weight. Engines like diesel have a positive modifier, meaning they can carry heavier loads with less power
 
-	var/currentweight = 0 //weight being dragged. Only used for vehicles
+	var/currentweight = 0 //weight being dragged. Only used for vehicles. For ICEs, this value is per liter (1000 cc)
 	var/currentpower = 0 //power being used
 
 	var/currentspeed = 0 //current speed. Mostly used for vehicles
