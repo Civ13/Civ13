@@ -94,6 +94,8 @@
 	if (on)
 		on = FALSE
 		visible_message("[user] turns the [src] off.","You turn the [src] off.")
+		playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
+		power_off_connections()
 		currentspeed = 0
 		currentpower = 0
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
@@ -111,3 +113,9 @@
 		icon_state = "[engineclass]_on"
 	else
 		icon_state = "[engineclass]_static"
+
+/obj/structure/engine/proc/power_off_connections()
+	for (var/obj/C in connections)
+		if (C.powerneeded > 0 && C.powersource == src)
+			C.powered = 0
+	return

@@ -34,6 +34,7 @@
 			visible_message("The engine stalls.")
 			playsound(loc, 'sound/machines/diesel_ending.ogg', 100, FALSE, 3)
 			on = FALSE
+			power_off_connections()
 			currentspeed = 0
 			currentpower = 0
 			update_icon()
