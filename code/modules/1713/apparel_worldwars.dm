@@ -59,3 +59,10 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, bullet = 30, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/mask/glasses/pilot
+	name = "pilot goggles"
+	desc = "Early 20th century pilot goggles."
+	icon_state = "biker"
+	item_state = "biker"
+	worn_state = "biker"
