@@ -47,7 +47,6 @@
 /obj/structure/engine/proc/process_power_output()
 	var/powerused = 0
 	currentspeed = 0
-	var/load = FALSE
 	if (!isemptylist(connections))
 		for (var/obj/C in connections)
 			if (C.powerneeded > 0 && C.powersource == src)
@@ -57,7 +56,6 @@
 						C.powered = TRUE
 					else
 						powerused += process_load(C)
-						load = TRUE
 						C.powered = TRUE
 				else
 					C.powered = FALSE

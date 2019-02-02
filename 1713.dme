@@ -418,6 +418,7 @@
 #include "code\modules\1713\vehicles\vehicles.dm"
 #include "code\modules\1713\vehicles\engines\engines.dm"
 #include "code\modules\1713\vehicles\engines\external_combustion.dm"
+#include "code\modules\1713\vehicles\engines\heatsource.dm"
 #include "code\modules\1713\vehicles\engines\internal_combustion.dm"
 #include "code\modules\1713\weapons\attachment.dm"
 #include "code\modules\1713\weapons\zoom.dm"

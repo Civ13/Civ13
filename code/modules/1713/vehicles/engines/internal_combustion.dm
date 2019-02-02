@@ -18,6 +18,11 @@
 	var/fuelefficiency = 0 //fuel consumption on max power. Lower is better.
 	var/enginesize = 1000 //in cubic centimeters (cc)
 
+/obj/structure/engine/internal/New()
+	..()
+	weight = 20*(enginesize/1000)
+	name = "[enginesize/1000]L. [name]"
+
 /obj/structure/engine/internal/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel) && fueltank == null)
 		user.drop_from_inventory(W)
@@ -50,7 +55,7 @@
 /obj/structure/engine/internal/running()
 	if (on)
 		var/done = FALSE
-		var/fuelconsumption = fuelefficiency*(min(powerused, maxpower)/maxpower) //fuelconsumption is based on current RPM
+		var/fuelconsumption = fuelefficiency*(min(currentpower, maxpower)/maxpower) //fuelconsumption is based on current RPM
 		for (var/F in fuels)
 			if (fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
