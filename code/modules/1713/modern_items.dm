@@ -11,7 +11,7 @@
 	not_disassemblable = FALSE
 	powerneeded = 2
 
-/obj/structure/heatsource/New()
+/obj/structure/lamppost_small/New()
 	..()
 	do_light()
 
