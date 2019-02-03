@@ -15,15 +15,17 @@
 	enginetype = "internal"
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank = null
 	var/list/fuels = list() //accepted fuels (can be more than one)
-	var/fuelefficiency = 0 //fuel consumption on max power. Lower is better.
+	var/fuelefficiency = 0 //fuel consumption on max power. Lower is better. The default value is per 1000 cc (liter)
 	var/enginesize = 1000 //in cubic centimeters (cc)
 
 /obj/structure/engine/internal/New()
 	..()
 	weight = 20*(enginesize/1000)
-	name = "[enginesize/1000]L. [name]"
+	name = "[enginesize/1000] liter [name]"
+	maxpower *= (enginesize/1000)
+	fuelefficiency *= (enginesize/1000)
 
-/obj/structure/engine/internal/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/engine/internal/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel) && fueltank == null)
 		user.drop_from_inventory(W)
 		fueltank = W
@@ -34,6 +36,19 @@
 	else
 		..()
 
+/obj/structure/engine/internal/verb/remove_fueltank()
+	set category = null
+	set name = "Remove Fueltank"
+	set src in range(1, usr)
+
+	if (fueltank == null)
+		return
+	else
+		power_off_connections()
+		fueltank.anchored = FALSE
+		usr << "You disconnect the fuel tank from the [src]."
+		fueltank = null
+		return
 
 /obj/structure/engine/internal/turn_on(var/mob/user = null)
 	if (fueltank != null)
@@ -55,7 +70,7 @@
 /obj/structure/engine/internal/running()
 	if (on)
 		var/done = FALSE
-		var/fuelconsumption = fuelefficiency*(min(currentpower, maxpower)/maxpower) //fuelconsumption is based on current RPM
+		var/fuelconsumption = fuelefficiency*(min(currentpower, maxpower)/maxpower) //fuelconsumption is based on current load
 		for (var/F in fuels)
 			if (fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
