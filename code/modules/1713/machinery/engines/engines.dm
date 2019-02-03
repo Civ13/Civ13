@@ -49,16 +49,18 @@
 	currentspeed = 0
 	if (!isemptylist(connections))
 		for (var/obj/C in connections)
-			if (C.powerneeded > 0 && C.powersource == src)
-				if (C.powerneeded <= (maxpower - powerused))
-					if (!istype(C, /obj/structure/vehicle/axis))
-						powerused += C.powerneeded
-						C.powered = TRUE
-					else
-						powerused += process_load(C)
-						C.powered = TRUE
+			if (C.powerneeded <= (maxpower - powerused))
+				if (!istype(C, /obj/structure/vehicle/axis))
+					powerused += C.powerneeded
+					C.powered = TRUE
+					if (istype(C, /obj/structure/cable))
+						var/obj/structure/cable/CBL = C
+						CBL.power_on()
 				else
-					C.powered = FALSE
+					powerused += process_load(C)
+					C.powered = TRUE
+			else
+				C.powered = FALSE
 	return min(powerused, maxpower)
 	//TODO: diferentiating between "movement" connections and "static" connections, so speed and weight can be calculated.
 
@@ -118,4 +120,18 @@
 	for (var/obj/C in connections)
 		if (C.powerneeded > 0 && C.powersource == src)
 			C.powered = 0
+		if (istype(C, /obj/structure/cable))
+			var/obj/structure/cable/CBL = C
+			CBL.powered = FALSE
+			CBL.power_off()
 	return
+
+/obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/stack/cable_coil))
+		var/obj/item/stack/cable_coil/CC = W
+		var/obj/structure/cable/NCC = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		NCC.connections += src
+		connections += NCC
+		user << "You connect the cable to the [src]."
+	else
+		..()

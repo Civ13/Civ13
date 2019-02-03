@@ -33,6 +33,26 @@
 	pixel_y = rand(-2,2)
 	update_icon()
 
+/obj/item/connector
+	name = "cable connector"
+	desc = "a cable connector, used to merge or split cables."
+	w_class = 1
+	layer = 3.92
+	icon = 'icons/obj/machines/power.dmi'
+	icon_state = "connector"
+	var/list/connections = list()
+	var/list/turflist = list()
+/obj/item/connector/attack_self(mob/user)
+	for(var/obj/structure/cable/CL in get_turf(user))
+		turflist += CL
+	for(var/obj/structure/cable/CLC in turflist)
+		for(var/obj/structure/cable/CLD in turflist)
+			if (!(CLD in CLC.connections) && CLC != CLD)
+				CLC.connections += CLD
+	user.drop_from_inventory(src)
+	anchored = TRUE
+	user << "You connect the cables on this tile."
+	return
 ///////////////////////////////////
 // General procedures
 ///////////////////////////////////
@@ -98,7 +118,11 @@
 	C.add_fingerprint(user)
 
 	C.update_icon()
-
+	for(var/obj/structure/cable/NCO in get_turf(get_step(T, dirn)))
+		if (NCO.d1 == dirn)
+			NCO.connections += C
+			C.connections += NCO
+			user << "You connect the two cables."
 	return C
 
 // called when cable_coil is click on an installed obj/cable
@@ -143,16 +167,15 @@
 
 			var/obj/structure/cable/NC = new /obj/structure/cable(U)
 			amount -= 1
-			C.color = color
-			C.cable_color = cable_color
+			NC.color = C.color
+			NC.cable_color = C.cable_color
 			NC.d1 = 0
 			NC.d2 = fdirn
 			NC.add_fingerprint(user)
-			NC.connections = C
-			C.connections = NC
-			if (C.connected)
-				NC.connected = TRUE
+			NC.connections += C
+			C.connections += NC
 			NC.update_icon()
+			C.update_icon()
 			return
 
 	// exisiting cable doesn't point at our position, so see if it's a stub
@@ -187,8 +210,6 @@
 
 		C.add_fingerprint(user)
 		C.update_icon()
-
-		C.disconnect()
 		return
 
 //////////////////////////////

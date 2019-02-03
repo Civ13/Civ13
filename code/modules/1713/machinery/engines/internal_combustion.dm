@@ -25,7 +25,7 @@
 	maxpower *= (enginesize/1000)
 	fuelefficiency *= (enginesize/1000)
 
-/obj/structure/engine/internal/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/engine/internal/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel) && fueltank == null)
 		user.drop_from_inventory(W)
 		fueltank = W

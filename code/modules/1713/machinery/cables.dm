@@ -44,13 +44,13 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/d2 = 1   // cable direction 2 (see above)
 	var/list/connections = list()
 	var/obj/item/stack/cable_coil/stored
-	var/connected = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-
+	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond.
 	var/cable_color = "red"
 	color = "#ff0000"
-
+	var/usesound = 'sound/items/deconstruct.ogg'
+	var/powerflow = 0
 /obj/structure/cable/yellow
 	cable_color = "yellow"
 	color = "#ffff00"
@@ -98,8 +98,6 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (!cable_color)
 		cable_color = pick(cable_colors)
 
-	update_connections()
-
 	update_icon()
 
 /obj/structure/cable/Destroy()					// called when a cable is deleted
@@ -120,6 +118,7 @@ By design, d1 is the smallest direction and d2 is the highest
 
 	if(istype(W, /obj/item/weapon/material/knife))
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
+		playsound(loc, usesound, 100, FALSE)
 		stored.add_fingerprint(user)
 		Destroy()
 		return
@@ -170,27 +169,50 @@ By design, d1 is the smallest direction and d2 is the highest
 				if (cable_color == CB.cable_color)
 					if (!CB in connections)
 						connections += CB
-						CB.connected = TRUE
-						connected = TRUE
 	return connections
 
 //needed as this can, unlike other placements, disconnect cables
 /obj/structure/cable/proc/disconnect()
-	connected = FALSE
+	for (var/obj/structure/cable/CB in connections)
+		CB.connections -= src
+		connections -= CB
 	connections = list()
-	update_connections()
 
-/obj/structure/cable/proc/update_connections()
+/obj/structure/cable/proc/update_power()
 	if (!isturf(loc))
 		return
 	for (var/obj/structure/cable/CB in connections)
-		if (color == CB.color && CB.connected && connected)
-			connected = TRUE
-			CB.connected = TRUE
-		else
-			CB.connected = FALSE
-			connected = FALSE
-			CB.connections -= src
-			connections -= CB
-		CB.update_connections()
+		if (lastupdate <= world.time-2)
+			if (powered)
+				CB.powered = TRUE
+				CB.powerneeded += powerneeded
+				lastupdate = world.time
+				CB.power_on()
+			else
+				CB.powered = FALSE
+				CB.powerneeded -= powerneeded
+				lastupdate = world.time
+				CB.power_off()
+	return
+
+/obj/structure/cable/proc/power_on()
+	if (!isturf(loc))
+		return
+	for (var/obj/structure/cable/CB in connections)
+		if (lastupdate <= world.time-2)
+			CB.powered = TRUE
+			CB.powerflow += powerflow
+			lastupdate = world.time
+			CB.power_on()
+	return
+
+/obj/structure/cable/proc/power_off()
+	if (!isturf(loc))
+		return
+	for (var/obj/structure/cable/CB in connections)
+		if (lastupdate <= world.time-2)
+			CB.powered = FALSE
+			CB.powerflow -= powerflow
+			lastupdate = world.time
+			CB.power_off()
 	return

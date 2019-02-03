@@ -16,20 +16,31 @@
 	do_light()
 
 /obj/structure/lamppost_small/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	//TODO: Cable stuff
-	..()
+	if (istype(W, /obj/item/stack/cable_coil))
+		var/obj/item/stack/cable_coil/CC = W
+		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		powersource.connections += src
+		user << "You connect the cable to the [src]."
+	else
+		..()
 /obj/structure/lamppost_small/proc/do_light()
-	if (powered && powersource)
-		if (powersource.on)
-			set_light(6)
-			icon_state = "lamppost_small_on"
-		else
-			set_light(0)
-			icon_state = "lamppost_small"
-			powered = FALSE
+	if (check_power())
+		set_light(6)
+		icon_state = "lamppost_small_on"
+		powered = TRUE
 	else
 		set_light(0)
 		icon_state = "lamppost_small"
 		powered = FALSE
 	spawn(10)
 		do_light()
+
+/obj/structure/lamppost_small/proc/check_power()
+	if (!powersource || powerneeded == 0)
+		return FALSE
+	else
+		if (powersource.powered && powersource.powerflow >= powerneeded)
+			powersource.powerflow-=powerneeded
+			return TRUE
+		else
+			return FALSE
