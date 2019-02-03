@@ -21,7 +21,7 @@
 	var/flammable = FALSE
 
 	var/powerneeded = 0 //how much power it draws from a nearby engine. 0 means no power needed.
-	var/obj/structure/engine/powersource = null
+	var/obj/structure/cable/powersource = null
 	var/powered = FALSE
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)

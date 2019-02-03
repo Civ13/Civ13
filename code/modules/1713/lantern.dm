@@ -40,13 +40,13 @@
 		if (W.reagents.has_reagent("petroleum", 1))
 			var/regamt = W.reagents.get_reagent_amount("petroleum")
 			W.reagents.remove_reagent("petroleum", regamt)
-			fuel += (regamt*60)
+			fuel += (regamt*120)
 			user << "You refuel the lantern with petroleum."
 			return
 		else if (W.reagents.has_reagent("olive_oil", 1))
 			var/regamt = W.reagents.get_reagent_amount("olive_oil")
 			W.reagents.remove_reagent("olive_oil", regamt)
-			fuel += (regamt*60)
+			fuel += (regamt*120)
 			user << "You refuel the lantern with olive oil."
 			return
 /obj/item/flashlight/lantern/attack_hand(mob/user as mob)

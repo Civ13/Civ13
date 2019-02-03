@@ -24,7 +24,7 @@
 
 	var/prob_of_weather_mod = ((((1/mod_weather_interval) * 10) / 2) * 100) * schedule_interval/20
 	var/prob_of_weather_change = ((((1/change_weather_interval) * 10) / 2) * 100) * schedule_interval/20
-	if (weather == WEATHER_RAIN)
+	if (weather == WEATHER_RAIN || weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 		prob_of_weather_change = (prob_of_weather_change*2)
 	if (prob(prob_of_weather_mod))
 		if (world.realtime >= next_can_mod_weather)

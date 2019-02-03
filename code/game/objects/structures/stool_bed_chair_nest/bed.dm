@@ -20,7 +20,8 @@
 	var/material/padding_material
 	var/base_icon = "bed"
 	var/applies_material_colour = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/bed/wood
 	material = "wood"
 

@@ -1,3 +1,4 @@
+
 /obj/structure/vehicle
 	name = "vehicle part"
 	desc = "a basic vehicle part."
