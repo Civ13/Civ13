@@ -116,9 +116,9 @@
 	C.d1 = 0 //it's a O-X node cable
 	C.d2 = dirn
 	C.add_fingerprint(user)
-
+	var/opdir = turn(180,dirn)
 	C.update_icon()
-	for(var/obj/structure/cable/NCO in get_turf(get_step(T, dirn)))
+	for(var/obj/structure/cable/NCO in get_turf(get_step(T, opdir)))
 		if (NCO.d1 == dirn)
 			NCO.connections += C
 			C.connections += NCO

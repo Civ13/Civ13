@@ -36,6 +36,19 @@
 	else
 		..()
 
+/obj/structure/engine/internal/verb/remove_fueltank()
+	set category = null
+	set name = "Remove Fueltank"
+	set src in range(1, usr)
+
+	if (fueltank == null)
+		return
+	else
+		power_off_connections()
+		fueltank.anchored = FALSE
+		usr << "You disconnect the fuel tank from the [src]."
+		fueltank = null
+		return
 
 /obj/structure/engine/internal/turn_on(var/mob/user = null)
 	if (fueltank != null)

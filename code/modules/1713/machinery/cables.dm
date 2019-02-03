@@ -50,7 +50,8 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/cable_color = "red"
 	color = "#ff0000"
 	var/usesound = 'sound/items/deconstruct.ogg'
-	var/powerflow = 0
+	var/powerflow = 0 //maximum powerflow in the network (total maxpower of all engines connected)
+	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
 /obj/structure/cable/yellow
 	cable_color = "yellow"
 	color = "#ffff00"
@@ -182,37 +183,40 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (!isturf(loc))
 		return
 	for (var/obj/structure/cable/CB in connections)
-		if (lastupdate <= world.time-2)
+		if (CB.lastupdate <= world.time-2)
 			if (powered)
-				CB.powered = TRUE
-				CB.powerneeded += powerneeded
+				CB.currentflow += currentflow
 				lastupdate = world.time
-				CB.power_on()
-			else
-				CB.powered = FALSE
-				CB.powerneeded -= powerneeded
-				lastupdate = world.time
-				CB.power_off()
+				CB.update_power()
 	return
 
-/obj/structure/cable/proc/power_on()
+/obj/structure/cable/proc/power_on(var/maxpower = 0)
 	if (!isturf(loc))
 		return
+	if (maxpower > 0)
+		powered = TRUE
+		powerflow += maxpower
+
 	for (var/obj/structure/cable/CB in connections)
-		if (lastupdate <= world.time-2)
+		if (CB.lastupdate <= world.time-30)
 			CB.powered = TRUE
 			CB.powerflow += powerflow
 			lastupdate = world.time
-			CB.power_on()
+			CB.power_on(0)
 	return
 
-/obj/structure/cable/proc/power_off()
+/obj/structure/cable/proc/power_off(var/maxpower = 0)
 	if (!isturf(loc))
 		return
+	if (maxpower > 0)
+		powered = FALSE
+		powerflow -= maxpower
 	for (var/obj/structure/cable/CB in connections)
-		if (lastupdate <= world.time-2)
+		if (CB.lastupdate <= world.time-30)
 			CB.powered = FALSE
 			CB.powerflow -= powerflow
+			if (CB.powerflow < 0)
+				CB.powerflow = 0
 			lastupdate = world.time
-			CB.power_off()
+			CB.power_off(0)
 	return

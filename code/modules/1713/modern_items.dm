@@ -17,6 +17,9 @@
 
 /obj/structure/lamppost_small/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
+		if (powersource)
+			user << "There's already a cable connected here! Split it further from the engine."
+			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
 		powersource.connections += src
@@ -28,10 +31,12 @@
 		set_light(6)
 		icon_state = "lamppost_small_on"
 		powered = TRUE
+		on = TRUE
 	else
 		set_light(0)
 		icon_state = "lamppost_small"
 		powered = FALSE
+		on = FALSE
 	spawn(10)
 		do_light()
 
@@ -39,8 +44,11 @@
 	if (!powersource || powerneeded == 0)
 		return FALSE
 	else
-		if (powersource.powered && powersource.powerflow >= powerneeded)
-			powersource.powerflow-=powerneeded
+		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
+			if (!on)
+				powersource.currentflow+=powerneeded
+				powersource.update_power()
+				on = TRUE
 			return TRUE
 		else
 			return FALSE

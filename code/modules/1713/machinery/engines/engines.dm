@@ -53,9 +53,6 @@
 				if (!istype(C, /obj/structure/vehicle/axis))
 					powerused += C.powerneeded
 					C.powered = TRUE
-					if (istype(C, /obj/structure/cable))
-						var/obj/structure/cable/CBL = C
-						CBL.power_on()
 				else
 					powerused += process_load(C)
 					C.powered = TRUE
@@ -123,14 +120,18 @@
 		if (istype(C, /obj/structure/cable))
 			var/obj/structure/cable/CBL = C
 			CBL.powered = FALSE
-			CBL.power_off()
+			CBL.power_off(maxpower)
 	return
 
 /obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
+		for(var/obj/structure/cable/EXC in connections)
+			user << "There's already a cable connected here! Split it further from the engine."
+			return
 		var/obj/item/stack/cable_coil/CC = W
 		var/obj/structure/cable/NCC = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
 		NCC.connections += src
+		NCC.powerflow += maxpower
 		connections += NCC
 		user << "You connect the cable to the [src]."
 	else
