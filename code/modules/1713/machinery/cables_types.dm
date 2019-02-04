@@ -78,7 +78,7 @@
 // Cable laying procedures
 //////////////////////////////////////////////
 
-// called when cable_coil is clicked on a turf
+// called when cable_coil is placed on a turf
 /obj/item/stack/cable_coil/proc/place_turf(turf/T, mob/user, dirnew)
 	if(!isturf(user.loc))
 		return
@@ -116,12 +116,38 @@
 	C.d1 = 0 //it's a O-X node cable
 	C.d2 = dirn
 	C.add_fingerprint(user)
-	var/opdir = turn(180,dirn)
+	var/opdir = 1
+	if (dirn == 1)
+		opdir = 2
+	else if (dirn == 2)
+		opdir = 1
+	else if (dirn == 4)
+		opdir = 8
+	else if (dirn == 5)
+		opdir = 10
+	else if (dirn == 6)
+		opdir = 9
+	else if (dirn == 8)
+		opdir = 4
+	else if (dirn == 9)
+		opdir = 6
+	else if (dirn == 10)
+		opdir = 5
 	C.update_icon()
-	for(var/obj/structure/cable/NCO in get_turf(get_step(T, opdir)))
-		if (NCO.d1 == dirn)
+	for(var/obj/structure/cable/NCO in get_turf(C))
+		if (NCO.d2 == dirn || NCO.d2 == opdir && NCO != C)
 			NCO.connections += C
 			C.connections += NCO
+//			user << "You connect the two cables."
+	for(var/obj/structure/cable/NCOO in get_turf(get_dir(C,dirn)))
+		if (NCOO.d2 == opdir && NCOO != C)
+			NCOO.connections += C
+			C.connections += NCOO
+			user << "You connect the two cables."
+	for(var/obj/structure/cable/NCOC in get_turf(get_dir(C,opdir)))
+		if (NCOC.d2 == dirn && NCOC != C)
+			NCOC.connections += C
+			C.connections += NCOC
 			user << "You connect the two cables."
 	return C
 

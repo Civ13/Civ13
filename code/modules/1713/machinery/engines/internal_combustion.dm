@@ -21,7 +21,7 @@
 /obj/structure/engine/internal/New()
 	..()
 	weight = 20*(enginesize/1000)
-	name = "[enginesize/1000] liter [name]"
+	name = "[enginesize]cc [name]"
 	maxpower *= (enginesize/1000)
 	fuelefficiency *= (enginesize/1000)
 
@@ -44,10 +44,12 @@
 	if (fueltank == null)
 		return
 	else
+		on = FALSE
 		power_off_connections()
 		fueltank.anchored = FALSE
 		usr << "You disconnect the fuel tank from the [src]."
 		fueltank = null
+		update_icon()
 		return
 
 /obj/structure/engine/internal/turn_on(var/mob/user = null)
@@ -61,6 +63,8 @@
 				playsound(loc, 'sound/machines/diesel_starting.ogg', 100, FALSE, 3)
 				update_icon()
 				running()
+				for (var/obj/structure/cable/CB in connections)
+					CB.power_on(maxpower)
 				spawn(40)
 					running_sound()
 				done = TRUE
@@ -100,7 +104,7 @@
 	icon_state = "hotbulb_static"
 	engineclass = "hotbulb"
 
-	maxpower = 65
+	maxpower = 66
 	torque = 1.1
 	fuelefficiency = 0.5
 	fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel", "olive_oil") //basically everything
@@ -148,7 +152,7 @@
 	icon_state = "gasoline_static"
 	engineclass = "gasoline"
 
-	maxpower = 85
+	maxpower = 86
 	torque = 0.77
 	fuelefficiency = 0.35
 	fuels = list("gasoline","ethanol")
@@ -172,7 +176,7 @@
 	icon_state = "turbine_static"
 	engineclass = "turbine"
 
-	maxpower = 135
+	maxpower = 136
 	torque = 0.88
 	fuelefficiency = 0.4
 	fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel", "olive_oil")
@@ -208,7 +212,7 @@
 	icon_state = "diesel_static"
 	engineclass = "diesel"
 
-	maxpower = 85
+	maxpower = 86
 	torque = 1.08
 	fuelefficiency = 0.22
 	fuels = list("diesel","biodiesel","gasoline")

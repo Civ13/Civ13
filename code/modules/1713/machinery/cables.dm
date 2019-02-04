@@ -195,13 +195,13 @@ By design, d1 is the smallest direction and d2 is the highest
 		return
 	if (maxpower > 0)
 		powered = TRUE
-		powerflow += maxpower
+		lastupdate = world.realtime
 
 	for (var/obj/structure/cable/CB in connections)
 		if (CB.lastupdate <= world.time-30)
 			CB.powered = TRUE
 			CB.powerflow += powerflow
-			lastupdate = world.time
+			CB.lastupdate = world.time
 			CB.power_on(0)
 	return
 
@@ -211,6 +211,8 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (maxpower > 0)
 		powered = FALSE
 		powerflow -= maxpower
+		lastupdate = world.realtime
+
 	for (var/obj/structure/cable/CB in connections)
 		if (CB.lastupdate <= world.time-30)
 			CB.powered = FALSE
