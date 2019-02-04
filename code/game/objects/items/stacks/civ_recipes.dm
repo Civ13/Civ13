@@ -169,6 +169,9 @@
 			new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("iron bullet (x3)", /obj/item/stack/ammopart/bullet, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[1] >= 99 && map.ordinal_age >= 4)
+		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[2] >= 90 && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("trench shovel", /obj/item/weapon/shovel/trench, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	recipes += new/datum/stack_recipe("iron arm bangles", /obj/item/clothing/accessory/armband/armbangle, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -406,7 +409,10 @@
 		recipes += new/datum/stack_recipe("wine glass", /obj/item/weapon/reagent_containers/food/drinks/drinkingglass, 2, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("tribal pot", /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fermentation jar", /obj/item/weapon/starterjar, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
-
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe_list("electrical", list(
+			new/datum/stack_recipe("small lightbulb", /obj/structure/lamp/lamp_small, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("light tube", /obj/structure/lamp/lamp_big, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("stone brazier",	/obj/structure/brazier/stone, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -730,8 +736,17 @@
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
-
-
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe_list("cables", list(
+			new/datum/stack_recipe("cable connector", /obj/item/connector, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("white cable coil (10m)", /obj/item/stack/cable_coil/white, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("red cable coil (10m)", /obj/item/stack/cable_coil/red, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue cable coil (10m)", /obj/item/stack/cable_coil/blue, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("yellow cable coil (10m)", /obj/item/stack/cable_coil/yellow, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("green cable coil (10m)", /obj/item/stack/cable_coil/green, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("orange cable coil (10m)", /obj/item/stack/cable_coil/orange, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("cyan cable coil (10m)", /obj/item/stack/cable_coil/cyan, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("pink cable coil (10m)", /obj/item/stack/cable_coil/pink, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/bronze/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 21 && current_res[2] >= 16)
@@ -765,7 +780,9 @@
 		recipes += new/datum/stack_recipe("steel shield", /obj/item/weapon/shield/steel, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 71 && current_res[2] >= 89)
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
-
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe_list("electrical", list(
+			new/datum/stack_recipe("street lamp", /obj/structure/lamp/lamppost_small, 3, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
