@@ -12,6 +12,7 @@
 	not_disassemblable = FALSE
 	powerneeded = 2
 	var/light_amt = 6 //light range
+	layer = 3.95
 
 /obj/structure/lamp/New()
 	..()
@@ -41,6 +42,7 @@
 		icon_state = base_icon
 		powered = FALSE
 		on = FALSE
+
 	spawn(10)
 		do_light()
 
@@ -55,6 +57,10 @@
 				on = TRUE
 			return TRUE
 		else
+			if (on)
+				powersource.currentflow-=powerneeded
+				powersource.update_power()
+				on = FALSE
 			return FALSE
 
 /obj/structure/lamp/lamppost_small

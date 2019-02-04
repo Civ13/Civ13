@@ -23,6 +23,7 @@
 	anchored = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	layer = 3.98
 
 	var/weight = 20 //how much the engine weights (duh). For ICEs, this value is per liter (1000 cc)
 

@@ -188,6 +188,11 @@ By design, d1 is the smallest direction and d2 is the highest
 				CB.currentflow += currentflow
 				lastupdate = world.time
 				CB.update_power()
+			else
+				CB.currentflow = 0
+				currentflow = 0
+				lastupdate = world.time
+				CB.update_power()
 	return
 
 /obj/structure/cable/proc/power_on(var/maxpower = 0)

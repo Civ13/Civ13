@@ -89,6 +89,7 @@
 
 	if(get_amount() < 1) // Out of cable
 		user << "<span class='warning'>There is no cable left!</span>"
+		qdel(src)
 		return
 
 	if(get_dist(T,user) > 1) // Too far
@@ -135,17 +136,17 @@
 		opdir = 5
 	C.update_icon()
 	for(var/obj/structure/cable/NCO in get_turf(C))
-		if (NCO.d2 == dirn || NCO.d2 == opdir && NCO != C)
+		if ((NCO.d2 == dirn || NCO.d2 == opdir) && NCO != C)
 			NCO.connections += C
 			C.connections += NCO
-//			user << "You connect the two cables."
-	for(var/obj/structure/cable/NCOO in get_turf(get_dir(C,dirn)))
-		if (NCOO.d2 == opdir && NCOO != C)
+			user << "You connect the two cables."
+	for(var/obj/structure/cable/NCOO in get_turf(get_step(C,dirn)))
+		if ((NCOO.d2 == opdir || NCOO.d2 == C.d2) && NCOO != C)
 			NCOO.connections += C
 			C.connections += NCOO
 			user << "You connect the two cables."
-	for(var/obj/structure/cable/NCOC in get_turf(get_dir(C,opdir)))
-		if (NCOC.d2 == dirn && NCOC != C)
+	for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
+		if ((NCOC.d2 == dirn || NCOC.d2 == C.d2) && NCOC != C)
 			NCOC.connections += C
 			C.connections += NCOC
 			user << "You connect the two cables."
@@ -198,8 +199,9 @@
 			NC.d1 = 0
 			NC.d2 = fdirn
 			NC.add_fingerprint(user)
-			NC.connections += C
-			C.connections += NC
+			if (NC != C)
+				NC.connections += C
+				C.connections += NC
 			NC.update_icon()
 			C.update_icon()
 			return
@@ -236,6 +238,33 @@
 
 		C.add_fingerprint(user)
 		C.update_icon()
+		var/opdir = 1
+		if (C.d2 == 1)
+			opdir = 2
+		else if (C.d2 == 2)
+			opdir = 1
+		else if (C.d2 == 4)
+			opdir = 8
+		else if (C.d2 == 5)
+			opdir = 10
+		else if (C.d2 == 6)
+			opdir = 9
+		else if (C.d2 == 8)
+			opdir = 4
+		else if (C.d2 == 9)
+			opdir = 6
+		else if (C.d2 == 10)
+			opdir = 5
+		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,C.d2)))
+			if ((NCOO.d2 == opdir || NCOO.d2 == C.d2) && NCOO != C)
+				NCOO.connections += C
+				C.connections += NCOO
+				user << "You connect the two cables."
+		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
+			if ((NCOC.d2 == C.d2 || NCOC.d2 == C.d2) && NCOC != C)
+				NCOC.connections += C
+				C.connections += NCOC
+				user << "You connect the two cables."
 		return
 
 //////////////////////////////
