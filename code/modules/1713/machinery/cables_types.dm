@@ -137,18 +137,24 @@
 	C.update_icon()
 	for(var/obj/structure/cable/NCO in get_turf(C))
 		if ((NCO.d2 == dirn || NCO.d2 == opdir) && NCO != C)
-			NCO.connections += C
-			C.connections += NCO
+			if (!(C in NCO.connections))
+				NCO.connections += C
+			if (!(NCO in C.connections))
+				C.connections += NCO
 			user << "You connect the two cables."
 	for(var/obj/structure/cable/NCOO in get_turf(get_step(C,dirn)))
 		if ((NCOO.d2 == opdir || NCOO.d2 == C.d2) && NCOO != C)
-			NCOO.connections += C
-			C.connections += NCOO
+			if (!(C in NCOO.connections))
+				NCOO.connections += C
+			if (!(NCOO in C.connections))
+				C.connections += NCOO
 			user << "You connect the two cables."
 	for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
 		if ((NCOC.d2 == dirn || NCOC.d2 == C.d2) && NCOC != C)
-			NCOC.connections += C
-			C.connections += NCOC
+			if (!(C in NCOC.connections))
+				NCOC.connections += C
+			if (!(NCOC in C.connections))
+				C.connections += NCOC
 			user << "You connect the two cables."
 	return C
 
