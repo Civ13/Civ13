@@ -78,7 +78,7 @@
 // Cable laying procedures
 //////////////////////////////////////////////
 
-// called when cable_coil is clicked on a turf
+// called when cable_coil is placed on a turf
 /obj/item/stack/cable_coil/proc/place_turf(turf/T, mob/user, dirnew)
 	if(!isturf(user.loc))
 		return
@@ -89,6 +89,7 @@
 
 	if(get_amount() < 1) // Out of cable
 		user << "<span class='warning'>There is no cable left!</span>"
+		qdel(src)
 		return
 
 	if(get_dist(T,user) > 1) // Too far
@@ -116,12 +117,44 @@
 	C.d1 = 0 //it's a O-X node cable
 	C.d2 = dirn
 	C.add_fingerprint(user)
-	var/opdir = turn(180,dirn)
+	var/opdir = 1
+	if (dirn == 1)
+		opdir = 2
+	else if (dirn == 2)
+		opdir = 1
+	else if (dirn == 4)
+		opdir = 8
+	else if (dirn == 5)
+		opdir = 10
+	else if (dirn == 6)
+		opdir = 9
+	else if (dirn == 8)
+		opdir = 4
+	else if (dirn == 9)
+		opdir = 6
+	else if (dirn == 10)
+		opdir = 5
 	C.update_icon()
-	for(var/obj/structure/cable/NCO in get_turf(get_step(T, opdir)))
-		if (NCO.d1 == dirn)
-			NCO.connections += C
-			C.connections += NCO
+	for(var/obj/structure/cable/NCO in get_turf(C))
+		if ((NCO.d2 == dirn || NCO.d2 == opdir) && NCO != C)
+			if (!(C in NCO.connections))
+				NCO.connections += C
+			if (!(NCO in C.connections))
+				C.connections += NCO
+			user << "You connect the two cables."
+	for(var/obj/structure/cable/NCOO in get_turf(get_step(C,dirn)))
+		if ((NCOO.d2 == opdir || NCOO.d2 == C.d2) && NCOO != C)
+			if (!(C in NCOO.connections))
+				NCOO.connections += C
+			if (!(NCOO in C.connections))
+				C.connections += NCOO
+			user << "You connect the two cables."
+	for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
+		if ((NCOC.d2 == dirn || NCOC.d2 == C.d2) && NCOC != C)
+			if (!(C in NCOC.connections))
+				NCOC.connections += C
+			if (!(NCOC in C.connections))
+				C.connections += NCOC
 			user << "You connect the two cables."
 	return C
 
@@ -172,8 +205,9 @@
 			NC.d1 = 0
 			NC.d2 = fdirn
 			NC.add_fingerprint(user)
-			NC.connections += C
-			C.connections += NC
+			if (NC != C)
+				NC.connections += C
+				C.connections += NC
 			NC.update_icon()
 			C.update_icon()
 			return
@@ -210,6 +244,33 @@
 
 		C.add_fingerprint(user)
 		C.update_icon()
+		var/opdir = 1
+		if (C.d2 == 1)
+			opdir = 2
+		else if (C.d2 == 2)
+			opdir = 1
+		else if (C.d2 == 4)
+			opdir = 8
+		else if (C.d2 == 5)
+			opdir = 10
+		else if (C.d2 == 6)
+			opdir = 9
+		else if (C.d2 == 8)
+			opdir = 4
+		else if (C.d2 == 9)
+			opdir = 6
+		else if (C.d2 == 10)
+			opdir = 5
+		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,C.d2)))
+			if ((NCOO.d2 == opdir || NCOO.d2 == C.d2) && NCOO != C)
+				NCOO.connections += C
+				C.connections += NCOO
+				user << "You connect the two cables."
+		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
+			if ((NCOC.d2 == C.d2 || NCOC.d2 == C.d2) && NCOC != C)
+				NCOC.connections += C
+				C.connections += NCOC
+				user << "You connect the two cables."
 		return
 
 //////////////////////////////

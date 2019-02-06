@@ -434,6 +434,8 @@
 
 		if (H)
 			H.adaptStat("crafting", 1*recipe.req_amount)
+	if (findtext(recipe.title, "cable coil (10m)"))
+		produced = 10
 	if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
 		produced = 2
 	if (recipe.result_type == /obj/item/stack/ammopart/bullet)

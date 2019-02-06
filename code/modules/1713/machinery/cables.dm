@@ -183,9 +183,16 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (!isturf(loc))
 		return
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-2)
+		if (CB.lastupdate <= world.time-15 && CB != src)
 			if (powered)
 				CB.currentflow += currentflow
+				lastupdate = world.time
+				CB.lastupdate = world.time
+				CB.update_power()
+			else
+				CB.currentflow = 0
+				currentflow = 0
+				CB.lastupdate = world.time
 				lastupdate = world.time
 				CB.update_power()
 	return
@@ -195,13 +202,13 @@ By design, d1 is the smallest direction and d2 is the highest
 		return
 	if (maxpower > 0)
 		powered = TRUE
-		powerflow += maxpower
+		lastupdate = world.realtime
 
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-30)
+		if (CB.lastupdate <= world.time-15 && CB != src)
 			CB.powered = TRUE
 			CB.powerflow += powerflow
-			lastupdate = world.time
+			CB.lastupdate = world.time
 			CB.power_on(0)
 	return
 
@@ -211,12 +218,15 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (maxpower > 0)
 		powered = FALSE
 		powerflow -= maxpower
+		lastupdate = world.realtime
+		if (powerflow < 0)
+			powerflow = 0
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-30)
+		if (CB.lastupdate <= world.time-15 && CB != src)
 			CB.powered = FALSE
 			CB.powerflow -= powerflow
 			if (CB.powerflow < 0)
 				CB.powerflow = 0
-			lastupdate = world.time
+			CB.lastupdate = world.time
 			CB.power_off(0)
 	return
