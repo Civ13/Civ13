@@ -2,7 +2,7 @@
 /obj/map_metadata/supply_raid
 	ID = MAP_SUPPLY_RAID
 	title = "Supply Raid (100x75x1)"
-//	lobby_icon_state = "imperial"
+	lobby_icon_state = "imperial"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 900
 	squad_spawn_locations = FALSE
@@ -22,6 +22,7 @@
 	mission_start_message = "<font size=4>All factions have <b>15 minutes</b> to prepare before the combat starts.</font>"
 	faction1 = BRITISH
 	faction2 = INDIANS
+
 	ambience = list('sound/ambience/jungle1.ogg')
 
 obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)

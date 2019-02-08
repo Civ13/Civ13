@@ -42,6 +42,7 @@
 	icon_state = "connector"
 	var/list/connections = list()
 	var/list/turflist = list()
+
 /obj/item/connector/attack_self(mob/user)
 	for(var/obj/structure/cable/CL in get_turf(user))
 		turflist += CL
@@ -135,6 +136,7 @@
 	else if (dirn == 10)
 		opdir = 5
 	C.update_icon()
+/*
 	for(var/obj/structure/cable/NCO in get_turf(C))
 		if ((NCO.d2 == dirn || NCO.d2 == opdir) && NCO != C)
 			if (!(C in NCO.connections))
@@ -142,15 +144,17 @@
 			if (!(NCO in C.connections))
 				C.connections += NCO
 			user << "You connect the two cables."
+*/
 	for(var/obj/structure/cable/NCOO in get_turf(get_step(C,dirn)))
-		if ((NCOO.d2 == opdir || NCOO.d2 == C.d2) && NCOO != C)
+		if ((NCOO.d2 == opdir) && NCOO != C)
 			if (!(C in NCOO.connections))
 				NCOO.connections += C
 			if (!(NCOO in C.connections))
 				C.connections += NCOO
 			user << "You connect the two cables."
+
 	for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
-		if ((NCOC.d2 == dirn || NCOC.d2 == C.d2) && NCOC != C)
+		if ((NCOC.d2 == dirn) && NCOC != C)
 			if (!(C in NCOC.connections))
 				NCOC.connections += C
 			if (!(NCOC in C.connections))
@@ -206,8 +210,10 @@
 			NC.d2 = fdirn
 			NC.add_fingerprint(user)
 			if (NC != C)
-				NC.connections += C
-				C.connections += NC
+				if (!(C in NC.connections))
+					NC.connections += C
+				if (!(NC in C.connections))
+					C.connections += NC
 			NC.update_icon()
 			C.update_icon()
 			return
@@ -261,16 +267,31 @@
 			opdir = 6
 		else if (C.d2 == 10)
 			opdir = 5
+		for(var/obj/structure/cable/NCCO in get_turf(C))
+			if (NCCO.d1 == 0 && (NCCO.d2 == opdir || NCCO.d2 == C.d2) && NCCO != C)
+				NCCO.disconnect()
+				qdel(NCCO)
+				/*
+				if (!(C in NCCO.connections))
+					NCCO.connections += C
+				if (!(NCCO in C.connections))
+					C.connections += NCCO
+				user << "You connect the two cables."
 		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,C.d2)))
-			if ((NCOO.d2 == opdir || NCOO.d2 == C.d2) && NCOO != C)
-				NCOO.connections += C
-				C.connections += NCOO
+			if ((NCOO.d2 == opdir) && NCOO != C)
+				if (!(C in NCOO.connections))
+					NCOO.connections += C
+				if (!(NCOO in C.connections))
+					C.connections += NCOO
 				user << "You connect the two cables."
 		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
-			if ((NCOC.d2 == C.d2 || NCOC.d2 == C.d2) && NCOC != C)
-				NCOC.connections += C
-				C.connections += NCOC
+			if ((NCOC.d2 == C.d2) && NCOC != C)
+				if (!(C in NCOC.connections))
+					NCOC.connections += C
+				if (!(NCOC in C.connections))
+					C.connections += NCOC
 				user << "You connect the two cables."
+				*/
 		return
 
 //////////////////////////////
