@@ -25,6 +25,14 @@
 /process/epochswap/fire()
 	// no SCHECK here
 	if (is_ready())
+		if (config.allowedgamemodes == "TDM")
+			epochs = list(
+				"313 B.C." = 0,
+				"1013" = 0,
+				"1713" = 0,
+				"1873" = 0,)
+		else if (config.allowedgamemodes == "RP")
+			epochs = list("Civilization 13" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 
@@ -52,7 +60,7 @@
 	var/ready = TRUE
 	var/admin_triggered = FALSE
 	var/finished_at = -1
-	var/next_map_title = "Colony"
+	var/next_map_title = "TBD"
 
 /process/mapswap/setup()
 	name = "mapswap"
@@ -79,8 +87,8 @@
 //				MAP_CURSED_ISLAND = 0,
 				MAP_NAVAL = 0,
 				MAP_ISLAND = 0,
-			//		MAP_VOYAGE = 10,
-			//		MAP_BATTLEROYALE = 20,
+		//		MAP_VOYAGE = 10,
+		//		MAP_BATTLEROYALE = 20,
 				MAP_SUPPLY_RAID = 8,
 				MAP_RECIFE = 10,
 //				MAP_FIELDS = 10,

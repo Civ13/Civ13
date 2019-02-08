@@ -2,8 +2,11 @@
 ## IMPORTANT: Don't include special characters such as ' in here
 SERVER_NAME Civilization 13
 
-## Where is the game folder located? (If you dont use scripts, this is the same as where you put the dmb's. If you do, point this to the folder where you have 1713-1 folder, not the git folder.)
+## Where is the game folder located?
 MASTER_DIRECTORY /home/1713
+
+## If this server is running RP maps only, TDM only, or both (RP TDM ALL).
+ALLOWED_GAMEMODES ALL
 
 ## What features do you want to advertise on your hub message?
 HUB_FEATURES From the Stone Age to the Industrial Age
