@@ -46,7 +46,8 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/obj/item/stack/cable_coil/stored
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond.
+	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond. For turning on/off.
+	var/lastupdate2 = 0 //to prevent loops. Can only update once per decisecond. For power calculations.
 	var/cable_color = "red"
 	color = "#ff0000"
 	var/usesound = 'sound/items/deconstruct.ogg'
@@ -179,21 +180,22 @@ By design, d1 is the smallest direction and d2 is the highest
 		connections -= CB
 	connections = list()
 
-/obj/structure/cable/proc/update_power()
+/obj/structure/cable/proc/update_power(var/powerval = 0)
 	if (!isturf(loc))
 		return
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-15 && CB != src)
+		if (CB.lastupdate2 <= world.time-15 && CB != src)
 			if (powered)
-				CB.currentflow += currentflow
-				lastupdate = world.time
-				CB.lastupdate = world.time
+				CB.currentflow += powerval
+				currentflow += powerval
+				lastupdate2 = world.time
+				CB.lastupdate2 = world.time
 				CB.update_power()
 			else
 				CB.currentflow = 0
 				currentflow = 0
-				CB.lastupdate = world.time
-				lastupdate = world.time
+				CB.lastupdate2 = world.time
+				lastupdate2 = world.time
 				CB.update_power()
 	return
 
@@ -202,7 +204,8 @@ By design, d1 is the smallest direction and d2 is the highest
 		return
 	if (maxpower > 0)
 		powered = TRUE
-		lastupdate = world.realtime
+		powerflow += maxpower
+		lastupdate = world.time
 
 	for (var/obj/structure/cable/CB in connections)
 		if (CB.lastupdate <= world.time-15 && CB != src)
@@ -222,7 +225,7 @@ By design, d1 is the smallest direction and d2 is the highest
 		if (powerflow < 0)
 			powerflow = 0
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-15 && CB != src)
+		if (CB.lastupdate <= world.time-15 && CB != src && CB.powered)
 			CB.powered = FALSE
 			CB.powerflow -= powerflow
 			if (CB.powerflow < 0)

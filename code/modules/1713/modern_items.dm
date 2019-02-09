@@ -52,14 +52,12 @@
 	else
 		if (powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
 			if (!on)
-				powersource.currentflow+=powerneeded
-				powersource.update_power()
+				powersource.update_power(powerneeded)
 				on = TRUE
 			return TRUE
 		else
 			if (on)
-				powersource.currentflow-=powerneeded
-				powersource.update_power()
+				powersource.update_power(powerneeded)
 				on = FALSE
 			return FALSE
 

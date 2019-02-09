@@ -267,18 +267,8 @@
 			opdir = 6
 		else if (C.d2 == 10)
 			opdir = 5
-		for(var/obj/structure/cable/NCCO in get_turf(C))
-			if (NCCO.d1 == 0 && (NCCO.d2 == opdir || NCCO.d2 == C.d2) && NCCO != C)
-				NCCO.disconnect()
-				qdel(NCCO)
-				/*
-				if (!(C in NCCO.connections))
-					NCCO.connections += C
-				if (!(NCCO in C.connections))
-					C.connections += NCCO
-				user << "You connect the two cables."
 		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,C.d2)))
-			if ((NCOO.d2 == opdir) && NCOO != C)
+			if ((NCOO.d2 == C.d2) && NCOO != C)
 				if (!(C in NCOO.connections))
 					NCOO.connections += C
 				if (!(NCOO in C.connections))
@@ -290,6 +280,16 @@
 					NCOC.connections += C
 				if (!(NCOC in C.connections))
 					C.connections += NCOC
+				user << "You connect the two cables."
+		for(var/obj/structure/cable/NCCO in get_turf(C))
+			if (NCCO.d1 == 0 && (NCCO.d2 == opdir || NCCO.d2 == C.d2) && NCCO != C)
+				NCCO.disconnect()
+				qdel(NCCO)
+				/*
+				if (!(C in NCCO.connections))
+					NCCO.connections += C
+				if (!(NCCO in C.connections))
+					C.connections += NCCO
 				user << "You connect the two cables."
 				*/
 		return

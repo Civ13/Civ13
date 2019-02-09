@@ -305,6 +305,57 @@
 	throw_range = 1
 	nothrow = TRUE
 
+/obj/item/weapon/reagent_containers/glass/barrel/modern
+	name = "steel barrel"
+	desc = "A steel barrel. You can put liquids inside."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "barrel"
+	amount_per_transfer_from_this = 10
+	volume = 350
+	density = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/water
+	name = "water barrel"
+	desc = "A steel barrel, filled with drinking water."
+	New()
+		..()
+		reagents.add_reagent("water",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/oil
+	name = "steel barrel"
+	desc = "A steel barrel, filled with crude oil."
+	New()
+		..()
+		reagents.add_reagent("petroleum",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline
+	name = "steel barrel"
+	desc = "A steel barrel, filled with gasoline."
+	New()
+		..()
+		reagents.add_reagent("gasoline",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel
+	name = "diesel barrel"
+	desc = "A steel barrel, filled with diesel."
+	New()
+		..()
+		reagents.add_reagent("diesel",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/biodiesel
+	name = "biodiesel barrel"
+	desc = "A steel barrel, filled with biodiesel."
+	New()
+		..()
+		reagents.add_reagent("biodiesel",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/ethanol
+	name = "ethanol barrel"
+	desc = "A steel barrel, filled with ethanol."
+	New()
+		..()
+		reagents.add_reagent("ethanol",350)
+
 /obj/item/weapon/reagent_containers/glass/barrel/empty
 	name = "wood barrel"
 	desc = "A wood barrel. You can put liquids inside."
