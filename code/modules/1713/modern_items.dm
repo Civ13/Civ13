@@ -54,11 +54,15 @@
 			if (!on)
 				powersource.update_power(powerneeded)
 				on = TRUE
+				powersource.currentflow += powerneeded
+				powersource.lastupdate2 = world.time
 			return TRUE
 		else
 			if (on)
 				powersource.update_power(powerneeded)
 				on = FALSE
+				powersource.currentflow -= powerneeded
+				powersource.lastupdate2 = world.time
 			return FALSE
 
 /obj/structure/lamp/lamppost_small

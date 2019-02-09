@@ -187,16 +187,12 @@ By design, d1 is the smallest direction and d2 is the highest
 		if (CB.lastupdate2 <= world.time-25 && CB != src)
 			if (powered)
 				CB.currentflow += powerval
-				currentflow += powerval
-				lastupdate2 = world.time
 				CB.lastupdate2 = world.time
-				CB.update_power()
+				CB.update_power(powerval)
 			else
 				CB.currentflow = 0
-				currentflow = 0
 				CB.lastupdate2 = world.time
-				lastupdate2 = world.time
-				CB.update_power()
+				CB.update_power(powerval)
 	return
 
 /obj/structure/cable/proc/power_on(var/maxpower = 0)

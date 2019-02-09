@@ -50,6 +50,11 @@
 	currentspeed = 0
 	if (!isemptylist(connections))
 		for (var/obj/C in connections)
+			if (istype(C, /obj/structure/cable))
+				var/obj/structure/cable/CBL = C
+				if (CBL.powerflow > 0)
+					powerused += CBL.powerflow
+					C.powered = TRUE
 			if (C.powerneeded <= (maxpower - powerused))
 				if (!istype(C, /obj/structure/vehicle/axis))
 					powerused += C.powerneeded
@@ -59,7 +64,7 @@
 					C.powered = TRUE
 			else
 				C.powered = FALSE
-	return min(powerused, maxpower)
+	return min(max(powerused,maxpower*0.1), maxpower) //minimum powerused is 10% of maxpower, maximum is the maxpower value
 	//TODO: diferentiating between "movement" connections and "static" connections, so speed and weight can be calculated.
 
 
@@ -132,7 +137,6 @@
 		var/obj/item/stack/cable_coil/CC = W
 		var/obj/structure/cable/NCC = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
 		NCC.connections += src
-		NCC.powerflow += maxpower
 		connections += NCC
 		user << "You connect the cable to the [src]."
 	else
