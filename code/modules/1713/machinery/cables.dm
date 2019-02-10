@@ -183,8 +183,10 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/structure/cable/proc/update_power(var/powerval = 0)
 	if (!isturf(loc))
 		return
+	var/connectioncount = 0 //to prevent loops. maximum 4 connections per tile
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate2 <= world.time-25 && CB != src)
+		if ((CB.lastupdate2 <= world.time-25) && CB != src && connectioncount <= 4)
+			connectioncount +=1
 			if (powered)
 				CB.currentflow += powerval
 				CB.lastupdate2 = world.time

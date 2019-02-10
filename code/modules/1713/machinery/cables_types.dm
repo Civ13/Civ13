@@ -46,6 +46,7 @@
 /obj/item/connector/attack_self(mob/user)
 	for(var/obj/structure/cable/CL in get_turf(user))
 		turflist += CL
+		CL.connections += src
 	for(var/obj/structure/cable/CLC in turflist)
 		for(var/obj/structure/cable/CLD in turflist)
 			if (!(CLD in CLC.connections) && CLC != CLD)
@@ -282,7 +283,7 @@
 					C.connections += NCOC
 				user << "You connect the two cables."
 		for(var/obj/structure/cable/NCCO in get_turf(C))
-			if (NCCO.d1 == 0 && (NCCO.d2 == opdir || NCCO.d2 == C.d2) && NCCO != C)
+			if (NCCO.d1 == 0 && (NCCO.d2 == opdir || NCCO.d2 == C.d2 || NCCO.d1 == C.d1) && NCCO != C)
 				NCCO.disconnect()
 				qdel(NCCO)
 				/*
