@@ -179,7 +179,6 @@
 		user << "<span class='warning'>You can't lay cable at a place that far away!</span>"
 		return
 
-
 	if(U == T) //if clicked on the turf we're standing on, try to put a cable in the direction we're facing
 		place_turf(T,user)
 		return
