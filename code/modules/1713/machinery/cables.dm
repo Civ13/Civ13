@@ -118,14 +118,7 @@ By design, d1 is the smallest direction and d2 is the highest
 
 /obj/structure/cable/proc/handlecable(obj/item/W, mob/user, params)
 
-	if(istype(W, /obj/item/weapon/material/knife))
-		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
-		playsound(loc, usesound, 100, FALSE)
-		stored.add_fingerprint(user)
-		Destroy()
-		return
-
-	else if(istype(W, /obj/item/stack/cable_coil))
+	if(istype(W, /obj/item/stack/cable_coil))
 		var/obj/item/stack/cable_coil/coil = W
 		if (coil.get_amount() < 1)
 			user <<"<span class='warning'>Not enough cable!</span>"
@@ -147,7 +140,14 @@ By design, d1 is the smallest direction and d2 is the highest
 //   - Multitool : get the power currently passing through the cable
 //
 /obj/structure/cable/attackby(obj/item/W, mob/user, params)
-	handlecable(W, user, params)
+	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
+		playsound(loc, usesound, 100, FALSE)
+		stored.add_fingerprint(user)
+		Destroy()
+		return
+	else
+		handlecable(W, user, params)
 
 /obj/structure/cable/proc/update_stored(length = 1, colorC = "red")
 	stored.amount = length
@@ -178,8 +178,9 @@ By design, d1 is the smallest direction and d2 is the highest
 	for (var/obj/structure/cable/CB in connections)
 		CB.connections -= src
 		connections -= CB
-	connections = list()
-
+	for (var/obj/OB in connections)
+		OB.powersource = null
+		connections -= OB
 /obj/structure/cable/proc/update_power(var/powerval = 0)
 	if (!isturf(loc))
 		return
@@ -189,12 +190,12 @@ By design, d1 is the smallest direction and d2 is the highest
 			connectioncount +=1
 			if (powered)
 				CB.currentflow += powerval
-				CB.lastupdate2 = world.time
 				CB.update_power(powerval)
+				CB.lastupdate2 = world.time
 			else
 				CB.currentflow = 0
-				CB.lastupdate2 = world.time
 				CB.update_power(powerval)
+				CB.lastupdate2 = world.time
 	return
 
 /obj/structure/cable/proc/power_on(var/maxpower = 0)
@@ -209,8 +210,8 @@ By design, d1 is the smallest direction and d2 is the highest
 		if (CB.lastupdate <= world.time-25 && CB != src)
 			CB.powered = TRUE
 			CB.powerflow += powerflow
-			CB.lastupdate = world.time
 			CB.power_on(0)
+			CB.lastupdate = world.time
 	return
 
 /obj/structure/cable/proc/power_off(var/maxpower = 0)
