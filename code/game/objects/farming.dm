@@ -62,6 +62,11 @@
 	plant = "tea"
 	color = "#995b0b"
 
+/obj/item/stack/farming/seeds/banana
+	name = "banana seeds"
+	plant = "banana"
+	color = "#ffe135"
+
 /obj/item/stack/farming/seeds/potato
 	name = "seed potato"
 	desc = "a potato selected for breeding because of its characteristics."
@@ -245,6 +250,13 @@
 	icon_state = "rice-grow1"
 	plant = "rice"
 	harvest_verb = "harvest"
+
+/obj/structure/farming/plant/banana
+	name = "banana"
+	desc = "a banana plant."
+	icon_state = "banana-grow1"
+	plant = "banana"
+
 
 /obj/structure/farming/plant/mushroom
 	name = "mushroom"

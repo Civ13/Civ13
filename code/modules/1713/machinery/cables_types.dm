@@ -146,6 +146,15 @@
 				C.connections += NCO
 			user << "You connect the two cables."
 */
+
+	for(var/obj/structure/cable/NCOD in range(1,C))
+		if ((NCOD.d1 == C.d2 || NCOD.d2 == C.d1 ) && NCOD != C)
+			if (!(C in NCOD.connections))
+				NCOD.connections += C
+			if (!(NCOD in C.connections))
+				C.connections += NCOD
+			user << "You connect the two cables."
+
 	for(var/obj/structure/cable/NCOO in get_turf(get_step(C,dirn)))
 		if ((NCOO.d2 == opdir) && NCOO != C)
 			if (!(C in NCOO.connections))

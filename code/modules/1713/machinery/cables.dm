@@ -147,7 +147,16 @@ By design, d1 is the smallest direction and d2 is the highest
 		Destroy()
 		return
 	else
+/*		if (connections.len >= 2)
+			var/count = 0
+			for(var/obj/structure/cable/CBL in connections)
+				count+=1
+			if (count >= 2)
+				user << "Too many connections! Use a connector."
+				return
+*/
 		handlecable(W, user, params)
+		return
 
 /obj/structure/cable/proc/update_stored(length = 1, colorC = "red")
 	stored.amount = length
@@ -181,7 +190,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	for (var/obj/OB in connections)
 		OB.powersource = null
 		connections -= OB
-/obj/structure/cable/proc/update_power(var/powerval = 0)
+/obj/structure/cable/proc/update_power(var/powerval = 0, var/recheck = 0)
 	if (!isturf(loc))
 		return
 	var/connectioncount = 0 //to prevent loops. maximum 4 connections per tile
@@ -193,9 +202,22 @@ By design, d1 is the smallest direction and d2 is the highest
 				CB.currentflow += powerval
 			else
 				CB.currentflow = 0
-			CB.update_power(powerval)
+			CB.update_power(powerval,0)
+		if (recheck)
+			recheck_update_power(powerval)
 	return
-
+/obj/structure/cable/proc/recheck_update_power(var/powerval = 0)
+	if (!isturf(loc))
+		return
+	spawn(30)
+		var/connectioncount = 0 //to prevent loops. maximum 4 connections per tile
+		for (var/obj/structure/cable/CB in connections)
+			if ((CB.lastupdate2 <= world.time-25) && CB != src && connectioncount <= 4)
+				connectioncount +=1
+				CB.lastupdate2 = world.time
+				if (powered && CB.currentflow < currentflow)
+					CB.currentflow = currentflow
+					CB.recheck_update_power(powerval)
 /obj/structure/cable/proc/power_on(var/maxpower = 0)
 	if (!isturf(loc))
 		return

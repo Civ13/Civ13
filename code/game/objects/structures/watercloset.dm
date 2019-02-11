@@ -559,10 +559,12 @@
 
 /obj/structure/sink/New()
 	..()
+/*
 	if (map.ID == MAP_NOMADS_JUNGLE)
 		mosquito_proc()
+*/
 	spawn(2000)
-		if (map.chad_mode && map.ID != MAP_NOMADS_JUNGLE)
+		if (map.chad_mode)
 			mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()
