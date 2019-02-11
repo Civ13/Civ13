@@ -149,25 +149,25 @@
 
 	for(var/obj/structure/cable/NCOD in range(1,C))
 		if ((NCOD.d1 == opdir || NCOD.d2 == C.d1 ) && NCOD != C)
-			if (!(C in NCOD.connections))
+			if (!(C in NCOD.connections) && !list_cmp(C.connections, NCOD.connections))
 				NCOD.connections += C
-			if (!(NCOD in C.connections))
+			if (!(NCOD in C.connections) && !list_cmp(C.connections, NCOD.connections))
 				C.connections += NCOD
 			user << "You connect the two cables."
 
 	for(var/obj/structure/cable/NCOO in get_turf(get_step(C,dirn)))
 		if ((NCOO.d2 == opdir) && NCOO != C)
-			if (!(C in NCOO.connections))
+			if (!(C in NCOO.connections) && !list_cmp(C.connections, NCOO.connections))
 				NCOO.connections += C
-			if (!(NCOO in C.connections))
+			if (!(NCOO in C.connections) && !list_cmp(C.connections, NCOO.connections))
 				C.connections += NCOO
 			user << "You connect the two cables."
 
 	for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
 		if ((NCOC.d2 == dirn) && NCOC != C)
-			if (!(C in NCOC.connections))
+			if (!(C in NCOC.connections) && !list_cmp(C.connections, NCOC.connections))
 				NCOC.connections += C
-			if (!(NCOC in C.connections))
+			if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))
 				C.connections += NCOC
 			user << "You connect the two cables."
 	return C
