@@ -21,7 +21,7 @@
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
-			user << "There's already a cable connected here! Split it further from the engine."
+			user << "There's already a cable connected here! Split it further from the [src]."
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
