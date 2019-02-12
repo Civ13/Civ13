@@ -148,7 +148,7 @@
 */
 
 	for(var/obj/structure/cable/NCOD in range(1,C))
-		if ((NCOD.d1 == opdir || NCOD.d2 == C.d1 ) && NCOD != C)
+		if ((NCOD.d1 == opdir || NCOD.d2 == C.d1 ) && !(C.d1 == 0 && NCOD.d2 == C.d2) && NCOD != C)
 			if (!(C in NCOD.connections) && !list_cmp(C.connections, NCOD.connections))
 				NCOD.connections += C
 			if (!(NCOD in C.connections) && !list_cmp(C.connections, NCOD.connections))

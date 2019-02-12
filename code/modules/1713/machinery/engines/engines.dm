@@ -52,8 +52,8 @@
 		for (var/obj/C in connections)
 			if (istype(C, /obj/structure/cable))
 				var/obj/structure/cable/CBL = C
-				if (CBL.powerflow > 0)
-					powerused += CBL.powerflow
+				if (CBL.currentflow > 0)
+					powerused += CBL.currentflow
 					C.powered = TRUE
 			if (C.powerneeded <= (maxpower - powerused))
 				if (!istype(C, /obj/structure/vehicle/axis))
