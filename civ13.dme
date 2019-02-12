@@ -262,6 +262,7 @@
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
 #include "code\game\objects\map_metadata\nomads_desert.dm"
+#include "code\game\objects\map_metadata\nomads_divide.dm"
 #include "code\game\objects\map_metadata\nomads_extended.dm"
 #include "code\game\objects\map_metadata\nomads_ice_age.dm"
 #include "code\game\objects\map_metadata\nomads_jungle.dm"
@@ -798,5 +799,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_desert.dmm"
+#include "maps\special\nomads_divide.dmm"
 // END_INCLUDE

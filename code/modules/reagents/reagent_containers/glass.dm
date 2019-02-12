@@ -29,6 +29,8 @@
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
 		/obj/structure/oil_spring,
+		/obj/structure/refinery,
+		/obj/structure/oilwell,
 		/obj/item/flashlight/lantern,
 		/obj/item/stack/ammopart,
 		)
