@@ -107,7 +107,7 @@
 	var/maxvolume = 300
 	var/active = FALSE
 	var/product = "gasoline"
-	powerneeded = 20
+	powerneeded = 1
 
 /obj/structure/refinery/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
