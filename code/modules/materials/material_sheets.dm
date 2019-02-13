@@ -210,6 +210,7 @@
 	icon_state = "sheet-metal"
 	default_type = DEFAULT_WALL_MATERIAL
 	value = 5
+	max_amount = 500
 
 /obj/item/stack/material/wood
 	name = "wooden plank"
