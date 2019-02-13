@@ -877,7 +877,10 @@
 			Move(get_step(mob, NORTH), NORTH)
 		catch (var/E)
 			pass(E)
-
+		if (istype(mob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = mob
+			if (H.driver && H.driver_vehicle)
+				H.driver_vehicle.processmove(NORTH)
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
 	set instant = TRUE
@@ -887,6 +890,10 @@
 			Move(get_step(mob, SOUTH), SOUTH)
 		catch (var/E)
 			pass(E)
+		if (istype(mob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = mob
+			if (H.driver && H.driver_vehicle)
+				H.driver_vehicle.processmove(SOUTH)
 
 /client/verb/startmovingright()
 	set name = ".startmovingright"
@@ -897,6 +904,10 @@
 			Move(get_step(mob, EAST), EAST)
 		catch (var/E)
 			pass(E)
+		if (istype(mob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = mob
+			if (H.driver && H.driver_vehicle)
+				H.driver_vehicle.processmove(EAST)
 
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
@@ -907,6 +918,10 @@
 			Move(get_step(mob, WEST), WEST)
 		catch (var/E)
 			pass(E)
+		if (istype(mob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = mob
+			if (H.driver && H.driver_vehicle)
+				H.driver_vehicle.processmove(WEST)
 
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"

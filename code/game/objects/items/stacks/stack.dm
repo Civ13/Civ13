@@ -182,6 +182,29 @@
 				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
 					qdel(H.r_hand)
 
+	if (findtext(recipe.title, "raft"))
+		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
+			user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/rope))
+				var/obj/item/stack/material/rope/NR = H.l_hand
+				if (NR.amount >= 2)
+					NR.amount -= 2
+					if (NR.amount <= 0)
+						qdel(H.l_hand)
+				else
+					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
+			else if (istype(H.r_hand, /obj/item/stack/material/rope))
+				var/obj/item/stack/material/rope/NR = H.r_hand
+				if (NR.amount >= 2)
+					NR.amount -= 2
+					if (NR.amount <= 0)
+						qdel(H.r_hand)
+				else
+					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
+
+
 	if (recipe.result_type == /obj/structure/religious/totem || recipe.result_type == /obj/structure/religious/impaledskull || recipe.result_type == /obj/structure/religious/tribalmask || recipe.result_type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot || recipe.result_type == /obj/item/clothing/accessory/armband/talisman || recipe.result_type == /obj/item/clothing/head/skullmask || recipe.result_type == /obj/item/weapon/material/kitchen/utensil/knife/bone)
 		if (!H.faction_text == INDIANS)
 			H << "<span class = 'danger'>Only natives can make this!</span>"

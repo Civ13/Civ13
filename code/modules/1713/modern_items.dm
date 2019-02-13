@@ -10,8 +10,8 @@
 	density = FALSE
 	opacity = FALSE
 	var/on = FALSE
-	not_movable = TRUE
-	not_disassemblable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 	powerneeded = 2
 	var/light_amt = 6 //light range
 	layer = 3.95
