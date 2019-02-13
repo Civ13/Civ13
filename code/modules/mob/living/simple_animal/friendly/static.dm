@@ -60,6 +60,8 @@
 	for (var/obj/covers/CV in src.loc)
 		if (CV.is_cover == TRUE)
 			return
+	for (var/obj/structure/vehicle/V in src.loc)
+		return
 	if (istype(M, /mob/living/carbon/human))
 		invisibility = 0
 		visible_message("<span class='notice'>The piranhas swarm [M]!</span>")
