@@ -1,6 +1,6 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/nomads_divide
-	//ID = MAP_NOMADS_DIVIDE
+	ID = MAP_NOMADS_DIVIDE
 	title = "Nomads (Jungle-Desert) (250x250x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
