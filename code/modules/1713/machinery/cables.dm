@@ -53,6 +53,22 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/usesound = 'sound/items/deconstruct.ogg'
 	var/powerflow = 0 //maximum powerflow in the network (total maxpower of all engines connected)
 	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
+	var/tilepos = "over"
+
+/obj/structure/cable/verb/hiding()
+	set category = null
+	set name = "Under/Over tiles"
+	set src in range(1, usr)
+	if (tilepos == "over")
+		tilepos = "under"
+		layer = 1.95
+		return
+
+	else if (tilepos == "under")
+		tilepos = "over"
+		layer = MOB_LAYER - 0.1
+		return
+
 /obj/structure/cable/yellow
 	cable_color = "yellow"
 	color = "#ffff00"
