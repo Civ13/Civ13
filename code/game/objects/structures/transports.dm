@@ -23,6 +23,7 @@
 	for (var/obj/O in ontop)
 		O.forceMove(get_step(src, m_dir))
 	forceMove(get_step(src, m_dir))
+	update_icon()
 	return
 
 /obj/structure/vehicle/update_icon()
