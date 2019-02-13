@@ -122,6 +122,7 @@
 				MAP_NOMADS_DESERT = 0,
 				MAP_NOMADS_ICE_AGE = 0,
 				MAP_NOMADS_JUNGLE = 0,
+				MAP_NOMADS_DIVIDE = 0,
 			)
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
