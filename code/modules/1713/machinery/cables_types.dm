@@ -42,6 +42,26 @@
 	icon_state = "connector"
 	var/list/connections = list()
 	var/list/turflist = list()
+	var/tilepos = "over"
+
+/obj/item/connector/verb/hiding()
+	set category = null
+	set name = "Under/Over tiles"
+	set src in range(1, usr)
+
+	if (!anchored)
+		usr << "Place it first."
+		return
+
+	if (tilepos == "over")
+		tilepos = "under"
+		layer = 1.95
+		return
+
+	else if (tilepos == "under")
+		tilepos = "over"
+		layer = 3.92
+		return
 
 /obj/item/connector/attack_self(mob/user)
 	for(var/obj/structure/cable/CL in get_turf(user))
@@ -106,10 +126,14 @@
 			dirn = get_dir(T, user)
 	else
 		dirn = dirnew
-
+	var/currdir = "horizontal"
+	if (dirn == 8 || dirn == 4)
+		currdir = "horizontal"
+	else if (dirn == 1 || dirn == 2)
+		currdir = "vertical"
 	for(var/obj/structure/cable/LC in T)
-		if(LC.d2 == dirn && LC.d1 == 0)
-			user << "<span class='warning'>There's already a cable at that position!</span>"
+		if(LC.tiledir == currdir)
+			user << "<span class='warning'>There's already a cable at that position with the same direction!</span>"
 			return
 
 	var/obj/structure/cable/C = new /obj/structure/cable(T)
@@ -118,190 +142,35 @@
 	amount -= 1
 	C.d1 = 0 //it's a O-X node cable
 	C.d2 = dirn
+	C.tiledir = currdir
 	C.add_fingerprint(user)
-	var/opdir = 1
-	if (dirn == 1)
-		opdir = 2
-	else if (dirn == 2)
-		opdir = 1
-	else if (dirn == 4)
-		opdir = 8
-	else if (dirn == 5)
-		opdir = 10
-	else if (dirn == 6)
-		opdir = 9
-	else if (dirn == 8)
-		opdir = 4
-	else if (dirn == 9)
-		opdir = 6
-	else if (dirn == 10)
-		opdir = 5
+	var/opdir1 = 0
+	var/opdir2 = 0
+	if (C.tiledir == "horizontal")
+		opdir1 = 4
+		opdir2 = 8
+	else if  (C.tiledir == "vertical")
+		opdir1 = 1
+		opdir2 = 2
 	C.update_icon()
-/*
-	for(var/obj/structure/cable/NCO in get_turf(C))
-		if ((NCO.d2 == dirn || NCO.d2 == opdir) && NCO != C)
-			if (!(C in NCO.connections))
-				NCO.connections += C
-			if (!(NCO in C.connections))
-				C.connections += NCO
-			user << "You connect the two cables."
-*/
 
-	for(var/obj/structure/cable/NCOD in range(1,C))
-		if ((NCOD.d1 == opdir || NCOD.d2 == C.d1 ) && !(C.d1 == 0 && NCOD.d2 == C.d2) && NCOD != C)
-			if (!(C in NCOD.connections) && !list_cmp(C.connections, NCOD.connections))
-				NCOD.connections += C
-			if (!(NCOD in C.connections) && !list_cmp(C.connections, NCOD.connections))
-				C.connections += NCOD
-			user << "You connect the two cables."
-
-	for(var/obj/structure/cable/NCOO in get_turf(get_step(C,dirn)))
-		if ((NCOO.d2 == opdir) && NCOO != C)
-			if (!(C in NCOO.connections) && !list_cmp(C.connections, NCOO.connections))
-				NCOO.connections += C
-			if (!(NCOO in C.connections) && !list_cmp(C.connections, NCOO.connections))
-				C.connections += NCOO
-			user << "You connect the two cables."
-
-	for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
-		if ((NCOC.d2 == dirn) && NCOC != C)
-			if (!(C in NCOC.connections) && !list_cmp(C.connections, NCOC.connections))
-				NCOC.connections += C
-			if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))
-				C.connections += NCOC
-			user << "You connect the two cables."
-	return C
-
-// called when cable_coil is click on an installed obj/cable
-// or click on a turf that already contains a "node" cable
-/obj/item/stack/cable_coil/proc/cable_join(obj/structure/cable/C, mob/user, var/showerror = TRUE)
-	var/turf/U = user.loc
-	if(!isturf(U))
-		return
-
-	var/turf/T = C.loc
-
-	if(!isturf(T))		// sanity checks
-		return
-
-	if(get_dist(C, user) > 1)		// make sure it's close enough
-		user << "<span class='warning'>You can't lay cable at a place that far away!</span>"
-		return
-
-	if(U == T) //if clicked on the turf we're standing on, try to put a cable in the direction we're facing
-		place_turf(T,user)
-		return
-
-	var/dirn = get_dir(C, user)
-
-	// one end of the clicked cable is pointing towards us
-	if(C.d1 == dirn || C.d2 == dirn)
-		if(!isturf(U))
-			user << "<span class='warning'>You can't lay a cable here!"
-			return
-		else
-			// cable is pointing at us, we're standing on an open tile
-			// so create a stub pointing at the clicked cable on our tile
-
-			var/fdirn = turn(dirn, 180)		// the opposite direction
-
-			for(var/obj/structure/cable/LC in U)		// check to make sure there's not a cable there already
-				if(LC.d1 == fdirn || LC.d2 == fdirn)
-					if (showerror)
-						user << "<span class='warning'>There's already a cable at that position!</span>"
-					return
-
-			var/obj/structure/cable/NC = new /obj/structure/cable(U)
-			amount -= 1
-			NC.color = C.color
-			NC.cable_color = C.cable_color
-			NC.d1 = 0
-			NC.d2 = fdirn
-			NC.add_fingerprint(user)
-			if (NC != C)
-				if (!(C in NC.connections))
-					NC.connections += C
-				if (!(NC in C.connections))
-					C.connections += NC
-			NC.update_icon()
-			C.update_icon()
-			return
-
-	// exisiting cable doesn't point at our position, so see if it's a stub
-	else if(C.d1 == 0)
-							// if so, make it a full cable pointing from it's old direction to our dirn
-		var/nd1 = C.d2	// these will be the new directions
-		var/nd2 = dirn
-
-
-		if(nd1 > nd2)		// swap directions to match icons/states
-			nd1 = dirn
-			nd2 = C.d2
-
-
-		for(var/obj/structure/cable/LC in T)		// check to make sure there's no matching cable
-			if(LC == C)			// skip the cable we're interacting with
-				continue
-			if((LC.d1 == nd1 && LC.d2 == nd2) || (LC.d1 == nd2 && LC.d2 == nd1) )	// make sure no cable matches either direction
-				if (showerror)
-					user <<"<span class='warning'>There's already a cable at that position!</span>"
-
-				return
-
-
-		C.update_icon()
-
-		C.d1 = nd1
-		C.d2 = nd2
-
-		//updates the stored cable coil
-		C.update_stored(2, cable_color)
-
-		C.add_fingerprint(user)
-		C.update_icon()
-		var/opdir = 1
-		if (C.d2 == 1)
-			opdir = 2
-		else if (C.d2 == 2)
-			opdir = 1
-		else if (C.d2 == 4)
-			opdir = 8
-		else if (C.d2 == 5)
-			opdir = 10
-		else if (C.d2 == 6)
-			opdir = 9
-		else if (C.d2 == 8)
-			opdir = 4
-		else if (C.d2 == 9)
-			opdir = 6
-		else if (C.d2 == 10)
-			opdir = 5
-		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,C.d2)))
-			if ((NCOO.d2 == C.d2) && NCOO != C)
-				if (!(C in NCOO.connections))
+	if (opdir1 != 0 && opdir2 != 0)
+		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,opdir1)))
+			if ((NCOO.tiledir == C.tiledir) && NCOO != C)
+				if (!(C in NCOO.connections) && !list_cmp(C.connections, NCOO.connections))
 					NCOO.connections += C
-				if (!(NCOO in C.connections))
+				if (!(NCOO in C.connections) && !list_cmp(C.connections, NCOO.connections))
 					C.connections += NCOO
 				user << "You connect the two cables."
-		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir)))
-			if ((NCOC.d2 == C.d2) && NCOC != C)
-				if (!(C in NCOC.connections))
+
+		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir2)))
+			if ((NCOC.d2 == dirn) && NCOC != C)
+				if (!(C in NCOC.connections) && !list_cmp(C.connections, NCOC.connections))
 					NCOC.connections += C
-				if (!(NCOC in C.connections))
+				if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))
 					C.connections += NCOC
 				user << "You connect the two cables."
-		for(var/obj/structure/cable/NCCO in get_turf(C))
-			if (NCCO.d1 == 0 && (NCCO.d2 == opdir || NCCO.d2 == C.d2 || NCCO.d1 == C.d1) && NCCO != C)
-				NCCO.disconnect()
-				qdel(NCCO)
-				/*
-				if (!(C in NCCO.connections))
-					NCCO.connections += C
-				if (!(NCCO in C.connections))
-					C.connections += NCCO
-				user << "You connect the two cables."
-				*/
-		return
+	return C
 
 //////////////////////////////
 // Misc.

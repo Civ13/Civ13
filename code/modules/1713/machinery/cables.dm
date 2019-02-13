@@ -54,6 +54,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/powerflow = 0 //maximum powerflow in the network (total maxpower of all engines connected)
 	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
 	var/tilepos = "over"
+	var/tiledir = "horizontal"
 
 /obj/structure/cable/verb/hiding()
 	set category = null
@@ -130,28 +131,11 @@ By design, d1 is the smallest direction and d2 is the highest
 ///////////////////////////////////
 
 /obj/structure/cable/update_icon()
-	icon_state = "[d1]-[d2]"
-
-/obj/structure/cable/proc/handlecable(obj/item/W, mob/user, params)
-
-	if(istype(W, /obj/item/stack/cable_coil))
-		var/obj/item/stack/cable_coil/coil = W
-		if (coil.get_amount() < 1)
-			user <<"<span class='warning'>Not enough cable!</span>"
-			return
-		coil.cable_join(src, user)
-/*
-	else if(W.tool_behaviour == TOOL_MULTITOOL)
-		if(powernet && (powernet.avail > 0))		// is it powered?
-			user <<"<span class='danger'>Total power: [DisplayPower(powernet.avail)]\nLoad: [DisplayPower(powernet.load)]\nExcess power: [DisplayPower(surplus())]</span>"
-		else
-			user <<"<span class='danger'>The cable is not powered.</span>"
-		shock(user, 5, 0.2)
-*/
-	add_fingerprint(user)
+//	icon_state = "[d1]-[d2]"
+	icon_state = tiledir
 
 // Items usable on a cable :
-//   - Wirecutters : cut it duh !
+//   - knife : cut it duh !
 //   - Cable coil : merge cables
 //   - Multitool : get the power currently passing through the cable
 //
@@ -162,6 +146,14 @@ By design, d1 is the smallest direction and d2 is the highest
 		stored.add_fingerprint(user)
 		Destroy()
 		return
+/*
+	else if(W.tool_behaviour == TOOL_MULTITOOL)
+		if(powernet && (powernet.avail > 0))		// is it powered?
+			user <<"<span class='danger'>Total power: [DisplayPower(powernet.avail)]\nLoad: [DisplayPower(powernet.load)]\nExcess power: [DisplayPower(surplus())]</span>"
+		else
+			user <<"<span class='danger'>The cable is not powered.</span>"
+		shock(user, 5, 0.2)
+*/
 	else
 /*		if (connections.len >= 2)
 			var/count = 0
@@ -171,7 +163,7 @@ By design, d1 is the smallest direction and d2 is the highest
 				user << "Too many connections! Use a connector."
 				return
 */
-		handlecable(W, user, params)
+//		handlecable(W, user, params)
 		return
 
 /obj/structure/cable/proc/update_stored(length = 1, colorC = "red")
