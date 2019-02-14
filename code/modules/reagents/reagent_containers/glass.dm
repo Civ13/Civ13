@@ -31,6 +31,7 @@
 		/obj/structure/oil_spring,
 		/obj/structure/refinery,
 		/obj/structure/oilwell,
+		/obj/structure/heatsource,
 		/obj/item/flashlight/lantern,
 		/obj/item/stack/ammopart,
 		)

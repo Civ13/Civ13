@@ -10,7 +10,7 @@
 	var/on = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-
+	var/fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel", "olive_oil")
 /obj/structure/heatsource/New()
 	..()
 	do_light()
@@ -33,7 +33,7 @@
 					qdel(src)
 					return
 		else if (istype(W, /obj/item/stack/ore/coal))
-			fuel += (180)*W.amount
+			fuel += (240)*W.amount
 			user << "You refuel the [src]."
 			qdel(W)
 			return
@@ -42,7 +42,17 @@
 			user << "You refuel the [src]."
 			qdel(W)
 			return
-
+		else if (istype(W, /obj/item/weapon/reagent_containers/glass) && !istype(W, /obj/item/weapon/reagent_containers/glass/rag))
+			var/obj/item/weapon/reagent_containers/glass/fcont = W
+			var/amt = 0
+			for (var/F in fuels)
+				if (fcont.reagents.has_reagent(F))
+					amt += fcont.reagents.get_reagent_amount(F)
+					fcont.reagents.remove_reagent(F, fcont.reagents.get_reagent_amount(F))
+			fuel += (30)*amt
+			user << "You refuel the [src]."
+			fcont.reagents.clear_reagents()
+			return
 		else if  (istype(W, /obj/item))
 			if (W.flammable)
 				if (istype(W, /obj/item/stack))
@@ -74,7 +84,7 @@
 		user << "You light \the [src]."
 		on = TRUE
 		icon_state = "furnace_open_on"
-		set_light(2)
+		set_light(5)
 		return
 	else
 		user << "You put out \the [src]."

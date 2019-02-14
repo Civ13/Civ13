@@ -266,6 +266,7 @@
 #include "code\game\objects\map_metadata\nomads_extended.dm"
 #include "code\game\objects\map_metadata\nomads_ice_age.dm"
 #include "code\game\objects\map_metadata\nomads_jungle.dm"
+#include "code\game\objects\map_metadata\nomads_mountain.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
 #include "code\game\objects\map_metadata\siege.dm"

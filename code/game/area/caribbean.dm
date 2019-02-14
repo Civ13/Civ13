@@ -355,7 +355,45 @@
 	name = "the caves"
 	location = AREA_INSIDE
 
+/area/caribbean/void/caves/level1
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
 
+/area/caribbean/void/caves/level2
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level3
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level4
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level5
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level6
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level7
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level8
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
 // end of wormhole areas
 
 

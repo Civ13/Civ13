@@ -363,12 +363,13 @@
 				user << "<span class='notice'>There already is something planted here.</span>"
 				return
 			var/area/A = get_area(C)
-			if (istype(A, /area/caribbean/void/caves) && !istype(C, /obj/item/stack/farming/seeds/mushroom))
-				user << "<span class='notice'>You can't farm underground.</span>"
-				return
-			if (A.location == AREA_INSIDE && !istype(C, /obj/item/stack/farming/seeds/mushroom))
-				user << "<span class='notice'>You can't farm in a roofed area.</span>"
-				return
+			if (!map.ID == MAP_NOMADS_MOUNTAIN)
+				if (istype(A, /area/caribbean/void/caves) && !istype(C, /obj/item/stack/farming/seeds/mushroom))
+					user << "<span class='notice'>You can't farm underground.</span>"
+					return
+				if (A.location == AREA_INSIDE && !istype(C, /obj/item/stack/farming/seeds/mushroom))
+					user << "<span class='notice'>You can't farm in a roofed area.</span>"
+					return
 			else if (istype(C, /obj/item/stack/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/potato(src)
