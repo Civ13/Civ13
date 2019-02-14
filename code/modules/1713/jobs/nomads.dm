@@ -23,7 +23,7 @@
 	if (!map.chad_mode)
 
 //knives and other tools/////////////////////////////////////////////////
-		if (map.civilizations && !map.ID == MAP_NOMADS_MOUNTAIN)
+		if (map.civilizations && map.ID != MAP_NOMADS_MOUNTAIN)
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
 			else if (map.ordinal_age == 1)

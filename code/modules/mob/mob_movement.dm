@@ -880,7 +880,10 @@
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
 			if (H.driver && H.driver_vehicle)
+				H.dir = NORTH
+				H.driver_vehicle.dir = NORTH
 				H.driver_vehicle.processmove(NORTH)
+
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
 	set instant = TRUE
@@ -893,6 +896,8 @@
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
 			if (H.driver && H.driver_vehicle)
+				H.dir = SOUTH
+				H.driver_vehicle.dir = SOUTH
 				H.driver_vehicle.processmove(SOUTH)
 
 /client/verb/startmovingright()
@@ -907,6 +912,8 @@
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
 			if (H.driver && H.driver_vehicle)
+				H.dir = EAST
+				H.driver_vehicle.dir = EAST
 				H.driver_vehicle.processmove(EAST)
 
 /client/verb/startmovingleft()
@@ -921,6 +928,8 @@
 		if (istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
 			if (H.driver && H.driver_vehicle)
+				H.dir = WEST
+				H.driver_vehicle.dir = WEST
 				H.driver_vehicle.processmove(WEST)
 
 /client/verb/stopmovingup()

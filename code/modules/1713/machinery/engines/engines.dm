@@ -56,7 +56,7 @@
 					powerused += CBL.currentflow
 					C.powered = TRUE
 			if (C.powerneeded <= (maxpower - powerused))
-				if (!istype(C, /obj/structure/vehicle/axis))
+				if (!istype(C, /obj/structure/vehicleparts/axis))
 					powerused += C.powerneeded
 					C.powered = TRUE
 				else
@@ -81,7 +81,7 @@
 //processes the engine load taking into account power, weight and torque
 
 
-/obj/structure/engine/proc/process_load(var/obj/structure/vehicle/axis/source = null)
+/obj/structure/engine/proc/process_load(var/obj/structure/vehicleparts/axis/source = null)
 	var/pullweight = process_current_weight()
 	pullweight /= torque
 	currentspeed += source.get_speed()*(pullweight/maxpower) //movement delay, in deciseconds per tile (higher = slower)

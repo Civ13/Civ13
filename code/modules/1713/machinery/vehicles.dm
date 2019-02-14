@@ -1,5 +1,5 @@
 
-/obj/structure/vehicle
+/obj/structure/vehicleparts
 	name = "vehicle part"
 	desc = "a basic vehicle part."
 	icon = 'icons/obj/vehicleparts.dmi'
@@ -9,14 +9,14 @@
 	not_disassemblable = TRUE
 	flammable = FALSE
 
-/obj/structure/vehicle/axis
+/obj/structure/vehicleparts/axis
 	name = "vehicle axis"
 	desc = "supports wheels."
 	icon_state = "axis"
 	var/list/wheels = list()
 	var/currentspeed = 10 //5 to 10, 5 being the fastest (less delay)
 
-/obj/structure/vehicle/axis/proc/get_speed()
+/obj/structure/vehicleparts/axis/proc/get_speed()
 	if (powered)
 		return currentspeed
 	else

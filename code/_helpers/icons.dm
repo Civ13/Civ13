@@ -869,3 +869,10 @@ arguments tx, ty, tz are target coordinates (requred), range defines render dist
 cap_mode is capturing mode (optional), user is capturing mob (requred only wehen cap_mode = CAPTURE_MODE_REGULAR),
 lighting determines lighting capturing (optional), suppress_errors suppreses errors and continues to capture (optional).
 */
+
+
+/atom/proc/add_overlay(image)
+	var/list/new_overlays = overlays.Copy()
+	new_overlays -= image
+	new_overlays += image
+	overlays = new_overlays

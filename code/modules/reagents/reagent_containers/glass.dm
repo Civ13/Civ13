@@ -317,6 +317,25 @@
 	volume = 350
 	density = TRUE
 
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank
+	name = "large fueltank"
+	desc = "A metalic fueltank. Used to connect to a engine and supply it with fuel."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "fueltank_large"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
+	name = "small fueltank"
+	icon_state = "fueltank_small"
+	volume = 120
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike
+	name = "motorcycle fueltank"
+	icon_state = "fueltank_bike"
+	volume = 50
+
 /obj/item/weapon/reagent_containers/glass/barrel/modern/water
 	name = "water barrel"
 	desc = "A steel barrel, filled with drinking water."
