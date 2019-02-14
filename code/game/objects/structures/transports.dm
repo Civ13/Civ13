@@ -43,7 +43,7 @@
 	not_disassemblable = FALSE
 
 /obj/structure/vehicle/raft/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
-	if (M.anchored == FALSE && M.driver == FALSE)
+	if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
 		visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 		if (do_after(M, 40, src))
 			visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
@@ -60,7 +60,6 @@
 		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 		if (do_after(user, 30, src))
 			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
-			user.anchored = FALSE
 			ontop -= user
 			if (user == driver)
 				user.driver = FALSE
@@ -70,6 +69,13 @@
 
 /obj/structure/vehicle/raft/do_vehicle_check(var/m_dir = null)
 	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
-		return TRUE
+		if (driver in src.loc)
+			return TRUE
+		else
+			driver.driver = FALSE
+			driver.driver_vehicle = null
+			driver << "You leave the [src]."
+			ontop -= driver
+			driver = null
 	else
 		return FALSE
