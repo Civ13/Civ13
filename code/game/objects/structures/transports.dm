@@ -31,18 +31,8 @@
 		dir = driver.dir
 	..()
 
-/obj/structure/vehicle/raft
-	name = "raft"
-	icon = 'icons/obj/vehicleparts.dmi'
-	icon_state = "raft"
-	anchored = FALSE
-	density = FALSE
-	opacity = FALSE
-	flammable = TRUE
-	not_movable = FALSE
-	not_disassemblable = FALSE
 
-/obj/structure/vehicle/raft/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
+/obj/structure/vehicle/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
 	if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
 		visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 		if (do_after(M, 40, src))
@@ -55,7 +45,7 @@
 				ontop += M
 			return
 
-/obj/structure/vehicle/raft/attack_hand(mob/living/carbon/human/user as mob)
+/obj/structure/vehicle/attack_hand(mob/living/carbon/human/user as mob)
 	if ((user in ontop))
 		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
 		if (do_after(user, 30, src))
@@ -66,6 +56,18 @@
 				user.driver_vehicle = null
 				driver = null
 			return
+
+
+/obj/structure/vehicle/raft
+	name = "raft"
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "raft"
+	anchored = FALSE
+	density = FALSE
+	opacity = FALSE
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
 
 /obj/structure/vehicle/raft/do_vehicle_check(var/m_dir = null)
 	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
