@@ -56,9 +56,9 @@
 					powerused += CBL.currentflow
 					C.powered = TRUE
 			if (C.powerneeded <= (maxpower - powerused))
-				if (!istype(C, /obj/structure/vehicleparts/axis))
-					powerused += C.powerneeded
-					C.powered = TRUE
+//				if (!istype(C, /obj/structure/vehicleparts/axis))
+				powerused += C.powerneeded
+				C.powered = TRUE
 /*				else
 					powerused += process_load(C)
 					C.powered = TRUE
