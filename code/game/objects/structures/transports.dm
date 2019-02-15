@@ -135,6 +135,7 @@
 					engine.currentspeed = 0
 					engine.currentpower = 0
 					user << "You turn off the engine."
+					set_light(0)
 					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
 					return
 
@@ -205,6 +206,8 @@
 	axis = new/obj/structure/vehicleparts/axis/bike
 	wheeled = TRUE
 	dwheel = new/obj/item/vehicleparts/wheel/handle
+
+	light_color = "#e2ac53"
 /obj/structure/vehicle/motorcycle/m125
 	name = "125cc motorcycle"
 	desc = "A 125cc, 4-stroke gasoline motorcycle."
@@ -249,11 +252,11 @@
 		for(var/obj/structure/O in get_turf(get_step(src,driver.dir)))
 			if (O.density == TRUE)
 				moving = FALSE
-				world << "<span class='warning'>You hit \the [O]!</span>"
+				visible_message("<span class='notice'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 				health -= rand(3,4)*axis.currentspeed
 				driver.adjustBruteLoss(rand(3,4)*axis.currentspeed)
 				if (axis.currentspeed >= 3 || (axis.currentspeed == 2 && prob(50)))
-					world << "<span class='danger'>You fall from \the [src]!</span>"
+					visible_message("<span class='notice'>[driver] falls from \the [src]!</span>","<span class='danger'>You fall from \the [src]!</span>")
 					stopmovementloop()
 					driver.SpinAnimation(5,1)
 					if (isturf(locate(x+1,y,z)))
