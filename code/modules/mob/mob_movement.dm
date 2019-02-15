@@ -882,7 +882,8 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
-				H.driver_vehicle.processmove(NORTH)
+				if (!H.driver_vehicle.wheeled)
+					H.driver_vehicle.processmove(NORTH)
 
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
@@ -898,7 +899,8 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH
-				H.driver_vehicle.processmove(SOUTH)
+				if (!H.driver_vehicle.wheeled)
+					H.driver_vehicle.processmove(SOUTH)
 
 /client/verb/startmovingright()
 	set name = ".startmovingright"
@@ -914,7 +916,8 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
-				H.driver_vehicle.processmove(EAST)
+				if (!H.driver_vehicle.wheeled)
+					H.driver_vehicle.processmove(EAST)
 
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
@@ -930,7 +933,8 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
-				H.driver_vehicle.processmove(WEST)
+				if (!H.driver_vehicle.wheeled)
+					H.driver_vehicle.processmove(WEST)
 
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"

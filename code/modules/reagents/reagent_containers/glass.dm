@@ -34,6 +34,7 @@
 		/obj/structure/heatsource,
 		/obj/item/flashlight/lantern,
 		/obj/item/stack/ammopart,
+		/obj/structure/vehicle,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
