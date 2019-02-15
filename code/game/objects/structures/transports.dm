@@ -252,11 +252,12 @@
 		for(var/obj/structure/O in get_turf(get_step(src,driver.dir)))
 			if (O.density == TRUE)
 				moving = FALSE
-				visible_message("<span class='notice'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
+				visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 				health -= rand(3,4)*axis.currentspeed
 				driver.adjustBruteLoss(rand(3,4)*axis.currentspeed)
+				axis.currentspeed = 0
 				if (axis.currentspeed >= 3 || (axis.currentspeed == 2 && prob(50)))
-					visible_message("<span class='notice'>[driver] falls from \the [src]!</span>","<span class='danger'>You fall from \the [src]!</span>")
+					visible_message("<span class='warning'>[driver] falls from \the [src]!</span>","<span class='warning'>You fall from \the [src]!</span>")
 					stopmovementloop()
 					driver.SpinAnimation(5,1)
 					if (isturf(locate(x+1,y,z)))
