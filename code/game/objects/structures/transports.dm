@@ -19,6 +19,8 @@
 	var/obj/structure/engine/internal/engine = null
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
+	var/health = 100
+
 /obj/structure/vehicle/proc/processmove(var/m_dir = null)
 	if (!m_dir)
 		return
@@ -64,8 +66,10 @@
 
 /obj/structure/vehicle/proc/movementloop()
 	if (moving == TRUE && driver)
-		if (do_vehicle_check())
+		if (do_vehicle_check() && axis.currentspeed > 0)
 			do_move(driver.dir)
+		else
+			axis.currentspeed = 0
 		spawn(vehicle_m_delay+1)
 			movementloop()
 			return
@@ -162,7 +166,7 @@
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
-
+	health = 50
 /obj/structure/vehicle/raft/do_vehicle_check(var/m_dir = null)
 	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
 		if (driver in src.loc)
@@ -199,7 +203,7 @@
 /obj/structure/vehicle/motorcycle/m125
 	name = "125cc motorcycle"
 	desc = "A 125cc, 4-stroke gasoline motorcycle."
-
+	health = 130
 /obj/structure/vehicle/motorcycle/m125/New()
 	..()
 	engine = new/obj/structure/engine/internal/gasoline
@@ -231,12 +235,15 @@
 
 /obj/structure/vehicle/motorcycle/do_vehicle_check(var/m_dir = null)
 	if (check_engine())
-		for(var/obj/O in get_turf(get_step(src,m_dir)))
+		for(var/obj/structure/O in get_turf(get_step(src,driver.dir)))
 			if (O.density == TRUE)
 				moving = FALSE
 				stopmovementloop()
+				world << "<span class='warning'>You hit \the [O]!</span>"
+				health -= rand(3,4)*axis.currentspeed
+				driver.adjustBruteLoss(rand(3,4)*axis.currentspeed)
 				return FALSE
-		if (!istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water/deep) && get_turf(get_step(src,m_dir)).density == FALSE)
+		if (!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && get_turf(get_step(src,driver.dir)).density == FALSE)
 			if (driver in src.loc)
 				return TRUE
 			else

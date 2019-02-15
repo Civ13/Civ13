@@ -56,6 +56,8 @@
 /obj/item/vehicleparts/wheel/attack_self(mob/living/carbon/human/H)
 	if(!H.driver_vehicle)
 		return
+	if(!H.driver_vehicle.engine)
+		return
 	if (!H.driver_vehicle.engine.on && H.driver_vehicle.fueltank.reagents.total_volume > 0)
 		H.driver_vehicle.engine.turn_on(H)
 		playsound(loc, 'sound/machines/diesel_starting.ogg', 65, FALSE, 2)
@@ -67,26 +69,29 @@
 		H << "There is not enough fuel!"
 		return
 
-	if (H.driver_vehicle.moving == FALSE || H.driver_vehicle.axis.currentspeed == 0)
-		H.driver_vehicle.moving = TRUE
+	if (H.driver_vehicle.axis.currentspeed <= 0)
 		H.driver_vehicle.axis.currentspeed = 1
 		var/spd = H.driver_vehicle.axis.get_speed()
 		if (spd <= 0)
 			return
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
-		H.driver_vehicle.startmovementloop()
-		H << "You accelerate."
+		spawn(1)
+			H.driver_vehicle.moving = TRUE
+			H.driver_vehicle.startmovementloop()
+			H << "You put on the first gear."
 		return
-	else if (H.driver_vehicle.axis.currentspeed<=H.driver_vehicle.axis.speeds)
+	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
 		H.driver_vehicle.axis.currentspeed++
 		var/spd = H.driver_vehicle.axis.get_speed()
 		if (spd <= 0)
 			return
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
-			H << "You increace the speed."
+			H << "You increase the speed."
 			return
+	else
+		return
 /*
 	else if (H.driver_vehicle.moving == TRUE)
 		H.driver_vehicle.moving = FALSE
@@ -95,12 +100,14 @@
 		return
 */
 /obj/item/vehicleparts/wheel/attack_hand(mob/living/carbon/human/user)
-	if (!user.driver_vehicle.moving || user.driver_vehicle.axis.currentspeed <= 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
+	if (user.driver_vehicle.axis.currentspeed < 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
 		return
 	else
 		user.driver_vehicle.axis.currentspeed--
 		var/spd = user.driver_vehicle.axis.get_speed()
-		if (spd <= 0)
+		if (spd <= 0 || user.driver_vehicle.axis.currentspeed == 0)
+			user.driver_vehicle.moving = FALSE
+			user << "You stop \the [user.driver_vehicle]."
 			return
 		else
 			user.driver_vehicle.vehicle_m_delay = spd
