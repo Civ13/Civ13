@@ -309,7 +309,7 @@
 	icon_state = "oilpump1"
 
 /obj/structure/fuelpump/proc/updatedesc()
-	desc = "This pump has [vol] units of [fueltype] available. Price: [price] silver coins per unit. Copper and Gold accepted too."
+	desc = "This pump has [vol] units of [fueltype] available. Price: [price*10] silver coins per unit. Copper and Gold accepted too."
 
 /obj/structure/fuelpump/proc/do_color()
 	if (customcolor)
@@ -404,6 +404,7 @@
 				W.forceMove(locate(0,0,0))
 				unlockedvol = (valp/price)
 				user << "<span class = 'notice'>You can now withdraw [unlockedvol] units of [fueltype] from this pump.</span>"
+				unlocked = 1
 				return
 			else
 				return
@@ -422,8 +423,8 @@
 		if (unlocked && unlockedvol>0)
 			var/avvol = GC.reagents.maximum_volume-GC.reagents.total_volume
 			if (unlockedvol <= avvol)
-				unlockedvol = 0
 				vol -= unlockedvol
+				unlockedvol = 0
 				GC.reagents.add_reagent(fueltype,unlockedvol)
 				user << "You fill the [GC] with all the purchased [fueltype]."
 				return
