@@ -789,6 +789,10 @@
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern, 1, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("fuel pump (star)",/obj/structure/fuelpump/star, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("fuel pump (small)",/obj/structure/fuelpump/small, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("fuel pump (N)",/obj/structure/fuelpump/n, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("fuel pump (S)",/obj/structure/fuelpump/s, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe_list("electrical", list(
 			new/datum/stack_recipe("street lamp", /obj/structure/lamp/lamppost_small, 3, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
 

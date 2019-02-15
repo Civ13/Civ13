@@ -22,7 +22,9 @@
 	var/list/datum/matter_synth/synths = null
 	var/real_value = 1
 	value = 1
-
+	var/customcolor = "FFFFFF"
+	var/customcode = "0000"
+	var/customname = ""
 /obj/item/stack/New(var/loc, var/_amount=0)
 	..()
 	if (!stacktype)
@@ -132,6 +134,37 @@
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
 
+	if (findtext(recipe.title, "fuel pump"))
+		if (H.getStatCoeff("crafting") < 1.35)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
+		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
+			H << "<span class = 'notice'>You need a key in one of your hands in order to craft this.</span>"
+			return
+		if (istype(H.l_hand, /obj/item/weapon/key))
+			customcode = H.l_hand.code
+		if (istype(H.r_hand, /obj/item/weapon/key))
+			customcode = H.r_hand.code
+		customname = input(user, "Choose a name for this pump:", "Fuel Pump Name" , "fuel pump")
+		if (customname == "" || customname == null)
+			customname = "fuel pump"
+		customcolor = input(user, "Fuel Pump - Choose a hex color (without the #):", "Fuel Pump Color" , "FFFFFF")
+		if (customcolor == null || customcolor == "")
+			return
+		else
+			customcolor = uppertext(customcolor)
+			if (lentext(customcolor) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(customcolor,i,i+1)
+				else
+					numtocheck = copytext(customcolor,i,0)
+				if (!(numtocheck in listallowed))
+					return
 	if (findtext(recipe.title, "oil deposit"))
 		if (H.civilization == null || H.civilization == "none")
 			user << "You need to be part of a faction to build this!"
@@ -566,7 +599,12 @@
 
 		O.set_dir(user.dir)
 		O.add_fingerprint(user)
-
+		if (istype(O, /obj/structure/fuelpump))
+			var/obj/structure/fuelpump/FP = O
+			FP.customcolor = addtext("#",customcolor)
+			FP.keycode = customcode
+			FP.name = customname
+			FP.do_color()
 		if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced
