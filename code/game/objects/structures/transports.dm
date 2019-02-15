@@ -235,13 +235,39 @@
 
 /obj/structure/vehicle/motorcycle/do_vehicle_check(var/m_dir = null)
 	if (check_engine())
+		var/turf/T = get_turf(get_step(src,driver.dir))
+		if (!T)
+			moving = FALSE
+			stopmovementloop()
+			return FALSE
 		for(var/obj/structure/O in get_turf(get_step(src,driver.dir)))
 			if (O.density == TRUE)
 				moving = FALSE
-				stopmovementloop()
 				world << "<span class='warning'>You hit \the [O]!</span>"
 				health -= rand(3,4)*axis.currentspeed
 				driver.adjustBruteLoss(rand(3,4)*axis.currentspeed)
+				if (axis.currentspeed >= 3 || (axis.currentspeed == 2 && prob(50)))
+					world << "<span class='danger'>You fall from \the [src]!</span>"
+					stopmovementloop()
+					driver.SpinAnimation(5,1)
+					if (isturf(locate(x+1,y,z)))
+						driver.forceMove(locate(x+1,y,z))
+					else if (isturf(locate(x-1,y,z)))
+						driver.forceMove(locate(x+1,y,z))
+					else
+						driver.forceMove(locate(x,y,z))
+					driver.Weaken(5)
+					driver.adjustBruteLoss(rand(8,19))
+					driver.driver = FALSE
+					driver.driver_vehicle = null
+					unbuckle_mob()
+					update_overlay()
+					update_icon()
+					ontop -= driver
+					driver = null
+					return FALSE
+
+				stopmovementloop()
 				return FALSE
 		if (!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && get_turf(get_step(src,driver.dir)).density == FALSE)
 			if (driver in src.loc)

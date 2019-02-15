@@ -59,9 +59,10 @@
 				if (!istype(C, /obj/structure/vehicleparts/axis))
 					powerused += C.powerneeded
 					C.powered = TRUE
-				else
+/*				else
 					powerused += process_load(C)
 					C.powered = TRUE
+*/
 			else
 				C.powered = FALSE
 	return min(max(powerused,maxpower*0.1), maxpower) //minimum powerused is 10% of maxpower, maximum is the maxpower value
