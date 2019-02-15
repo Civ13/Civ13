@@ -181,7 +181,7 @@
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
 		for (var/turf/floor/dirt/D)
-			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/dirt/underground))
+			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
 				if (get_area(D).location == AREA_OUTSIDE && prob(50))
 					D.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/G)
