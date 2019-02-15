@@ -114,8 +114,11 @@
 				driver = null
 				if (wheeled)
 					if (user.l_hand == dwheel)
-						user.l_hand = null
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
 					else if (user.r_hand == dwheel)
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
 						user.r_hand = null
 					user.update_icons()
 			update_overlay()
@@ -146,9 +149,11 @@
 					driver = null
 					if (wheeled)
 						if (user.l_hand == dwheel)
-							user.l_hand = null
+							user.remove_from_mob(dwheel)
+							dwheel.forceMove(src)
 						else if (user.r_hand == dwheel)
-							user.r_hand = null
+							user.remove_from_mob(dwheel)
+							dwheel.forceMove(src)
 				update_overlay()
 				update_icon()
 				return
@@ -216,6 +221,7 @@
 		spawn(1)
 			engine.fueltank = fueltank
 			engine.connections += axis
+			dwheel.forceMove(src)
 
 	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike
 
@@ -258,6 +264,8 @@
 						driver.forceMove(locate(x,y,z))
 					driver.Weaken(5)
 					driver.adjustBruteLoss(rand(8,19))
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
 					driver.driver = FALSE
 					driver.driver_vehicle = null
 					unbuckle_mob()
@@ -280,6 +288,8 @@
 				update_overlay()
 				update_icon()
 				ontop -= driver
+				driver.remove_from_mob(dwheel)
+				dwheel.forceMove(src)
 				driver = null
 		else
 			moving = FALSE
