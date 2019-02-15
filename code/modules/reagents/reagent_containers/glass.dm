@@ -35,6 +35,7 @@
 		/obj/item/flashlight/lantern,
 		/obj/item/stack/ammopart,
 		/obj/structure/vehicle,
+		/obj/structure/fuelpump,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
