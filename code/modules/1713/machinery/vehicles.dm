@@ -28,7 +28,8 @@
 	speedlist = list(1=3,2=2,3=1)
 
 /obj/structure/vehicleparts/axis/proc/get_speed()
-	if (currentspeed == 0)
+	if (currentspeed <= 0)
+		currentspeed = 0
 		powerneeded = 0
 		return 0
 	else
@@ -100,7 +101,7 @@
 		return
 */
 /obj/item/vehicleparts/wheel/attack_hand(mob/living/carbon/human/user)
-	if (user.driver_vehicle.axis.currentspeed < 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
+	if (user.driver_vehicle.axis.currentspeed <= 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
 		return
 	else
 		user.driver_vehicle.axis.currentspeed--
