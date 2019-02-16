@@ -419,20 +419,23 @@
 		if (unlocked && unlockedvol<=0)
 			unlockedvol = 0
 			user << "All the paid for fuel has been used. Finish the transaction."
+			updatedesc()
 			return
 		if (unlocked && unlockedvol>0)
 			var/avvol = GC.reagents.maximum_volume-GC.reagents.total_volume
 			if (unlockedvol <= avvol)
 				vol -= unlockedvol
-				unlockedvol = 0
 				GC.reagents.add_reagent(fueltype,unlockedvol)
 				user << "You fill the [GC] with all the purchased [fueltype]."
+				unlockedvol = 0
+				updatedesc()
 				return
 			else if (unlockedvol > avvol)
 				unlockedvol -= avvol
 				vol -= avvol
 				GC.reagents.add_reagent(fueltype,avvol)
 				user << "You fill the [GC] completely. There are [unlockedvol] units remanining in the pump."
+				updatedesc()
 				return
 
 		if (!unlocked)
