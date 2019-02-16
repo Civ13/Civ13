@@ -304,19 +304,18 @@
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600)
-			if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
-				if (map.ID == MAP_NOMADS_MOUNTAIN)
-					var/heating = 0
-					for(var/obj/structure/brazier/B in range(3,src))
-						if (B.on && B.fuel >= 1)
-							heating += 1
-					for(var/obj/structure/heatsource/HS in range(3,src))
-						if (HS.on && HS.fuel >= 1)
-							heating += 1
-					if (heating != 0)
-						stage += 1
-				else
+			if (season == "WINTER" || get_area(get_turf(src)).location == 0)
+				var/heating = 0
+				for(var/obj/structure/brazier/B in range(3,src))
+					if (B.on && B.fuel >= 1)
+						heating += 1
+				for(var/obj/structure/heatsource/HS in range(3,src))
+					if (HS.on && HS.fuel >= 1)
+						heating += 1
+				if (heating != 0)
 					stage += 1
+			else
+				stage += 1
 			growth()
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
