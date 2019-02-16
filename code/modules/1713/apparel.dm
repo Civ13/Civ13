@@ -738,3 +738,24 @@
 	item_state = "flipflops"
 	worn_state = "flipflops"
 	force = WEAPON_FORCE_WEAK
+
+/obj/item/clothing/under/jedi
+	name = "Jedi outfit"
+	desc = "A loose outfit worn by the Jedi."
+	icon_state = "jedi_knight"
+	item_state = "jedi_knight"
+	worn_state = "jedi_knight"
+
+/obj/item/clothing/suit/storage/jacket/jedi
+	name = "Jedi robe"
+	desc = "A brown Jedi robe."
+	icon_state = "jedi_robe"
+	item_state = "jedi_robe"
+	worn_state = "jedi_robe"
+
+/obj/item/clothing/under/flamengo
+	name = "Flamengo shirt with yellow shorts"
+	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
+	icon_state = "flamengo"
+	item_state = "flamengo"
+	worn_state = "flamengo"
