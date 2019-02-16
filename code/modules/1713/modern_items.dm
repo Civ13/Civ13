@@ -184,15 +184,15 @@
 		usr << "<span class = 'notice'>You need to shut the refinery down first!</span>"
 		return
 	else
-		var/prod = WWinput(usr, "What to produce?", "Refinery", "cancel", list("gasoline","diesel","cancel"))
-		if (prod == "cancel")
+		var/prod = WWinput(usr, "What to produce?", "Refinery", "Cancel", list("Gasoline","Diesel","Cancel"))
+		if (prod == "Cancel")
 			return
-		else if (prod == "gasoline")
-			product = "Gasoline"
+		else if (prod == "Gasoline")
+			product = "gasoline"
 			usr << "This refinery will now produce <b>Gasoline</b>."
 			return
-		else if (prod == "diesel")
-			product = "Diesel"
+		else if (prod == "Diesel")
+			product = "diesel"
 			usr << "This refinery will now produce <b>Diesel</b>."
 			return
 /obj/structure/refinery/attack_hand(var/mob/living/carbon/human/H)
