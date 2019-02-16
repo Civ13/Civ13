@@ -184,14 +184,14 @@
 		usr << "<span class = 'notice'>You need to shut the refinery down first!</span>"
 		return
 	else
-		var/prod = WWinput(usr, "What to produce?", "Refinery", "Cancel", list("Gasoline","Diesel","Cancel"))
-		if (prod == "Cancel")
+		var/prod = WWinput(usr, "What to produce?", "Refinery", "cancel", list("gasoline","diesel","cancel"))
+		if (prod == "cancel")
 			return
-		else if (prod == "Gasoline")
+		else if (prod == "gasoline")
 			product = "Gasoline"
 			usr << "This refinery will now produce <b>Gasoline</b>."
 			return
-		else if (prod == "Diesel")
+		else if (prod == "diesel")
 			product = "Diesel"
 			usr << "This refinery will now produce <b>Diesel</b>."
 			return

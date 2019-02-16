@@ -723,3 +723,18 @@
 	item_state = "chad"
 	worn_state = "chad"
 	force = WEAPON_FORCE_WEAK
+
+/obj/item/clothing/under/flamengo
+	name = "Flamengo shirt with yellow shorts"
+	desc = "A C.R. Flamengo football shirt, with yellow swimming trunks."
+	icon_state = "flamengo"
+	item_state = "flamengo"
+	worn_state = "flamengo"
+
+/obj/item/clothing/shoes/flipflops
+	name = "flip-flops"
+	desc = "Brazilian style flip-flops."
+	icon_state = "flipflops"
+	item_state = "flipflops"
+	worn_state = "flipflops"
+	force = WEAPON_FORCE_WEAK
