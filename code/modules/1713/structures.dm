@@ -155,7 +155,7 @@
 /obj/structure/flag/spanish
 	icon_state = "spanish"
 	name = "Spanish Flag"
-	desc = "The Spanish flag, white with a red cross of Burgundry."
+	desc = "The Spanish flag, white with a red cross of burgundy."
 
 /obj/structure/flag/british
 	icon_state = "british"

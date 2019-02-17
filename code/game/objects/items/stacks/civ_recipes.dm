@@ -666,7 +666,7 @@
 			new/datum/stack_recipe("charcoal suit", /obj/item/clothing/suit/storage/jacket/charcoal_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black suit", /obj/item/clothing/suit/storage/jacket/black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark black suit", /obj/item/clothing/suit/storage/jacket/really_black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("burgundry suit", /obj/item/clothing/suit/storage/jacket/burgundry_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("burgundy suit", /obj/item/clothing/suit/storage/jacket/burgundy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("checkered suit", /obj/item/clothing/suit/storage/jacket/checkered_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("navy suit", /obj/item/clothing/suit/storage/jacket/navy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
