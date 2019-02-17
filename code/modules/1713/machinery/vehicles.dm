@@ -127,6 +127,7 @@
 	var/customcolor = "#FFFFFF"
 	var/maxengine = 500
 	var/maxfueltank = 100
+	density = TRUE
 	weight = 100
 	w_class = 10
 	nothrow = TRUE
@@ -154,10 +155,9 @@
 	targettype = /obj/structure/vehicle/motorcycle
 
 /obj/item/vehicleparts/frame/proc/do_color()
-	if (customcolor)
-		colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
-		colorv.color = customcolor
-		overlays += colorv
+	colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
+	colorv.color = customcolor
+	overlays += colorv
 	update_icon()
 
 /obj/item/vehicleparts/frame/bike/update_icon()
@@ -196,12 +196,13 @@
 					check_step()
 					return
 		else
-			user << "<span class = 'notice'>This fuel tank is too big for the [src]!</span>"
+			user << "<span class = 'notice'>This engine is too big for the [src]!</span>"
 			return
 
 /obj/item/vehicleparts/frame/proc/check_step()
 	if (step >= maxstep)
 		var/obj/structure/vehicle/NEWBIKE = new/obj/structure/vehicle/motorcycle(get_turf(src))
+		NEWBIKE.dir = dir
 		NEWBIKE.customcolor = customcolor
 		NEWBIKE.do_color()
 		NEWBIKE.engine = engine
@@ -223,3 +224,6 @@
 			colorv.color = customcolor
 		update_icon()
 		return
+
+/obj/item/vehicleparts/frame/attack_hand(mob/user as mob)
+	return

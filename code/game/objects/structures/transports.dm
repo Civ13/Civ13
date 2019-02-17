@@ -208,6 +208,7 @@
 	vehicle_m_delay = 3
 	var/image/cover_overlay = null
 	var/image/cover_overlay_c = null
+	var/image/cover_overlay_base = null
 	axis = new/obj/structure/vehicleparts/axis/bike
 	wheeled = TRUE
 	dwheel = new/obj/item/vehicleparts/wheel/handle
@@ -237,18 +238,23 @@
 /obj/structure/vehicle/motorcycle/New()
 	..()
 	//TODO: assign axis, fueltank, engine and connect them
+	cover_overlay_base = image(icon, "[icon_state]_frame2_mask")//"bike_cover")
 	cover_overlay = image(icon, "[icon_state]_overlay")//"bike_cover")
 	cover_overlay.layer = MOB_LAYER + 2.1
 	cover_overlay_c = image(icon, "[icon_state]_overlay_mask")//"bike_cover")
 	cover_overlay_c.layer = MOB_LAYER + 2.11
 	spawn(3)
 		cover_overlay_c.color = customcolor
+		cover_overlay_base.color = customcolor
+		overlays += cover_overlay_base
 /obj/structure/vehicle/motorcycle/update_overlay()
 	if (driver)
 		add_overlay(cover_overlay)
+		add_overlay(cover_overlay_c)
 		return
 	else
 		overlays -= cover_overlay
+		overlays -= cover_overlay_c
 		return
 
 /obj/structure/vehicle/motorcycle/do_vehicle_check(var/m_dir = null)
