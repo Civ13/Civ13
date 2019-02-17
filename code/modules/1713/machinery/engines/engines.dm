@@ -196,7 +196,7 @@
 		if (steelamt == 0)
 			return
 
-		var/display = list("Turbine Engine (136 sheets per 1000 cc)","Hot Bulb Engine (66 sheets per 1000 cc)","4-Stroke Gasoline Engine (100 sheets per 1000 cc)", "Cancel")
+		var/display = list("Turbine Engine (136 sheets per 1000 cc)","Hot Bulb Engine (66 sheets per 1000 cc)","4-Stroke Gasoline Engine (100 sheets per 1000 cc)","Diesel Engine (80 sheets per 1000 cc)","Hesselman Engine (86 sheets per 1000 cc)", "Cancel")
 		var/choice = WWinput(H, "What engine do you want to make?", "Engines", "Cancel", display)
 		if (choice == "Cancel")
 			return
@@ -300,6 +300,34 @@
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
 						NEN.name = "[NEN.enginesize]cc diesel engine"
+						NEN.maxpower *= (NEN.enginesize/1000)
+						NEN.fuelefficiency *= (NEN.enginesize/1000)
+						H << "You finish building the engine."
+						done = FALSE
+						return
+				else
+					done = FALSE
+					return
+
+		else if (choice == "Hesselman Engine (86 sheets per 1000 cc)")
+			enginesize = input(H, "Choose the engine size, in cc: (minimum 200, maximum 5000)") as num
+			enginesize = Clamp(enginesize, 200, 5000)
+			if ((enginesize/1000)*86 > steelamt)
+				H << "You don't have enough steel. You need [(enginesize/1000)*86] and you have [steelamt]. Try building a smaller engine."
+				return
+			else
+				H << "You start building the engine..."
+				done = TRUE
+				if (do_after(H,240,src))
+					if (done)
+						if (istype(H.l_hand, /obj/item/stack/material/steel))
+							H.l_hand.amount -= (enginesize/1000)*86
+						else if (istype(H.r_hand, /obj/item/stack/material/steel))
+							H.r_hand.amount -= (enginesize/1000)*86
+						var/obj/structure/engine/internal/hesselman/NEN = new/obj/structure/engine/internal/hesselman(get_turf(H))
+						NEN.enginesize = enginesize
+						NEN.weight = 20*(NEN.enginesize/1000)
+						NEN.name = "[NEN.enginesize]cc hesselman engine"
 						NEN.maxpower *= (NEN.enginesize/1000)
 						NEN.fuelefficiency *= (NEN.enginesize/1000)
 						H << "You finish building the engine."
