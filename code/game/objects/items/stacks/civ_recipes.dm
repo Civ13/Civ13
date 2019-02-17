@@ -455,7 +455,7 @@
 		recipes = list(new/datum/stack_recipe("cigar", /obj/item/clothing/mask/smokable/cigarette/cigar, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("cuban cigar", /obj/item/clothing/mask/smokable/cigarette/cigar/havana, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 
-/material/cocaine/generate_recipes_civs(var/list/current_res = list(0,0,0))
+/material/coca/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[3] >= 93)
 		recipes = list(new/datum/stack_recipe("cocaine", /obj/item/weapon/reagent_containers/pill/cocaine, 10, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE))
