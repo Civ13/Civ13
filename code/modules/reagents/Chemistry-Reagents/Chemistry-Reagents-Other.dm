@@ -390,8 +390,41 @@
 
 /datum/reagent/petroleum/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	..()
-	M.adjustToxLoss(20)
+	M.adjustToxLoss(10)
 
 /datum/reagent/petroleum/touch_mob(var/mob/living/L, var/amount)
 	if (istype(L))
 		L.adjust_fire_stacks(amount / 5)
+
+
+/datum/reagent/gasoline
+	name = "Gasoline"
+	id = "gasoline"
+	description = "Refined from petroleum. A thin yellow liquid."
+	taste_description = "gasoline"
+	reagent_state = LIQUID
+	color = "#ffffe0"
+
+/datum/reagent/gasoline/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	..()
+	M.adjustToxLoss(10)
+
+/datum/reagent/gasoline/touch_mob(var/mob/living/L, var/amount)
+	if (istype(L))
+		L.adjust_fire_stacks(amount / 2)
+
+/datum/reagent/diesel
+	name = "Diesel"
+	id = "diesel"
+	description = "Refined from petroleum. A thick yellow-red color."
+	taste_description = "diesel"
+	reagent_state = LIQUID
+	color = "#985b10"
+
+/datum/reagent/biodiesel
+	name = "Bioiesel"
+	id = "biodiesel"
+	description = "Refined from many different agricultural fats."
+	taste_description = "diesel"
+	reagent_state = LIQUID
+	color = "#f9c901"

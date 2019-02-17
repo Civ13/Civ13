@@ -731,3 +731,5 @@
 #define EJECT_CASINGS	1 //drop spent casings on the ground after firing
 #define CYCLE_CASINGS 	2 //experimental: cycle casings, like a revolver. Also works for multibarrelled guns
 #define REMOVE_CASINGS	3
+
+#define list_cmp(l1, l2) (length(l1 & l2) > 0)

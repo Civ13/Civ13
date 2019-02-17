@@ -150,9 +150,16 @@
 	var/disease_type = "none"
 	var/disease_progression = 0
 	var/disease_treatment = 0
+
 	var/list/disease_immunity = list()
+
+//	drug addiction works on a scale of 0 to 100.
+//	Every dose increases the meter. It will slowly go down, but high values will give you withdrawal symptoms,
+//	if you dont have that reagent in your blood.
 
 	var/civilization = "none" //what civilization this person belongs to
 
+	var/driver = FALSE
+	var/obj/structure/vehicle/driver_vehicle = null
 	var/riding = FALSE // if riding a horse
 	var/mob/living/simple_animal/riding_mob = null

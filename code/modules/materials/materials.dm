@@ -249,6 +249,20 @@ var/list/name_to_material
 	sheet_singular_name = "leave"
 	sheet_plural_name = "leaves"
 
+
+/material/coca
+	name = "coca"
+	stack_type = /obj/item/stack/material/coca
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 5
+	icon_colour = "#faeff1"
+	shard_type = null
+	tableslam_noise = null
+	hardness = 10
+
+	sheet_singular_name = "leave"
+	sheet_plural_name = "leaves"
+
 /material/poppy
 	name = "poppy"
 	stack_type = /obj/item/stack/material/poppy
