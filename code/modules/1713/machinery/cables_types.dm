@@ -164,7 +164,7 @@
 				user << "You connect the two cables."
 
 		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir2)))
-			if ((NCOC.d2 == dirn) && NCOC != C)
+			if ((NCOC.d2 == C.d2) && NCOC != C)
 				if (!(C in NCOC.connections) && !list_cmp(C.connections, NCOC.connections))
 					NCOC.connections += C
 				if (!(NCOC in C.connections) && !list_cmp(C.connections, NCOC.connections))

@@ -140,6 +140,32 @@
 		NCC.connections += src
 		connections += NCC
 		user << "You connect the cable to the [src]."
+		var/opdir1 = 0
+		var/opdir2 = 0
+		if (NCC.tiledir == "horizontal")
+			opdir1 = 4
+			opdir2 = 8
+		else if  (NCC.tiledir == "vertical")
+			opdir1 = 1
+			opdir2 = 2
+		NCC.update_icon()
+
+		if (opdir1 != 0 && opdir2 != 0)
+			for(var/obj/structure/cable/NCOO in get_turf(get_step(NCC,opdir1)))
+				if ((NCOO.tiledir == NCC.tiledir) && NCOO != NCC)
+					if (!(NCC in NCOO.connections) && !list_cmp(NCC.connections, NCOO.connections))
+						NCOO.connections += NCC
+					if (!(NCOO in NCC.connections) && !list_cmp(NCC.connections, NCOO.connections))
+						NCC.connections += NCOO
+					user << "You connect the two cables."
+
+			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
+				if ((NCOC.d2 == NCC.d2) && NCOC != powersource)
+					if (!(NCC in NCOC.connections) && !list_cmp(NCC.connections, NCOC.connections))
+						NCOC.connections += powersource
+					if (!(NCOC in NCC.connections) && !list_cmp(NCC.connections, NCOC.connections))
+						NCC.connections += NCOC
+					user << "You connect the two cables."
 	else
 		..()
 
