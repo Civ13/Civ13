@@ -130,6 +130,13 @@
 		if (CONSCIOUS)
 			adjustOxyLoss(-5)
 
+//drug addictions
+	for(var/ad in addictions)
+		if (addictions[ad]>0)
+			var/ind = addictions[ad]
+			process_addictions(ad,ind)
+			addictions[ad] -= 0.05
+
 // disease stuff
 	if (disease == TRUE)
 		if (disease_type == "none")
@@ -1442,3 +1449,152 @@
 			if (buriedalive && stat != DEAD)
 				adjustOxyLoss(5)
 				src << "<span class='danger'>You can't breathe!</span>"
+
+
+/mob/living/carbon/human/proc/process_addictions(drug = null, value = 0)
+	if (!drug || value == 0)
+		return
+	else
+		switch(drug)
+			if ("cocaine")
+				if (ingested.has_reagent("cocaine"))
+					return
+				switch (value)
+					if (0 to 24)
+						return
+					if (24 to 37)
+						if (prob(13))
+							emote("twitch")
+						return
+					if (37 to 56)
+						if (prob(15))
+							if (prob(50))
+								emote("twitch")
+							else
+								emote("shiver")
+						if (prob(2))
+							confused = 5
+						return
+					if (56 to 81)
+						if (prob(33))
+							if (prob(50))
+								emote("twitch")
+							else
+								emote("shiver")
+							custom_pain("You feel restless.",0)
+						if (prob(5))
+							confused = 6
+						if (prob(10))
+							make_dizzy(5)
+						return
+					if (81 to 100)
+						if (prob(40))
+							if (prob(50))
+								emote("twitch")
+							else
+								emote("shiver")
+							custom_pain("You can't stand still!",1)
+						if (prob(10))
+							confused = 6
+						if (prob(12))
+							make_dizzy(6)
+						return
+			if ("opium")
+				if (ingested.has_reagent("opium"))
+					return
+				switch (value)
+					if (0 to 13)
+						if (prob(5))
+							emote("shiver")
+							src << "You feel slighly sick."
+						return
+					if (13 to 25)
+						if (prob(10))
+							custom_pain("You feel a slight itch.",0)
+						if (prob(8))
+							emote("shiver")
+							src << "You feel sick."
+						return
+					if (25 to 48)
+						if (prob(10))
+							custom_pain("Your body itches all over.",1)
+						if (prob(11))
+							emote("shiver")
+							src << "You feel sick."
+						if (prob(6))
+							vomit()
+						return
+					if (48 to 67)
+						if (prob(10))
+							custom_pain("Your body itches all over, it's driving you mad!",1)
+						if (prob(11))
+							emote("shiver")
+						if (prob(2))
+							apply_effect(12, AGONY, FALSE)
+							apply_effect(7, DROWSY, FALSE)
+						return
+					if (67 to 81)
+						if (prob(10))
+							custom_pain("Your body itches all over, it's driving you mad!",2)
+						if (prob(11))
+							emote("shiver")
+						if (prob(2))
+							apply_effect(15, AGONY, FALSE)
+							apply_effect(9, DROWSY, FALSE)
+						return
+					if (81 to 100)
+						if (prob(10))
+							custom_pain("Your body itches all over, it's driving you mad!",2)
+						if (prob(11))
+							emote("shiver")
+						if (prob(2))
+							apply_effect(17, AGONY, FALSE)
+							apply_effect(10, DROWSY, FALSE)
+						return
+			if ("tobacco")
+				if (ingested.has_reagent("nicotine"))
+					return
+				switch (value)
+					if (0 to 21)
+						return
+					if (21 to 44)
+						return
+					if (44 to 72)
+						return
+					if (72 to 87)
+						return
+					if (87 to 100)
+						return
+			if ("alcohol")
+				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
+					return
+				switch (value)
+					if (0 to 21)
+						return
+					if (21 to 44)
+						if (prob(5))
+							emote("shiver")
+						return
+					if (44 to 72)
+						if (prob(10))
+							emote("shiver")
+						if (prob(2))
+							make_dizzy(6) // It is decreased at the speed of 3 per tick
+							custom_pain("You feel a light pain in your head.",0)
+						return
+					if (72 to 87)
+						if (prob(13))
+							emote("shiver")
+						if (prob(5))
+							custom_pain("You head hurts a lot!",1)
+						if (prob(5))
+							make_dizzy(6) // It is decreased at the speed of 3 per tick
+						return
+					if (87 to 100)
+						if (prob(16))
+							emote("shiver")
+						if (prob(9))
+							custom_pain("You feel an excrutiating pain in your head!",1)
+						if (prob(9))
+							make_dizzy(6) // It is decreased at the speed of 3 per tick
+						return

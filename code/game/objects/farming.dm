@@ -122,6 +122,11 @@
 	plant = "olives"
 	color = "#343400"
 
+/obj/item/stack/farming/seeds/coca
+	name = "coca seeds"
+	plant = "coca"
+	color = "#8b0000"
+
 /obj/structure/farming/plant
 	name = "plant"
 	desc = "a generic plant."
@@ -257,6 +262,11 @@
 	icon_state = "banana-grow1"
 	plant = "banana"
 
+/obj/structure/farming/plant/coca
+	name = "coca"
+	desc = "a coca plant. Produces coca leaves that can be refined to cocaine."
+	icon_state = "coca-grow1"
+	plant = "coca"
 
 /obj/structure/farming/plant/mushroom
 	name = "mushroom"
@@ -338,6 +348,9 @@
 
 /obj/structure/farming/plant/tobacco/spawnProduce()
 	new/obj/item/stack/material/tobacco(loc)
+
+/obj/structure/farming/plant/coca/spawnProduce()
+	new/obj/item/stack/material/coca(loc)
 
 /obj/structure/farming/plant/sugarcane/spawnProduce()
 	new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)

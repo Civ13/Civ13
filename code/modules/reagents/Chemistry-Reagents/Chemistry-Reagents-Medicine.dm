@@ -516,11 +516,30 @@
 
 /datum/reagent/opium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 200)
-
+	M.addictions["opium"] += 0.1
 /datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 250)
+
+/datum/reagent/cocaine
+	name = "Cocaine"
+	id = "cocaine"
+	description = "A powerful stimulant. Very addictive."
+	taste_description = "metallic bitterness"
+	reagent_state = SOLID
+	color = "#faeff1"
+	metabolism = REM * 0.13
+	overdose = 60
+
+/datum/reagent/cocaine/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.add_chemical_effect(CE_PAINKILLER, 40)
+	M.addictions["cocaine"] += 0.12
+	M.add_chemical_effect(CE_SPEEDBOOST, 2)
+	M.add_chemical_effect(CE_PULSE, 4)
+/datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
+	..()
+	M.make_dizzy(6)
 
 /datum/reagent/pervitin
 	name = "Pervitin"
