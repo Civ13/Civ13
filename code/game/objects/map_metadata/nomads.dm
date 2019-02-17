@@ -91,7 +91,7 @@
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
 		for (var/turf/floor/dirt/D)
-			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed))
+			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && D.z == world.maxz)
 				D.ChangeTurf(/turf/floor/grass)
 			D.update_icon()
 		for (var/turf/floor/dirt/burned/BD)
