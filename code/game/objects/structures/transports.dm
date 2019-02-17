@@ -20,6 +20,10 @@
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
 	var/health = 100
+	var/customcolor = "#FFFFFF"
+
+/obj/structure/vehicle/proc/do_color()
+	return
 
 /obj/structure/vehicle/proc/processmove(var/m_dir = null)
 	if (!m_dir)
@@ -203,6 +207,7 @@
 	not_disassemblable = TRUE
 	vehicle_m_delay = 3
 	var/image/cover_overlay = null
+	var/image/cover_overlay_c = null
 	axis = new/obj/structure/vehicleparts/axis/bike
 	wheeled = TRUE
 	dwheel = new/obj/item/vehicleparts/wheel/handle
@@ -211,6 +216,7 @@
 /obj/structure/vehicle/motorcycle/m125
 	name = "125cc motorcycle"
 	desc = "A 125cc, 4-stroke gasoline motorcycle."
+	icon_state = "motorcycleX"
 	health = 130
 /obj/structure/vehicle/motorcycle/m125/New()
 	..()
@@ -233,7 +239,10 @@
 	//TODO: assign axis, fueltank, engine and connect them
 	cover_overlay = image(icon, "[icon_state]_overlay")//"bike_cover")
 	cover_overlay.layer = MOB_LAYER + 2.1
-
+	cover_overlay_c = image(icon, "[icon_state]_overlay_mask")//"bike_cover")
+	cover_overlay_c.layer = MOB_LAYER + 2.11
+	spawn(3)
+		cover_overlay_c.color = customcolor
 /obj/structure/vehicle/motorcycle/update_overlay()
 	if (driver)
 		add_overlay(cover_overlay)
@@ -380,3 +389,9 @@
 			return
 	else
 		..()
+
+/obj/structure/vehicle/motorcycle/do_color()
+	if (customcolor)
+		var/image/colorov = image("icon" = icon, "icon_state" = "[icon_state]_mask1")
+		colorov.color = customcolor
+		overlays += colorov

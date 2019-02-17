@@ -12,6 +12,7 @@
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"
 	desc = "supports wheels."
+	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "axis"
 	var/list/wheels = list()
 	var/currentspeed = 0
@@ -48,6 +49,7 @@
 	nothrow = TRUE
 	nodrop = TRUE
 	w_class = 5
+	secondary_action = TRUE
 
 /obj/item/vehicleparts/wheel/handle
 	name = "motorcycle handles"
@@ -101,7 +103,8 @@
 		H << "You brake."
 		return
 */
-/obj/item/vehicleparts/wheel/attack_hand(mob/living/carbon/human/user)
+
+/obj/item/vehicleparts/wheel/secondary_attack_self(mob/living/carbon/human/user)
 	if (user.driver_vehicle.axis.currentspeed <= 0 || !user.driver_vehicle.engine.on || user.driver_vehicle.fueltank.reagents.total_volume <= 0)
 		return
 	else
@@ -115,3 +118,108 @@
 			user.driver_vehicle.vehicle_m_delay = spd
 			user << "You reduce the speed."
 			return
+
+/obj/item/vehicleparts/frame
+	name = "vehicle frame"
+	desc = "a vehicle frame."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "motorcycle_frame0"
+	var/customcolor = "#FFFFFF"
+	var/maxengine = 500
+	var/maxfueltank = 100
+	weight = 100
+	w_class = 10
+	nothrow = TRUE
+	throw_speed = 1
+	throw_range = 1
+	var/obj/structure/engine/internal/engine = null
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
+	var/step = 0
+	var/maxstep = 3
+	var/targettype = /obj/structure/vehicle
+	var/image/colorv = null
+
+/obj/item/vehicleparts/frame/bike
+	name = "motorcycle frame"
+	desc = "a motorcycle frame. Will fit engines up to 125cc and fueltanks up to 75u."
+	icon_state = "motorcycle_frame1"
+	var/base_icon = "motorcycle_frame"
+	customcolor = "#FFFFFF"
+	maxengine = 125
+	maxfueltank = 75
+	weight = 20
+	w_class = 6
+	step = 1
+	maxstep = 3
+	targettype = /obj/structure/vehicle/motorcycle
+
+/obj/item/vehicleparts/frame/proc/do_color()
+	if (customcolor)
+		colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
+		colorv.color = customcolor
+		overlays += colorv
+	update_icon()
+
+/obj/item/vehicleparts/frame/bike/update_icon()
+	..()
+	icon_state = "[base_icon][step]"
+
+/obj/item/vehicleparts/frame/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) && step == 2)
+		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/NF = W
+		if (NF.reagents.maximum_volume <= maxfueltank)
+			if (do_after(user,100,src))
+				if (fueltank == null)
+					user << "<span class = 'notice'>You attach the [W] to the [src].</span>"
+					user.drop_from_inventory(W)
+					fueltank = W
+					W.forceMove(src)
+					step = 3
+					check_step()
+					return
+		else
+			user << "<span class = 'notice'>This fuel tank is too big for the [src]!</span>"
+			return
+	else
+		..()
+/obj/item/vehicleparts/frame/MouseDrop_T(obj/structure/O as obj, mob/user as mob)
+	if (istype(O, /obj/structure/engine/internal) && step == 1)
+		var/obj/structure/engine/internal/NE = O
+		if (NE.enginesize <= maxengine)
+			user << "<span class = 'notice'>You start placing the [O].</span>"
+			if (do_after(user,130,src))
+				if (engine == null)
+					user << "<span class = 'notice'>You attach the [O] to the [src].</span>"
+					engine = O
+					O.forceMove(src)
+					step = 2
+					check_step()
+					return
+		else
+			user << "<span class = 'notice'>This fuel tank is too big for the [src]!</span>"
+			return
+
+/obj/item/vehicleparts/frame/proc/check_step()
+	if (step >= maxstep)
+		var/obj/structure/vehicle/NEWBIKE = new/obj/structure/vehicle/motorcycle(get_turf(src))
+		NEWBIKE.customcolor = customcolor
+		NEWBIKE.do_color()
+		NEWBIKE.engine = engine
+		NEWBIKE.fueltank = fueltank
+		NEWBIKE.name = name
+		spawn(1)
+			NEWBIKE.engine.fueltank = NEWBIKE.fueltank
+			NEWBIKE.engine.connections += NEWBIKE.axis
+			NEWBIKE.dwheel.forceMove(NEWBIKE)
+			spawn(1)
+				engine.forceMove(NEWBIKE)
+				fueltank.forceMove(NEWBIKE)
+				qdel(src)
+				return
+	else
+		update_icon()
+		if (colorv)
+			colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
+			colorv.color = customcolor
+		update_icon()
+		return
