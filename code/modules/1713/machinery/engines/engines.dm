@@ -159,10 +159,10 @@
 						NCC.connections += NCOO
 					user << "You connect the two cables."
 
-			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.d2 == NCC.d2) && NCOC != powersource)
+			for(var/obj/structure/cable/NCOC in get_turf(get_step(NCC,opdir2)))
+				if ((NCOC.tiledir == NCC.tiledir) && NCOC != NCC)
 					if (!(NCC in NCOC.connections) && !list_cmp(NCC.connections, NCOC.connections))
-						NCOC.connections += powersource
+						NCOC.connections += NCC
 					if (!(NCOC in NCC.connections) && !list_cmp(NCC.connections, NCOC.connections))
 						NCC.connections += NCOC
 					user << "You connect the two cables."

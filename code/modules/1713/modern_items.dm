@@ -48,7 +48,7 @@
 					user << "You connect the two cables."
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.d2 == powersource.d2) && NCOC != powersource)
+				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
 					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
@@ -194,7 +194,7 @@
 					H << "You connect the two cables."
 
 			for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-				if ((NCOC.d2 == powersource.d2) && NCOC != powersource)
+				if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
 					if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
 						NCOC.connections += powersource
 					if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
