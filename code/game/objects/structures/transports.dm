@@ -6,7 +6,7 @@
 	var/list/ontop = list()
 	var/mob/living/carbon/human/driver = null
 	var/lastmove = 0
-	var/vehicle_m_delay = 20
+	var/vehicle_m_delay = 15
 	anchored = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -311,7 +311,11 @@
 			axis.currentspeed = 0
 			stopmovementloop()
 			return FALSE
-		if (!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && get_turf(get_step(src,driver.dir)).density == FALSE)
+		var/canpass = FALSE
+		for(var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
+			if (CVV.density == FALSE)
+				canpass = TRUE
+		if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE)
 			if (driver in src.loc)
 				return TRUE
 			else
