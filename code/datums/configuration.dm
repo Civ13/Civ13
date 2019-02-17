@@ -128,7 +128,7 @@ var/list/gamemode_cache = list()
 	var/ghosts_can_possess_animals = FALSE
 
 	var/no_respawn_delays = FALSE
-
+	var/allowedgamemodes = "ALL"
 	var/max_expected_players = 50 // determines autobalance
 
 	// hub stuff
@@ -189,6 +189,9 @@ var/list/gamemode_cache = list()
 
 				if ("master_directory")
 					masterdir = value
+
+				if ("allowed_gamemodes")
+					allowedgamemodes = value
 
 				if ("no_respawn_delays")
 					no_respawn_delays = text2num(value)

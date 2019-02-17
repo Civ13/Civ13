@@ -3,10 +3,27 @@
 	real_name = name
 
 /mob/living/carbon/human/proc/give_clothes()
+	if (map.ID == MAP_NOMADS_MOUNTAIN)
+		if (map.ordinal_age == 0)
+			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/weapon/pickaxe/bone(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/shovel/bone(src), slot_belt)
+		else if (map.ordinal_age == 1)
+			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/weapon/pickaxe/bone(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/shovel/bone(src), slot_belt)
+		else if (map.ordinal_age == 2)
+			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/weapon/pickaxe(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/shovel(src), slot_belt)
+		else if (map.ordinal_age >= 3)
+			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
+			equip_to_slot_or_del(new /obj/item/weapon/pickaxe(src), slot_back)
+			equip_to_slot_or_del(new /obj/item/weapon/shovel(src), slot_belt)
 	if (!map.chad_mode)
 
-//knives/////////////////////////////////////////////////
-		if (map.civilizations)
+//knives and other tools/////////////////////////////////////////////////
+		if (map.civilizations && map.ID != MAP_NOMADS_MOUNTAIN)
 			if (map.ordinal_age == 0)
 				equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_belt)
 			else if (map.ordinal_age == 1)

@@ -561,6 +561,11 @@
 			if (loc_temp < 295)
 				loc_temp = 295
 				break
+	for (var/obj/structure/heatsource/HS in range(3, src))
+		if (HS.on == TRUE)
+			if (loc_temp < 295)
+				loc_temp = 295
+				break
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 295)

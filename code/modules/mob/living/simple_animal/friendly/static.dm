@@ -60,11 +60,15 @@
 	for (var/obj/covers/CV in src.loc)
 		if (CV.is_cover == TRUE)
 			return
+	if (!istype(get_turf(src), /turf/floor/beach/water))
+		return
 	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = M
+		if (!H.driver_vehicle)
+			return
 		invisibility = 0
 		visible_message("<span class='notice'>The piranhas swarm [M]!</span>")
-		if (ishuman(M))
-			var/mob/living/carbon/human/H = M
+		if (ishuman(H))
 			var/dam_zone = pick("l_foot", "r_foot", "l_leg", "r_leg")
 			var/obj/item/organ/external/affecting = H.get_organ(dam_zone)
 			if (prob(25))

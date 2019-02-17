@@ -7,7 +7,7 @@
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
 	ambience = list("sound/ambience/ship1.ogg")
-
+	var/climate = "temperate" //temperate, desert, jungle, tundra
 /area/caribbean/New()
 	..()
 	if (istype(src, /area/caribbean/british))
@@ -58,7 +58,7 @@
 	base_turf = /turf/floor/dirt
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
-
+	climate = "jungle"
 /area/caribbean/tribes/goose
 	name = "Red Goose Tribe"
 /area/caribbean/tribes/goose/supplies
@@ -115,41 +115,64 @@
 	base_turf = /turf/floor/grass
 	icon_state = "red2"
 	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "temperate"
+
+/area/caribbean/nomads/sand
+	name = "Beach"
+	base_turf = /turf/floor/beach/sand
+	icon_state = "blue1"
+	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "temperate"
 
 /area/caribbean/nomads/desert
 	name = "Desert"
 	base_turf = /turf/floor/beach/sand/desert
 	icon_state = "red3"
 	ambience = list("sound/ambience/desert.ogg")
+	climate = "desert"
+
+/area/caribbean/nomads/desert/water
+	name = "Desert River"
+	base_turf = /turf/floor/beach/sand/desert
+	icon_state = "blue2"
+	ambience = list("sound/ambience/desert.ogg")
+	climate = "desert"
+
 /area/caribbean/nomads/river
 	name = "Jungle River"
 	base_turf = /turf/floor/beach/water/jungle
 	icon_state = "blue1"
+	climate = "jungle"
 
 /area/caribbean/nomads/forest
 	name = "Forest"
 	base_turf = /turf/floor/grass
 	icon_state = "green1"
+	climate = "temperate"
 
 /area/caribbean/nomads/forest/snow
-	name = "Forest"
+	name = "Snowy Forest"
 	base_turf = /turf/floor/winter/grass
 	icon_state = "green1"
+	climate = "tundra"
 
 /area/caribbean/nomads/forest/Jungle
 	name = "Jungle"
 	base_turf = /turf/floor/grass/jungle
 	icon_state = "green1"
+	climate = "jungle"
 
 /area/caribbean/nomads/snow
 	name = "Snow"
 	base_turf = /turf/floor/winter
 	icon_state = "red1"
+	climate = "tundra"
 
 /area/caribbean/nomads/ice
 	name = "Ice"
 	base_turf = /turf/floor/beach/water/ice
 	icon_state = "blue1"
+	climate = "tundra"
 
 /area/caribbean/island
 	name = "Island"
@@ -193,6 +216,7 @@
 	icon_state = "red1"
 	base_turf = /turf/floor/beach/sand/desert
 	ambience = list("sound/ambience/desert.ogg")
+	climate = "desert"
 /area/caribbean/desert/town
 	name = "Little Creek"
 	icon_state = "blue1"
@@ -211,12 +235,13 @@
 	name = "The Forest"
 	icon_state = "purple1"
 	base_turf = /turf/floor/grass
+	climate = "temperate"
 
 /area/caribbean/forest/dirt
 	name = "The Forest"
 	icon_state = "purple1"
 	base_turf = /turf/floor/dirt
-
+	climate = "temperate"
 
 /area/caribbean/supply
 	name = "Supply Arrival"
@@ -264,7 +289,7 @@
 /area/caribbean/farm
 	name = "Farmland"
 	icon_state = "red3"
-
+	climate = "temperate"
 
 // admin zone
 
@@ -274,7 +299,7 @@
 	location = AREA_INSIDE
 	artillery_integrity = INFINITY
 	base_turf = /turf/floor/dirt
-
+	climate = "temperate"
 
 // houses in No Man's Land
 
@@ -330,7 +355,45 @@
 	name = "the caves"
 	location = AREA_INSIDE
 
+/area/caribbean/void/caves/level1
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
 
+/area/caribbean/void/caves/level2
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level3
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level4
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level5
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level6
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level7
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/level8
+	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
 // end of wormhole areas
 
 
@@ -341,12 +404,14 @@
 	icon_state = "red2"
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "jungle"
 
 /area/caribbean/colonies/beach
 	name = "Beach"
 	icon_state = "red1"
 	base_turf = /turf/floor/beach/sand
 	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "temperate"
 
 /area/caribbean/colonies/caves
 	name = "Caves"
@@ -360,6 +425,7 @@
 	icon_state = "red4"
 	base_turf = /turf/floor/beach/water/swamp
 	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "jungle"
 
 /area/caribbean/colonies/british
 	name = "British Colony Hall"

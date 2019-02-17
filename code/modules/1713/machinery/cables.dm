@@ -46,12 +46,30 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/obj/item/stack/cable_coil/stored
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond.
+	var/lastupdate = 0 //to prevent loops. Can only update once per decisecond. For turning on/off.
+	var/lastupdate2 = 0 //to prevent loops. Can only update once per decisecond. For power calculations.
 	var/cable_color = "red"
 	color = "#ff0000"
 	var/usesound = 'sound/items/deconstruct.ogg'
 	var/powerflow = 0 //maximum powerflow in the network (total maxpower of all engines connected)
 	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
+	var/tilepos = "over"
+	var/tiledir = "horizontal"
+
+/obj/structure/cable/verb/hiding()
+	set category = null
+	set name = "Under/Over tiles"
+	set src in range(1, usr)
+	if (tilepos == "over")
+		tilepos = "under"
+		layer = 1.95
+		return
+
+	else if (tilepos == "under")
+		tilepos = "over"
+		layer = MOB_LAYER - 0.1
+		return
+
 /obj/structure/cable/yellow
 	cable_color = "yellow"
 	color = "#ffff00"
@@ -113,23 +131,21 @@ By design, d1 is the smallest direction and d2 is the highest
 ///////////////////////////////////
 
 /obj/structure/cable/update_icon()
-	icon_state = "[d1]-[d2]"
+//	icon_state = "[d1]-[d2]"
+	icon_state = tiledir
 
-/obj/structure/cable/proc/handlecable(obj/item/W, mob/user, params)
-
-	if(istype(W, /obj/item/weapon/material/knife))
+// Items usable on a cable :
+//   - knife : cut it duh !
+//   - Cable coil : merge cables
+//   - Multitool : get the power currently passing through the cable
+//
+/obj/structure/cable/attackby(obj/item/W, mob/user, params)
+	if(istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		playsound(loc, usesound, 100, FALSE)
 		stored.add_fingerprint(user)
 		Destroy()
 		return
-
-	else if(istype(W, /obj/item/stack/cable_coil))
-		var/obj/item/stack/cable_coil/coil = W
-		if (coil.get_amount() < 1)
-			user <<"<span class='warning'>Not enough cable!</span>"
-			return
-		coil.cable_join(src, user)
 /*
 	else if(W.tool_behaviour == TOOL_MULTITOOL)
 		if(powernet && (powernet.avail > 0))		// is it powered?
@@ -138,15 +154,17 @@ By design, d1 is the smallest direction and d2 is the highest
 			user <<"<span class='danger'>The cable is not powered.</span>"
 		shock(user, 5, 0.2)
 */
-	add_fingerprint(user)
-
-// Items usable on a cable :
-//   - Wirecutters : cut it duh !
-//   - Cable coil : merge cables
-//   - Multitool : get the power currently passing through the cable
-//
-/obj/structure/cable/attackby(obj/item/W, mob/user, params)
-	handlecable(W, user, params)
+	else
+/*		if (connections.len >= 2)
+			var/count = 0
+			for(var/obj/structure/cable/CBL in connections)
+				count+=1
+			if (count >= 2)
+				user << "Too many connections! Use a connector."
+				return
+*/
+//		handlecable(W, user, params)
+		return
 
 /obj/structure/cable/proc/update_stored(length = 1, colorC = "red")
 	stored.amount = length
@@ -177,35 +195,47 @@ By design, d1 is the smallest direction and d2 is the highest
 	for (var/obj/structure/cable/CB in connections)
 		CB.connections -= src
 		connections -= CB
-	connections = list()
-
-/obj/structure/cable/proc/update_power()
+	for (var/obj/OB in connections)
+		OB.powersource = null
+		connections -= OB
+/obj/structure/cable/proc/update_power(var/powerval = 0, var/recheck = 0)
 	if (!isturf(loc))
 		return
+	var/connectioncount = 0 //to prevent loops. maximum 4 connections per tile
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-15 && CB != src)
+		if ((CB.lastupdate2 <= world.time-25) && CB != src && connectioncount <= 4)
+			connectioncount +=1
+			CB.lastupdate2 = world.time
 			if (powered)
-				CB.currentflow += currentflow
-				lastupdate = world.time
-				CB.lastupdate = world.time
-				CB.update_power()
+				CB.currentflow += powerval
 			else
 				CB.currentflow = 0
-				currentflow = 0
-				CB.lastupdate = world.time
-				lastupdate = world.time
-				CB.update_power()
+			CB.update_power(powerval,0)
+		if (recheck)
+			recheck_update_power(powerval)
 	return
-
+/obj/structure/cable/proc/recheck_update_power(var/powerval = 0)
+	if (!isturf(loc))
+		return
+	spawn(30)
+		var/connectioncount = 0 //to prevent loops. maximum 4 connections per tile
+		for (var/obj/structure/cable/CB in connections)
+			if ((CB.lastupdate2 <= world.time-25) && CB != src && connectioncount <= 4)
+				connectioncount +=1
+				CB.lastupdate2 = world.time
+				if (powered && CB.currentflow < currentflow)
+					CB.currentflow = currentflow
+					CB.recheck_update_power(powerval)
 /obj/structure/cable/proc/power_on(var/maxpower = 0)
 	if (!isturf(loc))
 		return
 	if (maxpower > 0)
 		powered = TRUE
-		lastupdate = world.realtime
+		powerflow += maxpower
+		lastupdate = world.time
 
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-15 && CB != src)
+		if (CB.lastupdate <= world.time-25 && CB != src)
 			CB.powered = TRUE
 			CB.powerflow += powerflow
 			CB.lastupdate = world.time
@@ -218,11 +248,11 @@ By design, d1 is the smallest direction and d2 is the highest
 	if (maxpower > 0)
 		powered = FALSE
 		powerflow -= maxpower
-		lastupdate = world.realtime
+		lastupdate = world.time
 		if (powerflow < 0)
 			powerflow = 0
 	for (var/obj/structure/cable/CB in connections)
-		if (CB.lastupdate <= world.time-15 && CB != src)
+		if (CB.lastupdate <= world.time-25 && CB != src && CB.powered)
 			CB.powered = FALSE
 			CB.powerflow -= powerflow
 			if (CB.powerflow < 0)

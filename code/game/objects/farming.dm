@@ -62,6 +62,11 @@
 	plant = "tea"
 	color = "#995b0b"
 
+/obj/item/stack/farming/seeds/banana
+	name = "banana seeds"
+	plant = "banana"
+	color = "#ffe135"
+
 /obj/item/stack/farming/seeds/potato
 	name = "seed potato"
 	desc = "a potato selected for breeding because of its characteristics."
@@ -246,6 +251,13 @@
 	plant = "rice"
 	harvest_verb = "harvest"
 
+/obj/structure/farming/plant/banana
+	name = "banana"
+	desc = "a banana plant."
+	icon_state = "banana-grow1"
+	plant = "banana"
+
+
 /obj/structure/farming/plant/mushroom
 	name = "mushroom"
 	desc = "a bunch of mushrooms. Can be grown inside and underground."
@@ -292,7 +304,17 @@
 			desc = "A dead [plant] plant."
 			name = "dead [plant] plant"
 		spawn(600)
-			if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
+			if (season == "WINTER" || get_area(get_turf(src)).location == 0)
+				var/heating = 0
+				for(var/obj/structure/brazier/B in range(3,src))
+					if (B.on && B.fuel >= 1)
+						heating += 1
+				for(var/obj/structure/heatsource/HS in range(3,src))
+					if (HS.on && HS.fuel >= 1)
+						heating += 1
+				if (heating != 0)
+					stage += 1
+			else
 				stage += 1
 			growth()
 

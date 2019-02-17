@@ -362,14 +362,7 @@
 			if (locate(/obj/structure/farming/plant) in src)
 				user << "<span class='notice'>There already is something planted here.</span>"
 				return
-			var/area/A = get_area(C)
-			if (istype(A, /area/caribbean/void/caves) && !istype(C, /obj/item/stack/farming/seeds/mushroom))
-				user << "<span class='notice'>You can't farm underground.</span>"
-				return
-			if (A.location == AREA_INSIDE && !istype(C, /obj/item/stack/farming/seeds/mushroom))
-				user << "<span class='notice'>You can't farm in a roofed area.</span>"
-				return
-			else if (istype(C, /obj/item/stack/farming/seeds/potato))
+			if (istype(C, /obj/item/stack/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/potato(src)
 				if (C.amount>1)
@@ -488,6 +481,14 @@
 			else if (istype(C, /obj/item/stack/farming/seeds/cotton))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/cotton(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
+			else if (istype(C, /obj/item/stack/farming/seeds/banana))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/banana(src)
 				if (C.amount>1)
 					C.amount -= 1
 				else

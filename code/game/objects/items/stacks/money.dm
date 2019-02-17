@@ -277,7 +277,7 @@
 
 /obj/item/stack/money/goldcoin
 	name = "gold coins"
-	desc = "A small gold coin. Worth 4 silver coins and 40 copper coins."
+	desc = "A small gold coin. Worth 4 silver coins or 40 copper coins."
 	singular_name = "gold coin"
 	icon_state = "goldcoin_pile"
 	amount = 1

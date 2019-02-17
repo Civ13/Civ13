@@ -126,6 +126,13 @@
 	is_diggable = FALSE
 	initial_flooring = null
 
+/turf/floor/beach/drywater2
+	name = "dry riverbed"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "sand1"
+	is_diggable = FALSE
+	initial_flooring = null
+
 /turf/floor/beach/sand
 	name = "sand"
 	icon_state = "sand"
@@ -170,6 +177,24 @@
 	density = FALSE
 	iscovered = FALSE
 	initial_flooring = /decl/flooring/water_deep
+
+/turf/floor/beach/water/deep/jungle
+	name = "deep jungle water"
+	icon_state = "seashallow_jungle1"
+	desc = "Water. Seems to be very deep, you cant see the bottom."
+	water_level = 200
+	density = FALSE
+	iscovered = FALSE
+	initial_flooring = /decl/flooring/water_jungle1
+
+/turf/floor/beach/water/deep/swamp
+	name = "deep swamp water"
+	icon_state = "seashallow_swamp"
+	desc = "Water. Seems to be very deep, you cant see the bottom."
+	water_level = 200
+	density = FALSE
+	iscovered = FALSE
+	initial_flooring = /decl/flooring/water_swamp
 
 /turf/floor/beach/water/deep/saltwater
 	name = "deep saltwater"

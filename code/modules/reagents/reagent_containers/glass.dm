@@ -29,8 +29,13 @@
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
 		/obj/structure/oil_spring,
+		/obj/structure/refinery,
+		/obj/structure/oilwell,
+		/obj/structure/heatsource,
 		/obj/item/flashlight/lantern,
 		/obj/item/stack/ammopart,
+		/obj/structure/vehicle,
+		/obj/structure/fuelpump,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -304,6 +309,76 @@
 	throw_speed = 1
 	throw_range = 1
 	nothrow = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern
+	name = "steel barrel"
+	desc = "A steel barrel. You can put liquids inside."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "barrel"
+	amount_per_transfer_from_this = 10
+	volume = 350
+	density = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank
+	name = "large fueltank"
+	desc = "A metalic fueltank. Used to connect to a engine and supply it with fuel."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "fueltank_large"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
+	name = "small fueltank"
+	icon_state = "fueltank_small"
+	volume = 120
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike
+	name = "motorcycle fueltank"
+	icon_state = "fueltank_bike"
+	volume = 50
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/water
+	name = "water barrel"
+	desc = "A steel barrel, filled with drinking water."
+	New()
+		..()
+		reagents.add_reagent("water",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/oil
+	name = "steel barrel"
+	desc = "A steel barrel, filled with crude oil."
+	New()
+		..()
+		reagents.add_reagent("petroleum",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline
+	name = "steel barrel"
+	desc = "A steel barrel, filled with gasoline."
+	New()
+		..()
+		reagents.add_reagent("gasoline",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel
+	name = "diesel barrel"
+	desc = "A steel barrel, filled with diesel."
+	New()
+		..()
+		reagents.add_reagent("diesel",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/biodiesel
+	name = "biodiesel barrel"
+	desc = "A steel barrel, filled with biodiesel."
+	New()
+		..()
+		reagents.add_reagent("biodiesel",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/ethanol
+	name = "ethanol barrel"
+	desc = "A steel barrel, filled with ethanol."
+	New()
+		..()
+		reagents.add_reagent("ethanol",350)
 
 /obj/item/weapon/reagent_containers/glass/barrel/empty
 	name = "wood barrel"
