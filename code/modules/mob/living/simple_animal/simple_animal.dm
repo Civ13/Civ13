@@ -564,7 +564,7 @@
 		if (!istype(get_turf(src),/turf/floor/grass))
 			if (prob(100/totalcount))
 				for(var/turf/floor/grass/GT in range(6,src))
-					walk_towards(src, locate(GT), turns_per_move)
+					walk_towards(src, GT, turns_per_move)
 					return
 		else
 			return
@@ -574,7 +574,7 @@
 			for(var/obj/structure/farming/plant/PL in range(1,src))
 				return
 			for(var/obj/structure/farming/plant/PL in range(8,src))
-				walk_towards(src, locate(PL), turns_per_move)
+				walk_towards(src, PL, turns_per_move)
 				return
 
 	if (carnivore)
@@ -583,7 +583,7 @@
 				return
 			for(var/mob/living/ML in range(9,src))
 				if (ML.stat == DEAD)
-					walk_towards(src, locate(ML), turns_per_move)
+					walk_towards(src, ML, turns_per_move)
 					return
 
 	if (predatory_carnivore)
@@ -591,7 +591,7 @@
 			for(var/mob/living/ML in range(1,src))
 				return
 			for(var/mob/living/ML in range(9,src))
-				walk_towards(src, locate(ML), turns_per_move)
+				walk_towards(src, ML, turns_per_move)
 				return
 
 /mob/living/simple_animal/proc/eat()
