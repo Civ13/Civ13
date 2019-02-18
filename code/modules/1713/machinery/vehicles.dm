@@ -154,6 +154,7 @@
 	maxstep = 3
 	targettype = /obj/structure/vehicle/motorcycle
 
+
 /obj/item/vehicleparts/frame/proc/do_color()
 	colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
 	colorv.color = customcolor

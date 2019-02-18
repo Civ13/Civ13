@@ -247,6 +247,11 @@
 		cover_overlay_c.color = customcolor
 		cover_overlay_base.color = customcolor
 		overlays += cover_overlay_base
+		update_customdesc()
+
+/obj/structure/vehicle/motorcycle/proc/update_customdesc()
+	desc = "A [engine.enginesize]cc motorcycle. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
+	return
 /obj/structure/vehicle/motorcycle/update_overlay()
 	if (driver)
 		add_overlay(cover_overlay)
@@ -258,6 +263,7 @@
 		return
 
 /obj/structure/vehicle/motorcycle/do_vehicle_check(var/m_dir = null)
+	update_customdesc()
 	if (check_engine())
 		var/turf/T = get_turf(get_step(src,driver.dir))
 		if (!T)
@@ -354,7 +360,6 @@
 		return FALSE
 
 /obj/structure/vehicle/motorcycle/check_engine()
-//TODO: add fuel consumption
 
 	if (!engine || !fueltank)
 		return FALSE
