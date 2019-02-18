@@ -55,6 +55,11 @@
 	var/obj/origin = null
 	var/mob/living/following_mob = null
 
+	var/herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
+	var/granivore = 0 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
