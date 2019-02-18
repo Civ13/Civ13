@@ -57,6 +57,7 @@
 
 	var/herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
 	var/granivore = 0 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	var/scavenger = 0 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
@@ -133,7 +134,7 @@
 						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
-					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore) && simplehunger < 700) || simplehunger < 180)
+					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 700) || simplehunger < 180)
 						check_food() // animals will search for crops, grass, and so on
 						eat()
 					else
@@ -557,7 +558,7 @@
 
 /mob/living/simple_animal/proc/check_food()
 
-	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore
+	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
 	if (totalcount <= 0)
 		return
 	if (herbivore)
@@ -594,8 +595,16 @@
 				walk_towards(src, ML, turns_per_move)
 				return
 
+	if (scavenger)
+		if (prob(100/totalcount))
+			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+				return
+			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
+				walk_towards(src, FD, turns_per_move)
+				return
+
 /mob/living/simple_animal/proc/eat()
-	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore
+	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
 	if (totalcount <= 0)
 		return
 
@@ -645,6 +654,15 @@
 								qdel(ML)
 						return
 
+
+	if (scavenger)
+		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+			if (prob(33))
+				visible_message("\The [src] bites some of \the [FD].")
+				simplehunger += 400
+				if (prob(30))
+					qdel(FD)
+					return
 
 
 	if (predatory_carnivore)
