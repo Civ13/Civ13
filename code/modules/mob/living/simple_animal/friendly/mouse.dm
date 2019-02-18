@@ -33,7 +33,7 @@
 
 	can_pull_size = TRUE
 	can_pull_mobs = MOB_PULL_NONE
-
+	granivore = 1
 
 /mob/living/simple_animal/mouse/New()
 	..()
