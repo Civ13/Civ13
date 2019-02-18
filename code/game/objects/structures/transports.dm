@@ -385,18 +385,22 @@
 					fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
 					GC.reagents.del_reagent("gasoline")
 					user << "You empty \the [W] into the fueltank."
+					update_customdesc()
 					return
 				else
 					var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
 					fueltank.reagents.add_reagent("gasoline",amttransf)
 					GC.reagents.remove_reagent("gasoline",amttransf)
 					user << "You fill the fueltank completly with \the [W]."
+					update_customdesc()
 					return
 			else
 				user << "\The [W] has no gasoline in it."
+				update_customdesc()
 				return
 		else
 			user << "The fueltank is full already."
+			update_customdesc()
 			return
 	else
 		..()
