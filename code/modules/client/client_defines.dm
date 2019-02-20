@@ -63,3 +63,5 @@
 	var/next_calculate_is_active_non_observer = -1
 
 	var/movement_busy = FALSE
+
+/client/authenticate = FALSE
