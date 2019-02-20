@@ -210,14 +210,20 @@ the HUD updates properly! */
 				if (viewer == perp)
 					holderf.icon_state = "civp" //player hud
 				else if (perp.civilization == "none")
-					holderf.icon_state = "civ4" //nomads are yellow
-				else if (perp.civilization == viewer.civilization && viewer.civilization != "none")
-					holderf.icon_state = "civ2" //same faction is green
+					holderf.icon_state = "" //nomads are yellow
+				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
+					holderf.icon_state = "civp" //same faction is green
+				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
+					holderf.icon_state = "civpl" //same faction is green
 				else
-					holderf.icon_state = "civ1" //other factions are red
-				if (perp.stat!=DEAD && (!perp.key || !perp.client) && perp.invisibility == 101)
-					holderf.icon_state = "" // ssd's dont have huds
-				P.Client.images += holderf
+					holderf.icon_state = "" //other factions are red
+				perp.hud_list[BASE_FACTION] = holderf
+				if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
+					P.Client.images += perp.hud_list[BASE_FACTION]
+				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
+					P.Client.images += perp.hud_list[BASE_FACTION]
+				else
+					P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
 /datum/arranged_hud_process
 	var/client/Client
 	var/mob/Mob
