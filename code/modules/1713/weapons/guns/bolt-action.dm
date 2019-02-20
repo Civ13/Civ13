@@ -527,6 +527,11 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 
+/obj/item/weapon/gun/projectile/murata/New()
+	..()
+	loaded = list()
+	chambered = null
+
 /obj/item/weapon/gun/projectile/murata/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
