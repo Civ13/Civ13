@@ -403,12 +403,12 @@
 	item_state = "checkered_suit"
 	worn_state = "checkered_suit"
 
-/obj/item/clothing/suit/storage/jacket/burgundry_suit
-	name = "black suit"
-	desc = "A formal burgundry colored suit."
-	icon_state = "burgundry_suit"
-	item_state = "burgundry_suit"
-	worn_state = "burgundry_suit"
+/obj/item/clothing/suit/storage/jacket/burgundy_suit
+	name = "burgundy suit"
+	desc = "A formal burgundy colored suit."
+	icon_state = "burgundy_suit"
+	item_state = "burgundy_suit"
+	worn_state = "burgundy_suit"
 
 /obj/item/clothing/accessory/tie
 	name = "black tie"

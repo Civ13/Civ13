@@ -261,7 +261,15 @@
 		new/datum/stack_recipe("wood fence", 	/obj/structure/grille/fence, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("wood structure", /obj/structure/barricade, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE,),))
 
-	if (current_res[2] >= 21)
+	if (current_res[2] >= 95)
+		recipes += new/datum/stack_recipe_list("weapons", list(
+			new/datum/stack_recipe("arrow", /obj/item/ammo_casing/arrow, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bow", /obj/item/weapon/gun/projectile/bow, 8, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("quarterstaff", /obj/item/weapon/material/quarterstaff, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
+			new/datum/stack_recipe("punji sticks trap", /obj/item/weapon/punji_sticks, 4, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood spear", /obj/item/weapon/material/spear, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
+			new/datum/stack_recipe("police baton", /obj/item/weapon/melee/classic_baton, 4, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[2] >= 21 && current_res[2] < 95)
 		recipes += new/datum/stack_recipe_list("weapons", list(
 			new/datum/stack_recipe("arrow", /obj/item/ammo_casing/arrow, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bow", /obj/item/weapon/gun/projectile/bow, 8, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -455,7 +463,7 @@
 		recipes = list(new/datum/stack_recipe("cigar", /obj/item/clothing/mask/smokable/cigarette/cigar, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("cuban cigar", /obj/item/clothing/mask/smokable/cigarette/cigar/havana, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 
-/material/cocaine/generate_recipes_civs(var/list/current_res = list(0,0,0))
+/material/coca/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[3] >= 93)
 		recipes = list(new/datum/stack_recipe("cocaine", /obj/item/weapon/reagent_containers/pill/cocaine, 10, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE))
@@ -666,7 +674,7 @@
 			new/datum/stack_recipe("charcoal suit", /obj/item/clothing/suit/storage/jacket/charcoal_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black suit", /obj/item/clothing/suit/storage/jacket/black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark black suit", /obj/item/clothing/suit/storage/jacket/really_black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("burgundry suit", /obj/item/clothing/suit/storage/jacket/burgundry_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("burgundy suit", /obj/item/clothing/suit/storage/jacket/burgundy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("checkered suit", /obj/item/clothing/suit/storage/jacket/checkered_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("navy suit", /obj/item/clothing/suit/storage/jacket/navy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -747,7 +755,7 @@
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.ordinal_age >= 5)
+	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe_list("cables", list(
 			new/datum/stack_recipe("cable connector", /obj/item/connector, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("white cable coil (10m)", /obj/item/stack/cable_coil/white, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -795,10 +803,20 @@
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern, 1, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE)
+
 		recipes += new/datum/stack_recipe("fuel pump (star)",/obj/structure/fuelpump/star, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("fuel pump (small)",/obj/structure/fuelpump/small, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("fuel pump (N)",/obj/structure/fuelpump/n, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("fuel pump (S)",/obj/structure/fuelpump/s, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe_list("vehicle parts", list(
+			new/datum/stack_recipe("motorcycle frame", /obj/item/vehicleparts/frame/bike, 12, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),))
+		recipes += new/datum/stack_recipe_list("fuel tanks", list(
+			new/datum/stack_recipe("25u bike fuel tank", /obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("50u bike fuel tank", /obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike, 4, _time = 65, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("75u bike fuel tank", /obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75, 6, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("120u small fuel tank", /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small, 10, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("250u large fuel tank", /obj/item/weapon/reagent_containers/glass/barrel/fueltank, 20, _time = 185, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 		recipes += new/datum/stack_recipe_list("electrical", list(
 			new/datum/stack_recipe("street lamp", /obj/structure/lamp/lamppost_small, 3, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),))
 

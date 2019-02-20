@@ -25,6 +25,26 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		src << "<span class = 'red'>You are unable to equip that.</span>"
 
+//secondary Activate-Held-Object, when an object has more than a action possible (i.e. vehicle controls)
+/client/verb/secondary_activation()
+	set name = "secondary_activation"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+
+	var/obj/item/I = mob.get_active_hand()
+	if (!I)
+		return
+	if (!I.secondary_action)
+		return
+	I.secondary_attack_self(mob)
+	return
+
+
 /mob/living/carbon/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = TRUE)
 	for (var/slot in slots)
 		if (equip_to_slot_if_possible(W, slots[slot], del_on_fail = FALSE))

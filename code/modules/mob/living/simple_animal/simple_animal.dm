@@ -55,6 +55,13 @@
 	var/obj/origin = null
 	var/mob/living/following_mob = null
 
+	var/herbivore = 0 //if it eats grass of the floor (i.e. goats, cows)
+	var/granivore = 0 //if it will be attracted to crops (i.e. rabbits, mice, birds)
+	var/scavenger = 0 //if it will be attracted to trash, rotting meat, etc (mice, mosquitoes)
+	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
+	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
+
+	var/simplehunger = 1000
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -91,6 +98,16 @@
 	handle_paralysed()
 	handle_supernatural()
 
+	if (herbivore || carnivore || predatory_carnivore || granivore)
+		simplehunger-=1
+		if (simplehunger > 1000)
+			simplehunger = 1000
+
+		if (simplehunger <= 0)
+			visible_message("\The [src] is starving!")
+			health--
+			simplehunger = 30
+
 	if (following_mob)
 		stop_automated_movement = TRUE
 		if (get_dist(src, following_mob) > 2)
@@ -109,6 +126,7 @@
 			turns_since_move++
 			if (turns_since_move >= turns_per_move)
 				if (!(stop_automated_movement_when_pulled && pulledby)) //Soma animals don't move when pulled
+
 					if (istype(src, /mob/living/simple_animal/hostile/skeleton/attacker))
 						if (prob(20) && get_dist(src, locate(/obj/effect/landmark/npctarget)) > 11)
 							walk_towards(src, locate(/obj/effect/landmark/npctarget),6)
@@ -116,11 +134,15 @@
 						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
-					var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
-					moving_to = pick(cardinal)
-					set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
-					Move(get_step(src,moving_to))
-					turns_since_move = FALSE
+					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 700) || simplehunger < 180)
+						check_food() // animals will search for crops, grass, and so on
+						eat()
+					else
+						var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
+						moving_to = pick(cardinal)
+						set_dir(moving_to)			//How about we turn them the direction they are moving, yay.
+						Move(get_step(src,moving_to))
+						turns_since_move = FALSE
 
 	//Speaking
 	if (!client && speak_chance)
@@ -533,3 +555,118 @@
 		stop_automated_movement = FALSE
 
 		return
+
+/mob/living/simple_animal/proc/check_food()
+
+	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
+	if (totalcount <= 0)
+		return
+	if (herbivore)
+		if (!istype(get_turf(src),/turf/floor/grass))
+			if (prob(100/totalcount))
+				for(var/turf/floor/grass/GT in range(6,src))
+					walk_towards(src, GT, turns_per_move)
+					return
+		else
+			return
+
+	if (granivore)
+		if (prob(100/totalcount))
+			for(var/obj/structure/farming/plant/PL in range(1,src))
+				return
+			for(var/obj/structure/farming/plant/PL in range(8,src))
+				walk_towards(src, PL, turns_per_move)
+				return
+
+	if (carnivore)
+		if (prob(100/totalcount))
+			for(var/mob/living/ML in range(1,src))
+				return
+			for(var/mob/living/ML in range(9,src))
+				if (ML.stat == DEAD)
+					walk_towards(src, ML, turns_per_move)
+					return
+
+	if (predatory_carnivore)
+		if (prob(100/totalcount))
+			for(var/mob/living/ML in range(1,src))
+				return
+			for(var/mob/living/ML in range(9,src))
+				walk_towards(src, ML, turns_per_move)
+				return
+
+	if (scavenger)
+		if (prob(100/totalcount))
+			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+				return
+			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
+				walk_towards(src, FD, turns_per_move)
+				return
+
+/mob/living/simple_animal/proc/eat()
+	var/totalcount = herbivore+granivore+carnivore+predatory_carnivore+scavenger
+	if (totalcount <= 0)
+		return
+
+	if (herbivore)
+		for(var/turf/floor/grass/GT in range(1,src))
+			if (prob(33))
+				visible_message("\The [src] eats some grass.")
+				simplehunger += 550
+				GT.grassamt -= 1
+				if (GT.grassamt <= 0)
+					if (istype(GT, (/turf/floor/grass/jungle)))
+						GT.ChangeTurf(/turf/floor/dirt/jungledirt)
+						return
+					else
+						GT.ChangeTurf(/turf/floor/dirt)
+						return
+				else
+					return
+		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
+			if (prob(20))
+				visible_message("\The [src] eats some of the wheat.")
+
+
+	if (granivore)
+		for(var/obj/structure/farming/plant/PL in range(1,src))
+			if (prob(15))
+				visible_message("<span class='notice'>\The [src] eats the [PL]!</span>")
+				simplehunger += 400
+				qdel(PL)
+				return
+			else
+				return
+
+
+	if (carnivore)
+		for(var/mob/living/ML in range(1,src))
+			if (ML.stat == DEAD)
+				if (prob(33))
+					visible_message("\The [src] bites some meat of \the [ML].")
+					simplehunger += 400
+					if (istype(ML, /mob/living/simple_animal))
+						var/mob/living/simple_animal/MLL = ML
+						if (MLL.mob_size <= 9)
+							qdel(ML)
+						else
+							if (prob(30))
+								qdel(ML)
+						return
+
+
+	if (scavenger)
+		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+			if (prob(33))
+				visible_message("\The [src] bites some of \the [FD].")
+				simplehunger += 400
+				if (prob(30))
+					qdel(FD)
+					return
+
+
+	if (predatory_carnivore)
+		for(var/mob/living/ML in range(1,src))
+			return
+
+

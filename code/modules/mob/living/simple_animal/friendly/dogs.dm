@@ -24,6 +24,7 @@
 	maxbodytemp = 323	//Above 50 Degrees Celcius
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
+	carnivore = 1
 
 /mob/living/simple_animal/dog/Life()
 	//MICE!

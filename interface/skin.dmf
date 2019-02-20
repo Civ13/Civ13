@@ -74,6 +74,9 @@ macro "macro"
 	elem 
 		name = "CTRL+4"
 		command = "a-intent harm"
+	elem "secondaryactivation"
+		name = "CTRL+C"
+		command = "secondary_activation"
 	elem 
 		name = "CTRL+E"
 		command = "quick-equip"
@@ -199,6 +202,9 @@ macro "hotkeymode"
 	elem 
 		name = "A+UP"
 		command = ".stopmovingleft"
+	elem "secondaryactivation"
+		name = "C"
+		command = "secondary_activation"
 	elem 
 		name = "D"
 		command = ".startmovingright"
@@ -250,8 +256,6 @@ macro "hotkeymode"
 	elem "s_key"
 		name = "S"
 		command = ".startmovingdown"
-	elem 
-		name = "CTRL+S"
 	elem 
 		name = "S+UP"
 		command = ".stopmovingdown"

@@ -255,7 +255,7 @@
 	name = "wolf spawner"
 	hostile = TRUE
 	max_number = 4
-	max_range = 10
+	max_range = 8
 	create_path = /mob/living/simple_animal/hostile/wolf
 	timer = 3000
 
@@ -263,7 +263,7 @@
 	name = "white wolf spawner"
 	hostile = TRUE
 	max_number = 4
-	max_range = 10
+	max_range = 8
 	create_path = /mob/living/simple_animal/hostile/wolf/white
 	timer = 3000
 

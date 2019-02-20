@@ -176,7 +176,7 @@
 			var/obj/item/weapon/reagent_containers/pill/cocaine_line/coca = new/obj/item/weapon/reagent_containers/pill/cocaine_line(user)
 			user.put_in_hands(coca)
 			vol = reagents.get_reagent_amount("cocaine")/25
-			desc = "A gram of very pure cocaine. Contains [vol] grams."
+			desc = "A pile of very pure cocaine. Contains [vol] grams."
 	else
 		..()
 
@@ -185,7 +185,7 @@
 		user << "You put \the [I] into \the [src]."
 		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
 		vol = reagents.get_reagent_amount("cocaine")/25
-		desc = "A gram of very pure cocaine. Contains [vol] grams."
+		desc = "A pile of very pure cocaine. Contains [vol] grams."
 	else
 		..()
 /obj/item/weapon/reagent_containers/pill/cocaine_line

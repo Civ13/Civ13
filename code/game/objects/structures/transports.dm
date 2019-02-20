@@ -6,7 +6,7 @@
 	var/list/ontop = list()
 	var/mob/living/carbon/human/driver = null
 	var/lastmove = 0
-	var/vehicle_m_delay = 20
+	var/vehicle_m_delay = 15
 	anchored = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -20,6 +20,10 @@
 	var/obj/structure/vehicleparts/axis/axis = null
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
 	var/health = 100
+	var/customcolor = "#FFFFFF"
+
+/obj/structure/vehicle/proc/do_color()
+	return
 
 /obj/structure/vehicle/proc/processmove(var/m_dir = null)
 	if (!m_dir)
@@ -203,6 +207,8 @@
 	not_disassemblable = TRUE
 	vehicle_m_delay = 3
 	var/image/cover_overlay = null
+	var/image/cover_overlay_c = null
+	var/image/cover_overlay_base = null
 	axis = new/obj/structure/vehicleparts/axis/bike
 	wheeled = TRUE
 	dwheel = new/obj/item/vehicleparts/wheel/handle
@@ -211,6 +217,7 @@
 /obj/structure/vehicle/motorcycle/m125
 	name = "125cc motorcycle"
 	desc = "A 125cc, 4-stroke gasoline motorcycle."
+	icon_state = "motorcycleX"
 	health = 130
 /obj/structure/vehicle/motorcycle/m125/New()
 	..()
@@ -231,18 +238,32 @@
 /obj/structure/vehicle/motorcycle/New()
 	..()
 	//TODO: assign axis, fueltank, engine and connect them
+	cover_overlay_base = image(icon, "[icon_state]_frame2_mask")//"bike_cover")
 	cover_overlay = image(icon, "[icon_state]_overlay")//"bike_cover")
 	cover_overlay.layer = MOB_LAYER + 2.1
+	cover_overlay_c = image(icon, "[icon_state]_overlay_mask")//"bike_cover")
+	cover_overlay_c.layer = MOB_LAYER + 2.11
+	spawn(3)
+		cover_overlay_c.color = customcolor
+		cover_overlay_base.color = customcolor
+		overlays += cover_overlay_base
+		update_customdesc()
 
+/obj/structure/vehicle/motorcycle/proc/update_customdesc()
+	desc = "A [engine.enginesize]cc motorcycle. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
+	return
 /obj/structure/vehicle/motorcycle/update_overlay()
 	if (driver)
 		add_overlay(cover_overlay)
+		add_overlay(cover_overlay_c)
 		return
 	else
 		overlays -= cover_overlay
+		overlays -= cover_overlay_c
 		return
 
 /obj/structure/vehicle/motorcycle/do_vehicle_check(var/m_dir = null)
+	update_customdesc()
 	if (check_engine())
 		var/turf/T = get_turf(get_step(src,driver.dir))
 		if (!T)
@@ -311,7 +332,11 @@
 			axis.currentspeed = 0
 			stopmovementloop()
 			return FALSE
-		if (!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && get_turf(get_step(src,driver.dir)).density == FALSE)
+		var/canpass = FALSE
+		for(var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
+			if (CVV.density == FALSE)
+				canpass = TRUE
+		if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE)
 			if (driver in src.loc)
 				return TRUE
 			else
@@ -335,7 +360,6 @@
 		return FALSE
 
 /obj/structure/vehicle/motorcycle/check_engine()
-//TODO: add fuel consumption
 
 	if (!engine || !fueltank)
 		return FALSE
@@ -361,18 +385,28 @@
 					fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
 					GC.reagents.del_reagent("gasoline")
 					user << "You empty \the [W] into the fueltank."
+					update_customdesc()
 					return
 				else
 					var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
 					fueltank.reagents.add_reagent("gasoline",amttransf)
 					GC.reagents.remove_reagent("gasoline",amttransf)
 					user << "You fill the fueltank completly with \the [W]."
+					update_customdesc()
 					return
 			else
 				user << "\The [W] has no gasoline in it."
+				update_customdesc()
 				return
 		else
 			user << "The fueltank is full already."
+			update_customdesc()
 			return
 	else
 		..()
+
+/obj/structure/vehicle/motorcycle/do_color()
+	if (customcolor)
+		var/image/colorov = image("icon" = icon, "icon_state" = "[icon_state]_mask1")
+		colorov.color = customcolor
+		overlays += colorov

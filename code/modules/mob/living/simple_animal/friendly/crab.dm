@@ -22,6 +22,7 @@
 	var/obj/item/inventory_mask
 	possession_candidate = TRUE
 	mob_size = MOB_SMALL
+
 /mob/living/simple_animal/crab/Life()
 	..()
 	//CRAB movement

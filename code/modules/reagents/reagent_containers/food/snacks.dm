@@ -481,6 +481,9 @@
 			name = "rotten [name]"
 			rotten = TRUE
 			reagents.add_reagent("food_poisoning", 1)
+			spawn(1000)
+				if (isturf(loc))
+					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
 
@@ -501,6 +504,9 @@
 			name = "rotten [name]"
 			rotten = TRUE
 			reagents.add_reagent("food_poisoning", 1)
+			spawn(1000)
+				if (isturf(loc))
+					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
 
@@ -1611,6 +1617,9 @@
 			rotten = TRUE
 			reagents.remove_reagent("protein", 1)
 			reagents.add_reagent("food_poisoning", 1)
+			spawn(1000)
+				if (isturf(loc))
+					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
 /obj/item/weapon/reagent_containers/food/snacks/cutlet

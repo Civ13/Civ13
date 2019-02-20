@@ -14,13 +14,9 @@
 	icon_state = "baton"
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
-	force = WEAPON_FORCE_PAINFUL
+	force = WEAPON_FORCE_WEAK
 	var/weakens = 1
 	flammable = TRUE
-/obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
-	return ..()
-
-// the parent for this is in swords_axes_etc.dm
 
 /obj/item/weapon/melee/classic_baton/club
 	name = "wood club"
@@ -30,7 +26,7 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_NORMAL
 
-/obj/item/weapon/melee/classic_baton/club/attack(mob/M as mob, mob/living/user as mob)
+/obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
 
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
 		if (I_HURT)
@@ -40,6 +36,10 @@
 
 	var/user_last_intent = user.a_intent
 	user.a_intent = I_HURT // so we actually hit people right
+
+	..(M, user)
+
+	M.Weaken(weakens) // decent
 
 	user.a_intent = user_last_intent
 
@@ -52,8 +52,9 @@
 	icon_state = "big_club"
 	item_state = "big_club"
 	force = WEAPON_FORCE_PAINFUL
+	weakens = 2
 
-/obj/item/weapon/melee/classic_baton/club/attack(mob/M as mob, mob/living/user as mob)
+/obj/item/weapon/melee/classic_baton/big_club/attack(mob/M as mob, mob/living/user as mob)
 
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
 		if (I_HURT)
