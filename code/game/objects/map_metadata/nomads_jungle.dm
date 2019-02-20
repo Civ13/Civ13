@@ -70,6 +70,12 @@
 					qdel(OB)
 			D.ChangeTurf(/turf/floor/beach/water/flooded)
 		real_season = "wet"
+		for (var/turf/floor/dirt/jungledirt/JD)
+			if (prob(50))
+				JD.ChangeTurf(/turf/floor/grass/jungle)
+		for (var/turf/floor/dirt/burned/BJ)
+			if (prob(75))
+				BJ.ChangeTurf(/turf/floor/dirt/jungledirt)
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season</b> has started.</big>"

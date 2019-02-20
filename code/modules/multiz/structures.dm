@@ -31,7 +31,8 @@
 	icon = 'icons/obj/stairs.dmi'
 	var/istop = TRUE
 	var/obj/structure/multiz/target
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 	New()
 		. = ..()
 		for (var/obj/structure/multiz/M in loc)
@@ -289,7 +290,9 @@
 		usr.client.moving = FALSE
 	else
 		M.Move(get_turf(target))
-
+/obj/structure/stairs
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/stairs/active/attack_hand(mob/user)
 	. = ..()

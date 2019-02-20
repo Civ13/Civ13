@@ -15,6 +15,8 @@
 	icon_opened = "pine_open"
 	anchored = TRUE
 	density = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/closet/hideout/pine
 	name = "strange leaves"

@@ -8,7 +8,8 @@
 	anchored = TRUE
 	var/shattered = FALSE
 	var/list/ui_users = list()
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/mirror/attack_hand(mob/user as mob)
 
 	if (shattered)	return

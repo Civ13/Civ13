@@ -25,6 +25,8 @@
 	var/water = 0
 	var/stew_ticks = 0
 	var/list/stew_nutriment_desc = list()
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/pot/New()
 	..()

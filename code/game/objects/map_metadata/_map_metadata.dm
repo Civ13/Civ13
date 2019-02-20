@@ -21,7 +21,7 @@ var/civmax_research = list(130,130,130)
 	var/event_faction = null
 	var/min_autobalance_players = 0
 	var/respawn_delay = 3000
-	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW, WEATHER_SANDSTORM, WEATHER_BLIZZARD, WEATHER_NONE, WEATHER_STORM)
+	var/list/valid_weather_types = list(WEATHER_RAIN, WEATHER_SNOW, WEATHER_SANDSTORM, WEATHER_BLIZZARD, WEATHER_NONE, WEATHER_STORM, WEATHER_SMOG)
 	var/squad_spawn_locations = TRUE
 	var/availablefactions_run = FALSE
 	var/list/availablefactions = list("Red Goose Tribesman")
@@ -122,6 +122,9 @@ var/civmax_research = list(130,130,130)
 	var/age5_timer = 46000
 	var/age5_top = 140
 
+
+	var/pollutionmeter = 0
+
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -149,6 +152,17 @@ var/civmax_research = list(130,130,130)
 	// makes win condition helper datum
 	win_condition = new
 	set_ordinal_age()
+	spawn(5000)
+		pollution()
+
+/obj/map_metadata/proc/pollution()
+
+	if (pollutionmeter >= 2000)
+		change_weather(WEATHER_SMOG)
+		world << "The air gets smoggy..."
+	pollutionmeter -= 80
+	spawn(9000) //every 15 mins
+		pollution()
 
 /obj/map_metadata/proc/set_ordinal_age()
 	if (age == "5000 B.C.")

@@ -25,6 +25,7 @@
 //	holder_type = /obj/item/weapon/holder/cat
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
+	carnivore = 1
 
 /mob/living/simple_animal/cat/Life()
 	//MICE!

@@ -176,3 +176,99 @@
 			return
 	else
 		..()
+
+
+///////////////WW2-MODERN//////////////////////////////////////
+
+
+
+/////////////////UNIFORMS////////////////////////////////////
+/obj/item/clothing/under/customuniform_modern
+	name = "camo uniform"
+	desc = "A modern era camouflaged uniform."
+	var/uncolored = FALSE
+	var/browncolor = 0
+	var/greencolor = 0
+	var/blackcolor = 0
+	item_state = "modern_camo_custom"
+	icon_state = "modern_camo_custom"
+	worn_state = "modern_camo_custom"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customuniform_modern/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!browncolor)
+			var/input = input(user, "First Camo Color - Choose a hex color (without the # | default is brown):", "First Camo Color" , "58493d")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				browncolor = addtext("#",input)
+		if (!greencolor)
+			var/input = input(user, "Second Camo Color - Choose a hex color (without the # | default is green):", "Second Camo Color" , "5b6142")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				greencolor = addtext("#",input)
+		if (!blackcolor)
+			var/input = input(user, "Third Camo Color - Choose a hex color (without the # | default is dark grey):", "First Camo Color" , "2f323b")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				blackcolor = addtext("#",input)
+		if (greencolor && browncolor && blackcolor)
+			uncolored = FALSE
+			var/image/brown = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l1")
+			brown.color = browncolor
+			var/image/green = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l2")
+			green.color = greencolor
+			var/image/black = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l3")
+			black.color = blackcolor
+			var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_objs")
+			overlays += brown
+			overlays += green
+			overlays += black
+			overlays += belt
+			return
+	else
+		..()

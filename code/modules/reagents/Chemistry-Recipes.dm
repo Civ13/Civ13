@@ -940,7 +940,7 @@
 	result = "moonshine"
 	required_reagents = list("nutriment" = 10)
 	catalysts = list("enzyme" = 5)
-	result_amount = 10
+	result_amount = 5
 
 /datum/chemical_reaction/grenadine
 	name = "Grenadine Syrup"
@@ -964,7 +964,7 @@
 	result = "melonliquor"
 	required_reagents = list("watermelonjuice" = 10)
 	catalysts = list("enzyme" = 5)
-	result_amount = 10
+	result_amount = 5
 
 /datum/chemical_reaction/vodka
 	name = "Vodka"
@@ -972,7 +972,7 @@
 	result = "vodka"
 	required_reagents = list("potato" = 10)
 	catalysts = list("enzyme" = 5)
-	result_amount = 10
+	result_amount = 5
 
 /datum/chemical_reaction/sake
 	name = "Sake"
@@ -980,7 +980,7 @@
 	result = "sake"
 	required_reagents = list("rice" = 10)
 	catalysts = list("enzyme" = 5)
-	result_amount = 10
+	result_amount = 5
 
 /datum/chemical_reaction/gin_tonic
 	name = "Gin and Tonic"

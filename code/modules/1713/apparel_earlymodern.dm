@@ -103,10 +103,7 @@
 			rolled = TRUE
 	update_clothing_icon()
 
-/obj/item/clothing/suit/storage/armycoat
-	min_cold_protection_temperature = COAT_MIN_COLD_PROTECTION_TEMPERATURE
-
-/obj/item/clothing/suit/storage/armycoat/japcoat
+/obj/item/clothing/suit/storage/coat/japcoat
 	name = "Japanese Coat"
 	desc = "A japanese army coat."
 	icon_state = "japcoat"
@@ -119,7 +116,7 @@
 	var/colorn = 1
 
 
-/obj/item/clothing/suit/storage/armycoat/japcoat2
+/obj/item/clothing/suit/storage/coat/japcoat2
 	name = "Japanese Coat"
 	desc = "A japanese army coat."
 	icon_state = "japcoat2"
@@ -131,7 +128,7 @@
 	value = 65
 	var/colorn = 1
 
-/obj/item/clothing/suit/storage/armycoat/ruscoat
+/obj/item/clothing/suit/storage/coat/ruscoat
 	name = "Russian Coat"
 	desc = "A russian army coat."
 	icon_state = "ruscoat"
@@ -143,7 +140,15 @@
 	value = 65
 	var/colorn = 1
 
-/obj/item/clothing/suit/storage/armycoat/rusoffcoat
+/obj/item/clothing/suit/storage/coat/ruscoat/grey
+	name = "Grey Winter Coat"
+	desc = "A thick winter coat."
+
+/obj/item/clothing/suit/storage/coat/japcoat2/brown
+	name = "Brown Winter Coat"
+	desc = "A thick winter coat."
+
+/obj/item/clothing/suit/storage/coat/rusoffcoat
 	name = "Russian Officer Coat."
 	desc = "A russian army  officer coat. Worn by officers, acknowledge their rank."
 	icon_state = "rusoffcoat"
@@ -398,12 +403,12 @@
 	item_state = "checkered_suit"
 	worn_state = "checkered_suit"
 
-/obj/item/clothing/suit/storage/jacket/burgundry_suit
-	name = "black suit"
-	desc = "A formal burgundry colored suit."
-	icon_state = "burgundry_suit"
-	item_state = "burgundry_suit"
-	worn_state = "burgundry_suit"
+/obj/item/clothing/suit/storage/jacket/burgundy_suit
+	name = "burgundy suit"
+	desc = "A formal burgundy colored suit."
+	icon_state = "burgundy_suit"
+	item_state = "burgundy_suit"
+	worn_state = "burgundy_suit"
 
 /obj/item/clothing/accessory/tie
 	name = "black tie"
@@ -459,3 +464,13 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, bullet = 35, laser = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/pith
+	name = "iron pith helmet"
+	desc = "A typical pointed helmet."
+	icon_state = "pith"
+	item_state = "pith"
+	worn_state = "pith"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)

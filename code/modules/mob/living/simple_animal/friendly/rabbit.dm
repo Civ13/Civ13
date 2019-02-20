@@ -26,6 +26,7 @@
 	universal_speak = FALSE
 	universal_understand = TRUE
 	mob_size = MOB_SMALL
+	granivore = 1
 
 /mob/living/simple_animal/rabbit/New()
 	..()

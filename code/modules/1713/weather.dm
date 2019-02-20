@@ -12,7 +12,7 @@
 	if (map && !(_weather in map.valid_weather_types) && _weather != WEATHER_NONE)
 		return
 
-	var/old_weather = weather
+//	var/old_weather = weather
 	if (season == "WINTER")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
@@ -21,12 +21,16 @@
 			weather = WEATHER_BLIZZARD
 		else if (_weather == WEATHER_SNOW)
 			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SPRING")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
 
@@ -37,12 +41,16 @@
 			weather = WEATHER_SNOW
 		else if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SUMMER")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else
 			weather = WEATHER_NONE
 
@@ -52,6 +60,8 @@
 				weather = WEATHER_RAIN
 			else if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
 		else
@@ -61,6 +71,8 @@
 				weather = WEATHER_STORM
 			else if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
 
@@ -70,84 +82,126 @@
 				weather = WEATHER_SANDSTORM
 			else if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
 		else
 			if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
-	var/area_icon = 'icons/effects/weather.dmi'
 	var/area_icon_state = ""
-	var/area_alpha = 255
 
 	switch (weather)
 		if (WEATHER_SNOW)
 			switch (weather_intensity)
 				if (1.0)
 					area_icon_state = "snow1"
-					area_alpha = 255
 				if (2.0)
 					area_icon_state = "snow2"
-					area_alpha = 255
 				if (3.0)
 					area_icon_state = "snow3"
-					area_alpha = 255
 		if (WEATHER_RAIN)
 			switch (weather_intensity)
 				if (1.0)
 					area_icon_state = "rain1"
-					area_alpha = 255
 				if (2.0)
 					area_icon_state = "rain2"
-					area_alpha = 255
 				if (3.0)
 					area_icon_state = "rain3"
-					area_alpha = 255
 		if (WEATHER_BLIZZARD)
 			switch (weather_intensity)
 				if (1.0)
 					area_icon_state = "snow_storm"
-					area_alpha = 255
 				if (2.0)
 					area_icon_state = "snow_storm"
-					area_alpha = 255
+
 				if (3.0)
 					area_icon_state = "snow_storm"
-					area_alpha = 255
+
 		if (WEATHER_SANDSTORM)
 			switch (weather_intensity)
 				if (1.0)
 					area_icon_state = "sandstorm"
-					area_alpha = 255
+
 				if (2.0)
 					area_icon_state = "sandstorm"
-					area_alpha = 255
+
 				if (3.0)
 					area_icon_state = "sandstorm"
-					area_alpha = 255
+
 		if (WEATHER_STORM)
 			switch (weather_intensity)
 				if (1.0)
 					area_icon_state = "monsoon"
-					area_alpha = 255
+
 				if (2.0)
 					area_icon_state = "monsoon"
-					area_alpha = 255
+
 				if (3.0)
 					area_icon_state = "monsoon"
-					area_alpha = 255
-	for (var/area/caribbean/A in area_list)
-		if (istype(A) && A.location == AREA_OUTSIDE)
-			A.icon = area_icon
-			A.icon_state = area_icon_state
-			A.alpha = area_alpha
-			A.weather = weather
-			A.weather_intensity = weather_intensity
 
+		if (WEATHER_SMOG)
+			area_icon_state = "smog"
+
+
+	if (map.civilizations)
+		for (var/area/caribbean/A in area_list)
+			if (istype(A) && A.location == AREA_OUTSIDE)
+				if (A.climate == "temperate")
+					A.icon_state = area_icon_state
+					A.weather = weather
+					A.weather_intensity = weather_intensity
+				else if (A.climate == "tundra")
+					if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "snow_storm"
+						A.weather = WEATHER_BLIZZARD
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = area_icon_state
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+
+				else if (A.climate == "jungle")
+					if (season == "Wet Season" && weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "monsoon"
+						A.weather = WEATHER_STORM
+						A.weather_intensity = weather_intensity
+					else if (season != "Wet Season" && (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM))
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = area_icon_state
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+
+				else if (A.climate == "desert")
+					if (season == "Dry Season" && (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM))
+						A.icon_state = "sandstorm"
+						A.weather = WEATHER_SANDSTORM
+						A.weather_intensity = weather_intensity
+					else if (season != "Dry Season" && (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM))
+						A.icon_state = ""
+						A.weather = WEATHER_NONE
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = area_icon_state
+						A.weather = weather
+						A.weather_intensity = weather_intensity
+	else
+		for (var/area/caribbean/A in area_list)
+			if (istype(A) && A.location == AREA_OUTSIDE)
+				A.icon_state = area_icon_state
+				A.weather = weather
+				A.weather_intensity = weather_intensity
+/*
 	if (old_weather != weather)
 		announce_weather_change(old_weather, weather)
-
+*/
 /proc/modify_weather_somehow()
 	if (weather == WEATHER_NONE)
 		return
@@ -188,7 +242,9 @@
 			possibilities = list(WEATHER_NONE)
 		if ("FALL")
 			possibilities = list(WEATHER_RAIN,WEATHER_SNOW,WEATHER_NONE)
-
+	if (map)
+		if (map.pollutionmeter >= 2000)
+			possibilities += WEATHER_SMOG
 	if (possibilities.len)
 		change_weather(pick(possibilities))
 
@@ -206,6 +262,8 @@
 			return "sandstorm"
 		if (WEATHER_STORM)
 			return "storm"
+		if (WEATHER_SMOG)
+			return "smog"
 	return "none"
 
 // global weather variable changed

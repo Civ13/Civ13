@@ -154,6 +154,15 @@
 	w_class = 1.0
 	flammable = TRUE
 
+/obj/item/stack/material/coca
+	name = "coca leaves"
+	desc = "Can be made into cocaine."
+	icon_state = "coca"
+	default_type = "coca"
+	value = 2
+	w_class = 1.0
+	flammable = TRUE
+
 /obj/item/stack/material/poppy
 	name = "poppy"
 	desc = "dried opium poppies. Opium can be extracted."
@@ -210,6 +219,7 @@
 	icon_state = "sheet-metal"
 	default_type = DEFAULT_WALL_MATERIAL
 	value = 5
+	max_amount = 500
 
 /obj/item/stack/material/wood
 	name = "wooden plank"

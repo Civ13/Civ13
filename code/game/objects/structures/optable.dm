@@ -7,6 +7,8 @@
 	anchored = 1.0
 	var/mob/living/carbon/human/victim = null
 	var/strapped = 0.0
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/optable/New()
 	..()

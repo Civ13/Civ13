@@ -7,7 +7,8 @@
 	anchored = TRUE
 	var/direction = SOUTH
 	var/timer = 0
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/boiling_oil/attack_hand(var/mob/user as mob)
 	if (timer == 2)

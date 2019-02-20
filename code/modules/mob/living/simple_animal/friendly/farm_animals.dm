@@ -26,6 +26,7 @@
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
 	mob_size = MOB_LARGE
+	herbivore = 1
 
 /mob/living/simple_animal/bull
 	name = "bull"
@@ -50,6 +51,7 @@
 	var/calf = FALSE
 	health = 65
 	mob_size = MOB_LARGE
+	herbivore = 1
 
 /mob/living/simple_animal/bull/New()
 	..()
@@ -183,6 +185,7 @@
 	var/amount_grown = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
+	granivore = 1
 
 /mob/living/simple_animal/chick/New()
 	..()
@@ -228,6 +231,7 @@
 	var/egg_timer = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
+	granivore = 1
 
 /mob/living/simple_animal/chicken/New()
 	..()
@@ -336,6 +340,7 @@
 	var/egg_timer = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_SMALL
+	granivore = 1
 
 /mob/living/simple_animal/rooster/New()
 	..()
@@ -379,6 +384,8 @@
 	var/datum/reagents/udder = null
 	mob_size = MOB_MEDIUM
 	var/lamb = FALSE
+	herbivore = 1
+
 /mob/living/simple_animal/goat/New()
 	..()
 	spawn(1)
@@ -507,6 +514,7 @@
 	var/datum/reagents/udder = null
 	mob_size = MOB_MEDIUM
 	var/lamb = FALSE
+	herbivore = 1
 
 /mob/living/simple_animal/sheep/female
 	name = "sheep ewe"
@@ -632,6 +640,8 @@
 	var/max_content_size = 35
 	var/content_size = 0
 	var/list/packed_items = list()
+	herbivore = 1
+
 /mob/living/simple_animal/camel/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (!stat && user.a_intent == I_HELP && icon_state != icon_dead && !istype(O, /obj/item/weapon/leash))
 		if (content_size + O.w_class > max_content_size)

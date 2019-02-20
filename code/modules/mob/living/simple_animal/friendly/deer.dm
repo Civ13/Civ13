@@ -27,6 +27,7 @@
 	icon_dead = "deer_f_dead"
 	icon_gib = "deer_f_dead"
 	mob_size = MOB_LARGE
+	herbivore = 1
 
 /mob/living/simple_animal/deer/Life()
 	..()
@@ -74,6 +75,7 @@
 	icon_dead = "reindeer_f_dead"
 	icon_gib = "reindeer_f_dead"
 	mob_size = MOB_LARGE
+	herbivore = 1
 
 /mob/living/simple_animal/reindeer/Life()
 	..()

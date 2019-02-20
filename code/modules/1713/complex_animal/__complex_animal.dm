@@ -78,6 +78,7 @@
 
 	if (nutrition <= 0)
 		health--
+		nutrition = 5
 		visible_message("\The [src] is starving!")
 
 	if (stat == UNCONSCIOUS)

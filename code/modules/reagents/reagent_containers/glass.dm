@@ -22,14 +22,20 @@
 		/obj/structure/table,
 		/obj/structure/closet,
 		/obj/structure/sink,
+		/obj/structure/engine,
 		/obj/item/weapon/storage,
 		/obj/item/weapon/storage/secure/safe,
 		/mob/living/simple_animal/cow,
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
 		/obj/structure/oil_spring,
+		/obj/structure/refinery,
+		/obj/structure/oilwell,
+		/obj/structure/heatsource,
 		/obj/item/flashlight/lantern,
 		/obj/item/stack/ammopart,
+		/obj/structure/vehicle,
+		/obj/structure/fuelpump,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -101,7 +107,7 @@
 				user << "<span class='notice'>You set the label to \"[tmp_label]\".</span>"
 				label_text = tmp_label
 				update_name_label()
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes))
 
 			if (!is_open_container())
 				user << "<span class='notice'>\The [src] is closed.</span>"
@@ -115,7 +121,7 @@
 			qdel(W)
 			return
 
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/chinchona))
 
 			if (!is_open_container())
 				user << "<span class='notice'>\The [src] is closed.</span>"
@@ -129,7 +135,7 @@
 			qdel(W)
 			return
 
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
 
 			if (!is_open_container())
 				user << "<span class='notice'>\The [src] is closed.</span>"
@@ -143,7 +149,47 @@
 			qdel(W)
 			return
 
-		if (istype(W, /obj/item/stack/material/cotton))
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the potatoes, producing potato juice."
+			reagents.add_reagent("potato", 5)
+			qdel(W)
+			return
+
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You smash the rice, producing a rice paste."
+			reagents.add_reagent("rice", 5)
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/coffee))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You grind the coffee, producing a coffee drink."
+			reagents.add_reagent("coffee", 15)
+			qdel(W)
+			return
+		else if (istype(W, /obj/item/stack/material/cotton))
 			var/obj/item/stack/material/cotton/CT = W
 
 			if (!is_open_container())
@@ -263,6 +309,85 @@
 	throw_speed = 1
 	throw_range = 1
 	nothrow = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern
+	name = "steel barrel"
+	desc = "A steel barrel. You can put liquids inside."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "barrel"
+	amount_per_transfer_from_this = 10
+	volume = 350
+	density = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank
+	name = "large fueltank"
+	desc = "A metalic fueltank. Used to connect to a engine and supply it with fuel."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "fueltank_large"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
+	name = "small fueltank"
+	icon_state = "fueltank_small"
+	volume = 120
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25
+	name = "25u motorcycle fueltank"
+	icon_state = "fueltank_bike"
+	volume = 25
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike
+	name = "50u motorcycle fueltank"
+	icon_state = "fueltank_bike"
+	volume = 50
+
+/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike75
+	name = "75u motorcycle fueltank"
+	icon_state = "fueltank_bike"
+	volume = 75
+/obj/item/weapon/reagent_containers/glass/barrel/modern/water
+	name = "water barrel"
+	desc = "A steel barrel, filled with drinking water."
+	New()
+		..()
+		reagents.add_reagent("water",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/oil
+	name = "steel barrel"
+	desc = "A steel barrel, filled with crude oil."
+	New()
+		..()
+		reagents.add_reagent("petroleum",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline
+	name = "steel barrel"
+	desc = "A steel barrel, filled with gasoline."
+	New()
+		..()
+		reagents.add_reagent("gasoline",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel
+	name = "diesel barrel"
+	desc = "A steel barrel, filled with diesel."
+	New()
+		..()
+		reagents.add_reagent("diesel",250)
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/biodiesel
+	name = "biodiesel barrel"
+	desc = "A steel barrel, filled with biodiesel."
+	New()
+		..()
+		reagents.add_reagent("biodiesel",350)
+
+/obj/item/weapon/reagent_containers/glass/barrel/ethanol
+	name = "ethanol barrel"
+	desc = "A steel barrel, filled with ethanol."
+	New()
+		..()
+		reagents.add_reagent("ethanol",350)
 
 /obj/item/weapon/reagent_containers/glass/barrel/empty
 	name = "wood barrel"

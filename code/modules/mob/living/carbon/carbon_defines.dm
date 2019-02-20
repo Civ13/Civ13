@@ -26,6 +26,8 @@
 
 	var/cpr_time = 1.0
 
+	var/list/addictions = list("cocaine" = 0, "opium" = 0, "alcohol" = 0, "tobacco" = 0)
+
 	var/obj/item/weapon/tank/internal = null//Human/Monkey
 
 	// hunger

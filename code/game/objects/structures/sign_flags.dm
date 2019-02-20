@@ -12,6 +12,8 @@
 				return
 		visible_message("<span class='warning'>[user] rips [src]!</span>" )
 		qdel(src)
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/sign/flag/red
 	name = "\improper red banner"

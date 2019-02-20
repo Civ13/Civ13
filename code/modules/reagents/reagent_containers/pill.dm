@@ -156,7 +156,47 @@
 		..()
 		reagents.add_reagent("opium", 5)
 
+/obj/item/weapon/reagent_containers/pill/cocaine
+	name = "pile of cocaine"
+	desc = "A pile of very pure cocaine."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "cocaine_pile"
+	var/vol = 1
+	value = 20
+	New()
+		..()
+		reagents.add_reagent("cocaine", 25)
+		desc = "A pile of very pure cocaine. Contains [vol] grams."
 
+/obj/item/weapon/reagent_containers/pill/cocaine/attack_hand(mob/living/user)
+	if (src == user.l_hand || src == user.r_hand)
+		if (reagents.get_reagent_amount("cocaine") >= 10)
+			user << "You split a line from the [src]."
+			reagents.remove_reagent("cocaine",5)
+			var/obj/item/weapon/reagent_containers/pill/cocaine_line/coca = new/obj/item/weapon/reagent_containers/pill/cocaine_line(user)
+			user.put_in_hands(coca)
+			vol = reagents.get_reagent_amount("cocaine")/25
+			desc = "A pile of very pure cocaine. Contains [vol] grams."
+	else
+		..()
+
+/obj/item/weapon/reagent_containers/pill/cocaine/attackby(var/obj/item/I, var/mob/user)
+	if (istype(I, /obj/item/weapon/reagent_containers/pill/cocaine_line))
+		user << "You put \the [I] into \the [src]."
+		reagents.add_reagent("cocaine",I.reagents.get_reagent_amount("cocaine"))
+		vol = reagents.get_reagent_amount("cocaine")/25
+		desc = "A pile of very pure cocaine. Contains [vol] grams."
+	else
+		..()
+/obj/item/weapon/reagent_containers/pill/cocaine_line
+	name = "line of cocaine"
+	desc = "A line of cocaine. Ready to go up your nose."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "cocaine_line"
+	value = 4
+	New()
+		..()
+		reagents.add_reagent("cocaine", 5)
 
 /obj/item/weapon/reagent_containers/pill/methylphenidate
 	name = "Methylphenidate pill"

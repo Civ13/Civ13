@@ -81,7 +81,8 @@
 	anchored = TRUE
 	density = TRUE
 	flammable = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 	var/icon_vend //Icon_state when vending
 	var/icon_deny //Icon_state when denying access
 

@@ -20,7 +20,8 @@
 	var/material/padding_material
 	var/base_icon = "bed"
 	var/applies_material_colour = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/bed/wood
 	material = "wood"
 
@@ -98,11 +99,7 @@
 				return
 
 /obj/structure/bed/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench))
-		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
-		dismantle()
-		qdel(src)
-	else if (istype(W,/obj/item/stack))
+	if (istype(W,/obj/item/stack))
 		if (padding_material)
 			user << "\The [src] is already padded."
 			return

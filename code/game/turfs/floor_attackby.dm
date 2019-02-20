@@ -362,14 +362,7 @@
 			if (locate(/obj/structure/farming/plant) in src)
 				user << "<span class='notice'>There already is something planted here.</span>"
 				return
-			var/area/A = get_area(C)
-			if (istype(A, /area/caribbean/void/caves) && !istype(C, /obj/item/stack/farming/seeds/mushroom))
-				user << "<span class='notice'>You can't farm underground.</span>"
-				return
-			if (A.location == AREA_INSIDE && !istype(C, /obj/item/stack/farming/seeds/mushroom))
-				user << "<span class='notice'>You can't farm in a roofed area.</span>"
-				return
-			else if (istype(C, /obj/item/stack/farming/seeds/potato))
+			if (istype(C, /obj/item/stack/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/potato(src)
 				if (C.amount>1)
@@ -493,6 +486,14 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/banana))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/banana(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 			else if (istype(C, /obj/item/stack/farming/seeds/rice))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/rice(src)
@@ -524,6 +525,14 @@
 				else
 					qdel(C)
 				return
+			else if (istype(C, /obj/item/stack/farming/seeds/coca))
+				visible_message("[user] places the seeds in the ploughed field.")
+				new/obj/structure/farming/plant/coca(src)
+				if (C.amount>1)
+					C.amount -= 1
+				else
+					qdel(C)
+				return
 /*					if (ishuman(user)) todo: farming skills
 						var/mob/living/carbon/human/H = user
 						H.adaptStat("crafting", 3) */
@@ -537,17 +546,17 @@
 		if (istype(T, /turf/floor/grass/jungle))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
-		if (istype(T, /turf/floor/dirt/burned))
+		else if (istype(T, /turf/floor/dirt/burned))
 			user << "<span class='danger'>This floor is burned! Wait for it to recover first.</span>"
 			return
-		if (istype(T, /turf/floor/dirt/jungledirt))
+		else if (istype(T, /turf/floor/dirt/jungledirt))
 			user << "<span class='danger'>Jungle terrain is too poor to be farmed. Find a flood plain.</span>"
 			return
-		if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
+		else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
 			if (do_after(user, 50, user.loc))
 				ChangeTurf(/turf/floor/dirt)
 				return
-		if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
+		else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 			if (do_after(user, 70, user.loc))
 				if (istype(T, /turf/floor/dirt/flooded))
 					ChangeTurf(/turf/floor/dirt/ploughed/flooded)

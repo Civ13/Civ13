@@ -7,7 +7,8 @@
 	var/counter = 1
 	var/timeout = 0
 	flammable = TRUE
-
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /obj/structure/oil_spring/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (counter <= 0)
 		user << "<span class='warning'>\The [src] is dry!</span>"
@@ -194,7 +195,11 @@
 				new/obj/effect/burning_oil(OL.loc)
 
 	for (var/turf/floor/grass/GR in orange(1, src))
-		if (prob(10))
+		var/blocked = 0
+		for (var/obj/covers/CV in GR)
+			if (CV.flammable == 0)
+				blocked = 1
+		if (prob(10) && !blocked)
 			new/obj/effect/burning_oil(GR)
 
 	for (var/turf/floor/wood/WF in orange(1, src))

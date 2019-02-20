@@ -43,6 +43,8 @@
 	spawn(50)
 		for (var/obj/structure/roof_support/RS in range(2, src))
 			supportfound = TRUE
+		for (var/obj/structure/mine_support/stone/SS in range(2, src))
+			supportfound = TRUE
 		for (var/turf/wall/W in range(1, src))
 			supportfound = TRUE
 		for (var/obj/covers/C in range(1, src))
@@ -101,6 +103,8 @@
 	var/confirm = FALSE
 	for(var/obj/structure/roof_support/RS in range(2, get_step(user, user.dir)))
 		confirm = TRUE
+	for(var/obj/structure/mine_support/stone/SS in range(2, get_step(user, user.dir)))
+		confirm = TRUE
 	for(var/obj/covers/CV in range(1, get_step(user, user.dir)))
 		if (CV.wall)
 			confirm = TRUE
@@ -128,6 +132,8 @@
 	opacity = FALSE
 	density = FALSE
 	var/health = 100
+	not_movable = TRUE
+	not_disassemblable = FALSE
 
 /obj/structure/mine_support
 	name = "mine support"
@@ -138,6 +144,25 @@
 	opacity = FALSE
 	density = FALSE
 	var/health = 100
+	not_movable = TRUE
+	not_disassemblable = FALSE
+
+/obj/structure/mine_support/stone
+	name = "stone pillar"
+	desc = "A stone pillar that can support roofs and mine shafts."
+	icon_state = "support_st1"
+	flammable = FALSE
+	anchored = TRUE
+	opacity = FALSE
+	density = FALSE
+	health = 180
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/mine_support/stone/New()
+	..()
+	icon_state = pick("support_st1","support_st2")
+	update_icon()
 
 /obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon))

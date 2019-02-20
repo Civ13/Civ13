@@ -20,3 +20,4 @@
 	response_harm   = "hits"
 	mob_size = MOB_MEDIUM
 	possession_candidate = TRUE
+	granivore = 1

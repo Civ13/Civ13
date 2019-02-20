@@ -8,6 +8,9 @@
 	var/list/climbers = list()
 	var/low = FALSE
 
+
+	var/not_movable = TRUE
+	var/not_disassemblable = TRUE
 /obj/structure/Destroy()
 	if (parts)
 		new parts(loc)
@@ -26,6 +29,25 @@
 		structure_shaken()
 
 	return ..()
+/obj/structure/attackby(obj/item/O as obj, mob/user as mob)
+	if (istype(O,/obj/item/weapon/wrench) && !not_movable)
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		return
+	else if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
+		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+		user << "<span class='notice'>You begin dismantling \the [src].</span>"
+		if (do_after(user,25,src))
+			user << "<span class='notice'>You dismantle \the [src].</span>"
+			new /obj/item/stack/material/wood(get_turf(src), amount = 3)
+			for (var/obj/item/weapon/book/b in contents)
+				b.loc = (get_turf(src))
+			qdel(src)
+			return
+	else
+		..()
+
 
 /obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover, /obj/effect/effect/smoke))

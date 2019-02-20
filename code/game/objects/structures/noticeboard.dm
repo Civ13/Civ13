@@ -6,7 +6,8 @@
 	density = FALSE
 	anchored = TRUE
 	var/notices = FALSE
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/noticeboard/initialize()
 	for (var/obj/item/I in loc)
 		if (notices > 4) break
@@ -90,7 +91,8 @@
 	anchored = TRUE
 	var/faction = FALSE
 	var/receive_only = FALSE
-
+	not_movable = FALSE
+	not_disassemblable = TRUE
 /obj/structure/mailbox/processor
 	invisibility = 101
 

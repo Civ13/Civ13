@@ -16,7 +16,7 @@
 /proc/WWinput(client, message, title, default, toc1, toc2)
 
 	if (!title)
-		title = "1713"
+		title = "Civilization 13"
 
 	. = FALSE
 

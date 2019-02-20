@@ -8,6 +8,8 @@
 	var/maxhealth = 100
 	layer = 3.2
 	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 /*
 /obj/structure/wild/New()
 	..()*/
@@ -125,6 +127,30 @@
 	density = TRUE
 	sways = FALSE
 	amount = 5
+
+/obj/structure/wild/tree/Destroy()
+	if (prob(75))
+		var/nearbyObjects = range(2,src)
+		var/list/turf/emptyTurfs = list()
+		var/newtreetype = type
+		spawn(18000)
+			for(var/turf/T in nearbyObjects)
+				if (!istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
+					continue //bad turf
+				else
+					var/found = 0
+					for(var/obj/covers/CV in T)
+						found++
+					for(var/obj/structure/ST in T)
+						found++
+					if (!found)
+						emptyTurfs += T
+			if (emptyTurfs.len)
+				var/chosenturf = pick(emptyTurfs)
+				if (chosenturf)
+					new newtreetype(chosenturf)
+					return
+
 
 /obj/structure/wild/tree/live_tree/New()
 	..()
@@ -454,6 +480,30 @@
 		dropwood.amount = 7
 		qdel(src)
 		return
+
+/obj/structure/wild/jungle/Destroy()
+	if (prob(75))
+		var/nearbyObjects = range(2,src)
+		var/list/turf/emptyTurfs = list()
+		var/newtreetype = type
+		spawn(18000)
+			for(var/turf/T in nearbyObjects)
+				if (!istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
+					continue //bad turf
+				else
+					var/found = 0
+					for(var/obj/covers/CV in T)
+						found++
+					for(var/obj/structure/ST in T)
+						found++
+					if (!found)
+						emptyTurfs += T
+			if (emptyTurfs.len)
+				var/chosenturf = pick(emptyTurfs)
+				if (chosenturf)
+					new newtreetype(chosenturf)
+					return
+	..()
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife/bone))

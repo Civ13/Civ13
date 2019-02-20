@@ -101,13 +101,16 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wall_clock"
 	flammable = TRUE
-
+	not_movable = FALSE
+	not_disassemblable = FALSE
 /obj/structure/potted_plant
 	name = "potted plant"
 	desc = "A potted plant."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "potted_plant"
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
 
 /obj/structure/flag
 	icon = 'icons/obj/flags.dmi'
@@ -118,6 +121,8 @@
 	density = TRUE
 	anchored = TRUE
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/flag/ex_act(severity)
 	switch(severity)
@@ -150,7 +155,7 @@
 /obj/structure/flag/spanish
 	icon_state = "spanish"
 	name = "Spanish Flag"
-	desc = "The Spanish flag, white with a red cross of Burgundry."
+	desc = "The Spanish flag, white with a red cross of burgundy."
 
 /obj/structure/flag/british
 	icon_state = "british"
@@ -184,6 +189,8 @@
 	anchored = TRUE
 	var/mob/living/carbon/human/hanging = null
 	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/noose/New()
 	..()
@@ -288,6 +295,9 @@
 	anchored = TRUE
 	var/mob/living/carbon/human/hanging = null
 	var/roped = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+
 /obj/structure/gallows/New()
 	..()
 	processing_objects |= src

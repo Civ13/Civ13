@@ -460,7 +460,10 @@ var/global/list/damage_icon_parts = list()
 	var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
 	var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_over")
 	var/image/epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
-
+	var/image/brown = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l1")
+	var/image/green = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l2")
+	var/image/black = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l3")
+	var/image/beltm = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_objs")
 	if (w_uniform && istype(w_uniform, /obj/item/clothing/under))
 /*		var/new_screen_loc = find_inv_position(slot_w_uniform)
 		if (new_screen_loc)
@@ -501,6 +504,21 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += shirt
 				standing.overlays += belt
 				standing.overlays += epaulettes
+		else if (istype(w_uniform, /obj/item/clothing/under/customuniform_modern))
+			var/obj/item/clothing/under/customuniform_modern/CU = w_uniform
+			if (!CU.uncolored)
+				brown = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l1")
+				brown.color = CU.browncolor
+				green = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l2")
+				green.color = CU.greencolor
+				black = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l3")
+				black.color = CU.blackcolor
+				beltm = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_objs")
+				standing.overlays += brown
+				standing.overlays += green
+				standing.overlays += black
+				standing.overlays += beltm
+
 		//apply blood overlay
 		if (w_uniform.blood_DNA)
 			var/image/bloodsies	= image(icon = species.blood_mask, icon_state = "uniformblood")
@@ -580,9 +598,10 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_ears(var/update_icons=1)
 	overlays_standing[EARS_LAYER] = null
-	if ( (head && (head.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))) || (wear_mask && (wear_mask.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))))
-		if (update_icons)   update_icons()
-		return
+//this was causing the image to not move, so removed
+//	if ( (head && (head.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))) || (wear_mask && (wear_mask.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))))
+//		if (update_icons)   update_icons()
+//		return
 
 	if (l_ear || r_ear)
 		if (l_ear)

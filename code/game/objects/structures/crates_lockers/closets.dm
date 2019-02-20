@@ -21,6 +21,8 @@
 	var/store_items = TRUE
 	var/store_mobs = TRUE
 	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = FALSE
 
 /obj/structure/closet/initialize()
 	..()

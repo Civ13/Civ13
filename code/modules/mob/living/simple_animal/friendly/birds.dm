@@ -17,6 +17,7 @@
 	meat_amount = 2
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
+	granivore = 1
 
 /mob/living/simple_animal/turkey_f
 	name = "\improper turkey"
@@ -41,6 +42,7 @@
 	mob_size = MOB_MEDIUM
 	var/eggsleft = 5
 	var/egg_timer = FALSE
+	granivore = 1
 
 /mob/living/simple_animal/turkey_m
 	name = "\improper turkey"
@@ -64,6 +66,7 @@
 	harm_intent_damage = 4
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
+	granivore = 1
 
 /mob/living/simple_animal/goose
 	name = "\improper goose"
@@ -87,7 +90,7 @@
 	harm_intent_damage = 7
 	pass_flags = PASSTABLE
 	mob_size = MOB_MEDIUM
-
+	granivore = 1
 
 /mob/living/simple_animal/turkeychick
 	name = "\improper turkey chick"
@@ -112,6 +115,7 @@
 	var/amount_grown = FALSE
 	pass_flags = PASSTABLE
 	mob_size = MOB_MINISCULE
+	granivore = 1
 
 /mob/living/simple_animal/turkeychick/New()
 	..()

@@ -13,7 +13,7 @@ pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 for pid in pids:
 	try:
 		name = open(os.path.join('/proc', pid, 'cmdline'), 'r').read()
-		if "1713.dmb" in name:
+		if "civ13.dmb" in name:
 			if "sudo" in name:
 				os.kill(int(pid), signal.SIGKILL)
 	except IOError: # proc has already terminated

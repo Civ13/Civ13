@@ -7,6 +7,8 @@
 	opacity = FALSE
 	var/fuel = 0
 	var/on = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
 
 /obj/structure/brazier/New()
 	..()
@@ -41,9 +43,9 @@
 			return
 		else if (istype(W, /obj/item/ammo_casing/arrow) && on)
 			var/obj/item/ammo_casing/arrow/WW = W
-			user << "You start lighting the arrow in the brazier..."
+			user << "You start lighting the arrow in \the [src]..."
 			if (do_after(user, 30, src))
-				user << "You light the arrow in the brazier."
+				user << "You light the arrow in \the [src]."
 				WW.name = "fire arrow"
 				WW.icon_state = "arrowf"
 				WW.projectile_type = /obj/item/projectile/arrow/arrow/fire
@@ -58,18 +60,19 @@
 					fuel += 25*ST.amount
 				else
 					fuel += 25
-				user << "You place \the [W] in the brazier, refueling it."
+				user << "You place \the [W] in \the [src], refueling it."
 				qdel(W)
 				return
 			else
 				if (on)
-					user << "You throw \the [W] into the fire, melting it."
+					user << "You throw \the [W] into \the [src], melting it."
 					qdel(W)
 					return
 	..()
 /obj/structure/brazier/proc/do_light()
 	if (on)
-		fuel = (fuel-1)
+		fuel--
+		map.pollutionmeter += 0.015
 		if (fuel <= 0)
 			on = FALSE
 			icon_state = "brazier0"
@@ -79,13 +82,13 @@
 
 /obj/structure/brazier/attack_hand(mob/user as mob)
 	if (!on && fuel > 0)
-		user << "You light the brazier."
+		user << "You light \the [src]."
 		on = TRUE
 		icon_state = "brazier1"
 		set_light(5)
 		return
 	else
-		user << "You put out the brazier."
+		user << "You put out \the [src]."
 		on = FALSE
 		icon_state = "brazier0"
 		set_light(0)
