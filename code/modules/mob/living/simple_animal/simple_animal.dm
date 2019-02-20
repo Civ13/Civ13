@@ -105,7 +105,7 @@
 
 		if (simplehunger <= 0)
 			visible_message("\The [src] is starving!")
-			health--
+			adjustBruteLoss(-1)
 			simplehunger = 30
 
 	if (following_mob)
@@ -613,6 +613,7 @@
 			if (prob(33))
 				visible_message("\The [src] eats some grass.")
 				simplehunger += 550
+				adjustBruteLoss(-4)
 				GT.grassamt -= 1
 				if (GT.grassamt <= 0)
 					if (istype(GT, (/turf/floor/grass/jungle)))
@@ -633,6 +634,7 @@
 			if (prob(15))
 				visible_message("<span class='notice'>\The [src] eats the [PL]!</span>")
 				simplehunger += 400
+				adjustBruteLoss(-4)
 				qdel(PL)
 				return
 			else
@@ -645,6 +647,7 @@
 				if (prob(33))
 					visible_message("\The [src] bites some meat of \the [ML].")
 					simplehunger += 400
+					adjustBruteLoss(-4)
 					if (istype(ML, /mob/living/simple_animal))
 						var/mob/living/simple_animal/MLL = ML
 						if (MLL.mob_size <= 9)
@@ -660,6 +663,7 @@
 			if (prob(33))
 				visible_message("\The [src] bites some of \the [FD].")
 				simplehunger += 400
+				adjustBruteLoss(-4)
 				if (prob(30))
 					qdel(FD)
 					return

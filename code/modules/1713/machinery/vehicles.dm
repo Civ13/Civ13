@@ -8,12 +8,12 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = FALSE
-
+/////////////////////////////////AXIS/////////////////////////////////////
 /obj/structure/vehicleparts/axis
 	name = "vehicle axis"
 	desc = "supports wheels."
 	icon = 'icons/obj/vehicleparts.dmi'
-	icon_state = "axis"
+	icon_state = "axis_powered"
 	var/list/wheels = list()
 	var/currentspeed = 0
 	var/speeds = 5
@@ -38,7 +38,7 @@
 		powerneeded = spd
 		return speedlist[currentspeed]
 
-
+///////////////////////////////////DRIVING WHEEL/////////////////////
 /obj/item/vehicleparts/wheel
 	name = "vehicle wheel"
 	desc = "Used to steer a vehicle."
@@ -118,7 +118,7 @@
 			user.driver_vehicle.vehicle_m_delay = spd
 			user << "You reduce the speed."
 			return
-
+///////////////////FRAME///////////////////////////////
 /obj/item/vehicleparts/frame
 	name = "vehicle frame"
 	desc = "a vehicle frame."
@@ -228,3 +228,23 @@
 
 /obj/item/vehicleparts/frame/attack_hand(mob/user as mob)
 	return
+
+
+////////////////////////FRAMES//////////////////////
+/obj/structure/vehicleparts/frame
+	name = "steel frame"
+	desc = "a steel vehicle frame."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "frame_steel"
+	powerneeded = 0
+	flammable = FALSE
+	var/resistance = 150
+	var/list/connections = list()
+/obj/structure/vehicleparts/frame/wood
+	name = "wood frame"
+	desc = "a wood vehicle frame."
+	icon = 'icons/obj/vehicleparts.dmi'
+	icon_state = "frame_wood"
+	powerneeded = 0
+	flammable = TRUE
+	resistance = 90

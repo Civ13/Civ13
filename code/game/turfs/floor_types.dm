@@ -46,7 +46,7 @@
 	name = "Grass patch"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "grass1"
-	var/grassamt = 5
+	var/grassamt = 1
 
 	New()
 		icon_state = "grass[pick("0","1","2","3")]"

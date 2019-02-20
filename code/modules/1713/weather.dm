@@ -21,12 +21,16 @@
 			weather = WEATHER_BLIZZARD
 		else if (_weather == WEATHER_SNOW)
 			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SPRING")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
 
@@ -37,12 +41,16 @@
 			weather = WEATHER_SNOW
 		else if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SUMMER")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
 		else
 			weather = WEATHER_NONE
 
@@ -52,6 +60,8 @@
 				weather = WEATHER_RAIN
 			else if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
 		else
@@ -61,6 +71,8 @@
 				weather = WEATHER_STORM
 			else if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
 
@@ -70,11 +82,15 @@
 				weather = WEATHER_SANDSTORM
 			else if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
 		else
 			if (_weather == WEATHER_NONE)
 				weather = WEATHER_NONE
+			else if (_weather == WEATHER_SMOG)
+				weather = WEATHER_SMOG
 			else
 				weather = WEATHER_NONE
 	var/area_icon_state = ""
@@ -127,6 +143,10 @@
 
 				if (3.0)
 					area_icon_state = "monsoon"
+
+		if (WEATHER_SMOG)
+			area_icon_state = "smog"
+
 
 	if (map.civilizations)
 		for (var/area/caribbean/A in area_list)
@@ -222,7 +242,9 @@
 			possibilities = list(WEATHER_NONE)
 		if ("FALL")
 			possibilities = list(WEATHER_RAIN,WEATHER_SNOW,WEATHER_NONE)
-
+	if (map)
+		if (map.pollutionmeter >= 2000)
+			possibilities += WEATHER_SMOG
 	if (possibilities.len)
 		change_weather(pick(possibilities))
 
@@ -240,6 +262,8 @@
 			return "sandstorm"
 		if (WEATHER_STORM)
 			return "storm"
+		if (WEATHER_SMOG)
+			return "smog"
 	return "none"
 
 // global weather variable changed

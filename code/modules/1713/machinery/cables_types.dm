@@ -26,7 +26,7 @@
 	singular_name = "cable piece"
 	w_class = 2
 	var/usesound = 'sound/items/deconstruct.ogg'
-
+	value = 0.25
 /obj/item/stack/cable_coil/New()
 	..()
 	pixel_x = rand(-2,2)
