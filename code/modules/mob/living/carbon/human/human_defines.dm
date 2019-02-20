@@ -158,6 +158,7 @@
 //	if you dont have that reagent in your blood.
 
 	var/civilization = "none" //what civilization this person belongs to
+	var/leader = FALSE
 
 	var/driver = FALSE
 	var/obj/structure/vehicle/driver_vehicle = null

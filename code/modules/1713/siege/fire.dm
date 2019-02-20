@@ -71,7 +71,8 @@
 	..()
 /obj/structure/brazier/proc/do_light()
 	if (on)
-		fuel = (fuel-1)
+		fuel--
+		map.pollutionmeter += 0.015
 		if (fuel <= 0)
 			on = FALSE
 			icon_state = "brazier0"

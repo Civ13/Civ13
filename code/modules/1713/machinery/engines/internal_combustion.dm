@@ -78,6 +78,8 @@
 		for (var/F in fuels)
 			if (fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
+				//add polution to global meter
+				map.pollutionmeter += fuelconsumption
 				done = TRUE
 
 		if (!done)

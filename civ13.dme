@@ -363,6 +363,7 @@
 #include "code\modules\1713\doctor_handbook.dm"
 #include "code\modules\1713\helmet.dm"
 #include "code\modules\1713\lantern.dm"
+#include "code\modules\1713\marketplace.dm"
 #include "code\modules\1713\medical.dm"
 #include "code\modules\1713\modern_items.dm"
 #include "code\modules\1713\MRE.dm"
@@ -801,5 +802,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_divide.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE

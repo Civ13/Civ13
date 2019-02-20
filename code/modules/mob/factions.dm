@@ -36,6 +36,7 @@
 			return
 	if (newname != null && newname != "none")
 		H.civilization = newname
+		H.leader = TRUE
 		map.custom_faction_nr += newname
 		var/newnamev = list("[newname]" = list(map.default_research,map.default_research,map.default_research,H,0))
 		map.custom_civs += newnamev
@@ -63,6 +64,7 @@
 				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
 					map.custom_civs[U.civilization][4] = null
 			U.civilization = "none"
+			U.leader = FALSE
 			usr << "You left your faction. You are now a Nomad."
 			remove_commander()
 	else
@@ -98,6 +100,8 @@
 						visible_message("<big>[choice2] is the new leader of [U.civilization]!</big>")
 						var/mob/living/carbon/human/CM = choice2
 						CM.make_commander()
+						CM.leader = TRUE
+						U.leader = FALSE
 						remove_commander()
 				else
 					usr << "<span class='danger'You are not the Leader, so you can't transfer the faction's leadership.</span>"
@@ -130,6 +134,7 @@
 			else if (map.custom_civs[U.civilization][4] == null)
 				map.custom_civs[U.civilization][4] = U
 				visible_message("<big>[U] is now the Leader of [U.civilization]!</big>")
+				U.leader = FALSE
 				make_commander()
 	else
 		usr << "<span class='danger'>You cannot become a Leader in this map.</span>"
