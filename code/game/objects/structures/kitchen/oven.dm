@@ -142,6 +142,8 @@
 		else if (istype(I, /obj/item/weapon/clay))
 			var/obj/item/weapon/clay/CL = I
 			contents += new CL.result(src)
+			if (CL.result == /obj/item/weapon/clay/claybricks/fired)
+				contents += new CL.result(src)
 			contents -= I
 			qdel(I)
 
