@@ -12,4 +12,7 @@
 
 /obj/structure/marketplace/attackby(var/obj/item/W, var/mob/user)
 	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/ST = W
+		if (ST.amount == 0 || ST.value == 0)
+			user << "This isn't worth anything."
 		return

@@ -161,6 +161,8 @@ var/civmax_research = list(130,130,130)
 		change_weather(WEATHER_SMOG)
 		world << "The air gets smoggy..."
 	pollutionmeter -= 80
+	if (pollutionmeter < 0)
+		pollutionmeter = 0
 	spawn(9000) //every 15 mins
 		pollution()
 
