@@ -129,28 +129,25 @@
 	amount = 5
 
 /obj/structure/wild/tree/Destroy()
-	if (prob(75))
-		var/nearbyObjects = range(2,src)
-		var/list/turf/emptyTurfs = list()
-		var/newtreetype = type
-		spawn(18000)
-			for(var/turf/T in nearbyObjects)
-				if (!istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-					continue //bad turf
-				else
-					var/found = 0
-					for(var/obj/covers/CV in T)
-						found++
-					for(var/obj/structure/ST in T)
-						found++
-					if (!found)
-						emptyTurfs += T
-			if (emptyTurfs.len)
-				var/chosenturf = pick(emptyTurfs)
-				if (chosenturf)
-					new newtreetype(chosenturf)
-					return
-
+	var/nearbyObjects = range(2,src)
+	var/list/turf/emptyTurfs = list()
+	var/newtreetype = type
+	spawn(18000)
+		for(var/turf/floor/T in nearbyObjects)
+			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
+				var/found = 0
+				for(var/obj/covers/CV in T)
+					found++
+				for(var/obj/structure/ST in T)
+					found++
+				if (!found)
+					emptyTurfs += T
+		if (emptyTurfs.len)
+			var/chosenturf = pick(emptyTurfs)
+			if (chosenturf)
+				new newtreetype(chosenturf)
+				return
+	..()
 
 /obj/structure/wild/tree/live_tree/New()
 	..()
@@ -278,6 +275,26 @@
 	..()
 	icon_state = pick("palm1","palm2")
 
+/obj/structure/wild/palm/Destroy()
+	var/nearbyObjects = range(2,src)
+	var/list/turf/emptyTurfs = list()
+	var/newtreetype = type
+	spawn(18000)
+		for(var/turf/floor/T in nearbyObjects)
+			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
+				var/found = 0
+				for(var/obj/covers/CV in T)
+					found++
+				for(var/obj/structure/ST in T)
+					found++
+				if (!found)
+					emptyTurfs += T
+		if (emptyTurfs.len)
+			var/chosenturf = pick(emptyTurfs)
+			if (chosenturf)
+				new newtreetype(chosenturf)
+				return
+	..()
 /obj/structure/wild/bush
 	name = "bush"
 	icon_state = "small_bush"
@@ -482,27 +499,25 @@
 		return
 
 /obj/structure/wild/jungle/Destroy()
-	if (prob(75))
-		var/nearbyObjects = range(2,src)
-		var/list/turf/emptyTurfs = list()
-		var/newtreetype = type
-		spawn(18000)
-			for(var/turf/T in nearbyObjects)
-				if (!istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
-					continue //bad turf
-				else
-					var/found = 0
-					for(var/obj/covers/CV in T)
-						found++
-					for(var/obj/structure/ST in T)
-						found++
-					if (!found)
-						emptyTurfs += T
-			if (emptyTurfs.len)
-				var/chosenturf = pick(emptyTurfs)
-				if (chosenturf)
-					new newtreetype(chosenturf)
-					return
+	var/nearbyObjects = range(2,src)
+	var/list/turf/emptyTurfs = list()
+	var/newtreetype = type
+	spawn(18000)
+		for(var/turf/floor/T in nearbyObjects)
+			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/grass/jungle) || istype (T, /turf/floor/winter/grass))
+				var/found = 0
+				for(var/obj/covers/CV in T)
+					found++
+				for(var/obj/structure/ST in T)
+					found++
+				if (!found)
+					emptyTurfs += T
+		if (emptyTurfs.len)
+			var/chosenturf = pick(emptyTurfs)
+			if (chosenturf)
+				new newtreetype(chosenturf)
+				return
+
 	..()
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)

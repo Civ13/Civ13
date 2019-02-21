@@ -560,9 +560,14 @@
 			if (do_after(user, 70, user.loc))
 				if (istype(T, /turf/floor/dirt/flooded))
 					ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+					return
+				else if (istype(T, /turf/floor/dirt/underground))
+					user << "<span class='danger'>You can't plough this type of terrain.</span>"
+					return
 				else
 					ChangeTurf(/turf/floor/dirt/ploughed)
-				return
+					return
+
 		else
 			user << "<span class='danger'>You can't plough this type of terrain.</span>"
 			return
