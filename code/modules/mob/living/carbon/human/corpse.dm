@@ -79,6 +79,50 @@ mob/living/carbon/human/corpse/british_sailor
 		spawn (50) // must be here or they won't spawn, it seems - Kachnov
 			death()
 
+/mob/living/carbon/human/corpse/japanese
+	gender = MALE
+
+/mob/living/carbon/human/corpse/japanese/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Nitohei")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Japanese Soldier"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
+/mob/living/carbon/human/corpse/japanesecap
+	gender = MALE
+
+/mob/living/carbon/human/corpse/japanesecap/New()
+	..()
+	icon_state = "human_m_s"
+	var/spawntime = 0
+	invisibility = 101
+	if (!job_master)
+		spawntime = 5
+	spawn (spawntime)
+		if (!job_master)
+			qdel(src)
+			return
+		job_master.EquipRank(src, "Rikugun-Tai-i")
+		dir = pick(NORTH,SOUTH,EAST,WEST)
+		adjustBruteLoss(rand(6,7))
+		name = "Japanese Captain"
+		invisibility = 0
+		spawn (50) // must be here or they won't spawn, it seems - Kachnov
+			death()
+
 
 /mob/living/carbon/human/corpse/Giant
 	gender = MALE
