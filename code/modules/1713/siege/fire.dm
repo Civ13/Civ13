@@ -28,7 +28,7 @@
 				visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(user,50,src))
-					visible_message("<span class='warning'>user] deconstructs \the [src].</span>")
+					visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
 					qdel(src)
 					return
 		else if (istype(W, /obj/item/stack/ore/coal))
