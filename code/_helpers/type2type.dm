@@ -225,3 +225,14 @@
 
 /proc/isLeap(y)
 	return ((y) % 4 == FALSE && ((y) % 100 != FALSE || (y) % 400 == FALSE))
+
+
+/proc/list2text(L)
+	return jointext(L, ";")
+
+/proc/list2text_assoc(var/atom/A)
+	. = list()
+	for (var/key in A.vars)
+		if (A.vars[key] != null && A.vars[key] != "null")
+			. += "[key]=[A.vars[key]]"
+	return list2text(.)

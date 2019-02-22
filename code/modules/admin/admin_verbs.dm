@@ -134,6 +134,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adrev,
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
+	/datum/admins/proc/export,
 //	/client/proc/check_customitem_activity,
 	/client/proc/nanomapgen_DumpImage
 	)
