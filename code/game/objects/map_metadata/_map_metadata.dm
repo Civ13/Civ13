@@ -125,6 +125,9 @@ var/civmax_research = list(130,130,130)
 
 	var/pollutionmeter = 0
 
+	var/list/globalmarketplace = list()
+	var/list/marketplaceaccounts = list()
+	var/globalmarketplacecount = 0
 /obj/map_metadata/New()
 	..()
 	map = src
