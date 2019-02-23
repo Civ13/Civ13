@@ -225,6 +225,8 @@
 		recipes += new/datum/stack_recipe("oil well",/obj/structure/oilwell, 40, _time = 270, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.gamemode == "Oil Rush")
 		recipes += new/datum/stack_recipe("oil deposit",/obj/structure/oil_deposits, 6, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 96)
+		recipes += new/datum/stack_recipe("global exchange",/obj/structure/marketplace, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 52)
 		recipes += new/datum/stack_recipe("printing press",/obj/structure/printingpress, 12, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("roof support",/obj/structure/roof_support, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
