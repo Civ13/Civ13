@@ -394,9 +394,7 @@
 			new/datum/stack_recipe("barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty, 5, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("violin",/obj/item/violin, 10, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("piano",/obj/structure/piano, 18, _time = 195, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("cigar case",/obj/item/weapon/storage/fancy/cigar, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)))
-
+			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),))
 	if (current_res[1] >= 24 && current_res[2] >= 33)
 		recipes += new/datum/stack_recipe_list("siege weapons", list(
 			new/datum/stack_recipe("catapult",/obj/structure/catapult, 50, _time = 450, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -466,8 +464,6 @@
 	if (current_res[3] >= 23)
 		recipes = list(new/datum/stack_recipe("cigar", /obj/item/clothing/mask/smokable/cigarette/cigar, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("cuban cigar", /obj/item/clothing/mask/smokable/cigarette/cigar/havana, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
-	if (current_res[3] >= 80)
-		recipes = list(new/datum/stack_recipe("cigaette", /obj/item/clothing/mask/smokable/cigarette, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE))
 
 /material/coca/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
