@@ -235,7 +235,7 @@
 /obj/item/vehicleparts/frame/MouseDrop_T(obj/structure/O as obj, mob/user as mob)
 	if (istype(O, /obj/structure/engine/internal) && step == 1)
 		var/obj/structure/engine/internal/NE = O
-		if (NE.enginesize <= maxengine)
+		if (NE.enginesize <= maxengine && NE.enginesize >= maxengine/4)
 			user << "<span class = 'notice'>You start placing the [O].</span>"
 			if (do_after(user,130,src))
 				if (engine == null)
@@ -245,7 +245,9 @@
 					step = 2
 					check_step()
 					return
-		else
+		else if (NE.enginesize > maxengine)
+			user << "<span class = 'notice'>This engine is too big for the [src]!</span>"
+		else if (NE.enginesize <= maxengine && NE.enginesize < maxengine/4)
 			user << "<span class = 'notice'>This engine is too big for the [src]!</span>"
 			return
 
