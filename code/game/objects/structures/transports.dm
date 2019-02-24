@@ -197,10 +197,10 @@
 
 ///////////////////////////////////////////////////////
 /obj/structure/vehicle/boat
-	name = "boat"
+	name = "outrigger raft"
 	desc = "A simple wood boat. Can be powered by a motor."
 	icon = 'icons/obj/vehicleparts64x64.dmi'
-	icon_state = "raft"
+	icon_state = "outrigger_frame1"
 	anchored = FALSE
 	density = FALSE
 	opacity = FALSE
@@ -215,6 +215,28 @@
 	var/image/cover_overlay_c = null
 	var/maxcapacity = 1 //besides the driver
 	var/mob/living/carbon/human/currentcap = null
+
+/obj/structure/vehicle/boat/b400
+	name = "diesel outrigger"
+	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
+	icon_state = "outrigger_frame3"
+	health = 130
+
+/obj/structure/vehicle/boat/b400/New()
+	..()
+	engine = new/obj/structure/engine/internal/diesel
+	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
+	spawn(1)
+		engine.enginesize = 400
+		engine.weight = 20*(engine.enginesize/1000)
+		engine.name = "400cc diesel engine"
+		engine.maxpower *= (engine.enginesize/1000)
+		engine.fuelefficiency *= (engine.enginesize/1000)
+		spawn(1)
+			engine.fueltank = fueltank
+			engine.connections += axis
+			dwheel.forceMove(src)
+
 /obj/structure/vehicle/boat/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
 	if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
 		visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
@@ -357,24 +379,31 @@
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
 		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
-			if (GC.reagents.has_reagent("gasoline"))
-				if (GC.reagents.get_reagent_amount("gasoline")<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
-					fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
-					GC.reagents.del_reagent("gasoline")
-					user << "You empty \the [W] into the fueltank."
-					update_customdesc()
-					return
-				else
-					var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
-					fueltank.reagents.add_reagent("gasoline",amttransf)
-					GC.reagents.remove_reagent("gasoline",amttransf)
-					user << "You fill the fueltank completly with \the [W]."
-					update_customdesc()
-					return
-			else
-				user << "\The [W] has no gasoline in it."
+			var/found = FALSE
+			for (var/datum/reagent/RG in engine.reagents.reagent_list)
+				for (var/i in engine.fuels)
+					if (i == RG.id)
+						found = TRUE
+			if (!found)
+				user << "\The [W] has no acceptable fuel in it."
 				update_customdesc()
 				return
+			for (var/datum/reagent/RG in engine.reagents.reagent_list)
+				for (var/i in engine.fuels)
+					if (GC.reagents.has_reagent(i))
+						if (GC.reagents.get_reagent_amount(i)<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
+							fueltank.reagents.add_reagent(i,GC.reagents.get_reagent_amount(i))
+							GC.reagents.del_reagent(i)
+							user << "You empty \the [W] into the fueltank."
+							update_customdesc()
+							return
+						else
+							var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
+							fueltank.reagents.add_reagent(i,amttransf)
+							GC.reagents.remove_reagent(i,amttransf)
+							user << "You fill the fueltank completly with \the [W]."
+							update_customdesc()
+							return
 		else
 			user << "The fueltank is full already."
 			update_customdesc()

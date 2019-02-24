@@ -128,6 +128,8 @@ var/civmax_research = list(130,130,130)
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
 	var/globalmarketplacecount = 0
+
+	var/winddirection = "East"
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -157,6 +159,16 @@ var/civmax_research = list(130,130,130)
 	set_ordinal_age()
 	spawn(5000)
 		pollution()
+	spawn(2400)
+		wind()
+
+/obj/map_metadata/proc/wind()
+	var/oldwind = winddirection
+	winddirection = pick("North", "South", "East", "West")
+	if (winddirection != oldwind)
+		world << "<big>The wind changes direction. It is now blowing from the <b>[winddirection]</b>.</big>"
+	spawn(rand(3600,6000))
+		wind()
 
 /obj/map_metadata/proc/pollution()
 

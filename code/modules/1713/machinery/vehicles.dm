@@ -191,11 +191,11 @@
 	targettype = /obj/structure/vehicle/motorcycle
 
 /obj/item/vehicleparts/frame/boat
-	name = "boat frame"
-	desc = "a simple boat, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
+	name = "outrigger boat frame"
+	desc = "a simple outrigger boat frame, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
 	icon = 'icons/obj/vehicleparts64x64.dmi'
-	icon_state = "raft"
-	var/base_icon = "raft"
+	icon_state = "outrigger_frame1"
+	var/base_icon = "outrigger_frame"
 	maxengine = 400
 	maxfueltank = 150
 	weight = 60
@@ -214,6 +214,9 @@
 	..()
 	icon_state = "[base_icon][step]"
 
+/obj/item/vehicleparts/frame/boat/update_icon()
+	..()
+	icon_state = "[base_icon][step]"
 /obj/item/vehicleparts/frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) && step == 2)
 		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/NF = W

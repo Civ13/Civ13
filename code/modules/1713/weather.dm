@@ -208,6 +208,23 @@
 						A.icon_state = area_icon_state
 						A.weather = weather
 						A.weather_intensity = weather_intensity
+				else if (A.climate == "sea")
+					if (season == "Wet Season" && weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
+						A.icon_state = "monsoon"
+						A.weather = WEATHER_STORM
+						A.weather_intensity = weather_intensity
+					else if (season != "Wet Season" && (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM))
+						A.icon_state = "rain2"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else if (weather == WEATHER_SNOW || weather == WEATHER_RAIN)
+						A.icon_state = "rain2"
+						A.weather = WEATHER_RAIN
+						A.weather_intensity = weather_intensity
+					else
+						A.icon_state = area_icon_state
+						A.weather = weather
+						A.weather_intensity = weather_intensity
 	else
 		for (var/area/caribbean/A in area_list)
 			if (istype(A) && A.location == AREA_OUTSIDE)

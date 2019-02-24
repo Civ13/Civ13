@@ -93,11 +93,14 @@
 				S.dry = TRUE
 				S.update_icon()
 		for (var/turf/floor/beach/water/swamp/D)
-			D.ChangeTurf(/turf/floor/beach/drywater)
+			if (D.z > 1)
+				D.ChangeTurf(/turf/floor/beach/drywater)
 		for (var/turf/floor/beach/water/deep/swamp/DS)
-			DS.ChangeTurf(/turf/floor/beach/drywater2)
+			if (DS.z > 1)
+				DS.ChangeTurf(/turf/floor/beach/drywater2)
 		for (var/turf/floor/beach/water/flooded/DF)
-			DF.ChangeTurf(/turf/floor/dirt/flooded)
+			if (DF.z > 1)
+				DF.ChangeTurf(/turf/floor/dirt/flooded)
 		spawn(12000)
 			world << "<big>The sky starts to get cloudy... The <b>Wet Season</b> is coming in 10 minutes.</big>"
 
