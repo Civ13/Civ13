@@ -92,6 +92,28 @@
 	desc = "Used to steer a boat."
 	icon_state = "rudder"
 
+/obj/item/vehicleparts/wheel/rudder_sails
+	name = "boat rudder and sail control"
+	desc = "Used to steer a boat and control the sails."
+	icon_state = "rudder"
+
+/obj/item/vehicleparts/wheel/rudder_sails/attack_self(mob/living/carbon/human/H)
+	if(!H.driver_vehicle)
+		return
+	if (!H.driver_vehicle.sails)
+		return
+	if (H.driver_vehicle.sails)
+		if (!H.driver_vehicle.sails_on)
+			H << "You hoist the sails."
+			H.driver_vehicle.sails_on = TRUE
+			H.driver_vehicle.check_sails()
+			H.driver_vehicle.update_overlay()
+			return
+		else
+			H << "You retract the sails."
+			H.driver_vehicle.sails_on = FALSE
+			H.driver_vehicle.update_overlay()
+			return
 /obj/item/vehicleparts/wheel/attack_self(mob/living/carbon/human/H)
 	if(!H.driver_vehicle)
 		return
@@ -321,3 +343,4 @@
 	powerneeded = 0
 	flammable = TRUE
 	resistance = 90
+

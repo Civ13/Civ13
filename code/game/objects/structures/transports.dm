@@ -21,7 +21,11 @@
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
 	var/health = 100
 	var/customcolor = "#FFFFFF"
+	var/sails = FALSE
+	var/sails_on = FALSE
 
+/obj/structure/vehicle/proc/check_sails()
+	return
 /obj/structure/vehicle/proc/updatepassdir()
 	return
 /obj/structure/vehicle/proc/do_color()
@@ -196,7 +200,6 @@
 	else
 		return FALSE
 
-
 ///////////////////////////////////////////////////////
 //dirs:
 //S: 23,33; 10,33
@@ -222,13 +225,78 @@
 	var/image/cover_overlay_c = null
 	var/maxcapacity = 1 //besides the driver
 	var/mob/living/carbon/human/currentcap = null
-	var/sails = FALSE
+
 /obj/structure/vehicle/boat/b400
 	name = "diesel outrigger"
 	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
 	icon_state = "outrigger_frame3"
 	health = 130
 
+/obj/structure/vehicle/boat/sailboat
+	name = "sailing outrigger"
+	desc = "A sailing boat. Powered by the wind."
+	icon_state = "outrigger_frame1"
+	health = 130
+	sails = TRUE
+	dwheel = new/obj/item/vehicleparts/wheel/rudder_sails
+
+	New()
+		..()
+		update_overlay()
+/obj/structure/vehicle/boat/check_sails()
+	var/timer = 15
+	if (!sails || !sails_on)
+		return
+	if (sails && sails_on)
+		switch(map.windspeedvar)
+			if (0)
+				timer = 40
+			if (1)
+				timer = 15
+			if (2)
+				timer = 11
+			if (3)
+				timer = 7
+			if (4)
+				timer = 4
+		switch(map.winddirection)
+			if ("North")
+				if (dir == SOUTH)
+					timer /= 1
+				if  (dir == WEST || dir == EAST)
+					timer /= 0.4
+				if (dir == NORTH)
+					timer /= 0.1
+			if ("South")
+				if (dir == NORTH)
+					timer /= 1
+				if  (dir == WEST || dir == EAST)
+					timer /= 0.4
+				if (dir == SOUTH)
+					timer /= 0.1
+			if ("East")
+				if (dir == WEST)
+					timer /= 1
+				if  (dir == NORTH || dir == SOUTH)
+					timer /= 0.4
+				if (dir == EAST)
+					timer /= 0.1
+			if ("West")
+				if (dir == EAST)
+					timer /= 1
+				if  (dir == NORTH || dir == SOUTH)
+					timer /= 0.4
+				if (dir == WEST)
+					timer /= 0.1
+	for (var/mob/living/ML in ontop)
+		ML.forceMove(get_step(src, dir))
+	for (var/obj/O in ontop)
+		O.forceMove(get_step(src, dir))
+	forceMove(get_step(src, dir))
+	updatepassdir()
+	update_icon()
+	spawn(timer)
+		check_sails()
 /obj/structure/vehicle/boat/updatepassdir()
 	if (driver)
 		driver.pixel_x = pixel_x
@@ -244,8 +312,8 @@
 				driver.pixel_x += 5
 				driver.pixel_y += 31
 			if (WEST)
-				driver.pixel_x += 5
-				driver.pixel_y += 19
+				driver.pixel_x += 31
+				driver.pixel_y += 10
 	if (currentcap)
 		currentcap.pixel_x = pixel_x
 		currentcap.pixel_y = pixel_y
@@ -397,20 +465,29 @@
 	spawn(3)
 		if (engine)
 			update_customdesc()
-		if (sails)
+		if (sails && !sails_on)
+			cover_overlay_c = image(icon, "sail0")
+			cover_overlay_c.layer = MOB_LAYER + 2.11
+		if (sails && sails_on)
 			cover_overlay_c = image(icon, "sail")
 			cover_overlay_c.layer = MOB_LAYER + 2.11
-
 /obj/structure/vehicle/boat/proc/update_customdesc()
 	desc = "A boat with a [engine.enginesize]cc engine. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
 	return
 /obj/structure/vehicle/boat/update_overlay()
 	if (sails)
-		add_overlay(cover_overlay_c)
-		return
+		if (sails_on)
+			cover_overlay_c = image(icon, "sail")
+			cover_overlay_c.layer = MOB_LAYER + 2.11
+			update_icon()
+			return
+		else
+			cover_overlay_c = image(icon, "sail0")
+			cover_overlay_c.layer = MOB_LAYER + 2.11
+			update_icon()
+			return
 	else
 		overlays -= cover_overlay_c
-		return
 
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))

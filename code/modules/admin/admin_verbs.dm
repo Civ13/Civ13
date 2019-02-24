@@ -156,6 +156,8 @@ var/list/admin_verbs_debug = list(
 	/client/proc/jumptocoord,
 	/client/proc/dsay,
 	/client/proc/change_time_of_day,
+	/client/proc/change_wind_dir,
+	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather,
 	/client/proc/change_colour_filter
