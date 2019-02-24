@@ -176,6 +176,7 @@
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	vehicle_m_delay = 12
 	health = 50
 /obj/structure/vehicle/raft/do_vehicle_check(var/m_dir = null)
 	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
@@ -192,6 +193,89 @@
 			driver = null
 	else
 		return FALSE
+
+
+///////////////////////////////////////////////////////
+/obj/structure/vehicle/boat
+	name = "boat"
+	desc = "A simple wood boat. Can be powered by a motor."
+	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon_state = "raft"
+	anchored = FALSE
+	density = FALSE
+	opacity = FALSE
+	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	vehicle_m_delay = 12
+	health = 90
+	axis = new/obj/structure/vehicleparts/axis/boat
+	wheeled = TRUE
+	dwheel = new/obj/item/vehicleparts/wheel/rudder
+	var/image/cover_overlay_c = null
+
+/obj/structure/vehicle/boat/do_vehicle_check(var/m_dir = null)
+	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
+		if (driver in src.loc)
+			return TRUE
+		else
+			driver.driver = FALSE
+			driver.driver_vehicle = null
+			driver << "You leave the [src]."
+			unbuckle_mob()
+			update_overlay()
+			update_icon()
+			ontop -= driver
+			driver = null
+	else
+		return FALSE
+/obj/structure/vehicle/boat/New()
+	..()
+	cover_overlay_c = image(icon, "[icon_state]_overlay")//"bike_cover")
+	cover_overlay_c.layer = MOB_LAYER + 2.11
+	spawn(3)
+		if (engine)
+			update_customdesc()
+
+/obj/structure/vehicle/boat/proc/update_customdesc()
+	desc = "A boat with a [engine.enginesize]cc engine. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
+	return
+/obj/structure/vehicle/motorcycle/update_overlay()
+	if (driver)
+		add_overlay(cover_overlay_c)
+		return
+	else
+		overlays -= cover_overlay_c
+		return
+
+/obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/GC = W
+		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
+			if (GC.reagents.has_reagent("gasoline"))
+				if (GC.reagents.get_reagent_amount("gasoline")<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
+					fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
+					GC.reagents.del_reagent("gasoline")
+					user << "You empty \the [W] into the fueltank."
+					update_customdesc()
+					return
+				else
+					var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
+					fueltank.reagents.add_reagent("gasoline",amttransf)
+					GC.reagents.remove_reagent("gasoline",amttransf)
+					user << "You fill the fueltank completly with \the [W]."
+					update_customdesc()
+					return
+			else
+				user << "\The [W] has no gasoline in it."
+				update_customdesc()
+				return
+		else
+			user << "The fueltank is full already."
+			update_customdesc()
+			return
+	else
+		..()
 
 ///////////////////////////////////////////////////////
 /obj/structure/vehicle/motorcycle

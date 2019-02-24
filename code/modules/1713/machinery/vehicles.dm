@@ -28,6 +28,13 @@
 	maxpower = 10
 	speedlist = list(1=3,2=2,3=1)
 
+/obj/structure/vehicleparts/axis/boat
+	name = "boat rudder control"
+	currentspeed = 0
+	speeds = 3
+	maxpower = 40
+	speedlist = list(1=8,2=6,3=4)
+
 /obj/structure/vehicleparts/axis/proc/get_speed()
 	if (currentspeed <= 0)
 		currentspeed = 0
@@ -38,6 +45,30 @@
 		powerneeded = spd
 		return speedlist[currentspeed]
 
+/obj/structure/vehicleparts/axis/proc/check_enginepower(var/esize = 0)
+	return
+
+/obj/structure/vehicleparts/axis/bike/check_enginepower(var/esize = 0)
+	if (esize == 0)
+		return
+	if (esize >= 120)
+		speedlist = list(1=3,2=2,3=1)
+	else if (esize >= 95)
+		speedlist = list(1=4,2=3,3=2)
+	else
+		speedlist = list(1=5,2=4,3=3)
+		return
+
+/obj/structure/vehicleparts/axis/boat/check_enginepower(var/esize = 0)
+	if (esize == 0)
+		return
+	if (esize >= 300)
+		speedlist = list(1=8,2=6,3=4)
+	else if (esize >= 200)
+		speedlist = list(1=9,2=7,3=5)
+	else
+		speedlist = list(1=10,2=8,3=6)
+		return
 ///////////////////////////////////DRIVING WHEEL/////////////////////
 /obj/item/vehicleparts/wheel
 	name = "vehicle wheel"
@@ -55,6 +86,11 @@
 	name = "motorcycle handles"
 	desc = "Used to steer a motorcycle."
 	icon_state = "bike_handles"
+
+/obj/item/vehicleparts/wheel/rudder
+	name = "boat rudder"
+	desc = "Used to steer a boat."
+	icon_state = "rudder"
 
 /obj/item/vehicleparts/wheel/attack_self(mob/living/carbon/human/H)
 	if(!H.driver_vehicle)
@@ -154,6 +190,19 @@
 	maxstep = 3
 	targettype = /obj/structure/vehicle/motorcycle
 
+/obj/item/vehicleparts/frame/boat
+	name = "boat frame"
+	desc = "a simple boat, with no engine or propulsion mode. Supports engines up to 400cc and fueltanks up to 150u"
+	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon_state = "raft"
+	var/base_icon = "raft"
+	maxengine = 400
+	maxfueltank = 150
+	weight = 60
+	w_class = 7
+	step = 1
+	maxstep = 3
+	targettype = /obj/structure/vehicle/boat
 
 /obj/item/vehicleparts/frame/proc/do_color()
 	colorv = image("icon" = icon, "icon_state" = "[icon_state]_mask")
@@ -216,6 +265,7 @@
 			spawn(1)
 				engine.forceMove(NEWBIKE)
 				fueltank.forceMove(NEWBIKE)
+				NEWBIKE.axis.check_enginepower(NEWBIKE.engine.enginesize)
 				qdel(src)
 				return
 	else
@@ -229,7 +279,24 @@
 /obj/item/vehicleparts/frame/attack_hand(mob/user as mob)
 	return
 
-
+/obj/item/vehicleparts/frame/boat/check_step()
+	if (step >= maxstep)
+		var/obj/structure/vehicle/NEWBOAT = new/obj/structure/vehicle/boat(get_turf(src))
+		NEWBOAT.dir = dir
+		NEWBOAT.engine = engine
+		NEWBOAT.fueltank = fueltank
+		NEWBOAT.name = name
+		spawn(1)
+			NEWBOAT.engine.fueltank = NEWBOAT.fueltank
+			NEWBOAT.engine.connections += NEWBOAT.axis
+			NEWBOAT.dwheel.forceMove(NEWBOAT)
+			spawn(1)
+				engine.forceMove(NEWBOAT)
+				fueltank.forceMove(NEWBOAT)
+				NEWBOAT.axis.check_enginepower(NEWBOAT.engine.enginesize)
+				qdel(src)
+				return
+		return
 ////////////////////////FRAMES//////////////////////
 /obj/structure/vehicleparts/frame
 	name = "steel frame"
