@@ -213,7 +213,112 @@
 	wheeled = TRUE
 	dwheel = new/obj/item/vehicleparts/wheel/rudder
 	var/image/cover_overlay_c = null
+	var/maxcapacity = 1 //besides the driver
+	var/mob/living/carbon/human/currentcap = null
+/obj/structure/vehicle/boat/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
+	if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
+		visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		if (do_after(M, 40, src))
+			visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+			M.forceMove(get_turf(src))
+			if (!driver)
+				if (wheeled)
+					if (M.put_in_active_hand(dwheel) == FALSE)
+						M << "Your hands are full!"
+						return
 
+				M.driver = TRUE
+				M.driver_vehicle = src
+				driver = M
+				buckle_mob(driver)
+				ontop += M
+				M.pixel_x += 32
+				M.pixel_y += 25
+			else if (!currentcap)
+				currentcap = M
+				ontop += M
+				M.anchored = TRUE
+				M.pixel_x += 12
+				M.pixel_y += 25
+			update_overlay()
+			update_icon()
+			return
+
+/obj/structure/vehicle/boat/attack_hand(mob/living/carbon/human/user as mob)
+	if ((user in ontop))
+		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		if (do_after(user, 30, src))
+			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+			ontop -= user
+			if (user == driver)
+				user.driver = FALSE
+				unbuckle_mob()
+				user.driver_vehicle = null
+				driver = null
+				user.pixel_x -= 32
+				user.pixel_y -= 25
+				if (wheeled)
+					if (user.l_hand == dwheel)
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
+					else if (user.r_hand == dwheel)
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
+						user.r_hand = null
+					user.update_icons()
+			else if (!currentcap)
+				currentcap = null
+				ontop -= user
+				user.anchored = FALSE
+				user.pixel_x -= 12
+				user.pixel_y -= 25
+			update_overlay()
+			update_icon()
+			return
+
+/obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+	if (istype(W, /obj/item/vehicleparts/wheel))
+		if ((user in ontop))
+			if (user == driver && engine)
+				if (engine.on)
+					engine.on = FALSE
+					engine.power_off_connections()
+					engine.currentspeed = 0
+					engine.currentpower = 0
+					user << "You turn off the engine."
+					set_light(0)
+					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					return
+
+			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			if (do_after(user, 30, src))
+				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+				ontop -= user
+				if (user == driver)
+					user.driver = FALSE
+					unbuckle_mob()
+					user.driver_vehicle = null
+					driver = null
+					user.pixel_x -= 32
+					user.pixel_y -= 25
+					if (wheeled)
+						if (user.l_hand == dwheel)
+							user.remove_from_mob(dwheel)
+							dwheel.forceMove(src)
+						else if (user.r_hand == dwheel)
+							user.remove_from_mob(dwheel)
+							dwheel.forceMove(src)
+				else if (!currentcap)
+					currentcap = null
+					ontop -= user
+					user.anchored = FALSE
+					user.pixel_x -= 12
+					user.pixel_y -= 25
+				update_overlay()
+				update_icon()
+				return
+	else
+		..()
 /obj/structure/vehicle/boat/do_vehicle_check(var/m_dir = null)
 	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
 		if (driver in src.loc)

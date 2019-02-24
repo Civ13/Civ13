@@ -247,8 +247,9 @@
 					return
 		else if (NE.enginesize > maxengine)
 			user << "<span class = 'notice'>This engine is too big for the [src]!</span>"
+			return
 		else if (NE.enginesize <= maxengine && NE.enginesize < maxengine/4)
-			user << "<span class = 'notice'>This engine is too big for the [src]!</span>"
+			user << "<span class = 'notice'>This engine is too small for the [src]!</span>"
 			return
 
 /obj/item/vehicleparts/frame/proc/check_step()
