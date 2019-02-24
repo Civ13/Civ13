@@ -632,6 +632,7 @@
 					stat("Mode:", map.gamemode)
 				stat("Epoch:", map.age)
 				stat("Season:", get_season())
+				stat("Wind:", map.winddesc)
 //				stat("Weather:", get_weather())
 				stat("Time of Day:", time_of_day)
 

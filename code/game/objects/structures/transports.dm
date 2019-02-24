@@ -196,6 +196,11 @@
 
 
 ///////////////////////////////////////////////////////
+//dirs:
+//S: 23,33; 10,33
+//N: 10,11; 25,11
+//E: 5,31; 5,19
+//W: 31,10; 31,20
 /obj/structure/vehicle/boat
 	name = "outrigger raft"
 	desc = "A simple wood boat. Can be powered by a motor."
@@ -221,6 +226,36 @@
 	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
 	icon_state = "outrigger_frame3"
 	health = 130
+
+/obj/structure/vehicle/boat/proc/updatepassdir()
+	if (driver)
+		switch (driver.dir)
+			if (SOUTH)
+				driver.pixel_x += 23
+				driver.pixel_y += 33
+			if (NORTH)
+				driver.pixel_x += 10
+				driver.pixel_y += 11
+			if (EAST)
+				driver.pixel_x += 5
+				driver.pixel_y += 31
+			if (WEST)
+				driver.pixel_x += 5
+				driver.pixel_y += 19
+	if (currentcap)
+		switch (currentcap.dir)
+			if (SOUTH)
+				currentcap.pixel_x += 10
+				currentcap.pixel_y += 33
+			if (NORTH)
+				currentcap.pixel_x += 25
+				currentcap.pixel_y += 11
+			if (EAST)
+				currentcap.pixel_x += 5
+				currentcap.pixel_y += 19
+			if (WEST)
+				currentcap.pixel_x += 31
+				currentcap.pixel_y += 19
 
 /obj/structure/vehicle/boat/b400/New()
 	..()
@@ -254,14 +289,14 @@
 				driver = M
 				buckle_mob(driver)
 				ontop += M
-				M.pixel_x += 32
-				M.pixel_y += 25
+				M.pixel_x += 23
+				M.pixel_y += 33
 			else if (!currentcap)
 				currentcap = M
 				ontop += M
 				M.anchored = TRUE
-				M.pixel_x += 12
-				M.pixel_y += 25
+				M.pixel_x += 10
+				M.pixel_y += 33
 			update_overlay()
 			update_icon()
 			return
@@ -277,8 +312,8 @@
 				unbuckle_mob()
 				user.driver_vehicle = null
 				driver = null
-				user.pixel_x -= 32
-				user.pixel_y -= 25
+				user.pixel_x -= 23
+				user.pixel_y -= 33
 				if (wheeled)
 					if (user.l_hand == dwheel)
 						user.remove_from_mob(dwheel)
@@ -292,8 +327,8 @@
 				currentcap = null
 				ontop -= user
 				user.anchored = FALSE
-				user.pixel_x -= 12
-				user.pixel_y -= 25
+				user.pixel_x -= 10
+				user.pixel_y -= 33
 			update_overlay()
 			update_icon()
 			return
@@ -321,8 +356,8 @@
 					unbuckle_mob()
 					user.driver_vehicle = null
 					driver = null
-					user.pixel_x -= 32
-					user.pixel_y -= 25
+					user.pixel_x -= 23
+					user.pixel_y -= 33
 					if (wheeled)
 						if (user.l_hand == dwheel)
 							user.remove_from_mob(dwheel)
@@ -334,14 +369,15 @@
 					currentcap = null
 					ontop -= user
 					user.anchored = FALSE
-					user.pixel_x -= 12
-					user.pixel_y -= 25
+					user.pixel_x -= 10
+					user.pixel_y -= 33
 				update_overlay()
 				update_icon()
 				return
 	else
 		..()
 /obj/structure/vehicle/boat/do_vehicle_check(var/m_dir = null)
+	update_customdesc()
 	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
 		if (driver in src.loc)
 			return TRUE
