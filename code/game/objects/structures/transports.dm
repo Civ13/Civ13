@@ -345,8 +345,8 @@
 /obj/structure/vehicle/boat/proc/update_customdesc()
 	desc = "A boat with a [engine.enginesize]cc engine. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
 	return
-/obj/structure/vehicle/motorcycle/update_overlay()
-	if (driver)
+/obj/structure/vehicle/boat/update_overlay()
+	if (driver || currentcap)
 		add_overlay(cover_overlay_c)
 		return
 	else
