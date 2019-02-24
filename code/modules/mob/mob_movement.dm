@@ -882,6 +882,7 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = NORTH
 				H.driver_vehicle.dir = NORTH
+				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(NORTH)
 
@@ -899,6 +900,7 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = SOUTH
 				H.driver_vehicle.dir = SOUTH
+				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(SOUTH)
 
@@ -916,6 +918,7 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = EAST
 				H.driver_vehicle.dir = EAST
+				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(EAST)
 
@@ -933,6 +936,7 @@
 			if (H.driver && H.driver_vehicle)
 				H.dir = WEST
 				H.driver_vehicle.dir = WEST
+				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(WEST)
 

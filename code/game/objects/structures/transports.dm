@@ -22,6 +22,8 @@
 	var/health = 100
 	var/customcolor = "#FFFFFF"
 
+/obj/structure/vehicle/proc/updatepassdir()
+	return
 /obj/structure/vehicle/proc/do_color()
 	return
 
@@ -227,8 +229,10 @@
 	icon_state = "outrigger_frame3"
 	health = 130
 
-/obj/structure/vehicle/boat/proc/updatepassdir()
+/obj/structure/vehicle/boat/updatepassdir()
 	if (driver)
+		driver.pixel_x = pixel_x
+		driver.pixel_y = pixel_y
 		switch (driver.dir)
 			if (SOUTH)
 				driver.pixel_x += 23
@@ -243,6 +247,8 @@
 				driver.pixel_x += 5
 				driver.pixel_y += 19
 	if (currentcap)
+		currentcap.pixel_x = pixel_x
+		currentcap.pixel_y = pixel_y
 		switch (currentcap.dir)
 			if (SOUTH)
 				currentcap.pixel_x += 10
@@ -289,14 +295,12 @@
 				driver = M
 				buckle_mob(driver)
 				ontop += M
-				M.pixel_x += 23
-				M.pixel_y += 33
+				updatepassdir()
 			else if (!currentcap)
 				currentcap = M
 				ontop += M
 				M.anchored = TRUE
-				M.pixel_x += 10
-				M.pixel_y += 33
+				updatepassdir()
 			update_overlay()
 			update_icon()
 			return
@@ -312,8 +316,7 @@
 				unbuckle_mob()
 				user.driver_vehicle = null
 				driver = null
-				user.pixel_x -= 23
-				user.pixel_y -= 33
+				updatepassdir()
 				if (wheeled)
 					if (user.l_hand == dwheel)
 						user.remove_from_mob(dwheel)
@@ -327,8 +330,7 @@
 				currentcap = null
 				ontop -= user
 				user.anchored = FALSE
-				user.pixel_x -= 10
-				user.pixel_y -= 33
+				updatepassdir()
 			update_overlay()
 			update_icon()
 			return
@@ -356,8 +358,7 @@
 					unbuckle_mob()
 					user.driver_vehicle = null
 					driver = null
-					user.pixel_x -= 23
-					user.pixel_y -= 33
+					updatepassdir()
 					if (wheeled)
 						if (user.l_hand == dwheel)
 							user.remove_from_mob(dwheel)
@@ -369,8 +370,7 @@
 					currentcap = null
 					ontop -= user
 					user.anchored = FALSE
-					user.pixel_x -= 10
-					user.pixel_y -= 33
+					updatepassdir()
 				update_overlay()
 				update_icon()
 				return

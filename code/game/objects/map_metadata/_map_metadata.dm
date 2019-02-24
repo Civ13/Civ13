@@ -167,7 +167,7 @@ var/civmax_research = list(130,130,130)
 
 /obj/map_metadata/proc/wind()
 	var/oldwind = winddirection
-	var/oldspeed = windspeed
+	var/oldspeed = windspeedvar
 	winddirection = pick("North", "South", "East", "West")
 	windspeedvar += pick(-1,0,1)
 	if (windspeedvar > 4)
@@ -190,7 +190,7 @@ var/civmax_research = list(130,130,130)
 		if (4)
 			windspeed = "a gale"
 			winddesc = "A [winddirection]ern gale."
-	if (windspeed != oldspeed)
+	if (windspeedvar != oldspeed)
 		world << "<big>The wind changes strength. It is now <b>[windspeed]</b>.</big>"
 	if (winddirection != oldwind)
 		world << "<big>The wind changes direction. It is now blowing from the <b>[winddirection]</b>.</big>"
