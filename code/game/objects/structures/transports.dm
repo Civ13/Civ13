@@ -215,7 +215,7 @@
 	var/image/cover_overlay_c = null
 	var/maxcapacity = 1 //besides the driver
 	var/mob/living/carbon/human/currentcap = null
-
+	var/sails = FALSE
 /obj/structure/vehicle/boat/b400
 	name = "diesel outrigger"
 	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
@@ -358,17 +358,18 @@
 		return FALSE
 /obj/structure/vehicle/boat/New()
 	..()
-	cover_overlay_c = image(icon, "[icon_state]_overlay")//"bike_cover")
-	cover_overlay_c.layer = MOB_LAYER + 2.11
 	spawn(3)
 		if (engine)
 			update_customdesc()
+		if (sails)
+			cover_overlay_c = image(icon, "sail")
+			cover_overlay_c.layer = MOB_LAYER + 2.11
 
 /obj/structure/vehicle/boat/proc/update_customdesc()
 	desc = "A boat with a [engine.enginesize]cc engine. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
 	return
 /obj/structure/vehicle/boat/update_overlay()
-	if (driver || currentcap)
+	if (sails)
 		add_overlay(cover_overlay_c)
 		return
 	else
@@ -380,30 +381,28 @@
 		var/obj/item/weapon/reagent_containers/glass/GC = W
 		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
 			var/found = FALSE
-			for (var/datum/reagent/RG in engine.reagents.reagent_list)
-				for (var/i in engine.fuels)
-					if (i == RG.id)
-						found = TRUE
+			for (var/i in engine.fuels)
+				if (GC.reagents.has_reagent(i))
+					found = TRUE
 			if (!found)
 				user << "\The [W] has no acceptable fuel in it."
 				update_customdesc()
 				return
-			for (var/datum/reagent/RG in engine.reagents.reagent_list)
-				for (var/i in engine.fuels)
-					if (GC.reagents.has_reagent(i))
-						if (GC.reagents.get_reagent_amount(i)<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
-							fueltank.reagents.add_reagent(i,GC.reagents.get_reagent_amount(i))
-							GC.reagents.del_reagent(i)
-							user << "You empty \the [W] into the fueltank."
-							update_customdesc()
-							return
-						else
-							var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
-							fueltank.reagents.add_reagent(i,amttransf)
-							GC.reagents.remove_reagent(i,amttransf)
-							user << "You fill the fueltank completly with \the [W]."
-							update_customdesc()
-							return
+			for (var/i in engine.fuels)
+				if (GC.reagents.has_reagent(i))
+					if (GC.reagents.get_reagent_amount(i)<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
+						fueltank.reagents.add_reagent(i,GC.reagents.get_reagent_amount(i))
+						GC.reagents.del_reagent(i)
+						user << "You empty \the [W] into the fueltank."
+						update_customdesc()
+						return
+					else
+						var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
+						fueltank.reagents.add_reagent(i,amttransf)
+						GC.reagents.remove_reagent(i,amttransf)
+						user << "You fill the fueltank completly with \the [W]."
+						update_customdesc()
+						return
 		else
 			user << "The fueltank is full already."
 			update_customdesc()
