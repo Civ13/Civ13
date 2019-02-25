@@ -179,12 +179,14 @@
 	base_turf = /turf/floor/beach/sand
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "sea"
 
 /area/caribbean/sea
 	name = "Island"
 	base_turf = /turf/floor/beach/sand
 	icon_state = "purple1"
 	ambience = list("sound/ambience/ship1.ogg")
+	climate = "sea"
 
 /area/caribbean/sea/beach
 	name = "Beach"

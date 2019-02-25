@@ -261,6 +261,7 @@
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
 #include "code\game\objects\map_metadata\naval.dm"
 #include "code\game\objects\map_metadata\nomads.dm"
+#include "code\game\objects\map_metadata\nomads_continental.dm"
 #include "code\game\objects\map_metadata\nomads_desert.dm"
 #include "code\game\objects\map_metadata\nomads_divide.dm"
 #include "code\game\objects\map_metadata\nomads_extended.dm"
@@ -802,5 +803,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads.dmm"
+#include "maps\special\nomads_continental.dmm"
 // END_INCLUDE
