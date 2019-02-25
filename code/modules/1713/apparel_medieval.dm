@@ -272,6 +272,7 @@
 	armor = list(melee = 60, bullet = 55, laser = 20,energy = 20, bomb = 40, bio = 30, rad = FALSE)
 	value = 40
 	slowdown = 0.75
+
 /obj/item/clothing/head/helmet/gold_crown
 	name = "gold crown"
 	desc = "A crown of gold. Fancy."
@@ -287,6 +288,27 @@
 	item_state = "silver_crown"
 	worn_state = "silver_crown"
 	armor = list(melee = 20, bullet = 15, laser = 10,energy = 15, bomb = 15, bio = 10, rad = FALSE)
+
+//Insert more inlaid crowns here.
+
+/obj/item/clothing/head/helmet/gold_crown_diamond
+	name = "inlaid gold crown"
+	desc = "A crown of gold, with a diamond in it. Extra Fancy."
+	icon_state = "gold_crown_diamond"
+	item_state = "gold_crown"
+	worn_state = "gold_crown_diamond"
+	armor = list(melee = 25, bullet = 20, laser = 30,energy = 25, bomb = 20, bio = 15, rad = FALSE)
+
+/obj/item/clothing/head/helmet/silver_crown_diamond
+	name = "inlaid silver crown"
+	desc = "A crown of silver, with a diamond in it. Extra Fancy."
+	icon_state = "silver_crown_diamond"
+	item_state = "silver_crown"
+	worn_state = "gold_crown_diamond"
+	armor = list(melee = 25, bullet = 20, laser = 30,energy = 25, bomb = 20, bio = 15, rad = FALSE)
+
+//continue
+
 
 /obj/item/clothing/head/helmet/medieval
 	name = "knight helmet"
