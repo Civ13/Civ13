@@ -469,3 +469,42 @@
 	icon_state = "halfhuipil"
 	item_state = "halfhuipil"
 	worn_state = "halfhuipil"
+
+/obj/item/clothing/suit/armor/samurai
+	name = "samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord's bodyguards."
+	icon_state = "samurai3"
+	item_state = "samurai3"
+	worn_state = "samurai3"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 65, bullet = 85, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	value = 45
+	slowdown = 1
+
+/obj/item/clothing/suit/armor/samurai/red
+	name = "red samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord's bodyguards."
+	icon_state = "samurai1"
+	item_state = "samurai1"
+	worn_state = "samurai1"
+
+/obj/item/clothing/suit/armor/samurai/blue
+	name = "blue samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord's bodyguards."
+	icon_state = "samurai2"
+	item_state = "samurai2"
+	worn_state = "samurai2"
+
+/obj/item/clothing/under/hanfu
+	name = "dark hanfu"
+	desc = "A light, loose fitting hanfu."
+	icon_state = "dark_hanfu"
+	item_state = "dark_hanfu"
+	worn_state = "dark_hanfu"
+
+/obj/item/clothing/under/hanfu/light
+	name = "light hanfu"
+	desc = "A light, loose fitting hanfu."
+	icon_state = "light_hanfu"
+	item_state = "light_hanfu"
+	worn_state = "light_hanfu"
