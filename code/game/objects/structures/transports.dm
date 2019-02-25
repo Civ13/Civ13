@@ -222,10 +222,12 @@
 	axis = new/obj/structure/vehicleparts/axis/boat
 	wheeled = TRUE
 	dwheel = new/obj/item/vehicleparts/wheel/rudder
+	var/image/cover_overlay = null
 	var/image/cover_overlay_c = null
 	var/maxcapacity = 1 //besides the driver
 	var/mob/living/carbon/human/currentcap = null
-
+	bound_width = 64
+	bound_height = 64
 /obj/structure/vehicle/boat/b400
 	name = "diesel outrigger"
 	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
@@ -242,10 +244,19 @@
 
 	New()
 		..()
+		cover_overlay = image(icon, "sail0")
+		cover_overlay.layer = MOB_LAYER + 2.11
+		cover_overlay_c = image(icon, "sail")
+		cover_overlay_c.layer = MOB_LAYER + 2.12
+		add_overlay(cover_overlay)
 		update_overlay()
+		update_icon()
 /obj/structure/vehicle/boat/check_sails()
 	var/timer = 15
 	if (!sails || !sails_on)
+		return
+	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water))
+		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(src)]!</span>")
 		return
 	if (sails && sails_on)
 		switch(map.windspeedvar)
@@ -465,25 +476,18 @@
 	spawn(3)
 		if (engine)
 			update_customdesc()
-		if (sails && !sails_on)
-			cover_overlay_c = image(icon, "sail0")
-			cover_overlay_c.layer = MOB_LAYER + 2.11
-		if (sails && sails_on)
-			cover_overlay_c = image(icon, "sail")
-			cover_overlay_c.layer = MOB_LAYER + 2.11
+
 /obj/structure/vehicle/boat/proc/update_customdesc()
 	desc = "A boat with a [engine.enginesize]cc engine. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
 	return
 /obj/structure/vehicle/boat/update_overlay()
 	if (sails)
 		if (sails_on)
-			cover_overlay_c = image(icon, "sail")
-			cover_overlay_c.layer = MOB_LAYER + 2.11
+			add_overlay(cover_overlay_c)
 			update_icon()
 			return
 		else
-			cover_overlay_c = image(icon, "sail0")
-			cover_overlay_c.layer = MOB_LAYER + 2.11
+			overlays -= cover_overlay_c
 			update_icon()
 			return
 	else
