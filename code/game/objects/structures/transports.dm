@@ -21,7 +21,13 @@
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/fueltank = null
 	var/health = 100
 	var/customcolor = "#FFFFFF"
+	var/sails = FALSE
+	var/sails_on = FALSE
 
+/obj/structure/vehicle/proc/check_sails()
+	return
+/obj/structure/vehicle/proc/updatepassdir()
+	return
 /obj/structure/vehicle/proc/do_color()
 	return
 
@@ -176,6 +182,7 @@
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	vehicle_m_delay = 12
 	health = 50
 /obj/structure/vehicle/raft/do_vehicle_check(var/m_dir = null)
 	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
@@ -192,6 +199,334 @@
 			driver = null
 	else
 		return FALSE
+
+///////////////////////////////////////////////////////
+//dirs:
+//S: 23,33; 10,33
+//N: 10,11; 25,11
+//E: 5,31; 5,19
+//W: 31,10; 31,20
+/obj/structure/vehicle/boat
+	name = "outrigger raft"
+	desc = "A simple wood boat. Can be powered by a motor."
+	icon = 'icons/obj/vehicleparts64x64.dmi'
+	icon_state = "outrigger_frame1"
+	anchored = FALSE
+	density = FALSE
+	opacity = FALSE
+	flammable = TRUE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	vehicle_m_delay = 12
+	health = 90
+	axis = new/obj/structure/vehicleparts/axis/boat
+	wheeled = TRUE
+	dwheel = new/obj/item/vehicleparts/wheel/rudder
+	var/image/cover_overlay = null
+	var/image/cover_overlay_c = null
+	var/maxcapacity = 1 //besides the driver
+	var/mob/living/carbon/human/currentcap = null
+	bound_width = 64
+	bound_height = 64
+/obj/structure/vehicle/boat/b400
+	name = "diesel outrigger"
+	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
+	icon_state = "outrigger_frame3"
+	health = 130
+
+/obj/structure/vehicle/boat/sailboat
+	name = "sailing outrigger"
+	desc = "A sailing boat. Powered by the wind."
+	icon_state = "outrigger_frame1"
+	health = 130
+	sails = TRUE
+	dwheel = new/obj/item/vehicleparts/wheel/rudder_sails
+
+	New()
+		..()
+		cover_overlay = image(icon, "sail0")
+		cover_overlay.layer = MOB_LAYER + 2.11
+		cover_overlay_c = image(icon, "sail")
+		cover_overlay_c.layer = MOB_LAYER + 2.12
+		add_overlay(cover_overlay)
+		update_overlay()
+		update_icon()
+/obj/structure/vehicle/boat/check_sails()
+	var/timer = 15
+	if (!sails || !sails_on)
+		return
+	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water))
+		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
+		sails_on = FALSE
+		return
+	if (sails && sails_on)
+		switch(map.windspeedvar)
+			if (0)
+				timer = 40
+			if (1)
+				timer = 15
+			if (2)
+				timer = 11
+			if (3)
+				timer = 7
+			if (4)
+				timer = 4
+		switch(map.winddirection)
+			if ("North")
+				if (dir == SOUTH)
+					timer /= 1
+				if  (dir == WEST || dir == EAST)
+					timer /= 0.4
+				if (dir == NORTH)
+					timer /= 0.1
+			if ("South")
+				if (dir == NORTH)
+					timer /= 1
+				if  (dir == WEST || dir == EAST)
+					timer /= 0.4
+				if (dir == SOUTH)
+					timer /= 0.1
+			if ("East")
+				if (dir == WEST)
+					timer /= 1
+				if  (dir == NORTH || dir == SOUTH)
+					timer /= 0.4
+				if (dir == EAST)
+					timer /= 0.1
+			if ("West")
+				if (dir == EAST)
+					timer /= 1
+				if  (dir == NORTH || dir == SOUTH)
+					timer /= 0.4
+				if (dir == WEST)
+					timer /= 0.1
+	for (var/mob/living/ML in ontop)
+		ML.forceMove(get_step(src, dir))
+	for (var/obj/O in ontop)
+		O.forceMove(get_step(src, dir))
+	forceMove(get_step(src, dir))
+	updatepassdir()
+	update_icon()
+	spawn(timer)
+		check_sails()
+/obj/structure/vehicle/boat/updatepassdir()
+	if (driver)
+		driver.pixel_x = pixel_x
+		driver.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				driver.pixel_x += 23
+				driver.pixel_y += 33
+			if (NORTH)
+				driver.pixel_x += 10
+				driver.pixel_y += 11
+			if (EAST)
+				driver.pixel_x += 5
+				driver.pixel_y += 31
+			if (WEST)
+				driver.pixel_x += 31
+				driver.pixel_y += 10
+	if (currentcap)
+		currentcap.pixel_x = pixel_x
+		currentcap.pixel_y = pixel_y
+		switch (dir)
+			if (SOUTH)
+				currentcap.pixel_x += 10
+				currentcap.pixel_y += 33
+			if (NORTH)
+				currentcap.pixel_x += 25
+				currentcap.pixel_y += 11
+			if (EAST)
+				currentcap.pixel_x += 5
+				currentcap.pixel_y += 19
+			if (WEST)
+				currentcap.pixel_x += 31
+				currentcap.pixel_y += 19
+
+/obj/structure/vehicle/boat/b400/New()
+	..()
+	engine = new/obj/structure/engine/internal/diesel
+	fueltank = new/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small
+	spawn(1)
+		engine.enginesize = 400
+		engine.weight = 20*(engine.enginesize/1000)
+		engine.name = "400cc diesel engine"
+		engine.maxpower *= (engine.enginesize/1000)
+		engine.fuelefficiency *= (engine.enginesize/1000)
+		spawn(1)
+			engine.fueltank = fueltank
+			engine.connections += axis
+			dwheel.forceMove(src)
+
+/obj/structure/vehicle/boat/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
+	if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
+		visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		if (do_after(M, 40, src))
+			visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+			M.forceMove(get_turf(src))
+			if (!driver)
+				if (wheeled)
+					if (M.put_in_active_hand(dwheel) == FALSE)
+						M << "Your hands are full!"
+						return
+
+				M.driver = TRUE
+				M.driver_vehicle = src
+				driver = M
+				buckle_mob(driver)
+				ontop += M
+				updatepassdir()
+			else if (!currentcap)
+				currentcap = M
+				ontop += M
+				M.anchored = TRUE
+				updatepassdir()
+			update_overlay()
+			update_icon()
+			return
+
+/obj/structure/vehicle/boat/attack_hand(mob/living/carbon/human/user as mob)
+	if ((user in ontop))
+		visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+		if (do_after(user, 30, src))
+			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+			ontop -= user
+			if (user == driver)
+				user.driver = FALSE
+				unbuckle_mob()
+				user.driver_vehicle = null
+				driver = null
+				updatepassdir()
+				if (wheeled)
+					if (user.l_hand == dwheel)
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
+					else if (user.r_hand == dwheel)
+						user.remove_from_mob(dwheel)
+						dwheel.forceMove(src)
+						user.r_hand = null
+					user.update_icons()
+			else if (!currentcap)
+				currentcap = null
+				ontop -= user
+				user.anchored = FALSE
+				updatepassdir()
+			update_overlay()
+			update_icon()
+			return
+
+/obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
+	if (istype(W, /obj/item/vehicleparts/wheel))
+		if ((user in ontop))
+			if (user == driver && engine)
+				if (engine.on)
+					engine.on = FALSE
+					engine.power_off_connections()
+					engine.currentspeed = 0
+					engine.currentpower = 0
+					user << "You turn off the engine."
+					set_light(0)
+					playsound(loc, 'sound/machines/diesel_ending.ogg', 65, FALSE, 2)
+					return
+
+			visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			if (do_after(user, 30, src))
+				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+				ontop -= user
+				if (user == driver)
+					user.driver = FALSE
+					unbuckle_mob()
+					user.driver_vehicle = null
+					driver = null
+					updatepassdir()
+					if (wheeled)
+						if (user.l_hand == dwheel)
+							user.remove_from_mob(dwheel)
+							dwheel.forceMove(src)
+						else if (user.r_hand == dwheel)
+							user.remove_from_mob(dwheel)
+							dwheel.forceMove(src)
+				else if (!currentcap)
+					currentcap = null
+					ontop -= user
+					user.anchored = FALSE
+					updatepassdir()
+				update_overlay()
+				update_icon()
+				return
+	else
+		..()
+/obj/structure/vehicle/boat/do_vehicle_check(var/m_dir = null)
+	update_customdesc()
+	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
+		if (driver in src.loc)
+			return TRUE
+		else
+			driver.driver = FALSE
+			driver.driver_vehicle = null
+			driver << "You leave the [src]."
+			unbuckle_mob()
+			update_overlay()
+			update_icon()
+			ontop -= driver
+			driver = null
+	else
+		return FALSE
+/obj/structure/vehicle/boat/New()
+	..()
+	spawn(3)
+		if (engine)
+			update_customdesc()
+
+/obj/structure/vehicle/boat/proc/update_customdesc()
+	desc = "A boat with a [engine.enginesize]cc engine. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
+	return
+/obj/structure/vehicle/boat/update_overlay()
+	if (sails)
+		if (sails_on)
+			add_overlay(cover_overlay_c)
+			update_icon()
+			return
+		else
+			overlays -= cover_overlay_c
+			update_icon()
+			return
+	else
+		overlays -= cover_overlay_c
+
+/obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/GC = W
+		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
+			var/found = FALSE
+			for (var/i in engine.fuels)
+				if (GC.reagents.has_reagent(i))
+					found = TRUE
+			if (!found)
+				user << "\The [W] has no acceptable fuel in it."
+				update_customdesc()
+				return
+			for (var/i in engine.fuels)
+				if (GC.reagents.has_reagent(i))
+					if (GC.reagents.get_reagent_amount(i)<= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
+						fueltank.reagents.add_reagent(i,GC.reagents.get_reagent_amount(i))
+						GC.reagents.del_reagent(i)
+						user << "You empty \the [W] into the fueltank."
+						update_customdesc()
+						return
+					else
+						var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
+						fueltank.reagents.add_reagent(i,amttransf)
+						GC.reagents.remove_reagent(i,amttransf)
+						user << "You fill the fueltank completly with \the [W]."
+						update_customdesc()
+						return
+		else
+			user << "The fueltank is full already."
+			update_customdesc()
+			return
+	else
+		..()
 
 ///////////////////////////////////////////////////////
 /obj/structure/vehicle/motorcycle

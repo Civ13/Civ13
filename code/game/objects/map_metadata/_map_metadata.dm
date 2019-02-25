@@ -128,6 +128,11 @@ var/civmax_research = list(130,130,130)
 	var/list/globalmarketplace = list()
 	var/list/marketplaceaccounts = list()
 	var/globalmarketplacecount = 0
+
+	var/winddirection = "East"
+	var/windspeedvar = 1 // 0 to 4
+	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale
+	var/winddesc = "A light Eastern breeze."
 /obj/map_metadata/New()
 	..()
 	map = src
@@ -157,6 +162,40 @@ var/civmax_research = list(130,130,130)
 	set_ordinal_age()
 	spawn(5000)
 		pollution()
+	spawn(2400)
+		wind()
+
+/obj/map_metadata/proc/wind()
+	var/oldwind = winddirection
+	var/oldspeed = windspeedvar
+	winddirection = pick("North", "South", "East", "West")
+	windspeedvar += pick(-1,0,1)
+	if (windspeedvar > 4)
+		windspeedvar = 4
+	if (windspeedvar < 0)
+		windspeedvar = 0
+	switch (windspeedvar)
+		if (0)
+			windspeed = "calm"
+			winddesc = "No wind."
+		if (1)
+			windspeed = "a light breeze"
+			winddesc = "A light [winddirection]ern breeze."
+		if (2)
+			windspeed = "a moderate breeze"
+			winddesc = "A moderate [winddirection]ern breeze."
+		if (3)
+			windspeed = "a strong breeze"
+			winddesc = "A strong [winddirection]ern breeze."
+		if (4)
+			windspeed = "a gale"
+			winddesc = "A [winddirection]ern gale."
+	if (windspeedvar != oldspeed)
+		world << "<big>The wind changes strength. It is now <b>[windspeed]</b>.</big>"
+	if (winddirection != oldwind)
+		world << "<big>The wind changes direction. It is now blowing from the <b>[winddirection]</b>.</big>"
+	spawn(rand(3600,6000))
+		wind()
 
 /obj/map_metadata/proc/pollution()
 
