@@ -256,7 +256,8 @@
 	if (!sails || !sails_on)
 		return
 	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water))
-		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(src)]!</span>")
+		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
+		sails_on = FALSE
 		return
 	if (sails && sails_on)
 		switch(map.windspeedvar)
