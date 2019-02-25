@@ -269,6 +269,7 @@
 					O.forceMove(src)
 					step = 2
 					check_step()
+					update_icon()
 					return
 		else if (NE.enginesize > maxengine)
 			user << "<span class = 'notice'>This engine is too big for the [src]!</span>"
