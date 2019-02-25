@@ -89,6 +89,9 @@
 	if (current_res[2] >= 39 && map.ordinal_age <= 2)
 		recipes += new/datum/stack_recipe("medieval shoes", /obj/item/clothing/shoes/medieval, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("arabic-style shoes", /obj/item/clothing/shoes/medieval/arab, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("samurai armor", /obj/item/clothing/suit/armor/samurai, 20, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("red samurai armor", /obj/item/clothing/suit/armor/samurai/red, 20, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("blue samurai armor", /obj/item/clothing/suit/armor/samurai/blue, 20, _time = 130, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 80 && map.ordinal_age >= 3)
 		recipes += new/datum/stack_recipe("gunpowder pouch", /obj/item/weapon/reagent_containers/food/drinks/gunpowder, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("bandolier", /obj/item/clothing/accessory/storage/webbing, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -620,7 +623,9 @@
 			new/datum/stack_recipe("light brown arabic tunic", /obj/item/clothing/under/medieval/arab1, 3, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light white arabic tunic", /obj/item/clothing/under/medieval/arab2, 3, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("baggy renaissance clothing", /obj/item/clothing/under/renaissance, 6, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("pontifical renaissance clothing", /obj/item/clothing/under/renaissance_pontifical, 6, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("pontifical renaissance clothing", /obj/item/clothing/under/renaissance_pontifical, 6, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 79 && current_res[3] < 98)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 				new/datum/stack_recipe("blue colonial clothing", /obj/item/clothing/under/civ1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
