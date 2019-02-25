@@ -313,7 +313,7 @@
 	if (driver)
 		driver.pixel_x = pixel_x
 		driver.pixel_y = pixel_y
-		switch (driver.dir)
+		switch (dir)
 			if (SOUTH)
 				driver.pixel_x += 23
 				driver.pixel_y += 33
@@ -329,7 +329,7 @@
 	if (currentcap)
 		currentcap.pixel_x = pixel_x
 		currentcap.pixel_y = pixel_y
-		switch (currentcap.dir)
+		switch (dir)
 			if (SOUTH)
 				currentcap.pixel_x += 10
 				currentcap.pixel_y += 33
