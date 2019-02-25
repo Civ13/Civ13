@@ -495,6 +495,13 @@
 	item_state = "samurai2"
 	worn_state = "samurai2"
 
+/obj/item/clothing/suit/armor/samurai/black
+	name = "black samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord's bodyguards."
+	icon_state = "samurai4"
+	item_state = "samurai4"
+	worn_state = "samurai4"
+
 /obj/item/clothing/under/hanfu
 	name = "dark hanfu"
 	desc = "A light, loose fitting hanfu."
@@ -508,3 +515,34 @@
 	icon_state = "light_hanfu"
 	item_state = "light_hanfu"
 	worn_state = "light_hanfu"
+
+/obj/item/clothing/head/helmet/samurai
+	name = "samurai helmet"
+	desc = "A thick leather samurai helmet."
+	icon_state = "samurai3"
+	item_state = "samurai3"
+	worn_state = "samurai3"
+	body_parts_covered = HEAD
+	armor = list(melee = 65, bullet = 85, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/helmet/samurai/red
+	name = "red samurai helmet"
+	desc = "A thick leather samurai helmet."
+	icon_state = "samurai1"
+	item_state = "samurai1"
+	worn_state = "samurai1"
+
+/obj/item/clothing/head/helmet/samurai/blue
+	name = "samurai helmet"
+	desc = "A thick leather samurai helmet."
+	icon_state = "samurai2"
+	item_state = "samurai2"
+	worn_state = "samurai2"
+
+/obj/item/clothing/head/helmet/samurai/black
+	name = "black samurai helmet"
+	desc = "A thick leather samurai helmet."
+	icon_state = "samurai4"
+	item_state = "samurai4"
+	worn_state = "samurai4"
