@@ -885,7 +885,7 @@
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/silver_crown_diamond(src.loc)
+		new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
 		qdel(src)
 		qdel(W)
 
@@ -894,6 +894,6 @@
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/gold_crown_diamond(src.loc)
+		new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
 		qdel(src)
 		qdel(W)
