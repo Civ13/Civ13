@@ -240,6 +240,15 @@
 	..()
 	icon_state = "[base_icon][step]"
 /obj/item/vehicleparts/frame/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/structure/vehicleparts/sail) && step == 1 && istype(src, /obj/item/vehicleparts/frame/boat))
+		if (do_after(user,130,src) && src && W)
+			user << "<span class = 'notice'>You attach the [W] to the [src].</span>"
+			user.drop_from_inventory(W)
+			qdel(W)
+			new/obj/structure/vehicle/boat/sailboat(get_turf(user))
+			qdel(src)
+			return
+
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel/fueltank) && step == 2)
 		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/NF = W
 		if (NF.reagents.maximum_volume <= maxfueltank)
@@ -345,3 +354,13 @@
 	flammable = TRUE
 	resistance = 90
 
+///////////////////////EXTRA STUFF//////////////////////
+
+/obj/structure/vehicleparts/sail
+	name = "small sail"
+	desc = "a small sail. Will fit a minor boat."
+	icon_state = "sailing0"
+	anchored = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	flammable = TRUE
