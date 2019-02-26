@@ -359,6 +359,7 @@
 /obj/item/sail
 	name = "small sail"
 	desc = "a small sail. Will fit a minor boat."
+	icon = 'icons/obj/vehicleparts.dmi'
 	icon_state = "sailing0"
 	anchored = FALSE
 	flammable = TRUE
