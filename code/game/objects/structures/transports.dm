@@ -54,8 +54,9 @@
 /obj/structure/vehicle/proc/do_move(var/m_dir = null)
 	for (var/mob/living/ML in ontop)
 		ML.forceMove(get_step(src, m_dir))
-	for (var/obj/O in ontop_o)
+	for (var/obj/structure/O in ontop_o)
 		O.forceMove(get_step(src, m_dir))
+		O.dir = dir
 	forceMove(get_step(src, m_dir))
 	update_icon()
 	return
@@ -117,7 +118,7 @@
 				update_icon()
 				return
 	else if (istype(A, /obj))
-		var/obj/O = A
+		var/obj/structure/O = A
 		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
 			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
@@ -126,6 +127,13 @@
 				O.pixel_y = pixel_y+16
 				ontop_o += O
 				O.anchored = TRUE
+				O.dir = dir
+				if (istype(O, /obj/structure/cannon))
+					O.icon = 'icons/obj/cannon.dmi'
+					O.x = x
+					O.y = y
+					O.pixel_x = pixel_x
+					O.pixel_y = pixel_y
 				update_overlay()
 				update_icon()
 				return
@@ -157,7 +165,7 @@
 			update_icon()
 			return
 	else if (ontop_o.len > 0)
-		for (var/obj/O in ontop_o)
+		for (var/obj/structure/O in ontop_o)
 			O.anchored = FALSE
 			ontop_o -= O
 			O.pixel_x = pixel_x
@@ -337,7 +345,7 @@
 					timer /= 0.1
 	for (var/mob/living/ML in ontop)
 		ML.forceMove(get_step(src, dir))
-	for (var/obj/O in ontop_o)
+	for (var/obj/structure/O in ontop_o)
 		O.forceMove(get_step(src, dir))
 	forceMove(get_step(src, dir))
 	updatepassdir()
@@ -378,14 +386,34 @@
 				currentcap.pixel_x += 31
 				currentcap.pixel_y += 19
 	if (ontop_o.len > 0)
-		for(var/obj/OB in ontop_o)
+		for(var/obj/structure/OB in ontop_o)
 			switch (dir)
 				if (SOUTH, NORTH)
-					OB.pixel_x = pixel_x+16
-					OB.pixel_y = pixel_y+20
+					if (istype(OB, /obj/structure/cannon))
+						OB.pixel_x = pixel_x
+						if (dir == SOUTH)
+							OB.pixel_y = pixel_y-32
+							OB.dir = dir
+						else
+							OB.pixel_y = pixel_y+32
+							OB.dir = dir
+					else
+						OB.pixel_x = pixel_x+16
+						OB.pixel_y = pixel_y+20
+						OB.dir = dir
 				if (EAST, WEST)
-					OB.pixel_x = pixel_x+32
-					OB.pixel_y = pixel_y+10
+					if (istype(OB, /obj/structure/cannon))
+						OB.pixel_y = pixel_y
+						if (dir == WEST)
+							OB.pixel_x = pixel_x-32
+							OB.dir = dir
+						else
+							OB.pixel_x = pixel_x+32
+							OB.dir = dir
+					else
+						OB.pixel_x = pixel_x+32
+						OB.pixel_y = pixel_y+10
+						OB.dir = dir
 
 /obj/structure/vehicle/boat/b400/New()
 	..()
@@ -431,7 +459,7 @@
 				update_icon()
 				return
 	else if (istype(A, /obj))
-		var/obj/O = A
+		var/obj/structure/O = A
 		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
 			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
@@ -439,6 +467,14 @@
 				O.pixel_x = pixel_x+16
 				O.pixel_y = pixel_y+16
 				ontop_o += O
+				O.dir = dir
+				O.anchored = TRUE
+				if (istype(O, /obj/structure/cannon))
+					O.x = x
+					O.y = y
+					O.pixel_x = pixel_x
+					O.pixel_y = pixel_y
+					O.icon = 'icons/obj/cannon.dmi'
 				update_overlay()
 				update_icon()
 				return
@@ -476,11 +512,12 @@
 			update_icon()
 			return
 	else if (ontop_o.len > 0)
-		for (var/obj/O in ontop_o)
+		for (var/obj/structure/O in ontop_o)
 			O.anchored = FALSE
 			ontop_o -= O
 			O.pixel_x = pixel_x
 			O.pixel_y = pixel_y
+			O.dir = dir
 			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
 		return
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
