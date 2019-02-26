@@ -361,7 +361,5 @@
 	desc = "a small sail. Will fit a minor boat."
 	icon_state = "sailing0"
 	anchored = FALSE
-	not_movable = FALSE
-	not_disassemblable = TRUE
 	flammable = TRUE
 	w_class = 4.0
