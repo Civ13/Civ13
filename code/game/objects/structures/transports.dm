@@ -4,6 +4,7 @@
 	desc = "A vehicle."
 	icon_state = "motorcycle"
 	var/list/ontop = list()
+	var/list/ontop_o = list()
 	var/mob/living/carbon/human/driver = null
 	var/lastmove = 0
 	var/vehicle_m_delay = 15
@@ -24,6 +25,8 @@
 	var/sails = FALSE
 	var/sails_on = FALSE
 
+	var/mobcapacity = 1
+	var/storagecapacity = 0
 /obj/structure/vehicle/proc/check_sails()
 	return
 /obj/structure/vehicle/proc/updatepassdir()
@@ -51,7 +54,7 @@
 /obj/structure/vehicle/proc/do_move(var/m_dir = null)
 	for (var/mob/living/ML in ontop)
 		ML.forceMove(get_step(src, m_dir))
-	for (var/obj/O in ontop)
+	for (var/obj/O in ontop_o)
 		O.forceMove(get_step(src, m_dir))
 	forceMove(get_step(src, m_dir))
 	update_icon()
@@ -90,26 +93,42 @@
 	moving = FALSE
 	return
 
-/obj/structure/vehicle/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
-	if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
-		visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
-		if (do_after(M, 40, src))
-			visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
-			M.forceMove(get_turf(src))
-			if (!driver)
-				if (wheeled)
-					if (M.put_in_active_hand(dwheel) == FALSE)
-						M << "Your hands are full!"
-						return
+/obj/structure/vehicle/MouseDrop_T(atom/A, mob/living/carbon/human/user)
+	if (istype(A, /mob/living/carbon/human))
+		var/mob/living/carbon/human/M = A
+		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop) && ontop.len < mobcapacity)
+			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			if (do_after(M, 40, src))
+				visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+				M.forceMove(get_turf(src))
+				if (!driver)
+					if (wheeled)
+						if (M.put_in_active_hand(dwheel) == FALSE)
+							M << "Your hands are full!"
+							return
 
-				M.driver = TRUE
-				M.driver_vehicle = src
-				driver = M
-				buckle_mob(driver)
-				ontop += M
-			update_overlay()
-			update_icon()
-			return
+					M.driver = TRUE
+					M.driver_vehicle = src
+					driver = M
+					buckle_mob(driver)
+				else
+					ontop += M
+				update_overlay()
+				update_icon()
+				return
+	else if (istype(A, /obj))
+		var/obj/O = A
+		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
+			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
+			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
+				visible_message("<div class='notice'>[user] sucessfully puts \the [O] on \the [src].</div>","<div class='notice'>You sucessfully put \the [O] on \the [src].</div>")
+				O.pixel_x = pixel_x+16
+				O.pixel_y = pixel_y+16
+				ontop_o += O
+				O.anchored = TRUE
+				update_overlay()
+				update_icon()
+				return
 
 /obj/structure/vehicle/attack_hand(mob/living/carbon/human/user as mob)
 	if ((user in ontop))
@@ -117,6 +136,8 @@
 		if (do_after(user, 30, src))
 			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
+			user.pixel_x = pixel_x
+			user.pixel_y = pixel_y
 			if (user == driver)
 				user.driver = FALSE
 				unbuckle_mob()
@@ -126,6 +147,7 @@
 					if (user.l_hand == dwheel)
 						user.remove_from_mob(dwheel)
 						dwheel.forceMove(src)
+						user.l_hand = null
 					else if (user.r_hand == dwheel)
 						user.remove_from_mob(dwheel)
 						dwheel.forceMove(src)
@@ -134,6 +156,14 @@
 			update_overlay()
 			update_icon()
 			return
+	else if (ontop_o.len > 0)
+		for (var/obj/O in ontop_o)
+			O.anchored = FALSE
+			ontop_o -= O
+			O.pixel_x = pixel_x
+			O.pixel_y = pixel_y
+			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
+		return
 
 /obj/structure/vehicle/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
 	if (istype(W, /obj/item/vehicleparts/wheel))
@@ -153,6 +183,8 @@
 			if (do_after(user, 30, src))
 				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
+				user.pixel_x = pixel_x
+				user.pixel_y = pixel_y
 				if (user == driver)
 					user.driver = FALSE
 					unbuckle_mob()
@@ -210,7 +242,7 @@
 	name = "outrigger raft"
 	desc = "A simple wood boat. Can be powered by a motor."
 	icon = 'icons/obj/vehicleparts64x64.dmi'
-	icon_state = "outrigger_frame1"
+	icon_state = "outrigger_frame3"
 	anchored = FALSE
 	density = FALSE
 	opacity = FALSE
@@ -228,6 +260,9 @@
 	var/mob/living/carbon/human/currentcap = null
 	bound_width = 64
 	bound_height = 64
+	mobcapacity = 2
+	storagecapacity = 1
+
 /obj/structure/vehicle/boat/b400
 	name = "diesel outrigger"
 	desc = "A 400cc, diesel-powered outrigger. Has a 125u fueltank."
@@ -302,7 +337,7 @@
 					timer /= 0.1
 	for (var/mob/living/ML in ontop)
 		ML.forceMove(get_step(src, dir))
-	for (var/obj/O in ontop)
+	for (var/obj/O in ontop_o)
 		O.forceMove(get_step(src, dir))
 	forceMove(get_step(src, dir))
 	updatepassdir()
@@ -342,6 +377,15 @@
 			if (WEST)
 				currentcap.pixel_x += 31
 				currentcap.pixel_y += 19
+	if (ontop_o.len > 0)
+		for(var/obj/OB in ontop_o)
+			switch (dir)
+				if (SOUTH, NORTH)
+					OB.pixel_x = pixel_x+16
+					OB.pixel_y = pixel_y+20
+				if (EAST, WEST)
+					OB.pixel_x = pixel_x+32
+					OB.pixel_y = pixel_y+10
 
 /obj/structure/vehicle/boat/b400/New()
 	..()
@@ -358,32 +402,46 @@
 			engine.connections += axis
 			dwheel.forceMove(src)
 
-/obj/structure/vehicle/boat/MouseDrop_T(mob/living/carbon/human/M, mob/living/carbon/human/user)
-	if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
-		visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
-		if (do_after(M, 40, src))
-			visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
-			M.forceMove(get_turf(src))
-			if (!driver)
-				if (wheeled)
-					if (M.put_in_active_hand(dwheel) == FALSE)
-						M << "Your hands are full!"
-						return
+/obj/structure/vehicle/boat/MouseDrop_T(atom/A, mob/living/carbon/human/user)
+	if (istype(A, /mob/living/carbon/human))
+		var/mob/living/carbon/human/M = A
+		if (M.anchored == FALSE && M.driver == FALSE && !(M in ontop))
+			visible_message("<div class='notice'>[M] starts getting on \the [src]...</div>","<div class='notice'>You start going on \the [src]...</div>")
+			if (do_after(M, 40, src))
+				visible_message("<div class='notice'>[M] sucessfully climbs into \the [src].</div>","<div class='notice'>You sucessfully climb into \the [src].</div>")
+				M.forceMove(get_turf(src))
+				if (!driver)
+					if (wheeled)
+						if (M.put_in_active_hand(dwheel) == FALSE)
+							M << "Your hands are full!"
+							return
 
-				M.driver = TRUE
-				M.driver_vehicle = src
-				driver = M
-				buckle_mob(driver)
-				ontop += M
-				updatepassdir()
-			else if (!currentcap)
-				currentcap = M
-				ontop += M
-				M.anchored = TRUE
-				updatepassdir()
-			update_overlay()
-			update_icon()
-			return
+					M.driver = TRUE
+					M.driver_vehicle = src
+					driver = M
+					buckle_mob(driver)
+					ontop += M
+					updatepassdir()
+				else if (!currentcap)
+					currentcap = M
+					ontop += M
+					M.anchored = TRUE
+					updatepassdir()
+				update_overlay()
+				update_icon()
+				return
+	else if (istype(A, /obj))
+		var/obj/O = A
+		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
+			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
+			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
+				visible_message("<div class='notice'>[user] sucessfully puts \the [O] on \the [src].</div>","<div class='notice'>You sucessfully put \the [O] on \the [src].</div>")
+				O.pixel_x = pixel_x+16
+				O.pixel_y = pixel_y+16
+				ontop_o += O
+				update_overlay()
+				update_icon()
+				return
 
 /obj/structure/vehicle/boat/attack_hand(mob/living/carbon/human/user as mob)
 	if ((user in ontop))
@@ -391,6 +449,8 @@
 		if (do_after(user, 30, src))
 			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
+			user.pixel_x = pixel_x
+			user.pixel_y = pixel_y
 			if (user == driver)
 				user.driver = FALSE
 				unbuckle_mob()
@@ -401,6 +461,7 @@
 					if (user.l_hand == dwheel)
 						user.remove_from_mob(dwheel)
 						dwheel.forceMove(src)
+						user.l_hand = null
 					else if (user.r_hand == dwheel)
 						user.remove_from_mob(dwheel)
 						dwheel.forceMove(src)
@@ -414,7 +475,14 @@
 			update_overlay()
 			update_icon()
 			return
-
+	else if (ontop_o.len > 0)
+		for (var/obj/O in ontop_o)
+			O.anchored = FALSE
+			ontop_o -= O
+			O.pixel_x = pixel_x
+			O.pixel_y = pixel_y
+			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
+		return
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
 	if (istype(W, /obj/item/vehicleparts/wheel))
 		if ((user in ontop))
@@ -433,6 +501,8 @@
 			if (do_after(user, 30, src))
 				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
+				user.pixel_x = pixel_x
+				user.pixel_y = pixel_y
 				if (user == driver)
 					user.driver = FALSE
 					unbuckle_mob()

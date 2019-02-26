@@ -337,6 +337,11 @@
 	w_class = 2.0
 	value = 0
 	singular_name = "bone"
+/obj/item/stack/material/bone/New()
+	..()
+	spawn(7200)
+		if (isturf(loc))
+			qdel(src)
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
 	if (map.civilizations)
 		var/mob/living/carbon/human/U = user

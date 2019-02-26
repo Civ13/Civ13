@@ -77,7 +77,7 @@
 		starving = FALSE
 
 	if (nutrition <= 0)
-		health--
+		adjustBruteLoss(1)
 		nutrition = 5
 		visible_message("\The [src] is starving!")
 
