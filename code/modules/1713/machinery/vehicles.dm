@@ -240,7 +240,7 @@
 	..()
 	icon_state = "[base_icon][step]"
 /obj/item/vehicleparts/frame/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/structure/vehicleparts/sail) && step == 1 && istype(src, /obj/item/vehicleparts/frame/boat))
+	if (istype(W, /obj/item/sail) && step == 1 && istype(src, /obj/item/vehicleparts/frame/boat))
 		if (do_after(user,130,src) && src && W)
 			user << "<span class = 'notice'>You attach the [W] to the [src].</span>"
 			user.drop_from_inventory(W)
@@ -356,7 +356,7 @@
 
 ///////////////////////EXTRA STUFF//////////////////////
 
-/obj/structure/vehicleparts/sail
+/obj/item/sail
 	name = "small sail"
 	desc = "a small sail. Will fit a minor boat."
 	icon_state = "sailing0"
@@ -364,3 +364,4 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	flammable = TRUE
+	w_class = 4.0

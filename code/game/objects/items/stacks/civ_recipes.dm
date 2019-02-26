@@ -487,7 +487,7 @@
 /material/cloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[3] >= 22)
-		recipes += list(new/datum/stack_recipe("small sail",/obj/structure/vehicleparts/sail, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("small sail",/obj/item/sail, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 19)
 		recipes += list(new/datum/stack_recipe("bandages", /obj/item/stack/medical/bruise_pack/bint, 1, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
