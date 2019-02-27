@@ -96,7 +96,7 @@
 	name = "boat rudder and sail control"
 	desc = "Used to steer a boat and control the sails."
 	icon_state = "rudder"
-
+	var/spamtimer = 0
 /obj/item/vehicleparts/wheel/rudder_sails/attack_self(mob/living/carbon/human/H)
 	if(!H.driver_vehicle)
 		return
@@ -104,11 +104,13 @@
 		return
 	if (H.driver_vehicle.sails)
 		if (!H.driver_vehicle.sails_on)
-			H << "You hoist the sails."
-			H.driver_vehicle.sails_on = TRUE
-			H.driver_vehicle.check_sails()
-			H.driver_vehicle.update_overlay()
-			return
+			if (world.time > spamtimer)
+				H << "You hoist the sails."
+				H.driver_vehicle.sails_on = TRUE
+				H.driver_vehicle.check_sails()
+				spamtimer = world.time + 20
+				H.driver_vehicle.update_overlay()
+				return
 		else
 			H << "You retract the sails."
 			H.driver_vehicle.sails_on = FALSE
