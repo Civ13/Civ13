@@ -77,6 +77,129 @@
 	amount = 1
 	layer = 1.99
 
+//Carpets - To be Expanded upon Later
+
+/obj/covers/carpet/
+	name = "Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "carpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/pinkcarpet
+	name = "Pink Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "gaycarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/redcarpet
+	name = "Red Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "carpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/orangecarpet
+	name = "Orange Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "oracarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/purplecarpet
+	name = "Purple Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "purcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/bluecarpet
+	name = "Blue Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "blucarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/tealcarpet
+	name = "Teal Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "sblucarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/greencarpet
+	name = "Green Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "turcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/blackcarpet
+	name = "Black Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "bcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/whitecarpet
+	name = "White Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "wcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+//Continue
+
 /obj/covers/saloon_door
 	name = "saloon door"
 	desc = "A wood door."
