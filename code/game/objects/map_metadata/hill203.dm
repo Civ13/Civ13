@@ -19,7 +19,7 @@
 	age = "1904"
 	faction_distribution_coeffs = list(JAPANESE = 0.6, RUSSIAN = 0.4)
 	battle_name = "Seige of Hill 203"
-	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> is besieging the <b>Russian</b> controlled hill 203! The Russians will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> is besieging the <b>Russian</b> controlled hill 203! The Russians will win if they manage to hold the hillfor 35 minutes. <br> The battle will start in <b>6 minutes</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	songs = list(
@@ -90,7 +90,7 @@ var/no_loop_hill = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_kar == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_hill == FALSE)
 		ticker.finished = TRUE
 		var/message = "The Imperial Japanese Army has captured the hill! The remaining Russian troops have surrendered!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
