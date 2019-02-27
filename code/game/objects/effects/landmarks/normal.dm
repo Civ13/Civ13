@@ -554,6 +554,9 @@
 			return
 /////////////////
 
+/////////////////
+
+
 		if ("endgame_exit")
 			endgame_safespawns += loc
 			qdel(src)
