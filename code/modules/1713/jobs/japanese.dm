@@ -191,7 +191,7 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateJP"
+	spawn_location = "JoinLateJPDoc"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -354,7 +354,7 @@
 
 	return TRUE
 
-/datum/job/japanese/white_sash
+/datum/job/japanese/whitesash_infantry
 	title = "Sash Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
