@@ -761,6 +761,7 @@
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("artillery casing", /obj/item/stack/ammopart/casing/artillery, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe_list("cables", list(
 			new/datum/stack_recipe("cable connector", /obj/item/connector, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -803,8 +804,10 @@
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("steel shield", /obj/item/weapon/shield/steel, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[1] >= 71 && current_res[2] >= 89)
-		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 71 && current_res[2] >= 79)
+		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 81 && current_res[2] >= 95)
+		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon/modern, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 5)
@@ -885,7 +888,7 @@
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/silver_crown_diamond(src.loc)
+		new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
 		qdel(src)
 		qdel(W)
 
@@ -894,6 +897,6 @@
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/gold_crown_diamond(src.loc)
+		new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
 		qdel(src)
 		qdel(W)

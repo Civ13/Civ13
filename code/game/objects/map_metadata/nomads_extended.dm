@@ -148,7 +148,7 @@
 			TREES.update_icon()
 		for (var/turf/floor/dirt/D)
 			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
-				if (D.z == world.maxz)
+				if (D.z == world.maxz  && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
 					D.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/G)
 			G.ChangeTurf(/turf/floor/winter/grass)
