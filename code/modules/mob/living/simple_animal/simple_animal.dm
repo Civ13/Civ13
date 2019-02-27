@@ -105,7 +105,7 @@
 
 		if (simplehunger <= 0)
 			visible_message("\The [src] is starving!")
-			adjustBruteLoss(1)
+			adjustBruteLoss(round(max(1,maxHealth/10)))
 			simplehunger = 30
 
 	if (following_mob)

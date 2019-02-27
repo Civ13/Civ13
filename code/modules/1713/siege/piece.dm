@@ -91,7 +91,7 @@
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 
-	if (!locate(src) in get_step(user, user.dir))
+	if (!locate(user) in range(1,src))
 		user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
 		return FALSE
 
