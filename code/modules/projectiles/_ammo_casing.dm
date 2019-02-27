@@ -139,6 +139,18 @@
 	resultpath = null
 	gunpowder_max = 1
 
+/obj/item/stack/ammopart/casing/artillery
+	name = "empty artillery casing"
+	desc = "A large empty brass casing."
+	icon = 'icons/obj/cannon_ball.dmi'
+	icon_state = "casing"
+	force = WEAPON_FORCE_HARMLESS+1
+	throwforce = WEAPON_FORCE_HARMLESS+2
+	resultpath = null
+	gunpowder_max = 5
+	max_amount = 1
+	value = 4
+
 /obj/item/stack/ammopart/bullet
 	name = "iron bullet"
 	desc = "A molded iron bullet, made to fit in a casing."

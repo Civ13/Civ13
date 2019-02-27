@@ -103,7 +103,7 @@
 		spawn(15000)
 			change_weather(WEATHER_SNOW)
 			for (var/turf/floor/dirt/D)
-				if (z == world.maxz && prob(40))
+				if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
 					D.ChangeTurf(/turf/floor/dirt/winter)
 			for (var/turf/floor/grass/G)
 				if (prob(40))

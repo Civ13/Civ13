@@ -57,7 +57,7 @@
 			new/obj/structure/wild/smallbush/winter(SB.loc)
 			qdel(SB)
 		for (var/turf/floor/dirt/D)
-			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
+			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
 				var/area/A = get_area(D)
 				if  (A.location != AREA_INSIDE)
 					D.ChangeTurf(/turf/floor/dirt/winter)
