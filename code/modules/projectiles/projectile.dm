@@ -160,6 +160,7 @@
 		on_impact(user)
 		qdel(src)
 		return FALSE
+
 	if (targloc == curloc) //Shooting something in the same turf
 		do_bullet_act(target, target_zone)
 		on_impact(target)

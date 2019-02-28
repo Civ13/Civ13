@@ -23,6 +23,17 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+obj/item/ammo_magazine/madsen
+	name = "magazine (7.92x54mm)"
+	icon_state = "madsen"
+	mag_type = MAGAZINE
+	caliber = "a762x54"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 1440)
+	ammo_type = /obj/item/ammo_casing/a762x54
+	max_ammo = 25
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/gewehr71
 	name = "Clip (7.65x53mm)"
 	icon_state = "kclip"
