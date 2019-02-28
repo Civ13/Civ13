@@ -75,7 +75,44 @@
 						var/turf/floor/FF = get_step(src,direction)
 						FF.update_icon() //so siding get updated properly
 
+//Carpets - To be Expanded Upon
 
+/turf/floor/carpet/pinkcarpet
+	name = "Pink Carpet"
+	icon_state = "gaycarpet"
+
+/turf/floor/carpet/redcarpet
+	name = "Red Carpet"
+	icon_state = "carpet"
+
+/turf/floor/carpet/orangecarpet
+	name = "Orange Carpet"
+	icon_state = "oracarpet"
+
+/turf/floor/carpet/purplecarpet
+	name = "Purple Carpet"
+	icon_state = "purcarpet"
+
+/turf/floor/carpet/bluecarpet
+	name = "Blue Carpet"
+	icon_state = "blucarpet"
+
+/turf/floor/carpet/tealcarpet
+	name = "Teal Carpet"
+	icon_state = "sblucarpet"
+
+/turf/floor/carpet/greencarpet
+	name = "Green Carpet"
+	icon_state = "turcarpet"
+
+/turf/floor/carpet/blackcarpet
+	name = "Black Carpet"
+	icon_state = "bcarpet"
+
+/turf/floor/carpet/whitecarpet
+	name = "White Carpet"
+	icon_state = "wcarpet"
+//Continue
 
 /turf/floor/plating/ironsand/New()
 	..()
