@@ -4,3 +4,4 @@
 #define GUN_TYPE_MG  3
 #define GUN_TYPE_BOW 4
 #define GUN_TYPE_SHOTGUN 5
+#define GUN_TYPE_MG 6
