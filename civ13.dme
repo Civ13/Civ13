@@ -254,6 +254,7 @@
 #include "code\game\objects\map_metadata\fields.dm"
 #include "code\game\objects\map_metadata\four_colonies.dm"
 #include "code\game\objects\map_metadata\heraclea.dm"
+#include "code\game\objects\map_metadata\hill203.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\island.dm"
 #include "code\game\objects\map_metadata\karak.dm"
