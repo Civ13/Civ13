@@ -41,18 +41,18 @@
 "aO" = (/obj/covers/wood,/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "aP" = (/obj/covers/wood,/obj/structure/filingcabinet,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "aQ" = (/obj/covers/wood,/obj/structure/pot,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"aR" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"aR" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "aS" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "aT" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "aU" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "aV" = (/obj/covers/wood,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "aW" = (/obj/structure/table/wood,/obj/item/ammo_magazine/arisakabox,/obj/item/ammo_magazine/arisakabox,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"aX" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"aX" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "aY" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "aZ" = (/obj/covers/wood,/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/wood,/area/caribbean/russian/land/inside)
 "ba" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bb" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
-"bc" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/small_pot,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bc" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bd" = (/obj/covers/wood,/obj/structure/optable,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "be" = (/obj/covers/wood,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "bf" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -71,7 +71,7 @@
 "bs" = (/obj/covers/wood,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bt" = (/obj/covers/wood,/obj/structure/bedsheetbin,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bu" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/medical,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"bv" = (/obj/covers/wood,/obj/structure/closet/cabinet,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"bv" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka/empty,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bw" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "bx" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "by" = (/obj/covers/wood,/obj/structure/simple_door/key_door/french,/turf/floor/wood,/area/caribbean/russian/land/inside)
@@ -104,18 +104,24 @@
 "bZ" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/key/french{name = "Russian key"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "ca" = (/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall)
 "cb" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cc" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"cd" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ce" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cf" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cg" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"ch" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/small_pot,/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
 
 (1,1,1) = {"
 aaabayababababababayabayabababababababayabaaacacacacacacacadadadadadadadadacacacacacacacaaabayabababayabayababayabayababababaaacacacadadacadacadadacadadadacacadaaabayababababababababababababayabaaadac
-aaayaeahaeaeahaeaeaeaZaebhbibibjbkbjbkaeayaaacacacacacacacacadadadadadadacacacacacacacacaaayahblbmbnboaZbnbmbnboaZaeaebpahabaaacacadacacacacacacacacacacacadacacaaaybqaeaeaebrbnbobsbsbtaebuaebuayaaacac
-aaabaebvaeaebvaeaeaebgaeaeaeaeaeaeaeaeaeabaaacacacacacacacacacacacacacacacacacacacacacacaaabaeaeaeaeaebgaeaeaeaebgaeaeaeaeabaaacacadacacacacacacacacacacacacadacaaabbwaeaeaebraeaeaeaeaeaeaeaeaeabaaacac
+aaayaeahaeaeahaeaeaeaZaebhbibibjbkbjbkaeayaaacacacacacacacacadadadadadadacacacacacacacacaaayahblbmbnboaZbnbmbnboaZaeaebpahabaaacacadacacacacacacacacacacacadacacaaaybqaeaeaebrbnboaRbsbtaebuaebuayaaacac
+aaabaeaXaeaebcaeaeaebgaeaeaeaeaeaeaeaeaeabaaacacacacacacacacacacacacacacacacacacacacacacaaabaeaeaeaeaebgaeaeaeaebgaeaeaeaeabaaacacadacacacacacacacacacacacacadacaaabbwaeaeaebraeaeaeaeaeaeaeaeaeabaaacac
 aaabaebbaeaebbaebbaebxaeaebbaebbaeaeaeaeabaaacacacacacacacacacacacacacacacacacacacacacacaaabaeaeaeaeaebyaeaeaeaebyaeaeaebmabaaacacacacacacacacacacacacacacacacacaaabbzaeaeaebraeaeaeaeaeaebuaebuabaaacac
 aaabaeahaeaeahaeaeaebgaeaeaeaeaeaebAaebBabaaacacacacacacacacacacacacacacacacacacacacacacaaabaeaeaeaeaebgaeaeaeaebgaeaeaebnabaaacacacacacacacacacacacacacacacacacaaabbrbrbrbrbraeaebKaebKaeaeaeaeabaaacac
-aaabaebvaeaebvaeaeaebgaeaebbaebbaebCaebDabaaacacacacacacacacacadadadadadadadadadadadadacaaabaebPaeaebobgaebPaeaebgaeaebPboabaaadacadacacacacacacacacacacacacacacaaabbzaeaeaebraeaeaeaeaeaebuaebuabaaacac
+aaabaebcaeaebvaeaeaebgaeaebbaebbaebCaebDabaaacacacacacacacacacadadadadadadadadadadadadacaaabaebPaeaebobgaebPaeaebgaeaebPboabaaadacadacacacacacacacacacacacacacacaaabbzaeaeaebraeaeaeaeaeaebuaebuabaaacac
 aaabaebbaeaebbaebbbEbgaeaeaeaeaeaebFaeaeabaaadadadadadadadadadadadadadadadadadadadadadadaaabaeaeaeaebnbgaebZbGaebgaeaeaeaeabaaacadacacadadacacacacacacacacacacacaaabbwaeaeaebraeaeaeaeaeaeaeaeaeabaaacac
-aaabaeahaeaeahaeaebsbgaeaebbaebbaebsaeaeabaaadadadadadadadadadadadadadadadadadadadadadadaaabaeaeaeaebmbgaebHbIbsbgaeaeaeaeabaaadadadadadadadacacacacacacacacacacaaaybqaeaeaebraeaeaeaeaeaebuaebuayaaadad
-aaayaebvaeaebvaeaebsaZaeaeaeaeaeaebsbJbJayaaadadadadadadadadadadadadadadadadadadadadadadaaabbZbGaeaeaebgaeaeaeaebgbsbGbZaeabaaadadadadadadadadadadadadadadadadadaaabayabababbQbxbQabafafabafafayabaaadad
-aaabayabababagagabayabayagagababbxababayabaaadadadadadadadadadadadadadadadadadadadadadadaaaybLbIbMbsaeaZaeaeaeaeaZbMbIbsbmabaaadadadadadadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadad
+aaabaeahaeaeahaeaebsbgaeaebbaebbaeccaeaeabaaadadadadadadadadadadadadadadadadadadadadadadaaabaeaeaeaebmbgaebHbIbsbgaeaeaeaeabaaadadadadadadadacacacacacacacacacacaaaybqaeaeaebraeaeaeaeaeaebuaebuayaaadad
+aaayaebvaeaeaXaeaebsaZaeaeaeaeaeaecdbJbJayaaadadadadadadadadadadadadadadadadadadadadadadaaabbZbGaeaeaebgaeaeaeaebgbsbGbZaeabaaadadadadadadadadadadadadadadadadadaaabayabababbQbxbQabafafabafafayabaaadad
+aaabayabababagagabayabayagagababbxababayabaaadadadadadadadadadadadadadadadadadadadadadadaaaybLbIbMaRaeaZaeaeaeaeaZbMbIaRbmabaaadadadadadadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadad
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadadadadadadadadadadadadadadadadaaabayabababayabaybyabayabayababababaaadadadadadadadadadadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadad
 adadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadadadadadadadadadadadadadadadadaiaaaaaaadadadadadadadadadadad
 adadadadadadadadadadadadadadaiaaaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadad
@@ -252,8 +258,8 @@ avbTawaxbUazazbUaxaAbTavatacacacadadacacacacacacacacacacacacacacacatavbTavavavaB
 bTaDaEaEaEaEaEaEaEaEaFbTatacacacadacacacacacacacacacacacacacacacacatbTaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEaEbTatacacacacacacacacacacacacacacacacacacacacacatavavbVavavbVaGbVavavbVavavatacacacacacacacacacacac
 avaHaEaEaEaEaEaEaEaEaIavatacacacacacacacacacacacacacacacacacacacacatavaJaJaJaJaJaJaEaEaEaEaEaEaEaKaEaKavatacacacacacacacacacacacacacacacacacacacacacatavaLaMawaNaOaEaNaPawaMaLavatacacacacacacacacacacac
 avaDaEaEaEaEaEaEaEaEaQavatacacacacacacacacacacacacacacacacacacacacataBaEaEaJaEaEaJaEaEaEaEaEaEaEaEaEaEaBatacacacacacacacacacacacacacacacacacacacacacatavaEaEaGaEaEaEaEaEaGaEaEavatacacacacacacacacacacac
-avaHaEaEbOaEbOaEbOaEaRavatacacacacacacacacacacacadacacacacacacacacataBaSaEaJaSaEaJbWaEbWaEaEaEaEaKaEaKaBatadacacacacacacacacacacacacacacacacacacacacatavaEaEawaEaTaUaVaEawaEaEavatacacacacacacacacacacac
-avaWaEaEaLaEaLaEaLaEaXavatacacacacacacacacacacacadacacacacacacacacatavaYaEaJaYaEaJaEaEaEaEaEaEaEaEaEaEavatadacacacacacacacacacacacacacacacacacacacacatavbXaVawaEbabYaVaEawbXaVavatacacacacacacacacacacac
-avaWaEaEbOaEbOaEbOaEbcavatacacacacacacacadadadadadacacacacacacacacatbTbdaEaJbdaEaJaVaVbeaVaVaEaEaKaEaKbTatacacacacacacacacacacacacacacacacacacacacacatavbfbaawaEaEaEaEaEawbfbaavatacacacacacadadadadadad
+avaHaEaEbOaEbOaEbOaEceavatacacacacacacacacacacacadacacacacacacacacataBaSaEaJaSaEaJbWaEbWaEaEaEaEaKaEaKaBatadacacacacacacacacacacacacacacacacacacacacatavaEaEawaEaTaUcfaEawaEaEavatacacacacacacacacacacac
+avaWaEaEaLaEaLaEaLaEcgavatacacacacacacacacacacacadacacacacacacacacatavaYaEaJaYaEaJaEaEaEaEaEaEaEaEaEaEavatadacacacacacacacacacacacacacacacacacacacacatavbXcfawaEbabYaVaEawbXcfavatacacacacacacacacacacac
+avaWaEaEbOaEbOaEbOaEchavatacacacacacacacadadadadadacacacacacacacacatbTbdaEaJbdaEaJaVcfbeaVaVaEaEaKaEaKbTatacacacacacacacacacacacacacacacacacacacacacatavbfbaawaEaEaEaEaEawbfbaavatacacacacacadadadadadad
 bTaEaEaEaLaEaLaEaLaEaIbTatadadadacadacadadadadadadadadadadacadadadatavbTavavavavavavavavavavavavavavbTavatadacacacacacacacacacacacacacacacacacacacacatavavbTavavavbVavavavbVavavatacacacacadadadadadadad
 "}
