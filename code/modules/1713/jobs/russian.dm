@@ -141,7 +141,7 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Kpt."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRU"
+	spawn_location = "JoinLateRUDoc"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE

@@ -191,7 +191,7 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateJP"
+	spawn_location = "JoinLateJPDoc"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -354,7 +354,7 @@
 
 	return TRUE
 
-/datum/job/japanese/white_sash
+/datum/job/japanese/whitesash_infantry
 	title = "Sash Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
@@ -366,7 +366,7 @@
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/japanese/white_sash/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/whitesash_infantry/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
