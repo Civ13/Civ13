@@ -64,7 +64,7 @@ bullet_act
 				if (GUN_TYPE_BOW)
 					H.adaptStat("bows", 1)
 				if (GUN_TYPE_MG)
-					H.adaptStat("MG", 1)
+					H.adaptStat("mg", 1)
 
 	def_zone = check_zone(def_zone)
 
