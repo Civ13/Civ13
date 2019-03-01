@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/nomads_continental
 	ID = MAP_NOMADS_CONTINENTAL
-	title = "Nomads (Tundra-Ocean-Desert) (300x300x2)"
+	title = "Nomads (Continents) (200x500x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!

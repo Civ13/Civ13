@@ -12,10 +12,10 @@
 ////Stationary Machinegun////
 /////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/stationary
-	name = "mg"
-	desc = "6-barreled highspeed machinegun. How is it you're seeing this? (dumbass if spawned it)"
-	icon_state = null
-	item_state = null
+	name = "machinegun"
+	desc = "a large machinegun."
+	icon_state = ""
+	item_state = ""
 	layer = MOB_LAYER + 1
 	anchored = TRUE
 	density = TRUE
@@ -23,7 +23,7 @@
 	load_method = SINGLE_CASING
 	handle_casings = REMOVE_CASINGS
 	max_shells = 6000
-	caliber = null
+	caliber = "a762x54"
 	slot_flags = FALSE
 	ammo_type = /obj/item/ammo_casing/a762x54
 	stat = "MG"
@@ -43,9 +43,9 @@
 	gun_type = GUN_TYPE_MG
 
 	accuracy_increase_mod = 1.00
-	accuracy_decrease_mod = 1.00
+	accuracy_decrease_mod = 1.1
 	KD_chance = KD_CHANCE_VERY_LOW
-	stat = "MG"
+	stat = "dexterity"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/attack_hand(var/mob/user)
 
@@ -69,31 +69,9 @@
 						if (user.loc != loc)
 							user.use_MG(null)
 			else
-				user.show_message("<span class = 'warning'>You need both hands to use a minigun.</span>")
+				user.show_message("<span class = 'warning'>You need both hands to use a machinegun.</span>")
 		else
 			user.show_message("<span class='warning'>You're too far from the handles.</span>")
-/*
-/obj/item/weapon/gun/projectile/automatic/stationary/proc/try_use_sights(mob/user)
-	if (is_used_by(user))
-		//toggle_scope(2.0)
-	else
-		user.visible_message("<span class='warning'>You aren't using \the [src].</span>")*/
-
-// An ugly hack called a boolean proc, made it like this to allow special
-// behaviour without too many overrides. So special snowflake weapons like the minigun
-// can use zoom without overriding the original zoom proc.
-//	user: user mob
-//	devicename: name of what device you are peering through, set by zoom() in items.dm
-//	silent: boolean controlling whether it should tell the user why they can't zoom in or not
-// I am sorry for creating this abomination -- Irra
-///obj/item/weapon/gun/projectile/automatic/stationary/can_zoom(mob/user, var/devicename, var/silent)
-	//if (user.stat || !ishuman(user))
-		//if (!silent) user.show_message("You are unable to focus through the [devicename]")
-		//return FALSE
-	//else if (!zoomed && global_hud.darkMask[1] in user.client.screen)
-		//if (!silent) user.show_message("Your visor gets in the way of looking through the [devicename]")
-		//return FALSE
-	return TRUE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/try_remove_mag(mob/user)
 	if (!ishuman(user))
@@ -179,59 +157,3 @@
 	if (istype(mover, /obj/item/projectile))
 		return TRUE
 	return FALSE
-
-///////////////////////
-////Stationary maxim////
-///////////////////////
-/obj/item/weapon/gun/projectile/automatic/stationary/maxim
-	name = "KORD"
-	desc = "Heavy machinegun"
-	icon_state = "maxim"
-	load_method = MAGAZINE
-	handle_casings = EJECT_CASINGS
-	caliber = "a762x54"
-	magazine_type = /obj/item/ammo_magazine/maxim
-	max_shells = FALSE
-
-	fire_sound = 'sound/weapons/WW2/kord1.ogg'
-
-	firemodes = list(
-		list(name="default", burst=3, burst_delay=0.5, fire_delay=1.5, dispersion=list(0), accuracy=list(2))
-		)
-
-/obj/item/weapon/gun/projectile/automatic/stationary/maxim/rotate_to(mob/user, atom/A)
-	var/shot_dir = get_carginal_dir(src, A)
-	dir = shot_dir
-
-	//if (zoomed)
-		//zoom(user, FALSE) //Stop Zoom
-
-	user.forceMove(loc)
-	user.dir = dir
-
-// helpers
-
-/mob/var/using_MG = null
-/mob/proc/use_MG(o)
-	if (!o || !istype(o, /obj/item/weapon/gun/projectile/automatic/stationary))
-		using_MG = null
-	else
-		using_MG = o
-
-/mob/proc/handle_MG_operation(var/stop_using = FALSE)
-	if (using_MG && istype(using_MG, /obj/item/weapon/gun/projectile/automatic/stationary))
-		var/obj/item/weapon/gun/projectile/automatic/stationary/mg = using_MG
-		if (!(locate(src) in range(mg.maximum_use_range, mg)) || stop_using)
-			use_MG(null)
-			mg.stopped_using(src)
-	else if (!locate(using_MG) in range(1, src) || stop_using)
-		use_MG(null)
-
-/mob/Move()
-	. = ..()
-	handle_MG_operation()
-
-/mob/update_canmove()
-	. = ..()
-	if (lying || stat)
-		handle_MG_operation(stop_using = TRUE)
