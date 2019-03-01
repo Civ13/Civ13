@@ -42,7 +42,7 @@
 			do_move(m_dir)
 			lastmove = world.time
 
-/obj/structure/vehicle/proc/do_vehicle_check(var/m_dir = null) //check if the vehicle can move.
+/obj/structure/vehicle/proc/do_vehicle_check() //check if the vehicle can move.
 	return TRUE
 
 /obj/structure/vehicle/proc/update_overlay() //for the vehicles that have overlays (i.e. motorcycles)
@@ -224,8 +224,8 @@
 	not_disassemblable = FALSE
 	vehicle_m_delay = 12
 	health = 50
-/obj/structure/vehicle/raft/do_vehicle_check(var/m_dir = null)
-	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
+/obj/structure/vehicle/raft/do_vehicle_check()
+	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water))
 		if (driver in src.loc)
 			return TRUE
 		else
@@ -563,9 +563,9 @@
 				return
 	else
 		..()
-/obj/structure/vehicle/boat/do_vehicle_check(var/m_dir = null)
+/obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
-	if (istype(get_turf(get_step(src,m_dir)), /turf/floor/beach/water))
+	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water))
 		if (driver in src.loc)
 			return TRUE
 		else
@@ -704,7 +704,7 @@
 		overlays -= cover_overlay_c
 		return
 
-/obj/structure/vehicle/motorcycle/do_vehicle_check(var/m_dir = null)
+/obj/structure/vehicle/motorcycle/do_vehicle_check()
 	update_customdesc()
 	if (check_engine())
 		var/turf/T = get_turf(get_step(src,driver.dir))
