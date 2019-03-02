@@ -162,6 +162,12 @@
 	icon_state = "green1"
 	climate = "jungle"
 
+/area/caribbean/nomads/forest/Jungle/river
+	name = "Jungle River"
+	base_turf = /turf/floor/beach/water/jungle
+	icon_state = "green3"
+	climate = "jungle"
+
 /area/caribbean/nomads/snow
 	name = "Snow"
 	base_turf = /turf/floor/winter

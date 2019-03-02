@@ -119,6 +119,15 @@ var/list/flooring_types
 	damage_temperature = T0C+3000
 	flags = TURF_HAS_EDGES
 
+/decl/flooring/water_jungle3
+	name = "deep jungle river water"
+	desc = "Simple water."
+	icon = 'icons/misc/beach.dmi'
+	icon_base = "seashallow_jungle3"
+	has_base_range = 0
+	damage_temperature = T0C+3000
+	flags = TURF_HAS_EDGES
+
 /decl/flooring/sand
 	name = "sand"
 	desc = "Simple sand."
