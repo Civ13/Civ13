@@ -312,12 +312,11 @@
 		for (var/mob/living/simple_animal/mouse/M in range(2,src))
 			//0.1% prob
 			if (!"plague" in disease_immunity)
-				if (prob(1))
-					if (prob(50))
-						disease = TRUE
-						disease_type = "plague"
-						disease_progression = 0
-						disease_treatment = 0
+				if (prob(2))
+					disease = TRUE
+					disease_type = "plague"
+					disease_progression = 0
+					disease_treatment = 0
 
 		for (var/mob/living/carbon/human/H in range(2,src))
 			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
