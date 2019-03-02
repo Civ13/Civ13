@@ -112,6 +112,7 @@
 					M.driver_vehicle = src
 					driver = M
 					buckle_mob(driver)
+					ontop += M
 				else
 					ontop += M
 				update_overlay()
@@ -222,11 +223,12 @@
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	wheeled = FALSE
 	vehicle_m_delay = 12
 	health = 50
 /obj/structure/vehicle/raft/do_vehicle_check()
 	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water))
-		if (driver in get_turf(loc))
+		if (driver in get_turf(src))
 			return TRUE
 		else
 			driver.driver = FALSE

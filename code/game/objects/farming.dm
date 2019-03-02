@@ -382,7 +382,16 @@
 						heating += 1
 				if (heating != 0)
 					stage += 1
-			else if ((season in seasons && get_area(get_turf(src)).climate in biomes) || get_area(get_turf(src)).climate == "jungle" || get_area(get_turf(src)).climate == "desert")
+			var/currcl = get_area(get_turf(src)).climate
+			var/count = 0
+			for (var/i in biomes)
+				if (i == currcl)
+					if (currcl == "jungle" || currcl == "desert")
+						count++
+					for (var/k in seasons)
+						if (season == k)
+							count++
+			if (count > 0)
 				stage += 1
 			growth()
 
