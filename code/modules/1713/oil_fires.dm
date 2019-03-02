@@ -157,7 +157,7 @@
 	if (A.weather == WEATHER_RAIN || A.weather == WEATHER_SNOW)
 		if (prob(30))
 			qdel(src)
-	if (A.weather == WEATHER_STORM || A.WEATHER_BLIZZARD)
+	if (A.weather == WEATHER_STORM || A.weather == WEATHER_BLIZZARD)
 		qdel(src)
 
 	for (var/mob/living/L in src.loc)
