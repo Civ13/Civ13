@@ -99,6 +99,9 @@
 		for (var/turf/floor/grass/GTT in get_area_turfs(/area/caribbean/nomads/snow))
 			GTT.ChangeTurf(/turf/floor/winter/grass)
 		real_season = "wet"
+		spawn(12000)
+			world << "<big>The sky starts to clear... The <b>Dry Season</b> is coming in 10 minutes.</big>"
+
 	else
 		season = "Dry Season"
 		world << "<big>The <b>Dry Season/Summer</b> has started.</big>"
@@ -108,13 +111,13 @@
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = TRUE
 				S.update_icon()
-		for (var/turf/floor/beach/water/swamp/D)
+		for (var/turf/floor/beach/water/swamp/D in get_area_turfs(/area/caribbean/nomads/desert))
 			if (D.z > 1)
 				D.ChangeTurf(/turf/floor/beach/drywater)
-		for (var/turf/floor/beach/water/deep/swamp/DS)
+		for (var/turf/floor/beach/water/deep/swamp/DS in get_area_turfs(/area/caribbean/nomads/desert))
 			if (DS.z > 1)
 				DS.ChangeTurf(/turf/floor/beach/drywater2)
-		for (var/turf/floor/beach/water/flooded/DF)
+		for (var/turf/floor/beach/water/flooded/DF in get_area_turfs(/area/caribbean/nomads/forest/Jungle))
 			if (DF.z > 1)
 				DF.ChangeTurf(/turf/floor/dirt/flooded)
 		for (var/turf/floor/dirt/winter/DT in get_area_turfs(/area/caribbean/nomads/forest))
