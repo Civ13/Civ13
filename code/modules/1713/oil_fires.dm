@@ -154,6 +154,8 @@
 	if (prob(3))
 		new/obj/effect/effect/smoke(loc)
 	var/area/A = get_area(get_turf(src))
+	if (!A)
+		return
 	if (A.weather == WEATHER_RAIN || A.weather == WEATHER_SNOW)
 		if (prob(30))
 			qdel(src)
