@@ -30,7 +30,6 @@
 	gamemode = "Classic (Stone Age Start)"
 	var/list/arealist_r = list()
 	var/list/arealist_g = list()
-	var/real_season = "wet"
 /obj/map_metadata/nomads_continental/New()
 	..()
 	spawn(2500)
@@ -41,10 +40,7 @@
 		for (var/i = 1, i <= 30, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
 			new/obj/structure/piranha(areaspawn)
-	spawn(1200)
-		if (season == "SPRING") //fixes game setting the season as spring
-			season = "Wet Season"
-	spawn(18000)
+	spawn(9000)
 		seasons()
 
 /obj/map_metadata/nomads_continental/faction2_can_cross_blocks()
@@ -57,9 +53,9 @@
 	return ""
 
 /obj/map_metadata/nomads_continental/proc/seasons()
-	if (real_season == "dry")
-		season = "Wet Season"
-		world << "<big>The <b>Wet Season/Winter</b> has started.</big>"
+	if (season == "FALL")
+		season = "WINTER"
+		world << "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>"
 			change_weather_somehow()
 		for (var/turf/floor/dirt/flooded/D)
 			D.ChangeTurf(/turf/floor/beach/water/flooded)
@@ -101,15 +97,11 @@
 			DTT.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/GTT in get_area_turfs(/area/caribbean/nomads/snow))
 			GTT.ChangeTurf(/turf/floor/winter/grass)
-		real_season = "wet"
-		spawn(12000)
-			world << "<big>The sky starts to clear... The <b>Dry Season</b> is coming in 10 minutes.</big>"
 
-	else
-		season = "Dry Season"
-		world << "<big>The <b>Dry Season/Summer</b> has started.</big>"
+	else if (season == "SPRING")
+		season = "SUMMER"
+		world << "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>"
 			change_weather_somehow()
-		real_season = "dry"
 		for(var/obj/structure/sink/S in get_area_turfs(/area/caribbean/nomads/desert))
 			if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
 				S.dry = TRUE
@@ -129,10 +121,79 @@
 		for (var/turf/floor/winter/grass/GT in get_area_turfs(/area/caribbean/nomads/forest))
 			if (get_area(GT).climate == "temperate")
 				GT.ChangeTurf(/turf/floor/grass)
-		spawn(12000)
-			world << "<big>The sky starts to get cloudy... The <b>Wet Season</b> is coming in 10 minutes.</big>"
-
-	spawn(20000)
+	else if (season == "WINTER")
+		season = "SPRING"
+		world << "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>"
+		for (var/obj/structure/wild/tree/live_tree/TREES)
+			TREES.update_icon()
+		for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest))
+			if (get_area(D).climate == "temperate")
+				if (prob(60))
+					D.ChangeTurf(/turf/floor/dirt)
+		for (var/turf/floor/winter/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
+			if (get_area(G).climate == "temperate")
+				if (prob(60))
+					G.ChangeTurf(/turf/floor/grass)
+		spawn(150)
+			change_weather(WEATHER_NONE)
+			for (var/obj/structure/window/snowwall/SW1 in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(get_turf(SW1)).climate == "temperate")
+					if (prob(60))
+						qdel(SW1)
+			for (var/obj/covers/snow_wall/SW2 in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(get_turf(SW2)).climate == "temperate")
+					if (prob(60))
+						qdel(SW2)
+			for (var/obj/item/weapon/snowwall/SW3 in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(get_turf(SW3)).climate == "temperate")
+					if (prob(60))
+						qdel(SW3)
+		spawn(3000)
+			for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(D).climate == "temperate")
+					D.ChangeTurf(/turf/floor/dirt)
+			for (var/turf/floor/winter/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(G).climate == "temperate")
+					G.ChangeTurf(/turf/floor/grass)
+			for (var/obj/structure/window/snowwall/SW1 in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(get_turf(SW1)).climate == "temperate")
+					qdel(SW1)
+			for (var/obj/covers/snow_wall/SW2 in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(get_turf(SW2)).climate == "temperate")
+					qdel(SW2)
+			for (var/obj/item/weapon/snowwall/SW3 in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(get_turf(SW3)).climate == "temperate")
+					qdel(SW3)
+	else if (season == "SUMMER")
+		season = "FALL"
+		world << "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>"
+		for (var/obj/structure/wild/tree/live_tree/TREES)
+			TREES.update_icon()
+		for (var/turf/floor/dirt/burned/BD)
+			BD.ChangeTurf(/turf/floor/dirt)
+		for (var/turf/floor/grass/G)
+			G.update_icon()
+		spawn(100)
+			change_weather(WEATHER_RAIN)
+		spawn(15000)
+			change_weather(WEATHER_SNOW)
+			for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
+				if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
+					D.ChangeTurf(/turf/floor/dirt/winter)
+			for (var/turf/floor/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
+				if (get_area(G).climate == "temperate")
+					if (prob(40))
+						G.ChangeTurf(/turf/floor/winter/grass)
+			spawn(1200)
+				for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
+					if (!istype(D,/turf/floor/dirt/winter) && (get_area(D).climate == "temperate"))
+						if (D.z == world.maxz && prob(50))
+							D.ChangeTurf(/turf/floor/dirt/winter)
+				for (var/turf/floor/grass/G in get_area_turfs(/area/caribbean/nomads/forest))
+					if (get_area(G).climate == "temperate")
+						if (prob(50))
+							G.ChangeTurf(/turf/floor/winter/grass)
+	spawn(9000)
 		seasons()
 
 
