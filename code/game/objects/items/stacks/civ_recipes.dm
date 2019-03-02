@@ -227,6 +227,8 @@
 		recipes += new/datum/stack_recipe("boat frame", /obj/item/vehicleparts/frame/boat, 22, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.resourceresearch == TRUE)
 		recipes += new/datum/stack_recipe("research desk",/obj/structure/researchdesk, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 96)
+		recipes += new/datum/stack_recipe("global exchange",/obj/structure/marketplace, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 105 || map.gamemode == "Oil Rush")
 		recipes += new/datum/stack_recipe("oil well",/obj/structure/oilwell, 40, _time = 270, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.gamemode == "Oil Rush")
@@ -267,7 +269,15 @@
 		new/datum/stack_recipe("wood fence", 	/obj/structure/grille/fence, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("wood structure", /obj/structure/barricade, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE,),))
 
-	if (current_res[2] >= 21)
+	if (current_res[2] >= 95)
+		recipes += new/datum/stack_recipe_list("weapons", list(
+			new/datum/stack_recipe("arrow", /obj/item/ammo_casing/arrow, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bow", /obj/item/weapon/gun/projectile/bow, 8, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("quarterstaff", /obj/item/weapon/material/quarterstaff, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
+			new/datum/stack_recipe("punji sticks trap", /obj/item/weapon/punji_sticks, 4, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("wood spear", /obj/item/weapon/material/spear, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
+			new/datum/stack_recipe("police baton", /obj/item/weapon/melee/classic_baton, 4, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[2] >= 21 && current_res[2] < 95)
 		recipes += new/datum/stack_recipe_list("weapons", list(
 			new/datum/stack_recipe("arrow", /obj/item/ammo_casing/arrow, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bow", /obj/item/weapon/gun/projectile/bow, 8, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -722,6 +732,18 @@
 	if (current_res[1] >= 18 && current_res[3]>= 26) // Same level that bronze surgical tools can be made.
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 
+	//Carpets - To be expanded upon with borders and such later.
+	if (map.ordinal_age >= 2)
+		recipes += new/datum/stack_recipe_list("carpeting", list(
+			new/datum/stack_recipe("pink carpet", /obj/covers/carpet/pinkcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("red carpet", /obj/covers/carpet/redcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("orange carpet", /obj/covers/carpet/orangecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("purple carpet", /obj/covers/carpet/purplecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue carpet", /obj/covers/carpet/bluecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("teal carpet", /obj/covers/carpet/tealcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("green carpet", /obj/covers/carpet/greencarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("black carpet", /obj/covers/carpet/blackcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("white carpet", /obj/covers/carpet/whitecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 /material/gold/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -764,7 +786,7 @@
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("artillery casing", /obj/item/stack/ammopart/casing/artillery, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.ordinal_age >= 5)
+	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe_list("cables", list(
 			new/datum/stack_recipe("cable connector", /obj/item/connector, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("white cable coil (10m)", /obj/item/stack/cable_coil/white, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -809,7 +831,7 @@
 	if (current_res[1] >= 71 && current_res[2] >= 79)
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 81 && current_res[2] >= 95)
-		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon/modern, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("artillery cannon", /obj/structure/cannon/modern, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 5)
@@ -882,23 +904,3 @@
 	recipes += new/datum/stack_recipe("skin coat", /obj/item/clothing/suit/storage/coat/fur/pink, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("skin boots", /obj/item/clothing/shoes/fur/pink, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("skin gloves", /obj/item/clothing/gloves/thick/leather/pink, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-
-////I don't know where else to put this...
-
-/obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/diamond))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
-		qdel(src)
-		qdel(W)
-
-/obj/item/clothing/head/helmet/gold_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/stack/material/diamond))
-		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
-		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
-		qdel(src)
-		qdel(W)

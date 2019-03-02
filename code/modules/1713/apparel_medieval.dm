@@ -306,6 +306,23 @@
 	worn_state = "gold_crown_diamond"
 	armor = list(melee = 25, bullet = 20, laser = 30,energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
+/obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/diamond))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the diamond in the crown.</span>"
+		new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
+		qdel(src)
+		qdel(W)
+
+/obj/item/clothing/head/helmet/gold_crown/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return//I really don't understand why this check is needed
+	if (istype(W, /obj/item/stack/material/diamond))
+		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+		user << "<span class='notice'>You place the diamond in the crown.</span>"
+		new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
+		qdel(src)
+		qdel(W)
 //continue
 
 /obj/item/clothing/head/helmet/medieval
