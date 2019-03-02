@@ -119,7 +119,7 @@
 				return
 	else if (istype(A, /obj))
 		var/obj/structure/O = A
-		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
+		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity && O != src)
 			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
 				visible_message("<div class='notice'>[user] sucessfully puts \the [O] on \the [src].</div>","<div class='notice'>You sucessfully put \the [O] on \the [src].</div>")
