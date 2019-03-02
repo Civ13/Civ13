@@ -363,6 +363,11 @@
 	name = "the caves"
 	location = AREA_INSIDE
 
+/area/caribbean/void/caves/special
+	icon_state = "blue2"
+	name = "the caves"
+	location = AREA_INSIDE
+
 /area/caribbean/void/caves/level1
 	icon_state = "blue1"
 	name = "the caves"
