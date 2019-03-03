@@ -21,6 +21,10 @@
 			weather = WEATHER_BLIZZARD
 		else if (_weather == WEATHER_SNOW)
 			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_RAIN)
+			weather = WEATHER_RAIN
+		else if (_weather == WEATHER_STORM)
+			weather = WEATHER_STORM
 		else if (_weather == WEATHER_SMOG)
 			weather = WEATHER_SMOG
 		else
@@ -29,11 +33,16 @@
 	else if (season == "SPRING")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
-		else if (_weather == WEATHER_SMOG)
-			weather = WEATHER_SMOG
 		else if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
-
+		else if (_weather == WEATHER_SNOW)
+			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_STORM)
+			weather = WEATHER_STORM
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
+		else
+			weather = WEATHER_NONE
 	else if (season == "FALL")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
@@ -43,12 +52,20 @@
 			weather = WEATHER_RAIN
 		else if (_weather == WEATHER_SMOG)
 			weather = WEATHER_SMOG
+		else if (_weather == WEATHER_SANDSTORM)
+			weather = WEATHER_SANDSTORM
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SUMMER")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
+		else if (_weather == WEATHER_SNOW)
+			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_RAIN)
+			weather = WEATHER_RAIN
+		else if (_weather == WEATHER_SANDSTORM)
+			weather = WEATHER_SANDSTORM
 		else if (_weather == WEATHER_SMOG)
 			weather = WEATHER_SMOG
 		else

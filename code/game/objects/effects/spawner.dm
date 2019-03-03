@@ -309,6 +309,11 @@
 	var/timer = 6000
 	var/spawning = FALSE
 	invisibility = 101
+/obj/effect/spawner/objspawner/New()
+	..()
+	invisibility = 101
+	icon_state = "invisible"
+	spawnerproc()
 
 /obj/effect/spawner/objspawner/proc/getEmptyTurf()
 	var/nearbyObjects = range(max_range,src)
