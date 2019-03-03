@@ -95,7 +95,7 @@
 			else if (get_area(GT).climate == "tundra")
 				GT.ChangeTurf(/turf/floor/winter/grass)
 		for (var/turf/floor/dirt/DTT in get_area_turfs(/area/caribbean/nomads/snow))
-			if (!istype(DTT, turf/floor/dirt/underground))
+			if (!istype(DTT, /turf/floor/dirt/underground))
 				DTT.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/GTT in get_area_turfs(/area/caribbean/nomads/snow))
 			GTT.ChangeTurf(/turf/floor/winter/grass)
