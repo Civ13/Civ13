@@ -746,12 +746,71 @@
 	item_state = "jedi_knight"
 	worn_state = "jedi_knight"
 
+/obj/item/clothing/under/sith
+	name = "Sith outfit"
+	desc = "A loose outfit worn by the Siths."
+	icon_state = "sith_knight"
+	item_state = "sith_knight"
+	worn_state = "sith_knight"
+
 /obj/item/clothing/suit/storage/jacket/jedi
 	name = "Jedi robe"
 	desc = "A brown Jedi robe."
 	icon_state = "jedi_robe"
 	item_state = "jedi_robe"
 	worn_state = "jedi_robe"
+	var/toggled = FALSE
+
+/obj/item/clothing/suit/storage/jacket/jedi/verb/toggle_hood()
+	set category = null
+	set src in usr
+	if (type !=/obj/item/clothing/suit/storage/jacket/jedi)
+		return
+	else
+		if (toggled)
+			item_state = "jedi_robe"
+			icon_state = "jedi_robe"
+			worn_state = "jedi_robe"
+			item_state_slots["slot_w_uniform"] = "jedi_robe"
+			usr << "<span class = 'danger'>You take down your robe's hood.</span>"
+			toggled = FALSE
+		else if (!toggled)
+			item_state = "jedi_robe_hooded"
+			icon_state = "jedi_robe_hooded"
+			worn_state = "jedi_robe_hooded"
+			item_state_slots["slot_w_uniform"] = "jedi_robe_hooded"
+			usr << "<span class = 'danger'>You put up your robe's hood.</span>"
+			toggled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/suit/storage/jacket/sith
+	name = "Sith robe"
+	desc = "A black Sith robe."
+	icon_state = "sith_robe"
+	item_state = "sith_robe"
+	worn_state = "sith_robe"
+	var/toggled = FALSE
+/obj/item/clothing/suit/storage/jacket/sith/verb/toggle_hood()
+	set category = null
+	set src in usr
+	if (type !=/obj/item/clothing/suit/storage/jacket/sith)
+		return
+	else
+		if (toggled)
+			item_state = "sith_robe"
+			icon_state = "sith_robe"
+			worn_state = "sith_robe"
+			item_state_slots["slot_w_uniform"] = "sith_robe"
+			usr << "<span class = 'danger'>You take down your robe's hood.</span>"
+			toggled = FALSE
+		else if (!toggled)
+			item_state = "sith_robe_hooded"
+			icon_state = "sith_robe_hooded"
+			worn_state = "sith_robe_hooded"
+			item_state_slots["slot_w_uniform"] = "sith_robe_hooded"
+			usr << "<span class = 'danger'>You put up your robe's hood.</span>"
+			toggled = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/under/flamengo
 	name = "Flamengo shirt with yellow shorts"
