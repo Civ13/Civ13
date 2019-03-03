@@ -42,12 +42,14 @@
 		for (var/i = 1, i <= map.globalmarketplacecount, i++)
 			if (map.globalmarketplace[i][6] == 0)
 				currlist += list(list(i,"[map.globalmarketplace[i][3]] [map.globalmarketplace[i][2]], for [(map.globalmarketplace[i][4]*10)*1.1] silver."))
+				world.log << "clist: [i] [map.globalmarketplace[i][3]] [map.globalmarketplace[i][2]], for [(map.globalmarketplace[i][4]*10)*1.1] silver."
 		if (isemptylist(currlist))
 			user << "There are no orders on the market!"
 			return
 		var/list/choicelist = list()
 		for (var/k = 1, k <= currlist.len, k++)
 			choicelist += "[currlist[k][2]]"
+			world.log << "curr: [currlist[k][1]] [currlist[k][2]]"
 		choicelist += "Cancel"
 		var/choice2 =  WWinput(user, "Choose a order:", "Global Exchange", "Cancel", choicelist)
 		if (choice2 == "Cancel")
@@ -55,7 +57,8 @@
 		else
 			for (var/k = 1, k <= currlist.len, k++)
 				if (choice2 == "[currlist[k][2]]")
-					var/cost = (map.globalmarketplace[k][4]*1.1)
+					world.log << "[choice2] == [currlist[k][2]]"
+					var/cost = (map.globalmarketplace[currlist[k][1]][4]*1.1)
 					if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
 						user << "You need to have money in one of your hands!"
 						return
@@ -69,11 +72,11 @@
 							mstack.amount -= (cost/mstack.value)
 							if (mstack.amount<= 0)
 								qdel(mstack)
-							var/obj/BO = map.globalmarketplace[k][2]
+							var/obj/BO = map.globalmarketplace[currlist[k][1]][2]
 							BO.forceMove(get_turf(src))
-							map.globalmarketplace[k][6] = 1
+							map.globalmarketplace[currlist[k][1]][6] = 1
 							user << "You fulfill the order."
-							var/mob/living/carbon/human/seller = map.globalmarketplace[k][1]
+							var/mob/living/carbon/human/seller = map.globalmarketplace[currlist[k][1]][1]
 							map.marketplaceaccounts[seller] += (cost/1.1)
 							return
 						else
