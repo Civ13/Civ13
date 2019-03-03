@@ -296,3 +296,83 @@
 	create_path = /mob/living/simple_animal/hostile/dinosaur/velociraptor
 	timer = 3000
 	activated = 0
+
+////////////////////OBJ SPAWNER///////////
+/obj/effect/spawner/objspawner
+	name = "obj spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	var/activated = 1
+	var/max_number = 35
+	var/max_range = 13
+	var/create_path = /obj/structure/wild/tree/live_tree
+	var/timer = 6000
+	var/spawning = FALSE
+	invisibility = 101
+
+/obj/effect/spawner/objspawner/proc/getEmptyTurf()
+	var/nearbyObjects = range(max_range,src)
+	var/list/turf/emptyTurfs = new
+	for(var/turf/T in nearbyObjects)
+		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
+			continue //bad turf
+		for(var/obj/OB in T)
+			continue //bad location
+
+		emptyTurfs += T
+	if (emptyTurfs.len)
+		return pick(emptyTurfs)
+
+/obj/effect/spawner/objspawner/proc/getCurrent()
+	var/count = 0
+	for (var/obj/O in range(max_range,src))
+		if (istype(O, create_path))
+			count++
+	if (count < max_number)
+		return TRUE
+	else
+		return FALSE
+/obj/effect/spawner/objspawner/proc/spawnTarget()
+	var/turf/emptyTurf = getEmptyTurf()
+	if (emptyTurf)
+		new create_path(emptyTurf)
+
+/obj/effect/spawner/objspawner/proc/spawnerproc()
+
+	if (getCurrent() == TRUE)
+		spawning = TRUE
+	if (activated)
+		if (spawning == TRUE)
+			spawning = FALSE
+			spawnTarget()
+
+	spawn(rand(timer,timer*1.5))
+		spawnerproc()
+
+
+/obj/effect/spawner/objspawner/tree
+	name = "tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 35
+	max_range = 13
+	create_path = /obj/structure/wild/tree/live_tree
+	timer = 6000
+
+/obj/effect/spawner/objspawner/palm
+	name = "palm spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 13
+	max_range = 13
+	create_path = /obj/structure/wild/palm
+	timer = 6000
+
+/obj/effect/spawner/objspawner/jungle
+	name = "jungle tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 26
+	max_range = 13
+	create_path = /obj/structure/wild/jungle
+	timer = 6000

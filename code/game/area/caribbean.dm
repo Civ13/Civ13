@@ -162,6 +162,12 @@
 	icon_state = "green1"
 	climate = "jungle"
 
+/area/caribbean/nomads/forest/Jungle/river
+	name = "Jungle River"
+	base_turf = /turf/floor/beach/water/jungle
+	icon_state = "green3"
+	climate = "jungle"
+
 /area/caribbean/nomads/snow
 	name = "Snow"
 	base_turf = /turf/floor/winter
@@ -354,6 +360,11 @@
 
 /area/caribbean/void/caves
 	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/special
+	icon_state = "blue2"
 	name = "the caves"
 	location = AREA_INSIDE
 

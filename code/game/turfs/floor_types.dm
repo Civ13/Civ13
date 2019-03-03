@@ -194,7 +194,7 @@
 //water level is measured in centimeters. the maximum is 200 (2 meters). up to 1.5 will make movement progressively slower, up from that you will drown if you stay for too long.
 
 /turf/floor/beach/water
-	name = "water"
+	name = "shallow water"
 	desc = "Water. Seems to be shallow."
 	icon_state = "seashallow"
 	move_delay = 3
@@ -217,16 +217,16 @@
 	initial_flooring = /decl/flooring/water_deep
 
 /turf/floor/beach/water/deep/jungle
-	name = "deep jungle water"
-	icon_state = "seashallow_jungle1"
+	name = "deep jungle river"
+	icon_state = "seashallow_jungle3"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
 	density = FALSE
 	iscovered = FALSE
-	initial_flooring = /decl/flooring/water_jungle1
+	initial_flooring = /decl/flooring/water_jungle3
 
 /turf/floor/beach/water/deep/swamp
-	name = "deep swamp water"
+	name = "deep swamp"
 	icon_state = "seashallow_swamp"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
@@ -247,13 +247,13 @@
 	else
 		return ..()
 /turf/floor/beach/water/swamp
-	name = "swamp water"
+	name = "swamp"
 	move_delay = 3
 	icon_state = "seashallow_swamp"
 	sickness = 3
 	initial_flooring = /decl/flooring/water_swamp
 /turf/floor/beach/water/jungle
-	name = "river water"
+	name = "jungle river"
 	move_delay = 5
 	icon_state = "seashallow_jungle1"
 	sickness = 2

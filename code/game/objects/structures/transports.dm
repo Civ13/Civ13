@@ -112,6 +112,7 @@
 					M.driver_vehicle = src
 					driver = M
 					buckle_mob(driver)
+					ontop += M
 				else
 					ontop += M
 				update_overlay()
@@ -119,7 +120,7 @@
 				return
 	else if (istype(A, /obj))
 		var/obj/structure/O = A
-		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
+		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity && O != src)
 			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
 				visible_message("<div class='notice'>[user] sucessfully puts \the [O] on \the [src].</div>","<div class='notice'>You sucessfully put \the [O] on \the [src].</div>")
@@ -222,11 +223,12 @@
 	flammable = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
+	wheeled = FALSE
 	vehicle_m_delay = 12
 	health = 50
 /obj/structure/vehicle/raft/do_vehicle_check()
 	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water))
-		if (driver in src.loc)
+		if (driver in get_turf(src))
 			return TRUE
 		else
 			driver.driver = FALSE
@@ -369,6 +371,23 @@
 			if (WEST)
 				driver.pixel_x += 31
 				driver.pixel_y += 10
+		if (!(driver in range(1,src)))
+			ontop -= driver
+			driver.anchored = FALSE
+			driver.driver = FALSE
+			unbuckle_mob()
+			driver.driver_vehicle = null
+			if (wheeled)
+				if (driver.l_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.l_hand = null
+				else if (driver.r_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.r_hand = null
+				driver.update_icons()
+				driver = null
 	if (currentcap)
 		currentcap.pixel_x = pixel_x
 		currentcap.pixel_y = pixel_y
@@ -385,6 +404,10 @@
 			if (WEST)
 				currentcap.pixel_x += 31
 				currentcap.pixel_y += 19
+		if (!(currentcap in range(1,src)))
+			ontop -= currentcap
+			currentcap.anchored = FALSE
+			currentcap = null
 	if (ontop_o.len > 0)
 		for(var/obj/structure/OB in ontop_o)
 			switch (dir)
@@ -503,7 +526,7 @@
 						dwheel.forceMove(src)
 						user.r_hand = null
 					user.update_icons()
-			else if (!currentcap)
+			else if (currentcap)
 				currentcap = null
 				ontop -= user
 				user.anchored = FALSE
@@ -566,7 +589,7 @@
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
 	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water))
-		if (driver in src.loc)
+		if (driver in get_turf(loc))
 			return TRUE
 		else
 			driver.driver = FALSE

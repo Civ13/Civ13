@@ -562,6 +562,8 @@
 	if (totalcount <= 0)
 		return
 	if (herbivore)
+		for(var/turf/floor/grass/GT in range(1,src))
+			return
 		if (!istype(get_turf(src),/turf/floor/grass))
 			if (prob(100/totalcount))
 				for(var/turf/floor/grass/GT in range(6,src))
@@ -609,7 +611,7 @@
 		return
 
 	if (herbivore)
-		for(var/turf/floor/grass/GT in range(1,src))
+		for(var/turf/floor/grass/GT in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] eats some grass.")
 				simplehunger += 550
@@ -627,6 +629,10 @@
 		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
 			if (prob(20))
 				visible_message("\The [src] eats some of the wheat.")
+				simplehunger += 550
+				adjustBruteLoss(-4)
+				qdel(WT)
+				return
 
 
 	if (granivore)

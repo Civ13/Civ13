@@ -200,7 +200,15 @@
 
 	else
 		return
-
+/obj/item/stack/ammopart/casing/artillery/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		for(var/i=1;i<=amount;i++)
+			new/obj/item/cannon_ball/shell(user.loc)
+		qdel(src)
+		return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
+		return
 /obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")

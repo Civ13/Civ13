@@ -86,9 +86,15 @@
 				return
 		if (C.reagents.total_volume)
 			visible_message("<span class='notice'>\The [user] tips the contents of \the [C] on \the [src].</span>")
-			if (C.reagents.has_reagent("petroleum", 5))
+			if (reagents.has_reagent("petroleum", 5))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			else if (C.reagents.has_reagent("olive_oil", 10))
+			if (reagents.has_reagent("gasoline", 5))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			if (reagents.has_reagent("diesel", 10))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			if (reagents.has_reagent("biodiesel", 10))
+				new/obj/effect/decal/cleanable/blood/oil(user.loc)
+			else if (reagents.has_reagent("olive_oil", 15))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			C.reagents.clear_reagents()
 			C.update_icon()
@@ -167,6 +173,8 @@
 						if (prob(90))
 							var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 							mineral.amount = rand(1,3)
+							if (istype(get_area(src), /area/caribbean/void/caves/special))
+								mineral.amount *= 2
 							H << "<span class='danger'>You found some copper ore!</span>"
 							if(map.ID == MAP_NOMADS_DESERT)
 								T.ChangeTurf(/turf/floor/dirt/dust)
@@ -178,6 +186,8 @@
 						else
 							var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
 							mineral.amount = rand(1,3)
+							if (istype(get_area(src), /area/caribbean/void/caves/special))
+								mineral.amount *= 2
 							H << "<span class='danger'>You found some tin ore!</span>"
 							if(map.ID == MAP_NOMADS_DESERT)
 								T.ChangeTurf(/turf/floor/dirt/dust)
@@ -189,6 +199,8 @@
 					if (prob(40) && map.age != "5000 B.C.")
 						var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
 						mineral.amount = rand(1,4)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
 						H << "<span class='danger'>You found some iron ore!</span>"
 						if(map.ID == MAP_NOMADS_DESERT)
 							T.ChangeTurf(/turf/floor/dirt/dust)
@@ -199,7 +211,9 @@
 						return
 					if (prob(25))
 						if (map.ordinal_age <= 1)
-							new/obj/item/stack/ore/coal(src)
+							var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+							if (istype(get_area(src), /area/caribbean/void/caves/special))
+								mineral.amount *= 2
 							H << "<span class='danger'>You found some coal!</span>"
 							if(map.ID == MAP_NOMADS_DESERT)
 								T.ChangeTurf(/turf/floor/dirt/dust)
@@ -211,7 +225,9 @@
 						else
 							var/pickperc = pick(1,2,3)
 							if (pickperc == 1)
-								new/obj/item/stack/ore/coal(src)
+								var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+								if (istype(get_area(src), /area/caribbean/void/caves/special))
+									mineral.amount *= 2
 								H << "<span class='danger'>You found some coal!</span>"
 								if(map.ID == MAP_NOMADS_DESERT)
 									T.ChangeTurf(/turf/floor/dirt/dust)
@@ -221,7 +237,9 @@
 								H.adaptStat("strength", 1)
 								return
 							else if (pickperc == 2)
-								new/obj/item/stack/ore/saltpeter(src)
+								var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
+								if (istype(get_area(src), /area/caribbean/void/caves/special))
+									mineral.amount *= 2
 								H << "<span class='danger'>You found some saltpeter!</span>"
 								if(map.ID == MAP_NOMADS_DESERT)
 									T.ChangeTurf(/turf/floor/dirt/dust)
@@ -231,7 +249,9 @@
 								H.adaptStat("strength", 1)
 								return
 							else if (pickperc == 3)
-								new/obj/item/stack/ore/sulphur(src)
+								var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
+								if (istype(get_area(src), /area/caribbean/void/caves/special))
+									mineral.amount *= 2
 								H << "<span class='danger'>You found some sulphur!</span>"
 								if(map.ID == MAP_NOMADS_DESERT)
 									T.ChangeTurf(/turf/floor/dirt/dust)
@@ -241,7 +261,9 @@
 								H.adaptStat("strength", 1)
 								return
 					if (prob(5))
-						new/obj/item/stack/ore/silver(src)
+						var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
 						H << "<span class='danger'>You found some silver ore!</span>"
 						if(map.ID == MAP_NOMADS_DESERT)
 							T.ChangeTurf(/turf/floor/dirt/dust)
@@ -251,7 +273,9 @@
 						H.adaptStat("strength", 1)
 						return
 					if (prob(2))
-						new/obj/item/stack/ore/gold(src)
+						var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
 						H << "<span class='danger'>You found some gold ore!</span>"
 						if(map.ID == MAP_NOMADS_DESERT)
 							T.ChangeTurf(/turf/floor/dirt/dust)
@@ -261,7 +285,9 @@
 						H.adaptStat("strength", 1)
 						return
 					if (prob(1))
-						new/obj/item/stack/ore/diamond(src)
+						var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
 						H << "<span class='danger'>You found some raw diamonds!</span>"
 						if(map.ID == MAP_NOMADS_DESERT)
 							T.ChangeTurf(/turf/floor/dirt/dust)
@@ -272,6 +298,8 @@
 						return
 					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 					mineral.amount = rand(2,4)
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
 					H << "<span class='danger'>You found some usable stone blocks!</span>"
 					if(map.ID == MAP_NOMADS_DESERT)
 						T.ChangeTurf(/turf/floor/dirt/dust)
