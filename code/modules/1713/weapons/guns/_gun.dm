@@ -113,9 +113,15 @@
 	if (ismob(loc))
 		firer = loc
 	else if (isturf(loc))
-		for (var/mob/living/L in loc)
-			firer = L
-			break
+		if (istype(src, /obj/item/weapon/gun/projectile/automatic/stationary))
+			for (var/mob/living/L in loc)
+				if (L.using_MG == src)
+					firer = L
+					break
+		else
+			for (var/mob/living/L in loc)
+				firer = L
+				break
 
 	if (!firer || !target || !istype(target))
 		return prob(50)
@@ -164,10 +170,10 @@
 			. = ceil(100 - hitchance)
 
 		// gas masks make you less accurate now
-//		if (firer.wear_mask)
-//			var/hitchance = 100 - .
-//			hitchance /= 1.10
-//			. = ceil(100 - hitchance)
+		if (firer.wear_mask)
+			var/hitchance = 100 - .
+			hitchance /= 1.10
+			. = ceil(100 - hitchance)
 
 	. = min(CLAMP0100(.), 99) // minimum hit chance is 2% no matter what
 //	log_debug(.)

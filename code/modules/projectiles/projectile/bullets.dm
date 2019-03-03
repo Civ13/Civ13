@@ -38,6 +38,7 @@
 	return ..()
 
 /obj/item/projectile/bullet/check_penetrate(var/atom/A)
+/obj/item/projectile/bullet/check_penetrate(var/atom/A)
 	if (!A || !A.density) return TRUE //if whatever it was got destroyed when we hit it, then I guess we can just keep going
 
 	else if (ismob(A))
