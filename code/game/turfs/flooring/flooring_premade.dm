@@ -155,3 +155,15 @@
 	may_become_muddy = TRUE
 	is_diggable = TRUE
 	initial_flooring = /decl/flooring/dirt
+
+
+/turf/floor/mining
+	name = "minerals"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "minerals"
+	interior = FALSE
+	stepsound = "dirt"
+	available_dirt = 2
+	may_become_muddy = TRUE
+	is_diggable = FALSE
+	initial_flooring = null

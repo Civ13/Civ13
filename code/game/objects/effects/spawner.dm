@@ -381,3 +381,30 @@
 	max_range = 13
 	create_path = /obj/structure/wild/jungle
 	timer = 6000
+
+//ore spanwers for extended games
+/obj/effect/spawner/orespawner
+	name = "ore spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	var/active = FALSE
+/obj/effect/spawner/orespawner/New()
+	..()
+	invisibility = 101
+	icon_state = "invisible"
+
+/obj/effect/spawner/orespawner/proc/do_spawn()
+	var/turf/sourceturf = get_turf(src)
+	if (active)
+		if (!istype(sourceturf, /turf/floor/dirt) || istype(sourceturf, /turf/floor/dirt/underground))
+			return
+		else
+			sourceturf.ChangeTurf(/turf/floor/mining)
+			return
+	else
+		if (istype(sourceturf, /turf/floor/dirt))
+			return
+		else
+			sourceturf.ChangeTurf(/turf/floor/dirt)
+			return
+		return
