@@ -140,15 +140,25 @@
 	set category = null
 	set src in view(1)
 	set name = "Fold Canopy"
+
+	if (!oldarea)
+		return
 	visible_message("[usr] starts folding the [src]...","You start folding the [src]...")
 	if (do_after(usr, 35, src))
 		visible_message("[usr] finishes folding the [src].","You finish folding the [src].")
-		new/obj/item/weapon/tent(src.loc)
-		new oldarea(src.loc)
+		newareaproc()
+		new/obj/item/weapon/tent(get_turf(src))
 		for(var/obj/structure/tent/T in range(1,src))
 			T.update_icon()
+		for (var/atom/movable/lighting_overlay/LO in get_turf(src))
+			LO.update_overlay()
 		qdel(src)
 		return
+/obj/structure/tent/proc/newareaproc()
+	if (!oldarea)
+		return
+	new oldarea.type(get_turf(src))
+	return
 
 /obj/structure/tent/update_icon()
 	..()
