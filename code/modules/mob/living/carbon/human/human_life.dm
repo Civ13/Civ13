@@ -500,24 +500,62 @@
 
 	switch (season)
 		if ("WINTER")
-			loc_temp = 244
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 244
+				if ("sea")
+					loc_temp = 262
+				if ("tundra")
+					loc_temp = 213
+				if ("desert")
+					loc_temp = 303
+				if ("jungle")
+					loc_temp = 293
+
 		if ("FALL")
-			loc_temp = 285
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 285
+				if ("sea")
+					loc_temp = 289
+				if ("tundra")
+					loc_temp = 213
+				if ("desert")
+					loc_temp = 303
+				if ("jungle")
+					loc_temp = 293
+
 		if ("SUMMER")
-			loc_temp = 303
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 303
+				if ("sea")
+					loc_temp = 295
+				if ("tundra")
+					loc_temp = 244
+				if ("desert")
+					loc_temp = 313
+				if ("jungle")
+					loc_temp = 304
+
 		if ("SPRING")
-			loc_temp = 290
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 290
+				if ("sea")
+					loc_temp = 288
+				if ("tundra")
+					loc_temp = 213
+				if ("desert")
+					loc_temp = 309
+				if ("jungle")
+					loc_temp = 297
+
 		if ("Dry Season")
 			loc_temp = 313
 		if ("Wet Season")
 			loc_temp = 303
 
-	if (map && map.ID == MAP_NOMADS_ICE_AGE)
-		switch (season)
-			if ("WINTER")
-				loc_temp = 213
-			if ("SUMMER")
-				loc_temp = 244
 
 	switch (time_of_day)
 		if ("Midday")
@@ -556,10 +594,6 @@
 			loc_temp = 190
 		if (WEATHER_SANDSTORM)
 			loc_temp = 321
-	if (map.blizzard)
-		loc_temp = 190
-	if (map.heat_wave)
-		loc_temp = 321
 	loc_temp = round(loc_temp)
 
 	for (var/obj/structure/brazier/BR in range(3, src))
