@@ -533,11 +533,43 @@
 	worn_state = "samurai2"
 
 /obj/item/clothing/suit/armor/samurai/black
-	name = "blue samurai armor"
+	name = "black samurai armor"
 	desc = "A thick, leather armor, covering most of the body. Often worn by a lord's bodyguards."
 	icon_state = "samurai4"
 	item_state = "samurai4"
 	worn_state = "samurai4"
+
+/obj/item/clothing/suit/armor/samurai/lord
+	name = "lord's samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord."
+	icon_state = "samurai_lord3"
+	item_state = "samurai_lord3"
+	worn_state = "samurai_lord3"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 75, bullet = 95, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	value = 45
+	slowdown = 1.1
+
+/obj/item/clothing/suit/armor/samurai/lord/red
+	name = "lord's red samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord."
+	icon_state = "samurai_lord1"
+	item_state = "samurai_lord1"
+	worn_state = "samurai_lord1"
+
+/obj/item/clothing/suit/armor/samurai/lord/blue
+	name = "lord's blue samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord."
+	icon_state = "samurai_lord2"
+	item_state = "samurai_lord2"
+	worn_state = "samurai_lord2"
+
+/obj/item/clothing/suit/armor/samurai/lord/black
+	name = "lord's black samurai armor"
+	desc = "A thick, leather armor, covering most of the body. Often worn by a lord."
+	icon_state = "samurai_lord4"
+	item_state = "samurai_lord4"
+	worn_state = "samurai_lord4"
 
 /obj/item/clothing/under/hanfu
 	name = "dark hanfu"
@@ -553,9 +585,16 @@
 	item_state = "light_hanfu"
 	worn_state = "light_hanfu"
 
+/obj/item/clothing/under/hanfu/green
+	name = "green hanfu"
+	desc = "A green, loose fitting hanfu."
+	icon_state = "green_hanfu"
+	item_state = "green_hanfu"
+	worn_state = "green_hanfu"
+
 /obj/item/clothing/head/helmet/samurai
 	name = "samurai helmet"
-	desc = "A thick leather helmet of japanese origin."
+	desc = "A thick leather helmet of japanese origin. Typically worn by feudal lords."
 	icon_state = "samurai3"
 	item_state = "samurai3"
 	worn_state = "samurai3"
@@ -563,23 +602,79 @@
 	armor = list(melee = 65, bullet = 85, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 
+/obj/item/clothing/head/helmet/samurai/guard
+	name = "samurai helmet"
+	desc = "A thick leather helmet of japanese origin."
+	icon_state = "samurai_guard3"
+	item_state = "samurai_guard3"
+	worn_state = "samurai_guard3"
+	body_parts_covered = HEAD
+	armor = list(melee = 55, bullet = 75, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	flags_inv = BLOCKHAIR
+
+/obj/item/clothing/head/helmet/samurai/guard/red
+	name = "red samurai helmet"
+	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
+	icon_state = "samurai_guard1"
+	item_state = "samurai_guard1"
+	worn_state = "samurai_guard1"
+
+/obj/item/clothing/head/helmet/samurai/guard/blue
+	name = "blue samurai helmet"
+	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
+	icon_state = "samurai_guard2"
+	item_state = "samurai_guard2"
+	worn_state = "samurai_guard2"
+
+/obj/item/clothing/head/helmet/samurai/guard/black
+	name = "black samurai helmet"
+	desc = "A thick leather helmet of japanese origin. Typically worn by samurai."
+	icon_state = "samurai_guard4"
+	item_state = "samurai_guard4"
+	worn_state = "samurai_guard4"
+
 obj/item/clothing/head/helmet/samurai/red
 	name = "red samurai helmet"
-	desc = "A thick leather helmet of japanese origin."
+	desc = "A thick leather helmet of japanese origin. Typically worn by feudal lords."
 	icon_state = "samurai1"
 	item_state = "samurai1"
 	worn_state = "samurai1"
 
 obj/item/clothing/head/helmet/samurai/blue
 	name = "blue samurai helmet"
-	desc = "A thick leather helmet of japanese origin."
+	desc = "A thick leather helmet of japanese origin. Typically worn by feudal lords."
 	icon_state = "samurai2"
 	item_state = "samurai2"
 	worn_state = "samurai2"
 
 obj/item/clothing/head/helmet/samurai/black
 	name = "black samurai helmet"
-	desc = "A thick leather helmet of japanese origin."
+	desc = "A thick leather helmet of japanese origin. Typically worn by feudal lords."
 	icon_state = "samurai4"
 	item_state = "samurai4"
 	worn_state = "samurai4"
+
+/obj/item/clothing/mask/samurai
+	name = "samurai mask"
+	desc = "A mask of metal, worn by lords to protect their face."
+	icon_state = "samurai1"
+	item_state = "samurai1"
+	worn_state = "samurai1"
+	body_parts_covered = FACE|EYES
+	flags_inv = 0
+	w_class = 2
+	armor = list(melee = 55, bullet = 45, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/mask/samurai/red
+	name = "red samurai mask"
+	desc = "A mask of metal, worn by lords to protect their face."
+	icon_state = "samurai2"
+	item_state = "samurai2"
+	worn_state = "samurai2"
+
+/obj/item/clothing/mask/samurai/blue
+	name = "blue samurai mask"
+	desc = "A mask of metal, worn by lords to protect their face."
+	icon_state = "samurai3"
+	item_state = "samurai3"
+	worn_state = "samurai3"
