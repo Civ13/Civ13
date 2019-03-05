@@ -21,6 +21,10 @@
 			weather = WEATHER_BLIZZARD
 		else if (_weather == WEATHER_SNOW)
 			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_RAIN)
+			weather = WEATHER_RAIN
+		else if (_weather == WEATHER_STORM)
+			weather = WEATHER_STORM
 		else if (_weather == WEATHER_SMOG)
 			weather = WEATHER_SMOG
 		else
@@ -29,11 +33,16 @@
 	else if (season == "SPRING")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
-		else if (_weather == WEATHER_SMOG)
-			weather = WEATHER_SMOG
 		else if (_weather == WEATHER_RAIN)
 			weather = WEATHER_RAIN
-
+		else if (_weather == WEATHER_SNOW)
+			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_STORM)
+			weather = WEATHER_STORM
+		else if (_weather == WEATHER_SMOG)
+			weather = WEATHER_SMOG
+		else
+			weather = WEATHER_NONE
 	else if (season == "FALL")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
@@ -43,12 +52,20 @@
 			weather = WEATHER_RAIN
 		else if (_weather == WEATHER_SMOG)
 			weather = WEATHER_SMOG
+		else if (_weather == WEATHER_SANDSTORM)
+			weather = WEATHER_SANDSTORM
 		else
 			weather = WEATHER_NONE
 
 	else if (season == "SUMMER")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
+		else if (_weather == WEATHER_SNOW)
+			weather = WEATHER_SNOW
+		else if (_weather == WEATHER_RAIN)
+			weather = WEATHER_RAIN
+		else if (_weather == WEATHER_SANDSTORM)
+			weather = WEATHER_SANDSTORM
 		else if (_weather == WEATHER_SMOG)
 			weather = WEATHER_SMOG
 		else
@@ -158,7 +175,7 @@
 					A.weather = weather
 					A.weather_intensity = weather_intensity
 				if (A.climate == "tundra")
-					if (season == "Wet Season" || season == "Winter" ||  season == "Fall" || season == "Spring")
+					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL" || season == "SPRING")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "snow_storm"
 							A.weather = WEATHER_BLIZZARD
@@ -172,7 +189,7 @@
 							A.weather = WEATHER_NONE
 							A.weather_intensity = weather_intensity
 
-					else if (season == "Dry Season" || season == "Summer")
+					else if (season == "Dry Season" || season == "SUMMER")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "snow1"
 							A.weather = WEATHER_SNOW
@@ -188,7 +205,7 @@
 							A.weather_intensity = weather_intensity
 
 				else if (A.climate == "jungle")
-					if (season == "Wet Season" || season == "Summer" || season == "Spring")
+					if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "monsoon"
 							A.weather = WEATHER_STORM
@@ -201,7 +218,7 @@
 							A.icon_state = ""
 							A.weather = weather
 							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season" || season == "Winter" ||  season == "Fall")
+					else if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = ""
 							A.weather = WEATHER_NONE
@@ -212,7 +229,7 @@
 							A.weather_intensity = weather_intensity
 
 				else if (A.climate == "desert")
-					if (season == "Dry Season" || season == "Winter" ||  season == "Fall")
+					if (season == "Dry Season" || season == "SUMMER" ||  season == "FALL")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "sandstorm"
 							A.weather = WEATHER_SANDSTORM
@@ -225,7 +242,7 @@
 							A.icon_state = ""
 							A.weather = weather
 							A.weather_intensity = weather_intensity
-					else if (season == "Wet Season" || season == "Summer" || season == "Spring")
+					else if (season == "Wet Season" || season == "WINTER" || season == "SPRING")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = ""
 							A.weather = WEATHER_NONE
@@ -240,7 +257,7 @@
 							A.weather_intensity = weather_intensity
 
 				else if (A.climate == "sea")
-					if (season == "Wet Season" || season == "Winter" ||  season == "Fall")
+					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "monsoon"
 							A.weather = WEATHER_STORM
@@ -253,7 +270,7 @@
 							A.icon_state = ""
 							A.weather = weather
 							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season" || season == "Summer" || season == "Spring")
+					else if (season == "Dry Season" || season == "SUMMER" || season == "SPRING")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "rain2"
 							A.weather = WEATHER_RAIN
@@ -268,7 +285,7 @@
 							A.weather_intensity = weather_intensity
 
 				else if (A.climate == "temperate")
-					if (season == "Wet Season" || season == "Winter")
+					if (season == "Wet Season" || season == "WINTER")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "snow_storm"
 							A.weather = WEATHER_BLIZZARD
@@ -281,7 +298,7 @@
 							A.icon_state = ""
 							A.weather = WEATHER_NONE
 							A.weather_intensity = weather_intensity
-					else if (season == "Dry Season"|| season == "Fall" || season == "Spring")
+					else if (season == "Dry Season"|| season == "FALL" || season == "SPRING")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "rain2"
 							A.weather = WEATHER_RAIN
@@ -294,7 +311,7 @@
 							A.icon_state = ""
 							A.weather = WEATHER_NONE
 							A.weather_intensity = weather_intensity
-					else if (season == "Summer")
+					else if (season == "SUMMER")
 						A.icon_state = ""
 						A.weather = WEATHER_NONE
 						A.weather_intensity = weather_intensity
@@ -335,9 +352,9 @@
 
 	switch (season)
 		if ("WINTER")
-			possibilities = list(WEATHER_BLIZZARD,WEATHER_SNOW,WEATHER_NONE)
+			possibilities = list(WEATHER_BLIZZARD, WEATHER_RAIN, WEATHER_SNOW, WEATHER_NONE, WEATHER_STORM)
 		if ("SPRING")
-			possibilities = list(WEATHER_RAIN,WEATHER_NONE)
+			possibilities = list(WEATHER_RAIN, WEATHER_NONE, WEATHER_STORM, WEATHER_SNOW)
 		if ("Wet Season")
 			if (map.ID == MAP_NOMADS_DESERT)
 				possibilities = list(WEATHER_RAIN,WEATHER_NONE)
@@ -349,7 +366,7 @@
 			else
 				possibilities = list(WEATHER_NONE,WEATHER_SANDSTORM)
 		if ("SUMMER")
-			possibilities = list(WEATHER_NONE)
+			possibilities = list(WEATHER_NONE,WEATHER_RAIN,WEATHER_SANDSTORM)
 		if ("FALL")
 			possibilities = list(WEATHER_RAIN,WEATHER_SNOW,WEATHER_NONE)
 	if (map)

@@ -7,7 +7,7 @@
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
 	ambience = list("sound/ambience/ship1.ogg")
-	var/climate = "temperate" //temperate, desert, jungle, tundra
+
 /area/caribbean/New()
 	..()
 	if (istype(src, /area/caribbean/british))

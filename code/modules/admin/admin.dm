@@ -1013,3 +1013,24 @@ var/list/atom_types = null
 			world.log << "Finished exporting areas to [F3]."
 			world << "<big>SAVING FINISHED SUCCESSFULLY</big>"
 			return
+
+/datum/admins/proc/toggle_ores()
+	set category = "Special"
+	set desc="Toggle ore spawners on and off"
+	set name="Toggle Ore Spawners"
+
+	if (map)
+		if (map.orespawners == 1)
+			map.orespawners = 0
+			world.log << "usr] toggled the ore spawners OFF."
+			for (var/obj/effect/spawner/orespawner/O in world)
+				O.active = 0
+				O.do_spawn()
+			return
+		else
+			map.orespawners = 1
+			world.log << "[usr] toggled the ore spawners ON."
+			for (var/obj/effect/spawner/orespawner/O in world)
+				O.active = 1
+				O.do_spawn()
+			return

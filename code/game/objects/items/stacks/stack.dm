@@ -129,6 +129,10 @@
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = new/obj/item/weapon/gun/projectile/ancient/firelance
 	build_override_firelance.desc = "A simple firelance."
 	var/mob/living/carbon/human/H = user
+
+	if (istype(get_turf(H), /turf/floor/beach/water/deep))
+		H << "<span class = 'danger'>You can't build here!</span>"
+		return
 	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle") || findtext(recipe.title, "drinking glass") || findtext(recipe.title, "teapot") || findtext(recipe.title, "teacup") || findtext(recipe.title, "wine glass") || findtext(recipe.title, "black leather shoes") || findtext(recipe.title, "black leather boots") || findtext(recipe.title, "leather boots"))
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
@@ -251,6 +255,7 @@
 						qdel(H.l_hand)
 				else
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
+					return
 			else if (istype(H.r_hand, /obj/item/stack/material/rope))
 				var/obj/item/stack/material/rope/NR = H.r_hand
 				if (NR.amount >= 2)
@@ -259,6 +264,7 @@
 						qdel(H.r_hand)
 				else
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
+					return
 
 
 	if (recipe.result_type == /obj/structure/religious/totem || recipe.result_type == /obj/structure/religious/impaledskull || recipe.result_type == /obj/structure/religious/tribalmask || recipe.result_type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot || recipe.result_type == /obj/item/clothing/accessory/armband/talisman || recipe.result_type == /obj/item/clothing/head/skullmask || recipe.result_type == /obj/item/weapon/material/kitchen/utensil/knife/bone)

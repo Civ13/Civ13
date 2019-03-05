@@ -72,6 +72,7 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/set_custom_research,
 	/datum/admins/proc/set_research_speed,
 	/datum/admins/proc/set_custom_age,
+	/datum/admins/proc/toggle_ores,
 )
 var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_search,

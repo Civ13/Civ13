@@ -55,7 +55,7 @@
 		else
 			for (var/k = 1, k <= currlist.len, k++)
 				if (choice2 == "[currlist[k][2]]")
-					var/cost = (map.globalmarketplace[k][4]*1.1)
+					var/cost = (map.globalmarketplace[currlist[k][1]][4]*1.1)
 					if (!istype(user.l_hand, /obj/item/stack/money) && !istype(user.r_hand, /obj/item/stack/money))
 						user << "You need to have money in one of your hands!"
 						return
@@ -69,11 +69,11 @@
 							mstack.amount -= (cost/mstack.value)
 							if (mstack.amount<= 0)
 								qdel(mstack)
-							var/obj/BO = map.globalmarketplace[k][2]
+							var/obj/BO = map.globalmarketplace[currlist[k][1]][2]
 							BO.forceMove(get_turf(src))
-							map.globalmarketplace[k][6] = 1
+							map.globalmarketplace[currlist[k][1]][6] = 1
 							user << "You fulfill the order."
-							var/mob/living/carbon/human/seller = map.globalmarketplace[k][1]
+							var/mob/living/carbon/human/seller = map.globalmarketplace[currlist[k][1]][1]
 							map.marketplaceaccounts[seller] += (cost/1.1)
 							return
 						else

@@ -513,25 +513,16 @@
 	explosion_resistance = FALSE
 
 /obj/item/weapon/covers/attack_self(mob/user)
-	var/your_dir = "NORTH"
-
-	switch (user.dir)
-		if (NORTH)
-			your_dir = "NORTH"
-		if (SOUTH)
-			your_dir = "SOUTH"
-		if (EAST)
-			your_dir = "EAST"
-		if (WEST)
-			your_dir = "WEST"
-
 	var/covers_time = 80
-
 	if (ishuman(user))
+		var/turf/targetfloor = get_turf(get_step(user, user.dir))
+		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
+			visible_message("<span class='notice'>You can't build here!</span>")
+			return
 		var/mob/living/carbon/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-	if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+	if (WWinput(user, "This will start building a floor cover [user.dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc) && src)
 			qdel(src)

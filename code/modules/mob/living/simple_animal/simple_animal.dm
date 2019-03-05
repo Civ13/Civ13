@@ -562,13 +562,12 @@
 	if (totalcount <= 0)
 		return
 	if (herbivore)
-		for(var/turf/floor/grass/GT in range(1,src))
-			return
-		if (!istype(get_turf(src),/turf/floor/grass))
-			if (prob(100/totalcount))
-				for(var/turf/floor/grass/GT in range(6,src))
-					walk_towards(src, GT, turns_per_move)
-					return
+		if (prob(100/totalcount))
+			for(var/turf/floor/grass/GT in range(1,src))
+				return
+			for(var/turf/floor/grass/GT in range(6,src))
+				walk_towards(src, GT, turns_per_move)
+				return
 		else
 			return
 

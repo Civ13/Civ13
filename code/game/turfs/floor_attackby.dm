@@ -697,3 +697,97 @@
 				return
 		// Repairs.
 	return ..()
+
+/turf/floor/mining/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype(C, /obj/item/weapon/pickaxe))
+		var/mob/living/carbon/human/H = user
+		if (istype(H))
+			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with the [C.name].</span>")
+			playsound(src,'sound/effects/shovelling.ogg',100,1)
+			if (do_after(user, 110/(H.getStatCoeff("strength"))))
+				if (prob(25))
+					if (prob(90))
+						var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
+						mineral.amount = rand(1,3)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
+						H << "<span class='danger'>You found some copper ore!</span>"
+						H.adaptStat("strength", 1)
+						return
+					else
+						var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
+						mineral.amount = rand(1,3)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
+						H << "<span class='danger'>You found some tin ore!</span>"
+						H.adaptStat("strength", 1)
+						return
+				if (prob(40) && map.age != "5000 B.C.")
+					var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
+					mineral.amount = rand(1,4)
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					H << "<span class='danger'>You found some iron ore!</span>"
+					H.adaptStat("strength", 1)
+					return
+				if (prob(25))
+					if (map.ordinal_age <= 1)
+						var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
+						H << "<span class='danger'>You found some coal!</span>"
+						H.adaptStat("strength", 1)
+						return
+					else
+						var/pickperc = pick(1,2,3)
+						if (pickperc == 1)
+							var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+							if (istype(get_area(src), /area/caribbean/void/caves/special))
+								mineral.amount *= 2
+							H << "<span class='danger'>You found some coal!</span>"
+							H.adaptStat("strength", 1)
+							return
+						else if (pickperc == 2)
+							var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
+							if (istype(get_area(src), /area/caribbean/void/caves/special))
+								mineral.amount *= 2
+							H << "<span class='danger'>You found some saltpeter!</span>"
+							H.adaptStat("strength", 1)
+							return
+						else if (pickperc == 3)
+							var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
+							if (istype(get_area(src), /area/caribbean/void/caves/special))
+								mineral.amount *= 2
+							H << "<span class='danger'>You found some sulphur!</span>"
+							H.adaptStat("strength", 1)
+							return
+				if (prob(5))
+					var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					H << "<span class='danger'>You found some silver ore!</span>"
+					H.adaptStat("strength", 1)
+					return
+				if (prob(2))
+					var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					H << "<span class='danger'>You found some gold ore!</span>"
+					H.adaptStat("strength", 1)
+					return
+				if (prob(1))
+					var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					H << "<span class='danger'>You found some raw diamonds!</span>"
+					H.adaptStat("strength", 1)
+					return
+				var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+				mineral.amount = rand(2,4)
+				if (istype(get_area(src), /area/caribbean/void/caves/special))
+					mineral.amount *= 2
+				H << "<span class='danger'>You found some usable stone blocks!</span>"
+				H.adaptStat("strength", 1)
+				return
+		else
+			return ..(C, user)

@@ -44,8 +44,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	var/has_gravity = TRUE
 //	var/obj/machinery/power/apc/apc = null
 	var/no_air = null
-	var/list/all_doors = list()		//Added by Strumpetplaya - Alarm Change - Contains a list of doors adjacent to this area
-	var/air_doors_activated = FALSE
 	var/list/ambience = list()
 	var/list/forced_ambience = list()
 	var/turf/base_turf //The base turf type of the area, which can be used to override the z-level's base turf
@@ -65,8 +63,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	var/parent_area_type = null
 	var/area/parent_area = null
 
-	var/last_lift_master = null
-
+	var/climate = "temperate" //temperate, desert, jungle, tundra
 
 /*Adding a wizard area teleport list because motherfucking lag -- Urist*/
 /*I am far too lazy to make it a proper list of areas so I'll just make it run the usual telepot routine at the start of the game*/

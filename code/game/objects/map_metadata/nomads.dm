@@ -102,7 +102,7 @@
 			change_weather(WEATHER_RAIN)
 		spawn(15000)
 			change_weather(WEATHER_SNOW)
-			for (var/turf/floor/dirt/D)
+			for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
 				if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
 					D.ChangeTurf(/turf/floor/dirt/winter)
 			for (var/turf/floor/grass/G)
@@ -121,7 +121,7 @@
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
-		for (var/turf/floor/dirt/D)
+		for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
 			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
 				if (D.z == world.maxz)
 					D.ChangeTurf(/turf/floor/dirt/winter)

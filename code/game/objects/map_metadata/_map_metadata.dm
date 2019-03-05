@@ -122,6 +122,7 @@ var/civmax_research = list(130,130,130)
 	var/age5_timer = 46000
 	var/age5_top = 140
 
+	var/orespawners = 0
 
 	var/pollutionmeter = 0
 

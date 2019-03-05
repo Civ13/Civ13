@@ -67,15 +67,17 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 //coats/////////////////////////////////////////////////
-		if (season == "WINTER" || map.ID == MAP_NOMADS_ICE_AGE)
-			if (map.ordinal_age < 4)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
-				if (map.ordinal_age == 0)
-					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
-			else if (map.ordinal_age == 4)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-			else if (map.ordinal_age == 5)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+		spawn(5)
+			var/area/mob_area = get_area(src)
+			if (mob_area.climate == "tundra" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
+				if (map.ordinal_age < 4)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
+					if (map.ordinal_age == 0)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+				else if (map.ordinal_age == 4)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+				else if (map.ordinal_age == 5)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
 
 /////////////////////////CIVS////////////////////////
 
