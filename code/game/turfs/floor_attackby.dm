@@ -600,7 +600,7 @@
 			user << "<span class='danger'>You can't plough this type of terrain.</span>"
 			return
 
-	else if (istype(C, /obj/item/weapon/covers) && !isturf(src, /turf/floor/beach/water/deep))
+	else if (istype(C, /obj/item/weapon/covers) && !isturf(src, /turf/floor/beach/water/deep/saltwater))
 
 		var/your_dir = "NORTH"
 
