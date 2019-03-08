@@ -118,3 +118,9 @@
 	desc = "A silver sign which reads 'VI'."
 	name = "SIX"
 	icon_state = "n6"
+
+/obj/structure/sign/torii
+	desc = "A tall red gate structure."
+	name = "torii gate"
+	icon_state = "torii"
+	icon = 'icons/turf/64x64.dmi'
