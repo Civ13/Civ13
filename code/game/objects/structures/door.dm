@@ -226,6 +226,7 @@
 
 /obj/structure/simple_door/wood/New(var/newloc,var/material_name)
 	..(newloc, "wood")
+
 /obj/structure/simple_door/wood2/New(var/newloc,var/material_name)
 	..(newloc, "wood")
 	basic_icon = "wood2"

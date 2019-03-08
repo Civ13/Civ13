@@ -240,6 +240,36 @@
 	wall = TRUE
 	explosion_resistance = 5
 
+/obj/covers/wood_wall/shoji
+	name = "shoji wall"
+	desc = "A shoji paper wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall2"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 3
+	layer = 3
+	health = 70
+	wall = TRUE
+	explosion_resistance = 1
+
+/obj/covers/wood_wall/shoji_divider
+	name = "shoji dividing wall"
+	desc = "A shoji paper wall. This one is more meant to divide rooms."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 3
+	layer = 3
+	health = 50
+	wall = TRUE
+	explosion_resistance = 1
+
 /obj/covers/stone_wall
 	name = "stone wall"
 	desc = "A stone wall."
