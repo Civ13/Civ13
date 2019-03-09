@@ -87,6 +87,33 @@
 	value = 6
 	block_chance = 20
 	cooldownw = 6
+
+/obj/item/weapon/material/naginata
+	name = "naginata"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A wood staff with a blade on the end, good for impaling those who insult your lord."
+	slot_flags = SLOT_BACK
+	icon_state = "naginata"
+	item_state = "naginata"
+	default_material = "iron"
+	throw_speed = 7
+	throw_range = 11
+	allow_spin = FALSE
+	force_divisor = 0.4 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","impaled","beaten")
+	value = 30
+	block_chance = 25
+	cooldownw = 6
+	color = null
+
+/obj/item/weapon/material/naginata/steel
+	default_material = "steel"
+	value = 35
+	block_chance = 27
+	cooldownw = 6
+
 /obj/item/weapon/material/hatchet
 	name = "hatchet"
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."
