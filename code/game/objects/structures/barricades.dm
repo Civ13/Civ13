@@ -377,3 +377,184 @@
 		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
 		qdel(src)
 		return
+
+
+/obj/structure/barricade/jap_h
+	name = "shingled stone wall"
+	desc = "A wall of stone blocks with some red shingles."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "jap_wall_h"
+	material = "stone"
+	health = 600
+	maxhealth = 600
+	material_name = "stone"
+
+/obj/structure/barricade/jap_h/New()
+	..()
+	icon_state = "jap_wall_h"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/jap_h/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/jap_h_l
+	name = "shingled stone wall"
+	desc = "A wall of stone blocks with some red shingles."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "jap_wall_h_l"
+	material = "stone"
+	health = 600
+	maxhealth = 600
+	material_name = "stone"
+
+/obj/structure/barricade/jap_h_l/New()
+	..()
+	icon_state = "jap_wall_h_l"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/jap_h_l/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/jap_h_r
+	name = "shingled stone wall"
+	desc = "A wall of stone blocks with some red shingles."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "jap_wall_h_r"
+	material = "stone"
+	health = 600
+	maxhealth = 600
+	material_name = "stone"
+
+/obj/structure/barricade/jap_h_r/New()
+	..()
+	icon_state = "jap_wall_h_r"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/jap_h_r/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/jap_v
+	name = "shingled stone wall"
+	desc = "A wall of stone blocks with red shingling."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "jap_wall_v"
+	material = "stone"
+	health = 600
+	maxhealth = 600
+	material_name = "stone"
+
+/obj/structure/barricade/jap_v/New()
+	..()
+	icon_state = "jap_wall_v"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/jap_v/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/jap_v_t
+	name = "shingled stone wall"
+	desc = "A wall of stone blocks with red shingling."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "jap_wall_v_t"
+	material = "stone"
+	health = 600
+	maxhealth = 600
+	material_name = "stone"
+
+/obj/structure/barricade/jap_v_t/New()
+	..()
+	icon_state = "jap_wall_v_t"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/jap_v_t/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return
+
+/obj/structure/barricade/jap_v_b
+	name = "shingled stone wall"
+	desc = "A wall of stone blocks with red shingling."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "jap_wall_v_b"
+	material = "stone"
+	health = 600
+	maxhealth = 600
+	material_name = "stone"
+
+/obj/structure/barricade/jap_v_b/New()
+	..()
+	icon_state = "jap_wall_v_b"
+	name = "stone wall"
+	health = 600
+	maxhealth = 600
+
+/obj/structure/barricade/jap_v_b/ex_act(severity)
+	switch(severity)
+		if (1.0)
+			health -= 150
+		if (2.0)
+			health -= 100
+		if (3.0)
+			health -= 50
+	if (health <= 0)
+		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
+		qdel(src)
+		return

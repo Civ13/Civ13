@@ -469,7 +469,13 @@
 			new/datum/stack_recipe("fortified wall (horizontal)", /obj/structure/barricade/stone_h, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("fortified wall (vertical)", /obj/structure/barricade/stone_v, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("fortified crenelated wall (horizontal)", /obj/structure/barricade/stone_h/crenelated, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("fortified crenelated wall (vertical)", /obj/structure/barricade/stone_v/crenelated, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("fortified crenelated wall (vertical)", /obj/structure/barricade/stone_v/crenelated, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("stone shingled wall (vertical center)", /obj/structure/barricade/jap_v, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("stone shingled wall (vertical top)", /obj/structure/barricade/jap_v_t, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("stone shingled wall (vertical bottom)", /obj/structure/barricade/jap_v_b, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("stone shingled wall (horizontal center)", /obj/structure/barricade/jap_h, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("stone shingled wall (horizontal left)", /obj/structure/barricade/jap_h_l, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("stone shingled wall (horizontal right)", /obj/structure/barricade/jap_h_r, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 /material/tobacco/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
