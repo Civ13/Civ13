@@ -27,6 +27,14 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "old_stone_wall"
 
+/turf/wall/shoji
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall"
+
+/turf/wall/shoji2
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall2"
+
 /turf/wall/old_stone/update_icon()
 	return
 
