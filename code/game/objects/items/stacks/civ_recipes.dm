@@ -157,6 +157,9 @@
 		recipes += new/datum/stack_recipe("halberd", /obj/item/weapon/material/halberd, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("pike", /obj/item/weapon/material/pike, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 
+	if (current_res[1] >= 39 && current_res[2] >= 40 && map.ordinal_age <= 2)
+		recipes += new/datum/stack_recipe("naginata", /obj/item/weapon/material/naginata, 12, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
+
 		recipes += new/datum/stack_recipe_list("tools", list(
 			new/datum/stack_recipe("hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
 			new/datum/stack_recipe("shovel", /obj/item/weapon/shovel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -182,6 +185,7 @@
 		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 90 && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("trench shovel", /obj/item/weapon/shovel/trench, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("bayonet", /obj/item/weapon/attachment/bayonet, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 87)
 		recipes += new/datum/stack_recipe("iron furnace", /obj/structure/heatsource, 15, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 
@@ -662,13 +666,14 @@
 	if (current_res[3] >= 98 && current_res[3] < 112)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("pioneer outfit", /obj/item/clothing/under/industrial1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("rancher outfit", /obj/item/clothing/under/industrial1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("cowboy outfit", /obj/item/clothing/under/industrial1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("checkered outfit", /obj/item/clothing/under/industrial1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("worker outfit", /obj/item/clothing/under/industrial1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("rancher outfit", /obj/item/clothing/under/industrial2, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("cowboy outfit", /obj/item/clothing/under/industrial3, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("checkered outfit", /obj/item/clothing/under/industrial4, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("worker outfit", /obj/item/clothing/under/industrial5, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom uniform", /obj/item/clothing/under/customuniform, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 112)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("light brown outfit", /obj/item/clothing/under/modern1, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -679,7 +684,8 @@
 			new/datum/stack_recipe("mechanic outfit", /obj/item/clothing/under/mechanic_outfit, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom uniform", /obj/item/clothing/under/customuniform, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 57 && current_res[3] < 89 )
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("black jacket", /obj/item/clothing/suit/storage/jacket/piratejacket1, 6, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -842,7 +848,7 @@
 		recipes += new/datum/stack_recipe("steel shield", /obj/item/weapon/shield/steel, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 71 && current_res[2] >= 79)
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
-	if (current_res[1] >= 81 && current_res[2] >= 95)
+	if (current_res[1] >= 95 && current_res[2] >= 109)
 		recipes += new/datum/stack_recipe("artillery cannon", /obj/structure/cannon/modern, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
