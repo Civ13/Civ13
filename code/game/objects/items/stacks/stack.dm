@@ -768,7 +768,7 @@
 	var/transfer = max(min(tamount, get_amount(), (S.get_max_amount() - S.get_amount())), FALSE)
 
 	var/orig_amount = get_amount()
-	if (transfer && use(transfer,H))
+	if (transfer && use(transfer))
 		S.add(transfer)
 		if (prob(transfer/orig_amount * 100))
 			transfer_fingerprints_to(S)
@@ -787,7 +787,7 @@
 	var/transfer = max(min(tamount, amount, initial(max_amount)), FALSE)
 
 	var/orig_amount = amount
-	if (transfer && use(transfer,H))
+	if (transfer && use(transfer))
 		var/obj/item/stack/newstack = new type(loc, transfer)
 		newstack.color = color
 		if (prob(transfer/orig_amount * 100))
