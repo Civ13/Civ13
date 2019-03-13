@@ -702,7 +702,7 @@ obj/structure/anvil/New()
 				display4 = list("Picklehaube (7)", "Pith (7)", "Cancel")
 
 			if (map.ordinal_age >= 2)
-				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)","Samurai Helmet (10)", "Red Samurai Helmet (10)", "Blue Samurai Helmet (10)", "Black Samurai Helmet (10)", "Lord's Samurai Armor (18)", "Lord's Red Samurai Armor (18)", "Lord's Blue Samurai Armor (18)", "Lord's Black Samurai Armor (18)", "Cancel")
+				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)", "Cancel")
 			else
 				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Roman Helmet (10)", "Greek Helmet (13)", "Gladiator Helmet (12)", "Horned Helmet (9)", "Cancel")
 			var/choice4 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display4)
