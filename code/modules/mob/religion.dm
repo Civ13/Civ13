@@ -1,3 +1,9 @@
+/mob/living/carbon/human/make_nomad()
+	..()
+	verbs += /mob/living/carbon/human/proc/create_religion
+	verbs += /mob/living/carbon/human/proc/abandon_religion
+	verbs += /mob/living/carbon/human/proc/clergy
+
 ///////////////////////RELIGION/////////////////////////
 /mob/living/carbon/human/proc/create_religion()
 	set name = "Create Religion"
@@ -9,7 +15,7 @@
 	else
 		return
 	if (map.nomads == TRUE)
-		if (U.civilization != "none")
+		if (U.religion != "none")
 			usr << "<span class='danger'>You are already member of a religion. Abandon it first.</span>"
 			return
 		else
@@ -34,12 +40,16 @@
 	if (newname != null && newname != "none")
 		H.religion = newname
 		map.custom_religion_nr += newname
-		var/choosetype = "default"
+		var/choosetype = "Knowledge"
+		var/chooseclergy = "Shamans"
 		var/choosesymbol = "star"
 		var/choosecolor1 = "#000000"
 		var/choosecolor2 = "#FFFFFF"
 		choosetype = WWinput(src, "Choose a focus for the new religion:", "Religion Creation", "Cancel", list("Cancel","Combat","Knowledge","Production"))
 		if (choosetype == "Cancel")
+			return
+		chooseclergy = WWinput(src, "Choose a clergy organization for your new religion:", "Religion Creation", "Cancel", list("Cancel","Shamans","Priests","Monks","Clerics","Cultists"))
+		if (chooseclergy == "Cancel")
 			return
 		choosesymbol = WWinput(src, "Choose a symbol for the new religion:", "Religion Creation", "Cancel", list("Cancel","Star","Sun","Moon","Skull","Hammer","Scales","Cross","Tree"))
 		if (choosesymbol == "Cancel")
@@ -84,8 +94,8 @@
 		H.religious_leader = TRUE
 		H.religion_type = choosetype
 		map.custom_religion_nr += newname
-		//////////////////////////////////////creator, type, points, symbol, color1, color2
-		var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2))
+		//////////////////////////////////////creator, type, points, symbol, color1, color2, clergy style
+		var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2,chooseclergy))
 		map.custom_religions += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> religion.</big>"
 		return
@@ -105,8 +115,8 @@
 		if (U.religion == "none")
 			usr << "<span class='danger'>You are not part of any religion.</span>"
 			return
-		else if (U.religious_leader)
-			usr << "<span class='danger'>You cannot leave a religion you founded!</span>"
+		else if (U.religious_leader || U.religious_clergy != FALSE)
+			usr << "<span class='danger'>You cannot leave a religion while part of its clergy!</span>"
 			return
 		else
 			if (map.custom_religions[U.religion][1] != null)
@@ -120,7 +130,79 @@
 		usr << "<span class='danger'>You cannot leave your religion in this map.</span>"
 		return
 
+/mob/living/carbon/human/proc/clergy()
+	set name = "Join the Clergy"
+	set category = "Faction"
+	var/mob/living/carbon/human/U
 
+	if (istype(src, /mob/living/carbon/human))
+		U = src
+	else
+		return
+	if (map.nomads == TRUE)
+		if (U.religion == "none")
+			usr << "<span class='danger'>You are not part of any religion.</span>"
+			return
+		else if (U.religious_leader || U.religious_clergy != FALSE)
+			usr << "<span class='danger'>You are already part of the clergy!</span>"
+			return
+		else
+			switch(map.custom_religions[U.religion][7])
+
+				if ("Shamans")
+					U.religious_clergy = "Shamans"
+					U << "<big>You become a Shaman for the [U.religion]!</big>"
+					if (U.gender == "male")
+						U.fully_replace_character_name(U.real_name,"Shaman [U.name]")
+					else
+						U.fully_replace_character_name(U.real_name,"Shamaness [U.name]")
+					return
+
+				if ("Priests")
+					if (U.getStatCoeff("philosophy") < 1.75)
+						U << "<span class='danger'>Your philosophy skill is too low. You need 1.75 or more to become a priest.</span>"
+						return
+					else
+						U.religious_clergy = "Priests"
+						U << "<big>You become a Priest for the [U.religion]!</big>"
+						if (U.gender == "male")
+							U.fully_replace_character_name(U.real_name,"Priest [U.name]")
+						else
+							U.fully_replace_character_name(U.real_name,"Priestess [U.name]")
+						return
+
+				if ("Monks")
+					if (U.getStatCoeff("philosophy") < 1.5)
+						U << "<span class='danger'>Your philosophy skill is too low. You need 1.5 or more to become a monk.</span>"
+						return
+					else
+						U.religious_clergy = "Monks"
+						U << "<big>You become a Monk for the [U.religion]!</big>"
+						if (U.gender == "male")
+							U.fully_replace_character_name(U.real_name,"Brother [U.name]")
+						else
+							U.fully_replace_character_name(U.real_name,"Sister [U.name]")
+						return
+
+				if ("Clerics")
+					if (U.getStatCoeff("philosophy") < 2.2)
+						U << "<span class='danger'>Your philosophy skill is too low. You need 2.2 or more to become a cleric.</span>"
+						return
+					else
+						U.religious_clergy = "Clerics"
+						U << "<big>You become a Cleric for the [U.religion]!</big>"
+						if (U.gender == "male")
+							U.fully_replace_character_name(U.real_name,"Venerable [U.name]")
+						else
+							U.fully_replace_character_name(U.real_name,"Venerable [U.name]")
+						return
+
+				if ("Cultists")
+					U.religious_clergy = "Cultists"
+					U << "<big>You become a Cultist of the [U.religion]!</big>"
+	else
+		usr << "<span class='danger'>You cannot join the clergy on this map.</span>"
+		return
 /mob/living/carbon/human/proc/religion_check()
 	for (var/obj/item/clothing/CT in contents)
 		for (var/obj/item/clothing/accessory/armband/talisman/T in CT.contents)
@@ -157,7 +239,7 @@
 /obj/item/weapon/book/holybook/attack_self(var/mob/living/carbon/human/user as mob)
 	if (user.religion == religion && religion != "none")
 		user << "You stare at the glorious holy book of your religion."
-	else if (user.religion != religion && religion != "none" && !user.religious_leader)
+	else if (user.religion != religion && religion != "none" && !user.religious_leader && user.religious_clergy == FALSE)
 		user << "You start reading the [title]..."
 		if (do_after(user, 900, src))
 			var/choice = WWinput(user, "After reading the [title], you feel attracted to the [religion] religion. Do you want to convert?", "[title]", "Yes", list("Yes","No"))
