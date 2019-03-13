@@ -592,6 +592,27 @@
 	item_state = "green_hanfu"
 	worn_state = "green_hanfu"
 
+/obj/item/clothing/under/artisan
+	name = "artisan clothing"
+	desc = "A light, loose fitting bit of clothes."
+	icon_state = "artisan1"
+	item_state = "artisan1"
+	worn_state = "artisan1"
+
+/obj/item/clothing/under/artisan/dark
+	name = "dark artisan clothing"
+	desc = "A light, loose fitting bit of clothes."
+	icon_state = "artisan2"
+	item_state = "artisan2"
+	worn_state = "artisan2"
+
+/obj/item/clothing/under/artisan/light
+	name = "light artisan clothing"
+	desc = "A light, loose fitting bit of clothes."
+	icon_state = "artisan3"
+	item_state = "artisan3"
+	worn_state = "artisan3"
+
 /obj/item/clothing/head/helmet/samurai
 	name = "samurai helmet"
 	desc = "A thick leather helmet of japanese origin. Typically worn by feudal lords."
