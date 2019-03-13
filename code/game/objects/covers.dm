@@ -600,11 +600,11 @@
 			if (do_after(user, 70, src))
 				visible_message("[user] places the [W] on the [src].")
 				var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
-				var/mob/living/carbon/human/H = user
-				RP.religion = H.religion
-				RP.symbol = map.custom_religions[H.religion][4]
-				RP.color1 = map.custom_religions[H.religion][5]
-				RP.color2 = map.custom_religions[H.religion][6]
+				var/obj/item/weapon/poster/religious/P = W
+				RP.religion = P.religion
+				RP.symbol = P.symbol
+				RP.color1 = P.color1
+				RP.color2 = P.color2
 				user.drop_from_inventory(W)
 				qdel(W)
 				return

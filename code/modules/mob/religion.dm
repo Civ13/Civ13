@@ -182,6 +182,14 @@
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
 	flammable = TRUE
+	force = 0
+
+/obj/item/weapon/poster/religious/New()
+	..()
+	spawn(10)
+		if (religion != "none")
+			name = "rolled [religion]'s poster"
+			desc = "This is a rolled [religion] religion propaganda poster. Ready to deploy."
 
 /obj/structure/poster/religious
 	name = "religious poster"
@@ -196,6 +204,7 @@
 
 /obj/structure/poster/religious/New()
 	..()
+	invisibility = 101
 	spawn(10)
 		if (religion != "none")
 			name = "[religion]'s poster"
@@ -209,8 +218,9 @@
 			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[map.custom_religions[religion][4]]")
 			overs.color = map.custom_religions[religion][5]
 			overlays += overs
-			update_icon()
-
+		transform = matrixangle(rand(-9,9))
+		update_icon()
+		invisibility = 0
 /obj/structure/poster/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
 		user << "You start ripping off the [src]..."

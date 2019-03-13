@@ -210,7 +210,10 @@
 		if (H.getStatCoeff("philosophy") < 2.49 || H.religion == "none" || H.religious_leader == FALSE)
 			H << "<span class = 'danger'>You can't make a holy book.</span>"
 			return
-
+	if (findtext(recipe.title, "religious poster"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You can't make a religious poster since you have no religion!</span>"
+			return
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -646,6 +649,12 @@
 			HB.religion = H.religion
 			HB.religion_type = map.custom_religions[H.religion][2]
 			HB.title = customname
+		else if (istype(O, /obj/item/weapon/poster/religious))
+			var/obj/item/weapon/poster/religious/P = O
+			P.religion = H.religion
+			P.symbol = map.custom_religions[H.religion][4]
+			P.color1 = map.custom_religions[H.religion][5]
+			P.color2 = map.custom_religions[H.religion][6]
 		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
 			FP.customcolor = addtext("#",customcolor)
