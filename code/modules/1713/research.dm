@@ -170,25 +170,28 @@
 			if (choice == "No")
 				return
 			else if (choice == "Yes")
+				var/modif = 1
+				if (user.religion_check() == "Knowledge")
+					modif = 1.35
 				user << "<span class='notice'>You begin reading the [name] attently...</span>"
-				if (do_after(user, (600*k_level), src))
+				if (do_after(user, (600*k_level)/modif, src))
 					user << "<span class='notice'>You finish studying the [name]. You feel smarter already.</span>"
 					if (k_class == "industry")
-						user.adaptStat("crafting", (16*k_level))
+						user.adaptStat("crafting", (16*k_level)/modif)
 					if (k_class == "medicine")
-						user.adaptStat("medical", (16*k_level))
+						user.adaptStat("medical", (16*k_level)/modif)
 					if (k_class == "archery")
-						user.adaptStat("bows", (16*k_level))
+						user.adaptStat("bows", (16*k_level)/modif)
 					if (k_class == "fencing")
-						user.adaptStat("swords", (16*k_level))
+						user.adaptStat("swords", (16*k_level)/modif)
 					if (k_class == "anatomy")
-						user.adaptStat("strength", (8*k_level))
-						user.adaptStat("dexterity", (8*k_level))
+						user.adaptStat("strength", (8*k_level)/modif)
+						user.adaptStat("dexterity", (8*k_level)/modif)
 					if (k_class == "gunpowder")
-						user.adaptStat("pistol", (8*k_level))
-						user.adaptStat("rifle", (8*k_level))
+						user.adaptStat("pistol", (8*k_level)/modif)
+						user.adaptStat("rifle", (8*k_level)/modif)
 					if (k_class == "philosophy")
-						user.adaptStat("philosophy", (16*k_level))
+						user.adaptStat("philosophy", (16*k_level)/modif)
 					qdel(src)
 					return
 

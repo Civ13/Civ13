@@ -595,7 +595,19 @@
 				return
 	if (wall)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-
+		if (istype(W, /obj/item/weapon/poster/religious))
+			user << "You start placing the [W] on the [src]..."
+			if (do_after(user, 70, src))
+				visible_message("[user] places the [W] on the [src].")
+				var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
+				var/mob/living/carbon/human/H = user
+				RP.religion = H.religion
+				RP.symbol = map.custom_religions[H.religion][4]
+				RP.color1 = map.custom_religions[H.religion][5]
+				RP.color2 = map.custom_religions[H.religion][6]
+				user.drop_from_inventory(W)
+				qdel(W)
+				return
 		if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
 			var/obj/item/flashlight/torch/T = W
 			if (prob(33) && T.on)

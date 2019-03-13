@@ -40,9 +40,6 @@
 	var/list/all_underwear = list()
 	var/backbag = 2		//Which backpack type the player has chosen. Nothing, Satchel or Backpack.
 
-	// General information
-	var/religion = ""
-
 	//Equipment slots
 	var/obj/item/wear_suit = null
 	var/obj/item/w_uniform = null
@@ -160,7 +157,9 @@
 
 	var/civilization = "none" //what civilization this person belongs to
 	var/leader = FALSE
-
+	var/religion = "none" //what religion this person belongs to
+	var/religion_type = "none"
+	var/religious_leader = FALSE
 	var/driver = FALSE
 	var/obj/structure/vehicle/driver_vehicle = null
 	var/riding = FALSE // if riding a horse

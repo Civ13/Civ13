@@ -23,7 +23,22 @@
 	density = TRUE
 	anchored = TRUE
 	var/tribe = "goose"
+	var/religion = "none"
 	layer = 3.2
+
+/obj/structure/religious/totem/New()
+	..()
+	spawn(10)
+		if (religion != "none")
+			religioncheck()
+
+/obj/structure/religious/totem/proc/religioncheck()
+	if (religion != "none")
+		for(var/i = 1, i <= map.custom_religion_nr.len, i++)
+			if (map.custom_religion_nr[i] == religion)
+				map.custom_religions[religion][3] += 1
+	spawn(1200)
+		religioncheck()
 
 /obj/structure/religious/animal_statue
 	name = "statue"

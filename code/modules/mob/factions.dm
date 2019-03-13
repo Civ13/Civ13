@@ -4,6 +4,11 @@
 	verbs += /mob/living/carbon/human/proc/transfer_faction
 	verbs += /mob/living/carbon/human/proc/become_leader
 
+//	verbs += /mob/living/carbon/human/proc/create_religion
+//	verbs += /mob/living/carbon/human/proc/abandon_religion
+
+
+/////////////FACTIONS////////////////////////////
 /mob/living/carbon/human/proc/create_faction()
 	set name = "Create Faction"
 	set category = "Faction"

@@ -558,6 +558,7 @@
 #include "code\modules\mob\mob_view.dm"
 #include "code\modules\mob\motd.dm"
 #include "code\modules\mob\pray.dm"
+#include "code\modules\mob\religion.dm"
 #include "code\modules\mob\say.dm"
 #include "code\modules\mob\typing_indicator.dm"
 #include "code\modules\mob\update_icons.dm"

@@ -450,7 +450,7 @@
 					for(var/obj/item/weapon/B in base)
 						B.loc = get_turf(src)
 						base -= B
-						if (istype(B, /obj/item/weapon/book))
+						if (istype(B, /obj/item/weapon/book) && !istype(B, /obj/item/weapon/book/holybook))
 							var/obj/item/weapon/book/NC = B
 							var/obj/item/weapon/book/NB = new/obj/item/weapon/book(src.loc)
 							NB.dat = NC.dat
@@ -458,7 +458,15 @@
 							NB.author = NC.author
 							NB.unique = NC.unique
 							NB.title = NC.title
-
+						else if (istype(B, /obj/item/weapon/book/holybook))
+							var/obj/item/weapon/book/holybook/NC = B
+							var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(src.loc)
+							NB.author = NC.author
+							NB.title = NC.title
+							NB.name = NC.name
+							NB.desc = NC.desc
+							NB.religion = NC.religion
+							NB.religion_type = NC.religion_type
 						else if (istype(B, /obj/item/weapon/paper))
 							var/obj/item/weapon/paper/NC = B
 							var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(src.loc)
