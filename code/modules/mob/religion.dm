@@ -48,7 +48,7 @@
 		choosetype = WWinput(src, "Choose a focus for the new religion:", "Religion Creation", "Cancel", list("Cancel","Combat","Knowledge","Production"))
 		if (choosetype == "Cancel")
 			return
-		chooseclergy = WWinput(src, "Choose a clergy organization for your new religion:", "Religion Creation", "Cancel", list("Cancel","Shamans","Priests","Monks","Clerics","Cultists"))
+		chooseclergy = WWinput(src, "Choose a clergy organization for your new religion:", "Religion Creation", "Cancel", list("Cancel","Shamans","Cultists","Priests","Monks","Clerics"))
 		if (chooseclergy == "Cancel")
 			return
 		choosesymbol = WWinput(src, "Choose a symbol for the new religion:", "Religion Creation", "Cancel", list("Cancel","Star","Sun","Moon","Skull","Hammer","Scales","Cross","Tree"))
@@ -98,6 +98,9 @@
 		var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2,chooseclergy))
 		map.custom_religions += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> religion.</big>"
+		if (chooseclergy != "Cultists")
+			H.fully_replace_character_name(H.real_name,"Prophet [H.name]")
+
 		return
 	else
 		return
@@ -206,7 +209,7 @@
 /mob/living/carbon/human/proc/religion_check()
 	for (var/obj/item/clothing/CT in contents)
 		for (var/obj/item/clothing/accessory/armband/talisman/T in CT.contents)
-			if (T.religion == "none")
+			if (T.religion == "none" || religion == "none")
 				return FALSE
 			else
 				return religion_type
@@ -283,7 +286,7 @@
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
 	flammable = TRUE
-
+	layer = 3.2
 /obj/structure/poster/religious/New()
 	..()
 	invisibility = 101
@@ -314,3 +317,79 @@
 			update_icon()
 	else
 		..()
+
+obj/structure/altar
+	name = "religious altar"
+	icon = 'icons/obj/cross.dmi'
+	icon_state = "wood_altar"
+	desc = "A religious altar."
+	var/religion = "none"
+	var/symbol = "Cross"
+	var/color1 = "#000000"
+	var/color2 = "#FFFFFF"
+	flammable = TRUE
+	var/health = 70
+
+/obj/structure/altar/New()
+	..()
+	invisibility = 101
+	spawn(10)
+		if (religion != "none")
+			name = "[religion]'s altar"
+			desc = "This is a altar dedicated to the [religion] religion."
+			var/image/overc = image("icon" = icon, "icon_state" = "thin_banner_1")
+			overc.color = map.custom_religions[religion][6]
+			overlays += overc
+			var/image/overc1 = image("icon" = icon, "icon_state" = "thin_banner_2")
+			overc1.color = map.custom_religions[religion][5]
+			overlays += overc1
+			var/image/overs = image("icon" = icon, "icon_state" = "holybook_[map.custom_religions[religion][4]]")
+			overs.color = map.custom_religions[religion][5]
+			overlays += overs
+		update_icon()
+		invisibility = 0
+
+/obj/structure/altar/attackby(obj/item/W as obj, mob/user as mob)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	switch(W.damtype)
+		if ("fire")
+			if (flammable)
+				health -= W.force * TRUE
+			else
+				health -= W.force * 0.20
+		else
+			health -= W.force * 0.20
+	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
+	user.do_attack_animation(src)
+	try_destroy()
+	..()
+
+/obj/structure/altar/proc/try_destroy()
+	if (health <= 0)
+		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
+		qdel(src)
+		return
+
+obj/structure/altar/wood
+	name = "wood altar"
+	icon_state = "wood_altar"
+	flammable = TRUE
+	health = 70
+
+obj/structure/altar/stone
+	name = "stone altar"
+	icon_state = "stone_altar"
+	flammable = FALSE
+	health = 160
+
+obj/structure/altar/marble
+	name = "marble altar"
+	icon_state = "marble_altar"
+	flammable = FALSE
+	health = 110
+
+obj/structure/altar/iron
+	name = "iron altar"
+	icon_state = "iron_altar"
+	flammable = FALSE
+	health = 120

@@ -158,6 +158,19 @@
 		else
 			return ..(C, user)
 
+	else if (istype(C, /obj/item/weapon/poster/religious) && istype(get_turf(src), /turf/floor/dirt/underground))
+		user << "You start placing the [C] on the [src]..."
+		if (do_after(user, 70, src))
+			visible_message("[user] places the [C] on the [src].")
+			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
+			var/obj/item/weapon/poster/religious/P = C
+			RP.religion = P.religion
+			RP.symbol = P.symbol
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.drop_from_inventory(C)
+			qdel(C)
+			return
 	else if (istype(C, /obj/item/weapon/pickaxe))
 		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user

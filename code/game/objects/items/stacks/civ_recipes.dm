@@ -181,7 +181,7 @@
 		recipes += new/datum/stack_recipe("bayonet", /obj/item/weapon/attachment/bayonet, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 87)
 		recipes += new/datum/stack_recipe("iron furnace", /obj/structure/heatsource, 15, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
-
+	recipes += new/datum/stack_recipe("iron altar", /obj/structure/altar/iron, 12, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("iron arm bangles", /obj/item/clothing/accessory/armband/armbangle, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 35 && current_res[3]>= 44)
 		recipes += new/datum/stack_recipe("splints", /obj/item/stack/medical/splint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -355,11 +355,13 @@
 			new/datum/stack_recipe("wood pole", /obj/structure/barricade/wood_pole, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	if (current_res[1] < 47)
-		recipes += new/datum/stack_recipe_list("decoration", list(
+		recipes += new/datum/stack_recipe_list("religious & decoration", list(
+			new/datum/stack_recipe("wood altar", /obj/structure/altar/wood, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("native wood mask", /obj/structure/religious/tribalmask, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("impaled skull", /obj/structure/religious/impaledskull, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
-		recipes += new/datum/stack_recipe_list("decoration", list(
+		recipes += new/datum/stack_recipe_list("religious & decoration", list(
+			new/datum/stack_recipe("wood altar", /obj/structure/altar/wood, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("impaled skull", /obj/structure/religious/impaledskull, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("small cross", /obj/structure/religious/woodcross1, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("cross", /obj/structure/religious/woodcross2, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
@@ -468,6 +470,9 @@
 	recipes += new/datum/stack_recipe("stone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone stairs", /obj/covers/cobblestone/stairs, 2, _time = 45, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("stone altar", /obj/structure/altar/stone, 15, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 28)
+		recipes += new/datum/stack_recipe("marble altar", /obj/structure/altar/marble, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 43)
 		recipes += new/datum/stack_recipe("gravestone", /obj/structure/religious/gravestone, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("totem", /obj/structure/religious/totem, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)

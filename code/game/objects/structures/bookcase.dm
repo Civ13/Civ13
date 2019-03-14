@@ -150,10 +150,15 @@
 					current_tribesmen = alive_civilians.len/2
 				else
 					current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
-			var/studytime = 300*current_research/current_tribesmen
+			var/studytime = (300*current_research)/current_tribesmen
 			var/displaytime = convert_to_textminute(studytime)
+			var/modif = 1
+			if (user.religion_check() == "Knowledge")
+				modif += 0.15
+			if (user.religious_clergy == "Monks")
+				modif += 0.3
 			user << "Studying these documents... This will take [displaytime] to finish."
-			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))
+			if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
 				user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 				user.adaptStat("philosophy", 1*current_research)
 				if (user.civilization == civname_a)

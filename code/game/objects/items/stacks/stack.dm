@@ -211,9 +211,15 @@
 			return
 		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
 
-	if (findtext(recipe.title, "religious poster"))
+	if (findtext(recipe.title, "altar"))
+		if (H.religious_leader == FALSE)
+			if (H.religious_clergy == 0)
+				H << "<span class = 'danger'>You can't make an altar as you are not part of the clergy.</span>"
+				return
+
+	if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar"))
 		if (H.religion == "none")
-			H << "<span class = 'danger'>You can't make a religious poster since you have no religion!</span>"
+			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
 			return
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
@@ -652,6 +658,12 @@
 			HB.title = customname
 		else if (istype(O, /obj/item/weapon/poster/religious))
 			var/obj/item/weapon/poster/religious/P = O
+			P.religion = H.religion
+			P.symbol = map.custom_religions[H.religion][4]
+			P.color1 = map.custom_religions[H.religion][5]
+			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/altar))
+			var/obj/structure/altar/P = O
 			P.religion = H.religion
 			P.symbol = map.custom_religions[H.religion][4]
 			P.color1 = map.custom_religions[H.religion][5]

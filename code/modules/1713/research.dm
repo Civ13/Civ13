@@ -54,9 +54,14 @@
 		var/choice = WWinput(user, "Which subject do you wish to write about?", "Scientific [name] production", "Cancel", display)
 		if (choice == "Cancel")
 			return
+		var/modif = 1
+		if (user.religion_check() == "Knowledge")
+			modif += 0.15
+		if (user.religious_clergy == "Monks")
+			modif += 0.3
 		if (choice == "Industry")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
-			if (do_after(user, (300*(user.getStatCoeff("crafting"))), src))
+			if (do_after(user, (300*(user.getStatCoeff("crafting")))/modif, src))
 				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "industry"
@@ -74,7 +79,7 @@
 
 		if (choice == "Anatomy")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
-			if (do_after(user, (300*((user.getStatCoeff("dexterity")+user.getStatCoeff("strength")))), src))
+			if (do_after(user, (300*((user.getStatCoeff("dexterity")+user.getStatCoeff("strength"))))/modif, src))
 				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "anatomy"
@@ -89,7 +94,7 @@
 
 		if (choice == "Fencing")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
-			if (do_after(user, (300*(user.getStatCoeff("swords"))), src))
+			if (do_after(user, (300*(user.getStatCoeff("swords")))/modif, src))
 				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "fencing"
@@ -104,7 +109,7 @@
 
 		if (choice == "Archery")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
-			if (do_after(user, (300*(user.getStatCoeff("bows"))), src))
+			if (do_after(user, (300*(user.getStatCoeff("bows")))/modif, src))
 				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "archery"
@@ -119,7 +124,7 @@
 
 		if (choice == "Gunpowder")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
-			if (do_after(user, (300*((user.getStatCoeff("pistol")+user.getStatCoeff("rifle")))), src))
+			if (do_after(user, (300*((user.getStatCoeff("pistol")+user.getStatCoeff("rifle"))))/modif, src))
 				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "gunpowder"
@@ -134,7 +139,7 @@
 
 		if (choice == "Medicine")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
-			if (do_after(user, (300*(user.getStatCoeff("medical"))), src))
+			if (do_after(user, (300*(user.getStatCoeff("medical")))/modif, src))
 				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "medicine"
@@ -149,7 +154,7 @@
 
 		if (choice == "Philosophy")
 			user << "<span class='notice'>You begin to transpose your knowledge to the [name].</span>"
-			if (do_after(user, (300*(user.getStatCoeff("philosophy"))), src))
+			if (do_after(user, (300*(user.getStatCoeff("philosophy")))/modif, src))
 				user << "<span class='notice'>You finish the [name].</span>"
 				user.adaptStat("philosophy", 1)
 				k_class = "philosophy"
@@ -172,7 +177,9 @@
 			else if (choice == "Yes")
 				var/modif = 1
 				if (user.religion_check() == "Knowledge")
-					modif = 1.35
+					modif += 0.25
+				if (user.religious_clergy == "Monks")
+					modif += 0.3
 				user << "<span class='notice'>You begin reading the [name] attently...</span>"
 				if (do_after(user, (600*k_level)/modif, src))
 					user << "<span class='notice'>You finish studying the [name]. You feel smarter already.</span>"
@@ -244,11 +251,16 @@
 		else
 			var/current_tribesmen = 0
 			var/studytime = 300*k_level
+			var/modif = 1
+			if (user.religion_check() == "Knowledge")
+				modif += 0.25
+			if (user.religious_clergy == "Monks")
+				modif += 0.3
 			var/displaytime = convert_to_textminute(studytime)
 			user << "Studying this document... This will take [displaytime] to finish."
-			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))
+			if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
 				user << "You finish studying this document. The knowledge gained will be useful in the development of our society."
-				user.adaptStat("philosophy", 1*k_level)
+				user.adaptStat("philosophy", 1*k_level*modif)
 				if (user.original_job_title == "Nomad")
 					if (user.civilization != null && user.civilization != "none")
 						if (alive_civilians.len <= 12)

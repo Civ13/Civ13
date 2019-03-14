@@ -17,7 +17,7 @@
 
 /obj/structure/religious/totem
 	name = "stone totem"
-	desc = "A stone statue, representing the spirit animal of this tribe."
+	desc = "A stone statue, representing a spirit animal of this tribe."
 	icon = 'icons/obj/cross.dmi'
 	icon_state = "goose"
 	density = TRUE
@@ -36,7 +36,8 @@
 	if (religion != "none")
 		for(var/i = 1, i <= map.custom_religion_nr.len, i++)
 			if (map.custom_religion_nr[i] == religion)
-				map.custom_religions[religion][3] += 1
+				if (map.custom_religions[religion][7] == "Shamans")
+					map.custom_religions[religion][3] += 1
 	spawn(1200)
 		religioncheck()
 
