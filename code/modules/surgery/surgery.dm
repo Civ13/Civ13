@@ -86,7 +86,7 @@ proc/spread_germs_to_organ(var/obj/item/organ/external/E, var/mob/living/carbon/
 
 	E.germ_level = max(germ_level,E.germ_level) //as funny as scrubbing microbes out with clean gloves is - no.
 
-proc/do_surgery(mob/living/carbon/M, mob/living/user, obj/item/tool)
+proc/do_surgery(mob/living/carbon/M, mob/living/carbon/human/user, obj/item/tool)
 	if (!istype(M))
 		return FALSE
 	if (user.a_intent == I_HURT)	//check for Hippocratic Oath
@@ -110,7 +110,10 @@ proc/do_surgery(mob/living/carbon/M, mob/living/user, obj/item/tool)
 						S.end_step(user, M, zone, tool)		//finish successfully
 						if (ishuman(user))
 							var/mob/living/carbon/human/H = user
-							H.adaptStat("medical", rand(1,2))
+							var/mod = 1
+							if (user.religious_clergy == "Shamans")
+								mod = 2
+							H.adaptStat("medical", 1.5*mod)
 						M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 					else
 						M.op_stage.in_progress -= zone 									// Clear the in-progress flag.

@@ -141,8 +141,7 @@
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
-	if (findtext(recipe.title, "holy book"))
-		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
+
 	if (findtext(recipe.title, "frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -207,9 +206,11 @@
 			return
 
 	if (findtext(recipe.title, "holy book"))
-		if (H.getStatCoeff("philosophy") < 2.49 || H.religion == "none" || H.religious_leader == FALSE)
+		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
 			H << "<span class = 'danger'>You can't make a holy book.</span>"
 			return
+		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
+
 	if (findtext(recipe.title, "religious poster"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You can't make a religious poster since you have no religion!</span>"
