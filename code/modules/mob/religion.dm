@@ -105,9 +105,24 @@
 		var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2,chooseclergy))
 		map.custom_religions += newnamev
 		usr << "<big>You are now the leader of the <b>[newname]</b> religion.</big>"
-		if (chooseclergy != "Cultists")
-			H.fully_replace_character_name(H.real_name,"Prophet [H.name]")
-
+		switch(chooseclergy)
+			if ("Shamans")
+				if (H.gender == "male")
+					H.fully_replace_character_name(H.real_name,"Elder Shaman [H.name]")
+				else
+					H.fully_replace_character_name(H.real_name,"Elder Shamaness [H.name]")
+			if ("Priests")
+				if (H.gender == "male")
+					H.fully_replace_character_name(H.real_name,"High Priest [H.name]")
+				else
+					H.fully_replace_character_name(H.real_name,"High Priestess [H.name]")
+			if ("Monks")
+				if (H.gender == "male")
+					H.fully_replace_character_name(H.real_name,"Father [H.name]")
+				else
+					H.fully_replace_character_name(H.real_name,"Mother [H.name]")
+			if ("Clerics")
+				H.fully_replace_character_name(H.real_name,"Prophet [H.name]")
 		return
 	else
 		return
