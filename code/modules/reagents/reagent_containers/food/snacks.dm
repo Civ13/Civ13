@@ -354,6 +354,8 @@
 	nutriment_amt = 2
 	nutriment_desc = list("egg" = 2)
 	decay = 35*600
+	var/amount_grown = 0
+	var/growing = FALSE
 /obj/item/weapon/reagent_containers/food/snacks/egg/New()
 	..()
 	spawn(50)
@@ -387,6 +389,7 @@
 	nutriment_amt = 2
 	nutriment_desc = list("egg" = 2)
 	var/amount_grown = 0
+	var/growing = FALSE
 	decay = 35*600
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
 	..()
