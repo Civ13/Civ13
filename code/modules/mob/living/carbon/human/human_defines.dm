@@ -157,10 +157,13 @@
 
 	var/civilization = "none" //what civilization this person belongs to
 	var/leader = FALSE
+
 	var/religion = "none" //what religion this person belongs to
 	var/religion_type = "none"
+	var/religion_style = "none"
 	var/religious_leader = FALSE
 	var/religious_clergy = FALSE
+
 	var/driver = FALSE
 	var/obj/structure/vehicle/driver_vehicle = null
 	var/riding = FALSE // if riding a horse

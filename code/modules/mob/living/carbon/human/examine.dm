@@ -300,9 +300,9 @@
 			var/mob/living/carbon/human/H = user
 			if (H.civilization == civilization && civilization != "none") // when you ghost, mind.assigned_job is set to null
 				msg += "<br><i>You recognize [T.him] as a member of your faction, <b>[civilization]</b>.</i>"
-			if (H.religion == religion && religion_type == "Cultists" && religious_clergy == "Cultists")
+			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")
 				msg += "<br><i>You recognize [T.him] as an ordained <b>Cultist</b> of your cult, <b>[religion]</b>.</i>"
-			else if (H.religion == religion && religion_type == "Cultists" && religious_clergy != "Cultists")
+			else if (H.religion == religion && religion_style == "Cultists" && religious_clergy != "Cultists")
 				msg += "<br><i>You recognize [T.him] as a member of your cult, <b>[religion]</b>.</i>"
 				if (map.custom_civs[H.civilization][4] != null)
 					if (map.custom_civs[H.civilization][4].real_name == real_name)

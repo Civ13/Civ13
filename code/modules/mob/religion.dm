@@ -93,6 +93,7 @@
 		H.religion = newname
 		H.religious_leader = TRUE
 		H.religion_type = choosetype
+		H.religion_style = chooseclergy
 		map.custom_religion_nr += newname
 		//////////////////////////////////////creator, type, points, symbol, color1, color2, clergy style
 		var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2,chooseclergy))
@@ -127,6 +128,7 @@
 					map.custom_religions[U.religion][1] = null
 			U.religion = "none"
 			U.religion_type = "none"
+			U.religion_style = "none"
 			U.religious_leader = FALSE
 			usr << "You left your religion. You are now an atheist."
 	else
@@ -255,8 +257,9 @@
 				user.religion = religion
 				user.religious_leader = FALSE
 				user.religion_type = religion_type
+				user.religion_style = map.custom_religions[religion][7]
 				user << "<big>You convert to the [religion] religion!</big>"
-				if (religion_type == "Clerics")
+				if (map.custom_religions[religion][7] == "Clerics")
 					map.custom_religions[religion][3] += 15
 				return
 
@@ -397,7 +400,7 @@ obj/structure/altar
 
 
 obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
-	if (H.religion == religion && (H.religious_clergy == "Priests" || H.religious_leader) && H.religion_type == "Priests")
+	if (H.religion == religion && (H.religious_clergy == "Priests" || H.religious_leader) && H.religion_style == "Priests")
 		var/choice = WWinput(H, "What action do you want to perform?", "[religion]'s Altar", "Cancel", list("Cancel", "Worshipping Session", "Conversion"))
 		switch(choice)
 			if ("Cancel")
@@ -436,6 +439,7 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 						choice2.religion = H.religion
 						choice2.religious_leader = FALSE
 						choice2.religion_type = H.religion_type
+						choice2.religion_style = H.religion_style
 						return
 					else if (answer == "No")
 						usr << "[closemobs] has rejected your offer."
@@ -489,7 +493,7 @@ obj/structure/altar/iron
 	spawn(10)
 		if (religion != "none")
 			name = "[religion]'s banner"
-			desc = "This is a [religion] religion banner poster."
+			desc = "This is a [religion] religion banner."
 			var/image/overc = image("icon" = icon, "icon_state" = "wall_banner_1")
 			overc.color = map.custom_religions[religion][6]
 			overlays += overc
