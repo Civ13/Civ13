@@ -243,6 +243,9 @@
 	if (user.religion == religion && religion != "none")
 		user << "You stare at the glorious holy book of your religion."
 	else if (user.religion != religion && religion != "none" && !user.religious_leader && user.religious_clergy == FALSE)
+		if (map.custom_religions[user.religion][7] == "Clerics")
+			user << "You can't abandon a Clerical religion!"
+			return
 		user << "You start reading the [title]..."
 		if (do_after(user, 900, src))
 			var/choice = WWinput(user, "After reading the [title], you feel attracted to the [religion] religion. Do you want to convert?", "[title]", "Yes", list("Yes","No"))
@@ -253,6 +256,8 @@
 				user.religious_leader = FALSE
 				user.religion_type = religion_type
 				user << "<big>You convert to the [religion] religion!</big>"
+				if (religion_type == "Clerics")
+					map.custom_religions[religion][3] += 15
 				return
 
 
@@ -329,7 +334,7 @@ obj/structure/altar
 	var/color2 = "#FFFFFF"
 	flammable = TRUE
 	var/health = 70
-
+	var/session = FALSE
 /obj/structure/altar/New()
 	..()
 	invisibility = 101
@@ -349,8 +354,28 @@ obj/structure/altar
 		update_icon()
 		invisibility = 0
 
-/obj/structure/altar/attackby(obj/item/W as obj, mob/user as mob)
+/obj/structure/altar/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if (user.a_intent == I_HELP && user.religion == religion && user.religious_clergy == "Cultists")
+		if (istype(W, /obj/item/clothing/accessory/armband/talisman))
+			var/obj/item/clothing/accessory/armband/talisman/T = W
+			if (T.religion != religion)
+				user << "You start destroying \the [W] in the name of your religion, [religion]..."
+				if (do_after(user, 100, src))
+					user << "You destroy \the [W]!"
+					map.custom_religions[religion][3] += 3
+					qdel(W)
+					return
+		else if (istype(W, /obj/item/weapon/book/holybook))
+			var/obj/item/weapon/book/holybook/T = W
+			if (T.religion != religion)
+				user << "You start destroying \the [W] in the name of your religion, [religion]..."
+				if (do_after(user, 100, src))
+					user << "You destroy \the [W]!"
+					map.custom_religions[religion][3] += 10
+					qdel(W)
+					return
+		return
 	switch(W.damtype)
 		if ("fire")
 			if (flammable)
@@ -369,6 +394,56 @@ obj/structure/altar
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		qdel(src)
 		return
+
+
+obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
+	if (H.religion == religion && (H.religious_clergy == "Priests" || H.religious_leader) && H.religion_type == "Priests")
+		var/choice = WWinput(H, "What action do you want to perform?", "[religion]'s Altar", "Cancel", list("Cancel", "Worshipping Session", "Conversion"))
+		switch(choice)
+			if ("Cancel")
+				return
+			if ("Worshipping Session")
+				if (!session)
+					session = TRUE
+					visible_message("[H] starts holding a worshipping session of the [religion] religion...")
+					var/list/currlist = list()
+					for (var/mob/living/carbon/human/A in range(3, loc))
+						if (A.stat == 0 && A != H && A.religion == religion)
+							currlist += A
+					if (do_after(H, 600, src))
+						var/list/currlist2 = list()
+						for (var/mob/living/carbon/human/AA in range(3, loc))
+							if (AA.stat == 0 && (AA in currlist))
+								currlist2 += AA
+						map.custom_religions[religion][3] += currlist2.len*0.8
+						visible_message("[H] finishes the worshipping session of the [religion] religion.")
+						return
+
+			if ("Conversion")
+				var/list/closemobs = list("Cancel")
+				for (var/mob/living/carbon/human/M in range(2,loc))
+					if (M.religion != religion && M.religious_clergy == FALSE && map.custom_religions[M.religion][7] != "Clerics" && M.stat == 0)
+						closemobs += M
+				var/choice3 = WWinput(usr, "Who do you want to convert?", "[religion]'s Altar", "Cancel", closemobs)
+				if (choice3 == "Cancel")
+					return
+				else
+					var/mob/living/carbon/human/choice2 = choice3
+					var/answer = WWinput(choice2, "[H] asks you to convert to his religion, [H.religion]. Will you accept?", null, "Yes", list("Yes","No"))
+					if (answer == "Yes")
+						usr << "[choice2] accepts your offer. They are worshipping [H.religion]."
+						src << "You accept [H]'s offer. You are now worshipping [H.religion]."
+						choice2.religion = H.religion
+						choice2.religious_leader = FALSE
+						choice2.religion_type = H.religion_type
+						return
+					else if (answer == "No")
+						usr << "[closemobs] has rejected your offer."
+						return
+					else
+						return
+	else
+		..()
 
 obj/structure/altar/wood
 	name = "wood altar"
@@ -393,3 +468,44 @@ obj/structure/altar/iron
 	icon_state = "iron_altar"
 	flammable = FALSE
 	health = 120
+
+
+
+/obj/structure/banner/religious
+	name = "religious banner"
+	icon = 'icons/obj/cross.dmi'
+	icon_state = "wall_banner"
+	desc = "A white banner."
+	var/religion = "none"
+	var/symbol = "Cross"
+	var/color1 = "#000000"
+	var/color2 = "#FFFFFF"
+	flammable = TRUE
+	layer = 3.21
+
+/obj/structure/banner/religious/New()
+	..()
+	invisibility = 101
+	spawn(10)
+		if (religion != "none")
+			name = "[religion]'s banner"
+			desc = "This is a [religion] religion banner poster."
+			var/image/overc = image("icon" = icon, "icon_state" = "wall_banner_1")
+			overc.color = map.custom_religions[religion][6]
+			overlays += overc
+			var/image/overc1 = image("icon" = icon, "icon_state" = "wall_banner_2")
+			overc1.color = map.custom_religions[religion][5]
+			overlays += overc1
+			var/image/overs = image("icon" = icon, "icon_state" = "banner_[map.custom_religions[religion][4]]")
+			overs.color = map.custom_religions[religion][5]
+			overlays += overs
+		update_icon()
+		invisibility = 0
+/obj/structure/poster/banner/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (W.sharp)
+		user << "You start ripping off the [src]..."
+		if (do_after(user, 130, src))
+			visible_message("[user] rips the [src]!")
+			qdel(src)
+	else
+		..()

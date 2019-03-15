@@ -19,6 +19,11 @@
 			I.loc = src
 	update_icon()
 
+/obj/structure/bookcase/New()
+	..()
+	spawn(10)
+		religioncheck()
+
 /obj/structure/bookcase/attack_hand(var/mob/user as mob)
 	if (contents.len)
 		var/obj/item/weapon/book/choice = WWinput(user, "Which book would you like to remove from the shelf?", "Bookcase", WWinput_first_choice(contents), WWinput_list_or_null(contents))
@@ -194,3 +199,11 @@
 		sum_i = null
 		sum_m = null
 		sum_h = null
+
+/obj/structure/bookcase/proc/religioncheck()
+	for (var/obj/item/weapon/book/research/B in contents)
+		if (B.monk && B.religion != "none")
+			if (map.custom_religions[B.religion][7] == "Monks")
+				map.custom_religions[B.religion][3] += 0.3
+	spawn(2400)
+		religioncheck()
