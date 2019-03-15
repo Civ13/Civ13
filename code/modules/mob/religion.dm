@@ -48,7 +48,13 @@
 		choosetype = WWinput(src, "Choose a focus for the new religion:", "Religion Creation", "Cancel", list("Cancel","Combat","Knowledge","Production"))
 		if (choosetype == "Cancel")
 			return
-		chooseclergy = WWinput(src, "Choose a clergy organization for your new religion:", "Religion Creation", "Cancel", list("Cancel","Shamans","Cultists","Priests","Monks","Clerics"))
+		var/list/clergychoices = list("Cancel","Shamans")
+		if (map.ordinal_age == 1)
+			clergychoices = list("Cancel","Shamans","Cultists","Priests")
+		else if (map.ordinal_age >= 2)
+			clergychoices = list("Cancel","Shamans","Cultists","Priests","Monks","Clerics")
+
+		chooseclergy = WWinput(src, "Choose a clergy organization for your new religion:", "Religion Creation", "Cancel", clergychoices)
 		if (chooseclergy == "Cancel")
 			return
 		choosesymbol = WWinput(src, "Choose a symbol for the new religion:", "Religion Creation", "Cancel", list("Cancel","Star","Sun","Moon","Skull","Hammer","Scales","Cross","Tree"))
