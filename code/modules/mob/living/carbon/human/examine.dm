@@ -298,18 +298,26 @@
 	else
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
+			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")
+				msg += "<br><i>You recognize [T.him] as an ordained <b>Cultist</b> of your cult, <b>[religion]</b>.</i>"
+			else if (H.religion == religion && religion_style == "Cultists" && religious_clergy != "Cultists")
+				msg += "<br><i>You recognize [T.him] as a member of your cult, <b>[religion]</b>.</i>"
+
 			if (H.civilization == civilization && civilization != "none") // when you ghost, mind.assigned_job is set to null
-				msg += "<br><i>You recognize [T.him] as a member of your group, <b>[civilization]</b>.</i>"
+				msg += "<br><i>You recognize [T.him] as a member of your faction, <b>[civilization]</b>.</i>"
 				if (map.custom_civs[H.civilization][4] != null)
 					if (map.custom_civs[H.civilization][4].real_name == real_name)
-						msg += "<br><b>[T.He] is the leader of your group.</b>"
-
+						msg += "<br><b>[T.He] is the leader of your faction.</b>"
 			else if (civilization != "none") // examining someone on another team
 				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
+
 			else
-				msg += "<br><i>[T.He] is a nomad. He has no group</b>.</i>"
+				msg += "<br><i>[T.He] is a nomad. He has no faction</b>.</i>"
 		else if (isobserver(user))
-			msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
+			if (civilization != "none")
+				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
+			else
+				msg += "<br><i>[T.He] is a nomad. He has no faction</b>.</i>"
 
 		else if (ishuman(user) && user == src)
 			var/mob/living/carbon/human/H = user

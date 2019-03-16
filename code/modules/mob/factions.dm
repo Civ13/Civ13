@@ -4,6 +4,7 @@
 	verbs += /mob/living/carbon/human/proc/transfer_faction
 	verbs += /mob/living/carbon/human/proc/become_leader
 
+/////////////FACTIONS////////////////////////////
 /mob/living/carbon/human/proc/create_faction()
 	set name = "Create Faction"
 	set category = "Faction"
@@ -73,7 +74,7 @@
 
 
 /mob/living/carbon/human/proc/transfer_faction()
-	set name = "Transfer Leadership"
+	set name = "Transfer Faction Leadership"
 	set category = "Faction"
 	var/mob/living/carbon/human/U
 
@@ -114,7 +115,7 @@
 		return
 
 /mob/living/carbon/human/proc/become_leader()
-	set name = "Become Leader"
+	set name = "Become Faction Leader"
 	set category = "Faction"
 	var/mob/living/carbon/human/U
 

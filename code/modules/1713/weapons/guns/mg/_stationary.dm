@@ -26,7 +26,7 @@
 	caliber = "a762x54"
 	slot_flags = FALSE
 	ammo_type = /obj/item/ammo_casing/a762x54
-	stat = "MG"
+	stat = "mg"
 
 	firemodes = list(
 		list(name="3000 rpm", burst=10, burst_delay=0.1, fire_delay=0.4, dispersion=list(1.0)),

@@ -158,6 +158,19 @@
 		else
 			return ..(C, user)
 
+	else if (istype(C, /obj/item/weapon/poster/religious) && istype(get_turf(src), /turf/floor/dirt/underground))
+		user << "You start placing the [C] on the [src]..."
+		if (do_after(user, 70, src))
+			visible_message("[user] places the [C] on the [src].")
+			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
+			var/obj/item/weapon/poster/religious/P = C
+			RP.religion = P.religion
+			RP.symbol = P.symbol
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.drop_from_inventory(C)
+			qdel(C)
+			return
 	else if (istype(C, /obj/item/weapon/pickaxe))
 		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user
@@ -600,7 +613,7 @@
 			user << "<span class='danger'>You can't plough this type of terrain.</span>"
 			return
 
-	else if (istype(C, /obj/item/weapon/covers) && !isturf(src, /turf/floor/beach/water/deep/saltwater))
+	else if (istype(C, /obj/item/weapon/covers) && !istype(src, /turf/floor/beach/water/deep/saltwater))
 
 		var/your_dir = "NORTH"
 
@@ -625,12 +638,13 @@
 			if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 				visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 				if (do_after(user, covers_time, user.loc))
-					qdel(C)
-					new/obj/covers/repairedfloor(src, user)
-					visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
-					if (ishuman(user))
-						var/mob/living/carbon/human/H = user
-						H.adaptStat("crafting", 3)
+					if (!istype(src, /turf/floor/beach/water/deep/saltwater))
+						qdel(C)
+						new/obj/covers/repairedfloor(src, user)
+						visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
+						if (ishuman(user))
+							var/mob/living/carbon/human/H = user
+							H.adaptStat("crafting", 3)
 				return
 
 

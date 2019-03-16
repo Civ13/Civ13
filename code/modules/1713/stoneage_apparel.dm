@@ -73,10 +73,11 @@
 
 /obj/item/clothing/accessory/armband/talisman
 	name = "bone talisman"
-	desc = "A human bone talisman."
+	desc = "A bone talisman."
 	icon_state = "talisman"
 	item_state = "talisman"
 	slot = "decor"
+	var/religion = "none"
 
 /obj/item/clothing/accessory/armband/indian1
 	name = "indian acessories"

@@ -138,8 +138,12 @@
 			accuracy_sublist = accuracy_list["small"]
 
 	. = get_base_miss_chance(accuracy_sublist, target)
+	var/modif = 1
+	if (firer.religion_check() == "Combat")
+		modif = 1.1
 
-	var/firer_stat = firer.getStatCoeff(stat)
+	var/firer_stat = firer.getStatCoeff(stat)*modif
+
 	var/miss_chance_modifier = 1.00
 
 //	log_debug("initial miss chance: [.]")

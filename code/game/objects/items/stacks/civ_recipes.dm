@@ -160,13 +160,6 @@
 	if (current_res[1] >= 39 && current_res[2] >= 40 && map.ordinal_age <= 2)
 		recipes += new/datum/stack_recipe("naginata", /obj/item/weapon/material/naginata, 12, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 
-		recipes += new/datum/stack_recipe_list("tools", list(
-			new/datum/stack_recipe("hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
-			new/datum/stack_recipe("shovel", /obj/item/weapon/shovel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("wrench", /obj/item/weapon/wrench, 4, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("butcher's cleaver", /obj/item/weapon/material/knife/butcher, 3, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
-			new/datum/stack_recipe("razor blade", /obj/item/weapon/material/kitchen/utensil/knife/razorblade, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
-			new/datum/stack_recipe("pickaxe", /obj/item/weapon/pickaxe, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[2] >= 82 && map.ordinal_age < 4)
 		recipes += new/datum/stack_recipe_list("bullets", list(
 			new/datum/stack_recipe("musket ball (x2)", /obj/item/stack/ammopart/musketball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -188,7 +181,7 @@
 		recipes += new/datum/stack_recipe("bayonet", /obj/item/weapon/attachment/bayonet, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 87)
 		recipes += new/datum/stack_recipe("iron furnace", /obj/structure/heatsource, 15, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
-
+	recipes += new/datum/stack_recipe("iron altar", /obj/structure/altar/iron, 12, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("iron arm bangles", /obj/item/clothing/accessory/armband/armbangle, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 35 && current_res[3]>= 44)
 		recipes += new/datum/stack_recipe("splints", /obj/item/stack/medical/splint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -230,7 +223,8 @@
 
 /material/wood/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
-	recipes += new/datum/stack_recipe("raft",/obj/structure/vehicle/raft, 10, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 22)
+		recipes += new/datum/stack_recipe("raft",/obj/structure/vehicle/raft, 10, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 22)
 		recipes += new/datum/stack_recipe("boat frame", /obj/item/vehicleparts/frame/boat, 22, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.resourceresearch == TRUE)
@@ -241,18 +235,15 @@
 		recipes += new/datum/stack_recipe("oil well",/obj/structure/oilwell, 40, _time = 270, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.gamemode == "Oil Rush")
 		recipes += new/datum/stack_recipe("oil deposit",/obj/structure/oil_deposits, 6, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
-	if (current_res[1] >= 52)
-		recipes += new/datum/stack_recipe("printing press",/obj/structure/printingpress, 12, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("roof support",/obj/structure/roof_support, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("mine support",/obj/structure/mine_support, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("roof builder",/obj/item/weapon/roofbuilder, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 33 && current_res[3]>= 48)
 		recipes += new/datum/stack_recipe("doctor handbook",/obj/item/weapon/doctor_handbook, 12, _time = 210, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[1] >= 25 && current_res[3]>= 51)
-		recipes += new/datum/stack_recipe("operating table",/obj/structure/optable, 9, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
+//	if (current_res[1] >= 25 && current_res[3]>= 51)
+//		recipes += new/datum/stack_recipe("operating table",/obj/structure/optable, 9, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.ordinal_age > 0 && map.research_active == TRUE)
 		recipes += new/datum/stack_recipe("research kit",/obj/item/weapon/researchkit, 10, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 18)
 
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
@@ -364,11 +355,13 @@
 			new/datum/stack_recipe("wood pole", /obj/structure/barricade/wood_pole, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	if (current_res[1] < 47)
-		recipes += new/datum/stack_recipe_list("decoration", list(
+		recipes += new/datum/stack_recipe_list("religious & decoration", list(
+			new/datum/stack_recipe("wood altar", /obj/structure/altar/wood, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("native wood mask", /obj/structure/religious/tribalmask, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("impaled skull", /obj/structure/religious/impaledskull, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
-		recipes += new/datum/stack_recipe_list("decoration", list(
+		recipes += new/datum/stack_recipe_list("religious & decoration", list(
+			new/datum/stack_recipe("wood altar", /obj/structure/altar/wood, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("impaled skull", /obj/structure/religious/impaledskull, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("small cross", /obj/structure/religious/woodcross1, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("cross", /obj/structure/religious/woodcross2, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
@@ -383,8 +376,6 @@
 	else if (current_res[1] >= 19 && current_res[1] <= 45)
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("campfire",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -397,9 +388,6 @@
 	else
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("book",/obj/item/weapon/book, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("sandals", /obj/item/clothing/shoes/sandal, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("wood mug",/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("campfire",/obj/structure/oven/fireplace, 4, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -411,6 +399,35 @@
 			new/datum/stack_recipe("violin",/obj/item/violin, 10, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("piano",/obj/structure/piano, 18, _time = 195, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),))
+	if (current_res[1] < 19)
+		recipes += new/datum/stack_recipe_list("paper & printing", list(
+			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),))
+	else if (current_res[1] >= 19 && current_res[1] <= 45)
+		recipes += new/datum/stack_recipe_list("paper & printing", list(
+			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[1] > 45 && current_res[1] < 52)
+		recipes += new/datum/stack_recipe_list("paper & printing", list(
+			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("book",/obj/item/weapon/book, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else
+		recipes += new/datum/stack_recipe_list("paper & printing", list(
+			new/datum/stack_recipe("printing press",/obj/structure/printingpress, 12, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("book",/obj/item/weapon/book, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 	if (current_res[1] >= 24 && current_res[2] >= 33)
 		recipes += new/datum/stack_recipe_list("siege weapons", list(
 			new/datum/stack_recipe("catapult",/obj/structure/catapult, 50, _time = 450, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -453,6 +470,9 @@
 	recipes += new/datum/stack_recipe("stone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone stairs", /obj/covers/cobblestone/stairs, 2, _time = 45, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("stone altar", /obj/structure/altar/stone, 15, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 28)
+		recipes += new/datum/stack_recipe("marble altar", /obj/structure/altar/marble, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 43)
 		recipes += new/datum/stack_recipe("gravestone", /obj/structure/religious/gravestone, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("totem", /obj/structure/religious/totem, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -514,6 +534,7 @@
 
 /material/cloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	recipes += list(new/datum/stack_recipe("religious banner",/obj/structure/banner/religious, 3, _time = 65, _one_per_turf = TRUE, _on_floor = TRUE))
 	if (current_res[3] >= 22)
 		recipes += list(new/datum/stack_recipe("small sail",/obj/item/sail, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 19)

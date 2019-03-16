@@ -321,9 +321,10 @@
 	for(var/turf/T in nearbyObjects)
 		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
 			continue //bad turf
-		for(var/obj/OB in T)
+		for(var/obj/structure/OB in T)
 			continue //bad location
-
+		for(var/obj/covers/OB in T)
+			continue //bad location
 		emptyTurfs += T
 	if (emptyTurfs.len)
 		return pick(emptyTurfs)

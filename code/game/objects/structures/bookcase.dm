@@ -19,6 +19,11 @@
 			I.loc = src
 	update_icon()
 
+/obj/structure/bookcase/New()
+	..()
+	spawn(10)
+		religioncheck()
+
 /obj/structure/bookcase/attack_hand(var/mob/user as mob)
 	if (contents.len)
 		var/obj/item/weapon/book/choice = WWinput(user, "Which book would you like to remove from the shelf?", "Bookcase", WWinput_first_choice(contents), WWinput_list_or_null(contents))
@@ -150,10 +155,15 @@
 					current_tribesmen = alive_civilians.len/2
 				else
 					current_tribesmen = alive_civilians.len/min(2+((alive_civilians.len-30)*0.1),5)
-			var/studytime = 300*current_research/current_tribesmen
+			var/studytime = (300*current_research)/current_tribesmen
 			var/displaytime = convert_to_textminute(studytime)
+			var/modif = 1
+			if (user.religion_check() == "Knowledge")
+				modif += 0.15
+			if (user.religious_clergy == "Monks")
+				modif += 0.3
 			user << "Studying these documents... This will take [displaytime] to finish."
-			if (do_after(user,studytime/user.getStatCoeff("philosophy"),src))
+			if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
 				user << "You finish studying these documents. The knowledge gained will be useful in the development of our society."
 				user.adaptStat("philosophy", 1*current_research)
 				if (user.civilization == civname_a)
@@ -189,3 +199,11 @@
 		sum_i = null
 		sum_m = null
 		sum_h = null
+
+/obj/structure/bookcase/proc/religioncheck()
+	for (var/obj/item/weapon/book/research/B in contents)
+		if (B.monk && B.religion != "none")
+			if (map.custom_religions[B.religion][7] == "Monks")
+				map.custom_religions[B.religion][3] += 0.3
+	spawn(2400)
+		religioncheck()

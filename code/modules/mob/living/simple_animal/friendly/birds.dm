@@ -18,7 +18,204 @@
 	mob_size = MOB_SMALL
 	possession_candidate = TRUE
 	granivore = 1
+///////////////////////////////////////CHICKENS////////////////////////
 
+/mob/living/simple_animal/chick
+	name = "\improper chick"
+	desc = "Adorable! They make such a racket though."
+	icon_state = "chick"
+	icon_living = "chick"
+	icon_dead = "chick_dead"
+	icon_gib = "chick_gib"
+	speak = list("Cherp.","Cherp?","Chirrup.","Cheep!")
+	speak_emote = list("cheeps")
+	emote_hear = list("cheeps")
+	emote_see = list("pecks at the ground","flaps its tiny wings")
+	speak_chance = 2
+	turns_per_move = 2
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = TRUE
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = TRUE
+	var/amount_grown = FALSE
+	pass_flags = PASSTABLE
+	mob_size = MOB_MINISCULE
+	granivore = 1
+
+/mob/living/simple_animal/chick/New()
+	..()
+	pixel_x = rand(-6, 6)
+	pixel_y = rand(0, 10)
+
+/mob/living/simple_animal/chick/Life()
+	. =..()
+	if (!.)
+		return
+	if (!stat)
+		amount_grown += 1
+		if (amount_grown >= 250)
+			new /mob/living/simple_animal/chicken(loc)
+			qdel(src)
+
+/mob/living/simple_animal/chick/death()
+	..()
+	chicken_count -= 1
+
+/mob/living/simple_animal/chicken
+	name = "\improper chicken"
+	desc = "Hopefully the eggs are good this season."
+	icon_state = "brownhen"
+	icon_living = "brownhen"
+	icon_dead = "brownhen_dead"
+	speak = list("Cluck!","BWAAAAARK BWAK BWAK BWAK!","Bwaak bwak.")
+	speak_emote = list("clucks","croons")
+	emote_hear = list("clucks")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	turns_per_move = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 2
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 10
+	var/eggsleft = 5
+	var/roosting_icon = "brownhen_roosting"
+	var/body_color
+	var/egg_timer = FALSE
+	pass_flags = PASSTABLE
+	mob_size = MOB_SMALL
+	granivore = 1
+
+/mob/living/simple_animal/chicken/New()
+	..()
+	if (!body_color)
+		body_color = pick( list("brown","black","white","grey") )
+	icon_state = "[body_color]hen"
+	icon_living = "[body_color]hen"
+	roosting_icon = "[body_color]hen_roosting"
+	icon_dead = "[body_color]hen_dead"
+	pixel_x = rand(-6, 6)
+	pixel_y = rand(0, 10)
+	chicken_count += 1
+
+/mob/living/simple_animal/chicken/death()
+	..()
+	chicken_count -= 1
+
+/mob/living/simple_animal/chicken/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	if (stat == CONSCIOUS && istype(O, /obj/item/stack/farming/seeds))
+		var/obj/item/stack/S = O
+		if (eggsleft < 5)
+			user.visible_message("<span class='notice'>[user] feeds [src] \the [O].</span>")
+			eggsleft++
+			S.use(1)
+		else
+			user << "<span class = 'red'>The [src] is not hungry.</span>"
+	..()
+/mob/living/simple_animal/chicken/Life()
+	. =..()
+	if (!.)
+		return
+	if (!stat)
+		egg_timer += 1
+		if (egg_timer >= 120)
+			if (!stat && eggsleft > 0)
+				visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
+				stop_automated_movement = TRUE
+				icon_state = roosting_icon
+				icon_living = roosting_icon
+				update_icons()
+				spawn(250)
+					icon_state = "[body_color]hen"
+					icon_living = "[body_color]hen"
+					update_icons()
+				eggsleft--
+				egg_timer = 0
+				var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
+				E.pixel_x = rand(-6,6)
+				E.pixel_y = rand(-6,6)
+				var/malearound = FALSE
+				var/nearbyObjects = range(1,src) //3x3 area around chicken
+				for(var/mob/living/simple_animal/rooster/M in nearbyObjects)
+					if (M.stat == CONSCIOUS)
+						malearound = TRUE
+				if (malearound)
+					var/chickenCount = 0
+					for(var/mob/living/simple_animal/chicken/M in nearbyObjects)
+						chickenCount++
+
+					for(var/mob/living/simple_animal/chick/M in nearbyObjects)
+						chickenCount++
+
+					if (chickenCount <= 5 && E.growing == FALSE) // max 5 chickens/chicks in a 5x5 area for eggs to start hatching
+						E.grow()
+						E.growing = TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/egg/proc/grow()
+	if (isturf(loc) && chicken_count < 50)
+		chicken_count++
+		amount_grown += 1
+		if (amount_grown >= 400)
+			visible_message("[src] hatches with a quiet cracking sound.")
+			new /mob/living/simple_animal/chick(get_turf(src))
+			processing_objects.Remove(src)
+			qdel(src)
+			return
+		else
+			spawn(40)
+				grow()
+
+	else
+		processing_objects.Remove(src)
+		return
+
+/mob/living/simple_animal/rooster
+	name = "\improper rooster"
+	desc = "Hopefully the eggs are good this season."
+	icon_state = "brownrooster"
+	icon_living = "brownrooster"
+	icon_dead = "brownrooster_dead"
+	speak = list("Cluck!","BWAAAAARK BWAK BWAK BWAK!","Cock-a-doodle-doo!")
+	speak_emote = list("clucks","croons")
+	emote_hear = list("clucks")
+	emote_see = list("pecks at the ground","flaps its wings viciously")
+	speak_chance = 2
+	turns_per_move = 3
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_amount = 2
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "kicks"
+	attacktext = "kicked"
+	health = 15
+	var/roosting_icon = "brownrooster_roosting"
+	var/body_color
+	var/egg_timer = FALSE
+	pass_flags = PASSTABLE
+	mob_size = MOB_SMALL
+	granivore = 1
+
+/mob/living/simple_animal/rooster/New()
+	..()
+	if (!body_color)
+		body_color = pick( list("brown","black","white","grey") )
+	icon_state = "[body_color]rooster"
+	icon_living = "[body_color]rooster"
+	roosting_icon = "[body_color]rooster_roosting"
+	icon_dead = "[body_color]rooster_dead"
+	pixel_x = rand(-6, 6)
+	pixel_y = rand(0, 10)
+	if (map)
+		chicken_count += 1
+/mob/living/simple_animal/rooster/death()
+	..()
+	chicken_count -= 1
+////////////////////////////////////////TURKEYS//////////////////////
 /mob/living/simple_animal/turkey_f
 	name = "\improper turkey"
 	desc = "A common american animal. Good for meat."
@@ -121,6 +318,7 @@
 	..()
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
+	turkey_count += 1
 
 /mob/living/simple_animal/turkeychick/Life()
 	. =..()
@@ -169,11 +367,11 @@
 				E.pixel_x = rand(-6,6)
 				E.pixel_y = rand(-6,6)
 				var/malearound = FALSE
-				var/nearbyObjects = range(1,src) //3x3 area around cow
+				var/nearbyObjects = range(1,src) //3x3 area around turkey
 				for(var/mob/living/simple_animal/turkey_m/M in nearbyObjects)
 					if (M.stat == CONSCIOUS)
 						malearound = TRUE
-				if (prob(20) && malearound)
+				if (malearound)
 					var/nearbyObjects1 = range(2,src) //5x5 area
 					var/turkeyCount = 0
 					for(var/mob/living/simple_animal/turkey_m/M in nearbyObjects1)
@@ -185,10 +383,11 @@
 					for(var/mob/living/simple_animal/turkeychick/M in nearbyObjects1)
 						turkeyCount++
 
-					if (turkeyCount <= 5) // max 5 chickens/chicks in a 5x5 area for eggs to start hatching
-						processing_objects.Add(E)
+					if (turkeyCount <= 5 && E.growing == FALSE) // max 5 turkeys/chicks in a 5x5 area for eggs to start hatching
+						E.grow()
+						E.growing = TRUE
 
-/obj/item/weapon/reagent_containers/food/snacks/turkeyegg/process()
+/obj/item/weapon/reagent_containers/food/snacks/turkeyegg/proc/grow()
 	if (isturf(loc) && turkey_count < 35)
 		turkey_count++
 		amount_grown += 1
@@ -199,8 +398,8 @@
 			qdel(src)
 			return
 		else
-			spawn(40)
-				process()
+			spawn(50)
+				grow()
 	else
 		processing_objects.Remove(src)
 		return

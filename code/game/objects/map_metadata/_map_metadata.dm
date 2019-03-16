@@ -85,6 +85,8 @@ var/civmax_research = list(130,130,130)
 	var/nomads = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/custom_civs = list()
+	var/list/custom_religions = list()
+	var/list/custom_religion_nr = list()
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical), 4th value: leader. 5th value: victory points
 	var/civa_research = list(0,0,0,null,0)
 	var/civb_research = list(0,0,0,null,0)
@@ -134,6 +136,7 @@ var/civmax_research = list(130,130,130)
 	var/windspeedvar = 1 // 0 to 4
 	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale
 	var/winddesc = "A light Eastern breeze."
+
 /obj/map_metadata/New()
 	..()
 	map = src

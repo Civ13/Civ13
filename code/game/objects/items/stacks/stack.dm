@@ -137,6 +137,11 @@
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+	if (findtext(recipe.title, "talisman") || findtext(recipe.title, "totem"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+
 	if (findtext(recipe.title, "frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -200,6 +205,22 @@
 			user << "You are too close to an existing deposit!"
 			return
 
+	if (findtext(recipe.title, "holy book"))
+		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
+			H << "<span class = 'danger'>You can't make a holy book.</span>"
+			return
+		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
+
+	if (findtext(recipe.title, "altar"))
+		if (H.religious_leader == FALSE)
+			if (H.religious_clergy == 0)
+				H << "<span class = 'danger'>You can't make an altar as you are not part of the clergy.</span>"
+				return
+
+	if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar") || findtext(recipe.title, "religious banner"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
+			return
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -266,12 +287,6 @@
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 					return
 
-
-	if (recipe.result_type == /obj/structure/religious/totem || recipe.result_type == /obj/structure/religious/impaledskull || recipe.result_type == /obj/structure/religious/tribalmask || recipe.result_type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot || recipe.result_type == /obj/item/clothing/accessory/armband/talisman || recipe.result_type == /obj/item/clothing/head/skullmask || recipe.result_type == /obj/item/weapon/material/kitchen/utensil/knife/bone)
-		if (!H.faction_text == INDIANS)
-			H << "<span class = 'danger'>Only natives can make this!</span>"
-			return
-
 		if (recipe.result_type == /obj/structure/religious/totem)
 			if (H.original_job_title == "Red Goose Tribesman")
 				newtotem.name = "Stone Goose Totem"
@@ -299,7 +314,9 @@
 				newtotem.desc = "A stone bear totem."
 			else
 				newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
-				newtotem.desc = "A stone totem."
+				newtotem.name = "[H.religion] totem."
+				newtotem.desc = "A stone totem, dedicated to the [H.religion] religion."
+				newtotem.religion = H.religion
 
 		if (recipe.result_type == /obj/structure/religious/impaledskull)
 			if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
@@ -548,7 +565,7 @@
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
-	if (use(required))
+	if (use(required,H))
 		var/atom/O
 		if (recipe.use_material)
 			O = new recipe.result_type(user.loc, recipe.use_material)
@@ -628,18 +645,47 @@
 
 		O.set_dir(user.dir)
 		O.add_fingerprint(user)
-		if (istype(O, /obj/structure/fuelpump))
+		if (istype(O, /obj/item/clothing/accessory/armband/talisman))
+			var/obj/item/clothing/accessory/armband/talisman/TM = O
+			TM.name = "[H.religion] bone talisman"
+			TM.desc = "A [H.religion] bone talisman."
+			TM.religion = H.religion
+		else if (istype(O, /obj/item/weapon/book/holybook))
+			var/obj/item/weapon/book/holybook/HB = O
+			HB.author = "[H]"
+			HB.religion = H.religion
+			HB.religion_type = map.custom_religions[H.religion][2]
+			HB.title = customname
+		else if (istype(O, /obj/item/weapon/poster/religious))
+			var/obj/item/weapon/poster/religious/P = O
+			P.religion = H.religion
+			P.symbol = map.custom_religions[H.religion][4]
+			P.color1 = map.custom_religions[H.religion][5]
+			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/banner/religious))
+			var/obj/structure/banner/religious/RB = O
+			RB.religion = H.religion
+			RB.symbol = map.custom_religions[H.religion][4]
+			RB.color1 = map.custom_religions[H.religion][5]
+			RB.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/altar))
+			var/obj/structure/altar/P = O
+			P.religion = H.religion
+			P.symbol = map.custom_religions[H.religion][4]
+			P.color1 = map.custom_religions[H.religion][5]
+			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
 			FP.customcolor = addtext("#",customcolor)
 			FP.keycode = customcode
 			FP.name = customname
 			FP.do_color()
-		if (istype(O, /obj/item/vehicleparts/frame))
+		else if (istype(O, /obj/item/vehicleparts/frame))
 			var/obj/item/vehicleparts/frame/FF = O
 			FF.customcolor = addtext("#",customcolor)
 			FF.name = customname
 			FF.do_color()
-		if (istype(O, /obj/item/stack))
+		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced
 			S.add_to_stacks(user)
@@ -696,11 +742,24 @@
 		return FALSE
 	return TRUE
 
-/obj/item/stack/proc/use(var/used)
+/obj/item/stack/proc/use(var/used,var/mob/living/carbon/human/H = null)
 	if (!can_use(used))
 		return FALSE
 	if (!uses_charge)
-		amount -= used
+		if (H)
+			if (H.religion_check() == "Production")
+				if (used < 4)
+					amount -= used
+				else if (used >= 4 && used < 10)
+					amount -= (used-1)
+				else if (used >= 10)
+					amount -= (used-2)
+				else
+					amount -= used
+			else
+				amount -= used
+		else
+			amount -= used
 		if (amount <= 0)
 			if (usr)
 				usr.remove_from_mob(src)
