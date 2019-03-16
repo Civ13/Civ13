@@ -513,6 +513,7 @@
 	if (current_res[3] >= 23)
 		recipes = list(new/datum/stack_recipe("cigar", /obj/item/clothing/mask/smokable/cigarette/cigar, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("cuban cigar", /obj/item/clothing/mask/smokable/cigarette/cigar/havana, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("cigarette", /obj/item/clothing/mask/smokable/cigarette, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE))
 
 /material/coca/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -800,6 +801,7 @@
 
 	if (current_res[1] >= 18 && current_res[3]>= 26) // Same level that bronze surgical tools can be made.
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("cigarette pack", /obj/item/weapon/storage/fancy/cigarettes, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE))
 
 	//Carpets - To be expanded upon with borders and such later.
 	if (map.ordinal_age >= 2)
