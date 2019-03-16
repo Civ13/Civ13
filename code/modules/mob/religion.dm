@@ -266,9 +266,10 @@
 	if (user.religion == religion && religion != "none")
 		user << "You stare at the glorious holy book of your religion."
 	else if (user.religion != religion && religion != "none" && !user.religious_leader && user.religious_clergy == FALSE)
-		if (map.custom_religions[user.religion][7] == "Clerics")
-			user << "You can't abandon a Clerical religion!"
-			return
+		if (user.religion != "none")
+			if (map.custom_religions[user.religion][7] == "Clerics")
+				user << "You can't abandon a Clerical religion!"
+				return
 		user << "You start reading the [title]..."
 		if (do_after(user, 900, src))
 			var/choice = WWinput(user, "After reading the [title], you feel attracted to the [religion] religion. Do you want to convert?", "[title]", "Yes", list("Yes","No"))
