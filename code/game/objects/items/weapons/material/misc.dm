@@ -104,14 +104,14 @@
 	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
 	attack_verb = list("bashed","impaled","beaten")
 	value = 30
-	block_chance = 25
+	block_chance = 36
 	cooldownw = 6
 	color = null
 
 /obj/item/weapon/material/naginata/steel
 	default_material = "steel"
 	value = 35
-	block_chance = 27
+	block_chance = 40
 	cooldownw = 6
 
 /obj/item/weapon/material/hatchet

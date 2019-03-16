@@ -516,7 +516,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 65, bullet = 85, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
-	slowdown = 1
+	slowdown = 0.2
 
 /obj/item/clothing/suit/armor/samurai/red
 	name = "red samurai armor"
@@ -548,7 +548,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 75, bullet = 95, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
-	slowdown = 1.1
+	slowdown = 0.6
 
 /obj/item/clothing/suit/armor/samurai/lord/red
 	name = "lord's red samurai armor"
@@ -621,7 +621,6 @@
 	worn_state = "samurai3"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, bullet = 85, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/helmet/samurai/guard
 	name = "samurai helmet"
@@ -631,7 +630,6 @@
 	worn_state = "samurai_guard3"
 	body_parts_covered = HEAD
 	armor = list(melee = 55, bullet = 75, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
-	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/helmet/samurai/guard/red
 	name = "red samurai helmet"
