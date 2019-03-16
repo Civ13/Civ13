@@ -217,7 +217,7 @@
 				H << "<span class = 'danger'>You can't make an altar as you are not part of the clergy.</span>"
 				return
 
-	if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar"))
+	if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar") || findtext(recipe.title, "religious banner"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
 			return
@@ -662,6 +662,12 @@
 			P.symbol = map.custom_religions[H.religion][4]
 			P.color1 = map.custom_religions[H.religion][5]
 			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/banner/religious))
+			var/obj/structure/banner/religious/RB = O
+			RB.religion = H.religion
+			RB.symbol = map.custom_religions[H.religion][4]
+			RB.color1 = map.custom_religions[H.religion][5]
+			RB.color2 = map.custom_religions[H.religion][6]
 		else if (istype(O, /obj/structure/altar))
 			var/obj/structure/altar/P = O
 			P.religion = H.religion

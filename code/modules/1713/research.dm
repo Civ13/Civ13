@@ -27,6 +27,8 @@
 	var/sum_a = 0
 	var/sum_b = 0
 	var/sum_c = 0
+	var/monk = FALSE //if the book was authored by a monk
+	var/religion = "none"
 /obj/item/weapon/book/research/New()
 	..()
 	if (map.ordinal_age >= 3)
@@ -74,6 +76,9 @@
 				name = pick("Woodcutting Basics, by [user]", "Mining and Industrialization, by [user]", "Furniture: How to Complete a Home, by [user]", "Building and Construction Basics, by [user]")
 				desc = "A scientific [name], with knowledge in crafting."
 				author = "[user]"
+				if (user.religious_clergy == "Monks")
+					monk = TRUE
+					religion = user.religion
 				update_icon()
 				return
 
@@ -89,6 +94,9 @@
 				name = pick("Human Body Limits, by [user]", "Increasing Muscular Mass, by [user]", "Complete Guide to Human Anatomy, by [user]", "Athletics Guide, by [user]")
 				desc = "A scientific [name], with knowledge in strength and dexterity."
 				author = "[user]"
+				if (user.religious_clergy == "Monks")
+					monk = TRUE
+					religion = user.religion
 				update_icon()
 				return
 
@@ -104,6 +112,9 @@
 				name = pick("Swords & Swordfighting, by [user]", "Fencing: The Human Art, by [user]", "Introduction to Swordfighting, by [user]", "From Spears to Pikes, by [user]")
 				desc = "A scientific [name], with knowledge in swords."
 				author = "[user]"
+				if (user.religious_clergy == "Monks")
+					monk = TRUE
+					religion = user.religion
 				update_icon()
 				return
 
@@ -119,6 +130,9 @@
 				name = pick("Bows & Longbows, by [user]", "On Archery Physics, by [user]", "Archery and Accuracy, by [user]", "The Archer's Guide, by [user]")
 				desc = "A scientific [name], with knowledge in archery."
 				author = "[user]"
+				if (user.religious_clergy == "Monks")
+					monk = TRUE
+					religion = user.religion
 				update_icon()
 				return
 
@@ -134,6 +148,9 @@
 				name = pick("Muskets and Pistols: The Complete Guide, by [user]", "Gun Rifling, by [user]", "Cannons, Muskets & Blunderbusses, by [user]", "The Soldiers Companion, by [user]")
 				desc = "A scientific [name], with knowledge in gunpowder weapons."
 				author = "[user]"
+				if (user.religious_clergy == "Monks")
+					monk = TRUE
+					religion = user.religion
 				update_icon()
 				return
 
@@ -149,6 +166,9 @@
 				name = pick("Diseases of the Blood, by [user]", "Religion & Cures, by [user]", "Surgery Guide, by [user]", "Amputation: A Beginners Guide, by [user]")
 				desc = "A scientific [name], with knowledge in medicine."
 				author = "[user]"
+				if (user.religious_clergy == "Monks")
+					monk = TRUE
+					religion = user.religion
 				update_icon()
 				return
 
@@ -164,6 +184,9 @@
 				name = pick("Discourse Rethoric, by [user]", "Metaphysics of Religion, by [user]", "Politics, by [user]", "Human Ethics, by [user]")
 				desc = "A scientific [name], with knowledge in philosophy."
 				author = "[user]"
+				if (user.religious_clergy == "Monks")
+					monk = TRUE
+					religion = user.religion
 				update_icon()
 				return
 	else

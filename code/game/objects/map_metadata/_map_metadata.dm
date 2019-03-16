@@ -136,6 +136,7 @@ var/civmax_research = list(130,130,130)
 	var/windspeedvar = 1 // 0 to 4
 	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale
 	var/winddesc = "A light Eastern breeze."
+
 /obj/map_metadata/New()
 	..()
 	map = src

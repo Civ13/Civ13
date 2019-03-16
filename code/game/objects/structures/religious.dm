@@ -30,15 +30,15 @@
 	..()
 	spawn(10)
 		if (religion != "none")
+			name = "[religion]'s stone totem"
+			desc = "A stone totem dedicated to the [religion] religion."
 			religioncheck()
 
 /obj/structure/religious/totem/proc/religioncheck()
 	if (religion != "none")
-		for(var/i = 1, i <= map.custom_religion_nr.len, i++)
-			if (map.custom_religion_nr[i] == religion)
-				if (map.custom_religions[religion][7] == "Shamans")
-					map.custom_religions[religion][3] += 1
-	spawn(1200)
+		if (map.custom_religions[religion][7] == "Shamans")
+			map.custom_religions[religion][3] += 1
+	spawn(2400)
 		religioncheck()
 
 /obj/structure/religious/animal_statue
