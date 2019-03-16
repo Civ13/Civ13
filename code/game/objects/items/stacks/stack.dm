@@ -656,6 +656,9 @@
 			HB.religion = H.religion
 			HB.religion_type = map.custom_religions[H.religion][2]
 			HB.title = customname
+		else if (istype(O, /obj/structure/religious/totem))
+			var/obj/structure/religious/totem/TT = O
+			TT.religion = H.religion
 		else if (istype(O, /obj/item/weapon/poster/religious))
 			var/obj/item/weapon/poster/religious/P = O
 			P.religion = H.religion

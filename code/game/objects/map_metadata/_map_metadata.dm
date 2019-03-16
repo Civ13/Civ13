@@ -168,6 +168,17 @@ var/civmax_research = list(130,130,130)
 		pollution()
 	spawn(2400)
 		wind()
+	spawn(2000)
+		religious_timer()
+/obj/map_metadata/proc/religious_timer()
+	if (map.custom_religions.len > 0)
+		for (var/rel in map.custom_religions)
+			if (map.custom_religions[rel][3] > 0)
+				map.custom_religions[rel][3] -= 0.2
+			if (map.custom_religions[rel][3] < 0)
+				map.custom_religions[rel][3] = 0
+	spawn(1200)
+		religious_timer()
 
 /obj/map_metadata/proc/wind()
 	var/oldwind = winddirection
