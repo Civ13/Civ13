@@ -368,6 +368,18 @@ var/russian_forceEnabled = FALSE
 	var/msg12 = "Japanese: [alive_japanese.len] alive, [heavily_injured_japanese.len] heavily injured or unconscious, [dead_japanese.len] deceased. Mortality rate: [mortality_japanese]%"
 	var/msg13 = "Russian: [alive_russian.len] alive, [heavily_injured_russian.len] heavily injured or unconscious, [dead_russian.len] deceased. Mortality rate: [mortality_russian]%"
 
+	var/msg_religions = ""
+	var/relp = ""
+	var/relp_am = 0
+	if (map && map.civilizations)
+		for (var/rel in map.custom_religions)
+			if (map.custom_religions[rel][3] > relp_am)
+				relp = rel
+				relp_am = map.custom_religions[rel][3]
+	if (relp_am > 0 && relp != "")
+		msg_religions = "<b>Most Powerful Religion:</b> [relp]"
+
+
 
 	if (map && !map.faction_organization.Find(BRITISH))
 		msg1 = null
@@ -432,6 +444,8 @@ var/russian_forceEnabled = FALSE
 				world << "<font size=3>[msg11]</font>"
 			if (msg13)
 				world << "<font size=3>[msg11]</font>"
+			if (map.civilizations && msg_religions != "")
+				world << "<font size=3>[msg_religions]</font>"
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
 			else

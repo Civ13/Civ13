@@ -450,7 +450,7 @@
 					for(var/obj/item/weapon/B in base)
 						B.loc = get_turf(src)
 						base -= B
-						if (istype(B, /obj/item/weapon/book) && !istype(B, /obj/item/weapon/book/holybook))
+						if (istype(B, /obj/item/weapon/book) && !istype(B, /obj/item/weapon/book/holybook) && !istype(B, /obj/item/weapon/book/research))
 							var/obj/item/weapon/book/NC = B
 							var/obj/item/weapon/book/NB = new/obj/item/weapon/book(src.loc)
 							NB.dat = NC.dat
@@ -476,6 +476,22 @@
 							NP.free_space = NC.free_space
 							NP.rigged = NC.rigged
 							NP.spam_flag = NC.spam_flag
+						else if (istype(B, /obj/item/weapon/book/research))
+							var/obj/item/weapon/book/research/NC = B
+							var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(src.loc)
+							NB.author = NC.author
+							NB.title = NC.title
+							NB.name = NC.name
+							NB.desc = NC.desc
+							NB.completed = NC.completed = 0
+							NB.k_class = NC.k_class = "none"
+							NB.k_level = NC.k_level = 0
+							NB.styleb = NC.styleb = "scroll"
+							NB.sum_a = NC.sum_a = 0
+							NB.sum_b = NC.sum_b = 0
+							NB.sum_c = NC.sum_c = 0
+							NB.monk = NC.monk = FALSE //if the book was authored by a monk
+							NB.religion = NC.religion = "none"
 					for(var/obj/item/weapon/C in copy)
 						copy -= C
 						qdel(C)
