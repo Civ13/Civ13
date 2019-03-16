@@ -56,7 +56,7 @@
 					user << "You finish copying [src]."
 					if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
 						var/obj/item/weapon/book/NC = src
-						var/obj/item/weapon/book/NB = new/obj/item/weapon/book(src.loc)
+						var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))
 						NB.dat = NC.dat
 						NB.due_date = NC.due_date
 						NB.author = NC.author
@@ -65,7 +65,7 @@
 						qdel(B)
 					else if (istype(src, /obj/item/weapon/book/holybook))
 						var/obj/item/weapon/book/holybook/NC = src
-						var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(src.loc)
+						var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(get_turf(user))
 						NB.author = NC.author
 						NB.title = NC.title
 						NB.name = NC.name
@@ -75,7 +75,7 @@
 						qdel(B)
 					else if (istype(src, /obj/item/weapon/book/research))
 						var/obj/item/weapon/book/research/NC = src
-						var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(src.loc)
+						var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(get_turf(user))
 						NB.author = NC.author
 						NB.title = NC.title
 						NB.name = NC.name

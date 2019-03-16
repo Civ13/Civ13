@@ -203,9 +203,11 @@
 						if (user.l_hand == dwheel)
 							user.remove_from_mob(dwheel)
 							dwheel.forceMove(src)
+							user.l_hand = null
 						else if (user.r_hand == dwheel)
 							user.remove_from_mob(dwheel)
 							dwheel.forceMove(src)
+							user.r_hand = null
 				update_overlay()
 				update_icon()
 				return
@@ -573,9 +575,11 @@
 						if (user.l_hand == dwheel)
 							user.remove_from_mob(dwheel)
 							dwheel.forceMove(src)
+							user.l_hand = null
 						else if (user.r_hand == dwheel)
 							user.remove_from_mob(dwheel)
 							dwheel.forceMove(src)
+							user.r_hand = null
 				else if (!currentcap)
 					currentcap = null
 					ontop -= user
@@ -784,8 +788,14 @@
 				if (driver.head && !istype(driver.head, /obj/item/clothing/head/helmet))
 					driver << "<span class='warning'>Your head hits the ground!</span>"
 					driver.adjustBrainLoss(rand(3,6))
-				driver.remove_from_mob(dwheel)
-				dwheel.forceMove(src)
+				if (driver.l_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.l_hand = null
+				else if (driver.r_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.r_hand = null
 				driver.driver = FALSE
 				driver.driver_vehicle = null
 				unbuckle_mob()
@@ -812,8 +822,14 @@
 				update_overlay()
 				update_icon()
 				ontop -= driver
-				driver.remove_from_mob(dwheel)
-				dwheel.forceMove(src)
+				if (driver.l_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.l_hand = null
+				else if (driver.r_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.r_hand = null
 				driver = null
 		else
 			moving = FALSE
