@@ -46,7 +46,7 @@
 		choosetype = WWinput(src, "Choose a focus for the new religion:", "Religion Creation", "Cancel", list("Cancel","Combat","Knowledge","Production"))
 		if (choosetype == "Cancel")
 			return
-		var/list/clergychoices = list("Cancel","Shamans")
+		var/list/clergychoices = list("Cancel","Shamans","Priests")
 		if (map.ordinal_age == 1)
 			clergychoices = list("Cancel","Shamans","Cultists","Priests")
 		else if (map.ordinal_age >= 2)
