@@ -68,7 +68,7 @@
 		user << "You are not part of a faction."
 		return
 
-	if (!leader)
+	if (!user.leader)
 		user << "You cannot recruit because you are not the faction leader."
 		return
 
