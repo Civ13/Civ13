@@ -542,6 +542,15 @@
 	flammable = TRUE
 	explosion_resistance = FALSE
 
+/obj/covers/repairedfloor/New()
+	..()
+	spawn(15)
+		var/turf/T = get_turf(src)
+		if (istype(T, /turf/floor/beach/water/deep/saltwater))
+			visible_message("The [src] sinks!")
+			qdel(src)
+			return
+
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/covers_time = 80
 	if (ishuman(user))

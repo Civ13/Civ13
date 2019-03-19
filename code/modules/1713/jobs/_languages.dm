@@ -5,7 +5,7 @@
 
 /datum/job/civilian
 	default_language = "English"
-	additional_languages = list("French" = 25, "Spanish" = 15, "Portuguese" = 10)
+	additional_languages = list()
 
 /datum/job/civilian/portuguese
 	default_language = "Portuguese"

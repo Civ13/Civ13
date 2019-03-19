@@ -9,6 +9,9 @@
 #define ENGLISH "ENGLISH"
 #define CARIB "CARIB"
 #define LATIN "LATIN"
+#define GERMAN "GERMAN"
+#define CHINESE "CHINESE"
+#define HEBREW "HEBREW"
 
 //used for languages & factions
 #define SPANISH "SPANISH"

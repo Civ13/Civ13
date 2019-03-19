@@ -73,7 +73,7 @@
 			var/lname = capitalize(language.name)
 			H.partial_languages[lname] += 1
 			if (H.partial_languages[lname] > rand(200,250))
-				H.add_language(language, FALSE)
+				H.add_language("[lname]", FALSE)
 				H.add_note("Known Languages", "[language.name]")
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"
 

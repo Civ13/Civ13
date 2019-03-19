@@ -142,6 +142,27 @@
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
 
+	if (findtext(recipe.title, "cigarette pack"))
+		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
+		if (customname == "" || customname == null)
+			customname = "cigarette pack"
+		customcolor = input(user, "Choose a hex color (without the #):", "Cigarette Pack Color" , "000000")
+		if (customcolor == null || customcolor == "")
+			return
+		else
+			customcolor = uppertext(customcolor)
+			if (lentext(customcolor) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(customcolor,i,i+1)
+				else
+					numtocheck = copytext(customcolor,i,0)
+				if (!(numtocheck in listallowed))
+					return
+
 	if (findtext(recipe.title, "frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -688,6 +709,11 @@
 			FF.customcolor = addtext("#",customcolor)
 			FF.name = customname
 			FF.do_color()
+		else if (istype(O, /obj/item/weapon/storage/fancy/cigarettes))
+			var/obj/item/weapon/storage/fancy/cigarettes/C = O
+			C.customcolor = addtext("#",customcolor)
+			C.name = customname
+			C.do_color()
 		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced

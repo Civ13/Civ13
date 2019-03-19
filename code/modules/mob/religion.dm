@@ -38,8 +38,6 @@
 			usr << "<span class='danger'>That religion already exists. Choose another name.</span>"
 			return
 	if (newname != null && newname != "none")
-		H.religion = newname
-		map.custom_religion_nr += newname
 		var/choosetype = "Knowledge"
 		var/chooseclergy = "Shamans"
 		var/choosesymbol = "star"
@@ -98,6 +96,7 @@
 
 		H.religion = newname
 		H.religious_leader = TRUE
+		H.religious_clergy = chooseclergy
 		H.religion_type = choosetype
 		H.religion_style = chooseclergy
 		map.custom_religion_nr += newname

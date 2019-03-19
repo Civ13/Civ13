@@ -68,6 +68,10 @@
 		user << "You are not part of a faction."
 		return
 
+	if (!leader)
+		user << "You cannot recruit because you are not the faction leader."
+		return
+
 	if (!istype(src) || src.incapacitated() || src.client == null)
 		user << "The target does not seem to respond..."
 		return

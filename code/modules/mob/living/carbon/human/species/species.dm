@@ -243,9 +243,9 @@
 /datum/species/proc/get_random_english_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english, gender))
+			return capitalize(pick(first_names_female_english)) + " " + capitalize(pick(last_names_english))
 		else
-			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english, gender))
+			return capitalize(pick(first_names_male_english)) + " " + capitalize(pick(last_names_english))
 
 
 /datum/species/proc/get_random_carib_name(var/gender, var/jew)
@@ -259,62 +259,85 @@
 /datum/species/proc/get_random_french_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_french)) + " " + capitalize(pick(last_names_french, gender))
+			return capitalize(pick(first_names_female_french)) + " " + capitalize(pick(last_names_french))
 		else
-			return capitalize(pick(first_names_male_french)) + " " + capitalize(pick(last_names_french, gender))
+			return capitalize(pick(first_names_male_french)) + " " + capitalize(pick(last_names_french))
 
 
 /datum/species/proc/get_random_portuguese_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_portuguese)) + " " + capitalize(pick(last_names_portuguese, gender))
+			return capitalize(pick(first_names_female_portuguese)) + " " + capitalize(pick(last_names_portuguese))
 		else
-			return capitalize(pick(first_names_male_portuguese)) + " " + capitalize(pick(last_names_portuguese, gender))
+			return capitalize(pick(first_names_male_portuguese)) + " " + capitalize(pick(last_names_portuguese))
 
 
 /datum/species/proc/get_random_spanish_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_spanish)) + " " + capitalize(pick(last_names_spanish, gender))
+			return capitalize(pick(first_names_female_spanish)) + " " + capitalize(pick(last_names_spanish))
 		else
-			return capitalize(pick(first_names_male_spanish)) + " " + capitalize(pick(last_names_spanish, gender))
+			return capitalize(pick(first_names_male_spanish)) + " " + capitalize(pick(last_names_spanish))
 
 
 /datum/species/proc/get_random_dutch_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_dutch)) + " " + capitalize(pick(last_names_dutch, gender))
+			return capitalize(pick(first_names_female_dutch)) + " " + capitalize(pick(last_names_dutch))
 		else
-			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch, gender))
+			return capitalize(pick(first_names_male_dutch)) + " " + capitalize(pick(last_names_dutch))
 
 /datum/species/proc/get_random_japanese_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese, gender))
+			return capitalize(pick(first_names_female_japanese)) + " " + capitalize(pick(last_names_japanese))
 		else
-			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese, gender))
+			return capitalize(pick(first_names_male_japanese)) + " " + capitalize(pick(last_names_japanese))
 
 /datum/species/proc/get_random_russian_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian, gender))
+			return capitalize(pick(first_names_female_russian)) + " " + capitalize(pick(last_names_russian))
 		else
-			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian, gender))
+			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
 
-/datum/species/proc/get_random_greek_name(var/jew) //gender removed
+/datum/species/proc/get_random_greek_name(var/gender, var/jew)
 	if (!name_language)
 
 		return capitalize(pick(first_names_male_greek))
 
-/datum/species/proc/get_random_roman_name(var/jew) //gender removed
+/datum/species/proc/get_random_roman_name(var/gender, var/jew)
 	if (!name_language)
 		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 							//some useless code removed
 
-/datum/species/proc/get_random_arab_name(var/jew) //gender removed
+/datum/species/proc/get_random_arab_name(var/gender, var/jew)
 	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
+		else
+			return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
 
-		return capitalize(pick(first_names_male_arab)) + " ibn " + capitalize(pick(first_names_male_arab))
+/datum/species/proc/get_random_hebrew_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_hebrew)) + " " + capitalize(pick(last_names_hebrew))
+		else
+			return capitalize(pick(first_names_male_hebrew)) + " " + capitalize(pick(last_names_hebrew))
+
+/datum/species/proc/get_random_german_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german,))
+		else
+			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(last_names_german))
+
+/datum/species/proc/get_random_chinese_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_chinese)) + " " + capitalize(pick(last_names_chinese))
+		else
+			return capitalize(pick(first_names_male_chinese)) + " " + capitalize(pick(last_names_chinese))
 
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
