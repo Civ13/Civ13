@@ -92,7 +92,7 @@
 							add_language("Dutch",TRUE)
 							remove_language("English")
 							replace_memory("English", "Dutch")
-							for (var/datum/language/latin/A in languages)
+							for (var/datum/language/dutch/A in languages)
 								default_language = A
 							name = species.get_random_dutch_name(gender)
 							real_name = name

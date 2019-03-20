@@ -97,7 +97,7 @@
 		recipes += new/datum/stack_recipe("red samurai helmet", /obj/item/clothing/head/helmet/samurai/guard/red, 10, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("blue samurai helmet", /obj/item/clothing/head/helmet/samurai/guard/blue, 10, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("black samurai helmet", /obj/item/clothing/head/helmet/samurai/guard/black, 10, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (current_res[2] >= 80 && map.ordinal_age >= 3)
+	if (current_res[2] >= 54 && map.ordinal_age >= 2)
 		recipes += new/datum/stack_recipe("gunpowder pouch", /obj/item/weapon/reagent_containers/food/drinks/gunpowder, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("bandolier", /obj/item/clothing/accessory/storage/webbing, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[3] >= 85)
