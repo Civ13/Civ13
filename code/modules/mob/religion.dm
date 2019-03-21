@@ -441,14 +441,15 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 								currlist2 += AA
 						map.custom_religions[religion][3] += currlist2.len*0.8
 						visible_message("[H] finishes the worshipping session of the [religion] religion.")
+						session = FALSE
 						return
 
 			if ("Conversion")
 				var/list/closemobs = list("Cancel")
 				for (var/mob/living/carbon/human/M in range(2,loc))
-					if (M.religion != religion && M.religious_clergy == FALSE && map.custom_religions[M.religion][7] != "Clerics" && M.stat == 0)
+					if (M.religion != religion && M.religious_clergy == FALSE && M.religion_style != "Clerics")
 						closemobs += M
-				var/choice3 = WWinput(usr, "Who do you want to convert?", "[religion]'s Altar", "Cancel", closemobs)
+				var/choice3 = WWinput(H, "Who do you want to convert?", "[religion]'s Altar", "Cancel", closemobs)
 				if (choice3 == "Cancel")
 					return
 				else
