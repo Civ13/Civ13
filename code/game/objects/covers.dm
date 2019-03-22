@@ -281,7 +281,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 300
+	health = 600
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
