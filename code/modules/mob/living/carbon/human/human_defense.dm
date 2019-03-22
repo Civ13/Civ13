@@ -17,7 +17,16 @@ bullet_act
 	for (var/obj/item/weapon/grab/G in grabbed_by)
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
-
+	if (user.a_intent == I_HELP && gender == MALE && istype(W,/obj/item/weapon/material/kitchen/utensil/knife/circumcision))
+		if (circumcised)
+			user << "<span class = 'notice'>[src]is already circumcised!</span>"
+			return
+		else
+			visible_message("<span class = 'notice'>[user] starts to circumcise [src]...</span>")
+			if (do_after(user, 90, src) && !circumcised)
+				visible_message("<span class = 'notice'>[user] successfully circumcises [src].</span>")
+				circumcised = TRUE
+				return
 	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user

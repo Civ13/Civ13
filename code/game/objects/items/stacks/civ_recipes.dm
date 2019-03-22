@@ -148,6 +148,8 @@
 		recipes += new/datum/stack_recipe("keychain", /obj/item/weapon/storage/belt/keychain, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 25)
 		recipes += new/datum/stack_recipe("anvil", /obj/structure/anvil, 25, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("circumcision knife", /obj/item/weapon/material/kitchen/utensil/knife/circumcision, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+
 	if (current_res[1] >= 27 && current_res[2] >= 16)
 		recipes += new/datum/stack_recipe("iron-tipped spear", /obj/item/weapon/material/spear, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 
