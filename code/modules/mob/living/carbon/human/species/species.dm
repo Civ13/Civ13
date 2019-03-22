@@ -339,6 +339,21 @@
 		else
 			return capitalize(pick(first_names_male_chinese)) + " " + capitalize(pick(last_names_chinese))
 
+/datum/species/proc/get_random_swahili_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_swahili)) + " " + capitalize(pick(last_names_swahili))
+		else
+			return capitalize(pick(first_names_male_swahili)) + " " + capitalize(pick(last_names_swahili))
+
+/datum/species/proc/get_random_zulu_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_zulu)) + " " + capitalize(pick(last_names_zulu))
+		else
+			return capitalize(pick(first_names_male_zulu)) + " " + capitalize(pick(last_names_zulu))
+
+
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)

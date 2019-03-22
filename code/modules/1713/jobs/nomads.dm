@@ -127,21 +127,21 @@
 							return
 					if ("jungle")
 						if (x<100)
-							add_language("Japanese",TRUE)
+							add_language("Swahili",TRUE)
 							remove_language("English")
-							replace_memory("English", "Japanese")
-							for (var/datum/language/japanese/A in languages)
+							replace_memory("English", "Swahili")
+							for (var/datum/language/swahili/A in languages)
 								default_language = A
-							name = species.get_random_japanese_name(gender)
+							name = species.get_random_swahili_name(gender)
 							real_name = name
 							return
 						else
-							add_language("Chinese",TRUE)
+							add_language("Zulu",TRUE)
 							remove_language("English")
-							replace_memory("English", "Chinese")
-							for (var/datum/language/chinese/A in languages)
+							replace_memory("English", "Zulu")
+							for (var/datum/language/zulu/A in languages)
 								default_language = A
-							name = species.get_random_chinese_name(gender)
+							name = species.get_random_zulu_name(gender)
 							real_name = name
 							return
 					if ("desert")

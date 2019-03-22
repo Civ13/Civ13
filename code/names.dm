@@ -62,6 +62,15 @@ var/list/first_names_female_arab = file2list("config/names/first_female_arab.txt
 var/list/first_names_male_roman = file2list("config/names/first_male_roman.txt")
 var/list/middle_names_roman = file2list("config/names/middle_roman.txt")
 var/list/last_names_roman = file2list("config/names/last_roman.txt")
+
+var/list/first_names_male_swahili = file2list("config/names/first_male_swahili.txt")
+var/list/first_names_female_swahili = file2list("config/names/first_female_swahili.txt")
+var/list/last_names_swahili = file2list("config/names/last_swahili.txt")
+
+var/list/first_names_male_zulu = file2list("config/names/first_male_zulu.txt")
+var/list/first_names_female_zulu = file2list("config/names/first_female_zulu.txt")
+var/list/last_names_zulu = file2list("config/names/last_zulu.txt")
+
 /* NOT USED FOR NOW!
 var/list/country_names = file2list("config/names/countries.txt")
 var/civname_a = pick(country_names)

@@ -12,6 +12,8 @@
 #define GERMAN "GERMAN"
 #define CHINESE "CHINESE"
 #define HEBREW "HEBREW"
+#define SWAHILI "SWAHILI"
+#define ZULU "ZULU"
 
 //used for languages & factions
 #define SPANISH "SPANISH"

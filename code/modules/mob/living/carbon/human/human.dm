@@ -77,18 +77,42 @@
 				verbs |= /mob/living/carbon/human/proc/selfheal
 				verbs |= /mob/living/carbon/human/proc/selfrevive
 	spawn(5)
-		if (faction_text == ARAB)
-			s_tone = -90
-			force_update_limbs()
-			update_body()
-		else if (faction_text == INDIANS)
-			s_tone = -115
-			force_update_limbs()
-			update_body()
-		else if (s_tone < -65)
-			s_tone = -65
-			force_update_limbs()
-			update_body()
+		if (map && map.ID == MAP_NOMADS_CONTINENTAL)
+			var/area/mob_area = get_area(src)
+			switch (mob_area.climate)
+				if ("tundra")
+					s_tone = -10
+					force_update_limbs()
+					update_body()
+				if ("temperate")
+					s_tone = -55
+					force_update_limbs()
+					update_body()
+				if ("sea")
+					s_tone = -65
+					force_update_limbs()
+					update_body()
+				if ("desert")
+					s_tone = -90
+					force_update_limbs()
+					update_body()
+				if ("jungle")
+					s_tone = -150
+					force_update_limbs()
+					update_body()
+		else
+			if (faction_text == ARAB)
+				s_tone = -90
+				force_update_limbs()
+				update_body()
+			else if (faction_text == INDIANS)
+				s_tone = -115
+				force_update_limbs()
+				update_body()
+			else if (s_tone < -65)
+				s_tone = -65
+				force_update_limbs()
+				update_body()
 /mob/living/carbon/human/Destroy()
 	human_mob_list -= src
 	human_clients_mob_list -= src

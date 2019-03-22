@@ -11,42 +11,19 @@
 	var/author		 // Who wrote the thing, can be changed by pen or PC. It is not automatically assigned
 	var/unique = FALSE   // FALSE - Normal book, TRUE - Should not be treated as normal book, unable to be copied, unable to be modified
 	var/title		 // The real name of the book.
-	var/carved = FALSE	 // Has the book been hollowed out for use as a secret storage item?
 	var/obj/item/store	//What's in the book?
 	flammable = TRUE
+	var/const/deffont = "Verdana"
+	var/const/signfont = "Times New Roman"
 
 /obj/item/weapon/book/attack_self(var/mob/user as mob)
-	if (carved)
-		if (store)
-			user << "<span class='notice'>[store] falls out of [title]!</span>"
-			store.loc = get_turf(loc)
-			store = null
-			return
-		else
-			user << "<span class='notice'>The pages of [title] have been cut out!</span>"
-			return
 	if (dat)
-		user << browse("<TT><I>Penned by [author].</I></TT> <BR>" + "[dat]", "window=book")
-		user.visible_message("[user] opens a book titled \"[title]\" and begins reading intently.")
-		onclose(user, "book")
+		user.examinate(src)
+		return
 	else
 		user << "This book is completely blank!"
 
 /obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/carbon/human/user as mob)
-	if (carved)
-		if (!store)
-			if (W.w_class < w_class)
-				user.drop_item()
-				W.loc = src
-				store = W
-				user << "<span class='notice'>You put [W] in [title].</span>"
-				return
-			else
-				user << "<span class='notice'>[W] won't fit in [title].</span>"
-				return
-		else
-			user << "<span class='notice'>There's already something in [title]!</span>"
-			return
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
 		if (!B.author && !B.title && user.religious_clergy == "Monks")
@@ -105,12 +82,12 @@
 					name = newtitle
 					title = newtitle
 			if ("Contents")
-				var/content = sanitize(input("Write your book's contents (HTML NOT allowed):") as message|null, MAX_BOOK_MESSAGE_LEN)
+				var/content = sanitize(input("Write your book's contents:") as message|null, MAX_BOOK_MESSAGE_LEN)
 				if (!content)
 					usr << "The content is invalid."
 					return
 				else
-					dat += content
+					dat += parsepencode(content, W, usr)
 			if ("Author")
 				var/newauthor = sanitize(input(usr, "Write the author's name:"))
 				if (!newauthor)
@@ -120,19 +97,84 @@
 					author = newauthor
 			else
 				return
-	else if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/wirecutters))
-		if (carved)	return
-		user << "<span class='notice'>You begin to carve out [title].</span>"
-		if (do_after(user, 30, src))
-			user << "<span class='notice'>You carve out the pages from [title]! You didn't want to read it anyway.</span>"
-			carved = TRUE
-			return
 	else
 		..()
 
-/obj/item/weapon/book/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
-	if (user.targeted_organ == "eyes")
-		user.visible_message("<span class='notice'>You open up the book and show it to [M]. </span>", \
-			"<span class='notice'> [user] opens up a book and shows it to [M]. </span>")
-		M << browse("<TT><I>Penned by [author].</I></TT> <BR>" + "[dat]", "window=book")
-		user.setClickCooldown(DEFAULT_QUICK_COOLDOWN) //to prevent spam
+/obj/item/weapon/book/examine(mob/user)
+	..()
+	if (in_range(user, src) || isghost(user))
+		show_content(usr)
+	else
+		user << "<span class='notice'>You have to go closer if you want to read it.</span>"
+	return
+
+/obj/item/weapon/book/proc/show_content(var/mob/user, var/forceshow=0)
+	if (!(istype(user, /mob/living/carbon/human) || isghost(user) && !forceshow))
+		user << browse("<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[stars(dat)]</BODY></HTML>", "window=[name]")
+		onclose(user, "[name]")
+	else
+		user << browse("<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[dat]</BODY></HTML>", "window=[name]")
+		onclose(user, "[name]")
+
+/obj/item/weapon/book/verb/rename()
+	set name = "Rename book"
+	set category = null
+	set src in usr
+	playsound(src,'sound/effects/pen.ogg',40,1)
+
+	var/n_name = sanitizeSafe(input(usr, "What would you like to label the book?", "Book Labelling", null)  as text, MAX_NAME_LEN)
+
+	// We check loc one level up, so we can rename in clipboards and such. See also: /obj/item/weapon/photo/rename()
+	if ((loc == usr || loc.loc && loc.loc == usr) && usr.stat == FALSE && n_name)
+		name = n_name
+		if (n_name != "paper")
+			desc = "This is a paper titled '" + name + "'."
+
+		add_fingerprint(usr)
+	return
+
+
+/obj/item/weapon/book/proc/get_signature(var/obj/item/weapon/pen/P, mob/user as mob)
+	if (P && istype(P, /obj/item/weapon/pen))
+		return P.get_signature(user)
+	return (user && user.real_name) ? user.real_name : "Anonymous"
+
+/obj/item/weapon/book/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob)
+	t = cp1251_to_utf8(t)
+
+	t = replacetext(t, "\[center\]", "<center>")
+	t = replacetext(t, "\[/center\]", "</center>")
+	t = replacetext(t, "\[br\]", "<BR>")
+	t = replacetext(t, "\[b\]", "<b>")
+	t = replacetext(t, "\[/b\]", "</b>")
+	t = replacetext(t, "\[i\]", "<I>")
+	t = replacetext(t, "\[/i\]", "</I>")
+	t = replacetext(t, "\[u\]", "<U>")
+	t = replacetext(t, "\[/u\]", "</U>")
+	t = replacetext(t, "\[time\]", "[stationtime2text()]")
+	t = replacetext(t, "\[date\]", "[stationdate2text()]")
+	t = replacetext(t, "\[large\]", "<font size=\"4\">")
+	t = replacetext(t, "\[/large\]", "</font>")
+	t = replacetext(t, "\[sign\]", "<font face=\"[signfont]\"><i>[get_signature(P, user)]</i></font>")
+
+	t = replacetext(t, "\[h1\]", "<H1>")
+	t = replacetext(t, "\[/h1\]", "</H1>")
+	t = replacetext(t, "\[h2\]", "<H2>")
+	t = replacetext(t, "\[/h2\]", "</H2>")
+	t = replacetext(t, "\[h3\]", "<H3>")
+	t = replacetext(t, "\[/h3\]", "</H3>")
+
+	t = replacetext(t, "\[*\]", "<li>")
+	t = replacetext(t, "\[hr\]", "<HR>")
+	t = replacetext(t, "\[small\]", "<font size = \"1\">")
+	t = replacetext(t, "\[/small\]", "</font>")
+	t = replacetext(t, "\[list\]", "<ul>")
+	t = replacetext(t, "\[/list\]", "</ul>")
+	t = replacetext(t, "\[table\]", "<table border=1 cellspacing=0 cellpadding=3 style='border: TRUEpx solid black;'>")
+	t = replacetext(t, "\[/table\]", "</td></tr></table>")
+	t = replacetext(t, "\[grid\]", "<table>")
+	t = replacetext(t, "\[/grid\]", "</td></tr></table>")
+	t = replacetext(t, "\[row\]", "</td><tr>")
+	t = replacetext(t, "\[cell\]", "<td>")
+
+	t = "<font face=\"[deffont]\" color=[P ? P.colour : "black"]>[t]</font>"
