@@ -278,8 +278,8 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/stone_v
@@ -288,8 +288,8 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick2"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/stone_h/crenelated
@@ -298,8 +298,8 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick_c"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/stone_v/crenelated
@@ -308,36 +308,36 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "stone_brick_c2"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/stone_h/New()
 	..()
 	icon_state = "stone_brick"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 /obj/structure/barricade/stone_v/New()
 	..()
 	icon_state = "stone_brick2"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/stone_h/crenelated/New()
 	..()
 	icon_state = "stone_brick_c"
 	name = "crenelated stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/stone_v/crenelated/New()
 	..()
 	icon_state = "stone_brick_c2"
 	name = "crenelated stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/stone_h/ex_act(severity)
 	switch(severity)
@@ -398,16 +398,16 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "jap_wall_h"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/jap_h/New()
 	..()
 	icon_state = "jap_wall_h"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/jap_h/ex_act(severity)
 	switch(severity)
@@ -428,16 +428,16 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "jap_wall_h_l"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/jap_h_l/New()
 	..()
 	icon_state = "jap_wall_h_l"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/jap_h_l/ex_act(severity)
 	switch(severity)
@@ -458,16 +458,16 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "jap_wall_h_r"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/jap_h_r/New()
 	..()
 	icon_state = "jap_wall_h_r"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/jap_h_r/ex_act(severity)
 	switch(severity)
@@ -488,16 +488,16 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "jap_wall_v"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/jap_v/New()
 	..()
 	icon_state = "jap_wall_v"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/jap_v/ex_act(severity)
 	switch(severity)
@@ -518,16 +518,16 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "jap_wall_v_t"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/jap_v_t/New()
 	..()
 	icon_state = "jap_wall_v_t"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/jap_v_t/ex_act(severity)
 	switch(severity)
@@ -548,16 +548,16 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "jap_wall_v_b"
 	material = "stone"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 	material_name = "stone"
 
 /obj/structure/barricade/jap_v_b/New()
 	..()
 	icon_state = "jap_wall_v_b"
 	name = "stone wall"
-	health = 600
-	maxhealth = 600
+	health = 2709
+	maxhealth = 2709
 
 /obj/structure/barricade/jap_v_b/ex_act(severity)
 	switch(severity)
