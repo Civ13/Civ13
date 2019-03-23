@@ -50,9 +50,10 @@ var/global/list/valid_coordinates = list()
 				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
 			log_admin("Governor Announcement: [key_name(usr)] - [messaget] : [message]")
 		else
-			if (civilization == M.civilization && civilization != "none")
+			if (civilization == M.civilization && civilization != "none" && world.time > announcement_cooldown)
 				messaget = "[name] announces:"
 				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
+				announcement_cooldown = world.time+1800
 			log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
 
 /mob/living/carbon/human/proc/Check_Coordinates()

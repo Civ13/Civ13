@@ -149,24 +149,33 @@
 		var/list/a3list = list("Cancel")
 		if (faction_perms[1] == 1)
 			a3list += "Permission Management"
+			src << "<big>You gained the Permission Management.</big>"
 		if (faction_perms[2] == 1)
 			a3list += "Announcements"
+			src << "<big>You gained the Announcement permission.</big>"
 		if (faction_perms[3] == 1)
 			a3list += "Giving Titles"
+			src << "<big>You gained the Title Giving permission.</big>"
 		if (faction_perms[4] == 1)
 			a3list += "Recruitment"
+			src << "<big>You gained the Recruitment permission.</big>"
+
 		var/answer3 = WWinput(src, "Which permission to remove?", null, "Cancel", a3list)
 		switch(answer3)
 			if ("Permission Management")
 				faction_perms[1] = 0
+				src << "<big>You lost the Permission Management.</big>"
 			if ("Announcements")
 				faction_perms[2] = 0
+				src << "<big>You lost the Announcement permission.</big>"
 				remove_commander()
 			if ("Giving Titles")
 				faction_perms[3] = 0
+				src << "<big>You lost the Title Giving permission.</big>"
 				remove_title_changer()
 			if ("Recruitment")
 				faction_perms[4] = 0
+				src << "<big>You lost the Recruitment permission.</big>"
 			else
 				return
 	else

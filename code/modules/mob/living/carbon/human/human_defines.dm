@@ -163,6 +163,7 @@
 	//leadership (total control!), announcement, give titles, recruitment
 	var/list/faction_perms = list(0,0,0,0)
 	var/title = ""
+	var/announcement_cooldown = 0
 
 	var/religion = "none" //what religion this person belongs to
 	var/religion_type = "none"

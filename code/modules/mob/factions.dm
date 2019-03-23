@@ -22,6 +22,7 @@
 			var/choosename = russian_to_cp1251(input(src, "Choose a name for the faction:") as text|null)
 			create_faction_pr(choosename)
 			make_commander()
+			make_title_changer()
 			return
 	else
 		usr << "<span class='danger'>You cannot create a faction in this map.</span>"
@@ -103,11 +104,13 @@
 						visible_message("<big>[choice2] is the new leader of [U.civilization]!</big>")
 						var/mob/living/carbon/human/CM = choice2
 						CM.make_commander()
+						CM.make_title_changer()
 						CM.leader = TRUE
 						CM.faction_perms = list(1,1,1,1)
 						U.leader = FALSE
 						U.faction_perms = list(0,0,0,0)
-						remove_commander()
+						U.remove_title_changer()
+						U.remove_commander()
 				else
 					usr << "<span class='danger'You are not the Leader, so you can't transfer the faction's leadership.</span>"
 					return
@@ -141,6 +144,7 @@
 				visible_message("<big>[U] is now the Leader of [U.civilization]!</big>")
 				U.leader = TRUE
 				U.faction_perms = list(1,1,1,1)
+				U.make_title_changer()
 				make_commander()
 	else
 		usr << "<span class='danger'>You cannot become a Leader in this map.</span>"
@@ -152,18 +156,11 @@
 	set category = "Officer"
 	var/mob/living/carbon/human/U
 
-	if (istype(src, /mob/living/carbon/human))
-		U = src
-	else
-		return
 	if (map.nomads == TRUE)
 		if (istype(usr, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = usr
 			if (H.civilization == "none")
 				usr << "You are not part of any faction."
-				return
-			if (U.civilization != H.civilization)
-				usr << "You are not part of the same faction!"
 				return
 			else
 				if (H.faction_perms[3] == 0)
@@ -171,14 +168,25 @@
 					return
 
 				else
-					var/inp = russian_to_cp1251(input(usr, "Choose a title to give:") as text|null)
-					if (inp == "" || !inp)
-						return
-					else
-						U.title = inp
-						U.fully_replace_character_name(U.real_name,"[U.title] [U.name]")
-						usr << "[src] is now a [U.title]."
-						return
+					if (map.custom_civs[U.civilization][4] != null)
+						if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+							var/list/closemobs = list("Cancel")
+							for (var/mob/living/carbon/human/M in range(4,loc))
+								if (M.civilization == U.civilization)
+									closemobs += M
+							var/choice2 = WWinput(usr, "Who to give a title to?", "Faction Title", "Cancel", closemobs)
+							if (choice2 == "Cancel")
+								return
+							else
+								U = choice2
+								var/inp = russian_to_cp1251(input(usr, "Choose a title to give:") as text|null)
+								if (inp == "" || !inp)
+									return
+								else
+									U.title = inp
+									U.fully_replace_character_name(U.real_name,"[U.title] [U.name]")
+									usr << "[src] is now a [U.title]."
+									return
 	else
 		usr << "<span class='danger'>You cannot give titles in this map.</span>"
 		return
@@ -188,18 +196,11 @@
 	set category = "Officer"
 	var/mob/living/carbon/human/U
 
-	if (istype(src, /mob/living/carbon/human))
-		U = src
-	else
-		return
 	if (map.nomads == TRUE)
 		if (istype(usr, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = usr
 			if (H.civilization == "none")
 				usr << "You are not part of any faction."
-				return
-			if (U.civilization != H.civilization)
-				usr << "You are not part of the same faction!"
 				return
 			else
 				if (H.faction_perms[3] == 0)
@@ -207,14 +208,25 @@
 					return
 
 				else
-					if (U.title != "")
-						U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title]",""))
-						usr << "[src]'s title of [U.title] has been removed by [usr]."
-						U.title = ""
-						return
-					else
-						usr << "[src] has no title."
-						return
+					if (map.custom_civs[U.civilization][4] != null)
+						if (map.custom_civs[U.civilization][4].real_name == U.real_name)
+							var/list/closemobs = list("Cancel")
+							for (var/mob/living/carbon/human/M in range(4,loc))
+								if (M.civilization == U.civilization && M.title != "")
+									closemobs += M
+							var/choice2 = WWinput(usr, "Who to remove a title from?", "Faction Title", "Cancel", closemobs)
+							if (choice2 == "Cancel")
+								return
+							else
+								U = choice2
+								if (U.title != "")
+									U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title] ",""))
+									usr << "[src]'s title of [U.title] has been removed by [usr]."
+									U.title = ""
+									return
+								else
+									usr << "[src] has no title."
+									return
 	else
 		usr << "<span class='danger'>You cannot give titles in this map.</span>"
 		return
