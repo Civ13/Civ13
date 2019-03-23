@@ -68,8 +68,8 @@
 		user << "You are not part of a faction."
 		return
 
-	if (!user.leader)
-		user << "You cannot recruit because you are not the faction leader."
+	if (!user.leader || faction_perms[4] == 0)
+		user << "You don't have the permissions to recruit."
 		return
 
 	if (!istype(src) || src.incapacitated() || src.client == null)
@@ -85,5 +85,89 @@
 	else if (answer == "No")
 		usr << "[src] has rejected your offer."
 		return
+	else
+		return
+
+/mob/living/carbon/human/verb/faction_perms()
+	set category = null
+	set name = "Faction Perms"
+	set desc = "Change the faction permissions of this person."
+
+	set src in view(1)
+
+	var/mob/living/carbon/human/user
+
+	if (!ishuman(src))
+		return
+
+	if (!ishuman(usr))
+		return
+	else
+		user = usr
+
+	if (user.stat || user.restrained() || !isliving(user))
+		return
+
+	if (user.original_job_title != "Nomad" || user.civilization == "none" || user.civilization == null)
+		user << "You are not part of a faction."
+		return
+
+	if (!user.leader || faction_perms[1] == 0)
+		user << "You don't have the permissions to change faction permissions."
+		return
+
+	if (!istype(src) || src.incapacitated() || src.client == null)
+		user << "The target does not seem to respond..."
+		return
+
+	var/answer = WWinput(src, "Add or Remove a permission?", null, "Add", list("Add","Remove","Cancel"))
+	if (answer == "Add")
+		var/list/a2list = list("Cancel")
+		if (faction_perms[1] == 0)
+			a2list += "Permission Management"
+		if (faction_perms[2] == 0)
+			a2list += "Announcements"
+		if (faction_perms[3] == 0)
+			a2list += "Giving Titles"
+		if (faction_perms[4] == 0)
+			a2list += "Recruitment"
+		var/answer2 = WWinput(src, "Which permission to add?", null, "Cancel", a2list)
+		switch(answer2)
+			if ("Permission Management")
+				faction_perms[1] = 1
+			if ("Announcements")
+				faction_perms[2] = 1
+				make_commander()
+			if ("Giving Titles")
+				faction_perms[3] = 1
+				make_title_changer()
+			if ("Recruitment")
+				faction_perms[4] = 1
+			else
+				return
+	else if (answer == "Remove")
+		var/list/a3list = list("Cancel")
+		if (faction_perms[1] == 1)
+			a3list += "Permission Management"
+		if (faction_perms[2] == 1)
+			a3list += "Announcements"
+		if (faction_perms[3] == 1)
+			a3list += "Giving Titles"
+		if (faction_perms[4] == 1)
+			a3list += "Recruitment"
+		var/answer3 = WWinput(src, "Which permission to remove?", null, "Cancel", a3list)
+		switch(answer3)
+			if ("Permission Management")
+				faction_perms[1] = 0
+			if ("Announcements")
+				faction_perms[2] = 0
+				remove_commander()
+			if ("Giving Titles")
+				faction_perms[3] = 0
+				remove_title_changer()
+			if ("Recruitment")
+				faction_perms[4] = 0
+			else
+				return
 	else
 		return

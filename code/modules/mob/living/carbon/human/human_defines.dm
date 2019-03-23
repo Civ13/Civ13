@@ -160,6 +160,9 @@
 
 	var/civilization = "none" //what civilization this person belongs to
 	var/leader = FALSE
+	//leadership (total control!), announcement, give titles, recruitment
+	var/list/faction_perms = list(0,0,0,0)
+	var/title = ""
 
 	var/religion = "none" //what religion this person belongs to
 	var/religion_type = "none"

@@ -22,6 +22,16 @@ var/global/list/valid_coordinates = list()
 /mob/living/carbon/human/proc/remove_commander()
 	verbs -= /mob/living/carbon/human/proc/Commander_Announcement
 
+
+/mob/living/carbon/human/proc/make_title_changer()
+	verbs += /mob/living/carbon/human/proc/Add_Title
+	verbs += /mob/living/carbon/human/proc/Remove_Title
+
+/mob/living/carbon/human/proc/remove_title_changer()
+	verbs -= /mob/living/carbon/human/proc/Add_Title
+	verbs -= /mob/living/carbon/human/proc/Remove_Title
+
+
 /proc/check_coords_check()
 	return (!map || (map.faction2_can_cross_blocks() && map.faction1_can_cross_blocks()))
 /mob/living/carbon/human/proc/Commander_Announcement()
