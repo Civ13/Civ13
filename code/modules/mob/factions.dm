@@ -168,25 +168,23 @@
 					return
 
 				else
-					if (map.custom_civs[U.civilization][4] != null)
-						if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-							var/list/closemobs = list("Cancel")
-							for (var/mob/living/carbon/human/M in range(4,loc))
-								if (M.civilization == U.civilization)
-									closemobs += M
-							var/choice2 = WWinput(usr, "Who to give a title to?", "Faction Title", "Cancel", closemobs)
-							if (choice2 == "Cancel")
-								return
-							else
-								U = choice2
-								var/inp = russian_to_cp1251(input(usr, "Choose a title to give:") as text|null)
-								if (inp == "" || !inp)
-									return
-								else
-									U.title = inp
-									U.fully_replace_character_name(U.real_name,"[U.title] [U.name]")
-									usr << "[src] is now a [U.title]."
-									return
+					var/list/closemobs = list("Cancel")
+					for (var/mob/living/carbon/human/M in range(4,loc))
+						if (M.civilization == H.civilization)
+							closemobs += M
+					var/choice2 = WWinput(usr, "Who to give a title to?", "Faction Title", "Cancel", closemobs)
+					if (choice2 == "Cancel")
+						return
+					else
+						U = choice2
+						var/inp = russian_to_cp1251(input(usr, "Choose a title to give:") as text|null)
+						if (inp == "" || !inp)
+							return
+						else
+							U.title = inp
+							U.fully_replace_character_name(U.real_name,"[U.title] [U.name]")
+							usr << "[src] is now a [U.title]."
+							return
 	else
 		usr << "<span class='danger'>You cannot give titles in this map.</span>"
 		return
@@ -208,25 +206,23 @@
 					return
 
 				else
-					if (map.custom_civs[U.civilization][4] != null)
-						if (map.custom_civs[U.civilization][4].real_name == U.real_name)
-							var/list/closemobs = list("Cancel")
-							for (var/mob/living/carbon/human/M in range(4,loc))
-								if (M.civilization == U.civilization && M.title != "")
-									closemobs += M
-							var/choice2 = WWinput(usr, "Who to remove a title from?", "Faction Title", "Cancel", closemobs)
-							if (choice2 == "Cancel")
-								return
-							else
-								U = choice2
-								if (U.title != "")
-									U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title] ",""))
-									usr << "[src]'s title of [U.title] has been removed by [usr]."
-									U.title = ""
-									return
-								else
-									usr << "[src] has no title."
-									return
+					var/list/closemobs = list("Cancel")
+					for (var/mob/living/carbon/human/M in range(4,loc))
+						if (M.civilization == H.civilization && M.title != "")
+							closemobs += M
+					var/choice2 = WWinput(usr, "Who to remove a title from?", "Faction Title", "Cancel", closemobs)
+					if (choice2 == "Cancel")
+						return
+					else
+						U = choice2
+						if (U.title != "")
+							U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title] ",""))
+							usr << "[src]'s title of [U.title] has been removed by [usr]."
+							U.title = ""
+							return
+						else
+							usr << "[src] has no title."
+							return
 	else
 		usr << "<span class='danger'>You cannot give titles in this map.</span>"
 		return
