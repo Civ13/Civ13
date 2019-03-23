@@ -89,21 +89,21 @@
 				switch (mob_area.climate)
 					if ("tundra")
 						if (x<100)
-							add_language("Dutch",TRUE)
+							add_language("Russian",TRUE)
 							remove_language("English")
-							replace_memory("English", "Dutch")
-							for (var/datum/language/dutch/A in languages)
+							replace_memory("English", "Russian")
+							for (var/datum/language/russian/A in languages)
 								default_language = A
-							name = species.get_random_dutch_name(gender)
+							name = species.get_random_russian_name(gender)
 							real_name = name
 							return
 						else
-							add_language("German",TRUE)
+							add_language("Ukrainian",TRUE)
 							remove_language("English")
-							replace_memory("English", "German")
-							for (var/datum/language/german/A in languages)
+							replace_memory("English", "Ukrainian")
+							for (var/datum/language/ukrainian/A in languages)
 								default_language = A
-							name = species.get_random_german_name(gender)
+							name = species.get_random_ukrainian_name(gender)
 							real_name = name
 							return
 					if ("sea")
@@ -115,6 +115,7 @@
 								default_language = A
 							name = species.get_random_spanish_name(gender)
 							real_name = name
+							add_note("Known Languages", "Spanish")
 							return
 						else
 							add_language("French",TRUE)
@@ -124,6 +125,7 @@
 								default_language = A
 							name = species.get_random_french_name(gender)
 							real_name = name
+							add_note("Known Languages", "French")
 							return
 					if ("jungle")
 						if (x<100)
@@ -134,6 +136,7 @@
 								default_language = A
 							name = species.get_random_swahili_name(gender)
 							real_name = name
+							add_note("Known Languages", "Swahili")
 							return
 						else
 							add_language("Zulu",TRUE)
@@ -143,6 +146,7 @@
 								default_language = A
 							name = species.get_random_zulu_name(gender)
 							real_name = name
+							add_note("Known Languages", "Zulu")
 							return
 					if ("desert")
 						if (x<100)
@@ -153,6 +157,7 @@
 								default_language = A
 							name = species.get_random_arab_name(gender)
 							real_name = name
+							add_note("Known Languages", "Arabic")
 							return
 						else
 							add_language("Hebrew",TRUE)
@@ -162,6 +167,7 @@
 								default_language = A
 							name = species.get_random_hebrew_name(gender)
 							real_name = name
+							add_note("Known Languages", "Hebrew")
 							return
 					if ("temperate")
 						if (x<100)
@@ -172,6 +178,7 @@
 								default_language = A
 							name = species.get_random_spanish_name(gender)
 							real_name = name
+							add_note("Known Languages", "Spanish")
 							return
 						else
 							add_language("French",TRUE)
@@ -181,6 +188,7 @@
 								default_language = A
 							name = species.get_random_french_name(gender)
 							real_name = name
+							add_note("Known Languages", "French")
 							return
 
 

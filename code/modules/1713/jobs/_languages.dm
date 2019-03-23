@@ -72,11 +72,13 @@
 	if (!H.languages.len)
 		H.add_language(default_language, FALSE)
 		if (!notes.Find(default_language))
-			H.add_note("Known Languages", default_language)
+			if (map.ID != MAP_NOMADS_CONTINENTAL)
+				H.add_note("Known Languages", default_language)
 	else if (H.languages[1] != default_language)
 		H.add_language(default_language, FALSE)
-		if (!notes.Find(default_language))
-			H.add_note("Known Languages", default_language)
+		if (map.ID != MAP_NOMADS_CONTINENTAL)
+			if (!notes.Find(default_language))
+				H.add_note("Known Languages", default_language)
 
 	H.default_language = H.languages[1]
 

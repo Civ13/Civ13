@@ -301,6 +301,14 @@
 		else
 			return capitalize(pick(first_names_male_russian)) + " " + capitalize(pick(last_names_russian))
 
+/datum/species/proc/get_random_ukrainian_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_ukrainian)) + " " + capitalize(pick(last_names_ukrainian))
+		else
+			return capitalize(pick(first_names_male_ukrainian)) + " " + capitalize(pick(last_names_ukrainian))
+
+
 /datum/species/proc/get_random_greek_name(var/gender, var/jew)
 	if (!name_language)
 

@@ -10,6 +10,7 @@
 #define CARIB "CARIB"
 #define LATIN "LATIN"
 #define GERMAN "GERMAN"
+#define UKRAINIAN "UKRAINIAN"
 #define CHINESE "CHINESE"
 #define HEBREW "HEBREW"
 #define SWAHILI "SWAHILI"

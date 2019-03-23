@@ -128,7 +128,16 @@
 	colour = "Russian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = RUSSIAN_SYLLABLES
-	mutual_intelligibility = list()
+	mutual_intelligibility = list(/datum/language/ukrainian = 35)
+
+/datum/language/ukrainian
+	name = "Ukrainian"
+	desc = "Slava Ukraina!"
+	key = "u"
+	colour = "Ukrainian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = RUSSIAN_SYLLABLES
+	mutual_intelligibility = list(/datum/language/russian = 35)
 
 /datum/language/chinese
 	name = "Chinese"
