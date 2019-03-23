@@ -109,6 +109,7 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/turkey_f
 	timer = 3000
+
 /obj/effect/spawner/mobspawner/panthers
 	name = "panther spawner"
 	hostile = TRUE
@@ -140,13 +141,13 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/bear/polar
 	timer = 3000
+
 /obj/effect/spawner/mobspawner/monkeys
 	name = "monkey spawner"
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/monkey
 	timer = 3000
-
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
@@ -175,6 +176,14 @@
 	create_path = /mob/living/simple_animal/frog/poisonous
 	timer = 4800
 
+/obj/effect/spawner/mobspawner/frog
+	name = "frog spawner"
+	hostile = TRUE
+	max_number = 4
+	max_range = 12
+	create_path = /mob/living/simple_animal/frog
+	timer = 4800
+
 /obj/effect/spawner/mobspawner/mouse
 	name = "mouse spawner"
 	max_number = 2
@@ -189,6 +198,7 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/poison/snake
 	timer = 5000
+
 /obj/effect/spawner/mobspawner/deer_m
 	name = "stag spawner"
 	max_number = 2
@@ -202,7 +212,6 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/deer/female
 	timer = 3000
-
 
 /obj/effect/spawner/mobspawner/reindeer_m
 	name = "reindeer stag spawner"
@@ -232,6 +241,7 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/goat
 	timer = 5000
+
 /obj/effect/spawner/mobspawner/goats_f
 	name = "female goat spawner"
 	max_number = 2
@@ -245,12 +255,21 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/sheep
 	timer = 5000
+
 /obj/effect/spawner/mobspawner/sheep_f
 	name = "female sheep spawner"
 	max_number = 2
 	max_range = 5
 	create_path = /mob/living/simple_animal/sheep/female
 	timer = 5000
+
+/obj/effect/spawner/mobspawner/camel
+	name = "camel spawner"
+	max_number = 2
+	max_range = 8
+	create_path = /mob/living/simple_animal/camel
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/wolves
 	name = "wolf spawner"
 	hostile = TRUE
