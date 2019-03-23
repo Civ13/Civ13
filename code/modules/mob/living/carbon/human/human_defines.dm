@@ -171,6 +171,11 @@
 	var/religious_leader = FALSE
 	var/religious_clergy = FALSE
 
+	var/inducedSSD = FALSE
+	var/lastx = 0
+	var/lasty = 0
+	var/lastz = 0
+
 	var/driver = FALSE
 	var/obj/structure/vehicle/driver_vehicle = null
 	var/riding = FALSE // if riding a horse
