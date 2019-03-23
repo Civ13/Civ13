@@ -514,9 +514,9 @@ var/global/list/damage_icon_parts = list()
 				top.color = CD.topcolor
 				underc.color = CD.undercolor
 				over.color = CD.overcolor
-				overlays += top
-				overlays += underc
-				overlays += over
+				standing.overlays += top
+				standing.overlays += underc
+				standing.overlays += over
 		else if (istype(w_uniform, /obj/item/clothing/under/customuniform_modern))
 			var/obj/item/clothing/under/customuniform_modern/CU = w_uniform
 			if (!CU.uncolored)
