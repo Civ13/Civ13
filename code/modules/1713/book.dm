@@ -87,7 +87,8 @@
 					usr << "The content is invalid."
 					return
 				else
-					dat += parsepencode(content, W, usr)
+					var/t = parsepencode(content, W, user)
+					dat += t
 			if ("Author")
 				var/newauthor = sanitize(input(usr, "Write the author's name:"))
 				if (!newauthor)
@@ -178,3 +179,5 @@
 	t = replacetext(t, "\[cell\]", "<td>")
 
 	t = "<font face=\"[deffont]\" color=[P ? P.colour : "black"]>[t]</font>"
+
+	return t
