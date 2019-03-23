@@ -244,6 +244,20 @@
 	else
 		return FALSE
 
+/obj/structure/vehicle/raft/attackby(obj/item/O as obj, mob/user as mob)
+    if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
+        playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+        user << "<span class='notice'>You begin dismantling \the [src].</span>"
+        if (do_after(user,25,src))
+            user << "<span class='notice'>You dismantle \the [src].</span>"//We lose some materials in the process. Some wood and rope is no longer useful as raw.
+            var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
+            new /obj/item/stack/material/rope(get_turf(src))
+            W.add(4)//adds 4 boards to the stack, making it 5
+            qdel(src)
+            return
+    else
+        ..()
+
 ///////////////////////////////////////////////////////
 //dirs:
 //S: 23,33; 10,33
@@ -439,6 +453,20 @@
 						OB.pixel_x = pixel_x+32
 						OB.pixel_y = pixel_y+10
 						OB.dir = dir
+
+/obj/structure/vehicle/boat/sailboat/attackby(obj/item/O as obj, mob/user as mob)
+    if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)
+        playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+        user << "<span class='notice'>You begin dismantling \the [src].</span>"
+        if (do_after(user,25,src))
+            user << "<span class='notice'>You dismantle \the [src].</span>"//We lose some materials in the process. Some wood is no longer useful as raw.
+            new /obj/item/sail(get_turf(src))
+            var /obj/item/stack/material/wood/W = new /obj/item/stack/material/wood(get_turf(src))
+            W.add(9)//adds 9 boards to the stack, making it 10
+            qdel(src)
+            return
+    else
+        ..()
 
 /obj/structure/vehicle/boat/b400/New()
 	..()
