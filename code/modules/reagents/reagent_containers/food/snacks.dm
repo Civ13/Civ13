@@ -492,7 +492,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/salmonfillet
 	name = "salmon fillet"
-	desc = "A fillet of salmoh."
+	desc = "A fillet of salmon."
 	icon_state = "salmonfillet"
 	center_of_mass = list("x"=17, "y"=13)
 	var/rotten = FALSE

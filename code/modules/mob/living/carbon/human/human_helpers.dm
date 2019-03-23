@@ -62,6 +62,13 @@
 	if (usr.sleeping)
 		usr << "<span class = 'red'>You are already sleeping.</span>"
 		return
+	var/found = FALSE
+	for (var/obj/structure/bed/B in get_turf(src))
+		if (B)
+			found = TRUE
+	if (!found)
+		usr << "<span class = 'red'>You need to be over a bed.</span>"
+		return
 	if (WWinput(src, "Are you sure you want to sleep for a while? This will protect you when disconnected, but takes 2 minutes to take effect.", "Sleep", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will start sleeping in two minutes."
 		spawn(1200)
