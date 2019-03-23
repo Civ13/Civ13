@@ -91,7 +91,6 @@
 						if (x<100)
 							add_language("Russian",TRUE)
 							remove_language("English")
-							replace_memory("English", "Russian")
 							for (var/datum/language/russian/A in languages)
 								default_language = A
 							name = species.get_random_russian_name(gender)
@@ -100,7 +99,6 @@
 						else
 							add_language("Ukrainian",TRUE)
 							remove_language("English")
-							replace_memory("English", "Ukrainian")
 							for (var/datum/language/ukrainian/A in languages)
 								default_language = A
 							name = species.get_random_ukrainian_name(gender)
@@ -110,7 +108,6 @@
 						if (x<100)
 							add_language("Spanish",TRUE)
 							remove_language("English")
-							replace_memory("English", "Spanish")
 							for (var/datum/language/spanish/A in languages)
 								default_language = A
 							name = species.get_random_spanish_name(gender)
@@ -120,7 +117,6 @@
 						else
 							add_language("French",TRUE)
 							remove_language("English")
-							replace_memory("English", "French")
 							for (var/datum/language/french/A in languages)
 								default_language = A
 							name = species.get_random_french_name(gender)
@@ -131,7 +127,6 @@
 						if (x<100)
 							add_language("Swahili",TRUE)
 							remove_language("English")
-							replace_memory("English", "Swahili")
 							for (var/datum/language/swahili/A in languages)
 								default_language = A
 							name = species.get_random_swahili_name(gender)
@@ -141,7 +136,6 @@
 						else
 							add_language("Zulu",TRUE)
 							remove_language("English")
-							replace_memory("English", "Zulu")
 							for (var/datum/language/zulu/A in languages)
 								default_language = A
 							name = species.get_random_zulu_name(gender)
@@ -152,7 +146,6 @@
 						if (x<100)
 							add_language("Arabic",TRUE)
 							remove_language("English")
-							replace_memory("English", "Arabic")
 							for (var/datum/language/arab/A in languages)
 								default_language = A
 							name = species.get_random_arab_name(gender)
@@ -162,7 +155,6 @@
 						else
 							add_language("Hebrew",TRUE)
 							remove_language("English")
-							replace_memory("English", "Hebrew")
 							for (var/datum/language/hebrew/A in languages)
 								default_language = A
 							name = species.get_random_hebrew_name(gender)
@@ -171,24 +163,22 @@
 							return
 					if ("temperate")
 						if (x<100)
-							add_language("Spanish",TRUE)
+							add_language("Dutch",TRUE)
 							remove_language("English")
-							replace_memory("English", "Spanish")
-							for (var/datum/language/spanish/A in languages)
+							for (var/datum/language/dutch/A in languages)
 								default_language = A
-							name = species.get_random_spanish_name(gender)
+							name = species.get_random_dutch_name(gender)
 							real_name = name
-							add_note("Known Languages", "Spanish")
+							add_note("Known Languages", "Dutch")
 							return
 						else
-							add_language("French",TRUE)
+							add_language("German",TRUE)
 							remove_language("English")
-							replace_memory("English", "French")
-							for (var/datum/language/french/A in languages)
+							for (var/datum/language/german/A in languages)
 								default_language = A
-							name = species.get_random_french_name(gender)
+							name = species.get_random_german_name(gender)
 							real_name = name
-							add_note("Known Languages", "French")
+							add_note("Known Languages", "German")
 							return
 
 
