@@ -18,8 +18,8 @@
 
 	var/override_material_state = null
 
-	var/health = 100
-	var/initial_health = 100
+	var/health = 400
+	var/initial_health = 400
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
