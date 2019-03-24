@@ -508,15 +508,27 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += shirt
 				standing.overlays += belt
 				standing.overlays += epaulettes
-		if (istype(w_uniform, /obj/item/clothing/under/customdress))
+		else if (istype(w_uniform, /obj/item/clothing/under/customdress))
 			var/obj/item/clothing/under/customdress/CD = w_uniform
 			if (!CD.uncolored)
+				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_top")
+				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_under")
+				over = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_over")
 				top.color = CD.topcolor
 				underc.color = CD.undercolor
 				over.color = CD.overcolor
 				standing.overlays += top
 				standing.overlays += underc
 				standing.overlays += over
+		else if (istype(w_uniform, /obj/item/clothing/under/customren))
+			var/obj/item/clothing/under/customren/CD = w_uniform
+			if (!CD.uncolored)
+				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_top")
+				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_lining")
+				top.color = CD.topcolor
+				underc.color = CD.undercolor
+				standing.overlays += top
+				standing.overlays += underc
 		else if (istype(w_uniform, /obj/item/clothing/under/customuniform_modern))
 			var/obj/item/clothing/under/customuniform_modern/CU = w_uniform
 			if (!CU.uncolored)
