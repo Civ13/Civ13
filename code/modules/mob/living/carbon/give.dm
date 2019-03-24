@@ -120,7 +120,7 @@
 		user << "The target does not seem to respond..."
 		return
 
-	var/answer = WWinput(src, "Add or Remove a permission?", null, "Add", list("Add","Remove","Cancel"))
+	var/answer = WWinput(user, "Add or Remove a permission?", null, "Add", list("Add","Remove","Cancel"))
 	if (answer == "Add")
 		var/list/a2list = list("Cancel")
 		if (faction_perms[1] == 0)
@@ -131,7 +131,7 @@
 			a2list += "Giving Titles"
 		if (faction_perms[4] == 0)
 			a2list += "Recruitment"
-		var/answer2 = WWinput(src, "Which permission to add?", null, "Cancel", a2list)
+		var/answer2 = WWinput(user, "Which permission to add?", null, "Cancel", a2list)
 		switch(answer2)
 			if ("Permission Management")
 				faction_perms[1] = 1
@@ -160,7 +160,7 @@
 			a3list += "Recruitment"
 			src << "<big>You gained the Recruitment permission.</big>"
 
-		var/answer3 = WWinput(src, "Which permission to remove?", null, "Cancel", a3list)
+		var/answer3 = WWinput(user, "Which permission to remove?", null, "Cancel", a3list)
 		switch(answer3)
 			if ("Permission Management")
 				faction_perms[1] = 0

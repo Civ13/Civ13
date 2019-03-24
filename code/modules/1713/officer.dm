@@ -53,8 +53,8 @@ var/global/list/valid_coordinates = list()
 			if (civilization == M.civilization && civilization != "none" && world.time > announcement_cooldown)
 				messaget = "[name] announces:"
 				M.show_message("<big><span class=notice><b>[messaget]</b></big><p style='text-indent: 50px'>[message]</p></span>", 2)
-				announcement_cooldown = world.time+1800
-			log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
+	announcement_cooldown = world.time+1800
+	log_admin("Faction Announcement: [key_name(usr)] - [messaget] : [message]")
 
 /mob/living/carbon/human/proc/Check_Coordinates()
 	set category = "Officer"
