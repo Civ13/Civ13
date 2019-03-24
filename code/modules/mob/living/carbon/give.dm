@@ -112,7 +112,7 @@
 		user << "You are not part of a faction."
 		return
 
-	if (!user.leader || faction_perms[1] == 0)
+	if (!user.leader || user.faction_perms[1] == 0)
 		user << "You don't have the permissions to change faction permissions."
 		return
 
