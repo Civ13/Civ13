@@ -151,6 +151,7 @@
 	tameminimum = 200
 	maxHealth = 65
 	health = 65
+
 /mob/living/simple_animal/complex_animal/dog/beagle
 	name = "Wild Beagle"
 	faction = null
@@ -161,6 +162,7 @@
 	mob_size = MOB_SMALL
 	maxHealth = 50
 	health = 0
+
 /mob/living/simple_animal/complex_animal/dog/pug
 	name = "Wild Pug"
 	faction = null
