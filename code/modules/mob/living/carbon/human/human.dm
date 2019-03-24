@@ -87,7 +87,7 @@
 					force_update_limbs()
 					update_body()
 				if ("temperate")
-					s_tone = -55
+					s_tone = -30
 					force_update_limbs()
 					update_body()
 					new_hair = pick("Light Brown","Dark Brown","Light Grey","Light Blond","Blond","Dirty Blond")
