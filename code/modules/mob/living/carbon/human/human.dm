@@ -79,27 +79,40 @@
 	spawn(5)
 		if (map && map.ID == MAP_NOMADS_CONTINENTAL)
 			var/area/mob_area = get_area(src)
+			var/new_hair = "Black"
 			switch (mob_area.climate)
 				if ("tundra")
 					s_tone = -10
+					new_hair = pick("Light Brown","Red","Orange","Light Blond","Blond","Dirty Blond")
 					force_update_limbs()
 					update_body()
 				if ("temperate")
 					s_tone = -55
 					force_update_limbs()
 					update_body()
+					new_hair = pick("Light Brown","Dark Brown","Light Grey","Light Blond","Blond","Dirty Blond")
 				if ("sea")
 					s_tone = -65
 					force_update_limbs()
 					update_body()
+					new_hair = pick("Light Brown","Dark Brown","Grey","Dirty Blond", "Black")
 				if ("desert")
 					s_tone = -90
 					force_update_limbs()
 					update_body()
+					new_hair = pick("Dark Brown","Grey","Black")
 				if ("jungle")
 					s_tone = -150
 					force_update_limbs()
 					update_body()
+					new_hair = "Black"
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
 		else
 			if (faction_text == ARAB)
 				s_tone = -90

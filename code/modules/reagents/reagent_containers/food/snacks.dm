@@ -485,7 +485,7 @@
 			rotten = TRUE
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
-				if (isturf(loc))
+				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
@@ -508,7 +508,7 @@
 			rotten = TRUE
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
-				if (isturf(loc))
+				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
@@ -1621,7 +1621,7 @@
 			reagents.remove_reagent("protein", 1)
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
-				if (isturf(loc))
+				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
