@@ -83,24 +83,24 @@
 			switch (mob_area.climate)
 				if ("tundra")
 					s_tone = -10
-					new_hair = pick("Light Brown","Red","Orange","Light Blond","Blond","Dirty Blond")
+					new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
 					force_update_limbs()
 					update_body()
 				if ("temperate")
 					s_tone = -30
 					force_update_limbs()
 					update_body()
-					new_hair = pick("Light Brown","Dark Brown","Light Grey","Light Blond","Blond","Dirty Blond")
+					new_hair = pick("Light Brown","Dark Brown","Blond","Dirty Blond")
 				if ("sea")
 					s_tone = -65
 					force_update_limbs()
 					update_body()
-					new_hair = pick("Light Brown","Dark Brown","Grey","Dirty Blond", "Black")
+					new_hair = pick("Light Brown","Dark Brown","Black")
 				if ("desert")
 					s_tone = -90
 					force_update_limbs()
 					update_body()
-					new_hair = pick("Dark Brown","Grey","Black")
+					new_hair = pick("Dark Brown","Black")
 				if ("jungle")
 					s_tone = -150
 					force_update_limbs()
