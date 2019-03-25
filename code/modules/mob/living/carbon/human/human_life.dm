@@ -338,7 +338,7 @@
 		if (disease == FALSE)
 			//0.005%
 			if (prob(1))
-				if (prob(1))
+				if (prob(1) && !inducedSSD)
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0

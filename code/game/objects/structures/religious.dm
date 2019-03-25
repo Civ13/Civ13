@@ -32,6 +32,7 @@
 		if (religion != "none")
 			name = "[religion]'s stone totem"
 			desc = "A stone totem dedicated to the [religion] religion."
+			icon_state = pick("bear","mouse","goose","wolf","turkey","monkey")
 			if (map.custom_religions[religion][7] == "Shamans")
 				map.custom_religions[religion][3] += 25
 

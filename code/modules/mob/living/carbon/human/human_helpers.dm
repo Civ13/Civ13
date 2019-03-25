@@ -78,7 +78,7 @@
 			usr.sleeping = 20 //Short nap
 			inducedSSD = TRUE
 			sleep_update()
-			usr.forceMove(locate(0,0,0))
+			usr.forceMove(locate(1,1,1))
 			return
 /mob/living/carbon/human/verb/mob_wakeup()
 	set name = "Wake Up"
