@@ -558,7 +558,6 @@
 
 /material/cloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
-	recipes += list(new/datum/stack_recipe("religious banner",/obj/structure/banner/religious, 3, _time = 65, _one_per_turf = TRUE, _on_floor = TRUE))
 	if (current_res[3] >= 22)
 		recipes += list(new/datum/stack_recipe("small sail",/obj/item/sail, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 19)
@@ -569,7 +568,6 @@
 		recipes += list(new/datum/stack_recipe("trauma kit", /obj/item/stack/medical/advanced/bruise_pack, 2, _time = 105, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 43)
 		recipes += list(new/datum/stack_recipe("burn kit", /obj/item/stack/medical/advanced/ointment, 1, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
-	recipes += list(new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 130)
 		recipes += list(new/datum/stack_recipe("custom camo uniform", 	/obj/item/clothing/under/customuniform_modern, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 
@@ -817,6 +815,12 @@
 			new/datum/stack_recipe("blue bedsheet", /obj/item/weapon/bedsheet/blue, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("yellow bedsheet", /obj/item/weapon/bedsheet/blue, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red bedsheet", /obj/item/weapon/bedsheet/red, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
+
+		recipes += new/datum/stack_recipe_list("banners & flags", list(
+			new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("faction banner (square)",/obj/structure/banner/faction/banner_a, 3, _time = 65, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("faction banner (gonfalon)",/obj/structure/banner/faction/banner_b, 3, _time = 65, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("religious banner",/obj/structure/banner/religious, 3, _time = 65, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	if (current_res[1] >= 18 && current_res[3]>= 26) // Same level that bronze surgical tools can be made.
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))

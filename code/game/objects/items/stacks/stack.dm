@@ -242,6 +242,10 @@
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
 			return
+	if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner"))
+		if (H.civilization == "none")
+			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>"
+			return
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -705,6 +709,12 @@
 			RB.symbol = map.custom_religions[H.religion][4]
 			RB.color1 = map.custom_religions[H.religion][5]
 			RB.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/banner/faction))
+			var/obj/structure/banner/faction/FB = O
+			FB.faction = H.civilization
+			FB.symbol = map.custom_civs[H.civilization][6]
+			FB.color1 = map.custom_civs[H.civilization][7]
+			FB.color2 = map.custom_civs[H.civilization][8]
 		else if (istype(O, /obj/structure/altar))
 			var/obj/structure/altar/P = O
 			P.religion = H.religion

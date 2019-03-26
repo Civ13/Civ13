@@ -40,7 +40,7 @@
 		var/choosecolor1 = "#000000"
 		var/choosecolor2 = "#FFFFFF"
 		var/choosesymbol = "star"
-		choosesymbol = WWinput(src, "Choose a symbol for the new faction:", "Faction Creation", "Cancel", list("Cancel","Star","Sun","Moon"))
+		choosesymbol = WWinput(src, "Choose a symbol for the new faction:", "Faction Creation", "Cancel", list("Cancel","star","sun","moon","cross","big cross","saltire"))
 		if (choosesymbol == "Cancel")
 			return
 		choosecolor1 = input(H, "Choose the main/symbol hex color (without the #):", "Color" , "000000")
@@ -279,12 +279,16 @@
 	desc = "A white banner."
 	var/bstyle = "banner_a"
 	var/faction = "none"
-	var/symbol = "Cross"
+	var/symbol = "cross"
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
 	flammable = TRUE
 	layer = 3.21
 
+/obj/structure/banner/faction/banner_a
+	bstyle = "banner_a"
+/obj/structure/banner/faction/banner_b
+	bstyle = "banner_b"
 /obj/structure/banner/faction/New()
 	..()
 	invisibility = 101
