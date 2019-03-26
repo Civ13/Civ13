@@ -418,7 +418,11 @@
 			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("leader propaganda poster",/obj/item/weapon/poster/faction/lead, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (current_res[1] > 45 && current_res[1] < 52)
 		recipes += new/datum/stack_recipe_list("paper & printing", list(
 			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -426,7 +430,12 @@
 			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("book",/obj/item/weapon/book, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("leader propaganda poster",/obj/item/weapon/poster/faction/lead, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("paper & printing", list(
 			new/datum/stack_recipe("printing press",/obj/structure/printingpress, 12, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -435,7 +444,12 @@
 			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("book",/obj/item/weapon/book, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("leader propaganda poster",/obj/item/weapon/poster/faction/lead, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if (current_res[1] >= 24 && current_res[2] >= 33)
 		recipes += new/datum/stack_recipe_list("siege weapons", list(

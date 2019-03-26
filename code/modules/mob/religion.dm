@@ -527,7 +527,8 @@ obj/structure/altar/iron
 			overlays += overs
 		update_icon()
 		invisibility = 0
-/obj/structure/poster/banner/attackby(obj/item/weapon/W as obj, mob/user as mob)
+
+/obj/structure/banner/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
 		user << "You start ripping off the [src]..."
 		if (do_after(user, 130, src))

@@ -686,6 +686,19 @@
 			P.symbol = map.custom_religions[H.religion][4]
 			P.color1 = map.custom_religions[H.religion][5]
 			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/item/weapon/poster/faction))
+			var/obj/item/weapon/poster/faction/P = O
+			P.faction = H.civilization
+			P.color1 = map.custom_civs[P.faction][7]
+			P.color2 = map.custom_civs[P.faction][8]
+			if (istype(O, /obj/item/weapon/poster/faction/lead))
+				P.bstyle = "prop_lead"
+			else if (istype(O, /obj/item/weapon/poster/faction/work))
+				P.bstyle = "prop_work"
+			else if (istype(O, /obj/item/weapon/poster/faction/mil1))
+				P.bstyle = "prop_mil1"
+			else if (istype(O, /obj/item/weapon/poster/faction/mil2))
+				P.bstyle = "prop_mil2"
 		else if (istype(O, /obj/structure/banner/religious))
 			var/obj/structure/banner/religious/RB = O
 			RB.religion = H.religion

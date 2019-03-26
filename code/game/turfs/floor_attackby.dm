@@ -171,6 +171,19 @@
 			user.drop_from_inventory(C)
 			qdel(C)
 			return
+	else if (istype(C, /obj/item/weapon/poster/faction) && istype(get_turf(src), /turf/floor/dirt/underground))
+		user << "You start placing the [C] on the [src]..."
+		if (do_after(user, 70, src))
+			visible_message("[user] places the [C] on the [src].")
+			var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
+			var/obj/item/weapon/poster/faction/P = C
+			RP.faction = P.faction
+			RP.bstyle = P.bstyle
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.drop_from_inventory(C)
+			qdel(C)
+			return
 	else if (istype(C, /obj/item/weapon/pickaxe))
 		var/turf/T = get_turf(src)
 		var/mob/living/carbon/human/H = user

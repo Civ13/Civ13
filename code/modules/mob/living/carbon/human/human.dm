@@ -92,7 +92,7 @@
 					update_body()
 					new_hair = pick("Light Brown","Dark Brown","Blond","Dirty Blond")
 				if ("sea")
-					s_tone = -65
+					s_tone = -50
 					force_update_limbs()
 					update_body()
 					new_hair = pick("Light Brown","Dark Brown","Black")
