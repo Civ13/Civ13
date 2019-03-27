@@ -72,14 +72,22 @@
 	if (WWinput(src, "Are you sure you want to sleep for a while? This will protect you when disconnected, but takes 2 minutes to take effect.", "Sleep", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will start sleeping in two minutes."
 		spawn(1200)
-			lastx = usr.x
-			lasty = usr.y
-			lastz = usr.z
-			usr.sleeping = 20 //Short nap
-			inducedSSD = TRUE
-			sleep_update()
-			usr.forceMove(locate(1,1,1))
-			return
+			found = FALSE
+			for (var/obj/structure/bed/B in get_turf(src))
+				if (B)
+					found = TRUE
+			if (!found)
+				usr << "<span class = 'red'>You need to be over a bed.</span>"
+				return
+			else
+				lastx = usr.x
+				lasty = usr.y
+				lastz = usr.z
+				usr.sleeping = 20 //Short nap
+				inducedSSD = TRUE
+				sleep_update()
+				usr.forceMove(locate(1,1,1))
+				return
 /mob/living/carbon/human/verb/mob_wakeup()
 	set name = "Wake Up"
 	set category = "IC"
