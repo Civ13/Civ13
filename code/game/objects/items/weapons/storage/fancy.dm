@@ -96,6 +96,10 @@
 	can_hold = list(/obj/item/clothing/mask/smokable/cigarette, /obj/item/weapon/flame/lighter)
 	icon_type = "cigarette"
 	var/customcolor = "#000000"
+
+/obj/item/weapon/storage/fancy/cigarettes/update_icon()
+	return
+
 /obj/item/weapon/storage/fancy/cigarettes/New()
 	..()
 	flags |= NOREACT
