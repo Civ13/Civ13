@@ -196,7 +196,7 @@
 					if (M.civilization != user.civilization)
 						closemobs += M
 				var/choice2 = WWinput(usr, "Who to give the visa to?", "Visa", "Cancel", closemobs)
-				if (choice2 == "Cancel")
+				if (choice2 == "Cancel" || !choice2)
 					return
 				else
 					U = choice2
