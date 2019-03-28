@@ -142,6 +142,27 @@
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
 
+	if (findtext(recipe.title, "cigarette pack"))
+		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
+		if (customname == "" || customname == null)
+			customname = "cigarette pack"
+		customcolor = input(user, "Choose a hex color (without the #):", "Cigarette Pack Color" , "000000")
+		if (customcolor == null || customcolor == "")
+			return
+		else
+			customcolor = uppertext(customcolor)
+			if (lentext(customcolor) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(customcolor,i,i+1)
+				else
+					numtocheck = copytext(customcolor,i,0)
+				if (!(numtocheck in listallowed))
+					return
+
 	if (findtext(recipe.title, "frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -205,6 +226,11 @@
 			user << "You are too close to an existing deposit!"
 			return
 
+	if (findtext(recipe.title, "passport"))
+		if (H.civilization == null || H.civilization == "none")
+			user << "You need to be part of a faction to craft a passport!"
+			return
+
 	if (findtext(recipe.title, "holy book"))
 		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
 			H << "<span class = 'danger'>You can't make a holy book.</span>"
@@ -220,6 +246,10 @@
 	if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar") || findtext(recipe.title, "religious banner"))
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
+			return
+	if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner"))
+		if (H.civilization == "none")
+			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>"
 			return
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
@@ -665,12 +695,31 @@
 			P.symbol = map.custom_religions[H.religion][4]
 			P.color1 = map.custom_religions[H.religion][5]
 			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/item/weapon/poster/faction))
+			var/obj/item/weapon/poster/faction/P = O
+			P.faction = H.civilization
+			P.color1 = map.custom_civs[P.faction][7]
+			P.color2 = map.custom_civs[P.faction][8]
+			if (istype(O, /obj/item/weapon/poster/faction/lead))
+				P.bstyle = "prop_lead"
+			else if (istype(O, /obj/item/weapon/poster/faction/work))
+				P.bstyle = "prop_work"
+			else if (istype(O, /obj/item/weapon/poster/faction/mil1))
+				P.bstyle = "prop_mil1"
+			else if (istype(O, /obj/item/weapon/poster/faction/mil2))
+				P.bstyle = "prop_mil2"
 		else if (istype(O, /obj/structure/banner/religious))
 			var/obj/structure/banner/religious/RB = O
 			RB.religion = H.religion
 			RB.symbol = map.custom_religions[H.religion][4]
 			RB.color1 = map.custom_religions[H.religion][5]
 			RB.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/banner/faction))
+			var/obj/structure/banner/faction/FB = O
+			FB.faction = H.civilization
+			FB.symbol = map.custom_civs[H.civilization][6]
+			FB.color1 = map.custom_civs[H.civilization][7]
+			FB.color2 = map.custom_civs[H.civilization][8]
 		else if (istype(O, /obj/structure/altar))
 			var/obj/structure/altar/P = O
 			P.religion = H.religion
@@ -688,6 +737,11 @@
 			FF.customcolor = addtext("#",customcolor)
 			FF.name = customname
 			FF.do_color()
+		else if (istype(O, /obj/item/weapon/storage/fancy/cigarettes))
+			var/obj/item/weapon/storage/fancy/cigarettes/C = O
+			C.customcolor = addtext("#",customcolor)
+			C.name = customname
+			C.do_color()
 		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced
@@ -697,6 +751,10 @@
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
+		else if (istype(O, /obj/item/clothing/accessory/storage/passport))
+			var/obj/item/clothing/accessory/storage/passport/PP = O
+			PP.owner = H
+			PP.own()
 		if (istype(O, /obj/item/weapon/storage)) //BubbleWrap - so newly formed boxes are empty
 			for (var/obj/item/I in O)
 				qdel(I)

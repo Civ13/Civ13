@@ -9,6 +9,12 @@
 #define ENGLISH "ENGLISH"
 #define CARIB "CARIB"
 #define LATIN "LATIN"
+#define GERMAN "GERMAN"
+#define UKRAINIAN "UKRAINIAN"
+#define CHINESE "CHINESE"
+#define HEBREW "HEBREW"
+#define SWAHILI "SWAHILI"
+#define ZULU "ZULU"
 
 //used for languages & factions
 #define SPANISH "SPANISH"

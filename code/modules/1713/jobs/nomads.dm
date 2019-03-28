@@ -79,6 +79,109 @@
 				else if (map.ordinal_age == 5)
 					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
 
+///////////////LANGUAGE PROC/////////////////////////
+
+/mob/living/carbon/human/proc/give_languages()
+	if (map && map.civilizations)
+		if (map.ID == MAP_NOMADS_CONTINENTAL)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("tundra")
+						if (x<100)
+							add_language("Russian",TRUE)
+							remove_language("English")
+							for (var/datum/language/russian/A in languages)
+								default_language = A
+							name = species.get_random_russian_name(gender)
+							real_name = name
+							return
+						else
+							add_language("Ukrainian",TRUE)
+							remove_language("English")
+							for (var/datum/language/ukrainian/A in languages)
+								default_language = A
+							name = species.get_random_ukrainian_name(gender)
+							real_name = name
+							return
+					if ("sea")
+						if (x<100)
+							add_language("Spanish",TRUE)
+							remove_language("English")
+							for (var/datum/language/spanish/A in languages)
+								default_language = A
+							name = species.get_random_spanish_name(gender)
+							real_name = name
+							add_note("Known Languages", "Spanish")
+							return
+						else
+							add_language("French",TRUE)
+							remove_language("English")
+							for (var/datum/language/french/A in languages)
+								default_language = A
+							name = species.get_random_french_name(gender)
+							real_name = name
+							add_note("Known Languages", "French")
+							return
+					if ("jungle")
+						if (x<100)
+							add_language("Swahili",TRUE)
+							remove_language("English")
+							for (var/datum/language/swahili/A in languages)
+								default_language = A
+							name = species.get_random_swahili_name(gender)
+							real_name = name
+							add_note("Known Languages", "Swahili")
+							return
+						else
+							add_language("Zulu",TRUE)
+							remove_language("English")
+							for (var/datum/language/zulu/A in languages)
+								default_language = A
+							name = species.get_random_zulu_name(gender)
+							real_name = name
+							add_note("Known Languages", "Zulu")
+							return
+					if ("desert")
+						if (x<100)
+							add_language("Arabic",TRUE)
+							remove_language("English")
+							for (var/datum/language/arab/A in languages)
+								default_language = A
+							name = species.get_random_arab_name(gender)
+							real_name = name
+							add_note("Known Languages", "Arabic")
+							return
+						else
+							add_language("Hebrew",TRUE)
+							remove_language("English")
+							for (var/datum/language/hebrew/A in languages)
+								default_language = A
+							name = species.get_random_hebrew_name(gender)
+							real_name = name
+							add_note("Known Languages", "Hebrew")
+							return
+					if ("temperate")
+						if (x<100)
+							add_language("Dutch",TRUE)
+							remove_language("English")
+							for (var/datum/language/dutch/A in languages)
+								default_language = A
+							name = species.get_random_dutch_name(gender)
+							real_name = name
+							add_note("Known Languages", "Dutch")
+							return
+						else
+							add_language("German",TRUE)
+							remove_language("English")
+							for (var/datum/language/german/A in languages)
+								default_language = A
+							name = species.get_random_german_name(gender)
+							real_name = name
+							add_note("Known Languages", "German")
+							return
+
+
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
@@ -294,6 +397,7 @@
 	if (!H)	return FALSE
 	H.give_clothes()
 	H.make_nomad()
+	H.give_languages()
 
 	H.add_note("Role", "You are a <b>Nomad</b>. Form a tribe and survive!")
 

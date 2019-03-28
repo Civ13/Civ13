@@ -118,18 +118,118 @@
 
 /obj/item/clothing/accessory/storage/coinpouch
 	name = "coin pouch"
-	desc = "A small pouch, where you can carry your coins."
+	desc = "A small pouch, where you can carry your coins and small objects."
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "coinpouch1"
 	slot_flags = SLOT_ID
-	slots = 5
+	slots = 8
+
+/obj/item/clothing/accessory/storage/coinpouch/wallet
+	name = "wallet"
+	desc = "A personal wallet, where you can carry your coins and small objects."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "wallet"
 
 /obj/item/clothing/accessory/storage/coinpouch/New()
 	..()
 	hold.max_storage_space = 25
 	hold.can_hold = list(/obj/item/stack/money,\
 	/obj/item/weapon/key,\
-	/obj/item/weapon/storage/belt/keychain)
+	/obj/item/weapon/storage/belt/keychain,\
+	/obj/item/clothing/accessory/storage/passport,\
+	/obj/item/weapon/visa)
+
+
+/obj/item/clothing/accessory/storage/passport
+	name = "passport"
+	desc = "A personal passport. Can hold several visas."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "passport"
+	item_state = "paper"
+	slot_flags = SLOT_ID | SLOT_POCKET
+	slots = 15
+	w_class = 2
+	var/mob/living/carbon/human/owner = null
+	var/faction = ""
+	flammable = TRUE
+
+/obj/item/clothing/accessory/storage/passport/New()
+	..()
+	hold.max_storage_space = 50
+	hold.can_hold = list(/obj/item/weapon/visa)
+
+/obj/item/clothing/accessory/storage/passport/proc/own()
+	spawn(5)
+		if (owner)
+			faction = owner.civilization
+			name = "[faction]'s passport"
+			desc = "[faction] passport, issued to [owner]. Can hold several visas."
+
+/obj/item/weapon/visa
+	name = "visa"
+	desc = "a traveller visa."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "visa0"
+	item_state = "paper"
+	throwforce = FALSE
+	w_class = TRUE
+	throw_range = TRUE
+	throw_speed = TRUE
+	attack_verb = list("bapped")
+	flammable = TRUE
+	var/mob/living/carbon/human/owner = null
+	var/duration = 0
+
+/obj/item/weapon/visa/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+	if (istype(W, /obj/item/weapon/pen) && !owner && duration == 0)
+		if (user.civilization == "none")
+			user << "You are not in a faction!"
+			return
+		else
+			if (user.faction_perms[4] == 0)
+				user << "You don't have the recruitment permissions to issue visas!"
+				return
+			else
+				var/mob/living/carbon/human/U = null
+				var/closemobs = list("Cancel")
+				for (var/mob/living/carbon/human/M in range(4,loc))
+					if (M.civilization != user.civilization)
+						closemobs += M
+				var/choice2 = WWinput(usr, "Who to give the visa to?", "Visa", "Cancel", closemobs)
+				if (choice2 == "Cancel" || !choice2)
+					return
+				else
+					U = choice2
+					var/inp = input(user, "How long should the visa last? In minutes. (Up to 3 days - 4320 minutes)") as num|null
+					if (!isnum(inp))
+						return
+					if (inp <= 0)
+						return
+					if (inp > 4320)
+						inp = 4320
+						return
+					else
+						duration = inp
+						owner = U
+						icon_state = "visa1"
+						name = "[user.civilization] visa"
+						var/cdur = ""
+						if (duration > 60)
+							cdur = "[duration/60] hours"
+						else
+							cdur = "[duration] minutes"
+						desc = "A visa issued by <b>[user.civilization]</b> to <b>[owner]</b>.<br>Issued on <b>[roundduration2text()]</b> and valid for <b>[cdur]</b> starting then.<br>Signed by: <b><i>[user]</i></b>."
+						user << "You issue the visa."
+						update_icon()
+						do_duration()
+						return
+	else
+		..()
+/obj/item/weapon/visa/proc/do_duration()
+	spawn(duration*600)
+		qdel(src)
+		return
+
 
 /obj/item/weapon/storage/backpack/quiver
 	name = "quiver"

@@ -38,8 +38,6 @@
 			usr << "<span class='danger'>That religion already exists. Choose another name.</span>"
 			return
 	if (newname != null && newname != "none")
-		H.religion = newname
-		map.custom_religion_nr += newname
 		var/choosetype = "Knowledge"
 		var/chooseclergy = "Shamans"
 		var/choosesymbol = "star"
@@ -48,7 +46,7 @@
 		choosetype = WWinput(src, "Choose a focus for the new religion:", "Religion Creation", "Cancel", list("Cancel","Combat","Knowledge","Production"))
 		if (choosetype == "Cancel")
 			return
-		var/list/clergychoices = list("Cancel","Shamans")
+		var/list/clergychoices = list("Cancel","Shamans","Priests")
 		if (map.ordinal_age == 1)
 			clergychoices = list("Cancel","Shamans","Cultists","Priests")
 		else if (map.ordinal_age >= 2)
@@ -98,6 +96,7 @@
 
 		H.religion = newname
 		H.religious_leader = TRUE
+		H.religious_clergy = chooseclergy
 		H.religion_type = choosetype
 		H.religion_style = chooseclergy
 		map.custom_religion_nr += newname
@@ -266,9 +265,10 @@
 	if (user.religion == religion && religion != "none")
 		user << "You stare at the glorious holy book of your religion."
 	else if (user.religion != religion && religion != "none" && !user.religious_leader && user.religious_clergy == FALSE)
-		if (map.custom_religions[user.religion][7] == "Clerics")
-			user << "You can't abandon a Clerical religion!"
-			return
+		if (user.religion != "none")
+			if (map.custom_religions[user.religion][7] == "Clerics")
+				user << "You can't abandon a Clerical religion!"
+				return
 		user << "You start reading the [title]..."
 		if (do_after(user, 900, src))
 			var/choice = WWinput(user, "After reading the [title], you feel attracted to the [religion] religion. Do you want to convert?", "[title]", "Yes", list("Yes","No"))
@@ -441,14 +441,15 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 								currlist2 += AA
 						map.custom_religions[religion][3] += currlist2.len*0.8
 						visible_message("[H] finishes the worshipping session of the [religion] religion.")
+						session = FALSE
 						return
 
 			if ("Conversion")
 				var/list/closemobs = list("Cancel")
 				for (var/mob/living/carbon/human/M in range(2,loc))
-					if (M.religion != religion && M.religious_clergy == FALSE && map.custom_religions[M.religion][7] != "Clerics" && M.stat == 0)
+					if (M.religion != religion && M.religious_clergy == FALSE && M.religion_style != "Clerics")
 						closemobs += M
-				var/choice3 = WWinput(usr, "Who do you want to convert?", "[religion]'s Altar", "Cancel", closemobs)
+				var/choice3 = WWinput(H, "Who do you want to convert?", "[religion]'s Altar", "Cancel", closemobs)
 				if (choice3 == "Cancel")
 					return
 				else
@@ -526,7 +527,8 @@ obj/structure/altar/iron
 			overlays += overs
 		update_icon()
 		invisibility = 0
-/obj/structure/poster/banner/attackby(obj/item/weapon/W as obj, mob/user as mob)
+
+/obj/structure/banner/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.sharp)
 		user << "You start ripping off the [src]..."
 		if (do_after(user, 130, src))

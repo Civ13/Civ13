@@ -79,6 +79,7 @@
 				if (user.religious_clergy == "Monks")
 					monk = TRUE
 					religion = user.religion
+					map.custom_religions[user.religion][3] += 6
 				update_icon()
 				return
 
@@ -97,6 +98,7 @@
 				if (user.religious_clergy == "Monks")
 					monk = TRUE
 					religion = user.religion
+					map.custom_religions[user.religion][3] += 6
 				update_icon()
 				return
 
@@ -115,6 +117,7 @@
 				if (user.religious_clergy == "Monks")
 					monk = TRUE
 					religion = user.religion
+					map.custom_religions[user.religion][3] += 6
 				update_icon()
 				return
 
@@ -133,6 +136,7 @@
 				if (user.religious_clergy == "Monks")
 					monk = TRUE
 					religion = user.religion
+					map.custom_religions[user.religion][3] += 6
 				update_icon()
 				return
 
@@ -151,6 +155,7 @@
 				if (user.religious_clergy == "Monks")
 					monk = TRUE
 					religion = user.religion
+					map.custom_religions[user.religion][3] += 6
 				update_icon()
 				return
 
@@ -169,6 +174,7 @@
 				if (user.religious_clergy == "Monks")
 					monk = TRUE
 					religion = user.religion
+					map.custom_religions[user.religion][3] += 6
 				update_icon()
 				return
 
@@ -187,6 +193,7 @@
 				if (user.religious_clergy == "Monks")
 					monk = TRUE
 					religion = user.religion
+					map.custom_religions[user.religion][3] += 6
 				update_icon()
 				return
 	else

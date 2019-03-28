@@ -261,6 +261,8 @@
 		msg += is_bleeding[limb]
 	for (var/implant in get_visible_implants(0))
 		msg += "<span class='danger'>[src] [T.has] \a [implant] sticking out of [T.his] flesh!</span>\n"
+	if (gender == MALE && circumcised && !w_uniform && !wear_suit)
+		msg += "<span class='danger'>[src] is circumcised!</span>\n"
 
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
 	if (O && O.get_teeth() < O.max_teeth)

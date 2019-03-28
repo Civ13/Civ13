@@ -281,7 +281,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 300
+	health = 600
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -542,6 +542,15 @@
 	flammable = TRUE
 	explosion_resistance = FALSE
 
+/obj/covers/repairedfloor/New()
+	..()
+	spawn(15)
+		var/turf/T = get_turf(src)
+		if (istype(T, /turf/floor/beach/water/deep/saltwater))
+			visible_message("The [src] sinks!")
+			qdel(src)
+			return
+
 /obj/item/weapon/covers/attack_self(mob/user)
 	var/covers_time = 80
 	if (ishuman(user))
@@ -603,6 +612,19 @@
 				var/obj/item/weapon/poster/religious/P = W
 				RP.religion = P.religion
 				RP.symbol = P.symbol
+				RP.color1 = P.color1
+				RP.color2 = P.color2
+				user.drop_from_inventory(W)
+				qdel(W)
+				return
+		if (istype(W, /obj/item/weapon/poster/faction))
+			user << "You start placing the [W] on the [src]..."
+			if (do_after(user, 70, src))
+				visible_message("[user] places the [W] on the [src].")
+				var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
+				var/obj/item/weapon/poster/faction/P = W
+				RP.faction = P.faction
+				RP.bstyle = P.bstyle
 				RP.color1 = P.color1
 				RP.color2 = P.color2
 				user.drop_from_inventory(W)

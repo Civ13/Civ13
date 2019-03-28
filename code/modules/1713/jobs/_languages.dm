@@ -5,7 +5,7 @@
 
 /datum/job/civilian
 	default_language = "English"
-	additional_languages = list("French" = 25, "Spanish" = 15, "Portuguese" = 10)
+	additional_languages = list()
 
 /datum/job/civilian/portuguese
 	default_language = "Portuguese"
@@ -72,11 +72,13 @@
 	if (!H.languages.len)
 		H.add_language(default_language, FALSE)
 		if (!notes.Find(default_language))
-			H.add_note("Known Languages", default_language)
+			if (map.ID != MAP_NOMADS_CONTINENTAL)
+				H.add_note("Known Languages", default_language)
 	else if (H.languages[1] != default_language)
 		H.add_language(default_language, FALSE)
-		if (!notes.Find(default_language))
-			H.add_note("Known Languages", default_language)
+		if (map.ID != MAP_NOMADS_CONTINENTAL)
+			if (!notes.Find(default_language))
+				H.add_note("Known Languages", default_language)
 
 	H.default_language = H.languages[1]
 

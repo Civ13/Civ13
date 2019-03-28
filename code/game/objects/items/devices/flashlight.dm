@@ -13,7 +13,7 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 50,"glass" = 20)
 
 	action_button_name = "Toggle Flashlight"
-	var/on = TRUE
+	var/on = FALSE
 	var/brightness_on = 5 //luminosity when on
 	var/turn_on_sound = 'sound/effects/Custom_flashlight.ogg'
 	var/fuel = 600 // 10 mins

@@ -81,7 +81,163 @@
 	icon_state = "customarabictunic"
 	item_state = "customarabictunic"
 	worn_state = "customarabictunic"
+
+/obj/item/clothing/under/customren
+	name = "renaissance putfit"
+	desc = "A renaissance-style outfit."
+	var/uncolored = FALSE
+	var/topcolor = 0
+	var/undercolor = 0
+	item_state = "customren"
+	icon_state = "customren"
+	worn_state = "customren"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customren/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!topcolor)
+			var/input = input(user, "Top - Choose a hex color (without the #):", "Top Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				topcolor = addtext("#",input)
+
+		if (!undercolor)
+			var/input = input(user, "Lining - Choose a hex color (without the #):", "Lining Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				undercolor = addtext("#",input)
+
+		if (topcolor && undercolor)
+			uncolored = FALSE
+			var/image/top = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customren_top")
+			top.color = topcolor
+			var/image/under = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customren_lining")
+			under.color = undercolor
+			overlays += top
+			overlays += under
+			return
+	else
+		..()
 ///////////////IMPERIAL//////////////////////////////////////
+/obj/item/clothing/under/customdress
+	name = "dress"
+	desc = "A female dress."
+	var/uncolored = FALSE
+	var/topcolor = 0
+	var/undercolor = 0
+	var/overcolor = 0
+	item_state = "customdress"
+	icon_state = "customdress"
+	worn_state = "customdress"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customdress/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!topcolor)
+			var/input = input(user, "Top - Choose a hex color (without the #):", "Top Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				topcolor = addtext("#",input)
+
+		if (!undercolor)
+			var/input = input(user, "Under Bottom - Choose a hex color (without the #):", "Under Bottom Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				undercolor = addtext("#",input)
+		if (!overcolor)
+			var/input = input(user, "Over Bottom - Choose a hex color (without the #):", "Over Bottom Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				overcolor = addtext("#",input)
+		if (topcolor && undercolor && overcolor)
+			uncolored = FALSE
+			var/image/top = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customdress_top")
+			top.color = topcolor
+			var/image/under = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customdress_under")
+			under.color = undercolor
+			var/image/over = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "customdress_over")
+			over.color = overcolor
+			overlays += top
+			overlays += under
+			overlays += over
+			return
+	else
+		..()
 
 
 

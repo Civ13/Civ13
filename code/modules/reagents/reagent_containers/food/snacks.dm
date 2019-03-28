@@ -485,14 +485,14 @@
 			rotten = TRUE
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
-				if (isturf(loc))
+				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
 
 /obj/item/weapon/reagent_containers/food/snacks/salmonfillet
 	name = "salmon fillet"
-	desc = "A fillet of salmoh."
+	desc = "A fillet of salmon."
 	icon_state = "salmonfillet"
 	center_of_mass = list("x"=17, "y"=13)
 	var/rotten = FALSE
@@ -508,7 +508,7 @@
 			rotten = TRUE
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
-				if (isturf(loc))
+				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)
@@ -1621,7 +1621,7 @@
 			reagents.remove_reagent("protein", 1)
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
-				if (isturf(loc))
+				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))
 			spawn(3000)
 				qdel(src)

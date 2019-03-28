@@ -82,7 +82,7 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
+		if ((map.heat_wave || map.ID == MAP_NOMADS_DESERT) && !inducedSSD)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
 				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
@@ -95,9 +95,12 @@
 						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
 						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
 		else
-			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
 				water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+			else if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
+				nutrition -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
@@ -138,6 +141,13 @@
 			addictions[ad] -= 0.05
 
 // disease stuff
+	if (inducedSSD && disease && disease_progression <= 15)
+		disease = 0
+		disease_type = "none"
+		disease_progression = 0
+		bodytemperature = 310.055
+		disease_treatment = 0
+
 	if (disease == TRUE)
 		if (disease_type == "none")
 			disease = FALSE
@@ -335,7 +345,7 @@
 		if (disease == FALSE)
 			//0.005%
 			if (prob(1))
-				if (prob(1))
+				if (prob(1) && !inducedSSD)
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
