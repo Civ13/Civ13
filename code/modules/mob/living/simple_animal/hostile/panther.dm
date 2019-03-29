@@ -30,6 +30,13 @@
 
 	faction = "neutral"
 
+/mob/living/simple_animal/hostile/panther/jaguar
+	name = "jaguar"
+	icon_state = "jaguar"
+	icon_living = "jaguar"
+	icon_dead = "jaguar_dead"
+	icon_gib = "jaguar_gib"
+
 /mob/living/simple_animal/hostile/panther/Life()
 	. =..()
 	if (!.)

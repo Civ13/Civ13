@@ -486,6 +486,15 @@
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
 
+/obj/structure/wild/jungle/acacia
+	name = "acacia tree"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	icon_state = "african_acacia"
+/obj/structure/wild/jungle/acacia/dead
+	name = "dead acacia tree"
+	icon_state = "african_acacia_dead"
+
+
 /obj/structure/wild/jungle/New()
 	..()
 	icon_state = "tree[rand(1,7)]"
