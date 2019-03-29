@@ -465,6 +465,37 @@
 	icon_state = "fieldcap_custom"
 	item_state = "fieldcap_custom"
 	worn_state = "fieldcap_custom"
+	var/capcolor = 0
+
+/obj/item/clothing/head/custom/fieldcap/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!capcolor)
+			var/input = input(user, "Cap - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				capcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (capcolor)
+			uncolored1 = FALSE
+			var/image/cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "fieldcap_custom")
+			cap.color = capcolor
+			overlays += cap
+			return
+	else
+		..()
 
 /////////////////UNIFORMS////////////////////////////////////
 /obj/item/clothing/under/customuniform_modern

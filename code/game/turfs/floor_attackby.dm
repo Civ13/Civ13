@@ -190,7 +190,7 @@
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
-			if (do_after(user, 80/(H.getStatCoeff("strength"))))
+			if (do_after(user, 160/(H.getStatCoeff("strength"))))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
 					return
@@ -198,7 +198,7 @@
 					if (prob(25))
 						if (prob(90))
 							var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
-							mineral.amount = rand(1,3)
+							mineral.amount = rand(2,6)
 							if (istype(get_area(src), /area/caribbean/void/caves/special))
 								mineral.amount *= 2
 							H << "<span class='danger'>You found some copper ore!</span>"
@@ -211,7 +211,7 @@
 							return
 						else
 							var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
-							mineral.amount = rand(1,3)
+							mineral.amount = rand(2,6)
 							if (istype(get_area(src), /area/caribbean/void/caves/special))
 								mineral.amount *= 2
 							H << "<span class='danger'>You found some tin ore!</span>"
@@ -224,7 +224,7 @@
 							return
 					if (prob(40) && map.age != "5000 B.C.")
 						var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-						mineral.amount = rand(1,4)
+						mineral.amount = rand(2,6)
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
 						H << "<span class='danger'>You found some iron ore!</span>"
@@ -252,6 +252,7 @@
 							var/pickperc = pick(1,2,3)
 							if (pickperc == 1)
 								var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+								mineral.amount = 2
 								if (istype(get_area(src), /area/caribbean/void/caves/special))
 									mineral.amount *= 2
 								H << "<span class='danger'>You found some coal!</span>"
@@ -264,6 +265,7 @@
 								return
 							else if (pickperc == 2)
 								var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
+								mineral.amount = 2
 								if (istype(get_area(src), /area/caribbean/void/caves/special))
 									mineral.amount *= 2
 								H << "<span class='danger'>You found some saltpeter!</span>"
@@ -276,6 +278,7 @@
 								return
 							else if (pickperc == 3)
 								var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
+								mineral.amount = 2
 								if (istype(get_area(src), /area/caribbean/void/caves/special))
 									mineral.amount *= 2
 								H << "<span class='danger'>You found some sulphur!</span>"
@@ -288,6 +291,7 @@
 								return
 					if (prob(5))
 						var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
+						mineral.amount = 2
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
 						H << "<span class='danger'>You found some silver ore!</span>"
@@ -300,6 +304,7 @@
 						return
 					if (prob(2))
 						var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
+						mineral.amount = 2
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
 						H << "<span class='danger'>You found some gold ore!</span>"
@@ -312,6 +317,7 @@
 						return
 					if (prob(1))
 						var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
+						mineral.amount = 2
 						if (istype(get_area(src), /area/caribbean/void/caves/special))
 							mineral.amount *= 2
 						H << "<span class='danger'>You found some raw diamonds!</span>"
@@ -323,7 +329,7 @@
 						H.adaptStat("strength", 1)
 						return
 					var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
-					mineral.amount = rand(2,4)
+					mineral.amount = rand(4,8)
 					if (istype(get_area(src), /area/caribbean/void/caves/special))
 						mineral.amount *= 2
 					H << "<span class='danger'>You found some usable stone blocks!</span>"

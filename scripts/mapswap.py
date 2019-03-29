@@ -78,6 +78,12 @@ elif map == "NOMADS_ICE_AGE":
 	dmms.append("#include \"maps\\special\\nomads_ice_age.dmm\"")
 elif map == "NOMADS_JUNGLE":
 	dmms.append("#include \"maps\\special\\nomads_jungle.dmm\"")
+elif map == "NOMADS_DIVIDE":
+	dmms.append("#include \"maps\\special\\nomads_divide.dmm\"")
+elif map == "NOMADS_CONTINENTAL":
+	dmms.append("#include \"maps\\special\\nomads_continental.dmm\"")
+elif map == "NOMADS_PANGEA":
+	dmms.append("#include \"maps\\special\\nomads_pangea.dmm\"")
 
 elif map == "LITTLE_CREEK":
 	dmms.append("#include \"maps\\1873\\little_creek.dmm\"")
