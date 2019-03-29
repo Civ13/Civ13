@@ -32,10 +32,6 @@
 	var/list/arealist_g = list()
 /obj/map_metadata/nomads_pangea/New()
 	..()
-	spawn(2500)
-		for (var/i = 1, i <= 30, i++)
-			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
-			new/obj/structure/piranha(areaspawn)
 	spawn(9000)
 		seasons()
 
