@@ -281,7 +281,7 @@
 	if (randwep == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_belt)
 	if (randwep == 4)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/battleaxe(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_l_store)
 	if (prob(30))
@@ -814,7 +814,7 @@
 	if (randwep == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_belt)
 	if (randwep == 4)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/battleaxe(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(H), slot_l_store)
 	if (prob(30))

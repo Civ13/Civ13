@@ -132,6 +132,7 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 5
+
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
 	desc = "A crude hatchet, made with wood and stone."
@@ -251,6 +252,7 @@
 	value = 10
 	block_chance = 15
 	cooldownw = 10
+
 /obj/item/weapon/material/spear/sarissa
 	name = "sarissa"
 	sharp = TRUE
@@ -457,7 +459,7 @@
 	value = 18
 	cooldownw = 13
 
-/obj/item/weapon/material/battleaxe
+/obj/item/weapon/material/hatchet/battleaxe
 	name = "battle axe"
 	desc = "A very sharp axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
 	icon = 'icons/obj/weapons.dmi'

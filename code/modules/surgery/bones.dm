@@ -40,6 +40,7 @@
 			affected.perma_injury = 0
 			affected.damage = 0
 			affected.stage = FALSE
+			affected.createwound(BRUISE, -25)
 		else
 			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name]<span class = 'red'>in the WRONG place with \the [tool].</span></span>", \
 				"<span class = 'notice'>You set the bone in [target]'s [affected.name]<span class = 'red'> in the WRONG place with \the [tool].</span></span>")
@@ -82,6 +83,7 @@
 		affected.perma_injury = 0
 		affected.damage = 0
 		affected.stage = FALSE
+		affected.createwound(BRUISE, -25)
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
