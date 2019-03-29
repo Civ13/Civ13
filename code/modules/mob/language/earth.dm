@@ -12,6 +12,7 @@
 #define RUSSIAN_SYLLABLES list("al", "an", "bi", "vye", "vo", "go", "dye", "yel", "?n", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nye", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "rye", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "vyer", "yego", "yeny", "yenn", "yest", "kak", "ln", "ova", "ogo", "?l", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto")
 #define GERMAN_SYLLABLES list("abe","ach","and","auf","aus","ben","ber","che","cht","das","den","der","die","ein","eit","end","ere","ers","ese","gen","hen","ich","ige","ine","ist","lic","lle","men","mit","nde","nen","nge","nic","nte","ren","sch","sei","sen","sic","sie","ste","ten","ter","und","ung","ver","ich","ein","der","sch","die","und","che","cht","den","gen","ine","ten","ung","hen","nde","lic","ver","sie","ste","nen","eit","ber","ter","nge","das","ach","and","ers","ren","nic","ere","sic","ist","lle","ben","auf","abe","end","aus","mit","ige","sen","men","sei","nte","ese")
 #define SWAHILI_SYLLABLES list("ak", "al", "am", "an", "ar", "at", "ba", "ch", "en", "ha", "hi", "ia", "ik", "il", "im", "in", "ka", "ki", "ku", "kw", "la", "li", "ma", "mb", "mi", "na", "ng", "ni", "ra", "si", "ta", "ti", "uw", "wa", "we", "ya", "ye", "wa", "ku", "ka", "na", "li", "ma", "an", "ya", "ik", "ak", "al", "am", "ni", "in", "ha", "at", "ki", "ng", "ti", "ba", "uw", "hi", "si", "kw", "ta", "ar", "ra", "il", "we", "mb", "en", "la", "mi", "ia", "ch", "im", "ye", "aka", "ake", "aki", "ali", "ama", "amb", "ana", "ang", "ani", "ara", "ari", "ata", "ati", "eye", "eza", "ika", "iki", "iku", "ili", "ing", "ini", "ish", "ita", "kam", "kat", "kut", "kuw", "kwa", "lik", "mba", "ngu", "sha", "tik", "uli", "uwa", "wak", "wal", "wam", "wan", "yak", "yey", "ali", "kuw", "uwa", "kwa", "ati", "iku", "lik", "kat", "ili", "ika", "mba", "aka", "ana", "ama", "amb", "ake", "tik", "ing", "ini", "kam", "wak", "ani", "sha", "ara", "yak", "ang", "wal", "ish", "aki", "wan", "eza", "ari", "kut", "ata", "wam", "yey", "eye", "ngu", "iki", "uli", "ita")
+#define AINU_SYLLABLES list("da", "do", "de", "ra", "ri", "ro", "re", "tsu", "me", "mi", "ma", "ka", "ki", "ko", "ke", "shi", "sho", "sha", "sa", "se", "su", "si", "ou", "na", "no", "ni", "ne", "te", "ta", "to", "ti", "wa", "wo", "wi", "we", "ho", "ga", "ge", "go", "gi", "al", "an", "bi", "vye", "vo", "go", "dye", "yel", "?n", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nye", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "rye", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "vyer", "yego", "yeny", "yenn", "yest", "kak", "ln", "ova", "ogo", "?l", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -118,6 +119,15 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = JAPANESE_SYLLABLES
 	mutual_intelligibility = list(/datum/language/chinese = 15)
+
+/datum/language/ainu
+	name = "Ainu"
+	desc = "Osoma!."
+	key = "i"
+	colour = "Ainu"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = AINU_SYLLABLES
+	mutual_intelligibility = list(/datum/language/japanese = 15, /datum/language/russian = 15)
 
 /datum/language/russian
 	name = "Russian"

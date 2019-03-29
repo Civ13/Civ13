@@ -180,7 +180,52 @@
 							real_name = name
 							add_note("Known Languages", "German")
 							return
+//////////////////////////////////////////////////////
+///////////////////Karafuta-Sakhalinsk////////////////
+//////////////////////////////////////////////////////
+	if (map && map.civilizations)
+		if (map.ID == MAP_NOMADS_KARAFUTA-SAKHALINSK)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("tundra")
+						if (x<100)
+							add_language("Russian",TRUE)
+							remove_language("English")
+							for (var/datum/language/russian/A in languages)
+								default_language = A
+							name = species.get_random_russian_name(gender)
+							real_name = name
+							return
+						else
+							add_language("Ainu",TRUE)
+							remove_language("English")
+							for (var/datum/language/ainu/A in languages)
+								default_language = A
+							name = species.get_random_ainu_name(gender)
+							real_name = name
+							add_note("Known Languages", "Ainu")
+							return
 
+					if ("temperate")
+						if (x<100)
+							add_language("Japanese",TRUE)
+							remove_language("English")
+							for (var/datum/language/japanese/A in languages)
+								default_language = A
+							name = species.get_random_japanese_name(gender)
+							real_name = name
+							add_note("Known Languages", "Japanese")
+							return
+						else
+							add_language("Ainu",TRUE)
+							remove_language("English")
+							for (var/datum/language/ainu/A in languages)
+								default_language = A
+							name = species.get_random_ainu_name(gender)
+							real_name = name
+							add_note("Known Languages", "Ainu")
+							return
 
 /////////////////////////CIVS////////////////////////
 

@@ -126,6 +126,45 @@
 				s_tone = -65
 				force_update_limbs()
 				update_body()
+///////////////////////////////////////////////////////////////////
+/////////////////////////Karafuta-Sakhalinsk///////////////////////
+///////////////////////////////////////////////////////////////////
+		if (map && (map.ID == MAP_NOMADS_KARAFUTA-SAKHALINSK))
+			var/area/mob_area = get_area(src)
+			var/new_hair = "Black"
+			switch (mob_area.climate)
+				if ("tundra")
+					s_tone = -40
+					new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond", "Dark Brown", "Black", "Light Brown")
+					force_update_limbs()
+					update_body()
+				if ("temperate")
+					s_tone = -35
+					force_update_limbs()
+					update_body()
+					new_hair = pick("Black")
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+		else
+			if (faction_text == ARAB)
+				s_tone = -90
+				force_update_limbs()
+				update_body()
+			else if (faction_text == INDIANS)
+				s_tone = -115
+				force_update_limbs()
+				update_body()
+			else if (s_tone < -65)
+				s_tone = -65
+				force_update_limbs()
+				update_body()
+
+
 /mob/living/carbon/human/Destroy()
 	human_mob_list -= src
 	human_clients_mob_list -= src
