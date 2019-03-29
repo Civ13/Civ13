@@ -248,11 +248,8 @@
 /turf/floor/beach/water/deep/saltwater
 	name = "deep saltwater"
 	salty = TRUE
-<<<<<<< HEAD
-
-=======
 	initial_flooring = /decl/flooring/water_deep_salt
->>>>>>> be9358e70582c705b33b70a567740ab87df648fa
+	
 /turf/floor/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
