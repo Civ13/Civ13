@@ -730,15 +730,15 @@ var/global/list/damage_icon_parts = list()
 			cap.color = CU.capcolor
 			symbol = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l3")
 			symbol.color = CU.symbolcolor
-			overlays += band
-			overlays += cap
-			overlays += symbol
+			standing.overlays += band
+			standing.overlays += cap
+			standing.overlays += symbol
 
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
 			var/obj/item/clothing/head/custom/fieldcap/CU = w_uniform
 			cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "fieldcap_custom")
 			cap.color = CU.capcolor
-			overlays += cap
+			standing.overlays += cap
 
 		if (head.blood_DNA)
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "helmetblood")
