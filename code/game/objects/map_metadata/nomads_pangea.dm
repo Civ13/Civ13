@@ -32,7 +32,7 @@
 	var/list/arealist_g = list()
 /obj/map_metadata/nomads_pangea/New()
 	..()
-	spawn(9000)
+	spawn(18000)
 		seasons()
 
 /obj/map_metadata/nomads_pangea/faction2_can_cross_blocks()
@@ -187,7 +187,7 @@
 					if (get_area(G).climate == "temperate")
 						if (prob(50))
 							G.ChangeTurf(/turf/floor/winter/grass)
-	spawn(9000)
+	spawn(18000)
 		seasons()
 
 

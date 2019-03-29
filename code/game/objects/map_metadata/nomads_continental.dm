@@ -40,7 +40,7 @@
 		for (var/i = 1, i <= 30, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
 			new/obj/structure/piranha(areaspawn)
-	spawn(9000)
+	spawn(18000)
 		seasons()
 
 /obj/map_metadata/nomads_continental/faction2_can_cross_blocks()
@@ -195,7 +195,7 @@
 					if (get_area(G).climate == "temperate")
 						if (prob(50))
 							G.ChangeTurf(/turf/floor/winter/grass)
-	spawn(9000)
+	spawn(18000)
 		seasons()
 
 
