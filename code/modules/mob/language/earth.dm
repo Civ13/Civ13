@@ -40,7 +40,7 @@
 	colour = "English"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ENGLISH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10)
+	mutual_intelligibility = list(/datum/language/french = 10,/datum/language/german = 10,/datum/language/dutch = 10)
 
 /datum/language/french
 	name = "French"
@@ -49,9 +49,7 @@
 	colour = "French"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = FRENCH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 10,
-		/datum/language/spanish = 25,
-		/datum/language/portuguese = 10)
+	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/spanish = 25,/datum/language/portuguese = 10,/datum/language/dutch = 10)
 
 /datum/language/dutch
 	name = "Dutch"
@@ -60,7 +58,7 @@
 	colour = "Dutch"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = DUTCH_SYLLABLES
-	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/german = 35)
+	mutual_intelligibility = list(/datum/language/english = 10,/datum/language/german = 40)
 
 /datum/language/carib
 	name = "Carib"
@@ -79,7 +77,7 @@
 	colour = "Greek"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GREEK_SYLLABLES
-	mutual_intelligibility = list()
+	mutual_intelligibility = list(/datum/language/latin = 10)
 
 /datum/language/latin
 	name = "Latin"

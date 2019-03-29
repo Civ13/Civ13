@@ -203,6 +203,7 @@
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
+
 /turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE
@@ -237,6 +238,7 @@
 /turf/floor/beach/water/deep/saltwater
 	name = "deep saltwater"
 	salty = TRUE
+
 /turf/floor/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
@@ -246,18 +248,21 @@
 		return FALSE
 	else
 		return ..()
+
 /turf/floor/beach/water/swamp
 	name = "swamp"
 	move_delay = 3
 	icon_state = "seashallow_swamp"
 	sickness = 3
 	initial_flooring = /decl/flooring/water_swamp
+
 /turf/floor/beach/water/jungle
 	name = "jungle river"
 	move_delay = 5
 	icon_state = "seashallow_jungle1"
 	sickness = 2
 	initial_flooring = /decl/flooring/water_jungle1
+
 /turf/floor/beach/water/flooded
 	name = "flooded riverbed"
 	move_delay = 5
