@@ -83,7 +83,7 @@
 
 /mob/living/carbon/human/proc/give_languages()
 	if (map && map.civilizations)
-		if (map.ID == MAP_NOMADS_CONTINENTAL)
+		if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
