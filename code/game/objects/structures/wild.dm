@@ -157,10 +157,7 @@
 /obj/structure/wild/tree/live_tree/update_icon()
 	..()
 	if (season == "WINTER")
-		if (prob(50))
-			icon = 'icons/obj/flora/bigtrees_winter.dmi'
-		else
-			icon = 'icons/obj/flora/deadtrees.dmi'
+		icon = 'icons/obj/flora/bigtrees_winter.dmi'
 
 	else if (season == "SUMMER")
 		icon = 'icons/obj/flora/bigtrees.dmi'
@@ -180,10 +177,7 @@
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
-		if (prob(50))
-			dropwood.amount = 4
-		else
-			dropwood.amount = 7
+		dropwood.amount = 7
 		qdel(src)
 		return
 

@@ -1,6 +1,6 @@
 #define NO_WINNER "The round is proceeding normally."
-/obj/map_metadata/nomads_karafuta-sakhalinsk
-	ID = MAP_NOMADS_KARAFUTA-SAKHALINSK
+/obj/map_metadata/nomads_karafuta
+	ID = MAP_NOMADS_KARAFUTA
 	title = "Nomads (Karafuta-Sakhalinsk) (300x450x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
@@ -28,21 +28,21 @@
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
-/obj/map_metadata/nomads_karafuta-sakhalinsk/New()
+/obj/map_metadata/nomads_karafuta/New()
 	..()
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_karafuta-sakhalinsk/faction2_can_cross_blocks()
+/obj/map_metadata/nomads_karafuta/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_karafuta-sakhalinsk/faction1_can_cross_blocks()
+/obj/map_metadata/nomads_karafuta/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 0 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/nomads_karafuta-sakhalinsk/cross_message(faction)
+/obj/map_metadata/nomads_karafuta/cross_message(faction)
 	return ""
 
-/obj/map_metadata/nomads_karafuta-sakhalinsk/proc/seasons()
+/obj/map_metadata/nomads_karafuta/proc/seasons()
 	if (season == "WINTER")
 		season = "SPRING"
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
@@ -157,7 +157,7 @@
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/nomads_karafuta-sakhalinsk/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/nomads_karafuta/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_nomad == TRUE)
 		. = TRUE
 	else

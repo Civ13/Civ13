@@ -184,7 +184,7 @@
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
 	if (map && map.civilizations)
-		if (map.ID == MAP_NOMADS_KARAFUTA-SAKHALINSK)
+		if (map.ID == MAP_NOMADS_KARAFUTA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)

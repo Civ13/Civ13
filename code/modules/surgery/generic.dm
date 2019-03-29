@@ -68,7 +68,7 @@
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/stack/material/rope",50),
-		4 = list("/obj/item/flashlight/torch/on",30),
+		4 = list("/obj/item/flashlight/torch",30),
 	)
 
 	min_duration = 40
@@ -161,7 +161,7 @@
 		1 = list("/obj/item/weapon/surgery/cautery",100),
 		2 = list("/obj/item/weapon/surgery/cautery/bronze",85),
 		3 = list("/obj/item/clothing/mask/smokable/cigarette/cigar",60),
-		4 = list("/obj/item/flashlight/torch/on",75),
+		4 = list("/obj/item/flashlight/torch",75),
 	)
 
 	min_duration = 70
