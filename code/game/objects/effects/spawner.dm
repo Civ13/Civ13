@@ -118,6 +118,15 @@
 	create_path = /mob/living/simple_animal/hostile/panther
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/panthers/jaguar
+	name = "jaguar spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 12
+	create_path = /mob/living/simple_animal/hostile/panther/jaguar
+	timer = 3000
+
+
 /obj/effect/spawner/mobspawner/bears
 	name = "bear spawner"
 	hostile = TRUE
@@ -401,6 +410,15 @@
 	max_range = 13
 	create_path = /obj/structure/wild/jungle
 	timer = 6000
+
+/obj/effect/spawner/objspawner/acacia
+	name = "acacia tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 10
+	max_range = 13
+	create_path = /obj/structure/wild/jungle/acacia
+	timer = 7500
 
 //ore spanwers for extended games
 /obj/effect/spawner/orespawner

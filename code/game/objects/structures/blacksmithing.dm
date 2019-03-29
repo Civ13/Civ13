@@ -61,7 +61,7 @@ obj/structure/anvil/New()
 	else if (steel_amt > 0)
 		var/list/display = list("Swords", "Cancel")
 		if (map.ordinal_age >= 4)
-			display = list("Swords","Guns", "Cancel")
+			display = list("Swords","Guns","Armor", "Cancel")
 		else
 			display = list("Swords", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display)
@@ -700,7 +700,8 @@ obj/structure/anvil/New()
 			var/list/display4 = list("Cancel")
 			if (map.ordinal_age >= 4)
 				display4 = list("Picklehaube (7)", "Pith (7)", "Cancel")
-
+			if (map.ordinal_age >= 5)
+				display4 = list("Picklehaube (7)", "Pith (7)", "Brodie (10)", "Stahlhelm (10)", "Cancel")
 			if (map.ordinal_age >= 2)
 				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)", "Cancel")
 			else
@@ -903,8 +904,39 @@ obj/structure/anvil/New()
 						new/obj/item/clothing/head/helmet/modern/pickelhaube(user.loc)
 						return
 				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more steel to make this!</span>"
 					return
+
+			if (choice4 == "Stahlhelm (10)")
+				if (steel_amt >= 10)
+					user << "You begin crafting the stahlhelm..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && steel_amt >= 7)
+						user << "You craft the stahlhelm."
+						steel_amt -= 10
+						if (steel_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/modern/stahlhelm(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+
+			if (choice4 == "Brodie (9)")
+				if (steel_amt >= 9)
+					user << "You begin crafting the brodie..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && steel_amt >= 7)
+						user << "You craft the stahlhelm."
+						steel_amt -= 9
+						if (steel_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/modern/brodie(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more steel to make this!</span>"
+					return
+
 
 			if (choice4 == "Pith (7)")
 				if (steel_amt >= 7)
@@ -918,7 +950,7 @@ obj/structure/anvil/New()
 						new/obj/item/clothing/head/helmet/modern/pith(user.loc)
 						return
 				else
-					user << "<span class='notice'>You need more iron to make this!</span>"
+					user << "<span class='notice'>You need more steel to make this!</span>"
 					return
 			if (choice4 == "Samurai Helmet (10)")
 				if (iron_amt >= 10)

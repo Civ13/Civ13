@@ -141,6 +141,13 @@
 			addictions[ad] -= 0.05
 
 // disease stuff
+	if (inducedSSD && disease && disease_progression <= 15)
+		disease = 0
+		disease_type = "none"
+		disease_progression = 0
+		bodytemperature = 310.055
+		disease_treatment = 0
+
 	if (disease == TRUE)
 		if (disease_type == "none")
 			disease = FALSE

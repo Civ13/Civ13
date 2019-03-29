@@ -89,6 +89,8 @@
 	if (current_res[1] >= 18)
 		recipes += new/datum/stack_recipe("coin pouch", /obj/item/clothing/accessory/storage/coinpouch, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("leather backpack", /obj/item/weapon/storage/backpack, 6, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[1] >= 87)
+		recipes += new/datum/stack_recipe("wallet", /obj/item/clothing/accessory/storage/coinpouch/wallet, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 19 && map.ordinal_age <= 1)
 		recipes += new/datum/stack_recipe("roman-style sandals", /obj/item/clothing/shoes/roman, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("long celtic braccae", /obj/item/clothing/under/celtic_long_braccae, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -423,6 +425,8 @@
 			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else if (current_res[1] >= 19 && current_res[1] <= 45)
 		recipes += new/datum/stack_recipe_list("paper & printing", list(
+			new/datum/stack_recipe("passport",/obj/item/clothing/accessory/storage/passport, 3, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("visa (empty)",/obj/item/weapon/visa, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -434,13 +438,14 @@
 			new/datum/stack_recipe("leader propaganda poster",/obj/item/weapon/poster/faction/lead, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (current_res[1] > 45 && current_res[1] < 52)
 		recipes += new/datum/stack_recipe_list("paper & printing", list(
+			new/datum/stack_recipe("passport",/obj/item/clothing/accessory/storage/passport, 3, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("visa (empty)",/obj/item/weapon/visa, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("book",/obj/item/weapon/book, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -448,13 +453,14 @@
 	else
 		recipes += new/datum/stack_recipe_list("paper & printing", list(
 			new/datum/stack_recipe("printing press",/obj/structure/printingpress, 12, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("passport",/obj/item/clothing/accessory/storage/passport, 3, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("visa (empty)",/obj/item/weapon/visa, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("holy book",/obj/item/weapon/book/holybook, 15, _time = 240, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("pen",/obj/item/weapon/pen, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("paper sheet",/obj/item/weapon/paper, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("book",/obj/item/weapon/book, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("religious poster",/obj/item/weapon/poster/religious, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("military propaganda poster (flag)",/obj/item/weapon/poster/faction/mil1, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("military propaganda poster (armed)",/obj/item/weapon/poster/faction/mil2, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("work propaganda poster",/obj/item/weapon/poster/faction/work, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -661,6 +667,8 @@
 			new/datum/stack_recipe("brown flatcap", /obj/item/clothing/head/flatcap1, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue flatcap", /obj/item/clothing/head/flatcap2, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("grey flatcap", /obj/item/clothing/head/flatcap3, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("custom officer cap", /obj/item/clothing/head/custom_off_cap, 4, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("custom field cap", /obj/item/clothing/head/custom/fieldcap, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),
 			))
 	if ( current_res[3] < 15)
 		recipes += new/datum/stack_recipe_list("clothing", list(

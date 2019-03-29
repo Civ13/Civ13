@@ -31,6 +31,40 @@
 			return
 	else
 		..()
+
+/obj/item/clothing/head/custom
+	var/uncolored1 = FALSE
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored1 = TRUE
+
+
+/obj/item/clothing/head/custom/attack_self(mob/user as mob)
+	if (uncolored1)
+		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (lentext(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			color = addtext("#",input)
+//			user << "Color: [color]"
+			uncolored1 = FALSE
+			return
+	else
+		..()
 ///////////////ANCIENT//////////////////////////////////////
 /obj/item/clothing/under/custom/toga
 	name = "toga"
@@ -336,7 +370,132 @@
 
 ///////////////WW2-MODERN//////////////////////////////////////
 
+/obj/item/clothing/head/custom_off_cap
+	name = "officer cap"
+	desc = "An officer cap."
+	var/uncolored1 = FALSE
+	var/capcolor = 0
+	var/bandcolor = 0
+	var/symbolcolor = 0
+	item_state = "customcap"
+	icon_state = "customcap"
+	worn_state = "customcap"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored1 = TRUE
 
+
+/obj/item/clothing/head/custom_off_cap/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!capcolor)
+			var/input = input(user, "Cap - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				capcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (!bandcolor)
+			var/input = input(user, "Band - Choose a hex color (without the #):", "Band Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				bandcolor = addtext("#",input)
+		if (!symbolcolor)
+			var/input = input(user, "Symbol - Choose a hex color (without the #):", "Symbol Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				symbolcolor = addtext("#",input)
+		if (bandcolor && capcolor && symbolcolor)
+			uncolored1 = FALSE
+			var/image/band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l2")
+			band.color = bandcolor
+			var/image/cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l1")
+			cap.color = capcolor
+			var/image/symbol = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l3")
+			symbol.color = symbolcolor
+			overlays += band
+			overlays += cap
+			overlays += symbol
+			return
+	else
+		..()
+
+/obj/item/clothing/head/custom/fieldcap
+	name = "field cap"
+	desc = "A cap often worn by military personnel."
+	icon_state = "fieldcap_custom"
+	item_state = "fieldcap_custom"
+	worn_state = "fieldcap_custom"
+	var/capcolor = 0
+
+/obj/item/clothing/head/custom/fieldcap/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!capcolor)
+			var/input = input(user, "Cap - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				capcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (capcolor)
+			uncolored1 = FALSE
+			var/image/cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "fieldcap_custom")
+			cap.color = capcolor
+			overlays += cap
+			return
+	else
+		..()
 
 /////////////////UNIFORMS////////////////////////////////////
 /obj/item/clothing/under/customuniform_modern

@@ -226,6 +226,11 @@
 			user << "You are too close to an existing deposit!"
 			return
 
+	if (findtext(recipe.title, "passport"))
+		if (H.civilization == null || H.civilization == "none")
+			user << "You need to be part of a faction to craft a passport!"
+			return
+
 	if (findtext(recipe.title, "holy book"))
 		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
 			H << "<span class = 'danger'>You can't make a holy book.</span>"
@@ -746,6 +751,10 @@
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
+		else if (istype(O, /obj/item/clothing/accessory/storage/passport))
+			var/obj/item/clothing/accessory/storage/passport/PP = O
+			PP.owner = H
+			PP.own()
 		if (istype(O, /obj/item/weapon/storage)) //BubbleWrap - so newly formed boxes are empty
 			for (var/obj/item/I in O)
 				qdel(I)

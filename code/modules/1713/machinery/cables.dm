@@ -201,6 +201,9 @@ By design, d1 is the smallest direction and d2 is the highest
 	for (var/obj/OB in connections)
 		OB.powersource = null
 		connections -= OB
+		if (istype(OB, /obj/structure/engine))
+			var/obj/structure/engine/EN = OB
+			EN.connections -= src
 /obj/structure/cable/proc/update_power(var/powerval = 0, var/recheck = 0)
 	if (!isturf(loc))
 		return

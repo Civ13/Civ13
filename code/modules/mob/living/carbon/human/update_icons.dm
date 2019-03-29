@@ -688,6 +688,9 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_head(var/update_icons=1)
+	var/image/band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l2")
+	var/image/cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l1")
+	var/image/symbol = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l3")
 	if (head)
 		/*var/new_screen_loc = find_inv_position(slot_head)
 		if (new_screen_loc)
@@ -717,10 +720,25 @@ var/global/list/damage_icon_parts = list()
 		else
 			t_icon = body_build.hat_icon
 
-
-
 		//Create the image
 		var/image/standing = image(icon = t_icon, icon_state = t_state)
+		if (istype(head, /obj/item/clothing/head/custom_off_cap))
+			var/obj/item/clothing/head/custom_off_cap/CU = w_uniform
+			band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l2")
+			band.color = CU.bandcolor
+			cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l1")
+			cap.color = CU.capcolor
+			symbol = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l3")
+			symbol.color = CU.symbolcolor
+			overlays += band
+			overlays += cap
+			overlays += symbol
+
+		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
+			var/obj/item/clothing/head/custom/fieldcap/CU = w_uniform
+			cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "fieldcap_custom")
+			cap.color = CU.capcolor
+			overlays += cap
 
 		if (head.blood_DNA)
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "helmetblood")

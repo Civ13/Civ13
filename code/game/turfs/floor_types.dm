@@ -127,6 +127,15 @@
 	may_become_muddy = TRUE
 	initial_flooring = null
 
+/turf/floor/grass/jungle/savanna
+	name = "dry grass"
+	icon_state = "grass_dry"
+	initial_flooring = null
+
+/turf/floor/grass/jungle/savanna/New()
+	..()
+	icon_state = "grass_dry"
+
 /turf/floor/winter
 	name = "snow"
 	icon = 'icons/turf/snow.dmi'
@@ -207,6 +216,7 @@
 /turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE
+	initial_flooring = /decl/flooring/water_salt
 
 /turf/floor/beach/water/deep
 	name = "deep water"
@@ -238,7 +248,11 @@
 /turf/floor/beach/water/deep/saltwater
 	name = "deep saltwater"
 	salty = TRUE
+<<<<<<< HEAD
 
+=======
+	initial_flooring = /decl/flooring/water_deep_salt
+>>>>>>> be9358e70582c705b33b70a567740ab87df648fa
 /turf/floor/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE

@@ -269,6 +269,7 @@
 #include "code\game\objects\map_metadata\nomads_ice_age.dm"
 #include "code\game\objects\map_metadata\nomads_jungle.dm"
 #include "code\game\objects\map_metadata\nomads_mountain.dm"
+#include "code\game\objects\map_metadata\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\recife.dm"
 #include "code\game\objects\map_metadata\robusta.dm"
 #include "code\game\objects\map_metadata\siege.dm"
@@ -808,5 +809,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_continental.dmm"
+#include "maps\special\nomads_pangea.dmm"
 // END_INCLUDE

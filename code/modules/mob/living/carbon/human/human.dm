@@ -77,7 +77,7 @@
 				verbs |= /mob/living/carbon/human/proc/selfheal
 				verbs |= /mob/living/carbon/human/proc/selfrevive
 	spawn(5)
-		if (map && map.ID == MAP_NOMADS_CONTINENTAL)
+		if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA))
 			var/area/mob_area = get_area(src)
 			var/new_hair = "Black"
 			switch (mob_area.climate)

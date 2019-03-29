@@ -133,6 +133,7 @@
 				MAP_NOMADS_JUNGLE = 0,
 				MAP_NOMADS_DIVIDE = 0,
 				MAP_NOMADS_CONTINENTAL = 0,
+				MAP_NOMADS_PANGEA = 0,
 			)
 
 		spawn(10)

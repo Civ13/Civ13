@@ -463,7 +463,7 @@ var/global/datum/controller/occupations/job_master
 
 		spawn (50)
 			H.stopDumbDamage = FALSE
-		if (map.ID == MAP_NOMADS_CONTINENTAL)
+		if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
 			spawn(12)
 				H.memory()
 		else
