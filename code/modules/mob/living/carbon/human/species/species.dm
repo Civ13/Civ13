@@ -340,6 +340,13 @@
 		else
 			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(last_names_german))
 
+/datum/species/proc/get_random_ainu_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_ainu)) + " " + capitalize(pick(last_names_ainu,))
+		else
+			return capitalize(pick(first_names_male_ainu)) + " " + capitalize(pick(last_names_ainu))
+
 /datum/species/proc/get_random_chinese_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)

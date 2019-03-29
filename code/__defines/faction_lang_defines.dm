@@ -15,6 +15,7 @@
 #define HEBREW "HEBREW"
 #define SWAHILI "SWAHILI"
 #define ZULU "ZULU"
+#define AINU "AINU"
 
 //used for languages & factions
 #define SPANISH "SPANISH"
