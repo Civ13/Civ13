@@ -132,6 +132,9 @@
 	icon_state = "grass_dry"
 	initial_flooring = null
 
+/turf/floor/grass/jungle/savanna/New()
+	..()
+	icon_state = "grass_dry"
 
 /turf/floor/winter
 	name = "snow"
