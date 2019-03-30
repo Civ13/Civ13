@@ -107,7 +107,7 @@
 
 // Custom qdel to allow returning of objects to hands on canceled build
 /obj/item/stack/var/handReturnMap[0]
-obj/item/stack/proc/qdelHandReturn(var/datum/A, var/mob/user)
+/obj/item/stack/proc/qdelHandReturn(var/datum/A, var/mob/user)
 // add the item to the handReturnMap
 	if (!(user.key in handReturnMap))
 		handReturnMap[user.key] = list()
