@@ -112,6 +112,32 @@ var/list/cry_sounds_female = list(
 	'sound/effects/emotes/female_cry1.ogg',
 	'sound/effects/emotes/female_cry2.ogg')
 
+var/list/gasp_sounds_male = list(
+	'sound/effects/emotes/man_gasp0.ogg',
+	'sound/effects/emotes/man_gasp1.ogg',
+	'sound/effects/emotes/man_gasp2.ogg',
+	'sound/effects/emotes/man_gasp3.ogg',
+	'sound/effects/emotes/man_gasp4.ogg',
+	'sound/effects/emotes/man_gasp5.ogg',
+	'sound/effects/emotes/man_gasp6.ogg',
+	'sound/effects/emotes/man_gasp7.ogg',
+	'sound/effects/emotes/man_gasp8.ogg',
+	'sound/effects/emotes/man_gasp9.ogg',
+	'sound/effects/emotes/man_gasp10.ogg')
+
+var/list/gasp_sounds_female = list(
+	'sound/effects/emotes/woman_gasp0.ogg',
+	'sound/effects/emotes/woman_gasp1.ogg',
+	'sound/effects/emotes/woman_gasp2.ogg',
+	'sound/effects/emotes/woman_gasp3.ogg',
+	'sound/effects/emotes/woman_gasp4.ogg',
+	'sound/effects/emotes/woman_gasp5.ogg',
+	'sound/effects/emotes/woman_gasp6.ogg',
+	'sound/effects/emotes/woman_gasp7.ogg',
+	'sound/effects/emotes/woman_gasp8.ogg',
+	'sound/effects/emotes/woman_gasp9.ogg',
+	'sound/effects/emotes/woman_gasp10.ogg')
+
 var/list/laugh_sounds_female = list(
 	'sound/effects/emotes/female_laugh1.ogg',
 	'sound/effects/emotes/female_laugh3.ogg')
@@ -334,7 +360,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(sigh_sounds_male)
 			if ("sneeze_male")
 				soundin = pick(sneeze_sounds_male)
-
+			if ("gasp_male")
+				soundin = pick(gasp_sounds_male)
+			if ("gasp_female")
+				soundin = pick(gasp_sounds_female)
 			if ("cough_female")
 				soundin = pick(cough_sounds_female)
 			if ("cry_female")
