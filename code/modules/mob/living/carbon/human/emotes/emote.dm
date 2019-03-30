@@ -13,7 +13,8 @@ var/list/vocal_emotes = list(
 	"sigh",
 	"sneeze",
 	"yawn",
-	"charge")
+	"charge",
+	"gasp")
 
 /mob/living/carbon/human/emote(var/act,var/m_type=1,var/message = null)
 
@@ -261,6 +262,7 @@ var/list/vocal_emotes = list(
 					if (!muzzled)
 						message = "gasps!"
 						m_type = 2
+						playsound(get_turf(src), "gasp_[gender]", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2
