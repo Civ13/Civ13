@@ -1,6 +1,6 @@
 // At minimum every mob has a hear_say proc.
-
-/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol)
+/mob/var/next_language_learn = -1
+/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null)
 	if (!client)
 		return
 
@@ -27,7 +27,7 @@
 				message = pick(S.speak)
 			else
 				if (language)
-					message = language.scramble(message, src)
+					message = language.scramble(alt_message, src)
 				else
 					message = stars(message)
 
@@ -69,10 +69,11 @@
 
 	if (language && ishuman(src))
 		var/mob/living/carbon/human/H = src
-		if (!H.languages.Find(language))
+		if (!H.languages.Find(language) && world.time >= src.next_language_learn)
+			src.next_language_learn = world.time + 100 // Cooldown is 100 ticks seconds = 10 seconds
 			var/lname = capitalize(language.name)
 			H.partial_languages[lname] += 1
-			if (H.partial_languages[lname] > rand(200,250))
+			if (H.partial_languages[lname] >= language.difficulty)
 				H.add_language("[lname]", FALSE)
 				H.add_note("Known Languages", "[language.name]")
 				H << "<span class = 'notice'>You've learned how to speak <b>[language.name]</b> from hearing it so much.</span>"

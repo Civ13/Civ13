@@ -233,7 +233,7 @@ proc/get_radio_key_from_channel(var/channel)
 
 	for (var/mob/M in listening)
 		M << speech_bubble
-		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol)
+		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol, alt_message)
 
 	for (var/obj/O in listening_obj)
 		spawn(0)

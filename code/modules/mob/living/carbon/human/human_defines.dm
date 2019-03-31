@@ -135,7 +135,7 @@
 
 	var/stopDumbDamage = FALSE
 
-	var/partial_languages[10]
+	var/partial_languages[0]
 
 	var/debugmob = FALSE
 
