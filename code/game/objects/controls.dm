@@ -4,7 +4,7 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "gate_control"
 	anchored = TRUE
-	var/open = TRUE
+	var/open = FALSE
 	var/cooldown = 0
 	var/distance = 6
 	density = TRUE

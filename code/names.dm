@@ -89,8 +89,10 @@ var/civname_e = pick(country_names-civname_a-civname_b-civname_c-civname_d)
 var/civname_f = pick(country_names-civname_a-civname_b-civname_c-civname_d-civname_e)
 var/list/civnames = list(civname_a,civname_b,civname_c,civname_d,civname_e,civname_f)
 */
-var/civname_a = "Redland" //red
-var/civname_b = "Greenville" //green
+var/civname_a = "West Kingdom" //red
+var/civname_b = "East Kingdom" //green
+//var/civname_a = "Redland" //red
+//var/civname_b = "Greenville" //green
 var/civname_c = "Blueport" //blue
 var/civname_d = "Yellowdale" //yellow
 var/civname_e = "Whitetown" //white
