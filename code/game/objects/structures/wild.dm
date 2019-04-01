@@ -504,7 +504,7 @@
 	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
-
+//these are under the jungle subtype so they dont change sprites during the winter.
 /obj/structure/wild/jungle/acacia
 	name = "acacia tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'
@@ -522,6 +522,21 @@
 	..()
 	icon_state = "tree[rand(1,7)]"
 
+/obj/structure/wild/jungle/medpine
+	name = "mediterranean pine tree"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	icon_state = "med_pine"
+
+/obj/structure/wild/jungle/medpine/dead
+	name = "dead mediterranean pine tree"
+	icon_state = "med_pine_dead"
+
+/obj/structure/wild/jungle/medpine/New()
+	..()
+	icon_state = "med_pine"
+/obj/structure/wild/jungle/medpine/dead/New()
+	..()
+	icon_state = "med_pine_dead"
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")

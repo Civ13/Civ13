@@ -893,6 +893,9 @@
 	recipes += new/datum/stack_recipe("small copper pot", /obj/item/weapon/reagent_containers/glass/small_pot/copper_small, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("large copper pot", /obj/item/weapon/reagent_containers/glass/small_pot/copper_large, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("copper arm bangles", /obj/item/clothing/accessory/armband/armbangle/copper, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[1] >= 83)
+		recipes += new/datum/stack_recipe("trombone",/obj/item/trombone, 6, _time = 155, _one_per_turf = FALSE, _on_floor = TRUE)
+
 
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
