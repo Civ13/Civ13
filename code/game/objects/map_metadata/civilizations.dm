@@ -49,18 +49,20 @@
 	for (var/turf/wall/rockwall/RW)
 		RW.ChangeTurf(/turf/floor/dirt/jungledirt)
 	world << "<font color=#CECE00><big><b>THE WALL HAS GONE DOWN!</b></big></font>"
+	admin_ended_all_grace_periods = TRUE
 	return
 /obj/map_metadata/civilizations/proc/wallup()
 	for (var/turf/floor/dirt/jungledirt/JD)
 		JD.ChangeTurf(/turf/wall/rockwall)
 	world <<"<font color=#CECE00><big><b>THE WALL HAS GONE UP!</b></big></font>"
+	admin_ended_all_grace_periods = FALSE
 	return
 
 /obj/map_metadata/civilizations/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 864000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/civilizations/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 864000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/civilizations/cross_message(faction)
 	return "<big><b>THE GRACE PERIOD HAS ENDED!</b></big>"
