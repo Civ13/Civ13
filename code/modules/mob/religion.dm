@@ -443,6 +443,9 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 						visible_message("[H] finishes the worshipping session of the [religion] religion.")
 						session = FALSE
 						return
+					else
+						session = FALSE
+						return
 
 			if ("Conversion")
 				var/list/closemobs = list("Cancel")
