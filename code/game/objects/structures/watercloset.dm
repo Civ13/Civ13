@@ -390,7 +390,6 @@
 	visible_message("<span class='notice'>\The [usr] tips the contents of \the [thing] into \the [src].</span>")
 	thing.reagents.clear_reagents()
 	thing.update_icon()
-	thing.reagents.del_reagent("cholera")
 
 /obj/structure/sink/attack_hand(mob/user as mob)
 	if (ishuman(user))

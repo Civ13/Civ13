@@ -42,17 +42,32 @@
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 
 		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+			if (map.ID == MAP_CIVILIZATIONS)
+				spawn(5)
+					if (gender == "male")
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(src), slot_w_uniform)
+					else
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (map.ID == MAP_CIVILIZATIONS)
 				spawn(5)
 					if (gender == "male")
 						if (civilization == "West Kingdom")
-							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red2(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
 						else
-							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(src), slot_w_uniform)
 					else
 						if (civilization == "West Kingdom")
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)

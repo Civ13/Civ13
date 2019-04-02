@@ -170,6 +170,7 @@
 	material = "stone"
 	material_name = "stone"
 
+
 /obj/structure/barricade/sandstone_v
 	name = "sandstone wall"
 	desc = "A wall of sandstone blocks."
@@ -179,6 +180,7 @@
 	maxhealth = 600
 	material = "stone"
 	material_name = "stone"
+
 
 /obj/structure/barricade/sandstone_h/crenelated
 	name = "crenelated sandstone wall"
@@ -190,6 +192,7 @@
 	material = "stone"
 	material_name = "stone"
 
+
 /obj/structure/barricade/sandstone_v/crenelated
 	name = "crenelated sandstone wall"
 	desc = "A wall of sandstone blocks."
@@ -200,6 +203,7 @@
 	material = "stone"
 	material_name = "stone"
 
+
 /obj/structure/barricade/sandstone_h/New()
 	..()
 	icon_state = "sandstone_brick"
@@ -207,6 +211,7 @@
 	health = 600
 	maxhealth = 600
 	material_name = "stone"
+	color = null
 
 /obj/structure/barricade/sandstone_v/New()
 	..()
@@ -215,7 +220,7 @@
 	health = 600
 	maxhealth = 600
 	material_name = "stone"
-
+	color = null
 /obj/structure/barricade/sandstone_h/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c"
@@ -223,7 +228,7 @@
 	health = 600
 	maxhealth = 600
 	material_name = "stone"
-
+	color = null
 /obj/structure/barricade/sandstone_v/crenelated/New()
 	..()
 	icon_state = "sandstone_brick_c2"
@@ -231,7 +236,7 @@
 	health = 600
 	maxhealth = 600
 	material_name = "stone"
-
+	color = null
 /obj/structure/barricade/sandstone_h/ex_act(severity)
 	switch(severity)
 		if (1.0)
@@ -331,27 +336,28 @@
 	name = "stone wall"
 	health = 2709
 	maxhealth = 2709
+	color = null
 /obj/structure/barricade/stone_v/New()
 	..()
 	icon_state = "stone_brick2"
 	name = "stone wall"
 	health = 2709
 	maxhealth = 2709
-
+	color = null
 /obj/structure/barricade/stone_h/crenelated/New()
 	..()
 	icon_state = "stone_brick_c"
 	name = "crenelated stone wall"
 	health = 2709
 	maxhealth = 2709
-
+	color = null
 /obj/structure/barricade/stone_v/crenelated/New()
 	..()
 	icon_state = "stone_brick_c2"
 	name = "crenelated stone wall"
 	health = 2709
 	maxhealth = 2709
-
+	color = null
 /obj/structure/barricade/stone_h/ex_act(severity)
 	switch(severity)
 		if (1.0)
