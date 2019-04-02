@@ -182,3 +182,12 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = SWAHILI_SYLLABLES
 	mutual_intelligibility = list(/datum/language/zulu = 35)
+
+/datum/language/armenian
+	name = "Armenian"
+	desc = "Baref!"
+	key = "m"
+	colour = "Armenian"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = ARAB_SYLLABLES
+	mutual_intelligibility = list(/datum/language/hebrew = 10)
