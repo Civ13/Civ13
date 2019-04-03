@@ -134,9 +134,8 @@
 						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
-					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 700) || simplehunger < 180)
+					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
 						check_food() // animals will search for crops, grass, and so on
-						eat()
 					else
 						var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 						moving_to = pick(cardinal)
@@ -563,7 +562,9 @@
 		return
 	if (herbivore)
 		if (prob(100/totalcount))
-			for(var/turf/floor/grass/GT in range(1,src))
+			for(var/turf/floor/grass/GT in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/turf/floor/grass/GT in range(6,src))
 				walk_towards(src, GT, turns_per_move)
@@ -573,7 +574,9 @@
 
 	if (granivore)
 		if (prob(100/totalcount))
-			for(var/obj/structure/farming/plant/PL in range(1,src))
+			for(var/obj/structure/farming/plant/PL in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/obj/structure/farming/plant/PL in range(8,src))
 				walk_towards(src, PL, turns_per_move)
@@ -581,7 +584,9 @@
 
 	if (carnivore)
 		if (prob(100/totalcount))
-			for(var/mob/living/ML in range(1,src))
+			for(var/mob/living/ML in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/mob/living/ML in range(9,src))
 				if (ML.stat == DEAD)
@@ -590,7 +595,9 @@
 
 	if (predatory_carnivore)
 		if (prob(100/totalcount))
-			for(var/mob/living/ML in range(1,src))
+			for(var/mob/living/ML in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/mob/living/ML in range(9,src))
 				walk_towards(src, ML, turns_per_move)
@@ -598,7 +605,9 @@
 
 	if (scavenger)
 		if (prob(100/totalcount))
-			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
 				walk_towards(src, FD, turns_per_move)
@@ -635,7 +644,7 @@
 
 
 	if (granivore)
-		for(var/obj/structure/farming/plant/PL in range(1,src))
+		for(var/obj/structure/farming/plant/PL in range(2,src))
 			if (prob(15))
 				visible_message("<span class='notice'>\The [src] eats the [PL]!</span>")
 				simplehunger += 400
@@ -647,7 +656,7 @@
 
 
 	if (carnivore)
-		for(var/mob/living/ML in range(1,src))
+		for(var/mob/living/ML in range(2,src))
 			if (ML.stat == DEAD)
 				if (prob(33))
 					visible_message("\The [src] bites some meat of \the [ML].")
@@ -664,7 +673,7 @@
 
 
 	if (scavenger)
-		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] bites some of \the [FD].")
 				simplehunger += 400
@@ -675,7 +684,7 @@
 
 
 	if (predatory_carnivore)
-		for(var/mob/living/ML in range(1,src))
+		for(var/mob/living/ML in range(2,src))
 			return
 
 
