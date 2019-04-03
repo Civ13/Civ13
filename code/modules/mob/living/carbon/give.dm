@@ -64,7 +64,11 @@
 		user << "You cannot recruit yourself."
 		return
 
-	if (user.original_job_title != "Nomad" || user.civilization == "none" || user.civilization == null)
+	if (user.original_job_title != "Nomad")
+		user << "You can't recruit in this map."
+		return
+
+	if (user.civilization == "none" || user.civilization == null)
 		user << "You are not part of a faction."
 		return
 
