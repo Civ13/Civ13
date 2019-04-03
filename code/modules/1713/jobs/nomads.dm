@@ -63,6 +63,7 @@
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (map.ID == MAP_CIVILIZATIONS)
 				spawn(5)
+					make_nomad()
 					if (gender == "male")
 						if (civilization == "West Kingdom")
 							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
