@@ -213,6 +213,21 @@
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
 
+/turf/floor/beach/water/coastwater
+	name = "coast water"
+	desc = "lovely water hitting the coast line"
+	icon_state = "beach"
+
+/turf/floor/beach/water/coastwater/corner
+	name = "coast water corner"
+	desc = "lovely water hitting the coast line"
+	icon_state = "beachcorner"
+
+/turf/floor/beach/water/coastwater/layer
+	name = "coast water"
+	desc = "lovely water hitting the coast line"
+	icon_state = "seashallow_edgesX"
+
 /turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE
@@ -249,7 +264,7 @@
 	name = "deep saltwater"
 	salty = TRUE
 	initial_flooring = /decl/flooring/water_deep_salt
-	
+
 /turf/floor/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
