@@ -232,13 +232,13 @@
 						real_name = name
 						return
 					if ("semiarid")
-						add_language("Spanish",TRUE)
+						add_language("Latin",TRUE)
 						remove_language("English")
-						for (var/datum/language/spanish/A in languages)
+						for (var/datum/language/latin/A in languages)
 							default_language = A
-						name = species.get_random_spanish_name(gender)
+						name = species.get_random_roman_name(gender)
 						real_name = name
-						add_note("Known Languages", "Spanish")
+						add_note("Known Languages", "Latin")
 						return
 					if ("savanna")
 						add_language("Swahili",TRUE)
