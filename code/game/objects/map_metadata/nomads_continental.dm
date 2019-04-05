@@ -40,7 +40,7 @@
 		for (var/i = 1, i <= 30, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/nomads/forest/Jungle/river))
 			new/obj/structure/piranha(areaspawn)
-	spawn(9000)
+	spawn(18000)
 		seasons()
 
 /obj/map_metadata/nomads_continental/faction2_can_cross_blocks()
@@ -86,13 +86,13 @@
 				if (get_area(DT).climate == "temperate")
 					if (prob(75))
 						DT.ChangeTurf(/turf/floor/dirt/winter)
-				else if (get_area(DT).climate == "tundra")
+				else if (get_area(DT).climate == "tundra" || get_area(DT).climate == "taiga")
 					DT.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/GT in get_area_turfs(/area/caribbean/nomads/forest))
 			if (get_area(GT).climate == "temperate")
 				if (prob(80))
 					GT.ChangeTurf(/turf/floor/winter/grass)
-			else if (get_area(GT).climate == "tundra")
+			else if (get_area(GT).climate == "tundra" || get_area(GT).climate == "taiga")
 				GT.ChangeTurf(/turf/floor/winter/grass)
 		for (var/turf/floor/dirt/DTT in get_area_turfs(/area/caribbean/nomads/snow))
 			if (!istype(DTT, /turf/floor/dirt/underground))
@@ -195,7 +195,7 @@
 					if (get_area(G).climate == "temperate")
 						if (prob(50))
 							G.ChangeTurf(/turf/floor/winter/grass)
-	spawn(9000)
+	spawn(18000)
 		seasons()
 
 

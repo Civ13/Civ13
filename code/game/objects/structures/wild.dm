@@ -110,6 +110,7 @@
 	layer = 5.11
 	health = 50
 	maxhealth = 50
+
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
 	icon = 'icons/obj/flora/deadtrees.dmi'
@@ -171,6 +172,7 @@
 			icon = 'icons/obj/flora/bigtrees.dmi'
 		else
 			icon = 'icons/obj/flora/deadtrees.dmi'
+
 /obj/structure/wild/tree/live_tree/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
@@ -178,13 +180,18 @@
 		dropwood.amount = 7
 		qdel(src)
 		return
+
 /obj/structure/wild/tree/dead_tree/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
-		dropwood.amount = 7
+		if (prob(50))
+			dropwood.amount = 4
+		else
+			dropwood.amount = 7
 		qdel(src)
 		return
+
 /obj/structure/wild/tree/fire_act(temperature)
 	if (prob(15 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
@@ -207,6 +214,7 @@
 		try_destroy()
 	else
 		..()
+
 /obj/structure/wild/palm
 	name = "palm tree"
 	icon = 'icons/misc/beach2.dmi'
@@ -217,8 +225,9 @@
 	amount = 4
 	var/cooldown_sap = FALSE
 	layer = 5.11
+
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife/bone) && user.a_intent == I_HELP)
+	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (!istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && !istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot))
 			user << "<span class = 'warning'>You need to have a pot in one of your hands in order to extract palm sap.</span>"
@@ -324,6 +333,7 @@
 	flammable = FALSE
 	health = 20
 	maxhealth = 20
+
 /obj/structure/wild/junglebush
 	name = "small vegetation"
 	icon = 'icons/obj/flora/jungleflora.dmi'
@@ -333,10 +343,12 @@
 	health = 60
 	maxhealth = 60
 	var/healthamount = 1
+
 /obj/structure/wild/junglebush/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
 		qdel(src)
+
 /obj/structure/wild/smallbush
 	name = "small bush"
 	icon = 'icons/obj/flora/ausflora.dmi'
@@ -345,6 +357,7 @@
 	density = FALSE
 	health = 20
 	maxhealth = 20
+
 /obj/structure/wild/smallbush/fire_act(temperature)
 	if (prob(65 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
@@ -381,6 +394,7 @@
 	flammable = FALSE
 	health = 20
 	maxhealth = 20
+
 /obj/structure/wild/rock
 	name = "rock"
 	icon_state = "rock1"
@@ -390,6 +404,7 @@
 	amount = 0
 	health = 20
 	maxhealth = 20
+
 /obj/structure/wild/tallgrass
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
@@ -399,20 +414,24 @@
 	layer = 5.1
 	health = 20
 	maxhealth = 20
+
 /obj/structure/wild/tallgrass/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
 		qdel(src)
+
 /obj/structure/wild/tallgrass2
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
 	icon_state = "tall_grass_5"
 	opacity = FALSE
 	density = FALSE
+
 /obj/structure/wild/tallgrass2/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] is burned away.</span>")
 		qdel(src)
+
 /obj/structure/wild/tallgrass/New()
 	..()
 	icon_state = "tall_grass_[rand(1,4)]"
@@ -485,7 +504,7 @@
 	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
 		qdel(src)
-
+//these are under the jungle subtype so they dont change sprites during the winter.
 /obj/structure/wild/jungle/acacia
 	name = "acacia tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'
@@ -503,6 +522,21 @@
 	..()
 	icon_state = "tree[rand(1,7)]"
 
+/obj/structure/wild/jungle/medpine
+	name = "mediterranean pine tree"
+	icon = 'icons/obj/flora/bigtrees.dmi'
+	icon_state = "med_pine"
+
+/obj/structure/wild/jungle/medpine/dead
+	name = "dead mediterranean pine tree"
+	icon_state = "med_pine_dead"
+
+/obj/structure/wild/jungle/medpine/New()
+	..()
+	icon_state = "med_pine"
+/obj/structure/wild/jungle/medpine/dead/New()
+	..()
+	icon_state = "med_pine_dead"
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
@@ -534,7 +568,7 @@
 	..()
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife/bone))
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
 		visible_message("<span class='danger'>[user] tries to chop down the [src]!</span>")

@@ -66,11 +66,16 @@
 /obj/effect/spawner/mobspawner/proc/getEmptyTurf()
 	var/nearbyObjects = range(max_range,src)
 	var/list/turf/emptyTurfs = new
+	var/invalid = FALSE
 	for(var/turf/T in nearbyObjects)
-		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water/deep))
-			continue //bad turf
-
-		emptyTurfs += T
+		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
+			invalid = TRUE
+		for(var/obj/structure/OB in T)
+			invalid = TRUE
+		for(var/obj/covers/OB in T)
+			invalid = TRUE
+		if (!invalid)
+			emptyTurfs += T
 	if (emptyTurfs.len)
 		return pick(emptyTurfs)
 
@@ -208,6 +213,13 @@
 	create_path = /mob/living/simple_animal/hostile/poison/snake
 	timer = 5000
 
+/obj/effect/spawner/mobspawner/crab
+	name = "crab spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/crab/small
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/deer_m
 	name = "stag spawner"
 	max_number = 2
@@ -337,6 +349,7 @@
 	var/timer = 6000
 	var/spawning = FALSE
 	invisibility = 101
+
 /obj/effect/spawner/objspawner/New()
 	..()
 	invisibility = 101
@@ -346,14 +359,16 @@
 /obj/effect/spawner/objspawner/proc/getEmptyTurf()
 	var/nearbyObjects = range(max_range,src)
 	var/list/turf/emptyTurfs = new
+	var/invalid = FALSE
 	for(var/turf/T in nearbyObjects)
 		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
-			continue //bad turf
+			invalid = TRUE
 		for(var/obj/structure/OB in T)
-			continue //bad location
+			invalid = TRUE
 		for(var/obj/covers/OB in T)
-			continue //bad location
-		emptyTurfs += T
+			invalid = TRUE
+		if (!invalid)
+			emptyTurfs += T
 	if (emptyTurfs.len)
 		return pick(emptyTurfs)
 
@@ -419,6 +434,15 @@
 	max_range = 13
 	create_path = /obj/structure/wild/jungle/acacia
 	timer = 7500
+
+/obj/effect/spawner/objspawner/medpine
+	name = "mediterranean pine tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 18
+	max_range = 13
+	create_path = /obj/structure/wild/jungle/medpine
+	timer = 6000
 
 //ore spanwers for extended games
 /obj/effect/spawner/orespawner

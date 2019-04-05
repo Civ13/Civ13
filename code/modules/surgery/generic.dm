@@ -68,6 +68,7 @@
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/surgery/hemostat/bronze",85),
 		3 = list("/obj/item/stack/material/rope",50),
+		4 = list("/obj/item/flashlight/torch",30),
 	)
 
 	min_duration = 40
@@ -196,8 +197,9 @@
 	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/bone_saw",100),
 		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
-		3 = list("/obj/item/weapon/material/hatchet",75),
-		4 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",75)
+		3 = list("/obj/item/weapon/material/hatchet",50),
+		4 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",30),
+		5 = list("/obj/item/weapon/material/battleaxe",70),
 	)
 
 	min_duration = 110

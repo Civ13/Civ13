@@ -86,6 +86,11 @@
 					new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
 					force_update_limbs()
 					update_body()
+				if ("taiga")
+					s_tone = -18
+					new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
+					force_update_limbs()
+					update_body()
 				if ("temperate")
 					s_tone = -30
 					force_update_limbs()
@@ -96,13 +101,29 @@
 					force_update_limbs()
 					update_body()
 					new_hair = pick("Light Brown","Dark Brown","Black")
+				if ("semiarid")
+					s_tone = -50
+					force_update_limbs()
+					update_body()
+					new_hair = pick("Light Brown","Dark Brown","Black")
 				if ("desert")
 					s_tone = -90
 					force_update_limbs()
 					update_body()
 					new_hair = pick("Dark Brown","Black")
 				if ("jungle")
-					s_tone = -150
+					if (map.ID == MAP_NOMADS_PANGEA)
+						s_tone = -35
+						force_update_limbs()
+						update_body()
+						new_hair = "Black"
+					else
+						s_tone = -165
+						force_update_limbs()
+						update_body()
+						new_hair = "Black"
+				if ("savanna")
+					s_tone = -165
 					force_update_limbs()
 					update_body()
 					new_hair = "Black"
@@ -129,7 +150,7 @@
 ///////////////////////////////////////////////////////////////////
 /////////////////////////Karafuta-Sakhalinsk///////////////////////
 ///////////////////////////////////////////////////////////////////
-		if (map && (map.ID == MAP_NOMADS_KARAFUTA-SAKHALINSK))
+		if (map && (map.ID == MAP_NOMADS_KARAFUTA))
 			var/area/mob_area = get_area(src)
 			var/new_hair = "Black"
 			switch (mob_area.climate)

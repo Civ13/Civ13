@@ -314,12 +314,12 @@
 				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
 
 			else
-				msg += "<br><i>[T.He] is a nomad. He has no faction</b>.</i>"
+				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
 		else if (isobserver(user))
 			if (civilization != "none")
 				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
 			else
-				msg += "<br><i>[T.He] is a nomad. He has no faction</b>.</i>"
+				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
 
 		else if (ishuman(user) && user == src)
 			var/mob/living/carbon/human/H = user

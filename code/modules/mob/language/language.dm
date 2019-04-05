@@ -7,6 +7,7 @@
 /datum/language
 	var/name = "an unknown language"  // Fluff name of language if any.
 	var/desc = "A language."          // Short description for 'Check Languages'.
+	var/difficulty = 250              // Difficulty of a language. If you wanted Japanese to be harder than English, for example
 	var/speech_verb = "says"          // 'says', 'hisses', 'farts'.
 	var/ask_verb = "asks"             // Used when sentence ends in a ?
 	var/exclaim_verb = "exclaims"     // Used when sentence ends in a !
@@ -17,7 +18,6 @@
 	var/flags = 0                     // Various language flags.
 	var/native                        // If set, non-native speakers will have trouble speaking.
 	var/list/syllables                // Used when scrambling text for a non-speaker.
-	var/list/space_chance = 55        // Likelihood of getting a space in the random scramble string
 	var/list/mutual_intelligibility = list()
 
 /datum/language/proc/get_random_name(var/gender, name_count=2, syllable_count=4, syllable_divisor=2)
@@ -151,53 +151,66 @@
 		scramble_cache[input] = n
 		return n
 
-	var/input_size = length(input)
 	var/scrambled_text = ""
-	var/capitalize = TRUE
-
 	var/list/original_words = splittext(input, " ")
 
-	var/mutual_intelligibility = 0
-	if (hearer)
-		mutual_intelligibility = hearer.get_mutual_intelligibility(src)
-
-	while (length(scrambled_text) < input_size)
+	var/mob/living/carbon/human/H = hearer
+	var/capitalize = TRUE
+	var/capitalize_next = TRUE
+	if (original_words.len)
 		var/next = ""
-		var/MI = FALSE
-		if (prob(mutual_intelligibility) && original_words.len)
-			for (var/v in 1 to original_words.len)
-				if (original_words[v] != null)
-					next = original_words[v]
-					if (prob(10)) // make the word appear slightly weird: "hello" = "hsllo"
-						next = replacetext(next, pick(alphabet_lowercase), pick(alphabet_lowercase))
-					original_words[v] = null
-					break
-			if (next)
-				next = "[next] "
+		for (var/v in 1 to original_words.len)
+			if (original_words[v] == null)
+				break
+			next = original_words[v]
+			// Save the ending character in case it's punctuation
+			var/ending = copytext(next, length(next))
+			var/add_ending = FALSE
+			// Check if the beginning of the word is capitalized
+			var/beginning = (copytext(next, 1, 2))
+			var/beginning_cap = (beginning == uppertext(beginning))
+			// Check if the word is in all caps
+			var/allcaps = (next == uppertext(next))
+			capitalize_next = FALSE
+			if (findtext(next, "...", length(next)-3))
+				// It's an ellipsis ...
+				ending = "..."
+			// Partial language skill / language difficulty * 100
+			if (prob(H.partial_languages[name] / difficulty * 100))
+				// Make the word appear slightly weird: "hello" = "hsllo"
+				next = replacetext(next, pick(alphabet_lowercase), pick(alphabet_lowercase))
 			else
-				next = pick(syllables)
-			MI = TRUE
-		else
-			next = pick(syllables)
-		if (capitalize)
-			next = capitalize(next)
-			capitalize = FALSE
-		scrambled_text += next
-		if (!MI)
-			var/chance = rand(100)
-			if (chance <= 5)
-				scrambled_text += ". "
-				capitalize = TRUE
-			else if (chance > 5 && chance <= space_chance)
-				scrambled_text += " "
+				// Produce a foreign word of sufficient length
+				var/foreign_word = ""
+				while (length(foreign_word) < length(next))
+					foreign_word += pick(syllables)
+				// Strip leading single quotes
+				if (copytext(foreign_word, 1, 2) == "'")
+					foreign_word = copytext(foreign_word, 2)
+				next = foreign_word
+				// Preserve punctuation
+				if (ending in list("!","?",".",",","..."))
+					add_ending = TRUE
+					// Capitalize the next word, unless it's a comma or ellipsis
+					if (ending in list(",","..."))
+						capitalize_next = FALSE
+					else
+						capitalize_next = TRUE
+				else
+					capitalize_next = FALSE
+			if (allcaps)
+				next = uppertext(next)
+			else if (capitalize || beginning_cap)
+				next = capitalize(next)
+			if (add_ending)
+				next += ending
+			if (next)
+				scrambled_text += "[next] "
+			capitalize = capitalize_next
+			original_words[v] = null
 
+	// Clean up whitespace
 	scrambled_text = trim(scrambled_text)
-	var/ending = copytext(scrambled_text, length(scrambled_text))
-	if (ending == ".")
-		scrambled_text = copytext(scrambled_text,1,length(scrambled_text)-1)
-	var/input_ending = copytext(input, input_size)
-	if (input_ending in list("!","?","."))
-		scrambled_text += input_ending
 
 	// Add it to cache, cutting old entries if the list is too long
 	scramble_cache[input] = scrambled_text
@@ -255,7 +268,6 @@
 
 // Language handling.
 /mob/proc/add_language(var/language, var/allow_name_changing = FALSE)
-
 	if (language == uppertext(language))
 		language = capitalize(lowertext(language))
 
@@ -383,6 +395,21 @@
 	if (!istype(new_language) || (new_language in languages))
 		return FALSE
 
+	// If they don't have a default language, set it
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if (!H.default_language)
+			H.default_language = new_language
+
+	// Set partial_language values to mutual_intelligibility scores for the added language
+	// Someone who knows Russian understands N% of Ukrainian
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		var/list/m_int = new_language.mutual_intelligibility
+		for (var/lname in all_languages)
+			var/datum/language/L = all_languages[lname]
+			if (L.type in m_int)
+				H.partial_languages[lname] = max((H.partial_languages[lname]), m_int[L.type]*L.difficulty/100)
 	languages.Add(new_language)
 	return TRUE
 
@@ -391,10 +418,19 @@
 	. = (L in languages)
 	languages.Remove(L)
 
-/mob/living/remove_language(rem_language)
+/mob/living/remove_language(var/rem_language)
 	var/datum/language/L = all_languages[rem_language]
 	if (default_language == L)
 		default_language = null
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		// Remove partial_language values
+		H.partial_languages[rem_language] = 0
+		var/list/m_int = L.mutual_intelligibility
+		for (var/lname in all_languages)
+			var/datum/language/R = all_languages[lname]
+			if (R.type in m_int)
+				H.partial_languages[lname] = max((H.partial_languages[lname]-m_int[R.type]*R.difficulty/100), 0)
 	return ..()
 
 // Can we speak this language, as opposed to just understanding it?
@@ -426,14 +462,14 @@
 	var/dat = "<b><font size = 5>Known Languages</font></b><br/><br/>"
 
 	if (default_language)
-		dat += "Current default language: [default_language] - <a href='byond://?src=\ref[src];default_lang=reset'>reset</a><br/><br/>"
+		dat += "Current default language: [default_language]<br/><br/>"
 
 	for (var/datum/language/L in languages)
 		if (!(L.flags & NONGLOBAL))
 			if (L == default_language)
-				dat += "<b>[L.name] ([get_language_prefix()][L.key])</b> - default - <a href='byond://?src=\ref[src];default_lang=reset'>reset</a><br/>[L.desc]<br/><br/>"
+				dat += "<b>[L.name] ([get_language_prefix()][L.key])</b> - default<br/>[L.desc]<br/><br/>"
 			else
-				dat += "<b>[L.name] ([get_language_prefix()][L.key])</b> - <a href='byond://?src=\ref[src];default_lang=\ref[L]'>set default</a><br/>[L.desc]<br/><br/>"
+				dat += "<b>[L.name] ([get_language_prefix()][L.key])</b><br/>[L.desc]<br/><br/>"
 
 	src << browse(dat, "window=checklanguage")
 

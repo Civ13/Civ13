@@ -140,7 +140,10 @@ var/global/datum/controller/occupations/job_master
 		set_factions(autobalance_for_players)
 
 	if (map && map.civilizations)
-		set_factions2(autobalance_for_players)
+		if (map.ID == MAP_CIVILIZATIONS)
+			set_factions2(15)
+		else
+			set_factions2(autobalance_for_players)
 	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
 		civilians_forceEnabled = TRUE
 	for (var/datum/job/J in occupations)

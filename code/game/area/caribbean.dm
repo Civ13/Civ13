@@ -150,6 +150,12 @@
 	icon_state = "green1"
 	climate = "temperate"
 
+/area/caribbean/nomads/semiarid
+	name = "Semi-Arid"
+	base_turf = /turf/floor/dirt/dust
+	icon_state = "red1"
+	climate = "semiarid"
+
 /area/caribbean/nomads/forest/snow
 	name = "Snowy Forest"
 	base_turf = /turf/floor/winter/grass
@@ -162,6 +168,12 @@
 	icon_state = "green1"
 	climate = "jungle"
 
+/area/caribbean/nomads/forest/savanna
+	name = "Savanna"
+	base_turf = /turf/floor/grass/jungle/savanna
+	icon_state = "blue3"
+	climate = "savanna"
+
 /area/caribbean/nomads/forest/Jungle/river
 	name = "Jungle River"
 	base_turf = /turf/floor/beach/water/jungle
@@ -173,6 +185,12 @@
 	base_turf = /turf/floor/winter
 	icon_state = "red1"
 	climate = "tundra"
+
+/area/caribbean/nomads/taiga
+	name = "Taiga"
+	base_turf = /turf/floor/dirt
+	icon_state = "red3"
+	climate = "taiga"
 
 /area/caribbean/nomads/ice
 	name = "Ice"

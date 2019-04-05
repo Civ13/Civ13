@@ -22,6 +22,31 @@
 	fuel = 0 //starts empty
 	unlimited = FALSE
 
+/obj/item/flashlight/lantern/bronze
+	name = "bronze etsy lamp"
+	icon_state = "etsy"
+	item_state = "etsy"
+	desc = "A very beautiful lamp it can be used for religions perpuses or to give you light at night it's much bridghter then a normal lantern butt you maybe calld a jew because you have it."
+	brightness_on = 8			// luminosity when on
+	light_color = rgb(200, 255, 200) // green tint
+	on_state = "etsy-on"
+	off_state = "etsy"
+	value = 16
+	fuel = 0 //starts empty
+	unlimited = FALSE
+
+/obj/item/flashlight/lantern/bronze/update_icon()
+	..()
+	if (on)
+		item_state = "etsy-on"
+	else
+		item_state = "etsy"
+
+/obj/item/flashlight/lantern/bronze/on
+	icon_state = "torch-on"
+	item_state = "torch-on"
+	on = TRUE
+
 /obj/item/flashlight/lantern/attack_self(mob/user)
 	if (!isturf(user.loc))
 		user << "You cannot turn the light on while in this [user.loc]." //To prevent some lighting anomalities.

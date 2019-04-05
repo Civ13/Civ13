@@ -42,15 +42,46 @@
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 
 		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+			if (map.ID == MAP_CIVILIZATIONS)
+				spawn(5)
+					if (gender == "male")
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
+					else
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+			if (map.ID == MAP_CIVILIZATIONS)
+				spawn(5)
+					make_nomad()
+					if (gender == "male")
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
+					else
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 		else if (map.ordinal_age == 4)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
@@ -69,7 +100,7 @@
 //coats/////////////////////////////////////////////////
 		spawn(5)
 			var/area/mob_area = get_area(src)
-			if (mob_area.climate == "tundra" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
+			if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
 				if (map.ordinal_age < 4)
 					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
 					if (map.ordinal_age == 0)
@@ -83,7 +114,7 @@
 
 /mob/living/carbon/human/proc/give_languages()
 	if (map && map.civilizations)
-		if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
+		if (map.ID == MAP_NOMADS_CONTINENTAL)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
@@ -180,11 +211,76 @@
 							real_name = name
 							add_note("Known Languages", "German")
 							return
+		else if (map.ID == MAP_NOMADS_PANGEA)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("tundra")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						for (var/datum/language/russian/A in languages)
+							default_language = A
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						return
+					if ("taiga")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						for (var/datum/language/russian/A in languages)
+							default_language = A
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						return
+					if ("semiarid")
+						add_language("Latin",TRUE)
+						remove_language("English")
+						for (var/datum/language/latin/A in languages)
+							default_language = A
+						name = species.get_random_roman_name(gender)
+						real_name = name
+						add_note("Known Languages", "Latin")
+						return
+					if ("savanna")
+						add_language("Swahili",TRUE)
+						remove_language("English")
+						for (var/datum/language/swahili/A in languages)
+							default_language = A
+						name = species.get_random_swahili_name(gender)
+						real_name = name
+						add_note("Known Languages", "Swahili")
+						return
+					if ("jungle")
+						add_language("Japanese",TRUE)
+						remove_language("English")
+						for (var/datum/language/japanese/A in languages)
+							default_language = A
+						name = species.get_random_japanese_name(gender)
+						real_name = name
+						add_note("Known Languages", "Japanese")
+						return
+					if ("desert")
+						add_language("Arabic",TRUE)
+						remove_language("English")
+						for (var/datum/language/arab/A in languages)
+							default_language = A
+						name = species.get_random_arab_name(gender)
+						real_name = name
+						add_note("Known Languages", "Arabic")
+						return
+					if ("temperate")
+						add_language("German",TRUE)
+						remove_language("English")
+						for (var/datum/language/german/A in languages)
+							default_language = A
+						name = species.get_random_german_name(gender)
+						real_name = name
+						add_note("Known Languages", "German")
+						return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
 	if (map && map.civilizations)
-		if (map.ID == MAP_NOMADS_KARAFUTA-SAKHALINSK)
+		if (map.ID == MAP_NOMADS_KARAFUTA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)

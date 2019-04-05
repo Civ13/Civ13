@@ -177,6 +177,18 @@ obj/structure/boiling_oil/proc/splash()
 			return
 
 obj/structure/boiling_oil/attackby(obj/item/weapon/oilbarrel/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers))
+		if (W.reagents.has_reagent("olive_oil", 50))
+			W.reagents.remove_reagent("olive_oil", 50)
+			timer = 1
+			visible_message("[user] fills the pot with oil and starts heating it!")
+			icon_state = "oil_pot1"
+			boil()
+			return
+		else
+			user << "This barrel has no olive oil inside!"
+			return
+
 	if (istype(W, /obj/item/weapon/oilbarrel))
 		if (W.full > 0 && timer == 0)
 			W.full -= 1
@@ -192,7 +204,8 @@ obj/structure/boiling_oil/attackby(obj/item/weapon/oilbarrel/W as obj, mob/user 
 			user << "This barrel is empty!"
 			W.name = "empty olive oil barrel"
 			return
-
+	else
+		..()
 
 /obj/item/weapon/oilbarrel
 	name = "olive oil barrel"

@@ -517,10 +517,16 @@
 					loc_temp = 262
 				if ("tundra")
 					loc_temp = 213
+				if ("taiga")
+					loc_temp = 220
+				if ("semiarid")
+					loc_temp = 272
 				if ("desert")
 					loc_temp = 303
 				if ("jungle")
 					loc_temp = 293
+				if ("savanna")
+					loc_temp = 285
 
 		if ("FALL")
 			switch (mob_area.climate)
@@ -530,10 +536,16 @@
 					loc_temp = 289
 				if ("tundra")
 					loc_temp = 213
+				if ("taiga")
+					loc_temp = 229
+				if ("semiarid")
+					loc_temp = 295
 				if ("desert")
 					loc_temp = 303
 				if ("jungle")
 					loc_temp = 293
+				if ("savanna")
+					loc_temp = 290
 
 		if ("SUMMER")
 			switch (mob_area.climate)
@@ -543,10 +555,16 @@
 					loc_temp = 295
 				if ("tundra")
 					loc_temp = 244
+				if ("taiga")
+					loc_temp = 255
+				if ("semiarid")
+					loc_temp = 309
 				if ("desert")
 					loc_temp = 313
 				if ("jungle")
 					loc_temp = 304
+				if ("savanna")
+					loc_temp = 300
 
 		if ("SPRING")
 			switch (mob_area.climate)
@@ -556,11 +574,16 @@
 					loc_temp = 288
 				if ("tundra")
 					loc_temp = 213
+				if ("taiga")
+					loc_temp = 229
+				if ("semiarid")
+					loc_temp = 300
 				if ("desert")
 					loc_temp = 309
 				if ("jungle")
 					loc_temp = 297
-
+				if ("savanna")
+					loc_temp = 295
 		if ("Dry Season")
 			loc_temp = 313
 		if ("Wet Season")

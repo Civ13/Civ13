@@ -105,6 +105,17 @@
 	onclose(user, "stack")
 	return
 
+// Custom qdel to allow returning of objects to hands on canceled build
+/obj/item/stack/var/handReturnMap[0]
+/obj/item/stack/proc/qdelHandReturn(var/datum/A, var/mob/user)
+// add the item to the handReturnMap
+	if (!(user.key in handReturnMap))
+		handReturnMap[user.key] = list()
+	var/datum/I = A
+	handReturnMap[user.key] += list(I)
+	// qdel the item
+	qdel(A)
+
 /mob/var/can_build_recipe = TRUE
 /obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)
 	var/required = quantity*recipe.req_amount
@@ -276,12 +287,12 @@
 				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 				build_override_firelance.force = round(H.l_hand.force*0.9)
 				build_override_firelance.throwforce = round(H.l_hand.throwforce*0.65)
-				qdel(H.l_hand)
+				qdelHandReturn(H.l_hand, H)
 			else if (istype(H.r_hand, /obj/item/weapon/material/spear))
 				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 				build_override_firelance.force = round(H.r_hand.force*0.9)
 				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
-				qdel(H.r_hand)
+				qdelHandReturn(H.r_hand, H)
 	if (!findtext(recipe.title, "wood spear"))
 		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe"))
 			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -289,9 +300,9 @@
 				return
 			else
 				if (istype(H.l_hand, /obj/item/weapon/material/handle))
-					qdel(H.l_hand)
+					qdelHandReturn(H.l_hand, H)
 				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
-					qdel(H.r_hand)
+					qdelHandReturn(H.r_hand, H)
 
 	if (findtext(recipe.title, "raft"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
@@ -303,7 +314,7 @@
 				if (NR.amount >= 2)
 					NR.amount -= 2
 					if (NR.amount <= 0)
-						qdel(H.l_hand)
+						qdelHandReturn(H.l_hand, H)
 				else
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 					return
@@ -312,7 +323,7 @@
 				if (NR.amount >= 2)
 					NR.amount -= 2
 					if (NR.amount <= 0)
-						qdel(H.r_hand)
+						qdelHandReturn(H.r_hand, H)
 				else
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 					return
@@ -358,13 +369,13 @@
 					targetskull = replacetext(targetskull, " head", "")
 					targetskull = "impaled [targetskull] skull"
 					newskull.name = targetskull
-					qdel(H.l_hand)
+					qdelHandReturn(H.l_hand, H)
 				else if (istype(H.r_hand, /obj/item/organ/external/head))
 					var/targetskull = H.r_hand.name
 					targetskull = replacetext(targetskull, " head", "")
 					targetskull = "impaled [targetskull] skull"
 					newskull.name = targetskull
-					qdel(H.r_hand)
+					qdelHandReturn(H.r_hand, H)
 
 	if (findtext(recipe.title, "custom sign"))
 		var/customname = input(user, "Choose a name for this sign:") as text|null
@@ -562,6 +573,13 @@
 
 		user << "<span class='notice'>Building [recipe.title] ...</span>"
 		if (!do_after(user, buildtime))
+			if (H.key in handReturnMap)
+				var/atom/O
+				var/datum/A
+				for(A in handReturnMap[H.key])
+					O = new A.type()
+					H.put_in_hands(O)
+				handReturnMap.Remove(H.key)
 			return
 
 		if (H)

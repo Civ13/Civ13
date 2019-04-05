@@ -213,6 +213,21 @@
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
 
+/turf/floor/beach/water/coastwater
+	name = "coast water"
+	desc = "lovely water hitting the coast line"
+	icon_state = "beach"
+
+/turf/floor/beach/water/coastwater/corner
+	name = "coast water corner"
+	desc = "lovely water hitting the coast line"
+	icon_state = "beachcorner"
+
+/turf/floor/beach/water/coastwater/layer
+	name = "coast water"
+	desc = "lovely water hitting the coast line"
+	icon_state = "seashallow_edgesX"
+
 /turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE
@@ -249,6 +264,7 @@
 	name = "deep saltwater"
 	salty = TRUE
 	initial_flooring = /decl/flooring/water_deep_salt
+
 /turf/floor/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
@@ -258,18 +274,21 @@
 		return FALSE
 	else
 		return ..()
+
 /turf/floor/beach/water/swamp
 	name = "swamp"
 	move_delay = 3
 	icon_state = "seashallow_swamp"
 	sickness = 3
 	initial_flooring = /decl/flooring/water_swamp
+
 /turf/floor/beach/water/jungle
 	name = "jungle river"
 	move_delay = 5
 	icon_state = "seashallow_jungle1"
 	sickness = 2
 	initial_flooring = /decl/flooring/water_jungle1
+
 /turf/floor/beach/water/flooded
 	name = "flooded riverbed"
 	move_delay = 5

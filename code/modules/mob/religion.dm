@@ -1,8 +1,9 @@
 /mob/living/carbon/human/make_nomad()
 	..()
-	verbs += /mob/living/carbon/human/proc/create_religion
-	verbs += /mob/living/carbon/human/proc/abandon_religion
-	verbs += /mob/living/carbon/human/proc/clergy
+	if (map.nomads)
+		verbs += /mob/living/carbon/human/proc/create_religion
+		verbs += /mob/living/carbon/human/proc/abandon_religion
+		verbs += /mob/living/carbon/human/proc/clergy
 
 ///////////////////////RELIGION/////////////////////////
 /mob/living/carbon/human/proc/create_religion()
@@ -441,6 +442,9 @@ obj/structure/altar/attack_hand(mob/living/carbon/human/H as mob)
 								currlist2 += AA
 						map.custom_religions[religion][3] += currlist2.len*0.8
 						visible_message("[H] finishes the worshipping session of the [religion] religion.")
+						session = FALSE
+						return
+					else
 						session = FALSE
 						return
 

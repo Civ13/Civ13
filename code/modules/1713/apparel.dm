@@ -96,6 +96,20 @@
 	item_state = "dress3"
 	worn_state = "dress3"
 
+/obj/item/clothing/under/civfg
+	name = "Green dress"
+	desc = "A green dress."
+	icon_state = "dressg"
+	item_state = "dressg"
+	worn_state = "dressg"
+
+/obj/item/clothing/under/civfr
+	name = "Red dress"
+	desc = "A red dress."
+	icon_state = "dressr"
+	item_state = "dressr"
+	worn_state = "dressr"
+
 // WEBBING - can hold everything but clothing
 
 /obj/item/clothing/accessory/storage/webbing
