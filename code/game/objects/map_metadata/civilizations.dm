@@ -14,7 +14,7 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "1713"
+	age = "1013"
 	civilizations = TRUE
 	var/tribes_nr = 2
 	faction_distribution_coeffs = list(CIVILIAN = 1)
@@ -25,9 +25,9 @@
 	availablefactions_run = TRUE
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
-	default_research = 86
+	default_research = 48
 	gamemode = "Two Kingdoms"
-	ordinal_age = 3
+	ordinal_age = 2
 	age1_done = TRUE
 	age2_done = TRUE
 	research_active = FALSE
