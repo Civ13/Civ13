@@ -688,9 +688,9 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_head(var/update_icons=1)
-	var/image/band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l2")
-	var/image/cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l1")
-	var/image/symbol = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l3")
+	var/image/band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
+	var/image/cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
+	var/image/symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
 	if (head)
 		/*var/new_screen_loc = find_inv_position(slot_head)
 		if (new_screen_loc)
@@ -724,11 +724,11 @@ var/global/list/damage_icon_parts = list()
 		var/image/standing = image(icon = t_icon, icon_state = t_state)
 		if (istype(head, /obj/item/clothing/head/custom_off_cap))
 			var/obj/item/clothing/head/custom_off_cap/CU = w_uniform
-			band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l2")
+			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
 			band.color = CU.bandcolor
-			cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l1")
+			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
 			cap.color = CU.capcolor
-			symbol = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_l3")
+			symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
 			symbol.color = CU.symbolcolor
 			standing.overlays += band
 			standing.overlays += cap
@@ -736,14 +736,14 @@ var/global/list/damage_icon_parts = list()
 
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
 			var/obj/item/clothing/head/custom/fieldcap/CU = w_uniform
-			cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "fieldcap_custom")
+			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom")
 			cap.color = CU.capcolor
 			standing.overlays += cap
 
 		if (head.blood_DNA)
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "helmetblood")
 			bloodsies.color = head.blood_color
-			standing.overlays	+= bloodsies
+			standing.overlays += bloodsies
 
 		if (istype(head,/obj/item/clothing/head))
 			var/obj/item/clothing/head/hat = head
