@@ -49,7 +49,7 @@
 						if (civilization == "West Kingdom")
 							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
 						else
-							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
 					else
 						if (civilization == "West Kingdom")
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
@@ -68,7 +68,7 @@
 						if (civilization == "West Kingdom")
 							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
 						else
-							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
 					else
 						if (civilization == "West Kingdom")
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)

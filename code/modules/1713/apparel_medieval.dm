@@ -113,6 +113,13 @@
 	worn_state = "blue_tunic2"
 
 
+/obj/item/clothing/under/medieval/green
+	name = "green tunic"
+	desc = "A light green tunic."
+	icon_state = "green_tunic"
+	item_state = "green_tunic"
+	worn_state = "green_tunic"
+
 /obj/item/clothing/under/medieval/red
 	name = "red tunic"
 	desc = "A light red tunic."
