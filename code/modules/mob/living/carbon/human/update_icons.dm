@@ -723,7 +723,7 @@ var/global/list/damage_icon_parts = list()
 		//Create the image
 		var/image/standing = image(icon = t_icon, icon_state = t_state)
 		if (istype(head, /obj/item/clothing/head/custom_off_cap))
-			var/obj/item/clothing/head/custom_off_cap/CU = w_uniform
+			var/obj/item/clothing/head/custom_off_cap/CU = head
 			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
 			band.color = CU.bandcolor
 			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
@@ -735,7 +735,7 @@ var/global/list/damage_icon_parts = list()
 			standing.overlays += symbol
 
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
-			var/obj/item/clothing/head/custom/fieldcap/CU = w_uniform
+			var/obj/item/clothing/head/custom/fieldcap/CU = head
 			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom")
 			cap.color = CU.capcolor
 			standing.overlays += cap
