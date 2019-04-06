@@ -63,6 +63,10 @@
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
+	var/area/currentarea = get_area(src)
+	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
+		gib()
+
 	#define HUNGER_THIRST_MULTIPLIER 0.80
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()

@@ -88,7 +88,7 @@
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
 
-	if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
+	if ((map.civilizations && (season != "WINTER")) || !(map.civilizations))
 		if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
 			spawning = TRUE
 		if (current_number < 0)
