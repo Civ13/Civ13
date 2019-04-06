@@ -350,8 +350,7 @@
 
 /obj/structure/farming/plant/proc/spawnSeeds()
 	var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-	new seedpath(loc)
-	new seedpath(loc)
+	new seedpath(loc, 2)
 
 /obj/structure/farming/plant/proc/spawnProduce()
 	var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
