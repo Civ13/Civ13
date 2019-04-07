@@ -93,38 +93,45 @@
 	for (var/obj/item/I in contents)
 		if (istype(I, /obj/item/stack/ore))
 			if (istype(I, /obj/item/stack/ore/diamond))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/diamond(src)
+				var/obj/item/stack/material/diamond/NO = new/obj/item/stack/material/diamond(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/glass))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/glass(src)
+				var/obj/item/stack/material/glass/NO = new/obj/item/stack/material/glass(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/gold))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/gold(src)
+				var/obj/item/stack/material/gold/NO = new/obj/item/stack/material/gold(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/silver))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/silver(src)
+				var/obj/item/stack/material/silver/NO = new/obj/item/stack/material/silver(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/iron))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/iron(src)
+				var/obj/item/stack/material/iron/NO = new/obj/item/stack/material/iron(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/copper))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/copper(src)
+				var/obj/item/stack/material/copper/NO = new/obj/item/stack/material/copper(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/tin))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/tin(src)
+				var/obj/item/stack/material/tin/NO = new/obj/item/stack/material/tin(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
