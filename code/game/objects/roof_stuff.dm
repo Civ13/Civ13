@@ -97,6 +97,10 @@
 		var/mob/living/carbon/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+	var/area/currentarea = get_area(get_step(user, user.dir))
+	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
+		user << "You cannot build a roof here."
+		return
 	for (var/obj/roof/RF in get_step(user, user.dir))
 		user << "That area is already roofed!"
 		return
