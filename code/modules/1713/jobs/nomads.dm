@@ -340,6 +340,7 @@
 	if (!H)	return FALSE
 	H.civilization = civname_a
 	H.give_clothes()
+	H.make_nomad()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
@@ -373,6 +374,7 @@
 	if (!H)	return FALSE
 	H.civilization = civname_b
 	H.give_clothes()
+	H.make_nomad()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")
