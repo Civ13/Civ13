@@ -68,6 +68,16 @@
 	name = "leather curtain"
 	color = "#624a2e"
 
+/obj/structure/curtain/leather/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (user.a_intent == I_HELP)
+		if ((istype(W, /obj/item/weapon/material/kitchen/utensil/knife)))
+			visible_message("<span class='warning'>[user] starts to cut down \the [src].</span>")
+			playsound(src, 'sound/items/poster_ripped.ogg', 100, TRUE)
+			if (do_after(user,50,src))
+				visible_message("<span class='warning'>[user] cuts down \the [src].</span>")
+				qdel(src)
+				return
+
 /obj/structure/curtain/leather/open
 	icon_state = "open"
 	opacity = FALSE
