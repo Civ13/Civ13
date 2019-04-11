@@ -42,23 +42,40 @@
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 
 		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+			if (map.ID == MAP_CIVILIZATIONS)
+				spawn(5)
+					if (gender == "male")
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
+					else
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
 			if (map.ID == MAP_CIVILIZATIONS)
-				if (gender == "male")
-					if (civilization == "West Kingdom")
-						equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red2(src), slot_w_uniform)
+				spawn(5)
+					make_nomad()
+					if (gender == "male")
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
 					else
-						equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue2(src), slot_w_uniform)
-				else
-					if (civilization == "West Kingdom")
-						equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
-						equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
-					else
-						equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
-						equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			else
 				if (gender == "male")
 					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
@@ -215,13 +232,13 @@
 						real_name = name
 						return
 					if ("semiarid")
-						add_language("Spanish",TRUE)
+						add_language("Latin",TRUE)
 						remove_language("English")
-						for (var/datum/language/spanish/A in languages)
+						for (var/datum/language/latin/A in languages)
 							default_language = A
-						name = species.get_random_spanish_name(gender)
+						name = species.get_random_roman_name(gender)
 						real_name = name
-						add_note("Known Languages", "Spanish")
+						add_note("Known Languages", "Latin")
 						return
 					if ("savanna")
 						add_language("Swahili",TRUE)
@@ -323,6 +340,7 @@
 	if (!H)	return FALSE
 	H.civilization = civname_a
 	H.give_clothes()
+	H.make_nomad()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
@@ -356,6 +374,7 @@
 	if (!H)	return FALSE
 	H.civilization = civname_b
 	H.give_clothes()
+	H.make_nomad()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")

@@ -1,6 +1,7 @@
 /mob/living/carbon/human/proc/make_nomad()
-	verbs += /mob/living/carbon/human/proc/create_faction
-	verbs += /mob/living/carbon/human/proc/abandon_faction
+	if (map.nomads)
+		verbs += /mob/living/carbon/human/proc/create_faction
+		verbs += /mob/living/carbon/human/proc/abandon_faction
 	verbs += /mob/living/carbon/human/proc/transfer_faction
 	verbs += /mob/living/carbon/human/proc/become_leader
 
@@ -126,7 +127,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE)
+	if (map.civilizations == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -171,7 +172,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE)
+	if (map.civilizations == TRUE)
 		if (U.civilization == "none")
 			usr << "You are not part of any faction."
 			return
@@ -197,7 +198,7 @@
 	set category = "Officer"
 	var/mob/living/carbon/human/U
 
-	if (map.nomads == TRUE)
+	if (map.civilizations == TRUE)
 		if (istype(usr, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = usr
 			if (H.civilization == "none")
@@ -235,7 +236,7 @@
 	set category = "Officer"
 	var/mob/living/carbon/human/U
 
-	if (map.nomads == TRUE)
+	if (map.civilizations == TRUE)
 		if (istype(usr, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = usr
 			if (H.civilization == "none")

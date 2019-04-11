@@ -1,8 +1,9 @@
 /mob/living/carbon/human/make_nomad()
 	..()
-	verbs += /mob/living/carbon/human/proc/create_religion
-	verbs += /mob/living/carbon/human/proc/abandon_religion
-	verbs += /mob/living/carbon/human/proc/clergy
+	if (map.nomads)
+		verbs += /mob/living/carbon/human/proc/create_religion
+		verbs += /mob/living/carbon/human/proc/abandon_religion
+		verbs += /mob/living/carbon/human/proc/clergy
 
 ///////////////////////RELIGION/////////////////////////
 /mob/living/carbon/human/proc/create_religion()

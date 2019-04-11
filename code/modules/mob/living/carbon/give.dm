@@ -64,7 +64,11 @@
 		user << "You cannot recruit yourself."
 		return
 
-	if (user.original_job_title != "Nomad" || user.civilization == "none" || user.civilization == null)
+	if (user.original_job_title != "Nomad")
+		user << "You can't recruit in this map."
+		return
+
+	if (user.civilization == "none" || user.civilization == null)
 		user << "You are not part of a faction."
 		return
 
@@ -108,7 +112,7 @@
 	if (user.stat || user.restrained() || !isliving(user))
 		return
 
-	if (user.original_job_title != "Nomad" || user.civilization == "none" || user.civilization == null)
+	if (!map.civilizations || user.civilization == "none" || user.civilization == null)
 		user << "You are not part of a faction."
 		return
 
@@ -129,7 +133,7 @@
 			a2list += "Announcements"
 		if (faction_perms[3] == 0)
 			a2list += "Giving Titles"
-		if (faction_perms[4] == 0)
+		if (faction_perms[4] == 0 && map.nomads)
 			a2list += "Recruitment"
 		var/answer2 = WWinput(user, "Which permission to add?", null, "Cancel", a2list)
 		switch(answer2)

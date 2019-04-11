@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/civilizations
 	ID = MAP_CIVILIZATIONS
-	title = "Two Kingdoms (220x225x2)"
+	title = "Two Kingdoms (300x100x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -25,7 +25,7 @@
 	availablefactions_run = TRUE
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
-	default_research = 62
+	default_research = 48
 	gamemode = "Two Kingdoms"
 	ordinal_age = 2
 	age1_done = TRUE

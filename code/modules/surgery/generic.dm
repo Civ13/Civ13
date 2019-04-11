@@ -198,7 +198,7 @@
 		1 = list("/obj/item/weapon/surgery/bone_saw",100),
 		2 = list("/obj/item/weapon/surgery/bone_saw/bronze",85),
 		3 = list("/obj/item/weapon/material/hatchet",50),
-		4 = list("/obj/item/weapon/material/kitchen/utensil/knife",30),
+		4 = list("/obj/item/weapon/material/kitchen/utensil/knife/bone",30),
 		5 = list("/obj/item/weapon/material/battleaxe",70),
 	)
 

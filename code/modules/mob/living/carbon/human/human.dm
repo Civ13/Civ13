@@ -118,12 +118,12 @@
 						update_body()
 						new_hair = "Black"
 					else
-						s_tone = -160
+						s_tone = -165
 						force_update_limbs()
 						update_body()
 						new_hair = "Black"
 				if ("savanna")
-					s_tone = -140
+					s_tone = -165
 					force_update_limbs()
 					update_body()
 					new_hair = "Black"

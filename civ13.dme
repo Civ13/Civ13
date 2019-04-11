@@ -811,5 +811,9 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
+<<<<<<< HEAD
 #include "maps\special\nomads_pangea.dmm"
+=======
+#include "maps\special\civilizations.dmm"
+>>>>>>> 7d04e6bcaa4f09b46810bd4235e5026418fa20a8
 // END_INCLUDE

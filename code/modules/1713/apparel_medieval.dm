@@ -113,6 +113,13 @@
 	worn_state = "blue_tunic2"
 
 
+/obj/item/clothing/under/medieval/green
+	name = "green tunic"
+	desc = "A light green tunic."
+	icon_state = "green_tunic"
+	item_state = "green_tunic"
+	worn_state = "green_tunic"
+
 /obj/item/clothing/under/medieval/red
 	name = "red tunic"
 	desc = "A light red tunic."
@@ -172,7 +179,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
-	slowdown = 1.2
+	slowdown = 1.5
 /obj/item/clothing/suit/armor/medieval/blue
 	name = "blue plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
