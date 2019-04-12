@@ -58,6 +58,8 @@
 		currentpower = process_power_output()
 		spawn(10)
 			running()
+		for (var/obj/structure/cable/CB in connections)
+			CB.power_on(maxpower)
 		return
 
 /obj/structure/engine/external/New()

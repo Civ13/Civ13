@@ -222,7 +222,7 @@ var/global/list/damage_icon_parts = list()
 	//Create a new, blank icon for our mob to use.
 	if (stand_icon)
 		qdel(stand_icon)
-	stand_icon = new(species.icon_template ? species.icon_template : 'icons/mob/human.dmi',"blank")
+	stand_icon = new('icons/mob/human.dmi',"blank")
 
 	var/g = "male"
 	if (gender == FEMALE)
