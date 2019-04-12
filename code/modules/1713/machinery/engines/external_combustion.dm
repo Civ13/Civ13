@@ -71,7 +71,7 @@
 /obj/structure/engine/external/steam
 	name = "steam engine"
 	desc = "A big steam-powered engine. Low Power-To-Weight ratio, but good for static operations."
-	icon = 'icons/obj/engines.dmi'
+	icon = 'icons/obj/engines32.dmi'
 	icon_state = "steam_static"
 	engineclass = "steam"
 
