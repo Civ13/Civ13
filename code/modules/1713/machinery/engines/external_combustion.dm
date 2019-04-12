@@ -20,6 +20,7 @@
 			visible_message("[user] turns \the [src] on.","You turn \the [src] on.")
 			playsound(loc, 'sound/machines/diesel_starting.ogg', 100, FALSE, 3)
 			on = TRUE
+			update_icon()
 			running()
 			spawn(40)
 				running_sound()
