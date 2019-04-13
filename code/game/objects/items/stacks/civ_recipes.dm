@@ -192,7 +192,7 @@
 			new/datum/stack_recipe("iron bullet (x3)", /obj/item/stack/ammopart/bullet, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[1] >= 99 && map.ordinal_age >= 4)
+	if (current_res[1] >= 115 && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 90 && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("trench shovel", /obj/item/weapon/shovel/trench, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
