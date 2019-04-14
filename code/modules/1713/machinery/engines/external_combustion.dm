@@ -20,6 +20,7 @@
 			visible_message("[user] turns \the [src] on.","You turn \the [src] on.")
 			playsound(loc, 'sound/machines/diesel_starting.ogg', 100, FALSE, 3)
 			on = TRUE
+			update_icon()
 			running()
 			spawn(40)
 				running_sound()
@@ -58,6 +59,8 @@
 		currentpower = process_power_output()
 		spawn(10)
 			running()
+		for (var/obj/structure/cable/CB in connections)
+			CB.power_on(maxpower)
 		return
 
 /obj/structure/engine/external/New()
@@ -69,7 +72,7 @@
 /obj/structure/engine/external/steam
 	name = "steam engine"
 	desc = "A big steam-powered engine. Low Power-To-Weight ratio, but good for static operations."
-	icon = 'icons/obj/engines.dmi'
+	icon = 'icons/obj/engines32.dmi'
 	icon_state = "steam_static"
 	engineclass = "steam"
 

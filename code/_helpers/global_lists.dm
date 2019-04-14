@@ -185,7 +185,14 @@ var/list/hair_colors = list(
 	"Light Grey" = "#d3d3d3",
 	"Grey" = "#808080"
 )
-
+// new eye colors
+var/list/eye_colors = list(
+	"Black" = "#000000",
+	"Dark Brown" = "#2B1D0E",
+	"Brown" = "#542A0E",
+	"Green" = "#4B7248",
+	"Blue" = "#5EA4E7",
+)
 
 var/global/list/global_mutations  = list() // List of hidden mutation things.
 // Noises made when hit while typing.

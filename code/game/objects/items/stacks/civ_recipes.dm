@@ -55,7 +55,7 @@
 	recipes += new/datum/stack_recipe("unfired clay roofing", /obj/item/weapon/clay/roofing, 2, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay vase", /obj/item/weapon/clay/vase, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay wine cup", /obj/item/weapon/clay/winecup, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
-	recipes += new/datum/stack_recipe("unfired clay blocks", /obj/item/weapon/clay/claybricks, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("unfired clay blocks", /obj/item/weapon/clay/claybricks, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay bowl", /obj/item/weapon/clay/claybowl, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay jug", /obj/item/weapon/clay/clayjug, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired clay cup", /obj/item/weapon/clay/claycup, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -66,7 +66,7 @@
 	recipes += new/datum/stack_recipe("unfired clay pitcher", /obj/item/weapon/clay/claypitcher, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("unfired large clay pitcher", /obj/item/weapon/clay/largeclaypitcher, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 82)
-		recipes += new/datum/stack_recipe("unfired clay bricks", /obj/item/weapon/clay/advclaybricks, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("unfired clay bricks", /obj/item/weapon/clay/advclaybricks, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/leather/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -192,7 +192,7 @@
 			new/datum/stack_recipe("iron bullet (x3)", /obj/item/stack/ammopart/bullet, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[1] >= 99 && map.ordinal_age >= 4)
+	if (current_res[1] >= 115 && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 90 && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("trench shovel", /obj/item/weapon/shovel/trench, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -957,9 +957,10 @@
 		recipes += new/datum/stack_recipe("artillery cannon", /obj/structure/cannon/modern, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
+
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern, 1, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE)
-
 		recipes += new/datum/stack_recipe("fuel pump (star)",/obj/structure/fuelpump/star, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("fuel pump (small)",/obj/structure/fuelpump/small, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("fuel pump (N)",/obj/structure/fuelpump/n, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
