@@ -107,7 +107,12 @@ proc/admin_notice(var/message, var/rights)
 				<A href='?src=\ref[src];simplemake=bear;mob=\ref[M]'>Bear</A> |
 				<A href='?src=\ref[src];simplemake=velociraptor;mob=\ref[M]'>Velociraptor</A> ]
 				<br>"}
-
+			body += {"<br><br>
+				<b>Body type transformation:</b><font size=2><br>These transformations will keep the user as "human" but change the body type.</font><br>
+				<A href='?src=\ref[src];simplemake=default;mob=\ref[M]'>Default</A> |
+				<A href='?src=\ref[src];simplemake=gorilla;mob=\ref[M]'>Gorilla</A> |
+				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Wolfman</A> |
+				<br>"}
 	body += {"<br><br>
 			<b>Other actions:</b>
 			<br>

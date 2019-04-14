@@ -12,6 +12,8 @@
 	var/misk_icon		= 'icons/mob/mob.dmi'
 	var/belt_icon		= 'icons/mob/belt.dmi'
 	var/backpack_icon	= 'icons/mob/back.dmi'
+	var/nohair = FALSE
+	var/nofacialhair = FALSE
 
 /datum/body_build/female
 	gender 			= FEMALE
@@ -49,4 +51,24 @@
 	backpack_icon	= 'icons/mob/back.dmi'
 
 /datum/body_build/fat/female
+	gender 			= FEMALE
+
+
+
+/datum/body_build/gorilla
+	name			= "Gorilla"
+	index			= "_gorilla"
+	nohair = TRUE
+	nofacialhair = TRUE
+
+/datum/body_build/gorilla/female
+	gender 			= FEMALE
+
+/datum/body_build/wolfman
+	name			= "Wolfman"
+	index			= "_wolfman"
+	nohair = TRUE
+	nofacialhair = TRUE
+
+/datum/body_build/wolfman/female
 	gender 			= FEMALE

@@ -120,9 +120,10 @@
 
 
 		var/delmob = FALSE
-		switch(WWinput(usr, "Delete old mob?", "Delete Mob", "Yes", list("Yes","No","Cancel")))
-			if ("Cancel")	return
-			if ("Yes")		delmob = TRUE
+		if (href_list["simplemake"] != "gorilla" && href_list["simplemake"] != "default" && href_list["simplemake"] != "wolfman")
+			switch(WWinput(usr, "Delete old mob?", "Delete Mob", "Yes", list("Yes","No","Cancel")))
+				if ("Cancel")	return
+				if ("Yes")		delmob = TRUE
 
 		log_admin("[key_name(usr)] has used rudimentary transformation on [key_name(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]")
 		message_admins("<span class = 'notice'>[key_name_admin(usr)] has used rudimentary transformation on [key_name_admin(M)]. Transforming to [href_list["simplemake"]]; deletemob=[delmob]</span>", TRUE)
@@ -139,6 +140,46 @@
 			if ("mouse")			M.change_mob_type( /mob/living/simple_animal/mouse , null, null, delmob )
 			if ("bear")			M.change_mob_type( /mob/living/simple_animal/hostile/bear , null, null, delmob )
 			if ("velociraptor")			M.change_mob_type( /mob/living/simple_animal/hostile/dinosaur/velociraptor , null, null, delmob )
+
+			if ("default")
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					var/mob/living/carbon/human/HM = M
+					HM.body_build.index = ""
+					HM.body_build.name = "Default"
+					HM.update_hair()
+					HM.change_facial_hair()
+					HM.force_update_limbs()
+					HM.update_body()
+					HM.update_hair()
+			if ("gorilla")
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					var/mob/living/carbon/human/HM = M
+					HM.body_build.index = "_gorilla"
+					HM.body_build.name = "Gorilla"
+					HM.update_hair()
+					HM.change_facial_hair()
+					HM.force_update_limbs()
+					HM.update_body()
+					HM.update_hair()
+			if ("wolfman")
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					var/mob/living/carbon/human/HM = M
+					HM.body_build.index = "_wolfman"
+					HM.body_build.name = "Wolfman"
+					HM.update_hair()
+					HM.change_facial_hair()
+					HM.force_update_limbs()
+					HM.update_body()
+					HM.update_hair()
 
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])

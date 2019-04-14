@@ -26,7 +26,7 @@
 	name = "bronze etsy lamp"
 	icon_state = "etsy"
 	item_state = "etsy"
-	desc = "A very beautiful lamp it can be used for religions perpuses or to give you light at night it's much bridghter then a normal lantern butt you maybe calld a jew because you have it."
+	desc = "A bronze lamp with several candle holders."
 	brightness_on = 8			// luminosity when on
 	light_color = rgb(200, 255, 200) // green tint
 	on_state = "etsy-on"
