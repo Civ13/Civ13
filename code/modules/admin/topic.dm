@@ -147,7 +147,8 @@
 					return
 				else
 					var/mob/living/carbon/human/HM = M
-					HM.body_build = get_body_build(M.gender,"Default")
+					HM.body_build.index = ""
+					HM.body_build.name = "Default"
 					HM.update_hair()
 					HM.change_facial_hair()
 					HM.force_update_limbs()
@@ -159,7 +160,8 @@
 					return
 				else
 					var/mob/living/carbon/human/HM = M
-					HM.body_build = get_body_build(M.gender,"Gorilla")
+					HM.body_build.index = "_gorilla"
+					HM.body_build.name = "Gorilla"
 					HM.update_hair()
 					HM.change_facial_hair()
 					HM.force_update_limbs()
@@ -171,7 +173,8 @@
 					return
 				else
 					var/mob/living/carbon/human/HM = M
-					HM.body_build = get_body_build(M.gender,"Wolfman")
+					HM.body_build.index = "_wolfman"
+					HM.body_build.name = "Wolfman"
 					HM.update_hair()
 					HM.change_facial_hair()
 					HM.force_update_limbs()
