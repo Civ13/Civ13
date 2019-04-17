@@ -190,7 +190,7 @@
 		var/mob/living/carbon/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rock with the [C.name].</span>", "<span class = 'notice'>You start to break the rock with the [C.name].</span>")
-			playsound(src,'sound/effects/shovelling.ogg',100,1)
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, 160/(H.getStatCoeff("strength"))))
 				collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
@@ -737,7 +737,7 @@
 		var/mob/living/carbon/human/H = user
 		if (istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with the [C.name].</span>")
-			playsound(src,'sound/effects/shovelling.ogg',100,1)
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
 			if (do_after(user, 110/(H.getStatCoeff("strength"))))
 				if (prob(25))
 					if (prob(90))
