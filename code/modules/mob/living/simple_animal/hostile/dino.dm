@@ -67,7 +67,7 @@
 
 			if (stance_step <= -35) //If we have not found a mob for 35-ish ticks, revert to idle mode
 				stance = HOSTILE_STANCE_IDLE
-			if (stance_step >= 4)   //If we have been staring at a mob for 4 ticks,
+			if (stance_step >= 3)   //If we have been staring at a mob for 4 ticks,
 				stance = HOSTILE_STANCE_ATTACK
 
 		if (HOSTILE_STANCE_ATTACKING)
