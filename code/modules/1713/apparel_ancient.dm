@@ -130,6 +130,28 @@
 	item_state = "greatshendyt"
 	worn_state = "greatshendyt"
 
+/obj/item/clothing/suit/armor/ancient/scale
+	name = "scale armor"
+	desc = "A thick, expensivescaled iron armor, covering the torso."
+	icon_state = "scale_armor"
+	item_state = "scale_armor"
+	worn_state = "scale_armor"
+	body_parts_covered = UPPER_TORSO
+	armor = list(melee = 65, bullet = 45, laser = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	value = 40
+	slowdown = 0.8
+
+/obj/item/clothing/suit/armor/ancient/linen
+	name = "linothorax armor"
+	desc = "A thick linen armor, covering the torso and lower body."
+	icon_state = "heavycloth_armor"
+	item_state = "heavycloth_armor"
+	worn_state = "heavycloth_armor"
+	body_parts_covered = UPPER_TORSO | LOWER_TORSO
+	armor = list(melee = 55, bullet = 35, laser = 10,energy = 15, bomb = 35, bio = 20, rad = FALSE)
+	value = 40
+	slowdown = 0.2
+
 /obj/item/clothing/suit/cape
 	name = "red cape"
 	desc = "A long red cape."
