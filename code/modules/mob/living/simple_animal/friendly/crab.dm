@@ -26,9 +26,9 @@
 /mob/living/simple_animal/crab/small
 	name = "small crab"
 	desc = "A hard-shelled crustacean. it seems to look around for food trying to become a big boy."
-	icon_state = "crab_small"
-	icon_living = "crab_small"
-	icon_dead = "crab_small_dead"
+	icon_state = "red_crab"
+	icon_living = "red_crab"
+	icon_dead = "red_crab_dead"
 	mob_size = MOB_MINISCULE
 	maxHealth = 10
 	health = 10

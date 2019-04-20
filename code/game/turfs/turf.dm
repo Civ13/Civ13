@@ -405,9 +405,15 @@ var/const/enterloopsanity = 100
 				footstepsound = "grassfootsteps"
 			//else 	if (istype(src, /turf/stalker/floor/tropa))//Not needed for now.
 			//	footstepsound = "sandfootsteps"
+			else if (istype(src, /turf/floor/winter))
+				footstepsound = "snowfootsteps"
 			else 	if (istype(src, /turf/floor/beach/water) && src.water_level > 0)
 				if (!istype(src, /turf/floor/beach/water/ice))
 					footstepsound = "waterfootsteps"
+				else
+					footstepsound = "icefootsteps"
+			else	if (istype(src, /turf/floor/beach/sand))
+				footstepsound = "sandfootsteps"
 			else 	if (istype(src, /turf/floor/wood))
 				footstepsound = "woodfootsteps"
 			else 	if (istype(src, /turf/floor/carpet))

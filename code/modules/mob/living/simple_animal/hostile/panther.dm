@@ -68,13 +68,18 @@
 						var/action = pick( list( "growls at [target_mob].", "stares angrily at [target_mob].", "prepares to attack [target_mob].", "closely watches [target_mob]." ) )
 						if (action)
 							custom_emote(1,action)
+							if (prob(50))
+								playsound(src.loc, 'sound/animals/panther/panthergrowl1.ogg', 150, TRUE, 2)
+							else
+								playsound(src.loc, 'sound/animals/panther/panthergrowl2.ogg', 150, TRUE, 2)
 			if (!found_mob)
 				stance_step--
 
 			if (stance_step <= -20) //If we have not found a mob for 20-ish ticks, revert to idle mode
 				stance = HOSTILE_STANCE_IDLE
-			if (stance_step >= 7)   //If we have been staring at a mob for 7 ticks,
+			if (stance_step >= 3)   //If we have been staring at a mob for 7 ticks,
 				stance = HOSTILE_STANCE_ATTACK
+				playsound(src.loc, 'sound/animals/panther/pantherroar.ogg', 150, TRUE, 2)
 
 		if (HOSTILE_STANCE_ATTACKING)
 			if (stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
@@ -112,6 +117,10 @@
 /mob/living/simple_animal/hostile/panther/AttackingTarget()
 	if (!Adjacent(target_mob))
 		return
+	if(prob(50))
+		playsound(src.loc, 'sound/weapons/bite.ogg', 100, TRUE, 2)
+	else
+		playsound(src.loc, 'sound/weapons/bite_2.ogg', 100, TRUE, 2)
 	custom_emote(1, pick( list("slashes at [target_mob]!", "bites [target_mob]!") ) )
 
 	var/damage = pick(melee_damage_lower,melee_damage_upper)
