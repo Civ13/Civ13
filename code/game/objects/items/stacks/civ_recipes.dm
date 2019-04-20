@@ -694,13 +694,15 @@
 			new/datum/stack_recipe("customizable celtic trousers", /obj/item/clothing/under/custom/celtic, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("linothorax armor", /obj/item/clothing/suit/armor/ancient/linen, 8, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if ((current_res[3] >= 38) && (current_res[3] < 59))
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("huipil", /obj/item/clothing/under/huipil, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("half huipil", /obj/item/clothing/under/halfhuipil, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable tunic", /obj/item/clothing/under/custom/tunic, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable arabic tunic", /obj/item/clothing/under/custom/arabictunic, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light brown arabic tunic", /obj/item/clothing/under/medieval/arab1, 3, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -710,12 +712,14 @@
 			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("artisan clothing", /obj/item/clothing/under/artisan, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark artisan clothing", /obj/item/clothing/under/artisan/dark, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("light artisan clothing", /obj/item/clothing/under/artisan/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("light artisan clothing", /obj/item/clothing/under/artisan/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("linothorax armor", /obj/item/clothing/suit/armor/ancient/linen, 8, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if ((current_res[3] >= 59) && (current_res[3] < 79))
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("huipil", /obj/item/clothing/under/huipil, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("half huipil", /obj/item/clothing/under/halfhuipil, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable tunic", /obj/item/clothing/under/custom/tunic, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable arabic tunic", /obj/item/clothing/under/custom/arabictunic, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -733,6 +737,7 @@
 	if (current_res[3] >= 79 && current_res[3] < 98)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 				new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+				new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 				new/datum/stack_recipe("blue colonial clothing", /obj/item/clothing/under/civ1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 				new/datum/stack_recipe("white colonial clothing", /obj/item/clothing/under/civ2, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 				new/datum/stack_recipe("short-sleeved colonial clothing", /obj/item/clothing/under/civ3, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -751,6 +756,7 @@
 	if (current_res[3] >= 98 && current_res[3] < 112)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pioneer outfit", /obj/item/clothing/under/industrial1, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("rancher outfit", /obj/item/clothing/under/industrial2, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cowboy outfit", /obj/item/clothing/under/industrial3, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -762,6 +768,7 @@
 			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("artisan clothing", /obj/item/clothing/under/artisan, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark artisan clothing", /obj/item/clothing/under/artisan/dark, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light artisan clothing", /obj/item/clothing/under/artisan/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 112)
 		recipes += new/datum/stack_recipe_list("clothing", list(
