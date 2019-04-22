@@ -77,12 +77,12 @@
 	desc = "A sword used by the japanese for centuries. Made to slice and slash, not chop or saw."
 	icon_state = "katana"
 	item_state = "katana"
-	block_chance = 35
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	block_chance = 27
+	force_divisor = 0.8 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 60
-	cooldownw = 6
+	cooldownw = 7
 
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"

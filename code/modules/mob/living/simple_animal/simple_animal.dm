@@ -206,12 +206,23 @@
 /mob/living/simple_animal/proc/audible_emote(var/act_desc)
 	custom_emote(2, act_desc)
 
-/mob/living/simple_animal/bullet_act(var/obj/item/projectile/Proj)
-	if (!Proj || Proj.nodamage)
-		return
+/mob/living/simple_animal/bullet_act(var/obj/item/projectile/proj)
+	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
+		var/mob/living/carbon/human/H = proj.firer
+		if (prob(40))
+			switch (proj.firedfrom.gun_type)
+				if (GUN_TYPE_RIFLE)
+					H.adaptStat("rifle", 1)
+				if (GUN_TYPE_PISTOL)
+					H.adaptStat("pistol", 1)
+				if (GUN_TYPE_BOW)
+					H.adaptStat("bows", 1)
 
-	adjustBruteLoss(Proj.damage)
+	adjustBruteLoss(proj.damage)
 	return FALSE
+
+	if (!proj || proj.nodamage)
+		return
 
 /mob/living/simple_animal/attack_hand(mob/living/carbon/human/M as mob)
 	..()
