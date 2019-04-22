@@ -64,7 +64,7 @@
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
 	var/area/currentarea = get_area(src)
-	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
+	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
 		gib()
 
 	#define HUNGER_THIRST_MULTIPLIER 0.80
