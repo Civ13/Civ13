@@ -82,6 +82,7 @@
 	w_class = 2
 	throw_speed = 4
 	throw_range = 10
+	secondary_action = 1
 
 	var/list/stored_ammo = list()
 	var/mag_type = SPEEDLOADER //ammo_magazines can only be used with compatible guns. This is not a bitflag, the load_method var on guns is.
@@ -100,6 +101,23 @@
 	// are we an ammo box
 	var/is_box = FALSE
 
+/obj/item/ammo_magazine/secondary_attack_self(mob/living/carbon/human/user)
+	if (stored_ammo.len >= max_ammo)
+		user << "<span class='warning'>[src] is full!</span>"
+		return
+	else if (!caliber)
+		user << "<span class='warning'>This [src] has no caliber associated - manually add ammunition first.</span>"
+		return
+	else
+		var/count = 0
+		for(var/obj/item/ammo_casing/AC in get_turf(user))
+			if (AC.caliber == caliber && stored_ammo.len < max_ammo)
+				AC.loc = src
+				stored_ammo.Insert(1, AC) //add to the head of the list
+				count = 1
+		if (count > 0)
+			user << "<span class='warning'>You fill the [src] with the ammunition on the floor.</span>"
+		return
 /obj/item/ammo_magazine/emptypouch
 	name = "empty bullet pouch"
 	pouch = TRUE
