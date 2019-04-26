@@ -49,6 +49,7 @@
 	..()
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
+	chicken_count++
 
 /mob/living/simple_animal/chick/Life()
 	. =..()
@@ -139,26 +140,28 @@
 				var/obj/item/weapon/reagent_containers/food/snacks/egg/E = new(get_turf(src))
 				E.pixel_x = rand(-6,6)
 				E.pixel_y = rand(-6,6)
-				var/malearound = FALSE
-				var/nearbyObjects = range(1,src) //3x3 area around chicken
-				for(var/mob/living/simple_animal/rooster/M in nearbyObjects)
-					if (M.stat == CONSCIOUS)
-						malearound = TRUE
-				if (malearound)
-					var/chickenCount = 0
-					for(var/mob/living/simple_animal/chicken/M in nearbyObjects)
-						chickenCount++
 
-					for(var/mob/living/simple_animal/chick/M in nearbyObjects)
-						chickenCount++
+/obj/item/weapon/reagent_containers/food/snacks/egg/New()
+	..()
+	var/malearound = FALSE
+	var/nearbyObjects = range(1,src) //3x3 area around chicken
+	for(var/mob/living/simple_animal/rooster/M in nearbyObjects)
+		if (M.stat == CONSCIOUS)
+			malearound = TRUE
+	if (malearound)
+		var/chickenCount = 0
+		for(var/mob/living/simple_animal/chicken/M in nearbyObjects)
+			chickenCount++
 
-					if (chickenCount <= 5 && E.growing == FALSE) // max 5 chickens/chicks in a 5x5 area for eggs to start hatching
-						E.grow()
-						E.growing = TRUE
+		for(var/mob/living/simple_animal/chick/M in nearbyObjects)
+			chickenCount++
+
+		if (chickenCount <= 5 && growing == FALSE) // max 5 chickens/chicks in a 5x5 area for eggs to start hatching
+			growing = TRUE
+			grow()
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/proc/grow()
 	if (isturf(loc) && chicken_count < 50)
-		chicken_count++
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
@@ -210,8 +213,8 @@
 	icon_dead = "[body_color]rooster_dead"
 	pixel_x = rand(-6, 6)
 	pixel_y = rand(0, 10)
-	if (map)
-		chicken_count += 1
+	chicken_count += 1
+
 /mob/living/simple_animal/rooster/death()
 	..()
 	chicken_count -= 1
@@ -366,30 +369,9 @@
 				var/obj/item/weapon/reagent_containers/food/snacks/turkeyegg/E = new(get_turf(src))
 				E.pixel_x = rand(-6,6)
 				E.pixel_y = rand(-6,6)
-				var/malearound = FALSE
-				var/nearbyObjects = range(1,src) //3x3 area around turkey
-				for(var/mob/living/simple_animal/turkey_m/M in nearbyObjects)
-					if (M.stat == CONSCIOUS)
-						malearound = TRUE
-				if (malearound)
-					var/nearbyObjects1 = range(2,src) //5x5 area
-					var/turkeyCount = 0
-					for(var/mob/living/simple_animal/turkey_m/M in nearbyObjects1)
-						turkeyCount++
-
-					for(var/mob/living/simple_animal/turkey_f/M in nearbyObjects1)
-						turkeyCount++
-
-					for(var/mob/living/simple_animal/turkeychick/M in nearbyObjects1)
-						turkeyCount++
-
-					if (turkeyCount <= 5 && E.growing == FALSE) // max 5 turkeys/chicks in a 5x5 area for eggs to start hatching
-						E.grow()
-						E.growing = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/proc/grow()
 	if (isturf(loc) && turkey_count < 35)
-		turkey_count++
 		amount_grown += 1
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
@@ -403,3 +385,25 @@
 	else
 		processing_objects.Remove(src)
 		return
+/obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
+	..()
+	var/malearound = FALSE
+	var/nearbyObjects = range(1,src) //3x3 area around turkey
+	for(var/mob/living/simple_animal/turkey_m/M in nearbyObjects)
+		if (M.stat == CONSCIOUS)
+			malearound = TRUE
+	if (malearound)
+		var/nearbyObjects1 = range(2,src) //5x5 area
+		var/turkeyCount = 0
+		for(var/mob/living/simple_animal/turkey_m/M in nearbyObjects1)
+			turkeyCount++
+
+		for(var/mob/living/simple_animal/turkey_f/M in nearbyObjects1)
+			turkeyCount++
+
+		for(var/mob/living/simple_animal/turkeychick/M in nearbyObjects1)
+			turkeyCount++
+
+		if (turkeyCount <= 5 && growing == FALSE) // max 5 turkeys/chicks in a 5x5 area for eggs to start hatching
+			growing = TRUE
+			grow()

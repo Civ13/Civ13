@@ -444,7 +444,7 @@
 
 /mob/living/simple_animal/Destroy()
 	unregisterSpawner()
-	. = ..()
+	..()
 
 /mob/living/simple_animal/death(gibbed, deathmessage = "dies!")
 	icon_state = icon_dead
