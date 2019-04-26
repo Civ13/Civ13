@@ -11,6 +11,7 @@
 	var/image/inv_overlay = null	//overlay used when attached to clothing.
 	var/image/mob_overlay = null
 	var/overlay_state = null
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 
 /obj/item/clothing/accessory/Destroy()
 	if (has_suit)

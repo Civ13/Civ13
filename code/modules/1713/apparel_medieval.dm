@@ -269,6 +269,17 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	value = 30
 	slowdown = 0.6
+
+/obj/item/clothing/accessory/armor/chainmail
+	name = "chainmail"
+	desc = "Wearable armor made of several small interlinked chains."
+	icon_state = "chainmail"
+	item_state = "chainmail"
+	worn_state = "chainmail"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	value = 30
+	slowdown = 0.6
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
 	desc = "A longer version of the chainmail, worn as a coat. Offers greater protection."

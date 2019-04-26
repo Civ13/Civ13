@@ -307,6 +307,10 @@ bullet_act
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & def_zone.body_part)
 				protection += C.armor[type]
+				if (C.accessories.len)
+					for (var/ac in C.accessories)
+						var/obj/item/clothing/accessory/AC = ac
+						protection += AC.armor[type]
 	return protection
 
 /mob/living/carbon/human/proc/check_head_coverage()
