@@ -58,7 +58,7 @@
 	name = "combat gloves"
 	icon_state = "black"
 	item_state = "swat_gl"
-	armor = list(melee = 80, bullet = 60, laser = 60,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 60, gun = 60,energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	siemens_coefficient = FALSE
 
 /obj/item/clothing/gloves/botanic_leather

@@ -6,7 +6,7 @@
 	worn_state = "germtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
 
@@ -18,7 +18,7 @@
 	worn_state = "frenchtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
 
@@ -48,7 +48,7 @@
 	worn_state = "stahlhelm_old"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, bullet = 35, laser = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 35, gun = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww/adrian
 	name = "Adrian Helmet"
@@ -58,7 +58,7 @@
 	worn_state = "adrian"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, bullet = 30, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/mask/glasses/pilot
 	name = "pilot goggles"
@@ -75,7 +75,7 @@
 	worn_state = "japhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 43, bullet = 33, laser = 10,energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	armor = list(melee = 43, arrow = 33, gun = 10,energy = 15, bomb = 44, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww/japhelm/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
@@ -94,7 +94,7 @@
 	worn_state = "japhelm_bandana"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 43, bullet = 33, laser = 10,energy = 15, bomb = 44, bio = 20, rad = FALSE)
+	armor = list(melee = 43, arrow = 33, gun = 10,energy = 15, bomb = 44, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/japcap_ww2
 	name = "Japanese Cap"

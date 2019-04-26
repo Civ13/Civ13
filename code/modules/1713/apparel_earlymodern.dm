@@ -5,7 +5,7 @@
 	item_state = "japboots"
 	worn_state = "japboots"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 15, bullet = 10, laser = 10,energy = 8, bomb = 15, bio = 10, rad = FALSE)
+	armor = list(melee = 15, arrow = 10, gun = 10,energy = 8, bomb = 15, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -111,7 +111,7 @@
 	worn_state = "japcoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
 
@@ -124,7 +124,7 @@
 	worn_state = "japcoat2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
 
@@ -136,7 +136,7 @@
 	worn_state = "ruscoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
 
@@ -156,7 +156,7 @@
 	worn_state = "rusoffcoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
 
@@ -171,7 +171,7 @@
 	worn_state = "japvest"
 	body_parts_covered = UPPER_TORSO
 	cold_protection = UPPER_TORSO
-	armor = list(melee = 10, bullet = 10, laser = 10,energy = 10, bomb = 10, bio = 10, rad = FALSE)
+	armor = list(melee = 10, arrow = 10, gun = 10,energy = 10, bomb = 10, bio = 10, rad = FALSE)
 	value = 10
 
 /obj/item/clothing/head/japcap
@@ -443,7 +443,7 @@
 	worn_state = "pickelhaube"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/stahlhelm
 	name = "iron stahlhelm"
@@ -453,7 +453,7 @@
 	worn_state = "stahlhelm"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, bullet = 45, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/brodie
 	name = "iron brodie"
@@ -463,7 +463,7 @@
 	worn_state = "brodie"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, bullet = 35, laser = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 35, gun = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/pith
 	name = "iron pith helmet"
@@ -473,4 +473,4 @@
 	worn_state = "pith"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
