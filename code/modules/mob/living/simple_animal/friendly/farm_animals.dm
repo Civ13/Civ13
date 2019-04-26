@@ -145,7 +145,7 @@
 			if (cowCount > 5) // max 5 cows/bulls in a 15x15 area around cow
 				overpopulationCountdown = 150 // 5 minutes
 				pregnant = FALSE
-	else
+	else if (pregnant)
 		birthCountdown--
 		if (birthCountdown <= 0)
 			pregnant = FALSE
@@ -297,7 +297,7 @@
 			if (goatCount > 5) // max 5 cows/bulls in a 15x15 area around
 				overpopulationCountdown = 150 // 5 minutes
 				pregnant = FALSE
-	else
+	else if (pregnant)
 		birthCountdown--
 		if (birthCountdown <= 0)
 			pregnant = FALSE
@@ -430,7 +430,7 @@
 			if (sheepCount > 5) // max 5 cows/bulls in a 15x15 area around
 				overpopulationCountdown = 150 // 5 minutes
 				pregnant = FALSE
-	else
+	else if (pregnant)
 		birthCountdown--
 		if (birthCountdown <= 0)
 			pregnant = FALSE

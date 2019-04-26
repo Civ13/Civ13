@@ -6,7 +6,7 @@
 	item_state = "roman"
 	worn_state = "roman"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, bullet = 20, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 60, arrow = 5, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	siemens_coefficient = 0.6
 //roman memes
 /obj/item/clothing/under/roman
@@ -132,12 +132,12 @@
 
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "scale armor"
-	desc = "A thick, expensivescaled iron armor, covering the torso."
+	desc = "A thick, expensive scaled iron armor, covering the torso."
 	icon_state = "scale_armor"
 	item_state = "scale_armor"
 	worn_state = "scale_armor"
 	body_parts_covered = UPPER_TORSO
-	armor = list(melee = 65, bullet = 45, laser = 10,energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 	value = 40
 	slowdown = 0.8
 
@@ -148,7 +148,7 @@
 	item_state = "heavycloth_armor"
 	worn_state = "heavycloth_armor"
 	body_parts_covered = UPPER_TORSO | LOWER_TORSO
-	armor = list(melee = 55, bullet = 35, laser = 10,energy = 15, bomb = 35, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 35, gun = FALSE, energy = 15, bomb = 35, bio = 20, rad = FALSE)
 	value = 40
 	slowdown = 0.2
 
@@ -174,7 +174,7 @@
 	worn_state = "roman"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/roman_decurion
 	name = "Roman decurion helmet"
@@ -184,7 +184,7 @@
 	worn_state = "roman_d"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "Roman centurion helmet"
@@ -194,7 +194,7 @@
 	worn_state = "roman_c"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/gladiator
 	name = "gladiator helmet"
@@ -204,7 +204,7 @@
 	worn_state = "gladiator"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 60, bullet = 45, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 45, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 
 /obj/item/clothing/head/helmet/horned
@@ -214,7 +214,7 @@
 	item_state = "viking"
 	worn_state = "viking"
 	body_parts_covered = HEAD
-	armor = list(melee = 45, bullet = 30, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek
 	name = "greek helmet"
@@ -224,7 +224,7 @@
 	worn_state = "greek"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 62, bullet = 44, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek_commander
 	name = "Lochagos helmet"
@@ -234,7 +234,7 @@
 	worn_state = "greek_c"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 62, bullet = 44, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/greek_sl
 	name = "Dimoerites helmet"
@@ -244,7 +244,7 @@
 	worn_state = "greek_sl"
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 62, bullet = 44, laser = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/leather
 	name = "leather helmet"
@@ -253,7 +253,7 @@
 	item_state = "leatherhelmet"
 	worn_state = "leatherhelmet"
 	body_parts_covered = HEAD
-	armor = list(melee = 27, bullet = 8, laser = 10, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+	armor = list(melee = 27, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/nemes
 	name = "nemes headdress"
@@ -308,7 +308,7 @@
 	worn_state = "fur_jacket1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, bullet = 0, laser = 10,energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 15, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 	var/colorn = 1
 	var/specific = FALSE
@@ -406,7 +406,7 @@
 	item_state = "fur"
 	worn_state = "fur"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 20, bullet = 20, laser = 50,energy = 25, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 20, arrow = 10, gun = FALSE, energy = 25, bomb = 50, bio = 20, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET

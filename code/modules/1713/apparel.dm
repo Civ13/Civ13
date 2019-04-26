@@ -8,7 +8,7 @@
 	name = "\improper wrapped boots"
 	icon_state = "wrappedboots"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 10, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -361,7 +361,7 @@
 	item_state = "soldier_shoes"
 	worn_state = "soldier_shoes"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 30, bullet = 20, laser = 20,energy = 15, bomb = 30, bio = 10, rad = FALSE)
+	armor = list(melee = 30, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 
@@ -372,7 +372,7 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -384,7 +384,7 @@
 	item_state = "sailorboots2"
 	worn_state = "sailorboots2"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -748,7 +748,7 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -760,7 +760,7 @@
 	item_state = "sailorboots2"
 	worn_state = "sailorboots2"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
