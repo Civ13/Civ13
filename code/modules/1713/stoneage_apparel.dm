@@ -139,7 +139,7 @@
 	icon_state = "skull_mask"
 	item_state = "skull_mask"
 	body_parts_covered = FACE|EYES
-	armor = list(melee = 25, arrow = 10, gun = 0,energy = 0, bomb = 15, bio = 0, rad = FALSE)
+	armor = list(melee = 25, arrow = 10, gun = 0, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/head/chief_hat
 	name = "Chief hat"

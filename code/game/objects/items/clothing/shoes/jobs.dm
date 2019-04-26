@@ -5,7 +5,7 @@
 	icon_state = "jackboots"
 	item_state = "jackboots"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 30, arrow = 10, gun = 10, energy = 15, bomb = 20, bio = FALSE, rad = FALSE)
+	armor = list(melee = 30, arrow = 20, gun = 5, energy = 15, bomb = 20, bio = FALSE, rad = FALSE)
 	siemens_coefficient = 0.7
 	can_hold_knife = TRUE
 	cold_protection = FEET

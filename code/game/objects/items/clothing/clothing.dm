@@ -338,7 +338,7 @@ BLIND     // can't see anything
 	name = "suit"
 	var/fire_resist = T0C+100
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
-	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE,energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	slot_flags = SLOT_OCLOTHING
 	var/blood_overlay_type = "suit"
 	siemens_coefficient = 0.9
@@ -361,7 +361,7 @@ BLIND     // can't see anything
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	permeability_coefficient = 0.90
 	slot_flags = SLOT_ICLOTHING
-	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE,energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = FALSE, bomb = FALSE, bio = FALSE, rad = FALSE)
 	w_class = 3
 	//var/has_sensor = TRUE //For the crew computer 2 = unable to change mode
 //	var/sensor_mode = FALSE
