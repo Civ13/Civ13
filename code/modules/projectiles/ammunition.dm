@@ -237,6 +237,11 @@
 		for (var/i in TRUE to initial_ammo)
 			stored_ammo += new ammo_type(src)
 	update_icon()
+	if (istype(src, /obj/item/ammo_magazine/emptyclip))
+		for (var/i = FALSE, i <= max_ammo, i++)
+			var/ammo_state = "clip-[i]"
+			icon_keys += i
+			ammo_states += ammo_state
 
 /obj/item/ammo_magazine/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W == src)
