@@ -8,6 +8,7 @@
 	not_disassemblable = TRUE
 	density = FALSE
 	opacity = FALSE
+	var/currmsg = ""
 	var/list/allowedlist = list("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
 /obj/structure/telegraph/proc/convertmsg(var/message)
 	var/output = ""
@@ -23,16 +24,31 @@
 				output += ascii2text(ascii_char-32)
 	return output
 
+/obj/structure/telegraph/proc/transmit(var/msg)
+	if (!msg)
+		return
+	for (var/obj/structure/phoneline/PL in range(2,src))
+		PL.transmit(msg,src)
+		return
+
+/obj/structure/telegraph/proc/receive(var/msg)
+	if (!msg)
+		return
+	playsound(loc, 'sound/machines/telegraph.ogg', 65)
+	visible_message(msg)
+	return
+
 /obj/structure/telegraph/attack_hand(var/mob/user as mob)
 	var/message = input(usr, "Write a word. Up to 10 characters, no spaces, symbols or numbers.") as text
 	message = sanitize(message, 10)
 	message = convertmsg(message)
 	if (message && message != "")
-		visible_message("<font color=#FFAE19><b>...[message]...</b></font>")
+		currmsg = "<font color=#FFAE19><b>...[message]...</b></font>"
+		transmit(currmsg)
 		playsound(loc, 'sound/machines/telegraph.ogg', 65)
 		icon_state = "telegraph_active"
 		update_icon()
-		spawn(30)
+		spawn(22)
 			icon_state = "telegraph"
 			update_icon()
 	return
@@ -49,9 +65,38 @@
 	opacity = FALSE
 	var/obj/structure/phonecable/horizontal/h_cable = null
 	var/obj/structure/phonecable/vertical/v_cable = null
+	var/currmsg = ""
 	New()
 		..()
 		update_lines()
+
+/obj/structure/phoneline/proc/transmit(var/msg, var/obj/structure/telegraph/TL, var/obj/structure/phoneline/origin)
+	if (!msg || !TL)
+		return
+	else
+		//left
+		for (var/obj/structure/phoneline/PL in get_turf(locate(x-3,y,z)))
+			if (PL != origin)
+				PL.transmit(msg,TL,src)
+
+		//right
+		for (var/obj/structure/phoneline/PL in get_turf(locate(x+3,y,z)))
+			if (PL != origin)
+				PL.transmit(msg,TL,src)
+
+		//up
+		for (var/obj/structure/phoneline/PL in get_turf(locate(x,y+3,z)))
+			if (PL != origin)
+				PL.transmit(msg,TL,src)
+
+		//down
+		for (var/obj/structure/phoneline/PL in get_turf(locate(x,y-3,z)))
+			if (PL != origin)
+				PL.transmit(msg,TL,src)
+
+		for (var/obj/structure/telegraph/TLG in range(2,src))
+			if (TLG != TL)
+				TLG.receive(msg)
 
 /obj/structure/phonecable
 	name = "communications cable"
