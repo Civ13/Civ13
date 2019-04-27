@@ -259,6 +259,21 @@
 	value = 20
 	flammable = TRUE
 	slowdown = 0.2
+
+/obj/item/clothing/accessory/armor
+	icon = 'icons/obj/clothing/suits.dmi'
+	slot = "armor"
+/obj/item/clothing/accessory/armor/get_mob_overlay()
+	if (!mob_overlay)
+		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+		if (icon_override)
+			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
+				tmp_icon_state = "[tmp_icon_state]_mob"
+			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]")
+		else
+			mob_overlay = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "[tmp_icon_state]")
+	return mob_overlay
+
 /obj/item/clothing/suit/armor/medieval/chainmail
 	name = "chainmail"
 	desc = "Wearable armor made of several small interlinked chains."
@@ -280,6 +295,7 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	value = 30
 	slowdown = 0.6
+
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
 	desc = "A longer version of the chainmail, worn as a coat. Offers greater protection."
