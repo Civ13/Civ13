@@ -86,7 +86,6 @@
 #define INV_R_HAND_DEF_ICON 'icons/mob/items/righthand.dmi'
 #define INV_W_UNIFORM_DEF_ICON 'icons/mob/uniform.dmi'
 #define INV_ACCESSORIES_DEF_ICON 'icons/mob/ties.dmi'
-#define INV_SUIT_DEF_ICON 'icons/mob/ties.dmi'
 #define INV_SUIT_DEF_ICON 'icons/mob/suit.dmi'
 #define MAX_SUPPLIED_LAW_NUMBER 50
 
