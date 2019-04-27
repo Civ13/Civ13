@@ -134,7 +134,7 @@
 /obj/item/ammo_magazine/emptyclip
 	name = "empty clip"
 	clip = TRUE
-	icon_state = "clip-0"
+	icon_state = "klip"
 	ammo_type = null
 	caliber = null
 	max_ammo = 5
