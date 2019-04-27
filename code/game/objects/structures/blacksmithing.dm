@@ -79,7 +79,7 @@ obj/structure/anvil/New()
 				display2 = list("Small Sword (10)", "Spadroon (15)", "Katana (15)", "Cancel")
 		else if (choice == "Guns")
 			if (map.ordinal_age == 5)
-				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (30)", "Arisaka Type 35 (33)", "Murata Type 22 (30)", "Pump-Action Shotgun (30)","Nambu Type A (25)", "Borchardt C93 (25)", "Mauser C96 (25)", "Luger P08 (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", ,"Gewehr 98 (35)", "Gewehr 71 (30)", "Cancel")
+				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (30)", "Arisaka Type 35 (33)", "Murata Type 22 (30)", "Pump-Action Shotgun (30)","Nambu Type A (25)", "Borchardt C93 (25)", "Mauser C96 (25)", "Luger P08 (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", ,"Gewehr 98 (35)", "Gewehr 71 (30)","Lee-enfield (35)", "Cancel")
 			else if (map.ordinal_age == 4)
 				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
 			else
@@ -212,6 +212,21 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/gun/projectile/boltaction/gewehr98(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Lee-enfield (35)")
+			if (steel_amt >= 35)
+				user << "You begin crafting an Enfield..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 35)
+					user << "You craft an Enfield."
+					steel_amt -= 35
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/enfield(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
