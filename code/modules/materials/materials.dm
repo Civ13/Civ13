@@ -474,6 +474,15 @@ var/list/name_to_material
 	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
+/material/electronics
+	name = "electronic"
+	icon_colour = "#272727"
+	stack_type = /obj/item/stack/material/electronics
+	weight = 14
+	hardness = 20
+	sheet_singular_name = "circuit"
+	sheet_plural_name = "circuits"
+
 //TODO PLACEHOLDERS:
 /material/leather
 	name = "leather"
