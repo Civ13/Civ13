@@ -451,6 +451,55 @@
 	flammable = FALSE
 	explosion_resistance = 6
 
+/obj/covers/cement_wall
+	name = "cement wall"
+	desc = "A cement wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "cement_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 200
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 7
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+
+/obj/covers/cement_wall/incomplete
+	name = "cement wall"
+	desc = "A cement brick wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "cementwall_inc1"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = FALSE
+	incomplete = TRUE
+	amount = 0
+	layer = 3
+	health = 80
+	var/stage = 1
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+
+/obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
+		user << "You start adding cement to the wall..."
+		if (do_after(user, 20, src))
+			user << "You finish adding cement to the wall, completing it."
+			qdel(W)
+			new /obj/covers/cement_wall(loc)
+			qdel(src)
+			return
+			return
+	..()
+
+
 /obj/covers/brick_wall/incomplete
 	name = "brick wall"
 	desc = "A clay brick wall."
