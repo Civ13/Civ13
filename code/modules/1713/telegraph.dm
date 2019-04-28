@@ -24,6 +24,19 @@
 				output += ascii2text(ascii_char-32)
 	return output
 
+
+/obj/structure/radio/verb/name_telegraph()
+	set category = null
+	set name = "Name"
+	set desc = "Name this telegraph."
+
+	set src in view(1)
+	var/yn = input(usr, "Name this telegraph?") in list("Yes", "No")
+	if (yn == "Yes")
+		var/_name = input(usr, "What name?") as text
+		name = sanitize(_name, 20)
+	return
+
 /obj/structure/telegraph/proc/transmit(var/msg)
 	if (!msg)
 		return
@@ -43,7 +56,7 @@
 	message = sanitize(message, 10)
 	message = convertmsg(message)
 	if (message && message != "")
-		currmsg = "<font color=#FFAE19><b>...[message]...</b></font>"
+		currmsg = "<font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [name]:</font> <b>\"...[message]...\"</b>"
 		transmit(currmsg)
 		playsound(loc, 'sound/machines/telegraph.ogg', 65)
 		icon_state = "telegraph_active"
@@ -91,6 +104,11 @@
 
 		//down
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x,y-3,z)))
+			if (PL != origin)
+				PL.transmit(msg,TL,src)
+
+		//right next to it
+		for (var/obj/structure/phoneline/PL in range(1,src))
 			if (PL != origin)
 				PL.transmit(msg,TL,src)
 
@@ -179,7 +197,7 @@
 	powerneeded = 20
 
 /obj/structure/radio/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (!anchored)
+	if (!anchored && !istype(W, /obj/item/weapon/wrench))
 		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
 		return
 	if (istype(W, /obj/item/stack/cable_coil))

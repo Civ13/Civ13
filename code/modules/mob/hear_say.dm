@@ -132,9 +132,9 @@
 	else
 		var/fontsize = 2
 
-		var/full_message = "<font size = [fontsize]><b>[destination.name], [destination.freq]kHz: <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		if (track)
-			full_message = "<font size = [fontsize]><b>[destination.name], [destination.freq]kHz: ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
 		on_hear_radio(destination, full_message)
 
 /proc/say_timestamp()
