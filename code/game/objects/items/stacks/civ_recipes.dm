@@ -249,6 +249,8 @@
 		recipes += new/datum/stack_recipe("research desk",/obj/structure/researchdesk, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 96)
 		recipes += new/datum/stack_recipe("global exchange",/obj/structure/marketplace, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (map.ordinal_age >= 4)
+		recipes += new/datum/stack_recipe("communications pole",/obj/structure/phoneline, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 105 || map.gamemode == "Oil Rush")
 		recipes += new/datum/stack_recipe("oil well",/obj/structure/oilwell, 40, _time = 270, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.gamemode == "Oil Rush")
@@ -893,6 +895,8 @@
 
 /material/copper/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	if (map.ordinal_age >= 4)
+		recipes += new/datum/stack_recipe("telegraph",/obj/structure/telegraph, 12, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 8 && current_res[2] >= 8)
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
