@@ -179,6 +179,9 @@
 	powerneeded = 20
 
 /obj/structure/radio/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (!anchored)
+		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
+		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
 			user << "There's already a cable connected here! Split it further from the [src]."
