@@ -129,7 +129,7 @@
 /obj/item/stack/material/electronics
 	name = "electronic circuits"
 	icon_state = "sheet-electronics"
-	default_type = "electronics"
+	default_type = "electronic"
 	value = 5
 
 /obj/item/stack/material/marble
