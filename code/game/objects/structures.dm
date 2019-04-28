@@ -31,8 +31,16 @@
 	return ..()
 /obj/structure/attackby(obj/item/O as obj, mob/user as mob)
 	if (istype(O,/obj/item/weapon/wrench) && !not_movable)
+		if (powersource)
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		if (istype(src, /obj/structure/engine))
+			var/obj/structure/engine/EN
+			if (EN.connections)
+				user << "<span class='notice'>Remove the cables first.</span>"
+				return
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
 		anchored = !anchored
 		return
 	else if (istype(O,/obj/item/weapon/hammer) && !not_disassemblable)

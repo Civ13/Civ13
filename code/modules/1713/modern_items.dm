@@ -21,6 +21,9 @@
 	do_light()
 
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (!anchored)
+		user << "<span class='notice'>Fix the lamp in place with a wrench first.</span>"
+		return
 	if (istype(W, /obj/item/stack/cable_coil))
 		if (powersource)
 			user << "There's already a cable connected here! Split it further from the [src]."
@@ -167,6 +170,9 @@
 				H << "<span class = 'notice'>This [W] has no crude petroleum in it!</span>"
 				return
 	else if (istype(W, /obj/item/stack/cable_coil))
+		if (!anchored)
+			H << "<span class='notice'>Fix the refinery in place with a wrench first.</span>"
+			return
 		if (powersource)
 			H << "There's already a cable connected here! Split it further from the [src]."
 			return
