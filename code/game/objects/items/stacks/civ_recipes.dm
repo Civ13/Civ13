@@ -897,6 +897,8 @@
 	..()
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("telegraph",/obj/structure/telegraph, 12, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe("electronic circuits",/obj/item/stack/material/electronics, 1, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 8 && current_res[2] >= 8)
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
@@ -1040,3 +1042,9 @@
 	recipes += new/datum/stack_recipe("skin coat", /obj/item/clothing/suit/storage/coat/fur/pink, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("skin boots", /obj/item/clothing/shoes/fur/pink, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("skin gloves", /obj/item/clothing/gloves/thick/leather/pink, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/electronics/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	..()
+	recipes += new/datum/stack_recipe("radio transmitter", /obj/structure/radio/transmitter, 12, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("radio receiver", /obj/structure/radio, 3, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
+//	recipes += new/datum/stack_recipe("two-way radio", /obj/structure/radio/transmitter_receiver, 10, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
