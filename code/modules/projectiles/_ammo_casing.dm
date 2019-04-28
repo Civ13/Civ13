@@ -275,7 +275,7 @@
 		else if (input == "7.65x53 Mauser")
 			resultpath = /obj/item/ammo_casing/a765x53
 		else if (input == "7.92x57 Mauser")
-			resultpath = /obj/item/ammo_casing/
+			resultpath = /obj/item/ammo_casing/a792x57
 		else if (input == ".303 British")
 			resultpath = /obj/item/ammo_casing/a303
 		if (resultpath != null)
