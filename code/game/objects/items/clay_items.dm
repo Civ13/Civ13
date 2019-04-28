@@ -47,7 +47,7 @@
 /obj/item/weapon/clay/advclaybricks/cement
 	name = "unfired cement bricks"
 	icon_state = "unfired_cementbricks"
-	result = /obj/item/weapon/clay/advclaybricks/fired
+	result = /obj/item/weapon/clay/advclaybricks/fired/cement
 
 /obj/item/weapon/clay/claybowl
 	name = "unfired clay bowl"
@@ -133,7 +133,7 @@
 		qdel(src)
 		return
 
-/obj/item/weapon/clay/advclaybricks/cement/fired/attack_self(mob/user)
+/obj/item/weapon/clay/advclaybricks/fired/cement/attack_self(mob/user)
 	user << "You start building the cement wall..."
 	if (do_after(user, 25, src))
 		user << "You finish the placement of the cement wall foundation."

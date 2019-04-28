@@ -67,6 +67,7 @@
 	recipes += new/datum/stack_recipe("unfired large clay pitcher", /obj/item/weapon/clay/largeclaypitcher, 3, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 82)
 		recipes += new/datum/stack_recipe("unfired clay bricks", /obj/item/weapon/clay/advclaybricks, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("unfired cement bricks", /obj/item/weapon/clay/advclaybricks/cement, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/leather/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
