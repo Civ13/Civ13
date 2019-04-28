@@ -338,9 +338,9 @@
 			</script>
 
 			<center>
-			<font size=3 color=#8b0000><b>[style]</b></font><br><br>
+			<font size=3><b>[style]</b></font><br><br>
+			<b><font size=2 color=#8b0000>POWER OFF</a><br><br>
 			</center>
-			<b><font size=2>POWER OFF</a><br><br>
 			</font></b><br>
 			</body>
 			</html>
