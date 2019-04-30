@@ -170,10 +170,6 @@
 	if (map.civilizations)
 		for (var/area/caribbean/A in area_list)
 			if (istype(A) && A.location == AREA_OUTSIDE)
-				if (A.climate == "temperate")
-					A.icon_state = area_icon_state
-					A.weather = weather
-					A.weather_intensity = weather_intensity
 				if (A.climate == "tundra")
 					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL" || season == "SPRING")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
@@ -203,7 +199,7 @@
 							A.weather = WEATHER_NONE
 							A.weather_intensity = weather_intensity
 
-				if (A.climate == "taiga")
+				else if (A.climate == "taiga")
 					if (season == "Wet Season" || season == "WINTER" ||  season == "FALL")
 						if (weather == WEATHER_STORM || weather == WEATHER_BLIZZARD || weather == WEATHER_SANDSTORM)
 							A.icon_state = "snow_storm"

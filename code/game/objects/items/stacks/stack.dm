@@ -328,54 +328,72 @@
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
 					return
 
-		if (recipe.result_type == /obj/structure/religious/totem)
-			if (H.original_job_title == "Red Goose Tribesman")
-				newtotem.name = "Stone Goose Totem"
-				newtotem.icon_state = "goose"
-				newtotem.desc = "A stone goose totem."
-			else if (H.original_job_title == "Blue Turkey Tribesman")
-				newtotem.name = "Stone Turkey Totem"
-				newtotem.icon_state = "turkey"
-				newtotem.desc = "A stone turkey totem."
-			else if (H.original_job_title == "Blue Monkey Tribesman")
-				newtotem.name = "Stone Monkey Totem"
-				newtotem.icon_state = "monkey"
-				newtotem.desc = "A stone monkey totem."
-			else if (H.original_job_title == "Yellow Mouse Tribesman")
-				newtotem.name = "Stone Mouse Totem"
-				newtotem.icon_state = "mouse"
-				newtotem.desc = "A stone mouse totem."
-			else if (H.original_job_title == "White Wolf Tribesman")
-				newtotem.name = "Stone Wolf Totem"
-				newtotem.icon_state = "wolf"
-				newtotem.desc = "A stone wolf totem."
-			else if (H.original_job_title == "Black Bear Tribesman")
-				newtotem.name = "Stone Bear Totem"
-				newtotem.icon_state = "bear"
-				newtotem.desc = "A stone bear totem."
-			else
-				newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
-				newtotem.name = "[H.religion] totem."
-				newtotem.desc = "A stone totem, dedicated to the [H.religion] religion."
-				newtotem.religion = H.religion
+	if (recipe.result_type == /obj/item/stack/material/electronics)
+		if (H.getStatCoeff("crafting") < 2.2)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+		if (!istype(H.l_hand, /obj/item/stack/material/iron) && !istype(H.r_hand, /obj/item/stack/material/iron))
+			user << "<span class = 'warning'>You need to have iron in the other hand to craft electronic circuits.</span>"
+			return
+		if (istype(H.l_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.l_hand
+			NR.amount -= 1
+			if (NR.amount <= 0)
+				qdelHandReturn(H.l_hand, H)
+		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.r_hand
+			NR.amount -= 1
+			if (NR.amount <= 0)
+				qdelHandReturn(H.r_hand, H)
 
-		if (recipe.result_type == /obj/structure/religious/impaledskull)
-			if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
-				user << "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>"
-				return
-			else
-				if (istype(H.l_hand, /obj/item/organ/external/head))
-					var/targetskull = H.l_hand.name
-					targetskull = replacetext(targetskull, " head", "")
-					targetskull = "impaled [targetskull] skull"
-					newskull.name = targetskull
-					qdelHandReturn(H.l_hand, H)
-				else if (istype(H.r_hand, /obj/item/organ/external/head))
-					var/targetskull = H.r_hand.name
-					targetskull = replacetext(targetskull, " head", "")
-					targetskull = "impaled [targetskull] skull"
-					newskull.name = targetskull
-					qdelHandReturn(H.r_hand, H)
+	if (recipe.result_type == /obj/structure/religious/totem)
+		if (H.original_job_title == "Red Goose Tribesman")
+			newtotem.name = "Stone Goose Totem"
+			newtotem.icon_state = "goose"
+			newtotem.desc = "A stone goose totem."
+		else if (H.original_job_title == "Blue Turkey Tribesman")
+			newtotem.name = "Stone Turkey Totem"
+			newtotem.icon_state = "turkey"
+			newtotem.desc = "A stone turkey totem."
+		else if (H.original_job_title == "Blue Monkey Tribesman")
+			newtotem.name = "Stone Monkey Totem"
+			newtotem.icon_state = "monkey"
+			newtotem.desc = "A stone monkey totem."
+		else if (H.original_job_title == "Yellow Mouse Tribesman")
+			newtotem.name = "Stone Mouse Totem"
+			newtotem.icon_state = "mouse"
+			newtotem.desc = "A stone mouse totem."
+		else if (H.original_job_title == "White Wolf Tribesman")
+			newtotem.name = "Stone Wolf Totem"
+			newtotem.icon_state = "wolf"
+			newtotem.desc = "A stone wolf totem."
+		else if (H.original_job_title == "Black Bear Tribesman")
+			newtotem.name = "Stone Bear Totem"
+			newtotem.icon_state = "bear"
+			newtotem.desc = "A stone bear totem."
+		else
+			newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
+			newtotem.name = "[H.religion] totem."
+			newtotem.desc = "A stone totem, dedicated to the [H.religion] religion."
+			newtotem.religion = H.religion
+
+	if (recipe.result_type == /obj/structure/religious/impaledskull)
+		if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
+			user << "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/organ/external/head))
+				var/targetskull = H.l_hand.name
+				targetskull = replacetext(targetskull, " head", "")
+				targetskull = "impaled [targetskull] skull"
+				newskull.name = targetskull
+				qdelHandReturn(H.l_hand, H)
+			else if (istype(H.r_hand, /obj/item/organ/external/head))
+				var/targetskull = H.r_hand.name
+				targetskull = replacetext(targetskull, " head", "")
+				targetskull = "impaled [targetskull] skull"
+				newskull.name = targetskull
+				qdelHandReturn(H.r_hand, H)
 
 	if (findtext(recipe.title, "custom sign"))
 		var/customname = input(user, "Choose a name for this sign:") as text|null

@@ -75,6 +75,13 @@
 	anchored = TRUE
 	user << "You connect the cables on this tile."
 	return
+/obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/wrench))
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'r>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		return
+
 ///////////////////////////////////
 // General procedures
 ///////////////////////////////////

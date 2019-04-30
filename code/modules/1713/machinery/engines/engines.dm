@@ -132,6 +132,9 @@
 
 /obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
+		if (!anchored)
+			user << "<span class='notice'>Fix the engine in place with a wrench first.</span>"
+			return
 		for(var/obj/structure/cable/EXC in connections)
 			user << "There's already a cable connected here! Split it further from the engine."
 			return

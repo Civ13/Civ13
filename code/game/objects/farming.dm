@@ -90,6 +90,11 @@
 	icon_state = "potato"
 	color = null
 
+/obj/item/stack/farming/seeds/carrot
+	name = "carrot seeds"
+	plant = "carrot"
+	color = "#c13100"
+
 /obj/item/stack/farming/seeds/rice
 	name = "rice seeds"
 	desc = "rice seeds selected for their characteristics."
@@ -212,6 +217,12 @@
 	desc = "a potato plant."
 	icon_state = "potato-grow1"
 	plant = "potato"
+
+/obj/structure/farming/plant/carrot
+	name = "carrot plant"
+	desc = "a carrot plant."
+	icon_state = "carrot-grow1"
+	plant = "carrot"
 
 /obj/structure/farming/plant/poppy
 	name = "poppy plant"
