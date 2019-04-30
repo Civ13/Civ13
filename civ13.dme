@@ -248,6 +248,7 @@
 #include "code\game\objects\items\weapons\storage\storage.dm"
 #include "code\game\objects\map_metadata\_map_metadata.dm"
 #include "code\game\objects\map_metadata\battleroyale.dm"
+#include "code\game\objects\map_metadata\beynes.dm"
 #include "code\game\objects\map_metadata\camp.dm"
 #include "code\game\objects\map_metadata\civilizations.dm"
 #include "code\game\objects\map_metadata\colony.dm"
