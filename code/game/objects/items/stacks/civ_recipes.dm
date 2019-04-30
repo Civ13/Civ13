@@ -485,6 +485,14 @@
 			new/datum/stack_recipe("wooden foot", /obj/item/weapon/prosthesis/woodfoot, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("wooden pegleg", /obj/item/weapon/prosthesis/pegleg, 5, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),))
 
+	if (current_res[1] >= 65)
+		recipes += new/datum/stack_recipe_list("paintings", list(
+			new/datum/stack_recipe("stormy sea", /obj/structure/sign/painting1, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("city street", /obj/structure/sign/painting2, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("sea sunset", /obj/structure/sign/painting3, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("valley", /obj/structure/sign/painting4, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("still life", /obj/structure/sign/painting5, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),))
+
 /material/rope/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes = list(new/datum/stack_recipe("noose", /obj/structure/noose, _time = 20))
