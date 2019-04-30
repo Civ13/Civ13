@@ -273,6 +273,75 @@
 	else
 		..()
 
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+/obj/item/clothing/under/customdress2
+	name = "dress"
+	desc = "A female dress."
+	var/uncolored = FALSE
+	var/topcolor = 0
+	var/undercolor = 0
+	item_state = "custombuttonup_full"
+	icon_state = "custombuttonup_full"
+	worn_state = "custombuttonup_full"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customdress2/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!topcolor)
+			var/input = input(user, "Top - Choose a hex color (without the #):", "Sleeves/Skirt Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				topcolor = addtext("#",input)
+
+		if (!undercolor)
+			var/input = input(user, "Under Bottom - Choose a hex color (without the #):", "Vest/Skirt Line Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				undercolor = addtext("#",input)
+		if (topcolor && undercolor)
+			uncolored = FALSE
+			var/image/top = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custombuttonup_lines")
+			top.color = topcolor
+			var/image/under = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custombuttonup_bottom")
+			under.color = undercolor
+			overlays += top
+			overlays += under
+			return
+	else
+		..()
+
 
 
 /////////////////UNIFORMS////////////////////////////////////

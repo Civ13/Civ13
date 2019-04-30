@@ -5,7 +5,7 @@
 	item_state = "medieval"
 	worn_state = "medieval"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 15, bullet = 10, laser = 10,energy = 8, bomb = 15, bio = 10, rad = FALSE)
+	armor = list(melee = 15, arrow = 10, gun = FALSE, energy = 8, bomb = 15, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 /obj/item/clothing/shoes/medieval/arab
@@ -15,7 +15,7 @@
 	item_state = "arab"
 	worn_state = "arab"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 10, bullet = 8, laser = 8,energy = 6, bomb = 12, bio = 10, rad = FALSE)
+	armor = list(melee = 10, arrow = 8, gun = FALSE, energy = 6, bomb = 12, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 
@@ -28,7 +28,7 @@
 	worn_state = "knight"
 	body_parts_covered = FEET
 	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 75, bullet = 60, laser = 10,energy = 8, bomb = 25, bio = 15, rad = FALSE)
+	armor = list(melee = 75, arrow = 60, gun = 10, energy = 8, bomb = 25, bio = 15, rad = FALSE)
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 
@@ -177,7 +177,7 @@
 	item_state = "knight_simple"
 	worn_state = "knight_simple"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 1.5
 /obj/item/clothing/suit/armor/medieval/blue
@@ -219,7 +219,7 @@
 	item_state = "bronze_chestplate"
 	worn_state = "bronze_chestplate"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 50, bullet = 35, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 25
 	slowdown = 0.7
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
@@ -229,7 +229,7 @@
 	item_state = "iron_chestplate"
 	worn_state = "iron_chestplate"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 60, bullet = 40, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 32
 	slowdown = 0.8
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/red
@@ -255,10 +255,25 @@
 	item_state = "leather_armor"
 	worn_state = "leather_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 30, bullet = 15, laser = 10,energy = 15, bomb = 20, bio = 20, rad = FALSE)
+	armor = list(melee = 30, arrow = 15, gun = FALSE, energy = 15, bomb = 20, bio = 20, rad = FALSE)
 	value = 20
 	flammable = TRUE
 	slowdown = 0.2
+
+/obj/item/clothing/accessory/armor
+	icon = 'icons/obj/clothing/suits.dmi'
+	slot = "armor"
+/obj/item/clothing/accessory/armor/get_mob_overlay()
+	if (!mob_overlay)
+		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+		if (icon_override)
+			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
+				tmp_icon_state = "[tmp_icon_state]_mob"
+			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]")
+		else
+			mob_overlay = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "[tmp_icon_state]")
+	return mob_overlay
+
 /obj/item/clothing/suit/armor/medieval/chainmail
 	name = "chainmail"
 	desc = "Wearable armor made of several small interlinked chains."
@@ -266,9 +281,21 @@
 	item_state = "chainmail"
 	worn_state = "chainmail"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 50, bullet = 35, laser = 15,energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = FALSE)
 	value = 30
 	slowdown = 0.6
+
+/obj/item/clothing/accessory/armor/chainmail
+	name = "chainmail"
+	desc = "Wearable armor made of several small interlinked chains."
+	icon_state = "chainmail"
+	item_state = "chainmail"
+	worn_state = "chainmail"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = FALSE)
+	value = 30
+	slowdown = 0.6
+
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
 	desc = "A longer version of the chainmail, worn as a coat. Offers greater protection."
@@ -276,7 +303,7 @@
 	item_state = "hauberk"
 	worn_state = "hauberk"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 60, bullet = 55, laser = 20,energy = 20, bomb = 40, bio = 30, rad = FALSE)
+	armor = list(melee = 60, arrow = 55, gun = 10, energy = 20, bomb = 40, bio = 30, rad = FALSE)
 	value = 40
 	slowdown = 0.75
 /obj/item/clothing/head/helmet/gold_crown
@@ -285,7 +312,7 @@
 	icon_state = "gold_crown"
 	item_state = "gold_crown"
 	worn_state = "gold_crown"
-	armor = list(melee = 20, bullet = 15, laser = 10,energy = 15, bomb = 15, bio = 10, rad = FALSE)
+	armor = list(melee = 20, arrow = 15, gun = 10, energy = 15, bomb = 15, bio = 10, rad = FALSE)
 
 /obj/item/clothing/head/helmet/silver_crown
 	name = "silver crown"
@@ -293,7 +320,7 @@
 	icon_state = "silver_crown"
 	item_state = "silver_crown"
 	worn_state = "silver_crown"
-	armor = list(melee = 20, bullet = 15, laser = 10,energy = 15, bomb = 15, bio = 10, rad = FALSE)
+	armor = list(melee = 20, arrow = 15, gun = 10, energy = 15, bomb = 15, bio = 10, rad = FALSE)
 
 //Insert more inlaid crowns here.
 
@@ -303,7 +330,7 @@
 	icon_state = "gold_crown_diamond"
 	item_state = "gold_crown"
 	worn_state = "gold_crown_diamond"
-	armor = list(melee = 25, bullet = 20, laser = 30,energy = 25, bomb = 20, bio = 15, rad = FALSE)
+	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
 /obj/item/clothing/head/helmet/silver_crown_diamond
 	name = "inlaid silver crown"
@@ -311,7 +338,7 @@
 	icon_state = "silver_crown_diamond"
 	item_state = "silver_crown"
 	worn_state = "gold_crown_diamond"
-	armor = list(melee = 25, bullet = 20, laser = 30,energy = 25, bomb = 20, bio = 15, rad = FALSE)
+	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
 /obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
@@ -339,7 +366,7 @@
 	item_state = "knight_simple"
 	worn_state = "knight_simple"
 	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
 
 /obj/item/clothing/head/helmet/medieval/templar
@@ -349,7 +376,7 @@
 	item_state = "knight_templar"
 	worn_state = "knight_templar"
 	flags_inv = BLOCKHAIR
-	armor = list(melee = 70, bullet = 90, laser = 10,energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/helmet1
 	name = "protective conical helmet"
@@ -359,7 +386,7 @@
 	worn_state = "medieval_helmet1"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/helmet2
 	name = "kettle helmet"
@@ -369,7 +396,7 @@
 	worn_state = "medieval_helmet2"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, bullet = 35, laser = 10,energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 35, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/helmet3
 	name = "conical helmet"
@@ -379,7 +406,7 @@
 	worn_state = "medieval_helmet3"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 40, bullet = 30, laser = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/coif
 	name = "iron coif"
@@ -389,7 +416,7 @@
 	worn_state = "coif"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 45, bullet = 40, laser = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 45, arrow = 40, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/coif_helmet
 	name = "iron coif and helmet"
@@ -399,7 +426,7 @@
 	worn_state = "coif_helmet"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/arab
 	name = "conical arabic helmet and turban"
@@ -409,7 +436,7 @@
 	worn_state = "turhelm1"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 50, bullet = 40, laser = 10,energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/arab2
 	name = "long arabic helmet and turban"
@@ -419,7 +446,7 @@
 	worn_state = "arabw_helmet1"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
 /obj/item/clothing/head/helmet/medieval/arab3
 	name = "long arabic helmet"
@@ -429,7 +456,7 @@
 	worn_state = "arabw_helmet"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, bullet = 45, laser = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
 
 
 /obj/item/clothing/head/helmet/medieval/arab/New()
@@ -521,9 +548,9 @@
 	item_state = "samurai3"
 	worn_state = "samurai3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 65, bullet = 85, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 75, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
-	slowdown = 0.2
+	slowdown = 0.6
 
 /obj/item/clothing/suit/armor/samurai/red
 	name = "red samurai armor"
@@ -553,9 +580,9 @@
 	item_state = "samurai_lord3"
 	worn_state = "samurai_lord3"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
-	armor = list(melee = 75, bullet = 95, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 75, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
-	slowdown = 0.6
+	slowdown = 0.9
 
 /obj/item/clothing/suit/armor/samurai/lord/red
 	name = "lord's red samurai armor"
@@ -627,7 +654,7 @@
 	item_state = "samurai3"
 	worn_state = "samurai3"
 	body_parts_covered = HEAD
-	armor = list(melee = 65, bullet = 85, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 55, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/samurai/guard
 	name = "samurai helmet"
@@ -636,7 +663,7 @@
 	item_state = "samurai_guard3"
 	worn_state = "samurai_guard3"
 	body_parts_covered = HEAD
-	armor = list(melee = 55, bullet = 75, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 55, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/samurai/guard/red
 	name = "red samurai helmet"
@@ -689,7 +716,7 @@ obj/item/clothing/head/helmet/samurai/black
 	body_parts_covered = FACE|EYES
 	flags_inv = 0
 	w_class = 2
-	armor = list(melee = 55, bullet = 45, laser = 10,energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
 /obj/item/clothing/mask/samurai/red
 	name = "red samurai mask"

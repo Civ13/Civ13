@@ -14,6 +14,7 @@
 	var/projectile_type					//The bullet type to create when New() is called
 	var/obj/item/projectile/BB = null	//The loaded bullet - make it so that the projectiles are created only when needed?
 	var/spent_icon = null
+	var/thrown_force_divisor = 0.1
 
 /obj/item/ammo_casing/New()
 	..()
@@ -81,6 +82,8 @@
 	w_class = 2
 	throw_speed = 4
 	throw_range = 10
+	secondary_action = 1
+	var/clip = FALSE
 
 	var/list/stored_ammo = list()
 	var/mag_type = SPEEDLOADER //ammo_magazines can only be used with compatible guns. This is not a bitflag, the load_method var on guns is.
@@ -99,18 +102,45 @@
 	// are we an ammo box
 	var/is_box = FALSE
 
+/obj/item/ammo_magazine/secondary_attack_self(mob/living/carbon/human/user)
+	if (stored_ammo.len >= max_ammo)
+		user << "<span class='warning'>[src] is full!</span>"
+		return
+	else if (!caliber)
+		user << "<span class='warning'>This [src] has no caliber associated - manually add ammunition first.</span>"
+		return
+	else
+		var/count = 0
+		for(var/obj/item/ammo_casing/AC in get_turf(user))
+			if (AC.caliber == caliber && stored_ammo.len < max_ammo)
+				AC.loc = src
+				stored_ammo.Insert(1, AC) //add to the head of the list
+				count = 1
+		if (count > 0)
+			user << "<span class='warning'>You fill the [src] with the ammunition on the floor.</span>"
+		return
+
 /obj/item/ammo_magazine/emptypouch
 	name = "empty bullet pouch"
-	pouch = TRUE
 	icon_state = "pouch_closed"
 	ammo_type = null
 	caliber = null
 	max_ammo = 20
 	weight = 0.70
-
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
 	pouch = TRUE
+
+/obj/item/ammo_magazine/emptyclip
+	name = "empty clip"
+	clip = TRUE
+	icon_state = "clip-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 5
+	weight = 0.1
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/verb/toggle_open()
 	set category = null
 	set src in view(1)
@@ -189,6 +219,10 @@
 					new_state = ammo_states[idx]
 					break
 			icon_state = (new_state)? new_state : initial(icon_state)
+		if (clip)
+			if (stored_ammo.len == FALSE)
+				caliber = null
+				name = "empty clip"
 
 
 /obj/item/ammo_magazine/New()
@@ -203,6 +237,11 @@
 		for (var/i in TRUE to initial_ammo)
 			stored_ammo += new ammo_type(src)
 	update_icon()
+	if (istype(src, /obj/item/ammo_magazine/emptyclip))
+		for (var/i = FALSE, i <= max_ammo, i++)
+			var/ammo_state = "clip-[i]"
+			icon_keys += i
+			ammo_states += ammo_state
 
 /obj/item/ammo_magazine/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W == src)
@@ -220,7 +259,10 @@
 		stored_ammo.Insert(1, C) //add to the head of the list
 		if (caliber == null)
 			caliber = C.caliber
-			name = "bullet pouch ([C])"
+			if (pouch)
+				name = "bullet pouch ([C])"
+			else if (clip)
+				name = "clip ([C])"
 		update_icon()
 	else if (istype(W, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/M = W

@@ -386,6 +386,7 @@
 #include "code\modules\1713\stoneage_apparel.dm"
 #include "code\modules\1713\structures.dm"
 #include "code\modules\1713\supplysystem.dm"
+#include "code\modules\1713\telegraph.dm"
 #include "code\modules\1713\tools.dm"
 #include "code\modules\1713\trench.dm"
 #include "code\modules\1713\vending.dm"

@@ -252,7 +252,7 @@
 		if (map.ordinal_age == 4)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
 		else if (map.ordinal_age >= 5)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.65x53 Mauser", "7.92x57 Mauser", "Cancel")
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.65x53 Mauser", "7.92x57 Mauser", ".303 British", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -276,6 +276,8 @@
 			resultpath = /obj/item/ammo_casing/a765x53
 		else if (input == "7.92x57 Mauser")
 			resultpath = /obj/item/ammo_casing/a792x57
+		else if (input == ".303 British")
+			resultpath = /obj/item/ammo_casing/a303
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -330,6 +332,16 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a65x50mm
 	caliber = "a65x50mm"
+	value = 5
+
+/obj/item/ammo_casing/a65x52mm
+	name = "6.5x52mm bullet"
+	desc = "A brass casing containing powder and a lead bullet."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a65x52mm
+	caliber = "a65x52mm"
 	value = 5
 
 /obj/item/ammo_casing/a8x53mm
@@ -431,6 +443,16 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
 	caliber = "a762x54"
+	value = 2
+
+/obj/item/ammo_casing/a303
+	name = ".303 bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a303
+	caliber = "a303"
 	value = 2
 
 /obj/item/ammo_casing/a762x38

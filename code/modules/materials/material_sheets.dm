@@ -126,6 +126,12 @@
 	default_type = "clay"
 	value = 2
 
+/obj/item/stack/material/electronics
+	name = "electronic circuits"
+	icon_state = "sheet-electronics"
+	default_type = "electronic"
+	value = 5
+
 /obj/item/stack/material/marble
 	name = "marble brick"
 	icon_state = "sheet-marble"

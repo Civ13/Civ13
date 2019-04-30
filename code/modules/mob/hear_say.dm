@@ -81,9 +81,70 @@
 /mob/proc/on_hear_say(var/message)
 	src << message
 
+/mob/proc/hear_radio(var/message, var/datum/language/language=null, var/mob/speaker = null, var/obj/structure/radio/source, var/obj/structure/radio/destination)
+
+	if (!client || !message)
+		return
+
+	if (!destination)
+		destination = source
+
+	message = capitalize(message)
+
+	if (sleeping || stat==1) //If unconscious or sleeping
+		hear_sleep(message)
+		return
+
+	var/track = null
+
+	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
+	if (language && (language.flags & NONVERBAL))
+		if (!speaker || (sdisabilities & BLIND || blinded) || !(speaker in view(src)))
+			message = stars(message)
+
+	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
+		if (!say_understands(speaker,language))
+			if (istype(speaker,/mob/living/simple_animal))
+				var/mob/living/simple_animal/S = speaker
+				if (S.speak && S.speak.len)
+					message = pick(S.speak)
+				else
+					return
+			else
+				if (language)
+					message = language.scramble(message, src)
+				else
+					message = stars(message)
+
+	var/speaker_name = speaker.name
+
+	if (isghost(src))
+		if (speaker_name != speaker.real_name) //Announce computer and various stuff that broadcasts doesn't use it's real name but AI's can't pretend to be other mobs.
+			speaker_name = "[speaker.real_name] ([speaker_name])"
+		track = /*"[speaker_name] */"([ghost_follow_link(speaker, src)])"
+
+	if (dd_hasprefix(message, " "))
+		message = copytext(message, 2)
+
+	if (sdisabilities & DEAF || ear_deaf)
+		if (prob(20))
+			src << "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>"
+	else
+		var/fontsize = 2
+
+		var/full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font><font size = [fontsize]> <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+		if (track)
+			full_message = "<font size = [fontsize] color=#FFAE19><b>[destination.name], [destination.freq]kHz:</font><font size = [fontsize]> ([track]) <span class = 'small_message'>([language.name])</span> \"[message]\"</font>"
+		on_hear_radio(destination, full_message)
 
 /proc/say_timestamp()
 	return "<span class='say_quote'>\[[stationtime2text()]\]</span>"
+
+/mob/proc/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)
+	src << "\icon[getFlatIcon(destination)] [fullmessage]"
+
+/mob/observer/ghost/on_hear_radio(var/obj/structure/radio/destination, var/fullmessage)
+	src << "\icon[getFlatIcon(destination)] [fullmessage]"
 
 /mob/proc/hear_signlang(var/message, var/verb = "gestures", var/datum/language/language, var/mob/speaker = null)
 	if (!client)

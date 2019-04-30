@@ -141,12 +141,15 @@
 		else
 			H.driver_vehicle.vehicle_m_delay = spd
 		spawn(1)
-			H.driver_vehicle.moving = TRUE
-			H.driver_vehicle.startmovementloop()
-			H << "You put on the first gear."
+			if (H.driver_vehicle.axis.currentspeed == 1)
+				H.driver_vehicle.moving = TRUE
+				H.driver_vehicle.startmovementloop()
+				H << "You put on the first gear."
 		return
 	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
 		H.driver_vehicle.axis.currentspeed++
+		if (H.driver_vehicle.axis.currentspeed>H.driver_vehicle.axis.speedlist.len)
+			H.driver_vehicle.axis.currentspeed = H.driver_vehicle.axis.speedlist.len
 		var/spd = H.driver_vehicle.axis.get_speed()
 		if (spd <= 0)
 			return
