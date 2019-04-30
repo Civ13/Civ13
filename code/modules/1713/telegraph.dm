@@ -165,7 +165,7 @@
 		for (var/obj/structure/telegraph/TLG in range(2,src))
 			if (TLG != TL)
 				TLG.receive(msg,stripmsg)
-	lastproc = world.time+1
+	lastproc = world.time+3
 /obj/structure/phoneline/proc/ring_phone(var/target, var/origin, var/obj/structure/telephone/originphone)
 	if (!origin || !target)
 		return
@@ -201,7 +201,7 @@
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
 				if (!TLG.ringing)
 					TLG.ringproc(origin, originphone)
-	lastproc = world.time+1
+	lastproc = world.time+3
 /obj/structure/phonecable
 	name = "communications cable"
 	desc = "A thin copper cable used for communications"
