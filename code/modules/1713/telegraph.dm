@@ -717,6 +717,7 @@ var/list/global/phone_numbers = list()
 	var/list/storedphrases = list()
 	var/on = FALSE
 	var/bdrunning = FALSE
+	var/mob/living/carbon/human/owner = null
 
 /obj/structure/radiorecorder/update_icon()
 	..()
@@ -758,10 +759,13 @@ var/list/global/phone_numbers = list()
 	if (on)
 		usr << "You turn the [src] off."
 		on = FALSE
+		update_icon()
 		return
 	else
 		usr << "You turn the [src] on."
 		on = TRUE
+		update_icon()
+		owner = usr
 		if (!bdrunning)
 			broadcast()
 			bdrunning = TRUE
@@ -775,6 +779,6 @@ var/list/global/phone_numbers = list()
 		var/bdphrase = pick(storedphrases)
 		for(var/obj/structure/radio/RD in range(1,src))
 			if (RD.transmitter && RD.transmitter_on && RD.check_power())
-				RD.broadcast(bdphrase)
+				RD.broadcast(bdphrase, owner)
 		spawn(1200)
 			broadcast()
