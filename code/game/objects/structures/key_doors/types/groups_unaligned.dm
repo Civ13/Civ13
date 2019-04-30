@@ -9,15 +9,6 @@
 /obj/structure/simple_door/key_door/anyone/wood
 	material = "wood"
 
-/obj/structure/simple_door/key_door/anyone/train
-	material = "morgue"
-
-/obj/structure/simple_door/key_door/anyone/train/New()
-	..()
-	name = "Train Door"
-
-/obj/structure/simple_door/key_door/anyone/cell
-	material = "cell"
 
 #undef ANYONE_CODE
 
