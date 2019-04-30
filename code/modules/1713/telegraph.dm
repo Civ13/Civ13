@@ -716,6 +716,7 @@ var/list/global/phone_numbers = list()
 	opacity = FALSE
 	var/list/storedphrases = list()
 	var/on = FALSE
+	var/bdrunning = FALSE
 
 /obj/structure/radiorecorder/update_icon()
 	..()
@@ -724,10 +725,56 @@ var/list/global/phone_numbers = list()
 	else
 		icon_state = "recorder"
 
-/obj/structure/telephone/attack_hand(var/mob/user as mob)
+/obj/structure/radiorecorder/attack_hand(var/mob/user as mob)
+	var/input1 = WWinput(user, "Do you want to add or remove phrases?", "Voice Recorder", "Cancel", list("Cancel","Add","Remove"))
+	if (input1 == "Cancel")
+		return
+	else if (input1 == "Add")
+		var/input3 = input(usr, "What phrase? Maximum 100 characters.") as text
+		if (input3 == "")
+			return
+		else
+			input3 = sanitize(input3, 100)
+			storedphrases += input3
+			return
+
+	else if (input1 == "Remove")
+		var/list/sp2 = storedphrases
+		sp2 += "Cancel"
+		var/input2 = WWinput(user, "What phrase to remove?", "Voice Recorder", "Cancel", storedphrases)
+		if (input2 == "Cancel")
+			return
+		else
+			storedphrases -= input2
+			return
+
+/obj/structure/radiorecorder/verb/turnon()
+	set category = null
+	set name = "Turn On/Off"
+	set desc = "Make the recorder play or turn it off."
+
+	set src in view(1)
+
 	if (on)
-		user << "You turn the [src] off."
+		usr << "You turn the [src] off."
 		on = FALSE
+		return
 	else
-		user << "You turn the [src] on."
+		usr << "You turn the [src] on."
 		on = TRUE
+		if (!bdrunning)
+			broadcast()
+			bdrunning = TRUE
+		return
+
+/obj/structure/radiorecorder/proc/broadcast()
+	if (!on)
+		bdrunning = FALSE
+		return
+	else
+		var/bdphrase = pick(storedphrases)
+		for(var/obj/structure/radio/RD in range(1,src))
+			if (RD.transmitter && RD.transmitter_on && RD.check_power())
+				RD.broadcast(bdphrase)
+		spawn(1200)
+			broadcast()
