@@ -340,6 +340,29 @@
 	mob_size = MOB_MEDIUM
 	var/lamb = FALSE
 	herbivore = 1
+	var/sheared = FALSE
+
+/mob/living/simple_animal/sheep/update_icons()
+	..()
+	if (sheared)
+		icon_state = "sheep_ram_sheared"
+		icon_living = "sheep_ram_sheared"
+		icon_dead = "sheep_ram_sheared_dead"
+	else
+		icon_state = "sheep_ram"
+		icon_living = "sheep_ram"
+		icon_dead = "sheep_ram_dead"
+
+/mob/living/simple_animal/sheep/female/update_icons()
+	..()
+	if (sheared)
+		icon_state = "sheep_ewe_sheared"
+		icon_living = "sheep_ewe_sheared"
+		icon_dead = "sheep_ewe_sheared_dead"
+	else
+		icon_state = "sheep_ewe"
+		icon_living = "sheep_ewe"
+		icon_dead = "sheep_ewe_dead"
 
 /mob/living/simple_animal/sheep/female
 	name = "sheep ewe"
@@ -387,18 +410,45 @@
 				icon_living = "sheep_ewe"
 				icon_dead = "sheep_ewe_dead"
 				mob_size = MOB_MEDIUM
-/mob/living/simple_animal/sheep/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
-	var/obj/item/weapon/reagent_containers/glass/G = O
-	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
-			user << "<span class = 'red'>The [O] is full.</span>"
-		if (!transfered)
-			user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+
+/mob/living/simple_animal/sheep/proc/regrowth()
+	spawn(4800)
+		sheared = FALSE
+		update_icons()
 		return
+
+/mob/living/simple_animal/sheep/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	if (istype(O, /obj/item/weapon/reagent_containers/glass))
+		var/obj/item/weapon/reagent_containers/glass/G = O
+		if (stat == CONSCIOUS && istype(G) && G.is_open_container())
+			user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+			var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
+			if (G.reagents.total_volume >= G.volume)
+				user << "<span class = 'red'>The [O] is full.</span>"
+			if (!transfered)
+				user << "<span class = 'red'>The udder is dry. Wait a bit.</span>"
+			return
+	else if (istype(O, /obj/item/weapon/shears) && sheared == FALSE)
+		user << "You start shearing \the [src]..."
+		if (do_after(user, 150, src) && sheared == FALSE)
+			user << "You finish shearing \the [src]."
+			sheared = TRUE
+			update_icons()
+			regrowth()
+			new/obj/item/stack/material/wool(get_turf(src))
+			return
 	else
 		..()
+/mob/living/simple_animal/sheep/attackby(var/obj/item/O as obj, var/mob/user as mob)
+	if (istype(O, /obj/item/weapon/shears) && sheared == FALSE)
+		user << "You start shearing \the [src]..."
+		if (do_after(user, 150, src) && sheared == FALSE)
+			user << "You finish shearing \the [src]."
+			sheared = TRUE
+			update_icons()
+			regrowth()
+			new/obj/item/stack/material/wool(get_turf(src))
+			return
 
 /mob/living/simple_animal/sheep/female/Life()
 	. = ..()

@@ -250,6 +250,23 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/stack/material/wool
+	name = "wool pile"
+	icon_state = "woolpile"
+	default_type = "wool"
+	value = 2
+	w_class = 2.0
+	flammable = TRUE
+
+
+/obj/item/stack/material/woolcloth
+	name = "wool cloth"
+	icon_state = "wool_roll"
+	default_type = "woolcloth"
+	value = 3
+	w_class = 2.0
+	flammable = TRUE
+
 /obj/item/stack/material/leather
 	name = "leather"
 	desc = "The by-product of mob grinding."

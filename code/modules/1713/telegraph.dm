@@ -271,7 +271,7 @@
 	receiver = FALSE
 	receiver_on = FALSE
 	transmitter_on = TRUE
-	powerneeded = 35
+	powerneeded = 20
 
 /obj/structure/radio/transmitter_receiver
 	name = "two-way radio"
