@@ -42,6 +42,10 @@
 		if (RD.transmitter && RD.transmitter_on && RD.check_power())
 			RD.broadcast(message_without_html, src)
 
+	for (var/obj/structure/telephone/TL in range(2,src))
+		if (TL.connected)
+			TL.broadcast(message_without_html, src)
+
 /mob/living/carbon/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)
 		if (client)
