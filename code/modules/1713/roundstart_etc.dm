@@ -63,8 +63,11 @@ var/GRACE_PERIOD_LENGTH = 7
 		season = "Wet Season"
 	else if (map.ID == MAP_NOMADS_ICE_AGE)
 		season = "WINTER"
+	else if (map.ID == MAP_HILL203)
+		season = "WINTER"
 	else
 		season = "SPRING"
+
 	return TRUE
 
 	for (var/grass in grass_turf_list)

@@ -31,7 +31,7 @@
 				"1013" = 0,
 				"1713" = 0,
 				"1873" = 0,
-//				"1904" = 0,
+				"1904" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list("Civilization 13" = 0,)
