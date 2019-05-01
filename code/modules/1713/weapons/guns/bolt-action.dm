@@ -407,10 +407,10 @@
 
 /obj/item/weapon/gun/projectile/boltaction/carcano
 	name = "carcano 1891"
-	desc = "An italian bolt-action rifle chambered in 7.92x57mm Mauser ammunition."
+	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
 	icon_state = "carcano"
 	item_state = "carcano"
-	caliber = "a792x57"
+	caliber = "a65x52"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a65x52mm
@@ -739,7 +739,7 @@
 	slot_flags = SLOT_BACK
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
-	load_method = SINGLE_CASING
+	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
