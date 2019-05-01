@@ -136,6 +136,8 @@
 		recipes += new/datum/stack_recipe_list("foot wear", list(
 			new/datum/stack_recipe("black riding boots", /obj/item/clothing/shoes/riding1, 3, _time =50 , _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("riding boots", /obj/item/clothing/shoes/riding2, 3, _time =50 , _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[2] >= 38)
+		recipes += new/datum/stack_recipe("whip", /obj/item/weapon/melee/classic_baton/whip, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/iron/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
