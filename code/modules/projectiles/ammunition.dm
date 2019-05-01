@@ -28,6 +28,10 @@
 /obj/item/ammo_casing/proc/checktype()
 	BB.btype = btype
 	BB.checktype()
+	if (btype == "AP")
+		name = "[name] (AP)"
+	else if (btype == "HP")
+		name = "[name] (HP)"
 
 /obj/item/ammo_casing/Destroy()
 	bullet_casings -= src

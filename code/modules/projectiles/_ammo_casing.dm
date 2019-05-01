@@ -128,6 +128,7 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	resultpath = null
 	gunpowder_max = 1.5
+	var/inputbtype = "normal"
 
 /obj/item/stack/ammopart/casing/pistol
 	name = "empty pistol casing"
@@ -268,21 +269,30 @@
 			resultpath = /obj/item/ammo_casing/shotgun/beanbag
 		else if (input == "7.62x54mmR Russian")
 			resultpath = /obj/item/ammo_casing/a762x54
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "8x53mm Murata")
 			resultpath = /obj/item/ammo_casing/a8x53mm
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "6.5x50mmSR Arisaka")
 			resultpath = /obj/item/ammo_casing/a65x50mm
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.65x53 Mauser")
 			resultpath = /obj/item/ammo_casing/a765x53
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.92x57 Mauser")
 			resultpath = /obj/item/ammo_casing/a792x57
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == ".303 British")
 			resultpath = /obj/item/ammo_casing/a303
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "6.5x52mm Carcano")
 			resultpath = /obj/item/ammo_casing/a65x52mm
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
-				new resultpath(user.loc)
+				var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+				NC.btype = inputbtype
+				NC.checktype()
 			qdel(src)
 			return
 		else
