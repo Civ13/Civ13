@@ -1,10 +1,10 @@
 #define NO_WINNER "The fighting is still going on."
 /obj/map_metadata/hill203
 	ID = MAP_HILL203
-	title = "Hill 203 (100x200x1)"
+	title = "Hill 203 (100x170x1)"
 	lobby_icon_state = "hill203"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 300
+	respawn_delay = 0
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
