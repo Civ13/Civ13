@@ -410,7 +410,7 @@
 	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
 	icon_state = "carcano"
 	item_state = "carcano"
-	caliber = "a65x52"
+	caliber = "a65x52mm"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a65x52mm

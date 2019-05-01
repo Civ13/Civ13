@@ -11,8 +11,21 @@
 	var/mob_passthrough_check = FALSE
 	var/move_tiles = -1
 	var/moved_tiles = FALSE
+	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
 
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
+
+/obj/item/projectile/bullet/New()
+	..()
+	if (btype == "AP")
+		damage *= 0.70
+		penetrating *= 2
+		armor_penetration *= 3
+
+	else if (btype == "HP")
+		damage *= 1.3
+		penetrating = 0
+		armor_penetration /= 3
 
 /obj/item/projectile/bullet/get_structure_damage()
 	if (damage_type == BRUTE || damage_type == BURN)
