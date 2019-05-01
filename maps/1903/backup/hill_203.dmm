@@ -158,9 +158,9 @@
 "db" = (/obj/covers/wood,/obj/item/weapon/stool/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "dc" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRUDoc"},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "dd" = (/obj/covers/wood,/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"de" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"de" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "df" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRU"},/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/russian/land/inside)
-"dg" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dg" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "dh" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "di" = (/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dj" = (/obj/covers/wood,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -221,9 +221,6 @@
 "em" = (/obj/structure/flag/japanese,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
 "en" = (/obj/covers/wood,/obj/item/weapon/reagent_containers/glass/barrel/oil,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "eo" = (/obj/covers/wood,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/wood,/area/caribbean/japanese/land/inside)
-"ep" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"eq" = (/obj/covers/wood,/obj/structure/telegraph{name = "Trenches"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"er" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/russian/land/inside)
 
 (1,1,1) = {"
 aaabacababababababacabacabababababababacabahaaadaeadadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadadaeadafadadadadadadadadadadadadadadadadadafadadaaahacababababababacabababababacabaaazad
@@ -238,8 +235,8 @@ aaabararararararaganaxcNdgdfagaBdbaRagaTabaaazazazazazazazazazazazazazazazazazaz
 aaacagavagagavagaganaicNdgdaagagdbaSaTaTacaaazazazazazazazazazazazaZazazazazazazazazazazaaabdBagagagabagasaQagabagagaFdyabaaadazazadazazazazazazazazadazazadazazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazaz
 aaabacabababaWaWabacabacaWaWabaCabababacabaaazazazazazazazazazazazazazazazazazazbaazazadaaabagagagagabagaJaDayabagagaDaJabaaazazazazadazazadazadazazazazadazazazazazazazazazaaaaaaazazazazazazazazazazaz
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazazazazadadazazazazazazazazazazazaaabdBagagagabagagagagabaqagagagabaaazazazazazazazazazazazazazazazazazazazazazazazbbaaaaaaazazazazazazazazazazaz
-azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazaaabagagagagabagagagagabaqagepepabaaazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
-azazazazazazazazazazazazazazbbaaaaaaazazazazazazazazazazazazazazadazazazazazazazazazazazaaacdBagagbiacagagagagacaqbKeqeracaaazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazaaabagagagagabagagagagabaqagagagabaaazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazbbaaaaaaazazazazazazazazazazazazazazadazazazazazazazazazazazaaacdBagagbiacagagagagacaqagagagacaaazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
 azazazazazazazazazazazazazazazaaaaaaazazazazazazazbaazazazazazazazazazazazazazazazazadazaaabacababacababcvabacabacabahacabaaazazazaZazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
 azazazazazbaazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazbQazazazazazadazazazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazadadazazazazazazbaazazazazazazazazazazaaaaaaazazazazazazazazazazaz
 azazazazazazazadazazazazazadazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazadadazazazazazazazazazazazazazazazazadazazazazazaaaaaaazazazazazazadazazazaz
