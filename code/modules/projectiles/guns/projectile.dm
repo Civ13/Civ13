@@ -44,7 +44,6 @@
 
 	var/infinite_ammo = FALSE
 
-	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
 /obj/item/weapon/gun/projectile/New()
 	..()
 	if (ispath(ammo_type) && (load_method & (SINGLE_CASING|SPEEDLOADER)))

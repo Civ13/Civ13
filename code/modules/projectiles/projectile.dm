@@ -78,6 +78,20 @@
 
 	var/useless = FALSE
 
+	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
+
+/obj/item/projectile/proc/checktype()
+	if (btype == "AP")
+		damage *= 0.70
+		penetrating *= 2
+		armor_penetration *= 3
+		return
+	else if (btype == "HP")
+		damage *= 1.3
+		penetrating = 0
+		armor_penetration /= 3
+		return
+
 /obj/item/projectile/Destroy()
 	projectile_list -= src
 	..()

@@ -14,17 +14,6 @@
 
 	muzzle_type = /obj/effect/projectile/bullet/muzzle
 
-/obj/item/projectile/bullet/proc/checktype()
-	if (btype == "AP")
-		damage *= 0.70
-		penetrating *= 2
-		armor_penetration *= 3
-		return
-	else if (btype == "HP")
-		damage *= 1.3
-		penetrating = 0
-		armor_penetration /= 3
-		return
 /obj/item/projectile/bullet/get_structure_damage()
 	if (damage_type == BRUTE || damage_type == BURN)
 		return damage/25 // bullets are no longer good at destroying walls, use c4 - Kachnov
