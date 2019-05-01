@@ -311,7 +311,6 @@ bullet_act
 					for (var/ac in C.accessories)
 						var/obj/item/clothing/accessory/AC = ac
 						protection += AC.armor[type]
-	world.log << "protection: [protection]"
 	return protection
 
 /mob/living/carbon/human/proc/check_head_coverage()

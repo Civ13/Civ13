@@ -223,6 +223,16 @@ var/list/name_to_material
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
 	hardness = 100
 
+/material/barbedwire
+	name = "barbedwire"
+	stack_type = /obj/item/stack/material/barbwire
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 10
+	icon_colour = "#FFFFFF"
+	shard_type = SHARD_SHARD
+	tableslam_noise = 'sound/effects/Glasshit.ogg'
+	hardness = 30
+
 /material/rope
 	name = "rope"
 	stack_type = /obj/item/stack/material/rope

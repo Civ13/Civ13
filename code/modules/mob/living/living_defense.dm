@@ -28,7 +28,6 @@
 		absorb -= 1
 	if (prob(armor_pen))
 		absorb -= 1
-	world.log << "ABSORB: [absorb]"
 	if (absorb >= 2)
 		if (absorb_text)
 			show_message("[absorb_text]")

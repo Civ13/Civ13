@@ -86,6 +86,12 @@
 /obj/item/stack/material/iron/twentyfive
 	amount = 25
 
+/obj/item/stack/material/barbwire
+	name = "Barbwire"
+	icon_state = "barbwire_stack"
+	default_type = "barbedwire"
+	value = 2
+
 /obj/item/stack/material/bronze
 	name = "bronze"
 	icon_state = "sheet-bronze"
