@@ -57,10 +57,11 @@
 		updateinfolinks()
 
 	paper_list += src
-	if (map.ordinal_age <= 1)
-		name = "papyrus"
-		icon_state = "scrollpaper"
-		desc = "A blank parchement scroll."
+	if (map)
+		if (map.ordinal_age <= 1)
+			name = "papyrus"
+			icon_state = "scrollpaper"
+			desc = "A blank parchement scroll."
 
 /obj/item/weapon/paper/Destroy()
 	paper_list -= src

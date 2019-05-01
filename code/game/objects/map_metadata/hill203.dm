@@ -39,13 +39,13 @@
 	if (istype(J, /datum/job/russian))
 		. = TRUE
 
-/obj/map_metadata/camp/short_win_time(faction)
+/obj/map_metadata/hill203/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
 		return 6000 // 10 minutes
 
-/obj/map_metadata/camp/long_win_time(faction)
+/obj/map_metadata/hill203/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
@@ -56,19 +56,23 @@
 	switch (define)
 		if (RUSSIAN)
 			return "Russians"
+		if (JAPANESE)
+			return "Japanese"
 
 /obj/map_metadata/hill203/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (RUSSIAN)
 			return "Russians"
-
+		if (JAPANESE)
+			return "Japanese"
 /obj/map_metadata/hill203/army2name(army)
 	..()
 	switch (army)
 		if ("Russians")
 			return "Russian"
-
+		if ("Japanese")
+			return "Japanese"
 
 /obj/map_metadata/hill203/cross_message(faction)
 	if (faction == JAPANESE)
@@ -85,7 +89,6 @@
 		return "<span class = 'userdanger'>The Russians may no longer cross the invisible wall!</span>"
 	else
 		return ""
-
 
 /obj/map_metadata/hill203/update_win_condition()
 	if (!win_condition_specialcheck())
