@@ -186,7 +186,7 @@ obj/item/projectile/bullet/rifle/a65x52mm
 
 /obj/item/projectile/bullet/shotgun/beanbag
 	name = "beanbag"
-	check_armour = "melee"
+	check_armor = "melee"
 	damage = DAMAGE_LOW/2
 	agony = DAMAGE_MEDIUM_HIGH
 	embed = FALSE

@@ -4,7 +4,7 @@
 	damage = 60
 	damage_type = BRUTE
 	nodamage = FALSE
-	check_armour = "gun"
+	check_armor = "gun"
 	embed = FALSE
 	sharp = TRUE
 	hitsound_wall = "ric_sound"
@@ -144,7 +144,7 @@
 
 /obj/item/projectile/bullet/pistol/rubber //"rubber" bullets
 	name = "rubber bullet"
-	check_armour = "melee"
+	check_armor = "melee"
 	damage = 5
 	agony = 25
 	embed = FALSE
