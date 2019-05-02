@@ -85,9 +85,9 @@
 ////////////
 /obj/item/weapon/storage/fancy/cigarettes
 	name = "cigarette packet"
-	desc = "The most popular brand of Space Cigarettes, sponsors of the Olympics."
+	desc = "A cigarette packet."
 	icon = 'icons/obj/cigarettes.dmi'
-	icon_state = "cigpacket"
+	icon_state = "cigpacket0"
 	item_state = "cigpacket"
 	w_class = TRUE
 	throwforce = WEAPON_FORCE_HARMLESS
@@ -95,6 +95,10 @@
 	storage_slots = 6
 	can_hold = list(/obj/item/clothing/mask/smokable/cigarette, /obj/item/weapon/flame/lighter)
 	icon_type = "cigarette"
+	var/customcolor = "#000000"
+
+/obj/item/weapon/storage/fancy/cigarettes/update_icon()
+	return
 
 /obj/item/weapon/storage/fancy/cigarettes/New()
 	..()
@@ -104,9 +108,11 @@
 	create_reagents(15 * storage_slots)//so people can inject cigarettes without opening a packet, now with being able to inject the whole one
 	flags |= OPENCONTAINER
 
-/obj/item/weapon/storage/fancy/cigarettes/update_icon()
-	icon_state = "[initial(icon_state)][contents.len]"
-	return
+/obj/item/weapon/storage/fancy/cigarettes/proc/do_color()
+	if (customcolor)
+		var/image/colorov = image("icon" = icon, "icon_state" = "[icon_state]_o")
+		colorov.color = customcolor
+		overlays += colorov
 
 /obj/item/weapon/storage/fancy/cigarettes/remove_from_storage(obj/item/W as obj, atom/new_location)
 	// Don't try to transfer reagents to lighters
@@ -145,13 +151,6 @@
 		update_icon()
 	else
 		..()
-
-/obj/item/weapon/storage/fancy/cigarettes/dromedaryco
-	name = "\improper DromedaryCo packet"
-	desc = "A packet of six imported DromedaryCo cancer sticks. A label on the packaging reads, \"Wouldn't a slow death make a change?\""
-	icon_state = "Dpacket"
-	item_state = "Dpacket"
-
 
 /obj/item/weapon/storage/fancy/cigar
 	name = "cigar case"

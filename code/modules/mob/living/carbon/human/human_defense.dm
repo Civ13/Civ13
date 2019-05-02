@@ -17,7 +17,16 @@ bullet_act
 	for (var/obj/item/weapon/grab/G in grabbed_by)
 		if (G.assailant == user && G.state >= GRAB_NECK)
 			grabbed_by_user = TRUE
-
+	if (user.a_intent == I_HELP && gender == MALE && istype(W,/obj/item/weapon/material/kitchen/utensil/knife/circumcision))
+		if (circumcised)
+			user << "<span class = 'notice'>[src]is already circumcised!</span>"
+			return
+		else
+			visible_message("<span class = 'notice'>[user] starts to circumcise [src]...</span>")
+			if (do_after(user, 90, src) && !circumcised)
+				visible_message("<span class = 'notice'>[user] successfully circumcises [src].</span>")
+				circumcised = TRUE
+				return
 	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && !grabbed_by_user && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		if (stat == DEAD)
 			var/mob/living/carbon/human/H = user
@@ -63,6 +72,8 @@ bullet_act
 					H.adaptStat("pistol", 1)
 				if (GUN_TYPE_BOW)
 					H.adaptStat("bows", 1)
+				if (GUN_TYPE_MG)
+					H.adaptStat("mg", 1)
 
 	def_zone = check_zone(def_zone)
 
@@ -176,7 +187,7 @@ bullet_act
 
 	//Shrapnel
 	if (P.can_embed())
-		var/armor = getarmor_organ(organ, "bullet")
+		var/armor = getarmor_organ(organ, "gun")
 		if (prob(20 + max(P.damage - armor, -10)))
 			var/obj/item/weapon/material/shard/shrapnel/SP = new()
 			SP.name = (P.name != "shrapnel")? "[P.name] shrapnel" : "shrapnel"
@@ -286,7 +297,7 @@ bullet_act
 
 	return siemens_coefficient
 
-//this proc returns the armour value for a particular external organ.
+//this proc returns the armor value for a particular external organ.
 /mob/living/carbon/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
 	if (!type || !def_zone) return FALSE
 	var/protection = FALSE
@@ -296,6 +307,10 @@ bullet_act
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & def_zone.body_part)
 				protection += C.armor[type]
+				if (C.accessories.len)
+					for (var/ac in C.accessories)
+						var/obj/item/clothing/accessory/AC = ac
+						protection += AC.armor[type]
 	return protection
 
 /mob/living/carbon/human/proc/check_head_coverage()

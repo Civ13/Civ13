@@ -8,11 +8,42 @@
 		selected_target[1] = object
 		selected_target[2] = params
 		while (selected_target[1] && mob && !mob.lying && mob.stat == CONSCIOUS)
+			var/foundMG = FALSE
+			for (var/obj/item/weapon/gun/projectile/automatic/stationary/MG in get_turf(src))
+				var/can_fire = TRUE
+				var/atom/A = object
+				switch (MG.dir)
+					if (EAST)
+						if (A.x > MG.x)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+					if (WEST)
+						if (A.x < MG.x)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+					if (NORTH)
+						if (A.y > MG.y)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+					if (SOUTH)
+						if (A.y < MG.y)
+							can_fire = TRUE
+						else
+							can_fire = FALSE
+				if (!can_fire)
+					continue
+				if (MG.last_user == src)
+					MG.Fire(A, src, force = TRUE)
 
-			var/obj/item/weapon/gun/G = mob.get_active_hand()
-			if (G && istype(G))
-				G.next_fire_time = 0 // no 'you can't fire' spam
-				Click(selected_target[1], location, control, selected_target[2])
+				foundMG = TRUE
+			if (!foundMG)
+				var/obj/item/weapon/gun/G = mob.get_active_hand()
+				if (G && istype(G))
+					G.next_fire_time = 0 // no 'you can't fire' spam
+					Click(selected_target[1], location, control, selected_target[2])
 			sleep(0.01)
 	else
 		return ..(object, location, control, params)
@@ -34,6 +65,10 @@
 	var/obj/item/H = get_active_hand()
 	if (H)
 		return H.CanItemAutoclick(object, location, params)
+	else if (!H)
+		for (var/obj/item/weapon/gun/projectile/automatic/stationary/MG in get_turf(src))
+			if (MG.last_user == src)
+				return TRUE
 
 /obj/item/proc/CanItemAutoclick(object, location, params)
 	return istype(src, /obj/item/weapon/gun/projectile/automatic)

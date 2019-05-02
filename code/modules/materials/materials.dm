@@ -223,6 +223,16 @@ var/list/name_to_material
 	tableslam_noise = 'sound/effects/Glasshit.ogg'
 	hardness = 100
 
+/material/barbedwire
+	name = "barbedwire"
+	stack_type = /obj/item/stack/material/barbwire
+	flags = MATERIAL_UNMELTABLE
+	cut_delay = 10
+	icon_colour = "#FFFFFF"
+	shard_type = SHARD_SHARD
+	tableslam_noise = 'sound/effects/Glasshit.ogg'
+	hardness = 30
+
 /material/rope
 	name = "rope"
 	stack_type = /obj/item/stack/material/rope
@@ -474,6 +484,24 @@ var/list/name_to_material
 	melting_point = T0C+300
 	flags = MATERIAL_PADDING
 
+/material/woolcloth //todo
+	name = "woolcloth"
+	hardness = 10
+
+	door_icon_base = "wood"
+	ignition_point = T0C+232
+	melting_point = T0C+300
+	flags = MATERIAL_PADDING
+
+/material/electronics
+	name = "electronic"
+	icon_colour = "#272727"
+	stack_type = /obj/item/stack/material/electronics
+	weight = 14
+	hardness = 20
+	sheet_singular_name = "circuit"
+	sheet_plural_name = "circuits"
+
 //TODO PLACEHOLDERS:
 /material/leather
 	name = "leather"
@@ -595,6 +623,18 @@ var/list/name_to_material
 	melting_point = T0C+300
 	sheet_singular_name = "stack"
 	sheet_plural_name = "stacks"
+
+/material/wool
+	name = "wool"
+	hardness = 6
+	stack_type = /obj/item/stack/material/wool
+	display_name ="wool"
+	icon_colour = "#F1F1F1"
+	flags = MATERIAL_PADDING
+	ignition_point = T0C+232
+	melting_point = T0C+300
+	sheet_singular_name = "pile"
+	sheet_plural_name = "piles"
 
 /material/cloth_teal
 	name = "teal"

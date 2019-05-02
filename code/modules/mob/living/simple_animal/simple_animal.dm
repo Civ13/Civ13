@@ -105,7 +105,7 @@
 
 		if (simplehunger <= 0)
 			visible_message("\The [src] is starving!")
-			adjustBruteLoss(-1)
+			adjustBruteLoss(round(max(1,maxHealth/10)))
 			simplehunger = 30
 
 	if (following_mob)
@@ -134,9 +134,8 @@
 						var/mob/living/simple_animal/hostile/skeleton/attacker_gods/A = src
 						if (prob(20) && get_dist(src, A.target_loc) > 11)
 							walk_towards(src, A.target_loc,6)
-					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 700) || simplehunger < 180)
+					if ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180)
 						check_food() // animals will search for crops, grass, and so on
-						eat()
 					else
 						var/moving_to = FALSE // otherwise it always picks 4, fuck if I know.   Did I mention fuck BYOND
 						moving_to = pick(cardinal)
@@ -207,12 +206,23 @@
 /mob/living/simple_animal/proc/audible_emote(var/act_desc)
 	custom_emote(2, act_desc)
 
-/mob/living/simple_animal/bullet_act(var/obj/item/projectile/Proj)
-	if (!Proj || Proj.nodamage)
-		return
+/mob/living/simple_animal/bullet_act(var/obj/item/projectile/proj)
+	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
+		var/mob/living/carbon/human/H = proj.firer
+		if (prob(40))
+			switch (proj.firedfrom.gun_type)
+				if (GUN_TYPE_RIFLE)
+					H.adaptStat("rifle", 1)
+				if (GUN_TYPE_PISTOL)
+					H.adaptStat("pistol", 1)
+				if (GUN_TYPE_BOW)
+					H.adaptStat("bows", 1)
 
-	adjustBruteLoss(Proj.damage)
+	adjustBruteLoss(proj.damage)
 	return FALSE
+
+	if (!proj || proj.nodamage)
+		return
 
 /mob/living/simple_animal/attack_hand(mob/living/carbon/human/M as mob)
 	..()
@@ -434,7 +444,7 @@
 
 /mob/living/simple_animal/Destroy()
 	unregisterSpawner()
-	. = ..()
+	..()
 
 /mob/living/simple_animal/death(gibbed, deathmessage = "dies!")
 	icon_state = icon_dead
@@ -562,17 +572,30 @@
 	if (totalcount <= 0)
 		return
 	if (herbivore)
-		if (!istype(get_turf(src),/turf/floor/grass))
-			if (prob(100/totalcount))
-				for(var/turf/floor/grass/GT in range(6,src))
-					walk_towards(src, GT, turns_per_move)
-					return
+		if (prob(100/totalcount))
+			for(var/turf/floor/grass/GT in range(2,src))
+				walk_towards(src,0)
+				eat()
+				return
+			for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
+				walk_towards(src,0)
+				eat()
+				return
+			for(var/turf/floor/grass/GT in range(6,src))
+				walk_towards(src, GT, turns_per_move)
+				return
 		else
 			return
 
 	if (granivore)
 		if (prob(100/totalcount))
-			for(var/obj/structure/farming/plant/PL in range(1,src))
+			for(var/obj/item/stack/farming/seeds/WT in range(2,src))
+				walk_towards(src,0)
+				eat()
+				return
+			for(var/obj/structure/farming/plant/PL in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/obj/structure/farming/plant/PL in range(8,src))
 				walk_towards(src, PL, turns_per_move)
@@ -580,7 +603,9 @@
 
 	if (carnivore)
 		if (prob(100/totalcount))
-			for(var/mob/living/ML in range(1,src))
+			for(var/mob/living/ML in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/mob/living/ML in range(9,src))
 				if (ML.stat == DEAD)
@@ -589,7 +614,9 @@
 
 	if (predatory_carnivore)
 		if (prob(100/totalcount))
-			for(var/mob/living/ML in range(1,src))
+			for(var/mob/living/ML in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/mob/living/ML in range(9,src))
 				walk_towards(src, ML, turns_per_move)
@@ -597,7 +624,9 @@
 
 	if (scavenger)
 		if (prob(100/totalcount))
-			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
+				walk_towards(src,0)
+				eat()
 				return
 			for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(8,src))
 				walk_towards(src, FD, turns_per_move)
@@ -609,7 +638,7 @@
 		return
 
 	if (herbivore)
-		for(var/turf/floor/grass/GT in range(1,src))
+		for(var/turf/floor/grass/GT in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] eats some grass.")
 				simplehunger += 550
@@ -625,14 +654,25 @@
 				else
 					return
 		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
-			if (prob(20))
+			if (prob(30))
 				visible_message("\The [src] eats some of the wheat.")
+				simplehunger += 550
+				adjustBruteLoss(-4)
+				qdel(WT)
+				return
 
 
 	if (granivore)
-		for(var/obj/structure/farming/plant/PL in range(1,src))
+		for(var/obj/item/stack/farming/seeds/SD in range(2,src))
+			if (prob(35))
+				visible_message("<span class='notice'>\The [src] eats \the [SD]!</span>")
+				simplehunger += 500
+				adjustBruteLoss(-4)
+				qdel(SD)
+				return
+		for(var/obj/structure/farming/plant/PL in range(2,src))
 			if (prob(15))
-				visible_message("<span class='notice'>\The [src] eats the [PL]!</span>")
+				visible_message("<span class='notice'>\The [src] eats \the [PL]!</span>")
 				simplehunger += 400
 				adjustBruteLoss(-4)
 				qdel(PL)
@@ -642,7 +682,7 @@
 
 
 	if (carnivore)
-		for(var/mob/living/ML in range(1,src))
+		for(var/mob/living/ML in range(2,src))
 			if (ML.stat == DEAD)
 				if (prob(33))
 					visible_message("\The [src] bites some meat of \the [ML].")
@@ -659,7 +699,7 @@
 
 
 	if (scavenger)
-		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(1,src))
+		for(var/obj/item/weapon/reagent_containers/food/snacks/FD in range(2,src))
 			if (prob(33))
 				visible_message("\The [src] bites some of \the [FD].")
 				simplehunger += 400
@@ -670,7 +710,7 @@
 
 
 	if (predatory_carnivore)
-		for(var/mob/living/ML in range(1,src))
+		for(var/mob/living/ML in range(2,src))
 			return
 
 

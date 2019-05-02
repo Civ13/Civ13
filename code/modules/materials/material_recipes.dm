@@ -209,6 +209,20 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("red beret", /obj/item/clothing/head/red_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue beret", /obj/item/clothing/head/blue_beret, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("kerchief", /obj/item/clothing/head/kerchief, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
+	//Carpets - To be expanded upon with borders and such later.
+	if (map.ordinal_age == 2)
+		recipes += new/datum/stack_recipe_list("carpeting", list(
+			new/datum/stack_recipe("pink carpet", /obj/covers/carpet/pinkcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("red carpet", /obj/covers/carpet/redcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("orange carpet", /obj/covers/carpet/orangecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("purple carpet", /obj/covers/carpet/purplecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue carpet", /obj/covers/carpet/bluecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("teal carpet", /obj/covers/carpet/tealcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("green carpet", /obj/covers/carpet/greencarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("black carpet", /obj/covers/carpet/blackcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("white carpet", /obj/covers/carpet/whitecarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),))
+
+	//Continue as Normal
 	if (map.ordinal_age == 3)
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("straw hat", /obj/item/clothing/head/strawhat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -334,3 +348,5 @@ var/list/engineer_exclusive_recipe_types = null
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 
+/material/barbedwire/generate_recipes()
+	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))

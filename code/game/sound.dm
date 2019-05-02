@@ -55,8 +55,10 @@ var/list/grassfootsteps = list('sound/effects/footsteps/grass/grass1.ogg','sound
 var/list/dirtfootsteps = list('sound/effects/footsteps/dirt/dirt1.ogg','sound/effects/footsteps/dirt/dirt2.ogg','sound/effects/footsteps/dirt/dirt3.ogg','sound/effects/footsteps/dirt/dirt4.ogg')
 var/list/waterfootsteps = list('sound/effects/footsteps/water/slosh1.ogg','sound/effects/footsteps/water/slosh2.ogg','sound/effects/footsteps/water/slosh3.ogg','sound/effects/footsteps/water/slosh4.ogg')
 var/list/sandfootsteps = list('sound/effects/footsteps/sand/sand_step1.ogg','sound/effects/footsteps/sand/sand_step2.ogg','sound/effects/footsteps/sand/sand_step3.ogg','sound/effects/footsteps/sand/sand_step4.ogg','sound/effects/footsteps/sand/sand_step5.ogg','sound/effects/footsteps/sand/sand_step6.ogg','sound/effects/footsteps/sand/sand_step7.ogg','sound/effects/footsteps/sand/sand_step8.ogg')
-var/list/woodfootsteps = list ('sound/effects/footsteps/wood/wood_step1.ogg','sound/effects/footsteps/wood/wood_step2.ogg','sound/effects/footsteps/wood/wood_step3.ogg','sound/effects/footsteps/wood/wood_step4.ogg','sound/effects/footsteps/wood/wood_step5.ogg','sound/effects/footsteps/wood/wood_step6.ogg','sound/effects/footsteps/wood/wood_step7.ogg','sound/effects/footsteps/wood/wood_step8.ogg')
-var/list/carpetfootsteps = list ('sound/effects/footsteps/carpet/carpet_step1.ogg','sound/effects/footsteps/carpet/carpet_step2.ogg','sound/effects/footsteps/carpet/carpet_step3.ogg','sound/effects/footsteps/carpet/carpet_step4.ogg','sound/effects/footsteps/carpet/carpet_step5.ogg','sound/effects/footsteps/carpet/carpet_step6.ogg','sound/effects/footsteps/carpet/carpet_step7.ogg','sound/effects/footsteps/carpet/carpet_step8.ogg')
+var/list/woodfootsteps = list('sound/effects/footsteps/wood/wood_step1.ogg','sound/effects/footsteps/wood/wood_step2.ogg','sound/effects/footsteps/wood/wood_step3.ogg','sound/effects/footsteps/wood/wood_step4.ogg','sound/effects/footsteps/wood/wood_step5.ogg','sound/effects/footsteps/wood/wood_step6.ogg','sound/effects/footsteps/wood/wood_step7.ogg','sound/effects/footsteps/wood/wood_step8.ogg')
+var/list/carpetfootsteps = list('sound/effects/footsteps/carpet/carpet_step1.ogg','sound/effects/footsteps/carpet/carpet_step2.ogg','sound/effects/footsteps/carpet/carpet_step3.ogg','sound/effects/footsteps/carpet/carpet_step4.ogg','sound/effects/footsteps/carpet/carpet_step5.ogg','sound/effects/footsteps/carpet/carpet_step6.ogg','sound/effects/footsteps/carpet/carpet_step7.ogg','sound/effects/footsteps/carpet/carpet_step8.ogg')
+var/list/snowfootsteps = list('sound/effects/footsteps/snow/snow1.ogg','sound/effects/footsteps/snow/snow2.ogg','sound/effects/footsteps/snow/snow3.ogg','sound/effects/footsteps/snow/snow4.ogg','sound/effects/footsteps/snow/snow5.ogg')
+var/list/icefootsteps = list('sound/effects/footsteps/ice/ice1.ogg','sound/effects/footsteps/ice/ice2.ogg','sound/effects/footsteps/ice/ice3.ogg','sound/effects/footsteps/ice/ice4.ogg','sound/effects/footsteps/ice/ice5.ogg')
 
 var/list/artillery_out = list( 'sound/weapons/WW2/new_exp_high_1.ogg', 'sound/weapons/WW2/new_exp_high_2.ogg', 'sound/weapons/WW2/new_exp_high_3.ogg')
 var/list/artillery_in = list( 'sound/weapons/WW2/new_artillery_incoming01.ogg', 'sound/weapons/WW2/new_artillery_incoming02.ogg', 'sound/weapons/WW2/new_artillery_incoming03.ogg', 'sound/weapons/WW2/new_artillery_incoming04.ogg', 'sound/weapons/WW2/new_artillery_incoming05.ogg', 'sound/weapons/WW2/new_artillery_incoming06.ogg')
@@ -111,6 +113,32 @@ var/list/cough_sounds_female = list(
 var/list/cry_sounds_female = list(
 	'sound/effects/emotes/female_cry1.ogg',
 	'sound/effects/emotes/female_cry2.ogg')
+
+var/list/gasp_sounds_male = list(
+	'sound/effects/emotes/man_gasp0.ogg',
+	'sound/effects/emotes/man_gasp1.ogg',
+	'sound/effects/emotes/man_gasp2.ogg',
+	'sound/effects/emotes/man_gasp3.ogg',
+	'sound/effects/emotes/man_gasp4.ogg',
+	'sound/effects/emotes/man_gasp5.ogg',
+	'sound/effects/emotes/man_gasp6.ogg',
+	'sound/effects/emotes/man_gasp7.ogg',
+	'sound/effects/emotes/man_gasp8.ogg',
+	'sound/effects/emotes/man_gasp9.ogg',
+	'sound/effects/emotes/man_gasp10.ogg')
+
+var/list/gasp_sounds_female = list(
+	'sound/effects/emotes/woman_gasp0.ogg',
+	'sound/effects/emotes/woman_gasp1.ogg',
+	'sound/effects/emotes/woman_gasp2.ogg',
+	'sound/effects/emotes/woman_gasp3.ogg',
+	'sound/effects/emotes/woman_gasp4.ogg',
+	'sound/effects/emotes/woman_gasp5.ogg',
+	'sound/effects/emotes/woman_gasp6.ogg',
+	'sound/effects/emotes/woman_gasp7.ogg',
+	'sound/effects/emotes/woman_gasp8.ogg',
+	'sound/effects/emotes/woman_gasp9.ogg',
+	'sound/effects/emotes/woman_gasp10.ogg')
 
 var/list/laugh_sounds_female = list(
 	'sound/effects/emotes/female_laugh1.ogg',
@@ -313,6 +341,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("sandfootsteps") soundin = pick(sandfootsteps)
 			if ("woodfootsteps") soundin = pick(woodfootsteps)
 			if ("carpetfootsteps") soundin = pick(carpetfootsteps)
+			if ("snowfootsteps") soundin = pick(snowfootsteps)
+			if ("icefootsteps") soundin = pick(icefootsteps)
 			if ("doorknock") soundin = pick(doorknock_sounds)
 			if ("artillery_out") soundin = pick(artillery_out)
 			if ("artillery_in") soundin = pick(artillery_in)
@@ -334,7 +364,10 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(sigh_sounds_male)
 			if ("sneeze_male")
 				soundin = pick(sneeze_sounds_male)
-
+			if ("gasp_male")
+				soundin = pick(gasp_sounds_male)
+			if ("gasp_female")
+				soundin = pick(gasp_sounds_female)
 			if ("cough_female")
 				soundin = pick(cough_sounds_female)
 			if ("cry_female")

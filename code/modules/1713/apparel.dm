@@ -8,7 +8,7 @@
 	name = "\improper wrapped boots"
 	icon_state = "wrappedboots"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 10, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -96,6 +96,20 @@
 	item_state = "dress3"
 	worn_state = "dress3"
 
+/obj/item/clothing/under/civfg
+	name = "Green dress"
+	desc = "A green dress."
+	icon_state = "dressg"
+	item_state = "dressg"
+	worn_state = "dressg"
+
+/obj/item/clothing/under/civfr
+	name = "Red dress"
+	desc = "A red dress."
+	icon_state = "dressr"
+	item_state = "dressr"
+	worn_state = "dressr"
+
 // WEBBING - can hold everything but clothing
 
 /obj/item/clothing/accessory/storage/webbing
@@ -118,18 +132,118 @@
 
 /obj/item/clothing/accessory/storage/coinpouch
 	name = "coin pouch"
-	desc = "A small pouch, where you can carry your coins."
+	desc = "A small pouch, where you can carry your coins and small objects."
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "coinpouch1"
 	slot_flags = SLOT_ID
-	slots = 5
+	slots = 8
+
+/obj/item/clothing/accessory/storage/coinpouch/wallet
+	name = "wallet"
+	desc = "A personal wallet, where you can carry your coins and small objects."
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "wallet"
 
 /obj/item/clothing/accessory/storage/coinpouch/New()
 	..()
 	hold.max_storage_space = 25
 	hold.can_hold = list(/obj/item/stack/money,\
 	/obj/item/weapon/key,\
-	/obj/item/weapon/storage/belt/keychain)
+	/obj/item/weapon/storage/belt/keychain,\
+	/obj/item/clothing/accessory/storage/passport,\
+	/obj/item/weapon/visa)
+
+
+/obj/item/clothing/accessory/storage/passport
+	name = "passport"
+	desc = "A personal passport. Can hold several visas."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "passport"
+	item_state = "paper"
+	slot_flags = SLOT_ID | SLOT_POCKET
+	slots = 15
+	w_class = 2
+	var/mob/living/carbon/human/owner = null
+	var/faction = ""
+	flammable = TRUE
+
+/obj/item/clothing/accessory/storage/passport/New()
+	..()
+	hold.max_storage_space = 50
+	hold.can_hold = list(/obj/item/weapon/visa)
+
+/obj/item/clothing/accessory/storage/passport/proc/own()
+	spawn(5)
+		if (owner)
+			faction = owner.civilization
+			name = "[faction]'s passport"
+			desc = "[faction] passport, issued to [owner]. Can hold several visas."
+
+/obj/item/weapon/visa
+	name = "visa"
+	desc = "a traveller visa."
+	icon = 'icons/obj/bureaucracy.dmi'
+	icon_state = "visa0"
+	item_state = "paper"
+	throwforce = FALSE
+	w_class = TRUE
+	throw_range = TRUE
+	throw_speed = TRUE
+	attack_verb = list("bapped")
+	flammable = TRUE
+	var/mob/living/carbon/human/owner = null
+	var/duration = 0
+
+/obj/item/weapon/visa/attackby(obj/item/W as obj, mob/living/carbon/human/user as mob)
+	if (istype(W, /obj/item/weapon/pen) && !owner && duration == 0)
+		if (user.civilization == "none")
+			user << "You are not in a faction!"
+			return
+		else
+			if (user.faction_perms[4] == 0)
+				user << "You don't have the recruitment permissions to issue visas!"
+				return
+			else
+				var/mob/living/carbon/human/U = null
+				var/closemobs = list("Cancel")
+				for (var/mob/living/carbon/human/M in range(4,loc))
+					if (M.civilization != user.civilization)
+						closemobs += M
+				var/choice2 = WWinput(usr, "Who to give the visa to?", "Visa", "Cancel", closemobs)
+				if (choice2 == "Cancel" || !choice2)
+					return
+				else
+					U = choice2
+					var/inp = input(user, "How long should the visa last? In minutes. (Up to 3 days - 4320 minutes)") as num|null
+					if (!isnum(inp))
+						return
+					if (inp <= 0)
+						return
+					if (inp > 4320)
+						inp = 4320
+						return
+					else
+						duration = inp
+						owner = U
+						icon_state = "visa1"
+						name = "[user.civilization] visa"
+						var/cdur = ""
+						if (duration > 60)
+							cdur = "[duration/60] hours"
+						else
+							cdur = "[duration] minutes"
+						desc = "A visa issued by <b>[user.civilization]</b> to <b>[owner]</b>.<br>Issued on <b>[roundduration2text()]</b> and valid for <b>[cdur]</b> starting then.<br>Signed by: <b><i>[user]</i></b>."
+						user << "You issue the visa."
+						update_icon()
+						do_duration()
+						return
+	else
+		..()
+/obj/item/weapon/visa/proc/do_duration()
+	spawn(duration*600)
+		qdel(src)
+		return
+
 
 /obj/item/weapon/storage/backpack/quiver
 	name = "quiver"
@@ -247,7 +361,7 @@
 	item_state = "soldier_shoes"
 	worn_state = "soldier_shoes"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 30, bullet = 20, laser = 20,energy = 15, bomb = 30, bio = 10, rad = FALSE)
+	armor = list(melee = 30, arrow = 25, gun = FALSE, energy = 15, bomb = 30, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 
@@ -258,7 +372,7 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -270,7 +384,7 @@
 	item_state = "sailorboots2"
 	worn_state = "sailorboots2"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 80, bullet = 60, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 80, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -634,7 +748,7 @@
 	item_state = "sailorboots1"
 	worn_state = "sailorboots1"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -646,7 +760,7 @@
 	item_state = "sailorboots2"
 	worn_state = "sailorboots2"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 60, bullet = 50, laser = 50,energy = 25, bomb = 50, bio = 10, rad = FALSE)
+	armor = list(melee = 60, arrow = 20, gun = FALSE, energy = 25, bomb = 50, bio = 10, rad = FALSE)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -746,12 +860,71 @@
 	item_state = "jedi_knight"
 	worn_state = "jedi_knight"
 
+/obj/item/clothing/under/sith
+	name = "Sith outfit"
+	desc = "A loose outfit worn by the Siths."
+	icon_state = "sith_knight"
+	item_state = "sith_knight"
+	worn_state = "sith_knight"
+
 /obj/item/clothing/suit/storage/jacket/jedi
 	name = "Jedi robe"
 	desc = "A brown Jedi robe."
 	icon_state = "jedi_robe"
 	item_state = "jedi_robe"
 	worn_state = "jedi_robe"
+	var/toggled = FALSE
+
+/obj/item/clothing/suit/storage/jacket/jedi/verb/toggle_hood()
+	set category = null
+	set src in usr
+	if (type !=/obj/item/clothing/suit/storage/jacket/jedi)
+		return
+	else
+		if (toggled)
+			item_state = "jedi_robe"
+			icon_state = "jedi_robe"
+			worn_state = "jedi_robe"
+			item_state_slots["slot_w_uniform"] = "jedi_robe"
+			usr << "<span class = 'danger'>You take down your robe's hood.</span>"
+			toggled = FALSE
+		else if (!toggled)
+			item_state = "jedi_robe_hooded"
+			icon_state = "jedi_robe_hooded"
+			worn_state = "jedi_robe_hooded"
+			item_state_slots["slot_w_uniform"] = "jedi_robe_hooded"
+			usr << "<span class = 'danger'>You put up your robe's hood.</span>"
+			toggled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/suit/storage/jacket/sith
+	name = "Sith robe"
+	desc = "A black Sith robe."
+	icon_state = "sith_robe"
+	item_state = "sith_robe"
+	worn_state = "sith_robe"
+	var/toggled = FALSE
+/obj/item/clothing/suit/storage/jacket/sith/verb/toggle_hood()
+	set category = null
+	set src in usr
+	if (type !=/obj/item/clothing/suit/storage/jacket/sith)
+		return
+	else
+		if (toggled)
+			item_state = "sith_robe"
+			icon_state = "sith_robe"
+			worn_state = "sith_robe"
+			item_state_slots["slot_w_uniform"] = "sith_robe"
+			usr << "<span class = 'danger'>You take down your robe's hood.</span>"
+			toggled = FALSE
+		else if (!toggled)
+			item_state = "sith_robe_hooded"
+			icon_state = "sith_robe_hooded"
+			worn_state = "sith_robe_hooded"
+			item_state_slots["slot_w_uniform"] = "sith_robe_hooded"
+			usr << "<span class = 'danger'>You put up your robe's hood.</span>"
+			toggled = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/under/flamengo
 	name = "Flamengo shirt with yellow shorts"

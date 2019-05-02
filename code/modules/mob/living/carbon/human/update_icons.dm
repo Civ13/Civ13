@@ -222,7 +222,7 @@ var/global/list/damage_icon_parts = list()
 	//Create a new, blank icon for our mob to use.
 	if (stand_icon)
 		qdel(stand_icon)
-	stand_icon = new(species.icon_template ? species.icon_template : 'icons/mob/human.dmi',"blank")
+	stand_icon = new('icons/mob/human.dmi',"blank")
 
 	var/g = "male"
 	if (gender == FEMALE)
@@ -460,10 +460,14 @@ var/global/list/damage_icon_parts = list()
 	var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
 	var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_over")
 	var/image/epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
-	var/image/brown = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l1")
-	var/image/green = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l2")
-	var/image/black = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_l3")
-	var/image/beltm = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "modern_camo_custom_objs")
+	var/image/brown = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l1")
+	var/image/green = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l2")
+	var/image/black = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l3")
+	var/image/beltm = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_objs")
+	var/image/top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_top")
+	var/image/underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_under")
+	var/image/over = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_over")
+
 	if (w_uniform && istype(w_uniform, /obj/item/clothing/under))
 /*		var/new_screen_loc = find_inv_position(slot_w_uniform)
 		if (new_screen_loc)
@@ -504,6 +508,27 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += shirt
 				standing.overlays += belt
 				standing.overlays += epaulettes
+		else if (istype(w_uniform, /obj/item/clothing/under/customdress))
+			var/obj/item/clothing/under/customdress/CD = w_uniform
+			if (!CD.uncolored)
+				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_top")
+				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_under")
+				over = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_over")
+				top.color = CD.topcolor
+				underc.color = CD.undercolor
+				over.color = CD.overcolor
+				standing.overlays += top
+				standing.overlays += underc
+				standing.overlays += over
+		else if (istype(w_uniform, /obj/item/clothing/under/customren))
+			var/obj/item/clothing/under/customren/CD = w_uniform
+			if (!CD.uncolored)
+				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_top")
+				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_lining")
+				top.color = CD.topcolor
+				underc.color = CD.undercolor
+				standing.overlays += top
+				standing.overlays += underc
 		else if (istype(w_uniform, /obj/item/clothing/under/customuniform_modern))
 			var/obj/item/clothing/under/customuniform_modern/CU = w_uniform
 			if (!CU.uncolored)
@@ -663,6 +688,9 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_head(var/update_icons=1)
+	var/image/band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
+	var/image/cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
+	var/image/symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
 	if (head)
 		/*var/new_screen_loc = find_inv_position(slot_head)
 		if (new_screen_loc)
@@ -692,15 +720,30 @@ var/global/list/damage_icon_parts = list()
 		else
 			t_icon = body_build.hat_icon
 
-
-
 		//Create the image
 		var/image/standing = image(icon = t_icon, icon_state = t_state)
+		if (istype(head, /obj/item/clothing/head/custom_off_cap))
+			var/obj/item/clothing/head/custom_off_cap/CU = head
+			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
+			band.color = CU.bandcolor
+			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
+			cap.color = CU.capcolor
+			symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
+			symbol.color = CU.symbolcolor
+			standing.overlays += band
+			standing.overlays += cap
+			standing.overlays += symbol
+
+		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
+			var/obj/item/clothing/head/custom/fieldcap/CU = head
+			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom")
+			cap.color = CU.capcolor
+			standing.overlays += cap
 
 		if (head.blood_DNA)
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "helmetblood")
 			bloodsies.color = head.blood_color
-			standing.overlays	+= bloodsies
+			standing.overlays += bloodsies
 
 		if (istype(head,/obj/item/clothing/head))
 			var/obj/item/clothing/head/hat = head

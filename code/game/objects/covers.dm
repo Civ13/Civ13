@@ -77,6 +77,129 @@
 	amount = 1
 	layer = 1.99
 
+//Carpets - To be Expanded upon Later
+
+/obj/covers/carpet/
+	name = "Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "carpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/pinkcarpet
+	name = "Pink Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "gaycarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/redcarpet
+	name = "Red Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "carpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/orangecarpet
+	name = "Orange Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "oracarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/purplecarpet
+	name = "Purple Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "purcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/bluecarpet
+	name = "Blue Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "blucarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/tealcarpet
+	name = "Teal Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "sblucarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/greencarpet
+	name = "Green Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "turcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/blackcarpet
+	name = "Black Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "bcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+
+/obj/covers/carpet/whitecarpet
+	name = "White Carpet"
+	desc = "Fluffy and Flammable!"
+	icon = 'icons/turf/flooring/carpet.dmi'
+	icon_state = "wcarpet"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = TRUE
+//Continue
+
 /obj/covers/saloon_door
 	name = "saloon door"
 	desc = "A wood door."
@@ -117,6 +240,36 @@
 	wall = TRUE
 	explosion_resistance = 5
 
+/obj/covers/wood_wall/shoji
+	name = "shoji wall"
+	desc = "A shoji paper wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall2"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 3
+	layer = 3
+	health = 70
+	wall = TRUE
+	explosion_resistance = 1
+
+/obj/covers/wood_wall/shoji_divider
+	name = "shoji dividing wall"
+	desc = "A shoji paper wall. This one is more meant to divide rooms."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 3
+	layer = 3
+	health = 50
+	wall = TRUE
+	explosion_resistance = 1
+
 /obj/covers/stone_wall
 	name = "stone wall"
 	desc = "A stone wall."
@@ -128,7 +281,7 @@
 	opacity = TRUE
 	amount = 0
 	layer = 3
-	health = 300
+	health = 600
 	wood = FALSE
 	wall = TRUE
 	flammable = FALSE
@@ -298,6 +451,54 @@
 	flammable = FALSE
 	explosion_resistance = 6
 
+/obj/covers/cement_wall
+	name = "cement wall"
+	desc = "A cement wall."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "cement_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 200
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 7
+
+/obj/covers/cement_wall/incomplete
+	name = "cement wall"
+	desc = "A cement brick wall."
+	icon = 'icons/obj/claystuff.dmi'
+	icon_state = "cementwall_inc1"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = FALSE
+	incomplete = TRUE
+	amount = 0
+	layer = 3
+	health = 80
+	var/stage = 1
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+
+/obj/covers/cement_wall/incomplete/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/clay/advclaybricks/fired/cement))
+		user << "You start adding cement to the wall..."
+		if (do_after(user, 20, src))
+			user << "You finish adding cement to the wall, completing it."
+			qdel(W)
+			new /obj/covers/cement_wall(loc)
+			qdel(src)
+			return
+			return
+	..()
+
+
 /obj/covers/brick_wall/incomplete
 	name = "brick wall"
 	desc = "A clay brick wall."
@@ -389,26 +590,26 @@
 	flammable = TRUE
 	explosion_resistance = FALSE
 
+/obj/covers/repairedfloor/New()
+	..()
+	spawn(15)
+		var/turf/T = get_turf(src)
+		if (istype(T, /turf/floor/beach/water/deep/saltwater))
+			visible_message("The [src] sinks!")
+			qdel(src)
+			return
+
 /obj/item/weapon/covers/attack_self(mob/user)
-	var/your_dir = "NORTH"
-
-	switch (user.dir)
-		if (NORTH)
-			your_dir = "NORTH"
-		if (SOUTH)
-			your_dir = "SOUTH"
-		if (EAST)
-			your_dir = "EAST"
-		if (WEST)
-			your_dir = "WEST"
-
 	var/covers_time = 80
-
 	if (ishuman(user))
+		var/turf/targetfloor = get_turf(get_step(user, user.dir))
+		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
+			visible_message("<span class='notice'>You can't build here!</span>")
+			return
 		var/mob/living/carbon/human/H = user
 		covers_time /= H.getStatCoeff("strength")
 		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-	if (WWinput(user, "This will start building a floor cover [your_dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
+	if (WWinput(user, "This will start building a floor cover [user.dir] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
 		if (do_after(user, covers_time, user.loc) && src)
 			qdel(src)
@@ -451,7 +652,32 @@
 				return
 	if (wall)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-
+		if (istype(W, /obj/item/weapon/poster/religious))
+			user << "You start placing the [W] on the [src]..."
+			if (do_after(user, 70, src))
+				visible_message("[user] places the [W] on the [src].")
+				var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
+				var/obj/item/weapon/poster/religious/P = W
+				RP.religion = P.religion
+				RP.symbol = P.symbol
+				RP.color1 = P.color1
+				RP.color2 = P.color2
+				user.drop_from_inventory(W)
+				qdel(W)
+				return
+		if (istype(W, /obj/item/weapon/poster/faction))
+			user << "You start placing the [W] on the [src]..."
+			if (do_after(user, 70, src))
+				visible_message("[user] places the [W] on the [src].")
+				var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
+				var/obj/item/weapon/poster/faction/P = W
+				RP.faction = P.faction
+				RP.bstyle = P.bstyle
+				RP.color1 = P.color1
+				RP.color2 = P.color2
+				user.drop_from_inventory(W)
+				qdel(W)
+				return
 		if (istype(W, /obj/item/flashlight/torch) && wood == TRUE)
 			var/obj/item/flashlight/torch/T = W
 			if (prob(33) && T.on)

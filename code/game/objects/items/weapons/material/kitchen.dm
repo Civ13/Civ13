@@ -147,6 +147,41 @@
 	..()
 	name = "bone knife"
 
+/obj/item/weapon/material/kitchen/utensil/knife/circumcision
+	name = "circumcision knife"
+	desc = "A small knife with a bone handle, used to perform circumcisions."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "circumcision"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.35
+
+/obj/item/weapon/material/kitchen/utensil/knife/circumcision/New()
+	..()
+	name = "circumcision knife"
+
+/obj/item/weapon/material/kitchen/utensil/knife/circumcision/attack(target as mob, mob/living/user as mob)
+	if (istype(target, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = target
+		if (user.a_intent == I_HELP && H.gender == MALE)
+			if (H.circumcised)
+				user << "<span class = 'notice'>[H] is already circumcised!</span>"
+				return
+			else
+				visible_message("<span class = 'notice'>[user] starts to circumcise [H]...</span>")
+				if (do_after(user, 90, H) && !H.circumcised)
+					visible_message("<span class = 'notice'>[user] successfully circumcises [H].</span>")
+					H.circumcised = TRUE
+					return
+				else
+					return ..()
+		else
+			return ..()
+	else
+		return ..()
+
 /obj/item/weapon/material/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	return ..()
 

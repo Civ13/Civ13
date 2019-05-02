@@ -75,7 +75,44 @@
 						var/turf/floor/FF = get_step(src,direction)
 						FF.update_icon() //so siding get updated properly
 
+//Carpets - To be Expanded Upon
 
+/turf/floor/carpet/pinkcarpet
+	name = "Pink Carpet"
+	icon_state = "gaycarpet"
+
+/turf/floor/carpet/redcarpet
+	name = "Red Carpet"
+	icon_state = "carpet"
+
+/turf/floor/carpet/orangecarpet
+	name = "Orange Carpet"
+	icon_state = "oracarpet"
+
+/turf/floor/carpet/purplecarpet
+	name = "Purple Carpet"
+	icon_state = "purcarpet"
+
+/turf/floor/carpet/bluecarpet
+	name = "Blue Carpet"
+	icon_state = "blucarpet"
+
+/turf/floor/carpet/tealcarpet
+	name = "Teal Carpet"
+	icon_state = "sblucarpet"
+
+/turf/floor/carpet/greencarpet
+	name = "Green Carpet"
+	icon_state = "turcarpet"
+
+/turf/floor/carpet/blackcarpet
+	name = "Black Carpet"
+	icon_state = "bcarpet"
+
+/turf/floor/carpet/whitecarpet
+	name = "White Carpet"
+	icon_state = "wcarpet"
+//Continue
 
 /turf/floor/plating/ironsand/New()
 	..()
@@ -89,6 +126,15 @@
 	is_diggable = TRUE
 	may_become_muddy = TRUE
 	initial_flooring = null
+
+/turf/floor/grass/jungle/savanna
+	name = "dry grass"
+	icon_state = "grass_dry"
+	initial_flooring = null
+
+/turf/floor/grass/jungle/savanna/New()
+	..()
+	icon_state = "grass_dry"
 
 /turf/floor/winter
 	name = "snow"
@@ -157,7 +203,7 @@
 //water level is measured in centimeters. the maximum is 200 (2 meters). up to 1.5 will make movement progressively slower, up from that you will drown if you stay for too long.
 
 /turf/floor/beach/water
-	name = "water"
+	name = "shallow water"
 	desc = "Water. Seems to be shallow."
 	icon_state = "seashallow"
 	move_delay = 3
@@ -166,9 +212,26 @@
 	var/sickness = 1 //amount of toxins, from 0 to 3
 	initial_flooring = /decl/flooring/water
 	watertile = TRUE
+
+/turf/floor/beach/water/coastwater
+	name = "coast water"
+	desc = "lovely water hitting the coast line"
+	icon_state = "beach"
+
+/turf/floor/beach/water/coastwater/corner
+	name = "coast water corner"
+	desc = "lovely water hitting the coast line"
+	icon_state = "beachcorner"
+
+/turf/floor/beach/water/coastwater/layer
+	name = "coast water"
+	desc = "lovely water hitting the coast line"
+	icon_state = "seashallow_edgesX"
+
 /turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE
+	initial_flooring = /decl/flooring/water_salt
 
 /turf/floor/beach/water/deep
 	name = "deep water"
@@ -180,16 +243,16 @@
 	initial_flooring = /decl/flooring/water_deep
 
 /turf/floor/beach/water/deep/jungle
-	name = "deep jungle water"
-	icon_state = "seashallow_jungle1"
+	name = "deep jungle river"
+	icon_state = "seashallow_jungle3"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
 	density = FALSE
 	iscovered = FALSE
-	initial_flooring = /decl/flooring/water_jungle1
+	initial_flooring = /decl/flooring/water_jungle3
 
 /turf/floor/beach/water/deep/swamp
-	name = "deep swamp water"
+	name = "deep swamp"
 	icon_state = "seashallow_swamp"
 	desc = "Water. Seems to be very deep, you cant see the bottom."
 	water_level = 200
@@ -200,6 +263,8 @@
 /turf/floor/beach/water/deep/saltwater
 	name = "deep saltwater"
 	salty = TRUE
+	initial_flooring = /decl/flooring/water_deep_salt
+
 /turf/floor/beach/water/deep/CanPass(atom/movable/mover)
 	if (istype(mover, /obj/effect/effect/smoke))
 		return TRUE
@@ -209,18 +274,21 @@
 		return FALSE
 	else
 		return ..()
+
 /turf/floor/beach/water/swamp
-	name = "swamp water"
+	name = "swamp"
 	move_delay = 3
 	icon_state = "seashallow_swamp"
 	sickness = 3
 	initial_flooring = /decl/flooring/water_swamp
+
 /turf/floor/beach/water/jungle
-	name = "river water"
+	name = "jungle river"
 	move_delay = 5
 	icon_state = "seashallow_jungle1"
 	sickness = 2
 	initial_flooring = /decl/flooring/water_jungle1
+
 /turf/floor/beach/water/flooded
 	name = "flooded riverbed"
 	move_delay = 5

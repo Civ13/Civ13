@@ -22,7 +22,6 @@
 
 /obj/structure/sign/attackby(obj/item/tool as obj, mob/user as mob)	//deconstruction
 	if (istype(tool, /obj/item/weapon/hammer))
-		user << "You unfasten the sign with your [tool]."
 		var/obj/item/sign/S = new(loc)
 		S.name = name
 		S.desc = desc
@@ -30,6 +29,7 @@
 		//var/icon/I = icon('icons/obj/decals.dmi', icon_state)
 		//S.icon = I.Scale(24, 24)
 		S.sign_state = icon_state
+		user << "You unfasten \the [S] with your [tool]."
 		qdel(src)
 	else ..()
 
@@ -61,7 +61,6 @@
 			user << "You fasten \the [S] with your [tool]."
 			qdel(src)
 	else ..()
-
 
 /obj/structure/sign/securearea
 	name = "\improper SECURE AREA"
@@ -118,3 +117,34 @@
 	desc = "A silver sign which reads 'VI'."
 	name = "SIX"
 	icon_state = "n6"
+
+/obj/structure/sign/torii
+	desc = "A tall red gate structure."
+	name = "torii gate"
+	icon_state = "torii"
+	icon = 'icons/turf/64x64.dmi'
+
+/obj/structure/sign/painting1
+	desc = "A large foamy wave crashes into the rocky shore. A bit of sunlight passes through the clouds, glistening on the sea surface and wet boulders."
+	name = "painting"
+	icon_state = "painting1"
+
+/obj/structure/sign/painting2
+	desc = "A serene city street with a few people on a summer day. Two- and three-storey houses stand to the left and right, separated by a cobblestone road. A massive building with spires could be seen in the distance."
+	name = "painting"
+	icon_state = "painting2"
+
+/obj/structure/sign/painting3
+	desc = "A blazing sunset seen from a steep cliff above the sea."
+	name = "painting"
+	icon_state = "painting3"
+
+/obj/structure/sign/painting4
+	desc = "A wooded mountain valley with a small pond at the clearing, where a group of horsemen could be seen. The mountains themselves loom farther ahead, obscured by a thin haze."
+	name = "painting"
+	icon_state = "painting4"
+
+/obj/structure/sign/painting5
+	desc = "A still life painting, depicting a table with a piece of white cloth, several fruits and a human skull."
+	name = "painting"
+	icon_state = "painting5"

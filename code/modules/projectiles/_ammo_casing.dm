@@ -128,6 +128,7 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	resultpath = null
 	gunpowder_max = 1.5
+	var/inputbtype = "normal"
 
 /obj/item/stack/ammopart/casing/pistol
 	name = "empty pistol casing"
@@ -138,6 +139,18 @@
 	throwforce = WEAPON_FORCE_HARMLESS
 	resultpath = null
 	gunpowder_max = 1
+
+/obj/item/stack/ammopart/casing/artillery
+	name = "empty artillery casing"
+	desc = "A large empty brass casing."
+	icon = 'icons/obj/cannon_ball.dmi'
+	icon_state = "casing"
+	force = WEAPON_FORCE_HARMLESS+1
+	throwforce = WEAPON_FORCE_HARMLESS+2
+	resultpath = null
+	gunpowder_max = 5
+	max_amount = 1
+	value = 4
 
 /obj/item/stack/ammopart/bullet
 	name = "iron bullet"
@@ -188,7 +201,15 @@
 
 	else
 		return
-
+/obj/item/stack/ammopart/casing/artillery/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		for(var/i=1;i<=amount;i++)
+			new/obj/item/cannon_ball/shell(user.loc)
+		qdel(src)
+		return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
+		return
 /obj/item/stack/ammopart/casing/pistol/attack_self(mob/user)
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
 		var/list/listing = list("Cancel")
@@ -232,7 +253,7 @@
 		if (map.ordinal_age == 4)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
 		else if (map.ordinal_age >= 5)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.65x53 Mauser", "7.92x57 Mauser", "Cancel")
+			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.65x53 Mauser", "7.92x57 Mauser", ".303 British","6.5x52mm Carcano", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -248,17 +269,30 @@
 			resultpath = /obj/item/ammo_casing/shotgun/beanbag
 		else if (input == "7.62x54mmR Russian")
 			resultpath = /obj/item/ammo_casing/a762x54
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "8x53mm Murata")
 			resultpath = /obj/item/ammo_casing/a8x53mm
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "6.5x50mmSR Arisaka")
 			resultpath = /obj/item/ammo_casing/a65x50mm
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.65x53 Mauser")
 			resultpath = /obj/item/ammo_casing/a765x53
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.92x57 Mauser")
 			resultpath = /obj/item/ammo_casing/a792x57
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+		else if (input == ".303 British")
+			resultpath = /obj/item/ammo_casing/a303
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+		else if (input == "6.5x52mm Carcano")
+			resultpath = /obj/item/ammo_casing/a65x52mm
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
-				new resultpath(user.loc)
+				var/obj/item/ammo_casing/NC = new resultpath(user.loc)
+				NC.btype = inputbtype
+				NC.checktype()
 			qdel(src)
 			return
 		else
@@ -310,6 +344,16 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a65x50mm
 	caliber = "a65x50mm"
+	value = 5
+
+/obj/item/ammo_casing/a65x52mm
+	name = "6.5x52mm bullet"
+	desc = "A brass casing containing powder and a lead bullet."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a65x52mm
+	caliber = "a65x52mm"
 	value = 5
 
 /obj/item/ammo_casing/a8x53mm
@@ -411,6 +455,16 @@
 	weight = 0.05
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x54
 	caliber = "a762x54"
+	value = 2
+
+/obj/item/ammo_casing/a303
+	name = ".303 bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a303
+	caliber = "a303"
 	value = 2
 
 /obj/item/ammo_casing/a762x38

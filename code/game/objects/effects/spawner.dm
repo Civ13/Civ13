@@ -66,11 +66,16 @@
 /obj/effect/spawner/mobspawner/proc/getEmptyTurf()
 	var/nearbyObjects = range(max_range,src)
 	var/list/turf/emptyTurfs = new
+	var/invalid = FALSE
 	for(var/turf/T in nearbyObjects)
-		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water/deep))
-			continue //bad turf
-
-		emptyTurfs += T
+		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
+			invalid = TRUE
+		for(var/obj/structure/OB in T)
+			invalid = TRUE
+		for(var/obj/covers/OB in T)
+			invalid = TRUE
+		if (!invalid)
+			emptyTurfs += T
 	if (emptyTurfs.len)
 		return pick(emptyTurfs)
 
@@ -83,11 +88,10 @@
 
 /obj/effect/spawner/mobspawner/proc/spawnerproc()
 
-	if ((map.civilizations && !(season == "WINTER")) || !(map.civilizations))
-		if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
-			spawning = TRUE
-		if (current_number < 0)
-			current_number = 0
+	if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
+		spawning = TRUE
+	if (current_number < 0)
+		current_number = 0
 	if (activated)
 		if (spawning == TRUE)
 			spawning = FALSE
@@ -109,6 +113,7 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/turkey_f
 	timer = 3000
+
 /obj/effect/spawner/mobspawner/panthers
 	name = "panther spawner"
 	hostile = TRUE
@@ -116,6 +121,15 @@
 	max_range = 12
 	create_path = /mob/living/simple_animal/hostile/panther
 	timer = 3000
+
+/obj/effect/spawner/mobspawner/panthers/jaguar
+	name = "jaguar spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 12
+	create_path = /mob/living/simple_animal/hostile/panther/jaguar
+	timer = 3000
+
 
 /obj/effect/spawner/mobspawner/bears
 	name = "bear spawner"
@@ -140,13 +154,13 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/hostile/bear/polar
 	timer = 3000
+
 /obj/effect/spawner/mobspawner/monkeys
 	name = "monkey spawner"
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/monkey
 	timer = 3000
-
 
 /obj/effect/spawner/mobspawner/pirates
 	name = "pirate spawner"
@@ -175,6 +189,14 @@
 	create_path = /mob/living/simple_animal/frog/poisonous
 	timer = 4800
 
+/obj/effect/spawner/mobspawner/frog
+	name = "frog spawner"
+	hostile = TRUE
+	max_number = 4
+	max_range = 12
+	create_path = /mob/living/simple_animal/frog
+	timer = 4800
+
 /obj/effect/spawner/mobspawner/mouse
 	name = "mouse spawner"
 	max_number = 2
@@ -189,6 +211,14 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/hostile/poison/snake
 	timer = 5000
+
+/obj/effect/spawner/mobspawner/crab
+	name = "crab spawner"
+	max_number = 2
+	max_range = 5
+	create_path = /mob/living/simple_animal/crab/small
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/deer_m
 	name = "stag spawner"
 	max_number = 2
@@ -202,7 +232,6 @@
 	max_range = 10
 	create_path = /mob/living/simple_animal/deer/female
 	timer = 3000
-
 
 /obj/effect/spawner/mobspawner/reindeer_m
 	name = "reindeer stag spawner"
@@ -232,6 +261,7 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/goat
 	timer = 5000
+
 /obj/effect/spawner/mobspawner/goats_f
 	name = "female goat spawner"
 	max_number = 2
@@ -245,12 +275,21 @@
 	max_range = 5
 	create_path = /mob/living/simple_animal/sheep
 	timer = 5000
+
 /obj/effect/spawner/mobspawner/sheep_f
 	name = "female sheep spawner"
 	max_number = 2
 	max_range = 5
 	create_path = /mob/living/simple_animal/sheep/female
 	timer = 5000
+
+/obj/effect/spawner/mobspawner/camel
+	name = "camel spawner"
+	max_number = 2
+	max_range = 8
+	create_path = /mob/living/simple_animal/camel
+	timer = 5000
+
 /obj/effect/spawner/mobspawner/wolves
 	name = "wolf spawner"
 	hostile = TRUE
@@ -296,3 +335,137 @@
 	create_path = /mob/living/simple_animal/hostile/dinosaur/velociraptor
 	timer = 3000
 	activated = 0
+
+////////////////////OBJ SPAWNER///////////
+/obj/effect/spawner/objspawner
+	name = "obj spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	var/activated = 1
+	var/max_number = 35
+	var/max_range = 13
+	var/create_path = /obj/structure/wild/tree/live_tree
+	var/timer = 6000
+	var/spawning = FALSE
+	invisibility = 101
+
+/obj/effect/spawner/objspawner/New()
+	..()
+	invisibility = 101
+	icon_state = "invisible"
+	spawnerproc()
+
+/obj/effect/spawner/objspawner/proc/getEmptyTurf()
+	var/nearbyObjects = range(max_range,src)
+	var/list/turf/emptyTurfs = new
+	var/invalid = FALSE
+	for(var/turf/T in nearbyObjects)
+		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
+			invalid = TRUE
+		for(var/obj/structure/OB in T)
+			invalid = TRUE
+		for(var/obj/covers/OB in T)
+			invalid = TRUE
+		if (!invalid)
+			emptyTurfs += T
+	if (emptyTurfs.len)
+		return pick(emptyTurfs)
+
+/obj/effect/spawner/objspawner/proc/getCurrent()
+	var/count = 0
+	for (var/obj/O in range(max_range,src))
+		if (istype(O, create_path))
+			count++
+	if (count < max_number)
+		return TRUE
+	else
+		return FALSE
+/obj/effect/spawner/objspawner/proc/spawnTarget()
+	var/turf/emptyTurf = getEmptyTurf()
+	if (emptyTurf)
+		new create_path(emptyTurf)
+
+/obj/effect/spawner/objspawner/proc/spawnerproc()
+
+	if (getCurrent() == TRUE)
+		spawning = TRUE
+	if (activated)
+		if (spawning == TRUE)
+			spawning = FALSE
+			spawnTarget()
+
+	spawn(rand(timer,timer*1.5))
+		spawnerproc()
+
+
+/obj/effect/spawner/objspawner/tree
+	name = "tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 35
+	max_range = 13
+	create_path = /obj/structure/wild/tree/live_tree
+	timer = 6000
+
+/obj/effect/spawner/objspawner/palm
+	name = "palm spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 13
+	max_range = 13
+	create_path = /obj/structure/wild/palm
+	timer = 6000
+
+/obj/effect/spawner/objspawner/jungle
+	name = "jungle tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 26
+	max_range = 13
+	create_path = /obj/structure/wild/jungle
+	timer = 6000
+
+/obj/effect/spawner/objspawner/acacia
+	name = "acacia tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 10
+	max_range = 13
+	create_path = /obj/structure/wild/jungle/acacia
+	timer = 7500
+
+/obj/effect/spawner/objspawner/medpine
+	name = "mediterranean pine tree spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	max_number = 18
+	max_range = 13
+	create_path = /obj/structure/wild/jungle/medpine
+	timer = 6000
+
+//ore spanwers for extended games
+/obj/effect/spawner/orespawner
+	name = "ore spawner"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "x1"
+	var/active = FALSE
+/obj/effect/spawner/orespawner/New()
+	..()
+	invisibility = 101
+	icon_state = "invisible"
+
+/obj/effect/spawner/orespawner/proc/do_spawn()
+	var/turf/sourceturf = get_turf(src)
+	if (active)
+		if (!istype(sourceturf, /turf/floor/dirt) || istype(sourceturf, /turf/floor/dirt/underground))
+			return
+		else
+			sourceturf.ChangeTurf(/turf/floor/mining)
+			return
+	else
+		if (istype(sourceturf, /turf/floor/dirt))
+			return
+		else
+			sourceturf.ChangeTurf(/turf/floor/dirt)
+			return
+		return

@@ -71,7 +71,7 @@
 	else
 		target_zone = pick("l_foot", "r_foot", "l_leg", "r_leg")
 
-	//armour
+	//armor
 	var/blocked = L.run_armor_check(target_zone, "melee")
 
 	if (blocked >= 2)
@@ -183,7 +183,7 @@
 	else
 		target_zone = pick("l_foot", "r_foot", "l_leg", "r_leg")
 
-	//armour
+	//armor
 	var/blocked = L.run_armor_check(target_zone, "melee")
 
 	if (blocked >= 2)

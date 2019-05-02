@@ -30,6 +30,9 @@
 		if (user.getStatCoeff("medical") < 1.5)
 			user << "Your medical skill is too low for such a complicated procedure!"
 			return
+		var/mod = 1
+		if (user.religious_clergy == "Shamans")
+			mod = 2
 		switch (limb_type)
 			if ("leg")
 				var/obj/item/organ/external/GR = C.get_organ("groin")
@@ -45,7 +48,7 @@
 						LL.prosthesis = TRUE
 						LL.prosthesis_type = icon_state
 						C.update_mutations(1)
-						user.adaptStat("medical", 4)
+						user.adaptStat("medical", 4*mod)
 						qdel(src)
 					return
 				else if (RL.is_stump() && RL.prosthesis == FALSE)
@@ -55,7 +58,7 @@
 						RL.prosthesis = TRUE
 						RL.prosthesis_type = icon_state
 						C.update_mutations(1)
-						user.adaptStat("medical", 4)
+						user.adaptStat("medical", 4*mod)
 						qdel(src)
 					return
 			if ("foot")
@@ -75,7 +78,7 @@
 						LF.prosthesis = TRUE
 						LF.prosthesis_type = icon_state
 						C.update_mutations(1)
-						user.adaptStat("medical", 3)
+						user.adaptStat("medical", 3*mod)
 						qdel(src)
 					return
 				else if (RF.is_stump() && RF.prosthesis == FALSE && !RL.is_stump())
@@ -85,7 +88,7 @@
 						RF.prosthesis = TRUE
 						RF.prosthesis_type = icon_state
 						C.update_mutations(1)
-						user.adaptStat("medical", 3)
+						user.adaptStat("medical", 3*mod)
 						qdel(src)
 					return
 	else

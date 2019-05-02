@@ -2,7 +2,7 @@
 RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 ***********************************/
 /obj/item/ammo_magazine/mosin
-	name = "Clip (7.92x54mm)"
+	name = "clip (7.92x54mm)"
 	icon_state = "clip"
 	caliber = "a762x54"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
@@ -10,6 +10,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 5
 	weight = 0.04
 	multiple_sprites = TRUE
+	clip = TRUE
 
 /obj/item/ammo_magazine/mosinbox
 	name = "magazine box (7.92x54mm)"
@@ -23,8 +24,19 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+obj/item/ammo_magazine/madsen
+	name = "magazine (7.92x54mm)"
+	icon_state = "madsen"
+	mag_type = MAGAZINE
+	caliber = "a762x54"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 1440)
+	ammo_type = /obj/item/ammo_casing/a762x54
+	max_ammo = 25
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/gewehr71
-	name = "Clip (7.65x53mm)"
+	name = "clip (7.65x53mm)"
 	icon_state = "kclip"
 	caliber = "a765x53"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
@@ -32,6 +44,8 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 5
 	weight = 0.04
 	multiple_sprites = TRUE
+	clip = TRUE
+
 
 /obj/item/ammo_magazine/gewehr71box
 	name = "magazine box (7.65x53mm)"
@@ -46,7 +60,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	is_box = TRUE
 
 /obj/item/ammo_magazine/gewehr98
-	name = "Clip (7.92x57mm)"
+	name = "clip (7.92x57mm)"
 	icon_state = "kclip"
 	caliber = "a792x57"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
@@ -54,6 +68,8 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 5
 	weight = 0.04
 	multiple_sprites = TRUE
+	clip = TRUE
+
 
 /obj/item/ammo_magazine/gewehr98box
 	name = "magazine box (7.92x57mm)"
@@ -92,7 +108,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	is_box = TRUE
 
 /obj/item/ammo_magazine/arisaka
-	name = "Clip (6.5x50mm)"
+	name = "clip (6.5x50mm)"
 	icon_state = "kclip"
 	caliber = "a65x50mm"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
@@ -100,6 +116,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 5
 	weight = 0.038
 	multiple_sprites = TRUE
+	clip = TRUE
 
 /obj/item/ammo_magazine/arisakabox
 	name = "magazine box (6.5x50mm)"
@@ -113,6 +130,29 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
+/obj/item/ammo_magazine/carcano
+	name = "clip (6.5x52mm)"
+	icon_state = "kclip"
+	caliber = "a65x52mm"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a65x52mm
+	max_ammo = 5
+	weight = 0.038
+	multiple_sprites = TRUE
+	clip = TRUE
+
+/obj/item/ammo_magazine/carcano_box
+	name = "magazine box (6.5x52mm)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a65x52mm"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a65x52mm
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 /obj/item/ammo_magazine/maxim
 	name = "Maxim ammo belt"
 	icon_state = "maximbelt"
@@ -120,7 +160,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	caliber = "a762x54"
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a762x38
+	ammo_type = /obj/item/ammo_casing/a762x54
 	max_ammo = 250
 	multiple_sprites = TRUE
 	var/slot = "decor"
@@ -169,6 +209,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.06
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
+	clip = TRUE
 
 
 ////////// NAGANT REVOLVER ///////////////
@@ -233,7 +274,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 
 
 /obj/item/ammo_magazine/murata
-	name = "Clip (8x53mm)"
+	name = "clip (8x53mm)"
 	icon_state = "kclip"
 	caliber = "a8x53mm"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
@@ -241,6 +282,43 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 5
 	weight = 0.048
 	multiple_sprites = TRUE
+	clip = TRUE
+
+/obj/item/ammo_magazine/murata_box
+	name = "magazine box (8x53mm)"
+	icon_state = "arisaka_ammo"
+	mag_type = MAGAZINE
+	caliber = "a8x53mm"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a8x53mm
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
+/obj/item/ammo_magazine/enfield
+	name = "clip (.303)"
+	icon_state = "clip"
+	caliber = "a303"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a303
+	max_ammo = 5
+	weight = 0.048
+	multiple_sprites = TRUE
+	clip = TRUE
+
+/obj/item/ammo_magazine/enfield_box
+	name = "magazine box (.303)"
+	icon_state = "ammo"
+	mag_type = MAGAZINE
+	caliber = "a303"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a303
+	max_ammo = 50
+	multiple_sprites = FALSE
+	is_box = TRUE
+
 
 /obj/item/ammo_magazine/c44p
 	name = "bullet pouch (.44)"

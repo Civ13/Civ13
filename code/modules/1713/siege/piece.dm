@@ -16,6 +16,15 @@
 	anchored = TRUE
 	not_movable = FALSE
 	not_disassemblable = TRUE
+	var/ammotype = /obj/item/cannon_ball
+	var/spritemod = TRUE //if true, uses 32x64
+
+/obj/structure/cannon/modern
+	name = "Field Cannon"
+	icon = 'icons/obj/cannon.dmi'
+	icon_state = "modern_cannon"
+	ammotype = /obj/item/cannon_ball/shell
+	spritemod = FALSE
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
@@ -43,9 +52,9 @@
 
 // todo: loading artillery. This will regenerate the shrapnel and affect our explosion
 /obj/structure/cannon/attackby(obj/item/W as obj, mob/M as mob)
-	if (istype(W, /obj/item/cannon_ball))
+	if (istype(W, ammotype))
 		if (loaded)
-			M << "<span class = 'warning'>There's already a cannonball loaded.</span>"
+			M << "<span class = 'warning'>There's already a [loaded] loaded.</span>"
 			return
 		// load first and only slot
 		M.remove_from_mob(W)
@@ -91,7 +100,7 @@
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 
-	if (!locate(src) in get_step(user, user.dir))
+	if (!locate(user) in range(1,src))
 		user << "<span class = 'danger'>Get behind the cannon to use it.</span>"
 		return FALSE
 
@@ -299,28 +308,32 @@
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon_v.dmi'
+					icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon_v.dmi'
+					icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon_h.dmi'
+					icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon_h.dmi'
+					icon_state = "cannon"
 	return
 
 /obj/structure/cannon/verb/rotate_right()
@@ -333,28 +346,32 @@
 		switch(dir)
 			if (EAST)
 				dir = SOUTH
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon_v.dmi'
+					icon_state = "cannon"
 			if (WEST)
 				dir = NORTH
-				bound_height = 64
-				bound_width = 32
-				icon = 'icons/obj/cannon_v.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 64
+					bound_width = 32
+					icon = 'icons/obj/cannon_v.dmi'
+					icon_state = "cannon"
 			if (NORTH)
 				dir = EAST
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon_h.dmi'
+					icon_state = "cannon"
 			if (SOUTH)
 				dir = WEST
-				bound_height = 32
-				bound_width = 64
-				icon = 'icons/obj/cannon_h.dmi'
-				icon_state = "cannon"
+				if (spritemod)
+					bound_height = 32
+					bound_width = 64
+					icon = 'icons/obj/cannon_h.dmi'
+					icon_state = "cannon"
 	return
 
 /obj/structure/cannon/relaymove(var/mob/mob, direction)
@@ -388,26 +405,27 @@
 	// bug abusers btfo
 	if (map.check_caribbean_block(mob, get_turf(mob)))
 		return FALSE
-	if (dir==SOUTH)
-		bound_height = 64
-		bound_width = 32
-		icon = 'icons/obj/cannon_v.dmi'
-		icon_state = "cannon"
-	if (dir==NORTH)
-		bound_height = 64
-		bound_width = 32
-		icon = 'icons/obj/cannon_v.dmi'
-		icon_state = "cannon"
-	if (dir==EAST)
-		bound_height = 32
-		bound_width = 64
-		icon = 'icons/obj/cannon_h.dmi'
-		icon_state = "cannon"
-	if (dir==WEST)
-		bound_height = 32
-		bound_width = 64
-		icon = 'icons/obj/cannon_h.dmi'
-		icon_state = "cannon"
+	if (spritemod)
+		if (dir==SOUTH)
+			bound_height = 64
+			bound_width = 32
+			icon = 'icons/obj/cannon_v.dmi'
+			icon_state = "cannon"
+		if (dir==NORTH)
+			bound_height = 64
+			bound_width = 32
+			icon = 'icons/obj/cannon_v.dmi'
+			icon_state = "cannon"
+		if (dir==EAST)
+			bound_height = 32
+			bound_width = 64
+			icon = 'icons/obj/cannon_h.dmi'
+			icon_state = "cannon"
+		if (dir==WEST)
+			bound_height = 32
+			bound_width = 64
+			icon = 'icons/obj/cannon_h.dmi'
+			icon_state = "cannon"
 	return TRUE
 
 /obj/structure/cannon/Bump(var/atom/A, yes)
@@ -421,52 +439,54 @@
 			A.last_bumped = world.time
 			A.Bumped(src)
 		return
-	if (dir==SOUTH)
-		bound_height = 64
-		bound_width = 32
-		icon = 'icons/obj/cannon_v.dmi'
-		icon_state = "cannon"
-	if (dir==NORTH)
-		bound_height = 64
-		bound_width = 32
-		icon = 'icons/obj/cannon_v.dmi'
-		icon_state = "cannon"
-	if (dir==EAST)
-		bound_height = 32
-		bound_width = 64
-		icon = 'icons/obj/cannon_h.dmi'
-		icon_state = "cannon"
-	if (dir==WEST)
-		bound_height = 32
-		bound_width = 64
-		icon = 'icons/obj/cannon_h.dmi'
-		icon_state = "cannon"
+	if (spritemod)
+		if (dir==SOUTH)
+			bound_height = 64
+			bound_width = 32
+			icon = 'icons/obj/cannon_v.dmi'
+			icon_state = "cannon"
+		if (dir==NORTH)
+			bound_height = 64
+			bound_width = 32
+			icon = 'icons/obj/cannon_v.dmi'
+			icon_state = "cannon"
+		if (dir==EAST)
+			bound_height = 32
+			bound_width = 64
+			icon = 'icons/obj/cannon_h.dmi'
+			icon_state = "cannon"
+		if (dir==WEST)
+			bound_height = 32
+			bound_width = 64
+			icon = 'icons/obj/cannon_h.dmi'
+			icon_state = "cannon"
 	..()
 	return
 
 /obj/structure/cannon/Move(var/turf/NewLoc, var/newdir)
 	..()
-	switch(newdir)
-		if (SOUTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (NORTH)
-			bound_height = 64
-			bound_width = 32
-			icon = 'icons/obj/cannon_v.dmi'
-			icon_state = "cannon"
-		if (EAST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
-		if (WEST)
-			bound_height = 32
-			bound_width = 64
-			icon = 'icons/obj/cannon_h.dmi'
-			icon_state = "cannon"
+	if (spritemod)
+		switch(newdir)
+			if (SOUTH)
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
+			if (NORTH)
+				bound_height = 64
+				bound_width = 32
+				icon = 'icons/obj/cannon_v.dmi'
+				icon_state = "cannon"
+			if (EAST)
+				bound_height = 32
+				bound_width = 64
+				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
+			if (WEST)
+				bound_height = 32
+				bound_width = 64
+				icon = 'icons/obj/cannon_h.dmi'
+				icon_state = "cannon"
 /*
 /obj/structure/cannon/verb/fix()
 	set category = null

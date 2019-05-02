@@ -85,6 +85,8 @@ var/civmax_research = list(130,130,130)
 	var/nomads = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/custom_civs = list()
+	var/list/custom_religions = list()
+	var/list/custom_religion_nr = list()
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical), 4th value: leader. 5th value: victory points
 	var/civa_research = list(0,0,0,null,0)
 	var/civb_research = list(0,0,0,null,0)
@@ -105,7 +107,7 @@ var/civmax_research = list(130,130,130)
 	var/age1_lim = 75
 	var/age1_done = 0
 	var/age1_top = 35
-	var/age2_lim = 150
+	var/age2_lim = 135
 	var/age2_done = 0
 	var/age2_timer = 40000
 	var/age2_top = 65
@@ -122,8 +124,18 @@ var/civmax_research = list(130,130,130)
 	var/age5_timer = 46000
 	var/age5_top = 140
 
+	var/orespawners = 0
 
 	var/pollutionmeter = 0
+
+	var/list/globalmarketplace = list()
+	var/list/marketplaceaccounts = list()
+	var/globalmarketplacecount = 0
+
+	var/winddirection = "East"
+	var/windspeedvar = 1 // 0 to 4
+	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale
+	var/winddesc = "A light Eastern breeze."
 
 /obj/map_metadata/New()
 	..()
@@ -154,6 +166,51 @@ var/civmax_research = list(130,130,130)
 	set_ordinal_age()
 	spawn(5000)
 		pollution()
+	spawn(2400)
+		wind()
+	spawn(2000)
+		religious_timer()
+/obj/map_metadata/proc/religious_timer()
+	if (map.custom_religions.len > 0)
+		for (var/rel in map.custom_religions)
+			if (map.custom_religions[rel][3] > 0)
+				map.custom_religions[rel][3] -= 0.2
+			if (map.custom_religions[rel][3] < 0)
+				map.custom_religions[rel][3] = 0
+	spawn(1200)
+		religious_timer()
+
+/obj/map_metadata/proc/wind()
+	var/oldwind = winddirection
+	var/oldspeed = windspeedvar
+	winddirection = pick("North", "South", "East", "West")
+	windspeedvar += pick(-1,0,1)
+	if (windspeedvar > 4)
+		windspeedvar = 4
+	if (windspeedvar < 0)
+		windspeedvar = 0
+	switch (windspeedvar)
+		if (0)
+			windspeed = "calm"
+			winddesc = "No wind."
+		if (1)
+			windspeed = "a light breeze"
+			winddesc = "A light [winddirection]ern breeze."
+		if (2)
+			windspeed = "a moderate breeze"
+			winddesc = "A moderate [winddirection]ern breeze."
+		if (3)
+			windspeed = "a strong breeze"
+			winddesc = "A strong [winddirection]ern breeze."
+		if (4)
+			windspeed = "a gale"
+			winddesc = "A [winddirection]ern gale."
+	if (windspeedvar != oldspeed)
+		world << "<big>The wind changes strength. It is now <b>[windspeed]</b>.</big>"
+	if (winddirection != oldwind)
+		world << "<big>The wind changes direction. It is now blowing from the <b>[winddirection]</b>.</big>"
+	spawn(rand(3600,6000))
+		wind()
 
 /obj/map_metadata/proc/pollution()
 
@@ -161,6 +218,8 @@ var/civmax_research = list(130,130,130)
 		change_weather(WEATHER_SMOG)
 		world << "The air gets smoggy..."
 	pollutionmeter -= 80
+	if (pollutionmeter < 0)
+		pollutionmeter = 0
 	spawn(9000) //every 15 mins
 		pollution()
 

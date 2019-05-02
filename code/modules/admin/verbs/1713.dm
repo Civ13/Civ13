@@ -368,6 +368,41 @@ var/russian_forceEnabled = FALSE
 	var/msg12 = "Japanese: [alive_japanese.len] alive, [heavily_injured_japanese.len] heavily injured or unconscious, [dead_japanese.len] deceased. Mortality rate: [mortality_japanese]%"
 	var/msg13 = "Russian: [alive_russian.len] alive, [heavily_injured_russian.len] heavily injured or unconscious, [dead_russian.len] deceased. Mortality rate: [mortality_russian]%"
 
+	var/msg_religions = ""
+	var/relp = ""
+	var/relp_am = 0
+	if (map && map.civilizations)
+		for (var/rel in map.custom_religions)
+			if (map.custom_religions[rel][3] > relp_am)
+				relp = rel
+				relp_am = map.custom_religions[rel][3]
+	if (relp_am > 0 && relp != "")
+		msg_religions = "<b>Most Powerful Religion:</b> [relp]"
+
+	var/msg_factions = ""
+	var/relpf = ""
+	var/relpf_am = 0
+	var/relpf_max = 0
+	var/list/facl = list()
+	if (map && map.civilizations)
+		for (var/i=1,i<=map.custom_faction_nr.len,i++)
+			var/nu = 0
+			facl += list(map.custom_faction_nr[i],nu)
+
+		for (var/relf in facl)
+			var/curr = ""
+			for (var/mob/living/carbon/human/H in world)
+				for(var/k=1,k<=facl.len,k++)
+					if (facl[k] == H.civilization)
+						relpf_am += 1
+						curr = "[H.civilization]"
+			if (relpf_am > relpf_max)
+				relpf = "[curr]"
+				relpf_max = relpf_am
+			relpf_am = 0
+
+	if (relpf_max > 0 && relpf != "")
+		msg_factions = "<b>Largest Faction:</b> [relpf]"
 
 	if (map && !map.faction_organization.Find(BRITISH))
 		msg1 = null
@@ -432,6 +467,10 @@ var/russian_forceEnabled = FALSE
 				world << "<font size=3>[msg11]</font>"
 			if (msg13)
 				world << "<font size=3>[msg11]</font>"
+			if (map.civilizations && msg_religions != "")
+				world << "<font size=3>[msg_religions]</font>"
+			if (map.civilizations && msg_factions != "")
+				world << "<font size=3>[msg_factions]</font>"
 			if (shower)
 				message_admins("[key_name(shower)] showed everyone the battle report.")
 			else

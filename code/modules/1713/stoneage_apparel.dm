@@ -62,7 +62,7 @@
 	icon_state = "bonearmor"
 	item_state = "bonearmor"
 	worn_state = "bonearmor"
-	armor = list(melee = 50, bullet = 0, laser = 0,energy = 0, bomb = 10, bio = 0, rad = FALSE)
+	armor = list(melee = 50, arrow = 15, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
 
 /obj/item/clothing/under/indianhuge
 	name = "big leopard pelt"
@@ -73,10 +73,11 @@
 
 /obj/item/clothing/accessory/armband/talisman
 	name = "bone talisman"
-	desc = "A human bone talisman."
+	desc = "A bone talisman."
 	icon_state = "talisman"
 	item_state = "talisman"
 	slot = "decor"
+	var/religion = "none"
 
 /obj/item/clothing/accessory/armband/indian1
 	name = "indian acessories"
@@ -138,7 +139,7 @@
 	icon_state = "skull_mask"
 	item_state = "skull_mask"
 	body_parts_covered = FACE|EYES
-	armor = list(melee = 25, bullet = 10, laser = 0,energy = 0, bomb = 15, bio = 0, rad = FALSE)
+	armor = list(melee = 25, arrow = 10, gun = 0, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
 /obj/item/clothing/head/chief_hat
 	name = "Chief hat"

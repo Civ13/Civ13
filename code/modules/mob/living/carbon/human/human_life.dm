@@ -63,6 +63,10 @@
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
+	var/area/currentarea = get_area(src)
+	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
+		gib()
+
 	#define HUNGER_THIRST_MULTIPLIER 0.80
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
@@ -82,7 +86,7 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
+		if ((map.heat_wave || map.ID == MAP_NOMADS_DESERT) && !inducedSSD)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
 				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
@@ -95,9 +99,12 @@
 						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
 						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
 		else
-			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
 				water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+			else if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
+				nutrition -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
@@ -138,6 +145,13 @@
 			addictions[ad] -= 0.05
 
 // disease stuff
+	if (inducedSSD && disease && disease_progression <= 15)
+		disease = 0
+		disease_type = "none"
+		disease_progression = 0
+		bodytemperature = 310.055
+		disease_treatment = 0
+
 	if (disease == TRUE)
 		if (disease_type == "none")
 			disease = FALSE
@@ -312,12 +326,11 @@
 		for (var/mob/living/simple_animal/mouse/M in range(2,src))
 			//0.1% prob
 			if (!"plague" in disease_immunity)
-				if (prob(1))
-					if (prob(50))
-						disease = TRUE
-						disease_type = "plague"
-						disease_progression = 0
-						disease_treatment = 0
+				if (prob(2))
+					disease = TRUE
+					disease_type = "plague"
+					disease_progression = 0
+					disease_treatment = 0
 
 		for (var/mob/living/carbon/human/H in range(2,src))
 			if (H.disease == TRUE && !(H.disease_type in disease_immunity) && !disease_type == "malaria") //malaria doesn't transmit from person to person.
@@ -336,7 +349,7 @@
 		if (disease == FALSE)
 			//0.005%
 			if (prob(1))
-				if (prob(1))
+				if (prob(1) && !inducedSSD)
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
@@ -501,24 +514,85 @@
 
 	switch (season)
 		if ("WINTER")
-			loc_temp = 244
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 244
+				if ("sea")
+					loc_temp = 262
+				if ("tundra")
+					loc_temp = 213
+				if ("taiga")
+					loc_temp = 220
+				if ("semiarid")
+					loc_temp = 272
+				if ("desert")
+					loc_temp = 303
+				if ("jungle")
+					loc_temp = 293
+				if ("savanna")
+					loc_temp = 285
+
 		if ("FALL")
-			loc_temp = 285
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 285
+				if ("sea")
+					loc_temp = 289
+				if ("tundra")
+					loc_temp = 213
+				if ("taiga")
+					loc_temp = 229
+				if ("semiarid")
+					loc_temp = 295
+				if ("desert")
+					loc_temp = 303
+				if ("jungle")
+					loc_temp = 293
+				if ("savanna")
+					loc_temp = 290
+
 		if ("SUMMER")
-			loc_temp = 303
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 303
+				if ("sea")
+					loc_temp = 295
+				if ("tundra")
+					loc_temp = 244
+				if ("taiga")
+					loc_temp = 255
+				if ("semiarid")
+					loc_temp = 309
+				if ("desert")
+					loc_temp = 313
+				if ("jungle")
+					loc_temp = 304
+				if ("savanna")
+					loc_temp = 300
+
 		if ("SPRING")
-			loc_temp = 290
+			switch (mob_area.climate)
+				if ("temperate")
+					loc_temp = 290
+				if ("sea")
+					loc_temp = 288
+				if ("tundra")
+					loc_temp = 213
+				if ("taiga")
+					loc_temp = 229
+				if ("semiarid")
+					loc_temp = 300
+				if ("desert")
+					loc_temp = 309
+				if ("jungle")
+					loc_temp = 297
+				if ("savanna")
+					loc_temp = 295
 		if ("Dry Season")
 			loc_temp = 313
 		if ("Wet Season")
 			loc_temp = 303
 
-	if (map && map.ID == MAP_NOMADS_ICE_AGE)
-		switch (season)
-			if ("WINTER")
-				loc_temp = 213
-			if ("SUMMER")
-				loc_temp = 244
 
 	switch (time_of_day)
 		if ("Midday")
@@ -557,10 +631,6 @@
 			loc_temp = 190
 		if (WEATHER_SANDSTORM)
 			loc_temp = 321
-	if (map.blizzard)
-		loc_temp = 190
-	if (map.heat_wave)
-		loc_temp = 321
 	loc_temp = round(loc_temp)
 
 	for (var/obj/structure/brazier/BR in range(3, src))

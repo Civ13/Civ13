@@ -35,6 +35,26 @@ var/list/first_names_male_russian = file2list("config/names/first_male_russian.t
 var/list/first_names_female_russian = file2list("config/names/first_female_russian.txt")
 var/list/last_names_russian = file2list("config/names/last_russian.txt")
 
+var/list/first_names_male_ukrainian = file2list("config/names/first_male_ukrainian.txt")
+var/list/first_names_female_ukrainian = file2list("config/names/first_female_ukrainian.txt")
+var/list/last_names_ukrainian = file2list("config/names/last_ukrainian.txt")
+
+var/list/first_names_male_chinese = file2list("config/names/first_male_chinese.txt")
+var/list/first_names_female_chinese = file2list("config/names/first_female_chinese.txt")
+var/list/last_names_chinese = file2list("config/names/last_chinese.txt")
+
+var/list/first_names_male_hebrew = file2list("config/names/first_male_hebrew.txt")
+var/list/first_names_female_hebrew = file2list("config/names/first_female_hebrew.txt")
+var/list/last_names_hebrew = file2list("config/names/last_hebrew.txt")
+
+var/list/first_names_male_german = file2list("config/names/first_male_german.txt")
+var/list/first_names_female_german = file2list("config/names/first_female_german.txt")
+var/list/last_names_german = file2list("config/names/last_german.txt")
+
+var/list/first_names_male_ainu = file2list("config/names/first_male_ainu.txt")
+var/list/first_names_female_ainu = file2list("config/names/first_female_ainu.txt")
+var/list/last_names_ainu = file2list("config/names/last_ainu.txt")
+
 var/list/first_names_male_carib = file2list("config/names/first_carib.txt")
 var/list/first_names_female_carib = file2list("config/names/first_carib.txt")
 var/list/last_names_carib = file2list("config/names/last_carib.txt")
@@ -42,14 +62,23 @@ var/list/last_names_carib = file2list("config/names/last_carib.txt")
 var/list/verbs = file2list("config/names/verbs.txt")
 var/list/adjectives = file2list("config/names/adjectives.txt")
 
-var/list/first_names_male_greek = file2list("config/names/first_male_greek.txt")		//Add greek names to names vars
+var/list/first_names_male_greek = file2list("config/names/first_male_greek.txt")
 
-var/list/first_names_male_arab = file2list("config/names/first_male_arab.txt")		//Add greek names to names vars
-
+var/list/first_names_male_arab = file2list("config/names/first_male_arab.txt")
+var/list/first_names_female_arab = file2list("config/names/first_female_arab.txt")
 
 var/list/first_names_male_roman = file2list("config/names/first_male_roman.txt")
-var/list/middle_names_roman = file2list("config/names/middle_roman.txt")                 //Add roman names to names vars
+var/list/middle_names_roman = file2list("config/names/middle_roman.txt")
 var/list/last_names_roman = file2list("config/names/last_roman.txt")
+
+var/list/first_names_male_swahili = file2list("config/names/first_male_swahili.txt")
+var/list/first_names_female_swahili = file2list("config/names/first_female_swahili.txt")
+var/list/last_names_swahili = file2list("config/names/last_swahili.txt")
+
+var/list/first_names_male_zulu = file2list("config/names/first_male_zulu.txt")
+var/list/first_names_female_zulu = file2list("config/names/first_female_zulu.txt")
+var/list/last_names_zulu = file2list("config/names/last_zulu.txt")
+
 /* NOT USED FOR NOW!
 var/list/country_names = file2list("config/names/countries.txt")
 var/civname_a = pick(country_names)
@@ -60,8 +89,10 @@ var/civname_e = pick(country_names-civname_a-civname_b-civname_c-civname_d)
 var/civname_f = pick(country_names-civname_a-civname_b-civname_c-civname_d-civname_e)
 var/list/civnames = list(civname_a,civname_b,civname_c,civname_d,civname_e,civname_f)
 */
-var/civname_a = "Redland" //red
-var/civname_b = "Greenville" //green
+var/civname_a = "West Kingdom" //red
+var/civname_b = "East Kingdom" //green
+//var/civname_a = "Redland" //red
+//var/civname_b = "Greenville" //green
 var/civname_c = "Blueport" //blue
 var/civname_d = "Yellowdale" //yellow
 var/civname_e = "Whitetown" //white

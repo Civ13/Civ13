@@ -4,7 +4,7 @@
 	damage = 60
 	damage_type = BRUTE
 	nodamage = FALSE
-	check_armour = "bullet"
+	check_armor = "gun"
 	embed = FALSE
 	sharp = TRUE
 	hitsound_wall = "ric_sound"
@@ -37,6 +37,7 @@
 		return FALSE
 	return ..()
 
+/obj/item/projectile/bullet/check_penetrate(var/atom/A)
 /obj/item/projectile/bullet/check_penetrate(var/atom/A)
 	if (!A || !A.density) return TRUE //if whatever it was got destroyed when we hit it, then I guess we can just keep going
 
@@ -143,7 +144,7 @@
 
 /obj/item/projectile/bullet/pistol/rubber //"rubber" bullets
 	name = "rubber bullet"
-	check_armour = "melee"
+	check_armor = "melee"
 	damage = 5
 	agony = 25
 	embed = FALSE

@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/civilizations
 	ID = MAP_CIVILIZATIONS
-	title = "Civilizations (225x225x2)"
+	title = "Two Kingdoms (300x100x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -14,90 +14,58 @@
 	roundend_condition_sides = list(
 		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "5000 B.C."
+	age = "1013"
 	civilizations = TRUE
-	var/tribes_nr = 1
+	var/tribes_nr = 2
 	faction_distribution_coeffs = list(CIVILIAN = 1)
-	battle_name = "the civilizations"
-	mission_start_message = "<big>After ages as hunter-gatherers, one tribe has settled in this area and started farming. Will it advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
+	battle_name = "the kingdoms"
+	mission_start_message = "<big>Two medieval kingdoms rule this land. They have <b>24 hours</b> to fortify and build a military. Who will win?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	availablefactions_run = TRUE
 	songs = list(
 		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
-	research_active = TRUE
-	age1_lim = 75
-	age1_done = 0
-	age2_lim = 150
-	age2_done = 0
-	age3_lim = 240
-	age3_done = 0
-	gamemode = "Classic (Stone Age Start)"
+	default_research = 48
+	gamemode = "Two Kingdoms"
+	ordinal_age = 2
+	age1_done = TRUE
+	age2_done = TRUE
+	research_active = FALSE
 
 /obj/map_metadata/civilizations/New()
-	if (clients.len <= 8)
-		tribes_nr = 1
-	if (clients.len > 8 && clients.len <= 16)
-		tribes_nr = 2
-	if (clients.len > 16 && clients.len <= 24)
-		tribes_nr = 3
-	if (clients.len > 24 && clients.len <= 30)
-		tribes_nr = 4
-	if (clients.len > 30 && clients.len <= 36)
-		tribes_nr = 5
-	if (clients.len > 36)
-		tribes_nr = 6
-	if (tribes_nr >= 2)
-		mission_start_message = "<big>After ages as hunter-gatherers, [tribes_nr] tribes have settled in this area and started farming. Will they advance through the ages, or be forgotten forever?</big><br><b>Wiki Guide: http://1713.eu/wiki/index.php/Civilizations</b>"
+	var/newnamea = list("West Kingdom" = list(default_research,default_research,default_research,null,0,"saltire","#D4AF37","#660000"))
+	var/newnameb = list("East Kingdom" = list(default_research,default_research,default_research,null,0,"saltire","#C0C0C0","#006600"))
+	custom_civs += newnamea
+	custom_civs += newnameb
 	civa_research = list(default_research,default_research,default_research,null)
 	civb_research = list(default_research,default_research,default_research,null)
-	civc_research = list(default_research,default_research,default_research,null)
-	civd_research = list(default_research,default_research,default_research,null)
-	cive_research = list(default_research,default_research,default_research,null)
-	civf_research = list(default_research,default_research,default_research,null)
+	spawn(1)
+
 	..()
 	spawn(18000)
 		seasons()
-	spawn(9000)
-		for (var/datum/job/civilian/civa/J in job_master.occupations)
-			if (J.current_positions == 0)
-				for (var/area/caribbean/tribes/goose/supplies/A)
-					for(var/obj/K in A)
-						qdel(K)
-		for (var/datum/job/civilian/civb/J in job_master.occupations)
-			if (J.current_positions == 0)
-				for (var/area/caribbean/tribes/turkey/supplies/A)
-					for(var/obj/K in A)
-						qdel(K)
-		for (var/datum/job/civilian/civc/J in job_master.occupations)
-			if (J.current_positions == 0)
-				for (var/area/caribbean/tribes/monkey/supplies/A)
-					for(var/obj/K in A)
-						qdel(K)
-		for (var/datum/job/civilian/civd/J in job_master.occupations)
-			if (J.current_positions == 0)
-				for (var/area/caribbean/tribes/mouse/supplies/A)
-					for(var/obj/K in A)
-						qdel(K)
-		for (var/datum/job/civilian/cive/J in job_master.occupations)
-			if (J.current_positions == 0)
-				for (var/area/caribbean/tribes/wolf/supplies/A)
-					for(var/obj/K in A)
-						qdel(K)
-		for (var/datum/job/civilian/civf/J in job_master.occupations)
-			if (J.current_positions == 0)
-				for (var/area/caribbean/tribes/bear/supplies/A)
-					for(var/obj/K in A)
-						qdel(K)
+
+/obj/map_metadata/civilizations/proc/walldown()
+	for (var/turf/wall/rockwall/RW)
+		RW.ChangeTurf(/turf/floor/dirt/jungledirt)
+	world << "<font color=#CECE00><big><b>THE WALL HAS GONE DOWN!</b></big></font>"
+	admin_ended_all_grace_periods = TRUE
+	return
+/obj/map_metadata/civilizations/proc/wallup()
+	for (var/turf/floor/dirt/jungledirt/JD)
+		JD.ChangeTurf(/turf/wall/rockwall)
+	world <<"<font color=#CECE00><big><b>THE WALL HAS GONE UP!</b></big></font>"
+	admin_ended_all_grace_periods = FALSE
+	return
 
 /obj/map_metadata/civilizations/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/civilizations/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/civilizations/cross_message(faction)
-	return ""
+	return "<big><b>THE GRACE PERIOD HAS ENDED!</b></big>"
 
 /obj/map_metadata/civilizations/proc/seasons()
 	if (season == "WINTER")
@@ -114,7 +82,7 @@
 		for (var/turf/floor/dirt/burned/B)
 			if (get_area(B).location == AREA_OUTSIDE)
 				if (prob(60))
-					B.ChangeTurf(/turf/floor/grass)
+					B.ChangeTurf(/turf/floor/dirt)
 		spawn(150)
 			change_weather(WEATHER_NONE)
 			for (var/obj/structure/window/snowwall/SW1)
@@ -127,17 +95,15 @@
 				if (prob(60))
 					qdel(SW3)
 		spawn(1500)
-		for (var/turf/floor/beach/water/ice/salty/SW)
-			SW.ChangeTurf(/turf/floor/beach/water/shallowsaltwater)
-		for (var/turf/floor/beach/water/ice/W)
-			W.ChangeTurf(/turf/floor/beach/water)
+			for (var/turf/floor/beach/water/ice/salty/SW)
+				SW.ChangeTurf(/turf/floor/beach/water/shallowsaltwater)
+			for (var/turf/floor/beach/water/ice/W)
+				W.ChangeTurf(/turf/floor/beach/water)
 		spawn(3000)
-			for (var/turf/floor/dirt/D)
-				if (istype(D, /turf/floor/dirt/winter))
-					D.ChangeTurf(/turf/floor/dirt)
+			for (var/turf/floor/dirt/winter/D)
+				D.ChangeTurf(/turf/floor/dirt)
 			for (var/turf/floor/winter/grass/G)
-				if (istype(G, /turf/floor/winter/grass))
-					G.ChangeTurf(/turf/floor/grass)
+				G.ChangeTurf(/turf/floor/grass)
 			for (var/obj/structure/window/snowwall/SW1)
 				qdel(SW1)
 			for (var/obj/covers/snow_wall/SW2)
@@ -150,7 +116,7 @@
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
 		for (var/turf/floor/dirt/D)
-			if (prob(50))
+			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && D.z == world.maxz)
 				D.ChangeTurf(/turf/floor/grass)
 			D.update_icon()
 		for (var/turf/floor/dirt/burned/BD)
@@ -161,8 +127,8 @@
 			change_weather(WEATHER_RAIN)
 		spawn(15000)
 			change_weather(WEATHER_SNOW)
-			for (var/turf/floor/dirt/D)
-				if (z == world.maxz && prob(40))
+			for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
+				if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
 					D.ChangeTurf(/turf/floor/dirt/winter)
 			for (var/turf/floor/grass/G)
 				if (prob(40))
@@ -180,7 +146,7 @@
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
-		for (var/turf/floor/dirt/D)
+		for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
 			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
 				if (D.z == world.maxz)
 					D.ChangeTurf(/turf/floor/dirt/winter)
@@ -208,34 +174,12 @@
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
 		for (var/turf/floor/dirt/winter/D)
-			if (istype(D, /turf/floor/dirt/winter))
-				D.ChangeTurf(/turf/floor/dirt)
+			D.ChangeTurf(/turf/floor/dirt)
 		for (var/turf/floor/winter/grass/G)
-			if (istype(G, /turf/floor/winter/grass))
-				G.ChangeTurf(/turf/floor/grass)
+			G.ChangeTurf(/turf/floor/grass)
 		spawn(100)
 			change_weather(WEATHER_NONE)
 	spawn(18000)
 		seasons()
 
-/obj/map_metadata/civilizations/tick()
-	..()
-	if (age1_done == FALSE)
-		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age1_lim || (civb_research[1]+civb_research[2]+civb_research[3]) >= age1_lim   || (civc_research[1]+civc_research[2]+civc_research[3]) >= age1_lim   || (civd_research[1]+civd_research[2]+civd_research[3]) >= age1_lim   || (cive_research[1]+cive_research[2]+cive_research[3]) >= age1_lim   || (civf_research[1]+civf_research[2]+civf_research[3]) >= age1_lim )
-			world << "<big>The world has advanced into the Bronze Age!</big>"
-			age = "313 B.C."
-			set_ordinal_age()
-			age1_done = TRUE
-	if (age2_done == FALSE)
-		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age2_lim || (civb_research[1]+civb_research[2]+civb_research[3]) >= age2_lim    || (civc_research[1]+civc_research[2]+civc_research[3]) >= age2_lim    || (civd_research[1]+civd_research[2]+civd_research[3]) >= age2_lim    || (cive_research[1]+cive_research[2]+cive_research[3]) >= age2_lim    || (civf_research[1]+civf_research[2]+civf_research[3]) >= age2_lim  )
-			world << "<big>The world has advanced into the Medieval Age!</big>"
-			age = "1013"
-			set_ordinal_age()
-			age2_done = TRUE
-	if (age3_done == FALSE)
-		if ((civa_research[1]+civa_research[2]+civa_research[3]) >= age3_lim|| (civb_research[1]+civb_research[2]+civb_research[3]) >= age3_lim    || (civc_research[1]+civc_research[2]+civc_research[3]) >= age3_lim    || (civd_research[1]+civd_research[2]+civd_research[3]) >= age3_lim    || (cive_research[1]+cive_research[2]+cive_research[3]) >= age3_lim    || (civf_research[1]+civf_research[2]+civf_research[3]) >= age3_lim  )
-			world << "<big>The world has advanced into the Imperial Age!</big>"
-			age = "1713"
-			set_ordinal_age()
-			age3_done = TRUE
 #undef NO_WINNER

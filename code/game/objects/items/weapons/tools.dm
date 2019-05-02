@@ -206,3 +206,19 @@
 	w_class = 2.0
 	matter = list(DEFAULT_WALL_MATERIAL = 250)
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+
+/*
+ * Wrench
+ */
+/obj/item/weapon/shears
+	name = "shears"
+	desc = "A tool used to collect wool from sheep."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "shears"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 2.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")

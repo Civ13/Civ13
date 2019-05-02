@@ -67,7 +67,7 @@
 		else
 			msg += "[T.He] [T.is] wearing \icon[head] \a [head] on [T.his] head.\n"
 
-	//suit/armour
+	//suit/armor
 	if (wear_suit)
 		if (wear_suit.blood_DNA)
 			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[wear_suit] [wear_suit.gender==PLURAL?"some":"a"] [(wear_suit.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_suit.name]!</span>\n"
@@ -261,6 +261,8 @@
 		msg += is_bleeding[limb]
 	for (var/implant in get_visible_implants(0))
 		msg += "<span class='danger'>[src] [T.has] \a [implant] sticking out of [T.his] flesh!</span>\n"
+	if (gender == MALE && circumcised && !w_uniform && !wear_suit)
+		msg += "<span class='danger'>[src] is circumcised!</span>\n"
 
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
 	if (O && O.get_teeth() < O.max_teeth)
@@ -298,18 +300,26 @@
 	else
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
+			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")
+				msg += "<br><i>You recognize [T.him] as an ordained <b>Cultist</b> of your cult, <b>[religion]</b>.</i>"
+			else if (H.religion == religion && religion_style == "Cultists" && religious_clergy != "Cultists")
+				msg += "<br><i>You recognize [T.him] as a member of your cult, <b>[religion]</b>.</i>"
+
 			if (H.civilization == civilization && civilization != "none") // when you ghost, mind.assigned_job is set to null
-				msg += "<br><i>You recognize [T.him] as a member of your group, <b>[civilization]</b>.</i>"
+				msg += "<br><i>You recognize [T.him] as a member of your faction, <b>[civilization]</b>.</i>"
 				if (map.custom_civs[H.civilization][4] != null)
 					if (map.custom_civs[H.civilization][4].real_name == real_name)
-						msg += "<br><b>[T.He] is the leader of your group.</b>"
-
+						msg += "<br><b>[T.He] is the leader of your faction.</b>"
 			else if (civilization != "none") // examining someone on another team
 				msg += "<br><span class='warning'><i>[T.He] seems to be a member of [civilization].</i>"
+
 			else
-				msg += "<br><i>[T.He] is a nomad. He has no group</b>.</i>"
+				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
 		else if (isobserver(user))
-			msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
+			if (civilization != "none")
+				msg += "<br><i>[T.He] [T.is] a member of <b>[civilization]</b>.</i>"
+			else
+				msg += "<br><i>[T.He] is a nomad. [T.He] has no faction</b>.</i>"
 
 		else if (ishuman(user) && user == src)
 			var/mob/living/carbon/human/H = user

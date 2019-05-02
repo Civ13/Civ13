@@ -26,10 +26,13 @@
 	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
 	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
 	var/mob/living/carbon/human/H_user = user
-	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (H_user.getStatCoeff("swords")),92)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
+	var/modif = 1
+	if (H_user.religion_check() == "Combat")
+		modif = 1.1
+	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (H_user.getStatCoeff("swords")*modif),92)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
 		user.visible_message("<span class='danger'><big>\The [user] parries [attack_text] with \the [src]!</big></span>")
 		var/mob/living/carbon/human/H = user
-		H.adaptStat("swords", 1)
+		H.adaptStat("swords", 1*modif)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		health -= 0.5
 		if(prob(15))
@@ -74,8 +77,8 @@
 	desc = "A sword used by the japanese for centuries. Made to slice and slash, not chop or saw."
 	icon_state = "katana"
 	item_state = "katana"
-	block_chance = 33
-	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	block_chance = 27
+	force_divisor = 0.8 // 42 when wielded with hardnes 60 (steel)
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	value = 60
@@ -222,7 +225,7 @@ obj/item/weapon/material/sword/sabre/iron
 	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 47
-	cooldownw = 13
+	cooldownw = 15
 	value = 60
 
 obj/item/weapon/material/sword/longsword/iron

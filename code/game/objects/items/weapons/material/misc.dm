@@ -6,6 +6,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "harpoon"
 	item_state = "harpoon"
+	worn_state = "spear"
 	throw_speed = 3
 	throw_range = 7
 	allow_spin = FALSE
@@ -42,6 +43,7 @@
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "rake"
 	item_state = "rake"
+	worn_state = "rake"
 	default_material = "iron"
 	force_divisor = 0.35 // 5 with weight 20 (steel)
 	thrown_force_divisor = 0.35 // as above
@@ -56,7 +58,8 @@
 	desc = "A crude, yet effective weapon."
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "spear_old"
-	item_state = "dory"
+	item_state = "spear"
+	worn_state = "spear"
 	default_material = "wood"
 	throw_speed = 6
 	throw_range = 11
@@ -87,6 +90,33 @@
 	value = 6
 	block_chance = 20
 	cooldownw = 6
+
+/obj/item/weapon/material/naginata
+	name = "naginata"
+	sharp = TRUE
+	edge = TRUE
+	desc = "A wood staff with a blade on the end, good for impaling those who insult your lord."
+	slot_flags = SLOT_BACK
+	icon_state = "naginata"
+	item_state = "naginata"
+	default_material = "iron"
+	throw_speed = 7
+	throw_range = 11
+	allow_spin = FALSE
+	force_divisor = 0.4 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 16 with weight 20 (steel)
+	attack_verb = list("bashed","impaled","beaten")
+	value = 30
+	block_chance = 36
+	cooldownw = 6
+	color = null
+
+/obj/item/weapon/material/naginata/steel
+	default_material = "steel"
+	value = 35
+	block_chance = 40
+	cooldownw = 6
+
 /obj/item/weapon/material/hatchet
 	name = "hatchet"
 	desc = "A very sharp axe blade upon a short wood handle. It has a long history of chopping things, but now it is used for chopping wood."
@@ -105,6 +135,7 @@
 	slot_flags = SLOT_BELT
 	block_chance = 15
 	cooldownw = 5
+
 /obj/item/weapon/material/hatchet/tribal
 	name = "hatchet"
 	desc = "A crude hatchet, made with wood and stone."
@@ -172,6 +203,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "pilum"
 	item_state = "pilum"
+	worn_state = "pilum"
 	default_material = "wood"
 	throw_speed = 6
 	throw_range = 14
@@ -214,6 +246,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "dory"
 	item_state = "dory"
+	worn_state = "dory"
 	default_material = "wood"
 	throw_speed = 4
 	throw_range = 8
@@ -224,6 +257,7 @@
 	value = 10
 	block_chance = 15
 	cooldownw = 10
+
 /obj/item/weapon/material/spear/sarissa
 	name = "sarissa"
 	sharp = TRUE
@@ -231,8 +265,8 @@
 	desc = "A 5 meter long spear, used by phalanx soldiers."
 	slot_flags = SLOT_BACK
 	icon_state = "sarissa"
-	item_state = "dory"
-	worn_state = "dory"
+	item_state = "sarissa"
+	worn_state = "sarissa"
 	default_material = "wood"
 	throw_speed = 1
 	throw_range = 1
@@ -400,6 +434,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "halberd"
 	item_state = "halberd"
+	worn_state = "halberd"
 	default_material = "iron"
 	throw_speed = 3
 	throw_range = 4
@@ -419,6 +454,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "pike"
 	item_state = "pike"
+	worn_state = "pike"
 	default_material = "iron"
 	throw_speed = 4
 	throw_range = 5
@@ -430,7 +466,7 @@
 	value = 18
 	cooldownw = 13
 
-/obj/item/weapon/material/battleaxe
+/obj/item/weapon/material/hatchet/battleaxe
 	name = "battle axe"
 	desc = "A very sharp axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
 	icon = 'icons/obj/weapons.dmi'

@@ -18,6 +18,17 @@
 			qdel(W)
 		else
 			icon_state = "loom"
+	if (istype(W, /obj/item/stack/material/wool))
+		H.visible_message("You start to produce the wool cloth.")
+		icon_state = "loom1"
+		if (do_after(H, min(W.amount*20, 200), H.loc))
+			H.visible_message("You finish producing the wool cloth.")
+			icon_state = "loom"
+			var/obj/item/stack/material/woolcloth/clothes = new/obj/item/stack/material/woolcloth(H.loc)
+			clothes.amount = W.amount
+			qdel(W)
+		else
+			icon_state = "loom"
 /obj/structure/mill
 	name = "mill"
 	desc = "A small mill, used to grind cereals into flour."
@@ -450,7 +461,7 @@
 					for(var/obj/item/weapon/B in base)
 						B.loc = get_turf(src)
 						base -= B
-						if (istype(B, /obj/item/weapon/book))
+						if (istype(B, /obj/item/weapon/book) && !istype(B, /obj/item/weapon/book/holybook) && !istype(B, /obj/item/weapon/book/research))
 							var/obj/item/weapon/book/NC = B
 							var/obj/item/weapon/book/NB = new/obj/item/weapon/book(src.loc)
 							NB.dat = NC.dat
@@ -458,7 +469,15 @@
 							NB.author = NC.author
 							NB.unique = NC.unique
 							NB.title = NC.title
-
+						else if (istype(B, /obj/item/weapon/book/holybook))
+							var/obj/item/weapon/book/holybook/NC = B
+							var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(src.loc)
+							NB.author = NC.author
+							NB.title = NC.title
+							NB.name = NC.name
+							NB.desc = NC.desc
+							NB.religion = NC.religion
+							NB.religion_type = NC.religion_type
 						else if (istype(B, /obj/item/weapon/paper))
 							var/obj/item/weapon/paper/NC = B
 							var/obj/item/weapon/paper/NP = new/obj/item/weapon/paper(src.loc)
@@ -468,6 +487,22 @@
 							NP.free_space = NC.free_space
 							NP.rigged = NC.rigged
 							NP.spam_flag = NC.spam_flag
+						else if (istype(B, /obj/item/weapon/book/research))
+							var/obj/item/weapon/book/research/NC = B
+							var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(src.loc)
+							NB.author = NC.author
+							NB.title = NC.title
+							NB.name = NC.name
+							NB.desc = NC.desc
+							NB.completed = NC.completed = 0
+							NB.k_class = NC.k_class = "none"
+							NB.k_level = NC.k_level = 0
+							NB.styleb = NC.styleb = "scroll"
+							NB.sum_a = NC.sum_a = 0
+							NB.sum_b = NC.sum_b = 0
+							NB.sum_c = NC.sum_c = 0
+							NB.monk = NC.monk = FALSE //if the book was authored by a monk
+							NB.religion = NC.religion = "none"
 					for(var/obj/item/weapon/C in copy)
 						copy -= C
 						qdel(C)

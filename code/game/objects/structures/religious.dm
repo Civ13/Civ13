@@ -17,13 +17,24 @@
 
 /obj/structure/religious/totem
 	name = "stone totem"
-	desc = "A stone statue, representing the spirit animal of this tribe."
+	desc = "A stone statue, representing a spirit animal of this tribe."
 	icon = 'icons/obj/cross.dmi'
 	icon_state = "goose"
 	density = TRUE
 	anchored = TRUE
 	var/tribe = "goose"
+	var/religion = "none"
 	layer = 3.2
+
+/obj/structure/religious/totem/New()
+	..()
+	spawn(10)
+		if (religion != "none")
+			name = "[religion]'s stone totem"
+			desc = "A stone totem dedicated to the [religion] religion."
+			icon_state = pick("bear","mouse","goose","wolf","turkey","monkey")
+			if (map.custom_religions[religion][7] == "Shamans")
+				map.custom_religions[religion][3] += 25
 
 /obj/structure/religious/animal_statue
 	name = "statue"

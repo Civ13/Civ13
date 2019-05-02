@@ -77,18 +77,123 @@
 				verbs |= /mob/living/carbon/human/proc/selfheal
 				verbs |= /mob/living/carbon/human/proc/selfrevive
 	spawn(5)
-		if (faction_text == ARAB)
-			s_tone = -90
-			force_update_limbs()
-			update_body()
-		else if (faction_text == INDIANS)
-			s_tone = -115
-			force_update_limbs()
-			update_body()
-		else if (s_tone < -65)
-			s_tone = -65
-			force_update_limbs()
-			update_body()
+		if (map && (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA))
+			var/area/mob_area = get_area(src)
+			var/new_hair = "Black"
+			var/new_eyes = "Black"
+			switch (mob_area.climate)
+				if ("tundra")
+					s_tone = -10
+					new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
+					new_eyes = pick("Blue")
+					force_update_limbs()
+					update_body()
+				if ("taiga")
+					s_tone = -18
+					new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
+					new_eyes = pick("Green", "Blue")
+					force_update_limbs()
+					update_body()
+				if ("temperate")
+					s_tone = -30
+					new_hair = pick("Light Brown","Dark Brown","Blond","Dirty Blond")
+					new_eyes = pick("Brown", "Green", "Blue")
+					force_update_limbs()
+					update_body()
+				if ("sea")
+					s_tone = -50
+					new_hair = pick("Light Brown","Dark Brown","Black")
+					new_eyes = pick("Dark Brown", "Brown")
+					force_update_limbs()
+					update_body()
+				if ("semiarid")
+					s_tone = -50
+					new_hair = pick("Light Brown","Dark Brown","Black")
+					new_eyes = pick("Dark Brown", "Brown")
+					force_update_limbs()
+					update_body()
+				if ("desert")
+					s_tone = -90
+					new_hair = pick("Dark Brown","Black")
+					new_eyes = pick("Dark Brown", "Black")
+					force_update_limbs()
+					update_body()
+				if ("jungle")
+					if (map.ID == MAP_NOMADS_PANGEA)
+						s_tone = -35
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
+					else
+						s_tone = -165
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
+				if ("savanna")
+					s_tone = -165
+					new_hair = "Black"
+					new_eyes = "Black"
+					force_update_limbs()
+					update_body()
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
+///////////////////////////////////////////////////////////////////
+/////////////////////////Karafuta-Sakhalinsk///////////////////////
+///////////////////////////////////////////////////////////////////
+		else if (map && (map.ID == MAP_NOMADS_KARAFUTA))
+			var/area/mob_area = get_area(src)
+			var/new_hair = "Black"
+			var/new_eyes = "Black"
+			switch (mob_area.climate)
+				if ("tundra")
+					s_tone = -40
+					new_hair = pick("Red","Orange","Light Blond","Blond","Dirty Blond")
+					new_eyes = pick("Green", "Blue")
+					force_update_limbs()
+					update_body()
+				if ("temperate")
+					s_tone = -35
+					new_hair = "Black"
+					new_eyes = pick("Dark Brown", "Black")
+					force_update_limbs()
+					update_body()
+			var/hex_hair = hair_colors[new_hair]
+			r_hair = hex2num(copytext(hex_hair, 2, 4))
+			g_hair = hex2num(copytext(hex_hair, 4, 6))
+			b_hair = hex2num(copytext(hex_hair, 6, 8))
+			r_facial = hex2num(copytext(hex_hair, 2, 4))
+			g_facial = hex2num(copytext(hex_hair, 4, 6))
+			b_facial = hex2num(copytext(hex_hair, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+			change_eye_color(r_eyes, g_eyes, b_eyes)
+		else
+			if (faction_text == ARAB)
+				s_tone = -90
+				force_update_limbs()
+				update_body()
+			else if (faction_text == INDIANS)
+				s_tone = -115
+				force_update_limbs()
+				update_body()
+			else if (s_tone < -65)
+				s_tone = -65
+				force_update_limbs()
+				update_body()
 /mob/living/carbon/human/Destroy()
 	human_mob_list -= src
 	human_clients_mob_list -= src
@@ -109,8 +214,9 @@ var/list/coefflist = list()
 			stat("Move Mode:", m_intent)
 			stat("Stamina: ", "[round((getStat("stamina")/stats["stamina"][2]) * 100)]%")
 			stat("")
-			stat(stat_header("Research"))
+			stat(stat_header("Factions"))
 			stat("")
+			stat("Religion:", religion)
 			stat("Civilization:", civilization)
 			stat("Epoch:", map.age)
 			if (original_job_title == "Civilization A Citizen")

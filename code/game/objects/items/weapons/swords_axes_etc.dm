@@ -26,6 +26,16 @@
 	slot_flags = SLOT_BACK
 	force = WEAPON_FORCE_NORMAL
 
+/obj/item/weapon/melee/classic_baton/whip
+	name = "whip"
+	desc = "A leather wip. To keep your slaves in order."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "whip"
+	item_state = "whip"
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_WEAK+3
+	flammable = TRUE
+
 /obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
 
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov

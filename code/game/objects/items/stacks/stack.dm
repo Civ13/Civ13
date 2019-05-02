@@ -105,6 +105,17 @@
 	onclose(user, "stack")
 	return
 
+// Custom qdel to allow returning of objects to hands on canceled build
+/obj/item/stack/var/handReturnMap[0]
+/obj/item/stack/proc/qdelHandReturn(var/datum/A, var/mob/user)
+// add the item to the handReturnMap
+	if (!(user.key in handReturnMap))
+		handReturnMap[user.key] = list()
+	var/datum/I = A
+	handReturnMap[user.key] += list(I)
+	// qdel the item
+	qdel(A)
+
 /mob/var/can_build_recipe = TRUE
 /obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user)
 	var/required = quantity*recipe.req_amount
@@ -129,10 +140,40 @@
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = new/obj/item/weapon/gun/projectile/ancient/firelance
 	build_override_firelance.desc = "A simple firelance."
 	var/mob/living/carbon/human/H = user
+
+	if (istype(get_turf(H), /turf/floor/beach/water/deep))
+		H << "<span class = 'danger'>You can't build here!</span>"
+		return
 	if (findtext(recipe.title, "gunpowder pouch") || findtext(recipe.title, "bandolier") || findtext(recipe.title, "lantern") || findtext(recipe.title, "oven") || findtext(recipe.title, "keychain") || findtext(recipe.title, "anvil") || findtext(recipe.title, "musket ball") || findtext(recipe.title, "small musket ball") || findtext(recipe.title, "blunderbuss ball") || findtext(recipe.title, "cannon ball") || findtext(recipe.title, "pen") || findtext(recipe.title, "paper sheet") || findtext(recipe.title, "small glass bottle") || findtext(recipe.title, "drinking glass") || findtext(recipe.title, "teapot") || findtext(recipe.title, "teacup") || findtext(recipe.title, "wine glass") || findtext(recipe.title, "black leather shoes") || findtext(recipe.title, "black leather boots") || findtext(recipe.title, "leather boots"))
 		if (H.faction_text == INDIANS)
 			H << "<span class = 'danger'>You don't know how to make this.</span>"
 			return
+	if (findtext(recipe.title, "talisman") || findtext(recipe.title, "totem"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
+			return
+
+	if (findtext(recipe.title, "cigarette pack"))
+		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
+		if (customname == "" || customname == null)
+			customname = "cigarette pack"
+		customcolor = input(user, "Choose a hex color (without the #):", "Cigarette Pack Color" , "000000")
+		if (customcolor == null || customcolor == "")
+			return
+		else
+			customcolor = uppertext(customcolor)
+			if (lentext(customcolor) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(customcolor,i,i+1)
+				else
+					numtocheck = copytext(customcolor,i,0)
+				if (!(numtocheck in listallowed))
+					return
+
 	if (findtext(recipe.title, "frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -196,6 +237,31 @@
 			user << "You are too close to an existing deposit!"
 			return
 
+	if (findtext(recipe.title, "passport"))
+		if (H.civilization == null || H.civilization == "none")
+			user << "You need to be part of a faction to craft a passport!"
+			return
+
+	if (findtext(recipe.title, "holy book"))
+		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
+			H << "<span class = 'danger'>You can't make a holy book.</span>"
+			return
+		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
+
+	if (findtext(recipe.title, "altar"))
+		if (H.religious_leader == FALSE)
+			if (H.religious_clergy == 0)
+				H << "<span class = 'danger'>You can't make an altar as you are not part of the clergy.</span>"
+				return
+
+	if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar") || findtext(recipe.title, "religious banner"))
+		if (H.religion == "none")
+			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>"
+			return
+	if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner"))
+		if (H.civilization == "none")
+			H << "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>"
+			return
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
@@ -221,12 +287,12 @@
 				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 				build_override_firelance.force = round(H.l_hand.force*0.9)
 				build_override_firelance.throwforce = round(H.l_hand.throwforce*0.65)
-				qdel(H.l_hand)
+				qdelHandReturn(H.l_hand, H)
 			else if (istype(H.r_hand, /obj/item/weapon/material/spear))
 				build_override_firelance.desc = "A spear with a gunpowder container near the tip, that can be filled with gunpowder and projectiles."
 				build_override_firelance.force = round(H.r_hand.force*0.9)
 				build_override_firelance.throwforce = round(H.r_hand.throwforce*0.65)
-				qdel(H.r_hand)
+				qdelHandReturn(H.r_hand, H)
 	if (!findtext(recipe.title, "wood spear"))
 		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe"))
 			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
@@ -234,9 +300,9 @@
 				return
 			else
 				if (istype(H.l_hand, /obj/item/weapon/material/handle))
-					qdel(H.l_hand)
+					qdelHandReturn(H.l_hand, H)
 				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
-					qdel(H.r_hand)
+					qdelHandReturn(H.r_hand, H)
 
 	if (findtext(recipe.title, "raft"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
@@ -248,70 +314,86 @@
 				if (NR.amount >= 2)
 					NR.amount -= 2
 					if (NR.amount <= 0)
-						qdel(H.l_hand)
+						qdelHandReturn(H.l_hand, H)
 				else
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
+					return
 			else if (istype(H.r_hand, /obj/item/stack/material/rope))
 				var/obj/item/stack/material/rope/NR = H.r_hand
 				if (NR.amount >= 2)
 					NR.amount -= 2
 					if (NR.amount <= 0)
-						qdel(H.r_hand)
+						qdelHandReturn(H.r_hand, H)
 				else
 					user << "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>"
+					return
 
-
-	if (recipe.result_type == /obj/structure/religious/totem || recipe.result_type == /obj/structure/religious/impaledskull || recipe.result_type == /obj/structure/religious/tribalmask || recipe.result_type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot || recipe.result_type == /obj/item/clothing/accessory/armband/talisman || recipe.result_type == /obj/item/clothing/head/skullmask || recipe.result_type == /obj/item/weapon/material/kitchen/utensil/knife/bone)
-		if (!H.faction_text == INDIANS)
-			H << "<span class = 'danger'>Only natives can make this!</span>"
+	if (recipe.result_type == /obj/item/stack/material/electronics)
+		if (H.getStatCoeff("crafting") < 2.2)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
+		if (!istype(H.l_hand, /obj/item/stack/material/iron) && !istype(H.r_hand, /obj/item/stack/material/iron))
+			user << "<span class = 'warning'>You need to have iron in the other hand to craft electronic circuits.</span>"
+			return
+		if (istype(H.l_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.l_hand
+			NR.amount -= 1
+			if (NR.amount <= 0)
+				qdelHandReturn(H.l_hand, H)
+		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
+			var/obj/item/stack/material/electronics/NR = H.r_hand
+			NR.amount -= 1
+			if (NR.amount <= 0)
+				qdelHandReturn(H.r_hand, H)
 
-		if (recipe.result_type == /obj/structure/religious/totem)
-			if (H.original_job_title == "Red Goose Tribesman")
-				newtotem.name = "Stone Goose Totem"
-				newtotem.icon_state = "goose"
-				newtotem.desc = "A stone goose totem."
-			else if (H.original_job_title == "Blue Turkey Tribesman")
-				newtotem.name = "Stone Turkey Totem"
-				newtotem.icon_state = "turkey"
-				newtotem.desc = "A stone turkey totem."
-			else if (H.original_job_title == "Blue Monkey Tribesman")
-				newtotem.name = "Stone Monkey Totem"
-				newtotem.icon_state = "monkey"
-				newtotem.desc = "A stone monkey totem."
-			else if (H.original_job_title == "Yellow Mouse Tribesman")
-				newtotem.name = "Stone Mouse Totem"
-				newtotem.icon_state = "mouse"
-				newtotem.desc = "A stone mouse totem."
-			else if (H.original_job_title == "White Wolf Tribesman")
-				newtotem.name = "Stone Wolf Totem"
-				newtotem.icon_state = "wolf"
-				newtotem.desc = "A stone wolf totem."
-			else if (H.original_job_title == "Black Bear Tribesman")
-				newtotem.name = "Stone Bear Totem"
-				newtotem.icon_state = "bear"
-				newtotem.desc = "A stone bear totem."
-			else
-				newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
-				newtotem.desc = "A stone totem."
+	if (recipe.result_type == /obj/structure/religious/totem)
+		if (H.original_job_title == "Red Goose Tribesman")
+			newtotem.name = "Stone Goose Totem"
+			newtotem.icon_state = "goose"
+			newtotem.desc = "A stone goose totem."
+		else if (H.original_job_title == "Blue Turkey Tribesman")
+			newtotem.name = "Stone Turkey Totem"
+			newtotem.icon_state = "turkey"
+			newtotem.desc = "A stone turkey totem."
+		else if (H.original_job_title == "Blue Monkey Tribesman")
+			newtotem.name = "Stone Monkey Totem"
+			newtotem.icon_state = "monkey"
+			newtotem.desc = "A stone monkey totem."
+		else if (H.original_job_title == "Yellow Mouse Tribesman")
+			newtotem.name = "Stone Mouse Totem"
+			newtotem.icon_state = "mouse"
+			newtotem.desc = "A stone mouse totem."
+		else if (H.original_job_title == "White Wolf Tribesman")
+			newtotem.name = "Stone Wolf Totem"
+			newtotem.icon_state = "wolf"
+			newtotem.desc = "A stone wolf totem."
+		else if (H.original_job_title == "Black Bear Tribesman")
+			newtotem.name = "Stone Bear Totem"
+			newtotem.icon_state = "bear"
+			newtotem.desc = "A stone bear totem."
+		else
+			newtotem.icon_state = pick("bear","goose", "turkey", "monkey", "mouse", "wolf")
+			newtotem.name = "[H.religion] totem."
+			newtotem.desc = "A stone totem, dedicated to the [H.religion] religion."
+			newtotem.religion = H.religion
 
-		if (recipe.result_type == /obj/structure/religious/impaledskull)
-			if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
-				user << "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>"
-				return
-			else
-				if (istype(H.l_hand, /obj/item/organ/external/head))
-					var/targetskull = H.l_hand.name
-					targetskull = replacetext(targetskull, " head", "")
-					targetskull = "impaled [targetskull] skull"
-					newskull.name = targetskull
-					qdel(H.l_hand)
-				else if (istype(H.r_hand, /obj/item/organ/external/head))
-					var/targetskull = H.r_hand.name
-					targetskull = replacetext(targetskull, " head", "")
-					targetskull = "impaled [targetskull] skull"
-					newskull.name = targetskull
-					qdel(H.r_hand)
+	if (recipe.result_type == /obj/structure/religious/impaledskull)
+		if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
+			user << "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/organ/external/head))
+				var/targetskull = H.l_hand.name
+				targetskull = replacetext(targetskull, " head", "")
+				targetskull = "impaled [targetskull] skull"
+				newskull.name = targetskull
+				qdelHandReturn(H.l_hand, H)
+			else if (istype(H.r_hand, /obj/item/organ/external/head))
+				var/targetskull = H.r_hand.name
+				targetskull = replacetext(targetskull, " head", "")
+				targetskull = "impaled [targetskull] skull"
+				newskull.name = targetskull
+				qdelHandReturn(H.r_hand, H)
 
 	if (findtext(recipe.title, "custom sign"))
 		var/customname = input(user, "Choose a name for this sign:") as text|null
@@ -392,6 +474,33 @@
 		if (H.getStatCoeff("crafting") < 1.8 && !findtext(recipe.title, "catapult projectile"))
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
+	if (findtext(recipe.title, "stormy sea") || findtext(recipe.title, "city street") || findtext(recipe.title, "sea sunset") || findtext(recipe.title, "valley") || findtext(recipe.title, "still life"))
+		if (H.getStatCoeff("crafting") < 2)
+			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
+			return
+
+		if (!istype(H.l_hand, /obj/item/stack/material/cloth) && !istype(H.r_hand, /obj/item/stack/material/cloth))
+			user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
+			return
+		else
+			if (istype(H.l_hand, /obj/item/stack/material/cloth))
+				var/obj/item/stack/material/cloth/NCL = H.l_hand
+				if (NCL.amount >= 3)
+					NCL.amount -= 3
+					if (NCL.amount <= 0)
+						qdelHandReturn(H.l_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
+					return
+			else if (istype(H.r_hand, /obj/item/stack/material/cloth))
+				var/obj/item/stack/material/cloth/NCL = H.r_hand
+				if (NCL.amount >= 3)
+					NCL.amount -= 3
+					if (NCL.amount <= 0)
+						qdelHandReturn(H.r_hand, H)
+				else
+					user << "<span class = 'warning'>You need a stack of at least 3 pieces of cloth in one of your hands in order to make this.</span>"
+					return
 
 	if (findtext(recipe.title, "locked") && findtext(recipe.title, "door") && !findtext(recipe.title, "unlocked"))
 		if (H.getStatCoeff("crafting") < 1)
@@ -509,6 +618,13 @@
 
 		user << "<span class='notice'>Building [recipe.title] ...</span>"
 		if (!do_after(user, buildtime))
+			if (H.key in handReturnMap)
+				var/atom/O
+				var/datum/A
+				for(A in handReturnMap[H.key])
+					O = new A.type()
+					H.put_in_hands(O)
+				handReturnMap.Remove(H.key)
 			return
 
 		if (H)
@@ -542,7 +658,7 @@
 	if (recipe.result_type == /obj/structure/sink/well)
 		for (var/obj/structure/sink/puddle/P in get_turf(H))
 			qdel(P)
-	if (use(required))
+	if (use(required,H))
 		var/atom/O
 		if (recipe.use_material)
 			O = new recipe.result_type(user.loc, recipe.use_material)
@@ -622,18 +738,74 @@
 
 		O.set_dir(user.dir)
 		O.add_fingerprint(user)
-		if (istype(O, /obj/structure/fuelpump))
+		if (istype(O, /obj/item/clothing/accessory/armband/talisman))
+			var/obj/item/clothing/accessory/armband/talisman/TM = O
+			TM.name = "[H.religion] bone talisman"
+			TM.desc = "A [H.religion] bone talisman."
+			TM.religion = H.religion
+		else if (istype(O, /obj/item/weapon/book/holybook))
+			var/obj/item/weapon/book/holybook/HB = O
+			HB.author = "[H]"
+			HB.religion = H.religion
+			HB.religion_type = map.custom_religions[H.religion][2]
+			HB.title = customname
+		else if (istype(O, /obj/structure/religious/totem))
+			var/obj/structure/religious/totem/TT = O
+			TT.religion = H.religion
+		else if (istype(O, /obj/item/weapon/poster/religious))
+			var/obj/item/weapon/poster/religious/P = O
+			P.religion = H.religion
+			P.symbol = map.custom_religions[H.religion][4]
+			P.color1 = map.custom_religions[H.religion][5]
+			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/item/weapon/poster/faction))
+			var/obj/item/weapon/poster/faction/P = O
+			P.faction = H.civilization
+			P.color1 = map.custom_civs[P.faction][7]
+			P.color2 = map.custom_civs[P.faction][8]
+			if (istype(O, /obj/item/weapon/poster/faction/lead))
+				P.bstyle = "prop_lead"
+			else if (istype(O, /obj/item/weapon/poster/faction/work))
+				P.bstyle = "prop_work"
+			else if (istype(O, /obj/item/weapon/poster/faction/mil1))
+				P.bstyle = "prop_mil1"
+			else if (istype(O, /obj/item/weapon/poster/faction/mil2))
+				P.bstyle = "prop_mil2"
+		else if (istype(O, /obj/structure/banner/religious))
+			var/obj/structure/banner/religious/RB = O
+			RB.religion = H.religion
+			RB.symbol = map.custom_religions[H.religion][4]
+			RB.color1 = map.custom_religions[H.religion][5]
+			RB.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/banner/faction))
+			var/obj/structure/banner/faction/FB = O
+			FB.faction = H.civilization
+			FB.symbol = map.custom_civs[H.civilization][6]
+			FB.color1 = map.custom_civs[H.civilization][7]
+			FB.color2 = map.custom_civs[H.civilization][8]
+		else if (istype(O, /obj/structure/altar))
+			var/obj/structure/altar/P = O
+			P.religion = H.religion
+			P.symbol = map.custom_religions[H.religion][4]
+			P.color1 = map.custom_religions[H.religion][5]
+			P.color2 = map.custom_religions[H.religion][6]
+		else if (istype(O, /obj/structure/fuelpump))
 			var/obj/structure/fuelpump/FP = O
 			FP.customcolor = addtext("#",customcolor)
 			FP.keycode = customcode
 			FP.name = customname
 			FP.do_color()
-		if (istype(O, /obj/item/vehicleparts/frame))
+		else if (istype(O, /obj/item/vehicleparts/frame))
 			var/obj/item/vehicleparts/frame/FF = O
 			FF.customcolor = addtext("#",customcolor)
 			FF.name = customname
 			FF.do_color()
-		if (istype(O, /obj/item/stack))
+		else if (istype(O, /obj/item/weapon/storage/fancy/cigarettes))
+			var/obj/item/weapon/storage/fancy/cigarettes/C = O
+			C.customcolor = addtext("#",customcolor)
+			C.name = customname
+			C.do_color()
+		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O
 			S.amount = produced
 			S.add_to_stacks(user)
@@ -642,6 +814,10 @@
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
 			new/obj/item/ammo_casing/stone(get_turf(O))
+		else if (istype(O, /obj/item/clothing/accessory/storage/passport))
+			var/obj/item/clothing/accessory/storage/passport/PP = O
+			PP.owner = H
+			PP.own()
 		if (istype(O, /obj/item/weapon/storage)) //BubbleWrap - so newly formed boxes are empty
 			for (var/obj/item/I in O)
 				qdel(I)
@@ -690,11 +866,24 @@
 		return FALSE
 	return TRUE
 
-/obj/item/stack/proc/use(var/used)
+/obj/item/stack/proc/use(var/used,var/mob/living/carbon/human/H = null)
 	if (!can_use(used))
 		return FALSE
 	if (!uses_charge)
-		amount -= used
+		if (H)
+			if (H.religion_check() == "Production")
+				if (used < 4)
+					amount -= used
+				else if (used >= 4 && used < 10)
+					amount -= (used-1)
+				else if (used >= 10)
+					amount -= (used-2)
+				else
+					amount -= used
+			else
+				amount -= used
+		else
+			amount -= used
 		if (amount <= 0)
 			if (usr)
 				usr.remove_from_mob(src)

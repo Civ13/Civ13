@@ -113,9 +113,15 @@
 	if (ismob(loc))
 		firer = loc
 	else if (isturf(loc))
-		for (var/mob/living/L in loc)
-			firer = L
-			break
+		if (istype(src, /obj/item/weapon/gun/projectile/automatic/stationary))
+			for (var/mob/living/L in loc)
+				if (L.using_MG == src)
+					firer = L
+					break
+		else
+			for (var/mob/living/L in loc)
+				firer = L
+				break
 
 	if (!firer || !target || !istype(target))
 		return prob(50)
@@ -132,8 +138,12 @@
 			accuracy_sublist = accuracy_list["small"]
 
 	. = get_base_miss_chance(accuracy_sublist, target)
+	var/modif = 1
+	if (firer.religion_check() == "Combat")
+		modif = 1.1
 
-	var/firer_stat = firer.getStatCoeff(stat)
+	var/firer_stat = firer.getStatCoeff(stat)*modif
+
 	var/miss_chance_modifier = 1.00
 
 //	log_debug("initial miss chance: [.]")
@@ -164,10 +174,10 @@
 			. = ceil(100 - hitchance)
 
 		// gas masks make you less accurate now
-//		if (firer.wear_mask)
-//			var/hitchance = 100 - .
-//			hitchance /= 1.10
-//			. = ceil(100 - hitchance)
+		if (firer.wear_mask)
+			var/hitchance = 100 - .
+			hitchance /= 1.10
+			. = ceil(100 - hitchance)
 
 	. = min(CLAMP0100(.), 99) // minimum hit chance is 2% no matter what
 //	log_debug(.)

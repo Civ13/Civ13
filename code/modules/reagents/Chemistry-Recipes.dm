@@ -196,15 +196,6 @@
 	required_reagents = list("aluminum" = 1, "silicon" = 1, "acetone" = 1)
 	result_amount = 3
 
-/*
-/datum/chemical_reaction/peyote
-	name = "Peyote"
-	id = "peyote"
-	result = "peyote"
-	required_reagents = list("mercury" = 1, "sugar" = 1, "lithium" = 1)
-	result_amount = 3
-
-*/
 /datum/chemical_reaction/pacid
 	name = "Polytrinic acid"
 	id = "pacid"

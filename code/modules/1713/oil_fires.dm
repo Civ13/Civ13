@@ -153,6 +153,14 @@
 //this tile
 	if (prob(3))
 		new/obj/effect/effect/smoke(loc)
+	var/area/A = get_area(get_turf(src))
+	if (!A)
+		return
+	if (A.weather == WEATHER_RAIN || A.weather == WEATHER_SNOW)
+		if (prob(30))
+			qdel(src)
+	if (A.weather == WEATHER_STORM || A.weather == WEATHER_BLIZZARD)
+		qdel(src)
 
 	for (var/mob/living/L in src.loc)
 		L.adjustFireLoss(rand(15,25))

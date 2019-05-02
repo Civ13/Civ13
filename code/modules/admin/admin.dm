@@ -107,7 +107,12 @@ proc/admin_notice(var/message, var/rights)
 				<A href='?src=\ref[src];simplemake=bear;mob=\ref[M]'>Bear</A> |
 				<A href='?src=\ref[src];simplemake=velociraptor;mob=\ref[M]'>Velociraptor</A> ]
 				<br>"}
-
+			body += {"<br><br>
+				<b>Body type transformation:</b><font size=2><br>These transformations will keep the user as "human" but change the body type.</font><br>
+				<A href='?src=\ref[src];simplemake=default;mob=\ref[M]'>Default</A> |
+				<A href='?src=\ref[src];simplemake=gorilla;mob=\ref[M]'>Gorilla</A> |
+				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Wolfman</A> |
+				<br>"}
 	body += {"<br><br>
 			<b>Other actions:</b>
 			<br>
@@ -966,3 +971,71 @@ var/list/atom_types = null
 
 	message_admins("[key_name(usr)] manually reloaded admins")
 	load_admins(1)
+
+////WORK IN PROGRESS - PERSISTENCE STUFF////
+/datum/admins/proc/export()
+	set category = "Server"
+	set desc="Export Variables"
+	set name="Export"
+	var/confirm = WWinput(usr, "Are you sure you want to save the world? SERVER MIGHT FREEZE FOR UP TO 2 MINUTES!", "Confirmation Required", "No", list("Yes", "No"))
+	if (confirm == "No")
+		return
+	else
+		world << "<big>SAVING THE WORLD IN 10 SECONDS. GAME WILL FREEZE!</big>"
+		spawn(100)
+			world.log << "Exporting mobs..."
+			var/F = file("SQL/saves/mobs.txt")
+			if (fexists(F))
+				fdel(F)
+			for (var/mob/M in world)
+				var/txtexport = list2text_assoc(M)
+				text2file(txtexport,F)
+			world.log << "Finished exporting mobs to [F]."
+
+			world.log << "Exporting turfs..."
+			var/F1 = file("SQL/saves/turfs.txt")
+			if (fexists(F1))
+				fdel(F1)
+			for (var/turf/T in world)
+				text2file("[T.type];[T.loc];[T.x];[T.y];[T.z]",F1)
+			world.log << "Finished exporting turfs to [F1]."
+
+			world.log << "Exporting objs..."
+			var/F2 = file("SQL/saves/objs.txt")
+			if (fexists(F2))
+				fdel(F2)
+			for (var/obj/O in world)
+				var/txtexport = list2text_assoc(O)
+				text2file(txtexport,F2)
+			world.log << "Finished exporting objs to [F2]."
+
+			world.log << "Exporting areas..."
+			var/F3 = file("SQL/saves/areas.txt")
+			if (fexists(F3))
+				fdel(F3)
+			for (var/area/A in world)
+				text2file("[A.name];[A.type]",F3)
+			world.log << "Finished exporting areas to [F3]."
+			world << "<big>SAVING FINISHED SUCCESSFULLY</big>"
+			return
+
+/datum/admins/proc/toggle_ores()
+	set category = "Special"
+	set desc="Toggle ore spawners on and off"
+	set name="Toggle Ore Spawners"
+
+	if (map)
+		if (map.orespawners == 1)
+			map.orespawners = 0
+			world.log << "usr] toggled the ore spawners OFF."
+			for (var/obj/effect/spawner/orespawner/O in world)
+				O.active = 0
+				O.do_spawn()
+			return
+		else
+			map.orespawners = 1
+			world.log << "[usr] toggled the ore spawners ON."
+			for (var/obj/effect/spawner/orespawner/O in world)
+				O.active = 1
+				O.do_spawn()
+			return

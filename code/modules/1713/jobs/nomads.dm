@@ -42,15 +42,46 @@
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 
 		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
+			if (map.ID == MAP_CIVILIZATIONS)
+				spawn(5)
+					if (gender == "male")
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
+					else
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
-			if (gender == "male")
-				equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+			if (map.ID == MAP_CIVILIZATIONS)
+				spawn(5)
+					make_nomad()
+					if (gender == "male")
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(src), slot_w_uniform)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/medieval/green(src), slot_w_uniform)
+					else
+						if (civilization == "West Kingdom")
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfr(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+						else
+							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
+							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			else
-				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
-				equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+				if (gender == "male")
+					equip_to_slot_or_del(new /obj/item/clothing/under/civ2(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+					equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 		else if (map.ordinal_age == 4)
 			if (gender == "male")
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
@@ -67,15 +98,230 @@
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 //coats/////////////////////////////////////////////////
-		if (season == "WINTER" || map.ID == MAP_NOMADS_ICE_AGE)
-			if (map.ordinal_age < 4)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
-				if (map.ordinal_age == 0)
-					equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
-			else if (map.ordinal_age == 4)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-			else if (map.ordinal_age == 5)
-				equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+		spawn(5)
+			var/area/mob_area = get_area(src)
+			if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
+				if (map.ordinal_age < 4)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur(src), slot_wear_suit)
+					if (map.ordinal_age == 0)
+						equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
+				else if (map.ordinal_age == 4)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+				else if (map.ordinal_age == 5)
+					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
+
+///////////////LANGUAGE PROC/////////////////////////
+
+/mob/living/carbon/human/proc/give_languages()
+	if (map && map.civilizations)
+		if (map.ID == MAP_NOMADS_CONTINENTAL)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("tundra")
+						if (x<100)
+							add_language("Russian",TRUE)
+							remove_language("English")
+							for (var/datum/language/russian/A in languages)
+								default_language = A
+							name = species.get_random_russian_name(gender)
+							real_name = name
+							return
+						else
+							add_language("Ukrainian",TRUE)
+							remove_language("English")
+							for (var/datum/language/ukrainian/A in languages)
+								default_language = A
+							name = species.get_random_ukrainian_name(gender)
+							real_name = name
+							return
+					if ("sea")
+						if (x<100)
+							add_language("Spanish",TRUE)
+							remove_language("English")
+							for (var/datum/language/spanish/A in languages)
+								default_language = A
+							name = species.get_random_spanish_name(gender)
+							real_name = name
+							add_note("Known Languages", "Spanish")
+							return
+						else
+							add_language("French",TRUE)
+							remove_language("English")
+							for (var/datum/language/french/A in languages)
+								default_language = A
+							name = species.get_random_french_name(gender)
+							real_name = name
+							add_note("Known Languages", "French")
+							return
+					if ("jungle")
+						if (x<100)
+							add_language("Swahili",TRUE)
+							remove_language("English")
+							for (var/datum/language/swahili/A in languages)
+								default_language = A
+							name = species.get_random_swahili_name(gender)
+							real_name = name
+							add_note("Known Languages", "Swahili")
+							return
+						else
+							add_language("Zulu",TRUE)
+							remove_language("English")
+							for (var/datum/language/zulu/A in languages)
+								default_language = A
+							name = species.get_random_zulu_name(gender)
+							real_name = name
+							add_note("Known Languages", "Zulu")
+							return
+					if ("desert")
+						if (x<100)
+							add_language("Arabic",TRUE)
+							remove_language("English")
+							for (var/datum/language/arab/A in languages)
+								default_language = A
+							name = species.get_random_arab_name(gender)
+							real_name = name
+							add_note("Known Languages", "Arabic")
+							return
+						else
+							add_language("Hebrew",TRUE)
+							remove_language("English")
+							for (var/datum/language/hebrew/A in languages)
+								default_language = A
+							name = species.get_random_hebrew_name(gender)
+							real_name = name
+							add_note("Known Languages", "Hebrew")
+							return
+					if ("temperate")
+						if (x<100)
+							add_language("Dutch",TRUE)
+							remove_language("English")
+							for (var/datum/language/dutch/A in languages)
+								default_language = A
+							name = species.get_random_dutch_name(gender)
+							real_name = name
+							add_note("Known Languages", "Dutch")
+							return
+						else
+							add_language("German",TRUE)
+							remove_language("English")
+							for (var/datum/language/german/A in languages)
+								default_language = A
+							name = species.get_random_german_name(gender)
+							real_name = name
+							add_note("Known Languages", "German")
+							return
+		else if (map.ID == MAP_NOMADS_PANGEA)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("tundra")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						for (var/datum/language/russian/A in languages)
+							default_language = A
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						return
+					if ("taiga")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						for (var/datum/language/russian/A in languages)
+							default_language = A
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						return
+					if ("semiarid")
+						add_language("Latin",TRUE)
+						remove_language("English")
+						for (var/datum/language/latin/A in languages)
+							default_language = A
+						name = species.get_random_roman_name(gender)
+						real_name = name
+						add_note("Known Languages", "Latin")
+						return
+					if ("savanna")
+						add_language("Swahili",TRUE)
+						remove_language("English")
+						for (var/datum/language/swahili/A in languages)
+							default_language = A
+						name = species.get_random_swahili_name(gender)
+						real_name = name
+						add_note("Known Languages", "Swahili")
+						return
+					if ("jungle")
+						add_language("Japanese",TRUE)
+						remove_language("English")
+						for (var/datum/language/japanese/A in languages)
+							default_language = A
+						name = species.get_random_japanese_name(gender)
+						real_name = name
+						add_note("Known Languages", "Japanese")
+						return
+					if ("desert")
+						add_language("Arabic",TRUE)
+						remove_language("English")
+						for (var/datum/language/arab/A in languages)
+							default_language = A
+						name = species.get_random_arab_name(gender)
+						real_name = name
+						add_note("Known Languages", "Arabic")
+						return
+					if ("temperate")
+						add_language("German",TRUE)
+						remove_language("English")
+						for (var/datum/language/german/A in languages)
+							default_language = A
+						name = species.get_random_german_name(gender)
+						real_name = name
+						add_note("Known Languages", "German")
+						return
+//////////////////////////////////////////////////////
+///////////////////Karafuta-Sakhalinsk////////////////
+//////////////////////////////////////////////////////
+	if (map && map.civilizations)
+		if (map.ID == MAP_NOMADS_KARAFUTA)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("tundra")
+						if (x<100)
+							add_language("Russian",TRUE)
+							remove_language("English")
+							for (var/datum/language/russian/A in languages)
+								default_language = A
+							name = species.get_random_russian_name(gender)
+							real_name = name
+							return
+						else
+							add_language("Ainu",TRUE)
+							remove_language("English")
+							for (var/datum/language/ainu/A in languages)
+								default_language = A
+							name = species.get_random_ainu_name(gender)
+							real_name = name
+							add_note("Known Languages", "Ainu")
+							return
+
+					if ("temperate")
+						if (x<100)
+							add_language("Japanese",TRUE)
+							remove_language("English")
+							for (var/datum/language/japanese/A in languages)
+								default_language = A
+							name = species.get_random_japanese_name(gender)
+							real_name = name
+							add_note("Known Languages", "Japanese")
+							return
+						else
+							add_language("Ainu",TRUE)
+							remove_language("English")
+							for (var/datum/language/ainu/A in languages)
+								default_language = A
+							name = species.get_random_ainu_name(gender)
+							real_name = name
+							add_note("Known Languages", "Ainu")
+							return
 
 /////////////////////////CIVS////////////////////////
 
@@ -94,16 +340,10 @@
 	if (!H)	return FALSE
 	H.civilization = civname_a
 	H.give_clothes()
+	H.make_nomad()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
-	if (map.ordinal_age >= 2)
-		if (prob(85))
-			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
-		else
-			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
-	else
-		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -134,16 +374,10 @@
 	if (!H)	return FALSE
 	H.civilization = civname_b
 	H.give_clothes()
+	H.make_nomad()
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")
-	if (map.ordinal_age >= 2)
-		if (prob(85))
-			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
-		else
-			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
-	else
-		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -177,13 +411,6 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_c]</b> civilization.")
-	if (map.ordinal_age >= 2)
-		if (prob(85))
-			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
-		else
-			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
-	else
-		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -217,13 +444,6 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_d]</b> civilization.")
-	if (map.ordinal_age >= 2)
-		if (prob(85))
-			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
-		else
-			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
-	else
-		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -257,13 +477,6 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_e]</b> civilization.")
-	if (map.ordinal_age >= 2)
-		if (prob(85))
-			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
-		else
-			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
-	else
-		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -297,13 +510,6 @@
 
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_f]</b> civilization.")
-	if (map.ordinal_age >= 2)
-		if (prob(85))
-			H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
-		else
-			H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the Civilization! Remember, foreign worshipers are your allies, the Dark God is above patriotism!")
-	else
-		H.add_note("Religion", "You worship the <b>Old Gods</b> of your tribe. Keep an eye for heretics...")
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
@@ -334,15 +540,9 @@
 	if (!H)	return FALSE
 	H.give_clothes()
 	H.make_nomad()
+	H.give_languages()
 
 	H.add_note("Role", "You are a <b>Nomad</b>. Form a tribe and survive!")
-	if (prob(80))
-		H.add_note("Religion", "You worship the <b>Ancients</b>. This is a low-key religion that teaches you to respect others. Other violent religions, however, are not to be accepted...")
-	else if (prob(50))
-		H.add_note("Religion", "You worship the <b>Dark God</b>. Find your brothers in faith, and take over the world! The Lord of Light is your natural enemy.")
-	else
-		H.add_note("Religion", "You worship the <b>Lord of Light</b>. Find your brothers in faith, and take over the world! The Dark Lord is your natural enemy.")
-
 
 	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))

@@ -7,7 +7,7 @@
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
 	ambience = list("sound/ambience/ship1.ogg")
-	var/climate = "temperate" //temperate, desert, jungle, tundra
+
 /area/caribbean/New()
 	..()
 	if (istype(src, /area/caribbean/british))
@@ -150,6 +150,12 @@
 	icon_state = "green1"
 	climate = "temperate"
 
+/area/caribbean/nomads/semiarid
+	name = "Semi-Arid"
+	base_turf = /turf/floor/dirt/dust
+	icon_state = "red1"
+	climate = "semiarid"
+
 /area/caribbean/nomads/forest/snow
 	name = "Snowy Forest"
 	base_turf = /turf/floor/winter/grass
@@ -162,11 +168,29 @@
 	icon_state = "green1"
 	climate = "jungle"
 
+/area/caribbean/nomads/forest/savanna
+	name = "Savanna"
+	base_turf = /turf/floor/grass/jungle/savanna
+	icon_state = "blue3"
+	climate = "savanna"
+
+/area/caribbean/nomads/forest/Jungle/river
+	name = "Jungle River"
+	base_turf = /turf/floor/beach/water/jungle
+	icon_state = "green3"
+	climate = "jungle"
+
 /area/caribbean/nomads/snow
 	name = "Snow"
 	base_turf = /turf/floor/winter
 	icon_state = "red1"
 	climate = "tundra"
+
+/area/caribbean/nomads/taiga
+	name = "Taiga"
+	base_turf = /turf/floor/dirt
+	icon_state = "red3"
+	climate = "taiga"
 
 /area/caribbean/nomads/ice
 	name = "Ice"
@@ -179,12 +203,14 @@
 	base_turf = /turf/floor/beach/sand
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
+	climate = "sea"
 
 /area/caribbean/sea
 	name = "Island"
 	base_turf = /turf/floor/beach/sand
 	icon_state = "purple1"
 	ambience = list("sound/ambience/ship1.ogg")
+	climate = "sea"
 
 /area/caribbean/sea/beach
 	name = "Beach"
@@ -205,6 +231,36 @@
 	name = "No Man's Land"
 	icon_state = "purple1"
 
+/area/caribbean/no_mans_land/tundra
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/taiga
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/temperate
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/desert
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "desert"
+	base_turf = /turf/floor/beach/sand/desert
+/area/caribbean/no_mans_land/semiarid
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "semiarid"
+	base_turf = /turf/floor/dirt/dust
+/area/caribbean/no_mans_land/jungle
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "jungle"
+	base_turf = /turf/floor/dirt/jungledirt
 /area/caribbean/no_mans_land/invisible_wall
 	icon_state = "green1"
 
@@ -352,6 +408,11 @@
 
 /area/caribbean/void/caves
 	icon_state = "blue1"
+	name = "the caves"
+	location = AREA_INSIDE
+
+/area/caribbean/void/caves/special
+	icon_state = "blue2"
 	name = "the caves"
 	location = AREA_INSIDE
 

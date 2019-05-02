@@ -174,18 +174,25 @@ var/global/list/string_slot_flags = list(
 
 // new hair colors
 var/list/hair_colors = list(
-	"Black" = "#000000",
-	"Light Brown" = "#A0522D",
-	"Dark Brown" = "#53290B",
-	"Red" = "#800000",
-	"Orange" = "#EF7B18",
-	"Light Blond" = "#FFF8DC",
-	"Blond" = "#FBF4D0",
-	"Dirty Blond" = "#FFD57D",
+	"Black" = "#090806",
+	"Light Brown" = "#6A4E42",
+	"Dark Brown" = "#3B3024",
+	"Red" = "#B55239",
+	"Orange" = "#91553D",
+	"Light Blond" = "#E6CEA8",
+	"Blond" = "#E5C8A8",
+	"Dirty Blond" = "#B89778",
 	"Light Grey" = "#d3d3d3",
 	"Grey" = "#808080"
 )
-
+// new eye colors
+var/list/eye_colors = list(
+	"Black" = "#000000",
+	"Dark Brown" = "#2B1D0E",
+	"Brown" = "#542A0E",
+	"Green" = "#4B7248",
+	"Blue" = "#5EA4E7",
+)
 
 var/global/list/global_mutations  = list() // List of hidden mutation things.
 // Noises made when hit while typing.

@@ -93,38 +93,45 @@
 	for (var/obj/item/I in contents)
 		if (istype(I, /obj/item/stack/ore))
 			if (istype(I, /obj/item/stack/ore/diamond))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/diamond(src)
+				var/obj/item/stack/material/diamond/NO = new/obj/item/stack/material/diamond(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/glass))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/glass(src)
+				var/obj/item/stack/material/glass/NO = new/obj/item/stack/material/glass(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/gold))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/gold(src)
+				var/obj/item/stack/material/gold/NO = new/obj/item/stack/material/gold(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/silver))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/silver(src)
+				var/obj/item/stack/material/silver/NO = new/obj/item/stack/material/silver(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/iron))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/iron(src)
+				var/obj/item/stack/material/iron/NO = new/obj/item/stack/material/iron(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/copper))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/copper(src)
+				var/obj/item/stack/material/copper/NO = new/obj/item/stack/material/copper(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/tin))
-				for (var/COUNT = 1; COUNT <= I.amount; COUNT++)
-					contents += new/obj/item/stack/material/tin(src)
+				var/obj/item/stack/material/tin/NO = new/obj/item/stack/material/tin(src)
+				NO.amount = I.amount
+				contents += NO
 				contents -= I
 				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
@@ -142,6 +149,8 @@
 		else if (istype(I, /obj/item/weapon/clay))
 			var/obj/item/weapon/clay/CL = I
 			contents += new CL.result(src)
+			if (CL.result == /obj/item/weapon/clay/claybricks/fired)
+				contents += new CL.result(src)
 			contents -= I
 			qdel(I)
 
@@ -197,6 +206,32 @@
 	max_space = 5
 	fuel = 4
 
+/obj/structure/oven/fireplace/proc/smoke_signals()
+	for (var/mob/living/carbon/human/HH in range(25,src))
+		if (!HH.blinded && !HH.paralysis && HH.sleeping <= 0 && HH.stat == 0)
+			var/currdir = "somewhere"
+			if (z == HH.z)
+				if (y < HH.y)
+					currdir = "south"
+				if (y > HH.y)
+					currdir = "north"
+				if (y == HH.y)
+					currdir = ""
+				if (x <= HH.x)
+					currdir = "[currdir]west"
+				if (x > HH.x)
+					currdir = "[currdir]east"
+				if (x == HH.x)
+					currdir = ""
+			if (currdir != "somewhere" && currdir != "")
+				HH << "You see some smoke signals [currdir] of you..."
+
+/obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
+		H << "You produce some smoke signals."
+		smoke_signals()
+	else
+		..()
 /obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
 	if (icon_state == "[base_state]_on")
 		M.apply_damage(rand(2,4), BURN, "l_leg")

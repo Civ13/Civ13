@@ -40,9 +40,6 @@
 	var/list/all_underwear = list()
 	var/backbag = 2		//Which backpack type the player has chosen. Nothing, Satchel or Backpack.
 
-	// General information
-	var/religion = ""
-
 	//Equipment slots
 	var/obj/item/wear_suit = null
 	var/obj/item/w_uniform = null
@@ -109,6 +106,9 @@
 	var/shoveling_dirt = FALSE
 	var/shoveling_sand = FALSE
 	var/buriedalive = FALSE
+
+	var/circumcised = FALSE
+
 	/* These are stats. They affect how fast and how well you can do certain
 	 * actions. All stats have a min (stats[stat][1]) and a max (stats[stat][2]),
 	 * but currently no stats 'deteriorate' (in the future strength will),
@@ -126,6 +126,7 @@
 		"bows" = list(100,100),
 		"medical" = list(100,100),
 		"philosophy" = list(100,100),
+		"mg" = list(100,100),
 		"stamina" = list(100,100))
 
 	var/has_hunger_and_thirst = TRUE
@@ -134,7 +135,7 @@
 
 	var/stopDumbDamage = FALSE
 
-	var/partial_languages[10]
+	var/partial_languages[0]
 
 	var/debugmob = FALSE
 
@@ -158,6 +159,22 @@
 //	if you dont have that reagent in your blood.
 
 	var/civilization = "none" //what civilization this person belongs to
+	var/leader = FALSE
+	//leadership (total control!), announcement, give titles, recruitment
+	var/list/faction_perms = list(0,0,0,0)
+	var/title = ""
+	var/announcement_cooldown = 0
+
+	var/religion = "none" //what religion this person belongs to
+	var/religion_type = "none"
+	var/religion_style = "none"
+	var/religious_leader = FALSE
+	var/religious_clergy = FALSE
+
+	var/inducedSSD = FALSE
+	var/lastx = 0
+	var/lasty = 0
+	var/lastz = 0
 
 	var/driver = FALSE
 	var/obj/structure/vehicle/driver_vehicle = null

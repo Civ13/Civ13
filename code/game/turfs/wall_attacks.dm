@@ -132,7 +132,32 @@
 		var/obj/item/frame/F = W
 		F.try_build(src)
 		return*/
-
+	if (istype(W, /obj/item/weapon/poster/religious))
+		user << "You start placing the [W] on the [src]..."
+		if (do_after(user, 70, src))
+			visible_message("[user] places the [W] on the [src].")
+			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
+			var/obj/item/weapon/poster/religious/P = W
+			RP.religion = P.religion
+			RP.symbol = P.symbol
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.drop_from_inventory(W)
+			qdel(W)
+			return
+	if (istype(W, /obj/item/weapon/poster/faction))
+		user << "You start placing the [W] on the [src]..."
+		if (do_after(user, 70, src))
+			visible_message("[user] places the [W] on the [src].")
+			var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
+			var/obj/item/weapon/poster/faction/P = W
+			RP.faction = P.faction
+			RP.bstyle = P.bstyle
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.drop_from_inventory(W)
+			qdel(W)
+			return
 	if (!istype(W, /obj/item/weapon/reagent_containers))
 		if (!W.force)
 			return attack_hand(user)

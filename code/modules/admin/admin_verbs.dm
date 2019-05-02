@@ -48,7 +48,6 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/togglelooc,		//toggles looc on/off for everyone,
 	/datum/admins/proc/toggleoocdead,	//toggles ooc on/off for everyone who is dead,
 	/datum/admins/proc/toggledsay,		//toggles dsay on/off for everyone,
-	/client/proc/game_panel,			//game panel, allows to change game-mode etc,
 	/datum/admins/proc/PlayerNotes,
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			//frees slot for chosen job,
@@ -73,6 +72,7 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/set_custom_research,
 	/datum/admins/proc/set_research_speed,
 	/datum/admins/proc/set_custom_age,
+	/datum/admins/proc/toggle_ores,
 )
 var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_search,
@@ -117,6 +117,7 @@ var/list/admin_verbs_fun = list(
 var/list/admin_verbs_spawn = list(
 	/datum/admins/proc/spawn_atom,		// allows us to spawn instances,
 	/datum/admins/proc/spawn_player_as_job,
+	/client/proc/game_panel,
 	/client/proc/respawn_character
 	)
 
@@ -134,6 +135,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adrev,
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
+	/datum/admins/proc/export,
 //	/client/proc/check_customitem_activity,
 	/client/proc/nanomapgen_DumpImage
 	)
@@ -155,6 +157,8 @@ var/list/admin_verbs_debug = list(
 	/client/proc/jumptocoord,
 	/client/proc/dsay,
 	/client/proc/change_time_of_day,
+	/client/proc/change_wind_dir,
+	/client/proc/change_wind_spd,
 	/client/proc/randomly_change_weather,
 	/client/proc/randomly_modify_weather,
 	/client/proc/change_colour_filter

@@ -27,7 +27,6 @@
 	var/image/cover_overlay = null
 	var/image/cover_overlay2 = null
 	var/image/cover_overlay3 = null
-	herbivore = 1
 
 /mob/living/simple_animal/horse/New()
 	..()

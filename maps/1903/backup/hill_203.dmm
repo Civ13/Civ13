@@ -1,0 +1,426 @@
+"aa" = (/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"ab" = (/turf/wall/wood,/area/caribbean/russian/land/inside)
+"ac" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/wood,/area/caribbean/russian/land/inside)
+"ad" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"ae" = (/obj/structure/phoneline,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"af" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"ag" = (/obj/covers/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ah" = (/obj/structure/phoneline,/turf/wall/wood,/area/caribbean/russian/land/inside)
+"ai" = (/obj/covers/wood,/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/wood,/area/caribbean/russian/land/inside)
+"aj" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ak" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosinbox,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"al" = (/obj/covers/wood,/obj/structure/vending/russianapparel,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"am" = (/obj/covers/wood,/obj/structure/vending/rusweapons,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"an" = (/obj/covers/wood,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ao" = (/obj/covers/wood,/obj/structure/optable,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ap" = (/obj/covers/wood,/obj/structure/curtain/medical,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aq" = (/obj/covers/wood,/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ar" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"as" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"at" = (/obj/covers/wood,/obj/structure/bedsheetbin,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"au" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/medical,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"av" = (/obj/covers/wood,/obj/structure/closet/cabinet{anchored = 1},/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka/empty,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aw" = (/obj/covers/wood,/obj/item/weapon/reagent_containers/glass/barrel/oil,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"ax" = (/obj/covers/wood,/turf/wall/wood,/area/caribbean/russian/land/inside)
+"ay" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"az" = (/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"aA" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aB" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRU"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aC" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aD" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aE" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aF" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aG" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/ammo_magazine/c762x38mmR,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aH" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aI" = (/obj/covers/wood,/obj/structure/pot,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aJ" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/key/french{name = "Russian key"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aK" = (/obj/covers/wood,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aL" = (/obj/covers/wood,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aM" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aN" = (/obj/structure/sink/kitchen,/turf/wall/wood,/area/caribbean/russian/land/inside)
+"aO" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/violin,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aP" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/small_pot,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aQ" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRUCap"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aR" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aS" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aT" = (/obj/covers/wood,/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aU" = (/obj/structure/sign/redcross,/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/wood,/area/caribbean/russian/land/inside)
+"aV" = (/obj/structure/barricade,/obj/structure/window/classic,/obj/covers/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aW" = (/obj/covers/wood,/obj/structure/window/classic,/obj/structure/barricade,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aX" = (/obj/covers/wood,/obj/structure/oven,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"aY" = (/obj/structure/wild/tree/dead_tree,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"aZ" = (/obj/structure/wild/burnedbush,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"ba" = (/obj/structure/wild/tree/dead_tree,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"bb" = (/obj/structure/flag/russian,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"bc" = (/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bd" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"be" = (/obj/structure/window/classic,/obj/structure/barricade,/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bf" = (/obj/structure/sign/flag/japanese,/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bg" = (/obj/covers/wood,/obj/structure/simple_door/key_door/japanese,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bh" = (/obj/covers/wood,/obj/structure/telegraph{name = "High Command"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"bi" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/ammo_magazine/c762x38mmR,/obj/item/ammo_magazine/c762x38mmR,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/clothing/accessory/medal/bronze,/obj/item/clothing/accessory/medal/gold,/obj/item/clothing/accessory/medal/silver,/obj/item/clothing/accessory/holster/hip,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"bj" = (/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bk" = (/obj/covers/wood,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bl" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bm" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bn" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bo" = (/obj/covers/wood,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bp" = (/obj/structure/barricade,/obj/structure/window/classic,/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bq" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"br" = (/obj/structure/sink/kitchen,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bs" = (/obj/structure/window/classic,/obj/covers/wood,/obj/structure/barricade,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bt" = (/obj/structure/sign/redcross,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bu" = (/obj/structure/vending/japaneseapparel,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bv" = (/obj/covers/wood,/obj/structure/oven,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bw" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 8},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bx" = (/obj/structure/vending/japweapons,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"by" = (/obj/covers/wood,/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bz" = (/obj/covers/wood,/obj/structure/curtain/medical,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bA" = (/obj/covers/wood,/obj/item/weapon/bedsheet/medical,/obj/structure/bed/padded,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bB" = (/obj/covers/wood,/obj/structure/pot,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bC" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bD" = (/obj/covers/wood,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"bE" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/adv,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bF" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPDoc"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bG" = (/obj/structure/sign/flag/japanese,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bH" = (/obj/structure/table/wood,/obj/item/ammo_magazine/arisakabox,/obj/item/ammo_magazine/arisakabox,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bI" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"bJ" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bK" = (/obj/covers/wood,/obj/structure/teleprinter,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"bL" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"bM" = (/obj/covers/wood,/obj/structure/optable,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bN" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bO" = (/obj/covers/wood,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"bP" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/structure/sign/flag/japanese,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"bQ" = (/obj/structure/wild/burnedtree,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"bR" = (/obj/structure/window/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"bS" = (/obj/structure/window/sandbag,/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"bT" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"bU" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"bV" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"bW" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"bX" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"bY" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"bZ" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"ca" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cb" = (/obj/structure/phoneline,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cc" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"cd" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"ce" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cf" = (/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cg" = (/obj/structure/cannon/modern,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"ch" = (/obj/structure/window/snowwall,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"ci" = (/obj/structure/window/snowwall,/obj/structure/phoneline,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cj" = (/obj/structure/window/snowwall,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"ck" = (/obj/structure/window/snowwall,/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cl" = (/obj/structure/window/snowwall,/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cm" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/obj/structure/window/snowwall,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"cn" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"co" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"cp" = (/obj/structure/table/wood,/obj/structure/teleprinter,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"cq" = (/obj/structure/telegraph{name = "High Command"},/obj/structure/table/wood,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"cr" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/taiga)
+"cs" = (/obj/covers/wood,/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/pistol/nambu,/obj/item/ammo_magazine/c8mmnambu,/obj/item/clothing/accessory/holster/hip,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"ct" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cu" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cv" = (/obj/covers/wood,/obj/structure/simple_door/key_door/french{name = "russian"; unique_door_name = "Russian locked"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"cw" = (/turf/wall/rockwall,/area/caribbean/no_mans_land/taiga)
+"cx" = (/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cy" = (/turf/wall/rockwall,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cz" = (/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cA" = (/obj/structure/wild/smallbush/winter,/turf/wall/rockwall,/area/caribbean/no_mans_land/taiga)
+"cB" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cC" = (/obj/structure/wild/tree/dead_tree,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cD" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"cE" = (/obj/structure/wild/burnedtree,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cF" = (/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cG" = (/obj/structure/window/snowwall,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cH" = (/obj/structure/window/snowwall,/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cI" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cJ" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cK" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cL" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cM" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cN" = (/obj/covers/wood,/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"cO" = (/obj/structure/phoneline,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"cP" = (/obj/covers/wood,/obj/structure/telegraph{name = "Trenches"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cQ" = (/obj/covers/wood,/obj/structure/teleprinter,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cR" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper_bundle,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cS" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cT" = (/obj/covers/wood,/obj/structure/telegraph{name = "High Command"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cU" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"cV" = (/obj/covers/wood,/obj/structure/telegraph{name = "Hospital"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cW" = (/obj/covers/wood,/obj/structure/bed/chair/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cX" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cY" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"cZ" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"da" = (/obj/covers/wood,/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"db" = (/obj/covers/wood,/obj/item/weapon/stool/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dc" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRUDoc"},/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dd" = (/obj/covers/wood,/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"de" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"df" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRU"},/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dg" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dh" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"di" = (/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dj" = (/obj/covers/wood,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dk" = (/obj/covers/wood,/obj/item/weapon/stool,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dl" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dm" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dn" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"do" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dp" = (/obj/covers/wood,/obj/structure/bed/chair,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dq" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/red,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dr" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/kitchen/wood_bowl,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"ds" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dt" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/small_pot,/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/item/weapon/reagent_containers/food/snacks/spaghetti{name = "noodles"},/obj/covers/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"du" = (/obj/covers/wood,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dv" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/turf/wall/brick,/area/caribbean/russian/land/inside)
+"dw" = (/obj/covers/wood,/obj/structure/filingcabinet/filingcabinet,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dx" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/telegraph{name = "Barracks"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dy" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/teleprinter,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dz" = (/obj/covers/wood,/obj/structure/curtain/medical,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dA" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/telegraph{name = "Hospital"},/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dB" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/captain,/turf/floor/wood,/area/caribbean/russian/land/inside)
+"dC" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dD" = (/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dE" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dF" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dG" = (/obj/structure/wild/tree/dead_tree,/obj/map_metadata/hill203,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dH" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/obj/structure/window/snowwall,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dI" = (/obj/covers/wood,/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dJ" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/rd,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dK" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dL" = (/obj/covers/wood,/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dM" = (/obj/covers/wood,/obj/structure/filingcabinet/filingcabinet,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dN" = (/obj/covers/wood,/obj/structure/telegraph{name = "Barracks"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"dO" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/structure/phoneline,/turf/wall/brick,/area/caribbean/japanese/land/inside)
+"dP" = (/obj/structure/window/snowwall,/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dQ" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/taiga)
+"dR" = (/obj/structure/wild/burnedbush,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"dS" = (/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"dT" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"dU" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/phoneline,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"dV" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"dW" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"dX" = (/obj/structure/cannon/modern{icon_state = "modern_cannon"; dir = 1},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"dY" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"dZ" = (/obj/structure/table/wood,/obj/structure/teleprinter,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"ea" = (/obj/structure/telegraph{name = "High Command"},/obj/structure/table/wood,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"eb" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"ec" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/obj/structure/phoneline,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"ed" = (/obj/structure/window/snowwall,/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"ee" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"ef" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"eg" = (/obj/structure/flag/japanese,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"eh" = (/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
+"ei" = (/obj/structure/wild/tree/dead_tree,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
+"ej" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
+"ek" = (/turf/floor/winter/grass,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
+"el" = (/obj/structure/wild/smallbush/winter,/turf/floor/winter,/area/caribbean/no_mans_land/invisible_wall{climate = "taiga"})
+"em" = (/obj/structure/flag/japanese,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"en" = (/obj/covers/wood,/obj/item/weapon/reagent_containers/glass/barrel/oil,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+"eo" = (/obj/covers/wood,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/wood,/area/caribbean/japanese/land/inside)
+
+(1,1,1) = {"
+aaabacababababababacabacabababababababacabahaaadaeadadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadadaeadafadadadadadadadadadadadadadadadadadafadadaaahacababababababacabababababacabaaazad
+aaabawawaLagagagagagaxaKajakakalamalamcNbhabaaadadadadadadadadadadadadadadadadadadadazazadadadadadadadadadadadadadadadadadadadadadadadadadadadazadadadadadadazadaaacaGapaGagapaqbIasbLatcDauauauacaaadad
+aaacararararararagagaibDagagagagagagagcNbKabaaadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadazadaaabaAapaAagapagagagagagagagagagabaaadad
+aaabagavagagavagagagaxbDagagagagagagagcNcUdvaaadadadadadadadadadadaYaYadadadadadadadadadaaabacababacabacababacabacahabacabaaadadadadadadadadadadadadadadadadadadaaabaoapaoagapagagagagagagauauauabaaadad
+aaabaBaBaBaBaBaBaBagaCagagaBagaBagagagagababaaadadadadadadadadadadadadadadadadadadadadadaaacananagaXacdwdwdwdwacaXdxdyaDacaaadadadadadadadadadadadadadadadadadadaaabdzapapapapagagdcdddcagagagagabaaadad
+aaabararararararagagaxcNandaagagdbaHagaIabaaaaadadadadadadadadadadadadadadadadadadadadadaaabayagagagcvagagagagcvagagaFaDabaaadadadadadadadaYadadadadadadadadadadaaabcUdaagagagagagddddddagauauauabaaadad
+aaabagavagagavagagagaxcNdedfagaBdbaMagagaNaaazazazazazazazazazazazazazazazazazazazazadazaaabaDaEagagabagagagagabagagaFaDabaaadadadadadadadadadadadadadadadadadadaaabdydaagagagagagddddddagagagagabaaadad
+aaabaBaBaBaBaBaBaBaOaxcNdgdaagagdbaPagagabaaazazazazazazazazazazazazazazazazazazazazazazaaabaJasagagabagagagagabagagasaJabaaadadadadadadadadadadadadadadadadadadaaacbhagagagagagagagagagagauauauacaaazaz
+aaabararararararaganaxcNdgdfagaBdbaRagaTabaaazazazazazazazazazazazazazazazazazazazazazazaaacagagagagacagagagagacagagaFdAahaaadaeadadaeadadaeadadaeadadaeadadaeadaaahacabababaUaCaUabaVaVabaVaVacabaaazaz
+aaacagavagagavagaganaicNdgdaagagdbaSaTaTacaaazazazazazazazazazazazaZazazazazazazazazazazaaabdBagagagabagasaQagabagagaFdyabaaadazazadazazazazazazazazadazazadazazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazaz
+aaabacabababaWaWabacabacaWaWabaCabababacabaaazazazazazazazazazazazazazazazazazazbaazazadaaabagagagagabagaJaDayabagagaDaJabaaazazazazadazazadazadazazazazadazazazazazazazazazaaaaaaazazazazazazazazazazaz
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazazazazazadadazazazazazazazazazazazaaabdBagagagabagagagagabaqagagagabaaazazazazazazazazazazazazazazazazazazazazazazazbbaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazaaabagagagagabagagagagabaqagagagabaaazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazbbaaaaaaazazazazazazazazazazazazazazadazazazazazazazazazazazaaacdBagagbiacagagagagacaqagagagacaaazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazbaazazazazazazazazazazazazazazazazadazaaabacababacababcvabacabacabahacabaaazazazaZazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazbaazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazbQazazazazazadazazazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazazazazazadadazazazazazazbaazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazadazazazazazadazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazadadazazazazazazazazazazazazazazazazadazazazazazaaaaaaazazazazazazadazazazaz
+azazazazazazbQazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazadadazazazazazazazazazazazazbbaaaaaaazazazazaeazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazbQazazazazazazazazazazazazazazaZazazazazazazazazazazazazaaaaaaazazazadadadazazazazazazazazazbaazazazazazazazazazbaazazazazazazaaaaaaazazazazazazazbaazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazazadadazazazazaaaaaaazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazadazazazazazaZazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazaZazazazazazazazazazazazadazazazazazaaaaaaazazazadaeadadazazazazazazazazazazazazazazadazazazazazazazazazazaaaaaaazazazazbaazazazazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazaZazazazazazazbaazazazazazazazazazazaaaaaaazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+azazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazaeazazazazazazazazazazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazaz
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbSbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbR
+bTbTbTbTbTbUbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbVbWaaaabXbYbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbVbWaaaabXbYbTbTbTbTbTbTbTbTbTbTbTbUbTbTbTbTbTbTbTbTbTbTbTbT
+azazazazazazazazazazazazazazazazbaazazazazazazazazazazazazadbZbWaaaabXcaazazazazazazazazazazazadazazbaazazazazazazazazbaazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazadazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaaaabXcaadazazazazazazazazazazazazazazazazazazazazazcbazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazaZazazazazazazazazazazazazazazaz
+azazazazadazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaaaabXcaadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaZazbZbWaaaabXcaazazazazazazazazazazazazazazazazazbaazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazadazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazbaazazazazazazazazazazazazadbZbWaaaabXcaazazazazazazazazazazazadazazbaazazazazazazazcbbaazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazadazaz
+azazazazaZazazbQazazazazazazazazazazazazazbaazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazaZazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazaZazazazazazazazazbZbWaaaabXcaazazazazbaazazazazazaZazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazcbazazcbbaazcbazbZccaaaacdcaazcbazazcbazbacbazazcbazazcbazazcbazazcbazazcbazazazazazazazazazazazbZbWaaaabXcaazazazazbQazadazazazazazazazazazadazazazazaZazaz
+azazazazazazazazazazazazazazazaZazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazaZazazazazazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaaaabXcaaZaZazazazazazazazazazazazazazazazazazazazazazazazazazazbQazazazazazbZbWaaaabXcaazazazazadazazazadazazazbaazazazazazazazazazazaz
+azazazazazazazbaazazazazazazazazazazceazazazcbazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazceazazazcbazazbaazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazbQazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazbQazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazadadazazazazazazazazazazcfcgazcfcfcfazazazazazazazazbZbWaaaabXcaazazazazazazadazazazbQazazazazazazazazazazazazazazazazazcfcfcfcgazcfbZbWaaaabXcaazazazazadazazazadazazazazazazazazazazazazazazaz
+chchchchchchchchchchchchchchchchchchchchchchcichchcjchchchchckbWaaaabXclchchchchchchchchchchchchchchchchchchchchchchcichchchchcechchchchchchckbWaaaabXcmchchchchchchchchchchchchchchchchchchchchchchchch
+cncncncncncncncncncncncncncncncncncncncncocpcqcncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncocpcqcncncncncncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncn
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbR
+bTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTazadazadbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTazazazazbTbTbUbTbTbTbTbTbTbTbTbTbUbTbTbTbTbTbTbTbTbTbTbTbT
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazadazazazazazazazazazazazazadazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazadazazadazazazazazazazbZcaazazbZcaazazazazadazazazadazazazazazazazazazazazazazazaz
+azazadazazazazazazazazazazazazazazazazazazazazazazazazazazazbZcaazazbZcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZclchchckcaazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZclchchckcaazazazazazazazazbaazazazazazazazazceazazazazbaazazazazazazazazazazazazbTbTbTbTazazazazazazazazazazazbaazazazazazazazazazazazazaz
+azazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazbTbTbTbTazazazazazazazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaZbaazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazbQazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadadbaazazazazazazazadadazaz
+azazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazceazceazazafadazazazazazazazazazazadazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazadazazazazazceazazazazazazazazazazazazazazazazazadaZazazazazazazazazazazadazazazazazazazazazazazazazazazadaZazazazazazazazadazazazazazazazazazazazazazazadadazazazazazazazazazazazazazazbaazazazaz
+eheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheheieheheheheheheheheheheheheheheheheheheheheheheheiehehehehehehehehehehehehehejeheheheheheheheheheheheheheheheheh
+azazazazadadadadazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazadazazazaZcrazcrazazazadbaceazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazbaadadazazazazazazazcrazazadazazazazazazazazazazazazazazazazazazazazazceazazazazbaazazazazazazazazazazazazazazazazazazazazazazazcrcrcrazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazadazcrcrcrazazazazazazazazazazazazazazazazazadazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcrcrcrcrazazazazazazazazazadazazazazazazaz
+azazazbaazazazazazazazbaazazazazazazazazazazazazcrazcrcrcrbaazazazazazazazazadazbaazazadadazazazazazazazazazazazazazazazazazazazadazazazazazazadazazazazazazazazcrcrazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazceazazcrcrcrcrcrcrazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcrcrazazazazazazazazazazazazazazazazazazaz
+azadazazazazazazazazazazazazazceazazazazazazazcrcrazcrcrazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazadbQazazazazaz
+azazazazazazazazazazazazazazazadadazazazazazazazazazcrazazazazazazazazazazazazazazazazazazazazazazazazazazadazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwazazazazcwcwazazadazazazazazazazazazceazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwcwazazcwcwcwcwcwcwazcwazazazazazazazazazazazazbaazazazazazazazazazadbQazazcwcwcwadazazazazazazazazazazadazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazceazazazazazazazcwcwcwcwcwcwcwcwcwcwcwcwazazazazazazazazazazazazazazazazazazazazazazcwcwcwcwcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwcwcwazazazazcwazazcwcwceazbaazadadazazazazazazazazazazazazazazcwazcwcwcwcwcwcwcwcwazazazazazazazazbaazazazazazazazazazazazadazazazazazaz
+azazazazazazadazazazazazazazazazaZazazazazazazazazazazazazazcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwazcwcwazazceazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwcwcwcwcwceazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazadazazazazazazazadazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwcwcwcwcwazazazadbQazazadadadadadazazazazazadazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazadazaZazazazazazazazazazazazazazazazazazazcrazazazazcwcwcwazazazazazadazazazadbaazazadadadadadazazaz
+azazazazazazbQceazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazcwcwazazazazazazazazazazadazazazazadazazazazaz
+azazazazazazazazazazazadazazazazazazazazazcrazazazazazazazazazazazazazadazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazazazazazazazazazbQazazazazazazazazazazazazazazazazazazadadazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazbaazazazazazazazazazazazazazazadazazazazadazazazazazazazazazazazazazazazazazazadbaazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazadazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazadadazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazcrazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazaZazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazadazazcrazazceazazazazazazazazazazazazazazazazazazazazazazceazceazazafadazazazazazazaz
+azazazazazazazazazazazazazazazazazazazceazazazazazazazceazazadazazazazazazazazazazazbQazazazazazazazazazazazazazazazazazazazazceazbaazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazaz
+azazazazazazazazazazazazazazazazazazcecrazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaZazazazazazazadazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazadadazazazazazazazazazazazazazazcrazazazazazazazazazazazazazazazazazazazazazadazazadadazazazazazcrazazcrazazazazazazadazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazcrazazazadazazazadazazazazazadazazazcrazcrazazadazazazadazazazazazazazadazazazazazazazazazazazazadazazcrazcrcrazcrazazazazadazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazadazazazazazazazazcrazcrcrazazazazazazazazazazazazazazazazazazazazazazazazcrazazazazceazazazazazazazazazazazazazazazazazcrcrcrcrcrcrcrazazceazazazazazazazazazazazazazazazazadazaz
+azazazazazazazazazazazbaazazazadazazazazazazazazazazcwcwazazazazazazazazazazazazazazazazazcrcrcrcrazazazcrazazazazazadadazazazazazazazazazazazadcrcrcrcrcrazazazceazbaazazazazazazazazadazazazazadadazaz
+azazazazcrazazazazazazazazazazadazazazazazazazazcwcwcwcwcwazazazazazazazazazazazazazazcrcrcrcrcrcrcrazazcrazazazazazazadazazazazazazazazazazazazazcrcrcrazazazazazazazazazazazazazazazadazazazazazazazaz
+azazazazazcrcrcrazazazazazazazazazazazazazazcwcwcwcwcwcwcwcwcwazazazazazazcebaazazazazcrazcrcrcrcrcrazazcrazazazazazazazazazazazazazazazazazazazazazcrazazazazadazazadadazazazazazazazazazazazazazazazaz
+azazazazcrcrcrcrcrazazazazazazazazazazazazcwcwcwazazazazadcwcwcwcwazazazazazazazazazazcrazazcrcrcrcrcrcrazcrazazazazazazazazazazazazbaazazazazazazazcrazazazazazazazazazazazazazazceazazazazazazazazazaz
+azazazazcrcrcrcrazcrazazazazazazazazazazazazazazazazazazcrazazcwazazazazazazazceazazazazcrazazazcradazazazazazazazazazazazazazazazazazadadazazazazazazazadcwazazazazazazazazazazadazazazazazazazazazazaz
+azazazazazcrcrazazazazazadazazadadazazazazazazazazazazazazazazazcrazazazazazazazazazazazcrazcrazazazazazcrazazazazazazazazazazazadazazazazazazazazazazazcwcwazazazazazazazazazazazazadadazazazazazazazad
+azazazazazcrcrazazazazazazazazazazazazazazazazazazazbQazazazazazazadazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazcwcwcwcwazazazazazazazazazazazazazazazazazazazazaz
+adadazazazazazazazadazazazazazazazazazazazazazazazazazazaZazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazcwcwazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazaZazazazazazazazazazcwcwazazazazazazazazazazadazazazazazazazazceazazazazazazcwazazazazazazazazazazazazazazazazazazazadazazazazaz
+azazazazazazazazazazazazbQazazazazazazazazazazazazazazazazazazadcrazbQazazazazazazazcwcwcwcwcwazazazazazazazazazazazceazcwazazazazazazazazazazazazazazazazazazazadazazazazbQazazazazazazazazazazazazazaz
+azazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwcwcwcwcwcwcwazazazazazazazazazazazcwazcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazcrazazazazafcwcwcwcwcxcxcycxcxcxcxczcxcxcxcxcxcxcxcxcycycwcwcwazcwazazazazazazazazazazazazazazazazazazazazazadadazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazadazazazazazazazazazazazazcrcrcrazazazazcAcwcwazazczcxcxcxcxcxcxcxcBcxcxcxcxcxcxcxcxcxcwcwcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazcrcrazazazazcycycxcCcxczczcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcycycyazazadazazazazazazazazazazazceazazazazazazazazazazazazazazadadazazazad
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazcxczcxcxcxcxcxcxcxcxcxcxcxcxcxcCcxczcxcxcEcEcxcxcxcxcFcycwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+adadadazazazazazazazazazazazceazazazazazazazazazazazazazazcrazazadcrazazcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxczcxcxcxcxcxcxcxcxcxcycycwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazceazazazazazazadadazazazazazazazazazazazazazazazazazazazazazazcxcxcxcxcxcxcxcxcxcxcxcGcGcHcxcxcGcGcGcxcxcxcxcxcxcxcFcxcxcxcrazcrazazazazazazazazazazazazazadadazazazazazazazaZazazazbaazazazaz
+azazazazazazazazazazazazazazazazazadbaazadadazazazazazazazadazazazazazazcxcxcxcxcxcxcxcxcxcxcxcIcJcKcxcxcKcJcLcMcxcxcxcxcxcxcxcCcxcxcrcrcrcrazazazazazazazazazazazazazazazazazazazazazazadazazazazazazaz
+azazazazazazazazazazazazazceazazazazazazazceazazazazazazazazazazazazazazcxcxcxcxcxcEcxcxcxcxcxdhdididididididCcMcxcxcxcxcxcxcxcxcxcxcrcrcrazazazazazazadazazadazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazbQazazazazazazazazazazbaazbaazazazcxcxcxcxcxcBcxcxcxcxdicMdididDdDdididEcMcxdicxcxcxcxcxcxcxcxcrcrazazazazazazazazazazazazazazazazazazazazazazceazazazazazazazazaz
+azazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazadczcxcxcxcxcxcxcxdicxcxdFdidDcFcFdDdidCdhcxcBcxdicxcxcCcxcxcxazcrazcrazazazazazazazazazazazazazazazazazazazazadadazazazazazazazad
+azazazazazazazazazazadadazazazazazazazazazazazazazazazazadazazazazazazazczcxcxcxcxcxcxcxcxcxcxdhdDcFdGcFcFdDdEcMcxcxcxcxcxcxcxcxcxcxcrazazcrazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazadazazazcxcxcxcxcxcCcxcxcxcxcxdhdidDcFcFdDdidCdhcxcxcxcxcxcxcxczcxcxazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbaazadazazazcxcxcxcxcxcxcxcxcxcxcxdhdididDdDdididEcMcxcxcxcBcxcxcxcxcxcxazadceazazazazazadazazazazazazazazazazazazazazazazazazazadazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcxcxcxcxcxcxcxcxcxdicxdhcxdidicxdicxdCcMcxcxcxcxcxcxcxcxcxcxazazazazazazazazazazazazazazadazazazazazazazazazazbQbQazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazcxcxcxcxcxczcxcxcxcxcxdHcGcGcxcxcGcGdPdhcxdicxcxcxcxcxcxcxcxbaceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azadazazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazazcwcwcxcxcxcxczczcxcxcxcxcxcJcJcJcxcxcKcJcJcxcCcxcxcxcxcxcxcxcxcxazazazazazazazazazazazazazazazazazazazazadadceazazazazazazazazazazaz
+azazazazazazazazazazazazazadazazazazazazazazazazazazazadadazazazazazazcwcwcwazcxcxcxcxcxcxcxcxdCcxcxcxcxcxcBdEcxcxcxcxcxcBcxcxcxcxcyazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazbaazazadazazazazazazazazazazazazazazadazazazazazazazazazazcwcwcwcwcycxcxcxcxcCcxcxdEcxcxcxcxcxdEdEcxcxcxcxcxcxcxcxcxcxcwcwazazazadazazazazazazazazazazazazazazazazazazazazazazazadadazazazad
+azazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazcrazazazcwazazcwcwcwcxcxcxcFcxcxcxcxcxcxcxcxdEdEcxcxcxcxcxcxcxcxcxcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazbQazadcrcrazazazazazazazazazazazazcrcrazazazazazazazcwcycycycxcxcBcxcxcxcxcxcxcxcxcxcxcxcEcxcxdicxcycwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazcrcrcrazazazazazazazazazazazazazcrazazazazazazazazazcwcwazazazazcxcxcxcxcxcxcxcxcxcxcxcxadazcwcwcwadazazazazazazazazazazazazazadazazadadazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazcrcrcrcrcrazazazazadazazazazazazazazazazazazazazazbaazazazcwazazazazazazazazazazazazazazazazazcwcwcwazazazazazazazazazazazazbQbQazazazazazazazazazazazazadadazazazazazazazad
+azazadazazceazazazazazazcrcrcrdQazcrazazazazazazazazazazazadazazazazazazazazazazazazazazazazadadazazazazcrazazazazazcwcwcwcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazadazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazcrazazcrazcrcrazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazbaazazazazazazazaz
+azazazazazazazazaZazazazazazcrazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcrazazazazazazazazazceceazazazazazazazbaazazazazazazazazazceazazazazazazazazazazazazazazazazazazadazazazazaz
+azazazazazazazazazazazazazazazazceazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazceazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadadazazazazazazazazazazazazazazazazazazazazazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadadazazazazazazazazazazazaz
+azazazazazazazazazazazceazazazazazadadazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazadadazazazadazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazadazazazazazazazazazazazazazazceazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaZazazazazazazazazazazazaZaZadadazazazad
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazbaazazazazadadazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazcwcwazazadazazazazazazazazazceazazazazazazazadazazazazazazazazazazazazaZazazazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazbaazazazazazazazazazazazcwcwcwcwcwcwazcwazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazaZazazazazazazazazazazazazazadazazazazazazazazazadaYazazazazazazazazazazazazazazazaz
+azazceazazazazazazazazazazazazazazazazcwcwcwcwcwcwcwcwcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazazadazazaYazazazazazazazazazazazazazazazazazazazcwcwcwazcwazazazcwcwazazcwazadazazazazazazaz
+azazazazazazazazazazazazazazazazazazazcwcwcwazazazazcwazazcwcwceazazazadadazazazazazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazcwcwcwcwcwcwcwcwcwcwcwcwcwcwcwazazazazazazazaz
+azazazazazazazazazazazazazazazazceazcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazadcrazazazazazazazazazazazaZazazazazcwcwcwcwcwcwcwcwcwcwcwcwcwcwcwcwcwazazazazazaz
+azazazazazazazadazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazadadazazazazazcwcwcwcwcwazadazcwcwadadazazazcwazcwcwceazazazazaz
+azazazazazazazazazazceazazazazazazazadazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazcrazazazazazcrazazazazazazazadazazazazazazcwcwcwazazazazazazazadazazazazazazazazazazazadazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazaZazazazazazazazazazazazazazadcrcrazazcrazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazcrcrcrcrcrazazazazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazadazazazazazazazazazadazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazcrcrazcrazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazadazazazazazazazadazazadazazazazazazazazazazazazazazazceazazazazazazazazazazazazazazbQazazazazazazazazcrcrcrazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazadazazazadazazazazazaz
+azazazazbaazazazazazadadadadadadadazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazcrazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazadazbaadazazazazazazazazazazazazazadazazazadazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazadadazazazazazazbaazazazadazazazazazazazazazazazazazazazazazazazazaz
+azazazazazadazazazazazazazadazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazadceazazazazazazazazazazazazazazazazceazazazazazazazazaz
+azazazazazazaZbaazazazazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadadazazazazazazazadazazazazazazazazaz
+azazazazazazazazazazazazazazazbaazazadazazazazazazazazazazazbQazazazazazazazazazazazazazazazazazazazazazazazazceazazadadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadaz
+azazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaZazazazazazazaz
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazcrazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazbQazazazazazazazazadazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazadazazazazazadazazazcrazcrazazadazazazadazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazadazbQazazazazazazazazazazazazazazazazazazadazazazazazazaz
+azazazazazazazazazazazazadazazazazazazazazazcrcrazcrazazazazazazazazazazadazazazbaazazazazazazazazazazazazazazadazazazazazazadazazazazaZazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazadazaz
+azazazazazazazazazazazazadazazazazazazazazcrcrcrcrcrazcrazazazazazazazazazazazazceceazazazazazazazazazazazazazazazazazazazazazazazazazazazazceazazazcrcrazadadazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazazazadadcrcrcrazcrcrazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcrcrcrcrazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazceazazazazazbaazazazazazcrazazazazazazazadazazazazazazazazazazazcrazazazazazazazazceadazazazazazbaazazazazazazazazazazazazazazazcrazazazazazazazazceazazadadazazazadazazazazazazazazaz
+ehehehehehehekehehehehehehehehehehehehehehehejehehehehehelehehehehehehehehehehehejehejehejejejehehehehehehehehehehehehehehehehehehehehehehehehehejehejejeheheheheheheheheheheheheheheheheheheheheheheheh
+azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazcrcrcrazazazazazazazazazazazazazazadadazazazazazazazazazazazazcrazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazadazazazazazazazazazazazazadazazazazazazazceazazazazazazazazazcrazazazazazceazazazazadazazazazazbQazazazazazazazazazazadadazazazazazazazbaazazazazazazazazazazazazazazazazaz
+azadazazazazceazazazazazazazazaZazazazazazazazazazazazazbaazazazazazazazazazazazdRdRazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazadazazazazazazadaz
+azazazazazazazazazazazazazazbaazazazazazazazazazazazceazazazazazazazazazbaazazazazazazazazazazazazazazceazazazazazazazazazazazazazazadazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazazchchchchazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazceazazazazazazazazazazazazazazazchchchchazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazadadadadbZbYbTbTbVcaazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazbZbYbTbTbVcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazbZcaazazbZcaazazazazazazazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazbZcaazazbZcaazazazazazazazazazazazazazazazazazazazazazazazadazazazazaz
+azadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazchchchchchchchchchchchchazazazazchchchchchchchchchchchchchchchchcjcjchchchchchchchchchchcjcjcjchchchchchchcjchchchchchchchchazazazazchchchchcjchchchchchchchchchchchcjchchchchchchchchchchchchch
+cncncncncncncncncncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncncn
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacocpcqdSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacocpcqdSaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbR
+bTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbVbWaaaabXdTbTbTbTbTbTbTbTbTbTbTdUbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbUbUbTbTbTbTbTbTbTbTbTbTbTbTbTdVbWaabXdWbTbTbTbTbTbTbTbTbTbTbTbTbTbTdUbTbTbTbTbTbTbTbTbTbTbTbTbTbT
+azazazazazazazazazazazazazazazbZbWaaaabXcaadadcfcfdXazcfcfazazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazcfcfdXazcfcfbZbWaabXdYazazazazazazazazazazazazazazazazazazazazazazazazadazazazaz
+azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazadazazazazazazazazazazadazazazazazazazazazazazazdZeaebazazazazazazbZbWaabXcaazazazazazazazazadazazazceceazazazazazbaazazazazazazazazaz
+azazazceazazadadazazazbaazazazbZbWaaaabXcaazadazazazazazazazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazccaabXecazazcbazazcbazazcbazazcbazazcbazazazazadazazazazazazazazaz
+azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazceazazbaazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazbZbWaabXcaazazazazazazazazazazazazbaazazazazazazazazazazazazazazazaz
+azazazazazazaZazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazceazazazazazazazazazazceazazazazazazazazazazazazceazazazazazazazazazbZbWaabXcaazazazazazazazazazaZazazazazazazazbaazazazazceazazazazazaz
+azazbaazazazazazazazazazazazazbZbWaaaabXcaazazazazadazazazadazazazazazazazazazazazazazazazazazaZazazazazbaazazazazazazazazazazazazazbZbWaabXcaazazazazazazazadazazazazazazcbazazazazazazazceazazazazazaz
+azazazazazazazazazceazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazbZbWaabXcaazazazazazazazadazazazazazazazaZazazazazazazazazazazazadaz
+ceazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazceazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaabXcaazazazazazazazceazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaabXcaazazazazazazazazazazazazazazcbazazazazazadazazazazazazazaz
+azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaabXcaazazazazazazazazazazazazazazazazazazazazadazazazazazazazaz
+chchchchchchchchchchchchchchchedbWaaaabXcmchchchchchcjchchchchchchchchchchchchchchchchchchchchchchchchchchchchcjchchchchchchchchchchckbWaabXcmchchchchchchchchcjcjchchchchchchchchchchchchchchchchchchch
+cncncncncncncncncncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncnaaaaaacncncncncncncncncncncncncneecqefcncncncncncncncncncncncncncn
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+azazazazaaaaaaaaazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazadazazazazazazazazadazazazazazazazadadadadadadadadadadadadadaeadadadadaaaaadadadadadadadad
+azazazazaaaaaaaaazazazazazazazazazbaazazazadazceazazazazazazazazazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazazazazadadadadadadadadadadadadadadadadadadaaaaadadadadadadadad
+azazazazaaaaaaaaazazazazazazazazazazazazazazazazazazazazazazaZadazazazazazazazazazazaaaaaaazazazazazazazazazazazazazazadadadazazazazazazazazazadadadadadadadadadadadadadadadadadadadaaaaadadadadadadadad
+azazazazaaaaaaaaazazazazazazazazazazazazazazazazazazazazazazazazaZazazazazazazadadadaaaaaaadadadadadadadadadazazazazazazazazazazadadadadadadadadadadadadadadadadadadadadadaeadadadadaaaaadadadadadadadad
+adadadadaaaaaaaaadadadadadadadadadadadadadadadadazazazazazazazceazazazazazazazadadadaaaaaaadadadadadadadadadazazazazazazazazazazadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaadadadadadadadad
+adadadadaaaaaaaaadadadadadadadadaYadadadadadadadadazazazazazazazazazazazazadadadadadaaaaaaadadadadadadadadadadazazazazazazazazadadadadadadadadadafadadadadadadadadadadadadadadadadadaaaaadadadadaYadadad
+adadadadaaaaaaaaadadadadadadadadadadadadadadadadadadazbaazazazazazazazazadadadadadadaaaaaaadadadadadadadadadadazadazazadafadadadadadadadadadadadadadadadadadadadadadadadadaeadadadadaaaaadadadadadadadad
+azazazegaaaaaaaaazazadazazadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadadadadaddRadadadadadadadadadadadadadaYadadadadadadadadadadadadadadademaaaaadadadadadadadad
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadaaaaaaadadadadadadadadadadadadadaYadadadadadadadadadadadaYafadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bcbdbobpbfbqbqbfbpbobobobobdbcaaadadadadadadadadadadadadadadadadadadazazazazazazazegaaaaaaazazazadadadadadadadadadadadadadadadadaYadadadadadadadadadadadadadadadadaabcbdbccObcbcbdbebfbgbfbdbcbcbcbcbdbc
+bddjeneneobjbjbjbjdkdkdkdkbjbdaaadadadadadadadadadadadadadadadadadadaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabddIcscPcQcRbcbjbjbjbjbcbjbjbjcsdJbd
+bcdjbjbjdkdkbjbjbjdldldmdmbjbcaaadadadadadadadadadadadadadadadadadadaabcbdbcbcbcbsbdbfbqbtbsbdbcbsbsbcbdbcaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcbjbjbnbncSbcbjbjbjbjbcbjbjbjbjbjbc
+bcbubjdkdndodkbjbjdkdkdkdkbybraaadadadadadadadaYadadadadadadadadadadaabdbjbjbjbjbjbjbjbjbjdpdpdpdpdKcQcTbdaaadadadadadadaYadadadadafadadadadadadadadadadadadadadadaabcbjbjbjbjbjbcbjbjbjbjbcbkbjbjbjdJbc
+bcbxbjbjdkdkbjbjbjbjbjbjbjbybcaaadadadadadadadadadadadadadadadadadadaabcbzbzbzbzbzbzbjbjbjbjbjbjbjbjbjdLcOaaadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadaacOcVbwbjbjdIbdbjbjbjbjbdbNbwbjbjbjbc
+bcbubjdqdqdqdqdqbjbjdkdrbjbybcaaadadadadadadadadadadadadadadadadadadaabsbjbjbzbjbjbzbjbjbjbjbjbAbjbAbjbAbsaaadadadadadadaYadadadadadadadadadadadadadadadadadadadadaabccQbwbjbjdIbcbmblbNbjbcbkbjbjbjdJbc
+bdbxbjbCbCbCbCbCbjbjdkdrbjbvbcbcbdaaadadadadadadadadadadadadadadadadaabsbEbjbzbEbjbzbFbjbFbjbjbAbjbAbjbAbsaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcdKbjbjbjbjbcbjctbkbjbcbjbjbjbjbjbc
+bcbHbjdqdqdqdqdqbjbjdkdsbjbBbjdKbcaaadadadadadadadadadadadadadadadadaabcbJbjbzbJbjbzbjbjbjbjbjbAbjbAbjbAbcaaadadadadadadadadadadadadadadadadadadadadadadadadadadadaabcdMbjbjbjbjbGbjbjbjbjbGbjbjbjbjbjbc
+bcbHbjbCbCbCbCbCbjbjdkdtbjbjbjcQbcaaadadadadadadadadadadadadadadadadaabdbMbjbzbMbjbzcXbNbOcYcZbAbjbAbjbAbdaaadadadadadadadadadadadadadadadadadadadadafadadadadadadaabccQcWcubjbjbgbjbjbjbjbgbjbkcubjbkbc
+bcdubjdqdqdqdqdqbjbjdkdrbjbjbjcTbcaaadadadadadadadadadadadadadadadadaabcbdbcbcbcbcbdbcbcbcbcbdbcbcbcbcbdbcaaadadadadadadadadadafadadadadadaYadadadadadadadadadadadaabddNbkblbjbvbPbjbjbjbjbPbvbmblbkbkbd
+bdbcbcbcbcbdbcbcbcbcbcbdbcbcbcbcdOaaadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadaacObdbcbcbcbdbcbdbcbcbdbcbdbcbcbcbdbc
+"}

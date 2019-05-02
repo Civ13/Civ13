@@ -27,6 +27,19 @@
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "old_stone_wall"
 
+/turf/wall/cement_wall
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "cement_wall"
+	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
+
+/turf/wall/shoji
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall"
+
+/turf/wall/shoji2
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "shoji_wall2"
+
 /turf/wall/old_stone/update_icon()
 	return
 

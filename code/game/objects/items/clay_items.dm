@@ -44,6 +44,11 @@
 	icon_state = "unfired_advclaybricks"
 	result = /obj/item/weapon/clay/advclaybricks/fired
 
+/obj/item/weapon/clay/advclaybricks/cement
+	name = "unfired cement bricks"
+	icon_state = "unfired_cementbricks"
+	result = /obj/item/weapon/clay/advclaybricks/fired/cement
+
 /obj/item/weapon/clay/claybowl
 	name = "unfired clay bowl"
 	icon_state = "unfired_claybowl"
@@ -104,6 +109,13 @@
 	throwforce = WEAPON_FORCE_WEAK+3
 	force = WEAPON_FORCE_WEAK+5
 
+/obj/item/weapon/clay/advclaybricks/fired/cement
+	name = "cement bricks"
+	icon_state = "cementbricks"
+	desc = "modern bricks. Can be used to make cement walls."
+	throwforce = WEAPON_FORCE_WEAK+4
+	force = WEAPON_FORCE_WEAK+6
+
 
 /obj/item/weapon/clay/claybricks/fired/attack_self(mob/user)
 	user << "You start building the clay wall..."
@@ -118,6 +130,14 @@
 	if (do_after(user, 25, src))
 		user << "You finish the placement of the brick wall foundation."
 		new /obj/covers/brick_wall/incomplete(user.loc)
+		qdel(src)
+		return
+
+/obj/item/weapon/clay/advclaybricks/fired/cement/attack_self(mob/user)
+	user << "You start building the cement wall..."
+	if (do_after(user, 25, src))
+		user << "You finish the placement of the cement wall foundation."
+		new /obj/covers/cement_wall/incomplete(user.loc)
 		qdel(src)
 		return
 

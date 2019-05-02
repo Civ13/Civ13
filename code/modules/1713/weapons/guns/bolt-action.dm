@@ -384,7 +384,7 @@
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
 	bolt_safety = FALSE
-	effectiveness_mod = 0.85
+	effectiveness_mod = 0.89
 	value = 100
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -404,6 +404,38 @@
 		return
 	else
 		icon_state = "gewehr98"
+
+/obj/item/weapon/gun/projectile/boltaction/carcano
+	name = "carcano 1891"
+	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
+	icon_state = "carcano"
+	item_state = "carcano"
+	caliber = "a65x52mm"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a65x52mm
+	magazine_type = /obj/item/ammo_magazine/carcano
+	bolt_safety = FALSE
+	effectiveness_mod = 0.85
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+
+/obj/item/weapon/gun/projectile/boltaction/carcano/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "carcano_open") //closed
+		icon_state = "carcano"
+	else if (icon_state == "carcano")
+		return
+	else
+		icon_state = "carcano"
 
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka35
@@ -689,3 +721,36 @@
 		return
 	else
 		icon_state = "berdan"
+
+/obj/item/weapon/gun/projectile/boltaction/enfield
+	name = "Lee-enfield"
+	desc = "A 10-shot, bolt-action rifle, standard issue for british military, chambered in .303 british."
+	icon_state ="enfield"
+	item_state ="enfield"
+	var/iconame = "sharps"
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a303"
+	weight = 4.5
+	effectiveness_mod = 0.99
+	bolt_safety = FALSE
+	value = 80
+	recoil = 3
+	slot_flags = SLOT_BACK
+	throwforce = 16
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	ammo_type = /obj/item/ammo_casing/a303
+	magazine_type = /obj/item/ammo_magazine/enfield
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 10
+/obj/item/weapon/gun/projectile/boltaction/enfield/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "enfield_open") //closed
+		icon_state = "enfield"
+	else if (icon_state == "enfield")
+		return
+	else
+		icon_state = "enfield"
