@@ -73,7 +73,7 @@
 	on_impact(atom/hit_atom)
 		on_hit(hit_atom)
 
-/obj/item/projectile/bullet/rifle/a65x50mm
+/obj/item/projectile/bullet/rifle/a65x50
 	damage = DAMAGE_HIGH-3
 	penetrating = 2
 	armor_penetration = 10

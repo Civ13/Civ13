@@ -274,7 +274,7 @@
 			resultpath = /obj/item/ammo_casing/a8x53mm
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "6.5x50mmSR Arisaka")
-			resultpath = /obj/item/ammo_casing/a65x50mm
+			resultpath = /obj/item/ammo_casing/a65x50
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.65x53 Mauser")
 			resultpath = /obj/item/ammo_casing/a765x53
@@ -336,14 +336,14 @@
 		return
 
 
-/obj/item/ammo_casing/a65x50mm
+/obj/item/ammo_casing/a65x50
 	name = "6.5x50mm bullet"
 	desc = "A brass casing containing powder and a lead bullet."
 	icon_state = "kclip-bullet"
 	spent_icon = "kclip-casing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/rifle/a65x50mm
-	caliber = "a65x50mm"
+	projectile_type = /obj/item/projectile/bullet/rifle/a65x50
+	caliber = "a65x50"
 	value = 5
 
 /obj/item/ammo_casing/a65x52mm

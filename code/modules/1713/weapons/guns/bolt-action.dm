@@ -314,10 +314,10 @@
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
 	icon_state = "arisaka30"
 	item_state = "arisaka30"
-	caliber = "a65x50mm"
+	caliber = "a65x50"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a65x50mm
+	ammo_type = /obj/item/ammo_casing/a65x50
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
@@ -443,10 +443,10 @@
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
 	icon_state = "arisaka35"
 	item_state = "arisaka35"
-	caliber = "a65x50mm"
+	caliber = "a65x50"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a65x50mm
+	ammo_type = /obj/item/ammo_casing/a65x50
 	bolt_safety = FALSE
 	effectiveness_mod = 0.98
 	value = 120
