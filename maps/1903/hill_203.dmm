@@ -262,7 +262,6 @@
 "fb" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
 "fc" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
 "fd" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
-"fe" = (/obj/structure/wild/tree/dead_tree,/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "ff" = (/obj/structure/barricade/steel,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "fg" = (/obj/item/stack/material/barbwire,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
 "fh" = (/obj/covers/wood,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/item/weapon/reagent_containers/food/condiment/tealeaves,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -359,7 +358,7 @@ azazazazazceazazazazazazazazazcwcwazazazeVaaazazazcwcwcwcwazazadazazazcxcxcxcxcx
 azazazazazazazazazazazazazazcwcwcwcwazazeVaaaaazazazcwcwazbaazadazazazcxcxcxcxcxcxcxcxeZeZdCdhdididDdDdididEcMcxeZcxcBcxcBcxeNcxcxazadeOeKazazazazadazcwazazazazazazaaaaeJeJeJazazazazazazadazazazazazaz
 azazazazazazazazazazazazazazazcwcwazazazeveVaaazazazazcwazazazazazazazcxcxcxcxcxcxcxcxeZeZdCdhcxdidicxdicxdCcMeZeZcxcxcxcxcxcxcxcxazazeyeKazazazazazazazazazazadazazaaaaeJeJeJazazazbQbQazazazazazazazaz
 azazazazazazazazcwcwazazazazazcwcwazazazadeVaaazazazazazazazazazazazazcxcxcxcxcxczcxcxcxeZdCdHcGcGcxcxcGcGdPdheZdicxcxcxcxcxcxcxcxbaceezeKazazazazazazazazazazazazazaaaaeHcweHazazazazazazazazazazazazaz
-adazazazazazazazazazazazazazazcwcwcwazazazeVaaazazceazazazazazazazcwcwcxcxcxcxczczcxcxcxeZcxcJcJcJcxcxcKcJcJeZfecxcxcxcxcxcxcxcxcxazeAeBeKazazazazazazazazazazazazazaaaaazcwcwceazazazazazazazazazazazaz
+adazazazazazazazazazazazazazazcwcwcwazazazeVaaazazceazazazazazazazcwcwcxcxcxcxczczcxcxcxeZcxcJcJcJcxcxcKcJcJeZeZcxcxcxcxcxcxcxcxcxazeAeBeKazazazazazazazazazazazazazaaaaazcwcwceazazazazazazazazazazazaz
 azazazazazazazazazazcwazadazazazazazazazazeVaaazazazadadazazazazazazcwcwcwazcxcxcxcxcxcxeZeZcxcxdicxcxdieZeZeZcxcxcxcxcBcxcxcxcxcyazeDeDeKazazazazazazazazazazazazazaaaacwcwcwazazazazazazazazazazazazaz
 azazazazazbaazazadcwazazazazazazazazazazazeVaaadazazazazazazazazazazcwcwcwcwcycxcxcxcxcCcxeZeZeZeZeZeZeZeZeZeZcxcxcxcxeNcxcxcxcxcwcwazazazadazazazazazazazazazazazazazaaaacwazazazazazazazadadazazazadaz
 azazadazazazazazazazazazazazazazazazazazazeVaaazazazazazazazcrazazazcwazazcwcwcwcxcxcxcFcxcxcxeNeZeZcxdieZeZeNcxcxcxcxcxcxcxcxcwcwcwazazazazazazazazazazazazazazazazazazaacwcwazazazazazazazazazazbaazaz

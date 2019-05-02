@@ -63,9 +63,9 @@
 	..()
 	switch (define)
 		if (RUSSIAN)
-			return "Russians"
+			return "Russian Army"
 		if (JAPANESE)
-			return "Japanese"
+			return "Japanese Army"
 /obj/map_metadata/hill203/army2name(army)
 	..()
 	switch (army)
