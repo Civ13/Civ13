@@ -464,9 +464,9 @@ var/russian_forceEnabled = FALSE
 			if (msg11)
 				world << "<font size=3>[msg11]</font>"
 			if (msg12)
-				world << "<font size=3>[msg11]</font>"
+				world << "<font size=3>[msg12]</font>"
 			if (msg13)
-				world << "<font size=3>[msg11]</font>"
+				world << "<font size=3>[msg13]</font>"
 			if (map.civilizations && msg_religions != "")
 				world << "<font size=3>[msg_religions]</font>"
 			if (map.civilizations && msg_factions != "")
