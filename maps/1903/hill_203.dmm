@@ -116,7 +116,7 @@
 "cl" = (/obj/structure/window/snowwall,/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "cm" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/obj/structure/window/snowwall,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "cn" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
-"co" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"co" = (/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "cp" = (/obj/structure/table/wood,/obj/structure/teleprinter,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
 "cq" = (/obj/structure/telegraph{name = "High Command"},/obj/structure/table/wood,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
 "cr" = (/turf/floor/dirt/burned,/area/caribbean/no_mans_land/taiga)
@@ -134,13 +134,13 @@
 "cD" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "cE" = (/obj/structure/wild/burnedtree,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "cF" = (/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"cG" = (/obj/structure/window/snowwall,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"cH" = (/obj/structure/window/snowwall,/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"cI" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"cJ" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"cK" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"cL" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"cM" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cG" = (/obj/effect/decal/cleanable/generic,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cH" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
+"cI" = (/obj/effect/decal/cleanable/blood,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cJ" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cK" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cL" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"cM" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "cN" = (/obj/covers/wood,/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "cO" = (/obj/structure/phoneline,/turf/wall/brick,/area/caribbean/japanese/land/inside)
 "cP" = (/obj/covers/wood,/obj/structure/telegraph{name = "Trenches"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -161,7 +161,7 @@
 "de" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "df" = (/obj/covers/wood,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateRU"},/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "dg" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/shot,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"dh" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dh" = (/obj/item/stack/material/barbwire,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "di" = (/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dj" = (/obj/covers/wood,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/obj/item/weapon/shovel,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dk" = (/obj/covers/wood,/obj/item/weapon/stool,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -182,12 +182,12 @@
 "dz" = (/obj/covers/wood,/obj/structure/curtain/medical,/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside)
 "dA" = (/obj/covers/wood,/obj/structure/table/wood,/obj/structure/telegraph{name = "Hospital"},/turf/floor/wood,/area/caribbean/russian/land/inside)
 "dB" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/captain,/turf/floor/wood,/area/caribbean/russian/land/inside)
-"dC" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dC" = (/obj/item/ammo_magazine/maxim,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dD" = (/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"dE" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/dirt/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"dF" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dE" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim{icon_state = "maxim"; dir = 1},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dF" = (/mob/living/carbon/human/corpse/russian,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dG" = (/obj/structure/wild/tree/dead_tree,/obj/map_metadata/hill203,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"dH" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/obj/structure/window/snowwall,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dH" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dI" = (/obj/covers/wood,/obj/structure/filingcabinet/chestdrawer,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dJ" = (/obj/covers/wood,/obj/structure/bed/padded,/obj/item/weapon/bedsheet/rd,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dK" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/japanese/land/inside)
@@ -195,7 +195,7 @@
 "dM" = (/obj/covers/wood,/obj/structure/filingcabinet/filingcabinet,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dN" = (/obj/covers/wood,/obj/structure/telegraph{name = "Barracks"},/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/japanese/land/inside)
 "dO" = (/obj/item/flashlight/lantern/on{fuel = 30000; name = "lit lantern"},/obj/structure/phoneline,/turf/wall/brick,/area/caribbean/japanese/land/inside)
-"dP" = (/obj/structure/window/snowwall,/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 4},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"dP" = (/obj/effect/decal/cleanable/blood,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "dQ" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/taiga)
 "dR" = (/obj/structure/wild/burnedbush,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
 "dS" = (/obj/structure/phoneline,/turf/floor/trench,/area/caribbean/no_mans_land/taiga)
@@ -245,7 +245,7 @@
 "eK" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "eL" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "eM" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_66%"},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
-"eN" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"eN" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "eO" = (/obj/structure/wild/smallbush/winter,/obj/structure/barbwire,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 "eP" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag/incomplete,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "eQ" = (/obj/structure/barbwire,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/taiga)
@@ -273,6 +273,55 @@
 "fm" = (/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 1},/obj/structure/window/snowwall{icon_state = "snow_wall"; dir = 8},/obj/structure/flag/japanese,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
 "fn" = (/obj/structure/window/sandbag/sandbag,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
 "fo" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fp" = (/obj/item/weapon/attachment/scope/adjustable/binoculars,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fq" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fr" = (/mob/living/carbon/human/corpse/russian,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"fs" = (/obj/item/ammo_magazine/maxim,/obj/item/ammo_magazine/maxim,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"ft" = (/mob/living/carbon/human/corpse/russiansgt,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"fu" = (/mob/living/carbon/human/corpse/russian,/turf/floor/winter/grass,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fv" = (/mob/living/carbon/human/corpse/russian,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fw" = (/obj/effect/decal/cleanable/blood,/obj/effect/decal/cleanable/generic,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fx" = (/mob/living/carbon/human/corpse/russiansgt,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fy" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fz" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fA" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fB" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fC" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fD" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fE" = (/obj/structure/wild/burnedtree,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fF" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fG" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fI" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fJ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fK" = (/mob/living/carbon/human/corpse/japanesesgt,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fL" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/winter,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fM" = (/obj/item/weapon/sandbag/sandbag,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fN" = (/obj/item/ammo_magazine/maxim,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fO" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fP" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fQ" = (/obj/structure/wild/smallbush/winter,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fR" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fS" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fT" = (/obj/effect/decal/cleanable/blood/drip,/obj/effect/decal/cleanable/generic,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fU" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fV" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fW" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fX" = (/obj/structure/wild/smallbush/winter,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fY" = (/obj/effect/decal/cleanable/ash,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"fZ" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"ga" = (/obj/effect/decal/cleanable/blood,/mob/living/carbon/human/corpse/russian,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gb" = (/obj/item/weapon/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gc" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"ge" = (/obj/effect/decal/cleanable/generic,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gf" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gg" = (/obj/structure/window/sandbag/sandbag,/turf/floor/trench,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gh" = (/obj/item/weapon/material/shard{default_material = "iron"; icon_state = "splinterslarge"},/turf/floor/dirt,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gi" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gj" = (/mob/living/carbon/human/corpse/japanesesgt,/turf/floor/dirt/burned,/area/caribbean/island{base_turf = /turf/floor/dirt/winter; climate = "taiga"; name = "Hill 203"})
+"gk" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
+"gl" = (/mob/living/carbon/human/corpse/japanese,/turf/floor/winter/grass,/area/caribbean/no_mans_land/taiga)
+"gm" = (/obj/structure/wild/tree/dead_tree,/mob/living/carbon/human/corpse/japanese,/turf/floor/winter,/area/caribbean/no_mans_land/taiga)
 
 (1,1,1) = {"
 aaabacababababababacabacabababababababacabahaaadaeadadaeadadaeadadaeadadaeadadaeadafaeadadaeadadaeadadaeadadaeadadaeadafadadadadadadadadadadadadadadadadadafadadaaabacababababababacabababababacabaaazad
@@ -302,10 +351,10 @@ bRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbR
 bTbTbTbTbTbUbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbVbWaaaabXbYbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbVbWaaaabXbYbTbTbTbTbTbTbTbTbTbTbTbUbTbTbTbTbTbTbTbTbTbTbTbT
 azazazazazazazazazazazazazazazazbaazazazazazazazazazazazazadbZbWaaaabXcaazazazazazazazazazazazadazazbaazazazazazazazazbaazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazaz
 azbaazazazazazazazazazazazazazazazazazazazazcbazazcbbaazcbazbZccaaaacdcaazcbazazcbazbacbazazcbazazcbazazcbazazcbazazcbazazazazazazazazazazazbZbWaaaabXcaazbaazazbQazadazazazazazazazazazadazazazazaZazaz
-azazazazazazazazazazazazazazazazduazazazazazazazbQazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazdubZbWaaaabXcaazazazazazazazazazazazazazazazazbaazazazazazazaz
+azazazazazazazazazazazazazazazcoduazazazazazazazbQazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcoazazdubZbWaaaabXcaazazazazazazazazazazazazazazazazbaazazazazazazaz
 azazazazadadazazazazazazazazazazcfcgazcfcfcfazazazazazazazazbZbWaaaabXcaazazazazazazadazazazbQazazazazazazazazazazazazazazazazazcfcfcfcgazcfbZbWaaaabXcaazazazazadazazazadazazazazazazazazazazazazazazaz
 chchchchchchchchchchchchchchchchchchchazchchcichchcjchchchchdTbWaaaabXdVchchchchchchchchchchchchchchchchchchchchchchcichchchazcechchchchchchdTbWaaaabXdWchchchchchchchchchchchchchchchchchchchchchchchch
-cncncncncncncncncncncncncncncncncncncnaacocpcqcncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncocpcqcncncnaacncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncn
+cncncncncncncncncncncncncncncncncncncnaacHcpcqcncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncHcpcqcncncnaacncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncn
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafgfgfgfgfgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafgfgfgfgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbR
@@ -339,42 +388,42 @@ azazazazazazazazazazbaazazazadazazazazazazazazazazcwcweHeHaaaaazazazazazazazazaz
 azazazcrazazazazazazazazazazadazazcwcwazazazazcwcwcwcwcwaaaaaaazazazazazazazazazazazcrcrcrcrcrcrcrazazcrazazazazazazadazazcwcwazazazazazazazazazcrcrcreJazazazazazazazazazazazazazazadazazazazazazazazaz
 azazazazcrcrcrazazazazazazazazazcwcwazazazcwcwcwcwcwcwcwcwcwazazazazazazcebaazazazazcrazcrcrcrcrcrazazcrazazazazazazazazazazcwcwazazazazazazazazazcrazeJazazadazazadadazazazazazazazazaZazazazazazazazaz
 azazazcrcrcrcrcrazazazazazazazazcwcwazazcwcwcwazazazazadcwcwcwcwazazazazazazazazazazcrazazcrcrcrcrcrcrazcrazazazazazazazazazcwcwcwbaazazazazazazazcrazeJazazazazazazazazazazazazceazazazazazazazazazazaz
-azazazcrcrcrcrazcrazazazazazazcwcwazazazazazazazazazazcrazazcwazazazazazazazceazazazazcrazazazcradazazazazazazazazazazazazazazcwcwazadadazazazazazazazeHcwazazazazazazazazazcwadazazazazazazazazbQazazaz
-azazazazcrcrazazazazazadazazadcwcwazazazazazazeTeUeUeUazazazazcrazazazazazazazazazazazcrazcrazazazazazcrazazazazazazazazazazazadcwcwazazazazazazazazazcwcwazazazazazazazazazcwcwazadadazazazazazazazadaz
-azazazazcrcrazazazazazazazazazcwazazazazcwazazeVaaeWaaazazazazazadazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazcwazazazazadazazazcwcwcwcwazazazazazazazazcwazazazazazazazazazazazazaz
+azazazcrcrcrcrazcrazazazazazazcwcwazazazazazazazazazazcrazazcwazazazazazazazceazazazazcrazazazcradazazazazazazazfrazazazazazazcwcwazadadazazazazazazazeHcwazazazazazazazazazcwadazazazazazazazazbQazazaz
+azazazazcrcrazazazazazadazazadcwcwazazazazazazeTeUeUeUazazazazcrazazazazazazazazazazazcrazcrazftazazazcrazazazazazazazazazazazadcwcwazazazazazazazazazcwcwazazazazazazazazazcwcwazadadazazazazazazazadaz
+azazazazcrcrazazazazazazazazazcwazazazazcwazazeVaaeWaaazazazazazadazazazazazadazfrazazazazazazazazazazazazazazazazazazazazazazazazcwazazazazadazazazcwcwcwcwazazazazazazazazcwazazazazazazazazazazazazaz
 adazazazazazazazadazazazazazazcwazazazazcwazazeVaaazazaZazazazazazazazazazazazazazadazazazazazazazazazazazazeJeDeDeKazazazazazazazadazazazazazazazcwcwazazazazcwcwazazazazazazazazazazazbaazazazazazazaz
 azazazazazazazazazazazazazazazazazbaazcwcwazazeVaaaaaaaaaaazazazazazazaZazazazazazazazazazcwcweDeDeDeKazazazeJeteueKazazazazazazazazceazazazazazazcwazazazazazazcwcwazazazazazazazazazazazadazazazazazaz
 azazazazazazazazazazazbQazazazazazazazcwazazazeXeYeYeYaaaaazadcrazbQazazazazazazazcwcwcwcwcweJeteweueKazazazeJeycxceazcwazazazazazazazazazazazazazazazazazazazadazcwcwazbQazazazazazazazazazazazazazazaz
 azazazazazadcwazazazazazazazazazazazcwcwazazazazazazezaaaaazazazazazazazazazazcwcwcwcwcwcwcwcxcxcxcxcxcxcxcxcxcxcxcwazcwcwazazazazazazazazazazazazazazazazazazazazazcwcwazazazazazazazazazcwazazceazazaz
-azazazazazazadazazazazazazazazazazazcwazazazazazazazezaaaaazazcrazazazazafcwcwcwcwcxcxcycxcxcxcxczcxcxcxcxcxcxcxcxcycycwcwcwazcwazazazazazazazazazazazazazazazazazazcwcwazadadazazazazazazazazazazazazaz
-azazazcwazazazazazazazazazazazazadcwcwazazazazazazazezaaaacrcrcrazazazazcAcwcwcxcxczcxcxcxcxcxcxcxcBcxcxcxcxcxcxcxcxcxcwcwcwcwcwazazazazazazazazazazazazazazazazazazazcwcwazazazazazazazcwazazazazazazaZ
-azazazazazazazazazazazazazazazazcwcwazazazazeTeUeUeUeUaaaacwcrcrazazazazcycycxcCcxczczcxcxcxcxcxcxcxcxcxcxcxeNcxcxcxcxcxcxcycycyazazadazazazazazazazazazazazceazazazazcwcwcwazazazazazazazadadazazazadaz
-azazazazazazazazazceazazazazazazcwazazazazazeVaaaaaaaaaaaacwazazadazazazcxczcxcxcxcxcxcxcxeNeZeZeZfacxcCcxczeZcxcEcEcxcxcxcxcFcycwcwazazazazazazcwazazazazazazazazazaacwcwcwazazazazazazazazazazazazazaz
-adadazazazazadazazazazazazceazazeHazazazazazeVaaaaaacwcwcwcwcwadcrazazcxcxcxcxcxcxcxcxcxeZeZeZeZeZeZeZeZeZeZeZeZcxcxcxcxcxcxcxcycycwcwazazazazcwcwcwazazazazazazazazaaaacwcwcwazazazazazazazazazazazazaz
-azazazazceazazazazazazazadazazazeJazazazazazeVaaaaaaaacwcwcwcwazeJeAcxcxcxcxcxcxcxcxcxeZeZcxcGcGcHcxcxcGcGcGcxeZeZcxcxcxcxcFcxcxcxcrazcrazazazazcwcwazazazazazazazadaaaacwcwcwazazazaZazazazbaazazazazaz
-azazazazazazazazazazazazazazazazfbbaazadadazeXeYeYeYeYcwcwcwazazeJeycxcxcxcxcxcxcxcxcxcxeZdCcIcJcKcxcxcKcJcLcMeZeZcxcxcxcxcxcCcxcxcrcrcrcrazazazcwcweTeUfcazazazazazaaaaazcweHazazazazadazazazazazazazaz
-azazazazazazazazadazazazceazazazeJazazazceazazazazazcwcwazazazazeJeycxcxcxcxcxcxcEcxcxcxeZdCdhdididididididCcMeZcxcxcxcxcxcxcxcxcxcrcrcrazazazcwcwcweVaaaaaaaaazazazaaaaeHcweJazazazazazazazazazazazazaz
-azazazazazazadazazazazazazazazazeJazbQazazazazazazcwcwcwazbaazbaeJeycxcxcxcxcxcxcBcxcxeNeZdEcMdididDdDdididEcMeZdicxcxcxcxcxcxcxcxcrcrazazazazcwcwcweXeYfdazaaazazazaaaaeJeJeJazazceazazazazazazazazazaz
-azazazazazazazazazazazazazazbaazeHcwazazazazazazazcwcwazazazazazeJeyczczcxcxcxcxcxcxcxdieZdCdFdidDcFcFdDdidCdheZcBcxdicxcxcCcxcxcxcxcrazcrazazazcwcwazazazazaaaaaaaaaaaaeJeJeJazazadadazazazazazazazadaz
-azazazazazazazcwcwadadazazazazcwcwcwazazeVaaazazazazcwcwazazazazeJeBcxczcxcxcxcxcxcxcxeZeZdCdhdDcFdGcFcFdDdEcMeZcxcxcxcxcxcxcxcxcxcFazazcrazazazazcwcwazazazazazazazaaaaeJeJeJazazazazazazazazazazazazaz
-azazazazazceazazazazazazazazazcwcwazazazeVaaazazazcwcwcwcwazazadazazazcxcxcxcxcxcCcxcxeZeZdCdhdidDcFcFdDdidCdhfaeZcxcxcxcxcxczcxcxcxazazazazazazazazcwcwazazazazbaazaaaaeJeJeJazazazazazazazazazazazbQaz
-azazazazazazazazazazazazazazcwcwcwcwazazeVaaaaazazazcwcwazbaazadazazazcxcxcxcxcxcxcxcxeZeZdCdhdididDdDdididEcMcxeZcxcBcxcBcxeNcxcxcxadeOeKazazazazadazcwazazazazazazaaaaeJeJeJazazazazazazadazazazazazaz
-azazazazazazazazazazazazazazazcwcwazazazeveVaaazazazazcwazazazazazazazcxcxcxcxcxcxcxcxeZeZdCdhcxdidicxdicxdCcMeZeZcxcxcxcxcxcxcxcxcxcxeCeKazazazazazazazazazazadazazaaaaeJeJeJazazazbQbQazazazazazazazaz
-azazazazazazazazcwcwazazazazazcwcwazazazadeVaaazazazazazazazazazazazazcxcxcxcxcxczcxcxcxeZdCdHcGcGcxcxcGcGdPdheZdicxcxcxcxcxcxcxcxcCcBeLeKazazazazazazazazazazazazazaaaaeHcweHazazazazazazazazazazazazaz
-adazazazazazazazazazazazazazazcwcwcwazazazeVaaazazceazazazazazazazcwcwcxcxcxcxczczcxcxcxeZcxcJcJcJcxcxcKcJcJeZeZcxcxcxcxcxcxcxcxcxcxeMePeKazazazazazazazazazazazazazaaaaazcwcwceazazazazazazazazazazazaz
-azazazazazazazazazazcwazadazazazazazazazazeVaaazazazadadazazazazazazcwcwcwcxcxcxcxcxcxcxeZeZcxcxdicxcxdieZeZeZcxcxcxcxcBcxcxcxcxcyazeDeDeKazazazazazazazazazazazazazaaaacwcwcwazazazazazazazazazazazazaz
-azazazazazbaazazadcwazazazazazazazazazazazeVaaadazazazazazazazazazazcwcwcwcwcycxcxcxcxcCcxeZeZeZeZeZeZeZeZeZeZcxcxcxcxeNcxcxcxcxcwcwazazazadazazazazazazazazazazazazazaaaacwazazazazazazazadadazazazadaz
-azazadazazazazazazazazazazazazazazazazazazeVaaazazazazazazazcrazazazcwazazcwcwcwcxcxcxcFcxcxcxeNeZeZcxdieZeZeNcxcxcxcxcxcxcxcxcwcwcwazazazazazazazazazazazazazazazazazazaacwcwazazazazazazazazazazbaazaz
-azazazazazazazazazazazazazbQazadcrcwazazazeVaaazazazazazazazcrcrazazazazazazazcwcycycycxcxcBcxcxcxcxcBcxcxcxcxcxcxcEcxcxdicxcycwcwazazazazazazazazazazazazazazazazazazazazcwcwcwazazazazazazazazaZazazaz
-azazazazazazazazazazazazazazazcrcrcwazazexeVaaazazazazazazazazcrazazazazazazazazazcwcwcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxczcxcwcwcwadazazazazazazazazazazazazazadazazadadazcwcwcwazazazazazazazazazazazazaz
-azazazazazazazazazazazazazcrcrcrcrcwcwazeVaaaaazazazazazazazazazazazazazazazbaazazazcwcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcycwcwazazazazazazazazazazazazbQbQazazazazazazazazcwcwazazadadazazazazazazazadaz
+azazazazazazadazazazazazazazazazazazcwazazazazazazazezaaaaazazcrazazazazafcwcwcwcwcxcxcycxcxcxcxfucxcxcxcxcxcxfvcxcycycwcwcwazcwazazazazazazazazazazazazazazazazazazcwcwazadadazazazazazazazazazazazazaz
+azazazcwazazazazazazazazazazazazadcwcwazazazazazazazezaaaacrcrcrazazazazcAcwcwcxcxczcxcxcxcFcxcxcxcBcFcxfxcxcxdDcxcxcxcwcwcwcwcwazazazazazazazazazazazazazazazazazazazcwcwazazazazazazazcwazazazazazazaZ
+azazazazazazazazazazazazazazazazcwcwazazazazeTeUeUeUeUaaaacwcrcrazazazazcycycxcCcxcFczcxcxcxcxcxcFcFcxcxcFcFfycxcxcxcxcxcxcycycyazazadazazazazazazazazazazazceazazazazcwcwcwazazazazazazazadadazazazadaz
+azazazazazazazazazceazazazazazazcwazazazazazeVaaaaaaaaaaaacwazazadazazazcxczcxcxcxcxcxcFcFfyfzfzfzfAcFfBcFfCfzfDcEfEcxcxcxcxcFcycwcwazazazazazazcwazazazazazazazazazaacwcwcwazazazazazazazazazazazazazaz
+adadazazazazadazazazazazazceazazeHazazazazazeVaaaaaacwcwcwcwcwadcrazazcxcxcxcxcGcxcxcFcFeZeZeZeZeZeZeZeZeZeZeZeZcFcxcxcxcxcxcxcycycwcwazazazazcwcwcwazazazazazazazazaaaacwcwcwazazazazazazazazazazazazaz
+azazazazceazazazazazazazadazazazeJazazazazazeVaaaaaaaacwcwcwcwazeJeAcxcxcxcxdDcxcxcFcFeZeZcFfFcJcJdDcFfFfFfFcFeZeZcFcFcxcxcFcxcxcxcrazcrazazazazcwcwazazazazazazazadaaaacwcwcwazazazaZazazazbaazazazazaz
+azazazazazazazazazazazazazazazazfbbaazadadazeXeYeYeYeYcwcwcwazazeJeycxcxfvcIcxcxcxfvcFcFeZfGfHcKfIdDdDfIfIcLfJeZeZcFcMfKdDcxcCcxcxcrcrcrcrazazazcwcweTeUfcazazazazazaaaaazcweHazazazazadazazazazazazazaz
+azazazazazazazazadazazazceazazazeJazazazceazazazazazcwcwazazazazeJeycxfLcxcxcxcxcEdDcFcFeZfCfJdhgbdPcFdCdEfGfJfOfPcFcxcxcFcxcxcxcxcrcrcrazazazcwcwcweVaaaaaaaaazazazaaaaeHcweJazazazazazazazazazazazazaz
+azazazazazazadazazazazazazazazazeJazbQazazazazazazcwcwcwazbaazbaeJeycxcxcxcxcxcxfQcFcFfRfSfGfJdDdDdDdDdDdFfGfDfOfUdDcxcxcxcxcxcxcxcrcrazazazazcwcwcweXeYfdazaaazazazaaaaeJeJeJazazceazazazazazazazazazaz
+azazazazazazazazazazazazazazbaazeHcwazazazazazazazcwcwazazazazazeJeyczczcxcxfxcxcxcxcFfVfSfCfJdHdDcFcFdDfNfGfDfOfXcFcFcFcxcCcxcxcxcxcrazcrazazazcwcwazazazazaaaaaaaaaaaaeJeJeJazazadadazazazazazazazadaz
+azazazazazazazcwcwadadazazazazcwcwcwazazeVaaazazazazcwcwazazazazeJeBcxczcxcxcxcxdDcxfVfSeZfGfJdDcFdGcFcFcFfGfJfOfPcFcIcxfvcxcxcxcxcFazazcrazazazazcwcwazazazazazazazaaaaeJeJeJazazazazazazazazazazazazaz
+azazazazazceazazazazazazazazazcwcwazazazeVaaazazazcwcwcwcwazazadazazazcxcxcxfYdDcCcxfVfScFfGfJeNdPcFcFdDfpfGfDfaeZcFcFcFcxcxczcxcxcxazazazazazazazazcwcwazazazazbaazaaaaeJeJeJazazazazazazazazazazazbQaz
+azazazazazazazazazazazazazazcwcwcwcwazazeVaaaaazazazcwcwazbaazadazazazcxcxcxcxcxcxdDfVfSdDfCfJfsdDdDdDdDfNfGfJcFeZcFcBcxcBcxfycxcxcxadeOeKazazazazadazcwazazazazazazaaaaeJeJeJazazazazazazadazazazazazaz
+azazazazazazazazazazazazazazazcwcwazazazeveVaaazazazazcwazazazazazazazcxcxcxcxfqcxfvfVfSeZfGfJfZdDfMgafTfMfCfJeZeZcFcFdDdDcxcxcxcxcxcxeCeKazazazazazazazazazazadazazaaaaeJeJeJazazazbQbQazazazazazazazaz
+azazazazazazazazcwcwazazazazazcwcwazazazadeVaaazazazazazazazazazazazazcxcxcxfLcxczcxcFcFeZfGgcfFfFdDdDcJfFfWfJeZcFcFcxdDdDcFcxcxcxcCcBeLeKazazazazazazazazazazazazazaaaaeHcweHazazazazazazazazazazazazaz
+adazazazazazazazazazazazazazazcwcwcwazazazeVaaazazceazazazazazazazcwcwcxcxcxcxczdDcxgecFeZcFcKfIfIdDcFfIfIcKeZeZdDcFcFfwcxcxcxcxcxcxeMePeKazazazazazazazazazazazazazaaaaazcwcwceazazazazazazazazazazazaz
+azazazazazazazazazazcwazadazazazazazazazazeVaaazazazadadazazazazazazcwcwcwcxcxcxcxdDcFdDeZeZdDcFdDcFdHdDcFeZeZcFcFdDgffQcxcxfLcxcyazeDeDeKazazazazazazazazazazazazazaaaacwcwcwazazazazazazazazazazazazaz
+azazazazazbaazazadcwazazazazazazazazazazazeVaaadazazazazazazazazazazcwcwcwcwcycxcxcxdDfBcFeZeZeZeZeZggggeZeZeZcFcFcxcxghcxcxcMcxcwcwazazazadazazazazazazazazazazazazazaaaacwazazazazazazazadadazazazadaz
+azazadazazazazazazazazazazazazazazazazazazeVaaazazazazazazazcrazazazcwazazcwcwcwcxcxcxcFdDcFcFfyggggfDfCggggghcFdDdDcxcxcxcxcxcwcwcwazazazazazazazazazazazazazazazazazazaacwcwazazazazazazazazazazbaazaz
+azazazazazazazazazazazazazbQazadcrcwazazazeVaaazazazazazazazcrcrazazazazazazazcwcycycycxdDfQcFcFcFcFfQcFcxdDcFdDcxgicxfKdicxcycwcwazazazazazazazazazazazazazazazazazazazazcwcwcwazazazazazazazazaZazazaz
+azazazazazazazazazazazazazazazcrcrcwazazexeVaaazazazazazazazazcrazazazazazazazazazcwcwcxcxcxgjcxfLcFcFcxcFcxcxcFcxcxcxczcxcwcwcwadazazazazazazazazazazazazazadazazadadazcwcwcwazazazazazazazazazazazazaz
+azazazazazazazazazazazazazcrcrcrcrcwcwazeVaaaaazazazazazazazazazazazazazazazbaazazazcwcxcxcxcxcxcxcxcxcxcxcxcxcxcxcFcxcxcycwcwazazazazazazazazazazazazbQbQazazazazazazazazcwcwazazadadazazazazazazazadaz
 azadazazceazazazazazazcrcrcrdQazcrazcwazaaaaazazazazazazadazazazazazazazazazazazazazazeJeyczczcxcxcxcxcreMfefnfnfncwcwcwcwcwcwazazazazazazazazazazazazcwazazazazazazazazcwcwazazazazazazazazazazazazazaz
 azazazazazazazazazazazazadazazazazcwcwcwaaaaazazazazazazazazazazazazazazazazazazazazazeJfoczcxcxeLeKcrazeQeQeDeDeDazazazazazazazazazazazazazazazazadcwcwcwcwazazazazazcwcwazazazazazbaazazazazazazazazaz
 azazazazazazazaZazazazazazcrazceazcwcwazaaaaazazazazazazazazazazazazazcwazazazazazazazeJeReSeReReReKazazazazazceceazazazazazazazbaazazazazazazazazcwcwcwcwazazazazazcwcwazazazazazazazazazadazazazazazaz
-azazazazazazazazazazazazazazazceazazcwazaaaaazazazazazazazazazazbaazcwcwazazazazazazazazazazazceazazadazazazazazazazazazazazazazazazazazazazazazcwcwcwcwazazazadazazazazazazazazazazazazcwazazazazazazaz
-azazazazazazazazadazazazazazazazazazcwcwaaaaazazazazazazazazazazazazazcwazazazazazazadadazazazazazazazazazazazazazazazazazazazazazadadazazazazcwcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazaz
+azazazazazazazazazazazazazazazceazazcwazaaaaazazazazazazazazazazbaazcwcwazazazazazazazazazazazceazazadazazazazazazazazazgkazazazazazazazazazazazcwcwcwcwazazazadazazazazazazazazazazazazcwazazazazazazaz
+azazazazazazazazadazazazazazazazazazcwcwaaaaazazazazazazazazazazazazazcwazazazazazazgladazazazazazazazazazazazazazazazazazazazazazadadazazazazcwcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazaz
 azazadadazazazazazazazazazazazazazazeHcwazaaaaazazazazazazazazazazazazcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazcwcwcwazazazazazazazazazazazazazadadazazazazazazazazazazazazaz
-azazazcwazazazazazazceazazazazazadadeJcweHazaaazazbaazazazazazazazazazazcwcwazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazcwcwazazazadadazazazadazazazazazazazazcwcwazazazazazazazazazazaz
+azazazcwazazazazazazceazazazazazadadeJcweHazaaazazbaazazazazazazazazazazcwcwazazazazazazazazazazazazazazazazazazgmazazazazazazazazazazazcwcwazazazadadazazazadazazazazazazazazcwcwazazazazazazazazazazaz
 azazazazazazazazazazazazazadazazazazfbfbeJazaaazazazazazceazadadazazazazcwcwcwazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaZazazazazazazcwcwazazazaZaZadadazazazadaz
 azazazazazazazazazazazazazazazazazazeJfbeJazaaazazazazazazazazazazazazazazazazazadazbaazazazazadadazcwcwcwazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazcwcwcwcwazazazazazazazazazazaz
 azazazcwazazazazazazazazazazazazazazeJfbfbazcwcwazazadazazazazazazazazazceazazazazazazazadazcwcwcwcwcwazazazazazazaZazazazadadazazazazazazazazazazazazazazazazazazazazazazcwcwcwazazazazazazazazazazazaz
@@ -406,12 +455,12 @@ azazazazazazazazeFeFeFeFeFazazbZcaazazbZcaazeDeDeDeDeDeDazazazazazazazazazceazaz
 azadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazadazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbaazazazazazazazazazazazazazazazazazazazaz
 azazazazchchchchchchchchchchchchazazazazchchchchchchchchchchchchchchchchcjcjchchchchchchchchchchcjcjcjchchchchchchcjchchchchchchchchazazazazchchchchcjchchchchchchchchchchchcjchchchchchchchchchchchchch
 cncncncncncncncncncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncncnaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncncn
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafgfgfgfgaaaacocpcqdSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafgfgfgfgfgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacocpcqdSaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafgfgfgfgaaaacHcpcqdSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafgfgfgfgfgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacHcpcqdSaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaaaaaaaabRbRaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRaabRbRbRbRbRbRbRaaaaaabRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbRbR
 bTbTbTbTbTbTbTbTbTbTbTbTbTbTbTfjbWaaaabXfkbTazbTbTbTbTbTbTbTbTdUbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbTbUbUbTbTbTbTbTbTazbTbTbTbTbTbTflbWaabXfmbTbTbTbTbTbTbTbTbTbTbTbTbTbTdUbTbTbTbTbTbTbTbTbTbTbTbTbTbT
 azazazazazazazazazazazazazazazbZbWaaaabXcaadadcfcfdXazcfcfazazazazazazazazazazazazazazazazazazazazazazazazceazazazazazazcfcfdXazcfcfbZbWaabXdYazazazazazazazazazazazazazazazazazazazazazazazazadazazazaz
-azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazduazazazazazazazadazazazazazazazazazazadazazazazazazazazazazazazdZeaebazazazduazazbZbWaabXcaazazazazazazazazadazazazceceazazazazazbaazazazazazazazazaz
+azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazduazcoazazazazazadazazazazazazazazazazadazazazazazazazazazazazazdZeaebazcoazduazazbZbWaabXcaazazazazazazazazadazazazceceazazazazazbaazazazazazazazazaz
 azazazceazazadadazazazbaazazazbZbWaaaabXcaazadazazazazazazazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazcbazazccaabXecazazcbazazcbazazcbazazcbazazcbazazazazadazazazazazazazazaz
 azazazazazazazazazazazazazazazbZbWaaaabXcaazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazbZbWaabXcaazazazazazazazazazazazazazazazazazazazazadazazazazazazazaz
 chchchchchchchchchchchchchchchedbWaaaabXcmchchchchchcjchchchchchchchchchchchchchchchchchchchchchchchchchchchchcjchchchchchchchchchchckbWaabXcmchchchchchchchchcjcjchchchchchchchchchchchchchchchchchchch
