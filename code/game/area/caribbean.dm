@@ -231,6 +231,36 @@
 	name = "No Man's Land"
 	icon_state = "purple1"
 
+/area/caribbean/no_mans_land/tundra
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/taiga
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/temperate
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/desert
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "desert"
+	base_turf = /turf/floor/beach/sand/desert
+/area/caribbean/no_mans_land/semiarid
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "semiarid"
+	base_turf = /turf/floor/dirt/dust
+/area/caribbean/no_mans_land/jungle
+	name = "No Man's Land"
+	icon_state = "purple1"
+	climate = "jungle"
+	base_turf = /turf/floor/dirt/jungledirt
 /area/caribbean/no_mans_land/invisible_wall
 	icon_state = "green1"
 

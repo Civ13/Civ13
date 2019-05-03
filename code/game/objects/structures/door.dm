@@ -210,6 +210,11 @@
 	..(newloc, "iron")
 	basic_icon = "cell"
 	name = "Cell"
+/obj/structure/simple_door/fence/New(var/newloc,var/material_name)
+	..(newloc, "wood")
+	basic_icon = "fence"
+	icon_state = "fence"
+	name = "Fence Door"
 /obj/structure/simple_door/cell/New(var/newloc,var/material_name)
 	..(newloc, "iron")
 /obj/structure/simple_door/stone/New(var/newloc,var/material_name)

@@ -169,8 +169,8 @@
 	icon_state = "japvest"
 	item_state = "japvest"
 	worn_state = "japvest"
-	body_parts_covered = UPPER_TORSO
-	cold_protection = UPPER_TORSO
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 10, bomb = 10, bio = 10, rad = FALSE)
 	value = 10
 

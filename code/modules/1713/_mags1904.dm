@@ -110,9 +110,9 @@ obj/item/ammo_magazine/madsen
 /obj/item/ammo_magazine/arisaka
 	name = "clip (6.5x50mm)"
 	icon_state = "kclip"
-	caliber = "a65x50mm"
+	caliber = "a65x50"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
-	ammo_type = /obj/item/ammo_casing/a65x50mm
+	ammo_type = /obj/item/ammo_casing/a65x50
 	max_ammo = 5
 	weight = 0.038
 	multiple_sprites = TRUE
@@ -122,10 +122,10 @@ obj/item/ammo_magazine/madsen
 	name = "magazine box (6.5x50mm)"
 	icon_state = "arisaka_ammo"
 	mag_type = MAGAZINE
-	caliber = "a65x50mm"
+	caliber = "a65x50"
 	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a65x50mm
+	ammo_type = /obj/item/ammo_casing/a65x50
 	max_ammo = 50
 	multiple_sprites = FALSE
 	is_box = TRUE
@@ -161,6 +161,54 @@ obj/item/ammo_magazine/madsen
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a762x54
+	max_ammo = 250
+	multiple_sprites = TRUE
+	var/slot = "decor"
+	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
+	var/image/inv_overlay = null	//overlay used when attached to clothing.
+	var/image/mob_overlay = null
+	var/overlay_state = null
+
+/obj/item/ammo_magazine/mg08
+	name = "MG08 ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a792x57"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a792x57
+	max_ammo = 250
+	multiple_sprites = TRUE
+	var/slot = "decor"
+	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
+	var/image/inv_overlay = null	//overlay used when attached to clothing.
+	var/image/mob_overlay = null
+	var/overlay_state = null
+
+/obj/item/ammo_magazine/vickers
+	name = "Vickers ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a303"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a762x54
+	max_ammo = 250
+	multiple_sprites = TRUE
+	var/slot = "decor"
+	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
+	var/image/inv_overlay = null	//overlay used when attached to clothing.
+	var/image/mob_overlay = null
+	var/overlay_state = null
+
+/obj/item/ammo_magazine/type3
+	name = "Type 3 ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a65x50"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a65x50
 	max_ammo = 250
 	multiple_sprites = TRUE
 	var/slot = "decor"

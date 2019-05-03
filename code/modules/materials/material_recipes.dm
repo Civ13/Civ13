@@ -348,3 +348,5 @@ var/list/engineer_exclusive_recipe_types = null
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 
+/material/barbedwire/generate_recipes()
+	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))

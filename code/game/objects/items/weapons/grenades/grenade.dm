@@ -203,3 +203,53 @@
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
 		prime()
 		return
+
+/obj/item/weapon/grenade/modern
+	name = "grenade"
+	desc = "A hand held grenade, with a 5 second fuse."
+	var/explosion_size = 2
+
+/obj/item/weapon/grenade/modern/prime()
+	set waitfor = 0
+	..()
+
+	var/turf/O = get_turf(src)
+	if(!O) return
+
+	if(explosion_size)
+		explosion(O,0,1,3,1)
+		qdel(src)
+
+/obj/item/weapon/grenade/modern/mills
+	name = "mills bomb no. 5"
+	desc = "A British early XXth century grenade."
+	icon_state = "mills"
+	det_time = 70
+	throw_range = 7
+
+/obj/item/weapon/grenade/modern/mills2
+	name = "mills bomb no. 36M"
+	desc = "A British early XXth century grenade, with a reduced timer to 4 seconds."
+	icon_state = "mills"
+	det_time = 40
+	throw_range = 7
+
+/obj/item/weapon/grenade/modern/f1
+	name = "F1 grenade"
+	desc = "A French early XXth century grenade, also used by Russia."
+	icon_state = "f1"
+	det_time = 40
+	throw_range = 8
+
+/obj/item/weapon/grenade/modern/stg1915
+	name = "M1915 Stielhandgranate"
+	desc = "A A German early XXth century design."
+	icon_state = "stgnade"
+	det_time = 45
+	throw_range = 10
+/obj/item/weapon/grenade/ww1/stg1924
+	name = "M1924 Stielhandgranate"
+	desc = "A A German design, to replace the M1915."
+	icon_state = "stgnade"
+	det_time = 45
+	throw_range = 11

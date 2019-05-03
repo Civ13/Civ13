@@ -467,7 +467,6 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 7
-	flags = TURF_HAS_EDGES | SMOOTH_ONLY_WITH_ITSELF
 
 /obj/covers/cement_wall/incomplete
 	name = "cement wall"

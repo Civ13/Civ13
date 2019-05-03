@@ -18,6 +18,17 @@
 			qdel(W)
 		else
 			icon_state = "loom"
+	if (istype(W, /obj/item/stack/material/wool))
+		H.visible_message("You start to produce the wool cloth.")
+		icon_state = "loom1"
+		if (do_after(H, min(W.amount*20, 200), H.loc))
+			H.visible_message("You finish producing the wool cloth.")
+			icon_state = "loom"
+			var/obj/item/stack/material/woolcloth/clothes = new/obj/item/stack/material/woolcloth(H.loc)
+			clothes.amount = W.amount
+			qdel(W)
+		else
+			icon_state = "loom"
 /obj/structure/mill
 	name = "mill"
 	desc = "A small mill, used to grind cereals into flour."

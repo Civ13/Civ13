@@ -67,7 +67,7 @@
 		else
 			msg += "[T.He] [T.is] wearing \icon[head] \a [head] on [T.his] head.\n"
 
-	//suit/armour
+	//suit/armor
 	if (wear_suit)
 		if (wear_suit.blood_DNA)
 			msg += "<span class='warning'>[T.He] [T.is] wearing \icon[wear_suit] [wear_suit.gender==PLURAL?"some":"a"] [(wear_suit.blood_color != "#030303") ? "blood" : "oil"]-stained [wear_suit.name]!</span>\n"

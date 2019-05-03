@@ -35,7 +35,7 @@
 	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY, CLONE, HALLOSS are the only things that should be in here
 	var/nodamage = FALSE //Determines if the projectile will skip any damage inflictions
 	var/taser_effect = FALSE //If set then the projectile will apply it's agony damage using stun_effect_act() to mobs it hits, and other damage will be ignored
-	var/check_armour = "bullet" //Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
+	var/check_armor = "gun" //Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
 	var/projectile_type = /obj/item/projectile
 	var/penetrating = 0 //If greater than zero, the projectile will pass through dense objects as specified by on_penetrate()
 	var/gibs = FALSE
@@ -77,6 +77,20 @@
 	var/is_shrapnel = FALSE
 
 	var/useless = FALSE
+
+	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
+
+/obj/item/projectile/proc/checktype()
+	if (btype == "AP")
+		damage *= 0.70
+		penetrating *= 2
+		armor_penetration *= 3
+		return
+	else if (btype == "HP")
+		damage *= 1.3
+		penetrating = 0
+		armor_penetration /= 3
+		return
 
 /obj/item/projectile/Destroy()
 	projectile_list -= src

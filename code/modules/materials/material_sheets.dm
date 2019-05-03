@@ -86,6 +86,12 @@
 /obj/item/stack/material/iron/twentyfive
 	amount = 25
 
+/obj/item/stack/material/barbwire
+	name = "Barbwire"
+	icon_state = "barbwire_stack"
+	default_type = "barbedwire"
+	value = 2
+
 /obj/item/stack/material/bronze
 	name = "bronze"
 	icon_state = "sheet-bronze"
@@ -246,6 +252,23 @@
 	name = "cloth"
 	icon_state = "sheet-cloth"
 	default_type = "cloth"
+	value = 3
+	w_class = 2.0
+	flammable = TRUE
+
+/obj/item/stack/material/wool
+	name = "wool pile"
+	icon_state = "woolpile"
+	default_type = "wool"
+	value = 2
+	w_class = 2.0
+	flammable = TRUE
+
+
+/obj/item/stack/material/woolcloth
+	name = "wool cloth"
+	icon_state = "wool_roll"
+	default_type = "woolcloth"
 	value = 3
 	w_class = 2.0
 	flammable = TRUE

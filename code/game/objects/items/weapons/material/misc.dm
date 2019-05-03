@@ -6,6 +6,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "harpoon"
 	item_state = "harpoon"
+	worn_state = "spear"
 	throw_speed = 3
 	throw_range = 7
 	allow_spin = FALSE
@@ -42,6 +43,7 @@
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "rake"
 	item_state = "rake"
+	worn_state = "rake"
 	default_material = "iron"
 	force_divisor = 0.35 // 5 with weight 20 (steel)
 	thrown_force_divisor = 0.35 // as above
@@ -56,7 +58,8 @@
 	desc = "A crude, yet effective weapon."
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "spear_old"
-	item_state = "dory"
+	item_state = "spear"
+	worn_state = "spear"
 	default_material = "wood"
 	throw_speed = 6
 	throw_range = 11
@@ -200,6 +203,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "pilum"
 	item_state = "pilum"
+	worn_state = "pilum"
 	default_material = "wood"
 	throw_speed = 6
 	throw_range = 14
@@ -242,6 +246,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "dory"
 	item_state = "dory"
+	worn_state = "dory"
 	default_material = "wood"
 	throw_speed = 4
 	throw_range = 8
@@ -260,8 +265,8 @@
 	desc = "A 5 meter long spear, used by phalanx soldiers."
 	slot_flags = SLOT_BACK
 	icon_state = "sarissa"
-	item_state = "dory"
-	worn_state = "dory"
+	item_state = "sarissa"
+	worn_state = "sarissa"
 	default_material = "wood"
 	throw_speed = 1
 	throw_range = 1
@@ -429,6 +434,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "halberd"
 	item_state = "halberd"
+	worn_state = "halberd"
 	default_material = "iron"
 	throw_speed = 3
 	throw_range = 4
@@ -448,6 +454,7 @@
 	slot_flags = SLOT_BACK | SLOT_BELT
 	icon_state = "pike"
 	item_state = "pike"
+	worn_state = "pike"
 	default_material = "iron"
 	throw_speed = 4
 	throw_range = 5
