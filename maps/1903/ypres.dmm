@@ -303,7 +303,7 @@
 "fQ" = (/obj/structure/closet/crate/ww1/grenades_german,/turf/floor/trench,/area/caribbean/no_mans_land/temperate)
 "fR" = (/obj/structure/closet/crate/ww1/ammo_mg08,/turf/floor/trench,/area/caribbean/no_mans_land/temperate)
 "fS" = (/obj/structure/closet/crate/empty{name = "HE shells"},/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/obj/item/cannon_ball/shell,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
-"fT" = (/obj/structure/closet/crate/empty{name = "chlorine shells"},/obj/item/cannon_ball/shell/gas/chlorine,/obj/item/cannon_ball/shell/gas/chlorine,/obj/item/cannon_ball/shell/gas/chlorine,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
+"fT" = (/obj/structure/closet/crate/empty{name = "gas shells"},/obj/item/cannon_ball/shell/gas/chlorine,/obj/item/cannon_ball/shell/gas/chlorine,/obj/item/cannon_ball/shell/gas/mustard,/obj/item/cannon_ball/shell/gas/mustard,/obj/item/cannon_ball/shell/gas/phosgene,/obj/item/cannon_ball/shell/gas/phosgene,/obj/item/cannon_ball/shell/gas/white_phosphorus,/obj/item/cannon_ball/shell/gas/white_phosphorus,/obj/item/cannon_ball/shell/gas/xylyl_bromide,/obj/item/cannon_ball/shell/gas/xylyl_bromide,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "fU" = (/obj/structure/cannon/modern,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "fV" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "fW" = (/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "german radio"},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
@@ -342,6 +342,7 @@
 "gD" = (/obj/structure/wild/tree/dead_tree,/obj/structure/window/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "gE" = (/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean/german/inside)
 "gF" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/obj/structure/table/rack,/turf/floor/trench,/area/caribbean/german/inside)
+"gG" = (/obj/structure/closet/coffin,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "gH" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/obj/structure/bed/bedroll,/turf/floor/trench,/area/caribbean/german/inside)
 "gI" = (/obj/structure/mine_support,/turf/floor/trench,/area/caribbean/german/inside)
 "gJ" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/turf/floor/trench,/area/caribbean/german/inside)
@@ -355,12 +356,14 @@
 "gR" = (/obj/structure/wild/tallgrass2,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 "gS" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
 "gT" = (/obj/structure/wild/tree/dead_tree/destroyed,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/temperate)
+"gU" = (/obj/structure/closet/coffin,/turf/floor/dirt/burned,/area/caribbean/no_mans_land/temperate)
+"gV" = (/obj/structure/religious/woodcross2,/turf/floor/dirt,/area/caribbean/no_mans_land/temperate)
 
 (1,1,1) = {"
-ababababaCababababaybEababababababababababababbgbgbgbgbgacadbgbgbgababababababazabababababafaZbsatatatdxdyauayazabaAaAabayabababababababababbEababaBab
-abaCababababababababbEabababaOababaAabababayaybgawaYawaGaIaWaXdzbgabaCababababaAaAaAabababbadAaYaYaYaYdxdBbfabababababaCababaEababayabayazabbEazababab
+ababababaCababababaybEababababababababababababbgbgbgbgbgacadbgbgbgabgGgGgGgGgGgGabababababafaZbsatatatdxdyauayazabaAaAabayabababababababababbEababaBab
+abaCababababababababbEabababaOababaAabababayaybgawaYawaGaIaWaXdzbgabgGgGgGgGgGgUaAaAabababbadAaYaYaYaYdxdBbfabababababaCababaEababayabayazabbEazababab
 abababaxababababababbEababazababbeayabayabayabbgawaYawaYaWaWaWbhaaababababayaAabaAaAaAababafaYaYdCaYaYdxdDbiabaAayabababababazayababababababcjaxaBaBaC
-abababababazazababaCbEababazababayfSababfTababacaYaYaYaYaYaYaYbhacabaAabababababababababbEbEbBaYandAdAaYbBbiazababfSababfTababababaAababababbEaBaBabab
+abababababazazababaCbEababazababayfSababfTababacaYaYaYaYaYaYaYbhacabaAgVababgVabababababbEbEbBaYandAdAaYbBbiazababfSababfTababababaAababababbEaBaBabab
 abababababababaBbEbEcjababazabayapczababbkababbgawaYawaYaYaYaYbjbgababazabababayababayabbEbMbmbnbnbIbnbmbobMabababczababbkbrababaCababazababbEaBaBabab
 abaCabaAaCaBaBaBbEaCabababababababcBfUabdkababbgbqaYawanbtbuaYbBbgababazaAazabayaAazabaycjabababaBaBabayaBaAaAababcBfUabdkabaBababababazbEbEbEabaeaAay
 ababaAaAabaBaBabbEababababaxabaCaAaAcGcGblababbvbFbEbFbgacbgbggbbgaAababababababaAaFazaybEabababababababababaFabababbVbVaBaBaBababaAabazbEayabababayab
@@ -428,8 +431,8 @@ aAababaCababcsaCaAaAaAaCababazayabababababaAcsababababababazabaAazaoababaoababdn
 ababayabababcsayaAabaEababababaEababababakaycsaAabbwbxbybzbzgdbzbzbzbxbxbwabaAababcsababayaEabaFaAabcsabaeaAbdaBababababaBblaBabababaxababababayababaA
 aAababazazabcsayayabababababababazabaxababbkcscTcDbAckbCbCbDdrbXdEbHcmbJbKdVdVdIcEcsabaAayaBaBabbLbzbGbzgdbzbzbzgebzbzbLabaCaAaFaAabababazayabababaCab
 abababaAababcscxaxabababaAfVbVbVcUababaAabcycscscsbGbGdsdsdsdsdsdsdsdsbGbGcscscscscsababaQaBaxaAbNaRbGbZdEcoaSaSdtcpcdbNabayaAaoaEfVbVbVcUaEababababay
-ababababababcscsabababababczfYaAfZfWabababaAbVbVccbNbGbObGbObGbObGbObGbObKbVcncscscuabababaAaAaAbNbGbGducecebGduducfcgbNayayayabfWczfYabbkabababaxabab
+ababababababcscsabababababczfYaAfZfWababgVaAbVabccbNbGbObGbObGbObGbObGbObKbVcncscscuabababaAaAaAbNbGbGducecebGduducfcgbNayayayabfWczfYabbkabababaxabab
 abababaCababbWcsabaCabababfTazaAfSabababaTababababbNcqbObGbOcqbObGbOcqbObNayabcscscscscscscscscsbGbGbGdubGbGbGduducfdvbNababaxaAabfTaAabfSaBaBababaAab
-abababababababcuababababayabazabazabababaOababababbwbxbzbzbzbPbybybybzbxbwayabcscsabaAabaAabababbNcqaUaUaUcqbGbGbGcqdwbNabababababababababaAaBaBababab
-aVabababaBababcsababababababababababababababaAaAabababababababababababababababcscsabaAbdaBazabaAbLbybPbPbPbzbybybzbPbzbQaTababaCaAaAababazbdaAabababaT
+abababababababcuababababayabazabazaTgGgGgGgGgGgGabbwbxbzbzbzbPbybybybzbxbwayabcscsabaAabaAabababbNcqaUaUaUcqbGbGbGcqdwbNabababababababababaAaBaBababab
+aVabababaBababcsababababababababababgGgGgGgGgUgGabababababababababababababababcscsabaAbdaBazabaAbLbybPbPbPbzbybybzbPbzbQaTababaCaAaAababazbdaAabababaT
 "}

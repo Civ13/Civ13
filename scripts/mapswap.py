@@ -92,7 +92,7 @@ elif map == "LITTLE_CREEK_TDM":
 	dmms.append("#include \"maps\\1873\\little_creek_tdm.dmm\"")
 
 elif map == "HILL203":
-	dmms.append("#include \"maps\\1903\\hill203.dmm\"")
+	dmms.append("#include \"maps\\1903\\hill_203.dmm\"")
 elif map == "YPRES":
 	dmms.append("#include \"maps\\1903\\ypres.dmm\"")
 else:
