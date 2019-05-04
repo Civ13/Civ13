@@ -172,6 +172,8 @@
 		/obj/item/clothing/head/japcap2 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
 
 /obj/structure/vending/russianapparel
@@ -186,5 +188,6 @@
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/rusian = 50,
 
 	)
