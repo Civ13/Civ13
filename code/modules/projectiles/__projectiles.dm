@@ -77,30 +77,55 @@
 	damage = DAMAGE_HIGH-3
 	penetrating = 2
 	armor_penetration = 10
+/obj/item/projectile/bullet/rifle/a65x50/weak/New()
+	..()
+	damage = (DAMAGE_HIGH-3)/4
+	penetrating = 1
+	armor_penetration = 10
 
-
-/obj/item/projectile/bullet/rifle/a65x52mm
+/obj/item/projectile/bullet/rifle/a65x52
 	damage = DAMAGE_HIGH-3
 	penetrating = 2
 	armor_penetration = 10
 
 
-/obj/item/projectile/bullet/rifle/a8x53mm
+/obj/item/projectile/bullet/rifle/a8x53
 	damage = DAMAGE_HIGH+2
 	penetrating = 3
 	armor_penetration = 20
 
+/obj/item/projectile/bullet/rifle/a8x50
+	damage = DAMAGE_HIGH+1
+	penetrating = 3
+	armor_penetration = 19
+
+/obj/item/projectile/bullet/rifle/a8x50/weak/New()
+	..()
+	damage = (damage)/4
+	penetrating = 1
+	armor_penetration = 19
 
 /obj/item/projectile/bullet/rifle/a762x54
 	damage = DAMAGE_HIGH+1
 	penetrating = 2
 	armor_penetration = 18
 
+/obj/item/projectile/bullet/rifle/a762x54/weak/New()
+	..()
+	damage = (damage)/4
+	penetrating = 1
+	armor_penetration = 18
 
 /obj/item/projectile/bullet/pistol/a762x38
 	damage = DAMAGE_MEDIUM
 	penetrating = 2
 	armor_penetration = 12
+
+/obj/item/projectile/bullet/pistol/a8x27
+	damage = DAMAGE_MEDIUM-3
+	penetrating = 1
+	armor_penetration = 9
+
 
 /obj/item/projectile/bullet/pistol/a41
 	damage = DAMAGE_MEDIUM+1
@@ -109,6 +134,11 @@
 
 /obj/item/projectile/bullet/pistol/a45
 	damage = DAMAGE_MEDIUM+5
+	penetrating = 2
+	armor_penetration = 15
+
+/obj/item/projectile/bullet/pistol/a455
+	damage = DAMAGE_MEDIUM+6
 	penetrating = 2
 	armor_penetration = 15
 
@@ -127,6 +157,11 @@
 	penetrating = 2
 	armor_penetration = 20
 
+/obj/item/projectile/bullet/rifle/a792x57/weak/New()
+	..()
+	damage = (DAMAGE_HIGH+2)/4
+	penetrating = 1
+	armor_penetration = 20
 
 /obj/item/projectile/bullet/rifle/a765x53
 	damage = DAMAGE_HIGH+1
@@ -144,6 +179,11 @@
 	penetrating = 3
 	armor_penetration = 13
 
+/obj/item/projectile/bullet/rifle/a303/weak/New()
+	..()
+	damage = (DAMAGE_HIGH+2)/4
+	penetrating = 1
+	armor_penetration = 13
 
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_MEDIUM + 1
@@ -155,10 +195,6 @@
 	penetrating = 2
 	armor_penetration = 45
 
-/obj/item/projectile/bullet/mg/a77x58_weaker
-	damage = DAMAGE_HIGH + 2
-	penetrating = 2
-	armor_penetration = 10
 
 /obj/item/projectile/bullet/pistol/c8mmnambu
 	damage = DAMAGE_MEDIUM + 2

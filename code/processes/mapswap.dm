@@ -82,6 +82,7 @@
 	// 1903 - TDM
 			maps = list(
 				MAP_HILL203 = 0,
+				MAP_YPRES = 0,
 			)
 
 		if (epoch == "1873")

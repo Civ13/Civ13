@@ -162,6 +162,19 @@
 	sways = FALSE
 	amount = 5
 
+/obj/structure/wild/tree/dead_tree/destroyed
+	name = "destroyed tree"
+	icon = 'icons/obj/flora/destroyedtrees.dmi'
+	icon_state = "1"
+	opacity = FALSE
+	density = TRUE
+	sways = FALSE
+	amount = 2
+
+/obj/structure/wild/tree/dead_tree/destroyed/New()
+	..()
+	icon_state = "[rand(1,8)]"
+
 /obj/structure/wild/tree/live_tree
 	name = "tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'

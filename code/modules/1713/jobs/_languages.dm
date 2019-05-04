@@ -21,7 +21,7 @@
 
 /datum/job/british
 	default_language = "English"
-	additional_languages = list("French" = 15, "Spanish" = 15, "Portuguese" = 5)
+	additional_languages = list("French" = 15, "Spanish" = 15, "Portuguese" = 5, "German" = 5)
 
 /datum/job/indians
 	default_language = "Carib"
@@ -62,6 +62,10 @@
 /datum/job/russian
 	default_language = "Russian"
 	additional_languages = list("English" = 15, "Japanese" = 5)
+
+/datum/job/german
+	default_language = "German"
+	additional_languages = list("French" = 15, "English" = 15)
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 
@@ -126,6 +130,10 @@
 		if (ROMAN)
 			for (var/datum/language/latin/L in H.languages)
 				H.default_language = L
+				break
+		if (GERMAN)
+			for (var/datum/language/german/K in H.languages)
+				H.default_language = K
 				break
 		if (GREEK)
 			for (var/datum/language/greek/G in H.languages)

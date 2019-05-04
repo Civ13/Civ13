@@ -56,6 +56,7 @@ var/greek_toggled = TRUE
 var/arab_toggled = TRUE
 var/japanese_toggled = TRUE
 var/russian_toggled = TRUE
+var/german_toggled = TRUE
 /client/proc/toggle_factions()
 	set name = "Toggle Factions"
 	set category = "Special"
@@ -79,6 +80,7 @@ var/russian_toggled = TRUE
 	choices += "ARAB ([arab_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "JAPANESE ([japanese_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "RUSSIAN ([russian_toggled ? "ENABLED" : "DISABLED"])"
+	choices += "GERMAN ([german_toggled ? "ENABLED" : "DISABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -138,6 +140,10 @@ var/russian_toggled = TRUE
 		arab_toggled = !arab_toggled
 		world << "<span class = 'warning'>The Arabic faction has been [arab_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
 		message_admins("[key_name(src)] changed the Arabic faction 'enabled' setting to [arab_toggled].")
+	else if (findtext(choice, "GERMAN"))
+		german_toggled = !german_toggled
+		world << "<span class = 'warning'>The German faction has been [german_toggled ? "<b><i>ENABLED</i></b>" : "<b><i>DISABLED</i></b>"].</span>"
+		message_admins("[key_name(src)] changed the German faction 'enabled' setting to [german_toggled].")
 var/civilians_forceEnabled = FALSE
 var/british_forceEnabled = FALSE
 var/pirates_forceEnabled = FALSE
@@ -151,6 +157,7 @@ var/greek_forceEnabled = FALSE
 var/arab_forceEnabled = FALSE
 var/japanese_forceEnabled = FALSE
 var/russian_forceEnabled = FALSE
+var/german_forceEnabled = FALSE
 
 /client/proc/forcibly_enable_faction()
 	set name = "Forcibly Enable Faction"
@@ -175,6 +182,7 @@ var/russian_forceEnabled = FALSE
 	choices += "ARAB ([arab_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "JAPANESE ([japanese_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "RUSSIAN ([russian_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
+	choices += "GERMAN ([german_forceEnabled ? "FORCIBLY ENABLED" : "NOT FORCIBLY ENABLED"])"
 	choices += "CANCEL"
 
 	var/choice = input("Enable/Disable what faction?") in choices
@@ -227,7 +235,6 @@ var/russian_forceEnabled = FALSE
 		roman_forceEnabled = !roman_forceEnabled
 		world << "<span class = 'notice'>The Roman faction [roman_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Roman faction 'forceEnabled' setting to [roman_forceEnabled].")
-
 	else if (findtext(choice, "GREEK"))
 		greek_forceEnabled = !greek_forceEnabled
 		world << "<span class = 'notice'>The Greek faction [greek_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
@@ -236,6 +243,10 @@ var/russian_forceEnabled = FALSE
 		arab_forceEnabled = arab_forceEnabled
 		world << "<span class = 'notice'>The Arabic faction [arab_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
 		message_admins("[key_name(src)] changed the Arabic faction 'forceEnabled' setting to [arab_forceEnabled].")
+	else if (findtext(choice, "GERMAN"))
+		arab_forceEnabled = arab_forceEnabled
+		world << "<span class = 'notice'>The German faction [german_forceEnabled ? "has been forcibly <b>enabled</b>" : "<b>is no longer forcibly enabled</b>"].</span>"
+		message_admins("[key_name(src)] changed the German faction 'forceEnabled' setting to [german_forceEnabled].")
 
 /client/proc/toggle_respawn_delays()
 	set category = "Special"
@@ -286,6 +297,7 @@ var/russian_forceEnabled = FALSE
 	var/total_arab = alive_arab.len + dead_arab.len + heavily_injured_arab.len
 	var/total_japanese = alive_japanese.len + dead_japanese.len + heavily_injured_japanese.len
 	var/total_russian = alive_russian.len + dead_russian.len + heavily_injured_russian.len
+	var/total_german = alive_german.len + dead_german.len + heavily_injured_german.len
 
 	var/mortality_coefficient_pirates = 0
 	var/mortality_coefficient_british = 0
@@ -300,6 +312,7 @@ var/russian_forceEnabled = FALSE
 	var/mortality_coefficient_arab = 0
 	var/mortality_coefficient_japanese = 0
 	var/mortality_coefficient_russian = 0
+	var/mortality_coefficient_german = 0
 
 	if (dead_british.len > 0)
 		mortality_coefficient_british = dead_british.len/total_british
@@ -340,6 +353,9 @@ var/russian_forceEnabled = FALSE
 	if (dead_russian.len > 0)
 		mortality_coefficient_russian = dead_russian.len/total_russian
 
+	if (dead_german.len > 0)
+		mortality_coefficient_german = dead_german.len/total_german
+
 	var/mortality_british = round(mortality_coefficient_british*100)
 	var/mortality_pirates = round(mortality_coefficient_pirates*100)
 	var/mortality_civilian = round(mortality_coefficient_civilian*100)
@@ -353,6 +369,7 @@ var/russian_forceEnabled = FALSE
 	var/mortality_arab = round(mortality_coefficient_arab*100)
 	var/mortality_japanese = round(mortality_coefficient_japanese*100)
 	var/mortality_russian = round(mortality_coefficient_russian*100)
+	var/mortality_german = round(mortality_coefficient_german*100)
 
 	var/msg1 = "British: [alive_british.len] alive, [heavily_injured_british.len] heavily injured or unconscious, [dead_british.len] deceased. Mortality rate: [mortality_british]%"
 	var/msg2 = "Pirates: [alive_pirates.len] alive, [heavily_injured_pirates.len] heavily injured or unconscious, [dead_pirates.len] deceased. Mortality rate: [mortality_pirates]%"
@@ -367,6 +384,7 @@ var/russian_forceEnabled = FALSE
 	var/msg11 = "Arabs: [alive_arab.len] alive, [heavily_injured_arab.len] heavily injured or unconscious, [dead_arab.len] deceased. Mortality rate: [mortality_arab]%"
 	var/msg12 = "Japanese: [alive_japanese.len] alive, [heavily_injured_japanese.len] heavily injured or unconscious, [dead_japanese.len] deceased. Mortality rate: [mortality_japanese]%"
 	var/msg13 = "Russian: [alive_russian.len] alive, [heavily_injured_russian.len] heavily injured or unconscious, [dead_russian.len] deceased. Mortality rate: [mortality_russian]%"
+	var/msg14 = "German: [alive_german.len] alive, [heavily_injured_german.len] heavily injured or unconscious, [dead_german.len] deceased. Mortality rate: [mortality_german]%"
 
 	var/msg_religions = ""
 	var/relp = ""
@@ -430,6 +448,8 @@ var/russian_forceEnabled = FALSE
 		msg12 = null
 	if (map && !map.faction_organization.Find(RUSSIAN))
 		msg13 = null
+	if (map && !map.faction_organization.Find(GERMAN))
+		msg14 = null
 	var/public = "Yes"
 
 	if (shower && !private)
@@ -467,6 +487,8 @@ var/russian_forceEnabled = FALSE
 				world << "<font size=3>[msg12]</font>"
 			if (msg13)
 				world << "<font size=3>[msg13]</font>"
+			if (msg14)
+				world << "<font size=3>[msg14]</font>"
 			if (map.civilizations && msg_religions != "")
 				world << "<font size=3>[msg_religions]</font>"
 			if (map.civilizations && msg_factions != "")
@@ -502,3 +524,5 @@ var/russian_forceEnabled = FALSE
 			shower << msg12
 		if (msg13)
 			shower << msg13
+		if (msg14)
+			shower << msg14

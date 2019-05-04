@@ -18,6 +18,8 @@
 	not_disassemblable = TRUE
 	var/ammotype = /obj/item/cannon_ball
 	var/spritemod = TRUE //if true, uses 32x64
+	var/explosion = TRUE
+	var/reagent_payload = "none"
 
 /obj/structure/cannon/modern
 	name = "Field Cannon"
@@ -178,6 +180,11 @@
 
 			travelled = 0
 			high = TRUE
+			if (!istype(loaded, /obj/item/cannon_ball/shell/gas))
+				explosion = TRUE
+			else
+				explosion = FALSE
+				reagent_payload = loaded.reagent_payload
 			qdel(loaded)
 			loaded = null
 
@@ -236,19 +243,37 @@
 					if (hit)
 						playsound(target, "artillery_in", 70, TRUE)
 						spawn (10)
-							var/target_area_original_integrity = target_area.artillery_integrity
-							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
-								for (var/mob/living/L in view(20, target))
-									shake_camera(L, 5, 5)
-									L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
-								message_admins("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
-								log_admin("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
-								return
-							else if (target_area_original_integrity)
-								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
-							message_admins("Cannonball hit at [target.x], [target.y], [target.z].")
-							log_admin("Cannonball hit at [target.x], [target.y], [target.z].")
-							explosion(target, 1, 2, 3, 4)
+							if (explosion)
+								explosion(target, 1, 2, 3, 4)
+								var/target_area_original_integrity = target_area.artillery_integrity
+								if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
+									for (var/mob/living/L in view(20, target))
+										shake_camera(L, 5, 5)
+										L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
+									message_admins("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
+									log_admin("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
+									return
+								else if (target_area_original_integrity)
+									target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
+								message_admins("Cannonball hit at [target.x], [target.y], [target.z].")
+								log_admin("Cannonball hit at [target.x], [target.y], [target.z].")
+							else
+								message_admins("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+								log_admin("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+								var/how_many = 24 // half of 49, the radius we spread over (7x7)
+								for (var/k in 1 to how_many)
+									switch (reagent_payload)
+										if ("chlorine_gas")
+											new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
+										if ("mustard_gas")
+											new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
+										if ("white_phosphorus_gas")
+											new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(target)
+										if ("xylyl_bromide")
+											new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
+										if ("phosgene")
+											new/obj/effect/effect/smoke/chem/payload/phosgene(target)
+
 						break
 
 					sleep(0.5)

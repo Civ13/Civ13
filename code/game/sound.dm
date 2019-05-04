@@ -204,6 +204,13 @@ var/list/charge_sounds_ar = list(
 	'sound/effects/emotes/charge_ar5.ogg',
 	'sound/effects/emotes/charge_ar6.ogg',
 	)
+var/list/charge_sounds_ge = list(
+	'sound/effects/emotes/charge_ger.ogg',
+	'sound/effects/emotes/charge_ger2.ogg',
+	'sound/effects/emotes/charge_ger3.ogg',
+	'sound/effects/emotes/charge_ger4.ogg',
+	'sound/effects/emotes/charge_ger5.ogg',
+	)
 var/list/charge_sounds_crusader = list(
 	'sound/effects/emotes/charge_crusader.ogg',)
 // pain, etc sounds from Interbay
@@ -407,6 +414,8 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_gr)
 			if ("charge_ROMAN")
 				soundin = pick(charge_sounds_ro)
+			if ("charge_GERMAN")
+				soundin = pick(charge_sounds_ge)
 			if ("charge_ARAB")
 				soundin = pick(charge_sounds_ar)
 			if ("charge_CRUSADER")

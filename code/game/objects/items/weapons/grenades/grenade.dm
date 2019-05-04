@@ -227,7 +227,7 @@
 	det_time = 70
 	throw_range = 7
 
-/obj/item/weapon/grenade/modern/mills2
+/obj/item/weapon/grenade/ww2/mills2
 	name = "mills bomb no. 36M"
 	desc = "A British early XXth century grenade, with a reduced timer to 4 seconds."
 	icon_state = "mills"
@@ -247,7 +247,7 @@
 	icon_state = "stgnade"
 	det_time = 45
 	throw_range = 10
-/obj/item/weapon/grenade/ww1/stg1924
+/obj/item/weapon/grenade/ww2/stg1924
 	name = "M1924 Stielhandgranate"
 	desc = "A A German design, to replace the M1915."
 	icon_state = "stgnade"

@@ -449,6 +449,8 @@
 			regrowth()
 			new/obj/item/stack/material/wool(get_turf(src))
 			return
+	else
+		..()
 
 /mob/living/simple_animal/sheep/female/Life()
 	. = ..()

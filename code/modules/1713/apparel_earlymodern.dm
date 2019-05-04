@@ -474,3 +474,10 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
+/obj/item/clothing/suit/storage/jacket/doctor
+	name = "white labcoat"
+	desc = "A white labcoat."
+	icon_state = "labcoat"
+	item_state = "labcoat"
+	worn_state = "labcoat"

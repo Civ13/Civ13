@@ -607,6 +607,8 @@
 		dat += "[alive_japanese.len] Japanese "
 	if (RUSSIAN in map.faction_organization)
 		dat += "[alive_russian.len] Russian "
+	if (GERMAN in map.faction_organization)
+		dat += "[alive_german.len] German "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -627,6 +629,7 @@
 		ARAB = FALSE,
 		RUSSIAN = FALSE,
 		JAPANESE = FALSE,
+		GERMAN = FALSE,
 		)
 
 	var/prev_side = FALSE

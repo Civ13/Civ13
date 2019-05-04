@@ -8,13 +8,6 @@
 	dynamic_lighting = TRUE
 	ambience = list("sound/ambience/ship1.ogg")
 
-/area/caribbean/New()
-	..()
-	if (istype(src, /area/caribbean/british))
-		name = "(British) [name]"
-	else if (istype(src, /area/caribbean/pirates))
-		name = "(Pirates) [name]"
-
 // Basic Area Definitions
 
 /* note: BYOND reaches some kind of limit when it encounters areas with massive
@@ -557,22 +550,57 @@
 	icon_state = "red3"
 
 /area/caribbean/british
+	icon_state = "blue1"
 
 /area/caribbean/british/land
-	name = "Land Base"
-	icon_state = "red1"
+	name = "British Base"
+	icon_state = "blue1"
 	base_turf = /turf/floor/dirt
 	ambience = list("sound/ambience/jungle1.ogg")
 
 
 /area/caribbean/british/land/inside
 	location = AREA_INSIDE
-	icon_state = "red2"
+	icon_state = "blue2"
 
 
 /area/caribbean/british/land/outside
-	icon_state = "red3"
+	icon_state = "blue3"
 
+/area/caribbean/british/land/outside/objective
+	icon_state = "blue1"
+
+
+/area/caribbean/french
+	icon_state = "blue1"
+
+/area/caribbean/french/land
+	name = "French Base"
+	icon_state = "blue1"
+	base_turf = /turf/floor/dirt
+	ambience = list("sound/ambience/jungle1.ogg")
+
+
+/area/caribbean/french/land/inside
+	location = AREA_INSIDE
+	icon_state = "blue2"
+
+
+/area/caribbean/french/land/outside
+	icon_state = "blue3"
+
+/area/caribbean/french/land/outside/objective
+	icon_state = "blue1"
+
+/area/caribbean/german
+	name = "German Base"
+	icon_state = "red1"
+	base_turf = /turf/floor/dirt
+/area/caribbean/german/objective
+	icon_state = "red3"
+/area/caribbean/german/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
 
 /area/caribbean/british/ship
 	name = "British Ship"

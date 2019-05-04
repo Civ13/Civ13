@@ -292,4 +292,62 @@ obj/structure/closet/crate/empty
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/clothing/accessory/storage/webbing = 10)
 	cratevalue = 110 //assuming 10 value
+
+
+////WW1////////
+obj/structure/closet/crate/ww1/grenades_french
+	name = "F1 grenade crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/grenade/modern/f1 = 10)
+
+obj/structure/closet/crate/ww1/grenades_german
+	name = "stg 1915 grenade crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/grenade/modern/stg1915 = 10)
+
+obj/structure/closet/crate/ww1/grenades_british
+	name = "Mills grenade crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/grenade/modern/mills = 10)
+
+
+obj/structure/closet/crate/ww1/ammo_hotchkiss
+	name = "Hotchkiss belts crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_magazine/hotchkiss = 3)
+
+obj/structure/closet/crate/ww1/ammo_type3
+	name = "Type 3 belts crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_magazine/type3 = 3)
+
+obj/structure/closet/crate/ww1/ammo_vickers
+	name = "Vickers belts crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_magazine/vickers = 3)
+
+obj/structure/closet/crate/ww1/ammo_mg08
+	name = "MG08 belts crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_magazine/mg08 = 3)
+obj/structure/closet/crate/ww1/ammo_maxim
+	name = "Maxim belts crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/ammo_magazine/maxim = 3)
 #undef DYNAMIC_AMT

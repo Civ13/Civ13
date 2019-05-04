@@ -23,7 +23,7 @@
 /datum/job/var/is_nomad = FALSE //self explanatory
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 /datum/job/var/is_cowboy = FALSE
-
+/datum/job/var/is_ww1 = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold
@@ -69,6 +69,8 @@
 		. = RUSSIAN
 	else if (istype(src, /datum/job/roman))
 		. = ROMAN
+	else if (istype(src, /datum/job/german))
+		. = GERMAN
 	else if (istype(src, /datum/job/greek))
 		. = GREEK
 	else if (istype(src, /datum/job/arab))
@@ -120,6 +122,9 @@
 	else if (istype(src, /datum/job/arab))
 		user.faction_text = "ARAB"
 		user.base_faction = new/datum/faction/arab(user, src)
+	else if (istype(src, /datum/job/german))
+		user.faction_text = "GERMAN"
+		user.base_faction = new/datum/faction/german(user, src)
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
 		return "British Empire"

@@ -282,6 +282,24 @@
 	transmitter_on = TRUE
 	powerneeded = 20
 
+/obj/structure/radio/transmitter_receiver/nopower
+	name = "two-way radio"
+	icon_state = "radio"
+	transmitter = TRUE
+	receiver = TRUE
+	receiver_on = TRUE
+	transmitter_on = TRUE
+	powerneeded = 0
+
+var/global/FREQ1 = rand(150,200)
+var/global/FREQ2 = rand(201,250)
+
+/obj/structure/radio/transmitter_receiver/nopower/faction1/New()
+	..()
+	freq = FREQ1
+/obj/structure/radio/transmitter_receiver/nopower/faction2/New()
+	..()
+	freq = FREQ2
 /obj/structure/radio/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!anchored && !istype(W, /obj/item/weapon/wrench))
 		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
@@ -422,7 +440,7 @@
 	if (!receiver && transmitter)
 		style = "Radio Transmitter"
 	if (m)
-		if (check_power() == FALSE)
+		if (check_power() == FALSE && powerneeded > 0)
 			m << browse({"
 
 			<br>
@@ -577,7 +595,7 @@
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.freq == freq && radio.check_power())
+				if (radio.freq == freq && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
@@ -778,7 +796,7 @@ var/list/global/phone_numbers = list()
 	else
 		var/bdphrase = pick(storedphrases)
 		for(var/obj/structure/radio/RD in range(1,src))
-			if (RD.transmitter && RD.transmitter_on && RD.check_power())
+			if (RD.transmitter && RD.transmitter_on && (RD.check_power() || RD.powerneeded == 0))
 				RD.broadcast(bdphrase, owner)
 		spawn(1200)
 			broadcast()
