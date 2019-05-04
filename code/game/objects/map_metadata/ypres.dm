@@ -60,15 +60,14 @@
 				var/turf/T6 = get_turf(UKF)
 				new/obj/structure/sign/flag/french(T6)
 				qdel(UKF)
-			for (var/area/caribbean/british/land/outside/A1 in world)
-				var/turf/TA = get_turf(A1)
-				new/area/caribbean/french/land/outside(TA)
-			for (var/area/caribbean/british/land/inside/A2 in world)
-				var/turf/TA = get_turf(A2)
-				new/area/caribbean/french/land/inside(TA)
-			for (var/area/caribbean/british/land/outside/objective/A3 in world)
-				var/turf/TA = get_turf(A3)
-				new/area/caribbean/french/land/outside/objective(TA)
+			for (var/turf/floor/trench/A1 in world)
+				var/area/A = get_area(A1)
+				if (istype(A,/area/caribbean/british/land/inside))
+					new/area/caribbean/french/land/inside(get_turf(A1))
+				if (istype(A,/area/caribbean/british/land/outside))
+					new/area/caribbean/french/land/outside(get_turf(A1))
+				if (istype(A,/area/caribbean/british/land/outside/objective))
+					new/area/caribbean/french/land/outside/objective(get_turf(A1))
 			british_toggled = FALSE
 			french_toggled = TRUE
 		else

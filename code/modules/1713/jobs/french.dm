@@ -803,11 +803,8 @@
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/french/full/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/french/full(null)
-	if (prob(50))
-		var/obj/item/clothing/accessory/armor/modern/plate/newplate = new /obj/item/clothing/accessory/armor/modern/plate(null)
-		uniform.attackby(newplate, H)
-	uniform.attackby(fullwebbing, H)
+	var/obj/item/clothing/accessory/armor/modern/plate/newplate = new /obj/item/clothing/accessory/armor/modern/plate(null)
+	uniform.attackby(newplate, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier specialized in infiltration and shock tactics. Lead the way for your fellow soldiers to the enemy trenches!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

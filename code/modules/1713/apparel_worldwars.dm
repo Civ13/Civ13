@@ -319,7 +319,7 @@
 	new /obj/item/weapon/grenade/modern/f1(src)
 	new /obj/item/weapon/grenade/modern/f1(src)
 /obj/item/clothing/accessory/storage/webbing/ww1/british
-	name = "german webbing"
+	name = "british webbing"
 	icon_state = "british_vest"
 	item_state = "british_vest"
 /obj/item/clothing/accessory/storage/webbing/ww1/british/full
@@ -345,6 +345,7 @@
 /obj/item/clothing/accessory/armor/modern/plate
 	name = "breastplate body armor"
 	desc = "Wearable armor made of steel sheets."
+	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_platearmor"
 	item_state = "modern_platearmor"
 	worn_state = "modern_platearmor"
@@ -356,6 +357,7 @@
 /obj/item/clothing/accessory/armor/modern/british
 	name = "Dayfield body armor"
 	desc = "British-made wearable armor made of steel sheets."
+	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_dayfield"
 	item_state = "modern_dayfield"
 	worn_state = "modern_dayfield"

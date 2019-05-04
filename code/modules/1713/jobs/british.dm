@@ -815,11 +815,8 @@
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/british/full2/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/british/full2(null)
-	uniform.attackby(fullwebbing, H)
-	if (prob(50))
-		var/obj/item/clothing/accessory/armor/modern/british/newplate = new /obj/item/clothing/accessory/armor/modern/british(null)
-		uniform.attackby(newplate, H)
+	var/obj/item/clothing/accessory/armor/modern/british/newplate = new /obj/item/clothing/accessory/armor/modern/british(null)
+	uniform.attackby(newplate, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier specialized in infiltration and shock tactics. Lead the way for your fellow soldiers to the enemy trenches!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -842,8 +839,8 @@
 	is_ww1 = TRUE
 
 	// AUTOBALANCE
-	min_positions = 6
-	max_positions = 200
+	min_positions = 12
+	max_positions = 400
 
 /datum/job/british/ww1infantry/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

@@ -1372,7 +1372,11 @@
 					else
 						holder2.icon_state = "rn_basic"
 				if (FRENCH)
-					holder2.icon_state = "fr_basic"
+				if (BRITISH)
+					if (map.ordinal_age >= 4)
+						holder2.icon_state = "fr2_basic"
+					else
+						holder2.icon_state = "fr_basic"
 				if (SPANISH)
 					holder2.icon_state = "sp_basic"
 				if (PORTUGUESE)
