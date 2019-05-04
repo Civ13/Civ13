@@ -371,7 +371,7 @@
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP && map.ID != MAP_HILL203)
 			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now.</span>"
 			return
 
@@ -607,6 +607,8 @@
 		dat += "[alive_japanese.len] Japanese "
 	if (RUSSIAN in map.faction_organization)
 		dat += "[alive_russian.len] Russian "
+	if (GERMAN in map.faction_organization)
+		dat += "[alive_german.len] German "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -627,6 +629,7 @@
 		ARAB = FALSE,
 		RUSSIAN = FALSE,
 		JAPANESE = FALSE,
+		GERMAN = FALSE,
 		)
 
 	var/prev_side = FALSE

@@ -7,7 +7,7 @@
 		"1013" = 0,
 		"1713" = 0,
 		"1873" = 0,
-//		"1904" = 0,
+		"1904" = 0,
 		"Civilization 13" = 0,
 	)
 	var/ready = TRUE
@@ -31,7 +31,7 @@
 				"1013" = 0,
 				"1713" = 0,
 				"1873" = 0,
-//				"1904" = 0,
+				"1904" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list("Civilization 13" = 0,)
@@ -82,6 +82,7 @@
 	// 1903 - TDM
 			maps = list(
 				MAP_HILL203 = 0,
+				MAP_YPRES = 0,
 			)
 
 		if (epoch == "1873")

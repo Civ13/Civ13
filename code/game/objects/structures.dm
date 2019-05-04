@@ -35,8 +35,8 @@
 			user << "<span class='notice'>Remove the cables first.</span>"
 			return
 		if (istype(src, /obj/structure/engine))
-			var/obj/structure/engine/EN
-			if (EN.connections)
+			var/obj/structure/engine/EN = src
+			if (!isemptylist(EN.connections))
 				user << "<span class='notice'>Remove the cables first.</span>"
 				return
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)

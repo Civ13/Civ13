@@ -8,13 +8,13 @@
 	throwforce = TRUE
 	w_class = TRUE
 	flammable = TRUE
-
 	var/leaves_residue = TRUE
 	var/caliber = ""					//Which kind of guns it can be loaded into
 	var/projectile_type					//The bullet type to create when New() is called
 	var/obj/item/projectile/BB = null	//The loaded bullet - make it so that the projectiles are created only when needed?
 	var/spent_icon = null
 	var/thrown_force_divisor = 0.1
+	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
 
 /obj/item/ammo_casing/New()
 	..()
@@ -24,6 +24,15 @@
 	pixel_y = rand(-10, 10)
 	bullet_casings += src
 	randomrotation()
+
+/obj/item/ammo_casing/proc/checktype()
+	BB.btype = btype
+	BB.checktype()
+	if (btype == "AP")
+		name = "[name] (AP)"
+	else if (btype == "HP")
+		name = "[name] (HP)"
+
 /obj/item/ammo_casing/Destroy()
 	bullet_casings -= src
 	..()
@@ -38,23 +47,6 @@
 	BB = null
 	set_dir(pick(cardinal)) //spin spent casings
 	update_icon()
-
-/obj/item/ammo_casing/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/hammer))
-		if (!BB)
-			user << "<span class = 'notice'>There is no bullet in the casing to inscribe anything into.</span>"
-			return
-
-		var/tmp_label = ""
-		var/label_text = sanitizeSafe(input(user, "Inscribe some text into \the [initial(BB.name)]","Inscription",tmp_label), MAX_NAME_LEN)
-		if (length(label_text) > 20)
-			user << "<span class = 'red'>The inscription can be at most 20 characters long.</span>"
-		else if (!label_text)
-			user << "<span class = 'notice'>You scratch the inscription off of [initial(BB)].</span>"
-			BB.name = initial(BB.name)
-		else
-			user << "<span class = 'notice'>You inscribe \"[label_text]\" into \the [initial(BB.name)].</span>"
-			BB.name = "[initial(BB.name)] (\"[label_text]\")"
 
 /obj/item/ammo_casing/update_icon()
 	if (spent_icon && !BB)

@@ -41,19 +41,19 @@ var/global/list/sparring_attack_cache = list()
 /datum/unarmed_attack/proc/get_unarmed_damage()
 	return damage
 
-/datum/unarmed_attack/proc/apply_effects(var/mob/living/carbon/human/user,var/mob/living/carbon/human/target,var/armour,var/attack_damage,var/zone)
+/datum/unarmed_attack/proc/apply_effects(var/mob/living/carbon/human/user,var/mob/living/carbon/human/target,var/armor,var/attack_damage,var/zone)
 
 	if (target.stat == DEAD)
 		return
 
 	var/stun_chance = rand(0, 100)
 
-	if (attack_damage >= 5 && armour < 2 && !(target == user) && stun_chance <= attack_damage * 5) // 25% standard chance
+	if (attack_damage >= 5 && armor < 2 && !(target == user) && stun_chance <= attack_damage * 5) // 25% standard chance
 		switch(zone) // strong punches can have effects depending on where they hit
 			if ("head", "mouth", "eyes")
 				// Induce blurriness
 				target.visible_message("<span class='danger'>[target] looks momentarily disoriented.</span>", "<span class='danger'>You see stars.</span>")
-				target.apply_effect(attack_damage*2, EYE_BLUR, armour)
+				target.apply_effect(attack_damage*2, EYE_BLUR, armor)
 			if ("l_arm", "l_hand")
 				if (target.l_hand)
 					// Disarm left hand
@@ -80,20 +80,20 @@ var/global/list/sparring_attack_cache = list()
 							W.shatter()
 					if (prob(50))
 						target.set_dir(reverse_dir[target.dir])
-					target.apply_effect(attack_damage * 0.4, WEAKEN, armour)
+					target.apply_effect(attack_damage * 0.4, WEAKEN, armor)
 			if ("groin")
 				target.visible_message("<span class='warning'>[target] looks like \he is in pain!</span>", "<span class='warning'>[(target.gender=="female") ? "Oh god that hurt!" : "Oh no, not your[pick("testicles", "crown jewels", "clockweights", "family jewels", "marbles", "bean bags", "teabags", "sweetmeats", "goolies")]!"]</span>")
-				target.apply_effects(stutter = attack_damage * 2, agony = attack_damage* 3, blocked = armour)
+				target.apply_effects(stutter = attack_damage * 2, agony = attack_damage* 3, blocked = armor)
 			if ("l_leg", "l_foot", "r_leg", "r_foot")
 				if (!target.lying)
 					target.visible_message("<span class='warning'>[target] gives way slightly.</span>")
-					target.apply_effect(attack_damage*3, AGONY, armour)
-	else if (attack_damage >= 5 && !(target == user) && (stun_chance + attack_damage * 5 >= 100) && armour < 2) // Chance to get the usual throwdown as well (25% standard chance)
+					target.apply_effect(attack_damage*3, AGONY, armor)
+	else if (attack_damage >= 5 && !(target == user) && (stun_chance + attack_damage * 5 >= 100) && armor < 2) // Chance to get the usual throwdown as well (25% standard chance)
 		if (!target.lying)
 			target.visible_message("<span class='danger'>[target] [pick("slumps", "falls", "drops")] down to the ground!</span>")
 		else
 			target.visible_message("<span class='danger'>[target] has been weakened!</span>")
-		target.apply_effect(3, WEAKEN, armour)
+		target.apply_effect(3, WEAKEN, armor)
 
 /datum/unarmed_attack/proc/show_attack(var/mob/living/carbon/human/user, var/mob/living/carbon/human/target, var/zone, var/attack_damage)
 	var/obj/item/organ/external/affecting = target.get_organ(zone)

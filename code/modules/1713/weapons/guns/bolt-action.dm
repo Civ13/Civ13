@@ -314,10 +314,10 @@
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
 	icon_state = "arisaka30"
 	item_state = "arisaka30"
-	caliber = "a65x50mm"
+	caliber = "a65x50"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a65x50mm
+	ammo_type = /obj/item/ammo_casing/a65x50
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
@@ -407,13 +407,13 @@
 
 /obj/item/weapon/gun/projectile/boltaction/carcano
 	name = "carcano 1891"
-	desc = "An italian bolt-action rifle chambered in 7.92x57mm Mauser ammunition."
+	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
 	icon_state = "carcano"
 	item_state = "carcano"
-	caliber = "a792x57"
+	caliber = "a65x52"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a65x52mm
+	ammo_type = /obj/item/ammo_casing/a65x52
 	magazine_type = /obj/item/ammo_magazine/carcano
 	bolt_safety = FALSE
 	effectiveness_mod = 0.85
@@ -443,10 +443,10 @@
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
 	icon_state = "arisaka35"
 	item_state = "arisaka35"
-	caliber = "a65x50mm"
+	caliber = "a65x50"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a65x50mm
+	ammo_type = /obj/item/ammo_casing/a65x50
 	bolt_safety = FALSE
 	effectiveness_mod = 0.98
 	value = 120
@@ -652,10 +652,10 @@
 	desc = "Japanese bolt-action rifle chambered in 8x53mm Murata ammunition."
 	icon_state = "murata"
 	item_state = "murata"
-	caliber = "a8x53mm"
+	caliber = "a8x53"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a8x53mm
+	ammo_type = /obj/item/ammo_casing/a8x53
 	bolt_safety = FALSE
 	effectiveness_mod = 0.75
 	value = 120
@@ -723,7 +723,7 @@
 		icon_state = "berdan"
 
 /obj/item/weapon/gun/projectile/boltaction/enfield
-	name = "Lee-enfield"
+	name = "Lee-Enfield Mk. III"
 	desc = "A 10-shot, bolt-action rifle, standard issue for british military, chambered in .303 british."
 	icon_state ="enfield"
 	item_state ="enfield"
@@ -739,7 +739,7 @@
 	slot_flags = SLOT_BACK
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
-	load_method = SINGLE_CASING
+	load_method = SINGLE_CASING | SPEEDLOADER
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
@@ -754,3 +754,64 @@
 		return
 	else
 		icon_state = "enfield"
+
+/obj/item/weapon/gun/projectile/boltaction/lebel
+	name = "Lebel 1886/M93"
+	desc = "A 8 round, bolt-action rifle, standard issue for french military, chambered in 8×50mmR Lebel."
+	icon_state ="lebel"
+	item_state ="lebel"
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a8x50"
+	weight = 4.4
+	effectiveness_mod = 0.97
+	bolt_safety = FALSE
+	value = 80
+	recoil = 3
+	slot_flags = SLOT_BACK
+	throwforce = 16
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING
+	ammo_type = /obj/item/ammo_casing/a8x50
+	magazine_type = /obj/item/ammo_magazine/c8x50
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 8
+
+/obj/item/weapon/gun/projectile/boltaction/berthier
+	name = "Berthier M1907/15"
+	desc = "A 3 round, bolt-action carbine, chambered in 8×50mmR Lebel."
+	icon_state ="berthier"
+	item_state ="berthier"
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a8x50"
+	weight = 3
+	effectiveness_mod = 0.94
+	bolt_safety = FALSE
+	value = 80
+	recoil = 3
+	slot_flags = SLOT_BACK
+	throwforce = 16
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	ammo_type = /obj/item/ammo_casing/a8x50
+	magazine_type = /obj/item/ammo_magazine/c8x50_3clip
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 3
+
+/obj/item/weapon/gun/projectile/boltaction/lebel/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "berthier_open") //closed
+		icon_state = "berthier"
+	else if (icon_state == "berthier")
+		return
+	else
+		icon_state = "berthier"
+
+/obj/item/weapon/gun/projectile/boltaction/berthier/m16
+	name = "Berthier M1907/16"
+	desc = "A 5 round, bolt-action carbine, chambered in 8×50mmR Lebel."
+	magazine_type = /obj/item/ammo_magazine/c8x50_5clip
+	max_shells = 5

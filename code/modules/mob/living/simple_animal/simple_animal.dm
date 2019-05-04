@@ -577,6 +577,10 @@
 				walk_towards(src,0)
 				eat()
 				return
+			for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
+				walk_towards(src,0)
+				eat()
+				return
 			for(var/turf/floor/grass/GT in range(6,src))
 				walk_towards(src, GT, turns_per_move)
 				return
@@ -585,6 +589,10 @@
 
 	if (granivore)
 		if (prob(100/totalcount))
+			for(var/obj/item/stack/farming/seeds/WT in range(2,src))
+				walk_towards(src,0)
+				eat()
+				return
 			for(var/obj/structure/farming/plant/PL in range(2,src))
 				walk_towards(src,0)
 				eat()
@@ -646,7 +654,7 @@
 				else
 					return
 		for(var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/WT in range(2,src))
-			if (prob(20))
+			if (prob(30))
 				visible_message("\The [src] eats some of the wheat.")
 				simplehunger += 550
 				adjustBruteLoss(-4)
@@ -655,9 +663,16 @@
 
 
 	if (granivore)
+		for(var/obj/item/stack/farming/seeds/SD in range(2,src))
+			if (prob(35))
+				visible_message("<span class='notice'>\The [src] eats \the [SD]!</span>")
+				simplehunger += 500
+				adjustBruteLoss(-4)
+				qdel(SD)
+				return
 		for(var/obj/structure/farming/plant/PL in range(2,src))
 			if (prob(15))
-				visible_message("<span class='notice'>\The [src] eats the [PL]!</span>")
+				visible_message("<span class='notice'>\The [src] eats \the [PL]!</span>")
 				simplehunger += 400
 				adjustBruteLoss(-4)
 				qdel(PL)

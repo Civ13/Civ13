@@ -62,6 +62,76 @@
 		/obj/item/ammo_magazine/mosinbox = 10,
 	)
 
+/obj/structure/vending/ww1gerweapons
+	name = "German rifle rack"
+	desc = "A rack of rifles and ammunition."
+	icon_state = "modern_german"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/gewehr98 = 15,
+		/obj/item/ammo_magazine/gewehr98 = 50,
+		/obj/item/weapon/attachment/bayonet/military = 25,
+	)
+
+/obj/structure/vending/ww1britweapons
+	name = "British rifle rack"
+	desc = "A rack of rifles and ammunition."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/enfield = 15,
+		/obj/item/ammo_magazine/enfield = 50,
+		/obj/item/weapon/attachment/bayonet/military = 25,
+	)
+/obj/structure/vending/ww1frenchweapons
+	name = "French rifle rack"
+	desc = "A rack of rifles and ammunition."
+	icon_state = "modern_france"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/lebel = 15,
+		/obj/item/ammo_magazine/c8x50 = 20,
+		/obj/item/ammo_magazine/c8x50_3clip = 30,
+		/obj/item/weapon/attachment/bayonet/military = 25,
+	)
+/obj/structure/vending/ww1frenchapparel
+	name = "French Army apparel rack"
+	desc = "Basic wear for soldiers of the French Army."
+	icon_state = "apparel_france"
+	products = list(
+		/obj/item/clothing/shoes/leatherboots1 = 15,
+		/obj/item/clothing/under/ww1/french = 15,
+		/obj/item/clothing/suit/storage/coat/frenchcoat = 15,
+		/obj/item/clothing/head/frenchcap = 15,
+		/obj/item/clothing/accessory/storage/webbing/ww1/french = 15,
+		/obj/item/clothing/head/helmet/ww/adrian = 15,
+		/obj/item/clothing/mask/gas/french = 15,
+	)
+/obj/structure/vending/ww1britapparel
+	name = "British Army apparel rack"
+	desc = "Basic wear for soldiers of the Royal Army."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/leatherboots1 = 15,
+		/obj/item/clothing/under/ww1/british = 15,
+		/obj/item/clothing/suit/storage/coat/britishcoat = 15,
+		/obj/item/clothing/head/britishcap = 15,
+		/obj/item/clothing/accessory/storage/webbing/ww1/british = 15,
+		/obj/item/clothing/head/helmet/ww/brodie = 15,
+		/obj/item/clothing/head/helmet/ww/brodie/khaki = 15,
+		/obj/item/clothing/mask/gas/british = 15,
+	)
+/obj/structure/vending/ww1gerapparel
+	name = "German Army apparel rack"
+	desc = "Basic wear for soldiers of the Imperial German Army."
+	icon_state = "apparel_german2"
+	products = list(
+		/obj/item/clothing/shoes/blackboots1 = 15,
+		/obj/item/clothing/under/ww1/german = 15,
+		/obj/item/clothing/suit/storage/coat/germcoat = 15,
+		/obj/item/clothing/head/germcap = 15,
+		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
+		/obj/item/clothing/head/helmet/ww/stahlhelm = 15,
+		/obj/item/clothing/head/helmet/modern/pickelhaube = 15,
+		/obj/item/clothing/mask/gas/german = 15,
+	)
 /obj/structure/vending/japweapons
 	name = "Japanese Weapon rack"
 	desc = "A rack of war equipment."

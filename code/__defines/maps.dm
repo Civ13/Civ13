@@ -36,3 +36,4 @@
 #define MODE_WAR 1
 
 #define MAP_HILL203 "HILL203"
+#define MAP_YPRES "YPRES"

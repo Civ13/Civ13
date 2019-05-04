@@ -1,0 +1,51 @@
+/obj/item/clothing/mask/gas
+	name = "gas mask"
+	desc = "A face-covering mask that filters harmful gases from the air."
+	icon_state = "gas_alt"
+	item_flags = BLOCK_GAS_SMOKE_EFFECT | AIRTIGHT
+	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE
+	body_parts_covered = FACE|EYES
+	w_class = 2.0
+	item_state = "gas_alt"
+	gas_transfer_coefficient = 0.01
+	permeability_coefficient = 0.01
+	siemens_coefficient = 0.9
+	var/gas_filter_strength = TRUE			//For gas mask filters
+	var/list/filtered_gases = list("plasma", "sleeping_agent")
+	armor = list(melee = FALSE, bullet = FALSE, laser = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = FALSE)
+	slot_flags = SLOT_BELT|SLOT_MASK
+
+/obj/item/clothing/mask/gas/proc/check_can_block(var/datum/reagent/r)
+	if ((r.id in filtered_gases && prob(83)) || ("zyklon_b" in filtered_gases && r.id == "zyklon_b")) /*
+?Lord Taemin? - Yesterday at 3:01 PM
+-Gas mask should protect you only 83%*/
+		return TRUE
+	return FALSE
+
+/obj/item/clothing/mask/gas/filter_air(datum/gas_mixture/air)
+	var/datum/gas_mixture/filtered = new
+
+	for (var/g in filtered_gases)
+		if (air.gas[g])
+			filtered.gas[g] = air.gas[g] * gas_filter_strength
+			air.gas[g] -= filtered.gas[g]
+
+	air.update_values()
+	filtered.update_values()
+
+	return filtered
+
+/obj/item/clothing/mask/gas/german
+	icon_state = "german_gasmask"
+	item_state = "german_gasmask"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b")
+
+/obj/item/clothing/mask/gas/british
+	icon_state = "british_gasmask"
+	item_state = "british_gasmask"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b")
+
+/obj/item/clothing/mask/gas/french
+	icon_state = "french_gasmask"
+	item_state = "french_gasmask"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b")

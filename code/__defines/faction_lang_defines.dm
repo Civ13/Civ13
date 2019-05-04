@@ -4,12 +4,12 @@
 #define INDIANS "INDIANS"
 #define BRITISH "BRITISH"
 #define ROMAN "ROMAN"
+#define GERMAN "GERMAN"
 
 // used for languages only
 #define ENGLISH "ENGLISH"
 #define CARIB "CARIB"
 #define LATIN "LATIN"
-#define GERMAN "GERMAN"
 #define UKRAINIAN "UKRAINIAN"
 #define CHINESE "CHINESE"
 #define HEBREW "HEBREW"
@@ -61,6 +61,9 @@
 
 	if (constant == ROMAN)
 		return "Roman Republic"
+
+	if (constant == GERMAN)
+		return "German Empire"
 
 	if (constant == GREEK)
 		return "Greek States"

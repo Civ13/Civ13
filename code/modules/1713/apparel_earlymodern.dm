@@ -169,8 +169,8 @@
 	icon_state = "japvest"
 	item_state = "japvest"
 	worn_state = "japvest"
-	body_parts_covered = UPPER_TORSO
-	cold_protection = UPPER_TORSO
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	cold_protection = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 10, bomb = 10, bio = 10, rad = FALSE)
 	value = 10
 
@@ -474,3 +474,10 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+
+/obj/item/clothing/suit/storage/jacket/doctor
+	name = "white labcoat"
+	desc = "A white labcoat."
+	icon_state = "labcoat"
+	item_state = "labcoat"
+	worn_state = "labcoat"

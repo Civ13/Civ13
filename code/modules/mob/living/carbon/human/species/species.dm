@@ -192,15 +192,16 @@
 
 	if (H.bodytemperature < cold_level_1)
 		var/turf/T = get_turf(H)
-		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && !istype(H.shoes, /obj/item/clothing/shoes/fur))
+		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes.cold_protection != FEET)
 			if (prob(25 - (H.shoes ? 15 : 0)))
 				H << "<span class='danger'>Your feet are freezing!</span>"
 				H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
 
-		if (istype(H.wear_suit, /obj/item/clothing/suit/storage/coat))
-			var/area/mob_area = get_area(H)
-			if (mob_area.weather != WEATHER_BLIZZARD)
-				return //properly clothed for cold weather
+		if (istype(H.wear_suit, /obj/item/clothing/suit))
+			if (H.wear_suit.min_cold_protection_temperature <= COAT_MIN_COLD_PROTECTION_TEMPERATURE)
+				var/area/mob_area = get_area(H)
+				if (mob_area.weather != WEATHER_BLIZZARD)
+					return //properly clothed for cold weather
 
 		var/covered = FALSE // Basic coverage can help.
 		for (var/obj/item/clothing/clothes in H)

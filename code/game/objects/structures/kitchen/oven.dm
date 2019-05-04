@@ -206,6 +206,32 @@
 	max_space = 5
 	fuel = 4
 
+/obj/structure/oven/fireplace/proc/smoke_signals()
+	for (var/mob/living/carbon/human/HH in range(25,src))
+		if (!HH.blinded && !HH.paralysis && HH.sleeping <= 0 && HH.stat == 0)
+			var/currdir = "somewhere"
+			if (z == HH.z)
+				if (y < HH.y)
+					currdir = "south"
+				if (y > HH.y)
+					currdir = "north"
+				if (y == HH.y)
+					currdir = ""
+				if (x <= HH.x)
+					currdir = "[currdir]west"
+				if (x > HH.x)
+					currdir = "[currdir]east"
+				if (x == HH.x)
+					currdir = ""
+			if (currdir != "somewhere" && currdir != "")
+				HH << "You see some smoke signals [currdir] of you..."
+
+/obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/carbon/human/H)
+	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
+		H << "You produce some smoke signals."
+		smoke_signals()
+	else
+		..()
 /obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
 	if (icon_state == "[base_state]_on")
 		M.apply_damage(rand(2,4), BURN, "l_leg")

@@ -297,7 +297,7 @@ bullet_act
 
 	return siemens_coefficient
 
-//this proc returns the armour value for a particular external organ.
+//this proc returns the armor value for a particular external organ.
 /mob/living/carbon/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
 	if (!type || !def_zone) return FALSE
 	var/protection = FALSE

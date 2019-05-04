@@ -118,6 +118,30 @@
 			cooldown_horn = FALSE
 		return
 
+/obj/item/weapon/whistle
+	name = "trench whistle"
+	desc = "Good for ordering the troops to go over the top."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "whistle"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_HARMLESS
+	item_state = "zippo"
+	w_class = 2.0
+	matter = list(DEFAULT_WALL_MATERIAL = 50)
+	attack_verb = list("attacked", "whacked")
+	var/cooldown_whistle = FALSE
+
+/obj/item/weapon/whistle/attack_self(mob/user as mob)
+	if (cooldown_whistle == FALSE)
+		playsound(loc, 'sound/effects/whistle.ogg', 100, FALSE)
+		user.visible_message("<span class='warning'>[user] sounds the [name]!</span>")
+		cooldown_whistle = TRUE
+		spawn(100)
+			cooldown_whistle = FALSE
+		return
+
 /obj/item/weapon/siegeladder
 	name = "siege ladder"
 	desc = "A wood ladder, used to climb over walls."
@@ -205,4 +229,20 @@
 	throwforce = WEAPON_FORCE_NORMAL-1
 	w_class = 2.0
 	matter = list(DEFAULT_WALL_MATERIAL = 250)
+	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
+
+/*
+ * Wrench
+ */
+/obj/item/weapon/shears
+	name = "shears"
+	desc = "A tool used to collect wool from sheep."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "shears"
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_NORMAL
+	throwforce = WEAPON_FORCE_NORMAL
+	w_class = 2.0
+	matter = list(DEFAULT_WALL_MATERIAL = 150)
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")

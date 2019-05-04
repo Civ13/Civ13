@@ -366,9 +366,9 @@ var/civmax_research = list(130,130,130)
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, JAPANESE, RUSSIAN)
+				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, RUSSIAN)
 					return !faction1_can_cross_blocks()
-				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB)
+				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB, GERMAN, JAPANESE)
 					return !faction2_can_cross_blocks()
 	return FALSE
 
@@ -517,7 +517,8 @@ var/civmax_research = list(130,130,130)
 		GREEK = 0,
 		ARAB = 0,
 		JAPANESE = 0,
-		RUSSIAN = 0,)
+		RUSSIAN = 0,
+		GERMAN = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -611,6 +612,8 @@ var/civmax_research = list(130,130,130)
 			return "Dutch"
 		if (ROMAN)
 			return "Roman"
+		if (GERMAN)
+			return "German"
 		if (GREEK)
 			return "Greek"
 		if (ARAB)
@@ -647,6 +650,8 @@ var/civmax_research = list(130,130,130)
 			return "Japanese Empire"
 		if (RUSSIAN)
 			return "Russian Empire"
+		if (GERMAN)
+			return "German Empire"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -675,6 +680,8 @@ var/civmax_research = list(130,130,130)
 			return "Japanese"
 		if ("Russian Empire")
 			return "Russian"
+		if ("German Empire")
+			return "German"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

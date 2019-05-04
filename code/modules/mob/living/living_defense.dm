@@ -10,25 +10,24 @@
 	1 - halfblock
 	2 - fullblock
 */
-/mob/living/proc/run_armor_check(var/def_zone = null, var/attack_flag = "melee", var/armour_pen = FALSE, var/absorb_text = null, var/soften_text = null)
-	if (armour_pen >= 100)
+/mob/living/proc/run_armor_check(var/def_zone = null, var/attack_flag = "melee", var/armor_pen = FALSE, var/absorb_text = null, var/soften_text = null)
+	if (armor_pen >= 100)
 		return FALSE //might as well just skip the processing
 
 	var/armor = getarmor(def_zone, attack_flag)
 	var/absorb = FALSE
 
-	//Roll armour
+	//Roll armor
 	if (prob(armor))
 		absorb += 1
 	if (prob(armor))
 		absorb += 1
 
 	//Roll penetration
-	if (prob(armour_pen))
+	if (prob(armor_pen))
 		absorb -= 1
-	if (prob(armour_pen))
+	if (prob(armor_pen))
 		absorb -= 1
-
 	if (absorb >= 2)
 		if (absorb_text)
 			show_message("[absorb_text]")
@@ -52,10 +51,10 @@
 /mob/living/bullet_act(var/obj/item/projectile/P, var/def_zone)
 
 	//Armor
-	var/absorb = run_armor_check(def_zone, P.check_armour, P.armor_penetration)
+	var/absorb = run_armor_check(def_zone, P.check_armor, P.armor_penetration)
 	var/proj_sharp = is_sharp(P)
 	var/proj_edge = P.edge
-	if ((proj_sharp || proj_edge) && prob(getarmor(def_zone, P.check_armour)))
+	if ((proj_sharp || proj_edge) && prob(getarmor(def_zone, P.check_armor)))
 		proj_sharp = FALSE
 		proj_edge = FALSE
 
@@ -119,7 +118,7 @@
 	//Apply weapon damage
 	var/weapon_sharp = is_sharp(I)
 	var/weapon_edge = I.edge
-	if (prob(max(getarmor(hit_zone, "melee") - I.armor_penetration, FALSE))) //melee armour provides a chance to turn sharp/edge weapon attacks into blunt ones
+	if (prob(max(getarmor(hit_zone, "melee") - I.armor_penetration, FALSE))) //melee armor provides a chance to turn sharp/edge weapon attacks into blunt ones
 		weapon_sharp = FALSE
 		weapon_edge = FALSE
 
