@@ -181,7 +181,7 @@
 	caliber = "a762x38"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
-	max_shells = 6
+	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
 	weight = 1.45
 	single_action = FALSE

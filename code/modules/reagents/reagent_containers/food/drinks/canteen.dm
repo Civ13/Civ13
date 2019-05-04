@@ -7,5 +7,6 @@
 	slot_flags = SLOT_BACK|SLOT_BELT
 	desc = "A very large canteen for storing water."
 
-/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/New()
+/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full/New()
 	..()
+	reagents.add_reagent("water", 200)

@@ -69,6 +69,7 @@
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/gewehr98 = 15,
 		/obj/item/ammo_magazine/gewehr98 = 50,
+		/obj/item/ammo_magazine/mauser = 20,
 		/obj/item/weapon/attachment/bayonet/military = 25,
 	)
 
@@ -79,6 +80,7 @@
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/enfield = 15,
 		/obj/item/ammo_magazine/enfield = 50,
+		/obj/item/ammo_magazine/c455 = 20,
 		/obj/item/weapon/attachment/bayonet/military = 25,
 	)
 /obj/structure/vending/ww1frenchweapons
@@ -89,6 +91,7 @@
 		/obj/item/weapon/gun/projectile/boltaction/lebel = 15,
 		/obj/item/ammo_magazine/c8x50 = 20,
 		/obj/item/ammo_magazine/c8x50_3clip = 30,
+		/obj/item/ammo_magazine/c8x27 = 20,
 		/obj/item/weapon/attachment/bayonet/military = 25,
 	)
 /obj/structure/vending/ww1frenchapparel
@@ -104,6 +107,9 @@
 		/obj/item/clothing/head/helmet/ww/adrian = 15,
 		/obj/item/clothing/mask/gas/french = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/french = 50,
 	)
 /obj/structure/vending/ww1britapparel
 	name = "British Army apparel rack"
@@ -119,6 +125,9 @@
 		/obj/item/clothing/head/helmet/ww/brodie/khaki = 15,
 		/obj/item/clothing/mask/gas/british = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/british = 50,
 	)
 /obj/structure/vending/ww1gerapparel
 	name = "German Army apparel rack"
@@ -134,6 +143,9 @@
 		/obj/item/clothing/head/helmet/modern/pickelhaube = 15,
 		/obj/item/clothing/mask/gas/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 	)
 /obj/structure/vending/japweapons
 	name = "Japanese Weapon rack"
@@ -159,6 +171,7 @@
 		/obj/item/clothing/head/japcap = 15,
 		/obj/item/clothing/head/japcap2 = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
 	)
 
 /obj/structure/vending/russianapparel
@@ -171,5 +184,7 @@
 		/obj/item/clothing/suit/storage/coat/ruscoat = 15,
 		/obj/item/clothing/head/ruscap = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 
 	)
