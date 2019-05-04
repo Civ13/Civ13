@@ -76,3 +76,8 @@
 	name = "Japanese MRE: Noodles"
 	desc = "A package of precooked noodles and dry meat."
 	nutriment_desc = list("noodles" = 1, "vegetables" = 1, "dried meat")
+
+/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian
+	name = "Russian MRE: Potatoes"
+	desc = "A package of precooked potatoes."
+	nutriment_desc = list("potatoes" = 1,)
