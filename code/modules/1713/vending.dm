@@ -188,6 +188,6 @@
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
-		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/rusian = 50,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
 	)
