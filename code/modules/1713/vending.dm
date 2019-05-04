@@ -103,6 +103,7 @@
 		/obj/item/clothing/accessory/storage/webbing/ww1/french = 15,
 		/obj/item/clothing/head/helmet/ww/adrian = 15,
 		/obj/item/clothing/mask/gas/french = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
 	)
 /obj/structure/vending/ww1britapparel
 	name = "British Army apparel rack"
@@ -117,6 +118,7 @@
 		/obj/item/clothing/head/helmet/ww/brodie = 15,
 		/obj/item/clothing/head/helmet/ww/brodie/khaki = 15,
 		/obj/item/clothing/mask/gas/british = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
 	)
 /obj/structure/vending/ww1gerapparel
 	name = "German Army apparel rack"
@@ -131,6 +133,7 @@
 		/obj/item/clothing/head/helmet/ww/stahlhelm = 15,
 		/obj/item/clothing/head/helmet/modern/pickelhaube = 15,
 		/obj/item/clothing/mask/gas/german = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
 	)
 /obj/structure/vending/japweapons
 	name = "Japanese Weapon rack"
@@ -155,6 +158,7 @@
 		/obj/item/clothing/suit/armor/japmisc/japvest = 5,
 		/obj/item/clothing/head/japcap = 15,
 		/obj/item/clothing/head/japcap2 = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
 	)
 
 /obj/structure/vending/russianapparel
@@ -166,5 +170,6 @@
 		/obj/item/clothing/under/rusuni = 15,
 		/obj/item/clothing/suit/storage/coat/ruscoat = 15,
 		/obj/item/clothing/head/ruscap = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
 
 	)

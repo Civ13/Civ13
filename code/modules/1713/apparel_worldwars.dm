@@ -313,6 +313,7 @@
 	item_state = "french_vest"
 /obj/item/clothing/accessory/storage/webbing/ww1/french/full
 /obj/item/clothing/accessory/storage/webbing/ww1/french/full/New()
+	..()
 	new /obj/item/ammo_magazine/c8x50(src)
 	new /obj/item/ammo_magazine/c8x50(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)
