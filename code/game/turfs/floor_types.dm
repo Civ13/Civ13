@@ -217,6 +217,7 @@
 	name = "coast water"
 	desc = "lovely water hitting the coast line"
 	icon_state = "beach"
+	watertile = FALSE
 
 /turf/floor/beach/water/coastwater/corner
 	name = "coast water corner"
@@ -227,11 +228,23 @@
 	name = "coast water"
 	desc = "lovely water hitting the coast line"
 	icon_state = "seashallow_edgesX"
+	watertile = TRUE
+
+/turf/floor/beach/water/coastwater/layer/swamp
+	name = "swamp coast water"
+	icon_state = "seashallow_swamp_edges"
 
 /turf/floor/beach/water/shallowsaltwater
 	name = "saltwater"
 	salty = TRUE
 	initial_flooring = /decl/flooring/water_salt
+
+/turf/floor/beach/water/coastwater/layer/salty
+	name = "coast water"
+	desc = "lovely water hitting the coast line"
+	icon_state = "seashallow_edgesX"
+	watertile = TRUE
+	salty = TRUE
 
 /turf/floor/beach/water/deep
 	name = "deep water"
