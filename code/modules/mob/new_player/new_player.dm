@@ -543,6 +543,10 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
+	if (job.is_ww1)
+		if (client.prefs.gender == FEMALE)
+			usr << "<span class='danger'>You must be male to play as this faction.</span>"
+			return
 	if (map.age == "1013" && !map.civilizations && !istype(job, /datum/job/civilian))
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
