@@ -95,6 +95,8 @@ var/civmax_research = list(130,130,130)
 	var/cive_research = list(0,0,0,null,0)
 	var/civf_research = list(0,0,0,null,0)
 
+	var/list/facl = list()
+
 	var/chad_mode = FALSE //Virgins BTFO
 	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done

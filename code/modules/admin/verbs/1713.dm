@@ -399,25 +399,25 @@ var/german_forceEnabled = FALSE
 
 	var/msg_factions = ""
 	var/relpf = ""
-	var/relpf_am = 0
+//	var/relpf_am = 0
 	var/relpf_max = 0
-	var/list/facl = list()
+//	var/list/facl = list()
 	if (map && map.civilizations)
 		for (var/i=1,i<=map.custom_faction_nr.len,i++)
 			var/nu = 0
-			facl += list(map.custom_faction_nr[i],nu)
+			map.facl += list(map.custom_faction_nr[i] = nu)
 
-		for (var/relf in facl)
+		for (var/relf in map.facl)
 			var/curr = ""
+			map.facl[relf] = 0
 			for (var/mob/living/carbon/human/H in world)
-				for(var/k=1,k<=facl.len,k++)
-					if (facl[k] == H.civilization)
-						relpf_am += 1
-						curr = "[H.civilization]"
-			if (relpf_am > relpf_max)
+				if (relf == H.civilization)
+					map.facl[relf] += 1
+					curr = "[H.civilization]"
+			if (map.facl[relf] > relpf_max)
 				relpf = "[curr]"
-				relpf_max = relpf_am
-			relpf_am = 0
+				relpf_max = map.facl[relf]
+//			relpf_am = 0
 
 	if (relpf_max > 0 && relpf != "")
 		msg_factions = "<b>Largest Faction:</b> [relpf]"
