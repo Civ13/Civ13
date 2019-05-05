@@ -14,14 +14,14 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british,
-		list(FRENCH) = /area/caribbean/french,
-		list(GERMAN) = /area/caribbean/german
+		list(BRITISH) = /area/caribbean/british/land/inside/objective,
+		list(FRENCH) = /area/caribbean/french/land/inside/objective,
+		list(GERMAN) = /area/caribbean/german/inside/objective
 		)
 	age = "1915"
 	ordinal_age = 5
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5, GERMAN = 0.5)
-	battle_name = "Ypres"
+	battle_name = "second battle of Ypres"
 	mission_start_message = "<font size=4>The <b>German</b> and the <b>Allied</b> forces are facing eachother in the trenches near Ypres! Get ready for the battle! It will start in <b>5 minutes</b>.</font>"
 	faction1 = BRITISH
 	faction2 = GERMAN

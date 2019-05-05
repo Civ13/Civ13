@@ -92,7 +92,7 @@ elif map == "LITTLE_CREEK_TDM":
 	dmms.append("#include \"maps\\1873\\little_creek_tdm.dmm\"")
 
 elif map == "HILL203":
-	dmms.append("#include \"maps\\1903\\hill203.dmm\"")
+	dmms.append("#include \"maps\\1903\\hill_203.dmm\"")
 elif map == "YPRES":
 	dmms.append("#include \"maps\\1903\\ypres.dmm\"")
 else:
@@ -130,7 +130,7 @@ os.system("DreamMaker /home/1713/civ13-git/civ13.dme")
 
 print("Copying configuration settings...")
 
-os.system("sudo python3.6 /home/1713/civ13/scripts/copyconfigfiles.py")
+os.system("sudo python3.6 /home/1713/civ13-rp/scripts/copyconfigfiles.py")
 
 t2 = time.time() - t1
 
@@ -161,7 +161,7 @@ for pid in pids:
 				
 				# civ13 is the active server; restart civ13
 				if "1713" in name and may_restart_server[0] == "1713":
-					if os.path.isfile("/home/1713/civ13/serverdata.txt"):
+					if os.path.isfile("/home/1713/civ13-rp/serverdata.txt"):
 						process = psutil.Process(int(pid))
 						if process != None:
 							print("Killing the server...")
@@ -169,11 +169,11 @@ for pid in pids:
 							print("Copying binaries...")
 							dmb = os.path.join('/home/1713/civ13-git/civ13.dmb')
 							rsc = os.path.join('/home/1713/civ13-git/civ13.rsc')
-							shutil.copyfile(dmb, '/home/1713/civ13/civ13.dmb')
-							shutil.copyfile(rsc, '/home/1713/civ13/civ13.rsc')
+							shutil.copyfile(dmb, '/home/1713/civ13-rp/civ13.dmb')
+							shutil.copyfile(rsc, '/home/1713/civ13-rp/civ13.rsc')
 							time.sleep(8) # important or the process will die
 							print("Rebooting the server...")
-							os.system('sudo DreamDaemon /home/1713/civ13/civ13.dmb 1713 -trusted -webclient -logself &')
+							os.system('sudo DreamDaemon /home/1713/civ13-rp/civ13.dmb 1713 -trusted -webclient -logself &')
 							print("Restarted main server on port 1713.")
 
 	except IOError: # proc has already terminated

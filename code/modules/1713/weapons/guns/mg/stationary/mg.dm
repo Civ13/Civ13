@@ -62,7 +62,7 @@
 	if (ammo_magazine)
 		icon_state = base_icon
 	else
-		icon_state = "base_icon[0]"
+		icon_state = "[base_icon][0]"
 	update_held_icon()
 	return
 
