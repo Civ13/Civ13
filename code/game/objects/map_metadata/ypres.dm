@@ -14,9 +14,9 @@
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(BRITISH) = /area/caribbean/british/land/outside/objective,
-		list(FRENCH) = /area/caribbean/french/land/outside/objective,
-		list(GERMAN) = /area/caribbean/german/objective
+		list(BRITISH) = /area/caribbean/british/land/inside/objective,
+		list(FRENCH) = /area/caribbean/french/land/inside/objective,
+		list(GERMAN) = /area/caribbean/german/inside/objective
 		)
 	age = "1915"
 	ordinal_age = 5

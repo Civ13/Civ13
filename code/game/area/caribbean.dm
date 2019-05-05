@@ -563,6 +563,8 @@
 	location = AREA_INSIDE
 	icon_state = "blue2"
 
+/area/caribbean/british/land/inside/objective
+	icon_state = "blue2"
 
 /area/caribbean/british/land/outside
 	icon_state = "blue3"
@@ -585,7 +587,7 @@
 	location = AREA_INSIDE
 	icon_state = "blue2"
 
-
+/area/caribbean/french/land/inside/objective
 /area/caribbean/french/land/outside
 	icon_state = "blue3"
 
@@ -601,7 +603,7 @@
 /area/caribbean/german/inside
 	location = AREA_INSIDE
 	icon_state = "red2"
-
+/area/caribbean/german/inside/objective
 /area/caribbean/british/ship
 	name = "British Ship"
 	icon_state = "blue1"
@@ -683,6 +685,9 @@
 /area/caribbean/pirates/land/inside
 	location = AREA_INSIDE
 	icon_state = "red2"
+
+/area/caribbean/pirates/land/inside/objective
+
 
 
 /area/caribbean/pirates/land/outside
