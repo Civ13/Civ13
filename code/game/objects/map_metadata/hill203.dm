@@ -19,7 +19,7 @@
 	age = "1904"
 	faction_distribution_coeffs = list(JAPANESE = 0.5, RUSSIAN = 0.5)
 	battle_name = "Siege of Hill 203"
-	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Hill 203! Each side will win if they manage to hold the hilltop for <b>6 minutes</b>.<br>The battle will start in <b>6 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Hill 203! Each side will win if they manage to hold the hilltop for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	ordinal_age = 5
@@ -43,13 +43,13 @@
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3600 // 6 minutes
+		return 3000 // 5 minutes
 
 /obj/map_metadata/hill203/long_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
 		return 600
 	else
-		return 3600 // 6 minutes
+		return 3000 // 5 minutes
 
 /obj/map_metadata/hill203/roundend_condition_def2name(define)
 	..()
