@@ -457,14 +457,14 @@
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
 				if (O == original)
-					var/hitchance = 60 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
+					var/hitchance = 18 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
-						hitchance = 100
+						hitchance = 50
 					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
 						hitchance = 100
 					else if (isitem(O)) // any item
 						var/obj/item/I = O
-						hitchance = 25 * I.w_class // a pistol would be 50%
+						hitchance = 9 * I.w_class // a pistol would be 50%
 					if (prob(hitchance))
 						do_bullet_act(O)
 						bumped = TRUE
