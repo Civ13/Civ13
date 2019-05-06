@@ -93,7 +93,7 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 /datum/reagent/toxin/xylyl_bromide/touch_mob(var/mob/living/L, var/amount)
 	if (istype(L))
 		eye_damage(L, get_severity(amount/2))
-		external_damage(L, get_severity(amount/2))
+		L.eye_blurry += (amount)
 
 //yellow cross
 /datum/reagent/toxin/mustard_gas
