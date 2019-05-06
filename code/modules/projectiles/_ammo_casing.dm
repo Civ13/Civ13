@@ -468,6 +468,16 @@
 	caliber = "a765x53"
 	value = 8
 
+/obj/item/ammo_casing/a7x57
+	name = "7x53mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.076
+	projectile_type = /obj/item/projectile/bullet/rifle/a7x57
+	caliber = "a7x57"
+	value = 8
+
 /obj/item/ammo_casing/a577
 	name = ".577/450 Martini-Henry bullet"
 	desc = "A brass casing."

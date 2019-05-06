@@ -342,7 +342,7 @@
 		icon_state = "arisaka30"
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr71
-	name = "Gewehr71"
+	name = "Gewehr 71"
 	desc = "A german bolt-action rifle chambered in 7.65x53mm Mauser ammunition."
 	icon_state = "gewehr71"
 	item_state = "gewehr71"
@@ -373,18 +373,91 @@
 	else
 		icon_state = "gewehr71"
 
+/obj/item/weapon/gun/projectile/boltaction/mauser1890
+	name = "Mauser M1890"
+	desc = "A german bolt-action rifle commonly known as the \"Ottoman Mauser\", chambered in 7.65x53mm Mauser ammunition."
+	icon_state = "mauser90"
+	item_state = "gewehr98"
+	caliber = "a765x53"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a765x53
+	magazine_type = /obj/item/ammo_magazine/gewehr71
+	bolt_safety = FALSE
+	effectiveness_mod = 0.89
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 10
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+
+/obj/item/weapon/gun/projectile/boltaction/mauser1890/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "mauser90_open") //closed
+		icon_state = "mauser90"
+	else if (icon_state == "mauser90")
+		return
+	else
+		icon_state = "mauser90"
+
+/obj/item/weapon/gun/projectile/boltaction/mauser1893
+	name = "Mauser M1893"
+	desc = "A german bolt-action rifle commonly known as the \"Spanish Mauser\", chambered in 7x57mm Mauser ammunition."
+	icon_state = "mauser93"
+	item_state = "gewehr98"
+	caliber = "a7x57"
+	weight = 3.68
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a7x57
+	magazine_type = /obj/item/ammo_magazine/mauser1893
+	bolt_safety = FALSE
+	effectiveness_mod = 0.91
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 10
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+
+/obj/item/weapon/gun/projectile/boltaction/mauser1893/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "mauser93_open") //closed
+		icon_state = "mauser930"
+	else if (icon_state == "mauser93")
+		return
+	else
+		icon_state = "mauser93"
+
+/obj/item/weapon/gun/projectile/boltaction/mauser1893/mauser1893o
+	name = "Mauser M1893 (Ottoman)"
+	desc = "An Ottoman version of the \"Spanish Mauser\", chambered in 7.65x53mm Mauser ammunition."
+	caliber = "a765x53"
+	weight = 3.8
+	ammo_type = /obj/item/ammo_casing/a765x53
+	magazine_type = /obj/item/ammo_magazine/gewehr71
+
+
 /obj/item/weapon/gun/projectile/boltaction/gewehr98
-	name = "Gewehr98"
+	name = "Gewehr 98"
 	desc = "A german bolt-action rifle chambered in 7.92x57mm Mauser ammunition."
 	icon_state = "gewehr98"
 	item_state = "gewehr98"
 	caliber = "a792x57"
-	weight = 3.8
+	weight = 4
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
 	bolt_safety = FALSE
-	effectiveness_mod = 0.89
+	effectiveness_mod = 0.95
 	value = 100
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -404,6 +477,83 @@
 		return
 	else
 		icon_state = "gewehr98"
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/mauser1903
+	name = "Mauser M1903"
+	desc = "The ottoman version of the Mauser M1898, chambered in 7.65x53mm Mauser ammunition."
+	caliber = "a765x53"
+	weight = 3.7
+	ammo_type = /obj/item/ammo_casing/a765x53
+	magazine_type = /obj/item/ammo_magazine/gewehr71
+	effectiveness_mod = 0.96
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a
+	name = "Karabiner 98a"
+	desc = "A shortened carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition."
+	icon_state = "kar98a"
+	item_state = "kar98k"
+	weight = 3.5
+	effectiveness_mod = 0.97
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "kar98a_open") //closed
+		icon_state = "kar98a"
+	else if (icon_state == "kar98a")
+		return
+	else
+		icon_state = "kar98a"
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k
+	name = "Karabiner 98k"
+	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition."
+	icon_state = "kar98k"
+	item_state = "kar98k"
+	weight = 3.7
+	effectiveness_mod = 1.05
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "kar98k_open") //closed
+		icon_state = "kar98k"
+	else if (icon_state == "kar98k")
+		return
+	else
+		icon_state = "kar98k"
+
+/obj/item/weapon/gun/projectile/boltaction/p14enfield
+	name = "Pattern 1914 Enfield"
+	desc = "A british bolt-action rifle based on the Mauser line, chambered in .303 Enfield ammunition."
+	icon_state = "p14enfield"
+	item_state = "p14enfield"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a303"
+	weight = 4.2
+	bolt_safety = FALSE
+	value = 80
+	recoil = 2
+	throwforce = 16
+	ammo_type = /obj/item/ammo_casing/a303
+	magazine_type = /obj/item/ammo_magazine/enfield
+	effectiveness_mod = 0.97
+	slot_flags = SLOT_BACK
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+
+/obj/item/weapon/gun/projectile/boltaction/p14enfield/update_icon(var/add_scope = FALSE)
+	if (bolt_open)
+		if (!findtext(icon_state, "_open"))
+			icon_state = addtext(icon_state, "_open") //open
+	else if (icon_state == "p14enfield_open") //closed
+		icon_state = "p14enfield"
+	else if (icon_state == "p14enfield")
+		return
+	else
+		icon_state = "p14enfield"
 
 /obj/item/weapon/gun/projectile/boltaction/carcano
 	name = "carcano 1891"
@@ -727,7 +877,6 @@
 	desc = "A 10-shot, bolt-action rifle, standard issue for british military, chambered in .303 british."
 	icon_state ="enfield"
 	item_state ="enfield"
-	var/iconame = "sharps"
 	force = 12
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a303"

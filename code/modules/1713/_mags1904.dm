@@ -70,6 +70,16 @@ obj/item/ammo_magazine/madsen
 	multiple_sprites = TRUE
 	clip = TRUE
 
+/obj/item/ammo_magazine/mauser1893
+	name = "clip (7x53mm)"
+	icon_state = "kclip"
+	caliber = "a7x57"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a7x57
+	max_ammo = 5
+	weight = 0.038
+	multiple_sprites = TRUE
+	clip = TRUE
 
 /obj/item/ammo_magazine/gewehr98box
 	name = "magazine box (7.92x57mm)"

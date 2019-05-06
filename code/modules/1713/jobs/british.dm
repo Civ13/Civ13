@@ -811,7 +811,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/brodie(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/p14enfield(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/modern/british/newplate = new /obj/item/clothing/accessory/armor/modern/british(null)
