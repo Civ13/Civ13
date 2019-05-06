@@ -62,11 +62,13 @@
 				qdel(UKF)
 			for (var/turf/floor/trench/A1 in world)
 				var/area/A = get_area(A1)
-				if (istype(A,/area/caribbean/british/land/inside))
+				if (istype(A,/area/caribbean/british/land/inside/objective))
+					new/area/caribbean/french/land/inside/objective(get_turf(A1))
+				else if (istype(A,/area/caribbean/british/land/inside))
 					new/area/caribbean/french/land/inside(get_turf(A1))
-				if (istype(A,/area/caribbean/british/land/outside))
+				else if (istype(A,/area/caribbean/british/land/outside))
 					new/area/caribbean/french/land/outside(get_turf(A1))
-				if (istype(A,/area/caribbean/british/land/outside/objective))
+				else if (istype(A,/area/caribbean/british/land/outside/objective))
 					new/area/caribbean/french/land/outside/objective(get_turf(A1))
 			british_toggled = FALSE
 			french_toggled = TRUE
