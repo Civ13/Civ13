@@ -819,5 +819,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_pangea.dmm"
+#include "maps\1903\ypres.dmm"
 // END_INCLUDE
