@@ -399,10 +399,9 @@ var/german_forceEnabled = FALSE
 
 	var/msg_factions = ""
 	var/relpf = ""
-//	var/relpf_am = 0
 	var/relpf_max = 0
-//	var/list/facl = list()
 	if (map && map.civilizations)
+		map.facl = list()
 		for (var/i=1,i<=map.custom_faction_nr.len,i++)
 			var/nu = 0
 			map.facl += list(map.custom_faction_nr[i] = nu)
@@ -419,8 +418,8 @@ var/german_forceEnabled = FALSE
 				relpf_max = map.facl[relf]
 //			relpf_am = 0
 
-	if (relpf_max > 0 && relpf != "")
-		msg_factions = "<b>Largest Faction:</b> [relpf]"
+		if (relpf_max > 0 && relpf != "")
+			msg_factions = "<b>Largest Faction:</b> [relpf]"
 
 	if (map && !map.faction_organization.Find(BRITISH))
 		msg1 = null
