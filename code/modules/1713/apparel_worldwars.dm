@@ -366,3 +366,13 @@
 	armor = list(melee = 70, arrow = 90, gun = 40, energy = 12, bomb = 40, bio = 20, rad = FALSE)
 	value = 50
 	slowdown = 0.8
+
+////////////////////////////////////
+///////////////WW2//////////////////
+////////////////////////////////////
+/obj/item/clothing/under/ww2/german
+	name = "german uniform"
+	desc = "A german feldgrau uniform, used by the Wehrmacht."
+	icon_state = "ww2_german"
+	item_state = "ww2_german"
+	worn_state = "ww2_german"

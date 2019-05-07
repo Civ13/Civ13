@@ -6,7 +6,7 @@
 	name = "Maxim 1895"
 	desc = "Heavy Maxim machinegun on cart mount."
 	icon_state = "maxim"
-	var/base_icon = "maxim"
+	base_icon = "maxim"
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	caliber = "a762x54"

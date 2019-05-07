@@ -233,9 +233,9 @@
 		else if (input == "9mm Japanese Revolver")
 			resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
 		else if (input == "9x19mm Parabellum")
-			resultpath = /obj/item/ammo_casing/a9x19mm
+			resultpath = /obj/item/ammo_casing/a9x19
 		else if (input == "7.65x25mm Parabellum Borchardt")
-			resultpath = /obj/item/ammo_casing/a765x25mm
+			resultpath = /obj/item/ammo_casing/a765x25
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -547,24 +547,34 @@
 	caliber = "c8mmnambu"
 	value = 2
 
-/obj/item/ammo_casing/a9x19mm
+/obj/item/ammo_casing/a9x19
 	name = "9x19mm bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/a9x19mm
-	caliber = "9x19mm"
+	projectile_type = /obj/item/projectile/bullet/pistol/a9x19
+	caliber = "a9x19"
 	value = 2
 
-/obj/item/ammo_casing/a765x25mm
+/obj/item/ammo_casing/a765x25
 	name = "7.65x25mm bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/a765x25mm
-	caliber = "765x25mm"
+	projectile_type = /obj/item/projectile/bullet/pistol/a765x25
+	caliber = "a765x25"
+	value = 2
+
+/obj/item/ammo_casing/a762x25
+	name = "7.62x25mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a762x25
+	caliber = "a762x25"
 	value = 2
 
 /obj/item/ammo_casing/a44p
