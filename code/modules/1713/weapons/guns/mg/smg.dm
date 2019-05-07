@@ -79,9 +79,9 @@
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp40
-
+	full_auto = TRUE
 	firemodes = list(
-		list(name="full auto",	burst=3, burst_delay=1.4, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.4, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -98,8 +98,8 @@
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	weight = 3.63
 	firemodes = list(
-		list(name="single shot",	burst=1, burst_delay=0.8, recoil=0.4, move_delay=2, dispersion = list(0.5, 0.7, 0.7, 0.7, 0.9)),
-		list(name="full auto",	burst=3, burst_delay=1.2, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.4, move_delay=2, dispersion = list(0.5, 0.7, 0.7, 0.7, 0.9)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
@@ -111,10 +111,11 @@
 	item_state = "pps"
 	base_icon = "pps"
 	caliber = "a762x25"
+	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_pps
 	weight = 3.04
 	firemodes = list(
-		list(name="full auto",	burst=4, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
 	sel_mode = 1
