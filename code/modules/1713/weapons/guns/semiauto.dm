@@ -95,12 +95,12 @@
 	item_state = "svt"
 	base_icon = "svt"
 	w_class = 4
-	load_method = SINGLE_CASING|SPEEDLOADER
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
 	caliber = "a762x54"
 	ammo_type = /obj/item/ammo_casing/a762x54
 	slot_flags = SLOT_BACK
-	magazine_type = /obj/item/ammo_magazine/mosin
+	magazine_type = /obj/item/ammo_magazine/svt
 	weight = 3.85
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
@@ -110,10 +110,11 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	force = 10
 	throwforce = 20
+	effectiveness_mod = 1.03
 
 /obj/item/weapon/gun/projectile/semiautomatic/g41
 	name = "Gewehr 41"
-	desc = "German semi-automatic rifle using 7.92x57mm Mauser ammunition in a 10 round magazine."
+	desc = "German semi-automatic rifle using 7.92x57mm Mauser ammunition in a 10 round non-detachable magazine."
 	icon_state = "g41"
 	item_state = "g41"
 	base_icon = "g41"
@@ -132,6 +133,28 @@
 	throwforce = 20
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	effectiveness_mod = 1.05
+
+/obj/item/weapon/gun/projectile/semiautomatic/g43
+	name = "Gewehr 43"
+	desc = "German semi-automatic rifle using 7.92x57mm Mauser ammunition in a 10 round detachable magazine."
+	icon_state = "g43"
+	item_state = "g43"
+	base_icon = "g43"
+	w_class = 4
+	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
+	max_shells = 10
+	caliber = "a792x57"
+	slot_flags = SLOT_BACK
+	ammo_type = /obj/item/ammo_casing/a792x57
+	magazine_type = /obj/item/ammo_magazine/g43
+	weight = 4.9
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
+		)
+	force = 10
+	throwforce = 20
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	effectiveness_mod = 1.07
 
 /obj/item/weapon/gun/projectile/semiautomatic/stg
 	name = "StG 44"
