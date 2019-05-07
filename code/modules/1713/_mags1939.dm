@@ -29,11 +29,11 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/stg
-	name = "StG 44 magazine (9x33mm)"
+	name = "StG 44 magazine (7.92x33mm)"
 	icon_state = "stg"
 	mag_type = MAGAZINE
-	caliber = "a9x33"
-	ammo_type = /obj/item/ammo_casing/a9x33
+	caliber = "a792x33"
+	ammo_type = /obj/item/ammo_casing/a792x33
 	max_ammo = 30
 	weight = 0.32
 	multiple_sprites = TRUE

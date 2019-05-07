@@ -577,14 +577,14 @@
 	caliber = "a762x25"
 	value = 2
 
-/obj/item/ammo_casing/a9x33
-	name = "9x33mm bullet"
+/obj/item/ammo_casing/a792x33
+	name = "7.92x33mm bullet"
 	desc = "A brass casing."
 	icon_state = "pistol_bullet_anykind"
 	spent_icon = "pistolcasing"
 	weight = 0.05
-	projectile_type = /obj/item/projectile/bullet/pistol/a9x33
-	caliber = "a9x33"
+	projectile_type = /obj/item/projectile/bullet/pistol/a792x33
+	caliber = "a792x33"
 	value = 2
 
 /obj/item/ammo_casing/a44p

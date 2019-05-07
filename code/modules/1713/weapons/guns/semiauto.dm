@@ -60,6 +60,10 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 	var/base_icon = "semiautomatic"
+/obj/item/weapon/gun/projectile/semiautomatic/New()
+	..()
+	loaded = list()
+	chambered = null
 
 /obj/item/weapon/gun/projectile/semiautomatic/update_icon()
 	..()
