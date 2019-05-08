@@ -100,7 +100,7 @@
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	weight = 3.63
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.4, move_delay=2, dispersion = list(0.5, 0.7, 0.7, 0.7, 0.9)),
+		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0.4, move_delay=2, dispersion = list(0.5, 0.7, 0.7, 0.7, 0.9)),
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
@@ -134,8 +134,8 @@
 	slot_flags = SLOT_BACK
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.5, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
-		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=5, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
-		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1, move_delay=7, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 1
 	sel_mode = 1
@@ -151,9 +151,9 @@
 	weight = 3.07
 	slot_flags = SLOT_BACK
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=5, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1, move_delay=7, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1, move_delay=4, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
@@ -212,8 +212,8 @@
 	weight = 3.07
 	slot_flags = SLOT_BACK
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=5, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
