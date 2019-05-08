@@ -9,13 +9,53 @@
 	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 75
 
-/obj/item/clothing/under/modern_camo
-	name = "woodland camo uniform"
-	desc = "A modern woodland camo uniform."
-	icon_state = "modern_camo"
-	item_state = "modern_camo"
-	worn_state = "modern_camo"
+/obj/item/clothing/under/us_uni
+	name = "olive drab uniform"
+	desc = "The standard US Army uniform of the mid-20th century."
+	icon_state = "us_uni"
+	item_state = "us_uni"
+	worn_state = "us_uni"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/us_uni/us_camo
+	name = "woodland camo uniform"
+	desc = "The standard US Army camo uniform the mid-20th century."
+	icon_state = "us_camo"
+	item_state = "us_camo"
+	worn_state = "us_camo"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/us_uni/us_greentrousers
+	name = "olive drab trousers"
+	desc = "The standard US olive drab uniform trousers."
+	icon_state = "us_greentrousers"
+	item_state = "us_greentrousers"
+	worn_state = "us_greentrousers"
+	body_parts_covered = LOWER_TORSO|LEGS
+
+/obj/item/clothing/under/us_uni/us_lightuni
+	name = "olive drab shirt and trousers"
+	desc = "A light version of the US Army olive drab uniform."
+	icon_state = "us_lightuni"
+	item_state = "us_lightuni"
+	worn_state = "us_lightuni"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/under/us_uni/us_lightuni2
+	name = "woodland camo trousers and olive drab shirt"
+	desc = "A light version of the US Army woodland camo trousers and a olive drab shirt."
+	icon_state = "us_lightuni2"
+	item_state = "us_lightuni2"
+	worn_state = "us_lightuni2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/suit/storage/us_jacket
+	name = "olive drab jacket"
+	desc = "The standard US Army olive drab jacket of the mid-20th century."
+	icon_state = "us_jacket"
+	item_state = "us_jacket"
+	worn_state = "us_jacket"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 
 /obj/item/clothing/under/vietcong
 	name = "Vietcong uniform"
@@ -57,3 +97,13 @@
 			var/chosen = pick(optlist)
 			attachments += chosen
 			optlist -= chosen
+
+/obj/item/clothing/accessory/storage/webbing/us_vest
+	name = "US Army webbing"
+	desc = "A large webbing with several pockets."
+	icon_state = "us_vest"
+	item_state = "us_vest"
+	slots = 10
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,)
