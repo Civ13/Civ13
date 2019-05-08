@@ -1,7 +1,7 @@
 #define NO_WINNER "No ship has been captured."
 /obj/map_metadata/compound
 	ID = MAP_COMPOUND
-	title = "Compound (50x50x2)"
+	title = "Compound (100x100x2)"
 	lobby_icon_state = ""
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300

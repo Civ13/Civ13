@@ -1367,12 +1367,13 @@
 				if (PIRATES)
 					holder2.icon_state = "pirate_basic"
 				if (BRITISH)
+					if (map.ID == MAP_COMPOUND)
+						holder2.icon_state = "us_basic"
 					if (map.ordinal_age >= 4)
 						holder2.icon_state = "brit_basic"
 					else
 						holder2.icon_state = "rn_basic"
 				if (FRENCH)
-				if (BRITISH)
 					if (map.ordinal_age >= 4)
 						holder2.icon_state = "fr2_basic"
 					else
@@ -1392,7 +1393,10 @@
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
 				if (JAPANESE)
-					holder2.icon_state = "jp_basic"
+					if (map.ID == MAP_COMPOUND)
+						holder2.icon_state = "vc_basic"
+					else
+						holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
