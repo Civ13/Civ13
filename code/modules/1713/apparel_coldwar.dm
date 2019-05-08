@@ -50,7 +50,7 @@
 
 /obj/item/clothing/head/helmet/modern/ushelmet/late/New()
 	..()
-	var/numb = rand(0,5)
+	var/numb = rand(0,3)
 	var/list/optlist = list("card","bullets","cigpack","peace","text")
 	if (numb > 0)
 		for (var/i = 1, i <= numb, i++)
