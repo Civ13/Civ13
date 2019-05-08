@@ -127,7 +127,7 @@
 
 
 /obj/structure/wild/bullet_act(var/obj/item/projectile/proj)
-	if (prob(proj.damage - 30)) // makes shrapnel unable to take down trees
+	if (proj.damage > 100 && prob(33)) // makes shrapnel unable to take down trees
 		visible_message("<span class = 'danger'>[src] collapses!</span>")
 		qdel(src)
 
