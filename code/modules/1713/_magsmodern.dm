@@ -8,7 +8,7 @@
 	weight = 0.7
 	multiple_sprites = TRUE
 /obj/item/ammo_magazine/ak74
-	name = "AK47 magazine (5.45x39mm)"
+	name = "AK-74 magazine (5.45x39mm)"
 	icon_state = "ak74"
 	mag_type = MAGAZINE
 	caliber = "a545x39"

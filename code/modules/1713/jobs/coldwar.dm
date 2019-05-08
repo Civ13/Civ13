@@ -52,7 +52,7 @@
 	min_positions = 10
 	max_positions = 100
 
-/datum/job/japanese/vietcong/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/american_soldier/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)

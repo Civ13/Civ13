@@ -177,7 +177,7 @@
 	last_fire = world.time
 
 /obj/item/weapon/gun/projectile/boltaction/update_icon()
-	if (bolt_open)
+	if (!bolt_open)
 		icon_state = base_icon
 	else
 		icon_state = "[base_icon]_open"
