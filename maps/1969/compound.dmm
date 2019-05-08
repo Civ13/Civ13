@@ -215,6 +215,7 @@
 "eg" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
 "eh" = (/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
 "ei" = (/obj/structure/bed/roller,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"ej" = (/obj/map_metadata/compound,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 
 (1,1,1) = {"
 bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
@@ -419,5 +420,5 @@ ababaiababadarabapababababababababaiabapababapababadababadadadadbibiaeaeaebibibi
 abababavapadabababapabadabapapabapababaqababababaDabababadadadbiaeaeaeaeaebiaebibiadajadabadabaiavapapaqababcpapaiababababapabahabababababababcqapababaqababababaDabavabaXbpadaaadadboabadadadadadadacac
 abahapababababababadabababagababababababababababadababajadbibibiaeaeaeaeaebiaebiadadadadabababalabababapabaiapabababadabababcladadabadahabababababababababaiabcraraladababacadadadadadabacadadadadadaacs
 agabababababababababahabapabababababadababaiadadabababadadbibibibiaeaeaeaebibibiadababadadababababababababababadadadabababapabadadabapababababarahabadabapabababaqababababadacakadacadabacacbhbhacadadac
-agababababahababagababadabababalababaiabababababababadadadadbibibiaeaeaebibibiadadadabababababahabababadadadadadadaiadadabababadadabababababababababaXaiaiabababababakaXaiadadadadacababadadbhacacacadac
+ejababababahababagababadabababalababaiabababababababadadadadbibibiaeaeaebibibiadadadabababababahabababadadadadadadaiadadabababadadabababababababababaXaiaiabababababakaXaiadadadadacababadadbhacacacadac
 "}
