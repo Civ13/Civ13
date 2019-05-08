@@ -446,8 +446,8 @@
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/stahlhelm
-	name = "iron stahlhelm"
-	desc = "A typical pointed helmet."
+	name = "M1935 stahlhelm"
+	desc = "A typical german helmet."
 	icon_state = "stahlhelm"
 	item_state = "stahlhelm"
 	worn_state = "stahlhelm"

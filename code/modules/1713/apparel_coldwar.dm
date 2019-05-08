@@ -24,3 +24,36 @@
 	item_state = "vietcong"
 	worn_state = "vietcong"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/head
+	var/list/attachments = list()
+
+/obj/item/clothing/head/helmet/modern/ushelmet
+	name = "M1 helmet"
+	desc = "A typical US Army helmet."
+	icon_state = "ushelmet"
+	item_state = "ushelmet"
+	worn_state = "ushelmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/ushelmet/late
+	name = "M1 helmet"
+	desc = "A typical US Army helmet."
+	icon_state = "ushelmet2"
+	item_state = "ushelmet2"
+	worn_state = "ushelmet2"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/ushelmet/late/New()
+	..()
+	var/numb = rand(0,5)
+	var/list/optlist = list("card","bullets","cigpack","peace","text")
+	if (numb > 0)
+		for (var/i = 1, i <= numb, i++)
+			var/chosen = pick(optlist)
+			attachments += chosen
+			optlist -= chosen
