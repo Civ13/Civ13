@@ -75,6 +75,7 @@
 "bw" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/forest/dirt)
 "bx" = (/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/forest/dirt)
 "by" = (/obj/structure/wild/largejungle,/turf/floor/trench,/area/caribbean/forest/dirt)
+"bz" = (/obj/map_metadata/compound,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/forest/dirt)
 
 (1,1,1) = {"
 aaabacabacabadadaeaeaeaeaeadadaeadabadabadabafafagafafabahababababababaiabababahababajajadadadaaadaj
@@ -126,5 +127,5 @@ aSadadadadadadadadadalaaadadadadaaacadaaalababababapaqabadadacamamamamadaSadadad
 adacacakadaSacaYaaadabadadadaXbbacacacadadabababaqabababakabadamamacadadadacacakadaSacaYaaadadadacaW
 adaaaTadadadadbcaXadaSadadaYadadacacacababapadabacababababadadadaZadacadadaaaTadadadadbcaXadadaaacad
 adadadaYadaSadadadadadacacadadadaSadadadababaiacababapabadadadadadaYadadadamadaYadaSadadadadbbacaXac
-acaXacaYadadacacadaaadaaaTadaaadadacacabacbebfbfbfacadadajamadaaaaadbdakacasacaYamadacacadaaadacacac
+bzaXacaYadadacacadaaadaaaTadaaadadacacabacbebfbfbfacadadajamadaaaaadbdakacasacaYamadacacadaaadacacac
 "}
