@@ -24,6 +24,7 @@
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 /datum/job/var/is_cowboy = FALSE
 /datum/job/var/is_ww1 = FALSE
+/datum/job/var/is_coldwar = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold

@@ -650,3 +650,17 @@
 	desc = "A 5 round, bolt-action carbine, chambered in 8×50mmR Lebel."
 	magazine_type = /obj/item/ammo_magazine/c8x50_5clip
 	max_shells = 5
+
+/obj/item/weapon/gun/projectile/boltaction/mosin/obrez
+	name = "Mosin-Nagant \"Obrez\""
+	desc = "A makeshift sawn-off Mosin \"pistol\", chambered in 7.62x54mmR cartridges."
+	icon_state ="obrez"
+	item_state ="pistol"
+	base_icon = "obrez"
+	force = 5
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a762x54"
+	weight = 1.4
+	effectiveness_mod = 0.77
+	value = 60
+	slot_flags = SLOT_BELT

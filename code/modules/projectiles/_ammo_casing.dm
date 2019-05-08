@@ -587,6 +587,36 @@
 	caliber = "a792x33"
 	value = 2
 
+/obj/item/ammo_casing/a545x39
+	name = "5.45x39mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/rifle/a545x39
+	caliber = "a545x39"
+	value = 2
+
+/obj/item/ammo_casing/a556x45
+	name = "5.56x45mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/rifle/a556x45
+	caliber = "a556x45"
+	value = 2
+
+/obj/item/ammo_casing/a762x39
+	name = "7.62x39mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.06
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x39
+	caliber = "a762x39"
+	value = 2
+
 /obj/item/ammo_casing/a44p
 	name = ".44 bullet"
 	desc = "A brass casing."

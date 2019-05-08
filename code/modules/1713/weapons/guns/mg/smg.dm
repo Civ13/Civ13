@@ -59,8 +59,10 @@
 /obj/item/weapon/gun/projectile/submachinegun/update_icon()
 	if (ammo_magazine)
 		icon_state = base_icon
+		item_state = base_icon
 	else
 		icon_state = "[base_icon]_open"
+		item_state = "[base_icon]_open"
 	update_held_icon()
 	return
 
@@ -118,4 +120,100 @@
 		list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
 
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47
+	name = "AK-47"
+	desc = "Soviet assault rifle chambered in 7.62x39mm."
+	icon_state = "ak47"
+	item_state = "ak47"
+	base_icon = "ak47"
+	caliber = "a762x39"
+	magazine_type = /obj/item/ammo_magazine/ak47
+	weight = 3.47
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.5, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=5, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1, move_delay=7, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		)
+	effectiveness_mod = 1
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74
+	name = "AK-74"
+	desc = "Soviet assault rifle chambered in 5.45x39mm."
+	icon_state = "ak74"
+	item_state = "ak74"
+	base_icon = "ak74"
+	caliber = "a545x39"
+	magazine_type = /obj/item/ammo_magazine/ak74
+	weight = 3.07
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=5, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1, move_delay=7, dispersion = list(1.1, 1.2, 1.3, 1.3, 1.5)),
+		)
+	effectiveness_mod = 1.07
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
+	name = "AKS-74"
+	desc = "Soviet assault rifle chambered in 5.45x39mm, with a folding stock."
+	slot_flags = SLOT_BACK
+	icon_state = "aks74"
+	item_state = "aks74"
+	base_icon = "aks74"
+	var/folded = FALSE
+	weight = 2.95
+	effectiveness_mod = 1.05
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/update_icon()
+	if (folded)
+		base_icon = "aks74_folded"
+	else
+		base_icon = "aks74"
+	..()
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/verb/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (folded)
+		folded = FALSE
+		base_icon = "aks74"
+		usr << "You collapse the stock on \the [src]."
+		set_stock()
+		update_icon()
+	else
+		folded = TRUE
+		base_icon = "aks74_folded"
+		usr << "You extend the stock on \the [src]."
+		set_stock()
+		update_icon()
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/proc/set_stock()
+	if (folded)
+		slot_flags = SLOT_BACK|SLOT_BELT
+		effectiveness_mod = 0.87
+	else
+		slot_flags = SLOT_BACK
+		effectiveness_mod = 1.05
+
+/obj/item/weapon/gun/projectile/submachinegun/m16
+	name = "M16"
+	desc = "An american assault rifle, chambered in 5.56x45mm."
+	icon_state = "m16"
+	item_state = "m16"
+	base_icon = "m16"
+	caliber = "a556x45"
+	magazine_type = /obj/item/ammo_magazine/m16
+	weight = 3.07
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=5, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		)
+	effectiveness_mod = 1.07
 	sel_mode = 1

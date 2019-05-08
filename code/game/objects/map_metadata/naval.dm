@@ -40,7 +40,7 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = TRUE
 
-/obj/map_metadata/robusta/cross_message(faction)
+/obj/map_metadata/naval/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/naval/faction2_can_cross_blocks()
