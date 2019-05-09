@@ -1369,7 +1369,7 @@
 				if (BRITISH)
 					if (map.ID == MAP_COMPOUND)
 						holder2.icon_state = "us_basic"
-					if (map.ordinal_age >= 4)
+					else if (map.ordinal_age >= 4)
 						holder2.icon_state = "brit_basic"
 					else
 						holder2.icon_state = "rn_basic"

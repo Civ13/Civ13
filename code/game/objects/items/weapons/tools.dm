@@ -54,7 +54,7 @@
 	name = "wirecutters"
 	desc = "This cuts wires."
 	icon = 'icons/obj/items.dmi'
-	icon_state = "cutters"
+	icon_state = "cutters-y"
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK

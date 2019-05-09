@@ -46,30 +46,34 @@
 //Disarming
 /obj/item/mine/attackby(obj/item/W as obj, mob/user as mob)
 	if (anchored)
-		if (istype(W, /obj/item/weapon/wirecutters))
-			user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
-			if (!do_after(user,60))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
-				return
-			if (prob(95))
-				user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
-				anchored = FALSE
-				icon_state = "mine"
-				layer = initial(layer)
-				return
-			else
-				Bumped(user)
-		else if (istype(W, /obj/item/weapon/material/knife))
-			user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
-			if (!do_after(user,80))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
-				return
-			if (prob(50))
-				user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
-				anchored = FALSE
-				icon_state = "mine"
-				layer = initial(layer)
-				return
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			if (istype(W, /obj/item/weapon/wirecutters))
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
+				if (!do_after(user,60))
+					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+					return
+				if (prob(min(95*H.getStatCoeff("dexterity"),100)))
+					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+					anchored = FALSE
+					icon_state = "mine"
+					layer = initial(layer)
+					return
+				else
+					Bumped(user)
+			else if (istype(W, /obj/item/weapon/material/knife))
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
+				if (!do_after(user,80))
+					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+					return
+				if (prob(min(50*H.getStatCoeff("dexterity"),75)))
+					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+					anchored = FALSE
+					icon_state = "mine"
+					layer = initial(layer)
+					return
+				else
+					Bumped(user)
 			else
 				Bumped(user)
 		else
@@ -77,16 +81,20 @@
 
 /obj/item/mine/attack_hand(mob/user as mob)
 	if (anchored)
-		user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
-		if (!do_after(user,100))
-			user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")
-			return
-		if (prob(15))
-			user.visible_message("<span class = 'notice'>\The [user] finishes digging up the \the [src], disarming it!</span>")
-			anchored = FALSE
-			icon_state = "mine"
-			layer = initial(layer)
-			return
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
+			if (!do_after(user,100))
+				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")
+				return
+			if (prob(min(15*H.getStatCoeff("dexterity"),35)))
+				user.visible_message("<span class = 'notice'>\The [user] finishes digging up the \the [src], disarming it!</span>")
+				anchored = FALSE
+				icon_state = "mine"
+				layer = initial(layer)
+				return
+			else
+				Bumped(user)
 		else
 			Bumped(user)
 	else
@@ -157,30 +165,34 @@
 //Disarming
 /obj/item/mine/bobbytrap/attackby(obj/item/W as obj, mob/user as mob)
 	if (anchored)
-		if (istype(W, /obj/item/weapon/wirecutters))
-			user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
-			if (!do_after(user,60))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
-				return
-			if (prob(95))
-				user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
-				if (origin)
-					new origin(get_turf(user))
-				qdel(src)
-				return
-			else
-				Bumped(user)
-		else if (istype(W, /obj/item/weapon/material/knife))
-			user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
-			if (!do_after(user,80))
-				user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
-				return
-			if (prob(50))
-				user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
-				if (origin)
-					new origin(get_turf(user))
-				qdel(src)
-				return
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			if (istype(W, /obj/item/weapon/wirecutters))
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
+				if (!do_after(user,60))
+					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+					return
+				if (prob(min(95*H.getStatCoeff("dexterity"),100)))
+					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+					if (origin)
+						new origin(get_turf(user))
+					qdel(src)
+					return
+				else
+					Bumped(user)
+			else if (istype(W, /obj/item/weapon/material/knife))
+				user.visible_message("<span class = 'notice'>\The [user] starts to disarm the \the [src] with the [W].</span>")
+				if (!do_after(user,80))
+					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm the \the [src].</span>")
+					return
+				if (prob(min(85*H.getStatCoeff("dexterity"),90)))
+					user.visible_message("<span class = 'notice'>\The [user] finishes disarming the \the [src]!</span>")
+					if (origin)
+						new origin(get_turf(user))
+					qdel(src)
+					return
+				else
+					Bumped(user)
 			else
 				Bumped(user)
 		else
@@ -188,16 +200,20 @@
 
 /obj/item/mine/bobbytrap/attack_hand(mob/user as mob)
 	if (anchored)
-		user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
-		if (!do_after(user,100))
-			user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")
-			return
-		if (prob(15))
-			user.visible_message("<span class = 'notice'>\The [user] finishes digging up the \the [src], disarming it!</span>")
-			if (origin)
-				new origin(get_turf(user))
-			qdel(src)
-			return
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			user.visible_message("<span class = 'notice'>\The [user] starts to dig around the \the [src] with their bare hands!</span>")
+			if (!do_after(user,100))
+				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up the \the [src].</span>")
+				return
+			if (prob(min(60*H.getStatCoeff("dexterity"),85)))
+				user.visible_message("<span class = 'notice'>\The [user] finishes digging up the \the [src], disarming it!</span>")
+				if (origin)
+					new origin(get_turf(user))
+				qdel(src)
+				return
+			else
+				Bumped(user)
 		else
 			Bumped(user)
 	else
