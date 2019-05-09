@@ -214,6 +214,7 @@
 #include "code\game\objects\items\weapons\explosives.dm"
 #include "code\game\objects\items\weapons\handcuffs.dm"
 #include "code\game\objects\items\weapons\legcuffs.dm"
+#include "code\game\objects\items\weapons\mines.dm"
 #include "code\game\objects\items\weapons\mop.dm"
 #include "code\game\objects\items\weapons\nomadstuff.dm"
 #include "code\game\objects\items\weapons\paint.dm"

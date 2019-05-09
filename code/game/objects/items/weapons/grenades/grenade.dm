@@ -253,3 +253,22 @@
 	icon_state = "stgnade"
 	det_time = 45
 	throw_range = 11
+
+/obj/item/weapon/grenade/ww2
+	secondary_action = TRUE
+/obj/item/weapon/grenade/modern
+	secondary_action = TRUE
+
+/obj/item/weapon/grenade/secondary_attack_self(mob/living/carbon/human/user)
+	if (secondary_action)
+		var/inp = WWinput(user, "Are you sure you wan't to place a bobby trap here?", "Bobby Trapping", "No", list("Yes","No"))
+		if (inp == "Yes")
+			user << "Placing the bobby trap..."
+			if (do_after(user, 100, src))
+				if (src)
+					user << "You successfully place the bobby trap here using \the [src]."
+					var/obj/item/mine/bobbytrap/BT = new /obj/item/mine/bobbytrap(get_turf(user))
+					BT.origin = src.type
+					qdel(src)
+		else
+			return

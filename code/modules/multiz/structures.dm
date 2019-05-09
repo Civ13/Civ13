@@ -258,6 +258,8 @@
 		if (H.faction_text == "BRITISH")
 			H << "This tunnel is too small for you!"
 			return
+		else
+			..()
 	else
 		..()
 

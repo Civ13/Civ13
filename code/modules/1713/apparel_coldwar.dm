@@ -107,3 +107,20 @@
 	New()
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,)
+
+/obj/item/clothing/suit/storage/ghillie
+	name = "ghillie suit"
+	desc = "A camo ghillie suit."
+	icon_state = "ghillie"
+	item_state = "ghillie"
+	worn_state = "ghillie"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HANDS|FEET
+	armor = list(melee = 12, arrow = 5, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 100
+
+/obj/item/clothing/head/ghillie
+	name = "ghillie headcover"
+	desc = "An headcover for a ghillie suit."
+	icon_state = "ghillie"
+	item_state = "ghillie"
+	body_parts_covered = HEAD
