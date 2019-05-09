@@ -225,10 +225,16 @@ obj/item/projectile/bullet/rifle/a545x39
 	damage = DAMAGE_MEDIUM
 	penetrating = 1
 	armor_penetration = 10
+/obj/item/projectile/bullet/rifle/a762x51
+	damage = DAMAGE_MEDIUM_HIGH+5
+	penetrating = 2
+	armor_penetration = 20
+
 obj/item/projectile/bullet/rifle/a556x45
 	damage = DAMAGE_MEDIUM+4
 	penetrating = 1
 	armor_penetration = 12
+
 /obj/item/projectile/bullet/pistol/a765x25
 	damage = DAMAGE_MEDIUM + 2
 	penetrating = 2

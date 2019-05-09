@@ -60,6 +60,8 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 	var/base_icon = "semiautomatic"
+	equiptimer = 12
+	gun_safety = TRUE
 /obj/item/weapon/gun/projectile/semiautomatic/New()
 	..()
 	loaded = list()
@@ -174,7 +176,7 @@
 	load_magazine_sound = 'sound/weapons/stg_reload.ogg'
 	magazine_type = /obj/item/ammo_magazine/stg
 	weight = 4.6
-
+	equiptimer = 15
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.2, 0.3, 0.3, 0.4, 0.5)),
 		list(name="full auto",	burst=1, burst_delay=1.5, move_delay=4, dispersion = list(1.2, 1.4, 1.4, 1.4, 1.7)),

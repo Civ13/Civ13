@@ -30,7 +30,8 @@
 	stat = "rifle"
 	move_delay = 2
 	fire_delay = 2
-
+	equiptimer = 15
+	gun_safety = TRUE
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
@@ -206,7 +207,7 @@
 	magazine_type = /obj/item/ammo_magazine/sharps
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 1
-
+	gun_safety = FALSE
 /obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry
 	name = "Martini-Henry Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .577/450 cartridges."
@@ -285,7 +286,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
-
+	equiptimer = 18
 
 /obj/item/weapon/gun/projectile/boltaction/mosin/m30
 	name = "Mosin-Nagant M1891/30"
@@ -295,6 +296,7 @@
 	base_icon = "mosin30"
 	weight = 4
 	effectiveness_mod = 1.02
+	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/arisaka30
 	name = "Arisaka Type 30"
@@ -317,7 +319,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
-
+	equiptimer = 18
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr71
 	name = "Gewehr 71"
@@ -340,7 +342,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
-
+	equiptimer = 19
 
 /obj/item/weapon/gun/projectile/boltaction/mauser1890
 	name = "Mauser M1890"
@@ -363,6 +365,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/mauser1893
 	name = "Mauser M1893"
@@ -385,6 +388,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/mauser1893/mauser1893o
 	name = "Mauser M1893 (Ottoman)"
@@ -393,7 +397,7 @@
 	weight = 3.8
 	ammo_type = /obj/item/ammo_casing/a765x53
 	magazine_type = /obj/item/ammo_magazine/gewehr71
-
+	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98
 	name = "Gewehr 98"
@@ -416,6 +420,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/mauser1903
 	name = "Mauser M1903"
@@ -425,6 +430,7 @@
 	ammo_type = /obj/item/ammo_casing/a765x53
 	magazine_type = /obj/item/ammo_magazine/gewehr71
 	effectiveness_mod = 0.96
+	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a
 	name = "Karabiner 98a"
@@ -434,7 +440,7 @@
 	base_icon = "kar98a"
 	weight = 3.5
 	effectiveness_mod = 0.97
-
+	equiptimer = 12
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k
 	name = "Karabiner 98k"
 	desc = "A shortened, modernized carabine version of the Gewehr 98, chambered in 7.92x57mm Mauser ammunition."
@@ -443,7 +449,7 @@
 	base_icon = "kar98k"
 	weight = 3.7
 	effectiveness_mod = 1.05
-
+	equiptimer = 12
 /obj/item/weapon/gun/projectile/boltaction/p14enfield
 	name = "Pattern 1914 Enfield"
 	desc = "A british bolt-action rifle based on the Mauser line, chambered in .303 Enfield ammunition."
@@ -464,7 +470,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
-
+	equiptimer = 12
 /obj/item/weapon/gun/projectile/boltaction/carcano
 	name = "carcano 1891"
 	desc = "An italian bolt-action rifle chambered in 6.50x52mm ammunition."
@@ -486,7 +492,7 @@
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
-
+	equiptimer = 14
 /obj/item/weapon/gun/projectile/boltaction/arisaka35
 	name = "Arisaka Type 35"
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
@@ -508,7 +514,7 @@
 	load_method = SINGLE_CASING | SPEEDLOADER
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
-
+	equiptimer = 15
 
 /obj/item/weapon/gun/projectile/boltaction/murata
 	name = "Type-22 Murata"
@@ -533,7 +539,7 @@
 	magazine_type = /obj/item/ammo_magazine/murata
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	blackpowder = TRUE
-
+	equiptimer = 17
 	/////need to add:
 	///Springfield Model
 	///1861,Pattern
@@ -565,6 +571,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x54
 	magazine_type = /obj/item/ammo_magazine/mosin
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 17
 /obj/item/weapon/gun/projectile/boltaction/berdan/update_icon(var/add_scope = FALSE)
 	if (bolt_open)
 		if (!findtext(icon_state, "_open"))
@@ -598,7 +605,7 @@
 	magazine_type = /obj/item/ammo_magazine/enfield
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 10
-
+	equiptimer = 15
 /obj/item/weapon/gun/projectile/boltaction/lebel
 	name = "Lebel 1886/M93"
 	desc = "A 8 round, bolt-action rifle, standard issue for french military, chambered in 8×50mmR Lebel."
@@ -621,7 +628,7 @@
 	magazine_type = /obj/item/ammo_magazine/c8x50
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 8
-
+	equiptimer = 16
 /obj/item/weapon/gun/projectile/boltaction/berthier
 	name = "Berthier M1907/15"
 	desc = "A 3 round, bolt-action carbine, chambered in 8×50mmR Lebel."
@@ -644,13 +651,13 @@
 	magazine_type = /obj/item/ammo_magazine/c8x50_3clip
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 3
-
+	equiptimer = 13
 /obj/item/weapon/gun/projectile/boltaction/berthier/m16
 	name = "Berthier M1907/16"
 	desc = "A 5 round, bolt-action carbine, chambered in 8×50mmR Lebel."
 	magazine_type = /obj/item/ammo_magazine/c8x50_5clip
 	max_shells = 5
-
+	equiptimer = 13
 /obj/item/weapon/gun/projectile/boltaction/mosin/obrez
 	name = "Mosin-Nagant \"Obrez\""
 	desc = "A makeshift sawn-off Mosin \"pistol\", chambered in 7.62x54mmR cartridges."
@@ -664,3 +671,4 @@
 	effectiveness_mod = 0.77
 	value = 60
 	slot_flags = SLOT_BELT
+	equiptimer = 9

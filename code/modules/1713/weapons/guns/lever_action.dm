@@ -33,7 +33,7 @@
 	fire_delay = 2
 	blackpowder = FALSE
 	handle_casings = HOLD_CASINGS
-
+	equiptimer = 15
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 

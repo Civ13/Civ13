@@ -19,8 +19,8 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
+	equiptimer = 7
 	accuracy_list = list(
-
 		// small body parts: head, hand, feet
 		"small" = list(
 			SHORT_RANGE_STILL = 60,
@@ -188,6 +188,7 @@
 	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
+	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/m1892
 	name = "Modèle 1892 revolver"
@@ -204,6 +205,7 @@
 	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
+	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peacemaker"
@@ -268,6 +270,7 @@
 	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
+	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/panther
 	name = "Panther revolver"
@@ -282,6 +285,8 @@
 	weight = 0.8
 	load_method = SINGLE_CASING
 	load_delay = 6
+	gun_safety = TRUE
+
 /obj/item/weapon/gun/projectile/revolver/derringer
 	name = "Derringer M95 pistol"
 	desc = "Officialy the Remington Model 95, this small pistol has two barrels."

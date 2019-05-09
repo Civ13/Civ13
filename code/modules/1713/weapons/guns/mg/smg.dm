@@ -6,6 +6,8 @@
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
 	slot_flags = SLOT_BACK|SLOT_BELT
+	equiptimer = 12
+	gun_safety = TRUE
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet
@@ -82,6 +84,7 @@
 	fire_sound = 'sound/weapons/mp40.ogg'
 	magazine_type = /obj/item/ammo_magazine/mp40
 	full_auto = TRUE
+	equiptimer = 12
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1.4, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
@@ -99,6 +102,7 @@
 	caliber = "a762x25"
 	magazine_type = /obj/item/ammo_magazine/c762x25_ppsh
 	weight = 3.63
+	equiptimer = 14
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0.4, move_delay=2, dispersion = list(0.5, 0.7, 0.7, 0.7, 0.9)),
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
@@ -116,6 +120,7 @@
 	full_auto = TRUE
 	magazine_type = /obj/item/ammo_magazine/c762x25_pps
 	weight = 3.04
+	equiptimer = 10
 	firemodes = list(
 		list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
 		)
@@ -131,11 +136,12 @@
 	caliber = "a762x39"
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.47
+	equiptimer = 15
 	slot_flags = SLOT_BACK
 	firemodes = list(
-		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.5, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
-		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
 		)
 	effectiveness_mod = 1
 	sel_mode = 1
@@ -149,6 +155,7 @@
 	caliber = "a545x39"
 	magazine_type = /obj/item/ammo_magazine/ak74
 	weight = 3.07
+	equiptimer = 15
 	slot_flags = SLOT_BACK
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
@@ -183,13 +190,15 @@
 	if (folded)
 		folded = FALSE
 		base_icon = "aks74"
-		usr << "You collapse the stock on \the [src]."
+		usr << "You extend the stock on \the [src]."
+		equiptimer = 15
 		set_stock()
 		update_icon()
 	else
 		folded = TRUE
 		base_icon = "aks74_folded"
-		usr << "You extend the stock on \the [src]."
+		usr << "You collapse the stock on \the [src]."
+		equiptimer = 7
 		set_stock()
 		update_icon()
 
@@ -210,10 +219,29 @@
 	caliber = "a556x45"
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
+	equiptimer = 15
 	slot_flags = SLOT_BACK
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		)
+	effectiveness_mod = 1.07
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/m14
+	name = "M14"
+	desc = "An american assault rifle, chambered in 7.62x51mm."
+	icon_state = "m14"
+	item_state = "m14"
+	base_icon = "m14"
+	caliber = "a762x51"
+	magazine_type = /obj/item/ammo_magazine/m14
+	weight = 3.6
+	equiptimer = 15
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=3, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1

@@ -2,6 +2,7 @@
 	gun_type = GUN_TYPE_SHOTGUN
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
 	// 15% more accurate than SMGs
+	equiptimer = 17
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet

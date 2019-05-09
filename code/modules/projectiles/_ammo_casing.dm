@@ -606,7 +606,15 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/a556x45
 	caliber = "a556x45"
 	value = 2
-
+/obj/item/ammo_casing/a762x51
+	name = "7.62x51mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.06
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x51
+	caliber = "a762x51"
+	value = 2
 /obj/item/ammo_casing/a762x39
 	name = "7.62x39mm bullet"
 	desc = "A brass casing."

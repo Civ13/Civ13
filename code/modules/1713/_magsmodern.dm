@@ -26,3 +26,13 @@
 	max_ammo = 30
 	weight = 0.5
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m14
+	name = "M16 magazine (7.62x51mm)"
+	icon_state = "m14"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 20
+	weight = 0.45
+	multiple_sprites = TRUE
