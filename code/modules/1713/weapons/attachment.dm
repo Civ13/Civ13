@@ -186,15 +186,19 @@ Current Defines (_defines/attachment.dm)
 	//var/datum/action/bayonet/amelee
 
 /obj/item/weapon/attachment/bayonet/attached(mob/user, obj/item/weapon/gun/G)
-  ..()
-  G.bayonet = src
+	..()
+	G.bayonet = src
+	G.overlays += G.bayonet_ico
+
 
 /obj/item/weapon/attachment/bayonet/removed(mob/user, obj/item/weapon/gun/G)
-  ..()
-  G.bayonet = null
+	..()
+	G.bayonet = null
+	G.overlays -= G.bayonet_ico
+
 
 /obj/item/weapon/attachment/bayonet/military
-	force = WEAPON_FORCE_DANGEROUS/3
+	force = WEAPON_FORCE_DANGEROUS/1.5
 //	weakens = 1
 	weight = 0.450
 	value = 12
@@ -203,6 +207,31 @@ Current Defines (_defines/attachment.dm)
 	name = "iron sights"
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope
+	name = "sniper scope"
+	icon_state = "kar_scope"
+	desc = "You can attach this to rifles... or use them as binoculars."
+	max_zoom = ZOOM_CONSTANT*2
+
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope/removed(mob/user, obj/item/weapon/gun/G)
+	..()
+	//This should only be temporary until more attachment icons are made, then we switch to adding/removing icon masks
+	if (istype(G, /obj/item/weapon/gun/projectile))
+		var/obj/item/weapon/gun/projectile/W = G
+		W.sniper_scope = FALSE
+		W.update_icon()
+
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope/attached(mob/user, obj/item/weapon/gun/G)
+	..()
+	if (istype(G, /obj/item/weapon/gun/projectile))
+		var/obj/item/weapon/gun/projectile/W = G
+		W.sniper_scope = TRUE
+		W.update_icon()
+
+/obj/item/weapon/attachment/scope/removed(mob/user, obj/item/weapon/gun/G)
+  ..()
+  G.accuracy = initial(G.accuracy)
+  G.recoil = initial(G.recoil)
 
 /obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
   return

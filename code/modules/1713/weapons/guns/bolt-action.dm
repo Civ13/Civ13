@@ -178,13 +178,20 @@
 	last_fire = world.time
 
 /obj/item/weapon/gun/projectile/boltaction/update_icon()
-	if (!bolt_open)
-		icon_state = base_icon
+	if (sniper_scope)
+		if (bolt_open)
+			icon_state = "[base_icon]_scope_open"
+			return
+		else
+			icon_state = "[base_icon]_scope"
+			return
 	else
-		icon_state = "[base_icon]_open"
+		if (!bolt_open)
+			icon_state = base_icon
+		else
+			icon_state = "[base_icon]_open"
 	update_held_icon()
 	return
-
 /obj/item/weapon/gun/projectile/boltaction/singleshot
 	name = "Sharps Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .45-70 cartridges."
@@ -208,6 +215,7 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 1
 	gun_safety = FALSE
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 /obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry
 	name = "Martini-Henry Rifle"
 	desc = "A single-shot, falling block rifle, with a long range. Uses .577/450 cartridges."
@@ -341,6 +349,7 @@
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 19
 

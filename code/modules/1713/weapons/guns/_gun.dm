@@ -112,7 +112,7 @@
 	var/mob/living/carbon/human/firer = null
 	var/blackpowder = FALSE
 	secondary_action = TRUE
-
+	var/sniper_scope = FALSE
 /obj/item/weapon/gun/projectile/secondary_attack_self(mob/living/carbon/human/user)
 	if (gun_safety)
 		if (safetyon)

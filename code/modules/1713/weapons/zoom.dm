@@ -51,6 +51,14 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars
+	name = "ninoculars"
+	desc = "A pair of binoculars."
+	icon_state = "binoculars"
+	max_zoom = ZOOM_CONSTANT*3
+	attachable = FALSE
+	value = 15
+
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null

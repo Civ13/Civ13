@@ -254,11 +254,26 @@
 	det_time = 45
 	throw_range = 11
 
+/obj/item/weapon/grenade/ww2/mk2
+	name = "Mk2 grenade"
+	desc = "An American grenade introduced in 1918."
+	icon_state = "mk2"
+	det_time = 50
+	throw_range = 8
+
+/obj/item/weapon/grenade/coldwar/m26
+	name = "M26 grenade"
+	desc = "An American grenade introduced in the 1950's."
+	icon_state = "m26"
+	det_time = 50
+	throw_range = 9
+
 /obj/item/weapon/grenade/ww2
 	secondary_action = TRUE
 /obj/item/weapon/grenade/modern
 	secondary_action = TRUE
-
+/obj/item/weapon/grenade/coldwar
+	secondary_action = TRUE
 /obj/item/weapon/grenade/secondary_attack_self(mob/living/carbon/human/user)
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you wan't to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))

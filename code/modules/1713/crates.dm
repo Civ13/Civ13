@@ -350,4 +350,20 @@ obj/structure/closet/crate/ww1/ammo_maxim
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/ammo_magazine/maxim = 3)
+
+
+obj/structure/closet/crate/ww2/mk2
+	name = "Mk2 grenade crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/grenade/ww2/mk2 = 10)
+
+obj/structure/closet/crate/coldwar/m26
+	name = "M26 grenade crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/grenade/coldwar/m26 = 10)
+
 #undef DYNAMIC_AMT

@@ -58,14 +58,24 @@
 	KD_chance = KD_CHANCE_VERY_LOW
 	stat = "mg"
 	w_class = 3
+	attachment_slots = ATTACH_IRONSIGHTS
 /obj/item/weapon/gun/projectile/submachinegun/update_icon()
-	if (ammo_magazine)
-		icon_state = base_icon
-		item_state = base_icon
+	if (sniper_scope)
+		if (!ammo_magazine)
+			icon_state = "[base_icon]_scope_open"
+			return
+		else
+			icon_state = "[base_icon]_scope"
+			return
 	else
-		icon_state = "[base_icon]_open"
-		item_state = "[base_icon]_open"
+		if (ammo_magazine)
+			icon_state = base_icon
+			item_state = base_icon
+		else
+			icon_state = "[base_icon]_open"
+			item_state = "[base_icon]_open"
 	update_held_icon()
+
 	return
 
 /obj/item/weapon/gun/projectile/submachinegun/New()
@@ -145,6 +155,7 @@
 		)
 	effectiveness_mod = 1
 	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74
 	name = "AK-74"
@@ -164,6 +175,7 @@
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
 	name = "AKS-74"
@@ -227,6 +239,7 @@
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
 /obj/item/weapon/gun/projectile/submachinegun/m14
 	name = "M14"
@@ -236,6 +249,7 @@
 	base_icon = "m14"
 	caliber = "a762x51"
 	magazine_type = /obj/item/ammo_magazine/m14
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6
 	equiptimer = 15
 	slot_flags = SLOT_BACK
