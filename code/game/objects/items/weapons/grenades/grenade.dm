@@ -261,13 +261,13 @@
 
 /obj/item/weapon/grenade/secondary_attack_self(mob/living/carbon/human/user)
 	if (secondary_action)
-		var/inp = WWinput(user, "Are you sure you wan't to place a bobby trap here?", "Bobby Trapping", "No", list("Yes","No"))
+		var/inp = WWinput(user, "Are you sure you wan't to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
 		if (inp == "Yes")
-			user << "Placing the bobby trap..."
+			user << "Placing the booby trap..."
 			if (do_after(user, 100, src))
 				if (src)
-					user << "You successfully place the bobby trap here using \the [src]."
-					var/obj/item/mine/bobbytrap/BT = new /obj/item/mine/bobbytrap(get_turf(user))
+					user << "You successfully place the booby trap here using \the [src]."
+					var/obj/item/mine/boobytrap/BT = new /obj/item/mine/boobytrap(get_turf(user))
 					BT.origin = src.type
 					qdel(src)
 		else

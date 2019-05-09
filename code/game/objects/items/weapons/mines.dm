@@ -149,11 +149,11 @@
 	throw_speed = 3
 	anchored = FALSE
 
-/obj/item/mine/bobbytrap
-	name = "bobby trap"
+/obj/item/mine/boobytrap
+	name = "booby trap"
 	desc = "Useful for setting traps or for area denial."
 	icon = 'icons/obj/grenade.dmi'
-	icon_state = "bobbytrap_armed"
+	icon_state = "boobytrap_armed"
 	force = 10.0
 	w_class = 2.0
 	throwforce = 5.0
@@ -163,7 +163,7 @@
 	var/origin = null
 
 //Disarming
-/obj/item/mine/bobbytrap/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/mine/boobytrap/attackby(obj/item/W as obj, mob/user as mob)
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/carbon/human/H = user
@@ -198,7 +198,7 @@
 		else
 			Bumped(user)
 
-/obj/item/mine/bobbytrap/attack_hand(mob/user as mob)
+/obj/item/mine/boobytrap/attack_hand(mob/user as mob)
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/carbon/human/H = user
