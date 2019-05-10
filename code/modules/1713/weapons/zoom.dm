@@ -52,7 +52,7 @@ Parts of code courtesy of Super3222
 	value = 15
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars
-	name = "ninoculars"
+	name = "binoculars"
 	desc = "A pair of binoculars."
 	icon_state = "binoculars"
 	max_zoom = ZOOM_CONSTANT*3
