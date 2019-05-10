@@ -242,7 +242,7 @@
 "eH" = (/obj/structure/window/classic,/obj/covers/wood_ship,/obj/structure/curtain/open,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "eI" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
 "eJ" = (/obj/structure/table/wood,/obj/item/weapon/pen,/obj/item/weapon/storage/fancy/cigarettes,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
-"eK" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigarettes,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"eK" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigarettes{icon_state = "luckystrike"; name = "Lucky Strike"},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 "eL" = (/obj/item/weapon/storage/pill_bottle/tramadol,/obj/item/weapon/storage/pill_bottle/penicillin,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 "eM" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
 "eN" = (/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
