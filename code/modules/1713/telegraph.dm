@@ -577,21 +577,18 @@ var/global/FREQ2 = rand(201,250)
 	if (dd_hasprefix(msg, "*"))
 		return
 
-	var/list/used_radios = list()
 	var/list/tried_mobs = list()
 
 	for (var/mob/living/carbon/human/hearer in human_mob_list)
 		if (tried_mobs.Find(hearer))
 			continue
 		tried_mobs += hearer
+		var/list/used_radios = list()
 		if (hearer.stat == CONSCIOUS)
 			var/list/radios = list()
 			for (var/obj/structure/radio/radio in view(world.view, hearer))
 				if (radio.receiver_on)
 					radios |= radio
-			for (var/obj/structure/radio/radio in radios)
-				if (!loc && radio == src)
-					continue
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio

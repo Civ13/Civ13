@@ -365,6 +365,8 @@ Parts of code courtesy of Super3222
 		client.view = world.view
 
 /mob/living/carbon/human/proc/using_zoom()
+	if (using_MG)
+		return TRUE
 	if (stat == CONSCIOUS)
 		if (client && actions.len)
 			if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons

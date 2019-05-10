@@ -22,6 +22,19 @@
 	do_light()
 
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+		if (powersource)
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		if (istype(src, /obj/structure/engine))
+			var/obj/structure/engine/EN = src
+			if (!isemptylist(EN.connections))
+				user << "<span class='notice'>Remove the cables first.</span>"
+				return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		return
 	if (!anchored)
 		user << "<span class='notice'>Fix the lamp in place with a wrench first.</span>"
 		return
