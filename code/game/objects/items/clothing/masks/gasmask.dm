@@ -17,9 +17,10 @@
 	slot_flags = SLOT_BELT|SLOT_MASK
 
 /obj/item/clothing/mask/gas/proc/check_can_block(var/datum/reagent/r)
-	if (r.id in filtered_gases && prob(efficiency))
+	if (prob(efficiency))
 		return TRUE
-	return FALSE
+	else
+		return FALSE
 
 /obj/item/clothing/mask/gas/filter_air(datum/gas_mixture/air)
 	var/datum/gas_mixture/filtered = new

@@ -145,6 +145,7 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 
 /datum/reagent/toxin/xylyl_bromide/touch_mob(var/mob/living/L, var/amount)
 	if (istype(L))
+		if (mask_check(L)) return
 		L.eye_blurry += (amount/10)
 
 
