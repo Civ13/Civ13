@@ -156,7 +156,7 @@
 /obj/item/weapon/gun/projectile/pistol/m1911
 	name = "Colt M1911"
 	desc = "The standard issue pistol of the US Army. Chambered in .45 ACP."
-	icon_state = "borchardt"
+	icon_state = "colt"
 	w_class = 2
 	caliber = "a45acp"
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'

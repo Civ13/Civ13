@@ -23,6 +23,10 @@
 	matter = list(DEFAULT_WALL_MATERIAL = 10)
 	var/colour = "black"	//what colour the ink is!
 
+/obj/item/weapon/pen/pencil
+	name = "pencil"
+	desc = "a normal graphite pencil."
+	icon_state = "pencil"
 
 /obj/item/weapon/pen/blue
 	desc = "It's a normal blue ink pen."

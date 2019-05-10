@@ -99,6 +99,17 @@
 	item_state = "ushelmet_camo"
 	worn_state = "ushelmet_camo"
 
+/obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory/New()
+	..()
+	var/numb = rand(0,1)
+	var/list/optlist = list("card","bullets","cigpack","peace","text")
+	if (numb > 0)
+		for (var/i = 1, i <= numb, i++)
+			var/chosen = pick(optlist)
+			attachments += chosen
+			optlist -= chosen
+
+
 /obj/item/clothing/head/helmet/modern/ushelmet/late
 	name = "M1 helmet"
 	desc = "A typical US Army helmet."

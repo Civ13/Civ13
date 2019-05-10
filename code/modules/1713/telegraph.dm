@@ -592,7 +592,7 @@ var/global/FREQ2 = rand(201,250)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (radio.freq == freq && (radio.check_power() || radio.powerneeded == 0))
+				if (radio.freq == freq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)

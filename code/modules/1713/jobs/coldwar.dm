@@ -340,10 +340,7 @@
 			var/obj/item/clothing/accessory/storage/webbing/us_vest/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/us_vest(null)
 			uniform.attackby(fullwebbing, H)
 //head
-	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo(H), slot_head)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/late(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	var/obj/item/weapon/gun/projectile/submachinegun/m14/m14sniper = new /obj/item/weapon/gun/projectile/submachinegun/m14(H)
 	H.equip_to_slot_or_del(m14sniper, slot_back)
@@ -396,7 +393,7 @@
 			var/obj/item/clothing/accessory/storage/webbing/us_vest/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/us_vest(null)
 			uniform.attackby(fullwebbing, H)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/late(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_back)
 
