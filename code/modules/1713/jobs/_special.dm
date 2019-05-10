@@ -76,6 +76,10 @@
 		. = GREEK
 	else if (istype(src, /datum/job/arab))
 		. = ARAB
+	else if (istype(src, /datum/job/american))
+		. = AMERICAN
+	else if (istype(src, /datum/job/vietnamese))
+		. = VIETNAMESE
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -126,6 +130,12 @@
 	else if (istype(src, /datum/job/german))
 		user.faction_text = "GERMAN"
 		user.base_faction = new/datum/faction/german(user, src)
+	else if (istype(src, /datum/job/american))
+		user.faction_text = "AMERICAN"
+		user.base_faction = new/datum/faction/american(user, src)
+	else if (istype(src, /datum/job/vietnamese))
+		user.faction_text = "VIETNAMESE"
+		user.base_faction = new/datum/faction/vietnamese(user, src)
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
 		return "British Empire"

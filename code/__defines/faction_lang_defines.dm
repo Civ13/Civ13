@@ -4,7 +4,7 @@
 #define INDIANS "INDIANS"
 #define BRITISH "BRITISH"
 #define ROMAN "ROMAN"
-#define GERMAN "GERMAN"
+#define AMERICAN "AMERICAN"
 
 // used for languages only
 #define ENGLISH "ENGLISH"
@@ -26,7 +26,8 @@
 #define RUSSIAN "RUSSIAN"
 #define GREEK "GREEK"
 #define ARAB "ARAB"
-
+#define GERMAN "GERMAN"
+#define VIETNAMESE "VIETNAMESE"
 /proc/faction_const2name(constant)
 
 	if (constant == PIRATES)
@@ -70,3 +71,9 @@
 
 	if (constant == ARAB)
 		return "Arabic Caliphate"
+
+	if (constant == AMERICAN)
+		return "United States"
+
+	if (constant == VIETNAMESE)
+		return "Vietnamese"

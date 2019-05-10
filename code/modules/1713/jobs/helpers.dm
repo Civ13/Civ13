@@ -86,6 +86,19 @@
 					if (H.original_job.base_type_flag() == GERMAN)
 						BATTLEREPORT_VARIABLE_CHECK(H)
 							++.
+
+		if (AMERICAN)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == AMERICAN)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
+		if (VIETNAMESE)
+			for (var/mob/living/carbon/human/H in player_list)
+				if (H.original_job && H.stat != DEAD)
+					if (H.original_job.base_type_flag() == VIETNAMESE)
+						BATTLEREPORT_VARIABLE_CHECK(H)
+							++.
 // get every single mob of x faction: useful for counting deceased & gibbed mobs. More efficient than n_of_side()
 // currently does not support undead/pillarmen faction
 /proc/total_n_of_side(x)
@@ -119,3 +132,7 @@
 			return dead_arab.len + heavily_injured_arab.len + alive_arab.len
 		if (GERMAN)
 			return dead_german.len + heavily_injured_german.len + alive_german.len
+		if (AMERICAN)
+			return dead_american.len + heavily_injured_american.len + alive_american.len
+		if (VIETNAMESE)
+			return dead_vietnamese.len + heavily_injured_vietnamese.len + alive_vietnamese.len

@@ -84,6 +84,15 @@
 	magazine_type = /obj/item/ammo_magazine/mg08
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm
+	name = "PKM machine gun"
+	desc = "Soviet Heavy Maxim machinegun. Uses 7.62x54mm rounds."
+	icon_state = "pkm"
+	base_icon = "pkm"
+	caliber = "a762x54_weak"
+	magazine_type = /obj/item/ammo_magazine/pkm
+	ammo_type = /obj/item/ammo_casing/a762x54/weak
+
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers
 	name = "Vickers machine gun"
 	desc = "A water-cooled heavy machinegun, using .303 british rounds."

@@ -66,6 +66,14 @@
 /datum/job/german
 	default_language = "German"
 	additional_languages = list("French" = 15, "English" = 15)
+
+/datum/job/american
+	default_language = "English"
+	additional_languages = list("French" = 10, "Spanish" = 25, "Portuguese" = 5, "German" = 5)
+
+/datum/job/vietnamese
+	default_language = "Vietnamese"
+	additional_languages = list("French" = 5, "English" = 5, "Chinese" = 10)
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	. = ..()
 
@@ -142,4 +150,8 @@
 		if (ARAB)
 			for (var/datum/language/arab/A in H.languages)
 				H.default_language = A
+				break
+		if (VIETNAMESE)
+			for (var/datum/language/vietnamese/V in H.languages)
+				H.default_language = V
 				break

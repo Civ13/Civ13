@@ -78,19 +78,43 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/ushelmet/sgt
+	name = "M1 helmet (sergeant)"
+	desc = "A typical US Army helmet. With sergeant markings."
+	icon_state = "ushelmet_sgt"
+	item_state = "ushelmet_sgt"
+	worn_state = "ushelmet_sgt"
+
+/obj/item/clothing/head/helmet/modern/ushelmet/lt
+	name = "M1 helmet (lieutenant)"
+	desc = "A typical US Army helmet. With lieutenant markings."
+	icon_state = "ushelmet_lt"
+	item_state = "ushelmet_lt"
+	worn_state = "ushelmet_lt"
+
+/obj/item/clothing/head/helmet/modern/ushelmet/camo
+	name = "M1 camo helmet"
+	desc = "A typical US Army helmet. With a woodland camo cover."
+	icon_state = "ushelmet_camo"
+	item_state = "ushelmet_camo"
+	worn_state = "ushelmet_camo"
+
 /obj/item/clothing/head/helmet/modern/ushelmet/late
 	name = "M1 helmet"
 	desc = "A typical US Army helmet."
 	icon_state = "ushelmet2"
 	item_state = "ushelmet2"
 	worn_state = "ushelmet2"
-	body_parts_covered = HEAD
-	flags_inv = BLOCKHEADHAIR
-	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+/obj/item/clothing/head/helmet/modern/ushelmet/medical
+	name = "M1 medical helmet"
+	desc = "A typical US Army helmet, with a red cross on a white background."
+	icon_state = "ushelmet_medical"
+	item_state = "ushelmet_medica"
+	worn_state = "ushelmet_medica"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/late/New()
 	..()
-	var/numb = rand(0,3)
+	var/numb = rand(0,2)
 	var/list/optlist = list("card","bullets","cigpack","peace","text")
 	if (numb > 0)
 		for (var/i = 1, i <= numb, i++)
@@ -124,3 +148,23 @@
 	icon_state = "ghillie"
 	item_state = "ghillie"
 	body_parts_covered = HEAD
+
+
+/obj/item/clothing/head/jungle_hat
+	name = "green jungle hat"
+	desc = "A wide brim, soft jungle hat."
+	icon_state = "jungle_hat_green"
+	item_state = "jungle_hat_green"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/head/jungle_hat/khaki
+	name = "khaki jungle hat"
+	icon_state = "jungle_hat_khaki"
+	item_state = "jungle_hat_khaki"
+
+/obj/item/clothing/accessory/armband/khan_ran_scarf
+	name = "khan ran scarf"
+	desc = "A traditional Mekong Delta white-and-grey chekered scarf."
+	icon_state = "khan_ran_scarf"
+	item_state = "khan_ran_scarf"
+	slot = "decor"

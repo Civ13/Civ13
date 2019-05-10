@@ -337,9 +337,17 @@
 /datum/species/proc/get_random_german_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german,))
+			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german))
 		else
 			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(last_names_german))
+
+/datum/species/proc/get_random_vietnamese_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_vietnamese)) + " " + capitalize(pick(last_names_vietnamese))
+		else
+			return capitalize(pick(first_names_male_vietnamese)) + " " + capitalize(pick(last_names_vietnamese))
+
 
 /datum/species/proc/get_random_ainu_name(var/gender, var/jew)
 	if (!name_language)

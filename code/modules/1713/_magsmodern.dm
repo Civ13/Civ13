@@ -36,3 +36,19 @@
 	max_ammo = 20
 	weight = 0.45
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/pkm
+	name = "PKM ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a762x54_weak"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a762x54/weak
+	max_ammo = 250
+	multiple_sprites = TRUE
+	var/slot = "decor"
+	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
+	var/image/inv_overlay = null	//overlay used when attached to clothing.
+	var/image/mob_overlay = null
+	var/overlay_state = null

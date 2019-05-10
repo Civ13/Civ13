@@ -1367,9 +1367,7 @@
 				if (PIRATES)
 					holder2.icon_state = "pirate_basic"
 				if (BRITISH)
-					if (map.ID == MAP_COMPOUND)
-						holder2.icon_state = "us_basic"
-					else if (map.ordinal_age >= 4)
+					if (map.ordinal_age >= 4)
 						holder2.icon_state = "brit_basic"
 					else
 						holder2.icon_state = "rn_basic"
@@ -1393,10 +1391,7 @@
 				if (ROMAN)
 					holder2.icon_state = "roman_basic"
 				if (JAPANESE)
-					if (map.ID == MAP_COMPOUND)
-						holder2.icon_state = "vc_basic"
-					else
-						holder2.icon_state = "jp_basic"
+					holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
@@ -1407,6 +1402,10 @@
 						holder2.icon_state = "ger_basic"
 					else
 						holder2.icon_state = "ger2_basic"
+				if (AMERICAN)
+					holder2.icon_state = "us_basic"
+				if (VIETNAMESE)
+					holder2.icon_state = "vc_basic"
 				if (CIVILIAN)
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"

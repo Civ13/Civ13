@@ -466,8 +466,8 @@
 	armor = list(melee = 45, arrow = 35, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/pith
-	name = "iron pith helmet"
-	desc = "A typical pointed helmet."
+	name = "pith helmet"
+	desc = "A typical tropical helmet."
 	icon_state = "pith"
 	item_state = "pith"
 	worn_state = "pith"

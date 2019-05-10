@@ -32,6 +32,8 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[ARAB]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[JAPANESE]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[RUSSIAN]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[VIETNAMESE]
+		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[AMERICAN]
 	else
 		for (var/faction in map.faction_organization)
 			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
@@ -405,6 +407,10 @@ var/global/datum/controller/occupations/job_master
 					spawn_location = "JoinLateAR"
 				if (GERMAN)
 					spawn_location = "JoinLateGE"
+				if (VIETNAMESE)
+					spawn_location = "JoinLateJP"
+				if (AMERICAN)
+					spawn_location = "JoinLateRN"
 		// fixes spawning at 1,1,1
 
 		if (!spawn_location)
@@ -555,6 +561,9 @@ var/global/datum/controller/occupations/job_master
 	var/arab = alive_n_of_side(ARAB)
 	var/japanese = alive_n_of_side(JAPANESE)
 	var/russian = alive_n_of_side(RUSSIAN)
+	var/american = alive_n_of_side(AMERICAN)
+	var/vietnamese = alive_n_of_side(VIETNAMESE)
+
 	// by default no sides are hardlocked
 	var/max_british = INFINITY
 	var/max_pirates = INFINITY
@@ -570,6 +579,8 @@ var/global/datum/controller/occupations/job_master
 	var/max_japanese = INFINITY
 	var/max_russian = INFINITY
 	var/max_german = INFINITY
+	var/max_american = INFINITY
+	var/max_vietnamese = INFINITY
 
 	// see job_data.dm
 	var/relevant_clients = clients.len
@@ -619,6 +630,11 @@ var/global/datum/controller/occupations/job_master
 		if (map.faction_distribution_coeffs.Find(ARAB))
 			max_arab = ceil(relevant_clients * map.faction_distribution_coeffs[ARAB])
 
+		if (map.faction_distribution_coeffs.Find(AMERICAN))
+			max_american = ceil(relevant_clients * map.faction_distribution_coeffs[AMERICAN])
+
+		if (map.faction_distribution_coeffs.Find(VIETNAMESE))
+			max_vietnamese = ceil(relevant_clients * map.faction_distribution_coeffs[VIETNAMESE])
 	switch (side)
 		if (CIVILIAN)
 			if (civilians_forceEnabled)
@@ -703,4 +719,15 @@ var/global/datum/controller/occupations/job_master
 			if (arab >= max_arab)
 				return TRUE
 
+		if (AMERICAN)
+			if (american_forceEnabled)
+				return FALSE
+			if (american >= max_american)
+				return TRUE
+
+		if (VIETNAMESE)
+			if (vietnamese_forceEnabled)
+				return FALSE
+			if (vietnamese >= max_vietnamese)
+				return TRUE
 	return FALSE

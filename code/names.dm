@@ -51,6 +51,10 @@ var/list/first_names_male_german = file2list("config/names/first_male_german.txt
 var/list/first_names_female_german = file2list("config/names/first_female_german.txt")
 var/list/last_names_german = file2list("config/names/last_german.txt")
 
+var/list/first_names_male_vietnamese = file2list("config/names/first_male_vietnamese.txt")
+var/list/first_names_female_vietnamese = file2list("config/names/first_female_vietnamese.txt")
+var/list/last_names_vietnamese = file2list("config/names/last_vietnamese.txt")
+
 var/list/first_names_male_ainu = file2list("config/names/first_male_ainu.txt")
 var/list/first_names_female_ainu = file2list("config/names/first_female_ainu.txt")
 var/list/last_names_ainu = file2list("config/names/last_ainu.txt")
