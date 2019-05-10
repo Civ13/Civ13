@@ -81,7 +81,7 @@
 			item_state = base_icon
 		else
 			icon_state = "[base_icon]_open"
-			item_state = "[base_icon]_open"
+			item_state = base_icon
 	update_held_icon()
 	return
 /obj/item/weapon/gun/projectile/semiautomatic/handle_post_fire()

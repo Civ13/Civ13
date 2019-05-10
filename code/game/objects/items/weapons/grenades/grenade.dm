@@ -267,13 +267,25 @@
 	icon_state = "m26"
 	det_time = 50
 	throw_range = 9
+/obj/item/weapon/grenade/coldwar/prime()
+	set waitfor = 0
+	..()
+
+	var/turf/O = get_turf(src)
+	if(!O) return
+
+	if(explosion_size)
+		explosion(O,0,1,3,1)
+		qdel(src)
 
 /obj/item/weapon/grenade/ww2
 	secondary_action = TRUE
+	var/explosion_size = 2
 /obj/item/weapon/grenade/modern
 	secondary_action = TRUE
 /obj/item/weapon/grenade/coldwar
 	secondary_action = TRUE
+	var/explosion_size = 2
 /obj/item/weapon/grenade/secondary_attack_self(mob/living/carbon/human/user)
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you wan't to place a booby trap here?", "Booby Trapping", "No", list("Yes","No"))
