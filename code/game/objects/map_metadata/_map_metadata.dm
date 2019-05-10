@@ -661,7 +661,7 @@ var/civmax_research = list(130,130,130)
 		if (AMERICAN)
 			return "United States"
 		if (VIETNAMESE)
-			return "Vietnamese"
+			return "Vietcong group"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
