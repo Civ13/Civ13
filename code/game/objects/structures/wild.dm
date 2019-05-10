@@ -736,7 +736,7 @@
 		if (!isturf(user.loc)) // are you in a container/closet/pod/etc?
 			return
 		var/mob/living/carbon/human/H = user
-		if (H.faction_text == "JAPANESE")
+		if (H.faction_text == "VIETNAMESE")
 			user << "You start hiding in \the [src]..."
 			if (do_after(user,100,src))
 				user << "You finish hiding in \the [src]."
