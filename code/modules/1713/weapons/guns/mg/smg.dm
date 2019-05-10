@@ -144,6 +144,7 @@
 	item_state = "ak47"
 	base_icon = "ak47"
 	caliber = "a762x39"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.47
 	equiptimer = 15
@@ -164,6 +165,7 @@
 	item_state = "ak74"
 	base_icon = "ak74"
 	caliber = "a545x39"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
 	weight = 3.07
 	equiptimer = 15
@@ -229,6 +231,7 @@
 	item_state = "m16"
 	base_icon = "m16"
 	caliber = "a556x45"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
 	equiptimer = 15
@@ -248,6 +251,7 @@
 	item_state = "m14"
 	base_icon = "m14"
 	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/m14
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6

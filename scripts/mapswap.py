@@ -95,6 +95,8 @@ elif map == "HILL203":
 	dmms.append("#include \"maps\\1903\\hill_203.dmm\"")
 elif map == "YPRES":
 	dmms.append("#include \"maps\\1903\\ypres.dmm\"")
+elif map == "COMPOUND":
+	dmms.append("#include \"maps\\1969\\compound.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()

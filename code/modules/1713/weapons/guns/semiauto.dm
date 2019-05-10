@@ -1,5 +1,5 @@
 /obj/item/weapon/gun/projectile/semiautomatic
-
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	// pistol accuracy, rifle skill & decent KD chance
 	accuracy_list = list(
 
@@ -159,6 +159,7 @@
 	load_method = SINGLE_CASING|SPEEDLOADER
 	max_shells = 10
 	caliber = "a792x57"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
 	slot_flags = SLOT_BACK
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
@@ -181,6 +182,7 @@
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
 	caliber = "a792x57"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
 	slot_flags = SLOT_BACK
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/g43
