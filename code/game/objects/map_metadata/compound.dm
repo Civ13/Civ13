@@ -36,9 +36,9 @@ obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/compound/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/compound/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 1800 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
 
 #undef NO_WINNER
