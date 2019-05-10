@@ -172,7 +172,7 @@
 	title = "US Lieutenant"
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRNCap"
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
 	is_officer = TRUE
@@ -218,7 +218,7 @@
 	title = "US Sergeant"
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRN"
+	spawn_location = "JoinLateRNCap"
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
 	is_officer = TRUE
