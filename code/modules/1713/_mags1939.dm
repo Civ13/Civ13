@@ -59,3 +59,13 @@
 	max_ammo = 10
 	weight = 0.3
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m1911
+	name = "M1911 magazine (.45)"
+	icon_state = "m1911"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a45acp
+	matter = list(DEFAULT_WALL_MATERIAL = 525) //metal costs are very roughly based around TRUE .45 casing = 75 metal
+	caliber = "a45acp"
+	max_ammo = 7
+	multiple_sprites = TRUE

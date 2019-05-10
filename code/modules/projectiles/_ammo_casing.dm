@@ -414,6 +414,16 @@
 	caliber = "a45"
 	value = 7
 
+/obj/item/ammo_casing/a45acp
+	name = ".45 ACP bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/a45
+	caliber = "a45acp"
+	value = 7
+
 /obj/item/ammo_casing/a455
 	name = ".455 Webley bullet"
 	desc = "A brass casing."
