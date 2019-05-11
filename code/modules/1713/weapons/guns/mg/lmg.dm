@@ -82,7 +82,8 @@
 	if (!user.has_empty_hand(both = FALSE))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
-	..()
+	else
+		return TRUE
 
 /obj/item/weapon/gun/projectile/automatic/madsen
 	name = "Madsen light machine gun"
