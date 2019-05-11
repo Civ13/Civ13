@@ -60,13 +60,32 @@
 	stat = "mg"
 	w_class = 3
 	attachment_slots = ATTACH_IRONSIGHTS
+	var/jammed_until = -1
+	var/jamcheck = 0
+	var/last_fire = -1
 
 /obj/item/weapon/gun/projectile/submachinegun/special_check(mob/user)
 	if (!user.has_empty_hand(both = FALSE))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
+	if (jammed_until > world.time)
+		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
+		return FALSE
+	return TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/handle_post_fire()
+	..()
+
+	if (world.time - last_fire > 50)
+		jamcheck = 0
 	else
-		return TRUE
+		++jamcheck
+
+	if (prob(jamcheck/2))
+		jammed_until = max(world.time + (jamcheck * 5), 50)
+		jamcheck = 0
+
+	last_fire = world.time
 
 /obj/item/weapon/gun/projectile/submachinegun/update_icon()
 	if (sniper_scope)
