@@ -115,6 +115,7 @@
 	slot_flags = SLOT_BACK
 	magazine_type = /obj/item/ammo_magazine/svt
 	weight = 3.85
+	load_delay = 8
 	firemodes = list(
 		list(name="single shot",burst=1, move_delay=2, fire_delay=6)
 		)
@@ -181,6 +182,7 @@
 	w_class = 4
 	load_method = SINGLE_CASING|SPEEDLOADER|MAGAZINE
 	max_shells = 10
+	load_delay = 8
 	caliber = "a792x57"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	slot_flags = SLOT_BACK
@@ -209,6 +211,7 @@
 	load_magazine_sound = 'sound/weapons/stg_reload.ogg'
 	magazine_type = /obj/item/ammo_magazine/stg
 	weight = 4.6
+	load_delay = 8
 	equiptimer = 15
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.8, move_delay=2, dispersion = list(0.2, 0.3, 0.3, 0.4, 0.5)),

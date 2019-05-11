@@ -8,6 +8,7 @@
 	slot_flags = SLOT_BACK|SLOT_BELT
 	equiptimer = 12
 	gun_safety = TRUE
+	load_delay = 8
 	accuracy_list = list(
 
 		// small body parts: head, hand, feet

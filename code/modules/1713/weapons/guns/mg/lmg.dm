@@ -4,6 +4,7 @@
 	throwforce = 30
 	var/base_icon = "automatic"
 	equiptimer = 22
+	load_delay = 12
 	gun_safety = TRUE
 	// not accurate at all
 	accuracy_list = list(

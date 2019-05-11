@@ -178,7 +178,7 @@
 "dv" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 "dw" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 "dx" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
-"dy" = (/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dy" = (/obj/structure/table/wood,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/flame/lighter/zippo,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 "dz" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
 "dA" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
 "dB" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/tent,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
@@ -453,6 +453,7 @@
 "iK" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "iL" = (/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/turf/floor/dirt,/area/caribbean/void/caves)
 "iM" = (/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/obj/item/ammo_casing/rocket,/turf/floor/dirt,/area/caribbean/void/caves)
+"iN" = (/obj/item/weapon/gun/launcher/grenadelauncher/M79,/obj/item/weapon/gun/launcher/grenadelauncher/M79,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 
 (1,1,1) = {"
 bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
@@ -641,7 +642,7 @@ abababarababadagabalabababababababahahababapabfuadbibiaeaehthtaebiadbibihNadadad
 aCababababababababababababababababahahaqabababfuamiBbibiaehththtbibibiaebiadapabadadababababadadaXababadgyabclababababdodpddcAcTdBdtdCdudbiwiAixeJdbdbdvdbdmeKcXcLababababaqaiabaCabababgyababababadadaa
 adababaiabavapapabababapabavababapabababaiaiabfufuiCbibibiaehtaebiaeaebibiamiDadadabaXabclapabadadapababgyadababababababcMdddKcTdLdsdududbiydMdPhmdmdRdRdRdmeKdzcLababaCaiaiababababababgyadabapabadadac
 ababalabababababababapababaqababababaDabavabaiaifuiEambibiaehthtbiaeaebibihNiFctabadabapababaXabababababgzalcmabapapadawcMdAdhcTdBdsdtdudbdbiwizdbdbdRdRdRdmdydzabawabababababababadadadgAababababadacad
-adababababapabababababababababaiababaralababababfufuadhOhPhPhQhRhRhQhQhQhQhPadajapahfvfufufvfufufufugYabgyabcmabababababcMdAdTdUdVdWdWdWdbdbdbdbdbdbdbdbdbcZdmdFaiabalababababadababakabgyabababadadadaa
+adababababapabababababababababaiababaralababababfufuadhOhPhPhQhRhRhQhQhQhQhPadajapahfvfufufvfufufufugYabgyabcmabababababcMdAdTdUdVdWdWdWdbdbdbdbdbdbdbdbiNcZdmdFaiabalababababadababakabgyabababadadadaa
 abababababababaiabarahabadabapabababaqabababababcffufuhShGhThGhGhGhGhGhGhGhTfufufvajfvfvaXadadfvadabfufuhLabaXaiapabababcMabcDcDdGdHczcEdbdbdbdldldldldldldldXdzahabababadadaCadadadadadgAaladababadadaa
 aiabapababababalababababaXaiaiabababababakaiaiababababhUhUhVhVhWhWhWhXhXhVhVadiGiHadadambihNadadapabababhYfuagabababababadadababcLdIegawdbdbdbdYdZeaeaeaedcTdjeealdpababaiabababadadadadgAajabadabadadad
 ababababadabababababapaiadabababapabababadabapabfuababadbibibiaehthtaeaeaebibiiIadadbiadadbiadahadclabaigAfufufufufufuapadapawcucLdNdOcGdhefdbdbdbdbdbdbdbcTehdgabdpapabababababadakadadgAadajadapadadbl

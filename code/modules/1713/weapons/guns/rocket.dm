@@ -46,7 +46,9 @@
 	var/list/rockets = new/list()
 	release_force = 15
 	throw_distance = 30
-
+	fire_delay = 6
+	equiptimer = 28
+	load_delay = 18
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
 	if(!..(user, 2))
 		return
@@ -149,7 +151,9 @@
 	var/list/rockets = new/list()
 	release_force = 9
 	throw_distance = 12
-
+	fire_delay = 4
+	equiptimer = 20
+	load_delay = 10
 /obj/item/weapon/gun/launcher/grenadelauncher/examine(mob/user)
 	if(!..(user, 2))
 		return
@@ -206,19 +210,20 @@
 		..()
 
 /obj/item/ammo_casing/grenade_l
+	icon = 'icons/obj/grenade.dmi'
 	name = "40mm grenade"
 	desc = "A high explosive designed to be fired from a launcher."
-	icon_state = "grenade_40mm"
+	icon_state = "g40mm"
 	projectile_type = /obj/item/missile/grenade
 	caliber = "g40"
 	w_class = 4
 
 /obj/item/missile/grenade
 	icon = 'icons/obj/grenade.dmi'
-	icon_state = "grenade"
+	icon_state = "g40mm"
 	primed = null
 	throwforce = 12
-	allow_spin = FALSE
+	allow_spin = TRUE
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 2)
