@@ -323,6 +323,12 @@
 	name = "british webbing"
 	icon_state = "british_vest"
 	item_state = "british_vest"
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather
+	name = "leather webbing"
+	icon_state = "british_vest"
+	item_state = "british_vest"
+
 /obj/item/clothing/accessory/storage/webbing/ww1/british/full
 /obj/item/clothing/accessory/storage/webbing/ww1/british/full/New()
 	..()
