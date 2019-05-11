@@ -103,6 +103,56 @@
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	return TRUE
 
+/datum/job/vietnamese/vietcong_comms
+	title = "Tuy Phai"
+	en_meaning = "Vietcong Courer/Runner"
+	rank_abbreviation = "Tuy Phai"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateJP"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 12
+
+/datum/job/vietnamese/vietcong_comms/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/vietcong(H), slot_w_uniform)
+
+//head
+	if (prob(40))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/rice_hat(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tactical(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(60))
+		var/obj/item/clothing/accessory/armband/khan_ran_scarf/krscarf = new /obj/item/clothing/accessory/armband/khan_ran_scarf(null)
+		uniform.attackby(krscarf, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, in charge of the communications and also acting as a courier for ammunition, grenades, and so on. Keep the squads up to date and supplied!")
+	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+	return TRUE
 
 /datum/job/vietnamese/vietcong
 	title = "Binh Ni"
@@ -206,7 +256,7 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/yellow_scarf/yscarf = new /obj/item/clothing/accessory/armband/yellow_scarf(null)
 	uniform.attackby(yscarf, H)
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/armpit/holsterh = new /obj/item/clothing/accessory/holster/armpit(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole platoon. Organize your troops accordingly!")
@@ -308,6 +358,51 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
+
+/datum/job/american/american_radioman
+	title = "US Radio Operator"
+	rank_abbreviation = "Cpl."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_radioman = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 5
+
+/datum/job/american/american_radioman/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni(H), slot_w_uniform)
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/us_jacket(H), slot_wear_suit)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2(H), slot_w_uniform)
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/us_jacket(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, in charge of your squad communications. Keep the line open between the <b>Squad Leader</b> and HQ!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
 	return TRUE
 
 /datum/job/american/american_marksman

@@ -8,6 +8,8 @@
 	var/release_force = 0
 	var/throw_distance = 10
 	fire_sound_text = "a launcher firing"
+	var/gun_safety = TRUE
+	var/safetyon = FALSE
 
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
@@ -17,6 +19,18 @@
 /obj/item/weapon/gun/launcher/handle_suicide(mob/living/user)
 	user << "\red Shooting yourself with \a [src] is pretty tricky. You can't seem to manage it."
 	return
+
+/obj/item/weapon/gun/launcher/secondary_attack_self(mob/living/carbon/human/user)
+	if (gun_safety)
+		if (safetyon)
+			safetyon = FALSE
+			user << "<span class='notice'>You toggle \the [src]'s safety <b>OFF</b>.</span>"
+			return
+		else
+			safetyon = TRUE
+			user << "<span class='notice'>You toggle \the [src]'s safety <b>ON</b>.</span>"
+			return
+
 
 /obj/item/weapon/gun/launcher/proc/update_release_force(obj/item/projectile)
 	return 0
@@ -32,6 +46,9 @@
 /obj/item/weapon/gun/launcher/special_check(mob/user)
 	if (!user.has_empty_hand(both = FALSE))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		return FALSE
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
 	else
 		return TRUE
@@ -120,13 +137,26 @@
 		..()
 
 /obj/item/ammo_casing/rocket
-	name = "RPG-7 rocket"
-	desc = "A high explosive designed to be fired from a launcher."
+	name = "RPG rocket"
+	desc = "A high explosive warhead and propeller designed to be fired from a rocket launcher."
 	icon_state = "rocketshell"
 	projectile_type = /obj/item/missile
 	caliber = "rocket"
 	w_class = 4
 	slot_flags = SLOT_BELT
+
+/obj/item/ammo_casing/rocket/pg7v
+	name = "PG-7V rocket"
+	desc = "A high explosive warhead and propeller designed to be fired from a RPG-7 launcher."
+	icon_state = "pg7v"
+	projectile_type = /obj/item/missile/explosive
+
+
+/obj/item/ammo_casing/rocket/og7v
+	name = "OG-7V rocket"
+	desc = "A fragmentation warhead and propeller designed to be fired from a RPG-7 launcher."
+	icon_state = "og7v"
+	projectile_type = /obj/item/missile/fragmentation
 
 /obj/item/missile
 	icon = 'icons/obj/grenade.dmi'
@@ -142,7 +172,48 @@
 			..()
 		return
 
+/obj/item/missile/explosive
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 1, 2, 4)
+			qdel(src)
+		else
+			..()
+		return
 
+/obj/item/missile/fragmentation
+	var/num_fragments = 30
+	var/spread_range = 6
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/fragment_damage = 15
+	var/damage_step = 2
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom,0,1,3,1)
+			var/turf/T = get_turf(hit_atom)
+			if(!T) return
+			if (!ismob(loc))
+
+				var/list/target_turfs = getcircle(T, spread_range)
+				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+				for (var/turf/TT in target_turfs)
+					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+					P.damage = fragment_damage
+					P.pellets = fragments_per_projectile
+					P.range_step = damage_step
+					P.shot_from = name
+					P.launch_fragment(TT)
+
+					// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
+					for (var/mob/living/L in T)
+						P.attack_mob(L, 0, 0)
+
+			spawn (5)
+				qdel(src)
+		else
+			..()
+		return
 ///////////////////M79
 /obj/item/weapon/gun/launcher/grenadelauncher
 	name = "grenade launcher"

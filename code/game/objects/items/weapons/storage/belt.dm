@@ -28,6 +28,12 @@
 		var/mob/M = loc
 		M.update_inv_belt()
 
+/obj/item/weapon/storage/belt/tactical
+	name = "combat belt"
+	storage_slots = 8
+	max_w_class = 3
+	max_storage_space = 28
+
 /obj/item/weapon/storage/belt/medical
 	name = "medical belt"
 	can_hold = list(

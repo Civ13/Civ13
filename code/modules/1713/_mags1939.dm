@@ -8,6 +8,16 @@
 	weight = 0.34
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/greasegun
+	name = "M3A1 magazine (.45 ACP)"
+	icon_state = "greasegun"
+	mag_type = MAGAZINE
+	caliber = "a45acp"
+	ammo_type = /obj/item/ammo_casing/a45acp
+	max_ammo = 30
+	weight = 0.4
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/c762x25_pps
 	name = "PPS-43 magazine (7.62x25mm)"
 	icon_state = "pps"

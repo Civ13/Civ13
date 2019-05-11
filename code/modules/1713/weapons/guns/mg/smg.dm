@@ -111,6 +111,25 @@
 	sel_mode = 1
 	effectiveness_mod = 1.05
 
+/obj/item/weapon/gun/projectile/submachinegun/greasegun
+	name = "M3A1 \"grease gun\""
+	desc = "An american light SMG, used by support troops."
+	icon_state = "greasegun"
+	item_state = "greasegun"
+	base_icon = "greasegun"
+	weight = 3.6
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/mp40.ogg'
+	magazine_type = /obj/item/ammo_magazine/greasegun
+	full_auto = TRUE
+	slot_flags = SLOT_BELT
+	equiptimer = 7
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.6, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+
+	sel_mode = 1
+	effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"

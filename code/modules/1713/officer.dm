@@ -1,6 +1,6 @@
 //ARTILLERY
 
-#define kanonier_msg " A Kanonier can now fire within <b>15 square meters</b> of this position."
+#define kanonier_msg " Artillery, airstrikes and supplies can now be requested within <b>15 square meters</b> of this position."
 
 var/global/list/valid_coordinates = list()
 /mob/living/carbon/human/var/checking_coords[4]
@@ -15,6 +15,9 @@ var/global/list/valid_coordinates = list()
 	verbs += /mob/living/carbon/human/proc/Check_Coordinates_Chump
 	verbs += /mob/living/carbon/human/proc/Reset_Coordinates_Chump
 	can_check_distant_coordinates = TRUE
+
+/mob/living/carbon/human/proc/make_artillery_radioman()
+	verbs += /mob/living/carbon/human/proc/order_airstrike
 
 /mob/living/carbon/human/proc/make_commander()
 	verbs += /mob/living/carbon/human/proc/Commander_Announcement
@@ -136,3 +139,99 @@ var/global/list/valid_coordinates = list()
 		return ..()
 
 //OTHER
+
+
+
+/mob/living/carbon/human/proc/order_airstrike()
+	set category = "Officer"
+	set name = "Order Airstrike"
+	var/icon/radio
+	var/currfreq = 0
+	for (var/obj/structure/radio/R in range(1,src))
+		if (!radio)
+			radio = getFlatIcon(R)
+			currfreq = R.freq
+	for (var/obj/item/weapon/radio/R in range(1,src))
+		if (!radio)
+			radio = getFlatIcon(R)
+			currfreq = R.freq
+	if (currfreq == 0)
+		src << "<span class='notice'>There is no radio nearby! You need one to order an airstrike.</span>"
+		return
+	if (map.artillery_count > 0 && world.time >= map.artillery_last+map.artillery_timer)
+		var/list/validchoices = map.valid_artillery
+		var/valid_coords_check = FALSE
+		validchoices += "Cancel"
+		var/input1 = WWinput(src, "Which type of airstrike to request?", "Order Airstrike", "Cancel", validchoices)
+		if (input1 == "Cancel")
+			return
+		var/inputx = input(src, "Choose the X coordinate:") as num
+		if (inputx > world.maxx)
+			inputx = world.maxx
+		if (inputx < 0)
+			inputx = 1
+		var/inputy = input(src, "Choose the Y coordinate:") as num
+		if (inputy > world.maxy)
+			inputy = world.maxy
+		if (inputy < 0)
+			inputy = 1
+		if (global.valid_coordinates.Find("[inputx],[inputy]"))
+			valid_coords_check = TRUE
+		else
+			for (var/coords in global.valid_coordinates)
+				var/splitcoords = splittext(coords, ",")
+				var/coordx = text2num(splitcoords[1])
+				var/coordy = text2num(splitcoords[2])
+				if (abs(coordx - inputx) <= 15)
+					if (abs(coordy - inputy) <= 15)
+						valid_coords_check = TRUE
+		if (!valid_coords_check)
+			src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
+			return
+		for (var/mob/living/carbon/human/friendlies in range(7, locate(inputx,inputy,src.z)))
+			if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
+				src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+				return
+		src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
+		map.artillery_count--
+		map.artillery_last = world.time
+		spawn(rand(150,250)*10)
+			airstrike(input1,inputx,inputy,src.z)
+		message_admins("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
+		log_game("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
+		return
+	else if (map.artillery_count <= 0)
+		map.artillery_count = 0
+		src << "<span class='warning'>There are no more airstrikes available.</span>"
+		return
+	else if (world.time < map.artillery_last+map.artillery_timer)
+		src << "<span class='warning'>You can't order an airstrike yet! Wait [round(((map.artillery_last+map.artillery_timer)-world.time)/600)] minutes.</span>"
+		return
+
+/mob/living/carbon/human/proc/airstrike(var/type, var/inputx, var/inputy, var/inputz)
+	var/turf/T = get_turf(locate(inputx,inputy,inputz))
+	if (!T)
+		return
+	if (type == "White Phosphorus")
+		new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(T)
+	else if (type == "Explosive")
+		var/xoffsetmin = inputx-6
+		var/xoffsetmax = inputx+6
+		var/yoffsetmin = inputy-6
+		var/yoffsetmax = inputy+6
+		for (var/i = 1, i < 6, i++)
+			var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
+			explosion(O,1,1,3,1)
+	else if (type == "Napalm")
+		var/xoffsetmin = inputx-7
+		var/xoffsetmax = inputx+7
+		var/yoffsetmin = inputy-7
+		var/yoffsetmax = inputy+7
+		for (var/i = 1, i < 15, i++)
+			var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
+			explosion(O,0,1,1,3)
+			for (var/mob/living/LS1 in O)
+				LS1.adjustFireLoss(35)
+				LS1.fire_stacks += rand(8,10)
+				LS1.IgniteMob()
+			new/obj/effect/burning_oil(O)

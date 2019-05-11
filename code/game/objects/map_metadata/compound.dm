@@ -17,6 +17,7 @@
 		list(VIETNAMESE) = /area/caribbean/japanese
 		)
 	age = "1969"
+	ordinal_age = 5
 	faction_distribution_coeffs = list(AMERICAN = 0.5, VIETNAMESE = 0.5)
 	battle_name = "jungle compound"
 	mission_start_message = "<font size=4>The <b>Vietcong</b> must defend the village from the Americans. The <b>US Army</b> must defend their base.<br>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
@@ -25,6 +26,8 @@
 	valid_weather_types = list(WEATHER_RAIN, WEATHER_NONE, WEATHER_STORM)
 	songs = list(
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+	artillery_count = 3
+
 obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_coldwar == TRUE)

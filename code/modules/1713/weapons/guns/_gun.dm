@@ -117,11 +117,11 @@
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE
-			user << "<span class='notice'>You toggle the [src]'s safety <b>OFF</b>.</span>"
+			user << "<span class='notice'>You toggle \the [src]'s safety <b>OFF</b>.</span>"
 			return
 		else
 			safetyon = TRUE
-			user << "<span class='notice'>You toggle the [src]'s safety <b>ON</b>.</span>"
+			user << "<span class='notice'>You toggle \the [src]'s safety <b>ON</b>.</span>"
 			return
 
 /obj/item/weapon/gun/projectile/special_check(var/mob/user)

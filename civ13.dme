@@ -385,6 +385,7 @@
 #include "code\modules\1713\oil_fires.dm"
 #include "code\modules\1713\ores.dm"
 #include "code\modules\1713\production.dm"
+#include "code\modules\1713\radio.dm"
 #include "code\modules\1713\research.dm"
 #include "code\modules\1713\researchcost.dm"
 #include "code\modules\1713\roundstart_etc.dm"
