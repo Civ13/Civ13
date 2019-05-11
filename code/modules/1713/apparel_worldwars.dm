@@ -1,6 +1,6 @@
 /obj/item/clothing/suit/storage/coat/germcoat
-	name = "German Coat"
-	desc = "A german coat."
+	name = "German coat"
+	desc = "A German army coat."
 	icon_state = "germtrench"
 	item_state = "germtrench"
 	worn_state = "germtrench"
@@ -11,8 +11,8 @@
 	var/colorn = 1
 
 /obj/item/clothing/suit/storage/coat/frenchcoat
-	name = "French Trench Coat"
-	desc = "A french trench coat."
+	name = "French trench coat"
+	desc = "A French trench coat."
 	icon_state = "frenchtrench"
 	item_state = "frenchtrench"
 	worn_state = "frenchtrench"
@@ -22,15 +22,28 @@
 	value = 65
 	var/colorn = 1
 
+/obj/item/clothing/suit/storage/coat/britishcoat
+	name = "British coat"
+	desc = "A British coat."
+	icon_state = "britishtrench"
+	item_state = "britishtrench"
+	worn_state = "britishtrench"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+	var/colorn = 1
+
+
 /obj/item/clothing/head/germcap
 	name = "German Cap"
 	desc = "A cap worn by german soldiers."
-	icon_state = "germcap"
-	item_state = "germcap"
+	icon_state = "germcap2"
+	item_state = "germcap2"
 
 /obj/item/clothing/head/frenchcap
-	name = "French Cap"
-	desc = "A cap worn by french soldiers."
+	name = "French képi"
+	desc = "A flat circular cap worn by french soldiers."
 	icon_state = "frenchcap"
 	item_state = "frenchcap"
 
@@ -41,8 +54,8 @@
 	item_state = "brittcap"
 
 /obj/item/clothing/head/helmet/ww/stahlhelm
-	name = "iron stahlhelm"
-	desc = "A typical pointed helmet."
+	name = "M1915 stahlhelm"
+	desc = "A typical grman stahlhelm helmet."
 	icon_state = "stahlhelm_old"
 	item_state = "stahlhelm_old"
 	worn_state = "stahlhelm_old"
@@ -51,7 +64,7 @@
 	armor = list(melee = 45, arrow = 35, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/ww/adrian
-	name = "Adrian Helmet"
+	name = "Adrian helmet"
 	desc = "A typical french adrian helmet."
 	icon_state = "adrian"
 	item_state = "adrian"
@@ -60,6 +73,30 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww/brodie
+	name = "Brodie helmet"
+	desc = "A typical british helmet."
+	icon_state = "brodie"
+	item_state = "brodie"
+	worn_state = "brodie"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+/obj/item/clothing/head/helmet/ww/pickelhaube2
+	name = "leather pickelhaube"
+	desc = "A typical pointed helmet."
+	icon_state = "pickelhaube2"
+	item_state = "pickelhaube2"
+	worn_state = "pickelhaube2"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 30, arrow = 30, gun = 3, energy = 10, bomb = 35, bio = 20, rad = FALSE)
+/obj/item/clothing/head/helmet/ww/brodie/khaki
+	name = "Khaki Brodie helmet"
+	desc = "A typical british helmet, with a khaki cover."
+	icon_state = "brodie_old"
+	item_state = "brodie_old"
+	worn_state = "brodie_old"
 /obj/item/clothing/mask/glasses/pilot
 	name = "pilot goggles"
 	desc = "Early 20th century pilot goggles."
@@ -215,3 +252,133 @@
 	icon_state = "japbandana"
 	item_state = "japbandana"
 	worn_state = "japbandana"
+
+///////////WW1 UNIFORMS///////////
+/obj/item/clothing/under/ww1/german
+	name = "german uniform"
+	desc = "A german feldgrau uniform, used by the Imperial German Army."
+	icon_state = "ww1_german"
+	item_state = "ww1_german"
+	worn_state = "ww1_german"
+
+/obj/item/clothing/under/ww1/british
+	name = "british uniform"
+	desc = "A british khaki uniform, used by the Royal Army."
+	icon_state = "ww1_british"
+	item_state = "ww1_british"
+	worn_state = "ww1_british"
+
+/obj/item/clothing/under/ww1/french
+	name = "french uniform"
+	desc = "A french light blue uniform, used by the French Army."
+	icon_state = "ww1_french"
+	item_state = "ww1_french"
+	worn_state = "ww1_french"
+
+
+/obj/item/clothing/accessory/storage/webbing/ww1
+	name = "webbing"
+	desc = "two leather belts with small pouches for ammunition and grenades."
+	icon_state = "german_vest"
+	item_state = "german_vest"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,)
+
+/obj/item/clothing/accessory/storage/webbing/ww1/german
+	name = "german webbing"
+	icon_state = "german_vest"
+	item_state = "german_vest"
+/obj/item/clothing/accessory/storage/webbing/ww1/german/full
+/obj/item/clothing/accessory/storage/webbing/ww1/german/full/New()
+	..()
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+/obj/item/clothing/accessory/storage/webbing/ww1/german/full2
+/obj/item/clothing/accessory/storage/webbing/ww1/german/full2/New()
+	..()
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/ammo_magazine/gewehr98(src)
+	new /obj/item/weapon/grenade/modern/stg1915(src)
+	new /obj/item/weapon/grenade/modern/stg1915(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+/obj/item/clothing/accessory/storage/webbing/ww1/french
+	name = "french webbing"
+	icon_state = "french_vest"
+	item_state = "french_vest"
+/obj/item/clothing/accessory/storage/webbing/ww1/french/full
+/obj/item/clothing/accessory/storage/webbing/ww1/french/full/New()
+	..()
+	new /obj/item/ammo_magazine/c8x50(src)
+	new /obj/item/ammo_magazine/c8x50(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+	new /obj/item/weapon/grenade/modern/f1(src)
+	new /obj/item/weapon/grenade/modern/f1(src)
+/obj/item/clothing/accessory/storage/webbing/ww1/british
+	name = "british webbing"
+	icon_state = "british_vest"
+	item_state = "british_vest"
+
+/obj/item/clothing/accessory/storage/webbing/ww1/leather
+	name = "leather webbing"
+	icon_state = "british_vest"
+	item_state = "british_vest"
+
+/obj/item/clothing/accessory/storage/webbing/ww1/british/full
+/obj/item/clothing/accessory/storage/webbing/ww1/british/full/New()
+	..()
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+/obj/item/clothing/accessory/storage/webbing/ww1/british/full2
+/obj/item/clothing/accessory/storage/webbing/ww1/british/full2/New()
+	..()
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/ammo_magazine/enfield(src)
+	new /obj/item/weapon/grenade/modern/mills(src)
+	new /obj/item/weapon/grenade/modern/mills(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+
+
+/obj/item/clothing/accessory/armor/modern/plate
+	name = "breastplate body armor"
+	desc = "Wearable armor made of steel sheets."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "modern_platearmor"
+	item_state = "modern_platearmor"
+	worn_state = "modern_platearmor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 70, arrow = 95, gun = 45, energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.8
+
+/obj/item/clothing/accessory/armor/modern/british
+	name = "Dayfield body armor"
+	desc = "British-made wearable armor made of steel sheets."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "modern_dayfield"
+	item_state = "modern_dayfield"
+	worn_state = "modern_dayfield"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 70, arrow = 90, gun = 40, energy = 12, bomb = 40, bio = 20, rad = FALSE)
+	value = 50
+	slowdown = 0.8
+
+////////////////////////////////////
+///////////////WW2//////////////////
+////////////////////////////////////
+/obj/item/clothing/under/ww2/german
+	name = "german uniform"
+	desc = "A german feldgrau uniform, used by the Wehrmacht."
+	icon_state = "ww2_german"
+	item_state = "ww2_german"
+	worn_state = "ww2_german"

@@ -95,6 +95,8 @@ var/civmax_research = list(130,130,130)
 	var/cive_research = list(0,0,0,null,0)
 	var/civf_research = list(0,0,0,null,0)
 
+	var/list/facl = list()
+
 	var/chad_mode = FALSE //Virgins BTFO
 	var/gamemode = "Team Deathmatch"
 	var/research_active = FALSE //if research can be done
@@ -366,9 +368,9 @@ var/civmax_research = list(130,130,130)
 			return FALSE
 		else
 			switch (H.original_job.base_type_flag())
-				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, JAPANESE, RUSSIAN)
+				if (BRITISH, PORTUGUESE, FRENCH, SPANISH, DUTCH, ROMAN, RUSSIAN, AMERICAN)
 					return !faction1_can_cross_blocks()
-				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB)
+				if (PIRATES, INDIANS, CIVILIAN, GREEK, ARAB, GERMAN, JAPANESE, VIETNAMESE)
 					return !faction2_can_cross_blocks()
 	return FALSE
 
@@ -450,43 +452,41 @@ var/civmax_research = list(130,130,130)
 		win_condition_spam_check = TRUE
 		return FALSE
 	// German major
-	else if (roundend_condition_sides.len > 1)
-		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + short_win_time(roundend_condition_sides[2][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-		// German minor
-		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + long_win_time(roundend_condition_sides[2][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-		// Soviet major
-		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + short_win_time(roundend_condition_sides[1][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-		// Soviet minor
-		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + long_win_time(roundend_condition_sides[1][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-
+	if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] base! They will win in {time} minute{s}."
+				next_win = world.time + short_win_time(roundend_condition_sides[2][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// German minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] base! They will win in {time} minute{s}."
+				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
+	// Soviet major
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] base! They will win in {time} minute{s}."
+				next_win = world.time + short_win_time(roundend_condition_sides[1][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
+	// Soviet minor
+	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
+		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
+			if (last_win_condition != win_condition.hash)
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] base! They will win in {time} minute{s}."
+				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
+				announce_current_win_condition()
+				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
+				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
 	else
 		if (current_win_condition != NO_WINNER && current_winner && current_loser)
 			world << "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>"
@@ -517,7 +517,10 @@ var/civmax_research = list(130,130,130)
 		GREEK = 0,
 		ARAB = 0,
 		JAPANESE = 0,
-		RUSSIAN = 0,)
+		RUSSIAN = 0,
+		GERMAN = 0,
+		AMERICAN = 0,
+		VIETNAMESE = 0,)
 
 	if (!(side in soldiers))
 		soldiers[side] = 0
@@ -611,6 +614,8 @@ var/civmax_research = list(130,130,130)
 			return "Dutch"
 		if (ROMAN)
 			return "Roman"
+		if (GERMAN)
+			return "German"
 		if (GREEK)
 			return "Greek"
 		if (ARAB)
@@ -619,6 +624,10 @@ var/civmax_research = list(130,130,130)
 			return "Japanese"
 		if (RUSSIAN)
 			return "Russian"
+		if (AMERICAN)
+			return "American"
+		if (VIETNAMESE)
+			return "Vietnamese"
 /obj/map_metadata/proc/roundend_condition_def2army(define)
 	switch (define)
 		if (BRITISH)
@@ -647,6 +656,12 @@ var/civmax_research = list(130,130,130)
 			return "Japanese Empire"
 		if (RUSSIAN)
 			return "Russian Empire"
+		if (GERMAN)
+			return "German Empire"
+		if (AMERICAN)
+			return "United States"
+		if (VIETNAMESE)
+			return "Vietcong group"
 /obj/map_metadata/proc/army2name(army)
 	switch (army)
 		if ("British Empire")
@@ -675,6 +690,12 @@ var/civmax_research = list(130,130,130)
 			return "Japanese"
 		if ("Russian Empire")
 			return "Russian"
+		if ("German Empire")
+			return "German"
+		if ("United States")
+			return "American"
+		if ("Vietcong Group")
+			return "Vietnamese"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE
 

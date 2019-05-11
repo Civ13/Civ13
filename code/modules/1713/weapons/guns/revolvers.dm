@@ -19,8 +19,8 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
+	equiptimer = 7
 	accuracy_list = list(
-
 		// small body parts: head, hand, feet
 		"small" = list(
 			SHORT_RANGE_STILL = 60,
@@ -174,20 +174,38 @@
 
 
 /obj/item/weapon/gun/projectile/revolver/nagant_revolver
-	name = "Nagant Revolver"
+	name = "Nagant revolver"
 	desc = "Russian officer's revolver."
 	icon_state = "nagant"
 	w_class = 2
 	caliber = "a762x38"
 	load_method = SINGLE_CASING
 	handle_casings = CYCLE_CASINGS
-	max_shells = 6
+	max_shells = 7
 	magazine_type = /obj/item/ammo_magazine/c762x38mmR
-	weight = 2.3
-	single_action = TRUE
-	blackpowder = TRUE
+	weight = 1.45
+	single_action = FALSE
+	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
+	gun_safety = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/m1892
+	name = "Modèle 1892 revolver"
+	desc = "French officer's revolver."
+	icon_state = "m1892"
+	w_class = 2
+	caliber = "a8x27"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c8x27
+	weight = 1.3
+	single_action = FALSE
+	blackpowder = FALSE
+	cocked = FALSE
+	load_delay = 5
+	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peacemaker"
@@ -222,7 +240,7 @@
 	cocked = FALSE
 
 /obj/item/weapon/gun/projectile/revolver/t26_revolver
-	name = "Type 26 Revolver"
+	name = "Type 26 revolver"
 	desc = "Japanese officer's revolver."
 	icon_state = "t26revolver"
 	w_class = 2
@@ -236,8 +254,26 @@
 	blackpowder = TRUE
 	cocked = FALSE
 	load_delay = 5
+
+/obj/item/weapon/gun/projectile/revolver/webley
+	name = "Webley revolver"
+	desc = "British officer's revolver."
+	icon_state = "webley"
+	w_class = 2
+	caliber = "a455"
+	load_method = SINGLE_CASING
+	handle_casings = CYCLE_CASINGS
+	max_shells = 6
+	magazine_type = /obj/item/ammo_magazine/c455
+	weight = 1.6
+	single_action = FALSE
+	blackpowder = FALSE
+	cocked = FALSE
+	load_delay = 5
+	gun_safety = TRUE
+
 /obj/item/weapon/gun/projectile/revolver/panther
-	name = "Panther Revolver"
+	name = "Panther revolver"
 	desc = "a .44 caliber revolver."
 	icon_state = "panther"
 	item_state = "panther"
@@ -249,8 +285,10 @@
 	weight = 0.8
 	load_method = SINGLE_CASING
 	load_delay = 6
+	gun_safety = TRUE
+
 /obj/item/weapon/gun/projectile/revolver/derringer
-	name = "Derringer M95 Pistol"
+	name = "Derringer M95 pistol"
 	desc = "Officialy the Remington Model 95, this small pistol has two barrels."
 	icon_state = "derringer"
 	item_state = "pistol"

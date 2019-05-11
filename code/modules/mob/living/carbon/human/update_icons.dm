@@ -745,8 +745,13 @@ var/global/list/damage_icon_parts = list()
 			bloodsies.color = head.blood_color
 			standing.overlays += bloodsies
 
+
 		if (istype(head,/obj/item/clothing/head))
 			var/obj/item/clothing/head/hat = head
+			if (hat.attachments.len)
+				for (var/attach in hat.attachments)
+					var/image/NI = image("icon_state" = "[attach]")
+					standing.overlays |= NI
 			var/cache_key = "[hat.light_overlay]_[species.get_bodytype()]"
 			if (hat.on && light_overlay_cache[cache_key])
 				standing.overlays |= light_overlay_cache[cache_key]

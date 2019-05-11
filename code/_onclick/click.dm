@@ -113,6 +113,47 @@
 
 	var/obj/item/W = get_active_hand()
 
+	if (!W)
+
+		var/atom/movable/special_MG = null
+
+		if (using_MG)
+			special_MG = using_MG
+
+		if (special_MG && special_MG.loc)
+
+			var/obj/item/weapon/gun/projectile/automatic/stationary/MG = special_MG
+
+			var/can_fire = FALSE
+
+			switch (MG.dir)
+				if (EAST)
+					if (A.x > MG.x)
+						can_fire = TRUE
+					else
+						can_fire = FALSE
+				if (WEST)
+					if (A.x < MG.x)
+						can_fire = TRUE
+					else
+						can_fire = FALSE
+				if (NORTH, NORTHEAST, NORTHWEST)
+					if (A.y > MG.y)
+						can_fire = TRUE
+					else
+						can_fire = FALSE
+				if (SOUTH, SOUTHEAST, SOUTHWEST)
+					if (A.y < MG.y)
+						can_fire = TRUE
+					else
+						can_fire = FALSE
+
+			if (!can_fire)
+				goto skip
+
+			MG.Fire(A, src, force = TRUE)
+
+			skip
 
 
 	if (W == A) // Handle attack_self

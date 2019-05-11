@@ -23,7 +23,8 @@
 /datum/job/var/is_nomad = FALSE //self explanatory
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 /datum/job/var/is_cowboy = FALSE
-
+/datum/job/var/is_ww1 = FALSE
+/datum/job/var/is_coldwar = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold
@@ -69,10 +70,16 @@
 		. = RUSSIAN
 	else if (istype(src, /datum/job/roman))
 		. = ROMAN
+	else if (istype(src, /datum/job/german))
+		. = GERMAN
 	else if (istype(src, /datum/job/greek))
 		. = GREEK
 	else if (istype(src, /datum/job/arab))
 		. = ARAB
+	else if (istype(src, /datum/job/american))
+		. = AMERICAN
+	else if (istype(src, /datum/job/vietnamese))
+		. = VIETNAMESE
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -120,6 +127,15 @@
 	else if (istype(src, /datum/job/arab))
 		user.faction_text = "ARAB"
 		user.base_faction = new/datum/faction/arab(user, src)
+	else if (istype(src, /datum/job/german))
+		user.faction_text = "GERMAN"
+		user.base_faction = new/datum/faction/german(user, src)
+	else if (istype(src, /datum/job/american))
+		user.faction_text = "AMERICAN"
+		user.base_faction = new/datum/faction/american(user, src)
+	else if (istype(src, /datum/job/vietnamese))
+		user.faction_text = "VIETNAMESE"
+		user.base_faction = new/datum/faction/vietnamese(user, src)
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
 		return "British Empire"

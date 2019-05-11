@@ -4,12 +4,12 @@
 #define INDIANS "INDIANS"
 #define BRITISH "BRITISH"
 #define ROMAN "ROMAN"
+#define AMERICAN "AMERICAN"
 
 // used for languages only
 #define ENGLISH "ENGLISH"
 #define CARIB "CARIB"
 #define LATIN "LATIN"
-#define GERMAN "GERMAN"
 #define UKRAINIAN "UKRAINIAN"
 #define CHINESE "CHINESE"
 #define HEBREW "HEBREW"
@@ -26,7 +26,8 @@
 #define RUSSIAN "RUSSIAN"
 #define GREEK "GREEK"
 #define ARAB "ARAB"
-
+#define GERMAN "GERMAN"
+#define VIETNAMESE "VIETNAMESE"
 /proc/faction_const2name(constant)
 
 	if (constant == PIRATES)
@@ -62,8 +63,17 @@
 	if (constant == ROMAN)
 		return "Roman Republic"
 
+	if (constant == GERMAN)
+		return "German Empire"
+
 	if (constant == GREEK)
 		return "Greek States"
 
 	if (constant == ARAB)
 		return "Arabic Caliphate"
+
+	if (constant == AMERICAN)
+		return "United States"
+
+	if (constant == VIETNAMESE)
+		return "Vietnamese"

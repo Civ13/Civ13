@@ -39,8 +39,12 @@
 	message_without_html = handle_speech_problems(message_without_html)[1]
 
 	for (var/obj/structure/radio/RD in range(2,src))
-		if (RD.transmitter && RD.transmitter_on && RD.check_power())
+		if (RD.transmitter && RD.transmitter_on && (RD.check_power() || RD.powerneeded == 0))
 			RD.broadcast(message_without_html, src)
+
+	for (var/obj/structure/telephone/TL in range(2,src))
+		if (TL.connected)
+			TL.broadcast(message_without_html, src)
 
 /mob/living/carbon/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)

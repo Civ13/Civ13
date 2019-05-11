@@ -86,10 +86,24 @@
 	icon_state = "medical_flag"
 
 /obj/structure/sign/flag/japanese
-	name = "Imperial Japanese Flag"
-	desc = "A flag with the imperial japanese flag."
+	name = "Imperial Japanese flag"
+	desc = "A flag with the imperial Japanese flag."
 	icon_state = "japanese"
 
+/obj/structure/sign/flag/french
+	name = "French flag"
+	desc = "A flag with the tricolour french flag."
+	icon_state = "flag_france"
+
+/obj/structure/sign/flag/german
+	name = "German Empire flag"
+	desc = "A horizontal tricolour flag of the German Empire."
+	icon_state = "flag_germany"
+
+/obj/structure/sign/flag/uk
+	name = "United Kingdom flag"
+	desc = "A flag of the United Kingdom."
+	icon_state = "flag_uk"
 
 /obj/structure/sign/flag/custom
 	name = "flag"

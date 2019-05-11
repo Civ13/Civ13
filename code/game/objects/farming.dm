@@ -180,7 +180,7 @@
 	not_disassemblable = TRUE
 	var/list/biomes = list("tundra", "taiga", "temperate", "sea","semiarid", "desert", "jungle","savanna")
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
-
+	var/vstatic = FALSE
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
 	desc = "a tomato plant."
@@ -368,37 +368,39 @@
 	new fruitpath(loc)
 
 /obj/structure/farming/plant/proc/growth()
-	if (stage < 12)
-		if (stage < readyStageMin)
-			icon_state = "[plant]-grow[stage]"
-			desc = "A young [plant] plant."
-			name = "young [plant] plant"
-		else if (readyHarvest())
-			icon_state = "[plant]-harvest"
-			desc = "A ready to harvest [plant] plant."
-			name = "ready [plant] plant"
-		else
-			icon_state = "[plant]-dead"
-			desc = "A dead [plant] plant."
-			name = "dead [plant] plant"
-		spawn(600)
-			if (get_area(get_turf(src)).location == 0)
-				if (istype(src, /obj/structure/farming/plant/mushroom))
-					stage += 1
+	if (!vstatic)
+		if (stage < 12)
+			if (stage < readyStageMin)
+				icon_state = "[plant]-grow[stage]"
+				desc = "A young [plant] plant."
+				name = "young [plant] plant"
+			else if (readyHarvest())
+				icon_state = "[plant]-harvest"
+				desc = "A ready to harvest [plant] plant."
+				name = "ready [plant] plant"
 			else
-				var/currcl = get_area(get_turf(src)).climate
-				var/count = 0
-				for (var/i in biomes)
-					if (i == currcl)
-						if (currcl == "jungle" || currcl == "desert" || currcl == "savanna")
-							count++
-						for (var/k in seasons)
-							if (season == k)
+				icon_state = "[plant]-dead"
+				desc = "A dead [plant] plant."
+				name = "dead [plant] plant"
+			spawn(600)
+				if (get_area(get_turf(src)).location == 0)
+					if (istype(src, /obj/structure/farming/plant/mushroom))
+						stage += 1
+				else
+					var/currcl = get_area(get_turf(src)).climate
+					var/count = 0
+					for (var/i in biomes)
+						if (i == currcl)
+							if (currcl == "jungle" || currcl == "desert" || currcl == "savanna")
 								count++
-				if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA))
-					stage += 1
-			growth()
-
+							for (var/k in seasons)
+								if (season == k)
+									count++
+					if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA))
+						stage += 1
+				growth()
+	else
+		icon_state = "[plant]-harvest"
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		if (stage < readyStageMin) // destroy

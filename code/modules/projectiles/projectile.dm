@@ -35,7 +35,7 @@
 	var/damage_type = BRUTE //BRUTE, BURN, TOX, OXY, CLONE, HALLOSS are the only things that should be in here
 	var/nodamage = FALSE //Determines if the projectile will skip any damage inflictions
 	var/taser_effect = FALSE //If set then the projectile will apply it's agony damage using stun_effect_act() to mobs it hits, and other damage will be ignored
-	var/check_armour = "bullet" //Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
+	var/check_armor = "gun" //Defines what armor to use when it hits things.  Must be set to gun, arrow, energy or bomb	//Cael - bio and rad are also valid
 	var/projectile_type = /obj/item/projectile
 	var/penetrating = 0 //If greater than zero, the projectile will pass through dense objects as specified by on_penetrate()
 	var/gibs = FALSE
@@ -77,6 +77,22 @@
 	var/is_shrapnel = FALSE
 
 	var/useless = FALSE
+
+	var/can_hit_in_trench = 1
+
+	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
+
+/obj/item/projectile/proc/checktype()
+	if (btype == "AP")
+		damage *= 0.70
+		penetrating *= 2
+		armor_penetration *= 3
+		return
+	else if (btype == "HP")
+		damage *= 1.3
+		penetrating = 0
+		armor_penetration /= 3
+		return
 
 /obj/item/projectile/Destroy()
 	projectile_list -= src
@@ -427,34 +443,42 @@
 	var/passthrough = TRUE //if the projectile should continue flying
 	var/passthrough_message = null
 
-	if (T.density)
+	if(can_hit_in_trench == 1)
+		if(kill_count < (initial(kill_count) - 1))
+			if(!istype(T, /turf/floor/trench))
+				can_hit_in_trench = 0
+			else
+				can_hit_in_trench = -1
+
+	if (T.density || (can_hit_in_trench == -1 && !istype(T, /turf/floor/trench)))
 		passthrough = FALSE
 	else
-		// needs to be its own loop for reasons
-		for (var/obj/O in T.contents)
-			if (O == original)
-				var/hitchance = 60 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
-				if (isstructure(O))
-					hitchance = 100
-				else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
-					hitchance = 100
-				else if (isitem(O)) // any item
-					var/obj/item/I = O
-					hitchance = 25 * I.w_class // a pistol would be 50%
-				if (prob(hitchance))
-					do_bullet_act(O)
-					bumped = TRUE
-					loc = null
-					qdel(src)
-					return FALSE
-				else
-					O.visible_message("<span class = 'warning'>\The [src] narrowly misses [O]!</span>")
-					if (isitem(O) || (O.density && O.anchored)) // since it was on the ground
+		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
+			// needs to be its own loop for reasons
+			for (var/obj/O in T.contents)
+				if (O == original)
+					var/hitchance = 18 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
+					if (isstructure(O) && !istype(O, /obj/structure/lamp))
+						hitchance = 50
+					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
+						hitchance = 100
+					else if (isitem(O)) // any item
+						var/obj/item/I = O
+						hitchance = 9 * I.w_class // a pistol would be 50%
+					if (prob(hitchance))
+						do_bullet_act(O)
 						bumped = TRUE
 						loc = null
 						qdel(src)
 						return FALSE
-				break
+					else
+						O.visible_message("<span class = 'warning'>\The [src] narrowly misses [O]!</span>")
+						if (isitem(O) || (O.density && O.anchored)) // since it was on the ground
+							bumped = TRUE
+							loc = null
+							qdel(src)
+							return FALSE
+					break
 		for (var/atom/movable/AM in T.contents)
 			if (!untouchable.Find(AM))
 				if (isliving(AM) && AM != firer)
@@ -497,7 +521,7 @@
 
 	//penetrating projectiles can pass through things that otherwise would not let them
 	++penetrating
-	if (T.density && penetrating > 0)
+	if ((T.density && penetrating > 0) && (can_hit_in_trench != -1))
 		if (check_penetrate(T))
 			passthrough = TRUE
 			passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"

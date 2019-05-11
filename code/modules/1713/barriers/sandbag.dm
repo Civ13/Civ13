@@ -10,6 +10,13 @@
 	anchored = TRUE
 	climbable = TRUE
 
+/obj/structure/window/sandbag/sandbag
+	name = "sandbag wall"
+	icon_state = "sandbag"
+	layer = MOB_LAYER + 0.02 //just above mobs
+	anchored = TRUE
+	climbable = TRUE
+
 /obj/structure/window/sandbag/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
 		if (WWinput(user, "Dismantle this dirt wall?", "Dismantle dirt wall", "Yes", list("Yes", "No")) == "Yes")
@@ -72,6 +79,26 @@
 	icon_state = "dirt_wall_33%"
 	var/progress = FALSE
 
+/obj/structure/window/sandbag/sandbag/incomplete
+	name = "incomplete sandbag wall"
+	icon_state = "sandbag_33%"
+	var/progress = FALSE
+
+/obj/structure/window/sandbag/sandbag/incomplete/attackby(obj/O as obj, mob/user as mob)
+	user.dir = get_dir(user, src)
+	if (istype(O, /obj/item/weapon/sandbag/sandbag))
+		if (progress < 3)
+			progress += 1
+			if (progress == 2)
+				icon_state = "sandbag_66%"
+			if (progress >= 3)
+				icon_state = "sandbag"
+				new/obj/structure/window/sandbag/sandbag(loc, dir)
+				qdel(src)
+			visible_message("<span class='danger'>[user] puts the sandbag into \the [src].</span>")
+			qdel(O)
+	else
+		return
 
 /obj/structure/window/sandbag/incomplete/ex_act(severity)
 	qdel(src)
@@ -190,6 +217,32 @@
 	anchored = TRUE
 	climbable = TRUE
 	health = 30
+
+/obj/item/weapon/sandbag/sandbag //:agony:
+	name = "sandbag"
+	icon_state = "sandbag_new"
+	icon = 'icons/obj/items.dmi'
+	w_class = TRUE
+	sand_amount = FALSE
+	value = 0
+/obj/item/weapon/sandbag/sandbag/attack_self(mob/user)
+	user << "You start building the sandbag wall..."
+	if (do_after(user, 25, src))
+		user << "You finish the placement of the sandbag wall foundation."
+		new /obj/structure/window/sandbag/sandbag/incomplete(user.loc)
+		qdel(src)
+		return
+
+/obj/structure/window/sandbag/sandbag/attack_hand(var/mob/user as mob)
+	if (locate(src) in get_step(user, user.dir))
+		if (WWinput(user, "Dismantle this sandbag wall?", "Dismantle sandbag wall", "Yes", list("Yes", "No")) == "Yes")
+			visible_message("<span class='danger'>[user] starts dismantling the sandbag wall.</span>", "<span class='danger'>You start dismantling the sandbag wall.</span>")
+			if (do_after(user, 200, src))
+				visible_message("<span class='danger'>[user] finishes dismantling the sandbag wall.</span>", "<span class='danger'>You finish dismantling the sandbag wall.</span>")
+				var/turf = get_turf(src)
+				new /obj/item/weapon/sandbag/sandbag(turf)
+				qdel(src)
+
 
 /obj/structure/window/sandbag/rock/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))

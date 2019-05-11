@@ -51,6 +51,14 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars
+	name = "binoculars"
+	desc = "A pair of binoculars."
+	icon_state = "binoculars"
+	max_zoom = ZOOM_CONSTANT*3
+	attachable = FALSE
+	value = 15
+
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null
@@ -357,6 +365,8 @@ Parts of code courtesy of Super3222
 		client.view = world.view
 
 /mob/living/carbon/human/proc/using_zoom()
+	if (using_MG)
+		return TRUE
 	if (stat == CONSCIOUS)
 		if (client && actions.len)
 			if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons

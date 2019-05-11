@@ -371,7 +371,7 @@
 			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
 			return
 
-		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP)
+		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP && map.ID != MAP_HILL203)
 			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now.</span>"
 			return
 
@@ -543,6 +543,10 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
+	if (job.is_ww1)
+		if (client.prefs.gender == FEMALE)
+			usr << "<span class='danger'>You must be male to play as this faction.</span>"
+			return
 	if (map.age == "1013" && !map.civilizations && !istype(job, /datum/job/civilian))
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
@@ -607,6 +611,12 @@
 		dat += "[alive_japanese.len] Japanese "
 	if (RUSSIAN in map.faction_organization)
 		dat += "[alive_russian.len] Russian "
+	if (GERMAN in map.faction_organization)
+		dat += "[alive_german.len] German "
+	if (AMERICAN in map.faction_organization)
+		dat += "[alive_american.len] American "
+	if (VIETNAMESE in map.faction_organization)
+		dat += "[alive_vietnamese.len] Vietnamese "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -627,6 +637,9 @@
 		ARAB = FALSE,
 		RUSSIAN = FALSE,
 		JAPANESE = FALSE,
+		GERMAN = FALSE,
+		AMERICAN = FALSE,
+		VIETNAMESE = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -689,6 +702,21 @@
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/greek) && !greek_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/arab) && !arab_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/russian) && !russian_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/german) && !german_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/american) && !american_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/vietnamese) && !vietnamese_toggled)
 			job_is_available = FALSE
 		// check if the job is admin-locked or disabled codewise
 

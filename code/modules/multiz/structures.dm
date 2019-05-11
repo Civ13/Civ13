@@ -249,11 +249,26 @@
 	icon_state = "hole_top"
 	istop = TRUE
 
+/obj/structure/multiz/ladder/ww2/tunneltop/vietcong
+	icon_state = "pine_closed"
+
+/obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
+	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = M
+		if (H.faction_text != "VIETNAMESE")
+			H << "This tunnel is too small for you!"
+			return
+		else
+			..()
+	else
+		..()
+
 /obj/structure/multiz/ladder/ww2/tunnelbottom
 	name = "tunnel exit"
 	desc = "A makeshift stairway, leads to the surface."
 	icon_state = "hole_bottom"
 	istop = FALSE
+/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong
 
 /obj/structure/multiz/stairs
 	name = "Stairs"

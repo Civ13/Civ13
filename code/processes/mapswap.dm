@@ -7,7 +7,8 @@
 		"1013" = 0,
 		"1713" = 0,
 		"1873" = 0,
-//		"1904" = 0,
+		"1904" = 0,
+		"1969" = 0,
 		"Civilization 13" = 0,
 	)
 	var/ready = TRUE
@@ -31,7 +32,8 @@
 				"1013" = 0,
 				"1713" = 0,
 				"1873" = 0,
-//				"1904" = 0,
+				"1904" = 0,
+				"1969" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list("Civilization 13" = 0,)
@@ -77,11 +79,16 @@
 	if (is_ready())
 		ready = FALSE
 		epoch = vote.voted_epoch
-
+		if (epoch == "1969")
+	// 1969 - TDM
+			maps = list(
+				MAP_COMPOUND = 0,
+			)
 		if (epoch == "1904")
 	// 1903 - TDM
 			maps = list(
 				MAP_HILL203 = 0,
+				MAP_YPRES = 0,
 			)
 
 		if (epoch == "1873")

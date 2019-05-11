@@ -39,6 +39,8 @@ obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (J.is_medieval == TRUE)
 		. = FALSE
+	else if (J.is_ww1 == TRUE)
+		. = FALSE
 	else
 		. = TRUE
 /obj/map_metadata/four_colonies/faction2_can_cross_blocks()

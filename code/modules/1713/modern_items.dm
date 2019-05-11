@@ -15,12 +15,26 @@
 	powerneeded = 2
 	var/light_amt = 6 //light range
 	layer = 3.95
+	var/brightness_color = null
 
 /obj/structure/lamp/New()
 	..()
 	do_light()
 
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+		if (powersource)
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		if (istype(src, /obj/structure/engine))
+			var/obj/structure/engine/EN = src
+			if (!isemptylist(EN.connections))
+				user << "<span class='notice'>Remove the cables first.</span>"
+				return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		return
 	if (!anchored)
 		user << "<span class='notice'>Fix the lamp in place with a wrench first.</span>"
 		return
@@ -62,8 +76,11 @@
 
 
 /obj/structure/lamp/proc/do_light()
-	if (check_power())
-		set_light(light_amt)
+	if (check_power() || powerneeded == 0)
+		if (brightness_color)
+			set_light(light_amt, 1, brightness_color)
+		else
+			set_light(light_amt)
 		icon_state = "[base_icon]_on"
 		powered = TRUE
 		on = TRUE
@@ -112,6 +129,12 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/lamp/lamp_small/alwayson
+	powerneeded = 0
+	on = TRUE
+/obj/structure/lamp/lamp_small/alwayson/red
+	brightness_color = "#da0205"
+
 /obj/structure/lamp/lamp_big
 	name = "light tube"
 	desc = "A light tube."
@@ -121,6 +144,10 @@
 	light_amt = 4
 	not_movable = FALSE
 	not_disassemblable = FALSE
+
+/obj/structure/lamp/lamp_big/alwayson
+	powerneeded = 0
+	on = TRUE
 
 /obj/structure/refinery
 	name = "refinery"

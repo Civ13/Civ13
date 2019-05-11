@@ -75,6 +75,7 @@
 	var/weight = 0
 	var/heavy = FALSE
 
+	var/equiptimer = 0 //if it takes some time to equip to a active hand (e.g. guns)
 /obj/item/equipped()
 	..()
 	var/mob/M = loc
@@ -147,31 +148,60 @@
 /obj/item/attack_hand(mob/user as mob)
 	if (isturf(loc) && anchored) return
 	if (!user) return
-	if (hasorgans(user))
-		var/mob/living/carbon/human/H = user
-		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
-		if (user.hand)
-			temp = H.organs_by_name["l_hand"]
-		if (temp && !temp.is_usable())
-			user << "<span class='notice'>You try to move your [temp.name], but cannot!</span>"
-			return
-		if (!temp)
-			user << "<span class='notice'>You try to use your hand, but realize it is no longer attached!</span>"
-			return
-	pickup(user)
-	if (istype(loc, /obj/item/weapon/storage))
-		var/obj/item/weapon/storage/S = loc
-		S.remove_from_storage(src)
+	if (do_after(user,equiptimer, src, can_move = TRUE))
+		if (src in range(1,user))
+			if (hasorgans(user))
+				var/mob/living/carbon/human/H = user
+				var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
+				if (user.hand)
+					temp = H.organs_by_name["l_hand"]
+				if (temp && !temp.is_usable())
+					user << "<span class='notice'>You try to move your [temp.name], but cannot!</span>"
+					return
+				if (!temp)
+					user << "<span class='notice'>You try to use your hand, but realize it is no longer attached!</span>"
+					return
+			pickup(user)
+			if (istype(loc, /obj/item/weapon/storage))
+				var/obj/item/weapon/storage/S = loc
+				S.remove_from_storage(src)
 
-	throwing = FALSE
-	if (loc == user)
-		if (!user.unEquip(src))
-			return
-	else
-		if (isliving(loc))
-			return
-	pickup(user)
-	user.put_in_active_hand(src)
+			throwing = FALSE
+			if (loc == user)
+				if (!user.unEquip(src))
+					return
+			else
+				if (isliving(loc))
+					return
+			user.put_in_active_hand(src)
+			pickup(user)
+		else
+			if (!isturf(src.loc))
+				if (hasorgans(user))
+					var/mob/living/carbon/human/H = user
+					var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
+					if (user.hand)
+						temp = H.organs_by_name["l_hand"]
+					if (temp && !temp.is_usable())
+						user << "<span class='notice'>You try to move your [temp.name], but cannot!</span>"
+						return
+					if (!temp)
+						user << "<span class='notice'>You try to use your hand, but realize it is no longer attached!</span>"
+						return
+				pickup(user)
+				if (istype(loc, /obj/item/weapon/storage))
+					var/obj/item/weapon/storage/S = loc
+					S.remove_from_storage(src)
+
+				throwing = FALSE
+				if (loc == user)
+					if (!user.unEquip(src))
+						return
+				else
+					if (isliving(loc))
+						return
+				user.put_in_active_hand(src)
+				pickup(user)
 	return
 
 // Due to storage type consolidation this should get used more now.
