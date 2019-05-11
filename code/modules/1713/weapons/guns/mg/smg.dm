@@ -60,6 +60,13 @@
 	stat = "mg"
 	w_class = 3
 	attachment_slots = ATTACH_IRONSIGHTS
+
+/obj/item/weapon/gun/projectile/submachinegun/special_check(mob/user)
+	if (!user.has_empty_hand(both = FALSE))
+		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		return FALSE
+	..()
+
 /obj/item/weapon/gun/projectile/submachinegun/update_icon()
 	if (sniper_scope)
 		if (!ammo_magazine)

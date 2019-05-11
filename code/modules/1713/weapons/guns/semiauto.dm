@@ -84,6 +84,13 @@
 			item_state = base_icon
 	update_held_icon()
 	return
+
+/obj/item/weapon/gun/projectile/semiautomatic/special_check(mob/user)
+	if (!user.has_empty_hand(both = FALSE))
+		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
+		return FALSE
+	..()
+
 /obj/item/weapon/gun/projectile/semiautomatic/handle_post_fire()
 	..()
 
