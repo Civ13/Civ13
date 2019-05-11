@@ -56,7 +56,10 @@
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
 	if(!..(user, 2))
 		return
-	user << "[rockets.len] / [max_rockets] rockets."
+	if (rockets)
+		user << "<b>LOADED</B>"
+	else
+		user << "<b>UNLOADED</B>"
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))

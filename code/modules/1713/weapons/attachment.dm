@@ -198,7 +198,7 @@ Current Defines (_defines/attachment.dm)
 
 
 /obj/item/weapon/attachment/bayonet/military
-	force = WEAPON_FORCE_DANGEROUS/1.5
+	force = WEAPON_FORCE_ROBUST
 //	weakens = 1
 	weight = 0.450
 	value = 12
