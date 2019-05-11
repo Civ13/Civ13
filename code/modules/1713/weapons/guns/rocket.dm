@@ -48,8 +48,7 @@
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
-	else
-		return TRUE
+	return TRUE
 /obj/item/weapon/gun/launcher/rocket
 	name = "rocket launcher"
 	desc = "MAGGOT."

@@ -86,6 +86,9 @@
 	return
 
 /obj/item/weapon/gun/projectile/semiautomatic/special_check(mob/user)
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
 	if (!user.has_empty_hand(both = FALSE))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE

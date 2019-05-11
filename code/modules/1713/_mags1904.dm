@@ -36,7 +36,7 @@ obj/item/ammo_magazine/madsen
 	multiple_sprites = TRUE
 
 obj/item/ammo_magazine/b762
-	name = "belt (7.92x51mm)"
+	name = "belt (7.62x51mm)"
 	icon_state = "b762"
 	mag_type = MAGAZINE
 	caliber = "a762x51_weak"

@@ -126,13 +126,16 @@
 
 /obj/item/weapon/gun/projectile/revolver/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
-	return ..()
+	return TRUE
 
 /obj/item/weapon/gun/projectile/revolver/handle_post_fire()
 	..()
@@ -535,7 +538,10 @@
 	if (!cocked && single_action)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
-	return ..()
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
+	return TRUE
 
 /obj/item/weapon/gun/projectile/revolving/handle_post_fire()
 	..()

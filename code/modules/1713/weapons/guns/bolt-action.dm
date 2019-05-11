@@ -131,14 +131,16 @@
 	check_bolt--
 
 /obj/item/weapon/gun/projectile/boltaction/special_check(mob/user)
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the bolt is open!</span>"
 		return FALSE
 	if (!user.has_empty_hand(both = FALSE))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
-	else
-		return TRUE
+	return TRUE
 
 /obj/item/weapon/gun/projectile/boltaction/load_ammo(var/obj/item/A, mob/user)
 	if (!bolt_open)
@@ -248,7 +250,7 @@
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the breech is open!</span>"
 		return FALSE
-	return ..()
+	return TRUE
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt

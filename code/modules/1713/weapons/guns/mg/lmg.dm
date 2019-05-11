@@ -84,6 +84,9 @@
 	chambered = null
 
 /obj/item/weapon/gun/projectile/automatic/special_check(mob/user)
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
 	if (!user.has_empty_hand(both = FALSE))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
@@ -115,7 +118,7 @@
 	magazine_type = /obj/item/ammo_magazine/b762
 	weight = 10.5
 	firemodes = list(
-		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.8, 1.2, 1.4, 1.6, 1.8), recoil = 2),)
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),)
 	slot_flags = 0
 	force = 20
 	nothrow = TRUE
