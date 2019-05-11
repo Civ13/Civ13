@@ -261,6 +261,7 @@
 	det_time = 50
 	throw_range = 8
 
+
 /obj/item/weapon/grenade/coldwar/m26
 	name = "M26 grenade"
 	desc = "An American grenade introduced in the 1950's."
@@ -271,19 +272,44 @@
 	set waitfor = 0
 	..()
 
-	var/turf/O = get_turf(src)
-	if(!O) return
+	var/turf/T = get_turf(src)
+	if(!T) return
 
 	if(explosion_size)
-		explosion(O,0,1,3,1)
-		qdel(src)
+		explosion(T,0,1,3,1)
+	if (!ismob(loc))
 
+		var/list/target_turfs = getcircle(T, spread_range)
+		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+		for (var/turf/TT in target_turfs)
+			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+			P.damage = fragment_damage
+			P.pellets = fragments_per_projectile
+			P.range_step = damage_step
+			P.shot_from = name
+			P.launch_fragment(TT)
+
+			// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
+			for (var/mob/living/L in T)
+				P.attack_mob(L, 0, 0)
+
+	spawn (5)
+		qdel(src)
 /obj/item/weapon/grenade/ww2
 	secondary_action = TRUE
 	var/explosion_size = 2
 /obj/item/weapon/grenade/modern
 	secondary_action = TRUE
 /obj/item/weapon/grenade/coldwar
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 37  //total number of fragments produced by the grenade
+	var/fragment_damage = 15
+	var/damage_step = 2      //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/big_bomb = FALSE
+
+	//The radius of the circle used to launch projectiles. Lower values mean less projectiles are used but if set too low gaps may appear in the spread pattern
+	var/spread_range = 7
 	secondary_action = TRUE
 	var/explosion_size = 2
 /obj/item/weapon/grenade/secondary_attack_self(mob/living/carbon/human/user)
@@ -299,3 +325,17 @@
 					qdel(src)
 		else
 			return
+
+
+/obj/item/projectile/bullet/pellet/fragment
+	damage = 18
+	range_step = 2
+
+	base_spread = FALSE //causes it to be treated as a shrapnel explosion instead of cone
+	spread_step = 12
+
+	silenced = TRUE //embedding messages are still produced so it's kind of weird when enabled.
+	no_attack_log = TRUE
+	muzzle_type = null
+
+	embed = TRUE

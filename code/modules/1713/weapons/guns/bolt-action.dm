@@ -674,6 +674,7 @@
 	item_state ="pistol"
 	base_icon = "obrez"
 	force = 5
+	attachment_slots = ATTACH_IRONSIGHTS
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 1.4

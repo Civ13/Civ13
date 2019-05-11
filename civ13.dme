@@ -453,6 +453,7 @@
 #include "code\modules\1713\weapons\guns\lever_action.dm"
 #include "code\modules\1713\weapons\guns\pistols.dm"
 #include "code\modules\1713\weapons\guns\revolvers.dm"
+#include "code\modules\1713\weapons\guns\rocket.dm"
 #include "code\modules\1713\weapons\guns\semiauto.dm"
 #include "code\modules\1713\weapons\guns\shotguns.dm"
 #include "code\modules\1713\weapons\guns\mg\_stationary.dm"
