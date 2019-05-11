@@ -132,7 +132,7 @@
 	else
 		++jamcheck
 
-	if (prob(jamcheck/2))
+	if (prob(jamcheck/4))
 		jammed_until = max(world.time + (jamcheck * 5), 50)
 		jamcheck = 0
 
