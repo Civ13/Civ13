@@ -45,7 +45,7 @@
 	var/list/rockets = new/list()
 	release_force = 15
 	throw_distance = 30
-	allow_spin = FALSE
+
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
 	if(!..(user, 2))
 		return
@@ -118,7 +118,7 @@
 	icon_state = "missile"
 	var/primed = null
 	throwforce = 15
-
+	allow_spin = FALSE
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
