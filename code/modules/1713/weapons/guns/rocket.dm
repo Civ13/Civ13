@@ -25,6 +25,7 @@
 	update_release_force(projectile)
 	projectile.loc = get_turf(user)
 	projectile.throw_at(target, throw_distance, release_force, user)
+	projectile.dir = get_dir(src.loc, target.loc)
 	update_icon(projectile)
 	return 1
 
