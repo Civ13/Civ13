@@ -98,7 +98,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/update_icon()
 	..()
-	if(rockets)
+	if(rockets.len)
 		icon_state = "rpg7"
 	else
 		icon_state = "rpg7_empty"
@@ -120,12 +120,13 @@
 		..()
 
 /obj/item/ammo_casing/rocket
-	name = "RPG7 rocket shell"
+	name = "RPG-7 rocket"
 	desc = "A high explosive designed to be fired from a launcher."
 	icon_state = "rocketshell"
 	projectile_type = /obj/item/missile
 	caliber = "rocket"
 	w_class = 4
+	slot_flags = SLOT_BELT
 
 /obj/item/missile
 	icon = 'icons/obj/grenade.dmi'
@@ -225,6 +226,7 @@
 	projectile_type = /obj/item/missile/grenade
 	caliber = "g40"
 	w_class = 4
+	slot_flags = SLOT_POCKET
 
 /obj/item/missile/grenade
 	icon = 'icons/obj/grenade.dmi'
