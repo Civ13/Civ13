@@ -4,7 +4,7 @@
 	w_class = 5.0
 	flags =  CONDUCT
 	slot_flags = SLOT_BACK
-
+	var/load_delay = 10
 	var/release_force = 0
 	var/throw_distance = 10
 	fire_sound_text = "a launcher firing"
@@ -56,7 +56,7 @@
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
-		if(rockets.len < max_rockets)
+		if(rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.drop_item()
 			I.loc = src
 			rockets += I
@@ -164,7 +164,7 @@
 
 /obj/item/weapon/gun/launcher/grenadelauncher/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/grenade_l))
-		if(rockets.len < max_rockets)
+		if(rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
 			user.drop_item()
 			I.loc = src
 			rockets += I
