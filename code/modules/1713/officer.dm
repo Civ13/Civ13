@@ -165,41 +165,42 @@ var/global/list/valid_coordinates = list()
 		var/input1 = WWinput(src, "Which type of airstrike to request?", "Order Airstrike", "Cancel", validchoices)
 		if (input1 == "Cancel")
 			return
-		var/inputx = input(src, "Choose the X coordinate:") as num
-		if (inputx > world.maxx)
-			inputx = world.maxx
-		if (inputx < 0)
-			inputx = 1
-		var/inputy = input(src, "Choose the Y coordinate:") as num
-		if (inputy > world.maxy)
-			inputy = world.maxy
-		if (inputy < 0)
-			inputy = 1
-		if (global.valid_coordinates.Find("[inputx],[inputy]"))
-			valid_coords_check = TRUE
 		else
-			for (var/coords in global.valid_coordinates)
-				var/splitcoords = splittext(coords, ",")
-				var/coordx = text2num(splitcoords[1])
-				var/coordy = text2num(splitcoords[2])
-				if (abs(coordx - inputx) <= 15)
-					if (abs(coordy - inputy) <= 15)
-						valid_coords_check = TRUE
-		if (!valid_coords_check)
-			src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
-			return
-		for (var/mob/living/carbon/human/friendlies in range(7, locate(inputx,inputy,src.z)))
-			if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
-				src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+			var/inputx = input(src, "Choose the X coordinate:") as num
+			if (inputx > world.maxx)
+				inputx = world.maxx
+			if (inputx < 0)
+				inputx = 1
+			var/inputy = input(src, "Choose the Y coordinate:") as num
+			if (inputy > world.maxy)
+				inputy = world.maxy
+			if (inputy < 0)
+				inputy = 1
+			if (global.valid_coordinates.Find("[inputx],[inputy]"))
+				valid_coords_check = TRUE
+			else
+				for (var/coords in global.valid_coordinates)
+					var/splitcoords = splittext(coords, ",")
+					var/coordx = text2num(splitcoords[1])
+					var/coordy = text2num(splitcoords[2])
+					if (abs(coordx - inputx) <= 15)
+						if (abs(coordy - inputy) <= 15)
+							valid_coords_check = TRUE
+			if (!valid_coords_check)
+				src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Those coordinates were not reported by a scout or officer. Over.\"</font>"
 				return
-		src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
-		map.artillery_count--
-		map.artillery_last = world.time
-		spawn(rand(150,250)*10)
-			airstrike(input1,inputx,inputy,src.z)
-		message_admins("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
-		log_game("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
-		return
+			for (var/mob/living/carbon/human/friendlies in range(7, locate(inputx,inputy,src.z)))
+				if (friendlies.faction_text == faction_text && friendlies.stat != DEAD)
+					src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2]> <span class = 'small_message'>([default_language.name])</span> \"Negative, [name], I repeat, negative. Friendlies in the area. Choose another area. Over.\"</font>"
+					return
+			src << "\icon[radio] <font size=2 color=#FFAE19><b>Air Force Command, [currfreq]kHz:</font></b><font size=2> <span class = 'small_message'>([default_language.name])</span> \"Roger, [name], [input1] bombing run underway on [inputx],[inputy]. Stay clear. Over.\"</font>"
+			map.artillery_count--
+			map.artillery_last = world.time
+			spawn(rand(15,25)*10)
+				airstrike(input1,inputx,inputy,src.z)
+			message_admins("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
+			log_game("[key_name_admin(src)] ordered an [input1] airstrike at ([inputx],[inputy],[src.z]).")
+			return
 	else if (map.artillery_count <= 0)
 		map.artillery_count = 0
 		src << "<span class='warning'>There are no more airstrikes available.</span>"
