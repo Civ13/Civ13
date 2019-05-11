@@ -35,6 +35,17 @@ obj/item/ammo_magazine/madsen
 	max_ammo = 25
 	multiple_sprites = TRUE
 
+obj/item/ammo_magazine/b762
+	name = "belt (7.92x51mm)"
+	icon_state = "b762"
+	mag_type = MAGAZINE
+	caliber = "a762x51_weak"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 1440)
+	ammo_type = /obj/item/ammo_casing/a762x51/weak
+	max_ammo = 100
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/gewehr71
 	name = "clip (7.65x53mm)"
 	icon_state = "kclip"

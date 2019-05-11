@@ -8,8 +8,6 @@
 	var/release_force = 0
 	var/throw_distance = 10
 	fire_sound_text = "a launcher firing"
-	var/gun_safety = TRUE
-	var/safetyon = FALSE
 
 //This normally uses a proc on projectiles and our ammo is not strictly speaking a projectile.
 /obj/item/weapon/gun/launcher/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)

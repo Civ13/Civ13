@@ -52,6 +52,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/vietnamese/vietcong_doctor
@@ -101,6 +102,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/vietnamese/vietcong_comms
@@ -151,6 +153,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 
 	return TRUE
 
@@ -210,6 +213,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 
 	return TRUE
 
@@ -268,6 +272,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/american_sergeant
@@ -314,6 +319,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/american_medic
@@ -358,6 +364,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
 
 /datum/job/american/american_radioman
@@ -402,6 +409,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 
 	return TRUE
 
@@ -455,11 +463,57 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/american/american_lmg
+	title = "US Automatic Rifleman"
+	rank_abbreviation = "Spc."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/american/american_lmg/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni(H), slot_w_uniform)
+	else
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni2(H), slot_w_uniform)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_greentrousers(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/m60(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, carrying a light machine gun. Keep your squad covered!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_VERY_HIGH) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_HIGH)
+	return TRUE
 /datum/job/american/american_soldier
-	title = "US Soldier"
+	title = "US Rifleman"
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -496,7 +550,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>[title]</b>, fighting against the Vietcong!")
+	H.add_note("Role", "You are a <b>[title]</b>, a basic grunt. Follow orders and defeat the enemy!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH) //muskets
@@ -505,4 +559,5 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
