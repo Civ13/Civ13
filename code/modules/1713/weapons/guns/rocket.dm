@@ -50,7 +50,7 @@
 /obj/item/weapon/gun/launcher/rocket/examine(mob/user)
 	if(!..(user, 2))
 		return
-	user << "\blue [rockets.len] / [max_rockets] rockets."
+	user << "[rockets.len] / [max_rockets] rockets."
 
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
 	if(istype(I, /obj/item/ammo_casing/rocket))
@@ -59,6 +59,7 @@
 			I.loc = src
 			rockets += I
 			user << "You put the rocket in \the [src]."
+			update_icon()
 		else
 			usr << "\The [src] cannot hold more rockets."
 
@@ -74,6 +75,7 @@
 /obj/item/weapon/gun/launcher/rocket/handle_post_fire(mob/user, atom/target)
 	message_admins("[key_name_admin(user)] fired a rocket from a rocket launcher ([src.name]) at [target].")
 	log_game("[key_name_admin(user)] used a rocket launcher ([src.name]) at [target].")
+	update_icon()
 	..()
 
 /obj/item/weapon/gun/launcher/rocket/rpg7
@@ -97,6 +99,7 @@
 		rockets.len--
 		user.put_in_hands(G)
 		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
+		update_icon()
 	else
 		user << "<span class='warning'>\The [src] is empty.</span>"
 
@@ -123,6 +126,102 @@
 	throw_impact(atom/hit_atom)
 		if(primed)
 			explosion(hit_atom, 0, 1, 2, 4)
+			qdel(src)
+		else
+			..()
+		return
+
+
+///////////////////M79
+/obj/item/weapon/gun/launcher/grenadelauncher
+	name = "grenade launcher"
+	desc = "MAGGOT."
+	icon_state = "rocket"
+	item_state = "rocket"
+	w_class = 5
+	throw_speed = 2
+	throw_range = 10
+	force = 5.0
+	flags =  CONDUCT
+	slot_flags = 0
+	fire_sound = 'sound/effects/bang.ogg'
+	var/max_rockets = 1
+	var/list/rockets = new/list()
+	release_force = 9
+	throw_distance = 12
+
+/obj/item/weapon/gun/launcher/grenadelauncher/examine(mob/user)
+	if(!..(user, 2))
+		return
+	if (rockets)
+		user << "<b>LOADED</B>"
+	else
+		user << "<b>UNLOADED</B>"
+
+/obj/item/weapon/gun/launcher/grenadelauncher/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I, /obj/item/ammo_casing/grenade_l))
+		if(rockets.len < max_rockets)
+			user.drop_item()
+			I.loc = src
+			rockets += I
+			user << "You put the grenade in \the [src]."
+		else
+			usr << "\The [src] cannot hold more grenades."
+
+/obj/item/weapon/gun/launcher/grenadelauncher/consume_next_projectile()
+	if(rockets.len)
+		var/obj/item/ammo_casing/rocket/I = rockets[1]
+		var/obj/item/missile/grenade/M = new (src)
+		M.primed = 1
+		rockets -= I
+		return M
+	return null
+
+/obj/item/weapon/gun/launcher/grenadelauncher/handle_post_fire(mob/user, atom/target)
+	message_admins("[key_name_admin(user)] fired a grenade from a grenade launcher ([src.name]) at [target].")
+	log_game("[key_name_admin(user)] used a grenade launcher ([src.name]) at [target].")
+	..()
+
+/obj/item/weapon/gun/launcher/grenadelauncher/M79
+	name = "M79 Grenade Launcher"
+	desc = "American multi-use grenade launcher."
+	icon_state = "m79"
+	item_state = "m79"
+	slot_flags = SLOT_BACK
+	force = 10
+
+/obj/item/weapon/gun/launcher/grenadelauncher/M79/proc/unload(mob/user)
+	if(rockets.len)
+		var/obj/item/ammo_casing/rocket/G = rockets[rockets.len]
+		rockets.len--
+		user.put_in_hands(G)
+		user.visible_message("\The [user] removes \a [G] from [src].", "<span class='notice'>You remove \a [G] from \the [src].</span>")
+	else
+		user << "<span class='warning'>\The [src] is empty.</span>"
+
+/obj/item/weapon/gun/launcher/grenadelauncher/M79/attack_hand(mob/user)
+	if(user.get_inactive_hand() == src)
+		unload(user)
+	else
+		..()
+
+/obj/item/ammo_casing/grenade_l
+	name = "40mm grenade"
+	desc = "A high explosive designed to be fired from a launcher."
+	icon_state = "grenade_40mm"
+	projectile_type = /obj/item/missile/grenade
+	caliber = "g40"
+	w_class = 4
+
+/obj/item/missile/grenade
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "grenade"
+	primed = null
+	throwforce = 12
+	allow_spin = FALSE
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 1, 2, 2)
 			qdel(src)
 		else
 			..()
