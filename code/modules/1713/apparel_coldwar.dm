@@ -120,8 +120,8 @@
 	name = "M1 medical helmet"
 	desc = "A typical US Army helmet, with a red cross on a white background."
 	icon_state = "ushelmet_medical"
-	item_state = "ushelmet_medica"
-	worn_state = "ushelmet_medica"
+	item_state = "ushelmet_medical"
+	worn_state = "ushelmet_medical"
 
 /obj/item/clothing/head/helmet/modern/ushelmet/late/New()
 	..()

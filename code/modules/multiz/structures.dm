@@ -255,7 +255,7 @@
 /obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
 	if (istype(M, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = M
-		if (H.faction_text == "BRITISH")
+		if (H.faction_text != "VIETNAMESE")
 			H << "This tunnel is too small for you!"
 			return
 		else

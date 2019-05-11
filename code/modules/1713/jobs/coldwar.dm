@@ -88,6 +88,8 @@
 	uniform.attackby(white, H)
 	var/obj/item/clothing/accessory/armband/blue_scarf/bscarf = new /obj/item/clothing/accessory/armband/blue_scarf(null)
 	uniform.attackby(bscarf, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
@@ -139,7 +141,7 @@
 	else if (pickgun == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
 	else if (pickgun == 4)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/british/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/british(null)
