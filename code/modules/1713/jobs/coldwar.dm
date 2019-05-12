@@ -323,6 +323,50 @@
 	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
 
+/datum/job/american/american_sf
+	title = "US Commando"
+	rank_abbreviation = "Cpl."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_officer = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/american/american_sf/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_tigerstripes(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/grey(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/facecamo(H), slot_wear_mask)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/commando_bandana(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/boot/bowie(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(lw, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("mg", STAT_MEDIUM_HIGH)
+	return TRUE
+
 /datum/job/american/american_medic
 	title = "US Field Medic"
 	rank_abbreviation = "Cpl."

@@ -82,10 +82,10 @@
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
-		++jamcheck
+		jamcheck += 0.25
 
-	if (prob(jamcheck/3))
-		jammed_until = max(world.time + (jamcheck * 5), 50)
+	if (prob(jamcheck))
+		jammed_until = max(world.time + (jamcheck * 4), 45)
 		jamcheck = 0
 
 	last_fire = world.time
@@ -294,6 +294,27 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando
+	name = "XM177 Colt Commando"
+	desc = "A carbine version of the AR-15/M16, chambered in 5.56x45mm."
+	icon_state = "m4"
+	item_state = "m4"
+	base_icon = "m4"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	weight = 3.07
+	equiptimer = 9
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		list(name="full auto",	burst=1, burst_delay=1.1, recoil=1.2, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.8)),
+		)
+	effectiveness_mod = 1.08
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
 /obj/item/weapon/gun/projectile/submachinegun/m14
 	name = "M14"
 	desc = "An american assault rifle, chambered in 7.62x51mm."
@@ -309,7 +330,7 @@
 	slot_flags = SLOT_BACK
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
-		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=3, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1

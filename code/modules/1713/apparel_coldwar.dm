@@ -49,6 +49,34 @@
 	worn_state = "us_lightuni2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
+/obj/item/clothing/under/us_uni/us_tigerstripes
+	name = "tigerstripes camo uniform"
+	desc = "A camo uniform in the tigerstripes pattern."
+	icon_state = "us_camo_tigerstripes"
+	item_state = "us_camo_tigerstripes"
+	worn_state = "us_camo_tigerstripes"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/head/commando_bandana
+	name = "olive drab bandana"
+	desc = "An olive drab coloured bandana."
+	icon_state = "commando_bandana"
+	item_state = "commando_bandana"
+	body_parts_covered = HEAD
+
+/obj/item/clothing/accessory/storage/webbing/light
+	name = "light webbing"
+	desc = "a light webbing, with lower capacity but permitting fast movement."
+	slots = 5
+	icon_state = "german_vest"
+	item_state = "german_vest"
+
+/obj/item/clothing/mask/facecamo
+	name = "woodlands face camo"
+	desc = "Face painting in woodland camo pattern."
+	icon_state = "painting_woodland"
+	item_state = "painting_woodland"
+
 /obj/item/clothing/suit/storage/us_jacket
 	name = "olive drab jacket"
 	desc = "The standard US Army olive drab jacket of the mid-20th century."
