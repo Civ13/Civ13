@@ -139,6 +139,10 @@ var/civmax_research = list(130,130,130)
 	var/windspeed = "a light breeze" // calm, light breeze, moderate breeze, strong breeze, gale
 	var/winddesc = "A light Eastern breeze."
 
+	var/artillery_count = 0
+	var/artillery_timer = 3000
+	var/artillery_last = 0
+	var/list/valid_artillery = list("Explosive","Napalm","White Phosphorus")
 /obj/map_metadata/New()
 	..()
 	map = src

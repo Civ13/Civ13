@@ -42,6 +42,10 @@
 		if (RD.transmitter && RD.transmitter_on && (RD.check_power() || RD.powerneeded == 0))
 			RD.broadcast(message_without_html, src)
 
+	for (var/obj/item/weapon/radio/PRD in range(1,src))
+		if (PRD.transmitter && PRD.transmitter_on)
+			PRD.broadcast(message_without_html, src)
+
 	for (var/obj/structure/telephone/TL in range(2,src))
 		if (TL.connected)
 			TL.broadcast(message_without_html, src)

@@ -625,6 +625,11 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/a762x51
 	caliber = "a762x51"
 	value = 2
+
+/obj/item/ammo_casing/a762x51/weak
+	projectile_type = /obj/item/projectile/bullet/rifle/a762x51/weak
+	caliber = "a762x51_weak"
+
 /obj/item/ammo_casing/a762x39
 	name = "7.62x39mm bullet"
 	desc = "A brass casing."

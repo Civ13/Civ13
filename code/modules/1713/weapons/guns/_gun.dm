@@ -14,6 +14,9 @@
 #define KD_CHANCE_LOW 40
 #define KD_CHANCE_MEDIUM 60
 #define KD_CHANCE_HIGH 80
+/obj/item/weapon/gun
+	var/gun_safety = FALSE
+	var/safetyon = FALSE
 
 /obj/item/weapon/gun/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/weapon/attachment))
@@ -76,8 +79,6 @@
 	var/load_delay = 0
 
 	equiptimer = 10
-	var/gun_safety = FALSE
-	var/safetyon = FALSE
 
 	var/headshot_kill_chance = 40 // if we have enough damage. See projectile.dm if you want to know why this needs to be set to 40 for all guns - Kachnov
 	var/KO_chance = 33 // even if we fail to kill with a headshot, chance to make the target go unconscious
@@ -117,11 +118,11 @@
 	if (gun_safety)
 		if (safetyon)
 			safetyon = FALSE
-			user << "<span class='notice'>You toggle the [src]'s safety <b>OFF</b>.</span>"
+			user << "<span class='notice'>You toggle \the [src]'s safety <b>OFF</b>.</span>"
 			return
 		else
 			safetyon = TRUE
-			user << "<span class='notice'>You toggle the [src]'s safety <b>ON</b>.</span>"
+			user << "<span class='notice'>You toggle \the [src]'s safety <b>ON</b>.</span>"
 			return
 
 /obj/item/weapon/gun/projectile/special_check(var/mob/user)

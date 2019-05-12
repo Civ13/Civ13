@@ -25,6 +25,7 @@
 /datum/job/var/is_cowboy = FALSE
 /datum/job/var/is_ww1 = FALSE
 /datum/job/var/is_coldwar = FALSE
+/datum/job/var/is_radioman = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold
@@ -156,8 +157,11 @@
 	if (is_officer)
 		H.make_artillery_officer()
 		H.add_note("Officer", "As an officer, you can check coordinates.</span>")
-	if (is_commander)
+	if (is_commander && map.ordinal_age < 5)
 		H.make_commander()
+	if (is_radioman)
+		H.make_artillery_radioman()
+		H.add_note("Radio Operator", "As a radio operator, you can order air strikes on your commander's provided coordinates.</span>")
 
 	// hack to make scope icons immediately appear - Kachnov
 	spawn (20)

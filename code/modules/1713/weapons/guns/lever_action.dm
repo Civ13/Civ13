@@ -113,6 +113,9 @@
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
 /*
 	if (loaded.len <= 0)
 		user << "<span class='warning'>\the [src] is empty.</span>"

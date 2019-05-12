@@ -132,6 +132,17 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.3
 
+/obj/item/weapon/material/kitchen/utensil/knife/boot/bowie
+	name = "bowie knife"
+	desc = "A rather large bowie knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "bowie_knife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
+
 /obj/item/weapon/material/kitchen/utensil/knife/bone
 	name = "bone knife"
 	desc = "A small knife with a bone blade and obsidian handle."

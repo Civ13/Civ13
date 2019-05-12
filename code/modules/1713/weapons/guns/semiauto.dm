@@ -86,25 +86,27 @@
 	return
 
 /obj/item/weapon/gun/projectile/semiautomatic/special_check(mob/user)
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
 	if (!user.has_empty_hand(both = FALSE))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
-	else
-		return TRUE
+	if (jammed_until > world.time)
+		user << "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>"
+		return FALSE
+	return TRUE
 
 /obj/item/weapon/gun/projectile/semiautomatic/handle_post_fire()
 	..()
 
-	if (istype(src, /obj/item/weapon/gun/projectile/semiautomatic/stg))
-		return
-
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
-		++jamcheck
+		jamcheck += 0.7
 
 	if (prob(jamcheck))
-		jammed_until = max(world.time + (jamcheck * 5), 50)
+		jammed_until = max(world.time + (jamcheck * 4), 40)
 		jamcheck = 0
 
 	last_fire = world.time

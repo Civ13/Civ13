@@ -182,6 +182,26 @@
 	name = "Russian Flag"
 	desc = "The tricolor Russian flag."
 
+/obj/structure/flag/russian
+	icon_state = "russian"
+	name = "Russian Flag"
+	desc = "The tricolor Russian flag."
+
+/obj/structure/flag/soviet
+	icon_state = "soviet"
+	name = "Soviet Union Flag"
+	desc = "The Soviet flag."
+
+/obj/structure/flag/us
+	icon_state = "us"
+	name = "USA Flag"
+	desc = "The US flag."
+
+/obj/structure/flag/reich
+	icon_state = "reich"
+	name = "Third Reich Flag"
+	desc = "The Third Reich war flag."
+
 /obj/structure/noose
 	icon = 'icons/obj/noose.dmi'
 	icon_state = ""
