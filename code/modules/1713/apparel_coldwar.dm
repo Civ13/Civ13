@@ -34,16 +34,16 @@
 	body_parts_covered = LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/us_uni/us_lightuni
-	name = "olive drab shirt and trousers"
-	desc = "A light version of the US Army olive drab uniform."
-	icon_state = "us_lightuni"
-	item_state = "us_lightuni"
-	worn_state = "us_lightuni"
+	name = "olive drab uniform with rolled sleeves"
+	desc = "A rolled-sleeves version of the US Army olive drab uniform."
+	icon_state = "us_uni_rolled"
+	item_state = "us_uni_rolled"
+	worn_state = "us_uni_rolled"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
 /obj/item/clothing/under/us_uni/us_lightuni2
-	name = "woodland camo trousers and olive drab shirt"
-	desc = "A light version of the US Army woodland camo trousers and a olive drab shirt."
+	name = "olive drab trousers and white undershirt"
+	desc = "A light version of the US Army olive drab trousers and the service white undershirt."
 	icon_state = "us_lightuni2"
 	item_state = "us_lightuni2"
 	worn_state = "us_lightuni2"
@@ -207,3 +207,42 @@
 	icon_state = "khan_ran_scarf"
 	item_state = "khan_ran_scarf"
 	slot = "decor"
+
+/obj/item/clothing/accessory/armor/coldwar
+	icon = 'icons/obj/clothing/ties.dmi'
+/obj/item/clothing/accessory/armor/coldwar/get_mob_overlay()
+	if (!mob_overlay)
+		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+		if (icon_override)
+			if ("[tmp_icon_state]_mob" in icon_states(icon_override))
+				tmp_icon_state = "[tmp_icon_state]_mob"
+			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]")
+		else
+			mob_overlay = image("icon" = 'icons/mob/ties.dmi', "icon_state" = "[tmp_icon_state]")
+	return mob_overlay
+/obj/item/clothing/accessory/armor/coldwar/flakjacket
+	name = "M-1952 Flak Jacket"
+	desc = "Wearable armor meant to protect against shrapnel and light hits. Won't do much against large caliber weapons."
+	icon_state = "flakjacket"
+	item_state = "flakjacket"
+	worn_state = "flakjacket"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 60, arrow = 75, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	value = 60
+	slowdown = 0.2
+
+/obj/item/clothing/accessory/armor/coldwar/flakjacket/m1969
+	name = "M-1969 Flak Jacket"
+	desc = "Wearable armor with neck protection meant to protect against shrapnel and light hits. Won't do much against large caliber weapons."
+	icon_state = "flakjacket1969"
+	item_state = "flakjacket1969"
+	worn_state = "flakjacket1969"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 65, arrow = 75, gun = 20, energy = 15, bomb = 60, bio = 20, rad = FALSE)
+	value = 60
+	slowdown = 0.2
+
+/obj/item/weapon/storage/belt/largepouches/m60
+/obj/item/weapon/storage/belt/largepouches/m60/New()
+	..()
+	new/obj/item/ammo_magazine/b762(src)
