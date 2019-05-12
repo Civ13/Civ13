@@ -493,7 +493,9 @@
 	max_w_class = 4
 	max_storage_space = 9
 	show_above_suit = TRUE
-
+/obj/item/weapon/storage/belt/largepouches/green
+	icon_state = "largepouches_green"
+	item_state = "largepouches_green"
 /obj/item/weapon/storage/belt/smallpouches
 	name = "small pouches"
 	desc = "A belt with 4 small pouches, that can fit items like magazines, knives, and other small things."
@@ -504,3 +506,7 @@
 	max_w_class = 2
 	max_storage_space = 8
 	show_above_suit = TRUE
+
+/obj/item/weapon/storage/belt/smallpouches/green
+	icon_state = "smallpouches_green"
+	item_state = "smallpouches_green"

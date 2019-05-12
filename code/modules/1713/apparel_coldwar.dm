@@ -67,7 +67,7 @@
 /obj/item/clothing/accessory/storage/webbing/light
 	name = "light webbing"
 	desc = "a light webbing, with lower capacity but permitting fast movement."
-	slots = 5
+	slots = 3
 	icon_state = "german_vest"
 	item_state = "german_vest"
 
@@ -163,13 +163,13 @@
 
 /obj/item/clothing/accessory/storage/webbing/us_vest
 	name = "US Army webbing"
-	desc = "A large webbing with several pockets."
+	desc = "A large webbing with several small pockets."
 	icon_state = "us_vest"
 	item_state = "us_vest"
-	slots = 10
+	slots = 5
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,)
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,)
 
 /obj/item/clothing/suit/storage/ghillie
 	name = "ghillie suit"
@@ -242,7 +242,14 @@
 	value = 60
 	slowdown = 0.2
 
-/obj/item/weapon/storage/belt/largepouches/m60
-/obj/item/weapon/storage/belt/largepouches/m60/New()
+/obj/item/weapon/storage/belt/largepouches/green/m60
+/obj/item/weapon/storage/belt/largepouches/green/m60/New()
 	..()
 	new/obj/item/ammo_magazine/b762(src)
+
+/obj/item/weapon/storage/belt/smallpouches/vc_officer
+/obj/item/weapon/storage/belt/smallpouches/vc_officer/New()
+	..()
+	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
+	new /obj/item/weapon/key/vietnamese(src)
+	new /obj/item/weapon/whistle(src)
