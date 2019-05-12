@@ -105,6 +105,30 @@
 	desc = "A flag of the United Kingdom."
 	icon_state = "flag_uk"
 
+/obj/structure/sign/flag/vietnam
+	name = "North Vietnam flag"
+	desc = "The North Vietnamese flag."
+	icon_state = "flag_vietnam"
+
+/obj/structure/sign/flag/vietcong
+	name = "Viet Cong flag"
+	desc = "The blue and red flag of the Viet Cong forces."
+	icon_state = "flag_vietcong"
+
+/obj/structure/sign/flag/usa
+	name = "USA flag"
+	desc = "The star-spangled banner."
+	icon_state = "flag_usa"
+
+/obj/structure/sign/flag/sov
+	name = "Soviet Union flag"
+	desc = "The red flag of the Soviet Union."
+	icon_state = "flag_sov"
+
+/obj/structure/sign/flag/nazi
+	name = "Third Reich flag"
+	desc = "The red, white and black flag of the Third Reich."
+	icon_state = "flag_nazi"
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."

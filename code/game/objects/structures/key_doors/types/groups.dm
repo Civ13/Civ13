@@ -315,3 +315,16 @@
 	keyslot_type = /datum/keyslot/japanese
 	unique_door_name = "Japanese locked"
 #undef JP_CODE
+
+#define VC_CODE 995 * 8
+/datum/keyslot/vietnamese
+	code = VC_CODE
+
+/obj/item/weapon/key/vietnamese
+	code = VC_CODE
+	name = "Vietnamese key"
+
+/obj/structure/simple_door/key_door/vietnamese
+	keyslot_type = /datum/keyslot/vietnamese
+	unique_door_name = "Vietnamese locked"
+#undef VC_CODE

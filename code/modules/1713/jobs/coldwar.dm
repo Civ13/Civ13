@@ -34,6 +34,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
 	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/vietnamese(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_belt)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform

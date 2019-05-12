@@ -140,3 +140,22 @@
 		jamcheck = 0
 
 	last_fire = world.time
+
+/obj/item/weapon/gun/projectile/automatic/pkm
+	name = "PKM machine gun"
+	desc = "A soviet machinegun chambered in 7.62x54mmR rounds."
+	icon_state = "pkmp"
+	item_state = "pkmp"
+	base_icon = "pkmp"
+	caliber = "a762x54_weak"
+	magazine_type = /obj/item/ammo_magazine/pkm/c100
+	weight = 7.5
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.3, move_delay=7, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.6), recoil = 1.8),)
+	slot_flags = 0
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 25
+	load_delay = 50
+	slowdown = 0.8
