@@ -19,7 +19,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/enable_approved_only,
 	/client/proc/disable_approved_only,
 	/client/proc/enable_whitelist,
-	/client/proc/enable_whitelist,
+	/client/proc/disable_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
