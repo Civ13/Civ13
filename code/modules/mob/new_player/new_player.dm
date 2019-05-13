@@ -331,6 +331,15 @@
 			src << "<span class = 'danger'>You're banned from playing.</span>"
 			return TRUE
 
+		if (!isemptylist(approved_list) && config.useapprovedlist)
+			var/found = FALSE
+			for (var/i in approved_list)
+				if (i == client.ckey)
+					found = TRUE
+			if (!found)
+				usr << "<span class = 'notice'><font size = 4 color='red'><b>The game is currently only accepting approved players. Visit the Discord to get approved.</b></font></span>"
+				return
+
 		if (!ticker.players_can_join)
 			src << "<span class = 'danger'>You can't join the game yet.</span>"
 			return TRUE
@@ -374,10 +383,19 @@
 		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP && map.ID != MAP_HILL203)
 			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now.</span>"
 			return
-
+/* "Old" whitelisting proccess
 		if (actual_job.whitelisted)
 			if (!actual_job.validate(client))
 				usr << "<span class = 'notice'>You need to be whitelisted to play this job. Apply in the Discord.</span>"
+				return
+*/
+		if (actual_job.whitelisted && !isemptylist(whitelist_list) && config.use_job_whitelist)
+			var/found = FALSE
+			for (var/i in whitelist_list)
+				if (i == client.ckey)
+					found = TRUE
+			if (!found)
+				usr << "<span class = 'notice'><font size = 4><b>You need to be whitelisted to play this job. Apply in the Discord.</b></font></span>"
 				return
 
 		if (actual_job.is_officer)
@@ -659,9 +677,6 @@
 			continue
 
 		var/job_is_available = job && IsJobAvailable(job.title)
-
-		if (!job.validate(src))
-			job_is_available = FALSE
 
 		//	unavailable_message = " <span class = 'color: rgb(255,215,0);'>{WHITELISTED}</span> "
 

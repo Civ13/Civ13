@@ -15,6 +15,7 @@
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
 	is_officer = TRUE
+	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -236,6 +237,7 @@
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
+	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 2
@@ -278,7 +280,7 @@
 	spawn_location = "JoinLateRNCap"
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
-	is_officer = TRUE
+	is_squad_leader = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -323,7 +325,7 @@
 	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
-	is_officer = TRUE
+	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 1
 	max_positions = 4
