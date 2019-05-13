@@ -2,14 +2,18 @@
 	// epoch = required players
 
 	var/list/epochs = list(
-//		"5000 B.C." = 0,
-		"313 B.C." = 0,
-		"1013" = 0,
-		"1713" = 0,
-		"1873" = 0,
-		"1904" = 0,
-		"1969" = 0,
-		"Civilization 13" = 0,
+		//Stone Age (?-3000 B.C.)" = 0,
+		"Bronze Age (500 B.C.-400 A.D.)" = 0,
+		//"Dark Ages (400-700)" = 0,
+		"Middle Ages (700-1450)" = 0,
+		//"Renaissance (1450-1650)" = 0,
+		"Imperial Age (1650-1780)" = 0,
+		"Industrial Age (1850-1895)" = 0,
+		"Early Modern Era (1896-1933)" = 0,
+		//"World War II (1934-1957)" = 0,
+		"Cold War Era (1958-1984)" = 0,
+		//Modern Era (1985-2020)" = 0,
+		"Civilization 13 (Nomads)" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -28,12 +32,16 @@
 	if (is_ready())
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
-				"313 B.C." = 0,
-				"1013" = 0,
-				"1713" = 0,
-				"1873" = 0,
-				"1904" = 0,
-				"1969" = 0,
+				"Bronze Age (500 B.C.-400 A.D.)" = 0,
+				//"Dark Ages (400-700)" = 0,
+				"Middle Ages (700-1450)" = 0,
+				//"Renaissance (1450-1650)" = 0,
+				"Imperial Age (1650-1780)" = 0,
+				"Industrial Age (1850-1895)" = 0,
+				"Early Modern Era (1896-1933)" = 0,
+				//"World War II (1934-1957)" = 0,
+				"Cold War Era (1958-1984)" = 0,
+				//Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list("Civilization 13" = 0,)
@@ -53,14 +61,14 @@
 			. = TRUE
 	return .
 
-/process/epochswap/proc/swap(var/winner = "1713")
+/process/epochswap/proc/swap(var/winner = "Imperial Age (1650-1780)")
 	vote.voted_epoch = winner
 
 
 /process/mapswap
 	// map = required players
 	var/list/maps = list(MAP_CURSED_ISLAND = 0,)
-	var/epoch = "1713"
+	var/epoch = "Imperial Age (1650-1780)"
 	var/ready = TRUE
 	var/admin_triggered = FALSE
 	var/finished_at = -1
@@ -79,25 +87,25 @@
 	if (is_ready())
 		ready = FALSE
 		epoch = vote.voted_epoch
-		if (epoch == "1969")
+		if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
 			)
-		if (epoch == "1904")
+		if (epoch == "Early Modern Era (1896-1933)")
 	// 1903 - TDM
 			maps = list(
 				MAP_HILL203 = 0,
 				MAP_YPRES = 0,
 			)
 
-		if (epoch == "1873")
+		if (epoch == "Industrial Age (1850-1895)")
 	// 1873 - TDM
 			maps = list(
 				MAP_LITTLE_CREEK = 10,
 				MAP_LITTLE_CREEK_TDM = 0,
 			)
-		if (epoch == "1713")
+		if (epoch == "Imperial Age (1650-1780)")
 		//1713 - TDM
 			maps = list(
 //				MAP_CURSED_ISLAND = 0,
@@ -115,23 +123,23 @@
 				MAP_HUNT = 0,
 //				MAP_FOUR_COLONIES = 35,
 			)
-		if (epoch == "313 B.C.")
+		if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
 	// 313bc - TDM
 			maps = list(
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
 			)
-		if (epoch == "1013")
+		if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM
 			maps = list(
 				MAP_CAMP = 0,
 				MAP_KARAK = 0,
 			)
-		if (epoch == "5000 B.C.")
+		if (epoch == "Stone Age (?-3000 B.C.)")
 			maps = list(
 				MAP_TRIBES = 0,
 			)
-		if (epoch == "Civilization 13")
+		if (epoch == "Civilization 13 (Nomads)")
 			maps = list(
 //				MAP_CIVILIZATIONS = 0,
 				MAP_NOMADS = 0,
