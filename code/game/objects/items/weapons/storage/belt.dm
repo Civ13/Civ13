@@ -45,7 +45,7 @@
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 	new /obj/item/stack/medical/bruise_pack/gauze(src)
 	new /obj/item/stack/medical/splint(src)
-	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/doctor_handbook(src)
 	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
 
 /obj/item/weapon/storage/belt/medical/full_us/New()
@@ -54,7 +54,7 @@
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
 	new /obj/item/stack/medical/advanced/ointment(src)
 	new /obj/item/stack/medical/splint(src)
-	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/doctor_handbook(src)
 	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
 
 
