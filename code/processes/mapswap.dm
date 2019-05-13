@@ -32,6 +32,7 @@
 	if (is_ready())
 		if (config.allowedgamemodes == "TDM")
 			epochs = list(
+				//Stone Age (?-3000 B.C.)" = 0,
 				"Bronze Age (500 B.C.-400 A.D.)" = 0,
 				//"Dark Ages (400-700)" = 0,
 				"Middle Ages (700-1450)" = 0,

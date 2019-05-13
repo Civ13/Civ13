@@ -186,7 +186,6 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
-	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
 
@@ -609,7 +608,6 @@
 	spawn_location = "JoinLatePirate"
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
-	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 6
 	max_positions = 100
@@ -690,7 +688,6 @@
 	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
-	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 9
@@ -772,7 +769,6 @@
 	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
 	is_cowboy = TRUE
-	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 9
