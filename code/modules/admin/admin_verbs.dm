@@ -40,7 +40,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/admin_memo,			//admin memo system. show/delete/write. +SERVER needed to delete admin memos of others,
 	/client/proc/player_memo,
 	/client/proc/dsay,					//talk in deadchat using our ckey/fakekey,
-//	/client/proc/toggle_hear_deadcast,	//toggles whether we hear deadchat,
 	/client/proc/investigate_show,		//various admintools for investigation. Such as a singulo grief-log,
 	/client/proc/secrets,
 	/datum/admins/proc/toggleooc,		//toggles ooc on/off for everyone,
@@ -51,15 +50,12 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			//frees slot for chosen job,
 	/client/proc/cmd_admin_change_custom_event,
-	///client/proc/check_customitem_activity,
 	/client/proc/allow_character_respawn,    // Allows a ghost to respawn ,
 	/client/proc/reset_roundstart_autobalance,
 	/datum/admins/proc/ic_announce,
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
 	/client/proc/change_human_appearance_self,	// Allows the human-based mob itself change its basic appearance ,
 	/client/proc/view_chemical_reaction_logs,
-/*	/client/proc/allow_join_ruforce,
-	/client/proc/allow_join_geforce,*/
 	/client/proc/end_all_grace_periods,
 	/client/proc/reset_all_grace_periods,
 	/datum/admins/proc/paralyze_mob,
@@ -135,7 +131,6 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
 	/datum/admins/proc/export,
-//	/client/proc/check_customitem_activity,
 	/client/proc/nanomapgen_DumpImage
 	)
 var/list/admin_verbs_debug = list(
@@ -149,8 +144,6 @@ var/list/admin_verbs_debug = list(
 	/client/proc/enable_debug_verbs,
 	/client/proc/callproc,
 	/client/proc/callproc_target,
-//	/client/proc/SDQL_query,
-//	/client/proc/SDQL2_query,
 	/client/proc/Jump,
 	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
@@ -282,7 +275,6 @@ var/list/admin_verbs_manager = list(
 )
 
 var/list/admin_verbs_host = list(
-//	/client/proc/eject_unwhitelisted,
 	/client/proc/toggle_pingability
 )
 
@@ -316,7 +308,6 @@ var/list/admin_verbs_host = list(
 /client/proc/remove_admin_verbs()
 	verbs.Remove(
 		admin_verbs_default,
-//		/client/proc/togglebuildmodeself,
 		admin_verbs_admin,
 		admin_verbs_trialadmin,
 		admin_verbs_fun,
@@ -324,7 +315,6 @@ var/list/admin_verbs_host = list(
 		admin_verbs_debug,
 		admin_verbs_mod,
 		admin_verbs_mentor,
-//		admin_verbs_possess,
 		admin_verbs_permissions,
 		/client/proc/stealth,
 		admin_verbs_rejuv,

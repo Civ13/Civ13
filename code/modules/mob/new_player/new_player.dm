@@ -561,6 +561,9 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
+		if (client.prefs.gender == FEMALE && istype(job, /datum/job/american))
+			usr << "<span class='danger'>You must be male to play as this faction.</span>"
+			return
 	if (job.is_ww1)
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
