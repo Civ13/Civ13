@@ -197,7 +197,7 @@
 	 */
 
 	if (clients.len >= PLAYERCAP)
-		if (!holder && !validate_whitelist("server"))
+		if (!holder)
 			src << "<span class = 'danger'><font size = 4>The server is full right now, sorry.</font></span>"
 			del(src)
 			return
@@ -218,12 +218,6 @@
 		if (!world_is_open)
 			src << "<span class = 'userdanger'>The server is currently closed to non-admins.</span>"
 			message_admins("[src] tried to log in, but was rejected, the server is closed to non-admins.")
-			del(src)
-			return
-
-		else if (!validate_whitelist("server"))
-			src << "<span class = 'userdanger'>You are not in the server whitelist. You cannot join this server right now, sorry.</span>"
-			message_admins("[src] tried to log in, but was rejected, because they weren't in the 'server' whitelist.")
 			del(src)
 			return
 

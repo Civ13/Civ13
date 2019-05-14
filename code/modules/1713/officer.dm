@@ -228,7 +228,7 @@ var/global/list/valid_coordinates = list()
 		var/xoffsetmax = inputx+7
 		var/yoffsetmin = inputy-7
 		var/yoffsetmax = inputy+7
-		for (var/i = 1, i < 15, i++)
+		for (var/i = 1, i < 6, i++)
 			var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
 			explosion(O,0,1,1,3)
 			for (var/mob/living/LS1 in O)
@@ -236,3 +236,15 @@ var/global/list/valid_coordinates = list()
 				LS1.fire_stacks += rand(8,10)
 				LS1.IgniteMob()
 			new/obj/effect/burning_oil(O)
+		spawn(10)
+			xoffsetmin = inputx-4
+			xoffsetmax = inputx+4
+			yoffsetmin = inputy-4
+			yoffsetmax = inputy+4
+			for (var/i = 1, i < 18, i++)
+				var/turf/O = get_turf(locate(rand(xoffsetmin,xoffsetmax),rand(yoffsetmin,yoffsetmax),inputz))
+				for (var/mob/living/LS1 in O)
+					LS1.adjustFireLoss(14)
+					LS1.fire_stacks += rand(2,4)
+					LS1.IgniteMob()
+				new/obj/effect/burning_oil(O)

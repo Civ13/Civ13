@@ -698,7 +698,7 @@ var/civmax_research = list(130,130,130)
 			return "German"
 		if ("United States")
 			return "American"
-		if ("Vietcong Group")
+		if ("Vietcong group")
 			return "Vietnamese"
 /obj/map_metadata/proc/special_relocate(var/mob/M)
 	return FALSE

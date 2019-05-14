@@ -281,6 +281,7 @@
 	desc = "two leather belts with small pouches for ammunition and grenades."
 	icon_state = "german_vest"
 	item_state = "german_vest"
+	slots = 4
 	New()
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,)
@@ -289,36 +290,12 @@
 	name = "german webbing"
 	icon_state = "german_vest"
 	item_state = "german_vest"
-/obj/item/clothing/accessory/storage/webbing/ww1/german/full
-/obj/item/clothing/accessory/storage/webbing/ww1/german/full/New()
-	..()
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
-/obj/item/clothing/accessory/storage/webbing/ww1/german/full2
-/obj/item/clothing/accessory/storage/webbing/ww1/german/full2/New()
-	..()
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/ammo_magazine/gewehr98(src)
-	new /obj/item/weapon/grenade/modern/stg1915(src)
-	new /obj/item/weapon/grenade/modern/stg1915(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/french
 	name = "french webbing"
 	icon_state = "french_vest"
 	item_state = "french_vest"
-/obj/item/clothing/accessory/storage/webbing/ww1/french/full
-/obj/item/clothing/accessory/storage/webbing/ww1/french/full/New()
-	..()
-	new /obj/item/ammo_magazine/c8x50(src)
-	new /obj/item/ammo_magazine/c8x50(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
-	new /obj/item/weapon/grenade/modern/f1(src)
-	new /obj/item/weapon/grenade/modern/f1(src)
+
 /obj/item/clothing/accessory/storage/webbing/ww1/british
 	name = "british webbing"
 	icon_state = "british_vest"
@@ -328,25 +305,6 @@
 	name = "leather webbing"
 	icon_state = "british_vest"
 	item_state = "british_vest"
-
-/obj/item/clothing/accessory/storage/webbing/ww1/british/full
-/obj/item/clothing/accessory/storage/webbing/ww1/british/full/New()
-	..()
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
-/obj/item/clothing/accessory/storage/webbing/ww1/british/full2
-/obj/item/clothing/accessory/storage/webbing/ww1/british/full2/New()
-	..()
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/ammo_magazine/enfield(src)
-	new /obj/item/weapon/grenade/modern/mills(src)
-	new /obj/item/weapon/grenade/modern/mills(src)
-	new /obj/item/weapon/attachment/bayonet/military(src)
 
 
 /obj/item/clothing/accessory/armor/modern/plate

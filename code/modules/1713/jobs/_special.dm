@@ -10,6 +10,7 @@
 /datum/job/var/is_secondary = FALSE
 /datum/job/var/is_deathmatch = FALSE
 /datum/job/var/blacklisted = FALSE
+/datum/job/var/whitelisted = FALSE
 /datum/job/var/is_target = FALSE //for VIP modes
 /datum/job/var/rank_abbreviation = null
 /datum/job/var/is_governor = FALSE
