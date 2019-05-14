@@ -95,7 +95,7 @@
 			new/obj/effect/decal/cleanable/blood/oil(user.loc)
 		if (C.reagents.has_reagent("olive_oil", 15))
 			new/obj/effect/decal/cleanable/blood/oil(user.loc)
-		C.reagents.splash(src, reagents.total_volume)
+		C.reagents.splash(src, C.reagents.total_volume)
 		C.reagents.clear_reagents()
 		C.update_icon()
 		C.reagents.del_reagent("cholera")
