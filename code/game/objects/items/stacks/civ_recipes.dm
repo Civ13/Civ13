@@ -504,6 +504,7 @@
 	recipes += list(new/datum/stack_recipe("rope handcuffs", /obj/item/weapon/handcuffs/rope, _time = 50))
 	recipes += list(new/datum/stack_recipe("fishing net", /obj/item/weapon/fishing/net, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("leash", /obj/item/weapon/leash, _time = 20))
+
 /material/glass/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 22)
@@ -520,6 +521,9 @@
 		recipes += new/datum/stack_recipe_list("electrical", list(
 			new/datum/stack_recipe("small lightbulb", /obj/structure/lamp/lamp_small, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light tube", /obj/structure/lamp/lamp_big, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (map.ordinal_age >= 4)
+		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("stone pillar",	/obj/structure/mine_support/stone, 2, _time = 130, _one_per_turf = TRUE, _on_floor = TRUE)

@@ -146,10 +146,10 @@
 
 /* Common reactions */
 
-/datum/chemical_reaction/inaprovaline
-	name = "Inaprovaline"
-	id = "inaprovaline"
-	result = "inaprovaline"
+/datum/chemical_reaction/
+	name = ""
+	id = ""
+	result = ""
 	required_reagents = list("acetone" = 1, "carbon" = 1, "sugar" = 1)
 	result_amount = 3
 
@@ -164,7 +164,7 @@
 	name = "Tramadol"
 	id = "tramadol"
 	result = "tramadol"
-	required_reagents = list("inaprovaline" = 1, "ethanol" = 1, "acetone" = 1)
+	required_reagents = list("" = 1, "ethanol" = 1, "acetone" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/paracetamol
@@ -181,13 +181,6 @@
 	required_reagents = list("ethanol" = 1, "tramadol" = 1)
 	catalysts = list("tungsten" = 5)
 	result_amount = TRUE
-
-/datum/chemical_reaction/sterilizine
-	name = "Sterilizine"
-	id = "sterilizine"
-	result = "sterilizine"
-	required_reagents = list("ethanol" = 1, "anti_toxin" = 1, "hclacid" = 1)
-	result_amount = 3
 
 /datum/chemical_reaction/silicate
 	name = "Silicate"
@@ -239,34 +232,11 @@
 	result_amount = 2
 	log_is_important = TRUE
 
-/datum/chemical_reaction/peridaxon
-	name = "Peridaxon"
-	id = "peridaxon"
-	result = "peridaxon"
-	required_reagents = list("bicaridine" = 2, "clonexadone" = 2)
-	catalysts = list("tungsten" = 5)
-	result_amount = 2
-
-/datum/chemical_reaction/leporazine
-	name = "Leporazine"
-	id = "leporazine"
-	result = "leporazine"
-	required_reagents = list("silicon" = 1, "copper" = 1)
-	catalysts = list("tungsten" = 5)
-	result_amount = 2
-
-/datum/chemical_reaction/cryptobiolin
-	name = "Cryptobiolin"
-	id = "cryptobiolin"
-	result = "cryptobiolin"
-	required_reagents = list("potassium" = 1, "acetone" = 1, "sugar" = 1)
-	result_amount = 3
-
 /datum/chemical_reaction/tricordrazine
 	name = "Tricordrazine"
 	id = "tricordrazine"
 	result = "tricordrazine"
-	required_reagents = list("inaprovaline" = 1, "anti_toxin" = 1)
+	required_reagents = list("" = 1, "anti_toxin" = 1)
 	result_amount = 2
 
 /datum/chemical_reaction/alkysine
@@ -292,21 +262,6 @@
 	required_reagents = list("acetone" = 1, "phosphorus" = 1, "kelotane" = 1)
 	result_amount = 3
 
-/datum/chemical_reaction/dexalinp
-	name = "Dexalin Plus"
-	id = "dexalinp"
-	result = "dexalinp"
-	required_reagents = list("dexalin" = 1, "carbon" = 1, "iron" = 1)
-	result_amount = 3
-
-/datum/chemical_reaction/bicaridine
-	name = "Bicaridine"
-	id = "bicaridine"
-	result = "bicaridine"
-	required_reagents = list("inaprovaline" = 1, "carbon" = 1)
-	inhibitors = list("sugar" = 1) // Messes up with inaprovaline
-	result_amount = 2
-
 /datum/chemical_reaction/hyperzine
 	name = "Hyperzine"
 	id = "hyperzine"
@@ -318,34 +273,6 @@
 	name = "Pervitin"
 	result = "pervitin"
 	required_reagents = list("lithium" = 1, "acetone" = 1, "carbon" = 1)
-	result_amount = 3
-
-/datum/chemical_reaction/ryetalyn
-	name = "Ryetalyn"
-	id = "ryetalyn"
-	result = "ryetalyn"
-	required_reagents = list("arithrazine" = 1, "carbon" = 1)
-	result_amount = 2
-
-/datum/chemical_reaction/penicillin
-	name = "penicillin"
-	id = "penicillin"
-	result = "penicillin"
-	required_reagents = list("cryptobiolin" = 1, "inaprovaline" = 1)
-	result_amount = 2
-
-/datum/chemical_reaction/imidazoline
-	name = "imidazoline"
-	id = "imidazoline"
-	result = "imidazoline"
-	required_reagents = list("carbon" = 1, "hydrazine" = 1, "anti_toxin" = 1)
-	result_amount = 2
-
-/datum/chemical_reaction/ethylredoxrazine
-	name = "Ethylredoxrazine"
-	id = "ethylredoxrazine"
-	result = "ethylredoxrazine"
-	required_reagents = list("acetone" = 1, "anti_toxin" = 1, "carbon" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/soporific
@@ -475,7 +402,7 @@
 	name = "Paroxetine"
 	id = "paroxetine"
 	result = "paroxetine"
-	required_reagents = list("mindbreaker" = 1, "acetone" = 1, "inaprovaline" = 1)
+	required_reagents = list("mindbreaker" = 1, "acetone" = 1, "" = 1)
 	result_amount = 3
 
 /* Grenade reactions */

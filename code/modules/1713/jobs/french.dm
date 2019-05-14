@@ -756,9 +756,9 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/frenchcap(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
 	uniform.attackby(white, H)
