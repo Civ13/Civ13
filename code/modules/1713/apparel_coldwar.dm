@@ -70,7 +70,9 @@
 	slots = 3
 	icon_state = "german_vest"
 	item_state = "german_vest"
-	hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,)
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,)
 /obj/item/clothing/mask/facecamo
 	name = "woodlands face camo"
 	desc = "Face painting in woodland camo pattern."
