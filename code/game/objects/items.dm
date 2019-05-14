@@ -468,14 +468,6 @@ var/list/global/slot_flags_enumeration = list(
 	user.do_attack_animation(M)
 
 	add_fingerprint(user)
-	//if ((CLUMSY in user.mutations) && prob(50))
-	//	M = user
-		/*
-		M << "<span class='warning'>You stab yourself in the eye.</span>"
-		M.sdisabilities |= BLIND
-		M.weakened += 4
-		M.adjustBruteLoss(10)
-		*/
 
 	if (istype(H))
 
@@ -500,7 +492,7 @@ var/list/global/slot_flags_enumeration = list(
 					M.drop_item()
 				M.eye_blurry += 10
 				M.Paralyse(1)
-				M.Weaken(4)
+				M.Weaken(3)
 			if (eyes.damage >= eyes.min_broken_damage)
 				if (M.stat != 2)
 					M << "<span class='warning'>You go blind!</span>"

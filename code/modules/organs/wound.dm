@@ -121,9 +121,9 @@
 	// proc for checking whether the wound is considered open enough for infections
 	// this is not the proc that instantizes an infection in a wound - use infection_check() instead!
 	proc/can_be_infected()
-		if (damage < 10)	//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
+		if (damage < 8)	//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
 			return FALSE
-		if (is_treated() && damage < 25)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
+		if (is_treated() && damage < 18)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
 			return FALSE
 		if (disinfected)
 			germ_level = FALSE	//reset this, just in case
@@ -138,14 +138,14 @@
 	// untreated cuts (and bleeding bruises) and burns are possibly infectable, chance higher if wound is bigger
 	proc/infection_check()
 		if (can_be_infected())
-			var/dam_coef = round(damage/10)
+			var/dam_coef = round(damage)
 			switch (damage_type)
 				if (BRUISE)
 					return prob(dam_coef*5)
 				if (BURN)
 					return prob(dam_coef*10)
 				if (CUT)
-					return prob(dam_coef*20)
+					return prob(dam_coef*15)
 
 		return FALSE
 

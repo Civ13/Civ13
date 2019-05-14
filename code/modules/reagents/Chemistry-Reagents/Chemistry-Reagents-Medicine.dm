@@ -228,17 +228,13 @@
 	overdose = REAGENTS_OVERDOSE
 	touch_met = 5
 
-/datum/reagent/hydrogen_peroxide/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/prontosil/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
 	M.germ_level -= min(removed*25, M.germ_level)
-	for (var/obj/item/I in M.contents)
-		I.was_bloodied = null
-	M.was_bloodied = null
 
-/datum/reagent/hydrogen_peroxide/touch_obj(var/obj/O)
+/datum/reagent/prontosil/touch_obj(var/obj/O)
 	O.germ_level -= min(volume*20, O.germ_level)
-	O.was_bloodied = null
 
-/datum/reagent/hydrogen_peroxide/touch_turf(var/turf/T)
+/datum/reagent/prontosil/touch_turf(var/turf/T)
 	T.germ_level -= min(volume*20, T.germ_level)
 
 /datum/reagent/hydrogen_peroxide

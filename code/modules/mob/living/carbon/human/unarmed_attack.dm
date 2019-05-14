@@ -73,7 +73,7 @@ var/global/list/sparring_attack_cache = list()
 						target.visible_message("<span class='danger'>[pick("[target] was sent flying backward!", "[target] staggers back from the impact!")]</span>")
 					else
 						target.visible_message("<span class='danger'>[target] slams into [T]!</span>")
-						target.Weaken(rand(2,3))
+						target.Weaken(rand(1,2))
 						target.adjustBruteLoss(rand(10,15))
 						playsound(get_turf(target), 'sound/effects/gore/fallsmash.ogg', 100)
 						for (var/obj/structure/window/W in T)
