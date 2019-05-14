@@ -279,8 +279,7 @@
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
-	if (map && map.civilizations)
-		if (map.ID == MAP_NOMADS_KARAFUTA)
+		else if (map.ID == MAP_NOMADS_KARAFUTA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
@@ -322,6 +321,27 @@
 							real_name = name
 							add_note("Known Languages", "Ainu")
 							return
+		spawn(10)
+			if (map.ID == MAP_NOMADS_CONTINENTAL || MAP_NOMADS_PANGEA)
+				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
+					var/found = FALSE
+					for (var/i in whitelist_list)
+						if (i == client.ckey)
+							found = TRUE
+					if (found)
+						var/datum/language/currlg
+						for (var/datum/language/A in languages)
+							currlg = A
+						var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a [currlg.name] speaker. Since you are whitelisted, you can customize your name. Do you want to?", "Engines", "No", list("Yes","No"))
+						if (input_msg == "No")
+							return
+						else
+							var/input_name = input(src, "Choose the new name: (Max 15 characters, please keep it language appropriate)","Custom Name", name) as text
+							input_name = sanitizeName(input_name, 15, FALSE)
+							if (input_name != "")
+								name = input_name
+								real_name = input_name
+								return
 
 /////////////////////////CIVS////////////////////////
 
