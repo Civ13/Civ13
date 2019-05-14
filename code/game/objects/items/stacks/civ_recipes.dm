@@ -158,6 +158,8 @@
 		recipes += new/datum/stack_recipe("locked door", /obj/structure/simple_door/key_door/custom, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("key", /obj/item/weapon/key, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("keychain", /obj/item/weapon/storage/belt/keychain, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[1] >= 50)
+		recipes += new/datum/stack_recipe("iron fence", /obj/structure/grille/ironfence, 2, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 25)
 		recipes += new/datum/stack_recipe("anvil", /obj/structure/anvil, 25, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("circumcision knife", /obj/item/weapon/material/kitchen/utensil/knife/circumcision, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
