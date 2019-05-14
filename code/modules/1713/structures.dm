@@ -94,6 +94,14 @@
 	opacity = TRUE
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 	flammable = TRUE
+	
+/obj/structure/grille/ironfence
+	name = "iron fence"
+	desc = "A wrought iron fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "iron_fence"
+	health = 50
+	hitsound = 'sound/weapons/blade_parry1.ogg'
 
 /obj/structure/wallclock
 	name = "wall clock"
