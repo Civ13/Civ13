@@ -106,7 +106,7 @@
 	name = "RPG-7"
 	desc = "Russian multi-use rocket."
 	icon_state = "rpg7_empty"
-	item_state = "rocket"
+	item_state = "rpg"
 	slot_flags = SLOT_BACK
 	force = 10
 
