@@ -11,7 +11,7 @@
 	metabolism = REM * 0.5
 	scannable = TRUE
 
-/datum/reagent/arenaline/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/adrenaline/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
@@ -335,15 +335,15 @@
 	reagent_state = LIQUID
 	color = "#000067"
 	metabolism = REM * 0.10
-	overdose = 9
+	overdose = 14
 
 /datum/reagent/opium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 200)
+	M.add_chemical_effect(CE_PAINKILLER, 100)
 	M.addictions["opium"] += 0.1
 /datum/reagent/opium/overdose(var/mob/living/carbon/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
-	M.druggy = max(M.druggy, 250)
+	M.druggy = max(M.druggy, 200)
 
 /datum/reagent/cocaine
 	name = "Cocaine"

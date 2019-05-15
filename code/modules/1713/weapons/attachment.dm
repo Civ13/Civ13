@@ -125,6 +125,9 @@ Current Defines (_defines/attachment.dm)
     if (ATTACH_UNDER)
       if (attachment_slots & ATTACH_UNDER)
         A.attached(user, src)
+    if (ATTACH_ADV_SCOPE)
+      if (attachment_slots & ATTACH_ADV_SCOPE)
+        A.attached(user, src)
       else
         user << "You fumble around with the attachment."
     else
@@ -210,7 +213,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope
 	name = "sniper scope"
 	icon_state = "kar_scope"
-	desc = "You can attach this to rifles... or use them as binoculars."
+	desc = "You can attach this to rifles... or use them as binoculars. Amplifies 8x."
 	max_zoom = ZOOM_CONSTANT*2
 
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope/removed(mob/user, obj/item/weapon/gun/G)
@@ -235,3 +238,86 @@ Current Defines (_defines/attachment.dm)
 
 /obj/item/weapon/attachment/scope/iron_sights/removed(mob/user, obj/item/weapon/gun/G)
   return
+
+
+/////////////////ADVANCED OPTICS//////////////////////////////
+
+
+/obj/item/weapon/attachment/scope/adjustable/advanced
+	icon = 'icons/obj/gun_att.dmi'
+	icon_state = "acog"
+	var/acc_modifier = 0
+	var/scopeonly = TRUE //if the gun must be on scope mode to give the bonuses
+	attachment_type = ATTACH_ADV_SCOPE
+	var/image/ongun
+	New()
+		..()
+		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/attached(mob/user, obj/item/weapon/gun/G)
+	..()
+	G.specialoptics = src
+	G.optics_ico = ongun
+	G.overlays += G.optics_ico
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/removed(mob/user, obj/item/weapon/gun/G)
+	..()
+	G.specialoptics = null
+	G.overlays -= G.optics_ico
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/acog
+	name = "4x ACOG scope"
+	icon_state = "acog"
+	desc = "A 4x scope."
+	max_zoom = ZOOM_CONSTANT+4
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/reddot
+	name = "red dot sight"
+	icon_state = "reddot"
+	desc = "A red dot laser sight. Increases accuracy and gives a slight magnification."
+	max_zoom = ZOOM_CONSTANT+2
+	acc_modifier = 1.4
+
+/obj/item/weapon/attachment/scope/adjustable/advanced/holographic
+	name = "holographic sight"
+	desc = "A reflector holographic sight. Does not give magnification but greatly reduces parallax error."
+	icon_state = "holographic"
+	max_zoom = ZOOM_CONSTANT
+	acc_modifier = 1.5
+
+/obj/item/weapon/attachment/under
+	icon = 'icons/obj/gun_att.dmi'
+	icon_state = "foregrip"
+	var/acc_modifier = 0
+	var/scopeonly = TRUE //if the gun must be on scope mode to give the bonuses
+	attachment_type = ATTACH_UNDER
+	var/image/ongun
+	New()
+		..()
+		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
+
+/obj/item/weapon/attachment/under/attached(mob/user, obj/item/weapon/gun/G)
+	..()
+	G.under = src
+	G.under_ico = ongun
+	G.overlays += G.under_ico
+
+/obj/item/weapon/attachment/under/removed(mob/user, obj/item/weapon/gun/G)
+	..()
+	G.under = null
+	G.overlays -= G.under_ico
+
+/obj/item/weapon/attachment/under/laser
+	name = "laser pointer"
+	icon_state = "laser"
+	desc = "a basic laser pointer, increases accuracy by a bit."
+	acc_modifier = 1.2
+	scopeonly = FALSE
+
+/obj/item/weapon/attachment/under/foregrip
+	name = "foregrip"
+	icon_state = "foregrip"
+	desc = "a foregrip, to increase stability when firing."
+	acc_modifier = 1.4
+	scopeonly = FALSE
+

@@ -180,6 +180,11 @@
 
 				var/trans
 				if (ismob(target))
+					if (reagents.has_reagent("adrenaline", 20) && ishuman(target))
+						H.AdjustParalysis(-3)
+						H.AdjustStunned(-8)
+						H.AdjustWeakened(-10)
+						H.emote("scream")
 					var/contained = reagentlist()
 					trans = reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_BLOOD)
 					admin_inject_log(user, target, src, contained, trans)
@@ -314,6 +319,7 @@
 	icon_state = "single_use0"
 	w_class = 1
 	volume = 5
+	amount_per_transfer_from_this = 5
 	single_use = TRUE
 /obj/item/weapon/reagent_containers/syringe/morphine/New()
 	..()
@@ -332,7 +338,8 @@
 	desc = "Injector containing a single dose of IV sulfanomides. Used to prevent and treat systemic microbial infections."
 	icon_state = "single_use2"
 	w_class = 1
-	volume = 5
+	volume = 9
+	amount_per_transfer_from_this = 9
 	single_use = TRUE
 /obj/item/weapon/reagent_containers/syringe/sulfanomides/New()
 	..()
@@ -352,6 +359,7 @@
 	icon_state = "single_use3"
 	w_class = 1
 	volume = 30
+	amount_per_transfer_from_this = 30
 	single_use = TRUE
 /obj/item/weapon/reagent_containers/syringe/adrenaline/New()
 	..()

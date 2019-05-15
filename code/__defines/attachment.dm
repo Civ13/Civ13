@@ -3,3 +3,4 @@
 #define ATTACH_STOCK 4
 #define ATTACH_BARREL 8
 #define ATTACH_UNDER 16
+#define ATTACH_ADV_SCOPE 32
