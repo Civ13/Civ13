@@ -255,3 +255,74 @@
 	new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(src)
 	new /obj/item/weapon/key/vietnamese(src)
 	new /obj/item/weapon/whistle(src)
+
+/obj/item/clothing/accessory/armor/coldwar/plates
+	var/slots = 2
+	var/obj/item/weapon/storage/internal/hold
+
+/obj/item/clothing/accessory/armor/coldwar/plates/New()
+	..()
+	hold = new/obj/item/weapon/storage/internal(src)
+	hold.storage_slots = slots
+	hold.can_hold = list(/obj/item/weapon/armorplates,)
+
+/obj/item/clothing/accessory/armor/coldwar/plates/attack_hand(mob/user as mob)
+	if (has_suit)	//if we are part of a suit
+		hold.open(user)
+		return
+
+	if (hold.handle_attack_hand(user))	//otherwise interact as a regular storage item
+		..(user)
+
+/obj/item/clothing/accessory/armor/coldwar/plates/MouseDrop(obj/over_object as obj)
+	if (has_suit)
+		return
+
+	if (hold.handle_mousedrop(usr, over_object))
+		..(over_object)
+
+/obj/item/clothing/accessory/armor/coldwar/plates/attackby(obj/item/W as obj, mob/user as mob)
+	return hold.attackby(W, user)
+
+/obj/item/clothing/accessory/armor/coldwar/plates/emp_act(severity)
+	hold.emp_act(severity)
+	..()
+
+/obj/item/clothing/accessory/armor/coldwar/plates/attack_self(mob/user as mob)
+	user << "<span class='notice'>You empty [src].</span>"
+	var/turf/T = get_turf(src)
+	hold.hide_from(usr)
+	for (var/obj/item/I in hold.contents)
+		hold.remove_from_storage(I, T)
+	add_fingerprint(user)
+
+/obj/item/clothing/accessory/armor/coldwar/plates/interceptor
+	name = "black Interceptor Body Armor"
+	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection."
+	icon_state = "modern_kevlar"
+	item_state = "modern_kevlar"
+	worn_state = "modern_kevlar"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 75, arrow = 100, gun = 65, energy = 25, bomb = 65, bio = 20, rad = FALSE)
+	value = 120
+	slowdown = 0.4
+	w_class = 4
+	weight = 3.8
+
+
+/obj/item/weapon/armorplates
+	name = "ballistic plates"
+	desc = "Used to increase the protection of some body armors."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "plates"
+	item_state = "plates"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 8.0
+	throwforce = 6.0
+	matter = list(DEFAULT_WALL_MATERIAL = 50)
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
