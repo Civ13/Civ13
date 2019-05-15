@@ -303,7 +303,6 @@ bullet_act
 	var/protection = FALSE
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
 	for (var/gear in protective_gear)
-		world.log << "YEA?"
 		if (gear && istype(gear ,/obj/item/clothing))
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & def_zone.body_part)
@@ -311,14 +310,11 @@ bullet_act
 			if (C.accessories.len)
 				for (var/obj/item/clothing/accessory/AC in C.accessories)
 					if (AC.body_parts_covered & def_zone.body_part)
-						world.log << "One"
 						protection += AC.armor[type]
 						if (istype(AC, /obj/item/clothing/accessory/armor/coldwar/plates))
-							world.log << "Two"
 							var/obj/item/clothing/accessory/armor/coldwar/plates/ACP = AC
 							for (var/obj/item/weapon/armorplates/plt in ACP.hold)
 								if (type == "melee" || type == "arrow" || type == "gun")
-									world.log << "Works!"
 									protection += 10
 	return protection
 
