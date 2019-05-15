@@ -297,7 +297,7 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
 				else if (H.original_job_title == original_job_title && original_job_title == "West Side Gang")
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
-	else
+	else if (map.civilizations)
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
 			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")
