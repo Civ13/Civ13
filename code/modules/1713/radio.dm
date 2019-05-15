@@ -536,7 +536,7 @@ var/global/FREQ2 = rand(201,250)
 				used_radios += radio
 				if (radio.freq == freq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
-			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
+			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
 				if (used_radios.Find(radio))
