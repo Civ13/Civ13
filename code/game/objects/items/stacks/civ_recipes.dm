@@ -195,8 +195,12 @@
 			new/datum/stack_recipe("small musket ball (x3)", /obj/item/stack/ammopart/musketball_pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("iron bullet (x3)", /obj/item/stack/ammopart/bullet, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[2] >= 110 && map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe_list("magazines", list(
+			new/datum/stack_recipe("borchardt magazine", /obj/item/ammo_magazine/borchardt/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("luger magazine", /obj/item/ammo_magazine/luger/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("nambu magazine", /obj/item/ammo_magazine/c8mmnambu/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[1] >= 115 && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 90 && map.ordinal_age >= 4)

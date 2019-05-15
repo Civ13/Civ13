@@ -274,6 +274,7 @@ obj/item/ammo_magazine/b762
 	weight = 0.02
 	multiple_sprites = TRUE
 
+
 /obj/item/ammo_magazine/borchardt
 	name = "Borchardt magazine"
 	icon_state = "borchardtmag"
@@ -283,6 +284,16 @@ obj/item/ammo_magazine/b762
 	max_ammo = 8
 	weight = 0.02
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/luger/empty/New()
+	..()
+	stored_ammo.Cut()
+/obj/item/ammo_magazine/c8mmnambu/empty/New()
+	..()
+	stored_ammo.Cut()
+/obj/item/ammo_magazine/borchardt/empty/New()
+	..()
+	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/mauser
 	name = "Mauser clip (9x19mm)"
