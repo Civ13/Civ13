@@ -381,6 +381,7 @@
 #include "code\modules\1713\MRE.dm"
 #include "code\modules\1713\newspaper.dm"
 #include "code\modules\1713\noghost.dm"
+#include "code\modules\1713\nvg.dm"
 #include "code\modules\1713\officer.dm"
 #include "code\modules\1713\oil_fires.dm"
 #include "code\modules\1713\ores.dm"

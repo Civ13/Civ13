@@ -77,6 +77,10 @@
 	var/confused = FALSE		//Carbon
 	var/sleeping = FALSE		//Carbon
 	var/resting = FALSE			//Carbon
+
+	var/nvg = FALSE
+	var/thermal = FALSE
+
 	var/lying = FALSE
 	var/lying_prev = FALSE
 	var/canmove = TRUE

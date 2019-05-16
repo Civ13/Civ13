@@ -321,6 +321,13 @@ Current Defines (_defines/attachment.dm)
 	max_zoom = ZOOM_CONSTANT
 	acc_modifier = 1.5
 
+/obj/item/weapon/attachment/scope/adjustable/advanced/nvs
+	name = "night vision scope"
+	desc = "A bulky scope that allows images be produced in levels of light approaching total darkness."
+	icon_state = "nvs"
+	max_zoom = ZOOM_CONSTANT
+	acc_modifier = 0.8
+
 /obj/item/weapon/attachment/under
 	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "foregrip"

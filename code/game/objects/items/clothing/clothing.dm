@@ -110,7 +110,7 @@ BLIND     // can't see anything
 	var/vision_flags = FALSE
 	var/darkness_view = FALSE//Base human is 2
 	var/see_invisible = -1
-	var/active = TRUE
+	var/active = FALSE
 	var/obj/screen/overlay = null
 
 /obj/item/clothing/mask/glasses/update_clothing_icon()

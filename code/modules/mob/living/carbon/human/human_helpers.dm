@@ -52,8 +52,23 @@
 
 	if (istype(head, /obj/item/clothing/head))
 		add_clothing_protection(head)
+	if (istype(wear_mask, /obj/item/clothing/mask/glasses))
+		var/obj/item/clothing/mask/glasses/GL = wear_mask
+		process_glasses(GL)
 	if (istype(wear_mask, /obj/item/clothing/mask))
 		add_clothing_protection(wear_mask)
+
+/mob/living/carbon/human/proc/process_glasses(var/obj/item/clothing/mask/glasses/G)
+	if (G && G.active)
+		equipment_darkness_modifier += G.darkness_view
+		equipment_vision_flags |= G.vision_flags
+
+		if (G.see_invisible >= 0)
+			if (equipment_see_invis)
+				equipment_see_invis = min(equipment_see_invis, G.see_invisible)
+			else
+				equipment_see_invis = G.see_invisible
+
 
 /mob/living/carbon/human/verb/mob_sleep()
 	set name = "Sleep"

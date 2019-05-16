@@ -652,6 +652,40 @@
 	parentmob.a_intent_change(I_DISARM)
 //	..()
 
+/obj/screen/nvgoverlay
+	icon = 'icons/mob/screen1_full.dmi'
+	icon_state = "blank"
+	name = "nvg"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	mouse_opacity = FALSE
+	process_flag = TRUE
+	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
+
+/obj/screen/thermaloverlay
+	icon = 'icons/mob/screen1_full.dmi'
+	icon_state = "blank"
+	name = "thermal"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	mouse_opacity = FALSE
+	process_flag = TRUE
+	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
+
+/obj/screen/nvgoverlay/process()
+	update_icon()
+
+/obj/screen/nvgoverlay/update_icon()
+	underlays.Cut()
+	if (parentmob.nvg)
+		underlays += global_hud.nvg
+
+/obj/screen/thermaloverlay/process()
+	update_icon()
+
+/obj/screen/thermaloverlay/update_icon()
+	underlays.Cut()
+	if (parentmob.thermal)
+		underlays += global_hud.thermal
+
 /obj/screen/drugoverlay
 	icon = 'icons/mob/screen1_full.dmi'
 	icon_state = "blank"
@@ -672,7 +706,6 @@
 		underlays += global_hud.blurry
 	if (parentmob.druggy)
 		underlays += global_hud.druggy
-
 
 /obj/screen/full_1_tile_overlay
 	name = "full_1_tile_overlay"
