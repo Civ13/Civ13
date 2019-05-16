@@ -32,6 +32,8 @@
 	on_state = "nvg"
 	active = 0
 	overtype = "nvg"
+	blocks_scope = TRUE
+
 /obj/item/clothing/mask/glasses/nvg/New()
 	..()
 	overlay = global_hud.nvg
@@ -44,13 +46,15 @@
 	item_state = "thermal_off"
 	darkness_view = 7
 	toggleable = 1
-	see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
+//	see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
 	off_state = "thermal_off"
 	on_state = "thermal"
 	vision_flags = SEE_MOBS
 	flash_protection = FLASH_PROTECTION_REDUCED
 	active = 0
 	overtype = "thermal"
+	blocks_scope = TRUE
+
 /obj/item/clothing/mask/glasses/thermal/New()
 	..()
 	overlay = global_hud.thermal

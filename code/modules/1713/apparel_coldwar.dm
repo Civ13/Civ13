@@ -78,7 +78,7 @@
 	desc = "Face painting in woodland camo pattern."
 	icon_state = "painting_woodland"
 	item_state = "painting_woodland"
-
+	blocks_scope = FALSE
 /obj/item/clothing/suit/storage/us_jacket
 	name = "olive drab jacket"
 	desc = "The standard US Army olive drab jacket of the mid-20th century."

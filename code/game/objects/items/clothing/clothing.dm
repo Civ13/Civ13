@@ -244,6 +244,7 @@ BLIND     // can't see anything
 	var/voicechange = FALSE
 	var/list/say_messages
 	var/list/say_verbs
+	var/blocks_scope = FALSE
 
 /obj/item/clothing/mask/update_clothing_icon()
 	if (ismob(loc))
