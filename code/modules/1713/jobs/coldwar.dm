@@ -97,7 +97,7 @@
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL) //not used
 	H.setStat("pistol", STAT_NORMAL)
@@ -147,8 +147,8 @@
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the communications and also acting as a courier for ammunition, grenades, and so on. Keep the squads up to date and supplied!")
 	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL) //not used
 	H.setStat("pistol", STAT_NORMAL)
