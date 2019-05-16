@@ -140,7 +140,7 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 	else
 		return
 
-mob/proc/rest_cone_act()//For showing and hiding the cone when you rest or lie down.
+mob/living/carbon/human/proc/rest_cone_act()//For showing and hiding the cone when you rest or lie down.
 	if (resting || lying)
 		hide_cone()
 	else
