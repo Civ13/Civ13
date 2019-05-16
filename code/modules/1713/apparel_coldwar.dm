@@ -189,7 +189,7 @@
 	icon_state = "ghillie"
 	item_state = "ghillie"
 	body_parts_covered = HEAD
-
+	restricts_view = 1
 
 /obj/item/clothing/head/jungle_hat
 	name = "green jungle hat"
