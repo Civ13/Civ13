@@ -148,9 +148,9 @@ mob/living/carbon/human/proc/rest_cone_act()//For showing and hiding the cone wh
 
 //Making these generic procs so you can call them anywhere.
 mob/living/carbon/human/proc/show_cone()
-	if (fov)
+	if (HUDtech["fov"])
 		fov.alpha = 255
 
 mob/living/carbon/human/proc/hide_cone()
-	if (fov)
+	if (HUDtech["fov"])
 		fov.alpha = 0
