@@ -34,48 +34,58 @@ atom/proc/InCone(atom/center = usr, dir = NORTH)
 			return (dir & (NORTH|SOUTH)) ? TRUE : FALSE
 		return (dir & (EAST|WEST)) ? TRUE : FALSE
 
-	else if (global_hud.fov.icon_state == "narrow") //180 degrees
+	else if (global_hud.fov.icon_state == "helmet") //180 degrees
 		if (!d) return TRUE
 		switch(center.dir)
 			if (WEST)
 				if (x <= center.x)
-					return TRUE
-			else if (EAST)
+					return FALSE
+			if (EAST)
 				if (x >= center.x)
-					return TRUE
-			else if (NORTH)
-				if (y >= center.x)
-					return TRUE
-			else if (SOUTH)
-				if (y <= center.x)
-					return TRUE
-		return FALSE
+					return FALSE
+			if (NORTH)
+				if (y >= center.y)
+					return FALSE
+			if (SOUTH)
+				if (y <= center.y)
+					return FALSE
+		return TRUE
 
-	else if (global_hud.fov.icon_state == "helmet") //60 degrees
-		//first remove anything 180 degrees behind
+	else if (global_hud.fov.icon_state == "narrow") //60 degrees
+		//first remove anything 180 degrees behind, and authorize anything right in front
+		var/dx = abs(x - center.x)
+		var/dy = abs(y - center.y)
 		switch(center.dir)
 			if (WEST)
 				if (x > center.x)
-					return FALSE
-				if (get_dir(center, src) == center.dir)
 					return TRUE
-			else if (EAST)
+				if (get_dir(center, src) == center.dir)
+					return FALSE
+				if (get_dist(center, src) >= dx)
+					return FALSE
+			if (EAST)
 				if (x < center.x)
-					return FALSE
-				if (get_dir(center, src) == center.dir)
 					return TRUE
-			else if (NORTH)
-				if (y < center.x)
-					return FALSE
 				if (get_dir(center, src) == center.dir)
-					return TRUE
-			else if (SOUTH)
-				if (y > center.x)
 					return FALSE
-				if (get_dir(center, src) == center.dir)
+				if (get_dist(center, src) >= dx)
+					return FALSE
+			if (NORTH)
+				if (y < center.y)
 					return TRUE
+				if (get_dir(center, src) == center.dir)
+					return FALSE
+				if (get_dist(center, src) >= dy)
+					return FALSE
+			if (SOUTH)
+				if (y > center.y)
+					return TRUE
+				if (get_dir(center, src) == center.dir)
+					return FALSE
+				if (get_dist(center,src) >= dy)
+					return FALSE
 
-		return FALSE
+		return TRUE
 mob/dead/InCone(mob/center = usr, dir = NORTH)
 	return
 
