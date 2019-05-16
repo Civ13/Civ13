@@ -951,6 +951,32 @@
 	screen_loc = "1,1"
 	mouse_opacity = FALSE
 	layer = 18
+	process_flag = TRUE
+
+/obj/screen/fov/process()
+	update_icon()
+
+/obj/screen/fov/update_icon()
+	underlays.Cut()
+	if (!config.disable_fov)
+		if (istype(parentmob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = parentmob
+			var/largest = 0
+			for (var/obj/item/clothing/CM in H.contents)
+				if (CM.restricts_view > largest && (H.wear_mask == CM || H.head == CM))
+					largest = CM.restricts_view
+
+			if (largest <= 0)
+				global_hud.fov.icon_state = "combat"
+			else if (largest == 1)
+				global_hud.fov.icon_state = "helmet"
+			else if (largest >= 2)
+				global_hud.fov.icon_state = "narrow"
+			else
+				global_hud.fov.icon_state = "combat"
+
+		underlays += global_hud.fov
+
 
 /obj/screen/toggle_inventory/proc/hidden_inventory_update(obj/screen/inventory/inv_elem)
 	var/mob/living/carbon/human/H = parentmob

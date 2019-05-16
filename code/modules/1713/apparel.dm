@@ -3,7 +3,6 @@
 
 
 // pirates
-
 /obj/item/clothing/shoes/heavyboots/wrappedboots
 	name = "\improper wrapped boots"
 	icon_state = "wrappedboots"

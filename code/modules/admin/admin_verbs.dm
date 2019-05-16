@@ -16,6 +16,8 @@ var/list/admin_verbs_default = list(
 	/client/proc/getruntimelog                     // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/enable_fov,
+	/client/proc/disable_fov,
 	/client/proc/enable_approved_only,
 	/client/proc/disable_approved_only,
 	/client/proc/enable_whitelist,
@@ -824,3 +826,32 @@ var/global/list/global_colour_matrix = null
 		return
 	else
 		config.use_job_whitelist = FALSE
+
+
+/client/proc/enable_fov()
+	set name = "Enable FOV"
+	set category = "Special"
+
+	if (config.disable_fov == FALSE)
+		src << "Field of View mechanic is already enabled."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+
+	config.disable_fov = FALSE
+	world << "<font size = 3>Fields of view are now <b>enabled</b>.</font>"
+	return
+/client/proc/disable_fov()
+	set name = "Disable FOV"
+	set category = "Special"
+
+	if (config.disable_fov == TRUE)
+		src << "Field of View mechanic is already disabled."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+	config.disable_fov = TRUE
+	world << "<font size = 3>Fields of view are now <b>disabled</b>.</font>"
+	return

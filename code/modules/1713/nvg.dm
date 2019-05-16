@@ -33,6 +33,7 @@
 	active = 0
 	overtype = "nvg"
 	blocks_scope = TRUE
+	restricts_view = 0
 
 /obj/item/clothing/mask/glasses/nvg/New()
 	..()
@@ -54,6 +55,7 @@
 	active = 0
 	overtype = "thermal"
 	blocks_scope = TRUE
+	restricts_view = 0
 
 /obj/item/clothing/mask/glasses/thermal/New()
 	..()

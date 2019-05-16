@@ -16,6 +16,7 @@
 	armor = list(melee = FALSE, bullet = FALSE, laser = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = FALSE)
 	slot_flags = SLOT_BELT|SLOT_MASK
 	blocks_scope = TRUE
+	restricts_view = 2
 
 /obj/item/clothing/mask/gas/proc/check_can_block(var/datum/reagent/r)
 	if (prob(efficiency))

@@ -15,11 +15,15 @@
 			usr << "You deactivate the optics on the [src]."
 			if (overtype == "nvg")
 				user.nvg = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
 				user.handle_vision()
 			else if (overtype == "thermal")
 				user.thermal = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
 				user.handle_vision()
-		else
+		else if (src == user.wear_mask)
 			active = 1
 			icon_state = on_state
 			user.update_inv_wear_mask()
@@ -28,9 +32,29 @@
 			usr << "You activate the optics on the [src]."
 			if (overtype == "nvg")
 				user.nvg = TRUE
+				restricts_view = 2
+				blocks_scope = TRUE
 				user.handle_vision()
 			else if (overtype == "thermal")
 				user.thermal = TRUE
+				restricts_view = 2
+				blocks_scope = TRUE
+				user.handle_vision()
+		else
+			active = 0
+			icon_state = off_state
+			user.update_inv_wear_mask()
+			flash_protection = FLASH_PROTECTION_NONE
+			tint = TINT_NONE
+			if (overtype == "nvg")
+				user.nvg = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
+				user.handle_vision()
+			else if (overtype == "thermal")
+				user.thermal = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
 				user.handle_vision()
 		user.update_action_buttons()
 

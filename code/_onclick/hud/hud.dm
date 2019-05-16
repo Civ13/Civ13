@@ -9,7 +9,8 @@ var/list/global_huds = list(
 		global_hud.vimpaired,
 		global_hud.darkMask,
 		global_hud.nvg,
-		global_hud.thermal,)
+		global_hud.thermal,
+		global_hud.fov,)
 /*
 /datum/hud/var/obj/screen/grab_intent
 /datum/hud/var/obj/screen/hurt_intent
@@ -23,6 +24,7 @@ var/list/global_huds = list(
 	var/list/darkMask
 	var/obj/screen/nvg
 	var/obj/screen/thermal
+	var/obj/screen/fov
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
@@ -68,6 +70,14 @@ var/list/global_huds = list(
 	thermal.layer = 17
 	thermal.plane = HUD_PLANE
 	thermal.mouse_opacity = FALSE
+
+	fov = new /obj/screen/fov()
+	fov.icon = 'icons/mob/hide.dmi'
+	fov.icon_state = "combat"
+	fov.name = " "
+	fov.screen_loc = "1,1"
+	fov.mouse_opacity = FALSE
+	fov.layer = 18
 
 	var/obj/screen/O
 	var/i

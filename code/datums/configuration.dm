@@ -62,6 +62,7 @@ var/list/gamemode_cache = list()
 	var/show_mentors = FALSE
 	var/mods_can_tempban = FALSE
 	var/mods_can_job_tempban = FALSE
+	var/disable_fov = FALSE
 	var/mod_tempban_max = 1440
 	var/mod_job_tempban_max = 1440
 	var/ToRban = FALSE
@@ -465,7 +466,6 @@ var/list/gamemode_cache = list()
 				if ("character_slots")
 					config.character_slots = text2num(value)
 
-
 				if ("allow_extra_antags")
 					config.allow_extra_antags = TRUE
 
@@ -482,6 +482,9 @@ var/list/gamemode_cache = list()
 
 				if ("round_end_countdown")
 					config.round_end_countdown = text2num(value)
+
+				if ("disable_fov")
+					config.disable_fov = TRUE
 
 				else
 					log_misc("Unknown setting in configuration: '[name]'")

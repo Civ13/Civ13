@@ -22,18 +22,60 @@ client/
 atom/proc/InCone(atom/center = usr, dir = NORTH)
 	if (get_dist(center, src) == FALSE || src == center) return FALSE
 	var/d = get_dir(center, src)
+	if (global_hud.fov.icon_state == "combat") //300 degrees
+		if (!d || d == dir) return TRUE
+		if (dir & (dir-1))
+			return (d & ~dir) ? FALSE : TRUE
+		if (!(d & dir)) return FALSE
+		var/dx = abs(x - center.x)
+		var/dy = abs(y - center.y)
+		if (dx == dy) return TRUE
+		if (dy > dx)
+			return (dir & (NORTH|SOUTH)) ? TRUE : FALSE
+		return (dir & (EAST|WEST)) ? TRUE : FALSE
 
-	if (!d || d == dir) return TRUE
-	if (dir & (dir-1))
-		return (d & ~dir) ? FALSE : TRUE
-	if (!(d & dir)) return FALSE
-	var/dx = abs(x - center.x)
-	var/dy = abs(y - center.y)
-	if (dx == dy) return TRUE
-	if (dy > dx)
-		return (dir & (NORTH|SOUTH)) ? TRUE : FALSE
-	return (dir & (EAST|WEST)) ? TRUE : FALSE
+	else if (global_hud.fov.icon_state == "narrow") //180 degrees
+		if (!d) return TRUE
+		switch(center.dir)
+			if (WEST)
+				if (x <= center.x)
+					return TRUE
+			else if (EAST)
+				if (x >= center.x)
+					return TRUE
+			else if (NORTH)
+				if (y >= center.x)
+					return TRUE
+			else if (SOUTH)
+				if (y <= center.x)
+					return TRUE
+		return FALSE
 
+	else if (global_hud.fov.icon_state == "helmet") //60 degrees
+		//first remove anything 180 degrees behind
+		switch(center.dir)
+			if (WEST)
+				if (x > center.x)
+					return FALSE
+				if (get_dir(center, src) == center.dir)
+					return TRUE
+			else if (EAST)
+				if (x < center.x)
+					return FALSE
+				if (get_dir(center, src) == center.dir)
+					return TRUE
+			else if (NORTH)
+				if (y < center.x)
+					return FALSE
+				if (get_dir(center, src) == center.dir)
+					return TRUE
+			else if (SOUTH)
+				if (y > center.x)
+					return FALSE
+				if (get_dir(center, src) == center.dir)
+					return TRUE
+
+		return FALSE
 mob/dead/InCone(mob/center = usr, dir = NORTH)
 	return
 
@@ -55,7 +97,8 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 
 /mob/living/update_vision_cone()
 	var/delay = 10
-	if (client && fov)
+	if (client && HUDtech["fov"] && !config.disable_fov)
+		var/obj/screen/fov/fov = HUDtech["fov"]
 		var/image/I = null
 		for (I in client.hidden_atoms)
 			I.override = FALSE
@@ -69,21 +112,23 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 		if (fov.alpha != FALSE)
 			var/mob/living/M
 			for (M in cone(src, OPPOSITE_DIR(dir), view(10, src)))
-				I = image("split", M)
-				I.override = TRUE
-				client.images += I
-				client.hidden_atoms += I
-				client.hidden_mobs += M
-				if (pulling == M)//If we're pulling them we don't want them to be invisible, too hard to play like that.
-					I.override = FALSE
+				if (!(M in range(1,src)))
+					I = image("split", M)
+					I.override = TRUE
+					client.images += I
+					client.hidden_atoms += I
+					client.hidden_mobs += M
+					if (pulling == M)//If we're pulling them we don't want them to be invisible, too hard to play like that.
+						I.override = FALSE
 
 			//Optional items can be made invisible too. Uncomment this part if you wish to items to be invisible.
-			//var/obj/item/O
-			//for (O in cone(src, OPPOSITE_DIR(dir), oview(src)))
-			//	I = image("split", O)
-			//	I.override = TRUE
-			//	client.images += I
-			//	client.hidden_atoms += I
+			var/obj/item/O
+			for (O in cone(src, OPPOSITE_DIR(dir), oview(src)))
+				if (!O.anchored && !(O in range(1,src)))
+					I = image("split", O)
+					I.override = TRUE
+					client.images += I
+					client.hidden_atoms += I
 
 	else
 		return

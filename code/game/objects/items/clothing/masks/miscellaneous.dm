@@ -35,3 +35,4 @@
 	body_parts_covered = FACE
 	w_class = 2
 	blocks_scope = TRUE
+	restricts_view = 1

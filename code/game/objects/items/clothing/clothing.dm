@@ -13,6 +13,7 @@
 
 	dropsound = 'sound/effects/drop_clothing.ogg'
 	flammable = TRUE
+	var/restricts_view = 0 //If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"
 
 //Updates the icons of the mob wearing the clothing item, if any.
 /obj/item/clothing/proc/update_clothing_icon()
@@ -24,6 +25,9 @@
 	gunshot_residue = null
 
 ///////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head/helmet
+	restricts_view = 1
+
 // Ears: headsets, earmuffs and tiny objects
 /obj/item/clothing/ears
 	name = "ears"
