@@ -147,10 +147,10 @@ mob/proc/rest_cone_act()//For showing and hiding the cone when you rest or lie d
 		show_cone()
 
 //Making these generic procs so you can call them anywhere.
-mob/proc/show_cone()
+mob/living/carbon/human/proc/show_cone()
 	if (fov)
 		fov.alpha = 255
 
-mob/proc/hide_cone()
+mob/living/carbon/human/proc/hide_cone()
 	if (fov)
 		fov.alpha = 0
