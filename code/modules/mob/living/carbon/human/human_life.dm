@@ -348,7 +348,7 @@
 						disease_treatment = 0
 		if (disease == FALSE)
 			//0.005%
-			if (prob(1))
+			if (prob(1) && map.civilizations)
 				if (prob(1) && !inducedSSD)
 					disease = TRUE
 					disease_type = "flu"

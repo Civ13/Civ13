@@ -12,9 +12,6 @@
 //Defines.
 #define OPPOSITE_DIR(D) turn(D, 180)
 
-/mob
-	var/obj/screen/fov = null//The screen object because I can't figure out how the hell TG does their screen objects so I'm just using legacy code.
-
 client/
 	var/list/hidden_atoms = list()
 	var/list/hidden_mobs = list()
@@ -105,7 +102,7 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 /mob/proc/update_vision_cone()
 	return
 
-/mob/living/update_vision_cone()
+/mob/living/carbon/human/update_vision_cone()
 	var/delay = 10
 	if (client && HUDtech["fov"] && !config.disable_fov)
 		var/obj/screen/fov/fov = HUDtech["fov"]
