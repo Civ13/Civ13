@@ -421,9 +421,12 @@ var/const/enterloopsanity = 100
 			else
 				footstepsound = "erikafootsteps"
 
-			if (istype(H.shoes, /obj/item/clothing/shoes) && (H.m_intent != "stealth"))
+			if (H.m_intent != "stealth")
+				var/fsvol = 50
+				if (istype(H.shoes, /obj/item/clothing/shoes))
+					fsvol = 100 //shoes make more noise than bare feet
 				if (movementMachine.ticks >= H.next_footstep_sound_at_movement_tick)
-					playsound(src, footstepsound, 100, TRUE)
+					playsound(src, footstepsound, fsvol, TRUE)
 					switch (H.m_intent)
 						if ("run")
 							H.next_footstep_sound_at_movement_tick = movementMachine.ticks + (movementMachine.interval*40*(0.3/movementMachine.interval))

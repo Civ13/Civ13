@@ -29,7 +29,7 @@
 	return get_run_delay() * 1.33
 
 /mob/proc/get_stealth_delay()
-	return get_run_delay() * 2.2
+	return get_run_delay() * 4
 
 // weight slowdown
 
