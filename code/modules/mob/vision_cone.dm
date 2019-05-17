@@ -103,8 +103,10 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 	return
 
 /mob/living/carbon/human/update_vision_cone()
-	var/delay = 10
+//	var/delay = 10
 	if (client && HUDtech["fov"] && !config.disable_fov)
+		rest_cone_act()
+/*
 		var/obj/screen/fov/fov = HUDtech["fov"]
 		var/image/I = null
 		for (I in client.hidden_atoms)
@@ -136,7 +138,7 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 					I.override = TRUE
 					client.images += I
 					client.hidden_atoms += I
-
+*/
 	else
 		return
 

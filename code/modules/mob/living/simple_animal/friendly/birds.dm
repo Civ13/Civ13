@@ -166,7 +166,7 @@
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
 			new /mob/living/simple_animal/chick(get_turf(src))
-			processing_objects.Remove(src)
+			processing_objects -= src
 			qdel(src)
 			return
 		else
@@ -174,7 +174,7 @@
 				grow()
 
 	else
-		processing_objects.Remove(src)
+		processing_objects -= src
 		return
 
 /mob/living/simple_animal/rooster
@@ -376,14 +376,14 @@
 		if (amount_grown >= 400)
 			visible_message("[src] hatches with a quiet cracking sound.")
 			new /mob/living/simple_animal/turkeychick(get_turf(src))
-			processing_objects.Remove(src)
+			processing_objects -= src
 			qdel(src)
 			return
 		else
 			spawn(50)
 				grow()
 	else
-		processing_objects.Remove(src)
+		processing_objects -= src
 		return
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
 	..()
