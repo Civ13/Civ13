@@ -92,7 +92,6 @@
 #include "code\datums\browser.dm"
 #include "code\datums\category.dm"
 #include "code\datums\configuration.dm"
-#include "code\datums\getrev.dm"
 #include "code\datums\hud.dm"
 #include "code\datums\mind.dm"
 #include "code\datums\organs.dm"
@@ -826,5 +825,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1969\compound.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE
