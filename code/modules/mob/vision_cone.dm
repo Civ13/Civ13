@@ -103,12 +103,12 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 	return
 
 /mob/living/carbon/human/update_vision_cone()
-//	var/delay = 10
+	var/delay = 10
 	if (client && HUDtech["fov"] && !config.disable_fov)
 //delete these lines when activating "normal" update vision cone
-		rest_cone_act()
-		HUDtech["fov"].dir = dir
-/*
+//		rest_cone_act()
+//		HUDtech["fov"].dir = dir
+
 		var/obj/screen/fov/fov = HUDtech["fov"]
 		var/image/I = null
 		for (I in client.hidden_atoms)
@@ -131,7 +131,7 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 					client.hidden_mobs += M
 					if (pulling == M)//If we're pulling them we don't want them to be invisible, too hard to play like that.
 						I.override = FALSE
-
+/*
 			//Optional items can be made invisible too. Uncomment this part if you wish to items to be invisible.
 			var/obj/item/O
 			for (O in cone(src, OPPOSITE_DIR(dir), oview(src)))

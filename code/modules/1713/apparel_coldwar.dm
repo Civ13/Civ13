@@ -296,19 +296,47 @@
 		hold.remove_from_storage(I, T)
 	add_fingerprint(user)
 
+//late coldwar stuff
+
+/obj/item/clothing/accessory/armor/coldwar/pasgt
+	name = "woodland PASGT body armor"
+	desc = "Wearable armor that can stop most pistol rounds. This one is in U.S. Woodland pattern."
+	icon_state = "pasgt_woodland"
+	item_state = "pasgt_woodland"
+	worn_state = "pasgt_woodland"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.3
+	w_class = 4
+	weight = 3.8
+
 /obj/item/clothing/accessory/armor/coldwar/plates/interceptor
 	name = "black Interceptor Body Armor"
 	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection."
-	icon_state = "modern_kevlar"
-	item_state = "modern_kevlar"
-	worn_state = "modern_kevlar"
+	icon_state = "iba_black"
+	item_state = "iba_black"
+	worn_state = "iba_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 75, arrow = 100, gun = 65, energy = 25, bomb = 65, bio = 20, rad = FALSE)
 	value = 120
 	slowdown = 0.4
 	w_class = 4
-	weight = 3.8
+	weight = 6
 
+/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ucp
+	name = "UCP Interceptor Body Armor"
+	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Universal Camouflage Pattern."
+	icon_state = "iba_ucp"
+	item_state = "iba_ucp"
+	worn_state = "iba_ucp"
+
+/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp
+	name = "OCP Interceptor Body Armor"
+	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection. This one has the Operational Camouflage Pattern."
+	icon_state = "iba_ocp"
+	item_state = "iba_ocp"
+	worn_state = "iba_ocp"
 
 /obj/item/weapon/armorplates
 	name = "ballistic plates"
@@ -326,3 +354,83 @@
 	sharp = FALSE
 	edge = TRUE
 	w_class = 2.0
+
+/obj/item/clothing/accessory/armor/knee_protections
+	name = "knee protections"
+	desc = "Used to increase the protection of the legs."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "knee_protections"
+	item_state = "knee_protections"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "leg_armor"
+	matter = list(DEFAULT_WALL_MATERIAL = 50)
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = LEGS
+	armor = list(melee = 75, arrow = 50, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.1
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+/obj/item/clothing/accessory/armor/elbow_protections
+	name = "elbow protections"
+	desc = "Used to increase the protection of the arms."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "elbow_protections"
+	item_state = "elbow_protections"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	force = 6.0
+	throwforce = 3.0
+	slot = "arm_armor"
+	matter = list(DEFAULT_WALL_MATERIAL = 50)
+	attack_verb = list("bashed", "bludgeoned", "whacked")
+	body_parts_covered = ARMS
+	armor = list(melee = 65, arrow = 45, gun = 15, energy = 25, bomb = 55, bio = 20, rad = FALSE)
+	slowdown = 0.1
+	sharp = FALSE
+	edge = TRUE
+	w_class = 2.0
+
+
+/obj/item/clothing/head/helmet/modern/pasgt
+	name = "PASGT helmet"
+	desc = "A typical US Army PASGT helmet. This one is in U.S. Woodland pattern."
+	icon_state = "pasgt_woodland"
+	item_state = "pasgt_woodland"
+	worn_state = "pasgt_woodland"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 62, arrow = 55, gun = 21, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/lwh
+	name = "LWH helmet"
+	desc = "A typical US Army LightWeight Helmet. This one is in beige color."
+	icon_state = "lwh_desert"
+	item_state = "lwh_desert"
+	worn_state = "lwh_desert"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 68, arrow = 67, gun = 27, energy = 18, bomb = 65, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/lwh/black
+	name = "black LWH helmet"
+	desc = "A typical US Army LightWeight Helmet. This one is in black color."
+	icon_state = "lwh_black"
+	item_state = "lwh_black"
+	worn_state = "lwh_black"
+
+
+
+/obj/item/clothing/under/us_uni/us_camo_woodland
+	name = "woodland camo uniform"
+	desc = "The standard US Army camo uniform the late 20th century."
+	icon_state = "us_camo_woodland"
+	item_state = "us_camo_woodland"
+	worn_state = "us_camo_woodland"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
