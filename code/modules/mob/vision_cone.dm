@@ -105,7 +105,9 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 /mob/living/carbon/human/update_vision_cone()
 //	var/delay = 10
 	if (client && HUDtech["fov"] && !config.disable_fov)
+//delete these lines when activating "normal" update vision cone
 		rest_cone_act()
+		HUDtech["fov"].dir = dir
 /*
 		var/obj/screen/fov/fov = HUDtech["fov"]
 		var/image/I = null
