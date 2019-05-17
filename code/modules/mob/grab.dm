@@ -8,6 +8,9 @@
 	for (var/obj/item/weapon/grab/G in list(mob.l_hand, mob.r_hand))
 		G.reset_kill_state() //no wandering across the station/asteroid while choking someone
 
+/mob
+	var/mouth_covered = FALSE
+
 /obj/item/weapon/grab
 	name = "grab"
 	icon = 'icons/mob/screen/1713Style.dmi'
@@ -157,6 +160,7 @@
 		if ("mouth")
 			if (announce)
 				user.visible_message("<span class='warning'>\The [user] covers [target]'s mouth!</span>")
+				target.mouth_covered = TRUE
 			if (target.silent < 3)
 				target.silent = 3
 		if ("eyes")
@@ -323,6 +327,7 @@
 /obj/item/weapon/grab/dropped()
 	if (ismob(loc))
 		var/mob/M = loc
+		M.mouth_covered = FALSE
 		M.grab_list = list()
 	loc = null
 	if (!destroying)
