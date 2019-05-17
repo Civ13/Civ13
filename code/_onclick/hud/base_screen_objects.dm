@@ -509,12 +509,13 @@
 		return TRUE
 
 	if (C.m_intent == "run")
+		C.m_intent = "stealth"
+	else if (C.m_intent == "stealth")
 		C.m_intent = "walk"
-//	else if (C.m_intent == "walk" && !C.resting)
-//		C.resting = TRUE
-	else if (C.m_intent == "walk"/*&& C.resting*/)
-	//	C.resting = FALSE
+	else if (C.m_intent == "walk")
 		C.m_intent = "run"
+	else
+		C.m_intent = "walk"
 
 	update_icon()
 
@@ -532,6 +533,8 @@
 				icon_state = "proning"
 			else*/
 			icon_state = "walking"
+		if ("stealth")
+			icon_state = "stealth"
 
 //-----------------------mov_intent END------------------------------
 /obj/screen/equip

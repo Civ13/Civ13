@@ -28,6 +28,9 @@
 /mob/proc/get_walk_delay()
 	return get_run_delay() * 1.33
 
+/mob/proc/get_stealth_delay()
+	return get_run_delay() * 2.2
+
 // weight slowdown
 
 /mob/living/carbon/human/var/last_run_delay = -1
@@ -532,7 +535,11 @@
 				if (mob_is_human)
 					H.nutrition -= 0.002
 					H.water -= 0.002
-
+			if ("stealth")
+				move_delay += mob.get_stealth_delay() + standing_on_snow
+				if (mob_is_human)
+					H.nutrition -= 0.004
+					H.water -= 0.004
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
