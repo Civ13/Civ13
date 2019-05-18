@@ -29,6 +29,8 @@ var/civmax_research = list(130,130,130)
 //faction stuff
 	var/faction1 = BRITISH
 	var/faction2 = PIRATES
+	var/faction1_points = 0
+	var/faction2_points = 0
 	var/no_subfaction_chance = TRUE
 	var/subfaction_is_main_faction = FALSE
 	var/list/faction_organization = list()

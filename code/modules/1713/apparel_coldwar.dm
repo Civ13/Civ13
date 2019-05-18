@@ -311,6 +311,13 @@
 	w_class = 4
 	weight = 3.8
 
+/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki
+	name = "khaki PASGT body armor"
+	desc = "Wearable armor that can stop most pistol rounds. This one is khaki colored."
+	icon_state = "pasgt_khaki"
+	item_state = "pasgt_khaki"
+	worn_state = "pasgt_khaki"
+
 /obj/item/clothing/accessory/armor/coldwar/plates/interceptor
 	name = "black Interceptor Body Armor"
 	desc = "Wearable armor that can stop even some rifle rounds. Can be fitted with plates to increase protection."
@@ -451,4 +458,43 @@
 	icon_state = "us_camo_ocp"
 	item_state = "us_camo_ocp"
 	worn_state = "us_camo_ocp"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/mask/balaclava
+	name = "black balaclava"
+	desc = "A black balaclava, covering the face."
+	icon_state = "balaclava"
+	item_state = "balaclava"
+	worn_state = "balaclava"
+	body_parts_covered = FACE|EYES|HEAD
+	w_class = 1
+	restricts_view = 2
+
+
+/obj/item/clothing/accessory/storage/webbing/green_webbing
+	name = "green chest webbing"
+	desc = "a green chest-level webbing, with three medium sized pouches."
+	slots = 3
+	icon_state = "green_webbing"
+	item_state = "green_webbing"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,)
+
+/obj/item/clothing/accessory/storage/webbing/khaki_webbing
+	name = "khaki chest webbing"
+	desc = "a green chest-level webbing, with three medium sized pouches."
+	slots = 3
+	icon_state = "khaki_webbing"
+	item_state = "khaki_webbing"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,)
+
+/obj/item/clothing/under/insurgent
+	name = "black tunic"
+	desc = "An all black tunic and trousers outfit."
+	icon_state = "insurgent_black"
+	item_state = "insurgent_black"
+	worn_state = "insurgent_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS

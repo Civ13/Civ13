@@ -596,3 +596,319 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("mg", STAT_MEDIUM_LOW)
 	return TRUE
+
+/////////////////////////////////////////////////////////////////////////
+/datum/job/american/specops_leader
+	title = "SOF Team Leader"
+	rank_abbreviation = "Lt."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	whitelisted = TRUE
+	is_officer = TRUE
+	is_commander = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/specops_leader/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_tigerstripes(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/grey(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/facecamo(H), slot_wear_mask)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/commando_bandana(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/garrote(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(lw, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("mg", STAT_MEDIUM_HIGH)
+	return TRUE
+
+
+/datum/job/american/specops_technician
+	title = "SOF Technician"
+	rank_abbreviation = "Sst."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	whitelisted = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/american/specops_technician/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_tigerstripes(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/grey(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/facecamo(H), slot_wear_mask)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/commando_bandana(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/garrote(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(lw, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_HIGH)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_HIGH)
+	H.setStat("bows", STAT_HIGH)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("mg", STAT_VERY_HIGH)
+	return TRUE
+
+/datum/job/american/specops_doctor
+	title = "SOF Medic"
+	rank_abbreviation = "Sfc."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/american/specops_doctor/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_tigerstripes(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/grey(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/facecamo(H), slot_wear_mask)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/commando_bandana(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/garrote(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(lw, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("mg", STAT_MEDIUM_HIGH)
+	return TRUE
+
+/datum/job/american/specops_operator
+	title = "SOF Operator"
+	rank_abbreviation = "Sgt."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 8
+
+/datum/job/american/specops_operator/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_tigerstripes(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/grey(H), slot_gloves)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/facecamo(H), slot_wear_mask)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/commando_bandana(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/garrote(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
+	uniform.attackby(lw, H)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_HIGH)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_VERY_HIGH)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("mg", STAT_HIGH)
+	return TRUE
+
+/////////////////////////////////////////////////////
+
+/datum/job/arab/insurgent_leader
+	title = "Insurgent Leader"
+	en_meaning = ""
+	rank_abbreviation = "Leader "
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateAR"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_officer = TRUE
+	is_specops = TRUE
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 12
+
+/datum/job/arab/insurgent_leader/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/vietcong(H), slot_w_uniform)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pith(H), slot_head)
+//back
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/vc_officer(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	var/obj/item/clothing/accessory/armband/red_scarf/rscarf = new /obj/item/clothing/accessory/armband/red_scarf(null)
+	uniform.attackby(rscarf, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, lead the Viet Cong in the fight against the imperialists!")
+	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
+	return TRUE
+
+
+/datum/job/arab/insurgent
+	title = "Insurgent"
+	en_meaning = ""
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateAR"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	// AUTOBALANCE
+	min_positions = 20
+	max_positions = 50
+
+/datum/job/arab/insurgent/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent(H), slot_w_uniform)
+
+//head
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_head)
+
+//back
+	var/pickgun = rand(1,3)
+	if (pickgun == 1)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4(H), slot_back)
+	else if (pickgun == 2)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_back)
+	else if (pickgun == 3)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/boot/bowie(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_wear_id)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(50))
+		var/obj/item/clothing/accessory/storage/webbing/green_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing(null)
+		uniform.attackby(fullwebbing, H)
+	else
+		var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing(null)
+		uniform.attackby(fullwebbing, H)
+	give_random_name(H)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard")
+		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard")
+	H.s_tone = rand(-92,-80)
+	var/new_hair = pick("Dark Brown","Black")
+	var/new_eyes = pick("Dark Brown", "Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	var/hex_eyes = eye_colors[new_eyes]
+	H.r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+	H.g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+	H.b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+	H.change_eye_color(H.r_eyes, H.g_eyes, H.b_eyes)
+	H.force_update_limbs()
+	H.update_body()
+	H.add_note("Role", "You are a <b>[title]</b>, fighting guerilla warfare against the imperialists!")
+	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL) //not used
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
+
+	return TRUE

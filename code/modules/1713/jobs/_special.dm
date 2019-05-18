@@ -27,6 +27,7 @@
 /datum/job/var/is_ww1 = FALSE
 /datum/job/var/is_coldwar = FALSE
 /datum/job/var/is_radioman = FALSE
+/datum/job/var/is_specops = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold

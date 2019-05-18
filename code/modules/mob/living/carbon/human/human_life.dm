@@ -1385,7 +1385,10 @@
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
-					holder2.icon_state = "arab_basic"
+					if (map.ordinal_age >= 6)
+						holder2.icon_state = "isis_basic"
+					else
+						holder2.icon_state = "arab_basic"
 				if (GREEK)
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
