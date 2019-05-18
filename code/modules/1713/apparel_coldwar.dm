@@ -434,3 +434,21 @@
 	item_state = "us_camo_woodland"
 	worn_state = "us_camo_woodland"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+
+/obj/item/clothing/under/us_uni/us_camo_ucp
+	name = "UCP camo uniform"
+	desc = "The standard US Army camo uniform the early 21st century."
+	icon_state = "us_camo_ucp"
+	item_state = "us_camo_ucp"
+	worn_state = "us_camo_ucp"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+
+/obj/item/clothing/under/us_uni/us_camo_ocp
+	name = "OCP camo uniform"
+	desc = "The standard US Army camo uniform from 2018 onwards."
+	icon_state = "us_camo_ocp"
+	item_state = "us_camo_ocp"
+	worn_state = "us_camo_ocp"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
