@@ -113,6 +113,7 @@
 
 /obj/item/garrote/attack(mob/living/carbon/human/target as mob, mob/living/carbon/human/user as mob)
 	if (garroting)
+		stop_garroting(user)
 		return
 	else
 		start_garroting(user,target)
@@ -131,7 +132,6 @@
 
 /obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user)
 	garroting = FALSE
-	user << "You loosen the garrote."
 	update_icon()
 /obj/item/garrote/attack_self(mob/living/carbon/human/user)
 	if(garroting)
