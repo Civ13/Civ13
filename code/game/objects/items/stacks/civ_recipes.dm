@@ -509,7 +509,7 @@
 	recipes += list(new/datum/stack_recipe("fishing net", /obj/item/weapon/fishing/net, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("leash", /obj/item/weapon/leash, _time = 20))
 	if (current_res[2] >= 43)
-		recipes += list(new/datum/stack_recipe("garrote", /obj/item/weapon/garrote, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("garrote", /obj/item/garrote, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE))
 
 /material/glass/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()

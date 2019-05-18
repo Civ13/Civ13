@@ -85,7 +85,7 @@
 
 
 ////////////////GARROTE/////////////////////
-/obj/item/weapon/garrote
+/obj/item/garrote
 	name = "garrote"
 	desc = "A handheld ligature of rope, used to strangle a person."
 	icon = 'icons/obj/weapons.dmi'
@@ -103,31 +103,37 @@
 	var/next_garrote = 0
 	var/garroting = FALSE
 
-/obj/item/weapon/garrote/Destroy()
+/obj/item/garrote/Destroy()
 	garroting = FALSE
 	update_icon()
 	return ..()
 
-/obj/item/weapon/garrote/update_icon()
+/obj/item/garrote/update_icon()
     icon_state = "garrote[garroting ? "_w" : ""]"
 
-/obj/item/weapon/garrote/proc/start_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
+/obj/item/garrote/attack(mob/living/carbon/human/target as mob, mob/living/carbon/human/user as mob)
+	if (garroting)
+		return
+	else
+		start_garroting(user,target)
+		return
+/obj/item/garrote/proc/start_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
 	playsound(target.loc, 'sound/weapons/grapple.ogg', 40, 1, -4)
 	playsound(target.loc, 'sound/weapons/cablecuff.ogg', 15, 1, -5)
 	garroting = TRUE
 	update_icon()
-	garroting_process(user)
+	garroting_process(user,target)
 	next_garrote = world.time + 10
 	visible_message(
 		"<span class='danger'>[user] has grabbed \the [target] with \the [src]!</span>",\
 		"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
 		"You hear some struggling and muffled cries of surprise")
 
-/obj/item/weapon/garrote/proc/stop_garroting()
+/obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user)
 	garroting = FALSE
+	user << "You loosen the garrote."
 	update_icon()
-
-/obj/item/weapon/garrote/attack_self(mob/living/carbon/human/user)
+/obj/item/garrote/attack_self(mob/living/carbon/human/user)
 	if(garroting)
 		user << "<span class='notice'>You release the garrote on your victim.</span>" //Not the grab, though. Only the garrote.
 		garroting = FALSE
@@ -135,41 +141,12 @@
 		return
 	if(world.time <= next_garrote) 	return
 
-	if(ishuman(user))
-		var/obj/item/weapon/grab/G = null
-		for (var/obj/item/weapon/grab/GR in user.grab_list)
-			G = GR
-			continue
-		if (!G)
-			user << "<span class='warning'>You must be grabbing someone to garrote them!</span>"
-			return
-
-		if(!G.affecting || !ishuman(G.affecting) || G.assailant != user)
-			user << "<span class='warning'>You must be grabbing someone to garrote them!</span>"
-			return
-
-		start_garroting(user,G.affecting)
-
-/obj/item/weapon/garrote/proc/garroting_process(mob/living/carbon/human/user)
+/obj/item/garrote/proc/garroting_process(mob/living/carbon/human/user,mob/living/carbon/human/target)
 	if (!user)
-		return FALSE
-	var/obj/item/weapon/grab/G = null
-	for (var/obj/item/weapon/grab/GR in user)
-		G = GR
-		continue
-	if (!G)
 		return FALSE
 	if(ishuman(user))
 		if(!(user.l_hand == src || user.r_hand == src)) //THE GARROTE IS NOT IN HANDS, ABORT
 			garroting = FALSE
-			G.state = GRAB_PASSIVE
-			user << "You loosen the garrote."
-			update_icon()
-			return FALSE
-
-		if(!G.affecting || !ishuman(G.affecting))
-			garroting = FALSE
-			G.state = GRAB_PASSIVE
 			user << "You loosen the garrote."
 			update_icon()
 			return FALSE
@@ -182,16 +159,15 @@
 			spawn(25)
 				garroting_process(user)
 
-		var/mob/living/carbon/human/H = G.affecting
-		if(istype(H))
-			if(!H.mouth_covered)
-				H.forcesay(list("-hrk!", "-hrgh!", "-urgh!", "-kh!", "-hrnk!"))
+		if(istype(target))
+			if(!target.mouth_covered)
+				target.forcesay(list("-hrk!", "-hrgh!", "-urgh!", "-kh!", "-hrnk!"))
 
-		if(G.state >= GRAB_PASSIVE) //Only do oxyloss if in agreesive grab to prevent passive grab choking or something.
-			H.adjustOxyLoss(3) //Stack the chokes with additional oxyloss for quicker death
+		if (garroting) //Only do oxyloss if in agreesive grab to prevent passive grab choking or something.
+			target.adjustOxyLoss(3) //Stack the chokes with additional oxyloss for quicker death
 			if(prob(40))
-				H.stuttering = max(H.stuttering, 3) //It will hamper your voice, being choked and all.
-				H.losebreath = max(H.losebreath, 3)
+				target.stuttering = max(target.stuttering, 3) //It will hamper your voice, being choked and all.
+				target.losebreath = max(target.losebreath, 3)
 		return TRUE
 	else
 		garroting = FALSE

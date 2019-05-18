@@ -191,3 +191,70 @@
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
 	)
+
+
+/obj/structure/vending/sofapparel
+	name = "SOF apparel rack"
+	desc = "Basic wear for U.S. Special Operations Forces."
+	icon_state = "apparel_sof"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/head/jungle_hat/khaki = 15,
+		/obj/item/stack/medical/bruise_pack/gauze = 20,
+		/obj/item/flashlight/lantern = 15,
+		/obj/item/clothing/under/us_uni/us_camo_woodland = 15,
+		/obj/item/clothing/under/us_uni/us_camo_ucp = 15,
+		/obj/item/clothing/under/us_uni/us_camo_ocp = 15,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 30,
+		/obj/item/clothing/accessory/armor/coldwar/plates/interceptor = 10,
+		/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ucp = 10,
+		/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/ocp = 10,
+		/obj/item/weapon/armorplates = 15,
+		/obj/item/clothing/accessory/armor/knee_protections = 15,
+		/obj/item/clothing/accessory/armor/elbow_protections = 15,
+		/obj/item/clothing/head/helmet/modern/lwh = 15,
+		/obj/item/clothing/head/helmet/modern/lwh/black = 15,
+		/obj/item/clothing/head/jungle_hat/khaki = 15,
+		/obj/item/clothing/mask/balaclava = 15,
+		/obj/item/clothing/mask/glasses/nvg = 15,
+	)
+
+/obj/structure/vending/sofweapons
+	name = "SOF weapons rack"
+	desc = "Weapons for U.S. Special Operations Forces."
+	icon_state = "weapons_sof"
+	products = list(
+		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/m14 = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/ak74uso = 15,
+//		/obj/item/weapon/gun/projectile/submachinegun/scarl = 15,
+//		/obj/item/weapon/gun/projectile/submachinegun/scarl/scarh = 15,
+//		/obj/item/weapon/gun/projectile/submachinegun/hk417 = 15,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 15,
+		/obj/item/weapon/gun/projectile/pistol/m1911 = 15,
+		/obj/item/weapon/grenade/smokebomb/m18smoke = 15,
+		/obj/item/weapon/grenade/coldwar/m67 = 15,
+		/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 15,
+		/obj/item/weapon/grenade/flashbang/m84 = 15,
+	)
+
+obj/structure/vending/sofammo
+	name = "SOF ammunition crates"
+	desc = "ammunition and attachments for U.S. Special Operations Forces."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak74 = 20,
+		/obj/item/ammo_magazine/m16 = 50,
+		/obj/item/ammo_magazine/m14 = 50,
+//		/obj/item/ammo_magazine/g3 = 20,
+//		/obj/item/ammo_magazine/scarh = 20,
+		/obj/item/ammo_magazine/m1911 = 50,
+		/obj/item/weapon/attachment/scope/adjustable/sniper_scope = 15,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/acog = 15,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/reddot = 15,
+		/obj/item/weapon/attachment/scope/adjustable/advanced/holographic = 15,
+		/obj/item/weapon/attachment/under/laser = 15,
+		/obj/item/weapon/attachment/under/foregrip = 15,
+	)

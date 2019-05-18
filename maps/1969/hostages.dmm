@@ -1,108 +1,230 @@
-"a" = (/turf/floor/dirt,/area/caribbean/arab)
-"b" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/dirt,/area/caribbean/arab)
-"c" = (/mob/living/simple_animal/hostage,/turf/floor/dirt,/area/caribbean/arab)
-"d" = (/obj/map_metadata/hostages,/turf/floor/dirt,/area/caribbean/arab)
-"e" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt,/area/caribbean/arab)
+"aa" = (/turf/wall/rockwall,/area/caribbean/arab/desert)
+"ab" = (/turf/wall/rockwall,/area/caribbean/arab/caves)
+"ac" = (/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"ad" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"ae" = (/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"af" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"ag" = (/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ah" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ai" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aj" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ak" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"al" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"am" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"an" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"ao" = (/obj/structure/bed/roller,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"ap" = (/turf/wall/rockwall,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aq" = (/obj/structure/window/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ar" = (/obj/structure/bed/roller,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"as" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"at" = (/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"au" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"av" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"aw" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ax" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ay" = (/obj/item/stack/farming/seeds/orange,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"az" = (/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aA" = (/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aB" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aC" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aD" = (/turf/floor/beach/sand,/area/caribbean/arab/desert)
+"aE" = (/obj/structure/wild/palm,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"aF" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aG" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aH" = (/obj/structure/closet/anchored,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aI" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aJ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/syringe/morphine,/obj/item/weapon/reagent_containers/syringe/morphine,/obj/item/weapon/reagent_containers/syringe/morphine,/obj/item/weapon/reagent_containers/syringe/morphine,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aK" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aL" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aM" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aN" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/flag/us,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aO" = (/obj/structure/wild/rock,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aP" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aQ" = (/obj/structure/roof_support,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aR" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"aS" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aT" = (/obj/structure/wild/jungle/medpine/dead,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"aU" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aV" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aW" = (/obj/structure/sign/flag/medical,/obj/structure/barricade,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aX" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"aY" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"aZ" = (/obj/structure/wild/palm,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"ba" = (/obj/item/weapon/stool,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bb" = (/obj/structure/roof_support,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bc" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bd" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"be" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bf" = (/obj/structure/closet/crate,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bg" = (/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bh" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen/pencil,/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bi" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bj" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bk" = (/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bl" = (/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bm" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bn" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "insurgent radio"; transmitter_on = 0},/turf/floor/dirt/dust,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bo" = (/obj/structure/wild/smallbush,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bp" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bq" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 9},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"br" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bs" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 5},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bt" = (/obj/structure/wild/tree/dead_tree,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"bu" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean/arab/desert)
+"bv" = (/obj/structure/table/wood,/obj/item/weapon/pen/pencil,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bw" = (/obj/structure/lamp/lamp_small/alwayson,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bx" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"by" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bz" = (/mob/living/simple_animal/mouse/brown,/turf/floor/dirt/dust,/area/caribbean/arab/desert)
+"bA" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/glass,/obj/item/weapon/storage/fancy/cigar,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bB" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bC" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 4},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bD" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bE" = (/obj/structure/barricade,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bF" = (/mob/living/simple_animal/camel,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"bG" = (/obj/structure/wild/tallgrass2,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"bH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"bI" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{name = "SOF radio"},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bJ" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bK" = (/obj/structure/closet/crate/empty,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bL" = (/obj/structure/closet/crate/empty,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bM" = (/obj/structure/wild/junglebush,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bN" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/beach/sand,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bO" = (/obj/structure/closet/crate,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bP" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bQ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
+"bR" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bS" = (/obj/item/stack/farming/seeds/wheat,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bT" = (/obj/structure/wild/smallbush,/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"bU" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bV" = (/obj/structure/vending/sofapparel,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bW" = (/obj/structure/vending/sofweapons,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bX" = (/obj/structure/vending/sofammo,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bY" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"bZ" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 4},/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ca" = (/obj/structure/wild/smallbush,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cb" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 10},/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cc" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cd" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ce" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 6},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cf" = (/turf/floor/dirt,/area/caribbean/arab/caves)
+"cg" = (/mob/living/simple_animal/hostage,/turf/floor/dirt,/area/caribbean/arab/caves)
+"ch" = (/obj/map_metadata/hostages,/turf/wall/rockwall,/area/caribbean/arab/caves)
+"ci" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/dirt,/area/caribbean/arab/caves)
+"cj" = (/turf/wall/rockwall,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ck" = (/mob/living/simple_animal/mouse/brown,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cl" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cm" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cn" = (/turf/floor/beach/water,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"co" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cp" = (/obj/structure/roof_support,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/lamp/lamp_big/alwayson,/turf/floor/beach/sand/desert,/area/caribbean/british/land/inside{base_turf = /turf/floor/dirt/dust; climate = "desert"; icon_state = "red1"; name = "SOF base"})
+"cq" = (/obj/structure/window/sandbag/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cr" = (/obj/structure/flag/us,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/beach/sand/desert,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cs" = (/obj/effect/landmark{name = "JoinLateRN"},/obj/structure/lamp/lamp_small/alwayson,/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"ct" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cu" = (/obj/structure/barricade,/turf/floor/dirt/dust,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cv" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
+"cw" = (/obj/effect/landmark{name = "JoinLateRN"},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land{base_turf = /turf/floor/beach/sand/desert; climate = "desert"; icon_state = "red2"; name = "SOF base"})
 
 (1,1,1) = {"
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaacaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-daaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababagagahabababababababababababababababababababababacabababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababagabababagabababababababababajagagakakagagagagalamaqadacacababacacabababababababababababacacacacacacacababababababababababababababababababababababababababababababababababababababababababababab
+ababababagagababagaraoaoarapabababagagasatatauagagagatatawaxadaeacacabacacacacababababababacacacacacacacacacacacabacacacabababababababababababababababababababababababababababababababababababababababab
+ababagagayaBagataCazaAaAaAapagagagagatatatatatatatagatataKaLafaiaeacacacaeacacacababababacanaeaeaeaeaeavaDaeaeacacacabababababababababababababababababababababababababababababababababababababababababab
+abababatatagagatataHazaIaAaJagagatatatatataMatatatatataLaPaVadaeafaeacacaeacacacaEacabacacaFaeaeaeaeaeaDaDaeaeacacacabababababababababababababababababababababababababababababababababababababababababab
+ababagagagatatataWaQazaRaRaQatatagatatatagagatatatatataXatatafaeafaeaeaeaeaFacaeaGacacacaeaeacaeaeacaeaeaDaFacacacacacababababababababababababababababababababababababababababababababababababababababab
+abagagagatagatatatatatatatatatatajatatasasagataCatagatbcbdatbeataNaeaeaeaeaeaiaeaeaiaeaeaeaeaOaeaeaeaeacaeaeaeacacacacacabababababababababababababababababababababababababababababababababababababababab
+abagabaQazbaazbbatatbfatbfbgbkbkbkagatataBatatatatatblbmbdatatatafaeaeaeaeaSaeaeaeaeaeaeaeaeaiaeacacacacacaTaeaeacacacababababababababababababababababababababababababababababababababababababababababab
+abababbpbhbibjazatatatbqbrbrbrbrbrbsagatatbwatblatblblbwabataCatafaeaeaeaeaiaeaeaeaeaeaSaiaeanacacaeacacacacaeaeacacacababababababababababababababababababababababababababababababababababababababababab
+ababagaAbnaAbaboatbkbxbybBbkcsagbkbCagagbDbEbJblblblababababaUaUaYaeaeaeaeaeaeaeaeaeaeaeaeaeacaeaeacacaeacacacanacacacababababababababababababababababababababababababababababababababababababababababab
+abababbpbvbaazazasbkbKbybBctcucvbkbCagbLbMbNblatblababababaeaFaeaeaeaeaeaeaeaeaeaeaeaeaeaeaZacacaeanaeaDacacacacacacabababababababababababababababababababababababababababababababababababababababababab
+abababazbAbaazazatatbObPbTbkcwagagbZbkbLblblblblatatatabaiaeaeaeaeaebtaeaeaeaeaeaeaeaeaZaeaeacaeaebuaDaeacacacacacacacababababababababababababababababababababababababababababababababababababababababab
+ababagbbbIaAazbbatagagcbcccccccccdceaBblblblblataCataCababaeaZaeaZaeaeaeaOaeaeaeaFaOaeaeaeaZacbzacaeaeaeaFacaiacacababababababababababababababababababababababababababababababababababababababababababab
+abagagatatasasatataCbkbkbkagbkbkbkbkblblblblatasataMabababaeaeaiaeaeaeaeaeaeaeaFaDaeaeaeaeaeacaeacaeaiaeaeacacaFacababababababababababababababababababababababababababababababababababababababababababab
+ababcjagatataBatatataBaMbkatatbkbkbkbkblatatatatatabababaiaeaeaeaeaeaeaeaeaeaeaeaeaDaeaeacaZacacacaeaiaiaeaeaeaeacababababababababababababababababababababababababababababababababababababababababababab
+ababagagagatatatagagatatatatblblatbkblatatckabababababaeaeaeaeaeaeaeaeaeaeaZaeaeaeaeaeaeacacacacaeaeaeaZbFaeaeacacacabababababababababababababababababababababababababababababababababababababababababab
+ababagagatatatclbRbSbRbRbRcmblblbkbkatatatabababababaeaeaeaeaeaeaSaeaeaeaeaeaeaeaOaFaeaeaeaeaeacaeaFaeaeaeaDaiaeacacabababababababababababababababababababababababababababababababababababababababababab
+ababagauatatatbUbVazbWazbXbYatatbkatcnatababababaeaeaeaZaeaeaeaeaeaeaeaDaeaeaeaeaZaeaeaeaeaGacaeaeaeaeaeaOaeaeacacacabababababababababababababababababababababababababababababababababababababababababab
+ababagatatatatbUazazazazbobYatbkbkaCataCabababaeaeaeaeaeaeaiaiaeaeaDaFaeaeaSaeaeaeaFaiaeaeaeaeaeaeaeaZaeaFaeacacacacacababababababababababababababababababababababababababababababababababababababababab
+abababagaCagatazazazazazazazbkbkasataMabababaeaeaiaeaeaeaeaeaeaeaeaDaeaeacacacaeaDaeaeaeaeaeaeaeaeaeaeaeaeacaSaeacacacababababababababababababababababababababababababababababababababababababababababab
+abababagatatatbUazazazazbocaatatatatataXabbGaFaeaeaeaeaeaFaFaeaeaDaSaeaeaeaeaeaeaDaeaeaeaSaeaeaGaeaeaFaeaiaeaeaeacacacacabababababababababababababababababababababababababababababababababababababababab
+abababagaMatatcoazazazboazcpatagatataCatbcbHacaZaeaeaeaeaeaFaeaeaeaeaeaeaZaeaeaeaDaeaeaeaeaOaeaeaeaebtaeaeaeaDaeacacaDacabababababababababababababababababababababababababababababababababababababababab
+abababasataCatawawawawawawawatatatabcqcqcrbHaeaZaeaeaGaeaeaeaeaeaeaFaeaeaeaDaDaDaeaiaeaeaeaeaFaDaDaDaeaeaeaDaDaeaDaDacacacababababababababababababababababababababababababababababababababababababababab
+ababagaBatatatbMabatababatatatababababbQbQaeaeaeaSaeaeaeaeaeaiaeaeaeaeaeaeaDaDbtaeaeaeaeaeaeaeaDaDaDaeaeaeaeaeaDaZacacacacababababababababababababababababababababababababababababababababababababababab
+ababababatabatababababababasabababababaeaeaOaeaeaiaeaeaeacacacacaeaDaGaeaeaeaFaeaeaeaeacaeaeacaeacacacacacacaeaeacacabababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababaeaZaeaeaeaeaeaeaeaeaeaeaeaOaDaeaeaiaeaeaeacaeaeaeaeaeaeacacacacacacacacacacacabababababababababababababababababababababababababababababababababababababababababab
+aeababababababababababababababababaeaeaeaeaFaeaOaeaeaeaeaeaeaeaeaeaDaeaeaeaeaeaeaeaeaeaeaeaeacacabababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeabababababababababaeaeaeaeaeaeaeaGaeaeaeaeaeaeaiaDaeaZaeaeaeaeaeaeaeaeaeaeaeaeacacacacacabababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaeaeaeaeaeaeaeaeaeaZaeaeaeaeaeaeaeaeaeaiaeaeaDaeaeaeaeaeaeacaeacacaeacacacacacacacacabababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaeaeaeaeaeaeaiaeaeaeaeaeaeacaeaibtaeaeaeaeaeaTaeaeacaeaeaeaeacacacacacacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaSaeaFaeaeaeaGaeaeaeaeaeaeaiaeaeaeaeaeaeaFaeaeaeaGaeaeaeaeaeaeaeacacababacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaeaeaeaeaeaeaSaeaeaFaeaeaeaeaeaeaeaeacaeaeaeaeacacaeacacacacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aZaeaeaeaeaiaeaeaeaeaeaeaeaFaeaeaeaeaeaOaeaeaeacaeacacacacacacacabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaGaeaeacaeaeaeaeaeacacacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaFaeaeaiaeaeaeaeaeaeaeaeaeaeacaeacacacacabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaOaeaeaebtaeaeaeacaeaeaeacacacaeacacacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaGaeaeaeaeaeaeaeaeaeacacacabacacacabacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaiaeaSaeaeaFaZaeaeacabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaeaiaeaeaeaeaeacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaeaeaeaeaeacacacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaFaeaeaeaeaeacaaacabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaZacaeaeaeacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaeaeaeaeaFaeacaeacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeaFaeaeaeaeaeaeaeacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeaeacaeaeacaeaeacacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+aeacacacacacacacacababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+acacacabacacabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcgcfcgcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcgcfcfcgcfcfcgcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf
+chabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcicicfcfcfcfcf
 "}

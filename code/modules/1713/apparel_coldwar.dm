@@ -498,3 +498,11 @@
 	item_state = "insurgent_black"
 	worn_state = "insurgent_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/us_uni/us_lightuni_modern
+	name = "U.S. Army training uniform"
+	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
+	icon_state = "us_lightuni_modern"
+	item_state = "us_lightuni_modern"
+	worn_state = "us_lightuni_modern"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS

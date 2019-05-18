@@ -40,3 +40,10 @@
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
 		active = TRUE
 		prime()
+
+/obj/item/weapon/grenade/smokebomb/m18smoke
+	desc = "It is set to detonate in 2 seconds."
+	name = "M18 smoke grenade"
+	icon_state = "m18smoke"
+	det_time = 20
+	item_state = "m18smoke"

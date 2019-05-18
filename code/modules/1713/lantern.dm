@@ -158,3 +158,12 @@
 				do_torch()
 		else if (on == FALSE)
 			do_torch()
+
+
+/obj/item/flashlight/lantern
+	unlimited = TRUE
+	name = "flashlight_off"
+	desc = "an electrical flashlight."
+	icon_state = "flashlight_off"
+	on_state = "flashlight_on"
+	off_state = "flashlight_off"

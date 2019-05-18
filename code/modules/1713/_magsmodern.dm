@@ -18,7 +18,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/m16
-	name = "M16 magazine (5.56x45mm)"
+	name = "STANAG magazine (5.56x45mm)"
 	icon_state = "m16"
 	mag_type = MAGAZINE
 	caliber = "a556x45"

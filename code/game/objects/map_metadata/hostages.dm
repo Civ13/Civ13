@@ -17,7 +17,7 @@
 		list(ARAB) = /area/caribbean/greek
 		)
 	age = "2014"
-	ordinal_age = 5
+	ordinal_age = 6
 	faction_distribution_coeffs = list(AMERICAN = 0.2, ARAB = 0.8)
 	battle_name = "hostage rescue"
 	mission_start_message = "<font size=4>The insurgents are holding <b>American</b> embassy staff hostage! The Special Forces must rescue them within <b>20 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>1</b> point per hostage kept alive and in their control by the end of the 20 minutes.</font>"
@@ -96,6 +96,8 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 		return ""
 
 /obj/map_metadata/hostages/update_win_condition()
+	if (world.time < 3000)
+		return
 	if (win_condition_spam_check)
 		return FALSE
 	var/message = ""
@@ -149,19 +151,17 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 	return TRUE
 
 /obj/map_metadata/hostages/proc/check_hostages()
-	if (!faction1_can_cross_blocks())
-		return
 	rescued_hostages = 0
 	held_hostages = 0
 	dead_hostages = 0
-	for (var/mob/living/simple_animal/hostage/RH in get_area_turfs(/area/caribbean/british))
-		if (RH.stat != DEAD)
-			rescued_hostages++
-	for (var/mob/living/simple_animal/hostage/HH in get_area_turfs(/area/caribbean/arab))
-		if (HH.stat != DEAD)
-			held_hostages++
 	for (var/mob/living/simple_animal/hostage/DH in world)
-		if (DH.stat == DEAD)
+		if (DH.stat != DEAD)
+			var/area/currarea = get_area(DH)
+			if (istype(currarea, /area/caribbean/british))
+				rescued_hostages++
+			else if (istype(currarea, /area/caribbean/british))
+				held_hostages++
+		else if (DH.stat == DEAD)
 			dead_hostages++
 //	if (rescued_hostages + dead_hostages + held_hostages < total_hostages)
 //		dead_hostages = total_hostages-held_hostages-rescued_hostages

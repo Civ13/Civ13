@@ -268,6 +268,14 @@
 	icon_state = "m26"
 	det_time = 50
 	throw_range = 9
+
+
+/obj/item/weapon/grenade/coldwar/m67
+	name = "M67 grenade"
+	desc = "An American grenade introduced as a replacement for the M26."
+	icon_state = "m67"
+	det_time = 50
+	throw_range = 10
 /obj/item/weapon/grenade/coldwar/prime()
 	set waitfor = 0
 	..()
@@ -296,6 +304,25 @@
 
 	spawn (5)
 		qdel(src)
+
+/obj/item/weapon/grenade/coldwar/nonfrag/m26
+	name = "M26 explosive grenade"
+	desc = "An American grenade introduced in the 1950's. This one has no shrapnel."
+	icon_state = "m26_ex"
+	det_time = 50
+	throw_range = 10
+
+/obj/item/weapon/grenade/coldwar/nonfrag/prime()
+	set waitfor = 0
+	..()
+
+	var/turf/T = get_turf(src)
+	if(!T) return
+
+	if(explosion_size)
+		explosion(T,1,3,3,1)
+		qdel(src)
+
 /obj/item/weapon/grenade/ww2
 	secondary_action = TRUE
 	var/explosion_size = 2
@@ -339,3 +366,97 @@
 	muzzle_type = null
 
 	embed = TRUE
+
+
+
+/obj/item/weapon/grenade/suicide_vest
+	name = "suicide vest"
+	desc = "An IED suicide vest. Deadly!"
+	icon_state = "suicide_vest"
+	nothrow = TRUE
+	throw_speed = 1
+	throw_range = 2
+	flags = CONDUCT
+	slot_flags = SLOT_BELT
+	det_time = 10
+	var/armed = "disarmed"
+
+/obj/item/weapon/grenade/suicide_vest/prime()
+	if (active)
+		var/turf/T = get_turf(src)
+		if (T)
+			T.hotspot_expose(700,125)
+		if(!T) return
+		var/original_mobs = list()
+		var/original_objs = list()
+
+		explosion(T,2,3,3,3)
+		for (var/mob/living/L in T.contents)
+			original_mobs += L
+			if (L.client)
+				L.canmove = FALSE
+		for (var/obj/O in T.contents)
+			original_objs += O
+		playsound(T, "explosion", 100, TRUE)
+		spawn (1)
+			for (var/mob/living/L in original_mobs)
+				if (L)
+					L.maim()
+					if (L)
+						L.canmove = TRUE
+			for (var/obj/O in original_objs)
+				if (O)
+					O.ex_act(1.0)
+			T.ex_act(1.0)
+		qdel(src)
+
+
+/obj/item/weapon/grenade/suicide_vest/examine(mob/user)
+	..()
+	user << "\The [src] is <b>[armed]</b>."
+	return
+
+/obj/item/weapon/grenade/suicide_vest/attack_self(mob/user as mob)
+	if (!active && armed == "armed")
+		user << "<span class='warning'>You switch \the [name]!</span>"
+		activate(user)
+		add_fingerprint(user)
+
+/obj/item/weapon/grenade/suicide_vest/attack_hand(mob/user as mob)
+	if (!active && armed == "armed" && loc == user)
+		user << "<span class='warning'>You switch \the [name]!</span>"
+		activate(user)
+		add_fingerprint(user)
+	else
+		..()
+
+/obj/item/weapon/grenade/suicide_vest/verb/arm()
+	set category = null
+	set name = "Arm/Disarm"
+	set src in range(1, usr)
+
+	if (armed == "armed")
+		usr << "You disarm \the [src]."
+		armed = "disarmed"
+		return
+	else
+		usr << "<span class='warning'>You arm \the [src]!</span>"
+		armed = "armed"
+		return
+
+/obj/item/weapon/grenade/suicide_vest/activate(mob/living/carbon/human/user as mob)
+	if (active)
+		return
+
+	if (user)
+		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+
+	if (user.faction_text == ARAB)
+		user.emote("charge")
+	active = TRUE
+	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
+
+	spawn(det_time)
+		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
+		prime()
+		return
