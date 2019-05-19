@@ -528,7 +528,7 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/submachinegun/hk417
-	name = "M14"
+	name = "HK417"
 	desc = "A german assault rifle based on the G36 and M16, chambered in 7.62x51mm."
 	icon_state = "hk417"
 	item_state = "hk417"

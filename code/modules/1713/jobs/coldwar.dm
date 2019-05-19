@@ -635,8 +635,8 @@
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	H.setStat("mg", STAT_MEDIUM_HIGH)
-
-	H.add_language("Arabic",TRUE)
+	spawn(20)
+		H.add_language("Arabic",TRUE)
 	return TRUE
 
 /datum/job/american/specops_doctor
