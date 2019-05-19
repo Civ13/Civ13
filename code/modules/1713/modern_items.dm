@@ -83,7 +83,15 @@
 	else
 		..()
 
-
+/obj/structure/lamp/update_icon()
+	if (lamp_inside && !lamp_broken && on)
+		icon_state = "[base_icon]_on"
+	else if (lamp_inside && !lamp_broken && !on)
+		icon_state = base_icon
+	else if (!lamp_inside)
+		icon_state = "[base_icon]_empty"
+	else if (lamp_inside && lamp_broken)
+		icon_state = "[base_icon]_broken"
 /obj/structure/lamp/proc/do_light()
 	if (!lamp_broken && lamp_inside)
 		if (check_power() || powerneeded == 0)
@@ -91,17 +99,17 @@
 				set_light(light_amt, 1, brightness_color)
 			else
 				set_light(light_amt)
-			icon_state = "[base_icon]_on"
+			update_icon()
 			powered = TRUE
 			on = TRUE
 		else
 			set_light(0)
-			icon_state = base_icon
+			update_icon()
 			powered = FALSE
 			on = FALSE
 	else
 		set_light(0)
-		icon_state = base_icon
+		update_icon()
 		powered = FALSE
 		on = FALSE
 
