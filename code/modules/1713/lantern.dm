@@ -160,9 +160,9 @@
 			do_torch()
 
 
-/obj/item/flashlight/lantern
+/obj/item/flashlight/flashlight
 	unlimited = TRUE
-	name = "flashlight_off"
+	name = "flashlight"
 	desc = "an electrical flashlight."
 	icon_state = "flashlight_off"
 	on_state = "flashlight_on"

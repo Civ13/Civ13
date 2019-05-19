@@ -16,6 +16,7 @@
 	var/light_amt = 6 //light range
 	layer = 3.95
 	var/brightness_color = null
+	var/prob_hit = 10
 
 /obj/structure/lamp/New()
 	..()
@@ -112,13 +113,27 @@
 				powersource.lastupdate2 = world.time
 			return FALSE
 
+
+/obj/structure/lamp/bullet_act(var/obj/item/projectile/Proj)
+	if (prob(prob_hit))
+		visible_message("\The [src] shatters!")
+		playsound(src, 'sound/effects/hit_on_shattered_glass.ogg', 70, TRUE)
+		new/obj/item/weapon/material/shard(loc)
+		on = FALSE
+		if (powersource)
+			var/obj/structure/cable/CB = powersource
+			CB.connections -= src
+			powersource = null
+		qdel(src)
+	..()
+
 /obj/structure/lamp/lamppost_small
 	name = "small lamp post"
 	desc = "A small lamp post, good for outdoor illumination."
 	icon_state = "lamppost_small"
 	powerneeded = 2
 	light_amt = 6
-
+	prob_hit = 20
 /obj/structure/lamp/lamp_small
 	name = "small lightbulb"
 	desc = "A small lightbulb."
@@ -128,6 +143,7 @@
 	light_amt = 3
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	prob_hit = 30
 
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
@@ -144,6 +160,7 @@
 	light_amt = 4
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	prob_hit = 45
 
 /obj/structure/lamp/lamp_big/alwayson
 	powerneeded = 0

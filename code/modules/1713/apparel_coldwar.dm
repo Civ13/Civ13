@@ -435,13 +435,20 @@
 
 
 /obj/item/clothing/under/us_uni/us_camo_woodland
-	name = "woodland camo uniform"
+	name = "woodland camouflage uniform"
 	desc = "The standard US Army camo uniform the late 20th century."
 	icon_state = "us_camo_woodland"
 	item_state = "us_camo_woodland"
 	worn_state = "us_camo_woodland"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/us_uni/us_camo_dcu
+	name = "desert camouflage uniform"
+	desc = "The standard US Army desert camo uniform the late 20th century."
+	icon_state = "us_camo_dcu"
+	item_state = "us_camo_dcu"
+	worn_state = "us_camo_dcu"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/us_uni/us_camo_ucp
 	name = "UCP camo uniform"
@@ -491,7 +498,7 @@
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,)
 
-/obj/item/clothing/under/insurgent
+/obj/item/clothing/under/insurgent_black
 	name = "black tunic"
 	desc = "An all black tunic and trousers outfit."
 	icon_state = "insurgent_black"
@@ -499,6 +506,45 @@
 	worn_state = "insurgent_black"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/insurgent_sand
+	name = "sand-colored tunic"
+	desc = "A dark yellow, sand-colored tunic and trousers outfit."
+	icon_state = "insurgent_sand"
+	item_state = "insurgent_sand"
+	worn_state = "insurgent_sand"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/insurgent_sand_woodland
+	name = "sand-colored tunic with woodland camo trousers"
+	desc = "A dark yellow, sand-colored tunic with woodland camo trousers."
+	icon_state = "insurgent_sand_woodland"
+	item_state = "insurgent_sand_woodland"
+	worn_state = "insurgent_sand_woodland"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/insurgent_sand_dcu
+	name = "sand-colored uniform with desert camo trousers"
+	desc = "A dark yellow, sand-colored uniform with desert camo trousers."
+	icon_state = "insurgent_sand_dcu"
+	item_state = "insurgent_sand_dcu"
+	worn_state = "insurgent_sand_dcu"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/insurgent_sand_green
+	name = "light brown uniform with green trousers"
+	desc = "A light brown uniform with green trousers."
+	icon_state = "insurgent_sand_green"
+	item_state = "insurgent_sand_green"
+	worn_state = "insurgent_sand_green"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/under/insurgent_leader
+	name = "black tunic with camo trousers"
+	desc = "A black tunic with camo trousers, worn by insurgent leaders."
+	icon_state = "insurgent_leader"
+	item_state = "insurgent_leader"
+	worn_state = "insurgent_leader"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 /obj/item/clothing/under/us_uni/us_lightuni_modern
 	name = "U.S. Army training uniform"
 	desc = "An informal outfit made of OCP pattern trousers and a olive drab shirt."
@@ -506,3 +552,17 @@
 	item_state = "us_lightuni_modern"
 	worn_state = "us_lightuni_modern"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
+
+/obj/item/clothing/gloves/fingerless
+	name = "fingerless black gloves"
+	icon_state = "fingerless"
+	item_state = "fingerless"
+	body_parts_covered = HANDS
+	slot_flags = SLOT_GLOVES
+
+/obj/item/clothing/head/black_bandana
+	name = "black bandana"
+	desc = "A light black piece of cloth worn wrapped around the head."
+	icon_state = "black_bandana"
+	item_state = "black_bandana"
+	body_parts_covered = HEAD

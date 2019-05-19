@@ -618,12 +618,11 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ocp(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
-	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -633,42 +632,8 @@
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	H.setStat("mg", STAT_MEDIUM_HIGH)
-	return TRUE
 
-
-/datum/job/american/specops_technician
-	title = "SOF Technician"
-	rank_abbreviation = "Sst."
-	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRN"
-	SL_check_independent = TRUE
-	is_coldwar = TRUE
-	is_specops = TRUE
-	whitelisted = TRUE
-	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 2
-
-/datum/job/american/specops_technician/equip(var/mob/living/carbon/human/H)
-	if (!H)	return FALSE
-//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
-
-	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
-	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_HIGH)
-	H.setStat("medical", STAT_MEDIUM_HIGH)
-	H.setStat("mg", STAT_VERY_HIGH)
+	H.add_language("Arabic",TRUE)
 	return TRUE
 
 /datum/job/american/specops_doctor
@@ -691,9 +656,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
-	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -725,9 +689,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
 
 	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
-	H.add_note("Special Forces", "As a member of the special forces, you are able to check coordinates like Officers. You are also able to crawl down Viet Cong tunnels, but be careful!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_VERY_HIGH)
@@ -758,17 +722,10 @@
 /datum/job/arab/insurgent_leader/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
-	else
-		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent(H), slot_w_uniform)
-
-//head
-	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_head)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
 //back
 	var/pickgun = rand(1,3)
 	if (pickgun == 1)
@@ -781,13 +738,13 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/boot/bowie(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_wear_id)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(50))
-		var/obj/item/clothing/accessory/storage/webbing/green_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing(null)
+		var/obj/item/clothing/accessory/armor/coldwar/pasgt/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
 		uniform.attackby(fullwebbing, H)
 	else
-		var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing(null)
+		var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
 		uniform.attackby(fullwebbing, H)
 	give_random_name(H)
 	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard")
@@ -845,12 +802,22 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent(H), slot_w_uniform)
-
+	var/pickclothes = rand(1,4)
+	switch (pickclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_green(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_woodland(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_dcu(H), slot_w_uniform)
 //head
 	if (prob(50))
-		H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_head)
-
+		if (prob(50))
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_head)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
 //back
 	var/pickgun = rand(1,3)
 	if (pickgun == 1)
@@ -861,7 +828,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/boot/bowie(H), slot_belt)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform

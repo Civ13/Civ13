@@ -12,6 +12,9 @@
 	var/open_panel = FALSE
 	var/image_overlay = null
 
+/obj/item/weapon/plastique/c4
+	name = "C4 explosive"
+
 
 /obj/item/weapon/plastique/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/wrench))

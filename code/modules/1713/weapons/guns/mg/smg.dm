@@ -389,7 +389,7 @@
 
 	return
 
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/ak74uso/fold()
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/fold()
 	set name = "Toggle Stock"
 	set category = null
 	set src in usr

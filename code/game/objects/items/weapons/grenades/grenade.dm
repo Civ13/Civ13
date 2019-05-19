@@ -308,7 +308,7 @@
 /obj/item/weapon/grenade/coldwar/nonfrag/m26
 	name = "M26 explosive grenade"
 	desc = "An American grenade introduced in the 1950's. This one has no shrapnel."
-	icon_state = "m26_ex"
+	icon_state = "m26_explosive"
 	det_time = 50
 	throw_range = 10
 

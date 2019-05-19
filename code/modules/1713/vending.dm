@@ -200,9 +200,12 @@
 	products = list(
 		/obj/item/clothing/shoes/jackboots = 15,
 		/obj/item/clothing/head/jungle_hat/khaki = 15,
-		/obj/item/stack/medical/bruise_pack/gauze = 20,
+		/obj/item/clothing/gloves/fingerless = 15,
+		/obj/item/weapon/storage/belt/largepouches = 15,
+		/obj/item/weapon/storage/belt/smallpouches = 15,
 		/obj/item/flashlight/lantern = 15,
 		/obj/item/clothing/under/us_uni/us_camo_woodland = 15,
+		/obj/item/clothing/under/us_uni/us_camo_dcu = 15,
 		/obj/item/clothing/under/us_uni/us_camo_ucp = 15,
 		/obj/item/clothing/under/us_uni/us_camo_ocp = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
@@ -228,7 +231,7 @@
 		/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4 = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws = 15,
 		/obj/item/weapon/gun/projectile/submachinegun/m14 = 15,
-		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/ak74uso = 15,
+		/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso = 15,
 //		/obj/item/weapon/gun/projectile/submachinegun/scarl = 15,
 //		/obj/item/weapon/gun/projectile/submachinegun/scarl/scarh = 15,
 //		/obj/item/weapon/gun/projectile/submachinegun/hk417 = 15,
@@ -238,6 +241,8 @@
 		/obj/item/weapon/grenade/coldwar/m67 = 15,
 		/obj/item/weapon/grenade/coldwar/nonfrag/m26 = 15,
 		/obj/item/weapon/grenade/flashbang/m84 = 15,
+		/obj/item/weapon/grenade/incendiary/anm14 = 15,
+		/obj/item/weapon/plastique/c4 = 6,
 	)
 
 obj/structure/vending/sofammo

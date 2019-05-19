@@ -328,3 +328,16 @@
 	keyslot_type = /datum/keyslot/vietnamese
 	unique_door_name = "Vietnamese locked"
 #undef VC_CODE
+
+#define INS_CODE 995 * 9
+/datum/keyslot/insurgent
+	code = INS_CODE
+
+/obj/item/weapon/key/insurgent
+	code = INS_CODE
+	name = "Insurgent key"
+
+/obj/structure/simple_door/key_door/insurgent
+	keyslot_type = /datum/keyslot/insurgent
+	unique_door_name = "Insurgent locked"
+#undef INS_CODE
