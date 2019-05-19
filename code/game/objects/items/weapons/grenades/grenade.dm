@@ -395,6 +395,7 @@
 			original_mobs += L
 			if (L.client)
 				L.canmove = FALSE
+				L.gib()
 		for (var/obj/O in T.contents)
 			original_objs += O
 		playsound(T, "explosion", 100, TRUE)

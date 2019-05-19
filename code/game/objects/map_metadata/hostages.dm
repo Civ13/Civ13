@@ -163,8 +163,8 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 				held_hostages++
 		else if (DH.stat == DEAD)
 			dead_hostages++
-//	if (rescued_hostages + dead_hostages + held_hostages < total_hostages)
-//		dead_hostages = total_hostages-held_hostages-rescued_hostages
+	if (rescued_hostages + dead_hostages + held_hostages < total_hostages)
+		dead_hostages = total_hostages-held_hostages-rescued_hostages
 	faction1_points = rescued_hostages
 	faction2_points = held_hostages
 

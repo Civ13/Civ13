@@ -708,7 +708,7 @@
 /datum/job/arab/insurgent_leader
 	title = "Insurgent Leader"
 	en_meaning = ""
-	rank_abbreviation = "Leader "
+	rank_abbreviation = "Leader"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateAR"
 	SL_check_independent = TRUE
