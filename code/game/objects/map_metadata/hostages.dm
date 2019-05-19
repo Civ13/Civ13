@@ -18,7 +18,7 @@
 		)
 	age = "2014"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(AMERICAN = 0.2, ARAB = 0.8)
+	faction_distribution_coeffs = list(AMERICAN = 0.33, ARAB = 0.67)
 	battle_name = "hostage rescue"
 	mission_start_message = "<font size=4>The insurgents are holding <b>American</b> embassy staff hostage! The Special Forces must rescue them within <b>20 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>1</b> point per hostage kept alive and in their control by the end of the 20 minutes.</font>"
 	faction1 = AMERICAN
@@ -28,7 +28,7 @@
 		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
 	artillery_count = 0
 
-	var/total_hostages = 5
+	var/total_hostages = 6
 	var/rescued_hostages = 0
 	var/held_hostages = 0
 	var/dead_hostages = 0
