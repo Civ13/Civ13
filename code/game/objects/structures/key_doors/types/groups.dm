@@ -341,3 +341,16 @@
 	keyslot_type = /datum/keyslot/insurgent
 	unique_door_name = "Insurgent locked"
 #undef INS_CODE
+
+#define US_CODE 995 * 9
+/datum/keyslot/american
+	code = US_CODE
+
+/obj/item/weapon/key/american
+	code = US_CODE
+	name = "American key"
+
+/obj/structure/simple_door/key_door/american
+	keyslot_type = /datum/keyslot/american
+	unique_door_name = "American locked"
+#undef US_CODE

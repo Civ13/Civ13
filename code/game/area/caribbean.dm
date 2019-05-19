@@ -804,3 +804,10 @@
 	icon_state = "blue2"
 	location = AREA_INSIDE
 	climate = "desert"
+
+/area/caribbean/arab/caves/prison
+	name = "Cave Prison"
+	base_turf = /turf/floor/dirt
+	icon_state = "blue3"
+	location = AREA_INSIDE
+	climate = "desert"

@@ -525,8 +525,10 @@
 	recipes += new/datum/stack_recipe("fermentation jar", /obj/item/weapon/starterjar, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe_list("electrical", list(
-			new/datum/stack_recipe("small lightbulb", /obj/structure/lamp/lamp_small, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("light tube", /obj/structure/lamp/lamp_big, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("small lightbulb frame", /obj/structure/lamp/lamp_small, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("light tube frame", /obj/structure/lamp/lamp_big, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("light tube", /obj/item/lightbulb/tube, 1, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("lightbulb", /obj/item/lightbulb, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 

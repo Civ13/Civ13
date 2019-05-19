@@ -178,8 +178,13 @@ default behaviour is:
 	set category = "IC"
 	adjustBrainLoss(300)
 	health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
-	death()
-	src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
+	if (map.ID != MAP_HOSTAGES || (getOxyLoss() + getToxLoss() + getFireLoss() + getBruteLoss() > 150))
+		death()
+		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
+		return
+	else
+		src << "<span class = 'notice'>You cannot succumb in this map unless you have very high damage!</span>"
+		return
 
 
 //This proc is used for mobs which are affected by pressure to calculate the amount of pressure that actually

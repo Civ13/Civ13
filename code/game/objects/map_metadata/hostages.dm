@@ -1,7 +1,7 @@
 #define NO_WINNER "The operation is still underway."
 /obj/map_metadata/hostages
 	ID = MAP_HOSTAGES
-	title = "Hostage Rescue (100x100x2)"
+	title = "Hostage Rescue (100x100x1)"
 	lobby_icon_state = "coldwar"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
@@ -33,12 +33,16 @@
 	var/held_hostages = 0
 	var/dead_hostages = 0
 
+
+	var/faction1_prisoners = 0
+	var/faction2_prisoners = 0
+
 	faction1_points = 0
 	faction2_points = 0
 
 /obj/map_metadata/hostages/New()
 	..()
-	mission_start_message = "<font size=4>The insurgents are holding [total_hostages] <b>American</b> embassy staff hostage! The Special Forces must rescue them within <b>20 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>1</b> point per hostage kept alive and in their control by the end of the 20 minutes.</font>"
+	mission_start_message = "<font size=4>The insurgents are holding [total_hostages] <b>American</b> hostages! The Special Forces must rescue them within <b>20 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>5</b> points per hostage kept alive and in their control by the end of the 20 minutes. Americans also get <b>1</b> point per prisoner alive and handcuffed in their prison. Insurgents get <b>3</b> points per prisoner alive and handcuffed in their prisons.</font>"
 	spawn(3000)
 		hostage_msg()
 
@@ -103,7 +107,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 	var/message = ""
 	var/win_result = check_hostages()
 	if (win_result == "early victory")
-		message = "All hostages have been rescued! The SOF team has won!"
+		message = "All hostages have been rescued! The <b>SOF team</b> has won!"
 		current_winner = AMERICAN
 		current_loser = ARAB
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
@@ -111,7 +115,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 		win_condition_spam_check = TRUE
 		return FALSE
 	else if (win_result == "early failure")
-		message = "All hostages are dead! The mission was a failure and both sides are defeated!"
+		message = "All hostages are dead! The mission was a failure and <b>both sides are defeated</b>!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		ticker.finished = TRUE
 		win_condition_spam_check = TRUE
@@ -127,19 +131,19 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 			if (win_result == AMERICAN)
 				current_winner = AMERICAN
 				current_loser = ARAB
-				message = "The SOF team has rescued [rescued_hostages] hostages and won!"
+				message = "The <b>SOF team</b> has [faction2_points] victory points and won the round!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				ticker.finished = TRUE
 				return FALSE
 			else if (win_result == ARAB)
 				current_winner = ARAB
 				current_loser = AMERICAN
-				message = "The Insurgents have held [held_hostages] hostages and won!"
+				message = "The <b>Insurgents</b> have [faction2_points] victory points and won the round!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				ticker.finished = TRUE
 				return FALSE
 			else if (win_result == "failure" || win_result == "draw")
-				message = "Both sides have the same amount of hostages. The round is a draw."
+				message = "Both sides have the same amount of victory points. The round is a draw."
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				ticker.finished = TRUE
 			else
@@ -154,6 +158,11 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 	rescued_hostages = 0
 	held_hostages = 0
 	dead_hostages = 0
+	faction1_points = 0
+	faction2_points = 0
+	faction1_prisoners = 0
+	faction2_prisoners = 0
+
 	for (var/mob/living/simple_animal/hostage/DH in world)
 		if (DH.stat != DEAD)
 			var/area/currarea = get_area(DH)
@@ -165,8 +174,18 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 			dead_hostages++
 	if (dead_hostages+held_hostages+rescued_hostages < total_hostages)
 		dead_hostages = total_hostages-held_hostages-rescued_hostages
-	faction1_points = rescued_hostages
-	faction2_points = held_hostages
+	faction1_points = rescued_hostages*5
+	faction2_points = held_hostages*5
+
+	for (var/mob/living/carbon/human/PR in world)
+		if (PR.stat != DEAD && PR.handcuffed)
+			var/area/currarea2 = get_area(PR)
+			if (istype(currarea2, /area/caribbean/british/land/inside/objective))
+				faction1_prisoners++
+			else if (istype(currarea2, /area/caribbean/arab/caves/prison))
+				faction2_prisoners++
+	faction1_points += faction1_prisoners
+	faction2_points += faction2_prisoners*3
 
 	if (rescued_hostages >= total_hostages)
 		return "early victory"
@@ -185,7 +204,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/hostages/proc/hostage_msg()
 	check_hostages()
 	spawn(1)
-		world << "<font size = 4><span class = 'notice'><b>Current Status:</b></font><br><font size = 3>Hostages Rescued: [rescued_hostages]/[total_hostages]<br>Hostages Held: [held_hostages]/[total_hostages]<br>Hostages Dead: [dead_hostages]/[total_hostages]</span></font>"
+		world << "<font size = 4><span class = 'notice'><b>Current Status:</b></font><br><font size = 3>Hostages Rescued: [rescued_hostages]/[total_hostages]<br>Hostages Held: [held_hostages]/[total_hostages]<br>Hostages Dead: [dead_hostages]/[total_hostages]<br>U.S. SOF Points: [faction1_points] - Insurgent Points: [faction2_points]</span></font>"
 	spawn(3000)
 		hostage_msg()
 #undef NO_WINNER

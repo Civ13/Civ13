@@ -620,9 +620,12 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ocp(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/glasses/sunglasses(H), slot_wear_mask)
+
 	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
-	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+
+	H.add_note("Role", "You are a <b>[title]</b>, an officer of the Special Operation Forces team tasked with the rescue of the hostages. You should stay in the base and keep the operation organized! You also speak <b>Arabic</b> and can listen to insurgent communications.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -656,8 +659,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
-	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a trained doctor of the Special Operation Forces team tasked with the rescue of the hostages. You should stay in the base and keep your teammates and prioners alive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -678,8 +682,8 @@
 	is_coldwar = TRUE
 	is_specops = TRUE
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 8
+	min_positions = 4
+	max_positions = 10
 
 /datum/job/american/specops_operator/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -689,9 +693,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
 
 	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
 
-	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Forces tasked with commando operations behind enemy lines. Coordinate with the Army and defeat the Viet Cong!")
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Operation Forces team tasked with the rescue of the hostages. You will only be successfull if you coordinate with the rest of your team!")
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_VERY_HIGH)
@@ -717,35 +721,30 @@
 	is_specops = TRUE
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 12
+	max_positions = 5
 
 /datum/job/arab/insurgent_leader/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_leader(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
 //back
-	var/pickgun = rand(1,3)
-	if (pickgun == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4(H), slot_back)
-	else if (pickgun == 2)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_back)
-	else if (pickgun == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws(H), slot_back)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/boot/bowie(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/arabsword(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/flashlight(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	if (prob(50))
-		var/obj/item/clothing/accessory/armor/coldwar/pasgt/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
-		uniform.attackby(fullwebbing, H)
-	else
-		var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
-		uniform.attackby(fullwebbing, H)
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
 	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard")
 		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard")
@@ -791,8 +790,8 @@
 	is_coldwar = TRUE
 	is_specops = TRUE
 	// AUTOBALANCE
-	min_positions = 20
-	max_positions = 50
+	min_positions = 22
+	max_positions = 45
 
 /datum/job/arab/insurgent/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -814,22 +813,23 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_dcu(H), slot_w_uniform)
 //head
 	if (prob(50))
-		if (prob(50))
+		if (prob(20))
 			H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_head)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
 //back
-	var/pickgun = rand(1,3)
+	var/pickgun = rand(1,2)
 	if (pickgun == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/m16a4(H), slot_back)
-	else if (pickgun == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_back)
-	else if (pickgun == 3)
+	else if (pickgun == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/boot/bowie(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/flashlight(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(50))

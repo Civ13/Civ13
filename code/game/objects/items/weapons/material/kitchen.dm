@@ -121,7 +121,7 @@
 	else
 		return ..()
 
-/obj/item/weapon/material/kitchen/utensil/knife/boot/makeshift_knife
+/obj/item/weapon/material/kitchen/utensil/knife/makeshift_knife
 	name = "boot knife"
 	desc = "A small self made knife used a lot in jail."
 	icon = 'icons/obj/weapons.dmi'
@@ -132,7 +132,7 @@
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.3
 
-/obj/item/weapon/material/kitchen/utensil/knife/boot/bowie
+/obj/item/weapon/material/kitchen/utensil/knife/bowie
 	name = "bowie knife"
 	desc = "A rather large bowie knife."
 	icon = 'icons/obj/weapons.dmi'

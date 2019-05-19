@@ -18,6 +18,7 @@
 	var/brightness_color = null
 	var/lamp_inside = TRUE
 	var/lamp_broken = FALSE
+	var/ltype = "lbulb"
 /obj/structure/lamp/New()
 	..()
 	do_light()
@@ -25,12 +26,14 @@
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/lightbulb) && !lamp_inside)
 		var/obj/item/lightbulb/L = W
-		if (!L.broken)
+		if (!L.broken && L.ltype == ltype)
 			user << "You put the lightbulb in."
+			qdel(W)
 			lamp_inside = TRUE
 			lamp_broken = FALSE
 			icon_state = base_icon
 			update_icon()
+			return
 	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
 			user << "<span class='notice'>Remove the cables first.</span>"
@@ -140,7 +143,7 @@
 	if (lamp_inside && !lamp_broken)
 		visible_message("\The [src] shatters!")
 		playsound(src, 'sound/effects/hit_on_shattered_glass.ogg', 70, TRUE)
-		new/obj/item/weapon/material/shard(loc)
+//		new/obj/item/weapon/material/shard(loc)
 		on = FALSE
 		lamp_broken = TRUE
 		icon_state = "[base_icon]_broken"
@@ -160,25 +163,45 @@
 	density = FALSE
 	opacity = FALSE
 	var/broken = FALSE
+	var/ltype = "lbulb"
 
 /obj/item/lightbulb/broken
 	name = "broken lightbulb"
 	icon_state = "lbulb_broken"
 	broken = TRUE
 
+/obj/item/lightbulb/tube
+	name = "light tube"
+	icon_state = "ltube"
+	ltype = "ltube"
+
+/obj/item/lightbulb/tube/broken
+	name = "broken light tube"
+	icon_state = "ltube_broken"
+	broken = TRUE
+
 /obj/structure/lamp/attack_hand(mob/living/carbon/human/user as mob)
 	if (lamp_inside)
 		if (lamp_broken)
 			user << "You remove the broken lightbulb."
-			user.put_in_active_hand(new/obj/item/lightbulb/broken)
+			lamp_inside = FALSE
+			lamp_broken = FALSE
+			var/obj/item/lightbulb/broken/LP = new/obj/item/lightbulb/broken
+			LP.ltype = ltype
+			LP.icon_state = "[ltype]_broken"
+			LP.update_icon()
+			user.put_in_active_hand(LP)
 
 		else
 			user << "You remove the lightbulb."
-			user.put_in_active_hand(new/obj/item/lightbulb)
-		lamp_inside = FALSE
+			lamp_inside = FALSE
+			var/obj/item/lightbulb/LP = new/obj/item/lightbulb
+			LP.ltype = ltype
+			LP.icon_state = "[ltype]"
+			LP.update_icon()
+			user.put_in_active_hand(LP)
 		icon_state = "[base_icon]_empty"
 		update_icon()
-		return
 	else
 		..()
 
@@ -214,10 +237,13 @@
 	light_amt = 4
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	ltype = "ltube"
 
 /obj/structure/lamp/lamp_big/alwayson
 	powerneeded = 0
 	on = TRUE
+/obj/structure/lamp/lamp_big/alwayson/white
+	brightness_color = "#ffffff"
 
 /obj/structure/refinery
 	name = "refinery"

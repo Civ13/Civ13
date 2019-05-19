@@ -37,6 +37,26 @@
 	weight = 0.45
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/hk
+	name = "H&K magazine (7.62x51mm)"
+	icon_state = "hk"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 20
+	weight = 0.45
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/scarh
+	name = "SCAR-H magazine (7.62x51mm)"
+	icon_state = "scarh"
+	mag_type = MAGAZINE
+	caliber = "a762x51"
+	ammo_type = /obj/item/ammo_casing/a762x51
+	max_ammo = 30
+	weight = 0.75
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/pkm
 	name = "PKM ammo belt (7.62x54mmR)"
 	icon_state = "maximbelt"

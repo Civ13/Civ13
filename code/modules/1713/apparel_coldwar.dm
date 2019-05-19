@@ -539,8 +539,8 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
 /obj/item/clothing/under/insurgent_leader
-	name = "black tunic with camo trousers"
-	desc = "A black tunic with camo trousers, worn by insurgent leaders."
+	name = "black tunic with desert camo trousers"
+	desc = "A black tunic with desert camo trousers, worn by insurgent leaders."
 	icon_state = "insurgent_leader"
 	item_state = "insurgent_leader"
 	worn_state = "insurgent_leader"
@@ -566,3 +566,24 @@
 	icon_state = "black_bandana"
 	item_state = "black_bandana"
 	body_parts_covered = HEAD
+
+/obj/item/clothing/head/black_shemagh
+	name = "black shemagh"
+	desc = "A light black piece of cloth worn loosely wrapped around the head, typical of middle-east countries."
+	icon_state = "black_shemagh"
+	item_state = "black_shemagh"
+	body_parts_covered = HEAD
+
+/obj/item/weapon/material/sword/arabsword
+	name = "arabic sword"
+	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
+	icon_state = "arabsword1"
+	item_state = "longsword"
+	throw_speed = 4
+	throw_range = 5
+	force_divisor = 0.75 // 45 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 26
+	cooldownw = 9
+	value = 60

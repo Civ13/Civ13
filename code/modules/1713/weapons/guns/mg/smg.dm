@@ -483,3 +483,67 @@
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/scarl
+	name = "FN SCAR-L"
+	desc = "A belgian assault rifle, chambered in 5.56x45mm."
+	icon_state = "scarl"
+	item_state = "scarl"
+	base_icon = "scarl"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	weight = 3
+	equiptimer = 10
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.8, move_delay=3, dispersion = list(0.7, 0.9, 1, 1, 1.2)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0.8, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		)
+	effectiveness_mod = 1.08
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/scarh
+	name = "FN SCAR-H"
+	icon_state = "scarh"
+	item_state = "scarh"
+	base_icon = "scarh"
+	desc = "A belgian assault rifle, chambered in 7.62x51mm."
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/scarh
+	weight = 3.5
+	equiptimer = 11
+	effectiveness_mod = 1.05
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		)
+	effectiveness_mod = 1.06
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/hk417
+	name = "M14"
+	desc = "A german assault rifle based on the G36 and M16, chambered in 7.62x51mm."
+	icon_state = "hk417"
+	item_state = "hk417"
+	base_icon = "hk417"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/hk
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	weight = 3.8
+	equiptimer = 13
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1.1, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
+		)
+	effectiveness_mod = 1.08
+	sel_mode = 1
