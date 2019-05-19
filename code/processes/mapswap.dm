@@ -92,6 +92,7 @@
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
+				MAP_HOSTAGES = 0,
 			)
 		if (epoch == "Early Modern Era (1896-1933)")
 	// 1903 - TDM
