@@ -649,7 +649,7 @@
 	is_specops = TRUE
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 2
+	max_positions = 3
 
 /datum/job/american/specops_doctor/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -683,7 +683,7 @@
 	is_specops = TRUE
 	// AUTOBALANCE
 	min_positions = 6
-	max_positions = 18
+	max_positions = 33
 
 /datum/job/american/specops_operator/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -721,7 +721,7 @@
 	is_specops = TRUE
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 5
+	max_positions = 8
 
 /datum/job/arab/insurgent_leader/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -791,7 +791,7 @@
 	is_specops = TRUE
 	// AUTOBALANCE
 	min_positions = 22
-	max_positions = 45
+	max_positions = 66
 
 /datum/job/arab/insurgent/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
