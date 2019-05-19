@@ -536,7 +536,7 @@
 	caliber = "a762x51"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	magazine_type = /obj/item/ammo_magazine/hk
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	weight = 3.8
 	equiptimer = 13
 	slot_flags = SLOT_BACK
