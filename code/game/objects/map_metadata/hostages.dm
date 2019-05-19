@@ -121,7 +121,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 		win_condition_spam_check = TRUE
 		return FALSE
 	else
-		if (world.time >= 15000)
+		if (world.time >= 15000 || (world.time > next_win && next_win != -1))
 			if (win_condition_spam_check)
 				return FALSE
 			message = "The Operation is over!"
