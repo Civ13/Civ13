@@ -54,7 +54,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 
 /obj/map_metadata/hostages/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/hostages/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
