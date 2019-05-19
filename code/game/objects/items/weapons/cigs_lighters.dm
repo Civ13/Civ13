@@ -69,7 +69,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	item_state = "cigoff"
 	name = "burnt match"
 	desc = "A match. This one has seen better days."
-	processing_objects.Remove(src)
+	processing_objects -= src
 
 //////////////////
 //FINE SMOKABLES//
@@ -140,7 +140,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		var/turf/T = get_turf(src)
 		T.visible_message(flavor_text)
 		set_light(2, 0.25, "#E38F46")
-		processing_objects.Add(src)
+		processing_objects += src
 
 /obj/item/clothing/mask/smokable/proc/die(var/nomessage = FALSE)
 	var/turf/T = get_turf(src)
@@ -156,7 +156,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			M.update_inv_wear_mask(0)
 			M.update_inv_l_hand(0)
 			M.update_inv_r_hand(1)
-		processing_objects.Remove(src)
+		processing_objects -= src
 		qdel(src)
 	else
 		new /obj/effect/decal/cleanable/ash(T)
@@ -170,7 +170,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			M.update_inv_wear_mask(0)
 			M.update_inv_l_hand(0)
 			M.update_inv_r_hand(1)
-		processing_objects.Remove(src)
+		processing_objects -= src
 
 /obj/item/clothing/mask/smokable/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	..()
@@ -324,7 +324,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		item_state = icon_on
 		var/turf/T = get_turf(src)
 		T.visible_message(flavor_text)
-		processing_objects.Add(src)
+		processing_objects += src
 		if (ismob(loc))
 			var/mob/living/M = loc
 			M.update_inv_wear_mask(0)
@@ -337,7 +337,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		lit = FALSE
 		icon_state = icon_off
 		item_state = icon_off
-		processing_objects.Remove(src)
+		processing_objects -= src
 	else if (smoketime)
 		var/turf/location = get_turf(user)
 		user.visible_message("<span class='notice'>[user] empties out [src].</span>", "<span class='notice'>You empty out [src].</span>")
@@ -471,14 +471,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 
 			set_light(2)
-			processing_objects.Add(src)
+			processing_objects += src
 		else
 			playsound(src, sound_toggleOFF, 30, FALSE)
 			lit = FALSE
 			icon_state = "[base_state]"
 			item_state = "[base_state]"
 			set_light(0)
-			processing_objects.Remove(src)
+			processing_objects -= src
 	else
 		return ..()
 	return

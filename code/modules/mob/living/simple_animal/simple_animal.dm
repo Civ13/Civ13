@@ -306,7 +306,7 @@
 			visible_message("<span class='notice'>[user] gently taps [src] with \the [O].</span>")
 		else
 			O.attack(src, user, user.targeted_organ)
-	else if (O.sharp)
+	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
 			if (istype(src, /mob/living/simple_animal/frog/poisonous))
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")

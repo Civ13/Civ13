@@ -44,6 +44,152 @@ This saves us from having to call add_fingerprint() any time something is put in
 	I.secondary_attack_self(mob)
 	return
 
+//NUMPAD 8
+/client/verb/zone_sel_head()
+	set name = "zone_sel_head"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.targeted_organ != "head" && H.targeted_organ != "mouth" && H.targeted_organ != "eyes")
+		H.targeted_organ = "head"
+	else if (H.targeted_organ == "head")
+		H.targeted_organ = "mouth"
+	else if (H.targeted_organ == "mouth")
+		H.targeted_organ = "eyes"
+	else
+		H.targeted_organ = "head"
+
+	H.HUDneed["damage zone"].update_icon()
+
+//NUMPAD 4
+/client/verb/zone_sel_left_upper()
+	set name = "zone_sel_left_upper"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.targeted_organ != "l_hand" && H.targeted_organ != "l_arm")
+		H.targeted_organ = "l_arm"
+	else if (H.targeted_organ == "l_arm")
+		H.targeted_organ = "l_hand"
+	else if (H.targeted_organ == "l_hand")
+		H.targeted_organ = "l_arm"
+	else
+		H.targeted_organ = "l_arm"
+
+	H.HUDneed["damage zone"].update_icon()
+
+//NUMPAD 5
+/client/verb/zone_sel_chest()
+	set name = "zone_sel_chest"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	H.targeted_organ = "chest"
+
+	H.HUDneed["damage zone"].update_icon()
+
+//NUMPAD 6
+/client/verb/zone_sel_right_upper()
+	set name = "zone_sel_right_upper"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.targeted_organ != "r_hand" && H.targeted_organ != "r_arm")
+		H.targeted_organ = "r_arm"
+	else if (H.targeted_organ == "r_arm")
+		H.targeted_organ = "r_hand"
+	else if (H.targeted_organ == "r_hand")
+		H.targeted_organ = "r_arm"
+	else
+		H.targeted_organ = "r_arm"
+
+	H.HUDneed["damage zone"].update_icon()
+
+//NUMPAD 1
+/client/verb/zone_sel_left_lower()
+	set name = "zone_sel_left_lower"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.targeted_organ != "l_foot" && H.targeted_organ != "l_leg")
+		H.targeted_organ = "l_leg"
+	else if (H.targeted_organ == "l_leg")
+		H.targeted_organ = "l_foot"
+	else if (H.targeted_organ == "l_foot")
+		H.targeted_organ = "l_leg"
+	else
+		H.targeted_organ = "l_leg"
+
+	H.HUDneed["damage zone"].update_icon()
+
+//NUMPAD 2
+/client/verb/zone_sel_groin()
+	set name = "zone_sel_groin"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	H.targeted_organ = "groin"
+
+	H.HUDneed["damage zone"].update_icon()
+
+//NUMPAD 3
+/client/verb/zone_sel_right_lower()
+	set name = "zone_sel_right_lower"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.targeted_organ != "r_foot" && H.targeted_organ != "r_leg")
+		H.targeted_organ = "r_leg"
+	else if (H.targeted_organ == "r_leg")
+		H.targeted_organ = "r_foot"
+	else if (H.targeted_organ == "r_foot")
+		H.targeted_organ = "r_leg"
+	else
+		H.targeted_organ = "r_leg"
+
+	H.HUDneed["damage zone"].update_icon()
 
 /mob/living/carbon/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = TRUE)
 	for (var/slot in slots)

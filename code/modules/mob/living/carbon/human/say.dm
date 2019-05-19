@@ -15,11 +15,10 @@
 	message = capitalize_cp1251(sanitize(message))
 	var/message_without_html = message
 
-	if (!dd_hasprefix(message, ";") && !dd_hasprefix(message, ":b") && !dd_hasprefix(message, ":r") && !dd_hasprefix(message, ":l") && !dd_hasprefix(message, ":f"))
-		if (dd_hassuffix(message, "!") && !dd_hassuffix(message, "!!"))
-			message = "<span class = 'font-size: 1.1em;'>[message]</span>"
-		else if (dd_hassuffix(message, "!!"))
-			message = "<span class = 'font-size: 1.2em;'><b>[message]</b></span>"
+	if (dd_hassuffix(message, "!") && !dd_hassuffix(message, "!!"))
+		message = "<span class = 'font-size: 1.1em;'>[message]</span>"
+	else if (dd_hassuffix(message, "!!"))
+		message = "<span class = 'font-size: 1.2em;'><b>[message]</b></span>"
 
 	var/normal_message = message
 	for (var/rp in radio_prefixes)
@@ -39,8 +38,17 @@
 	message_without_html = handle_speech_problems(message_without_html)[1]
 
 	for (var/obj/structure/radio/RD in range(2,src))
-		if (RD.transmitter && RD.transmitter_on && RD.check_power())
+		if (RD.transmitter && RD.transmitter_on && (RD.check_power() || RD.powerneeded == 0))
 			RD.broadcast(message_without_html, src)
+
+	for (var/obj/item/weapon/radio/PRD in range(1,src))
+		if (PRD.transmitter && PRD.transmitter_on)
+			if (PRD in contents)
+				if (dd_hasprefix(message_without_html, ";"))
+					message_without_html = replacetext(message_without_html,";","",1,2)
+					PRD.broadcast(message_without_html, src)
+			else
+				PRD.broadcast(message_without_html, src)
 
 	for (var/obj/structure/telephone/TL in range(2,src))
 		if (TL.connected)

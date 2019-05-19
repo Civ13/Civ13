@@ -13,6 +13,9 @@ var/list/alive_roman = list()
 var/list/alive_arab = list()
 var/list/alive_japanese = list()
 var/list/alive_russian = list()
+var/list/alive_german = list()
+var/list/alive_american = list()
+var/list/alive_vietnamese = list()
 
 var/list/heavily_injured_british = list()
 var/list/heavily_injured_pirates = list()
@@ -27,6 +30,9 @@ var/list/heavily_injured_greek = list()
 var/list/heavily_injured_arab = list()
 var/list/heavily_injured_japanese = list()
 var/list/heavily_injured_russian = list()
+var/list/heavily_injured_german = list()
+var/list/heavily_injured_american = list()
+var/list/heavily_injured_vietnamese = list()
 
 var/list/dead_british = list()
 var/list/dead_pirates = list()
@@ -41,6 +47,9 @@ var/list/dead_roman = list()
 var/list/dead_arab = list()
 var/list/dead_japanese = list()
 var/list/dead_russian = list()
+var/list/dead_german = list()
+var/list/dead_american = list()
+var/list/dead_vietnamese = list()
 
 var/list/recently_died = list()
 
@@ -103,6 +112,18 @@ var/list/recently_died = list()
 			dead = dead_japanese
 			injured = heavily_injured_japanese
 			alive = alive_japanese
+		if (GERMAN)
+			dead = dead_german
+			injured = heavily_injured_german
+			alive = alive_german
+		if (AMERICAN)
+			dead = dead_american
+			injured = heavily_injured_american
+			alive = alive_american
+		if (VIETNAMESE)
+			dead = dead_vietnamese
+			injured = heavily_injured_vietnamese
+			alive = alive_vietnamese
 	return list(alive, dead, injured)
 
 /mob/living/carbon/human/death()

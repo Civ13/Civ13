@@ -1,3 +1,72 @@
+
+/obj/item/clothing/mask/glasses
+	var/toggleable = FALSE
+	var/off_state = ""
+	var/on_state = ""
+	var/overtype = ""
+/obj/item/clothing/mask/glasses/attack_self(mob/living/carbon/human/user)
+	if(toggleable && !user.incapacitated())
+		if(active)
+			active = 0
+			icon_state = off_state
+			user.update_inv_wear_mask()
+			flash_protection = FLASH_PROTECTION_NONE
+			tint = TINT_NONE
+			usr << "You deactivate the optics on the [src]."
+			if (overtype == "nvg")
+				user.nvg = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
+				user.handle_vision()
+			else if (overtype == "thermal")
+				user.thermal = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
+				user.handle_vision()
+		else if (src == user.wear_mask)
+			active = 1
+			icon_state = on_state
+			user.update_inv_wear_mask()
+			flash_protection = initial(flash_protection)
+			tint = initial(tint)
+			usr << "You activate the optics on the [src]."
+			if (overtype == "nvg")
+				user.nvg = TRUE
+				restricts_view = 2
+				blocks_scope = TRUE
+				user.handle_vision()
+			else if (overtype == "thermal")
+				user.thermal = TRUE
+				restricts_view = 2
+				blocks_scope = TRUE
+				user.handle_vision()
+		else
+			active = 0
+			icon_state = off_state
+			user.update_inv_wear_mask()
+			flash_protection = FLASH_PROTECTION_NONE
+			tint = TINT_NONE
+			if (overtype == "nvg")
+				user.nvg = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
+				user.handle_vision()
+			else if (overtype == "thermal")
+				user.thermal = FALSE
+				restricts_view = 0
+				blocks_scope = FALSE
+				user.handle_vision()
+		user.update_action_buttons()
+
+/obj/item/clothing/mask/glasses/verb/toggle()
+	set name = "Toggle"
+	set category = null
+	set src in usr
+	if (!toggleable)
+		return
+	else
+		attack_self(usr)
+		return
 /obj/item/clothing/mask/glasses/eyepatch
 	name = "eyepatch"
 	desc = "Yarr."

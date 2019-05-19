@@ -348,7 +348,7 @@
 						disease_treatment = 0
 		if (disease == FALSE)
 			//0.005%
-			if (prob(1))
+			if (prob(1) && map.civilizations)
 				if (prob(1) && !inducedSSD)
 					disease = TRUE
 					disease_type = "flu"
@@ -1367,9 +1367,15 @@
 				if (PIRATES)
 					holder2.icon_state = "pirate_basic"
 				if (BRITISH)
-					holder2.icon_state = "rn_basic"
+					if (map.ordinal_age >= 4)
+						holder2.icon_state = "brit_basic"
+					else
+						holder2.icon_state = "rn_basic"
 				if (FRENCH)
-					holder2.icon_state = "fr_basic"
+					if (map.ordinal_age >= 4)
+						holder2.icon_state = "fr2_basic"
+					else
+						holder2.icon_state = "fr_basic"
 				if (SPANISH)
 					holder2.icon_state = "sp_basic"
 				if (PORTUGUESE)
@@ -1379,7 +1385,10 @@
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
-					holder2.icon_state = "arab_basic"
+					if (map.ordinal_age >= 6)
+						holder2.icon_state = "isis_basic"
+					else
+						holder2.icon_state = "arab_basic"
 				if (GREEK)
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
@@ -1387,7 +1396,19 @@
 				if (JAPANESE)
 					holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
-					holder2.icon_state = "ru_basic"
+					if (map.ordinal_age <= 5)
+						holder2.icon_state = "ru_basic"
+					else
+						holder2.icon_state = "sov_basic"
+				if (GERMAN)
+					if (map.ordinal_age <= 5)
+						holder2.icon_state = "ger_basic"
+					else
+						holder2.icon_state = "ger2_basic"
+				if (AMERICAN)
+					holder2.icon_state = "us_basic"
+				if (VIETNAMESE)
+					holder2.icon_state = "vc_basic"
 				if (CIVILIAN)
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"
@@ -1452,7 +1473,7 @@
 /mob/living/carbon/human/handle_vision()
 
 	if (client)
-		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal, global_hud.meson, global_hud.science)
+		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal)
 
 	if (!laddervision)
 		if (using_object)

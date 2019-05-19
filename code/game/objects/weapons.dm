@@ -4,6 +4,9 @@
 	hitsound = "swing_hit"
 	var/drawsound = null
 	var/warning_played = null
+	var/image/bayonet_ico
+	var/image/optics_ico
+	var/image/under_ico
 
 /obj/item/weapon/Bump(mob/M as mob)
 	spawn(0)
@@ -21,3 +24,8 @@
 	spawn(10)
 		warning_played = FALSE
 
+/obj/item/weapon/gun/projectile/New()
+	..()
+	bayonet_ico = image("icon" = 'icons/obj/gun.dmi', "icon_state" = "bayonet")
+	optics_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")
+	under_ico = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "")

@@ -569,14 +569,11 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_wear_id(var/update_icons=1)
 	if (wear_id)
-/*		var/new_screen_loc = find_inv_position(slot_wear_id)
-		if (new_screen_loc)
-			wear_id.screen_loc = new_screen_loc	*/
 		wear_id.screen_loc = find_inv_position(slot_wear_id)
 		if (w_uniform && w_uniform:displays_id)
 			var/image/standing
 			if (wear_id.icon_override)
-				standing = image("icon" = wear_id.icon_override, "icon_state" = "[icon_state]")
+				standing = image("icon" = wear_id.icon_override, "icon_state" = "[wear_id.item_state]")
 
 			else
 				standing = image("icon" = 'icons/mob/mob.dmi', "icon_state" = "id")
@@ -745,8 +742,13 @@ var/global/list/damage_icon_parts = list()
 			bloodsies.color = head.blood_color
 			standing.overlays += bloodsies
 
+
 		if (istype(head,/obj/item/clothing/head))
 			var/obj/item/clothing/head/hat = head
+			if (hat.attachments.len)
+				for (var/attach in hat.attachments)
+					var/image/NI = image("icon_state" = "[attach]")
+					standing.overlays |= NI
 			var/cache_key = "[hat.light_overlay]_[species.get_bodytype()]"
 			if (hat.on && light_overlay_cache[cache_key])
 				standing.overlays |= light_overlay_cache[cache_key]
@@ -854,8 +856,6 @@ var/global/list/damage_icon_parts = list()
 	else
 		overlays_standing[SUIT_LAYER]	= null
 		update_inv_shoes(0)
-
-	update_collar(0)
 
 	if (update_icons)   update_icons()
 
@@ -1050,21 +1050,6 @@ var/global/list/damage_icon_parts = list()
 		overlays_standing[L_HAND_LAYER] = null
 
 	if (update_icons) update_icons()
-
-//Adds a collar overlay above the helmet layer if the suit has one
-//	Suit needs an identically named sprite in icons/mob/collar.dmi
-/mob/living/carbon/human/proc/update_collar(var/update_icons=1)
-	var/icon/C = new('icons/mob/collar.dmi')
-	var/image/standing = null
-
-	if (wear_suit)
-		if (wear_suit.icon_state in C.IconStates())
-			standing = image("icon" = C, "icon_state" = "[wear_suit.icon_state]")
-
-	overlays_standing[COLLAR_LAYER]	= standing
-
-	if (update_icons)   update_icons()
-
 
 /mob/living/carbon/human/update_fire(var/update_icons=1)
 	overlays_standing[FIRE_LAYER] = null

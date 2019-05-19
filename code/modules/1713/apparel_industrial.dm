@@ -117,6 +117,13 @@
 	item_state = "red_scarf"
 	slot = "decor"
 
+/obj/item/clothing/accessory/armband/yellow_scarf
+	name = "yellow scarf"
+	desc = "A light cotton scarf, in yellow."
+	icon_state = "yellow_scarf"
+	item_state = "yellow_scarf"
+	slot = "decor"
+
 /obj/item/clothing/accessory/armband/suspenders1
 	name = "suspenders"
 	desc = "Leather suspenders."

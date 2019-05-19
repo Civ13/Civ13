@@ -287,6 +287,27 @@ macro "hotkeymode"
 		name = "CTRL+Z"
 		command = "Activate-Held-Object"
 	elem 
+		name = "Numpad1"
+		command = "zone_sel_right_lower"
+	elem 
+		name = "Numpad2"
+		command = "zone_sel_groin"
+	elem 
+		name = "Numpad3"
+		command = "zone_sel_left_lower"
+	elem 
+		name = "Numpad4"
+		command = "zone_sel_right_upper"
+	elem 
+		name = "Numpad5"
+		command = "zone_sel_chest"
+	elem 
+		name = "Numpad6"
+		command = "zone_sel_left_upper"
+	elem 
+		name = "Numpad8"
+		command = "zone_sel_head"
+	elem 
 		name = "F1"
 		command = "adminhelp"
 	elem 

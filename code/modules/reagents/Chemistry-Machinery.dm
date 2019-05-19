@@ -19,14 +19,14 @@
 	icon_state = "dispenser"
 //	use_power = FALSE
 //	idle_power_usage = 40
-	var/ui_title = "Chem Dispenser 5000"
+	var/ui_title = "Chemical Dispenser"
 	var/energy = 100
 	var/max_energy = 100
 	var/amount = 30
 	var/accept_glass = FALSE //At FALSE ONLY accepts glass containers. Kinda misleading varname.
 	var/atom/beaker = null
 	var/hackedcheck = FALSE
-	var/list/dispensable_reagents = list("hydrazine","lithium","carbon","ammonia","acetone",
+	var/list/dispensable_reagents = list("lithium","carbon","ammonia","acetone",
 	"sodium","aluminum","silicon","phosphorus","sulfur","hclacid","potassium","iron",
 	"copper","mercury","radium","water","ethanol","sugar","sacid","tungsten")
 	var/stat = 0

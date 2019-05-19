@@ -509,12 +509,13 @@
 		return TRUE
 
 	if (C.m_intent == "run")
+		C.m_intent = "stealth"
+	else if (C.m_intent == "stealth")
 		C.m_intent = "walk"
-//	else if (C.m_intent == "walk" && !C.resting)
-//		C.resting = TRUE
-	else if (C.m_intent == "walk"/*&& C.resting*/)
-	//	C.resting = FALSE
+	else if (C.m_intent == "walk")
 		C.m_intent = "run"
+	else
+		C.m_intent = "walk"
 
 	update_icon()
 
@@ -532,6 +533,8 @@
 				icon_state = "proning"
 			else*/
 			icon_state = "walking"
+		if ("stealth")
+			icon_state = "stealth"
 
 //-----------------------mov_intent END------------------------------
 /obj/screen/equip
@@ -652,6 +655,40 @@
 	parentmob.a_intent_change(I_DISARM)
 //	..()
 
+/obj/screen/nvgoverlay
+	icon = 'icons/mob/screen1_full.dmi'
+	icon_state = "blank"
+	name = "nvg"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	mouse_opacity = FALSE
+	process_flag = TRUE
+	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
+
+/obj/screen/thermaloverlay
+	icon = 'icons/mob/screen1_full.dmi'
+	icon_state = "blank"
+	name = "thermal"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	mouse_opacity = FALSE
+	process_flag = TRUE
+	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
+
+/obj/screen/nvgoverlay/process()
+	update_icon()
+
+/obj/screen/nvgoverlay/update_icon()
+	underlays.Cut()
+	if (parentmob.nvg)
+		underlays += global_hud.nvg
+
+/obj/screen/thermaloverlay/process()
+	update_icon()
+
+/obj/screen/thermaloverlay/update_icon()
+	underlays.Cut()
+	if (parentmob.thermal)
+		underlays += global_hud.thermal
+
 /obj/screen/drugoverlay
 	icon = 'icons/mob/screen1_full.dmi'
 	icon_state = "blank"
@@ -672,7 +709,6 @@
 		underlays += global_hud.blurry
 	if (parentmob.druggy)
 		underlays += global_hud.druggy
-
 
 /obj/screen/full_1_tile_overlay
 	name = "full_1_tile_overlay"
@@ -918,6 +954,32 @@
 	screen_loc = "1,1"
 	mouse_opacity = FALSE
 	layer = 18
+	process_flag = TRUE
+
+/obj/screen/fov/process()
+	update_icon()
+
+/obj/screen/fov/update_icon()
+	underlays.Cut()
+	if (!config.disable_fov)
+		if (istype(parentmob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = parentmob
+			var/largest = 0
+			for (var/obj/item/clothing/CM in H.contents)
+				if (CM.restricts_view > largest && (H.wear_mask == CM || H.head == CM))
+					largest = CM.restricts_view
+
+			if (largest <= 0)
+				global_hud.fov.icon_state = "combat"
+			else if (largest == 1)
+				global_hud.fov.icon_state = "helmet"
+			else if (largest >= 2)
+				global_hud.fov.icon_state = "narrow"
+			else
+				global_hud.fov.icon_state = "combat"
+
+		underlays += global_hud.fov
+
 
 /obj/screen/toggle_inventory/proc/hidden_inventory_update(obj/screen/inventory/inv_elem)
 	var/mob/living/carbon/human/H = parentmob

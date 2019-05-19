@@ -59,15 +59,15 @@
 			var/image/lid = image(icon, src, "lid_bottle")
 			overlays += lid
 
-/obj/item/weapon/reagent_containers/glass/bottle/inaprovaline
-	name = "inaprovaline bottle"
-	desc = "A small bottle. Contains inaprovaline - used to stabilize patients."
+/obj/item/weapon/reagent_containers/glass/bottle/adrenaline
+	name = "adrenaline bottle"
+	desc = "A small bottle. Contains adrenaline - used to stabilize patients."
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "bottle-4"
 
 	New()
 		..()
-		reagents.add_reagent("inaprovaline", 60)
+		reagents.add_reagent("adrenaline", 60)
 		update_icon()
 
 /obj/item/weapon/reagent_containers/glass/bottle/toxin

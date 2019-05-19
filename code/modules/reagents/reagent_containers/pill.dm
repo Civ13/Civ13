@@ -105,30 +105,7 @@
 	New()
 		..()
 		reagents.add_reagent("cyanide", 50)
-/*
-/obj/item/weapon/reagent_containers/pill/adminordrazine
-	name = "Adminordrazine pill"
-	desc = "It's magic. We don't have to explain it."
-	icon_state = "pill16"
-	New()
-		..()
-		reagents.add_reagent("adminordrazine", 50)*/
 
-/obj/item/weapon/reagent_containers/pill/stox
-	name = "Sleeping pill"
-	desc = "Commonly used to treat insomnia."
-	icon_state = "pill8"
-	New()
-		..()
-		reagents.add_reagent("stoxin", 15)
-
-/obj/item/weapon/reagent_containers/pill/kelotane
-	name = "Kelotane pill"
-	desc = "Used to treat burns."
-	icon_state = "pill11"
-	New()
-		..()
-		reagents.add_reagent("kelotane", 15)
 
 /obj/item/weapon/reagent_containers/pill/paracetamol
 	name = "Paracetamol pill"
@@ -215,39 +192,16 @@
 		reagents.add_reagent("citalopram", 15)
 
 
-/obj/item/weapon/reagent_containers/pill/inaprovaline
-	name = "Inaprovaline pill"
+/obj/item/weapon/reagent_containers/pill/adrenaline
+	name = "adrenaline pill"
 	desc = "Used to stabilize patients."
 	icon_state = "pill20"
 	New()
 		..()
-		reagents.add_reagent("inaprovaline", 30)
+		reagents.add_reagent("adrenaline", 30)
 
-/obj/item/weapon/reagent_containers/pill/dexalin
-	name = "Dexalin pill"
-	desc = "Used to treat oxygen deprivation."
-	icon_state = "pill16"
-	New()
-		..()
-		reagents.add_reagent("dexalin", 15)
 
-/obj/item/weapon/reagent_containers/pill/dexalin_plus
-	name = "Dexalin Plus pill"
-	desc = "Used to treat extreme oxygen deprivation."
-	icon_state = "pill8"
-	New()
-		..()
-		reagents.add_reagent("dexalinp", 15)
-
-/obj/item/weapon/reagent_containers/pill/dermaline
-	name = "Dermaline pill"
-	desc = "Used to treat burn wounds."
-	icon_state = "pill12"
-	New()
-		..()
-		reagents.add_reagent("dermaline", 15)
-
-/obj/item/weapon/reagent_containers/pill/dylovene
+/obj/item/weapon/reagent_containers/pill/anti_toxin
 	name = "Dylovene pill"
 	desc = "A broad-spectrum anti-toxin."
 	icon_state = "pill13"
@@ -255,21 +209,6 @@
 		..()
 		reagents.add_reagent("anti_toxin", 15)
 
-/obj/item/weapon/reagent_containers/pill/inaprovaline
-	name = "Inaprovaline pill"
-	desc = "Used to stabilize patients."
-	icon_state = "pill20"
-	New()
-		..()
-		reagents.add_reagent("inaprovaline", 30)
-
-/obj/item/weapon/reagent_containers/pill/bicaridine
-	name = "Bicaridine pill"
-	desc = "Used to treat physical injuries."
-	icon_state = "pill18"
-	New()
-		..()
-		reagents.add_reagent("bicaridine", 20)
 
 /obj/item/weapon/reagent_containers/pill/happy
 	name = "Happy pill"
@@ -280,15 +219,6 @@
 		reagents.add_reagent("peyote", 15)
 		reagents.add_reagent("sugar", 15)
 
-/obj/item/weapon/reagent_containers/pill/zoom
-	name = "Zoom pill"
-	desc = "Zoooom!"
-	icon_state = "pill18"
-	New()
-		..()
-		reagents.add_reagent("impedrezene", 10)
-		reagents.add_reagent("synaptizine", 5)
-		reagents.add_reagent("hyperzine", 5)
 
 /obj/item/weapon/reagent_containers/pill/penicillin
 	name = "penicillin pill"

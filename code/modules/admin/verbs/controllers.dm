@@ -49,12 +49,6 @@ var/list/special_globalobjects = list("processScheduler", "Master", "Ticker", "C
 		if ("Observation")
 			debug_variables(all_observable_events)
 
-		if ("Whitelists")
-			var/which = input("Which whitelist?") in global_whitelists
-			var/datum/whitelist/W = global_whitelists[which]
-			if (W && istype(W))
-				debug_variables(W)
-
 		if ("Job Master")
 			if (job_master)
 				debug_variables(job_master)

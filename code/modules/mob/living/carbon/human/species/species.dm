@@ -337,9 +337,17 @@
 /datum/species/proc/get_random_german_name(var/gender, var/jew)
 	if (!name_language)
 		if (gender == FEMALE)
-			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german,))
+			return capitalize(pick(first_names_female_german)) + " " + capitalize(pick(last_names_german))
 		else
 			return capitalize(pick(first_names_male_german)) + " " + capitalize(pick(last_names_german))
+
+/datum/species/proc/get_random_vietnamese_name(var/gender, var/jew)
+	if (!name_language)
+		if (gender == FEMALE)
+			return capitalize(pick(first_names_female_vietnamese)) + " " + capitalize(pick(last_names_vietnamese))
+		else
+			return capitalize(pick(first_names_male_vietnamese)) + " " + capitalize(pick(last_names_vietnamese))
+
 
 /datum/species/proc/get_random_ainu_name(var/gender, var/jew)
 	if (!name_language)
@@ -486,7 +494,8 @@
 
 	if (!H.druggy)
 		H.see_in_dark = (H.sight == SEE_TURFS|SEE_MOBS|SEE_OBJS) ? 8 : min(darksight + H.equipment_darkness_modifier, 8)
-
+		if(H.equipment_see_invis)
+			H.see_invisible = max(H.see_invisible, H.equipment_see_invis)
 
 	if (H.equipment_tint_total >= TINT_BLIND)
 		H.eye_blind = max(H.eye_blind, TRUE)

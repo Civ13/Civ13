@@ -71,7 +71,14 @@
 				return TRUE
 
 /obj/item/proc/CanItemAutoclick(object, location, params)
-	return istype(src, /obj/item/weapon/gun/projectile/automatic)
+	if (istype(src, /obj/item/weapon/gun))
+		var/obj/item/weapon/gun/CG = src
+		if (CG.full_auto)
+			return TRUE
+		else
+			return FALSE
+	else
+		return FALSE
 
 /atom/proc/IsAutoclickable()
 	return TRUE

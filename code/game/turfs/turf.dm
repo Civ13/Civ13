@@ -403,8 +403,6 @@ var/const/enterloopsanity = 100
 				footstepsound = "platingfootsteps"
 			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
-			//else 	if (istype(src, /turf/stalker/floor/tropa))//Not needed for now.
-			//	footstepsound = "sandfootsteps"
 			else if (istype(src, /turf/floor/winter))
 				footstepsound = "snowfootsteps"
 			else 	if (istype(src, /turf/floor/beach/water) && src.water_level > 0)
@@ -423,9 +421,12 @@ var/const/enterloopsanity = 100
 			else
 				footstepsound = "erikafootsteps"
 
-			if (istype(H.shoes, /obj/item/clothing/shoes))
+			if (H.m_intent != "stealth")
+				var/fsvol = 60
+				if (istype(H.shoes, /obj/item/clothing/shoes))
+					fsvol = 100 //shoes make more noise than bare feet
 				if (movementMachine.ticks >= H.next_footstep_sound_at_movement_tick)
-					playsound(src, footstepsound, 100, TRUE)
+					playsound(src, footstepsound, fsvol, TRUE)
 					switch (H.m_intent)
 						if ("run")
 							H.next_footstep_sound_at_movement_tick = movementMachine.ticks + (movementMachine.interval*40*(0.3/movementMachine.interval))

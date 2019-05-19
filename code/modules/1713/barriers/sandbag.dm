@@ -225,12 +225,11 @@
 	w_class = TRUE
 	sand_amount = FALSE
 	value = 0
-
 /obj/item/weapon/sandbag/sandbag/attack_self(mob/user)
 	user << "You start building the sandbag wall..."
 	if (do_after(user, 25, src))
 		user << "You finish the placement of the sandbag wall foundation."
-		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
+		new /obj/structure/window/sandbag/sandbag/incomplete(user.loc)
 		qdel(src)
 		return
 

@@ -35,7 +35,10 @@
 obj/map_metadata/karak/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/arab))
-		. = TRUE
+		if (J.is_coldwar || J.is_specops)
+			. = FALSE
+		else
+			. = TRUE
 	if (istype(J, /datum/job/french))
 		if (J.is_crusader == TRUE)
 			. = TRUE

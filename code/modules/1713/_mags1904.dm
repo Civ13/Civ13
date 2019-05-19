@@ -35,6 +35,17 @@ obj/item/ammo_magazine/madsen
 	max_ammo = 25
 	multiple_sprites = TRUE
 
+obj/item/ammo_magazine/b762
+	name = "belt (7.62x51mm)"
+	icon_state = "b762"
+	mag_type = MAGAZINE
+	caliber = "a762x51_weak"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 1440)
+	ammo_type = /obj/item/ammo_casing/a762x51/weak
+	max_ammo = 100
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/gewehr71
 	name = "clip (7.65x53mm)"
 	icon_state = "kclip"
@@ -70,6 +81,16 @@ obj/item/ammo_magazine/madsen
 	multiple_sprites = TRUE
 	clip = TRUE
 
+/obj/item/ammo_magazine/mauser1893
+	name = "clip (7x53mm)"
+	icon_state = "kclip"
+	caliber = "a7x57"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a7x57
+	max_ammo = 5
+	weight = 0.038
+	multiple_sprites = TRUE
+	clip = TRUE
 
 /obj/item/ammo_magazine/gewehr98box
 	name = "magazine box (7.92x57mm)"
@@ -133,9 +154,9 @@ obj/item/ammo_magazine/madsen
 /obj/item/ammo_magazine/carcano
 	name = "clip (6.5x52mm)"
 	icon_state = "kclip"
-	caliber = "a65x52mm"
+	caliber = "a65x52"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
-	ammo_type = /obj/item/ammo_casing/a65x52mm
+	ammo_type = /obj/item/ammo_casing/a65x52
 	max_ammo = 5
 	weight = 0.038
 	multiple_sprites = TRUE
@@ -145,10 +166,10 @@ obj/item/ammo_magazine/madsen
 	name = "magazine box (6.5x52mm)"
 	icon_state = "ammo"
 	mag_type = MAGAZINE
-	caliber = "a65x52mm"
+	caliber = "a65x52"
 	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a65x52mm
+	ammo_type = /obj/item/ammo_casing/a65x52
 	max_ammo = 50
 	multiple_sprites = FALSE
 	is_box = TRUE
@@ -157,10 +178,10 @@ obj/item/ammo_magazine/madsen
 	name = "Maxim ammo belt"
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
-	caliber = "a762x54"
+	caliber = "a762x54_weak"
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a762x54
+	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
 	var/slot = "decor"
@@ -173,10 +194,10 @@ obj/item/ammo_magazine/madsen
 	name = "MG08 ammo belt"
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
-	caliber = "a792x57"
+	caliber = "a792x57_weak"
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a792x57
+	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
 	var/slot = "decor"
@@ -189,10 +210,26 @@ obj/item/ammo_magazine/madsen
 	name = "Vickers ammo belt"
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
-	caliber = "a303"
+	caliber = "a303_weak"
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a762x54
+	ammo_type = /obj/item/ammo_casing/a303/weak
+	max_ammo = 250
+	multiple_sprites = TRUE
+	var/slot = "decor"
+	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
+	var/image/inv_overlay = null	//overlay used when attached to clothing.
+	var/image/mob_overlay = null
+	var/overlay_state = null
+
+/obj/item/ammo_magazine/hotchkiss
+	name = "Hotchkiss ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a8x50_weak"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a8x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
 	var/slot = "decor"
@@ -205,10 +242,10 @@ obj/item/ammo_magazine/madsen
 	name = "Type 3 ammo belt"
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
-	caliber = "a65x50"
+	caliber = "a65x50_weak"
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a65x50
+	ammo_type = /obj/item/ammo_casing/a65x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
 	var/slot = "decor"
@@ -231,28 +268,39 @@ obj/item/ammo_magazine/madsen
 	name = "Luger magazine"
 	icon_state = "lugermag"
 	mag_type = MAGAZINE
-	caliber = "9x19mm"
-	ammo_type = /obj/item/ammo_casing/a9x19mm
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 8
 	weight = 0.02
 	multiple_sprites = TRUE
+
 
 /obj/item/ammo_magazine/borchardt
 	name = "Borchardt magazine"
 	icon_state = "borchardtmag"
 	mag_type = MAGAZINE
-	caliber = "765x25mm"
-	ammo_type = /obj/item/ammo_casing/a765x25mm
+	caliber = "a765x25"
+	ammo_type = /obj/item/ammo_casing/a765x25
 	max_ammo = 8
 	weight = 0.02
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/luger/empty/New()
+	..()
+	stored_ammo.Cut()
+/obj/item/ammo_magazine/c8mmnambu/empty/New()
+	..()
+	stored_ammo.Cut()
+/obj/item/ammo_magazine/borchardt/empty/New()
+	..()
+	stored_ammo.Cut()
+
 /obj/item/ammo_magazine/mauser
 	name = "Mauser clip (9x19mm)"
 	icon_state = "mauser"
-	caliber = "9x19mm"
+	caliber = "a9x19"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
-	ammo_type = /obj/item/ammo_casing/a9x19mm
+	ammo_type = /obj/item/ammo_casing/a9x19
 	max_ammo = 10
 	weight = 0.06
 	multiple_sprites = TRUE
@@ -268,6 +316,17 @@ obj/item/ammo_magazine/madsen
 	caliber = "a762x38"
 	max_ammo = 21
 	weight = 0.4
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
+/obj/item/ammo_magazine/c8x27
+	name = "bullet pouch (8x27mmR)"
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a8x27
+	caliber = "a8x27"
+	max_ammo = 24
+	weight = 0.5
 	multiple_sprites = TRUE
 	mag_type = SPEEDLOADER
 	pouch = TRUE
@@ -296,6 +355,18 @@ obj/item/ammo_magazine/madsen
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c455
+	name = "bullet pouch (.455 Webley)"
+	desc = "a pouch of .455 Webley bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a455
+	caliber = "a455"
+	max_ammo = 24
+	weight = 0.95
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
+
 /obj/item/ammo_magazine/c41
 	name = "bullet pouch (.41 Short)"
 	desc = "a pouch of .41-100 bullets, mostly used on the Derringer."
@@ -320,13 +391,24 @@ obj/item/ammo_magazine/madsen
 	mag_type = SPEEDLOADER
 	pouch = TRUE
 
+/obj/item/ammo_magazine/c8x50
+	name = "bullet pouch (8x50mmR Lebel)"
+	desc = "a pouch of 8x50mmR Lebel bullets."
+	icon_state = "pouch"
+	ammo_type = /obj/item/ammo_casing/a8x50
+	caliber = "a8x50"
+	max_ammo = 24
+	weight = 0.95
+	multiple_sprites = TRUE
+	mag_type = SPEEDLOADER
+	pouch = TRUE
 
 /obj/item/ammo_magazine/murata
 	name = "clip (8x53mm)"
 	icon_state = "kclip"
-	caliber = "a8x53mm"
+	caliber = "a8x53"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
-	ammo_type = /obj/item/ammo_casing/a8x53mm
+	ammo_type = /obj/item/ammo_casing/a8x53
 	max_ammo = 5
 	weight = 0.048
 	multiple_sprites = TRUE
@@ -336,10 +418,10 @@ obj/item/ammo_magazine/madsen
 	name = "magazine box (8x53mm)"
 	icon_state = "arisaka_ammo"
 	mag_type = MAGAZINE
-	caliber = "a8x53mm"
+	caliber = "a8x53"
 	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
-	ammo_type = /obj/item/ammo_casing/a8x53mm
+	ammo_type = /obj/item/ammo_casing/a8x53
 	max_ammo = 50
 	multiple_sprites = FALSE
 	is_box = TRUE
@@ -366,8 +448,26 @@ obj/item/ammo_magazine/madsen
 	max_ammo = 50
 	multiple_sprites = FALSE
 	is_box = TRUE
-
-
+/obj/item/ammo_magazine/c8x50_3clip
+	name = "clip (8x50mmR Lebel, 3u)"
+	icon_state = "clip"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a8x50
+	caliber = "a8x50"
+	max_ammo = 3
+	weight = 0.035
+	multiple_sprites = TRUE
+	clip = TRUE
+/obj/item/ammo_magazine/c8x50_5clip
+	name = "clip (8x50mmR Lebel, 5u)"
+	icon_state = "clip"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a8x50
+	caliber = "a8x50"
+	max_ammo = 5
+	weight = 0.048
+	multiple_sprites = TRUE
+	clip = TRUE
 /obj/item/ammo_magazine/c44p
 	name = "bullet pouch (.44)"
 	icon_state = "pouch"

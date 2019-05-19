@@ -142,16 +142,11 @@ ALLOW_WEBCLIENT
 ## byond membership starts at $10 for 3 months, so to use the webclient to evade, they would have sink 10 bucks in each evade.
 #WEBCLIENT_ONLY_BYOND_MEMBERS
 
-## TODO: whitelists
-
-## Set to prevent anyone but those ckeys listed in config/whitelist.txt and config/admins.txt from joining your server
-#USEWHITELIST
-
-## Set this to give people in the 'teststaff' whitelist admin permissions
-ALLOW_TESTING_STAFF
+## Set to prevent anyone but those ckeys listed in SQL/approved.txt and config/admins.txt from joining your server
+#USEAPPROVEDLIST
 
 ## Jobs that can be whitelisted are whitelisted, according to a new DB whitelists table
-#USE_JOB_WHITELIST
+USE_JOB_WHITELIST
 
 ## set a server location for world reboot. Don't include the byond://, just give the address and port.
 # Don't set this to the same server, BYOND will automatically restart players to the server when it has restarted.
@@ -239,3 +234,6 @@ SHOW_MODS 1
 
 #show mentors in staff who
 SHOW_MENTORS 1
+
+#disables field of view if uncommented
+#DISABLE_FOV
