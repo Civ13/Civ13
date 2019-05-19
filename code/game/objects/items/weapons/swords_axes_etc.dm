@@ -130,9 +130,12 @@
 		"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
 		"You hear some struggling and muffled cries of surprise")
 
-/obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user)
+/obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
 	garroting = FALSE
+	target.canmove = TRUE
+	user << "You loosen the garrote."
 	update_icon()
+	return
 /obj/item/garrote/attack_self(mob/living/carbon/human/user)
 	if(garroting)
 		user << "<span class='notice'>You release the garrote on your victim.</span>" //Not the grab, though. Only the garrote.
@@ -146,20 +149,18 @@
 		return FALSE
 	if(ishuman(user))
 		if(!(user.l_hand == src || user.r_hand == src)) //THE GARROTE IS NOT IN HANDS, ABORT
-			garroting = FALSE
-			user << "You loosen the garrote."
-			update_icon()
+			stop_garroting(user,target)
 			return FALSE
 
 		if (garroting == FALSE)
-			user << "You loosen the garrote."
-			update_icon()
+			stop_garroting(user,target)
 			return FALSE
 		else
 			spawn(25)
 				garroting_process(user)
 
 		if(istype(target))
+			target.canmove = FALSE
 			if(!target.mouth_covered)
 				target.forcesay(list("-hrk!", "-hrgh!", "-urgh!", "-kh!", "-hrnk!"))
 
