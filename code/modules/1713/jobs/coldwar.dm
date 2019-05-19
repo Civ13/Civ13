@@ -682,8 +682,8 @@
 	is_coldwar = TRUE
 	is_specops = TRUE
 	// AUTOBALANCE
-	min_positions = 4
-	max_positions = 10
+	min_positions = 6
+	max_positions = 18
 
 /datum/job/american/specops_operator/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
