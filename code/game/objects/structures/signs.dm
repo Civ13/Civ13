@@ -87,6 +87,22 @@
 	desc = "Next to the extremely long list of names and job titles, there is a drawing of a little child. The child appears to be retarded. Beneath the image, someone has scratched the word \"PACKETS\""
 	icon_state = "kiddieplaque"
 
+/obj/structure/sign/exit
+	name = "Exit"
+	desc = "Points to the exit."
+	icon_state = "exit"
+
+/obj/structure/sign/exit/New()
+	..()
+	if (dir == WEST)
+		desc = "Exit to the left."
+	else if (dir == EAST)
+		desc = "Exit to the right."
+	else if (dir == NORTH)
+		desc = "Exit to the north."
+	else if (dir == SOUTH)
+		desc = "Exit to the south."
+
 /obj/structure/sign/custom
 	name = "Sign"
 	desc = "Signs something."
