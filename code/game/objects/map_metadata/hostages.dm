@@ -18,7 +18,7 @@
 		)
 	age = "2014"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(AMERICAN = 0.33, ARAB = 0.67)
+	faction_distribution_coeffs = list(AMERICAN = 0.4, ARAB = 0.6)
 	battle_name = "hostage rescue"
 	mission_start_message = "<font size=4>The insurgents are holding <b>American</b> embassy staff hostage! The Special Forces must rescue them within <b>20 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>1</b> point per hostage kept alive and in their control by the end of the 20 minutes.</font>"
 	faction1 = AMERICAN
