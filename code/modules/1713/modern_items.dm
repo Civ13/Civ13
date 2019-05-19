@@ -16,13 +16,21 @@
 	var/light_amt = 6 //light range
 	layer = 3.95
 	var/brightness_color = null
-	var/prob_hit = 10
-
+	var/lamp_inside = TRUE
+	var/lamp_broken = FALSE
 /obj/structure/lamp/New()
 	..()
 	do_light()
 
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/lightbulb) && !lamp_inside)
+		var/obj/item/lightbulb/L = W
+		if (!L.broken)
+			user << "You put the lightbulb in."
+			lamp_inside = TRUE
+			lamp_broken = FALSE
+			icon_state = base_icon
+			update_icon()
 	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
 			user << "<span class='notice'>Remove the cables first.</span>"
@@ -77,14 +85,20 @@
 
 
 /obj/structure/lamp/proc/do_light()
-	if (check_power() || powerneeded == 0)
-		if (brightness_color)
-			set_light(light_amt, 1, brightness_color)
+	if (!lamp_broken && lamp_inside)
+		if (check_power() || powerneeded == 0)
+			if (brightness_color)
+				set_light(light_amt, 1, brightness_color)
+			else
+				set_light(light_amt)
+			icon_state = "[base_icon]_on"
+			powered = TRUE
+			on = TRUE
 		else
-			set_light(light_amt)
-		icon_state = "[base_icon]_on"
-		powered = TRUE
-		on = TRUE
+			set_light(0)
+			icon_state = base_icon
+			powered = FALSE
+			on = FALSE
 	else
 		set_light(0)
 		icon_state = base_icon
@@ -115,17 +129,50 @@
 
 
 /obj/structure/lamp/bullet_act(var/obj/item/projectile/Proj)
-	if (prob(prob_hit))
+	if (lamp_inside && !lamp_broken)
 		visible_message("\The [src] shatters!")
 		playsound(src, 'sound/effects/hit_on_shattered_glass.ogg', 70, TRUE)
 		new/obj/item/weapon/material/shard(loc)
 		on = FALSE
-		if (powersource)
-			var/obj/structure/cable/CB = powersource
-			CB.connections -= src
-			powersource = null
-		qdel(src)
+		lamp_broken = TRUE
+		icon_state = "[base_icon]_broken"
+		update_icon()
+//	if (powersource)
+//		var/obj/structure/cable/CB = powersource
+//		CB.connections -= src
+//		powersource = null
+//	qdel(src)
 	..()
+
+/obj/item/lightbulb
+	name = "lightbulb"
+	icon = 'icons/obj/lighting.dmi'
+	icon_state = "lbulb"
+	anchored = FALSE
+	density = FALSE
+	opacity = FALSE
+	var/broken = FALSE
+
+/obj/item/lightbulb/broken
+	name = "broken lightbulb"
+	icon_state = "lbulb_broken"
+	broken = TRUE
+
+/obj/structure/lamp/attack_hand(mob/living/carbon/human/user as mob)
+	if (lamp_inside)
+		if (lamp_broken)
+			user << "You remove the broken lightbulb."
+			user.put_in_active_hand(new/obj/item/lightbulb/broken)
+
+		else
+			user << "You remove the lightbulb."
+			user.put_in_active_hand(new/obj/item/lightbulb)
+		lamp_inside = FALSE
+		icon_state = "[base_icon]_empty"
+		update_icon()
+		return
+	else
+		..()
 
 /obj/structure/lamp/lamppost_small
 	name = "small lamp post"
@@ -133,7 +180,7 @@
 	icon_state = "lamppost_small"
 	powerneeded = 2
 	light_amt = 6
-	prob_hit = 20
+
 /obj/structure/lamp/lamp_small
 	name = "small lightbulb"
 	desc = "A small lightbulb."
@@ -143,7 +190,6 @@
 	light_amt = 3
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	prob_hit = 30
 
 /obj/structure/lamp/lamp_small/alwayson
 	powerneeded = 0
@@ -160,7 +206,6 @@
 	light_amt = 4
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	prob_hit = 45
 
 /obj/structure/lamp/lamp_big/alwayson
 	powerneeded = 0

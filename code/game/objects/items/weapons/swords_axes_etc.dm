@@ -113,51 +113,60 @@
 
 /obj/item/garrote/attack(mob/living/carbon/human/target as mob, mob/living/carbon/human/user as mob)
 	if (garroting)
-		stop_garroting(user)
+		stop_garroting(user,target)
 		return
 	else
 		start_garroting(user,target)
 		return
 /obj/item/garrote/proc/start_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
-	playsound(target.loc, 'sound/weapons/grapple.ogg', 40, 1, -4)
-	playsound(target.loc, 'sound/weapons/cablecuff.ogg', 15, 1, -5)
-	garroting = TRUE
-	update_icon()
-	garroting_process(user,target)
-	next_garrote = world.time + 10
-	visible_message(
-		"<span class='danger'>[user] has grabbed \the [target] with \the [src]!</span>",\
-		"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
-		"You hear some struggling and muffled cries of surprise")
-
+	if (!user.has_empty_hand())
+		user << "<span class='notice'>You need a free hand to use the garrote!</span>"
+		return
+	var/obj/item/weapon/grab/GR = new /obj/item/weapon/grab(user, target)
+	user.put_in_hands(GR)
+	GR.synch()
+	target.LAssailant = user
+	if (GR != null)
+		playsound(target.loc, 'sound/weapons/grapple.ogg', 40, 1, -4)
+		playsound(target.loc, 'sound/weapons/cablecuff.ogg', 15, 1, -5)
+		garroting = TRUE
+		update_icon()
+		garroting_process(user,target,GR)
+		next_garrote = world.time + 40
+		visible_message(
+			"<span class='danger'>[user] has grabbed \the [target] with \the [src]!</span>",\
+			"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
+			"You hear some struggling and muffled cries of surprise")
+		return
 /obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
 	garroting = FALSE
-	target.canmove = TRUE
-	user << "You loosen the garrote."
+	user << "<span class='notice'>You release the garrote on your victim.</span>" //Not the grab, though. Only the garrote.
 	update_icon()
 	return
 /obj/item/garrote/attack_self(mob/living/carbon/human/user)
-	if(garroting)
-		user << "<span class='notice'>You release the garrote on your victim.</span>" //Not the grab, though. Only the garrote.
-		garroting = FALSE
-		update_icon()
-		return
 	if(world.time <= next_garrote) 	return
+	if(garroting)
+		stop_garroting(user)
+		return
 
-/obj/item/garrote/proc/garroting_process(mob/living/carbon/human/user,mob/living/carbon/human/target)
-	if (!user)
+/obj/item/garrote/proc/garroting_process(mob/living/carbon/human/user,mob/living/carbon/human/target,obj/item/weapon/grab/GB)
+	if (!user || !target || !GB)
 		return FALSE
 	if(ishuman(user))
 		if(!(user.l_hand == src || user.r_hand == src)) //THE GARROTE IS NOT IN HANDS, ABORT
 			stop_garroting(user,target)
 			return FALSE
 
+		if(!(user.l_hand == GB || user.r_hand == GB)) //THE GRAB IS NOT IN HANDS, ABORT
+			stop_garroting(user,target)
+			return FALSE
+
 		if (garroting == FALSE)
 			stop_garroting(user,target)
 			return FALSE
-		else
-			spawn(25)
-				garroting_process(user)
+
+		spawn(25)
+			garroting_process(user,target,GB)
 
 		if(istype(target))
 			target.canmove = FALSE

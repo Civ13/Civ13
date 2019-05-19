@@ -457,7 +457,7 @@
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
 				if (O == original)
-					var/hitchance = 18 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
+					var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
 					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.

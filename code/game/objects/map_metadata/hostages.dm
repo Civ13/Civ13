@@ -159,11 +159,12 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 			var/area/currarea = get_area(DH)
 			if (istype(currarea, /area/caribbean/british))
 				rescued_hostages++
-			else if (istype(currarea, /area/caribbean/british))
+			else if (istype(currarea, /area/caribbean/arab))
 				held_hostages++
 		else if (DH.stat == DEAD)
 			dead_hostages++
-	total_hostages = dead_hostages+rescued_hostages+held_hostages
+	if (dead_hostages+held_hostages+rescued_hostages < total_hostages)
+		dead_hostages = total_hostages-held_hostages-rescued_hostages
 	faction1_points = rescued_hostages
 	faction2_points = held_hostages
 
@@ -184,7 +185,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/hostages/proc/hostage_msg()
 	check_hostages()
 	spawn(1)
-		world << "<font size = 4><span class = 'notice'><b>Current Status:</b></font><br><font size = 3>Hostages Rescued: [rescued_hostages]/[total_hostages].<br>Hostages Held: [held_hostages]/[total_hostages].<br>Hostages Dead: [dead_hostages]/[total_hostages].</span></font>"
+		world << "<font size = 4><span class = 'notice'><b>Current Status:</b></font><br><font size = 3>Hostages Rescued: [rescued_hostages]/[total_hostages]<br>Hostages Held: [held_hostages]/[total_hostages]<br>Hostages Dead: [dead_hostages]/[total_hostages]</span></font>"
 	spawn(3000)
 		hostage_msg()
 #undef NO_WINNER
