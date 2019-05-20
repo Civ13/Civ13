@@ -83,6 +83,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 		if ("SOF Team")
 			return "SOF Team"
 
+
 /obj/map_metadata/hostages/cross_message(faction)
 	if (faction == AMERICAN)
 		return "<font size = 4>The SOF may now cross the invisible wall!</font>"

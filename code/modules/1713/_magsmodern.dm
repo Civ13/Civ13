@@ -74,7 +74,7 @@
 	icon_state = "b762x54"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
-	w_class = 4
+	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 100

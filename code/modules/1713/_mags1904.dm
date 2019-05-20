@@ -40,7 +40,7 @@ obj/item/ammo_magazine/b762
 	icon_state = "b762"
 	mag_type = MAGAZINE
 	caliber = "a762x51_weak"
-	w_class = 4
+	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 1440)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
 	max_ammo = 100
