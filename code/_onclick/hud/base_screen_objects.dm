@@ -311,11 +311,11 @@
 			var/obj/item/organ/external/BP = X
 			var/damage = BP.burn_dam + BP.brute_dam
 			var/icon_num = 1
-			if(damage > (BP.max_damage/4)) // > 25% max dmg - yellow
+			if(damage > (BP.max_damage*0.15)) // > 15% max dmg - yellow
 				icon_num = 2
-			if(damage > (BP.max_damage/2)) // > 50% max dmg - orange
+			if(damage > (BP.max_damage*0.4)) // > 40% max dmg - orange
 				icon_num = 3
-			if(damage > BP.max_damage) // > 100% max dmg - red
+			if(damage > BP.max_damage*0.7) // > 70% max dmg - red
 				icon_num = 4
 			if(icon_num)
 				add_overlay(image(icon, "[BP.limb_name][icon_num]"))

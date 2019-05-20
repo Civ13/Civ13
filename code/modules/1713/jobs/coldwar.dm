@@ -814,7 +814,7 @@
 //head
 	if (prob(50))
 		if (prob(20))
-			H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_head)
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
 		else
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
 	else

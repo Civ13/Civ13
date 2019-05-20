@@ -2,7 +2,7 @@
 	// epoch = required players
 
 	var/list/epochs = list(
-		//Stone Age (?-3000 B.C.)" = 0,
+		//"Stone Age (?-3000 B.C.)" = 0,
 		"Bronze Age (500 B.C.-400 A.D.)" = 0,
 		//"Dark Ages (400-700)" = 0,
 		"Middle Ages (700-1450)" = 0,
@@ -12,7 +12,7 @@
 		"Early Modern Era (1896-1933)" = 0,
 		//"World War II (1934-1957)" = 0,
 		"Cold War Era (1958-1984)" = 0,
-		//Modern Era (1985-2020)" = 0,
+		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
 	)
 	var/ready = TRUE
@@ -42,7 +42,7 @@
 				"Early Modern Era (1896-1933)" = 0,
 				//"World War II (1934-1957)" = 0,
 				"Cold War Era (1958-1984)" = 0,
-				//Modern Era (1985-2020)" = 0,
+				"Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
 			epochs = list("Civilization 13 (Nomads)" = 0,)
@@ -88,11 +88,16 @@
 	if (is_ready())
 		ready = FALSE
 		epoch = vote.voted_epoch
+
+		if (epoch == "Modern Era (1985-2020)")
+	// 2013 - TDM
+			maps = list(
+				MAP_HOSTAGES = 0,
+			)
 		if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
-				MAP_HOSTAGES = 0,
 			)
 		if (epoch == "Early Modern Era (1896-1933)")
 	// 1903 - TDM
