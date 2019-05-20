@@ -7,7 +7,7 @@
 	taste_description = "bitterness"
 	reagent_state = LIQUID
 	color = "#00BFFF"
-	overdose = REAGENTS_OVERDOSE * 2
+	overdose = REAGENTS_OVERDOSE * 3 //3 doses
 	metabolism = REM * 0.5
 	scannable = TRUE
 
