@@ -56,23 +56,24 @@
 
 	var/limbs_count = 4
 	var/obj/item/organ/external/E = organs_by_name["l_foot"]
-	if (E.status & ORGAN_DESTROYED)
-		limbs_count--
+	if (E)
+		if (E.status & ORGAN_DESTROYED)
+			limbs_count--
 
-	E = organs_by_name["r_foot"]
-	if (!E || (E.status & ORGAN_DESTROYED))
-		limbs_count--
+		E = organs_by_name["r_foot"]
+		if (!E || (E.status & ORGAN_DESTROYED))
+			limbs_count--
 
-	E = organs_by_name["r_hand"]
-	if (!E || (E.status & ORGAN_DESTROYED))
-		limbs_count--
+		E = organs_by_name["r_hand"]
+		if (!E || (E.status & ORGAN_DESTROYED))
+			limbs_count--
 
-	E = organs_by_name["l_hand"]
-	if (!E || (E.status & ORGAN_DESTROYED))
-		limbs_count--
+		E = organs_by_name["l_hand"]
+		if (!E || (E.status & ORGAN_DESTROYED))
+			limbs_count--
 
-	if (limbs_count == FALSE)
-		has_limbs = FALSE
+		if (limbs_count == FALSE)
+			has_limbs = FALSE
 
 /mob/living/carbon/human/proc/handle_stance()
 	// Don't need to process any of this if they aren't standing anyways

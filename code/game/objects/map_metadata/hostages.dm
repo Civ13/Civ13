@@ -42,7 +42,7 @@
 
 /obj/map_metadata/hostages/New()
 	..()
-	mission_start_message = "<font size=4>The insurgents are holding [total_hostages] <b>American</b> hostages! The Special Forces must rescue them within <b>20 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>5</b> points per hostage kept alive and in their control by the end of the 20 minutes. Americans also get <b>1</b> point per prisoner alive and handcuffed in their prison. Insurgents get <b>3</b> points per prisoner alive and handcuffed in their prisons.</font>"
+	mission_start_message = "<font size=4>The insurgents are holding [total_hostages] <b>American</b> hostages! The Special Forces must rescue them within <b>35 minutes</b>. If all of them die, both teams lose.<br>Each team gets <b>5</b> points per hostage kept alive and in their control by the end of the 20 minutes. Americans also get <b>1</b> point per prisoner alive and handcuffed in their prison. Insurgents get <b>3</b> points per prisoner alive and handcuffed in their prisons.</font>"
 	spawn(3000)
 		hostage_msg()
 

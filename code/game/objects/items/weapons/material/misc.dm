@@ -301,10 +301,11 @@
 	if (deployed)
 		spawn(3)
 			check_dmg()
+		if (ismob(loc))
 		var/mob/living/H = loc
-		if (H.stat == DEAD || H.stat == UNCONSCIOUS)
-			deployed = FALSE
-			return
+			if (H.stat == DEAD || H.stat == UNCONSCIOUS)
+				deployed = FALSE
+				return
 		for (var/mob/living/TARGETMOB in get_step(loc, ownerdir))
 			for (var/obj/structure/noose/N in get_turf(TARGETMOB))
 				if (N.hanging == TARGETMOB)
