@@ -693,6 +693,18 @@
 		..()
 		bitesize = 2
 
+/obj/item/weapon/reagent_containers/food/snacks/rice
+	name = "rice"
+	desc = "A pile of raw rice grains."
+	icon_state = "ricepile"
+	filling_color = "#dcdcdc"
+	nutriment_desc = list("rice" = TRUE)
+	nutriment_amt = 2
+	decay = 60*600
+	New()
+		..()
+		bitesize = 2
+
 /obj/item/weapon/reagent_containers/food/snacks/spaghetti
 	name = "Spaghetti"
 	desc = "A bundle of raw spaghetti."
@@ -933,18 +945,18 @@
 		qdel(src)
 
 /obj/item/weapon/reagent_containers/food/snacks/boiledrice
-	name = "Boiled Rice"
+	name = "boiled rice"
 	desc = "A boring dish of boring rice."
 	icon_state = "boiledrice"
 	trash = /obj/item/kitchen/snack_bowl
 	filling_color = "#FFFBDB"
 	center_of_mass = list("x"=17, "y"=11)
 	nutriment_desc = list("rice" = 2)
-	nutriment_amt = 2
+	nutriment_amt = 3
 	decay = 12*600
 	New()
 		..()
-		bitesize = 2
+		bitesize = 6
 
 /obj/item/weapon/reagent_containers/food/snacks/ricepudding
 	name = "Rice Pudding"

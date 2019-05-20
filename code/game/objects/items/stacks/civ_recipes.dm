@@ -1000,6 +1000,7 @@
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("wood stove",/obj/structure/oven/woodstove, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern, 1, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE)
