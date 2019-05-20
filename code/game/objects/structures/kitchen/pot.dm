@@ -4,6 +4,7 @@
 #define STATE_STEWING "stew"
 // what turns into what when we boil it?
 #define BOIL_MAP list(/obj/item/weapon/reagent_containers/food/snacks/spaghetti = /obj/item/weapon/reagent_containers/food/snacks/boiledspagetti)
+#define BOIL_MAP list(/obj/item/weapon/reagent_containers/food/snacks/rice = /obj/item/weapon/reagent_containers/food/snacks/boiledrice)
 
 
 /obj/structure/pot
