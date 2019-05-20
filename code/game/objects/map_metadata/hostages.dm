@@ -2,7 +2,7 @@
 /obj/map_metadata/hostages
 	ID = MAP_HOSTAGES
 	title = "Hostage Rescue (100x100x1)"
-	lobby_icon_state = "coldwar"
+	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
@@ -25,7 +25,7 @@
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
 	artillery_count = 0
 
 	var/total_hostages = 6
