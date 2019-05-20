@@ -132,7 +132,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 			if (win_result == AMERICAN)
 				current_winner = AMERICAN
 				current_loser = ARAB
-				message = "The <b>SOF team</b> has [faction2_points] victory points and won the round!"
+				message = "The <b>SOF team</b> has [faction1_points] victory points and won the round!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				ticker.finished = TRUE
 				return FALSE
