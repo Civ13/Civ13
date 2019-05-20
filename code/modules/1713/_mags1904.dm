@@ -2,7 +2,7 @@
 RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 ***********************************/
 /obj/item/ammo_magazine/mosin
-	name = "clip (7.92x54mm)"
+	name = "clip (7.62x54mm)"
 	icon_state = "clip"
 	caliber = "a762x54"
 	matter = list(DEFAULT_WALL_MATERIAL = 360)
@@ -13,7 +13,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	clip = TRUE
 
 /obj/item/ammo_magazine/mosinbox
-	name = "magazine box (7.92x54mm)"
+	name = "magazine box (7.62x54mm)"
 	icon_state = "mosin_ammo"
 	mag_type = MAGAZINE
 	caliber = "a762x54"
@@ -25,7 +25,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	is_box = TRUE
 
 obj/item/ammo_magazine/madsen
-	name = "magazine (7.92x54mm)"
+	name = "magazine (7.62x54mm)"
 	icon_state = "madsen"
 	mag_type = MAGAZINE
 	caliber = "a762x54"
