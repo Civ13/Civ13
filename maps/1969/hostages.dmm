@@ -154,7 +154,7 @@
 "cX" = (/obj/structure/closet/crate/empty,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/obj/item/weapon/grenade/suicide_vest,/turf/floor/dirt,/area/caribbean/arab/caves)
 "cY" = (/obj/structure/closet/crate/empty,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/turf/floor/dirt,/area/caribbean/arab/caves)
 "cZ" = (/obj/structure/barricade/steel,/obj/structure/sign/custom{name = "Storage - Explosives"},/turf/floor/dirt,/area/caribbean/arab/caves)
-"da" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/turf/floor/dirt,/area/caribbean/arab/caves)
+"da" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/dirt,/area/caribbean/arab/caves)
 "db" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/arab/caves)
 "dc" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/turf/floor/dirt,/area/caribbean/arab/caves)
 "dd" = (/obj/structure/sign/custom{name = "Storage - Ammunition"},/obj/structure/barricade/steel,/turf/floor/dirt,/area/caribbean/arab/caves)
@@ -383,6 +383,7 @@
 "hs" = (/obj/structure/barbwire,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "ht" = (/obj/structure/wild/rock,/obj/structure/barbwire,/turf/floor/beach/sand/desert,/area/caribbean/arab/desert)
 "hu" = (/obj/structure/sign/custom{name = "SE Armory"},/obj/structure/barricade/steel,/turf/floor/dirt,/area/caribbean/arab/caves)
+"hv" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/hk,/obj/item/ammo_magazine/hk,/obj/item/ammo_magazine/hk,/obj/item/ammo_magazine/hk,/obj/item/ammo_magazine/hk,/obj/item/ammo_magazine/hk,/obj/item/ammo_magazine/hk,/obj/item/ammo_magazine/hk,/turf/floor/dirt,/area/caribbean/arab/caves)
 
 (1,1,1) = {"
 cjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjcjabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab
@@ -471,7 +472,7 @@ abababababababababababababababababababababababababababababababababababababcfcfab
 abababababababababababababababababababababababababababababababababababababcfcfhgababababababababcfcfcfcfcfcfcfcfcfcffaabfgfgcfcfcffgcffgcfcffgfgcfciabdacfcfcfdaabababababababababababababababababababab
 abababababababababababababababababababababababababababababababababababababcfcfabababababababababcfcfababababababababababfifyfxfgcffffnfzcfflflfzfffgabcWcfcfcfdbabababababababababababababababababababab
 abababababababababababababababababababababababababababababababababababababdZcfhlabababababababhmcfcfababababababababababfofgfdciciegfgfgcfegfdfdfdegabdccfcfcfdcabababababababababababababababababababab
-abababababababababababababababababababababababababababababababababababababcfcfcfcfdFcfcfcfdFcfcfcfcfabababababababababababababababababababababababababcNcfcfcfgKabababababababababababababababababababab
+abababababababababababababababababababababababababababababababababababababcfcfcfcfdFcfcfcfdFcfcfcfcfabababababababababababababababababababababababababhvcfhvcfgKabababababababababababababababababababab
 abababababababababababababababababababababababababababababababababababababcfcfcfcfcfcfcfcfcfcfcfcfcfabababababababababababababababababababababababababababababababababababababababababababababababababab
 abababababababababababababababababababababababababababababababababababababababababababababababcfcfcfababababababababababababababababababababababababababababababababdUdHdUepdWdUdVepdUdHdWababababababab
 abababababababababababababababababababababababababababababababababababababababababababababababdZcfcfababababababababababababababababababababababababababababababababdWdHdHepeCdHdHepdHdHeCababababababab

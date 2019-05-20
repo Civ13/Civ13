@@ -820,10 +820,9 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
 //back
-	var/pickgun = rand(1,2)
-	if (pickgun == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_back)
-	else if (pickgun == 2)
+	if (prob(33))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_back)
+	else
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)

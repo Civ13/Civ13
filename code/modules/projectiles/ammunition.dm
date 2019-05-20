@@ -110,6 +110,7 @@
 				count = 1
 		if (count > 0)
 			user << "<span class='warning'>You fill the [src] with the ammunition on the floor.</span>"
+			update_icon()
 		return
 
 /obj/item/ammo_magazine/emptypouch

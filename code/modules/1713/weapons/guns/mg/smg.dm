@@ -484,7 +484,7 @@
 	effectiveness_mod = 1.07
 	sel_mode = 1
 
-/obj/item/weapon/gun/projectile/submachinegun/m14
+/obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"
 	desc = "A german assault rifle, chambered in 7.62x51mm."
 	icon_state = "g3"
