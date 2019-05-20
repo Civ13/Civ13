@@ -54,9 +54,10 @@
 		sync_organ_dna()
 
 	make_blood()
-	if (map.civilizations == TRUE)
-		nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
-		water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
+	if (map)
+		if (map.civilizations == TRUE)
+			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
+			water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
 	else
 		nutrition = max_nutrition
 		water = max_water

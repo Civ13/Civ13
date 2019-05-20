@@ -74,6 +74,7 @@
 
 /obj/effect/effect/smoke/chem/Destroy()
 	opacity = FALSE
+	walk(src, 0)
 	fadeOut()
 	..()
 
