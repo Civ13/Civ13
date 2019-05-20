@@ -276,6 +276,36 @@
 	icon_state = "m67"
 	det_time = 50
 	throw_range = 10
+
+/obj/item/weapon/grenade/ww2/prime()
+	set waitfor = 0
+	..()
+
+	var/turf/T = get_turf(src)
+	if(!T) return
+
+	if(explosion_size)
+		explosion(T,0,1,3,1)
+	if (!ismob(loc))
+
+		var/list/target_turfs = getcircle(T, spread_range)
+		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+
+		for (var/turf/TT in target_turfs)
+			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+			P.damage = fragment_damage
+			P.pellets = fragments_per_projectile
+			P.range_step = damage_step
+			P.shot_from = name
+			P.launch_fragment(TT)
+
+			// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
+			for (var/mob/living/L in T)
+				P.attack_mob(L, 0, 0)
+
+	spawn (5)
+		qdel(src)
+
 /obj/item/weapon/grenade/coldwar/prime()
 	set waitfor = 0
 	..()
@@ -324,8 +354,14 @@
 		qdel(src)
 
 /obj/item/weapon/grenade/ww2
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 37  //total number of fragments produced by the grenade
+	var/fragment_damage = 15
+	var/damage_step = 2      //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	var/big_bomb = FALSE
 	secondary_action = TRUE
 	var/explosion_size = 2
+	var/spread_range = 7
 /obj/item/weapon/grenade/modern
 	secondary_action = TRUE
 /obj/item/weapon/grenade/coldwar
