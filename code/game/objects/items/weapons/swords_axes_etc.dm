@@ -150,7 +150,7 @@
 		return
 
 /obj/item/garrote/proc/garroting_process(mob/living/carbon/human/user,mob/living/carbon/human/target,obj/item/weapon/grab/GB)
-	if (!user || !target || !GB)
+	if (!ishuman(user) || !ishuman(target) || !GB)
 		return FALSE
 	if(ishuman(user))
 		if(!(user.l_hand == src || user.r_hand == src)) //THE GARROTE IS NOT IN HANDS, ABORT
