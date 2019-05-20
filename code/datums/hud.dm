@@ -24,7 +24,7 @@
 	)
 
 	HUDoverlays = list(
-		"damageoverlay" = list("type" = /obj/screen/damageoverlay, "loc" = "1,1", "icon" =  'icons/mob/screen1_full.dmi'),
+		"damageoverlay" = list("type" = /obj/screen/damageoverlay, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi'),
 		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"drugeffect" = list("type" = /obj/screen/drugoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
@@ -33,7 +33,7 @@
 		"fov"		  = list("type" = /obj/screen/fov,		  "loc" = "1,1", "icon_state" = "blank"),
 	)
 	HUDneed = list(
-		"health"      = list("type" = /obj/screen/health,     "loc" = "15,7"),
+		"health"      = list("type" = /obj/screen/health,     "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll.dmi'),
 		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,6"),
 		"bodytemp"    = list("type" = /obj/screen/bodytemp,   "loc" = "15,8"),
 		"throw"       = list("type" = /obj/screen/HUDthrow,   "loc" = "9,1"),

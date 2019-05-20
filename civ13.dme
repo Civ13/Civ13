@@ -719,6 +719,7 @@
 #include "code\modules\nano\modules\nano_module.dm"
 #include "code\modules\organs\blood.dm"
 #include "code\modules\organs\brain.dm"
+#include "code\modules\organs\helpers.dm"
 #include "code\modules\organs\organ.dm"
 #include "code\modules\organs\organ_external.dm"
 #include "code\modules\organs\organ_icon.dm"

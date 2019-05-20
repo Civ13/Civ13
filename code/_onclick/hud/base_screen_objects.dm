@@ -282,14 +282,16 @@
 //--------------------------------------------------health---------------------------------------------------------
 /obj/screen/health
 	name = "health"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "health0"
+	icon = 'icons/mob/screen/healthdoll.dmi'
+	icon_state = "healthdoll_BASE_ALIVE"
 	screen_loc = "15,7"
 	process_flag = TRUE
 
 /obj/screen/health/process()
+	var/mob/living/carbon/human/H = parentmob
+	overlays.Cut()
 	if (parentmob.stat != DEAD)
-		var/mob/living/carbon/human/H = parentmob
+/*
 		if (istype(H) && H.analgesic > 100)
 			icon_state = "health0"
 		else
@@ -303,6 +305,28 @@
 				else					icon_state = "health6"
 	else
 		icon_state = "health7"
+*/
+		icon_state = "healthdoll_BASE"
+		for(var/X in H.organs)
+			var/obj/item/organ/external/BP = X
+			var/damage = BP.burn_dam + BP.brute_dam
+			var/icon_num = 1
+			if(damage > (BP.max_damage/4)) // > 25% max dmg - yellow
+				icon_num = 2
+			if(damage > (BP.max_damage/2)) // > 50% max dmg - orange
+				icon_num = 3
+			if(damage > BP.max_damage) // > 100% max dmg - red
+				icon_num = 4
+			if(icon_num)
+				add_overlay(image(icon, "[BP.limb_name][icon_num]"))
+		var/list/missinglimbs = H.get_missing_limbs()
+		for(var/t in missinglimbs) //Missing limbs
+			add_overlay(image(icon, "[t]6"))
+	else
+		icon_state = "healthdoll_BASE_DEAD"
+		var/list/missinglimbs = H.get_missing_limbs()
+		for(var/t in missinglimbs) //Missing limbs
+			add_overlay(image(icon, "[t]6"))
 
 /obj/screen/health/Click()
 	if (ishuman(parentmob))
