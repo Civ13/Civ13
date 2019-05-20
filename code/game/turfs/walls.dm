@@ -38,7 +38,6 @@ var/list/global/wall_cache = list()
 	tank_destroyable = FALSE
 	layer = TURF_LAYER + 0.02 // above lifts
 	desc = "A massive slab of rock in the shape of a wall."
-
 /turf/wall/rockwall/update_icon()
 	return
 
@@ -169,9 +168,6 @@ var/list/global/wall_cache = list()
 	return ..()
 
 /turf/wall/proc/dismantle_wall(var/devastated, var/explode, var/no_product)
-
-	if (!no_product)
-		material.place_dismantled_product(src,devastated)
 
 	for (var/obj/O in contents) //Eject contents!
 		O.loc = src
