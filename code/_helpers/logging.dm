@@ -165,3 +165,23 @@
 
 /proc/key_name_admin(var/whom, var/include_name = TRUE)
 	return key_name(whom, TRUE, include_name)
+
+
+// Helper procs for building detailed log lines
+/datum/proc/log_info_line()
+	return "[src] ([type])"
+
+/atom/log_info_line()
+	var/turf/t = get_turf(src)
+	return "[src] ([t ? t : "NULL"]) ([t ? t.x : 0],[t ? t.y : 0],[t ? t.z : 0]) ([t ? t.type : "NULL"])"
+
+/mob/log_info_line()
+	return "[..()] ([ckey])"
+
+/turf/log_info_line()
+	return "[src] ([loc]) ([x],[y],[z]) ([loc.type])"
+
+/proc/log_info_line(var/datum/d)
+	if(!istype(d))
+		return
+	return d.log_info_line()
