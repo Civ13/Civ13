@@ -112,28 +112,28 @@ bullet_act
 		   * 2. randomness
 		   * 3. survival stat
 		*/
+		if (P)
+			var/distcheck = max(abs(P.starting.x - x), abs(P.starting.y - y))
 
-		var/distcheck = max(abs(P.starting.x - x), abs(P.starting.y - y))
+			if (distcheck > 2) // not PB range
+				if (!P.execution)
 
-		if (distcheck > 2) // not PB range
-			if (!P.execution)
+					// shooting a moving target from 19 tiles away (new max scope range) has a 72% graze chance
+					// this means if snipers want to hit people they need to shoot at still targets
+					// shooting at someone from <= 7 tiles away has no graze chance - Kachnov
 
-				// shooting a moving target from 19 tiles away (new max scope range) has a 72% graze chance
-				// this means if snipers want to hit people they need to shoot at still targets
-				// shooting at someone from <= 7 tiles away has no graze chance - Kachnov
+					var/graze_chance_multiplier = 5
+					if (list("head", "mouth", "eyes").Find(def_zone))
+						++graze_chance_multiplier
+					graze_chance_multiplier += 1
 
-				var/graze_chance_multiplier = 5
-				if (list("head", "mouth", "eyes").Find(def_zone))
-					++graze_chance_multiplier
-				graze_chance_multiplier += 1
-
-				if (lastMovedRecently(accuracy_check = TRUE))
-					if (prob(graze_chance_multiplier * max(distcheck - 7, 0)))
-						visible_message("<span class = 'warning'>[src] is just grazed by the bullet!</span>")
-						adjustBruteLoss(pick(14,15))
-						P.useless = TRUE
-						qdel(P)
-						return
+					if (lastMovedRecently(accuracy_check = TRUE))
+						if (prob(graze_chance_multiplier * max(distcheck - 7, 0)))
+							visible_message("<span class = 'warning'>[src] is just grazed by the bullet!</span>")
+							adjustBruteLoss(pick(14,15))
+							P.useless = TRUE
+							qdel(P)
+							return
 
 		// get knocked back once in a while
 		// unless we're on a train because bugs
