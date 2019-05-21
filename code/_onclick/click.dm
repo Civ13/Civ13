@@ -86,9 +86,22 @@
 
 	if (stat || paralysis || stunned || weakened)
 		return
-
-	face_atom(A) // change direction to face what you clicked on
-
+	if (!prone)
+		face_atom(A) // change direction to face what you clicked on
+	else
+		var/cdir = get_dir(src, A)
+		if (cdir == NORTH || cdir == NORTHWEST || cdir == NORTHEAST || cdir == WEST)
+			dir = WEST
+			var/matrix/M = matrix()
+			M.Turn(-90)
+			M.Translate(1,-6)
+			transform = M
+		else
+			dir = EAST
+			var/matrix/M = matrix()
+			M.Turn(90)
+			M.Translate(1,-6)
+			transform = M
 	if (!canClick()) // in the year 2000...
 		return
 
@@ -388,7 +401,33 @@
 	var/slowness = weakened ? 1.50 : 1.00
 	scrambling = TRUE
 	sleep(9*slowness)
-	visible_message("<span class = 'red'><b>[src]</b> crawls!</span>")
+	visible_message("<span class = 'red'><b>[src]</b> crawls with difficulty!</span>")
+	var/nloc = loc
+	if (nloc == oloc)
+		Move(F)
+	scrambling = FALSE
+
+/mob/proc/proning(var/turf/floor/F)
+	if (F.density)
+		return FALSE
+	if (stat || buckled || paralysis || stunned || sleeping || (status_flags & FAKEDEATH) || restrained() || (weakened > 10))
+		return FALSE
+	if (!has_limbs)
+		src << "<span class = 'red'>You can't even move yourself - you have no limbs!</span>"
+		return FALSE
+	if (scrambling)
+		return FALSE
+	if (map.check_caribbean_block(src, F) || map.check_caribbean_block(src, get_turf(src))) // you somehow got here, fuck you - Kachnov
+		return FALSE
+	var/oloc = loc
+	scrambling = TRUE
+	lying = TRUE
+	facing_dir = dir
+	if (dir == NORTH || dir == NORTHWEST || dir == NORTHEAST || dir == WEST)
+		dir = WEST
+	else
+		dir = EAST
+	sleep(get_prone_delay())
 	var/nloc = loc
 	if (nloc == oloc)
 		Move(F)

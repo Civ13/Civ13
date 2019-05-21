@@ -47,8 +47,9 @@
 
 	if (transforming)
 		return
-
-	if (lying || stat < CONSCIOUS)
+//	if (prone)
+//		lying = 1
+	if (lying || stat < CONSCIOUS || prone)
 		layer = MOB_LAYER - 0.01
 	else
 		layer = MOB_LAYER
@@ -490,7 +491,7 @@
 				if (prob(50))
 					src << "<span class='danger'>You suddenly black out!</span>"
 					Paralyse(10)
-				else if (!lying)
+				else if (!lying || !prone)
 					src << "<span class='danger'>Your legs won't respond properly, you fall down!</span>"
 					Weaken(10)
 

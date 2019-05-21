@@ -700,6 +700,7 @@
 			canmove = FALSE
 			anchored = TRUE
 			noose = TRUE
+			prone = FALSE
 			update_icons()
 	for (var/obj/structure/gallows/G in get_turf(src))
 		if (G.hanging == src)
@@ -707,6 +708,7 @@
 			canmove = FALSE
 			anchored = TRUE
 			gallows = TRUE
+			prone = FALSE
 			update_icons()
 	if (!noose && !gallows)
 		if (buckled)
@@ -732,8 +734,7 @@
 			lying = FALSE
 			canmove = TRUE
 			anchored = FALSE
-
-	if (lying)
+	if (lying || prone)
 		density = FALSE
 		anchored = FALSE
 	//	if (l_hand) unEquip(l_hand)
@@ -974,7 +975,7 @@ mob/proc/yank_out_object()
 
 /mob/set_dir()
 	if (facing_dir)
-		if (!canface() || lying || buckled || restrained())
+		if (!canface() || lying || prone || buckled || restrained())
 			facing_dir = null
 		else if (dir != facing_dir)
 			return ..(facing_dir)

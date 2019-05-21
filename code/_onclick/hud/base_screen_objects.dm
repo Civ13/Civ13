@@ -520,12 +520,12 @@
 /obj/screen/mov_intent
 	name = "mov_intent"
 	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "running"
+	icon_state = "walk"
 	screen_loc = "14,1"
 
 /obj/screen/mov_intent/Click()
 //	if (iscarbon(parentmob))
-	var/mob/living/carbon/C = parentmob
+	var/mob/living/carbon/human/C = parentmob
 	if (C.legcuffed)
 		C << "<span class='notice'>You are legcuffed! You cannot run until you get [C.legcuffed] removed!</span>"
 		C.m_intent = "walk"	//Just incase
@@ -533,6 +533,8 @@
 		return TRUE
 
 	if (C.m_intent == "run")
+		C.m_intent = "proning"
+	else if (C.m_intent == "proning")
 		C.m_intent = "stealth"
 	else if (C.m_intent == "stealth")
 		C.m_intent = "walk"
@@ -541,7 +543,27 @@
 	else
 		C.m_intent = "walk"
 
-	update_icon()
+	if (C.m_intent == "proning")
+		C.prone = TRUE
+		C.facing_dir = dir
+		if (C.dir == NORTH || C.dir == NORTHWEST || C.dir == NORTHEAST || C.dir == WEST)
+			C.dir = WEST
+		else
+			C.dir = EAST
+		var/matrix/M = matrix()
+		M.Turn(90)
+		M.Translate(1,-6)
+		update_icon()
+		C.transform = M
+		return
+
+	else
+		C.prone = FALSE
+		var/matrix/M = matrix()
+		M.Translate(0, 16*(C.size_multiplier-1))
+		C.transform = M
+		update_icon()
+		return
 
 /obj/screen/mov_intent/New()
 	..()
@@ -553,10 +575,9 @@
 		if ("run")
 			icon_state = "running"
 		if ("walk")
-		/*	if (C.resting)
-				icon_state = "proning"
-			else*/
 			icon_state = "walking"
+		if ("proning")
+			icon_state = "proning"
 		if ("stealth")
 			icon_state = "stealth"
 

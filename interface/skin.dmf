@@ -242,6 +242,9 @@ macro "hotkeymode"
 		name = "CTRL+J"
 		command = "toggle-gun-mode"
 	elem 
+		name = "M"
+		command = "m-intent-change"
+	elem 
 		name = "Q"
 		command = ".northwest"
 	elem 

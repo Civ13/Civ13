@@ -106,7 +106,7 @@
 
 /mob/living/proc/update_pulling()
 	if (pulling)
-		if (incapacitated())
+		if (incapacitated() || prone)
 			stop_pulling()
 
 //This updates the health and status of the mob (conscious, unconscious, dead)

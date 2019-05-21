@@ -82,6 +82,7 @@
 	var/thermal = FALSE
 
 	var/lying = FALSE
+	var/prone = FALSE
 	var/lying_prev = FALSE
 	var/canmove = TRUE
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.

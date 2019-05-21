@@ -520,3 +520,45 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (slot_handcuffed) items += handcuffed
 
 	return items
+
+/client/verb/m_intent_change()
+	set name = "m-intent-change"
+	set hidden = TRUE
+	if (!mob)
+		return
+	if (ishuman(mob))
+		if (mob.m_intent == "run")
+			mob.m_intent = "proning"
+		else if (mob.m_intent == "proning")
+			mob.m_intent = "stealth"
+		else if (mob.m_intent == "stealth")
+			mob.m_intent = "walk"
+		else if (mob.m_intent == "walk")
+			mob.m_intent = "run"
+		else
+			mob.m_intent = "walk"
+
+		if (mob.m_intent == "proning")
+			mob.prone = TRUE
+			mob.facing_dir = dir
+			if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+				mob.dir = WEST
+			else
+				mob.dir = EAST
+			var/matrix/M = matrix()
+			M.Turn(90)
+			var/mob/living/carbon/human/H = mob
+			M.Scale(H.size_multiplier)
+			M.Translate(1,-6)
+			mob.transform = M
+		else
+			mob.prone = FALSE
+			var/matrix/M = matrix()
+			var/mob/living/carbon/human/H = mob
+			M.Scale(H.size_multiplier)
+			M.Translate(0, 16*(H.size_multiplier-1))
+			mob.transform = M
+		if (mob.HUDneed.Find("m_intent"))
+			var/obj/screen/intent/I = mob.HUDneed["m_intent"]
+			I.update_icon()
+			return
