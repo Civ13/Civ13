@@ -374,7 +374,34 @@ bullet_act
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if (!affecting)
 		return //should be prevented by attacked_with_item() but for sanity.
+	if (hit_zone == "l_hand" || hit_zone == "r_hand" || hit_zone == "r_foot" || hit_zone == "l_foot")
+		if (prob(50))
+			if (prob(65))
+				visible_message("<span class='notice'>[user] has tried to strike [src]'s [affecting.name] with [I.name] but missed!</span>")
+				return
+			else
+				switch(hit_zone)
+					if ("l_hand")
+						hit_zone = "l_hand"
+					if ("r_hand")
+						hit_zone = "r_hand"
+					if ("l_foot")
+						hit_zone = "l_leg"
+					if ("r_foot")
+						hit_zone = "r_leg"
+				affecting = get_organ(hit_zone)
 
+	else if (hit_zone == "l_leg" || hit_zone == "r_leg" || hit_zone == "r_arm" || hit_zone == "l_arm")
+		if (prob(25))
+			if (prob(60))
+				visible_message("<span class='notice'>[user] has tried to strike [src]'s [affecting.name] with [I.name] but missed!</span>")
+				return
+			else
+				affecting = get_organ("chest")
+	else if (hit_zone == "head")
+		if (prob(18))
+			visible_message("<span class='notice'>[user] has tried to strike [src]'s [affecting.name] with [I.name] but missed!</span>")
+			return
 	visible_message("<span class='danger'>[src] has been [I.attack_verb.len? pick(I.attack_verb) : "attacked"] in the [affecting.name] with [I.name] by [user]!</span>")
 	receive_damage()
 
