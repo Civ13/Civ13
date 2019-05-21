@@ -55,7 +55,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 2.00
-	KD_chance = KD_CHANCE_VERY_LOW
+	KD_chance = KD_CHANCE_MEDIUM
 	stat = "mg"
 	w_class = 5
 	heavy = TRUE
