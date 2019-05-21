@@ -31,7 +31,7 @@
 	uniform.attackby(indian2_a, H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/tribal(H), slot_r_hand)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Elder</b> of a Carib tribe. Organize your <b>Tribesmen</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -74,7 +74,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/bruise_pack/herbs(H), slot_r_store)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a <b>Shaman</b>, the healer and religious leader of your tribe. Keep your fellow tribesmen healthy and motivated!")
 	H.setStat("strength", STAT_NORMAL)
@@ -123,7 +123,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
 	else if (randweapon == 3)
 		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_l_hand)
-
+	give_random_name(H)
 	H.f_style = "Shaved"
 	H.add_note("Role", "You are a member of a Carib tribe. Organize with your <b>Chief</b> and take out the invaders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)

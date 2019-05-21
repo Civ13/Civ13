@@ -42,7 +42,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -83,6 +83,8 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+	return TRUE
 
 /datum/job/roman/bearer
 	title = "Signifer"
@@ -117,6 +119,8 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+	return TRUE
 /datum/job/roman/soldier
 	title = "Legionarius"
 	en_meaning = "Main Infantry"
@@ -150,7 +154,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -188,6 +192,8 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+	return TRUE
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////GREEK///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +240,8 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
+	return TRUE
 /datum/job/greek/squad_leader	//Greek - Phalanx
 	title = "Dimoerites"
 	en_meaning = "Greek Squad Leader"
@@ -275,7 +282,8 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
+	return TRUE
 /datum/job/greek/soldier
 	title = "Hoplites"
 	en_meaning = "Greek Spear Infantry"
@@ -315,7 +323,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -352,3 +360,5 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+	return TRUE
