@@ -530,6 +530,8 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (mob.m_intent == "run")
 			mob.m_intent = "proning"
 		else if (mob.m_intent == "proning")
+			if (mob.facing_dir)
+				mob.set_face_dir()
 			mob.m_intent = "stealth"
 		else if (mob.m_intent == "stealth")
 			mob.m_intent = "walk"

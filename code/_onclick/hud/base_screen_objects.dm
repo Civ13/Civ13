@@ -535,6 +535,8 @@
 	if (C.m_intent == "run")
 		C.m_intent = "proning"
 	else if (C.m_intent == "proning")
+		if (C.facing_dir)
+			C.set_face_dir()
 		C.m_intent = "stealth"
 	else if (C.m_intent == "stealth")
 		C.m_intent = "walk"
