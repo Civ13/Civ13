@@ -110,6 +110,9 @@ macro "macro"
 	elem "ooc"
 		name = "F4"
 		command = "ooc"
+	elem 
+		name = "F5"
+		command = "looc"
 
 macro "hotkeymode"
 	elem 
@@ -195,7 +198,7 @@ macro "hotkeymode"
 		command = "a-intent harm"
 	elem 
 		name = "5"
-		command = ".me"
+		command = "m_intent_run"
 	elem 
 		name = "A"
 		command = ".startmovingleft"
@@ -322,6 +325,12 @@ macro "hotkeymode"
 	elem "ooc"
 		name = "F4"
 		command = "ooc"
+	elem 
+		name = "F5"
+		command = "looc"
+	elem 
+		name = "F6"
+		command = ".me"
 
 
 menu "menu"

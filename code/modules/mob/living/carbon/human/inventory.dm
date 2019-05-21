@@ -564,3 +564,27 @@ This saves us from having to call add_fingerprint() any time something is put in
 			var/obj/screen/intent/I = mob.HUDneed["m_intent"]
 			I.update_icon()
 			return
+
+/client/verb/m_intent_run()
+	set name = "m_intent_run"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.m_intent == "walk")
+		mob.m_intent = "run"
+		return
+	else if (H.m_intent == "run")
+		mob.m_intent = "walk"
+		return
+	else if (mob.m_intent == "proning")
+		if (mob.facing_dir)
+			mob.set_face_dir()
+			mob.m_intent = "walk"
+	else
+		mob.m_intent = "walk"
