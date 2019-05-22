@@ -416,10 +416,10 @@ var/civmax_research = list(130,130,130)
 	if (J.is_nomad == TRUE)
 		. = FALSE
 /obj/map_metadata/proc/cross_message(faction)
-	return "<font size = 4>The [faction_const2name(faction)] may now cross the invisible wall!</font>"
+	return "<font size = 4>The [faction_const2name(faction,ordinal_age)] may now cross the invisible wall!</font>"
 
 /obj/map_metadata/proc/reverse_cross_message(faction)
-	return "<span class = 'userdanger'>The [faction_const2name(faction)] may no longer cross the invisible wall!</span>"
+	return "<span class = 'userdanger'>The [faction_const2name(faction,ordinal_age)] may no longer cross the invisible wall!</span>"
 
 
 // old game mode stuff

@@ -251,6 +251,11 @@
 	..()
 	new/obj/item/ammo_magazine/b762(src)
 
+/obj/item/weapon/storage/belt/largepouches/m249
+/obj/item/weapon/storage/belt/largepouches/m249/New()
+	..()
+	new/obj/item/ammo_magazine/m249(src)
+
 /obj/item/weapon/storage/belt/smallpouches/vc_officer
 /obj/item/weapon/storage/belt/smallpouches/vc_officer/New()
 	..()
@@ -416,6 +421,21 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 55, gun = 21, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/pasgt/desert
+	name = "PASGT helmet"
+	desc = "A typical US Army PASGT helmet. This one is in U.S. Desert pattern."
+	icon_state = "pasgt_desert"
+	item_state = "pasgt_desert"
+	worn_state = "pasgt_desert"
+
+/obj/item/clothing/head/helmet/modern/pasgt/desert/New()
+	..()
+	if (prob(50))
+		icon_state = "pasgt_desert_attachments"
+		item_state = "pasgt_desert_attachments"
+		worn_state = "pasgt_desert_attachments"
+		update_icon()
 
 /obj/item/clothing/head/helmet/modern/lwh
 	name = "LWH helmet"

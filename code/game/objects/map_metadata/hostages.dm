@@ -48,10 +48,14 @@
 
 obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_specops == TRUE)
-		. = TRUE
+	if (istype(J, /datum/job/american))
+		if (J.is_specops && !J.is_modernday)
+			. = TRUE
 	else
-		. = FALSE
+		if (J.is_specops)
+			. = TRUE
+		else
+			. = FALSE
 
 /obj/map_metadata/hostages/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)

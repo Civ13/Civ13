@@ -28,13 +28,16 @@
 #define ARAB "ARAB"
 #define GERMAN "GERMAN"
 #define VIETNAMESE "VIETNAMESE"
-/proc/faction_const2name(constant)
+/proc/faction_const2name(constant,age = 0)
 
 	if (constant == PIRATES)
 		return "Pirates"
 
 	if (constant == BRITISH)
-		return "British Empire"
+		if (age >= 6)
+			return "United Kingdom"
+		else
+			return "British Empire"
 
 	if (constant == CIVILIAN)
 		return "Colonists"
@@ -49,7 +52,11 @@
 		return "Spanish Empire"
 
 	if (constant == FRENCH)
-		return "French Empire"
+		if (age >= 4)
+			return "French Republic"
+		else
+			return "French Empire"
+
 
 	if (constant == DUTCH)
 		return "Dutch Republic"
@@ -58,19 +65,26 @@
 		return "Japanese Empire"
 
 	if (constant == RUSSIAN)
-		return "Russian Empire"
-
+		if (age >= 6)
+			return "Soviet Union"
+		else
+			return "Russian Empire"
 	if (constant == ROMAN)
 		return "Roman Republic"
 
 	if (constant == GERMAN)
-		return "German Empire"
-
+		if (age >= 6)
+			return "Third Reich"
+		else
+			return "German Empire"
 	if (constant == GREEK)
 		return "Greek States"
 
 	if (constant == ARAB)
-		return "Arabic Caliphate"
+		if (age >= 6)
+			return "Insurgents"
+		else
+			return "Arabic Caliphate"
 
 	if (constant == AMERICAN)
 		return "United States"

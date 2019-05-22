@@ -456,6 +456,16 @@
 	desc = "A modernized version of the M16, with picatinny rail for attachments."
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/att/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		SP.attached(null,src,TRUE)
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"
@@ -463,6 +473,18 @@
 	icon_state = "m4mws"
 	desc = "A version of the M4 carbine made to fit the Modular Weapon System."
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		SP.attached(null,src,TRUE)
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m14
 	name = "M14"
@@ -483,6 +505,11 @@
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/g3
 	name = "H&K G3"

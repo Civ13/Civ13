@@ -284,6 +284,7 @@
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
 	is_squad_leader = TRUE
+	can_get_coordinates = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -484,10 +485,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
-	var/obj/item/weapon/gun/projectile/submachinegun/m14/m14sniper = new /obj/item/weapon/gun/projectile/submachinegun/m14(H)
-	H.equip_to_slot_or_del(m14sniper, slot_back)
-	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/snipsc = new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(null)
-	m14sniper.attach_A(snipsc,H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper, slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	give_random_name(H)
@@ -722,6 +720,7 @@
 	is_coldwar = TRUE
 	is_officer = TRUE
 	is_specops = TRUE
+	is_modernday = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -792,6 +791,7 @@
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
 	is_specops = TRUE
+	is_modernday = TRUE
 	// AUTOBALANCE
 	min_positions = 22
 	max_positions = 66

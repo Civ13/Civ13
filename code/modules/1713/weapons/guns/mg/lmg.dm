@@ -127,6 +127,25 @@
 	load_delay = 50
 	slowdown = 1
 
+/obj/item/weapon/gun/projectile/automatic/m249
+	name = "M249 machine gun"
+	desc = "An american machinegun chambered in 5.56x45mm NATO rounds. Sucessor of the M60."
+	icon_state = "m60"
+	item_state = "m60"
+	base_icon = "m60"
+	caliber = "a556x45"
+	magazine_type = /obj/item/ammo_magazine/m249
+	weight = 10
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.1, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 2),)
+	slot_flags = 0
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 25
+	load_delay = 50
+	slowdown = 1
+
 /obj/item/weapon/gun/projectile/automatic/handle_post_fire()
 	..()
 

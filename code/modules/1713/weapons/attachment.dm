@@ -152,9 +152,8 @@ Current Defines (_defines/attachment.dm)
 	var/weakens = 0
 	//var/datum/action/bayonet/amelee
 
-/obj/item/weapon/attachment/bayonet/attached(mob/user, obj/item/weapon/gun/G)
-	user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
-	if (do_after(user, 15, user))
+/obj/item/weapon/attachment/bayonet/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+	if (quick)
 		user.unEquip(src)
 		A_attached = TRUE
 		G.attachment_slots -= attachment_type
@@ -162,12 +161,25 @@ Current Defines (_defines/attachment.dm)
 		G.actions += actions
 		G.verbs += verbs
 		G.attachments += src
-		G.update_attachment_actions(user)
 		user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 		G.bayonet = src
 		G.overlays += G.bayonet_ico
 	else
-		return
+		user << "<span class = 'notice'>You start to attach [src] to the [G].</span>"
+		if (do_after(user, 15, user))
+			user.unEquip(src)
+			A_attached = TRUE
+			G.attachment_slots -= attachment_type
+			loc = G
+			G.actions += actions
+			G.verbs += verbs
+			G.attachments += src
+			G.update_attachment_actions(user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			G.bayonet = src
+			G.overlays += G.bayonet_ico
+		else
+			return
 
 
 /obj/item/weapon/attachment/bayonet/removed(mob/user, obj/item/weapon/gun/G)
@@ -220,23 +232,35 @@ Current Defines (_defines/attachment.dm)
 	else
 		return
 
-/obj/item/weapon/attachment/scope/adjustable/sniper_scope/attached(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		user.unEquip(src)
+/obj/item/weapon/attachment/scope/adjustable/sniper_scope/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+	if (quick)
 		A_attached = TRUE
 		G.attachment_slots -= attachment_type
 		loc = G
 		G.actions += actions
 		G.verbs += verbs
 		G.attachments += src
-		G.update_attachment_actions(user)
-		user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 		if (istype(G, /obj/item/weapon/gun/projectile))
 			var/obj/item/weapon/gun/projectile/W = G
 			W.sniper_scope = TRUE
 			W.update_icon()
 	else
-		return
+		if (do_after(user, 15, user))
+			user.unEquip(src)
+			A_attached = TRUE
+			G.attachment_slots -= attachment_type
+			loc = G
+			G.actions += actions
+			G.verbs += verbs
+			G.attachments += src
+			G.update_attachment_actions(user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			if (istype(G, /obj/item/weapon/gun/projectile))
+				var/obj/item/weapon/gun/projectile/W = G
+				W.sniper_scope = TRUE
+				W.update_icon()
+		else
+			return
 
 /obj/item/weapon/attachment/scope/removed(mob/user, obj/item/weapon/gun/G)
 	if (do_after(user, 15, user))
@@ -271,22 +295,32 @@ Current Defines (_defines/attachment.dm)
 		..()
 		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
 
-/obj/item/weapon/attachment/scope/adjustable/advanced/attached(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		user.unEquip(src)
+/obj/item/weapon/attachment/scope/adjustable/advanced/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+	if (quick)
 		A_attached = TRUE
 		G.attachment_slots -= attachment_type
 		loc = G
 		G.actions += actions
 		G.verbs += verbs
 		G.attachments += src
-		G.update_attachment_actions(user)
-		user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 		G.specialoptics = src
 		G.optics_ico = ongun
 		G.overlays += G.optics_ico
-	else
-		return
+		if (do_after(user, 15, user))
+			user.unEquip(src)
+			A_attached = TRUE
+			G.attachment_slots -= attachment_type
+			loc = G
+			G.actions += actions
+			G.verbs += verbs
+			G.attachments += src
+			G.update_attachment_actions(user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			G.specialoptics = src
+			G.optics_ico = ongun
+			G.overlays += G.optics_ico
+		else
+			return
 /obj/item/weapon/attachment/scope/adjustable/advanced/removed(mob/user, obj/item/weapon/gun/G)
 	if (do_after(user, 15, user))
 		G.attachments -= src
@@ -339,22 +373,33 @@ Current Defines (_defines/attachment.dm)
 		..()
 		ongun = image("icon" = 'icons/obj/gun_att.dmi', "icon_state" = "[icon_state]_ongun")
 
-/obj/item/weapon/attachment/under/attached(mob/user, obj/item/weapon/gun/G)
-	if (do_after(user, 15, user))
-		user.unEquip(src)
+/obj/item/weapon/attachment/under/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
+	if (quick)
 		A_attached = TRUE
 		G.attachment_slots -= attachment_type
 		loc = G
 		G.actions += actions
 		G.verbs += verbs
 		G.attachments += src
-		G.update_attachment_actions(user)
-		user << "<span class = 'notice'>You attach [src] to the [G].</span>"
 		G.under = src
 		G.under_ico = ongun
 		G.overlays += G.under_ico
 	else
-		return
+		if (do_after(user, 15, user))
+			user.unEquip(src)
+			A_attached = TRUE
+			G.attachment_slots -= attachment_type
+			loc = G
+			G.actions += actions
+			G.verbs += verbs
+			G.attachments += src
+			G.update_attachment_actions(user)
+			user << "<span class = 'notice'>You attach [src] to the [G].</span>"
+			G.under = src
+			G.under_ico = ongun
+			G.overlays += G.under_ico
+		else
+			return
 
 /obj/item/weapon/attachment/under/removed(mob/user, obj/item/weapon/gun/G)
 	if (do_after(user, 15, user))

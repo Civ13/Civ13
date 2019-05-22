@@ -615,9 +615,9 @@
 						grace_period_string += ", "
 					if (!map.civilizations)
 						if (map.last_crossing_block_status[faction])
-							grace_period_string += "[faction_const2name(faction)] may cross"
+							grace_period_string += "[faction_const2name(faction,map.ordinal_age)] may cross"
 						else
-							grace_period_string += "[faction_const2name(faction)] may not cross"
+							grace_period_string += "[faction_const2name(faction,map.ordinal_age)] may not cross"
 					else
 						if (map.last_crossing_block_status[faction])
 							grace_period_string += "The grace wall has been removed."
