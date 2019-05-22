@@ -416,18 +416,49 @@ bullet_act
 		return FALSE
 
 	// Handle striking to cripple.
-	if (user.a_intent == I_DISARM)
-		effective_force /= 2 //half the effective force
-		if (!..(I, effective_force, blocked, hit_zone))
-			return FALSE
+	if(user.a_intent == I_DISARM)
+		effective_force *= 0.66 //reduced effective force...
+		if(!..(I, user, effective_force, blocked, hit_zone))
+			return 0
 
-		attack_joint(affecting, I, blocked) //but can dislocate joints
-	else if (!..())
-		return FALSE
+		//set the dislocate mult less than the effective force mult so that
+		//dislocating limbs on disarm is a bit easier than breaking limbs on harm
+		attack_joint(affecting, I, effective_force, 0.5, blocked) //...but can dislocate joints
+	else if(!..())
+		return 0
 
-	if ((effective_force > 12 && prob(15)))
+	if(effective_force > 10 || effective_force >= 5 && prob(33))
 		forcesay(hit_appends)	//forcesay checks stat already
-	if ((I.damtype == BRUTE || I.damtype == HALLOSS) && prob(5 + (effective_force)))
+
+	//Ok this block of text handles cutting arteries, tendons, and limbs off.
+	//First we cut an artery, the reason for that, is that arteries are funninly enough, not that lethal, and don't have the biggest impact. They'll still make you bleed out, but they're less immediately lethal.
+	if(I.sharp && prob(I.sharpness * 2) && !(affecting.status & ORGAN_ARTERY_CUT))
+		affecting.sever_artery()
+		if(affecting.artery_name == "cartoid artery")
+			src.visible_message("<span class='danger'>[user] slices [src]'s throat!</span>")
+		else
+			src.visible_message("<span class='danger'>[user] slices open [src]'s [affecting.artery_name] artery!</span>")
+
+	//Next tendon, which disables the limb, but does not remove it, making it easier to fix, and less lethal, than losing it.
+	else if(I.sharp && (I.sharpness * 2) && !(affecting.status & ORGAN_TENDON_CUT) && affecting.has_tendon)//Yes this is the same exactly probability again. But I'm running it seperate because I don't want the two to be exclusive.
+		affecting.sever_tendon()
+		src.visible_message("<span class='danger'>[user] slices open [src]'s [affecting.tendon_name] tendon!</span>")
+
+	//Finally if we pass all that, we cut the limb off. This should reduce the number of one hit sword kills.
+	else if(I.sharp && I.edge)
+		if (istype(user, /mob/living/carbon/human))
+			var/mob/living/carbon/human/HH = user
+			if(prob(I.sharpness * HH.getStatCoeff("strength")))
+				affecting.droplimb(0, DROPLIMB_EDGE)
+
+	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
+
+	if(I.damtype == BRUTE && !I.edge && prob(I.force * (hit_zone == "mouth" ? 6 : 0)) && O)//Knocking out teeth.
+		if(O.knock_out_teeth(get_dir(user, src), round(rand(28, 38) * ((I.force*1.5)/100))))
+			src.visible_message("<span class='danger'>[src]'s teeth sail off in an arc!</span>", \
+								"<span class='userdanger'>[src]'s teeth sail off in an arc!</span>")
+
+	else if ((I.damtype == BRUTE || I.damtype == HALLOSS) && prob(5 + (effective_force)))
 		if (!stat)
 			if (headcheck(hit_zone))
 				//Harder to score a stun but if you do it lasts a bit longer
@@ -439,7 +470,7 @@ bullet_act
 				if (prob(effective_force/5))
 					visible_message("<span class='danger'>[src] has been knocked down!</span>")
 					apply_effect(1, WEAKEN, blocked)
-	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
+
 	if (prob(I.force * (hit_zone == "mouth" ? 5 : 0)) && O) //Will the teeth fly out?
 		if (O.knock_out_teeth(get_dir(user, src), round(rand(28, 38) * ((I.force*1.5)/100))))
 			visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
@@ -479,7 +510,6 @@ bullet_act
 				visible_message("<span class='danger'>[src] has been knocked down!</span>")
 				Weaken(2)
 
-	return TRUE
 
 /mob/living/carbon/human/proc/attack_joint(var/obj/item/organ/external/organ, var/obj/item/W, var/blocked)
 	if (!organ || (organ.dislocated == 2) || (organ.dislocated == -1) || blocked >= 2)
@@ -543,12 +573,17 @@ bullet_act
 
 		var/obj/item/organ/external/affecting = get_organ(zone)
 		var/hit_area = affecting.name
-
+		var/datum/wound/created_wound
 		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
 		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].") //I guess "melee" is the best fit here
 
-		if (armor < 2)
-			apply_damage(throw_damage, dtype, zone, armor, is_sharp(O), O.edge, O)
+		if(armor < 100)
+			var/sharp = O.sharp
+			var/edge = O.edge
+			if(prob(armor))
+				edge = 0
+				sharp = 0
+			created_wound = apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
 
 		if (ismob(O.thrower))
 			var/mob/M = O.thrower
@@ -575,7 +610,7 @@ bullet_act
 			//Thrown sharp objects have some momentum already and have a small chance to embed even if the damage is below the threshold
 			if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
 				if (I.w_class <= 2.0)
-					affecting.embed(I)
+					affecting.embed(I, supplied_wound = created_wound)
 		if (istype(O, /obj/item/weapon/snowball))
 			O.icon_state = "snowball_hit"
 			O.update_icon()
@@ -670,3 +705,59 @@ bullet_act
 		perm += perm_by_part[part]
 
 	return perm
+
+
+/mob/living/carbon/human/kick_act(var/mob/living/carbon/human/user)
+	if(!..())//If we can't kick then this doesn't happen.
+		return
+	if(user == src)//Can't kick yourself dummy.
+		return
+
+	var/hit_zone = user.targeted_organ
+	var/too_high_message = "You can't reach that high."
+	var/obj/item/organ/external/affecting = get_organ(hit_zone)
+	if(!affecting || affecting.is_stump())
+		user << "<span class='danger'>They are missing that limb!</span>"
+		return
+
+	var/armour = run_armor_check(hit_zone, "melee")
+	switch(hit_zone)
+		if("chest")//If we aim for the chest we kick them in the direction we're facing.
+			if(lying)
+				var/turf/target = get_turf(src.loc)
+				var/range = src.throw_range
+				var/throw_dir = get_dir(user, src)
+				for(var/i = 1; i < range; i++)
+					var/turf/new_turf = get_step(target, throw_dir)
+					target = new_turf
+					if(new_turf.density)
+						break
+				src.throw_at(target, rand(1,3), src.throw_speed)
+			if(user.lying)
+				user << "[too_high_message]"
+				return
+
+		if("mouth")//If we aim for the mouth then we kick their teeth out.
+			if(lying)
+				if(istype(affecting, /obj/item/organ/external/head) && prob(95))
+					var/obj/item/organ/external/head/U = affecting
+					U.knock_out_teeth(get_dir(user, src), rand(1,3))//Knocking out one tooth at a time.
+			else
+				user << "[too_high_message]"
+				return
+
+		if("head")
+			if(!lying)
+				user << "[too_high_message]"
+				return
+
+	var/kickdam = rand(0,15)
+	stats["stamina"][1] = max(stats["stamina"][1] - kickdam, 0)
+	if(kickdam)
+		playsound(user.loc, 'sound/weapons/kick.ogg', 50, 0)
+		apply_damage(kickdam, BRUTE, hit_zone, armour)
+		user.visible_message("<span class=danger>[user] kicks [src] in the [affecting.name]!<span>")
+		admin_attack_log(user, src, "Has kicked [src]", "Has been kicked by [user].")
+	else
+		user.visible_message("<span class=danger>[user] tried to kick [src] in the [affecting.name], but missed!<span>")
+		playsound(loc, 'sound/weapons/punchmiss.ogg', 50, 1)

@@ -100,6 +100,60 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 	if (prob(amt * 100))
 		blood_splatter(src,src)
 
+
+#define BLOOD_SPRAY_DISTANCE 2
+/mob/living/carbon/human/proc/blood_squirt(var/amt, var/turf/sprayloc)
+	if(amt <= 0 || !istype(sprayloc))
+		return
+	var/spraydir = pick(alldirs)
+	amt = ceil(amt/BLOOD_SPRAY_DISTANCE)
+	var/bled = 0
+	spawn(0)
+		for(var/i = 1 to BLOOD_SPRAY_DISTANCE)
+			sprayloc = get_step(sprayloc, spraydir)
+			if(!istype(sprayloc) || sprayloc.density)
+				break
+			var/hit_mob
+			for(var/thing in sprayloc)
+				var/atom/A = thing
+				if(!A.simulated)
+					continue
+
+				if(ishuman(A))
+					var/mob/living/carbon/human/H = A
+					if(!H.lying)
+						H.bloody_body(src)
+						H.bloody_hands(src)
+						var/blinding = FALSE
+						if(ran_zone() == "head")
+							blinding = TRUE
+							for(var/obj/item/I in list(H.head, H.wear_mask))
+								if(I && (I.body_parts_covered & EYES))
+									blinding = FALSE
+									break
+						if(blinding)
+							H.eye_blurry = max(H.eye_blurry, 10)
+							H.eye_blind = max(H.eye_blind, 5)
+							H << "<span class='danger'>You are blinded by a spray of blood!</span>"
+						else
+							H << "<span class='danger'>You are hit by a spray of blood!</span>"
+						hit_mob = TRUE
+
+				if(hit_mob || !A.CanPass(src, sprayloc))
+					break
+
+			drip(amt, sprayloc, spraydir)
+			bled += amt
+			if(hit_mob) break
+			sleep(1)
+	return bled
+#undef BLOOD_SPRAY_DISTANCE
+
+/mob/living/carbon/human/proc/remove_blood(var/amt)
+	if(!amt)
+		return 0
+	return vessel.remove_reagent("blood", amt * (src.mob_size/MOB_MEDIUM))
+
 /****************************************************
 				BLOOD TRANSFERS
 ****************************************************/
@@ -271,3 +325,4 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 //	B.fluorescent  = FALSE
 	B.invisibility = FALSE
 	return B
+

@@ -108,6 +108,7 @@
 	var/defense_intent = I_PARRY//Living. For dodging and parrying.
 	var/m_intent = "walk"//Living
 	var/obj/buckled = null//Living
+	var/middle_click_intent = "kick" //For doing different things with middle click.
 	var/combat_mode = 0//Living
 	var/obj/item/l_hand = null//Living
 	var/obj/item/r_hand = null//Living
@@ -115,6 +116,7 @@
 	var/obj/item/weapon/storage/s_active = null//Carbon
 	var/obj/item/clothing/mask/wear_mask = null//Carbon
 
+	var/mood_modifier = 0
 
 	var/datum/hud/hud_used = null
 

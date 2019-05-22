@@ -387,28 +387,14 @@
 
 //--------------------------------------------------bodytemp---------------------------------------------------------
 /obj/screen/bodytemp
-	name = "bodytemp"
+	name = "body temperature"
 	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "temp0"
-	screen_loc = "15,8"
+	screen_loc = "15,9"
 	process_flag = TRUE
 
 /obj/screen/bodytemp/process()
 	update_icon()
-	//var/mob/living/carbon/human/H = parentmob
-	/*if (!parentmob:species)
-		switch(parentmob:bodytemperature) //310.055 optimal body temp
-			if (370 to INFINITY)		icon_state = "temp4"
-			if (350 to 370)			icon_state = "temp3"
-			if (335 to 350)			icon_state = "temp2"
-			if (320 to 335)			icon_state = "temp1"
-			if (300 to 320)			icon_state = "temp0"
-			if (295 to 300)			icon_state = "temp-1"
-			if (280 to 295)			icon_state = "temp-2"
-			if (260 to 280)			icon_state = "temp-3"
-			else					icon_state = "temp-4"
-	else*/
-
 
 /obj/screen/bodytemp/update_icon()
 	//TODO: precalculate all of this stuff when the species datum is created
@@ -515,6 +501,61 @@
 		var/mob/living/L = parentmob
 		L.resist()
 //-----------------------resist END------------------------------
+
+
+/obj/screen/kick_jump_bite
+	name = "secondary attack"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "kick"
+	screen_loc = "11,2"
+
+/obj/screen/kick_jump_bite/Click()
+	if (isliving(parentmob))
+		var/mob/living/L = parentmob
+		L.resist()
+		switch (parentmob.middle_click_intent)
+			if("kick")
+				parentmob.middle_click_intent = "jump"
+				icon_state = "jump"
+				update_icon()
+				return
+			if("jump")
+				parentmob.middle_click_intent = "bite"
+				icon_state = "bite"
+				update_icon()
+				return
+			if("bite")
+				parentmob.middle_click_intent = "kick"
+				icon_state = "kick"
+				update_icon()
+				return
+/*
+/obj/screen/combat_mode
+	name = "combat mode"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "act_resist"
+	screen_loc = "14:16,2"
+
+/obj/screen/combat_mode/Click()
+	if(!ishuman(usr))	return
+	var/mob/living/carbon/human/C = usr
+	if(C.combat_mode)
+		C.combat_mode = 0
+		C.combat_icon.icon_state = "combat0"
+	else
+		C.combat_mode = 1
+		C.combat_icon.icon_state = "combat1"
+*/
+/obj/screen/mood
+	name = "mood"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "mood1"
+	screen_loc = "15,8"
+	process_flag = TRUE
+/obj/screen/combat_mode/Click()
+	var/mob/living/carbon/human/C = usr
+	C << "[C.mood]"
+//	C.print_happiness(C)
 
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent

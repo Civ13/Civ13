@@ -35,7 +35,8 @@
 	HUDneed = list(
 		"health"      = list("type" = /obj/screen/health,     "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll.dmi'),
 		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,6"),
-		"bodytemp"    = list("type" = /obj/screen/bodytemp,   "loc" = "15,8"),
+		"mood"  			 = list("type" = /obj/screen/mood,       "loc" = "15,8"),
+		"body temperature"    = list("type" = /obj/screen/bodytemp,   "loc" = "15,9"),
 		"throw"       = list("type" = /obj/screen/HUDthrow,   "loc" = "9,1"),
 		"pull"        = list("type" = /obj/screen/pull,       "loc" = "10,1"),
 		"drop"        = list("type" = /obj/screen/drop,       "loc" = "9,1"),
@@ -51,8 +52,9 @@
 		"damage zone" = list("type" = /obj/screen/zone_sel,   "loc" = "15,1"),
 		"swap hand"   = list("type" = /obj/screen/swap,       "loc" = "7,2"),
 		"toggle gun mode"   = list("type" = /obj/screen/gun/mode,       "loc" = "4,1"),
-		"allow movement"   = list("type" = /obj/screen/gun/move,       "loc" = "4,2"),
-		"allow item use"   = list("type" = /obj/screen/gun/item,       "loc" = "5,2"),
+		"allow movement"	= list("type" = /obj/screen/gun/move,       "loc" = "4,2"),
+		"allow item use" 	 = list("type" = /obj/screen/gun/item,       "loc" = "5,2"),
+		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,       "loc" = "11,2"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,       "loc" = "1,1")
 		)
 

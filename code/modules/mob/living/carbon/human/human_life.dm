@@ -89,31 +89,31 @@
 	if (has_hunger_and_thirst)
 		if ((map.heat_wave || map.ID == MAP_NOMADS_DESERT) && !inducedSSD)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.01/2.5) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.02/2.5) * HUNGER_THIRST_MULTIPLIER)
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7/2.5) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7/2.5) * HUNGER_THIRST_MULTIPLIER)
 		else
 			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.01/2.5) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.01/2.5) * HUNGER_THIRST_MULTIPLIER)
 			else if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-				nutrition -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.0025/2.5) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.0025/2.5) * HUNGER_THIRST_MULTIPLIER)
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
 
 	#undef HUNGER_THIRST_MULTIPLIER
 

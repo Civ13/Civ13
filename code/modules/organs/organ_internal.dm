@@ -3,7 +3,8 @@
 /****************************************************
 				INTERNAL ORGANS DEFINES
 ****************************************************/
-
+/obj/item/organ
+	var/relative_size = 100   // Relative size of the organ. Roughly % of space they take in the target projection :D
 
 // Brain is defined in brain_item.dm.
 /obj/item/organ/kidneys
@@ -14,6 +15,7 @@
 	parent_organ = "groin"
 	w_class = 1
 	min_broken_damage = 65
+	relative_size = 30
 /obj/item/organ/kidneys/process()
 
 	..()
@@ -37,6 +39,7 @@
 	gender = PLURAL
 	organ_tag = "eyes"
 	parent_organ = "head"
+	relative_size = 10
 	var/list/eye_colour = list(0,0,0)
 
 /obj/item/organ/eyes/proc/update_colour()
@@ -69,6 +72,7 @@
 	organ_tag = "liver"
 	parent_organ = "groin"
 	w_class = 1
+	relative_size = 60
 /obj/item/organ/liver/process()
 
 	..()
@@ -124,6 +128,7 @@
 	organ_tag = "appendix"
 	var/inflamed = FALSE
 	w_class = 1
+	relative_size = 10
 /obj/item/organ/appendix/update_icon()
 	..()
 	if (inflamed)

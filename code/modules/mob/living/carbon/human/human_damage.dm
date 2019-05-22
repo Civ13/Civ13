@@ -323,20 +323,33 @@ This function restores all organs.
 	if (blocked)
 		damage = (damage/(blocked+1))
 
+	if(damage > 15)
+		make_adrenaline(round(damage/10))
+	var/datum/wound/created_wound
 	switch(damagetype)
-		if (BRUTE)
-			damageoverlaytemp = 20
+		if(BRUTE)
 			damage = damage*species.brute_mod
-			if (organ.take_damage(damage, FALSE, sharp, edge, used_weapon))
-				UpdateDamageIcon()
+			created_wound = organ.take_damage(damage, 0, sharp, edge, used_weapon)
 			receive_damage()
-
-		if (BURN)
-			damageoverlaytemp = 20
+		if(BURN)
 			damage = damage*species.burn_mod
-			if (organ.take_damage(0, damage, sharp, edge, used_weapon))
-				UpdateDamageIcon()
+			created_wound = organ.take_damage(0, damage, sharp, edge, used_weapon)
 
 	// Will set our damageoverlay icon to the next level, which will then be set back to the normal level the next mob.Life().
 	updatehealth()
-	return TRUE
+	return created_wound
+
+// Find out in how much pain the mob is at the moment.
+/mob/living/carbon/human/proc/get_shock()
+
+	var/traumatic_shock = getHalLoss()                 // Pain.
+	traumatic_shock += (0.5 * src.getToxLoss())        // Organ failure.
+	traumatic_shock += (0.5 * src.getCloneLoss())      // Genetic decay.
+	traumatic_shock -= src.chem_effects[CE_PAINKILLER] // TODO: check what is actually stored here.
+
+	if(slurring)                                       // Drunk.
+		traumatic_shock *= 0.75
+	if(stat == UNCONSCIOUS)
+		traumatic_shock *= 0.5
+
+	return max(0,traumatic_shock)

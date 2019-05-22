@@ -461,3 +461,85 @@
 
 /turf/Entered(var/atom/movable/AM, var/atom/old_loc, var/special_event)
 	return ..(AM, old_loc, FALSE)
+
+//Kicking
+/atom/proc/kick_act(mob/living/carbon/human/user)
+	//They're not adjcent to us so we can't kick them. Can't kick in straightjacket or while being incapacitated (except lying), can't kick while legcuffed or while being locked in closet
+	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT|INCAPACITATION_BUCKLED_PARTIALLY|INCAPACITATION_BUCKLED_FULLY) \
+		|| istype(user.loc, /obj/structure/closet))
+		return
+
+	if(user.handcuffed && prob(45) && !user.incapacitated(INCAPACITATION_FORCELYING))//User can fail to kick smbd if cuffed
+		user.visible_message("<span class='danger'>[user.name] loses \his balance while trying to kick \the [src].</span>", \
+					"<span class='warning'> You lost your balance.</span>")
+		user.Weaken(1)
+		return
+
+	if(user.middle_click_intent == "kick")//We're in kick mode, we can kick.
+		for(var/limbcheck in list("l_leg","r_leg"))//But we need to see if we have legs.
+			var/obj/item/organ/affecting = user.get_organ(limbcheck)
+			if(!affecting)//Oh shit, we don't have have any legs, we can't kick.
+				return 0
+
+		user.setClickCooldown(16)
+		return 1 //We do have legs now though, so we can kick.
+
+//Kicking
+/atom/proc/bite_act(mob/living/carbon/human/user)
+	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT) || istype(user.loc, /obj/structure/closet) || !ishuman(src))
+		return
+	var/mob/living/carbon/human/target = src
+	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent
+		var/limbcheck = user.targeted_organ
+		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm"))
+			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
+			if(!affecting)
+				user << "<span class='notice'>[src] is missing that body part.</span>"
+				return FALSE
+			else
+				visible_message("<span class='danger'>[user] bites the [src]'s [affecting.name]!</span>","<span class='danger'>You bite the [src]'s [affecting.name]!</span>")
+				if (ishuman(src) && ishuman(user))
+					affecting.createwound(BRUISE, rand(6,9)*user.getStatCoeff("strength"))
+					target.emote("painscream")
+				else
+					target.adjustBruteLoss(rand(6,7))
+				if (prob(30))
+					if (limbcheck == "l_hand")
+						if (target.l_hand)
+							// Disarm left hand
+							//Urist McAssistant dropped the macguffin with a scream just sounds odd. Plus it doesn't work with NO_PAIN
+							target.visible_message("<span class='danger'>[target] drops \the [target.l_hand]!</span>")
+							target.drop_l_hand()
+					if (limbcheck == "r_hand")
+						if (target.r_hand)
+							// Disarm right hand
+							target.visible_message("<span class='danger'>[target] drops \the [target.r_hand]!</span>")
+							target.drop_r_hand()
+		else
+			user << "<span class='notice'>You cannot bite that part of the body, it's too far away!</span>"
+			return FALSE
+
+		user.setClickCooldown(25)
+		return TRUE
+
+//Jumping
+/atom/proc/jump_act(atom/target, mob/living/carbon/human/user)
+	//No jumping on the ground dummy && No jumping in space && No jumping in straightjacket or while being incapacitated (except handcuffs) && No jumping vhile being legcuffed or locked in closet
+	if(user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT|INCAPACITATION_BUCKLED_PARTIALLY|INCAPACITATION_BUCKLED_FULLY|INCAPACITATION_FORCELYING) || user.isinspace() \
+		|| istype(user.loc, /obj/structure/closet))
+		return
+
+	for(var/limbcheck in list("l_leg","r_leg"))//But we need to see if we have legs.
+		var/obj/item/organ/affecting = user.get_organ(limbcheck)
+		if(!affecting)//Oh shit, we don't have have any legs, we can't jump.
+			return
+
+	//Nice, we can jump, let's do that then.
+//	playsound(user, "sound/effects/jump_[user.gender == MALE ? "male" : "female"].ogg", 25)
+	playsound(user, user.gender == MALE ? 'sound/effects/jump_male.ogg' : 'sound/effects/jump_female.ogg', 25)
+	user.visible_message("[user] jumps.")
+	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(20,40), 0)
+	user.throw_at(target, 5, 0.5, user)
+	user.setClickCooldown(16)
+
+//all things climbable

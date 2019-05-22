@@ -171,6 +171,9 @@
 	var/religious_leader = FALSE
 	var/religious_clergy = FALSE
 
+
+	var/mood = 100
+
 	var/inducedSSD = FALSE
 	var/lastx = 0
 	var/lasty = 0

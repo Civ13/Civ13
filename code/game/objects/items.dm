@@ -572,3 +572,19 @@ var/list/global/slot_flags_enumeration = list(
 
 /obj/item/proc/get_weight()
 	return weight
+
+
+//Kicking an item
+/obj/item/kick_act(var/mob/living/user)
+	if(!..())
+		return
+	var/turf/target = get_turf(src.loc)
+	var/range = throw_range
+	var/throw_dir = get_dir(user, src)
+	for(var/i = 1; i < range; i++)
+		var/turf/new_turf = get_step(target, throw_dir)
+		target = new_turf
+		if(new_turf.density)
+			break
+	throw_at(target, rand(1,3), throw_speed)
+	user.visible_message("[user] kicks \the [src.name].")

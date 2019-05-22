@@ -298,8 +298,22 @@
 	Only used for swapping hands
 */
 /mob/proc/MiddleClickOn(var/atom/A)
-	swap_hand()
+	A.MiddleClick(src)
 	return
+
+/atom/proc/MiddleClick(var/mob/M)
+	middle_click_intent_check(M)
+	return
+// In case of use break glass
+
+
+/mob/proc/ShiftMiddleClickOn(var/atom/A)
+	A.ShiftMiddleClick(src)
+	return
+
+/atom/proc/ShiftMiddleClick(var/mob/user)
+	user.pointed(src)
+
 
 // In case of use break glass
 /*
@@ -312,6 +326,8 @@
 	For most mobs, examine.
 	This is overridden in ai.dm
 */
+
+
 /mob/proc/ShiftClickOn(var/atom/A)
 	A.ShiftClick(src)
 	return
@@ -432,3 +448,13 @@
 	if (nloc == oloc)
 		Move(F)
 	scrambling = FALSE
+
+/atom/proc/middle_click_intent_check(var/mob/M)
+	if(M.middle_click_intent == "kick")
+		return kick_act(M)
+	else if(M.middle_click_intent == "jump")
+		jump_act(src, M)
+	else if(M.middle_click_intent == "bite")
+		bite_act(M)
+	else
+		M.swap_hand()

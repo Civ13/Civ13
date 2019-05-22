@@ -1186,3 +1186,8 @@ var/list/rank_prefix = list(\
 		return PULSE_NONE
 	else
 		return H.pulse
+
+
+/mob/living/carbon/human/proc/make_adrenaline(amount)
+	if(stat == CONSCIOUS)
+		reagents.add_reagent("adrenaline", amount)
