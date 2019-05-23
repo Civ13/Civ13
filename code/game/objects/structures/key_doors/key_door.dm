@@ -42,7 +42,7 @@ var/list/nonbreaking_types = list(
 
 	spawn (2)
 		if (unique_door_name && map_door_name == "door")
-			name = "[unique_door_name] Door"
+			name = "[unique_door_name] door"
 		else if (map_door_name != "door")
 			name = "[map_door_name] Door"
 
