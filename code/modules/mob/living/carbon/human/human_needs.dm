@@ -14,6 +14,22 @@
 			msg = "My mood is excellent!"
 	return
 	src << "<span class='info'>[msg]<br>*---------*</span>"
+
+/mob/living/carbon/human/proc/handle_ptsd()
+	if (ptsd < 10)
+		return FALSE
+	else
+		if (prob(0.45*(ptsd/10))) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
+			do_ptsd()
+			return TRUE
+
+/mob/living/carbon/human/proc/do_ptsd()
+	if (ptsd < 3)
+		return
+	else
+		jitteriness += rand(140,200)
+		src << "<span class='warning'>You start shaking!</span>
+		return
 /*
 /mob/living/carbon/human/proc/update_happiness()
 	var/old_mood = mood

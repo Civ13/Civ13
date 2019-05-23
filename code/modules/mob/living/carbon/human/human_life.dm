@@ -391,6 +391,8 @@
 
 		handle_pain()
 
+		handle_ptsd()
+
 		handle_medical_side_effects()
 		if (map.civilizations)
 			handle_hair_growth()
