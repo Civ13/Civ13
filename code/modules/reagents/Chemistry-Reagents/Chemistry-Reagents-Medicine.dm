@@ -16,6 +16,9 @@
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
 	M.mood += removed*4
+	M.SetParalysis(0)
+	M.SetWeakened(0)
+	
 /datum/reagent/anti_toxin
 	name = "Anti-toxin"
 	id = "anti_toxin"
