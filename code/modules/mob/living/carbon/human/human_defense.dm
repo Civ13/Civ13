@@ -446,10 +446,12 @@ bullet_act
 
 	//Finally if we pass all that, we cut the limb off. This should reduce the number of one hit sword kills.
 	else if(I.sharp && I.edge)
-		if (istype(user, /mob/living/carbon/human))
-			var/mob/living/carbon/human/HH = user
-			if(prob(I.sharpness * HH.getStatCoeff("strength")))
-				affecting.droplimb(0, DROPLIMB_EDGE)
+		if (istype(user, /mob/living/carbon/human) && istype(I,/obj/item/weapon/material/sword))
+			var/obj/item/weapon/material/sword/S = I
+			if (S.atk_mode == SLASH)
+				var/mob/living/carbon/human/HH = user
+				if(prob((I.force * HH.getStatCoeff("strength")/3)))
+					affecting.droplimb(0, DROPLIMB_EDGE)
 
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
 
