@@ -293,6 +293,7 @@
 #include "code\game\objects\structures\door.dm"
 #include "code\game\objects\structures\filingcabinet.dm"
 #include "code\game\objects\structures\grille.dm"
+#include "code\game\objects\structures\iv_drip.dm"
 #include "code\game\objects\structures\kitchen_spike.dm"
 #include "code\game\objects\structures\levers.dm"
 #include "code\game\objects\structures\mirror.dm"
