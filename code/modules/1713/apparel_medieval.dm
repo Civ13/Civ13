@@ -368,6 +368,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = FALSE)
 	flags_inv = BLOCKHAIR
+	restricts_view = 2
 
 /obj/item/clothing/head/helmet/medieval/templar
 	name = "templar knight helmet"
@@ -717,6 +718,7 @@ obj/item/clothing/head/helmet/samurai/black
 	flags_inv = 0
 	w_class = 2
 	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	restricts_view = 1
 
 /obj/item/clothing/mask/samurai/red
 	name = "red samurai mask"

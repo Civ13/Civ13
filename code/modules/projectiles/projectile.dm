@@ -96,6 +96,7 @@
 
 /obj/item/projectile/Destroy()
 	projectile_list -= src
+	walk(src, 0)
 	..()
 
 //TODO: make it so this is called more reliably, instead of sometimes by bullet_act() and sometimes not
@@ -404,7 +405,7 @@
 	else if (!useless && !target_mob.takes_less_damage) // if we just grazed, useless is set to TRUE
 		if (target_mob.stat == CONSCIOUS && prob(mygun.KO_chance) && damage >= DAMAGE_HIGH-6)
 			visible_message("<span class = 'danger'>[target_mob] is knocked out!</span>")
-			target_mob.Paralyse(5)
+			target_mob.Paralyse(3)
 
 	//hit messages
 	if (blockedhit == FALSE)
@@ -457,7 +458,7 @@
 			// needs to be its own loop for reasons
 			for (var/obj/O in T.contents)
 				if (O == original)
-					var/hitchance = 18 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
+					var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
 					if (isstructure(O) && !istype(O, /obj/structure/lamp))
 						hitchance = 50
 					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
@@ -563,8 +564,8 @@
 		setup_trajectory()
 		firstmove = TRUE
 
-	if (src && loc)
-		if (--kill_count < 1)
+	spawn while(src && src.loc)
+		if (kill_count-- < 1)
 			for (var/atom/movable/AM in loc)
 				do_bullet_act(AM)
 			do_bullet_act(loc)

@@ -124,6 +124,12 @@ Parts of code courtesy of Super3222
 	if (user.stat || !ishuman(user))
 		if (!silent) user << "You are unable to focus through \the [src]."
 		return FALSE
+	if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
+		var/obj/item/clothing/mask/currmask = H.wear_mask
+		if (currmask.blocks_scope)
+			if (!silent) user << "You can't use the [src] while wearing \the [currmask]!"
+			return FALSE
+		return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		if (!silent) user << "Your visor gets in the way of looking through \the [src]."
 		return FALSE
@@ -235,7 +241,6 @@ Parts of code courtesy of Super3222
 			for (var/obj/screen/movable/action_button/AB in user.client.screen)
 				if (AB.name == "Toggle Sights" && AB != azoom.button && azoom.button.screen_loc)
 					AB.invisibility = 101
-
 					var/azoom_button_screenX = text2num(splittext(splittext(azoom.button.screen_loc, ":")[1], "+")[2])
 					var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
 

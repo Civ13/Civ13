@@ -792,3 +792,22 @@
 	base_turf = /turf/floor/beach/sand
 /area/caribbean/arab/sand
 	base_turf = /turf/floor/beach/sand
+
+/area/caribbean/arab/desert
+	name = "Desert"
+	base_turf = /turf/floor/beach/sand/desert
+	climate = "desert"
+	icon_state = "blue1"
+/area/caribbean/arab/caves
+	name = "Caves"
+	base_turf = /turf/floor/dirt
+	icon_state = "blue2"
+	location = AREA_INSIDE
+	climate = "desert"
+
+/area/caribbean/arab/caves/prison
+	name = "Cave Prison"
+	base_turf = /turf/floor/dirt
+	icon_state = "blue3"
+	location = AREA_INSIDE
+	climate = "desert"

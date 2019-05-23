@@ -195,8 +195,12 @@
 			new/datum/stack_recipe("small musket ball (x3)", /obj/item/stack/ammopart/musketball_pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("iron bullet (x3)", /obj/item/stack/ammopart/bullet, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
-
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[2] >= 110 && map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe_list("magazines", list(
+			new/datum/stack_recipe("borchardt magazine", /obj/item/ammo_magazine/borchardt/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("luger magazine", /obj/item/ammo_magazine/luger/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("nambu magazine", /obj/item/ammo_magazine/c8mmnambu/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[1] >= 115 && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 90 && map.ordinal_age >= 4)
@@ -504,6 +508,9 @@
 	recipes += list(new/datum/stack_recipe("rope handcuffs", /obj/item/weapon/handcuffs/rope, _time = 50))
 	recipes += list(new/datum/stack_recipe("fishing net", /obj/item/weapon/fishing/net, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("leash", /obj/item/weapon/leash, _time = 20))
+	if (current_res[2] >= 43)
+		recipes += list(new/datum/stack_recipe("garrote", /obj/item/garrote, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE))
+
 /material/glass/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	if (current_res[1] >= 22)
@@ -518,8 +525,13 @@
 	recipes += new/datum/stack_recipe("fermentation jar", /obj/item/weapon/starterjar, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe_list("electrical", list(
-			new/datum/stack_recipe("small lightbulb", /obj/structure/lamp/lamp_small, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("light tube", /obj/structure/lamp/lamp_big, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("small lightbulb frame", /obj/structure/lamp/lamp_small, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("light tube frame", /obj/structure/lamp/lamp_big, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("light tube", /obj/item/lightbulb/tube, 1, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("lightbulb", /obj/item/lightbulb, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (map.ordinal_age >= 4)
+		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("stone pillar",	/obj/structure/mine_support/stone, 2, _time = 130, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -988,6 +1000,7 @@
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("wood stove",/obj/structure/oven/woodstove, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 
 	if (map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern, 1, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE)

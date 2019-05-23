@@ -490,7 +490,7 @@
 	icon_state = "largepouches"
 	item_state = "largepouches"
 	storage_slots = 2
-	max_w_class = 4
+	max_w_class = 3
 	max_storage_space = 9
 	show_above_suit = TRUE
 /obj/item/weapon/storage/belt/largepouches/green

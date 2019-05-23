@@ -1,4 +1,4 @@
-#define NO_WINNER "No ship has been captured."
+#define NO_WINNER "No base has been captured."
 /obj/map_metadata/compound
 	ID = MAP_COMPOUND
 	title = "Compound (100x100x2)"
@@ -30,7 +30,7 @@
 
 obj/map_metadata/compound/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_coldwar == TRUE)
+	if (J.is_coldwar == TRUE && !J.is_specops && !J.is_modernday)
 		. = TRUE
 	else
 		. = FALSE

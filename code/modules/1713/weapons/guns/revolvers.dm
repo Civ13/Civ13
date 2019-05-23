@@ -194,7 +194,7 @@
 	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/m1892
-	name = "Modèle 1892 revolver"
+	name = "Modele 1892 revolver"
 	desc = "French officer's revolver."
 	icon_state = "m1892"
 	w_class = 2

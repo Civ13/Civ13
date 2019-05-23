@@ -84,7 +84,7 @@
 /obj/item/weapon/grab/proc/headbut(mob/living/carbon/human/target, mob/living/carbon/human/attacker)
 	if (!istype(attacker))
 		return
-	if (target.lying)
+	if (target.lying || target.prone)
 		return
 	attacker.visible_message("<span class='danger'>[attacker] thrusts \his head into [target]'s skull!</span>")
 

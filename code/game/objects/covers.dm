@@ -556,13 +556,15 @@
 
 
 /obj/covers/Destroy()
-	if (wall && !incomplete)
-		new current_area_type(get_turf(src))
-		visible_message("The roof collapses!")
-	var/turf/floor/T = get_turf(loc)
-	T.iscovered = origin_covered
-	T.water_level = origin_water_level
-	T.move_delay = T.get_move_delay()
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (istype(CURRENTAREA, /area/caribbean/void/caves))
+		if (wall && !incomplete)
+			new current_area_type(get_turf(src))
+			visible_message("The roof collapses!")
+		var/turf/floor/T = get_turf(loc)
+		T.iscovered = origin_covered
+		T.water_level = origin_water_level
+		T.move_delay = T.get_move_delay()
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount

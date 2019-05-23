@@ -47,8 +47,9 @@
 
 	if (transforming)
 		return
-
-	if (lying || stat < CONSCIOUS)
+//	if (prone)
+//		lying = 1
+	if (lying || stat < CONSCIOUS || prone)
 		layer = MOB_LAYER - 0.01
 	else
 		layer = MOB_LAYER
@@ -67,7 +68,7 @@
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
 		gib()
 
-	#define HUNGER_THIRST_MULTIPLIER 0.80
+	#define HUNGER_THIRST_MULTIPLIER 0.32
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
@@ -88,32 +89,33 @@
 	if (has_hunger_and_thirst)
 		if ((map.heat_wave || map.ID == MAP_NOMADS_DESERT) && !inducedSSD)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.02) * HUNGER_THIRST_MULTIPLIER)
+				mood -= 0.02
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
 		else
 			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
 			else if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-				nutrition -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+				mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 
 	// hotfixes some stamina bugs
@@ -156,9 +158,10 @@
 		if (disease_type == "none")
 			disease = FALSE
 		else if (disease_type == "plague")
+			mood -= 0.25
 			if (disease_progression == 1 || disease_progression == 90 || disease_progression == 180)
 				update_surgery(1)
-			disease_progression += 1
+			disease_progression += 0.5
 			// first 3 minutes
 			if (prob(7))
 				src << "You feel painful lumps on your skin."
@@ -187,10 +190,11 @@
 				disease_treatment = 0
 				bodytemperature = 310.055
 		else if (disease_type == "flu")
+			mood -= 0.1
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 4
+				disease_progression += 2
 			// first 2 minutes
 			if (disease_progression == 25)
 				src << "You feel a little feverish."
@@ -236,10 +240,11 @@
 					disease_immunity += "flu"
 
 		else if (disease_type == "malaria")
+			mood -= 0.17
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 3
+				disease_progression += 1.5
 			// first 2 minutes
 			if (disease_progression == 25)
 				src << "You feel a little feverish."
@@ -291,10 +296,11 @@
 				disease_treatment = 0
 
 		else if (disease_type == "cholera")
+			mood -= 0.15
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 3
+				disease_progression += 1.5
 			// first 3 minutes
 			if (disease_progression == 90)
 				src << "You feel nauseous."
@@ -348,7 +354,7 @@
 						disease_treatment = 0
 		if (disease == FALSE)
 			//0.005%
-			if (prob(1))
+			if (prob(1) && map.civilizations)
 				if (prob(1) && !inducedSSD)
 					disease = TRUE
 					disease_type = "flu"
@@ -490,7 +496,7 @@
 				if (prob(50))
 					src << "<span class='danger'>You suddenly black out!</span>"
 					Paralyse(10)
-				else if (!lying)
+				else if (!lying || !prone)
 					src << "<span class='danger'>Your legs won't respond properly, you fall down!</span>"
 					Weaken(10)
 
@@ -1385,7 +1391,10 @@
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
-					holder2.icon_state = "arab_basic"
+					if (map.ordinal_age >= 6)
+						holder2.icon_state = "isis_basic"
+					else
+						holder2.icon_state = "arab_basic"
 				if (GREEK)
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
@@ -1470,7 +1479,7 @@
 /mob/living/carbon/human/handle_vision()
 
 	if (client)
-		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal, global_hud.meson, global_hud.science)
+		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal)
 
 	if (!laddervision)
 		if (using_object)
@@ -1547,6 +1556,7 @@
 			if ("cocaine")
 				if (ingested.has_reagent("cocaine"))
 					return
+				mood -= (value/100)*0.26
 				switch (value)
 					if (0 to 24)
 						return
@@ -1590,6 +1600,7 @@
 			if ("opium")
 				if (ingested.has_reagent("opium"))
 					return
+				mood -= (value/100)*0.32
 				switch (value)
 					if (0 to 13)
 						if (prob(5))
@@ -1642,6 +1653,7 @@
 			if ("tobacco")
 				if (ingested.has_reagent("nicotine"))
 					return
+				mood -= (value/100)*0.14
 				switch (value)
 					if (0 to 21)
 						return
@@ -1656,6 +1668,7 @@
 			if ("alcohol")
 				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
 					return
+				mood -= (value/100)*0.20
 				switch (value)
 					if (0 to 21)
 						return

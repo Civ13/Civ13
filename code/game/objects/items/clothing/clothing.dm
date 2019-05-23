@@ -13,6 +13,7 @@
 
 	dropsound = 'sound/effects/drop_clothing.ogg'
 	flammable = TRUE
+	var/restricts_view = 0 //If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"
 
 //Updates the icons of the mob wearing the clothing item, if any.
 /obj/item/clothing/proc/update_clothing_icon()
@@ -24,6 +25,9 @@
 	gunshot_residue = null
 
 ///////////////////////////////////////////////////////////////////////
+/obj/item/clothing/head/helmet
+	restricts_view = 1
+
 // Ears: headsets, earmuffs and tiny objects
 /obj/item/clothing/ears
 	name = "ears"
@@ -110,7 +114,7 @@ BLIND     // can't see anything
 	var/vision_flags = FALSE
 	var/darkness_view = FALSE//Base human is 2
 	var/see_invisible = -1
-	var/active = TRUE
+	var/active = FALSE
 	var/obj/screen/overlay = null
 
 /obj/item/clothing/mask/glasses/update_clothing_icon()
@@ -244,6 +248,7 @@ BLIND     // can't see anything
 	var/voicechange = FALSE
 	var/list/say_messages
 	var/list/say_verbs
+	var/blocks_scope = FALSE
 
 /obj/item/clothing/mask/update_clothing_icon()
 	if (ismob(loc))
@@ -374,7 +379,7 @@ BLIND     // can't see anything
 
 	//convenience var for defining the icon state for the overlay used when the clothing is worn.
 
-	valid_accessory_slots = list("utility","armband","decor", "sash", "cape", "overcloth", "tie", "armor")
+	valid_accessory_slots = list("utility","armband","decor", "sash", "cape", "overcloth", "tie", "armor", "leg_armor", "arm_armor")
 	restricted_accessory_slots = list("utility", "armband", "armor")
 
 

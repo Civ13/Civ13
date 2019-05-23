@@ -321,3 +321,43 @@
 	taste_description = "old eggs"
 	reagent_state = SOLID
 	color = "#BF8C00"
+
+/datum/reagent/uranium
+	name ="Uranium"
+	id = "uranium"
+	description = "A silvery-white metallic chemical element in the actinide series, weakly radioactive."
+	taste_description = "the inside of a reactor"
+	reagent_state = SOLID
+	color = "#B8B8C0"
+
+/datum/reagent/uranium/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+	affect_ingest(M, alien, removed)
+
+/datum/reagent/uranium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.apply_effect(5 * removed, IRRADIATE, blocked = 0)
+
+/datum/reagent/uranium/touch_turf(var/turf/T)
+	if(volume >= 3)
+		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
+		if(!glow)
+			new /obj/effect/decal/cleanable/greenglow(T)
+		return
+
+/datum/reagent/radium
+	name = "Radium"
+	id = "radium"
+	description = "Radium is an alkaline earth metal. It is extremely radioactive."
+	taste_description = "the color blue, and regret"
+	reagent_state = SOLID
+	color = "#C7C7C7"
+
+/datum/reagent/radium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.apply_effect(10 * removed, IRRADIATE, blocked = 0) // Radium may increase your chances to cure a disease
+
+
+/datum/reagent/radium/touch_turf(var/turf/T)
+	if(volume >= 3)
+		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
+		if(!glow)
+			new /obj/effect/decal/cleanable/greenglow(T)
+		return

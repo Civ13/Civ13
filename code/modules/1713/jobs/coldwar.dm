@@ -44,7 +44,7 @@
 	uniform.attackby(rscarf, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, lead the Viet Cong in the fight against the imperialists!")
-	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
+	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL) //muskets
@@ -94,10 +94,10 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your comrades healthy!")
-	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
+	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL) //not used
 	H.setStat("pistol", STAT_NORMAL)
@@ -145,10 +145,10 @@
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, in charge of the communications and also acting as a courier for ammunition, grenades, and so on. Keep the squads up to date and supplied!")
-	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
+	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL) //muskets
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
 	H.setStat("dexterity", STAT_MEDIUM_HIGH)
 	H.setStat("swords", STAT_NORMAL) //not used
 	H.setStat("pistol", STAT_NORMAL)
@@ -196,7 +196,10 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
 	else if (pickgun == 4)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
 	uniform.attackby(fullwebbing, H)
@@ -205,7 +208,7 @@
 		uniform.attackby(krscarf, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, fighting guerilla warfare against the imperialists!")
-	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
+	H.add_note("Vietcong Mechanics", "- Press <b>C</b> to place a booby trap while holding a grenade.<br><br>- The tunnel entrances connecting to your underground compound are only accessible by fellow Vietnamese and american commandos. Americans won't be able to crawl inside.<br><br>- Drag yourself to a Jungle Tree to hide on it.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL) //muskets
@@ -281,6 +284,7 @@
 	SL_check_independent = TRUE
 	is_coldwar = TRUE
 	is_squad_leader = TRUE
+	can_get_coordinates = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -344,7 +348,7 @@
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_back)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/boot/bowie(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/light/lw = new /obj/item/clothing/accessory/storage/webbing/light(null)
 	uniform.attackby(lw, H)
@@ -387,11 +391,14 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/medical(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/medical/full_us(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_l_hand)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
 	uniform.attackby(white, H)
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow soldiers healthy!")
 	H.setStat("strength", STAT_NORMAL)
@@ -478,10 +485,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
-	var/obj/item/weapon/gun/projectile/submachinegun/m14/m14sniper = new /obj/item/weapon/gun/projectile/submachinegun/m14(H)
-	H.equip_to_slot_or_del(m14sniper, slot_back)
-	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/snipsc = new /obj/item/weapon/attachment/scope/adjustable/sniper_scope(null)
-	m14sniper.attach_A(snipsc,H)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper, slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	give_random_name(H)
@@ -589,4 +593,283 @@
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	H.setStat("mg", STAT_MEDIUM_LOW)
+	return TRUE
+
+/////////////////////////////////////////////////////////////////////////
+/datum/job/american/specops_leader
+	title = "SOF Team Leader"
+	rank_abbreviation = "Lt."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	whitelisted = TRUE
+	is_officer = TRUE
+	is_commander = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/american/specops_leader/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ocp(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/glasses/sunglasses(H), slot_wear_mask)
+
+	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	H.add_note("Role", "You are a <b>[title]</b>, an officer of the Special Operation Forces team tasked with the rescue of the hostages. You should stay in the base and keep the operation organized! You also speak <b>Arabic</b> and can listen to insurgent communications.")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("mg", STAT_MEDIUM_HIGH)
+	spawn(20)
+		H.add_language("Arabic",TRUE)
+	return TRUE
+
+/datum/job/american/specops_doctor
+	title = "SOF Medic"
+	rank_abbreviation = "Sfc."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 3
+
+/datum/job/american/specops_doctor/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a trained doctor of the Special Operation Forces team tasked with the rescue of the hostages. You should stay in the base and keep your teammates and prioners alive!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_VERY_HIGH)
+	H.setStat("mg", STAT_MEDIUM_HIGH)
+	return TRUE
+
+/datum/job/american/specops_operator
+	title = "SOF Operator"
+	rank_abbreviation = "Sgt."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRN"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	// AUTOBALANCE
+	min_positions = 6
+	max_positions = 33
+
+/datum/job/american/specops_operator/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni_modern(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the Special Operation Forces team tasked with the rescue of the hostages. You will only be successfull if you coordinate with the rest of your team!")
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_HIGH)
+	H.setStat("rifle", STAT_VERY_HIGH)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_VERY_HIGH)
+	H.setStat("pistol", STAT_VERY_HIGH)
+	H.setStat("bows", STAT_VERY_HIGH)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("mg", STAT_HIGH)
+	return TRUE
+
+/////////////////////////////////////////////////////
+
+/datum/job/arab/insurgent_leader
+	title = "Insurgent Leader"
+	en_meaning = ""
+	rank_abbreviation = "Leader"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateAR"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_officer = TRUE
+	is_specops = TRUE
+	is_modernday = TRUE
+	// AUTOBALANCE
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/arab/insurgent_leader/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_leader(H), slot_w_uniform)
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
+//back
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/arabsword(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/flashlight(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armor/coldwar/pasgt/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
+	uniform.attackby(fullwebbing, H)
+	give_random_name(H)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard")
+		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard")
+	H.s_tone = rand(-92,-80)
+	var/new_hair = pick("Dark Brown","Black")
+	var/new_eyes = pick("Dark Brown", "Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	var/hex_eyes = eye_colors[new_eyes]
+	H.r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+	H.g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+	H.b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+	H.change_eye_color(H.r_eyes, H.g_eyes, H.b_eyes)
+	H.force_update_limbs()
+	H.update_body()
+	H.add_note("Role", "You are an <b>[title]</b>, a team leader for the Insurgents in this map. Organize your brothers and repel the westerners!")
+	H.add_note("Insurgent Mechanics", "- You have a radio on your vest. Use \";\" to broadcast. Be aware that americans can probably listen to your radio communications! This can be both an advantage and a disadvantage...")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("mg", STAT_MEDIUM_LOW)
+
+	return TRUE
+
+
+/datum/job/arab/insurgent
+	title = "Insurgent"
+	en_meaning = ""
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateAR"
+	SL_check_independent = TRUE
+	is_coldwar = TRUE
+	is_specops = TRUE
+	is_modernday = TRUE
+	// AUTOBALANCE
+	min_positions = 22
+	max_positions = 66
+
+/datum/job/arab/insurgent/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+//clothes
+	var/pickclothes = rand(1,4)
+	switch (pickclothes)
+		if (1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand(H), slot_w_uniform)
+		if (2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_green(H), slot_w_uniform)
+		if (3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_woodland(H), slot_w_uniform)
+		if (4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_sand_dcu(H), slot_w_uniform)
+//head
+	if (prob(50))
+		if (prob(20))
+			H.equip_to_slot_or_del(new /obj/item/clothing/mask/balaclava(H), slot_wear_mask)
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/black_bandana(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
+//back
+	if (prob(33))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_back)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/flashlight/flashlight(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	if (prob(50))
+		var/obj/item/clothing/accessory/storage/webbing/green_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/green_webbing(null)
+		uniform.attackby(fullwebbing, H)
+	else
+		var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing(null)
+		uniform.attackby(fullwebbing, H)
+	give_random_name(H)
+	if (H.f_style != "Full Beard" && H.f_style != "Medium Beard" && H.f_style != "Long Beard" && H.f_style != "Very Long Beard")
+		H.f_style = pick("Full Beard","Medium Beard","Long Beard","Very Long Beard")
+	H.s_tone = rand(-92,-80)
+	var/new_hair = pick("Dark Brown","Black")
+	var/new_eyes = pick("Dark Brown", "Black")
+	var/hex_hair = hair_colors[new_hair]
+	H.r_hair = hex2num(copytext(hex_hair, 2, 4))
+	H.g_hair = hex2num(copytext(hex_hair, 4, 6))
+	H.b_hair = hex2num(copytext(hex_hair, 6, 8))
+	H.r_facial = hex2num(copytext(hex_hair, 2, 4))
+	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
+	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
+	var/hex_eyes = eye_colors[new_eyes]
+	H.r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+	H.g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+	H.b_eyes = hex2num(copytext(hex_eyes, 6, 8))
+	H.change_eye_color(H.r_eyes, H.g_eyes, H.b_eyes)
+	H.force_update_limbs()
+	H.update_body()
+	H.add_note("Role", "You are an <b>[title]</b>, fighting guerilla warfare against the westerners. Protect the cave!")
+	H.add_note("Insurgent Mechanics", "- You have a radio on your vest. Use \";\" to broadcast. Be aware that americans can probably listen to your radio communications!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("mg", STAT_MEDIUM_LOW)
+
 	return TRUE

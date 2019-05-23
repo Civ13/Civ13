@@ -56,7 +56,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 2.00
-	KD_chance = KD_CHANCE_VERY_LOW
+	KD_chance = KD_CHANCE_MEDIUM
 	stat = "mg"
 	w_class = 3
 	attachment_slots = ATTACH_IRONSIGHTS
@@ -245,7 +245,23 @@
 		base_icon = "aks74_folded"
 	else
 		base_icon = "aks74"
-	..()
+	if (sniper_scope)
+		if (!ammo_magazine)
+			icon_state = "[base_icon]_scope_open"
+			return
+		else
+			icon_state = "[base_icon]_scope"
+			return
+	else
+		if (ammo_magazine)
+			icon_state = base_icon
+			item_state = base_icon
+		else
+			icon_state = "[base_icon]_open"
+			item_state = "[base_icon]_open"
+	update_held_icon()
+
+	return
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/verb/fold()
 	set name = "Toggle Stock"
@@ -273,6 +289,124 @@
 	else
 		slot_flags = SLOT_BACK
 		effectiveness_mod = 1.05
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u
+	name = "AKS-74U"
+	desc = "Soviet assault carbine version of the AK-74, chambered in 5.45x39mm, with a folding stock."
+	slot_flags = SLOT_BACK
+	icon_state = "aks74u"
+	item_state = "aks74u"
+	base_icon = "aks74u"
+	folded = FALSE
+	weight = 2.7
+	effectiveness_mod = 1.02
+	equiptimer = 12
+	attachment_slots = ATTACH_IRONSIGHTS
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/update_icon()
+	if (folded)
+		base_icon = "aks74u_folded"
+	else
+		base_icon = "aks74u"
+	if (sniper_scope)
+		if (!ammo_magazine)
+			icon_state = "[base_icon]_scope_open"
+			return
+		else
+			icon_state = "[base_icon]_scope"
+			return
+	else
+		if (ammo_magazine)
+			icon_state = base_icon
+			item_state = base_icon
+		else
+			icon_state = "[base_icon]_open"
+			item_state = "[base_icon]_open"
+	update_held_icon()
+
+	return
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (folded)
+		folded = FALSE
+		base_icon = "aks74u"
+		usr << "You extend the stock on \the [src]."
+		equiptimer = 12
+		set_stock()
+		update_icon()
+	else
+		folded = TRUE
+		base_icon = "aks74u_folded"
+		usr << "You collapse the stock on \the [src]."
+		equiptimer = 6
+		set_stock()
+		update_icon()
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/set_stock()
+	if (folded)
+		slot_flags = SLOT_BACK|SLOT_BELT
+		effectiveness_mod = 0.84
+	else
+		slot_flags = SLOT_BACK
+		effectiveness_mod = 1.02
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso
+	name = "AKS-74U SpecOps"
+	desc = "Soviet assault carbine version of the AK-74, chambered in 5.45x39mm, with a folding stock. This one has picatinny rails for attachments."
+	slot_flags = SLOT_BACK
+	icon_state = "aks74uso"
+	item_state = "aks74uso"
+	base_icon = "aks74uso"
+	folded = FALSE
+	weight = 2.65
+	effectiveness_mod = 1.02
+	equiptimer = 12
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
+	if (folded)
+		base_icon = "aks74uso_folded"
+	else
+		base_icon = "aks74uso"
+	if (sniper_scope)
+		if (!ammo_magazine)
+			icon_state = "[base_icon]_scope_open"
+			return
+		else
+			icon_state = "[base_icon]_scope"
+			return
+	else
+		if (ammo_magazine)
+			icon_state = base_icon
+			item_state = base_icon
+		else
+			icon_state = "[base_icon]_open"
+			item_state = "[base_icon]_open"
+	update_held_icon()
+
+	return
+
+/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (folded)
+		folded = FALSE
+		base_icon = "aks74uso"
+		usr << "You extend the stock on \the [src]."
+		equiptimer = 12
+		set_stock()
+		update_icon()
+	else
+		folded = TRUE
+		base_icon = "aks74uso_folded"
+		usr << "You collapse the stock on \the [src]."
+		equiptimer = 5
+		set_stock()
+		update_icon()
 
 /obj/item/weapon/gun/projectile/submachinegun/m16
 	name = "M16"
@@ -313,7 +447,44 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
-	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	attachment_slots = ATTACH_IRONSIGHTS
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4
+	name = "M16A4"
+	base_icon = "m16a4"
+	icon_state = "m16a4"
+	desc = "A modernized version of the M16, with picatinny rail for attachments."
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/att/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		SP.attached(null,src,TRUE)
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
+	name = "M4 MWS"
+	base_icon = "m4mws"
+	icon_state = "m4mws"
+	desc = "A version of the M4 carbine made to fit the Modular Weapon System."
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		SP.attached(null,src,TRUE)
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m14
 	name = "M14"
@@ -333,4 +504,93 @@
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
 		)
 	effectiveness_mod = 1.07
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/submachinegun/g3
+	name = "H&K G3"
+	desc = "A german assault rifle, chambered in 7.62x51mm."
+	icon_state = "g3"
+	item_state = "g3"
+	base_icon = "g3"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/hk
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	weight = 4.2
+	equiptimer = 15
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
+		)
+	effectiveness_mod = 1.07
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/scarl
+	name = "FN SCAR-L"
+	desc = "A belgian assault rifle, chambered in 5.56x45mm."
+	icon_state = "scarl"
+	item_state = "scarl"
+	base_icon = "scarl"
+	caliber = "a556x45"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/m16
+	weight = 3
+	equiptimer = 10
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.8, move_delay=3, dispersion = list(0.7, 0.9, 1, 1, 1.2)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=0.8, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
+		)
+	effectiveness_mod = 1.08
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/scarh
+	name = "FN SCAR-H"
+	icon_state = "scarh"
+	item_state = "scarh"
+	base_icon = "scarh"
+	desc = "A belgian assault rifle, chambered in 7.62x51mm."
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/scarh
+	weight = 3.5
+	equiptimer = 11
+	effectiveness_mod = 1.05
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.2, move_delay=4, dispersion = list(1, 1.2, 1.5, 1.6, 1.7)),
+		)
+	effectiveness_mod = 1.06
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+/obj/item/weapon/gun/projectile/submachinegun/hk417
+	name = "HK417"
+	desc = "A german assault rifle based on the G36 and M16, chambered in 7.62x51mm."
+	icon_state = "hk417"
+	item_state = "hk417"
+	base_icon = "hk417"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/hk
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
+	weight = 3.8
+	equiptimer = 13
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1.1, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
+		)
+	effectiveness_mod = 1.08
 	sel_mode = 1

@@ -97,12 +97,14 @@
 	icon_state = "brodie_old"
 	item_state = "brodie_old"
 	worn_state = "brodie_old"
+
 /obj/item/clothing/mask/glasses/pilot
 	name = "pilot goggles"
 	desc = "Early 20th century pilot goggles."
 	icon_state = "biker"
 	item_state = "biker"
 	worn_state = "biker"
+	restricts_view = 1
 
 /obj/item/clothing/head/helmet/ww/japhelm
 	name = "japanese helmet"

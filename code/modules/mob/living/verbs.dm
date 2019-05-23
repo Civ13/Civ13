@@ -1,4 +1,4 @@
-/mob/living/verb/pointed(atom/A as mob|obj|turf in view())
+/mob/living/pointed(atom/A as mob|obj|turf in view())
 	set name = "Point To"
 	set category = null
 

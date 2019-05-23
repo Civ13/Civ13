@@ -20,7 +20,7 @@
 	var/datum/reagents/metabolism/ingested = null
 	var/datum/reagents/metabolism/touching = null
 	var/losebreath = FALSE //if we failed to breathe last tick
-
+	var/mood = 100
 	var/coughedtime = null
 	var/lastpuke = FALSE
 

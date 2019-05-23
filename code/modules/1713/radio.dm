@@ -536,7 +536,7 @@ var/global/FREQ2 = rand(201,250)
 				used_radios += radio
 				if (radio.freq == freq && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
 					hearer.hear_radio(msg, speaker.default_language, speaker, src, radio)
-			for (var/obj/item/weapon/radio/radio in range(1,get_turf(src)))
+			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
 				if (used_radios.Find(radio))
@@ -547,3 +547,27 @@ var/global/FREQ2 = rand(201,250)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
 		O.hear_radio(msg, speaker.default_language, speaker, src)
+
+//////////////"POUCH SLOT" RADIOS///////////////////////////
+//For modern radios worn on your chest
+/obj/item/weapon/radio/walkietalkie
+	name = "walkie-talkie radio"
+	desc = "Used to communicate with distant places. Set to 150kHz."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "portable_radio4"
+	item_state = "portable_radio4"
+	flammable = FALSE
+	density = FALSE
+	opacity = FALSE
+	powerneeded = 0
+	w_class = 2.0
+	slot_flags = SLOT_BELT|SLOT_ID
+	nothrow = FALSE
+	icon_override = 'icons/mob/pouch.dmi'
+
+/obj/item/weapon/radio/walkietalkie/faction1/New()
+	..()
+	freq = FREQ1
+/obj/item/weapon/radio/walkietalkie/faction2/New()
+	..()
+	freq = FREQ2

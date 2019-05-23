@@ -35,93 +35,13 @@
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 
-/obj/item/weapon/storage/pill_bottle/bicaridine
-	name = "bottle of Bicaridine pills"
-	desc = "Contains pills used to stabilize the severely injured."
-
-/obj/item/weapon/storage/pill_bottle/bicaridine/New()
-    ..()
-    new /obj/item/weapon/reagent_containers/pill/bicaridine(src)
-    new /obj/item/weapon/reagent_containers/pill/bicaridine(src)
-    new /obj/item/weapon/reagent_containers/pill/bicaridine(src)
-    new /obj/item/weapon/reagent_containers/pill/bicaridine(src)
-    new /obj/item/weapon/reagent_containers/pill/bicaridine(src)
-    new /obj/item/weapon/reagent_containers/pill/bicaridine(src)
-    new /obj/item/weapon/reagent_containers/pill/bicaridine(src)
-
-/obj/item/weapon/storage/pill_bottle/dexalin_plus
-	name = "bottle of Dexalin Plus pills"
-	desc = "Contains pills used to treat extreme cases of oxygen deprivation."
-
-/obj/item/weapon/storage/pill_bottle/dexalin_plus/New()
-    ..()
-    new /obj/item/weapon/reagent_containers/pill/dexalin_plus(src)
-    new /obj/item/weapon/reagent_containers/pill/dexalin_plus(src)
-    new /obj/item/weapon/reagent_containers/pill/dexalin_plus(src)
-    new /obj/item/weapon/reagent_containers/pill/dexalin_plus(src)
-    new /obj/item/weapon/reagent_containers/pill/dexalin_plus(src)
-    new /obj/item/weapon/reagent_containers/pill/dexalin_plus(src)
-    new /obj/item/weapon/reagent_containers/pill/dexalin_plus(src)
-
-/obj/item/weapon/storage/pill_bottle/dermaline
-	name = "bottle of Dermaline pills"
-	desc = "Contains pills used to treat burn wounds."
-
-/obj/item/weapon/storage/pill_bottle/dermaline/New()
-    ..()
-    new /obj/item/weapon/reagent_containers/pill/dermaline(src)
-    new /obj/item/weapon/reagent_containers/pill/dermaline(src)
-    new /obj/item/weapon/reagent_containers/pill/dermaline(src)
-    new /obj/item/weapon/reagent_containers/pill/dermaline(src)
-    new /obj/item/weapon/reagent_containers/pill/dermaline(src)
-    new /obj/item/weapon/reagent_containers/pill/dermaline(src)
-    new /obj/item/weapon/reagent_containers/pill/dermaline(src)
-
-/obj/item/weapon/storage/pill_bottle/dylovene
-	name = "bottle of Dylovene pills"
-	desc = "Contains pills used to treat toxic substances in the blood."
-
-/obj/item/weapon/storage/pill_bottle/dylovene/New()
-    ..()
-    new /obj/item/weapon/reagent_containers/pill/dylovene(src)
-    new /obj/item/weapon/reagent_containers/pill/dylovene(src)
-    new /obj/item/weapon/reagent_containers/pill/dylovene(src)
-    new /obj/item/weapon/reagent_containers/pill/dylovene(src)
-    new /obj/item/weapon/reagent_containers/pill/dylovene(src)
-    new /obj/item/weapon/reagent_containers/pill/dylovene(src)
-    new /obj/item/weapon/reagent_containers/pill/dylovene(src)
-
-/obj/item/weapon/storage/pill_bottle/inaprovaline
-	name = "bottle of Inaprovaline pills"
+/obj/item/weapon/storage/pill_bottle/
+	name = "bottle of  pills"
 	desc = "Contains pills used to stabilize patients."
-
-	New()
-		..()
-		new /obj/item/weapon/reagent_containers/pill/inaprovaline( src )
-		new /obj/item/weapon/reagent_containers/pill/inaprovaline( src )
-		new /obj/item/weapon/reagent_containers/pill/inaprovaline( src )
-		new /obj/item/weapon/reagent_containers/pill/inaprovaline( src )
-		new /obj/item/weapon/reagent_containers/pill/inaprovaline( src )
-		new /obj/item/weapon/reagent_containers/pill/inaprovaline( src )
-		new /obj/item/weapon/reagent_containers/pill/inaprovaline( src )
-
-/obj/item/weapon/storage/pill_bottle/kelotane
-	name = "bottle of kelotane pills"
-	desc = "Contains pills used to treat burns."
-
-	New()
-		..()
-		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
-		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
-		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
-		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
-		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
-		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
-		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
 
 /obj/item/weapon/storage/pill_bottle/penicillin
 	name = "bottle of penicillin pills"
-	desc = "A theta-lactam antibiotic. Effective against many diseases likely to be encountered in space."
+	desc = "An antibiotic. Effective against many microbial diseases."
 
 /obj/item/weapon/storage/pill_bottle/penicillin/New()
     ..()

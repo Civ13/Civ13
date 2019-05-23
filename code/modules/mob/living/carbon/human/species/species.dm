@@ -192,10 +192,11 @@
 
 	if (H.bodytemperature < cold_level_1)
 		var/turf/T = get_turf(H)
-		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes.cold_protection != FEET)
-			if (prob(25 - (H.shoes ? 15 : 0)))
-				H << "<span class='danger'>Your feet are freezing!</span>"
-				H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
+		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes)
+			if (H.shoes.cold_protection != FEET)
+				if (prob(25 - (H.shoes ? 15 : 0)))
+					H << "<span class='danger'>Your feet are freezing!</span>"
+					H.adjustFireLossByPart(3, pick("l_foot", "r_foot"))
 
 		if (istype(H.wear_suit, /obj/item/clothing/suit))
 			if (H.wear_suit.min_cold_protection_temperature <= COAT_MIN_COLD_PROTECTION_TEMPERATURE)
@@ -494,7 +495,8 @@
 
 	if (!H.druggy)
 		H.see_in_dark = (H.sight == SEE_TURFS|SEE_MOBS|SEE_OBJS) ? 8 : min(darksight + H.equipment_darkness_modifier, 8)
-
+		if(H.equipment_see_invis)
+			H.see_invisible = max(H.see_invisible, H.equipment_see_invis)
 
 	if (H.equipment_tint_total >= TINT_BLIND)
 		H.eye_blind = max(H.eye_blind, TRUE)

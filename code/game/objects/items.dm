@@ -23,7 +23,6 @@
 	//var/list/origin_tech = null	//Used by R&D to determine what research bonuses it grants.
 	var/list/attack_verb = list() //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/force = FALSE
-
 	var/amount = TRUE
 	var/value = 0 //the cost of an item.
 
@@ -468,14 +467,6 @@ var/list/global/slot_flags_enumeration = list(
 	user.do_attack_animation(M)
 
 	add_fingerprint(user)
-	//if ((CLUMSY in user.mutations) && prob(50))
-	//	M = user
-		/*
-		M << "<span class='warning'>You stab yourself in the eye.</span>"
-		M.sdisabilities |= BLIND
-		M.weakened += 4
-		M.adjustBruteLoss(10)
-		*/
 
 	if (istype(H))
 
@@ -500,7 +491,7 @@ var/list/global/slot_flags_enumeration = list(
 					M.drop_item()
 				M.eye_blurry += 10
 				M.Paralyse(1)
-				M.Weaken(4)
+				M.Weaken(3)
 			if (eyes.damage >= eyes.min_broken_damage)
 				if (M.stat != 2)
 					M << "<span class='warning'>You go blind!</span>"
@@ -580,3 +571,19 @@ var/list/global/slot_flags_enumeration = list(
 
 /obj/item/proc/get_weight()
 	return weight
+
+
+//Kicking an item
+/obj/item/kick_act(var/mob/living/user)
+	if(!..())
+		return
+	var/turf/target = get_turf(src.loc)
+	var/range = throw_range
+	var/throw_dir = get_dir(user, src)
+	for(var/i = 1; i < range; i++)
+		var/turf/new_turf = get_step(target, throw_dir)
+		target = new_turf
+		if(new_turf.density)
+			break
+	throw_at(target, rand(1,3), throw_speed)
+	user.visible_message("[user] kicks \the [src.name].")

@@ -234,3 +234,6 @@ SHOW_MODS 1
 
 #show mentors in staff who
 SHOW_MENTORS 1
+
+#disables field of view if uncommented
+#DISABLE_FOV
