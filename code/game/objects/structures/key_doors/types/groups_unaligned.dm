@@ -8,6 +8,10 @@
 
 /obj/structure/simple_door/key_door/anyone/wood
 	material = "wood"
+	
+/obj/structure/simple_door/key_door/anyone/shoji
+	material = "paper"
+	unique_door_name = "shoji"
 
 
 #undef ANYONE_CODE
