@@ -556,6 +556,27 @@
 	var/mob/living/carbon/human/C = usr
 	C << "[C.mood]"
 //	C.print_happiness(C)
+/obj/screen/mood/process()
+	update_icon()
+
+/obj/screen/mood/update_icon()
+	if (isliving(parentmob))
+		var/mob/living/carbon/human/L = parentmob
+		switch(L.mood)
+			if(-5000000 to 19)
+				icon_state = "mood5"
+
+			if(20 to 39)
+				icon_state = "mood4"
+
+			if(40 to 59)
+				icon_state = "mood3"
+
+			if(60 to 79)
+				icon_state = "mood2"
+
+			if(80 to INFINITY)
+				icon_state = "mood1"
 
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent

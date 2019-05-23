@@ -87,6 +87,7 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
+		mood += 0.01
 		if ((map.heat_wave || map.ID == MAP_NOMADS_DESERT) && !inducedSSD)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 				nutrition -= ((0.01/2.5) * HUNGER_THIRST_MULTIPLIER)
@@ -157,9 +158,10 @@
 		if (disease_type == "none")
 			disease = FALSE
 		else if (disease_type == "plague")
+			mood -= 0.25
 			if (disease_progression == 1 || disease_progression == 90 || disease_progression == 180)
 				update_surgery(1)
-			disease_progression += 1
+			disease_progression += 0.5
 			// first 3 minutes
 			if (prob(7))
 				src << "You feel painful lumps on your skin."
@@ -188,10 +190,11 @@
 				disease_treatment = 0
 				bodytemperature = 310.055
 		else if (disease_type == "flu")
+			mood -= 0.1
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 4
+				disease_progression += 2
 			// first 2 minutes
 			if (disease_progression == 25)
 				src << "You feel a little feverish."
@@ -237,10 +240,11 @@
 					disease_immunity += "flu"
 
 		else if (disease_type == "malaria")
+			mood -= 0.17
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 3
+				disease_progression += 1.5
 			// first 2 minutes
 			if (disease_progression == 25)
 				src << "You feel a little feverish."
@@ -292,10 +296,11 @@
 				disease_treatment = 0
 
 		else if (disease_type == "cholera")
+			mood -= 0.15
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 3
+				disease_progression += 1.5
 			// first 3 minutes
 			if (disease_progression == 90)
 				src << "You feel nauseous."
@@ -1551,6 +1556,7 @@
 			if ("cocaine")
 				if (ingested.has_reagent("cocaine"))
 					return
+				mood -= (value/100)*0.26
 				switch (value)
 					if (0 to 24)
 						return
@@ -1594,6 +1600,7 @@
 			if ("opium")
 				if (ingested.has_reagent("opium"))
 					return
+				mood -= (value/100)*0.32
 				switch (value)
 					if (0 to 13)
 						if (prob(5))
@@ -1646,6 +1653,7 @@
 			if ("tobacco")
 				if (ingested.has_reagent("nicotine"))
 					return
+				mood -= (value/100)*0.14
 				switch (value)
 					if (0 to 21)
 						return
@@ -1660,6 +1668,7 @@
 			if ("alcohol")
 				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
 					return
+				mood -= (value/100)*0.20
 				switch (value)
 					if (0 to 21)
 						return
