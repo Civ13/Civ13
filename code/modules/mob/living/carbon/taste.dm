@@ -48,6 +48,6 @@ calculate text size per text.
 				else if (percent <= minimum_percent)
 					continue
 				out.Add("[size][tastes[i]]")
-	if (!smoked) //to prevent spam of "You taste X" every second
+	if (!smoked || prob(2)) //to prevent spam of "You taste X" every second
 		src << "<span class='notice'>You can taste [english_list(out,"something indescribable")].</span>" //no taste means there are too many tastes and not enough flavor.
 	from.trans_to_holder(target,amount,multiplier,copy) //complete transfer

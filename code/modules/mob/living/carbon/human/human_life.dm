@@ -725,24 +725,6 @@
 	// tell src they're dying
 	species.get_environment_discomfort(src)
 
-/*
-/mob/living/carbon/human/proc/adjust_body_temperature(current, loc_temp, boost = 0)
-	var/temperature = current
-	var/difference = abs(current-loc_temp)	//get difference
-	var/increments// = difference/10			//find how many increments apart they are
-	if (difference > 50)
-		increments = difference/25
-	else
-		increments = difference/50
-	var/change = increments*boost	// Get the amount to change by (x per increment)
-	var/temp_change
-	if (current < loc_temp)
-		temperature = min(loc_temp, temperature+change)
-	else if (current > loc_temp)
-		temperature = max(loc_temp, temperature-change)
-	temp_change = (temperature - current)
-	return temp_change
-*/
 /mob/living/carbon/human/proc/stabilize_body_temperature()
 	if (species.passive_temp_gain) // We produce heat naturally.
 		bodytemperature += species.passive_temp_gain
