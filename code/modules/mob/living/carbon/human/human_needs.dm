@@ -1,20 +1,22 @@
 /mob/living/carbon/human/proc/print_mood()
-
-	var/msg = ""
-	switch(mood)
-		if(-5000000 to 19)
-			msg = "My mood is horrible!"
-		if(20 to 39)
-			msg = "My mood is bad."
-		if(40 to 59)
-			msg = "My mood is neutral."
-		if(60 to 79)
-			msg = "My mood is good."
-		if(80 to INFINITY)
-			msg = "My mood is excellent!"
-	return
-	src << "<span class='info'>[msg]<br>*---------*</span>"
-
+	if (!ishuman(src))
+		return
+	else
+		var/mob/living/carbon/human/H = src
+		var/msg = ""
+		switch(mood)
+			if(-5000000 to 19)
+				msg = "My mood is horrible!"
+			if(20 to 39)
+				msg = "My mood is bad."
+			if(40 to 59)
+				msg = "My mood is neutral."
+			if(60 to 79)
+				msg = "My mood is good."
+			if(80 to INFINITY)
+				msg = "My mood is excellent!"
+		H << "<span class='info'>[msg]<br>*---------*</span>"
+		return
 /mob/living/carbon/human/proc/handle_ptsd()
 	if (ptsd < 10)
 		return FALSE
@@ -27,9 +29,15 @@
 	if (ptsd < 3)
 		return
 	else
-		jitteriness += rand(140,200)
-		src << "<span class='warning'>You start shaking!</span>"
-		return
+		if (prob(50))
+			jitteriness += rand(140,200)
+			src << "<span class='warning'>You start shaking!</span>"
+			return
+		else
+			jitteriness += rand(60,90)
+			Paralyse(3)
+			visible_message("[src] collapses, breathing heavily!","<span class='warning'>You can't handle the situation!</span>")
+			return
 /*
 /mob/living/carbon/human/proc/update_happiness()
 	var/old_mood = mood
