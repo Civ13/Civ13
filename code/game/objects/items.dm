@@ -23,7 +23,6 @@
 	//var/list/origin_tech = null	//Used by R&D to determine what research bonuses it grants.
 	var/list/attack_verb = list() //Used in attackby() to say how something was attacked "[x] has been [z.attack_verb] by [y] with [z]"
 	var/force = FALSE
-
 	var/amount = TRUE
 	var/value = 0 //the cost of an item.
 

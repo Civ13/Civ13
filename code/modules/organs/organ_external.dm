@@ -1106,7 +1106,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left shoulder"
 	can_grasp = TRUE
 	artery_name = "basilic vein"
-
+	has_tendon = TRUE
 /obj/item/organ/external/arm/right
 	limb_name = "r_arm"
 	name = "right arm"
@@ -1129,7 +1129,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left hip"
 	can_stand = TRUE
 	artery_name = "femoral artery"
-
+	has_tendon = TRUE
 /obj/item/organ/external/leg/right
 	limb_name = "r_leg"
 	name = "right leg"
@@ -1152,7 +1152,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left ankle"
 	amputation_point = "left ankle"
 	can_stand = TRUE
-
+	has_tendon = TRUE
 /obj/item/organ/external/foot/removed()
 	if (owner) owner.u_equip(owner.shoes)
 	..()
@@ -1179,7 +1179,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left wrist"
 	amputation_point = "left wrist"
 	can_grasp = TRUE
-
+	has_tendon = TRUE
 /obj/item/organ/external/hand/removed()
 	owner.u_equip(owner.gloves)
 	..()
