@@ -34,6 +34,10 @@ var/list/nonbreaking_types = list(
 
 	health = 300
 	initial_health = health
+	
+	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+		health = 50
+		initial_health = health
 
 
 	spawn (2)
@@ -127,6 +131,8 @@ var/list/nonbreaking_types = list(
 				visible_message("<span class = 'danger'>[user] hits the door with [W]!</span>")
 				if (istype(material, /material/wood))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
+				if (istype(material, /material/paper))
+					playsound(get_turf(src), 'sound/effects/cardboardpunch.ogg', 100)
 				else
 					playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
 				update_damage(-W.force)
@@ -197,6 +203,8 @@ var/list/nonbreaking_types = list(
 				user.visible_message("<span class = 'danger'>[user] kicks the door!</span>")
 				if (istype(material, /material/wood))
 					playsound(get_turf(src), 'sound/effects/wooddoorhit.ogg', 100)
+				if (istype(material, /material/paper))
+					playsound(get_turf(src), 'sound/effects/cardboardpunch.ogg', 100)
 				else
 					playsound(get_turf(src), 'sound/effects/grillehit.ogg', 100)
 				update_damage(-10)
@@ -220,7 +228,10 @@ var/list/nonbreaking_types = list(
 	health += amt
 	damage_display()
 	if (health <= 0)
-		visible_message("<span class = 'danger'>[src] collapses into a pile of scrap metal!</span>")
+		if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+			visible_message("<span class = 'danger'>The shoji door is torn apart!</span>")
+		else
+			visible_message("<span class = 'danger'>[src] collapses into a pile of scrap metal!</span>")
 		qdel(src)
 
 /obj/structure/simple_door/key_door/proc/damage_display()
