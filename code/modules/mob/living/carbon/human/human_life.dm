@@ -68,7 +68,7 @@
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
 		gib()
 
-	#define HUNGER_THIRST_MULTIPLIER 0.80
+	#define HUNGER_THIRST_MULTIPLIER 0.32
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
@@ -87,35 +87,35 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		mood += 0.01
 		if ((map.heat_wave || map.ID == MAP_NOMADS_DESERT) && !inducedSSD)
 			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/2.5) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.02/2.5) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.02) * HUNGER_THIRST_MULTIPLIER)
+				mood -= 0.02
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/2.5) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/2.5) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
 		else
 			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/2.5) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.01/2.5) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
 			else if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-				nutrition -= ((0.0025/2.5) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.0025/2.5) * HUNGER_THIRST_MULTIPLIER)
+				nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
+				water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
 			else
 				switch (stat)
 					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
 					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/2.5) * HUNGER_THIRST_MULTIPLIER)
-
+						nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+						water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+				mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 
 	// hotfixes some stamina bugs

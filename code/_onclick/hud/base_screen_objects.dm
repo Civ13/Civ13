@@ -553,7 +553,7 @@
 	screen_loc = "15,8"
 	process_flag = TRUE
 /obj/screen/combat_mode/Click()
-	var/mob/living/carbon/human/C = usr
+	var/mob/living/carbon/human/C = parentmob
 	C << "[C.mood]"
 //	C.print_happiness(C)
 /obj/screen/mood/process()
