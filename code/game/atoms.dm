@@ -464,6 +464,8 @@
 
 //Kicking
 /atom/proc/kick_act(mob/living/carbon/human/user)
+	if (!user.canClick())
+		return
 	//They're not adjcent to us so we can't kick them. Can't kick in straightjacket or while being incapacitated (except lying), can't kick while legcuffed or while being locked in closet
 	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT|INCAPACITATION_BUCKLED_PARTIALLY|INCAPACITATION_BUCKLED_FULLY) \
 		|| istype(user.loc, /obj/structure/closet))
@@ -486,6 +488,8 @@
 
 //Kicking
 /atom/proc/bite_act(mob/living/carbon/human/user)
+	if (!user.canClick())
+		return
 	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT) || istype(user.loc, /obj/structure/closet) || !ishuman(src))
 		return
 	var/mob/living/carbon/human/target = src
@@ -524,6 +528,8 @@
 
 //Jumping
 /atom/proc/jump_act(atom/target, mob/living/carbon/human/user)
+	if (!user.canClick())
+		return
 	//No jumping on the ground dummy && No jumping in space && No jumping in straightjacket or while being incapacitated (except handcuffs) && No jumping vhile being legcuffed or locked in closet
 	if(user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT|INCAPACITATION_BUCKLED_PARTIALLY|INCAPACITATION_BUCKLED_FULLY|INCAPACITATION_FORCELYING) || user.isinspace() \
 		|| istype(user.loc, /obj/structure/closet))
