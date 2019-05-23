@@ -565,8 +565,44 @@ This saves us from having to call add_fingerprint() any time something is put in
 			I.update_icon()
 			return
 
+/client/verb/secondary_intent_change()
+	set name = "secondary-intent-change"
+	set hidden = TRUE
+	if (!mob)
+		return
+	if (ishuman(mob))
+		var/mob/living/carbon/human/H = mob
+		H.resist()
+		switch (mob.middle_click_intent)
+			if("kick")
+				mob.middle_click_intent = "jump"
+
+			if("jump")
+				mob.middle_click_intent = "bite"
+
+			if("bite")
+				mob.middle_click_intent = "kick"
+		var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
+		I.update_icon()
+		return
+
+/client/verb/defense_intent_change()
+	set name = "defense-intent-change"
+	set hidden = TRUE
+	if (!mob)
+		return
+	if (ishuman(mob))
+		if (mob.defense_intent == I_DODGE)
+			mob.defense_intent = I_PARRY
+			mob << "<span class='warning'>You will now parry.</span>"
+		else
+			mob.defense_intent = I_DODGE
+			mob << "<span class='warning'>You will now dodge.</span>"
+			var/obj/screen/intent/I = mob.HUDneed["mode"]
+			I.update_icon()
+
 /client/verb/m_intent_run()
-	set name = "m_intent_run"
+	set name = "m-intent-run"
 	set hidden = TRUE
 
 	if (!mob)

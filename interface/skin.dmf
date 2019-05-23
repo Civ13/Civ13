@@ -198,7 +198,7 @@ macro "hotkeymode"
 		command = "a-intent harm"
 	elem 
 		name = "5"
-		command = "m_intent_run"
+		command = "m-intent-change"
 	elem 
 		name = "A"
 		command = ".startmovingleft"
@@ -246,7 +246,7 @@ macro "hotkeymode"
 		command = "toggle-gun-mode"
 	elem 
 		name = "M"
-		command = "m-intent-change"
+		command = "m-intent-run"
 	elem 
 		name = "Q"
 		command = ".northwest"
@@ -268,6 +268,9 @@ macro "hotkeymode"
 	elem 
 		name = "T"
 		command = ".say"
+	elem 
+		name = "U"
+		command = "secondary-intent-change"
 	elem "w_key"
 		name = "W"
 		command = ".startmovingup"
@@ -282,10 +285,7 @@ macro "hotkeymode"
 		command = ".northeast"
 	elem 
 		name = "Y"
-		command = "Activate-Held-Object"
-	elem 
-		name = "CTRL+Y"
-		command = "Activate-Held-Object"
+		command = "defense-intent-change"
 	elem 
 		name = "Z"
 		command = "Activate-Held-Object"
