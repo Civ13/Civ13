@@ -18,12 +18,18 @@
 		H << "<span class='info'>[msg]<br>*---------*</span>"
 		return
 /mob/living/carbon/human/proc/handle_ptsd()
+	if (ptsd > 100)
+		ptsd = 100
+	if (ptsd < 0)
+		ptsd = 0
+
 	if (ptsd < 10)
 		return FALSE
 	else
 		if (prob(0.45*(ptsd/10))) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
 			do_ptsd()
 			return TRUE
+		flash_sadness(ptsd)
 
 /mob/living/carbon/human/proc/do_ptsd()
 	if (ptsd < 3)
@@ -38,51 +44,14 @@
 			Paralyse(3)
 			visible_message("[src] collapses, breathing heavily!","<span class='warning'>You can't handle the situation!</span>")
 			return
-/*
-/mob/living/carbon/human/proc/update_happiness()
-	var/old_mood = mood
-	var/old_icon = null
-	if(mood_icon)
-	old_icon = H.HUDneed["mood"].icon_state
 
-	happiness = 0
-	for(var/i in events)
-		var/datum/happiness_event/event = events[i]
-		happiness += event.happiness
 
-	switch(mood)
-		if(-5000000 to 19)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood5"
-
-		if(20 to 39)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood4"
-
-		if(40 to 59)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood3"
-
-		if(60 to 79)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood2"
-
-		if(80 to INFINITY)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood1"
-
-	if(old_icon && old_icon != mood.icon_state)
-		if(old_happiness > happiness)
-			src << "<span class='warning'>My mood gets worse.</span>"
-		else
-			src << "<span class='info'>My mood gets better.</span>"
-
-/mob/proc/flash_sadness()
-	if(prob(2))
-		flick("sadness",pain)
+/mob/living/carbon/human/proc/flash_sadness(ptsd = 1)
+	if(prob(2*ptsd))
+		flick("sadness",HUDtech["pain"])
 		var/spoopysound = pick('sound/effects/badmood1.ogg','sound/effects/badmood2.ogg','sound/effects/badmood3.ogg','sound/effects/badmood4.ogg')
 		sound_to(src, spoopysound)
-
+/*
 /mob/living/carbon/human/proc/handle_happiness()
 	switch(happiness)
 		if(-5000000 to 19)
