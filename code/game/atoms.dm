@@ -539,13 +539,14 @@
 		var/obj/item/organ/affecting = user.get_organ(limbcheck)
 		if(!affecting)//Oh shit, we don't have have any legs, we can't jump.
 			return
-
+	if (istype(target, /turf/floor/beach/water) || user.stats["stamina"][1] <= 25 || get_dist(target,user)>2)
+		return
 	//Nice, we can jump, let's do that then.
 //	playsound(user, "sound/effects/jump_[user.gender == MALE ? "male" : "female"].ogg", 25)
 	playsound(user, user.gender == MALE ? 'sound/effects/jump_male.ogg' : 'sound/effects/jump_female.ogg', 25)
 	user.visible_message("[user] jumps.")
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(20,40), 0)
 	user.throw_at(target, 5, 0.5, user)
-	user.setClickCooldown(16)
+	user.setClickCooldown(22)
 
 //all things climbable
