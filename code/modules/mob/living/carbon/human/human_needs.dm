@@ -29,7 +29,8 @@
 		if (prob(0.45*(ptsd/10))) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
 			do_ptsd()
 			return TRUE
-		flash_sadness(ptsd)
+		if (prob(0.45*(ptsd/4)))
+			flash_sadness(ptsd)
 
 /mob/living/carbon/human/proc/do_ptsd()
 	if (ptsd < 3)
