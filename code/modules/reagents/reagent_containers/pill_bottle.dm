@@ -39,16 +39,6 @@
 	name = "bottle of  pills"
 	desc = "Contains pills used to stabilize patients."
 
-	New()
-		..()
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-
 /obj/item/weapon/storage/pill_bottle/penicillin
 	name = "bottle of penicillin pills"
 	desc = "An antibiotic. Effective against many microbial diseases."
