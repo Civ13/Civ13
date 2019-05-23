@@ -28,7 +28,7 @@
 		return
 	else
 		jitteriness += rand(140,200)
-		src << "<span class='warning'>You start shaking!</span>
+		src << "<span class='warning'>You start shaking!</span>"
 		return
 /*
 /mob/living/carbon/human/proc/update_happiness()
