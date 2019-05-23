@@ -109,25 +109,25 @@ Current Defines (_defines/attachment.dm)
 				user << "You already have iron sights."
 		if (ATTACH_SCOPE)
 			if (attachment_slots & ATTACH_SCOPE)
-				A.attached(user, src)
+				A.attached(user, src, FALSE)
 			else
 				user << "You fumble around with the attachment."
 		if (ATTACH_STOCK)
 			if (attachment_slots & ATTACH_STOCK)
-				A.attached(user, src)
+				A.attached(user, src, FALSE)
 			else
 				user << "You fumble around with the attachment."
 		if (ATTACH_BARREL)
 			if (attachment_slots & ATTACH_BARREL)
-				A.attached(user, src)
+				A.attached(user, src, FALSE)
 			else
 				user << "You fumble around with the attachment."
 		if (ATTACH_UNDER)
 			if (attachment_slots & ATTACH_UNDER)
-				A.attached(user, src)
+				A.attached(user, src, FALSE)
 		if (ATTACH_ADV_SCOPE)
 			if (attachment_slots & ATTACH_ADV_SCOPE)
-				A.attached(user, src)
+				A.attached(user, src, FALSE)
 			else
 				user << "You fumble around with the attachment."
 		else
@@ -306,6 +306,7 @@ Current Defines (_defines/attachment.dm)
 		G.specialoptics = src
 		G.optics_ico = ongun
 		G.overlays += G.optics_ico
+	else
 		if (do_after(user, 15, user))
 			user.unEquip(src)
 			A_attached = TRUE
