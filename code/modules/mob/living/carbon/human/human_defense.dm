@@ -450,7 +450,7 @@ bullet_act
 			var/obj/item/weapon/material/sword/S = I
 			if (S.atk_mode == SLASH)
 				var/mob/living/carbon/human/HH = user
-				if(prob((I.force * HH.getStatCoeff("strength")/3)))
+				if(prob((I.force * HH.getStatCoeff("strength")/6)))
 					affecting.droplimb(0, DROPLIMB_EDGE)
 
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
