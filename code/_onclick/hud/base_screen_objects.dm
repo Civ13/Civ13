@@ -553,19 +553,9 @@
 	screen_loc = "15,8"
 	process_flag = TRUE
 /obj/screen/combat_mode/Click()
-	var/mob/living/carbon/human/C = parentmob
-	if (icon_state == "mood5")
-		C << "My mood is horrible!"
-	else if (icon_state == "mood4")
-		C << "My mood is bad."
-	else if (icon_state == "mood3")
-		C << "My mood is neutral."
-	else if (icon_state == "mood2")
-		C << "My mood is good."
-	else if (icon_state == "mood1")
-		C << "My mood is excellent!"
-	return
-//	C.print_happiness(C)
+	if (ishuman(parentmob))
+		var/mob/living/carbon/human/C = parentmob
+		C.print_mood()
 /obj/screen/mood/process()
 	update_icon()
 

@@ -452,7 +452,9 @@ bullet_act
 				var/mob/living/carbon/human/HH = user
 				if(prob((I.force * HH.getStatCoeff("strength")/6)))
 					affecting.droplimb(0, DROPLIMB_EDGE)
-
+					for(var/mob/living/carbon/human/NB in view(6,src))
+						NB.mood -= 10
+						NB.ptsd += 1
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
 
 	if(I.damtype == BRUTE && !I.edge && prob(I.force * (hit_zone == "mouth" ? 6 : 0)) && O)//Knocking out teeth.

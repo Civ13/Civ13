@@ -1,29 +1,31 @@
-/mob/living/carbon/human/proc/print_happiness()
-//	var/msg = "\n<span class='info'>I am a follower of <font color='red'>[religion]</font></span>.\n"
-//	msg += "<span class='info'>I am [get_social_class()]</span>.\n"
-	var/msg += "<span class='info'>*---------*\n<EM>Current mood</EM>\n"
-	for(var/i in events)
-		var/datum/happiness_event/event = events[i]
-		msg += event.description
+/mob/living/carbon/human/proc/print_mood()
 
-	if(!events.len)
-		msg += "<span class='info'>I feel indifferent.</span>\n"
-
-
-	msg += "<span class='info'>*---------*</span>"
-	to_chat(src, msg)
-
+	var/msg = ""
+	switch(mood)
+		if(-5000000 to 19)
+			msg = "My mood is horrible!"
+		if(20 to 39)
+			msg = "My mood is bad."
+		if(40 to 59)
+			msg = "My mood is neutral."
+		if(60 to 79)
+			msg = "My mood is good."
+		if(80 to INFINITY)
+			msg = "My mood is excellent!"
+	return
+	src << "<span class='info'>[msg]<br>*---------*</span>"
+/*
 /mob/living/carbon/human/proc/update_happiness()
 	var/old_mood = mood
 	var/old_icon = null
 	if(mood_icon)
 	old_icon = H.HUDneed["mood"].icon_state
-/*
+
 	happiness = 0
 	for(var/i in events)
 		var/datum/happiness_event/event = events[i]
 		happiness += event.happiness
-*/
+
 	switch(mood)
 		if(-5000000 to 19)
 			if(happiness_icon)
@@ -72,7 +74,7 @@
 		if(80 to INFINITY)
 			mood_modifier = 10
 
-/*
+
 /mob/living/carbon/human/proc/add_event(category, type) //Category will override any events in the same category, should be unique unless the event is based on the same thing like hunger.
 	var/datum/happiness_event/the_event
 	if(events[category])

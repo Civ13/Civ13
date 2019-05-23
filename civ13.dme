@@ -625,6 +625,7 @@
 #include "code\modules\mob\living\carbon\human\human_job.dm"
 #include "code\modules\mob\living\carbon\human\human_life.dm"
 #include "code\modules\mob\living\carbon\human\human_movement.dm"
+#include "code\modules\mob\living\carbon\human\human_needs.dm"
 #include "code\modules\mob\living\carbon\human\human_organs.dm"
 #include "code\modules\mob\living\carbon\human\human_species.dm"
 #include "code\modules\mob\living\carbon\human\human_stats.dm"

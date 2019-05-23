@@ -119,6 +119,8 @@
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
 			visible_message("\The [src] bites off [H]'s limb!")
+			for(var/mob/living/carbon/human/NB in view(6,src))
+				NB.mood -= 12
 		return H
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob
