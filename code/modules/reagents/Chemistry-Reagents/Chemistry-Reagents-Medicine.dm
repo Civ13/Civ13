@@ -18,7 +18,7 @@
 	M.mood += removed*4
 	M.SetParalysis(0)
 	M.SetWeakened(0)
-	
+
 /datum/reagent/anti_toxin
 	name = "Anti-toxin"
 	id = "anti_toxin"
@@ -307,7 +307,7 @@
 		if (world.time > data + ANTIDEPRESSANT_MESSAGE_DELAY)
 			data = world.time
 			M << "<span class='notice'>Your mind feels stable... a little stable.</span>"
-	M.mood += removed*22
+	M.mood += removed*20
 
 /datum/reagent/paroxetine
 	name = "Paroxetine"

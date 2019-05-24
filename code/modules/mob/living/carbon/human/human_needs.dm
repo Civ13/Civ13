@@ -23,7 +23,7 @@
 	if (ptsd < 0)
 		ptsd = 0
 
-	if (ptsd < 10)
+	if (ptsd < 10 || ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
 		return FALSE
 	else
 		if (prob(0.45*(ptsd/8)) && prob(100-mood)) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
@@ -33,7 +33,7 @@
 			flash_sadness(ptsd)
 
 /mob/living/carbon/human/proc/do_ptsd()
-	if (ptsd < 3)
+	if (ptsd < 3 || ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
 		return
 	else
 		if (prob(50))
@@ -50,6 +50,8 @@
 
 
 /mob/living/carbon/human/proc/flash_sadness(ptsd = 1)
+	if (ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
+		return
 	if(prob(2*ptsd))
 		flick("sadness",HUDtech["pain"])
 		var/spoopysound = pick('sound/effects/badmood1.ogg','sound/effects/badmood2.ogg','sound/effects/badmood3.ogg','sound/effects/badmood4.ogg')
