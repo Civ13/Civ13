@@ -173,6 +173,7 @@
 	icon_state = "flour"
 	item_state = "flour"
 	decay = 45*600
+	satisfaction = -3
 	New()
 		..()
 		reagents.add_reagent("flour", 30)
@@ -207,6 +208,7 @@
 	icon = 'icons/obj/food.dmi'
 	icon_state = "sugar"
 	item_state = "flour"
+	satisfaction = 8
 	New()
 		..()
 		reagents.add_reagent("sugar", 30)
@@ -220,6 +222,7 @@
 	icon_state = "tea_leaves_dried"
 	item_state = "flour"
 	decay = 80*600
+	satisfaction = 4
 	New()
 		..()
 		reagents.add_reagent("tea", 10)

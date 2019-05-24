@@ -552,7 +552,7 @@
 	icon_state = "mood1"
 	screen_loc = "15,8"
 	process_flag = TRUE
-/obj/screen/combat_mode/Click()
+/obj/screen/mood/Click()
 	if (ishuman(parentmob))
 		var/mob/living/carbon/human/C = parentmob
 		C.print_mood()

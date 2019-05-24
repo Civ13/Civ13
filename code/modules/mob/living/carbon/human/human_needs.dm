@@ -15,7 +15,7 @@
 				msg = "My mood is good."
 			if(80 to INFINITY)
 				msg = "My mood is excellent!"
-		H << "<span class='info'>[msg]<br>*---------*</span>"
+		H << "<span class='info'>[msg]</span>"
 		return
 /mob/living/carbon/human/proc/handle_ptsd()
 	if (ptsd > 100)
@@ -26,10 +26,10 @@
 	if (ptsd < 10)
 		return FALSE
 	else
-		if (prob(0.45*(ptsd/10))) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
+		if (prob(0.45*(ptsd/8)) && prob(100-mood)) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
 			do_ptsd()
 			return TRUE
-		if (prob(0.45*(ptsd/4)))
+		if (prob(0.45*(ptsd/4)) && prob(100-mood))
 			flash_sadness(ptsd)
 
 /mob/living/carbon/human/proc/do_ptsd()
@@ -38,12 +38,14 @@
 	else
 		if (prob(50))
 			jitteriness += rand(140,200)
-			src << "<span class='warning'>You start shaking!</span>"
+			visible_message("[src] starts shaking!","<span class='warning'>You start shaking!</span>")
+			emote("cry")
 			return
 		else
 			jitteriness += rand(60,90)
 			Paralyse(3)
 			visible_message("[src] collapses, breathing heavily!","<span class='warning'>You can't handle the situation!</span>")
+			emote("scream")
 			return
 
 

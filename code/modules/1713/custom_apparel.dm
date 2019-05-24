@@ -342,8 +342,165 @@
 	else
 		..()
 
+/////////////////COLONIAL COAT////////////////////////////////////
+/obj/item/clothing/suit/storage/jacket/customcolonialcoat
+	name = "colonial coat"
+	desc = "A colonial coat of the XVIIIth century."
+	var/uncolored = FALSE
+	var/topcolor = 0
+	var/deccolor = 0
+	var/linescolor = 0
+	item_state = "cuscolonialcoat_full"
+	icon_state = "cuscolonialcoat_full"
+	worn_state = "cuscolonialcoat_full"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
 
 
+/obj/item/clothing/suit/storage/jacket/customcolonialcoat/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!topcolor)
+			var/input = input(user, "Main - Choose a hex color (without the #):", "Main Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				topcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (!deccolor)
+			var/input = input(user, "Decorations - Choose a hex color (without the #):", "Decorations Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				deccolor = addtext("#",input)
+		if (!linescolor)
+			var/input = input(user, "Lines - Choose a hex color (without the #):", "Lines Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				linescolor = addtext("#",input)
+		if (topcolor && deccolor && linescolor)
+			uncolored = FALSE
+			var/image/top = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonialcoat_top")
+			top.color = topcolor
+			var/image/dec = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonialcoat_dec")
+			dec.color = deccolor
+			var/image/lines = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonialcoat_lines")
+			lines.color = linescolor
+			overlays += top
+			overlays += dec
+			overlays += lines
+			return
+	else
+		..()
+
+
+/obj/item/clothing/suit/storage/jacket/customcolonial
+	name = "colonial jacket"
+	desc = "A colonial jacket of the XVIIIth century."
+	var/uncolored = FALSE
+	var/jacketcolor = 0
+	var/crosscolor = 0
+	item_state = "cuscolonial_full"
+	icon_state = "cuscolonial_full"
+	worn_state = "cuscolonial_full"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/suit/storage/jacket/customcolonial/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!jacketcolor)
+			var/input = input(user, "Jacket - Choose a hex color (without the #):", "Jacket Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				jacketcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (!crosscolor)
+			var/input = input(user, "Pants - Choose a cross bandolier color (without the #):", "Bandolier Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				crosscolor = addtext("#",input)
+		if (jacketcolor && crosscolor)
+			uncolored = FALSE
+			var/image/jacket = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonial_jacket")
+			jacket.color = jacketcolor
+			var/image/cross = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonial_cross")
+			cross.color = crosscolor
+			var/image/plain = image("icon" = 'icons/obj/clothing/suits.dmi', "icon_state" = "customcolonial_plain")
+			overlays += jacket
+			overlays += cross
+			overlays += plain
+			return
+	else
+		..()
 /////////////////UNIFORMS////////////////////////////////////
 /obj/item/clothing/under/customuniform
 	name = "uniform"

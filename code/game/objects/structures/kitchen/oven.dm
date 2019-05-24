@@ -190,6 +190,7 @@
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE
 				F.raw = FALSE
+				F.satisfaction = abs(F.satisfaction*2)
 
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)
