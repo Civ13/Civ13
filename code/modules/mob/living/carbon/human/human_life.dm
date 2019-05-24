@@ -691,7 +691,8 @@
 		temp_adj = min(temp_adj,8)
 	else
 		temp_adj = max(temp_adj,-8)
-	bodytemperature += temp_adj
+	if (map && map.civilizations)
+		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
 	if (bodytemperature >= species.heat_level_1)
 		//Body temperature is too hot.
