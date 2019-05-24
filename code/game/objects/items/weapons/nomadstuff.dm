@@ -114,8 +114,10 @@
 /obj/structure/tent/New()
 	..()
 	oldarea = get_area(src)
+	var/oldclimate = oldarea.climate
 	if (oldarea.location == AREA_OUTSIDE)
-		new/area/caribbean/roofed(src.loc)
+		var/area/caribbean/roofed/A = new/area/caribbean/roofed(src.loc)
+		A.climate = oldclimate
 		for(var/obj/structure/tent/T in range(1,src))
 			T.update_icon()
 		update_icon()

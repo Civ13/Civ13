@@ -594,9 +594,9 @@
 				if ("savanna")
 					loc_temp = 29
 		if ("Dry Season")
-			loc_temp = 40
+			loc_temp = 50
 		if ("Wet Season")
-			loc_temp = 30
+			loc_temp = 40
 
 
 	switch (time_of_day)
@@ -655,11 +655,11 @@
 				break
 	//inside areas have natural insulation, so the temp will be more moderate than outside.
 	if (mob_area.location == AREA_INSIDE)
-		if (loc_temp > 295)
-			loc_temp = (max(295,loc_temp-40))
-		else if (loc_temp < 290)
-			loc_temp = (min(290,loc_temp+40))
-	if (loc_temp > 17 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+		if (loc_temp > 22)
+			loc_temp = (max(22,loc_temp-40))
+		else if (loc_temp < 18)
+			loc_temp = (min(18,loc_temp+40))
+	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -682,15 +682,20 @@
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_COLD_DIVISOR) //this will be negative
-	else if (loc_temp > bodytemperature-10) //Over 27 degrees = unconfortable with too much clothing
+	else if (loc_temp > bodytemperature) //Over 37 degrees = unconfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
-			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_HEAT_DIVISOR)
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
 			temp_adj = abs(temp_adj)
 	if (temp_adj > 0)
 		temp_adj = min(temp_adj,8)
-	else
+	else if (temp_adj < 0)
 		temp_adj = max(temp_adj,-8)
+	else
+		if (loc_temp < bodytemperature)
+			temp_adj = -0.1
+		if (loc_temp > bodytemperature)
+			temp_adj = 0.1
 	if (map && map.civilizations)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
