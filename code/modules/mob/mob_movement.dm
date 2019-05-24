@@ -593,8 +593,9 @@
 				H << "<span class = 'danger'>You're too tired to keep running.</span>"
 				if (H.m_intent != "walk")
 					H.m_intent = "walk" // in case we don't have a m_intent HUD, somehow
-					var/obj/screen/intent/I = mob.HUDneed["mov_intent"]
-					I.update_icon()
+					if (mob.HUDneed["mov_intent"])
+						var/obj/screen/intent/I = mob.HUDneed["mov_intent"]
+						I.update_icon()
 
 		if (!mob_is_observer && F_is_valid_floor)
 			if (istype(src, /mob/living/carbon/human))
