@@ -55,7 +55,7 @@
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
 			for (var/mob/living/carbon/human/M in range(1, src))
 				M.adjustBruteLoss(rand(17,27))
-				M.Weaken(18)
+				M.Weaken(15)
 				M << "The roof collapses!"
 			Destroy()
 			qdel(src)

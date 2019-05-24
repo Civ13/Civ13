@@ -51,6 +51,14 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars
+	name = "binoculars"
+	desc = "A pair of binoculars."
+	icon_state = "binoculars"
+	max_zoom = ZOOM_CONSTANT*3
+	attachable = FALSE
+	value = 15
+
 /obj/item/weapon/attachment/scope/adjustable/verb/adjust_scope_verb()
 	set name = "Adjust Zoom"
 	set category = null
@@ -115,6 +123,12 @@ Parts of code courtesy of Super3222
 	var/mob/living/carbon/human/H = user
 	if (user.stat || !ishuman(user))
 		if (!silent) user << "You are unable to focus through \the [src]."
+		return FALSE
+	if (H.wear_mask && istype(H.wear_mask, /obj/item/clothing/mask))
+		var/obj/item/clothing/mask/currmask = H.wear_mask
+		if (currmask.blocks_scope)
+			if (!silent) user << "You can't use the [src] while wearing \the [currmask]!"
+			return FALSE
 		return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		if (!silent) user << "Your visor gets in the way of looking through \the [src]."
@@ -227,7 +241,6 @@ Parts of code courtesy of Super3222
 			for (var/obj/screen/movable/action_button/AB in user.client.screen)
 				if (AB.name == "Toggle Sights" && AB != azoom.button && azoom.button.screen_loc)
 					AB.invisibility = 101
-
 					var/azoom_button_screenX = text2num(splittext(splittext(azoom.button.screen_loc, ":")[1], "+")[2])
 					var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
 
@@ -357,6 +370,8 @@ Parts of code courtesy of Super3222
 		client.view = world.view
 
 /mob/living/carbon/human/proc/using_zoom()
+	if (using_MG)
+		return TRUE
 	if (stat == CONSCIOUS)
 		if (client && actions.len)
 			if (client.pixel_x || client.pixel_y) //Cancel currently scoped weapons

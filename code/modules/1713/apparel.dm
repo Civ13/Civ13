@@ -3,7 +3,6 @@
 
 
 // pirates
-
 /obj/item/clothing/shoes/heavyboots/wrappedboots
 	name = "\improper wrapped boots"
 	icon_state = "wrappedboots"
@@ -118,11 +117,10 @@
 	icon_state = "bandolier"
 	item_state = "bandolier"
 	slots = 8
-
+	slot = "utility"
 	New()
 		..()
 		hold.can_hold = list(/obj/item/ammo_casing)
-
 
 /obj/item/clothing/under/doctor
 	name = "doctor's uniform"

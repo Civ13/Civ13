@@ -29,7 +29,7 @@ var/list/preferences_datums = list()
 
 	var/b_type = "A+"					//blood type (not-chooseable)
 	var/backbag = 2						//backpack type
-	var/h_style = "Bald"				//Hair type
+	var/h_style = "Short Hair"				//Hair type
 	var/r_hair = FALSE						//Hair color
 	var/g_hair = FALSE						//Hair color
 	var/b_hair = FALSE						//Hair color
@@ -73,7 +73,7 @@ var/list/preferences_datums = list()
 	var/list/preferences_enabled = list("SOUND_MIDI", "SOUND_LOBBY", "SOUND_AMBIENCE",
 		"CHAT_GHOSTEARS", "CHAT_GHOSTSIGHT", "CHAT_GHOSTRADIO", "CHAT_SHOWICONS",
 		"SHOW_TYPING", "CHAT_OOC", "CHAT_LOOC", "CHAT_DEAD", "SHOW_PROGRESS",
-		"CHAT_ATTACKLOGS", "CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
+		"CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
 
 	var/list/preferences_disabled = list()
 

@@ -127,7 +127,7 @@
 		for(var/mob/living/simple_animal/bull/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
 				pregnant = TRUE
-				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+				birthCountdown = 600
 				break
 
 		if (pregnant)
@@ -143,7 +143,7 @@
 					cowCount++
 
 			if (cowCount > 5) // max 5 cows/bulls in a 15x15 area around cow
-				overpopulationCountdown = 150 // 5 minutes
+				overpopulationCountdown = 300
 				pregnant = FALSE
 	else if (pregnant)
 		birthCountdown--
@@ -282,7 +282,7 @@
 		for(var/mob/living/simple_animal/goat/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/goat/female))
 				pregnant = TRUE
-				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+				birthCountdown = 600 // life ticks once per 2 seconds, 300 == 10 minutes
 				break
 
 		if (pregnant)
@@ -295,7 +295,7 @@
 
 
 			if (goatCount > 5) // max 5 cows/bulls in a 15x15 area around
-				overpopulationCountdown = 150 // 5 minutes
+				overpopulationCountdown = 300 // 5 minutes
 				pregnant = FALSE
 	else if (pregnant)
 		birthCountdown--
@@ -449,6 +449,8 @@
 			regrowth()
 			new/obj/item/stack/material/wool(get_turf(src))
 			return
+	else
+		..()
 
 /mob/living/simple_animal/sheep/female/Life()
 	. = ..()
@@ -465,7 +467,7 @@
 		for(var/mob/living/simple_animal/sheep/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/sheep/female))
 				pregnant = TRUE
-				birthCountdown = 300 // life ticks once per 2 seconds, 300 == 10 minutes
+				birthCountdown = 600 // life ticks once per 2 seconds, 300 == 10 minutes
 				break
 
 		if (pregnant)
@@ -478,7 +480,7 @@
 
 
 			if (sheepCount > 5) // max 5 cows/bulls in a 15x15 area around
-				overpopulationCountdown = 150 // 5 minutes
+				overpopulationCountdown = 300 // 5 minutes
 				pregnant = FALSE
 	else if (pregnant)
 		birthCountdown--

@@ -8,6 +8,8 @@
 	var/turf/cover = get_turf(src)
 	if (!cover)
 		return FALSE
+	if (!istype(P, /obj/item/projectile))
+		return FALSE
 	if (get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
 		return FALSE
 	// can't hit legs or feet when they're behind a sandbag
@@ -81,7 +83,7 @@
 						return TRUE
 
 			if (check_cover(mover, mover.throw_source) && prob(bullet_deflection_chance(mover)))
-				visible_message("<span class = 'warning'>[mover] hits the dirt wall!</span>")
+				visible_message("<span class = 'warning'>[mover] hits the [src]!</span>")
 				if (istype(mover, /obj/item/projectile))
 					var/obj/item/projectile/B = mover
 					B.damage = 0 // make sure we can't hurt people after hitting a sandbag

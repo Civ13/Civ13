@@ -72,6 +72,8 @@
 		update_icon()
 		if (name == "campfire")
 			set_light(5)
+		else if (name == "wood stove")
+			set_light(1)
 		else
 			set_light(2)
 		spawn (50)
@@ -188,6 +190,7 @@
 				var/obj/item/weapon/reagent_containers/food/F = I
 				F.roasted = TRUE
 				F.raw = FALSE
+				F.satisfaction = abs(F.satisfaction*2)
 
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)
@@ -399,3 +402,17 @@
 		var/obj/item/stack/ore/tin/emptyedtin = new/obj/item/stack/ore/tin(src.loc)
 		emptyedtin.amount = tin
 		tin = 0
+
+/obj/structure/oven/woodstove
+	name = "wood stove"
+	desc = "A stove fueled with wood logs."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "woodstove"
+	layer = 2.9
+	density = TRUE
+	anchored = TRUE
+	flags = OPENCONTAINER | NOREACT
+	base_state = "woodstove"
+	on = FALSE
+	max_space = 9
+	fuel = 4

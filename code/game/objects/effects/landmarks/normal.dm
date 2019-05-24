@@ -597,7 +597,28 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
+/////////////////
+////russian/////
+		if ("JoinLateGECap")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 
+		if ("JoinLateGE")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+
+		if ("JoinLateGEDoc")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 //////////////////////////////////////////////
 
 		if ("endgame_exit")

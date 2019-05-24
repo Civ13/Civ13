@@ -121,7 +121,7 @@
 	else
 		return ..()
 
-/obj/item/weapon/material/kitchen/utensil/knife/boot/makeshift_knife
+/obj/item/weapon/material/kitchen/utensil/knife/makeshift_knife
 	name = "boot knife"
 	desc = "A small self made knife used a lot in jail."
 	icon = 'icons/obj/weapons.dmi'
@@ -131,6 +131,17 @@
 	unbreakable = TRUE
 	drawsound = 'sound/items/unholster_knife.ogg'
 	force_divisor = 0.3
+
+/obj/item/weapon/material/kitchen/utensil/knife/bowie
+	name = "bowie knife"
+	desc = "A rather large bowie knife."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "bowie_knife"
+	item_state = "knife"
+	applies_material_colour = FALSE
+	unbreakable = TRUE
+	drawsound = 'sound/items/unholster_knife.ogg'
+	force_divisor = 0.6
 
 /obj/item/weapon/material/kitchen/utensil/knife/bone
 	name = "bone knife"

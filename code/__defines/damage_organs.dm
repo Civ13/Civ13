@@ -38,6 +38,8 @@
 #define ORGAN_SPLINTED   (1<<4)
 #define ORGAN_DEAD       (1<<5)
 #define ORGAN_ASSISTED   (1<<6)
+#define ORGAN_ARTERY_CUT (1<<7)
+#define ORGAN_TENDON_CUT (1<<8)
 
 #define DROPLIMB_EDGE 0
 #define DROPLIMB_BLUNT 1

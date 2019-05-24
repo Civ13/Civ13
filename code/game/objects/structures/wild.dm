@@ -11,7 +11,7 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/seedtimer = 1
-
+	var/mob/living/carbon/human/stored_unit = null
 /obj/structure/wild/proc/seedtimer_proc()
 	spawn(6000)
 		seedtimer = 1
@@ -121,13 +121,15 @@
 
 /obj/structure/wild/proc/try_destroy()
 	if (health <= 0)
+		if (stored_unit)
+			release_stored()
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		qdel(src)
 		return
 
 
 /obj/structure/wild/bullet_act(var/obj/item/projectile/proj)
-	if (prob(proj.damage - 30)) // makes shrapnel unable to take down trees
+	if (proj.damage > 100 && prob(33)) // makes shrapnel unable to take down trees
 		visible_message("<span class = 'danger'>[src] collapses!</span>")
 		qdel(src)
 
@@ -161,6 +163,19 @@
 	density = TRUE
 	sways = FALSE
 	amount = 5
+
+/obj/structure/wild/tree/dead_tree/destroyed
+	name = "destroyed tree"
+	icon = 'icons/obj/flora/destroyedtrees.dmi'
+	icon_state = "1"
+	opacity = FALSE
+	density = TRUE
+	sways = FALSE
+	amount = 2
+
+/obj/structure/wild/tree/dead_tree/destroyed/New()
+	..()
+	icon_state = "[rand(1,8)]"
 
 /obj/structure/wild/tree/live_tree
 	name = "tree"
@@ -608,6 +623,8 @@
 	icon_state = "med_pine_dead"
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
+		if (stored_unit)
+			release_stored()
 		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
 		var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(get_turf(src))
 		dropwood.amount = 7
@@ -708,3 +725,40 @@
 		try_destroy()
 	else
 		..()
+
+
+/obj/structure/wild/jungle/MouseDrop_T(var/mob/living/carbon/human/user as mob)
+	if (istype(user, /mob/living/carbon/human))
+		if (stored_unit)
+			return
+		if (user.restrained() || user.stat || user.weakened || user.stunned || user.paralysis)
+			return
+		if (!isturf(user.loc)) // are you in a container/closet/pod/etc?
+			return
+		var/mob/living/carbon/human/H = user
+		if (H.faction_text == "VIETNAMESE")
+			user << "You start hiding in \the [src]..."
+			if (do_after(user,100,src))
+				user << "You finish hiding in \the [src]."
+				stored_unit = user
+				if (user.client)
+					user.client.perspective = EYE_PERSPECTIVE
+					user.client.eye = src
+				user.forceMove(src)
+	else
+		..()
+
+/obj/structure/wild/attack_hand(mob/user as mob)
+	if (stored_unit)
+		if (user == stored_unit)
+			release_stored()
+	else
+		..()
+/obj/structure/wild/proc/release_stored()
+	if (stored_unit)
+		if (stored_unit.client)
+			stored_unit.client.eye = stored_unit.client.mob
+			stored_unit.client.perspective = MOB_PERSPECTIVE
+			stored_unit.forceMove(get_turf(src))
+			stored_unit = null
+			return

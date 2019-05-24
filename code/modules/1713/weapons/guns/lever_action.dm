@@ -33,7 +33,7 @@
 	fire_delay = 2
 	blackpowder = FALSE
 	handle_casings = HOLD_CASINGS
-
+	equiptimer = 15
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 
@@ -112,6 +112,9 @@
 	var/mob/living/carbon/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
+		return FALSE
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
 /*
 	if (loaded.len <= 0)

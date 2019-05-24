@@ -50,6 +50,18 @@
 		else
 			icon_state = "flour_mill"
 
+/obj/structure/mill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
+		H.visible_message("You start to mill the [W.name].")
+		icon_state = "flour_mill1"
+		if (do_after(H, 20, H.loc))
+			H.visible_message("You finish milling the [W.name].")
+			new/obj/item/weapon/reagent_containers/food/snacks/rice(H.loc)
+			icon_state = "flour_mill"
+			qdel(W)
+		else
+			icon_state = "flour_mill"
+
 /obj/structure/dehydrator
 	name = "dehydrator"
 	desc = "A wood structure used to dry meat, fish, tobacco, and so on."

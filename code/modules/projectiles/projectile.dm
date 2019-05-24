@@ -78,6 +78,8 @@
 
 	var/useless = FALSE
 
+	var/can_hit_in_trench = 1
+
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
 
 /obj/item/projectile/proc/checktype()
@@ -94,6 +96,7 @@
 
 /obj/item/projectile/Destroy()
 	projectile_list -= src
+	walk(src, 0)
 	..()
 
 //TODO: make it so this is called more reliably, instead of sometimes by bullet_act() and sometimes not
@@ -402,7 +405,7 @@
 	else if (!useless && !target_mob.takes_less_damage) // if we just grazed, useless is set to TRUE
 		if (target_mob.stat == CONSCIOUS && prob(mygun.KO_chance) && damage >= DAMAGE_HIGH-6)
 			visible_message("<span class = 'danger'>[target_mob] is knocked out!</span>")
-			target_mob.Paralyse(5)
+			target_mob.Paralyse(3)
 
 	//hit messages
 	if (blockedhit == FALSE)
@@ -441,34 +444,42 @@
 	var/passthrough = TRUE //if the projectile should continue flying
 	var/passthrough_message = null
 
-	if (T.density)
+	if(can_hit_in_trench == 1)
+		if(kill_count < (initial(kill_count) - 1))
+			if(!istype(T, /turf/floor/trench))
+				can_hit_in_trench = 0
+			else
+				can_hit_in_trench = -1
+
+	if (T.density || (can_hit_in_trench == -1 && !istype(T, /turf/floor/trench)))
 		passthrough = FALSE
 	else
-		// needs to be its own loop for reasons
-		for (var/obj/O in T.contents)
-			if (O == original)
-				var/hitchance = 60 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
-				if (isstructure(O))
-					hitchance = 100
-				else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
-					hitchance = 100
-				else if (isitem(O)) // any item
-					var/obj/item/I = O
-					hitchance = 25 * I.w_class // a pistol would be 50%
-				if (prob(hitchance))
-					do_bullet_act(O)
-					bumped = TRUE
-					loc = null
-					qdel(src)
-					return FALSE
-				else
-					O.visible_message("<span class = 'warning'>\The [src] narrowly misses [O]!</span>")
-					if (isitem(O) || (O.density && O.anchored)) // since it was on the ground
+		if(!istype(T, /turf/floor/trench) || can_hit_in_trench)
+			// needs to be its own loop for reasons
+			for (var/obj/O in T.contents)
+				if (O == original)
+					var/hitchance = 33 // a light, for example. This was 66%, but that was unusually accurate, thanks BYOND
+					if (isstructure(O) && !istype(O, /obj/structure/lamp))
+						hitchance = 50
+					else if (!isitem(O) && isnonstructureobj(O)) // a tank, for example.
+						hitchance = 100
+					else if (isitem(O)) // any item
+						var/obj/item/I = O
+						hitchance = 9 * I.w_class // a pistol would be 50%
+					if (prob(hitchance))
+						do_bullet_act(O)
 						bumped = TRUE
 						loc = null
 						qdel(src)
 						return FALSE
-				break
+					else
+						O.visible_message("<span class = 'warning'>\The [src] narrowly misses [O]!</span>")
+						if (isitem(O) || (O.density && O.anchored)) // since it was on the ground
+							bumped = TRUE
+							loc = null
+							qdel(src)
+							return FALSE
+					break
 		for (var/atom/movable/AM in T.contents)
 			if (!untouchable.Find(AM))
 				if (isliving(AM) && AM != firer)
@@ -511,7 +522,7 @@
 
 	//penetrating projectiles can pass through things that otherwise would not let them
 	++penetrating
-	if (T.density && penetrating > 0)
+	if ((T.density && penetrating > 0) && (can_hit_in_trench != -1))
 		if (check_penetrate(T))
 			passthrough = TRUE
 			passthrough_message = "<span class = 'warning'>The bullet penetrates \the [T]!</span>"
@@ -553,8 +564,8 @@
 		setup_trajectory()
 		firstmove = TRUE
 
-	if (src && loc)
-		if (--kill_count < 1)
+	spawn while(src && src.loc)
+		if (kill_count-- < 1)
 			for (var/atom/movable/AM in loc)
 				do_bullet_act(AM)
 			do_bullet_act(loc)

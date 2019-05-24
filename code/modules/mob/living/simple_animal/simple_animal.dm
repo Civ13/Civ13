@@ -61,7 +61,7 @@
 	var/carnivore = 0 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
-	var/simplehunger = 1000
+	var/simplehunger = 2000
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -100,13 +100,13 @@
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
 		simplehunger-=1
-		if (simplehunger > 1000)
-			simplehunger = 1000
+		if (simplehunger > 2000)
+			simplehunger = 2000
 
 		if (simplehunger <= 0)
 			visible_message("\The [src] is starving!")
 			adjustBruteLoss(round(max(1,maxHealth/10)))
-			simplehunger = 30
+			simplehunger = 60
 
 	if (following_mob)
 		stop_automated_movement = TRUE
@@ -306,7 +306,7 @@
 			visible_message("<span class='notice'>[user] gently taps [src] with \the [O].</span>")
 		else
 			O.attack(src, user, user.targeted_organ)
-	else if (O.sharp)
+	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
 			if (istype(src, /mob/living/simple_animal/frog/poisonous))
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")

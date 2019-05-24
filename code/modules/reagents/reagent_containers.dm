@@ -7,6 +7,48 @@
 	var/amount_per_transfer_from_this = 5
 	var/possible_transfer_amounts = list(5,10,15,25,30)
 	var/volume = 30
+	secondary_action = TRUE
+
+/obj/item/weapon/reagent_containers/verb/smell() //set amount_per_transfer_from_this
+	set name = "Smell"
+	set category = null
+	set src in range(0)
+	var/list/tastes = list() //descriptor = strength
+	var/list/out = list()
+	var/total_taste = FALSE
+	for (var/datum/reagent/R in reagents.reagent_list)
+		var/desc
+		if (!R.taste_mult)
+			continue
+		if (R.id == "nutriment")
+			var/list/t = R.get_data()
+			for (var/i in TRUE to t.len)
+				var/A = t[i]
+				if (!(A in tastes))
+					tastes.Add(A)
+					tastes[A] = FALSE
+				tastes[A] += t[A]
+				total_taste += t[A]
+			continue
+		else
+			desc = R.taste_description
+		if (!(desc in tastes))
+			tastes.Add(desc)
+			tastes[desc] = FALSE
+		tastes[desc] += reagents.get_reagent_amount(R.id) * R.taste_mult
+		total_taste += reagents.get_reagent_amount(R.id) * R.taste_mult
+	if (tastes.len)
+		for (var/i in TRUE to tastes.len)
+			var/size = "a hint of "
+			var/percent = tastes[tastes[i]]/total_taste * 100
+			if (percent > 15)
+				size = ""
+			else if (percent <= 15)
+				continue
+			out.Add("[size][tastes[i]]")
+	usr << "<span class='notice'>You can smell [english_list(out,"something indescribable")].</span>" //no taste means there are too many tastes and not enough flavor.
+/obj/item/weapon/reagent_containers/secondary_attack_self(mob/living/carbon/human/user)
+	smell()
 
 /obj/item/weapon/reagent_containers/verb/set_APTFT() //set amount_per_transfer_from_this
 	set name = "Set transfer amount"

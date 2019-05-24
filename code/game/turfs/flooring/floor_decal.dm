@@ -543,6 +543,19 @@ var/list/floor_decals = list()
 	name = "plaque"
 	icon_state = "plaque"
 
+/obj/effect/floor_decal/dirtwall
+	name = "carpet"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "dirt_wall"
+
+/obj/effect/floor_decal/dirtwall/inc66
+	name = "carpet"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "dirt_wall_66%"
+/obj/effect/floor_decal/dirtwall/inc33
+	name = "carpet"
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "dirt_wall_33%"
 /obj/effect/floor_decal/carpet
 	name = "carpet"
 	icon = 'icons/turf/flooring/carpet.dmi'

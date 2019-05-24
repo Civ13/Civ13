@@ -217,6 +217,27 @@
 		face_atom(A)
 	//A.visible_message("<small>[A] looks at [src].</small>")//Doesn't work for everything yet.
 	A.examine(src)
+/mob/verb/pointed(atom/A as mob|obj|turf in view())
+	set name = "Point To"
+	set category = "Object"
+
+	if(!src || !isturf(src.loc) || !(A in view(src.loc)))
+		return 0
+	if(istype(A, /obj/effect/decal/point))
+		return 0
+
+	var/tile = get_turf(A)
+	if (!tile)
+		return 0
+
+	var/obj/P = new /obj/effect/decal/point(tile)
+	P.invisibility = invisibility
+	spawn (20)
+		if(P)
+			qdel(P)	// qdel
+
+	face_atom(A)
+	return 1
 
 /mob/proc/ret_grab(obj/effect/list_container/mobl/L as obj, flag)
 	if ((!( istype(l_hand, /obj/item/weapon/grab) ) && !( istype(r_hand, /obj/item/weapon/grab) )))
@@ -609,15 +630,15 @@
 			if (map && !map.civilizations)
 				var/grace_period_string = ""
 				for (var/faction in map.faction_organization)
-					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, CIVILIAN, ROMAN, GREEK, ARAB, JAPANESE, RUSSIAN).Find(faction))
+					if (!list(BRITISH, PIRATES, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, CIVILIAN, ROMAN, GREEK, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, VIETNAMESE).Find(faction))
 						continue
 					if (grace_period_string)
 						grace_period_string += ", "
 					if (!map.civilizations)
 						if (map.last_crossing_block_status[faction])
-							grace_period_string += "[faction_const2name(faction)] may cross"
+							grace_period_string += "[faction_const2name(faction,map.ordinal_age)] may cross"
 						else
-							grace_period_string += "[faction_const2name(faction)] may not cross"
+							grace_period_string += "[faction_const2name(faction,map.ordinal_age)] may not cross"
 					else
 						if (map.last_crossing_block_status[faction])
 							grace_period_string += "The grace wall has been removed."
@@ -700,6 +721,7 @@
 			canmove = FALSE
 			anchored = TRUE
 			noose = TRUE
+			prone = FALSE
 			update_icons()
 	for (var/obj/structure/gallows/G in get_turf(src))
 		if (G.hanging == src)
@@ -707,6 +729,7 @@
 			canmove = FALSE
 			anchored = TRUE
 			gallows = TRUE
+			prone = FALSE
 			update_icons()
 	if (!noose && !gallows)
 		if (buckled)
@@ -732,8 +755,7 @@
 			lying = FALSE
 			canmove = TRUE
 			anchored = FALSE
-
-	if (lying)
+	if (lying || prone)
 		density = FALSE
 		anchored = FALSE
 	//	if (l_hand) unEquip(l_hand)
@@ -974,7 +996,7 @@ mob/proc/yank_out_object()
 
 /mob/set_dir()
 	if (facing_dir)
-		if (!canface() || lying || buckled || restrained())
+		if (!canface() || lying || prone || buckled || restrained())
 			facing_dir = null
 		else if (dir != facing_dir)
 			return ..(facing_dir)

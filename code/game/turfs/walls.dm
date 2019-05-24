@@ -38,7 +38,6 @@ var/list/global/wall_cache = list()
 	tank_destroyable = FALSE
 	layer = TURF_LAYER + 0.02 // above lifts
 	desc = "A massive slab of rock in the shape of a wall."
-
 /turf/wall/rockwall/update_icon()
 	return
 
@@ -170,9 +169,6 @@ var/list/global/wall_cache = list()
 
 /turf/wall/proc/dismantle_wall(var/devastated, var/explode, var/no_product)
 
-	if (!no_product)
-		material.place_dismantled_product(src,devastated)
-
 	for (var/obj/O in contents) //Eject contents!
 		O.loc = src
 
@@ -182,13 +178,10 @@ var/list/global/wall_cache = list()
 	update_icon()
 	ChangeTurf(/turf/floor/wood_broken)
 /turf/wall/ex_act(severity)
-	var/area/src_area = get_area(src)
-	if (src_area && src_area.type == /area/caribbean/void)
-		return
 	switch(severity)
 		if (1.0, 2.0)
 			if (!material || material.integrity < 400)
-				ChangeTurf(get_base_turf(z))
+				ChangeTurf(get_base_turf_by_area(src))
 			else
 				dismantle_wall(1,1)
 		if (3.0)

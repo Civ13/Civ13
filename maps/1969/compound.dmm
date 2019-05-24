@@ -1,0 +1,695 @@
+"aa" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"ab" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ac" = (/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/no_mans_land/jungle)
+"ad" = (/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"ae" = (/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"af" = (/obj/structure/sign/custom{name = "Eastern Rice Fields (North)"},/turf/floor/dirt,/area/caribbean/void/caves)
+"ag" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ah" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ai" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aj" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/jungle)
+"ak" = (/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"al" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"am" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"an" = (/obj/structure/wild/tallgrass,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/jungle)
+"ao" = (/obj/structure/wild/tallgrass2,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"ap" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aq" = (/obj/structure/wild/bush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ar" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"as" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/no_mans_land/jungle)
+"at" = (/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong,/turf/floor/dirt,/area/caribbean/void/caves)
+"au" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"av" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aw" = (/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"ax" = (/obj/structure/closet/hideout/beach,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ay" = (/obj/structure/sign/custom{name = "West Village"},/turf/floor/dirt,/area/caribbean/void/caves)
+"az" = (/obj/structure/wild/bush,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"aA" = (/mob/living/simple_animal/turkey_f,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aB" = (/obj/item/stack/farming/seeds/tree,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aC" = (/obj/structure/wild/jungle,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"aD" = (/mob/living/simple_animal/mouse/gray,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aE" = (/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/turf/floor/dirt,/area/caribbean/void/caves)
+"aF" = (/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/no_mans_land/jungle)
+"aG" = (/obj/item/stack/farming/seeds/poppy,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aH" = (/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/turf/floor/dirt,/area/caribbean/void/caves)
+"aI" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/turf/floor/dirt,/area/caribbean/void/caves)
+"aJ" = (/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/turf/floor/dirt,/area/caribbean/void/caves)
+"aK" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/shotgun/pump,/obj/item/weapon/gun/projectile/shotgun/pump,/turf/floor/dirt,/area/caribbean/void/caves)
+"aL" = (/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/void/caves)
+"aM" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/dirt,/area/caribbean/void/caves)
+"aN" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/turf/floor/dirt,/area/caribbean/void/caves)
+"aO" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/iv_drip,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"aP" = (/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/dirt,/area/caribbean/void/caves)
+"aQ" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/c8x27,/turf/floor/dirt,/area/caribbean/void/caves)
+"aR" = (/obj/item/weapon/bedroll,/turf/floor/dirt,/area/caribbean/void/caves)
+"aS" = (/obj/structure/bed/bedroll,/turf/floor/dirt,/area/caribbean/void/caves)
+"aT" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/turf/floor/dirt,/area/caribbean/void/caves)
+"aU" = (/turf/wall/old_stone,/area/caribbean/no_mans_land/jungle)
+"aV" = (/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/jungle)
+"aW" = (/obj/structure/wild/tallgrass,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/jungle)
+"aX" = (/obj/structure/wild/palm,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"aY" = (/obj/structure/wild/largejungle,/mob/living/simple_animal/monkey,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"aZ" = (/obj/structure/wild/rock,/obj/structure/wild/tallgrass,/turf/floor/plating/stone_old,/area/caribbean/no_mans_land/jungle)
+"ba" = (/obj/structure/sign/custom{name = "Village Center"},/turf/floor/dirt,/area/caribbean/void/caves)
+"bb" = (/mob/living/simple_animal/parrot,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"bc" = (/obj/structure/sign/custom{name = "East Village"},/turf/floor/dirt,/area/caribbean/void/caves)
+"bd" = (/obj/structure/sink/puddle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"be" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/void/caves)
+"bf" = (/obj/structure/wild/rock,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"bg" = (/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/turf/floor/dirt,/area/caribbean/void/caves)
+"bh" = (/obj/structure/wild/junglebush,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/no_mans_land/jungle)
+"bi" = (/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
+"bj" = (/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/turf/floor/dirt,/area/caribbean/void/caves)
+"bk" = (/obj/structure/sign/custom{name = "Eastern Rice Fields (South)"},/turf/floor/dirt,/area/caribbean/void/caves)
+"bl" = (/obj/structure/wild/largejungle,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/no_mans_land/jungle)
+"bm" = (/obj/structure/wild/burnedbush,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"bn" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"bo" = (/mob/living/simple_animal/frog,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"bp" = (/obj/structure/wild/burnedbush,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/no_mans_land/jungle)
+"bq" = (/mob/living/simple_animal/frog/poisonous,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"br" = (/obj/item/stack/farming/seeds/hemp,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"bs" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"bt" = (/obj/structure/window/sandbag/sandbag,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"bu" = (/mob/living/simple_animal/leech,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"bv" = (/obj/item/clothing/mask/smokable/cigarette,/turf/floor/dirt,/area/caribbean/void/caves)
+"bw" = (/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"bx" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/void/caves)
+"by" = (/turf/floor/dirt,/area/caribbean/void/caves)
+"bz" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/void/caves)
+"bA" = (/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/dirt,/area/caribbean/void/caves)
+"bB" = (/obj/structure/closet/crate/ww1/grenades_french,/turf/floor/dirt,/area/caribbean/void/caves)
+"bC" = (/obj/structure/wild/junglebush,/obj/structure/window/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"bD" = (/obj/structure/wild/largejungle,/obj/structure/window/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"bE" = (/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/turf/floor/dirt,/area/caribbean/void/caves)
+"bF" = (/obj/item/weapon/reagent_containers/food/snacks/sausage,/turf/floor/dirt,/area/caribbean/void/caves)
+"bG" = (/obj/item/weapon/reagent_containers/food/snacks/pickle,/obj/item/weapon/reagent_containers/food/snacks/pickle,/turf/floor/dirt,/area/caribbean/void/caves)
+"bH" = (/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/turf/floor/dirt,/area/caribbean/void/caves)
+"bI" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/structure/table/wood,/obj/item/clothing/mask/smokable/cigarette,/turf/floor/dirt,/area/caribbean/void/caves)
+"bJ" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/soda,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/void/caves)
+"bK" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/dirt,/area/caribbean/void/caves)
+"bL" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt,/area/caribbean/void/caves)
+"bM" = (/obj/item/weapon/flame/lighter/zippo,/turf/floor/dirt,/area/caribbean/void/caves)
+"bN" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"bO" = (/obj/effect/spawner/mobspawner/monkeys,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"bP" = (/obj/structure/bed,/obj/item/weapon/bedsheet/medical,/turf/floor/dirt,/area/caribbean/void/caves)
+"bQ" = (/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/dirt,/area/caribbean/void/caves)
+"bR" = (/obj/item/stack/medical/bruise_pack/bint,/turf/floor/dirt,/area/caribbean/void/caves)
+"bS" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/dirt,/area/caribbean/void/caves)
+"bT" = (/obj/item/stack/medical/splint,/turf/floor/dirt,/area/caribbean/void/caves)
+"bU" = (/obj/structure/sign/flag/medical,/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"bV" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt,/area/caribbean/void/caves)
+"bW" = (/obj/item/roller,/turf/floor/dirt,/area/caribbean/void/caves)
+"bX" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/turf/floor/dirt,/area/caribbean/void/caves)
+"bY" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/turf/floor/dirt,/area/caribbean/void/caves)
+"bZ" = (/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/turf/floor/dirt,/area/caribbean/void/caves)
+"ca" = (/obj/structure/wild/palm,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cb" = (/obj/structure/wild/bush,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cc" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/turf/floor/dirt,/area/caribbean/void/caves)
+"cd" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/turf/floor/dirt,/area/caribbean/void/caves)
+"ce" = (/obj/structure/window/sandbag/sandbag,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cf" = (/obj/structure/wild/bush,/mob/living/simple_animal/mouse/gray,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cg" = (/obj/item/stack/cable_coil/white,/obj/item/stack/cable_coil/white,/turf/floor/dirt,/area/caribbean/void/caves)
+"ch" = (/obj/structure/bed,/obj/item/weapon/bedsheet/medical,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/void/caves)
+"ci" = (/obj/item/stack/farming/seeds/potato,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cj" = (/obj/structure/fish,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"ck" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"cl" = (/obj/item/stack/farming/seeds/tobacco,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cm" = (/turf/floor/dirt/dust{name = "dry dirt"},/area/caribbean/no_mans_land/jungle)
+"cn" = (/obj/structure/barbwire,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"co" = (/obj/covers/straw_wall,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"cp" = (/obj/item/stack/farming/seeds/peyote,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cq" = (/obj/item/stack/farming/seeds/cotton,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cr" = (/obj/item/stack/farming/seeds/banana,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cs" = (/obj/structure/wild/burnedtree,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/no_mans_land/jungle)
+"ct" = (/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cu" = (/obj/structure/wild/largejungle,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"cv" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cw" = (/obj/structure/wild/largejungle,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cx" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"cy" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cz" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"cA" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"cB" = (/obj/structure/wild/palm,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"cC" = (/obj/structure/wild/jungle,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cD" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cE" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"cF" = (/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"cG" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"cH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/obj/structure/barbwire,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cI" = (/obj/structure/window/sandbag/sandbag,/obj/structure/barbwire,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cJ" = (/obj/structure/window/sandbag/sandbag,/obj/structure/barbwire,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"cK" = (/obj/structure/wild/junglebush,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"cL" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cM" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cN" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"cO" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"cP" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers{icon_state = "vickers"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"cQ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"cR" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"cS" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"cT" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"cU" = (/obj/structure/wild/junglebush,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"cV" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/item/stack/material/barbwire,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"cW" = (/obj/item/stack/material/barbwire,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"cX" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cY" = (/obj/structure/wild/bush,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"cZ" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"da" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/wrench,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"db" = (/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dc" = (/obj/structure/wild/palm,/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"dd" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"de" = (/obj/covers/straw_wall,/obj/structure/sign/painting1,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"df" = (/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dg" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"dh" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"di" = (/obj/item/weapon/shovel/trench,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dj" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dk" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"dl" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dm" = (/obj/item/weapon/stool/wood,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dn" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"do" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"dp" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"dq" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/jungledirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dr" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/roof_support,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"ds" = (/obj/item/weapon/bedroll,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dt" = (/obj/structure/bed/bedroll,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"du" = (/obj/structure/roof_support,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dv" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dw" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dx" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dy" = (/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dz" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"dA" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"dB" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/clothing/head/cowboyhat,/obj/item/clothing/head/cowboyhat,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dC" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dD" = (/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dE" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt,/area/caribbean/void/caves)
+"dF" = (/obj/structure/wild/palm,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"dG" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"dH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"dI" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"dJ" = (/obj/structure/curtain/leather,/obj/covers/wood_ship,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"dK" = (/obj/structure/wild/junglebush,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"dL" = (/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dM" = (/obj/item/weapon/stool/wood,/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dN" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"dO" = (/obj/structure/sign/flag/vietcong,/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"dP" = (/obj/structure/sign/flag/vietnam,/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"dQ" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction1{anchored = 1; icon_state = "radio_transmitter"; name = "HQ Radio"; not_movable = 1},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dR" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dS" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 4},/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt,/area/caribbean/void/caves)
+"dT" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"dU" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dV" = (/obj/item/weapon/stool/wood,/obj/structure/lamp/lamp_small/alwayson,/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dW" = (/obj/structure/table/wood,/obj/item/clothing/mask/smokable/cigarette/cigar,/obj/item/weapon/material/ashtray/bronze,/obj/item/weapon/pen/pencil,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"dX" = (/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"dY" = (/obj/structure/barricade,/obj/structure/sign/flag/medical,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"dZ" = (/obj/item/roller,/obj/item/roller,/obj/item/roller,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"ea" = (/obj/structure/bed/roller,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"eb" = (/obj/structure/wild/junglebush,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ec" = (/obj/structure/wild/jungle,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"ed" = (/obj/structure/bed/roller,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"ee" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"ef" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"eg" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"eh" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"ei" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"ej" = (/obj/map_metadata/compound,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ek" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"el" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"em" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"en" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"eo" = (/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"ep" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"eq" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"er" = (/obj/structure/wild/largejungle,/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"es" = (/obj/structure/wild/bush,/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"et" = (/obj/structure/wild/junglebush,/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"eu" = (/obj/structure/wild/palm,/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"ev" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"ew" = (/obj/covers/straw_wall,/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"ex" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife,/obj/item/kitchen/plate,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"ey" = (/obj/covers/wood_ship,/obj/item/weapon/stool/wood,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"ez" = (/obj/covers/wood_ship,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eA" = (/obj/covers/wood_ship,/obj/structure/oven,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eB" = (/obj/structure/window/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"eC" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/fork,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eD" = (/obj/covers/wood_ship,/obj/structure/bed/bedroll,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eE" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eF" = (/obj/structure/wild/bush,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eG" = (/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eH" = (/obj/structure/window/classic,/obj/covers/wood_ship,/obj/structure/curtain/open,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eI" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eJ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"eK" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigarettes{icon_state = "luckystrike"; name = "Lucky Strike"},/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"eL" = (/obj/item/stack/medical/advanced/sulfa,/obj/item/stack/medical/advanced/sulfa,/turf/floor/dirt,/area/caribbean/void/caves)
+"eM" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eN" = (/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"eO" = (/obj/covers/straw_wall,/turf/floor/dirt/dust,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eP" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eQ" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eR" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eS" = (/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"eT" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eU" = (/obj/covers/straw_wall,/obj/structure/sign/painting2,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eV" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eW" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"eX" = (/obj/covers/wood_ship,/obj/structure/radio,/obj/structure/table/wood,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eY" = (/obj/covers/wood_ship,/obj/structure/pot,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"eZ" = (/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/japanese/land/outside{name = "Village"})
+"fa" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fb" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"fc" = (/obj/structure/wild/jungle,/obj/structure/window/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fd" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fe" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"ff" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fg" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fh" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fi" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fj" = (/mob/living/simple_animal/chick,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fk" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"fl" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fm" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fn" = (/obj/covers/wood_ship,/obj/structure/table/wood,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fo" = (/mob/living/simple_animal/rooster,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fp" = (/obj/structure/wild/jungle,/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fq" = (/obj/covers/wood_ship,/obj/structure/closet/crate/chest,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fr" = (/obj/structure/window/sandbag/rock,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fs" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/obj/structure/window/sandbag/rock,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"ft" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fu" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"fv" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"fw" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"fx" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fy" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fz" = (/obj/structure/wild/rock,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"fA" = (/obj/covers/straw_wall,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fB" = (/obj/structure/sign/custom{name = "South Rice Fields"},/turf/floor/dirt,/area/caribbean/void/caves)
+"fC" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"fD" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"fE" = (/obj/covers/wood_ship,/obj/structure/closet/cabinet,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fF" = (/obj/structure/window/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"fG" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"fH" = (/obj/structure/wild/smallbush,/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 8},/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fI" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/mob/living/simple_animal/chicken,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fJ" = (/obj/covers/wood_ship,/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fK" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"fL" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"fM" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"fN" = (/mob/living/simple_animal/chicken,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fO" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fP" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/trash/candle,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fQ" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"fR" = (/obj/covers/straw_wall,/obj/structure/sign/painting5,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fS" = (/obj/covers/wood_ship,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fT" = (/obj/covers/wood_ship,/obj/structure/mill,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fU" = (/mob/living/simple_animal/leech,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"fV" = (/obj/structure/wild/largejungle,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"fW" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/storage/fancy/candle_box,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fX" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fY" = (/obj/covers/wood_ship,/obj/structure/bed/bedroll,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"fZ" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"ga" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"gb" = (/obj/structure/window/classic,/obj/covers/wood_ship,/obj/structure/curtain/open,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"gc" = (/obj/covers/wood_ship,/obj/item/weapon/stool/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"gd" = (/obj/structure/window/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"ge" = (/obj/structure/window/sandbag,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"gf" = (/obj/structure/barbwire,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"gg" = (/obj/structure/wild/largejungle,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"gh" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/obj/item/weapon/material/kitchen/utensil/fork,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"gi" = (/obj/covers/wood/stairs,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"gj" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"gk" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"gl" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"gm" = (/obj/structure/wild/palm,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"gn" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"go" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"gp" = (/obj/structure/barbwire,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"gq" = (/obj/structure/window/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"gr" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"gs" = (/obj/structure/wild/jungle,/obj/structure/window/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"gt" = (/obj/structure/wild/palm,/obj/structure/barbwire,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"gu" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"gv" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"gw" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"gx" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"gy" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"gz" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"gA" = (/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall)
+"gB" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt,/area/caribbean/void/caves)
+"gC" = (/obj/structure/wild/bush,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"gD" = (/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/no_mans_land/invisible_wall)
+"gE" = (/obj/structure/wild/palm,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"gF" = (/obj/structure/closet/crate/coldwar/m26,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"gG" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"gH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/obj/item/ammo_magazine/m14,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"gI" = (/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall)
+"gJ" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall)
+"gK" = (/obj/structure/wild/burnedtree,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall)
+"gL" = (/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/no_mans_land/invisible_wall)
+"gM" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"gN" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"gO" = (/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall)
+"gP" = (/obj/structure/window/sandbag,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"gQ" = (/obj/structure/wild/junglebush,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"gR" = (/obj/structure/wild/palm,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"gS" = (/obj/structure/wild/junglebush,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"gT" = (/obj/structure/wild/jungle,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"gU" = (/obj/structure/wild/smallbush,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"gV" = (/obj/structure/wild/jungle,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"gW" = (/obj/structure/wild/rock,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"gX" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"gY" = (/obj/structure/wild/jungle,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"gZ" = (/obj/structure/window/sandbag,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"ha" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"hb" = (/obj/structure/wild/palm,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"hc" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"hd" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/dirt,/area/caribbean/void/caves)
+"he" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"hf" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"hg" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"hh" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"hi" = (/obj/structure/wild/bush,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"hj" = (/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"hk" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/pkm,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"hl" = (/obj/structure/farming/plant/rice{layer = 5; vstatic = 1},/obj/effect/floor_decal/dirtwall/inc33,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hm" = (/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"hn" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"ho" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/no_mans_land/jungle)
+"hp" = (/obj/structure/wild/jungle,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"hq" = (/obj/structure/wild/junglebush,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"hr" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"hs" = (/obj/structure/wild/palm,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"ht" = (/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"hu" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt/underground{name = "rock wall"},/area/caribbean/no_mans_land/jungle)
+"hv" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"hw" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"hx" = (/obj/structure/barbwire,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hy" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hz" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hA" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"hB" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"hC" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"hD" = (/obj/structure/barbwire,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"hE" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"hF" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"hG" = (/obj/covers/cobblestone,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hH" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hI" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"hJ" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hK" = (/obj/structure/window/sandbag,/obj/structure/wild/jungle,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"hL" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
+"hM" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall)
+"hN" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
+"hO" = (/obj/structure/window/sandbag/rock,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"hP" = (/obj/structure/window/sandbag/rock,/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
+"hQ" = (/obj/structure/window/sandbag/rock,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hR" = (/obj/structure/window/sandbag/rock,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"hS" = (/obj/covers/cobblestone,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"hT" = (/obj/covers/cobblestone,/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
+"hU" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"hV" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
+"hW" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"hX" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 1},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hY" = (/obj/structure/wild/palm,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
+"hZ" = (/obj/structure/sign/custom{name = "American Base (NW)"},/turf/floor/dirt,/area/caribbean/void/caves)
+"ia" = (/obj/structure/sign/custom{name = "American Base (E)"},/turf/floor/dirt,/area/caribbean/void/caves)
+"ib" = (/obj/structure/sign/custom{name = "Bridge (West)"},/turf/floor/dirt,/area/caribbean/void/caves)
+"ic" = (/obj/structure/multiz/ladder/ww2/tunneltop/vietcong,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"id" = (/obj/structure/multiz/ladder/ww2/tunneltop/vietcong,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"ie" = (/obj/covers/wood_ship,/obj/structure/multiz/ladder/ww2/tunneltop/vietcong{icon = 'icons/obj/closet.dmi'; icon_state = "cabinet_closed"; name = "closet"},/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
+"if" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"ig" = (/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "Vietcong Radio Post"},/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/void/caves)
+"ih" = (/obj/structure/sign/kiddieplaque{desc = ""; name = "Vietcong HQ"},/obj/structure/barricade,/turf/floor/dirt,/area/caribbean/void/caves)
+"ii" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/dirt,/area/caribbean/void/caves)
+"ij" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/turf/floor/dirt,/area/caribbean/void/caves)
+"ik" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/dirt,/area/caribbean/void/caves)
+"il" = (/obj/structure/table/wood,/obj/item/weapon/paper_bin,/turf/floor/dirt,/area/caribbean/void/caves)
+"im" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/pistol/luger,/turf/floor/dirt,/area/caribbean/void/caves)
+"in" = (/obj/structure/bed/chair,/turf/floor/dirt,/area/caribbean/void/caves)
+"io" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/small/beer,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/obj/item/weapon/handcuffs/rope,/turf/floor/dirt,/area/caribbean/void/caves)
+"ip" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2{name = "HQ Radio"},/turf/floor/dirt,/area/caribbean/void/caves)
+"iq" = (/obj/structure/wild/palm,/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 1},/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"ir" = (/obj/structure/wild/bush,/obj/structure/barbwire,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"is" = (/obj/structure/wild/smallbush,/obj/structure/barbwire,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"it" = (/obj/structure/window/sandbag,/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"iu" = (/obj/structure/wild/tallgrass,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"iv" = (/obj/structure/wild/bush,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
+"iw" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/bottle/whiskey,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"ix" = (/obj/structure/barricade,/obj/structure/sign/flag/usa,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"iy" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/pen/pencil,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"iz" = (/obj/item/weapon/stool/wood,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"iA" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/cigarettes{icon_state = "luckystrike"; name = "Lucky Strike"},/obj/item/clothing/mask/glasses/sunglasses,/obj/item/clothing/head/cowboyhat2,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"iB" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iC" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iD" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iE" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"iF" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iG" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iH" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iI" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iJ" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
+"iK" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"iL" = (/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/turf/floor/dirt,/area/caribbean/void/caves)
+"iM" = (/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/turf/floor/dirt,/area/caribbean/void/caves)
+"iN" = (/obj/item/weapon/gun/launcher/grenadelauncher/M79,/obj/item/weapon/gun/launcher/grenadelauncher/M79,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/item/ammo_casing/grenade_l,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"iO" = (/obj/item/ammo_magazine/c8x27,/obj/item/ammo_magazine/c8x27,/turf/floor/dirt,/area/caribbean/void/caves)
+"iP" = (/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/void/caves)
+"iQ" = (/obj/item/weapon/gun/projectile/boltaction/mosin/m30,/obj/item/weapon/gun/projectile/boltaction/mosin/m30,/obj/item/weapon/gun/projectile/boltaction/mosin/obrez,/turf/floor/dirt,/area/caribbean/void/caves)
+"iR" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/void/caves)
+"iS" = (/obj/structure/table/wood,/obj/item/clothing/mask/smokable/cigarette,/turf/floor/dirt,/area/caribbean/void/caves)
+"iT" = (/obj/item/weapon/stool/wood,/turf/floor/dirt,/area/caribbean/void/caves)
+"iU" = (/obj/structure/simple_door/key_door/vietnamese{name = "Armory"},/turf/floor/dirt,/area/caribbean/void/caves)
+"iV" = (/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/void/caves)
+"iW" = (/obj/item/stack/material/barbwire,/obj/item/stack/material/barbwire,/turf/floor/dirt,/area/caribbean/void/caves)
+"iX" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 1},/obj/item/stack/material/barbwire,/obj/item/stack/material/barbwire,/turf/floor/dirt,/area/caribbean/void/caves)
+"iY" = (/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/turf/floor/dirt,/area/caribbean/void/caves)
+"iZ" = (/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/dirt,/area/caribbean/void/caves)
+"ja" = (/obj/item/weapon/shovel/trench,/obj/item/weapon/shovel/trench,/turf/floor/dirt,/area/caribbean/void/caves)
+"jb" = (/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/turf/floor/dirt,/area/caribbean/void/caves)
+"jc" = (/obj/structure/barricade,/obj/structure/sign/flag/vietcong,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"jd" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/flag/us,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"je" = (/obj/item/weapon/stool/wood,/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 1},/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"jf" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag,/obj/structure/flag/us,/turf/floor/dirt,/area/caribbean/no_mans_land/jungle)
+"jg" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"jh" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"ji" = (/obj/structure/sink/well,/obj/structure/mine_support,/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
+"jj" = (/obj/structure/table/wood,/obj/item/weapon/flame/lighter/zippo,/obj/item/weapon/flame/lighter/zippo,/obj/item/clothing/mask/glasses/sunglasses,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"jk" = (/obj/structure/window/sandbag/sandbag,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/roof_support,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"jl" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"jm" = (/obj/structure/window/sandbag/sandbag,/obj/structure/roof_support,/turf/floor/dirt,/area/caribbean/british/land/inside{name = "American Tent"})
+"jn" = (/obj/structure/lamp/lamp_small/alwayson{icon_state = "bulb"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/british/land/outside{name = "American Camp"})
+"jo" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/obj/item/weapon/storage/firstaid/surgery,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"jp" = (/obj/structure/table/wood,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"jq" = (/obj/structure/fish,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"jr" = (/obj/structure/fish,/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
+"js" = (/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"jt" = (/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"ju" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+
+(1,1,1) = {"
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwaEbybxbyaJbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwiObybjbyaIbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwaLbybgbyiPbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwaKbyiLbyiQbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbBbyiMbybBbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwaMbyaTbyaPbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwaMbyaTbyaQbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwiRbycgbyiVbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwaPbybybyaNbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwdOdPbwbwiUiUbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbKbIiSiTbxbybybybxbybybxbyaSbwaRdOaSbwaRbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbyiTiTbybybybybybyiTiTbybybybybvbxbvbxbyaSbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbybybEbFbGbHbybyiTbIbJiTbybybLbLbLbLbLbMbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbLbLigbLbvbyaSbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwafbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbybybybAbybybybAbybybybybybLbLbLbLbLbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzatbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbybybybwbwbwbwbwbwbwbwbwbzbybMbAbvbAbvaSbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbyatbybwbwbwaTiWiXiYbybybybyaRbwaRbwaSbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwaybAigbwbwbwaTaTiZjajbbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybwbwbwbwbwbwbwbybwbwigbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybybybybybAbybAbybybybybAbybybybybybybybybAbybybybAbybybybybAbybybybybAbybybybybybybybWbWbWbRbybybybybybybybybybybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwcheLbQbRbSbTbwbwbwbUbybyatbebwbwihbybwbwbwbwbwbwbwbwbwbwbyatbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybAbybybybybybAbybybybybybybAbXbYbybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbPbybybybybybybybybybybybybabwbwbwbybwbwbwbwbwbwbwbwbwbwbybAbcbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwchbybVbVigbPbwbwbwbUbybybwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwdEbybybydSbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwiiijgBikilbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwdOimbyinikiidObwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbzioiphdbebwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybkbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybyatbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybyigbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybyfBbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzatbybybybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybybybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybyigbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybxhZbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybybybybybybxbybybybybybybxbybybybybybybybxbybybybybyatbybybybxbybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbebwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybebwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwigbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbWigbxiabw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybybybybybxbybybybybybybybybxbybybybybybybxbybybybybybybxbybybybybybybxbybybybybybyatccbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbRbybycdbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbWbWbybybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybybybybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbRbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwccbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwcdbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzbybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbZbybybwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbzatbyigbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwaHbyibbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
+"}
+
+(1,1,2) = {"
+aaabacabacabadadaeaeaeaeaeadadfuadabadabadabababagabababahababababababaiabababahababajajadadadaaadajagabababababababadabalabababalalabauababababadadaaadajagapababaqababababaDabavabaiaiabababababaiabab
+acabakababadamadaeaeaeaeadamamfuadabababaiabababadabagababadabababalabababababababababababadadadamanabagabapabapababadabadaFahabababahabababababadadadamanadabababababaiababaralabababababababababababah
+abababaoaaahadaeaeaeaeaeadabadfuadabaiaiaiababapababagababaCababababahabababapababababapabadadadamahabababababababababababababapadababahapabapabadadadamanadahabadabapabababaqabababababcfavapabaqaqabal
+abadapababadadaeaeaeadadadababfuababababaqababababababaiababarapababababababahahabapababadasahadaaadababavababababababababababababagabababababadabadadaaadabababaXaiaiabababababavaiaiababababababababab
+akabaoabamadadaeaeadamadadadfufuabababababapababaqapababababababababapababababavababababababababadabalabaiababapabababaCababavavabababababababadabadadababalapaiadabababapababapabababababababababababab
+adamabadamaeaeaeaeadababaifuabaralapababababababababababaiahabababababaiavaiabababapaiaiabababahabalalalabababababapavadababababavabapalapabababalabababaiabababadaraiababaFabababahababapababaiavapabaq
+abapabadadaeaeaeadadabapabfuabaqabababababcfavapabapaqabalabaFabalababalabababalabababababalababavababababababaiababababababababababalahabapababababapababapababababababababavabababaFabalababalabababab
+abahamadaeaeaeadadaXaiaifufuabababavaiaiabapababababababababapababaiabababavabababababaiahabavababadababavababababaYababacacababaialabamabababababababababaFarabababapabaiababababababababababababababab
+ahamadadaeaeadapaifufufufuapababababcncncncncncnababababcncncnaFabababababababababababababababaiabababababapababalababababababapalabaXababababavababapababababababalabababalalabapababaFabababababaiabav
+adadaeaeaeadadabfufuaraiababaFabababahabababababaiavapabiriscncnababababapabavababababababavabababaravabalabababalabababagapabalahamabapabababababahabapabadahabadabapabababaqababagababababapabapababaq
+adaeaeaeadadamfufuababababababavabababaFaialababalababcocodedJcocoaiavabababababapaiaiabagapababapadabababababababbbababapabababamahadabababaGababalabababaiababaXaiaiababababababababababababababababab
+adaeaeadamamabfufuabfuapabaiabababapabababababababababewexeyezeAcoalababadabalabababababahababadabahabaiababapabababababapababadadaqadababavabababababababaqapaiadababaFapababapabahabapabagababadababab
+aeaeadamamabadfufuabalabababalalababababaFitititititahcoeCezezeDcoabaiababadadabababababababalababababababavababaiaiabababababadagadadaiababababapalapabaqaqaFabadaraiabababababababababababaiababarapab
+aeadadahabaiababfuadabapabababaqababagababeEeFeGeGeGeGeHezezezeDeHababababahababavapabaqaqabaiabadabababaqababababavavabababababababaqabalalababalahabababababaFadabababababavababapahabadababababababab
+adadapadababadabfuaXaiaiabababcocococococoeIeIeGeIeIeIcoezezezeDcoaFababauabababababababababahabapadabapababaiabapababavabapalapabaqaqabalababaiabababavababbfadababapabaiabaFababahahababaFababauababab
+adababapadababhafuadababaFapabcoeDezezeAcoeGeMeGeGeNeGcocodJdJeOcoababababaiadabababapababababababadadabababababahababababalahababababababapabahababavaqabawabadabalabababalalababaFabababababalalababai
+apabababadadabhafuadaraiabababeHezezezezeHeGeGePeGeGeQeReGeSeGeGePeTcMaiagadapadabaiabavaiabapababadahababababacacababaialabamababababababaqabahababababababadadabadaFababababahabababababapabababababai
+abababaiabadadfMfuadabababababcocoeUdJcocoeNeGeVeGeGeSeGeGeSeGeReGeWcMcMagadadadapababaqababababaiaFababapabadadadadacabadadadabaiavapabaqaqababahahapabababadababababababadababapabapababababaiabahabai
+adabalahababadfMfufuabapabaiabeweXeyezeYcoeGeZeSeSeSeSeSeSeSeGeGfaeWiucMagapabababababababaiababadadaqabababaqadadadadacabadagabalabababababababahahababapabadabababababababagababababadabababababababad
+adadadababahadabadfugSfuababalcoeCezezezcoeNeGeSeGcocoeHcoeHcocoeFeWcMababababadahabapabapababaiabababapaqabadadacamadabababababababababababababahahaqabababadabaCabaqababapababadababababahabababababab
+adadadabababababfbhffbaFhgababeHezezezezeHeGeSeSeGcoeDezezezfdcofefeffeGapababababaiadabarabapadababaqabababakabadamacabavapapabababapabavababapabababaiaiabadavadababababababababababapababapababababab
+aFadabadapabaiabfgfhhhfhfiapadcoezezezezcoeGeSeNeGeHezezezeyexeHeGfjfkeGabfuabaiababadarabarabababaracapabababadadadadababababababapababaqababababababababababababababavabababababababababababaiarabaiab
+aFadabadababahabflabfufufmababcocodJdJeOcofaeSeGeGcoeAezezezfncofoeGfpePabfuababavfuadfuababababalaqadabababababaiababaralabababababababababicabaiahababapababaiavaiabababapaiaiabababababaiababaiababab
+adadadadaladababflaCabhiabeSeSeGeSeSeSeSeSeGeSeGeGcofqezezezezcofreGfsftfVfufufufufufufufugRabapabababahabadabapabababaqabababababcfavapabaqaqabalabaFabalababalabababalabababababalababavabababababavab
+adadadababadababavadicfufveSeSeSeSeGeGeGeSeSeSeReGcocoeHdJeHcocoeGeGeWbNgRababababapabababavgYababababababaXaiaiabababeBeBfceBeBadadeBeBeBeBeBababababababaiabababavabababababaiahabavabababaiababahabab
+adabapababahabfwfxfufufuapeGeGeGeGeReGfyeGeSeSeGeGeGeGeGeSeGeGeGcUeSfLbNapababababahahabapaiabfufuababapaifuabababapfmhlhlhlhlhlhlhlhlhlhlhlhlflabababaFababababababababababababababababababababadababah
+adapababaiababdcfzfuaiabaheGeRePePeNeNeGeNeGeSeSeSeReVjheSeSeSeShnfAfAcoeHcodecococoauabababababargYabababadaraiababhohlhlhlhlhlhlhlhlhlhlhlhlflaqagababababababapabavababababababavababababahababababah
+adadabahabababfwfCfuababaleGeGeGeGeGeGeGfaeGeGeGeSfDeVjieShpeGeGeGcoeAezezcoeDfEeDcoababarabababaifufufuabababadadadfmhlhlhlhlhlhlhlhlhlhlhlhlflababaiabalababababapabazavababapababababababadaravabapab
+adadahababapabfufufuavababeVeGeGePeGfHfefefefIeGeVeSeSeSeSePeGeVeGeUfnfJezcoezezezcoababababapabalaiaifufufuabaiababfuhlhlhlhlhlhlhlhlhlhlhlhladabapabaiababapavabababaiabababababaiaiabapababadabababab
+abadabalabababababfuahababeReGeGeGeGeGeVfNfofOeVeGeGeGeSeSeGeGeGeGeHfPfJezdJezezeDeHababapababababapfMfufufugSfufufufuhlhlhlhlhlhlhlhlhlhlhlhladadaAabababababapabaiaiaiabababadabarabababababababaiabab
+abadabaiahahabababfufuavageGeGeGeReMfQeVeGeNfOideVeGeReGeSeSeGePePcoezezezcoezeziefRabababahabapabakabapfvapababababfmhlhlhlhlhlhlhlhlhlhlhlhlhqababababababaBabababaralabababababababadabababababababab
+abadabadahaiadapapaifufufuapaiePcocoeHeUcoeHcocoeGeGeVeNjceSeSeSeSdJezfSfTcoezeDeDcofhhrcMapabagababadadfuadaiabababfmhlhlhlhlhlhlhlhlhlhlhlhlflabababapabababapababaqababapababalaqababababapababababav
+aFaFadadahahababaiababalfufuabeGcofWfXezeDezfYfReGeVeGeGeSeSeVeSeGcococoeHcococococoadfmhsadabababababaifufuabapadabfmhlhlhlhlhlhlhlhlhlhlhlhlflavaiaiabbCeBeBeBabababeBbDeBeBeBeBabarababadabadabababab
+htaeaeadadadadadabadadadfufufueSgbgceyezezfSezeHePeGeMeGeSeNeNeSeVeGfaababahahabadadadfmcMabapabadabapabfufuaradadababfhfhfhfhgXfufugXgXhufhfhapabababfmhlhlhlhlhlhlhlhlhlhlhlhlhlcaababadaFaFadadabapab
+hththtaeaeadamadamadadgdgdgegdeSfAezezezezfSfYcoeGeNeGeSeSeGeGeSeSeGeGcocoeHeHcocoadadhvhwfuababaXapgRfufufufuadabadapabaiabaiadadfuadadadabababababalfmhlhlhlhlhlhlhlhlhlhlhlhlhlcaabapadadaFadadababab
+aeaeaehthtaegfhxhxgfamgfgfgfgfeSfAeHcodJdJcoeHcoggeGeReNeSeReGeGeSeSePeHeyfXghfqeHadabfmcMabfufufufufuabapapfufuabadabababalalababadfuapadabavababababfmhlhlhlhlhlhlhlhlhlhlhlhlhlcbababadaFaFaFabababab
+aFaFaFaeaehxhyhzaehzaegfgfgfgfeSeSeSeSgigieGeGeMgjgkgleGeSgmeGeGhjeSeMcoezeyeyezcoabhAfhhsababapadarapababaFgSfuadapadadabaxababapadfuababababeBeBfceBgPhlhlhlhlhlhlhlhlhlhlhlhlhlflababadadadadaqabadab
+adaFaFaFaeaehzhyhxaehzaeaehtaeaeaeameSeSeSeSeSeSfDeSeSeNeSeEeNgngoeSeSdJezezezezdJabhBabahapababapabadababababfuadababadfuadapabababfuadabalgQhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlfuavabaiabadababapabab
+adaFaFadadgfhCadadhChxhDhththtaeaegfgfgfgfgpgfadeGeSeSeSeSgjhkgqgreGeSfAeDezezezcohEhBabababababababfuapabaiabfuapabfufufufuadabbOfufuadabalfmhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlfufufuababababaqababab
+abaiabarababadabadadaeaeaehthtaeadamadamaeamadamadadfuadadgXhhfhgXabeSeHeDeDfSeDeHababadadapaiadaiabababababaifufufufuababfufufufufuababaiabfmhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlflaigRfuababaracababad
+abadabadabaiacadadadadadaeaehthththtaehthtaehthththFhGhHgfgfgfgfgtgfgffAcoeHeHcofAadadadabababababaiabadadabaiabfuabaUaVaUaUaVaUaUfuahadadabfmhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlflapabgSapabaqadababai
+adadadabapababababadadadamaeaeaeaehththththththththFhGhIhthththththtaeaeaeaeaeabadadadamadadamababadadgYadabababababaiaWaZabaVamarfufuaxadapfmhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlflababfuababababahabab
+aaacadadadadaaababapabamadadamadadamaegfgfgfgfaeadhJhGhHhtaejqhthththththtaeaeaeaeaeadadaeaeadamambhadaiababababababaUadapaVadaVaVfufufuamfufuhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlhlgTabgUfuapabababababab
+acadadadadadbhababababababadabadaaaaadamaiaraXaXakaafugfgfgfgfgfadadaeaehthththththtaeaeaehtaeaeaeadamabapabaiadabapaUabaVabamaWadadfufufufufuhlhlhlhlhlhlhlfxfhfhfugVfhfhgWgXgXfhaiabfufufuabababapabab
+acacacadadadadapahabadabadadababababadabaiahababababfuabaqalababapadadaeaeaeaeaehthththththththtaeaeadababababadababababaWadamapaUabadfufuabfmhlhlhlhlhlhlhlflabaifufufufufufVfufuabfufuarfufugYababagab
+bfadadadadadadababababapadadababaiabahapaiaiadfugUgUfufufuadabadadaiarabadadadaehtaeaeaeaeaehthtaeaeadadadabavadapabaUaiaVaUabaUaUabadfufuabfmhlhlhlhlhlhlhlfuababicaYabfufugZfFgZfufuadfFfFfFgZfufuabab
+adacacakadbfacagabapababadabababfFfFfFfFfFfFfFfufFfFfFfFfubnabaiababaiabadadacaeaeadambmadadaehtaeamadadadabahadadabababababahahahababadamfufmhlhlhlhlhlhlhlfuababalabfufufKhlhlhlhlhlhlhlhlhlhlfMfuahal
+adaabhadadadadbqbladbfadadbmadfKhlhlhlhlhlhlhlhlhlhlhlhlfMfuadadbnadacadfuaabhadasaaadbqamaehthtaeadamababababadadababaUaVaVadaUapabapadfufufmhlhlhlhlhlhlhlhagYabalabfuapfKhlhlhlhlhlhlhlhlhlhlfMfuabab
+adadadbmadbfadadadadadacacadadfKhlhlhlhlhlhlhlhlhlhlhlhlfMadfuadadbmadfuadamadbmadbfasadadaehthtaeamadaradaiabapadadabaVadaVahaVfufuadapfuabavfhfhfhfhhbfZfhabfufuabbbfuabfKhlhlhlhlhlhlhlhlhlhlfMfuabab
+ababaiababababagapabalababababfKhlhlhlhlhlhlhlhlhlhlhlhladadfuaaahadfUfVacasacbmamadamamaeaeaehtaeadadaiadababaFaFadadaUaWamaVamababfufufuadadabapcBaiabawaiabaifufufufualfKhlhlhlhlhlhlhlhlhlhlhcabfuab
+abababapababababababababapabababfZfZgahlhlhlhlhlhlhlhlhladaifuadadfufuacacadadadadasadaeaeaehthtaeaeaeadadadababaFaFadaVadaVababaVadabaiadadapecababcuabapabcuabfuaiaifugYabgahlhlhlhlhlhlhlhlhlhlhaabab
+avahabababapabapababababababababagicfKhlhlhlhlhlhlhlhlhlfMfufufufufuababadamadaeadaeaehththththththtaecjaeadadababadadaUaUaUadadaUadadadaXababawfFhKfFfFfFfFfFawawabaraifuabfKhlhlhlhlhlhlhlhlhlhlhaapab
+abababcpabapaBabababababababababadabfmhlhlhlhlhlhlhlhlhlfMfuaiabababaiamadadaeaeaehthththtaeaehththththtaeaeamgRadadababadabadbfadabapabababavfKhlhlhlhlhlhlhlflabamabarfuaxfKhlhlhlhlhlhlhlhlhlhlhaabab
+abababababababababababavabapalabaXababfhfZadfufufhfZfhfZfufuababababababadaeaeaeaehtaeaeaeaeadaeaeaeaehthtaeaeadabadadaiacabadabacbhadabaiapadfmhlhlhlhlhlhlhlflabfuavabfuabfKhlhlhlhlhlhlhlhlhlhlhaahab
+ababapabababavabapalahababalahamabapabababadadfufufufufufuaCaiabababaiadamaeaeaehththtaeadadadamadadaeaehththtaeadadadadadadabadadbhacadbfabawawhlhlhlhlhlhlhladawawadabfubffKhlhlhlhlhlhlhlhlhlhefuabab
+apabahababaiabapabababaialabamahadababababadadalfuawawcBfufualabababababadadaehththtaeaeadadadamadadamadaeaehththtaeaeamadadamadadabadababadadfmhlhlhlhlhlhlhlflawaiababfuabfmhlhlhlhlhlhlhlhlhlhafuaCab
+aqabahabababababababababadadadaqadababavabaweBfFfugsfFfFabfufuababalabadadamaehtaeaeadamaeadadadadadadabadamaeaehthtaeaeadadadamaeaeadapaeaeawcuhlhlhlhlhlhlhlflabababadfufuabfhfZadfufufhfZfhfZfufuabab
+aqababahahabababababarababadagadadaiabababfKhlhlhlhlhlhlfMcBfuaiahabavadamaeaehtaeaeadadadadababadaeadadadadadadaehthththtaeaeaehthtaeaehthtaeaeiffZfZfZiqfZfZadadabadababfufufufufufufufufufufufuapabab
+abababahahapabapababababababababaqabalalabfmhlhlhlhlhlhlfMfufuababaiabaXaeadhthtcjadadagadabavabadadadababadadadamaeaehthththththththththththththtaeaeaeaeaeaeadadamapabaeamfufufvadadamabfuadadadabadai
+abababahahabababababaiabavapabaqaqabalababadhlhlhlhlhlhlfufuapabababaiadaeaehtaeaeaeadabahapababahaiabababaiabadadadamadadamaeadaeaeaeaeaeaeaehththththththththththtadadhtaefvfuaeamadadadadadaeadadamad
+ababapabababavababalababababababapababapabguhlhlhlhlhlhlfMabababababaqaXaeaehtaeaeadamabadababagababavababababababadabadaaaaadamaiaraXaXakaaaeaeaehtaehthththtaehthththththzhzhzaeaehzamaeadaeaeamadaeam
+abababbraDabababababababaFababababababaqabgvhlhlhlhlhlhlfMabababapabadamaeaehtaeadamadaiadabababahicapabahabadabadadababababadabaiahabababababaeaeaeaeaeaeadaeadadadadaeaeaehzaehzaeaehtaeaeaeaeaeaeaeae
+abaiababarabapalababababaFabaiavapabaqaqababgwgwfuhhfhfZawabababababamadaeaehtaeadadabaiababagabahabadababababapadadababaiabahabaiaiadadagagabadaeadadadadadadababadadamadadaeaeaehzaehthththththththtae
+apabababapababaiabapababaFaFalabababababababgxgxfufuapababapababababadaeaehthtaeaeadamababapabababababagabapababadabababababababadabadadabababababadadaiababaiabababababadadfvaeadaeadadaeaehthtjqhththt
+aiababababababababababadaFaFabababababapabababababfufufuabaiadadaCabamaehthtaeaeaeadabababababababamahabgygygygygygygAgzgygygygygzgygygygygygygzgAgygygygygygygygygygCgAgygyhLivgygyhMhMgAaeaeaeaeaeaeae
+ababapababaFaraFaFaFaFaFaFaFababaiabavababapabapalaiaifuababaiababadaehthtaeaeaeadamadaCabaiadabapabadaigzaiapagabahadabawababalapababadckadababababapababapababababahababfuhiabababababgAamadamadadadad
+abababavabababapabababaXaiabaiaiabababababababaqaifufufuabababaqaiadaehthtaeaeadadadadadababapababababadgyababagabagadadagabapabababababababababckabababapabaqabapababababfufuapadamababgyabadadadabamad
+ababababababadababababagababaralababababababaiaifufufuabapabababahadhthtaeaeadamadaiabahadadadadapabaFaFgDadadadadadahadadadahabagarabaiavababababababavababababababababamabfuababfuabahgyababababababad
+abapaiaiabababababababadababaqababababapabababfuabababaiadababahadaehtaeaeadadaeadadaiadadaFaFadadadadadgAadadaFaFaFaFagadadabababaqabababaqalababapabababababavababababapfufuahabapadadgAabababapahabad
+ababababababababapalabaXababababavaiaiabalababfuababadadamabadamhththtaeaeadadhzadadadaFaFaFaFadadaFaFaFgDaFaFaFaFaFaFadfufufufufufufufufufufufufufuaiarabaiabababapaiaiabfufuababababadgAabahababababad
+abababababagapabalahamabapabababababahabababadfuaCabadadadadaehththtaeadadaiamapadadaFaFadaFaFaFaFaFaFaFgDaFaFadadadadfuabababapabababapababababaifufuaiabababalabfufufufugSfufufufuababgAadabapabicabab
+agapabalabababababamahadabababaGababalabababaifuabadaehzadaehththtaeadamamabadadadapaFadadaFaFaFaFaFaFaFgDaFadadadadfuadabababababaiabababababavababfufufufVfufufufuabaiahabavahfufugYabgyabababadababab
+abababababapababadadaqadababavabapabababapababfuabadaeaeaehthtaeaeadadadabababapabamadadabaFaFaFaFaFaFaFgDaFadadaFaFaFadadapababababapabapapabararararaiabaiavabbdfufuabababababaqabfufuhLavabababaiabab
+apabababababababadagadadaiabababababababababfuadaXadbiaehthtbiaeaFaFaFabapaiadadadadadadaFaFaFaFaFaFaFaFgDaFadadaFaFaFadadababbsbtbtcebtctabcuababababarababababfucvcwcvcvcvapabaiaiaiabhLfufufufufufufu
+abababababababababababaqabalalabababababababfuadadhNbibihtaebiadadadadadadamabaiadaFaFaFaFaFaFaFaFaFadadgAadaFadaFaFadadabababcxcAcFcNcFcOcPcyawapapabaiabaiarabgRfuawabcCabaiababavabaigEabfufuabfuabab
+ababababavabapalapabaqaqabalababaiabapabavabfuajadbibiaehtaebijrbiadadaiadadadadaFaFaFaFaFaFaFaFadadaXadgAadadaFaFaFadadabababcxcAcOczcRcScTcHcIcIcIcJcJcIcJcJcJcJfucKfucLabcLabalabfufuhLfufuabadababab
+abaCalahababalahababababababapabahababavaqabawfuadadbiaehthtaeaebibiadaFaFaFaFaFaFaFaFaFaFaFaFaFadadadadgDaFadadadadadcMabapabcxcVcWcZdadbdbgFgFdDdfdfdfdfdfdgdkcEfufvfufufucLabfufuababgycfababababapab
+apadababaialabamababababababaqabahababababababfuakadbiaeaehtaebibibiadaFaFaFaFaFaFaFaFaFaFaFaFaFadaXadaFgDaFadadabababcMabababcxdhdidigFdbdbdbcZdbdbdbdbdbjtcTcGjdgGgHcXcYfucLfufuavaiaigyababababababab
+abababababadadadabaiavapabaqaqababahahapabababfuadbibiaeaehthtbibiadadaFaFaFadadadadadadadadadadadabadadgAadadababadadcMabbsdjcRdbdbdbdbdbdbdbdbdbdbdbdbdbdbdldldldbdmcXdcfufufufuabababgyabapabapadacad
+abababarababadagabalabababababababahahababapabfuadbibiaeaehthtaebiadbibihNadadadabapadadapadabahababababgyababapabababcMapdddqcTdrdsdtdudbdudydydydudbdbdbdbdvdwdxdmdBdncLabababababapabgyabababadadadaa
+aCababababababababababababababababahahaqabababfuamiBbibiaehththtbibibiaebiadapabadadababababadadaXababadgyabclababababdodpddcAcTdCdtdLdydbdMdQdVdWdydbdbdbdbdbdvdbdmeKcXcLabababaCabababgyababababadadaa
+adababaiabavapapabababapabavababapabababaiaiabfufuiCbibibiaehtaebiaeaebibiamiDadadabaXabclapabadadapababgyadababababababcMdddKefeJdsdydydbhmiwixiyizdRdRdRdRdRdRdbdmiAdzcLababaCababababgyadabapabadadac
+ababalabababababababapababaqababababaDabavabaiaifuiEambibiaehthtbiaeaebibihNiFctabadabapababaXabababababgzalcmabapapadawcMdAdhcTdCdsdtdydbdudMjedydudRdRdRdRdRdRdbdmjjdzabdpabababadadadgAababababadacad
+adababababapabababababababababaiababaralababababfufuadhOhPhPhQhRhRhQhQhQhQhPadajapahfvfufufvfufufufugYabgyabcmabababababcMdAdTdUjkjljljmdbdbdbdbdbdbdbdbdbdbdbdbiNcZdmdFaidpalabababakabgyabababadadadaa
+abababababababaiabarahabadabapabababaqabababababcffufuhShGhThGhGhGhGhGhGhGhTfufufvajfvfvaXadadfvadabfufuhLabaXaiapabababcMabcDcDdGdHelcEdhcZdbdbdbdldldldldldldldldldXdzahdpababadadadadgAaladababadadaa
+aiabapababababalababababaXaiaiabababababakaiaiababababhUhUhVhVhWhWhWhXhXhVhVadiGiHadadambihNadadapabababhYfuagabababababadadababcLdIegawdbdbdbdbdbdYeaeadZeaeaeaedaOdjeealdpababadadadadgAajabadabadadad
+ababababadabababababapaiadabababapabababadabapabfuababadbibibiaehthtaeaeaebibiiIadadbiadadbiadahadclabaigAfufufufufufuapadapawcucLdNegawdhdbdbdbdbdbdbdbdbdbdbdbdbaOehdgabdpapabadakadadgAadajadapadadbl
+ababababababababaiabababadaraiababicabababahabaiababapadbibibiaeaehthtaeaebibiiJiFbibiadbibiamadabaXabadgAabababababfufuabababawabadjfcGdheodbdbdbdbdbdbdbdbdbdbdbjujndgabdpababadadadajgIajabadadadadbu
+abapababapababababarababadabababababavabababababalababadiKbibiaeaehthtaeaeaeaebibibibiadadbiadabadadababgyabavapabaqaqfufufuadadapadawjgeiekdbdbdbdYeaeajojsemenjpcTcFcTabcMabaCalaaadadgAadakababadadad
+ababadahababababapabarabababapabaiababababababaharaiababiEadbibibiaehthtaeaeaebibibibibiambiadabadabababgyabababababababfufufufufufufufucRcQcQcQczcQcQcQcQcQcRcQcRcRepdgabcMavababadacbogAadadadabadblad
+abababababababarabababababalabababalapabababababapabababadadadbibiaeaehthtaeaeaebibibibiadamadahadabapaigAabababapababababfufuavcvcvabaieqererdXdXdXdXdXesesdXetdXdXeuevabdpaqabbfadadacgJaaadabadadabad
+abababababapababababaiabababaiababalababaiabadadabapabaiajamadbiaebiaehthtaeaeaebibibibibiamajabaCabadadgzadabaiabavaiabapabfuabadabebcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvcvdpababadacacadgAacacadadacacaa
+aiaiababaXadabababababapabababababababababababababababababajadbibibiaehththtbibibibibiadadadadadadababadgAadapababaqababababfuaiabababawababecabababababababababaqabahabababababadaaadaagKacacababblbpac
+abaXabababaXaiabababababababadalabababababababahahabadababajadadbiaehthththtaebibibibiadanabadadadababapgyababababababaiababfufuaiabapababababalabaiabaiaiabaiababababahahababapabadababgyadciabadadblaa
+ababababaiadabarabaiabababadadababababababababahaiabababadanadadbibihththtaeaebibibibiadadabahabababababgyadahabadabapababaifufuababapabadababababcqapababababahahaqababaiadakadadadadabgAadadadadadadac
+ababaiababadarabapababababababababaiabapababapababadababamamadadbibiaehtaebibibibiadamadababababababababgyababadadababadabababfGfuababaiabababababaiaiavababapabababaiaiabadababadabababgAababadadadadac
+abababavapadabababapabadabapapabapababaqababababaDabababadadadbiaeaeaehtaebiaebibiadajaCabahapaiavapapaqgyabcpapaiababababapabahfuababababababcqapababaqababababaDabavabaXbpadaaadadboabgAadadadadadacac
+abahapababababababadabababagababababababababababadababajadbibibiaeaehthtaebiaebiadadadadabababalabababapgyaiapabababadabababcladfufuadahababapababababababaiabcraraladababacadadadadadabgLadadadadadaacs
+agabababababababababahabapabababababadababaiadadababahadadbibibibiaehtaeaebibibiadababadadabababababababgygygygAgAgAgygygygzgygAhLhLgzgygygygygMgNgygAgygzgygygygCgygygygygAgLgOgAgLgAgygLacbhbhacadadac
+ejababababahababagababadabababalababaiabababababababamadadadbibibiaehthtbibibiadamadababahababahapababadadadadadadaiadadabababadadfuababababababababaXaiaiabababababakaXaiadadadadacababadadbhacacacadac
+"}

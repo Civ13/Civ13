@@ -139,6 +139,8 @@
 	build_override_coins_gold.desc = "Some coins."
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = new/obj/item/weapon/gun/projectile/ancient/firelance
 	build_override_firelance.desc = "A simple firelance."
+	var/obj/structure/religious/gravestone/build_override_gravestone = new/obj/structure/religious/gravestone
+	build_override_gravestone.desc = "A gravestone."
 	var/mob/living/carbon/human/H = user
 
 	if (istype(get_turf(H), /turf/floor/beach/water/deep))
@@ -446,6 +448,16 @@
 		else
 			build_override_coins_gold.name = "gold [customname]"
 			build_override_coins_gold.desc = "gold coins, minted by [H]."
+			
+	if (findtext(recipe.title, "gravestone"))
+		var/customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
+		if (customname == "" || customname == null)
+			customname = "gravestone"
+		var/customdesc = input(user, "Choose an epitaph to inscribe on this gravestone:") as text|null
+		if (customdesc == "" || customdesc == null)
+			customdesc = "A gravestone made with polished stone."
+		build_override_gravestone.name = customname
+		build_override_gravestone.desc = customdesc
 
 	if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1)
@@ -733,6 +745,13 @@
 			newskull.loc = get_turf(O)
 			newskull.set_dir(user.dir)
 			newskull.add_fingerprint(user)
+			qdel(O)
+			return
+			
+		if (build_override_gravestone.desc != "A gravestone.")
+			build_override_gravestone.loc = get_turf(O)
+			build_override_gravestone.set_dir(user.dir)
+			build_override_gravestone.add_fingerprint(user)
 			qdel(O)
 			return
 

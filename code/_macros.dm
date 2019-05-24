@@ -76,3 +76,8 @@
 #define isDeleted(D) (!D || D:gcDestroyed)
 
 #define forrange(x) for (var/v = 1 to x)
+
+#define to_chat(target, message)                            target << message
+#define to_world(message)                                   world << message
+#define to_world_log(message)                               world.log << message
+#define sound_to(target, sound)                             target << sound

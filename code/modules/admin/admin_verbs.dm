@@ -16,11 +16,12 @@ var/list/admin_verbs_default = list(
 	/client/proc/getruntimelog                     // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
-	/client/proc/add_to_server_whitelist,
-	/client/proc/remove_from_server_whitelist,
-	/client/proc/view_server_whitelist,
-//	/client/proc/eject_unwhitelisted,
-	/client/proc/enable_disable_server_whitelist,
+	/client/proc/enable_fov,
+	/client/proc/disable_fov,
+	/client/proc/enable_approved_only,
+	/client/proc/disable_approved_only,
+	/client/proc/enable_whitelist,
+	/client/proc/disable_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
@@ -41,7 +42,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/admin_memo,			//admin memo system. show/delete/write. +SERVER needed to delete admin memos of others,
 	/client/proc/player_memo,
 	/client/proc/dsay,					//talk in deadchat using our ckey/fakekey,
-//	/client/proc/toggle_hear_deadcast,	//toggles whether we hear deadchat,
 	/client/proc/investigate_show,		//various admintools for investigation. Such as a singulo grief-log,
 	/client/proc/secrets,
 	/datum/admins/proc/toggleooc,		//toggles ooc on/off for everyone,
@@ -52,15 +52,12 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/free_slot,			//frees slot for chosen job,
 	/client/proc/cmd_admin_change_custom_event,
-	///client/proc/check_customitem_activity,
 	/client/proc/allow_character_respawn,    // Allows a ghost to respawn ,
 	/client/proc/reset_roundstart_autobalance,
 	/datum/admins/proc/ic_announce,
 	/client/proc/change_human_appearance_admin,	// Allows an admin to change the basic appearance of human-based mobs ,
 	/client/proc/change_human_appearance_self,	// Allows the human-based mob itself change its basic appearance ,
 	/client/proc/view_chemical_reaction_logs,
-/*	/client/proc/allow_join_ruforce,
-	/client/proc/allow_join_geforce,*/
 	/client/proc/end_all_grace_periods,
 	/client/proc/reset_all_grace_periods,
 	/datum/admins/proc/paralyze_mob,
@@ -136,7 +133,6 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
 	/datum/admins/proc/export,
-//	/client/proc/check_customitem_activity,
 	/client/proc/nanomapgen_DumpImage
 	)
 var/list/admin_verbs_debug = list(
@@ -150,8 +146,6 @@ var/list/admin_verbs_debug = list(
 	/client/proc/enable_debug_verbs,
 	/client/proc/callproc,
 	/client/proc/callproc_target,
-//	/client/proc/SDQL_query,
-//	/client/proc/SDQL2_query,
 	/client/proc/Jump,
 	/client/proc/jumptomob,
 	/client/proc/jumptocoord,
@@ -283,7 +277,6 @@ var/list/admin_verbs_manager = list(
 )
 
 var/list/admin_verbs_host = list(
-//	/client/proc/eject_unwhitelisted,
 	/client/proc/toggle_pingability
 )
 
@@ -317,7 +310,6 @@ var/list/admin_verbs_host = list(
 /client/proc/remove_admin_verbs()
 	verbs.Remove(
 		admin_verbs_default,
-//		/client/proc/togglebuildmodeself,
 		admin_verbs_admin,
 		admin_verbs_trialadmin,
 		admin_verbs_fun,
@@ -325,7 +317,6 @@ var/list/admin_verbs_host = list(
 		admin_verbs_debug,
 		admin_verbs_mod,
 		admin_verbs_mentor,
-//		admin_verbs_possess,
 		admin_verbs_permissions,
 		/client/proc/stealth,
 		admin_verbs_rejuv,
@@ -586,22 +577,6 @@ var/list/admin_verbs_host = list(
 			config.log_hrefs = TRUE
 			src << "<b>Started logging hrefs</b>"
 
-/client/proc/check_ai_laws()
-	set name = "Check AI Laws"
-	set category = "Admin"
-	return FALSE
-
-/client/proc/rename_silicon()
-	set name = "Rename Silicon"
-	set category = "Admin"
-	return FALSE
-
-
-/client/proc/manage_silicon_laws()
-	set name = "Manage Silicon Laws"
-	set category = "Admin"
-	return FALSE
-
 /client/proc/change_human_appearance_admin()
 	set name = "Change Mob Appearance - Admin"
 	set desc = "Allows you to change the mob appearance"
@@ -783,3 +758,100 @@ var/global/list/global_colour_matrix = null
 					if(9)
 						global_colour_matrix_temp += CLAMP01(input("Blue to Blue") as num)
 			global_colour_matrix = global_colour_matrix_temp
+
+/client/proc/enable_approved_only()
+	set name = "Enable Approved Only"
+	set category = "Server"
+
+	if (config.useapprovedlist == TRUE)
+		src << "Server is already \"Approved Only\"."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+
+	var/conf_1 = input("Are you sure you wan't to restrict the server to Approved players?") in list ("Yes", "No")
+	if (conf_1 == "No")
+		return
+	else
+		config.useapprovedlist = TRUE
+
+/client/proc/disable_approved_only()
+	set name = "Disable Approved Only"
+	set category = "Server"
+
+	if (config.useapprovedlist == FALSE)
+		src << "Server is already open to everyone."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+
+	var/conf_1 = input("Are you sure you wan't to open the server to everyone?") in list ("Yes", "No")
+	if (conf_1 == "No")
+		return
+	else
+		config.useapprovedlist = FALSE
+
+/client/proc/enable_whitelist()
+	set name = "Enable Job Whitelists"
+	set category = "Server"
+
+	if (config.use_job_whitelist == TRUE)
+		src << "Whitelisted Jobs are already restricted."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+
+	var/conf_1 = input("Are you sure you wan't to restrict the whitelisted jobs to whitelisted players?") in list ("Yes", "No")
+	if (conf_1 == "No")
+		return
+	else
+		config.use_job_whitelist = TRUE
+
+/client/proc/disable_whitelist()
+	set name = "Disable Job Whitelists"
+	set category = "Server"
+
+	if (config.use_job_whitelist == FALSE)
+		src << "Whitelisted jobs are already open to everyone."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+
+	var/conf_1 = input("Are you sure you wan't to open the whitelisted jobs to everyone?") in list ("Yes", "No")
+	if (conf_1 == "No")
+		return
+	else
+		config.use_job_whitelist = FALSE
+
+
+/client/proc/enable_fov()
+	set name = "Enable FOV"
+	set category = "Special"
+
+	if (config.disable_fov == FALSE)
+		src << "Field of View mechanic is already enabled."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+
+	config.disable_fov = FALSE
+	world << "<font size = 3>Fields of view are now <b>enabled</b>.</font>"
+	return
+/client/proc/disable_fov()
+	set name = "Disable FOV"
+	set category = "Special"
+
+	if (config.disable_fov == TRUE)
+		src << "Field of View mechanic is already disabled."
+		return
+	if (!check_rights(R_ADMIN))
+		src << "<span class = 'danger'>You don't have the permissions.</span>"
+		return
+	config.disable_fov = TRUE
+	world << "<font size = 3>Fields of view are now <b>disabled</b>.</font>"
+	return

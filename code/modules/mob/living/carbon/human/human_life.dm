@@ -47,8 +47,9 @@
 
 	if (transforming)
 		return
-
-	if (lying || stat < CONSCIOUS)
+//	if (prone)
+//		lying = 1
+	if (lying || stat < CONSCIOUS || prone)
 		layer = MOB_LAYER - 0.01
 	else
 		layer = MOB_LAYER
@@ -66,8 +67,11 @@
 	var/area/currentarea = get_area(src)
 	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
 		gib()
-
-	#define HUNGER_THIRST_MULTIPLIER 0.80
+	if (mood > 100)
+		mood = 100
+	else if (mood < 0)
+		mood = 0
+	#define HUNGER_THIRST_MULTIPLIER 0.32
 	if (stat == DEAD && start_to_rot == FALSE)
 		do_rotting()
 		start_to_rot = TRUE
@@ -86,34 +90,32 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		if ((map.heat_wave || map.ID == MAP_NOMADS_DESERT) && !inducedSSD)
-			if ((istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.02/1) * HUNGER_THIRST_MULTIPLIER)
-			else
-				switch (stat)
-					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
-					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.7/1) * HUNGER_THIRST_MULTIPLIER)
-		else
-			if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-				nutrition -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.01/1) * HUNGER_THIRST_MULTIPLIER)
-			else if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-				nutrition -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
-				water -= ((0.0025/1) * HUNGER_THIRST_MULTIPLIER)
-			else
-				switch (stat)
-					if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-					if (UNCONSCIOUS) // takes over an hour to starve
-						nutrition -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
-						water -= ((0.27/1) * HUNGER_THIRST_MULTIPLIER)
+		if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
+			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
+			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
 
+		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+
+		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
+			switch (stat)
+				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+				if (UNCONSCIOUS) // takes over an hour to starve
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+			mood -= 0.02
+		else
+			switch (stat)
+				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+				if (UNCONSCIOUS) // takes over an hour to starve
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 
 	// hotfixes some stamina bugs
@@ -156,9 +158,10 @@
 		if (disease_type == "none")
 			disease = FALSE
 		else if (disease_type == "plague")
+			mood -= 0.25
 			if (disease_progression == 1 || disease_progression == 90 || disease_progression == 180)
 				update_surgery(1)
-			disease_progression += 1
+			disease_progression += 0.5
 			// first 3 minutes
 			if (prob(7))
 				src << "You feel painful lumps on your skin."
@@ -187,10 +190,11 @@
 				disease_treatment = 0
 				bodytemperature = 310.055
 		else if (disease_type == "flu")
+			mood -= 0.1
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 4
+				disease_progression += 2
 			// first 2 minutes
 			if (disease_progression == 25)
 				src << "You feel a little feverish."
@@ -236,10 +240,11 @@
 					disease_immunity += "flu"
 
 		else if (disease_type == "malaria")
+			mood -= 0.17
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 3
+				disease_progression += 1.5
 			// first 2 minutes
 			if (disease_progression == 25)
 				src << "You feel a little feverish."
@@ -291,10 +296,11 @@
 				disease_treatment = 0
 
 		else if (disease_type == "cholera")
+			mood -= 0.15
 			if (!disease_treatment)
-				disease_progression += 1
+				disease_progression += 0.5
 			else
-				disease_progression += 3
+				disease_progression += 1.5
 			// first 3 minutes
 			if (disease_progression == 90)
 				src << "You feel nauseous."
@@ -348,7 +354,7 @@
 						disease_treatment = 0
 		if (disease == FALSE)
 			//0.005%
-			if (prob(1))
+			if (prob(1) && map.civilizations)
 				if (prob(1) && !inducedSSD)
 					disease = TRUE
 					disease_type = "flu"
@@ -384,6 +390,8 @@
 		handle_shock()
 
 		handle_pain()
+
+		handle_ptsd()
 
 		handle_medical_side_effects()
 		if (map.civilizations)
@@ -490,7 +498,7 @@
 				if (prob(50))
 					src << "<span class='danger'>You suddenly black out!</span>"
 					Paralyse(10)
-				else if (!lying)
+				else if (!lying || !prone)
 					src << "<span class='danger'>Your legs won't respond properly, you fall down!</span>"
 					Weaken(10)
 
@@ -505,93 +513,90 @@
 
 /mob/living/carbon/human/handle_environment()
 
-	//Moved pressure calculations here for use in skip-processing check.
-//	var/pressure = NORMAL_PRESSURE
-	var/loc_temp = 293
+	var/loc_temp = 20
 	var/area/mob_area = get_area(src)
 
-//	if (mob_area.location == AREA_OUTSIDE)
 
 	switch (season)
 		if ("WINTER")
 			switch (mob_area.climate)
 				if ("temperate")
-					loc_temp = 244
+					loc_temp = -29
 				if ("sea")
-					loc_temp = 262
+					loc_temp = -11
 				if ("tundra")
-					loc_temp = 213
+					loc_temp = -60
 				if ("taiga")
-					loc_temp = 220
+					loc_temp = -53
 				if ("semiarid")
-					loc_temp = 272
+					loc_temp = 0
 				if ("desert")
-					loc_temp = 303
+					loc_temp = 32
 				if ("jungle")
-					loc_temp = 293
+					loc_temp = 30
 				if ("savanna")
-					loc_temp = 285
+					loc_temp = 27
 
 		if ("FALL")
 			switch (mob_area.climate)
 				if ("temperate")
-					loc_temp = 285
+					loc_temp = 7
 				if ("sea")
-					loc_temp = 289
+					loc_temp = 11
 				if ("tundra")
-					loc_temp = 213
+					loc_temp = -50
 				if ("taiga")
-					loc_temp = 229
+					loc_temp = -35
 				if ("semiarid")
-					loc_temp = 295
+					loc_temp = 12
 				if ("desert")
-					loc_temp = 303
+					loc_temp = 39
 				if ("jungle")
-					loc_temp = 293
+					loc_temp = 32
 				if ("savanna")
-					loc_temp = 290
+					loc_temp = 29
 
 		if ("SUMMER")
 			switch (mob_area.climate)
 				if ("temperate")
-					loc_temp = 303
+					loc_temp = 30
 				if ("sea")
-					loc_temp = 295
+					loc_temp = 23
 				if ("tundra")
-					loc_temp = 244
+					loc_temp = -25
 				if ("taiga")
-					loc_temp = 255
+					loc_temp = -10
 				if ("semiarid")
-					loc_temp = 309
+					loc_temp = 35
 				if ("desert")
-					loc_temp = 313
+					loc_temp = 55
 				if ("jungle")
-					loc_temp = 304
+					loc_temp = 40
 				if ("savanna")
-					loc_temp = 300
+					loc_temp = 35
 
 		if ("SPRING")
 			switch (mob_area.climate)
 				if ("temperate")
-					loc_temp = 290
+					loc_temp = 10
 				if ("sea")
-					loc_temp = 288
+					loc_temp = 14
 				if ("tundra")
-					loc_temp = 213
+					loc_temp = -35
 				if ("taiga")
-					loc_temp = 229
+					loc_temp = -15
 				if ("semiarid")
-					loc_temp = 300
+					loc_temp = 28
 				if ("desert")
-					loc_temp = 309
+					loc_temp = 45
 				if ("jungle")
-					loc_temp = 297
+					loc_temp = 34
 				if ("savanna")
-					loc_temp = 295
+					loc_temp = 29
 		if ("Dry Season")
-			loc_temp = 313
+			loc_temp = 40
 		if ("Wet Season")
-			loc_temp = 303
+			loc_temp = 30
 
 
 	switch (time_of_day)
@@ -628,25 +633,25 @@
 				if (3.0)
 					loc_temp *= 0.95
 		if (WEATHER_BLIZZARD)
-			loc_temp = 190
+			loc_temp = -82
 		if (WEATHER_SANDSTORM)
-			loc_temp = 321
+			loc_temp = 60
 	loc_temp = round(loc_temp)
 
 	for (var/obj/structure/brazier/BR in range(3, src))
 		if (BR.on == TRUE)
-			if (loc_temp < 295)
-				loc_temp = 295
+			if (loc_temp < 22)
+				loc_temp = 22
 				break
 	for (var/obj/structure/heatsource/HS in range(3, src))
 		if (HS.on == TRUE)
-			if (loc_temp < 295)
-				loc_temp = 295
+			if (loc_temp < 22)
+				loc_temp = 22
 				break
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
-			if (loc_temp < 295)
-				loc_temp = 295
+			if (loc_temp < 22)
+				loc_temp = 22
 				break
 	//inside areas have natural insulation, so the temp will be more moderate than outside.
 	if (mob_area.location == AREA_INSIDE)
@@ -654,7 +659,7 @@
 			loc_temp = (max(295,loc_temp-40))
 		else if (loc_temp < 290)
 			loc_temp = (min(290,loc_temp+40))
-	if (loc_temp > 280 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+	if (loc_temp > 17 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -669,22 +674,24 @@
 
 	else if (heatDamageFromClothingTimer > 0)
 		heatDamageFromClothingTimer--
-
+	//lets convert from Celsius to Kelvin
+	loc_temp += 273.15
 	//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection (convection)
 	var/temp_adj = 0
-	if (loc_temp < bodytemperature) //Place is colder than we are
+	if (loc_temp < bodytemperature-20) //Under 17 degrees = unconfortable without clothing
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
-			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_COLD_DIVISOR) //this will be negative
-	else if (loc_temp > bodytemperature) //Place is hotter than we are
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_COLD_DIVISOR) //this will be negative
+	else if (loc_temp > bodytemperature-10) //Over 27 degrees = unconfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
-			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
-
-	//Use heat transfer as proportional to the gas density. However, we only care about the relative density vs standard 101 kPa/20 C air. Therefore we can use mole ratios
-//	var/relative_density = environment.total_moles / MOLES_CELLSTANDARD
-	var/relative_density = 1.0
-	bodytemperature += between(BODYTEMP_COOLING_MAX, temp_adj*relative_density, BODYTEMP_HEATING_MAX)
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_HEAT_DIVISOR)
+			temp_adj = abs(temp_adj)
+	if (temp_adj > 0)
+		temp_adj = min(temp_adj,8)
+	else
+		temp_adj = max(temp_adj,-8)
+	bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
 	if (bodytemperature >= species.heat_level_1)
 		//Body temperature is too hot.
@@ -719,33 +726,11 @@
 	// tell src they're dying
 	species.get_environment_discomfort(src)
 
-/*
-/mob/living/carbon/human/proc/adjust_body_temperature(current, loc_temp, boost = 0)
-	var/temperature = current
-	var/difference = abs(current-loc_temp)	//get difference
-	var/increments// = difference/10			//find how many increments apart they are
-	if (difference > 50)
-		increments = difference/25
-	else
-		increments = difference/50
-	var/change = increments*boost	// Get the amount to change by (x per increment)
-	var/temp_change
-	if (current < loc_temp)
-		temperature = min(loc_temp, temperature+change)
-	else if (current > loc_temp)
-		temperature = max(loc_temp, temperature-change)
-	temp_change = (temperature - current)
-	return temp_change
-*/
 /mob/living/carbon/human/proc/stabilize_body_temperature()
-	if (species.passive_temp_gain) // We produce heat naturally.
-		bodytemperature += species.passive_temp_gain
-	if (species.body_temperature == null)
-		return //this species doesn't have metabolic thermoregulation
 
 	var/body_temperature_difference = species.body_temperature - bodytemperature
 
-	if (abs(body_temperature_difference) < 0.5)
+	if (abs(body_temperature_difference) < 3)
 		return //fuck this precision
 
 	if (on_fire)
@@ -754,22 +739,9 @@
 	if (bodytemperature < species.cold_level_1) //260.15 is 310.15 - 50, the temperature where you start to feel effects.
 		if (nutrition >= 2) //If we are very, very cold we'll use up quite a bit of nutriment to heat us up.
 			nutrition -= 0.10
-		var/recovery_amt = max((body_temperature_difference / BODYTEMP_AUTORECOVERY_DIVISOR), BODYTEMP_AUTORECOVERY_MINIMUM)
-		//world << "Cold. Difference = [body_temperature_difference]. Recovering [recovery_amt]"
-//				log_debug("Cold. Difference = [body_temperature_difference]. Recovering [recovery_amt]")
-		bodytemperature += recovery_amt
-	else if (species.cold_level_1 <= bodytemperature && bodytemperature <= species.heat_level_1)
-		var/recovery_amt = body_temperature_difference / BODYTEMP_AUTORECOVERY_DIVISOR
-		//world << "Norm. Difference = [body_temperature_difference]. Recovering [recovery_amt]"
-//				log_debug("Norm. Difference = [body_temperature_difference]. Recovering [recovery_amt]")
-		bodytemperature += recovery_amt
+		bodytemperature += 0.1
 	else if (bodytemperature > species.heat_level_1) //360.15 is 310.15 + 50, the temperature where you start to feel effects.
-		//We totally need a sweat system cause it totally makes sense...~
-//		var/recovery_amt = min((body_temperature_difference / BODYTEMP_AUTORECOVERY_DIVISOR), -BODYTEMP_AUTORECOVERY_MINIMUM)	//We're dealing with negative numbers
-		//world << "Hot. Difference = [body_temperature_difference]. Recovering [recovery_amt]"
-//				log_debug("Hot. Difference = [body_temperature_difference]. Recovering [recovery_amt]")
-		var/recovery_amt = min(-20, round(body_temperature_difference/10))
-		bodytemperature += recovery_amt
+		bodytemperature -= 0.1
 
 //This proc returns a number made up of the flags for body parts which you are protected on. (such as HEAD, UPPER_TORSO, LOWER_TORSO, etc. See setup.dm for the full list)
 /mob/living/carbon/human/proc/get_heat_protection_flags(temperature) //Temperature is the temperature you're being exposed to.
@@ -1367,9 +1339,15 @@
 				if (PIRATES)
 					holder2.icon_state = "pirate_basic"
 				if (BRITISH)
-					holder2.icon_state = "rn_basic"
+					if (map.ordinal_age >= 4)
+						holder2.icon_state = "brit_basic"
+					else
+						holder2.icon_state = "rn_basic"
 				if (FRENCH)
-					holder2.icon_state = "fr_basic"
+					if (map.ordinal_age >= 4)
+						holder2.icon_state = "fr2_basic"
+					else
+						holder2.icon_state = "fr_basic"
 				if (SPANISH)
 					holder2.icon_state = "sp_basic"
 				if (PORTUGUESE)
@@ -1379,7 +1357,10 @@
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
-					holder2.icon_state = "arab_basic"
+					if (map.ordinal_age >= 6)
+						holder2.icon_state = "isis_basic"
+					else
+						holder2.icon_state = "arab_basic"
 				if (GREEK)
 					holder2.icon_state = "greek_basic"
 				if (ROMAN)
@@ -1387,7 +1368,19 @@
 				if (JAPANESE)
 					holder2.icon_state = "jp_basic"
 				if (RUSSIAN)
-					holder2.icon_state = "ru_basic"
+					if (map.ordinal_age <= 5)
+						holder2.icon_state = "ru_basic"
+					else
+						holder2.icon_state = "sov_basic"
+				if (GERMAN)
+					if (map.ordinal_age <= 5)
+						holder2.icon_state = "ger_basic"
+					else
+						holder2.icon_state = "ger2_basic"
+				if (AMERICAN)
+					holder2.icon_state = "us_basic"
+				if (VIETNAMESE)
+					holder2.icon_state = "vc_basic"
 				if (CIVILIAN)
 					if (original_job_title == "Civilization A Citizen")
 						holder2.icon_state = "civ1"
@@ -1452,7 +1445,7 @@
 /mob/living/carbon/human/handle_vision()
 
 	if (client)
-		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal, global_hud.meson, global_hud.science)
+		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal)
 
 	if (!laddervision)
 		if (using_object)
@@ -1529,6 +1522,7 @@
 			if ("cocaine")
 				if (ingested.has_reagent("cocaine"))
 					return
+				mood -= (value/100)*0.26
 				switch (value)
 					if (0 to 24)
 						return
@@ -1572,6 +1566,7 @@
 			if ("opium")
 				if (ingested.has_reagent("opium"))
 					return
+				mood -= (value/100)*0.32
 				switch (value)
 					if (0 to 13)
 						if (prob(5))
@@ -1624,6 +1619,7 @@
 			if ("tobacco")
 				if (ingested.has_reagent("nicotine"))
 					return
+				mood -= (value/100)*0.14
 				switch (value)
 					if (0 to 21)
 						return
@@ -1638,6 +1634,7 @@
 			if ("alcohol")
 				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
 					return
+				mood -= (value/100)*0.20
 				switch (value)
 					if (0 to 21)
 						return

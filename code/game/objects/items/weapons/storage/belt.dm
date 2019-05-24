@@ -28,6 +28,35 @@
 		var/mob/M = loc
 		M.update_inv_belt()
 
+/obj/item/weapon/storage/belt/tactical
+	name = "combat belt"
+	storage_slots = 8
+	max_w_class = 3
+	max_storage_space = 28
+
+/obj/item/weapon/storage/belt/medical
+	name = "medical belt"
+	can_hold = list(
+		/obj/item/stack/medical,
+		/obj/item/weapon/surgery,
+		)
+/obj/item/weapon/storage/belt/medical/full_vc/New()
+	..()
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/bruise_pack/gauze(src)
+	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/doctor_handbook(src)
+	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
+
+/obj/item/weapon/storage/belt/medical/full_us/New()
+	..()
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/bruise_pack(src)
+	new /obj/item/stack/medical/advanced/ointment(src)
+	new /obj/item/stack/medical/splint(src)
+	new /obj/item/weapon/doctor_handbook(src)
+	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
+
 
 /obj/item/weapon/storage/belt/utility
 	name = "tool-belt" //Carn: utility belt is nicer, but it bamboozles the text parsing.

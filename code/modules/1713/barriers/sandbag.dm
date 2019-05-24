@@ -225,15 +225,8 @@
 	w_class = TRUE
 	sand_amount = FALSE
 	value = 0
-
 /obj/item/weapon/sandbag/sandbag/attack_self(mob/user)
-	user << "You start building the sandbag wall..."
-	if (do_after(user, 25, src))
-		user << "You finish the placement of the sandbag wall foundation."
-		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
-		qdel(src)
-		return
-
+	return
 /obj/structure/window/sandbag/sandbag/attack_hand(var/mob/user as mob)
 	if (locate(src) in get_step(user, user.dir))
 		if (WWinput(user, "Dismantle this sandbag wall?", "Dismantle sandbag wall", "Yes", list("Yes", "No")) == "Yes")

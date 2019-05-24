@@ -63,20 +63,10 @@
 	desc = "Effective painkiller."
 	pill_type = /obj/item/weapon/reagent_containers/pill/tramadol
 
-/obj/item/weapon/pill_pack/dexalin
-	name = "dexalin pill pack"
-	desc = "Used in cases of oxygen deprivation."
-	pill_type = /obj/item/weapon/reagent_containers/pill/dexalin
-
-/obj/item/weapon/pill_pack/bicaridine
-	name = "bicaridine pill pack"
-	desc = "Helps treat brute injures."
-	pill_type = /obj/item/weapon/reagent_containers/pill/bicaridine
-
-/obj/item/weapon/pill_pack/inaprovaline
-	name = "inaprovaline pill pack"
+/obj/item/weapon/pill_pack/adrenaline
+	name = "adrenaline pill pack"
 	desc = "Prevents death by pain shock."
-	pill_type = /obj/item/weapon/reagent_containers/pill/inaprovaline
+	pill_type = /obj/item/weapon/reagent_containers/pill/adrenaline
 /*
 /obj/item/weapon/pill_pack/adminordrazine
 	name = "adminordrazine pill pack"
