@@ -350,9 +350,9 @@
 	var/topcolor = 0
 	var/deccolor = 0
 	var/linescolor = 0
-	item_state = "cuscolonialcoat_full"
-	icon_state = "cuscolonialcoat_full"
-	worn_state = "cuscolonialcoat_full"
+	item_state = "customcolonialcoat_full"
+	icon_state = "customcolonialcoat_full"
+	worn_state = "customcolonialcoat_full"
 	color = "#FFFFFF"
 	New()
 		..()
@@ -439,9 +439,9 @@
 	var/uncolored = FALSE
 	var/jacketcolor = 0
 	var/crosscolor = 0
-	item_state = "cuscolonial_full"
-	icon_state = "cuscolonial_full"
-	worn_state = "cuscolonial_full"
+	item_state = "customcolonial_full"
+	icon_state = "customcolonial_full"
+	worn_state = "customcolonial_full"
 	color = "#FFFFFF"
 	New()
 		..()
