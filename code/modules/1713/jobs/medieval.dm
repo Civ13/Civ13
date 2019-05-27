@@ -92,7 +92,6 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_medieval = TRUE
 
@@ -402,7 +401,6 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateFR"
-	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_medieval = TRUE
 	is_crusader = TRUE
@@ -625,7 +623,6 @@
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
-	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_medieval = TRUE
 
