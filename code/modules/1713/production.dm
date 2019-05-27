@@ -50,7 +50,6 @@
 		else
 			icon_state = "flour_mill"
 
-/obj/structure/mill/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/rice))
 		H.visible_message("You start to mill the [W.name].")
 		icon_state = "flour_mill1"
