@@ -818,6 +818,8 @@
 			new/datum/stack_recipe("light artisan clothing", /obj/item/clothing/under/artisan/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 57 && current_res[3] < 89 )
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
+			new/datum/stack_recipe("custom colonial jacket", /obj/item/clothing/suit/storage/jacket/customcolonial, 5, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("custom colonial coat", /obj/item/clothing/suit/storage/jacket/customcolonialcoat, 7, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black jacket", /obj/item/clothing/suit/storage/jacket/piratejacket1, 6, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("fancy brown jacket", /obj/item/clothing/suit/storage/jacket/piratejacket2, 10, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("fancy red jacket", /obj/item/clothing/suit/storage/jacket/piratejacket5, 10, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),

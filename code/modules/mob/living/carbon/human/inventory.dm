@@ -576,14 +576,19 @@ This saves us from having to call add_fingerprint() any time something is put in
 		switch (mob.middle_click_intent)
 			if("kick")
 				mob.middle_click_intent = "jump"
-
+				mob << "<span class='warning'>You will now jump.</span>"
+				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				I.update_icon()
 			if("jump")
 				mob.middle_click_intent = "bite"
-
+				mob << "<span class='warning'>You will now bite.</span>"
+				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				I.update_icon()
 			if("bite")
 				mob.middle_click_intent = "kick"
-		var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
-		I.update_icon()
+				mob << "<span class='warning'>You will now kick.</span>"
+				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
+				I.update_icon()
 		return
 
 /client/verb/defense_intent_change()
@@ -595,6 +600,8 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (mob.defense_intent == I_DODGE)
 			mob.defense_intent = I_PARRY
 			mob << "<span class='warning'>You will now parry.</span>"
+			var/obj/screen/intent/I = mob.HUDneed["mode"]
+			I.update_icon()
 		else
 			mob.defense_intent = I_DODGE
 			mob << "<span class='warning'>You will now dodge.</span>"

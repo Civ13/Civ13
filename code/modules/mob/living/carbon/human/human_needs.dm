@@ -1,62 +1,62 @@
-/mob/living/carbon/human/proc/print_happiness()
-//	var/msg = "\n<span class='info'>I am a follower of <font color='red'>[religion]</font></span>.\n"
-//	msg += "<span class='info'>I am [get_social_class()]</span>.\n"
-	var/msg += "<span class='info'>*---------*\n<EM>Current mood</EM>\n"
-	for(var/i in events)
-		var/datum/happiness_event/event = events[i]
-		msg += event.description
+/mob/living/carbon/human/proc/print_mood()
+	if (!ishuman(src))
+		return
+	else
+		var/mob/living/carbon/human/H = src
+		var/msg = ""
+		switch(mood)
+			if(-5000000 to 19)
+				msg = "My mood is horrible!"
+			if(20 to 39)
+				msg = "My mood is bad."
+			if(40 to 59)
+				msg = "My mood is neutral."
+			if(60 to 79)
+				msg = "My mood is good."
+			if(80 to INFINITY)
+				msg = "My mood is excellent!"
+		H << "<span class='info'>[msg]</span>"
+		return
+/mob/living/carbon/human/proc/handle_ptsd()
+	if (ptsd > 100)
+		ptsd = 100
+	if (ptsd < 0)
+		ptsd = 0
 
-	if(!events.len)
-		msg += "<span class='info'>I feel indifferent.</span>\n"
+	if (ptsd < 10 || ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
+		return FALSE
+	else
+		if (prob(0.45*(ptsd/8)) && prob(100-mood)) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
+			do_ptsd()
+			return TRUE
+		if (prob(0.45*(ptsd/4)) && prob(100-mood))
+			flash_sadness(ptsd)
 
-
-	msg += "<span class='info'>*---------*</span>"
-	to_chat(src, msg)
-
-/mob/living/carbon/human/proc/update_happiness()
-	var/old_mood = mood
-	var/old_icon = null
-	if(mood_icon)
-	old_icon = H.HUDneed["mood"].icon_state
-/*
-	happiness = 0
-	for(var/i in events)
-		var/datum/happiness_event/event = events[i]
-		happiness += event.happiness
-*/
-	switch(mood)
-		if(-5000000 to 19)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood5"
-
-		if(20 to 39)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood4"
-
-		if(40 to 59)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood3"
-
-		if(60 to 79)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood2"
-
-		if(80 to INFINITY)
-			if(happiness_icon)
-				happiness_icon.icon_state = "mood1"
-
-	if(old_icon && old_icon != mood.icon_state)
-		if(old_happiness > happiness)
-			src << "<span class='warning'>My mood gets worse.</span>"
+/mob/living/carbon/human/proc/do_ptsd()
+	if (ptsd < 3 || ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
+		return
+	else
+		if (prob(50))
+			jitteriness += rand(140,200)
+			visible_message("[src] starts shaking!","<span class='warning'>You start shaking!</span>")
+			emote("cry")
+			return
 		else
-			src << "<span class='info'>My mood gets better.</span>"
+			jitteriness += rand(60,90)
+			Paralyse(3)
+			visible_message("[src] collapses, breathing heavily!","<span class='warning'>You can't handle the situation!</span>")
+			emote("scream")
+			return
 
-/mob/proc/flash_sadness()
-	if(prob(2))
-		flick("sadness",pain)
+
+/mob/living/carbon/human/proc/flash_sadness(ptsd = 1)
+	if (ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
+		return
+	if(prob(2*ptsd))
+		flick("sadness",HUDtech["pain"])
 		var/spoopysound = pick('sound/effects/badmood1.ogg','sound/effects/badmood2.ogg','sound/effects/badmood3.ogg','sound/effects/badmood4.ogg')
 		sound_to(src, spoopysound)
-
+/*
 /mob/living/carbon/human/proc/handle_happiness()
 	switch(happiness)
 		if(-5000000 to 19)
@@ -72,7 +72,7 @@
 		if(80 to INFINITY)
 			mood_modifier = 10
 
-/*
+
 /mob/living/carbon/human/proc/add_event(category, type) //Category will override any events in the same category, should be unique unless the event is based on the same thing like hunger.
 	var/datum/happiness_event/the_event
 	if(events[category])

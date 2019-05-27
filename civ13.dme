@@ -293,6 +293,7 @@
 #include "code\game\objects\structures\door.dm"
 #include "code\game\objects\structures\filingcabinet.dm"
 #include "code\game\objects\structures\grille.dm"
+#include "code\game\objects\structures\iv_drip.dm"
 #include "code\game\objects\structures\kitchen_spike.dm"
 #include "code\game\objects\structures\levers.dm"
 #include "code\game\objects\structures\mirror.dm"
@@ -624,6 +625,7 @@
 #include "code\modules\mob\living\carbon\human\human_job.dm"
 #include "code\modules\mob\living\carbon\human\human_life.dm"
 #include "code\modules\mob\living\carbon\human\human_movement.dm"
+#include "code\modules\mob\living\carbon\human\human_needs.dm"
 #include "code\modules\mob\living\carbon\human\human_organs.dm"
 #include "code\modules\mob\living\carbon\human\human_species.dm"
 #include "code\modules\mob\living\carbon\human\human_stats.dm"
@@ -835,5 +837,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads_pangea.dmm"
+#include "maps\special\nomads_continental.dmm"
 // END_INCLUDE

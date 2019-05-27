@@ -38,6 +38,7 @@
 "aL" = (/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/gun/projectile/semiautomatic/svt,/obj/item/weapon/attachment/scope/adjustable/sniper_scope,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/dirt,/area/caribbean/void/caves)
 "aM" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/turf/floor/dirt,/area/caribbean/void/caves)
 "aN" = (/obj/structure/closet/crate/empty,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/obj/item/weapon/gun/projectile/revolver/nagant_revolver,/turf/floor/dirt,/area/caribbean/void/caves)
+"aO" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/iv_drip,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 "aP" = (/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosinbox,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/obj/item/ammo_magazine/mosin,/turf/floor/dirt,/area/caribbean/void/caves)
 "aQ" = (/obj/structure/closet/crate/empty,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/shellbox,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/luger,/obj/item/ammo_magazine/c8x27,/turf/floor/dirt,/area/caribbean/void/caves)
 "aR" = (/obj/item/weapon/bedroll,/turf/floor/dirt,/area/caribbean/void/caves)
@@ -485,6 +486,7 @@
 "jr" = (/obj/structure/fish,/turf/floor/beach/water/flooded,/area/caribbean/no_mans_land/jungle)
 "js" = (/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 "jt" = (/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/item/ammo_magazine/m1911,/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
+"ju" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/turf/floor/dirt,/area/caribbean/british/land/outside{name = "American Camp"})
 
 (1,1,1) = {"
 bwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbwbw
@@ -675,9 +677,9 @@ adababaiabavapapabababapabavababapabababaiaiabfufuiCbibibiaehtaebiaeaebibiamiDad
 ababalabababababababapababaqababababaDabavabaiaifuiEambibiaehthtbiaeaebibihNiFctabadabapababaXabababababgzalcmabapapadawcMdAdhcTdCdsdtdydbdudMjedydudRdRdRdRdRdRdbdmjjdzabdpabababadadadgAababababadacad
 adababababapabababababababababaiababaralababababfufuadhOhPhPhQhRhRhQhQhQhQhPadajapahfvfufufvfufufufugYabgyabcmabababababcMdAdTdUjkjljljmdbdbdbdbdbdbdbdbdbdbdbdbiNcZdmdFaidpalabababakabgyabababadadadaa
 abababababababaiabarahabadabapabababaqabababababcffufuhShGhThGhGhGhGhGhGhGhTfufufvajfvfvaXadadfvadabfufuhLabaXaiapabababcMabcDcDdGdHelcEdhcZdbdbdbdldldldldldldldldldXdzahdpababadadadadgAaladababadadaa
-aiabapababababalababababaXaiaiabababababakaiaiababababhUhUhVhVhWhWhWhXhXhVhVadiGiHadadambihNadadapabababhYfuagabababababadadababcLdIegawdbdbdbdbdbdYeaeadZeaeaeaedcTdjeealdpababadadadadgAajabadabadadad
-ababababadabababababapaiadabababapabababadabapabfuababadbibibiaehthtaeaeaebibiiIadadbiadadbiadahadclabaigAfufufufufufuapadapawcucLdNegawdhdbdbdbdbdbdbdbdbdbdbdbdbcTehdgabdpapabadakadadgAadajadapadadbl
-ababababababababaiabababadaraiababicabababahabaiababapadbibibiaeaehthtaeaebibiiJiFbibiadbibiamadabaXabadgAabababababfufuabababawabadjfcGdheodbdbdbdbdbdbdbdbdbdbdbcTjndgabdpababadadadajgIajabadadadadbu
+aiabapababababalababababaXaiaiabababababakaiaiababababhUhUhVhVhWhWhWhXhXhVhVadiGiHadadambihNadadapabababhYfuagabababababadadababcLdIegawdbdbdbdbdbdYeaeadZeaeaeaedaOdjeealdpababadadadadgAajabadabadadad
+ababababadabababababapaiadabababapabababadabapabfuababadbibibiaehthtaeaeaebibiiIadadbiadadbiadahadclabaigAfufufufufufuapadapawcucLdNegawdhdbdbdbdbdbdbdbdbdbdbdbdbaOehdgabdpapabadakadadgAadajadapadadbl
+ababababababababaiabababadaraiababicabababahabaiababapadbibibiaeaehthtaeaebibiiJiFbibiadbibiamadabaXabadgAabababababfufuabababawabadjfcGdheodbdbdbdbdbdbdbdbdbdbdbjujndgabdpababadadadajgIajabadadadadbu
 abapababapababababarababadabababababavabababababalababadiKbibiaeaehthtaeaeaeaebibibibiadadbiadabadadababgyabavapabaqaqfufufuadadapadawjgeiekdbdbdbdYeaeajojsemenjpcTcFcTabcMabaCalaaadadgAadakababadadad
 ababadahababababapabarabababapabaiababababababaharaiababiEadbibibiaehthtaeaeaebibibibibiambiadabadabababgyabababababababfufufufufufufufucRcQcQcQczcQcQcQcQcQcRcQcRcRepdgabcMavababadacbogAadadadabadblad
 abababababababarabababababalabababalapabababababapabababadadadbibiaeaehthtaeaeaebibibibiadamadahadabapaigAabababapababababfufuavcvcvabaieqererdXdXdXdXdXesesdXetdXdXeuevabdpaqabbfadadacgJaaadabadadabad

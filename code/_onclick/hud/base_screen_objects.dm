@@ -552,16 +552,18 @@
 	icon_state = "mood1"
 	screen_loc = "15,8"
 	process_flag = TRUE
-/obj/screen/combat_mode/Click()
-	var/mob/living/carbon/human/C = parentmob
-	C << "[C.mood]"
-//	C.print_happiness(C)
+/obj/screen/mood/Click()
+	if (ishuman(parentmob))
+		var/mob/living/carbon/human/C = parentmob
+		C.print_mood()
 /obj/screen/mood/process()
 	update_icon()
 
 /obj/screen/mood/update_icon()
 	if (isliving(parentmob))
 		var/mob/living/carbon/human/L = parentmob
+		var/old_icon = icon_state
+		var/old_mood = L.mood
 		switch(L.mood)
 			if(-5000000 to 19)
 				icon_state = "mood5"
@@ -577,7 +579,11 @@
 
 			if(80 to INFINITY)
 				icon_state = "mood1"
-
+		if(old_icon && old_icon != icon_state)
+			if(old_mood > L.mood)
+				src << "<span class='warning'>My mood gets worse.</span>"
+			else
+				src << "<span class='info'>My mood gets better.</span>"
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"

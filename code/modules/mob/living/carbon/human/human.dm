@@ -930,60 +930,60 @@ var/list/rank_prefix = list(\
 		var/mob/living/carbon/human/H = usr
 		if (!stat)
 			visible_message("<span class = 'notice'>[src] examines [gender==MALE?"himself":"herself"].</span>")
+		if (ishuman(H))
+			for (var/obj/item/organ/external/org in H.organs)
+				var/status = ""
 
-		for (var/obj/item/organ/external/org in H.organs)
-			var/status = ""
+				if (H.painchecks())//Can we feel pain? If we can then it tells us how much pain our limbs are in.
+					organpain = org.get_damage()
+					if (organpain > 0)
+						status = " <small>pain</small>"
+					if (organpain > 5)
+						status = " pain"
+					if (organpain > 20)
+						status = " PAIN!"
+					if (organpain > 40)
+						status = "<large><b> PAIN!</b></large>"
 
-			if (H.painchecks())//Can we feel pain? If we can then it tells us how much pain our limbs are in.
-				organpain = org.get_damage()
-				if (organpain > 0)
-					status = " <small>pain</small>"
-				if (organpain > 5)
-					status = " pain"
-				if (organpain > 20)
-					status = " PAIN!"
-				if (organpain > 40)
-					status = "<large><b> PAIN!</b></large>"
-
-			if (org.is_stump())//it missing
-				status = " MISSING!"
-
-
-			//This is all spaghetti.
-			if (organpain && (org.status & ORGAN_BLEEDING))//Is the limb bleeding and hurt?
-				status += " || <b>BLEEDING!</b>"
-
-			if ((!organpain) && (org.status & ORGAN_BLEEDING))//Or just bleeding.
-				status = "<b> BLEEDING!</b>"
-
-			if ((!organpain) && (org.status & ORGAN_BROKEN) && (org.status & ORGAN_BLEEDING))//Or is it bleeding and broken but you're not hurt.
-				status = "<b>BLEEDING! || BROKEN!</b>"
+				if (org.is_stump())//it missing
+					status = " MISSING!"
 
 
-			if (organpain && (org.status & ORGAN_BROKEN))//Is the limb broken and hurt?
-				status += " || <b>BROKEN!</b>"
+				//This is all spaghetti.
+				if (organpain && (org.status & ORGAN_BLEEDING))//Is the limb bleeding and hurt?
+					status += " || <b>BLEEDING!</b>"
 
-			if ((!organpain) && (org.status & ORGAN_BROKEN))//Or just broken.
-				status = "<b> IT'S BROKEN!</b>"
+				if ((!organpain) && (org.status & ORGAN_BLEEDING))//Or just bleeding.
+					status = "<b> BLEEDING!</b>"
 
-
-			if (organpain && (org.dislocated == 2))//Hurt and dislocated?
-				status += " || <b>DISLOCATED!</b>"
-
-			if ((!organpain) && (org.dislocated == 2))//Or just dislocated.
-				status = "<b> DISLOCATED!</b>"
+				if ((!organpain) && (org.status & ORGAN_BROKEN) && (org.status & ORGAN_BLEEDING))//Or is it bleeding and broken but you're not hurt.
+					status = "<b>BLEEDING! || BROKEN!</b>"
 
 
-			if (org.status & ORGAN_DEAD)//it dead
-				status = "</b> NECROTIC!</b>"
+				if (organpain && (org.status & ORGAN_BROKEN))//Is the limb broken and hurt?
+					status += " || <b>BROKEN!</b>"
 
-			if (!org.is_usable())//it useless
-				status = "</b> USELESS!</b>"
+				if ((!organpain) && (org.status & ORGAN_BROKEN))//Or just broken.
+					status = "<b> IT'S BROKEN!</b>"
 
-			if (status == "")
-				status = " OK"
 
-			src << output(text("\t [] []:[][]",status==" OK"?"<span class = 'notice'>":"<span class = 'warning'> ", capitalize(org.name), status, "</span>"), TRUE)
+				if (organpain && (org.dislocated == 2))//Hurt and dislocated?
+					status += " || <b>DISLOCATED!</b>"
+
+				if ((!organpain) && (org.dislocated == 2))//Or just dislocated.
+					status = "<b> DISLOCATED!</b>"
+
+
+				if (org.status & ORGAN_DEAD)//it dead
+					status = "</b> NECROTIC!</b>"
+
+				if (!org.is_usable())//it useless
+					status = "</b> USELESS!</b>"
+
+				if (status == "")
+					status = " OK"
+
+				src << output(text("\t [] []:[][]",status==" OK"?"<span class = 'notice'>":"<span class = 'warning'> ", capitalize(org.name), status, "</span>"), TRUE)
 
 
 

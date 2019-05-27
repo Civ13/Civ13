@@ -11,7 +11,7 @@
 	desc = "The best thing since sliced bread."
 	icon_state = "breadslice"
 	bitesize = 2
-
+	satisfaction = 7
 	var/list/ingredients = list()
 
 /obj/item/weapon/reagent_containers/food/snacks/csandwich/attackby(obj/item/W as obj, mob/user as mob)
