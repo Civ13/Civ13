@@ -475,6 +475,15 @@ var/list/name_to_material
 	name = "straw"
 //	icon_base = "straw"
 
+/material/paper
+	name = "paper"
+	hardness = 25
+	integrity = 35
+	door_icon_base = "shoji"
+	hitsound = 'sound/effects/cardboardpunch.ogg'
+	melting_point = T0C+300
+	ignition_point = T0C+288
+
 /material/cloth //todo
 	name = "cloth"
 	hardness = 10

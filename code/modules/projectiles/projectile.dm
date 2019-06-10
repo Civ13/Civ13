@@ -96,6 +96,7 @@
 
 /obj/item/projectile/Destroy()
 	projectile_list -= src
+	walk(src, 0)
 	..()
 
 //TODO: make it so this is called more reliably, instead of sometimes by bullet_act() and sometimes not
@@ -563,8 +564,8 @@
 		setup_trajectory()
 		firstmove = TRUE
 
-	if (src && loc)
-		if (--kill_count < 1)
+	spawn while(src && src.loc)
+		if (kill_count-- < 1)
 			for (var/atom/movable/AM in loc)
 				do_bullet_act(AM)
 			do_bullet_act(loc)

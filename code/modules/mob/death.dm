@@ -94,7 +94,7 @@
 		var/mob/living/L = src
 		if (L.HUDneed.Find("health"))
 			var/obj/screen/health/H = L.HUDneed["health"]
-			H.icon_state = "health7"
+			H.icon_state = "healthdoll_BASE_DEAD"
 
 	timeofdeath = world.time
 	if (mind) mind.store_memory("Time of death: [stationtime2text()]", FALSE)

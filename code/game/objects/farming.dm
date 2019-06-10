@@ -383,22 +383,23 @@
 				desc = "A dead [plant] plant."
 				name = "dead [plant] plant"
 			spawn(600)
-				if (get_area(get_turf(src)).location == 0)
-					if (istype(src, /obj/structure/farming/plant/mushroom))
-						stage += 1
-				else
-					var/currcl = get_area(get_turf(src)).climate
-					var/count = 0
-					for (var/i in biomes)
-						if (i == currcl)
-							if (currcl == "jungle" || currcl == "desert" || currcl == "savanna")
-								count++
-							for (var/k in seasons)
-								if (season == k)
+				if (src && get_area(get_turf(src)))
+					if (get_area(get_turf(src)).location == 0)
+						if (istype(src, /obj/structure/farming/plant/mushroom))
+							stage += 1
+					else
+						var/currcl = get_area(get_turf(src)).climate
+						var/count = 0
+						for (var/i in biomes)
+							if (i == currcl)
+								if (currcl == "jungle" || currcl == "desert" || currcl == "savanna")
 									count++
-					if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA))
-						stage += 1
-				growth()
+								for (var/k in seasons)
+									if (season == k)
+										count++
+						if (count > 0 || (map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_PANGEA))
+							stage += 1
+					growth()
 	else
 		icon_state = "[plant]-harvest"
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)

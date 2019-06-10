@@ -107,7 +107,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if (ishuman(loc))
 			var/mob/living/carbon/human/C = loc
 			if (src == C.wear_mask && C.check_has_mouth()) // if it's in the human/monkey mouth, transfer reagents to the mob
-				reagents.trans_to_mob(C, REM, CHEM_INGEST, 0.2) // Most of it is not inhaled... balance reasons.
+				reagents.trans_to_mob(C, REM, CHEM_INGEST, 0.2, FALSE, TRUE) // Most of it is not inhaled... balance reasons.
 		else // else just remove some of the reagents
 			reagents.remove_any(REM)
 
@@ -215,7 +215,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	weldermes = "<span class='notice'>USER casually lights the NAME with FLAME.</span>"
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME.</span>"
 
-
+	New()
+		..()
+		reagents.add_reagent("nicotine",15)
 /obj/item/clothing/mask/smokable/cigarette/afterattack(obj/item/weapon/reagent_containers/glass/glass, mob/user as mob, proximity)
 	..()
 	if (!proximity)
@@ -249,13 +251,18 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	throw_speed = 0.5
 	item_state = "cigaroff"
 	smoketime = 1500
-	chem_volume = 20
+	chem_volume = 30
 	matchmes = "<span class='notice'>USER lights their NAME with their FLAME.</span>"
 	lightermes = "<span class='notice'>USER manages to offend their NAME by lighting it with FLAME.</span>"
 	zippomes = "<span class='rose'>With a flick of their wrist, USER lights their NAME with their FLAME.</span>"
 	weldermes = "<span class='notice'>USER insults NAME by lighting it with FLAME.</span>"
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME with the power of science.</span>"
 	value = 17
+
+	New()
+		..()
+		reagents.add_reagent("nicotine",30)
+
 /obj/item/clothing/mask/smokable/cigarette/cigar/havana
 	name = "Cuban cigar"
 	desc = "A cigar fit for only the best of the best."
@@ -263,8 +270,11 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_on = "cigar2on"
 	icon_off = "cigar2off"
 	smoketime = 7200
-	chem_volume = 30
+	chem_volume = 40
 	value = 24
+	New()
+		..()
+		reagents.add_reagent("nicotine",40)
 
 /obj/item/weapon/cigbutt
 	name = "cigarette butt"

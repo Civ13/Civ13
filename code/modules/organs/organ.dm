@@ -338,3 +338,12 @@ var/list/organ_cache = list()
 					var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 					meat.name = "[name] meatsteak"
 				qdel(src)
+
+/obj/item/organ/proc/is_usable()
+	return !(status & (ORGAN_CUT_AWAY|ORGAN_MUTATED|ORGAN_DEAD))
+
+/obj/item/organ/external/stump/is_usable()
+	return 0
+
+/obj/item/organ/internal/is_usable()
+	return ..() && !is_broken()

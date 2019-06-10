@@ -202,6 +202,14 @@
 		visible_message("<span class='notice'>\The [user] bonks \the [src] harmlessly.</span>")
 	return TRUE
 
+
+/obj/structure/window/kick_act(var/mob/living/carbon/human/user)
+	if(!..())
+		return
+	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(10,15), 0)
+	visible_message("<span class='danger'>[user] kicks the [src]!</span>")
+	take_damage(rand(5,10))
+
 /obj/structure/window/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really wish I did not need this
 	if (istype(W, /obj/item/weapon/grab) && get_dist(src,user)<2)
@@ -423,7 +431,10 @@
 		if (S.amount >= 3)
 			visible_message("<span class = 'notice'>[user] starts to add glass to the window frame...</span>")
 			if (do_after(user, 50, src))
-				new/obj/structure/window/classic(get_turf(src))
+				if (istype(src, /obj/structure/window_frame/shoji))
+					new/obj/structure/window/classic/shoji(get_turf(src))
+				else
+					new/obj/structure/window/classic(get_turf(src))
 				visible_message("<span class = 'notice'>[user] adds glass to the window frame.</span>")
 				S.use(3)
 				qdel(src)
@@ -438,6 +449,11 @@
 		visible_message("<span class = 'notice'>The window is broken by [user]!</span>")
 		qdel(src)
 		return
+
+/obj/structure/window_frame/shoji
+	icon_state = "shoji_windownewframe"
+	name = "shoji window frame"
+	desc = "A good old window frame, only Japanese-style."
 
 /obj/structure/window/classic
 	desc = "A good old window."
@@ -483,7 +499,10 @@
 /obj/structure/window/classic/shatter(var/display_message = TRUE)
 	var/myturf = get_turf(src)
 	spawn (1)
-		new/obj/structure/window_frame(myturf)
+		if (istype(src, /obj/structure/window/classic/shoji))
+			new/obj/structure/window_frame/shoji(myturf)
+		else
+			new/obj/structure/window_frame(myturf)
 	..(display_message)
 
 
@@ -492,6 +511,12 @@
 
 /obj/structure/window/classic/update_nearby_icons()
 	return
+
+/obj/structure/window/classic/shoji
+	icon_state = "shoji_windownew"
+	basestate = "shoji_windownew"
+	name = "shoji window"
+	desc = "A good old window, only Japanese-style."
 
 
 

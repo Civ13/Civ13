@@ -148,8 +148,8 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 	if (owner.incapacitated())
 		owner << "<span class='warning'>You cannot aim a gun in your current state.</span>"
 		return
-	if (owner.lying)
-		owner << "<span class='warning'>You cannot aim a gun while prone.</span>"
+	if (owner.lying && !owner.prone)
+		owner << "<span class='warning'>You cannot aim a gun while laying on the floor.</span>"
 		return
 	if (owner.restrained())
 		owner << "<span class='warning'>You cannot aim a gun while handcuffed.</span>"

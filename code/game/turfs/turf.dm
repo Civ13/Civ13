@@ -421,7 +421,7 @@ var/const/enterloopsanity = 100
 			else
 				footstepsound = "erikafootsteps"
 
-			if (H.m_intent != "stealth")
+			if (H.m_intent != "stealth" && H.m_intent != "proning")
 				var/fsvol = 60
 				if (istype(H.shoes, /obj/item/clothing/shoes))
 					fsvol = 100 //shoes make more noise than bare feet

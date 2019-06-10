@@ -110,6 +110,9 @@ macro "macro"
 	elem "ooc"
 		name = "F4"
 		command = "ooc"
+	elem 
+		name = "F5"
+		command = "looc"
 
 macro "hotkeymode"
 	elem 
@@ -195,7 +198,7 @@ macro "hotkeymode"
 		command = "a-intent harm"
 	elem 
 		name = "5"
-		command = ".me"
+		command = "m-intent-change"
 	elem 
 		name = "A"
 		command = ".startmovingleft"
@@ -242,6 +245,9 @@ macro "hotkeymode"
 		name = "CTRL+J"
 		command = "toggle-gun-mode"
 	elem 
+		name = "M"
+		command = "m-intent-run"
+	elem 
 		name = "Q"
 		command = ".northwest"
 	elem 
@@ -262,6 +268,9 @@ macro "hotkeymode"
 	elem 
 		name = "T"
 		command = ".say"
+	elem 
+		name = "U"
+		command = "secondary-intent-change"
 	elem "w_key"
 		name = "W"
 		command = ".startmovingup"
@@ -276,10 +285,7 @@ macro "hotkeymode"
 		command = ".northeast"
 	elem 
 		name = "Y"
-		command = "Activate-Held-Object"
-	elem 
-		name = "CTRL+Y"
-		command = "Activate-Held-Object"
+		command = "defense-intent-change"
 	elem 
 		name = "Z"
 		command = "Activate-Held-Object"
@@ -319,6 +325,12 @@ macro "hotkeymode"
 	elem "ooc"
 		name = "F4"
 		command = "ooc"
+	elem 
+		name = "F5"
+		command = "looc"
+	elem 
+		name = "F6"
+		command = ".me"
 
 
 menu "menu"

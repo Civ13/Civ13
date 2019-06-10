@@ -436,7 +436,7 @@
 			original_objs += O
 		playsound(T, "explosion", 100, TRUE)
 		spawn (1)
-			for (var/mob/living/L in original_mobs)
+			for (var/mob/living/L in range(1,T))
 				if (L)
 					L.maim()
 					if (L)

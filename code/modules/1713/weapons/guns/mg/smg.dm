@@ -56,7 +56,7 @@
 
 	accuracy_increase_mod = 1.00
 	accuracy_decrease_mod = 2.00
-	KD_chance = KD_CHANCE_VERY_LOW
+	KD_chance = KD_CHANCE_MEDIUM
 	stat = "mg"
 	w_class = 3
 	attachment_slots = ATTACH_IRONSIGHTS
@@ -456,6 +456,16 @@
 	desc = "A modernized version of the M16, with picatinny rail for attachments."
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 
+/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/att/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		SP.attached(null,src,TRUE)
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"
@@ -463,6 +473,18 @@
 	icon_state = "m4mws"
 	desc = "A version of the M4 carbine made to fit the Modular Weapon System."
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_ADV_SCOPE|ATTACH_UNDER
+
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att/New()
+	..()
+	if (prob(50))
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/holographic/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/holographic(src)
+		SP.attached(null,src,TRUE)
+	else
+		var/obj/item/weapon/attachment/scope/adjustable/advanced/acog/SP = new/obj/item/weapon/attachment/scope/adjustable/advanced/acog(src)
+		SP.attached(null,src,TRUE)
+		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
+		FP.attached(null,src,TRUE)
 
 /obj/item/weapon/gun/projectile/submachinegun/m14
 	name = "M14"
@@ -480,6 +502,31 @@
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
+		)
+	effectiveness_mod = 1.07
+	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/submachinegun/g3
+	name = "H&K G3"
+	desc = "A german assault rifle, chambered in 7.62x51mm."
+	icon_state = "g3"
+	item_state = "g3"
+	base_icon = "g3"
+	caliber = "a762x51"
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/hk
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	weight = 4.2
+	equiptimer = 15
+	slot_flags = SLOT_BACK
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
+		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
 		)
 	effectiveness_mod = 1.07
 	sel_mode = 1

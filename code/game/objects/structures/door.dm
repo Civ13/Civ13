@@ -131,7 +131,10 @@
 
 /obj/structure/simple_door/proc/Open()
 	isSwitchingStates = TRUE
-	playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
+	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+		playsound(loc, 'sound/machines/shoji_door_open.ogg', 100, TRUE)
+	else
+		playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
 	flick("[basic_icon]opening",src)
 	spawn (10)
 		density = FALSE
@@ -145,7 +148,10 @@
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
-	playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
+	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+		playsound(loc, 'sound/machines/shoji_door_close.ogg', 100, TRUE)
+	else
+		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
 	flick("[basic_icon]closing",src)
 	spawn (10)
 		density = TRUE

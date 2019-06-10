@@ -72,7 +72,8 @@
 	item_state = "german_vest"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,)
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,)
+
 /obj/item/clothing/mask/facecamo
 	name = "woodlands face camo"
 	desc = "Face painting in woodland camo pattern."
@@ -171,7 +172,8 @@
 	slots = 5
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,)
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/handcuffs,)
+
 
 /obj/item/clothing/suit/storage/ghillie
 	name = "ghillie suit"
@@ -248,6 +250,11 @@
 /obj/item/weapon/storage/belt/largepouches/green/m60/New()
 	..()
 	new/obj/item/ammo_magazine/b762(src)
+
+/obj/item/weapon/storage/belt/largepouches/m249
+/obj/item/weapon/storage/belt/largepouches/m249/New()
+	..()
+	new/obj/item/ammo_magazine/m249(src)
 
 /obj/item/weapon/storage/belt/smallpouches/vc_officer
 /obj/item/weapon/storage/belt/smallpouches/vc_officer/New()
@@ -415,6 +422,21 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 55, gun = 21, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/modern/pasgt/desert
+	name = "PASGT helmet"
+	desc = "A typical US Army PASGT helmet. This one is in U.S. Desert pattern."
+	icon_state = "pasgt_desert"
+	item_state = "pasgt_desert"
+	worn_state = "pasgt_desert"
+
+/obj/item/clothing/head/helmet/modern/pasgt/desert/New()
+	..()
+	if (prob(50))
+		icon_state = "pasgt_desert_attachments"
+		item_state = "pasgt_desert_attachments"
+		worn_state = "pasgt_desert_attachments"
+		update_icon()
+
 /obj/item/clothing/head/helmet/modern/lwh
 	name = "LWH helmet"
 	desc = "A typical US Army LightWeight Helmet. This one is in beige color."
@@ -486,7 +508,7 @@
 	item_state = "green_webbing"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,)
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,)
 
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
@@ -496,7 +518,7 @@
 	item_state = "khaki_webbing"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,)
+		hold.can_hold = list(/obj/item/weapon/material/kitchen/utensil,/obj/item/weapon/key,/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade,/obj/item/weapon/attachment,/obj/item/weapon/gun/projectile/pistol,/obj/item/weapon/gun/projectile/revolver,/obj/item/weapon/handcuffs,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,)
 
 /obj/item/clothing/under/insurgent_black
 	name = "black tunic"

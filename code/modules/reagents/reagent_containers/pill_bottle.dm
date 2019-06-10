@@ -39,16 +39,6 @@
 	name = "bottle of  pills"
 	desc = "Contains pills used to stabilize patients."
 
-	New()
-		..()
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-		new /obj/item/weapon/reagent_containers/pill/( src )
-
 /obj/item/weapon/storage/pill_bottle/penicillin
 	name = "bottle of penicillin pills"
 	desc = "An antibiotic. Effective against many microbial diseases."
@@ -76,6 +66,21 @@
 		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
 		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
 		new /obj/item/weapon/reagent_containers/pill/tramadol( src )
+
+/obj/item/weapon/storage/pill_bottle/pervitin
+	name = "bottle of Pervitin pills"
+	desc = "Contains pills usof methamphetamine."
+
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+
 
 /obj/item/weapon/storage/pill_bottle/citalopram
 	name = "bottle of Citalopram pills"

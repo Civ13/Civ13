@@ -12,7 +12,7 @@
 		..()
 		reagents.add_reagent("protein", 5)
 		bitesize = 3
-
+	satisfaction = -6
 /obj/item/weapon/reagent_containers/food/snacks/meat/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (!roasted && !rotten && (istype(W,/obj/item/weapon/material/knife) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
 		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
@@ -27,9 +27,11 @@
 	spawn(3000) //5 minutes
 		icon_state = "rottenmeat"
 		name = "rotten [name]"
-		reagents.remove_reagent("protein", 2)
-		reagents.add_reagent("food_poisoning", 1)
+		if (reagents)
+			reagents.remove_reagent("protein", 2)
+			reagents.add_reagent("food_poisoning", 1)
 		rotten = TRUE
+		satisfaction = -10
 		spawn(1000)
 			if (isturf(loc) && prob(30))
 				new/mob/living/simple_animal/mouse(get_turf(src))

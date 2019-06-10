@@ -285,7 +285,9 @@
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("shoji wall", /obj/covers/wood_wall/shoji, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("shoji divider", /obj/covers/wood_wall/shoji_divider, 3, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("shoji divider", /obj/covers/wood_wall/shoji_divider, 3, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("shoji door", /obj/structure/simple_door/key_door/anyone/shoji, 3, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("shoji window", /obj/structure/window_frame/shoji, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 5, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -816,6 +818,8 @@
 			new/datum/stack_recipe("light artisan clothing", /obj/item/clothing/under/artisan/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 57 && current_res[3] < 89 )
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
+			new/datum/stack_recipe("custom colonial jacket", /obj/item/clothing/suit/storage/jacket/customcolonial, 5, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("custom colonial coat", /obj/item/clothing/suit/storage/jacket/customcolonialcoat, 7, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black jacket", /obj/item/clothing/suit/storage/jacket/piratejacket1, 6, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("fancy brown jacket", /obj/item/clothing/suit/storage/jacket/piratejacket2, 10, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("fancy red jacket", /obj/item/clothing/suit/storage/jacket/piratejacket5, 10, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),

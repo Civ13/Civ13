@@ -27,7 +27,7 @@
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/siege/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/siege/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)

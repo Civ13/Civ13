@@ -152,7 +152,7 @@ Please contact me on #coderbus IRC. ~Carn x
 		if (species.has_floating_eyes)
 			overlays |= species.get_eyes(src)
 
-	if (lying && !species.prone_icon) //Only rotate them if we're not drawing a specific icon for being prone.
+	if ((lying || prone) && !species.prone_icon) //Only rotate them if we're not drawing a specific icon for being prone.
 		var/matrix/M = matrix()
 		M.Turn(90)
 		M.Scale(size_multiplier)
@@ -803,6 +803,9 @@ var/global/list/damage_icon_parts = list()
 
 
 /mob/living/carbon/human/update_inv_wear_suit(var/update_icons=1)
+	var/image/base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_top")
+	var/image/secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_dec")
+	var/image/tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_lines")
 	update_surgery(0)
 	if ( wear_suit && istype(wear_suit, /obj/item/) )
 		/*var/new_screen_loc = find_inv_position(slot_wear_suit)
@@ -821,6 +824,28 @@ var/global/list/damage_icon_parts = list()
 		standing = image(icon = t_icon, icon_state = wear_suit.icon_state)
 		standing.color = wear_suit.color
 
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonialcoat))
+			var/obj/item/clothing/suit/storage/jacket/customcolonialcoat/CU = wear_suit
+			base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_top")
+			base.color = CU.topcolor
+			secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_dec")
+			secondary.color = CU.deccolor
+			tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_lines")
+			tertiary.color = CU.linescolor
+			standing.overlays += base
+			standing.overlays += secondary
+			standing.overlays += tertiary
+
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonial))
+			var/obj/item/clothing/suit/storage/jacket/customcolonial/CU = wear_suit
+			base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonial_jacket")
+			base.color = CU.jacketcolor
+			secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonial_cross")
+			secondary.color = CU.crosscolor
+			tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonial_plain")
+			standing.overlays += base
+			standing.overlays += secondary
+			standing.overlays += tertiary
 		if (wear_suit.blood_DNA)
 			var/obj/item/clothing/suit/S = wear_suit
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "[S.blood_overlay_type]blood")

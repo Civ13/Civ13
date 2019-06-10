@@ -74,8 +74,18 @@
 	icon_state = "b762x54"
 	mag_type = MAGAZINE
 	caliber = "a762x54_weak"
-	w_class = 4
+	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 100
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m9beretta
+	name = "M9 Beretta magazine (9x19mm)"
+	icon_state = "m9beretta"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 15
+	weight = 0.33
 	multiple_sprites = TRUE

@@ -79,7 +79,7 @@
 	ammo_type = /obj/item/ammo_casing/c8mmnambu
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-
+	effectiveness_mod = 0.94
 /obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
 	..()
 	if (ammo_magazine)
@@ -100,7 +100,7 @@
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-
+	effectiveness_mod = 0.96
 /obj/item/weapon/gun/projectile/pistol/luger/update_icon()
 	..()
 	if (ammo_magazine)
@@ -122,7 +122,7 @@
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = SINGLE_CASING | SPEEDLOADER
 	handle_casings = EJECT_CASINGS
-
+	effectiveness_mod = 0.9
 /obj/item/weapon/gun/projectile/pistol/mauser/update_icon()
 	..()
 	if (ammo_magazine)
@@ -143,7 +143,7 @@
 	ammo_type = /obj/item/ammo_casing/a765x25
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
-
+	effectiveness_mod = 0.9
 /obj/item/weapon/gun/projectile/pistol/borchardt/update_icon()
 	..()
 	if (ammo_magazine)
@@ -165,3 +165,18 @@
 	ammo_type = /obj/item/ammo_casing/a45acp
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.02
+
+/obj/item/weapon/gun/projectile/pistol/m9beretta
+	name = "M9 Beretta"
+	desc = "The standard issue pistol of the US Army of the late 20th century. Chambered in 9mm Parabellum."
+	icon_state = "m9beretta"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/m9beretta
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.12

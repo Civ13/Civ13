@@ -520,3 +520,118 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (slot_handcuffed) items += handcuffed
 
 	return items
+
+/client/verb/m_intent_change()
+	set name = "m-intent-change"
+	set hidden = TRUE
+	if (!mob)
+		return
+	if (ishuman(mob))
+		if (mob.m_intent == "run")
+			mob.m_intent = "proning"
+		else if (mob.m_intent == "proning")
+			if (mob.facing_dir)
+				mob.set_face_dir()
+			mob.m_intent = "stealth"
+		else if (mob.m_intent == "stealth")
+			mob.m_intent = "walk"
+		else if (mob.m_intent == "walk")
+			mob.m_intent = "run"
+		else
+			mob.m_intent = "walk"
+
+		if (mob.m_intent == "proning")
+			mob.prone = TRUE
+			mob.facing_dir = dir
+			if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+				mob.dir = WEST
+			else
+				mob.dir = EAST
+			var/matrix/M = matrix()
+			M.Turn(90)
+			var/mob/living/carbon/human/H = mob
+			M.Scale(H.size_multiplier)
+			M.Translate(1,-6)
+			mob.transform = M
+		else
+			mob.prone = FALSE
+			var/matrix/M = matrix()
+			var/mob/living/carbon/human/H = mob
+			M.Scale(H.size_multiplier)
+			M.Translate(0, 16*(H.size_multiplier-1))
+			mob.transform = M
+		if (mob.HUDneed.Find("m_intent"))
+			var/obj/screen/intent/I = mob.HUDneed["m_intent"]
+			I.update_icon()
+			return
+
+/client/verb/secondary_intent_change()
+	set name = "secondary-intent-change"
+	set hidden = TRUE
+	if (!mob)
+		return
+	if (ishuman(mob))
+		var/mob/living/carbon/human/H = mob
+		H.resist()
+		switch (mob.middle_click_intent)
+			if("kick")
+				mob.middle_click_intent = "jump"
+				mob << "<span class='warning'>You will now jump.</span>"
+				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				I.update_icon()
+			if("jump")
+				mob.middle_click_intent = "bite"
+				mob << "<span class='warning'>You will now bite.</span>"
+				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				I.update_icon()
+			if("bite")
+				mob.middle_click_intent = "kick"
+				mob << "<span class='warning'>You will now kick.</span>"
+				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
+				I.update_icon()
+		return
+
+/client/verb/defense_intent_change()
+	set name = "defense-intent-change"
+	set hidden = TRUE
+	if (!mob)
+		return
+	if (ishuman(mob))
+		if (mob.defense_intent == I_DODGE)
+			mob.defense_intent = I_PARRY
+			mob << "<span class='warning'>You will now parry.</span>"
+			var/obj/screen/intent/I = mob.HUDneed["mode"]
+			I.update_icon()
+		else
+			mob.defense_intent = I_DODGE
+			mob << "<span class='warning'>You will now dodge.</span>"
+			var/obj/screen/intent/I = mob.HUDneed["mode"]
+			I.update_icon()
+
+/client/verb/m_intent_run()
+	set name = "m-intent-run"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.m_intent == "walk")
+		mob.m_intent = "run"
+
+	else if (H.m_intent == "run")
+		mob.m_intent = "walk"
+
+	else if (mob.m_intent == "proning")
+		if (mob.facing_dir)
+			mob.set_face_dir()
+			mob.m_intent = "walk"
+	else
+		mob.m_intent = "walk"
+
+	if (mob.HUDneed.Find("m_intent"))
+		var/obj/screen/intent/I = mob.HUDneed["m_intent"]
+		I.update_icon()

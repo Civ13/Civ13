@@ -28,6 +28,8 @@
 /datum/job/var/is_coldwar = FALSE
 /datum/job/var/is_radioman = FALSE
 /datum/job/var/is_specops = FALSE
+/datum/job/var/is_modernday = FALSE
+/datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold
@@ -156,7 +158,7 @@
 
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	..()
-	if (is_officer)
+	if (is_officer || can_get_coordinates)
 		H.make_artillery_officer()
 		H.add_note("Officer", "As an officer, you can check coordinates.</span>")
 	if (is_commander && map.ordinal_age < 5)

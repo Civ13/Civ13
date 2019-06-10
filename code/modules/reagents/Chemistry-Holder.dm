@@ -386,7 +386,7 @@
 		perm = L.reagent_permeability()
 	return trans_to_mob(target, amount, CHEM_TOUCH, perm, copy)
 
-/datum/reagents/proc/trans_to_mob(var/mob/target, var/amount = TRUE, var/type = CHEM_BLOOD, var/multiplier = TRUE, var/copy = FALSE) // Transfer after checking into which holder...
+/datum/reagents/proc/trans_to_mob(var/mob/target, var/amount = TRUE, var/type = CHEM_BLOOD, var/multiplier = TRUE, var/copy = FALSE, var/smoked = FALSE) // Transfer after checking into which holder...
 	if (!target || !istype(target) || !target.simulated)
 		return
 	if (iscarbon(target))
@@ -396,7 +396,7 @@
 			return trans_to_holder(R, amount, multiplier, copy)
 		if (type == CHEM_INGEST)
 			var/datum/reagents/R = C.ingested
-			return C.ingest(src,R, amount, multiplier, copy)
+			return C.ingest(src,R, amount, multiplier, copy, smoked)
 		if (type == CHEM_TOUCH)
 			var/datum/reagents/R = C.touching
 			return trans_to_holder(R, amount, multiplier, copy)

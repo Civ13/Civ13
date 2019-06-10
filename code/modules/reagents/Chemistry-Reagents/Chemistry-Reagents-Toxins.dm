@@ -449,3 +449,4 @@
 	..()
 	M.add_chemical_effect(CE_PULSE, TRUE)
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
+	M.mood += removed*8

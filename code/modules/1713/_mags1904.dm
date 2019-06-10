@@ -24,7 +24,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	multiple_sprites = FALSE
 	is_box = TRUE
 
-obj/item/ammo_magazine/madsen
+/obj/item/ammo_magazine/madsen
 	name = "magazine (7.62x54mm)"
 	icon_state = "madsen"
 	mag_type = MAGAZINE
@@ -35,14 +35,25 @@ obj/item/ammo_magazine/madsen
 	max_ammo = 25
 	multiple_sprites = TRUE
 
-obj/item/ammo_magazine/b762
+/obj/item/ammo_magazine/b762
 	name = "belt (7.62x51mm)"
 	icon_state = "b762"
 	mag_type = MAGAZINE
 	caliber = "a762x51_weak"
-	w_class = 4
+	w_class = 3
 	matter = list(DEFAULT_WALL_MATERIAL = 1440)
 	ammo_type = /obj/item/ammo_casing/a762x51/weak
+	max_ammo = 100
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m249
+	name = "belt (5.56x45mm)"
+	icon_state = "b762"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 1440)
+	ammo_type = /obj/item/ammo_casing/a556x45
 	max_ammo = 100
 	multiple_sprites = TRUE
 

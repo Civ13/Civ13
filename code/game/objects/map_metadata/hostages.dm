@@ -2,11 +2,11 @@
 /obj/map_metadata/hostages
 	ID = MAP_HOSTAGES
 	title = "Hostage Rescue (100x100x1)"
-	lobby_icon_state = "coldwar"
+	lobby_icon_state = "modern"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
-//	min_autobalance_players = 90
+	min_autobalance_players = 100
 	faction_organization = list(
 		AMERICAN,
 		ARAB)
@@ -25,7 +25,7 @@
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
 	songs = list(
-		"Fortunate Son:1" = 'sound/music/fortunate_son.ogg',)
+		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
 	artillery_count = 0
 
 	var/total_hostages = 6
@@ -48,10 +48,14 @@
 
 obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_specops == TRUE)
-		. = TRUE
+	if (istype(J, /datum/job/american))
+		if (J.is_specops && !J.is_modernday)
+			. = TRUE
 	else
-		. = FALSE
+		if (J.is_specops)
+			. = TRUE
+		else
+			. = FALSE
 
 /obj/map_metadata/hostages/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
@@ -82,6 +86,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 			return "Insurgent"
 		if ("SOF Team")
 			return "SOF Team"
+
 
 /obj/map_metadata/hostages/cross_message(faction)
 	if (faction == AMERICAN)
@@ -131,7 +136,7 @@ obj/map_metadata/hostages/job_enabled_specialcheck(var/datum/job/J)
 			if (win_result == AMERICAN)
 				current_winner = AMERICAN
 				current_loser = ARAB
-				message = "The <b>SOF team</b> has [faction2_points] victory points and won the round!"
+				message = "The <b>SOF team</b> has [faction1_points] victory points and won the round!"
 				world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 				ticker.finished = TRUE
 				return FALSE

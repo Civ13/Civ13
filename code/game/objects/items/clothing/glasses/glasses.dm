@@ -108,6 +108,7 @@
 	item_state = "sunglasses"
 	darkness_view = -1
 	flash_protection = FLASH_PROTECTION_MODERATE
+	body_parts_covered = FALSE
 
 /obj/item/clothing/mask/glasses/sunglasses/blindfold
 	name = "blindfold"
@@ -115,3 +116,19 @@
 	icon_state = "blindfold"
 	item_state = "blindfold"
 	tint = TINT_BLIND
+
+/obj/item/clothing/mask/glasses/sunglasses/large
+	desc = "Strangely ancient technology used to help provide rudimentary eye cover. Enhanced shielding blocks many flashes."
+	name = "large sunglasses"
+	icon_state = "bigsunglasses"
+	item_state = "bigsunglasses"
+	darkness_view = -1
+	flash_protection = FLASH_PROTECTION_MAJOR
+	body_parts_covered = FALSE
+
+/obj/item/clothing/mask/glasses/tactical_goggles
+	name = "goggles"
+	desc = "Standard combat goggles."
+	icon_state = "tactical_goggles"
+	item_state = "tactical_goggles"
+	body_parts_covered = FALSE

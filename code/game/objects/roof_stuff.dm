@@ -25,9 +25,13 @@
 /obj/roof/New()
 	..()
 	var/area/caribbean/CURRENTAREA = get_area(src)
+//	var/oldclimate = CURRENTAREA.climate
 	if (CURRENTAREA.location == AREA_OUTSIDE)
 		current_area_type = CURRENTAREA.type
 		new/area/caribbean/roofed(get_turf(src))
+// TODO: Different roofed climates
+//		var/area/caribbean/roofed/A = new/area/caribbean/roofed(src.loc)
+//		A.climate = oldclimate
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
 	spawn(50)
