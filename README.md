@@ -1,5 +1,7 @@
 # Civilization 13
 
+[![Build Status](https://travis-ci.com/Civ13-SS13/Civ13.svg?branch=master)](https://travis-ci.com/Civ13-SS13/Civ13)
+
 WHAT IS THIS?
 Civ13 (formerly 1713) is a game based on Space Station 13 code, which features several epochs of human history. (hence the name). It features both RP and Combat maps and gamemodes.
 
