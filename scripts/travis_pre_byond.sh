@@ -18,3 +18,4 @@ else
   echo "$BYOND_MAJOR.$BYOND_MINOR" > "$HOME/BYOND/version.txt"
   cd ~/
 fi
+  DreamMaker civ13.dme
