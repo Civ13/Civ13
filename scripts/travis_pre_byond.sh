@@ -24,4 +24,7 @@ else
 		retval=1 #hard fail, due to warnings or errors
 		echo "Failed to compile!"
 		exit 1
-	fi
+		fi
+	else
+		echo "No errors!"
+		fi
