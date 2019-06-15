@@ -16,5 +16,5 @@ cache:
     - $HOME/BYOND-${BYOND_MAJOR}.${BYOND_MINOR}
 
 script:
-    scripts/travis_pre_byond.sh
+    bash scripts/travis_pre_byond.sh
 
