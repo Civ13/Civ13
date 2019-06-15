@@ -16,6 +16,7 @@
 		list(PIRATES) = /area/caribbean/british,
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(INDIANS = 0.5, PIRATE = 0.5)
 	battle_name = "marooned pirates"
 	mission_start_message = "<big>After a major storm, a Pirate shipwreck has come ashore in an unknown Island. However, they are not alone...<br> The gracewall will be up after <b>45 minutes</b>.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND PIRATES ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
