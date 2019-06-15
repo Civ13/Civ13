@@ -1048,7 +1048,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (map.ordinal_age == 5)
 		recipes += new/datum/stack_recipe_list("clothing", list(
-			new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
 			new/datum/stack_recipe("light brown outfit", /obj/item/clothing/under/modern1, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black outfit", /obj/item/clothing/under/modern2, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("grey outfit", /obj/item/clothing/under/modern3, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
