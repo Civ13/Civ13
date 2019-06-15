@@ -18,7 +18,7 @@ env:
  
 cache:
   directories:
-    - $HOME/BYOND-${BYOND_MAJOR}.${BYOND_MINOR}
+    - $HOME/BYOND
 
 script:
     bash scripts/travis_pre_byond.sh
