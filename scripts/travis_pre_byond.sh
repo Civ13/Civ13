@@ -10,7 +10,7 @@ curl "http://www.byond.com/download/build/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_
 unzip byond.zip
 rm byond.zip
 cd byond
-make install
+bash make install
 echo "Compiling the dme..."
 retval=1
 source $HOME/BYOND/byond/bin/byondsetup
