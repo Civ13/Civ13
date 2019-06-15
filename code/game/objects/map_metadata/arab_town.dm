@@ -17,7 +17,7 @@
 		list(ARAB) = /area/caribbean/arab
 		)
 	age = "2007"
-	ordinal_age = 6
+	ordinal_age = 8
 	faction_distribution_coeffs = list(AMERICAN = 0.4, ARAB = 0.6)
 	battle_name = "battle for the town"
 	mission_start_message = "<font size=4>The insurgents are holding the town. American troops must capture it within 30 minutes!</font>"

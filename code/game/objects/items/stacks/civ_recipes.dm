@@ -13,12 +13,7 @@
 110-120 Industrial Age (1870-1900)
 120-130 Early Modern Age (1900-1910)
 130-140 Interwar period (1910-1950)
-140-150 Space age (1950-Present
-
-///the next time lines are of the SS13 universe\\\
-
-150-170 Earth uniteds ( 1950-2050)
-170-230 Nanotrason hase taken over (2050-the SS13 time line 2560
+140-150 Space age (1950-Present)
 ///////////////////////////////////////////////////////
 */
 

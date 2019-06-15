@@ -19,6 +19,7 @@
 		list(INDIANS) = /area/caribbean/indians,
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(PORTUGUESE = 0.4, SPANISH = 0.4, INDIANS = 0.2)
 	battle_name = "Battle of Isla Robusta"
 	mission_start_message = "<font size=4>All factions have <b>12 minutes</b> to prepare before the combat starts.</font>"

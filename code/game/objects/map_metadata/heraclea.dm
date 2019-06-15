@@ -17,6 +17,7 @@
 		list(GREEK) = /area/caribbean/greek
 		)
 	age = "313 B.C."
+	ordinal_age = 1
 	faction_distribution_coeffs = list(ROMAN = 0.5, GREEK = 0.5)
 	battle_name = "battle of Heraclea"
 	mission_start_message = "<font size=4>The <b>Greek</b> and <b>Roman</b> armies are facing each other in southern Italy! Get ready for the battle! It will start in <b>5 minutes</b>.</font>"

@@ -21,6 +21,7 @@
 		list(SPANISH) = /area/caribbean/british,
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(BRITISH = 0.25, SPANISH = 0.25, FRENCH = 0.25, PORTUGUESE = 0.25)
 	battle_name = "Colonization"
 	mission_start_message = "<big>Four countries have reached this Island! The <b>Colonists</b> must build their villages. After <b>30</b> minutes, the grace wall will end.</big><br><span class = 'notice'><i>THIS IS A RP MAP - ALL FACTIONS ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event

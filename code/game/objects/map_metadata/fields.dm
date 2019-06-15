@@ -17,6 +17,7 @@
 		list(FRENCH) = /area/caribbean/colonies/french
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5)
 	battle_name = "Canadian Fields"
 	mission_start_message = "<font size=4>The <b>French</b> and <b>British</b> armies are facing each other in Canada! Get ready for the line battle! It will start in <b>5 minutes</b></font>"
