@@ -16,19 +16,9 @@ else
 	cd byond
 	make here
 	echo "$BYOND_MAJOR.$BYOND_MINOR" > "$HOME/BYOND/version.txt"
-	cd ~/
-	cd 
-	if hash DreamMaker 2>/dev/null
+	DreamMaker -max_errors 0 $HOME/Civ13-SS13/Civ13/civ13.dme 2>&1 | tee result.log
+	retval=$?
+	if ! grep '\- 0 errors, 0 warnings' result.log
 	then
-		DreamMaker -max_errors 0 civ13.dme 2>&1 | tee result.log
-		retval=$?
-		if ! grep '\- 0 errors, 0 warnings' result.log
-		then
-			retval=1 #hard fail, due to warnings or errors
-		fi
-	else
-		echo "Couldn't find the DreamMaker executable, aborting."
-		exit 3
-		fi
-
-	DreamDaemon civ13.dmb -close -trusted -verbose
+		retval=1 #hard fail, due to warnings or errors
+	fi
