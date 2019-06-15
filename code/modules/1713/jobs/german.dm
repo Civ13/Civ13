@@ -468,6 +468,7 @@
 	spawn_location = "JoinLateGE"
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
+	whitelisted = TRUE
 
 	// AUTOBALANCE
 	min_positions = 6
