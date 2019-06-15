@@ -1,6 +1,6 @@
 #pretending we're C because otherwise ruby will initialize, even with "language: dm".
 language: generic
-sudo: false
+sudo: true
 
 git:
   depth: 1
@@ -15,14 +15,6 @@ cache:
   directories:
     - $HOME/BYOND-${BYOND_MAJOR}.${BYOND_MINOR}
 
-addons:
-  apt:
-    packages:
-      - libc6-i386
-      - libgcc1:i386
-      - libstdc++6:i386
-
-
 script:
-    bash scripts/travis_pre_byond.sh
+    scripts/travis_pre_byond.sh
 
