@@ -14,7 +14,8 @@ make here
 echo "Compiling the dme..."
 retval=1
 source $HOME/BYOND/byond/bin/byondsetup
-DreamMaker -max_errors 0 $HOME/Civ13-SS13/Civ13/civ13.dme | tee result.log
+cd $HOME/Civ13-SS13/Civ13
+DreamMaker -max_errors 0 civ13.dme | tee result.log
 retval=$?
 if ! grep '\- 0 errors, 0 warnings' result.log
 then
@@ -22,4 +23,4 @@ then
 	echo "Failed to compile!"
 	exit 1
 	fi
-fi;
+fi
