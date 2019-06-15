@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-
+echo $PWD
+locdir = $PWD
 echo "Setting up BYOND."
 rm -rf "$HOME/BYOND"
 mkdir -p "$HOME/BYOND"
@@ -9,8 +10,6 @@ cd "$HOME/BYOND"
 curl "http://www.byond.com/download/build/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip" -o byond.zip
 unzip byond.zip
 rm byond.zip
-echo $PWD
-locdir = $PWD
 cd byond
 make here
 echo "Compiling the dme..."
