@@ -9,12 +9,14 @@ cd "$HOME/BYOND"
 curl "http://www.byond.com/download/build/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip" -o byond.zip
 unzip byond.zip
 rm byond.zip
+echo $PWD
+locdir = $PWD
 cd byond
 make here
 echo "Compiling the dme..."
 retval=1
 source $HOME/BYOND/byond/bin/byondsetup
-cd $HOME/Civ13-SS13/Civ13
+cd locdir
 DreamMaker -max_errors 0 civ13.dme | tee result.log
 retval=$?
 if ! grep '\- 0 errors, 0 warnings' result.log
