@@ -195,7 +195,7 @@ var/list/engineer_exclusive_recipe_types = null
 		recipes += new/datum/stack_recipe_list("firearms", list(
 			new/datum/stack_recipe("fire lance", /obj/item/weapon/gun/projectile/ancient/firelance, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("hand cannon", /obj/item/weapon/gun/projectile/ancient/handcannon, 14, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("arquebus", /obj/item/weapon/gun/projectile/ancient/arquebus, 15, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("arquebus", /obj/item/weapon/gun/projectile/ancient/arquebus, 15, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (map.ordinal_age == 3)
 		recipes += new/datum/stack_recipe_list("firearms", list(
 			new/datum/stack_recipe("matchlock musket", /obj/item/weapon/gun/projectile/ancient/matchlock, 18, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE),))
@@ -603,7 +603,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("cotton loincloth", /obj/item/clothing/under/loincotton, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("mayan loincloth", /obj/item/clothing/under/mayan_loincloth, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 
-	else if (map.ordinal_age = 1)
+	else if (map.ordinal_age == 1)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("fancy shendyt", /obj/item/clothing/under/pharaoh, 8, _time = 145, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("great shendyt", /obj/item/clothing/under/pharaoh2, 10, _time = 185, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -670,7 +670,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (map.ordinal_age == 5)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -683,7 +683,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("custom uniform", /obj/item/clothing/under/customuniform, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age == 3)
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("custom colonial jacket", /obj/item/clothing/suit/storage/jacket/customcolonial, 5, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -740,10 +740,8 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("brown bedsheet", /obj/item/weapon/bedsheet/brown, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue bedsheet", /obj/item/weapon/bedsheet/blue, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("yellow bedsheet", /obj/item/weapon/bedsheet/blue, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("red bedsheet", /obj/item/weapon/bedsheet/red, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
-
-		recipes += new/datum/stack_recipe_list("banners & flags", list(
-			new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("red bedsheet", /obj/item/weapon/bedsheet/red, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("custom flag maker", /obj/item/flagmaker, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if (map.ordinal_age >= 1) // Same level that bronze surgical tools can be made.
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
@@ -980,7 +978,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("cotton loincloth", /obj/item/clothing/under/loincotton, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("mayan loincloth", /obj/item/clothing/under/mayan_loincloth, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 
-	else if (map.ordinal_age = 1)
+	else if (map.ordinal_age == 1)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("fancy shendyt", /obj/item/clothing/under/pharaoh, 8, _time = 145, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("great shendyt", /obj/item/clothing/under/pharaoh2, 10, _time = 185, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -1047,7 +1045,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable buttoned dress", /obj/item/clothing/under/customdress2, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (map.ordinal_age == 5)
 		recipes += new/datum/stack_recipe_list("clothing", list(
 			new/datum/stack_recipe("customizable dress", /obj/item/clothing/under/customdress, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -1060,7 +1058,7 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("custom uniform", /obj/item/clothing/under/customuniform, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age == 3)
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("custom colonial jacket", /obj/item/clothing/suit/storage/jacket/customcolonial, 5, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE),
