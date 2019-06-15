@@ -1,11 +1,11 @@
 /mob/living/carbon/human/proc/getStat(statname)
-	return stats[lowertext(statname)][1]
+	return stats[lowertext(statname)][1]*mood_modifier
 
 /mob/living/carbon/human/proc/getMaxStat(statname)
 	return stats[lowertext(statname)][2]
 
 /mob/living/carbon/human/proc/getStatCoeff(statname)
-	return stats[lowertext(statname)][1]/100
+	return (stats[lowertext(statname)][1]/100)*mood_modifier
 
 
 /mob/living/carbon/human/proc/getLesserStatCombinedCoeff(var/list/statnames = list())

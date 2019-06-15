@@ -209,6 +209,9 @@
 				mymist = null
 				ismist = FALSE
 
+/mob/living/carbon/human/proc/is_nude()
+	return (!w_uniform) ? 1 : 0
+
 //Yes, showers are super powerful as far as washing goes.
 /obj/structure/shower/proc/wash(atom/movable/O as obj|mob)
 	if (!on) return
@@ -241,6 +244,9 @@
 			var/washshoes = TRUE
 			var/washmask = TRUE
 			var/washears = TRUE
+
+			if(H.is_nude())//Don't get clean showering with you clothes on.
+				H.set_hygiene(HYGIENE_LEVEL_CLEAN)
 
 			if (H.wear_suit)
 				washgloves = !(H.wear_suit.flags_inv & HIDEGLOVES)
