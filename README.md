@@ -1,7 +1,6 @@
 # Civilization 13
 
 [![Build Status](https://travis-ci.com/Civ13-SS13/Civ13.svg?branch=master)](https://travis-ci.com/Civ13-SS13/Civ13)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/civ13-SS13/civ13.svg?style=flat)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/civ13-SS13/civ13.svg?style=flat)
 ![GitHub repo size](https://img.shields.io/github/repo-size/civ13-SS13/civ13.svg?style=flat)
 
@@ -15,5 +14,5 @@ Civ13 (formerly 1713) is a game based on Space Station 13 code, which features s
 
 # Civ13 Discord
 [![discord](https://discordapp.com/api/guilds/468979034571931648/widget.png)](https://discord.gg/hBEtg4x)
-# Official Server
-http://1713.eu/server
+# Official Website
+https://1713.eu/
