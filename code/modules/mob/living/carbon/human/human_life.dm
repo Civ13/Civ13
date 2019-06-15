@@ -391,6 +391,10 @@
 
 		handle_pain()
 
+		handle_hygiene()
+
+		handle_mood()
+
 		handle_ptsd()
 
 		handle_medical_side_effects()

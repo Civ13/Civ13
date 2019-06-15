@@ -629,9 +629,10 @@ var/list/rank_prefix = list(\
 				var/turf/location = loc
 				if (istype(location, /turf))
 					location.add_vomit_floor(src, TRUE)
-
+				adjust_hygiene(-25)
 				nutrition -= 40
 				adjustToxLoss(-3)
+				mood -= 5
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
