@@ -53,11 +53,12 @@
 	return
 
 /obj/item/weapon/reagent_containers/food/snacks/attack(mob/M as mob, mob/user as mob, def_zone)
-	if (!reagents.total_volume)
-		user << "<span class='danger'>None of [src] left!</span>"
-		user.drop_from_inventory(src)
-		qdel(src)
-		return FALSE
+	if (reagents)
+		if (!reagents.total_volume)
+			user << "<span class='danger'>None of [src] left!</span>"
+			user.drop_from_inventory(src)
+			qdel(src)
+			return FALSE
 
 	if (istype(M, /mob/living/carbon))
 		//TODO: replace with standard_feed_mob() call.
@@ -1648,8 +1649,9 @@
 			icon_state = "rottencutlet"
 			name = "rotten [name]"
 			rotten = TRUE
-			reagents.remove_reagent("protein", 1)
-			reagents.add_reagent("food_poisoning", 1)
+			if (reagents)
+				reagents.remove_reagent("protein", 1)
+				reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
 				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))

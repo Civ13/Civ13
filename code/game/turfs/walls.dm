@@ -112,13 +112,14 @@ var/list/global/wall_cache = list()
 	if (!damage && material)
 		user << "<span class='notice'>It looks fully intact.</span>"
 	else
-		var/dam = damage / material.integrity
-		if (dam <= 0.3)
-			user << "<span class='warning'>It looks slightly damaged.</span>"
-		else if (dam <= 0.6)
-			user << "<span class='warning'>It looks moderately damaged.</span>"
-		else
-			user << "<span class='danger'>It looks heavily damaged.</span>"
+		if (material)
+			var/dam = damage / material.integrity
+			if (dam <= 0.3)
+				user << "<span class='warning'>It looks slightly damaged.</span>"
+			else if (dam <= 0.6)
+				user << "<span class='warning'>It looks moderately damaged.</span>"
+			else
+				user << "<span class='danger'>It looks heavily damaged.</span>"
 //Damage
 
 /turf/wall/melt()
