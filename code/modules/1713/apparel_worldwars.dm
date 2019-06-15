@@ -580,9 +580,9 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 100
 
-/obj/item/clothing/suit/storage/coat/ww2/ss_smock
-	name = "ss smock"
-	desc = "A german ss smock, in 1944 Erbsenmuster dot camo, worn by soldaten in the Schutzstaffel."
+/obj/item/clothing/suit/storage/coat/ww2/ss_parka
+	name = "ss parka"
+	desc = "A german ss parka, in 1944 Erbsenmuster dot camo, worn by soldaten in the Schutzstaffel."
 	icon_state = "sssmock"
 	item_state = "sssmock"
 	worn_state = "sssmock"
