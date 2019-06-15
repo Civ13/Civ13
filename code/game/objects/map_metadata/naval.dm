@@ -17,6 +17,7 @@
 		list(PIRATES) = /area/caribbean/pirates/ship/lower
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(FRENCH = 0.5, PIRATES = 0.5)
 	battle_name = "Naval boarding"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
