@@ -523,6 +523,13 @@ obj/item/clothing/under/ww2/german_ss_officer
 	item_state = "ssuni_officer"
 	worn_state = "ssuni_officer"
 
+obj/item/clothing/under/ww2/german_ss_camo
+	name = "german camo ss uniform"
+	desc = "A german SS uniform, in 1944 Erbsenmuster dot pattern."
+	icon_state = "ssuni_camo"
+	item_state = "ssuni_camo"
+	worn_state = "ssuni_camo"
+
 obj/item/clothing/under/ww2/soviet
 	name = "soviet uniform"
 	desc = "A soviet uniform, used by infantry in the red army."
@@ -575,7 +582,7 @@ obj/item/clothing/under/ww2/soviet_nkvd
 
 /obj/item/clothing/suit/storage/coat/ww2/ss_smock
 	name = "ss smock"
-	desc = "A german ss smock, worn by soldaten in the Schutzstaffel."
+	desc = "A german ss smock, in 1944 Erbsenmuster dot camo, worn by soldaten in the Schutzstaffel."
 	icon_state = "sssmock"
 	item_state = "sssmock"
 	worn_state = "sssmock"

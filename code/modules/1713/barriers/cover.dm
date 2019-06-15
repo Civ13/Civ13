@@ -21,8 +21,8 @@
 
 	if (ismob(P.original)) // what the firer clicked
 		var/mob/m = P.original
-		if (m.lying)
-			extra_chance += 30
+		if (m.lying || m.prone)
+			extra_chance += 60
 		if (ishuman(m))
 			var/mob/living/carbon/human/H = m
 			if (H.crouching && !H.lying)
