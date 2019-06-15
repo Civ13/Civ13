@@ -211,6 +211,7 @@
 							real_name = name
 							add_note("Known Languages", "German")
 							return
+/*
 		else if (map.ID == MAP_NOMADS_PANGEA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
@@ -275,6 +276,71 @@
 						name = species.get_random_german_name(gender)
 						real_name = name
 						add_note("Known Languages", "German")
+						return
+*/
+		else if (map.ID == MAP_NOMADS_PANGEA)
+			spawn(5)
+				var/area/mob_area = get_area(src)
+				switch (mob_area.climate)
+					if ("tundra")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						for (var/datum/language/russian/A in languages)
+							default_language = A
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						return
+					if ("taiga")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						for (var/datum/language/russian/A in languages)
+							default_language = A
+						name = species.get_random_russian_name(gender)
+						real_name = name
+						return
+					if ("semiarid")
+						add_language("Dutch",TRUE)
+						remove_language("English")
+						for (var/datum/language/dutch/A in languages)
+							default_language = A
+						name = species.get_random_dutch_name(gender)
+						real_name = name
+						add_note("Known Languages", "Dutch")
+						return
+					if ("savanna")
+						add_language("Chinese",TRUE)
+						remove_language("English")
+						for (var/datum/language/chinese/A in languages)
+							default_language = A
+						name = species.get_random_chinese_name(gender)
+						real_name = name
+						add_note("Known Languages", "Chinese")
+						return
+					if ("jungle")
+						add_language("Chinese",TRUE)
+						remove_language("English")
+						for (var/datum/language/chinese/A in languages)
+							default_language = A
+						name = species.get_random_chinese_name(gender)
+						real_name = name
+						add_note("Known Languages", "Chinese")
+						return
+					if ("desert")
+						add_language("Dutch",TRUE)
+						remove_language("English")
+						for (var/datum/language/dutch/A in languages)
+							default_language = A
+						name = species.get_random_dutch_name(gender)
+						real_name = name
+						add_note("Known Languages", "Dutch")
+						return
+					if ("temperate")
+						add_language("Russian",TRUE)
+						remove_language("English")
+						for (var/datum/language/russian/A in languages)
+							default_language = A
+						name = species.get_random_russian_name(gender)
+						real_name = name
 						return
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
