@@ -4,7 +4,10 @@ sudo: true
 
 git:
   depth: 1
-
+addons:
+  apt:
+    packages:
+      - libstdc++6:i386
 env:
   global:
     - BYOND_MAJOR="512"
