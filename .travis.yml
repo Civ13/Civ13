@@ -24,6 +24,5 @@ addons:
 
 
 script:
-  cd scripts
-  bash travis_pre_byond.sh
+    scripts/travis_pre_byond.sh
 
