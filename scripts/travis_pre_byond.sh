@@ -25,6 +25,3 @@ else
 		echo "Failed to compile!"
 		exit 1
 		fi
-	else
-		echo "No errors!"
-		fi
