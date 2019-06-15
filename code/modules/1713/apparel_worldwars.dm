@@ -116,6 +116,16 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww/japhelm_tanker
+	name = "japanese tanker helmet"
+	desc = "A typical rounded steel helmet, this one more made of meshes and hard leather."
+	icon_state = "japtanker"
+	item_state = "japtanker"
+	worn_state = "japtanker"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/helmet/ww/japhelm/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
 	if (istype(W, /obj/item/clothing/head/jap_headband))
@@ -248,12 +258,98 @@
 			rolled = TRUE
 	update_clothing_icon()
 
+obj/item/clothing/under/japuni_med
+	name = "Japanese Medic Uniform"
+	desc = "A imperial japanese army uniform, this one bears the rank of a medic."
+	icon_state = "japuni_med"
+	item_state = "japuni_med"
+	worn_state = "japuni_med"
+	var/rolled = FALSE
+
+obj/item/clothing/under/japuni_med/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/japuni_med)
+		return
+	else
+		if (rolled)
+			item_state = "japuni_med"
+			worn_state = "japuni_med"
+			item_state_slots["slot_w_uniform"] = "japuni_med"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "japuni_med_rolled"
+			worn_state = "japuni_med_rolled"
+			item_state_slots["slot_w_uniform"] = "japuni_med_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+obj/item/clothing/under/japuni_mp
+	name = "Japanese Kenpeitai Uniform"
+	desc = "A imperial japanese army uniform, this one bears the rank of a military police."
+	icon_state = "japuni_mp"
+	item_state = "japuni_mp"
+	worn_state = "japuni_mp"
+
+obj/item/clothing/under/japuni_tanker
+	name = "Japanese Tanker Uniform"
+	desc = "A imperial japanese army uniform, this one bears the rank of a tanker."
+	icon_state = "japtanker"
+	item_state = "japtanker"
+	worn_state = "japtanker"
+
 /obj/item/clothing/head/jap_headband
 	name = "Japanese Headband"
 	desc = "A headband worn by japanese soldiers."
 	icon_state = "japbandana"
 	item_state = "japbandana"
 	worn_state = "japbandana"
+
+obj/item/clothing/accessory/harness
+	name = "japanese pilot harness"
+	desc = "a harness made to strap someone to their plane."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "jap_harn"
+	item_state = "jap_harn"
+	worn_state = "jap_harn"
+
+/obj/item/clothing/suit/storage/coat/japcoat_ww2
+	name = "japanese coat"
+	desc = "A japanese army coat."
+	icon_state = "ww2_japcoat"
+	item_state = "ww2_japcoat"
+	worn_state = "ww2_japcoat"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+
+/obj/item/clothing/suit/storage/coat/japcoat_pilot
+	name = "japanese pilot coat"
+	desc = "A japanese air force kamikaze jacket."
+	icon_state = "jappilotcoat"
+	item_state = "jappilotcoat"
+	worn_state = "jappilotcoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 100
+
+obj/item/clothing/head/jap_pilotcap
+	name = "Japanese Pilot Cap"
+	desc = "A cap worn by japanese pilots."
+	icon_state = "jappilotcap"
+	item_state = "jappilotcap"
+	worn_state = "jappilotcap"
+
+obj/item/clothing/head/jap_mp
+	name = "kenpeitai cap"
+	desc = "A cap worn by japanese kenpeitai."
+	icon_state = "japcap_mp"
+	item_state = "japcap_mp"
+	worn_state = "japcap_mp"
 
 ///////////WW1 UNIFORMS///////////
 /obj/item/clothing/under/ww1/german
@@ -339,6 +435,308 @@
 /obj/item/clothing/under/ww2/german
 	name = "german uniform"
 	desc = "A german feldgrau uniform, used by the Wehrmacht."
-	icon_state = "ww2_german"
-	item_state = "ww2_german"
-	worn_state = "ww2_german"
+	icon_state = "geruni_ww2"
+	item_state = "geruni_ww2"
+	worn_state = "geruni_ww2"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/german/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/german)
+		return
+	else
+		if (rolled)
+			item_state = "geruni_ww2"
+			worn_state = "geruni_ww2"
+			item_state_slots["slot_w_uniform"] = "geruni_ww2"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "geruni_ww2_rolled"
+			worn_state = "geruni_ww2_rolled"
+			item_state_slots["slot_w_uniform"] = "geruni_ww2_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/german_doctor
+	name = "german doctor uniform"
+	desc = "A german feldgrau uniform, used by doctors in the Wehrmacht."
+	icon_state = "geruni_doctor"
+	item_state = "geruni_doctor"
+	worn_state = "geruni_doctor"
+	var/rolled = FALSE
+
+/obj/item/clothing/under/ww2/german_doctor/verb/roll_sleeves()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/under/ww2/german_doctor)
+		return
+	else
+		if (rolled)
+			item_state = "geruni_doctor"
+			worn_state = "geruni_doctor"
+			item_state_slots["slot_w_uniform"] = "geruni_doctor"
+			usr << "<span class = 'danger'>You roll down your uniform's sleeves.</span>"
+			rolled = FALSE
+		else if (!rolled)
+			item_state = "geruni_doctor_rolled"
+			worn_state = "geruni_doctor_rolled"
+			item_state_slots["slot_w_uniform"] = "geruni_doctor_rolled"
+			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
+			rolled = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/under/ww2/german_officer
+	name = "german officer uniform"
+	desc = "A german feldgrau uniform, used by officers in the Wehrmacht."
+	icon_state = "geruni_officer"
+	item_state = "geruni_officer"
+	worn_state = "geruni_officer"
+
+obj/item/clothing/under/ww2/german_tanker
+	name = "german tanker uniform"
+	desc = "A german feldgrau uniform, used by tankers in the Wehrmacht."
+	icon_state = "gertanker"
+	item_state = "gertanker"
+	worn_state = "gertanker"
+
+obj/item/clothing/under/ww2/german_mp
+	name = "german mp uniform"
+	desc = "A german feldgrau uniform, used by military police in the Wehrmacht."
+	icon_state = "geruni_mp"
+	item_state = "geruni_mp"
+	worn_state = "geruni_mp"
+
+obj/item/clothing/under/ww2/german_ss
+	name = "german ss uniform"
+	desc = "A german SS uniform, used by soldaten in the Schutzstaffel."
+	icon_state = "ssuni"
+	item_state = "ssuni"
+	worn_state = "ssuni"
+
+obj/item/clothing/under/ww2/german_ss_officer
+	name = "german ss officer uniform"
+	desc = "A german SS officer uniform, used by officers in the Schutzstaffel."
+	icon_state = "ssuni_officer"
+	item_state = "ssuni_officer"
+	worn_state = "ssuni_officer"
+
+obj/item/clothing/under/ww2/soviet
+	name = "soviet uniform"
+	desc = "A soviet uniform, used by infantry in the red army."
+	icon_state = "sovuni"
+	item_state = "sovuni"
+	worn_state = "sovuni"
+
+obj/item/clothing/under/ww2/soviet_tanker
+	name = "soviet tanker uniform"
+	desc = "A soviet tanker uniform, used by tank crewmen in the red army."
+	icon_state = "sovtanker"
+	item_state = "sovtanker"
+	worn_state = "sovtanker"
+
+obj/item/clothing/under/ww2/soviet_officer
+	name = "soviet officer uniform"
+	desc = "A soviet officer uniform, used by officers in the red army."
+	icon_state = "sovuni_officer"
+	item_state = "sovuni_officer"
+	worn_state = "sovuni_officer"
+
+obj/item/clothing/under/ww2/soviet_nkvd
+	name = "nkvd uniform"
+	desc = "A soviet nkvd uniform, used by nkvd."
+	icon_state = "nkvd_uni"
+	item_state = "nkvd_uni"
+	worn_state = "nkvd_uni"
+
+/obj/item/clothing/suit/storage/coat/german
+	name = "german parka"
+	desc = "A german parka, worn by soldaten in the Wehrmacht."
+	icon_state = "gerparka"
+	item_state = "gerparka"
+	worn_state = "gerparka"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+
+/obj/item/clothing/suit/storage/coat/german_officer
+	name = "german officer coat"
+	desc = "A german officer's coat, worn by officers in the Wehrmacht."
+	icon_state = "ger_offcoat"
+	item_state = "ger_offcoat"
+	worn_state = "ger_offcoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 100
+
+/obj/item/clothing/suit/storage/coat/ss_smock
+	name = "ss smock"
+	desc = "A german ss smock, worn by soldaten in the Schutzstaffel."
+	icon_state = "sssmock"
+	item_state = "sssmock"
+	worn_state = "sssmock"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+
+/obj/item/clothing/suit/storage/coat/soviet
+	name = "soviet coat"
+	desc = "A soviet trenchcoat, worn by krasarmanev in the red army."
+	icon_state = "ruscoat"
+	item_state = "ruscoat"
+	worn_state = "ruscoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+
+/obj/item/clothing/suit/storage/coat/soviet_officer
+	name = "soviet officer coat"
+	desc = "A soviet trenchcoat, worn by officers in the red army."
+	icon_state = "sov_offcoat"
+	item_state = "sov_offcoat"
+	worn_state = "sov_offcoat"
+	body_parts_covered = UPPER_TORSO||ARMS
+	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	value = 65
+
+/obj/item/clothing/head/helmet/ww2/us_mp
+	name = "us mp helmet"
+	desc = "A typical rounded steel helmet. This one has the markings of MP on it."
+	icon_state = "ushelmet_mp"
+	item_state = "ushelmet_mp"
+	worn_state = "ushelmet_mp"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+obj/item/clothing/head/us_nco_cap
+	name = "us nco cap"
+	desc = "A cap worn by american NCO's."
+	icon_state = "jappilotcap"
+	item_state = "jappilotcap"
+	worn_state = "jappilotcap"
+
+obj/item/clothing/head/german_tanker
+	name = "german tanker headset"
+	desc = "A cap and radio headset worn by german tank crewmen of the Wehrmacht."
+	icon_state = "gertanker"
+	item_state = "gertanker"
+	worn_state = "gertanker"
+
+obj/item/clothing/head/soviet_tanker
+	name = "soviet tanker cap"
+	desc = "A cap and worn by soviet tank crewmen of the red army."
+	icon_state = "sovtanker"
+	item_state = "sovtanker"
+	worn_state = "sovtanker"
+
+obj/item/clothing/head/ger_officercap
+	name = "german officer cap"
+	desc = "A cap and worn by german officers the Wehrmacht."
+	icon_state = "ger_officercap"
+	item_state = "ger_officercap"
+	worn_state = "ger_officercap"
+
+obj/item/clothing/head/sov_officercap
+	name = "soviet officer cap"
+	desc = "A cap and worn by soviet officers the red army."
+	icon_state = "sov_officercap"
+	item_state = "sov_officercap"
+	worn_state = "sov_officercap"
+
+obj/item/clothing/head/sov_pilotka
+	name = "soviet pilotka"
+	desc = "A cap and worn by soviet soldiers of the red army."
+	icon_state = "sovpilotka"
+	item_state = "sovpilotka"
+	worn_state = "sovpilotka"
+
+obj/item/clothing/head/sov_ushanka
+	name = "soviet ushanka"
+	desc = "A soviet ushanka, used by soldiers in the red army."
+	icon_state = "ushanka"
+	item_state = "ushanka"
+	worn_state = "ushanka"
+
+obj/item/clothing/head/sov_ushanka/attack_self(mob/user as mob)
+	if (icon_state == "ushanka")
+		icon_state = "ushanka_up"
+		user << "You raise the ear flaps on the ushanka."
+	else
+		icon_state = "ushanka"
+		user << "You lower the ear flaps on the ushanka."
+
+obj/item/clothing/head/nkvd_cap
+	name = "NKVD cap"
+	desc = "A cap and worn by NKVD."
+	icon_state = "nkvd_cap"
+	item_state = "nkvd_cap"
+	worn_state = "nkvd_cap"
+
+obj/item/clothing/head/ss_cap
+	name = "SS cap"
+	desc = "A cap and worn by officers in the Schutzstaffel."
+	icon_state = "sscap"
+	item_state = "sscap"
+	worn_state = "sscap"
+
+obj/item/clothing/head/german_fieldcap
+	name = "german field cap"
+	desc = "A cap and worn by german Wehrmacht."
+	icon_state = "fieldcap"
+	item_state = "fieldcap"
+	worn_state = "fieldcap"
+
+obj/item/clothing/head/soviet_fieldcap
+	name = "soviet field cap"
+	desc = "A cap and worn by soviets in the red army."
+	icon_state = "fieldcap2"
+	item_state = "fieldcap2"
+	worn_state = "fieldcap2"
+
+/obj/item/clothing/head/helmet/ww2/gerhelm
+	name = "german stahlhelm"
+	desc = "The typical rounded steel helmet of the Wehrmacht"
+	icon_state = "stahlhelm"
+	item_state = "stahlhelm"
+	worn_state = "stahlhelm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/gerhelm_medic
+	name = "german medic stahlhelm"
+	desc = "The typical rounded steel helmet of the Wehrmacht, this one belonging to a medic."
+	icon_state = "gerhelm_medic"
+	item_state = "gerhelm_medic"
+	worn_state = "gerhelm_medic"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/ss
+	name = "german ss helmet"
+	desc = "The typical rounded steel helmet of the Schutzstaffel."
+	icon_state = "sshelm"
+	item_state = "sshelm"
+	worn_state = "sshelm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 42, arrow = 32, gun = 12, energy = 15, bomb = 42, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/soviet
+	name = "soviet helmet"
+	desc = "The typical rounded steel helmet of the red army."
+	icon_state = "sovhelm"
+	item_state = "sovhelm"
+	worn_state = "sovhelm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
