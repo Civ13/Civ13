@@ -390,7 +390,7 @@
 		handle_shock()
 
 		handle_pain()
-	if (map.civilizations)
+		if (map.civilizations)
 			handle_hygiene()
 
 		handle_mood()

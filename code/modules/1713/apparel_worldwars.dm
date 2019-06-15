@@ -1,5 +1,5 @@
 /obj/item/clothing/suit/storage/coat/germcoat
-	name = "German coat"
+	name = "german coat"
 	desc = "A German army coat."
 	icon_state = "germtrench"
 	item_state = "germtrench"
@@ -11,7 +11,7 @@
 	var/colorn = 1
 
 /obj/item/clothing/suit/storage/coat/frenchcoat
-	name = "French trench coat"
+	name = "french trench coat"
 	desc = "A French trench coat."
 	icon_state = "frenchtrench"
 	item_state = "frenchtrench"
@@ -23,7 +23,7 @@
 	var/colorn = 1
 
 /obj/item/clothing/suit/storage/coat/britishcoat
-	name = "British coat"
+	name = "british coat"
 	desc = "A British coat."
 	icon_state = "britishtrench"
 	item_state = "britishtrench"
@@ -35,20 +35,20 @@
 	var/colorn = 1
 
 
-/obj/item/clothing/head/germcap
-	name = "German Cap"
+/obj/item/clothing/head/ww/germcap
+	name = "german cap"
 	desc = "A cap worn by german soldiers."
 	icon_state = "germcap2"
 	item_state = "germcap2"
 
-/obj/item/clothing/head/frenchcap
-	name = "French képi"
+/obj/item/clothing/head/ww/frenchcap
+	name = "french képi"
 	desc = "A flat circular cap worn by french soldiers."
 	icon_state = "frenchcap"
 	item_state = "frenchcap"
 
-/obj/item/clothing/head/britishcap
-	name = "British Cap"
+/obj/item/clothing/head/ww/britishcap
+	name = "british cap"
 	desc = "A cap worn by british soldiers."
 	icon_state = "brittcap"
 	item_state = "brittcap"
@@ -92,7 +92,7 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 30, arrow = 30, gun = 3, energy = 10, bomb = 35, bio = 20, rad = FALSE)
 /obj/item/clothing/head/helmet/ww/brodie/khaki
-	name = "Khaki Brodie helmet"
+	name = "khaki Brodie helmet"
 	desc = "A typical british helmet, with a khaki cover."
 	icon_state = "brodie_old"
 	item_state = "brodie_old"
@@ -106,7 +106,7 @@
 	worn_state = "biker"
 	restricts_view = 1
 
-/obj/item/clothing/head/helmet/ww/japhelm
+/obj/item/clothing/head/helmet/ww2/japhelm
 	name = "japanese helmet"
 	desc = "A typical rounded steel helmet."
 	icon_state = "japhelm"
@@ -116,7 +116,7 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
 
-/obj/item/clothing/head/helmet/ww/japhelm_tanker
+/obj/item/clothing/head/helmet/ww2/japhelm_tanker
 	name = "japanese tanker helmet"
 	desc = "A typical rounded steel helmet, this one more made of meshes and hard leather."
 	icon_state = "japtanker"
@@ -126,16 +126,16 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-/obj/item/clothing/head/helmet/ww/japhelm/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/clothing/head/helmet/ww2/japhelm/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return//I really don't understand why this check is needed
-	if (istype(W, /obj/item/clothing/head/jap_headband))
+	if (istype(W, /obj/item/clothing/head/ww2/jap_headband))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the heabdand on the helmet.</span>"
-		new/obj/item/clothing/head/helmet/ww/japhelm_bandana(user.loc)
+		new/obj/item/clothing/head/helmet/ww2/japhelm_bandana(user.loc)
 		qdel(src)
 		qdel(W)
 
-/obj/item/clothing/head/helmet/ww/japhelm_bandana
+/obj/item/clothing/head/helmet/ww2/japhelm_bandana
 	name = "japanese helmet"
 	desc = "A typical rounded steel helmet. This one has a headband attached to it."
 	icon_state = "japhelm_bandana"
@@ -145,18 +145,18 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
 
-/obj/item/clothing/head/japcap_ww2
-	name = "Japanese Cap"
+/obj/item/clothing/head/ww2/japcap
+	name = "japanese cap"
 	desc = "A cap worn by japanese soldiers."
 	icon_state = "ww2_japcap"
 	item_state = "ww2_japcap"
 	worn_state = "ww2_japcap"
 	var/toggled = FALSE
 
-/obj/item/clothing/head/japcap_ww2/verb/toggle_flaps()
+/obj/item/clothing/head/ww2/japcap/verb/toggle_flaps()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/head/japcap_ww2)
+	if (type != /obj/item/clothing/head/ww2/japcap)
 		return
 	else
 		if (toggled)
@@ -174,18 +174,18 @@
 	update_clothing_icon()
 
 
-/obj/item/clothing/head/japoffcap_ww2
-	name = "Japanese Officer Cap"
+/obj/item/clothing/head/ww2/japoffcap
+	name = "japanese officer cap"
 	desc = "A cap worn by japanese officers."
 	icon_state = "ww2_japoffcap"
 	item_state = "ww2_japoffcap"
 	worn_state = "ww2_japoffcap"
 	var/toggled = FALSE
 
-/obj/item/clothing/head/japoffcap_ww2/verb/toggle_flaps()
+/obj/item/clothing/head/ww2/japoffcap/verb/toggle_flaps()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/head/japoffcap_ww2)
+	if (type != /obj/item/clothing/head/ww2/japoffcap)
 		return
 	else
 		if (toggled)
@@ -202,18 +202,18 @@
 			toggled = TRUE
 	update_clothing_icon()
 
-/obj/item/clothing/under/japoffuni_ww2
-	name = "Japanese Officer Uniform"
+/obj/item/clothing/under/ww2/japoffuni
+	name = "japanese officer uniform"
 	desc = "A imperial japanese army officer uniform."
 	icon_state = "ww2_japoffuni"
 	item_state = "ww2_japoffuni"
 	worn_state = "ww2_japoffuni"
 	var/rolled = FALSE
 
-/obj/item/clothing/under/japoffuni_ww2/verb/roll_sleeves()
+/obj/item/clothing/under/ww2/japoffuni/verb/roll_sleeves()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/under/japoffuni_ww2)
+	if (type != /obj/item/clothing/under/ww2/japoffuni)
 		return
 	else
 		if (rolled)
@@ -230,18 +230,18 @@
 			rolled = TRUE
 	update_clothing_icon()
 
-/obj/item/clothing/under/japuni_ww2
-	name = "Japanese Uniform"
+/obj/item/clothing/under/ww2/japuni
+	name = "japanese uniform"
 	desc = "A imperial japanese army uniform."
 	icon_state = "ww2_japuni"
 	item_state = "ww2_japuni"
 	worn_state = "ww2_japuni"
 	var/rolled = FALSE
 
-/obj/item/clothing/under/japuni_ww2/verb/roll_sleeves()
+/obj/item/clothing/under/ww2/japuni/verb/roll_sleeves()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/under/japuni_ww2)
+	if (type != /obj/item/clothing/under/ww2/japuni)
 		return
 	else
 		if (rolled)
@@ -258,18 +258,18 @@
 			rolled = TRUE
 	update_clothing_icon()
 
-obj/item/clothing/under/japuni_med
-	name = "Japanese Medic Uniform"
+obj/item/clothing/under/ww2/japuni_med
+	name = "japanese medic uniform"
 	desc = "A imperial japanese army uniform, this one bears the rank of a medic."
 	icon_state = "japuni_med"
 	item_state = "japuni_med"
 	worn_state = "japuni_med"
 	var/rolled = FALSE
 
-obj/item/clothing/under/japuni_med/verb/roll_sleeves()
+obj/item/clothing/under/ww2/japuni_med/verb/roll_sleeves()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/under/japuni_med)
+	if (type != /obj/item/clothing/under/ww2/japuni_med)
 		return
 	else
 		if (rolled)
@@ -286,22 +286,22 @@ obj/item/clothing/under/japuni_med/verb/roll_sleeves()
 			rolled = TRUE
 	update_clothing_icon()
 
-obj/item/clothing/under/japuni_mp
-	name = "Japanese Kenpeitai Uniform"
+obj/item/clothing/under/ww2/japuni_mp
+	name = "japanese Kenpeitai uniform"
 	desc = "A imperial japanese army uniform, this one bears the rank of a military police."
 	icon_state = "japuni_mp"
 	item_state = "japuni_mp"
 	worn_state = "japuni_mp"
 
-obj/item/clothing/under/japuni_tanker
-	name = "Japanese Tanker Uniform"
+obj/item/clothing/under/ww2/japuni_tanker
+	name = "japanese tanker uniform"
 	desc = "A imperial japanese army uniform, this one bears the rank of a tanker."
 	icon_state = "japtanker"
 	item_state = "japtanker"
 	worn_state = "japtanker"
 
-/obj/item/clothing/head/jap_headband
-	name = "Japanese Headband"
+/obj/item/clothing/head/ww2/jap_headband
+	name = "japanese headband"
 	desc = "A headband worn by japanese soldiers."
 	icon_state = "japbandana"
 	item_state = "japbandana"
@@ -315,7 +315,7 @@ obj/item/clothing/accessory/harness
 	item_state = "jap_harn"
 	worn_state = "jap_harn"
 
-/obj/item/clothing/suit/storage/coat/japcoat_ww2
+/obj/item/clothing/suit/storage/coat/ww2/japcoat
 	name = "japanese coat"
 	desc = "A japanese army coat."
 	icon_state = "ww2_japcoat"
@@ -326,7 +326,7 @@ obj/item/clothing/accessory/harness
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 
-/obj/item/clothing/suit/storage/coat/japcoat_pilot
+/obj/item/clothing/suit/storage/coat/ww2/japcoat_pilot
 	name = "japanese pilot coat"
 	desc = "A japanese air force kamikaze jacket."
 	icon_state = "jappilotcoat"
@@ -337,16 +337,16 @@ obj/item/clothing/accessory/harness
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 100
 
-obj/item/clothing/head/jap_pilotcap
-	name = "Japanese Pilot Cap"
+obj/item/clothing/head/ww2/jap_pilotcap
+	name = "japanese pilot cap"
 	desc = "A cap worn by japanese pilots."
 	icon_state = "jappilotcap"
 	item_state = "jappilotcap"
 	worn_state = "jappilotcap"
 
-obj/item/clothing/head/jap_mp
-	name = "kenpeitai cap"
-	desc = "A cap worn by japanese kenpeitai."
+obj/item/clothing/head/ww2/jap_mp
+	name = "Kenpeitai cap"
+	desc = "A cap worn by japanese Kenpeitai."
 	icon_state = "japcap_mp"
 	item_state = "japcap_mp"
 	worn_state = "japcap_mp"
@@ -551,7 +551,7 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
 
-/obj/item/clothing/suit/storage/coat/german
+/obj/item/clothing/suit/storage/coat/ww2/german
 	name = "german parka"
 	desc = "A german parka, worn by soldaten in the Wehrmacht."
 	icon_state = "gerparka"
@@ -562,7 +562,7 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 
-/obj/item/clothing/suit/storage/coat/german_officer
+/obj/item/clothing/suit/storage/coat/ww2/german_officer
 	name = "german officer coat"
 	desc = "A german officer's coat, worn by officers in the Wehrmacht."
 	icon_state = "ger_offcoat"
@@ -573,7 +573,7 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 100
 
-/obj/item/clothing/suit/storage/coat/ss_smock
+/obj/item/clothing/suit/storage/coat/ww2/ss_smock
 	name = "ss smock"
 	desc = "A german ss smock, worn by soldaten in the Schutzstaffel."
 	icon_state = "sssmock"
@@ -584,7 +584,7 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 
-/obj/item/clothing/suit/storage/coat/soviet
+/obj/item/clothing/suit/storage/coat/ww2/soviet
 	name = "soviet coat"
 	desc = "A soviet trenchcoat, worn by krasarmanev in the red army."
 	icon_state = "ruscoat"
@@ -595,7 +595,7 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
 	value = 65
 
-/obj/item/clothing/suit/storage/coat/soviet_officer
+/obj/item/clothing/suit/storage/coat/ww2/soviet_officer
 	name = "soviet officer coat"
 	desc = "A soviet trenchcoat, worn by officers in the red army."
 	icon_state = "sov_offcoat"
@@ -616,56 +616,56 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
-obj/item/clothing/head/us_nco_cap
+obj/item/clothing/head/ww2/us_nco_cap
 	name = "us nco cap"
 	desc = "A cap worn by american NCO's."
 	icon_state = "jappilotcap"
 	item_state = "jappilotcap"
 	worn_state = "jappilotcap"
 
-obj/item/clothing/head/german_tanker
+obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
 	desc = "A cap and radio headset worn by german tank crewmen of the Wehrmacht."
 	icon_state = "gertanker"
 	item_state = "gertanker"
 	worn_state = "gertanker"
 
-obj/item/clothing/head/soviet_tanker
+obj/item/clothing/head/ww2/soviet_tanker
 	name = "soviet tanker cap"
 	desc = "A cap and worn by soviet tank crewmen of the red army."
 	icon_state = "sovtanker"
 	item_state = "sovtanker"
 	worn_state = "sovtanker"
 
-obj/item/clothing/head/ger_officercap
+obj/item/clothing/head/ww2/ger_officercap
 	name = "german officer cap"
 	desc = "A cap and worn by german officers the Wehrmacht."
 	icon_state = "ger_officercap"
 	item_state = "ger_officercap"
 	worn_state = "ger_officercap"
 
-obj/item/clothing/head/sov_officercap
+obj/item/clothing/head/ww2/sov_officercap
 	name = "soviet officer cap"
 	desc = "A cap and worn by soviet officers the red army."
 	icon_state = "sov_officercap"
 	item_state = "sov_officercap"
 	worn_state = "sov_officercap"
 
-obj/item/clothing/head/sov_pilotka
+obj/item/clothing/head/ww2/sov_pilotka
 	name = "soviet pilotka"
 	desc = "A cap and worn by soviet soldiers of the red army."
 	icon_state = "sovpilotka"
 	item_state = "sovpilotka"
 	worn_state = "sovpilotka"
 
-obj/item/clothing/head/sov_ushanka
+obj/item/clothing/head/ww2/sov_ushanka
 	name = "soviet ushanka"
 	desc = "A soviet ushanka, used by soldiers in the red army."
 	icon_state = "ushanka"
 	item_state = "ushanka"
 	worn_state = "ushanka"
 
-obj/item/clothing/head/sov_ushanka/attack_self(mob/user as mob)
+obj/item/clothing/head/ww2/sov_ushanka/attack_self(mob/user as mob)
 	if (icon_state == "ushanka")
 		icon_state = "ushanka_up"
 		user << "You raise the ear flaps on the ushanka."
@@ -673,28 +673,28 @@ obj/item/clothing/head/sov_ushanka/attack_self(mob/user as mob)
 		icon_state = "ushanka"
 		user << "You lower the ear flaps on the ushanka."
 
-obj/item/clothing/head/nkvd_cap
+obj/item/clothing/head/ww2/nkvd_cap
 	name = "NKVD cap"
 	desc = "A cap and worn by NKVD."
 	icon_state = "nkvd_cap"
 	item_state = "nkvd_cap"
 	worn_state = "nkvd_cap"
 
-obj/item/clothing/head/ss_cap
+obj/item/clothing/head/ww2/ss_cap
 	name = "SS cap"
 	desc = "A cap and worn by officers in the Schutzstaffel."
 	icon_state = "sscap"
 	item_state = "sscap"
 	worn_state = "sscap"
 
-obj/item/clothing/head/german_fieldcap
+obj/item/clothing/head/ww2/german_fieldcap
 	name = "german field cap"
 	desc = "A cap and worn by german Wehrmacht."
 	icon_state = "fieldcap"
 	item_state = "fieldcap"
 	worn_state = "fieldcap"
 
-obj/item/clothing/head/soviet_fieldcap
+obj/item/clothing/head/ww2/soviet_fieldcap
 	name = "soviet field cap"
 	desc = "A cap and worn by soviets in the red army."
 	icon_state = "fieldcap2"

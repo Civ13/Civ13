@@ -29,7 +29,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german, slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/germcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/germcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mauser(H), slot_l_store)
@@ -77,7 +77,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/germcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/germcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
@@ -124,7 +124,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/germcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/germcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
@@ -212,7 +212,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/german(H), slot_w_uniform) // for now
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/germcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/germcap(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
