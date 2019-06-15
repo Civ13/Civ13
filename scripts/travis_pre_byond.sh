@@ -22,4 +22,3 @@ then
 	echo "Failed to compile!"
 	exit 1
 	fi
-fi
