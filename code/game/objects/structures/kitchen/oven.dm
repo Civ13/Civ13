@@ -236,7 +236,7 @@
 	else
 		..()
 /obj/structure/oven/fireplace/Crossed(mob/living/carbon/M as mob)
-	if (icon_state == "[base_state]_on")
+	if (icon_state == "[base_state]_on" && ishuman(M))
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
 		visible_message("<span class = 'warning'>[M] gets burnt by the [name]!</span>")

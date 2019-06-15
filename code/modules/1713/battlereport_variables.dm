@@ -128,7 +128,7 @@ var/list/recently_died = list()
 
 /mob/living/carbon/human/death()
 	if (original_job_title == "Nomad")
-		if (civilization != "none")
+		if (civilization != "none" && map.custom_civs[civilization][4])
 			if (map.custom_civs[civilization][4].real_name == real_name)
 				map.custom_civs[civilization][4] = null
 
