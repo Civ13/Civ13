@@ -203,7 +203,9 @@
 /obj/structure/multiz/ladder/ww2
 	var/ladder_id = null
 	var/area_id = "defaultareaid"
-
+/obj/structure/multiz/ladder/ww2/stairsdown
+	icon_state = "rampbottom"
+	name = "stairs"
 /obj/structure/multiz/ladder/ww2/tunneltop/Crossed(var/atom/movable/AM)
 	if (find_target() && istop)
 		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
@@ -236,6 +238,11 @@
 
 /obj/structure/multiz/ladder/ww2/up
 	icon_state = "ladderup"
+	istop = FALSE
+
+/obj/structure/multiz/ladder/ww2/stairsup
+	icon_state = "rampup"
+	name = "stairs"
 	istop = FALSE
 
 /obj/structure/multiz/ladder/ww2/Destroy()
