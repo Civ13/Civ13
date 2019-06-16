@@ -280,12 +280,13 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/flashlight/lantern = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
 	)
 
-/obj/structure/vending/sovietapparel
+/obj/structure/vending/wehrmachtapparel
 	name = "Wehrmacht apparel rack"
 	desc = "Basic wear for german soldiers."
 	icon_state = "apparel_german"
@@ -298,6 +299,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/flashlight/lantern = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 
