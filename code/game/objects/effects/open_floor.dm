@@ -13,6 +13,13 @@ var/process/open_floor/OS2_controller = null
 	for (var/turf/floor/broken_floor/T in open_floors)
 		T.update_icon()
 
+/turf/sky
+	icon = 'icons/turf/sky.dmi'
+	icon_state = ""
+	name = "the sky"
+	opacity = FALSE
+	density = TRUE
+
 //to create the "shadow" over the previous floor
 /obj/effect/overlay/overfloor
 	name = "Hole"

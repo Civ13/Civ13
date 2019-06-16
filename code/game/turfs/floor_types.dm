@@ -350,6 +350,19 @@
 		icon_state = pick("concrete10", "concrete11")
 		return
 
+/turf/floor/plating/steel
+	name = "steel plated floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "floor"
+	interior = TRUE
+
+/turf/floor/plating/white
+	name = "white plated floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "white"
+	interior = TRUE
+
+
 /turf/floor/plating/cobblestone
 	name = "road"
 	icon = 'icons/turf/floors.dmi'
