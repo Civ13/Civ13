@@ -108,6 +108,101 @@
 	force = 20
 	throwforce = 30
 
+/obj/item/weapon/gun/projectile/automatic/type99
+	name = "Type-99 light machine gun"
+	desc = "The Type-99 Light Machine Gun, is a light machine gun (LMG) refitted to fit the new 7.7x58mm cartridge rather than the old 6.50x50mm rounds. This one is 7.7x58mm Arisaka rounds."
+	icon_state = "type99lmg"
+	item_state = "type99lmg"
+	base_icon = "type99lmg"
+	caliber = "a77x58"
+	magazine_type = /obj/item/ammo_magazine/type99
+	weight = 9.12
+	force = 20
+	throwforce = 30
+
+
+/obj/item/weapon/gun/projectile/automatic/dp28
+	name = "DP28 light machine gun"
+	desc = "The DP28 Light Machine Gun, is a light machine gun (LMG) This one is 7.62x54mmR rounds."
+	icon_state = "dp"
+	item_state = "dp"
+	base_icon = "dp"
+	caliber = "a762x54"
+	magazine_type = /obj/item/ammo_magazine/dp
+	weight = 9.12
+	force = 20
+	throwforce = 30
+////////////////////////////MG34/////////////////////////////////////////
+/obj/item/weapon/gun/projectile/automatic/mg34
+	name = "MG-34"
+	desc = "German light machinegun chambered in 7.92x57mm Mauser. An utterly devastating support weapon."
+	icon_state = "mg34"
+	item_state = "mg34"
+	base_icon = "mg34"
+	w_class = 5
+	heavy = TRUE
+	max_shells = 50
+	caliber = "a792x57"
+	weight = 12.1
+	slot_flags = SLOT_BACK
+	ammo_type = /obj/item/ammo_casing/a792x57/weak
+	load_method = MAGAZINE
+	magazine_type = /obj/item/ammo_magazine/mg34
+	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
+	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
+	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mg34_firing.ogg'
+	requires_two_hands = FALSE
+
+	firemodes = list(
+		list(name="short bursts", burst=8, move_delay=10, dispersion = list(0.8, 1.2, 1.2, 1.2, 1.4), burst_delay = 1.0, recoil = 1.4),
+		list(name="long bursts", burst=16, move_delay=12, dispersion = list(1.0, 1.4, 1.4, 1.4, 1.6), burst_delay = 1.4, recoil = 2.8)
+		)
+	fire_delay = 3
+	force = 20
+	throwforce = 30
+	var/cover_open = FALSE
+
+/obj/item/weapon/gun/projectile/automatic/mg34/special_check(mob/user)
+	if (cover_open)
+		user << "<span class='warning'>[src]'s cover is open! Close it before firing!</span>"
+		return FALSE
+	return ..()
+
+/obj/item/weapon/gun/projectile/automatic/mg34/proc/toggle_cover(mob/user)
+	cover_open = !cover_open
+	user << "<span class='notice'>You [cover_open ? "open" : "close"] [src]'s cover.</span>"
+	update_icon()
+
+/obj/item/weapon/gun/projectile/automatic/mg34/attack_self(mob/user as mob)
+	if (cover_open)
+		toggle_cover(user) //close the cover
+		playsound(loc, 'sound/weapons/guns/interact/lmg_close.ogg', 100, TRUE)
+	else
+		return ..() //once closed, behave like normal
+
+/obj/item/weapon/gun/projectile/automatic/mg34/attack_hand(mob/user as mob)
+	if (!cover_open && user.get_inactive_hand() == src)
+		toggle_cover(user) //open the cover
+		playsound(loc, 'sound/weapons/guns/interact/lmg_open.ogg', 100, TRUE)
+	else
+		return ..() //once open, behave like normal
+
+/obj/item/weapon/gun/projectile/automatic/mg34/update_icon()
+	icon_state = "mg34[cover_open ? "_open" : "closed"][ammo_magazine ? round(ammo_magazine.stored_ammo.len, 25) : "-empty"]"
+
+/obj/item/weapon/gun/projectile/automatic/mg34/load_ammo(var/obj/item/A, mob/user)
+	if (!cover_open)
+		user << "<span class='warning'>You need to open the cover to load [src].</span>"
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/automatic/mg34/unload_ammo(mob/user, var/allow_dump=1)
+	if (!cover_open)
+		user << "<span class='warning'>You need to open the cover to unload [src].</span>"
+		return
+	..()
+///////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/m60
 	name = "M60 machine gun"
 	desc = "An american machinegun chambered in 7.62x51mm NATO rounds. Heavy and handles like a pig."

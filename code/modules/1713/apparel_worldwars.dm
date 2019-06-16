@@ -718,9 +718,9 @@ obj/item/clothing/head/ww2/ss_cap
 obj/item/clothing/head/ww2/german_fieldcap
 	name = "german field cap"
 	desc = "A cap and worn by german Wehrmacht."
-	icon_state = "fieldcap"
-	item_state = "fieldcap"
-	worn_state = "fieldcap"
+	icon_state = "fieldcap1"
+	item_state = "fieldcap1"
+	worn_state = "fieldcap1"
 
 obj/item/clothing/head/ww2/soviet_fieldcap
 	name = "soviet field cap"

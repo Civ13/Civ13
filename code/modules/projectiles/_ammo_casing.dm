@@ -478,6 +478,16 @@
 	caliber = "a765x53"
 	value = 8
 
+/obj/item/ammo_casing/a765x25
+	name = "7.65x25mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/a765x25
+	caliber = "a765x25"
+	value = 8
+
 /obj/item/ammo_casing/a7x57
 	name = "7x53mm bullet"
 	desc = "A brass casing."
@@ -487,6 +497,20 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/a7x57
 	caliber = "a7x57"
 	value = 8
+
+/obj/item/ammo_casing/a77x58
+	name = "7.7x58mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.076
+	projectile_type = /obj/item/projectile/bullet/rifle/a77x58
+	caliber = "a77x58"
+	value = 8
+
+/obj/item/ammo_casing/a77x58/weak
+	projectile_type = /obj/item/projectile/bullet/rifle/a77x58/weak
+	caliber = "a77x58_weak"
 
 /obj/item/ammo_casing/a577
 	name = ".577/450 Martini-Henry bullet"

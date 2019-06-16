@@ -335,6 +335,52 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	equiptimer = 18
 
+/obj/item/weapon/gun/projectile/boltaction/arisaka38
+	name = "Arisaka Type 38"
+	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
+	icon_state = "arisaka38"
+	item_state = "arisaka38"
+	base_icon = "arisaka38"
+	caliber = "a65x50"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a65x50
+	magazine_type = /obj/item/ammo_magazine/arisaka
+	bolt_safety = FALSE
+	effectiveness_mod = 1.05
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 18
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka99
+	name = "Arisaka Type 99"
+	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
+	icon_state = "arisaka99"
+	item_state = "arisaka99"
+	base_icon = "arisaka99"
+	caliber = "a77x58"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a65x50
+	magazine_type = /obj/item/ammo_magazine/arisaka
+	bolt_safety = FALSE
+	effectiveness_mod = 1.05
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 18
+
 /obj/item/weapon/gun/projectile/boltaction/gewehr71
 	name = "Gewehr 71"
 	desc = "A german bolt-action rifle chambered in 7.65x53mm Mauser ammunition."
