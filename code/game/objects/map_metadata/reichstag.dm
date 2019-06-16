@@ -2,7 +2,7 @@
 /obj/map_metadata/reichstag
 	ID = MAP_REICHSTAG
 	title = "Reichstag (100x100x1)"
-	lobby_icon_state = "modern"
+	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
@@ -14,7 +14,7 @@
 		)
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/british,
-		list(GERMAN) = /area/caribbean/german
+		list(GERMAN) = /area/caribbean/german/objective,
 		)
 	age = "1945"
 	ordinal_age = 6
@@ -24,7 +24,8 @@
 	faction1 = RUSSIAN
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
-
+	songs = list(
+		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ww2 == TRUE)

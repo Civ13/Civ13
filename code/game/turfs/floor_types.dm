@@ -338,6 +338,16 @@
 	icon_state = "concrete6"
 	interior = FALSE
 
+/turf/floor/plating/road
+	name = "road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "road_1"
+	interior = FALSE
+
+/turf/floor/plating/concrete/New()
+	..()
+	icon_state = pick("road_1","road_2","road_3")
+
 /turf/floor/plating/concrete/New()
 	..()
 	if (icon_state == "concrete2")

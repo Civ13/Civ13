@@ -264,3 +264,85 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/attachment/under/laser = 15,
 		/obj/item/weapon/attachment/under/foregrip = 15,
 	)
+
+
+/obj/structure/vending/sovietapparel
+	name = "Red Army apparel rack"
+	desc = "Basic wear for russian soldiers."
+	icon_state = "apparel_russia"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/ww2/soviet = 15,
+		/obj/item/clothing/suit/storage/coat/ww2/soviet = 15,
+		/obj/item/clothing/head/ww2/sov_pilotka = 15,
+		/obj/item/clothing/head/ww2/sov_ushanka = 10,
+		/obj/item/clothing/head/helmet/ww2/soviet = 15,
+		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
+
+	)
+
+/obj/structure/vending/sovietapparel
+	name = "Wehrmacht apparel rack"
+	desc = "Basic wear for german soldiers."
+	icon_state = "apparel_german"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/ww2/german = 15,
+		/obj/item/clothing/suit/storage/coat/ww2/german = 15,
+		/obj/item/clothing/head/ww2/german_fieldcap = 15,
+		/obj/item/clothing/head/helmet/ww2/gerhelm = 15,
+		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
+
+	)
+
+/obj/structure/vending/wehrmachtweapons
+	name = "Wehrmacht rifle rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_german"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k = 15,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+
+/obj/structure/vending/sovietweapons
+	name = "Soviet rifle rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 15,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+
+/obj/structure/vending/wehrmachtammo
+	name = "Wehrmacht ammo crate"
+	desc = "A large crate of Wehrmacht ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/gewehr98box = 10,
+		/obj/item/ammo_magazine/gewehr98 = 50,
+		/obj/item/ammo_magazine/mp40 = 15,
+		/obj/item/ammo_magazine/stg = 15,
+		/obj/item/ammo_magazine/g43 = 15,
+		/obj/item/ammo_magazine/luger = 20,
+	)
+
+/obj/structure/vending/sovietammo
+	name = "Soviet ammo crate"
+	desc = "A large crate of Red Army ammunition."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/mosinbox = 10,
+		/obj/item/ammo_magazine/mosin = 50,
+		/obj/item/ammo_magazine/svt = 15,
+		/obj/item/ammo_magazine/c762x25_pps = 15,
+		/obj/item/ammo_magazine/c762x25_ppsh = 15,
+		/obj/item/ammo_magazine/c762x38mmR = 10,
+	)

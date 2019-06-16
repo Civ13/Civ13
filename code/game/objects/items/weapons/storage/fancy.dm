@@ -111,9 +111,13 @@
 	create_reagents(15 * storage_slots)//so people can inject cigarettes without opening a packet, now with being able to inject the whole one
 	flags |= OPENCONTAINER
 
+/obj/item/weapon/storage/fancy/cigarettes/randompack
+	var/randomize = TRUE
+
 /obj/item/weapon/storage/fancy/cigarettes/randompack/New()
 	..()
-	icon_state = pick("luckystrike","marlboro","prima","ls","tm","atika","pachka_papiros")
+	if (randomize)
+		icon_state = pick("luckystrike","marlboro","prima","ls","tm","atika","pachka_papiros")
 
 /obj/item/weapon/storage/fancy/cigarettes/randompack/lighter
 	lighter = TRUE

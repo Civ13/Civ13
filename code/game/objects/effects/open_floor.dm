@@ -37,6 +37,12 @@ var/process/open_floor/OS2_controller = null
 	icon_state = "black"
 	density = FALSE
 
+/turf/floor/broken_floor/sky
+	name = "sky"
+	density = FALSE
+	icon = 'icons/turf/sky.dmi'
+	icon_state = ""
+
 /turf/floor/broken_floor/New()
 	..()
 	if (z > 1)

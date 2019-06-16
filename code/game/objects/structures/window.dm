@@ -467,6 +467,14 @@
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
 
+/obj/structure/window/classic/metal
+	icon_state = "windowmetal"
+	basestate = "windowmetal"
+	flammable = FALSE
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	maxhealth = 80.0
+
 /obj/structure/window/classic/reinforced
 	reinf = TRUE
 
