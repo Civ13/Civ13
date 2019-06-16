@@ -2,7 +2,7 @@
 /obj/map_metadata/reichstag
 	ID = MAP_REICHSTAG
 	title = "Reichstag (100x100x1)"
-	lobby_icon_state = "modern"
+	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
@@ -14,17 +14,18 @@
 		)
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/british,
-		list(GERMAN) = /area/caribbean/german
+		list(GERMAN) = /area/caribbean/german/objective,
 		)
 	age = "1945"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.3, RUSSIAN = 0.7)
 	battle_name = "battle of the Reichstag"
-	mission_start_message = "<font size=4>All factions have <b>15 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>1 hour</b>. The Soviets will win if they manage to reach the top of the Reichstag.</font>"
+	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Soviets will win if they manage to reach the top of the Reichstag.</font>"
 	faction1 = RUSSIAN
 	faction2 = GERMAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
-
+	songs = list(
+		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ww2 == TRUE)
@@ -36,7 +37,7 @@ obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/reichstag/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 9000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/reichstag/roundend_condition_def2name(define)
@@ -85,7 +86,7 @@ var/no_loop_r = FALSE
 /obj/map_metadata/reichstag/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (world.time >= 36000)
+	if (world.time >= 24000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE

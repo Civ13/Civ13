@@ -558,6 +558,27 @@ obj/item/clothing/under/ww2/soviet_nkvd
 	item_state = "nkvd_uni"
 	worn_state = "nkvd_uni"
 
+obj/item/clothing/under/ww2/civ1
+	name = "green civilian outfit"
+	desc = "A mid 20th-century civilian outfit."
+	icon_state = "ww2_civuni1"
+	item_state = "ww2_civuni1"
+	worn_state = "ww2_civuni1"
+
+obj/item/clothing/under/ww2/civ2
+	name = "brown civilian outfit"
+	desc = "A mid 20th-century civilian outfit."
+	icon_state = "ww2_civuni2"
+	item_state = "ww2_civuni2"
+	worn_state = "ww2_civuni2"
+
+obj/item/clothing/under/ww2/hitlerjugend
+	name = "Hitlerjugend outfit"
+	desc = "The standard uniform of the HJ."
+	icon_state = "hj_uni"
+	icon_state = "hj_uni"
+	icon_state = "hj_uni"
+
 /obj/item/clothing/suit/storage/coat/ww2/german
 	name = "german parka"
 	desc = "A german parka, worn by soldaten in the Wehrmacht."
@@ -747,3 +768,34 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+
+/obj/item/clothing/accessory/armband/redcross
+	name = "red cross armband"
+	desc = "A white armband with the red cross in it."
+	icon_state = "redcross"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/nsdap
+	name = "NSDAP armband"
+	desc = "A red armband with the swastika on it."
+	icon_state = "nsdap"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/kenpeitai
+	name = "Kenpeitai armband"
+	desc = "A white armband with red japanese characters on it."
+	icon_state = "japanesemp"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/usmp
+	name = "military police armband"
+	desc = "A black armband with \"MP\" written on it."
+	icon_state = "usmp"
+	slot = "armband"
+
+/obj/item/clothing/accessory/armband/volkssturm
+	name = "Volkssturm armband"
+	desc = "A red, white and black armband of the Volkssturm"
+	icon_state = "volkssturm"
+	slot = "armband"

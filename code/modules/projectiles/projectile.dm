@@ -564,8 +564,8 @@
 		setup_trajectory()
 		firstmove = TRUE
 
-	spawn while(src && src.loc)
-		if (kill_count-- < 1)
+	if (src && loc)
+		if (--kill_count < 1)
 			for (var/atom/movable/AM in loc)
 				do_bullet_act(AM)
 			do_bullet_act(loc)

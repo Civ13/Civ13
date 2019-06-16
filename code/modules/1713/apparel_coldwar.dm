@@ -512,7 +512,7 @@
 
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
-	desc = "a green chest-level webbing, with three medium sized pouches."
+	desc = "a khaki chest-level webbing, with three medium sized pouches."
 	slots = 3
 	icon_state = "khaki_webbing"
 	item_state = "khaki_webbing"

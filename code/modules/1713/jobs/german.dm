@@ -320,13 +320,6 @@
 	return TRUE
 
 ////////////////////////////WW2//////////////////////////////////////////////
-/datum/job/german
-	faction = "Station"
-
-/datum/job/german/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_german_name(H.gender)
-	H.real_name = H.name
-
 /datum/job/german/captain_reichstag
 	title = "Waffen-SS Hauptsturmfuhrer"
 	en_meaning = "SS Captain"
@@ -359,6 +352,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/armband/nsdap/armband = new /obj/item/clothing/accessory/armband/nsdap(null)
+	uniform.attackby(armband, H)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	world << "<b><big>[H.real_name] is the commander of the German Forces!</big></b>"
@@ -443,8 +438,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
-	uniform.attackby(white, H)
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
@@ -527,8 +522,8 @@
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
-	min_positions = 12
-	max_positions = 60
+	min_positions = 6
+	max_positions = 30
 
 /datum/job/german/infantry_reichstag/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -559,6 +554,105 @@
 	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/german/volkssturm_reichstag
+	title = "Volkssturmmann"
+	en_meaning = "Militia"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateGE"
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+
+	// AUTOBALANCE
+	min_positions = 12
+	max_positions = 60
+
+/datum/job/german/volkssturm_reichstag/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+
+//clothes
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
+
+//head
+	var/pickhat = pick(1,2,3)
+	if (pickhat == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap1(H), slot_head)
+	else if (pickhat == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap2(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/flatcap3(H), slot_head)
+//back
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_back)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_back)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr71(H), slot_back)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/volkssturm/armband = new /obj/item/clothing/accessory/armband/volkssturm(null)
+	uniform.attackby(armband, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a conscripted civilian hastly organized into a militia. Do your best to defend the Reichstag!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/german/hj_reichstag
+	title = "Hitlerjunge"
+	en_meaning = "Militia"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateGE"
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+
+	// AUTOBALANCE
+	min_positions = 12
+	max_positions = 60
+
+/datum/job/german/hj_reichstag/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
+
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/hitlerjugend(H), slot_w_uniform)
+
+//back
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(H), slot_back)
+	else if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr98(H), slot_back)
+	else
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/gewehr71(H), slot_back)
+
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a young member of the Hitler's Youth. Defend the Reichstag!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
 
