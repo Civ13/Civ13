@@ -75,6 +75,15 @@
 	magazine_type = /obj/item/ammo_magazine/maxim
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 
+obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
+	name = "Maxim"
+	desc = "Russian version of the original Maxim machinegun, on cart mount. Uses Russian 7.62x54mm rounds."
+	icon_state = "maxim_ww2"
+	base_icon = "maxim_ww2"
+	caliber = "a762x54_weak"
+	magazine_type = /obj/item/ammo_magazine/maxim
+	ammo_type = /obj/item/ammo_casing/a762x54/weak
+
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg08
 	name = "Maschinengewehr 08"
 	desc = "German Heavy Maxim machinegun, based on the original Maxim. Uses 7.92x57mm Mauser rounds."
@@ -113,9 +122,19 @@
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type3
 	name = "Type 3 machine gun"
-	desc = "A japanese heavy machinegun nased on the Hotchkiss. Uses 6.5x50mm Arisaka rounds."
+	desc = "A japanese heavy machinegun based on the French Hotchkiss. Uses 6.5x50mm Arisaka rounds."
 	icon_state = "type3"
 	base_icon = "type3"
 	caliber = "a65x50_weak"
 	magazine_type = /obj/item/ammo_magazine/type3
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
+
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/type98
+	name = "Type 98 machine gun"
+	desc = "A japanese heavy machinegun. Uses 7.7x58mm Arisaka rounds."
+	icon_state = "type98hmg"
+	base_icon = "type98hmg"
+	caliber = "a77x58_weak"
+	magazine_type = /obj/item/ammo_magazine/type98
+	ammo_type = /obj/item/ammo_casing/a77x58/weak
+
