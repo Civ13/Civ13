@@ -33,10 +33,10 @@ obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = FALSE
 
-/obj/map_metadata/reichstag/faction2_can_cross_blocks()
+/obj/map_metadata/reichstag/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
 
-/obj/map_metadata/reichstag/faction1_can_cross_blocks()
+/obj/map_metadata/reichstag/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
 
 
@@ -139,10 +139,11 @@ var/no_loop_r = FALSE
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
 				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	if (current_win_condition != NO_WINNER && current_winner && current_loser)
-		world << "<font size = 3>The <b>Germans</b> have recaptured the Reichstag!</font>"
-		current_winner = null
-		current_loser = null
+	else
+		if (current_win_condition != NO_WINNER && current_winner && current_loser)
+			world << "<font size = 3>The <b>Germans</b> have recaptured the Reichstag!</font>"
+			current_winner = null
+			current_loser = null
 		next_win = -1
 		current_win_condition = NO_WINNER
 		win_condition.hash = 0
