@@ -98,3 +98,11 @@
 /obj/item/weapon/plastique/New()
 	image_overlay = image(icon, "plastic-explosive2")
 	..()
+
+/obj/item/weapon/plastique/russian
+	name = "explosive charge"
+	icon_state = "russian_charge"
+
+/obj/item/weapon/plastique/russian/New()
+	image_overlay = image(icon, "russian_charge_placed")
+	..()
