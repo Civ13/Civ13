@@ -71,7 +71,7 @@ obj/item/ammo_magazine/type99
 	name = "MG34 magazine (7.92x57mm)"
 	icon_state = "mg34"
 	mag_type = MAGAZINE
-	caliber = "a792x57"
+	caliber = "a792x57_weak"
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	max_ammo = 50
 	weight = 0.34
