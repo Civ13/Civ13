@@ -203,7 +203,7 @@
 		/obj/item/clothing/gloves/fingerless = 15,
 		/obj/item/weapon/storage/belt/largepouches = 15,
 		/obj/item/weapon/storage/belt/smallpouches = 15,
-		/obj/item/flashlight/lantern = 15,
+		/obj/item/flashlight/flashlight = 15,
 		/obj/item/clothing/under/us_uni/us_camo_woodland = 15,
 		/obj/item/clothing/under/us_uni/us_camo_dcu = 15,
 		/obj/item/clothing/under/us_uni/us_camo_ucp = 15,
@@ -280,7 +280,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/leather = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
-		/obj/item/flashlight/lantern = 15,
+		/obj/item/flashlight/flashlight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/russian = 50,
 
@@ -299,7 +299,7 @@ obj/structure/vending/sofammo
 		/obj/item/clothing/accessory/storage/webbing/ww1/german = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
 		/obj/item/weapon/shovel/trench = 10,
-		/obj/item/flashlight/lantern = 15,
+		/obj/item/flashlight/flashlight = 15,
 		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/german = 50,
 
