@@ -272,6 +272,15 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.02
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/walther
+	name = "Walther magazine"
+	icon_state = "waltherp"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 8
+	weight = 0.02
+	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/borchardt
 	name = "Borchardt magazine"

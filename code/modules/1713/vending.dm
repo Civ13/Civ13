@@ -333,7 +333,9 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/mp40 = 15,
 		/obj/item/ammo_magazine/stg = 15,
 		/obj/item/ammo_magazine/g43 = 15,
-		/obj/item/ammo_magazine/luger = 20,
+		/obj/item/ammo_magazine/mg34 = 10,
+		/obj/item/ammo_magazine/luger = 10,
+		/obj/item/ammo_magazine/walther = 10,
 	)
 
 /obj/structure/vending/sovietammo
@@ -346,5 +348,7 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/svt = 15,
 		/obj/item/ammo_magazine/c762x25_pps = 15,
 		/obj/item/ammo_magazine/c762x25_ppsh = 15,
+		/obj/item/ammo_magazine/dp = 10,
 		/obj/item/ammo_magazine/c762x38mmR = 10,
+		/obj/item/ammo_magazine/tt30 = 10,
 	)
