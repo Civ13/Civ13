@@ -415,11 +415,11 @@
 	return TRUE
 
 /datum/job/russian/sergeant_soviet
-	title = "Infanterie Unteroffizier"
+	title = "K.A. Serjant"
 	en_meaning = "Squad Leader"
-	rank_abbreviation = "Uffz."
+	rank_abbreviation = "Srj."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateGE"
+	spawn_location = "JoinLateRU"
 	is_officer = TRUE
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
@@ -458,12 +458,12 @@
 
 	return TRUE
 
-/datum/job/german/doctor_soviet
+/datum/job/russian/doctor_soviet
 	title = "K.A. Voynenvrach"
 	en_meaning = "Combat Medic"
 	rank_abbreviation = "Srj."
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateRUoc"
+	spawn_location = "JoinLateRUDoc"
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
 
