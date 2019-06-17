@@ -372,6 +372,133 @@
 	return TRUE
 
 
+/datum/job/russian/nkvd_soviet
+	title = "NKVD Leytenant"
+	en_meaning = "NKVD Officer"
+	rank_abbreviation = "NKVD Leyt."
+	head_position = TRUE
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRUCap"
+	is_officer = TRUE
+	whitelisted = TRUE
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/russian/nkvd_soviet/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet_nkvd(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/nkvd_cap(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	uniform.attackby(holsterh, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a member of the NKVD attached to this army unit. Your job is to make sure the soldiers follow STAVKA's orders. You can even discipline the officers if need be!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	return TRUE
+
+/datum/job/german/sergeant_soviet
+	title = "Infanterie Unteroffizier"
+	en_meaning = "Squad Leader"
+	rank_abbreviation = "Uffz."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateGE"
+	is_officer = TRUE
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 6
+
+/datum/job/german/sergeant_soviet/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
+//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ppsh(H), slot_belt)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2(H), slot_back)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/storage/webbing/ww1/leather/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/leather(null)
+	uniform.attackby(webbing, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your squad according to the <b>Kapitan's</b> orders!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/german/doctor_soviet
+	title = "K.A. Voynenvrach"
+	en_meaning = "Combat Medic"
+	rank_abbreviation = "Srj."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRUoc"
+	SL_check_independent = TRUE
+	is_ww2 = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 4
+
+/datum/job/russian/doctor_soviet/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/soviet(H), slot_w_uniform) // for now
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	uniform.attackby(armband, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
+
 /datum/job/russian/machinegunner_soviet
 	title = "K.A. Pulemetchik"
 	en_meaning = "Red Army Machinegunner"
@@ -425,8 +552,8 @@
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
-	min_positions = 12
-	max_positions = 80
+	min_positions = 20
+	max_positions = 100
 
 /datum/job/russian/soldier_soviet/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

@@ -769,6 +769,15 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww2/soviet_medic
+	name = "soviet medical helmet"
+	desc = "The typical rounded steel helmet of the red army, with the white markings of the medical corps."
+	icon_state = "sovhelm_medic"
+	item_state = "sovhelm_medic"
+	worn_state = "sovhelm_medic"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 
 /obj/item/clothing/accessory/armband/redcross
 	name = "red cross armband"
