@@ -174,7 +174,7 @@ var/list/global/wall_cache = list()
 	reinf_material = null
 	//update_connections(1)
 	update_icon()
-	ChangeTurf(/turf/floor/wood_broken)
+	ChangeTurf(/turf/floor/dirt)
 /turf/wall/ex_act(severity)
 	switch(severity)
 		if (1.0, 2.0)
