@@ -123,7 +123,7 @@
 	if (href_list["fire"])
 
 		if (map)
-			if ((H.faction_text == map.faction1 && !map.faction1_can_cross_blocks()) || (H.faction_text == map.faction2 && !map.faction2_can_cross_blocks()))
+			if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
 				user << "<span class = 'danger'>You can't fire yet.</span>"
 				return
 
