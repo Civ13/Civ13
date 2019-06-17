@@ -10,7 +10,7 @@
 		"Imperial Age (1650-1780)" = 0,
 		"Industrial Age (1850-1895)" = 0,
 		"Early Modern Era (1896-1933)" = 0,
-		//"World War II (1934-1957)" = 0,
+		"World War II (1934-1957)" = 0,
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
@@ -40,7 +40,7 @@
 				"Imperial Age (1650-1780)" = 0,
 				"Industrial Age (1850-1895)" = 0,
 				"Early Modern Era (1896-1933)" = 0,
-				//"World War II (1934-1957)" = 0,
+				"World War II (1934-1957)" = 0,
 				"Cold War Era (1958-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
 			)
@@ -99,6 +99,12 @@
 			maps = list(
 				MAP_COMPOUND = 0,
 			)
+		if (epoch == "World War II (1934-1957)")
+	// 1943 - TDM
+			maps = list(
+				MAP_REICHSTAG = 0,
+			)
+
 		if (epoch == "Early Modern Era (1896-1933)")
 	// 1903 - TDM
 			maps = list(
