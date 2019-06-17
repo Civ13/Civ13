@@ -64,9 +64,6 @@ var/list/global/wall_cache = list()
 		icon = 'icons/turf/walls.dmi'
 		icon_state = "rock"
 
-	var/area/my_area = get_area(src)
-	if (prob(10) && !istype(src, /turf/wall/indestructable) && my_area.type != /area/caribbean/void)
-		new /obj/effect/decal/cleanable/dirt (src)
 	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
 		L.update_overlay()
 

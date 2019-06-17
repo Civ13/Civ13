@@ -13,7 +13,7 @@
 		)
 	roundend_condition_sides = list(
 		list(RUSSIAN) = /area/caribbean/british,
-		list(GERMAN) = /area/caribbean/german/objective,
+		list(GERMAN) = /area/caribbean/german/reichstag/roof/objective,
 		)
 	age = "1945"
 	ordinal_age = 6
