@@ -74,6 +74,7 @@
 	var/admin_triggered = FALSE
 	var/finished_at = -1
 	var/next_map_title = "TBD"
+	var/done = FALSE
 
 /process/mapswap/setup()
 	name = "mapswap"
@@ -85,10 +86,10 @@
 
 /process/mapswap/fire()
 	// no SCHECK here
+	done = FALSE
 	if (is_ready())
 		ready = FALSE
 		epoch = vote.voted_epoch
-
 		if (epoch == "Modern Era (1985-2020)")
 	// 2013 - TDM
 			maps = list(
@@ -166,7 +167,7 @@
 
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
-
+			return
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
@@ -187,7 +188,9 @@
 	if (!maps.Find(winner))
 		winner = maps[1]
 	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
-	processes.python.execute("mapswap.py", list(winner))
+	if (!done)
+		processes.python.execute("mapswap.py", list(winner))
+		done = TRUE
 
 /process/gamemode
 	var/ready = TRUE
