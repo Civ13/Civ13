@@ -414,7 +414,7 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	return TRUE
 
-/datum/job/german/sergeant_soviet
+/datum/job/russian/sergeant_soviet
 	title = "Infanterie Unteroffizier"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
@@ -428,7 +428,7 @@
 	min_positions = 1
 	max_positions = 6
 
-/datum/job/german/sergeant_soviet/equip(var/mob/living/carbon/human/H)
+/datum/job/russian/sergeant_soviet/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
