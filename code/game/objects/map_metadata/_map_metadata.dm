@@ -89,6 +89,8 @@ var/civmax_research = list(130,130,130)
 	var/list/custom_civs = list()
 	var/list/custom_religions = list()
 	var/list/custom_religion_nr = list()
+	var/list/custom_company = list()
+	var/list/custom_company_nr = list()
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical), 4th value: leader. 5th value: victory points
 	var/civa_research = list(0,0,0,null,0)
 	var/civb_research = list(0,0,0,null,0)
@@ -222,7 +224,7 @@ var/civmax_research = list(130,130,130)
 
 /obj/map_metadata/proc/pollution()
 
-	if (pollutionmeter >= 2000)
+	if (pollutionmeter >= 1000)
 		change_weather(WEATHER_SMOG)
 		world << "The air gets smoggy..."
 	pollutionmeter -= 80

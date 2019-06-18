@@ -145,6 +145,8 @@
 			var/ind = addictions[ad]
 			process_addictions(ad,ind)
 			addictions[ad] -= 0.05
+		if (addictions[ad] < 0)
+			addictions[ad] = 0
 
 // disease stuff
 	if (inducedSSD && disease && disease_progression <= 15)
