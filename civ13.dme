@@ -528,6 +528,7 @@
 #include "code\modules\client\client_defines.dm"
 #include "code\modules\client\client_procs.dm"
 #include "code\modules\client\client_verbs.dm"
+#include "code\modules\client\fullscreen.dm"
 #include "code\modules\client\movement.dm"
 #include "code\modules\client\ping.dm"
 #include "code\modules\client\sound.dm"
@@ -838,5 +839,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\reichstag.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE
