@@ -137,7 +137,7 @@
 	w_class = 2
 	caliber = "a9x19"
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
-	magazine_type = /obj/item/ammo_magazine/luger
+	magazine_type = /obj/item/ammo_magazine/walther
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE

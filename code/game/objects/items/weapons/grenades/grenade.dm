@@ -243,16 +243,23 @@
 
 /obj/item/weapon/grenade/modern/stg1915
 	name = "M1915 Stielhandgranate"
-	desc = "A A German early XXth century design."
+	desc = "A German early XXth century design."
 	icon_state = "stgnade"
 	det_time = 45
 	throw_range = 10
 /obj/item/weapon/grenade/ww2/stg1924
 	name = "M1924 Stielhandgranate"
-	desc = "A A German design, to replace the M1915."
+	desc = "A German design, to replace the M1915."
 	icon_state = "stgnade"
 	det_time = 45
 	throw_range = 11
+
+/obj/item/weapon/grenade/ww2/rgd33
+	name = "RGD-33 grenade"
+	desc = "A Soviet fragmentation grenade."
+	icon_state = "rgd33"
+	det_time = 50
+	throw_range = 9
 
 /obj/item/weapon/grenade/ww2/mk2
 	name = "Mk2 grenade"

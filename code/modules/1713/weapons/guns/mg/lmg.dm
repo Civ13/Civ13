@@ -134,7 +134,7 @@
 	throwforce = 30
 ////////////////////////////MG34/////////////////////////////////////////
 /obj/item/weapon/gun/projectile/automatic/mg34
-	name = "MG-34"
+	name = "MG 34"
 	desc = "German light machinegun chambered in 7.92x57mm Mauser. An utterly devastating support weapon."
 	icon_state = "mg34"
 	item_state = "mg34"
@@ -142,7 +142,7 @@
 	w_class = 5
 	heavy = TRUE
 	max_shells = 50
-	caliber = "a792x57"
+	caliber = "a792x57_weak"
 	weight = 12.1
 	slot_flags = SLOT_BACK
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
@@ -152,7 +152,6 @@
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
 	fire_sound = 'sound/weapons/guns/fire/mg34_firing.ogg'
-	requires_two_hands = FALSE
 
 	firemodes = list(
 		list(name="short bursts", burst=8, move_delay=10, dispersion = list(0.8, 1.2, 1.2, 1.2, 1.4), burst_delay = 1.0, recoil = 1.4),

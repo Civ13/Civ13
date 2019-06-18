@@ -64,9 +64,6 @@ var/list/global/wall_cache = list()
 		icon = 'icons/turf/walls.dmi'
 		icon_state = "rock"
 
-	var/area/my_area = get_area(src)
-	if (prob(10) && !istype(src, /turf/wall/indestructable) && my_area.type != /area/caribbean/void)
-		new /obj/effect/decal/cleanable/dirt (src)
 	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
 		L.update_overlay()
 
@@ -127,14 +124,14 @@ var/list/global/wall_cache = list()
 	if (!can_melt())
 		return
 
-	ChangeTurf(/turf/floor/plating)
+	ChangeTurf(get_base_turf_by_area(src))
 
 	var/turf/floor/F = src
 	if (!F)
 		return
 	F.burn_tile()
 	F.icon_state = "wall_thermite"
-	visible_message("<span class='danger'>\The [src] spontaneously combusts!.</span>") //!!OH SHIT!!
+	visible_message("<span class='danger'>\The [src] spontaneously combusts!</span>") //!!OH SHIT!!
 	return
 
 /turf/wall/proc/take_damage(dam)
@@ -177,7 +174,7 @@ var/list/global/wall_cache = list()
 	reinf_material = null
 	//update_connections(1)
 	update_icon()
-	ChangeTurf(/turf/floor/wood_broken)
+	ChangeTurf(get_base_turf_by_area(src))
 /turf/wall/ex_act(severity)
 	switch(severity)
 		if (1.0, 2.0)
@@ -207,7 +204,7 @@ var/list/global/wall_cache = list()
 	O.density = TRUE
 	O.layer = 5
 
-	ChangeTurf(/turf/floor/plating)
+	ChangeTurf(get_base_turf_by_area(src))
 
 	var/turf/floor/F = src
 	F.burn_tile()
@@ -233,6 +230,6 @@ var/list/global/wall_cache = list()
 /turf/wall/proc/burn(temperature)
 	if (material.combustion_effect(src, temperature, 0.7))
 		spawn(2)
-			ChangeTurf(/turf/floor)
+			ChangeTurf(get_base_turf_by_area(src))
 			for (var/turf/wall/W in range(3,src))
 				W.burn((temperature/4))

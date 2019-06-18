@@ -138,3 +138,11 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	magazine_type = /obj/item/ammo_magazine/type98
 	ammo_type = /obj/item/ammo_casing/a77x58/weak
 
+/obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
+	name = "MG 34 machine gun"
+	desc = "A german heavy machinegun, using 7.92x57 Mauser rounds."
+	icon_state = "mg34hmg"
+	base_icon = "mg34hmg"
+	caliber = "a792x57_weak"
+	magazine_type = /obj/item/ammo_magazine/mg34belt
+	ammo_type = /obj/item/ammo_casing/a792x57/weak

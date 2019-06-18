@@ -72,12 +72,12 @@ var/process/open_floor/OS2_controller = null
 	if (floorbelowz)
 		if (istype(A, /mob))
 			A.z -= 1
-			A.visible_message("[A] falls from the deck above and slams into \the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch")
+			A.visible_message("[A] falls from the level above and slams into \the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch.")
 			if (istype(A, /mob/living/carbon/human))
 				playsound(A.loc, 'sound/effects/gore/fallsmash.ogg', 50, TRUE)
 				var/mob/living/carbon/human/H = A
-				H.Stun(2)
-				var/damage = 10
+				H.Stun(6)
+				var/damage = 40
 				H.apply_damage(rand(0, damage), BRUTE, "head")
 				H.apply_damage(rand(0, damage), BRUTE, "chest")
 				H.apply_damage(rand(0, damage), BRUTE, "l_leg")
@@ -91,7 +91,7 @@ var/process/open_floor/OS2_controller = null
 				return
 			else
 				A.z -= 1
-				A.visible_message("\The [A] falls from the deck above and slams into the floor!", "You hear something slam into the deck.")
+				A.visible_message("\The [A] falls from the level above and slams into the floor!", "You hear something slam into the deck.")
 
 /turf/floor/broken_floor/New()
 	..()

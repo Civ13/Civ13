@@ -64,14 +64,6 @@
 				continue
 			M.ingested.remove_reagent(R.id, removed * effect)
 
-/datum/reagent/carbon/touch_turf(var/turf/T)
-	var/obj/effect/decal/cleanable/dirt/dirtoverlay = locate(/obj/effect/decal/cleanable/dirt, T)
-	if (!dirtoverlay)
-		dirtoverlay = new/obj/effect/decal/cleanable/dirt(T)
-		dirtoverlay.alpha = volume * 30
-	else
-		dirtoverlay.alpha = min(dirtoverlay.alpha + volume * 30, 255)
-
 /datum/reagent/copper
 	name = "Copper"
 	id = "copper"

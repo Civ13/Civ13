@@ -64,7 +64,6 @@
 	// If icon_override or sprite_sheets are set they will take precendence over this, assuming they apply to the slot in question.
 	// Only slot_l_hand/slot_r_hand are implemented at the moment. Others to be implemented as needed.
 	var/list/item_icons = list()
-	var/requires_two_hands = FALSE
 	var/wielded_icon = null
 	var/worn_state = null
 
