@@ -64,4 +64,6 @@
 
 	var/movement_busy = FALSE
 
+	var/fullscreen = FALSE
+
 /client/authenticate = FALSE

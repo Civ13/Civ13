@@ -430,6 +430,9 @@ var/list/engineer_exclusive_recipe_types = null
 			new/datum/stack_recipe("lightbulb", /obj/item/lightbulb, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("vial", /obj/item/weapon/reagent_containers/glass/beaker/vial, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("beaker", /obj/item/weapon/reagent_containers/glass/beaker, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("large beaker", /obj/item/weapon/reagent_containers/glass/beaker/large, 3, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/stone/generate_recipes()
 	..()
