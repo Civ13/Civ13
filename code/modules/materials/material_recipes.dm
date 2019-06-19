@@ -441,6 +441,8 @@ var/list/engineer_exclusive_recipe_types = null
 	recipes += new/datum/stack_recipe("scientific rock slate",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe("road", /obj/covers/road, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone stairs", /obj/covers/cobblestone/stairs, 2, _time = 45, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone altar", /obj/structure/altar/stone, 15, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map.ordinal_age >= 1)
@@ -750,6 +752,8 @@ var/list/engineer_exclusive_recipe_types = null
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (map.ordinal_age >= 4)
 		recipes += list(new/datum/stack_recipe("cigarette pack", /obj/item/weapon/storage/fancy/cigarettes, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE))
+
+	recipes += list(new/datum/stack_recipe("cloth curtain", /obj/structure/curtain, 1, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE))
 
 	//Carpets - To be expanded upon with borders and such later.
 	if (map.ordinal_age >= 2)

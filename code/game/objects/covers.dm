@@ -56,6 +56,21 @@
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "rampup"
 
+/obj/covers/road
+	name = "road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "road_1"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+
+/obj/covers/road/New()
+	..()
+	icon_state = pick("road_1","road_2","road_3")
 
 /obj/covers/sandstone
 	name = "sandstone floor"

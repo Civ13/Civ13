@@ -152,7 +152,7 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	var/on = FALSE
-
+	var/collector
 /obj/structure/lab_distillery/New()
 	..()
 	reagents = new /datum/reagents(80)

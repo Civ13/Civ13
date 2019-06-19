@@ -19,6 +19,7 @@
 
 	var/list/can_be_placed_into = list(
 		/obj/structure/chemical_dispenser,
+		/obj/structure/lab_distillery,
 		/obj/structure/table,
 		/obj/structure/closet,
 		/obj/structure/sink,
