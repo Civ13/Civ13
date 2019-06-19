@@ -10,7 +10,10 @@ var/list/global_huds = list(
 		global_hud.darkMask,
 		global_hud.nvg,
 		global_hud.thermal,
-		global_hud.fov,)
+		global_hud.fov,
+		global_hud.noise,
+		global_hud.fishbed,
+		)
 /*
 /datum/hud/var/obj/screen/grab_intent
 /datum/hud/var/obj/screen/hurt_intent
@@ -25,6 +28,8 @@ var/list/global_huds = list(
 	var/obj/screen/nvg
 	var/obj/screen/thermal
 	var/obj/screen/fov
+	var/obj/screen/fishbed
+	var/obj/screen/noise
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
@@ -78,6 +83,9 @@ var/list/global_huds = list(
 	fov.screen_loc = "1,1"
 	fov.mouse_opacity = FALSE
 	fov.layer = 18
+
+//	noise = new /obj/screen/noise()
+//	fishbed = new /obj/screen/fishbed()
 
 	var/obj/screen/O
 	var/i

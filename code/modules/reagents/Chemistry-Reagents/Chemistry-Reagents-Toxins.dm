@@ -450,3 +450,14 @@
 	M.add_chemical_effect(CE_PULSE, TRUE)
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 	M.mood += removed*8
+
+
+/datum/reagent/toxin/chlorine
+	name = "Chlorine"
+	id = "chlorine"
+	description = "A highly poisonous liquid. Smells strongly of bleach."
+	reagent_state = LIQUID
+	taste_description = "bleach"
+	color = "#707c13"
+	strength = 15
+	metabolism = REM

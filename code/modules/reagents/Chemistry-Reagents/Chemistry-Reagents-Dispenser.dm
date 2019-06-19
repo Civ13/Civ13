@@ -285,7 +285,15 @@
 	color = "#808080"
 	power = 3
 	meltdose = 8
-
+/datum/reagent/acid/hydrogen_chloride
+	name = "Hydrogen Chloride"
+	id = "hydrogen_chloride"
+	description = "A somewhat corrosive mineral acid."
+	taste_description = "stomach acid"
+	reagent_state = LIQUID
+	color = "#808080"
+	power = 1
+	meltdose = 30
 /datum/reagent/sodium
 	name = "Sodium"
 	id = "sodium"

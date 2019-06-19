@@ -31,6 +31,9 @@
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"fov"		  = list("type" = /obj/screen/fov,		  "loc" = "1,1", "icon_state" = "blank"),
+
+//		"fishbed" = list("type" = /obj/screen/fishbed, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "fishbed"),
+//		"noise" = list("type" = /obj/screen/noise, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/effects/static.dmi', "icon_state" = "1 moderate"),
 	)
 	HUDneed = list(
 		"health"      = list("type" = /obj/screen/health,     "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll.dmi'),

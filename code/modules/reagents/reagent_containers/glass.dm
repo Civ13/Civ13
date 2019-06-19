@@ -210,6 +210,19 @@
 			reagents.add_reagent("cotton", CT.amount)
 			qdel(W)
 			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/corn))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You grind the corn, producing corn oil."
+			reagents.add_reagent("cornoil", 5)
+			qdel(W)
+			return
 	proc/update_name_label()
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		if (label_text == "")

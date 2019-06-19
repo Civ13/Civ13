@@ -153,11 +153,18 @@
 	required_reagents = list("acetone" = 1, "carbon" = 1, "sugar" = 1)
 	result_amount = 3
 
+/datum/chemical_reaction/penicillin
+	name = "Penicillin"
+	id = "penicillin"
+	result = "penicillin"
+	required_reagents = list("yeast" = 10, "acetone" = 1)
+	result_amount = 5
+
 /datum/chemical_reaction/tramadol
 	name = "Tramadol"
 	id = "tramadol"
 	result = "tramadol"
-	required_reagents = list("" = 1, "ethanol" = 1, "acetone" = 1)
+	required_reagents = list("opium" = 1, "ethanol" = 1, "acetone" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/oxycodone
@@ -211,6 +218,42 @@
 	required_reagents = list("lithium" = 1, "hydrazine" = 1)
 	result_amount = TRUE
 
+/datum/chemical_reaction/hclacid
+	name = "Hydrochloric Acid"
+	id = "hclacid"
+	result = "hclacid"
+	required_reagents = list("hydrogen_chloride" = 1, "water" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/sacid
+	name = "Sulphuric Acid"
+	id = "sacid"
+	result = "sacid"
+	required_reagents = list("sulphur" = 1, "water" = 5)
+	result_amount = 5
+
+/datum/chemical_reaction/salt
+	name = "Table Salt"
+	id = "sodiumchloride"
+	result = "sodiumchloride"
+	required_reagents = list("sodium" = 1, "chlorine" = 1)
+	result_amount = 1
+
+/datum/chemical_reaction/hydrogen_chloride
+	name = "Hydrogen Chloride"
+	id = "hydrogen_chloride"
+	result = "hydrogen_chloride"
+	required_reagents = list("hydrogen" = 1, "chlorine" = 1)
+	result_amount = 1
+
+/datum/chemical_reaction/water
+	name = "Water"
+	id = "water"
+	result = "water"
+	required_reagents = list("oxygen" = 1, "hydrogen" = 1)
+	result_amount = 1
+
+
 /datum/chemical_reaction/glycerol
 	name = "Glycerol"
 	id = "glycerol"
@@ -252,7 +295,7 @@
 	name = "Paroxetine"
 	id = "paroxetine"
 	result = "paroxetine"
-	required_reagents = list("mindbreaker" = 1, "acetone" = 1, "" = 1)
+	required_reagents = list("mindbreaker" = 1, "acetone" = 1)
 	result_amount = 3
 
 /* Grenade reactions */
@@ -346,7 +389,7 @@
 	name = "Napalm"
 	id = "napalm"
 	result = null
-	required_reagents = list("aluminum" = 1, "tungsten" = 1, "sacid" = 1 )
+	required_reagents = list("gasoline" = 1, "cotton" = 1)
 	result_amount = TRUE
 
 /datum/chemical_reaction/napalm/on_reaction(var/datum/reagents/holder, var/created_volume)

@@ -179,19 +179,6 @@
 		return
 
 
-
-/datum/reagent/water/holywater
-	name = "Holy Water"
-	id = "holywater"
-	description = "An ashen-obsidian-water mix, this solution will alter certain sections of the brain's rationality."
-	color = "#E0E8EF"
-
-/datum/reagent/water/holywater/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-
-/datum/reagent/water/holywater/touch_turf(var/turf/T)
-	return FALSE
-
 /datum/reagent/diethylamine
 	name = "Diethylamine"
 	id = "diethylamine"
@@ -318,7 +305,7 @@
 /datum/reagent/gunpowder
 	name = "gunpowder"
 	id = "gunpowder"
-	description = "Try to light it on fire and see what happens"
+	description = "Try to light it on fire and see what happens."
 	taste_description = "charcoal"
 	reagent_state = SOLID
 	color = "#484753"

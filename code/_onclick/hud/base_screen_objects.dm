@@ -940,6 +940,25 @@
 	icon_state = _icon_state
 	dir = _dir
 
+////////////Screen effects/////////////////////////
+/obj/screen/noise
+	icon = 'icons/effects/static.dmi'
+	icon_state = "1 moderate"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	layer = 17
+	alpha = 127
+
+/obj/screen/scanline
+	icon = 'icons/effects/static.dmi'
+	icon_state = "scanlines"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	alpha = 50
+	layer = 17
+
+/obj/screen/fishbed
+	icon = 'icons/mob/screen1_full.dmi'
+	icon_state = "fishbed"
+	layer = 18
 
 //-----------------------Gun Mod------------------------------
 /obj/screen/gun
