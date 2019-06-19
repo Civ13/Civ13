@@ -1,8 +1,8 @@
 #define NO_WINNER "The reichstag is under German control."
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
-	title = "Khalkhyin Gol (150x200x1)"
-	lobby_icon_state = "khalkhyn"
+	title = "Khalkhyn Gol (150x200x1)"
+	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
 	squad_spawn_locations = FALSE
@@ -19,14 +19,13 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(JAPANESE = 0.6, RUSSIAN = 0.4)
 	battle_name = "battle of Khalkhyn Gol"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if capture the <b>Soviet command!</b>. The Soviets will win if they manage to capture the japanese command!.</font>"
+	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command!</b>. The Soviets will win if they manage to capture the japanese command!.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
 	songs = list(
-		"Tojo's Bizarre adventure:1" = 'sound/music/tojos_bizarre_adventure.ogg',
 		"Doki no Sakura:2" = 'sound/music/doki_no_sakura.ogg')
-	gamemode = "Siege"
+
 /obj/map_metadata/khalkhyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_ww2 == TRUE)
