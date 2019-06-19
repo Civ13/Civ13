@@ -269,6 +269,24 @@
 	health = 50
 	wall = TRUE
 	explosion_resistance = 1
+	
+/obj/covers/wood_wall/log
+	name = "log wall"
+	desc = "A log wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "log_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 4
+	layer = 3
+	health = 180
+	wall = TRUE
+	explosion_resistance = 7
+
+/obj/covers/wood_wall/log/corner
+	icon_state = "log_wall_corner"
 
 /obj/covers/stone_wall
 	name = "stone wall"
