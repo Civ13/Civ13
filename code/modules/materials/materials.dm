@@ -475,6 +475,12 @@ var/list/name_to_material
 	name = "straw"
 //	icon_base = "straw"
 
+/material/wood/log
+	name = "log"
+	integrity = 175
+	hardness = 200
+	door_icon_base = "rustic"
+
 /material/paper
 	name = "paper"
 	hardness = 25
