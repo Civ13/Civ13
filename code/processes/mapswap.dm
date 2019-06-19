@@ -10,7 +10,7 @@
 		"Imperial Age (1650-1780)" = 0,
 		"Industrial Age (1850-1895)" = 0,
 		"Early Modern Era (1896-1933)" = 0,
-		//"World War II (1934-1957)" = 0,
+		"World War II (1934-1957)" = 0,
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
 		"Civilization 13 (Nomads)" = 0,
@@ -40,7 +40,7 @@
 				"Imperial Age (1650-1780)" = 0,
 				"Industrial Age (1850-1895)" = 0,
 				"Early Modern Era (1896-1933)" = 0,
-				//"World War II (1934-1957)" = 0,
+				"World War II (1934-1957)" = 0,
 				"Cold War Era (1958-1984)" = 0,
 				"Modern Era (1985-2020)" = 0,
 			)
@@ -74,6 +74,7 @@
 	var/admin_triggered = FALSE
 	var/finished_at = -1
 	var/next_map_title = "TBD"
+	var/done = FALSE
 
 /process/mapswap/setup()
 	name = "mapswap"
@@ -85,10 +86,10 @@
 
 /process/mapswap/fire()
 	// no SCHECK here
+	done = FALSE
 	if (is_ready())
 		ready = FALSE
 		epoch = vote.voted_epoch
-
 		if (epoch == "Modern Era (1985-2020)")
 	// 2013 - TDM
 			maps = list(
@@ -99,6 +100,12 @@
 			maps = list(
 				MAP_COMPOUND = 0,
 			)
+		if (epoch == "World War II (1934-1957)")
+	// 1943 - TDM
+			maps = list(
+				MAP_REICHSTAG = 0,
+			)
+
 		if (epoch == "Early Modern Era (1896-1933)")
 	// 1903 - TDM
 			maps = list(
@@ -160,7 +167,7 @@
 
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
-
+			return
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
@@ -181,7 +188,9 @@
 	if (!maps.Find(winner))
 		winner = maps[1]
 	// there used to be messages here about success and failure but they lie so they're gone - Kachnov
-	processes.python.execute("mapswap.py", list(winner))
+	if (!done)
+		processes.python.execute("mapswap.py", list(winner))
+		done = TRUE
 
 /process/gamemode
 	var/ready = TRUE

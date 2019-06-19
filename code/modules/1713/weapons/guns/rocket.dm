@@ -91,6 +91,8 @@
 	if(rockets.len)
 		var/obj/item/ammo_casing/rocket/I = rockets[1]
 		var/obj/item/missile/M = new (src)
+		if (ishuman(src.loc))
+			M.dir = src.loc.dir
 		M.primed = 1
 		rockets -= I
 		return M
@@ -133,6 +135,47 @@
 	else
 		..()
 
+
+/obj/item/weapon/gun/launcher/rocket/panzerfaust
+	name = "Panzerfaust 60"
+	desc = "German single-use rocket."
+	icon_state = "panzerfaust"
+	item_state = "panzerfaust"
+	slot_flags = SLOT_BACK
+	force = 10
+	recoil = 2
+	fire_delay = 12
+	release_force = 12
+	throw_distance = 10
+
+/obj/item/weapon/gun/launcher/rocket/panzerfaust/New()
+	..()
+	rockets += new /obj/item/ammo_casing/rocket/panzerfaust(src)
+	update_icon()
+
+/obj/item/weapon/gun/launcher/rocket/panzerfaust/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I, /obj/item/ammo_casing/rocket))
+		user << "<span class='warning'>You can't reload a [src]!</span>"
+		return
+
+/obj/item/weapon/gun/launcher/rocket/panzerfaust/update_icon()
+	..()
+	if(rockets.len)
+		icon_state = "panzerfaust"
+	else
+		icon_state = "panzerfaust_empty"
+
+/obj/item/weapon/gun/launcher/rocket/panzerfaust/proc/unload(mob/user)
+	if(rockets.len)
+		user << "<span class='warning'>You can't unload a [src]!</span>"
+		return
+	else
+		user << "<span class='warning'>\The [src] is already used.</span>"
+		return
+
+/obj/item/weapon/gun/launcher/rocket/panzerfaust/attack_hand(mob/user)
+	..()
+
 /obj/item/ammo_casing/rocket
 	name = "RPG rocket"
 	desc = "A high explosive warhead and propeller designed to be fired from a rocket launcher."
@@ -141,6 +184,12 @@
 	caliber = "rocket"
 	w_class = 4
 	slot_flags = SLOT_BELT
+
+/obj/item/ammo_casing/rocket/panzerfaust
+	name = "panzerfaust rocket"
+	desc = "A high explosive warhead and propeller designed to be fired from a panzerfaust launcher."
+	icon_state = "panzerfaust"
+	projectile_type = /obj/item/missile/explosive/panzerfaust
 
 /obj/item/ammo_casing/rocket/pg7v
 	name = "PG-7V rocket"
@@ -177,7 +226,15 @@
 		else
 			..()
 		return
-
+/obj/item/missile/explosive/panzerfaust
+	icon_state = "panzerfaust_missile"
+	throw_impact(atom/hit_atom)
+		if(primed)
+			explosion(hit_atom, 0, 1, 2, 3)
+			qdel(src)
+		else
+			..()
+		return
 /obj/item/missile/fragmentation
 	var/num_fragments = 30
 	var/spread_range = 6
@@ -189,22 +246,20 @@
 			explosion(hit_atom,0,1,3,1)
 			var/turf/T = get_turf(hit_atom)
 			if(!T) return
-			if (!ismob(loc))
+			var/list/target_turfs = getcircle(T, spread_range)
+			var/fragments_per_projectile = round(num_fragments/target_turfs.len)
 
-				var/list/target_turfs = getcircle(T, spread_range)
-				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+			for (var/turf/TT in target_turfs)
+				var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+				P.damage = fragment_damage
+				P.pellets = fragments_per_projectile
+				P.range_step = damage_step
+				P.shot_from = name
+				P.launch_fragment(TT)
 
-				for (var/turf/TT in target_turfs)
-					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-					P.damage = fragment_damage
-					P.pellets = fragments_per_projectile
-					P.range_step = damage_step
-					P.shot_from = name
-					P.launch_fragment(TT)
-
-					// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
-					for (var/mob/living/L in T)
-						P.attack_mob(L, 0, 0)
+				// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
+				for (var/mob/living/L in T)
+					P.attack_mob(L, 0, 0)
 
 			spawn (5)
 				qdel(src)

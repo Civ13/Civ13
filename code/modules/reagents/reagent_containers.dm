@@ -108,8 +108,25 @@
 	target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been splashed with [name] by [user.name] ([user.ckey]). Reagents: [contained]</font>")
 	user.attack_log += text("\[[time_stamp()]\] <font color='red'>Used the [name] to splash [target.name] ([target.key]). Reagents: [contained]</font>")
 	msg_admin_attack("[user.name] ([user.ckey]) splashed [target.name] ([target.key]) with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+	var/washed = FALSE
+	if (ishuman(target))
+		var/mob/living/carbon/human/HT = target
+		if (HT.is_nude())
+			if (reagents.has_reagent("water", 30) && reagents.total_volume == reagents.get_reagent_amount("water"))
+				HT.hygiene = min(HT.hygiene+(reagents.get_reagent_amount("water")),HYGIENE_LEVEL_CLEAN)
+				washed = TRUE
+			else
+				var/dirtyness = (reagents.total_volume - reagents.get_reagent_amount("water")) / reagents.total_volume
+				HT.hygiene = max(0, HT.hygiene-(dirtyness*100))
+	if (washed)
+		if (target == user)
+			user.visible_message("<span class='notice'>[user] washes himself with \the [src]</span>", "<span class = 'notice'>You wash yourself with \the [src].</span>")
+		else
+			user.visible_message("<span class='notice'>[user] washes [target] with \the [src]</span>", "<span class = 'notice'>You wash [target] with \the [src].</span>")
 
-	user.visible_message("<span class='danger'>[target] has been splashed with something by [user]!</span>", "<span class = 'notice'>You splash the solution onto [target].</span>")
+	else
+		user.visible_message("<span class='danger'>[target] has been splashed with something by [user]!</span>", "<span class = 'notice'>You splash the solution onto [target].</span>")
+
 	reagents.splash(target, reagents.total_volume)
 	return TRUE
 

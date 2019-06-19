@@ -13,12 +13,7 @@
 110-120 Industrial Age (1870-1900)
 120-130 Early Modern Age (1900-1910)
 130-140 Interwar period (1910-1950)
-140-150 Space age (1950-Present
-
-///the next time lines are of the SS13 universe\\\
-
-150-170 Earth uniteds ( 1950-2050)
-170-230 Nanotrason hase taken over (2050-the SS13 time line 2560
+140-150 Space age (1950-Present)
 ///////////////////////////////////////////////////////
 */
 
@@ -532,7 +527,10 @@
 			new/datum/stack_recipe("light tube", /obj/item/lightbulb/tube, 1, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("lightbulb", /obj/item/lightbulb, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age >= 4)
-		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("vial", /obj/item/weapon/reagent_containers/glass/beaker/vial, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("beaker", /obj/item/weapon/reagent_containers/glass/beaker, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("large beaker", /obj/item/weapon/reagent_containers/glass/beaker/large, 3, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()

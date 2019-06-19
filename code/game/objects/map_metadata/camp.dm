@@ -17,6 +17,7 @@
 		list(FRENCH) = /area/caribbean/island
 		)
 	age = "1013"
+	ordinal_age = 2
 	faction_distribution_coeffs = list(BRITISH = 0.5, FRENCH = 0.5)
 	songs = list(
 		"Crusaders:1" = 'sound/music/crusaders.ogg')

@@ -453,7 +453,6 @@ var/vietnamese_forceEnabled = FALSE
 			if (map.facl[relf] > relpf_max)
 				relpf = "[curr]"
 				relpf_max = map.facl[relf]
-//			relpf_am = 0
 
 		if (relpf_max > 0 && relpf != "")
 			msg_factions = "<b>Largest Faction:</b> [relpf]"

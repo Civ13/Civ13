@@ -65,9 +65,10 @@
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
-	if (map.chad_mode)
-		melee_damage_lower *= 1.5
-		melee_damage_upper *= 1.5
+	if (map)
+		if (map.chad_mode)
+			melee_damage_lower *= 1.5
+			melee_damage_upper *= 1.5
 /mob/living/simple_animal/Login()
 	if (src && client)
 		client.screen = null

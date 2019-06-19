@@ -145,6 +145,8 @@
 			var/ind = addictions[ad]
 			process_addictions(ad,ind)
 			addictions[ad] -= 0.05
+		if (addictions[ad] < 0)
+			addictions[ad] = 0
 
 // disease stuff
 	if (inducedSSD && disease && disease_progression <= 15)
@@ -390,6 +392,10 @@
 		handle_shock()
 
 		handle_pain()
+		if (map.civilizations)
+			handle_hygiene()
+
+		handle_mood()
 
 		handle_ptsd()
 
@@ -1355,9 +1361,15 @@
 					else
 						holder2.icon_state = "fr_basic"
 				if (SPANISH)
-					holder2.icon_state = "sp_basic"
+					if (map.ordinal_age <= 3)
+						holder2.icon_state = "sp_basic"
+					else
+						holder2.icon_state = "spn_basic"
 				if (PORTUGUESE)
-					holder2.icon_state = "pt_basic"
+					if (map.ordinal_age <= 4)
+						holder2.icon_state = "pt_basic"
+					else
+						holder2.icon_state = "pt2_basic"
 				if (INDIANS)
 					holder2.icon_state = "ind_basic"
 				if (DUTCH)
@@ -1376,13 +1388,17 @@
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
-					else
+					else if (map.ordinal_age == 6 || map.ordinal_age == 7)
 						holder2.icon_state = "sov_basic"
+					else
+						holder2.icon_state = "ru_basic"
 				if (GERMAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ger_basic"
-					else
+					else if (map.ordinal_age == 6)
 						holder2.icon_state = "ger2_basic"
+					else
+						holder2.icon_state = "ger3_basic"
 				if (AMERICAN)
 					holder2.icon_state = "us_basic"
 				if (VIETNAMESE)

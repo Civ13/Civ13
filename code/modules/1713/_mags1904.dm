@@ -195,11 +195,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
-	var/slot = "decor"
-	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
-	var/image/inv_overlay = null	//overlay used when attached to clothing.
-	var/image/mob_overlay = null
-	var/overlay_state = null
 
 /obj/item/ammo_magazine/mg08
 	name = "MG08 ammo belt"
@@ -211,11 +206,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
-	var/slot = "decor"
-	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
-	var/image/inv_overlay = null	//overlay used when attached to clothing.
-	var/image/mob_overlay = null
-	var/overlay_state = null
 
 /obj/item/ammo_magazine/vickers
 	name = "Vickers ammo belt"
@@ -227,11 +217,6 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a303/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
-	var/slot = "decor"
-	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
-	var/image/inv_overlay = null	//overlay used when attached to clothing.
-	var/image/mob_overlay = null
-	var/overlay_state = null
 
 /obj/item/ammo_magazine/hotchkiss
 	name = "Hotchkiss ammo belt"
@@ -243,11 +228,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
-	var/slot = "decor"
-	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
-	var/image/inv_overlay = null	//overlay used when attached to clothing.
-	var/image/mob_overlay = null
-	var/overlay_state = null
+
 
 /obj/item/ammo_magazine/type3
 	name = "Type 3 ammo belt"
@@ -259,11 +240,17 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
-	var/slot = "decor"
-	var/obj/item/clothing/under/has_suit = null		//the suit the tie may be attached to
-	var/image/inv_overlay = null	//overlay used when attached to clothing.
-	var/image/mob_overlay = null
-	var/overlay_state = null
+
+/obj/item/ammo_magazine/mg34belt
+	name = "MG 34 ammo belt"
+	icon_state = "maximbelt"
+	mag_type = MAGAZINE
+	caliber = "a792x57_weak"
+	w_class = 4
+	matter = list(DEFAULT_WALL_MATERIAL = 4500)
+	ammo_type = /obj/item/ammo_casing/a792x57/weak
+	max_ammo = 250
+	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/c8mmnambu
 	name = "Nambu magazine"
@@ -285,6 +272,15 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	weight = 0.02
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/walther
+	name = "Walther magazine"
+	icon_state = "waltherp"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 8
+	weight = 0.02
+	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/borchardt
 	name = "Borchardt magazine"

@@ -256,6 +256,12 @@
 	..()
 	new/obj/item/ammo_magazine/m249(src)
 
+/obj/item/weapon/storage/belt/largepouches/sovietmg
+/obj/item/weapon/storage/belt/largepouches/sovietmg/New()
+	..()
+	new/obj/item/ammo_magazine/dp(src)
+	new/obj/item/ammo_magazine/dp(src)
+
 /obj/item/weapon/storage/belt/smallpouches/vc_officer
 /obj/item/weapon/storage/belt/smallpouches/vc_officer/New()
 	..()
@@ -512,7 +518,7 @@
 
 /obj/item/clothing/accessory/storage/webbing/khaki_webbing
 	name = "khaki chest webbing"
-	desc = "a green chest-level webbing, with three medium sized pouches."
+	desc = "a khaki chest-level webbing, with three medium sized pouches."
 	slots = 3
 	icon_state = "khaki_webbing"
 	item_state = "khaki_webbing"

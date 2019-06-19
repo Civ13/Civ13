@@ -15,6 +15,7 @@
 		list(PIRATES) = /area/caribbean/british/ship, //it isnt in the map so nobody wins by capture
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(PIRATES = 1)
 	songs = list(
 		"Fortnite Default Dance:1" = 'sound/music/memes.ogg')

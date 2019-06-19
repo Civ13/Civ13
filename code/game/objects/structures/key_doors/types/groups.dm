@@ -290,6 +290,19 @@
 	unique_door_name = "Portuguese locked"
 #undef PT_CODE
 
+#define RU_CODE 995 * 5
+/datum/keyslot/russian
+	code = RU_CODE
+
+/obj/item/weapon/key/russian
+	code = RU_CODE
+	name = "Russian key"
+
+/obj/structure/simple_door/key_door/russian
+	keyslot_type = /datum/keyslot/russian
+	unique_door_name = "Russian locked"
+#undef RU_CODE
+
 #define NL_CODE 995 * 6
 /datum/keyslot/dutch
 	code = NL_CODE
@@ -342,7 +355,7 @@
 	unique_door_name = "Insurgent locked"
 #undef INS_CODE
 
-#define US_CODE 995 * 9
+#define US_CODE 995 * 10
 /datum/keyslot/american
 	code = US_CODE
 

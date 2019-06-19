@@ -114,11 +114,18 @@
 					force_update_limbs()
 					update_body()
 				if ("desert")
-					s_tone = -90
-					new_hair = pick("Dark Brown","Black")
-					new_eyes = pick("Dark Brown", "Black")
-					force_update_limbs()
-					update_body()
+					if (map.ID == MAP_NOMADS_PANGEA)
+						s_tone = -35
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
+					else
+						s_tone = -90
+						new_hair = pick("Dark Brown","Black")
+						new_eyes = pick("Dark Brown", "Black")
+						force_update_limbs()
+						update_body()
 				if ("jungle")
 					if (map.ID == MAP_NOMADS_PANGEA)
 						s_tone = -35
@@ -133,11 +140,18 @@
 						force_update_limbs()
 						update_body()
 				if ("savanna")
-					s_tone = -165
-					new_hair = "Black"
-					new_eyes = "Black"
-					force_update_limbs()
-					update_body()
+					if (map.ID == MAP_NOMADS_PANGEA)
+						s_tone = -35
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
+					else
+						s_tone = -165
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
 			var/hex_hair = hair_colors[new_hair]
 			r_hair = hex2num(copytext(hex_hair, 2, 4))
 			g_hair = hex2num(copytext(hex_hair, 4, 6))
@@ -615,9 +629,10 @@ var/list/rank_prefix = list(\
 				var/turf/location = loc
 				if (istype(location, /turf))
 					location.add_vomit_floor(src, TRUE)
-
+				adjust_hygiene(-25)
 				nutrition -= 40
 				adjustToxLoss(-3)
+				mood -= 5
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 

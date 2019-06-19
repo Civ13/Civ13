@@ -38,7 +38,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	desc = "A flexible, superconducting insulated cable for power transfer."
 	icon = 'icons/obj/machines/cables.dmi'
 	icon_state = "0-1"
-	layer = MOB_LAYER - 0.1
+	layer = 1.95
 	anchored = TRUE
 	var/d1 = 0   // cable direction 1 (see above)
 	var/d2 = 1   // cable direction 2 (see above)
@@ -53,7 +53,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/usesound = 'sound/items/deconstruct.ogg'
 	var/powerflow = 0 //maximum powerflow in the network (total maxpower of all engines connected)
 	var/currentflow = 0 //corrent power used by all the nodes in the network (cant be > powerflow)
-	var/tilepos = "over"
+	var/tilepos = "under"
 	var/tiledir = "horizontal"
 
 /obj/structure/cable/verb/hiding()

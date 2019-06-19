@@ -175,6 +175,8 @@
 //Updating pixelshift, position and direction
 //Gets called on process, when the grab gets upgraded or the assailant moves
 /obj/item/weapon/grab/proc/adjust_position()
+	if (!affecting)
+		return
 	if (affecting.buckled)
 		animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
 		return
