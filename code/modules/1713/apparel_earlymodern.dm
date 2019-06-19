@@ -298,6 +298,35 @@
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)
 
+/obj/item/weapon/storage/belt/jap/ww2soldier
+/obj/item/weapon/storage/belt/jap/ww2soldier/New()
+	..()
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+
+/obj/item/weapon/storage/belt/jap/ww2soldier100
+/obj/item/weapon/storage/belt/jap/ww2soldier100/New()
+	..()
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+
+/obj/item/weapon/storage/belt/jap/ww2soldier99
+/obj/item/weapon/storage/belt/jap/ww2soldier99/New()
+	..()
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //////////////CIVILIAN STUFF/////////////////////////////////////////////////////

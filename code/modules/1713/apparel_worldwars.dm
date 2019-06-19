@@ -116,6 +116,16 @@
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
 
+/obj/item/clothing/head/helmet/ww2/japhelm_med
+	name = "japanese medic helmet"
+	desc = "A typical rounded steel helmet, this one bearing the marks of a medic."
+	icon_state = "japhelm_medic"
+	item_state = "japhelm_medic"
+	worn_state = "japhelm_medic"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 43, arrow = 33, gun = 10, energy = 15, bomb = 44, bio = 20, rad = FALSE)
+
 /obj/item/clothing/head/helmet/ww2/japhelm_tanker
 	name = "japanese tanker helmet"
 	desc = "A typical rounded steel helmet, this one more made of meshes and hard leather."

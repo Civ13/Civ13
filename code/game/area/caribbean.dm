@@ -528,6 +528,10 @@
 	location = AREA_INSIDE
 	icon_state = "red2"
 
+/area/caribbean/japanese/land/inside/command
+	location = AREA_INSIDE
+	icon_state = "red2"
+
 
 /area/caribbean/japanese/land/outside
 	icon_state = "red3"
@@ -542,6 +546,10 @@
 
 
 /area/caribbean/russian/land/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+/area/caribbean/russian/land/inside/command
 	location = AREA_INSIDE
 	icon_state = "red2"
 

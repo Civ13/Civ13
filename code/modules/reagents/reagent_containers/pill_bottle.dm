@@ -69,7 +69,7 @@
 
 /obj/item/weapon/storage/pill_bottle/pervitin
 	name = "bottle of Pervitin pills"
-	desc = "Contains pills usof methamphetamine."
+	desc = "Contains pills of methamphetamine."
 
 	New()
 		..()
