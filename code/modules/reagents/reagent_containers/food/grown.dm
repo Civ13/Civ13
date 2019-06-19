@@ -101,7 +101,7 @@
 	icon_state = "rice"
 	color = "#dcdcdc"
 	nutriment_desc = list("rice" = TRUE)
-	decay = 65*600
+	decay = 0
 	satisfaction = -2
 /obj/item/weapon/reagent_containers/food/snacks/grown/wheat
 	name = "wheat"

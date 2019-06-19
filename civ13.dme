@@ -264,6 +264,7 @@
 #include "code\game\objects\map_metadata\hostages.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\island.dm"
+#include "code\game\objects\map_metadata\kahlkin_gol.dm"
 #include "code\game\objects\map_metadata\karak.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
 #include "code\game\objects\map_metadata\little_creek_tdm.dm"
@@ -838,5 +839,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\reichstag.dmm"
+#include "maps\1943\khalkhyn_gol.dmm"
 // END_INCLUDE

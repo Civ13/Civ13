@@ -208,6 +208,7 @@ Current Defines (_defines/attachment.dm)
 	name = "iron sights"
 	attachment_type = ATTACH_IRONSIGHTS
 	zoom_amt = ZOOM_CONSTANT
+
 /obj/item/weapon/attachment/scope/adjustable/sniper_scope
 	name = "sniper scope"
 	icon_state = "kar_scope"
