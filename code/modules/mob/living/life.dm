@@ -15,7 +15,7 @@
 			near_rainy_area = TRUE
 			rdist = 0
 		else
-			for (var/turf/T in view(world.view, src))
+			for (var/turf/T in view(7, src))
 				var/area/T_area = get_area(T)
 				if (T_area.weather == WEATHER_RAIN)
 					near_rainy_area = TRUE

@@ -520,7 +520,7 @@ var/list/admin_verbs_host = list(
 			explosion(epicenter, devastation_range, heavy_impact_range, light_impact_range, flash_range)
 	message_admins("[key] creating an admin explosion at [epicenter.loc].")
 
-/client/proc/make_sound(var/obj/O in range(world.view)) // -- TLE
+/client/proc/make_sound(var/obj/O in range(7)) // -- TLE
 	set category = "Special"
 	set name = "Make Sound"
 	set desc = "Display a message to everyone who can hear the target"

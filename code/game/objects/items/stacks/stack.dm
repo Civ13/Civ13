@@ -448,7 +448,7 @@
 		else
 			build_override_coins_gold.name = "gold [customname]"
 			build_override_coins_gold.desc = "gold coins, minted by [H]."
-			
+
 	if (findtext(recipe.title, "gravestone"))
 		var/customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
 		if (customname == "" || customname == null)
@@ -676,6 +676,26 @@
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+
+		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
+			var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				O.color = addtext("#",input)
+				return
 		if (build_override_firelance.desc != "A simple firelance.")
 			build_override_firelance.loc = get_turf(O)
 			build_override_firelance.set_dir(user.dir)
@@ -747,7 +767,7 @@
 			newskull.add_fingerprint(user)
 			qdel(O)
 			return
-			
+
 		if (build_override_gravestone.desc != "A gravestone.")
 			build_override_gravestone.loc = get_turf(O)
 			build_override_gravestone.set_dir(user.dir)

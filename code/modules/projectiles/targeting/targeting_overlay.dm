@@ -109,7 +109,7 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 
 	var/cancel_aim = TRUE
 
-	var/gun_view = world.view
+	var/gun_view = 7
 	for (var/obj/item/weapon/gun/G in owner.contents)
 		for (var/obj/item/weapon/attachment/scope/S in G.contents)
 			if (S.zoomed)

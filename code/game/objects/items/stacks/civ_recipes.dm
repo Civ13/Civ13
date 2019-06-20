@@ -272,10 +272,13 @@
 
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 			new/datum/stack_recipe("door", /obj/structure/simple_door/key_door/anyone/wood, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("rustic door", /obj/structure/simple_door/key_door/anyone/rustic, 4, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("floor tile", /obj/covers/wood, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("wood stairs", /obj/covers/wood/stairs, 2, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("window", /obj/structure/window_frame, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("soft wood wall", /obj/covers/wood_wall, 8, _time = 170, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("log wall", /obj/covers/wood_wall/log, 7, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("log wall corner", /obj/covers/wood_wall/log/corner, 7, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -531,6 +534,7 @@
 		recipes += new/datum/stack_recipe("vial", /obj/item/weapon/reagent_containers/glass/beaker/vial, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("beaker", /obj/item/weapon/reagent_containers/glass/beaker, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("large beaker", /obj/item/weapon/reagent_containers/glass/beaker/large, 3, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("laboratory distiller", /obj/structure/lab_distillery, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -541,6 +545,8 @@
 	recipes += new/datum/stack_recipe("scientific rock slate",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe("road", /obj/covers/road, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone stairs", /obj/covers/cobblestone/stairs, 2, _time = 45, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone altar", /obj/structure/altar/stone, 15, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 28)
@@ -886,7 +892,7 @@
 	if (current_res[1] >= 18 && current_res[3]>= 26) // Same level that bronze surgical tools can be made.
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("cigarette pack", /obj/item/weapon/storage/fancy/cigarettes, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE))
-
+	recipes += list(new/datum/stack_recipe("cloth curtain", /obj/structure/curtain, 1, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE))
 	//Carpets - To be expanded upon with borders and such later.
 	if (map.ordinal_age >= 2)
 		recipes += new/datum/stack_recipe_list("carpeting", list(

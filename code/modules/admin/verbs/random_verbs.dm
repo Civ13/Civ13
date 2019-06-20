@@ -323,7 +323,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Create Command Report"
 	return FALSE
 
-/client/proc/cmd_admin_delete(atom/O as obj|mob|turf in range(world.view))
+/client/proc/cmd_admin_delete(atom/O as obj|mob|turf in range(7))
 	set category = "Admin"
 	set name = "Delete"
 
@@ -337,7 +337,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 
 		qdel(O)
 
-/client/proc/cmd_admin_get(atom/movable/O as obj|mob in range(world.view))
+/client/proc/cmd_admin_get(atom/movable/O as obj|mob in range(7))
 	set category = "Admin"
 	set name = "Get"
 
@@ -364,7 +364,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 			src << "[job.title]: [job.total_positions]"
 
 
-/client/proc/cmd_admin_explosion(atom/O as obj|mob|turf in range(world.view))
+/client/proc/cmd_admin_explosion(atom/O as obj|mob|turf in range(7))
 	set category = "Special"
 	set name = "Explosion"
 

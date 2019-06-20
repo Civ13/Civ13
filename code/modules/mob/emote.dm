@@ -41,7 +41,7 @@
 				M.show_message(message, m_type)
 
 		if (m_type & TRUE)
-			var/list/see = get_mobs_or_objects_in_view(world.view,src) | viewers(get_turf(src), null)
+			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(get_turf(src), null)
 			for (var/I in see)
 				if (isobj(I))
 					spawn(0)
@@ -53,7 +53,7 @@
 					M.show_message(message, TRUE)
 
 		else if (m_type & 2)
-			var/list/hear = get_mobs_or_objects_in_view(world.view,src)
+			var/list/hear = get_mobs_or_objects_in_view(7,src)
 			for (var/I in hear)
 				if (isobj(I))
 					spawn(0)
