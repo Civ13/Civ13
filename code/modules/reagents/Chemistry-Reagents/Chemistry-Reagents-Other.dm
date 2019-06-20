@@ -141,43 +141,6 @@
 	M.sleeping = FALSE
 	M.jitteriness = FALSE
 
-/datum/reagent/gold
-	name = "Gold"
-	id = "gold"
-	description = "Gold is a dense, soft, shiny metal and the most malleable and ductile metal known."
-	taste_description = "expensive metal"
-	reagent_state = SOLID
-	color = "#F7C430"
-
-/datum/reagent/silver
-	name = "Silver"
-	id = "silver"
-	description = "A soft, white, lustrous transition metal, it has the highest electrical conductivity of any element and the highest thermal conductivity of any metal."
-	taste_description = "expensive yet reasonable metal"
-	reagent_state = SOLID
-	color = "#D0D0D0"
-
-/datum/reagent/uranium
-	name ="Uranium"
-	id = "uranium"
-	description = "A silvery-white metallic chemical element in the actinide series, weakly radioactive."
-	taste_description = "the inside of a reactor"
-	reagent_state = SOLID
-	color = "#B8B8C0"
-
-/datum/reagent/uranium/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
-	affect_ingest(M, alien, removed)
-
-/datum/reagent/uranium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.apply_effect(5 * removed, IRRADIATE, FALSE)
-
-/datum/reagent/uranium/touch_turf(var/turf/T)
-	if (volume >= 3)
-		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
-		if (!glow)
-			new /obj/effect/decal/cleanable/greenglow(T)
-		return
-
 
 /datum/reagent/diethylamine
 	name = "Diethylamine"

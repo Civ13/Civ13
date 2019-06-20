@@ -31,6 +31,9 @@
 	var/color = "#000000"
 	var/color_weight = TRUE
 	var/alpha = 255
+	var/atomic_nr = 0 //0 means its not a core element
+	var/chemical_symbol = "" //"" means its not a core element
+	var/radioactive = FALSE
 
 /datum/reagent/proc/remove_self(var/amount) // Shortcut
 	holder.remove_reagent(id, amount)

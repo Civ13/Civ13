@@ -103,7 +103,7 @@
 	name = "Cholera"
 	id = "cholera"
 	description = "A toxic bacteria."
-	taste_mult = 0.1
+	taste_mult = FALSE
 	reagent_state = LIQUID
 	color = "#CF3600"
 	strength = 0

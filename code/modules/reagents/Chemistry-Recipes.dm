@@ -232,6 +232,20 @@
 	required_reagents = list("sulphur" = 1, "water" = 5)
 	result_amount = 5
 
+/datum/chemical_reaction/ammonia
+	name = "Ammonia"
+	id = "ammonia"
+	result = "ammonia"
+	required_reagents = list("nitrogen" = 1, "hydrogen" = 3)
+	result_amount = 1
+
+/datum/chemical_reaction/acetone
+	name = "Acetone"
+	id = "acetone"
+	result = "acetone"
+	required_reagents = list("carbon" = 1, "ethanol" = 2)
+	result_amount = 1
+
 /datum/chemical_reaction/salt
 	name = "Table Salt"
 	id = "sodiumchloride"
