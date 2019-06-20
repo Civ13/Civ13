@@ -104,7 +104,12 @@
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
 	if(!scanning)
 		return
-	user << "<span class='notice'>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv</b></span>"
+	if (radiation_count >= 1000)
+		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count/1000] Sv/s</b></span>"
+	else if (radiation_count <= 0.1)
+		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
+	else
+		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
 	return
 
 /obj/item/weapon/geiger_counter/attack_self(mob/user)
@@ -115,7 +120,7 @@
 /obj/item/weapon/geiger_counter/attack(mob/living/M, mob/user)
 	if(user.a_intent == I_HELP)
 		user.visible_message("<span class='notice'>[user] scans [M] with [src].</span>", "<span class='notice'>You scan [M]'s radiation levels with [src]...</span>")
-		user << "<span class='notice'>\icon[getFlatIcon(src)] Reading: <b>[M.radiation/100] Gy</b></span>"
+		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[M.radiation/100] Gy</b></span>"
 		return
 	..()
 
@@ -128,35 +133,24 @@
 	update_icon()
 	usr << "<span class='notice'>You switch [scanning ? "on" : "off"] \the [src].</span>"
 	if (scanning)
-		processing_objects |= src
-	else
-		processing_objects -= src
-	return
+		processing()
 
 
-/obj/item/weapon/geiger_counter/Del()
-	processing_objects -= src
-	..()
-
-/obj/item/weapon/geiger_counter/process()
-	..()
+/obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
-		var/thesound = 'sound/machines/geiger/low1.ogg'
 		switch(radiation_count)
-			if(-INFINITY to RAD_LEVEL_NORMAL)
-				return
 			if(RAD_LEVEL_NORMAL + 1 to RAD_LEVEL_MODERATE)
-				thesound = pick('sound/machines/geiger/low1.ogg','sound/machines/geiger/low2.ogg','sound/machines/geiger/low3.ogg','sound/machines/geiger/low4.ogg')
-				playsound(loc, thesound)
+				playsound(get_turf(src), pick('sound/machines/geiger/low1.ogg','sound/machines/geiger/low2.ogg','sound/machines/geiger/low3.ogg','sound/machines/geiger/low4.ogg'),75)
 			if(RAD_LEVEL_MODERATE + 1 to RAD_LEVEL_HIGH)
-				thesound = pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg')
-				playsound(loc, thesound)
+				playsound(get_turf(src), pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg'),75)
 			if(RAD_LEVEL_HIGH + 1 to RAD_LEVEL_VERY_HIGH)
-				thesound = pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg')
-				playsound(loc, thesound)
+				playsound(get_turf(src), pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg'),75)
 			if(RAD_LEVEL_VERY_HIGH + 1 to RAD_LEVEL_CRITICAL)
-				thesound = pick('sound/machines/geiger/high1.ogg','sound/machines/geiger/high2.ogg','sound/machines/geiger/high3.ogg','sound/machines/geiger/high4.ogg')
-				playsound(loc, thesound)
+				playsound(get_turf(src), pick('sound/machines/geiger/high1.ogg','sound/machines/geiger/high2.ogg','sound/machines/geiger/high3.ogg','sound/machines/geiger/high4.ogg'),75)
 			if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
-				thesound = pick('sound/machines/geiger/ext1.ogg','sound/machines/geiger/ext2.ogg','sound/machines/geiger/ext3.ogg','sound/machines/geiger/ext4.ogg')
-				playsound(loc, thesound)
+				playsound(get_turf(src), pick('sound/machines/geiger/ext1.ogg','sound/machines/geiger/ext2.ogg','sound/machines/geiger/ext3.ogg','sound/machines/geiger/ext4.ogg'),75)
+		update_icon()
+		spawn(10)
+			processing()
+	else
+		return
