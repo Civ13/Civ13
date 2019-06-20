@@ -873,11 +873,10 @@ var/global/list/global_colour_matrix = null
 		return
 
 	var/turf/epicenter = mob.loc
-	var/heavy_range = WWinput(src, "Heavy impact range (in tiles):", "Radiation Emission", 1, "num")
-	var/light_range = WWinput(src, "Light impact range (in tiles):", "Radiation Emission", 1, "num")
+	var/range = WWinput(src, "Range (in tiles):", "Radiation Emission", 1, "num")
 	var/severity = WWinput(src, "Severity (in mSv per second):", "Radiation Emission", 1, "num")
 	var/duration = WWinput(src, "Duration (in seconds):", "Radiation Emission", 1, "num")
 
-	radiation_pulse(epicenter, heavy_range, light_range, severity, duration, 0)
-	message_admins("[key] creating a radiation emission at [epicenter.loc].")
-	log_game("Radiation emission with size ([heavy_range], [light_range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration]")
+	radiation_pulse(epicenter, range, severity, duration, 0)
+	message_admins("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].")
+	log_game("[key] created a radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration].")

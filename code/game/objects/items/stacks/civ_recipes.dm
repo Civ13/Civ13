@@ -18,26 +18,50 @@
 */
 
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
-	var/list/current_res = list(0,0,0)
-	if (civ == "Nomad")
-		current_res = map.custom_civs[user.civilization]
+	if (map.civilizations)
+		var/list/current_res = list(0,0,0)
+		if (civ == "Nomad" && user)
+			current_res = map.custom_civs[user.civilization]
+		else
+			if (civ == "Civilization A Citizen")
+				current_res = map.civa_research
+			else if (civ == "Civilization B Citizen")
+				current_res = map.civb_research
+			else if (civ == "Civilization C Citizen")
+				current_res = map.civc_research
+			else if (civ == "Civilization D Citizen")
+				current_res = map.civd_research
+			else if (civ == "Civilization E Citizen")
+				current_res = map.cive_research
+			else if (civ == "Civilization F Citizen")
+				current_res = map.civf_research
+		generate_recipes_civs(current_res)
 	else
-		if (civ == "Civilization A Citizen")
-			current_res = map.civa_research
-		else if (civ == "Civilization B Citizen")
-			current_res = map.civb_research
-		else if (civ == "Civilization C Citizen")
-			current_res = map.civc_research
-		else if (civ == "Civilization D Citizen")
-			current_res = map.civd_research
-		else if (civ == "Civilization E Citizen")
-			current_res = map.cive_research
-		else if (civ == "Civilization F Citizen")
-			current_res = map.civf_research
-	generate_recipes_civs(current_res)
+		if (!recipes)
+			var/list/current_res = list(0,0,0)
+			switch (map.ordinal_age)
+				if (0)
+					current_res = list(0,0,0)
+				if (1)
+					current_res = list(35,35,35)
+				if (2)
+					current_res = list(50,50,50)
+				if (3)
+					current_res = list(90,90,90)
+				if (4)
+					current_res = list(104,104,104)
+				if (5)
+					current_res = list(135,135,135)
+				if (6)
+					current_res = list(152,152,152)
+				if (7)
+					current_res = list(185,185,185)
+				if (8)
+					current_res = list(210,210,210)
+			generate_recipes_civs(current_res)
 	return recipes
 
-/material/proc/generate_recipes_civs(var/current_res = "none")
+/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0))
 
 	recipes = list()
 	if (hardness>=40 && current_res[1] > 8)
@@ -1083,6 +1107,8 @@
 	recipes += new/datum/stack_recipe("telephone", /obj/structure/telephone, 5, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("radio transmitter", /obj/structure/radio/transmitter, 12, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("radio receiver", /obj/structure/radio, 3, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("geiger counter", /obj/item/weapon/geiger_counter, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
+
 //	recipes += new/datum/stack_recipe("two-way radio", /obj/structure/radio/transmitter_receiver, 10, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/woolcloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
