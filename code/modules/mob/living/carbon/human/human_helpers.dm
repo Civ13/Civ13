@@ -132,3 +132,13 @@
 		spawn(600)
 			sleep_update()
 			return
+
+/mob/living/carbon/human/handle_mutations_and_radiation()
+	if(radiation)
+		radiation -= 0.05
+		switch(radiation)
+			if(100 to INFINITY)
+				adjustFireLoss(radiation*0.002)
+				updatehealth()
+
+		radiation = Clamp(radiation, 0, 750)

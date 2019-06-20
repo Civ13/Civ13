@@ -405,3 +405,62 @@
 	..()
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 250)
+
+
+/datum/reagent/potass_iodide
+	name = "Potassium Iodide"
+	id = "potass_iodide"
+	description = "Efficiently restores low radiation damage."
+	reagent_state = LIQUID
+	color = "#C8A5DC"
+	metabolism = 0.2
+
+/datum/reagent/potass_iodide/on_mob_life(mob/living/M)
+	if(M.radiation > 0)
+		M.radiation -= 6
+	if(M.radiation < 0)
+		M.radiation = 0
+	..()
+	return
+
+/datum/reagent/pen_acid
+	name = "Pentetic Acid"
+	id = "pen_acid"
+	description = "Reduces massive amounts of radiation and toxin damage while purging other chemicals from the body. Has a chance of dealing brute damage."
+	reagent_state = LIQUID
+	color = "#C8A5DC"
+	metabolism = 0.4
+
+/datum/reagent/pen_acid/on_mob_life(mob/living/M)
+	if(M.radiation > 0)
+		M.radiation -= 12
+	M.adjustToxLoss(-2*REM)
+	if(M.radiation < 0)
+		M.radiation = 0
+	for(var/datum/reagent/R in M.reagents.reagent_list)
+		if(R != src)
+			M.reagents.remove_reagent(R.id,2)
+	..()
+	return
+
+/datum/reagent/sal_acid
+	name = "Salicyclic Acid"
+	id = "sal_acid"
+	description = "Stimulates the healing of severe bruises. Extremely rapidly heals severe bruising and slowly heals minor ones. Overdose will worsen existing bruising."
+	reagent_state = LIQUID
+	color = "#C8A5DC"
+	metabolism = 0.5
+	overdose = 25
+
+/datum/reagent/sal_acid/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if(M.getBruteLoss() > 50)
+		M.adjustBruteLoss(-4*REM) //Twice as effective as styptic powder for severe bruising
+	else
+		M.adjustBruteLoss(-0.5*REM) //But only a quarter as effective for more minor ones
+	..()
+	return
+/datum/reagent/sal_acid/overdose(mob/living/M)
+	if(M.getBruteLoss()) //It only makes existing bruises worse
+		M.adjustBruteLoss(4.5*REM) // it's going to be healing either 4 or 0.5
+	..()
+	return

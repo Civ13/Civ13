@@ -541,9 +541,12 @@
     description = " Iodine is a dark grey or purple solid. It can sublimate into a purple-pink gas that has an irritating odor. The solid iodine is a dark, almost black, grey or purple color."
     taste_description = "raw fish"
     reagent_state = SOLID
-    color = "#af9600"
+    color = "#AF9600"
     atomic_nr = 53
     chemical_symbol = "I"
+
+/datum/reagent/iodine/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
+	M.apply_effect(max(M.radiation - 2 * removed, 0), IRRADIATE, blocked = 0)
 
 /datum/reagent/xenon
 	name = "Xenon"
@@ -915,7 +918,7 @@
 	M.apply_effect(10 * removed, IRRADIATE, blocked = 0) // Radium may increase your chances to cure a disease
 
 /datum/reagent/radium/touch_turf(var/turf/T)
-	if(volume >= 3)
+	if(volume >= 5)
 		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
 		if(!glow)
 			new /obj/effect/decal/cleanable/greenglow(T)
@@ -972,7 +975,7 @@
 	M.apply_effect(5 * removed, IRRADIATE, blocked = 0)
 
 /datum/reagent/uranium/touch_turf(var/turf/T)
-	if(volume >= 3)
+	if(volume >= 10)
 		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
 		if(!glow)
 			new /obj/effect/decal/cleanable/greenglow(T)
@@ -999,6 +1002,19 @@
 	atomic_nr = 94
 	chemical_symbol = "Pu"
 	radioactive = TRUE
+
+/datum/reagent/plutonium/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+	affect_ingest(M, alien, removed)
+
+/datum/reagent/plutonium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.apply_effect(15 * removed, IRRADIATE, blocked = 0)
+
+/datum/reagent/plutonium/touch_turf(var/turf/T)
+	if(volume >= 3)
+		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
+		if(!glow)
+			new /obj/effect/decal/cleanable/greenglow(T)
+		return
 
 /datum/reagent/americium
 	name = "Americium"

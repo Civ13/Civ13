@@ -74,6 +74,8 @@
 	M.water += removed * 40
 	M.addictions["alcohol"] += 0.02
 
+	M.apply_effect(max(M.radiation - 1 * removed, 0), IRRADIATE, blocked = 0)
+
 	M.add_chemical_effect(CE_ALCOHOL, TRUE)
 
 	if (dose * strength_mod >= strength) // Early warning
