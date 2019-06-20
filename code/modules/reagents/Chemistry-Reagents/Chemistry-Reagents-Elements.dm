@@ -998,7 +998,7 @@
 	color = "#ff6bd9"
 	atomic_nr = 94
 	chemical_symbol = "Pu"
-    radioactive = TRUE
+	radioactive = TRUE
 
 /datum/reagent/americium
 	name = "Americium"
