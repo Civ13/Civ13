@@ -2,7 +2,6 @@
 #define LIQUID 2
 #define GAS 3
 
-#define chemical_dispenser_ENERGY_COST	0.1	//How many energy points do we use per unit of chemical?
 #define BOTTLE_SPRITES list("bottle-1", "bottle-2", "bottle-3", "bottle-4") //list of available bottle sprites
 #define REAGENTS_PER_SHEET 20
 
@@ -17,16 +16,11 @@
 	anchored = TRUE
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "dispenser"
-//	use_power = FALSE
-//	idle_power_usage = 40
-	var/ui_title = "Chem Dispenser 5000"
-	var/energy = 100
-	var/max_energy = 100
+	var/ui_title = "Chemical Dispenser"
 	var/amount = 30
 	var/accept_glass = FALSE //At FALSE ONLY accepts glass containers. Kinda misleading varname.
 	var/atom/beaker = null
-	var/hackedcheck = FALSE
-	var/list/dispensable_reagents = list("hydrazine","lithium","carbon","ammonia","acetone",
+	var/list/dispensable_reagents = list("lithium","carbon","ammonia","acetone",
 	"sodium","aluminum","silicon","phosphorus","sulfur","hclacid","potassium","iron",
 	"copper","mercury","radium","water","ethanol","sugar","sacid","tungsten")
 	var/stat = 0
@@ -35,37 +29,6 @@
 
 /obj/structure/chemical_dispenser/New()
 	..()
-	processing_objects += src
-
-/obj/structure/chemical_dispenser/proc/recharge()
-	if (stat & BROKEN)
-		return
-	if (!processes.obj)
-		return
-	var/addenergy = 1
-	var/oldenergy = energy
-	energy = min(energy + addenergy, max_energy)
-	if (energy != oldenergy)
-//		use_power(CHEM_SYNTH_ENERGY / chemical_dispenser_ENERGY_COST) // This thing uses up "alot" of power (this is still low as shit for creating reagents from thin air)
-		nanomanager.update_uis(src) // update all UIs attached to src
-
-/*
-/obj/structure/chemical_dispenser/power_change()
-	..()
-	nanomanager.update_uis(src) // update all UIs attached to src
-*/
-
-/obj/structure/chemical_dispenser/process()
-	recharge()
-
-	if (stat & BROKEN)
-		icon_state = "dispenser_broken"
-	else
-		icon_state = initial(icon_state)
-
-/obj/structure/chemical_dispenser/New()
-	..()
-	recharge()
 	dispensable_reagents = sortList(dispensable_reagents)
 
 /obj/structure/chemical_dispenser/ex_act(severity)
@@ -90,17 +53,14 @@
   * @return nothing
   */
 /obj/structure/chemical_dispenser/ui_interact(mob/user, ui_key = "main",var/datum/nanoui/ui = null, var/force_open = TRUE)
-	if (stat & (BROKEN|NOPOWER)) return
 	if (user.stat || user.restrained()) return
 	var/mob/living/carbon/human/H = user
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
-		H << "<span class = 'danger'>This machinery is too complex for you to understand.</span>"
+		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return
 	// this is the data which will be sent to the ui
 	var/data[0]
 	data["amount"] = amount
-	data["energy"] = round(energy)
-	data["maxEnergy"] = round(max_energy)
 	data["isBeakerLoaded"] = beaker ? TRUE : FALSE
 	data["glass"] = accept_glass
 	var beakerContents[0]
@@ -154,10 +114,8 @@
 			var/space = R.maximum_volume - R.total_volume
 
 			//uses TRUE energy per 10 units.
-			var/added_amount = min(amount, energy / chemical_dispenser_ENERGY_COST, space)
+			var/added_amount = min(amount, space)
 			R.add_reagent(href_list["dispense"], added_amount)
-			energy = max(energy - added_amount * chemical_dispenser_ENERGY_COST, FALSE)
-
 	if (href_list["ejectBeaker"])
 		if (beaker)
 			var/obj/item/weapon/reagent_containers/B = beaker
@@ -169,19 +127,120 @@
 
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
 	if (beaker)
-		user << "Something is already loaded into the machine."
+		user << "A beaker is already placed in the dispenser."
 		return
 	if (istype(B, /obj/item/weapon/reagent_containers/glass) || istype(B, /obj/item/weapon/reagent_containers/food))
 		if (!accept_glass && istype(B,/obj/item/weapon/reagent_containers/food))
-			user << "<span class='notice'>This machine only accepts beakers</span>"
+			user << "<span class='notice'>You should only use beakers to manage chemicals.</span>"
 		beaker =  B
 		user.drop_item()
 		B.loc = src
-		user << "You set [B] on the machine."
+		user << "You place [B] in the dispenser."
 		nanomanager.update_uis(src) // update all UIs attached to src
 		return
 
 /obj/structure/chemical_dispenser/attack_hand(mob/user as mob)
-	if (stat & BROKEN)
-		return
 	ui_interact(user)
+
+/obj/structure/lab_distillery
+	name = "laboratory distiller"
+	desc = "A professional laboratory distillery, used to separate chemicals in a solution."
+	density = FALSE
+	anchored = FALSE
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "distill_empty_nocol"
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	var/on = FALSE
+	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
+/obj/structure/lab_distillery/New()
+	..()
+	reagents = new /datum/reagents(80)
+
+/obj/structure/lab_distillery/update_icon()
+	..()
+	if (reagents.total_volume > 0)
+		if (collector)
+			icon_state = "distill"
+		else
+			icon_state = "distill_nocol"
+	else
+		if (collector)
+			icon_state = "distill_empty"
+		else
+			icon_state = "distill_empty_nocol"
+	if (on)
+		icon_state = "distill_on"
+
+/obj/structure/lab_distillery/attack_hand(var/mob/living/carbon/human/H)
+	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		return
+	if (reagents.total_volume <= 0)
+		H << "The distiller is empty."
+		return
+	if (!collector && !on)
+		H << "You cannot turn the distiller on without a collector."
+		return
+	if (collector && !on)
+		H << "You turn the distiller on."
+		on = TRUE
+		update_icon()
+		process_distillery()
+	..()
+/obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/carbon/human/H as mob)
+	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
+		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
+		return
+	if (B.reagents)
+		if (B.reagents.total_volume > 0)
+			var/tamt = B.reagents.trans_to_holder(src.reagents, 10, TRUE, FALSE)
+			H << "You pour [tamt] units from \the [B] into the distiller."
+			update_icon()
+			return
+	if (istype(B, /obj/item/weapon/reagent_containers/glass/beaker) && !collector)
+		if (B.reagents.total_volume > 0)
+			H << "The collector must be empty!"
+			return
+		else
+			H << "You place [B] as the collector for the distiller."
+			collector =  B
+			H.drop_item()
+			B.loc = src
+			update_icon()
+			return
+	..()
+
+/obj/structure/lab_distillery/verb/empty()
+	set category = null
+	set name = "Remove Beaker"
+	set src in range(1, usr)
+
+	if (!collector)
+		usr << "There is no beaker to remove from \the [src]."
+		return
+
+	if (on)
+		usr << "<span class = 'danger'>You cannot remove the beaker while the distiller is running!</span>"
+		return
+
+	if (collector && !on)
+		visible_message("You remove \the [collector].","[usr] removes \the [collector] from \the [src].")
+		collector.loc = get_turf(src)
+		collector = null
+		return
+
+	return
+
+/obj/structure/lab_distillery/proc/process_distillery()
+	if (!on)
+		return
+	else
+		spawn(150)
+			var/largest = reagents.get_master_reagent_id()
+			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
+			collector.reagents.add_reagent(largest,voltotransf)
+			reagents.remove_reagent(largest,voltotransf)
+			on = FALSE
+			update_icon()
+			visible_message("\The [src] finishes distilling.")

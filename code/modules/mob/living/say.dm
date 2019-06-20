@@ -189,7 +189,7 @@ proc/get_radio_key_from_channel(var/channel)
 	var/sound_vol = handle_v[2]
 
 	var/italics = FALSE
-	var/message_range = world.view
+	var/message_range = 7
 
 	var/turf/T = get_turf(src)
 

@@ -93,7 +93,7 @@
 		below = GetBelow(src)
 		if (!below)
 			return
-	if (user.resting)//Can't climb down if you're lying down.
+	if (user.resting || user.prone)//Can't climb down if you're lying down.
 		return
 
 	playsound(user.loc, 'sound/effects/climb.ogg', 50, TRUE)

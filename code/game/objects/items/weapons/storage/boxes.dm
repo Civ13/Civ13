@@ -53,7 +53,6 @@
 /obj/item/weapon/storage/box/handcuffs
 	name = "box of spare handcuffs"
 	desc = "A box full of handcuffs."
-	icon_state = "handcuff"
 
 	New()
 		..()

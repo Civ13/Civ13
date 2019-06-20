@@ -122,9 +122,10 @@
 
 	if (href_list["fire"])
 
-		if (map && !map.faction1_can_cross_blocks())
-			user << "<span class = 'danger'>You can't fire yet.</span>"
-			return
+		if (map)
+			if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
+				user << "<span class = 'danger'>You can't fire yet.</span>"
+				return
 
 		if (!loaded)
 			user << "<span class = 'danger'>There's nothing in the catapult.</span>"

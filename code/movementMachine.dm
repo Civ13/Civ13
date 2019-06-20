@@ -103,11 +103,12 @@ var/movementMachine/movementMachine = null
 /movementMachine/proc/do_movement_continued(var/mob/M)
 	set waitfor = FALSE
 	var/movtoset = 0
-	if (M.client.move_delay)
-		movtoset = M.client.move_delay
-		sleep(movtoset - world.time)
-	else
-		sleep(3)
+	if (M && M.client)
+		if (M.client.move_delay)
+			movtoset = M.client.move_delay
+			sleep(movtoset - world.time)
+		else
+			sleep(3)
 	if (M && M.client)
 		M.client.movement_busy = FALSE
 		movementMachine_clients += M.client

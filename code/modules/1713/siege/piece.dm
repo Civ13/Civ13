@@ -271,7 +271,7 @@
 											new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(target)
 										if ("xylyl_bromide")
 											new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
-										if ("phosgene")
+										if ("phosgene_gas")
 											new/obj/effect/effect/smoke/chem/payload/phosgene(target)
 
 						break

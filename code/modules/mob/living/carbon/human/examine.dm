@@ -222,7 +222,6 @@
 
 		var/list/organ_data = species.has_limbs[organ_tag]
 		var/organ_descriptor = organ_data["descriptor"]
-
 		var/obj/item/organ/external/E = organs_by_name[organ_tag]
 		if (!E)
 			wound_flavor_text["[organ_descriptor]"] = "<span class='warning'><b>[T.He] [T.is] missing [T.his] [organ_descriptor].</b></span>\n"
@@ -230,7 +229,6 @@
 			wound_flavor_text["[organ_descriptor]"] = "<span class='warning'><b>[T.He] [T.has] a stump where [T.his] [organ_descriptor] should be.</b></span>\n"
 		else
 			continue
-
 
 	for (var/obj/item/organ/external/temp in organs)
 		if (temp)
@@ -297,7 +295,7 @@
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
 				else if (H.original_job_title == original_job_title && original_job_title == "West Side Gang")
 					msg += "<br><i>You recognize [T.him] as a fellow <b>[original_job.title] member</b>!</i>"
-	else
+	else if (map.civilizations)
 		if (ishuman(user) && user != src)
 			var/mob/living/carbon/human/H = user
 			if (H.religion == religion && religion_style == "Cultists" && religious_clergy == "Cultists")

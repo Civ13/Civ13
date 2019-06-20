@@ -96,6 +96,7 @@
 	can_hold = list(/obj/item/clothing/mask/smokable/cigarette, /obj/item/weapon/flame/lighter)
 	icon_type = "cigarette"
 	var/customcolor = "#000000"
+	var/lighter = FALSE //set to TRUE to make it spawn with a lighter inside
 
 /obj/item/weapon/storage/fancy/cigarettes/update_icon()
 	return
@@ -103,10 +104,23 @@
 /obj/item/weapon/storage/fancy/cigarettes/New()
 	..()
 	flags |= NOREACT
+	if (lighter)
+		new /obj/item/weapon/flame/lighter/random(src)
 	for (var/i = TRUE to storage_slots)
 		new /obj/item/clothing/mask/smokable/cigarette(src)
 	create_reagents(15 * storage_slots)//so people can inject cigarettes without opening a packet, now with being able to inject the whole one
 	flags |= OPENCONTAINER
+
+/obj/item/weapon/storage/fancy/cigarettes/randompack
+	var/randomize = TRUE
+
+/obj/item/weapon/storage/fancy/cigarettes/randompack/New()
+	..()
+	if (randomize)
+		icon_state = pick("luckystrike","marlboro","prima","ls","tm","atika","pachka_papiros")
+
+/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter
+	lighter = TRUE
 
 /obj/item/weapon/storage/fancy/cigarettes/proc/do_color()
 	if (customcolor)

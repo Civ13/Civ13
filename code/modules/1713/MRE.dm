@@ -53,7 +53,7 @@
 	nutriment_desc = list("canned meat" = 1)
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/french
-	name = "British MRE: Cheese"
+	name = "French MRE: Cheese"
 	desc = "A cheese MRE."
 	nutriment_desc = list("cheese" = 1)
 

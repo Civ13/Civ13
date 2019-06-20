@@ -298,6 +298,35 @@
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)
 
+/obj/item/weapon/storage/belt/jap/ww2soldier
+/obj/item/weapon/storage/belt/jap/ww2soldier/New()
+	..()
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+
+/obj/item/weapon/storage/belt/jap/ww2soldier100
+/obj/item/weapon/storage/belt/jap/ww2soldier100/New()
+	..()
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+
+/obj/item/weapon/storage/belt/jap/ww2soldier99
+/obj/item/weapon/storage/belt/jap/ww2soldier99/New()
+	..()
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //////////////CIVILIAN STUFF/////////////////////////////////////////////////////
@@ -446,8 +475,8 @@
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/stahlhelm
-	name = "iron stahlhelm"
-	desc = "A typical pointed helmet."
+	name = "M1935 stahlhelm"
+	desc = "A typical german helmet."
 	icon_state = "stahlhelm"
 	item_state = "stahlhelm"
 	worn_state = "stahlhelm"
@@ -466,8 +495,8 @@
 	armor = list(melee = 45, arrow = 35, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
 
 /obj/item/clothing/head/helmet/modern/pith
-	name = "iron pith helmet"
-	desc = "A typical pointed helmet."
+	name = "pith helmet"
+	desc = "A typical tropical helmet."
 	icon_state = "pith"
 	item_state = "pith"
 	worn_state = "pith"
@@ -481,3 +510,32 @@
 	icon_state = "labcoat"
 	item_state = "labcoat"
 	worn_state = "labcoat"
+
+
+/obj/item/weapon/storage/belt/largepouches
+	name = "large pouches"
+	desc = "A belt with two large pouches, that can fit large items like machinegun belts."
+	icon = 'icons/obj/clothing/belts.dmi'
+	icon_state = "largepouches"
+	item_state = "largepouches"
+	storage_slots = 2
+	max_w_class = 3
+	max_storage_space = 9
+	show_above_suit = TRUE
+/obj/item/weapon/storage/belt/largepouches/green
+	icon_state = "largepouches_green"
+	item_state = "largepouches_green"
+/obj/item/weapon/storage/belt/smallpouches
+	name = "small pouches"
+	desc = "A belt with 4 small pouches, that can fit items like magazines, knives, and other small things."
+	icon = 'icons/obj/clothing/belts.dmi'
+	icon_state = "smallpouches"
+	item_state = "smallpouches"
+	storage_slots = 4
+	max_w_class = 2
+	max_storage_space = 8
+	show_above_suit = TRUE
+
+/obj/item/weapon/storage/belt/smallpouches/green
+	icon_state = "smallpouches_green"
+	item_state = "smallpouches_green"

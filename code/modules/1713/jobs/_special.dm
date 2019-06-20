@@ -10,6 +10,7 @@
 /datum/job/var/is_secondary = FALSE
 /datum/job/var/is_deathmatch = FALSE
 /datum/job/var/blacklisted = FALSE
+/datum/job/var/whitelisted = FALSE
 /datum/job/var/is_target = FALSE //for VIP modes
 /datum/job/var/rank_abbreviation = null
 /datum/job/var/is_governor = FALSE
@@ -24,6 +25,12 @@
 /datum/job/var/is_civilizations = FALSE //if the job is for civilization maps
 /datum/job/var/is_cowboy = FALSE
 /datum/job/var/is_ww1 = FALSE
+/datum/job/var/is_ww2 = FALSE
+/datum/job/var/is_coldwar = FALSE
+/datum/job/var/is_radioman = FALSE
+/datum/job/var/is_specops = FALSE
+/datum/job/var/is_modernday = FALSE
+/datum/job/var/can_get_coordinates = FALSE
 // new autobalance stuff - Kachnov
 /datum/job/var/min_positions = 1 // absolute minimum positions if we reach player threshold
 /datum/job/var/max_positions = 1 // absolute maximum positions if we reach player threshold
@@ -75,6 +82,10 @@
 		. = GREEK
 	else if (istype(src, /datum/job/arab))
 		. = ARAB
+	else if (istype(src, /datum/job/american))
+		. = AMERICAN
+	else if (istype(src, /datum/job/vietnamese))
+		. = VIETNAMESE
 	_base_type_flag = .
 	return _base_type_flag
 
@@ -125,6 +136,12 @@
 	else if (istype(src, /datum/job/german))
 		user.faction_text = "GERMAN"
 		user.base_faction = new/datum/faction/german(user, src)
+	else if (istype(src, /datum/job/american))
+		user.faction_text = "AMERICAN"
+		user.base_faction = new/datum/faction/american(user, src)
+	else if (istype(src, /datum/job/vietnamese))
+		user.faction_text = "VIETNAMESE"
+		user.base_faction = new/datum/faction/vietnamese(user, src)
 /datum/job/proc/opposite_faction_name()
 	if (istype(src, /datum/job/pirates))
 		return "British Empire"
@@ -142,11 +159,14 @@
 
 /datum/job/update_character(var/mob/living/carbon/human/H)
 	..()
-	if (is_officer)
+	if (is_officer || can_get_coordinates)
 		H.make_artillery_officer()
 		H.add_note("Officer", "As an officer, you can check coordinates.</span>")
-	if (is_commander)
+	if (is_commander && map.ordinal_age < 5)
 		H.make_commander()
+	if (is_radioman)
+		H.make_artillery_radioman()
+		H.add_note("Radio Operator", "As a radio operator, you can order air strikes on your commander's provided coordinates.</span>")
 
 	// hack to make scope icons immediately appear - Kachnov
 	spawn (20)

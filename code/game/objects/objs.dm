@@ -81,7 +81,7 @@
 /obj/item/proc/is_used_on(obj/O, mob/user)
 
 /obj/proc/process()
-	processing_objects.Remove(src)
+	processing_objects -= src
 	return FALSE
 
 /obj/proc/updateUsrDialog()

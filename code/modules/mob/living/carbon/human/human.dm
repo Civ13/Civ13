@@ -54,9 +54,10 @@
 		sync_organ_dna()
 
 	make_blood()
-	if (map.civilizations == TRUE)
-		nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
-		water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
+	if (map)
+		if (map.civilizations == TRUE)
+			nutrition = rand(max_nutrition * 0.45, max_nutrition * 0.55) // 180 to 220
+			water = round(rand(max_water * 0.45, max_water * 0.55)) // 157 to 192
 	else
 		nutrition = max_nutrition
 		water = max_water
@@ -113,11 +114,18 @@
 					force_update_limbs()
 					update_body()
 				if ("desert")
-					s_tone = -90
-					new_hair = pick("Dark Brown","Black")
-					new_eyes = pick("Dark Brown", "Black")
-					force_update_limbs()
-					update_body()
+					if (map.ID == MAP_NOMADS_PANGEA)
+						s_tone = -35
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
+					else
+						s_tone = -90
+						new_hair = pick("Dark Brown","Black")
+						new_eyes = pick("Dark Brown", "Black")
+						force_update_limbs()
+						update_body()
 				if ("jungle")
 					if (map.ID == MAP_NOMADS_PANGEA)
 						s_tone = -35
@@ -132,11 +140,18 @@
 						force_update_limbs()
 						update_body()
 				if ("savanna")
-					s_tone = -165
-					new_hair = "Black"
-					new_eyes = "Black"
-					force_update_limbs()
-					update_body()
+					if (map.ID == MAP_NOMADS_PANGEA)
+						s_tone = -35
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
+					else
+						s_tone = -165
+						new_hair = "Black"
+						new_eyes = "Black"
+						force_update_limbs()
+						update_body()
 			var/hex_hair = hair_colors[new_hair]
 			r_hair = hex2num(copytext(hex_hair, 2, 4))
 			g_hair = hex2num(copytext(hex_hair, 4, 6))
@@ -614,9 +629,10 @@ var/list/rank_prefix = list(\
 				var/turf/location = loc
 				if (istype(location, /turf))
 					location.add_vomit_floor(src, TRUE)
-
+				adjust_hygiene(-25)
 				nutrition -= 40
 				adjustToxLoss(-3)
+				mood -= 5
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
@@ -929,60 +945,60 @@ var/list/rank_prefix = list(\
 		var/mob/living/carbon/human/H = usr
 		if (!stat)
 			visible_message("<span class = 'notice'>[src] examines [gender==MALE?"himself":"herself"].</span>")
+		if (ishuman(H))
+			for (var/obj/item/organ/external/org in H.organs)
+				var/status = ""
 
-		for (var/obj/item/organ/external/org in H.organs)
-			var/status = ""
+				if (H.painchecks())//Can we feel pain? If we can then it tells us how much pain our limbs are in.
+					organpain = org.get_damage()
+					if (organpain > 0)
+						status = " <small>pain</small>"
+					if (organpain > 5)
+						status = " pain"
+					if (organpain > 20)
+						status = " PAIN!"
+					if (organpain > 40)
+						status = "<large><b> PAIN!</b></large>"
 
-			if (H.painchecks())//Can we feel pain? If we can then it tells us how much pain our limbs are in.
-				organpain = org.get_damage()
-				if (organpain > 0)
-					status = " <small>pain</small>"
-				if (organpain > 5)
-					status = " pain"
-				if (organpain > 20)
-					status = " PAIN!"
-				if (organpain > 40)
-					status = "<large><b> PAIN!</b></large>"
-
-			if (org.is_stump())//it missing
-				status = " MISSING!"
-
-
-			//This is all spaghetti.
-			if (organpain && (org.status & ORGAN_BLEEDING))//Is the limb bleeding and hurt?
-				status += " || <b>BLEEDING!</b>"
-
-			if ((!organpain) && (org.status & ORGAN_BLEEDING))//Or just bleeding.
-				status = "<b> BLEEDING!</b>"
-
-			if ((!organpain) && (org.status & ORGAN_BROKEN) && (org.status & ORGAN_BLEEDING))//Or is it bleeding and broken but you're not hurt.
-				status = "<b>BLEEDING! || BROKEN!</b>"
+				if (org.is_stump())//it missing
+					status = " MISSING!"
 
 
-			if (organpain && (org.status & ORGAN_BROKEN))//Is the limb broken and hurt?
-				status += " || <b>BROKEN!</b>"
+				//This is all spaghetti.
+				if (organpain && (org.status & ORGAN_BLEEDING))//Is the limb bleeding and hurt?
+					status += " || <b>BLEEDING!</b>"
 
-			if ((!organpain) && (org.status & ORGAN_BROKEN))//Or just broken.
-				status = "<b> IT'S BROKEN!</b>"
+				if ((!organpain) && (org.status & ORGAN_BLEEDING))//Or just bleeding.
+					status = "<b> BLEEDING!</b>"
 
-
-			if (organpain && (org.dislocated == 2))//Hurt and dislocated?
-				status += " || <b>DISLOCATED!</b>"
-
-			if ((!organpain) && (org.dislocated == 2))//Or just dislocated.
-				status = "<b> DISLOCATED!</b>"
+				if ((!organpain) && (org.status & ORGAN_BROKEN) && (org.status & ORGAN_BLEEDING))//Or is it bleeding and broken but you're not hurt.
+					status = "<b>BLEEDING! || BROKEN!</b>"
 
 
-			if (org.status & ORGAN_DEAD)//it dead
-				status = "</b> NECROTIC!</b>"
+				if (organpain && (org.status & ORGAN_BROKEN))//Is the limb broken and hurt?
+					status += " || <b>BROKEN!</b>"
 
-			if (!org.is_usable())//it useless
-				status = "</b> USELESS!</b>"
+				if ((!organpain) && (org.status & ORGAN_BROKEN))//Or just broken.
+					status = "<b> IT'S BROKEN!</b>"
 
-			if (status == "")
-				status = " OK"
 
-			src << output(text("\t [] []:[][]",status==" OK"?"<span class = 'notice'>":"<span class = 'warning'> ", capitalize(org.name), status, "</span>"), TRUE)
+				if (organpain && (org.dislocated == 2))//Hurt and dislocated?
+					status += " || <b>DISLOCATED!</b>"
+
+				if ((!organpain) && (org.dislocated == 2))//Or just dislocated.
+					status = "<b> DISLOCATED!</b>"
+
+
+				if (org.status & ORGAN_DEAD)//it dead
+					status = "</b> NECROTIC!</b>"
+
+				if (!org.is_usable())//it useless
+					status = "</b> USELESS!</b>"
+
+				if (status == "")
+					status = " OK"
+
+				src << output(text("\t [] []:[][]",status==" OK"?"<span class = 'notice'>":"<span class = 'warning'> ", capitalize(org.name), status, "</span>"), TRUE)
 
 
 
@@ -1185,3 +1201,8 @@ var/list/rank_prefix = list(\
 		return PULSE_NONE
 	else
 		return H.pulse
+
+
+/mob/living/carbon/human/proc/make_adrenaline(amount)
+	if(stat == CONSCIOUS)
+		reagents.add_reagent("adrenaline", amount)

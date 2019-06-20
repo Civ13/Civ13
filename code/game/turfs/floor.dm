@@ -55,8 +55,6 @@
 	flooring = newflooring
 	update_icon(1)
 	levelupdate()
-//	if (prob(10))
-//		new /obj/effect/decal/cleanable/dirt (src)
 
 //This proc will set floor_type to null and the update_icon() proc will then change the icon_state of the turf
 //This proc auto corrects the grass tiles' siding.

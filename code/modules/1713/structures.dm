@@ -94,6 +94,14 @@
 	opacity = TRUE
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 	flammable = TRUE
+	
+/obj/structure/grille/ironfence
+	name = "iron fence"
+	desc = "A wrought iron fence."
+	icon = 'icons/obj/fence.dmi'
+	icon_state = "iron_fence"
+	health = 50
+	hitsound = 'sound/weapons/blade_parry1.ogg'
 
 /obj/structure/wallclock
 	name = "wall clock"
@@ -181,6 +189,26 @@
 	icon_state = "russian"
 	name = "Russian Flag"
 	desc = "The tricolor Russian flag."
+
+/obj/structure/flag/russian
+	icon_state = "russian"
+	name = "Russian Flag"
+	desc = "The tricolor Russian flag."
+
+/obj/structure/flag/soviet
+	icon_state = "soviet"
+	name = "Soviet Union Flag"
+	desc = "The Soviet flag."
+
+/obj/structure/flag/us
+	icon_state = "us"
+	name = "USA Flag"
+	desc = "The US flag."
+
+/obj/structure/flag/reich
+	icon_state = "reich"
+	name = "Third Reich Flag"
+	desc = "The Third Reich war flag."
 
 /obj/structure/noose
 	icon = 'icons/obj/noose.dmi'

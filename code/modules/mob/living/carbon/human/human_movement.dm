@@ -40,7 +40,13 @@
 			tally += 0.75
 		if (150 to 192)
 			tally += 0.50
-
+	switch (mood)
+		if (0 to 20)
+			tally += 1
+		if (20 to 40)
+			tally += 0.7
+		if (40 to 60)
+			tally += 0.4
 	if (wear_suit)
 		var/obj/item/clothing/WS = wear_suit
 		tally += WS.slowdown

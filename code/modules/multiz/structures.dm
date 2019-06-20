@@ -101,7 +101,7 @@
 		return
 
 	if (!target || !istype(target.loc, /turf))
-		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && !istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom) && !istype(src, /obj/structure/multiz/ladder/ww2) && !istype(src, /obj/structure/multiz/ladder/ww2/up))
+		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && !istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom) && !istype(src, /obj/structure/multiz/ladder/ww2) && !istype(src, /obj/structure/multiz/ladder/ww2/up) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsdown) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsup))
 			M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"
 			return
 
@@ -114,7 +114,7 @@
 	if (do_after(M, 10, src))
 		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
 		// pulling/grabbing people with you
-		if (istype(src, /obj/structure/multiz/ladder/ww2/tunneltop))
+		if (istop)
 			if (M.pulling != null)
 				M.pulling.z = M.pulling.z-1
 				M.pulling.x = src.x
@@ -123,30 +123,12 @@
 			M.x = src.x
 			M.y = src.y
 			return
-		else if (istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom))
+		else
 			if (M.pulling != null)
 				M.pulling.z = M.pulling.z+1
 				M.pulling.x = src.x
 				M.pulling.y = src.y
 			M.z = M.z+1
-			M.x = src.x
-			M.y = src.y
-			return
-		else if (istype(src, /obj/structure/multiz/ladder/ww2/up))
-			if (M.pulling != null)
-				M.pulling.z = M.pulling.z+1
-				M.pulling.x = src.x
-				M.pulling.y = src.y
-			M.z = M.z+1
-			M.x = src.x
-			M.y = src.y
-			return
-		else if (istype(src, /obj/structure/multiz/ladder/ww2))
-			if (M.pulling != null)
-				M.pulling.z = M.pulling.z-1
-				M.pulling.x = src.x
-				M.pulling.y = src.y
-			M.z = M.z-1
 			M.x = src.x
 			M.y = src.y
 			return
@@ -204,7 +186,11 @@
 	var/ladder_id = null
 	var/area_id = "defaultareaid"
 
-/obj/structure/multiz/ladder/ww2/tunneltop/Crossed(var/atom/movable/AM)
+/obj/structure/multiz/ladder/ww2/stairsdown
+	icon_state = "rampbottom"
+	name = "stairs"
+
+/obj/structure/multiz/ladder/ww2/Crossed(var/atom/movable/AM)
 	if (find_target() && istop)
 		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
 			var/obj/item/I = AM
@@ -214,17 +200,6 @@
 		else if (!AM.pulledby && istype(AM, /obj/structure/closet))
 			visible_message("\The [AM] falls down the ladder.")
 			AM.z = AM.z-1
-
-/obj/structure/multiz/ladder/ww2/Crossed(var/atom/movable/AM)
-	if (find_target() && istop)
-		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
-			var/obj/item/I = AM
-			if (I.w_class <= 2.0) // fixes maxim bug and probably some others - Kachnov
-				I.forceMove(get_turf(find_target()))
-				visible_message("\The [I] falls down the ladder.")
-		else if (!AM.pulledby && istype(AM, /obj/structure/closet))
-			visible_message("\The [AM] falls down the ladder.")
-			AM.forceMove(get_turf(find_target()))
 
 /obj/structure/multiz/ladder/ww2/find_target()
 	for (var/obj/structure/multiz/ladder/ww2/ladder in ladder_list)
@@ -238,6 +213,11 @@
 	icon_state = "ladderup"
 	istop = FALSE
 
+/obj/structure/multiz/ladder/ww2/stairsup
+	icon_state = "rampup"
+	name = "stairs"
+	istop = FALSE
+
 /obj/structure/multiz/ladder/ww2/Destroy()
 	if (target && istop)
 		qdel(target)
@@ -249,11 +229,26 @@
 	icon_state = "hole_top"
 	istop = TRUE
 
+/obj/structure/multiz/ladder/ww2/tunneltop/vietcong
+	icon_state = "pine_closed"
+
+/obj/structure/multiz/ladder/ww2/tunneltop/vietcong/attack_hand(var/mob/M)
+	if (istype(M, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = M
+		if (H.faction_text != "VIETNAMESE" && H.original_job_title != "US Commando")
+			H << "This tunnel is too small for you!"
+			return
+		else
+			..()
+	else
+		..()
+
 /obj/structure/multiz/ladder/ww2/tunnelbottom
 	name = "tunnel exit"
 	desc = "A makeshift stairway, leads to the surface."
 	icon_state = "hole_bottom"
 	istop = FALSE
+/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong
 
 /obj/structure/multiz/stairs
 	name = "Stairs"

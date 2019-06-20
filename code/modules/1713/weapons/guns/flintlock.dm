@@ -31,7 +31,7 @@
 	stat = "rifle"
 	move_delay = 5
 	fire_delay = 5
-
+	equiptimer = 20
 	// 5x as accurate as MGs for now
 	accuracy_list = list(
 

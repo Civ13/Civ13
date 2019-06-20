@@ -56,28 +56,29 @@
 
 	var/limbs_count = 4
 	var/obj/item/organ/external/E = organs_by_name["l_foot"]
-	if (E.status & ORGAN_DESTROYED)
-		limbs_count--
+	if (E)
+		if (E.status & ORGAN_DESTROYED)
+			limbs_count--
 
-	E = organs_by_name["r_foot"]
-	if (!E || (E.status & ORGAN_DESTROYED))
-		limbs_count--
+		E = organs_by_name["r_foot"]
+		if (!E || (E.status & ORGAN_DESTROYED))
+			limbs_count--
 
-	E = organs_by_name["r_hand"]
-	if (!E || (E.status & ORGAN_DESTROYED))
-		limbs_count--
+		E = organs_by_name["r_hand"]
+		if (!E || (E.status & ORGAN_DESTROYED))
+			limbs_count--
 
-	E = organs_by_name["l_hand"]
-	if (!E || (E.status & ORGAN_DESTROYED))
-		limbs_count--
+		E = organs_by_name["l_hand"]
+		if (!E || (E.status & ORGAN_DESTROYED))
+			limbs_count--
 
-	if (limbs_count == FALSE)
-		has_limbs = FALSE
+		if (limbs_count == FALSE)
+			has_limbs = FALSE
 
 /mob/living/carbon/human/proc/handle_stance()
 	// Don't need to process any of this if they aren't standing anyways
 	// unless their stance is damaged, and we want to check if they should stay down
-	if (!stance_damage && (lying || resting) && (life_tick % 4) == FALSE)
+	if (!stance_damage && (lying || resting || prone) && (life_tick % 4) == FALSE)
 		return
 
 	stance_damage = FALSE
@@ -126,7 +127,7 @@
 
 	// standing is poor
 	if (stance_damage >= 4 || (stance_damage >= 2 && prob(5)))
-		if (!(lying || resting))
+		if (!(lying || resting || prone))
 			if (species && !(species.flags & NO_PAIN))
 				emote("painscream")
 			custom_emote(1, "collapses!")

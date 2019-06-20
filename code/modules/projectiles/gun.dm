@@ -38,6 +38,7 @@
 	force = 5
 	attack_verb = list("struck", "hit", "bashed")
 
+	var/full_auto = FALSE
 	var/fire_delay = 5 	//delay after shooting before the gun can be used again
 	var/burst_delay = 2	//delay between shots, if firing in bursts
 	var/fire_sound = 'sound/weapons/kar_shot.ogg'
@@ -524,14 +525,18 @@
 	if (firemodes.len > 1)
 		var/datum/firemode/current_mode = firemodes[sel_mode]
 		user.visible_message("The fire selector is set to [current_mode.name].")
-
+	if (safetyon)
+		user << "<span class='notice'><b>The safety is on.</b></span>"
 /obj/item/weapon/gun/proc/switch_firemodes(mob/user=null)
 	sel_mode++
 	if (sel_mode > firemodes.len)
 		sel_mode = TRUE
 	var/datum/firemode/new_mode = firemodes[sel_mode]
 	user << "<span class='notice'>\The [src] is now set to [new_mode.name].</span>"
-
+	if (new_mode.name == "full auto")
+		full_auto = TRUE
+	else
+		full_auto = FALSE
 /obj/item/weapon/gun/attack_self(mob/user)
 	if (firemodes.len > 1)
 		switch_firemodes(user)

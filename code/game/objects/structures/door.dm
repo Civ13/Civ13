@@ -131,7 +131,10 @@
 
 /obj/structure/simple_door/proc/Open()
 	isSwitchingStates = TRUE
-	playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
+	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+		playsound(loc, 'sound/machines/shoji_door_open.ogg', 100, TRUE)
+	else
+		playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
 	flick("[basic_icon]opening",src)
 	spawn (10)
 		density = FALSE
@@ -140,12 +143,15 @@
 		update_icon()
 		isSwitchingStates = FALSE
 		update_nearby_tiles()
-		for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
-	playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
+	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
+		playsound(loc, 'sound/machines/shoji_door_close.ogg', 100, TRUE)
+	else
+		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
 	flick("[basic_icon]closing",src)
 	spawn (10)
 		density = TRUE
@@ -154,11 +160,11 @@
 		update_icon()
 		isSwitchingStates = FALSE
 		update_nearby_tiles()
-		for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
 
 /obj/structure/simple_door/Destroy()
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
 

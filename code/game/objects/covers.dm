@@ -56,6 +56,21 @@
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "rampup"
 
+/obj/covers/road
+	name = "road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "road_1"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+
+/obj/covers/road/New()
+	..()
+	icon_state = pick("road_1","road_2","road_3")
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -269,6 +284,24 @@
 	health = 50
 	wall = TRUE
 	explosion_resistance = 1
+	
+/obj/covers/wood_wall/log
+	name = "log wall"
+	desc = "A log wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "log_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 4
+	layer = 3
+	health = 180
+	wall = TRUE
+	explosion_resistance = 7
+
+/obj/covers/wood_wall/log/corner
+	icon_state = "log_wall_corner"
 
 /obj/covers/stone_wall
 	name = "stone wall"
@@ -556,13 +589,15 @@
 
 
 /obj/covers/Destroy()
-	if (wall && !incomplete)
-		new current_area_type(get_turf(src))
-		visible_message("The roof collapses!")
-	var/turf/floor/T = get_turf(loc)
-	T.iscovered = origin_covered
-	T.water_level = origin_water_level
-	T.move_delay = T.get_move_delay()
+	var/area/caribbean/CURRENTAREA = get_area(src)
+	if (istype(CURRENTAREA, /area/caribbean/void/caves))
+		if (wall && !incomplete)
+			new current_area_type(get_turf(src))
+			visible_message("The roof collapses!")
+		var/turf/floor/T = get_turf(loc)
+		T.iscovered = origin_covered
+		T.water_level = origin_water_level
+		T.move_delay = T.get_move_delay()
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount

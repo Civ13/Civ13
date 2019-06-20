@@ -17,6 +17,7 @@
 		list(PIRATES) = /area/caribbean/pirates/ship/lower
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(FRENCH = 0.5, PIRATES = 0.5)
 	battle_name = "Naval boarding"
 	mission_start_message = "<font size=4>All factions have <b>5 minutes</b> to prepare before the combat starts.</font>"
@@ -29,6 +30,10 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (J.is_army == TRUE)
 		. = FALSE
+	else if (J.is_ww1 == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
 	else if (J.is_medieval == TRUE)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
@@ -40,7 +45,7 @@ obj/map_metadata/naval/job_enabled_specialcheck(var/datum/job/J)
 	else
 		. = TRUE
 
-/obj/map_metadata/robusta/cross_message(faction)
+/obj/map_metadata/naval/cross_message(faction)
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/naval/faction2_can_cross_blocks()

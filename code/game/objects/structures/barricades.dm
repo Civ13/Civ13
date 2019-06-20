@@ -132,7 +132,7 @@
 		return FALSE
 
 /obj/structure/barricade/bullet_act(var/obj/item/projectile/proj)
-	health -= proj.damage
+	health -= proj.damage/3
 	visible_message("<span class='warning'>\The [src] is hit by the [proj.name]!</span>")
 	try_destroy()
 
@@ -288,7 +288,14 @@
 		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
 		qdel(src)
 		return
-
+/obj/structure/barricade/antitank
+	name = "czech hedgehog"
+	desc = "A static anti-tank obstacle defense made of metal angle beams."
+	icon_state = "antitank"
+	material = "steel"
+	health = 2709
+	maxhealth = 2709
+	material_name = "steel"
 
 /obj/structure/barricade/stone_h
 	name = "stone wall"

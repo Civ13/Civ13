@@ -778,7 +778,7 @@ proc/get_cardinal_dir(atom/A, atom/B)
 proc/anyprob(value)
 	return (rand(1,value)==value)
 
-proc/view_or_range(distance = world.view , center = usr , type)
+proc/view_or_range(distance = 7 , center = usr , type)
 	switch(type)
 		if ("view")
 			. = view(distance,center)
@@ -786,7 +786,7 @@ proc/view_or_range(distance = world.view , center = usr , type)
 			. = range(distance,center)
 	return
 
-proc/oview_or_orange(distance = world.view , center = usr , type)
+proc/oview_or_orange(distance = 7 , center = usr , type)
 	switch(type)
 		if ("view")
 			. = oview(distance,center)
@@ -1071,7 +1071,7 @@ var/list/FLOORITEMS = list(
 var/mob/dview/dview_mob = new
 
 //Version of view() which ignores darkness, because BYOND doesn't have it.
-/proc/dview(var/range = world.view, var/center, var/invis_flags = FALSE)
+/proc/dview(var/range = 7, var/center, var/invis_flags = FALSE)
 	if (!center)
 		return
 

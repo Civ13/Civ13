@@ -82,3 +82,105 @@
 	user.a_intent = user_last_intent
 
 	force = initial(force)
+
+
+////////////////GARROTE/////////////////////
+/obj/item/garrote
+	name = "garrote"
+	desc = "A handheld ligature of rope, used to strangle a person."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "garrote"
+	item_state = "zippo"
+	slot_flags = SLOT_BELT
+	force = WEAPON_FORCE_WEAK
+	flammable = TRUE
+	slot_flags = SLOT_BELT | SLOT_POCKET
+	force = WEAPON_FORCE_WEAK
+	w_class = 1.0
+	throwforce = WEAPON_FORCE_WEAK
+	throw_speed = 5
+	throw_range = 8
+	var/next_garrote = 0
+	var/garroting = FALSE
+
+/obj/item/garrote/Destroy()
+	garroting = FALSE
+	update_icon()
+	return ..()
+
+/obj/item/garrote/update_icon()
+    icon_state = "garrote[garroting ? "_w" : ""]"
+
+/obj/item/garrote/attack(mob/living/carbon/human/target as mob, mob/living/carbon/human/user as mob)
+	if (garroting)
+		stop_garroting(user,target)
+		return
+	else
+		start_garroting(user,target)
+		return
+/obj/item/garrote/proc/start_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
+	if (!user.has_empty_hand())
+		user << "<span class='notice'>You need a free hand to use the garrote!</span>"
+		return
+	var/obj/item/weapon/grab/GR = new /obj/item/weapon/grab(user, target)
+	user.put_in_hands(GR)
+	GR.synch()
+	target.LAssailant = user
+	if (GR != null)
+		playsound(target.loc, 'sound/weapons/grapple.ogg', 40, 1, -4)
+		playsound(target.loc, 'sound/weapons/cablecuff.ogg', 15, 1, -5)
+		garroting = TRUE
+		update_icon()
+		garroting_process(user,target,GR)
+		next_garrote = world.time + 40
+		visible_message(
+			"<span class='danger'>[user] has grabbed \the [target] with \the [src]!</span>",\
+			"<span class='danger'>You grab \the [target] with \the [src]!</span>",\
+			"You hear some struggling and muffled cries of surprise")
+		return
+/obj/item/garrote/proc/stop_garroting(mob/living/carbon/human/user,mob/living/carbon/human/target)
+	garroting = FALSE
+	user << "<span class='notice'>You release the garrote on your victim.</span>" //Not the grab, though. Only the garrote.
+	update_icon()
+	return
+/obj/item/garrote/attack_self(mob/living/carbon/human/user)
+	if(world.time <= next_garrote) 	return
+	if(garroting)
+		stop_garroting(user)
+		return
+
+/obj/item/garrote/proc/garroting_process(mob/living/carbon/human/user,mob/living/carbon/human/target,obj/item/weapon/grab/GB)
+	if (!ishuman(user) || !ishuman(target) || !GB)
+		return FALSE
+	if(ishuman(user))
+		if(!(user.l_hand == src || user.r_hand == src)) //THE GARROTE IS NOT IN HANDS, ABORT
+			stop_garroting(user,target)
+			return FALSE
+
+		if(!(user.l_hand == GB || user.r_hand == GB)) //THE GRAB IS NOT IN HANDS, ABORT
+			stop_garroting(user,target)
+			return FALSE
+
+		if (garroting == FALSE)
+			stop_garroting(user,target)
+			return FALSE
+
+		spawn(25)
+			garroting_process(user,target,GB)
+
+		if(istype(target))
+			target.canmove = FALSE
+			if(!target.mouth_covered)
+				target.forcesay(list("-hrk!", "-hrgh!", "-urgh!", "-kh!", "-hrnk!"))
+
+		if (garroting) //Only do oxyloss if in agreesive grab to prevent passive grab choking or something.
+			target.adjustOxyLoss(3) //Stack the chokes with additional oxyloss for quicker death
+			if(prob(40))
+				target.stuttering = max(target.stuttering, 3) //It will hamper your voice, being choked and all.
+				target.losebreath = max(target.losebreath, 3)
+		return TRUE
+	else
+		garroting = FALSE
+		update_icon()
+
+		return FALSE

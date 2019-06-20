@@ -178,30 +178,6 @@
 			new /obj/effect/decal/cleanable/greenglow(T)
 		return
 
-/datum/reagent/adrenaline
-	name = "Adrenaline"
-	id = "adrenaline"
-	description = "Adrenaline is a hormone used as a drug to treat cardiac arrest and other cardiac dysrhythmias resulting in diminished or absent cardiac output."
-	taste_description = "bitterness"
-	reagent_state = LIQUID
-	color = "#C8A5DC"
-
-/datum/reagent/adrenaline/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.SetParalysis(0)
-	M.SetWeakened(0)
-	M.adjustToxLoss(rand(3))
-
-/datum/reagent/water/holywater
-	name = "Holy Water"
-	id = "holywater"
-	description = "An ashen-obsidian-water mix, this solution will alter certain sections of the brain's rationality."
-	color = "#E0E8EF"
-
-/datum/reagent/water/holywater/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-
-/datum/reagent/water/holywater/touch_turf(var/turf/T)
-	return FALSE
 
 /datum/reagent/diethylamine
 	name = "Diethylamine"
@@ -329,7 +305,7 @@
 /datum/reagent/gunpowder
 	name = "gunpowder"
 	id = "gunpowder"
-	description = "Try to light it on fire and see what happens"
+	description = "Try to light it on fire and see what happens."
 	taste_description = "charcoal"
 	reagent_state = SOLID
 	color = "#484753"

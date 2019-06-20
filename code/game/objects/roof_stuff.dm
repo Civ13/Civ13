@@ -25,9 +25,13 @@
 /obj/roof/New()
 	..()
 	var/area/caribbean/CURRENTAREA = get_area(src)
+//	var/oldclimate = CURRENTAREA.climate
 	if (CURRENTAREA.location == AREA_OUTSIDE)
 		current_area_type = CURRENTAREA.type
 		new/area/caribbean/roofed(get_turf(src))
+// TODO: Different roofed climates
+//		var/area/caribbean/roofed/A = new/area/caribbean/roofed(src.loc)
+//		A.climate = oldclimate
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))
 		LO.update_overlay()
 	spawn(50)
@@ -55,7 +59,7 @@
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
 			for (var/mob/living/carbon/human/M in range(1, src))
 				M.adjustBruteLoss(rand(17,27))
-				M.Weaken(18)
+				M.Weaken(15)
 				M << "The roof collapses!"
 			Destroy()
 			qdel(src)

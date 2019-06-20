@@ -69,7 +69,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	item_state = "cigoff"
 	name = "burnt match"
 	desc = "A match. This one has seen better days."
-	processing_objects.Remove(src)
+	processing_objects -= src
 
 //////////////////
 //FINE SMOKABLES//
@@ -107,7 +107,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if (ishuman(loc))
 			var/mob/living/carbon/human/C = loc
 			if (src == C.wear_mask && C.check_has_mouth()) // if it's in the human/monkey mouth, transfer reagents to the mob
-				reagents.trans_to_mob(C, REM, CHEM_INGEST, 0.2) // Most of it is not inhaled... balance reasons.
+				reagents.trans_to_mob(C, REM, CHEM_INGEST, 0.2, FALSE, TRUE) // Most of it is not inhaled... balance reasons.
 		else // else just remove some of the reagents
 			reagents.remove_any(REM)
 
@@ -140,7 +140,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		var/turf/T = get_turf(src)
 		T.visible_message(flavor_text)
 		set_light(2, 0.25, "#E38F46")
-		processing_objects.Add(src)
+		processing_objects += src
 
 /obj/item/clothing/mask/smokable/proc/die(var/nomessage = FALSE)
 	var/turf/T = get_turf(src)
@@ -156,7 +156,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			M.update_inv_wear_mask(0)
 			M.update_inv_l_hand(0)
 			M.update_inv_r_hand(1)
-		processing_objects.Remove(src)
+		processing_objects -= src
 		qdel(src)
 	else
 		new /obj/effect/decal/cleanable/ash(T)
@@ -170,7 +170,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			M.update_inv_wear_mask(0)
 			M.update_inv_l_hand(0)
 			M.update_inv_r_hand(1)
-		processing_objects.Remove(src)
+		processing_objects -= src
 
 /obj/item/clothing/mask/smokable/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	..()
@@ -215,7 +215,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	weldermes = "<span class='notice'>USER casually lights the NAME with FLAME.</span>"
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME.</span>"
 
-
+	New()
+		..()
+		reagents.add_reagent("nicotine",15)
 /obj/item/clothing/mask/smokable/cigarette/afterattack(obj/item/weapon/reagent_containers/glass/glass, mob/user as mob, proximity)
 	..()
 	if (!proximity)
@@ -249,13 +251,18 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	throw_speed = 0.5
 	item_state = "cigaroff"
 	smoketime = 1500
-	chem_volume = 20
+	chem_volume = 30
 	matchmes = "<span class='notice'>USER lights their NAME with their FLAME.</span>"
 	lightermes = "<span class='notice'>USER manages to offend their NAME by lighting it with FLAME.</span>"
 	zippomes = "<span class='rose'>With a flick of their wrist, USER lights their NAME with their FLAME.</span>"
 	weldermes = "<span class='notice'>USER insults NAME by lighting it with FLAME.</span>"
 	ignitermes = "<span class='notice'>USER fiddles with FLAME, and manages to light their NAME with the power of science.</span>"
 	value = 17
+
+	New()
+		..()
+		reagents.add_reagent("nicotine",30)
+
 /obj/item/clothing/mask/smokable/cigarette/cigar/havana
 	name = "Cuban cigar"
 	desc = "A cigar fit for only the best of the best."
@@ -263,8 +270,11 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_on = "cigar2on"
 	icon_off = "cigar2off"
 	smoketime = 7200
-	chem_volume = 30
+	chem_volume = 40
 	value = 24
+	New()
+		..()
+		reagents.add_reagent("nicotine",40)
 
 /obj/item/weapon/cigbutt
 	name = "cigarette butt"
@@ -324,7 +334,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		item_state = icon_on
 		var/turf/T = get_turf(src)
 		T.visible_message(flavor_text)
-		processing_objects.Add(src)
+		processing_objects += src
 		if (ismob(loc))
 			var/mob/living/M = loc
 			M.update_inv_wear_mask(0)
@@ -337,7 +347,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		lit = FALSE
 		icon_state = icon_off
 		item_state = icon_off
-		processing_objects.Remove(src)
+		processing_objects -= src
 	else if (smoketime)
 		var/turf/location = get_turf(user)
 		user.visible_message("<span class='notice'>[user] empties out [src].</span>", "<span class='notice'>You empty out [src].</span>")
@@ -471,14 +481,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 
 			set_light(2)
-			processing_objects.Add(src)
+			processing_objects += src
 		else
 			playsound(src, sound_toggleOFF, 30, FALSE)
 			lit = FALSE
 			icon_state = "[base_state]"
 			item_state = "[base_state]"
 			set_light(0)
-			processing_objects.Remove(src)
+			processing_objects -= src
 	else
 		return ..()
 	return

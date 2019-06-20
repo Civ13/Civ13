@@ -571,7 +571,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/french, slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/frenchcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/frenchcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8x27(H), slot_l_store)
@@ -619,7 +619,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/french(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/frenchcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/frenchcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
@@ -666,7 +666,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/french(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/frenchcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/frenchcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_l_hand)
@@ -754,11 +754,11 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/french(H), slot_w_uniform) // for now
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/frenchcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/frenchcap(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
 	uniform.attackby(white, H)
@@ -844,7 +844,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/lebel(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/french(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/french/full/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/french/full(null)
+	var/obj/item/clothing/accessory/storage/webbing/ww1/french/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/french(null)
 	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the French Army. Follow your <b>Sergeant's</b> orders!")

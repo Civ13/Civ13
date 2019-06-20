@@ -38,7 +38,6 @@ var/list/global/wall_cache = list()
 	tank_destroyable = FALSE
 	layer = TURF_LAYER + 0.02 // above lifts
 	desc = "A massive slab of rock in the shape of a wall."
-
 /turf/wall/rockwall/update_icon()
 	return
 
@@ -65,15 +64,12 @@ var/list/global/wall_cache = list()
 		icon = 'icons/turf/walls.dmi'
 		icon_state = "rock"
 
-	var/area/my_area = get_area(src)
-	if (prob(10) && !istype(src, /turf/wall/indestructable) && my_area.type != /area/caribbean/void)
-		new /obj/effect/decal/cleanable/dirt (src)
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 
 /turf/wall/Destroy()
 	dismantle_wall(null,null,1)
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
 
@@ -110,16 +106,17 @@ var/list/global/wall_cache = list()
 /turf/wall/examine(mob/user)
 	. = ..(user)
 
-	if (!damage)
+	if (!damage && material)
 		user << "<span class='notice'>It looks fully intact.</span>"
 	else
-		var/dam = damage / material.integrity
-		if (dam <= 0.3)
-			user << "<span class='warning'>It looks slightly damaged.</span>"
-		else if (dam <= 0.6)
-			user << "<span class='warning'>It looks moderately damaged.</span>"
-		else
-			user << "<span class='danger'>It looks heavily damaged.</span>"
+		if (material)
+			var/dam = damage / material.integrity
+			if (dam <= 0.3)
+				user << "<span class='warning'>It looks slightly damaged.</span>"
+			else if (dam <= 0.6)
+				user << "<span class='warning'>It looks moderately damaged.</span>"
+			else
+				user << "<span class='danger'>It looks heavily damaged.</span>"
 //Damage
 
 /turf/wall/melt()
@@ -127,14 +124,14 @@ var/list/global/wall_cache = list()
 	if (!can_melt())
 		return
 
-	ChangeTurf(/turf/floor/plating)
+	ChangeTurf(get_base_turf_by_area(src))
 
 	var/turf/floor/F = src
 	if (!F)
 		return
 	F.burn_tile()
 	F.icon_state = "wall_thermite"
-	visible_message("<span class='danger'>\The [src] spontaneously combusts!.</span>") //!!OH SHIT!!
+	visible_message("<span class='danger'>\The [src] spontaneously combusts!</span>") //!!OH SHIT!!
 	return
 
 /turf/wall/proc/take_damage(dam)
@@ -170,9 +167,6 @@ var/list/global/wall_cache = list()
 
 /turf/wall/proc/dismantle_wall(var/devastated, var/explode, var/no_product)
 
-	if (!no_product)
-		material.place_dismantled_product(src,devastated)
-
 	for (var/obj/O in contents) //Eject contents!
 		O.loc = src
 
@@ -180,15 +174,12 @@ var/list/global/wall_cache = list()
 	reinf_material = null
 	//update_connections(1)
 	update_icon()
-	ChangeTurf(/turf/floor/wood_broken)
+	ChangeTurf(get_base_turf_by_area(src))
 /turf/wall/ex_act(severity)
-	var/area/src_area = get_area(src)
-	if (src_area && src_area.type == /area/caribbean/void)
-		return
 	switch(severity)
 		if (1.0, 2.0)
 			if (!material || material.integrity < 400)
-				ChangeTurf(get_base_turf(z))
+				ChangeTurf(get_base_turf_by_area(src))
 			else
 				dismantle_wall(1,1)
 		if (3.0)
@@ -213,7 +204,7 @@ var/list/global/wall_cache = list()
 	O.density = TRUE
 	O.layer = 5
 
-	ChangeTurf(/turf/floor/plating)
+	ChangeTurf(get_base_turf_by_area(src))
 
 	var/turf/floor/F = src
 	F.burn_tile()
@@ -239,6 +230,6 @@ var/list/global/wall_cache = list()
 /turf/wall/proc/burn(temperature)
 	if (material.combustion_effect(src, temperature, 0.7))
 		spawn(2)
-			ChangeTurf(/turf/floor)
+			ChangeTurf(get_base_turf_by_area(src))
 			for (var/turf/wall/W in range(3,src))
 				W.burn((temperature/4))

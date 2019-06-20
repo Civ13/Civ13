@@ -130,7 +130,8 @@ Please contact me on #coderbus IRC. ~Carn x
 #define R_HAND_LAYER			23
 #define FIRE_LAYER				24		//If you're on fire
 #define TARGETED_LAYER			25		//BS12: Layer for the target overlay from weapon targeting system
-#define TOTAL_LAYERS			25
+#define OVEREFFECTS_LAYER			26		//BS12: Layer for the target overlay from weapon targeting system
+#define TOTAL_LAYERS			26
 //////////////////////////////////
 
 /mob/living/carbon/human
@@ -152,7 +153,7 @@ Please contact me on #coderbus IRC. ~Carn x
 		if (species.has_floating_eyes)
 			overlays |= species.get_eyes(src)
 
-	if (lying && !species.prone_icon) //Only rotate them if we're not drawing a specific icon for being prone.
+	if ((lying || prone) && !species.prone_icon) //Only rotate them if we're not drawing a specific icon for being prone.
 		var/matrix/M = matrix()
 		M.Turn(90)
 		M.Scale(size_multiplier)
@@ -569,14 +570,11 @@ var/global/list/damage_icon_parts = list()
 
 /mob/living/carbon/human/update_inv_wear_id(var/update_icons=1)
 	if (wear_id)
-/*		var/new_screen_loc = find_inv_position(slot_wear_id)
-		if (new_screen_loc)
-			wear_id.screen_loc = new_screen_loc	*/
 		wear_id.screen_loc = find_inv_position(slot_wear_id)
 		if (w_uniform && w_uniform:displays_id)
 			var/image/standing
 			if (wear_id.icon_override)
-				standing = image("icon" = wear_id.icon_override, "icon_state" = "[icon_state]")
+				standing = image("icon" = wear_id.icon_override, "icon_state" = "[wear_id.item_state]")
 
 			else
 				standing = image("icon" = 'icons/mob/mob.dmi', "icon_state" = "id")
@@ -745,8 +743,13 @@ var/global/list/damage_icon_parts = list()
 			bloodsies.color = head.blood_color
 			standing.overlays += bloodsies
 
+
 		if (istype(head,/obj/item/clothing/head))
 			var/obj/item/clothing/head/hat = head
+			if (hat.attachments.len)
+				for (var/attach in hat.attachments)
+					var/image/NI = image("icon_state" = "[attach]")
+					standing.overlays |= NI
 			var/cache_key = "[hat.light_overlay]_[species.get_bodytype()]"
 			if (hat.on && light_overlay_cache[cache_key])
 				standing.overlays |= light_overlay_cache[cache_key]
@@ -801,6 +804,9 @@ var/global/list/damage_icon_parts = list()
 
 
 /mob/living/carbon/human/update_inv_wear_suit(var/update_icons=1)
+	var/image/base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_top")
+	var/image/secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_dec")
+	var/image/tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_lines")
 	update_surgery(0)
 	if ( wear_suit && istype(wear_suit, /obj/item/) )
 		/*var/new_screen_loc = find_inv_position(slot_wear_suit)
@@ -819,6 +825,28 @@ var/global/list/damage_icon_parts = list()
 		standing = image(icon = t_icon, icon_state = wear_suit.icon_state)
 		standing.color = wear_suit.color
 
+		if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonialcoat))
+			var/obj/item/clothing/suit/storage/jacket/customcolonialcoat/CU = wear_suit
+			base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_top")
+			base.color = CU.topcolor
+			secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_dec")
+			secondary.color = CU.deccolor
+			tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_lines")
+			tertiary.color = CU.linescolor
+			standing.overlays += base
+			standing.overlays += secondary
+			standing.overlays += tertiary
+
+		else if (istype(wear_suit, /obj/item/clothing/suit/storage/jacket/customcolonial))
+			var/obj/item/clothing/suit/storage/jacket/customcolonial/CU = wear_suit
+			base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonial_jacket")
+			base.color = CU.jacketcolor
+			secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonial_cross")
+			secondary.color = CU.crosscolor
+			tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonial_plain")
+			standing.overlays += base
+			standing.overlays += secondary
+			standing.overlays += tertiary
 		if (wear_suit.blood_DNA)
 			var/obj/item/clothing/suit/S = wear_suit
 			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "[S.blood_overlay_type]blood")
@@ -854,8 +882,6 @@ var/global/list/damage_icon_parts = list()
 	else
 		overlays_standing[SUIT_LAYER]	= null
 		update_inv_shoes(0)
-
-	update_collar(0)
 
 	if (update_icons)   update_icons()
 
@@ -1051,21 +1077,6 @@ var/global/list/damage_icon_parts = list()
 
 	if (update_icons) update_icons()
 
-//Adds a collar overlay above the helmet layer if the suit has one
-//	Suit needs an identically named sprite in icons/mob/collar.dmi
-/mob/living/carbon/human/proc/update_collar(var/update_icons=1)
-	var/icon/C = new('icons/mob/collar.dmi')
-	var/image/standing = null
-
-	if (wear_suit)
-		if (wear_suit.icon_state in C.IconStates())
-			standing = image("icon" = C, "icon_state" = "[wear_suit.icon_state]")
-
-	overlays_standing[COLLAR_LAYER]	= standing
-
-	if (update_icons)   update_icons()
-
-
 /mob/living/carbon/human/update_fire(var/update_icons=1)
 	overlays_standing[FIRE_LAYER] = null
 	if (on_fire)
@@ -1122,4 +1133,5 @@ var/global/list/damage_icon_parts = list()
 #undef R_HAND_LAYER
 #undef TARGETED_LAYER
 #undef FIRE_LAYER
+#undef OVEREFFECTS_LAYER
 #undef TOTAL_LAYERS

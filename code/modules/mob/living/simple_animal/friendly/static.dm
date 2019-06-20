@@ -77,6 +77,9 @@
 				affecting.droplimb(FALSE, DROPLIMB_EDGE)
 				visible_message("The piranhas bite off [H]'s [affecting]!")
 				qdel(affecting)
+				for(var/mob/living/carbon/human/NB in view(6,src))
+					NB.mood -= 10
+					NB.ptsd += 1
 			spawn(300)
 				invisibility = 101
 			return

@@ -586,7 +586,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british, slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/britishcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
@@ -633,7 +633,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/britishcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
@@ -679,7 +679,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/britishcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley(H), slot_l_hand)
@@ -765,10 +765,10 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform) // for now
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/britishcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
@@ -811,7 +811,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/brodie(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/p14enfield(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/modern/british/newplate = new /obj/item/clothing/accessory/armor/modern/british(null)
@@ -854,7 +854,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/webbing/ww1/british/full/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/british/full(null)
+	var/obj/item/clothing/accessory/storage/webbing/ww1/british/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/british(null)
 	uniform.attackby(fullwebbing, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier of the Royal Army. Follow your <b>Sergeant's</b> orders!")

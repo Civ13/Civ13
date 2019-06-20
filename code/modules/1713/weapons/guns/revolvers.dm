@@ -19,8 +19,8 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
+	equiptimer = 7
 	accuracy_list = list(
-
 		// small body parts: head, hand, feet
 		"small" = list(
 			SHORT_RANGE_STILL = 60,
@@ -126,13 +126,16 @@
 
 /obj/item/weapon/gun/projectile/revolver/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
 	if (istype(H) && H.faction_text == "INDIANS")
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
-	return ..()
+	return TRUE
 
 /obj/item/weapon/gun/projectile/revolver/handle_post_fire()
 	..()
@@ -188,9 +191,10 @@
 	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
+	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/m1892
-	name = "Modèle 1892 revolver"
+	name = "Modele 1892 revolver"
 	desc = "French officer's revolver."
 	icon_state = "m1892"
 	w_class = 2
@@ -204,6 +208,7 @@
 	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
+	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/peacemaker
 	name = "Colt Peacemaker"
@@ -268,6 +273,7 @@
 	blackpowder = FALSE
 	cocked = FALSE
 	load_delay = 5
+	gun_safety = TRUE
 
 /obj/item/weapon/gun/projectile/revolver/panther
 	name = "Panther revolver"
@@ -282,6 +288,8 @@
 	weight = 0.8
 	load_method = SINGLE_CASING
 	load_delay = 6
+	gun_safety = TRUE
+
 /obj/item/weapon/gun/projectile/revolver/derringer
 	name = "Derringer M95 pistol"
 	desc = "Officialy the Remington Model 95, this small pistol has two barrels."
@@ -530,7 +538,10 @@
 	if (!cocked && single_action)
 		user << "<span class='warning'>You can't fire \the [src] while the weapon is uncocked!</span>"
 		return FALSE
-	return ..()
+	if (gun_safety && safetyon)
+		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
+		return FALSE
+	return TRUE
 
 /obj/item/weapon/gun/projectile/revolving/handle_post_fire()
 	..()

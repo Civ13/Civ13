@@ -16,12 +16,37 @@
 	var/light_amt = 6 //light range
 	layer = 3.95
 	var/brightness_color = null
-
+	var/lamp_inside = TRUE
+	var/lamp_broken = FALSE
+	var/ltype = "lbulb"
 /obj/structure/lamp/New()
 	..()
 	do_light()
 
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/lightbulb) && !lamp_inside)
+		var/obj/item/lightbulb/L = W
+		if (!L.broken && L.ltype == ltype)
+			user << "You put the lightbulb in."
+			qdel(W)
+			lamp_inside = TRUE
+			lamp_broken = FALSE
+			icon_state = base_icon
+			update_icon()
+			return
+	if (istype(W,/obj/item/weapon/wrench) && !not_movable)
+		if (powersource)
+			user << "<span class='notice'>Remove the cables first.</span>"
+			return
+		if (istype(src, /obj/structure/engine))
+			var/obj/structure/engine/EN = src
+			if (!isemptylist(EN.connections))
+				user << "<span class='notice'>Remove the cables first.</span>"
+				return
+		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
+		user << (anchored ? "<span class='notice'>You unfasten \the [src] from the floor.</span>" : "<span class='notice'>You secure \the [src] to the floor.</span>")
+		anchored = !anchored
+		return
 	if (!anchored)
 		user << "<span class='notice'>Fix the lamp in place with a wrench first.</span>"
 		return
@@ -61,19 +86,33 @@
 	else
 		..()
 
-
-/obj/structure/lamp/proc/do_light()
-	if (check_power() || powerneeded == 0)
-		if (brightness_color)
-			set_light(light_amt, 1, brightness_color)
-		else
-			set_light(light_amt)
+/obj/structure/lamp/update_icon()
+	if (lamp_inside && !lamp_broken && on)
 		icon_state = "[base_icon]_on"
-		powered = TRUE
-		on = TRUE
+	else if (lamp_inside && !lamp_broken && !on)
+		icon_state = base_icon
+	else if (!lamp_inside)
+		icon_state = "[base_icon]_empty"
+	else if (lamp_inside && lamp_broken)
+		icon_state = "[base_icon]_broken"
+/obj/structure/lamp/proc/do_light()
+	if (!lamp_broken && lamp_inside)
+		if (check_power() || powerneeded == 0)
+			if (brightness_color)
+				set_light(light_amt, 1, brightness_color)
+			else
+				set_light(light_amt)
+			update_icon()
+			powered = TRUE
+			on = TRUE
+		else
+			set_light(0)
+			update_icon()
+			powered = FALSE
+			on = FALSE
 	else
 		set_light(0)
-		icon_state = base_icon
+		update_icon()
 		powered = FALSE
 		on = FALSE
 
@@ -98,6 +137,73 @@
 				powersource.currentflow -= powerneeded
 				powersource.lastupdate2 = world.time
 			return FALSE
+
+
+/obj/structure/lamp/bullet_act(var/obj/item/projectile/Proj)
+	if (lamp_inside && !lamp_broken)
+		visible_message("\The [src] shatters!")
+		playsound(src, 'sound/effects/hit_on_shattered_glass.ogg', 70, TRUE)
+//		new/obj/item/weapon/material/shard(loc)
+		on = FALSE
+		lamp_broken = TRUE
+		icon_state = "[base_icon]_broken"
+		update_icon()
+//	if (powersource)
+//		var/obj/structure/cable/CB = powersource
+//		CB.connections -= src
+//		powersource = null
+//	qdel(src)
+	..()
+
+/obj/item/lightbulb
+	name = "lightbulb"
+	icon = 'icons/obj/lighting.dmi'
+	icon_state = "lbulb"
+	anchored = FALSE
+	density = FALSE
+	opacity = FALSE
+	var/broken = FALSE
+	var/ltype = "lbulb"
+
+/obj/item/lightbulb/broken
+	name = "broken lightbulb"
+	icon_state = "lbulb_broken"
+	broken = TRUE
+
+/obj/item/lightbulb/tube
+	name = "light tube"
+	icon_state = "ltube"
+	ltype = "ltube"
+
+/obj/item/lightbulb/tube/broken
+	name = "broken light tube"
+	icon_state = "ltube_broken"
+	broken = TRUE
+
+/obj/structure/lamp/attack_hand(mob/living/carbon/human/user as mob)
+	if (lamp_inside)
+		if (lamp_broken)
+			user << "You remove the broken lightbulb."
+			lamp_inside = FALSE
+			lamp_broken = FALSE
+			var/obj/item/lightbulb/broken/LP = new/obj/item/lightbulb/broken
+			LP.ltype = ltype
+			LP.icon_state = "[ltype]_broken"
+			LP.update_icon()
+			user.put_in_active_hand(LP)
+
+		else
+			user << "You remove the lightbulb."
+			lamp_inside = FALSE
+			var/obj/item/lightbulb/LP = new/obj/item/lightbulb
+			LP.ltype = ltype
+			LP.icon_state = "[ltype]"
+			LP.update_icon()
+			user.put_in_active_hand(LP)
+		icon_state = "[base_icon]_empty"
+		update_icon()
+	else
+		..()
 
 /obj/structure/lamp/lamppost_small
 	name = "small lamp post"
@@ -131,10 +237,13 @@
 	light_amt = 4
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	ltype = "ltube"
 
 /obj/structure/lamp/lamp_big/alwayson
 	powerneeded = 0
 	on = TRUE
+/obj/structure/lamp/lamp_big/alwayson/white
+	brightness_color = "#ffffff"
 
 /obj/structure/refinery
 	name = "refinery"

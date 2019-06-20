@@ -154,7 +154,7 @@
 	taste_description = "slime"
 	taste_mult = 0.1
 	reagent_state = LIQUID
-	nutriment_factor = 20
+	nutriment_factor = 1
 	color = "#302000"
 
 /datum/reagent/nutriment/cornoil/touch_turf(var/turf/T)
@@ -163,10 +163,6 @@
 
 	var/hotspot = (locate(/obj/fire) in T)
 	if (hotspot)
-	//	var/datum/gas_mixture/lowertemp = T.remove_air(T:air:total_moles)
-	//	lowertemp.temperature = max(min(lowertemp.temperature-2000, lowertemp.temperature / 2), FALSE)
-	//	lowertemp.react()
-	//	T.assume_air(lowertemp)
 		qdel(hotspot)
 
 	if (volume >= 3)

@@ -18,6 +18,7 @@
 		list(PIRATES) = /area/caribbean/pirates/land/inside
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(BRITISH = 0.5, PIRATES = 0.5)
 	//songs = list()
 	meme = TRUE
@@ -29,6 +30,10 @@ obj/map_metadata/island/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_RP == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
+		. = FALSE
+	else if (J.is_ww1 == TRUE)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
 		. = FALSE

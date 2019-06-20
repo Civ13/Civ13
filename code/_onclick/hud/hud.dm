@@ -10,8 +10,10 @@ var/list/global_huds = list(
 		global_hud.darkMask,
 		global_hud.nvg,
 		global_hud.thermal,
-		global_hud.meson,
-		global_hud.science)
+		global_hud.fov,
+		global_hud.noise,
+		global_hud.fishbed,
+		)
 /*
 /datum/hud/var/obj/screen/grab_intent
 /datum/hud/var/obj/screen/hurt_intent
@@ -25,13 +27,15 @@ var/list/global_huds = list(
 	var/list/darkMask
 	var/obj/screen/nvg
 	var/obj/screen/thermal
-	var/obj/screen/meson
-	var/obj/screen/science
+	var/obj/screen/fov
+	var/obj/screen/fishbed
+	var/obj/screen/noise
+	var/obj/screen/cover
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
-	screen.screen_loc = "1,1"
-	screen.icon = 'icons/obj/hud_full.dmi'
+	screen.screen_loc = "4,1"
+	screen.icon = 'icons/mob/screen1_full.dmi'
 	screen.icon_state = icon_state
 	screen.layer = 17
 	screen.plane = HUD_PLANE
@@ -56,14 +60,38 @@ var/list/global_huds = list(
 	blurry.plane = HUD_PLANE
 	blurry.mouse_opacity = FALSE
 
-	nvg = setup_overlay("nvg_hud")
-	thermal = setup_overlay("thermal_hud")
-	meson = setup_overlay("meson_hud")
-	science = setup_overlay("science_hud")
+//	nvg = setup_overlay("nvg_hud")
+//	thermal = setup_overlay("thermal_hud")
+
+	nvg = new /obj/screen()
+	nvg.screen_loc = ui_entire_screen
+	nvg.icon_state = "nvg"
+	nvg.layer = 17
+	nvg.plane = HUD_PLANE
+	nvg.mouse_opacity = FALSE
+
+	thermal = new /obj/screen()
+	thermal.screen_loc = ui_entire_screen
+	thermal.icon_state = "thermal"
+	thermal.layer = 17
+	thermal.plane = HUD_PLANE
+	thermal.mouse_opacity = FALSE
+
+	fov = new /obj/screen/fov()
+	fov.icon = 'icons/mob/hide.dmi'
+	fov.icon_state = "combat"
+	fov.name = " "
+	fov.screen_loc = "4,1"
+	fov.mouse_opacity = FALSE
+	fov.layer = 18
+
+	cover = new /obj/screen/cover()
+	noise = new /obj/screen/noise()
+	fishbed = new /obj/screen/fishbed()
 
 	var/obj/screen/O
 	var/i
-	//that nasty looking dither you  get when you're short-sighted
+	//that nasty looking dither you get when you're short-sighted
 	vimpaired = newlist(/obj/screen,/obj/screen,/obj/screen,/obj/screen)
 	O = vimpaired[1]
 	O.screen_loc = "1,1 to 5,15"

@@ -8,6 +8,8 @@
 	var/turf/cover = get_turf(src)
 	if (!cover)
 		return FALSE
+	if (!istype(P, /obj/item/projectile))
+		return FALSE
 	if (get_dist(P.starting, loc) <= 1) //Tables won't help you if people are THIS close
 		return FALSE
 	// can't hit legs or feet when they're behind a sandbag
@@ -19,8 +21,8 @@
 
 	if (ismob(P.original)) // what the firer clicked
 		var/mob/m = P.original
-		if (m.lying)
-			extra_chance += 30
+		if (m.lying || m.prone)
+			extra_chance += 60
 		if (ishuman(m))
 			var/mob/living/carbon/human/H = m
 			if (H.crouching && !H.lying)

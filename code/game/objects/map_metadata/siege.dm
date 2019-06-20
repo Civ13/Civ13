@@ -17,6 +17,7 @@
 		list(GREEK) = /area/caribbean/greek
 		)
 	age = "313 B.C."
+	ordinal_age = 1
 	faction_distribution_coeffs = list(ROMAN = 0.5, GREEK = 0.5)
 	battle_name = "Syracusan siege"
 	mission_start_message = "<font size=4>The <b>Roman</b> troops are sieging a <b>Greek</b> fortress near Syracuse! The Greeks will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
@@ -27,7 +28,7 @@
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Siege"
 /obj/map_metadata/siege/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/siege/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)

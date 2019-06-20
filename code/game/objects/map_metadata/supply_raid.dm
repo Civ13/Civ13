@@ -17,6 +17,7 @@
 		list(INDIANS) = /area/caribbean/pirates/land
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(BRITISH = 0.35, INDIANS = 0.65)
 	battle_name = "Supply Raid on Port Andrew"
 	mission_start_message = "<font size=4>All factions have <b>15 minutes</b> to prepare before the combat starts.</font>"
@@ -30,6 +31,8 @@ obj/map_metadata/supply_raid/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_RP == TRUE)
 		. = FALSE
 	else if (J.is_army == TRUE)
+		. = FALSE
+	else if (J.is_coldwar == TRUE)
 		. = FALSE
 	else if (J.is_medieval == TRUE)
 		. = FALSE

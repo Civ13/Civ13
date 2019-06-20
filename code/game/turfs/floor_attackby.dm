@@ -95,7 +95,7 @@
 			new/obj/effect/decal/cleanable/blood/oil(user.loc)
 		if (C.reagents.has_reagent("olive_oil", 15))
 			new/obj/effect/decal/cleanable/blood/oil(user.loc)
-		C.reagents.splash(src, reagents.total_volume)
+		C.reagents.splash(src, C.reagents.total_volume)
 		C.reagents.clear_reagents()
 		C.update_icon()
 		C.reagents.del_reagent("cholera")
@@ -345,6 +345,42 @@
 					return
 		else
 			return ..(C, user)
+
+	else if (istype(C, /obj/item/weapon/sandbag/sandbag))
+
+		var/your_dir = "NORTH"
+
+		switch (user.dir)
+			if (NORTH)
+				your_dir = "NORTH"
+			if (SOUTH)
+				your_dir = "SOUTH"
+			if (EAST)
+				your_dir = "EAST"
+			if (WEST)
+				your_dir = "WEST"
+
+		var/sandbag_time = 50
+
+		if (ishuman(user))
+			var/mob/living/carbon/human/H = user
+			sandbag_time /= H.getStatCoeff("strength")
+			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+
+		if (src == get_step(user, user.dir))
+			if (WWinput(user, "This will start building a sandbag wall [your_dir] of you.", "Sandbag Wall Construction", "Continue", list("Continue", "Stop")) == "Continue")
+				visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
+				if (do_after(user, sandbag_time, user.loc))
+					var/obj/item/weapon/sandbag/sandbag/bag = C
+					var/progress = bag.sand_amount
+					qdel(C)
+					var/obj/structure/window/sandbag/sandbag/incomplete/sb = new/obj/structure/window/sandbag/sandbag/incomplete(src, user)
+					sb.progress = progress
+					visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>")
+					if (ishuman(user))
+						var/mob/living/carbon/human/H = user
+						H.adaptStat("crafting", 3)
+				return
 
 	else if (istype(C, /obj/item/weapon/sandbag))
 

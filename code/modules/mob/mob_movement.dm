@@ -28,6 +28,12 @@
 /mob/proc/get_walk_delay()
 	return get_run_delay() * 1.33
 
+/mob/proc/get_stealth_delay()
+	return get_run_delay() * 4
+
+/mob/proc/get_prone_delay()
+	return get_run_delay() * 8
+
 // weight slowdown
 
 /mob/living/carbon/human/var/last_run_delay = -1
@@ -80,9 +86,9 @@
 		var/mob/moving_mob = mover
 		if ((other_mobs && moving_mob.other_mobs))
 			return TRUE
-		return (!mover.density || !density || lying)
+		return (!mover.density || !density || lying || prone)
 	else
-		return (!mover.density || !density || lying)
+		return (!mover.density || !density || lying || prone)
 	return
 
 /mob/proc/setMoveCooldown(var/timeout)
@@ -297,6 +303,12 @@
 
 	for (var/obj/structure/noose/N in get_turf(mob))
 		if (N.hanging == mob)
+			return
+
+	if (mob.prone && istype(n, /turf))
+		var/turf/floor/F = n
+		if (F.Adjacent(mob))
+			mob.proning(F)
 			return
 
 	if (mob.lying && istype(n, /turf))
@@ -532,7 +544,16 @@
 				if (mob_is_human)
 					H.nutrition -= 0.002
 					H.water -= 0.002
-
+			if ("stealth")
+				move_delay += mob.get_stealth_delay() + standing_on_snow
+				if (mob_is_human)
+					H.nutrition -= 0.004
+					H.water -= 0.004
+			if ("proning")
+				move_delay += standing_on_snow
+				if (mob_is_human)
+					H.nutrition -= 0.0015
+					H.water -= 0.0015
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
@@ -570,11 +591,11 @@
 
 			if (H.getStat("stamina") <= 0 && H.m_intent == "run")
 				H << "<span class = 'danger'>You're too tired to keep running.</span>"
-				for (var/obj/screen/mov_intent/mov in H.client.screen)
-					H.client.Click(mov)
-					break
 				if (H.m_intent != "walk")
 					H.m_intent = "walk" // in case we don't have a m_intent HUD, somehow
+					if (mob.HUDneed["mov_intent"])
+						var/obj/screen/intent/I = mob.HUDneed["mov_intent"]
+						I.update_icon()
 
 		if (!mob_is_observer && F_is_valid_floor)
 			if (istype(src, /mob/living/carbon/human))
@@ -885,6 +906,20 @@
 				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(NORTH)
+			else if (mob.prone)
+				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+					mob.dir = WEST
+					var/matrix/M = matrix()
+					M.Turn(-90)
+					M.Translate(1,-6)
+					mob.transform = M
+				else
+					mob.dir = EAST
+					var/matrix/M = matrix()
+					M.Turn(90)
+					M.Translate(1,-6)
+					mob.transform = M
+
 
 /client/verb/startmovingdown()
 	set name = ".startmovingdown"
@@ -903,7 +938,19 @@
 				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(SOUTH)
-
+			else if (mob.prone)
+				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+					mob.dir = WEST
+					var/matrix/M = matrix()
+					M.Turn(-90)
+					M.Translate(1,-6)
+					mob.transform = M
+				else
+					mob.dir = EAST
+					var/matrix/M = matrix()
+					M.Turn(90)
+					M.Translate(1,-6)
+					mob.transform = M
 /client/verb/startmovingright()
 	set name = ".startmovingright"
 	set instant = TRUE
@@ -921,7 +968,19 @@
 				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(EAST)
-
+			else if (mob.prone)
+				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+					mob.dir = WEST
+					var/matrix/M = matrix()
+					M.Turn(-90)
+					M.Translate(1,-6)
+					mob.transform = M
+				else
+					mob.dir = EAST
+					var/matrix/M = matrix()
+					M.Turn(90)
+					M.Translate(1,-6)
+					mob.transform = M
 /client/verb/startmovingleft()
 	set name = ".startmovingleft"
 	set instant = TRUE
@@ -939,7 +998,19 @@
 				H.driver_vehicle.updatepassdir()
 				if (!H.driver_vehicle.wheeled)
 					H.driver_vehicle.processmove(WEST)
-
+			else if (mob.prone)
+				if (mob.dir == NORTH || mob.dir == NORTHWEST || mob.dir == NORTHEAST || mob.dir == WEST)
+					mob.dir = WEST
+					var/matrix/M = matrix()
+					M.Turn(-90)
+					M.Translate(1,-6)
+					mob.transform = M
+				else
+					mob.dir = EAST
+					var/matrix/M = matrix()
+					M.Turn(90)
+					M.Translate(1,-6)
+					mob.transform = M
 /client/verb/stopmovingup()
 	set name = ".stopmovingup"
 	set instant = TRUE

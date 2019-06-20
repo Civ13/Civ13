@@ -290,6 +290,19 @@
 	unique_door_name = "Portuguese locked"
 #undef PT_CODE
 
+#define RU_CODE 995 * 5
+/datum/keyslot/russian
+	code = RU_CODE
+
+/obj/item/weapon/key/russian
+	code = RU_CODE
+	name = "Russian key"
+
+/obj/structure/simple_door/key_door/russian
+	keyslot_type = /datum/keyslot/russian
+	unique_door_name = "Russian locked"
+#undef RU_CODE
+
 #define NL_CODE 995 * 6
 /datum/keyslot/dutch
 	code = NL_CODE
@@ -315,3 +328,42 @@
 	keyslot_type = /datum/keyslot/japanese
 	unique_door_name = "Japanese locked"
 #undef JP_CODE
+
+#define VC_CODE 995 * 8
+/datum/keyslot/vietnamese
+	code = VC_CODE
+
+/obj/item/weapon/key/vietnamese
+	code = VC_CODE
+	name = "Vietnamese key"
+
+/obj/structure/simple_door/key_door/vietnamese
+	keyslot_type = /datum/keyslot/vietnamese
+	unique_door_name = "Vietnamese locked"
+#undef VC_CODE
+
+#define INS_CODE 995 * 9
+/datum/keyslot/insurgent
+	code = INS_CODE
+
+/obj/item/weapon/key/insurgent
+	code = INS_CODE
+	name = "Insurgent key"
+
+/obj/structure/simple_door/key_door/insurgent
+	keyslot_type = /datum/keyslot/insurgent
+	unique_door_name = "Insurgent locked"
+#undef INS_CODE
+
+#define US_CODE 995 * 10
+/datum/keyslot/american
+	code = US_CODE
+
+/obj/item/weapon/key/american
+	code = US_CODE
+	name = "American key"
+
+/obj/structure/simple_door/key_door/american
+	keyslot_type = /datum/keyslot/american
+	unique_door_name = "American locked"
+#undef US_CODE

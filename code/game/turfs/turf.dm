@@ -348,14 +348,6 @@ var/const/enterloopsanity = 100
 		tracks = new typepath(src)
 	tracks.AddTracks(bloodDNA,comingdir,goingdir,bloodcolor)
 
-/turf/proc/update_dirt()
-	dirt = min(dirt+1, 101)
-	var/obj/effect/decal/cleanable/dirt/dirtoverlay = locate(/obj/effect/decal/cleanable/dirt, src)
-	if (dirt > 50)
-		if (!dirtoverlay)
-			dirtoverlay = new/obj/effect/decal/cleanable/dirt(src)
-		dirtoverlay.alpha = min((dirt - 50) * 5, 255)
-
 /turf/Entered(atom/A, atom/OL)
 	if (movement_disabled && usr.ckey != movement_disabled_exception)
 		usr << "<span class='danger'>Movement is admin-disabled.</span>" //This is to identify lag problems
@@ -366,8 +358,6 @@ var/const/enterloopsanity = 100
 		if (M.lying)
 			return ..()
 
-		// Dirt overlays.
-		update_dirt()
 
 		if (istype(M, /mob/living/carbon/human))
 			var/footstepsound
@@ -403,8 +393,6 @@ var/const/enterloopsanity = 100
 				footstepsound = "platingfootsteps"
 			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
-			//else 	if (istype(src, /turf/stalker/floor/tropa))//Not needed for now.
-			//	footstepsound = "sandfootsteps"
 			else if (istype(src, /turf/floor/winter))
 				footstepsound = "snowfootsteps"
 			else 	if (istype(src, /turf/floor/beach/water) && src.water_level > 0)
@@ -423,9 +411,12 @@ var/const/enterloopsanity = 100
 			else
 				footstepsound = "erikafootsteps"
 
-			if (istype(H.shoes, /obj/item/clothing/shoes))
+			if (H.m_intent != "stealth" && H.m_intent != "proning")
+				var/fsvol = 60
+				if (istype(H.shoes, /obj/item/clothing/shoes))
+					fsvol = 100 //shoes make more noise than bare feet
 				if (movementMachine.ticks >= H.next_footstep_sound_at_movement_tick)
-					playsound(src, footstepsound, 100, TRUE)
+					playsound(src, footstepsound, fsvol, TRUE)
 					switch (H.m_intent)
 						if ("run")
 							H.next_footstep_sound_at_movement_tick = movementMachine.ticks + (movementMachine.interval*40*(0.3/movementMachine.interval))

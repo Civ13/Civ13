@@ -15,6 +15,7 @@
 		list(INDIANS) = /area/caribbean/british
 		)
 	age = "5000 B.C."
+	ordinal_age = 0
 	faction_distribution_coeffs = list(INDIANS = 1)
 	battle_name = "the tribes"
 	mission_start_message = "<big>Six tribes have been inhabiting this area for generations. Will they be able to get along?</big>"

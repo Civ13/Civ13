@@ -46,7 +46,7 @@
 		overlays = list(cover_overlay3)
 
 /mob/living/simple_animal/horse/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
-	if (isnull(rider) && M == user)
+	if (isnull(rider) && M == user && (user.lying && !user.prone))
 		var/mob/living/carbon/human/MM = M
 		visible_message("<div class='notice'>[M] starts getting on the [src]'s back...</div>","<div class='notice'>You start going on the [src]'s back...</div>")
 		if (do_after(MM, 40, src))

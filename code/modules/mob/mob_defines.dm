@@ -77,7 +77,12 @@
 	var/confused = FALSE		//Carbon
 	var/sleeping = FALSE		//Carbon
 	var/resting = FALSE			//Carbon
+
+	var/nvg = FALSE
+	var/thermal = FALSE
+
 	var/lying = FALSE
+	var/prone = FALSE
 	var/lying_prev = FALSE
 	var/canmove = TRUE
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.
@@ -103,13 +108,13 @@
 	var/defense_intent = I_PARRY//Living. For dodging and parrying.
 	var/m_intent = "walk"//Living
 	var/obj/buckled = null//Living
+	var/middle_click_intent = "kick" //For doing different things with middle click.
 	var/combat_mode = 0//Living
 	var/obj/item/l_hand = null//Living
 	var/obj/item/r_hand = null//Living
 	var/obj/item/weapon/back = null//Human/Monkey
 	var/obj/item/weapon/storage/s_active = null//Carbon
 	var/obj/item/clothing/mask/wear_mask = null//Carbon
-
 
 	var/datum/hud/hud_used = null
 

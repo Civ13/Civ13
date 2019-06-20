@@ -331,6 +331,15 @@
 			src << "<span class = 'danger'>You're banned from playing.</span>"
 			return TRUE
 
+		if (!isemptylist(approved_list) && config.useapprovedlist)
+			var/found = FALSE
+			for (var/i in approved_list)
+				if (i == client.ckey)
+					found = TRUE
+			if (!found)
+				usr << "<span class = 'notice'><font size = 4 color='red'><b>The game is currently only accepting approved players. Visit the Discord to get approved.</b></font></span>"
+				return
+
 		if (!ticker.players_can_join)
 			src << "<span class = 'danger'>You can't join the game yet.</span>"
 			return TRUE
@@ -374,10 +383,19 @@
 		if (map && map.has_occupied_base(job_flag) && map.ID != MAP_CAMP && map.ID != MAP_HILL203)
 			usr << "<span class = 'danger'>The enemy is currently occupying your base! You can't be deployed right now.</span>"
 			return
-
+/* "Old" whitelisting proccess
 		if (actual_job.whitelisted)
 			if (!actual_job.validate(client))
 				usr << "<span class = 'notice'>You need to be whitelisted to play this job. Apply in the Discord.</span>"
+				return
+*/
+		if (actual_job.whitelisted && !isemptylist(whitelist_list) && config.use_job_whitelist)
+			var/found = FALSE
+			for (var/i in whitelist_list)
+				if (i == client.ckey)
+					found = TRUE
+			if (!found)
+				usr << "<span class = 'notice'><font size = 4><b>You need to be whitelisted to play this job. Apply in the Discord.</b></font></span>"
 				return
 
 		if (actual_job.is_officer)
@@ -543,6 +561,9 @@
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
+	if (client.prefs.gender == FEMALE && (istype(job, /datum/job/american) || istype(job, /datum/job/arab)))
+		usr << "<span class='danger'>You must be male to play as this faction.</span>"
+		return
 	if (job.is_ww1)
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
@@ -613,6 +634,10 @@
 		dat += "[alive_russian.len] Russian "
 	if (GERMAN in map.faction_organization)
 		dat += "[alive_german.len] German "
+	if (AMERICAN in map.faction_organization)
+		dat += "[alive_american.len] American "
+	if (VIETNAMESE in map.faction_organization)
+		dat += "[alive_vietnamese.len] Vietnamese "
 	dat += "<br>"
 //	dat += "<i>Jobs available for slave-banned players are marked with an *</i>"
 //	dat += "<br>"
@@ -634,6 +659,8 @@
 		RUSSIAN = FALSE,
 		JAPANESE = FALSE,
 		GERMAN = FALSE,
+		AMERICAN = FALSE,
+		VIETNAMESE = FALSE,
 		)
 
 	var/prev_side = FALSE
@@ -653,9 +680,6 @@
 			continue
 
 		var/job_is_available = job && IsJobAvailable(job.title)
-
-		if (!job.validate(src))
-			job_is_available = FALSE
 
 		//	unavailable_message = " <span class = 'color: rgb(255,215,0);'>{WHITELISTED}</span> "
 
@@ -696,6 +720,21 @@
 			job_is_available = FALSE
 
 		if (istype(job, /datum/job/greek) && !greek_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/arab) && !arab_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/russian) && !russian_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/german) && !german_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/american) && !american_toggled)
+			job_is_available = FALSE
+
+		if (istype(job, /datum/job/vietnamese) && !vietnamese_toggled)
 			job_is_available = FALSE
 		// check if the job is admin-locked or disabled codewise
 

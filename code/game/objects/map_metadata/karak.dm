@@ -17,6 +17,7 @@
 		list(FRENCH) = /area/caribbean/crusader,
 		)
 	age = "1013"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(ARAB = 0.5, FRENCH = 0.5)
 	battle_name = "karak of Karak"
 	mission_start_message = "<font size=4>The <b>Caliphate</b> troops are besieging the <b>Crusader</b> fortress of Karak! The Crusaders will win if they manage to hold the fortress for 35 minutes. <br> The siege will start in <b>6 minutes</b>.</font>"
@@ -30,12 +31,15 @@
 	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/karak/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 3600 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 36000 || admin_ended_all_grace_periods)
 
 obj/map_metadata/karak/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/arab))
-		. = TRUE
+		if (J.is_coldwar || J.is_specops)
+			. = FALSE
+		else
+			. = TRUE
 	if (istype(J, /datum/job/french))
 		if (J.is_crusader == TRUE)
 			. = TRUE

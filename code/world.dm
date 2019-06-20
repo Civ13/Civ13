@@ -14,7 +14,8 @@ var/global/serverswap_closed = FALSE
 
 */
 var/global/datum/global_init/init = new ()
-
+var/global/list/approved_list = list()
+var/global/list/whitelist_list = list()
 /*
 	Pre-map initialization stuff should go here.
 */
@@ -55,9 +56,9 @@ var/world_is_open = TRUE
 
 /world
 	mob = /mob/new_player
-	turf = /turf/floor/beach/water
+	turf = /turf/floor/dirt
 	area = /area/caribbean
-	view = "15x15"
+	view = "20x15"
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
 
 #define RECOMMENDED_VERSION 512
@@ -68,10 +69,6 @@ var/world_is_open = TRUE
 	if (config && config.server_name != null && config.server_suffix && world.port > 0)
 		// dumb and hardcoded but I don't care~
 		config.server_name += " #[(world.port % 1000) / 100]"
-
-	for (var/W in (typesof(/datum/whitelist) - /datum/whitelist))
-		var/datum/whitelist/whitelist = new W
-		global_whitelists[whitelist.name] = whitelist
 
 	callHook("startup")
 	//Emergency Fix
@@ -223,7 +220,6 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /world/Reboot(var/reason)
 
-	save_all_whitelists()
 	serverswap_pre_close_server()
 
 	/* Wait for serverswap to do its magic
@@ -293,9 +289,9 @@ var/world_topic_spam_protect_time = world.timeofday
 	. += "<b>Gamemode</b>: [map ? map.gamemode : "???"]"
 	. += ";"
 	. += "<b>Players</b>: [clients.len]" // turns out the bot only considers itself a player sometimes? its weird. Maybe it was fixed, not sure - Kachnov
-	if (config.usewhitelist)
+	if (config.useapprovedlist)
 		. += ";"
-		. += "<b>Whitelist</b>: Enabled"
+		. += "<b>Approved only</b>: Enabled"
 	. += ";"
 	. += "realtime=[num2text(world.realtime, 20)]"
 /proc/start_serverdata_loop()

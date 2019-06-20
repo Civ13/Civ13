@@ -36,10 +36,10 @@
 		//set src in oview(1)
 	switch(severity)
 		if (1.0)
-			ChangeTurf(world.turf)
+			ChangeTurf(get_base_turf_by_area(src))
 		if (2.0)
 			if (prob(40))
-				ChangeTurf(world.turf)
+				ChangeTurf(get_base_turf_by_area(src))
 	return
 
 /turf/floor/grass
@@ -351,6 +351,16 @@
 	icon_state = "concrete6"
 	interior = FALSE
 
+/turf/floor/plating/road
+	name = "road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "road_1"
+	interior = FALSE
+
+/turf/floor/plating/concrete/New()
+	..()
+	icon_state = pick("road_1","road_2","road_3")
+
 /turf/floor/plating/concrete/New()
 	..()
 	if (icon_state == "concrete2")
@@ -362,6 +372,19 @@
 	if (icon_state == "concrete10")
 		icon_state = pick("concrete10", "concrete11")
 		return
+
+/turf/floor/plating/steel
+	name = "steel plated floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "floor"
+	interior = TRUE
+
+/turf/floor/plating/white
+	name = "white plated floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "white"
+	interior = TRUE
+
 
 /turf/floor/plating/cobblestone
 	name = "road"
