@@ -546,6 +546,17 @@
 		C.combat_mode = 1
 		C.combat_icon.icon_state = "combat1"
 */
+
+obj/screen/tactic
+	name = "tactic"
+	icon = 'icons/mob/screen/1713Style.dmi'
+	icon_state = "nonethird"
+	screen_loc = "19,4"
+
+/obj/screen/tactic/New()
+	..()
+	update_icon()
+
 /obj/screen/mood
 	name = "mood"
 	icon = 'icons/mob/screen/1713Style.dmi'
@@ -835,7 +846,7 @@
 	icon = 'icons/mob/screen1_full.dmi'
 	icon_state = "oxydamageoverlay0"
 	name = "dmg"
-	screen_loc = "1,1"
+	screen_loc = "4,1"
 	mouse_opacity = FALSE
 	process_flag = TRUE
 	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
@@ -958,6 +969,11 @@
 /obj/screen/fishbed
 	icon = 'icons/mob/screen1_full.dmi'
 	icon_state = "fishbed"
+	layer = 17
+
+/obj/screen/cover
+	icon = 'icons/mob/screenlimit.dmi'
+	icon_state = "cover"
 	layer = 18
 
 //-----------------------Gun Mod------------------------------
@@ -1085,7 +1101,7 @@
 	icon = 'icons/mob/hide.dmi'
 	icon_state = "combat"
 	name = " "
-	screen_loc = "1,1"
+	screen_loc = "4,1"
 	mouse_opacity = FALSE
 	layer = 18
 	process_flag = TRUE

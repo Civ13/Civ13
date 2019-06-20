@@ -34,7 +34,7 @@ var/list/nonbreaking_types = list(
 
 	health = 300
 	initial_health = health
-	
+
 	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 		health = 50
 		initial_health = health
@@ -159,14 +159,14 @@ var/list/nonbreaking_types = list(
 
 		if (user.a_intent == I_HELP)
 			user.visible_message("<span class = 'notice'>[user] knocks at the door.</span>")
-			for (var/mob/living/L in view(world.view, src))
-				if (!viewers(world.view, L).Find(user))
+			for (var/mob/living/L in view(7, src))
+				if (!viewers(7, L).Find(user))
 					L << "<span class = 'notice'>You hear a knock at the door.</span>"
 			playsound(get_turf(src), "doorknock", 75, TRUE)
 		else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
 			user.visible_message("<span class = 'warning'>[user] bangs on the door.</span>")
-			for (var/mob/living/L in view(world.view, src))
-				if (!viewers(world.view, L).Find(user))
+			for (var/mob/living/L in view(7, src))
+				if (!viewers(7, L).Find(user))
 					L << "<span class = 'notice'>You hear a knock at the door.</span>"
 			playsound(get_turf(src), "doorknock", 100, TRUE)
 		else
@@ -189,14 +189,14 @@ var/list/nonbreaking_types = list(
 
 			if (user.a_intent == I_HELP)
 				user.visible_message("<span class = 'notice'>[user] knocks at the door.</span>")
-				for (var/mob/living/L in view(world.view, src))
-					if (!viewers(world.view, L).Find(user))
+				for (var/mob/living/L in view(7, src))
+					if (!viewers(7, L).Find(user))
 						L << "<span class = 'notice'>You hear a knock at the door.</span>"
 				playsound(get_turf(src), "doorknock", 75, TRUE)
 			else if (user.a_intent == I_DISARM || user.a_intent == I_GRAB)
 				user.visible_message("<span class = 'warning'>[user] bangs on the door.</span>")
-				for (var/mob/living/L in view(world.view, src))
-					if (!viewers(world.view, L).Find(user))
+				for (var/mob/living/L in view(7, src))
+					if (!viewers(7, L).Find(user))
 						L << "<span class = 'notice'>You hear a knock at the door.</span>"
 				playsound(get_turf(src), "doorknock", 100, TRUE)
 			else

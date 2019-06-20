@@ -246,7 +246,7 @@ var/list/charge_sounds_us = list(
 			continue
 
 		var/distance = get_dist(M, turf_source)
-		if (distance <= ((world.view * 3) + extrarange))
+		if (distance <= ((7 * 3) + extrarange))
 			var/turf/T = get_turf(M)
 			if (T && T.z == turf_source.z)
 				M.playsound_local(turf_source, soundin, vol, vary, frequency, falloff, is_global)
@@ -282,7 +282,7 @@ var/const/FALLOFF_SOUNDS = 0.5
 
 		// multiplicative falloff to add on top of natural audio falloff
 		// this is louder now, because it should be louder than war ambience - Kachnov
-		S.volume -= min(0, (max(distance - world.view, 0) * 1.5))
+		S.volume -= min(0, (max(distance - 7, 0) * 1.5))
 
 		// if you're in a different type of area (fake z levels) the sound will only be half as loud - Kachnov
 		if (S.volume > 0)

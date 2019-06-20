@@ -577,12 +577,12 @@ This saves us from having to call add_fingerprint() any time something is put in
 			if("kick")
 				mob.middle_click_intent = "jump"
 				mob << "<span class='warning'>You will now jump.</span>"
-				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
 				I.update_icon()
 			if("jump")
 				mob.middle_click_intent = "bite"
 				mob << "<span class='warning'>You will now bite.</span>"
-				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
 				I.update_icon()
 			if("bite")
 				mob.middle_click_intent = "kick"

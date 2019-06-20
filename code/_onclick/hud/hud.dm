@@ -30,10 +30,11 @@ var/list/global_huds = list(
 	var/obj/screen/fov
 	var/obj/screen/fishbed
 	var/obj/screen/noise
+	var/obj/screen/cover
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
-	screen.screen_loc = "1,1"
+	screen.screen_loc = "4,1"
 	screen.icon = 'icons/mob/screen1_full.dmi'
 	screen.icon_state = icon_state
 	screen.layer = 17
@@ -80,12 +81,13 @@ var/list/global_huds = list(
 	fov.icon = 'icons/mob/hide.dmi'
 	fov.icon_state = "combat"
 	fov.name = " "
-	fov.screen_loc = "1,1"
+	fov.screen_loc = "4,1"
 	fov.mouse_opacity = FALSE
 	fov.layer = 18
 
-//	noise = new /obj/screen/noise()
-//	fishbed = new /obj/screen/fishbed()
+	cover = new /obj/screen/cover()
+	noise = new /obj/screen/noise()
+	fishbed = new /obj/screen/fishbed()
 
 	var/obj/screen/O
 	var/i

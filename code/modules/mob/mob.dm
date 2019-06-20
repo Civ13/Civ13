@@ -92,7 +92,7 @@
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
 
 /mob/visible_message(var/message, var/self_message, var/blind_message)
-	var/list/see = get_mobs_or_objects_in_view(world.view,src) | viewers(world.view,src)
+	var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src)
 
 	for (var/I in see)
 		if (isobj(I))
@@ -124,7 +124,7 @@
 // hearing_distance (optional) is the range, how many tiles away the message can be heard.
 /mob/audible_message(var/message, var/deaf_message, var/hearing_distance, var/self_message)
 
-	var/range = world.view
+	var/range = 7
 	if (hearing_distance)
 		range = hearing_distance
 	var/list/hear = get_mobs_or_objects_in_view(range,src)

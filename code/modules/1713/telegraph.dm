@@ -325,7 +325,7 @@ var/list/global/phone_numbers = list()
 			continue
 		tried_mobs += hearer
 		if (hearer.stat == CONSCIOUS)
-			for (var/obj/structure/telephone/phone in view(world.view, hearer))
+			for (var/obj/structure/telephone/phone in view(7, hearer))
 				if (src == phone.origincall)
 					hearer.hear_phone(msg, speaker.default_language, speaker, src, phone)
 

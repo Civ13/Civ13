@@ -33,7 +33,7 @@ Parts of code courtesy of Super3222
 	..()
 	if (A_attached)
 		var/obj/item/weapon/gun/G = loc //loc is the gun this is attached to
-//		var/zoom_offset = round(world.view * zoom_amt)
+//		var/zoom_offset = round(7 * zoom_amt)
 		if (zoomed)
 	/*		if (G.accuracy)
 				G.accuracy = G.scoped_accuracy + zoom_offset*/
@@ -189,8 +189,8 @@ Parts of code courtesy of Super3222
 						_y = -zoom_amt
 					if (WEST)
 						_x = -zoom_amt
-				if (zoom_amt > world.view && user && user.client)//So we can still see the player at the edge of the screen if the zoom amount is greater than the world view
-					var/view_offset = round((zoom_amt - world.view)/2, TRUE)
+				if (zoom_amt > 7 && user && user.client)//So we can still see the player at the edge of the screen if the zoom amount is greater than the world view
+					var/view_offset = round((zoom_amt - 7)/2, TRUE)
 					user.client.view += view_offset
 					switch(user.dir)
 						if (NORTH)
@@ -216,7 +216,7 @@ Parts of code courtesy of Super3222
 	else //Resets everything
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
-		user.client.view = world.view
+		user.client.view = 7
 		user.visible_message("[zoomdevicename ? "[user] looks up from \the [name]" : "[user] lowers \the [name]"].")
 
 	if (zoomed)
@@ -368,7 +368,7 @@ Parts of code courtesy of Super3222
 	if (success && client)
 		client.pixel_x = 0
 		client.pixel_y = 0
-		client.view = world.view
+		client.view = 7
 
 /mob/living/carbon/human/proc/using_zoom()
 	if (using_MG)

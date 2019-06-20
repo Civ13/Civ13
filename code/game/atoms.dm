@@ -416,7 +416,7 @@
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
 /atom/proc/visible_message(var/message, var/blind_message)
 
-	var/list/see = get_mobs_or_objects_in_view(world.view,src) | viewers(get_turf(src), null)
+	var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(get_turf(src), null)
 
 	for (var/I in see)
 		if (isobj(I))
@@ -438,7 +438,7 @@
 // hearing_distance (optional) is the range, how many tiles away the message can be heard.
 /atom/proc/audible_message(var/message, var/deaf_message, var/hearing_distance)
 
-	var/range = world.view
+	var/range = 7
 	if (hearing_distance)
 		range = hearing_distance
 	var/list/hear = get_mobs_or_objects_in_view(range,src)

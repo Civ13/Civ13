@@ -64,12 +64,12 @@ var/list/global/wall_cache = list()
 		icon = 'icons/turf/walls.dmi'
 		icon_state = "rock"
 
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 
 /turf/wall/Destroy()
 	dismantle_wall(null,null,1)
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
 
