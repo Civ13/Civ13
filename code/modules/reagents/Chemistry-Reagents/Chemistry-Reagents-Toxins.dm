@@ -452,9 +452,9 @@
 	M.mood += removed*8
 
 
-/datum/reagent/toxin/chlorine
-	name = "Chlorine"
-	id = "chlorine"
+/datum/reagent/toxin/bleach
+	name = "Bleach"
+	id = "bleach"
 	description = "A highly poisonous liquid. Smells strongly of bleach."
 	reagent_state = LIQUID
 	taste_description = "bleach"

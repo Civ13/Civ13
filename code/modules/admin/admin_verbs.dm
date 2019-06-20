@@ -104,6 +104,7 @@ var/list/admin_verbs_fun = list(
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
+	/client/proc/radiation_emission,
 	/client/proc/make_sound,
 	/client/proc/editappear,
 	/client/proc/randomize_lobby_music,
@@ -199,6 +200,7 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/cmd_admin_crush_self,
 	/client/proc/drop_bomb,
+	/client/proc/radiation_emission,
 	/client/proc/make_sound,
 	/client/proc/ToRban,
 	/datum/admins/proc/startnow,
@@ -855,3 +857,27 @@ var/global/list/global_colour_matrix = null
 	config.disable_fov = TRUE
 	world << "<font size = 3>Fields of view are now <b>disabled</b>.</font>"
 	return
+
+
+/client/proc/radiation_emission()
+	set category = "Special"
+	set name = "Radiation Emission"
+	set desc = "Emits radiation for a set duration."
+
+	if (!mob || !mob.loc)
+		src << "<span class = 'warning'>You can't create a radiation emission here.</span>"
+		return
+
+	if (!processes.explosion || !processes.explosion.fires_at_gamestates.Find(ticker.current_state))
+		src << "<span class = 'warning'>You can't create a radiation emission now.</span>"
+		return
+
+	var/turf/epicenter = mob.loc
+	var/heavy_range = WWinput(src, "Heavy impact range (in tiles):", "Radiation Emission", 1, "num")
+	var/light_range = WWinput(src, "Light impact range (in tiles):", "Radiation Emission", 1, "num")
+	var/severity = WWinput(src, "Severity (in mSv per second):", "Radiation Emission", 1, "num")
+	var/duration = WWinput(src, "Duration (in seconds):", "Radiation Emission", 1, "num")
+
+	radiation_pulse(epicenter, heavy_range, light_range, severity, duration, 0)
+	message_admins("[key] creating a radiation emission at [epicenter.loc].")
+	log_game("Radiation emission with size ([heavy_range], [light_range]) and severity [severity] mSv in area [epicenter.loc.name], for [duration]")
