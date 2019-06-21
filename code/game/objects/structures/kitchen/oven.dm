@@ -332,7 +332,7 @@
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
 				fuel += 1
-				H << "You break \the [MT] and put it into the [src], using it as fuel."
+				H << "You break \the [MT] and put it into the [src], refueling it."
 				qdel(I)
 			else if (MT.get_material_name() == "bronze")
 				H << "You smelt \the [MT] into bronze ingots."
@@ -354,6 +354,12 @@
 				H << "You smelt \the [MT] into steel sheets."
 				new/obj/item/stack/material/steel(src.loc)
 				qdel(I)
+		else if (istype(I, /obj/item) && I.basematerials.len)
+			H << "You recicle \the [I] into its base materials."
+				for (var/i in I.basematerials)
+					var/obj/item/stack/material/M = new i
+					M.amount = I.basematerials[i]
+
 		else
 			..()
 	else

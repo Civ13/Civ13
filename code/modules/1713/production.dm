@@ -524,3 +524,126 @@
 				icon_state = "printingpress0"
 				return
 	return
+
+///////////////////////canning//////////////////////
+/obj/structure/canner
+	name = "canner"
+	desc = "A pressure tool used to seal cans."
+	icon = 'icons/obj/cans.dmi'
+	icon_state = "canner"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+
+/obj/structure/canner/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+	if (istype(W, /obj/item/weapon/can))
+		var/obj/item/weapon/can/C = W
+		if (C.stored.len)
+			H << "You start sealing \the [C]..."
+			icon_state = "canner_active"
+			if (do_after(H, 50, H.loc))
+				H << "You finish sealing \the [C]."
+				C.open = FALSE
+				C.sealed = TRUE
+				C.update_icon()
+				icon_state = "canner"
+			else
+				icon_state = "canner"
+
+/obj/item/weapon/can
+	name = "empty can"
+	desc = "A tin can that can keep food good for a long time. Can fit 5 units."
+	icon = 'icons/obj/cans.dmi'
+	icon_state = "can_empty"
+	var/base_icon = "can"
+	w_class = 2.0
+	flammable = FALSE
+	slot_flags = null
+	var/max_capacity = 5
+	var/brand = ""
+	var/list/stored = list()
+	var/open = TRUE
+	var/sealed = FALSE
+	var/customcolor1 = null
+	var/customcolor2 = null
+	basematerials = list(/obj/item/stack/material/tin = 0.45)
+
+/obj/item/weapon/can/small
+	name = "empty small can"
+	desc = "A tin can that can keep food good for a long time. Can fit 3 units."
+	icon_state = "small_can_empty"
+	base_icon = "small_can"
+	w_class = 1.0
+	slot_flags = SLOT_POCKET
+	max_capacity = 3
+	basematerials = list(/obj/item/stack/material/tin = 0.3)
+
+/obj/item/weapon/can/large
+	name = "empty large can"
+	desc = "A tin can that can keep food good for a long time. Can fit 10 units."
+	icon_state = "large_can_empty"
+	base_icon = "large_can"
+	w_class = 3.0
+	slot_flags = null
+	max_capacity = 10
+	basematerials = list(/obj/item/stack/material/tin = 0.9)
+
+/obj/item/weapon/can/update_icon()
+	if (open)
+		if (stored.len)
+			icon_state = "[base_icon]_open"
+		else
+			icon_state = "[base_icon]_empty"
+	else
+		icon_state = "[base_icon]"
+
+/obj/item/weapon/can/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks) && open)
+		if (stored.len < max_capacity && !sealed)
+			stored += W
+			H.drop_from_inventory(W)
+			W.forceMove(src)
+			H << "You put \the [W] in \the [src]."
+			if (stored.len == 1)
+				name = "[brand]canned [W]"
+			else
+				if (!findtext(name, "[W]"))
+					name = replacetext(name, " and ",", ")
+					name = "[name] and [W]"
+			return
+		else
+			H << "<span class='notice'>\the [src] is full!</span>"
+			return
+	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
+		if (!open)
+			open = TRUE
+			update_icon()
+			H << "You open \the [src]."
+			return
+	else
+		..()
+
+/obj/item/weapon/can/attack_hand(mob/living/carbon/human/user)
+	if (stored.len && (loc == user.l_hand || loc == user.r_hand))
+		for (var/obj/item/I in stored)
+			I.loc = user.loc
+			stored -= I
+			user.put_in_active_hand(I)
+			user << "You remove \the [I] from \the [src]."
+			if (!stored.len)
+				name = "empty [brand]can"
+			return
+	else
+		..()
+
+/obj/item/weapon/can/proc/do_color()
+
+	if (customcolor1)
+		var/image/colorov1 = image("icon" = icon, "icon_state" = "[base_icon]_o1")
+		colorov1.color = customcolor1
+		overlays += colorov1
+
+	if (customcolor2)
+		var/image/colorov2 = image("icon" = icon, "icon_state" = "[base_icon]_o2")
+		colorov2.color = customcolor2
+		overlays += colorov2
