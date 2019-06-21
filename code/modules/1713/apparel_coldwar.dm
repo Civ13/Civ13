@@ -615,3 +615,32 @@
 	block_chance = 26
 	cooldownw = 9
 	value = 60
+
+/obj/item/clothing/head/nbc
+	name = "yellow NBC hood"
+	desc = "A yellow coloured NBC hood, made protect against biological, chemical and nuclear threats."
+	icon_state = "nbc"
+	flags_inv = BLOCKHAIR
+	body_parts_covered = HEAD
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 25, bomb = 10, bio = 100, rad = 80)
+
+/obj/item/clothing/suit/nbc
+	name = "yellow NBC suit"
+	desc = "A yellow coloured NBC suit, made protect against biological, chemical and nuclear threats."
+	icon_state = "nbc"
+	item_state = "nbc"
+	worn_state = "nbc"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|FEET|HANDS
+	armor = list(melee = FALSE, arrow = FALSE, gun = FALSE, energy = 25, bomb = 10, bio = 100, rad = 80)
+
+/obj/item/clothing/head/nbc/olive
+	name = "olive drab NBC hood"
+	desc = "An olive drab coloured NBC hood, made protect against biological, chemical and nuclear threats."
+	icon_state = "nbc2"
+
+/obj/item/clothing/suit/nbc/olive
+	name = "olive drab NBC suit"
+	desc = "An olive drab coloured NBC suit, made protect against biological, chemical and nuclear threats."
+	icon_state = "nbc2"
+	item_state = "nbc2"
+	worn_state = "nbc2"
