@@ -135,6 +135,10 @@
 		recipes += new/datum/stack_recipe("bullet pouch", /obj/item/ammo_magazine/emptypouch, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("hip holster", /obj/item/clothing/accessory/holster/hip, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("double hip holster", /obj/item/clothing/accessory/holster/hip/double, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[3] >= 99)
+		recipes += new/datum/stack_recipe("khaki webbing", /obj/item/clothing/accessory/storage/webbing/khaki_webbing, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("green webbing", /obj/item/clothing/accessory/storage/webbing/green_webbing, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("light webbing", /obj/item/clothing/accessory/storage/webbing/light, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (current_res[1] >= 55 && current_res[3] >= 25)
 		recipes += new/datum/stack_recipe("black leather shoes", /obj/item/clothing/shoes/soldiershoes, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -853,7 +857,7 @@
 			new/datum/stack_recipe("fancy red jacket", /obj/item/clothing/suit/storage/jacket/piratejacket5, 10, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/piratejacket3, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/piratejacket4, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[3] >= 89 && current_res[3] < 112 )
+	if (current_res[3] >= 89 && current_res[3] < 112)
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("leather overcoat", /obj/item/clothing/suit/storage/jacket/leatherovercoat1, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black leather overcoat", /obj/item/clothing/suit/storage/jacket/leatherovercoat2, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -862,7 +866,7 @@
 			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("grey winter coat", /obj/item/clothing/suit/storage/coat/ruscoat/grey, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[3] >= 112)
+	if (current_res[3] >= 112 && current_res[3] < 145)
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -875,6 +879,24 @@
 			new/datum/stack_recipe("navy suit", /obj/item/clothing/suit/storage/jacket/navy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("grey winter coat", /obj/item/clothing/suit/storage/coat/ruscoat/grey, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[3] >= 145)
+		recipes += new/datum/stack_recipe_list("jackets & vests", list(
+			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("charcoal suit", /obj/item/clothing/suit/storage/jacket/charcoal_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("black suit", /obj/item/clothing/suit/storage/jacket/black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("dark black suit", /obj/item/clothing/suit/storage/jacket/really_black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("burgundy suit", /obj/item/clothing/suit/storage/jacket/burgundy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("checkered suit", /obj/item/clothing/suit/storage/jacket/checkered_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("navy suit", /obj/item/clothing/suit/storage/jacket/navy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("grey winter coat", /obj/item/clothing/suit/storage/coat/ruscoat/grey, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive drab NBC suit", /obj/item/clothing/suit/nbc/olive, 12, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive drab NBC hood", /obj/item/clothing/head/nbc/olive, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("yellow NBC suit", /obj/item/clothing/suit/nbc, 12, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("yellow NBC hood", /obj/item/clothing/head/nbc, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 	if (current_res[3] < 38)
 		recipes += new/datum/stack_recipe_list("accessories", list(
 			new/datum/stack_recipe("customizable armband", /obj/item/clothing/accessory/custom/armband, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
