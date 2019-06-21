@@ -59,9 +59,9 @@
 		// left side
 //		"equip"       = list("type" = /obj/screen/equip,      "loc" = "7,2"),
 //		"swap hand"   = list("type" = /obj/screen/swap,       "loc" = "7,2"),
-		"toggle gun mode"   = list("type" = /obj/screen/gun/mode,       "loc" = "1,5"),
-		"allow movement"	= list("type" = /obj/screen/gun/move,       "loc" = "4,2"),
-		"allow item use" 	 = list("type" = /obj/screen/gun/item,       "loc" = "5,2"),
+		"toggle gun mode"   = list("type" = /obj/screen/gun/mode,       "loc" = "1,6"),
+		"allow movement"	= list("type" = /obj/screen/gun/move,       "loc" = "2,6"),
+		"allow item use" 	 = list("type" = /obj/screen/gun/item,       "loc" = "3,6"),
 //		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,       "loc" = "1,1")
 		)
 
