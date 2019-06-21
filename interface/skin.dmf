@@ -585,7 +585,6 @@ window "mainwindow"
 		saved-params = "pos;size;is-minimized;is-maximized"
 		title = "Civilization 13"
 		titlebar = false
-		statusbar = false
 		is-maximized = true
 		keep-aspect = true
 		macro = "macro"
