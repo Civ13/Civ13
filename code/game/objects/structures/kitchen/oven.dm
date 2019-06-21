@@ -355,10 +355,10 @@
 				new/obj/item/stack/material/steel(src.loc)
 				qdel(I)
 		else if (istype(I, /obj/item) && I.basematerials.len)
-			H << "You recicle \the [I] into its base materials."
-				for (var/i in I.basematerials)
-					var/obj/item/stack/material/M = new i
-					M.amount = I.basematerials[i]
+			H << "You put \the [I] into \the [src] to recycle it."
+			if (I.basematerials[1] == "tin")
+				tin += I.basematerials[2]
+			qdel(I)
 
 		else
 			..()

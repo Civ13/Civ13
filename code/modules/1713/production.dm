@@ -566,7 +566,7 @@
 	var/sealed = FALSE
 	var/customcolor1 = null
 	var/customcolor2 = null
-	basematerials = list(/obj/item/stack/material/tin = 0.45)
+	basematerials = list("tin",0.45)
 
 /obj/item/weapon/can/small
 	name = "empty small can"
@@ -576,7 +576,7 @@
 	w_class = 1.0
 	slot_flags = SLOT_POCKET
 	max_capacity = 3
-	basematerials = list(/obj/item/stack/material/tin = 0.3)
+	basematerials = list("tin",0.3)
 
 /obj/item/weapon/can/large
 	name = "empty large can"
@@ -586,7 +586,7 @@
 	w_class = 3.0
 	slot_flags = null
 	max_capacity = 10
-	basematerials = list(/obj/item/stack/material/tin = 0.9)
+	basematerials = list("tin",0.9)
 
 /obj/item/weapon/can/update_icon()
 	if (open)
@@ -604,12 +604,24 @@
 			H.drop_from_inventory(W)
 			W.forceMove(src)
 			H << "You put \the [W] in \the [src]."
+			icon_state = "[base_icon]_open"
 			if (stored.len == 1)
 				name = "[brand]canned [W]"
+				name = replacetext(name, "the","")
 			else
 				if (!findtext(name, "[W]"))
 					name = replacetext(name, " and ",", ")
 					name = "[name] and [W]"
+					name = replacetext(name, "the","")
+			if (!findtext(W.name, "canned"))
+				W.name = replacetext(W.name, "the","")
+				W.name = "canned [W.name]"
+			name = replacetext(name, "  "," ")
+			var/obj/item/weapon/reagent_containers/food/snacks/S = W
+			if (S.satisfaction > 0)
+				S.satisfaction *= 0.5 //canned food doesn't taste as good
+			else
+				S.satisfaction *= 1.5 //food that is already bad will taste worse when canned
 			return
 		else
 			H << "<span class='notice'>\the [src] is full!</span>"
@@ -624,7 +636,7 @@
 		..()
 
 /obj/item/weapon/can/attack_hand(mob/living/carbon/human/user)
-	if (stored.len && (loc == user.l_hand || loc == user.r_hand))
+	if (stored.len && user.has_empty_hand() && loc == user && open)
 		for (var/obj/item/I in stored)
 			I.loc = user.loc
 			stored -= I
@@ -632,6 +644,7 @@
 			user << "You remove \the [I] from \the [src]."
 			if (!stored.len)
 				name = "empty [brand]can"
+				icon_state = "[base_icon]_empty"
 			return
 	else
 		..()
