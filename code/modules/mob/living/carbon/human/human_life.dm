@@ -556,7 +556,7 @@
 				if ("semiarid")
 					loc_temp = 12
 				if ("desert")
-					loc_temp = 39
+					loc_temp = 34
 				if ("jungle")
 					loc_temp = 32
 				if ("savanna")
@@ -575,7 +575,7 @@
 				if ("semiarid")
 					loc_temp = 35
 				if ("desert")
-					loc_temp = 55
+					loc_temp = 50
 				if ("jungle")
 					loc_temp = 40
 				if ("savanna")
@@ -594,7 +594,7 @@
 				if ("semiarid")
 					loc_temp = 28
 				if ("desert")
-					loc_temp = 45
+					loc_temp = 40
 				if ("jungle")
 					loc_temp = 34
 				if ("savanna")
