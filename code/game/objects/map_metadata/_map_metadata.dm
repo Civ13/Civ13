@@ -72,8 +72,8 @@ var/civmax_research = list(130,130,130)
 	var/battle_name = null
 
 	//age (313 B.C., 1013, 1713, etc)
-	var/age = "1713"
-	var/ordinal_age = 3
+	var/age = "5000 B.C."
+	var/ordinal_age = 0
 
 	//weather
 	var/blizzard = FALSE
