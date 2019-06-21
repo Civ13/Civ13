@@ -11,7 +11,7 @@
 #define RAD_LEVEL_DEADLY 500 //Always kills
 
 //severity: mSv per second. duration: duration in seconds
-/proc/radiation_pulse(turf/epicenter, heavy_range, light_range, severity, duration, log)
+/proc/radiation_pulse(turf/epicenter, range, severity, duration, log)
 	duration = round(duration)
 	var/last = world.time + duration
 	if(!epicenter || !severity || duration < 1) return FALSE
@@ -19,32 +19,24 @@
 	if(!istype(epicenter, /turf))
 		epicenter = get_turf(epicenter.loc)
 
-	if(heavy_range > light_range)
-		light_range = heavy_range
-
-	var/light_severity = severity * 0.5
-	for(var/atom/T in range(light_range, epicenter))
+	for(var/atom/T in range(range, epicenter))
+		var/cseverity=severity/100
 		var/distance = get_dist(epicenter, T)
 		if(distance < 0)
 			distance = 0
-		if(distance < heavy_range)
-			T.rad_act(severity/10)
-		else if(distance == heavy_range)
-			if(prob(50))
-				T.rad_act(severity/10)
-			else
-				T.rad_act(light_severity/10)
-		else if(distance <= light_range)
-			T.rad_act(light_severity/10)
+		if (distance <= 1 && distance <= range)
+			T.rad_act(cseverity)
+		else if (distance > 1 && distance <= range)
+			T.rad_act(cseverity*(1-(distance/range)))
 	if (world.time <= last && duration > 0)
 		spawn(10)
-			radiation_pulse(epicenter, heavy_range, light_range, severity, duration-1, 0)
+			radiation_pulse(epicenter, range, severity, duration-1, 0)
 	if (log)
-		log_game("Radiation emission with size ([heavy_range], [light_range]) and severity [severity] mSv in area [epicenter.loc.name] ")
+		log_game("Radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name] ")
 	return TRUE
 
 /atom/proc/rad_act(var/severity)
-	return TRUE
+	return 0
 
 /mob/living/carbon/human/rad_act(amount)
 	if(amount <= 0)
@@ -52,7 +44,7 @@
 	for (var/obj/item/organ/external/sorgan in organs)
 		var/blocked = getarmor_rad(sorgan)
 		amount = max(0, amount*(1 - blocked/100))
-
+		radiation += amount
 	for(var/obj/I in src) //Radiation is also applied to items held by the mob
 		I.rad_act(amount)
 
@@ -98,7 +90,7 @@
 	..()
 
 /obj/item/weapon/geiger_counter/rad_act(var/severity)
-	radiation_count = severity
+	radiation_count = severity*100 //to convert to mSv
 	update_icon()
 
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
@@ -110,6 +102,7 @@
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
 	else
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
+	radiation_count = 0
 	return
 
 /obj/item/weapon/geiger_counter/attack_self(mob/user)
@@ -138,8 +131,9 @@
 
 /obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
-		switch(radiation_count)
-			if(RAD_LEVEL_NORMAL + 1 to RAD_LEVEL_MODERATE)
+		var/rad_min = radiation_count*60 //we check the effects over 1 min
+		switch(rad_min)
+			if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
 				playsound(get_turf(src), pick('sound/machines/geiger/low1.ogg','sound/machines/geiger/low2.ogg','sound/machines/geiger/low3.ogg','sound/machines/geiger/low4.ogg'),75)
 			if(RAD_LEVEL_MODERATE + 1 to RAD_LEVEL_HIGH)
 				playsound(get_turf(src), pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg'),75)
