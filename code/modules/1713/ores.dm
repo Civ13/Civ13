@@ -57,7 +57,7 @@
 	name = "uranium ore"
 	icon_state = "ore_uranium"
 	radioactive = TRUE
-	radioactive_amt = 16
+	radioactive_amt = 7
 	flammable = FALSE
 
 /obj/item/stack/ore/saltpeter

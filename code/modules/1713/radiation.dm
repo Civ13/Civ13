@@ -102,7 +102,6 @@
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
 	else
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
-	radiation_count = 0
 	return
 
 /obj/item/weapon/geiger_counter/attack_self(mob/user)
