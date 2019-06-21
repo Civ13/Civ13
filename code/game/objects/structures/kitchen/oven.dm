@@ -391,7 +391,14 @@
 		newbronze.amount = min(tin,copper)*3
 		tin -= amountconsumed
 		copper -= amountconsumed
-
+	else if (tin == 0 && copper > 0)
+		var/obj/item/stack/material/copper/newcopper = new/obj/item/stack/material/copper(src.loc)
+		newcopper.amount = copper
+		copper = 0
+	else if (tin > 0 && copper == 0)
+		var/obj/item/stack/material/tin/newtin = new/obj/item/stack/material/tin(src.loc)
+		newtin.amount = tin
+		tin = 0
 /obj/structure/furnace/verb/empty()
 	set category = null
 	set name = "Empty"
