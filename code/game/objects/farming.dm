@@ -180,7 +180,8 @@
 	not_disassemblable = TRUE
 	var/list/biomes = list("tundra", "taiga", "temperate", "sea","semiarid", "desert", "jungle","savanna")
 	var/list/seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
-	var/vstatic = FALSE
+	var/vstatic = FALSE // to "freeze" the image, so it can be used as a prop
+	var/fertilized = FALSE
 /obj/structure/farming/plant/tomato
 	name = "tomato plant"
 	desc = "a tomato plant."
@@ -366,6 +367,8 @@
 /obj/structure/farming/plant/proc/spawnProduce()
 	var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
 	new fruitpath(loc)
+	if (fertilized)
+		new fruitpath(loc)
 
 /obj/structure/farming/plant/proc/growth()
 	if (!vstatic)
@@ -419,24 +422,40 @@
 //some specific, non-food plants
 /obj/structure/farming/plant/hemp/spawnProduce()
 	new/obj/item/stack/material/rope(loc)
+	if (fertilized)
+		new/obj/item/stack/material/rope(loc)
 
 /obj/structure/farming/plant/tobacco/spawnProduce()
 	new/obj/item/stack/material/tobacco(loc)
+	if (fertilized)
+		new/obj/item/stack/material/tobacco(loc)
 
 /obj/structure/farming/plant/coca/spawnProduce()
 	new/obj/item/stack/material/coca(loc)
+	if (fertilized)
+		new/obj/item/stack/material/coca(loc)
 
 /obj/structure/farming/plant/sugarcane/spawnProduce()
 	new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+	if (fertilized)
+		new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
 
 /obj/structure/farming/plant/tea/spawnProduce()
 	new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+	if (fertilized)
+		new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
 
 /obj/structure/farming/plant/poppy/spawnProduce()
 	new/obj/item/stack/material/poppy(loc)
+	if (fertilized)
+		new/obj/item/stack/material/poppy(loc)
 
 /obj/structure/farming/plant/tree/spawnProduce()
 	var/obj/item/stack/material/wood/NW = new/obj/item/stack/material/wood(loc)
 	NW.amount = 3
+	if (fertilized)
+		NW.amount = 6
 /obj/structure/farming/plant/cotton/spawnProduce()
 	new/obj/item/stack/material/cotton(loc)
+	if (fertilized)
+		new/obj/item/stack/material/cotton(loc)

@@ -559,8 +559,12 @@ var/global/list/damage_icon_parts = list()
 				if (istype(A, /obj/item/clothing/accessory/custom))
 					NI.color = A.color
 				standing.overlays |= NI
-
-
+		if (under.shit_overlay)
+			var/shit = image("icon" = 'icons/mob/human_races/masks/sickness.dmi', "icon_state"="shit")
+			standing.overlays += shit
+		if (under.piss_overlay)
+			var/piss = image("icon" = 'icons/mob/human_races/masks/sickness.dmi', "icon_state"="piss")
+			standing.overlays += piss
 		overlays_standing[UNIFORM_LAYER]	= standing
 	else
 		overlays_standing[UNIFORM_LAYER]	= null
@@ -1095,16 +1099,17 @@ var/global/list/damage_icon_parts = list()
 	if (disease == TRUE)
 		if (disease_type == "plague")
 			if (disease_progression >= 1 && disease_progression < 90)
-				total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence1")
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence1")
 			else if (disease_progression >= 90 && disease_progression < 180)
-				total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence2")
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence2")
 			else if (disease_progression >= 180)
-				total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence3")
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence3")
 	if (start_to_rot == TRUE)
 		if (rotting_stage == 1)
-			total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting1")
+			total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting1")
 		else if (rotting_stage == 2)
-			total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting2")
+			total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting2")
+
 	overlays_standing[SURGERY_LEVEL] = total
 	if (update_icons)   update_icons()
 

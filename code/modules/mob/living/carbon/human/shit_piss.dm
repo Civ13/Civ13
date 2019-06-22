@@ -139,6 +139,7 @@
 	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "poop2"
 	item_state = "poop"
+	satisfaction = -25 //tastes like shit
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/New()
 	..()
@@ -272,6 +273,10 @@
 			reagents.add_reagent("poo", 10)
 			adjust_hygiene(-25)
 			mood -= 25
+			w_uniform.shit_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="shit")
+			w_uniform.overlays += w_uniform.shit_overlay
+			w_uniform.update_icon()
+			update_icons()
 
 		//Poo on the face.
 		else if(M != src && M.lying)//Can only shit on them if they're lying down.
@@ -326,6 +331,10 @@
 		message = "<B>[src]</B> pisses \his pants."
 		adjust_hygiene(-25)
 		mood -= 15
+		w_uniform.piss_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="piss")
+		w_uniform.overlays += w_uniform.piss_overlay
+		w_uniform.update_icon()
+		update_icons()
 
 	else//On the floor.
 		var/turf/TT = src.loc
