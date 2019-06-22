@@ -16,11 +16,11 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 2,
-		"Yspace" = 5,
+		"Xspace" = 5,
+		"Yspace" = 1,
 		"ColCount" = 7,
 		"Xslot" = 5,
-		"Yslot" = 2
+		"Yslot" = 1
 	)
 
 	HUDoverlays = list(
@@ -34,7 +34,7 @@
 		"fov" = list("type" = /obj/screen/fov, "loc" = "4,1", "icon_state" = "blank"),
 
 //		"fishbed" = list("type" = /obj/screen/fishbed, "loc" = "4,1", "icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "fishbed"),
-		"noise" = list("type" = /obj/screen/noise, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/effects/static.dmi', "icon_state" = "1 light"),
+//		"noise" = list("type" = /obj/screen/noise, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/effects/static.dmi', "icon_state" = "1 light"),
 	)
 	HUDneed = list(
 		// right side

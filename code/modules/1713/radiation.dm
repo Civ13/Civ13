@@ -43,10 +43,15 @@
 		return
 	for (var/obj/item/organ/external/sorgan in organs)
 		var/blocked = getarmor_rad(sorgan)
-		amount = max(0, amount*(1 - blocked/100))
-		radiation += amount
-	for(var/obj/I in src) //Radiation is also applied to items held by the mob
-		I.rad_act(amount)
+		var/new_amount = max(0, amount*(1 - blocked/100))
+		radiation += new_amount
+	for(var/obj/I in src) //Radiation is also applied to items held by the mob, but with the unprotected values in the case of geiger counters
+		if (istype(I, /obj/item/weapon/geiger_counter))
+			I.rad_act(amount)
+		else
+			var/blocked = getarmor_rad("chest")
+			var/new_amount = max(0, amount*(1 - blocked/100))
+			I.rad_act(new_amount)
 
 /mob/living/carbon/human/proc/getarmor_rad(organ)
 	return getarmor_organ(organ, "rad")
@@ -68,7 +73,7 @@
 	if(!scanning)
 		return
 	else
-		check_radiation()
+		check_radiation(user)
 
 /obj/item/weapon/geiger_counter/update_icon()
 	if(!scanning)
@@ -98,11 +103,12 @@
 		return
 	if (radiation_count >= 1000)
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count/1000] Sv/s</b></span>"
+	else if (radiation_count <= 0.001)
+		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>0 uSv/s</b></span>"
 	else if (radiation_count <= 0.1)
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
 	else
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
-	radiation_count = 0
 	return
 
 /obj/item/weapon/geiger_counter/attack_self(mob/user)

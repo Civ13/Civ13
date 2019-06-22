@@ -234,10 +234,12 @@
 	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
 		world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
+		map.ordinal_age = 0
 		return
 
 	if (vote.voted_gamemode == "Chad Mode")
 		world << "<font color=#CECE00><big>Starting <b>Chad Mode</b>. Game epoch is the Stone Age, research inactive. Reduced starting items and more hostile conditions.</big></font>"
+		map.ordinal_age = 0
 		map.research_active = FALSE
 		map.chad_mode = TRUE
 		for (var/obj/effect/spawner/mobspawner/MS)
@@ -291,6 +293,7 @@
 		world << "<big>Starting <b>Auto-Research mode</b>. Starting epoch is the Stone Age, research active but automatic.</big>"
 		map.research_active = FALSE //well, it is, but we dont get research kits.
 		map.autoresearch = TRUE
+		map.ordinal_age = 0
 		spawn(100)
 			map.autoresearch_proc()
 		return
@@ -299,6 +302,7 @@
 		world << "<big>Starting <b>Resource-Based Research</b>. Starting epoch is the Stone Age, research active and requires the sale of items through <b>Research Desks</b>.</big>"
 		map.research_active = FALSE //well, it is, but we dont get research kits.
 		map.resourceresearch = TRUE
+		map.ordinal_age = 0
 		return
 
 	else if (vote.voted_gamemode == "Bronze Age Start")

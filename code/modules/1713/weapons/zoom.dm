@@ -216,7 +216,7 @@ Parts of code courtesy of Super3222
 	else //Resets everything
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
-		user.client.view = 7
+		user.client.view = world.view
 		user.visible_message("[zoomdevicename ? "[user] looks up from \the [name]" : "[user] lowers \the [name]"].")
 
 	if (zoomed)
@@ -368,7 +368,7 @@ Parts of code courtesy of Super3222
 	if (success && client)
 		client.pixel_x = 0
 		client.pixel_y = 0
-		client.view = 7
+		client.view = world.view
 
 /mob/living/carbon/human/proc/using_zoom()
 	if (using_MG)
