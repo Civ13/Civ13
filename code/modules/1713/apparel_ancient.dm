@@ -137,7 +137,7 @@
 	item_state = "scale_armor"
 	worn_state = "scale_armor"
 	body_parts_covered = UPPER_TORSO
-	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 45, bio = 20, rad = 45)
 	value = 40
 	slowdown = 0.8
 
@@ -148,7 +148,7 @@
 	item_state = "heavycloth_armor"
 	worn_state = "heavycloth_armor"
 	body_parts_covered = UPPER_TORSO | LOWER_TORSO
-	armor = list(melee = 55, arrow = 35, gun = FALSE, energy = 15, bomb = 35, bio = 20, rad = FALSE)
+	armor = list(melee = 55, arrow = 35, gun = FALSE, energy = 15, bomb = 35, bio = 20, rad = 10)
 	value = 40
 	slowdown = 0.2
 
@@ -308,7 +308,7 @@
 	worn_state = "fur_jacket1"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 15, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 15, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 	var/colorn = 1
 	var/specific = FALSE
@@ -406,7 +406,7 @@
 	item_state = "fur"
 	worn_state = "fur"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 20, arrow = 10, gun = FALSE, energy = 25, bomb = 50, bio = 20, rad = FALSE)
+	armor = list(melee = 20, arrow = 10, gun = FALSE, energy = 25, bomb = 50, bio = 20, rad = 35)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET

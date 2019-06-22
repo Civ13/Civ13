@@ -13,10 +13,10 @@
 	siemens_coefficient = 0.9
 	var/gas_filter_strength = TRUE			//For gas mask filters
 	var/list/filtered_gases = list("plasma", "sleeping_agent")
-	armor = list(melee = FALSE, bullet = FALSE, laser = FALSE, energy = FALSE, bomb = FALSE, bio = 75, rad = FALSE)
 	slot_flags = SLOT_BELT|SLOT_MASK
 	blocks_scope = TRUE
 	restricts_view = 2
+	armor = list(melee = 10, arrow = FALSE, gun = FALSE, energy = 35, bomb = 15, bio = 100, rad = 80)
 
 /obj/item/clothing/mask/gas/proc/check_can_block(var/datum/reagent/r)
 	if (prob(efficiency))
@@ -50,4 +50,9 @@
 /obj/item/clothing/mask/gas/french
 	icon_state = "french_gasmask"
 	item_state = "french_gasmask"
+	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")
+
+/obj/item/clothing/mask/gas/modern
+	icon_state = "modern_gasmask"
+	item_state = "modern_gasmask"
 	filtered_gases = list("xylyl_bromide", "mustard_gas", "white_phosphorus_gas", "chlorine_gas", "zyklon_b", "phosgene_gas")

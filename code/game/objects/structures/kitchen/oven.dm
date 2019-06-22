@@ -332,7 +332,7 @@
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
 				fuel += 1
-				H << "You break \the [MT] and put it into the [src], using it as fuel."
+				H << "You break \the [MT] and put it into the [src], refueling it."
 				qdel(I)
 			else if (MT.get_material_name() == "bronze")
 				H << "You smelt \the [MT] into bronze ingots."
@@ -354,6 +354,12 @@
 				H << "You smelt \the [MT] into steel sheets."
 				new/obj/item/stack/material/steel(src.loc)
 				qdel(I)
+		else if (istype(I, /obj/item) && I.basematerials.len)
+			H << "You put \the [I] into \the [src] to recycle it."
+			if (I.basematerials[1] == "tin")
+				tin += I.basematerials[2]
+			qdel(I)
+
 		else
 			..()
 	else
@@ -385,7 +391,14 @@
 		newbronze.amount = min(tin,copper)*3
 		tin -= amountconsumed
 		copper -= amountconsumed
-
+	else if (tin == 0 && copper > 0)
+		var/obj/item/stack/material/copper/newcopper = new/obj/item/stack/material/copper(src.loc)
+		newcopper.amount = copper
+		copper = 0
+	else if (tin > 0 && copper == 0)
+		var/obj/item/stack/material/tin/newtin = new/obj/item/stack/material/tin(src.loc)
+		newtin.amount = tin
+		tin = 0
 /obj/structure/furnace/verb/empty()
 	set category = null
 	set name = "Empty"
