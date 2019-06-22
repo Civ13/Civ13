@@ -392,12 +392,13 @@
 		handle_shock()
 
 		handle_pain()
-		if (map.civilizations)
-			handle_hygiene()
 
-		handle_mood()
-
-		handle_ptsd()
+		if (!inducedSSD)
+			handle_excrement()
+			if (map.civilizations)
+				handle_hygiene()
+			handle_mood()
+			handle_ptsd()
 
 		handle_medical_side_effects()
 		if (map.civilizations)

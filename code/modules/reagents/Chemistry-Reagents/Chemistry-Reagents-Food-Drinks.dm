@@ -45,7 +45,7 @@
 	if (issmall(M)) removed *= 2 // Small bodymass, more effect from lower volume.
 	M.heal_organ_damage(0.5 * removed, FALSE)
 	M.nutrition += nutriment_factor * removed // For hunger and fatness
-//	M.bowels += nutriment_factor * removed	//For pooping
+	M.bowels += nutriment_factor * removed
 	M.add_chemical_effect(CE_BLOODRESTORE, 4 * removed)
 
 /datum/reagent/nutriment/glucose
@@ -337,6 +337,8 @@
 
 /datum/reagent/drink/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	M.nutrition += nutrition * removed
+	M.bladder += removed
+	M.bowels += nutrition * removed
 
 	M.dizziness = max(0, M.dizziness + adj_dizzy)
 	M.drowsyness = max(0, M.drowsyness + adj_drowsy)

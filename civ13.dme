@@ -638,6 +638,7 @@
 #include "code\modules\mob\living\carbon\human\MedicalSideEffects.dm"
 #include "code\modules\mob\living\carbon\human\say.dm"
 #include "code\modules\mob\living\carbon\human\screaming.dm"
+#include "code\modules\mob\living\carbon\human\shit_piss.dm"
 #include "code\modules\mob\living\carbon\human\stripping.dm"
 #include "code\modules\mob\living\carbon\human\tester.dm"
 #include "code\modules\mob\living\carbon\human\unarmed_attack.dm"
