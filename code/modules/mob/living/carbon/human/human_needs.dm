@@ -25,9 +25,11 @@
 				msg_hygiene = "You feel a bit dirty."
 			if(0 to HYGIENE_LEVEL_DIRTY)
 				msg_hygiene = "You feel very dirty!"
-
+		H << "<span class='info'>*---------*</span>"
 		H << "<span class='info'>[msg]</span>"
 		H << "<span class='info'>[msg_hygiene]</span>"
+		H.print_excrement()
+		H << "<span class='info'>*---------*</span>"
 		return
 /mob/living/carbon/human/proc/handle_ptsd()
 	if (ptsd > 100)
