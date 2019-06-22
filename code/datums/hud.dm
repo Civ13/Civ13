@@ -16,11 +16,11 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 2,
-		"Yspace" = 5,
+		"Xspace" = 5,
+		"Yspace" = 1,
 		"ColCount" = 7,
 		"Xslot" = 5,
-		"Yslot" = 2
+		"Yslot" = 1
 	)
 
 	HUDoverlays = list(
