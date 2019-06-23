@@ -1,7 +1,7 @@
 #define NO_WINNER "The reichstag is under German control."
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
-	title = "Khalkhyn Gol (150x200x1)"
+	title = "Khalkhyn Gol (90x200x1)"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
@@ -15,7 +15,7 @@
 		list(RUSSIAN) = /area/caribbean/russian/land/inside/command,
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		)
-	age = "1945"
+	age = "1939"
 	ordinal_age = 6
 	faction_distribution_coeffs = list(JAPANESE = 0.6, RUSSIAN = 0.4)
 	battle_name = "battle of Khalkhyn Gol"

@@ -104,6 +104,7 @@
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
+				MAP_KHALKHYN_GOL = 0,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")
