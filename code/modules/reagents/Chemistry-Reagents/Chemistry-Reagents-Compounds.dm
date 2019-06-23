@@ -66,7 +66,7 @@
 
 /datum/reagent/ethanol/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	if (issmall(M)) removed *= 2
-	M.nutrition += nutriment_factor * removed
+	M.bladder += removed
 	var/strength_mod = 2
 	M.add_chemical_effect(CE_PAINKILLER, 20)
 	if (M.water < 0)
@@ -238,4 +238,5 @@
 	color = "#FFFFFF"
 
 /datum/reagent/sugar/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.nutrition += removed * 3
+	M.nutrition += removed * 2
+	M.bowels += removed

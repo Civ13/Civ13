@@ -18,8 +18,8 @@
 /obj/item/stack/ore/proc/process_radioactivity()
 	if (!src || !radioactive || radioactive_amt <= 0)
 		return
-
-	radiation_pulse(get_turf(src), 3, radioactive_amt, 10, FALSE) // 0.16 rads per second, should take 10 mins to reach 1 gray
+	if (!istype(loc, /obj/structure/closet/crate/lead)) //lead containers block radioactivity
+		radiation_pulse(get_turf(src), 3, radioactive_amt, 10, FALSE) // 0.16 rads per second, should take 10 mins to reach 1 gray
 
 	spawn(100)
 		process_radioactivity()

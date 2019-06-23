@@ -113,6 +113,13 @@
 	apply_colour = TRUE
 	value = 3
 
+/obj/item/stack/material/lead
+	name = "lead"
+	icon_state = "sheet-lead"
+	default_type = "lead"
+	apply_colour = TRUE
+	value = 3
+
 /obj/item/stack/material/sandstone
 	name = "sandstone brick"
 	icon_state = "sheet-sandstone"

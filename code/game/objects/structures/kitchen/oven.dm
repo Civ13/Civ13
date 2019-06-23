@@ -136,6 +136,12 @@
 				contents += NO
 				contents -= I
 				qdel(I)
+			else if (istype(I, /obj/item/stack/ore/lead))
+				var/obj/item/stack/material/lead/NO = new/obj/item/stack/material/lead(src)
+				NO.amount = I.amount
+				contents += NO
+				contents -= I
+				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			contents -= I

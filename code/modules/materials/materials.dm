@@ -322,6 +322,15 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
+/material/lead
+	name = "lead"
+	icon_colour = "#444f53"
+	stack_type = /obj/item/stack/material/lead
+	weight = 30
+	hardness = 35
+	sheet_singular_name = "ingot"
+	sheet_plural_name = "ingots"
+
 /material/silver
 	name = "silver"
 	stack_type = /obj/item/stack/material/silver

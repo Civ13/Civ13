@@ -387,23 +387,7 @@
 	if (istype(blood_DNA, /list))
 		blood_DNA = null
 		return TRUE
-/*
-/atom/proc/get_global_map_pos()
-	if (!islist(global_map) || isemptylist(global_map)) return
-	var/cur_x = null
-	var/cur_y = null
-	var/list/y_arr = null
-	for (cur_x=1,cur_x<=global_map.len,cur_x++)
-		y_arr = global_map[cur_x]
-		cur_y = y_arr.Find(z)
-		if (cur_y)
-			break
-//	world << "X = [cur_x]; Y = [cur_y]"
-	if (cur_x && cur_y)
-		return list("x"=cur_x,"y"=cur_y)
-	else
-		return FALSE
-*/
+
 /atom/proc/checkpass(passflag)
 	return pass_flags&passflag
 

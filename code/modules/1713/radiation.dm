@@ -42,8 +42,8 @@
 	if(amount <= 0)
 		return
 	for (var/obj/item/organ/external/sorgan in organs)
-		var/blocked = getarmor_rad(sorgan)
-		var/new_amount = max(0, amount*(1 - blocked/100))
+		var/blocked = getarmor_rad(sorgan.name)
+		var/new_amount = max(0, (amount/11)*(1 - blocked/100)) //we need to divide it by 11 because there are 11 external body parts. Otherwise the dose is 11 time greater than it is supposed to be.
 		radiation += new_amount
 	for(var/obj/I in src) //Radiation is also applied to items held by the mob, but with the unprotected values in the case of geiger counters
 		if (istype(I, /obj/item/weapon/geiger_counter))
@@ -54,7 +54,7 @@
 			I.rad_act(new_amount)
 
 /mob/living/carbon/human/proc/getarmor_rad(organ)
-	return getarmor_organ(organ, "rad")
+	return getarmor_organ(get_organ(organ), "rad")
 
 /obj/item/weapon/geiger_counter //DISCLAIMER: I know nothing about how real-life Geiger counters work. This will not be realistic. ~Xhuis
 	name = "geiger counter"

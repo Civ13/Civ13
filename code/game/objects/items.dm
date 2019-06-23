@@ -8,6 +8,8 @@
 	var/nodrop = FALSE
 	var/list/actions = list() //list of /datum/action's that this item has.
 	var/image/blood_overlay = null //this saves our blood splatter overlay, which will be processed not to go over the edges of the sprite
+	var/image/shit_overlay = null
+	var/image/piss_overlay = null
 	var/abstract = FALSE
 	var/r_speed = 1.0
 	var/health = null
@@ -508,10 +510,16 @@ var/list/global/slot_flags_enumeration = list(
 	. = ..()
 	if (blood_overlay)
 		overlays.Remove(blood_overlay)
+	if (shit_overlay)
+		overlays.Remove(shit_overlay)
+		shit_overlay = null
+	if (piss_overlay)
+		overlays.Remove(piss_overlay)
+		piss_overlay = null
 	if (istype(src, /obj/item/clothing/gloves))
 		var/obj/item/clothing/gloves/G = src
 		G.transfer_blood = FALSE
-
+	update_icon()
 /obj/item/reveal_blood()
 	if (was_bloodied/* && !fluorescent*/)
 	//	fluorescent = TRUE
