@@ -193,16 +193,16 @@ Parts of code courtesy of Super3222
 					var/view_offset = round((zoom_amt - 7)/2, TRUE)
 					switch(user.dir)
 						if (NORTH)
-							user.client.view = "20,[15+view_offset]"
+							user.client.view = "20x[15+view_offset]"
 							_y -= view_offset
 						if (EAST)
-							user.client.view = "[20+view_offset],15"
+							user.client.view = "[20+view_offset]x15"
 							_x -= view_offset
 						if (SOUTH)
-							user.client.view = "20,[15+view_offset]"
+							user.client.view = "20x[15+view_offset]"
 							_y += view_offset
 						if (WEST)
-							user.client.view = "[20+view_offset],15"
+							user.client.view = "[20+view_offset]x15"
 							_x += view_offset
 					animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, 4, TRUE)
 					animate(user.client, pixel_x = 0, pixel_y = 0)
