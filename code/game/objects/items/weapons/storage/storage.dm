@@ -67,14 +67,6 @@
 		if ((loc == usr) && !(istype(over_object, /obj/screen)) && !usr.unEquip(src))
 			return
 
-/*		switch(over_object.name)
-			if ("r_hand")
-				usr.u_equip(src)
-				usr.put_in_r_hand(src)
-			if ("l_hand")
-				usr.u_equip(src)
-				usr.put_in_l_hand(src)*/
-
 		if (istype(over_object, /obj/screen/inventory/hand))
 			if ( !usr.get_active_hand() )
 				var/obj/screen/inventory/hand/H = over_object
@@ -195,11 +187,11 @@
 /obj/item/weapon/storage/proc/slot_orient_objs(var/rows, var/cols, var/list/obj/item/display_contents, Xcord=4, Ycord=2)
 	var/cx = Xcord
 	var/cy = Ycord+rows
-	boxes.screen_loc = "[Xcord]:16,2:16 to [Xcord+cols]:16,[Ycord+rows]:16"
+	boxes.screen_loc = "[Xcord],2 to [Xcord+cols],[Ycord+rows]"
 
 	if (display_contents_with_number)
 		for (var/datum/numbered_display/ND in display_contents)
-			ND.sample_object.screen_loc = "[cx]:16,[cy]:16"
+			ND.sample_object.screen_loc = "[cx],[cy]"
 			ND.sample_object.maptext = "<font color='white'>[(ND.number > 1)? "[ND.number]" : ""]</font>"
 			ND.sample_object.layer = 20
 			ND.sample_object.plane = HUD_PLANE
@@ -209,7 +201,7 @@
 				cy--
 	else
 		for (var/obj/O in contents)
-			O.screen_loc = "[cx]:16,[cy]:16"
+			O.screen_loc = "[cx],[cy]"
 			O.maptext = ""
 			O.layer = 20
 			O.plane = HUD_PLANE
@@ -217,7 +209,7 @@
 			if (cx > (Xcord+cols))
 				cx = Xcord
 				cy--
-	closer.screen_loc = "[Xcord+cols+1]:16,[Ycord]:16"
+	closer.screen_loc = "[Xcord+cols+1],[Ycord]"
 	return
 
 /obj/item/weapon/storage/proc/space_orient_objs(var/list/obj/item/display_contents,var/Xcord = 4,var/Ycord = 2)
@@ -233,9 +225,9 @@
 	M.Scale((storage_width-storage_cap_width*2+3)/32,1)
 	storage_continue.transform = M
 
-	storage_start.screen_loc = "[Xcord]:16,[Ycord]:16"
-	storage_continue.screen_loc = "[Xcord]:[storage_cap_width+(storage_width-storage_cap_width*2)/2+2],[Ycord]:16"
-	storage_end.screen_loc = "[Xcord]:[19+storage_width-storage_cap_width],[Ycord]:16"
+	storage_start.screen_loc = "[Xcord],[Ycord]"
+	storage_continue.screen_loc = "[Xcord]:[storage_cap_width+(storage_width-storage_cap_width*2)/2+2],[Ycord]"
+	storage_end.screen_loc = "[Xcord]:[19+storage_width-storage_cap_width],[Ycord]"
 
 	var/startpoint = FALSE
 	var/endpoint = TRUE
@@ -259,12 +251,12 @@
 		storage_start.overlays += stored_continue
 		storage_start.overlays += stored_end
 
-		O.screen_loc = "[Xcord]:[round((startpoint+endpoint)/2)+2],[Ycord]:16"
+		O.screen_loc = "[Xcord]:[round((startpoint+endpoint)/2)+2],[Ycord]"
 		O.maptext = ""
 		O.layer = 20
 		O.plane = HUD_PLANE
 
-	closer.screen_loc = "[Xcord]:[storage_width+19],[Ycord]:16"
+	closer.screen_loc = "[Xcord]:[storage_width+19],[Ycord]"
 	return
 
 /datum/numbered_display
