@@ -212,7 +212,8 @@
 			var/hitchance = 100 - .
 			hitchance /= 1.10
 			. = ceil(100 - hitchance)
-
+	if (firer.tactic == "aim")
+		. *= 1.1
 	. = min(CLAMP0100(.), 99) // minimum hit chance is 2% no matter what
 //	log_debug(.)
 

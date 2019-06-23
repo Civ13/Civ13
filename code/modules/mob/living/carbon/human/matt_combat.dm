@@ -1,23 +1,13 @@
-//Commented out debugging shit.
-/*
-/mob/living/carbon/human/verb/toggle_combat_mode()
-	set name = "Toggle Combat Mode"
-	set category = "Combat"
-
-	if(combat_mode)
-		combat_mode = 0
-		to_chat(src, "You toggle off combat mode.")
-	else
-		combat_mode = 1
-		to_chat(src, "You toggle on combat mode.")
-*/
 
 //Going here till I find a better place for it.
 
 /mob/living/proc/attempt_dodge()//Handle parry is an object proc and it's, its own thing.
 	if((defense_intent == I_DODGE) && !lying)//Todo, make use of the check_shield_arc proc to make sure you can't dodge from behind.
 		var/mob/living/carbon/human/H_user = src
-		if(prob(min(25 * H_user.getStatCoeff("dexterity"), 75)))
+		var/prob1 = min(25 * H_user.getStatCoeff("dexterity"), 75)
+		if (H_user.tactic == "defend")
+			prob1 *= 1.2
+		if(prob(prob1))
 			do_dodge()
 			return	1
 

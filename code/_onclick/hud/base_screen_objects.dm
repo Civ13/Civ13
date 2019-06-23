@@ -511,8 +511,6 @@
 
 /obj/screen/kick_jump_bite/Click()
 	if (isliving(parentmob))
-		var/mob/living/L = parentmob
-		L.resist()
 		switch (parentmob.middle_click_intent)
 			if("kick")
 				parentmob.middle_click_intent = "jump"
@@ -529,33 +527,40 @@
 				icon_state = "kick"
 				update_icon()
 				return
-/*
-/obj/screen/combat_mode
-	name = "combat mode"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "act_resist"
-	screen_loc = "14:16,2"
 
-/obj/screen/combat_mode/Click()
-	if(!ishuman(usr))	return
-	var/mob/living/carbon/human/C = usr
-	if(C.combat_mode)
-		C.combat_mode = 0
-		C.combat_icon.icon_state = "combat0"
-	else
-		C.combat_mode = 1
-		C.combat_icon.icon_state = "combat1"
-*/
 
 obj/screen/tactic
 	name = "tactic"
 	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "nonethird"
+	icon_state = "charge"
 	screen_loc = "19,4"
 
 /obj/screen/tactic/New()
 	..()
 	update_icon()
+/obj/screen/tactic/Click()
+	if (isliving(parentmob))
+		switch (parentmob.tactic)
+			if("charge") //10% damage buff
+				parentmob.tactic = "aim"
+				icon_state = "aim"
+				update_icon()
+				return
+			if("aim") //10% accuracy buff
+				parentmob.tactic = "rush"
+				icon_state = "rush"
+				update_icon()
+				return
+			if("rush") // 15% cooldown buff
+				parentmob.tactic = "defend"
+				icon_state = "defend"
+				update_icon()
+				return
+			if("defend") //20% dodge/parry buff
+				parentmob.tactic = "charge"
+				icon_state = "charge"
+				update_icon()
+				return
 
 /obj/screen/mood
 	name = "mood"

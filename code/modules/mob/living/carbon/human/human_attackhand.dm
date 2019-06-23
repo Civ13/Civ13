@@ -217,7 +217,8 @@
 			// Apply stat effects
 			real_damage *= H.getStatCoeff("strength")
 			real_damage /= getStatCoeff("strength")
-
+			if (tactic == "charge")
+				real_damage *= 1.1
 			var/armor = run_armor_check(affecting, "melee")
 			// Apply additional unarmed effects.
 			attack.apply_effects(H, src, armor, rand_damage, hit_zone)

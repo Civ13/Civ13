@@ -100,8 +100,13 @@
 	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
 	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
 	var/mob/living/carbon/human/H_user = user
-
-	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (0.66*H_user.getStatCoeff("strength")+0.34*H_user.getStatCoeff("dexterity")),87)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
+	var/isdefend = 1 //the defend tactic modifier
+	var/modif = 1
+	if (H_user.religion_check() == "Combat")
+		modif = 1.1
+	if (user.tactic == "defend")
+		isdefend = 1.2
+	if(default_parry_check(user, attacker, damage_source) && prob(isdefend*(min(block_chance * modif*(0.66*H_user.getStatCoeff("strength")+0.34*H_user.getStatCoeff("dexterity")),87))) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
 		user.visible_message("<span class='danger'><big>\The [user] parries [attack_text] with \the [src]!</big></span>")
 		var/mob/living/carbon/human/H = user
 		if (prob(50))
