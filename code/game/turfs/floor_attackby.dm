@@ -646,7 +646,7 @@
 		return
 	var/turf/T = get_turf(src)
 	if (prob(25))
-		if (prob(90))
+		if (prob(60))
 			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 			mineral.amount = rand(2,6)
 			if (istype(get_area(src), /area/caribbean/void/caves/special))
