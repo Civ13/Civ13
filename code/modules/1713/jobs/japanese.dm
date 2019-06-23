@@ -418,7 +418,7 @@
 //////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////WW2///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-/datum/job/japanese/captain
+/datum/job/japanese/ija_captain
 	title = "IJA Rikugun-Tai-i"
 	en_meaning = "Army Captain"
 	rank_abbreviation = "Ri-Tai"
@@ -434,7 +434,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/captain/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_captain/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -466,7 +466,7 @@
 
 	return TRUE
 
-/datum/job/japanese/lieutenant
+/datum/job/japanese/ija_lieutenant
 	title = "IJA Rikugun-Chui"
 	en_meaning = "1st Lieutenant"
 	rank_abbreviation = "1lt."
@@ -482,7 +482,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/lieutenant/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_lieutenant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -514,7 +514,7 @@
 
 	return TRUE
 
-/datum/job/japanese/lieutenant2
+/datum/job/japanese/ija_lieutenant2
 	title = "IJA Rikugun-Shoi"
 	en_meaning = "2nd Lieutenant"
 	rank_abbreviation = "2lt."
@@ -530,7 +530,7 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/japanese/lieutenant2/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_lieutenant2/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -562,7 +562,7 @@
 
 	return TRUE
 
-/datum/job/japanese/sergeant
+/datum/job/japanese/ija_sergeant
 	title = "IJA Gunso"
 	en_meaning = "Sergeant"
 	rank_abbreviation = "Gu."
@@ -575,7 +575,7 @@
 	min_positions = 1
 	max_positions = 4
 
-/datum/job/japanese/sergeant/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_sergeant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -607,7 +607,7 @@
 
 	return TRUE
 
-/datum/job/japanese/doctor
+/datum/job/japanese/ija_doctor
 	title = "IJA Gun-i"
 	en_meaning = "Doctor"
 	rank_abbreviation = "Gun-i"
@@ -620,7 +620,7 @@
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/japanese/doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_doctor/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -647,7 +647,7 @@
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
 
-datum/job/japanese/medic
+datum/job/japanese/ija_medic
 	title = "IJA Sento-i"
 	en_meaning = "Medic"
 	rank_abbreviation = "Sen-i"
@@ -660,7 +660,7 @@ datum/job/japanese/medic
 	min_positions = 2
 	max_positions = 10
 
-/datum/job/japanese/medic/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_medic/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -686,7 +686,7 @@ datum/job/japanese/medic
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
 
-/datum/job/japanese/ww2infantry
+/datum/job/japanese/ija_ww2infantry
 	title = "IJA Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
@@ -698,7 +698,7 @@ datum/job/japanese/medic
 	min_positions = 6
 	max_positions = 200
 
-/datum/job/japanese/ww2infantry/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_ww2infantry/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -722,7 +722,7 @@ datum/job/japanese/medic
 	else if (randweap == 2)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_back)
 		H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
-
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a simple soldier second-class  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -736,7 +736,7 @@ datum/job/japanese/medic
 
 	return TRUE
 
-/datum/job/japanese/machinegunner
+/datum/job/japanese/ija_machinegunner
 	title = "IJA Taiho"
 	en_meaning = "Machinegunner"
 	rank_abbreviation = "Itto."
@@ -748,7 +748,7 @@ datum/job/japanese/medic
 	min_positions = 4
 	max_positions = 50
 
-/datum/job/japanese/machinegunner/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_machinegunner/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -767,7 +767,7 @@ datum/job/japanese/medic
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/type99(H), slot_back)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier99(H), slot_belt)
-
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a machine gunner, first-class,  employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders! Provide support and supressing fire for your comrades!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -782,7 +782,7 @@ datum/job/japanese/medic
 
 	return TRUE
 
-/datum/job/japanese/sniper
+/datum/job/japanese/ija_sniper
 	title = "IJA Senmeina no Hito"
 	en_meaning = "Sniper"
 	rank_abbreviation = "Jo."
@@ -794,7 +794,7 @@ datum/job/japanese/medic
 	min_positions = 2
 	max_positions = 200
 
-/datum/job/japanese/sniper/equip(var/mob/living/carbon/human/H)
+/datum/job/japanese/ija_sniper/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
@@ -815,7 +815,7 @@ datum/job/japanese/medic
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_back)
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
-
+	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sniper, 1st class, employed by the Imperial Japanese Army. Follow your <b>Officer's</b> orders and take out valuable targets from a range!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
