@@ -122,7 +122,6 @@
 /obj/screen/zone_sel
 	name = "damage zone"
 	icon_state = "zone_sel"
-	screen_loc = ui_zonesel
 	var/selecting = null
 
 /obj/screen/zone_sel/New()
@@ -343,7 +342,7 @@
 //--------------------------------------------------nutrition---------------------------------------------------------
 /obj/screen/nutrition
 	name = "nutrition"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "nutrition1"
 	screen_loc = "15,6"
 	process_flag = TRUE
@@ -388,7 +387,7 @@
 //--------------------------------------------------bodytemp---------------------------------------------------------
 /obj/screen/bodytemp
 	name = "body temperature"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "temp0"
 	screen_loc = "15,9"
 	process_flag = TRUE
@@ -434,7 +433,7 @@
 
 /obj/screen/pull
 	name = "pull"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "pull0"
 	screen_loc = "14,2"
 
@@ -454,7 +453,7 @@
 //-----------------------throw------------------------------
 /obj/screen/HUDthrow
 	name = "throw"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_throw_off"
 	screen_loc = "15,2"
 
@@ -480,7 +479,7 @@
 //-----------------------drop------------------------------
 /obj/screen/drop
 	name = "drop"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_drop"
 	screen_loc = "15:-16,2"
 
@@ -492,7 +491,7 @@
 //-----------------------resist------------------------------
 /obj/screen/resist
 	name = "resist"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_resist"
 	screen_loc = "14:16,2"
 
@@ -505,7 +504,7 @@
 
 /obj/screen/kick_jump_bite
 	name = "secondary attack"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "kick"
 	screen_loc = "11,2"
 
@@ -531,7 +530,7 @@
 
 obj/screen/tactic
 	name = "tactic"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "charge"
 	screen_loc = "19,4"
 
@@ -568,7 +567,7 @@ obj/screen/tactic
 
 /obj/screen/mood
 	name = "mood"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "mood1"
 	screen_loc = "15,8"
 	process_flag = TRUE
@@ -607,7 +606,7 @@ obj/screen/tactic
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "walk"
 	screen_loc = "14,1"
 
@@ -674,7 +673,7 @@ obj/screen/tactic
 //-----------------------mov_intent END------------------------------
 /obj/screen/equip
 	name = "equip"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_equip"
 	screen_loc = "8,2"
 
@@ -685,7 +684,7 @@ obj/screen/tactic
 //-----------------------swap------------------------------
 /obj/screen/swap
 	name = "swap hand"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "swap-l"
 
 /obj/screen/swap/New()
@@ -698,7 +697,7 @@ obj/screen/tactic
 //-----------------------intent------------------------------
 /obj/screen/intent
 	name = "intent"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "help"
 	screen_loc = "8,2"
 
@@ -724,7 +723,7 @@ obj/screen/tactic
 //-----------------------mode------------------------------
 /obj/screen/mode
 	name = "mode"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "dodge"
 	screen_loc = "11,1"
 //	process_flag = TRUE
@@ -754,7 +753,7 @@ obj/screen/tactic
 
 /obj/screen/fastintent
 	name = "fastintent"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 //update in a_intent_change, because macro
 /*/obj/screen/fastintent/Click()
 	if (parentmob.HUDneed.Find("intent"))
@@ -988,7 +987,7 @@ obj/screen/tactic
 //-----------------------Gun Mod------------------------------
 /obj/screen/gun
 	name = "gun"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	master = null
 	dir = 2
 
@@ -1072,7 +1071,7 @@ obj/screen/tactic
 
 //-----------------------toggle_inventory------------------------------
 /obj/screen/toggle_inventory
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "b-open"
 	name = "toggle inventory"
 	screen_loc = "1,0"

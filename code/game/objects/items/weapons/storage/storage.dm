@@ -171,7 +171,7 @@
 /obj/item/weapon/storage/proc/orient_objs(tx, ty, mx, my)
 	var/cx = tx
 	var/cy = ty
-	boxes.screen_loc = "[tx]:,[ty] to [mx],[my]"
+	boxes.screen_loc = "[tx],[ty] to [mx],[my]"
 	for (var/obj/O in contents)
 		O.screen_loc = "[cx],[cy]"
 		O.layer = 20
