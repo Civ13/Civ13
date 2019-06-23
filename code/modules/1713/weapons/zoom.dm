@@ -191,15 +191,18 @@ Parts of code courtesy of Super3222
 						_x = -zoom_amt
 				if (zoom_amt > 7 && user && user.client)//So we can still see the player at the edge of the screen if the zoom amount is greater than the world view
 					var/view_offset = round((zoom_amt - 7)/2, TRUE)
-					user.client.view += view_offset
 					switch(user.dir)
 						if (NORTH)
+							user.client.view = "20,[15+view_offset]"
 							_y -= view_offset
 						if (EAST)
+							user.client.view = "[20+view_offset],15"
 							_x -= view_offset
 						if (SOUTH)
+							user.client.view = "20,[15+view_offset]"
 							_y += view_offset
 						if (WEST)
+							user.client.view = "[20+view_offset],15"
 							_x += view_offset
 					animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, 4, TRUE)
 					animate(user.client, pixel_x = 0, pixel_y = 0)

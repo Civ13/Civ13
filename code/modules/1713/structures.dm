@@ -94,7 +94,7 @@
 	opacity = TRUE
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 	flammable = TRUE
-	
+
 /obj/structure/grille/ironfence
 	name = "iron fence"
 	desc = "A wrought iron fence."
@@ -126,7 +126,7 @@
 	layer = MOB_LAYER + 0.01
 	bound_width = 32
 	bound_height = 32
-	density = TRUE
+	density = FALSE
 	anchored = TRUE
 	flammable = TRUE
 	not_movable = FALSE
