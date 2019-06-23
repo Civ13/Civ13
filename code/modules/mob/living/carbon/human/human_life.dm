@@ -399,7 +399,9 @@
 				handle_hygiene()
 			handle_mood()
 			handle_ptsd()
-
+		if (!map.civilizations)
+			bowels = 0
+			bladder = 0
 		handle_medical_side_effects()
 		if (map.civilizations)
 			handle_hair_growth()

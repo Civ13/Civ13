@@ -63,7 +63,7 @@
 
 /obj/effect/decal/cleanable/urine
 	name = "urine stain"
-	desc = "Someone couldn't hold it.."
+	desc = "Someone couldn't hold it..."
 	density = 0
 	anchored = 1
 	layer = 2
