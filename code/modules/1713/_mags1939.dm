@@ -41,11 +41,11 @@ obj/item/ammo_magazine/type99
 	weight = 0.40
 	multiple_sprites = TRUE
 
-/obj/item/ammo_magazine/type98
-	name = "Type 98 ammo belt"
+/obj/item/ammo_magazine/type92
+	name = "Type 92 ammo belt"
 	icon_state = "maximbelt"
 	mag_type = MAGAZINE
-	caliber = "a77x58"
+	caliber = "a77x58_weak"
 	w_class = 4
 	matter = list(DEFAULT_WALL_MATERIAL = 4500)
 	ammo_type = /obj/item/ammo_casing/a77x58/weak

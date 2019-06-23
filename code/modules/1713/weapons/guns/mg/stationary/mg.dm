@@ -130,12 +130,12 @@ obj/item/weapon/gun/projectile/automatic/stationary/modern/maxim/ww2
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/type98
-	name = "Type 98 machine gun"
+	name = "Type 92 machine gun"
 	desc = "A japanese heavy machinegun. Uses 7.7x58mm Arisaka rounds."
 	icon_state = "type98hmg"
 	base_icon = "type98hmg"
 	caliber = "a77x58_weak"
-	magazine_type = /obj/item/ammo_magazine/type98
+	magazine_type = /obj/item/ammo_magazine/type92
 	ammo_type = /obj/item/ammo_casing/a77x58/weak
 
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/mg34
