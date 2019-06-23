@@ -635,3 +635,34 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (mob.HUDneed.Find("m_intent"))
 		var/obj/screen/intent/I = mob.HUDneed["m_intent"]
 		I.update_icon()
+
+
+/client/verb/tactic_intent()
+	set name = "tactic-intent"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.tactic == "charge")
+		H.tactic = "aim"
+
+	else if (H.tactic == "aim")
+		H.tactic = "rush"
+
+	else if (H.tactic == "rush")
+		H.tactic = "defend"
+
+	else if (H.tactic == "defend")
+		H.tactic = "charge"
+
+	else
+		H.tactic = "charge"
+
+	if (mob.HUDneed.Find("tactic"))
+		var/obj/screen/tactic/I = mob.HUDneed["tactic"]
+		I.update_icon()

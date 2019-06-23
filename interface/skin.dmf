@@ -254,6 +254,9 @@ macro "hotkeymode"
 		name = "M"
 		command = "m-intent-run"
 	elem 
+		name = "N"
+		command = "tactic-intent"
+	elem 
 		name = "Q"
 		command = ".northwest"
 	elem 
