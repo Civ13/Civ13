@@ -500,7 +500,35 @@
 		var/mob/living/L = parentmob
 		L.resist()
 //-----------------------resist END------------------------------
+/obj/screen/fixeye
+	name = "fixeye"
+	icon_state = "fixeye"
+	screen_loc = "19,8"
 
+/obj/screen/fixeye/New()
+	..()
+	update_icon()
+
+/obj/screen/fixeye/update_icon()
+	var/mob/living/carbon/human/L = parentmob
+	if (!L.facing_dir)
+		icon_state = "fixeye"
+	else
+		icon_state = "fixeye_on"
+
+/obj/screen/fixeye/Click()
+	if (isliving(parentmob))
+		var/mob/living/carbon/human/L = parentmob
+
+		L.set_face_dir()
+
+		if (!L.facing_dir)
+			L << "You are now not facing anything."
+			icon_state = "fixeye"
+		else
+			L << "You are now facing [dir2text(L.facing_dir)]."
+			icon_state = "fixeye_on"
+		update_icon()
 
 /obj/screen/kick_jump_bite
 	name = "secondary attack"
