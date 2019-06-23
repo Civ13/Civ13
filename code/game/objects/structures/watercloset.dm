@@ -118,7 +118,7 @@
 	icon_state = "pit_latrine3"
 	open = TRUE
 	not_movable = TRUE
-	not_disassembable = TRUE
+	not_disassemblable = TRUE
 
 /obj/structure/toilet/pit_latrine/New()
 	open = TRUE
