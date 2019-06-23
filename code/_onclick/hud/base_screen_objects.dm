@@ -544,21 +544,25 @@ obj/screen/tactic
 			if("charge") //10% damage buff
 				parentmob.tactic = "aim"
 				icon_state = "aim"
+				parentmob << "<span class='warning'>You will now focus on aiming.</span>"
 				update_icon()
 				return
 			if("aim") //10% accuracy buff
 				parentmob.tactic = "rush"
 				icon_state = "rush"
+				parentmob << "<span class='warning'>You will now focus on rushing.</span>"
 				update_icon()
 				return
 			if("rush") // 15% cooldown buff
 				parentmob.tactic = "defend"
 				icon_state = "defend"
+				parentmob << "<span class='warning'>You will now focus on defending.</span>"
 				update_icon()
 				return
 			if("defend") //20% dodge/parry buff
 				parentmob.tactic = "charge"
 				icon_state = "charge"
+				parentmob << "<span class='warning'>You will now focus on charging.</span>"
 				update_icon()
 				return
 

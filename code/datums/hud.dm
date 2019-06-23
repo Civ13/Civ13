@@ -38,14 +38,14 @@
 	)
 	HUDneed = list(
 		// right side
-		"body temperature"    = list("type" = /obj/screen/bodytemp,   "loc" = "19,9"),
-		"mood"  			 = list("type" = /obj/screen/mood,       "loc" = "19,8"),
-		"health"      = list("type" = /obj/screen/health,     "loc" = "19,7", "icon" = 'icons/mob/screen/healthdoll.dmi'),
-		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "19,6"),
-		"damage zone" = list("type" = /obj/screen/zone_sel,   "loc" = "19,5"),
-		"tactic"      = list("type" = /obj/screen/tactic,     "loc" = "19,4"),
-		"mode"        = list("type" = /obj/screen/mode,       "loc" = "19,4"),
-		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,       "loc" = "19,4"),
+		"body temperature"    = list("type" = /obj/screen/bodytemp,   "loc" = "19,14"),
+		"mood"  			 = list("type" = /obj/screen/mood,       "loc" = "19,13"),
+		"health"      = list("type" = /obj/screen/health,     "loc" = "19,12", "icon" = 'icons/mob/screen/healthdoll.dmi'),
+		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "19,11"),
+		"damage zone" = list("type" = /obj/screen/zone_sel,   "loc" = "19,8"),
+		"tactic"      = list("type" = /obj/screen/tactic,     "loc" = "19,7"),
+		"mode"        = list("type" = /obj/screen/mode,       "loc" = "19,6"),
+		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,       "loc" = "19,5"),
 		"m_intent"    = list("type" = /obj/screen/mov_intent, "loc" = "19,3"),
 		"throw"       = list("type" = /obj/screen/HUDthrow,   "loc" = "19,2"),
 		"pull"        = list("type" = /obj/screen/pull,       "loc" = "19,2"),
