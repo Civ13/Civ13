@@ -650,16 +650,16 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	if (H.tactic == "charge")
 		H.tactic = "aim"
-
+		H << "<span class='warning'>You will now focus on aiming.</span>"
 	else if (H.tactic == "aim")
 		H.tactic = "rush"
-
+		H << "<span class='warning'>You will now focus on rushing.</span>"
 	else if (H.tactic == "rush")
 		H.tactic = "defend"
-
+		H << "<span class='warning'>You will now focus on defending.</span>"
 	else if (H.tactic == "defend")
 		H.tactic = "charge"
-
+		H << "<span class='warning'>You will now focus on charging.</span>"
 	else
 		H.tactic = "charge"
 

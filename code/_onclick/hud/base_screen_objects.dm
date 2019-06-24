@@ -593,6 +593,19 @@ obj/screen/tactic
 				update_icon()
 				return
 
+/obj/screen/tactic/update_icon()
+	if (parentmob.tactic == "charge")
+		icon_state = "charge"
+
+	else if (parentmob.tactic == "aim")
+		icon_state = "aim"
+
+	else if (parentmob.tactic == "rush")
+		icon_state = "rush"
+
+	else if (parentmob.tactic == "defend")
+		icon_state = "defend"
+
 /obj/screen/mood
 	name = "mood"
 
