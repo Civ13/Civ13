@@ -125,8 +125,8 @@
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
-		for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
-			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
+		for (var/turf/floor/dirt/D)
+			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground) && !istype(D,/turf/floor/dirt/dust))
 				var/area/A = get_area(D)
 				if (A.location == AREA_OUTSIDE)
 					D.ChangeTurf(/turf/floor/dirt/winter)
