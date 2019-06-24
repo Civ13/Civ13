@@ -15,8 +15,8 @@
 	if (shell())
 		for (var/argument in args)
 			command = "[command] [argument]"
-		log_debug("Executing python3 command '[command]'")
-		return shell("sudo python3 [getScriptDir()]/[command]")
+		log_debug("Executing python3.6 command '[command]'")
+		return shell("sudo python3.6 [getScriptDir()]/[command]")
 	return FALSE
 
 /process/python/proc/getScriptDir()
