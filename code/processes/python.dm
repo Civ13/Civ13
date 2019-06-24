@@ -12,7 +12,7 @@
 	return
 
 /process/python/proc/execute(var/command, var/list/args = list())
-	if (shell()
+	if (shell())
 		if(world.realtime > last+300)
 			for (var/argument in args)
 				command = "[command] [argument]"
