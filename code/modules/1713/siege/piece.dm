@@ -1,5 +1,5 @@
 /obj/structure/cannon
-	name = "Cannon"
+	name = "cannon"
 	icon = 'icons/obj/cannon_v.dmi'
 	layer = MOB_LAYER + 1 //just above mobs
 	density = TRUE
@@ -20,13 +20,32 @@
 	var/spritemod = TRUE //if true, uses 32x64
 	var/explosion = TRUE
 	var/reagent_payload = "none"
+	var/maxrange = 80
 
 /obj/structure/cannon/modern
-	name = "Field Cannon"
+	name = "field cannon"
 	icon = 'icons/obj/cannon.dmi'
 	icon_state = "modern_cannon"
 	ammotype = /obj/item/cannon_ball/shell
 	spritemod = FALSE
+
+/obj/structure/cannon/mortar
+	name = "mortar"
+	icon = 'icons/obj/cannon_ball.dmi'
+	layer = MOB_LAYER + 1 //just above mobs
+	density = TRUE
+	icon_state = "mortar"
+	bound_height = 32
+	bound_width = 32
+	anchored = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	ammotype = /obj/item/cannon_ball/mortar_shell
+	spritemod = FALSE //if true, uses 32x64
+	explosion = TRUE
+	reagent_payload = "none"
+	maxrange = 23
+
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
@@ -122,8 +141,8 @@
 			loaded = M
 
 	if (href_list["set_angle"])
-		angle = input(user, "Set the target distance to what? (From 5 to 80 meters)") as num
-		angle = Clamp(angle, 5, 80)
+		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
+		angle = Clamp(angle, 5, maxrange)
 
 	if (href_list["fire"])
 
@@ -132,7 +151,7 @@
 			return
 
 		if (!loaded)
-			user << "<span class = 'danger'>There's nothing in the cannon.</span>"
+			user << "<span class = 'danger'>There's nothing in \the [src].</span>"
 			return
 
 
@@ -244,7 +263,10 @@
 						playsound(target, "artillery_in", 70, TRUE)
 						spawn (10)
 							if (explosion)
-								explosion(target, 1, 2, 3, 4)
+								if (istype(src,/obj/structure/cannon/mortar))
+									explosion(target, 1, 2, 2, 3)
+								else
+									explosion(target, 1, 2, 3, 4)
 								var/target_area_original_integrity = target_area.artillery_integrity
 								if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
 									for (var/mob/living/L in view(20, target))
@@ -328,7 +350,7 @@
 	set name = "Rotate left"
 	set src in range(2, usr)
 	if (anchored)
-		user << "<span class='notice'>You need to unsecure the cannon first!</span>"
+		user << "<span class='notice'>You need to unsecure \the [src] first!</span>"
 	else
 		switch(dir)
 			if (EAST)
@@ -366,7 +388,7 @@
 	set name = "Rotate right"
 	set src in range(2, usr)
 	if (anchored)
-		user << "<span class='notice'>You need to unsecure the cannon first!</span>"
+		user << "<span class='notice'>You need to unsecure \the [src] first!</span>"
 	else
 		switch(dir)
 			if (EAST)

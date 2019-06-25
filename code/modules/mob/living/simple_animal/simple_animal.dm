@@ -333,9 +333,12 @@
 						amt = 5
 					if (mob_size == MOB_HUGE)
 						amt = 8
-					for (var/v in TRUE to amt)
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-						meat.name = "[name] meatsteak"
+					var/namt = amt-2
+					if (namt <= 0)
+						namt = 1
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+					meat.name = "[name] meatsteak"
+					meat.amount = namt
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 						leather.name = "[name] leather"
