@@ -21,13 +21,15 @@
 	var/explosion = TRUE
 	var/reagent_payload = "none"
 	var/maxrange = 80
-
+	var/maxsway = 3
+	var/sway = 0
 /obj/structure/cannon/modern
 	name = "field cannon"
 	icon = 'icons/obj/cannon.dmi'
 	icon_state = "modern_cannon"
 	ammotype = /obj/item/cannon_ball/shell
 	spritemod = FALSE
+	maxsway = 10
 
 /obj/structure/cannon/mortar
 	name = "mortar"
@@ -45,7 +47,7 @@
 	explosion = TRUE
 	reagent_payload = "none"
 	maxrange = 23
-
+	maxsway = 7
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
@@ -144,9 +146,13 @@
 		angle = input(user, "Set the target distance to what? (From 5 to [maxrange] meters)") as num
 		angle = Clamp(angle, 5, maxrange)
 
+	if (href_list["set_sway"])
+		sway = input(user, "Set the Left-Right sway to what? (From -[maxsway] to [maxsway] meters - negatives are left, positives are right)") as num
+		sway = Clamp(sway, -maxsway, maxsway)
+
 	if (href_list["fire"])
 
-		if (map && !map.faction1_can_cross_blocks())
+		if (!map.faction1_can_cross_blocks() && !map.faction2_can_cross_blocks())
 			user << "<span class = 'danger'>You can't fire yet.</span>"
 			return
 
@@ -182,20 +188,9 @@
 			var/turf/target = get_turf(src)
 			var/odir = dir
 
-			max_distance = angle + rand(2,7)
-
-			switch (dir)
-				if (WEST)
-					max_distance = min(max_distance, x - 5)
-				if (EAST)
-					max_distance = min(max_distance, world.maxx - x - 5)
-				if (NORTH)
-					max_distance = min(max_distance, world.maxy - y - 5)
-				if (SOUTH)
-					max_distance = min(max_distance, y - 5)
+			max_distance = rand(max_distance - round(max_distance/10), max_distance + round(max_distance/10))
 
 			high_distance = max_distance * 0.80
-
 
 			travelled = 0
 			high = TRUE
@@ -207,98 +202,98 @@
 			qdel(loaded)
 			loaded = null
 
-			var/list/old_valid_targets = list()
-
 			spawn (0)
-				for (var/v in 1 to max_distance)
+				var/v = max_distance
 
-					if (v > high_distance)
-						high = FALSE
+				if (v > high_distance)
+					high = FALSE
 
-					var/hit = FALSE
+				var/hit = FALSE
 
-					if (target)
-						old_valid_targets.Insert(old_valid_targets.len+1, target)
+				var/skew = v >= 10
+				var/tx = 0
+				var/ty = 0
 
-					var/skew = v >= 10
+				switch (odir)
+					if (EAST)
+						tx = x+1+max_distance
+						ty = y + sway + (prob(20) && skew ? pick(1,-1) : 0)
+					if (WEST)
+						tx = x-1-max_distance
+						ty = y + sway + (prob(20) && skew ? pick(1,-1) : 0)
+					if (NORTH)
+						tx = x + sway + (prob(20) && skew ? pick(1,-1) : 0)
+						ty = y+1+max_distance
+					if (SOUTH)
+						tx = x + sway + (prob(20) && skew ? pick(1,-1) : 0)
+						ty = y-1-max_distance
+				if (tx < 1)
+					tx = 1
+				if (tx > world.maxx)
+					tx = world.maxx
+				if (ty < 1)
+					ty = 1
+				if (ty > world.maxy)
+					ty = world.maxy
+				target = locate(tx, ty, z)
+				var/highcheck = high
+				var/area/target_area = get_area(target)
+				if (target_area.location == AREA_INSIDE)
+					highcheck = FALSE
 
-					switch (odir)
-						if (EAST)
-							target = locate(target.x+1, target.y + (prob(20) && skew ? pick(1,-1) : 0), z)
-						if (WEST)
-							target = locate(target.x-1, target.y + (prob(20) && skew ? pick(1,-1) : 0), z)
-						if (NORTH)
-							target = locate(target.x + (prob(20) && skew ? pick(1,-1) : 0), target.y+1, z)
-						if (SOUTH)
-							target = locate(target.x + (prob(20) && skew ? pick(1,-1) : 0), target.y-1, z)
+				if (v >= max_distance)
+					hit = TRUE
+				else if (target.density && !highcheck)
+					hit = TRUE
+				else if (target && !(target in range(1, get_turf(src))))
+					if (!highcheck)
+						for (var/atom/movable/AM in target)
+							// go over sandbags
+							if (AM.density && !(AM.flags & ON_BORDER))
+								var/obj/structure/S = AM
+								// go over some structures
+								if (istype(S) && S.low)
+									continue
+								hit = TRUE
+								break
 
-					var/highcheck = high
-					var/area/target_area = get_area(target)
-					if (target_area.location == AREA_INSIDE)
-						highcheck = FALSE
-
-					if (v >= max_distance)
-						hit = TRUE
-					else if (target.density && !highcheck)
-						hit = TRUE
-					else if (target && !(target in range(1, get_turf(src))))
-						if (!highcheck)
-							for (var/atom/movable/AM in target)
-								// go over sandbags
-								if (AM.density && !(AM.flags & ON_BORDER))
-									var/obj/structure/S = AM
-									// go over some structures
-									if (istype(S) && S.low)
-										continue
-									hit = TRUE
-									break
-					else if (!target)
-						if (!old_valid_targets.len)
-							break
-						else
-							target = old_valid_targets[old_valid_targets.len]
-							hit = TRUE
-
-					if (hit)
-						playsound(target, "artillery_in", 70, TRUE)
-						spawn (10)
-							if (explosion)
-								if (istype(src,/obj/structure/cannon/mortar))
-									explosion(target, 1, 2, 2, 3)
-								else
-									explosion(target, 1, 2, 3, 4)
-								var/target_area_original_integrity = target_area.artillery_integrity
-								if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
-									for (var/mob/living/L in view(20, target))
-										shake_camera(L, 5, 5)
-										L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
-									message_admins("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
-									log_admin("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
-									return
-								else if (target_area_original_integrity)
-									target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
-								message_admins("Cannonball hit at [target.x], [target.y], [target.z].")
-								log_admin("Cannonball hit at [target.x], [target.y], [target.z].")
+				if (hit)
+					playsound(target, "artillery_in", 70, TRUE)
+					spawn (10)
+						if (explosion)
+							if (istype(src,/obj/structure/cannon/mortar))
+								explosion(target, 1, 2, 2, 3)
 							else
-								message_admins("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
-								log_admin("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
-								var/how_many = 24 // half of 49, the radius we spread over (7x7)
-								for (var/k in 1 to how_many)
-									switch (reagent_payload)
-										if ("chlorine_gas")
-											new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
-										if ("mustard_gas")
-											new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
-										if ("white_phosphorus_gas")
-											new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(target)
-										if ("xylyl_bromide")
-											new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
-										if ("phosgene_gas")
-											new/obj/effect/effect/smoke/chem/payload/phosgene(target)
-
-						break
-
-					sleep(0.5)
+								explosion(target, 1, 2, 3, 4)
+							var/target_area_original_integrity = target_area.artillery_integrity
+							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
+								for (var/mob/living/L in view(20, target))
+									shake_camera(L, 5, 5)
+									L << "<span class = 'danger'>You hear something violently smash into the ceiling!</span>"
+								message_admins("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
+								log_admin("Cannonball hit the ceiling at [target.x], [target.y], [target.z].")
+								return
+							else if (target_area_original_integrity)
+								target.visible_message("<span class = 'danger'>The ceiling collapses!</span>")
+							message_admins("Cannonball hit at [target.x], [target.y], [target.z].")
+							log_admin("Cannonball hit at [target.x], [target.y], [target.z].")
+						else
+							message_admins("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+							log_admin("Gas artillery shell ([reagent_payload]) hit at [target.x], [target.y], [target.z].")
+							var/how_many = 24 // half of 49, the radius we spread over (7x7)
+							for (var/k in 1 to how_many)
+								switch (reagent_payload)
+									if ("chlorine_gas")
+										new/obj/effect/effect/smoke/chem/payload/chlorine_gas(target)
+									if ("mustard_gas")
+										new/obj/effect/effect/smoke/chem/payload/mustard_gas(target)
+									if ("white_phosphorus_gas")
+										new/obj/effect/effect/smoke/chem/payload/white_phosphorus_gas(target)
+									if ("xylyl_bromide")
+										new/obj/effect/effect/smoke/chem/payload/xylyl_bromide(target)
+									if ("phosgene_gas")
+										new/obj/effect/effect/smoke/chem/payload/phosgene(target)
+				sleep(0.5)
 
 	do_html(user)
 
@@ -334,6 +329,7 @@
 		</center>
 		Shell: <a href='?src=\ref[src];load=1'>[loaded ? loaded.name : "No shell loaded"]</a><br><br>
 		Distance: <a href='?src=\ref[src];set_angle=1'>[angle] meters</a><br><br>
+		Left-Right sway: <a href='?src=\ref[src];set_sway=1'>[sway] meters</a><br><br>
 		<br>
 		<center>
 		<a href='?src=\ref[src];fire=1'><b><big>FIRE!</big></b></a>
