@@ -219,15 +219,15 @@
 				switch (odir)
 					if (EAST)
 						tx = x+1+max_distance
-						ty = y + sway + (prob(20) ? pick(1,-1) : 0)
+						ty = y + sway + pick(0,pick(1,-1))
 					if (WEST)
 						tx = x-1-max_distance
-						ty = y + sway + (prob(20) ? pick(1,-1) : 0)
+						ty = y + sway + pick(0,pick(1,-1))
 					if (NORTH)
-						tx = x + sway + (prob(20) ? pick(1,-1) : 0)
+						tx = x + sway + pick(0,pick(1,-1))
 						ty = y+1+max_distance
 					if (SOUTH)
-						tx = x + sway + (prob(20) ? pick(1,-1) : 0)
+						tx = x + sway + pick(0,pick(1,-1))
 						ty = y-1-max_distance
 				if (tx < 1)
 					tx = 1
