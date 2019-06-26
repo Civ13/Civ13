@@ -314,6 +314,9 @@
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
 					new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					if (istype(user, /mob/living/carbon/human))
+						var/mob/living/carbon/human/HM = user
+						HM.adaptStat("medical", 0.3)
 					crush()
 					qdel(src)
 			else
@@ -347,6 +350,9 @@
 						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 						bone.name = "[name] bone"
 						bone.amount = (amt-2)
+					if (istype(user, /mob/living/carbon/human))
+						var/mob/living/carbon/human/HM = user
+						HM.adaptStat("medical", amt/3)
 					crush()
 					qdel(src)
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_GRAB && stat == DEAD)
@@ -391,6 +397,9 @@
 				else if (istype(src, /mob/living/simple_animal/cat))
 					var/obj/item/stack/material/catpelt/NP = new/obj/item/stack/material/catpelt(get_turf(src))
 					NP.amount = 3
+				if (istype(user, /mob/living/carbon/human))
+					var/mob/living/carbon/human/HM = user
+					HM.adaptStat("medical", amt/3)
 				crush()
 				qdel(src)
 		else if (istype(O, /obj/item/weapon/reagent_containers/glass))
@@ -519,22 +528,7 @@
 /mob/living/simple_animal/put_in_hands(var/obj/item/W) // No hands.
 	W.loc = get_turf(src)
 	return TRUE
-/*
-// Harvest an animal's delicious byproducts
-/mob/living/simple_animal/proc/harvest(var/mob/user)
-	var/actual_meat_amount = max(1,(meat_amount/2))
-	if (meat_type && actual_meat_amount>0 && (stat == DEAD))
-		for (var/i=0;i<actual_meat_amount;i++)
-			var/obj/item/meat = new meat_type(get_turf(src))
-			meat.name = "[name] [meat.name]"
-		if (issmall(src))
-			user.visible_message("<span class='danger'>[user] chops up \the [src]!</span>")
-			new/obj/effect/decal/cleanable/blood/splatter(get_turf(src))
-			qdel(src)
-		else
-			user.visible_message("<span class='danger'>[user] butchers \the [src] messily!</span>")
-			gib()
-*/
+
 /mob/living/simple_animal/handle_fire()
 	return
 

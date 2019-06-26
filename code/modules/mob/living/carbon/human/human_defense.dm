@@ -41,6 +41,9 @@ bullet_act
 					HP.amount = 6
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
+					if (istype(user, /mob/living/carbon/human))
+						var/mob/living/carbon/human/HM = user
+						HM.adaptStat("medical", 1)
 					for (var/obj/item/clothing/I in contents)
 						drop_from_inventory(I)
 					crush()
