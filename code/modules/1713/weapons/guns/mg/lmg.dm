@@ -246,7 +246,7 @@
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
-		jamcheck += 0.2
+		jamcheck += 0.1
 
 	if (prob(jamcheck))
 		jammed_until = max(world.time + (jamcheck * 5), 50)

@@ -23,6 +23,7 @@
 	var/current_area_type = /area/caribbean
 	var/incomplete = FALSE
 	explosion_resistance = TRUE
+	var/bullethole_count = 0
 //	invisibility = 101 //starts invisible
 
 
@@ -284,7 +285,7 @@
 	health = 50
 	wall = TRUE
 	explosion_resistance = 1
-	
+
 /obj/covers/wood_wall/log
 	name = "log wall"
 	desc = "A log wall."
