@@ -15,8 +15,25 @@ Civ13 (formerly 1713) is a game based on Space Station 13 code, which features s
 
 ## Civ13 Discord
 [![discord](https://discordapp.com/api/guilds/468979034571931648/widget.png)](https://discord.gg/hBEtg4x)
+
+
 ## Official Website
 https://1713.eu/
+
+
+## Playing the game
+You will need a windows machine or a virtual machine running it from another OS.
+
+1. Download the latest BYOND distribution from http://www.byond.com/download/
+
+2. Register a BYOND account at https://secure.byond.com/Join
+
+3. Launch BYOND from **BYOND/bin/Byond.exe** and login.
+
+4. Navigate to **Space Station 13** and search for the **Civilization 13** server.
+
+5. You will start playing in seconds!
+
 
 ## Setting up a Server
 1. You will need a windows or linux machine with the following apps installed:
