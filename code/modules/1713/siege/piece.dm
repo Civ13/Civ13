@@ -20,9 +20,10 @@
 	var/spritemod = TRUE //if true, uses 32x64
 	var/explosion = TRUE
 	var/reagent_payload = "none"
-	var/maxrange = 80
+	var/maxrange = 50
 	var/maxsway = 3
 	var/sway = 0
+	var/firedelay = 20
 /obj/structure/cannon/modern
 	name = "field cannon"
 	icon = 'icons/obj/cannon.dmi'
@@ -30,7 +31,8 @@
 	ammotype = /obj/item/cannon_ball/shell
 	spritemod = FALSE
 	maxsway = 10
-
+	firedelay = 30
+	maxrange = 80
 /obj/structure/cannon/mortar
 	name = "mortar"
 	icon = 'icons/obj/cannon_ball.dmi'
@@ -48,6 +50,7 @@
 	reagent_payload = "none"
 	maxrange = 23
 	maxsway = 7
+	firedelay = 12
 /obj/structure/cannon/New()
 	..()
 	cannon_piece_list += src
@@ -161,7 +164,7 @@
 			return
 
 
-		if (do_after(user, 20, src))
+		if (do_after(user, firedelay, src))
 
 			// firing code
 
@@ -210,22 +213,21 @@
 
 				var/hit = FALSE
 
-				var/skew = v >= 10
 				var/tx = 0
 				var/ty = 0
 
 				switch (odir)
 					if (EAST)
 						tx = x+1+max_distance
-						ty = y + sway + (prob(20) && skew ? pick(1,-1) : 0)
+						ty = y + sway + (prob(20) ? pick(1,-1) : 0)
 					if (WEST)
 						tx = x-1-max_distance
-						ty = y + sway + (prob(20) && skew ? pick(1,-1) : 0)
+						ty = y + sway + (prob(20) ? pick(1,-1) : 0)
 					if (NORTH)
-						tx = x + sway + (prob(20) && skew ? pick(1,-1) : 0)
+						tx = x + sway + (prob(20) ? pick(1,-1) : 0)
 						ty = y+1+max_distance
 					if (SOUTH)
-						tx = x + sway + (prob(20) && skew ? pick(1,-1) : 0)
+						tx = x + sway + (prob(20) ? pick(1,-1) : 0)
 						ty = y-1-max_distance
 				if (tx < 1)
 					tx = 1
