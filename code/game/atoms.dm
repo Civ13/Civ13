@@ -525,12 +525,28 @@
 			return
 	if (istype(target, /turf/floor/beach/water) || user.stats["stamina"][1] <= 25 || get_dist(target,user)>2)
 		return
+	if ((istype(target, /obj) && target.density == TRUE) || (istype(target, /turf) && target.density == TRUE))
+		return
+	//is there a wall in the way?
+	if (get_dist(target,user)==2)
+		var/dir_to_tgt = get_dir(user,target)
+		for(var/obj/O in range(1,user))
+			if (get_dir(user,O) == dir_to_tgt && O.density == TRUE)
+				user << "<span class='danger'>You hit the [O]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
+		for(var/turf/T in range(1,user))
+			if (get_dir(user,T) == dir_to_tgt && T.density == TRUE)
+				user << "<span class='danger'>You hit the [T]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
 	//Nice, we can jump, let's do that then.
-//	playsound(user, "sound/effects/jump_[user.gender == MALE ? "male" : "female"].ogg", 25)
 	playsound(user, user.gender == MALE ? 'sound/effects/jump_male.ogg' : 'sound/effects/jump_female.ogg', 25)
 	user.visible_message("[user] jumps.")
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(20,40), 0)
 	user.throw_at(target, 5, 0.5, user)
 	user.setClickCooldown(22)
-
-//all things climbable
