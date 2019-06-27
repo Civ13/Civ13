@@ -367,7 +367,7 @@
 	caliber = "a77x58"
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	ammo_type = /obj/item/ammo_casing/a65x50
+	ammo_type = /obj/item/ammo_casing/a77x58
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
