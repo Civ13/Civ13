@@ -41,7 +41,10 @@
 		else
 			. = TRUE
 	if (istype(J, /datum/job/russian))
-		. = TRUE
+		if (J.is_ww2)
+			. = FALSE
+		else
+			. = TRUE
 
 /obj/map_metadata/hill203/short_win_time(faction)
 	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))

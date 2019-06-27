@@ -695,8 +695,8 @@ datum/job/japanese/ija_medic
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
 	// AUTOBALANCE
-	min_positions = 6
-	max_positions = 200
+	min_positions = 20
+	max_positions = 100
 
 /datum/job/japanese/ija_ww2infantry/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -746,7 +746,7 @@ datum/job/japanese/ija_medic
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 4
-	max_positions = 50
+	max_positions = 15
 
 /datum/job/japanese/ija_machinegunner/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -792,7 +792,7 @@ datum/job/japanese/ija_medic
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 200
+	max_positions = 10
 
 /datum/job/japanese/ija_sniper/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
