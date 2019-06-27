@@ -14,7 +14,7 @@
 
 /obj/screen
 	name = ""
-	icon = 'icons/mob/screen/1713Style.dmi'
+	icon = 'icons/mob/screen/effects.dmi'
 	layer = 20.0
 	plane = HUD_PLANE
 
@@ -290,21 +290,7 @@
 	var/mob/living/carbon/human/H = parentmob
 	overlays.Cut()
 	if (parentmob.stat != DEAD)
-/*
-		if (istype(H) && H.analgesic > 100)
-			icon_state = "health0"
-		else
-			switch(100 - ((parentmob:species.flags & NO_PAIN) ? FALSE : parentmob:traumatic_shock))
-				if (100 to INFINITY)		icon_state = "health0"
-				if (80 to 100)			icon_state = "health1"
-				if (60 to 80)			icon_state = "health2"
-				if (40 to 60)			icon_state = "health3"
-				if (20 to 40)			icon_state = "health4"
-				if (0 to 20)				icon_state = "health5"
-				else					icon_state = "health6"
-	else
-		icon_state = "health7"
-*/
+
 		icon_state = "healthdoll_BASE"
 		for(var/X in H.organs)
 			var/obj/item/organ/external/BP = X
@@ -332,11 +318,6 @@
 		var/mob/living/carbon/human/X = parentmob
 		X.exam_self()
 
-/*/obj/screen/health/New()
-	if (usr.client)
-		usr.client.screen += src
-		parentmob = usr
-*/
 //--------------------------------------------------health end---------------------------------------------------------
 
 //--------------------------------------------------nutrition---------------------------------------------------------
@@ -886,6 +867,7 @@ obj/screen/tactic
 		underlays += global_hud.druggy
 
 /obj/screen/full_1_tile_overlay
+	icon = 'icons/mob/screen/effects.dmi'
 	name = "full_1_tile_overlay"
 	icon_state = "blank"
 	layer = 21
