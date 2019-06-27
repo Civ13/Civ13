@@ -337,7 +337,7 @@
 
 	// AUTOBALANCE
 	min_positions = 3
-	max_positions = 200
+	max_positions = 10
 
 /datum/job/japanese/sniper/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
