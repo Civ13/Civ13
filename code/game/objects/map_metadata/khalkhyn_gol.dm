@@ -17,9 +17,9 @@
 		)
 	age = "1939"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(JAPANESE = 0.6, RUSSIAN = 0.4)
+	faction_distribution_coeffs = list(JAPANESE = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Khalkhyn Gol"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command!</b>. The Soviets will win if they manage to capture the japanese command!.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command!</b>. The Soviets will win if they manage to capture the japanese command!.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
@@ -34,10 +34,10 @@
 		. = FALSE
 
 /obj/map_metadata/khalkhyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/khalkhyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/khalkhyn/roundend_condition_def2name(define)
