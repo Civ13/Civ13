@@ -531,6 +531,7 @@
 	boxes = new /obj/screen/storage(  )
 	boxes.name = "storage"
 	boxes.master = src
+	boxes.icon = 'icons/mob/screen/1713Style.dmi'
 	boxes.icon_state = "block"
 	boxes.screen_loc = "7,7 to 10,8"
 	boxes.layer = 19
