@@ -11,6 +11,7 @@
 	var/attached = "none"
 	var/obj/attached_ob = null
 	flammable = TRUE
+	protection_chance = 30
 
 /obj/structure/barricade/wood_pole/New()
 	..()

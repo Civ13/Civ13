@@ -27,7 +27,7 @@
 	songs = list(
 		"Qom Nasheed:1" = 'sound/music/qom_nasheed.ogg',)
 	artillery_count = 3
-
+	valid_artillery = list("Explosive")
 obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (J.is_modernday == TRUE)
