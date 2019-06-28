@@ -321,6 +321,23 @@
 	flammable = FALSE
 	explosion_resistance = 10
 
+/obj/covers/sandstone_wall
+	name = "sandstone wall"
+	desc = "A sandstone wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 400
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 8
+
 /obj/covers/dirt_wall
 	name = "dirt wall"
 	desc = "A dirt wall."
