@@ -311,7 +311,10 @@
 /obj/screen/zone_sel3/New()
 	..()
 	selecting = parentmob.targeted_organ
-
+	if (parentmob.client.prefs.UI_style == "FoFStyle")
+		icon_state = "zone_sel_fof"
+	else
+		icon_state = "zone_sel"
 /obj/screen/zone_sel3/Click(location, control,params)
 	var/list/PL = params2list(params)
 	var/icon_x = text2num(PL["icon-x"])
@@ -322,49 +325,49 @@
 		if(5 to 8) //Feet
 			switch(icon_x)
 				if(6 to 13)
-					selecting = "r_foot"
+					parentmob.targeted_organ = "r_foot"
 				if(20 to 27)
-					selecting = "l_foot"
+					parentmob.targeted_organ = "l_foot"
 				else
 					return 1
 		if(9 to 25) //Legs
 			switch(icon_x)
 				if(8 to 15)
-					selecting = "r_leg"
+					parentmob.targeted_organ = "r_leg"
 				if(18 to 25)
-					selecting = "l_leg"
+					parentmob.targeted_organ = "l_leg"
 				else
 					return 1
 		if(26 to 32) //Hands and groin
 			switch(icon_x)
 				if(5 to 11)
-					selecting = "r_hand"
+					parentmob.targeted_organ = "r_hand"
 				if(12 to 22)
-					selecting = "groin"
+					parentmob.targeted_organ = "groin"
 				if(23 to 29)
-					selecting = "l_hand"
+					parentmob.targeted_organ = "l_hand"
 				else
 					return 1
 		if(33 to 48) //Chest and arms to shoulders
 			switch(icon_x)
 				if(4 to 10)
-					selecting = "l_arm"
+					parentmob.targeted_organ = "l_arm"
 				if(11 to 23)
-					selecting = "chest"
+					parentmob.targeted_organ = "chest"
 				if(24 to 29)
-					selecting = "r_arm"
+					parentmob.targeted_organ = "r_arm"
 				else
 					return 1
 		if(49 to 60) //Head, but we need to check for eye or mouth
 			if(icon_x in 11 to 22)
-				selecting = "head"
+				parentmob.targeted_organ = "head"
 				switch(icon_y)
 					if(48 to 52)
 						if(icon_x in 13 to 20)
-							selecting = "mouth"
+							parentmob.targeted_organ = "mouth"
 					if(53 to 55) //Eyeline, eyes are on 15 and 17
 						if(icon_x in 14 to 19)
-							selecting = "eyes"
+							parentmob.targeted_organ = "eyes"
 	if (old_selecting != parentmob.targeted_organ)
 		update_icon()
 
@@ -384,13 +387,14 @@
 /obj/screen/zone_sel_random
 	name = "random damage zone"
 	icon_state = "random"
-
-/obj/screen/zone_sel2/New()
-	..()
-	selecting = parentmob.targeted_organ
+	var/previous_s = ""
 
 /obj/screen/zone_sel_random/Click(location, control,params)
-	parentmob.targeted_organ = "random"
+	if (parentmob.targeted_organ == "random" && previous_s != "")
+		parentmob.targeted_organ = previous_s
+	else
+		previous_s = parentmob.targeted_organ
+		parentmob.targeted_organ = "random"
 	update_icon()
 	return TRUE
 
@@ -398,7 +402,7 @@
 	..()
 	update_icon()
 
-/obj/screen/zone_sel2/update_icon()
+/obj/screen/zone_sel_random/update_icon()
 	if (parentmob.targeted_organ == "random")
 		icon_state = "random_on"
 	else
