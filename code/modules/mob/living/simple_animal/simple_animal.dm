@@ -306,7 +306,10 @@
 		if (!O.force && !istype(O, /obj/item/stack/medical/bruise_pack))
 			visible_message("<span class='notice'>[user] gently taps [src] with \the [O].</span>")
 		else
-			O.attack(src, user, user.targeted_organ)
+			var/tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			O.attack(src, user, tgt)
 	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
 			if (istype(src, /mob/living/simple_animal/frog/poisonous))
@@ -405,8 +408,10 @@
 		else if (istype(O, /obj/item/weapon/reagent_containers/glass))
 			return
 		else
-			O.attack(src, user, user.targeted_organ)
-
+			var/tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			O.attack(src, user, tgt)
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 
 	visible_message("<span class='danger'>\The [src] has been attacked with \the [O] by [user].</span>")

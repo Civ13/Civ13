@@ -546,7 +546,10 @@ bullet_act
 		var/zone
 		if (istype(O.thrower, /mob/living))
 			var/mob/living/L = O.thrower
-			zone = check_zone(L.targeted_organ)
+			var/tgt = L.targeted_organ
+			if (L.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			zone = check_zone(tgt)
 		else
 			zone = ran_zone("chest",75)	//Hits a random part of the body, geared towards the chest
 
@@ -721,6 +724,8 @@ bullet_act
 		return
 
 	var/hit_zone = user.targeted_organ
+	if (user.targeted_organ == "random")
+		hit_zone = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 	var/too_high_message = "You can't reach that high."
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if(!affecting || affecting.is_stump())

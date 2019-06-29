@@ -479,6 +479,8 @@
 	var/mob/living/carbon/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent
 		var/limbcheck = user.targeted_organ
+		if (limbcheck == "random")
+			limbcheck = pick("l_arm","r_arm","l_hand","r_hand")
 		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm"))
 			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
 			if(!affecting)

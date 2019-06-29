@@ -368,6 +368,7 @@
 #include "code\modules\1713\apparel_imperial.dm"
 #include "code\modules\1713\apparel_industrial.dm"
 #include "code\modules\1713\apparel_medieval.dm"
+#include "code\modules\1713\apparel_modern.dm"
 #include "code\modules\1713\apparel_stoneage.dm"
 #include "code\modules\1713\apparel_worldwars.dm"
 #include "code\modules\1713\armor.dm"

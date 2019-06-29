@@ -192,7 +192,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
-
+	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
 /obj/screen/zone_sel/New()
@@ -203,7 +203,207 @@
 	overlays.Cut()
 	overlays += image('icons/mob/zone_sel.dmi', "[parentmob.targeted_organ]")
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
+//--------------------------------------------------ZONE SELECT---------------------------------------------------------
+/obj/screen/zone_sel2
+	name = "damage zone"
+	icon_state = "zone_sel"
+	var/selecting = null
 
+/obj/screen/zone_sel2/New()
+	..()
+	selecting = parentmob.targeted_organ
+
+/obj/screen/zone_sel2/Click(location, control,params)
+	var/list/PL = params2list(params)
+	var/icon_x = text2num(PL["icon-x"])
+	var/icon_y = text2num(PL["icon-y"])
+	var/old_selecting = parentmob.targeted_organ //We're only going to update_icon() if there's been a change
+
+	switch(icon_y)
+		if (1 to 7) //Feet
+			switch(icon_x)
+				if (1 to 16)
+					parentmob.targeted_organ = "r_foot"
+				if (17 to 32)
+					parentmob.targeted_organ = "l_foot"
+				else
+					return TRUE
+		if (8 to 19) //Legs
+			switch(icon_x)
+				if (1 to 16)
+					parentmob.targeted_organ = "r_leg"
+				if (17 to 32)
+					parentmob.targeted_organ = "l_leg"
+				else
+					return TRUE
+		if (19 to 23) //Legs and groin
+			switch(icon_x)
+				if (1 to 12)
+					parentmob.targeted_organ = "r_leg"
+				if (12 to 22)
+					parentmob.targeted_organ = "groin"
+				if (22 to 32)
+					parentmob.targeted_organ = "l_leg"
+				else
+					return TRUE
+		if (23 to 25) //Hands and groin
+			switch(icon_x)
+				if (2 to 11)
+					parentmob.targeted_organ = "r_hand"
+				if (12 to 22)
+					parentmob.targeted_organ = "groin"
+				if (23 to 31)
+					parentmob.targeted_organ = "l_hand"
+				else
+					return TRUE
+		if (26 to 32) //Hands and chest
+			switch(icon_x)
+				if (2 to 11)
+					parentmob.targeted_organ = "r_hand"
+				if (12 to 22)
+					parentmob.targeted_organ = "chest"
+				if (23 to 31)
+					parentmob.targeted_organ = "l_hand"
+				else
+					return TRUE
+		if (33 to 45) //Chest and arms to shoulders
+			switch(icon_x)
+				if (4 to 10)
+					parentmob.targeted_organ = "r_arm"
+				if (11 to 22)
+					parentmob.targeted_organ = "chest"
+				if (23 to 29)
+					parentmob.targeted_organ = "l_arm"
+				else
+					return TRUE
+		if (46 to 64) //Head, but we need to check for eye or mouth
+			if (icon_x in 12 to 22)
+				parentmob.targeted_organ = "head"
+				switch(icon_y)
+					if (49 to 51)
+						if (icon_x in 13 to 20)
+							parentmob.targeted_organ = "mouth"
+					if (53 to 55)
+						if (icon_x in 13 to 20)
+							parentmob.targeted_organ = "eyes"
+
+	if (old_selecting != parentmob.targeted_organ)
+		update_icon()
+
+	selecting = parentmob.targeted_organ
+	parentmob.HUDneed["random damage zone"].update_icon()
+	return TRUE
+
+/obj/screen/zone_sel2/New()
+	..()
+	update_icon()
+
+/obj/screen/zone_sel2/update_icon()
+	overlays.Cut()
+	overlays += image('icons/mob/screen/zone_sel_lw.dmi', "[parentmob.targeted_organ]")
+//--------------------------------------------------ZONE SELECT END---------------------------------------------------------
+//--------------------------------------------------ZONE SELECT---------------------------------------------------------
+/obj/screen/zone_sel3
+	name = "damage zone"
+	icon_state = "zone_sel"
+	var/selecting = null
+
+/obj/screen/zone_sel3/New()
+	..()
+	selecting = parentmob.targeted_organ
+
+/obj/screen/zone_sel3/Click(location, control,params)
+	var/list/PL = params2list(params)
+	var/icon_x = text2num(PL["icon-x"])
+	var/icon_y = text2num(PL["icon-y"])
+	var/old_selecting = parentmob.targeted_organ //We're only going to update_icon() if there's been a change
+
+	switch(icon_y)
+		if(5 to 8) //Feet
+			switch(icon_x)
+				if(6 to 13)
+					selecting = "r_foot"
+				if(20 to 27)
+					selecting = "l_foot"
+				else
+					return 1
+		if(9 to 25) //Legs
+			switch(icon_x)
+				if(8 to 15)
+					selecting = "r_leg"
+				if(18 to 25)
+					selecting = "l_leg"
+				else
+					return 1
+		if(26 to 32) //Hands and groin
+			switch(icon_x)
+				if(5 to 11)
+					selecting = "r_hand"
+				if(12 to 22)
+					selecting = "groin"
+				if(23 to 29)
+					selecting = "l_hand"
+				else
+					return 1
+		if(33 to 48) //Chest and arms to shoulders
+			switch(icon_x)
+				if(4 to 10)
+					selecting = "l_arm"
+				if(11 to 23)
+					selecting = "chest"
+				if(24 to 29)
+					selecting = "r_arm"
+				else
+					return 1
+		if(49 to 60) //Head, but we need to check for eye or mouth
+			if(icon_x in 11 to 22)
+				selecting = "head"
+				switch(icon_y)
+					if(48 to 52)
+						if(icon_x in 13 to 20)
+							selecting = "mouth"
+					if(53 to 55) //Eyeline, eyes are on 15 and 17
+						if(icon_x in 14 to 19)
+							selecting = "eyes"
+	if (old_selecting != parentmob.targeted_organ)
+		update_icon()
+
+	selecting = parentmob.targeted_organ
+	parentmob.HUDneed["random damage zone"].update_icon()
+	return TRUE
+
+/obj/screen/zone_sel3/New()
+	..()
+	update_icon()
+
+/obj/screen/zone_sel3/update_icon()
+	overlays.Cut()
+	overlays += image('icons/mob/screen/zone_sel_fof.dmi', "[parentmob.targeted_organ]")
+//--------------------------------------------------ZONE SELECT END---------------------------------------------------------
+//--------------------------------------------------RANDOM ZONE SELECT---------------------------------------------------------
+/obj/screen/zone_sel_random
+	name = "random damage zone"
+	icon_state = "random"
+
+/obj/screen/zone_sel2/New()
+	..()
+	selecting = parentmob.targeted_organ
+
+/obj/screen/zone_sel_random/Click(location, control,params)
+	parentmob.targeted_organ = "random"
+	update_icon()
+	return TRUE
+
+/obj/screen/zone_sel_random/New()
+	..()
+	update_icon()
+
+/obj/screen/zone_sel2/update_icon()
+	if (parentmob.targeted_organ == "random")
+		icon_state = "random_on"
+	else
+		icon_state = "random"
+//--------------------------------------------------RANDOM ZONE SELECT END---------------------------------------------------------
 /obj/screen/text
 	icon = null
 	icon_state = null

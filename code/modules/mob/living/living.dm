@@ -375,6 +375,8 @@ default behaviour is:
 /mob/living/proc/get_organ_target()
 	var/mob/shooter = src
 	var/t = shooter:targeted_organ
+	if (t == "random")
+		t = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 	if ((t in list( "eyes", "mouth" )))
 		t = "head"
 	var/obj/item/organ/external/def_zone = ran_zone(t)

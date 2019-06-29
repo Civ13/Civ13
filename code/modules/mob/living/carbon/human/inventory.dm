@@ -66,7 +66,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "head"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 4
 /client/verb/zone_sel_left_upper()
 	set name = "zone_sel_left_upper"
@@ -89,7 +89,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "l_arm"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 5
 /client/verb/zone_sel_chest()
 	set name = "zone_sel_chest"
@@ -105,7 +105,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	H.targeted_organ = "chest"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 6
 /client/verb/zone_sel_right_upper()
 	set name = "zone_sel_right_upper"
@@ -128,7 +128,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "r_arm"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 1
 /client/verb/zone_sel_left_lower()
 	set name = "zone_sel_left_lower"
@@ -151,7 +151,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "l_leg"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 2
 /client/verb/zone_sel_groin()
 	set name = "zone_sel_groin"
@@ -167,7 +167,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	H.targeted_organ = "groin"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 3
 /client/verb/zone_sel_right_lower()
 	set name = "zone_sel_right_lower"
@@ -190,7 +190,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "r_leg"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 /mob/living/carbon/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = TRUE)
 	for (var/slot in slots)
 		if (equip_to_slot_if_possible(W, slots[slot], del_on_fail = FALSE))
