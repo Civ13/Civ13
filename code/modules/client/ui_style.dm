@@ -1,7 +1,8 @@
 /var/list/all_ui_styles = list(
 	"1713Style",
 	"NewStyle",
-	"LiteWebStyle"
+	"LiteWebStyle",
+	"FoFStyle",
 	)
 
 /client/verb/change_ui()
