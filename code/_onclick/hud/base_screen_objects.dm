@@ -311,10 +311,7 @@
 /obj/screen/zone_sel3/New()
 	..()
 	selecting = parentmob.targeted_organ
-	if (parentmob.client.prefs.UI_style == "FoFStyle")
-		icon_state = "zone_sel_fof"
-	else
-		icon_state = "zone_sel"
+
 /obj/screen/zone_sel3/Click(location, control,params)
 	var/list/PL = params2list(params)
 	var/icon_x = text2num(PL["icon-x"])
