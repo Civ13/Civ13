@@ -195,7 +195,7 @@
 		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,8"),
 		"mood"  			 = list("type" = /obj/screen/mood,       "loc" = "15,7"),
 		"body temperature"    = list("type" = /obj/screen/bodytemp,   "loc" = "15,9"),
-		"throw"       = list("type" = /obj/screen/HUDthrow,   "loc" = "13:15,1"),
+		"throw"       = list("type" = /obj/screen/HUDthrow,   "loc" = "13,1"),
 		"pull"        = list("type" = /obj/screen/pull,       "loc" = "13,1"),
 		"m_intent"    = list("type" = /obj/screen/mov_intent, "loc" = "14,1"),
 		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,       "loc" = "11,1"),

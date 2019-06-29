@@ -96,7 +96,7 @@
 
 	var/obj/screen/movable/M = new()
 	M.name = "Movable UI Object"
-	M.icon = 'icons/mob/screen/1713Style.dmi'
+	M.icon = prefs.UI_file
 	M.icon_state = "block"
 	M.maptext = "Movable"
 	M.maptext_width = 64
@@ -116,7 +116,7 @@
 
 	var/obj/screen/movable/snap/S = new()
 	S.name = "Snap UI Object"
-	S.icon = 'icons/mob/screen/1713Style.dmi'
+	S.icon = prefs.UI_file
 	S.icon_state = "block"
 	S.maptext = "Snap"
 	S.maptext_width = 64
