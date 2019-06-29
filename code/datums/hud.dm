@@ -136,7 +136,7 @@
 		"random damage zone" = list("type" = /obj/screen/zone_sel_random,   "loc" = "15,3"),
 		"damage zone" = list("type" = /obj/screen/zone_sel3,   "loc" = "15,1", "icon" = 'icons/mob/screen/zone_sel_fof.dmi'),
 		"swap hand"   = list("type" = /obj/screen/swap,       "loc" = "7,2"),
-		"fixeye"     = list("type" = /obj/screen/fixeye,     "loc" = "15,2"),
+		"fixeye"     = list("type" = /obj/screen/fixeye,     "loc" = "15,4"),
 		"toggle gun mode"   = list("type" = /obj/screen/gun/mode,       "loc" = "4,1"),
 		"allow movement"	= list("type" = /obj/screen/gun/move,       "loc" = "4,2"),
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,       "loc" = "5,2"),
