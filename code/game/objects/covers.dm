@@ -767,9 +767,12 @@
 			start_fire()
 		try_destroy()
 	else
-		health -= proj.damage * 0.1
-		try_destroy()
-		return
+		if (wall)
+			health -= proj.damage * 0.1
+			try_destroy()
+			return
+		else
+			return
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)
@@ -780,6 +783,7 @@
 		spawn(400)
 			NF.icon_state = "fire_big"
 			NF.set_light(4)
+
 /obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
 	spawn(80)
 		if (health > 0)

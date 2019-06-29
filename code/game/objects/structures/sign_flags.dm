@@ -129,6 +129,17 @@
 	name = "Third Reich flag"
 	desc = "The red, white and black flag of the Third Reich."
 	icon_state = "flag_nazi"
+
+/obj/structure/sign/flag/israel
+	name = "Israel flag"
+	desc = "The white and blue flag of Israel, with the 6 pointed star in the middle."
+	icon_state = "flag_israel"
+
+/obj/structure/sign/flag/hezbollah
+	name = "Hezbollah flag"
+	desc = "The yellow and green flag of the Shia Hezbollah organization."
+	icon_state = "flag_hezbollah"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."

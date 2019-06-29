@@ -844,5 +844,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\khalkhyn_gol.dmm"
+#include "maps\1969\arab_town.dmm"
 // END_INCLUDE
