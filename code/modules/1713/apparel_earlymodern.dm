@@ -539,3 +539,9 @@
 /obj/item/weapon/storage/belt/smallpouches/green
 	icon_state = "smallpouches_green"
 	item_state = "smallpouches_green"
+
+
+/obj/item/weapon/storage/belt/smallpouches/green/bint
+/obj/item/weapon/storage/belt/smallpouches/green/bint/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
