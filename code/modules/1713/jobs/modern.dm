@@ -286,6 +286,8 @@
 //Yes, i know they're set as americans. Can't be bothered to add a new faction.
 
 /datum/job/american/idf
+	default_language = "Hebrew"
+	additional_languages = list("English" = 25, "Russian" = 25, "Arabic" = 10)
 
 /datum/job/american/idf/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_hebrew_name(H.gender)
