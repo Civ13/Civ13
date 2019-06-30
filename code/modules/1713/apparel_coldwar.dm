@@ -250,10 +250,12 @@
 /obj/item/weapon/storage/belt/largepouches/green/m60/New()
 	..()
 	new/obj/item/ammo_magazine/b762(src)
+	new/obj/item/ammo_magazine/b762(src)
 
 /obj/item/weapon/storage/belt/largepouches/m249
 /obj/item/weapon/storage/belt/largepouches/m249/New()
 	..()
+	new/obj/item/ammo_magazine/m249(src)
 	new/obj/item/ammo_magazine/m249(src)
 
 /obj/item/weapon/storage/belt/largepouches/sovietmg
@@ -273,7 +275,13 @@
 /obj/item/weapon/storage/belt/largepouches/green/negev/New()
 	..()
 	new/obj/item/ammo_magazine/negev(src)
+	new/obj/item/ammo_magazine/negev(src)
 
+/obj/item/weapon/storage/belt/largepouches/pkm
+/obj/item/weapon/storage/belt/largepouches/pkm/New()
+	..()
+	new/obj/item/ammo_magazine/pkm/c100(src)
+	new/obj/item/ammo_magazine/pkm/c100(src)
 
 /obj/item/clothing/mask/balaclava
 	name = "black balaclava"

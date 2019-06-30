@@ -311,7 +311,10 @@
 	weight = 4
 	effectiveness_mod = 1.02
 	equiptimer = 15
-
+/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
 /obj/item/weapon/gun/projectile/boltaction/arisaka30
 	name = "Arisaka Type 30"
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."

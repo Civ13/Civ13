@@ -227,6 +227,58 @@
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms
+	name = "AKMS"
+	desc = "Soviet assault rifle chambered in 7.62x39mm. This is the modernized version with folding stock."
+	slot_flags = SLOT_BACK
+	icon_state = "akms"
+	item_state = "akms"
+	base_icon = "akms"
+	var/folded = FALSE
+	weight = 3
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/update_icon()
+	if (folded)
+		base_icon = "akms_folded"
+	else
+		base_icon = "akms"
+	if (ammo_magazine)
+		icon_state = base_icon
+		item_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
+		item_state = "[base_icon]_open"
+	update_held_icon()
+
+	return
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/verb/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (folded)
+		folded = FALSE
+		base_icon = "akms"
+		usr << "You extend the stock on \the [src]."
+		equiptimer = 15
+		set_stock()
+		update_icon()
+	else
+		folded = TRUE
+		base_icon = "akms_folded"
+		usr << "You collapse the stock on \the [src]."
+		equiptimer = 7
+		set_stock()
+		update_icon()
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/proc/set_stock()
+	if (folded)
+		slot_flags = SLOT_BACK|SLOT_BELT
+		effectiveness_mod = 0.84
+	else
+		slot_flags = SLOT_BACK
+		effectiveness_mod = 1
+
 /obj/item/weapon/gun/projectile/submachinegun/ak74
 	name = "AK-74"
 	desc = "Soviet assault rifle chambered in 5.45x39mm."

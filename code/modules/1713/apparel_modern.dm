@@ -197,6 +197,18 @@
 	worn_state = "us_camo_woodland"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 
+/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah
+	name = "woodland camouflage uniform"
+	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia."
+	icon_state = "us_camo_woodland_hez"
+	item_state = "us_camo_woodland_hez"
+	worn_state = "us_camo_woodland_hez"
+/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah/officer
+	name = "woodland camouflage uniform"
+	desc = "The standard US Army camo uniform the late 20th century, with Hezbollah insiginia of an officer."
+	icon_state = "us_camo_woodland_hez_officer"
+	item_state = "us_camo_woodland_hez_officer"
+	worn_state = "us_camo_woodland_hez_officer"
 /obj/item/clothing/under/us_uni/us_camo_dcu
 	name = "desert camouflage uniform"
 	desc = "The standard US Army desert camo uniform the late 20th century."
