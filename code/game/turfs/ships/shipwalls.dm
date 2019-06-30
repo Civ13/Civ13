@@ -3,7 +3,7 @@
 	desc = "A wooden ship wall."
 	icon = 'icons/turf/boat.dmi'
 	icon_state = "boat1"
-	material = "wood"
+	material_name = "wood"
 	protection_chance = 60
 
 /obj/structure/barricade/ship/New(var/newloc, var/material_name)

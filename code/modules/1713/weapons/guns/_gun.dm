@@ -181,12 +181,14 @@
 		if ((specialoptics.scopeonly && specialoptics.zoomed) || !specialoptics.scopeonly)
 			var/effmod2 = effectiveness_mod
 			effmod2 *= specialoptics.acc_modifier
-			. /= effmod2
+			if (effmod2 != 0)
+				. /= effmod2
 	else if (under)
 		if ((under.scopeonly && specialoptics.zoomed) || !under.scopeonly)
 			var/effmod3 = effectiveness_mod
 			effmod3 *= under.acc_modifier
-			. /= effmod3
+			if (effmod3 != 0)
+				. /= effmod3
 	else
 		. /= effectiveness_mod
 

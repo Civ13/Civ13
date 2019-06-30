@@ -605,6 +605,8 @@ var/list/rank_prefix = list(\
 /mob/living/carbon/human/proc/check_has_mouth()
 	// Todo, check stomach organ when implemented.
 	var/obj/item/organ/external/head/H = get_organ("head")
+	if (istype(H, /obj/item/organ/external/stump))
+		return FALSE
 	if (!H || !H.can_intake_reagents)
 		return FALSE
 	return TRUE

@@ -102,7 +102,6 @@
 		return
 
 /obj/structure/barricade/proc/dismantle()
-	material.place_dismantled_product(get_turf(src))
 	qdel(src)
 	return
 

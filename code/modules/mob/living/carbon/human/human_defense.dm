@@ -115,7 +115,7 @@ bullet_act
 		   * 2. randomness
 		   * 3. survival stat
 		*/
-		if (P)
+		if (P && P.starting)
 			var/distcheck = max(abs(P.starting.x - x), abs(P.starting.y - y))
 
 			if (distcheck > 2) // not PB range
@@ -583,7 +583,6 @@ bullet_act
 
 		var/obj/item/organ/external/affecting = get_organ(zone)
 		var/hit_area = affecting.name
-		var/datum/wound/created_wound
 		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
 		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].") //I guess "melee" is the best fit here
 
@@ -593,7 +592,7 @@ bullet_act
 			if(prob(armor))
 				edge = 0
 				sharp = 0
-			created_wound = apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
+			apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
 
 		if (ismob(O.thrower))
 			var/mob/M = O.thrower
@@ -620,7 +619,7 @@ bullet_act
 			//Thrown sharp objects have some momentum already and have a small chance to embed even if the damage is below the threshold
 			if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
 				if (I.w_class <= 2.0)
-					affecting.embed(I, supplied_wound = created_wound)
+					affecting.embed(I)
 		if (istype(O, /obj/item/weapon/snowball))
 			O.icon_state = "snowball_hit"
 			O.update_icon()

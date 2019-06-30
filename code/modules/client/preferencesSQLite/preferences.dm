@@ -322,8 +322,10 @@ var/list/preferences_datums = list()
 	if (ispath(preference))
 		var/datum/client_preference/cp = get_client_preference_by_type(preference)
 		preference = cp.key
-
-	return (preference in prefs.preferences_enabled)
+	if (prefs)
+		return (preference in prefs.preferences_enabled)
+	else
+		return FALSE
 
 /client/proc/set_preference(var/preference, var/set_preference)
 	var/datum/client_preference/cp
