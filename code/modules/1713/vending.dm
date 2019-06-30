@@ -394,7 +394,7 @@ obj/structure/vending/idfammo
 		/obj/item/weapon/grenade/coldwar/m67= 20,
 		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 		/obj/item/weapon/grenade/flashbang/m84 = 20,
-		/obj/item/weapon/grenade/incendiary = 20,
+//		/obj/item/weapon/grenade/incendiary = 20,
 	)
 
 obj/structure/vending/hezammo

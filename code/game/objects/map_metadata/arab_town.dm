@@ -91,14 +91,14 @@ var/no_loop_arab = FALSE
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = "The Greek troops have managed to defend the fortress!"
+		var/message = "The Hezbollah has managed to defend their HQ!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_arab == FALSE)
 		ticker.finished = TRUE
-		var/message = "The Roman Legion has captured the fortress! The remaining Greek troops have surrendered!"
+		var/message = "The IDF has captured Hezbollah's HQ! Hezbollah retreats!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

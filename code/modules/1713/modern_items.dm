@@ -28,7 +28,8 @@
 			return TRUE
 		else
 			return FALSE
-	..()
+	else
+		return ..()
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/lightbulb) && !lamp_inside)
 		var/obj/item/lightbulb/L = W

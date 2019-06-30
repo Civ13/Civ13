@@ -129,7 +129,6 @@ Parts of code courtesy of Super3222
 		if (currmask.blocks_scope)
 			if (!silent) user << "You can't use the [src] while wearing \the [currmask]!"
 			return FALSE
-		return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		if (!silent) user << "Your visor gets in the way of looking through \the [src]."
 		return FALSE
