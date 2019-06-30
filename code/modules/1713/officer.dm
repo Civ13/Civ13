@@ -36,7 +36,7 @@ var/global/list/valid_coordinates = list()
 
 
 /proc/check_coords_check()
-	return (!map || (map.faction2_can_cross_blocks() && map.faction1_can_cross_blocks()))
+	return (!map || map.faction2_can_cross_blocks() || map.faction1_can_cross_blocks())
 /mob/living/carbon/human/proc/Commander_Announcement()
 	set category = "Officer"
 	set name = "Faction Announcement"
