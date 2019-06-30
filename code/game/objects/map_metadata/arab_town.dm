@@ -16,11 +16,11 @@
 		list(AMERICAN) = /area/caribbean/british,
 		list(ARAB) = /area/caribbean/arab
 		)
-	age = "2007"
+	age = "2006"
 	ordinal_age = 8
 	faction_distribution_coeffs = list(AMERICAN = 0.4, ARAB = 0.6)
 	battle_name = "battle for the town"
-	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within 30 minutes!</font>"
+	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within <b>40 minutes</b>!</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
@@ -88,7 +88,7 @@ var/no_loop_arab = FALSE
 /obj/map_metadata/arab_town/update_win_condition()
 	if (!win_condition_specialcheck())
 		return FALSE
-	if (world.time >= 21000)
+	if (world.time >= 24000)
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
