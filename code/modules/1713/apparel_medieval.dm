@@ -733,3 +733,10 @@ obj/item/clothing/head/helmet/samurai/black
 	icon_state = "samurai3"
 	item_state = "samurai3"
 	worn_state = "samurai3"
+
+/obj/item/clothing/head/gat
+	name = "gat hat"
+	desc = "A traditional Korean hat."
+	icon_state = "gat"
+	item_state = "gat"
+	worn_state = "gat"

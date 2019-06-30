@@ -427,7 +427,8 @@
 	if (current_res[1] < 47)
 		recipes += new/datum/stack_recipe_list("religious & decoration", list(
 			new/datum/stack_recipe("wood altar", /obj/structure/altar/wood, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("native wood mask", /obj/structure/religious/tribalmask, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("decorative wood mask", /obj/structure/religious/tribalmask, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("wearable wood mask", /obj/item/clothing/mask/wooden, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("impaled skull", /obj/structure/religious/impaledskull, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("religious & decoration", list(
@@ -701,6 +702,7 @@
 			new/datum/stack_recipe("tarred hat", /obj/item/clothing/head/tarred_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("rice hat", /obj/item/clothing/head/rice_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bandana", /obj/item/clothing/head/piratebandana1, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("gat hat", /obj/item/clothing/head/gat, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("artisan hat", /obj/item/clothing/head/artisan, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("feathered hat", /obj/item/clothing/head/feathered_hat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 98 && (current_res[3] < 109))

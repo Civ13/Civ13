@@ -79,6 +79,41 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
+/obj/structure/sign/traffic
+	name = "STOP sign"
+	desc = ""
+	icon_state = "stop"
+
+/obj/structure/sign/traffic/stop
+
+/obj/structure/sign/traffic/crossing
+	name = "pedestrian crossing sign"
+	icon_state = "zebracrossing"
+
+/obj/structure/sign/traffic/noentry
+	name = "no entry sign"
+	icon_state = "donotenter"
+
+/obj/structure/sign/traffic/yeld
+	name = "yeld sign"
+	icon_state = "yeld"
+
+/obj/structure/sign/traffic/zebracrossing
+	name = "pedestrian crossing"
+	icon_state = "zebra"
+
+/obj/structure/sign/traffic/central
+	name = "white line"
+	icon_state = "centralline"
+
+/obj/structure/sign/traffic/side
+	name = "yellow line"
+	icon_state = "sideline"
+
+/obj/structure/sign/traffic/cone
+	name = "traffic cone"
+	icon_state = "cone1"
+
 
 /obj/structure/sign/flag/medical
 	name = "Medical flag"

@@ -425,6 +425,9 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/window_frame/metal
+	icon_state = "windowmetal_frame"
+
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/material/glass))
 		var/obj/item/stack/S = W
@@ -519,6 +522,12 @@
 
 /obj/structure/window/classic/update_nearby_icons()
 	return
+
+/obj/structure/window/classic/metal/shatter(var/display_message = TRUE)
+	var/myturf = get_turf(src)
+	spawn (1)
+		new/obj/structure/window_frame/metal(myturf)
+	..(display_message)
 
 /obj/structure/window/classic/shoji
 	icon_state = "shoji_windownew"
