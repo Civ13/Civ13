@@ -240,8 +240,15 @@ Parts of code courtesy of Super3222
 			for (var/obj/screen/movable/action_button/AB in user.client.screen)
 				if (AB.name == "Toggle Sights" && AB != azoom.button && azoom.button.screen_loc)
 					AB.invisibility = 101
-					if (azoom && azoom.button)
+					if (azoom && azoom.button && findtext(azoom.button.screen_loc,":"))
 						var/azoom_button_screenX = text2num(splittext(splittext(azoom.button.screen_loc, ":")[1], "+")[2])
+						var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
+
+						// see if we need to move this button left to compensate
+						if (azoom_button_screenX > AB_screenX)
+							++moved
+					else if (azoom && azoom.button)
+						var/azoom_button_screenX = text2num(splittext(azoom.button.screen_loc, ",")[1])
 						var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
 
 						// see if we need to move this button left to compensate
@@ -315,22 +322,6 @@ Parts of code courtesy of Super3222
 /mob/living/carbon/human/Move()
 	..()
 	handle_zooms_with_movement()
-
-/*
-// item helpers
-/obj/item/proc/is_zoomable_object()
-	for (var/datum/action/toggle_scope/A in actions)
-		if (A)
-			return TRUE
-	return FALSE
-
-/obj/item/proc/has_zooming_scope()
-	for (var/datum/action/toggle_scope/A in actions)
-		if (A && A.scope.zoomed)
-			return TRUE
-	return FALSE*/
-
-// human helpers
 
 // resets zoom on movement
 /mob/living/carbon/human/proc/handle_zooms_with_movement()
