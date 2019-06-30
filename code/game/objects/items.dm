@@ -475,6 +475,12 @@ var/list/global/slot_flags_enumeration = list(
 	add_fingerprint(user)
 
 	if (istype(H))
+		if (prob(80) && H != user)
+			for (var/mob/O in (viewers(M) - user - M))
+				O.show_message("<span class='warning'>[M] tried to stab [user] in the eyes but missed!</span>", TRUE)
+			M << "<span class='warning'>[user] tried to stab you in the eyes but missed!</span>"
+			user << "<span class='warning'>You tried to stab [M] in the eyes with [src] but missed!</span>"
+			return
 
 		var/obj/item/organ/eyes/eyes = H.internal_organs_by_name["eyes"]
 
