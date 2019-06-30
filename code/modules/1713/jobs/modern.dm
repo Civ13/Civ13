@@ -483,7 +483,7 @@
 	return TRUE
 
 /datum/job/american/idf/lmg
-	title = "Miql'a"
+	title = "Miqla"
 	en_meaning = "IDF Squad LMG"
 	rank_abbreviation = "Rav."
 	selection_color = "#2d2d63"

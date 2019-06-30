@@ -17,7 +17,7 @@
 		)
 	age = "2006"
 	ordinal_age = 8
-	faction_distribution_coeffs = list(AMERICAN = 0.4, ARAB = 0.6)
+	faction_distribution_coeffs = list(AMERICAN = 0.5, ARAB = 0.5)
 	battle_name = "battle for the town"
 	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within <b>40 minutes</b>!</font>"
 	faction1 = AMERICAN
