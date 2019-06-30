@@ -540,6 +540,7 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4
 	name = "M4 Carbine"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"

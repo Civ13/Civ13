@@ -105,14 +105,33 @@
 	name = "pedestrian crossing"
 	icon_state = "zebra"
 
+/obj/structure/sign/traffic/zebracrossing/ex_act(severity)
+	switch(severity)
+		if (3.0)
+			qdel(src)
+			return
+		else
+	return
 /obj/structure/sign/traffic/central
 	name = "white line"
 	icon_state = "centralline"
-
+/obj/structure/sign/traffic/central/ex_act(severity)
+	switch(severity)
+		if (3.0)
+			qdel(src)
+			return
+		else
+	return
 /obj/structure/sign/traffic/side
 	name = "yellow line"
 	icon_state = "sideline"
-
+/obj/structure/sign/traffic/side/ex_act(severity)
+	switch(severity)
+		if (3.0)
+			qdel(src)
+			return
+		else
+	return
 /obj/structure/sign/traffic/cone
 	name = "traffic cone"
 	icon_state = "cone1"
