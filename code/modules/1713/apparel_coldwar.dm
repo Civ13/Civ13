@@ -269,8 +269,8 @@
 	new /obj/item/weapon/key/vietnamese(src)
 	new /obj/item/weapon/whistle(src)
 
-/obj/item/weapon/storage/belt/largepouches/negev
-/obj/item/weapon/storage/belt/largepouches/negev/New()
+/obj/item/weapon/storage/belt/largepouches/green/negev
+/obj/item/weapon/storage/belt/largepouches/green/negev/New()
 	..()
 	new/obj/item/ammo_magazine/negev(src)
 

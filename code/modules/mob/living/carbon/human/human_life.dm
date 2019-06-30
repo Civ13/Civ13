@@ -1379,7 +1379,10 @@
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
 					if (map.ordinal_age >= 6)
-						holder2.icon_state = "isis_basic"
+						if (map.ID == MAP_ARAB_TOWN)
+							holder2.icon_state = "hez_basic"
+						else
+							holder2.icon_state = "isis_basic"
 					else
 						holder2.icon_state = "arab_basic"
 				if (GREEK)
@@ -1403,7 +1406,10 @@
 					else
 						holder2.icon_state = "ger3_basic"
 				if (AMERICAN)
-					holder2.icon_state = "us_basic"
+					if (map.ID == MAP_ARAB_TOWN)
+						holder2.icon_state = "idf_basic"
+					else
+						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
 				if (CIVILIAN)

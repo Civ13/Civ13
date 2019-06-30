@@ -325,7 +325,7 @@
 /obj/item/clothing/head/helmet/modern/idf
 	name = "IDF helmet"
 	desc = "A typical IDF helmet. This one is in IDF olive green."
-	icon_state = "idf1"
+	icon_state = "idf"
 	item_state = "idf1"
 	worn_state = "idf1"
 	body_parts_covered = HEAD
@@ -334,8 +334,8 @@
 
 /obj/item/clothing/head/helmet/modern/idf/New()
 	..()
-	icon_state = pick("idf1","idf2","idf3")
-
+	item_state = pick("idf1","idf2","idf3")
+	worn_state = item_state
 
 /obj/item/clothing/accessory/armor/coldwar/idf
 	name = "Masada body armor"
