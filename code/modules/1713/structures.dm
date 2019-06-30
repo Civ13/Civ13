@@ -112,7 +112,7 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-
+	anchored = TRUE
 /obj/structure/props/junk
 	name = "junk"
 	desc = "A pile of junk."
@@ -123,7 +123,7 @@
 	not_disassemblable = TRUE
 	density = TRUE
 	opacity = FALSE
-
+	anchored = TRUE
 /obj/structure/props/junk/New()
 	..()
 	icon_state = "Junk_[rand(1,14)]"
@@ -138,7 +138,7 @@
 	not_disassemblable = TRUE
 	density = TRUE
 	opacity = FALSE
-
+	anchored = TRUE
 /obj/structure/props/stove/old
 	icon_state = "gasstove"
 
@@ -152,6 +152,7 @@
 	not_disassemblable = TRUE
 	density = TRUE
 	opacity = FALSE
+	anchored = TRUE
 
 /obj/structure/props/coatrack
 	name = "coat rack"
@@ -174,6 +175,7 @@
 	not_disassemblable = TRUE
 	density = TRUE
 	opacity = FALSE
+	anchored = TRUE
 
 /obj/structure/props/sofa/p2
 	icon_state = "sofa2"

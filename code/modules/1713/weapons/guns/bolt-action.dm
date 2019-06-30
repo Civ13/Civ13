@@ -734,3 +734,32 @@
 	value = 60
 	slot_flags = SLOT_BELT
 	equiptimer = 9
+
+
+/obj/item/weapon/gun/projectile/boltaction/m24
+	name = "M24 SWS"
+	desc = "A military version of the Remington 700 rifle."
+	icon_state = "m24"
+	item_state = "m24"
+	base_icon = "m24"
+	caliber = "a762x51"
+	weight = 4
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a762x51
+	magazine_type = /obj/item/ammo_magazine/m24
+	bolt_safety = FALSE
+	effectiveness_mod = 1.15
+	value = 130
+	slot_flags = SLOT_BACK
+	recoil = 1.8
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 12
+
+/obj/item/weapon/gun/projectile/boltaction/m24/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)

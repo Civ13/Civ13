@@ -272,3 +272,22 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.8
+
+/obj/item/weapon/gun/projectile/automatic/negev
+	name = "IWI Negev"
+	desc = "An israeli machinegun chambered in 5.56x45mm NATO rounds."
+	icon_state = "negev"
+	item_state = "negev"
+	base_icon = "negev"
+	caliber = "a556x45"
+	magazine_type = /obj/item/ammo_magazine/negev
+	weight = 8
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 2),)
+	slot_flags = 0
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 25
+	load_delay = 50
+	slowdown = 0.9

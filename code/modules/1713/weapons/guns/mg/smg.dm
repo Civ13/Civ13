@@ -486,6 +486,9 @@
 		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 		FP.attached(null,src,TRUE)
 
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4
+	name = "M4 Carbine"
+
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"
 	base_icon = "m4mws"

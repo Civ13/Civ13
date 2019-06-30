@@ -321,3 +321,31 @@
 	item_state = "idf_olive"
 	worn_state = "idf_olive"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+/obj/item/clothing/head/helmet/modern/idf
+	name = "IDF helmet"
+	desc = "A typical IDF helmet. This one is in IDF olive green."
+	icon_state = "idf1"
+	item_state = "idf1"
+	worn_state = "idf1"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 62, arrow = 55, gun = 21, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/modern/idf/New()
+	..()
+	icon_state = pick("idf1","idf2","idf3")
+
+
+/obj/item/clothing/accessory/armor/coldwar/idf
+	name = "Masada body armor"
+	desc = "Israeli wearable armor that can stop most pistol rounds. This one is green."
+	icon_state = "greenkevlarvest"
+	item_state = "greenkevlarvest"
+	worn_state = "greenkevlarvest"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 67, arrow = 95, gun = 52, energy = 22, bomb = 60, bio = 20, rad = FALSE)
+	value = 90
+	slowdown = 0.3
+	w_class = 4
+	weight = 3.8

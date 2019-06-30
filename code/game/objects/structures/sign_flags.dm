@@ -79,6 +79,9 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
+/obj/structure/sign
+	anchored = TRUE
+
 /obj/structure/sign/traffic
 	name = "STOP sign"
 	desc = ""
@@ -113,7 +116,11 @@
 /obj/structure/sign/traffic/cone
 	name = "traffic cone"
 	icon_state = "cone1"
+	anchored = FALSE
 
+/obj/structure/sign/traffic/cone/New()
+	..()
+	icon_state = pick("cone1","cone2")
 
 /obj/structure/sign/flag/medical
 	name = "Medical flag"

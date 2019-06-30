@@ -269,6 +269,12 @@
 	new /obj/item/weapon/key/vietnamese(src)
 	new /obj/item/weapon/whistle(src)
 
+/obj/item/weapon/storage/belt/largepouches/negev
+/obj/item/weapon/storage/belt/largepouches/negev/New()
+	..()
+	new/obj/item/ammo_magazine/negev(src)
+
+
 /obj/item/clothing/mask/balaclava
 	name = "black balaclava"
 	desc = "A black balaclava, covering the face."

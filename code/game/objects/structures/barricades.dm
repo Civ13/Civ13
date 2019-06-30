@@ -628,3 +628,19 @@
 /obj/structure/barricade/tires/New()
 	..()
 	icon_state = pick("tire2a","tire3","tire3a")
+
+
+/obj/structure/barricade/hescobastion
+	name = "hesco bastion"
+	desc = "A collapsible wire mesh container filled with sand. Very sturdy."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "hescobastion1"
+	material = "wood"
+	health = 600
+	maxhealth = 600
+	material_name = "wood"
+	protection_chance = 100
+
+/obj/structure/barricade/hescobastion/New()
+	..()
+	icon_state = pick("hescobastion1","hescobastion2","hescobastion3","hescobastion4")

@@ -20,7 +20,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(AMERICAN = 0.4, ARAB = 0.6)
 	battle_name = "battle for the town"
-	mission_start_message = "<font size=4>The insurgents are holding the town. American troops must capture it within 30 minutes!</font>"
+	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture it within 30 minutes!</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
@@ -30,7 +30,7 @@
 	valid_artillery = list("Explosive")
 obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_modernday == TRUE)
+	if (J.is_modernday == TRUE && istype(J, /datum/job/american/idf))
 		. = TRUE
 	else
 		. = FALSE
@@ -46,29 +46,29 @@ obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	switch (define)
 		if (ARAB)
-			return "Insurgent"
+			return "Hezbollah"
 		if (AMERICAN)
-			return "U.S.M.C."
+			return "IDF"
 /obj/map_metadata/arab_town/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (ARAB)
-			return "Insurgents"
+			return "Hezbollah"
 		if (AMERICAN)
-			return "U.S. Marines"
+			return "Israelis"
 
 /obj/map_metadata/arab_town/army2name(army)
 	..()
 	switch (army)
-		if ("Insurgents")
-			return "Insurgent"
-		if ("SOF Team")
-			return "U.S.M.C."
+		if ("Hezbollah")
+			return "Hezbollah"
+		if ("Israelis")
+			return "IDF"
 
 
 /obj/map_metadata/arab_town/cross_message(faction)
 	if (faction == AMERICAN)
-		return "<font size = 4>The U.S.M.C. may now cross the invisible wall!</font>"
+		return "<font size = 4>The IDF may now cross the invisible wall!</font>"
 	else if (faction == ARAB)
 		return ""
 	else
@@ -76,7 +76,7 @@ obj/map_metadata/arab_town/job_enabled_specialcheck(var/datum/job/J)
 
 /obj/map_metadata/arab_town/reverse_cross_message(faction)
 	if (faction == AMERICAN)
-		return "<span class = 'userdanger'>The U.S.M.C. may no longer cross the invisible wall!</span>"
+		return "<span class = 'userdanger'>The IDF may no longer cross the invisible wall!</span>"
 	else if (faction == ARAB)
 		return ""
 	else
