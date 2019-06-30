@@ -20,7 +20,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(AMERICAN = 0.4, ARAB = 0.6)
 	battle_name = "battle for the town"
-	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (left-corner) within 30 minutes!</font>"
+	mission_start_message = "<font size=4>The <b>Hezbollah</b> is holding the town. <b>IDF</b> troops must capture the Hezbollah HQ (SW corner) within 30 minutes!</font>"
 	faction1 = AMERICAN
 	faction2 = ARAB
 	valid_weather_types = list(WEATHER_NONE, WEATHER_SANDSTORM)
