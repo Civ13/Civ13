@@ -43,7 +43,7 @@
 		"health"      = list("type" = /obj/screen/health,     "loc" = "16,12", "icon" = 'icons/mob/screen/healthdoll.dmi'),
 		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "16,11"),
 		"random damage zone" = list("type" = /obj/screen/zone_sel_random,   "loc" = "16,10"),
-		"damage zone" = list("type" = /obj/screen/zone_sel3,   "loc" = "16,8", "icon" = 'icons/mob/screen/zone_sel_fof.dmi'),
+		"damage zone" = list("type" = /obj/screen/zone_sel3,   "loc" = "16,8", "icon" = 'icons/mob/screen/zone_sel.dmi'),
 		"fixeye"     = list("type" = /obj/screen/fixeye,     "loc" = "16,7"),
 		"tactic"      = list("type" = /obj/screen/tactic,     "loc" = "16,6"),
 		"mode"        = list("type" = /obj/screen/mode,       "loc" = "16,5"),
