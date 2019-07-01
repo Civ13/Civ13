@@ -31,31 +31,6 @@
 	else
 		target_permissions |= perm
 
-	// Update HUD icons.
-/*	if (owner.gun_move_icon)
-		if (!(target_permissions & TARGET_CAN_MOVE))
-			owner.gun_move_icon.icon_state = "no_walk0"
-			owner.gun_move_icon.name = "Allow Movement"
-		else
-			owner.gun_move_icon.icon_state = "no_walk1"
-			owner.gun_move_icon.name = "Disallow Movement"
-
-	if (owner.item_use_icon)
-		if (!(target_permissions & TARGET_CAN_CLICK))
-			owner.item_use_icon.icon_state = "no_item0"
-			owner.item_use_icon.name = "Allow Item Use"
-		else
-			owner.item_use_icon.icon_state = "no_item1"
-			owner.item_use_icon.name = "Disallow Item Use"
-
-	if (owner.radio_use_icon)
-		if (!(target_permissions & TARGET_CAN_RADIO))
-			owner.radio_use_icon.icon_state = "no_radio0"
-			owner.radio_use_icon.name = "Allow Radio Use"
-		else
-			owner.radio_use_icon.icon_state = "no_radio1"
-			owner.radio_use_icon.name = "Disallow Radio Use"*/
-
 	var/message = "no longer permitted to "
 	var/use_span = "warning"
 	if (target_permissions & perm)

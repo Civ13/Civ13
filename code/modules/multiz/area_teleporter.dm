@@ -54,7 +54,7 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 
 /obj/effect/area_teleporter
 	name = "area-teleporter"
-	icon = 'icons/mob/screen/1713Style.dmi'
+	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
 	var/id = null			//id of this bump_teleporter.
 	var/id_target = null	//id of bump_teleporter which this moves you to.

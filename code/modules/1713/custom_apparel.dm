@@ -501,6 +501,78 @@
 			return
 	else
 		..()
+
+/////////////////CUSTOM TRIBAL////////////////////////////////////
+/obj/item/clothing/under/customtribalrobe
+	name = "tribal robe"
+	desc = "A tribal robe."
+	var/uncolored = FALSE
+	var/shirtcolor = 0
+	var/pantscolor = 0
+	item_state = "tribalrobe"
+	icon_state = "tribalrobe"
+	worn_state = "tribalrobe"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/customtribalrobe/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!shirtcolor)
+			var/input = input(user, "Robe - Choose a hex color (without the #):", "Robe Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				shirtcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (!pantscolor)
+			var/input = input(user, "Decoration - Choose a hex color (without the #):", "Decoration Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				pantscolor = addtext("#",input)
+
+		if (shirtcolor && pantscolor)
+			uncolored = FALSE
+			var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_decoration")
+			pants.color = pantscolor
+			var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robe")
+			shirt.color = shirtcolor
+			var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robebelt")
+			overlays += pants
+			overlays += shirt
+			overlays += belt
+			return
+	else
+		..()
+
 /////////////////UNIFORMS////////////////////////////////////
 /obj/item/clothing/under/customuniform
 	name = "uniform"

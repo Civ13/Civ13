@@ -288,7 +288,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/scope/adjustable/advanced
 	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "acog"
-	var/acc_modifier = 0
+	var/acc_modifier = 1
 	var/scopeonly = TRUE //if the gun must be on scope mode to give the bonuses
 	attachment_type = ATTACH_ADV_SCOPE
 	var/image/ongun
@@ -367,7 +367,7 @@ Current Defines (_defines/attachment.dm)
 /obj/item/weapon/attachment/under
 	icon = 'icons/obj/gun_att.dmi'
 	icon_state = "foregrip"
-	var/acc_modifier = 0
+	var/acc_modifier = 1
 	var/scopeonly = TRUE //if the gun must be on scope mode to give the bonuses
 	attachment_type = ATTACH_UNDER
 	var/image/ongun

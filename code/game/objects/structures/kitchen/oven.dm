@@ -33,6 +33,10 @@
 		fuel += I.amount
 		qdel(I)
 		return
+	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
+		fuel += 0.5
+		qdel(I)
+		return
 	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 		if (istype(I, /obj/item/weapon/wrench))
 			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
@@ -304,6 +308,10 @@
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))
 				fuel += I.amount
+				qdel(I)
+				return
+			else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
+				fuel += 0.5
 				qdel(I)
 				return
 			else if (istype(I, /obj/item/stack/ore/coal))

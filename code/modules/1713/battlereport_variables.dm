@@ -58,72 +58,72 @@ var/list/recently_died = list()
 	var/list/alive = list()
 	var/list/injured = list()
 	var/list/dead = list()
-
-	switch (original_job.base_type_flag())
-		if (BRITISH)
-			dead = dead_british
-			injured = heavily_injured_british
-			alive = alive_british
-		if (PIRATES)
-			dead = dead_pirates
-			injured = heavily_injured_pirates
-			alive = alive_pirates
-		if (CIVILIAN)
-			dead = dead_civilians
-			injured = heavily_injured_civilians
-			alive = alive_civilians
-		if (FRENCH)
-			dead = dead_french
-			injured = heavily_injured_french
-			alive = alive_french
-		if (PORTUGUESE)
-			dead = dead_portuguese
-			injured = heavily_injured_portuguese
-			alive = alive_portuguese
-		if (SPANISH)
-			dead = dead_spanish
-			injured = heavily_injured_spanish
-			alive = alive_spanish
-		if (INDIANS)
-			dead = dead_indians
-			injured = heavily_injured_indians
-			alive = alive_indians
-		if (DUTCH)
-			dead = dead_dutch
-			injured = heavily_injured_dutch
-			alive = alive_dutch
-		if (ROMAN)
-			dead = dead_roman
-			injured = heavily_injured_roman
-			alive = alive_roman
-		if (GREEK)
-			dead = dead_greek
-			injured = heavily_injured_greek
-			alive = alive_greek
-		if (ARAB)
-			dead = dead_arab
-			injured = heavily_injured_arab
-			alive = alive_arab
-		if (RUSSIAN)
-			dead = dead_russian
-			injured = heavily_injured_russian
-			alive = alive_russian
-		if (JAPANESE)
-			dead = dead_japanese
-			injured = heavily_injured_japanese
-			alive = alive_japanese
-		if (GERMAN)
-			dead = dead_german
-			injured = heavily_injured_german
-			alive = alive_german
-		if (AMERICAN)
-			dead = dead_american
-			injured = heavily_injured_american
-			alive = alive_american
-		if (VIETNAMESE)
-			dead = dead_vietnamese
-			injured = heavily_injured_vietnamese
-			alive = alive_vietnamese
+	if (original_job)
+		switch (original_job.base_type_flag())
+			if (BRITISH)
+				dead = dead_british
+				injured = heavily_injured_british
+				alive = alive_british
+			if (PIRATES)
+				dead = dead_pirates
+				injured = heavily_injured_pirates
+				alive = alive_pirates
+			if (CIVILIAN)
+				dead = dead_civilians
+				injured = heavily_injured_civilians
+				alive = alive_civilians
+			if (FRENCH)
+				dead = dead_french
+				injured = heavily_injured_french
+				alive = alive_french
+			if (PORTUGUESE)
+				dead = dead_portuguese
+				injured = heavily_injured_portuguese
+				alive = alive_portuguese
+			if (SPANISH)
+				dead = dead_spanish
+				injured = heavily_injured_spanish
+				alive = alive_spanish
+			if (INDIANS)
+				dead = dead_indians
+				injured = heavily_injured_indians
+				alive = alive_indians
+			if (DUTCH)
+				dead = dead_dutch
+				injured = heavily_injured_dutch
+				alive = alive_dutch
+			if (ROMAN)
+				dead = dead_roman
+				injured = heavily_injured_roman
+				alive = alive_roman
+			if (GREEK)
+				dead = dead_greek
+				injured = heavily_injured_greek
+				alive = alive_greek
+			if (ARAB)
+				dead = dead_arab
+				injured = heavily_injured_arab
+				alive = alive_arab
+			if (RUSSIAN)
+				dead = dead_russian
+				injured = heavily_injured_russian
+				alive = alive_russian
+			if (JAPANESE)
+				dead = dead_japanese
+				injured = heavily_injured_japanese
+				alive = alive_japanese
+			if (GERMAN)
+				dead = dead_german
+				injured = heavily_injured_german
+				alive = alive_german
+			if (AMERICAN)
+				dead = dead_american
+				injured = heavily_injured_american
+				alive = alive_american
+			if (VIETNAMESE)
+				dead = dead_vietnamese
+				injured = heavily_injured_vietnamese
+				alive = alive_vietnamese
 	return list(alive, dead, injured)
 
 /mob/living/carbon/human/death()

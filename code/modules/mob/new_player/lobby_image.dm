@@ -5,7 +5,7 @@
 	desc = ""
 	icon = 'icons/_LOBBY.dmi'
 	icon_state = "civ13"
-	screen_loc = "WEST+2,SOUTH"
+	screen_loc = "WEST,SOUTH"
 
 /obj/effect/lobby_image/initialize()
 	if (map && map.lobby_icon_state)

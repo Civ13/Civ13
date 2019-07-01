@@ -495,6 +495,17 @@ var/global/list/damage_icon_parts = list()
 		//need to append _s to the icon state for legacy compatibility
 		var/image/standing = image(icon = under_icon, icon_state = under_state)
 		standing.color = w_uniform.color
+		if (istype(w_uniform, /obj/item/clothing/under/customtribalrobe))
+			var/obj/item/clothing/under/customtribalrobe/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_decoration")
+				pants.color = CU.pantscolor
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robe")
+				shirt.color = CU.shirtcolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robebelt")
+				standing.overlays += pants
+				standing.overlays += shirt
+				standing.overlays += belt
 		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)

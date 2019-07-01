@@ -1,5 +1,5 @@
 /process/python
-
+	var/last = 0
 /process/python/setup()
 	name = "python"
 	schedule_interval = 5 SECONDS
@@ -13,10 +13,15 @@
 
 /process/python/proc/execute(var/command, var/list/args = list())
 	if (shell())
-		for (var/argument in args)
-			command = "[command] [argument]"
-		log_debug("Executing python3 command '[command]'")
-		return shell("sudo python3 [getScriptDir()]/[command]")
+		if(world.realtime > last+300)
+			for (var/argument in args)
+				command = "[command] [argument]"
+			log_debug("Executing python3.6 command '[command]'")
+			last = world.realtime
+			return shell("sudo python3.6 [getScriptDir()]/[command]")
+		else
+			log_debug("python mapswap already running!")
+			return FALSE
 	return FALSE
 
 /process/python/proc/getScriptDir()

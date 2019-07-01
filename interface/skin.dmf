@@ -116,6 +116,9 @@ macro "macro"
 	elem 
 		name = "F5"
 		command = "looc"
+	elem 
+		name = "F12"
+		command = "ChangeHUD"
 
 macro "hotkeymode"
 	elem 
@@ -254,6 +257,9 @@ macro "hotkeymode"
 		name = "M"
 		command = "m-intent-run"
 	elem 
+		name = "N"
+		command = "tactic-intent"
+	elem 
 		name = "Q"
 		command = ".northwest"
 	elem 
@@ -337,6 +343,9 @@ macro "hotkeymode"
 	elem 
 		name = "F6"
 		command = ".me"
+	elem 
+		name = "F12"
+		command = "ChangeHUD"
 
 
 menu "menu"

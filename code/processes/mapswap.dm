@@ -94,6 +94,7 @@
 	// 2013 - TDM
 			maps = list(
 				MAP_HOSTAGES = 0,
+				MAP_ARAB_TOWN = 0,
 			)
 		if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
@@ -104,6 +105,7 @@
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
+				MAP_KHALKHYN_GOL = 0,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")

@@ -216,7 +216,7 @@
 				if (!(numtocheck in listallowed))
 					return
 
-	if (findtext(recipe.title, "frame"))
+	if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return

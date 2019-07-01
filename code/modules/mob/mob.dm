@@ -981,6 +981,11 @@ mob/proc/yank_out_object()
 		usr << "You are now not facing anything."
 	else
 		usr << "You are now facing [dir2text(facing_dir)]."
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if (H.HUDneed.Find("fixeye"))
+			var/obj/screen/tactic/I = H.HUDneed["fixeye"]
+			I.update_icon()
 
 /mob/proc/set_face_dir(var/newdir)
 	if (!isnull(facing_dir) && newdir == facing_dir)

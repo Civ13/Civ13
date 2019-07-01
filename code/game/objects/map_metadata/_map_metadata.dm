@@ -6,7 +6,7 @@ var/civmax_research = list(130,130,130)
 
 /obj/map_metadata
 	name = ""
-	icon = 'icons/mob/screen/1713Style.dmi'
+	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
 	anchored = TRUE
 	simulated = FALSE

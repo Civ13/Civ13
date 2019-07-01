@@ -466,12 +466,21 @@ var/list/global/slot_flags_enumeration = list(
 	user.attack_log += "\[[time_stamp()]\]<font color='red'> Attacked [M.name] ([M.ckey]) with [name] (INTENT: [uppertext(user.a_intent)])</font>"
 	M.attack_log += "\[[time_stamp()]\]<font color='orange'> Attacked by [user.name] ([user.ckey]) with [name] (INTENT: [uppertext(user.a_intent)])</font>"
 	msg_admin_attack("[user.name] ([user.ckey]) attacked [M.name] ([M.ckey]) with [name] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)") //BS12 EDIT ALG
-	user.setClickCooldown(cooldownw)
+	if (user.tactic == "rush")
+		user.setClickCooldown(cooldownw*0.85)
+	else
+		user.setClickCooldown(cooldownw)
 	user.do_attack_animation(M)
 
 	add_fingerprint(user)
 
 	if (istype(H))
+		if (prob(80) && H != user)
+			for (var/mob/O in (viewers(M) - user - M))
+				O.show_message("<span class='warning'>[M] tried to stab [user] in the eyes but missed!</span>", TRUE)
+			M << "<span class='warning'>[user] tried to stab you in the eyes but missed!</span>"
+			user << "<span class='warning'>You tried to stab [M] in the eyes with [src] but missed!</span>"
+			return
 
 		var/obj/item/organ/eyes/eyes = H.internal_organs_by_name["eyes"]
 

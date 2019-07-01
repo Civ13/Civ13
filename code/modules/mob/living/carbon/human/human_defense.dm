@@ -41,6 +41,9 @@ bullet_act
 					HP.amount = 6
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
+					if (istype(user, /mob/living/carbon/human))
+						var/mob/living/carbon/human/HM = user
+						HM.adaptStat("medical", 1)
 					for (var/obj/item/clothing/I in contents)
 						drop_from_inventory(I)
 					crush()
@@ -112,7 +115,7 @@ bullet_act
 		   * 2. randomness
 		   * 3. survival stat
 		*/
-		if (P)
+		if (P && P.starting)
 			var/distcheck = max(abs(P.starting.x - x), abs(P.starting.y - y))
 
 			if (distcheck > 2) // not PB range
@@ -179,7 +182,7 @@ bullet_act
 							visible_message("<span class = 'danger'>[src] flies back from the force of the blast!</span>")
 
 		// get weakened too
-		if (prob(P.KD_chance))
+		if (prob(P.KD_chance*0.5))
 			Weaken(2)
 			stats["stamina"][1] = max(stats["stamina"][1] - 50, 0)
 			if (client)
@@ -543,7 +546,10 @@ bullet_act
 		var/zone
 		if (istype(O.thrower, /mob/living))
 			var/mob/living/L = O.thrower
-			zone = check_zone(L.targeted_organ)
+			var/tgt = L.targeted_organ
+			if (L.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			zone = check_zone(tgt)
 		else
 			zone = ran_zone("chest",75)	//Hits a random part of the body, geared towards the chest
 
@@ -577,7 +583,6 @@ bullet_act
 
 		var/obj/item/organ/external/affecting = get_organ(zone)
 		var/hit_area = affecting.name
-		var/datum/wound/created_wound
 		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
 		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].") //I guess "melee" is the best fit here
 
@@ -587,7 +592,7 @@ bullet_act
 			if(prob(armor))
 				edge = 0
 				sharp = 0
-			created_wound = apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
+			apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
 
 		if (ismob(O.thrower))
 			var/mob/M = O.thrower
@@ -614,7 +619,7 @@ bullet_act
 			//Thrown sharp objects have some momentum already and have a small chance to embed even if the damage is below the threshold
 			if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
 				if (I.w_class <= 2.0)
-					affecting.embed(I, supplied_wound = created_wound)
+					affecting.embed(I)
 		if (istype(O, /obj/item/weapon/snowball))
 			O.icon_state = "snowball_hit"
 			O.update_icon()
@@ -718,6 +723,8 @@ bullet_act
 		return
 
 	var/hit_zone = user.targeted_organ
+	if (user.targeted_organ == "random")
+		hit_zone = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 	var/too_high_message = "You can't reach that high."
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if(!affecting || affecting.is_stump())

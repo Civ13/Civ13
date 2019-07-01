@@ -18,10 +18,12 @@
 		if (!temp || !temp.is_usable())
 			H << "<span class = 'red'>You can't use your hand.</span>"
 			return
-
+	var/tgt = H.targeted_organ
+	if (H.targeted_organ == "random")
+		tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 	// Should this all be in Touch()?
 	if (istype(H))
-		if (H != src && check_shields(0, null, H, H.targeted_organ, H.name))
+		if (H != src && check_shields(0, null, H, tgt, H.name))
 			H.do_attack_animation(src)
 			return FALSE
 
@@ -90,9 +92,11 @@
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 			visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>")
 			return TRUE
-
 		if (I_HURT)
-			if (M.targeted_organ == "mouth" && wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
+			var/tgtm = M.targeted_organ
+			if (M.targeted_organ == "random")
+				tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			if (tgtm == "mouth" && wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
 				var/obj/item/weapon/grenade/G = wear_mask
 				if (!G.active)
 					visible_message("<span class='danger'>\The [M] pulls the pin from \the [src]'s [G.name]!</span>")
@@ -112,7 +116,7 @@
 			var/rand_damage = rand(1, 5)
 			var/block = FALSE
 			var/accurate = FALSE
-			var/hit_zone = H.targeted_organ
+			var/hit_zone = tgt
 			var/obj/item/organ/external/affecting = get_organ(hit_zone)
 
 			if (!affecting || affecting.is_stump())
@@ -217,7 +221,8 @@
 			// Apply stat effects
 			real_damage *= H.getStatCoeff("strength")
 			real_damage /= getStatCoeff("strength")
-
+			if (tactic == "charge")
+				real_damage *= 1.1
 			var/armor = run_armor_check(affecting, "melee")
 			// Apply additional unarmed effects.
 			attack.apply_effects(H, src, armor, rand_damage, hit_zone)
@@ -234,7 +239,10 @@
 
 			if (w_uniform)
 				w_uniform.add_fingerprint(M)
-			var/obj/item/organ/external/affecting = get_organ(ran_zone(M.targeted_organ))
+			var/tgtm = M.targeted_organ
+			if (M.targeted_organ == "random")
+				tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			var/obj/item/organ/external/affecting = get_organ(ran_zone(tgtm))
 
 			var/list/holding = list(get_active_hand() = 40, get_inactive_hand = 20)
 
@@ -308,8 +316,12 @@
 
 	if (!has_grab)
 		return FALSE
-
-	if (!def_zone) def_zone = user.targeted_organ
+	var/tgt = user.targeted_organ
+	if (user.targeted_organ == "random")
+		tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+	if (!def_zone) def_zone = tgt
+	if (def_zone == "random")
+		def_zone = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 	var/target_zone = check_zone(def_zone)
 	if (!target_zone)
 		return FALSE

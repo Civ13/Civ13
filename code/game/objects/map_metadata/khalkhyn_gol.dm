@@ -1,7 +1,7 @@
 #define NO_WINNER "The reichstag is under German control."
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
-	title = "Khalkhyn Gol (150x200x1)"
+	title = "Khalkhyn Gol (90x200x1)"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
@@ -15,11 +15,11 @@
 		list(RUSSIAN) = /area/caribbean/russian/land/inside/command,
 		list(JAPANESE) = /area/caribbean/japanese/land/inside/command,
 		)
-	age = "1945"
+	age = "1939"
 	ordinal_age = 6
-	faction_distribution_coeffs = list(JAPANESE = 0.6, RUSSIAN = 0.4)
+	faction_distribution_coeffs = list(JAPANESE = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Khalkhyn Gol"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command!</b>. The Soviets will win if they manage to capture the japanese command!.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command!</b>. The Soviets will win if they manage to capture the japanese command!.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
@@ -34,10 +34,10 @@
 		. = FALSE
 
 /obj/map_metadata/khalkhyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 30000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/khalkhyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/khalkhyn/roundend_condition_def2name(define)
