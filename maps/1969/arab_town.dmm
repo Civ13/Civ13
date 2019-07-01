@@ -198,12 +198,11 @@
 "dP" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central,/turf/floor/plating/road,/area/caribbean/desert)
 "dQ" = (/obj/map_metadata/arab_town,/turf/floor/plating/road,/area/caribbean/desert)
 "dR" = (/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/road,/area/caribbean/desert)
-"dS" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/road,/area/caribbean/desert)
+"dS" = (/obj/structure/sign/traffic/zebracrossing{icon_state = "zebra"; dir = 4},/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/road,/area/caribbean/desert)
 "dT" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/barricade/shelf,/turf/floor/wood,/area/caribbean/desert/buildings{name = "Buildings"})
 "dU" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "dV" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/desert)
 "dW" = (/obj/structure/barricade/antitank,/turf/floor/dirt/dust,/area/caribbean/desert)
-"dX" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/road,/area/caribbean/desert)
 "dY" = (/obj/structure/wild/tallgrass2,/obj/structure/barricade/antitank,/turf/floor/beach/sand/desert,/area/caribbean/desert)
 "dZ" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/obj/effect/landmark{name = "JoinLateAR"},/turf/floor/plating/road,/area/caribbean/desert)
 "ea" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/dust,/area/caribbean/desert)
@@ -581,5 +580,5 @@ fkjJgKgKfkgKgKgKgKgKjFdVafeOhVbMgQcgeOafaQaaafcCbMbMbMcCbMbMcCbMgQcgbnafaUaUafab
 fjfkfkfkfjjFizjFfjfkfjafbEeOeOeObneOeOafaUaUafeVeVcCeVeVbMbMeVisbMbMeVafaaaOafahafabafaaaaaaaQaaaMaaafabaYadaeaeaeaecacacacacacaaeaeaeaeaeadababaqaqaq
 afafaffXaGfXaffWafafafafafafafaGaffWfXafaaaOaWbnbMbMbMeVgLgLeVbMbMbMcCafaaaQafhfabafafaaaaaJdLaKaaaaafabaXadaecacacacaaecaaeaeaeaeaeadaXadadabahbbbaaq
 aaaabqduaaazaaazaaaaaaaIaJaKaaaaaaaaaaaaaaaQaWeVhNjyiFeVjzjAeVhYjBiGeOafaLaaafafhfabafaaaaaaaaaaaaaaafabaXaecacaaeaeaeadaeaeaebeaXaXaXabaiabababataqba
-dQaacZduaaaaaaaaaaaJaKdgaaaaaaaaaadAduaaaaaabEeOeVeVeOeVeOeVeOeVeOeVeOafaaaaafabhBhBafdRdRdSdXdZdRdRafabaXaecacaaeaXaXabadaXaXaXadabababababababaqaqaq
+dQaacZduaaaaaaaaaaaJdZdSdRdRdRdRdRdAduaaaaaabEeOeVeVeOeVeOeVeOeVeOeVeOafaaaaafabhBhBafaaaaaJdLaKaaaaafabaXaecacaaeaXaXabadaXaXaXadabababababababaqaqaq
 "}
