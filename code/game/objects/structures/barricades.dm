@@ -618,7 +618,6 @@
 	desc = "A pile of old tires."
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "tire3a"
-	material = "wood"
 	health = 200
 	maxhealth = 200
 	material_name = "wood"
@@ -634,7 +633,6 @@
 	desc = "A collapsible wire mesh container filled with sand. Very sturdy."
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "hescobastion"
-	material = "wood"
 	health = 600
 	maxhealth = 600
 	material_name = "wood"
@@ -652,7 +650,6 @@
 	desc = "A store shelf."
 	icon = 'icons/obj/junk.dmi'
 	icon_state = "shelf1"
-	material = "wood"
 	health = 130
 	maxhealth = 130
 	material_name = "wood"
@@ -662,3 +659,21 @@
 	..()
 	icon_state = pick("shelf1","shelf2","shelf3")
 	name = "shelf"
+
+
+/obj/structure/barricade/car
+	name = "car"
+	desc = "An abandoned car."
+	icon = 'icons/obj/obj64x42.dmi'
+	icon_state = "car1"
+	health = 450
+	maxhealth = 450
+	material_name = "iron"
+	protection_chance = 80
+	bound_width = 64
+	layer = MOB_LAYER + 0.4
+
+/obj/structure/barricade/car/New()
+	..()
+	icon_state = pick("car1","car2","car3")
+	name = "car"
