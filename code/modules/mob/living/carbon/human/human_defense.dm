@@ -182,7 +182,7 @@ bullet_act
 							visible_message("<span class = 'danger'>[src] flies back from the force of the blast!</span>")
 
 		// get weakened too
-		if (prob(P.KD_chance))
+		if (prob(P.KD_chance*0.5))
 			Weaken(2)
 			stats["stamina"][1] = max(stats["stamina"][1] - 50, 0)
 			if (client)
