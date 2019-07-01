@@ -104,7 +104,7 @@
 /obj/structure/sign/traffic/zebracrossing
 	name = "pedestrian crossing"
 	icon_state = "zebra"
-
+	layer = 2
 /obj/structure/sign/traffic/zebracrossing/ex_act(severity)
 	switch(severity)
 		if (3.0)
@@ -115,6 +115,7 @@
 /obj/structure/sign/traffic/central
 	name = "white line"
 	icon_state = "centralline"
+	layer = 2
 /obj/structure/sign/traffic/central/ex_act(severity)
 	switch(severity)
 		if (3.0)
@@ -125,6 +126,7 @@
 /obj/structure/sign/traffic/side
 	name = "yellow line"
 	icon_state = "sideline"
+	layer = 2
 /obj/structure/sign/traffic/side/ex_act(severity)
 	switch(severity)
 		if (3.0)
