@@ -493,7 +493,7 @@
 		var/rn = rand(0, 200)
 		if (getBrainLoss() >= 5)
 			if (0 <= rn && rn <= 3)
-				custom_pain("Your head feels numb and painful.")
+				custom_pain("Your head feels numb and painful.", 9)
 		if (getBrainLoss() >= 15)
 			if (4 <= rn && rn <= 6) if (eye_blurry <= 0)
 				src << "<span class='warning'>It becomes hard to see for some reason.</span>"
@@ -1588,7 +1588,7 @@
 								emote("twitch")
 							else
 								emote("shiver")
-							custom_pain("You can't stand still!",1)
+							custom_pain("You can't stand still!",4)
 						if (prob(10))
 							confused = 6
 						if (prob(12))

@@ -689,7 +689,7 @@ var/list/rank_prefix = list(\
 	var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
 
 	if (L && !L.is_bruised())
-		custom_pain("You feel a stabbing pain in your chest!", TRUE)
+		custom_pain("You feel a stabbing pain in your chest!", 110)
 		L.bruise()
 
 /*

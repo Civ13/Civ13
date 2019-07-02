@@ -23,7 +23,9 @@
 			adjustCloneLoss(damage/(blocked+1))
 		if (HALLOSS)
 			adjustHalLoss(damage/(blocked+1))
-	flash_weak_pain()
+	if (istype(src,/mob/living/carbon/human))
+		var/mob/living/carbon/human/H = src
+		H.flash_weak_pain()
 	updatehealth()
 	return TRUE
 
@@ -36,7 +38,6 @@
 	if (oxy)	apply_damage(oxy, OXY, def_zone, blocked)
 	if (clone)	apply_damage(clone, CLONE, def_zone, blocked)
 	if (halloss) apply_damage(halloss, HALLOSS, def_zone, blocked)
-	flash_weak_pain()
 	return TRUE
 
 

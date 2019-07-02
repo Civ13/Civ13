@@ -415,7 +415,7 @@ This function completely restores a damaged organ to perfect condition.
 	if (damage > 15 && type != BURN && local_damage > 30 && prob(damage))
 		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15), src)
 		wounds += I
-		owner.custom_pain("You feel something rip in your [name]!", TRUE)
+		owner.custom_pain("You feel something rip in your [name]!", 120)
 
 	// first check whether we can widen an existing wound
 	if (wounds.len > 0 && prob(max(50+(number_wounds-1)*10,90)))
@@ -608,7 +608,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 			owner.vessel.remove_reagent("blood", wound_update_accuracy * W.damage/40) //line should possibly be moved to handle_blood, so all the bleeding stuff is in one place.
 			if (prob(1 * wound_update_accuracy))
-				owner.custom_pain("You feel a stabbing pain in your [name]!",1)
+				owner.custom_pain("You feel a stabbing pain in your [name]!",60)
 
 		// slow healing
 		var/heal_amt = FALSE

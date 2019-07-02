@@ -99,7 +99,7 @@
 
 			if(owner.stat == CONSCIOUS)
 				if(damage > 0 && prob(1))
-					owner.custom_pain("Your head feels numb and painful.",10)
+					owner.custom_pain("Your head feels numb and painful.",9)
 				if(is_bruised() && prob(1) && owner.eye_blurry <= 0)
 					to_chat(owner, "<span class='warning'>It becomes hard to see for some reason.</span>")
 					owner.eye_blurry = 10
