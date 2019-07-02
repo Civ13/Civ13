@@ -109,11 +109,10 @@ bullet_act
 			P.on_hit(src, 2, def_zone)
 			return 2
 	else
-		/* bullet grazing is affected by three factors now:
+		/* bullet grazing is affected by two factors now:
 		 * from most to least important, these are:
 		   * 1. is the target moving while being shot? Modified by distance
 		   * 2. randomness
-		   * 3. survival stat
 		*/
 		if (P && P.starting)
 			var/distcheck = max(abs(P.starting.x - x), abs(P.starting.y - y))
@@ -139,7 +138,6 @@ bullet_act
 							return
 
 		// get knocked back once in a while
-		// unless we're on a train because bugs
 
 		var/KD_check = FALSE
 

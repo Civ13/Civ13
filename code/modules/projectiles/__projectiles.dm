@@ -19,6 +19,9 @@
 	penetrating = 3
 	armor_penetration = 40
 
+/obj/item/projectile/arrow
+	embed = TRUE
+
 /obj/item/projectile/arrow/stone
 	damage = DAMAGE_MEDIUM-10
 	penetrating = 1
