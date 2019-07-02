@@ -1,24 +1,15 @@
-/mob/living/carbon/proc/flash_pain()
+/mob/living/proc/flash_pain()
+	if (HUDtech.Find("pain"))
+		flick("pain",HUDtech["pain"])
 	return
-	if (istype(src,/mob/living))
-		var/mob/living/L = src
-		if (L.HUDtech.Find("pain"))
-			flick("pain",L.HUDtech["pain"])
-
-/mob/living/carbon/proc/flash_weak_pain()//Why the fuck wasn't that there before?
+/mob/living/proc/flash_weak_pain()//Why the fuck wasn't that there before?
+	if (HUDtech.Find("pain"))
+		flick("weak_pain",HUDtech["pain"])
 	return
-	if (istype(src,/mob/living))
-		var/mob/living/L = src
-		if (L.HUDtech.Find("pain"))
-			flick("weak_pain",L.HUDtech["pain"])
-
-/mob/living/carbon/proc/flash_weakest_pain()
+/mob/living/proc/flash_weakest_pain()
+	if (HUDtech.Find("pain"))
+		flick("weakest_pain",HUDtech["pain"])
 	return
-	if (istype(src,/mob/living))
-		var/mob/living/L = src
-		if (L.HUDtech.Find("pain"))
-			flick("weakest_pain",L.HUDtech["pain"])
-
 mob/var/list/pain_stored = list()
 mob/var/last_pain_message = ""
 mob/var/next_pain_time = FALSE

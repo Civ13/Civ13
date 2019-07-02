@@ -75,9 +75,7 @@
 
 //Handles the effects of "stun" weapons
 /mob/living/proc/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone, var/used_weapon=null)
-	if (istype(src,/mob/living/carbon/human))
-		var/mob/living/carbon/human/H = src
-		H.flash_pain()
+	flash_pain()
 
 	if (stun_amount)
 		Stun(stun_amount)
