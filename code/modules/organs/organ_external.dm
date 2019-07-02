@@ -609,8 +609,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 			var/adrenaline = owner.reagents.get_reagent_amount("adrenaline")
 			if (!(W.can_autoheal() || (adrenaline)))	//adrenaline stops internal wounds from growing bigger with time, unless it is so small that it is already healing
 				W.open_wound(0.1 * wound_update_accuracy)
-
-			owner.vessel.remove_reagent("blood", wound_update_accuracy * W.damage/40) //line should possibly be moved to handle_blood, so all the bleeding stuff is in one place.
+			var/blooddrop = W.damage/40
+			if (applied_pressure)
+				blooddrop *= 0.3
+			owner.vessel.remove_reagent("blood", wound_update_accuracy * blooddrop) //line should possibly be moved to handle_blood, so all the bleeding stuff is in one place.
 			if (prob(1 * wound_update_accuracy))
 				owner.custom_pain("You feel a stabbing pain in your [name]!",60)
 
