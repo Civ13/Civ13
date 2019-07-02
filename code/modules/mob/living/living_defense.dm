@@ -75,7 +75,7 @@
 			if (prob(instadeath))
 				adjustBrainLoss(80)
 	if (!P.nodamage)
-		apply_damage(damage, P.damage_type, def_zone, absorb, FALSE, P, sharp=proj_sharp, edge=proj_edge)
+		apply_damage(damage, P.damage_type, def_zone, absorb, P, sharp=proj_sharp, edge=proj_edge)
 
 	P.on_hit(src, absorb, def_zone)
 

@@ -1,14 +1,14 @@
 /mob/living/proc/flash_pain()
 	if (HUDtech.Find("pain"))
-		flick("pain",HUDtech["pain"])
+		flick("dark128",HUDtech["pain"])
 	return
 /mob/living/proc/flash_weak_pain()//Why the fuck wasn't that there before?
 	if (HUDtech.Find("pain"))
-		flick("weak_pain",HUDtech["pain"])
+		flick("dark64",HUDtech["pain"])
 	return
 /mob/living/proc/flash_weakest_pain()
 	if (HUDtech.Find("pain"))
-		flick("weakest_pain",HUDtech["pain"])
+		flick("dark32",HUDtech["pain"])
 	return
 mob/var/list/pain_stored = list()
 mob/var/last_pain_message = ""
