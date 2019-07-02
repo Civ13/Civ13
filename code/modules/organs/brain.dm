@@ -107,7 +107,7 @@
 					to_chat(owner, "<span class='danger'>Your hand won't respond properly, and you drop what you are holding!</span>")
 					owner.drop_item()
 				if((damage >= (max_damage * 0.75)))
-					if(!owner.lying && prob(5))
+					if(!owner.lying)
 						to_chat(owner, "<span class='danger'>You black out!</span>")
 					owner.Paralyse(10)
 
