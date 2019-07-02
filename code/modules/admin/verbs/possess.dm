@@ -1,4 +1,4 @@
-/proc/possess(obj/O as obj in range(world.view))
+/proc/possess(obj/O as obj in range(7))
 	set name = "Possess Obj"
 	set category = "Ghost"
 
@@ -21,7 +21,7 @@
 	usr.control_object = O
 
 
-/proc/release(obj/O as obj in range(world.view))
+/proc/release(obj/O as obj in range(7))
 	set name = "Release Obj"
 	set category = "Ghost"
 	//usr.loc = get_turf(usr)

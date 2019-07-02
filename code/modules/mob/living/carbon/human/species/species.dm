@@ -506,12 +506,6 @@
 
 	if (!H.client)//no client, no screen to update
 		return TRUE
-/*
-	if (config.welder_vision)
-		if ((!H.equipment_prescription && (H.disabilities & NEARSIGHTED)) || H.equipment_tint_total == TINT_MODERATE)
-			H.client.screen += global_hud.vimpaired*/
-//	if (H.eye_blurry)	H.client.screen += global_hud.blurry
-//	if (H.druggy)		H.client.screen += global_hud.druggy
 
 	for (var/overlay in H.equipment_overlays)
 		H.client.screen |= overlay

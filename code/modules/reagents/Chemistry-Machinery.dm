@@ -143,16 +143,16 @@
 	ui_interact(user)
 
 /obj/structure/lab_distillery
-	name = "laboratory distillery"
+	name = "laboratory distiller"
 	desc = "A professional laboratory distillery, used to separate chemicals in a solution."
 	density = FALSE
 	anchored = FALSE
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "distill_empty"
+	icon_state = "distill_empty_nocol"
 	not_movable = FALSE
 	not_disassemblable = TRUE
 	var/on = FALSE
-
+	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
 /obj/structure/lab_distillery/New()
 	..()
 	reagents = new /datum/reagents(80)
@@ -160,9 +160,15 @@
 /obj/structure/lab_distillery/update_icon()
 	..()
 	if (reagents.total_volume > 0)
-		icon_state = "distill"
+		if (collector)
+			icon_state = "distill"
+		else
+			icon_state = "distill_nocol"
 	else
-		icon_state = "distill_empty"
+		if (collector)
+			icon_state = "distill_empty"
+		else
+			icon_state = "distill_empty_nocol"
 	if (on)
 		icon_state = "distill_on"
 
@@ -170,6 +176,17 @@
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
 		H << "<span class = 'danger'>These chemicals are too complex for you to understand.</span>"
 		return
+	if (reagents.total_volume <= 0)
+		H << "The distiller is empty."
+		return
+	if (!collector && !on)
+		H << "You cannot turn the distiller on without a collector."
+		return
+	if (collector && !on)
+		H << "You turn the distiller on."
+		on = TRUE
+		update_icon()
+		process_distillery()
 	..()
 /obj/structure/lab_distillery/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(H) && H.getStatCoeff("medical") < GET_MIN_STAT_COEFF(STAT_MEDIUM_HIGH))
@@ -181,4 +198,49 @@
 			H << "You pour [tamt] units from \the [B] into the distiller."
 			update_icon()
 			return
+	if (istype(B, /obj/item/weapon/reagent_containers/glass/beaker) && !collector)
+		if (B.reagents.total_volume > 0)
+			H << "The collector must be empty!"
+			return
+		else
+			H << "You place [B] as the collector for the distiller."
+			collector =  B
+			H.drop_item()
+			B.loc = src
+			update_icon()
+			return
 	..()
+
+/obj/structure/lab_distillery/verb/empty()
+	set category = null
+	set name = "Remove Beaker"
+	set src in range(1, usr)
+
+	if (!collector)
+		usr << "There is no beaker to remove from \the [src]."
+		return
+
+	if (on)
+		usr << "<span class = 'danger'>You cannot remove the beaker while the distiller is running!</span>"
+		return
+
+	if (collector && !on)
+		visible_message("You remove \the [collector].","[usr] removes \the [collector] from \the [src].")
+		collector.loc = get_turf(src)
+		collector = null
+		return
+
+	return
+
+/obj/structure/lab_distillery/proc/process_distillery()
+	if (!on)
+		return
+	else
+		spawn(150)
+			var/largest = reagents.get_master_reagent_id()
+			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
+			collector.reagents.add_reagent(largest,voltotransf)
+			reagents.remove_reagent(largest,voltotransf)
+			on = FALSE
+			update_icon()
+			visible_message("\The [src] finishes distilling.")

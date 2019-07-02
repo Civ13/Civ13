@@ -1,9 +1,9 @@
 /obj/effect/spawner
 	name = "object spawner"
+	icon = 'icons/mob/screen/effects.dmi'
 
 /obj/effect/spawner/objective_spawner
 	name = "objective spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/activated = 1
 	var/hostile = FALSE
@@ -26,7 +26,6 @@
 
 /obj/effect/spawner/mobspawner
 	name = "mob spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x2"
 	var/activated = 1
 	var/current_number = 0
@@ -339,7 +338,6 @@
 ////////////////////OBJ SPAWNER///////////
 /obj/effect/spawner/objspawner
 	name = "obj spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x1"
 	var/activated = 1
 	var/max_number = 35
@@ -400,7 +398,6 @@
 
 /obj/effect/spawner/objspawner/tree
 	name = "tree spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x1"
 	max_number = 35
 	max_range = 13
@@ -409,7 +406,6 @@
 
 /obj/effect/spawner/objspawner/palm
 	name = "palm spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x1"
 	max_number = 13
 	max_range = 13
@@ -418,7 +414,6 @@
 
 /obj/effect/spawner/objspawner/jungle
 	name = "jungle tree spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x1"
 	max_number = 26
 	max_range = 13
@@ -427,7 +422,6 @@
 
 /obj/effect/spawner/objspawner/acacia
 	name = "acacia tree spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x1"
 	max_number = 10
 	max_range = 13
@@ -436,7 +430,6 @@
 
 /obj/effect/spawner/objspawner/medpine
 	name = "mediterranean pine tree spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x1"
 	max_number = 18
 	max_range = 13
@@ -446,7 +439,6 @@
 //ore spanwers for extended games
 /obj/effect/spawner/orespawner
 	name = "ore spawner"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x1"
 	var/active = FALSE
 /obj/effect/spawner/orespawner/New()

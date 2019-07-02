@@ -268,6 +268,20 @@
 	det_time = 50
 	throw_range = 8
 
+/obj/item/weapon/grenade/ww2/type97
+	name = "Type-97 grenade"
+	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 5 seconds."
+	icon_state = "type97"
+	det_time = 50
+	throw_range = 10
+
+/obj/item/weapon/grenade/ww2/type91
+	name = "Type-91 grenade"
+	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 8 seconds."
+	icon_state = "type91"
+	det_time = 80
+	throw_range = 10
+
 
 /obj/item/weapon/grenade/coldwar/m26
 	name = "M26 grenade"
@@ -495,7 +509,7 @@
 	if (user)
 		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 
-	if (user.faction_text == ARAB)
+	if (user && user.faction_text == ARAB)
 		user.emote("charge")
 	active = TRUE
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)

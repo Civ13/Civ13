@@ -6,7 +6,7 @@ var/civmax_research = list(130,130,130)
 
 /obj/map_metadata
 	name = ""
-	icon = 'icons/mob/screen/1713Style.dmi'
+	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
 	anchored = TRUE
 	simulated = FALSE
@@ -72,8 +72,8 @@ var/civmax_research = list(130,130,130)
 	var/battle_name = null
 
 	//age (313 B.C., 1013, 1713, etc)
-	var/age = "1713"
-	var/ordinal_age = 3
+	var/age = "5000 B.C."
+	var/ordinal_age = 0
 
 	//weather
 	var/blizzard = FALSE
@@ -110,25 +110,45 @@ var/civmax_research = list(130,130,130)
 	var/autoresearch = FALSE //if autoresearch is active
 	var/autoresearch_mult = 0.4 // the amount research goes up per minute. Can be edited by admins.
 	var/resourceresearch = FALSE
+
 	var/age1_lim = 75
 	var/age1_done = 0
 	var/age1_top = 35
+
 	var/age2_lim = 135
 	var/age2_done = 0
 	var/age2_timer = 40000
 	var/age2_top = 65
-	var/age3_lim = 240
+
+	var/age3_lim = 230
 	var/age3_done = 0
 	var/age3_timer = 42000
-	var/age3_top = 85
-	var/age4_lim = 315
+	var/age3_top = 95
+
+	var/age4_lim = 290
 	var/age4_done = 0
 	var/age4_timer = 44000
-	var/age4_top = 120
-	var/age5_lim = 360
+	var/age4_top = 105
+
+	var/age5_lim = 335
 	var/age5_done = 0
 	var/age5_timer = 46000
-	var/age5_top = 140
+	var/age5_top = 125
+
+	var/age6_lim = 420
+	var/age6_done = 0
+	var/age6_timer = 48000
+	var/age6_top = 178
+
+	var/age7_lim = 540
+	var/age7_done = 0
+	var/age7_timer = 50000
+	var/age7_top = 195
+
+	var/age8_lim = 620
+	var/age8_done = 0
+	var/age8_timer = 52000
+	var/age8_top = 230
 
 	var/orespawners = 0
 
@@ -173,7 +193,6 @@ var/civmax_research = list(130,130,130)
 
 	// makes win condition helper datum
 	win_condition = new
-	set_ordinal_age()
 	spawn(5000)
 		pollution()
 	spawn(2400)
@@ -246,6 +265,12 @@ var/civmax_research = list(130,130,130)
 		ordinal_age = 4
 	else if (age == "1903")
 		ordinal_age = 5
+	else if (age == "1943")
+		ordinal_age = 6
+	else if (age == "1973")
+		ordinal_age = 7
+	else if (age == "2013")
+		ordinal_age = 8
 	return
 
 
@@ -363,6 +388,39 @@ var/civmax_research = list(130,130,130)
 					set_ordinal_age()
 					age5_done = TRUE
 					default_research = 120
+					break
+		else if (age6_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age6_lim && world.time >= age6_timer)
+					world << "<big>The world has advanced into the Second World War!</big>"
+					age = "1943"
+					set_ordinal_age()
+					age6_done = TRUE
+					default_research = 145
+					break
+		else if (age7_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age7_lim && world.time >= age7_timer)
+					world << "<big>The world has advanced into the Cold War!</big>"
+					age = "1973"
+					set_ordinal_age()
+					age7_done = TRUE
+					default_research = 175
+					break
+		else if (age8_done == FALSE)
+			var/count = 0
+			for(var/i = 1, i <= custom_faction_nr.len, i++)
+				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
+				if (count > age8_lim && world.time >= age8_timer)
+					world << "<big>The world has advanced into the Modern Age!</big>"
+					age = "2013"
+					set_ordinal_age()
+					age8_done = TRUE
+					default_research = 210
 					break
 /obj/map_metadata/proc/check_events()
 	return TRUE

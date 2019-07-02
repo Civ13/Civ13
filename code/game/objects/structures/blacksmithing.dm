@@ -1112,6 +1112,7 @@ obj/structure/anvil/New()
 	set category = null
 	set name = "Empty"
 	set src in range(1, usr)
+
 	if (iron_amt > 0)
 		var/obj/item/stack/material/iron/emptyediron = new/obj/item/stack/material/iron(src.loc)
 		emptyediron.amount = iron_amt

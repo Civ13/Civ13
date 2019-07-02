@@ -381,7 +381,10 @@ var/list/vocal_emotes = list(
 						if (faction_text == GERMAN)
 							playsound(get_turf(src), "charge_GERMAN", 100)
 						if (faction_text == AMERICAN)
-							playsound(get_turf(src), "charge_AMERICAN", 100)
+							if (map.ID == MAP_ARAB_TOWN)
+								playsound(get_turf(src), "charge_ISRAELI", 100)
+							else
+								playsound(get_turf(src), "charge_AMERICAN", 100)
 						if (faction_text == VIETNAMESE)
 							playsound(get_turf(src), "charge_VIETNAMESE", 100)
 					else
@@ -658,13 +661,18 @@ var/list/vocal_emotes = list(
 					if (r_hand) unEquip(r_hand)
 					next_emote["surrender"] = world.time + 600
 
+			if ("pee")
+				handle_piss()
+
+			if ("poop")
+				handle_shit()
 
 			if ("help")
 				src << {"blink, blink_r, blush, bow-(none)/mob, burp, choke, chuckle, clap, collapse, cough,
 	cry, drool, eyebrow, frown, gasp, giggle, groan, grumble, handshake, hug-(none)/mob,
 	grin, laugh, look-(none)/mob, moan, mumble, nod, point-atom, raise, salute, shake, shiver, shrug,
 	sigh, signal-#1-10, smile, sneeze, sniff, snore, stare-(none)/mob, scream, surrender, tremble, twitch,
-	wink, yawn, charge"}
+	wink, yawn, charge, piss, poop"}
 
 			else
 				src << "<span class = 'notice'>Unusable emote '[act]'. Say *help for a list.</span>"

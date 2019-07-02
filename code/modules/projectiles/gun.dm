@@ -165,7 +165,10 @@
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return
 	if (A == user)
-		if (user.targeted_organ == "mouth" && !mouthshoot)
+		var/tgt = user.targeted_organ
+		if (user.targeted_organ == "random")
+			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+		if (tgt == "mouth" && !mouthshoot)
 			handle_suicide(user)
 		else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
 			handle_shoot_self(user)
@@ -275,8 +278,10 @@
 				var/obj/item/projectile/P = projectile
 				P.KD_chance = 100
 			process_point_blank(projectile, user, target)
-
-		if (process_projectile(projectile, user, target, user.targeted_organ, clickparams))
+		var/tgt = user.targeted_organ
+		if (user.targeted_organ == "random")
+			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+		if (process_projectile(projectile, user, target, tgt, clickparams))
 			handle_post_fire(user, target, pointblank, reflex)
 			update_icon()
 
@@ -484,9 +489,12 @@
 		if (in_chamber && istype(in_chamber))
 
 			var/damage_multiplier = 1.33 // so legs and arms don't explode - Kachnov
-			var/organ_name = replacetext(replacetext(user.targeted_organ, "l_", "left "), "r_", "right ")
+			var/tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			var/organ_name = replacetext(replacetext(tgt, "l_", "left "), "r_", "right ")
 
-			switch (user.targeted_organ)
+			switch (tgt)
 				if ("l_hand", "r_hand", "l_foot", "r_foot")
 					damage_multiplier = 1.0
 				if ("chest")
@@ -502,7 +510,7 @@
 
 			in_chamber.on_hit(user)
 			if (in_chamber.damage_type != HALLOSS)
-				user.apply_damage(in_chamber.damage*damage_multiplier, in_chamber.damage_type, user.targeted_organ, used_weapon = "Point blank shot in the [user.targeted_organ] with \a [in_chamber]", sharp=1)
+				user.apply_damage(in_chamber.damage*damage_multiplier, in_chamber.damage_type, tgt, used_weapon = "Point blank shot in the [user.targeted_organ] with \a [in_chamber]", sharp=1)
 			else
 				user << "<span class = 'notice'>Ow...</span>"
 				user.apply_effect(110,AGONY,0)

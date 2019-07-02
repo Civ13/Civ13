@@ -50,17 +50,6 @@
 	icon_state = "drip1"
 	random_icon_states = list("drip1", "drip2", "drip3", "drip4", "drip5")
 
-//This proc is really deprecated.
-/*/obj/effect/decal/cleanable/poo/proc/streak(var/list/directions)
-	spawn (0)
-		var/direction = pick(directions)
-		for (var/i = 0, i < pick(1, 200; 2, 150; 3, 50; 4), i++)
-			sleep(3)
-			if (i > 0)
-				new /obj/effect/decal/cleanable/poo(src.loc)
-			if (step_to(src, get_step(src, direction), 0))
-				break
-*/
 
 /obj/effect/decal/cleanable/poo/Crossed(AM as mob|obj, var/forceslip = 0)
 	if (istype(AM, /mob/living/carbon) && src.dried == 0)
@@ -71,16 +60,10 @@
 		if(prob(5))
 			M.slip("poo")
 
-//These aren't needed for now.
-///obj/effect/decal/cleanable/poo/tracks/Crossed(AM as mob|obj)
-//	return
-
-//obj/effect/decal/cleanable/poo/drip/Crossed(AM as mob|obj)
-//	return
 
 /obj/effect/decal/cleanable/urine
 	name = "urine stain"
-	desc = "Someone couldn't hold it.."
+	desc = "Someone couldn't hold it..."
 	density = 0
 	anchored = 1
 	layer = 2
@@ -92,7 +75,7 @@
 /obj/effect/decal/cleanable/urine/Crossed(AM as mob|obj)
 	if (istype(AM, /mob/living/carbon))
 		var/mob/living/carbon/M =	AM
-		if ((ishuman(M) && istype(M:shoes, /obj/item/clothing/shoes/galoshes)) || M.m_intent == "walk")
+		if (ishuman(M) && M.m_intent == "walk")
 			return
 
 		if((!dried) && prob(5))
@@ -110,26 +93,6 @@
 		dried = 1
 		name = "dried urine stain"
 		desc = "That's a dried crusty urine stain. Fucking janitors."
-
-
-
-/obj/effect/decal/cleanable/cum
-	name = "cum"
-	desc = "It's pie cream from a cream pie. Or not..."
-	density = 0
-	layer = 2
-	icon = 'honk/icons/effects/cum.dmi'
-	blood_DNA = list()
-	anchored = 1
-	random_icon_states = list("cum1", "cum3", "cum4", "cum5", "cum6", "cum7", "cum8", "cum9", "cum10", "cum11", "cum12")
-
-
-/obj/effect/decal/cleanable/cum/New()
-	..()
-	icon_state = pick(random_icon_states)
-	for(var/obj/effect/decal/cleanable/cum/jizz in src.loc)
-		if(jizz != src)
-			qdel(jizz)
 
 
 //#####REAGENTS#####
@@ -153,27 +116,9 @@
 	..()
 	return
 
-//TO MAKE add_poo() PROC
-/*			reaction_mob(var/mob/M, var/method=TOUCH, var/volume)
-		src = null
-		if(istype(M, /mob/living/carbon/human) && method==TOUCH)
-			if(M:wear_suit) M:wear_suit.add_poo()
-			if(M:w_uniform) M:w_uniform.add_poo()
-			if(M:shoes) M:shoes.add_poo()
-			if(M:gloves) M:gloves.add_poo()
-			if(M:head) M:head.add_poo()
-		//if(method==INGEST)
-		//	if(prob(20))
-			//	M.contract_disease(new /datum/disease/gastric_ejections)
-			//	holder.add_reagent("gastricejections", 1)
-			//	M:toxloss += 0.1
-			//	holder.remove_reagent(src.id, 0.2)
-*/
-
 /datum/reagent/poo/touch_turf(var/turf/T)
 	src = null
-	if(!istype(T, /turf/space))
-		new /obj/effect/decal/cleanable/poo(T)
+	new /obj/effect/decal/cleanable/poo(T)
 
 //URINE
 /datum/reagent/urine
@@ -186,29 +131,15 @@
 
 /datum/reagent/urine/touch_turf(var/turf/T)
 	src = null
-	if(!istype(T, /turf/space))
-		new /obj/effect/decal/cleanable/urine(T)
-
-//SEMEN
-/datum/reagent/semen
-	name = "semen"
-	id = "semen"
-	description = "It's semen."
-	reagent_state = LIQUID
-	color = COLOR_WHITE
-	taste_description = "salt"
-
-/datum/reagent/semen/touch_turf(var/turf/T)
-	src = null
-	if(!istype(T, /turf/space))
-		new /obj/effect/decal/cleanable/cum(T)
+	new /obj/effect/decal/cleanable/urine(T)
 
 /obj/item/weapon/reagent_containers/food/snacks/poo
 	name = "poo"
 	desc = "A chocolately surprise!"
-	icon = 'icons/obj/poop.dmi'
+	icon = 'icons/effects/pooeffect.dmi'
 	icon_state = "poop2"
 	item_state = "poop"
+	satisfaction = -25 //tastes like shit
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/New()
 	..()
@@ -221,8 +152,7 @@
 	//	return
 	playsound(src.loc, "sound/effects/squishy.ogg", 40, 1)
 	var/turf/T = src.loc
-	if(!istype(T, /turf/space))
-		new /obj/effect/decal/cleanable/poo(T)
+	new /obj/effect/decal/cleanable/poo(T)
 	//qdel(src) THIS IS BAD AND YOU SHOULD FEEL BAD.
 	..()
 
@@ -241,8 +171,31 @@
 
 
 //#####LIFE PROCS#####
+/mob/living/carbon/human/proc/print_excrement()
+	if(bowels >= 250)
+		switch(bowels)
+			if(250 to 400)
+				to_chat(src, "<span class='info'><b>You need to poo.</b></span>")
+			if(400 to 450)
+				to_chat(src, "<span class='notice'><b>You really need to poo!</b></span>")
+			if(450 to 500)
+				to_chat(src, "<span class='warning'><b>You're about to shit yourself!</b></span>")
+			if(500 to INFINITY)
+				to_chat(src, "<span class='danger'><b>OH MY GOD YOU HAVE TO SHIT!</b></span>")
 
-//poo and pee counters. This is called in human/handle_stomach.
+	if(bladder >= 100)//Your bladder is smaller than your colon
+		switch(bladder)
+			if(100 to 250)
+				to_chat(src, "<span class='notice'><b>You need to pee.</b></span>")
+			if(250 to 400)
+				to_chat(src, "<span class='notice'><b>You really need to pee!</b></span>")
+			if(400 to 500)
+				to_chat(src, "<span class='warning'><b>You're about to piss yourself!</b></span>")
+			if(500 to INFINITY)
+				to_chat(src, "<span class='danger'><b>OH MY GOD YOU HAVE TO PEE!</b></span>")
+	return
+
+//poo and pee counters. This is called in human_life.
 /mob/living/carbon/human/proc/handle_excrement()
 	if(bowels <= 0)
 		bowels = 0
@@ -306,27 +259,24 @@
 
 		//Poo in the loo.
 		var/obj/structure/toilet/T = locate() in src.loc
-		var/obj/machinery/disposal/toilet/T2 = locate() in src.loc
 		var/mob/living/M = locate() in src.loc
-		if(T && T.open)
+		if (T && T.open)
 			message = "<B>[src]</B> defecates into \the [T]."
-
-		else if (T2 && T2.open)
-			message = "<B>[src]</B> defecates into \the [T2]."
 			var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
 			if(reagents)
 				reagents.trans_to(V, rand(1,5))
 
-			if(T2.CanInsertItem(src)) //attempt to insert the shit into the toilet.
-				V.forceMove(T2)
-			else
-				shit_left++
+			V.forceMove(T)
 
 		else if(w_uniform)
 			message = "<B>[src]</B> shits \his pants."
 			reagents.add_reagent("poo", 10)
 			adjust_hygiene(-25)
-			add_event("shitself", /datum/happiness_event/hygiene/shit)
+			mood -= 25
+			w_uniform.shit_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="shit")
+			w_uniform.overlays += w_uniform.shit_overlay
+			w_uniform.update_icon()
+			update_icons()
 
 		//Poo on the face.
 		else if(M != src && M.lying)//Can only shit on them if they're lying down.
@@ -339,8 +289,6 @@
 			var/obj/item/weapon/reagent_containers/food/snacks/poo/V = new/obj/item/weapon/reagent_containers/food/snacks/poo(src.loc)
 			if(reagents)
 				reagents.trans_to(V, rand(1,5))
-
-			shit_left++//Global var for round end, not how much piss is left.
 
 		playsound(src.loc, 'sound/effects/poo2.ogg', 60, 1)
 		bowels -= rand(60,80)
@@ -358,13 +306,12 @@
 		to_chat(src, "You don't have to.")
 		return
 
-	var/obj/structure/urinal/U = locate() in src.loc
-	var/obj/machinery/disposal/toilet/T = locate() in src.loc
-	var/obj/machinery/disposal/toilet/T2 = locate() in src.loc
+	var/obj/structure/toilet/T = locate() in src.loc
+	var/obj/structure/toilet/T2 = locate() in src.loc
 	var/obj/structure/sink/S = locate() in src.loc
 	var/obj/item/weapon/reagent_containers/RC = locate() in src.loc
-	if((U || S) && gender != FEMALE)//In the urinal or sink.
-		message = "<B>[src]</B> urinates into [U ? U : S]."
+	if((S) && gender != FEMALE)//In the urinal or sink.
+		message = "<B>[src]</B> urinates into [S]."
 		reagents.remove_any(rand(1,8))
 
 	else if( (T && T.open) || (T2 && T2.open) )//In the toilet.
@@ -383,7 +330,11 @@
 	else if(w_uniform)//In your pants.
 		message = "<B>[src]</B> pisses \his pants."
 		adjust_hygiene(-25)
-		add_event("pissedself", /datum/happiness_event/hygiene/pee)
+		mood -= 15
+		w_uniform.piss_overlay = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="piss")
+		w_uniform.overlays += w_uniform.piss_overlay
+		w_uniform.update_icon()
+		update_icons()
 
 	else//On the floor.
 		var/turf/TT = src.loc
@@ -391,7 +342,6 @@
 		if(reagents)
 			reagents.trans_to(D, rand(1,8))
 		message = "<B>[src]</B> pisses on the [TT.name]."
-		piss_left++//Global var for round end, not how much piss is left.
 
 	bladder -= 50
 	visible_message("[message]")

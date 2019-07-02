@@ -69,6 +69,10 @@
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
 	var/atom/movable/applied_pressure
+	var/burn_ratio = 0
+	var/brute_ratio = 0
+	var/encased = ""
+	var/cavity_name = ""
 /obj/item/organ/external/New()
 	..()
 	if(isnull(pain_disability_threshold))
@@ -249,7 +253,7 @@
 	if(internal_organs && internal_organs.len && (cur_damage + damage_amt >= max_damage || (((sharp && damage_amt >= 5) || damage_amt >= 10) && prob(5))))
 		// Damage an internal organ
 		var/list/victims = list()
-		for(var/obj/item/organ/internal/I in internal_organs)
+		for(var/obj/item/organ/I in internal_organs)
 			if(I.damage < I.max_damage && prob(I.relative_size))
 				victims += I
 		if(!victims.len)
@@ -409,7 +413,7 @@ This function completely restores a damaged organ to perfect condition.
 	//Possibly trigger an internal wound, too.
 	var/local_damage = brute_dam + burn_dam + damage
 	if (damage > 15 && type != BURN && local_damage > 30 && prob(damage))
-		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15))
+		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15), src)
 		wounds += I
 		owner.custom_pain("You feel something rip in your [name]!", TRUE)
 
@@ -431,7 +435,7 @@ This function completely restores a damaged organ to perfect condition.
 	var/wound_type = get_wound_type(type, damage)
 
 	if (wound_type)
-		var/datum/wound/W = new wound_type(damage)
+		var/datum/wound/W = new wound_type(damage, src)
 
 		//Check whether we can add the wound to an existing wound
 		for (var/datum/wound/other in wounds)
@@ -674,6 +678,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (!(brute_dam+burn_dam) || !number_wounds)
 		disfigured = FALSE
 
+	damage = brute_dam + burn_dam
+
+	update_damage_ratios()
+
 //Returns TRUE if damage_state changed
 /obj/item/organ/external/proc/update_damstate()
 	var/n_is = damage_state_text()
@@ -814,6 +822,11 @@ Note that amputating the affected organ does in fact remove the infection from t
 /****************************************************
 			   HELPERS
 ****************************************************/
+
+/obj/item/organ/external/proc/update_damage_ratios()
+	var/limb_loss_threshold = max_damage
+	brute_ratio = brute_dam / (limb_loss_threshold * 2)
+	burn_ratio = burn_dam / (limb_loss_threshold * 2)
 
 /obj/item/organ/external/proc/is_stump()
 	return FALSE
@@ -1091,6 +1104,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 	cannot_amputate = TRUE
 	parent_organ = null
 	artery_name = "aorta"
+	encased = "ribcage"
+	cavity_name = "thoracic"
 
 /obj/item/organ/external/groin
 	name = "lower body"
@@ -1107,6 +1122,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	dislocated = -1
 //	gendered_icon = TRUE
 	artery_name = "iliac artery"
+	cavity_name = "abdominal"
 
 /obj/item/organ/external/arm
 	limb_name = "l_arm"
@@ -1121,6 +1137,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left shoulder"
 	can_grasp = TRUE
 	artery_name = "basilic vein"
+	tendon_name = "palmaris longus tendon"
 	has_tendon = TRUE
 /obj/item/organ/external/arm/right
 	limb_name = "r_arm"
@@ -1143,6 +1160,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left knee"
 	amputation_point = "left hip"
 	can_stand = TRUE
+	tendon_name = "cruciate ligament"
 	artery_name = "femoral artery"
 	has_tendon = TRUE
 /obj/item/organ/external/leg/right
@@ -1166,6 +1184,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "l_leg"
 	joint = "left ankle"
 	amputation_point = "left ankle"
+	tendon_name = "Achilles tendon"
 	can_stand = TRUE
 	has_tendon = TRUE
 /obj/item/organ/external/foot/removed()
@@ -1193,6 +1212,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "l_arm"
 	joint = "left wrist"
 	amputation_point = "left wrist"
+	tendon_name = "carpal ligament"
 	can_grasp = TRUE
 	has_tendon = TRUE
 /obj/item/organ/external/hand/removed()
@@ -1220,10 +1240,12 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "chest"
 	joint = "jaw"
 	amputation_point = "neck"
-	artery_name = "cartoid artery"
+	artery_name = "carotid artery"
 //	gendered_icon = TRUE
 	var/list/teeth_list() = list()
 	var/max_teeth = 32
+	var/eye_icon = "eyes_s"
+	var/eye_icon_location = 'icons/mob/human_face.dmi'
 
 /obj/item/organ/external/head/removed()
 	if (owner)
@@ -1244,6 +1266,44 @@ Note that amputating the affected organ does in fact remove the infection from t
 				disfigure("brute")
 		if (burn_dam > 40)
 			disfigure("burn")
+/obj/item/organ/external/head/update_icon()
+
+	..()
+
+	if(owner)
+		if(eye_icon)
+			var/icon/eyes_icon = new/icon(eye_icon_location, eye_icon)
+			var/obj/item/organ/eyes/eyes = owner.internal_organs_by_name["eyes"]
+			if(eyes)
+				eyes_icon.Blend(rgb(eyes.eye_colour[1], eyes.eye_colour[2], eyes.eye_colour[3]), ICON_ADD)
+			else
+				eyes_icon.Blend(rgb(128,0,0), ICON_ADD)
+			mob_icon.Blend(eyes_icon, ICON_OVERLAY)
+			overlays |= eyes_icon
+
+		if(owner.lip_style && (species && (species.appearance_flags & HAS_LIPS)))
+			var/icon/lip_icon = new/icon('icons/mob/human_face.dmi', "lips_[owner.lip_style]_s")
+			overlays |= lip_icon
+			mob_icon.Blend(lip_icon, ICON_OVERLAY)
+
+		overlays |= get_hair_icon()
+
+	return mob_icon
+
+/obj/item/organ/external/head/proc/get_hair_icon()
+	var/image/res = image(species.icon_template,"")
+	if(owner.f_style)
+		var/icon/facial_s = new/icon("icon" = 'icons/mob/human_face.dmi', "icon_state" = "[owner.f_style]_s")
+		facial_s.Blend(rgb(owner.r_facial, owner.g_facial, owner.b_facial))
+		res.overlays |= facial_s
+
+	if(owner.h_style)
+		var/icon/hair_s = new/icon("icon" = 'icons/mob/human_face.dmi', "icon_state" = "[owner.h_style]_s")
+		if(islist(h_col) && h_col.len >= 3)
+			hair_s.Blend(rgb(h_col[1], h_col[2], h_col[3]))
+		res.overlays |= hair_s
+	return res
+
 
 /obj/item/organ/external/head/proc/get_teeth() //returns collective amount of teeth
 	var/amt = FALSE

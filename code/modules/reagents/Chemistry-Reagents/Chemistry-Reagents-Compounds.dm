@@ -24,15 +24,6 @@
 		usr << "<span class='notice'>The solution dissolves the ink on the book.</span>"
 	return
 
-/datum/reagent/aluminum
-	name = "Aluminum"
-	id = "aluminum"
-	taste_description = "metal"
-	taste_mult = 1.1
-	description = "A silvery white and ductile member of the boron group of chemical elements."
-	reagent_state = SOLID
-	color = "#A8A8A8"
-
 /datum/reagent/ammonia
 	name = "Ammonia"
 	id = "ammonia"
@@ -45,31 +36,6 @@
 
 /datum/reagent/ammonia/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
 	M.adjustToxLoss(removed * 1.5)
-
-/datum/reagent/carbon
-	name = "Coal"
-	id = "carbon"
-	description = "A chemical element, good for cooking and heating."
-	taste_description = "sour chalk"
-	taste_mult = 1.5
-	reagent_state = SOLID
-	color = "#1C1300"
-	ingest_met = REM * 5
-
-/datum/reagent/carbon/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	if (M.ingested && M.ingested.reagent_list.len > 1) // Need to have at least 2 reagents - cabon and something to remove
-		var/effect = TRUE / (M.ingested.reagent_list.len - 1)
-		for (var/datum/reagent/R in M.ingested.reagent_list)
-			if (R == src)
-				continue
-			M.ingested.remove_reagent(R.id, removed * effect)
-
-/datum/reagent/copper
-	name = "Copper"
-	id = "copper"
-	description = "A highly ductile metal."
-	taste_description = "copper"
-	color = "#6E3B08"
 
 /datum/reagent/ethanol
 	name = "Ethanol" //Parent class for all alcoholic reagents.
@@ -100,13 +66,15 @@
 
 /datum/reagent/ethanol/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
 	if (issmall(M)) removed *= 2
-	M.nutrition += nutriment_factor * removed
+	M.bladder += removed
 	var/strength_mod = 2
 	M.add_chemical_effect(CE_PAINKILLER, 20)
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 40
 	M.addictions["alcohol"] += 0.02
+
+	M.apply_effect(max(M.radiation - 1 * removed, 0), IRRADIATE, blocked = 0)
 
 	M.add_chemical_effect(CE_ALCOHOL, TRUE)
 
@@ -167,48 +135,6 @@
 /datum/reagent/hydrazine/affect_touch(var/mob/living/carbon/M, var/alien, var/removed) // Hydrazine is both toxic and flammable.
 	M.adjust_fire_stacks(removed / 12)
 	M.adjustToxLoss(0.2 * removed)
-
-
-/datum/reagent/iron
-	name = "Iron"
-	id = "iron"
-	description = "Pure iron is a metal."
-	taste_description = "metal"
-	reagent_state = SOLID
-	color = "#353535"
-
-/datum/reagent/iron/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_BLOODRESTORE, 8 * removed)
-
-
-/datum/reagent/mercury
-	name = "Mercury"
-	id = "mercury"
-	description = "A chemical element."
-	taste_mult = FALSE //mercury apparently is tasteless. IDK
-	reagent_state = LIQUID
-	color = "#484848"
-
-/datum/reagent/mercury/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	if (prob(5))
-		M.emote(pick("twitch", "drool", "moan"))
-	M.adjustBrainLoss(0.1)
-
-/datum/reagent/phosphorus
-	name = "Phosphorus"
-	id = "phosphorus"
-	description = "A chemical element, the backbone of biological energy carriers."
-	taste_description = "vinegar"
-	reagent_state = SOLID
-	color = "#832828"
-
-/datum/reagent/potassium
-	name = "Potassium"
-	id = "potassium"
-	description = "A soft, low-melting solid that can easily be cut with a knife. Reacts violently with water."
-	taste_description = "sweetness" //potassium is bitter in higher doses but sweet in lower ones.
-	reagent_state = SOLID
-	color = "#A0A0A0"
 
 /datum/reagent/acid
 	name = "Sulphuric acid"
@@ -285,7 +211,15 @@
 	color = "#808080"
 	power = 3
 	meltdose = 8
-
+/datum/reagent/acid/hydrogen_chloride
+	name = "Hydrogen Chloride"
+	id = "hydrogen_chloride"
+	description = "A somewhat corrosive mineral acid."
+	taste_description = "stomach acid"
+	reagent_state = LIQUID
+	color = "#808080"
+	power = 1
+	meltdose = 30
 /datum/reagent/sodium
 	name = "Sodium"
 	id = "sodium"
@@ -304,52 +238,5 @@
 	color = "#FFFFFF"
 
 /datum/reagent/sugar/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.nutrition += removed * 3
-
-/datum/reagent/sulfur
-	name = "Sulfur"
-	id = "sulfur"
-	description = "A chemical element with a pungent smell."
-	taste_description = "old eggs"
-	reagent_state = SOLID
-	color = "#BF8C00"
-
-/datum/reagent/uranium
-	name ="Uranium"
-	id = "uranium"
-	description = "A silvery-white metallic chemical element in the actinide series, weakly radioactive."
-	taste_description = "the inside of a reactor"
-	reagent_state = SOLID
-	color = "#B8B8C0"
-
-/datum/reagent/uranium/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
-	affect_ingest(M, alien, removed)
-
-/datum/reagent/uranium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.apply_effect(5 * removed, IRRADIATE, blocked = 0)
-
-/datum/reagent/uranium/touch_turf(var/turf/T)
-	if(volume >= 3)
-		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
-		if(!glow)
-			new /obj/effect/decal/cleanable/greenglow(T)
-		return
-
-/datum/reagent/radium
-	name = "Radium"
-	id = "radium"
-	description = "Radium is an alkaline earth metal. It is extremely radioactive."
-	taste_description = "the color blue, and regret"
-	reagent_state = SOLID
-	color = "#C7C7C7"
-
-/datum/reagent/radium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.apply_effect(10 * removed, IRRADIATE, blocked = 0) // Radium may increase your chances to cure a disease
-
-
-/datum/reagent/radium/touch_turf(var/turf/T)
-	if(volume >= 3)
-		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
-		if(!glow)
-			new /obj/effect/decal/cleanable/greenglow(T)
-		return
+	M.nutrition += removed * 2
+	M.bowels += removed/6

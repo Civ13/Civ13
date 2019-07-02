@@ -141,6 +141,15 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 25, arrow = 10, gun = 0, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
+/obj/item/clothing/mask/wooden
+	name = "wooden mask"
+	desc = "A tribal wooden mask."
+	icon_state = "woodenmask"
+	item_state = "woodenmask"
+	body_parts_covered = FACE|EYES
+	armor = list(melee = 15, arrow = 10, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
+
+
 /obj/item/clothing/head/chief_hat
 	name = "Chief hat"
 	desc = "A hat made with withe feathers. Worn by tribal leaders."

@@ -27,6 +27,8 @@
 	parentmob = _parentmob
 	name = _name
 	screen_loc = _screen_loc
+	if (parentmob)
+		icon = parentmob.client.prefs.UI_file
 	if (_icon)
 		icon = _icon
 	if (_icon_state)
@@ -122,7 +124,6 @@
 /obj/screen/zone_sel
 	name = "damage zone"
 	icon_state = "zone_sel"
-	screen_loc = ui_zonesel
 	var/selecting = null
 
 /obj/screen/zone_sel/New()
@@ -193,7 +194,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
-
+	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
 /obj/screen/zone_sel/New()
@@ -204,7 +205,208 @@
 	overlays.Cut()
 	overlays += image('icons/mob/zone_sel.dmi', "[parentmob.targeted_organ]")
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
+//--------------------------------------------------ZONE SELECT---------------------------------------------------------
+/obj/screen/zone_sel2
+	name = "damage zone"
+	icon_state = "zone_sel"
+	var/selecting = null
 
+/obj/screen/zone_sel2/New()
+	..()
+	selecting = parentmob.targeted_organ
+
+/obj/screen/zone_sel2/Click(location, control,params)
+	var/list/PL = params2list(params)
+	var/icon_x = text2num(PL["icon-x"])
+	var/icon_y = text2num(PL["icon-y"])
+	var/old_selecting = parentmob.targeted_organ //We're only going to update_icon() if there's been a change
+
+	switch(icon_y)
+		if (1 to 7) //Feet
+			switch(icon_x)
+				if (1 to 16)
+					parentmob.targeted_organ = "r_foot"
+				if (17 to 32)
+					parentmob.targeted_organ = "l_foot"
+				else
+					return TRUE
+		if (8 to 19) //Legs
+			switch(icon_x)
+				if (1 to 16)
+					parentmob.targeted_organ = "r_leg"
+				if (17 to 32)
+					parentmob.targeted_organ = "l_leg"
+				else
+					return TRUE
+		if (19 to 23) //Legs and groin
+			switch(icon_x)
+				if (1 to 12)
+					parentmob.targeted_organ = "r_leg"
+				if (12 to 22)
+					parentmob.targeted_organ = "groin"
+				if (22 to 32)
+					parentmob.targeted_organ = "l_leg"
+				else
+					return TRUE
+		if (23 to 25) //Hands and groin
+			switch(icon_x)
+				if (2 to 11)
+					parentmob.targeted_organ = "r_hand"
+				if (12 to 22)
+					parentmob.targeted_organ = "groin"
+				if (23 to 31)
+					parentmob.targeted_organ = "l_hand"
+				else
+					return TRUE
+		if (26 to 32) //Hands and chest
+			switch(icon_x)
+				if (2 to 11)
+					parentmob.targeted_organ = "r_hand"
+				if (12 to 22)
+					parentmob.targeted_organ = "chest"
+				if (23 to 31)
+					parentmob.targeted_organ = "l_hand"
+				else
+					return TRUE
+		if (33 to 45) //Chest and arms to shoulders
+			switch(icon_x)
+				if (4 to 10)
+					parentmob.targeted_organ = "r_arm"
+				if (11 to 22)
+					parentmob.targeted_organ = "chest"
+				if (23 to 29)
+					parentmob.targeted_organ = "l_arm"
+				else
+					return TRUE
+		if (46 to 64) //Head, but we need to check for eye or mouth
+			if (icon_x in 12 to 22)
+				parentmob.targeted_organ = "head"
+				switch(icon_y)
+					if (49 to 51)
+						if (icon_x in 13 to 20)
+							parentmob.targeted_organ = "mouth"
+					if (53 to 55)
+						if (icon_x in 13 to 20)
+							parentmob.targeted_organ = "eyes"
+
+	if (old_selecting != parentmob.targeted_organ)
+		update_icon()
+
+	selecting = parentmob.targeted_organ
+	parentmob.HUDneed["random damage zone"].update_icon()
+	return TRUE
+
+/obj/screen/zone_sel2/New()
+	..()
+	update_icon()
+
+/obj/screen/zone_sel2/update_icon()
+	overlays.Cut()
+	overlays += image('icons/mob/screen/zone_sel_lw.dmi', "[parentmob.targeted_organ]")
+//--------------------------------------------------ZONE SELECT END---------------------------------------------------------
+//--------------------------------------------------ZONE SELECT---------------------------------------------------------
+/obj/screen/zone_sel3
+	name = "damage zone"
+	icon_state = "zone_sel"
+	var/selecting = null
+
+/obj/screen/zone_sel3/New()
+	..()
+	selecting = parentmob.targeted_organ
+
+/obj/screen/zone_sel3/Click(location, control,params)
+	var/list/PL = params2list(params)
+	var/icon_x = text2num(PL["icon-x"])
+	var/icon_y = text2num(PL["icon-y"])
+	var/old_selecting = parentmob.targeted_organ //We're only going to update_icon() if there's been a change
+
+	switch(icon_y)
+		if(5 to 8) //Feet
+			switch(icon_x)
+				if(6 to 13)
+					parentmob.targeted_organ = "r_foot"
+				if(20 to 27)
+					parentmob.targeted_organ = "l_foot"
+				else
+					return 1
+		if(9 to 25) //Legs
+			switch(icon_x)
+				if(8 to 15)
+					parentmob.targeted_organ = "r_leg"
+				if(18 to 25)
+					parentmob.targeted_organ = "l_leg"
+				else
+					return 1
+		if(26 to 32) //Hands and groin
+			switch(icon_x)
+				if(5 to 11)
+					parentmob.targeted_organ = "r_hand"
+				if(12 to 22)
+					parentmob.targeted_organ = "groin"
+				if(23 to 29)
+					parentmob.targeted_organ = "l_hand"
+				else
+					return 1
+		if(33 to 48) //Chest and arms to shoulders
+			switch(icon_x)
+				if(4 to 10)
+					parentmob.targeted_organ = "r_arm"
+				if(11 to 23)
+					parentmob.targeted_organ = "chest"
+				if(24 to 29)
+					parentmob.targeted_organ = "l_arm"
+				else
+					return 1
+		if(49 to 60) //Head, but we need to check for eye or mouth
+			if(icon_x in 11 to 22)
+				parentmob.targeted_organ = "head"
+				switch(icon_y)
+					if(48 to 52)
+						if(icon_x in 13 to 20)
+							parentmob.targeted_organ = "mouth"
+					if(53 to 55) //Eyeline, eyes are on 15 and 17
+						if(icon_x in 14 to 19)
+							parentmob.targeted_organ = "eyes"
+	if (old_selecting != parentmob.targeted_organ)
+		update_icon()
+
+	selecting = parentmob.targeted_organ
+	parentmob.HUDneed["random damage zone"].update_icon()
+	return TRUE
+
+/obj/screen/zone_sel3/New()
+	..()
+	update_icon()
+
+/obj/screen/zone_sel3/update_icon()
+	overlays.Cut()
+	overlays += image('icons/mob/screen/zone_sel_fof.dmi', "[parentmob.targeted_organ]")
+//--------------------------------------------------ZONE SELECT END---------------------------------------------------------
+//--------------------------------------------------RANDOM ZONE SELECT---------------------------------------------------------
+/obj/screen/zone_sel_random
+	name = "random damage zone"
+	icon_state = "random"
+	var/previous_s = ""
+
+/obj/screen/zone_sel_random/Click(location, control,params)
+	if (parentmob.targeted_organ == "random" && previous_s != "")
+		parentmob.targeted_organ = previous_s
+	else
+		previous_s = parentmob.targeted_organ
+		parentmob.targeted_organ = "random"
+	update_icon()
+	return TRUE
+
+/obj/screen/zone_sel_random/New()
+	..()
+	update_icon()
+
+/obj/screen/zone_sel_random/update_icon()
+	if (parentmob.targeted_organ == "random")
+		icon_state = "random_on"
+	else
+		icon_state = "random"
+//--------------------------------------------------RANDOM ZONE SELECT END---------------------------------------------------------
 /obj/screen/text
 	icon = null
 	icon_state = null
@@ -216,6 +418,10 @@
 
 /obj/screen/storage
 	name = "storage"
+
+/obj/screen/storage/New()
+	icon = usr.client.prefs.UI_file
+	..()
 
 /obj/screen/storage/Click()
 	if (!usr.canClick())
@@ -291,21 +497,7 @@
 	var/mob/living/carbon/human/H = parentmob
 	overlays.Cut()
 	if (parentmob.stat != DEAD)
-/*
-		if (istype(H) && H.analgesic > 100)
-			icon_state = "health0"
-		else
-			switch(100 - ((parentmob:species.flags & NO_PAIN) ? FALSE : parentmob:traumatic_shock))
-				if (100 to INFINITY)		icon_state = "health0"
-				if (80 to 100)			icon_state = "health1"
-				if (60 to 80)			icon_state = "health2"
-				if (40 to 60)			icon_state = "health3"
-				if (20 to 40)			icon_state = "health4"
-				if (0 to 20)				icon_state = "health5"
-				else					icon_state = "health6"
-	else
-		icon_state = "health7"
-*/
+
 		icon_state = "healthdoll_BASE"
 		for(var/X in H.organs)
 			var/obj/item/organ/external/BP = X
@@ -333,17 +525,12 @@
 		var/mob/living/carbon/human/X = parentmob
 		X.exam_self()
 
-/*/obj/screen/health/New()
-	if (usr.client)
-		usr.client.screen += src
-		parentmob = usr
-*/
 //--------------------------------------------------health end---------------------------------------------------------
 
 //--------------------------------------------------nutrition---------------------------------------------------------
 /obj/screen/nutrition
 	name = "nutrition"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "nutrition1"
 	screen_loc = "15,6"
 	process_flag = TRUE
@@ -388,7 +575,7 @@
 //--------------------------------------------------bodytemp---------------------------------------------------------
 /obj/screen/bodytemp
 	name = "body temperature"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "temp0"
 	screen_loc = "15,9"
 	process_flag = TRUE
@@ -434,7 +621,7 @@
 
 /obj/screen/pull
 	name = "pull"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "pull0"
 	screen_loc = "14,2"
 
@@ -454,7 +641,7 @@
 //-----------------------throw------------------------------
 /obj/screen/HUDthrow
 	name = "throw"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_throw_off"
 	screen_loc = "15,2"
 
@@ -480,7 +667,7 @@
 //-----------------------drop------------------------------
 /obj/screen/drop
 	name = "drop"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_drop"
 	screen_loc = "15:-16,2"
 
@@ -492,7 +679,7 @@
 //-----------------------resist------------------------------
 /obj/screen/resist
 	name = "resist"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_resist"
 	screen_loc = "14:16,2"
 
@@ -501,18 +688,44 @@
 		var/mob/living/L = parentmob
 		L.resist()
 //-----------------------resist END------------------------------
+/obj/screen/fixeye
+	name = "fixeye"
+	icon_state = "fixeye"
+	screen_loc = "19,8"
 
+/obj/screen/fixeye/New()
+	..()
+	update_icon()
+
+/obj/screen/fixeye/update_icon()
+	var/mob/living/carbon/human/L = parentmob
+	if (!L.facing_dir)
+		icon_state = "fixeye"
+	else
+		icon_state = "fixeye_on"
+
+/obj/screen/fixeye/Click()
+	if (isliving(parentmob))
+		var/mob/living/carbon/human/L = parentmob
+
+		L.set_face_dir()
+
+		if (!L.facing_dir)
+			L << "You are now not facing anything."
+			icon_state = "fixeye"
+		else
+			L << "You are now facing [dir2text(L.facing_dir)]."
+			icon_state = "fixeye_on"
+		update_icon()
 
 /obj/screen/kick_jump_bite
 	name = "secondary attack"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "kick"
 	screen_loc = "11,2"
 
 /obj/screen/kick_jump_bite/Click()
 	if (isliving(parentmob))
-		var/mob/living/L = parentmob
-		L.resist()
 		switch (parentmob.middle_click_intent)
 			if("kick")
 				parentmob.middle_click_intent = "jump"
@@ -529,26 +742,61 @@
 				icon_state = "kick"
 				update_icon()
 				return
-/*
-/obj/screen/combat_mode
-	name = "combat mode"
-	icon = 'icons/mob/screen/1713Style.dmi'
-	icon_state = "act_resist"
-	screen_loc = "14:16,2"
 
-/obj/screen/combat_mode/Click()
-	if(!ishuman(usr))	return
-	var/mob/living/carbon/human/C = usr
-	if(C.combat_mode)
-		C.combat_mode = 0
-		C.combat_icon.icon_state = "combat0"
-	else
-		C.combat_mode = 1
-		C.combat_icon.icon_state = "combat1"
-*/
+
+obj/screen/tactic
+	name = "tactic"
+
+	icon_state = "charge"
+	screen_loc = "19,4"
+
+/obj/screen/tactic/New()
+	..()
+	update_icon()
+/obj/screen/tactic/Click()
+	if (isliving(parentmob))
+		switch (parentmob.tactic)
+			if("charge") //10% damage buff
+				parentmob.tactic = "aim"
+				icon_state = "aim"
+				parentmob << "<span class='warning'>You will now focus on aiming.</span>"
+				update_icon()
+				return
+			if("aim") //10% accuracy buff
+				parentmob.tactic = "rush"
+				icon_state = "rush"
+				parentmob << "<span class='warning'>You will now focus on rushing.</span>"
+				update_icon()
+				return
+			if("rush") // 15% cooldown buff
+				parentmob.tactic = "defend"
+				icon_state = "defend"
+				parentmob << "<span class='warning'>You will now focus on defending.</span>"
+				update_icon()
+				return
+			if("defend") //20% dodge/parry buff
+				parentmob.tactic = "charge"
+				icon_state = "charge"
+				parentmob << "<span class='warning'>You will now focus on charging.</span>"
+				update_icon()
+				return
+
+/obj/screen/tactic/update_icon()
+	if (parentmob.tactic == "charge")
+		icon_state = "charge"
+
+	else if (parentmob.tactic == "aim")
+		icon_state = "aim"
+
+	else if (parentmob.tactic == "rush")
+		icon_state = "rush"
+
+	else if (parentmob.tactic == "defend")
+		icon_state = "defend"
+
 /obj/screen/mood
 	name = "mood"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "mood1"
 	screen_loc = "15,8"
 	process_flag = TRUE
@@ -587,7 +835,7 @@
 //-----------------------mov_intent------------------------------
 /obj/screen/mov_intent
 	name = "mov_intent"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "walk"
 	screen_loc = "14,1"
 
@@ -654,7 +902,7 @@
 //-----------------------mov_intent END------------------------------
 /obj/screen/equip
 	name = "equip"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "act_equip"
 	screen_loc = "8,2"
 
@@ -665,7 +913,7 @@
 //-----------------------swap------------------------------
 /obj/screen/swap
 	name = "swap hand"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "swap-l"
 
 /obj/screen/swap/New()
@@ -678,7 +926,7 @@
 //-----------------------intent------------------------------
 /obj/screen/intent
 	name = "intent"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "help"
 	screen_loc = "8,2"
 
@@ -704,7 +952,7 @@
 //-----------------------mode------------------------------
 /obj/screen/mode
 	name = "mode"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "dodge"
 	screen_loc = "11,1"
 //	process_flag = TRUE
@@ -734,7 +982,7 @@
 
 /obj/screen/fastintent
 	name = "fastintent"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 //update in a_intent_change, because macro
 /*/obj/screen/fastintent/Click()
 	if (parentmob.HUDneed.Find("intent"))
@@ -826,6 +1074,7 @@
 		underlays += global_hud.druggy
 
 /obj/screen/full_1_tile_overlay
+	icon = 'icons/mob/screen/effects.dmi'
 	name = "full_1_tile_overlay"
 	icon_state = "blank"
 	layer = 21
@@ -835,7 +1084,7 @@
 	icon = 'icons/mob/screen1_full.dmi'
 	icon_state = "oxydamageoverlay0"
 	name = "dmg"
-	screen_loc = "1,1"
+	screen_loc = "4,1"
 	mouse_opacity = FALSE
 	process_flag = TRUE
 	layer = 17 //The black screen overlay sets layer to 18 to display it, this one has to be just on top.
@@ -940,11 +1189,35 @@
 	icon_state = _icon_state
 	dir = _dir
 
+////////////Screen effects/////////////////////////
+/obj/screen/noise
+	icon = 'icons/effects/static.dmi'
+	icon_state = "1 moderate"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	layer = 17
+	alpha = 127
+
+/obj/screen/scanline
+	icon = 'icons/effects/static.dmi'
+	icon_state = "scanlines"
+	screen_loc = "WEST,SOUTH to EAST,NORTH"
+	alpha = 50
+	layer = 17
+
+/obj/screen/fishbed
+	icon = 'icons/mob/screen1_full.dmi'
+	icon_state = "fishbed"
+	layer = 17
+
+/obj/screen/cover
+	icon = 'icons/mob/screenlimit.dmi'
+	icon_state = "cover"
+	layer = 18
 
 //-----------------------Gun Mod------------------------------
 /obj/screen/gun
 	name = "gun"
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	master = null
 	dir = 2
 
@@ -1028,7 +1301,7 @@
 
 //-----------------------toggle_inventory------------------------------
 /obj/screen/toggle_inventory
-	icon = 'icons/mob/screen/1713Style.dmi'
+
 	icon_state = "b-open"
 	name = "toggle inventory"
 	screen_loc = "1,0"
@@ -1066,7 +1339,7 @@
 	icon = 'icons/mob/hide.dmi'
 	icon_state = "combat"
 	name = " "
-	screen_loc = "1,1"
+	screen_loc = "4,1"
 	mouse_opacity = FALSE
 	layer = 18
 	process_flag = TRUE

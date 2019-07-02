@@ -176,6 +176,35 @@
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
 
+/obj/structure/vending/japaneseapparel_ww2
+	name = "Imperial Japanese Army apparel rack"
+	desc = "Basic wear for soldiers of the Imperial Japanese Army."
+	icon_state = "apparel_japan_ww2"
+	products = list(
+		/obj/item/clothing/shoes/heavyboots/wrappedboots = 15,
+		/obj/item/clothing/under/ww2/japuni = 15,
+		/obj/item/clothing/suit/storage/coat/ww2/japcoat = 15,
+		/obj/item/clothing/head/ww2/japcap = 15,
+		/obj/item/clothing/head/helmet/ww2/japhelm = 15,
+		/obj/item/clothing/head/ww2/jap_headband = 10,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
+	)
+obj/structure/vending/japweapons_ww2
+	name = "Japanese Weapon rack"
+	desc = "A rack of war equipment."
+	icon_state = "equipment_japan"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/arisaka38 = 15,
+		/obj/item/weapon/gun/projectile/boltaction/arisaka99 = 5,
+		/obj/item/ammo_magazine/arisakabox = 5,
+		/obj/item/ammo_magazine/arisaka = 50,
+		/obj/item/ammo_magazine/arisaka99 = 40,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+
 /obj/structure/vending/russianapparel
 	name = "Russian Army apparel rack"
 	desc = "Basic wear for russian soldiers."
@@ -351,4 +380,33 @@ obj/structure/vending/sofammo
 		/obj/item/ammo_magazine/dp = 10,
 		/obj/item/ammo_magazine/c762x38mmR = 10,
 		/obj/item/ammo_magazine/tt30 = 10,
+	)
+
+obj/structure/vending/idfammo
+	name = "IDF ammunition crates"
+	desc = "ammunition and attachments for the Israeli Defense Forces."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/m16 = 50,
+		/obj/item/ammo_magazine/negev = 10,
+		/obj/item/ammo_magazine/jericho = 50,
+		/obj/item/ammo_magazine/m24 = 50,
+		/obj/item/weapon/grenade/coldwar/m67= 20,
+		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
+		/obj/item/weapon/grenade/flashbang/m84 = 20,
+//		/obj/item/weapon/grenade/incendiary = 20,
+	)
+
+obj/structure/vending/hezammo
+	name = "Hezbollah ammunition crates"
+	desc = "ammunition and attachments for the Hezbollah armed forces."
+	icon_state = "ammo_crates"
+	products = list(
+		/obj/item/ammo_magazine/ak47 = 50,
+		/obj/item/ammo_magazine/ak74 = 50,
+		/obj/item/ammo_magazine/tt30 = 50,
+		/obj/item/ammo_magazine/mosin = 50,
+		/obj/item/ammo_magazine/pkm/c100 = 10,
+		/obj/item/weapon/grenade/coldwar/m26= 20,
+		/obj/item/weapon/grenade/smokebomb/m18smoke = 20,
 	)

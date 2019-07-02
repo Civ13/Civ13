@@ -15,7 +15,7 @@
 			near_rainy_area = TRUE
 			rdist = 0
 		else
-			for (var/turf/T in view(world.view, src))
+			for (var/turf/T in view(7, src))
 				var/area/T_area = get_area(T)
 				if (T_area.weather == WEATHER_RAIN)
 					near_rainy_area = TRUE
@@ -168,16 +168,6 @@
 	if (stat == DEAD)
 		return
 
-/*	if (eye_blind)
-		blind.alpha = 255
-	else
-		blind.alpha = FALSE
-		if (disabilities & NEARSIGHTED)
-			client.screen += global_hud.vimpaired
-		if (eye_blurry)
-			client.screen += global_hud.blurry
-		if (druggy)
-			client.screen += global_hud.druggy*/
 	if (using_object)
 		var/viewflags = using_object.check_eye(src)
 		if (viewflags < 0)

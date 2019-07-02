@@ -34,11 +34,11 @@
 		icon_state = "closed"
 	else
 		icon_state = "open"
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 
 /obj/structure/curtain/Destroy()
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
 

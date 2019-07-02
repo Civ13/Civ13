@@ -33,6 +33,10 @@
 		fuel += I.amount
 		qdel(I)
 		return
+	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
+		fuel += 0.5
+		qdel(I)
+		return
 	else if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
 		if (istype(I, /obj/item/weapon/wrench))
 			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
@@ -132,6 +136,12 @@
 				qdel(I)
 			else if (istype(I, /obj/item/stack/ore/tin))
 				var/obj/item/stack/material/tin/NO = new/obj/item/stack/material/tin(src)
+				NO.amount = I.amount
+				contents += NO
+				contents -= I
+				qdel(I)
+			else if (istype(I, /obj/item/stack/ore/lead))
+				var/obj/item/stack/material/lead/NO = new/obj/item/stack/material/lead(src)
 				NO.amount = I.amount
 				contents += NO
 				contents -= I
@@ -300,6 +310,10 @@
 				fuel += I.amount
 				qdel(I)
 				return
+			else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/poo))
+				fuel += 0.5
+				qdel(I)
+				return
 			else if (istype(I, /obj/item/stack/ore/coal))
 				fuel += I.amount*3
 				qdel(I)
@@ -332,7 +346,7 @@
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
 				fuel += 1
-				H << "You break \the [MT] and put it into the [src], using it as fuel."
+				H << "You break \the [MT] and put it into the [src], refueling it."
 				qdel(I)
 			else if (MT.get_material_name() == "bronze")
 				H << "You smelt \the [MT] into bronze ingots."
@@ -354,6 +368,12 @@
 				H << "You smelt \the [MT] into steel sheets."
 				new/obj/item/stack/material/steel(src.loc)
 				qdel(I)
+		else if (istype(I, /obj/item) && I.basematerials.len)
+			H << "You put \the [I] into \the [src] to recycle it."
+			if (I.basematerials[1] == "tin")
+				tin += I.basematerials[2]
+			qdel(I)
+
 		else
 			..()
 	else
@@ -385,7 +405,14 @@
 		newbronze.amount = min(tin,copper)*3
 		tin -= amountconsumed
 		copper -= amountconsumed
-
+	else if (tin == 0 && copper > 0)
+		var/obj/item/stack/material/copper/newcopper = new/obj/item/stack/material/copper(src.loc)
+		newcopper.amount = copper
+		copper = 0
+	else if (tin > 0 && copper == 0)
+		var/obj/item/stack/material/tin/newtin = new/obj/item/stack/material/tin(src.loc)
+		newtin.amount = tin
+		tin = 0
 /obj/structure/furnace/verb/empty()
 	set category = null
 	set name = "Empty"

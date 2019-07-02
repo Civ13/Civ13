@@ -7,15 +7,15 @@
 		var/msg_hygiene = ""
 		switch(mood)
 			if(-5000000 to 20)
-				msg = "My mood is horrible!"
+				msg = "Your mood is horrible!"
 			if(20 to 40)
-				msg = "My mood is bad."
+				msg = "Your mood is bad."
 			if(40 to 60)
-				msg = "My mood is neutral."
+				msg = "Your mood is neutral."
 			if(60 to 80)
-				msg = "My mood is good."
+				msg = "Your mood is good."
 			if(80 to 10000)
-				msg = "My mood is excellent!"
+				msg = "Your mood is excellent!"
 		switch(hygiene)
 			if(HYGIENE_LEVEL_CLEAN to INFINITY)
 				msg_hygiene = "You feel very clean!"
@@ -25,9 +25,11 @@
 				msg_hygiene = "You feel a bit dirty."
 			if(0 to HYGIENE_LEVEL_DIRTY)
 				msg_hygiene = "You feel very dirty!"
-
+		H << "<span class='info'>*---------*</span>"
 		H << "<span class='info'>[msg]</span>"
 		H << "<span class='info'>[msg_hygiene]</span>"
+		H.print_excrement()
+		H << "<span class='info'>*---------*</span>"
 		return
 /mob/living/carbon/human/proc/handle_ptsd()
 	if (ptsd > 100)

@@ -153,11 +153,18 @@
 	required_reagents = list("acetone" = 1, "carbon" = 1, "sugar" = 1)
 	result_amount = 3
 
+/datum/chemical_reaction/penicillin
+	name = "Penicillin"
+	id = "penicillin"
+	result = "penicillin"
+	required_reagents = list("yeast" = 10, "acetone" = 1)
+	result_amount = 5
+
 /datum/chemical_reaction/tramadol
 	name = "Tramadol"
 	id = "tramadol"
 	result = "tramadol"
-	required_reagents = list("" = 1, "ethanol" = 1, "acetone" = 1)
+	required_reagents = list("opium" = 1, "ethanol" = 1, "acetone" = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/oxycodone
@@ -211,6 +218,50 @@
 	required_reagents = list("lithium" = 1, "hydrazine" = 1)
 	result_amount = TRUE
 
+/datum/chemical_reaction/hclacid
+	name = "Hydrochloric Acid"
+	id = "hclacid"
+	result = "hclacid"
+	required_reagents = list("hydrogen_chloride" = 1, "water" = 5)
+	result_amount = 5
+
+
+/datum/chemical_reaction/ammonia
+	name = "Ammonia"
+	id = "ammonia"
+	result = "ammonia"
+	required_reagents = list("nitrogen" = 1, "hydrogen" = 3)
+	result_amount = 1
+
+/datum/chemical_reaction/acetone
+	name = "Acetone"
+	id = "acetone"
+	result = "acetone"
+	required_reagents = list("carbon" = 1, "ethanol" = 2)
+	result_amount = 1
+
+/datum/chemical_reaction/salt
+	name = "Table Salt"
+	id = "sodiumchloride"
+	result = "sodiumchloride"
+	required_reagents = list("sodium" = 1, "chlorine" = 1)
+	result_amount = 1
+
+/datum/chemical_reaction/hydrogen_chloride
+	name = "Hydrogen Chloride"
+	id = "hydrogen_chloride"
+	result = "hydrogen_chloride"
+	required_reagents = list("hydrogen" = 1, "chlorine" = 1)
+	result_amount = 1
+
+/datum/chemical_reaction/water
+	name = "Water"
+	id = "water"
+	result = "water"
+	required_reagents = list("oxygen" = 1, "hydrogen" = 1)
+	result_amount = 1
+
+
 /datum/chemical_reaction/glycerol
 	name = "Glycerol"
 	id = "glycerol"
@@ -223,6 +274,84 @@
 	id = "sodiumchloride"
 	result = "sodiumchloride"
 	required_reagents = list("sodium" = 1, "hclacid" = 1)
+	result_amount = 2
+
+/datum/chemical_reaction/aspirin
+	name = "Aspirin"
+	id = "aspirin"
+	result = "aspirin"
+	required_reagents = list("carbon" =5, "hydrogen" = 4, "oxygen" = 2 )
+	result_amount = 5
+
+/datum/chemical_reaction/calcium_carbonate
+	name = "Calcium carbonate"
+	id = "calcium carbonate"
+	result = "calcium carbonate"
+	required_reagents = list("carbon" =1, "calcium" = 1, "oxygen" = 3 )
+	result_amount = 2
+
+/datum/chemical_reaction/carbon_dioxyde
+	name = "Carbon dioxyde"
+	id = "carbon_dioxyde"
+	result = "carbon_dioxyde"
+	required_reagents = list("carbon" =1,  "oxygen" = 2 )
+	result_amount = 2
+
+
+/datum/chemical_reaction/sulphuric_acid
+	name = "Sulphuric acid"
+	id = "sacid"
+	result = "sacid"
+	required_reagents = list("sulfur" =1, "oxygen" = 1, "hydrogen" = 1 )
+	result_amount = 2
+
+/datum/chemical_reaction/saline_glucose
+	name = "Saline Glucose solution"
+	id = "saline_glucose"
+	result = "saline_glucose"
+	required_reagents = list("sodium_clorhide" =1, "water" = 1, "sugar" = 1 )
+	result_amount = 2
+
+/datum/chemical_reaction/aqua_regia
+	name = "Aqua regia"
+	id = "aqua_regia"
+	result = "aqua_regia"
+	required_reagents = list("nitric_acid" =1, "clorhydric_acid" = 3, )
+	result_amount = 2
+
+/datum/chemical_reaction/nitric_acid
+	name = "Nitric acid"
+	id = "nitric_acid"
+	result = "nitric_acid"
+	required_reagents = list("nitrogen" =2, "oxygen" =5, "water" = 3 )
+	result_amount = 4
+
+/datum/chemical_reaction/clorhydric_acid
+	name = "Clorhydric acid"
+	id = "clorhydric_acid"
+	result = "clorhydric_acid"
+	required_reagents = list("hydrogen" =1, "chlorine" = 1 )
+	result_amount = 1
+
+/datum/chemical_reaction/baking_soda
+	name = "Baking soda"
+	id = "baking_soda"
+	result = "baking_soda"
+	required_reagents = list("carbon_dioxide" =1, "ammonia" = 1, "sodium_chloride" = 2 )
+	result_amount = 2
+
+/datum/chemical_reaction/bleach
+	name = "Bleach"
+	id = "bleach"
+	result = "bleach"
+	required_reagents = list("sodium_hypochlorite" =1, "water" = 9)
+	result_amount = 10
+
+/datum/chemical_reaction/sodium_hypochlorite
+	name = "Sodium hypochlorite"
+	id = "sodium_hypochlorite"
+	result = "sodium_hypochlorite"
+	required_reagents = list("potassium" =1, "oxygen" = 1, "chlorine" = 1 )
 	result_amount = 2
 
 /datum/chemical_reaction/condensedcapsaicin
@@ -252,7 +381,7 @@
 	name = "Paroxetine"
 	id = "paroxetine"
 	result = "paroxetine"
-	required_reagents = list("mindbreaker" = 1, "acetone" = 1, "" = 1)
+	required_reagents = list("mindbreaker" = 1, "acetone" = 1)
 	result_amount = 3
 
 /* Grenade reactions */
@@ -346,7 +475,7 @@
 	name = "Napalm"
 	id = "napalm"
 	result = null
-	required_reagents = list("aluminum" = 1, "tungsten" = 1, "sacid" = 1 )
+	required_reagents = list("gasoline" = 1, "cotton" = 1)
 	result_amount = TRUE
 
 /datum/chemical_reaction/napalm/on_reaction(var/datum/reagents/holder, var/created_volume)

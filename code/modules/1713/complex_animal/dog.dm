@@ -385,7 +385,7 @@ s
 
 				var/dist = abs_dist(H, src)
 				var/maxdist = 13
-				if (!locate(H) in view(world.view, src) && dist <= maxdist)
+				if (!locate(H) in view(7, src) && dist <= maxdist)
 					if (prob(5) && world.time >= next_bork)
 						visible_message("<span class = 'danger'>\The [src] starts barking! It smells an enemy!</span>")
 						if (prob(50))

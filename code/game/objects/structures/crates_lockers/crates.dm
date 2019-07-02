@@ -117,3 +117,10 @@
 				S.forceMove(src)
 				break
 	return
+
+/obj/structure/closet/crate/lead
+	name = "lead safe"
+	desc = "A large lead safe, good to store radioactive things."
+	icon_state = "largermetal"
+	icon_opened = "largermetal"
+	icon_closed = "largermetal"

@@ -4,9 +4,9 @@
 #define HUMAN_MAX_OXYLOSS TRUE //Defines how much oxyloss humans can get per tick. A tile with no air at all (such as space) applies this value, otherwise it's a percentage of it.
 #define HUMAN_CRIT_MAX_OXYLOSS ( 2.0 / 6) //The amount of damage you'll get when in critical condition. We want this to be a 5 minute deal = 300s. There are 50HP to get through, so (1/6)*last_tick_duration per second. Breaths however only happen every 4 ticks. last_tick_duration = ~2.0 on average
 
-#define HEAT_DAMAGE_LEVEL_1 2 //Amount of damage applied when your body temperature just passes the 360.15k safety point
-#define HEAT_DAMAGE_LEVEL_2 4 //Amount of damage applied when your body temperature passes the 400K point
-#define HEAT_DAMAGE_LEVEL_3 8 //Amount of damage applied when your body temperature passes the 1000K point
+#define HEAT_DAMAGE_LEVEL_1 1 //Amount of damage applied when your body temperature just passes the 360.15k safety point
+#define HEAT_DAMAGE_LEVEL_2 2 //Amount of damage applied when your body temperature passes the 400K point
+#define HEAT_DAMAGE_LEVEL_3 4 //Amount of damage applied when your body temperature passes the 1000K point
 
 #define COLD_DAMAGE_LEVEL_1 2 //Amount of damage applied when your body temperature just passes the 260.15k safety point
 #define COLD_DAMAGE_LEVEL_2 4 //Amount of damage applied when your body temperature passes the 200K point
@@ -392,13 +392,16 @@
 		handle_shock()
 
 		handle_pain()
-		if (map.civilizations)
-			handle_hygiene()
 
-		handle_mood()
-
-		handle_ptsd()
-
+		if (!inducedSSD)
+			handle_excrement()
+			if (map.civilizations)
+				handle_hygiene()
+			handle_mood()
+			handle_ptsd()
+		if (!map.civilizations)
+			bowels = 0
+			bladder = 0
 		handle_medical_side_effects()
 		if (map.civilizations)
 			handle_hair_growth()
@@ -556,7 +559,7 @@
 				if ("semiarid")
 					loc_temp = 12
 				if ("desert")
-					loc_temp = 39
+					loc_temp = 34
 				if ("jungle")
 					loc_temp = 32
 				if ("savanna")
@@ -575,7 +578,7 @@
 				if ("semiarid")
 					loc_temp = 35
 				if ("desert")
-					loc_temp = 55
+					loc_temp = 50
 				if ("jungle")
 					loc_temp = 40
 				if ("savanna")
@@ -594,15 +597,15 @@
 				if ("semiarid")
 					loc_temp = 28
 				if ("desert")
-					loc_temp = 45
+					loc_temp = 40
 				if ("jungle")
 					loc_temp = 34
 				if ("savanna")
 					loc_temp = 29
 		if ("Dry Season")
-			loc_temp = 50
+			loc_temp = 45
 		if ("Wet Season")
-			loc_temp = 40
+			loc_temp = 30
 
 
 	switch (time_of_day)
@@ -1376,7 +1379,10 @@
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
 					if (map.ordinal_age >= 6)
-						holder2.icon_state = "isis_basic"
+						if (map.ID == MAP_ARAB_TOWN)
+							holder2.icon_state = "hez_basic"
+						else
+							holder2.icon_state = "isis_basic"
 					else
 						holder2.icon_state = "arab_basic"
 				if (GREEK)
@@ -1400,7 +1406,10 @@
 					else
 						holder2.icon_state = "ger3_basic"
 				if (AMERICAN)
-					holder2.icon_state = "us_basic"
+					if (map.ID == MAP_ARAB_TOWN)
+						holder2.icon_state = "idf_basic"
+					else
+						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
 				if (CIVILIAN)

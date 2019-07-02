@@ -5,6 +5,7 @@
 		verbs += /mob/living/carbon/human/proc/transfer_faction
 		verbs += /mob/living/carbon/human/proc/become_leader
 		verbs += /mob/living/carbon/human/proc/faction_list
+		verbs += /mob/living/carbon/human/proc/religion_list
 //	verbs += /mob/living/carbon/human/proc/create_company
 //	verbs += /mob/living/carbon/human/proc/transfer_company_stock
 /////////////FACTIONS////////////////////////////

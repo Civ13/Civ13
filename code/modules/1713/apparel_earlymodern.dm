@@ -5,7 +5,7 @@
 	item_state = "japboots"
 	worn_state = "japboots"
 	force = WEAPON_FORCE_WEAK
-	armor = list(melee = 15, arrow = 10, gun = FALSE, energy = 8, bomb = 15, bio = 10, rad = FALSE)
+	armor = list(melee = 15, arrow = 10, gun = FALSE, energy = 8, bomb = 15, bio = 10, rad = 25)
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 	cold_protection = FEET
@@ -111,7 +111,7 @@
 	worn_state = "japcoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
 
@@ -124,7 +124,7 @@
 	worn_state = "japcoat2"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
 
@@ -136,7 +136,7 @@
 	worn_state = "ruscoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
 
@@ -156,7 +156,7 @@
 	worn_state = "rusoffcoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
 
@@ -171,7 +171,7 @@
 	worn_state = "japvest"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	cold_protection = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 10, bomb = 10, bio = 10, rad = FALSE)
+	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 10, bomb = 10, bio = 10, rad = 15)
 	value = 10
 
 /obj/item/clothing/head/japcap
@@ -297,6 +297,35 @@
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/ammo_magazine/arisaka(src)
 	new /obj/item/weapon/attachment/bayonet/military(src)
+
+/obj/item/weapon/storage/belt/jap/ww2soldier
+/obj/item/weapon/storage/belt/jap/ww2soldier/New()
+	..()
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/ammo_magazine/arisaka99(src)
+	new /obj/item/weapon/attachment/bayonet/military(src)
+
+/obj/item/weapon/storage/belt/jap/ww2soldier100
+/obj/item/weapon/storage/belt/jap/ww2soldier100/New()
+	..()
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+	new /obj/item/ammo_magazine/type100(src)
+
+/obj/item/weapon/storage/belt/jap/ww2soldier99
+/obj/item/weapon/storage/belt/jap/ww2soldier99/New()
+	..()
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
+	new /obj/item/ammo_magazine/type99(src)
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -510,3 +539,9 @@
 /obj/item/weapon/storage/belt/smallpouches/green
 	icon_state = "smallpouches_green"
 	item_state = "smallpouches_green"
+
+
+/obj/item/weapon/storage/belt/smallpouches/green/bint
+/obj/item/weapon/storage/belt/smallpouches/green/bint/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)

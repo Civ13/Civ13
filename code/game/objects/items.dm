@@ -8,6 +8,8 @@
 	var/nodrop = FALSE
 	var/list/actions = list() //list of /datum/action's that this item has.
 	var/image/blood_overlay = null //this saves our blood splatter overlay, which will be processed not to go over the edges of the sprite
+	var/image/shit_overlay = null
+	var/image/piss_overlay = null
 	var/abstract = FALSE
 	var/r_speed = 1.0
 	var/health = null
@@ -72,6 +74,8 @@
 	// Weight variable
 	var/weight = 0
 	var/heavy = FALSE
+
+	var/list/basematerials = list()
 
 	var/equiptimer = 0 //if it takes some time to equip to a active hand (e.g. guns)
 /obj/item/equipped()
@@ -462,12 +466,21 @@ var/list/global/slot_flags_enumeration = list(
 	user.attack_log += "\[[time_stamp()]\]<font color='red'> Attacked [M.name] ([M.ckey]) with [name] (INTENT: [uppertext(user.a_intent)])</font>"
 	M.attack_log += "\[[time_stamp()]\]<font color='orange'> Attacked by [user.name] ([user.ckey]) with [name] (INTENT: [uppertext(user.a_intent)])</font>"
 	msg_admin_attack("[user.name] ([user.ckey]) attacked [M.name] ([M.ckey]) with [name] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)") //BS12 EDIT ALG
-	user.setClickCooldown(cooldownw)
+	if (user.tactic == "rush")
+		user.setClickCooldown(cooldownw*0.85)
+	else
+		user.setClickCooldown(cooldownw)
 	user.do_attack_animation(M)
 
 	add_fingerprint(user)
 
 	if (istype(H))
+		if (prob(80) && H != user)
+			for (var/mob/O in (viewers(M) - user - M))
+				O.show_message("<span class='warning'>[M] tried to stab [user] in the eyes but missed!</span>", TRUE)
+			M << "<span class='warning'>[user] tried to stab you in the eyes but missed!</span>"
+			user << "<span class='warning'>You tried to stab [M] in the eyes with [src] but missed!</span>"
+			return
 
 		var/obj/item/organ/eyes/eyes = H.internal_organs_by_name["eyes"]
 
@@ -506,10 +519,16 @@ var/list/global/slot_flags_enumeration = list(
 	. = ..()
 	if (blood_overlay)
 		overlays.Remove(blood_overlay)
+	if (shit_overlay)
+		overlays.Remove(shit_overlay)
+		shit_overlay = null
+	if (piss_overlay)
+		overlays.Remove(piss_overlay)
+		piss_overlay = null
 	if (istype(src, /obj/item/clothing/gloves))
 		var/obj/item/clothing/gloves/G = src
 		G.transfer_blood = FALSE
-
+	update_icon()
 /obj/item/reveal_blood()
 	if (was_bloodied/* && !fluorescent*/)
 	//	fluorescent = TRUE

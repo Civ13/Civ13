@@ -22,7 +22,14 @@
 /obj/structure/lamp/New()
 	..()
 	do_light()
-
+/obj/structure/lamp/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (istype(mover, /obj/item/projectile))
+		if (prob(80))
+			return TRUE
+		else
+			return FALSE
+	else
+		return ..()
 /obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/lightbulb) && !lamp_inside)
 		var/obj/item/lightbulb/L = W
@@ -211,7 +218,9 @@
 	icon_state = "lamppost_small"
 	powerneeded = 2
 	light_amt = 6
-
+/obj/structure/lamp/lamppost_small/alwayson
+	powerneeded = 0
+	on = TRUE
 /obj/structure/lamp/lamp_small
 	name = "small lightbulb"
 	desc = "A small lightbulb."

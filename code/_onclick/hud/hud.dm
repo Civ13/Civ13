@@ -10,7 +10,10 @@ var/list/global_huds = list(
 		global_hud.darkMask,
 		global_hud.nvg,
 		global_hud.thermal,
-		global_hud.fov,)
+		global_hud.fov,
+		global_hud.noise,
+		global_hud.fishbed,
+		)
 /*
 /datum/hud/var/obj/screen/grab_intent
 /datum/hud/var/obj/screen/hurt_intent
@@ -25,10 +28,13 @@ var/list/global_huds = list(
 	var/obj/screen/nvg
 	var/obj/screen/thermal
 	var/obj/screen/fov
+	var/obj/screen/fishbed
+	var/obj/screen/noise
+	var/obj/screen/cover
 
 /datum/global_hud/proc/setup_overlay(var/icon_state)
 	var/obj/screen/screen = new /obj/screen()
-	screen.screen_loc = "1,1"
+	screen.screen_loc = "4,1"
 	screen.icon = 'icons/mob/screen1_full.dmi'
 	screen.icon_state = icon_state
 	screen.layer = 17
@@ -40,6 +46,7 @@ var/list/global_huds = list(
 /datum/global_hud/New()
 	//420erryday psychedellic colours screen overlay for when you are high
 	druggy = new /obj/screen()
+	druggy.icon = 'icons/mob/screen/effects.dmi'
 	druggy.screen_loc = ui_entire_screen
 	druggy.icon_state = "druggy"
 	druggy.layer = 17
@@ -48,6 +55,7 @@ var/list/global_huds = list(
 
 	//that white blurry effect you get when you eyes are damaged
 	blurry = new /obj/screen()
+	blurry.icon = 'icons/mob/screen/effects.dmi'
 	blurry.screen_loc = ui_entire_screen
 	blurry.icon_state = "blurry"
 	blurry.layer = 17
@@ -58,6 +66,7 @@ var/list/global_huds = list(
 //	thermal = setup_overlay("thermal_hud")
 
 	nvg = new /obj/screen()
+	nvg.icon = 'icons/mob/screen/effects.dmi'
 	nvg.screen_loc = ui_entire_screen
 	nvg.icon_state = "nvg"
 	nvg.layer = 17
@@ -65,6 +74,7 @@ var/list/global_huds = list(
 	nvg.mouse_opacity = FALSE
 
 	thermal = new /obj/screen()
+	thermal.icon = 'icons/mob/screen/effects.dmi'
 	thermal.screen_loc = ui_entire_screen
 	thermal.icon_state = "thermal"
 	thermal.layer = 17
@@ -75,9 +85,13 @@ var/list/global_huds = list(
 	fov.icon = 'icons/mob/hide.dmi'
 	fov.icon_state = "combat"
 	fov.name = " "
-	fov.screen_loc = "1,1"
+	fov.screen_loc = "4,1"
 	fov.mouse_opacity = FALSE
 	fov.layer = 18
+
+	cover = new /obj/screen/cover()
+	noise = new /obj/screen/noise()
+	fishbed = new /obj/screen/fishbed()
 
 	var/obj/screen/O
 	var/i
@@ -113,17 +127,20 @@ var/list/global_huds = list(
 
 	for (i = TRUE, i <= 4, i++)
 		O = vimpaired[i]
+		O.icon = 'icons/mob/screen/effects.dmi'
 		O.icon_state = "dither50"
 		O.layer = 17
 		O.mouse_opacity = FALSE
 
 		O = darkMask[i]
+		O.icon = 'icons/mob/screen/effects.dmi'
 		O.icon_state = "dither50"
 		O.layer = 17
 		O.mouse_opacity = FALSE
 
 	for (i = 5, i <= 8, i++)
 		O = darkMask[i]
+		O.icon = 'icons/mob/screen/effects.dmi'
 		O.icon_state = "black"
 		O.layer = 17
 		O.mouse_opacity = FALSE
@@ -131,9 +148,9 @@ var/list/global_huds = list(
 /mob/proc/instantiate_hud(var/datum/hud/HUD, var/ui_style, var/ui_color, var/ui_alpha)
 	return
 
-//Triggered when F12 is pressed (Unless someone changed something in the DMF)
-/mob/verb/button_pressed_F12(var/full = FALSE as null)
-	set name = "F12"
+//Triggered when F11 is pressed (Unless someone changed something in the DMF)
+/mob/verb/button_pressed_F11(var/full = FALSE as null)
+	set name = "F11"
 	set hidden = TRUE
 
 	if (!hud_used)
