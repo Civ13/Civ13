@@ -350,11 +350,11 @@
 		if(33 to 48) //Chest and arms to shoulders
 			switch(icon_x)
 				if(4 to 10)
-					parentmob.targeted_organ = "l_arm"
+					parentmob.targeted_organ = "r_arm"
 				if(11 to 23)
 					parentmob.targeted_organ = "chest"
 				if(24 to 29)
-					parentmob.targeted_organ = "r_arm"
+					parentmob.targeted_organ = "l_arm"
 				else
 					return 1
 		if(49 to 60) //Head, but we need to check for eye or mouth
