@@ -20,6 +20,7 @@
 	var/healed_threshold = 1
 	var/oxygen_reserve = 6
 
+
 /obj/item/organ/brain/New()
 	..()
 	health = config.default_brain_health

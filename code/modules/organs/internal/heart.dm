@@ -12,9 +12,6 @@
 	w_class = 2
 	relative_size = 15
 	max_damage = 45
-	var/open
-	var/list/external_pump
-
 /obj/item/organ/heart/process()
 	if (owner)
 		handle_pulse()

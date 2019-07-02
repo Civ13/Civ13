@@ -96,60 +96,60 @@ mob/living/carbon/human/proc/custom_pain(var/message, var/flash_strength)
 		src << msg
 	next_pain_time = world.time + 100
 
-mob/living/carbon/human/proc/handle_pain()
-	if (stat >= 2) return
+/mob/living/carbon/human/proc/handle_pain()
+	// not when sleeping
 
-	if(world.time < next_pain_time)
+	if (species.flags & NO_PAIN) return
+
+	if (!has_pain) return
+
+	if (stat >= 2) return
+	if (analgesic > 70)
 		return
-	var/maxdam = 0
+	var/maxdam = FALSE
 	var/obj/item/organ/external/damaged_organ = null
-	for(var/obj/item/organ/external/E in organs)
+	for (var/obj/item/organ/external/E in organs)
+		if (E.status & (ORGAN_DEAD)) continue
 		var/dam = E.get_damage()
 		// make the choice of the organ depend on damage,
 		// but also sometimes use one of the less damaged ones
-		if(dam > maxdam && (maxdam == 0 || prob(70)) )
+		if (dam > maxdam && (maxdam == FALSE || prob(70)) )
 			damaged_organ = E
 			maxdam = dam
-	if(damaged_organ && chem_effects[CE_PAINKILLER] < maxdam)
-		if(maxdam > 10 && paralysis)
-			paralysis = max(0, paralysis - round(maxdam/10))
-		var/burning = damaged_organ.burn_dam > damaged_organ.brute_dam
-		var/msg
-		switch(maxdam)
-			if(1 to 10)
-				msg =  "Your [damaged_organ.name] [burning ? "burns" : "hurts"]."
-			if(11 to 90)
-				msg = "Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!"
-			if(91 to 10000)
-				msg = "OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!"
-		custom_pain(msg, maxdam, prob(10), damaged_organ, TRUE)
+	if (damaged_organ)
+		if (prob(30))
+			pain(damaged_organ.name, maxdam, FALSE)
+		damaged_organ.pain = maxdam
+
 	// Damage to internal organs hurts a lot.
-	for(var/obj/item/organ/I in internal_organs)
-		if(prob(1) && !(I.status & ORGAN_DEAD) && I.damage > 5)
+	for (var/obj/item/organ/I in internal_organs)
+		if (I.status & (ORGAN_DEAD)) continue
+		if (I.damage > 2) if (prob(2))
 			var/obj/item/organ/external/parent = get_organ(I.parent_organ)
-			var/pain = 10
-			var/message = "You feel a dull pain in your [parent.name]"
-			if(I.is_bruised())
-				pain = 25
-				message = "You feel a pain in your [parent.name]"
-			if(I.is_broken())
-				pain = 50
-				message = "You feel a sharp pain in your [parent.name]"
-			src.custom_pain(message, pain, affecting = parent)
+			custom_pain("You feel a sharp pain in your [parent.name]", TRUE)
 
+	var/toxDamageMessage = null
+	var/toxMessageProb = TRUE
+	switch(getToxLoss())
+		if (1 to 5)
+			toxMessageProb = TRUE
+			toxDamageMessage = "Your body stings slightly."
+		if (6 to 10)
+			toxMessageProb = 2
+			toxDamageMessage = "Your whole body hurts a little."
+		if (11 to 15)
+			toxMessageProb = 2
+			toxDamageMessage = "Your whole body hurts."
+		if (15 to 25)
+			toxMessageProb = 3
+			toxDamageMessage = "Your whole body hurts badly."
+		if (26 to INFINITY)
+			toxMessageProb = 5
+			toxDamageMessage = "Your body aches all over, it's driving you mad."
 
-	if(prob(1))
-		switch(getToxLoss())
-			if(5 to 17)
-				custom_pain("Your body stings slightly.", getToxLoss())
-			if(17 to 35)
-				custom_pain("Your body stings.", getToxLoss())
-			if(35 to 60)
-				custom_pain("Your body stings strongly.", getToxLoss())
-			if(60 to 100)
-				custom_pain("Your whole body hurts badly.", getToxLoss())
-			if(100 to INFINITY)
-				custom_pain("Your body aches all over, it's driving you mad.", getToxLoss())
+	if (toxDamageMessage && prob(toxMessageProb))
+		custom_pain(toxDamageMessage, getToxLoss() >= 15)
+
 
 /mob/living/carbon/human/proc/painchecks()
 	if (stat >= 2)
