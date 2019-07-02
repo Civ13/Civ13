@@ -69,7 +69,8 @@
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
 	var/atom/movable/applied_pressure
-
+	var/burn_ratio = 0
+	var/brute_ratio = 0
 	var/encased = ""
 	var/cavity_name = ""
 /obj/item/organ/external/New()
@@ -252,7 +253,7 @@
 	if(internal_organs && internal_organs.len && (cur_damage + damage_amt >= max_damage || (((sharp && damage_amt >= 5) || damage_amt >= 10) && prob(5))))
 		// Damage an internal organ
 		var/list/victims = list()
-		for(var/obj/item/organ/internal/I in internal_organs)
+		for(var/obj/item/organ/I in internal_organs)
 			if(I.damage < I.max_damage && prob(I.relative_size))
 				victims += I
 		if(!victims.len)
@@ -412,7 +413,7 @@ This function completely restores a damaged organ to perfect condition.
 	//Possibly trigger an internal wound, too.
 	var/local_damage = brute_dam + burn_dam + damage
 	if (damage > 15 && type != BURN && local_damage > 30 && prob(damage))
-		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15))
+		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15), src)
 		wounds += I
 		owner.custom_pain("You feel something rip in your [name]!", TRUE)
 
@@ -434,7 +435,7 @@ This function completely restores a damaged organ to perfect condition.
 	var/wound_type = get_wound_type(type, damage)
 
 	if (wound_type)
-		var/datum/wound/W = new wound_type(damage)
+		var/datum/wound/W = new wound_type(damage, src)
 
 		//Check whether we can add the wound to an existing wound
 		for (var/datum/wound/other in wounds)
@@ -677,6 +678,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (!(brute_dam+burn_dam) || !number_wounds)
 		disfigured = FALSE
 
+	damage = brute_dam + burn_dam
+
+	update_damage_ratios()
+
 //Returns TRUE if damage_state changed
 /obj/item/organ/external/proc/update_damstate()
 	var/n_is = damage_state_text()
@@ -817,6 +822,11 @@ Note that amputating the affected organ does in fact remove the infection from t
 /****************************************************
 			   HELPERS
 ****************************************************/
+
+/obj/item/organ/external/proc/update_damage_ratios()
+	var/limb_loss_threshold = max_damage
+	brute_ratio = brute_dam / (limb_loss_threshold * 2)
+	burn_ratio = burn_dam / (limb_loss_threshold * 2)
 
 /obj/item/organ/external/proc/is_stump()
 	return FALSE
