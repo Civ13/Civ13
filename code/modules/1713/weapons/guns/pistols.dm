@@ -4,7 +4,7 @@
 	move_delay = 1
 	fire_delay = 3
 	item_state = "pistol"
-	equiptimer = 5
+	equiptimer = 7
 	gun_safety = TRUE
 
 	accuracy_list = list(

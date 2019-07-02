@@ -188,12 +188,3 @@
 	var/list/all_bits = internal_organs|organs
 	for (var/obj/item/organ/O in all_bits)
 		O.set_dna(dna)
-
-/mob/living/proc/is_asystole()
-	return FALSE
-
-/mob/living/carbon/human/is_asystole()
-	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
-	if(!istype(heart) || !heart.is_working())
-		return TRUE
-	return FALSE
