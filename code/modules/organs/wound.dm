@@ -65,7 +65,7 @@
 		desc_list += V
 		damage_list += stages[V]
 
-	src.damage = damage
+	damage = _damage
 
 	// initialize with the appropriate stage
 	src.init_stage(damage)
