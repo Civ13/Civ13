@@ -252,7 +252,7 @@
 	if(internal_organs && internal_organs.len && (cur_damage + damage_amt >= max_damage || (((sharp && damage_amt >= 5) || damage_amt >= 10) && prob(5))))
 		// Damage an internal organ
 		var/list/victims = list()
-		for(var/obj/item/organ/internal/I in internal_organs)
+		for(var/obj/item/organ/I in internal_organs)
 			if(I.damage < I.max_damage && prob(I.relative_size))
 				victims += I
 		if(!victims.len)
