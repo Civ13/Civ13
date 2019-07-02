@@ -533,7 +533,13 @@
 			new/datum/stack_recipe("city street", /obj/structure/sign/painting2, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("sea sunset", /obj/structure/sign/painting3, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("valley", /obj/structure/sign/painting4, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("still life", /obj/structure/sign/painting5, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("still life", /obj/structure/sign/painting5, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("bird and blossom", /obj/structure/sign/painting6, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("pine on the shore", /obj/structure/sign/painting7, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("temple by the river", /obj/structure/sign/painting8, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("desert camp", /obj/structure/sign/painting9, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("barque at sea", /obj/structure/sign/painting10, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),))
+
 
 /material/rope/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()

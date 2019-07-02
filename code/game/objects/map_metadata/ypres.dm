@@ -26,7 +26,7 @@
 	faction1 = BRITISH
 	faction2 = GERMAN
 	songs = list(
-		"Yuki No Shingun:1" = 'sound/music/yuki_no_shingun.ogg')
+		"Argonnerwaldlied:1" = 'sound/music/argonnerwaldlied.ogg')
 
 /obj/map_metadata/ypres/New()
 	..()
