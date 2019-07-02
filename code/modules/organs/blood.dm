@@ -385,3 +385,12 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 	blood_volume = blood_volume * blood_volume_mod
 	return min(blood_volume, 100)
 
+
+/mob/living/carbon/human/proc/get_effective_blood_volume()
+	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
+	var/blood_volume = round((vessel.get_reagent_amount("blood")/species.blood_volume)*100)
+	if(!heart || (heart.pulse == PULSE_NONE && !(status_flags & FAKEDEATH)))
+		blood_volume *= 0.25
+	else
+		blood_volume *= max(0.3, (1-(heart.damage / heart.max_damage)))
+	return blood_volume
