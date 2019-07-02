@@ -19,7 +19,7 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
-	equiptimer = 5
+	equiptimer = 7
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(

@@ -61,37 +61,6 @@
 				if (stat != DEAD)
 					src << "<span class='notice'>You feel a breath of fresh air enter your lungs. It feels good.</span>"
 				H << "<span class='warning'>Repeat at least every 7 seconds.</span>"
-				if(is_asystole())
-					if(prob(5/H.getStatCoeff("medical")))
-						var/obj/item/organ/external/chest = get_organ("chest")
-						if(chest)
-							chest.fracture()
-
-					var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
-					if(heart)
-						heart.external_pump = list(world.time, 0.4 + 0.1*H.getStatCoeff("medical") + rand(-0.1,0.1))
-
-					if(stat != DEAD && prob(10 + 5 * H.getStatCoeff("medical")))
-						resuscitate()
-
-				if(!H.check_has_mouth())
-					to_chat(H, "<span class='warning'>You don't have a mouth, you cannot do mouth-to-mouth resuscitation!</span>")
-					return
-				if(!check_has_mouth())
-					to_chat(H, "<span class='warning'>They don't have a mouth, you cannot do mouth-to-mouth resuscitation!</span>")
-					return
-				if((H.head && (H.head.body_parts_covered & FACE)) || (H.wear_mask && (H.wear_mask.body_parts_covered & FACE)))
-					to_chat(H, "<span class='warning'>You need to remove your mouth covering for mouth-to-mouth resuscitation!</span>")
-					return 0
-				if((head && (head.body_parts_covered & FACE)) || (wear_mask && (wear_mask.body_parts_covered & FACE)))
-					to_chat(H, "<span class='warning'>You need to remove \the [src]'s mouth covering for mouth-to-mouth resuscitation!</span>")
-					return 0
-				if (!H.internal_organs_by_name["lungs"])
-					to_chat(H, "<span class='danger'>You need lungs for mouth-to-mouth resuscitation!</span>")
-					return
-				var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
-				if(L)
-					to_chat(src, "<span class='notice'>You feel a breath of fresh air enter your lungs. It feels good.</span>")
 
 			else
 				help_shake_act(M)
@@ -316,25 +285,6 @@
 			playsound(loc, 'sound/weapons/punchmiss.ogg', 25, TRUE, -1)
 			visible_message("<span class = 'red'><b>[M] attempted to disarm [src]!</b></span>")
 	return
-/mob/living/carbon/human/proc/resuscitate()
-	if(!is_asystole())
-		return
-	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
-	if(istype(heart) && !(heart.status & ORGAN_DEAD))
-		var/active_breaths = 0
-		var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
-		if(L)
-			active_breaths = L.active_breathing
-		if(active_breaths)
-			visible_message("\The [src] jerks and gasps for breath!")
-		else
-			visible_message("\The [src] twitches a bit as \his heart restarts!")
-		shock_stage = min(shock_stage, 100) // 120 is the point at which the heart stops.
-		if(getOxyLoss() >= 75)
-			setOxyLoss(75)
-		heart.pulse = PULSE_NORM
-		heart.handle_pulse()
-		return TRUE
 
 /mob/living/carbon/human/proc/afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, inrange, params)
 	return

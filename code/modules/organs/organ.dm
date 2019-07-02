@@ -345,5 +345,5 @@ var/list/organ_cache = list()
 /obj/item/organ/external/stump/is_usable()
 	return 0
 
-/obj/item/organ/is_usable()
+/obj/item/organ/internal/is_usable()
 	return ..() && !is_broken()
