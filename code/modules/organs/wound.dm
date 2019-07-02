@@ -288,6 +288,18 @@
 					return /datum/wound/burn/large
 				if(0 to 15)
 					return /datum/wound/burn/moderate
+		if(SHATTER)
+			switch(damage)
+				if(50 to INFINITY)
+					return /datum/wound/shatter/smashed
+				if(40 to 50)
+					return /datum/wound/shatter/wide
+				if(30 to 40)
+					return /datum/wound/shatter/narrow
+				if(15 to 30)
+					return /datum/wound/shatter/cracked
+				if(0 to 15)
+					return /datum/wound/shatter/chipped
 	return null //no wound
 
 /** CUTS **/
@@ -434,3 +446,38 @@ datum/wound/puncture/massive
 
 /datum/wound/lost_limb/can_merge(var/datum/wound/other)
 	return FALSE //cannot be merged
+
+
+/** CRYSTALLINE WOUNDS **/
+/datum/wound/shatter
+	bleed_threshold = INFINITY
+	damage_type = SHATTER
+	max_bleeding_stage = -1
+
+/datum/wound/shatter/proc/close()
+	damage = 0
+	qdel(src)
+
+/datum/wound/shatter/bleeding()
+	return FALSE
+
+/datum/wound/shatter/can_autoheal()
+	return FALSE
+
+/datum/wound/shatter/infection_check()
+	return FALSE
+
+/datum/wound/shatter/smashed
+	stages = list("shattered hole" = 0)
+
+/datum/wound/shatter/wide
+	stages = list("gaping crack" = 0)
+
+/datum/wound/shatter/narrow
+	stages = list("wide crack" = 0)
+
+/datum/wound/shatter/cracked
+	stages = list("narrow crack" = 0)
+
+/datum/wound/shatter/chipped
+	stages = list("chip" = 0)
