@@ -20,6 +20,7 @@
 	var/healed_threshold = 1
 	var/oxygen_reserve = 6
 
+
 /obj/item/organ/brain/New()
 	..()
 	health = config.default_brain_health
@@ -106,9 +107,9 @@
 					to_chat(owner, "<span class='danger'>Your hand won't respond properly, and you drop what you are holding!</span>")
 					owner.drop_item()
 				if((damage >= (max_damage * 0.75)))
-					if(!owner.lying && prob(5))
+					if(!owner.lying && prob(2))
 						to_chat(owner, "<span class='danger'>You black out!</span>")
-					owner.Paralyse(10)
+						owner.Paralyse(10)
 
 		// Brain damage from low oxygenation or lack of blood.
 		// No heart? You are going to have a very bad time. Not 100% lethal because heart transplants should be a thing.
