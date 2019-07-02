@@ -243,16 +243,23 @@
 
 /obj/item/weapon/grenade/modern/stg1915
 	name = "M1915 Stielhandgranate"
-	desc = "A A German early XXth century design."
+	desc = "A German early XXth century design."
 	icon_state = "stgnade"
 	det_time = 45
 	throw_range = 10
 /obj/item/weapon/grenade/ww2/stg1924
 	name = "M1924 Stielhandgranate"
-	desc = "A A German design, to replace the M1915."
+	desc = "A German design, to replace the M1915."
 	icon_state = "stgnade"
 	det_time = 45
 	throw_range = 11
+
+/obj/item/weapon/grenade/ww2/rgd33
+	name = "RGD-33 grenade"
+	desc = "A Soviet fragmentation grenade."
+	icon_state = "rgd33"
+	det_time = 50
+	throw_range = 9
 
 /obj/item/weapon/grenade/ww2/mk2
 	name = "Mk2 grenade"
@@ -260,6 +267,20 @@
 	icon_state = "mk2"
 	det_time = 50
 	throw_range = 8
+
+/obj/item/weapon/grenade/ww2/type97
+	name = "Type-97 grenade"
+	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 5 seconds."
+	icon_state = "type97"
+	det_time = 50
+	throw_range = 10
+
+/obj/item/weapon/grenade/ww2/type91
+	name = "Type-91 grenade"
+	desc = "A japanese grenade introduced in the second sino-japanese war. Blows up at 8 seconds."
+	icon_state = "type91"
+	det_time = 80
+	throw_range = 10
 
 
 /obj/item/weapon/grenade/coldwar/m26
@@ -488,7 +509,7 @@
 	if (user)
 		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 
-	if (user.faction_text == ARAB)
+	if (user && user.faction_text == ARAB)
 		user.emote("charge")
 	active = TRUE
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)

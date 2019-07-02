@@ -212,7 +212,7 @@
 	. = 0
 
 	// objects that let in light: typechecks about 500 objects, need to optimize this
-	for (var/turf/T in view(world.view*3, src))
+	for (var/turf/T in view(7*3, src))
 		if (!T.density && !locate_opaque_type(T.contents, /atom))
 			var/area/T_area = get_area(T)
 			if (T_area.location == AREA_OUTSIDE)

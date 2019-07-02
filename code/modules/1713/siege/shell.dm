@@ -13,6 +13,13 @@
 	w_class = 4.0
 	value = 18
 
+/obj/item/cannon_ball/mortar_shell
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "mortar shell"
+	icon_state = "shell_mortar"
+	w_class = 4.0
+	value = 15
+
 /obj/item/cannon_ball/shell/gas/chlorine
 	reagent_payload = "chlorine_gas"
 	name = "Chlorine Shell"

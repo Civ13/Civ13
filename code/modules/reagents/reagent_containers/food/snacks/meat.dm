@@ -27,8 +27,9 @@
 	spawn(3000) //5 minutes
 		icon_state = "rottenmeat"
 		name = "rotten [name]"
-		reagents.remove_reagent("protein", 2)
-		reagents.add_reagent("food_poisoning", 1)
+		if (reagents)
+			reagents.remove_reagent("protein", 2)
+			reagents.add_reagent("food_poisoning", 1)
 		rotten = TRUE
 		satisfaction = -10
 		spawn(1000)

@@ -4,7 +4,7 @@
 	move_delay = 1
 	fire_delay = 3
 	item_state = "pistol"
-	equiptimer = 7
+	equiptimer = 5
 	gun_safety = TRUE
 
 	accuracy_list = list(
@@ -88,6 +88,27 @@
 		icon_state = "nambu0"
 	return
 
+/obj/item/weapon/gun/projectile/pistol/ww2/nambu
+	name = "Nambu Type 14"
+	desc = "Standard issue Japanese pistol. Chambered in 8mm nambu ammunition."
+	icon_state = "nambu_ww2"
+	w_class = 2
+	caliber = "c8mmnambu"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/c8mmnambu
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/c8mmnambu
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.94
+/obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "nambu_ww2"
+	else
+		icon_state = "nambu_ww20"
+	return
+
 /obj/item/weapon/gun/projectile/pistol/luger
 	name = "Luger P08"
 	desc = "A Luger P08 chambered in 9x19mm parabellum, german design."
@@ -107,6 +128,27 @@
 		icon_state = "luger"
 	else
 		icon_state = "luger0"
+	return
+
+/obj/item/weapon/gun/projectile/pistol/waltherp38
+	name = "Walther P38"
+	desc = "A Walther P38 chambered in 9x19mm parabellum, german design."
+	icon_state = "waltherp38"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/walther
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.96
+/obj/item/weapon/gun/projectile/pistol/waltherp38/update_icon()
+	..()
+	if (ammo_magazine)
+		icon_state = "waltherp38"
+	else
+		icon_state = "waltherp380"
 	return
 
 /obj/item/weapon/gun/projectile/pistol/mauser
@@ -167,6 +209,20 @@
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 1.02
 
+/obj/item/weapon/gun/projectile/pistol/tt30
+	name = "TT-30"
+	desc = "The standard issue pistol of the Soviet Union. Chambered in 7.62x25mm Tokarev."
+	icon_state = "tt30"
+	w_class = 2
+	caliber = "a765x25"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/tt30
+	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a765x25
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 0.98
+
 /obj/item/weapon/gun/projectile/pistol/m9beretta
 	name = "M9 Beretta"
 	desc = "The standard issue pistol of the US Army of the late 20th century. Chambered in 9mm Parabellum."
@@ -176,6 +232,20 @@
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
 	magazine_type = /obj/item/ammo_magazine/m9beretta
 	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.12
+
+/obj/item/weapon/gun/projectile/pistol/jericho941
+	name = "Jericho 941"
+	desc = "The standard issue pistol of the IDF of the late 20th century. Chambered in 9mm Parabellum."
+	icon_state = "jericho941"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/jericho
+	weight = 0.85
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS

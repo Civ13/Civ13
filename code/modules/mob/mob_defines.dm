@@ -116,8 +116,6 @@
 	var/obj/item/weapon/storage/s_active = null//Carbon
 	var/obj/item/clothing/mask/wear_mask = null//Carbon
 
-	var/mood_modifier = 0
-
 	var/datum/hud/hud_used = null
 
 	var/list/grab_list = list()
@@ -203,8 +201,6 @@
 
 	var/scrambling = FALSE //For crawling.
 	var/has_limbs = TRUE //Whether this mob have any limbs he can move with
-	var/bowels = FALSE //For pooping
-	var/bladder = FALSE //For pissing
 
 	var/roundUID = 0
 

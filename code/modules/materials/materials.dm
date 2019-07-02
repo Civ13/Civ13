@@ -322,6 +322,15 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
+/material/lead
+	name = "lead"
+	icon_colour = "#444f53"
+	stack_type = /obj/item/stack/material/lead
+	weight = 30
+	hardness = 35
+	sheet_singular_name = "ingot"
+	sheet_plural_name = "ingots"
+
 /material/silver
 	name = "silver"
 	stack_type = /obj/item/stack/material/silver
@@ -474,6 +483,12 @@ var/list/name_to_material
 	integrity = 55
 	name = "straw"
 //	icon_base = "straw"
+
+/material/wood/log
+	name = "log"
+	integrity = 175
+	hardness = 200
+	door_icon_base = "rustic"
 
 /material/paper
 	name = "paper"

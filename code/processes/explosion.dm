@@ -88,7 +88,7 @@
 	var/volume = 10 + (power * 20)
 
 	var/frequency = get_rand_frequency()
-	var/closedist = round(max_range + world.view - 2, 1)
+	var/closedist = round(max_range + 7 - 2, 1)
 
 	//Whether or not this explosion causes enough vibration to send sound or shockwaves through the station
 	var/vibration = TRUE
@@ -111,7 +111,7 @@
 
 					var/dist = get_dist(M_turf, epicenter)
 					if (reception == 2 && (M.ear_deaf <= 0 || !M.ear_deaf))//Dont play sounds to deaf people
-						// If inside the blast radius + world.view - 2
+						// If inside the blast radius + 7 - 2
 						if (dist <= closedist)
 							M.playsound_local(epicenter, get_sfx("explosion"), min(100, volume), TRUE, frequency, falloff = 5) // get_sfx() is so that everyone gets the same sound
 							//You hear a far explosion if you're outside the blast radius. Small bombs shouldn't be heard all over the station.

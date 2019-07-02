@@ -14,6 +14,7 @@ var/list/preferences_datums = list()
 	//game-preferences
 	var/ooccolor = "#010000"			//Whatever this is set to acts as 'reset' color and is thus unusable as an actual custom color
 	var/UI_style = "1713Style"
+	var/UI_file = 'icons/mob/screen/1713Style.dmi'
 	var/UI_useborder = FALSE
 	var/UI_style_color = "#FFFFFF"
 	var/UI_style_alpha = 255
@@ -321,8 +322,10 @@ var/list/preferences_datums = list()
 	if (ispath(preference))
 		var/datum/client_preference/cp = get_client_preference_by_type(preference)
 		preference = cp.key
-
-	return (preference in prefs.preferences_enabled)
+	if (prefs)
+		return (preference in prefs.preferences_enabled)
+	else
+		return FALSE
 
 /client/proc/set_preference(var/preference, var/set_preference)
 	var/datum/client_preference/cp

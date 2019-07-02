@@ -82,7 +82,7 @@
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
-		jamcheck += 0.25
+		jamcheck += 0.12
 
 	if (prob(jamcheck))
 		jammed_until = max(world.time + (jamcheck * 4), 45)
@@ -153,6 +153,25 @@
 	sel_mode = 1
 	effectiveness_mod = 1.05
 
+/obj/item/weapon/gun/projectile/submachinegun/type100
+	name = "Type-100"
+	desc = "A japanese submachinegun chambered in 8x22mm Nambu, with a 30 round magazine. The first japanese submachinegun produced."
+	icon_state = "type100"
+	item_state = "type100"
+	base_icon = "type100"
+	weight = 3.97
+	caliber = "c8mmnambu"
+	fire_sound = 'sound/weapons/mp40.ogg'
+	magazine_type = /obj/item/ammo_magazine/type100
+	full_auto = TRUE
+	equiptimer = 12
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.4, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+
+	sel_mode = 1
+	effectiveness_mod = 1.03
+
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
 	desc = "Soviet submachinegun with a very large drum magazine. Chambered in 7.62x25mm Tokarev."
@@ -207,6 +226,58 @@
 	effectiveness_mod = 1
 	sel_mode = 1
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms
+	name = "AKMS"
+	desc = "Soviet assault rifle chambered in 7.62x39mm. This is the modernized version with folding stock."
+	slot_flags = SLOT_BACK
+	icon_state = "akms"
+	item_state = "akms"
+	base_icon = "akms"
+	var/folded = FALSE
+	weight = 3
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/update_icon()
+	if (folded)
+		base_icon = "akms_folded"
+	else
+		base_icon = "akms"
+	if (ammo_magazine)
+		icon_state = base_icon
+		item_state = base_icon
+	else
+		icon_state = "[base_icon]_open"
+		item_state = "[base_icon]_open"
+	update_held_icon()
+
+	return
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/verb/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (folded)
+		folded = FALSE
+		base_icon = "akms"
+		usr << "You extend the stock on \the [src]."
+		equiptimer = 15
+		set_stock()
+		update_icon()
+	else
+		folded = TRUE
+		base_icon = "akms_folded"
+		usr << "You collapse the stock on \the [src]."
+		equiptimer = 7
+		set_stock()
+		update_icon()
+
+/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/proc/set_stock()
+	if (folded)
+		slot_flags = SLOT_BACK|SLOT_BELT
+		effectiveness_mod = 0.84
+	else
+		slot_flags = SLOT_BACK
+		effectiveness_mod = 1
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74
 	name = "AK-74"
@@ -466,6 +537,10 @@
 		SP.attached(null,src,TRUE)
 		var/obj/item/weapon/attachment/under/foregrip/FP = new/obj/item/weapon/attachment/under/foregrip(src)
 		FP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4
+	name = "M4 Carbine"
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL|ATTACH_UNDER
 
 /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws
 	name = "M4 MWS"

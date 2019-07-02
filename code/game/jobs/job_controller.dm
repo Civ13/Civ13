@@ -12,11 +12,12 @@ var/global/datum/controller/occupations/job_master
 			job_master.toggle_roundstart_autobalance(0, announce)
 
 	var/list/faction_organized_occupations_separate_lists = list()
-	for (var/datum/job/J in job_master.occupations)
-		var/Jflag = J.base_type_flag()
-		if (!faction_organized_occupations_separate_lists.Find(Jflag))
-			faction_organized_occupations_separate_lists[Jflag] = list()
-		faction_organized_occupations_separate_lists[Jflag] += J
+	if (job_master)
+		for (var/datum/job/J in job_master.occupations)
+			var/Jflag = J.base_type_flag()
+			if (!faction_organized_occupations_separate_lists.Find(Jflag))
+				faction_organized_occupations_separate_lists[Jflag] = list()
+			faction_organized_occupations_separate_lists[Jflag] += J
 	if (!map)
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[CIVILIAN]
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[BRITISH]

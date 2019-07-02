@@ -67,14 +67,6 @@
 		if ((loc == usr) && !(istype(over_object, /obj/screen)) && !usr.unEquip(src))
 			return
 
-/*		switch(over_object.name)
-			if ("r_hand")
-				usr.u_equip(src)
-				usr.put_in_r_hand(src)
-			if ("l_hand")
-				usr.u_equip(src)
-				usr.put_in_l_hand(src)*/
-
 		if (istype(over_object, /obj/screen/inventory/hand))
 			if ( !usr.get_active_hand() )
 				var/obj/screen/inventory/hand/H = over_object
@@ -112,6 +104,8 @@
 		for (var/obj/item/I in src)
 			if (I.on_found(user))
 				return
+	if (!user.client)
+		return
 	if (user.s_active)
 		user.s_active.hide_from(user)
 	user.client.screen -= boxes
@@ -120,11 +114,16 @@
 	user.client.screen -= storage_end
 	user.client.screen -= closer
 	user.client.screen -= contents
+	closer.icon = user.client.prefs.UI_file
 	user.client.screen += closer
 	user.client.screen += contents
 	if (storage_slots)
+		boxes.icon = user.client.prefs.UI_file
 		user.client.screen += boxes
 	else
+		storage_start.icon = user.client.prefs.UI_file
+		storage_end.icon = user.client.prefs.UI_file
+		storage_continue.icon = user.client.prefs.UI_file
 		user.client.screen += storage_start
 		user.client.screen += storage_continue
 		user.client.screen += storage_end
@@ -179,7 +178,7 @@
 /obj/item/weapon/storage/proc/orient_objs(tx, ty, mx, my)
 	var/cx = tx
 	var/cy = ty
-	boxes.screen_loc = "[tx]:,[ty] to [mx],[my]"
+	boxes.screen_loc = "[tx],[ty] to [mx],[my]"
 	for (var/obj/O in contents)
 		O.screen_loc = "[cx],[cy]"
 		O.layer = 20

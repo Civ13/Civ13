@@ -11,6 +11,7 @@
 	var/attached = "none"
 	var/obj/attached_ob = null
 	flammable = TRUE
+	protection_chance = 30
 
 /obj/structure/barricade/wood_pole/New()
 	..()
@@ -94,7 +95,7 @@
 	opacity = TRUE
 	hitsound = 'sound/effects/wooddoorhit.ogg'
 	flammable = TRUE
-	
+
 /obj/structure/grille/ironfence
 	name = "iron fence"
 	desc = "A wrought iron fence."
@@ -111,6 +112,87 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	anchored = TRUE
+/obj/structure/props/junk
+	name = "junk"
+	desc = "A pile of junk."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "Junk_1"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+/obj/structure/props/junk/New()
+	..()
+	icon_state = "Junk_[rand(1,14)]"
+
+/obj/structure/props/stove
+	name = "stove"
+	desc = "A gas stove."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "stove"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+/obj/structure/props/stove/old
+	icon_state = "gasstove"
+
+/obj/structure/props/bathtub
+	name = "bathtub"
+	desc = "A bathtub."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "bathtub"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/coatrack
+	name = "coat rack"
+	desc = "A coat rack."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "coatrack"
+	flammable = FALSE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = FALSE
+	opacity = FALSE
+
+/obj/structure/props/sofa
+	name = "sofa"
+	desc = "A sofa."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "sofa"
+	flammable = TRUE
+	not_movable = FALSE
+	not_disassemblable = TRUE
+	density = TRUE
+	opacity = FALSE
+	anchored = TRUE
+
+/obj/structure/props/sofa/p2
+	icon_state = "sofa2"
+
+/obj/structure/props/sofa/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/item/projectile))
+		return prob(75)
+	else
+		return FALSE
+
+/obj/structure/props/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
+	if (istype(mover, /obj/item/projectile))
+		return prob(50)
+	else
+		return FALSE
+
+
 /obj/structure/potted_plant
 	name = "potted plant"
 	desc = "A potted plant."
@@ -126,7 +208,7 @@
 	layer = MOB_LAYER + 0.01
 	bound_width = 32
 	bound_height = 32
-	density = TRUE
+	density = FALSE
 	anchored = TRUE
 	flammable = TRUE
 	not_movable = FALSE

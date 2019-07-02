@@ -15,6 +15,7 @@
 		list(CIVILIAN) = /area/caribbean/british
 		)
 	age = "1873"
+	ordinal_age = 4
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "Little Creek"
 	mission_start_message = "<font size=3>At the small frontier town of <b>Little Creek</b>, the Sheriff recieves a warning: Two groups of outlaws are about to rob the town's bank! He must organize the bank's defense and prevent them...</font><br><br><big><i>The grace wall will go down in <b>4 minutes</b>. The Outlaws have <b>30 minutes</b> to collect <b>750 dollars</b>!</big></i>"

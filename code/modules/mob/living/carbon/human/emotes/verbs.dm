@@ -30,6 +30,10 @@
 	set category = "Emote"
 	emote("cry")
 
+/mob/living/carbon/human/verb/dance()
+	set category = "Emote"
+	emote("dance")
+
 /mob/living/carbon/human/verb/eyebrow()
 	set category = "Emote"
 	emote("eyebrow")
@@ -159,3 +163,11 @@
 /mob/living/carbon/human/verb/charge()
 	set category = "Emote"
 	emote("charge")
+
+/mob/living/carbon/human/verb/pee()
+	set category = "Emote"
+	emote("pee")
+
+/mob/living/carbon/human/verb/poop()
+	set category = "Emote"
+	emote("poop")

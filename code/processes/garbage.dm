@@ -71,8 +71,8 @@ var/list/delayed_garbage = list()
 			// Something's still referring to the qdel'd object.  Kill it.
 
 			// hey stop fucking spamming me when I start up the server - Kachnov
-			if (world.time > 6000)
-				testing("GC: -- \ref[A] | [A.type] was unable to be GC'd and was deleted --")
+//			if (world.time > 6000)
+//				testing("GC: -- \ref[A] | [A.type] was unable to be GC'd and was deleted --")
 
 			logging["[A.type]"]++
 			del(A)

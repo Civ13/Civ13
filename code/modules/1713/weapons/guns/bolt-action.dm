@@ -311,7 +311,10 @@
 	weight = 4
 	effectiveness_mod = 1.02
 	equiptimer = 15
-
+/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
 /obj/item/weapon/gun/projectile/boltaction/arisaka30
 	name = "Arisaka Type 30"
 	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
@@ -325,6 +328,52 @@
 	magazine_type = /obj/item/ammo_magazine/arisaka
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 18
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka38
+	name = "Arisaka Type 38"
+	desc = "Japanese bolt-action rifle chambered in 6.50x50mm Arisaka ammunition."
+	icon_state = "arisaka38"
+	item_state = "arisaka38"
+	base_icon = "arisaka38"
+	caliber = "a65x50"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a65x50
+	magazine_type = /obj/item/ammo_magazine/arisaka
+	bolt_safety = FALSE
+	effectiveness_mod = 1.05
+	value = 100
+	slot_flags = SLOT_BACK
+	recoil = 2
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 18
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka99
+	name = "Arisaka Type 99"
+	desc = "Japanese bolt-action rifle chambered in 7.7x58mm Arisaka ammunition."
+	icon_state = "arisaka99"
+	item_state = "arisaka99"
+	base_icon = "arisaka99"
+	caliber = "a77x58"
+	weight = 3.8
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a77x58
+	magazine_type = /obj/item/ammo_magazine/arisaka
+	bolt_safety = FALSE
+	effectiveness_mod = 1.05
 	value = 100
 	slot_flags = SLOT_BACK
 	recoil = 2
@@ -688,3 +737,32 @@
 	value = 60
 	slot_flags = SLOT_BELT
 	equiptimer = 9
+
+
+/obj/item/weapon/gun/projectile/boltaction/m24
+	name = "M24 SWS"
+	desc = "A military version of the Remington 700 rifle."
+	icon_state = "m24"
+	item_state = "m24"
+	base_icon = "m24"
+	caliber = "a762x51"
+	weight = 4
+	fire_sound = 'sound/weapons/kar_shot.ogg'
+	ammo_type = /obj/item/ammo_casing/a762x51
+	magazine_type = /obj/item/ammo_magazine/m24
+	bolt_safety = FALSE
+	effectiveness_mod = 1.15
+	value = 130
+	slot_flags = SLOT_BACK
+	recoil = 1.8
+	force = 11
+	throwforce = 25
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	equiptimer = 12
+
+/obj/item/weapon/gun/projectile/boltaction/m24/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)

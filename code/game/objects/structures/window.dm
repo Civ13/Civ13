@@ -425,6 +425,9 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 
+/obj/structure/window_frame/metal
+	icon_state = "windowmetal_frame"
+
 /obj/structure/window_frame/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack/material/glass))
 		var/obj/item/stack/S = W
@@ -466,6 +469,14 @@
 	layer = MOB_LAYER + 0.02
 	density = FALSE // so we can touch curtains from any direction
 	flammable = TRUE
+
+/obj/structure/window/classic/metal
+	icon_state = "windowmetal"
+	basestate = "windowmetal"
+	flammable = FALSE
+	maximal_heat = T0C + 1600
+	damage_per_fire_tick = 1.0
+	maxhealth = 80.0
 
 /obj/structure/window/classic/reinforced
 	reinf = TRUE
@@ -511,6 +522,12 @@
 
 /obj/structure/window/classic/update_nearby_icons()
 	return
+
+/obj/structure/window/classic/metal/shatter(var/display_message = TRUE)
+	var/myturf = get_turf(src)
+	spawn (1)
+		new/obj/structure/window_frame/metal(myturf)
+	..(display_message)
 
 /obj/structure/window/classic/shoji
 	icon_state = "shoji_windownew"

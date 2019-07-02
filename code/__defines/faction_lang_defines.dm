@@ -82,12 +82,18 @@
 
 	if (constant == ARAB)
 		if (age >= 6)
-			return "Insurgents"
+			if (map.ID == "ARAB_TOWN")
+				return "Hezbollah"
+			else
+				return "Insurgents"
 		else
 			return "Arabic Caliphate"
 
 	if (constant == AMERICAN)
-		return "United States"
+		if (map.ID == "ARAB_TOWN")
+			return "IDF"
+		else
+			return "United States"
 
 	if (constant == VIETNAMESE)
 		return "Vietnamese"

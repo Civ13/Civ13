@@ -97,6 +97,14 @@ elif map == "YPRES":
 	dmms.append("#include \"maps\\1903\\ypres.dmm\"")
 elif map == "COMPOUND":
 	dmms.append("#include \"maps\\1969\\compound.dmm\"")
+elif map == "HOSTAGES":
+	dmms.append("#include \"maps\\1969\\hostages.dmm\"")
+elif map == "REICHSTAG":
+	dmms.append("#include \"maps\\1943\\reichstag.dmm\"")
+elif map == "KHALKHYN_GOL":
+	dmms.append("#include \"maps\\1943\\khalkhyn_gol.dmm\"")
+elif map == "ARAB_TOWN":
+	dmms.append("#include \"maps\\1969\\arab_town.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()

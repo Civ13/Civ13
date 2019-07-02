@@ -53,7 +53,7 @@
 					H.UpdateDamageIcon()
 				H.updatehealth()
 				if (!(H.species && (H.species.flags)))
-					H.Weaken(2)
+					H.Weaken(1)
 				M << "<span class = 'red'><b>Your [affecting.name] gets cut by \the [src]!</b></span>"
 			else
 				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
@@ -62,7 +62,7 @@
 					H.UpdateDamageIcon()
 				H.updatehealth()
 				if (!(H.species && (H.species.flags)))
-					H.Weaken(3)
+					H.Weaken(1)
 				M << "<span class = 'red'><b>Your [affecting.name] gets deeply cut by \the [src]!</b></span>"
 			// stop crawling until we're up to prevent buggy crawling
 			H.scrambling = TRUE

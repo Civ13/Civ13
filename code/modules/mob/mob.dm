@@ -92,7 +92,7 @@
 // blind_message (optional) is what blind people will hear e.g. "You hear something!"
 
 /mob/visible_message(var/message, var/self_message, var/blind_message)
-	var/list/see = get_mobs_or_objects_in_view(world.view,src) | viewers(world.view,src)
+	var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(7,src)
 
 	for (var/I in see)
 		if (isobj(I))
@@ -124,7 +124,7 @@
 // hearing_distance (optional) is the range, how many tiles away the message can be heard.
 /mob/audible_message(var/message, var/deaf_message, var/hearing_distance, var/self_message)
 
-	var/range = world.view
+	var/range = 7
 	if (hearing_distance)
 		range = hearing_distance
 	var/list/hear = get_mobs_or_objects_in_view(range,src)
@@ -899,7 +899,7 @@ mob/proc/yank_out_object()
 		affected.take_damage((selection.w_class * 3), FALSE, FALSE, TRUE, "Embedded object extraction")
 
 		if (prob(selection.w_class * 5)) //I'M SO ANEMIC I COULD JUST -DIE-.
-			var/datum/wound/internal_bleeding/I = new (min(selection.w_class * 5, 15))
+			var/datum/wound/internal_bleeding/I = new (min(selection.w_class * 5, 15), src)
 			affected.wounds += I
 			H.custom_pain("Something tears wetly in your [affected] as [selection] is pulled free!", TRUE)
 
@@ -981,6 +981,11 @@ mob/proc/yank_out_object()
 		usr << "You are now not facing anything."
 	else
 		usr << "You are now facing [dir2text(facing_dir)]."
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if (H.HUDneed.Find("fixeye"))
+			var/obj/screen/tactic/I = H.HUDneed["fixeye"]
+			I.update_icon()
 
 /mob/proc/set_face_dir(var/newdir)
 	if (!isnull(facing_dir) && newdir == facing_dir)

@@ -141,56 +141,6 @@
 	M.sleeping = FALSE
 	M.jitteriness = FALSE
 
-/datum/reagent/gold
-	name = "Gold"
-	id = "gold"
-	description = "Gold is a dense, soft, shiny metal and the most malleable and ductile metal known."
-	taste_description = "expensive metal"
-	reagent_state = SOLID
-	color = "#F7C430"
-
-/datum/reagent/silver
-	name = "Silver"
-	id = "silver"
-	description = "A soft, white, lustrous transition metal, it has the highest electrical conductivity of any element and the highest thermal conductivity of any metal."
-	taste_description = "expensive yet reasonable metal"
-	reagent_state = SOLID
-	color = "#D0D0D0"
-
-/datum/reagent/uranium
-	name ="Uranium"
-	id = "uranium"
-	description = "A silvery-white metallic chemical element in the actinide series, weakly radioactive."
-	taste_description = "the inside of a reactor"
-	reagent_state = SOLID
-	color = "#B8B8C0"
-
-/datum/reagent/uranium/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
-	affect_ingest(M, alien, removed)
-
-/datum/reagent/uranium/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.apply_effect(5 * removed, IRRADIATE, FALSE)
-
-/datum/reagent/uranium/touch_turf(var/turf/T)
-	if (volume >= 3)
-		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
-		if (!glow)
-			new /obj/effect/decal/cleanable/greenglow(T)
-		return
-
-
-
-/datum/reagent/water/holywater
-	name = "Holy Water"
-	id = "holywater"
-	description = "An ashen-obsidian-water mix, this solution will alter certain sections of the brain's rationality."
-	color = "#E0E8EF"
-
-/datum/reagent/water/holywater/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
-	..()
-
-/datum/reagent/water/holywater/touch_turf(var/turf/T)
-	return FALSE
 
 /datum/reagent/diethylamine
 	name = "Diethylamine"
@@ -318,7 +268,7 @@
 /datum/reagent/gunpowder
 	name = "gunpowder"
 	id = "gunpowder"
-	description = "Try to light it on fire and see what happens"
+	description = "Try to light it on fire and see what happens."
 	taste_description = "charcoal"
 	reagent_state = SOLID
 	color = "#484753"

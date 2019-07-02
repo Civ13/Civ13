@@ -33,7 +33,7 @@ Parts of code courtesy of Super3222
 	..()
 	if (A_attached)
 		var/obj/item/weapon/gun/G = loc //loc is the gun this is attached to
-//		var/zoom_offset = round(world.view * zoom_amt)
+//		var/zoom_offset = round(7 * zoom_amt)
 		if (zoomed)
 	/*		if (G.accuracy)
 				G.accuracy = G.scoped_accuracy + zoom_offset*/
@@ -129,7 +129,6 @@ Parts of code courtesy of Super3222
 		if (currmask.blocks_scope)
 			if (!silent) user << "You can't use the [src] while wearing \the [currmask]!"
 			return FALSE
-		return FALSE
 	else if (global_hud.darkMask[1] in user.client.screen)
 		if (!silent) user << "Your visor gets in the way of looking through \the [src]."
 		return FALSE
@@ -241,12 +240,20 @@ Parts of code courtesy of Super3222
 			for (var/obj/screen/movable/action_button/AB in user.client.screen)
 				if (AB.name == "Toggle Sights" && AB != azoom.button && azoom.button.screen_loc)
 					AB.invisibility = 101
-					var/azoom_button_screenX = text2num(splittext(splittext(azoom.button.screen_loc, ":")[1], "+")[2])
-					var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
+					if (azoom && azoom.button && findtext(azoom.button.screen_loc,":"))
+						var/azoom_button_screenX = text2num(splittext(splittext(azoom.button.screen_loc, ":")[1], "+")[2])
+						var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
 
-					// see if we need to move this button left to compensate
-					if (azoom_button_screenX > AB_screenX)
-						++moved
+						// see if we need to move this button left to compensate
+						if (azoom_button_screenX > AB_screenX)
+							++moved
+					else if (azoom && azoom.button)
+						var/azoom_button_screenX = text2num(splittext(azoom.button.screen_loc, ",")[1])
+						var/AB_screenX = text2num(splittext(splittext(AB.screen_loc, ":")[1], "+")[2])
+
+						// see if we need to move this button left to compensate
+						if (azoom_button_screenX > AB_screenX)
+							++moved
 		else
 			for (var/obj/screen/movable/action_button/AB in user.client.screen)
 				if (AB.name == "Toggle Sights")
@@ -315,22 +322,6 @@ Parts of code courtesy of Super3222
 /mob/living/carbon/human/Move()
 	..()
 	handle_zooms_with_movement()
-
-/*
-// item helpers
-/obj/item/proc/is_zoomable_object()
-	for (var/datum/action/toggle_scope/A in actions)
-		if (A)
-			return TRUE
-	return FALSE
-
-/obj/item/proc/has_zooming_scope()
-	for (var/datum/action/toggle_scope/A in actions)
-		if (A && A.scope.zoomed)
-			return TRUE
-	return FALSE*/
-
-// human helpers
 
 // resets zoom on movement
 /mob/living/carbon/human/proc/handle_zooms_with_movement()

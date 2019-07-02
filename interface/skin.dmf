@@ -6,6 +6,9 @@ macro "macro"
 		name = "Center+REP"
 		command = ".center"
 	elem 
+		name = "Escape"
+		command = "updateFullscreen"
+	elem 
 		name = "Space"
 		command = "on-press-spacebar"
 	elem 
@@ -113,6 +116,9 @@ macro "macro"
 	elem 
 		name = "F5"
 		command = "looc"
+	elem 
+		name = "F12"
+		command = "ChangeHUD"
 
 macro "hotkeymode"
 	elem 
@@ -121,6 +127,9 @@ macro "hotkeymode"
 	elem 
 		name = "Center+REP"
 		command = ".center"
+	elem 
+		name = "Escape"
+		command = "updateFullscreen"
 	elem 
 		name = "Space"
 		command = "on-press-spacebar"
@@ -248,6 +257,9 @@ macro "hotkeymode"
 		name = "M"
 		command = "m-intent-run"
 	elem 
+		name = "N"
+		command = "tactic-intent"
+	elem 
 		name = "Q"
 		command = ".northwest"
 	elem 
@@ -331,6 +343,9 @@ macro "hotkeymode"
 	elem 
 		name = "F6"
 		command = ".me"
+	elem 
+		name = "F12"
+		command = "ChangeHUD"
 
 
 menu "menu"
@@ -574,53 +589,25 @@ window "mainwindow"
 		size = 640x440
 		anchor1 = none
 		anchor2 = none
+		background-color = #000000
 		is-default = true
 		saved-params = "pos;size;is-minimized;is-maximized"
-		title = "Space Station 13"
+		title = "Civilization 13"
+		titlebar = false
 		is-maximized = true
+		keep-aspect = true
 		macro = "macro"
-		menu = "menu"
-	elem "hotkey_toggle"
-		type = BUTTON
-		pos = 560,420
-		size = 80x20
-		anchor1 = 100,100
-		anchor2 = none
-		saved-params = ""
-		text = "Hotkey Toggle"
-		command = ".winset \"mainwindow.macro!=macro ? mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true : mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
-		button-type = pushbox
 	elem "mainvsplit"
 		type = CHILD
-		pos = 3,0
-		size = 634x416
+		pos = 0,0
+		size = 640x440
 		anchor1 = 0,0
 		anchor2 = 100,100
-		background-color = #000000
+		background-color = #271a0c
 		saved-params = "splitter"
 		right = "rpane"
 		is-vert = true
 		splitter = 75
-	elem "input"
-		type = INPUT
-		pos = 3,420
-		size = 517x20
-		anchor1 = 0,100
-		anchor2 = 100,100
-		background-color = #d3b5b5
-		is-default = true
-		border = sunken
-		saved-params = "command"
-	elem "saybutton"
-		type = BUTTON
-		pos = 520,420
-		size = 40x20
-		anchor1 = 100,100
-		anchor2 = none
-		saved-params = "is-checked"
-		text = "Chat"
-		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" macrobutton.is-checked=false:input.command=\""
-		button-type = pushbox
 
 window "mapwindow"
 	elem "mapwindow"
@@ -656,6 +643,7 @@ window "outputwindow"
 		size = 640x480
 		anchor1 = none
 		anchor2 = none
+		background-color = #392611
 		saved-params = "pos;size;is-minimized;is-maximized"
 		titlebar = false
 		statusbar = false
@@ -663,13 +651,56 @@ window "outputwindow"
 		can-minimize = false
 		can-resize = false
 		is-pane = true
+		can-scroll = vertical
+	elem "hotkey_toggle"
+		type = BUTTON
+		pos = 546,459
+		size = 92x20
+		anchor1 = 100,100
+		anchor2 = none
+		font-family = "Book Antiqua"
+		font-size = 8
+		text-color = #e1e1d7
+		background-color = #392611
+		saved-params = "is-checked"
+		text = "Hotkey Toggle"
+		command = ".winset \"mainwindow.macro!=macro ? mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true : mainwindow.macro=hotkeymode hotkey_toggle.is-checked=true mapwindow.map.focus=true\""
+		button-type = pushbox
+	elem "saybutton"
+		type = BUTTON
+		pos = 502,459
+		size = 40x20
+		anchor1 = 100,100
+		anchor2 = none
+		font-family = "Book Antiqua"
+		font-size = 8
+		text-color = #e1e1d7
+		background-color = #392611
+		saved-params = "is-checked"
+		text = "Chat"
+		command = ".winset \"saybutton.is-checked=true?input.command=\"!say \\\"\" macrobutton.is-checked=false:input.command=\""
+		button-type = pushbox
+	elem "input"
+		type = INPUT
+		pos = 2,459
+		size = 496x20
+		anchor1 = 0,100
+		anchor2 = 100,100
+		font-family = "Book Antiqua"
+		font-size = 8
+		background-color = #a68b7d
+		is-default = true
+		border = sunken
+		saved-params = ""
 	elem "output"
 		type = OUTPUT
 		pos = 0,0
-		size = 640x480
+		size = 640x456
 		anchor1 = 0,0
 		anchor2 = 100,100
-		font-family = "@SimSun-ExtB"
+		font-family = "Book Antiqua,Bookman Old Style,@SimSun-ExtB"
+		font-size = 9
+		background-color = #392611
 		is-default = true
 		saved-params = "max-lines"
 		style = ".system {color:#ff0000;}"
@@ -701,7 +732,7 @@ window "infowindow"
 	elem "infowindow"
 		type = MAIN
 		pos = 372,0
-		size = 420x480
+		size = 420x477
 		anchor1 = none
 		anchor2 = none
 		background-color = #271a0c
@@ -715,9 +746,9 @@ window "infowindow"
 		is-pane = true
 	elem "info"
 		type = INFO
-		pos = 0,16
-		size = 420x464
-		anchor1 = 0,3
+		pos = 0,24
+		size = 420x453
+		anchor1 = 0,5
 		anchor2 = 100,100
 		font-family = "Book Antiqua"
 		font-size = 8

@@ -272,12 +272,17 @@ It's fairly easy to fix if dealing with single letters but not so much with comp
 		var/atom/oldeye=M.client.eye
 
 		var/x
-		if (M.client)
+		if (M)
 			for (x=0; x<duration, x++)
-				M.client.eye = locate(dd_range(1,M.loc.x+rand(-strength,strength),world.maxx),dd_range(1,M.loc.y+rand(-strength,strength),world.maxy),M.loc.z)
-				sleep(1)
-			M.client.eye=oldeye
-			M.shakecamera = FALSE
+				if (M.client)
+					if (M.client.eye)
+						M.client.eye = locate(dd_range(1,M.loc.x+rand(-strength,strength),world.maxx),dd_range(1,M.loc.y+rand(-strength,strength),world.maxy),M.loc.z)
+						sleep(1)
+			if (M.client)
+				if (M.client.eye)
+					M.client.eye=oldeye
+			if (M)
+				M.shakecamera = FALSE
 
 
 /proc/findname(msg)

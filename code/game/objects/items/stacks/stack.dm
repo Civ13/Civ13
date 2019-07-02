@@ -23,6 +23,8 @@
 	var/real_value = 1
 	value = 1
 	var/customcolor = "FFFFFF"
+	var/customcolor1 = "000000"
+	var/customcolor2 = "FFFFFF"
 	var/customcode = "0000"
 	var/customname = ""
 /obj/item/stack/New(var/loc, var/_amount=0)
@@ -155,6 +157,44 @@
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
 
+	if (findtext(recipe.title, "tin can"))
+		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
+		if (customname == "" || customname == null)
+			customname = ""
+		customcolor1 = input(user, "Choose a main hex color (without the #):", "Tin Can Main Color" , "000000")
+		if (customcolor1 == null || customcolor1 == "")
+			customcolor1 = "#000000"
+		else
+			customcolor1 = uppertext(customcolor1)
+			if (lentext(customcolor1) != 6)
+				customcolor1 = "#000000"
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(customcolor1,i,i+1)
+				else
+					numtocheck = copytext(customcolor1,i,0)
+				if (!(numtocheck in listallowed))
+					customcolor1 = "#000000"
+		customcolor2 = input(user, "Choose a secondary hex color (without the #):", "Tin Can Secondary Color" , "FFFFFF")
+		if (customcolor2 == null || customcolor2 == "")
+			customcolor2 = "#FFFFFF"
+		else
+			customcolor2 = uppertext(customcolor2)
+			if (lentext(customcolor2) != 6)
+				customcolor2 = "#FFFFFF"
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(customcolor2,i,i+1)
+				else
+					numtocheck = copytext(customcolor2,i,0)
+				if (!(numtocheck in listallowed))
+					customcolor2 = "#FFFFFF"
+
+
 	if (findtext(recipe.title, "cigarette pack"))
 		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
 		if (customname == "" || customname == null)
@@ -176,7 +216,7 @@
 				if (!(numtocheck in listallowed))
 					return
 
-	if (findtext(recipe.title, "frame"))
+	if (findtext(recipe.title, "motorcycle frame") || findtext(recipe.title, "boat frame"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			H << "<span class = 'danger'>This is too complex for your skill level.</span>"
 			return
@@ -448,7 +488,7 @@
 		else
 			build_override_coins_gold.name = "gold [customname]"
 			build_override_coins_gold.desc = "gold coins, minted by [H]."
-			
+
 	if (findtext(recipe.title, "gravestone"))
 		var/customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
 		if (customname == "" || customname == null)
@@ -643,6 +683,14 @@
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
+
+	if (recipe.result_type == /obj/item/weapon/can)
+		produced = 2
+	if (recipe.result_type == /obj/item/weapon/can/small)
+		produced = 3
+	if (recipe.result_type == /obj/item/weapon/can/large)
+		produced = 1
+
 	if (recipe.result_type == /obj/item/stack/ammopart/stoneball)
 		produced = 2
 	if (recipe.result_type == /obj/item/stack/ammopart/bullet)
@@ -676,6 +724,26 @@
 			O = new recipe.result_type(user.loc, recipe.use_material)
 		else
 			O = new recipe.result_type(user.loc)
+
+		if (istype(O, /obj/structure/curtain) && !istype(O,/obj/structure/curtain/leather))
+			var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				O.color = addtext("#",input)
+				return
 		if (build_override_firelance.desc != "A simple firelance.")
 			build_override_firelance.loc = get_turf(O)
 			build_override_firelance.set_dir(user.dir)
@@ -747,7 +815,7 @@
 			newskull.add_fingerprint(user)
 			qdel(O)
 			return
-			
+
 		if (build_override_gravestone.desc != "A gravestone.")
 			build_override_gravestone.loc = get_turf(O)
 			build_override_gravestone.set_dir(user.dir)
@@ -823,6 +891,13 @@
 			var/obj/item/weapon/storage/fancy/cigarettes/C = O
 			C.customcolor = addtext("#",customcolor)
 			C.name = customname
+			C.do_color()
+		else if (istype(O, /obj/item/weapon/can))
+			var/obj/item/weapon/can/C = O
+			C.customcolor1 = addtext("#",customcolor1)
+			C.customcolor2 = addtext("#",customcolor2)
+			C.brand = "[customname] "
+			C.name = "empty [C.brand]can"
 			C.do_color()
 		else if (istype(O, /obj/item/stack))
 			var/obj/item/stack/S = O

@@ -15,6 +15,7 @@
 		list(BRITISH) = /area/caribbean/british/ship/lower,
 		)
 	age = "1713"
+	ordinal_age = 3
 	faction_distribution_coeffs = list(BRITISH = 1)
 	battle_name = "Transatlantic Voyage"
 	mission_start_message = "<font size=4>The travel is starting. Hold the ship against the pirates!</font>"

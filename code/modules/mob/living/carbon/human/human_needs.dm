@@ -4,18 +4,32 @@
 	else
 		var/mob/living/carbon/human/H = src
 		var/msg = ""
+		var/msg_hygiene = ""
 		switch(mood)
-			if(-5000000 to 19)
-				msg = "My mood is horrible!"
-			if(20 to 39)
-				msg = "My mood is bad."
-			if(40 to 59)
-				msg = "My mood is neutral."
-			if(60 to 79)
-				msg = "My mood is good."
-			if(80 to INFINITY)
-				msg = "My mood is excellent!"
+			if(-5000000 to 20)
+				msg = "Your mood is horrible!"
+			if(20 to 40)
+				msg = "Your mood is bad."
+			if(40 to 60)
+				msg = "Your mood is neutral."
+			if(60 to 80)
+				msg = "Your mood is good."
+			if(80 to 10000)
+				msg = "Your mood is excellent!"
+		switch(hygiene)
+			if(HYGIENE_LEVEL_CLEAN to INFINITY)
+				msg_hygiene = "You feel very clean!"
+			if(HYGIENE_LEVEL_NORMAL to HYGIENE_LEVEL_CLEAN)
+				msg_hygiene = "You feel clean."
+			if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
+				msg_hygiene = "You feel a bit dirty."
+			if(0 to HYGIENE_LEVEL_DIRTY)
+				msg_hygiene = "You feel very dirty!"
+		H << "<span class='info'>*---------*</span>"
 		H << "<span class='info'>[msg]</span>"
+		H << "<span class='info'>[msg_hygiene]</span>"
+		H.print_excrement()
+		H << "<span class='info'>*---------*</span>"
 		return
 /mob/living/carbon/human/proc/handle_ptsd()
 	if (ptsd > 100)
@@ -56,66 +70,57 @@
 		flick("sadness",HUDtech["pain"])
 		var/spoopysound = pick('sound/effects/badmood1.ogg','sound/effects/badmood2.ogg','sound/effects/badmood3.ogg','sound/effects/badmood4.ogg')
 		sound_to(src, spoopysound)
-/*
-/mob/living/carbon/human/proc/handle_happiness()
-	switch(happiness)
-		if(-5000000 to 19)
-			flash_sadness()
-			mood_modifier = -10
-		if(20 to 39)
-			flash_sadness()
-			mood_modifier = -5
-		if(40 to 59)
-			crit_mood_modifier = CRIT_SUCCESS_NORM
-		if(60 to 79)
-			mood_modifier = 5
-		if(80 to INFINITY)
-			mood_modifier = 10
 
+/mob/living/carbon/human/proc/handle_mood()
+	switch(mood)
+		if(-5000000 to 10)
+			flash_sadness(mood/40)
+			mood_modifier = 0.8
+		if(10 to 20)
+			flash_sadness(mood/40)
+			mood_modifier = 0.85
+		if(20 to 30)
+			if (prob(35))
+				flash_sadness(mood/40)
+			mood_modifier = 0.90
+		if(30 to 40)
+			if (prob(30))
+				flash_sadness(mood/40)
+			mood_modifier = 0.95
+		if(40 to 60)
+			mood_modifier = 1
+		if(60 to 80)
+			mood_modifier = 1.05
+		if(80 to 90)
+			mood_modifier = 1.10
+		if(90 to 10000)
+			mood_modifier = 1.15
 
-/mob/living/carbon/human/proc/add_event(category, type) //Category will override any events in the same category, should be unique unless the event is based on the same thing like hunger.
-	var/datum/happiness_event/the_event
-	if(events[category])
-		the_event = events[category]
-		if(the_event.type != type)
-			clear_event(category)
-			return .()
-		else
-			return 0 //Don't have to update the event.
-	else
-		the_event = new type()
-
-	events[category] = the_event
-	update_happiness()
-
-	if(the_event.timeout)
-		spawn(the_event.timeout)
-			clear_event(category)
-
-/mob/living/carbon/human/proc/clear_event(category)
-	var/datum/happiness_event/event = events[category]
-	if(!event)
-		return 0
-
-	events -= category
-	qdel(event)
-	update_happiness()
 
 /mob/living/carbon/human/proc/handle_hygiene()
-	adjust_hygiene(-my_hygiene_factor)
+	if (sleeping)
+		return
+	adjust_hygiene(-HYGIENE_FACTOR)
+	if (hygiene > HYGIENE_LEVEL_CLEAN)
+		hygiene = HYGIENE_LEVEL_CLEAN
+	if (hygiene < 0)
+		hygiene = 0
 	var/image/smell = image('icons/effects/effects.dmi', "smell")//This is a hack, there has got to be a safer way to do this but I don't know it at the moment.
 	switch(hygiene)
 		if(HYGIENE_LEVEL_NORMAL to INFINITY)
-			add_event("hygiene", /datum/happiness_event/hygiene/clean)
-			overlays -= smell
+			overlays_standing[26] = null
 		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
-			clear_event("hygiene")
-			overlays -= smell
+			overlays_standing[26] = null
+			mood -= 0.02
 		if(0 to HYGIENE_LEVEL_DIRTY)
-			overlays -= smell
-			overlays += smell
-			add_event("hygiene", /datum/happiness_event/hygiene/smelly)
-
+			overlays_standing[26] = smell
+			mood -= 0.04
+	if (hygiene <= HYGIENE_LEVEL_DIRTY)
+		if (prob(3))
+			for(var/mob/living/carbon/human/HM in range(3,src))
+				if (HM != src)
+					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
+					HM.mood -= 3
 /mob/living/carbon/human/proc/adjust_hygiene(var/amount)
 	var/old_hygiene = hygiene
 	if(amount>0)
@@ -127,17 +132,3 @@
 /mob/living/carbon/human/proc/set_hygiene(var/amount)
 	if(amount >= 0)
 		hygiene = min(HYGIENE_LEVEL_CLEAN, amount)
-
-/mob/living/carbon/human/proc/adjust_thirst(var/amount)
-	var/old_thirst = thirst
-	if(amount>0)
-		thirst = min(thirst+amount, THIRST_LEVEL_MAX)
-
-	else if(old_thirst)
-		thirst = max(thirst+amount, 0)
-
-/mob/living/carbon/human/proc/set_thirst(var/amount)
-	if(amount >= 0)
-		thirst = min(THIRST_LEVEL_MAX, amount)
-
-*/

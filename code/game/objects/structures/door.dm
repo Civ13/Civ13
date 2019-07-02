@@ -143,7 +143,7 @@
 		update_icon()
 		isSwitchingStates = FALSE
 		update_nearby_tiles()
-		for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
 
 /obj/structure/simple_door/proc/Close()
@@ -160,11 +160,11 @@
 		update_icon()
 		isSwitchingStates = FALSE
 		update_nearby_tiles()
-		for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+		for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 			L.update_overlay()
 
 /obj/structure/simple_door/Destroy()
-	for (var/atom/movable/lighting_overlay/L in view(world.view*3, src))
+	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
 

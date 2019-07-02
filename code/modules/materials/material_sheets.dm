@@ -22,7 +22,7 @@
 		default_type = DEFAULT_WALL_MATERIAL
 	material = get_material_by_name("[default_type]")
 
-	recipes = material.get_recipes()
+	recipes = material.get_recipes_civs()
 	stacktype = material.stack_type
 
 
@@ -110,6 +110,13 @@
 	name = "tin"
 	icon_state = "sheet-tin"
 	default_type = "tin"
+	apply_colour = TRUE
+	value = 3
+
+/obj/item/stack/material/lead
+	name = "lead"
+	icon_state = "sheet-lead"
+	default_type = "lead"
 	apply_colour = TRUE
 	value = 3
 
@@ -372,7 +379,6 @@
 		if (isturf(loc))
 			qdel(src)
 /obj/item/stack/material/list_recipes(mob/user as mob, recipes_sublist)
-	if (map.civilizations)
-		var/mob/living/carbon/human/U = user
-		recipes = material.get_recipes_civs(U.original_job_title, U)
+	var/mob/living/carbon/human/U = user
+	recipes = material.get_recipes_civs(U.original_job_title, U)
 	..()

@@ -66,7 +66,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "head"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 4
 /client/verb/zone_sel_left_upper()
 	set name = "zone_sel_left_upper"
@@ -89,7 +89,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "l_arm"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 5
 /client/verb/zone_sel_chest()
 	set name = "zone_sel_chest"
@@ -105,7 +105,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	H.targeted_organ = "chest"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 6
 /client/verb/zone_sel_right_upper()
 	set name = "zone_sel_right_upper"
@@ -128,7 +128,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "r_arm"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 1
 /client/verb/zone_sel_left_lower()
 	set name = "zone_sel_left_lower"
@@ -151,7 +151,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "l_leg"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 2
 /client/verb/zone_sel_groin()
 	set name = "zone_sel_groin"
@@ -167,7 +167,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	H.targeted_organ = "groin"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 //NUMPAD 3
 /client/verb/zone_sel_right_lower()
 	set name = "zone_sel_right_lower"
@@ -190,7 +190,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "r_leg"
 
 	H.HUDneed["damage zone"].update_icon()
-
+	H.HUDneed["random damage zone"].update_icon()
 /mob/living/carbon/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = TRUE)
 	for (var/slot in slots)
 		if (equip_to_slot_if_possible(W, slots[slot], del_on_fail = FALSE))
@@ -577,12 +577,12 @@ This saves us from having to call add_fingerprint() any time something is put in
 			if("kick")
 				mob.middle_click_intent = "jump"
 				mob << "<span class='warning'>You will now jump.</span>"
-				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
 				I.update_icon()
 			if("jump")
 				mob.middle_click_intent = "bite"
 				mob << "<span class='warning'>You will now bite.</span>"
-				var/obj/screen/intent/I = mob.HUDneed["mode"]
+				var/obj/screen/intent/I = mob.HUDneed["secondary attack"]
 				I.update_icon()
 			if("bite")
 				mob.middle_click_intent = "kick"
@@ -634,4 +634,35 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	if (mob.HUDneed.Find("m_intent"))
 		var/obj/screen/intent/I = mob.HUDneed["m_intent"]
+		I.update_icon()
+
+
+/client/verb/tactic_intent()
+	set name = "tactic-intent"
+	set hidden = TRUE
+
+	if (!mob)
+		return
+
+	if (!istype(mob,/mob/living/carbon/human))
+		return
+	var/mob/living/carbon/human/H = mob
+
+	if (H.tactic == "charge")
+		H.tactic = "aim"
+		H << "<span class='warning'>You will now focus on aiming.</span>"
+	else if (H.tactic == "aim")
+		H.tactic = "rush"
+		H << "<span class='warning'>You will now focus on rushing.</span>"
+	else if (H.tactic == "rush")
+		H.tactic = "defend"
+		H << "<span class='warning'>You will now focus on defending.</span>"
+	else if (H.tactic == "defend")
+		H.tactic = "charge"
+		H << "<span class='warning'>You will now focus on charging.</span>"
+	else
+		H.tactic = "charge"
+
+	if (mob.HUDneed.Find("tactic"))
+		var/obj/screen/tactic/I = mob.HUDneed["tactic"]
 		I.update_icon()

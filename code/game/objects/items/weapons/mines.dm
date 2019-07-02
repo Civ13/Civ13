@@ -117,7 +117,7 @@
 	if (world.time < nextCanExplode)
 		return
 	if (istype(AM, /mob/living))
-		for (var/mob/O in viewers(world.view, loc))
+		for (var/mob/O in viewers(7, loc))
 			O << "<font color='red'>[AM] triggered the [src]!</font>"
 		triggered = TRUE
 		visible_message("<span class = 'red'><b>Click!</b></span>")

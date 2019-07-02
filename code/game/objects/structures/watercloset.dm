@@ -2,7 +2,7 @@
 
 /obj/structure/toilet
 	name = "latrine"
-	desc = "A simple wooden latrine."
+	desc = "A simple latrine."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "toilet00"
 	density = FALSE
@@ -111,10 +111,29 @@
 			O.reagents.clear_reagents()
 			user << "<span class='notice'>You empty the [O] into the [src].</span>"
 
+/obj/structure/toilet/pit_latrine
+	name = "pit latrine"
+	desc = "A simple pit latrine, a hole dug on the ground to collect waste."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "pit_latrine3"
+	open = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/pit_latrine/New()
+	open = TRUE
+
+/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+	return
+/obj/structure/toilet/pit_latrine/attack_hand(mob/living/user as mob)
+	return
+
+/obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
+	return
 
 /obj/structure/shower
 	name = "shower"
-	desc = "The HS-451. Installed in the 2550s by the Hygiene Division."
+	desc = "A basic, hot-and-cold shower system."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "shower"
 	density = FALSE
@@ -209,6 +228,9 @@
 				mymist = null
 				ismist = FALSE
 
+/mob/living/carbon/human/proc/is_nude()
+	return (!w_uniform) ? 1 : 0
+
 //Yes, showers are super powerful as far as washing goes.
 /obj/structure/shower/proc/wash(atom/movable/O as obj|mob)
 	if (!on) return
@@ -241,6 +263,9 @@
 			var/washshoes = TRUE
 			var/washmask = TRUE
 			var/washears = TRUE
+
+			if(H.is_nude())//Don't get clean showering with you clothes on.
+				H.set_hygiene(HYGIENE_LEVEL_CLEAN)
 
 			if (H.wear_suit)
 				washgloves = !(H.wear_suit.flags_inv & HIDEGLOVES)
@@ -462,7 +487,15 @@
 					else
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				else
-					RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+					var/dirty = FALSE
+					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
+						if (PP)
+							dirty = TRUE
+					if (dirty)
+						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+					else
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)
 					update_icon()

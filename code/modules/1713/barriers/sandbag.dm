@@ -269,3 +269,15 @@
 /obj/structure/window/sandbag/railing/New()
 	..()
 	//invisibility = 101
+
+/obj/structure/window/sandbag/jersey
+	name = "jersey barrier"
+	icon_state = "jerseybarrier1"
+	icon = 'icons/obj/junk.dmi'
+
+/obj/structure/window/sandbag/jersey/New()
+	..()
+	icon_state = "jerseybarrier[rand(1,2)]"
+
+/obj/structure/window/sandbag/jersey/attack_hand(var/mob/user as mob)
+	return

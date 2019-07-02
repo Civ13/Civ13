@@ -155,3 +155,12 @@
 			for (var/datum/language/vietnamese/V in H.languages)
 				H.default_language = V
 				break
+		if (AMERICAN)
+			if (map.ID == MAP_ARAB_TOWN)
+				for (var/datum/language/hebrew/HB in H.languages)
+					H.default_language = HB
+					break
+			else
+				for (var/datum/language/english/E in H.languages)
+					H.default_language = E
+					break

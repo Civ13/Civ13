@@ -23,6 +23,7 @@
 	var/current_area_type = /area/caribbean
 	var/incomplete = FALSE
 	explosion_resistance = TRUE
+	var/bullethole_count = 0
 //	invisibility = 101 //starts invisible
 
 
@@ -56,6 +57,21 @@
 	icon = 'icons/obj/stairs.dmi'
 	icon_state = "rampup"
 
+/obj/covers/road
+	name = "road"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "road_1"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 2
+
+/obj/covers/road/New()
+	..()
+	icon_state = pick("road_1","road_2","road_3")
 
 /obj/covers/sandstone
 	name = "sandstone floor"
@@ -270,6 +286,24 @@
 	wall = TRUE
 	explosion_resistance = 1
 
+/obj/covers/wood_wall/log
+	name = "log wall"
+	desc = "A log wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "log_wall"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 4
+	layer = 3
+	health = 180
+	wall = TRUE
+	explosion_resistance = 7
+
+/obj/covers/wood_wall/log/corner
+	icon_state = "log_wall_corner"
+
 /obj/covers/stone_wall
 	name = "stone wall"
 	desc = "A stone wall."
@@ -286,6 +320,23 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 10
+
+/obj/covers/sandstone_wall
+	name = "sandstone wall"
+	desc = "A sandstone wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 400
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 8
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -716,9 +767,12 @@
 			start_fire()
 		try_destroy()
 	else
-		health -= proj.damage * 0.1
-		try_destroy()
-		return
+		if (wall)
+			health -= proj.damage * 0.1
+			try_destroy()
+			return
+		else
+			return
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)
@@ -729,6 +783,7 @@
 		spawn(400)
 			NF.icon_state = "fire_big"
 			NF.set_light(4)
+
 /obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
 	spawn(80)
 		if (health > 0)

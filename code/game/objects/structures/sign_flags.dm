@@ -79,6 +79,69 @@
 	icon_state = "carpet"
 	layer = OBJ_LAYER - 0.1
 
+/obj/structure/sign
+	anchored = TRUE
+
+/obj/structure/sign/traffic
+	name = "STOP sign"
+	desc = ""
+	icon_state = "stop"
+
+/obj/structure/sign/traffic/stop
+
+/obj/structure/sign/traffic/crossing
+	name = "pedestrian crossing sign"
+	icon_state = "zebracrossing"
+
+/obj/structure/sign/traffic/noentry
+	name = "no entry sign"
+	icon_state = "donotenter"
+
+/obj/structure/sign/traffic/yeld
+	name = "yeld sign"
+	icon_state = "yeld"
+
+/obj/structure/sign/traffic/zebracrossing
+	name = "pedestrian crossing"
+	icon_state = "zebra"
+	layer = 2
+/obj/structure/sign/traffic/zebracrossing/ex_act(severity)
+	switch(severity)
+		if (3.0)
+			qdel(src)
+			return
+		else
+	return
+/obj/structure/sign/traffic/central
+	name = "white line"
+	icon_state = "centralline"
+	layer = 2
+/obj/structure/sign/traffic/central/ex_act(severity)
+	switch(severity)
+		if (3.0)
+			qdel(src)
+			return
+		else
+	return
+/obj/structure/sign/traffic/side
+	name = "yellow line"
+	icon_state = "sideline"
+	layer = 2
+/obj/structure/sign/traffic/side/ex_act(severity)
+	switch(severity)
+		if (3.0)
+			qdel(src)
+			return
+		else
+	return
+/obj/structure/sign/traffic/cone
+	name = "traffic cone"
+	icon_state = "cone1"
+	anchored = FALSE
+
+/obj/structure/sign/traffic/cone/New()
+	..()
+	icon_state = pick("cone1","cone2")
 
 /obj/structure/sign/flag/medical
 	name = "Medical flag"
@@ -129,6 +192,17 @@
 	name = "Third Reich flag"
 	desc = "The red, white and black flag of the Third Reich."
 	icon_state = "flag_nazi"
+
+/obj/structure/sign/flag/israel
+	name = "Israel flag"
+	desc = "The white and blue flag of Israel, with the 6 pointed star in the middle."
+	icon_state = "flag_israel"
+
+/obj/structure/sign/flag/hezbollah
+	name = "Hezbollah flag"
+	desc = "The yellow and green flag of the Shia Hezbollah organization."
+	icon_state = "flag_hezbollah"
+
 /obj/structure/sign/flag/custom
 	name = "flag"
 	desc = "A flag."

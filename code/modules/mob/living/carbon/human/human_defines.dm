@@ -109,6 +109,8 @@
 
 	var/circumcised = FALSE
 	var/ptsd = 0
+	var/hygiene = 200
+	var/mood_modifier = 1
 	/* These are stats. They affect how fast and how well you can do certain
 	 * actions. All stats have a min (stats[stat][1]) and a max (stats[stat][2]),
 	 * but currently no stats 'deteriorate' (in the future strength will),

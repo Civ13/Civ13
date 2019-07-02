@@ -2,7 +2,7 @@
 	requires_power = FALSE
 	has_gravity = TRUE
 	no_air = FALSE
-	base_turf = /turf/floor/beach/water //The base turf type of the area, which can be used to override the z-level's base turf
+	base_turf = /turf/floor/dirt //The base turf type of the area, which can be used to override the z-level's base turf
 	sound_env = STANDARD_STATION
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
@@ -223,7 +223,7 @@
 /area/caribbean/no_mans_land
 	name = "No Man's Land"
 	icon_state = "purple1"
-
+	base_turf = /turf/floor/dirt
 /area/caribbean/no_mans_land/tundra
 	name = "No Man's Land"
 	icon_state = "purple1"
@@ -528,6 +528,10 @@
 	location = AREA_INSIDE
 	icon_state = "red2"
 
+/area/caribbean/japanese/land/inside/command
+	location = AREA_INSIDE
+	icon_state = "red2"
+
 
 /area/caribbean/japanese/land/outside
 	icon_state = "red3"
@@ -542,6 +546,10 @@
 
 
 /area/caribbean/russian/land/inside
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+/area/caribbean/russian/land/inside/command
 	location = AREA_INSIDE
 	icon_state = "red2"
 
@@ -604,6 +612,33 @@
 	location = AREA_INSIDE
 	icon_state = "red2"
 /area/caribbean/german/inside/objective
+
+/area/caribbean/german/reichstag/lobby
+	name = "Reichstag Lobby"
+	base_turf = /turf/floor/dirt
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+/area/caribbean/german/reichstag/first
+	name = "Reichstag 1st Floor"
+	base_turf = /turf/floor/broken_floor
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+/area/caribbean/german/reichstag/second
+	name = "Reichstag 2nd Floor"
+	base_turf = /turf/floor/broken_floor
+	location = AREA_INSIDE
+	icon_state = "red2"
+
+/area/caribbean/german/reichstag/roof
+	name = "Reichstag Roof"
+	base_turf = /turf/floor/broken_floor
+	icon_state = "red2"
+/area/caribbean/german/reichstag/roof/objective
+	name = "Reichstag Roof Objective"
+	icon_state = "red3"
+
 /area/caribbean/british/ship
 	name = "British Ship"
 	icon_state = "blue1"

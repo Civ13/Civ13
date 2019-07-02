@@ -4,9 +4,9 @@
 #define HUMAN_MAX_OXYLOSS TRUE //Defines how much oxyloss humans can get per tick. A tile with no air at all (such as space) applies this value, otherwise it's a percentage of it.
 #define HUMAN_CRIT_MAX_OXYLOSS ( 2.0 / 6) //The amount of damage you'll get when in critical condition. We want this to be a 5 minute deal = 300s. There are 50HP to get through, so (1/6)*last_tick_duration per second. Breaths however only happen every 4 ticks. last_tick_duration = ~2.0 on average
 
-#define HEAT_DAMAGE_LEVEL_1 2 //Amount of damage applied when your body temperature just passes the 360.15k safety point
-#define HEAT_DAMAGE_LEVEL_2 4 //Amount of damage applied when your body temperature passes the 400K point
-#define HEAT_DAMAGE_LEVEL_3 8 //Amount of damage applied when your body temperature passes the 1000K point
+#define HEAT_DAMAGE_LEVEL_1 1 //Amount of damage applied when your body temperature just passes the 360.15k safety point
+#define HEAT_DAMAGE_LEVEL_2 2 //Amount of damage applied when your body temperature passes the 400K point
+#define HEAT_DAMAGE_LEVEL_3 4 //Amount of damage applied when your body temperature passes the 1000K point
 
 #define COLD_DAMAGE_LEVEL_1 2 //Amount of damage applied when your body temperature just passes the 260.15k safety point
 #define COLD_DAMAGE_LEVEL_2 4 //Amount of damage applied when your body temperature passes the 200K point
@@ -145,6 +145,8 @@
 			var/ind = addictions[ad]
 			process_addictions(ad,ind)
 			addictions[ad] -= 0.05
+		if (addictions[ad] < 0)
+			addictions[ad] = 0
 
 // disease stuff
 	if (inducedSSD && disease && disease_progression <= 15)
@@ -391,8 +393,15 @@
 
 		handle_pain()
 
-		handle_ptsd()
-
+		if (!inducedSSD)
+			handle_excrement()
+			if (map.civilizations)
+				handle_hygiene()
+			handle_mood()
+			handle_ptsd()
+		if (!map.civilizations)
+			bowels = 0
+			bladder = 0
 		handle_medical_side_effects()
 		if (map.civilizations)
 			handle_hair_growth()
@@ -550,7 +559,7 @@
 				if ("semiarid")
 					loc_temp = 12
 				if ("desert")
-					loc_temp = 39
+					loc_temp = 34
 				if ("jungle")
 					loc_temp = 32
 				if ("savanna")
@@ -569,7 +578,7 @@
 				if ("semiarid")
 					loc_temp = 35
 				if ("desert")
-					loc_temp = 55
+					loc_temp = 50
 				if ("jungle")
 					loc_temp = 40
 				if ("savanna")
@@ -588,13 +597,13 @@
 				if ("semiarid")
 					loc_temp = 28
 				if ("desert")
-					loc_temp = 45
+					loc_temp = 40
 				if ("jungle")
 					loc_temp = 34
 				if ("savanna")
 					loc_temp = 29
 		if ("Dry Season")
-			loc_temp = 40
+			loc_temp = 45
 		if ("Wet Season")
 			loc_temp = 30
 
@@ -655,11 +664,11 @@
 				break
 	//inside areas have natural insulation, so the temp will be more moderate than outside.
 	if (mob_area.location == AREA_INSIDE)
-		if (loc_temp > 295)
-			loc_temp = (max(295,loc_temp-40))
-		else if (loc_temp < 290)
-			loc_temp = (min(290,loc_temp+40))
-	if (loc_temp > 17 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+		if (loc_temp > 22)
+			loc_temp = (max(22,loc_temp-40))
+		else if (loc_temp < 18)
+			loc_temp = (min(18,loc_temp+40))
+	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -682,16 +691,22 @@
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_COLD_DIVISOR) //this will be negative
-	else if (loc_temp > bodytemperature-10) //Over 27 degrees = unconfortable with too much clothing
+	else if (loc_temp > bodytemperature) //Over 37 degrees = unconfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
-			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_HEAT_DIVISOR)
+			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
 			temp_adj = abs(temp_adj)
 	if (temp_adj > 0)
 		temp_adj = min(temp_adj,8)
-	else
+	else if (temp_adj < 0)
 		temp_adj = max(temp_adj,-8)
-	bodytemperature += temp_adj
+	else
+		if (loc_temp < bodytemperature)
+			temp_adj = -0.1
+		if (loc_temp > bodytemperature)
+			temp_adj = 0.1
+	if (map && map.civilizations)
+		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
 	if (bodytemperature >= species.heat_level_1)
 		//Body temperature is too hot.
@@ -1349,16 +1364,25 @@
 					else
 						holder2.icon_state = "fr_basic"
 				if (SPANISH)
-					holder2.icon_state = "sp_basic"
+					if (map.ordinal_age <= 3)
+						holder2.icon_state = "sp_basic"
+					else
+						holder2.icon_state = "spn_basic"
 				if (PORTUGUESE)
-					holder2.icon_state = "pt_basic"
+					if (map.ordinal_age <= 4)
+						holder2.icon_state = "pt_basic"
+					else
+						holder2.icon_state = "pt2_basic"
 				if (INDIANS)
 					holder2.icon_state = "ind_basic"
 				if (DUTCH)
 					holder2.icon_state = "nl_basic"
 				if (ARAB)
 					if (map.ordinal_age >= 6)
-						holder2.icon_state = "isis_basic"
+						if (map.ID == MAP_ARAB_TOWN)
+							holder2.icon_state = "hez_basic"
+						else
+							holder2.icon_state = "isis_basic"
 					else
 						holder2.icon_state = "arab_basic"
 				if (GREEK)
@@ -1370,15 +1394,22 @@
 				if (RUSSIAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ru_basic"
-					else
+					else if (map.ordinal_age == 6 || map.ordinal_age == 7)
 						holder2.icon_state = "sov_basic"
+					else
+						holder2.icon_state = "ru_basic"
 				if (GERMAN)
 					if (map.ordinal_age <= 5)
 						holder2.icon_state = "ger_basic"
-					else
+					else if (map.ordinal_age == 6)
 						holder2.icon_state = "ger2_basic"
+					else
+						holder2.icon_state = "ger3_basic"
 				if (AMERICAN)
-					holder2.icon_state = "us_basic"
+					if (map.ID == MAP_ARAB_TOWN)
+						holder2.icon_state = "idf_basic"
+					else
+						holder2.icon_state = "us_basic"
 				if (VIETNAMESE)
 					holder2.icon_state = "vc_basic"
 				if (CIVILIAN)

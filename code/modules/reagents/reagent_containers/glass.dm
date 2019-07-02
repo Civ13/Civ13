@@ -19,6 +19,7 @@
 
 	var/list/can_be_placed_into = list(
 		/obj/structure/chemical_dispenser,
+		/obj/structure/lab_distillery,
 		/obj/structure/table,
 		/obj/structure/closet,
 		/obj/structure/sink,
@@ -93,11 +94,11 @@
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
 			if (reagents.has_reagent("petroleum", 5))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (reagents.has_reagent("gasoline", 5))
+			else if (reagents.has_reagent("gasoline", 5))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (reagents.has_reagent("diesel", 10))
+			else if (reagents.has_reagent("diesel", 10))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
-			if (reagents.has_reagent("biodiesel", 10))
+			else if (reagents.has_reagent("biodiesel", 10))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
 			else if (reagents.has_reagent("olive_oil", 15))
 				new/obj/effect/decal/cleanable/blood/oil(user.loc)
@@ -209,12 +210,97 @@
 			reagents.add_reagent("cotton", CT.amount)
 			qdel(W)
 			return
+		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/corn))
+
+			if (!is_open_container())
+				user << "<span class='notice'>\The [src] is closed.</span>"
+				return
+			if (!reagents.get_free_space())
+				user << "<span class='notice'>[src] is full.</span>"
+				return
+
+			user << "You grind the corn, producing corn oil."
+			reagents.add_reagent("cornoil", 5)
+			qdel(W)
+			return
 	proc/update_name_label()
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		if (label_text == "")
 			name = base_name
 		else
 			name = "[base_name] ([label_text])"
+
+/obj/item/weapon/reagent_containers/glass/beaker
+	name = "beaker"
+	desc = "A beaker."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "beaker"
+	item_state = "beaker"
+	matter = list("glass" = 500)
+
+	New()
+		..()
+		desc += " Can hold up to [volume] units."
+
+	on_reagent_change()
+		update_icon()
+
+	pickup(mob/user)
+		..()
+		playsound(src,'sound/effects/glassknock.ogg',50,1)
+		update_icon()
+
+	dropped(mob/user)
+		..()
+		playsound(src,'sound/effects/Glasshit.ogg',50,1)
+		update_icon()
+
+	attack_hand()
+		..()
+		update_icon()
+
+	update_icon()
+		overlays.Cut()
+
+		if (reagents.total_volume)
+			var/image/filling = image('icons/obj/reagentfillings.dmi', src, "[icon_state]10")
+
+			var/percent = round((reagents.total_volume / volume) * 100)
+			switch(percent)
+				if (0 to 9)		filling.icon_state = "[icon_state]-10"
+				if (10 to 24) 	filling.icon_state = "[icon_state]10"
+				if (25 to 49)	filling.icon_state = "[icon_state]25"
+				if (50 to 74)	filling.icon_state = "[icon_state]50"
+				if (75 to 79)	filling.icon_state = "[icon_state]75"
+				if (80 to 90)	filling.icon_state = "[icon_state]80"
+				if (91 to INFINITY)	filling.icon_state = "[icon_state]100"
+
+			filling.color = reagents.get_color()
+			overlays += filling
+
+		if (!is_open_container())
+			var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
+			overlays += lid
+
+/obj/item/weapon/reagent_containers/glass/beaker/large
+	name = "large beaker"
+	desc = "A large beaker."
+	icon_state = "beakerlarge"
+	matter = list("glass" = 5000)
+	volume = 120
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(5,10,15,25,30,60,120)
+	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/beaker/vial
+	name = "vial"
+	desc = "A small glass vial."
+	icon_state = "vial"
+	matter = list("glass" = 250)
+	volume = 30
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(5,10,15,25)
+	flags = OPENCONTAINER
 
 /obj/item/weapon/reagent_containers/glass/bucket
 	desc = "It's a bucket."

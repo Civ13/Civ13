@@ -65,9 +65,10 @@
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
-	if (map.chad_mode)
-		melee_damage_lower *= 1.5
-		melee_damage_upper *= 1.5
+	if (map)
+		if (map.chad_mode)
+			melee_damage_lower *= 1.5
+			melee_damage_upper *= 1.5
 /mob/living/simple_animal/Login()
 	if (src && client)
 		client.screen = null
@@ -305,7 +306,10 @@
 		if (!O.force && !istype(O, /obj/item/stack/medical/bruise_pack))
 			visible_message("<span class='notice'>[user] gently taps [src] with \the [O].</span>")
 		else
-			O.attack(src, user, user.targeted_organ)
+			var/tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			O.attack(src, user, tgt)
 	else if (O.sharp && !istype(src, /mob/living/simple_animal/hostage))
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_HURT && stat == DEAD)
 			if (istype(src, /mob/living/simple_animal/frog/poisonous))
@@ -313,6 +317,9 @@
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
 					new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					if (istype(user, /mob/living/carbon/human))
+						var/mob/living/carbon/human/HM = user
+						HM.adaptStat("medical", 0.3)
 					crush()
 					qdel(src)
 			else
@@ -332,9 +339,12 @@
 						amt = 5
 					if (mob_size == MOB_HUGE)
 						amt = 8
-					for (var/v in TRUE to amt)
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-						meat.name = "[name] meatsteak"
+					var/namt = amt-2
+					if (namt <= 0)
+						namt = 1
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+					meat.name = "[name] meatsteak"
+					meat.amount = namt
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 						leather.name = "[name] leather"
@@ -343,6 +353,9 @@
 						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 						bone.name = "[name] bone"
 						bone.amount = (amt-2)
+					if (istype(user, /mob/living/carbon/human))
+						var/mob/living/carbon/human/HM = user
+						HM.adaptStat("medical", amt/3)
 					crush()
 					qdel(src)
 		if (!istype(O, /obj/item/weapon/reagent_containers) && user.a_intent == I_GRAB && stat == DEAD)
@@ -387,13 +400,18 @@
 				else if (istype(src, /mob/living/simple_animal/cat))
 					var/obj/item/stack/material/catpelt/NP = new/obj/item/stack/material/catpelt(get_turf(src))
 					NP.amount = 3
+				if (istype(user, /mob/living/carbon/human))
+					var/mob/living/carbon/human/HM = user
+					HM.adaptStat("medical", amt/3)
 				crush()
 				qdel(src)
 		else if (istype(O, /obj/item/weapon/reagent_containers/glass))
 			return
 		else
-			O.attack(src, user, user.targeted_organ)
-
+			var/tgt = user.targeted_organ
+			if (user.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			O.attack(src, user, tgt)
 /mob/living/simple_animal/hit_with_weapon(obj/item/O, mob/living/user, var/effective_force, var/hit_zone)
 
 	visible_message("<span class='danger'>\The [src] has been attacked with \the [O] by [user].</span>")
@@ -515,22 +533,7 @@
 /mob/living/simple_animal/put_in_hands(var/obj/item/W) // No hands.
 	W.loc = get_turf(src)
 	return TRUE
-/*
-// Harvest an animal's delicious byproducts
-/mob/living/simple_animal/proc/harvest(var/mob/user)
-	var/actual_meat_amount = max(1,(meat_amount/2))
-	if (meat_type && actual_meat_amount>0 && (stat == DEAD))
-		for (var/i=0;i<actual_meat_amount;i++)
-			var/obj/item/meat = new meat_type(get_turf(src))
-			meat.name = "[name] [meat.name]"
-		if (issmall(src))
-			user.visible_message("<span class='danger'>[user] chops up \the [src]!</span>")
-			new/obj/effect/decal/cleanable/blood/splatter(get_turf(src))
-			qdel(src)
-		else
-			user.visible_message("<span class='danger'>[user] butchers \the [src] messily!</span>")
-			gib()
-*/
+
 /mob/living/simple_animal/handle_fire()
 	return
 

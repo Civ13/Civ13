@@ -13,36 +13,55 @@
 110-120 Industrial Age (1870-1900)
 120-130 Early Modern Age (1900-1910)
 130-140 Interwar period (1910-1950)
-140-150 Space age (1950-Present
-
-///the next time lines are of the SS13 universe\\\
-
-150-170 Earth uniteds ( 1950-2050)
-170-230 Nanotrason hase taken over (2050-the SS13 time line 2560
+140-150 Space age (1950-Present)
 ///////////////////////////////////////////////////////
 */
 
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
-	var/list/current_res = list(0,0,0)
-	if (civ == "Nomad")
-		current_res = map.custom_civs[user.civilization]
+	if (map && map.civilizations)
+		var/list/current_res = list(0,0,0)
+		if (civ == "Nomad" && user)
+			current_res = map.custom_civs[user.civilization]
+		else
+			if (civ == "Civilization A Citizen")
+				current_res = map.civa_research
+			else if (civ == "Civilization B Citizen")
+				current_res = map.civb_research
+			else if (civ == "Civilization C Citizen")
+				current_res = map.civc_research
+			else if (civ == "Civilization D Citizen")
+				current_res = map.civd_research
+			else if (civ == "Civilization E Citizen")
+				current_res = map.cive_research
+			else if (civ == "Civilization F Citizen")
+				current_res = map.civf_research
+		generate_recipes_civs(current_res)
 	else
-		if (civ == "Civilization A Citizen")
-			current_res = map.civa_research
-		else if (civ == "Civilization B Citizen")
-			current_res = map.civb_research
-		else if (civ == "Civilization C Citizen")
-			current_res = map.civc_research
-		else if (civ == "Civilization D Citizen")
-			current_res = map.civd_research
-		else if (civ == "Civilization E Citizen")
-			current_res = map.cive_research
-		else if (civ == "Civilization F Citizen")
-			current_res = map.civf_research
-	generate_recipes_civs(current_res)
+		if (!recipes)
+			var/list/current_res = list(0,0,0)
+			switch (map.ordinal_age)
+				if (0)
+					current_res = list(0,0,0)
+				if (1)
+					current_res = list(35,35,35)
+				if (2)
+					current_res = list(60,60,60)
+				if (3)
+					current_res = list(85,85,85)
+				if (4)
+					current_res = list(105,105,105)
+				if (5)
+					current_res = list(125,125,125)
+				if (6)
+					current_res = list(152,152,152)
+				if (7)
+					current_res = list(185,185,185)
+				if (8)
+					current_res = list(210,210,210)
+			generate_recipes_civs(current_res)
 	return recipes
 
-/material/proc/generate_recipes_civs(var/current_res = "none")
+/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0))
 
 	recipes = list()
 	if (hardness>=40 && current_res[1] > 8)
@@ -116,6 +135,10 @@
 		recipes += new/datum/stack_recipe("bullet pouch", /obj/item/ammo_magazine/emptypouch, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("hip holster", /obj/item/clothing/accessory/holster/hip, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("double hip holster", /obj/item/clothing/accessory/holster/hip/double, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[3] >= 99)
+		recipes += new/datum/stack_recipe("khaki webbing", /obj/item/clothing/accessory/storage/webbing/khaki_webbing, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("green webbing", /obj/item/clothing/accessory/storage/webbing/green_webbing, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("light webbing", /obj/item/clothing/accessory/storage/webbing/light, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (current_res[1] >= 55 && current_res[3] >= 25)
 		recipes += new/datum/stack_recipe("black leather shoes", /obj/item/clothing/shoes/soldiershoes, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -201,6 +224,10 @@
 			new/datum/stack_recipe("borchardt magazine", /obj/item/ammo_magazine/borchardt/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("luger magazine", /obj/item/ammo_magazine/luger/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("nambu magazine", /obj/item/ammo_magazine/c8mmnambu/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+
+	if (current_res[1] >= 95)
+		recipes += new/datum/stack_recipe("canner", /obj/structure/canner, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
+
 	if (current_res[1] >= 115 && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("engine maker", /obj/item/weapon/enginemaker, 5, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[2] >= 90 && map.ordinal_age >= 4)
@@ -277,10 +304,13 @@
 
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 			new/datum/stack_recipe("door", /obj/structure/simple_door/key_door/anyone/wood, 5, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("rustic door", /obj/structure/simple_door/key_door/anyone/rustic, 4, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("floor tile", /obj/covers/wood, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("wood stairs", /obj/covers/wood/stairs, 2, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("window", /obj/structure/window_frame, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("soft wood wall", /obj/covers/wood_wall, 8, _time = 170, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("log wall", /obj/covers/wood_wall/log, 7, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("log wall corner", /obj/covers/wood_wall/log/corner, 7, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -397,7 +427,8 @@
 	if (current_res[1] < 47)
 		recipes += new/datum/stack_recipe_list("religious & decoration", list(
 			new/datum/stack_recipe("wood altar", /obj/structure/altar/wood, 20, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("native wood mask", /obj/structure/religious/tribalmask, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("decorative wood mask", /obj/structure/religious/tribalmask, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("wearable wood mask", /obj/item/clothing/mask/wooden, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("impaled skull", /obj/structure/religious/impaledskull, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("religious & decoration", list(
@@ -532,7 +563,12 @@
 			new/datum/stack_recipe("light tube", /obj/item/lightbulb/tube, 1, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("lightbulb", /obj/item/lightbulb, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (map.ordinal_age >= 4)
-		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("vial", /obj/item/weapon/reagent_containers/glass/beaker/vial, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("beaker", /obj/item/weapon/reagent_containers/glass/beaker, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("large beaker", /obj/item/weapon/reagent_containers/glass/beaker/large, 3, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("laboratory distiller", /obj/structure/lab_distillery, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("toilet", /obj/structure/toilet, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/stone/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -543,6 +579,8 @@
 	recipes += new/datum/stack_recipe("scientific rock slate",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe("road", /obj/covers/road, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone stairs", /obj/covers/cobblestone/stairs, 2, _time = 45, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone altar", /obj/structure/altar/stone, 15, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 28)
@@ -664,6 +702,7 @@
 			new/datum/stack_recipe("tarred hat", /obj/item/clothing/head/tarred_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("rice hat", /obj/item/clothing/head/rice_hat, 3, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("bandana", /obj/item/clothing/head/piratebandana1, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("gat hat", /obj/item/clothing/head/gat, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("artisan hat", /obj/item/clothing/head/artisan, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("feathered hat", /obj/item/clothing/head/feathered_hat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 98 && (current_res[3] < 109))
@@ -725,6 +764,7 @@
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable tribal robe", /obj/item/clothing/under/customtribalrobe, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("linothorax armor", /obj/item/clothing/suit/armor/ancient/linen, 8, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if ((current_res[3] >= 38) && (current_res[3] < 59))
@@ -740,6 +780,7 @@
 			new/datum/stack_recipe("light hanfu", /obj/item/clothing/under/hanfu/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark hanfu", /obj/item/clothing/under/hanfu, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("green hanfu", /obj/item/clothing/under/hanfu/green, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable tribal robe", /obj/item/clothing/under/customtribalrobe, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("artisan clothing", /obj/item/clothing/under/artisan, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("dark artisan clothing", /obj/item/clothing/under/artisan/dark, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light artisan clothing", /obj/item/clothing/under/artisan/light, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -825,7 +866,7 @@
 			new/datum/stack_recipe("fancy red jacket", /obj/item/clothing/suit/storage/jacket/piratejacket5, 10, _time = 180, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/piratejacket3, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/piratejacket4, 4, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[3] >= 89 && current_res[3] < 112 )
+	if (current_res[3] >= 89 && current_res[3] < 112)
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("leather overcoat", /obj/item/clothing/suit/storage/jacket/leatherovercoat1, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("black leather overcoat", /obj/item/clothing/suit/storage/jacket/leatherovercoat2, 6, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -834,7 +875,7 @@
 			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("grey winter coat", /obj/item/clothing/suit/storage/coat/ruscoat/grey, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[3] >= 112)
+	if (current_res[3] >= 112 && current_res[3] < 145)
 		recipes += new/datum/stack_recipe_list("jackets & vests", list(
 			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -847,6 +888,24 @@
 			new/datum/stack_recipe("navy suit", /obj/item/clothing/suit/storage/jacket/navy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("grey winter coat", /obj/item/clothing/suit/storage/coat/ruscoat/grey, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[3] >= 145)
+		recipes += new/datum/stack_recipe_list("jackets & vests", list(
+			new/datum/stack_recipe("black vest", /obj/item/clothing/suit/storage/jacket/blackvest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("blue vest", /obj/item/clothing/suit/storage/jacket/bluevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive vest", /obj/item/clothing/suit/storage/jacket/olivevest, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("charcoal suit", /obj/item/clothing/suit/storage/jacket/charcoal_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("black suit", /obj/item/clothing/suit/storage/jacket/black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("dark black suit", /obj/item/clothing/suit/storage/jacket/really_black_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("burgundy suit", /obj/item/clothing/suit/storage/jacket/burgundy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("checkered suit", /obj/item/clothing/suit/storage/jacket/checkered_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("navy suit", /obj/item/clothing/suit/storage/jacket/navy_suit, 15, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("brown winter coat", /obj/item/clothing/suit/storage/coat/japcoat2/brown, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("grey winter coat", /obj/item/clothing/suit/storage/coat/ruscoat/grey, 10, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive drab NBC suit", /obj/item/clothing/suit/nbc/olive, 12, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("olive drab NBC hood", /obj/item/clothing/head/nbc/olive, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("yellow NBC suit", /obj/item/clothing/suit/nbc, 12, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("yellow NBC hood", /obj/item/clothing/head/nbc, 3, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE),))
+
 	if (current_res[3] < 38)
 		recipes += new/datum/stack_recipe_list("accessories", list(
 			new/datum/stack_recipe("customizable armband", /obj/item/clothing/accessory/custom/armband, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -888,7 +947,7 @@
 	if (current_res[1] >= 18 && current_res[3]>= 26) // Same level that bronze surgical tools can be made.
 		recipes += list(new/datum/stack_recipe("surgery kit", /obj/item/weapon/storage/firstaid/surgery_empty, 6, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 		recipes += list(new/datum/stack_recipe("cigarette pack", /obj/item/weapon/storage/fancy/cigarettes, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE))
-
+	recipes += list(new/datum/stack_recipe("cloth curtain", /obj/structure/curtain, 1, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE))
 	//Carpets - To be expanded upon with borders and such later.
 	if (map.ordinal_age >= 2)
 		recipes += new/datum/stack_recipe_list("carpeting", list(
@@ -1027,6 +1086,10 @@
 /material/tin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("small tin pot", /obj/item/weapon/reagent_containers/glass/small_pot, 3, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[1] >= 95)
+		recipes += new/datum/stack_recipe("small tin can (x3)", /obj/item/weapon/can/small, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("tin can (x2)", /obj/item/weapon/can, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("large tin can", /obj/item/weapon/can/large, 1, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 
 /material/bearpelt/brown/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -1079,6 +1142,8 @@
 	recipes += new/datum/stack_recipe("telephone", /obj/structure/telephone, 5, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("radio transmitter", /obj/structure/radio/transmitter, 12, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("radio receiver", /obj/structure/radio, 3, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("geiger counter", /obj/item/weapon/geiger_counter, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
+
 //	recipes += new/datum/stack_recipe("two-way radio", /obj/structure/radio/transmitter_receiver, 10, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 
 /material/woolcloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
@@ -1243,5 +1308,9 @@
 			new/datum/stack_recipe("yellow bedsheet", /obj/item/weapon/bedsheet/blue, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red bedsheet", /obj/item/weapon/bedsheet/red, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
 
-/material/barbedwire/generate_recipes_civs()
+/material/barbedwire/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	recipes = list(new/datum/stack_recipe("barbwire", /obj/structure/barbwire, _time = 20))
+
+/material/lead/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	if (current_res[3] >= 65)
+		recipes = list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
