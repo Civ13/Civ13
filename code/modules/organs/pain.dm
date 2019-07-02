@@ -54,33 +54,30 @@ mob/var/next_pain_time = FALSE
 // message is the custom message to be displayed
 // power decides how much painkillers will stop the message
 // force means it ignores anti-spam timer
-mob/living/carbon/proc/custom_pain(var/message, var/power, var/force, var/obj/item/organ/external/affecting, var/nohalloss, var/flash_pain)
+mob/living/carbon/proc/custom_pain(var/message, var/power = 0, var/force = FALSE, var/obj/item/organ/external/affecting, var/nohalloss = FALSE, var/flash_pain = 0)
 	if(!message || stat || chem_effects[CE_PAINKILLER] > power)
 		return 0
 
 	// Excessive halloss is horrible, just give them enough to make it visible.
 	if(!nohalloss && (power || flash_pain))//Flash pain is so that handle_pain actually makes use of this proc to flash pain.
-		var/actual_flash
 		if(affecting)
 			affecting.add_pain(ceil(power/2))
-			if(power > flash_pain)
-				actual_flash = power
-			else
-				actual_flash = flash_pain
-
-			switch(actual_flash)
-				if(1 to 10)
-					flash_weakest_pain()
-				if(11 to 90)
-					flash_weak_pain()
-					if(stuttering < 10)
-						stuttering += 5
-				if(91 to INFINITY)
-					flash_pain()
-					if(stuttering < 10)
-						stuttering += 10
 		else
 			adjustHalLoss(ceil(power/2))
+
+		var/actual_flash = max(power,flash_pain)
+
+		switch(actual_flash)
+			if(1 to 10)
+				flash_weakest_pain()
+			if(11 to 90)
+				flash_weak_pain()
+				if(stuttering < 10)
+					stuttering += 5
+			if(91 to INFINITY)
+				flash_pain()
+				if(stuttering < 10)
+					stuttering += 10
 
 	// Anti message spam checks
 	if(force || (message != last_pain_message) || (world.time >= next_pain_time))
