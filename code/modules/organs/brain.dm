@@ -1,6 +1,6 @@
 /obj/item/organ/brain
 	name = "brain"
-	health = 100 //They need to live awhile longer than other organs. Is this even used by organ code anymore?
+	health = 60 //They need to live awhile longer than other organs. Is this even used by organ code anymore?
 	desc = "A piece of juicy meat found in a person's head."
 	organ_tag = "brain"
 	parent_organ = "head"
@@ -24,7 +24,7 @@
 /obj/item/organ/brain/New()
 	..()
 	health = config.default_brain_health
-	max_damage = 100
+	max_damage = 60
 	if(species)
 		max_damage = species.total_health
 	min_bruised_damage = max_damage*0.25
