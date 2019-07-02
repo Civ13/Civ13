@@ -16,11 +16,11 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 5,
-		"Yspace" = 1,
+		"Xspace" = 2,
+		"Yspace" = 3,
 		"ColCount" = 7,
 		"Xslot" = 5,
-		"Yslot" = 1
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(
@@ -95,11 +95,11 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 7,
-		"Yspace" = 3,
+		"Xspace" = 2,
+		"Yspace" = 5,
 		"ColCount" = 7,
-		"Xslot" = 7,
-		"Yslot" = 3
+		"Xslot" = 5,
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(
@@ -171,11 +171,11 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 7,
-		"Yspace" = 3,
+		"Xspace" = 2,
+		"Yspace" = 5,
 		"ColCount" = 7,
-		"Xslot" = 7,
-		"Yslot" = 3
+		"Xslot" = 5,
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(
@@ -238,11 +238,11 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 7,
-		"Yspace" = 3,
+		"Xspace" = 2,
+		"Yspace" = 5,
 		"ColCount" = 7,
-		"Xslot" = 7,
-		"Yslot" = 3
+		"Xslot" = 5,
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(

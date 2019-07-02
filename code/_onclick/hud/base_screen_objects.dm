@@ -14,7 +14,7 @@
 
 /obj/screen
 	name = ""
-	icon = 'icons/mob/screen/effects.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	layer = 20.0
 	plane = HUD_PLANE
 
@@ -27,6 +27,8 @@
 	parentmob = _parentmob
 	name = _name
 	screen_loc = _screen_loc
+	if (parentmob)
+		icon = parentmob.client.prefs.UI_file
 	if (_icon)
 		icon = _icon
 	if (_icon_state)
@@ -416,6 +418,10 @@
 
 /obj/screen/storage
 	name = "storage"
+
+/obj/screen/storage/New()
+	icon = usr.client.prefs.UI_file
+	..()
 
 /obj/screen/storage/Click()
 	if (!usr.canClick())
