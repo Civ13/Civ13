@@ -18,7 +18,7 @@
 	var/const/damage_threshold_count = 10
 	var/damage_threshold_value = 10
 	var/healed_threshold = 1
-	var/oxygen_reserve = 6
+	var/oxygen_reserve = 90 //number of processes that the brain can hold with low blood pressure 1 process = 2 secs, according to current obj process
 
 
 /obj/item/organ/brain/New()
@@ -132,27 +132,37 @@
 			if(BLOOD_VOLUME_SAFE to INFINITY)
 				if((damage%damage_threshold_value)>=1)
 					damage--
+					if (oxygen_reserve < 90)
+						oxygen_reserve++
 			if(BLOOD_VOLUME_OKAY to BLOOD_VOLUME_SAFE)
 				if(prob(1))
 					to_chat(owner, "<span class='warning'>You feel [pick("dizzy","woozy","faint")]...</span>")
-				if(!past_damage_threshold(2) && prob(5))
+				if (oxygen_reserve > 0)
+					oxygen_reserve--
+				if(!past_damage_threshold(2) && oxygen_reserve <= 1)
 					take_damage(1)
 			if(BLOOD_VOLUME_BAD to BLOOD_VOLUME_OKAY)
 				owner.eye_blurry = max(owner.eye_blurry,6)
-				if(!past_damage_threshold(4) && prob(5))
+				if (oxygen_reserve > 0)
+					oxygen_reserve--
+				if(!past_damage_threshold(4) && oxygen_reserve <= 1)
 					take_damage(1)
 				if(prob(15))
 					owner.Paralyse(rand(1,3))
 					to_chat(owner, "<span class='warning'>You feel extremely [pick("dizzy","woozy","faint")]...</span>")
 			if(BLOOD_VOLUME_SURVIVE to BLOOD_VOLUME_BAD)
 				owner.eye_blurry = max(owner.eye_blurry,6)
-				if(!past_damage_threshold(6) && prob(10))
+				if (oxygen_reserve > 0)
+					oxygen_reserve--
+				if(!past_damage_threshold(6) && oxygen_reserve <= 1)
 					take_damage(1)
 				if(prob(15))
 					owner.Paralyse(3,5)
 					to_chat(owner, "<span class='warning'>You feel extremely [pick("dizzy","woozy","faint")]...</span>")
 			if(-(INFINITY) to BLOOD_VOLUME_SURVIVE) // Also see heart.dm, being below this point puts you into cardiac arrest.
 				owner.eye_blurry = max(owner.eye_blurry,6)
-				if (prob(15))
+				if (oxygen_reserve > 0)
+					oxygen_reserve -= 2
+				if (oxygen_reserve <= 1)
 					take_damage(1)
 	..()

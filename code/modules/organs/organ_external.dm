@@ -62,7 +62,7 @@
 	var/pain = FALSE
 	var/fracturetimer = 0
 	var/has_tendon = FALSE             // Can this limb be hamstrung?
-	var/artery_name = "artery"         // Flavour text for cartoid artery, aorta, etc.
+	var/artery_name = "artery"         // Flavour text for carotid artery, aorta, etc.
 	var/arterial_bleed_severity = 1    // Multiplier for bleeding in a limb.
 	var/tendon_name = "tendon"         // Flavour text for Achilles tendon, etc.
 	var/prosthesis = FALSE
