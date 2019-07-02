@@ -41,6 +41,7 @@
 	parent_organ = "head"
 	relative_size = 10
 	var/list/eye_colour = list(0,0,0)
+	min_broken_damage = 60
 
 /obj/item/organ/eyes/proc/update_colour()
 	if (!owner)
