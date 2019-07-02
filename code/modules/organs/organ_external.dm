@@ -1369,7 +1369,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/sever_artery()
 	if(!(status & ORGAN_ARTERY_CUT) && species && species.has_organ["heart"])
 		status |= ORGAN_ARTERY_CUT
-		if(artery_name == "cartoid artery")
+		if(artery_name == "carotid artery")
 			playsound(owner.loc, 'sound/voice/throat.ogg', 50, 1, -1)
 		return TRUE
 	return FALSE
@@ -1390,3 +1390,33 @@ Note that amputating the affected organ does in fact remove the infection from t
 		owner.custom_pain("A piece of bone in your [name] moves painfully!", 50)
 		var/obj/item/organ/I = pick(internal_organs)
 		I.take_damage(rand(3,5))
+
+// Pain/halloss
+/obj/item/organ/external/proc/get_pain()
+
+	var/lasting_pain = 0
+	if(is_broken())
+		lasting_pain += 10
+	else if(is_dislocated())
+		lasting_pain += 5
+	return pain + lasting_pain + 1.2 * brute_dam + 1.5 * burn_dam
+
+/obj/item/organ/external/proc/remove_pain(var/amount)
+
+	var/last_pain = pain
+	pain = max(0,min(max_damage,pain-amount))
+	return -(pain-last_pain)
+
+/obj/item/organ/external/proc/add_pain(var/amount)
+
+	var/last_pain = pain
+	pain = max(0,min(max_damage,pain+amount))
+	if(owner && ((amount > 15 && prob(20)) || (amount > 30 && prob(60))))
+		owner.emote("painscream")
+	return pain-last_pain
+
+/obj/item/organ/external/proc/stun_act(var/stun_amount, var/agony_amount)
+	return
+
+/obj/item/organ/external/proc/get_agony_multiplier()
+	return 1

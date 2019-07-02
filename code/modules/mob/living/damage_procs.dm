@@ -36,6 +36,7 @@
 	if (oxy)	apply_damage(oxy, OXY, def_zone, blocked)
 	if (clone)	apply_damage(clone, CLONE, def_zone, blocked)
 	if (halloss) apply_damage(halloss, HALLOSS, def_zone, blocked)
+	flash_weak_pain()
 	return TRUE
 
 
