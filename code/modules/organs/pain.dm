@@ -34,8 +34,6 @@ mob/var/next_pain_time = FALSE
 	if (amount > 10 && istype(src,/mob/living/carbon/human))
 		if (src:paralysis)
 			src:paralysis = max(0, src:paralysis-round(amount/10))
-	if (amount > 50 && prob(amount / 5))
-		src:drop_item()
 	var/msg
 
 	switch(amount)
@@ -105,8 +103,6 @@ mob/living/carbon/human/proc/handle_pain()
 	if(damaged_organ && chem_effects[CE_PAINKILLER] < maxdam)
 		if(maxdam > 10 && paralysis)
 			paralysis = max(0, paralysis - round(maxdam/10))
-		if(maxdam > 50 && prob(maxdam / 5))
-			drop_item()
 		var/burning = damaged_organ.burn_dam > damaged_organ.brute_dam
 		var/msg
 		switch(maxdam)
