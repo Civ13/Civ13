@@ -420,7 +420,8 @@
 	name = "storage"
 
 /obj/screen/storage/New()
-	icon = usr.client.prefs.UI_file
+	if (usr && usr.client)
+		icon = usr.client.prefs.UI_file
 	..()
 
 /obj/screen/storage/Click()
