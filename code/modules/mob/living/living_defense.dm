@@ -73,7 +73,7 @@
 			instadeath = 10
 		if (instadeath > 0)
 			if (prob(instadeath))
-				adjustBrainLoss(80)
+				death()
 	if (!P.nodamage)
 		apply_damage(damage, P.damage_type, def_zone, absorb, P, sharp=proj_sharp, edge=proj_edge)
 

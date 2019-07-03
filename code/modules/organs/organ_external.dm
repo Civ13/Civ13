@@ -4,7 +4,7 @@
 
 //These control the damage thresholds for the various ways of removing limbs
 //Numbers below 1.0 = more damage required
-#define DROPLIMB_THRESHOLD_DESTROY 0.86 // 66.3 damage to destroy the head: all rifles can do it now - Kachnov
+#define DROPLIMB_THRESHOLD_DESTROY 0.95
 #define DROPLIMB_THRESHOLD_EDGE 1
 #define DROPLIMB_THRESHOLD_TEAROFF 0.9
 
