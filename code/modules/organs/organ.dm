@@ -150,13 +150,13 @@ var/list/organ_cache = list()
 	//** Handle the effects of infections
 	var/antibiotics = owner.reagents.get_reagent_amount("penicillin")
 
-	if (germ_level > 0 && germ_level < INFECTION_LEVEL_ONE/2 && prob(30))
+	if (germ_level > 0 && germ_level < INFECTION_LEVEL_ONE && prob(30))
 		germ_level--
 
-	if (germ_level >= INFECTION_LEVEL_ONE/2)
+	if (germ_level >= INFECTION_LEVEL_ONE)
 		//aiming for germ level to go from ambient to INFECTION_LEVEL_TWO in an average of 15 minutes
 		if (antibiotics < 5 && prob(round(germ_level/6)))
-			germ_level++
+			germ_level+=0.5
 
 	if (germ_level >= INFECTION_LEVEL_ONE)
 		var/fever_temperature = (owner.species.heat_level_1 - owner.species.body_temperature - 5)* min(germ_level/INFECTION_LEVEL_TWO, TRUE) + owner.species.body_temperature

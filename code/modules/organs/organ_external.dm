@@ -543,7 +543,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		for (var/datum/wound/W in wounds)
 			//Infected wounds raise the organ's germ level
 			if (W.germ_level > germ_level)
-				germ_level++
+				germ_level+=0.5
 				break	//limit increase to a maximum of one per second
 
 /obj/item/organ/external/handle_germ_effects()
@@ -571,7 +571,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 				target_organ = pick(candidate_organs)
 
 		if (target_organ)
-			target_organ.germ_level++
+			target_organ.germ_level+=0.5
 
 		//spread the infection to child and parent organs
 		if (children)
