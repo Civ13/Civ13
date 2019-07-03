@@ -71,7 +71,12 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 			continue
 		for (var/datum/wound/W in temp.wounds)
 			if (W.bleeding())
-				bloodloss += W.damage / 100
+				if (W.damage_type == PIERCE)
+					bloodloss += W.damage / 150
+				else if (W.damage_type == CUT)
+					bloodloss += W.damage / 70
+				else
+					bloodloss += W.damage / 1000
 		if (temp.open)
 			++bloodloss  //Yer stomach is cut open
 	bloodloss = min(bloodloss, 4)

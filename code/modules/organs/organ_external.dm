@@ -27,8 +27,11 @@
 	var/model
 	var/force_icon
 	var/damage_state = "00"
-	var/brute_dam = FALSE
+	var/brute_dam = FALSE //sum of blunt, pierce and cut damage
 	var/burn_dam = FALSE
+	var/blunt_dam = FALSE // not sharp and not edged. More likely to break bones. Won't bleed.
+	var/pierce_dam = FALSE // sharp but not edged. More likely to give internal bleeding or damage wounds. Just a little bleeding.
+	var/cut_dam = FALSE // superficial damage, not a lot of damage but lots of bleeding.
 	var/max_size = FALSE
 	var/last_dam = -1
 	var/icon/mob_icon
@@ -271,7 +274,7 @@
 	if (used_weapon)
 		if (istype(used_weapon, /obj/item/projectile))
 			canbreak = FALSE
-	if(brute_dam > min_broken_damage && prob(brute_dam + brute * (1+blunt)) ) //blunt damage is gud at fracturing
+	if(blunt_dam > min_broken_damage && prob(blunt_dam * (1+blunt)) ) //blunt damage is gud at fracturing
 		if (canbreak)
 			fracture()
 
@@ -416,7 +419,7 @@ This function completely restores a damaged organ to perfect condition.
 	//moved this before the open_wound check so that having many small wounds for example doesn't somehow protect you from taking internal damage (because of the return)
 	//Possibly trigger an internal wound, too.
 	var/local_damage = brute_dam + burn_dam + damage
-	if (damage > 15 && type != BURN && local_damage > 30 && prob(damage))
+	if (damage > 15 && type == PIERCE && local_damage > 30 && prob(damage))
 		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15), src)
 		wounds += I
 		owner.custom_pain("You feel something rip in your [name]!", 120)
@@ -659,11 +662,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 	//update damage counts
 	for (var/datum/wound/W in wounds)
 		if (!W.internal) //so IB doesn't count towards crit/paincrit
-			if (W.damage_type == BURN)
-				burn_dam += W.damage
-			else
-				brute_dam += W.damage
-
+			switch(W.damage_type)
+				if (BURN)
+					burn_dam += W.damage
+				else if (PIERCE)
+					brute_dam += W.damage
+					pierce_dam += W.damage
+				else if (CUT)
+					brute_dam += W.damage
+					cut_dam += W.damage
+				else if (BRUISE)
+					brute_dam += W.damage
+					blunt_dam += W.damage
 		if (W.bleeding() && (H && !(H.species.flags & NO_BLOOD)))
 			W.bleed_timer--
 			status |= ORGAN_BLEEDING
@@ -677,8 +687,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 		status |= ORGAN_BLEEDING
 
 	//Bone fractures
-	if (brute_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
-		if (brute_dam > fracturetimer+20)
+	if (blunt_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
+		if (blunt_dam > fracturetimer+20)
 			fracture()
 
 	if (!(brute_dam+burn_dam) || !number_wounds)
@@ -931,24 +941,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	// Fractures have a chance of getting you out of restraints
 	if (prob(25))
 		release_restraints()
-
-	// This is mostly for the ninja suit to stop ninja being so crippled by breaks.
-	// TODO: consider moving this to a suit proc or process() or something during
-	// hardsuit rewrite.
-/*	if (owner && !(status & ORGAN_SPLINTED) && istype(owner,/mob/living/carbon/human))
-
-		var/mob/living/carbon/human/H = owner
-
-		if (H.wear_suit && istype(H.wear_suit,/obj/item/clothing/suit/space))
-
-			var/obj/item/clothing/suit/space/suit = H.wear_suit
-
-			if (isnull(suit.supporting_limbs))
-				return
-
-			owner << "You feel \the [suit] constrict about your [name], supporting it."
-			status |= ORGAN_SPLINTED
-			suit.supporting_limbs |= src*/
 	return
 
 /obj/item/organ/external/proc/mend_fracture()

@@ -333,7 +333,7 @@ datum/wound/cut/massive
 /datum/wound/puncture/can_merge(var/datum/wound/other)
 	return FALSE
 /datum/wound/puncture/bleeding()
-	return ..() && wound_damage() >= 5
+	return ..() && wound_damage() >= 17
 
 /datum/wound/puncture/small
 	max_bleeding_stage = 2
@@ -362,7 +362,7 @@ datum/wound/puncture/massive
 
 /** BRUISES **/
 /datum/wound/bruise/bleeding()
-	return ..() && wound_damage() >= 20
+	return ..() && wound_damage() >= 30
 
 /datum/wound/bruise
 	stages = list("monumental bruise" = 80, "huge bruise" = 50, "large bruise" = 30,
