@@ -48,12 +48,6 @@
 					custom_pain("You feel broken bones moving in your [E.name]!", 55)
 					I.take_damage(rand(3,5))
 
-				//Moving makes open wounds get infected much faster
-				if (E.wounds.len)
-					for (var/datum/wound/W in E.wounds)
-						if (W.infection_check())
-							W.germ_level += 1
-
 	var/limbs_count = 4
 	var/obj/item/organ/external/E = organs_by_name["l_foot"]
 	if (E)

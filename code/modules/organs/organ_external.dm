@@ -537,7 +537,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	for (var/datum/wound/W in wounds)
 		//Open wounds can become infected
 		if (owner.germ_level > W.germ_level && W.infection_check())
-			W.germ_level++
+			W.germ_level+=0.5
 
 	if (antibiotics < 5)
 		for (var/datum/wound/W in wounds)
@@ -578,12 +578,12 @@ Note that amputating the affected organ does in fact remove the infection from t
 			for (var/obj/item/organ/external/child in children)
 				if (child.germ_level < germ_level)
 					if (child.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
-						child.germ_level++
+						child.germ_level+=0.5
 
 		if (parent)
 			if (parent.germ_level < germ_level)
 				if (parent.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
-					parent.germ_level++
+					parent.germ_level+=0.5
 
 	if (germ_level >= INFECTION_LEVEL_THREE && antibiotics < 30)	//overdosing is necessary to stop severe infections
 		if (!(status & ORGAN_DEAD))
@@ -591,7 +591,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			owner << "<span class='notice'>You can't feel your [name] anymore...</span>"
 			owner.update_body(1)
 
-		germ_level++
+		germ_level+=0.5
 		owner.adjustToxLoss(1)
 
 //Updating wounds. Handles wound natural I had some free spachealing, internal bleedings and infections

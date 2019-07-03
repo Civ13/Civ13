@@ -147,9 +147,9 @@
 // checks if wound is considered open for external infections
 // untreated cuts (and bleeding bruises) and burns are possibly infectable, chance higher if wound is bigger
 /datum/wound/proc/infection_check()
-	if (damage < 10)	//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
+	if (damage < 17)	//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
 		return 0
-	if (is_treated() && damage < 25)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
+	if (is_treated() && damage < 35)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
 		return 0
 	if (disinfected)
 		germ_level = 0	//reset this, just in case

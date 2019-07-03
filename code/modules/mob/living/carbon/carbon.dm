@@ -30,12 +30,6 @@
 	nutrition = 400
 	..()
 
-/mob/living/carbon/Move(NewLoc, direct)
-	..()
-
-		// Moving around increases germ_level faster
-	if (germ_level < GERM_LEVEL_MOVE_CAP && prob(8))
-		germ_level++
 
 /mob/living/carbon/relaymove(var/mob/living/user, direction)
 	if ((user in stomach_contents) && istype(user))

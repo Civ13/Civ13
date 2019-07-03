@@ -166,7 +166,7 @@ var/list/organ_cache = list()
 		var/obj/item/organ/external/parent = owner.get_organ(parent_organ)
 		//spread germs
 		if (antibiotics < 5 && parent.germ_level < germ_level && ( parent.germ_level < INFECTION_LEVEL_ONE*2 || prob(30) ))
-			parent.germ_level++
+			parent.germ_level+=0.5
 
 		if (prob(3))	//about once every 30 seconds
 			take_damage(1,silent=prob(30))
@@ -183,7 +183,7 @@ var/list/organ_cache = list()
 			if (rejecting % 10 == FALSE) //Only fire every ten rejection ticks.
 				switch(rejecting)
 					if (1 to 50)
-						germ_level++
+						germ_level+=0.5
 					if (51 to 200)
 						germ_level += rand(1,2)
 					if (201 to 500)
