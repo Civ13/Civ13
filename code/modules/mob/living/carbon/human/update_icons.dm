@@ -122,8 +122,8 @@ Please contact me on #coderbus IRC. ~Carn x
 #define HAIR_LAYER				15		//TODO: make part of head layer?
 #define EARS_LAYER				16
 #define FACEMASK_LAYER			17
-#define HEAD_LAYER				18
-#define COLLAR_LAYER			19
+#define COLLAR_LAYER			18
+#define HEAD_LAYER				19
 #define HANDCUFF_LAYER			20
 #define LEGCUFF_LAYER			21
 #define L_HAND_LAYER			22
@@ -1136,7 +1136,7 @@ var/global/list/damage_icon_parts = list()
 			if (W.bandaged || W.clamped || W.salved)
 				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")
 				continue
-	overlays_standing[BANDAGES_LAYER] = DD
+	overlays_standing[COLLAR_LAYER] = DD
 	if (update_icons)   update_icons()
 //Human Overlays Indexes/////////
 #undef MUTATIONS_LAYER
