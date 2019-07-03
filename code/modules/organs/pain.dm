@@ -105,15 +105,16 @@ mob/living/carbon/human/proc/handle_pain()
 			paralysis = max(0, paralysis - round(maxdam/10))
 		var/burning = damaged_organ.burn_dam > damaged_organ.brute_dam
 		var/msg
-		switch(maxdam)
-			if(1 to 10)
-				msg = "Your [damaged_organ.name] [burning ? "burns" : "hurts"]."
+		if (prob(10))
+			switch(maxdam)
+				if(1 to 10)
+					msg = "Your [damaged_organ.name] [burning ? "burns" : "hurts"]."
 
-			if(11 to 90)
-				msg = "<font size=2>Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!</font>"
+				if(11 to 90)
+					msg = "<font size=2>Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!</font>"
 
-			if(91 to 10000)
-				msg = "<font size=3>OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!</font>"
+				if(91 to 10000)
+					msg = "<font size=3>OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!</font>"
 		custom_pain(msg, 0, prob(10), affecting = damaged_organ, flash_pain = maxdam)
 
 	// Damage to internal organs hurts a lot.
