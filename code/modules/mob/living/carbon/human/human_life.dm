@@ -1310,7 +1310,8 @@
 		Weaken(20)
 		if (prob(1))
 			adjustOxyLoss(10)
-
+	if (getBruteLoss() >= 150)
+		death()
 /mob/living/carbon/human/proc/handle_hud_list()
 
 	if (original_job && never_set_faction_huds)

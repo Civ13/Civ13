@@ -621,19 +621,19 @@
 
 /area/caribbean/german/reichstag/first
 	name = "Reichstag 1st Floor"
-	base_turf = /turf/floor/broken_floor
+	base_turf = /turf/floor/plating/concrete
 	location = AREA_INSIDE
 	icon_state = "red2"
 
 /area/caribbean/german/reichstag/second
 	name = "Reichstag 2nd Floor"
-	base_turf = /turf/floor/broken_floor
+	base_turf = /turf/floor/plating/concrete
 	location = AREA_INSIDE
 	icon_state = "red2"
 
 /area/caribbean/german/reichstag/roof
 	name = "Reichstag Roof"
-	base_turf = /turf/floor/broken_floor
+	base_turf = /turf/floor/plating/concrete
 	icon_state = "red2"
 /area/caribbean/german/reichstag/roof/objective
 	name = "Reichstag Roof Objective"
