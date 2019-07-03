@@ -178,7 +178,7 @@ default behaviour is:
 	set category = "IC"
 	adjustBrainLoss(300)
 	health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
-	if (map.ID != MAP_HOSTAGES || (getOxyLoss() + getToxLoss() + getFireLoss() + getBruteLoss() > 150))
+	if (map.civilizations || (getOxyLoss() + getToxLoss() + getFireLoss() + getBruteLoss() > 150))
 		death()
 		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
 		return

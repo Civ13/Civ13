@@ -18,8 +18,10 @@
 	auto_eject = TRUE
 	fire_sound = 'sound/weapons/WW2/kord1.ogg'
 	firemodes = list(
-		list(name="full auto", burst=6, burst_delay=0.6, fire_delay=1.0, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
+		list(name="full auto", burst=8, burst_delay=0.6, fire_delay=1.0, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)
+	full_auto = TRUE
+	fire_delay = 3
 /obj/item/weapon/gun/projectile/automatic/stationary/modern/rotate_to(mob/user, atom/A)
 	var/shot_dir = get_carginal_dir(src, A)
 	dir = shot_dir
