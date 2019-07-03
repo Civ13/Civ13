@@ -76,6 +76,10 @@
 /*
  * Knives
  */
+#define SLASH 1
+#define STAB 2
+#define BASH 3
+
 /obj/item/weapon/material/kitchen/utensil/knife
 	name = "knife"
 	desc = "A knife for eating with. Can cut through any food."
@@ -83,7 +87,9 @@
 	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
 	scoop_food = FALSE
 	slot_flags = SLOT_BELT|SLOT_POCKET
-
+	edge = TRUE
+	sharp = TRUE
+	var/atk_mode = SLASH
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade
 	name = "razor blade"
 	desc = "A folding blade, used to cut beard and hairs."
@@ -92,6 +98,26 @@
 	item_state = "knife"
 	force_divisor = 0.2
 	w_class = 1.0
+
+/obj/item/weapon/material/kitchen/utensil/knife/attack_self(mob/user)
+	..()
+	if(atk_mode == SLASH)
+		atk_mode = STAB
+		user << "<span class='notice'>You will now stab.</span>"
+		edge = 0
+		sharp = 1
+		attack_verb = list("stabbed")
+		hitsound = "stab_sound"
+		return
+
+	else if(atk_mode == STAB)
+		atk_mode = SLASH
+		user << "<span class='notice'>You will now slash.</span>"
+		attack_verb = list("slashed", "diced")
+		hitsound = "slash_sound"
+		edge = 1
+		sharp = 1
+		return
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
 	if (user.a_intent == I_HELP && M in range(user,1))

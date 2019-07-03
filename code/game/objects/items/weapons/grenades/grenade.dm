@@ -423,6 +423,7 @@
 	muzzle_type = null
 
 	embed = TRUE
+	sharp = TRUE
 
 
 
