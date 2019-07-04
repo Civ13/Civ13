@@ -42,9 +42,7 @@ var/civmax_research = list(130,130,130)
 		list(BRITISH) = /area/caribbean/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
-		"Fish in the Sea:1" = 'sound/music/shanties/fish_in_the_sea.ogg',
-		"Spanish Ladies:1" = 'sound/music/shanties/spanish_ladies.ogg',
-		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
+		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	var/mission_start_message = "Round will start soon!"
 
 	var/required_players = 1
