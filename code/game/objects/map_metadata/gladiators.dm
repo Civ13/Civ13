@@ -16,14 +16,14 @@
 	age = "313 B.C."
 	ordinal_age = 1
 	faction_distribution_coeffs = list(ROMAN = 1)
-	battle_name = "marooned pirates"
-	mission_start_message = "<big>After a major storm, a Pirate shipwreck has come ashore in an unknown Island. However, they are not alone...<br> The gracewall will be up after <b>45 minutes</b>.</big><br><span class = 'notice'><i>THIS IS A RP MAP - NATIVES AND PIRATES ARE FRIENDLY BY DEFAULT.</b> No griefing will be tolerated. If you break the rules, you will be banned from this gamemode!<i></span>" // to be replaced with the round's main event
+	battle_name = "gladiator fights"
+	mission_start_message = "<big><font color='yellow'>Ave Imperator, morituri te salutant!</font><br>Organize gladiatoral fights and become the best!</span>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = ROMAN
 	songs = list(
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Gladiatorial Combat"
-
+	is_singlefaction = TRUE
 obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/roman))
