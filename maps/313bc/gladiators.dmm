@@ -30,7 +30,6 @@
 "aD" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_v,/obj/structure/sign/flag/red2,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "aE" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/beach/sand,/area/caribbean/forest/dirt)
 "aF" = (/obj/covers/sandstone,/obj/structure/sink/well,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"aG" = (/obj/covers/sandstone,/obj/structure/simple_door/sandstone,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "aH" = (/obj/effect/decal/cleanable/blood,/turf/floor/beach/sand,/area/caribbean/forest/dirt)
 "aI" = (/obj/covers/sandstone_wall,/turf/floor/dirt,/area/caribbean/houses)
 "aJ" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on/anchored,/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
@@ -133,7 +132,6 @@
 "cC" = (/obj/covers/sandstone,/obj/item/weapon/storage/backpack/quiver/full,/turf/floor/beach/sand/dark,/area/caribbean/houses)
 "cD" = (/obj/covers/sandstone,/obj/item/weapon/storage/backpack/quiver/full,/obj/item/weapon/storage/backpack/quiver/full,/turf/floor/beach/sand/dark,/area/caribbean/houses)
 "cE" = (/obj/map_metadata/gladiators,/turf/floor/dirt,/area/caribbean/forest/dirt)
-"cF" = (/obj/structure/gatecontrol/sandstone{distance = 2},/turf/floor/beach/sand,/area/caribbean/forest/dirt)
 "cG" = (/obj/covers/sandstone,/obj/structure/gate/sandstone/open,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 
 (1,1,1) = {"
@@ -220,8 +218,8 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafafaoagaxaxaxaxaxaxaxaxagaoafafafafafafacaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafafaoaxaxaxaxaxagaxaxaxaxaoasafaiafafafacaaaaaaaaaaaaaIaQaQaQaIaaaaaaaaaaaaabagagatawazaxazayavatawazaxazayavatawazaxazayavatawazaxazayavagagbdaQaQaQaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafaeaoaxaxagaxaxaxaAaAaxaxaobAasafafafafacaaaaaaaaaaaaaIaQaQaQaIaaaaaaaaaaaaabagagatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavagagaIaIaIaLaIaIaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafafaoaxaxaBaxaxaxaxaxaxaxaoakakakakafafbyaLaIaIaIaLaIaIbdbCbdaIaIaLaIaIaIaLaIagagatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafcaaDcFaEaxaAaxaxagaxaxcFaDcaafafakcaafbdaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbdagagatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafafaGaxaxaxaxaxaxaxaHaxaxcGafafafcGafafbDaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbBagagaJawaxaxaxayaKaJawaxaxaxayaKaJawaxaxaxayaKaJawaxaxaxayaKagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafcaaDaxaEaxaAaxaxagaxaxaxaDcaafafakcaafbdaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbdagagatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafafcGaxaxaxaxaxaxaxaHaxaxcGafafafcGafafbDaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbBagagaJawaxaxaxayaKaJawaxaxaxayaKaJawaxaxaxayaKaJawaxaxaxayaKagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafaFaDaxaxaxaxaxaxaxaxaxaxaDafafafakaCafbdaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbdagagatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafaCaoaxaxaxaxagaxaxaBaxaxaoakakakakafafbyaLaIaIaIaLaIaIbdbEbdaIaIaLaIaIaIaLaIagagatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavatawaxaxaxayavagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacafasaoaxaxagaAaxaxaxaxaxagaoafafafaiafafacaaaaaaaaaaaaaIaQaQaQaIaaaaaaaaaaaaabagagatawazaxazayavatawazaxazayavatawazaxazayavatawazaxazayavagagabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
