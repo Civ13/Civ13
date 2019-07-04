@@ -30,7 +30,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -117,7 +117,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
 	H.setStat("strength", STAT_HIGH)
@@ -335,7 +335,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	world << "<b><big>[H.real_name] is the French Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the Leader of the Templar Knights in the Holy Land. Defend Christianity!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -562,7 +562,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/noblehat2(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword(H), slot_belt)
 	world << "<b><big>[H.real_name] is the British Lord!</big></b>"
 	H.add_note("Role", "You are a <b>[title]</b>, the absolute Lord of this army. Organize your men!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -648,7 +648,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/coif(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon/iron(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/armingsword/iron(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron/semioval(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a trained swordsman. You have good armor, compared to the lower-ranking conscripted militias and levies.")
 	H.setStat("strength", STAT_HIGH)
