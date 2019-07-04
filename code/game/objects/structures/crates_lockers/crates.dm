@@ -8,7 +8,7 @@
 	icon_opened = "crateopen"
 	icon_closed = "crate"
 	climbable = TRUE
-//	mouse_drag_pointer = MOUSE_ACTIVE_POINTER	//???
+	mouse_drop_zone = TRUE
 	var/rigged = FALSE
 
 // climbing crates - Kachnov
