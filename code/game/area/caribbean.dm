@@ -198,6 +198,10 @@
 	ambience = list("sound/ambience/jungle1.ogg")
 	climate = "sea"
 
+/area/caribbean/island/river
+	base_turf = /turf/floor/beach/water/shallowsaltwater
+	icon_state = "red1"
+
 /area/caribbean/sea
 	name = "Island"
 	base_turf = /turf/floor/beach/sand

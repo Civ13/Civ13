@@ -13,7 +13,7 @@
 		"World War II (1934-1957)" = 0,
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
-		"Civilization 13 (Nomads)" = 0,
+		"Civilization 13 (Nomads & RP)" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -45,7 +45,7 @@
 				"Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
-			epochs = list("Civilization 13 (Nomads)" = 0,)
+			epochs = list("Civilization 13 (Nomads & RP)" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 
@@ -133,11 +133,6 @@
 				MAP_RECIFE = 10,
 //				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
-
-			// 1713 - RP
-//				MAP_COLONY = 0,
-				MAP_HUNT = 0,
-//				MAP_FOUR_COLONIES = 35,
 			)
 		if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
 	// 313bc - TDM
@@ -155,7 +150,7 @@
 			maps = list(
 				MAP_TRIBES = 0,
 			)
-		if (epoch == "Civilization 13 (Nomads)")
+		if (epoch == "Civilization 13 (Nomads & RP)")
 			maps = list(
 //				MAP_CIVILIZATIONS = 0,
 				MAP_NOMADS = 0,
@@ -164,7 +159,11 @@
 				MAP_NOMADS_JUNGLE = 0,
 				MAP_NOMADS_DIVIDE = 0,
 				MAP_NOMADS_CONTINENTAL = 20,
-				MAP_NOMADS_PANGEA = 0,
+				MAP_NOMADS_PANGEA = 10,
+//				MAP_TRIBES = 20,
+				MAP_COLONY = 6,
+				MAP_HUNT = 0,
+				MAP_FOUR_COLONIES = 35,
 			)
 
 		spawn(10)

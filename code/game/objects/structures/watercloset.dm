@@ -371,7 +371,7 @@
 	var/sound = 'sound/effects/sink.ogg'
 	var/dry = FALSE
 	var/mosquito_count = 0
-	var/mosquito_limit = 2
+	var/mosquito_limit = 1
 	var/volume = 2000
 	var/max_volume = 2000
 	not_movable = TRUE
@@ -552,6 +552,9 @@
 	max_volume = 500
 	volume = 500
 
+/obj/structure/sink/puddle/nomosquitoes
+	mosquito_limit = 0
+
 /obj/structure/sink/well
 	name = "well"
 	icon_state = "well1"
@@ -593,17 +596,17 @@
 
 /obj/structure/sink/New()
 	..()
-/*
-	if (map.ID == MAP_NOMADS_JUNGLE)
+
+	if (map.ID == MAP_HUNT)
 		mosquito_proc()
-*/
+
 	spawn(2000)
 		if (map.chad_mode)
 			mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()
 	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
-		if (mosquito_count < mosquito_limit)
+		if (mosquito_count < mosquito_limit && mosquito_limit != 0)
 			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
 			NM.origin = src
 			mosquito_count++

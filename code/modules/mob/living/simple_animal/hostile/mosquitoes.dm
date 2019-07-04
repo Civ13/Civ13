@@ -70,17 +70,19 @@
 		walk_away(src, M, 3, 3)
 		return
 	if (prob(10))
-		var/obj/structure/sink/S = origin
-		S.mosquito_count--
+		if (origin)
+			var/obj/structure/sink/S = origin
+			S.mosquito_count--
 		qdel(src)
 		return
 
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
 	if (istype(O, /obj/item/weapon/swatter))
-		if (prob(20))
+		if (prob(30))
 			visible_message("[user] swats \the [src] with \the [O]!")
-			var/obj/structure/sink/S = origin
-			S.mosquito_count--
+			if (origin)
+				var/obj/structure/sink/S = origin
+				S.mosquito_count--
 			qdel(src)
 			return
 		else
