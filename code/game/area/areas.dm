@@ -47,7 +47,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	var/list/ambience = list()
 	var/list/forced_ambience = list()
 	var/turf/base_turf //The base turf type of the area, which can be used to override the z-level's base turf
-	var/sound_env = OUTSIDE
+	var/sound_env = FOREST
 
 	var/location = AREA_OUTSIDE
 
@@ -83,8 +83,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	power_environ = FALSE
 
 	..()
-
-	update_snowfall_valid_turfs()
 
 	spawn (100)
 		if (parent_area_type)
@@ -324,7 +322,6 @@ var/list/mob/living/forced_ambiance_list = new
 		artillery_integrity -= loss
 	else
 		artillery_integrity -= loss * 0.75
-	update_snowfall_valid_turfs()
 	if (artillery_integrity > 0)
 		return FALSE
 	return TRUE

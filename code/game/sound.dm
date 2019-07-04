@@ -26,17 +26,6 @@
 #define DIZZY 24
 #define PSYCHOTIC 25
 
-#define STANDARD_STATION STONEROOM
-#define LARGE_ENCLOSED HANGAR
-#define SMALL_ENCLOSED BATHROOM
-#define TUNNEL_ENCLOSED CAVE
-#define LARGE_SOFTFLOOR CARPETED_HALLWAY
-#define MEDIUM_SOFTFLOOR LIVINGROOM
-#define SMALL_SOFTFLOOR ROOM
-#define ASTEROID CAVE
-#define SPACE UNDERWATER
-#define OUTSIDE FOREST
-
 var/list/shatter_sound = list('sound/effects/Glassbr1.ogg','sound/effects/Glassbr2.ogg','sound/effects/Glassbr3.ogg')
 var/list/explosion_sound = list('sound/effects/Explosion1.ogg','sound/effects/Explosion2.ogg')
 var/list/spark_sound = list('sound/effects/sparks1.ogg','sound/effects/sparks2.ogg','sound/effects/sparks3.ogg','sound/effects/sparks4.ogg')

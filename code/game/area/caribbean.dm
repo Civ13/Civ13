@@ -3,7 +3,7 @@
 	has_gravity = TRUE
 	no_air = FALSE
 	base_turf = /turf/floor/dirt //The base turf type of the area, which can be used to override the z-level's base turf
-	sound_env = STANDARD_STATION
+	sound_env = FOREST
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
 	ambience = list("sound/ambience/ship1.ogg")
