@@ -206,7 +206,7 @@ Ccomp's first proc.
 /client/proc/allow_character_respawn()
 	set category = "Special"
 	set name = "Allow player to respawn"
-	set desc = "Let's the player bypass the 30 minute wait to respawn or allow them to re-enter their corpse."
+	set desc = "Let's the player bypass the wait to respawn or allow them to re-enter their corpse."
 	if (!holder)
 		src << "Only administrators may use this command."
 	var/list/ghosts= get_ghosts(1,1)
@@ -220,12 +220,11 @@ Ccomp's first proc.
 									   timeofdeath is used for bodies on autopsy but since we're messing with a ghost I'm pretty sure
 									   there won't be an autopsy.
 									*/
-	G.has_enabled_antagHUD = 2
 	G.can_reenter_corpse = TRUE
 
 	G:show_message(text("<span class = 'notice'><b>You may now respawn.  You should roleplay as if you learned nothing about the round during your time with the dead.</b></span>"), TRUE)
-	log_admin("[key_name(usr)] allowed [key_name(G)] to bypass the 30 minute respawn limit")
-	message_admins("Admin [key_name_admin(usr)] allowed [key_name_admin(G)] to bypass the 30 minute respawn limit", TRUE)
+	log_admin("[key_name(usr)] allowed [key_name(G)] to bypass the respawn limit")
+	message_admins("Admin [key_name_admin(usr)] allowed [key_name_admin(G)] to bypass the respawn limit", TRUE)
 
 /*
 If a guy was gibbed and you want to revive him, this is a good way to do so.

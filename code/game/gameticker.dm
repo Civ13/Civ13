@@ -59,9 +59,8 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 			pregame_timeleft = GAMETICKER_PREGAME_TIME
 			maytip = TRUE
 
-			if (serverswap_open_status)
-				world << "<b><span style = 'notice'>Welcome to the pre-game lobby!</span></b>"
-				world << "The game will start in [pregame_timeleft] seconds."
+			world << "<b><span style = 'notice'>Welcome to the pre-game lobby!</span></b>"
+			world << "The game will start in [pregame_timeleft] seconds."
 
 			while (current_state == GAME_STATE_PREGAME)
 				for (var/i=0, i<10, i++)
@@ -82,9 +81,8 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 					else
 						var/list/tips = file2list("config/tips.txt")
 						if (tips.len)
-							if (serverswap_open_status)
-								world << "<span class = 'notice'><b>Tip of the round:</b> [pick(tips)]</span>"
-								qdel_list(tips)
+							world << "<span class = 'notice'><b>Tip of the round:</b> [pick(tips)]</span>"
+							qdel_list(tips)
 					maytip = FALSE
 				if (pregame_timeleft <= 0)
 					current_state = GAME_STATE_SETTING_UP
@@ -95,9 +93,8 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 						else
 							var/list/tips = file2list("config/tips.txt")
 							if (tips.len)
-								if (serverswap_open_status)
-									world << "<span class = 'notice'><b>Tip of the round:</b> [pick(tips)]</span>"
-									qdel_list(tips)
+								world << "<span class = 'notice'><b>Tip of the round:</b> [pick(tips)]</span>"
+								qdel_list(tips)
 		while (!setup())
 
 
@@ -108,8 +105,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	job_master.ResetOccupations()
 
 	if (!map || !map.can_start() && !admin_started)
-		if (serverswap_open_status)
-			world << "<b>Unable to start the game.</b> Not enough players, [map.required_players] active players needed. Reverting to the pre-game lobby."
+		world << "<b>Unable to start the game.</b> Not enough players, [map.required_players] active players needed. Reverting to the pre-game lobby."
 		current_state = GAME_STATE_PREGAME
 		job_master.ResetOccupations()
 		return FALSE
@@ -201,8 +197,6 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 			if (!delay_end)
 				world << "<span class='notice'><big>Restarting in <b>90</b> seconds. Next map: <b>TBD</b></big></span>"
-				spawn(150)
-					serverswap_pre_close_server()
 				if (restart_after > restart_timeout)
 					restarting_is_very_bad = TRUE
 					spawn (restart_after - restart_timeout)

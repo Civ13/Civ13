@@ -5,39 +5,9 @@
 #define GAME_STATE_PLAYING		3
 #define GAME_STATE_FINISHED		4
 
-// Math constants.
-#define M_E     2.71828183
-#define M_PI    3.14159265
-#define M_SQRT2 1.41421356
-
-#define R_IDEAL_GAS_EQUATION       8.31    // kPa*L/(K*mol).
-#define ONE_ATMOSPHERE             101.325 // kPa.
-#define IDEAL_GAS_ENTROPY_CONSTANT 1164    // (mol^3 * s^3) / (kg^3 * L).
-
-// Radiation constants.
-#define STEFAN_BOLTZMANN_CONSTANT    5.6704e-8 // W/(m^2*K^4).
-#define COSMIC_RADIATION_TEMPERATURE 3.15      // K.
-#define AVERAGE_SOLAR_RADIATION      200       // W/m^2. Kind of arbitrary. Really this should depend on the sun position much like solars.
-#define RADIATOR_OPTIMUM_PRESSURE    3771      // kPa at 20 C. This should be higher as gases aren't great conductors until they are dense. Used the critical pressure for air.
-#define GAS_CRITICAL_TEMPERATURE     132.65    // K. The critical point temperature for air.
-
-/*
-	The pipe looks to be thin vertically and wide horizontally, so we'll assume that it's
-	three centimeters thick, one meter wide, and only explosed to the sun 3 degrees off of edge-on.
-	Since the radiatior is uniform along it's length, the ratio of surface area touched by sunlight
-	to the total surface area is the same as the ratio of the perimeter of the cross-section.
-*/
-#define RADIATOR_EXPOSED_SURFACE_AREA_RATIO 0.04 // (3 cm + 100 cm * sin(3deg))/(2*(3+100 cm)). Unitless ratio.
-
 #define CELL_VOLUME        2500 // Liters in a cell.
 #define MOLES_CELLSTANDARD (ONE_ATMOSPHERE*CELL_VOLUME/(T20C*R_IDEAL_GAS_EQUATION)) // Moles in a 2.5 m^3 cell at 101.325 kPa and 20 C.
 
-#define O2STANDARD 0.21 // Percentage.
-#define N2STANDARD 0.79
-
-#define MOLES_PHORON_VISIBLE 0.7 // Moles in a standard cell after which phoron is visible.
-#define MOLES_O2STANDARD     (MOLES_CELLSTANDARD * O2STANDARD) // O2 standard value (21%)
-#define MOLES_N2STANDARD     (MOLES_CELLSTANDARD * N2STANDARD) // N2 standard value (79%)
 
 // These are for when a mob breathes poisonous air.
 #define MIN_TOXIN_DAMAGE TRUE
@@ -96,9 +66,6 @@
 #define    MAX_HIGH_PRESSURE_DAMAGE 4 // This used to be 20... I got this much random rage for some retarded decision by polymorph?! Polymorph now lies in a pool of blood with a katana jammed in his spleen. ~Errorage --PS: The katana did less than 20 damage to him :(
 #define         LOW_PRESSURE_DAMAGE 2 // The amount of damage someone takes when in a low pressure area. (The pressure threshold is so low that it doesn't make sense to do any calculations, so it just applies this flat value).
 
-// Doors!
-#define DOOR_CRUSH_DAMAGE 10
-
 #define HUNGER_FACTOR              0.05 // Factor of how fast mob nutrition decreases
 #define REM 0.2 // Means 'Reagent Effect Multiplier'. This is how many units of reagent are consumed per tick
 #define CHEM_TOUCH TRUE
@@ -109,11 +76,6 @@
 #define LIQUID 2
 #define GAS 3
 #define REAGENTS_OVERDOSE 30
-
-#define MINIMUM_AIR_RATIO_TO_SUSPEND 0.05 // Minimum ratio of air that must move to/from a tile to suspend group processing
-#define MINIMUM_AIR_TO_SUSPEND       (MOLES_CELLSTANDARD * MINIMUM_AIR_RATIO_TO_SUSPEND) // Minimum amount of air that has to move before a group processing can be suspended
-#define MINIMUM_MOLES_DELTA_TO_MOVE  (MOLES_CELLSTANDARD * MINIMUM_AIR_RATIO_TO_SUSPEND) // Either this must be active
-#define MINIMUM_TEMPERATURE_TO_MOVE  (T20C + 100)                                        // or this (or both, obviously)
 
 #define MINIMUM_TEMPERATURE_RATIO_TO_SUSPEND      0.012        // Minimum temperature difference before group processing is suspended.
 #define MINIMUM_TEMPERATURE_DELTA_TO_SUSPEND      4
@@ -289,13 +251,6 @@
 #define THERMAL_PROTECTION_ARM_RIGHT   0.075
 #define THERMAL_PROTECTION_HAND_LEFT   0.025
 #define THERMAL_PROTECTION_HAND_RIGHT  0.025
-
-// disabilities
-#define NEARSIGHTED TRUE
-#define EPILEPSY    2
-#define COUGHING    4
-#define TOURETTES   8
-#define NERVOUS     16
 
 // sdisabilities
 #define BLIND TRUE
@@ -555,17 +510,6 @@
 #define IS_RESTRICTED     32768 // Is not a core/normally playable species. (castes, mutantraces)
 #define REGENERATES_LIMBS 65536 // Attempts to regenerate unamputated limbs.
 
-// Language flags.
-#define WHITELISTED TRUE   // Language is available if the speaker is whitelisted.
-#define RESTRICTED  2   // Language can only be accquired by spawning or an admin.
-#define NONVERBAL   4   // Language has a significant non-verbal component. Speech is garbled without line-of-sight.
-#define SIGNLANG    8   // Language is completely non-verbal. Speech is displayed through emotes for those who can understand.
-#define HIVEMIND    16  // Broadcast to all mobs with this language.
-#define NONGLOBAL   32  // Do not add to general languages list.
-#define INNATE      64  // All mobs can be assumed to speak and understand this language. (audible emotes)
-#define NO_TALK_MSG 128 // Do not show the "\The [speaker] talks into \the [radio]" message
-#define NO_STUTTER  256 // No stuttering, slurring, or other speech problems
-#define COMMON_VERBS 512
 //Flags for zone sleeping
 #define ZONE_ACTIVE   TRUE
 #define ZONE_SLEEPING FALSE
@@ -606,9 +550,6 @@
 #define FIRE_DAMAGE_MODIFIER 0.0215 // Higher values result in more external fire damage to the skin. (default 0.0215)
 #define  AIR_DAMAGE_MODIFIER 2.025  // More means less damage from hot air scalding lungs, less = more damage. (default 2.025)
 #define INFINITY             1.#INF
-#define BACKGROUND_ENABLED   FALSE      // The default value for all uses of set background. Set background can
-                                    // cause gradual lag and is recommended you only turn this on if necessary.
-                                    // TRUE will enable set background. FALSE will disable set background.
 
 // Setting this much higher than 1024 could allow spammers to DOS the server easily.
 #define MAX_MESSAGE_LEN       1024
@@ -727,3 +668,7 @@
 #define REMOVE_CASINGS	3
 
 #define list_cmp(l1, l2) (length(l1 & l2) > 0)
+
+#define USE_OPENSPACE TRUE
+
+#define ZOOM_CONSTANT 7

@@ -6,7 +6,7 @@
 	item_state = "pistol"
 	equiptimer = 5
 	gun_safety = TRUE
-
+	gun_type = GUN_TYPE_PISTOL
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
