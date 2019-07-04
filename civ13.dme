@@ -250,6 +250,7 @@
 #include "code\game\objects\map_metadata\cursed_island.dm"
 #include "code\game\objects\map_metadata\fields.dm"
 #include "code\game\objects\map_metadata\four_colonies.dm"
+#include "code\game\objects\map_metadata\gladiators.dm"
 #include "code\game\objects\map_metadata\heraclea.dm"
 #include "code\game\objects\map_metadata\hill203.dm"
 #include "code\game\objects\map_metadata\hostages.dm"
@@ -835,5 +836,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1969\arab_town.dmm"
+#include "maps\313bc\gladiators.dmm"
 // END_INCLUDE

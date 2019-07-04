@@ -362,3 +362,41 @@
 	H.setStat("medical", STAT_MEDIUM_LOW)
 	give_random_name(H)
 	return TRUE
+
+
+////////////////////GLADIATOR///////////////
+
+/datum/job/roman/gladiator
+	title = "Gladiator"
+	en_meaning = ""
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRO"
+	SL_check_independent = TRUE
+	is_gladiator = TRUE
+	// AUTOBALANCE
+	min_positions = 100
+	max_positions = 100
+/datum/job/roman/gladiator/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
+		//clothes
+	var/pickuni = rand(1,3)
+	if (pickuni == 1)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_green(H), slot_w_uniform)
+	else if (pickuni == 2)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_red(H), slot_w_uniform)
+	else if (pickuni == 3)
+		H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>, fighting in the area. Can you become the best?")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	return TRUE
