@@ -97,22 +97,6 @@
 					return
 			else
 				user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
-/*	else if (istype(M, /mob/living/simple_animal/complex_animal))
-		var/mob/living/simple_animal/complex_animal/C = M
-		if (C.health >= C.maxHealth)
-			user << "<span class='warning'>The wounds on \the [C] have already been treated.</span>"
-			return TRUE
-		else
-			user.visible_message("<span class='notice'>\The [user] starts treating \the [C]'s wounds.</span>", \
-					             "<span class='notice'>You start treating \the [C]'s wounds.</span>")
-			C.adjustBruteLoss(-(C.maxHealth/3))
-			if (amount == TRUE)
-				if (C.health >= C.maxHealth)
-					user << "<span class='warning'>\The [src] is used up.</span>"
-				else
-					user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [C].</span>"
-			use(1)
-*/
 
 /obj/item/stack/medical/advanced/bruise_pack
 	name = "trauma kit"

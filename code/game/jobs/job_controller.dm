@@ -37,7 +37,8 @@ var/global/datum/controller/occupations/job_master
 		job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[AMERICAN]
 	else
 		for (var/faction in map.faction_organization)
-			job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
+			if (job_master)
+				job_master.faction_organized_occupations |= faction_organized_occupations_separate_lists[faction]
 
 /datum/controller/occupations
 		//List of all jobs

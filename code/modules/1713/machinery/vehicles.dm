@@ -126,7 +126,7 @@
 		H.driver_vehicle.set_light(3)
 		playsound(loc, 'sound/machines/diesel_starting.ogg', 65, FALSE, 2)
 		spawn(40)
-			if (H.driver_vehicle.engine && H.driver_vehicle.engine.on)
+			if (H.driver_vehicle && H.driver_vehicle.engine && H.driver_vehicle.engine.on)
 				H.driver_vehicle.running_sound()
 		return
 	else if (H.driver_vehicle.fueltank.reagents.total_volume <= 0)
