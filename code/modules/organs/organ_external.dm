@@ -420,7 +420,7 @@ This function completely restores a damaged organ to perfect condition.
 	//Possibly trigger an internal wound, too.
 	var/local_damage = brute_dam + burn_dam + damage
 	if (damage > 15 && type == PIERCE && local_damage > 30 && prob(damage*0.8))
-		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15), src)
+		var/datum/wound/internal_bleeding/I = new (min(damage - 17, 12), src)
 		wounds += I
 		owner.custom_pain("You feel something rip in your [name]!", 120)
 
