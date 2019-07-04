@@ -40,10 +40,10 @@
 	if (ptsd < 10 || ingested.has_reagent("citalopram", 5) || ingested.has_reagent("paroxetine", 3.33)) //antidepressives and anxiolytics block PTSD effects
 		return FALSE
 	else
-		if (prob(0.45*(ptsd/8)) && prob(100-mood)) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
+		if (prob(0.45*(ptsd/8))) //at ptsd of 10, every 3 minutes or so, assuming the life tick of humans takes 8 deciseconds
 			do_ptsd()
 			return TRUE
-		if (prob(0.45*(ptsd/4)) && prob(100-mood))
+		if (prob(0.45*(ptsd/4)))
 			flash_sadness(ptsd)
 
 /mob/living/carbon/human/proc/do_ptsd()

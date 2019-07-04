@@ -38,7 +38,7 @@
 	item_state = "buckler"
 	var/base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_BACK|SLOT_DENYPOCKET
 	var/material = "wood"
 	health = 40 // hardness of wood
 	var/cooldown = 0
@@ -122,7 +122,10 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			health--
+			if (istype(damage_source, /obj/item/weapon/melee))
+				health -= 10
+			else
+				health--
 			check_health()
 			return TRUE
 	return FALSE

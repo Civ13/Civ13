@@ -1,12 +1,21 @@
-/* Weapons
- * Contains:
- *		Sword
- *		Classic Baton
- */
+//Melee Weapons, non edged or piercing (clubs, batons, maces)
+/obj/item/weapon/melee
+	edge = FALSE
+	sharp = FALSE
+	var/weakens = 0
 
-/*
- * Classic Baton
- */
+/obj/item/weapon/melee/mace
+	name = "mace"
+	desc = "A iron mace, good for breaking bones and armor."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "maul"
+	item_state = "mauler1"
+	slot_flags = SLOT_BACK
+	force = WEAPON_FORCE_NORMAL
+	weakens = 1
+	w_class = 3.0
+	flammable = FALSE
+
 /obj/item/weapon/melee/classic_baton
 	name = "police baton"
 	desc = "A wooden truncheon for beating criminal scum."
@@ -15,7 +24,7 @@
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
 	force = WEAPON_FORCE_WEAK
-	var/weakens = 1
+	weakens = 1
 	flammable = TRUE
 
 /obj/item/weapon/melee/classic_baton/club
@@ -36,7 +45,7 @@
 	force = WEAPON_FORCE_WEAK+3
 	flammable = TRUE
 
-/obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
+/obj/item/weapon/melee/attack(mob/M as mob, mob/living/user as mob)
 
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
 		if (I_HURT)
@@ -48,8 +57,8 @@
 	user.a_intent = I_HURT // so we actually hit people right
 
 	..(M, user)
-
-	M.Weaken(weakens) // decent
+	if (weakens)
+		M.Weaken(weakens) // decent
 
 	user.a_intent = user_last_intent
 

@@ -65,7 +65,7 @@
 		desc_list += V
 		damage_list += stages[V]
 
-	src.damage = damage
+	damage = _damage
 
 	// initialize with the appropriate stage
 	src.init_stage(damage)
@@ -147,9 +147,9 @@
 // checks if wound is considered open for external infections
 // untreated cuts (and bleeding bruises) and burns are possibly infectable, chance higher if wound is bigger
 /datum/wound/proc/infection_check()
-	if (damage < 10)	//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
+	if (damage < 17)	//small cuts, tiny bruises, and moderate burns shouldn't be infectable.
 		return 0
-	if (is_treated() && damage < 25)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
+	if (is_treated() && damage < 35)	//anything less than a flesh wound (or equivalent) isn't infectable if treated properly
 		return 0
 	if (disinfected)
 		germ_level = 0	//reset this, just in case
@@ -158,7 +158,7 @@
 	if (damage_type == BRUISE && !bleeding()) //bruises only infectable if bleeding
 		return 0
 
-	var/dam_coef = round(damage/10)
+	var/dam_coef = round(damage/20)
 	switch (damage_type)
 		if (BRUISE)
 			return prob(dam_coef*5)
@@ -333,7 +333,7 @@ datum/wound/cut/massive
 /datum/wound/puncture/can_merge(var/datum/wound/other)
 	return FALSE
 /datum/wound/puncture/bleeding()
-	return ..() && wound_damage() >= 5
+	return ..() && wound_damage() >= 17
 
 /datum/wound/puncture/small
 	max_bleeding_stage = 2
@@ -362,7 +362,7 @@ datum/wound/puncture/massive
 
 /** BRUISES **/
 /datum/wound/bruise/bleeding()
-	return ..() && wound_damage() >= 20
+	return ..() && wound_damage() >= 30
 
 /datum/wound/bruise
 	stages = list("monumental bruise" = 80, "huge bruise" = 50, "large bruise" = 30,

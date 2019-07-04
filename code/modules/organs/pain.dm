@@ -1,24 +1,15 @@
-mob/proc/flash_pain()
+/mob/living/proc/flash_pain()
+	if (HUDtech.Find("pain"))
+		flick("dark128",HUDtech["pain"])
 	return
-	if (istype(src,/mob/living))
-		var/mob/living/L = src
-		if (L.HUDtech.Find("pain"))
-			flick("pain",L.HUDtech["pain"])
-
-mob/proc/flash_weak_pain()//Why the fuck wasn't that there before?
+/mob/living/proc/flash_weak_pain()//Why the fuck wasn't that there before?
+	if (HUDtech.Find("pain"))
+		flick("dark64",HUDtech["pain"])
 	return
-	if (istype(src,/mob/living))
-		var/mob/living/L = src
-		if (L.HUDtech.Find("pain"))
-			flick("weak_pain",L.HUDtech["pain"])
-
-mob/proc/flash_weakest_pain()
+/mob/living/proc/flash_weakest_pain()
+	if (HUDtech.Find("pain"))
+		flick("dark32",HUDtech["pain"])
 	return
-	if (istype(src,/mob/living))
-		var/mob/living/L = src
-		if (L.HUDtech.Find("pain"))
-			flick("weakest_pain",L.HUDtech["pain"])
-
 mob/var/list/pain_stored = list()
 mob/var/last_pain_message = ""
 mob/var/next_pain_time = FALSE
@@ -43,30 +34,15 @@ mob/var/next_pain_time = FALSE
 	if (amount > 10 && istype(src,/mob/living/carbon/human))
 		if (src:paralysis)
 			src:paralysis = max(0, src:paralysis-round(amount/10))
-	if (amount > 50 && prob(amount / 5))
-		src:drop_item()
 	var/msg
-	/*if (burning)
-		switch(amount)
-			if (1 to 10)
-				//msg = "\red <b>Your [partname] burns.</b>"
-			if (11 to 90)
-				flash_weak_pain()
-				//msg = "\red <b><font size=2>Your [partname] burns badly!</font></b>"
-			if (91 to 10000)
-				flash_pain()
-				//msg = "\red <b><font size=3>OH GOD! Your [partname] is on fire!</font></b>"
-	else*/
+
 	switch(amount)
 		if (1 to 10)
 			flash_weakest_pain()
-			//msg = "<b>Your [partname] hurts.</b>"
 		if (11 to 90)
 			flash_weak_pain()
-			//msg = "<b><font size=2>Your [partname] hurts badly.</font></b>"
 		if (91 to 10000)
 			flash_pain()
-				//msg = "<b><font size=3>OH GOD! Your [partname] is hurting terribly!</font></b>"
 	if (msg && (msg != last_pain_message || prob(10)))
 		last_pain_message = msg
 		src << msg
@@ -74,37 +50,51 @@ mob/var/next_pain_time = FALSE
 
 
 // message is the custom message to be displayed
-// flash_strength is FALSE for weak pain flash, TRUE for strong pain flash
-mob/living/carbon/human/proc/custom_pain(var/message, var/flash_strength)
-	if (stat >= 1)
-		return
-	if (species.flags & NO_PAIN)
-		return
-	if (reagents.has_reagent("tramadol"))
-		return
-	if (reagents.has_reagent("oxycodone"))
-		return
-	if (analgesic)
-		return
-	var/msg = "<span class = 'red'><b>[message]</b></span>"
-	if (flash_strength >= 1)
-		msg = "<span class = 'red'><font size=3><b>[message]</b></font></span>"
+// power decides how much painkillers will stop the message
+// force means it ignores anti-spam timer
+mob/living/carbon/proc/custom_pain(var/message, var/power = 0, var/force = FALSE, var/obj/item/organ/external/affecting, var/nohalloss = FALSE, var/flash_pain = 0)
+	if(!message || stat || chem_effects[CE_PAINKILLER] > power)
+		return 0
+
+	// Excessive halloss is horrible, just give them enough to make it visible.
+	if(!nohalloss && (power || flash_pain))//Flash pain is so that handle_pain actually makes use of this proc to flash pain.
+		if(affecting)
+			affecting.add_pain(ceil(power/2))
+		else
+			adjustHalLoss(ceil(power/2))
+
+		var/actual_flash = max(power,flash_pain)
+
+		switch(actual_flash)
+			if(1 to 10)
+				flash_weakest_pain()
+			if(11 to 90)
+				flash_weak_pain()
+				if(stuttering < 10)
+					stuttering += 5
+			if(91 to INFINITY)
+				flash_pain()
+				if(stuttering < 10)
+					stuttering += 10
 
 	// Anti message spam checks
-	if (msg && ((msg != last_pain_message) || (world.time >= next_pain_time)))
-		last_pain_message = msg
-		src << msg
-	next_pain_time = world.time + 100
+	if(force || (message != last_pain_message) || (world.time >= next_pain_time))
+		last_pain_message = message
+		if(power >= 50)
+			to_chat(src, "<b><font size=3>[message]</font></b>")
+		else
+			to_chat(src, "<b>[message]</b>")
+	next_pain_time = world.time + (100-power)
 
 mob/living/carbon/human/proc/handle_pain()
-	if (stat >= 2) return
-
+	if(stat)
+		return
 	if(world.time < next_pain_time)
 		return
 	var/maxdam = 0
 	var/obj/item/organ/external/damaged_organ = null
 	for(var/obj/item/organ/external/E in organs)
-		var/dam = E.get_damage()
+		var/dam = E.get_pain() + E.get_damage()
 		// make the choice of the organ depend on damage,
 		// but also sometimes use one of the less damaged ones
 		if(dam > maxdam && (maxdam == 0 || prob(70)) )
@@ -115,40 +105,32 @@ mob/living/carbon/human/proc/handle_pain()
 			paralysis = max(0, paralysis - round(maxdam/10))
 		var/burning = damaged_organ.burn_dam > damaged_organ.brute_dam
 		var/msg
-		switch(maxdam)
-			if(1 to 10)
-				msg =  "Your [damaged_organ.name] [burning ? "burns" : "hurts"]."
-			if(11 to 90)
-				msg = "Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!"
-			if(91 to 10000)
-				msg = "OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!"
-		custom_pain(msg, maxdam, prob(10), damaged_organ, TRUE)
+		if (prob(10))
+			switch(maxdam)
+				if(1 to 10)
+					msg = "Your [damaged_organ.name] [burning ? "burns" : "hurts"]."
+
+				if(11 to 90)
+					msg = "<font size=2>Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!</font>"
+
+				if(91 to 10000)
+					msg = "<font size=3>OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!</font>"
+		custom_pain(msg, 0, prob(10), affecting = damaged_organ, flash_pain = maxdam)
+
 	// Damage to internal organs hurts a lot.
 	for(var/obj/item/organ/I in internal_organs)
-		if(prob(1) && !(I.status & ORGAN_DEAD) && I.damage > 5)
+		if((I.status & ORGAN_DEAD)) continue
+		if(I.damage > 2) if(prob(2))
 			var/obj/item/organ/external/parent = get_organ(I.parent_organ)
-			var/pain = 10
-			var/message = "You feel a dull pain in your [parent.name]"
-			if(I.is_bruised())
-				pain = 25
-				message = "You feel a pain in your [parent.name]"
-			if(I.is_broken())
-				pain = 50
-				message = "You feel a sharp pain in your [parent.name]"
-			src.custom_pain(message, pain, affecting = parent)
+			src.custom_pain("You feel a sharp pain in your [parent.name]", 50, affecting = parent)
 
-
-	if(prob(1))
+	if(prob(2))
 		switch(getToxLoss())
-			if(5 to 17)
+			if(10 to 25)
 				custom_pain("Your body stings slightly.", getToxLoss())
-			if(17 to 35)
-				custom_pain("Your body stings.", getToxLoss())
-			if(35 to 60)
-				custom_pain("Your body stings strongly.", getToxLoss())
-			if(60 to 100)
+			if(25 to 45)
 				custom_pain("Your whole body hurts badly.", getToxLoss())
-			if(100 to INFINITY)
+			if(61 to INFINITY)
 				custom_pain("Your body aches all over, it's driving you mad.", getToxLoss())
 
 /mob/living/carbon/human/proc/painchecks()
@@ -169,11 +151,9 @@ mob/living/carbon/human/proc/handle_pain()
 	else
 		return TRUE
 
-/*mob/living/carbon/human/proc/suffer_well(var/prob)//Subber well pupper.
-	if (prob(prob))
+mob/living/carbon/human/proc/suffer_well(var/prob)
+	if (prob(prob) && !stat)
 		emote("agony")
 		Weaken(10)
 		shake_camera(src, 20, 3)
-		if (!stat)//So this doesn't get displayed when you're asleep.
-			visible_message("<span class='warning'>[src] gives into the pain!</span>")
-			*/ //to be finished soon.
+		visible_message("<span class='warning'>[src] gives into the pain!</span>")

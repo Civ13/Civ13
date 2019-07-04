@@ -150,13 +150,13 @@ var/list/organ_cache = list()
 	//** Handle the effects of infections
 	var/antibiotics = owner.reagents.get_reagent_amount("penicillin")
 
-	if (germ_level > 0 && germ_level < INFECTION_LEVEL_ONE/2 && prob(30))
+	if (germ_level > 0 && germ_level < INFECTION_LEVEL_ONE && prob(30))
 		germ_level--
 
-	if (germ_level >= INFECTION_LEVEL_ONE/2)
+	if (germ_level >= INFECTION_LEVEL_ONE)
 		//aiming for germ level to go from ambient to INFECTION_LEVEL_TWO in an average of 15 minutes
 		if (antibiotics < 5 && prob(round(germ_level/6)))
-			germ_level++
+			germ_level+=0.5
 
 	if (germ_level >= INFECTION_LEVEL_ONE)
 		var/fever_temperature = (owner.species.heat_level_1 - owner.species.body_temperature - 5)* min(germ_level/INFECTION_LEVEL_TWO, TRUE) + owner.species.body_temperature
@@ -166,7 +166,7 @@ var/list/organ_cache = list()
 		var/obj/item/organ/external/parent = owner.get_organ(parent_organ)
 		//spread germs
 		if (antibiotics < 5 && parent.germ_level < germ_level && ( parent.germ_level < INFECTION_LEVEL_ONE*2 || prob(30) ))
-			parent.germ_level++
+			parent.germ_level+=0.5
 
 		if (prob(3))	//about once every 30 seconds
 			take_damage(1,silent=prob(30))
@@ -183,7 +183,7 @@ var/list/organ_cache = list()
 			if (rejecting % 10 == FALSE) //Only fire every ten rejection ticks.
 				switch(rejecting)
 					if (1 to 50)
-						germ_level++
+						germ_level+=0.5
 					if (51 to 200)
 						germ_level += rand(1,2)
 					if (201 to 500)
@@ -230,7 +230,7 @@ var/list/organ_cache = list()
 	if (owner && parent_organ && amount > 0)
 		var/obj/item/organ/external/parent = owner.get_organ(parent_organ)
 		if (parent && !silent)
-			owner.custom_pain("Something inside your [parent.name] hurts a lot.", TRUE)
+			owner.custom_pain("Something inside your [parent.name] hurts a lot.", 50)
 
 /obj/item/organ/proc/bruise()
 	damage = max(damage, min_bruised_damage)

@@ -14,9 +14,8 @@ var/diary               = null
 var/attack_log          = null
 var/href_logfile        = null
 var/customserver_name        = null
-var/game_version        = "1713"
+var/game_version        = "Civilization 13"
 var/changelog_hash      = ""
-//var/game_year           = (text2num(time2text(world.realtime, "YYYY")) + 544)
 
 var/round_progressing = TRUE
 

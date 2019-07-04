@@ -601,7 +601,7 @@ var/list/global/slot_flags_enumeration = list(
 	for(var/i = 1; i < range; i++)
 		var/turf/new_turf = get_step(target, throw_dir)
 		target = new_turf
-		if(new_turf.density)
+		if(new_turf && new_turf.density)
 			break
 	throw_at(target, rand(1,3), throw_speed)
 	user.visible_message("[user] kicks \the [src.name].")

@@ -65,41 +65,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 
 	var/climate = "temperate" //temperate, desert, jungle, tundra
 
-/*Adding a wizard area teleport list because motherfucking lag -- Urist*/
-/*I am far too lazy to make it a proper list of areas so I'll just make it run the usual telepot routine at the start of the game*/
-var/list/teleportlocs = list()
-
-/hook/startup/proc/setupTeleportLocs()
-	for (var/area in area_list)
-		var/area/AR = area
-		if (teleportlocs.Find(AR.name)) continue
-		var/turf/picked = pick_area_turf(AR.type, list(/proc/is_station_turf))
-		if (picked)
-			teleportlocs += AR.name
-			teleportlocs[AR.name] = AR
-
-	teleportlocs = sortAssoc(teleportlocs)
-
-	return TRUE
-
-var/list/ghostteleportlocs = list()
-
-/hook/startup/proc/setupGhostTeleportLocs()
-	for (var/area in area_list)
-		var/area/AR = area
-		if (ghostteleportlocs.Find(AR.name)) continue
-		if (AR.type == /area/caribbean/void) continue
-		if (!istype(AR, /area/caribbean)) continue
-		var/turf/picked = pick_area_turf(AR.type, list(/proc/is_station_turf))
-		if (picked)
-			ghostteleportlocs += AR.name
-			ghostteleportlocs[AR.name] = AR
-
-	ghostteleportlocs = sortAssoc(ghostteleportlocs)
-
-	return TRUE
-
-
 // ===
 /area
 	var/global/global_uid = FALSE

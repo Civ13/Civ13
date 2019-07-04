@@ -33,6 +33,3 @@
 
 /proc/not_turf_contains_dense_objects(var/turf/T)
 	return !turf_contains_dense_objects(T)
-
-/proc/is_station_turf(var/turf/T)
-	return T

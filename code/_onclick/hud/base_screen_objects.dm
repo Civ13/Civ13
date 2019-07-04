@@ -420,7 +420,8 @@
 	name = "storage"
 
 /obj/screen/storage/New()
-	icon = usr.client.prefs.UI_file
+	if (usr && usr.client)
+		icon = usr.client.prefs.UI_file
 	..()
 
 /obj/screen/storage/Click()
@@ -1079,6 +1080,9 @@ obj/screen/tactic
 	icon_state = "blank"
 	layer = 21
 	mouse_opacity = TRUE
+/obj/screen/full_1_tile_overlay/process()
+	update_icon()
+	return
 
 /obj/screen/damageoverlay
 	icon = 'icons/mob/screen1_full.dmi'

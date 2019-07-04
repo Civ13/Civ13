@@ -29,6 +29,7 @@
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "butch"
 	desc = "A huge knife used for chopping and chopping up meat."
+	edge = FALSE
 	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
-	attack_verb = list("cleaved", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
+	attack_verb = list("cleaved", "slashed", "sliced", "torn", "ripped", "diced", "cut")
 	drawsound = 'sound/items/unholster_knife.ogg'
