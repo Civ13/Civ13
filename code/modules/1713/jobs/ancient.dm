@@ -446,7 +446,7 @@
 	is_commander = TRUE
 	head_position = TRUE
 	is_officer = TRUE
-	is_whitelisted = TRUE
+	whitelisted = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1
