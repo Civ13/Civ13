@@ -31,6 +31,19 @@
 	armor = list(melee = 75, arrow = 60, gun = 10, energy = 8, bomb = 25, bio = 15, rad = 25)
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
+/obj/item/clothing/gloves/gauntlets
+	name = "armored gauntlets"
+	desc = "A pair of armored iron gauntlets."
+	icon_state = "gauntlet"
+	item_state = "gauntlet"
+	worn_state = "gauntlet"
+	body_parts_covered = HANDS
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 75, arrow = 60, gun = 10, energy = 8, bomb = 25, bio = 15, rad = 25)
+	cold_protection = HANDS
+	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
+	slowdown = 0.1
 
 /obj/item/clothing/under/medieval
 	name = "white tunic"

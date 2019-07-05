@@ -101,6 +101,15 @@
 	item_state = "customceltic"
 	worn_state = "customceltic"
 
+/obj/item/clothing/under/custom/toga/purple
+	name = "purple toga"
+	desc = "A fancy cloth toga."
+	icon_state = "customtoga"
+	item_state = "customtoga"
+	worn_state = "customtoga"
+	uncolored = FALSE
+	color = "#66023C"
+
 ///////////////MEDIEVAL//////////////////////////////////////
 /obj/item/clothing/under/custom/tunic
 	name = "tunic"

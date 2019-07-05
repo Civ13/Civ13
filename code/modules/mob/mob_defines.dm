@@ -161,6 +161,8 @@
 	var/spell/list/spell_list = list()
 
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
+	mouse_drop_pointer = MOUSE_ACTIVE_POINTER
+	mouse_drop_zone = TRUE
 
 	var/update_icon = TRUE //Set to TRUE to trigger update_icons() at the next life() call
 

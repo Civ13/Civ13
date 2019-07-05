@@ -14,7 +14,7 @@
 
 /obj/screen
 	name = ""
-	icon = 'icons/mob/screen/effects.dmi'
+	icon = 'icons/mob/screen/1713Style.dmi'
 	layer = 20.0
 	plane = HUD_PLANE
 
@@ -27,6 +27,8 @@
 	parentmob = _parentmob
 	name = _name
 	screen_loc = _screen_loc
+	if (parentmob)
+		icon = parentmob.client.prefs.UI_file
 	if (_icon)
 		icon = _icon
 	if (_icon_state)
@@ -348,11 +350,11 @@
 		if(33 to 48) //Chest and arms to shoulders
 			switch(icon_x)
 				if(4 to 10)
-					parentmob.targeted_organ = "l_arm"
+					parentmob.targeted_organ = "r_arm"
 				if(11 to 23)
 					parentmob.targeted_organ = "chest"
 				if(24 to 29)
-					parentmob.targeted_organ = "r_arm"
+					parentmob.targeted_organ = "l_arm"
 				else
 					return 1
 		if(49 to 60) //Head, but we need to check for eye or mouth
@@ -416,6 +418,11 @@
 
 /obj/screen/storage
 	name = "storage"
+
+/obj/screen/storage/New()
+	if (usr && usr.client)
+		icon = usr.client.prefs.UI_file
+	..()
 
 /obj/screen/storage/Click()
 	if (!usr.canClick())
@@ -1073,6 +1080,9 @@ obj/screen/tactic
 	icon_state = "blank"
 	layer = 21
 	mouse_opacity = TRUE
+/obj/screen/full_1_tile_overlay/process()
+	update_icon()
+	return
 
 /obj/screen/damageoverlay
 	icon = 'icons/mob/screen1_full.dmi'

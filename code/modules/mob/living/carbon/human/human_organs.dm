@@ -45,14 +45,8 @@
 			//Moving around with fractured ribs won't do you any good
 				if (E.is_broken() && E.internal_organs && E.internal_organs.len && prob(15))
 					var/obj/item/organ/I = pick(E.internal_organs)
-					custom_pain("You feel broken bones moving in your [E.name]!", TRUE)
+					custom_pain("You feel broken bones moving in your [E.name]!", 55)
 					I.take_damage(rand(3,5))
-
-				//Moving makes open wounds get infected much faster
-				if (E.wounds.len)
-					for (var/datum/wound/W in E.wounds)
-						if (W.infection_check())
-							W.germ_level += 1
 
 	var/limbs_count = 4
 	var/obj/item/organ/external/E = organs_by_name["l_foot"]
@@ -188,3 +182,12 @@
 	var/list/all_bits = internal_organs|organs
 	for (var/obj/item/organ/O in all_bits)
 		O.set_dna(dna)
+
+/mob/living/proc/is_asystole()
+	return FALSE
+
+/mob/living/carbon/human/is_asystole()
+	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
+	if(!istype(heart) || !heart.is_working())
+		return TRUE
+	return FALSE

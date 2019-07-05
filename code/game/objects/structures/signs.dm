@@ -164,3 +164,28 @@
 	desc = "A still life painting, depicting a table with a piece of white cloth, several fruits and a human skull."
 	name = "painting"
 	icon_state = "painting5"
+	
+/obj/structure/sign/painting6
+	desc = "A long-tailed bird with black, olive green and white plumage, resembling a magpie, perches on a tree branch, surrounded by white cherry blossoms."
+	name = "painting"
+	icon_state = "painting6"
+
+/obj/structure/sign/painting7
+	desc = "A lone figure with a carrying pole on their shoulders stands under a tall pine on the sloping shore, gazing at the snow-peaked mountain across the strait. The sky is colored dark orange by the setting sun."
+	name = "painting"
+	icon_state = "painting7"
+
+/obj/structure/sign/painting8
+	desc = "A hilly landscape, where a large temple with red timber beams and sweeping roofs stands on the bank of a river."
+	name = "painting"
+	icon_state = "painting8"
+
+/obj/structure/sign/painting9
+	desc = "A small encampment in the desert, with a few tents, several horses and loaded camels. A faraway river crosses the expanse of barren dunes."
+	name = "painting"
+	icon_state = "painting9"
+
+/obj/structure/sign/painting10
+	desc = "A barque at sea, lit by the full moon."
+	name = "painting"
+	icon_state = "painting10"

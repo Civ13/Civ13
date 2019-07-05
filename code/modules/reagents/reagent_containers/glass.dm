@@ -25,7 +25,6 @@
 		/obj/structure/sink,
 		/obj/structure/engine,
 		/obj/item/weapon/storage,
-		/obj/item/weapon/storage/secure/safe,
 		/mob/living/simple_animal/cow,
 		/mob/living/simple_animal/goat/female,
 		/mob/living/simple_animal/sheep/female,
@@ -539,6 +538,18 @@
 	New()
 		..()
 		reagents.add_reagent("wine",200)
+
+/obj/item/weapon/reagent_containers/glass/barrel/tea
+	name = "tea barrel"
+	desc = "A barrel of tea."
+	icon = 'icons/obj/barrel.dmi'
+	icon_state = "barrel_wood_drinks"
+	amount_per_transfer_from_this = 10
+	volume = 250
+	density = TRUE
+	New()
+		..()
+		reagents.add_reagent("tea",200)
 
 /obj/item/weapon/reagent_containers/glass/barrel/oil
 	name = "oil barrel"

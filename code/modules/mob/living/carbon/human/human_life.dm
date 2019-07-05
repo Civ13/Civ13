@@ -489,30 +489,6 @@
 		blinded =    1
 		eye_blurry = 1
 
-	if (stat != DEAD)
-		var/rn = rand(0, 200)
-		if (getBrainLoss() >= 5)
-			if (0 <= rn && rn <= 3)
-				custom_pain("Your head feels numb and painful.")
-		if (getBrainLoss() >= 15)
-			if (4 <= rn && rn <= 6) if (eye_blurry <= 0)
-				src << "<span class='warning'>It becomes hard to see for some reason.</span>"
-				eye_blurry = 10
-		if (getBrainLoss() >= 35)
-			if (7 <= rn && rn <= 9) if (get_active_hand())
-				src << "<span class='danger'>Your hand won't respond properly, you drop what you're holding!</span>"
-				drop_item()
-		if (getBrainLoss() >= 45)
-			if (10 <= rn && rn <= 12)
-				if (prob(50))
-					src << "<span class='danger'>You suddenly black out!</span>"
-					Paralyse(10)
-				else if (!lying || !prone)
-					src << "<span class='danger'>Your legs won't respond properly, you fall down!</span>"
-					Weaken(10)
-
-
-
 /mob/living/carbon/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
 	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 		return
@@ -1334,7 +1310,8 @@
 		Weaken(20)
 		if (prob(1))
 			adjustOxyLoss(10)
-
+	if (getBruteLoss() >= 150)
+		death()
 /mob/living/carbon/human/proc/handle_hud_list()
 
 	if (original_job && never_set_faction_huds)
@@ -1356,8 +1333,10 @@
 				if (BRITISH)
 					if (map.ordinal_age >= 4)
 						holder2.icon_state = "brit_basic"
-					else
+					else if (map.ordinal_age >= 3)
 						holder2.icon_state = "rn_basic"
+					else
+						holder2.icon_state = "eng_basic"
 				if (FRENCH)
 					if (map.ordinal_age >= 4)
 						holder2.icon_state = "fr2_basic"
@@ -1588,7 +1567,7 @@
 								emote("twitch")
 							else
 								emote("shiver")
-							custom_pain("You can't stand still!",1)
+							custom_pain("You can't stand still!",4)
 						if (prob(10))
 							confused = 6
 						if (prob(12))

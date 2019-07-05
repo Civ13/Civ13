@@ -27,6 +27,9 @@
 
 	var/mobcapacity = 1
 	var/storagecapacity = 0
+
+	mouse_drop_zone = TRUE
+
 /obj/structure/vehicle/proc/check_sails()
 	return
 /obj/structure/vehicle/proc/updatepassdir()

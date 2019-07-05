@@ -549,3 +549,10 @@
 		toggled = TRUE
 		usr.update_inv_wear_mask(1)
 		return
+
+/obj/item/clothing/head/laurelcrown
+	name = "laurel crown"
+	desc = "a crown made of laurel."
+	icon_state = "laurelcrown"
+	item_state = "laurelcrown"
+	body_parts_covered = FALSE

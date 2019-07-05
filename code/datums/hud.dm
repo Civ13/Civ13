@@ -16,18 +16,18 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 5,
-		"Yspace" = 1,
+		"Xspace" = 2,
+		"Yspace" = 3,
 		"ColCount" = 7,
 		"Xslot" = 5,
-		"Yslot" = 1
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(
 		"screen_cover" = list("type" = /obj/screen/cover, "loc" = "-2,1", "icon" = 'icons/mob/screenlimit.dmi',"icon_state" = "cover"),
 		"damageoverlay" = list("type" = /obj/screen/damageoverlay, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi'),
-		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
-		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
+		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
+		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
 		"drugeffect" = list("type" = /obj/screen/drugoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
@@ -95,17 +95,17 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 7,
-		"Yspace" = 3,
+		"Xspace" = 2,
+		"Yspace" = 5,
 		"ColCount" = 7,
-		"Xslot" = 7,
-		"Yslot" = 3
+		"Xslot" = 5,
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(
 		"damageoverlay" = list("type" = /obj/screen/damageoverlay, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi'),
-		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
-		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
+		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
+		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
 		"drugeffect" = list("type" = /obj/screen/drugoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
@@ -171,17 +171,17 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 7,
-		"Yspace" = 3,
+		"Xspace" = 2,
+		"Yspace" = 5,
 		"ColCount" = 7,
-		"Xslot" = 7,
-		"Yslot" = 3
+		"Xslot" = 5,
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(
 		"damageoverlay" = list("type" = /obj/screen/damageoverlay, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi'),
-		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
-		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
+		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
+		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
 		"drugeffect" = list("type" = /obj/screen/drugoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
@@ -238,17 +238,17 @@
 	//Xbags,Ybags for space_orient_objs
 	//Others for slot_orient_objs
 	ConteinerData = list(
-		"Xspace" = 7,
-		"Yspace" = 3,
+		"Xspace" = 2,
+		"Yspace" = 5,
 		"ColCount" = 7,
-		"Xslot" = 7,
-		"Yslot" = 3
+		"Xslot" = 5,
+		"Yslot" = 2
 	)
 
 	HUDoverlays = list(
 		"damageoverlay" = list("type" = /obj/screen/damageoverlay, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi'),
-		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
-		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
+		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
+		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
 		"drugeffect" = list("type" = /obj/screen/drugoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"nvg" = list("type" = /obj/screen/nvgoverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),
 		"thermal" = list("type" = /obj/screen/thermaloverlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon_state" = "blank"),

@@ -59,6 +59,14 @@
 		if (WU.accessories.len)
 			for (var/obj/item/clothing/accessory/AC in WU.accessories)
 				tally += AC.slowdown
+	if (shoes)
+		tally += shoes.slowdown
+	if (l_hand)
+		if (istype(l_hand, /obj/item/weapon/shield))
+			tally += l_hand.slowdown
+	if (r_hand)
+		if (istype(r_hand, /obj/item/weapon/shield))
+			tally += r_hand.slowdown
 	if (buckled && istype(buckled, /obj/structure/bed/chair/wheelchair))
 		for (var/organ_name in list("l_hand","r_hand","l_arm","r_arm"))
 			var/obj/item/organ/external/E = get_organ(organ_name)
@@ -69,9 +77,6 @@
 			else if (E.status & ORGAN_BROKEN)
 				tally += 1.2
 	else
-		if (shoes)
-			tally += shoes.slowdown
-
 		for (var/organ_name in list("l_foot","r_foot","l_leg","r_leg"))
 			var/obj/item/organ/external/E = get_organ(organ_name)
 			if (!E || E.is_stump())

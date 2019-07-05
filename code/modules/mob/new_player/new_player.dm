@@ -558,14 +558,14 @@
 		if (map && map.faction1_can_cross_blocks())
 			src << "<span class = 'red'>This job is not available for joining after the grace period has ended.</span>"
 			return
-		if (client.prefs.gender == FEMALE)
+		if (client && client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
-	if (client.prefs.gender == FEMALE && (istype(job, /datum/job/american) || istype(job, /datum/job/arab)))
+	if (client && client.prefs.gender == FEMALE && (istype(job, /datum/job/american) || istype(job, /datum/job/arab)))
 		usr << "<span class='danger'>You must be male to play as this faction.</span>"
 		return
 	if (job.is_ww1)
-		if (client.prefs.gender == FEMALE)
+		if (client && client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
 	if (map.age == "1013" && !map.civilizations && !istype(job, /datum/job/civilian))

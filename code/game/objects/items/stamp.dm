@@ -2,7 +2,7 @@
 	name = "wax seal stamp"
 	desc = "A stamp to use with hot wax, in order to mark important documents."
 	icon = 'icons/obj/bureaucracy.dmi'
-	icon_state = "stamp-qm"
+	icon_state = "stamp-rn"
 	item_state = "stamp"
 	throwforce = FALSE
 	w_class = 1.0

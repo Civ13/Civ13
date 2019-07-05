@@ -4,9 +4,9 @@
 	move_delay = 1
 	fire_delay = 3
 	item_state = "pistol"
-	equiptimer = 7
+	equiptimer = 5
 	gun_safety = TRUE
-
+	gun_type = GUN_TYPE_PISTOL
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(

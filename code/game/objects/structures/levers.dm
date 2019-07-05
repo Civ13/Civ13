@@ -1,3 +1,9 @@
+/obj/structure/functions
+	icon = 'icons/obj/decals.dmi'
+	icon_state = "woodsign"
+	anchored = TRUE
+	density = TRUE
+
 /obj/structure/skeleton_activator
 	name = "Activate Skeletons"
 	desc = "Activate the skeletons."
@@ -101,4 +107,47 @@
 		RC.max_number = maxamount
 		RC.timer = timer
 	user << "Town militia spawners have been configured to [timer/10] seconds, [maxamount] maximum number."
+	return
+
+/obj/structure/functions/clean_arena1
+	name = "Clean Arena I"
+	desc = "Clean the 1st arena deleting bodies and moving equipment to the armory."
+
+/obj/structure/functions/clean_arena1/attack_hand(mob/living/user)
+	if (!istype(user, /mob/living/carbon/human))
+		return
+	else
+		var/area/A = get_area(src.loc)
+		for (var/mob/living/carbon/human/H in A)
+			if (H.stat == DEAD)
+				qdel(H)
+		for (var/obj/item/I in A)
+			if (istype(I, /obj/item/organ))
+				qdel(I)
+			else
+				I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+		for (var/obj/effect/decal/cleanable/C in A)
+			qdel(C)
+	user << "Arena 1 cleared."
+	return
+/obj/structure/functions/clean_arena2
+	name = "Clean Arena II"
+	desc = "Clean the 2nd arena deleting bodies and moving equipment to the armory."
+
+/obj/structure/functions/clean_arena2/attack_hand(mob/living/user)
+	if (!istype(user, /mob/living/carbon/human))
+		return
+	else
+		var/area/A = get_area(src.loc)
+		for (var/mob/living/carbon/human/H in A)
+			if (H.stat == DEAD)
+				qdel(H)
+		for (var/obj/item/I in A)
+			if (istype(I, /obj/item/organ))
+				qdel(I)
+			else
+				I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+		for (var/obj/effect/decal/cleanable/C in A)
+			qdel(C)
+	user << "Arena 2 cleared."
 	return

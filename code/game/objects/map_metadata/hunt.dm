@@ -26,6 +26,14 @@
 	songs = list(
 		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	gamemode = "Survival RP"
+
+/obj/map_metadata/hunt/New()
+	..()
+	spawn(1200)
+		for (var/i = 1, i <= 50, i++)
+			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/island/river))
+			new/obj/structure/piranha(areaspawn)
+
 obj/map_metadata/hunt/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/pirates))

@@ -38,10 +38,12 @@
 	item_state = "buckler"
 	var/base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_BACK|SLOT_DENYPOCKET
 	var/material = "wood"
 	health = 40 // hardness of wood
 	var/cooldown = 0
+	slowdown = 0.1
+
 /obj/item/weapon/shield/New()
 	..()
 	if (get_material_name() == "wood")
@@ -55,6 +57,7 @@
 	health = 60
 	w_class = 3.0
 	base_block_chance = 30
+	slowdown = 0.3
 
 /obj/item/weapon/shield/iron
 	name = "iron shield"
@@ -65,6 +68,7 @@
 	health = 50
 	w_class = 3.0
 	base_block_chance = 30
+	slowdown = 0.25
 
 /obj/item/weapon/shield/bronze
 	name = "bronze shield"
@@ -75,6 +79,7 @@
 	health = 47
 	w_class = 3.0
 	base_block_chance = 30
+	slowdown = 0.2
 
 /obj/item/weapon/shield/aspis
 	name = "aspis"
@@ -85,7 +90,8 @@
 	material = "bronze"
 	health = 47
 	w_class = 3.0
-	base_block_chance = 33
+	base_block_chance = 45
+	slowdown = 0.4
 
 /obj/item/weapon/shield/aspis/New()
 	..()
@@ -103,16 +109,18 @@
 	health = 47
 	w_class = 3.0
 	base_block_chance = 35
+	slowdown = 0.3
 
 /obj/item/weapon/shield/roman_buckler
 	name = "roman parma shield"
 	icon_state = "roman_buckler"
 	item_state = "roman_buckler"
-	base_block_chance = 27
+	base_block_chance = 257
 	w_class = 2.0
 	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 40 // hardness of wood
+	slowdown = 0.1
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
 		return FALSE
@@ -122,7 +130,10 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			health--
+			if (istype(damage_source, /obj/item/weapon/melee))
+				health -= 10
+			else
+				health--
 			check_health()
 			return TRUE
 	return FALSE
@@ -153,7 +164,7 @@
 	health = 50
 	w_class = 3.0
 	base_block_chance = 40
-
+	slowdown = 0.3
 
 /obj/item/weapon/shield/iron/semioval/templar
 	name = "semioval iron templar shield"
@@ -176,6 +187,7 @@ obj/item/weapon/shield/red_buckler
 	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 40 // hardness of wood
+	slowdown = 0.1
 
 obj/item/weapon/shield/blue_buckler
 	name = "blue buckler shield"
@@ -186,6 +198,7 @@ obj/item/weapon/shield/blue_buckler
 	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 40 // hardness of wood
+	slowdown = 0.1
 
 obj/item/weapon/shield/attack_self(mob/user as mob)
 	if (cooldown < world.time - 10)
@@ -202,3 +215,4 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 40 // hardness of wood
+	slowdown = 0.22
