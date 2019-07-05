@@ -382,10 +382,6 @@
 		Process_Incorpmove(direct)
 		return
 
-	for (var/obj/effect/stop/S in mob.loc)
-		if (S.victim == mob)
-			return
-
 	if (mob_is_living && mob.stat == DEAD)
 		mob.ghostize()
 		return

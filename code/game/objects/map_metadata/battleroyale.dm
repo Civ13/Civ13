@@ -17,8 +17,6 @@
 	age = "1713"
 	ordinal_age = 3
 	faction_distribution_coeffs = list(PIRATES = 1)
-	songs = list(
-		"Fortnite Default Dance:1" = 'sound/music/memes.ogg')
 	battle_name = "Battleroyale at Isla Robusta"
 	mission_start_message = "<font size=4>You and several other pirates were abandoned at this forsaken island. Only one can survive! <b>Last standing player wins!</b></font>"
 	var/winner_name = "Unknown"

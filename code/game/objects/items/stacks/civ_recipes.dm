@@ -39,25 +39,26 @@
 	else
 		if (!recipes)
 			var/list/current_res = list(0,0,0)
-			switch (map.ordinal_age)
-				if (0)
-					current_res = list(0,0,0)
-				if (1)
-					current_res = list(35,35,35)
-				if (2)
-					current_res = list(60,60,60)
-				if (3)
-					current_res = list(85,85,85)
-				if (4)
-					current_res = list(105,105,105)
-				if (5)
-					current_res = list(125,125,125)
-				if (6)
-					current_res = list(152,152,152)
-				if (7)
-					current_res = list(185,185,185)
-				if (8)
-					current_res = list(210,210,210)
+			if (map)
+				switch (map.ordinal_age)
+					if (0)
+						current_res = list(0,0,0)
+					if (1)
+						current_res = list(35,35,35)
+					if (2)
+						current_res = list(60,60,60)
+					if (3)
+						current_res = list(85,85,85)
+					if (4)
+						current_res = list(105,105,105)
+					if (5)
+						current_res = list(125,125,125)
+					if (6)
+						current_res = list(152,152,152)
+					if (7)
+						current_res = list(185,185,185)
+					if (8)
+						current_res = list(210,210,210)
 			generate_recipes_civs(current_res)
 	return recipes
 
@@ -533,7 +534,13 @@
 			new/datum/stack_recipe("city street", /obj/structure/sign/painting2, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("sea sunset", /obj/structure/sign/painting3, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("valley", /obj/structure/sign/painting4, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("still life", /obj/structure/sign/painting5, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("still life", /obj/structure/sign/painting5, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("bird and blossom", /obj/structure/sign/painting6, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("pine on the shore", /obj/structure/sign/painting7, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("temple by the river", /obj/structure/sign/painting8, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("desert camp", /obj/structure/sign/painting9, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("barque at sea", /obj/structure/sign/painting10, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),))
+
 
 /material/rope/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -997,8 +1004,6 @@
 
 	if (current_res[1] >= 18 && current_res[2] >= 34)
 		recipes += new/datum/stack_recipe("[display_name] small sword", /obj/item/weapon/material/sword/smallsword/copper, 10, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
-	if (current_res[1] >= 18 && current_res[2] >= 42)
-		recipes += new/datum/stack_recipe("[display_name] spadroon", /obj/item/weapon/material/sword/spadroon/copper, 15, _time = 115, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("copper lamp", /obj/item/flashlight/lantern/copper, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("small copper pot", /obj/item/weapon/reagent_containers/glass/small_pot/copper_small, 3, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("large copper pot", /obj/item/weapon/reagent_containers/glass/small_pot/copper_large, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -1035,7 +1040,7 @@
 	if (current_res[1] >= 27 && current_res[2] >= 34)
 		recipes += new/datum/stack_recipe("[display_name] small sword", /obj/item/weapon/material/sword/smallsword/bronze, 10, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	if (current_res[1] >= 27 && current_res[2] >= 42)
-		recipes += new/datum/stack_recipe("[display_name] spadroon", /obj/item/weapon/material/sword/spadroon/bronze, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
+		recipes += new/datum/stack_recipe("[display_name] arming sword", /obj/item/weapon/material/sword/armingsword/bronze, 15, _time = 125, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	if (current_res[1] >= 34 && current_res[2] >= 21)
 		recipes += new/datum/stack_recipe("bronze chestplate", /obj/item/clothing/suit/armor/medieval/bronze_chestplate, 6, _time = 165, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	if (current_res[1] >= 18 && current_res[3]>= 26)

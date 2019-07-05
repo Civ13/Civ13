@@ -41,6 +41,7 @@
 	parent_organ = "head"
 	relative_size = 10
 	var/list/eye_colour = list(0,0,0)
+	min_broken_damage = 60
 
 /obj/item/organ/eyes/proc/update_colour()
 	if (!owner)
@@ -161,7 +162,7 @@
 				owner.Weaken(10)
 
 				var/obj/item/organ/external/E = owner.get_organ(parent_organ)
-				var/datum/wound/W = new /datum/wound/internal_bleeding(20)
+				var/datum/wound/W = new /datum/wound/internal_bleeding(20, src)
 				E.wounds += W
 				E.germ_level = max(INFECTION_LEVEL_TWO, E.germ_level)
 				owner.adjustToxLoss(25)

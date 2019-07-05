@@ -47,7 +47,7 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	var/list/ambience = list()
 	var/list/forced_ambience = list()
 	var/turf/base_turf //The base turf type of the area, which can be used to override the z-level's base turf
-	var/sound_env = OUTSIDE
+	var/sound_env = FOREST
 
 	var/location = AREA_OUTSIDE
 
@@ -64,41 +64,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and map itse
 	var/area/parent_area = null
 
 	var/climate = "temperate" //temperate, desert, jungle, tundra
-
-/*Adding a wizard area teleport list because motherfucking lag -- Urist*/
-/*I am far too lazy to make it a proper list of areas so I'll just make it run the usual telepot routine at the start of the game*/
-var/list/teleportlocs = list()
-
-/hook/startup/proc/setupTeleportLocs()
-	for (var/area in area_list)
-		var/area/AR = area
-		if (teleportlocs.Find(AR.name)) continue
-		var/turf/picked = pick_area_turf(AR.type, list(/proc/is_station_turf))
-		if (picked)
-			teleportlocs += AR.name
-			teleportlocs[AR.name] = AR
-
-	teleportlocs = sortAssoc(teleportlocs)
-
-	return TRUE
-
-var/list/ghostteleportlocs = list()
-
-/hook/startup/proc/setupGhostTeleportLocs()
-	for (var/area in area_list)
-		var/area/AR = area
-		if (ghostteleportlocs.Find(AR.name)) continue
-		if (AR.type == /area/caribbean/void) continue
-		if (!istype(AR, /area/caribbean)) continue
-		var/turf/picked = pick_area_turf(AR.type, list(/proc/is_station_turf))
-		if (picked)
-			ghostteleportlocs += AR.name
-			ghostteleportlocs[AR.name] = AR
-
-	ghostteleportlocs = sortAssoc(ghostteleportlocs)
-
-	return TRUE
-
 
 // ===
 /area
@@ -118,8 +83,6 @@ var/list/ghostteleportlocs = list()
 	power_environ = FALSE
 
 	..()
-
-	update_snowfall_valid_turfs()
 
 	spawn (100)
 		if (parent_area_type)
@@ -359,7 +322,6 @@ var/list/mob/living/forced_ambiance_list = new
 		artillery_integrity -= loss
 	else
 		artillery_integrity -= loss * 0.75
-	update_snowfall_valid_turfs()
 	if (artillery_integrity > 0)
 		return FALSE
 	return TRUE

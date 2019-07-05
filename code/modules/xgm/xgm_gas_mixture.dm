@@ -277,35 +277,6 @@
 
 	return TRUE
 
-
-//Checks if we are within acceptable range of another gas_mixture to suspend processing or merge.
-/datum/gas_mixture/proc/compare(const/datum/gas_mixture/sample)
-	if (!sample) return FALSE
-
-	var/list/marked = list()
-	for (var/g in gas)
-		if ((abs(gas[g] - sample.gas[g]) > MINIMUM_AIR_TO_SUSPEND) && \
-		((gas[g] < (1 - MINIMUM_AIR_RATIO_TO_SUSPEND) * sample.gas[g]) || \
-		(gas[g] > (1 + MINIMUM_AIR_RATIO_TO_SUSPEND) * sample.gas[g])))
-			return FALSE
-		marked[g] = TRUE
-
-	for (var/g in sample.gas)
-		if (!marked[g])
-			if ((abs(gas[g] - sample.gas[g]) > MINIMUM_AIR_TO_SUSPEND) && \
-			((gas[g] < (1 - MINIMUM_AIR_RATIO_TO_SUSPEND) * sample.gas[g]) || \
-			(gas[g] > (1 + MINIMUM_AIR_RATIO_TO_SUSPEND) * sample.gas[g])))
-				return FALSE
-
-	if (total_moles > MINIMUM_AIR_TO_SUSPEND)
-		if ((abs(temperature - sample.temperature) > MINIMUM_TEMPERATURE_DELTA_TO_SUSPEND) && \
-		((temperature < (1 - MINIMUM_TEMPERATURE_RATIO_TO_SUSPEND)*sample.temperature) || \
-		(temperature > (1 + MINIMUM_TEMPERATURE_RATIO_TO_SUSPEND)*sample.temperature)))
-			return FALSE
-
-	return TRUE
-
-
 /datum/gas_mixture/proc/react()
 //	zburn(null, force_burn=0, no_check=0) //could probably just call zburn() here with no args but I like being explicit.
 
@@ -371,59 +342,6 @@
 
 	update_values()
 	return TRUE
-
-
-//Shares gas with another gas_mixture based on the amount of connecting tiles and a fixed lookup table.
-/datum/gas_mixture/proc/share_ratio(datum/gas_mixture/other, connecting_tiles, share_size = null, one_way = FALSE)
-	var/static/list/sharing_lookup_table = list(0.30, 0.40, 0.48, 0.54, 0.60, 0.66)
-	//Shares a specific ratio of gas between mixtures using simple weighted averages.
-	var/ratio = sharing_lookup_table[6]
-
-	var/size = max(1, group_multiplier)
-	if (isnull(share_size)) share_size = max(1, other.group_multiplier)
-
-	var/full_heat_capacity = heat_capacity()
-	var/s_full_heat_capacity = other.heat_capacity()
-
-	var/list/avg_gas = list()
-
-	for (var/g in gas)
-		avg_gas[g] += gas[g] * size
-
-	for (var/g in other.gas)
-		avg_gas[g] += other.gas[g] * share_size
-
-	for (var/g in avg_gas)
-		avg_gas[g] /= (size + share_size)
-
-	var/temp_avg = FALSE
-	if (full_heat_capacity + s_full_heat_capacity)
-		temp_avg = (temperature * full_heat_capacity + other.temperature * s_full_heat_capacity) / (full_heat_capacity + s_full_heat_capacity)
-
-	//WOOT WOOT TOUCH THIS AND YOU ARE A RETARD.
-	if (sharing_lookup_table.len >= connecting_tiles) //6 or more interconnecting tiles will max at 42% of air moved per tick.
-		ratio = sharing_lookup_table[connecting_tiles]
-	//WOOT WOOT TOUCH THIS AND YOU ARE A RETARD
-
-	for (var/g in avg_gas)
-		gas[g] = max(0, (gas[g] - avg_gas[g]) * (1 - ratio) + avg_gas[g])
-		if (!one_way)
-			other.gas[g] = max(0, (other.gas[g] - avg_gas[g]) * (1 - ratio) + avg_gas[g])
-
-	temperature = max(0, (temperature - temp_avg) * (1-ratio) + temp_avg)
-	if (!one_way)
-		other.temperature = max(0, (other.temperature - temp_avg) * (1-ratio) + temp_avg)
-
-	update_values()
-	other.update_values()
-
-	return compare(other)
-
-
-//A wrapper around share_ratio for spacing gas at the same rate as if it were going into a large airless room.
-/datum/gas_mixture/proc/share_space(datum/gas_mixture/unsim_air)
-	return share_ratio(unsim_air, unsim_air.group_multiplier, max(1, max(group_multiplier + 3, TRUE) + unsim_air.group_multiplier), one_way = TRUE)
-
 
 //Equalizes a list of gas mixtures.  Used for pipe networks.
 /proc/equalize_gases(datum/gas_mixture/list/gases)

@@ -13,6 +13,7 @@
 
 #define MAP_HERACLEA "HERACLEA"
 #define MAP_SIEGE "SIEGE"
+#define MAP_GLADIATORS "GLADIATORS"
 
 #define MAP_CAMP "CAMP"
 #define MAP_KARAK "KARAK"

@@ -124,7 +124,7 @@ obj/item/weapon/material/sword/smallsword/bronze
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
-	cooldownw = 10
+	cooldownw = 9
 	value = 50
 
 obj/item/weapon/material/sword/spadroon/iron
@@ -134,6 +134,29 @@ obj/item/weapon/material/sword/spadroon/copper
 	default_material = "copper"
 
 obj/item/weapon/material/sword/spadroon/bronze
+	default_material = "bronze"
+
+/obj/item/weapon/material/sword/armingsword
+	name = "arming sword"
+	desc = "A very common medieval medium-sized sword."
+	icon_state = "armingsword"
+	item_state = "longsword2"
+	throw_speed = 3
+	throw_range = 3
+	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 37
+	cooldownw = 11
+	value = 50
+
+obj/item/weapon/material/sword/armingsword/iron
+	default_material = "iron"
+
+obj/item/weapon/material/sword/armingsword/copper
+	default_material = "copper"
+
+obj/item/weapon/material/sword/armingsword/bronze
 	default_material = "bronze"
 
 /obj/item/weapon/material/sword/vangar
@@ -219,7 +242,7 @@ obj/item/weapon/material/sword/sabre/iron
 
 /obj/item/weapon/material/sword/longsword
 	name = "longsword"
-	desc = "A large sword, with a long blade. Commonly used in the medieval era, it's rarely used now."
+	desc = "A sword with a long blade. Commonly used in the medieval era."
 	icon_state = "longsword"
 	item_state = "longsword"
 	throw_speed = 2

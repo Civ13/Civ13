@@ -1,4 +1,4 @@
-#define NO_WINNER "The reichstag is under German control."
+#define NO_WINNER "The battle is still going on."
 /obj/map_metadata/khalkhyn
 	ID = MAP_KHALKHYN_GOL
 	title = "Khalkhyn Gol (90x200x1)"
@@ -24,7 +24,7 @@
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
 	songs = list(
-		"Doki no Sakura:2" = 'sound/music/doki_no_sakura.ogg')
+		"Neue Deutsche Welle (Remix):1" = 'sound/music/neue_deutsche_welle.ogg',)
 
 /obj/map_metadata/khalkhyn/job_enabled_specialcheck(var/datum/job/J)
 	..()

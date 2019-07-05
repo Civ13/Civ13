@@ -9,6 +9,7 @@
 	layer = MOB_LAYER + 0.01 //just above mobs
 	anchored = TRUE
 	climbable = TRUE
+	mouse_drop_zone = TRUE
 
 /obj/structure/window/sandbag/sandbag
 	name = "sandbag wall"

@@ -55,9 +55,6 @@ var/list/interior_areas = list(/area/caribbean/houses,
 //	var/has_resources
 //	var/list/resources
 
-//	var/thermite = FALSE
-//	oxygen = MOLES_O2STANDARD
-//	nitrogen = MOLES_N2STANDARD
 	var/to_be_destroyed = FALSE //Used for fire, if a melting temperature was reached, it will be destroyed
 	var/max_fire_temperature_sustained = FALSE //The max temperature of the fire which it was subjected to
 	var/dirt = FALSE
@@ -302,7 +299,6 @@ var/const/enterloopsanity = 100
 
 	if (!wet)
 		wet = wet_val
-		wet_overlay = image('icons/effects/water.dmi',src,"wet_floor")
 		overlays += wet_overlay
 
 	if (unwet_task)

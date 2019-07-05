@@ -1,1 +1,0 @@
-#define ZOOM_CONSTANT 7

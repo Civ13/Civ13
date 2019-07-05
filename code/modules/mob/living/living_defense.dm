@@ -64,10 +64,18 @@
 		var/mob/living/carbon/human/H = src
 		if (H.takes_less_damage)
 			damage /= H.getStatCoeff("strength")
-
-
+		var/instadeath = 0
+		if (def_zone == "eyes")
+			instadeath = 20
+		else if (def_zone == "mouth")
+			instadeath = 20
+		else if (def_zone == "head")
+			instadeath = 10
+		if (instadeath > 0)
+			if (prob(instadeath))
+				death()
 	if (!P.nodamage)
-		apply_damage(damage, P.damage_type, def_zone, absorb, FALSE, P, sharp=proj_sharp, edge=proj_edge)
+		apply_damage(damage, P.damage_type, def_zone, absorb, P, sharp=proj_sharp, edge=proj_edge)
 
 	P.on_hit(src, absorb, def_zone)
 

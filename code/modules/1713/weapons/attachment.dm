@@ -151,7 +151,27 @@ Current Defines (_defines/attachment.dm)
 	var/attack_sound = 'sound/weapons/slice.ogg'
 	var/weakens = 0
 	//var/datum/action/bayonet/amelee
+	var/atk_mode = SLASH
 
+/obj/item/weapon/attachment/bayonet/attack_self(mob/user)
+	..()
+	if(atk_mode == SLASH)
+		atk_mode = STAB
+		user << "<span class='notice'>You will now stab.</span>"
+		edge = 0
+		sharp = 1
+		attack_verb = list("stabbed")
+		hitsound = "stab_sound"
+		return
+
+	else if(atk_mode == STAB)
+		atk_mode = SLASH
+		user << "<span class='notice'>You will now slash.</span>"
+		attack_verb = list("slashed", "diced")
+		hitsound = "slash_sound"
+		edge = 1
+		sharp = 1
+		return
 /obj/item/weapon/attachment/bayonet/attached(mob/user, obj/item/weapon/gun/G, var/quick = FALSE)
 	if (quick)
 		user.unEquip(src)

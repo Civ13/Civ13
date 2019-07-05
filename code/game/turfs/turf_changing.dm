@@ -12,28 +12,6 @@
 	var/old_lighting_overlay = lighting_overlay
 	var/list/old_lighting_corners = corners
 
-
-/*
-	if (ispath(N, /turf/floor))
-		var/turf/W = new N( locate(x, y, z) )
-		if (istype(W, /turf/floor/grass))
-			switch (season)
-				if ("WINTER")
-					W.color = DEAD_COLOR
-				if ("SUMMER")
-					W.color = SUMMER_COLOR
-				if ("FALL")
-					W.color = FALL_COLOR
-
-		if (old_fire)
-			fire = old_fire
-
-		W.levelupdate()
-		. = W
-
-
-	else
-*/
 	var/turf/W = new N( locate(x, y, z) )
 
 	if (old_fire)

@@ -620,8 +620,8 @@
 	if (G.load_method == MAGAZINE && G.ammo_magazine == null)
 		src << "<span class = 'red'>The [G.name] is already unloaded.</span>"
 		return
-
-	G.ammo_magazine.loc = get_turf(loc)
+	if (G && G.ammo_magazine)
+		G.ammo_magazine.loc = get_turf(loc)
 	visible_message(
 		"[G.ammo_magazine] falls out and clatters on the floor!",
 		"<span class='notice'>[G.ammo_magazine] falls out and clatters on the floor!</span>"

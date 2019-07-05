@@ -39,7 +39,7 @@
 /obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack))
 		var/obj/item/stack/D = W
-		if (D.get_material_name() != material.name)
+		if (material && D.get_material_name() != material.name)
 			return //hitting things with the wrong type of stack usually doesn't produce messages, and probably doesn't need to.
 		if (health < maxhealth)
 			if (D.get_amount() < 1)
@@ -618,7 +618,6 @@
 	desc = "A pile of old tires."
 	icon = 'icons/obj/modern_structures.dmi'
 	icon_state = "tire3a"
-	material = "wood"
 	health = 200
 	maxhealth = 200
 	material_name = "wood"
@@ -627,19 +626,54 @@
 /obj/structure/barricade/tires/New()
 	..()
 	icon_state = pick("tire2a","tire3","tire3a")
-
+	name = "pile of tires"
 
 /obj/structure/barricade/hescobastion
 	name = "hesco bastion"
 	desc = "A collapsible wire mesh container filled with sand. Very sturdy."
 	icon = 'icons/obj/junk.dmi'
-	icon_state = "hescobastion1"
-	material = "wood"
+	icon_state = "hescobastion"
 	health = 600
 	maxhealth = 600
 	material_name = "wood"
 	protection_chance = 100
+	opacity = TRUE
+	density = TRUE
 
 /obj/structure/barricade/hescobastion/New()
 	..()
-	icon_state = pick("hescobastion1","hescobastion2","hescobastion3","hescobastion4")
+	icon_state = "hescobastion"
+	name = "hesco bastion"
+
+/obj/structure/barricade/shelf
+	name = "shelf"
+	desc = "A store shelf."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "shelf1"
+	health = 130
+	maxhealth = 130
+	material_name = "wood"
+	protection_chance = 25
+
+/obj/structure/barricade/shelf/New()
+	..()
+	icon_state = pick("shelf1","shelf2","shelf3")
+	name = "shelf"
+
+
+/obj/structure/barricade/car
+	name = "car"
+	desc = "An abandoned car."
+	icon = 'icons/obj/obj64x42.dmi'
+	icon_state = "car1"
+	health = 450
+	maxhealth = 450
+	material_name = "iron"
+	protection_chance = 80
+	bound_width = 64
+	layer = MOB_LAYER + 0.4
+
+/obj/structure/barricade/car/New()
+	..()
+	icon_state = pick("car1","car2","car3")
+	name = "car"

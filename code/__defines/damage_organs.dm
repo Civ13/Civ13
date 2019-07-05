@@ -7,10 +7,6 @@
 #define CLONE     "clone"
 #define HALLOSS   "halloss"
 
-#define CUT       "cut"
-#define BRUISE    "bruise"
-#define PIERCE    "pierce"
-
 #define STUN      "stun"
 #define WEAKEN    "weaken"
 #define PARALYZE  "paralize"

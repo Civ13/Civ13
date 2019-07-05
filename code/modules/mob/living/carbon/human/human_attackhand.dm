@@ -61,14 +61,54 @@
 				if (stat != DEAD)
 					src << "<span class='notice'>You feel a breath of fresh air enter your lungs. It feels good.</span>"
 				H << "<span class='warning'>Repeat at least every 7 seconds.</span>"
+				if(is_asystole())
+					if(prob(5/H.getStatCoeff("medical")))
+						var/obj/item/organ/external/chest = get_organ("chest")
+						if(chest)
+							chest.fracture()
 
-			else
-				help_shake_act(M)
+					var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
+					if(heart)
+						heart.external_pump = list(world.time, 0.4 + 0.1*H.getStatCoeff("medical") + rand(-0.1,0.1))
+
+					if(stat != DEAD && prob(10 + 5 * H.getStatCoeff("medical")))
+						resuscitate()
+
+				if(!H.check_has_mouth())
+					to_chat(H, "<span class='warning'>You don't have a mouth, you cannot do mouth-to-mouth resuscitation!</span>")
+					return
+				if(!check_has_mouth())
+					to_chat(H, "<span class='warning'>They don't have a mouth, you cannot do mouth-to-mouth resuscitation!</span>")
+					return
+				if((H.head && (H.head.body_parts_covered & FACE)) || (H.wear_mask && (H.wear_mask.body_parts_covered & FACE)))
+					to_chat(H, "<span class='warning'>You need to remove your mouth covering for mouth-to-mouth resuscitation!</span>")
+					return 0
+				if((head && (head.body_parts_covered & FACE)) || (wear_mask && (wear_mask.body_parts_covered & FACE)))
+					to_chat(H, "<span class='warning'>You need to remove \the [src]'s mouth covering for mouth-to-mouth resuscitation!</span>")
+					return 0
+				if (!H.internal_organs_by_name["lungs"])
+					to_chat(H, "<span class='danger'>You need lungs for mouth-to-mouth resuscitation!</span>")
+					return
+				var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
+				if(L)
+					to_chat(src, "<span class='notice'>You feel a breath of fresh air enter your lungs. It feels good.</span>")
+			help_shake_act(M)
 			return TRUE
 
 		if (I_GRAB)
-			if (M == src || anchored)
+			if (anchored)
 				return FALSE
+			if (M == src)
+				var/obj/item/organ/external/organ = get_organ(tgt)
+				if(!organ || !(organ.status & ORGAN_BLEEDING))
+					return FALSE
+
+				if(organ.applied_pressure)
+					var/message = "<span class='warning'>[ismob(organ.applied_pressure)? "Someone" : "\A [organ.applied_pressure]"] is already applying pressure to [src == src? "your [organ.name]" : "[src]'s [organ.name]"].</span>"
+					M << "[message]"
+					return FALSE
+				apply_pressure(src, tgt)
+				return
 			for (var/obj/structure/noose/N in get_turf(src))
 				if (N.hanging == src)
 					return
@@ -285,6 +325,25 @@
 			playsound(loc, 'sound/weapons/punchmiss.ogg', 25, TRUE, -1)
 			visible_message("<span class = 'red'><b>[M] attempted to disarm [src]!</b></span>")
 	return
+/mob/living/carbon/human/proc/resuscitate()
+	if(!is_asystole())
+		return
+	var/obj/item/organ/heart/heart = internal_organs_by_name["heart"]
+	if(istype(heart) && !(heart.status & ORGAN_DEAD))
+		var/active_breaths = 0
+		var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
+		if(L)
+			active_breaths = L.active_breathing
+		if(active_breaths)
+			visible_message("\The [src] jerks and gasps for breath!")
+		else
+			visible_message("\The [src] twitches a bit as \his heart restarts!")
+		shock_stage = min(shock_stage, 100) // 120 is the point at which the heart stops.
+		if(getOxyLoss() >= 75)
+			setOxyLoss(75)
+		heart.pulse = PULSE_NORM
+		heart.handle_pulse()
+		return TRUE
 
 /mob/living/carbon/human/proc/afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, inrange, params)
 	return
@@ -361,6 +420,14 @@
 	return success
 
 
+/*
+	We want to ensure that a mob may only apply pressure to one organ of one mob at any given time. Currently this is done mostly implicitly through
+	the behaviour of do_after() and the fact that applying pressure to someone else requires a grab:
+
+	If you are applying pressure to yourself and attempt to grab someone else, you'll change what you are holding in your active hand which will stop do_mob()
+	If you are applying pressure to another and attempt to apply pressure to yourself, you'll have to switch to an empty hand which will also stop do_mob()
+	Changing targeted zones should also stop do_mob(), preventing you from applying pressure to more than one body part at once.
+*/
 /mob/living/carbon/human/proc/apply_pressure(mob/living/user, var/target_zone)
 	var/obj/item/organ/external/organ = get_organ(target_zone)
 	if(!organ || !(organ.status & ORGAN_BLEEDING))
@@ -377,16 +444,24 @@
 		user.visible_message("\The [user] starts applying pressure to [src]'s [organ.name]!", "You start applying pressure to [src]'s [organ.name]!")
 	spawn(0)
 		organ.applied_pressure = user
+		check_pressure(user,target_zone)
+	return 1
 
-		//apply pressure as long as they stay still and keep grabbing
-		do_mob(user, src, INFINITY, target_zone, progress = 0)
-
+/mob/living/carbon/human/proc/check_pressure(mob/living/user, var/target_zone)
+	var/obj/item/organ/external/organ = get_organ(target_zone)
+	if(!organ || !(organ.status & ORGAN_BLEEDING))
+		return FALSE
+	//apply pressure as long as they keep a hand empty
+	if (!has_empty_hand(FALSE))
 		organ.applied_pressure = null
 
 		if(user == src)
 			user.visible_message("\The [user] stops applying pressure to \his [organ.name]!", "You stop applying pressure to your [organ.name]!")
 		else
 			user.visible_message("\The [user] stops applying pressure to [src]'s [organ.name]!", "You stop applying pressure to [src]'s [organ.name]!")
+		return FALSE
+	else
 
-	return 1
-
+		spawn(10)
+			check_pressure(user, target_zone)
+			return TRUE

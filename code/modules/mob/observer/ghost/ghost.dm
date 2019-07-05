@@ -15,9 +15,6 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	var/started_as_observer //This variable is set to TRUE when you enter the game as an observer.
 							//If you died in the game and are a ghsot - this will remain as null.
 							//Note that this is not a reliable way to determine if admins started as observers, since they change mobs a lot.
-	var/has_enabled_antagHUD = FALSE
-	var/medHUD = FALSE
-	var/antagHUD = FALSE
 	universal_speak = TRUE
 	var/atom/movable/following = null
 	var/admin_ghosted = FALSE
@@ -33,7 +30,6 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/observer/ghost/New(mob/body)
 	see_in_dark = 100
-	verbs += /mob/observer/ghost/proc/dead_tele
 
 	var/turf/T
 	if (ismob(body))
@@ -113,12 +109,6 @@ Works together with spawning an observer, noted above.
 		for (var/image/hud in client.images)
 			if (copytext(hud.icon_state,1,4) == "hud")
 				client.images.Remove(hud)
-
-
-/mob/observer/ghost/proc/assess_targets(list/target_list)
-	for (var/mob/living/carbon/human/target in target_list)
-		client.images += target.hud_list[SPECIALROLE_HUD]
-	return TRUE
 
 /mob/proc/ghostize(var/can_reenter_corpse = TRUE)
 	// don't create bad ghosts - Kachnov
@@ -228,50 +218,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			H.verbs |= /mob/living/carbon/human/proc/selfrevive
 
 	return TRUE
-
-/mob/observer/ghost/verb/toggle_medHUD()
-	set category = "Ghost"
-	set name = "Toggle MedicHUD"
-	set desc = "Toggles Medical HUD allowing you to see how everyone is doing"
-	if (!client)
-		return
-	if (medHUD)
-		medHUD = FALSE
-		src << "<span class = 'notice'><b>Medical HUD Disabled</b></span>"
-	else
-		medHUD = TRUE
-		src << "<span class = 'notice'><b>Medical HUD Enabled</b></span>"
-
-/mob/observer/ghost/proc/dead_tele(A in ghostteleportlocs)
-	set category = "Ghost"
-	set name = "Teleport"
-	set desc= "Teleport to a location"
-	if (!isghost(usr))
-		usr << "Not when you're not dead!"
-		return
-
-	/*	this is dumb - Kachnov
-	usr.verbs -= /mob/observer/ghost/proc/dead_tele
-	spawn(5)
-		usr.verbs += /mob/observer/ghost/proc/dead_tele*/
-
-	var/area/thearea = ghostteleportlocs[A]
-	if (!thearea)	return
-
-	var/list/L = list()
-
-	if (usr.invisibility <= SEE_INVISIBLE_LIVING)
-		for (var/turf/T in get_area_turfs(thearea.type))
-			L += T
-	else
-		for (var/turf/T in get_area_turfs(thearea.type))
-			L+=T
-
-	if (!L || !L.len)
-		usr << "No area available."
-
-	stop_following()
-	usr.forceMove(pick(L))
 
 /mob/observer/ghost/verb/follow(input in getfitmobs()+"Cancel")
 	set category = "Ghost"

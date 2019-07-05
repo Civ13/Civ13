@@ -12,6 +12,9 @@
 	w_class = 2
 	relative_size = 15
 	max_damage = 45
+	var/open
+	var/list/external_pump
+
 /obj/item/organ/heart/process()
 	if (owner)
 		handle_pulse()
@@ -121,7 +124,7 @@
 							blood_max += W.damage / 40
 
 			if(temp.status & ORGAN_ARTERY_CUT)
-				var/bleed_amount = Floor((owner.vessel.total_volume / (temp.applied_pressure ? 400 : 250))*temp.arterial_bleed_severity)
+				var/bleed_amount = Floor((owner.vessel.total_volume / (temp.applied_pressure ? 500 : 250))*temp.arterial_bleed_severity)
 				if(bleed_amount)
 					if(open_wound)
 						blood_max += bleed_amount
