@@ -407,7 +407,7 @@
 	en_meaning = "Doctor"
 	rank_abbreviation = "Medicus"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateROM"
+	spawn_location = "JoinLateROG"
 	SL_check_independent = TRUE
 	is_gladiator = TRUE
 	// AUTOBALANCE
@@ -435,6 +435,44 @@
 
 
 
+/datum/job/roman/squad_leader	//Roman - Decurion
+	title = "Decurion"
+	en_meaning = "Roman Squad Leader"
+	rank_abbreviation = "Dec."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateROG"
+	SL_check_independent = TRUE
+	is_officer = TRUE
+	whitelisted = TRUE
+	// Autobalance
+	min_positions = 2
+	max_positions = 8
+
+/datum/job/roman/squad_leader/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
+		//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_decurion(H), slot_head)
+		//weapons
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_r_hand)
+	H.add_note("Role", "You are a <b>[title]</b>, the leader of a Roman legionary squad. Lead your <b>Legionaries</b> to battle, following the orders of the <b>Centurion</b>!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
+	return TRUE
+
 /datum/job/roman/emperor
 	title = "Imperator"
 	en_meaning = "Emperor"
@@ -458,7 +496,7 @@
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga/purple(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/gold_crown(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/laurelcrown(H), slot_head)
 
 	H.add_note("Role", "You are the <b>[title]</b>. Organize the games!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
