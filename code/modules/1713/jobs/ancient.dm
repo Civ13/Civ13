@@ -399,6 +399,18 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
+	spawn(10)
+		if (map.ID == MAP_GLADIATORS)
+			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
+			if (input_msg == "No")
+				return
+			else
+				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
+				input_name = sanitizeName(input_name, 15, FALSE)
+				if (input_name != "")
+					H.name = input_name
+					H.real_name = input_name
+					return
 	return TRUE
 
 
@@ -430,25 +442,37 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
+	spawn(10)
+		if (map.ID == MAP_GLADIATORS)
+			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
+			if (input_msg == "No")
+				return
+			else
+				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
+				input_name = sanitizeName(input_name, 15, FALSE)
+				if (input_name != "")
+					H.name = input_name
+					H.real_name = input_name
+					return
 	return TRUE
 
 
 
-/datum/job/roman/squad_leader	//Roman - Decurion
-	title = "Decurion"
-	en_meaning = "Roman Squad Leader"
-	rank_abbreviation = "Dec."
+/datum/job/roman/guard
+	title = "Custos"
+	en_meaning = "Arena Guard"
+	rank_abbreviation = "Custos"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateROG"
 	SL_check_independent = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
+	is_gladiator = TRUE
 	// Autobalance
 	min_positions = 2
 	max_positions = 8
 
-/datum/job/roman/squad_leader/equip(var/mob/living/carbon/human/H)
+/datum/job/roman/guard/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 		//shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
@@ -460,17 +484,27 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_r_hand)
-	H.add_note("Role", "You are a <b>[title]</b>, the leader of a Roman legionary squad. Lead your <b>Legionaries</b> to battle, following the orders of the <b>Centurion</b>!")
+	H.add_note("Role", "You are a <b>[title]</b>, guarding the arena. Keep the gladiators organized and following the rules, while protecting the Emperor!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("crafting", STAT_HIGH)
 	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("dexterity", STAT_HIGH)
 	H.setStat("swords", STAT_HIGH)
 	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	give_random_name(H)
+	H.setStat("bows", STAT_HIGH)
+	H.setStat("medical", STAT_NORMAL)
+	spawn(10)
+		if (map.ID == MAP_GLADIATORS)
+			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
+			if (input_msg == "No")
+				return
+			else
+				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
+				input_name = sanitizeName(input_name, 15, FALSE)
+				if (input_name != "")
+					H.name = input_name
+					H.real_name = input_name
+					return
 	return TRUE
 
 /datum/job/roman/emperor
@@ -507,4 +541,16 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_VERY_HIGH)
+	spawn(10)
+		if (map.ID == MAP_GLADIATORS)
+			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
+			if (input_msg == "No")
+				return
+			else
+				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
+				input_name = sanitizeName(input_name, 15, FALSE)
+				if (input_name != "")
+					H.name = input_name
+					H.real_name = input_name
+					return
 	return TRUE
