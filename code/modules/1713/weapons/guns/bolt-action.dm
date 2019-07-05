@@ -371,7 +371,7 @@
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a77x58
-	magazine_type = /obj/item/ammo_magazine/arisaka
+	magazine_type = /obj/item/ammo_magazine/arisaka99
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
@@ -766,3 +766,27 @@
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/boltaction/springfield
+	name = "M1903 Springfield"
+	desc = "A bolt-action rifle made in 1903, chambered in .30-06 with a 5 round internal magazine."
+	icon_state ="springfield_ww2"
+	item_state ="springfield_ww2"
+	base_icon = "springfield_ww2"
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a3006"
+	weight = 4.5
+	effectiveness_mod = 1.2
+	bolt_safety = FALSE
+	value = 80
+	recoil = 3
+	slot_flags = SLOT_BACK
+	throwforce = 16
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	ammo_type = /obj/item/ammo_casing/a3006
+	magazine_type = /obj/item/ammo_magazine/springfield
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 5
+	equiptimer = 12

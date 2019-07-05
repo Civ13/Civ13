@@ -205,6 +205,17 @@
 	penetrating = 1
 	armor_penetration = 13
 
+/obj/item/projectile/bullet/rifle/a3006
+	damage = DAMAGE_HIGH+2
+	penetrating = 3
+	armor_penetration = 13
+
+/obj/item/projectile/bullet/rifle/a3006/weak/New()
+	..()
+	damage = (DAMAGE_HIGH+2)/2
+	penetrating = 1
+	armor_penetration = 13
+
 /obj/item/projectile/bullet/pistol/c9mm_jap_revolver
 	damage = DAMAGE_MEDIUM + 1
 	penetrating = 1

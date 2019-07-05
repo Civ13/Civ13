@@ -176,6 +176,35 @@
 		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/japanese = 50,
 	)
 
+/obj/structure/vending/usa_apparel_ww2
+	name = "US Army apparel rack"
+	desc = "Basic wear for soldiers of the US Army."
+	icon_state = "apparel_usa"
+	products = list(
+		/obj/item/clothing/shoes/jackboots = 15,
+		/obj/item/clothing/under/ww2/us = 15,
+		/obj/item/clothing/under/ww2/us_light = 15,
+		/obj/item/clothing/under/ww2/us_shirtless = 15,
+		/obj/item/clothing/head/helmet/ww2/us = 15,
+		/obj/item/stack/medical/bruise_pack/bint = 10,
+		/obj/item/weapon/shovel/trench = 10,
+		/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full = 30,
+		/obj/item/weapon/reagent_containers/food/snacks/MRE/generic/american = 50,
+	)
+
+/obj/structure/vending/usa_equipment_ww2
+	name = "US Army equipment rack"
+	desc = "Basic gear for soldiers of the US Army."
+	icon_state = "equipment_usa"
+	products = list(
+		/obj/item/weapon/gun/projectile/semiautomatic/m1garand = 15,
+		/obj/item/ammo_magazine/garand = 50,
+		/obj/item/ammo_magazine/springfield = 40,
+		/obj/item/ammo_magazine/bar = 15,
+		/obj/item/ammo_magazine/thompson = 15,
+		/obj/item/ammo_magazine/m1911 = 10,
+	)
+
 /obj/structure/vending/japaneseapparel_ww2
 	name = "Imperial Japanese Army apparel rack"
 	desc = "Basic wear for soldiers of the Imperial Japanese Army."

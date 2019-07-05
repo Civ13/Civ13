@@ -348,8 +348,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/japuni(H), slot_w_uniform)
 
 //head
-	if (prob(70))
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/japcap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/japcap(H), slot_head)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat(H), slot_wear_suit)
 //back
@@ -373,7 +372,7 @@
 	return TRUE
 
 /datum/job/japanese/whitesash_infantry
-	title = "Nitohei"
+	title = "Shrio Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
@@ -618,7 +617,7 @@
 
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 10
+	max_positions = 4
 
 /datum/job/japanese/ija_doctor/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -648,7 +647,7 @@
 	H.setStat("medical", STAT_VERY_HIGH)
 
 datum/job/japanese/ija_medic
-	title = "IJA Sento-i"
+	title = "Sento-i"
 	en_meaning = "Medic"
 	rank_abbreviation = "Sen-i"
 	selection_color = "#2d2d63"
@@ -687,7 +686,7 @@ datum/job/japanese/ija_medic
 	H.setStat("medical", STAT_VERY_HIGH)
 
 /datum/job/japanese/ija_ww2infantry
-	title = "IJA Nitohei"
+	title = "Nitohei"
 	en_meaning = "Soldier Second-class"
 	rank_abbreviation = "Ni."
 	selection_color = "#2d2d63"
@@ -737,7 +736,7 @@ datum/job/japanese/ija_medic
 	return TRUE
 
 /datum/job/japanese/ija_machinegunner
-	title = "IJA Taiho"
+	title = "Taiho"
 	en_meaning = "Machinegunner"
 	rank_abbreviation = "Itto."
 	selection_color = "#2d2d63"
@@ -783,7 +782,7 @@ datum/job/japanese/ija_medic
 	return TRUE
 
 /datum/job/japanese/ija_sniper
-	title = "IJA Senmeina no Hito"
+	title = "Senmeina no Hito"
 	en_meaning = "Sniper"
 	rank_abbreviation = "Jo."
 	selection_color = "#2d2d63"

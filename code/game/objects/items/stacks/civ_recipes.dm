@@ -219,11 +219,19 @@
 			new/datum/stack_recipe("blunderbuss ball (x2)", /obj/item/stack/ammopart/blunderbuss, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("iron bullet (x3)", /obj/item/stack/ammopart/bullet, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[2] >= 110 && map.ordinal_age >= 5)
+	if (current_res[2] >= 110 && map.ordinal_age == 5)
 		recipes += new/datum/stack_recipe_list("magazines", list(
 			new/datum/stack_recipe("borchardt magazine", /obj/item/ammo_magazine/borchardt/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("luger magazine", /obj/item/ammo_magazine/luger/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("nambu magazine", /obj/item/ammo_magazine/c8mmnambu/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[2] >= 110 && map.ordinal_age >= 6)
+		recipes += new/datum/stack_recipe_list("magazines", list(
+			new/datum/stack_recipe("borchardt magazine", /obj/item/ammo_magazine/borchardt/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("luger magazine", /obj/item/ammo_magazine/luger/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("nambu magazine", /obj/item/ammo_magazine/c8mmnambu/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("walther magazine", /obj/item/ammo_magazine/walther/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("M1911 magazine", /obj/item/ammo_magazine/m1911/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("TT-30 magazine", /obj/item/ammo_magazine/tt30/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if (current_res[1] >= 95)
 		recipes += new/datum/stack_recipe("canner", /obj/structure/canner, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -313,11 +321,7 @@
 			new/datum/stack_recipe("log wall corner", /obj/covers/wood_wall/log/corner, 7, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("shoji wall", /obj/covers/wood_wall/shoji, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("shoji divider", /obj/covers/wood_wall/shoji_divider, 3, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("shoji door", /obj/structure/simple_door/key_door/anyone/shoji, 3, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("shoji window", /obj/structure/window_frame/shoji, 4, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 5, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),

@@ -16,7 +16,7 @@
 	max_shells = FALSE
 	anchored = FALSE
 	auto_eject = TRUE
-	fire_sound = 'sound/weapons/WW2/kord1.ogg'
+	fire_sound = 'sound/weapons/guns/fire/mg34_firing.ogg'
 	firemodes = list(
 		list(name="full auto", burst=6, burst_delay=0.6, fire_delay=1.0, dispersion=list(0.8, 0.9, 1.1, 1.2, 1.3), accuracy=list(2))
 		)

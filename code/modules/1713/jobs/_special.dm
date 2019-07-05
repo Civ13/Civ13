@@ -26,6 +26,7 @@
 /datum/job/var/is_cowboy = FALSE
 /datum/job/var/is_ww1 = FALSE
 /datum/job/var/is_ww2 = FALSE
+/datum/job/var/is_reichstag = FALSE
 /datum/job/var/is_coldwar = FALSE
 /datum/job/var/is_radioman = FALSE
 /datum/job/var/is_specops = FALSE

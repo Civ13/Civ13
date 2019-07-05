@@ -111,8 +111,8 @@ obj/item/ammo_magazine/dp
 	name = "DP disk (7.62x54mmR)"
 	icon_state = "dpdisk"
 	mag_type = MAGAZINE
-	caliber = "a762x54"
-	ammo_type = /obj/item/ammo_casing/a762x54
+	caliber = "a762x54_weak"
+	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 60
 	weight = 0.40
 	multiple_sprites = FALSE
@@ -158,6 +158,9 @@ obj/item/ammo_magazine/dp
 	caliber = "a45acp"
 	max_ammo = 7
 	multiple_sprites = TRUE
+/obj/item/ammo_magazine/m1911/empty/New()
+	..()
+	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/tt30
 	name = "TT30 magazine (7.62x25mm)"
@@ -167,4 +170,50 @@ obj/item/ammo_magazine/dp
 	matter = list(DEFAULT_WALL_MATERIAL = 525) //metal costs are very roughly based around TRUE .45 casing = 75 metal
 	caliber = "a765x25"
 	max_ammo = 8
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/tt30/empty/New()
+	..()
+	stored_ammo.Cut()
+
+
+/obj/item/ammo_magazine/garand
+	name = "clip (30-06) 8 rounds"
+	icon_state = "clip"
+	caliber = "a3006"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 8
+	weight = 0.038
+	multiple_sprites = TRUE
+	clip = TRUE
+
+/obj/item/ammo_magazine/springfield
+	name = "clip (30-06)"
+	icon_state = "clip"
+	caliber = "a3006"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a3006
+	max_ammo = 5
+	weight = 0.038
+	multiple_sprites = TRUE
+	clip = TRUE
+
+/obj/item/ammo_magazine/bar
+	name = "magazine (30-06)"
+	icon_state = "bar"
+	caliber = "a3006_weak"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a3006/weak
+	max_ammo = 20
+	weight = 0.038
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/thompson
+	name = "Thomspon magazine (.45)"
+	icon_state = "thompson"
+	mag_type = MAGAZINE
+	ammo_type = /obj/item/ammo_casing/a45acp
+	matter = list(DEFAULT_WALL_MATERIAL = 525) //metal costs are very roughly based around TRUE .45 casing = 75 metal
+	caliber = "a45acp"
+	max_ammo = 20
 	multiple_sprites = TRUE
