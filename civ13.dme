@@ -844,6 +844,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\omaha.dmm"
 #include "maps\313bc\gladiators.dmm"
 // END_INCLUDE
