@@ -72,8 +72,8 @@
 "bt" = (/obj/covers/sandstone_wall,/obj/structure/sign/custom{name = "Medicus"},/turf/floor/dirt,/area/caribbean/houses)
 "bu" = (/obj/covers/sandstone,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/houses)
 "bv" = (/obj/covers/sandstone,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/houses)
-"bw" = (/obj/covers/sandstone,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/houses)
-"bx" = (/obj/covers/sandstone,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/houses)
+"bw" = (/obj/covers/sandstone,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/item/stack/medical/advanced/ointment,/obj/structure/table/wood,/obj/item/weapon/doctor_handbook,/turf/floor/dirt,/area/caribbean/houses)
+"bx" = (/obj/covers/sandstone,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/wood,/obj/item/weapon/doctor_handbook,/turf/floor/dirt,/area/caribbean/houses)
 "by" = (/obj/covers/sandstone_wall,/turf/floor/beach/sand/dark,/area/caribbean/houses)
 "bz" = (/obj/covers/sandstone_wall,/obj/structure/sign/flag/medical,/turf/floor/dirt,/area/caribbean/houses)
 "bA" = (/obj/covers/sandstone,/obj/structure/sink/well,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
@@ -148,8 +148,8 @@
 "cR" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cS" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cT" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"cU" = (/obj/covers/sandstone_wall,/obj/structure/sign/custom{name = "Arena I"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"cV" = (/obj/covers/sandstone_wall,/obj/structure/sign/custom{name = "Arena II"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"cU" = (/obj/structure/sign/custom{name = "Arena I"},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"cV" = (/obj/structure/sign/custom{name = "Arena II"},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

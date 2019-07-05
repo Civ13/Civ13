@@ -419,6 +419,8 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>. Keep the arena clean and the men alive.")
 	H.setStat("strength", STAT_NORMAL)
@@ -428,5 +430,43 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
+
+
+
+/datum/job/roman/emperor
+	title = "Imperator"
+	en_meaning = "Emperor"
+	rank_abbreviation = "Imperator"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateROM"
+	SL_check_independent = TRUE
+	is_gladiator = TRUE
+	is_commander = TRUE
+	head_position = TRUE
+	is_officer = TRUE
+	is_whitelisted = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+/datum/job/roman/emperor/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga/purple(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/gold_crown(H), slot_head)
+
+	H.add_note("Role", "You are the <b>[title]</b>. Organize the games!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_HIGH)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_VERY_HIGH)
 	return TRUE
