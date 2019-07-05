@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/gladiators
 	ID = MAP_GLADIATORS
-	title = "Gladiators (100x100x1)"
+	title = "Gladiators (100x80x1)"
 	lobby_icon_state = "ancient"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 0

@@ -64,6 +64,12 @@
 			qdel(src)
 			return
 
+		if ("JoinLateROM")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		if ("JoinLateGR")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()

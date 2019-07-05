@@ -400,3 +400,33 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	return TRUE
+
+
+/datum/job/roman/doctor
+	title = "Medicus"
+	en_meaning = "Doctor"
+	rank_abbreviation = "Medicus"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateROM"
+	SL_check_independent = TRUE
+	is_gladiator = TRUE
+	// AUTOBALANCE
+	min_positions = 3
+	max_positions = 8
+/datum/job/roman/doctor/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+		//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
+		//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga(H), slot_w_uniform)
+
+	H.add_note("Role", "You are a <b>[title]</b>. Keep the arena clean and the men alive.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_NORMAL)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_VERY_HIGH)
+	return TRUE
