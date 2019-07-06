@@ -837,11 +837,8 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-<<<<<<< HEAD
 #include "maps\1903\ypres.dmm"
+#include "maps\313bc\gladiators.dmm"
 #include "maps\special\nomads.dmm"
 #include "maps\special\nomads_pangea.dmm"
-=======
-#include "maps\313bc\gladiators.dmm"
->>>>>>> b0f0505df95b7e04d465837ae2cb1aa72982713a
 // END_INCLUDE
