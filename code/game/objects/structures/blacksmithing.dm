@@ -76,7 +76,7 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 3)
 				display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Katana (15)", "Cancel")
 			else if (map.ordinal_age <= 2)
-				display2 = list("Small Sword (10)", "Spadroon (15)", "Katana (15)", "Cancel")
+				display2 = list("Small Sword (10)", "Arming Sword (15)", "Katana (15)", "Cancel")
 		else if (choice == "Guns")
 			if (map.ordinal_age == 5)
 				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (30)", "Arisaka Type 35 (33)", "Murata Type 22 (30)", "Pump-Action Shotgun (30)","Nambu Type A (25)", "Borchardt C93 (25)", "Mauser C96 (25)", "Luger P08 (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", ,"Gewehr 98 (35)", "Gewehr 71 (30)","Lee-enfield (35)", "Carcano (30)", "Cancel")
@@ -467,6 +467,20 @@ obj/structure/anvil/New()
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
+		if (choice2 == "Arming Sword (15)")
+			if (steel_amt >= 15)
+				user << "You begin crafting an arming sword..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,120,src) && steel_amt >= 15)
+					user << "You craft an arming sword."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/armingsword(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
 		if (choice2 == "Longsword (18)")
 			if (steel_amt >= 18)
 				user << "You begin crafting a longsword..."
@@ -516,7 +530,7 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 3)
 				display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Katana (15)", "Cancel")
 			else if (map.ordinal_age == 2)
-				display2 = list("Small Sword (10)", "Spadroon (15)", "Longsword (18)", "Katana (15)", "Cancel")
+				display2 = list("Small Sword (10)", "Arming Sword (15)", "Longsword (18)", "Katana (15)", "Cancel")
 			else if (map.ordinal_age == 1)
 				display2 = list("Gladius (10)", "Xiphos (14)", "Cancel")
 			else if (map.ordinal_age == 0)
@@ -619,6 +633,20 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/weapon/material/sword/spadroon/iron(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice2 == "Arming Sword (15)")
+				if (iron_amt >= 15)
+					user << "You begin crafting an arming sword..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,120,src) && iron_amt >= 15)
+						user << "You craft an arming sword."
+						iron_amt -= 15
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/sword/armingsword/iron(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"

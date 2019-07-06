@@ -3,7 +3,7 @@
 	has_gravity = TRUE
 	no_air = FALSE
 	base_turf = /turf/floor/dirt //The base turf type of the area, which can be used to override the z-level's base turf
-	sound_env = STANDARD_STATION
+	sound_env = FOREST
 	icon_state = "purple1"
 	dynamic_lighting = TRUE
 	ambience = list("sound/ambience/ship1.ogg")
@@ -197,6 +197,10 @@
 	icon_state = "red3"
 	ambience = list("sound/ambience/jungle1.ogg")
 	climate = "sea"
+
+/area/caribbean/island/river
+	base_turf = /turf/floor/beach/water/shallowsaltwater
+	icon_state = "red1"
 
 /area/caribbean/sea
 	name = "Island"
@@ -809,6 +813,29 @@
 	name = "Roman Camp"
 	icon_state = "red3"
 	base_turf = /turf/floor/dirt
+
+/area/caribbean/roman/arena1
+	name = "Arena I"
+	icon_state = "blue1"
+
+/area/caribbean/roman/arena2
+	name = "Arena II"
+	icon_state = "blue2"
+
+/area/caribbean/roman/morgue
+	name = "Morgue"
+	icon_state = "red3"
+	location = AREA_INSIDE
+
+/area/caribbean/roman/armory
+	name = "Armory"
+	icon_state = "green1"
+	location = AREA_INSIDE
+
+/area/caribbean/roman/armory/loot
+	name = "Armory Loots"
+	icon_state = "green2"
+
 /area/caribbean/greek
 	name = "Greek Camp"
 	icon_state = "blue1"

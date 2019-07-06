@@ -398,7 +398,7 @@
 						var/datum/language/currlg
 						for (var/datum/language/A in languages)
 							currlg = A
-						var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a [currlg.name] speaker. Since you are whitelisted, you can customize your name. Do you want to?", "Engines", "No", list("Yes","No"))
+						var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a [currlg.name] speaker. Since you are whitelisted, you can customize your name. Do you want to?", "Custom Name", "No", list("Yes","No"))
 						if (input_msg == "No")
 							return
 						else
@@ -408,7 +408,6 @@
 								name = input_name
 								real_name = input_name
 								return
-
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa

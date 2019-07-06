@@ -42,9 +42,7 @@ var/civmax_research = list(130,130,130)
 		list(BRITISH) = /area/caribbean/british)
 	var/list/ambience = list('sound/ambience/ship1.ogg')
 	var/list/songs = list(
-		"Fish in the Sea:1" = 'sound/music/shanties/fish_in_the_sea.ogg',
-		"Spanish Ladies:1" = 'sound/music/shanties/spanish_ladies.ogg',
-		"Irish Rovers:1" = 'sound/music/shanties/irish_rovers.ogg')
+		"Nassau Shores:1" = 'sound/music/nassau_shores.ogg',)
 	var/mission_start_message = "Round will start soon!"
 
 	var/required_players = 1
@@ -91,6 +89,7 @@ var/civmax_research = list(130,130,130)
 	var/list/custom_religion_nr = list()
 	var/list/custom_company = list()
 	var/list/custom_company_nr = list()
+	var/is_singlefaction = FALSE
 	//1st value: industrial (crafting, philosophy) 2nd value: military (gunpowder, fencing, archery), 3rd value: health (anatomy, medical), 4th value: leader. 5th value: victory points
 	var/civa_research = list(0,0,0,null,0)
 	var/civb_research = list(0,0,0,null,0)
@@ -517,7 +516,7 @@ var/civmax_research = list(130,130,130)
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
 		win_condition_spam_check = TRUE
 		return FALSE
-	if (nomads == FALSE)
+	if (nomads == FALSE && is_singlefaction == FALSE)
 		// German major
 		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))

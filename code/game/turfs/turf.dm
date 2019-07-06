@@ -299,7 +299,6 @@ var/const/enterloopsanity = 100
 
 	if (!wet)
 		wet = wet_val
-		wet_overlay = image('icons/effects/water.dmi',src,"wet_floor")
 		overlays += wet_overlay
 
 	if (unwet_task)

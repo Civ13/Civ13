@@ -45,6 +45,9 @@
 	create_path = /mob/living/simple_animal/hostile/skeleton
 	timer = 400
 
+/obj/effect/spawner/mobspawner/skeletons/off
+	activated = FALSE
+
 /obj/effect/spawner/mobspawner/attacker
 	name = "attacking skeleton spawner"
 	create_path = /mob/living/simple_animal/hostile/skeleton/attacker

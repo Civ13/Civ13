@@ -159,6 +159,16 @@
 	glass_type = "amphora"
 	volume = 150
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/wine
+	name = "amphora of wine"
+	New()
+		..()
+		reagents.add_reagent("wine", 120)
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/water
+	name = "amphora of water"
+	New()
+		..()
+		reagents.add_reagent("water", 150)
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap
 	name = "tribal pot"
 	desc = "A tribal clay pot."

@@ -72,7 +72,7 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		for (var/datum/wound/W in temp.wounds)
 			if (W.bleeding())
 				if (W.damage_type == PIERCE)
-					bloodloss += W.damage / 150
+					bloodloss += W.damage / 200
 				else if (W.damage_type == CUT)
 					bloodloss += W.damage / 70
 				else

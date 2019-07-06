@@ -51,6 +51,13 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 
+/obj/item/weapon/attachment/scope/adjustable/binoculars/small
+	name = "telescope"
+	desc = "A small telescope."
+	max_zoom = 10
+	attachable = FALSE
+	value = 15
+
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars
 	name = "binoculars"
 	desc = "A pair of binoculars."
