@@ -899,9 +899,9 @@ mob/proc/yank_out_object()
 		affected.take_damage((selection.w_class * 3), FALSE, FALSE, TRUE, "Embedded object extraction")
 
 		if (prob(selection.w_class * 5)) //I'M SO ANEMIC I COULD JUST -DIE-.
-			var/datum/wound/internal_bleeding/I = new (min(selection.w_class * 5, 15))
+			var/datum/wound/internal_bleeding/I = new (min(selection.w_class * 5, 15), src)
 			affected.wounds += I
-			H.custom_pain("Something tears wetly in your [affected] as [selection] is pulled free!", TRUE)
+			H.custom_pain("Something tears wetly in your [affected] as [selection] is pulled free!", 30)
 
 		if (ishuman(U))
 			var/mob/living/carbon/human/human_user = U
@@ -981,6 +981,11 @@ mob/proc/yank_out_object()
 		usr << "You are now not facing anything."
 	else
 		usr << "You are now facing [dir2text(facing_dir)]."
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if (H.HUDneed.Find("fixeye"))
+			var/obj/screen/tactic/I = H.HUDneed["fixeye"]
+			I.update_icon()
 
 /mob/proc/set_face_dir(var/newdir)
 	if (!isnull(facing_dir) && newdir == facing_dir)

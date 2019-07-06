@@ -13,7 +13,7 @@
 		"World War II (1934-1957)" = 0,
 		"Cold War Era (1958-1984)" = 0,
 		"Modern Era (1985-2020)" = 0,
-		"Civilization 13 (Nomads)" = 0,
+		"Civilization 13 (Nomads & RP)" = 0,
 	)
 	var/ready = TRUE
 	var/admin_triggered = FALSE
@@ -45,7 +45,7 @@
 				"Modern Era (1985-2020)" = 0,
 			)
 		else if (config.allowedgamemodes == "RP")
-			epochs = list("Civilization 13 (Nomads)" = 0,)
+			epochs = list("Civilization 13 (Nomads & RP)" = 0,)
 		ready = FALSE
 		vote.initiate_vote("epoch", "EpochSwap Process", TRUE, list(src, "swap"))
 
@@ -94,6 +94,7 @@
 	// 2013 - TDM
 			maps = list(
 				MAP_HOSTAGES = 0,
+				MAP_ARAB_TOWN = 0,
 			)
 		if (epoch == "Cold War Era (1958-1984)")
 	// 1969 - TDM
@@ -104,6 +105,7 @@
 	// 1943 - TDM
 			maps = list(
 				MAP_REICHSTAG = 0,
+				MAP_KHALKHYN_GOL = 0,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")
@@ -131,11 +133,6 @@
 				MAP_RECIFE = 10,
 //				MAP_FIELDS = 10,
 				MAP_ROBUSTA = 15,
-
-			// 1713 - RP
-//				MAP_COLONY = 0,
-				MAP_HUNT = 0,
-//				MAP_FOUR_COLONIES = 35,
 			)
 		if (epoch == "Bronze Age (500 B.C.-400 A.D.)")
 	// 313bc - TDM
@@ -153,7 +150,7 @@
 			maps = list(
 				MAP_TRIBES = 0,
 			)
-		if (epoch == "Civilization 13 (Nomads)")
+		if (epoch == "Civilization 13 (Nomads & RP)")
 			maps = list(
 //				MAP_CIVILIZATIONS = 0,
 				MAP_NOMADS = 0,
@@ -161,8 +158,12 @@
 				MAP_NOMADS_ICE_AGE = 0,
 				MAP_NOMADS_JUNGLE = 0,
 				MAP_NOMADS_DIVIDE = 0,
-				MAP_NOMADS_CONTINENTAL = 0,
-				MAP_NOMADS_PANGEA = 0,
+				MAP_NOMADS_CONTINENTAL = 20,
+				MAP_NOMADS_PANGEA = 10,
+//				MAP_TRIBES = 20,
+				MAP_COLONY = 6,
+				MAP_HUNT = 0,
+				MAP_FOUR_COLONIES = 35,
 			)
 
 		spawn(10)
@@ -234,10 +235,12 @@
 	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
 		world << "<big>Starting <b>Classic</b> mode. Starting epoch is the Stone Age, research active.</big>"
+		map.ordinal_age = 0
 		return
 
 	if (vote.voted_gamemode == "Chad Mode")
 		world << "<font color=#CECE00><big>Starting <b>Chad Mode</b>. Game epoch is the Stone Age, research inactive. Reduced starting items and more hostile conditions.</big></font>"
+		map.ordinal_age = 0
 		map.research_active = FALSE
 		map.chad_mode = TRUE
 		for (var/obj/effect/spawner/mobspawner/MS)
@@ -291,6 +294,7 @@
 		world << "<big>Starting <b>Auto-Research mode</b>. Starting epoch is the Stone Age, research active but automatic.</big>"
 		map.research_active = FALSE //well, it is, but we dont get research kits.
 		map.autoresearch = TRUE
+		map.ordinal_age = 0
 		spawn(100)
 			map.autoresearch_proc()
 		return
@@ -299,6 +303,7 @@
 		world << "<big>Starting <b>Resource-Based Research</b>. Starting epoch is the Stone Age, research active and requires the sale of items through <b>Research Desks</b>.</big>"
 		map.research_active = FALSE //well, it is, but we dont get research kits.
 		map.resourceresearch = TRUE
+		map.ordinal_age = 0
 		return
 
 	else if (vote.voted_gamemode == "Bronze Age Start")

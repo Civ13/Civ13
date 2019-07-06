@@ -26,17 +26,6 @@
 #define DIZZY 24
 #define PSYCHOTIC 25
 
-#define STANDARD_STATION STONEROOM
-#define LARGE_ENCLOSED HANGAR
-#define SMALL_ENCLOSED BATHROOM
-#define TUNNEL_ENCLOSED CAVE
-#define LARGE_SOFTFLOOR CARPETED_HALLWAY
-#define MEDIUM_SOFTFLOOR LIVINGROOM
-#define SMALL_SOFTFLOOR ROOM
-#define ASTEROID CAVE
-#define SPACE UNDERWATER
-#define OUTSIDE FOREST
-
 var/list/shatter_sound = list('sound/effects/Glassbr1.ogg','sound/effects/Glassbr2.ogg','sound/effects/Glassbr3.ogg')
 var/list/explosion_sound = list('sound/effects/Explosion1.ogg','sound/effects/Explosion2.ogg')
 var/list/spark_sound = list('sound/effects/sparks1.ogg','sound/effects/sparks2.ogg','sound/effects/sparks3.ogg','sound/effects/sparks4.ogg')
@@ -218,6 +207,8 @@ var/list/charge_sounds_vi = list(
 	'sound/effects/emotes/charge_vi2.ogg',)
 var/list/charge_sounds_us = list(
 	'sound/effects/emotes/charge_eng.ogg',)
+var/list/charge_sounds_isr = list(
+	'sound/effects/emotes/charge_isr.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -429,4 +420,6 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_vi)
 			if ("charge_AMERICAN")
 				soundin = pick(charge_sounds_us)
+			if ("charge_ISRAELI")
+				soundin = pick(charge_sounds_isr)
 	return soundin

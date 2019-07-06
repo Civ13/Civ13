@@ -1,5 +1,5 @@
 /obj/effect/spawner/lootdrop
-	icon = 'icons/mob/screen/1713Style.dmi'
+	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
 	var/lootcount = TRUE		//how many items will be spawned
 	var/lootdoubles = FALSE		//if the same item can be spawned twice

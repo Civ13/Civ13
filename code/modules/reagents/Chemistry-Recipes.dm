@@ -225,12 +225,20 @@
 	required_reagents = list("hydrogen_chloride" = 1, "water" = 5)
 	result_amount = 5
 
-/datum/chemical_reaction/sacid
-	name = "Sulphuric Acid"
-	id = "sacid"
-	result = "sacid"
-	required_reagents = list("sulphur" = 1, "water" = 5)
-	result_amount = 5
+
+/datum/chemical_reaction/ammonia
+	name = "Ammonia"
+	id = "ammonia"
+	result = "ammonia"
+	required_reagents = list("nitrogen" = 1, "hydrogen" = 3)
+	result_amount = 1
+
+/datum/chemical_reaction/acetone
+	name = "Acetone"
+	id = "acetone"
+	result = "acetone"
+	required_reagents = list("carbon" = 1, "ethanol" = 2)
+	result_amount = 1
 
 /datum/chemical_reaction/salt
 	name = "Table Salt"
@@ -266,6 +274,84 @@
 	id = "sodiumchloride"
 	result = "sodiumchloride"
 	required_reagents = list("sodium" = 1, "hclacid" = 1)
+	result_amount = 2
+
+/datum/chemical_reaction/aspirin
+	name = "Aspirin"
+	id = "aspirin"
+	result = "aspirin"
+	required_reagents = list("carbon" =5, "hydrogen" = 4, "oxygen" = 2 )
+	result_amount = 5
+
+/datum/chemical_reaction/calcium_carbonate
+	name = "Calcium carbonate"
+	id = "calcium carbonate"
+	result = "calcium carbonate"
+	required_reagents = list("carbon" =1, "calcium" = 1, "oxygen" = 3 )
+	result_amount = 2
+
+/datum/chemical_reaction/carbon_dioxyde
+	name = "Carbon dioxyde"
+	id = "carbon_dioxyde"
+	result = "carbon_dioxyde"
+	required_reagents = list("carbon" =1,  "oxygen" = 2 )
+	result_amount = 2
+
+
+/datum/chemical_reaction/sulphuric_acid
+	name = "Sulphuric acid"
+	id = "sacid"
+	result = "sacid"
+	required_reagents = list("sulfur" =1, "oxygen" = 1, "hydrogen" = 1 )
+	result_amount = 2
+
+/datum/chemical_reaction/saline_glucose
+	name = "Saline Glucose solution"
+	id = "saline_glucose"
+	result = "saline_glucose"
+	required_reagents = list("sodium_clorhide" =1, "water" = 1, "sugar" = 1 )
+	result_amount = 2
+
+/datum/chemical_reaction/aqua_regia
+	name = "Aqua regia"
+	id = "aqua_regia"
+	result = "aqua_regia"
+	required_reagents = list("nitric_acid" =1, "clorhydric_acid" = 3, )
+	result_amount = 2
+
+/datum/chemical_reaction/nitric_acid
+	name = "Nitric acid"
+	id = "nitric_acid"
+	result = "nitric_acid"
+	required_reagents = list("nitrogen" =2, "oxygen" =5, "water" = 3 )
+	result_amount = 4
+
+/datum/chemical_reaction/clorhydric_acid
+	name = "Clorhydric acid"
+	id = "clorhydric_acid"
+	result = "clorhydric_acid"
+	required_reagents = list("hydrogen" =1, "chlorine" = 1 )
+	result_amount = 1
+
+/datum/chemical_reaction/baking_soda
+	name = "Baking soda"
+	id = "baking_soda"
+	result = "baking_soda"
+	required_reagents = list("carbon_dioxide" =1, "ammonia" = 1, "sodium_chloride" = 2 )
+	result_amount = 2
+
+/datum/chemical_reaction/bleach
+	name = "Bleach"
+	id = "bleach"
+	result = "bleach"
+	required_reagents = list("sodium_hypochlorite" =1, "water" = 9)
+	result_amount = 10
+
+/datum/chemical_reaction/sodium_hypochlorite
+	name = "Sodium hypochlorite"
+	id = "sodium_hypochlorite"
+	result = "sodium_hypochlorite"
+	required_reagents = list("potassium" =1, "oxygen" = 1, "chlorine" = 1 )
 	result_amount = 2
 
 /datum/chemical_reaction/condensedcapsaicin

@@ -1,7 +1,7 @@
 
 /obj/effect/landmark
 	name = "landmark"
-	icon = 'icons/mob/screen/1713Style.dmi'
+	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
 	anchored = 1.0
 
@@ -64,6 +64,18 @@
 			qdel(src)
 			return
 
+		if ("JoinLateROM")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("JoinLateROG")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		if ("JoinLateGR")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()
@@ -643,7 +655,6 @@
 
 /obj/effect/landmark/start
 	name = "start"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x"
 	anchored = 1.0
 	invisibility = 101
@@ -655,7 +666,6 @@
 
 /obj/effect/landmark/npctarget
 	name = "npc target"
-	icon = 'icons/mob/screen/1713Style.dmi'
 	icon_state = "x"
 	anchored = 1.0
 	invisibility = 101

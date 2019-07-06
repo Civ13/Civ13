@@ -161,6 +161,8 @@
 	var/spell/list/spell_list = list()
 
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
+	mouse_drop_pointer = MOUSE_ACTIVE_POINTER
+	mouse_drop_zone = TRUE
 
 	var/update_icon = TRUE //Set to TRUE to trigger update_icons() at the next life() call
 
@@ -201,8 +203,6 @@
 
 	var/scrambling = FALSE //For crawling.
 	var/has_limbs = TRUE //Whether this mob have any limbs he can move with
-	var/bowels = FALSE //For pooping
-	var/bladder = FALSE //For pissing
 
 	var/roundUID = 0
 

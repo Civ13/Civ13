@@ -490,11 +490,6 @@
 	name = "Ship udgement"
 	info = "For crimes against the crew, the offender is sentenced to:<BR>\n<BR>\n"
 
-/obj/item/weapon/paper/flag
-	icon_state = "flag_neutral"
-	item_state = "paper"
-	anchored = 1.0
-
 /obj/item/weapon/paper/crumpled
 	name = "paper scrap"
 	icon_state = "scrap"

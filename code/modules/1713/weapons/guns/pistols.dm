@@ -4,9 +4,9 @@
 	move_delay = 1
 	fire_delay = 3
 	item_state = "pistol"
-	equiptimer = 7
+	equiptimer = 5
 	gun_safety = TRUE
-
+	gun_type = GUN_TYPE_PISTOL
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -232,6 +232,20 @@
 	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
 	magazine_type = /obj/item/ammo_magazine/m9beretta
 	weight = 0.794
+	ammo_type = /obj/item/ammo_casing/a9x19
+	load_method = MAGAZINE
+	handle_casings = EJECT_CASINGS
+	effectiveness_mod = 1.12
+
+/obj/item/weapon/gun/projectile/pistol/jericho941
+	name = "Jericho 941"
+	desc = "The standard issue pistol of the IDF of the late 20th century. Chambered in 9mm Parabellum."
+	icon_state = "jericho941"
+	w_class = 2
+	caliber = "a9x19"
+	fire_sound = 'sound/weapons/guns/fire/pistol_fire.ogg'
+	magazine_type = /obj/item/ammo_magazine/jericho
+	weight = 0.85
 	ammo_type = /obj/item/ammo_casing/a9x19
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS

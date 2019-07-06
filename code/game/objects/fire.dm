@@ -124,7 +124,7 @@ var/obj/burning_overlay_turf = null
 
 	var/turf/my_tile = loc
 
-	if (!istype(my_tile))
+	if (!istype(my_tile) && my_tile)
 		if (my_tile.fire == src)
 			my_tile.fire = null
 			RemoveFire()

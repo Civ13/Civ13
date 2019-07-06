@@ -387,23 +387,7 @@
 	if (istype(blood_DNA, /list))
 		blood_DNA = null
 		return TRUE
-/*
-/atom/proc/get_global_map_pos()
-	if (!islist(global_map) || isemptylist(global_map)) return
-	var/cur_x = null
-	var/cur_y = null
-	var/list/y_arr = null
-	for (cur_x=1,cur_x<=global_map.len,cur_x++)
-		y_arr = global_map[cur_x]
-		cur_y = y_arr.Find(z)
-		if (cur_y)
-			break
-//	world << "X = [cur_x]; Y = [cur_y]"
-	if (cur_x && cur_y)
-		return list("x"=cur_x,"y"=cur_y)
-	else
-		return FALSE
-*/
+
 /atom/proc/checkpass(passflag)
 	return pass_flags&passflag
 
@@ -495,6 +479,8 @@
 	var/mob/living/carbon/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent
 		var/limbcheck = user.targeted_organ
+		if (limbcheck == "random")
+			limbcheck = pick("l_arm","r_arm","l_hand","r_hand")
 		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm"))
 			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
 			if(!affecting)
@@ -541,12 +527,28 @@
 			return
 	if (istype(target, /turf/floor/beach/water) || user.stats["stamina"][1] <= 25 || get_dist(target,user)>2)
 		return
+	if ((istype(target, /obj) && target.density == TRUE) || (istype(target, /turf) && target.density == TRUE))
+		return
+	//is there a wall in the way?
+	if (get_dist(target,user)==2)
+		var/dir_to_tgt = get_dir(user,target)
+		for(var/obj/O in range(1,user))
+			if (get_dir(user,O) == dir_to_tgt && (O.density == TRUE || istype(O, /obj/structure/window/sandbag/railing)))
+				user << "<span class='danger'>You hit the [O]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
+		for(var/turf/T in range(1,user))
+			if (get_dir(user,T) == dir_to_tgt && T.density == TRUE)
+				user << "<span class='danger'>You hit the [T]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
 	//Nice, we can jump, let's do that then.
-//	playsound(user, "sound/effects/jump_[user.gender == MALE ? "male" : "female"].ogg", 25)
 	playsound(user, user.gender == MALE ? 'sound/effects/jump_male.ogg' : 'sound/effects/jump_female.ogg', 25)
 	user.visible_message("[user] jumps.")
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(20,40), 0)
 	user.throw_at(target, 5, 0.5, user)
 	user.setClickCooldown(22)
-
-//all things climbable

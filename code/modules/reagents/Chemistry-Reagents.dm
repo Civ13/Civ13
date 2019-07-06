@@ -31,6 +31,9 @@
 	var/color = "#000000"
 	var/color_weight = TRUE
 	var/alpha = 255
+	var/atomic_nr = 0 //0 means its not a core element
+	var/chemical_symbol = "" //"" means its not a core element
+	var/radioactive = FALSE
 
 /datum/reagent/proc/remove_self(var/amount) // Shortcut
 	holder.remove_reagent(id, amount)
@@ -43,6 +46,10 @@
 	return
 
 /datum/reagent/proc/touch_turf(var/turf/T, var/amount) // Cleaner cleaning, lube lubbing, etc, all go here
+	if(radioactive && volume >= 10)
+		var/obj/effect/decal/cleanable/greenglow/glow = locate(/obj/effect/decal/cleanable/greenglow, T)
+		if(!glow)
+			new /obj/effect/decal/cleanable/greenglow(T)
 	return
 
 /datum/reagent/proc/on_mob_life(var/mob/living/carbon/M, var/alien, var/location) // Currently, on_mob_life is called on carbons. Any interaction with non-carbon mobs (lube) will need to be done in touch_mob.
@@ -72,6 +79,8 @@
 	return
 
 /datum/reagent/proc/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	if (radioactive)
+		M.apply_effect(10 * removed, IRRADIATE, blocked = 0)
 	return
 
 /datum/reagent/proc/affect_ingest(var/mob/living/carbon/M, var/alien, var/removed)
@@ -79,6 +88,8 @@
 	return
 
 /datum/reagent/proc/affect_touch(var/mob/living/carbon/M, var/alien, var/removed)
+	if (radioactive)
+		affect_ingest(M, alien, removed)
 	return
 
 /datum/reagent/proc/overdose(var/mob/living/carbon/M, var/alien) // Overdose effect. Doesn't happen instantly.

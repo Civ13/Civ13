@@ -227,7 +227,8 @@ var/list/coefflist = list()
 			stat("")
 			stat("Attack Intent:", a_intent)
 			stat("Move Mode:", m_intent)
-			stat("Stamina: ", "[round((getStat("stamina")/stats["stamina"][2]) * 100)]%")
+			if (stats["stamina"][2] > 0)
+				stat("Stamina: ", "[round((getStat("stamina")/stats["stamina"][2]) * 100)]%")
 			stat("")
 			stat(stat_header("Factions"))
 			stat("")
@@ -605,6 +606,8 @@ var/list/rank_prefix = list(\
 /mob/living/carbon/human/proc/check_has_mouth()
 	// Todo, check stomach organ when implemented.
 	var/obj/item/organ/external/head/H = get_organ("head")
+	if (istype(H, /obj/item/organ/external/stump))
+		return FALSE
 	if (!H || !H.can_intake_reagents)
 		return FALSE
 	return TRUE
@@ -687,7 +690,7 @@ var/list/rank_prefix = list(\
 	var/obj/item/organ/lungs/L = internal_organs_by_name["lungs"]
 
 	if (L && !L.is_bruised())
-		custom_pain("You feel a stabbing pain in your chest!", TRUE)
+		custom_pain("You feel a stabbing pain in your chest!", 110)
 		L.bruise()
 
 /*

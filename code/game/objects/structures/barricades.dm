@@ -13,6 +13,8 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
+	var/protection_chance = 85 //prob of the projectile hitting the barricade
+
 /obj/structure/barricade/New(var/newloc)
 	..(newloc)
 	if (!material_name)
@@ -37,7 +39,7 @@
 /obj/structure/barricade/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/stack))
 		var/obj/item/stack/D = W
-		if (D.get_material_name() != material.name)
+		if (material && D.get_material_name() != material.name)
 			return //hitting things with the wrong type of stack usually doesn't produce messages, and probably doesn't need to.
 		if (health < maxhealth)
 			if (D.get_amount() < 1)
@@ -100,7 +102,6 @@
 		return
 
 /obj/structure/barricade/proc/dismantle()
-	material.place_dismantled_product(get_turf(src))
 	qdel(src)
 	return
 
@@ -127,7 +128,7 @@
 
 /obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.
 	if (istype(mover, /obj/item/projectile))
-		return prob(15)
+		return prob(100-protection_chance)
 	else
 		return FALSE
 
@@ -141,11 +142,14 @@
 	desc = "A wood wall made of vines and logs roped together."
 	icon_state = "woodbarricade_horizontal"
 	flammable = TRUE
+	protection_chance = 80
 /obj/structure/barricade/vertical
 	name = "wood barrier"
 	desc = "A wood wall made of vines and logs roped together."
 	icon_state = "woodbarricade_vertical"
 	flammable = TRUE
+	protection_chance = 80
+
 /obj/structure/barricade/vertical/New()
 	..()
 	icon_state = "woodbarricade_vertical"
@@ -169,7 +173,7 @@
 	maxhealth = 600
 	material = "stone"
 	material_name = "stone"
-
+	protection_chance = 90
 
 /obj/structure/barricade/sandstone_v
 	name = "sandstone wall"
@@ -180,7 +184,7 @@
 	maxhealth = 600
 	material = "stone"
 	material_name = "stone"
-
+	protection_chance = 90
 
 /obj/structure/barricade/sandstone_h/crenelated
 	name = "crenelated sandstone wall"
@@ -191,7 +195,7 @@
 	maxhealth = 600
 	material = "stone"
 	material_name = "stone"
-
+	protection_chance = 75
 
 /obj/structure/barricade/sandstone_v/crenelated
 	name = "crenelated sandstone wall"
@@ -202,7 +206,7 @@
 	maxhealth = 600
 	material = "stone"
 	material_name = "stone"
-
+	protection_chance = 75
 
 /obj/structure/barricade/sandstone_h/New()
 	..()
@@ -296,6 +300,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "steel"
+	protection_chance = 50
 
 /obj/structure/barricade/stone_h
 	name = "stone wall"
@@ -306,6 +311,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 90
 
 /obj/structure/barricade/stone_v
 	name = "stone wall"
@@ -316,6 +322,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 90
 
 /obj/structure/barricade/stone_h/crenelated
 	name = "crenelated stone wall"
@@ -326,6 +333,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 75
 
 /obj/structure/barricade/stone_v/crenelated
 	name = "crenelated stone wall"
@@ -336,6 +344,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 75
 
 /obj/structure/barricade/stone_h/New()
 	..()
@@ -427,6 +436,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 100
 
 /obj/structure/barricade/jap_h/New()
 	..()
@@ -457,6 +467,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 100
 
 /obj/structure/barricade/jap_h_l/New()
 	..()
@@ -487,6 +498,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 100
 
 /obj/structure/barricade/jap_h_r/New()
 	..()
@@ -517,6 +529,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 100
 
 /obj/structure/barricade/jap_v/New()
 	..()
@@ -547,6 +560,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 100
 
 /obj/structure/barricade/jap_v_t/New()
 	..()
@@ -577,6 +591,7 @@
 	health = 2709
 	maxhealth = 2709
 	material_name = "stone"
+	protection_chance = 100
 
 /obj/structure/barricade/jap_v_b/New()
 	..()
@@ -597,3 +612,68 @@
 		visible_message("<span class='danger'>\The [src] is blown apart!</span>")
 		qdel(src)
 		return
+
+/obj/structure/barricade/tires
+	name = "pile of tires"
+	desc = "A pile of old tires."
+	icon = 'icons/obj/modern_structures.dmi'
+	icon_state = "tire3a"
+	health = 200
+	maxhealth = 200
+	material_name = "wood"
+	protection_chance = 30
+
+/obj/structure/barricade/tires/New()
+	..()
+	icon_state = pick("tire2a","tire3","tire3a")
+	name = "pile of tires"
+
+/obj/structure/barricade/hescobastion
+	name = "hesco bastion"
+	desc = "A collapsible wire mesh container filled with sand. Very sturdy."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "hescobastion"
+	health = 600
+	maxhealth = 600
+	material_name = "wood"
+	protection_chance = 100
+	opacity = TRUE
+	density = TRUE
+
+/obj/structure/barricade/hescobastion/New()
+	..()
+	icon_state = "hescobastion"
+	name = "hesco bastion"
+
+/obj/structure/barricade/shelf
+	name = "shelf"
+	desc = "A store shelf."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "shelf1"
+	health = 130
+	maxhealth = 130
+	material_name = "wood"
+	protection_chance = 25
+
+/obj/structure/barricade/shelf/New()
+	..()
+	icon_state = pick("shelf1","shelf2","shelf3")
+	name = "shelf"
+
+
+/obj/structure/barricade/car
+	name = "car"
+	desc = "An abandoned car."
+	icon = 'icons/obj/obj64x42.dmi'
+	icon_state = "car1"
+	health = 450
+	maxhealth = 450
+	material_name = "iron"
+	protection_chance = 80
+	bound_width = 64
+	layer = MOB_LAYER + 0.4
+
+/obj/structure/barricade/car/New()
+	..()
+	icon_state = pick("car1","car2","car3")
+	name = "car"

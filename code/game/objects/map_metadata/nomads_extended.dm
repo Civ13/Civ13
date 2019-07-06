@@ -23,7 +23,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
+		"Empire Earth Intro:1" = 'sound/music/words_through_the_sky.ogg',)
 	nomads = TRUE
 	gamemode = "Oil Rush"
 	ordinal_age = 5

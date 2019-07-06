@@ -52,7 +52,7 @@
 		var/mob/living/carbon/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
-		if (affecting.open == FALSE)
+		if (affecting && affecting.open == FALSE)
 			if (affecting.is_bandaged())
 				user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been bandaged.</span>"
 				return TRUE
@@ -90,28 +90,13 @@
 					else
 						user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [affecting.name].</span>"
 				use(used)
+				H.update_bandaging(0)
 		else
 			if (can_operate(H))        //Checks if mob is lying down on table for surgery
 				if (do_surgery(H,user,src))
 					return
 			else
 				user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
-/*	else if (istype(M, /mob/living/simple_animal/complex_animal))
-		var/mob/living/simple_animal/complex_animal/C = M
-		if (C.health >= C.maxHealth)
-			user << "<span class='warning'>The wounds on \the [C] have already been treated.</span>"
-			return TRUE
-		else
-			user.visible_message("<span class='notice'>\The [user] starts treating \the [C]'s wounds.</span>", \
-					             "<span class='notice'>You start treating \the [C]'s wounds.</span>")
-			C.adjustBruteLoss(-(C.maxHealth/3))
-			if (amount == TRUE)
-				if (C.health >= C.maxHealth)
-					user << "<span class='warning'>\The [src] is used up.</span>"
-				else
-					user << "<span class='warning'>\The [src] is used up, but there are more wounds to treat on \the [C].</span>"
-			use(1)
-*/
 
 /obj/item/stack/medical/advanced/bruise_pack
 	name = "trauma kit"
@@ -131,7 +116,7 @@
 		var/mob/living/carbon/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
-		if (affecting.open == FALSE)
+		if (affecting && affecting.open == FALSE)
 			if (affecting.is_bandaged() && affecting.is_disinfected())
 				user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been treated.</span>"
 				return TRUE
@@ -178,7 +163,7 @@
 
 		var/mob/living/carbon/human/H_user = user
 		if (istype(H_user) && H_user.getStatCoeff("medical") >= GET_MIN_STAT_COEFF(STAT_VERY_HIGH))
-			if (affecting.open == FALSE)
+			if (affecting && affecting.open == FALSE)
 				if (affecting.is_bandaged() && affecting.is_disinfected())
 					affecting.wounds.Cut()
 					H_user.bad_external_organs -= affecting
@@ -260,7 +245,7 @@
 		var/mob/living/carbon/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 
-		if (affecting.open == FALSE)
+		if (affecting && affecting.open == FALSE)
 			if (affecting.is_salved())
 				user << "<span class='warning'>The wounds on [M]'s [affecting.name] have already been salved.</span>"
 				return TRUE
@@ -292,8 +277,7 @@
 /obj/item/stack/medical/splint/attack(mob/living/carbon/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
-
-	if (istype(M, /mob/living/carbon/human))
+	if (istype(M, /mob/living/carbon/human) && user.targeted_organ != "random")
 		var/mob/living/carbon/human/H = M
 		var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
 		var/limb = affecting.name

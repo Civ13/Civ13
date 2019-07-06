@@ -111,6 +111,20 @@
 /obj/item/projectile/proc/on_impact(var/atom/A)
 	impact_effect(effect_transform)		// generate impact effect
 	playsound(src, "ric_sound", 50, TRUE, -2)
+	if (istype(src, /obj/item/projectile/bullet))
+		if (istype(A, /turf))
+			var/turf/T = A
+			if (prob(25) && T.bullethole_count < 10 && T.density == TRUE)
+				T.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
+				T.bullethole_count++
+		else if (istype(A, /obj/covers))
+			var/obj/covers/C = A
+			if (prob(25) && C.bullethole_count < 10 && C.density == TRUE)
+				C.overlays += image('icons/turf/walls.dmi', "bullethole[rand(1,15)]")
+				C.bullethole_count++
+	spawn(25)
+		if (src)
+			qdel(src)
 	return TRUE
 
 //Checks if the projectile is eligible for embedding. Not that it necessarily will.
@@ -704,3 +718,6 @@
 	var/output = trace.launch(target) //Test it!
 	qdel(trace) //No need for it anymore
 	return output //Send it back to the gun!
+
+/obj/item/projectile/bullet
+	embed = TRUE

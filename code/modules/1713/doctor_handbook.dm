@@ -62,13 +62,13 @@
 		var/is_bad = FALSE	// I hate myself
 		if (severity_blood_loss)
 			is_bad = TRUE
-			user.show_message("<span class='warning'>* [capitalize(severity_adj[severity_blood_loss])] blood loss.</span>")
+			user.show_message("<span class='warning'><b>* [capitalize(severity_adj[severity_blood_loss])] blood loss.</b></span>")
 		if (severity_poisoning)
 			is_bad = TRUE
-			user.show_message("<span class='warning'>* [capitalize(severity_adj[severity_poisoning])] general poisoning.</span>")
+			user.show_message("<span class='warning'><b>* [capitalize(severity_adj[severity_poisoning])] general poisoning.</b></span>")
 		if (severity_malnourishment)
 			is_bad = TRUE
-			user.show_message("<span class='warning'>* [capitalize(severity_adj[severity_malnourishment])] malnourishment.</span>")
+			user.show_message("<span class='warning'><b>* [capitalize(severity_adj[severity_malnourishment])] malnourishment.</b></span>")
 		if (!is_bad)
 			user.show_message("<span class='notice'>* No general health issues.</span>")
 
@@ -87,12 +87,13 @@
 			var/internal = FALSE
 			var/open = FALSE
 			var/bleeding = FALSE
+			var/cuttendon = FALSE
 			var/foreign = FALSE // sharpnel, implants, and etcera
 
 			if (!e)
 				continue
 			if (e.status & ORGAN_DESTROYED && !e.is_stump())
-				user.show_message("<span class='warning'>* [capitalize(e.name)] is gored at [e.amputation_point] and needs to be amputated properly.</span>")
+				user.show_message("<span class='warning'><b>* [capitalize(e.name)] is gored at [e.amputation_point] and needs to be amputated properly.</b></span>")
 				ecount++
 				continue
 			if (e.status & ORGAN_BROKEN)
@@ -101,6 +102,8 @@
 					unsplinted_limbs.Add(e.name)
 			if (e.has_infected_wound())
 				infected = TRUE
+			if (e.status & ORGAN_TENDON_CUT)
+				cuttendon = TRUE
 			if (e.implants.len)
 				foreign = TRUE
 			for (var/datum/wound/W in e.wounds)
@@ -118,17 +121,20 @@
 					inner += "[bleeding ? " bleeding" : ""]"
 					inner += "[infected && e.germ_level > 175 ? " infected" : ""]"
 					inner += " wound[wounds > 1 ? "s" : ""]"
-					inner += " [foreign || internal || broken || e.burn_dam > 2 || e.brute_dam > 2 ? "and " : "at"]"
+					inner += " [foreign || internal || broken|| cuttendon || e.burn_dam > 2 || e.brute_dam > 2 ? "and " : "at"]"
 				if (e.brute_dam > 2)
 					var/sev = pick_severity(e.brute_dam)
 					inner += "[sev ? severity_adj[sev] : "dismissable"] bruises"
-					inner += " [foreign || internal || broken || e.burn_dam > 2 ? "and " : "at"]"
+					inner += " [foreign || internal || broken|| cuttendon || e.burn_dam > 2 ? "and " : "at"]"
 				if (e.burn_dam > 2)
 					var/sev = pick_severity(e.burn_dam)
 					inner += "[sev ? severity_adj[sev] : "dismissable"] burns"
-					inner += " [foreign || internal || broken ? "and " : "at"]"
+					inner += " [foreign || internal || broken|| cuttendon ? "and " : "at"]"
 				if (broken)
 					inner += "broken bones"
+					inner += " [foreign || internal || cuttendon ? "and " : "in"]"
+				if (cuttendon)
+					inner += "cut tendon"
 					inner += " [foreign || internal ? "and " : "in"]"
 				if (internal)
 					inner += "signs of internal bleeding"
@@ -137,7 +143,7 @@
 					inner += "likely sharpnel"
 					inner += " in"
 				string += "[capitalize(inner)] [G.his] [e.name].</span>"
-				user.show_message(string)
+				user.show_message("<b>[string]</b>")
 				ecount++
 		if (!ecount)
 			user.show_message("<span class='notice'>* No local injuries.</span>")
@@ -148,7 +154,7 @@
 			if (!e)
 				continue
 			else if (e.status & ORGAN_DESTROYED)
-				user.show_message("<span class='warning'>* [capitalize(e.name)] has been destroyed.</span>")
+				user.show_message("<span class='warning'><b>* [capitalize(e.name)] has been destroyed.</b></span>")
 				icount++
 			else if (e.status & ORGAN_BROKEN || e.damage >= e.min_bruised_damage)
 				var/string = "<span class='warning'>* "
@@ -156,7 +162,7 @@
 				inner += " and "
 				inner += "injuries on"
 				string += "[capitalize(inner)] [G.his] [e.name].</span>"
-				user.show_message(string)
+				user.show_message("<b>[string]</b>")
 				icount++
 
 		if (!icount)
@@ -173,6 +179,7 @@
 				 	string += "and "
 				Count++
 			string += " need[ecount == TRUE ? "s" : ""] splinting for safe transport."
+			user.show_message("<b>[string]</b>")
 
 		if (iscarbon(victim))
 			var/mob/living/carbon/C = victim
@@ -182,10 +189,10 @@
 			var/toxloss = victim.getToxLoss()
 
 			if (oxyloss)
-				user.show_message("<span class='[oxyloss <= 20 ? "warning" : "danger"]'>[G.He] has [oxyloss] units of oxygen loss.</span>")
+				user.show_message("<span class='[oxyloss <= 20 ? "warning" : "danger"]'><b>[G.He] has [oxyloss] units of oxygen loss.</b></span>")
 
 			if (toxloss)
-				user.show_message("<span class='[toxloss <= 20 ? "warning" : "danger"]'>[G.He] has [toxloss] units of toxin poisoning.</span>")
+				user.show_message("<span class='[toxloss <= 20 ? "warning" : "danger"]'><b>[G.He] has [toxloss] units of toxin poisoning.</b></span>")
 
 			user.show_message("<span class='[hunger_coeff > 0.66 ? "good" : hunger_coeff > 0.40 ? "notice" : "danger"]'>[G.He] is [round((1 - hunger_coeff)*100)]% hungry.</span>")
 			user.show_message("<span class='[thirst_coeff > 0.66 ? "good" : thirst_coeff > 0.40 ? "notice" : "danger"]'>[G.He] is [round((1 - thirst_coeff)*100)]% thirsty.</span>")

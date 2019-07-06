@@ -26,17 +26,20 @@
 	//Ok this if looks like a bit of a mess, and it is. Basically you need to have the sword in your active hand, and pass the default parry check
 	//and also pass the prob which is your melee skill * the swords block chance. Complicated, I know, but hopefully it'll balance out.
 	var/mob/living/carbon/human/H_user = user
+	var/isdefend = 1 //the defend tactic modifier
 	var/modif = 1
 	if (H_user.religion_check() == "Combat")
 		modif = 1.1
-	if(default_parry_check(user, attacker, damage_source) && prob(min(block_chance * (H_user.getStatCoeff("swords")*modif),92)) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
-		user.visible_message("<span class='danger'><big>\The [user] parries [attack_text] with \the [src]!</big></span>")
+	if (user.tactic == "defend")
+		isdefend = 1.2
+	if(default_parry_check(user, attacker, damage_source) && prob(isdefend*(min(block_chance * (H_user.getStatCoeff("swords")*modif),92))) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
+		user.visible_message("<font color='#E55300'><big>\The [user] parries [attack_text] with \the [src]!</big></font>")
 		var/mob/living/carbon/human/H = user
 		H.adaptStat("swords", 1*modif)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		health -= 0.5
 		if(prob(15))
-			user.visible_message("<span class='danger'><big>\The [src] flies out of \the [user]'s hand!</big></span>")
+			user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
 			user.drop_from_inventory(src)
 			throw_at(get_edge_target_turf(src, pick(alldirs)), rand(1,3), throw_speed)//Throw that sheesh away
 
@@ -121,7 +124,7 @@ obj/item/weapon/material/sword/smallsword/bronze
 	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
 	slot_flags = SLOT_BELT | SLOT_BACK
 	block_chance = 40
-	cooldownw = 10
+	cooldownw = 9
 	value = 50
 
 obj/item/weapon/material/sword/spadroon/iron
@@ -131,6 +134,29 @@ obj/item/weapon/material/sword/spadroon/copper
 	default_material = "copper"
 
 obj/item/weapon/material/sword/spadroon/bronze
+	default_material = "bronze"
+
+/obj/item/weapon/material/sword/armingsword
+	name = "arming sword"
+	desc = "A very common medieval medium-sized sword."
+	icon_state = "armingsword"
+	item_state = "longsword2"
+	throw_speed = 3
+	throw_range = 3
+	force_divisor = 0.9 // 48 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.45 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 37
+	cooldownw = 11
+	value = 50
+
+obj/item/weapon/material/sword/armingsword/iron
+	default_material = "iron"
+
+obj/item/weapon/material/sword/armingsword/copper
+	default_material = "copper"
+
+obj/item/weapon/material/sword/armingsword/bronze
 	default_material = "bronze"
 
 /obj/item/weapon/material/sword/vangar
@@ -216,7 +242,7 @@ obj/item/weapon/material/sword/sabre/iron
 
 /obj/item/weapon/material/sword/longsword
 	name = "longsword"
-	desc = "A large sword, with a long blade. Commonly used in the medieval era, it's rarely used now."
+	desc = "A sword with a long blade. Commonly used in the medieval era."
 	icon_state = "longsword"
 	item_state = "longsword"
 	throw_speed = 2

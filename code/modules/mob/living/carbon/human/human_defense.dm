@@ -41,6 +41,9 @@ bullet_act
 					HP.amount = 6
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
+					if (istype(user, /mob/living/carbon/human))
+						var/mob/living/carbon/human/HM = user
+						HM.adaptStat("medical", 1)
 					for (var/obj/item/clothing/I in contents)
 						drop_from_inventory(I)
 					crush()
@@ -106,13 +109,12 @@ bullet_act
 			P.on_hit(src, 2, def_zone)
 			return 2
 	else
-		/* bullet grazing is affected by three factors now:
+		/* bullet grazing is affected by two factors now:
 		 * from most to least important, these are:
 		   * 1. is the target moving while being shot? Modified by distance
 		   * 2. randomness
-		   * 3. survival stat
 		*/
-		if (P)
+		if (P && P.starting)
 			var/distcheck = max(abs(P.starting.x - x), abs(P.starting.y - y))
 
 			if (distcheck > 2) // not PB range
@@ -136,7 +138,6 @@ bullet_act
 							return
 
 		// get knocked back once in a while
-		// unless we're on a train because bugs
 
 		var/KD_check = FALSE
 
@@ -179,7 +180,7 @@ bullet_act
 							visible_message("<span class = 'danger'>[src] flies back from the force of the blast!</span>")
 
 		// get weakened too
-		if (prob(P.KD_chance))
+		if (prob(P.KD_chance*0.5))
 			Weaken(2)
 			stats["stamina"][1] = max(stats["stamina"][1] - 50, 0)
 			if (client)
@@ -434,15 +435,15 @@ bullet_act
 	//First we cut an artery, the reason for that, is that arteries are funninly enough, not that lethal, and don't have the biggest impact. They'll still make you bleed out, but they're less immediately lethal.
 	if(I.sharp && prob(I.force/10) && !(affecting.status & ORGAN_ARTERY_CUT))
 		affecting.sever_artery()
-		if(affecting.artery_name == "cartoid artery")
-			src.visible_message("<span class='danger'>[user] slices [src]'s throat!</span>")
+		if(affecting.artery_name == "carotid artery")
+			src.visible_message("<span class='danger'><b>[user] slices [src]'s throat!</b></span>")
 		else
-			src.visible_message("<span class='danger'>[user] slices open [src]'s [affecting.artery_name] artery!</span>")
+			src.visible_message("<span class='danger'><b>[user] slices open [src]'s [affecting.artery_name] artery!</b></span>")
 
 	//Next tendon, which disables the limb, but does not remove it, making it easier to fix, and less lethal, than losing it.
-	else if(I.sharp && (I.force/10) && !(affecting.status & ORGAN_TENDON_CUT) && affecting.has_tendon)//Yes this is the same exactly probability again. But I'm running it seperate because I don't want the two to be exclusive.
+	else if(I.sharp && prob(I.force/12) && !(affecting.status & ORGAN_TENDON_CUT) && affecting.has_tendon)
 		affecting.sever_tendon()
-		src.visible_message("<span class='danger'>[user] slices open [src]'s [affecting.tendon_name] tendon!</span>")
+		src.visible_message("<span class='danger'><b>[user] slices open [src]'s [affecting.tendon_name] tendon!</b></span>")
 
 	//Finally if we pass all that, we cut the limb off. This should reduce the number of one hit sword kills.
 	else if(I.sharp && I.edge)
@@ -519,7 +520,7 @@ bullet_act
 	if (!organ || (organ.dislocated == 2) || (organ.dislocated == -1) || blocked >= 2)
 		return FALSE
 	if (prob(W.force / (blocked+1)))
-		visible_message("<span class='danger'>[src]'s [organ.joint] [pick("gives way","caves in","crumbles","collapses")]!</span>")
+		visible_message("<span class='danger'><b>[src]'s [organ.joint] [pick("gives way","caves in","crumbles","collapses")]!</b></span>")
 		organ.dislocate(1)
 		return TRUE
 	return FALSE
@@ -543,7 +544,10 @@ bullet_act
 		var/zone
 		if (istype(O.thrower, /mob/living))
 			var/mob/living/L = O.thrower
-			zone = check_zone(L.targeted_organ)
+			var/tgt = L.targeted_organ
+			if (L.targeted_organ == "random")
+				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+			zone = check_zone(tgt)
 		else
 			zone = ran_zone("chest",75)	//Hits a random part of the body, geared towards the chest
 
@@ -577,7 +581,6 @@ bullet_act
 
 		var/obj/item/organ/external/affecting = get_organ(zone)
 		var/hit_area = affecting.name
-		var/datum/wound/created_wound
 		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
 		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].") //I guess "melee" is the best fit here
 
@@ -587,7 +590,7 @@ bullet_act
 			if(prob(armor))
 				edge = 0
 				sharp = 0
-			created_wound = apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
+			apply_damage(throw_damage,BRUTE, zone, armor, O, sharp, edge)
 
 		if (ismob(O.thrower))
 			var/mob/M = O.thrower
@@ -614,7 +617,7 @@ bullet_act
 			//Thrown sharp objects have some momentum already and have a small chance to embed even if the damage is below the threshold
 			if ((sharp && prob(damage/(10*I.w_class)*100)) || (damage > embed_threshold && prob(embed_chance)))
 				if (I.w_class <= 2.0)
-					affecting.embed(I, supplied_wound = created_wound)
+					affecting.embed(I)
 		if (istype(O, /obj/item/weapon/snowball))
 			O.icon_state = "snowball_hit"
 			O.update_icon()
@@ -718,6 +721,8 @@ bullet_act
 		return
 
 	var/hit_zone = user.targeted_organ
+	if (user.targeted_organ == "random")
+		hit_zone = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 	var/too_high_message = "You can't reach that high."
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if(!affecting || affecting.is_stump())

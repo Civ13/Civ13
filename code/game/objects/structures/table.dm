@@ -33,6 +33,8 @@
 	throwpass = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
+	mouse_drop_zone = TRUE
+
 /obj/structure/table/New()
 	..()
 	for (var/obj/structure/table/T in loc)

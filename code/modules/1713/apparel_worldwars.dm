@@ -6,7 +6,7 @@
 	worn_state = "germtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 20)
 	value = 65
 	var/colorn = 1
 
@@ -18,7 +18,7 @@
 	worn_state = "frenchtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 	var/colorn = 1
 
@@ -30,7 +30,7 @@
 	worn_state = "britishtrench"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 20)
 	value = 65
 	var/colorn = 1
 
@@ -333,7 +333,7 @@ obj/item/clothing/accessory/harness
 	worn_state = "ww2_japcoat"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
 /obj/item/clothing/suit/storage/coat/ww2/japcoat_pilot
@@ -344,7 +344,7 @@ obj/item/clothing/accessory/harness
 	worn_state = "jappilotcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 100
 
 obj/item/clothing/head/ww2/jap_pilotcap
@@ -423,7 +423,7 @@ obj/item/clothing/head/ww2/jap_mp
 	item_state = "modern_platearmor"
 	worn_state = "modern_platearmor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 70, arrow = 95, gun = 45, energy = 15, bomb = 45, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 95, gun = 45, energy = 15, bomb = 45, bio = 20, rad = 20)
 	value = 50
 	slowdown = 0.8
 
@@ -435,7 +435,7 @@ obj/item/clothing/head/ww2/jap_mp
 	item_state = "modern_dayfield"
 	worn_state = "modern_dayfield"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 70, arrow = 90, gun = 40, energy = 12, bomb = 40, bio = 20, rad = FALSE)
+	armor = list(melee = 70, arrow = 90, gun = 40, energy = 12, bomb = 40, bio = 20, rad = 15)
 	value = 50
 	slowdown = 0.8
 
@@ -597,7 +597,7 @@ obj/item/clothing/under/ww2/hitlerjugend
 	worn_state = "gerparka"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
 /obj/item/clothing/suit/storage/coat/ww2/german_officer
@@ -608,7 +608,7 @@ obj/item/clothing/under/ww2/hitlerjugend
 	worn_state = "ger_offcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 100
 
 /obj/item/clothing/suit/storage/coat/ww2/ss_parka
@@ -619,7 +619,7 @@ obj/item/clothing/under/ww2/hitlerjugend
 	worn_state = "sssmock"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
 /obj/item/clothing/suit/storage/coat/ww2/soviet
@@ -630,7 +630,7 @@ obj/item/clothing/under/ww2/hitlerjugend
 	worn_state = "ruscoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
 /obj/item/clothing/suit/storage/coat/ww2/soviet_officer
@@ -641,7 +641,7 @@ obj/item/clothing/under/ww2/hitlerjugend
 	worn_state = "sov_offcoat"
 	body_parts_covered = UPPER_TORSO||ARMS
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
-	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = FALSE)
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
 
 /obj/item/clothing/head/helmet/ww2/us_mp

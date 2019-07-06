@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
+		"Empire Earth Intro:1" = 'sound/music/words_through_the_sky.ogg',)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
@@ -55,7 +55,8 @@
 			if (prob(60))
 				G.ChangeTurf(/turf/floor/grass)
 		for (var/turf/floor/dirt/burned/B)
-			if (get_area(B).location == AREA_OUTSIDE)
+			var/area/A = get_area(B)
+			if (A.location == AREA_OUTSIDE)
 				if (prob(60))
 					B.ChangeTurf(/turf/floor/dirt)
 		spawn(150)
@@ -91,7 +92,8 @@
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
 		for (var/turf/floor/dirt/D)
-			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && D.z == world.maxz)
+			var/area/A = get_area(D)
+			if (prob(50) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !istype(D, /turf/floor/dirt/ploughed) && A.location == AREA_OUTSIDE && !istype(A,/area/caribbean/forest/dirt))
 				D.ChangeTurf(/turf/floor/grass)
 			D.update_icon()
 		for (var/turf/floor/dirt/burned/BD)
@@ -103,7 +105,8 @@
 		spawn(15000)
 			change_weather(WEATHER_SNOW)
 			for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
-				if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
+				var/area/A = get_area(D)
+				if (A.location == AREA_OUTSIDE && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust))
 					D.ChangeTurf(/turf/floor/dirt/winter)
 			for (var/turf/floor/grass/G)
 				if (prob(40))
@@ -111,7 +114,8 @@
 			spawn(1200)
 				for (var/turf/floor/dirt/D)
 					if (!istype(D,/turf/floor/dirt/winter))
-						if (D.z == world.maxz && prob(50))
+						var/area/A = get_area(D)
+						if (A.location == AREA_OUTSIDE && prob(50))
 							D.ChangeTurf(/turf/floor/dirt/winter)
 				for (var/turf/floor/grass/G)
 					if (prob(50))
@@ -121,9 +125,10 @@
 		world << "<big>The weather gets very cold. <b>Winter</b> has arrived.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
-		for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest))
-			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground))
-				if (D.z == world.maxz)
+		for (var/turf/floor/dirt/D)
+			if (!istype(D,/turf/floor/dirt/winter) && !istype(D,/turf/floor/dirt/underground) && !istype(D,/turf/floor/dirt/dust))
+				var/area/A = get_area(D)
+				if (A.location == AREA_OUTSIDE)
 					D.ChangeTurf(/turf/floor/dirt/winter)
 		for (var/turf/floor/grass/G)
 			G.ChangeTurf(/turf/floor/winter/grass)

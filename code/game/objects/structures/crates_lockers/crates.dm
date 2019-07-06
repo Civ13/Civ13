@@ -8,7 +8,7 @@
 	icon_opened = "crateopen"
 	icon_closed = "crate"
 	climbable = TRUE
-//	mouse_drag_pointer = MOUSE_ACTIVE_POINTER	//???
+	mouse_drop_zone = TRUE
 	var/rigged = FALSE
 
 // climbing crates - Kachnov
@@ -117,3 +117,10 @@
 				S.forceMove(src)
 				break
 	return
+
+/obj/structure/closet/crate/lead
+	name = "lead safe"
+	desc = "A large lead safe, good to store radioactive things."
+	icon_state = "largermetal"
+	icon_opened = "largermetal"
+	icon_closed = "largermetal"

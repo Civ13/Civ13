@@ -4,7 +4,7 @@
 
 //These control the damage thresholds for the various ways of removing limbs
 //Numbers below 1.0 = more damage required
-#define DROPLIMB_THRESHOLD_DESTROY 0.86 // 66.3 damage to destroy the head: all rifles can do it now - Kachnov
+#define DROPLIMB_THRESHOLD_DESTROY 0.95
 #define DROPLIMB_THRESHOLD_EDGE 1
 #define DROPLIMB_THRESHOLD_TEAROFF 0.9
 
@@ -13,7 +13,7 @@
 
 /obj/item/organ/external
 	name = "external"
-	min_broken_damage = 30
+	min_broken_damage = 70
 	max_damage = 0
 	dir = SOUTH
 	organ_tag = "limb"
@@ -27,8 +27,11 @@
 	var/model
 	var/force_icon
 	var/damage_state = "00"
-	var/brute_dam = FALSE
+	var/brute_dam = FALSE //sum of blunt, pierce and cut damage
 	var/burn_dam = FALSE
+	var/blunt_dam = FALSE // not sharp and not edged. More likely to break bones. Won't bleed.
+	var/pierce_dam = FALSE // sharp but not edged. More likely to give internal bleeding or damage wounds. Just a little bleeding.
+	var/cut_dam = FALSE // superficial damage, not a lot of damage but lots of bleeding.
 	var/max_size = FALSE
 	var/last_dam = -1
 	var/icon/mob_icon
@@ -62,13 +65,17 @@
 	var/pain = FALSE
 	var/fracturetimer = 0
 	var/has_tendon = FALSE             // Can this limb be hamstrung?
-	var/artery_name = "artery"         // Flavour text for cartoid artery, aorta, etc.
+	var/artery_name = "artery"         // Flavour text for carotid artery, aorta, etc.
 	var/arterial_bleed_severity = 1    // Multiplier for bleeding in a limb.
 	var/tendon_name = "tendon"         // Flavour text for Achilles tendon, etc.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
 	var/atom/movable/applied_pressure
+	var/burn_ratio = 0
+	var/brute_ratio = 0
+	var/encased = ""
+	var/cavity_name = ""
 /obj/item/organ/external/New()
 	..()
 	if(isnull(pain_disability_threshold))
@@ -249,7 +256,7 @@
 	if(internal_organs && internal_organs.len && (cur_damage + damage_amt >= max_damage || (((sharp && damage_amt >= 5) || damage_amt >= 10) && prob(5))))
 		// Damage an internal organ
 		var/list/victims = list()
-		for(var/obj/item/organ/internal/I in internal_organs)
+		for(var/obj/item/organ/I in internal_organs)
 			if(I.damage < I.max_damage && prob(I.relative_size))
 				victims += I
 		if(!victims.len)
@@ -263,9 +270,13 @@
 		jostle_bone(brute)
 //		if(can_feel_pain() && prob(40))
 //			owner.emote("scream")	//getting hit on broken hand hurts
-
-	if(brute_dam > min_broken_damage && prob(brute_dam + brute * (1+blunt)) ) //blunt damage is gud at fracturing
-		fracture()
+	var/canbreak = TRUE
+	if (used_weapon)
+		if (istype(used_weapon, /obj/item/projectile))
+			canbreak = FALSE
+	if(blunt_dam > min_broken_damage && prob(blunt_dam * (1+blunt)) ) //blunt damage is gud at fracturing
+		if (canbreak)
+			fracture()
 
 	var/can_cut = (prob(brute*2) || sharp)
 	var/spillover = 0
@@ -408,10 +419,10 @@ This function completely restores a damaged organ to perfect condition.
 	//moved this before the open_wound check so that having many small wounds for example doesn't somehow protect you from taking internal damage (because of the return)
 	//Possibly trigger an internal wound, too.
 	var/local_damage = brute_dam + burn_dam + damage
-	if (damage > 15 && type != BURN && local_damage > 30 && prob(damage))
-		var/datum/wound/internal_bleeding/I = new (min(damage - 15, 15))
+	if (damage > 15 && type == PIERCE && local_damage > 30 && prob(damage*0.8))
+		var/datum/wound/internal_bleeding/I = new (min(damage - 17, 12), src)
 		wounds += I
-		owner.custom_pain("You feel something rip in your [name]!", TRUE)
+		owner.custom_pain("You feel something rip in your [name]!", 120)
 
 	// first check whether we can widen an existing wound
 	if (wounds.len > 0 && prob(max(50+(number_wounds-1)*10,90)))
@@ -431,7 +442,7 @@ This function completely restores a damaged organ to perfect condition.
 	var/wound_type = get_wound_type(type, damage)
 
 	if (wound_type)
-		var/datum/wound/W = new wound_type(damage)
+		var/datum/wound/W = new wound_type(damage, src)
 
 		//Check whether we can add the wound to an existing wound
 		for (var/datum/wound/other in wounds)
@@ -529,13 +540,13 @@ Note that amputating the affected organ does in fact remove the infection from t
 	for (var/datum/wound/W in wounds)
 		//Open wounds can become infected
 		if (owner.germ_level > W.germ_level && W.infection_check())
-			W.germ_level++
+			W.germ_level+=0.5
 
 	if (antibiotics < 5)
 		for (var/datum/wound/W in wounds)
 			//Infected wounds raise the organ's germ level
 			if (W.germ_level > germ_level)
-				germ_level++
+				germ_level+=0.5
 				break	//limit increase to a maximum of one per second
 
 /obj/item/organ/external/handle_germ_effects()
@@ -563,19 +574,19 @@ Note that amputating the affected organ does in fact remove the infection from t
 				target_organ = pick(candidate_organs)
 
 		if (target_organ)
-			target_organ.germ_level++
+			target_organ.germ_level+=0.5
 
 		//spread the infection to child and parent organs
 		if (children)
 			for (var/obj/item/organ/external/child in children)
 				if (child.germ_level < germ_level)
 					if (child.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
-						child.germ_level++
+						child.germ_level+=0.5
 
 		if (parent)
 			if (parent.germ_level < germ_level)
 				if (parent.germ_level < INFECTION_LEVEL_ONE*2 || prob(30))
-					parent.germ_level++
+					parent.germ_level+=0.5
 
 	if (germ_level >= INFECTION_LEVEL_THREE && antibiotics < 30)	//overdosing is necessary to stop severe infections
 		if (!(status & ORGAN_DEAD))
@@ -583,7 +594,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			owner << "<span class='notice'>You can't feel your [name] anymore...</span>"
 			owner.update_body(1)
 
-		germ_level++
+		germ_level+=0.5
 		owner.adjustToxLoss(1)
 
 //Updating wounds. Handles wound natural I had some free spachealing, internal bleedings and infections
@@ -601,10 +612,12 @@ Note that amputating the affected organ does in fact remove the infection from t
 			var/adrenaline = owner.reagents.get_reagent_amount("adrenaline")
 			if (!(W.can_autoheal() || (adrenaline)))	//adrenaline stops internal wounds from growing bigger with time, unless it is so small that it is already healing
 				W.open_wound(0.1 * wound_update_accuracy)
-
-			owner.vessel.remove_reagent("blood", wound_update_accuracy * W.damage/40) //line should possibly be moved to handle_blood, so all the bleeding stuff is in one place.
+			var/blooddrop = W.damage/40
+			if (applied_pressure)
+				blooddrop *= 0.3
+			owner.vessel.remove_reagent("blood", wound_update_accuracy * blooddrop) //line should possibly be moved to handle_blood, so all the bleeding stuff is in one place.
 			if (prob(1 * wound_update_accuracy))
-				owner.custom_pain("You feel a stabbing pain in your [name]!",1)
+				owner.custom_pain("You feel a stabbing pain in your [name]!",60)
 
 		// slow healing
 		var/heal_amt = FALSE
@@ -649,11 +662,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 	//update damage counts
 	for (var/datum/wound/W in wounds)
 		if (!W.internal) //so IB doesn't count towards crit/paincrit
-			if (W.damage_type == BURN)
-				burn_dam += W.damage
-			else
-				brute_dam += W.damage
-
+			switch(W.damage_type)
+				if (BURN)
+					burn_dam += W.damage
+				else if (PIERCE)
+					brute_dam += W.damage
+					pierce_dam += W.damage
+				else if (CUT)
+					brute_dam += W.damage
+					cut_dam += W.damage
+				else if (BRUISE)
+					brute_dam += W.damage
+					blunt_dam += W.damage
 		if (W.bleeding() && (H && !(H.species.flags & NO_BLOOD)))
 			W.bleed_timer--
 			status |= ORGAN_BLEEDING
@@ -667,12 +687,16 @@ Note that amputating the affected organ does in fact remove the infection from t
 		status |= ORGAN_BLEEDING
 
 	//Bone fractures
-	if (brute_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
-		if (brute_dam > fracturetimer+20)
+	if (blunt_dam >= min_broken_damage * config.organ_health_multiplier && !H.buckled && !H.resting)
+		if (blunt_dam > fracturetimer+20)
 			fracture()
 
 	if (!(brute_dam+burn_dam) || !number_wounds)
 		disfigured = FALSE
+
+	damage = brute_dam + burn_dam
+
+	update_damage_ratios()
 
 //Returns TRUE if damage_state changed
 /obj/item/organ/external/proc/update_damstate()
@@ -815,6 +839,11 @@ Note that amputating the affected organ does in fact remove the infection from t
 			   HELPERS
 ****************************************************/
 
+/obj/item/organ/external/proc/update_damage_ratios()
+	var/limb_loss_threshold = max_damage
+	brute_ratio = brute_dam / (limb_loss_threshold * 2)
+	burn_ratio = burn_dam / (limb_loss_threshold * 2)
+
 /obj/item/organ/external/proc/is_stump()
 	return FALSE
 
@@ -912,24 +941,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	// Fractures have a chance of getting you out of restraints
 	if (prob(25))
 		release_restraints()
-
-	// This is mostly for the ninja suit to stop ninja being so crippled by breaks.
-	// TODO: consider moving this to a suit proc or process() or something during
-	// hardsuit rewrite.
-/*	if (owner && !(status & ORGAN_SPLINTED) && istype(owner,/mob/living/carbon/human))
-
-		var/mob/living/carbon/human/H = owner
-
-		if (H.wear_suit && istype(H.wear_suit,/obj/item/clothing/suit/space))
-
-			var/obj/item/clothing/suit/space/suit = H.wear_suit
-
-			if (isnull(suit.supporting_limbs))
-				return
-
-			owner << "You feel \the [suit] constrict about your [name], supporting it."
-			status |= ORGAN_SPLINTED
-			suit.supporting_limbs |= src*/
 	return
 
 /obj/item/organ/external/proc/mend_fracture()
@@ -1079,7 +1090,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "upper body"
 	limb_name = "chest"
 	icon_name = "torso"
-	min_broken_damage = 67
+	min_broken_damage = 80
 	max_damage = 101
 	w_class = 5
 	body_part = UPPER_TORSO
@@ -1091,12 +1102,14 @@ Note that amputating the affected organ does in fact remove the infection from t
 	cannot_amputate = TRUE
 	parent_organ = null
 	artery_name = "aorta"
+	encased = "ribcage"
+	cavity_name = "thoracic"
 
 /obj/item/organ/external/groin
 	name = "lower body"
 	limb_name = "groin"
 	icon_name = "groin"
-	min_broken_damage = 67
+	min_broken_damage = 80
 	max_damage = 101
 	w_class = 5
 	body_part = LOWER_TORSO
@@ -1107,12 +1120,13 @@ Note that amputating the affected organ does in fact remove the infection from t
 	dislocated = -1
 //	gendered_icon = TRUE
 	artery_name = "iliac artery"
+	cavity_name = "abdominal"
 
 /obj/item/organ/external/arm
 	limb_name = "l_arm"
 	name = "left arm"
 	icon_name = "l_arm"
-	min_broken_damage = 57
+	min_broken_damage = 67
 	max_damage = 65
 	w_class = 3
 	body_part = ARM_LEFT
@@ -1121,6 +1135,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left shoulder"
 	can_grasp = TRUE
 	artery_name = "basilic vein"
+	tendon_name = "palmaris longus tendon"
 	has_tendon = TRUE
 /obj/item/organ/external/arm/right
 	limb_name = "r_arm"
@@ -1143,6 +1158,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left knee"
 	amputation_point = "left hip"
 	can_stand = TRUE
+	tendon_name = "cruciate ligament"
 	artery_name = "femoral artery"
 	has_tendon = TRUE
 /obj/item/organ/external/leg/right
@@ -1158,14 +1174,15 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "l_foot"
 	name = "left foot"
 	icon_name = "l_foot"
-	min_broken_damage = 38
-	max_damage = 57 // 50% higher than the old 57, stops it from exploding - Kachnov
+	min_broken_damage = 50
+	max_damage = 65
 	w_class = 2
 	body_part = FOOT_LEFT
 	icon_position = LEFT
 	parent_organ = "l_leg"
 	joint = "left ankle"
 	amputation_point = "left ankle"
+	tendon_name = "Achilles tendon"
 	can_stand = TRUE
 	has_tendon = TRUE
 /obj/item/organ/external/foot/removed()
@@ -1186,13 +1203,14 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "l_hand"
 	name = "left hand"
 	icon_name = "l_hand"
-	min_broken_damage = 38
-	max_damage = 57 // 50% higher than the old 57, stops it from exploding - Kachnov
+	min_broken_damage = 50
+	max_damage = 65
 	w_class = 2
 	body_part = HAND_LEFT
 	parent_organ = "l_arm"
 	joint = "left wrist"
 	amputation_point = "left wrist"
+	tendon_name = "carpal ligament"
 	can_grasp = TRUE
 	has_tendon = TRUE
 /obj/item/organ/external/hand/removed()
@@ -1212,18 +1230,20 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "head"
 	icon_name = "head"
 	name = "head"
-	min_broken_damage = 38
-	max_damage = 57
+	min_broken_damage = 45
+	max_damage = 60
 	w_class = 3
 	body_part = HEAD
 	vital = TRUE
 	parent_organ = "chest"
 	joint = "jaw"
 	amputation_point = "neck"
-	artery_name = "cartoid artery"
+	artery_name = "carotid artery"
 //	gendered_icon = TRUE
 	var/list/teeth_list() = list()
 	var/max_teeth = 32
+	var/eye_icon = "eyes_s"
+	var/eye_icon_location = 'icons/mob/human_face.dmi'
 
 /obj/item/organ/external/head/removed()
 	if (owner)
@@ -1244,6 +1264,44 @@ Note that amputating the affected organ does in fact remove the infection from t
 				disfigure("brute")
 		if (burn_dam > 40)
 			disfigure("burn")
+/obj/item/organ/external/head/update_icon()
+
+	..()
+
+	if(owner)
+		if(eye_icon)
+			var/icon/eyes_icon = new/icon(eye_icon_location, eye_icon)
+			var/obj/item/organ/eyes/eyes = owner.internal_organs_by_name["eyes"]
+			if(eyes)
+				eyes_icon.Blend(rgb(eyes.eye_colour[1], eyes.eye_colour[2], eyes.eye_colour[3]), ICON_ADD)
+			else
+				eyes_icon.Blend(rgb(128,0,0), ICON_ADD)
+			mob_icon.Blend(eyes_icon, ICON_OVERLAY)
+			overlays |= eyes_icon
+
+		if(owner.lip_style && (species && (species.appearance_flags & HAS_LIPS)))
+			var/icon/lip_icon = new/icon('icons/mob/human_face.dmi', "lips_[owner.lip_style]_s")
+			overlays |= lip_icon
+			mob_icon.Blend(lip_icon, ICON_OVERLAY)
+
+		overlays |= get_hair_icon()
+
+	return mob_icon
+
+/obj/item/organ/external/head/proc/get_hair_icon()
+	var/image/res = image(species.icon_template,"")
+	if(owner.f_style)
+		var/icon/facial_s = new/icon("icon" = 'icons/mob/human_face.dmi', "icon_state" = "[owner.f_style]_s")
+		facial_s.Blend(rgb(owner.r_facial, owner.g_facial, owner.b_facial))
+		res.overlays |= facial_s
+
+	if(owner.h_style)
+		var/icon/hair_s = new/icon("icon" = 'icons/mob/human_face.dmi', "icon_state" = "[owner.h_style]_s")
+		if(islist(h_col) && h_col.len >= 3)
+			hair_s.Blend(rgb(h_col[1], h_col[2], h_col[3]))
+		res.overlays |= hair_s
+	return res
+
 
 /obj/item/organ/external/head/proc/get_teeth() //returns collective amount of teeth
 	var/amt = FALSE
@@ -1309,7 +1367,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/sever_artery()
 	if(!(status & ORGAN_ARTERY_CUT) && species && species.has_organ["heart"])
 		status |= ORGAN_ARTERY_CUT
-		if(artery_name == "cartoid artery")
+		if(artery_name == "carotid artery")
 			playsound(owner.loc, 'sound/voice/throat.ogg', 50, 1, -1)
 		return TRUE
 	return FALSE
@@ -1330,3 +1388,33 @@ Note that amputating the affected organ does in fact remove the infection from t
 		owner.custom_pain("A piece of bone in your [name] moves painfully!", 50)
 		var/obj/item/organ/I = pick(internal_organs)
 		I.take_damage(rand(3,5))
+
+// Pain/halloss
+/obj/item/organ/external/proc/get_pain()
+
+	var/lasting_pain = 0
+	if(is_broken())
+		lasting_pain += 10
+	else if(is_dislocated())
+		lasting_pain += 5
+	return pain + lasting_pain + 1.2 * brute_dam + 1.5 * burn_dam
+
+/obj/item/organ/external/proc/remove_pain(var/amount)
+
+	var/last_pain = pain
+	pain = max(0,min(max_damage,pain-amount))
+	return -(pain-last_pain)
+
+/obj/item/organ/external/proc/add_pain(var/amount)
+
+	var/last_pain = pain
+	pain = max(0,min(max_damage,pain+amount))
+	if(owner && ((amount > 15 && prob(20)) || (amount > 30 && prob(60))))
+		owner.emote("painscream")
+	return pain-last_pain
+
+/obj/item/organ/external/proc/stun_act(var/stun_amount, var/agony_amount)
+	return
+
+/obj/item/organ/external/proc/get_agony_multiplier()
+	return 1

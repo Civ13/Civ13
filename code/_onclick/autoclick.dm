@@ -36,7 +36,7 @@
 				if (!can_fire)
 					continue
 				if (MG.last_user == src)
-					MG.Fire(A, src, force = TRUE)
+					Click(selected_target[1], location, control, selected_target[2])
 
 				foundMG = TRUE
 			if (!foundMG)
@@ -60,8 +60,9 @@
 	return
 
 /mob/living/carbon/human/CanMobAutoclick(atom/object, location, params)
-	if (!object.IsAutoclickable())
-		return
+	if (object)
+		if (!object.IsAutoclickable())
+			return
 	var/obj/item/H = get_active_hand()
 	if (H)
 		return H.CanItemAutoclick(object, location, params)

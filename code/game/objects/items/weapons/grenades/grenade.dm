@@ -423,6 +423,7 @@
 	muzzle_type = null
 
 	embed = TRUE
+	sharp = TRUE
 
 
 
@@ -509,7 +510,7 @@
 	if (user)
 		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 
-	if (user.faction_text == ARAB)
+	if (user && user.faction_text == ARAB)
 		user.emote("charge")
 	active = TRUE
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)

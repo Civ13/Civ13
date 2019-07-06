@@ -2,7 +2,7 @@
 
 /obj/structure/toilet
 	name = "latrine"
-	desc = "A simple wooden latrine."
+	desc = "A simple latrine."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "toilet00"
 	density = FALSE
@@ -111,10 +111,29 @@
 			O.reagents.clear_reagents()
 			user << "<span class='notice'>You empty the [O] into the [src].</span>"
 
+/obj/structure/toilet/pit_latrine
+	name = "pit latrine"
+	desc = "A simple pit latrine, a hole dug on the ground to collect waste."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "pit_latrine3"
+	open = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/pit_latrine/New()
+	open = TRUE
+
+/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+	return
+/obj/structure/toilet/pit_latrine/attack_hand(mob/living/user as mob)
+	return
+
+/obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
+	return
 
 /obj/structure/shower
 	name = "shower"
-	desc = "The HS-451. Installed in the 2550s by the Hygiene Division."
+	desc = "A basic, hot-and-cold shower system."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "shower"
 	density = FALSE
@@ -352,7 +371,7 @@
 	var/sound = 'sound/effects/sink.ogg'
 	var/dry = FALSE
 	var/mosquito_count = 0
-	var/mosquito_limit = 2
+	var/mosquito_limit = 1
 	var/volume = 2000
 	var/max_volume = 2000
 	not_movable = TRUE
@@ -468,7 +487,15 @@
 					else
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				else
-					RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+					var/dirty = FALSE
+					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
+						if (PP)
+							dirty = TRUE
+					if (dirty)
+						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+					else
+						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)
 					update_icon()
@@ -525,6 +552,9 @@
 	max_volume = 500
 	volume = 500
 
+/obj/structure/sink/puddle/nomosquitoes
+	mosquito_limit = 0
+
 /obj/structure/sink/well
 	name = "well"
 	icon_state = "well1"
@@ -566,17 +596,17 @@
 
 /obj/structure/sink/New()
 	..()
-/*
-	if (map.ID == MAP_NOMADS_JUNGLE)
+
+	if (map.ID == MAP_HUNT)
 		mosquito_proc()
-*/
+
 	spawn(2000)
 		if (map.chad_mode)
 			mosquito_proc()
 
 /obj/structure/sink/proc/mosquito_proc()
 	if (istype(src, /obj/structure/sink/puddle) || istype(src, /obj/structure/sink/well))
-		if (mosquito_count < mosquito_limit)
+		if (mosquito_count < mosquito_limit && mosquito_limit != 0)
 			var/mob/living/simple_animal/mosquito/NM = new/mob/living/simple_animal/mosquito(src.loc)
 			NM.origin = src
 			mosquito_count++

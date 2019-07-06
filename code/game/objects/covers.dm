@@ -23,6 +23,7 @@
 	var/current_area_type = /area/caribbean
 	var/incomplete = FALSE
 	explosion_resistance = TRUE
+	var/bullethole_count = 0
 //	invisibility = 101 //starts invisible
 
 
@@ -284,7 +285,7 @@
 	health = 50
 	wall = TRUE
 	explosion_resistance = 1
-	
+
 /obj/covers/wood_wall/log
 	name = "log wall"
 	desc = "A log wall."
@@ -319,6 +320,23 @@
 	wall = TRUE
 	flammable = FALSE
 	explosion_resistance = 10
+
+/obj/covers/sandstone_wall
+	name = "sandstone wall"
+	desc = "A sandstone wall."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "sandstone_brick"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 0
+	layer = 3
+	health = 400
+	wood = FALSE
+	wall = TRUE
+	flammable = FALSE
+	explosion_resistance = 8
 
 /obj/covers/dirt_wall
 	name = "dirt wall"
@@ -749,9 +767,12 @@
 			start_fire()
 		try_destroy()
 	else
-		health -= proj.damage * 0.1
-		try_destroy()
-		return
+		if (wall)
+			health -= proj.damage * 0.1
+			try_destroy()
+			return
+		else
+			return
 
 /obj/covers/proc/start_fire()
 	if (onfire && wood)
@@ -762,6 +783,7 @@
 		spawn(400)
 			NF.icon_state = "fire_big"
 			NF.set_light(4)
+
 /obj/covers/proc/start_fire_dmg(var/obj/small_fire/SF)
 	spawn(80)
 		if (health > 0)

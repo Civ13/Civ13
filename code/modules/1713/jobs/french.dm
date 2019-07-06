@@ -90,9 +90,9 @@
 	return TRUE
 
 /datum/job/french/boatswain
-	title = "Chef d'équipage"
+	title = "Chef déquipage"
 	en_meaning = "Head of Personnel Officer"
-	rank_abbreviation = "Chef d'eq."
+	rank_abbreviation = "Chef deq."
 	head_position = TRUE
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNBoatswain"

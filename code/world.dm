@@ -1,8 +1,4 @@
 
-var/global/list/serverswap = list()
-var/global/serverswap_open_status = TRUE // if this is TRUE, we're the active server
-var/global/serverswap_closed = FALSE
-
 /*
 	The initialization of the game happens roughly like this:
 
@@ -58,7 +54,7 @@ var/world_is_open = TRUE
 	mob = /mob/new_player
 	turf = /turf/floor/dirt
 	area = /area/caribbean
-	view = "20x15"
+	view = 7
 	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
 
 #define RECOMMENDED_VERSION 512
@@ -220,8 +216,6 @@ var/world_topic_spam_protect_time = world.timeofday
 
 /world/Reboot(var/reason)
 
-	serverswap_pre_close_server()
-
 	/* Wait for serverswap to do its magic
 	 * this was 50 but now it's 70 to let the entire JOJO meme play even when the server restarts quickly
 	 * because sometimes it takes 1 second to restart other times 30 seconds :thinking: - Kachnov */
@@ -299,8 +293,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		var/F = file("serverdata.txt")
 		if (fexists("serverdata.txt"))
 			fdel(F)
-		if (!serverswap.len || !serverswap.Find("masterdir") || serverswap_open_status)
-			F << get_packaged_server_status_data()
+		F << get_packaged_server_status_data()
 		sleep (100)
 /proc/start_serverswap_loop()
 	spawn while (1)
@@ -308,35 +301,28 @@ var/world_topic_spam_protect_time = world.timeofday
 		try
 
 			// make sure processScheduler is running when the world starts up
-			if (serverswap_open_status)
-				if (!processScheduler.isRunning)
-					processScheduler.start()
-					message_admins("The process scheduler has been started. There are [processes.get_num_processes()] active processes.")
-					log_admin("processScheduler.start() was called at start_serverswap_loop().")
+			if (!processScheduler.isRunning)
+				processScheduler.start()
+				message_admins("The process scheduler has been started. There are [processes.get_num_processes()] active processes.")
+				log_admin("processScheduler.start() was called at start_serverswap_loop().")
 
-				// some sanity for the processScheduler
-				if (processScheduler.last_process != -1 && world.time - processScheduler.last_process >= processScheduler.scheduler_sleep_interval*300)
-					processScheduler.start()
+			// some sanity for the processScheduler
+			if (processScheduler.last_process != -1 && world.time - processScheduler.last_process >= processScheduler.scheduler_sleep_interval*300)
+				processScheduler.start()
 
 
 			// make sure movementMachine is running when the world starts up
-			if (serverswap_open_status)
-				if (!movementMachine)
-					movementMachine = new
-					movementMachine.start()
-					message_admins("The movement scheduler has been started.")
-					log_admin("movementMachine.start() was called at start_serverswap_loop().")
+			if (!movementMachine)
+				movementMachine = new
+				movementMachine.start()
+				message_admins("The movement scheduler has been started.")
+				log_admin("movementMachine.start() was called at start_serverswap_loop().")
 
-				// some sanity for the movementMachine
-				if (movementMachine.last_run != -1 && world.time - movementMachine.last_run >= movementMachine.interval*300)
-					movementMachine.start()
+			// some sanity for the movementMachine
+			if (movementMachine.last_run != -1 && world.time - movementMachine.last_run >= movementMachine.interval*300)
+				movementMachine.start()
 
 		catch(var/exception/e)
 			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
 
 		sleep(10)
-
-/proc/serverswap_pre_close_server()
-	// don't let the loop delete any file we create or make any new files
-	serverswap_closed = TRUE
-	serverswap_open_status = FALSE

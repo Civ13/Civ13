@@ -41,7 +41,10 @@ avoid code duplication. This includes items that may sometimes act as a standard
 		return FALSE
 	if (can_operate(src) && do_surgery(src,user,I)) //Surgery
 		return TRUE
-	return I.attack(src, user, user.targeted_organ)
+	var/tgt = user.targeted_organ
+	if (user.targeted_organ == "random")
+		tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+	return I.attack(src, user, tgt)
 
 // Proximity_flag is TRUE if this afterattack was called on something adjacent, in your square, or on your person.
 // Click parameters is the params string from byond Click() code, see that documentation.

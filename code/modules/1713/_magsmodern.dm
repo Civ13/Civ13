@@ -89,3 +89,36 @@
 	max_ammo = 15
 	weight = 0.33
 	multiple_sprites = TRUE
+
+
+/obj/item/ammo_magazine/jericho
+	name = "Jericho 941 magazine (9x19mm)"
+	icon_state = "m9beretta"
+	mag_type = MAGAZINE
+	caliber = "a9x19"
+	ammo_type = /obj/item/ammo_casing/a9x19
+	max_ammo = 16
+	weight = 0.35
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/negev
+	name = "Negev belt (5.56x45mm)"
+	icon_state = "b762"
+	mag_type = MAGAZINE
+	caliber = "a556x45"
+	w_class = 3
+	matter = list(DEFAULT_WALL_MATERIAL = 1440)
+	ammo_type = /obj/item/ammo_casing/a556x45
+	max_ammo = 150
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/m24
+	name = "clip (7.62x51mm)"
+	icon_state = "clip"
+	matter = list(DEFAULT_WALL_MATERIAL = 360)
+	ammo_type = /obj/item/ammo_casing/a762x51
+	caliber = "a762x51"
+	max_ammo = 5
+	weight = 0.045
+	multiple_sprites = TRUE
+	clip = TRUE

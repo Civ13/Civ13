@@ -151,13 +151,7 @@
 	unload_sound 	= 'sound/weapons/guns/interact/lmg_magout.ogg'
 	reload_sound 	= 'sound/weapons/guns/interact/lmg_magin.ogg'
 	cocked_sound 	= 'sound/weapons/guns/interact/lmg_cock.ogg'
-	fire_sound = 'sound/weapons/guns/fire/mg34_firing.ogg'
-
-	firemodes = list(
-		list(name="short bursts", burst=8, move_delay=10, dispersion = list(0.8, 1.2, 1.2, 1.2, 1.4), burst_delay = 1.0, recoil = 1.4),
-		list(name="long bursts", burst=16, move_delay=12, dispersion = list(1.0, 1.4, 1.4, 1.4, 1.6), burst_delay = 1.4, recoil = 2.8)
-		)
-	fire_delay = 3
+	fire_sound = 	'sound/weapons/guns/fire/mg34_firing.ogg'
 	force = 20
 	throwforce = 30
 	var/cover_open = FALSE
@@ -246,7 +240,7 @@
 	if (world.time - last_fire > 50)
 		jamcheck = 0
 	else
-		jamcheck += 0.2
+		jamcheck += 0.1
 
 	if (prob(jamcheck))
 		jammed_until = max(world.time + (jamcheck * 5), 50)
@@ -272,3 +266,22 @@
 	equiptimer = 25
 	load_delay = 50
 	slowdown = 0.8
+
+/obj/item/weapon/gun/projectile/automatic/negev
+	name = "IWI Negev"
+	desc = "An israeli machinegun chambered in 5.56x45mm NATO rounds."
+	icon_state = "negev"
+	item_state = "negev"
+	base_icon = "negev"
+	caliber = "a556x45"
+	magazine_type = /obj/item/ammo_magazine/negev
+	weight = 8
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=0.9, move_delay=7, dispersion = list(0.6, 1, 1.2, 1.3, 1.3), recoil = 2),)
+	slot_flags = 0
+	force = 20
+	nothrow = TRUE
+	throwforce = 30
+	equiptimer = 25
+	load_delay = 50
+	slowdown = 0.9

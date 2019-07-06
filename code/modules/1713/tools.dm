@@ -93,7 +93,7 @@
 
 /obj/item/weapon/shovel/attack_self(mob/user)
 	var/turf/floor/TB = get_turf(user)
-	var/display = list("Tunnel", "Grave", "Cancel")
+	var/display = list("Tunnel", "Grave", "Pit Latrine","Cancel")
 	var/input =  WWinput(user, "What do you want to dig?", "Digging", "Cancel", display)
 	if (input == "Cancel")
 		return
@@ -133,13 +133,28 @@
 			return
 		else
 			if (locate(/obj/structure/multiz) in user.loc)
-				user << "<span class='notice'>There is already a tunnel entrance here!</span>"
+				user << "<span class='notice'>There is a tunnel entrance here!</span>"
 				return
 			visible_message("[user] starts digging up a grave...","You start digging up a grave...")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
 			if (do_after(user, 100, src))
 				user << "You finish digging the grave."
 				new/obj/structure/religious/grave(user.loc)
+				return
+			else
+				return
+	else if  (input == "Pit Latrine")
+		if (istype(TB, /turf/open) || istype(TB, /turf/wall) || istype(TB, /turf/floor/wood) || istype(TB, /turf/floor/wood_broken) || istype(TB, /turf/floor/ship) || istype(TB, /turf/floor/carpet) || istype(TB, /turf/floor/broken_floor) || istype(TB, /turf/floor/plating/cobblestone) || istype(TB, /turf/floor/plating/concrete) || istype(TB, /turf/floor/plating/stone_old))
+			return
+		else
+			if (locate(/obj/structure/multiz) in user.loc)
+				user << "<span class='notice'>There is a tunnel entrance here!</span>"
+				return
+			visible_message("[user] starts digging up a pit latrine...","You start digging up a pit latrine...")
+			playsound(src,'sound/effects/shovelling.ogg',100,1)
+			if (do_after(user, 150, src))
+				user << "You finish digging the pit latrine."
+				new/obj/structure/toilet/pit_latrine(user.loc)
 				return
 			else
 				return

@@ -19,7 +19,9 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
-	equiptimer = 7
+	equiptimer = 5
+	gun_type = GUN_TYPE_PISTOL
+
 	accuracy_list = list(
 		// small body parts: head, hand, feet
 		"small" = list(

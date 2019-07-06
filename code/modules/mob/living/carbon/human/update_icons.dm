@@ -122,8 +122,8 @@ Please contact me on #coderbus IRC. ~Carn x
 #define HAIR_LAYER				15		//TODO: make part of head layer?
 #define EARS_LAYER				16
 #define FACEMASK_LAYER			17
-#define HEAD_LAYER				18
-#define COLLAR_LAYER			19
+#define COLLAR_LAYER			18
+#define HEAD_LAYER				19
 #define HANDCUFF_LAYER			20
 #define LEGCUFF_LAYER			21
 #define L_HAND_LAYER			22
@@ -131,7 +131,8 @@ Please contact me on #coderbus IRC. ~Carn x
 #define FIRE_LAYER				24		//If you're on fire
 #define TARGETED_LAYER			25		//BS12: Layer for the target overlay from weapon targeting system
 #define OVEREFFECTS_LAYER			26		//BS12: Layer for the target overlay from weapon targeting system
-#define TOTAL_LAYERS			26
+#define BANDAGES_LAYER			27
+#define TOTAL_LAYERS			27
 //////////////////////////////////
 
 /mob/living/carbon/human
@@ -205,7 +206,6 @@ var/global/list/damage_icon_parts = list()
 			damage_icon_parts[cache_index] = DI
 		else
 			DI = damage_icon_parts[cache_index]
-
 		standing_image.overlays += DI
 
 	overlays_standing[DAMAGE_LAYER]	= standing_image
@@ -436,6 +436,7 @@ var/global/list/damage_icon_parts = list()
 	update_inv_pockets(0)
 	update_fire(0)
 	update_surgery(0)
+	update_bandaging(0)
 	UpdateDamageIcon()
 	update_icons()
 
@@ -495,6 +496,17 @@ var/global/list/damage_icon_parts = list()
 		//need to append _s to the icon state for legacy compatibility
 		var/image/standing = image(icon = under_icon, icon_state = under_state)
 		standing.color = w_uniform.color
+		if (istype(w_uniform, /obj/item/clothing/under/customtribalrobe))
+			var/obj/item/clothing/under/customtribalrobe/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_decoration")
+				pants.color = CU.pantscolor
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robe")
+				shirt.color = CU.shirtcolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robebelt")
+				standing.overlays += pants
+				standing.overlays += shirt
+				standing.overlays += belt
 		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)
@@ -559,8 +571,12 @@ var/global/list/damage_icon_parts = list()
 				if (istype(A, /obj/item/clothing/accessory/custom))
 					NI.color = A.color
 				standing.overlays |= NI
-
-
+		if (under.shit_overlay)
+			var/shit = image("icon" = 'icons/mob/human_races/masks/sickness.dmi', "icon_state"="shit")
+			standing.overlays += shit
+		if (under.piss_overlay)
+			var/piss = image("icon" = 'icons/mob/human_races/masks/sickness.dmi', "icon_state"="piss")
+			standing.overlays += piss
 		overlays_standing[UNIFORM_LAYER]	= standing
 	else
 		overlays_standing[UNIFORM_LAYER]	= null
@@ -1095,19 +1111,33 @@ var/global/list/damage_icon_parts = list()
 	if (disease == TRUE)
 		if (disease_type == "plague")
 			if (disease_progression >= 1 && disease_progression < 90)
-				total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence1")
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence1")
 			else if (disease_progression >= 90 && disease_progression < 180)
-				total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence2")
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence2")
 			else if (disease_progression >= 180)
-				total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence3")
+				total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="human_pestilence3")
 	if (start_to_rot == TRUE)
 		if (rotting_stage == 1)
-			total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting1")
+			total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting1")
 		else if (rotting_stage == 2)
-			total = image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting2")
+			total.overlays += image(icon = 'icons/mob/human_races/masks/sickness.dmi', icon_state="rotting2")
+
 	overlays_standing[SURGERY_LEVEL] = total
 	if (update_icons)   update_icons()
 
+/mob/living/carbon/human/proc/update_bandaging(var/update_icons=1)
+	var/image/DD = image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="")
+	for (var/obj/item/organ/external/O in organs)
+		if (O.is_stump())
+			continue
+		if (O.wounds.len == 0)
+			continue
+		for (var/datum/wound/W in O.wounds)
+			if (W.bandaged || W.clamped || W.salved)
+				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")
+				continue
+	overlays_standing[COLLAR_LAYER] = DD
+	if (update_icons)   update_icons()
 //Human Overlays Indexes/////////
 #undef MUTATIONS_LAYER
 #undef DAMAGE_LAYER
@@ -1134,4 +1164,5 @@ var/global/list/damage_icon_parts = list()
 #undef TARGETED_LAYER
 #undef FIRE_LAYER
 #undef OVEREFFECTS_LAYER
+#undef BANDAGES_LAYER
 #undef TOTAL_LAYERS

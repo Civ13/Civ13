@@ -115,11 +115,11 @@
 	amount = amount*species.burn_mod
 	if (organ_name in organs_by_name)
 		var/obj/item/organ/external/O = get_organ(organ_name)
-
-		if (amount > 0)
-			O.take_damage(amount, amount, sharp=is_sharp(damage_source), edge=damage_source ? damage_source.edge : 0, used_weapon=damage_source)
-		else
-			O.heal_damage(-amount, -amount, internal=0,)
+		if (O)
+			if (amount > 0)
+				O.take_damage(amount, amount, sharp=is_sharp(damage_source), edge=damage_source ? damage_source.edge : 0, used_weapon=damage_source)
+			else
+				O.heal_damage(-amount, -amount, internal=0,)
 
 /mob/living/carbon/human/Stun(amount)
 	handle_zoom_stuff(1)
@@ -294,7 +294,7 @@ This function restores all organs.
 		zone = "head"
 	return organs_by_name[zone]
 
-/mob/living/carbon/human/apply_damage(var/damage = FALSE, var/damagetype = BRUTE, var/def_zone = null, var/blocked = FALSE, var/sharp = FALSE, var/edge = FALSE, var/obj/used_weapon = null)
+/mob/living/carbon/human/apply_damage(var/damage = FALSE, var/damagetype = BRUTE, var/def_zone = null, var/blocked = FALSE, var/obj/used_weapon = null, var/sharp = FALSE, var/edge = FALSE)
 
 	//visible_message("Hit debug. [damage] | [damagetype] | [def_zone] | [blocked] | [sharp] | [used_weapon]")
 

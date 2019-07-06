@@ -7,7 +7,7 @@
 	var/list/arms = list()
 	var/list/legs = list()
 
-	if (isliving(src))
+	if (ishuman(src))
 		var/mob/living/carbon/human/H = src
 		for (var/obj/item/organ/external/arm/A in H.organs)
 			++appendages

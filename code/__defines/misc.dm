@@ -1,26 +1,8 @@
 #define DEBUG
-/*
-// Turf-only flags.
-#define NOJAUNT 1 // This is used in literally one place, turf.dm, to block ethereal jaunt.
 
-#define TRANSITIONEDGE 7 // Distance from edge to move to another z-level.
-*/
+// Turf-only flags.
 // Some arbitrary defines to be used by self-pruning global lists. (see master_controller)
 #define PROCESS_KILL 26 // Used to trigger removal from a processing list.
-/*
-#define MAX_GEAR_COST 5 // Used in chargen for accessory loadout limit.
-*/
-// For secHUDs and medHUDs and variants. The number is the location of the image on the list hud_list of humans.
-#define      HEALTH_HUD 1 // A simple line rounding the mob's number health.
-#define      STATUS_HUD 2 // Alive, dead, diseased, etc.
-#define          ID_HUD 3 // The job asigned to your ID.
-#define      WANTED_HUD 4 // Wanted, released, paroled, security status.
-#define    IMPLOYAL_HUD 5 // Loyality implant.
-#define     IMPCHEM_HUD 6 // Chemical implant.
-#define    IMPTRACK_HUD 7 // Tracking implant.
-#define SPECIALROLE_HUD 8 // AntagHUD image.
-#define  STATUS_HUD_OOC 9 // STATUS_HUD without virus DB check for someone being ill.
-#define 	  LIFE_HUD 10 // STATUS_HUD that only reports dead or alive
 
 //some colors
 #define COLOR_WHITE            "#ffffff"
@@ -117,12 +99,6 @@
 // Special return values from bullet_act(). Positive return values are already used to indicate the blocked level of the projectile.
 #define PROJECTILE_CONTINUE   -1 //if the projectile should continue flying after calling bullet_act()
 #define PROJECTILE_FORCE_MISS -2 //if the projectile should treat the attack as a miss (suppresses attack and admin logs) - only applies to mobs.
-
-//Camera capture modes
-#define CAPTURE_MODE_REGULAR 0 //Regular polaroid camera mode
-#define CAPTURE_MODE_ALL 1 //Admin camera mode
-#define CAPTURE_MODE_PARTIAL 3 //Simular to regular mode, but does not do dummy check
-
 
 //HUD element hidings flags
 #define F12_FLAG 1 // 0001

@@ -1,7 +1,7 @@
 #define NO_WINNER "The round is proceeding normally."
 /obj/map_metadata/nomads_jungle
 	ID = MAP_NOMADS_JUNGLE
-	title = "Nomads (Jungle) (300x300x1)"
+	title = "Nomads (Jungle) (300x300x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 6000 // 10 minutes!
@@ -24,7 +24,7 @@
 	faction1 = CIVILIAN
 	availablefactions = list("Nomad")
 	songs = list(
-		"Empire Earth Intro:1" = 'sound/music/empire_earth_intro.ogg',)
+		"Empire Earth Intro:1" = 'sound/music/words_through_the_sky.ogg',)
 	research_active = TRUE
 	nomads = TRUE
 	gamemode = "Classic (Stone Age Start)"
