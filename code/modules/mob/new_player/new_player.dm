@@ -608,6 +608,8 @@
 	dat += "<b>Current Autobalance Status</b>: "
 	if (BRITISH in map.faction_organization)
 		dat += "[alive_british.len] British "
+	if (AMERICAN in map.faction_organization)
+		dat += "[alive_american.len] American "
 	if (PORTUGUESE in map.faction_organization)
 		dat += "[alive_portuguese.len] Portuguese "
 	if (FRENCH in map.faction_organization)

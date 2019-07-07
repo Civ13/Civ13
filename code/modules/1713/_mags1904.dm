@@ -281,6 +281,9 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	max_ammo = 8
 	weight = 0.02
 	multiple_sprites = TRUE
+/obj/item/ammo_magazine/walther/empty/New()
+	..()
+	stored_ammo.Cut()
 
 /obj/item/ammo_magazine/borchardt
 	name = "Borchardt magazine"

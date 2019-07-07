@@ -229,3 +229,26 @@
 		)
 
 	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/semiautomatic/m1garand
+	name = "M1garand"
+	desc = "An American semi-automatic rifle using .30-06 ammunition in a 8 round internal magazine."
+	icon_state = "m1garand"
+	item_state = "m1garand"
+	base_icon = "m1garand"
+	w_class = 4
+	load_method = SINGLE_CASING|SPEEDLOADER
+	max_shells = 8
+	caliber = "a3006"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	slot_flags = SLOT_BACK
+	ammo_type = /obj/item/ammo_casing/a3006
+	magazine_type = /obj/item/ammo_magazine/garand
+	weight = 4.9
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=2, fire_delay=2)
+		)
+	force = 10
+	throwforce = 20
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	effectiveness_mod = 1.05

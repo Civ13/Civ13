@@ -250,6 +250,19 @@
 	istop = FALSE
 /obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong
 
+/obj/structure/multiz/ladder/ww2/teleporter
+	name = "ladder"
+	desc = "A ladder.  You can climb it up and down."
+	icon_state = "ladderdown"
+	layer = 2.99 // below crates
+/obj/structure/multiz/ladder/ww2/teleporter/up
+	icon_state = "ladderup"
+	istop = FALSE
+/obj/structure/multiz/ladder/ww2/teleporter/find_target()
+	for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in ladder_list)
+		if (ladder_id == ladder.ladder_id && ladder != src)
+			return ladder
+
 /obj/structure/multiz/stairs
 	name = "Stairs"
 	icon_state = "rampup"
