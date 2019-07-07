@@ -415,12 +415,14 @@
 			if (input_msg == "No")
 				return
 			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
+				var/input_name = input(src, "Choose the new name: (Max 25 characters)","Custom Name", name) as text
+				input_name = sanitizeName(input_name, 25, FALSE)
+				if (input_name != "" && input_name)
 					name = input_name
 					real_name = input_name
-					return
+				if (!name || !real_name)
+					name = capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+					real_name = name
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
