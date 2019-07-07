@@ -24,6 +24,11 @@
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Gladiatorial Combat"
 	is_singlefaction = TRUE
+	var/list/gladiator_stats = list()
+obj/map_metadata/gladiators/New()
+	..()
+	load_gladiators()
+
 obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/roman))
@@ -40,5 +45,12 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/gladiators/cross_message(faction)
 	return "The gracewall is now removed."
 
-
+/obj/map_metadata/gladiators/proc/load_gladiators()
+	var/F = file("SQL/gladiator_stats.txt")
+	if (fexists(F))
+		var/list/temp_stats1 = file2list(F,"\n")
+		for (var/i in temp_stats1)
+			if (findtext(i, "||"))
+				var/list/temp_stats2 = splittext(i, "||")
+				gladiator_stats += list(temp_stats2[1],temp_stats2[2],temp_stats2[3])
 #undef NO_WINNER
