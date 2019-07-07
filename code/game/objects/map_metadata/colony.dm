@@ -49,6 +49,8 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 		. = FALSE
 	else if (J.is_nomad == TRUE)
 		. = FALSE
+	else if (J.is_cowboy == TRUE)
+		. = FALSE
 	else if (istype(J, /datum/job/indians))
 		if (istype(J, /datum/job/indians/tribes))
 			. = FALSE
