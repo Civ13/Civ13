@@ -399,18 +399,8 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
+	H.give_languages() //this will trigger the "give a custom name" proc
 	return TRUE
 
 
@@ -442,18 +432,7 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
 	return TRUE
 
 
@@ -493,18 +472,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_HIGH)
 	H.setStat("medical", STAT_NORMAL)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
 	return TRUE
 
 /datum/job/roman/emperor
@@ -541,16 +509,5 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_VERY_HIGH)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
 	return TRUE

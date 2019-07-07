@@ -408,6 +408,19 @@
 								name = input_name
 								real_name = input_name
 								return
+	else
+		spawn(10)
+		if (map.ID == MAP_GLADIATORS && client)
+			var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a gladiator named [name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
+			if (input_msg == "No")
+				return
+			else
+				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", name) as text
+				input_name = sanitizeName(input_name, 15, FALSE)
+				if (input_name != "")
+					name = input_name
+					real_name = input_name
+					return
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
