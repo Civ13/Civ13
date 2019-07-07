@@ -176,9 +176,9 @@ default behaviour is:
 	set name = "Succumb"
 	set desc = "Succumb to death."
 	set category = "IC"
-	adjustBrainLoss(300)
 	health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
 	if (map.civilizations || (getOxyLoss() + getToxLoss() + getFireLoss() + getBruteLoss() > 150))
+		adjustBrainLoss(300)
 		death()
 		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
 		return
