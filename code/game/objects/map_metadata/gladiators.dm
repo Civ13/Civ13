@@ -52,5 +52,20 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 		for (var/i in temp_stats1)
 			if (findtext(i, "||"))
 				var/list/temp_stats2 = splittext(i, "||")
-				gladiator_stats += list(temp_stats2[1],temp_stats2[2],temp_stats2[3])
+				gladiator_stats += list(temp_stats2[1],temp_stats2[2],temp_stats2[3],0)
+
+/obj/map_metadata/gladiators/proc/save_gladiators()
+	var/F = file("SQL/gladiator_stats.txt")
+	if (!gladiator_stats.len)
+		return
+	if (fexists(F))
+		fcopy("SQL/gladiator_stats.txt","SQL/gladiator_stats_backup.txt")
+		fdel(F)
+	for (var/i = 1, i <= gladiator_stats.len, i++)
+		if (gladiator_stats[i][4] == 0)
+			var/txtexport = list2text(gladiator_stats[i])
+			text2file(txtexport,F)
+	return
+
+
 #undef NO_WINNER

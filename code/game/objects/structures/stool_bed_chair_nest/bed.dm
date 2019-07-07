@@ -299,3 +299,34 @@
 /obj/structure/bed/saving
 
 /obj/structure/bed/saving/attack_hand(mob/living/carbon/human/user as mob)
+	if (!istype(user, /mob/living/carbon/human))
+		return
+	if (!user.client)
+		return
+	if (user.original_job_title != "Gladiator")
+		return
+	if ((user.getOxyLoss() + user.getToxLoss() + user.getFireLoss() + user.getBruteLoss() > 35))
+		user << "You are too damaged to save your character. Get surgery first."
+		return
+	var/choice = WWinput(user, "Do you want to save this character named [user.name]?", "Character Saving", "Yes", list("Yes","No"))
+	if (choice == "No")
+		return
+	else
+		var/done = FALSE
+		var/obj/map_metadata/gladiators/GD = null
+		if (istype(map, /obj/map_metadata/gladiators))
+			GD = map
+		if (!GD)
+			return
+		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+			if (GD.gladiator_stats[1][1] == user.client.ckey && GD.gladiator_stats[1][2] == user.name && !done)
+				(GD.gladiator_stats[1][3] = user.stats)
+				done = TRUE
+				GD.save_gladiators()
+				user << "Saved sucessfully."
+				return
+		if (done == FALSE)
+			GD.gladiator_stats += list(list(user.client.ckey, user.name, user.stats, 0))
+			GD.save_gladiators()
+			user << "Saved sucessfully."
+			return
