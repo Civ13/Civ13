@@ -413,6 +413,7 @@
 #include "code\modules\1713\complex_animal\wolf.dm"
 #include "code\modules\1713\jobs\_languages.dm"
 #include "code\modules\1713\jobs\_special.dm"
+#include "code\modules\1713\jobs\american.dm"
 #include "code\modules\1713\jobs\ancient.dm"
 #include "code\modules\1713\jobs\british.dm"
 #include "code\modules\1713\jobs\civ_factions.dm"
