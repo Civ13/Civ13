@@ -147,7 +147,7 @@
 "cQ" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/beach/sand,/area/caribbean/roman/arena1)
 "cR" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cS" = (/obj/covers/sandstone,/obj/structure/bed/chair/comfy/brown{icon_state = "chair_padding"; dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"cT" = (/obj/covers/sandstone,/obj/structure/railing,/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"cT" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cU" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/n1,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cV" = (/obj/covers/sandstone_wall,/obj/structure/sign/custom{name = "Arenas I and II"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cW" = (/obj/structure/simple_door/key_door/ancient/roman,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
@@ -191,6 +191,7 @@
 "dI" = (/obj/covers/sandstone,/obj/structure/mine_support,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "dJ" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "dK" = (/obj/covers/sandstone,/obj/structure/bed/chair/comfy/brown{icon_state = "chair_padding"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"dL" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/obj/structure/railing,/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -230,11 +231,11 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaacLcKafafafafakalalalakafafafafafafafafafafaLaMaPaQbC
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaccKafafadakaAaAaAaAaAakadasafbDafafafafafaIaQaQaQbCaQaQaQdyaLaQaQaQbRbJaQbJbRbJaQaLaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaaaaaaaLaQaQaLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafbDafaoaAaAaAaAaBaAaAaobAafafbDafafafafaIaRaMaQaQaQaQaQaQdzaQaQaQaQaQaQaQaQbJaQaIaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaaaaaaaIaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafaeaoaAaAaEaAcaaAcFaAaAaoakakakakafafafaIaIaIaLcddAdBdCdDaYaQaQaQaLbRbJaQaLbRbJaIaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaaaaaaaIaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacLafcMaDaAaAcHaAaAaAaAaAaAaocRafafcRcNafafdIaQaQaQaQaQaQaQaQaQaQaQaQbJbRaQaQaQbJaQaIbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVaaaaaaaIaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafcSaoaAcPaAcQaAaAaBaAaAaDafafafafcGafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbhaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaIaIaIaLaQaQaLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafbDaoaAaAaAaAaAaAaAaAaAcGafcOcTcTcUafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbdaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbhaQaQaQaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafaFaDaAaAaAaAaAaAaAaAaAaDafafafafcGafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbgaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbdaQaQaQaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaaacLafaCaoaAaAdcaAddaAdcaAaAaoafafafcRcXafafcVaIaIaLaIdIdIcVdIdIaIaIaLaIaIaIaLaQaQaLaIaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaIaQaQaLaIaIaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacLafcMaDaAaAcHaAaAaAaAaAaAalafafafafcNafafdIaQaQaQaQaQaQaQaQaQaQaQaQbJbRaQaQaQbJaQaIbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVaaaaaaaIaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafcSaoaAcPaAcQaAaAaBaAaAcGafafafafcGafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbhaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaIaIaIaLaQaQaLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafbDaoaAaAaAaAaAaAaAaAaAalcTafafdLcUafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbdaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbhaQaQaQaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafaFaDaAaAaAaAaAaAaAaAaAcGafafafafcGafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbgaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbdaQaQaQaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaacLafaCaoaAaAdcaAddaAdcaAaAalafafafafcXafafcVaIaIaLaIdIdIcVdIdIaIaIaLaIaIaIaLaQaQaLaIaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaIaQaQaLaIaIaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafasafaoaAaBcQaAaAaAaAaoakakakakakafafafafafafafafafafafafafafafafafafafaIaQaQaIaIbcbbaUbaaVbcbbaUbaaVbcbbaUbaaVbcbbaUbaaVaIaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaacbDafafadakdeaAaAaAaAakadafafafafafafafafafafafafafafafafafafafafafafafafaIaQaQaIaIaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaIaQaQaIaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaacafafafafafakalcWalakafafafafbDafafafafafafaeafafafcYcGcZcGdaafafaeafafafaIaQaQaIaIaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaLaQaQaLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

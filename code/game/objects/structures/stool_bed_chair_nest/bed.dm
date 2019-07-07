@@ -292,3 +292,10 @@
 	R.add_fingerprint(user)
 	qdel(held)
 	held = null
+
+
+///////////////////SAVING BEDS///////////////////////
+//For gladiator mode
+/obj/structure/bed/saving
+
+/obj/structure/bed/saving/attack_hand(mob/living/carbon/human/user as mob)
