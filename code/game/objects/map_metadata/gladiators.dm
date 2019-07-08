@@ -54,7 +54,7 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 		for (var/i = 1, i <= temp_stats1, i++)
 			if (findtext(temp_stats1[i], ";"))
 				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
-				gladiator_stats += list(temp_stats2[1],temp_stats2[2],temp_stats2[3],temp_stats2[4],temp_stats2[5])
+				gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],temp_stats2[4],temp_stats2[5]))
 		world << "Gladiator list loaded."
 		return TRUE
 	else
