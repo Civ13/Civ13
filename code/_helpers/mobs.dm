@@ -212,7 +212,7 @@ proc/random_ancient_name(gender, species = "Human")
 		current_species = all_species[species]
 
 	if (!current_species || current_species.name_language == null)
-		return capitalize(pick(ancient_names)) + " " + capitalize(pick(epithets))
+		return capitalize(pick(ancient_names)) + " " + pick(epithets)
 
 	else
 		return current_species.get_random_ancient_name(gender)

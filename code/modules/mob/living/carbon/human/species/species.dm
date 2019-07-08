@@ -323,7 +323,7 @@
 /datum/species/proc/get_random_ancient_name(var/gender, var/jew)
 	if (!name_language)
 
-		return capitalize(pick(ancient_names)) + " " + capitalize(pick(epithets))
+		return capitalize(pick(ancient_names)) + " " + pick(epithets)
 
 /datum/species/proc/get_random_arab_name(var/gender, var/jew)
 	if (!name_language)
