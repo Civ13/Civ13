@@ -182,7 +182,7 @@
 				var/list/vlist = list("Cancel")
 				for(var/mob/living/carbon/human/GLAD in world)
 					var/area/A = get_area(GLAD)
-					if (GLAD.original_job == "Gladiator" && GLAD.stat != DEAD && GLAD.client && A.name == arena_name)
+					if (GLAD.original_job_title == "Gladiator" && GLAD.stat != DEAD && GLAD.client && A.name == arena_name)
 						vlist += "[GLAD.name], [GLAD.client.ckey]"
 				var/choice = WWinput(user, "Who to assign a victory point to?", "Match Results", "Cancel", vlist)
 				if (choice == "Cancel" || vlist.len == 1)
