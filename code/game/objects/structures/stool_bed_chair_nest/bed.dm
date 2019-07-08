@@ -297,6 +297,7 @@
 ///////////////////SAVING BEDS///////////////////////
 //For gladiator mode
 /obj/structure/bed/saving
+	material = "wood"
 
 /obj/structure/bed/saving/attack_hand(mob/living/carbon/human/user as mob)
 	if (!istype(user, /mob/living/carbon/human))
