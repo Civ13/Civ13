@@ -5,8 +5,12 @@
 	faction = "Station"
 
 /datum/job/roman/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_roman_name()
-	H.real_name = H.name
+	if (title != "Gladiator")
+		H.name = H.species.get_random_roman_name()
+		H.real_name = H.name
+	else
+		H.name = H.species.get_random_ancient_name()
+		H.real_name = H.name
 
 /datum/job/roman/captain	//Roman - Centurion
 	title = "Centurion"
