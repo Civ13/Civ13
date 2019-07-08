@@ -213,6 +213,8 @@
 					if (!done)
 						GD.gladiator_stats += list(list(splitdata[1],splitdata[2],"0,0,0,0,0,0,0,0,0,0",0,1))
 					timer = world.time + 600
+					world << "<big>[splitdata[2]] was victorious!</big>"
+					GD.save_gladiators()
 			else
 				toplist = list()
 				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
