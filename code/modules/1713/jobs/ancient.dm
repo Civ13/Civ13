@@ -531,27 +531,28 @@
 					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
 						if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][2] == input_msg && GD.gladiator_stats[i][4] == 0)
 							name = GD.gladiator_stats[i][2]
+							real_name = name
 							var/statsplit = splittext(GD.gladiator_stats[i][3],",")
-							stats["strength"][1] = statsplit[1]
-							stats["strength"][2] = statsplit[1]
-							stats["crafting"][1] = statsplit[2]
-							stats["crafting"][2] = statsplit[2]
-							stats["rifle"][1] = statsplit[3]
-							stats["rifle"][2] = statsplit[3]
-							stats["dexterity"][1] = statsplit[4]
-							stats["dexterity"][2] = statsplit[4]
-							stats["swords"][1] = statsplit[5]
-							stats["swords"][2] = statsplit[5]
-							stats["pistol"][1] = statsplit[6]
-							stats["pistol"][2] = statsplit[6]
-							stats["bows"][1] = statsplit[7]
-							stats["bows"][2] = statsplit[7]
-							stats["medical"][1] = statsplit[8]
-							stats["medical"][2] = statsplit[8]
-							stats["philosophy"][1] = statsplit[9]
-							stats["philosophy"][2] = statsplit[9]
-							stats["mg"][1] = statsplit[10]
-							stats["mg"][2] = statsplit[10]
+							stats["strength"][1] = text2num(statsplit[1])
+							stats["strength"][2] = text2num(statsplit[1])
+							stats["crafting"][1] = text2num(statsplit[2])
+							stats["crafting"][2] = text2num(statsplit[2])
+							stats["rifle"][1] = text2num(statsplit[3])
+							stats["rifle"][2] = text2num(statsplit[3])
+							stats["dexterity"][1] = text2num(statsplit[4])
+							stats["dexterity"][2] = text2num(statsplit[4])
+							stats["swords"][1] = text2num(statsplit[5])
+							stats["swords"][2] = text2num(statsplit[5])
+							stats["pistol"][1] = text2num(statsplit[6])
+							stats["pistol"][2] = text2num(statsplit[6])
+							stats["bows"][1] = text2num(statsplit[7])
+							stats["bows"][2] = text2num(statsplit[7])
+							stats["medical"][1] = text2num(statsplit[8])
+							stats["medical"][2] = text2num(statsplit[8])
+							stats["philosophy"][1] = text2num(statsplit[9])
+							stats["philosophy"][2] = text2num(statsplit[9])
+							stats["mg"][1] = text2num(statsplit[10])
+							stats["mg"][2] = text2num(statsplit[10])
 							src << "<font size=2><b>Successfully loaded <b>[name]</b>.</font>"
 							return
 			if (done == FALSE)

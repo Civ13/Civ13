@@ -167,7 +167,6 @@
 "dk" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/beach/sand,/area/caribbean/roman/arena2)
 "dl" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/beach/sand,/area/caribbean/roman/arena2)
 "dm" = (/obj/structure/sign/traffic/side{icon_state = "sideline"; dir = 1},/turf/floor/beach/sand,/area/caribbean/roman/arena2)
-"dn" = (/obj/structure/sign/traffic/central,/turf/floor/beach/sand,/area/caribbean/roman/arena2)
 "do" = (/obj/covers/sandstone,/obj/structure/table/rack,/obj/item/clothing/suit/armor/ancient/linen,/obj/item/clothing/suit/armor/ancient/linen,/obj/item/clothing/suit/armor/ancient/linen,/obj/item/clothing/suit/armor/ancient/linen,/obj/item/clothing/suit/armor/ancient/linen,/obj/item/clothing/suit/armor/ancient/linen,/obj/item/clothing/suit/armor/ancient/linen,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "dp" = (/obj/covers/sandstone,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "dq" = (/obj/covers/sandstone,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
@@ -255,7 +254,7 @@ aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbibjbibjbibjbibjaGbjbrbrbsbsbtafafasaFaodfdf
 aaaaaaaaaaaaaaaaaadbbybybyaLbybybybyaIaIaLaIaIaIaLaIaIaIaLaIaIaIaLafafbDaCaDdfdfdfdfdfdfdfdfdfaDbDafafabdbdbdbbFcAbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIcBbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafaodfdfdmdfdmdfdmdfdfaoafafafabdbdbdbbEcCcDdodpdqbNbLdrdsdtducBcAcCcDdodpdqbQbOdrdsdtdubEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbadafafafbDafaodfdfdldgdfdfdfaoafafafafaddbdbdbbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafbDafafadakdndfdfdfdfakadafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafbDafafadakdfdfdfdfdfakadafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafafbDakalalalakafbDafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafafafafafafafbDafafafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbadafafafafafafafafafafafafafafafafafafaddbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
