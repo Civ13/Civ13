@@ -205,6 +205,18 @@ proc/random_roman_name(gender, species = "Human")
 	else
 		return current_species.get_random_roman_name(gender)
 
+// a mix of celtic, roman, thracian, germanic, etc names, for gladiators
+proc/random_ancient_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		return capitalize(pick(ancient_names)) + " " + pick(epithets)
+
+	else
+		return current_species.get_random_ancient_name(gender)
+
 
 proc/random_arab_name(gender, species = "Human")
 	var/datum/species/current_species

@@ -33,10 +33,13 @@
 obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/civilian))
-		if (J.is_civilizations)
+		. = TRUE
+		if (J.is_nomad == TRUE)
 			. = FALSE
-		else
-			. = TRUE
+		if (J.is_cowboy == TRUE)
+			. = FALSE
+		if (J.is_civilizations == TRUE)
+			. = FALSE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
 	else if (J.is_medieval == TRUE)
@@ -46,10 +49,6 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 	else if (J.is_army == TRUE)
 		. = FALSE
 	else if (J.is_marooned == TRUE)
-		. = FALSE
-	else if (J.is_nomad == TRUE)
-		. = FALSE
-	else if (J.is_cowboy == TRUE)
 		. = FALSE
 	else if (istype(J, /datum/job/indians))
 		if (istype(J, /datum/job/indians/tribes))
