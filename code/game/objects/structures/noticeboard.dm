@@ -186,7 +186,7 @@
 					if (GLAD.original_job == "Gladiator" && GLAD.stat != DEAD && GLAD.client)
 						vlist += "[GLAD.name], [GLAD.client.ckey]"
 				var/choice = WWinput(H, "Who to assign a victory point to?", "Match Results", "Cancel", vlist)
-				if (choice == "Cancel")
+				if (choice == "Cancel" || vlist.len == 1)
 					var/list/toplist = list()
 					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
 						toplist += list(list(GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4], GD.gladiator_stats[i][5]))

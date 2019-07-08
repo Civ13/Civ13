@@ -460,9 +460,8 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_decurion(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/whip(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, guarding the arena. Keep the gladiators organized and following the rules, while protecting the Emperor!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_HIGH)

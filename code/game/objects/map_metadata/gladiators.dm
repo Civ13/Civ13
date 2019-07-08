@@ -24,6 +24,7 @@
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Gladiatorial Combat"
 	is_singlefaction = TRUE
+	valid_weather_types = list(WEATHER_NONE)
 	var/list/gladiator_stats = list()
 obj/map_metadata/gladiators/New()
 	..()
