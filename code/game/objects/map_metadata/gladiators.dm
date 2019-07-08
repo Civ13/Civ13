@@ -48,17 +48,14 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 /obj/map_metadata/gladiators/proc/load_gladiators()
 	var/F = file("SQL/gladiator_stats.txt")
 	if (fexists(F))
-		world << "Gladiator list found, loading..."
 		var/list/temp_stats1 = file2list(F,"\n")
 		gladiator_stats = list()
 		for (var/i = 1, i <= temp_stats1, i++)
 			if (findtext(temp_stats1[i], ";"))
 				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
 				gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],temp_stats2[4],temp_stats2[5]))
-		world << "Gladiator list loaded."
 		return TRUE
 	else
-		world << "Gladiator list not found!"
 		return FALSE
 
 /obj/map_metadata/gladiators/proc/save_gladiators()
