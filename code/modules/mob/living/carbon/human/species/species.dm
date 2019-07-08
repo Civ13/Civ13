@@ -320,6 +320,10 @@
 	if (!name_language)
 		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 							//some useless code removed
+/datum/species/proc/get_random_ancient_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(ancient_names)) + " " + pick(epithets)
 
 /datum/species/proc/get_random_arab_name(var/gender, var/jew)
 	if (!name_language)

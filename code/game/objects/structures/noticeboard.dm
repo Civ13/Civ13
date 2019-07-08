@@ -249,3 +249,31 @@
 			usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 	else
 		return
+
+
+/obj/structure/gladiator_ledger/examine(mob/user)
+	..()
+	if (in_range(user, src) || isghost(user))
+		show_content(usr)
+	return
+
+/obj/structure/gladiator_ledger/proc/show_content(mob/user as mob)
+	if (map.ID == MAP_GLADIATORS)
+		var/obj/map_metadata/gladiators/GD = map
+		toplist = list()
+		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+			toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4]))
+		var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
+		for (var/i = 1, i <= toplist.len, i++)
+			if (toplist[i][1]>0)
+				if (toplist[i][4] == 0)
+					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: [toplist[i][1]] victories.</br>"
+				else
+					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][1]] victories.</br>"
+		body += {"<br>
+			</body></html>
+		"}
+
+		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+	else
+		return
