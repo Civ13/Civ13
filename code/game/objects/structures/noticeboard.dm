@@ -221,10 +221,11 @@
 
 				var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
 				for (var/i = 1, i <= toplist.len, i++)
-					if (toplist[i][3] == 0 && toplist[i][4]>0)
-						body += "<b>[toplist[i][2]]</b> ([toplist[i][1]])</b>: [toplist[i][4]] victories.</br>"
-					else
-						body += "<b>[toplist[i][2]]</b> ([toplist[i][1]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][4]] victories.</br>"
+					if (toplist[i][4]>0)
+						if (toplist[i][3] == 0)
+							body += "<b>[toplist[i][2]]</b> ([toplist[i][1]])</b>: [toplist[i][4]] victories.</br>"
+						else
+							body += "<b>[toplist[i][2]]</b> ([toplist[i][1]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][4]] victories.</br>"
 				body += {"<br>
 					</body></html>
 				"}
@@ -237,10 +238,11 @@
 
 			var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
 			for (var/i = 1, i <= toplist.len, i++)
-				if (toplist[i][3] == 0 && toplist[i][4]>0)
-					body += "<b>[toplist[i][2]]</b> ([toplist[i][1]])</b>: [toplist[i][4]] victories.</br>"
-				else
-					body += "<b>[toplist[i][2]]</b> ([toplist[i][1]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][4]] victories.</br>"
+				if (toplist[i][4]>0)
+					if (toplist[i][3] == 0)
+						body += "<b>[toplist[i][2]]</b> ([toplist[i][1]])</b>: [toplist[i][4]] victories.</br>"
+					else
+						body += "<b>[toplist[i][2]]</b> ([toplist[i][1]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][4]] victories.</br>"
 			body += {"<br>
 				</body></html>
 			"}
