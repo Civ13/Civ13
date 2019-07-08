@@ -24,6 +24,7 @@
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Gladiatorial Combat"
 	is_singlefaction = TRUE
+	valid_weather_types = list(WEATHER_NONE)
 	var/list/gladiator_stats = list()
 obj/map_metadata/gladiators/New()
 	..()
@@ -49,8 +50,26 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 	var/F = file("SQL/gladiator_stats.txt")
 	if (fexists(F))
 		var/list/temp_stats1 = file2list(F,"\n")
-		for (var/i in temp_stats1)
-			if (findtext(i, "||"))
-				var/list/temp_stats2 = splittext(i, "||")
-				gladiator_stats += list(temp_stats2[1],temp_stats2[2],temp_stats2[3])
+		gladiator_stats = list()
+		for (var/i = 1, i <= temp_stats1, i++)
+			if (findtext(temp_stats1[i], ";"))
+				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
+				gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],text2num(temp_stats2[4]),text2num(temp_stats2[5])))
+		return TRUE
+	else
+		return FALSE
+
+/obj/map_metadata/gladiators/proc/save_gladiators()
+	var/F = file("SQL/gladiator_stats.txt")
+	if (!gladiator_stats.len)
+		return
+	if (fexists(F))
+		fcopy("SQL/gladiator_stats.txt","SQL/gladiator_stats_backup.txt")
+		fdel(F)
+	for (var/i = 1, i <= gladiator_stats.len, i++)
+		var/txtexport = list2text(gladiator_stats[i])
+		text2file(txtexport,F)
+	return
+
+
 #undef NO_WINNER

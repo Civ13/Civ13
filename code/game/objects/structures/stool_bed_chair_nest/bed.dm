@@ -297,5 +297,41 @@
 ///////////////////SAVING BEDS///////////////////////
 //For gladiator mode
 /obj/structure/bed/saving
+	material = "wood"
 
 /obj/structure/bed/saving/attack_hand(mob/living/carbon/human/user as mob)
+	if (!istype(user, /mob/living/carbon/human))
+		return
+	if (!user.client)
+		return
+	if (user.original_job_title != "Gladiator")
+		return
+	if ((user.getOxyLoss() + user.getToxLoss() + user.getFireLoss() + user.getBruteLoss() > 35))
+		user << "You are too damaged to save your character. Get surgery first."
+		return
+	var/choice = WWinput(user, "Do you want to save this character named [user.name]?", "Character Saving", "Yes", list("Yes","No"))
+	if (choice == "No")
+		return
+	else
+		var/done = FALSE
+		var/obj/map_metadata/gladiators/GD = null
+		if (istype(map, /obj/map_metadata/gladiators))
+			GD = map
+		if (!GD)
+			return
+		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+			if (GD.gladiator_stats[1][1] == user.client.ckey && GD.gladiator_stats[1][2] == user.name && !done)
+				var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
+				GD.gladiator_stats[1][3] = statlist
+				done = TRUE
+				GD.save_gladiators()
+				qdel(user)
+				user << "Saved sucessfully."
+				return
+		if (done == FALSE)
+			var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
+			GD.gladiator_stats += list(list(user.client.ckey, user.name, statlist, 0,0))
+			GD.save_gladiators()
+			qdel(user)
+			user << "Saved sucessfully."
+			return

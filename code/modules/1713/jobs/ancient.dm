@@ -400,7 +400,7 @@
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
 	give_random_name(H)
-	H.give_languages() //this will trigger the "give a custom name" proc
+	H.check_profiles() //this will trigger the "give a custom name" proc
 	return TRUE
 
 
@@ -460,9 +460,8 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_decurion(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/whip(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, guarding the arena. Keep the gladiators organized and following the rules, while protecting the Emperor!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_HIGH)
@@ -498,6 +497,7 @@
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga/purple(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/laurelcrown(H), slot_head)
 
 	H.add_note("Role", "You are the <b>[title]</b>. Organize the games!")
@@ -511,3 +511,60 @@
 	H.setStat("medical", STAT_VERY_HIGH)
 	give_random_name(H)
 	return TRUE
+
+/mob/living/carbon/human/proc/check_profiles()
+	spawn(10)
+		if (map.ID == MAP_GLADIATORS && client)
+			var/obj/map_metadata/gladiators/GD = map
+			var/done = FALSE
+			var/list/loadinglist = list("Cancel")
+			if (GD.gladiator_stats.len && client)
+				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+					if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][4] == 0)
+						loadinglist += GD.gladiator_stats[i][2]
+						done = TRUE
+			if (done == TRUE)
+				var/input_msg = WWinput(src, "Welcome, [client.ckey]. Do you want to load any of your Gladiators?", "Load Gladiators", "Cancel", loadinglist)
+				if (input_msg == "Cancel")
+					done = FALSE
+				else
+					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+						if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][2] == input_msg && GD.gladiator_stats[i][4] == 0)
+							name = GD.gladiator_stats[i][2]
+							real_name = name
+							var/statsplit = splittext(GD.gladiator_stats[i][3],",")
+							stats["strength"][1] = text2num(statsplit[1])
+							stats["strength"][2] = text2num(statsplit[1])
+							stats["crafting"][1] = text2num(statsplit[2])
+							stats["crafting"][2] = text2num(statsplit[2])
+							stats["rifle"][1] = text2num(statsplit[3])
+							stats["rifle"][2] = text2num(statsplit[3])
+							stats["dexterity"][1] = text2num(statsplit[4])
+							stats["dexterity"][2] = text2num(statsplit[4])
+							stats["swords"][1] = text2num(statsplit[5])
+							stats["swords"][2] = text2num(statsplit[5])
+							stats["pistol"][1] = text2num(statsplit[6])
+							stats["pistol"][2] = text2num(statsplit[6])
+							stats["bows"][1] = text2num(statsplit[7])
+							stats["bows"][2] = text2num(statsplit[7])
+							stats["medical"][1] = text2num(statsplit[8])
+							stats["medical"][2] = text2num(statsplit[8])
+							stats["philosophy"][1] = text2num(statsplit[9])
+							stats["philosophy"][2] = text2num(statsplit[9])
+							stats["mg"][1] = text2num(statsplit[10])
+							stats["mg"][2] = text2num(statsplit[10])
+							src << "<font size=2><b>Successfully loaded <b>[name]</b>.</font>"
+							return
+			if (done == FALSE)
+				var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a gladiator named [name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
+				if (input_msg == "No")
+					return
+				else
+					var/input_name = input(src, "Choose the new name: (Max 25 characters)","Custom Name", name) as text
+					input_name = sanitizeName(input_name, 25, FALSE)
+					if (input_name != "" && input_name)
+						name = input_name
+						real_name = input_name
+					if (!name || !real_name)
+						name = capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+						real_name = name

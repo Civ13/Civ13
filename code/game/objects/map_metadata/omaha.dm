@@ -1,5 +1,5 @@
 /obj/map_metadata/omaha
-	ID = MAP_REICHSTAG
+	ID = MAP_OMAHA
 	title = "Reichstag (100x100x1)"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
