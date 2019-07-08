@@ -160,3 +160,74 @@
 			return
 
 	..()
+
+/obj/structure/gladiator_ledger
+	name = "gladiatorial ledger"
+	desc = "A board showing the victories of all gladiators."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "nboard00"
+	density = FALSE
+	anchored = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/arena_name = "Arena I"
+	var/timer = 0
+/obj/structure/gladiator_ledger/attack_hand(mob/user as mob)
+	if (map.ID == MAP_GLADIATORS)
+		var/obj/map_metadata/gladiators/GD = map
+		if (istype(user, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = user
+			if (H.original_job == "Imperator" && timer <= world.time)
+				var/vlist = list("Cancel")
+				var/area/A = get_area_name("[arena_name]")
+				if (!A)
+					return
+				for(var/mob/living/carbon/human/GLAD in A)
+					if (GLAD.original_job == "Gladiator" && GLAD.stat != DEAD && GLAD.client)
+						vlist += "[GLAD.name], [GLAD.client.ckey]"
+				var/choice = WWinput(H, "Who to assign a victory point to?", "Match Results", "Cancel", vlist)
+				if (choice == "Cancel")
+					var/list/toplist = list()
+					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+						toplist += list(list(GD.gladiator_stats[1], GD.gladiator_stats[2], GD.gladiator_stats[4], GD.gladiator_stats[5]))
+
+					var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
+					for (var/i = 1, i <= toplist.len, i++)
+						if (toplist[3] == 0 && toplist[4]>0)
+							body += "<b>[toplist[2]]</b> ([toplist[1]])</b>: [toplist[4]] victories.</br>"
+						else
+							body += "<b>[toplist[2]]</b> ([toplist[1]]) <font color='red'><i>DECEASED</i></font>: [toplist[4]] victories.</br>"
+					body += {"<br>
+						</body></html>
+					"}
+
+					usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+				else
+					var/list/splitdata = splittext(choice, ", ")
+					var/done = FALSE
+					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+						if (GD.gladiator_stats[i][1] == splitdata[1] && GD.gladiator_stats[i][2] == splitdata[2] && GD.gladiator_stats[i][4] == 0)
+							GD.gladiator_stats[i][5]++
+							done = TRUE
+							continue
+					if (!done)
+						GD.gladiator_stats += list(list(splitdata[1],splitdata[2],"0,0,0,0,0,0,0,0,0,0",0,1))
+					timer = world.time + 600
+		else
+			var/list/toplist = list()
+			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+				toplist += list(list(GD.gladiator_stats[1], GD.gladiator_stats[2], GD.gladiator_stats[4], GD.gladiator_stats[5]))
+
+			var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
+			for (var/i = 1, i <= toplist.len, i++)
+				if (toplist[3] == 0)
+					body += "<b>[toplist[2]]</b> ([toplist[1]])</b>: [toplist[4]] victories.</br>"
+				else
+					body += "<b>[toplist[2]]</b> ([toplist[1]]) <font color='red'><i>DECEASED</i></font>: [toplist[4]] victories.</br>"
+			body += {"<br>
+				</body></html>
+			"}
+
+			usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+	else
+		return

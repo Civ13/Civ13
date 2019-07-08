@@ -139,6 +139,7 @@
 			maps = list(
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
+				MAP_GLADIATORS = 0,
 			)
 		if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM
