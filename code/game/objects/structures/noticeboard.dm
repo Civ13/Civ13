@@ -180,11 +180,9 @@
 			var/mob/living/carbon/human/H = user
 			if (H.original_job_title == "Imperator" && timer <= world.time)
 				var/list/vlist = list("Cancel")
-				var/area/A = get_area_name("[arena_name]")
-				if (!A)
-					return
-				for(var/mob/living/carbon/human/GLAD in get_area_turfs(A))
-					if (GLAD.original_job == "Gladiator" && GLAD.stat != DEAD && GLAD.client)
+				for(var/mob/living/carbon/human/GLAD in world)
+					var/area/A = get_area(GLAD)
+					if (GLAD.original_job == "Gladiator" && GLAD.stat != DEAD && GLAD.client && A.name == arena_name)
 						vlist += "[GLAD.name], [GLAD.client.ckey]"
 				var/choice = WWinput(user, "Who to assign a victory point to?", "Match Results", "Cancel", vlist)
 				if (choice == "Cancel" || vlist.len == 1)
