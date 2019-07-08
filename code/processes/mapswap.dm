@@ -393,3 +393,23 @@
 		map.cive_research = list(customresearch,customresearch,customresearch,null)
 		map.civf_research = list(customresearch,customresearch,customresearch,null)
 		return
+	else if (vote.voted_gamemode == "WW2 Age (No Research)")
+		world << "<big>Starting <b>WW2 Age</b> mode. Game Epoch is the WW2 Age, research inactive.</big>"
+		map.ordinal_age = 6
+		map.age = "1943"
+		map.age1_done = TRUE
+		map.age2_done = TRUE
+		map.age3_done = TRUE
+		map.age4_done = TRUE
+		map.age5_done = TRUE
+		map.age6_done = TRUE
+		map.research_active = FALSE
+		var/customresearch = 152
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return
