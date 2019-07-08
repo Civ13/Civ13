@@ -202,7 +202,7 @@
 						</body></html>
 					"}
 
-					usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+					usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 				else
 					var/list/splitdata = splittext(choice, ", ")
 					var/done = FALSE
@@ -230,7 +230,7 @@
 					</body></html>
 				"}
 
-				usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+				usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 		else
 			var/list/toplist = list()
 			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
@@ -247,6 +247,6 @@
 				</body></html>
 			"}
 
-			usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+			usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 	else
 		return
