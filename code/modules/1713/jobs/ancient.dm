@@ -497,6 +497,7 @@
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga/purple(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/laurelcrown(H), slot_head)
 
 	H.add_note("Role", "You are the <b>[title]</b>. Organize the games!")
