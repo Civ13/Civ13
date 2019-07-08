@@ -177,7 +177,7 @@
 		var/obj/map_metadata/gladiators/GD = map
 		if (istype(user, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = user
-			if (H.original_job == "Imperator" && timer <= world.time)
+			if (H.original_job_title == "Imperator" && timer <= world.time)
 				var/vlist = list("Cancel")
 				var/area/A = get_area_name("[arena_name]")
 				if (!A)
