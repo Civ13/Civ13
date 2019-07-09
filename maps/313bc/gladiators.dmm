@@ -12,7 +12,7 @@
 "al" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/flag/red2,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "am" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "an" = (/obj/structure/sign/traffic/central,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"ao" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_v,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"ao" = (/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "ap" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 8},/turf/floor/beach/sand,/area/caribbean/forest/dirt)
 "aq" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "ar" = (/obj/structure/sign/traffic/central{icon_state = "centralline"; dir = 1},/turf/floor/beach/sand,/area/caribbean/forest/dirt)
@@ -27,7 +27,7 @@
 "aA" = (/turf/floor/beach/sand,/area/caribbean/roman/arena1)
 "aB" = (/turf/floor/beach/sand/dark,/area/caribbean/roman/arena1)
 "aC" = (/obj/covers/sandstone,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"aD" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_v,/obj/structure/sign/flag/red2,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"aD" = (/obj/covers/sandstone,/obj/structure/gladiator_control{layer = 3.1},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/roman/arena1)
 "aE" = (/obj/structure/sign/traffic/side,/turf/floor/beach/sand/dark,/area/caribbean/roman/arena1)
 "aF" = (/obj/covers/sandstone,/obj/structure/sink/well,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "aG" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateROM"},/turf/floor/dirt,/area/caribbean/houses)
@@ -79,7 +79,7 @@
 "bA" = (/obj/covers/sandstone,/obj/structure/sink/well,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "bB" = (/obj/covers/sandstone_wall,/obj/structure/sign/custom{name = "Training Grounds"},/turf/floor/dirt,/area/caribbean/houses)
 "bC" = (/obj/covers/sandstone,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/turf/floor/beach/sand/dark,/area/caribbean/houses)
-"bD" = (/obj/covers/sandstone,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"bD" = (/obj/covers/sandstone,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/structure/table/wood,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "bE" = (/obj/covers/sandstone_wall,/turf/floor/dirt,/area/caribbean/roman/armory)
 "bF" = (/obj/covers/sandstone_wall,/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt,/area/caribbean/roman/armory)
 "bG" = (/obj/covers/sandstone,/obj/structure/simple_door/sandstone,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
@@ -115,11 +115,13 @@
 "ck" = (/obj/covers/sandstone,/obj/item/clothing/under/custom/spartan,/obj/item/clothing/under/custom/spartan,/obj/item/clothing/under/custom/spartan,/obj/item/clothing/under/custom/spartan,/obj/item/clothing/under/custom/spartan,/obj/item/clothing/under/custom/celtic,/obj/item/clothing/under/custom/celtic,/obj/item/clothing/under/custom/celtic,/obj/item/clothing/under/custom/celtic,/obj/item/clothing/under/custom/celtic,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cl" = (/obj/covers/sandstone,/obj/item/clothing/suit/armor/medieval/leather,/obj/item/clothing/suit/armor/medieval/leather,/obj/item/clothing/suit/armor/medieval/leather,/obj/item/clothing/suit/armor/medieval/leather,/obj/item/clothing/suit/armor/medieval/leather,/obj/item/clothing/suit/armor/medieval/leather,/obj/item/clothing/suit/armor/medieval/leather,/obj/item/clothing/suit/armor/medieval/leather,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cm" = (/obj/covers/sandstone,/obj/structure/table/rack,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/obj/item/ammo_casing/arrow,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
+"cn" = (/obj/structure/bed/chair/comfy/brown{dir = 1; icon_state = "chair_padding"},/turf/floor/carpet/redcarpet,/area/caribbean/forest/dirt)
 "co" = (/obj/covers/sandstone,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/item/clothing/suit/armor/medieval/iron_chestplate,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cp" = (/obj/covers/sandstone,/obj/item/clothing/under/custom/roman,/obj/item/clothing/under/custom/roman,/obj/item/clothing/under/custom/roman,/obj/item/clothing/under/custom/roman,/obj/item/clothing/under/custom/shendyt,/obj/item/clothing/under/custom/shendyt,/obj/item/clothing/under/custom/shendyt,/obj/item/clothing/under/custom/shendyt,/obj/item/clothing/under/custom/shendyt,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cq" = (/obj/covers/sandstone,/obj/item/flashlight/lantern/on/anchored,/obj/structure/barricade/wood_pole,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cr" = (/obj/covers/sandstone,/obj/item/clothing/under/custom/toga,/obj/item/clothing/under/custom/toga,/obj/item/clothing/under/custom/toga,/obj/item/clothing/under/custom/toga,/obj/item/clothing/under/custom/toga,/obj/item/clothing/under/customtribalrobe,/obj/item/clothing/under/customtribalrobe,/obj/item/clothing/under/customtribalrobe,/obj/item/clothing/under/customtribalrobe,/obj/item/clothing/under/customtribalrobe,/obj/item/clothing/under/customtribalrobe,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cs" = (/obj/covers/sandstone,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/item/clothing/suit/armor/medieval/chainmail,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
+"ct" = (/obj/covers/sandstone,/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cu" = (/obj/covers/sandstone,/obj/item/clothing/suit/armor/medieval/hauberk,/obj/item/clothing/suit/armor/medieval/hauberk,/obj/item/clothing/suit/armor/medieval/hauberk,/obj/item/clothing/suit/armor/medieval/hauberk,/obj/item/clothing/suit/armor/medieval/hauberk,/obj/item/clothing/suit/armor/medieval/hauberk,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cv" = (/obj/covers/sandstone,/obj/item/clothing/under/custom/tunic,/obj/item/clothing/under/custom/tunic,/obj/item/clothing/under/custom/tunic,/obj/item/clothing/under/custom/tunic,/obj/item/clothing/under/custom/tunic,/obj/item/clothing/under/custom/tunic,/obj/item/clothing/under/custom/arabictunic,/obj/item/clothing/under/custom/arabictunic,/obj/item/clothing/under/custom/arabictunic,/obj/item/clothing/under/custom/arabictunic,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "cw" = (/obj/covers/sandstone,/obj/structure/table/rack,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/obj/item/ammo_casing/stone,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
@@ -138,13 +140,13 @@
 "cJ" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateROG"},/turf/floor/dirt,/area/caribbean/forest/dirt)
 "cK" = (/obj/covers/sandstone,/obj/effect/landmark{name = "JoinLateROG"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cL" = (/obj/covers/sandstone_wall,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"cM" = (/obj/covers/sandstone,/obj/structure/closet/crate/rations/fruits,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"cM" = (/obj/structure/closet/crate/rations/fruits,/turf/floor/carpet/redcarpet,/area/caribbean/forest/dirt)
 "cN" = (/obj/structure/sign/custom{name = "Arena I ENTRANCE"},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cO" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cP" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/beach/sand,/area/caribbean/roman/arena1)
 "cQ" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/beach/sand,/area/caribbean/roman/arena1)
 "cR" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"cS" = (/obj/covers/sandstone,/obj/structure/bed/chair/comfy/brown{icon_state = "chair_padding"; dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"cS" = (/obj/covers/sandstone,/obj/structure/gladiator_control{layer = 3.1},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/roman/arena2)
 "cT" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cU" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/n1,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cV" = (/obj/covers/sandstone_wall,/obj/structure/sign/custom{name = "Arenas I and II"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
@@ -156,7 +158,6 @@
 "db" = (/turf/wall/indestructable/black,/area/caribbean/forest/dirt)
 "dc" = (/obj/structure/sign/traffic/side{icon_state = "sideline"; dir = 1},/turf/floor/beach/sand,/area/caribbean/roman/arena1)
 "dd" = (/obj/structure/sign/traffic/side{icon_state = "sideline"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/roman/arena1)
-"de" = (/obj/structure/sign/traffic/central,/turf/floor/beach/sand,/area/caribbean/roman/arena1)
 "df" = (/turf/floor/beach/sand,/area/caribbean/roman/arena2)
 "dg" = (/turf/floor/dirt/dust,/area/caribbean/roman/arena2)
 "dh" = (/obj/structure/sign/traffic/side,/turf/floor/beach/sand,/area/caribbean/roman/arena2)
@@ -170,6 +171,7 @@
 "dp" = (/obj/covers/sandstone,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/item/weapon/material/knife,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "dq" = (/obj/covers/sandstone,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/item/weapon/material/naginata,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "dr" = (/obj/covers/sandstone,/obj/item/weapon/material/scythe,/obj/item/weapon/material/scythe,/obj/item/weapon/material/scythe,/obj/item/weapon/material/scythe,/obj/item/weapon/material/scythe,/obj/item/weapon/material/scythe,/obj/structure/table/rack,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
+"ds" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/structure/gladiator_ledger,/turf/floor/carpet/redcarpet,/area/caribbean/forest/dirt)
 "dt" = (/obj/covers/sandstone,/obj/structure/table/rack,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "du" = (/obj/covers/sandstone,/obj/structure/table/rack,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/obj/item/weapon/material/pilum,/turf/floor/beach/sand/dark,/area/caribbean/roman/armory)
 "dv" = (/obj/structure/functions/clean_arena1,/turf/floor/dirt,/area/caribbean/roman/arena1)
@@ -187,11 +189,16 @@
 "dH" = (/obj/structure/skeleton_deactivator,/turf/floor/dirt,/area/caribbean/admin)
 "dI" = (/obj/covers/sandstone,/obj/structure/mine_support,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "dJ" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"dK" = (/obj/covers/sandstone,/obj/structure/bed/chair/comfy/brown{icon_state = "chair_padding"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"dK" = (/obj/covers/sandstone,/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "dL" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/obj/structure/railing,/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"dM" = (/obj/covers/sandstone,/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/obj/structure/gladiator_ledger,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"dM" = (/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/forest/dirt)
 "dN" = (/obj/covers/sandstone,/obj/structure/gladiator_ledger{layer = 3.1},/obj/structure/barricade/ship/mast,/turf/floor/beach/sand/dark,/area/caribbean/houses)
-"dO" = (/obj/covers/sandstone,/obj/structure/gladiator_ledger{arena_name = "Arena II"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"dO" = (/obj/covers/sandstone,/obj/structure/window/sandbag/railing,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"dP" = (/obj/structure/gladiator_ledger{arena_name = "Arena II"},/obj/item/weapon/attachment/scope/adjustable/binoculars/small,/turf/floor/carpet/redcarpet,/area/caribbean/forest/dirt)
+"dQ" = (/obj/covers/sandstone,/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"dS" = (/obj/structure/bed/chair/comfy/brown{icon_state = "chair_padding"; dir = 8},/turf/floor/carpet/redcarpet,/area/caribbean/forest/dirt)
+"dT" = (/obj/covers/sandstone,/obj/structure/gate/sandstone/open,/turf/floor/beach/sand/dark,/area/caribbean/roman/arena1)
+"dU" = (/obj/covers/sandstone,/obj/structure/gate/sandstone/open,/turf/floor/beach/sand/dark,/area/caribbean/roman/arena2)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -212,6 +219,8 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabadabababababababababababababababadabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagagagagagagagagahagahahagagahagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagagagagagagagagahajahajahahagagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -219,42 +228,40 @@ aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdb
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagataparararauavataparararauavagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagatawazaxazayavatawazaxazayavagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagatawaxaxaxayavatawaxaxaxayavagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagatawaxaxaxayavatawaxaxaxayavagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagatawaxaxaxayavatawaxaxaxayavagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagaJawaxaxaxayaKaJawaxaxaxayaKagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabagagatawaxaxaxayavatawaxaxaxayavagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaIaIaIaLaIaIaIaLaIaIaIaIagatawaxaxaxayavatawaxaxaxayavagabdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbabadabababadabacabababababababababababababaIaIaIaIaIaIaIaIaIaIaQaQaQaQaQbJbRbJaQaQbBagatawazaxazayavatawazaxazayavagaIaIaLaIaIaIaLaIaIaIaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbabcJcKcJcKafafafafafafafafafafafafafaeafaeaIaPaMaQaOaNaQaQaXaIaQaQaQaQaQaQaQaQaQaQbdagatcbbZbZbZccavatcbbZbZbZccavagbBaQaQaQaQaQaQaQaQaQaLdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbabcKbDafafafbDafbDaCcIbDafafafbDafafafafafaIaQaQaQaNaQaQaQaZaIaQaQaQbJbRbJaQaQaQaQaIagamaqaqaqaqaqamamaqaqaqaqaqamagbdaQaQaQaQaQaQaQaQaQaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbcLcKafafafafakalalalakafafafafafafafafafafaLaMaPaQbCaQaQaQaSaIaQaQaQaLaQaQaQaLaQaQaIabababababababababababababababadaIaIaLaIaIaIaLaIaQaQaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbaccKafafadakaAaAaAaAaAakadasafbDafafafafafaIaQaQaQbCaQaQaQdyaLaQaQaQbRbJaQbJbRbJaQaLaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIdbdbdbaLaQaQaLdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacafbDafaoaAaAaAaAaBaAaAaobAafafbDafafafafaIaRaMaQaQaQaQaQaQdzaQaQaQaQaQaQaQaQbJaQaIaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVdbdbdbaIaQaQaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacafaeaoaAaAaEaAcaaAcFaAaAaoakakakakafafdxaIaIaIaLcddAdBdCdDaYaQaQaQaLbRbJaQaLbRbJaIaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVdbdbdbaIaQaQaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbcLafcMaDaAaAcHaAaAaAaAaAaAalafafafafcNafafdIaQaQaQaQaQaQaQaQaQaQaQaQbJbRaQaQaQbJaQaIbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVdbdbdbaIaQaQaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacafcSaoaAcPaAcQaAaAaBaAaAcGafafafafcGafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbhaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaIaIaIaLaQaQaLdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacafdMaoaAaAaAaAaAaAaAaAaAalcTafafdLcUafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQdNaQaQaQbdaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbhaQaQaQaQaQaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacafaFaDaAaAaAaAaAaAaAaAaAcGafafafafcGafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbgaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbdaQaQaQaQaQaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbcLafaCaoaAaAdcaAddaAdcaAaAalafafafafcXafafcVaIaIaLaIdIdIcVdIdIaIaIaLaIaIaIaLaQaQaLaIaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaIaQaQaLaIaIaIdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacafasafaoaAaBcQaAaAaAaAaoakakakakakafafafafafafafdxafafafafafafafafafafafaIaQaQaIaIbcbbaUbaaVbcbbaUbaaVbcbbaUbaaVbcbbaUbaaVaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacbDafafadakdeaAaAaAaAakadafafafafafafafafafafafafafafafafafafafafafafafafaIaQaQaIaIaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafafafafakalcWalakafafafafbDafafafafafafaeafafafcYcGcZcGdaafafaeafafafaIaQaQaIaIaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaLaQaQaLdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbadafbDafafafafafbDafafbDafafbDafafafafafafafafafafafakcOcRdJakafafafafafafaLaQaQaLaIaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbabaeafaeafafafafafafafafafafafafafafaeafafafafafafafakafafafakafafafafafafdIaQaQaIbEbEbEbKbKbKbKbKbKbKbKbKbKbKbKbKbObMbNbPbQaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbababadaIaIaIaLbzbgbtaLaIaIaIaLaIaIaIaLafafafafafbDafakcOcRdJakafafafafafafdIaQaQaQbHbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbEbGbHbEbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbbybybyaLbybybyaLbjbjbjbjbjbjbjbkblbmbubvbwbxaIafafafafafafafalcGalcGalafbDafafbDafdIaQaQaQbGbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbPbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaibdbjbjbjbjbjbjbjbjbjbjbjbjbjbjaIafafafafafadakdfdfdfdfdfakadasafaeafaLabababbFbSbIbTbUbVchbXbYcebIcfbIbIbSbIbTbUbVcybXbYcebIcfbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbaLaiaiaiaiaiaiaHbibjbibjbibjbibjbjbjbibibibiaIafafafbDafaodfdfdfdgdfdfdfaobAafafafabdbdbdbbEcgbIbIbIbIbIbIbIbIbIcibIbIcgbIbIbIbIbIbIbIbIbIcibEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbjbjbjbjbjbjbjbjaGbjaLaIaIaIaLafafafafaodfdfdhdfdhdfdidfdfaoafafafabdbdbdbbEcjbIckclcmcycmcocpbIcjbIbIcjbIckclcmchcmcocpbIcjbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbibjbibjbibjbibjaGbjbnbobpbqbzafafafaCaDdgdfdjdfdgdfdfdfdfaDafafafabdbdbdbbFbMbIbIbIbIcqbIbIbIbIbIbIbIbIbIbIbIbIcqbIbIbIbIbLbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbaLaiaiaiaiaiaiaLbjbjbjbjbjbjbjbjaGbjbjbjbjbjbgafafafafcWdfdkdfdldfdfdfdfdfaodOafafaddbdbdbbEcmbIcrcscmbVcmcucvbIcwbIbIcmbIcrcscmbVcmcucvbIcwbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbibjbibjbibjbibjaGbjbrbrbsbsbtafafasaFaodfdfdfdfdEdfdfdgdfaodKafafabdbdbdbbEcxbIbIbIbIbIbIbIbIbIczbIbIcxbIbIbIbIbIbIbIbIbIczbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbbybybyaLbybybybyaIaIaLaIaIaIaLaIaIaIaLaIaIaIaLafafbDaCaDdfdfdfdfdfdfdfdfdfaDbDafafabdbdbdbbFcAbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIcBbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafaodfdfdmdfdmdfdmdfdfaoafafafabdbdbdbbEcCcDdodpdqbNbLdrbWdtducBcAcCcDdodpdqbQbOdrbWdtdubEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbadafafafbDafaodfdfdldgdfdfdfaoafafafafaddbdbdbbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafbDafafadakdfdfdfdfdfakadafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafafbDakalalalakafbDafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafafafafafafafbDafafafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbabadabababadabacabababababababababababababaIaIaIaIaIaIaIaIaIaIaQaQaQaQaQbJbRbJaQaQbBagatawazaxazayavatawazaxazayavagaIaIaLaIaIaIaIaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbabcJcKcJcKafafafafafafafafafafafafafaeafaeaIaPaMaQaOaNaQaQaXaIaQaQaQaQaQaQaQaQaQaQbdagatcbbZbZbZccavatcbbZbZbZccavagbBaQaQaQaQaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbabcKafafafafafafafafafafafafafafafafafafafaIaQaQaQaNaQaQaQaZaIaQaQaQbJbRbJaQaQaQaQaIagamaqaqaqaqaqamamaqaqaqaqaqamagbdaQaQaQaQaQaQaLdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbcLcKafafafafafafafafafafafafafafafafafafafaLaMaPaQbCaQaQaQaSaIaQaQaQaLaQaQaQaLaQaQaLabababababababababababababababadaIaIaLaIaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbaccKafafafalakalaoalakalasafafafafafafafafaIaQaQaQbCaQaQaQdyaLaQaQaQbRbJaQbJbRbJaQaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafbDadaAaAaAaAaBaAaAadbAafafafafafafafaIaRaMaQaQaQaQaQaQdzaQaQaQaQaQaQaQaQbJaQaIaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafakaAaAaEaAcaaAcFaAaAakaCafafdxafafafaIaIaIaLcddAdBdCdDaYaQaQaQaLbRbJaQaLbRbJaIaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaIaQaQaLdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbcLafafalaAaAcHaAaAaAaAaAaAalakakakcNafafafdIaQaQaQaQaQaQaQaQaQaQaQaQbJbRaQaQaQbJaQaIbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVbaaUbbbcaVaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafaDaAcPaAcQaAaAaBaAaAdTafafafcGafafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbhaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaVbfaVaVbeaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafalaAaAaAaAaAaAaAaAaAalcTcIdLcUafafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbdaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbhaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafakaAaAaAaAaAaAaAaAaAdTafafafcGafafafdIaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQaQbgaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUaUbdaQaQaLdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbcLafafalaAaAdcaAddaAdcaAaAalakakakcXafafafcVaIaIaLaIdIdIcVdIdIaIaIaLaIaIaIaLaQaQdNaIaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaVaVbfaVbeaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafafadaAaBcQaAaAaAaAadafcIcIafdxafafafafafafafafafafafafafafafafafafafaIaQaQaIaIbcbbaUbaaVbcbbaUbaaVbcbbaUbaaVbcbbaUbaaVaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafafasakalcWalakalakbDafafafafafafafafafafafafafafafafafafafafafafafafaIaQaQaIaIaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaUaWaWaUaVaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbacafafafafaFaCdMctdscncMdQafafafafafafafafafaeafafafafafafafafafafaeafafafaIaQaQaIaIaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaTaUaUaTaVaLaQaQaLdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbadafafafafafafdMafdKafdKafafafafafafafafafafafafafdxcYcGcZcGdadxafafafafafaLaQaQaLaIaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaIaLaIaIaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbabaeafaeafafafdMafafafafafafafafafafaeafafafafafafafakcOcRdJakafafafafafafdIaQaQaIbEbEbEbKbKbKbKbKbKbKbKbKbKbKbKbKbObMbNbPbQaIaQaQaIdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbababadaIaIaLbzbgaIbtaLaIaIaIaLaIaIaIaLafafafafafafcIakafcIafakafafafafafafdIaQaQaQbHbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbEbGbHbEbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbbybybyaLbybybyaLbjbjbjbjbjbjbjbkblbmbubvbwbxaIafafafafafafbDakcOcRdJakbDafafafafafdIaQaQaQbGbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbPbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaibdbjbjbjbjbjbjbjbjbjbjbjbjbjbjaIafafafafafafaoaldUaldUalaoafasafaeafadabababbFbSbIbTbUbVchbXbYcebIcfbIbIbSbIbTbUbVcybXbYcebIcfbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbaLaiaiaiaiaiaiaHbibjbibjbibjbibjbjbjbibibibiaIafafafafafaddfdfdfdgdfdfdfadbAafafafabdbdbdbbEcgbIbIbIbIbIbIbIbIbIcibIbIcgbIbIbIbIbIbIbIbIbIcibEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbjbjbjbjbjbjbjbjaGdNaLaIaIaIaLafafafafaodfdfdhdfdhdfdidfdfaoafafafabdbdbdbbEcjbIckclcmcycmcocpbIcjbIbIcjbIckclcmchcmcocpbIcjbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbibjbibjbibjbibjaGbjbnbobpbqbzafafafaCaldgdfdjdfdgdfdfdfdfaldOafafabdbdbdbbFbMbIbIbIbIcqbIbIbIbIbIbIbIbIbIbIbIbIcqbIbIbIbIbLbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbaLaiaiaiaiaiaiaLbjbjbjbjbjbjbjbjaGbjbjbjbjbjbgdMdMdMdMcWdfdkdfdldfdfdfdfdfaodPdQafaddbdbdbbEcmbIcrcscmbVcmcucvbIcwbIbIcmbIcrcscmbVcmcucvbIcwbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbibjbibjbibjbibjaGbjbrbrbsbsbtafafasaFaodfdfdfdfdEdfdfdgdfcSdSafafabdbdbdbbEcxbIbIbIbIbIbIbIbIbIczbIbIcxbIbIbIbIbIbIbIbIbIczbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbbybybyaLbybybybyaIaIaLaIaIaIaLaIaIaIaLaIaIaIaLafafafaCaldfdfdfdfdfdfdfdfdfalcMdQafabdbdbdbbFcAbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIcBbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafaodfdfdmdfdmdfdmdfdfaodKafafabdbdbdbbEcCcDdodpdqbNbLdrbWdtducBcAcCcDdodpdqbQbOdrbWdtdubEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbadafafafafcIaddfdfdldgdfdfdfadafafafafaddbdbdbbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbFbEbEbEbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafbDaoalaoalaoalakafafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafafafafafafafafafafafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafafafafafafafafafafafafafafabdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbadafafafafafafafafafafafafafafafafafafaddbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabababadabababadabababadabababadababababdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

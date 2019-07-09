@@ -394,7 +394,7 @@
 	else if (pickuni == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>, fighting in the area. Can you become the best?")
+	H.add_note("Role", "You are a <b>[title]</b>, fighting in the area. Can you become the best? You can use the beds at the Sleeping Quarters to save your character's name, stats and victories. You will be able to load on respawn.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -504,7 +504,8 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/laurelcrown(H), slot_head)
 
-	H.add_note("Role", "You are the <b>[title]</b>. Organize the games!")
+	H.add_note("Role", "You are the <b>[title]</b>. You are responsable for organizing the games. You can use the interface of the <b>Gladiator Combat Organizer</b> to turn automatic mode on and off. If you decide to manage the games yourself, you will need to attribute the victory using the <b>Gladiator Ledger</b> - click on it and choose the winner!")
+
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
