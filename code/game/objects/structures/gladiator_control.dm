@@ -170,10 +170,10 @@
 		current_style = "1 on 1"
 		return
 	else if (human_clients_mob_list.len > 8 && human_clients_mob_list.len <= 16)
-		current_style = "4 people free-for-all"
+		current_style = pick("1 on 1","3 people free-for-all","4 people free-for-all")
 		return
 	else
-		current_style = "6 people free-for-all"
+		current_style = pick("1 on 1","3 people free-for-all","5 people free-for-all")
 		return
 
 /obj/structure/gladiator_control/proc/prepare_combat()
