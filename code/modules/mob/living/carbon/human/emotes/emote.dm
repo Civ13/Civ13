@@ -660,6 +660,9 @@ var/list/vocal_emotes = list(
 					if (l_hand) unEquip(l_hand)
 					if (r_hand) unEquip(r_hand)
 					next_emote["surrender"] = world.time + 600
+					surrendered = TRUE
+					spawn(600)
+						surrendered = FALSE
 
 			if ("pee")
 				handle_piss()
