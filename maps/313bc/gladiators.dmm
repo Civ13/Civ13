@@ -150,7 +150,7 @@
 "cT" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cU" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/n1,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cV" = (/obj/covers/sandstone_wall,/obj/structure/sign/custom{name = "Arenas I and II"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
-"cW" = (/obj/structure/simple_door/key_door/ancient/roman,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
+"cW" = (/obj/structure/simple_door/key_door/ancient/roman,/turf/floor/beach/sand/dark,/area/caribbean/roman/arena1)
 "cX" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/custom{name = "Arena I EXIT"},/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cY" = (/obj/structure/sign/custom{name = "Arena II ENTRANCE"},/obj/structure/barricade/sandstone_h,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
 "cZ" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/n2,/turf/floor/beach/sand/dark,/area/caribbean/forest/dirt)
@@ -158,6 +158,7 @@
 "db" = (/turf/wall/indestructable/black,/area/caribbean/forest/dirt)
 "dc" = (/obj/structure/sign/traffic/side{icon_state = "sideline"; dir = 1},/turf/floor/beach/sand,/area/caribbean/roman/arena1)
 "dd" = (/obj/structure/sign/traffic/side{icon_state = "sideline"; dir = 1},/turf/floor/beach/sand/dark,/area/caribbean/roman/arena1)
+"de" = (/obj/structure/simple_door/key_door/ancient/roman,/turf/floor/beach/sand/dark,/area/caribbean/roman/arena2)
 "df" = (/turf/floor/beach/sand,/area/caribbean/roman/arena2)
 "dg" = (/turf/floor/dirt/dust,/area/caribbean/roman/arena2)
 "dh" = (/obj/structure/sign/traffic/side,/turf/floor/beach/sand,/area/caribbean/roman/arena2)
@@ -254,7 +255,7 @@ aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaibdbjbjbjbjbjbjbjbjbjbjbjbjbjbjaIafafafafafafao
 aaaaaaaaaaaaaaaaaadbaLaiaiaiaiaiaiaHbibjbibjbibjbibjbjbjbibibibiaIafafafafafaddfdfdfdgdfdfdfadbAafafafabdbdbdbbEcgbIbIbIbIbIbIbIbIbIcibIbIcgbIbIbIbIbIbIbIbIbIcibEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbjbjbjbjbjbjbjbjaGdNaLaIaIaIaLafafafafaodfdfdhdfdhdfdidfdfaoafafafabdbdbdbbEcjbIckclcmcycmcocpbIcjbIbIcjbIckclcmchcmcocpbIcjbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbibjbibjbibjbibjaGbjbnbobpbqbzafafafaCaldgdfdjdfdgdfdfdfdfaldOafafabdbdbdbbFbMbIbIbIbIcqbIbIbIbIbIbIbIbIbIbIbIbIcqbIbIbIbIbLbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaadbaLaiaiaiaiaiaiaLbjbjbjbjbjbjbjbjaGbjbjbjbjbjbgdMdMdMdMcWdfdkdfdldfdfdfdfdfaodPdQafaddbdbdbbEcmbIcrcscmbVcmcucvbIcwbIbIcmbIcrcscmbVcmcucvbIcwbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaadbaLaiaiaiaiaiaiaLbjbjbjbjbjbjbjbjaGbjbjbjbjbjbgdMdMdMdMdedfdkdfdldfdfdfdfdfaodPdQafaddbdbdbbEcmbIcrcscmbVcmcucvbIcwbIbIcmbIcrcscmbVcmcucvbIcwbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbbyaiaiaiaiaiaiaIbibjbibjbibjbibjaGbjbrbrbsbsbtafafasaFaodfdfdfdfdEdfdfdgdfcSdSafafabdbdbdbbEcxbIbIbIbIbIbIbIbIbIczbIbIcxbIbIbIbIbIbIbIbIbIczbEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbbybybyaLbybybybyaIaIaLaIaIaIaLaIaIaIaLaIaIaIaLafafafaCaldfdfdfdfdfdfdfdfdfalcMdQafabdbdbdbbFcAbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIbIcBbFdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaaaaaaaaaaaaaadbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafaodfdfdmdfdmdfdmdfdfaodKafafabdbdbdbbEcCcDdodpdqbNbLdrbWdtducBcAcCcDdodpdqbQbOdrbWdtdubEdbdbdbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

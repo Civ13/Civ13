@@ -1,4 +1,8 @@
+////////////Things related to gladiator mode: ledgers, match controls, beds for saving
 
+//////////////////////////////////////////////////////////////
+//////////////////////SCORE/LEDGER////////////////////////////
+//////////////////////////////////////////////////////////////
 /obj/structure/gladiator_ledger
 	name = "gladiatorial ledger"
 	desc = "A board showing the victories of all gladiators."
@@ -26,15 +30,15 @@
 				if (choice == "Cancel" || vlist.len == 1)
 					toplist = list()
 					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-						toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4]))
+						toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
 
 					var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
 					for (var/i = 1, i <= toplist.len, i++)
 						if (toplist[i][1]>0)
 							if (toplist[i][4] == 0)
-								body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: [toplist[i][1]] victories.</br>"
+								body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 							else
-								body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][1]] victories.</br>"
+								body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 					body += {"<br>
 						</body></html>
 					"}
@@ -60,14 +64,14 @@
 			else
 				toplist = list()
 				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-					toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4]))
+					toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
 				var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
 				for (var/i = 1, i <= toplist.len, i++)
 					if (toplist[i][1]>0)
 						if (toplist[i][4] == 0)
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: [toplist[i][1]] victories.</br>"
+							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 						else
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][1]] victories.</br>"
+							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 				body += {"<br>
 					</body></html>
 				"}
@@ -76,14 +80,14 @@
 		else
 			toplist = list()
 			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-				toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4]))
+				toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
 			var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
 			for (var/i = 1, i <= toplist.len, i++)
 				if (toplist[i][1]>0)
 					if (toplist[i][4] == 0)
-						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: [toplist[i][1]] victories.</br>"
+						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 					else
-						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][1]] victories.</br>"
+						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 			body += {"<br>
 				</body></html>
 			"}
@@ -104,14 +108,14 @@
 		var/obj/map_metadata/gladiators/GD = map
 		toplist = list()
 		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-			toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4]))
+			toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
 		var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
 		for (var/i = 1, i <= toplist.len, i++)
 			if (toplist[i][1]>0)
 				if (toplist[i][4] == 0)
-					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: [toplist[i][1]] victories.</br>"
+					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 				else
-					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: [toplist[i][1]] victories.</br>"
+					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
 		body += {"<br>
 			</body></html>
 		"}
@@ -119,9 +123,10 @@
 		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 	else
 		return
-
+////////////////////////////////////////////////////////////////////
 /////////////////////////////AUTO GLADIATOR CONTROL/////////////////
 ////////////////////////////////////////////////////////////////////
+
 //Basically, this sets up the combats and winners when there's no Emperor.
 //The emperor can also set it to auto if he has to go AFK or something.
 /obj/structure/gladiator_control
@@ -142,6 +147,7 @@
 	var/current_participants = 0
 	var/automode = FALSE
 
+	var/cooldown_timer = 0
 /obj/structure/gladiator_control/New()
 	..()
 	arena = get_area(src.loc).name
@@ -157,9 +163,10 @@
 		if (combat_running == 1)
 			prepare_combat()
 		else if (combat_running == 0)
-			pick_combat()
-			combat_running = TRUE
-			world << "<font size=3 color='yellow'>The next combat at the [arena] is going to be a <b>[current_style] match</b>!</font>"
+			if (world.time > cooldown_timer)
+				pick_combat()
+				combat_running = TRUE
+				world << "<font size=3 color='yellow'>The next combat at the [arena] is going to be a <b>[current_style] match</b>!</font>"
 		else if (combat_running == 2)
 			check_combat()
 	spawn(10)
@@ -199,9 +206,13 @@
 			GATES.density = TRUE
 			spawn(30)
 				GATES.icon_state = "s_gate0"
+		for(var/obj/structure/simple_door/key_door/ancient/roman/DOORS in A)
+			if (DOORS.state)
+				DOORS.density = TRUE
+				DOORS.Close()
 		return
 	else if (count > count_max)
-		world << "<font size=2 color='yellow'>Too many people at [arena] There should be a maximum of <b>[count_max]</b>!</font>"
+		world << "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>"
 		return
 	return
 
@@ -233,10 +244,12 @@
 				done = TRUE
 				continue
 		if (!done && WINNER.client)
-			GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,"0,0,0,0,0,0,0,0,0,0",0,1))
+			var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["mg"][1]],[WINNER.stats["stamina"][1]]"
+			GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
 
 		GD.save_gladiators()
 		world << "<font size=3 color='yellow'>The combat in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+		cooldown_timer = world.time+300
 		spawn(60)
 			if (arena == "Arena I")
 				for(var/obj/structure/functions/clean_arena1/CA1 in world)
@@ -258,8 +271,10 @@
 					automode = !automode
 					user << "<font size=2 color='yellow'>Auto-Matchmaking mode turned <b>[automode ? "ON" : "OFF"]</b>.</font>"
 					return
-
+////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////CLEANERS//////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 /obj/structure/functions/clean_arena1
 	name = "Clean Arena I"
 	desc = "Clean the 1st arena deleting bodies and moving equipment to the armory."
@@ -337,3 +352,107 @@
 	for (var/obj/effect/decal/cleanable/C in A)
 		qdel(C)
 	return
+/////////////////////////////////////////////////////
+///////////////////SAVING BEDS///////////////////////
+/////////////////////////////////////////////////////
+
+//For gladiator mode
+/obj/structure/bed/saving
+	material = "wood"
+
+/obj/structure/bed/saving/attack_hand(mob/living/carbon/human/user as mob)
+	if (!istype(user, /mob/living/carbon/human))
+		return
+	if (!user.client)
+		return
+	if (user.original_job_title != "Gladiator")
+		return
+	if ((user.getOxyLoss() + user.getToxLoss() + user.getFireLoss() + user.getBruteLoss() > 35))
+		user << "You are too damaged to save your character. Get surgery first."
+		return
+	var/choice = WWinput(user, "Do you want to save this character named [user.name]?", "Character Saving", "Yes", list("Yes","No"))
+	if (choice == "No")
+		return
+	else
+		var/done = FALSE
+		var/obj/map_metadata/gladiators/GD = null
+		if (istype(map, /obj/map_metadata/gladiators))
+			GD = map
+		if (!GD)
+			return
+		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+			if (GD.gladiator_stats[1][1] == user.client.ckey && GD.gladiator_stats[1][2] == user.name && !done)
+				var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
+				GD.gladiator_stats[1][3] = statlist
+				done = TRUE
+				GD.save_gladiators()
+				qdel(user)
+				user << "Saved sucessfully."
+				return
+		if (done == FALSE)
+			var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
+			GD.gladiator_stats += list(list(user.client.ckey, user.name, statlist, 0,0))
+			GD.save_gladiators()
+			qdel(user)
+			user << "Saved sucessfully."
+			return
+
+/////////////////////////////////////////////////////////////
+////////////////PROFILE/LOADING/PROC/////////////////////////
+/////////////////////////////////////////////////////////////
+/mob/living/carbon/human/proc/check_profiles()
+	spawn(10)
+		if (map.ID == MAP_GLADIATORS && client)
+			var/obj/map_metadata/gladiators/GD = map
+			var/done = FALSE
+			var/list/loadinglist = list("Cancel")
+			if (GD.gladiator_stats.len && client)
+				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+					if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][4] == 0)
+						loadinglist += GD.gladiator_stats[i][2]
+						done = TRUE
+			if (done == TRUE)
+				var/input_msg = WWinput(src, "Welcome, [client.ckey]. Do you want to load any of your Gladiators?", "Load Gladiators", "Cancel", loadinglist)
+				if (input_msg == "Cancel")
+					done = FALSE
+				else
+					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+						if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][2] == input_msg && GD.gladiator_stats[i][4] == 0)
+							name = GD.gladiator_stats[i][2]
+							real_name = name
+							var/statsplit = splittext(GD.gladiator_stats[i][3],",")
+							stats["strength"][1] = text2num(statsplit[1])
+							stats["strength"][2] = text2num(statsplit[1])
+							stats["crafting"][1] = text2num(statsplit[2])
+							stats["crafting"][2] = text2num(statsplit[2])
+							stats["rifle"][1] = text2num(statsplit[3])
+							stats["rifle"][2] = text2num(statsplit[3])
+							stats["dexterity"][1] = text2num(statsplit[4])
+							stats["dexterity"][2] = text2num(statsplit[4])
+							stats["swords"][1] = text2num(statsplit[5])
+							stats["swords"][2] = text2num(statsplit[5])
+							stats["pistol"][1] = text2num(statsplit[6])
+							stats["pistol"][2] = text2num(statsplit[6])
+							stats["bows"][1] = text2num(statsplit[7])
+							stats["bows"][2] = text2num(statsplit[7])
+							stats["medical"][1] = text2num(statsplit[8])
+							stats["medical"][2] = text2num(statsplit[8])
+							stats["philosophy"][1] = text2num(statsplit[9])
+							stats["philosophy"][2] = text2num(statsplit[9])
+							stats["mg"][1] = text2num(statsplit[10])
+							stats["mg"][2] = text2num(statsplit[10])
+							src << "<font size=2><b>Successfully loaded <b>[name]</b>.</font>"
+							return
+			if (done == FALSE)
+				var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a gladiator named [name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
+				if (input_msg == "No")
+					return
+				else
+					var/input_name = input(src, "Choose the new name: (Max 25 characters)","Custom Name", name) as text
+					input_name = sanitizeName(input_name, 25, FALSE)
+					if (input_name != "" && input_name)
+						name = input_name
+						real_name = input_name
+					if (!name || !real_name)
+						name = capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
+						real_name = name

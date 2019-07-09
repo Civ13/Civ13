@@ -38,13 +38,13 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 /obj/map_metadata/gladiators/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 27000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/gladiators/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 27000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/gladiators/cross_message(faction)
-	return "The gracewall is now removed."
+	return ""
 
 /obj/map_metadata/gladiators/proc/load_gladiators()
 	var/F = file("SQL/gladiator_stats.txt")
@@ -54,7 +54,8 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 		for (var/i = 1, i <= temp_stats1, i++)
 			if (findtext(temp_stats1[i], ";"))
 				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
-				gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],text2num(temp_stats2[4]),text2num(temp_stats2[5])))
+				//								ckey			name		stats			0=alive,1=dead			victories					matches
+				gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],text2num(temp_stats2[4]),text2num(temp_stats2[5]),text2num(temp_stats2[6])))
 		return TRUE
 	else
 		return FALSE
