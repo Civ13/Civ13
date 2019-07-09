@@ -97,6 +97,13 @@
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
 				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
+		else if (map.ordinal_age == 6)
+			if (gender == "male")
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
+				equip_to_slot_or_del(new /obj/item/clothing/under/modern4(src), slot_w_uniform)
+			else
+				equip_to_slot_or_del(new /obj/item/clothing/under/civf1(src), slot_w_uniform)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 //coats/////////////////////////////////////////////////
 		spawn(5)
 			var/area/mob_area = get_area(src)
@@ -107,7 +114,7 @@
 						equip_to_slot_or_del(new /obj/item/clothing/shoes/fur(src), slot_shoes)
 				else if (map.ordinal_age == 4)
 					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
-				else if (map.ordinal_age == 5)
+				else if (map.ordinal_age >= 5)
 					equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat/grey(src), slot_wear_suit)
 
 ///////////////LANGUAGE PROC/////////////////////////
