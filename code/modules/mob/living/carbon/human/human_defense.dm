@@ -451,7 +451,7 @@ bullet_act
 			var/obj/item/weapon/material/sword/S = I
 			if (S.atk_mode == SLASH)
 				var/mob/living/carbon/human/HH = user
-				if(prob((I.force * HH.getStatCoeff("strength")/6)))
+				if(affecting.name != "groin" && prob((I.force * HH.getStatCoeff("strength")/6)))
 					affecting.droplimb(0, DROPLIMB_EDGE)
 					for(var/mob/living/carbon/human/NB in view(6,src))
 						NB.mood -= 10

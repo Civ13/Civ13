@@ -483,7 +483,7 @@
 	en_meaning = "Emperor"
 	rank_abbreviation = "Imperator"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateROM"
+	spawn_location = "JoinLateROG"
 	SL_check_independent = TRUE
 	is_gladiator = TRUE
 	is_commander = TRUE
