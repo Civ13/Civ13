@@ -15,6 +15,8 @@
 	var/arena_name = "Arena I"
 	var/timer = 0
 	var/list/toplist = list()
+	var/showing = "Players"
+
 /obj/structure/gladiator_ledger/attack_hand(mob/user as mob)
 	if (map.ID == MAP_GLADIATORS)
 		var/obj/map_metadata/gladiators/GD = map
@@ -28,22 +30,7 @@
 						vlist += "[GLAD.name], [GLAD.client.ckey]"
 				var/choice = WWinput(user, "Who to assign a victory point to?", "Match Results", "Cancel", vlist)
 				if (choice == "Cancel" || vlist.len == 1)
-					toplist = list()
-					for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-						toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
-
-					var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
-					for (var/i = 1, i <= toplist.len, i++)
-						if (toplist[i][1]>0)
-							if (toplist[i][4] == 0)
-								body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-							else
-								body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-					body += {"<br>
-						</body></html>
-					"}
-
-					usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+					show_content(user)
 				else
 					var/list/splitdata = splittext(choice, ", ")
 					var/done = FALSE
@@ -62,37 +49,9 @@
 					world << "<big>[splitdata[1]] ([splitdata[2]]) was victorious!</big>"
 					GD.save_gladiators()
 			else
-				toplist = list()
-				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-					toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
-				var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
-				for (var/i = 1, i <= toplist.len, i++)
-					if (toplist[i][1]>0)
-						if (toplist[i][4] == 0)
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-						else
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-				body += {"<br>
-					</body></html>
-				"}
-
-				usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+				show_content(user)
 		else
-			toplist = list()
-			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-				toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
-			var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
-			for (var/i = 1, i <= toplist.len, i++)
-				if (toplist[i][1]>0)
-					if (toplist[i][4] == 0)
-						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-					else
-						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-			body += {"<br>
-				</body></html>
-			"}
-
-			usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+			show_content(user)
 	else
 		return
 
@@ -107,22 +66,76 @@
 	if (map.ID == MAP_GLADIATORS)
 		var/obj/map_metadata/gladiators/GD = map
 		toplist = list()
-		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-			toplist += list(list(GD.gladiator_stats[i][5], GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], GD.gladiator_stats[i][4],GD.gladiator_stats[i][6]))
 		var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
-		for (var/i = 1, i <= toplist.len, i++)
-			if (toplist[i][1]>0)
-				if (toplist[i][4] == 0)
-					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-				else
-					body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][1]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: [toplist[i][1]/toplist[i][5]*100]%</br>"
-		body += {"<br>
-			</body></html>
-		"}
+		switch(showing)
+			if ("Players")
+				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+					//							ckey							victories					matches
+					toplist += list(list(GD.gladiator_stats[i][1], text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6])))
+				body += "<a href='?src=\ref[src];top10=1'>Top 10</a> | <b>Players</b> | <a href='?src=\ref[src];all=1'>All</a><br><hr><br>"
+				var/list/ckeylist = list()
+				for (var/i = 1, i <= toplist.len, i++)
+					if (ckeylist["[toplist[i][1]]"])
+						ckeylist["[toplist[i][1]]"][1] += toplist[i][2]
+						ckeylist["[toplist[i][1]]"][2] += toplist[i][3]
+					else
+						ckeylist += list("[toplist[i][1]]" = list(toplist[i][2],toplist[i][3],"[toplist[i][1]]"))
 
-		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
+				for (var/k in ckeylist)
+					body += "<b>[ckeylist[k][3]]</b>: <b>[ckeylist[k][1]]</b> victories in <b>[ckeylist[k][2]]</b> matches. W/R: <b>[text2num(ckeylist[k][1])/text2num(ckeylist[k][2])*100]%</b></br>"
+				body += {"<br>
+					</body></html>
+				"}
+			if ("All")
+				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+					//									alive?						ckey					name						victories				matches
+					toplist += list(list(text2num(GD.gladiator_stats[i][4]), GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6])))
+				body += "<a href='?src=\ref[src];top10=1'>Top 10</a> | <a href='?src=\ref[src];players=1'>Players</a> | <b>All</b><br><hr><br>"
+				for (var/i = 1, i <= toplist.len, i++)
+					if (toplist[i][4]>0)
+						if (toplist[i][1] == 0)
+							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
+						else
+							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
+				body += {"<br>
+					</body></html>
+				"}
+			if ("Top 10")
+				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+					//									alive?						ckey					name						victories				matches
+					toplist += list(list(text2num(GD.gladiator_stats[i][4]), GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6])))
+				body += "<b>Top 10</b> | <a href='?src=\ref[src];players=1'>Players</a> | <a href='?src=\ref[src];all=1'>All</a><br><hr><br>"
+				var/list/newtoplist = list()
+				newtoplist = sortTim(toplist, cmp=/proc/cmp_numeric_dsc)
+				for(var/ii = 1, ii <= 10, ii++)
+					for (var/i in newtoplist)
+						if (newtoplist[i][1] == 0)
+							body += "<b>[newtoplist[i][3]]</b> ([newtoplist[i][2]])</b>: <b>[newtoplist[i][4]]</b> victories in <b>[newtoplist[i][5]]</b> matches. W/R: <b>[newtoplist[i][4]/newtoplist[i][5]*100]%</b></br>"
+						else
+							body += "<b>[newtoplist[i][3]]</b> ([newtoplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[newtoplist[i][4]]</b> victories in <b>[newtoplist[i][5]]</b> matches. W/R: <b>[newtoplist[i][4]/newtoplist[i][5]*100]%</b></br>"
+				body += {"<br>
+					</body></html>
+				"}
+
+		usr << browse(body,"window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=700x500")
 	else
 		return
+
+/obj/structure/gladiator_ledger/Topic(href, href_list, hsrc)
+	var/mob/user = usr
+
+	if (!user)
+		return
+
+	if (href_list["players"])
+		showing = "Players"
+
+	if (href_list["all"])
+		showing = "All"
+
+	if (href_list["top10"])
+		showing = "Top 10"
+	show_content(user)
 ////////////////////////////////////////////////////////////////////
 /////////////////////////////AUTO GLADIATOR CONTROL/////////////////
 ////////////////////////////////////////////////////////////////////
