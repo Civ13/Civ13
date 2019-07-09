@@ -236,7 +236,14 @@
 			GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,"0,0,0,0,0,0,0,0,0,0",0,1))
 
 		GD.save_gladiators()
-		world << "<font size=3 color='yellow'>The combat has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+		world << "<font size=3 color='yellow'>The combat in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+		spawn(60)
+			if (arena == "Arena I")
+				for(var/obj/structure/functions/clean_arena1/CA1 in world)
+					CA1.clean_proc_nomob()
+			else if (arena == "Arena II")
+				for(var/obj/structure/functions/clean_arena2/CA2 in world)
+					CA2.clean_proc_nomob()
 		return
 
 /obj/structure/gladiator_control/attack_hand(mob/user as mob)
@@ -251,3 +258,82 @@
 					automode = !automode
 					user << "<font size=2 color='yellow'>Auto-Matchmaking mode turned <b>[automode ? "ON" : "OFF"]</b>.</font>"
 					return
+
+//////////////////////////////CLEANERS//////////////////////////////////////////
+/obj/structure/functions/clean_arena1
+	name = "Clean Arena I"
+	desc = "Clean the 1st arena deleting bodies and moving equipment to the armory."
+
+/obj/structure/functions/clean_arena1/attack_hand(mob/living/user)
+	clean_proc(user)
+/obj/structure/functions/clean_arena1/proc/clean_proc(mob/living/user)
+	if (user)
+		if (!istype(user, /mob/living/carbon/human))
+			return
+		else
+			var/area/A = get_area(src.loc)
+			for (var/mob/living/carbon/human/H in A)
+				if (H.stat == DEAD)
+					qdel(H)
+			for (var/obj/item/I in A)
+				if (istype(I, /obj/item/organ))
+					qdel(I)
+				else
+					I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+			for (var/obj/effect/decal/cleanable/C in A)
+				qdel(C)
+	if (user)
+		user << "Arena 1 cleared."
+	return
+/obj/structure/functions/clean_arena1/proc/clean_proc_nomob()
+	var/area/A = get_area(src.loc)
+	for (var/mob/living/carbon/human/H in A)
+		if (H.stat == DEAD)
+			qdel(H)
+	for (var/obj/item/I in A)
+		if (istype(I, /obj/item/organ))
+			qdel(I)
+		else
+			I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+	for (var/obj/effect/decal/cleanable/C in A)
+		qdel(C)
+	return
+/obj/structure/functions/clean_arena2
+	name = "Clean Arena II"
+	desc = "Clean the 2nd arena deleting bodies and moving equipment to the armory."
+
+/obj/structure/functions/clean_arena2/attack_hand(mob/living/user)
+	clean_proc(user)
+/obj/structure/functions/clean_arena2/proc/clean_proc(mob/living/user)
+	if (user)
+		if (!istype(user, /mob/living/carbon/human))
+			return
+		else
+			var/area/A = get_area(src.loc)
+			for (var/mob/living/carbon/human/H in A)
+				if (H.stat == DEAD)
+					qdel(H)
+			for (var/obj/item/I in A)
+				if (istype(I, /obj/item/organ))
+					qdel(I)
+				else
+					I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+			for (var/obj/effect/decal/cleanable/C in A)
+				qdel(C)
+	if (user)
+		user << "Arena 2 cleared."
+	return
+
+/obj/structure/functions/clean_arena2/proc/clean_proc_nomob()
+	var/area/A = get_area(src.loc)
+	for (var/mob/living/carbon/human/H in A)
+		if (H.stat == DEAD)
+			qdel(H)
+	for (var/obj/item/I in A)
+		if (istype(I, /obj/item/organ))
+			qdel(I)
+		else
+			I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+	for (var/obj/effect/decal/cleanable/C in A)
+		qdel(C)
+	return
