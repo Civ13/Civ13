@@ -17,7 +17,7 @@
 	ordinal_age = 1
 	faction_distribution_coeffs = list(ROMAN = 1)
 	battle_name = "gladiator fights"
-	mission_start_message = "<big><font color='yellow' size=3><B>AVE IMPERATOR, MORITVRI TE SALVTANT!</font><br>Organize gladiatoral fights and become the best!</B></span>" // to be replaced with the round's main event
+	mission_start_message = "<big><font color='yellow' size=3><B>AVE IMPERATOR, MORITVRI TE SALVTANT!</font><br>Organize gladiatoral fights and become the best!</B></font>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = ROMAN
 	songs = list(

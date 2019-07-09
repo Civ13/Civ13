@@ -211,7 +211,7 @@
 				DOORS.density = TRUE
 				DOORS.Close()
 		return
-	else if (count > count_max)
+	else if (count > count_max && prob(10))
 		world << "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>"
 		return
 	return
@@ -291,7 +291,7 @@
 				if (H.stat == DEAD)
 					qdel(H)
 			for (var/obj/item/I in A)
-				if (istype(I, /obj/item/organ))
+				if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
 					qdel(I)
 				else
 					I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
@@ -306,7 +306,7 @@
 		if (H.stat == DEAD)
 			qdel(H)
 	for (var/obj/item/I in A)
-		if (istype(I, /obj/item/organ))
+		if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
 			qdel(I)
 		else
 			I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
@@ -329,7 +329,7 @@
 				if (H.stat == DEAD)
 					qdel(H)
 			for (var/obj/item/I in A)
-				if (istype(I, /obj/item/organ))
+				if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
 					qdel(I)
 				else
 					I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
@@ -345,7 +345,7 @@
 		if (H.stat == DEAD)
 			qdel(H)
 	for (var/obj/item/I in A)
-		if (istype(I, /obj/item/organ))
+		if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
 			qdel(I)
 		else
 			I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
