@@ -397,6 +397,9 @@ This function completely restores a damaged organ to perfect condition.
 	brute_dam = FALSE
 	burn_dam = FALSE
 	germ_level = FALSE
+	pain = FALSE
+	for(var/datum/wound/wound in wounds)
+		wound.embedded_objects.Cut()
 	wounds.Cut()
 	number_wounds = FALSE
 

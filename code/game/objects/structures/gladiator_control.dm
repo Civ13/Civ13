@@ -202,6 +202,13 @@
 		else if (arena == "Arena II")
 			G.gracedown2 = FALSE
 		world << "<font size=3 color='yellow'>The combat has started!</font>"
+		var/list/currlist = list()
+		for(var/mob/living/carbon/human/H in A)
+			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
+				currlist += H.name
+		for(var/i = 1, i <= G.gladiator_stats.len, i++)
+			if (G.gladiator_stats[i][2] in currlist)
+				G.gladiator_stats[i][6]++
 		for(var/obj/structure/gate/GATES in A)
 			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)
 			GATES.icon_state = "s_gate_closing"
@@ -453,6 +460,10 @@
 			if (done == FALSE)
 				var/input_msg = WWinput(src, "Welcome, [client.ckey]. You have spawned as a gladiator named [name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
 				if (input_msg == "No")
+					var/obj/map_metadata/gladiators/G = map
+					var/statlist = "1,1,1,1,1,1,1,1,1,1"
+					statlist = "[stats["strength"][1]],[stats["crafting"][1]],[stats["rifle"][1]],[stats["dexterity"][1]],[stats["swords"][1]],[stats["pistol"][1]],[stats["bows"][1]],[stats["medical"][1]],[stats["philosophy"][1]],[stats["mg"][1]],[stats["stamina"][1]]"
+					G.gladiator_stats += list(list(client.ckey,name,statlist,0,0,0))
 					return
 				else
 					var/input_name = input(src, "Choose the new name: (Max 25 characters)","Custom Name", name) as text

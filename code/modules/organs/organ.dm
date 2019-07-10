@@ -197,7 +197,7 @@ var/list/organ_cache = list()
 
 /obj/item/organ/proc/rejuvenate()
 	damage = FALSE
-
+	status = 0
 /obj/item/organ/proc/is_damaged()
 	return damage > 0
 
