@@ -76,6 +76,7 @@ h1.alert, h2.alert		{color: #ff0000;}
 .red					{color: #ff3737}
 .danger					{color: #ff3737; font-weight: bold;}
 .userdanger				{color: #ff3737; font-weight: bold; font-size: 2.0em;}
+.userdanger_yellow		{color: #ffff00; font-weight: bold; font-size: 2.5em;}
 .hugedanger				{color: #ff3737; font-weight: bold; font-size: 3.0em;}
 .warning				{color: #ff3737; font-style: italic;}
 .rose					{color: #ff5050;}

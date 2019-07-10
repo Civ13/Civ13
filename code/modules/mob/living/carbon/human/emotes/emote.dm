@@ -655,14 +655,24 @@ var/list/vocal_emotes = list(
 
 			if ("surrender")
 				if (world.time >= next_emote["surrender"])
-					message = "surrenders!"
-					Weaken(50)
-					if (l_hand) unEquip(l_hand)
-					if (r_hand) unEquip(r_hand)
-					next_emote["surrender"] = world.time + 600
-					surrendered = TRUE
-					spawn(600)
-						surrendered = FALSE
+					if (original_job_title == "Gladiator")
+						message = "yields!"
+						Weaken(50)
+						if (l_hand) unEquip(l_hand)
+						if (r_hand) unEquip(r_hand)
+						next_emote["surrender"] = world.time + 600
+						surrendered = TRUE
+						spawn(600)
+							surrendered = FALSE
+					else
+						message = "surrenders!"
+						Weaken(50)
+						if (l_hand) unEquip(l_hand)
+						if (r_hand) unEquip(r_hand)
+						next_emote["surrender"] = world.time + 600
+						surrendered = TRUE
+						spawn(600)
+							surrendered = FALSE
 
 			if ("pee")
 				handle_piss()
@@ -686,7 +696,9 @@ var/list/vocal_emotes = list(
 
 		if (message)
 			log_emote("[name]/[key] : [message]")
-			if (act == "surrender")
+			if (act == "surrender" && message == "surrenders!")
 				custom_emote(m_type,message,"userdanger")
+			else if (act == "surrender" && message=="yields!")
+				custom_emote(m_type,message,"userdanger_yellow")
 			else
 				custom_emote(m_type,message)

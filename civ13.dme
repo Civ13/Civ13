@@ -290,6 +290,7 @@
 #include "code\game\objects\structures\curtains.dm"
 #include "code\game\objects\structures\door.dm"
 #include "code\game\objects\structures\filingcabinet.dm"
+#include "code\game\objects\structures\gladiator_control.dm"
 #include "code\game\objects\structures\grille.dm"
 #include "code\game\objects\structures\iv_drip.dm"
 #include "code\game\objects\structures\kitchen_spike.dm"
@@ -841,5 +842,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\special\nomads.dmm"
+#include "maps\313bc\gladiators.dmm"
 // END_INCLUDE
