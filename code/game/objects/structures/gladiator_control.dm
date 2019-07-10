@@ -22,7 +22,7 @@
 		var/obj/map_metadata/gladiators/GD = map
 		if (istype(user, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = user
-			if (H.original_job_title == "Imperator" && timer <= world.time)
+			if (H.original_job_title == "Imperator" && timer <= world.time && H.client.ckey == "taislin")
 				var/list/vlist = list("Cancel")
 				for(var/mob/living/carbon/human/GLAD in world)
 					var/area/A = get_area(GLAD)
