@@ -108,12 +108,11 @@
 					toplist["[GD.gladiator_stats[i][2]]"] = list(text2num(GD.gladiator_stats[i][4]), GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6]))
 					playerlist_ord["[GD.gladiator_stats[i][2]]"] = text2num(GD.gladiator_stats[i][5])
 				newtoplist = sortTim(playerlist_ord, /proc/cmp_numeric_dsc,TRUE)
-				for(var/ii = 1, ii <= min(10,newtoplist.len), ii++)
-					for (var/i in newtoplist)
-						if (toplist[i][1] == 0)
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
-						else
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
+				for (var/i in newtoplist)
+					if (toplist[i][1] == 0)
+						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
+					else
+						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
 
 			if ("Top 10 Players")
 				body += "<a href='?src=\ref[src];top10=1'>Top 10 Characters</a> | <b>Top 10 Players</b> | <a href='?src=\ref[src];all=1'>All Characters</a> | <a href='?src=\ref[src];players=1'>All Players</a><br><hr><br>"
@@ -129,10 +128,9 @@
 						ckeylist["[GD.gladiator_stats[i][1]]"] = list(text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6]),"[GD.gladiator_stats[i][1]]")
 						ckeylist_ord["[GD.gladiator_stats[i][1]]"] = text2num(GD.gladiator_stats[i][5])
 				newtoplist = sortTim(ckeylist_ord, /proc/cmp_numeric_dsc,TRUE)
-				for(var/ik = 1, ik <= min(10,ckeylist.len), ik++)
-					for (var/ii in newtoplist)
-						if (ckeylist[ii])
-							body += "<b>[ii]</b>: <b>[ckeylist[ii][1]]</b> victories in <b>[ckeylist[ii][2]]</b> matches. W/R: <b>[text2num(ckeylist[ii][1])/text2num(ckeylist[ii][2])*100]%</b></br>"
+				for (var/ii in newtoplist)
+					if (ckeylist[ii])
+						body += "<b>[ii]</b>: <b>[ckeylist[ii][1]]</b> victories in <b>[ckeylist[ii][2]]</b> matches. W/R: <b>[text2num(ckeylist[ii][1])/text2num(ckeylist[ii][2])*100]%</b></br>"
 
 		body += {"<br>
 			</body></html>
@@ -426,7 +424,7 @@
 				return
 		if (done == FALSE)
 			var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
-			GD.gladiator_stats += list(list(user.client.ckey, user.name, statlist, 0,0))
+			GD.gladiator_stats += list(list(user.client.ckey, user.name, statlist, 0,0,0))
 			GD.save_gladiators()
 			qdel(user)
 			user << "Saved sucessfully."
