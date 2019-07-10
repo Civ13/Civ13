@@ -151,6 +151,14 @@
 	var/automode = FALSE
 
 	var/cooldown_timer = 0
+
+	var/list/team1 = list()
+	var/list/team2 = list()
+
+	var/count_max = 2
+	var/victory_min = 1
+	var/teams = FALSE
+	var/count = 0
 /obj/structure/gladiator_control/New()
 	..()
 	arena = get_area(src.loc).name
@@ -159,9 +167,11 @@
 
 /obj/structure/gladiator_control/proc/run_proc()
 	active_emperor = 0
+/*
 	for(var/mob/living/carbon/human/EMP in world)
 		if (EMP.original_job_title == "Imperator" && EMP.stat == CONSCIOUS)
 			active_emperor++
+*/
 	if (active_emperor <= 0 || automode)
 		if (combat_running == 1)
 			prepare_combat()
@@ -177,25 +187,38 @@
 
 /obj/structure/gladiator_control/proc/pick_combat()
 	if (human_clients_mob_list.len <= 8)
-		current_style = "1 on 1"
+		current_style = "1 vs 1"
 		return
 	else if (human_clients_mob_list.len > 8 && human_clients_mob_list.len <= 16)
-		current_style = pick("1 on 1","3 people free-for-all","4 people free-for-all")
+		current_style = pick("1 vs 1","2 vs 2","3 people free-for-all","4 people free-for-all")
 		return
 	else
-		current_style = pick("1 on 1","3 people free-for-all","5 people free-for-all")
+		current_style = pick("1 vs 1","2 vs 2","3 people free-for-all","5 people free-for-all")
 		return
 
 /obj/structure/gladiator_control/proc/prepare_combat()
-	var/count = 0
-	var/count_max = 2
+	count = 0
+
+	team1 = list()
+	team2 = list()
+
 	switch(current_style)
-		if("1 on 1")
+		if("1 vs 1")
 			count_max = 2
+			victory_min = 1
+			teams = FALSE
 		if("4 people free-for-all")
 			count_max = 4
+			victory_min = 1
+			teams = FALSE
 		if("6 people free-for-all")
 			count_max = 6
+			victory_min = 1
+			teams = FALSE
+		if("2 vs 2")
+			count_max = 4
+			victory_min = 2
+			teams = TRUE
 	var/area/A = get_area(src.loc)
 	for(var/mob/living/carbon/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
@@ -207,14 +230,40 @@
 			G.gracedown1 = FALSE
 		else if (arena == "Arena II")
 			G.gracedown2 = FALSE
-		world << "<font size=3 color='yellow'>The combat has started!</font>"
-		var/list/currlist = list()
-		for(var/mob/living/carbon/human/H in A)
-			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
-				currlist += H.name
-		for(var/i = 1, i <= G.gladiator_stats.len, i++)
-			if (G.gladiator_stats[i][2] in currlist)
-				G.gladiator_stats[i][6]++
+		world << "<font size=3 color='yellow'>The combat has started at <b>[arena]</b>!</font>"
+		if (!teams)
+			var/list/currlist = list()
+			for(var/mob/living/carbon/human/H in A)
+				if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
+					currlist += H.name
+			for(var/i = 1, i <= G.gladiator_stats.len, i++)
+				if (G.gladiator_stats[i][2] in currlist)
+					G.gladiator_stats[i][6]++
+			var/flist = ""
+			for(var/i=1,i<=currlist.len,i++)
+				flist += "[currlist[i]], "
+			flist += "."
+			flist = replacetext(flist,", .",".")
+			world << "<font size=2 color='yellow'>Fighters: [flist]</font>"
+		else
+			for(var/mob/living/carbon/human/H in A)
+				if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
+					if (team1.len < victory_min)
+						team1 += H
+					else
+						team2 += H
+				for(var/i = 1, i <= G.gladiator_stats.len, i++)
+					if (G.gladiator_stats[i][2] == H)
+						G.gladiator_stats[i][6]++
+			var/flist = "Team 1: "
+			for(var/i=1,i<=team1.len,i++)
+				flist += "[team1[i]], "
+			flist += ". Team 2:"
+			for(var/i=1,i<=team2.len,i++)
+				flist += "[team2[i]], "
+			flist = replacetext(flist,", .",".")
+			world << "<font size=2 color='yellow'>[flist]</font>"
+
 		for(var/obj/structure/gate/GATES in A)
 			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)
 			GATES.icon_state = "s_gate_closing"
@@ -269,6 +318,53 @@
 			G.gracedown1 = TRUE
 		else if (arena == "Arena II")
 			G.gracedown2 = TRUE
+		cooldown_timer = world.time+300
+		spawn(60)
+			if (arena == "Arena I")
+				for(var/obj/structure/functions/clean_arena1/CA1 in world)
+					CA1.clean_proc_nomob()
+			else if (arena == "Arena II")
+				for(var/obj/structure/functions/clean_arena2/CA2 in world)
+					CA2.clean_proc_nomob()
+		return
+
+	else if (count == victory_min && victory_min > 1 && ((team1.len == 0 && team2.len > 0) || (team2.len == 0 && team1.len > 0)))
+		var/list/winnerlist = list()
+		for(var/mob/living/carbon/human/GLAD in A)
+			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+				winnerlist += GLAD
+		for(var/obj/structure/gate/GATES in A)
+			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)
+			GATES.icon_state = "s_gate_opening"
+			GATES.density = FALSE
+			spawn(30)
+				GATES.icon_state = "s_gate1"
+		combat_running = 0
+		if (!winnerlist.len)
+			return
+		for (var/mob/living/carbon/human/k in winnerlist)
+			var/done = FALSE
+			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+				if (GD.gladiator_stats[i][1] == k.client.ckey && GD.gladiator_stats[i][2] == k.name && GD.gladiator_stats[i][4] == 0)
+					GD.gladiator_stats[i][5]++
+					done = TRUE
+					continue
+			if (!done && k.client)
+				var/statlist = "[k.stats["strength"][1]],[k.stats["crafting"][1]],[k.stats["rifle"][1]],[k.stats["dexterity"][1]],[k.stats["swords"][1]],[k.stats["pistol"][1]],[k.stats["bows"][1]],[k.stats["medical"][1]],[k.stats["philosophy"][1]],[k.stats["mg"][1]],[k.stats["stamina"][1]]"
+				GD.gladiator_stats += list(list(k.client.ckey,k.name,statlist,0,1,1))
+		GD.save_gladiators()
+
+		var/flist = ""
+		for(var/mob/living/carbon/human/H in winnerlist)
+			flist += "[H] ([H.client.ckey]), "
+		flist += "."
+		flist = replacetext(flist,", .",".")
+
+		world << "<font size=3 color='yellow'>The combat in [arena] has ended! Winners: [flist].</font>"
+		if (arena == "Arena I")
+			GD.gracedown1 = TRUE
+		else if (arena == "Arena II")
+			GD.gracedown2 = TRUE
 		cooldown_timer = world.time+300
 		spawn(60)
 			if (arena == "Arena I")
@@ -480,3 +576,8 @@
 					if (!name || !real_name)
 						name = capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 						real_name = name
+					var/obj/map_metadata/gladiators/G = map
+					var/statlist = "1,1,1,1,1,1,1,1,1,1"
+					statlist = "[stats["strength"][1]],[stats["crafting"][1]],[stats["rifle"][1]],[stats["dexterity"][1]],[stats["swords"][1]],[stats["pistol"][1]],[stats["bows"][1]],[stats["medical"][1]],[stats["philosophy"][1]],[stats["mg"][1]],[stats["stamina"][1]]"
+					G.gladiator_stats += list(list(client.ckey,name,statlist,0,0,0))
+					return
