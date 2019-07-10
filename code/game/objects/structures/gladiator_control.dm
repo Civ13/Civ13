@@ -190,10 +190,10 @@
 		current_style = "1 vs 1"
 		return
 	else if (human_clients_mob_list.len > 8 && human_clients_mob_list.len <= 16)
-		current_style = pick("1 vs 1","2 vs 2","3 people free-for-all","4 people free-for-all")
+		current_style = pick("1 vs 1","2 vs 2","4 people free-for-all")
 		return
 	else
-		current_style = pick("1 vs 1","2 vs 2","3 people free-for-all","5 people free-for-all")
+		current_style = pick("1 vs 1","2 vs 2","4 people free-for-all","6 people free-for-all")
 		return
 
 /obj/structure/gladiator_control/proc/prepare_combat()
@@ -258,7 +258,7 @@
 			var/flist = "Team 1: "
 			for(var/i=1,i<=team1.len,i++)
 				flist += "[team1[i]], "
-			flist += ". Team 2:"
+			flist += ".<br> Team 2:"
 			for(var/i=1,i<=team2.len,i++)
 				flist += "[team2[i]], "
 			flist = replacetext(flist,", .",".")
@@ -328,11 +328,37 @@
 					CA2.clean_proc_nomob()
 		return
 
-	else if (count == victory_min && victory_min > 1 && ((team1.len == 0 && team2.len > 0) || (team2.len == 0 && team1.len > 0)))
-		var/list/winnerlist = list()
-		for(var/mob/living/carbon/human/GLAD in A)
-			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
-				winnerlist += GLAD
+	else if (count == victory_min && victory_min > 1)
+		for(var/mob/living/carbon/human/HH in team1)
+			if (HH.stat != CONSCIOUS || HH.surrendered)
+				team1 -= HH
+		for(var/mob/living/carbon/human/HM in team2)
+			if (HM.stat != CONSCIOUS || HM.surrendered)
+				team2 -= HM
+		if((team1.len == 0 && team2.len > 0) || (team2.len == 0 && team1.len > 0))
+			var/list/winnerlist = list()
+			for(var/mob/living/carbon/human/GLAD in A)
+				if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+					winnerlist += GLAD
+			for (var/mob/living/carbon/human/k in winnerlist)
+				var/done = FALSE
+				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+					if (GD.gladiator_stats[i][1] == k.client.ckey && GD.gladiator_stats[i][2] == k.name && GD.gladiator_stats[i][4] == 0)
+						GD.gladiator_stats[i][5]++
+						done = TRUE
+						continue
+				if (!done && k.client)
+					var/statlist = "[k.stats["strength"][1]],[k.stats["crafting"][1]],[k.stats["rifle"][1]],[k.stats["dexterity"][1]],[k.stats["swords"][1]],[k.stats["pistol"][1]],[k.stats["bows"][1]],[k.stats["medical"][1]],[k.stats["philosophy"][1]],[k.stats["mg"][1]],[k.stats["stamina"][1]]"
+					GD.gladiator_stats += list(list(k.client.ckey,k.name,statlist,0,1,1))
+			GD.save_gladiators()
+
+			var/flist = ""
+			for(var/mob/living/carbon/human/H in winnerlist)
+				flist += "[H] ([H.client.ckey]), "
+			flist += "."
+			flist = replacetext(flist,", .",".")
+			world << "<font size=3 color='yellow'>The combat in [arena] has ended! Winners: [flist].</font>"
+
 		for(var/obj/structure/gate/GATES in A)
 			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)
 			GATES.icon_state = "s_gate_opening"
@@ -340,27 +366,6 @@
 			spawn(30)
 				GATES.icon_state = "s_gate1"
 		combat_running = 0
-		if (!winnerlist.len)
-			return
-		for (var/mob/living/carbon/human/k in winnerlist)
-			var/done = FALSE
-			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-				if (GD.gladiator_stats[i][1] == k.client.ckey && GD.gladiator_stats[i][2] == k.name && GD.gladiator_stats[i][4] == 0)
-					GD.gladiator_stats[i][5]++
-					done = TRUE
-					continue
-			if (!done && k.client)
-				var/statlist = "[k.stats["strength"][1]],[k.stats["crafting"][1]],[k.stats["rifle"][1]],[k.stats["dexterity"][1]],[k.stats["swords"][1]],[k.stats["pistol"][1]],[k.stats["bows"][1]],[k.stats["medical"][1]],[k.stats["philosophy"][1]],[k.stats["mg"][1]],[k.stats["stamina"][1]]"
-				GD.gladiator_stats += list(list(k.client.ckey,k.name,statlist,0,1,1))
-		GD.save_gladiators()
-
-		var/flist = ""
-		for(var/mob/living/carbon/human/H in winnerlist)
-			flist += "[H] ([H.client.ckey]), "
-		flist += "."
-		flist = replacetext(flist,", .",".")
-
-		world << "<font size=3 color='yellow'>The combat in [arena] has ended! Winners: [flist].</font>"
 		if (arena == "Arena I")
 			GD.gracedown1 = TRUE
 		else if (arena == "Arena II")
