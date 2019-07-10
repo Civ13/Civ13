@@ -196,6 +196,11 @@
 			count++
 	if (count == count_max)
 		combat_running = 2
+		var/obj/map_metadata/gladiators/G = map
+		if (arena == "Arena I")
+			G.gracedown1 = FALSE
+		else if (arena == "Arena II")
+			G.gracedown2 = FALSE
 		world << "<font size=3 color='yellow'>The combat has started!</font>"
 		for(var/obj/structure/gate/GATES in A)
 			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)
@@ -246,6 +251,11 @@
 
 		GD.save_gladiators()
 		world << "<font size=3 color='yellow'>The combat in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+		var/obj/map_metadata/gladiators/G = map
+		if (arena == "Arena I")
+			G.gracedown1 = TRUE
+		else if (arena == "Arena II")
+			G.gracedown2 = TRUE
 		cooldown_timer = world.time+300
 		spawn(60)
 			if (arena == "Arena I")

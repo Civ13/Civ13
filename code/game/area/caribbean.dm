@@ -260,7 +260,13 @@
 	base_turf = /turf/floor/dirt/jungledirt
 /area/caribbean/no_mans_land/invisible_wall
 	icon_state = "green1"
-
+	name = "grace wall"
+/area/caribbean/no_mans_land/invisible_wall/one
+	icon_state = "green1"
+	name = "Arena I grace wall"
+/area/caribbean/no_mans_land/invisible_wall/two
+	icon_state = "green1"
+	name = "Arena II grace wall"
 /area/caribbean/no_mans_land/invisible_wall/inside
 	location = AREA_INSIDE
 

@@ -348,7 +348,7 @@
 		if (ref && map.check_caribbean_block(mob, ref))
 			mob.dir = direct
 			if (world.time >= mob.next_gracewall_message)
-				mob << "<span class = 'warning'>You cannot pass the invisible wall until the Grace Period has ended.</span>"
+				mob << "<span class = 'warning'>You cannot pass the invisible wall until the <b>Grace Period</b> has ended.</span>"
 				mob.next_gracewall_message = world.time + 10
 			return FALSE
 
