@@ -15,7 +15,7 @@
 	var/arena_name = "Arena I"
 	var/timer = 0
 	var/list/toplist = list()
-	var/showing = "Players"
+	var/showing = "Characters"
 
 /obj/structure/gladiator_ledger/attack_hand(mob/user as mob)
 	if (map.ID == MAP_GLADIATORS)
@@ -70,37 +70,8 @@
 			return
 		var/body = "<html><head><title>GLADIATORIAL LEDGER</title></head><b>GLADIATORIAL LEDGER</b><br><br>"
 		switch(showing)
-
-			if ("Players")
-				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-					//							ckey							victories					matches
-					toplist += list(list(GD.gladiator_stats[i][1], text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6])))
-				body += "<a href='?src=\ref[src];top10=1'>Top 10 Characters</a> | <a href='?src=\ref[src];top10players=1'>Top 10 Players</a> | <a href='?src=\ref[src];all=1'>All Characters</a> | <b>All Players</b><br><hr><br>"
-				var/list/ckeylist = list()
-				for (var/i = 1, i <= toplist.len, i++)
-					if (ckeylist["[toplist[i][1]]"])
-						ckeylist["[toplist[i][1]]"][1] += toplist[i][2]
-						ckeylist["[toplist[i][1]]"][2] += toplist[i][3]
-					else
-						ckeylist += list("[toplist[i][1]]" = list(toplist[i][2],toplist[i][3],"[toplist[i][1]]"))
-
-				for (var/k in ckeylist)
-					body += "<b>[ckeylist[k][3]]</b>: <b>[ckeylist[k][1]]</b> victories in <b>[ckeylist[k][2]]</b> matches. W/R: <b>[text2num(ckeylist[k][1])/text2num(ckeylist[k][2])*100]%</b></br>"
-
-			if ("All")
-				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-					//									alive?						ckey					name						victories				matches
-					toplist += list(list(text2num(GD.gladiator_stats[i][4]), GD.gladiator_stats[i][1], GD.gladiator_stats[i][2], text2num(GD.gladiator_stats[i][5]),text2num(GD.gladiator_stats[i][6])))
-				body += "<a href='?src=\ref[src];top10=1'>Top 10 Characters</a> | <a href='?src=\ref[src];top10players=1'>Top 10 Players</a> | <b>All Characters</b> | <a href='?src=\ref[src];players=1'>All Players</a><br><hr><br>"
-				for (var/i = 1, i <= toplist.len, i++)
-					if (toplist[i][4]>0)
-						if (toplist[i][1] == 0)
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
-						else
-							body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
-
-			if ("Top 10")
-				body += "<b>Top 10 Characters</b> | <a href='?src=\ref[src];top10players=1'>Top 10 Players</a> | <a href='?src=\ref[src];all=1'>All Characters</a> | <a href='?src=\ref[src];players=1'>All Players</a><br><hr><br>"
+			if ("Characters")
+				body += "<b>Characters</b> | <a href='?src=\ref[src];players=1'>Players</a><br><hr><br>"
 				var/list/playerlist_ord = list()
 				var/list/newtoplist = list()
 				for (var/i = 1, i <= GD.gladiator_stats.len, i++)
@@ -114,8 +85,8 @@
 					else
 						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
 
-			if ("Top 10 Players")
-				body += "<a href='?src=\ref[src];top10=1'>Top 10 Characters</a> | <b>Top 10 Players</b> | <a href='?src=\ref[src];all=1'>All Characters</a> | <a href='?src=\ref[src];players=1'>All Players</a><br><hr><br>"
+			if ("Players")
+				body += "<a href='?src=\ref[src];characters=1'>Characters</a> | <b>Players</b><br><hr><br>"
 				var/list/ckeylist = list()
 				var/list/ckeylist_ord = list("n" = 0)
 				var/list/newtoplist = list()
@@ -144,17 +115,10 @@
 
 	if (!user)
 		return
-
+	if (href_list["characters"])
+		showing = "Characters"
 	if (href_list["players"])
 		showing = "Players"
-
-	if (href_list["all"])
-		showing = "All"
-
-	if (href_list["top10"])
-		showing = "Top 10"
-	if (href_list["top10players"])
-		showing = "Top 10 Players"
 	show_content(user)
 ////////////////////////////////////////////////////////////////////
 /////////////////////////////AUTO GLADIATOR CONTROL/////////////////
