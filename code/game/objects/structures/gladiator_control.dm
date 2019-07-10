@@ -80,10 +80,13 @@
 					playerlist_ord["[GD.gladiator_stats[i][2]]"] = text2num(GD.gladiator_stats[i][5])
 				newtoplist = sortTim(playerlist_ord, /proc/cmp_numeric_dsc,TRUE)
 				for (var/i in newtoplist)
+					var/WR = ""
+					if (toplist[i][5]!=0)
+						WR = "[toplist[i][4]/toplist[i][5]*100]"
 					if (toplist[i][1] == 0)
-						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
+						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]])</b>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[WR]%</b></br>"
 					else
-						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[toplist[i][4]/toplist[i][5]*100]%</b></br>"
+						body += "<b>[toplist[i][3]]</b> ([toplist[i][2]]) <font color='red'><i>DECEASED</i></font>: <b>[toplist[i][4]]</b> victories in <b>[toplist[i][5]]</b> matches. W/R: <b>[WR]%</b></br>"
 
 			if ("Players")
 				body += "<a href='?src=\ref[src];characters=1'>Characters</a> | <b>Players</b><br><hr><br>"
@@ -101,7 +104,10 @@
 				newtoplist = sortTim(ckeylist_ord, /proc/cmp_numeric_dsc,TRUE)
 				for (var/ii in newtoplist)
 					if (ckeylist[ii])
-						body += "<b>[ii]</b>: <b>[ckeylist[ii][1]]</b> victories in <b>[ckeylist[ii][2]]</b> matches. W/R: <b>[text2num(ckeylist[ii][1])/text2num(ckeylist[ii][2])*100]%</b></br>"
+						var/WR = ""
+						if (text2num(ckeylist[ii][2]) != 0)
+							WR = "[text2num(ckeylist[ii][1])/text2num(ckeylist[ii][2])*100]"
+						body += "<b>[ii]</b>: <b>[ckeylist[ii][1]]</b> victories in <b>[ckeylist[ii][2]]</b> matches. W/R: <b>[WR]%</b></br>"
 
 		body += {"<br>
 			</body></html>
