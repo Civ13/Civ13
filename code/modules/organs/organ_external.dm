@@ -1113,6 +1113,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	max_damage = 135
 	w_class = 5
 	body_part = LOWER_TORSO
+	cannot_amputate = TRUE
 	vital = TRUE
 	parent_organ = "chest"
 	amputation_point = "lumbar"
