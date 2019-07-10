@@ -3,7 +3,7 @@
 	ID = MAP_GLADIATORS
 	title = "Gladiators (100x80x1)"
 	lobby_icon_state = "ancient"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
 	faction_organization = list(
@@ -26,11 +26,13 @@
 	is_singlefaction = TRUE
 	valid_weather_types = list(WEATHER_NONE)
 	var/list/gladiator_stats = list()
-obj/map_metadata/gladiators/New()
+	var/gracedown1 = TRUE
+	var/gracedown2 = TRUE
+/obj/map_metadata/gladiators/New()
 	..()
 	load_gladiators()
 
-obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/roman))
 		if (J.is_gladiator == TRUE)
@@ -38,10 +40,10 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 /obj/map_metadata/gladiators/faction2_can_cross_blocks()
-	return (admin_ended_all_grace_periods)
+	return (1)
 
 /obj/map_metadata/gladiators/faction1_can_cross_blocks()
-	return (admin_ended_all_grace_periods)
+	return (1)
 
 /obj/map_metadata/gladiators/cross_message(faction)
 	return ""
@@ -72,5 +74,16 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 		text2file(txtexport,F)
 	return
 
-
+/obj/map_metadata/gladiators/check_caribbean_block(var/mob/living/carbon/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (caribbean_blocking_area_types.Find(A.type))
+		if (A.name == "Arena I grace wall")
+			if (!gracedown1)
+				return TRUE
+		else if (A.name == "Arena II grace wall")
+			if (!gracedown2)
+				return TRUE
+	return FALSE
 #undef NO_WINNER
