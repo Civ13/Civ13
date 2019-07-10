@@ -1,5 +1,8 @@
 /turf/wall/iron/New(var/newloc)
 	..(newloc,"iron")
+/turf/wall/iron/low/New(var/newloc)
+	..(newloc,"iron")
+	opacity = FALSE
 /turf/wall/brick/New(var/newloc)
 	..(newloc,"brick")
 /turf/wall/diamond/New(var/newloc)

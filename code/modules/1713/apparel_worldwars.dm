@@ -105,6 +105,9 @@
 	item_state = "biker"
 	worn_state = "biker"
 	restricts_view = 1
+////////////////////////////////////////////////////////////////////////
+///////////////////////////////WW2 JAPS/////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/head/helmet/ww2/japhelm
 	name = "japanese helmet"
@@ -589,6 +592,41 @@ obj/item/clothing/under/ww2/hitlerjugend
 	icon_state = "hj_uni"
 	icon_state = "hj_uni"
 
+obj/item/clothing/under/ww2/us
+	name = "american uniform"
+	desc = "An american uniform, used by soldiers in the US army."
+	icon_state = "us_uni_ww2"
+	item_state = "us_uni_ww2"
+	worn_state = "us_uni_ww2"
+
+obj/item/clothing/under/ww2/us_cap
+	name = "american captain uniform"
+	desc = "An american uniform, used by captains in the US army."
+	icon_state = "usuni_cap"
+	item_state = "usuni_cap"
+	worn_state = "usuni_cap"
+
+obj/item/clothing/under/ww2/us_mp
+	name = "american mp uniform"
+	desc = "An american uniform, used by Military Police in the US army."
+	icon_state = "usuni_mp"
+	item_state = "usuni_mp"
+	worn_state = "usuni_mp"
+
+obj/item/clothing/under/ww2/us_light
+	name = "american light uniform"
+	desc = "An american uniform, used by soldiers in the US army, this one using the undershirt"
+	icon_state = "usuni2"
+	item_state = "usuni2"
+	worn_state = "usuni2"
+
+obj/item/clothing/under/ww2/us_shirtless
+	name = "american shirtless uniform"
+	desc = "An american uniform, used by soldiers in the US army, this one is shirtless."
+	icon_state = "us_greentrousers"
+	item_state = "us_greentrousers"
+	worn_state = "us_greentrousers"
+
 /obj/item/clothing/suit/storage/coat/ww2/german
 	name = "german parka"
 	desc = "A german parka, worn by soldaten in the Wehrmacht."
@@ -599,6 +637,10 @@ obj/item/clothing/under/ww2/hitlerjugend
 	cold_protection = UPPER_TORSO|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 25)
 	value = 65
+
+/obj/item/clothing/suit/storage/coat/ww2/german/civ
+	name = "grey parka"
+	desc = "A grey parka, good for warmth in the winters."
 
 /obj/item/clothing/suit/storage/coat/ww2/german_officer
 	name = "german officer coat"
@@ -657,9 +699,9 @@ obj/item/clothing/under/ww2/hitlerjugend
 obj/item/clothing/head/ww2/us_nco_cap
 	name = "us nco cap"
 	desc = "A cap worn by american NCO's."
-	icon_state = "jappilotcap"
-	item_state = "jappilotcap"
-	worn_state = "jappilotcap"
+	icon_state = "usnco_cap"
+	item_state = "usnco_cap"
+	worn_state = "usnco_cap"
 
 obj/item/clothing/head/ww2/german_tanker
 	name = "german tanker headset"
@@ -775,6 +817,76 @@ obj/item/clothing/head/ww2/soviet_fieldcap
 	icon_state = "sovhelm"
 	item_state = "sovhelm"
 	worn_state = "sovhelm"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/us
+	name = "american helmet"
+	desc = "The typical rounded steel helmet of the US Army."
+	icon_state = "ushelmet"
+	item_state = "ushelmet"
+	worn_state = "ushelmet"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/us_medic
+	name = "american medic helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing a medic symbol."
+	icon_state = "ushelmet_medical"
+	item_state = "ushelmet_medical"
+	worn_state = "ushelmet_medical"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/us_sgt
+	name = "american sergeant helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of Sergeant."
+	icon_state = "ushelmet_sgt"
+	item_state = "ushelmet_sgt"
+	worn_state = "ushelmet_sgt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/us_lt
+	name = "american lieutenant helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of Lieutenant."
+	icon_state = "ushelmet_lt"
+	item_state = "ushelmet_lt"
+	worn_state = "ushelmet_lt"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/us_cap
+	name = "american captain helmet"
+	desc = "The typical rounded steel helmet of the US Army, this one bearing the rank of Captain."
+	icon_state = "ushelmet_cap"
+	item_state = "ushelmet_cap"
+	worn_state = "ushelmet_cap"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/us_mar
+	name = "USMC helmet"
+	desc = "The typical rounded steel helmet of the USMC."
+	icon_state = "ushelmet_mar"
+	item_state = "ushelmet_mar"
+	worn_state = "ushelmet_mar"
+	body_parts_covered = HEAD
+	flags_inv = BLOCKHEADHAIR
+	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+
+/obj/item/clothing/head/helmet/ww2/us_mar_sgt
+	name = "USMC sergeant helmet"
+	desc = "The typical rounded steel helmet of the USMC, this one bearing the rank of Sergeant."
+	icon_state = "ushelmet_mar_nco"
+	item_state = "ushelmet_mar_nco"
+	worn_state = "ushelmet_mar_nco"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 10, energy = 15, bomb = 40, bio = 20, rad = FALSE)

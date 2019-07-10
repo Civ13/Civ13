@@ -69,7 +69,7 @@ obj/structure/anvil/New()
 		if (choice == "Cancel")
 			return
 		else if (choice == "Swords")
-			if (map.ordinal_age == 5)
+			if (map.ordinal_age >= 5)
 				display2 = list("Rapier (18)", "Katana (15)","Cancel")
 			else if (map.ordinal_age == 4)
 				display2 = list("Sabre (15)", "Rapier (18)", "Katana (15)","Cancel")
@@ -80,6 +80,8 @@ obj/structure/anvil/New()
 		else if (choice == "Guns")
 			if (map.ordinal_age == 5)
 				display2 = list("Mosin-Nagant (35)", "Arisaka Type 30 (30)", "Arisaka Type 35 (33)", "Murata Type 22 (30)", "Pump-Action Shotgun (30)","Nambu Type A (25)", "Borchardt C93 (25)", "Mauser C96 (25)", "Luger P08 (25)", "Type 26 Revolver (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", ,"Gewehr 98 (35)", "Gewehr 71 (30)","Lee-enfield (35)", "Carcano (30)", "Cancel")
+			else if (map.ordinal_age == 6)
+				display2 = list("Mosin-Nagant (35)", "Arisaka Type 38 (30)", "Arisaka Type 99 (33)", "Nambu Type 14 (25)", "Luger P08 (25)", "Nagant Revolver (25)", "Derringer M95 Pistol (15)", ,"Kar98k (35)", "Kar98A (30)","Lee-enfield (35)", "Carcano (30)", "TT-30 (25)","M1911 Colt (25)","Waltherp38 (25)","Springfield (35)", "Cancel")
 			else if (map.ordinal_age == 4)
 				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
 			else
@@ -202,6 +204,21 @@ obj/structure/anvil/New()
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 
+		if (choice2 == "Kar98A (30)")
+			if (steel_amt >= 30)
+				user << "You begin crafting a Kar98A..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 30)
+					user << "You craft a Kar98A."
+					steel_amt -= 30
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
 		if (choice2 == "Gewehr 98 (35)")
 			if (steel_amt >= 35)
 				user << "You begin crafting a Gewehr 98..."
@@ -212,6 +229,21 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/gun/projectile/boltaction/gewehr98(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Kar98k (35)")
+			if (steel_amt >= 35)
+				user << "You begin crafting a Kar98k..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 35)
+					user << "You craft a Kar98k."
+					steel_amt -= 35
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -242,6 +274,21 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/gun/projectile/boltaction/enfield(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Springfield (35)")
+			if (steel_amt >= 35)
+				user << "You begin crafting a Springfield..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 35)
+					user << "You craft a Springfield."
+					steel_amt -= 35
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/springfield(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -292,6 +339,36 @@ obj/structure/anvil/New()
 				user << "<span class='notice'>You need more steel to make this!</span>"
 				return
 
+		if (choice2 == "Arisaka Type 38 (30)")
+			if (steel_amt >= 30)
+				user << "You begin crafting a arisaka..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 30)
+					user << "You craft a arisaka."
+					steel_amt -= 30
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/arisaka38(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Arisaka Type 99 (33)")
+			if (steel_amt >= 33)
+				user << "You begin crafting a arisaka..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 33)
+					user << "You craft a arisaka."
+					steel_amt -= 33
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/boltaction/arisaka99(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
 		if (choice2 == "Murata Type 22 (30)")
 			if (steel_amt >= 30)
 				user << "You begin crafting a murata..."
@@ -317,6 +394,66 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/gun/projectile/pistol/nambu(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Nambu Type 14 (25)")
+			if (steel_amt >= 25)
+				user << "You begin crafting a Nambu..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 25)
+					user << "You craft a Nambu."
+					steel_amt -= 25
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/pistol/ww2/nambu(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Waltherp38 (25)")
+			if (steel_amt >= 25)
+				user << "You begin crafting a Walther..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 25)
+					user << "You craft a Walther."
+					steel_amt -= 25
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/pistol/waltherp38(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "M1911 Colt (25)")
+			if (steel_amt >= 25)
+				user << "You begin crafting a M1911..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 25)
+					user << "You craft a M1911."
+					steel_amt -= 25
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/pistol/m1911(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "TT-30 (25)")
+			if (steel_amt >= 25)
+				user << "You begin crafting a tt30..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,170,src) && steel_amt >= 25)
+					user << "You craft a tt30."
+					steel_amt -= 25
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/gun/projectile/pistol/tt30(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -512,7 +649,7 @@ obj/structure/anvil/New()
 				return
 	else if (iron_amt > 0)
 		var/list/display = list("Swords", "Armor", "Cancel")
-		if (map.ordinal_age == 5)
+		if (map.ordinal_age >= 5)
 			display = list("Armor", "Cancel")
 		else if (map.ordinal_age == 4)
 			display = list("Swords","Cancel")
@@ -758,8 +895,10 @@ obj/structure/anvil/New()
 			var/list/display4 = list("Cancel")
 			if (map.ordinal_age == 4)
 				display4 = list("Picklehaube (7)", "Pith (7)", "Cancel")
+			else if (map.ordinal_age == 6)
+				display4 = list("Brodie (10)", "Stahlhelm (10)","Type 92 Helmet (10)", "Soviet Helmet (10)", "Cancel")
 			else if (map.ordinal_age == 5)
-				display4 = list("Pickelhaube (7)", "Pith (7)", "Brodie (10)", "Stahlhelm (10)", "Cancel")
+				display4 = list("Pickelhaube (7)","MesH Pickelhaube (7)", "Pith (7)", "Brodie (10)", "Stahlhelm (10)", "Cancel")
 			else if (map.ordinal_age == 2)
 				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)", "Cancel")
 			else if (map.ordinal_age == 3)
@@ -967,6 +1106,21 @@ obj/structure/anvil/New()
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
 
+			if (choice4 == "Mesh Pickelhaube (7)")
+				if (iron_amt >= 7)
+					user << "You begin crafting the pickelhaube..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 7)
+						user << "You craft the pickelhaube."
+						iron_amt -= 7
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/ww/pickelhaube2(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
 			if (choice4 == "Stahlhelm (10)")
 				if (iron_amt >= 10)
 					user << "You begin crafting the stahlhelm..."
@@ -977,6 +1131,36 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/clothing/head/helmet/modern/stahlhelm(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice4 == "Type 92 Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the type 92..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 7)
+						user << "You craft the type 92."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/ww2/japhelm(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice4 == "Soviet Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the soviet helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 7)
+						user << "You craft the soviet helmet."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/ww2/soviet(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"

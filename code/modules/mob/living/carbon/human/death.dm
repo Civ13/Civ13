@@ -41,7 +41,13 @@
 /mob/living/carbon/human/death(gibbed = FALSE)
 
 	if (stat == DEAD) return
-
+	if (map.ID == MAP_GLADIATORS && client)
+		var/obj/map_metadata/gladiators/GD = map
+		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+			if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][2] == name)
+				GD.gladiator_stats[i][4] = 1
+				GD.save_gladiators()
+		src << "<big><b>[name]'s life fades away into history...</b></big>"
 	src << browse(null, "window=memory")
 
 
@@ -62,6 +68,7 @@
 	if (client)
 		client.next_normal_respawn = world.realtime + (map ? map.respawn_delay : 3000)
 		client << RESPAWN_MESSAGE
+
 
 	. = ..(gibbed)//,species.death_message)
 	if (!gibbed)

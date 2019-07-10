@@ -509,8 +509,8 @@
 	is_ww2 = TRUE
 
 	// AUTOBALANCE
-	min_positions = 4
-	max_positions = 15
+	min_positions = 1
+	max_positions = 8
 
 /datum/job/russian/machinegunner_soviet/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

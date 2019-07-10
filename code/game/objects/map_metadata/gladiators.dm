@@ -17,13 +17,19 @@
 	ordinal_age = 1
 	faction_distribution_coeffs = list(ROMAN = 1)
 	battle_name = "gladiator fights"
-	mission_start_message = "<big><font color='yellow' size=3><B>AVE IMPERATOR, MORITVRI TE SALVTANT!</font><br>Organize gladiatoral fights and become the best!</B></span>" // to be replaced with the round's main event
+	mission_start_message = "<big><font color='yellow' size=3><B>AVE IMPERATOR, MORITVRI TE SALVTANT!</font><br>Organize gladiatoral fights and become the best!</B></font>" // to be replaced with the round's main event
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = ROMAN
 	songs = list(
 		"Divinitus:1" = 'sound/music/divinitus.ogg',)
 	gamemode = "Gladiatorial Combat"
 	is_singlefaction = TRUE
+	valid_weather_types = list(WEATHER_NONE)
+	var/list/gladiator_stats = list()
+obj/map_metadata/gladiators/New()
+	..()
+	load_gladiators()
+
 obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 	..()
 	if (istype(J, /datum/job/roman))
@@ -32,13 +38,39 @@ obj/map_metadata/gladiators/job_enabled_specialcheck(var/datum/job/J)
 		else
 			. = FALSE
 /obj/map_metadata/gladiators/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 27000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/gladiators/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 27000 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 /obj/map_metadata/gladiators/cross_message(faction)
-	return "The gracewall is now removed."
+	return ""
+
+/obj/map_metadata/gladiators/proc/load_gladiators()
+	var/F = file("SQL/gladiator_stats.txt")
+	if (fexists(F))
+		var/list/temp_stats1 = file2list(F,"\n")
+		gladiator_stats = list()
+		for (var/i = 1, i <= temp_stats1, i++)
+			if (findtext(temp_stats1[i], ";"))
+				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
+				//								ckey			name		stats			0=alive,1=dead			victories					matches
+				gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],text2num(temp_stats2[4]),text2num(temp_stats2[5]),text2num(temp_stats2[6])))
+		return TRUE
+	else
+		return FALSE
+
+/obj/map_metadata/gladiators/proc/save_gladiators()
+	var/F = file("SQL/gladiator_stats.txt")
+	if (!gladiator_stats.len)
+		return
+	if (fexists(F))
+		fcopy("SQL/gladiator_stats.txt","SQL/gladiator_stats_backup.txt")
+		fdel(F)
+	for (var/i = 1, i <= gladiator_stats.len, i++)
+		var/txtexport = list2text(gladiator_stats[i])
+		text2file(txtexport,F)
+	return
 
 
 #undef NO_WINNER

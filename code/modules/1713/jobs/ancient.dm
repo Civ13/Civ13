@@ -5,8 +5,12 @@
 	faction = "Station"
 
 /datum/job/roman/give_random_name(var/mob/living/carbon/human/H)
-	H.name = H.species.get_random_roman_name()
-	H.real_name = H.name
+	if (title != "Gladiator")
+		H.name = H.species.get_random_roman_name()
+		H.real_name = H.name
+	else
+		H.name = H.species.get_random_ancient_name()
+		H.real_name = H.name
 
 /datum/job/roman/captain	//Roman - Centurion
 	title = "Centurion"
@@ -390,7 +394,7 @@
 	else if (pickuni == 3)
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(H), slot_w_uniform)
 
-	H.add_note("Role", "You are a <b>[title]</b>, fighting in the area. Can you become the best?")
+	H.add_note("Role", "You are a <b>[title]</b>, fighting in the area. Can you become the best? You can use the beds at the Sleeping Quarters to save your character's name, stats and victories. You will be able to load on respawn.")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
@@ -399,18 +403,8 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
+	H.check_profiles() //this will trigger the "give a custom name" proc
 	return TRUE
 
 
@@ -442,18 +436,7 @@
 	H.setStat("swords", STAT_NORMAL)
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
 	return TRUE
 
 
@@ -481,9 +464,8 @@
 		//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_decurion(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/whip(H), slot_belt)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, guarding the arena. Keep the gladiators organized and following the rules, while protecting the Emperor!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_HIGH)
@@ -493,18 +475,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_HIGH)
 	H.setStat("medical", STAT_NORMAL)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
 	return TRUE
 
 /datum/job/roman/emperor
@@ -512,7 +483,7 @@
 	en_meaning = "Emperor"
 	rank_abbreviation = "Imperator"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateROM"
+	spawn_location = "JoinLateROG"
 	SL_check_independent = TRUE
 	is_gladiator = TRUE
 	is_commander = TRUE
@@ -530,9 +501,11 @@
 		//clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga/purple(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/laurelcrown(H), slot_head)
 
-	H.add_note("Role", "You are the <b>[title]</b>. Organize the games!")
+	H.add_note("Role", "You are the <b>[title]</b>. You are responsable for organizing the games. You can use the interface of the <b>Gladiator Combat Organizer</b> to turn automatic mode on and off. If you decide to manage the games yourself, you will need to attribute the victory using the <b>Gladiator Ledger</b> - click on it and choose the winner!")
+
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -541,16 +514,5 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_VERY_HIGH)
-	spawn(10)
-		if (map.ID == MAP_GLADIATORS)
-			var/input_msg = WWinput(src, "Welcome, [H.client.ckey]. You have spawned as [H.name]. You can customize your name. Do you want to?", "Custom name", "No", list("Yes","No"))
-			if (input_msg == "No")
-				return
-			else
-				var/input_name = input(src, "Choose the new name: (Max 15 characters)","Custom Name", H.name) as text
-				input_name = sanitizeName(input_name, 15, FALSE)
-				if (input_name != "")
-					H.name = input_name
-					H.real_name = input_name
-					return
+	give_random_name(H)
 	return TRUE

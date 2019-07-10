@@ -139,6 +139,7 @@
 			maps = list(
 				MAP_HERACLEA = 0,
 				MAP_SIEGE = 0,
+				MAP_GLADIATORS = 0,
 			)
 		if (epoch == "Middle Ages (700-1450)")
 	//	1013 - TDM
@@ -230,7 +231,7 @@
 	ticker.delay_end = FALSE
 	ticker.pregame_timeleft = 10
 	if (vote.voted_gamemode == "Random")
-		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Modern Age (No Research)")
+		vote.voted_gamemode = pick("Classic (Stone Age Start)", "Auto-Research Mode", "Resource-Based Research", "Chad Mode", "Bronze Age (No Research)","Medieval (No Research)","Imperial Age (No Research)", "Industrial Age (No Research)", "Modern Age (No Research)", "WW2 Age (No Research)")
 
 	map.gamemode = vote.voted_gamemode
 	if (vote.voted_gamemode == "Classic (Stone Age Start)")
@@ -384,6 +385,27 @@
 		map.age5_done = TRUE
 		map.research_active = FALSE
 		var/customresearch = 135
+		map.default_research = customresearch
+		map.civa_research = list(customresearch,customresearch,customresearch,null)
+		map.civb_research = list(customresearch,customresearch,customresearch,null)
+		map.civc_research = list(customresearch,customresearch,customresearch,null)
+		map.civd_research = list(customresearch,customresearch,customresearch,null)
+		map.cive_research = list(customresearch,customresearch,customresearch,null)
+		map.civf_research = list(customresearch,customresearch,customresearch,null)
+		return
+
+	else if (vote.voted_gamemode == "WW2 Age (No Research)")
+		world << "<big>Starting <b>ww2 Age</b> mode. Game Epoch is the ww2 Age, research inactive.</big>"
+		map.ordinal_age = 6
+		map.age = "1943"
+		map.age1_done = TRUE
+		map.age2_done = TRUE
+		map.age3_done = TRUE
+		map.age4_done = TRUE
+		map.age5_done = TRUE
+		map.age6_done = TRUE
+		map.research_active = FALSE
+		var/customresearch = 152
 		map.default_research = customresearch
 		map.civa_research = list(customresearch,customresearch,customresearch,null)
 		map.civb_research = list(customresearch,customresearch,customresearch,null)

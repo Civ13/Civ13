@@ -127,8 +127,20 @@
 	icon_state = "dp"
 	item_state = "dp"
 	base_icon = "dp"
-	caliber = "a762x54"
+	caliber = "a762x54_weak"
 	magazine_type = /obj/item/ammo_magazine/dp
+	weight = 9.12
+	force = 20
+	throwforce = 30
+
+/obj/item/weapon/gun/projectile/automatic/bar
+	name = "Browning Automatic Rifle"
+	desc = "The BAR, is a light machine gun (LMG) This one is chambered in .30-06 rounds."
+	icon_state = "bar"
+	item_state = "bar"
+	base_icon = "bar"
+	caliber = "a3006_weak"
+	magazine_type = /obj/item/ammo_magazine/bar
 	weight = 9.12
 	force = 20
 	throwforce = 30

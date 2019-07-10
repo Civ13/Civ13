@@ -536,6 +536,38 @@
 	max_storage_space = 8
 	show_above_suit = TRUE
 
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_sgt/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/thompson(src)
+	new/obj/item/ammo_magazine/thompson(src)
+	new/obj/item/ammo_magazine/thompson(src)
+
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_sniper/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/springfield(src)
+	new/obj/item/ammo_magazine/springfield(src)
+	new/obj/item/ammo_magazine/springfield(src)
+
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner
+/obj/item/weapon/storage/belt/smallpouches/us_ww2_gunner/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
+	new/obj/item/ammo_magazine/bar(src)
+
+/obj/item/weapon/storage/belt/smallpouches/us_ww2
+/obj/item/weapon/storage/belt/smallpouches/us_ww2/New()
+	..()
+	new/obj/item/stack/medical/bruise_pack/bint(src)
+	new/obj/item/ammo_magazine/garand(src)
+	new/obj/item/ammo_magazine/garand(src)
+	new/obj/item/ammo_magazine/garand(src)
+
 /obj/item/weapon/storage/belt/smallpouches/green
 	icon_state = "smallpouches_green"
 	item_state = "smallpouches_green"
