@@ -357,7 +357,7 @@
 				flist += "[H] ([H.client.ckey]), "
 			flist += "."
 			flist = replacetext(flist,", .",".")
-			world << "<font size=3 color='yellow'>The combat in [arena] has ended! Winners: [flist].</font>"
+			world << "<font size=3 color='yellow'>The combat in [arena] has ended! Winners: [flist]</font>"
 
 		for(var/obj/structure/gate/GATES in A)
 			playsound(GATES, 'sound/effects/castle_gate.ogg', 100)

@@ -40,7 +40,7 @@
 	w_class = 2.0
 	slot_flags = SLOT_BACK|SLOT_DENYPOCKET
 	var/material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	var/cooldown = 0
 	slowdown = 0.1
 
@@ -54,7 +54,7 @@
 	item_state = "steel_shield"
 	slot_flags = SLOT_BACK
 	material = "steel"
-	health = 60
+	health = 30
 	w_class = 3.0
 	base_block_chance = 30
 	slowdown = 0.3
@@ -65,7 +65,7 @@
 	item_state = "iron_shield"
 	slot_flags = SLOT_BACK
 	material = "iron"
-	health = 50
+	health = 25
 	w_class = 3.0
 	base_block_chance = 30
 	slowdown = 0.25
@@ -76,7 +76,7 @@
 	item_state = "bronze_shield"
 	slot_flags = SLOT_BACK
 	material = "bronze"
-	health = 47
+	health = 23
 	w_class = 3.0
 	base_block_chance = 30
 	slowdown = 0.2
@@ -88,7 +88,7 @@
 	item_state = "athenian_shield"
 	slot_flags = SLOT_BACK
 	material = "bronze"
-	health = 47
+	health = 23
 	w_class = 3.0
 	base_block_chance = 45
 	slowdown = 0.4
@@ -106,7 +106,7 @@
 	item_state = "roman_shield"
 	slot_flags = SLOT_BACK
 	material = "bronze"
-	health = 47
+	health = 23
 	w_class = 3.0
 	base_block_chance = 35
 	slowdown = 0.3
@@ -119,7 +119,7 @@
 	w_class = 2.0
 	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.1
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
@@ -130,7 +130,7 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			if (istype(damage_source, /obj/item/weapon/melee))
+			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
 				health -= 10
 			else
 				health--
@@ -161,7 +161,7 @@
 	item_state = "semioval_shield"
 	slot_flags = SLOT_BACK
 	material = "iron"
-	health = 50
+	health = 25
 	w_class = 3.0
 	base_block_chance = 40
 	slowdown = 0.3
@@ -186,7 +186,7 @@ obj/item/weapon/shield/red_buckler
 	w_class = 2.0
 	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.1
 
 obj/item/weapon/shield/blue_buckler
@@ -197,7 +197,7 @@ obj/item/weapon/shield/blue_buckler
 	w_class = 2.0
 	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.1
 
 obj/item/weapon/shield/attack_self(mob/user as mob)
@@ -214,5 +214,5 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	w_class = 2.0
 	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.22
