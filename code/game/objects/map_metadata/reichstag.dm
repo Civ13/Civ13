@@ -28,7 +28,7 @@
 	gamemode = "Siege"
 obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE || J.is_reichstag == TRUE)
+	if (J.is_ww2 == TRUE && J.is_reichstag == TRUE)
 		. = TRUE
 	else
 		. = FALSE
