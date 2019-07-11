@@ -475,8 +475,10 @@
 				GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
 
 			GD.save_gladiators()
+			combat_running = 0
 			world << "<font size=3 color='yellow'>The [current_style] match in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
 			var/obj/map_metadata/gladiators/G = map
+
 			switch(arena)
 				if ("Arena I")
 					G.gracedown1 = TRUE
@@ -584,7 +586,7 @@
 		timer--
 		visible_message("<font size=1 color='yellow'>[arena]: Counter at [timer]...</font>")
 		if (timer < 1)
-			timer = 10
+			timer = 5
 			combat_running = 0
 			if (!WINNER)
 				return
