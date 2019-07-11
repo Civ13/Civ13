@@ -862,7 +862,9 @@
 /area/caribbean/roman/armory/loot
 	name = "Armory Loots"
 	icon_state = "green2"
-
+/area/caribbean/roman/armory/loot2
+	name = "Armory Loots"
+	icon_state = "green3"
 /area/caribbean/greek
 	name = "Greek Camp"
 	icon_state = "blue1"
