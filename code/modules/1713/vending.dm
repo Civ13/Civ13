@@ -183,7 +183,6 @@
 	products = list(
 		/obj/item/clothing/shoes/jackboots = 15,
 		/obj/item/clothing/under/ww2/us = 15,
-		/obj/item/clothing/under/ww2/us_light = 15,
 		/obj/item/clothing/under/ww2/us_shirtless = 15,
 		/obj/item/clothing/head/helmet/ww2/us = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,

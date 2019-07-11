@@ -230,11 +230,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
-	var/cloth = rand(1,2)
-	if (cloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
-	else if (cloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_light(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us(H), slot_head)
 //back
@@ -273,11 +269,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
-	var/cloth = rand(1,2)
-	if (cloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
-	else if (cloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_light(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us(H), slot_head)
 //back
@@ -318,11 +310,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
-	var/cloth = rand(1,2)
-	if (cloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
-	else if (cloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_light(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/us(H), slot_head)
 //back
@@ -396,11 +384,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
 
 //clothes
-	var/cloth = rand(1,3)
-	if (cloth == 1)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
-	else if (cloth == 2)
-		H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us_light(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/us(H), slot_w_uniform)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/knife/butcher(H), slot_l_store)
 	give_random_name(H)

@@ -594,10 +594,10 @@ obj/item/clothing/under/ww2/hitlerjugend
 
 obj/item/clothing/under/ww2/us
 	name = "american uniform"
-	desc = "An american uniform, used by soldiers in the US army."
-	icon_state = "us_uni_ww2"
-	item_state = "us_uni_ww2"
-	worn_state = "us_uni_ww2"
+	desc = "An american uniform, used by soldiers in the US army during WW2."
+	icon_state = "usuni2"
+	item_state = "usuni2"
+	worn_state = "usuni2"
 
 obj/item/clothing/under/ww2/us_cap
 	name = "american captain uniform"
@@ -612,13 +612,6 @@ obj/item/clothing/under/ww2/us_mp
 	icon_state = "usuni_mp"
 	item_state = "usuni_mp"
 	worn_state = "usuni_mp"
-
-obj/item/clothing/under/ww2/us_light
-	name = "american light uniform"
-	desc = "An american uniform, used by soldiers in the US army, this one using the undershirt"
-	icon_state = "usuni2"
-	item_state = "usuni2"
-	worn_state = "usuni2"
 
 obj/item/clothing/under/ww2/us_shirtless
 	name = "american shirtless uniform"
