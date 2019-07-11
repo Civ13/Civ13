@@ -29,6 +29,8 @@
 	..()
 	if (J.is_ww2 == TRUE)
 		. = TRUE
+	else
+		. = FALSE
 	if (J.is_reichstag == TRUE)
 		. = FALSE
 
