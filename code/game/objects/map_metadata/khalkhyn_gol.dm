@@ -19,7 +19,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(JAPANESE = 0.5, RUSSIAN = 0.5)
 	battle_name = "battle of Khalkhyn Gol"
-	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command!</b>. The Soviets will win if they manage to capture the japanese command!.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Japanese will win if they capture the <b>Soviet command</b>. The Soviets will win if they manage to capture the <b>Japanese command</b>.</font>"
 	faction1 = JAPANESE
 	faction2 = RUSSIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)

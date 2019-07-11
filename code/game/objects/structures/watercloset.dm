@@ -496,7 +496,8 @@
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-				volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
+				if (RG.reagents)
+					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)
 					update_icon()
 				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
@@ -597,7 +598,7 @@
 /obj/structure/sink/New()
 	..()
 
-	if (map.ID == MAP_HUNT)
+	if (map && map.ID == MAP_HUNT)
 		mosquito_proc()
 
 	spawn(2000)
