@@ -219,13 +219,13 @@ var/list/slot_equipment_priority = list( \
 		return TRUE
 	return FALSE
 
-//removes all in a mob to the Target (or loc if no target). Ignored nodrop flags by default.
-/mob/proc/strip(var/atom/Target = null, var/ignore_nodrop = TRUE)
+//removes all in a mob to the Target (or loc if no target). Ignores nodrop flags by default.
+/mob/proc/strip(var/atom/Target = null, var/ignore_nodrop = FALSE)
 	if (!Target)
 		Target = loc
-	for (var/obj/item/I in src)
+	for (var/obj/item/I in contents)
 		if (!istype(I,/obj/item/organ))
-			drop_from_inventory(I,Target,ignore_nodrop)
+			unEquip(I,ignore_nodrop,Target)
 	return
 //Drops the item in our left hand
 /mob/proc/drop_l_hand(var/atom/Target)
