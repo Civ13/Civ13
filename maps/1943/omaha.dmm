@@ -126,7 +126,7 @@
 "cv" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "cw" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/obj/structure/closet/cabinet,/obj/item/clothing/head/ww2/us_nco_cap,/obj/item/clothing/under/ww2/us_cap,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "cx" = (/obj/structure/bed/padded,/obj/item/weapon/bedsheet/brown,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
-"cy" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
+"cy" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/wood,/area/caribbean/german/inside)
 "cz" = (/obj/item/weapon/sandbag,/turf/floor/dirt,/area/caribbean/forest)
 "cA" = (/obj/structure/radio/transmitter_receiver/nopower/faction2,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/forest)
 "cB" = (/obj/structure/table,/obj/item/weapon/paper,/obj/item/weapon/pen,/turf/floor/plating/road,/area/caribbean/russian/land/outside)
@@ -384,7 +384,7 @@
 "ht" = (/obj/structure/table/wood,/obj/structure/radio/transmitter_receiver/nopower/faction2,/turf/floor/wood,/area/caribbean/german/inside)
 "hu" = (/obj/structure/closet/cabinet,/obj/item/ammo_magazine/walther,/obj/item/ammo_magazine/walther,/obj/item/weapon/gun/projectile/pistol/waltherp38,/turf/floor/wood,/area/caribbean/german/inside)
 "hv" = (/obj/structure/table/wood,/turf/floor/wood,/area/caribbean/german/inside)
-"hw" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/german/inside)
+"hw" = (/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/turf/floor/plating/road,/area/caribbean/german/inside/objective)
 "hx" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/plating/road,/area/caribbean/german/inside)
 "hy" = (/turf/floor/plating/road,/area/caribbean/german/inside)
 "hz" = (/obj/item/weapon/radio/faction2,/obj/item/weapon/radio/faction2,/turf/floor/plating/road,/area/caribbean/german/inside)
@@ -549,7 +549,10 @@
 "kC" = (/obj/item/weapon/bedsheet/brown,/obj/structure/bed/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 4},/turf/floor/wood,/area/caribbean/houses)
 "kD" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline{name = "gasoline barrel"},/turf/floor/plating/road,/area/caribbean/german/inside)
 "kE" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/plating/road,/area/caribbean/german/inside)
+"kF" = (/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/trench,/area/caribbean/german/inside)
 "kG" = (/obj/structure/sign/painting5,/turf/wall/wood,/area/caribbean/houses)
+"kH" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
+"kI" = (/obj/structure/table/wood,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars,/turf/floor/wood,/area/caribbean/russian/land/inside/command)
 "kJ" = (/obj/structure/closet/wardrobe,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/under/modern2,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/wood,/area/caribbean/houses)
 "kK" = (/obj/item/mine/boobytrap,/obj/structure/wild/tallgrass,/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/forest)
 "kL" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
@@ -727,7 +730,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeueueueueueueueueueueueueueueueuaaaaaaaaaaaaaaaaaa
 aaaaaaaaabaaaaaraaaaaaaaaraaaaeufafbfbfbfbfbfbfbfbnQfHfbfbnQeuaaaraaabaaaaaaaaaaaafYaaaaaaaraaaaaaaaaaaaaaaaaafYaaaaaraaaaaaaaaaaaaafYaaaaaaaafYaaaraaaaaaaaaaaa
 aaaraaaaaaaaaaaaaaaaabaaaaaaaaeufbfbfbfbfbfbfbfbfbfbfKfbfbfbeuaaaaaaaaaaaaaaarabaaaaaaaaaaabaaaaaaaaaafYaaaaaaaaaaaaabaaaraaaaaaabaaaaaaaaaaaaaaabaaaaaaaaaaaaab
 aaaaawaaaaawaaaaawaaaaawaaaaaweufbfMfbgifbfbgifbinfbfHfbfbfbeuaafYaaaaaraaaaaaaaaaaaglgmglglglglglglglglgmglglglglglglglglgmglglglgHgHgHgHgHhpgHgHgHgHgHgHgHgHhp
-aaaaabaaaaaaaaaaaaaraaaaaaaraaeufjhrhshthuhuhvhshqhweufbfbfbeuaaaaaaabaaaaaaaaaaaaaaglhxhyhyhyhyhyhyhyhyhxhyhyhyhyhzhzhzhAhBhChChDhEhEhEhGhPhHhIhJhKiyhLhMhLhNhO
+aaaaabaaaaaaaaaaaaaraaaaaaaraaeufjhrhshthuhuhvhshqcyeufbfbfbeuaaaaaaabaaaaaaaaaaaaaaglhxhyhyhyhyhyhyhyhyhxhyhyhyhyhzhzhzhAhBhChChDhEhEhEhGhPhHhIhJhKiyhLhMhLhNhO
 aaaaaaaraaaaaaaraaaaaafYaaaaaaeueueueufHeueueufHeueueunkfbfbeuaraaaaaafYaaaaaraaaaaaglhQhyhQhyhRhyhRhyhShyhThyhUhyhyhyhyhyhyhyhyhyhLhLhLhGhVhLhLhLhLhLhLhMhLhLhL
 aafYaaaaaaaaaaabaaaaaaaaabaaaaeunQfbfbfbhvfbgjfbfbfbnQfbfbfbeuaaaaaaaaaaaaaaaaaafYaaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhGhVioiohLhLhLhLhMhMhMhM
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeufbfbfbfbhvhshqhvhvfbfbfbfbfbeuaaabaraaaaaaaraaaaaaaaglhQhyhQhyhRhyhRhyhShyhThyhUhyhyhyhyhyhyhyhyhyhLhLhLhGhVhLhLhLhLhLhLhMhLhLhL
@@ -743,7 +746,7 @@ aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYbCbR
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYbCeNbpaYhyhyhyhyhykEkxhyhyhyhyhyhyhyhyhyhyhyhyigixififhLhLhLhLhLhLhLhLhLhLhLiyhLhLiz
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYbHbHaYhyhyhyhykwhykDkDhyhyhyhyhyhyhyhyhyhyhyhyiiiiiihLhLhLhLhLhLhLhLhLhLhLhLhLhLiA
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaWaNaNaNaNaNaNaNaNaWaYaYaYaYaWaNaNaNgmhyhyhyhyhyhyhyhyhyichyhyhyhyhyhyhyhyichyhyhyhLhLhLhLhLiehLhLhLhLhLhLhLhLiC
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaNaYaYaYaYaYaYaYaYaYaYaYaYaYaNaaaaaagliDhyiDhyiDhyiEhyiFhyiGhyiHhyiIhyhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhLhLhLhLhL
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaNaYaYaYaYaYaYaYaYaYaYaYaYaYaNaaaaaagliDhyiDhyiDhyiEhyiFhyiGhyiHhyiIhyhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhLhLhLhLhw
 aaaaaaaaaaaaaaaaaraaaaaaaaaaaaaraaaaaraaaaaaaraaaNaYaYaYaYaYaYaYaYaYaYaYaYaYaNaaaraaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhLhLhLhLhL
 aaaraaaaaafYabaaaaaafYaaabaraaaaaaaaaaaaaaaaaaaaaNaYaYaYaYaYaYaYaYaYaYaYaYaYaNaaaaaagliDhyiDhyiDhyiEhyiFhyiGhyiJhyiEhyhyhyhyhyhyhyhLhLhLhLhLhLhLhLhLhLhLhLhLhLhL
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaraaaaaaaaaaaaaNaYaYaYaYaYaYaYaYaYaYaYaYaYaNaaaaaagliKhyhyhyhyhyhyhyhyiKhyhyhyhyhyhyhyhAiLhChChDhEhEhEiMhLiNhLhLhLhLhLhLhLhLiO
@@ -878,8 +881,8 @@ fQfSlbhnhnhnhnhnhnhnkVfQfSgqgwgsgsgsgsgsgsgsgqfQfSlbhnhnhokVfQfSgqgwgugsgsgsgvgs
 fQfSlbhnhnhnhnhnkOhnkVfQfSgqgqgqgqgqiagqgqgsgqfQfSlbhnhnhnkVfQfSgqgwgsgsgsgsgsgsgsgqfQfSlbhnhnhnkShnhnhnhnhnhnkVfQfSgqgwgsgsgsgsgsgsgsgqfQfRfShnhnhnhnhnkNkNkNkN
 fQfSlbhnkShnhnhohnhnkVfQfSgqgxgxgxkckdgygsgsgqfQfSlbkOhnhnkVfQfSgqgqgqgqgqiagqgqgsgqfQfSlbhnhohnhnhnhnlMhnhnhnkVfQfSgqgqgqgqgqiagqgqgsgqfQfRfSkShnhnhnkNkNkNkNkN
 fQfSowlqlqlqlqlqlqlqlVfQfSgqgzgsgsgsgsgsgsgAgqfQfSowlqlqlqlVfQfSgqgxgxgxkckdgygsgsgqfQfSlbhnhnhnkOhnhnhnhnjyhnkVfQfSgqgxgxgxkckdgygsgsgqfQfRfShnhnhnkNkNkNkNkNkN
-fQfRgfgfgfgfgfgfgfgfgffRfSgqgsgCgsgsgsgsgCgsgqfQfRgfgfgtgfgffRfSgqgzgsgsgsgsgsgsgAgqfQfSowlqlqlqlqlqlqlqlqlqlqlVfQfSgqgzgsgsgsgsgsgsgAgqfQfRfShnkNkNkNkNkNkNkNkN
-fUfVfVfVfVfVfVfVfVfVfVfVfWgqgqoVgqgqgqgqoVgqgqfUfVfVfVfVfVfVfVfWgqgsgCgsgsgsgsgCgsgqfQfRgfgfgfgfgfgfgtgfgfgfgfgffRfSgqgsgCgsgsgsgsgCgsgqfUfVfWkNkNkNkNkNkNkNkNkN
+fQfRgfgfgfgfgfgfgfgfgffRfSgqkFgCgsgsgsgsgCgsgqfQfRgfgfgtgfgffRfSgqgzgsgsgsgsgsgsgAgqfQfSowlqlqlqlqlqlqlqlqlqlqlVfQfSgqgzgsgsgsgsgsgsgAgqfQfRfShnkNkNkNkNkNkNkNkN
+fUfVfVfVfVfVfVfVfVfVfVfVfWgqgqoVgqgqgqgqoVgqgqfUfVfVfVfVfVfVfVfWgqkFgCgsgsgsgsgCgsgqfQfRgfgfgfgfgfgfgtgfgfgfgfgffRfSgqkFgCgsgsgsgsgCgsgqfUfVfWkNkNkNkNkNkNkNkNkN
 mVmVmVmVmVmVmVmVmVmVmVmVmVgGgGgGgGgGgGgGgGgGgGmVmVmVmVmVmVmVmVmWgqgqoVgqgqgqgqoVgqgqfUfVfVfVfVfVfVfVfVfVfVfVfVfVfVfWgqgqoVgqgqgqgqoVgqgqmXgGgGgFgFgEgEgEgEgEgEgE
 oEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEmYgGgGgGgGgGgGgGgGgGgGmVmVmVmVmVmVmVmVmVmVmVmVmVmVmVmVgGgGgGgGgGgGgGgGgGgGoFoEoEoEoEoEoEoEoEkNkNkN
 oGoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoEoGoEoEoEoEoEoEoEoEoEoEoEoEoHoEoEoEoEoEoGoEoEoEoEoEoEoEoEoEkN
@@ -1056,8 +1059,8 @@ oPoPoPakccbnbjbjbjbjbjbjkibjbjcebjbjcebjbjcfcfcfcgcfchcfcfcibjbXbYbYbYbYbYbYbYbZ
 oPoPoPakccbnbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjcmbjbjbjbjbjbjbjcmbjbjcmbjbjbjbjbjaoauaucnaoakoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPakakjGbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjcocpcpcpcpcpcpcqcrcqcpcpcpcpcpcpcpcpcpcsauaoakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPakakjGbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjcpctcucucucvcvcucucucvcpcwcucxcucvcpccccakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPakakbjbjjHbjbKbjjHbjbKbjjHbjbKbjjHbjbKbjjHbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjcpcycucucucucucucucucucpcucucucucucpakakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPakakbjbjjIbjbKbjjIbjbKbjjIbjbKbjjIbjbKbjjIbjbjbjbjbjbjbjbjbjbjkjcBcCcDbjbjbjbjbjcpcycucucucEcFcGcHcucucqcucucucIcpakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPakakbjbjjHbjbKbjjHbjbKbjjHbjbKbjjHbjbKbjjHbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjbjcpkHcucucucucucucucucucpcucucucucucpakakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPakakbjbjjIbjbKbjjIbjbKbjjIbjbKbjjIbjbKbjjIbjbjbjbjbjbjbjbjbjbjkjcBcCcDbjbjbjbjbjcpkIcucucucEcFcGcHcucucqcucucucIcpakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPakakbjbjjIbjbKbjjIbjbKbjjIbjbKbjjIbjbKbjjIbjbjbjbjbjbjbjbjbjbjbjcKbjbjbjbjbjbjbjcpcucucucucLcMcucNcucucOcucucucpakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPakakakbjjIadjJadcRadjJadcRadjJadcRadjJadjIbjbjbjbjbjbjcmcmbjbjbjbjbjbjbjbjbjbjcmcpcScucucucTcTcucucucTcpcTcpcpakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPalakakakakjKcQjKcVjLcQjLcVkacQkacVkbcQkbakakakakakakakakakakakakakakakakakakakakcpcpcpcpcpcpcpcpcpcpcpcpcpakakoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
