@@ -790,3 +790,8 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 5
 	equiptimer = 12
+
+/obj/item/weapon/gun/projectile/boltaction/springfield/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
