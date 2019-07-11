@@ -143,6 +143,8 @@
 		qdel(src)
 
 /obj/item/weapon/grenade/dynamite/attack_self(mob/user as mob)
+	if (state == 2)
+		activate()
 	return
 
 /obj/item/weapon/grenade/dynamite/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -186,6 +188,7 @@
 /obj/item/weapon/grenade/dynamite/ready
 	state = 2
 	name = "dynamite stick"
+	icon_state = "dynamite2"
 	update_icon()
 
 /obj/item/weapon/grenade/dynamite/activate(mob/user as mob)
@@ -198,7 +201,7 @@
 	icon_state = "dynamite3"
 	active = TRUE
 	playsound(loc, 'sound/weapons/armbomb.ogg', 75, TRUE, -3)
-
+	update_icon()
 	spawn(det_time)
 		visible_message("<span class = 'warning'>\The [src] goes off!</span>")
 		prime()

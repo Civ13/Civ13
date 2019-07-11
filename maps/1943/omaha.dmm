@@ -269,7 +269,7 @@
 "fi" = (/obj/structure/table/wood,/obj/item/weapon/wirecutters/boltcutters,/obj/item/weapon/wirecutters/boltcutters,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
 "fj" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/german/inside)
 "fk" = (/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/item/weapon/grenade/dynamite/ready,/obj/structure/table/wood,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
-"fl" = (/obj/structure/table/wood,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
+"fl" = (/obj/structure/table/wood,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/obj/item/weapon/plastique/russian,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
 "fm" = (/obj/item/weapon/wrench,/obj/structure/table/wood,/obj/item/weapon/wrench,/obj/item/weapon/shovel/trench,/obj/item/weapon/hammer,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
 "fn" = (/obj/item/weapon/storage/belt/smallpouches,/obj/structure/table/wood,/obj/item/weapon/storage/belt/smallpouches,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
 "fo" = (/obj/item/weapon/gun/launcher/rocket/panzerfaust{desc = "German single-use rocket. This one was captured by the allies for their use."; name = "Stolen Panzerfaust"},/obj/item/weapon/gun/launcher/rocket/panzerfaust,/obj/structure/table/wood,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
@@ -1076,9 +1076,9 @@ oPoPoPamamdaanananananananananananananananananananananananananananananevanananan
 oPoPoPamamdaananananananananananananananevananananananananananananananananananananananananananeoanananananananeydceranezameAeteBamamoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdYanananananandYanananananananandYananananandYanananandYananananandYananananandYanandceCeDeEeEeFeEeEdUamanananametetamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamamdceodcamamamamamamamdceodcamamamamamamdceoamamamamamamamamamamamamdidcamamamamananameEeGeEeEeDeEeEeHamanananamamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPamameJandRandRanfeamddananananananeKamddananananananananddamheanhfanhgananhhanhiddamananameEeHeEeEeQeEeEeFamanananamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPamameJandRandRanfeamddananananananeKamddananananananananddamheanhfhhhgananhhhhhiddamananameEeHeEeEeQeEeEeFamanananamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdPandeandfandeamananeReSeaeTaneUamaneVananananananananamanananananananananananamananameEeWeEeEeFeEeEdUamereyamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPamamdFandRandRandRamananeXfrandUaneUamananananananananananamhianhjanhfananhkanhlanamananameEfceEeEfdeEeEeDamanamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPamamdFandRandRandRamananeXfrandUaneUamananananananananananamhianhjhhhfananhkhhhlanamananameEfceEeEfdeEeEeDamanamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdcdYdeandfandZamffananananananfgamfhfioBfkflfmfnfofpeVamdYananananananananandYamananameCeFeEeEemeEeEfqamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPdbamamamamamamamdcamdcamamamamamamdcamdcamamamamamamamamdcamdcamamamamdcamamamamdcamamdcamamamdcamamdcamamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
