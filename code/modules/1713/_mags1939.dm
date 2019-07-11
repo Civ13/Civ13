@@ -206,6 +206,7 @@ obj/item/ammo_magazine/dp
 	ammo_type = /obj/item/ammo_casing/a3006/weak
 	max_ammo = 20
 	weight = 0.038
+	mag_type = MAGAZINE
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/thompson

@@ -414,7 +414,6 @@
 "hX" = (/obj/structure/window/sandbag/sandbag,/turf/floor/plating/road,/area/caribbean/german/inside/objective)
 "hY" = (/obj/structure/optable,/turf/floor/plating/road,/area/caribbean/german/inside/objective)
 "hZ" = (/obj/structure/barricade/steel,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/german/inside/objective)
-"ia" = (/obj/structure/simple_door/key_door,/turf/floor/plating/road,/area/caribbean/german/inside/objective)
 "ib" = (/obj/structure/barricade/steel,/obj/structure/sign/flag/medical,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/road,/area/caribbean/german/inside/objective)
 "ic" = (/obj/structure/lamp/lamppost_small/alwayson,/turf/floor/plating/road,/area/caribbean/german/inside)
 "id" = (/obj/structure/wild/burnedtree,/turf/floor/grass,/area/caribbean/forest)
@@ -722,7 +721,7 @@ aaaaaaaraaaaaaaraaaaaafYaaaaaaeueueueufHeueueufHeueueunkfbfbeuaraaaaaafYaaaaaraa
 aafYaaaaaaaaaaabaaaaaaaaabaaaaeunQfbfbfbhvfbgjfbfbfbnQfbfbfbeuaaaaaaaaaaaaaaaaaafYaaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhGhVioiohLhLhLhLhMhMhMhM
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeufbfbfbfbhvhshqhvhvfbfbfbfbfbeuaaabaraaaaaaaraaaaaaaaglhQhyhQhyhRhyhRhyhShyhThyhUhyhyhyhyhyhyhyhyhyhLhLhLhGhVhLhLhLhLhLhLhMhLhLhL
 aaaraaaaabaraaaaaraaaaaraaaaaaeunLfbfbfbfbfbfbnLfbfbfbfbfbnLeuaaaaaaaaaaaaaaaaabaaaaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhGhWhXhLhXhXhXhLhMhLhNhY
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeueueueueueufHfKfHeueueueueueueuaaaraaaaaaaaaaaaaaaraaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhFhZibiamAhZhZhFhFhFhFhF
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeueueueueueufHfKfHeueueueueueueuaaaraaaaaaaaaaaaaaaraaglhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhLhLhLhFhZibhLmAhZhZhFhFhFhFhF
 aNaNaNaNaNaNaNaNaNaNaNaNaNaNaRaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaNaRaNaWaNaNaNaNaWaNaNaNgmhyhyhyhyhyhyhyhyhyichyhyhyhyhyhyhyhyichyhyhyhLhLhLhLhLiehLhLhLhLhLhLhLhLhL
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYbdbpbpaYhxhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyifififhLhLhLhLhLhLhLhLhLhLhLhLhLhLhL
 aYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYaYbCbDbHaYhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyhyigihiiiihLhLhLhLhLhLhLhLhLhLhLijijikil
