@@ -146,7 +146,7 @@
 	var/arena = "Arena I"
 
 	var/combat_running = FALSE
-	var/current_style = "1 on 1"
+	var/current_style = "1 vs 1"
 	var/current_participants = 0
 	var/automode = FALSE
 
@@ -161,7 +161,6 @@
 	var/count = 0
 /obj/structure/gladiator_control/New()
 	..()
-	arena = get_area(src.loc).name
 	spawn(1200)
 		run_proc()
 
@@ -219,17 +218,22 @@
 			count_max = 4
 			victory_min = 2
 			teams = TRUE
-	var/area/A = get_area(src.loc)
+	var/area/A = get_area_name(arena)
 	for(var/mob/living/carbon/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
 			count++
 	if (count == count_max)
 		combat_running = 2
 		var/obj/map_metadata/gladiators/G = map
-		if (arena == "Arena I")
-			G.gracedown1 = FALSE
-		else if (arena == "Arena II")
-			G.gracedown2 = FALSE
+		switch(arena)
+			if ("Arena I")
+				G.gracedown1 = FALSE
+			if ("Arena II")
+				G.gracedown2 = FALSE
+			if ("Arena III")
+				G.gracedown3 = FALSE
+			if ("Arena IV")
+				G.gracedown4 = FALSE
 		world << "<font size=3 color='yellow'>The combat has started at <b>[arena]</b>!</font>"
 		if (!teams)
 			var/list/currlist = list()
@@ -282,7 +286,7 @@
 
 /obj/structure/gladiator_control/proc/check_combat()
 	var/obj/map_metadata/gladiators/GD = map
-	var/area/A = get_area(src.loc)
+	var/area/A = get_area_name(arena)
 	var/count = 0
 	for(var/mob/living/carbon/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
@@ -313,19 +317,19 @@
 
 		GD.save_gladiators()
 		world << "<font size=3 color='yellow'>The combat in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
-		var/obj/map_metadata/gladiators/G = map
-		if (arena == "Arena I")
-			G.gracedown1 = TRUE
-		else if (arena == "Arena II")
-			G.gracedown2 = TRUE
+		switch(arena)
+			if ("Arena I")
+				GD.gracedown1 = TRUE
+			if ("Arena II")
+				GD.gracedown2 = TRUE
+			if ("Arena III")
+				GD.gracedown3 = TRUE
+			if ("Arena IV")
+				GD.gracedown4 = TRUE
 		cooldown_timer = world.time+300
 		spawn(60)
-			if (arena == "Arena I")
-				for(var/obj/structure/functions/clean_arena1/CA1 in world)
-					CA1.clean_proc_nomob()
-			else if (arena == "Arena II")
-				for(var/obj/structure/functions/clean_arena2/CA2 in world)
-					CA2.clean_proc_nomob()
+			for(var/obj/structure/functions/clean_arena1/CA1 in A)
+				CA1.clean_proc_nomob()
 		return
 
 	else if (count == victory_min && victory_min > 1)
@@ -366,20 +370,21 @@
 			spawn(30)
 				GATES.icon_state = "s_gate1"
 		combat_running = 0
-		if (arena == "Arena I")
-			GD.gracedown1 = TRUE
-		else if (arena == "Arena II")
-			GD.gracedown2 = TRUE
+		switch(arena)
+			if ("Arena I")
+				GD.gracedown1 = TRUE
+			if ("Arena II")
+				GD.gracedown2 = TRUE
+			if ("Arena III")
+				GD.gracedown3 = TRUE
+			if ("Arena IV")
+				GD.gracedown4 = TRUE
 		cooldown_timer = world.time+300
 		spawn(60)
-			if (arena == "Arena I")
-				for(var/obj/structure/functions/clean_arena1/CA1 in world)
-					CA1.clean_proc_nomob()
-			else if (arena == "Arena II")
-				for(var/obj/structure/functions/clean_arena2/CA2 in world)
-					CA2.clean_proc_nomob()
+			for(var/obj/structure/functions/clean_arena1/CA1 in A)
+				CA1.clean_proc_nomob()
 		return
-
+/*
 /obj/structure/gladiator_control/attack_hand(mob/user as mob)
 	if (map.ID == MAP_GLADIATORS)
 		if (istype(user, /mob/living/carbon/human))
@@ -392,14 +397,234 @@
 					automode = !automode
 					user << "<font size=2 color='yellow'>Auto-Matchmaking mode turned <b>[automode ? "ON" : "OFF"]</b>.</font>"
 					return
+*/
+/obj/structure/gladiator_control/ranged
+	current_style = "ranged"
+/obj/structure/gladiator_control/ranged/pick_combat()
+	current_style = pick("ranged")
+	return
+
+/obj/structure/gladiator_control/ranged/prepare_combat()
+	count = 0
+	count_max = 2
+	victory_min = 1
+	teams = FALSE
+
+	var/obj/map_metadata/gladiators/G = map
+	var/area/A = get_area_name(arena)
+
+	for(var/mob/living/carbon/human/GLAD in A)
+		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
+			count++
+
+	if (count == count_max)
+		combat_running = 2
+		switch(arena)
+			if ("Arena I")
+				G.gracedown1 = FALSE
+			if ("Arena II")
+				G.gracedown2 = FALSE
+			if ("Arena III")
+				G.gracedown3 = FALSE
+			if ("Arena IV")
+				G.gracedown4 = FALSE
+
+		world << "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>"
+		var/list/currlist = list()
+		for(var/mob/living/carbon/human/H in A)
+			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
+				currlist += H.name
+		for(var/i = 1, i <= G.gladiator_stats.len, i++)
+			if (G.gladiator_stats[i][2] in currlist)
+				G.gladiator_stats[i][6]++
+		var/flist = ""
+		for(var/i=1,i<=currlist.len,i++)
+			flist += "[currlist[i]], "
+		flist += "."
+		flist = replacetext(flist,", .",".")
+		world << "<font size=2 color='yellow'>Fighters: [flist]</font>"
+		return
+	else if (count > count_max && prob(10))
+		world << "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>"
+		return
+	return
+
+/obj/structure/gladiator_control/ranged/check_combat()
+	var/obj/map_metadata/gladiators/GD = map
+	var/area/A = get_area_name(arena)
+
+	var/mob/living/carbon/human/WINNER
+	var/count = 0
+	for(var/mob/living/carbon/human/GLAD in A)
+		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+			count++
+	if (count == 1)
+		for(var/mob/living/carbon/human/GLAD in A)
+			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+				WINNER = GLAD
+			if (!WINNER)
+				return
+			var/done = FALSE
+			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+				if (GD.gladiator_stats[i][1] == WINNER.client.ckey && GD.gladiator_stats[i][2] == WINNER.name && GD.gladiator_stats[i][4] == 0)
+					GD.gladiator_stats[i][5]++
+					done = TRUE
+					continue
+			if (!done && WINNER.client)
+				var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["mg"][1]],[WINNER.stats["stamina"][1]]"
+				GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
+
+			GD.save_gladiators()
+			world << "<font size=3 color='yellow'>The [current_style] match in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+			var/obj/map_metadata/gladiators/G = map
+			switch(arena)
+				if ("Arena I")
+					G.gracedown1 = TRUE
+				if ("Arena II")
+					G.gracedown2 = TRUE
+				if ("Arena III")
+					G.gracedown3 = TRUE
+				if ("Arena IV")
+					G.gracedown4 = TRUE
+
+			cooldown_timer = world.time+300
+			spawn(60)
+				for(var/obj/structure/functions/clean_arena1/CA1 in A)
+					CA1.clean_proc_nomob()
+			return
+		return
+
+/obj/structure/gladiator_control/wrestling
+	var/timer = 10
+	current_style = "unarmed"
+
+/obj/structure/gladiator_control/wrestling/pick_combat()
+	current_style = pick("unarmed","wrestling")
+	return
+
+/obj/structure/gladiator_control/wrestling/prepare_combat()
+	count = 0
+	count_max = 2
+	victory_min = 1
+	teams = FALSE
+
+	var/obj/map_metadata/gladiators/G = map
+	var/area/A = get_area_name(arena)
+	var/area/B = get_area_name("Arena IV outer ring")
+
+	for(var/mob/living/carbon/human/GLAD in A)
+		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
+			count++
+	if (current_style == "unarmed")
+		for(var/mob/living/carbon/human/GLAD in B)
+			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
+				count++
+	if (count == count_max)
+		combat_running = 2
+		switch(arena)
+			if ("Arena I")
+				G.gracedown1 = FALSE
+			if ("Arena II")
+				G.gracedown2 = FALSE
+			if ("Arena III")
+				G.gracedown3 = FALSE
+			if ("Arena IV")
+				G.gracedown4 = FALSE
+
+		world << "<font size=3 color='yellow'>The [current_style] combat has started at <b>[arena]</b>!</font>"
+		var/list/currlist = list()
+		for(var/mob/living/carbon/human/H in A)
+			if (H.original_job_title == "Gladiator" && H.stat == CONSCIOUS)
+				currlist += H.name
+		for(var/i = 1, i <= G.gladiator_stats.len, i++)
+			if (G.gladiator_stats[i][2] in currlist)
+				G.gladiator_stats[i][6]++
+		var/flist = ""
+		for(var/i=1,i<=currlist.len,i++)
+			flist += "[currlist[i]], "
+		flist += "."
+		flist = replacetext(flist,", .",".")
+		world << "<font size=2 color='yellow'>Fighters: [flist]</font>"
+		return
+	else if (count > count_max && prob(10))
+		world << "<font size=2 color='yellow'>Too many people at [arena]. There should be a maximum of <b>[count_max]</b>!</font>"
+		return
+	return
+
+/obj/structure/gladiator_control/wrestling/check_combat()
+	var/obj/map_metadata/gladiators/GD = map
+	var/area/A = get_area_name(arena)
+	var/area/B = get_area_name("Arena IV outer ring")
+
+	var/mob/living/carbon/human/WINNER
+	var/count = 0
+	for(var/mob/living/carbon/human/GLAD in A)
+		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+			if (current_style == "wrestling" && !GLAD.lying && !GLAD.scrambling && !GLAD.prone)
+				count++
+			else if (current_style == "unarmed")
+				count++
+	if (current_style == "unarmed")
+		for(var/mob/living/carbon/human/GLAD in B)
+			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+				count++
+	if (count == 1)
+		for(var/mob/living/carbon/human/GLAD in A)
+			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+				WINNER = GLAD
+		if (current_style == "unarmed")
+			for(var/mob/living/carbon/human/GLAD in B)
+				if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
+					WINNER = GLAD
+		timer--
+		visible_message("<font size=1 color='yellow'>[arena]: Counter at [timer]...</font>")
+		if (timer < 1)
+			timer = 10
+			combat_running = 0
+			if (!WINNER)
+				return
+			var/done = FALSE
+			for (var/i = 1, i <= GD.gladiator_stats.len, i++)
+				if (GD.gladiator_stats[i][1] == WINNER.client.ckey && GD.gladiator_stats[i][2] == WINNER.name && GD.gladiator_stats[i][4] == 0)
+					GD.gladiator_stats[i][5]++
+					done = TRUE
+					continue
+			if (!done && WINNER.client)
+				var/statlist = "[WINNER.stats["strength"][1]],[WINNER.stats["crafting"][1]],[WINNER.stats["rifle"][1]],[WINNER.stats["dexterity"][1]],[WINNER.stats["swords"][1]],[WINNER.stats["pistol"][1]],[WINNER.stats["bows"][1]],[WINNER.stats["medical"][1]],[WINNER.stats["philosophy"][1]],[WINNER.stats["mg"][1]],[WINNER.stats["stamina"][1]]"
+				GD.gladiator_stats += list(list(WINNER.client.ckey,WINNER.name,statlist,0,1,1))
+
+			GD.save_gladiators()
+			world << "<font size=3 color='yellow'>The [current_style] match in [arena] has ended! [WINNER] ([WINNER.client.ckey]) was victorious!</font>"
+			var/obj/map_metadata/gladiators/G = map
+			switch(arena)
+				if ("Arena I")
+					G.gracedown1 = TRUE
+				if ("Arena II")
+					G.gracedown2 = TRUE
+				if ("Arena III")
+					G.gracedown3 = TRUE
+				if ("Arena IV")
+					G.gracedown4 = TRUE
+
+			cooldown_timer = world.time+300
+			spawn(60)
+				for(var/obj/structure/functions/clean_arena1/CA1 in A)
+					CA1.clean_proc_nomob()
+			return
+	else
+		timer = 10
+		return
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////CLEANERS//////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /obj/structure/functions/clean_arena1
-	name = "Clean Arena I"
-	desc = "Clean the 1st arena deleting bodies and moving equipment to the armory."
-
+	name = "Clean Arena"
+	desc = "Clean the arena deleting bodies and moving equipment to the armory."
+	var/arena = "Arena I"
+	New()
+		..()
+		name = "Clear [arena]"
 /obj/structure/functions/clean_arena1/attack_hand(mob/living/user)
 	clean_proc(user)
 /obj/structure/functions/clean_arena1/proc/clean_proc(mob/living/user)
@@ -410,6 +635,7 @@
 			var/area/A = get_area(src.loc)
 			for (var/mob/living/carbon/human/H in A)
 				if (H.stat == DEAD)
+					H.strip(H.loc,TRUE)
 					qdel(H)
 			for (var/obj/item/I in A)
 				if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
@@ -418,13 +644,27 @@
 					I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
 			for (var/obj/effect/decal/cleanable/C in A)
 				qdel(C)
+			if (A.name == "Arena IV")
+				var/area/B = get_area_name("Arena IV outer ring")
+				for (var/mob/living/carbon/human/H in B)
+					if (H.stat == DEAD)
+						H.strip(H.loc,TRUE)
+						qdel(H)
+				for (var/obj/item/I in B)
+					if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
+						qdel(I)
+					else
+						I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+				for (var/obj/effect/decal/cleanable/C in B)
+					qdel(C)
 	if (user)
-		user << "Arena 1 cleared."
+		user << "[arena] cleared."
 	return
 /obj/structure/functions/clean_arena1/proc/clean_proc_nomob()
 	var/area/A = get_area(src.loc)
 	for (var/mob/living/carbon/human/H in A)
 		if (H.stat == DEAD)
+			H.strip(H.loc,TRUE)
 			qdel(H)
 	for (var/obj/item/I in A)
 		if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
@@ -433,46 +673,21 @@
 			I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
 	for (var/obj/effect/decal/cleanable/C in A)
 		qdel(C)
-	return
-/obj/structure/functions/clean_arena2
-	name = "Clean Arena II"
-	desc = "Clean the 2nd arena deleting bodies and moving equipment to the armory."
-
-/obj/structure/functions/clean_arena2/attack_hand(mob/living/user)
-	clean_proc(user)
-/obj/structure/functions/clean_arena2/proc/clean_proc(mob/living/user)
-	if (user)
-		if (!istype(user, /mob/living/carbon/human))
-			return
-		else
-			var/area/A = get_area(src.loc)
-			for (var/mob/living/carbon/human/H in A)
-				if (H.stat == DEAD)
-					qdel(H)
-			for (var/obj/item/I in A)
-				if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
-					qdel(I)
-				else
-					I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
-			for (var/obj/effect/decal/cleanable/C in A)
-				qdel(C)
-	if (user)
-		user << "Arena 2 cleared."
+	if (A.name == "Arena IV")
+		var/area/B = get_area_name("Arena IV outer ring")
+		for (var/mob/living/carbon/human/H in B)
+			if (H.stat == DEAD)
+				H.strip(H.loc,TRUE)
+				qdel(H)
+		for (var/obj/item/I in B)
+			if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food) || istype(I,/obj/item/clothing/shoes/roman) || istype(I,/obj/item/clothing/under/celtic_green) || istype(I,/obj/item/clothing/under/celtic_red) || istype(I,/obj/item/clothing/under/celtic_blue))
+				qdel(I)
+			else
+				I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+		for (var/obj/effect/decal/cleanable/C in B)
+			qdel(C)
 	return
 
-/obj/structure/functions/clean_arena2/proc/clean_proc_nomob()
-	var/area/A = get_area(src.loc)
-	for (var/mob/living/carbon/human/H in A)
-		if (H.stat == DEAD)
-			qdel(H)
-	for (var/obj/item/I in A)
-		if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
-			qdel(I)
-		else
-			I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
-	for (var/obj/effect/decal/cleanable/C in A)
-		qdel(C)
-	return
 /////////////////////////////////////////////////////
 ///////////////////SAVING BEDS///////////////////////
 /////////////////////////////////////////////////////

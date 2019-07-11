@@ -3,7 +3,7 @@
 	ID = MAP_GLADIATORS
 	title = "Gladiators (100x80x1)"
 	lobby_icon_state = "ancient"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/one, /area/caribbean/no_mans_land/invisible_wall/two,/area/caribbean/no_mans_land/invisible_wall/three,/area/caribbean/no_mans_land/invisible_wall/four)
 	respawn_delay = 0
 	squad_spawn_locations = FALSE
 	faction_organization = list(
@@ -81,16 +81,16 @@
 		return FALSE
 	var/area/A = get_area(T)
 	if (caribbean_blocking_area_types.Find(A.type))
-		if (A.name == "Arena I grace wall")
+		if (A.name == "I grace wall")
 			if (!gracedown1)
 				return TRUE
-		else if (A.name == "Arena II grace wall")
+		else if (A.name == "II grace wall")
 			if (!gracedown2)
 				return TRUE
-		else if (A.name == "Arena III grace wall")
+		else if (A.name == "III grace wall")
 			if (!gracedown3)
 				return TRUE
-		else if (A.name == "Arena IV grace wall")
+		else if (A.name == "IV grace wall")
 			if (!gracedown4)
 				return TRUE
 	return FALSE
