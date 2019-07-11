@@ -555,15 +555,20 @@
 	var/obj/map_metadata/gladiators/GD = map
 	var/area/A = get_area_name(arena)
 	var/area/B = get_area_name("Arena IV outer ring")
-
+	var/turf/TGT = pick_area_turf(/area/caribbean/roman/armory/loot)
 	var/mob/living/carbon/human/WINNER
 	var/count = 0
 	for(var/mob/living/carbon/human/GLAD in A)
+		GLAD.strip(TGT, TRUE)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
 			if (current_style == "wrestling" && !GLAD.lying && !GLAD.scrambling && !GLAD.prone)
 				count++
 			else if (current_style == "unarmed")
 				count++
+	for(var/obj/item/I in A)
+		I.loc = TGT
+	for(var/obj/item/II in B)
+		II.loc = TGT
 	if (current_style == "unarmed")
 		for(var/mob/living/carbon/human/GLAD in B)
 			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
