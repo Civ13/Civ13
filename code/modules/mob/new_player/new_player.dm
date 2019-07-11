@@ -608,8 +608,6 @@
 	dat += "<b>Current Autobalance Status</b>: "
 	if (BRITISH in map.faction_organization)
 		dat += "[alive_british.len] British "
-	if (AMERICAN in map.faction_organization)
-		dat += "[alive_american.len] American "
 	if (PORTUGUESE in map.faction_organization)
 		dat += "[alive_portuguese.len] Portuguese "
 	if (FRENCH in map.faction_organization)
@@ -637,7 +635,10 @@
 	if (GERMAN in map.faction_organization)
 		dat += "[alive_german.len] German "
 	if (AMERICAN in map.faction_organization)
-		dat += "[alive_american.len] American "
+		if (map && istype(map, /obj/map_metadata/arab_town))
+			dat += "[alive_american.len] Israeli "
+		else
+			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
 		dat += "[alive_vietnamese.len] Vietnamese "
 	dat += "<br>"
