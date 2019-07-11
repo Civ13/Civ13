@@ -28,6 +28,8 @@
 	var/list/gladiator_stats = list()
 	var/gracedown1 = TRUE
 	var/gracedown2 = TRUE
+	var/gracedown3 = TRUE
+	var/gracedown4 = TRUE
 /obj/map_metadata/gladiators/New()
 	..()
 	load_gladiators()
@@ -84,6 +86,12 @@
 				return TRUE
 		else if (A.name == "Arena II grace wall")
 			if (!gracedown2)
+				return TRUE
+		else if (A.name == "Arena III grace wall")
+			if (!gracedown3)
+				return TRUE
+		else if (A.name == "Arena IV grace wall")
+			if (!gracedown4)
 				return TRUE
 	return FALSE
 #undef NO_WINNER

@@ -264,19 +264,19 @@
 
 /area/caribbean/no_mans_land/invisible_wall/one
 	icon_state = "green1"
-	name = "Arena I grace wall"
+	name = "I grace wall"
 
 /area/caribbean/no_mans_land/invisible_wall/two
 	icon_state = "green1"
-	name = "Arena II grace wall"
+	name = "II grace wall"
 
 /area/caribbean/no_mans_land/invisible_wall/three
 	icon_state = "green1"
-	name = "Arena III grace wall"
+	name = "III grace wall"
 
 /area/caribbean/no_mans_land/invisible_wall/four
 	icon_state = "green1"
-	name = "Arena IV grace wall"
+	name = "IV grace wall"
 /area/caribbean/no_mans_land/invisible_wall/inside
 	location = AREA_INSIDE
 
@@ -846,7 +846,7 @@
 	name = "Arena IV"
 	icon_state = "blue2"
 /area/caribbean/roman/arena4/out
-	name = "Arena IV"
+	name = "Arena IV outer ring"
 	icon_state = "blue3"
 
 /area/caribbean/roman/morgue

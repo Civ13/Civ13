@@ -1257,7 +1257,7 @@
 				if (prob(10))
 					Weaken(15)
 
-/mob/living/carbon/human/handle_shock()
+/mob/living/carbon/human/proc/handle_shock()
 	..()
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (species && species.flags & NO_PAIN) return
@@ -1265,6 +1265,7 @@
 	if (health < config.health_threshold_softcrit)// health FALSE makes you immediately collapse
 		shock_stage = max(shock_stage, 61)
 
+	traumatic_shock = updateshock()
 	if (traumatic_shock >= 80)
 		shock_stage += 1
 

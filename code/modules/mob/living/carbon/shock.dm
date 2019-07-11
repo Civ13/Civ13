@@ -3,9 +3,6 @@
 
 // proc to find out in how much pain the mob is at the moment
 /mob/living/carbon/proc/updateshock()
-	if (species && (species.flags & NO_PAIN))
-		traumatic_shock = FALSE
-		return FALSE
 
 	traumatic_shock = 			\
 	1	* getOxyLoss() + 		\
@@ -31,7 +28,3 @@
 		traumatic_shock = FALSE
 
 	return traumatic_shock
-
-
-/mob/living/carbon/proc/handle_shock()
-	updateshock()

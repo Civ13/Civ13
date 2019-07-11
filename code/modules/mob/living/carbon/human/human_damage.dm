@@ -338,18 +338,3 @@ This function restores all organs.
 	// Will set our damageoverlay icon to the next level, which will then be set back to the normal level the next mob.Life().
 	updatehealth()
 	return created_wound
-
-// Find out in how much pain the mob is at the moment.
-/mob/living/carbon/human/proc/get_shock()
-
-	var/traumatic_shock = getHalLoss()                 // Pain.
-	traumatic_shock += (0.5 * src.getToxLoss())        // Organ failure.
-	traumatic_shock += (0.5 * src.getCloneLoss())      // Genetic decay.
-	traumatic_shock -= src.chem_effects[CE_PAINKILLER] // TODO: check what is actually stored here.
-
-	if(slurring)                                       // Drunk.
-		traumatic_shock *= 0.75
-	if(stat == UNCONSCIOUS)
-		traumatic_shock *= 0.5
-
-	return max(0,traumatic_shock)
