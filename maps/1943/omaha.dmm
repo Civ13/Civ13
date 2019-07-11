@@ -528,6 +528,7 @@
 "kh" = (/obj/structure/table/wood,/obj/item/weapon/paper_bin,/turf/floor/wood,/area/caribbean/houses)
 "ki" = (/obj/structure/radio/transmitter_receiver/nopower/faction1,/obj/structure/table,/turf/floor/plating/road,/area/caribbean/russian/land/outside)
 "kj" = (/obj/structure/table,/obj/structure/radio/transmitter_receiver/nopower/faction1,/turf/floor/plating/road,/area/caribbean/russian/land/outside)
+"kk" = (/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/obj/item/stack/ore/coal,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
 "kl" = (/obj/structure/closet/wardrobe,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/under/modern2,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
 "km" = (/obj/structure/curtain/medical,/turf/floor/wood,/area/caribbean/houses)
 "kn" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/combat,/obj/item/weapon/storage/firstaid/combat,/turf/floor/wood,/area/caribbean/houses)
@@ -536,6 +537,7 @@
 "kq" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
 "kr" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/pen,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
 "ks" = (/obj/structure/oven/woodstove,/obj/structure/lamp/lamp_big/alwayson,/turf/floor/wood,/area/caribbean/houses)
+"kt" = (/obj/structure/canner,/obj/structure/table/wood,/turf/floor/plating/road,/area/caribbean/russian/land/inside{name = "Ship Lower Deck"})
 "ku" = (/obj/structure/sign/redcross{name = "medical clinic"},/turf/wall/brick,/area/caribbean/houses)
 "kv" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/wood,/area/caribbean/houses)
 "ky" = (/obj/structure/closet/crate/coldwar,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/item/weapon/reagent_containers/blood/OMinus,/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 8},/turf/floor/wood,/area/caribbean/houses)
@@ -1071,7 +1073,7 @@ oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPoPoPamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPdbamamamamamamamdcamdcamamamamamamdcamamamamamamdcamamamamamdcamamamamamamdcamamamamamdcamamamdcamamdcamamamdboPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPamamdcdddeandfandgamdhanandianananddamdjdkdjamdlandmandndodpdpdqdrdmdsdtdudvdwdxdyamcZcZamdBananandCandDdEamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPamamdcdddeandfandgamdhanandianananddamdjdkdjamdlandmandndodpdpdqdrdmdsdtdudvdwdxdyamcZcZamdBananandCkkdDdEamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdFandRandRandRamananandGanandHanamdIandJamdKananandnandLananandManananananandNamananamananananananananamdOamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdPandfandeandfamananandGanandQdSamanananamdKananandnananananananandVdVananandTamananamananandUanexananamdWdXamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdFdYdRandRaneIamdZanandGananeaebamanananamecandmeddnaneeefeganeeaneeefanananehamananamanananeiejekeleaamdOanenamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
@@ -1079,7 +1081,7 @@ oPoPoPamamamdceodcamamamamamamamdcdidcamamamdceoamamamdcamamamamamdcamamamamepam
 oPoPoPamamddananananananddananananananananddanananananddananananddanananananddanananananddanandceranananananananamdOanesametetamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdaanananananananananananananananananananananananananananananevanananananananananananeoananananananananeoananewdcetetetamamoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdaananananananananananananananevananananananananananananananananananananananananananeoanananananananeydceranezameAeteBamamoPoPoPoPoPoPoPoPoPoPoPoPoPoP
-oPoPoPamamdYanananananandYanananananananandYananananandYanananandYananananandYananananandYanandceCeDeEeEeFeEeEdUamanananametetamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
+oPoPoPamamdYanananananandYanananananananandYananananandYanananandYananananandYananananandYanandceCeDeEeEeFeEeEdUamananktametetamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamamdceodcamamamamamamamdceodcamamamamamamdceoamamamamamamamamamamamamdidcamamamamananameEeGeEeEeDeEeEeHamanananamamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamameJandRandRanfeamddananananananeKamddananananananananddamheanhfhhhgananhhhhhiddamananameEeHeEeEeQeEeEeFamanananamamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
 oPoPoPamamdPandeandfandeamananeReSeaeTaneUamoBeVanananananananoBamanananananananananananamananameEeWeEeEeFeEeEdUamereyamamoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoPoP
