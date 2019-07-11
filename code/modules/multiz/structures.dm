@@ -258,10 +258,79 @@
 /obj/structure/multiz/ladder/ww2/teleporter/up
 	icon_state = "ladderup"
 	istop = FALSE
+/obj/structure/multiz/ladder/ww2/teleporter/New()
+	..()
+	for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in ladder_list)
+		if (ladder_id == ladder.ladder_id && ladder != src)
+			target = ladder
+			continue
 /obj/structure/multiz/ladder/ww2/teleporter/find_target()
 	for (var/obj/structure/multiz/ladder/ww2/teleporter/ladder in ladder_list)
 		if (ladder_id == ladder.ladder_id && ladder != src)
 			return ladder
+	return FALSE
+/obj/structure/multiz/ladder/ww2/teleporter/Crossed(var/atom/movable/AM)
+	if (target && istop)
+		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
+			var/obj/item/I = AM
+			if (I.w_class <= 2.0) // fixes maxim bug and probably some others - Kachnov
+				I.loc = target.loc
+				visible_message("\The [I] falls down the ladder.")
+		else if (!AM.pulledby && istype(AM, /obj/structure/closet))
+			visible_message("\The [AM] falls down the ladder.")
+			AM.loc = target.loc
+/obj/structure/multiz/ladder/ww2/teleporter/attack_hand(var/mob/M)
+
+	if (M.restrained())
+		M << "<span class='warning'>You can't use \the [src] while you're restrained.</span>"
+		return
+
+	if (!target || !istype(target.loc, /turf))
+		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && !istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom) && !istype(src, /obj/structure/multiz/ladder/ww2) && !istype(src, /obj/structure/multiz/ladder/ww2/up) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsdown) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsup))
+			M << "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>"
+			return
+
+	M.visible_message(
+		"<span class='notice'>\A [M] starts to climb [istop ? "down" : "up"] \a [src].</span>",
+		"<span class='notice'>You start to climb [istop ? "down" : "up"] \the [src].</span>",
+		"You hear the grunting and clanging of a metal ladder being used."
+	)
+
+	if (do_after(M, 10, src))
+		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
+		// pulling/grabbing people with you
+		if (M.pulling != null)
+			M.pulling.loc = target.loc
+		M.loc = target.loc
+		return
+
+		M.visible_message(
+			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
+			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
+			"You hear the grunting and clanging of a metal ladder being used."
+		)
+
+/obj/structure/multiz/ladder/ww2/teleporter/one
+	ladder_id = "1"
+/obj/structure/multiz/ladder/ww2/teleporter/up/one
+	ladder_id = "1"
+/obj/structure/multiz/ladder/ww2/teleporter/two
+	ladder_id = "2"
+/obj/structure/multiz/ladder/ww2/teleporter/up/two
+	ladder_id = "2"
+/obj/structure/multiz/ladder/ww2/teleporter/three
+	ladder_id = "3"
+/obj/structure/multiz/ladder/ww2/teleporter/up/three
+	ladder_id = "3"
+/obj/structure/multiz/ladder/ww2/teleporter/four
+	ladder_id = "4"
+/obj/structure/multiz/ladder/ww2/teleporter/up/four
+	ladder_id = "4"
+/obj/structure/multiz/ladder/ww2/teleporter/five
+	ladder_id = "5"
+/obj/structure/multiz/ladder/ww2/teleporter/up/five
+	ladder_id = "5"
+
 
 /obj/structure/multiz/stairs
 	name = "Stairs"

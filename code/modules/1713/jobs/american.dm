@@ -1,14 +1,12 @@
 /datum/job/american/captain_ww2
-	title = "Captain"
+	title = "US Captain"
 	rank_abbreviation = "Cpt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
-	is_modernday = FALSE
 	is_radioman = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
@@ -43,16 +41,14 @@
 	return TRUE
 
 /datum/job/american/lieutenant_ww2
-	title = "Lieutenant"
+	title = "US Lieutenant"
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNBoatswain"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
 	is_officer = TRUE
 	is_commander = FALSE
 	whitelisted = TRUE
-	is_modernday = FALSE
 	is_radioman = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
@@ -87,17 +83,16 @@
 	return TRUE
 
 /datum/job/american/sergeant_ww2
-	title = "Sergeant"
+	title = "US Sergeant"
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
 	is_squad_leader = TRUE
 	is_radioman = FALSE
-	is_modernday = FALSE
 	can_get_coordinates = TRUE
 	is_ww2 = TRUE
+	is_officer = TRUE
 	// AUTOBALANCE
 	min_positions = 2
 	max_positions = 8
@@ -132,13 +127,11 @@
 	return TRUE
 
 /datum/job/american/medic_ww2
-	title = "Field Medic"
+	title = "US Field Medic"
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -177,13 +170,11 @@
 	return TRUE
 
 /datum/job/american/doctor_ww2
-	title = "Doctor"
+	title = "US Doctor"
 	rank_abbreviation = "2lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNSurgeon"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -223,13 +214,11 @@
 	return TRUE
 
 /datum/job/american/sniper_ww2
-	title = "Sniper"
+	title = "US Sniper"
 	rank_abbreviation = "Pfc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -270,13 +259,11 @@
 	return TRUE
 
 /datum/job/american/machine_gunner_ww2
-	title = "Machine Gunner"
+	title = "US Machine Gunner"
 	rank_abbreviation = "Pfc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
@@ -319,13 +306,11 @@
 	return TRUE
 
 /datum/job/american/soldier_ww2
-	title = "Rifleman"
+	title = "US Rifleman"
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 10
@@ -364,13 +349,11 @@
 	return TRUE
 
 /datum/job/american/mp_ww2
-	title = "Military Police"
+	title = "US Military Police"
 	rank_abbreviation = "Ssgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNMidshipman"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_ww2 = TRUE
 	whitelisted = TRUE
 	// AUTOBALANCE
@@ -403,13 +386,11 @@
 	return TRUE
 
 /datum/job/american/chef_ww2
-	title = "Chef"
+	title = "US Chef"
 	rank_abbreviation = "Pfc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCook"
 	SL_check_independent = TRUE
-	is_coldwar = FALSE
-	is_modernday = FALSE
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 1

@@ -1,4 +1,4 @@
-/obj/transport_lever // same icon as the train lever for now
+/obj/structure/transport_lever // same icon as the train lever for now
 	anchored = 1.0
 	density = TRUE
 	icon = 'icons/obj/train_lever.dmi'
@@ -11,15 +11,15 @@
 	var/local = "docked"
 	var/next_activation = -1;
 
-/obj/transport_lever/New()
+/obj/structure/transport_lever/New()
 	..()
 	lever_list += src
 
-/obj/transport_lever/Destroy()
+/obj/structure/transport_lever/Destroy()
 	lever_list -= src
 	..()
 
-/obj/transport_lever/attack_hand(var/mob/user as mob)
+/obj/structure/transport_lever/attack_hand(var/mob/user as mob)
 //f (user && istype(user, /mob/living/carbon/human))
 //function(user)
 	if (world.time < next_activation)
@@ -48,7 +48,7 @@
 					else if (M.z == 2)
 						M.z = 1
 				for (var/obj/O in range(5, src))
-					if ((O.anchored == FALSE) || istype(O, /obj/transport_lever))
+					if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 						if (O.z == 1)
 							O.z = 2
 						else if (O.z == 2)
@@ -70,7 +70,7 @@
 							else if (M.z == 1)
 								M.z = 2
 						for (var/obj/O in range(5, src))
-							if ((O.anchored == FALSE) || istype(O, /obj/transport_lever))
+							if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 								if (O.z == 1)
 									O.z = 2
 								else if (O.z == 1)
@@ -102,7 +102,7 @@
 					else if (M.z == 2)
 						M.z = 1
 				for (var/obj/O in range(5, src))
-					if ((O.anchored == FALSE) || istype(O, /obj/transport_lever))
+					if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 						if (O.z == 1)
 							O.z = 2
 						else if (O.z == 2)
@@ -124,7 +124,7 @@
 							else if (M.z == 1)
 								M.z = 2
 						for (var/obj/O in range(5, src))
-							if ((O.anchored == FALSE) || istype(O, /obj/transport_lever))
+							if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 								if (O.z == 1)
 									O.z = 2
 								else if (O.z == 1)

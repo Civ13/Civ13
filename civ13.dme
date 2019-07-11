@@ -451,6 +451,7 @@
 #include "code\modules\1713\siege\fire.dm"
 #include "code\modules\1713\siege\piece.dm"
 #include "code\modules\1713\siege\shell.dm"
+#include "code\modules\1713\transporter\lever.dm"
 #include "code\modules\1713\weapons\attachment.dm"
 #include "code\modules\1713\weapons\zoom.dm"
 #include "code\modules\1713\weapons\guns\__readme.dm"
@@ -842,5 +843,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\313bc\gladiators.dmm"
+#include "maps\1943\omaha.dmm"
 // END_INCLUDE
