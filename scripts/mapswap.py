@@ -105,6 +105,10 @@ elif map == "KHALKHYN_GOL":
 	dmms.append("#include \"maps\\1943\\khalkhyn_gol.dmm\"")
 elif map == "ARAB_TOWN":
 	dmms.append("#include \"maps\\1969\\arab_town.dmm\"")
+elif map == "GLADIATORS":
+	dmms.append("#include \"maps\\313bc\\gladiators.dmm\"")
+elif map == "OMAHA":
+	dmms.append("#include \"maps\\1943\\omaha.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()

@@ -106,6 +106,7 @@
 			maps = list(
 				MAP_REICHSTAG = 0,
 				MAP_KHALKHYN_GOL = 0,
+				MAP_OMAHA = 10,
 			)
 
 		if (epoch == "Early Modern Era (1896-1933)")
