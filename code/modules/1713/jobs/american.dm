@@ -95,7 +95,7 @@
 	is_officer = TRUE
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 8
+	max_positions = 10
 
 /datum/job/american/sergeant_ww2/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -177,8 +177,8 @@
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
 	// AUTOBALANCE
-	min_positions = 2
-	max_positions = 8
+	min_positions = 1
+	max_positions = 4
 
 /datum/job/american/doctor_ww2/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -222,7 +222,7 @@
 	is_ww2 = TRUE
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 12
+	max_positions = 8
 
 /datum/job/american/sniper_ww2/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -301,7 +301,7 @@
 	SL_check_independent = TRUE
 	is_ww2 = TRUE
 	// AUTOBALANCE
-	min_positions = 10
+	min_positions = 8
 	max_positions = 100
 
 /datum/job/american/soldier_ww2/equip(var/mob/living/carbon/human/H)

@@ -768,10 +768,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 					"<span class='danger'>\The [owner]'s [name] explodes[gore]!</span>",\
 					"<span class='moderate'><b>Your [name] explodes[gore]!</b></span>",\
 					"<span class='danger'>You hear the [gore_sound].</span>")
-				playsound(owner, 'sound/effects/gore/chop6.ogg', 100 , FALSE)//Splat.
+				playsound(owner, "chop", 100 , FALSE)//Splat.
 			else
 				owner.death()
-				playsound(owner, 'sound/effects/gore/chop6.ogg', 100 , FALSE)//Splat.
+				playsound(owner, "chop", 100 , FALSE)//Splat.
 
 	var/mob/living/carbon/human/victim = owner //Keep a reference for post-removed().
 	var/obj/item/organ/external/parent_organ = parent
