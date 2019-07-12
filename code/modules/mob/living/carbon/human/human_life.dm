@@ -148,6 +148,10 @@
 		if (addictions[ad] < 0)
 			addictions[ad] = 0
 
+//death
+	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+		death()
+
 // disease stuff
 	if (inducedSSD && disease && disease_progression <= 15)
 		disease = 0
