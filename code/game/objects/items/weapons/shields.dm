@@ -52,7 +52,6 @@
 	name = "steel shield"
 	icon_state = "steel_shield"
 	item_state = "steel_shield"
-	slot_flags = SLOT_BACK
 	material = "steel"
 	health = 30
 	w_class = 3.0
@@ -63,7 +62,6 @@
 	name = "iron shield"
 	icon_state = "iron_shield"
 	item_state = "iron_shield"
-	slot_flags = SLOT_BACK
 	material = "iron"
 	health = 25
 	w_class = 3.0
@@ -74,7 +72,6 @@
 	name = "bronze shield"
 	icon_state = "bronze_shield"
 	item_state = "bronze_shield"
-	slot_flags = SLOT_BACK
 	material = "bronze"
 	health = 23
 	w_class = 3.0
@@ -86,7 +83,6 @@
 	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "athenian_shield"
 	item_state = "athenian_shield"
-	slot_flags = SLOT_BACK
 	material = "bronze"
 	health = 23
 	w_class = 3.0
@@ -104,7 +100,6 @@
 	desc = "a rectangular shield, with Roman motifs."
 	icon_state = "roman_shield"
 	item_state = "roman_shield"
-	slot_flags = SLOT_BACK
 	material = "bronze"
 	health = 23
 	w_class = 3.0
@@ -117,7 +112,6 @@
 	item_state = "roman_buckler"
 	base_block_chance = 257
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
@@ -159,7 +153,6 @@
 	name = "semioval iron shield"
 	icon_state = "semioval_shield"
 	item_state = "semioval_shield"
-	slot_flags = SLOT_BACK
 	material = "iron"
 	health = 25
 	w_class = 3.0
@@ -170,13 +163,11 @@
 	name = "semioval iron templar shield"
 	icon_state = "semioval_shield_templar"
 	item_state = "semioval_shield_templar"
-	slot_flags = SLOT_BACK
 
 /obj/item/weapon/shield/iron/semioval/templar2
 	name = "semioval iron templar shield"
 	icon_state = "semioval_shield_templar2"
 	item_state = "semioval_shield_templar2"
-	slot_flags = SLOT_BACK
 
 obj/item/weapon/shield/red_buckler
 	name = "red buckler shield"
@@ -184,7 +175,6 @@ obj/item/weapon/shield/red_buckler
 	item_state = "red_buckler"
 	base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
@@ -195,7 +185,6 @@ obj/item/weapon/shield/blue_buckler
 	item_state = "blue_buckler"
 	base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.1
@@ -212,7 +201,6 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "arabic_shield"
 	base_block_chance = 30
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
 	health = 20 // hardness of wood
 	slowdown = 0.22
