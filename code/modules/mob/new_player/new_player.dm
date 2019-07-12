@@ -604,7 +604,6 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-//	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_french.len] French, [alive_dutch.len] Dutch, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
 	dat += "<b>Current Autobalance Status</b>: "
 	if (BRITISH in map.faction_organization)
 		dat += "[alive_british.len] British "
@@ -752,6 +751,8 @@
 				prev_side = job.base_type_flag()
 				var/side_name = "<b><h1><big>[job.get_side_name()]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
+					if (map && map.ID== "ARAB_TOWN" && side_name == "American")
+						side_name = "Israeli"
 					dat += "<br><br>[side_name]<br>"
 
 			var/extra_span = ""
