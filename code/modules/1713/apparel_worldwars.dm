@@ -614,11 +614,11 @@ obj/item/clothing/under/ww2/us_mp
 	worn_state = "usuni_mp"
 
 obj/item/clothing/under/ww2/us_shirtless
-	name = "american shirtless uniform"
-	desc = "An american uniform, used by soldiers in the US army, this one is shirtless."
-	icon_state = "us_greentrousers"
-	item_state = "us_greentrousers"
-	worn_state = "us_greentrousers"
+	name = "american uniform with shirt"
+	desc = "An american uniform, used by soldiers in the US army, this one has no jacket."
+	icon_state = "us_shirtless"
+	item_state = "us_shirtless"
+	worn_state = "us_shirtless"
 
 /obj/item/clothing/suit/storage/coat/ww2/german
 	name = "german parka"
