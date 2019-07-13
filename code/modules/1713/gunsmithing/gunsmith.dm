@@ -317,6 +317,7 @@
 	var/single_action = FALSE
 	var/cocked = FALSE
 	var/base_icon = null
+	var/folded = FALSE
 	//shotgun
 	var/recentpump = FALSE // to prevent spammage
 	caliber = "caliber"
@@ -1021,25 +1022,23 @@
 		if (FM.fire_delay == -1)
 			FM.fire_delay = fire_delay
 /obj/item/weapon/gun/projectile/custom/update_icon()
+	if (stock_type == "Folding Stock")
+		if (!folded)
+			stock_img = image("icon" = src.icon, "icon_state" = "[src.stock_type]")
+		else
+			stock_img = image("icon" = src.icon, "icon_state" = "none")
 	if (feeding_type == "Open (Belt-Fed)" || feeding_type == "External Magazine" || feeding_type == "Large External Magazine")
 		if (ammo_magazine)
-			overlays.Cut()
-			overlays += stock_img
-			overlays += barrel_img
-			overlays += receiver_img
 			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_loaded")
-			overlays += feeding_img
 		else
-			overlays.Cut()
-			overlays += stock_img
-			overlays += barrel_img
-			overlays += receiver_img
 			feeding_img = image("icon" = src.icon, "icon_state" = "[src.feeding_type]_unloaded")
-			overlays += feeding_img
 	else
-		overlays += stock_img
-		overlays += barrel_img
-		overlays += receiver_img
+		feeding_img = image("icon" = src.icon, "icon_state" = "none")
+	overlays.Cut()
+	overlays += stock_img
+	overlays += barrel_img
+	overlays += receiver_img
+	overlays += feeding_img
 	update_held_icon()
 
 
@@ -1278,3 +1277,30 @@
 		else
 			return ..()
 	..()
+
+/obj/item/weapon/gun/projectile/custom/verb/fold()
+	set name = "Toggle Stock"
+	set category = null
+	set src in usr
+	if (stock_type == "Foldable Stock")
+		if (folded)
+			folded = FALSE
+			usr << "You extend the stock on \the [src]."
+			equiptimer +=5
+			set_stock()
+			update_icon()
+		else
+			folded = TRUE
+			base_icon = "akms_folded"
+			usr << "You collapse the stock on \the [src]."
+			equiptimer -= 5
+			set_stock()
+			update_icon()
+
+/obj/item/weapon/gun/projectile/custom/proc/set_stock()
+	if (folded)
+		slot_flags = SLOT_BACK|SLOT_BELT
+		effectiveness_mod *= 0.87
+	else
+		slot_flags = SLOT_BACK
+		effectiveness_mod /= 0.87

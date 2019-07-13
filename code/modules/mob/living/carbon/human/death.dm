@@ -41,7 +41,7 @@
 /mob/living/carbon/human/death(gibbed = FALSE)
 
 	if (stat == DEAD) return
-	if (map.ID == MAP_GLADIATORS && client)
+	if (map && map.ID == MAP_GLADIATORS && client)
 		var/obj/map_metadata/gladiators/GD = map
 		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
 			if (GD.gladiator_stats[i][1] == client.ckey && GD.gladiator_stats[i][2] == name)

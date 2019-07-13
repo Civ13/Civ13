@@ -513,7 +513,7 @@
 						else
 							L.pre_bullet_act(src)
 							attack_mob(L)
-							if (!L.lying)
+							if (L && !L.lying)
 								passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM

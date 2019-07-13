@@ -33,7 +33,8 @@
 	else if (istype(W,/obj/item/weapon/reagent_containers/food/snacks))
 		user << "<span class = 'notice'>You layer [W] over \the [src].</span>"
 		var/obj/item/weapon/reagent_containers/F = W
-		F.reagents.trans_to_obj(src, F.reagents.total_volume)
+		if (F && F.reagents)
+			F.reagents.trans_to_obj(src, F.reagents.total_volume)
 		user.drop_item()
 		W.loc = src
 		ingredients += W
@@ -79,8 +80,9 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/csandwich/examine(mob/user)
 	..(user)
-	var/obj/item/O = pick(contents)
-	user << "<span class = 'notice'>You think you can see [O.name] in there.</span>"
+	if (contents)
+		var/obj/item/O = pick(contents)
+		user << "<span class = 'notice'>You think you can see [O.name] in there.</span>"
 
 /obj/item/weapon/reagent_containers/food/snacks/csandwich/attack(mob/M as mob, mob/user as mob, def_zone)
 
