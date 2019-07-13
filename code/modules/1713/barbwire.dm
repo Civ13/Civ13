@@ -67,7 +67,8 @@
 			// stop crawling until we're up to prevent buggy crawling
 			H.scrambling = TRUE
 			spawn (35)
-				H.scrambling = FALSE
+				if (H && H.stat != DEAD)
+					H.scrambling = FALSE
 	return ..()
 
 /obj/structure/barbwire/attackby(obj/item/W as obj, mob/user as mob)
