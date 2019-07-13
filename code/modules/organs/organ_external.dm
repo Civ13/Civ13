@@ -1113,7 +1113,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "groin"
 	icon_name = "groin"
 	min_broken_damage = 80
-	max_damage = 135
+	max_damage = 101
 	w_class = 5
 	body_part = LOWER_TORSO
 	cannot_amputate = TRUE
@@ -1131,7 +1131,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "left arm"
 	icon_name = "l_arm"
 	min_broken_damage = 67
-	max_damage = 65
+	max_damage = 60
 	w_class = 3
 	body_part = ARM_LEFT
 	parent_organ = "chest"
@@ -1208,7 +1208,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "left hand"
 	icon_name = "l_hand"
 	min_broken_damage = 50
-	max_damage = 65
+	max_damage = 60
 	w_class = 2
 	body_part = HAND_LEFT
 	parent_organ = "l_arm"
