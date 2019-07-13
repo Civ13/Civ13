@@ -883,7 +883,8 @@
 		mind.active = FALSE					//we wish to transfer the key manually
 		mind.original = new_character
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
-
+	if (client.prefs.be_random_body)
+		client.prefs.randomize_appearance_for (new_character)
 	new_character.original_job = original_job
 	new_character.name = real_name
 	new_character.dna.ready_dna(new_character)

@@ -24,13 +24,13 @@ var/list/preferences_datums = list()
 	//character preferences
 	var/real_name = "John Doe"						//our character's name
 	var/be_random_name = FALSE				//whether we are a random name every round
+	var/be_random_body = FALSE				//whether we get a random body every round
 	var/gender = MALE					//gender of character (well duh)
 
 	var/body_build = "Default"			//character body build name
 	var/age = 25						//age of character
 
 	var/b_type = "A+"					//blood type (not-chooseable)
-	var/backbag = 2						//backpack type
 	var/h_style = "Short Hair"				//Hair type
 	var/hair_color = "Black"
 	var/facial_color = "Black"
@@ -202,9 +202,6 @@ var/list/preferences_datums = list()
 
 	character.all_underwear.Cut()
 
-	if (backbag > 4 || backbag < 1)
-		backbag = TRUE //Same as above
-	character.backbag = backbag
 
 	//Debugging report to track down a bug, which randomly assigned the plural gender to people.
 	if (character.gender in list(PLURAL, NEUTER))

@@ -122,7 +122,6 @@ var/global/list/facial_hair_styles_female_list = list()
 var/global/list/skin_styles_female_list = list()		//unused
 
 
-var/global/list/backbaglist = list("Nothing", "Backpack", "Satchel", "Satchel Alt")
 var/global/list/exclude_jobs = list()
 
 // Visual nets

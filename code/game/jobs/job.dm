@@ -84,14 +84,6 @@
 	//Put items in hands
 	if (hand) H.equip_to_slot_or_del(new hand (H), slot_l_hand)
 
-	//Put items in backpack
-	if ( H.backbag != TRUE )
-		var/backpack = backpacks[H.backbag-1]
-		var/obj/item/weapon/storage/backpack/BPK = new backpack(H)
-		if (H.equip_to_slot_or_del(BPK, slot_back,1))
-			for ( var/path in put_in_backpack )
-				new path(BPK)
-
 	//Survival equipment
 
 
