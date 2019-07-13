@@ -123,13 +123,13 @@
 	if (map.ordinal_age == 5)
 		display3 = list("Internal Magazine","Tubular", "Cancel")
 	else if (map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazines","Open (Belt-Fed)", "Cancel")
+		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)", "Cancel")
 	if (choice_receiver == "Pump-Action")
 		display3 = list("Tubular", "Cancel")
 	if (choice_receiver == "Revolver")
 		display3 = list("Revolving", "Cancel")
 	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (small)" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazines", "Cancel")
+		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazine", "Cancel")
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
 	if (choice_feeding == "Cancel")
 		current_gun = null
@@ -144,7 +144,7 @@
 		using_steel += 3
 	else if (choice_feeding == "External Magazine")
 		using_steel += 8
-	else if (choice_feeding == "Large External Magazines")
+	else if (choice_feeding == "Large External Magazine")
 		using_steel += 10
 	else if (choice_feeding == "Open (Belt-Fed)")
 		using_steel += 6
@@ -952,7 +952,7 @@
 			max_shells = 6
 		if ("External Magazine")
 			load_method = MAGAZINE
-		if ("Large External Magazines")
+		if ("Large External Magazine")
 			load_method = MAGAZINE
 		if ("Open (Belt-Fed)")
 			load_method = MAGAZINE

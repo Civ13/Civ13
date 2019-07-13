@@ -213,6 +213,7 @@
 	else if (istype(A, /obj/item/ammo_casing))
 		var/obj/item/ammo_casing/C = A
 		if (!(load_method & SINGLE_CASING) || caliber != C.caliber)
+			user << "<span class='warning'>\The [C] is of the wrong caliber!</span>"
 			return //incompatible
 		if (loaded.len >= max_shells)
 			user << "<span class='warning'>[src] is full.</span>"
