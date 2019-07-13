@@ -290,7 +290,7 @@
 		recipes += new/datum/stack_recipe("raft",/obj/structure/vehicle/raft, 10, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 22)
 		recipes += new/datum/stack_recipe("boat frame", /obj/item/vehicleparts/frame/boat, 22, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.resourceresearch == TRUE)
+	if (map && map.resourceresearch == TRUE)
 		recipes += new/datum/stack_recipe("research desk",/obj/structure/researchdesk, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 96)
 		recipes += new/datum/stack_recipe("global exchange",/obj/structure/marketplace, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)

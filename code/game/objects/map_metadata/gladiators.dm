@@ -55,7 +55,7 @@
 	if (fexists(F))
 		var/list/temp_stats1 = file2list(F,"\n")
 		gladiator_stats = list()
-		for (var/i = 1, i <= temp_stats1, i++)
+		for (var/i = 1, i <= temp_stats1.len, i++)
 			if (findtext(temp_stats1[i], ";"))
 				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
 				//								ckey			name		stats			0=alive,1=dead			victories					matches
