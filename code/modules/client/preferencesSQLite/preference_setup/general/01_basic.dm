@@ -19,7 +19,19 @@
 
 /datum/category_item/player_setup_item/general/basic/content(var/mob/user)
 	pref.update_preview_icons()
+	. = "<b>UI Style: </b><a href='?src=\ref[src];select_style=1'><b>[pref.UI_style]</b></A><br><br>"
+	var/currcursor = "Default"
+	if (pref.cursor == 'icons/effects/red_cursors.dmi')
+		currcursor = "Red Crosshair"
 
+	else if (pref.cursor == 'icons/effects/white_cursors.dmi')
+		currcursor = "White Crosshair"
+
+	else if (pref.cursor == 'icons/effects/green_cursors.dmi')
+		currcursor = "Green Crosshair"
+	else
+		currcursor = "Default"
+	. += "<b>Cursor Style: </b><a href='?src=\ref[src];select_cursor=1'><b>[currcursor]</b></A><br><br>"
 	for (var/v in TRUE to pref.preview_icons.len)
 		if (isicon(pref.preview_icons_front[v]))
 			user << browse_rsc(pref.preview_icons_front[v], "previewicon_[v]_front.png")
@@ -29,7 +41,7 @@
 			user << browse_rsc(pref.preview_icons_east[v], "previewicon_[v]_east.png")
 		if (isicon(pref.preview_icons_west[v]))
 			user << browse_rsc(pref.preview_icons_west[v], "previewicon_[v]_west.png")
-	. = "<b>Preview</b><br><br>"
+	. += "<b>Preview</b><br><br>"
 
 	for (var/v in TRUE to pref.preview_icons.len)
 		. += "<img src=previewicon_[v]_front.png height=64 width=64>"
@@ -42,19 +54,6 @@
 	. += "<a href='?src=\ref[src];rename=1'><b>[pref.real_name]</b></a><br><br>"
 	. += "(<a href='?src=\ref[src];random_name=1'>Random Name</A>) <br><br>"
 	. += "(<a href='?src=\ref[src];always_random_name=1'>Always Random Name: [pref.be_random_name ? "Yes" : "No"]</a>)<br><br>"
-	. += "<b>UI Style: </b><a href='?src=\ref[src];select_style=1'><b>[pref.UI_style]</b></A><br><br>"
-	var/currcursor = "Default"
-	if (pref.cursor == 'icons/effects/red_cursors.dmi')
-		currcursor = "Red Crosshair"
-
-	else if (pref.cursor == 'icons/effects/white_cursors.dmi')
-		currcursor = "White Crosshair"
-
-	else if (pref.cursor == 'icons/effects/green_cursors.dmi')
-		currcursor = "Green Crosshair"
-	else
-		currcursor = "Default"
-	. += "<b>Cursor Style: </b><a href='?src=\ref[src];select_cursor=1'><b>[currcursor]</b></A>"
 	. += "<br><br>"
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
