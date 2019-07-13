@@ -135,7 +135,7 @@
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
-		return FALSE
+		return
 	else if (choice_feeding == "Internal Magazine")
 		using_steel += 4
 	else if (choice_feeding == "Tubular")
@@ -157,7 +157,7 @@
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
-		return FALSE
+		return
 
 ////////////////BARREL///////////////////////////////
 	var/list/display4 = list("Cancel")
@@ -172,7 +172,7 @@
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
-		return FALSE
+		return
 	else if (choice_barrel == "Pistol Barrel")
 		using_steel += 4
 	else if (choice_barrel == "Carbine Barrel")
@@ -192,7 +192,7 @@
 		current_gun = null
 		using_wood = 0
 		using_steel = 0
-		return FALSE
+		return
 	else
 		var/list/caliberlist = list("Cancel")
 		switch (choice_receiver)
@@ -216,7 +216,7 @@
 			current_gun = null
 			using_wood = 0
 			using_steel = 0
-			return FALSE
+			return
 		else if (choice_caliber == "shotgun")
 			current_gun.caliber = "12gauge"
 			current_gun.ammo_type = /obj/item/ammo_casing/shotgun
@@ -616,8 +616,8 @@
 			full_auto = TRUE
 			attachment_slots = ATTACH_IRONSIGHTS
 			firemodes = list(
-				list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
-			)
+				list(name="full auto",	burst=1, burst_delay=1, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5))
+				)
 			load_method = MAGAZINE
 			load_delay = 8
 			equiptimer -= 1
@@ -677,7 +677,8 @@
 			heavy = TRUE
 			attachment_slots = ATTACH_IRONSIGHTS
 			firemodes = list(
-				list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),)
+				list(name="full auto",	burst=1, burst_delay=1.3, move_delay=8, dispersion = list(0.7, 1.1, 1.3, 1.4, 1.5), recoil = 2),
+				)
 			weight = 10
 			slot_flags = 0
 			force = 20
@@ -974,7 +975,39 @@
 			effectiveness_mod *= 1.25
 		if ("Air-Cooled Barrel")
 			effectiveness_mod *= 1
+	var/tempdesc = ""
+	switch(caliber)
+		if ("12gauge")
+			tempdesc = "12 gauge"
 
+		if ("largerifle")
+			tempdesc = "8mm large rifle rounds"
+
+		if ("smallrifle")
+			tempdesc = "6.5mm small rifle rounds"
+
+		if ("pistol45")
+			tempdesc = ".45 pistol rounds"
+
+		if ("pistol9")
+			tempdesc = "9mm pistol rounds"
+
+		if ("intermediumrifle")
+			tempdesc = "7.5mm intermediate rifle rounds"
+
+		if ("smallintermediumrifle")
+			tempdesc = "5.5mm intermediate rifle rounds"
+
+	desc = "A gun chambered in [tempdesc]. The feed system is [lowertext(feeding_type)]."
+	if (!firemodes.len)
+		firemodes += new firemode_type
+	else
+		for (var/i in 1 to firemodes.len)
+			firemodes[i] = new firemode_type(firemodes[i])
+
+	for (var/datum/firemode/FM in firemodes)
+		if (FM.fire_delay == -1)
+			FM.fire_delay = fire_delay
 /obj/item/weapon/gun/projectile/custom/update_icon()
 	if (feeding_type == "Open (Belt-Fed)" || feeding_type == "External Magazine" || feeding_type == "Large External Magazine")
 		if (ammo_magazine)
@@ -1017,6 +1050,7 @@
 
 /obj/item/weapon/gun/projectile/custom/handle_post_fire()
 	..()
+
 	if (receiver_type == "Semi-Auto (large)" || receiver_type == "Semi-Auto (small)" )
 		if (world.time - last_fire > 50)
 			jamcheck = 0
@@ -1168,7 +1202,7 @@
 
 	..()
 
-/obj/item/weapon/gun/projectile/custom/consume_next_projectile()
+/obj/item/weapon/gun/projectile/custom/consume_next_projectile(var/check = FALSE)
 	if (receiver_type == "Revolver")
 		if (chamber_offset)
 			chamber_offset--
@@ -1178,7 +1212,28 @@
 		if (chambered)
 			return chambered.BB
 		return null
-	..()
+	//get the next casing
+	if (loaded.len)
+		chambered = loaded[1] //load next casing.
+		if (handle_casings != HOLD_CASINGS)
+			loaded -= chambered
+			if (infinite_ammo)
+				loaded += new chambered.type
+
+	else if (ammo_magazine && ammo_magazine.stored_ammo.len)
+		chambered = ammo_magazine.stored_ammo[1]
+		if (handle_casings != HOLD_CASINGS)
+			ammo_magazine.stored_ammo -= chambered
+			if (infinite_ammo)
+				ammo_magazine.stored_ammo += new chambered.type
+
+	if (chambered)
+		if (gibs)
+			chambered.BB.gibs = TRUE
+		if (crushes)
+			chambered.BB.crushes = TRUE
+		return chambered.BB
+	return null
 
 /obj/item/weapon/gun/projectile/custom/attack_hand(mob/user as mob)
 	if (receiver_type == "Revolver")
@@ -1210,3 +1265,4 @@
 			return FALSE
 		else
 			return ..()
+	..()

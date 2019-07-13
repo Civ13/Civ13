@@ -85,15 +85,16 @@
 
 /obj/item/weapon/gun/New()
 	..()
-	if (!firemodes.len)
-		firemodes += new firemode_type
-	else
-		for (var/i in 1 to firemodes.len)
-			firemodes[i] = new firemode_type(firemodes[i])
+	if (!istype(src, /obj/item/weapon/gun/projectile/custom))
+		if (!firemodes.len)
+			firemodes += new firemode_type
+		else
+			for (var/i in 1 to firemodes.len)
+				firemodes[i] = new firemode_type(firemodes[i])
 
-	for (var/datum/firemode/FM in firemodes)
-		if (FM.fire_delay == -1)
-			FM.fire_delay = fire_delay
+		for (var/datum/firemode/FM in firemodes)
+			if (FM.fire_delay == -1)
+				FM.fire_delay = fire_delay
 
 	if (!aim_targets)
 		aim_targets = list()

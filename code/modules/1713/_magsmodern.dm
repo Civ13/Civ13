@@ -67,6 +67,7 @@
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
+	belt = TRUE
 
 
 /obj/item/ammo_magazine/pkm/c100
