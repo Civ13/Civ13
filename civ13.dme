@@ -415,6 +415,7 @@
 #include "code\modules\1713\complex_animal\bear.dm"
 #include "code\modules\1713\complex_animal\dog.dm"
 #include "code\modules\1713\complex_animal\wolf.dm"
+#include "code\modules\1713\gunsmithing\gunsmith.dm"
 #include "code\modules\1713\jobs\_languages.dm"
 #include "code\modules\1713\jobs\_special.dm"
 #include "code\modules\1713\jobs\american.dm"
@@ -841,5 +842,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\omaha.dmm"
+#include "maps\special\nomads.dmm"
 // END_INCLUDE
