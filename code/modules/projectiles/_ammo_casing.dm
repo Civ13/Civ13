@@ -726,3 +726,63 @@
 	icon_state = "bshell"
 	spent_icon = "bshell_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
+
+//generic calibers for custom weapons
+/obj/item/ammo_casing/largerifle
+	name = "8mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/largerifle
+	caliber = "largerifle"
+	value = 8
+
+/obj/item/ammo_casing/smallrifle
+	name = "6.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/smallrifle
+	caliber = "smallrifle"
+	value = 8
+
+/obj/item/ammo_casing/pistol45
+	name = ".45 bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/pistol45
+	caliber = "pistol45"
+	value = 2
+/obj/item/ammo_casing/pistol9
+	name = "9mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/pistol9
+	caliber = "pistol9"
+	value = 2
+
+/obj/item/ammo_casing/intermediumrifle
+	name = "7.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/intermediumrifle
+	caliber = "intermediumrifle"
+	value = 8
+
+/obj/item/ammo_casing/smallintermediumrifle
+	name = "5.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/rifle/smallintermediumrifle
+	caliber = "smallintermediumrifle"
+	value = 2

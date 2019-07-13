@@ -123,13 +123,13 @@
 	if (map.ordinal_age == 5)
 		display3 = list("Internal Magazine","Tubular", "Cancel")
 	else if (map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazines","Large External Magazines","Open (Belt-Fed)", "Cancel")
+		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazines","Open (Belt-Fed)", "Cancel")
 	if (choice_receiver == "Pump-Action")
 		display3 = list("Tubular", "Cancel")
 	if (choice_receiver == "Revolver")
 		display3 = list("Revolving", "Cancel")
 	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (small)" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazines","Large External Magazines", "Cancel")
+		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazines", "Cancel")
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
 	if (choice_feeding == "Cancel")
 		current_gun = null
@@ -142,7 +142,7 @@
 		using_steel += 5
 	else if (choice_feeding == "Revolving")
 		using_steel += 3
-	else if (choice_feeding == "External Magazines")
+	else if (choice_feeding == "External Magazine")
 		using_steel += 8
 	else if (choice_feeding == "Large External Magazines")
 		using_steel += 10
@@ -194,10 +194,67 @@
 		using_steel = 0
 		return FALSE
 	else
+		var/list/caliberlist = list("Cancel")
+		switch (choice_receiver)
+			if ("Pump-Action")
+				caliberlist = list("shotgun","Cancel")
+
+			if ("Bolt-Action","Semi-Auto (large)")
+				caliberlist = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
+			if ("Open-Bolt (large)")
+				caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
+			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+				caliberlist = list("9mm pistol",".45 pistol","Cancel")
+
+			if ("Dual Selective Fire", "Triple Selective Fire")
+				caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
+		var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
+		if (choice_caliber == "Cancel")
+			current_gun = null
+			using_wood = 0
+			using_steel = 0
+			return FALSE
+		else if (choice_caliber == "shotgun")
+			current_gun.caliber = "12gauge"
+			current_gun.ammo_type = /obj/item/ammo_casing/shotgun
+
+		else if (choice_caliber == "8mm large rifle")
+			current_gun.caliber = "largerifle"
+			current_gun.ammo_type = /obj/item/ammo_casing/largerifle
+
+		else if (choice_caliber == "6.5mm small rifle")
+			current_gun.caliber = "smallrifle"
+			current_gun.ammo_type = /obj/item/ammo_casing/smallrifle
+
+		else if (choice_caliber == ".45 pistol")
+			current_gun.caliber = "pistol45"
+			current_gun.ammo_type = /obj/item/ammo_casing/pistol45
+
+		else if (choice_caliber == "9mm pistol")
+			current_gun.caliber = "pistol9"
+			current_gun.ammo_type = /obj/item/ammo_casing/pistol9
+
+		else if (choice_caliber == "7.5mm intermediate rifle")
+			current_gun.caliber = "intermediumrifle"
+			current_gun.ammo_type = /obj/item/ammo_casing/intermediumrifle
+
+		else if (choice_caliber == "5.5mm intermediate rifle")
+			current_gun.caliber = "smallintermediumrifle"
+			current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
+
 		wood_amt -= using_wood
 		steel_amt -= using_steel
 		using_wood = 0
 		using_steel = 0
+		var/named = input(user, "Choose a name for this gun (max 15 characters):", "Gunsmithing", "gun")
+		if (named && named != "")
+			named = sanitize(named,15)
+			current_gun.name = named
+		else
+			current_gun.name = "gun"
 		current_gun.finish()
 		var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
 		NEWGUN.loc = get_turf(src)
@@ -258,6 +315,10 @@
 	var/base_icon = null
 	//shotgun
 	var/recentpump = FALSE // to prevent spammage
+	caliber = "caliber"
+	ammo_type = /obj/item/ammo_casing
+	magazine_type = /obj/item/ammo_magazine
+
 /obj/item/weapon/gun/projectile/custom/New()
 	..()
 	loaded = list()
@@ -889,7 +950,7 @@
 		if ("Revolving")
 			handle_casings = CYCLE_CASINGS
 			max_shells = 6
-		if ("External Magazines")
+		if ("External Magazine")
 			load_method = MAGAZINE
 		if ("Large External Magazines")
 			load_method = MAGAZINE
