@@ -317,7 +317,7 @@
 	var/recentpump = FALSE // to prevent spammage
 	caliber = "caliber"
 	ammo_type = /obj/item/ammo_casing
-	magazine_type = /obj/item/ammo_magazine
+	magazine_type = /obj/item/ammo_magazine/emptypouch
 
 /obj/item/weapon/gun/projectile/custom/New()
 	..()
@@ -942,6 +942,7 @@
 			load_method = SINGLE_CASING | SPEEDLOADER
 			load_shell_sound = 'sound/weapons/clip_reload.ogg'
 			max_shells = 5
+			magazine_type = /obj/item/ammo_magazine/emptyclip
 		if ("Tubular")
 			handle_casings = HOLD_CASINGS
 			load_method = SINGLE_CASING
@@ -952,10 +953,16 @@
 			max_shells = 6
 		if ("External Magazine")
 			load_method = MAGAZINE
+			magazine_type = /obj/item/ammo_magazine/emptymagazine/small
+			if (receiver_type == "Semi-Auto (small)")
+				magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
 		if ("Large External Magazine")
 			load_method = MAGAZINE
+			magazine_type = /obj/item/ammo_magazine/emptymagazine
 		if ("Open (Belt-Fed)")
 			load_method = MAGAZINE
+			magazine_type = /obj/item/ammo_magazine/emptybelt
+
 	switch(barrel_type)
 		if ("Pistol Barrel")
 			effectiveness_mod *= 0.8

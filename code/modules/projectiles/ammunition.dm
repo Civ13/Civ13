@@ -114,7 +114,7 @@
 		return
 
 /obj/item/ammo_magazine/emptypouch
-	name = "empty bullet pouch"
+	name = "empty bullet pouch (20)"
 	icon_state = "pouch_closed"
 	ammo_type = null
 	caliber = null
@@ -125,13 +125,53 @@
 	pouch = TRUE
 
 /obj/item/ammo_magazine/emptyclip
-	name = "empty clip"
+	name = "empty clip (5)"
 	clip = TRUE
 	icon_state = "clip-0"
 	ammo_type = null
 	caliber = null
 	max_ammo = 5
 	weight = 0.1
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/emptymagazine
+	name = "empty magazine (65)"
+	mag_type = MAGAZINE
+	icon_state = "ppsh-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 65
+	weight = 0.8
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/emptymagazine/small
+	name = "empty magazine (30)"
+	mag_type = MAGAZINE
+	icon_state = "pps-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 30
+	weight = 0.25
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/emptymagazine/pistol
+	name = "empty magazine (8)"
+	mag_type = MAGAZINE
+	icon_state = "m9beretta-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 8
+	weight = 0.1
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/emptybelt
+	name = "empty belt (100)"
+	mag_type = MAGAZINE
+	icon_state = "b762x54-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 100
+	weight = 1
+	w_class = 4
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/verb/toggle_open()
