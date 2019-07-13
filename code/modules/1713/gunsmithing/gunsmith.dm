@@ -1282,7 +1282,8 @@
 	set name = "Toggle Stock"
 	set category = null
 	set src in usr
-	if (stock_type == "Foldable Stock")
+
+	if (stock_type == "Folding Stock")
 		if (folded)
 			folded = FALSE
 			usr << "You extend the stock on \the [src]."
