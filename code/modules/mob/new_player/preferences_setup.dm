@@ -9,7 +9,7 @@
 				s_tone = random_skin_tone()
 			if (current_species.appearance_flags & HAS_EYE_COLOR)
 				randomize_eyes_color()
-
+		b_type = pick("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-")
 		h_style = random_hair_style(gender, species)
 		f_style = random_facial_hair_style(gender, species)
 		randomize_hair_color("hair")
