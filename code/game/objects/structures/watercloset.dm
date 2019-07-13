@@ -413,9 +413,10 @@
 		return
 	// Clear the vessel.
 	visible_message("<span class='notice'>\The [usr] tips the contents of \the [thing] into \the [src].</span>")
-	thing.reagents.splash(src, reagents.total_volume)
-	thing.reagents.clear_reagents()
-	thing.update_icon()
+	if (thing && reagents)
+		thing.reagents.splash(src, reagents.total_volume)
+		thing.reagents.clear_reagents()
+		thing.update_icon()
 
 /obj/structure/sink/attack_hand(mob/user as mob)
 	if (ishuman(user))

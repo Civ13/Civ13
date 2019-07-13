@@ -281,7 +281,8 @@
 		//Poo on the face.
 		else if(M != src && M.lying)//Can only shit on them if they're lying down.
 			message = "<span class='danger'><b>[src]</b> shits right on <b>[M]</b>'s face!</span>"
-			M.reagents.add_reagent("poo", 10)
+			if (M && M.reagents)
+				M.reagents.add_reagent("poo", 10)
 
 		//Poo on the floor.
 		else

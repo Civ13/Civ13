@@ -117,16 +117,16 @@
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
-
+	if (stats.len)
 	// hotfixes some stamina bugs
-	if (stats["stamina"][1] < 0)
-		stats["stamina"][1] = 0
+		if (stats["stamina"][1] < 0)
+			stats["stamina"][1] = 0
 
-	if (stats["stamina"][2] < 80)
-		stats["stamina"][2] = 80
+		if (stats["stamina"][2] < 80)
+			stats["stamina"][2] = 80
 
-	if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
-		src << "<span class = 'good'>You feel like you can run for a while.</span>"
+		if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
+			src << "<span class = 'good'>You feel like you can run for a while.</span>"
 
 	nutrition = min(nutrition, max_nutrition)
 	nutrition = max(nutrition, -max_nutrition)

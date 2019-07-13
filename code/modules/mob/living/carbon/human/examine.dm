@@ -323,7 +323,7 @@
 			var/mob/living/carbon/human/H = user
 			if (H.civilization != "none")
 				msg += "<br><i>You belong to <b>[H.civilization]</b>.</i>"
-				if (map.custom_civs[H.civilization][4].real_name == H.real_name)
+				if (map && map.custom_civs[H.civilization][4] && map.custom_civs[H.civilization][4].real_name == H.real_name)
 					msg += "<br><b>You are the leader of your group.</b>"
 
 	for (var/v in TRUE to embedded.len)

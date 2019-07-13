@@ -88,7 +88,7 @@
 			return
 		if (istype(target, /turf/floor/beach/water))
 			return
-		if (reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
+		if (reagents && reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
 			if (reagents.has_reagent("petroleum", 5))

@@ -5,7 +5,10 @@
 	return stats[lowertext(statname)][2]
 
 /mob/living/carbon/human/proc/getStatCoeff(statname)
-	return (stats[lowertext(statname)][1]/100)*mood_modifier
+	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
+		return (stats[lowertext(statname)][1]/100)*mood_modifier
+	else
+		return 0
 
 
 /mob/living/carbon/human/proc/getLesserStatCombinedCoeff(var/list/statnames = list())

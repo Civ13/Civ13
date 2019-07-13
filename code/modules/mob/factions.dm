@@ -260,7 +260,7 @@
 						return
 					else
 						U = choice2
-						if (U.title != "")
+						if (U && U.title != "")
 							U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title] ",""))
 							usr << "[src]'s title of [U.title] has been removed by [usr]."
 							U.title = ""

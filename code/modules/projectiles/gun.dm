@@ -191,10 +191,11 @@
 				var/obj/item/weapon/attachment/bayonet/a = bayonet
 				user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) // No more rapid stabbing for you.
 				visible_message("<span class = 'danger'>[user] impales [L] with their gun's bayonet!</span>")
-				L.apply_damage(a.force, BRUTE, def_zone)
-				L.Weaken(a.weakens)
-				if (L.stat == CONSCIOUS && prob(50))
-					L.emote("painscream")
+				if (L)
+					L.apply_damage(a.force, BRUTE, def_zone)
+					L.Weaken(a.weakens)
+					if (L.stat == CONSCIOUS && prob(50))
+						L.emote("painscream")
 				playsound(get_turf(src), a.attack_sound, rand(90,100))
 			else
 				var/obj/item/weapon/attachment/bayonet/a = bayonet

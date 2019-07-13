@@ -16,6 +16,9 @@
 		return
 
 	avg = 0
+	if (world && world.time > 864000)
+		disabled = TRUE
+		return
 	var/clients_checked = 0
 
 	while (current_list.len)

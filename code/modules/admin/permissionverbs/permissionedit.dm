@@ -158,7 +158,8 @@
 
 	if (islist(rowdata) && !isemptylist(rowdata))
 		admin_id = text2num(rowdata[1])
-		admin_rights = text2num(rowdata[4])
+		if (rowdata.len >= 4)
+			admin_rights = text2num(rowdata[4])
 
 	if (!admin_id)
 		return

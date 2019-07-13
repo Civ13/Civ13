@@ -584,7 +584,7 @@
 			return
 		var/obj/item/stack/money/MN = W
 		var/valp = MN.amount*MN.value
-		if ((valp/price) <= vol)
+		if (price > 0 && (valp/price) <= vol)
 			var/ch2 = WWinput(user, "You can buy [(valp/price)] units of [fueltype] with this amount. Confirm?", "[name]", "No", list("No","Yes"))
 			if (ch2 == "No")
 				return

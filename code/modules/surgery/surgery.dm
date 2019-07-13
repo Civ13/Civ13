@@ -118,7 +118,8 @@ proc/do_surgery(mob/living/carbon/M, mob/living/carbon/human/user, obj/item/tool
 							H.adaptStat("medical", 1.5*mod)
 						M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 					else
-						M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
+						if (M)
+							M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 				else
 					if (user.Adjacent(M) && (tool in user.contents))			//or
 						// better solution to combat surgery, nothing happens unless you were doing it for a while - Kachnov

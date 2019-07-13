@@ -581,6 +581,8 @@ bullet_act
 
 		var/obj/item/organ/external/affecting = get_organ(zone)
 		var/hit_area = affecting.name
+		if (!hit_area)
+			return
 		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
 		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].") //I guess "melee" is the best fit here
 
@@ -739,7 +741,7 @@ bullet_act
 				for(var/i = 1; i < range; i++)
 					var/turf/new_turf = get_step(target, throw_dir)
 					target = new_turf
-					if(new_turf.density)
+					if(new_turf && new_turf.density)
 						break
 				src.throw_at(target, rand(1,3), src.throw_speed)
 			if(user.lying)

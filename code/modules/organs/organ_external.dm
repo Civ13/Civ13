@@ -1332,7 +1332,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			for (var/i = TRUE; i < range; i++)
 				var/turf/new_turf = get_step(target, throw_dir)
 				target = new_turf
-				if (new_turf.density)
+				if (new_turf && new_turf.density)
 					break
 			T.throw_at(target,T.throw_range,T.throw_speed)
 			teeth.zero_amount() //Try to delete the teeth
@@ -1371,7 +1371,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/sever_artery()
 	if(!(status & ORGAN_ARTERY_CUT) && species && species.has_organ["heart"])
 		status |= ORGAN_ARTERY_CUT
-		if(artery_name == "carotid artery")
+		if(artery_name == "carotid artery" && owner)
 			playsound(owner.loc, 'sound/voice/throat.ogg', 50, 1, -1)
 		return TRUE
 	return FALSE

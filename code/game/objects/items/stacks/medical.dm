@@ -96,7 +96,8 @@
 				if (do_surgery(H,user,src))
 					return
 			else
-				user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
+				if (affecting)
+					user << "<span class='notice'>The [affecting.name] is cut open, you'll need more than a bandage!</span>"
 
 /obj/item/stack/medical/advanced/bruise_pack
 	name = "trauma kit"
