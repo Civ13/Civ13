@@ -286,6 +286,8 @@
 
 /material/wood/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe("gunsmithing bench",/obj/structure/gunbench, 13, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 22)
 		recipes += new/datum/stack_recipe("raft",/obj/structure/vehicle/raft, 10, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 22)

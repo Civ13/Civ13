@@ -1,5 +1,5 @@
 /obj/structure/gunbench
-	name = "gunbench"
+	name = "gunsmithing bench"
 	desc = "A large wooden workbench. The gunsmith's main work tool. It has 0 steel and 0 wood on it."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "gunbench1"
@@ -244,7 +244,7 @@
 		else if (choice_caliber == "5.5mm intermediate rifle")
 			current_gun.caliber = "smallintermediumrifle"
 			current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
-
+	if (choice_caliber != "Cancel" && choice_stock != "Cancel" && choice_barrel != "Cancel" && choice_receiver != "Cancel" && choice_feeding != "Cancel")
 		wood_amt -= using_wood
 		steel_amt -= using_steel
 		using_wood = 0
@@ -260,6 +260,11 @@
 		NEWGUN.loc = get_turf(src)
 		current_gun = null
 		return TRUE
+	else
+		current_gun = null
+		using_wood = 0
+		using_steel = 0
+		return
 
 /////////////////////////////////////////////////////////
 ///////////////////THE CUSTOM GUN////////////////////////
@@ -361,6 +366,7 @@
 
 	switch(receiver_type)
 		if ("Bolt-Action")
+			item_state = "mosin"
 			w_class = 4
 			force = 10
 			throwforce = 20
@@ -491,6 +497,7 @@
 			load_delay = 6
 
 		if ("Semi-Auto (small)")
+			item_state = "pistol"
 			stat = "pistol"
 			move_delay = 1
 			fire_delay = 3
@@ -546,6 +553,7 @@
 			KD_chance = KD_CHANCE_LOW
 			aim_miss_chance_divider = 2.00
 		if ("Semi-Auto (large)")
+			item_state = "g41"
 			stat = "rifle"
 			w_class = 4
 			slot_flags = SLOT_BACK
@@ -609,6 +617,7 @@
 				list(name="single shot",burst=1, move_delay=2, fire_delay=6)
 				)
 		if ("Open-Bolt (small)")
+			item_state = "greasegun"
 			stat = "mg"
 			w_class = 3
 			slot_flags = SLOT_BACK|SLOT_BELT
@@ -672,6 +681,7 @@
 			KD_chance = KD_CHANCE_MEDIUM
 			attachment_slots = ATTACH_IRONSIGHTS
 		if ("Open-Bolt (large)")
+			item_state = "negev"
 			stat = "mg"
 			w_class = 5
 			heavy = TRUE
@@ -742,6 +752,7 @@
 			full_auto = TRUE
 			attachment_slots = ATTACH_IRONSIGHTS
 		if ("Dual Selective Fire")
+			item_state = "ak47"
 			stat = "rifle"
 			w_class = 3
 			sel_mode = 1
@@ -807,6 +818,7 @@
 			KD_chance = KD_CHANCE_MEDIUM
 			attachment_slots = ATTACH_IRONSIGHTS
 		if ("Triple Selective Fire")
+			item_state = "m16"
 			stat = "rifle"
 			w_class = 3
 			sel_mode = 1
@@ -873,6 +885,7 @@
 			KD_chance = KD_CHANCE_MEDIUM
 			attachment_slots = ATTACH_IRONSIGHTS
 		if ("Pump-Action")
+			item_state = "shotgun-f"
 			stat = "rifle"
 			gun_type = GUN_TYPE_SHOTGUN
 			fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
