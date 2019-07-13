@@ -52,6 +52,8 @@
 
 /mob/living/carbon/human/update_hud()	//TODO: do away with this if possible
 	if (client)
+		if (client.prefs && client.prefs.cursor && client.prefs.cursor != client.mouse_pointer_icon)
+			client.mouse_pointer_icon = client.prefs.cursor
 		check_HUD()
 		client.screen |= contents
 		//if (hud_used)

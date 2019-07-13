@@ -19,6 +19,7 @@ var/list/preferences_datums = list()
 	var/UI_style_color = "#FFFFFF"
 	var/UI_style_alpha = 255
 	var/lobby_music_volume = 30
+	var/cursor = 'icons/effects/green_cursors.dmi'
 
 	//character preferences
 	var/real_name = "John Doe"						//our character's name

@@ -41,7 +41,20 @@
 	. += "<b>Name:</b> "
 	. += "<a href='?src=\ref[src];rename=1'><b>[pref.real_name]</b></a><br><br>"
 	. += "(<a href='?src=\ref[src];random_name=1'>Random Name</A>) <br><br>"
-	. += "(<a href='?src=\ref[src];always_random_name=1'>Always Random Name: [pref.be_random_name ? "Yes" : "No"]</a>)"
+	. += "(<a href='?src=\ref[src];always_random_name=1'>Always Random Name: [pref.be_random_name ? "Yes" : "No"]</a>)<br><br>"
+	. += "<b>UI Style: </b><a href='?src=\ref[src];select_style=1'><b>[pref.UI_style]</b></A><br><br>"
+	var/currcursor = "Default"
+	if (pref.cursor == 'icons/effects/red_cursors.dmi')
+		currcursor = "Red Crosshair"
+
+	else if (pref.cursor == 'icons/effects/white_cursors.dmi')
+		currcursor = "White Crosshair"
+
+	else if (pref.cursor == 'icons/effects/green_cursors.dmi')
+		currcursor = "Green Crosshair"
+	else
+		currcursor = "Default"
+	. += "<b>Cursor Style: </b><a href='?src=\ref[src];select_cursor=1'><b>[currcursor]</b></A>"
 	. += "<br><br>"
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
@@ -65,4 +78,25 @@
 		pref.be_random_name = !pref.be_random_name
 		return TOPIC_REFRESH
 
+	else if (href_list["select_style"])
+		var/UI_style_new = input(user, "Choose UI style:", "UI Style", pref.UI_style) as null|anything in all_ui_styles
+		if (!UI_style_new || !CanUseTopic(user)) return TOPIC_NOACTION
+		pref.UI_style = UI_style_new
+		pref.save_preferences()
+		return TOPIC_REFRESH
+
+	else if (href_list["select_cursor"])
+		var/cursor_new = WWinput(usr, "Choose Cursor Style:", "Mouse Cursor", "Default", list("Default","Red Crosshair","Green Crosshair","White Crosshair"))
+		if (cursor_new == "Default")
+			pref.cursor = null
+		else if (cursor_new == "Red Crosshair")
+			pref.cursor = 'icons/effects/red_cursors.dmi'
+		else if (cursor_new == "White Crosshair")
+			pref.cursor = 'icons/effects/white_cursors.dmi'
+		else if (cursor_new == "Green Crosshair")
+			pref.cursor = 'icons/effects/green_cursors.dmi'
+		else
+			pref.cursor = null
+		pref.save_preferences()
+		return TOPIC_REFRESH
 	return ..()
