@@ -193,57 +193,56 @@
 		using_wood = 0
 		using_steel = 0
 		return
-	else
-		var/list/caliberlist = list("Cancel")
-		switch (choice_receiver)
-			if ("Pump-Action")
-				caliberlist = list("shotgun","Cancel")
+	var/list/caliberlist = list("Cancel")
+	switch (choice_receiver)
+		if ("Pump-Action")
+			caliberlist = list("shotgun","Cancel")
 
-			if ("Bolt-Action","Semi-Auto (large)")
-				caliberlist = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		if ("Bolt-Action","Semi-Auto (large)")
+			caliberlist = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
 
-			if ("Open-Bolt (large)")
-				caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		if ("Open-Bolt (large)")
+			caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
 
-			if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
-				caliberlist = list("9mm pistol",".45 pistol","Cancel")
+		if ("Open-Bolt (small)","Revolver","Semi-Auto (small)")
+			caliberlist = list("9mm pistol",".45 pistol","Cancel")
 
-			if ("Dual Selective Fire", "Triple Selective Fire")
-				caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		if ("Dual Selective Fire", "Triple Selective Fire")
+			caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
 
-		var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
-		if (choice_caliber == "Cancel")
-			current_gun = null
-			using_wood = 0
-			using_steel = 0
-			return
-		else if (choice_caliber == "shotgun")
-			current_gun.caliber = "12gauge"
-			current_gun.ammo_type = /obj/item/ammo_casing/shotgun
+	var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
+	if (choice_caliber == "Cancel")
+		current_gun = null
+		using_wood = 0
+		using_steel = 0
+		return
+	else if (choice_caliber == "shotgun")
+		current_gun.caliber = "12gauge"
+		current_gun.ammo_type = /obj/item/ammo_casing/shotgun
 
-		else if (choice_caliber == "8mm large rifle")
-			current_gun.caliber = "largerifle"
-			current_gun.ammo_type = /obj/item/ammo_casing/largerifle
+	else if (choice_caliber == "8mm large rifle")
+		current_gun.caliber = "largerifle"
+		current_gun.ammo_type = /obj/item/ammo_casing/largerifle
 
-		else if (choice_caliber == "6.5mm small rifle")
-			current_gun.caliber = "smallrifle"
-			current_gun.ammo_type = /obj/item/ammo_casing/smallrifle
+	else if (choice_caliber == "6.5mm small rifle")
+		current_gun.caliber = "smallrifle"
+		current_gun.ammo_type = /obj/item/ammo_casing/smallrifle
 
-		else if (choice_caliber == ".45 pistol")
-			current_gun.caliber = "pistol45"
-			current_gun.ammo_type = /obj/item/ammo_casing/pistol45
+	else if (choice_caliber == ".45 pistol")
+		current_gun.caliber = "pistol45"
+		current_gun.ammo_type = /obj/item/ammo_casing/pistol45
 
-		else if (choice_caliber == "9mm pistol")
-			current_gun.caliber = "pistol9"
-			current_gun.ammo_type = /obj/item/ammo_casing/pistol9
+	else if (choice_caliber == "9mm pistol")
+		current_gun.caliber = "pistol9"
+		current_gun.ammo_type = /obj/item/ammo_casing/pistol9
 
-		else if (choice_caliber == "7.5mm intermediate rifle")
-			current_gun.caliber = "intermediumrifle"
-			current_gun.ammo_type = /obj/item/ammo_casing/intermediumrifle
+	else if (choice_caliber == "7.5mm intermediate rifle")
+		current_gun.caliber = "intermediumrifle"
+		current_gun.ammo_type = /obj/item/ammo_casing/intermediumrifle
 
-		else if (choice_caliber == "5.5mm intermediate rifle")
-			current_gun.caliber = "smallintermediumrifle"
-			current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
+	else if (choice_caliber == "5.5mm intermediate rifle")
+		current_gun.caliber = "smallintermediumrifle"
+		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
 	if (choice_caliber != "Cancel" && choice_stock != "Cancel" && choice_barrel != "Cancel" && choice_receiver != "Cancel" && choice_feeding != "Cancel")
 		wood_amt -= using_wood
 		steel_amt -= using_steel
