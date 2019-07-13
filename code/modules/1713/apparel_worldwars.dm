@@ -53,6 +53,9 @@
 	icon_state = "brittcap"
 	item_state = "brittcap"
 
+/obj/item/clothing/head/helmet/ww
+	health = 18
+
 /obj/item/clothing/head/helmet/ww/stahlhelm
 	name = "M1915 stahlhelm"
 	desc = "A typical grman stahlhelm helmet."
@@ -108,7 +111,8 @@
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////////WW2 JAPS/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-
+/obj/item/clothing/head/helmet/ww2
+	health = 20
 /obj/item/clothing/head/helmet/ww2/japhelm
 	name = "japanese helmet"
 	desc = "A typical rounded steel helmet."
@@ -417,7 +421,8 @@ obj/item/clothing/head/ww2/jap_mp
 	icon_state = "british_vest"
 	item_state = "british_vest"
 
-
+/obj/item/clothing/accessory/armor/modern
+	health = 20
 /obj/item/clothing/accessory/armor/modern/plate
 	name = "breastplate body armor"
 	desc = "Wearable armor made of steel sheets."

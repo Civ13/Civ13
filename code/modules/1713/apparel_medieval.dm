@@ -32,6 +32,7 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
+	health = 35
 /obj/item/clothing/gloves/gauntlets
 	name = "armored gauntlets"
 	desc = "A pair of armored iron gauntlets."
@@ -44,6 +45,7 @@
 	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
+	health = 23
 
 /obj/item/clothing/under/medieval
 	name = "white tunic"
@@ -193,6 +195,7 @@
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
 	value = 50
 	slowdown = 1.5
+	health = 60
 /obj/item/clothing/suit/armor/medieval/blue
 	name = "blue plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
@@ -235,6 +238,7 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = 20)
 	value = 25
 	slowdown = 0.7
+	health = 48
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
 	name = "iron chestplate"
 	desc = "An iron chestplate."
@@ -245,6 +249,7 @@
 	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
 	value = 32
 	slowdown = 0.8
+	health = 52
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/red
 	..()
 	icon_state = "iron_chestplater"
@@ -272,6 +277,7 @@
 	value = 20
 	flammable = TRUE
 	slowdown = 0.2
+	health = 33
 
 /obj/item/clothing/accessory/armor
 	icon = 'icons/obj/clothing/suits.dmi'
@@ -297,6 +303,7 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = 10)
 	value = 30
 	slowdown = 0.6
+	health = 50
 
 /obj/item/clothing/accessory/armor/chainmail
 	name = "chainmail"
@@ -308,6 +315,7 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = 10)
 	value = 30
 	slowdown = 0.6
+	health = 50
 
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
@@ -319,6 +327,8 @@
 	armor = list(melee = 60, arrow = 55, gun = 10, energy = 20, bomb = 40, bio = 30, rad = 15)
 	value = 40
 	slowdown = 0.75
+	health = 60
+
 /obj/item/clothing/head/helmet/gold_crown
 	name = "gold crown"
 	desc = "A crown of gold. Fancy."
@@ -382,6 +392,7 @@
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 35)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
+	health = 55
 
 /obj/item/clothing/head/helmet/medieval/templar
 	name = "templar knight helmet"
@@ -401,6 +412,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 35
 
 /obj/item/clothing/head/helmet/medieval/helmet2
 	name = "kettle helmet"
@@ -411,6 +423,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 35, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 28
 
 /obj/item/clothing/head/helmet/medieval/helmet3
 	name = "conical helmet"
@@ -421,6 +434,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/coif
 	name = "iron coif"
@@ -431,6 +445,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 40, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 37
 
 /obj/item/clothing/head/helmet/medieval/coif_helmet
 	name = "iron coif and helmet"
@@ -441,6 +456,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 45
 
 /obj/item/clothing/head/helmet/medieval/arab
 	name = "conical arabic helmet and turban"
@@ -451,6 +467,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/arab2
 	name = "long arabic helmet and turban"
@@ -461,6 +478,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/arab3
 	name = "long arabic helmet"
@@ -471,7 +489,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
-
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/arab/New()
 	..()
@@ -565,6 +583,7 @@
 	armor = list(melee = 65, arrow = 75, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
 	slowdown = 0.6
+	health = 40
 
 /obj/item/clothing/suit/armor/samurai/red
 	name = "red samurai armor"
@@ -669,6 +688,7 @@
 	worn_state = "samurai3"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 55, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	health = 30
 
 /obj/item/clothing/head/helmet/samurai/guard
 	name = "samurai helmet"

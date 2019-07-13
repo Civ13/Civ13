@@ -108,7 +108,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 15, energy = 15, bomb = 55, bio = 20, rad = FALSE)
-
+	health = 24
 /obj/item/clothing/head/helmet/modern/ushelmet/sgt
 	name = "M1 helmet (sergeant)"
 	desc = "A typical US Army helmet. With sergeant markings."
@@ -212,6 +212,8 @@
 	item_state = "khan_ran_scarf"
 	slot = "decor"
 
+/obj/item/clothing/accessory/armor
+	health = 20
 /obj/item/clothing/accessory/armor/coldwar
 	icon = 'icons/obj/clothing/ties.dmi'
 /obj/item/clothing/accessory/armor/coldwar/get_mob_overlay()

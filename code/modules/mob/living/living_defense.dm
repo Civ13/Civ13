@@ -10,7 +10,7 @@
 	1 - halfblock
 	2 - fullblock
 */
-/mob/living/proc/run_armor_check(var/def_zone = null, var/attack_flag = "melee", var/armor_pen = FALSE, var/absorb_text = null, var/soften_text = null)
+/mob/living/proc/run_armor_check(var/def_zone = null, var/attack_flag = "melee", var/armor_pen = FALSE, var/absorb_text = null, var/soften_text = null, var/obj/item/damage_source = null)
 	if (armor_pen >= 100)
 		return FALSE //might as well just skip the processing
 
@@ -28,20 +28,31 @@
 		absorb -= 1
 	if (prob(armor_pen))
 		absorb -= 1
+	var/dmg = 0
+	if (damage_source)
+		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+			dmg = 8
+		else
+			dmg = 0.8
 	if (absorb >= 2)
+		if (istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = src
+			H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[absorb_text]")
 		else
 			show_message("<span class='warning'>Your armor absorbs the blow!</span>")
 		return 2
 	if (absorb == TRUE)
+		if (istype(src, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = src
+			H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[soften_text]",4)
 		else
 			show_message("<span class='warning'>Your armor softens the blow!</span>")
 		return TRUE
 	return FALSE
-
 
 //if null is passed for def_zone, then this should return something appropriate for all zones (e.g. area effect damage)
 /mob/living/proc/getarmor(var/def_zone, var/type)
@@ -51,7 +62,7 @@
 /mob/living/bullet_act(var/obj/item/projectile/P, var/def_zone)
 
 	//Armor
-	var/absorb = run_armor_check(def_zone, P.check_armor, P.armor_penetration)
+	var/absorb = run_armor_check(def_zone, P.check_armor, P.armor_penetration, damage_source = P)
 	var/proj_sharp = is_sharp(P)
 	var/proj_edge = P.edge
 	if ((proj_sharp || proj_edge) && prob(getarmor(def_zone, P.check_armor)))
@@ -112,7 +123,7 @@
 /mob/living/proc/hit_with_weapon(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
 	visible_message("<span class='danger'>[src] has been [I.attack_verb.len? pick(I.attack_verb) : "attacked"] with the [I.name] by [user]!</span>")
 
-	var/blocked = run_armor_check(hit_zone, "melee")
+	var/blocked = run_armor_check(hit_zone, "melee", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 
 
@@ -152,7 +163,7 @@
 			return
 
 		visible_message("<span class = 'red'>[src] has been hit by [O].</span>")
-		var/armor = run_armor_check(null, "melee")
+		var/armor = run_armor_check(null, "melee", damage_source = AM)
 
 		if (armor < 2)
 			apply_damage(throw_damage, dtype, null, armor, is_sharp(O), O.edge, O)

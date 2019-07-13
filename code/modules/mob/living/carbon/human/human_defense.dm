@@ -319,8 +319,22 @@ bullet_act
 									protection += 10
 	return protection
 
+/mob/living/carbon/human/proc/damage_armor(var/obj/item/organ/external/def_zone, var/dmg = 0)
+	if (!dmg || !def_zone) return FALSE
+	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
+	for (var/gear in protective_gear)
+		if (gear && istype(gear ,/obj/item/clothing))
+			var/obj/item/clothing/C = gear
+			if (istype(C) && C.body_parts_covered & def_zone.body_part)
+				C.health -= dmg
+				C.check_health()
+			if (C.accessories.len)
+				for (var/obj/item/clothing/accessory/AC in C.accessories)
+					if (AC.body_parts_covered & def_zone.body_part)
+						AC.health -= dmg
+						AC.check_health()
+	return TRUE
 /mob/living/carbon/human/proc/check_head_coverage()
-
 	var/list/body_parts = list(head, wear_mask, wear_suit, w_uniform)
 	for (var/bp in body_parts)
 		if (!bp)	continue
@@ -406,7 +420,7 @@ bullet_act
 	visible_message("<span class='danger'>[src] has been [I.attack_verb.len? pick(I.attack_verb) : "attacked"] in the [affecting.name] with [I.name] by [user]!</span>")
 	receive_damage()
 
-	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].")
+	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 
 	return blocked
@@ -584,7 +598,7 @@ bullet_act
 		if (!hit_area)
 			return
 		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
-		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].") //I guess "melee" is the best fit here
+		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM) //I guess "melee" is the best fit here
 
 		if(armor < 100)
 			var/sharp = O.sharp

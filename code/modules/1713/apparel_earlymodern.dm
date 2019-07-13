@@ -173,6 +173,7 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 10, bomb = 10, bio = 10, rad = 15)
 	value = 10
+	health = 12
 
 /obj/item/clothing/head/japcap
 	name = "Japanese Cap"
