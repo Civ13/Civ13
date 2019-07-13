@@ -220,7 +220,6 @@
 "el" = (/turf/floor/beach/water/deep,/area/caribbean/roman/arena3)
 "em" = (/obj/structure/sign/traffic/side{icon_state = "sideline"; dir = 8},/turf/floor/beach/sand/dark,/area/caribbean/roman/arena4)
 "en" = (/obj/structure/sign/traffic/side{icon_state = "sideline"; dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/roman/arena4)
-"eo" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 4},/turf/floor/dirt,/area/caribbean/roman/arena3)
 "ep" = (/obj/structure/barricade/sandstone_h,/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/three)
 "eq" = (/obj/covers/sandstone,/obj/structure/barricade/sandstone_h,/obj/structure/sign/n2,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/two)
 "er" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/four)
@@ -235,7 +234,6 @@
 "eA" = (/obj/covers/sandstone,/obj/structure/gate/sandstone/open,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/three)
 "eB" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/four)
 "eC" = (/obj/covers/sandstone,/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/four)
-"eD" = (/obj/structure/window/sandbag/rock{icon_state = "rock_barricade"; dir = 8},/turf/floor/dirt,/area/caribbean/roman/arena3)
 "eE" = (/obj/covers/sandstone,/obj/structure/gatecontrol/sandstone{distance = 2; open = 1},/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/three)
 "eF" = (/obj/structure/barricade/sandstone_h,/obj/structure/sign/n3,/turf/floor/beach/sand/dark,/area/caribbean/no_mans_land/invisible_wall/three)
 "eG" = (/obj/structure/functions/clean_arena1,/turf/floor/dirt,/area/caribbean/roman/arena3)
@@ -312,10 +310,10 @@ dbdbdbdbdbdbdbdbdbdbdbdbdbabafafafafafafafafafafafafafafafafafecdfdfdidfdfdfaJdf
 dbdbdbdbdbdbdbdbdbdbdbdbdbadafafafafeEafafafafafbDafafeEafafafcIeedfdfdldgdfdfdfeeafafafafeuagagahahahahahahahagagevafafafafbEbEbEbFbEbEbEbFbEbEbEbFbGbGbHbEbEbFbEbEbEbFbEbEbEbEdbdbdbdbdbdbdbdbdbdbdbdb
 dbdbdbdbdbdbdbdbdbdbdbdbdbabafafaseieieAeFepeieiepeFeAeieiafafafbDecedeqeIeceddYafafafafafeuagagahahahahahahahagagevafafafadabafafafafafafafafafafafafafafafafafafafafafafafafabdbdbdbdbdbdbdbdbdbdbdbdb
 dbdbdbdbdbdbdbdbdbdbdbdbdbabafafbAeieMejejekelelekejejeMeicIafafafafctdscncMdQafafafafafaseuagagahemahahahenahagagevbDafafabafamanananananamafamanananananamafamanananananamafaddbdbdbdbdbdbdbdbdbdbdbdb
-dbdbdbdbdbdbdbdbdbdbdbdbdbabafafafepejejeoejelelejeDejejepcIafafafafafdKafdKafafafafafafbAeuagagahahahahahahahagagevafafafaaafataparararauavafataparararauavafataparararauavafabdbdbdbdbdbdbdbdbdbdbdbdb
+dbdbdbdbdbdbdbdbdbdbdbdbdbabafafafepejejejejelelejejejejepcIafafafafafdKafdKafafafafafafbAeuagagahahahahahahahagagevafafafaaafataparararauavafataparararauavafataparararauavafabdbdbdbdbdbdbdbdbdbdbdbdb
 dbdbdbdbdbdbdbdbdbdbdbdbdbadafafafeiejejejekelelekejejejeiafafafafafafafafafafafafafafafbDeuagagahahahahahahahagagevafafafdIafatawazaxazayavafatawazaxazayavafatawazaxazayavafabdbdbdbdbdbdbdbdbdbdbdbdb
 dbdbdbdbdbdbdbdbdbdbdbdbdbabafafafeFejejejejelelejejejejeFafafafafafafafafafafafafafafafafeuagagagahahahahahagagagevafafafdIafatawaxaxaxayavafatawaxaxaxayavafatawaxaxaxayavafabdbdbdbdbdbdbdbdbdbdbdbdb
-dbdbdbdbdbdbdbdbdbdbdbdbdbabafafafeiejejeoejelelejeDejejeiafafafafafafafafafafafafafafafafeuagagagagagagagagagagagevafafafdIafatawaxaxaxayavafatawaxaxaxayavafatawaxaxaxayavafaddbdbdbdbdbdbdbdbdbdbdbdb
+dbdbdbdbdbdbdbdbdbdbdbdbdbabafafafeiejejejejelelejejejejeiafafafafafafafafafafafafafafafafeuagagagagagagagagagagagevafafafdIafatawaxaxaxayavafatawaxaxaxayavafatawaxaxaxayavafaddbdbdbdbdbdbdbdbdbdbdbdb
 dbdbdbdbdbdbdbdbdbdbdbdbdbabafafcIepejejejekelelekejejejepafafafafafafafafafafafafafafafafeweBagagagagagagagagageCdjafafafdIafatawazaxazayavafatawazaxazayavafatawazaxazayavafabdbdbdbdbdbdbdbdbdbdbdbdb
 dbdbdbdbdbdbdbdbdbdbdbdbdbadafafbDeieNejejejelelejejejeNeibDafafafafafafafafafafafafafafafafdmexexexeJeKexexexexdjafafafafaaafatcbbZbZbZccavafatcbbZbZbZccavafatcbbZbZbZccavafabdbdbdbdbdbdbdbdbdbdbdbdb
 dbdbdbdbdbdbdbdbdbdbdbdbdbabafafafeieieieiepeFeLepeieieieibAafafafafafafafafafafafafafafafafafafafctdscncMdQbDafafafafafafabafamaqaqaqaqaqamafamaqaqaqaqaqamafamaqaqaqaqaqamafabdbdbdbdbdbdbdbdbdbdbdbdb

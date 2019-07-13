@@ -59,7 +59,8 @@
 			if (findtext(temp_stats1[i], ";"))
 				var/list/temp_stats2 = splittext(temp_stats1[i], ";")
 				//								ckey			name		stats			0=alive,1=dead			victories					matches
-				gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],text2num(temp_stats2[4]),text2num(temp_stats2[5]),text2num(temp_stats2[6])))
+				if ((text2num(temp_stats2[5]) > 0 && text2num(temp_stats2[6]) > 0) || (text2num(temp_stats2[5])/text2num(temp_stats2[6]))<= 1)
+					gladiator_stats += list(list(temp_stats2[1],temp_stats2[2],temp_stats2[3],text2num(temp_stats2[4]),text2num(temp_stats2[5]),text2num(temp_stats2[6])))
 		return TRUE
 	else
 		return FALSE
