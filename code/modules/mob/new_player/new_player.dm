@@ -620,7 +620,10 @@
 	if (INDIANS in map.faction_organization)
 		dat += "[alive_indians.len] Natives "
 	if (CIVILIAN in map.faction_organization)
-		dat += "[alive_civilians.len] Civilians "
+		if (map && istype(map, /obj/map_metadata/tsaritsyn))
+			dat += "[alive_civilians.len] Soviets "
+		else
+			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
 		dat += "[alive_greek.len] Greeks "
 	if (ROMAN in map.faction_organization)

@@ -40,7 +40,10 @@
 			return "British Empire"
 
 	if (constant == CIVILIAN)
-		return "Colonists"
+		if (map.ID == "TSARITSYN")
+			return "Red Army"
+		else
+			return "Colonists"
 
 	if (constant == INDIANS)
 		return "Native Tribe"
@@ -68,7 +71,10 @@
 		if (age >= 6)
 			return "Soviet Union"
 		else
-			return "Russian Empire"
+			if (map.ID == "TSARITSYN")
+				return "White Army"
+			else
+				return "Russian Empire"
 	if (constant == ROMAN)
 		return "Roman Republic"
 

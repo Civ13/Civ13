@@ -44,7 +44,7 @@ obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
 	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/tsaritsyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
+	return (admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/tsaritsyn/roundend_condition_def2name(define)
