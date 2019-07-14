@@ -37,7 +37,8 @@
 
 		if (ishuman(src))
 			emote("painscream")
-
+		if (client)
+			client.movement_busy = FALSE
 		lastgib = world.time
 		death(1)
 		transforming = TRUE

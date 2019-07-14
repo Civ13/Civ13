@@ -1,5 +1,6 @@
 /mob/living/carbon/human/gib()
-
+	if (client)
+		client.movement_busy = FALSE
 	ghostize() // preserve our body's icon before it explodes
 
 	for (var/obj/item/organ/I in internal_organs)
@@ -28,7 +29,8 @@
 	for (var/obj/item/I in contents)
 		if (!istype(I, /obj/item/organ))
 			drop_from_inventory(I)
-
+	if (client)
+		client.movement_busy = FALSE
 	..(species.gibbed_anim)
 	gibs(loc, null, species.flesh_color, species.blood_color)
 
@@ -50,7 +52,8 @@
 		src << "<big><b>[name]'s life fades away into history...</b></big>"
 	src << browse(null, "window=memory")
 
-
+	if (client)
+		client.movement_busy = FALSE
 
 	//Handle species-specific deaths.
 	species.handle_death(src)
