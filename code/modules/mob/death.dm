@@ -107,6 +107,7 @@
 		ticker.mode.check_win()*/
 
 	if (client)
+		client.movement_busy = FALSE
 		ghostize()
 
 	return TRUE
