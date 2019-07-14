@@ -18,7 +18,7 @@
 	age = "1919"
 	ordinal_age = 5
 	faction_distribution_coeffs = list(RUSSIAN = 0.5, CIVILIAN = 0.5)
-	battle_name = "battle of the tsaritsyn"
+	battle_name = "battle for the church"
 	mission_start_message = "<font size=4>All factions have <b>7 minutes</b> to prepare before the ceasefire ends!<br>The <b>Soviets</b> will win if they hold out for <b>40 minutes</b>. The <b>White Army</b> will win if they manage to capture the centre of the church.</font>"
 	faction1 = RUSSIAN
 	faction2 = CIVILIAN
