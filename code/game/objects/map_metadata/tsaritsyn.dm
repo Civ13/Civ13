@@ -1,7 +1,7 @@
 #define NO_WINNER "The church is under Soviet control."
 /obj/map_metadata/tsaritsyn
 	ID = MAP_TSARITSYN
-	title = "tsaritsyn (120x100x1)"
+	title = "Tsaritsyn (120x100x1)"
 	lobby_icon_state = "ww1"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 600
@@ -19,7 +19,7 @@
 	ordinal_age = 5
 	faction_distribution_coeffs = list(RUSSIAN = 0.5, CIVILIAN = 0.5)
 	battle_name = "battle of the tsaritsyn"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The RUSSIANs will win if they hold out for <b>40 minutes</b>. The Soviets will win if they manage to reach the top of the tsaritsyn.</font>"
+	mission_start_message = "<font size=4>All factions have <b>7 minutes</b> to prepare before the ceasefire ends!<br>The <b>Soviets</b> will win if they hold out for <b>40 minutes</b>. The <b>White Army</b> will win if they manage to capture the centre of the church.</font>"
 	faction1 = RUSSIAN
 	faction2 = CIVILIAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_SNOW, WEATHER_BLIZZARD)
@@ -41,10 +41,10 @@ obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 
 /obj/map_metadata/tsaritsyn/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/tsaritsyn/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4200 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/tsaritsyn/roundend_condition_def2name(define)

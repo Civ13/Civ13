@@ -17,6 +17,7 @@
 /obj/structure/brazier/loaded/New()
 	..()
 	fuel = 5000
+	set_light(5)
 	on = TRUE
 
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
