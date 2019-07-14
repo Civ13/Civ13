@@ -14,6 +14,11 @@
 	..()
 	do_light()
 
+/obj/structure/brazier/loaded/New()
+	..()
+	fuel = 5000
+	on = TRUE
+
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
 		if (istype(W, /obj/item/weapon/wrench) || (istype(W, /obj/item/weapon/hammer)))

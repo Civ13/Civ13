@@ -337,6 +337,22 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "concrete6"
 	interior = FALSE
+/turf/floor/plating/tiled
+	name = "tiled floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "wooden_floor_s1"
+	interior = TRUE
+/turf/floor/plating/tiled/dark
+	icon_state = "wooden_floor_s2"
+
+/turf/floor/plating/tiled/darker
+	icon_state = "wooden_floor_s3"
+
+/turf/floor/plating/tiled/woodh
+	icon_state = "wooden_floor_s4"
+
+/turf/floor/plating/tiled/woodv
+	icon_state = "wooden_floor_s5"
 
 /turf/floor/plating/road
 	name = "road"

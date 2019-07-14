@@ -168,6 +168,11 @@
 	desc = "A flag of the United Kingdom."
 	icon_state = "flag_uk"
 
+/obj/structure/sign/flag/russia
+	name = "Russia flag"
+	desc = "A flag of Russsia."
+	icon_state = "flag_russia"
+
 /obj/structure/sign/flag/vietnam
 	name = "North Vietnam flag"
 	desc = "The North Vietnamese flag."

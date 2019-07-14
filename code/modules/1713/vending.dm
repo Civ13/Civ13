@@ -380,6 +380,16 @@ obj/structure/vending/sofammo
 		/obj/item/weapon/attachment/bayonet/military = 15,
 	)
 
+
+/obj/structure/vending/oldrussianweapons
+	name = "Russian rifle rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+
 /obj/structure/vending/wehrmachtammo
 	name = "Wehrmacht ammo crate"
 	desc = "A large crate of Wehrmacht ammunition."

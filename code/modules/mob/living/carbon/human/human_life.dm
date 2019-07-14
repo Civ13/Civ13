@@ -1417,6 +1417,8 @@
 //						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = ""
+					if (map.ID == MAP_TSARITSYN)
+						holder2.icon_state = "sov_basic"
 
 			hud_list[BASE_FACTION] = holder2
 

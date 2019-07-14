@@ -602,7 +602,18 @@
 			latejoin_turfs[name] += loc
 			qdel(src)
 			return
-
+		if ("JoinLateRU2")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
+		if ("JoinLateRU3")
+			if (!latejoin_turfs[name])
+				latejoin_turfs[name] = list()
+			latejoin_turfs[name] += loc
+			qdel(src)
+			return
 		if ("JoinLateRUDoc")
 			if (!latejoin_turfs[name])
 				latejoin_turfs[name] = list()

@@ -186,6 +186,19 @@
 	sways = FALSE
 	amount = 5
 
+/obj/structure/wild/tree/live_tree/snow
+	name = "tree"
+	icon = 'icons/obj/flora/bigtrees_winter.dmi'
+	icon_state = "tree_1"
+	opacity = TRUE
+	density = TRUE
+	sways = FALSE
+	amount = 5
+
+/obj/structure/wild/tree/live_tree/snow/update_icon()
+	..()
+	icon = 'icons/obj/flora/bigtrees_winter.dmi'
+
 /obj/structure/wild/tree/Destroy()
 	var/nearbyObjects = range(2,src)
 	var/list/turf/emptyTurfs = list()
