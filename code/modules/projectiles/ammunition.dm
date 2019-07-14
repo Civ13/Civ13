@@ -155,15 +155,23 @@
 	weight = 0.25
 	multiple_sprites = TRUE
 /obj/item/ammo_magazine/emptymagazine/pistol
-	name = "pistol magazine (8)"
+	name = "pistol magazine (15)"
 	mag_type = MAGAZINE
 	icon_state = "m9beretta-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 15
+	weight = 0.2
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/emptymagazine/pistol/a45
+	name = "pistol magazine (8)"
+	mag_type = MAGAZINE
+	icon_state = "waltherp-0"
 	ammo_type = null
 	caliber = null
 	max_ammo = 8
 	weight = 0.1
 	multiple_sprites = TRUE
-
 /obj/item/ammo_magazine/emptybelt
 	name = "belt (100)"
 	mag_type = MAGAZINE
@@ -259,9 +267,13 @@
 				caliber = null
 				name = "clip ([max_ammo])"
 		else if (belt)
-			name = "belt ([max_ammo])"
+			if (stored_ammo.len == FALSE)
+				caliber = null
+				name = "belt ([max_ammo])"
 		else
-			name = "magazine ([max_ammo])"
+			if (stored_ammo.len == FALSE)
+				caliber = null
+				name = "magazine ([max_ammo])"
 
 /obj/item/ammo_magazine/New()
 	..()
@@ -297,14 +309,13 @@
 		stored_ammo.Insert(1, C) //add to the head of the list
 		if (caliber == null)
 			caliber = C.caliber
+			name = "[C] magazine ([max_ammo])"
 			if (pouch)
 				name = "[C] ammo pouch"
-			else if (clip)
+			if (clip)
 				name = "[C] clip"
-			else if (belt)
+			if (belt)
 				name = "[C] belt ([max_ammo])"
-			else
-				name = "[C] magazine ([max_ammo])"
 		name = replacetext(name, " bullet","")
 		update_icon()
 	else if (istype(W, /obj/item/ammo_magazine))

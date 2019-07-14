@@ -78,10 +78,6 @@
 		icon_state = "[base_icon]_open"
 	update_held_icon()
 	return
-/obj/item/weapon/gun/projectile/automatic/New()
-	..()
-	loaded = list()
-	chambered = null
 
 /obj/item/weapon/gun/projectile/automatic/special_check(mob/user)
 	if (gun_safety && safetyon)

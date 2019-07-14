@@ -322,15 +322,18 @@ bullet_act
 /mob/living/carbon/human/proc/damage_armor(var/obj/item/organ/external/def_zone, var/dmg = 0)
 	if (!dmg || !def_zone) return FALSE
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
+	var/obj/item/organ/external/affecting = get_organ(def_zone)
+	if (!affecting)
+		return
 	for (var/gear in protective_gear)
 		if (gear && istype(gear ,/obj/item/clothing))
 			var/obj/item/clothing/C = gear
-			if (istype(C) && C.body_parts_covered & def_zone.body_part)
+			if (istype(C) && C.body_parts_covered & affecting.body_part)
 				C.health -= dmg
 				C.check_health()
 			if (C.accessories.len)
 				for (var/obj/item/clothing/accessory/AC in C.accessories)
-					if (AC.body_parts_covered & def_zone.body_part)
+					if (AC.body_parts_covered & affecting.body_part)
 						AC.health -= dmg
 						AC.check_health()
 	return TRUE

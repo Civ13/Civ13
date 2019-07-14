@@ -969,7 +969,10 @@
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine/small
 			if (receiver_type == "Semi-Auto (small)")
-				magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+				if (caliber == "pistol9")
+					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+				else
+					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
 		if ("Large External Magazine")
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine
@@ -987,7 +990,7 @@
 		if ("Long Rifle Barrel")
 			effectiveness_mod *= 1.25
 		if ("Air-Cooled Barrel")
-			effectiveness_mod *= 1
+			effectiveness_mod *= 1.05
 	var/tempdesc = ""
 	switch(caliber)
 		if ("12gauge")
@@ -1066,7 +1069,10 @@
 		if (world.time - last_fire > 50)
 			jamcheck = 0
 		else
-			jamcheck += 0.4
+			if (barrel_type == "Air-Cooled Barrel")
+				jamcheck += 0.2
+			else
+				jamcheck += 0.6
 
 		if (prob(jamcheck))
 			jammed_until = max(world.time + (jamcheck * 4), 40)
@@ -1107,7 +1113,10 @@
 		if (world.time - last_fire > 50)
 			jamcheck = 0
 		else
-			jamcheck += 0.12
+			if (barrel_type == "Air-Cooled Barrel")
+				jamcheck += 0.1
+			else
+				jamcheck += 0.3
 
 		if (prob(jamcheck))
 			jammed_until = max(world.time + (jamcheck * 4), 45)
@@ -1118,7 +1127,10 @@
 		if (world.time - last_fire > 50)
 			jamcheck = 0
 		else
-			jamcheck += 0.1
+			if (barrel_type =="Air-Cooled Barrel")
+				jamcheck += 0.1
+			else
+				jamcheck += 0.6
 
 		if (prob(jamcheck))
 			jammed_until = max(world.time + (jamcheck * 5), 50)
@@ -1297,6 +1309,8 @@
 			equiptimer -= 5
 			set_stock()
 			update_icon()
+	else
+		usr << "\The [src] has no stock to toggle."
 
 /obj/item/weapon/gun/projectile/custom/proc/set_stock()
 	if (folded)

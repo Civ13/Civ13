@@ -72,10 +72,6 @@
 	aim_miss_chance_divider = 2.00
 	load_delay = 6
 
-/obj/item/weapon/gun/projectile/revolver/New()
-	..()
-	loaded = list()
-	chambered = null
 /obj/item/weapon/gun/projectile/revolver/update_icon()
 	..()
 	if (base_icon)
@@ -487,10 +483,7 @@
 	stat = "rifle"
 	aim_miss_chance_divider = 2.50
 	load_delay = 7
-/obj/item/weapon/gun/projectile/revolving/New()
-	..()
-	loaded = list()
-	chambered = null
+
 /obj/item/weapon/gun/projectile/revolving/verb/spin_cylinder()
 	set name = "Spin cylinder"
 	set desc = "Fun when you're bored out of your skull."
@@ -673,10 +666,6 @@
 	aim_miss_chance_divider = 2.00
 	load_delay = 6
 
-/obj/item/weapon/gun/projectile/capnball/New()
-	..()
-	loaded = list()
-	chambered = null
 /obj/item/weapon/gun/projectile/capnball/update_icon()
 	..()
 	if (base_icon)

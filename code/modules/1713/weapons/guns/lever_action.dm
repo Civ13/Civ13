@@ -85,10 +85,6 @@
 
 	var/recentpump = FALSE
 
-/obj/item/weapon/gun/projectile/leveraction/New()
-	..()
-	loaded = list()
-	chambered = null
 
 /obj/item/weapon/gun/projectile/leveraction/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)

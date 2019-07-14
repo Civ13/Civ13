@@ -46,13 +46,19 @@
 
 /obj/item/weapon/gun/projectile/New()
 	..()
-/*
-	if (ispath(ammo_type) && (load_method & (SINGLE_CASING|SPEEDLOADER)))
-		for (var/i in TRUE to max_shells)
-			loaded += new ammo_type(src)
-	if (ispath(magazine_type) && (load_method & MAGAZINE))
-		ammo_magazine = new magazine_type(src)
-*/
+	if (map && map.civilizations)
+		loaded = list()
+		chambered = null
+	else if (!(istype(loc, /mob/living)))
+		loaded = list()
+		chambered = null
+	else
+		if (ispath(ammo_type) && (load_method & (SINGLE_CASING|SPEEDLOADER)))
+			for (var/i in TRUE to max_shells)
+				loaded += new ammo_type(src)
+		if (ispath(magazine_type) && (load_method & MAGAZINE))
+			ammo_magazine = new magazine_type(src)
+
 	update_icon()
 
 	var/obj/item/weapon/attachment/A = new /obj/item/weapon/attachment/scope/iron_sights(src)
