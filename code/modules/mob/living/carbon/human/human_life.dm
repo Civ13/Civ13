@@ -1455,6 +1455,8 @@
 
 /mob/living/carbon/human/rejuvenate()
 	restore_blood()
+	shock_stage = 0
+	traumatic_shock = 0
 	..()
 
 /mob/living/carbon/human/handle_vision()
