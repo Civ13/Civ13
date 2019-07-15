@@ -281,6 +281,7 @@
 #include "code\game\objects\map_metadata\siege.dm"
 #include "code\game\objects\map_metadata\supply_raid.dm"
 #include "code\game\objects\map_metadata\tribes.dm"
+#include "code\game\objects\map_metadata\tsaritsyn.dm"
 #include "code\game\objects\map_metadata\voyage.dm"
 #include "code\game\objects\map_metadata\ypres.dm"
 #include "code\game\objects\structures\barricades.dm"
@@ -842,5 +843,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\omaha.dmm"
+#include "maps\WIP\tsaritsyn.dmm"
 // END_INCLUDE
