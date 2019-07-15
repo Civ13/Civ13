@@ -103,10 +103,19 @@
 				H.add_note("Known Languages", language_name)
 
 	switch (base_type_flag())
-		if (PIRATES, BRITISH, CIVILIAN)
+		if (PIRATES, BRITISH)
 			for (var/datum/language/english/E in H.languages)
 				H.default_language = E
 				break
+		if (CIVILIAN)
+			if (map.ID == MAP_TSARITSYN)
+				for (var/datum/language/russian/RR in H.languages)
+					H.default_language = RR
+					break
+			else
+				for (var/datum/language/english/E in H.languages)
+					H.default_language = E
+					break
 		if (SPANISH)
 			for (var/datum/language/spanish/S in H.languages)
 				H.default_language = S

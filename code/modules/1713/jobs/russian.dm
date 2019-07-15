@@ -877,6 +877,7 @@
 	return TRUE
 
 /datum/job/civilian/russian
+	default_language = "Russian"
 /datum/job/civilian/russian/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_russian_name(H.gender)
 	H.real_name = H.name
@@ -950,7 +951,7 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/russian_rcw(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
 //back
@@ -988,12 +989,13 @@
 	min_positions = 1
 	max_positions = 10
 
-/datum/job/russian/civilian/red_army_doctor/equip(var/mob/living/carbon/human/H)
+/datum/job/civilian/russian/red_army_doctor/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform) // for now
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/russian_rcw(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches(H), slot_belt)
@@ -1037,7 +1039,7 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/russian_rcw(H), slot_wear_suit)
 //head
 	var/randhead = pick(1,2,3)
 	if (randhead == 1)

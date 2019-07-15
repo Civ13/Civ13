@@ -152,6 +152,18 @@
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
 
+
+/obj/item/clothing/suit/storage/coat/russian_rcw
+	name = "Soviet coat"
+	desc = "An early Red Army coat."
+	icon_state = "japcoat2"
+	item_state = "japcoat2"
+	worn_state = "japcoat2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+
 /obj/item/clothing/suit/storage/coat/japcoat
 	name = "Japanese Coat"
 	desc = "A japanese army coat."
