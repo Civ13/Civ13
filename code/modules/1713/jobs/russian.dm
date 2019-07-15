@@ -617,11 +617,9 @@
 /datum/job/russian/rcw_captain/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1_officer, slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/rusoffcoat(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
@@ -665,21 +663,18 @@
 /datum/job/russian/rcw_sergeant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/rusoffcoat(H), slot_wear_suit)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/rusoffcap(H), slot_head)
 //weapons
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/nagant_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
+	var/obj/item/clothing/accessory/holster/chest/holsterh = new /obj/item/clothing/accessory/holster/chest(null)
 	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad. Organize your group according to the <b>Captain</b> orders!")
@@ -715,12 +710,16 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1(H), slot_w_uniform) // for now
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha/white(H), slot_head)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(armband, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
 	H.setStat("strength", STAT_NORMAL)
@@ -755,11 +754,12 @@
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1(H), slot_w_uniform)
-
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
+	if (prob(50))
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha/white(H), slot_head)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
 
@@ -799,20 +799,23 @@
 /datum/job/russian/cossack_leader/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/kuban_cossak(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha/kuban(H), slot_head)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kuban_cossak(H), slot_wear_suit)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_r_hand)
 
 	H.equip_to_slot_or_del(new 	/obj/item/ammo_magazine/mosin(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	var/obj/item/clothing/accessory/holster/hip/double/holsterh = new /obj/item/clothing/accessory/holster/hip/double(null)
+	uniform.attackby(holsterh, H)
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, leading a squad of cossacks loyal to the White Army. Lead your shock troops and defeat the Reds!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -843,15 +846,14 @@
 /datum/job/russian/cossack_soldier/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
-
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/kuban_cossak(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha/kuban(H), slot_head)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/kuban_cossak(H), slot_wear_suit)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
 
@@ -941,24 +943,24 @@
 /datum/job/civilian/russian/red_army_leader/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+	H.equip_to_slot_or_del(new/obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
 
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
-
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/obrez(H), slot_r_hand)
 	H.equip_to_slot_or_del(new 	/obj/item/ammo_magazine/mosin(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
 	give_random_name(H)
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(armband, H)
+	var/obj/item/clothing/accessory/holster/hip/double/holsterh = new /obj/item/clothing/accessory/holster/hip/double(null)
+	uniform.attackby(holsterh, H)
 	H.add_note("Role", "You are a <b>[title]</b>, leading a squad of red army soldiers. Organize your troops and defeat the Capitalists!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -971,7 +973,46 @@
 
 
 	return TRUE
+/datum/job/civilian/russian/red_army_doctor
+	title = "Krasny Armiya Medik"
+	en_meaning = "Red Army Doctor"
+	rank_abbreviation = "Dr."
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateRU3"
+	SL_check_independent = TRUE
+	is_rcw = TRUE
 
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 10
+
+/datum/job/russian/civilian/red_army_doctor/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform) // for now
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
+	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
+	var/obj/item/clothing/under/uniform = H.w_uniform
+	uniform.attackby(armband, H)
+	give_random_name(H)
+	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the soldiers healthy.")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW) //muskets
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_NORMAL) //not used
+	H.setStat("medical", STAT_VERY_HIGH)
+
+
+	return TRUE
 /datum/job/civilian/russian/red_army_soldier
 	title = "Krasny Armiya Strelok"
 	en_meaning = "Red Army Rifleman"
@@ -995,8 +1036,6 @@
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin(H), slot_back)
 

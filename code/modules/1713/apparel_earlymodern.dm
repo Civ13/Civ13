@@ -126,7 +126,7 @@
 	update_clothing_icon()
 
 /obj/item/clothing/suit/storage/coat/cheka
-	name = "Cheka Leather Coat"
+	name = "Cheka leather coat"
 	desc = "A shiny black leather coat used by Cheka agents."
 	icon_state = "leathercoat_c"
 	item_state = "leathercoat_c"
@@ -135,7 +135,22 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
-	var/colorn = 1
+/obj/item/clothing/under/kuban_kossak
+	name = "Kuban Cossak beshmet"
+	desc = "A red beshmet with grey trousers, traditional of the Kuban Cossaks."
+	icon_state = "kuban_cossak"
+	item_state = "kuban_cossak"
+	worn_state = "kuban_cossak"
+/obj/item/clothing/suit/storage/coat/kuban_cossak
+	name = "black cherkesska coat"
+	desc = "A traditional Kuban Cossak coat."
+	icon_state = "kuban_cossak"
+	item_state = "kuban_cossak"
+	worn_state = "kuban_cossak"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
 
 /obj/item/clothing/suit/storage/coat/japcoat
 	name = "Japanese Coat"
@@ -504,7 +519,21 @@
 	desc = "A black leather cap worn by Cheka agents."
 	icon_state = "cheka"
 	item_state = "cheka"
-
+/obj/item/clothing/head/ww/papakha
+	name = "papakha"
+	desc = "A traditional caucasus hat."
+	icon_state = "papakha"
+	item_state = "papakha"
+/obj/item/clothing/head/ww/papakha/white
+	name = "white papakha"
+	desc = "A traditional caucasus hat."
+	icon_state = "papakha_white"
+	item_state = "papakha_white"
+/obj/item/clothing/head/ww/papakha/kuban
+	name = "Kuban papakha"
+	desc = "A traditional Kuban Cossak papakha, black with a red crown."
+	icon_state = "papakha_kuban"
+	item_state = "papakha_kuban"
 /obj/item/clothing/head/helmet/modern/pickelhaube
 	name = "iron pickelhaube"
 	desc = "A typical pointed helmet."

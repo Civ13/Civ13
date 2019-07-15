@@ -151,7 +151,7 @@
 "cU" = (/turf/floor/dirt,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "cV" = (/obj/effect/decal/cleanable/cobweb2,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "cW" = (/obj/covers/stone_wall,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
-"cX" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/turf/floor/dirt/dust,/area/caribbean/russian/land{icon_state = "blue1"; name = "White Army Base"})
+"cX" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/storage/bible/orthodox,/turf/floor/dirt/dust,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
 "cY" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka,/turf/floor/dirt/dust,/area/caribbean/russian/land{icon_state = "blue1"; name = "White Army Base"})
 "cZ" = (/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "da" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
@@ -323,7 +323,7 @@
 "gk" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
 "gl" = (/obj/structure/wild/tree/live_tree/snow,/obj/structure/phoneline,/turf/floor/winter,/area/caribbean/forest/dirt)
 "gm" = (/obj/structure/flag/russian,/turf/floor/dirt/winter,/area/caribbean/russian/land{icon_state = "blue1"; name = "White Army Base"})
-"gn" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/dirt/dust,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
+"gn" = (/obj/structure/table/wood,/obj/item/weapon/storage/bible/orthodox,/turf/floor/wood/ship,/area/caribbean/forest/dirt)
 "go" = (/obj/structure/table/wood,/obj/item/weapon/material/ashtray/glass,/obj/item/weapon/paper,/obj/item/weapon/pen/pencil,/turf/floor/dirt/dust,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
 "gp" = (/obj/structure/radio/transmitter_receiver/nopower/faction1,/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
 "gq" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/russian/land/inside{icon_state = "blue2"; name = "White Army Base"})
@@ -455,7 +455,7 @@
 "iM" = (/obj/item/weapon/bedroll,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "iN" = (/obj/item/weapon/flame/candle,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "iO" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/table/wood{fixedsprite = 1; icon = 'icons/obj/cross.dmi'; icon_state = "stone_altar"; name = "altar"},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
-"iP" = (/obj/structure/window/sandbag/railing/stone,/obj/item/weapon/storage/bible{layer = 3.5},/obj/structure/table/wood{fixedsprite = 1; icon = 'icons/obj/cross.dmi'; icon_state = "stone_altar"; name = "altar"},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"iP" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/table/wood{fixedsprite = 1; icon = 'icons/obj/cross.dmi'; icon_state = "stone_altar"; name = "altar"},/obj/item/weapon/storage/bible/orthodox,/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "iQ" = (/obj/effect/decal/cleanable/generic,/turf/floor/trench,/area/caribbean/forest/dirt)
 "iR" = (/obj/structure/bed/chair,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "iS" = (/obj/item/weapon/paper/crumpled,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
@@ -615,6 +615,7 @@
 "lQ" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/obj/covers/carpet/redcarpet,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "lR" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "lS" = (/obj/structure/sink/well,/obj/structure/mine_support,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/winter,/area/caribbean/forest/dirt)
+"lT" = (/obj/structure/closet/cabinet,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/suit/storage/jacket/doctor,/obj/item/clothing/gloves/color/white,/obj/item/clothing/gloves/color/white,/obj/item/weapon/storage/bible/orthodox,/turf/floor/dirt/dust,/area/caribbean/russian/land{icon_state = "blue1"; name = "White Army Base"})
 
 (1,1,1) = {"
 aaaaaaajaaaaaaaaaaaaaaaiaaaaaaajaaaaaaaaaaaaaaaaaaaaajaaaaaaaaaabzbzaaaaaaaoaaaaaaaaaaaaaaaaaaaaavcEawawbAbzaaaaaaaaaaauaaaaaaaaaaaaaaaaaaaaajaaaaajaaaaaaababaaaaaaaacwfSfTfTfTfScwaaacaaaaaafEbTfUfVfWfXfYfZaQbSbTamamadamamadalamalalamamamga
@@ -622,7 +623,7 @@ aaauaaacaaaaaaaaaaauaaaaaaaaajajacaaaaaaaaaaaaajaaaaaaaqaaaaanagbBbCaaaacGaaaagl
 aaaaaaaaaaaaaiaaaaaaahhdbPaaaaaaanaaaaaiaaaaaaaaaaanaaaaaaaaaaaabzbzaaheaaaaaiaaaaaaajaaabaabPacaaavcEcEawbAbAavavaaanaaaahdaaauaaaaaaaagcgZgdgdgdhfhfhggcaaababaaaaajfSgdgdhhgdhifSaaaaaaacajljbRfUbRfUbRfUbRfUbRgfamamalamamadamhbamamamalalga
 aqaaaaaaaaajaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaauaaaaaaaaaaaaaaaaajaabzbzaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaavavcEawawawbAavavaaaaaaajaaaqaaaaaagcgdgdhhgdgdhigdgcaaabaaaaajaagcgCgdgdgdhjgcajaaaaacaclibRbRbRbRbRbRbRbRbRgfamhkalbTbRbRbSbTamhcamamalga
 aaaaanaaaaaaaqaaaaaaaaaaaaaaaaaaaaaaaaggaaacaaanaaaaajaaaaaaaaaabFbDaaaacGaaaaaaaaaaaabPaqaaaoaaajaaaaavavcEawawawavavavaaaaajaaaaaaajaagbgdgdhfhhgdgdgdgheaeaeaaaajaacwfSfTgifTfScwaaanaahlaclibRfUbRfUbRfUbRfUbRgjamamalgkiGaQbRbRgmamamamalga
-aaajaaaaaaaaaaaaaaanaaaaajaiajaaaaajaaaaaaaaaaaaaaaaajaaacaaaaaabEbzaaanaaaaahaaaiaaaaajaaaaacheaaaaaiaaavavawawawawbAbAbAavaaaaaiaaaaaagchmgdhhgdgdgdgdgcabababeaeaeaeaeaeaeaaaaaaaacacaaacaaljbTbSbSbSbSbRbRbRbRgnalamamgkgogpjzbRamhbhbadadaf
+aaajaaaaaaaaaaaaaaanaaaaajaiajaaaaajaaaaaaaaaaaaaaaaajaaacaaaaaabEbzaaanaaaaahaaaiaaaaajaaaaacheaaaaaiaaavavawawawawbAbAbAavaaaaaiaaaaaagchmgdhhgdgdgdgdgcabababeaeaeaeaeaeaeaaaaaaaacacaaacaaljbTbSbSbSbSbRbRbRbRcXalamamgkgogpjzbRamhbhbadadaf
 aaaaaaanaaaaajanaaaaaaaaaaaaaaaaaaaaaaaaaaajaaaahdaaajaaaaaiaaaabzbzaaaaagagaaaahdaaaaaaaaaaaaaaaaaaaaaaaaavavavavavawawawbAavaaavavaaaagchngdhngdgdgdhjgcaaabacabaaaaaaajaaajaaanaaacaaaoaoacfEljljljljljfEbZadadadadhoambTbRgqbRbTamamalaladaf
 aaaaaaaaaaaaauaaaaaaaaaaaaaiaaaaaaaiaaaaaaaaaaaaaaaaaaaaaaaaacaabzbzaaaacGagajaaaabPaaaaanaaahaaaabPaaajaaaaaaaCaaavavawawawbAbAbAbAavaacwfTgbfTfTfTgbfTcwacabacabaaaaajaaaaaaajaaaaaaaaacaaabaladamadalalalamhkamamadaladalalalalalalalalalalal
 aiaaaaahaaaaauacaiaaaaaqacaaacacaaaaaaaqaaaaaaaaaaaaaaaaaaaaaaaabzbzanaaaaaaaaaaaaaaaaaqaaaaaaaaaaaaaaaaaaaaaaaCacavavbAawawawawawawavavaaaaauaaaaaaaaacaaabaaabaablaaaacwfTfTgrfTgrfTcwacaaabaladhpamamadalamadadamamadamadbQcubRbSbTbRbRcvbQal
@@ -650,7 +651,7 @@ aiaaaaaaaaaaauaaaaaaaiaaacaaaaaaabaaaaacajbzbHabaaaaacaaababaaeoacaaaaeoeoeoachd
 aaaaaaaaaaaaaaaaaaaaaaakaaaaaaaaaaaaacacabbHbzaaaaababaaaaaaaceoeoeoajeoeoeoaaaaaaaaacaaaaaCabeCaUaUaaaaaSaUjybjaaaaaaaaaaaaaSaUbjeDeEavacavavawawawawavaaababaaaaacaaabaaaaanaaaaaaaaaaaaaaaaanaaaaaaaacwfTcwaaaaaaeaeaaaaaauaaaaaaeaeaaaaaaaaa
 aaaaaaaaaaaaaiaaaaaaaaaaaaaaaaaaaaababaaaabFbzabaaabaaaaaaaaagaaeoeoeoeoeoacaceoeoajaaeoaaaaaaeCiQiJaaaaaSaUaUbjaaaaaqaaajaaaSjyeleFeGaFaKacavavavawawbAbAavavavacabacacacacaaaaaaajaaaaaaaaaaaaaahdaaaaauaaaaajaaaaeaeaeaajaaajaaeaeaaaajaaaaaa
 aaaiaaaaaaaaaaaqaaajanaaaaabaaababababababbzbFaaaaaaaaeoeoahaaanaaeoeoeoeoaceoeoeoeoaaaaaaajacaLaUaUabaaaSeHeHbjaaaaaaauaaaaeIaUaUiJaUaUiQaBaDavavbAawawaweJfdeKavavavavavacacacaaagaaaqaaajaaaacwfTgbfTfTfTgbfTcwaaaaeaeaagaaeaeaeaeaaaaaaaaaaa
-aaaaaaaaaaaaaaaaaaauaaaaaaaaaaababacacabaabFbzaaaaajaaaaeoaaaaaaaaeoeoeoacacaceoeoeoaaeoaaeoaaaLaUjyaaabaaaaaaajaaaaaaaaaaaaaabfbfeLaUjyaUaBeyacacavaveKfdeJeJawawawawawavavavaoacaaaaaaaaaaaaaagcgChjhuhfhfhfhtgcaaaaaaeaeaeaeaaaaaaaaaaaauaaaa
+aaaaaaaaaaaaaaaaaaauaaaaaaaaaaababacacabaabFbzaaaaajaaaaeoaaaaaaaaeoeoeoacacaceoeoeoaaeoaaeoaaaLaUjyaaabaaaaaaajaaaaaaaaaaaaaabfbfeLaUjyaUaBeyacacavaveKfdeJeJawawawawawavavavaoacaaaaaaaaaaaaaagcgChjhuhfhfgnhtgcaaaaaaeaeaeaeaaaaaaaaaaaauaaaa
 aaaaaaaaaiaaaaaahdacacaaabaaabacababaaaoacbCbzaaaaeoaaaaeoeoaaajaaeoacacacaoeoeoeoeoeoeoeoeoaaaLaUaUaaaaaaajaaaaaaaafLaaaaaaaaaaeMeNbfbiaUaBaCacaoeOePeQeKeKfDawawawawawawavavavacavavavaaaaaaaagchqgdgdgdhhgdgdgcaaajauaaeaeaaaaaajaaaqaaaaaaaa
 aaaaapaaaaaaaaababaaaaaaabababaaaaacaaaoaabzbzaaaaaaanaaaaaqaaaaajaaaaeoeoeoeoeoeoeoeoeoeoeobseSaUaUaaababaaajauaaargWasdZdZdZcndLaraaaSaUelaIaFaFeTjIeUacavavavavavawawawawawbAbAavavavavaaaaaagbgCgdgdbpgdgdgdgbajaaaaaaeaaaaaauaaaaaaaaaaajaa
 aiaaaaaaaaajaaaaaaacacacabaaaaaaaaaaaaaaaabzbzaqaaaaataaaaauaaaaeoaaanaaeoeoeoeoeoeoeoeoeoeoeoeViJiQaaababaaaaaaaaarhFcococococohFaraaaSiQaUiJaUeWaUaUjJaFememeOePeQavavawawawawawawavavavaaaaaagcgdgdgdgdgdgdgdgcaaaaaaaaeahdgvaaaaaaaaajaaaaaa
@@ -712,7 +713,7 @@ bRbRbRbRbRbRbRbRbRadadadadadadaladalalalcdfQabaaaaaaaaaaaaaaaaapaaaaaaaaaaaaaaaa
 bQcubSbRbTbRbScvbQaladalbMaladalaladalalalaaaaaaajajajaaaaauaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagaaaaaaaaaabzbCbzaaaaaaaaacacgcgdgdgdgdgdgdgdgcaaaaaafSgCgdgdgdhhgYfSacacababjlacaaaaanaaaaaaaaaaaaaaajaiaaaaaaaaaaaaaaaaaaaahdavaaavavaaavavaa
 alalalalalamalalalalalalalalalalalalalalalabaaaaaaaaaxaaaaaaaaaaaaaaaaanaaaabPaaajaahdaaaaaaanaaaaaaaqaaajaabCbzbzaaaaaaabaaabgugdgdgdgdgdgdgdguajanaagchngdbpgdgdhAgcacababababacaaaaaaaaacajaaagagaaaaaaaaaaaaggaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 cealalalalalalalccalalalcccpccccccccalambWfQaaaaaaaaaaaaaaaaaaaaanaaaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaajaabzbzbzajaaaaaaaaabgchDhhhhgdgdgdgXgcaaauaagcgdgdgdgdhhhEgcabababacacaaaaaaaaaaaaaaaaaaagaaaaaaaaaaaaajaahdaaanajaaaabPaaaaaaaaaaacaa
-cfalalamaljralalcpcjbOcjckclcmcXbOcpalalcgfQaaanaaaaaaanaaaaaaaaaaaaaaacacajaaaaaaaaaaajajaaaaagaaaaaaaaaaajbzbzbzaaabaaacabaggcgYhfhEhhgdgdhqgcaaaaaafSgCgdgdgdgdhhfSaaabaaaccGabaaaaaaaaaaaaanaaaaaaaqaaajaaaaaaaaaaaaaaaaaaaaaaaaaqaaaaajanaa
+cfalalamaljralalcpcjbOcjckclcmlTbOcpalalcgfQaaanaaaaaaanaaaaaaaaaaaaaaacacajaaaaaaaaaaajajaaaaagaaaaaaaaaaajbzbzbzaaabaaacabaggcgYgnhEhhgdgdhqgcaaaaaafSgCgdgdgdgdhhfSaaabaaaccGabaaaaaaaaaaaaanaaaaaaaqaaajaaaaaaaaaaaaaaaaaaaaaaaaaqaaaaajanaa
 cfalalalkVcFkWalcccjbOcjbOdobObOcYccalalcdfQaaaaaaaaaaaaaaaaaaaaaaaaaaacacaaaaaaaaaaajaaaaaaaaaaaaaaajaaaaaabzbzbzaaaaacaaabaacwfTgufTfTfTgufTcwaaaaaagchqgdhmhmgdgZgcaaababagababaaaabPaaaaaaaiaaaaaaaaaaajaaaaaiaaaaaaaaanaaajaaaaaaaaaaaaaaaa
 chambObOcHcHcHalccbObObObOjsbObOcqccalamcdfQaaaaacaaajaaaaaaaaaaaaaaaaajaaaaaaaaaaaiaaaaaaaaaaaaaaaaaaaaaaaabzbzfKaaaaacaaabaaacabaaaaaaaaaaaaaaaaaaaacwfTfSfTfTfSfTcwabababaaabaaaaaaaaajajaaaaagaaaabPaaaaaaaaaaaaaaaaaaaaaaaaaaajaaaaaaaaaaaa
 chadalbObObObOalcpcjbOcjbObObObOcrcpalalbWebacaaaaaaaaacacaaaaanaaaaaaaaaaaiaaaaaaaaaaaaajaaaaanaaaaaaaaaaanbzbzbFaaaaaaababaaabacaaaaaaaaaaaaaaanaaaaaaaaaaaaaaaaaaacabaaaaaacGaaaaaaajaaaaaaaaaaaaaaajaaaaaaaqaaacajaaaaaaaaaaaaacaaaaaaaaaaaa
