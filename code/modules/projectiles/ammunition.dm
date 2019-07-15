@@ -136,7 +136,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/emptymagazine
-	name = "magazine (65)"
+	name = "drum magazine (65)"
 	mag_type = MAGAZINE
 	icon_state = "ppsh-0"
 	ammo_type = null
@@ -146,7 +146,7 @@
 	multiple_sprites = TRUE
 
 /obj/item/ammo_magazine/emptymagazine/small
-	name = "drum magazine (30)"
+	name = "magazine (30)"
 	mag_type = MAGAZINE
 	icon_state = "pps-0"
 	ammo_type = null

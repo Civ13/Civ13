@@ -435,7 +435,7 @@
 		if ("Revolver")
 			stat = "pistol"
 			w_class = 2
-			slot_flags = SLOT_BACK|SLOT_BELT|SLOT_POCKET
+			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 			handle_casings = CYCLE_CASINGS
 			max_shells = 7
 			unload_sound 	= 'sound/weapons/guns/interact/rev_magout.ogg'
@@ -547,7 +547,7 @@
 					VERY_LONG_RANGE_MOVING = 30),
 			)
 			w_class = 2
-			slot_flags = SLOT_BACK|SLOT_BELT|SLOT_POCKET
+			slot_flags = SLOT_BELT|SLOT_POCKET||SLOT_HOLSTER
 			accuracy_increase_mod = 1.50
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_LOW

@@ -228,9 +228,9 @@
 			resultpath = /obj/item/ammo_casing/a45
 		else if (input == ".44-40 Winchester")
 			resultpath = /obj/item/ammo_casing/a44
-		else if (input == "9mm pistol")
-			resultpath = /obj/item/ammo_casing/pistol45
 		else if (input == ".45 pistol")
+			resultpath = /obj/item/ammo_casing/pistol45
+		else if (input == "9mm pistol")
 			resultpath = /obj/item/ammo_casing/pistol9
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
