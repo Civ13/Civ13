@@ -4,7 +4,7 @@
 	var/title = "generic job"
 	//English meaning of this job's title, if applicable
 	var/en_meaning = ""
-	var/faction = "None"	              // Players will be allowed to spawn in as jobs that are set to "Station"
+	var/faction = "None"	              // Players will be allowed to spawn in as jobs that are set to "Human"
 
 	var/total_positions = FALSE               // How many players can be this job
 	//var/spawn_positions = FALSE               // How many players can spawn in as this job

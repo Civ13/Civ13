@@ -1,5 +1,5 @@
 /datum/job/japanese
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/japanese/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_japanese_name(H.gender)

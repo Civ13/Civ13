@@ -836,7 +836,7 @@
 /////////////////////ARABS/////////////////////////////
 //////////////////////////////////////////////////////
 /datum/job/arab
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/arab/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_arab_name()

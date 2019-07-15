@@ -672,7 +672,7 @@
 
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 
-		if (job.faction != "Station")
+		if (job.faction != "Human")
 			continue
 
 		if (job.title == "generic job")

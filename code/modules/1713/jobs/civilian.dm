@@ -1,6 +1,6 @@
 ////////////////////////////////////////////CIVILIAN///////////////////////////////////////////////////////
 /datum/job/civilian
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/civilian/give_random_name(var/mob/living/carbon/human/H)
 	if (is_civilizations || is_nomad)

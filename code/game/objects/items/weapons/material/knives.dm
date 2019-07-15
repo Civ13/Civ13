@@ -7,7 +7,7 @@
 	name = "kitchen knife"
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "knife"
-	desc = "A general purpose Chef's Knife made by SpaceCook Incorporated. Guaranteed to stay sharp for years to come."
+	desc = "A general purpose knife."
 	flags = CONDUCT
 	sharp = TRUE
 	edge = TRUE

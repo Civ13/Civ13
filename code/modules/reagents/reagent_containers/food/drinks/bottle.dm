@@ -271,7 +271,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/gin
 	name = "Griffeater Gin"
-	desc = "A bottle of high quality gin, produced in the New London Station."
+	desc = "A bottle of high quality gin."
 	icon_state = "ginbottle"
 	center_of_mass = list("x"=16, "y"=4)
 	New()
@@ -280,7 +280,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/gin/empty
 	name = "Griffeater Gin"
-	desc = "A bottle of high quality gin, produced in the New London Station."
+	desc = "A bottle of high quality gin."
 	icon_state = "ginbottle"
 	center_of_mass = list("x"=16, "y"=4)
 	New()

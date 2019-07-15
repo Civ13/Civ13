@@ -1,6 +1,6 @@
 
 /datum/job/vietnamese
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/vietnamese/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_vietnamese_name(H.gender)
@@ -224,7 +224,7 @@
 ////////////////////////////////////////////////US////////////////////////////////////////
 
 /datum/job/american
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/american/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_english_name(H.gender)

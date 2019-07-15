@@ -7,7 +7,6 @@
  *			file2list
  *			angle2dir
  *			angle2text
- *			worldtime2stationtime
  */
 
 /proc/path2text(var/path)

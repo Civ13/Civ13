@@ -1,5 +1,5 @@
 /datum/job/indians
-	faction = "Station"
+	faction = "Human"
 	var/tribe = "Carib"
 
 
