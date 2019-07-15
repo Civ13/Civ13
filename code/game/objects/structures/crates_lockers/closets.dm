@@ -243,6 +243,9 @@
 		return
 	if (istype(O, /obj/structure/closet))
 		return
+	var/area/A = get_area(src)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && map && (!map.faction1_can_cross_blocks() || map.faction2_can_cross_blocks()))
+		return
 	step_towards(O, loc)
 	if (user != O)
 		user.show_viewers("<span class='danger'>[user] stuffs [O] into [src]!</span>")
