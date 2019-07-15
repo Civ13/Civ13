@@ -332,7 +332,7 @@
 				else
 					edge_eligible = 1
 			brute = pure_brute
-			if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute))
+			if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
 				droplimb(0, DROPLIMB_EDGE)
 				for(var/mob/living/carbon/human/NB in view(6,src))
 					NB.mood -= 10
@@ -342,7 +342,7 @@
 				for(var/mob/living/carbon/human/NB in view(6,src))
 					NB.mood -= 10
 					NB.ptsd += 1
-			else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute))
+			else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
 				droplimb(0, DROPLIMB_BLUNT)
 				for(var/mob/living/carbon/human/NB in view(6,src))
 					NB.mood -= 10
