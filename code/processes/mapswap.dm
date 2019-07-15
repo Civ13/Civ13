@@ -114,7 +114,7 @@
 			maps = list(
 				MAP_HILL203 = 0,
 				MAP_YPRES = 0,
-				//MAP_TSARITSYN = 10,
+				MAP_TSARITSYN = 10,
 			)
 
 		if (epoch == "Industrial Age (1850-1895)")

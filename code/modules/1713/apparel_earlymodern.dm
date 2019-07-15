@@ -514,6 +514,19 @@
 	icon_state = "black_bowtie"
 	item_state = "black_bowtie"
 
+/obj/item/weapon/material/sword/shashka
+	name = "shashka sword"
+	desc = "A caucasian sabre, very sharp and meant to be used single-handedly."
+	icon_state = "shashka"
+	item_state = "longsword"
+	throw_speed = 4
+	throw_range = 5
+	force_divisor = 0.7 // 45 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 22
+	cooldownw = 7
+	value = 60
 /obj/item/clothing/head/ww/cheka
 	name = "Cheka cap"
 	desc = "A black leather cap worn by Cheka agents."
