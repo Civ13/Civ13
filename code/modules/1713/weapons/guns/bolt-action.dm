@@ -132,7 +132,7 @@
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the bolt is open!</span>"
 		return FALSE
-	if (!user.has_empty_hand(both = FALSE))
+	if (!user.has_empty_hand(both = FALSE) && !istype(src,/obj/item/weapon/gun/projectile/boltaction/mosin/obrez))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	return TRUE
@@ -725,14 +725,13 @@
 	base_icon = "obrez"
 	force = 5
 	attachment_slots = ATTACH_IRONSIGHTS
-	slot_flags = SLOT_HOLSTER|SLOT_POCKET|SLOT_BELT
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 1.4
 	w_class = 2
 	effectiveness_mod = 0.77
 	value = 60
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 	equiptimer = 9
 
 
