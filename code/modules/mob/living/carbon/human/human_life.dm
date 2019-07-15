@@ -65,10 +65,11 @@
 			riding = FALSE
 			riding_mob = null
 			forceMove(locate(x+1,y,z))
-			riding_mob.ride = FALSE
-			riding_mob.rider = null
-			riding_mob.update_icons()
-			riding_mob.stop_automated_movement = FALSE
+			if (riding_mob)
+				riding_mob.ride = FALSE
+				riding_mob.rider = null
+				riding_mob.update_icons()
+				riding_mob.stop_automated_movement = FALSE
 
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
