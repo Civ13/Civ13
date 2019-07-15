@@ -76,8 +76,11 @@
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
 	var/area/currentarea = get_area(src)
-	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
-		gib()
+	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
+		if (faction_text == map.faction1 && !map.faction1_can_cross_blocks())
+			gib()
+		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
+			gib()
 	if (mood > 100)
 		mood = 100
 	else if (mood < 0)
