@@ -156,12 +156,16 @@ bullet_act
 			// P.firer_original_dir is more accurate, since P.dir is never explicitly set? - Kachnov
 			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir)
 			if (behind)
-				if (behind.density || locate(/obj/structure) in behind)
+				if (behind.density || (locate(/obj/structure) in behind) || (locate(/obj/covers) in behind))
 					var/turf/slammed_into = behind
 					if (!slammed_into.density)
 						for (var/obj/structure/S in slammed_into.contents)
 							if (S.density)
 								slammed_into = S
+								break
+						for (var/obj/covers/CC in slammed_into.contents)
+							if (CC.density)
+								slammed_into = CC
 								break
 					if (slammed_into.density)
 						spawn (1)
