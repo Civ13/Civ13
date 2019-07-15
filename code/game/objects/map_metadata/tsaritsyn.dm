@@ -102,7 +102,7 @@ var/no_loop_t = FALSE
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE
 		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_r == FALSE)
+	if ((current_winner && current_loser && world.time > next_win) && no_loop_t == FALSE)
 		ticker.finished = TRUE
 		var/message = "The <b>White Army</b> has captured the church! The battle for is over!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
