@@ -652,6 +652,7 @@
 #include "code\modules\mob\living\carbon\human\species\species.dm"
 #include "code\modules\mob\living\carbon\human\species\species_attack.dm"
 #include "code\modules\mob\living\carbon\human\species\species_hud.dm"
+#include "code\modules\mob\living\simple_animal\riding.dm"
 #include "code\modules\mob\living\simple_animal\simple_animal.dm"
 #include "code\modules\mob\living\simple_animal\friendly\birds.dm"
 #include "code\modules\mob\living\simple_animal\friendly\cat.dm"

@@ -60,6 +60,16 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 
+	if (riding && riding_mob)
+		if (!(riding_mob in range(1,src)))
+			riding = FALSE
+			riding_mob = null
+			forceMove(locate(x+1,y,z))
+			riding_mob.ride = FALSE
+			riding_mob.rider = null
+			riding_mob.update_icons()
+			riding_mob.stop_automated_movement = FALSE
+
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
