@@ -729,6 +729,7 @@
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 1.4
+	w_class = 2
 	effectiveness_mod = 0.77
 	value = 60
 	slot_flags = SLOT_BELT

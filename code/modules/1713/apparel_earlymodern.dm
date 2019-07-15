@@ -135,7 +135,7 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
 	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
 	value = 65
-/obj/item/clothing/under/kuban_kossak
+/obj/item/clothing/under/kuban_cossak
 	name = "Kuban Cossak beshmet"
 	desc = "A red beshmet with grey trousers, traditional of the Kuban Cossaks."
 	icon_state = "kuban_cossak"
@@ -543,7 +543,11 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-
+/obj/item/clothing/head/ww/budenovka
+	name = "budenovka"
+	desc = "A Soviet budenovka hat."
+	icon_state = "budenovka"
+	item_state = "budenovka"
 /obj/item/clothing/head/helmet/modern/stahlhelm
 	name = "M1935 stahlhelm"
 	desc = "A typical german helmet."
