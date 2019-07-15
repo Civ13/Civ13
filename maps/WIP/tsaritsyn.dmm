@@ -159,7 +159,7 @@
 "dc" = (/obj/item/weapon/material/shard{material = "wood"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "dd" = (/obj/item/weapon/material/shard/shrapnel,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "de" = (/obj/effect/decal/cleanable/generic,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
-"df" = (/obj/effect/decal/cleanable/ash,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"df" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "dg" = (/turf/floor/dirt/burned,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "dh" = (/obj/effect/landmark{name = "JoinLateRU3"},/turf/floor/dirt,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "di" = (/obj/structure/simple_door/stone,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
@@ -454,8 +454,8 @@
 "iL" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/burned,/area/caribbean/forest/dirt)
 "iM" = (/obj/item/weapon/bedroll,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "iN" = (/obj/item/weapon/flame/candle,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
-"iO" = (/obj/structure/religious/totem{desc = "An altar."; icon_state = "stone_altar"; name = "stone altar"},/obj/structure/window/sandbag/railing/stone,/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
-"iP" = (/obj/structure/religious/totem{desc = "An altar."; icon_state = "stone_altar"; name = "stone altar"},/obj/structure/window/sandbag/railing/stone,/obj/item/weapon/storage/bible{layer = 3.5},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"iO" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/table/wood{fixedsprite = 1; icon = 'icons/obj/cross.dmi'; icon_state = "stone_altar"; name = "altar"},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"iP" = (/obj/structure/window/sandbag/railing/stone,/obj/item/weapon/storage/bible{layer = 3.5},/obj/structure/table/wood{fixedsprite = 1; icon = 'icons/obj/cross.dmi'; icon_state = "stone_altar"; name = "altar"},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "iQ" = (/obj/effect/decal/cleanable/generic,/turf/floor/trench,/area/caribbean/forest/dirt)
 "iR" = (/obj/structure/bed/chair,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "iS" = (/obj/item/weapon/paper/crumpled,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
@@ -470,7 +470,7 @@
 "jb" = (/obj/structure/bed/bedroll,/turf/floor/dirt,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "jc" = (/obj/structure/phoneline,/turf/floor/dirt/winter,/area/caribbean/forest/dirt)
 "jd" = (/obj/item/weapon/flame/candle,/obj/structure/table/wood,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
-"je" = (/obj/item/weapon/paper/crumpled/bloody,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"je" = (/obj/structure/window/sandbag/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/obj/covers/carpet/redcarpet,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "jf" = (/obj/structure/window/sandbag/sandbag/incomplete{icon_state = "sandbag_33%"; dir = 1},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "jg" = (/obj/item/weapon/flame/candle,/obj/item/weapon/flame/candle,/obj/structure/table/wood,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "jh" = (/obj/effect/decal/cleanable/generic,/obj/item/weapon/flame/candle,/obj/structure/table/wood,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
@@ -520,7 +520,7 @@
 "jZ" = (/obj/structure/window/sandbag/railing/stone{icon_state = "stone"; dir = 4},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "ka" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/table/wood,/obj/structure/telephone,/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "kb" = (/obj/structure/window/sandbag/railing/stone,/obj/structure/window/sandbag/railing/stone{icon_state = "stone"; dir = 4},/turf/floor/plating/tiled/darker,/area/caribbean/russian/land/inside/command{name = "The Church"})
-"kc" = (/obj/structure/window/sandbag/sandbag/incomplete{dir = 1; icon_state = "sandbag_66%"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"kc" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/covers/carpet/redcarpet,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
 "kd" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/weapon/storage/fancy/cigarettes{icon_state = "pachka_papiros"},/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "ke" = (/obj/item/weapon/cane,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
 "kf" = (/obj/item/weapon/cigbutt/cigarbutt,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
@@ -591,6 +591,30 @@
 "ls" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/beach/water/ice,/area/caribbean/no_mans_land/invisible_wall)
 "lt" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/beach/water/ice,/area/caribbean/no_mans_land/invisible_wall)
 "lu" = (/obj/structure/flag/soviet,/turf/floor/dirt,/area/caribbean/forest/dirt)
+"lv" = (/obj/structure/gallows{icon_state = "gallows1"; roped = 1},/turf/floor/winter,/area/caribbean/forest/dirt)
+"lw" = (/obj/covers/stone_wall,/obj/structure/sign/painting9,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lx" = (/obj/covers/stone_wall,/obj/structure/sign/painting7,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"ly" = (/obj/covers/stone_wall,/obj/structure/sign/painting8,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lz" = (/obj/covers/stone_wall,/obj/structure/sign/painting4,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lA" = (/obj/covers/stone_wall,/obj/structure/sign/painting5,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lB" = (/obj/covers/stone_wall,/obj/structure/sign/painting6,/turf/floor/plating/tiled/woodv,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lC" = (/obj/covers/stone_wall,/obj/structure/sign/painting3,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lD" = (/obj/covers/stone_wall,/obj/structure/sign/painting2,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lE" = (/obj/covers/stone_wall,/obj/structure/sign/painting7,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lF" = (/obj/covers/stone_wall,/obj/structure/sign/painting1,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lG" = (/obj/covers/stone_wall,/obj/structure/sign/painting5,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lH" = (/obj/covers/stone_wall,/obj/structure/sign/painting6,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lI" = (/obj/covers/stone_wall,/obj/structure/sign/painting10,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside{name = "Outer Church"})
+"lJ" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/obj/covers/carpet/redcarpet{icon_state = "carpet_broken"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lK" = (/obj/effect/decal/cleanable/dirt,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lL" = (/obj/covers/carpet/redcarpet{icon_state = "carpet_broken"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lM" = (/obj/item/weapon/paper/crumpled/bloody,/obj/covers/carpet/redcarpet,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lN" = (/obj/covers/carpet/redcarpet,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lO" = (/obj/effect/decal/cleanable/ash,/obj/covers/carpet/redcarpet{icon_state = "carpet_broken"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lP" = (/obj/covers/carpet/redcarpet,/obj/covers/carpet/redcarpet{icon_state = "carpet_broken"},/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lQ" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 1},/obj/covers/carpet/redcarpet,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lR" = (/obj/structure/bed/chair{icon_state = "chair"; dir = 8},/obj/effect/decal/cleanable/dirt,/turf/floor/plating/tiled,/area/caribbean/russian/land/inside/command{name = "The Church"})
+"lS" = (/obj/structure/sink/well,/obj/structure/mine_support,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/winter,/area/caribbean/forest/dirt)
 
 (1,1,1) = {"
 aaaaaaajaaaaaaaaaaaaaaaiaaaaaaajaaaaaaaaaaaaaaaaaaaaajaaaaaaaaaabzbzaaaaaaaoaaaaaaaaaaaaaaaaaaaaavcEawawbAbzaaaaaaaaaaauaaaaaaaaaaaaaaaaaaaaajaaaaajaaaaaaababaaaaaaaacwfSfTfTfTfScwaaacaaaaaafEbTfUfVfWfXfYfZaQbSbTamamadamamadalamalalamamamga
@@ -640,17 +664,17 @@ aaaaabaaaaaaajaaaaaaaaaaaaaaaaaaaaaaauaaajhzbFacaaaaaqaaauaaaaaaaaeoeoeoeoeoeoac
 abaaaaabaaaaaaaaaiaaaaahaaaqanaaaaagaaaaaabzbzaaaaaaaaaaaaaaayagacaDeoeoeoeoeoeoabababababacaaaaaccQaaaaariicoiiiiiiehiicoiiircoiscoiicoiicoarfLhNaacIaaaaababababababababaaaaaaaXaUaUesavbAawbAaaaaaaaaacacaiaaapaaeaauacaoajaaeaaaacaaauaaaaaa
 abababaaaaaaaaaaaaajaaaaaaaaaaaaaaaiaaaaaabzbzaaaaaaaaaaapaaaaaaabaDaceoeoeoeoacabacaaabacabaaaaaaaqaaaaascocococoehabehcococoijcococoiicocoaredhOhKaaaaaaaaabababacacaaaaaaaafffgeveveuavawawbAaaaaaqaaacajaaaaaaaueaaagxgygygygzgzgygygygAauaa
 abaaacaaaaaaaaauaaacaaaaaaaaaaauaaaaaaaaaabzbzaaaaaaaaaaaaaaajacacacacazaAaBeoacabababaaaaaaaacKaaaaaaaaarcLcMehacacabiicoiliicodgcodgcocoiiarcRhPfQaaaaauaaaaababacaoaaaaajaafhevevjoewavawawbAavaaaacwfTfTgufTfTcweaaagBaaaaaaaaaaaaaaaagBauaa
-aaaaaaaaaaanaaaaaaaaaaaaaiaaaaaaahaaaaggaibzbzanaaaaaaabaaacaaabababezaDaEaAitabfjaaajaiaaaaasardLdLdBararararariLihjPcTcTcTcTcndgdgarararararcRcSasarcnaraaajaaabaaacaaauaaaafhevevjpewavawawawavaaaagchAhhgdgdgZgceaaagBaaaaaaaaaaaahBaagBaaaa
-aaaaanaaaaaaaaaaaaaaaaajaaaaaaaaaahdaaaaaabzbzaaacaaaaacacabababaCababfkaGacababacacaaaaaaaaarcLjtjtcLcVcWjujvacjwefaciuiEiEiDjQixixiycZizjxcWcRcoiAcLdbarfQaaabaaaaaaaqaaaaaaeuflevldfmavawawbAavavaaguhhgdgdgdgdgieaeagBaagDajaaaaauaaaagBaaaa
-aaaaaaaaajaaaaaaanaaaaaaaaaaaaaaaaaaaaacaabDbzaaaaaaaaacababababaCaaabfkfnfoabaaacaaaaaaajaaarcocococoiBcWcZcZeiaceijRiDiDiDjSjAdadaiFcZcZdccWjTcMiHjUiHhJfQaaabaaaaajaaaaaaaaaaaSaUaUaMawawbAavaaauaagchngdgdgdgdgceaaagBaaaaaaaagEaaaagFgBaiaa
-aiaaaaaaaaaaaaajaaaaaaaaaaaaaaanaaaaajaaaabzbzapaaaaacaaacabacacaCaceCaAfpfqacabaqaaaaacaaagarkXcOiIcoiIcWddcZdceicZjVjWjXiDiCjAcZcZcZcZiKcZcWjBjYiMcNiNdLfQaaabababaaajaSaUiQaUiJjyaUaMawawbAaaaaajaagchngdgdgdhjgceaaagBaaaaajaaaaaaaagFgBaaaa
-aaaaaaaaaaaaaaaaaaanaaaaajanaaaaaaaaaaanacbzbzaaacaaabacahaaaaaaacfreAaEaAaBacaaacaaaaaaanaaariBcoiIcJiIcWjGcZcZiKcZjZkaiOiPkbjAcZiRdecZiScZcWiHiqiHcJiHaraaabababaaaaaaaSaUiJaUjyaUjyaMawawbAaaaaaaaacwfTfTgufTfTcweaaagBaaaaaagDaaaaaaaagBaaaa
-aaaaaaajaaanaaaaaaaaaaaaauaaaaaaaaaaaaaaaabzbzabababaaaaaaacaaaaaaajaaaCaOaPitaaajaaacaaahaacncoiqiBcocodZdeiTcZcZcZdedakcdadadecZcZcZdaiUcZdgcocoiViAdMdLaaababaaabaaaaaSaUaUesbfbfbfavawawbAavaaaaaaaaaaaaajaaaaaceaaagBaaaaaaaaaoaagFaagBaaaa
-aaaaaaaaaaaaaiaaaaaaaaaaauaaaaaaaaaaacacaabHbFababacacaaacaaaaabaaaaaCaCaEaBajaaajajaaacabacdZcocococMcodZcZiTiWiWcZiWiWcZiXcZcZiWiWiYiZjacZdZcojbfAiHkddLabababaaaaaqaaaSaUaUbjaCaaavbAawbAbAavaaauaqaaaagGeaeaeaeaeaaagBaagEaaaaaaaaaagFgBauaa
-aaaaaqaaaaaaaaaaahaaaaaiaaaaaaaaacacaaabaabHbHaaacahaaaaaaaaaaaaahaaaaaRaAaBcsacaaaaaaacacacarfAcococokecWjdcZcZcZcZcZjecZdfcZcZjGcZcZcZjfjgcWcRcRkfiHjCarabaaaSfbfbaaaaaSjyaUbjaCagavbAawbAaaavaaaaaaaaeaeaeaaaagaaaaaagBagaaaaagaaajajaagBajaa
-aaaaaaaaaaaaaaaaaaaaaaaaaaapacacacaaaaaaaabzbzaaaaaaapaaajaaaaaCaacsacaSkgaYaaahaaaaanacaiacascocoiBcNiIcWjdcZiWiYiWcZiWcZcZiWcZiWcZiWiWiWjhcWacaccRcodMdLeufleuaUaUaIaIeqaUaUbjaCajavawawbAaaaaaacwfTfSfTgifSfTcwaaanaagBaaajajaaaaaagDaagBaaaa
-aaaaaaaaaaajaaajaoaaaaaaaaaaaaaaababaaaaacbFbzacaaaaaaaaacaaacaCaaaCaaaSaTaUaaajakacacacahacarjDcoiBcoiIcWcZizcZcZcZcZcZcZdecZcZcZkhcZddcZjdcWabacacjijjdLleevevaUaUiJaUaUaUjybjaCaaavawawbAavaaaagchjgdgXgdgdhtgcaaaaaagBaaaaaaaagEaaaaaagBaaaa
-aqaaaaanaaaaaaaaaaaaanaaaaaaacabababaaaaacbzbzaqaaaaaaaaaaaaaaaaaaaCaaaWaTjyaaacaaaaaaacajacarcLjtcLjDcMcWjkiXiWiWiWiWcZiyizjEiWcZiWlfiWiKjFcWkYabdgdhcLarevevevaUaUiQaUiJiJaYbjaabAbAawbAbAavhCaagcgdgdgdgdgdgdgcaaaaaggBaaaaaaaaaaaaagaagBajaa
+aaaaaaaaaaanaaaaaaaaaaaaaiaaaaaaahaaaaggaibzbzanaaaaaaabaaacaaabababezaDaEaAitabfjaaajaiaaaaasardLdLdBararlwlxlyiLihjPcTcTcTcTcndgdglzlAlBararcRcSasarcnaraaajaaabaaacaaauaaaafhevevjpewavawawawavaaaagchAhhgdgdgZgceaaagBaaaaaaaaaaaahBaagBaaaa
+aaaaanaaaaaaaaaaaaaaaaajaaaaaaaaaahdaaaaaabzbzaaacaaaaacacabababaCababfkaGacababacacaaaaaaaaarcLjtjtcLcVcWjujvacjwefaciuiEiEiDjQixixiycZizjxlCcRcoiAcLdbarfQaaabaaaaaaaqaaaaaaeuflevldfmavawawbAavavaaguhhgdgdgdgdgieaeagBaagDajaaaaauaaaagBaaaa
+aaaaaaaaajaaaaaaanaaaaaaaaaaaaaaaaaaaaacaabDbzaaaaaaaaacababababaCaaabfkfnfoabaaacaaaaaaajaaarcocococoiBlDcZcZeiaceijRiDiDiDjSjAdadaiFcZcZdclEjTcMiHjUiHhJfQaaabaaaaajaaaaaaaaaaaSaUaUaMawawbAavaaauaagchngdgdgdgdgceaaagBaaaaaaaagEaaaagFgBaiaa
+aiaaaaaaaaaaaaajaaaaaaaaaaaaaaanaaaaajaaaabzbzapaaaaacaaacabacacaCaceCaAfpfqacabaqaaaaacaaagarkXcOiIcoiIlFddcZdceicZjVjWjXiDiCjAcZcZcZcZiKcZlGjBjYiMcNiNdLfQaaabababaaajaSaUiQaUiJjyaUaMawawbAaaaaajaagchngdgdgdhjgceaaagBaaaaajaaaaaaaagFgBaaaa
+aaaaaaaaaaaaaaaaaaanaaaaajanaaaaaaaaaaanacbzbzaaacaaabacahaaaaaaacfreAaEaAaBacaaacaaaaaaanaaariBcoiIcJiIlCjGcZcZiKcZjZkaiOiPkbjAcZiRdecZiScZcWiHiqiHcJiHaraaabababaaaaaaaSaUiJaUjyaUjyaMawawbAaaaaaaaacwfTfTgufTfTcweaaagBaaaaaagDaaaaaaaagBaaaa
+aaaaaaajaaanaaaaaaaaaaaaauaaaaaaaaaaaaaaaabzbzabababaaaaaaacaaaaaaajaaaCaOaPitaaajaaacaaahaacncoiqiBcocodZdeiTcZcZcZdedfjedakcdecZcZcZdaiUcZdgcocoiViAdMdLaaababaaabaaaaaSaUaUesbfbfbfavawawbAavaaaaaaaaaaaaajaaaaaceaaagBaaaaaaaaaoaagFaagBaaaa
+aaaaaaaaaaaaaiaaaaaaaaaaauaaaaaaaaaaacacaabHbFababacacaaacaaaaabaaaaaCaCaEaBajaaajajaaacabacdZcocococMcodZcZiTiWiWcZlJiWlKiXcZlLiWiWiYiZjacZdZcojbfAiHkddLabababaaaaaqaaaSaUaUbjaCaaavbAawbAbAavaaauaqaalSgGeaeaeaeaeaaagBaagEaaaaaaaaaagFgBauaa
+aaaaaqaaaaaaaaaaahaaaaaiaaaaaaaaacacaaabaabHbHaaacahaaaaaaaaaaaaahaaaaaRaAaBcsacaaaaaaacacacarfAcococokecWjdcZcZcZcZlLlMlNlOlPlLjGcZcZcZjfjgcWcRcRkfiHjCarabaaaSfbfbaaaaaSjyaUbjaCagavbAawbAaaavaaaaaaaaeaeaeaaaagaaaaaagBagaaaaagaaajajaagBajaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaapacacacaaaaaaaabzbzaaaaaaapaaajaaaaaCaacsacaSkgaYaaahaaaaanacaiacascocoiBcNiIlHjdcZiWiYiWlNlQlPlKiWlKiWcZiWiWiWjhlHacaccRcodMdLeufleuaUaUaIaIeqaUaUbjaCajavawawbAaaaaaacwfTfSfTgifSfTcwaaanaagBaaajajaaaaaagDaagBaaaa
+aaaaaaaaaaajaaajaoaaaaaaaaaaaaaaababaaaaacbFbzacaaaaaaaaacaaacaCaaaCaaaSaTaUaaajakacacacahacarjDcoiBcoiIlIcZizcZcZcZcZlNlNdelPlNcZkhcZddcZjdlDabacacjijjdLleevevaUaUiJaUaUaUjybjaCaaavawawbAavaaaagchjgdgXgdgdhtgcaaaaaagBaaaaaaaagEaaaaaagBaaaa
+aqaaaaanaaaaaaaaaaaaanaaaaaaacabababaaaaacbzbzaqaaaaaaaaaaaaaaaaaaaCaaaWaTjyaaacaaaaaaacajacarcLjtcLjDcMcWjkiXiWiWiWlJlNiylRjElQcZiWlfiWiKjFcWkYabdgdhcLarevevevaUaUiQaUiJiJaYbjaabAbAawbAbAavhCaagcgdgdgdgdgdgdgcaaaaaggBaaaaaaaaaaaaagaagBajaa
 aaaaaaaaaaaaaqaaaaaaaaaaaaaaababaaacacaaanbzbzacaaaaaaaiaaaaaaaaaaaCagaXaTaUaccsajaiaaaaacaaarardBdBdLcncWcWcWcWcWcWcWdxdicWcncWcWcWcWcWcWcWcWarararcnarareufleubfbfbfbfbfbfbfavavbAawawavaaaahCaafSgCgdbpgdhygYfSaaauaggHgygygygygygygIgygHajaa
 aaaaaaaaaaaaaaaaaaabaaaaaaababaaacaaaaaaaabzeraaajaaaaaaaaaaaaaaanaCagaXaTiJacaaaaaaaaaaajaaanaaaaaaacaaardjcocLcokZcocococococodndsdtdwdydtdsaaaaaaaaajaaaaaaaabsbsbsbsaaaaajbAawawawawavaaaaaaaagcgdgdgdgdhyhDgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 aaaaaiaaaaauaaanaaaaaaabababaaaaaaaaaaaqaabzbzaaaaanaaaaaaajaaaaaaajaZaSbajyaUiQbbacahaaajaaaaaacKaaacaadLdCdzcodzcodzcodzcocokfcodsdvdvdvdAdLbjcIaaaaauajajaaajacaqaaaaaaaaavbAawawawbAavaaaaajacgcgCgdgdgdgdgCgcaaaaanaaaaaaaaaahdaaaiacacaaaa
@@ -665,14 +689,14 @@ aaaaaaacaaaaaaabababaaaaaaaaababababaaaaaabzfHbzbzbzbzbzacaaaaaiacaaanaCacaqbfbf
 aaaaabaaaaauaaaaaaaaaaaaacaaaaaaabaaaaaaaabzbzbzbzbzbzbzauaaaaaaaaaaaCaaacacacaabranacaSbckpkqbdbdknbdbnkpbdbdkrbnbqkscUdmcocodzdnaracacacaaaaaaaacQacacacacaoaaaaaoaaacacaabAawawbAbAaaacaaababaaaaaaaaabaaacabacabaaabababacabacaaaaabaaaaaaaa
 aaaaaaaaaaaaaaacaiacaaaaajaaacaaababaaaaaaajaaaaanbzbzbzaaaaapacaaaaaaaaacbrbrbsbraaaaacbobtbobubfbfbobvbfbfbobfktardLcncTdZdZasdBarjlaaaajlaaaicGauaakuaaaakvacacjcacaacGacbAawawawbAaaacaaaaabaaaabPaaacaaaaabacaaaaacacaaaaabacaaaaacaaaaaaaa
 acaaajapacaaaaaaaaaaaaaaaahdaaaaaaabaaaaahaaaaaaacfHbDbDaaaaaaacacaaajaaaaagaaaaaabsbsbsbracacacaaacacapaabsbracaAdukweaabkweaeaeaeacRabaaaaaaaaaaaaaaaaaaacacaiaaacauaaaaacbAbAawawbAaaaaaaabababaaaaaaacaaaaaaaaaaaaaaachdaaaaaaaaggaoaaaaaaaa
-aaaaaaaaaaaaaaaaaaaaaiaaaaaaacaaabaaabaaaaaaaaaaacbFbzbzaaaaaaapacaaaaaabwaaaaaaajanaaaaaaaaaabxacacacacaabsbsbseXababebkweaabkxeceakwabaaacaaaaajaaaaacaiaaacacajacaaacacacfDfDawawbAavabaaaaababaaaaaaaaaaajaaaaaaanaaaaaaaaanaaaaaaaaaaanaaaa
+aaaaaaaaaaaaaaaaaaaaaiaaaaaaacaaabaaabaaaaaaaaaaacbFbzbzaaaaaaapacaaaaaabwaaaaaaajanaaaaaaaaaabxacacacacaabsbsbseXababebkweaabkxeceakwablvaclvaaajlvaaacaiaaacacajacaaacacacfDfDawawbAavabaaaaababaaaaaaaaaaajaaaaaaanaaaaaaaaanaaaaaaaaaaanaaaa
 aaaaahaaauaaajaiaaaaaaaaaaanacaaaaaaagagabaaaqaaacerbzbzfIbzbzbzbzaaaaahaaaaaaaaaahdaaaoaaacaaaabsbybsaakyaaaacIaAkwabededeeecefedcRababaaaaaabPacaaacacaaaaacbPapacacaocGbsfDawawawbAavaaaaababaaanaaaaaaaaaaaaaaaaaaaaaaajaaaabPaaaaaaaaaaaaaa
 ajaaaaaaaaaaaaaaaaaaaaaaahaaacaaaaababaaaaacacacacbFbzbzbzfJbzbzbCaaaaaaacaaaaaaaaaaaaaaaaacanaaaaaoanaakycKajkzeMabeacRcRedefcRababaaaaaaaaabacaaabaaabacaaaaaaacaaaaaaaabskAkBawawawbAaaabababaaaaaaajaaanaaaaaaaaaaaaaaaaaaaaaaaaaaaqaaaaaaaa
 aaaaaaaaaaaaaaaaajanaaaaaaaaagaaaaaaabaaaaaahdaaanaaaaajaaaaaabzbzaaaaaaaaaaajaaaaaaaaaaaaaaaaaaaaacaaaaajaaaakCeFababababababababacauacabacababababeaaaaiacbPaccwfTfTgufTfTcwaKkDfDawawbAlnloloaaabaaaaaaaaaaaaheagaaaaaaaaaaagaaaaajaaaaaaaaaa
 aaanaaaaaqaaaaaaaaaaajaaaaaiaaaaacaaaaaaaaaaaaaaaaaaajajacaaaabzbzaaaaajaaaaaaaqaaaaanagakaaaaajaqaaaaacaaaaaakzeMkEabababacabaaaaababababababacacaaeaeaaaaaaaaagchghjgdgdgCgcbsbsfDawawawlplqloabaaaaaaaaaaaaaaaaaaabaaaaanaaaaaahdaaaaaaaaaiaa
 aaaaaaaaaaaaaaaaanaaajaaaaauaaaaaaaaaaababaaaaajagaaaaaaanaaaafKbzaaaaaaaaanaaaahdaaaaaaaaaaaaaaaaaaaaajaakyaaankFeXabababaaaaabababacacacaaaaajaaabeaeaeaeaeaeagigdgdbpgdhEgcaabsbAbAbAawlplnlrlqaaaaaaaaaaaqaaaaaaagaaaaaaaaacajaaagbPaaaaaaaa
 aaaaaaaaanaaaaajaaaaaaaahdaaaaaaaaacaaaaaaaaaaaaagaaaaaaaaaaaabzbzauaaaaaaaaaaaaaaaaajaaaaaaagaaaaauaaaaaakyaakGaakHacaaabababababaaaaacaaauaaaaaaaaeaaaaaaaaaaugugdgdgdgdgdkIfQavavbAlrlrlsltawawbAavavaaaaaaaaaaaaajanaaaaaaaaaaaaaaagaaaaaaaa
-aaajaaaaajaaaaaaaaaaaaaaaaaaaaaaanacababaaaqaaaaaaaaaaaahdaaaabzbzbFbzbCbzbzbDbzbzbzbzbzbFaaaaaaaaaaaaaaaakyaakyaCaTiJaaabababaaaagHgJgygygycwfTgrcwfTfTgrfTcwaagcgZgdgdhqhngcaaaaaaaalqlrlnlpawawawawbAavaaaaaaaaaaaaaaaaaaaaaagganaaaaaaaqaaaj
+aaajaaaaajaaaaaaaaaaaaaaaaaaaaaaanacababaaaqaaaaaaaaaaaahdaaaabzbzbFbzbCbzbzbDbzbzbzbzbzbFaaaaaaaaaaaaaaaakyaakyaCaTiJaaababablSaagHgJgygygycwfTgrcwfTfTgrfTcwaagcgZgdgdhqhngcaaaaaaaalqlrlnlpawawawawbAavaaaaaaaaaaaaaaaaaaaaaagganaaaaaaaqaaaj
 aaaaagaaaaaaaaaaaaaaauanaaaaaaajacaaacacacaaaaaaaaaiajaaaaajaabzbzbzbzbzbzbzbDbzbFbzbzbzbzfKbzbzbzbzbCbzfIbzbzbzkJaTaUabaaababaaaagBaaaagKaagchthEgchggCgdhngcaacwfTfTkKfTfTcwcGaaaaaaaabAbHlnlrbAawawawawavavaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaj
 aaaaaqaaaaaiaaaaaaaaaaagagagagaaaaaaababacaaaaaaaaaaaaaaaaaaaaaaaaajaaaaaaaaajaaaafKbzbzbzbzbzbzbDbzbzbzbzbzbzkJbDbaiQaaaaababaaaagLaagMaaaagcgdhigcgdgdgdhmgcaUaUjygNkLaagOgPaqaaaabPacabababaaavavbAbAawawbAaaaaaaaaaaaaaaajajaabPagaaaaaaaaaa
 auaaaaaaaaaaaaahaiaaaaaaaaaaaaaaaaaaabababaaaaaaaaaaaaajaaaaaqaaaaaaacaaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaabzkJbzkMaUaaaaacababaagLaagKaagQgrhSgdgchqgdgdhTgraUaUiJgNaagwgRgPaaaaaaacacaaabababaaaaavavbAawbAavaaavavaaaaajaaaaaaaaaaanaiajaaaa

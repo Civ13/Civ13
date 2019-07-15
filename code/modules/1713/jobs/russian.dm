@@ -619,7 +619,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni, slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1_officer, slot_w_uniform)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/rusoffcoat(H), slot_wear_suit)
 //head
@@ -667,7 +667,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1(H), slot_w_uniform)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/rusoffcoat(H), slot_wear_suit)
 //head
@@ -713,7 +713,7 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform) // for now
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1(H), slot_w_uniform) // for now
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
 //jacket
@@ -754,7 +754,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_ww1(H), slot_w_uniform)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ruscap(H), slot_head)
@@ -897,17 +897,19 @@
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/nkvd_cap(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/cheka(H), slot_head)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ruscoat(H), slot_wear_suit)
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/cheka(H), slot_wear_suit)
 //back
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_belt)
 	give_random_name(H)
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(armband, H)
+	var/obj/item/clothing/accessory/holster/chest/holster = new /obj/item/clothing/accessory/holster/chest(null)
+	uniform.attackby(holster, H)
 	H.add_note("Role", "You are a <b>[title]</b>, A member of the feared VChEKA. Since officer ranks were abolished in the Red Army, it is your duty to keep the troops motivated and obedient, and to ensure Commanders follow the Sovnarkom's (Soviet government) orders. Do not hesitate to execute any traitors!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -942,7 +944,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)
@@ -989,7 +991,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
 
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni(H), slot_w_uniform)
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/rusuni_rcw(H), slot_w_uniform)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/soviet_fieldcap(H), slot_head)

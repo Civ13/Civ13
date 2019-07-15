@@ -76,12 +76,34 @@
 	item_state = "sash"
 
 /obj/item/clothing/under/rusuni
-	name = "Russian Army Uniform"
+	name = "Russian Army uniform"
 	desc = "A standard imperial russian army uniform."
 	icon_state = "rusuni"
 	item_state = "rusuni"
 	worn_state = "rusuni"
 	var/rolled = FALSE
+
+/obj/item/clothing/under/rusuni_ww1
+	name = "Russian Army uniform"
+	desc = "A standard imperial russian army uniform."
+	icon_state = "ww1_russian2"
+	item_state = "ww1_russian2"
+	worn_state = "ww1_russian2"
+
+/obj/item/clothing/under/rusuni_ww1_officer
+	name = "Russian Army officer uniform"
+	desc = "A standard imperial russian army uniform, with officer epaulettes."
+	icon_state = "ww1_russian_o"
+	item_state = "ww1_russian_o"
+	worn_state = "ww1_russian_o"
+
+
+/obj/item/clothing/under/rusuni_rcw
+	name = "Red Army uniform"
+	desc = "A standard early 20th century russian uniform, with no epaulettes or insignias."
+	icon_state = "ww1_russian"
+	item_state = "ww1_russian"
+	worn_state = "ww1_russian"
 
 /obj/item/clothing/under/rusuni/verb/roll_sleeves()
 	set category = null
@@ -102,6 +124,18 @@
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
 	update_clothing_icon()
+
+/obj/item/clothing/suit/storage/coat/cheka
+	name = "Cheka Leather Coat"
+	desc = "A shiny black leather coat used by Cheka agents."
+	icon_state = "leathercoat_c"
+	item_state = "leathercoat_c"
+	worn_state = "leathercoat_c"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+	var/colorn = 1
 
 /obj/item/clothing/suit/storage/coat/japcoat
 	name = "Japanese Coat"
@@ -464,6 +498,12 @@
 	desc = "A black bowtie."
 	icon_state = "black_bowtie"
 	item_state = "black_bowtie"
+
+/obj/item/clothing/head/ww/cheka
+	name = "Cheka cap"
+	desc = "A black leather cap worn by Cheka agents."
+	icon_state = "cheka"
+	item_state = "cheka"
 
 /obj/item/clothing/head/helmet/modern/pickelhaube
 	name = "iron pickelhaube"
