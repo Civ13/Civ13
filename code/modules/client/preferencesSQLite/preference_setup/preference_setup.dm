@@ -221,7 +221,7 @@
 		pref_initial_vars[varname] = initial(pref.vars[varname])
 
 	. = OnTopic(href, href_list, usr)
-	if (. == TOPIC_REFRESH)
+	if (. == TOPIC_REFRESH && pref_mob && pref_mob.client)
 		pref_mob.client.prefs.ShowChoices(usr)
 
 	update_setup()

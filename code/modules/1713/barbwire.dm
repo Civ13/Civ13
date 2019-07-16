@@ -45,7 +45,8 @@
 				H.updatehealth()
 				if (!(H.species && (H.species.flags)))
 					H.Weaken(1)
-				M << "<span class = 'red'><b>Your [affecting.name] gets slightly cut by \the [src]!</b></span>"
+				if (affecting)
+					M << "<span class = 'red'><b>Your [affecting.name] gets slightly cut by \the [src]!</b></span>"
 			else if (prob (33))
 				playsound(loc, 'sound/effects/glass_step.ogg', 50, TRUE)
 				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
