@@ -248,8 +248,6 @@
 	if((brute <= 0) && (burn <= 0))
 		return 0
 
-	var/blunt = brute && !sharp && !edge
-
 	// High brute damage or sharp objects may damage internal organs
 	var/damage_amt = brute
 	var/cur_damage = brute_dam
@@ -274,7 +272,7 @@
 	if (used_weapon)
 		if (istype(used_weapon, /obj/item/projectile))
 			canbreak = FALSE
-	if(blunt_dam > min_broken_damage && prob(blunt_dam * (1+blunt)) ) //blunt damage is gud at fracturing
+	if(blunt_dam > min_broken_damage && prob(blunt_dam)) //blunt damage is gud at fracturing
 		if (canbreak)
 			fracture()
 
@@ -1093,7 +1091,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "upper body"
 	limb_name = "chest"
 	icon_name = "torso"
-	min_broken_damage = 80
+	min_broken_damage = 55
 	max_damage = 101
 	w_class = 5
 	body_part = UPPER_TORSO
@@ -1112,7 +1110,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "lower body"
 	limb_name = "groin"
 	icon_name = "groin"
-	min_broken_damage = 80
+	min_broken_damage = 55
 	max_damage = 101
 	w_class = 5
 	body_part = LOWER_TORSO
@@ -1130,7 +1128,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "l_arm"
 	name = "left arm"
 	icon_name = "l_arm"
-	min_broken_damage = 67
+	min_broken_damage = 40
 	max_damage = 60
 	w_class = 3
 	body_part = ARM_LEFT
@@ -1153,7 +1151,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "l_leg"
 	name = "left leg"
 	icon_name = "l_leg"
-	min_broken_damage = 67
+	min_broken_damage = 40
 	max_damage = 70
 	w_class = 3
 	body_part = LEG_LEFT
@@ -1178,7 +1176,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "l_foot"
 	name = "left foot"
 	icon_name = "l_foot"
-	min_broken_damage = 50
+	min_broken_damage = 35
 	max_damage = 65
 	w_class = 2
 	body_part = FOOT_LEFT
@@ -1207,7 +1205,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "l_hand"
 	name = "left hand"
 	icon_name = "l_hand"
-	min_broken_damage = 50
+	min_broken_damage = 35
 	max_damage = 60
 	w_class = 2
 	body_part = HAND_LEFT
@@ -1234,7 +1232,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "head"
 	icon_name = "head"
 	name = "head"
-	min_broken_damage = 45
+	min_broken_damage = 40
 	max_damage = 60
 	w_class = 3
 	body_part = HEAD
