@@ -1698,3 +1698,10 @@
 						if (prob(9))
 							make_dizzy(6) // It is decreased at the speed of 3 per tick
 						return
+
+/mob/living/carbon/human/proc/instadeath_check()
+	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+		death()
+		return
+	else
+		return

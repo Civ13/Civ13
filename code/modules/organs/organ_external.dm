@@ -762,7 +762,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 				"<span class='danger'>You hear a crackling sound[gore].</span>")
 		if (DROPLIMB_BLUNT)
 			if (!istype(src, /obj/item/organ/external/head))
-				var/gore = " in shower of gore"
+				var/gore = " in a shower of gore"
 				var/gore_sound = "sickening splatter of gore"
 				owner.visible_message(
 					"<span class='danger'>\The [owner]'s [name] explodes[gore]!</span>",\
@@ -795,7 +795,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		victim.UpdateDamageIcon()
 		victim.regenerate_icons()
 		dir = 2
-
+	victim.instadeath_check()
 	switch(disintegrate)
 		if (DROPLIMB_EDGE)
 			compile_icon()

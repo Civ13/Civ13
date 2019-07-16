@@ -218,7 +218,7 @@ In most cases it makes more sense to use apply_damage() instead! And make sure t
 		UpdateDamageIcon()
 	updatehealth()
 	speech_problem_flag = TRUE
-
+	instadeath_check()
 
 //Heal MANY external organs, in random order
 /mob/living/carbon/human/heal_overall_damage(var/brute, var/burn)
@@ -258,6 +258,7 @@ In most cases it makes more sense to use apply_damage() instead! And make sure t
 
 		parts -= picked
 	updatehealth()
+	instadeath_check()
 	if (update)	UpdateDamageIcon()
 
 

@@ -48,7 +48,6 @@ bullet_act
 						drop_from_inventory(I)
 					crush()
 					qdel(src)
-
 	else
 		return ..(W, user)
 
@@ -236,7 +235,7 @@ bullet_act
 			fire_stacks += 1
 		IgniteMob()
 	..(P, def_zone)
-
+	instadeath_check()
 	spawn (0.01)
 		qdel(P)
 
@@ -426,7 +425,7 @@ bullet_act
 			return
 	visible_message("<span class='danger'>[src] has been [I.attack_verb.len? pick(I.attack_verb) : "attacked"] in the [affecting.name] with [I.name] by [user]!</span>")
 	receive_damage()
-
+	instadeath_check()
 	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 
@@ -535,7 +534,7 @@ bullet_act
 			if (prob(6))
 				visible_message("<span class='danger'>[src] has been knocked down!</span>")
 				Weaken(2)
-
+	instadeath_check()
 
 /mob/living/carbon/human/proc/attack_joint(var/obj/item/organ/external/organ, var/obj/item/W, var/blocked)
 	if (!organ || (organ.dislocated == 2) || (organ.dislocated == -1) || blocked >= 2)
