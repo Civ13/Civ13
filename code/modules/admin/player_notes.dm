@@ -44,7 +44,8 @@
 	//Updating list of keys with notes on them
 	var/savefile/note_list = "data/player_notes.sav"
 	var/list/note_keys
-	note_list >> note_keys
+	if (note_list)
+		note_list >> note_keys
 	if (!note_keys) note_keys = list()
 	if (!note_keys.Find(key)) note_keys += key
 	note_list << note_keys

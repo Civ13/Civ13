@@ -1,6 +1,6 @@
 /obj/map_metadata/omaha
 	ID = MAP_OMAHA
-	title = "Reichstag (100x100x1)"
+	title = "Omaha Beach (100x100x1)"
 	lobby_icon_state = "ww2"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 1200
@@ -18,7 +18,7 @@
 	ordinal_age = 6
 	faction_distribution_coeffs = list(GERMAN = 0.5, AMERICAN = 0.5)
 	battle_name = "D-day: Omaha Beach"
-	mission_start_message = "<font size=4>All factions have <b>10 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture the airfield hangar.</font>"
+	mission_start_message = "<font size=4>All factions have <b>8 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>40 minutes</b>. The Americans will win if they manage to capture the airfield hangar.</font>"
 	faction1 = GERMAN
 	faction2 = AMERICAN
 	valid_weather_types = list(WEATHER_NONE, WEATHER_RAIN)
@@ -29,16 +29,16 @@
 	..()
 	if (J.is_ww2 == TRUE)
 		. = TRUE
-	else if (J.is_reichstag == TRUE)
-		. = FALSE
 	else
+		. = FALSE
+	if (J.is_reichstag == TRUE)
 		. = FALSE
 
 /obj/map_metadata/omaha/faction1_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 /obj/map_metadata/omaha/faction2_can_cross_blocks()
-	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)
+	return (processes.ticker.playtime_elapsed >= 4800 || admin_ended_all_grace_periods)
 
 
 /obj/map_metadata/omaha/roundend_condition_def2name(define)
@@ -135,7 +135,7 @@ var/no_loop_o = FALSE
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Soviets</b> have reached the top of the Reichstag! They will win in {time} minutes."
+				current_win_condition = "The <b>Americans</b> have captured the Airfield! They will win in {time} minutes."
 				next_win = world.time + short_win_time(AMERICAN)
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])

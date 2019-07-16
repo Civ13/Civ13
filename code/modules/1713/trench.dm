@@ -8,6 +8,7 @@ var/list/global/floor_cache = list()
 	//var/image/over_OS_darkness = null
 	plane = UNDERFLOOR_PLANE
 	initial_flooring = /decl/flooring/trench
+	var/trench_filling = 0
 
 /turf/floor/trench/New()
 	if (!icon_state)
@@ -25,6 +26,38 @@ var/list/global/floor_cache = list()
 					var/turf/floor/FF = get_step(src,direction)
 					FF.update_icon() //so siding get updated properly
 
+/turf/floor/trench/make_grass()
+	overlays.Cut()
+	if (islist(decals))
+		decals.Cut()
+		decals = null
+
+	set_light(0)
+	levelupdate()
+
+	ChangeTurf(/turf/floor/trench)
+
+/turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
+		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
+		if (choice == "Yes")
+			user << "You shove some dirt into the trench."
+			trench_filling++
+			qdel(C)
+			check_filling()
+			return
+		else
+			return
+
+	else
+		..()
+
+/turf/floor/trench/proc/check_filling()
+	if (trench_filling < 0)
+		trench_filling = 0
+	if (trench_filling >= 2)
+		ChangeTurf(get_base_turf_by_area(src))
+	return
 /decl/flooring/trench
 	name = "trench"
 	desc = "Hole in the ground."

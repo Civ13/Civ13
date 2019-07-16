@@ -237,20 +237,17 @@ proc/random_skin_tone()
 	if (prob(60))
 		pass()
 	else if (prob(15))
-		skin_tone = "afroamerican"
+		skin_tone = "mulatto"
 	else if (prob(10))
 		skin_tone = "african"
 	else if (prob(10))
 		skin_tone = "latino"
-	else
-		skin_tone = "albino"
 
 	switch(skin_tone)
 		if ("caucasian")		. = -10
-		if ("afroamerican")	. = -115
+		if ("mulatto")	. = -115
 		if ("african")		. = -165
 		if ("latino")		. = -55
-		if ("albino")		. = 34
 		else				. = rand(-185,34)
 	return min(max( .+rand(-25, 25), -185),34)
 

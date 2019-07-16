@@ -37,7 +37,10 @@
 		var/mob/living/carbon/human/H = user
 		H.adaptStat("swords", 1*modif)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
-		health -= 0.5
+		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+			health -= 5
+		else
+			health-= 0.5
 		if(prob(15))
 			user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
 			user.drop_from_inventory(src)

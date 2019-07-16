@@ -62,6 +62,7 @@
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
 	var/simplehunger = 2000
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -209,6 +210,8 @@
 
 /mob/living/simple_animal/bullet_act(var/obj/item/projectile/proj)
 	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
+		if (proj.firer == rider)
+			return //we can't hit the animals we are riding
 		var/mob/living/carbon/human/H = proj.firer
 		if (prob(40))
 			switch (proj.firedfrom.gun_type)

@@ -10,7 +10,7 @@
 	var/list/accessories = list()
 	var/list/valid_accessory_slots
 	var/list/restricted_accessory_slots
-
+	health = 18
 	dropsound = 'sound/effects/drop_clothing.ogg'
 	flammable = TRUE
 	var/restricts_view = 0 //If it restricts the viewing cone - check hide.dmi: 0 means "combat". 1 means "helmet". 2 means "narrow"
@@ -24,10 +24,19 @@
 	..()
 	gunshot_residue = null
 
+/obj/item/clothing/proc/check_health()
+	if (health <= 0)
+		visible_message("\The [src] falls apart!")
+		if (istype(loc, /mob/living))
+			var/mob/living/M = loc
+			M.drop_from_inventory(src)
+		qdel(src)
+		return TRUE
+	return FALSE
 ///////////////////////////////////////////////////////////////////////
 /obj/item/clothing/head/helmet
 	restricts_view = 1
-
+	health = 35
 // Ears: headsets, earmuffs and tiny objects
 /obj/item/clothing/ears
 	name = "ears"

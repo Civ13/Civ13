@@ -176,9 +176,9 @@ var/list/slot_equipment_priority = list( \
 
 // Removes an item from inventory and places it in the target atom.
 // If canremove or other conditions need to be checked then use unEquip instead.
-/mob/proc/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
+/mob/proc/drop_from_inventory(var/obj/item/W, var/atom/Target = null, var/ignore_nodrop = FALSE)
 	if (W)
-		if (W.nodrop || W.nodrop_special_check())
+		if (W.nodrop || W.nodrop_special_check() || ignore_nodrop)
 			return FALSE
 
 		if (!Target)
@@ -218,6 +218,23 @@ var/list/slot_equipment_priority = list( \
 		update_icons()
 		return TRUE
 	return FALSE
+
+//removes all in a mob to the Target (or loc if no target). Ignores nodrop flags by default.
+/mob/proc/strip(var/atom/Target = null, var/ignore_nodrop = FALSE)
+	if (!Target)
+		Target = loc
+	for (var/obj/item/I in contents)
+		if (!istype(I,/obj/item/organ))
+			unEquip(I,ignore_nodrop,Target)
+	return
+//skips basic clothes
+/mob/proc/strip_nobasics(var/atom/Target = null, var/ignore_nodrop = FALSE)
+	if (!Target)
+		Target = loc
+	for (var/obj/item/I in contents)
+		if (!istype(I,/obj/item/organ) && !istype(I,/obj/item/clothing/under))
+			unEquip(I,ignore_nodrop,Target)
+	return
 
 //Drops the item in our left hand
 /mob/proc/drop_l_hand(var/atom/Target)

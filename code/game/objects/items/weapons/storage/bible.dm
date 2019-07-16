@@ -7,6 +7,9 @@
 	throw_range = 5
 	w_class = 3.0
 	var/mob/affecting = null
+/obj/item/weapon/storage/bible/orthodox
+	icon_state ="orthodoxbible"
+	item_state = "orthodoxbible"
 
 /obj/item/weapon/storage/bible/booze
 	name = "bible"

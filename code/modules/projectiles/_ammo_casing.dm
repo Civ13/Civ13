@@ -216,9 +216,9 @@
 		if (map.ordinal_age == 4)
 			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
 		else if (map.ordinal_age == 5)
-			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "9x19mm Parabellum", "7.65x25mm Parabellum Borchardt", "Cancel")
+			listing = list("9mm pistol",".45 pistol", "Cancel")
 		else if (map.ordinal_age >= 6)
-			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "9x19mm Parabellum", "7.65x25mm",".45 ACP", "Cancel")
+			listing = list("9mm pistol",".45 pistol", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -228,20 +228,10 @@
 			resultpath = /obj/item/ammo_casing/a45
 		else if (input == ".44-40 Winchester")
 			resultpath = /obj/item/ammo_casing/a44
-		else if (input == "7.62x38mmR Nagant")
-			resultpath = /obj/item/ammo_casing/a762x38
-		else if (input == "8mm Nambu")
-			resultpath = /obj/item/ammo_casing/c8mmnambu
-		else if (input == "9mm Japanese Revolver")
-			resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
-		else if (input == "9x19mm Parabellum")
-			resultpath = /obj/item/ammo_casing/a9x19
-		else if (input == "7.65x25mm Parabellum Borchardt")
-			resultpath = /obj/item/ammo_casing/a765x25
-		else if (input == "7.65x25mm")
-			resultpath = /obj/item/ammo_casing/a765x25
-		else if (input == ".45 ACP")
-			resultpath = /obj/item/ammo_casing/a45acp
+		else if (input == ".45 pistol")
+			resultpath = /obj/item/ammo_casing/pistol45
+		else if (input == "9mm pistol")
+			resultpath = /obj/item/ammo_casing/pistol9
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -259,9 +249,9 @@
 		if (map.ordinal_age == 4)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
 		else if (map.ordinal_age == 5)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.65x53 Mauser", "7.92x57 Mauser", ".303 British","6.5x52mm Carcano", "Cancel")
+			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
 		else if (map.ordinal_age >= 6)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.7x58mm Arisaka","7.65x53 Mauser", "7.92x57 Mauser", ".303 British","6.5x52mm Carcano",".30-06 Springfield", "Cancel")
+			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
 
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
@@ -276,32 +266,20 @@
 			resultpath = /obj/item/ammo_casing/shotgun/slug
 		else if (input == "12 Gauge (Beanbag)")
 			resultpath = /obj/item/ammo_casing/shotgun/beanbag
-		else if (input == "7.62x54mmR Russian")
-			resultpath = /obj/item/ammo_casing/a762x54
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "8x53mm Murata")
-			resultpath = /obj/item/ammo_casing/a8x53
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "6.5x50mmSR Arisaka")
-			resultpath = /obj/item/ammo_casing/a65x50
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.65x53 Mauser")
 			resultpath = /obj/item/ammo_casing/a765x53
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "7.92x57 Mauser")
-			resultpath = /obj/item/ammo_casing/a792x57
+		else if (input == "8mm large rifle")
+			resultpath = /obj/item/ammo_casing/largerifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == ".303 British")
-			resultpath = /obj/item/ammo_casing/a303
+		else if (input == "6.5mm small rifle")
+			resultpath = /obj/item/ammo_casing/smallrifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "6.5x52mm Carcano")
-			resultpath = /obj/item/ammo_casing/a65x52
+		else if (input == "7.5mm intermediate rifle")
+			resultpath = /obj/item/ammo_casing/intermediumrifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "7.7x58mm Arisaka")
-			resultpath = /obj/item/ammo_casing/a77x58
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == ".30-06 Springfield")
-			resultpath = /obj/item/ammo_casing/a3006
+		else if (input == "5.5mm intermediate rifle")
+			resultpath = /obj/item/ammo_casing/smallintermediumrifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
@@ -726,3 +704,63 @@
 	icon_state = "bshell"
 	spent_icon = "bshell_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
+
+//generic calibers for custom weapons
+/obj/item/ammo_casing/largerifle
+	name = "8mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/largerifle
+	caliber = "largerifle"
+	value = 8
+
+/obj/item/ammo_casing/smallrifle
+	name = "6.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/smallrifle
+	caliber = "smallrifle"
+	value = 8
+
+/obj/item/ammo_casing/pistol45
+	name = ".45 bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/pistol45
+	caliber = "pistol45"
+	value = 2
+/obj/item/ammo_casing/pistol9
+	name = "9mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/pistol9
+	caliber = "pistol9"
+	value = 2
+
+/obj/item/ammo_casing/intermediumrifle
+	name = "7.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/intermediumrifle
+	caliber = "intermediumrifle"
+	value = 8
+
+/obj/item/ammo_casing/smallintermediumrifle
+	name = "5.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/rifle/smallintermediumrifle
+	caliber = "smallintermediumrifle"
+	value = 2

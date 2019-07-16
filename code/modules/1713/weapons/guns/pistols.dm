@@ -56,10 +56,7 @@
 	KD_chance = KD_CHANCE_LOW
 	stat = "pistol"
 	aim_miss_chance_divider = 2.00
-/obj/item/weapon/gun/projectile/pistol/New()
-	..()
-	loaded = list()
-	chambered = null
+
 /obj/item/weapon/gun/projectile/pistol/attackby(obj/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/attachment/bayonet))
 		user << "<span class = 'danger'>That won't fit on there.</span>"

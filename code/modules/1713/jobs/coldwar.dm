@@ -1,6 +1,6 @@
 
 /datum/job/vietnamese
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/vietnamese/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_vietnamese_name(H.gender)
@@ -224,7 +224,7 @@
 ////////////////////////////////////////////////US////////////////////////////////////////
 
 /datum/job/american
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/american/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
@@ -232,7 +232,7 @@
 
 
 /datum/job/american/american_lieutenant
-	title = "US Lieutenant"
+	title = "USA Lieutenant"
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
@@ -277,7 +277,7 @@
 	return TRUE
 
 /datum/job/american/american_sergeant
-	title = "US Sergeant"
+	title = "USA Sergeant"
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
@@ -323,7 +323,7 @@
 	return TRUE
 
 /datum/job/american/american_sf
-	title = "US Commando"
+	title = "USA Commando"
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -367,7 +367,7 @@
 	return TRUE
 
 /datum/job/american/american_medic
-	title = "US Field Medic"
+	title = "USA Field Medic"
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -413,7 +413,7 @@
 	return TRUE
 
 /datum/job/american/american_radioman
-	title = "US Radio Operator"
+	title = "USA Radio Operator"
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -459,7 +459,7 @@
 	return TRUE
 
 /datum/job/american/american_marksman
-	title = "US Marksman"
+	title = "USA Marksman"
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -502,7 +502,7 @@
 	return TRUE
 
 /datum/job/american/american_lmg
-	title = "US Automatic Rifleman"
+	title = "USA Automatic Rifleman"
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -548,7 +548,7 @@
 	H.setStat("mg", STAT_MEDIUM_HIGH)
 	return TRUE
 /datum/job/american/american_soldier
-	title = "US Rifleman"
+	title = "USA Rifleman"
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"

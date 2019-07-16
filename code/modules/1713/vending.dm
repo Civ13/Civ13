@@ -183,7 +183,6 @@
 	products = list(
 		/obj/item/clothing/shoes/jackboots = 15,
 		/obj/item/clothing/under/ww2/us = 15,
-		/obj/item/clothing/under/ww2/us_light = 15,
 		/obj/item/clothing/under/ww2/us_shirtless = 15,
 		/obj/item/clothing/head/helmet/ww2/us = 15,
 		/obj/item/stack/medical/bruise_pack/bint = 10,
@@ -378,6 +377,16 @@ obj/structure/vending/sofammo
 	icon_state = "modern_british"
 	products = list(
 		/obj/item/weapon/gun/projectile/boltaction/mosin/m30 = 15,
+		/obj/item/weapon/attachment/bayonet/military = 15,
+	)
+
+
+/obj/structure/vending/oldrussianweapons
+	name = "Russian rifle rack"
+	desc = "A rack of war equipment."
+	icon_state = "modern_british"
+	products = list(
+		/obj/item/weapon/gun/projectile/boltaction/mosin = 15,
 		/obj/item/weapon/attachment/bayonet/military = 15,
 	)
 

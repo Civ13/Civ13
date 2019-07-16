@@ -110,11 +110,6 @@
 
 	return
 
-/obj/item/weapon/gun/projectile/submachinegun/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/submachinegun/mp40
 	name = "MP40"
 	desc = "German submachinegun chambered in 9x19 Parabellum, with a 32 magazine magazine layout. Standard issue amongst most troops."

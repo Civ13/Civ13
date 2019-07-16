@@ -90,11 +90,6 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 
-/obj/item/weapon/gun/projectile/boltaction/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/boltaction/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
@@ -137,7 +132,7 @@
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the bolt is open!</span>"
 		return FALSE
-	if (!user.has_empty_hand(both = FALSE))
+	if (!user.has_empty_hand(both = FALSE) && !istype(src,/obj/item/weapon/gun/projectile/boltaction/mosin/obrez))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	return TRUE
@@ -733,9 +728,10 @@
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 1.4
+	w_class = 2
 	effectiveness_mod = 0.77
 	value = 60
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 	equiptimer = 9
 
 
@@ -790,3 +786,8 @@
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
 	max_shells = 5
 	equiptimer = 12
+
+/obj/item/weapon/gun/projectile/boltaction/springfield/sniper/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)

@@ -224,7 +224,7 @@ var/global/datum/controller/occupations/job_master
 		if (H_area)
 			H_area.play_ambience(H)
 
-/datum/controller/occupations/proc/SetupOccupations(var/faction = "Station")
+/datum/controller/occupations/proc/SetupOccupations(var/faction = "Human")
 	occupations = list()
 	var/list/all_jobs = typesof(/datum/job)
 	if (!all_jobs.len)

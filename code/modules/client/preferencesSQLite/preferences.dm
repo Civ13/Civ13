@@ -19,18 +19,22 @@ var/list/preferences_datums = list()
 	var/UI_style_color = "#FFFFFF"
 	var/UI_style_alpha = 255
 	var/lobby_music_volume = 30
+	var/cursor = null
 
 	//character preferences
 	var/real_name = "John Doe"						//our character's name
 	var/be_random_name = FALSE				//whether we are a random name every round
+	var/be_random_body = FALSE				//whether we get a random body every round
 	var/gender = MALE					//gender of character (well duh)
 
 	var/body_build = "Default"			//character body build name
 	var/age = 25						//age of character
 
 	var/b_type = "A+"					//blood type (not-chooseable)
-	var/backbag = 2						//backpack type
 	var/h_style = "Short Hair"				//Hair type
+	var/hair_color = "Black"
+	var/facial_color = "Black"
+	var/eye_color = "Black"
 	var/r_hair = FALSE						//Hair color
 	var/g_hair = FALSE						//Hair color
 	var/b_hair = FALSE						//Hair color
@@ -198,9 +202,6 @@ var/list/preferences_datums = list()
 
 	character.all_underwear.Cut()
 
-	if (backbag > 4 || backbag < 1)
-		backbag = TRUE //Same as above
-	character.backbag = backbag
 
 	//Debugging report to track down a bug, which randomly assigned the plural gender to people.
 	if (character.gender in list(PLURAL, NEUTER))
@@ -212,111 +213,7 @@ var/list/preferences_datums = list()
 	if (islist(str))
 		return ""
 	return str
-/*
-//////////////Included in charprefs////////////////////////
-// global preferences handling
-/datum/preferences/proc/loadGlobalPreferences()
-	var/F = file("SQL/globalpreferences.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||\n")
-	var/list/tables = list()
-	for (var/i=1;i<globalprefs.len;i++)
-		var/list/globalprefs2 = splittext(globalprefs[i], ";")
-		if (globalprefs2[1] == client_ckey)
-			tables = globalprefs2[2]
-	if (!islist(tables) || isemptylist(tables))
-		return
-	var/list/keyvals_list = splittext(tables, "&")
-	for (var/keyval in keyvals_list)
-		var/keyval_pair = splittext(keyval, "=")
-		var/key = keyval_pair[1]
-		var/val = keyval_pair[2]
-		if (isnum(text2num(val)))
-			val = text2num(val)
-		if (val != vars[key])
-			if (vars[key])
-				vars[key] = val
 
-/datum/preferences/proc/saveGlobalPreferences()
-	var/prefstring = ""
-
-//	prefstring += "ooccolor=[globalprefsanitize(ooccolor)]&"
-//	prefstring += "UI_useborder=[globalprefsanitize(UI_useborder)]&"
-	prefstring += "lobby_music_volume=[globalprefsanitize(lobby_music_volume)]"
-	var/F = file("SQL/globalpreferences.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||\n")
-	var/done1 = FALSE
-	for (var/i=1;i<globalprefs.len;i++)
-		var/list/globalprefs2 = splittext(globalprefs[i], ";")
-		if (globalprefs2[1] == client_ckey)
-			globalprefs[i] = "[client_ckey];[prefstring]"
-			done1 = TRUE
-	if (!done1)
-		text2file("[client_ckey];[prefstring]|||", F)
-	else
-		fdel(F)
-		var/sum2 = 0
-		for (var/i=1;i<globalprefs.len;i++)
-			sum2 += "[globalprefs[i]]|||"
-		text2file("[sum2]", F)
-
-// global settings handling
-/datum/preferences/proc/loadGlobalSettings()
-	if (!client)
-		return
-
-	var/F = file("SQL/globalsettings.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||\n")
-	var/list/tables = list()
-	var/list/tables2 = list()
-	for (var/i=1;i<globalprefs.len;i++)
-		var/list/globalprefs2 = splittext(globalprefs[i], ";")
-		if (globalprefs2[1] == client_ckey)
-			//enabled
-			tables = globalprefs2[2]
-			var/list/vals_list = splittext(tables, "&")
-			for (var/val in vals_list)
-				if (isnum(text2num(val)))
-					val = text2num(val)
-				client.set_preference(val, TRUE)
-
-			// disabled
-			tables2 = globalprefs2[3]
-			var/list/vals_list2 = splittext(tables2, "&")
-			for (var/val2 in vals_list2)
-				if (isnum(text2num(val2)))
-					val2 = text2num(val2)
-				client.set_preference(val2, FALSE)
-
-
-/datum/preferences/proc/saveGlobalSettings()
-	var/prefstring = ""
-	for (var/v in 1 to preferences_enabled.len)
-		prefstring += preferences_enabled[v]
-		if (v != preferences_enabled.len)
-			prefstring += "&"
-	var/prefstring2 = ""
-	for (var/v in 1 to preferences_disabled.len)
-		prefstring2 += preferences_disabled[v]
-		if (v != preferences_disabled.len)
-			prefstring2 += "&"
-	var/F = file("SQL/globalsettings.txt")
-	var/list/globalprefs = splittext(file2text(F), "|||\n")
-	var/done1 = FALSE
-	for (var/i=1;i<globalprefs.len;i++)
-		var/list/globalprefs2 = splittext(globalprefs[i], ";")
-		if (globalprefs2[1] == client_ckey)
-			globalprefs[i] = "[client_ckey];[globalprefs2[2]];[globalprefs2[3]]"
-			done1 = TRUE
-	if (!done1) // if it doesnt exist, just add a new line
-		text2file("[client_ckey];[prefstring];[prefstring2]|||",F)
-	else //rewrite the file
-		fdel(F)
-		var/sum2 = ""
-		for (var/i=1;i<globalprefs.len;i++)
-			sum2 += "[globalprefs[i]]|||"
-		text2file("[sum2]", F)
-////////////////////////////////////////////////////////////
-*/
 /client/proc/is_preference_enabled(var/preference)
 
 	if (ispath(preference))

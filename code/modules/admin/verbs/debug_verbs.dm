@@ -21,30 +21,10 @@ var/list/debug_verbs = list (
  //       ,/client/proc/Test_ZAS_Connection
   //      ,/client/proc/ZoneTick
  //       ,/client/proc/rebootAirMaster
-        ,/client/proc/hide_debug_verbs
  //       ,/client/proc/testZAScolors
     //    ,/client/proc/testZAScolors_remove
 	//	,/client/proc/spawn_tanktransferbomb
 	)
-
-
-/client/proc/enable_debug_verbs()
-	set category = "Debug"
-	set name = "Debug verbs"
-
-	if (!check_rights(R_DEBUG)) return
-
-	verbs += debug_verbs
-
-
-
-/client/proc/hide_debug_verbs()
-	set category = "Debug"
-	set name = "Hide Debug verbs"
-
-	if (!check_rights(R_DEBUG)) return
-
-	verbs -= debug_verbs
 
 //This proc is intended to detect lag problems relating to communication procs
 var/global/say_disabled = FALSE

@@ -87,11 +87,6 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 
-/obj/item/weapon/gun/projectile/flintlock/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/flintlock/attack_self(mob/user)
 	var/mob/living/carbon/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")

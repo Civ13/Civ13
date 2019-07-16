@@ -218,7 +218,7 @@ In most cases it makes more sense to use apply_damage() instead! And make sure t
 		UpdateDamageIcon()
 	updatehealth()
 	speech_problem_flag = TRUE
-
+	instadeath_check()
 
 //Heal MANY external organs, in random order
 /mob/living/carbon/human/heal_overall_damage(var/brute, var/burn)
@@ -258,6 +258,7 @@ In most cases it makes more sense to use apply_damage() instead! And make sure t
 
 		parts -= picked
 	updatehealth()
+	instadeath_check()
 	if (update)	UpdateDamageIcon()
 
 
@@ -338,18 +339,3 @@ This function restores all organs.
 	// Will set our damageoverlay icon to the next level, which will then be set back to the normal level the next mob.Life().
 	updatehealth()
 	return created_wound
-
-// Find out in how much pain the mob is at the moment.
-/mob/living/carbon/human/proc/get_shock()
-
-	var/traumatic_shock = getHalLoss()                 // Pain.
-	traumatic_shock += (0.5 * src.getToxLoss())        // Organ failure.
-	traumatic_shock += (0.5 * src.getCloneLoss())      // Genetic decay.
-	traumatic_shock -= src.chem_effects[CE_PAINKILLER] // TODO: check what is actually stored here.
-
-	if(slurring)                                       // Drunk.
-		traumatic_shock *= 0.75
-	if(stat == UNCONSCIOUS)
-		traumatic_shock *= 0.5
-
-	return max(0,traumatic_shock)

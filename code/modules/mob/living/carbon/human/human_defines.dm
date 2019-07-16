@@ -38,7 +38,6 @@
 	var/b_type = "A+"	//Player's bloodtype
 
 	var/list/all_underwear = list()
-	var/backbag = 2		//Which backpack type the player has chosen. Nothing, Satchel or Backpack.
 
 	//Equipment slots
 	var/obj/item/wear_suit = null

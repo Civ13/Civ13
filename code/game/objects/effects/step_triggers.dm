@@ -115,21 +115,31 @@
 				A.y = rand(teleport_y, teleport_y_offset)
 				A.z = rand(teleport_z, teleport_z_offset)
 
-//////////////////////////////////////LANDING CRAFTS///////////////////////////////////////////
-/obj/effect/step_trigger/teleporter/lcraft
+//////////////////////////////////////TELEPORTER///////////////////////////////////////////
+/obj/effect/step_trigger/teleporter/stairs
 	var/teleport_x_offset = FALSE
 	var/teleport_y_offset = FALSE
 	var/teleport_z_offset = FALSE
+	var/up = FALSE
+	var/timer = 0
 
 	Trigger(var/atom/movable/A)
-		A << "<span class='info'>The landing craft is moving...</span>"
-		spawn(150)
+		spawn(timer)
 			if (teleport_x && teleport_y && teleport_z)
-				if (teleport_x_offset && teleport_y_offset && teleport_z_offset)
-
+				if (teleport_x_offset)
 					A.x = rand(teleport_x, teleport_x_offset)
+				else
+					A.x = teleport_x
+
+				if (teleport_y_offset)
 					A.y = rand(teleport_y, teleport_y_offset)
+				else
+					A.y = teleport_y
+
+				if (teleport_z_offset)
 					A.z = rand(teleport_z, teleport_z_offset)
+				else
+					A.z = teleport_z
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 /* Step trigger to display message if *TRIGGERED* */

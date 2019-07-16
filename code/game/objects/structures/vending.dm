@@ -58,7 +58,8 @@
 
 	var/atom/movable/product = instances[instances.len]	// Remove the last added product
 	instances -= product
-	product.forceMove(product_location)
+	if (product)
+		product.forceMove(product_location)
 	return product
 
 /datum/data/vending_product/proc/init_products()

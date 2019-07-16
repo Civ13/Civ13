@@ -3,9 +3,6 @@
 
 // proc to find out in how much pain the mob is at the moment
 /mob/living/carbon/proc/updateshock()
-	if (species && (species.flags & NO_PAIN))
-		traumatic_shock = FALSE
-		return FALSE
 
 	traumatic_shock = 			\
 	1	* getOxyLoss() + 		\
@@ -26,12 +23,13 @@
 	if (bloodstr)
 		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
 			traumatic_shock -= E.volume
-
+		for (var/datum/reagent/adrenaline/A in ingested.reagent_list)
+			traumatic_shock -= A.volume
+			shock_stage -= A.volume/4
+		for (var/datum/reagent/opium/O in ingested.reagent_list)
+			traumatic_shock -= O.volume/4
+			shock_stage -= O.volume/8
 	if (traumatic_shock < 0)
 		traumatic_shock = FALSE
 
 	return traumatic_shock
-
-
-/mob/living/carbon/proc/handle_shock()
-	updateshock()

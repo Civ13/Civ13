@@ -40,6 +40,8 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 			. = FALSE
 		if (J.is_civilizations == TRUE)
 			. = FALSE
+		if (J.is_rcw == TRUE)
+			. = FALSE
 	else if (istype(J, /datum/job/spanish/civilian))
 		. = FALSE
 	else if (J.is_medieval == TRUE)

@@ -60,13 +60,27 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 
+	if (riding && riding_mob)
+		if (!(riding_mob in range(1,src)))
+			riding = FALSE
+			riding_mob = null
+			forceMove(locate(x+1,y,z))
+			if (riding_mob)
+				riding_mob.ride = FALSE
+				riding_mob.rider = null
+				riding_mob.update_icons()
+				riding_mob.stop_automated_movement = FALSE
+
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
 	var/area/currentarea = get_area(src)
-	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
-		gib()
+	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
+		if (faction_text == map.faction1 && !map.faction1_can_cross_blocks())
+			gib()
+		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
+			gib()
 	if (mood > 100)
 		mood = 100
 	else if (mood < 0)
@@ -117,16 +131,16 @@
 					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
-
+	if (stats.len)
 	// hotfixes some stamina bugs
-	if (stats["stamina"][1] < 0)
-		stats["stamina"][1] = 0
+		if (stats["stamina"][1] < 0)
+			stats["stamina"][1] = 0
 
-	if (stats["stamina"][2] < 80)
-		stats["stamina"][2] = 80
+		if (stats["stamina"][2] < 80)
+			stats["stamina"][2] = 80
 
-	if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
-		src << "<span class = 'good'>You feel like you can run for a while.</span>"
+		if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
+			src << "<span class = 'good'>You feel like you can run for a while.</span>"
 
 	nutrition = min(nutrition, max_nutrition)
 	nutrition = max(nutrition, -max_nutrition)
@@ -147,6 +161,10 @@
 			addictions[ad] -= 0.05
 		if (addictions[ad] < 0)
 			addictions[ad] = 0
+
+//death
+	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+		death()
 
 // disease stuff
 	if (inducedSSD && disease && disease_progression <= 15)
@@ -644,7 +662,7 @@
 			loc_temp = (max(22,loc_temp-40))
 		else if (loc_temp < 18)
 			loc_temp = (min(18,loc_temp+40))
-	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && map.civilizations && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -1257,7 +1275,7 @@
 				if (prob(10))
 					Weaken(15)
 
-/mob/living/carbon/human/handle_shock()
+/mob/living/carbon/human/proc/handle_shock()
 	..()
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (species && species.flags & NO_PAIN) return
@@ -1265,6 +1283,7 @@
 	if (health < config.health_threshold_softcrit)// health FALSE makes you immediately collapse
 		shock_stage = max(shock_stage, 61)
 
+	traumatic_shock = updateshock()
 	if (traumatic_shock >= 80)
 		shock_stage += 1
 
@@ -1412,6 +1431,8 @@
 //						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = ""
+					if (map.ID == MAP_TSARITSYN)
+						holder2.icon_state = "sov_basic"
 
 			hud_list[BASE_FACTION] = holder2
 
@@ -1450,6 +1471,8 @@
 
 /mob/living/carbon/human/rejuvenate()
 	restore_blood()
+	shock_stage = 0
+	traumatic_shock = 0
 	..()
 
 /mob/living/carbon/human/handle_vision()
@@ -1675,3 +1698,10 @@
 						if (prob(9))
 							make_dizzy(6) // It is decreased at the speed of 3 per tick
 						return
+
+/mob/living/carbon/human/proc/instadeath_check()
+	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+		death()
+		return
+	else
+		return

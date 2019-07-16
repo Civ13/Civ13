@@ -53,11 +53,6 @@
 	KD_chance = KD_CHANCE_HIGH
 	stat = "rifle"
 
-/obj/item/weapon/gun/projectile/shotgun/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/shotgun/pump
 	name = "pump-action shotgun"
 	desc = "A pump-action shotgun chambered in 12 gauge rounds."

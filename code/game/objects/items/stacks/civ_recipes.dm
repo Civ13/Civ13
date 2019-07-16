@@ -222,17 +222,14 @@
 			new/datum/stack_recipe("cannon ball", /obj/item/cannon_ball, 5, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[2] >= 110 && map.ordinal_age == 5)
 		recipes += new/datum/stack_recipe_list("magazines", list(
-			new/datum/stack_recipe("borchardt magazine", /obj/item/ammo_magazine/borchardt/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("luger magazine", /obj/item/ammo_magazine/luger/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("nambu magazine", /obj/item/ammo_magazine/c8mmnambu/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (current_res[2] >= 110 && map.ordinal_age >= 6)
 		recipes += new/datum/stack_recipe_list("magazines", list(
-			new/datum/stack_recipe("borchardt magazine", /obj/item/ammo_magazine/borchardt/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("luger magazine", /obj/item/ammo_magazine/luger/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("nambu magazine", /obj/item/ammo_magazine/c8mmnambu/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("walther magazine", /obj/item/ammo_magazine/walther/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("M1911 magazine", /obj/item/ammo_magazine/m1911/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("TT-30 magazine", /obj/item/ammo_magazine/tt30/empty, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("pistol magazine (15)", /obj/item/ammo_magazine/emptymagazine/pistol, 3, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("magazine (30)", /obj/item/ammo_magazine/emptymagazine/small, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if (current_res[1] >= 95)
 		recipes += new/datum/stack_recipe("canner", /obj/structure/canner, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -286,11 +283,13 @@
 
 /material/wood/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
+	if (map && map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe("gunsmithing bench",/obj/structure/gunbench, 13, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 22)
 		recipes += new/datum/stack_recipe("raft",/obj/structure/vehicle/raft, 10, _time = 180, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 22)
 		recipes += new/datum/stack_recipe("boat frame", /obj/item/vehicleparts/frame/boat, 22, _time = 200, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.resourceresearch == TRUE)
+	if (map && map.resourceresearch == TRUE)
 		recipes += new/datum/stack_recipe("research desk",/obj/structure/researchdesk, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 96)
 		recipes += new/datum/stack_recipe("global exchange",/obj/structure/marketplace, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -1039,7 +1038,9 @@
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("artillery casing", /obj/item/stack/ammopart/casing/artillery, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("ammo clip", /obj/item/ammo_magazine/emptyclip, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("ammo clip (5)", /obj/item/ammo_magazine/emptyclip, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (map.ordinal_age >= 5)
+		recipes += new/datum/stack_recipe("ammo belt (100)", /obj/item/ammo_magazine/emptybelt, 7, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe_list("cables", list(

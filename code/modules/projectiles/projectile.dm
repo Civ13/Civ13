@@ -416,7 +416,7 @@
 		if (!silenced)
 			playsound(get_turf(target_mob), "miss_sound", 100, TRUE)
 		return FALSE
-	else if (!useless && !target_mob.takes_less_damage) // if we just grazed, useless is set to TRUE
+	else if (target_mob && !useless && !target_mob.takes_less_damage) // if we just grazed, useless is set to TRUE
 		if (target_mob.stat == CONSCIOUS && prob(mygun.KO_chance) && damage >= DAMAGE_HIGH-6)
 			visible_message("<span class = 'danger'>[target_mob] is knocked out!</span>")
 			target_mob.Paralyse(3)
@@ -513,7 +513,7 @@
 						else
 							L.pre_bullet_act(src)
 							attack_mob(L)
-							if (!L.lying)
+							if (L && !L.lying)
 								passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM

@@ -97,7 +97,11 @@
 
 /obj/item/weapon/paper_bundle/proc/show_content(mob/user as mob)
 	var/dat
-	var/obj/item/weapon/W = pages[page]
+	var/obj/item/weapon/W
+	if (pages[page])
+		W = pages[page]
+	else
+		return
 
 	// first
 	if (page == TRUE)
@@ -199,24 +203,25 @@
 
 
 /obj/item/weapon/paper_bundle/update_icon()
-	var/obj/item/weapon/paper/P = pages[1]
-	icon_state = P.icon_state
-	overlays = P.overlays
-	underlays = FALSE
-	var/i = FALSE
-	for (var/obj/O in src)
-		var/image/img = image('icons/obj/bureaucracy.dmi')
-		if (istype(O, /obj/item/weapon/paper))
-			img.icon_state = O.icon_state
-			img.pixel_x -= min(1*i, 2)
-			img.pixel_y -= min(1*i, 2)
-			pixel_x = min(0.5*i, TRUE)
-			pixel_y = min(  TRUE*i, 2)
-			underlays += img
-			i++
-	if (i>1)
-		desc =  "[i] papers clipped to each other."
-	else
-		desc = "A single sheet of paper."
-	overlays += image('icons/obj/bureaucracy.dmi', "clip")
-	return
+	if (pages[1])
+		var/obj/item/weapon/paper/P = pages[1]
+		icon_state = P.icon_state
+		overlays = P.overlays
+		underlays = FALSE
+		var/i = FALSE
+		for (var/obj/O in src)
+			var/image/img = image('icons/obj/bureaucracy.dmi')
+			if (istype(O, /obj/item/weapon/paper))
+				img.icon_state = O.icon_state
+				img.pixel_x -= min(1*i, 2)
+				img.pixel_y -= min(1*i, 2)
+				pixel_x = min(0.5*i, TRUE)
+				pixel_y = min(  TRUE*i, 2)
+				underlays += img
+				i++
+		if (i>1)
+			desc =  "[i] papers clipped to each other."
+		else
+			desc = "A single sheet of paper."
+		overlays += image('icons/obj/bureaucracy.dmi', "clip")
+		return

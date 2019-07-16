@@ -65,6 +65,8 @@ var/GRACE_PERIOD_LENGTH = 7
 		season = "WINTER"
 	else if (map.ID == MAP_HILL203)
 		season = "FALL"
+	else if (map.ID == MAP_TSARITSYN)
+		season = "FALL"
 	else
 		season = "SPRING"
 

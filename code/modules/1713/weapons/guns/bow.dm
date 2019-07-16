@@ -112,8 +112,12 @@
 
 /obj/item/weapon/gun/projectile/bow/New()
 	..()
-	loaded = list()
-	chambered = null
+	if (map && map.civilizations)
+		loaded = list()
+		chambered = null
+	else if (!(istype(loc, /mob/living)))
+		loaded = list()
+		chambered = null
 
 /obj/item/weapon/gun/projectile/bow/handle_post_fire()
 	..()

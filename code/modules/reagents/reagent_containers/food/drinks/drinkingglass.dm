@@ -54,7 +54,7 @@
 		qdel(W)
 		update_icon()
 		return
-	else if (istype(W, /obj/item/weapon/reagent_containers) && W.is_open_container() && W.reagents.has_reagent("sodiumchloride"))
+	else if (W && W.reagents && istype(W, /obj/item/weapon/reagent_containers) && W.is_open_container() && W.reagents.has_reagent("sodiumchloride"))
 		if (salted)
 			user << "<span class='warning'>The rim of [name] is already salted!</span>"
 			return

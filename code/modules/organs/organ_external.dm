@@ -332,7 +332,7 @@
 				else
 					edge_eligible = 1
 			brute = pure_brute
-			if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute))
+			if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
 				droplimb(0, DROPLIMB_EDGE)
 				for(var/mob/living/carbon/human/NB in view(6,src))
 					NB.mood -= 10
@@ -342,7 +342,7 @@
 				for(var/mob/living/carbon/human/NB in view(6,src))
 					NB.mood -= 10
 					NB.ptsd += 1
-			else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute))
+			else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
 				droplimb(0, DROPLIMB_BLUNT)
 				for(var/mob/living/carbon/human/NB in view(6,src))
 					NB.mood -= 10
@@ -397,6 +397,9 @@ This function completely restores a damaged organ to perfect condition.
 	brute_dam = FALSE
 	burn_dam = FALSE
 	germ_level = FALSE
+	pain = FALSE
+	for(var/datum/wound/wound in wounds)
+		wound.embedded_objects.Cut()
 	wounds.Cut()
 	number_wounds = FALSE
 
@@ -759,16 +762,16 @@ Note that amputating the affected organ does in fact remove the infection from t
 				"<span class='danger'>You hear a crackling sound[gore].</span>")
 		if (DROPLIMB_BLUNT)
 			if (!istype(src, /obj/item/organ/external/head))
-				var/gore = " in shower of gore"
+				var/gore = " in a shower of gore"
 				var/gore_sound = "sickening splatter of gore"
 				owner.visible_message(
 					"<span class='danger'>\The [owner]'s [name] explodes[gore]!</span>",\
 					"<span class='moderate'><b>Your [name] explodes[gore]!</b></span>",\
 					"<span class='danger'>You hear the [gore_sound].</span>")
-				playsound(owner, 'sound/effects/gore/chop6.ogg', 100 , FALSE)//Splat.
+				playsound(owner, "chop", 100 , FALSE)//Splat.
 			else
 				owner.death()
-				playsound(owner, 'sound/effects/gore/chop6.ogg', 100 , FALSE)//Splat.
+				playsound(owner, "chop", 100 , FALSE)//Splat.
 
 	var/mob/living/carbon/human/victim = owner //Keep a reference for post-removed().
 	var/obj/item/organ/external/parent_organ = parent
@@ -792,7 +795,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		victim.UpdateDamageIcon()
 		victim.regenerate_icons()
 		dir = 2
-
+	victim.instadeath_check()
 	switch(disintegrate)
 		if (DROPLIMB_EDGE)
 			compile_icon()
@@ -1110,7 +1113,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	limb_name = "groin"
 	icon_name = "groin"
 	min_broken_damage = 80
-	max_damage = 135
+	max_damage = 101
 	w_class = 5
 	body_part = LOWER_TORSO
 	cannot_amputate = TRUE
@@ -1128,7 +1131,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "left arm"
 	icon_name = "l_arm"
 	min_broken_damage = 67
-	max_damage = 65
+	max_damage = 60
 	w_class = 3
 	body_part = ARM_LEFT
 	parent_organ = "chest"
@@ -1205,7 +1208,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	name = "left hand"
 	icon_name = "l_hand"
 	min_broken_damage = 50
-	max_damage = 65
+	max_damage = 60
 	w_class = 2
 	body_part = HAND_LEFT
 	parent_organ = "l_arm"
@@ -1329,7 +1332,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			for (var/i = TRUE; i < range; i++)
 				var/turf/new_turf = get_step(target, throw_dir)
 				target = new_turf
-				if (new_turf.density)
+				if (new_turf && new_turf.density)
 					break
 			T.throw_at(target,T.throw_range,T.throw_speed)
 			teeth.zero_amount() //Try to delete the teeth
@@ -1368,7 +1371,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/sever_artery()
 	if(!(status & ORGAN_ARTERY_CUT) && species && species.has_organ["heart"])
 		status |= ORGAN_ARTERY_CUT
-		if(artery_name == "carotid artery")
+		if(artery_name == "carotid artery" && owner)
 			playsound(owner.loc, 'sound/voice/throat.ogg', 50, 1, -1)
 		return TRUE
 	return FALSE

@@ -53,6 +53,9 @@
 	icon_state = "brittcap"
 	item_state = "brittcap"
 
+/obj/item/clothing/head/helmet/ww
+	health = 18
+
 /obj/item/clothing/head/helmet/ww/stahlhelm
 	name = "M1915 stahlhelm"
 	desc = "A typical grman stahlhelm helmet."
@@ -108,7 +111,8 @@
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////////WW2 JAPS/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
-
+/obj/item/clothing/head/helmet/ww2
+	health = 20
 /obj/item/clothing/head/helmet/ww2/japhelm
 	name = "japanese helmet"
 	desc = "A typical rounded steel helmet."
@@ -395,7 +399,7 @@ obj/item/clothing/head/ww2/jap_mp
 	slots = 4
 	New()
 		..()
-		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,)
+		hold.can_hold = list(/obj/item/ammo_casing, /obj/item/ammo_magazine, /obj/item/weapon/grenade, /obj/item/weapon/attachment/bayonet,/obj/item/weapon/shovel/trench,/obj/item/weapon/reagent_containers/food/drinks/bottle/canteen,/obj/item/weapon/reagent_containers/food/snacks/MRE,/obj/item/stack/medical/bruise_pack)
 
 /obj/item/clothing/accessory/storage/webbing/ww1/german
 	name = "german webbing"
@@ -417,7 +421,8 @@ obj/item/clothing/head/ww2/jap_mp
 	icon_state = "british_vest"
 	item_state = "british_vest"
 
-
+/obj/item/clothing/accessory/armor/modern
+	health = 20
 /obj/item/clothing/accessory/armor/modern/plate
 	name = "breastplate body armor"
 	desc = "Wearable armor made of steel sheets."
@@ -594,10 +599,10 @@ obj/item/clothing/under/ww2/hitlerjugend
 
 obj/item/clothing/under/ww2/us
 	name = "american uniform"
-	desc = "An american uniform, used by soldiers in the US army."
-	icon_state = "us_uni_ww2"
-	item_state = "us_uni_ww2"
-	worn_state = "us_uni_ww2"
+	desc = "An american uniform, used by soldiers in the US army during WW2."
+	icon_state = "usuni2"
+	item_state = "usuni2"
+	worn_state = "usuni2"
 
 obj/item/clothing/under/ww2/us_cap
 	name = "american captain uniform"
@@ -613,19 +618,12 @@ obj/item/clothing/under/ww2/us_mp
 	item_state = "usuni_mp"
 	worn_state = "usuni_mp"
 
-obj/item/clothing/under/ww2/us_light
-	name = "american light uniform"
-	desc = "An american uniform, used by soldiers in the US army, this one using the undershirt"
-	icon_state = "usuni2"
-	item_state = "usuni2"
-	worn_state = "usuni2"
-
 obj/item/clothing/under/ww2/us_shirtless
-	name = "american shirtless uniform"
-	desc = "An american uniform, used by soldiers in the US army, this one is shirtless."
-	icon_state = "us_greentrousers"
-	item_state = "us_greentrousers"
-	worn_state = "us_greentrousers"
+	name = "american uniform with shirt"
+	desc = "An american uniform, used by soldiers in the US army, this one has no jacket."
+	icon_state = "us_shirtless"
+	item_state = "us_shirtless"
+	worn_state = "us_shirtless"
 
 /obj/item/clothing/suit/storage/coat/ww2/german
 	name = "german parka"

@@ -2,7 +2,7 @@
 
 	// workaround for language bug that happens when you're spawned in
 	if (!languages.len)
-		languages[1] = default_language
+		languages = list(default_language)
 
 	if (!message)
 		return

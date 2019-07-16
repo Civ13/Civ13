@@ -1,5 +1,5 @@
 /datum/job/german
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/german/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_german_name(H.gender)
@@ -372,7 +372,7 @@
 	return TRUE
 
 /datum/job/german/sergeant_reichstag
-	title = "Unteroffizier"
+	title = "Feldwebel"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
 	selection_color = "#2d2d63"
@@ -780,7 +780,7 @@
 	is_reichstag = FALSE
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 1
+	max_positions = 2
 
 /datum/job/german/leutnant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -815,7 +815,7 @@
 	return TRUE
 
 /datum/job/german/gruppenfuhrer
-	title = "Gruppenfuhrer"
+	title = "Unteroffizier"
 	en_meaning = "Squad Leader"
 	rank_abbreviation = "Uffz."
 	selection_color = "#2d2d63"
@@ -825,8 +825,8 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 4
+	min_positions = 2
+	max_positions = 10
 
 /datum/job/german/gruppenfuhrer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -864,7 +864,7 @@
 	is_reichstag = FALSE
 	// AUTOBALANCE
 	min_positions = 8
-	max_positions = 30
+	max_positions = 100
 
 /datum/job/german/schutze_soldaten/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -914,8 +914,8 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 4
+	min_positions = 2
+	max_positions = 8
 
 /datum/job/german/machine_gunner/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -1008,7 +1008,7 @@
 	is_reichstag = FALSE
 
 	// AUTOBALANCE
-	min_positions = 1
+	min_positions = 2
 	max_positions = 4
 
 /datum/job/german/mediziner/equip(var/mob/living/carbon/human/H)
@@ -1052,8 +1052,8 @@
 	is_ww2 = TRUE
 	is_reichstag = FALSE
 	// AUTOBALANCE
-	min_positions = 1
-	max_positions = 4
+	min_positions = 2
+	max_positions = 8
 
 /datum/job/german/sanitater/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE

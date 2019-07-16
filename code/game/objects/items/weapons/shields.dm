@@ -40,7 +40,7 @@
 	w_class = 2.0
 	slot_flags = SLOT_BACK|SLOT_DENYPOCKET
 	var/material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	var/cooldown = 0
 	slowdown = 0.1
 
@@ -52,9 +52,8 @@
 	name = "steel shield"
 	icon_state = "steel_shield"
 	item_state = "steel_shield"
-	slot_flags = SLOT_BACK
 	material = "steel"
-	health = 60
+	health = 30
 	w_class = 3.0
 	base_block_chance = 30
 	slowdown = 0.3
@@ -63,9 +62,8 @@
 	name = "iron shield"
 	icon_state = "iron_shield"
 	item_state = "iron_shield"
-	slot_flags = SLOT_BACK
 	material = "iron"
-	health = 50
+	health = 25
 	w_class = 3.0
 	base_block_chance = 30
 	slowdown = 0.25
@@ -74,9 +72,8 @@
 	name = "bronze shield"
 	icon_state = "bronze_shield"
 	item_state = "bronze_shield"
-	slot_flags = SLOT_BACK
 	material = "bronze"
-	health = 47
+	health = 23
 	w_class = 3.0
 	base_block_chance = 30
 	slowdown = 0.2
@@ -86,9 +83,8 @@
 	desc = "a round, slightly curved greek shield, with the colors and symbol of it's city-state."
 	icon_state = "athenian_shield"
 	item_state = "athenian_shield"
-	slot_flags = SLOT_BACK
 	material = "bronze"
-	health = 47
+	health = 23
 	w_class = 3.0
 	base_block_chance = 45
 	slowdown = 0.4
@@ -104,9 +100,8 @@
 	desc = "a rectangular shield, with Roman motifs."
 	icon_state = "roman_shield"
 	item_state = "roman_shield"
-	slot_flags = SLOT_BACK
 	material = "bronze"
-	health = 47
+	health = 23
 	w_class = 3.0
 	base_block_chance = 35
 	slowdown = 0.3
@@ -117,9 +112,8 @@
 	item_state = "roman_buckler"
 	base_block_chance = 257
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.1
 /obj/item/weapon/shield/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if (user.incapacitated())
@@ -130,7 +124,7 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			if (istype(damage_source, /obj/item/weapon/melee))
+			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
 				health -= 10
 			else
 				health--
@@ -159,9 +153,8 @@
 	name = "semioval iron shield"
 	icon_state = "semioval_shield"
 	item_state = "semioval_shield"
-	slot_flags = SLOT_BACK
 	material = "iron"
-	health = 50
+	health = 25
 	w_class = 3.0
 	base_block_chance = 40
 	slowdown = 0.3
@@ -170,13 +163,11 @@
 	name = "semioval iron templar shield"
 	icon_state = "semioval_shield_templar"
 	item_state = "semioval_shield_templar"
-	slot_flags = SLOT_BACK
 
 /obj/item/weapon/shield/iron/semioval/templar2
 	name = "semioval iron templar shield"
 	icon_state = "semioval_shield_templar2"
 	item_state = "semioval_shield_templar2"
-	slot_flags = SLOT_BACK
 
 obj/item/weapon/shield/red_buckler
 	name = "red buckler shield"
@@ -184,9 +175,8 @@ obj/item/weapon/shield/red_buckler
 	item_state = "red_buckler"
 	base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.1
 
 obj/item/weapon/shield/blue_buckler
@@ -195,9 +185,8 @@ obj/item/weapon/shield/blue_buckler
 	item_state = "blue_buckler"
 	base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.1
 
 obj/item/weapon/shield/attack_self(mob/user as mob)
@@ -212,7 +201,6 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	item_state = "arabic_shield"
 	base_block_chance = 30
 	w_class = 2.0
-	slot_flags = SLOT_BACK
 	material = "wood"
-	health = 40 // hardness of wood
+	health = 20 // hardness of wood
 	slowdown = 0.22

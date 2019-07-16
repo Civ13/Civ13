@@ -195,6 +195,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a762x54/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
+	belt = TRUE
 
 /obj/item/ammo_magazine/mg08
 	name = "MG08 ammo belt"
@@ -206,6 +207,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
+	belt = TRUE
 
 /obj/item/ammo_magazine/vickers
 	name = "Vickers ammo belt"
@@ -217,6 +219,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a303/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
+	belt = TRUE
 
 /obj/item/ammo_magazine/hotchkiss
 	name = "Hotchkiss ammo belt"
@@ -228,6 +231,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a8x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
+	belt = TRUE
 
 
 /obj/item/ammo_magazine/type3
@@ -240,6 +244,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a65x50/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
+	belt = TRUE
 
 /obj/item/ammo_magazine/mg34belt
 	name = "MG 34 ammo belt"
@@ -251,6 +256,7 @@ RUSSO-JAPANESE WAR WEAPONS MAGS N AMMO
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	max_ammo = 250
 	multiple_sprites = TRUE
+	belt = TRUE
 
 /obj/item/ammo_magazine/c8mmnambu
 	name = "Nambu magazine"

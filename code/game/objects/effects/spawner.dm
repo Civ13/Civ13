@@ -2,6 +2,38 @@
 	name = "object spawner"
 	icon = 'icons/mob/screen/effects.dmi'
 
+/obj/effect/spawner/ammospawner
+	name = "ammo spawner"
+	icon_state = "x3"
+	var/create_path = /obj/item/ammo_casing/arrow
+	var/max_amt = 1
+
+/obj/effect/spawner/ammospawner/arrow
+	name = "arrow spawner"
+	create_path = /obj/item/ammo_casing/arrow
+
+/obj/effect/spawner/ammospawner/stone
+	name = "stone projectile spawner"
+	create_path = /obj/item/ammo_casing/stone
+
+/obj/effect/spawner/ammospawner/New()
+	..()
+	invisibility = 101
+	spawnerproc()
+
+/obj/effect/spawner/ammospawner/proc/spawnerproc()
+	if (!src)
+		return
+
+	var/count = 0
+	for (var/obj/O in src.loc)
+		if (istype(O, create_path))
+			count++
+	if (count < max_amt)
+		new create_path(src.loc)
+	spawn(50)
+		spawnerproc()
+
 /obj/effect/spawner/objective_spawner
 	name = "objective spawner"
 	icon_state = "x2"

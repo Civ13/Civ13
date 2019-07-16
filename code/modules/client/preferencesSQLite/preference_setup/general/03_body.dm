@@ -28,36 +28,30 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 /datum/category_item/player_setup_item/general/body/content(var/mob/user)
 
 	var/mob_species = all_species[pref.species]
-	. += "<table><tr style='vertical-align:top'><td><b>Body</b> "
-	. += "(<a href='?src=\ref[src];random=1'>Randomize</A>)"
-	. += "<br><br>"
-	. += "<b>Default Gender:</b> <a href='?src=\ref[src];gender=1'><b>[capitalize(lowertext(pref.gender))]</b></a><br>"
-	. += "<br>"
+	. += "<table><tr style='vertical-align:top'><td>"
+	. += "<b>You are a [skintone2racedescription(pref.s_tone)] [age2agedescription(pref.age)] [pref.gender].</b><br><br>"
+	. += "<b>Gender:</b> <a href='?src=\ref[src];gender=1'>[capitalize(lowertext(pref.gender))]</a><br>"
 	. += "<b>Age:</b> <a href='?src=\ref[src];age=1'>[pref.age]</a><br>"
-	. += "<br>"
 	. += "<b>Blood Type: </b><a href='?src=\ref[src];blood_type=1'>[pref.b_type]</a><br>"
-	. += "<br><br>"
 	if (has_flag(mob_species, HAS_SKIN_TONE))
 		. += "<b>Skin Tone: </b><a href='?src=\ref[src];skin_tone=1'>[-pref.s_tone + 35]/220</a><br>"
 	. += "<br><br>"
-	. += "<b>Hair</b><br>"
+	. += "<font face='fixedsys' size='3' color='[hair_colors[pref.hair_color]]'><table style='display:inline;' bgcolor='[hair_colors[pref.hair_color]]'><tr><td><font color='[hair_colors[pref.hair_color]]'>__</font></td></tr></table></font>&nbsp;<b>Hair</b><br>"
 	if (has_flag(mob_species, HAS_HAIR_COLOR))
-		. += "<a href='?src=\ref[src];hair_color=1'>Change Color</a> <font face='fixedsys' size='3' color='#[num2hex(pref.r_hair, 2)][num2hex(pref.g_hair, 2)][num2hex(pref.b_hair, 2)]'><table style='display:inline;' bgcolor='#[num2hex(pref.r_hair, 2)][num2hex(pref.g_hair, 2)][num2hex(pref.b_hair)]'><tr><td>__</td></tr></table></font> "
-	. += " Style: <a href='?src=\ref[src];hair_style=1'>[pref.h_style]</a><br>"
+		. += "<b>Color:</b> <a href='?src=\ref[src];hair_color=1'>[pref.hair_color]</a>"
+	. += "<br><b>Style:</b> <a href='?src=\ref[src];hair_style=1'>[pref.h_style]</a><br>"
 
-	. += "<br><b>Facial</b><br>"
+	. += "<br><font face='fixedsys' size='3' color='[hair_colors[pref.facial_color]]'><table  style='display:inline;' bgcolor='[hair_colors[pref.facial_color]]'><tr><td><font color='[hair_colors[pref.facial_color]]'>__</font></td></tr></table></font>&nbsp;<b>Facial Hair</b><br>"
 	if (has_flag(mob_species, HAS_HAIR_COLOR))
-		. += "<a href='?src=\ref[src];facial_color=1'>Change Color</a> <font face='fixedsys' size='3' color='#[num2hex(pref.r_facial, 2)][num2hex(pref.g_facial, 2)][num2hex(pref.b_facial, 2)]'><table  style='display:inline;' bgcolor='#[num2hex(pref.r_facial, 2)][num2hex(pref.g_facial, 2)][num2hex(pref.b_facial)]'><tr><td>__</td></tr></table></font> "
-	. += " Style: <a href='?src=\ref[src];facial_style=1'>[pref.f_style]</a><br>"
+		. += "<b>Color:</b> <a href='?src=\ref[src];facial_color=1'>[pref.facial_color]</a>"
+	. += "<br><b>Style:</b> <a href='?src=\ref[src];facial_style=1'>[pref.f_style]</a><br>"
 
 	if (has_flag(mob_species, HAS_EYE_COLOR))
-		. += "<br><b>Eyes</b><br>"
-		. += "<a href='?src=\ref[src];eye_color=1'>Change Color</a> <font face='fixedsys' size='3' color='#[num2hex(pref.r_eyes, 2)][num2hex(pref.g_eyes, 2)][num2hex(pref.b_eyes, 2)]'><table  style='display:inline;' bgcolor='#[num2hex(pref.r_eyes, 2)][num2hex(pref.g_eyes, 2)][num2hex(pref.b_eyes)]'><tr><td>__</td></tr></table></font><br>"
-
-	if (has_flag(mob_species, HAS_SKIN_COLOR))
-		. += "<br><b>Body Color</b><br>"
-		. += "<a href='?src=\ref[src];skin_color=1'>Change Color</a> <font face='fixedsys' size='3' color='#[num2hex(pref.r_skin, 2)][num2hex(pref.g_skin, 2)][num2hex(pref.b_skin, 2)]'><table style='display:inline;' bgcolor='#[num2hex(pref.r_skin, 2)][num2hex(pref.g_skin, 2)][num2hex(pref.b_skin)]'><tr><td>__</td></tr></table></font><br>"
-
+		. += "<br><font face='fixedsys' size='3' color='[eye_colors[pref.eye_color]]'><table  style='display:inline;' bgcolor='[eye_colors[pref.eye_color]]'><tr><td><font color='[eye_colors[pref.eye_color]]'>__</font></td></tr></table></font>&nbsp;<b>Eyes</b><br>"
+		. += "<b>Color:</b> <a href='?src=\ref[src];eye_color=1'>[pref.eye_color]</a>"
+	. += "<br><br>"
+	. += "(<a href='?src=\ref[src];random=1'>Randomize</A>)<br><br>"
+	. += "<b>Always Randomize Body:</b> <a href='?src=\ref[src];always_random_body=1'>[pref.be_random_body ? "Yes" : "No"]</a>"
 /datum/category_item/player_setup_item/general/body/proc/has_flag(var/datum/species/mob_species, var/flag)
 	return mob_species && (mob_species.appearance_flags & flag)
 
@@ -80,6 +74,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		var/new_hair = input(user, "Choose your character's hair color:", "Hair Color") in hair_colors + "Cancel"
 		if (new_hair == "Cancel")
 			return
+		pref.hair_color = new_hair
 		var/hex_hair = hair_colors[new_hair]
 		pref.r_hair = hex2num(copytext(hex_hair, 2, 4))
 		pref.g_hair = hex2num(copytext(hex_hair, 4, 6))
@@ -103,9 +98,10 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	else if (href_list["facial_color"])
 		if (!has_flag(mob_species, HAS_HAIR_COLOR))
 			return TOPIC_NOACTION
-		var/new_hair = input(user, "Choose your character's facial-hair color:", "Hair Color") in hair_colors + "Cancel"
+		var/new_hair = input(user, "Choose your character's facial-hair color:", "Facial Hair Color") in hair_colors + "Cancel"
 		if (new_hair == "Cancel")
 			return
+		pref.facial_color = new_hair
 		var/hex_hair = hair_colors[new_hair]
 		pref.r_facial = hex2num(copytext(hex_hair, 2, 4))
 		pref.g_facial = hex2num(copytext(hex_hair, 4, 6))
@@ -115,11 +111,15 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	else if (href_list["eye_color"])
 		if (!has_flag(mob_species, HAS_EYE_COLOR))
 			return TOPIC_NOACTION
-		var/new_eyes = input(user, "Choose your character's eye color:", "Character Preference", rgb(pref.r_eyes, pref.g_eyes, pref.b_eyes)) as color|null
+		var/new_eyes = input(user, "Choose your character's eye color:", "Eye Color") in eye_colors + "Cancel"
+		if (new_eyes == "Cancel")
+			return
+		pref.eye_color = new_eyes
 		if (new_eyes && has_flag(mob_species, HAS_EYE_COLOR) && CanUseTopic(user))
-			pref.r_eyes = hex2num(copytext(new_eyes, 2, 4))
-			pref.g_eyes = hex2num(copytext(new_eyes, 4, 6))
-			pref.b_eyes = hex2num(copytext(new_eyes, 6, 8))
+			var/hex_eyes = eye_colors[new_eyes]
+			pref.r_eyes = hex2num(copytext(hex_eyes, 2, 4))
+			pref.g_eyes = hex2num(copytext(hex_eyes, 4, 6))
+			pref.b_eyes = hex2num(copytext(hex_eyes, 6, 8))
 			return TOPIC_REFRESH
 
 	else if (href_list["skin_tone"])
@@ -168,4 +168,8 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		if (new_age && CanUseTopic(user))
 			pref.age = max(min(round(text2num(new_age)), S.max_age), S.min_age)
 			return TOPIC_REFRESH
+
+	else if (href_list["always_random_body"])
+		pref.be_random_body = !pref.be_random_body
+		return TOPIC_REFRESH
 	return ..()

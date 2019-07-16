@@ -59,7 +59,7 @@
 		user << browse(null, "window=stack")
 	user.set_using_object(src) //for correct work of onclose
 	var/list/recipe_list = recipes
-	if (recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
+	if (recipe_list && recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
 	var/t1 = text("<HTML><HEAD><title>Constructions from []</title></HEAD><body><TT>Amount Left: []<br>", src, get_amount())
@@ -662,7 +662,7 @@
 
 	if (recipe.time)
 		var/buildtime = recipe.time
-		if (H)
+		if (H && H.getStatCoeff("strength"))
 			buildtime /= H.getStatCoeff("strength")
 			buildtime /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 

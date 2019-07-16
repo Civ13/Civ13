@@ -4,7 +4,7 @@
 	var/title = "generic job"
 	//English meaning of this job's title, if applicable
 	var/en_meaning = ""
-	var/faction = "None"	              // Players will be allowed to spawn in as jobs that are set to "Station"
+	var/faction = "None"	              // Players will be allowed to spawn in as jobs that are set to "Human"
 
 	var/total_positions = FALSE               // How many players can be this job
 	//var/spawn_positions = FALSE               // How many players can spawn in as this job
@@ -83,14 +83,6 @@
 
 	//Put items in hands
 	if (hand) H.equip_to_slot_or_del(new hand (H), slot_l_hand)
-
-	//Put items in backpack
-	if ( H.backbag != TRUE )
-		var/backpack = backpacks[H.backbag-1]
-		var/obj/item/weapon/storage/backpack/BPK = new backpack(H)
-		if (H.equip_to_slot_or_del(BPK, slot_back,1))
-			for ( var/path in put_in_backpack )
-				new path(BPK)
 
 	//Survival equipment
 

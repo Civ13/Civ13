@@ -304,3 +304,33 @@ obj/item/projectile/bullet/rifle/a556x45
 	sharp = FALSE
 
 
+//generic calibers for custom weapons
+/obj/item/projectile/bullet/rifle/largerifle
+	damage = DAMAGE_HIGH+2
+	penetrating = 2
+	armor_penetration = 20
+
+/obj/item/projectile/bullet/rifle/smallrifle
+	damage = DAMAGE_HIGH-3
+	penetrating = 2
+	armor_penetration = 10
+
+/obj/item/projectile/bullet/pistol/pistol45
+	damage = DAMAGE_MEDIUM+5
+	penetrating = 2
+	armor_penetration = 15
+
+/obj/item/projectile/bullet/pistol/pistol9
+	damage = DAMAGE_MEDIUM + 2
+	penetrating = 1
+	armor_penetration = 10
+
+/obj/item/projectile/bullet/rifle/intermediumrifle
+	damage = DAMAGE_MEDIUM_HIGH+3
+	penetrating = 2
+	armor_penetration = 17
+
+obj/item/projectile/bullet/rifle/smallintermediumrifle
+	damage = DAMAGE_MEDIUM
+	penetrating = 1
+	armor_penetration = 10

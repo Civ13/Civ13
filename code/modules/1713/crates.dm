@@ -71,16 +71,23 @@ obj/structure/closet/crate/empty
 	icon_closed = "wood_crate"
 
 /obj/structure/closet/crate/bayonets
-	name = "Bayonets crate"
+	name = "bayonets crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
 	paths = list(/obj/item/weapon/attachment/bayonet/military = 10)
 	cratevalue = 132//100 base value from 100 planks of wood
 
+/obj/structure/closet/crate/sandbags
+	name = "sandbag crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/sandbag/sandbag = 20)
+	cratevalue = 90
 
 /obj/structure/closet/crate/wood
-	name = "Wood planks crate"
+	name = "wood planks crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
@@ -94,7 +101,7 @@ obj/structure/closet/crate/empty
 		S.amount = 20
 
 /obj/structure/closet/crate/steel
-	name = "Steel sheets crate"
+	name = "steel sheets crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
@@ -108,7 +115,7 @@ obj/structure/closet/crate/empty
 		S.amount = 20
 
 /obj/structure/closet/crate/iron
-	name = "Iron ingots crate"
+	name = "iron ingots crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
@@ -122,7 +129,7 @@ obj/structure/closet/crate/empty
 		S.amount = 20
 
 /obj/structure/closet/crate/glass
-	name = "Glass sheets crate"
+	name = "glass sheets crate"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
@@ -136,7 +143,7 @@ obj/structure/closet/crate/empty
 		S.amount = 20
 
 /obj/structure/closet/crate/rations/
-	name = "Rations"
+	name = "rations"
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"

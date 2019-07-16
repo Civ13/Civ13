@@ -351,6 +351,9 @@ var/list/vocal_emotes = list(
 					if (!muzzled)
 						message = "charges!"
 						m_type = 2
+						if (faction_text == CIVILIAN)
+							if (original_job.is_rcw)
+								playsound(get_turf(src), "charge_RUSSIAN", 100)
 						if (faction_text == PIRATES)
 							playsound(get_turf(src), "charge_PIRATES", 100)
 						if (faction_text == BRITISH)

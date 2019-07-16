@@ -253,11 +253,6 @@ obj/item/weapon/gun/projectile/ancient/matchlock
 			VERY_LONG_RANGE_STILL = 63*0.85,
 			VERY_LONG_RANGE_MOVING = 32*0.85),
 	)
-/obj/item/weapon/gun/projectile/ancient/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/ancient/attack_self(mob/user)
 	return
 

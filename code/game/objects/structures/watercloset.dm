@@ -413,9 +413,10 @@
 		return
 	// Clear the vessel.
 	visible_message("<span class='notice'>\The [usr] tips the contents of \the [thing] into \the [src].</span>")
-	thing.reagents.splash(src, reagents.total_volume)
-	thing.reagents.clear_reagents()
-	thing.update_icon()
+	if (thing && reagents)
+		thing.reagents.splash(src, reagents.total_volume)
+		thing.reagents.clear_reagents()
+		thing.update_icon()
 
 /obj/structure/sink/attack_hand(mob/user as mob)
 	if (ishuman(user))
@@ -496,7 +497,8 @@
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
 						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-				volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
+				if (RG.reagents)
+					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)
 					update_icon()
 				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
@@ -597,7 +599,7 @@
 /obj/structure/sink/New()
 	..()
 
-	if (map.ID == MAP_HUNT)
+	if (map && map.ID == MAP_HUNT)
 		mosquito_proc()
 
 	spawn(2000)

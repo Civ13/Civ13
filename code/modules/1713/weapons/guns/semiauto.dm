@@ -62,10 +62,6 @@
 	var/base_icon = "semiautomatic"
 	equiptimer = 12
 	gun_safety = TRUE
-/obj/item/weapon/gun/projectile/semiautomatic/New()
-	..()
-	loaded = list()
-	chambered = null
 
 /obj/item/weapon/gun/projectile/semiautomatic/update_icon()
 	if (sniper_scope)

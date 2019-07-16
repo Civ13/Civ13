@@ -76,6 +76,7 @@
 	throw_range = 10
 	secondary_action = 1
 	var/clip = FALSE
+	var/belt = FALSE
 
 	var/list/stored_ammo = list()
 	var/mag_type = SPEEDLOADER //ammo_magazines can only be used with compatible guns. This is not a bitflag, the load_method var on guns is.
@@ -114,7 +115,7 @@
 		return
 
 /obj/item/ammo_magazine/emptypouch
-	name = "empty bullet pouch"
+	name = "bullet pouch (20)"
 	icon_state = "pouch_closed"
 	ammo_type = null
 	caliber = null
@@ -125,7 +126,7 @@
 	pouch = TRUE
 
 /obj/item/ammo_magazine/emptyclip
-	name = "empty clip"
+	name = "clip (5)"
 	clip = TRUE
 	icon_state = "clip-0"
 	ammo_type = null
@@ -133,6 +134,55 @@
 	max_ammo = 5
 	weight = 0.1
 	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/emptymagazine
+	name = "drum magazine (65)"
+	mag_type = MAGAZINE
+	icon_state = "ppsh-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 65
+	weight = 0.8
+	multiple_sprites = TRUE
+
+/obj/item/ammo_magazine/emptymagazine/small
+	name = "magazine (30)"
+	mag_type = MAGAZINE
+	icon_state = "pps-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 30
+	weight = 0.25
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/emptymagazine/pistol
+	name = "pistol magazine (15)"
+	mag_type = MAGAZINE
+	icon_state = "m9beretta-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 15
+	weight = 0.2
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/emptymagazine/pistol/a45
+	name = "pistol magazine (8)"
+	mag_type = MAGAZINE
+	icon_state = "waltherp-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 8
+	weight = 0.1
+	multiple_sprites = TRUE
+/obj/item/ammo_magazine/emptybelt
+	name = "belt (100)"
+	mag_type = MAGAZINE
+	icon_state = "b762x54-0"
+	ammo_type = null
+	caliber = null
+	max_ammo = 100
+	weight = 1
+	w_class = 4
+	multiple_sprites = TRUE
+	belt = TRUE
 
 /obj/item/ammo_magazine/verb/toggle_open()
 	set category = null
@@ -199,7 +249,7 @@
 					icon_state = "pouch_0"
 				else
 					icon_state = "pouch_empty"
-					name = "empty bullet pouch"
+					name = "bullet pouch ([max_ammo])"
 					desc = "an ammo pouch."
 					caliber = null
 	else
@@ -215,8 +265,15 @@
 		if (clip)
 			if (stored_ammo.len == FALSE)
 				caliber = null
-				name = "empty clip"
-
+				name = "clip ([max_ammo])"
+		else if (belt)
+			if (stored_ammo.len == FALSE)
+				caliber = null
+				name = "belt ([max_ammo])"
+		else
+			if (stored_ammo.len == FALSE)
+				caliber = null
+				name = "magazine ([max_ammo])"
 
 /obj/item/ammo_magazine/New()
 	..()
@@ -252,10 +309,14 @@
 		stored_ammo.Insert(1, C) //add to the head of the list
 		if (caliber == null)
 			caliber = C.caliber
+			name = "[C] magazine ([max_ammo])"
 			if (pouch)
-				name = "bullet pouch ([C])"
-			else if (clip)
-				name = "clip ([C])"
+				name = "[C] ammo pouch"
+			if (clip)
+				name = "[C] clip"
+			if (belt)
+				name = "[C] belt ([max_ammo])"
+		name = replacetext(name, " bullet","")
 		update_icon()
 	else if (istype(W, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/M = W

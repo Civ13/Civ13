@@ -76,12 +76,34 @@
 	item_state = "sash"
 
 /obj/item/clothing/under/rusuni
-	name = "Russian Army Uniform"
+	name = "Russian Army uniform"
 	desc = "A standard imperial russian army uniform."
 	icon_state = "rusuni"
 	item_state = "rusuni"
 	worn_state = "rusuni"
 	var/rolled = FALSE
+
+/obj/item/clothing/under/rusuni_ww1
+	name = "Russian Army uniform"
+	desc = "A standard imperial russian army uniform."
+	icon_state = "ww1_russian2"
+	item_state = "ww1_russian2"
+	worn_state = "ww1_russian2"
+
+/obj/item/clothing/under/rusuni_ww1_officer
+	name = "Russian Army officer uniform"
+	desc = "A standard imperial russian army uniform, with officer epaulettes."
+	icon_state = "ww1_russian_o"
+	item_state = "ww1_russian_o"
+	worn_state = "ww1_russian_o"
+
+
+/obj/item/clothing/under/rusuni_rcw
+	name = "Red Army uniform"
+	desc = "A standard early 20th century russian uniform, with no epaulettes or insignias."
+	icon_state = "ww1_russian"
+	item_state = "ww1_russian"
+	worn_state = "ww1_russian"
 
 /obj/item/clothing/under/rusuni/verb/roll_sleeves()
 	set category = null
@@ -102,6 +124,45 @@
 			usr << "<span class = 'danger'>You roll up your uniform's sleeves.</span>"
 			rolled = TRUE
 	update_clothing_icon()
+
+/obj/item/clothing/suit/storage/coat/cheka
+	name = "Cheka leather coat"
+	desc = "A shiny black leather coat used by Cheka agents."
+	icon_state = "leathercoat_c"
+	item_state = "leathercoat_c"
+	worn_state = "leathercoat_c"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+/obj/item/clothing/under/kuban_cossak
+	name = "Kuban Cossak beshmet"
+	desc = "A red beshmet with grey trousers, traditional of the Kuban Cossaks."
+	icon_state = "kuban_cossak"
+	item_state = "kuban_cossak"
+	worn_state = "kuban_cossak"
+/obj/item/clothing/suit/storage/coat/kuban_cossak
+	name = "black cherkesska coat"
+	desc = "A traditional Kuban Cossak coat."
+	icon_state = "kuban_cossak"
+	item_state = "kuban_cossak"
+	worn_state = "kuban_cossak"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
+
+
+/obj/item/clothing/suit/storage/coat/russian_rcw
+	name = "Soviet coat"
+	desc = "An early Red Army coat."
+	icon_state = "japcoat2"
+	item_state = "japcoat2"
+	worn_state = "japcoat2"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|LEG_LEFT|LEG_RIGHT|ARM_LEFT|ARM_RIGHT
+	armor = list(melee = 10, arrow = 0, gun = FALSE, energy = 15, bomb = 5, bio = 30, rad = 30)
+	value = 65
 
 /obj/item/clothing/suit/storage/coat/japcoat
 	name = "Japanese Coat"
@@ -173,6 +234,7 @@
 	cold_protection = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 10, arrow = 10, gun = FALSE, energy = 10, bomb = 10, bio = 10, rad = 15)
 	value = 10
+	health = 12
 
 /obj/item/clothing/head/japcap
 	name = "Japanese Cap"
@@ -464,6 +526,39 @@
 	icon_state = "black_bowtie"
 	item_state = "black_bowtie"
 
+/obj/item/weapon/material/sword/shashka
+	name = "shashka sword"
+	desc = "A caucasian sabre, very sharp and meant to be used single-handedly."
+	icon_state = "shashka"
+	item_state = "longsword"
+	throw_speed = 4
+	throw_range = 5
+	force_divisor = 0.7 // 45 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.7 // 14 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 22
+	cooldownw = 7
+	value = 60
+/obj/item/clothing/head/ww/cheka
+	name = "Cheka cap"
+	desc = "A black leather cap worn by Cheka agents."
+	icon_state = "cheka"
+	item_state = "cheka"
+/obj/item/clothing/head/ww/papakha
+	name = "papakha"
+	desc = "A traditional caucasus hat."
+	icon_state = "papakha"
+	item_state = "papakha"
+/obj/item/clothing/head/ww/papakha/white
+	name = "white papakha"
+	desc = "A traditional caucasus hat."
+	icon_state = "papakha_white"
+	item_state = "papakha_white"
+/obj/item/clothing/head/ww/papakha/kuban
+	name = "Kuban papakha"
+	desc = "A traditional Kuban Cossak papakha, black with a red crown."
+	icon_state = "papakha_kuban"
+	item_state = "papakha_kuban"
 /obj/item/clothing/head/helmet/modern/pickelhaube
 	name = "iron pickelhaube"
 	desc = "A typical pointed helmet."
@@ -473,7 +568,11 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-
+/obj/item/clothing/head/ww/budenovka
+	name = "budenovka"
+	desc = "A Soviet budenovka hat."
+	icon_state = "budenovka"
+	item_state = "budenovka"
 /obj/item/clothing/head/helmet/modern/stahlhelm
 	name = "M1935 stahlhelm"
 	desc = "A typical german helmet."

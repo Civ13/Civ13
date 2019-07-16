@@ -14,6 +14,14 @@
 	..()
 	do_light()
 
+/obj/structure/brazier/loaded/New()
+	..()
+	fuel = 5000
+	set_light(5)
+	on = TRUE
+	icon_state = "brazier1"
+	update_icon()
+
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
 		if (istype(W, /obj/item/weapon/wrench) || (istype(W, /obj/item/weapon/hammer)))

@@ -235,6 +235,8 @@
 			for (var/beat in splittext(lowertext(line), ","))
 				//world << "beat: [beat]"
 				var/list/notes = splittext(beat, "/")
+				if (!notes || !notes.len)
+					return
 				for (var/note in splittext(notes[1], "-"))
 					//world << "note: [note]"
 					if (!playing || !anchored)//If the piano is playing, or is loose
@@ -396,6 +398,8 @@
 			spawn (0)
 				var/list/lines = splittext(t, "\n")
 				var/tempo = 5
+				if (!lines || !lines.len)
+					return
 				if (copytext(lines[1],1,6) == "BPM: ")
 					var/divisor = text2num(copytext(lines[1],6))
 					if (!divisor)
