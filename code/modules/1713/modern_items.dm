@@ -62,17 +62,19 @@
 			user << "There's already a cable connected here! Split it further from the [src]."
 			return
 		var/obj/item/stack/cable_coil/CC = W
-		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
-		powersource.connections += src
+		if (powersource)
+			powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+			powersource.connections += src
 		var/opdir1 = 0
 		var/opdir2 = 0
-		if (powersource.tiledir == "horizontal")
+		if (powersource && powersource.tiledir == "horizontal")
 			opdir1 = 4
 			opdir2 = 8
-		else if  (powersource.tiledir == "vertical")
+		else if  (powersource && powersource.tiledir == "vertical")
 			opdir1 = 1
 			opdir2 = 2
-		powersource.update_icon()
+		if (powersource)
+			powersource.update_icon()
 
 		if (opdir1 != 0 && opdir2 != 0)
 			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))

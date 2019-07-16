@@ -210,6 +210,8 @@
 			for (var/beat in splittext(lowertext(line), ","))
 				//world << "beat: [beat]"
 				var/list/notes = splittext(beat, "/")
+				if (!notes.len)
+					return
 				for (var/note in splittext(notes[1], "-"))
 					//world << "note: [note]"
 					if (!playing || !isliving(loc))//If the violin is playing, or isn't held by a person

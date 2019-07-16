@@ -724,7 +724,7 @@
 		if (!GD)
 			return
 		for (var/i = 1, i <= GD.gladiator_stats.len, i++)
-			if (GD.gladiator_stats[1][1] == user.client.ckey && GD.gladiator_stats[1][2] == user.name && !done)
+			if (user.client && GD.gladiator_stats[1][1] == user.client.ckey && GD.gladiator_stats[1][2] == user.name && !done)
 				var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
 				GD.gladiator_stats[1][3] = statlist
 				done = TRUE
@@ -732,7 +732,7 @@
 				qdel(user)
 				user << "Saved sucessfully."
 				return
-		if (done == FALSE)
+		if (done == FALSE && user.client)
 			var/statlist = "[user.stats["strength"][1]],[user.stats["crafting"][1]],[user.stats["rifle"][1]],[user.stats["dexterity"][1]],[user.stats["swords"][1]],[user.stats["pistol"][1]],[user.stats["bows"][1]],[user.stats["medical"][1]],[user.stats["philosophy"][1]],[user.stats["mg"][1]],[user.stats["stamina"][1]]"
 			GD.gladiator_stats += list(list(user.client.ckey, user.name, statlist, 0,0,0))
 			GD.save_gladiators()

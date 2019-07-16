@@ -65,9 +65,11 @@
 		using_steel = 5
 	else if (choice_stock == "Folding Stock")
 		using_steel = 7
-
-	current_gun.stock_type = choice_stock
-	current_gun.step = 1
+	if (current_gun)
+		current_gun.stock_type = choice_stock
+		current_gun.step = 1
+	else
+		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
 		user << "Not enough resources!"
@@ -107,9 +109,11 @@
 		using_steel += 14
 	else if (choice_receiver == "Pump-Action")
 		using_steel += 5
-
-	current_gun.receiver_type = choice_receiver
-	current_gun.step = 2
+	if (current_gun)
+		current_gun.receiver_type = choice_receiver
+		current_gun.step = 2
+	else
+		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
 		user << "Not enough resources!"
@@ -148,9 +152,11 @@
 		using_steel += 10
 	else if (choice_feeding == "Open (Belt-Fed)")
 		using_steel += 6
-
-	current_gun.feeding_type = choice_feeding
-	current_gun.step = 3
+	if (current_gun)
+		current_gun.feeding_type = choice_feeding
+		current_gun.step = 3
+	else
+		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
 		user << "Not enough resources!"
@@ -183,9 +189,11 @@
 		using_steel += 8
 	else if (choice_barrel == "Air-Cooled Barrel")
 		using_steel += 10
-
-	current_gun.barrel_type = choice_barrel
-	current_gun.step = 4
+	if (current_gun)
+		current_gun.barrel_type = choice_barrel
+		current_gun.step = 4
+	else
+		return
 
 	if (using_wood > wood_amt || using_steel > steel_amt)
 		user << "Not enough resources!"
