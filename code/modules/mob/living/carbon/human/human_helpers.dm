@@ -116,13 +116,10 @@
 	if (WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will wake up in 30 seconds."
 		spawn(300)
-			if (usr.sleeping)
-				usr.sleeping = 0 //Short nap
-				inducedSSD = FALSE
-				usr.forceMove(locate(lastx,lasty,lastz))
-				return
-			else
-				return
+			usr.sleeping = 0 //Short nap
+			inducedSSD = FALSE
+			usr.forceMove(locate(lastx,lasty,lastz))
+			return
 //to keep the character sleeping
 /mob/living/carbon/human/proc/sleep_update()
 	if (!inducedSSD)

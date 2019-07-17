@@ -103,9 +103,9 @@
 	recipes += new/datum/stack_recipe("seed collector", /obj/item/weapon/storage/seed_collector, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("leather bandages", /obj/item/stack/medical/bruise_pack/bint/leather, 1, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("foldable canopy", /obj/item/weapon/tent, 5, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.ordinal_age <= 0)
+	if (map && map.ordinal_age <= 0)
 		recipes += new/datum/stack_recipe("leather loincloth", /obj/item/clothing/under/loinleather, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.ordinal_age <= 1)
+	if (map && map.ordinal_age <= 1)
 		recipes += new/datum/stack_recipe("small customizable loincloth", /obj/item/clothing/under/custom/spartan, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 18)
 		recipes += new/datum/stack_recipe("coin pouch", /obj/item/clothing/accessory/storage/coinpouch, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -293,7 +293,7 @@
 		recipes += new/datum/stack_recipe("research desk",/obj/structure/researchdesk, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 96)
 		recipes += new/datum/stack_recipe("global exchange",/obj/structure/marketplace, 10, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE)
-	if (map.ordinal_age >= 4)
+	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("communications pole",/obj/structure/phoneline, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 105 || map.gamemode == "Oil Rush")
 		recipes += new/datum/stack_recipe("oil well",/obj/structure/oilwell, 40, _time = 270, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -306,7 +306,7 @@
 		recipes += new/datum/stack_recipe("doctor handbook",/obj/item/weapon/doctor_handbook, 12, _time = 210, _one_per_turf = FALSE, _on_floor = TRUE)
 //	if (current_res[1] >= 25 && current_res[3]>= 51)
 //		recipes += new/datum/stack_recipe("operating table",/obj/structure/optable, 9, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.ordinal_age > 0 && map.research_active == TRUE)
+	if (map && map.ordinal_age > 0 && map.research_active == TRUE)
 		recipes += new/datum/stack_recipe("research kit",/obj/item/weapon/researchkit, 10, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 18)
 
@@ -566,13 +566,13 @@
 		recipes += new/datum/stack_recipe("wine glass", /obj/item/weapon/reagent_containers/food/drinks/drinkingglass, 2, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("tribal pot", /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fermentation jar", /obj/item/weapon/starterjar, 3, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.ordinal_age >= 5)
+	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe_list("electrical", list(
 			new/datum/stack_recipe("small lightbulb frame", /obj/structure/lamp/lamp_small, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light tube frame", /obj/structure/lamp/lamp_big, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("light tube", /obj/item/lightbulb/tube, 1, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("lightbulb", /obj/item/lightbulb, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (map.ordinal_age >= 4)
+	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("syringe", /obj/item/weapon/reagent_containers/syringe, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("vial", /obj/item/weapon/reagent_containers/glass/beaker/vial, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("beaker", /obj/item/weapon/reagent_containers/glass/beaker, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -584,12 +584,12 @@
 	..()
 	recipes += new/datum/stack_recipe("stone pillar",	/obj/structure/mine_support/stone, 2, _time = 130, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone brazier",	/obj/structure/brazier/stone, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE)
-	if (map.ordinal_age == 0 && map.research_active == TRUE)
+	if (map && map.ordinal_age == 0 && map.research_active == TRUE)
 		recipes += new/datum/stack_recipe("research kit",/obj/item/weapon/researchkit, 10, _time = 190, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("scientific rock slate",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone hatchet", /obj/item/weapon/material/hatchet/tribal, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 	recipes += new/datum/stack_recipe("cobblestone floor", /obj/covers/cobblestone, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
-	if (map.ordinal_age >= 5)
+	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("road", /obj/covers/road, 1, _time = 25, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone stairs", /obj/covers/cobblestone/stairs, 2, _time = 45, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("stone altar", /obj/structure/altar/stone, 15, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
@@ -978,7 +978,7 @@
 		recipes += list(new/datum/stack_recipe("cigarette pack", /obj/item/weapon/storage/fancy/cigarettes, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("cloth curtain", /obj/structure/curtain, 1, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE))
 	//Carpets - To be expanded upon with borders and such later.
-	if (map.ordinal_age >= 2)
+	if (map && map.ordinal_age >= 2)
 		recipes += new/datum/stack_recipe_list("carpeting", list(
 			new/datum/stack_recipe("pink carpet", /obj/covers/carpet/pinkcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("red carpet", /obj/covers/carpet/redcarpet, 1, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -1013,11 +1013,11 @@
 
 /material/copper/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
-	if (map.ordinal_age >= 4)
+	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("telegraph",/obj/structure/telegraph, 12, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("teleprinter",/obj/structure/teleprinter, 12, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 
-	if (map.ordinal_age >= 5)
+	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("electronic circuits",/obj/item/stack/material/electronics, 1, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 8 && current_res[2] >= 8)
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
@@ -1034,15 +1034,15 @@
 		recipes += new/datum/stack_recipe("trombone",/obj/item/trombone, 6, _time = 155, _one_per_turf = FALSE, _on_floor = TRUE)
 
 
-	if (map.ordinal_age >= 4)
+	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("rifle casing (x3)", /obj/item/stack/ammopart/casing/rifle, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("pistol casing (x3)", /obj/item/stack/ammopart/casing/pistol, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("artillery casing", /obj/item/stack/ammopart/casing/artillery, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("ammo clip (5)", /obj/item/ammo_magazine/emptyclip, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map.ordinal_age >= 5)
+	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("ammo belt (100)", /obj/item/ammo_magazine/emptybelt, 7, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE)
 
-	if (map.ordinal_age >= 4)
+	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe_list("cables", list(
 			new/datum/stack_recipe("cable connector", /obj/item/connector, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("white cable coil (10m)", /obj/item/stack/cable_coil/white, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -1089,12 +1089,12 @@
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 95 && current_res[2] >= 109)
 		recipes += new/datum/stack_recipe("artillery cannon", /obj/structure/cannon/modern, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
-	if (map.ordinal_age >= 4)
+	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("wood stove",/obj/structure/oven/woodstove, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 
-	if (map.ordinal_age >= 5)
+	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern, 1, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("fuel pump (star)",/obj/structure/fuelpump/star, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("fuel pump (small)",/obj/structure/fuelpump/small, 15, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
