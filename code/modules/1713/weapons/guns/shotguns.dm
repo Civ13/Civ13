@@ -62,7 +62,7 @@
 	w_class = 4.0
 	force = 10
 	flags =  CONDUCT
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "12gauge"
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/shotgun
@@ -106,7 +106,7 @@
 	w_class = 4.0
 	force = 10
 	flags =  CONDUCT
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "12gauge"
 	load_method = SINGLE_CASING
 	ammo_type = /obj/item/ammo_casing/shotgun

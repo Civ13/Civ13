@@ -109,7 +109,8 @@
 	var/m_intent = "walk"//Living
 	var/obj/buckled = null//Living
 	var/middle_click_intent = "kick" //For doing different things with middle click.
-	var/combat_mode = 0//Living
+	var/obj/item/shoulder = null//Living
+	var/obj/item/eyes = null//Living
 	var/obj/item/l_hand = null//Living
 	var/obj/item/r_hand = null//Living
 	var/obj/item/weapon/back = null//Human/Monkey

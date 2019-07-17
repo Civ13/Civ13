@@ -12,6 +12,8 @@
 	var/misk_icon		= 'icons/mob/mob.dmi'
 	var/belt_icon		= 'icons/mob/belt.dmi'
 	var/backpack_icon	= 'icons/mob/back.dmi'
+	var/shoulder_icon	= 'icons/mob/back.dmi'
+	var/eyes_icon    	= 'icons/mob/eyes.dmi'
 	var/nohair = FALSE
 	var/nofacialhair = FALSE
 

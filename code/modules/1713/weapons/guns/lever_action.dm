@@ -12,7 +12,7 @@
 	force = 10
 	throwforce = 10
 	max_shells = 15
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "a44"
 	recoil = 2 //extra kickback
 	load_method = SINGLE_CASING

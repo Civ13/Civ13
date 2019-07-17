@@ -59,7 +59,7 @@ var/mob/living/carbon/human/next_gas_flesh_message = -1
 			if (C.body_parts_covered & HANDS)
 				burnlist = replacetext(burnlist,"hands,","")
 		var/list/burnparts = splittext(burnlist, ",")
-		world.log << "[burnparts]"
+//		world.log << "[burnparts]"
 		for (var/pts in burnparts)
 			if (pts == "head")
 				m.adjustFireLossByPart(base, "eyes")

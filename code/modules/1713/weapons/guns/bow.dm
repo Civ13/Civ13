@@ -9,7 +9,7 @@
 	force = 6
 	throwforce = 6
 	max_shells = 1 //duh
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "arrow"
 	recoil = 0 //no shaking
 	fire_sound = 'sound/weapons/arrow_fly.ogg'
@@ -93,7 +93,7 @@
 	force = 6
 	throwforce = 6
 	max_shells = 1 //duh
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	caliber = "stone"
 	ammo_type = /obj/item/ammo_casing/stone
 	accuracy = TRUE

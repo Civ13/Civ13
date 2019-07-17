@@ -303,13 +303,16 @@ var/list/global/slot_flags_enumeration = list(
 	"[slot_wear_suit]" = SLOT_OCLOTHING,
 	"[slot_gloves]" = SLOT_GLOVES,
 	"[slot_shoes]" = SLOT_FEET,
+	"[slot_shoulder]" = SLOT_SHOULDER,
 	"[slot_belt]" = SLOT_BELT,
 	"[slot_head]" = SLOT_HEAD,
 	"[slot_l_ear]" = SLOT_EARS|SLOT_TWOEARS,
 	"[slot_r_ear]" = SLOT_EARS|SLOT_TWOEARS,
 	"[slot_w_uniform]" = SLOT_ICLOTHING,
 	"[slot_wear_id]" = SLOT_ID,
-	"[slot_tie]" = SLOT_TIE,
+	"[slot_eyes]" = SLOT_EYES,
+	"[slot_accessory]" = SLOT_ACCESSORY,
+	"[slot_shoulder]" = SLOT_SHOULDER,
 	)
 
 //the mob M is attempting to equip this item into the slot passed through as 'slot'. Return TRUE if it can do this and FALSE if it can't.
@@ -345,7 +348,7 @@ var/list/global/slot_flags_enumeration = list(
 	var/mob/_user = disable_warning? null : H
 	if (!H.slot_is_accessible(slot, src, _user))
 		return FALSE
-
+	var/obj/item/clothing/under/uniform = H.w_uniform
 	//Lastly, check special rules for the desired slot.
 	switch(slot)
 		if (slot_l_ear, slot_r_ear)
@@ -364,9 +367,7 @@ var/list/global/slot_flags_enumeration = list(
 				if (!disable_warning)
 					H << "<span class='warning'>You need clothes to put things in your pockets.</span>"
 				return FALSE
-			if (slot_flags & SLOT_DENYPOCKET)
-				return FALSE
-			if ( w_class > 2 && !(slot_flags & SLOT_POCKET) )
+			if ( w_class > 2 && (!(slot_flags & SLOT_POCKET) || istype(src,/obj/item/weapon/shield)))
 				return FALSE
 		if (slot_handcuffed)
 			if (!istype(src, /obj/item/weapon/handcuffs))
@@ -382,12 +383,11 @@ var/list/global/slot_flags_enumeration = list(
 					allow = TRUE
 			if (!allow)
 				return FALSE
-		if (slot_tie)
+		if (slot_accessory)
 			if (!H.w_uniform && (slot_w_uniform in mob_equip))
 				if (!disable_warning)
 					H << "<span class='warning'>You need clothes before you can attach this [name].</span>"
 				return FALSE
-			var/obj/item/clothing/under/uniform = H.w_uniform
 			if (uniform.accessories.len && !uniform.can_attach_accessory(src))
 				if (!disable_warning)
 					H << "<span class='warning'>You already have an accessory of this type attached to your [uniform].</span>"

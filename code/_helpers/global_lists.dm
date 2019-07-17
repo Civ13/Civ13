@@ -159,15 +159,15 @@ var/global/list/string_slot_flags = list(
 	"back" = SLOT_BACK,
 	"face" = SLOT_MASK,
 	"waist" = SLOT_BELT,
-	"ID slot" = SLOT_ID,
+	"pouch" = SLOT_ID,
 	"ears" = SLOT_EARS,
-	"eyes" = SLOT_EYES,
+	"shoulder" = SLOT_SHOULDER,
 	"hands" = SLOT_GLOVES,
 	"head" = SLOT_HEAD,
 	"feet" = SLOT_FEET,
-	"exo slot" = SLOT_OCLOTHING,
+	"suit" = SLOT_OCLOTHING,
 	"body" = SLOT_ICLOTHING,
-	"uniform" = SLOT_TIE,
+	"shoulder" = SLOT_SHOULDER,
 	"holster" = SLOT_HOLSTER
 )
 

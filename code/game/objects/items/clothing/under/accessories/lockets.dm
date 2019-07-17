@@ -5,7 +5,7 @@
 	item_state = "locket"
 	slot_flags = FALSE
 	w_class = 2
-	slot_flags = SLOT_MASK | SLOT_TIE
+	slot_flags = SLOT_ID|SLOT_ACCESSORY
 	var/base_icon
 	var/open
 	var/obj/item/held //Item inside locket.

@@ -50,7 +50,7 @@ There are several things that need to be remembered:
 		update_inv_gloves()
 		update_inv_shoes()
 		update_inv_w_uniform()
-		update_inv_glasse()
+		update_inv_eyes()
 		update_inv_l_hand()
 		update_inv_r_hand()
 		update_inv_belt()
@@ -58,6 +58,7 @@ There are several things that need to be remembered:
 		update_inv_ears()
 		update_inv_pockets()
 		update_inv_back()
+		update_inv_shoulder()
 		update_inv_handcuffed()
 		update_inv_wear_mask()
 
@@ -114,7 +115,7 @@ Please contact me on #coderbus IRC. ~Carn x
 #define GLOVES_LAYER			7
 #define BELT_LAYER				8
 #define SUIT_LAYER				9
-#define TAIL_LAYER				10		//bs12 specific. this hack is probably gonna come back to haunt me
+#define EYES_LAYER				10
 #define GLASSES_LAYER			11
 #define BELT_LAYER_ALT			12
 #define SUIT_STORE_LAYER		13
@@ -122,16 +123,16 @@ Please contact me on #coderbus IRC. ~Carn x
 #define HAIR_LAYER				15		//TODO: make part of head layer?
 #define EARS_LAYER				16
 #define FACEMASK_LAYER			17
-#define COLLAR_LAYER			18
+#define BANDAGES_LAYER			18
 #define HEAD_LAYER				19
-#define HANDCUFF_LAYER			20
-#define LEGCUFF_LAYER			21
-#define L_HAND_LAYER			22
-#define R_HAND_LAYER			23
-#define FIRE_LAYER				24		//If you're on fire
-#define TARGETED_LAYER			25		//BS12: Layer for the target overlay from weapon targeting system
-#define OVEREFFECTS_LAYER			26		//BS12: Layer for the target overlay from weapon targeting system
-#define BANDAGES_LAYER			27
+#define SHOULDER_LAYER			20
+#define HANDCUFF_LAYER			21
+#define LEGCUFF_LAYER			22
+#define L_HAND_LAYER			23
+#define R_HAND_LAYER			24
+#define FIRE_LAYER				25		//If you're on fire
+#define TARGETED_LAYER			26		//BS12: Layer for the target overlay from weapon targeting system
+#define OVEREFFECTS_LAYER		27
 #define TOTAL_LAYERS			27
 //////////////////////////////////
 
@@ -425,9 +426,11 @@ var/global/list/damage_icon_parts = list()
 	update_inv_ears(0)
 	update_inv_shoes(0)
 	update_inv_wear_mask(0)
+	update_inv_eyes(0)
 	update_inv_head(0)
 	update_inv_belt(0)
 	update_inv_back(0)
+	update_inv_shoulder(0)
 	update_inv_wear_suit(0)
 	update_inv_r_hand(0)
 	update_inv_l_hand(0)
@@ -446,11 +449,6 @@ var/global/list/damage_icon_parts = list()
 /mob/living/carbon/human/proc/find_inv_position(var/slot_id) //Find HUD position on screen TO:DO ìîãó ëè ÿ óïðîñòèòü???? species_hud?
 	for (var/obj/screen/inventory/HUDinv in HUDinventory)
 		if (HUDinv.slot_id == slot_id)
-			//world << "[slot_id] [HUDinv.screen_loc]"
-			/*if (HUDinv.invisibility == 101)
-				return null
-			else
-				return HUDinv.screen_loc*/
 			return (HUDinv.invisibility == 101) ? null : HUDinv.screen_loc
 	log_admin("[src] try find_inv_position a [slot_id], but not have that slot!")
 	src << "Some problem hase accure, change UI style pls or call admins."
@@ -632,6 +630,22 @@ var/global/list/damage_icon_parts = list()
 			overlays_standing[GLOVES_LAYER]	= bloodsies
 		else
 			overlays_standing[GLOVES_LAYER]	= null
+	if (update_icons)   update_icons()
+
+/mob/living/carbon/human/update_inv_eyes(var/update_icons=1)
+	if (eyes)
+/*		var/new_screen_loc = find_inv_position(slot_eyes)
+		if (new_screen_loc)
+			glasses.screen_loc = new_screen_loc	*/
+		eyes.screen_loc = find_inv_position(slot_eyes)
+		if (eyes.icon_override)
+			overlays_standing[GLASSES_LAYER] = image(icon = eyes.icon_override,   icon_state = eyes.icon_state)
+
+		else
+			overlays_standing[GLASSES_LAYER] = image(icon = body_build.eyes_icon, icon_state = eyes.icon_state)
+
+	else
+		overlays_standing[EYES_LAYER]	= null
 	if (update_icons)   update_icons()
 
 
@@ -960,21 +974,46 @@ var/global/list/damage_icon_parts = list()
 		var/overlay_state = back.icon_state
 		if (back.item_state_slots && back.item_state_slots[slot_back_str])
 			overlay_state = back.item_state_slots[slot_back_str]
-
-
 		//apply color
 		var/image/standing = image(icon = overlay_icon, icon_state = overlay_state)
 		standing.color = back.color
 
-		//create the image
-		overlays_standing[BACK_LAYER] = standing
+		overlays_standing[BACK_LAYER]	= standing
 	else
 		overlays_standing[BACK_LAYER] = null
 
 	if (update_icons)
 		update_icons()
 
+////////////SHOULDER
+/mob/living/carbon/human/update_inv_shoulder(var/update_icons=1)
+	if (shoulder)
+		shoulder.screen_loc = find_inv_position(slot_shoulder)
+		//determine the icon to use
+		var/icon/overlay_icon_shoulder
+		if (shoulder.icon_override)
+			overlay_icon_shoulder = shoulder.icon_override
+		else if (shoulder.item_icons && (slot_shoulder_str in shoulder.item_icons))
+			overlay_icon_shoulder = shoulder.item_icons[slot_shoulder_str]
+		else
+			overlay_icon_shoulder = body_build.shoulder_icon
 
+		//determine state to use
+		var/overlay_state_shoulder = shoulder.icon_state
+		if (shoulder.item_state_slots && shoulder.item_state_slots[slot_shoulder_str])
+			overlay_state_shoulder = back.item_state_slots[slot_shoulder_str]
+
+
+		//apply color
+		var/image/standing2 = image(icon = overlay_icon_shoulder, icon_state = overlay_state_shoulder)
+		standing2.color = shoulder.color
+		//create the image
+		overlays_standing[SHOULDER_LAYER] = standing2
+	else
+		overlays_standing[SHOULDER_LAYER] = null
+
+	if (update_icons)
+		update_icons()
 
 
 /mob/living/carbon/human/update_inv_handcuffed(var/update_icons=1)
@@ -1136,7 +1175,7 @@ var/global/list/damage_icon_parts = list()
 			if (W.bandaged || W.clamped || W.salved)
 				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")
 				continue
-	overlays_standing[COLLAR_LAYER] = DD
+	overlays_standing[BANDAGES_LAYER] = DD
 	if (update_icons)   update_icons()
 //Human Overlays Indexes/////////
 #undef MUTATIONS_LAYER
@@ -1154,9 +1193,10 @@ var/global/list/damage_icon_parts = list()
 #undef BELT_LAYER
 #undef SUIT_STORE_LAYER
 #undef BACK_LAYER
+#undef SHOULDER_LAYER
 #undef HAIR_LAYER
 #undef HEAD_LAYER
-#undef COLLAR_LAYER
+#undef BANDAGES_LAYER
 #undef HANDCUFF_LAYER
 #undef LEGCUFF_LAYER
 #undef L_HAND_LAYER
@@ -1164,5 +1204,4 @@ var/global/list/damage_icon_parts = list()
 #undef TARGETED_LAYER
 #undef FIRE_LAYER
 #undef OVEREFFECTS_LAYER
-#undef BANDAGES_LAYER
 #undef TOTAL_LAYERS

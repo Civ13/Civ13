@@ -10,7 +10,7 @@
 	force = 10
 	throwforce = 20
 	max_shells = 5
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "a762x54"
 	recoil = 2 //extra kickback
 	//fire_sound = 'sound/weapons/sniper.ogg'
@@ -207,7 +207,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
@@ -231,7 +231,7 @@
 	bolt_safety = FALSE
 	value = 90
 	recoil = 4
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
@@ -288,7 +288,7 @@
 	bolt_safety = FALSE
 	value = 100
 	recoil = 2
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -324,7 +324,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -347,7 +347,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -370,7 +370,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -393,7 +393,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.85
 	value = 90
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 10
 	throwforce = 20
@@ -417,7 +417,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.89
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 10
 	throwforce = 25
@@ -440,7 +440,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.91
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 10
 	throwforce = 25
@@ -472,7 +472,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -525,7 +525,7 @@
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
 	effectiveness_mod = 0.97
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
@@ -544,7 +544,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.85
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -565,7 +565,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.98
 	value = 120
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 12
 	throwforce = 20
@@ -588,7 +588,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.75
 	value = 120
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 12
 	throwforce = 20
@@ -623,7 +623,7 @@
 	bolt_safety = FALSE
 	value = 100
 	recoil = 2
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -656,7 +656,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -679,7 +679,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
@@ -702,7 +702,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -749,7 +749,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 1.15
 	value = 130
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 1.8
 	force = 11
 	throwforce = 25
@@ -777,7 +777,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
