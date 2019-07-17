@@ -517,10 +517,9 @@
 	for(var/mob/living/carbon/human/GLAD in A)
 		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
 			count++
-	if (current_style == "unarmed")
-		for(var/mob/living/carbon/human/GLAD in B)
-			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
-				count++
+	for(var/mob/living/carbon/human/GLAD in B)
+		if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS)//&& GLAD.client)
+			count++
 	if (count == count_max)
 		combat_running = 2
 		switch(arena)
