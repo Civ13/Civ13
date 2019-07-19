@@ -476,16 +476,17 @@ var/global/datum/controller/occupations/job_master
 			relocate(H)
 			if (H.client)
 				H.client.remove_gun_icons()
-
-		spawn (50)
-			H.stopDumbDamage = FALSE
-		if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
-			spawn(12)
+		if (H)
+			spawn (50)
+				if (H)
+					H.stopDumbDamage = FALSE
+			if (map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_PANGEA)
+				spawn(12)
+					H.memory()
+			else
 				H.memory()
-		else
-			H.memory()
 
-		return H
+			return H
 
 /datum/controller/occupations/proc/spawnKeys(var/mob/living/carbon/human/H, rank, title)
 

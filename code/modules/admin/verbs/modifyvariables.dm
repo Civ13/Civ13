@@ -558,7 +558,7 @@ var/list/VVckey_edit = list("key", "ckey")
 		if ("text")
 			var/var_new = input("Enter new text:","Text",O.vars[variable]) as null|text
 			if (var_new==null) return
-			if (variable in list("ckey", "key") && var_new in list(usr.ckey, usr.key))
+			if (usr && variable in list("ckey", "key") && var_new in list(usr.ckey, usr.key))
 				if (!O.vars["lastKnownCkey"] || !(O.vars["lastKnownCkey"] == usr.ckey))
 					usr << "<span class = 'danger'>Use the player panel to spawn yourself in as a mob.</span>"
 					return
