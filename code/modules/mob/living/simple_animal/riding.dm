@@ -26,7 +26,7 @@
 			overlays -= cover_overlay
 
 /mob/living/simple_animal/MouseDrop_T(mob/living/M, mob/living/carbon/human/user)
-	if (can_ride && isnull(rider) && M == user && !user.lying && !user.prone && !user.werewolf)
+	if (can_ride && isnull(rider) && M == user && !user.lying && !user.prone && (!user.werewolf || user.icon_state == "human"))
 		var/mob/living/carbon/human/MM = M
 		visible_message("<div class='notice'>[M] starts getting on the [src]'s back...</div>","<div class='notice'>You start going on \the [src]'s back...</div>")
 		if (do_after(MM, 40, src))
