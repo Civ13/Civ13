@@ -152,7 +152,7 @@
 	if (!user) return
 	if (istype(user, /mob/living/carbon/human))
 		var/mob/living/carbon/human/HM = user
-		if (HM.werewolf) return
+		if (HM.werewolf && HM.icon_state != "human") return
 	if (do_after(user,equiptimer, src, can_move = TRUE))
 		if (src in range(1,user))
 			if (hasorgans(user))
