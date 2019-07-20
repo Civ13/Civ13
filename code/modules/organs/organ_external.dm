@@ -1270,7 +1270,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 	..()
 
-	if(owner)
+	if(owner && !owner.werewolf && !owner.gorillaman)
 		if(eye_icon)
 			var/icon/eyes_icon = new/icon(eye_icon_location, eye_icon)
 			var/obj/item/organ/eyes/eyes = owner.internal_organs_by_name["eyes"]

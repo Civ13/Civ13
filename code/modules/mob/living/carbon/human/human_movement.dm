@@ -108,7 +108,8 @@
 	stored_tally = tally
 
 	next_calculate_tally = world.time + 10
-
+	if (werewolf)
+		tally *= 0.7
 	if (!isnull(riding_mob))
 		return 0
 	else

@@ -1,6 +1,6 @@
 // At minimum every mob has a hear_say proc.
 /mob/var/next_language_learn = -1
-/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null)
+/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
 	if (!client)
 		return
 
@@ -41,7 +41,8 @@
 
 	if (italics)
 		message = "<i>[message]</i>"
-
+	if (animal)
+		language = null
 	var/track = null
 	if (isghost(src))
 		if (italics && is_preference_enabled(/datum/client_preference/ghost_radio))

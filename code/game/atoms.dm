@@ -481,7 +481,7 @@
 		var/limbcheck = user.targeted_organ
 		if (limbcheck == "random")
 			limbcheck = pick("l_arm","r_arm","l_hand","r_hand")
-		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm"))
+		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm") || user.werewolf)
 			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
 			if(!affecting)
 				user << "<span class='notice'>[src] is missing that body part.</span>"
@@ -489,7 +489,12 @@
 			else
 				visible_message("<span class='danger'>[user] bites the [src]'s [affecting.name]!</span>","<span class='danger'>You bite the [src]'s [affecting.name]!</span>")
 				if (ishuman(src) && ishuman(user))
-					affecting.createwound(BRUISE, rand(6,9)*user.getStatCoeff("strength"))
+					if (user.werewolf)
+						affecting.createwound(BRUISE, rand(15,21)*user.getStatCoeff("strength"))
+						if (prob(20))
+							target.werewolf = 1
+					else
+						affecting.createwound(BRUISE, rand(6,9)*user.getStatCoeff("strength"))
 					target.emote("painscream")
 				else
 					target.adjustBruteLoss(rand(6,7))

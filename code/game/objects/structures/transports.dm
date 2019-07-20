@@ -76,6 +76,37 @@
 			spawn(27)
 				running_sound()
 				return
+//ok so, there seems to be a lot of bugs whenre people fall off or get thrown out of vehicles and stay on them. So we add a regular check.
+/obj/structure/vehicle/proc/safety_check()
+	if (!src)
+		return
+	if (driver)
+		if (!driver in range(2,src))
+			ontop -= driver
+			driver.pixel_x = 0
+			driver.pixel_y = 0
+			driver.driver = FALSE
+			unbuckle_mob()
+			driver.driver_vehicle = null
+			if (wheeled)
+				if (driver.l_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.l_hand = null
+				else if (driver.r_hand == dwheel)
+					driver.remove_from_mob(dwheel)
+					dwheel.forceMove(src)
+					driver.r_hand = null
+			driver.update_icons()
+			driver = null
+			update_overlay()
+			update_icon()
+	spawn(20)
+		safety_check()
+
+/obj/structure/vehicle/New()
+	..()
+	safety_check()
 ////////MOVEMENT LOOP/////////
 /obj/structure/vehicle/proc/startmovementloop()
 	moving = TRUE
@@ -122,6 +153,8 @@
 				update_icon()
 				return
 	else if (istype(A, /obj))
+		if (src == A)
+			return
 		var/obj/structure/O = A
 		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity && O != src)
 			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
@@ -148,8 +181,8 @@
 		if (do_after(user, 30, src))
 			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
-			user.pixel_x = pixel_x
-			user.pixel_y = pixel_y
+			user.pixel_x = 0
+			user.pixel_y = 0
 			if (user == driver)
 				user.driver = FALSE
 				unbuckle_mob()
@@ -172,8 +205,8 @@
 		for (var/obj/structure/O in ontop_o)
 			O.anchored = FALSE
 			ontop_o -= O
-			O.pixel_x = pixel_x
-			O.pixel_y = pixel_y
+			O.pixel_x = 0
+			O.pixel_y = 0
 			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
 		return
 
@@ -195,8 +228,8 @@
 			if (do_after(user, 30, src))
 				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
-				user.pixel_x = pixel_x
-				user.pixel_y = pixel_y
+				user.pixel_x = 0
+				user.pixel_y = 0
 				if (user == driver)
 					user.driver = FALSE
 					unbuckle_mob()
@@ -515,6 +548,8 @@
 				update_icon()
 				return
 	else if (istype(A, /obj))
+		if (src == A)
+			return
 		var/obj/structure/O = A
 		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
 			visible_message("<div class='notice'>[user] starts putting \the [O] on \the [src]...</div>","<div class='notice'>You start putting \the [O] on \the [src]...</div>")
@@ -541,8 +576,8 @@
 		if (do_after(user, 30, src))
 			visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 			ontop -= user
-			user.pixel_x = pixel_x
-			user.pixel_y = pixel_y
+			user.pixel_x = 0
+			user.pixel_y = 0
 			if (user == driver)
 				user.driver = FALSE
 				unbuckle_mob()
@@ -571,8 +606,8 @@
 		for (var/obj/structure/O in ontop_o)
 			O.anchored = FALSE
 			ontop_o -= O
-			O.pixel_x = pixel_x
-			O.pixel_y = pixel_y
+			O.pixel_x = 0
+			O.pixel_y = 0
 			O.dir = dir
 			visible_message("[user] takes \the [O] from \the [src].","You take \the [O] from \the [src].")
 		return
@@ -594,8 +629,8 @@
 			if (do_after(user, 30, src))
 				visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
 				ontop -= user
-				user.pixel_x = pixel_x
-				user.pixel_y = pixel_y
+				user.pixel_x = 0
+				user.pixel_y = 0
 				if (user == driver)
 					user.driver = FALSE
 					unbuckle_mob()
@@ -829,6 +864,8 @@
 					driver.r_hand = null
 				driver.driver = FALSE
 				driver.driver_vehicle = null
+				driver.pixel_x = 0
+				driver.pixel_y = 0
 				unbuckle_mob()
 				update_overlay()
 				update_icon()
@@ -849,6 +886,8 @@
 				driver.driver = FALSE
 				driver.driver_vehicle = null
 				driver << "You leave the [src]."
+				driver.pixel_x = 0
+				driver.pixel_y = 0
 				unbuckle_mob()
 				update_overlay()
 				update_icon()

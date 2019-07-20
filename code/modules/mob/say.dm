@@ -23,7 +23,11 @@
 /mob/verb/me_verb(message as text)
 	set name = "Me"
 	set category = "IC"
-
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if (H.werewolf || H.gorillaman)
+			usr << "<span class = 'red'>You can't emote.</span>"
+			return
 	if (say_disabled)	//This is here to try to identify lag problems
 		usr << "<span class = 'red'>Speech is currently admin-disabled.</span>"
 		return

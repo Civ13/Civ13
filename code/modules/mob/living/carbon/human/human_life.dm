@@ -47,6 +47,12 @@
 
 	if (transforming)
 		return
+	if (werewolf)
+		handle_animalistic("Wolfman")
+	else if (gorillaman)
+		handle_animalistic("Gorilla")
+	else if (!gorillaman && !werewolf && icon_state != "human")
+		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
 	if (lying || stat < CONSCIOUS || prone)

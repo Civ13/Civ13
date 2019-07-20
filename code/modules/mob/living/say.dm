@@ -121,7 +121,7 @@ proc/get_radio_key_from_channel(var/channel)
 		return "asks"
 	return verb
 
-/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/alt_message=null)
+/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/alt_message=null, var/animal = FALSE)
 	if (client)
 		if (client.prefs.muted & MUTE_IC)
 			src << "<span class = 'red'>You cannot speak in IC (Muted).</span>"
@@ -233,7 +233,7 @@ proc/get_radio_key_from_channel(var/channel)
 
 	for (var/mob/M in listening)
 		M << speech_bubble
-		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol, alt_message)
+		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol, alt_message, animal)
 
 	for (var/obj/O in listening_obj)
 		spawn(0)

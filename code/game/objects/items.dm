@@ -150,6 +150,9 @@
 /obj/item/attack_hand(mob/user as mob)
 	if (isturf(loc) && anchored) return
 	if (!user) return
+	if (istype(user, /mob/living/carbon/human))
+		var/mob/living/carbon/human/HM = user
+		if (HM.werewolf) return
 	if (do_after(user,equiptimer, src, can_move = TRUE))
 		if (src in range(1,user))
 			if (hasorgans(user))

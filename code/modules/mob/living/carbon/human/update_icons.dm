@@ -257,7 +257,10 @@ var/global/list/damage_icon_parts = list()
 				icon_key += "[rgb(part.s_col[1],part.s_col[2],part.s_col[3])]"
 			else
 				icon_key += "#000000"
-
+	if (werewolf)
+		icon_key += "werewolf"
+	else if (gorillaman)
+		icon_key += "gorilla"
 	var/icon/base_icon
 	if (human_icon_cache[icon_key])
 		base_icon = human_icon_cache[icon_key]
@@ -299,7 +302,7 @@ var/global/list/damage_icon_parts = list()
 /mob/living/carbon/human/proc/update_hair(var/update_icons=1)
 	//Reset our hair
 	overlays_standing[HAIR_LAYER]	= null
-
+	if (body_build.nohair || body_build.nofacialhair) return
 	var/obj/item/organ/external/head/head_organ = get_organ("head")
 	if (!head_organ || head_organ.is_stump() )
 		if (update_icons)   update_icons()
