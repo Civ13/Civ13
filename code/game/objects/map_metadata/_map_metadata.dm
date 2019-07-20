@@ -266,7 +266,7 @@ var/civmax_research = list(130,130,130)
 		ordinal_age = 5
 	else if (age == "1943")
 		ordinal_age = 6
-	else if (age == "1973")
+	else if (age == "1969")
 		ordinal_age = 7
 	else if (age == "2013")
 		ordinal_age = 8
@@ -405,7 +405,7 @@ var/civmax_research = list(130,130,130)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age7_lim && world.time >= age7_timer)
 					world << "<big>The world has advanced into the Cold War!</big>"
-					age = "1973"
+					age = "1969"
 					set_ordinal_age()
 					age7_done = TRUE
 					default_research = 175

@@ -580,8 +580,8 @@ proc/admin_notice(var/message, var/rights)
 			return
 		if (customresearchsp < 0)
 			customresearchsp = 0
-		if (customresearchsp > 200)
-			customresearchsp = 200
+		if (customresearchsp > 230)
+			customresearchsp = 230
 		map.autoresearch_mult = customresearchsp
 		world << "<big>Research increase per minute has been changed to <b>[map.autoresearch_mult]</b></big>"
 		log_admin("[key_name(usr)] has changed the research modifier to [map.autoresearch_mult].")
