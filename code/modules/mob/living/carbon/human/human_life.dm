@@ -169,7 +169,7 @@
 			addictions[ad] = 0
 
 //death
-	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 
 // disease stuff
@@ -1706,7 +1706,7 @@
 						return
 
 /mob/living/carbon/human/proc/instadeath_check()
-	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 		return
 	else
