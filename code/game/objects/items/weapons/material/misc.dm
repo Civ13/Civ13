@@ -3,7 +3,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "Good for whale hunting."
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "harpoon"
 	item_state = "harpoon"
 	worn_state = "spear"
@@ -23,7 +23,7 @@
 	sharp = FALSE
 	edge = FALSE
 	desc = "A basic stick with a hole on top to attach something. Can be made into a veriety of weapons and tools."
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "handle"
 	item_state = "spear"
 	default_material = "wood"
@@ -56,7 +56,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A crude, yet effective weapon."
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "spear_old"
 	item_state = "spear"
 	worn_state = "spear"
@@ -77,7 +77,7 @@
 	sharp = FALSE
 	edge = FALSE
 	desc = "A simple wood staff, doesn't do too much damage but its fast at blocking and hitting"
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "quarterstaff"
 	item_state = "quarterstaff"
 	default_material = "wood"
@@ -96,7 +96,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A wood staff with a blade on the end, good for impaling those who insult your lord."
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	icon_state = "naginata"
 	item_state = "naginata"
 	default_material = "iron"
@@ -190,7 +190,7 @@
 	throw_speed = TRUE
 	throw_range = 3
 	w_class = 4
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 //	origin_tech = "materials=2;combat=2"
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
 	cooldownw = 5
@@ -200,7 +200,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A 2-meter long javelin with an iron tip, used by the Roman Army."
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "pilum"
 	item_state = "pilum"
 	worn_state = "pilum"
@@ -220,7 +220,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A golden standard of a Roman Legion, with the Aquila on top."
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	icon_state = "roman_standard"
 	item_state = "roman_standard"
 	default_material = "wood"
@@ -243,7 +243,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A 2 meter long spear, used by soldiers of the Hellenic culture."
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "dory"
 	item_state = "dory"
 	worn_state = "dory"
@@ -263,7 +263,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A 5 meter long spear, used by phalanx soldiers."
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	icon_state = "sarissa"
 	item_state = "sarissa"
 	worn_state = "sarissa"
@@ -432,7 +432,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A spear topped by an axe blade."
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "halberd"
 	item_state = "halberd"
 	worn_state = "halberd"
@@ -452,7 +452,7 @@
 	sharp = TRUE
 	edge = TRUE
 	desc = "A long spear."
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	icon_state = "pike"
 	item_state = "pike"
 	worn_state = "pike"

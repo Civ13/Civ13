@@ -2,7 +2,7 @@
 
 var/global/obj/map_metadata/map = null
 //Max levels showing players how far to advance, appears on the Character tab
-var/civmax_research = list(130,130,130)
+var/civmax_research = list(230,230,230)
 
 /obj/map_metadata
 	name = ""
@@ -274,7 +274,7 @@ var/civmax_research = list(130,130,130)
 
 
 /obj/map_metadata/proc/autoresearch_proc()
-	if (autoresearch == TRUE && default_research < 130)
+	if (autoresearch == TRUE && default_research < 230)
 		spawn(600) //1 minute = 0.4 points (by default)
 			default_research += autoresearch_mult
 			if (map.ID == MAP_CIVILIZATIONS)
