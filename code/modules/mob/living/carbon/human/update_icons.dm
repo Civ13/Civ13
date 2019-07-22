@@ -214,9 +214,7 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)   update_icons()
 
 //BASE MOB SPRITE
-/mob/living/carbon/human/proc/update_body(var/update_icons=1)
-
-
+/mob/living/carbon/human/proc/update_body(var/update_icons=1, var/forced=FALSE)
 
 	//CACHING: Generate an index key from visible bodyparts.
 	//0 = destroyed, TRUE = normal, 2 = necrotic.
@@ -257,12 +255,8 @@ var/global/list/damage_icon_parts = list()
 				icon_key += "[rgb(part.s_col[1],part.s_col[2],part.s_col[3])]"
 			else
 				icon_key += "#000000"
-	if (werewolf)
-		icon_key += "werewolf"
-	else if (gorillaman)
-		icon_key += "gorilla"
 	var/icon/base_icon
-	if (human_icon_cache[icon_key])
+	if (human_icon_cache[icon_key] && !forced)
 		base_icon = human_icon_cache[icon_key]
 	else
 		//BEGIN CACHED ICON GENERATION.

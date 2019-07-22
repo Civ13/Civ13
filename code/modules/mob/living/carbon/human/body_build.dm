@@ -74,3 +74,12 @@
 
 /datum/body_build/wolfman/female
 	gender 			= FEMALE
+
+/datum/body_build/werewolf
+	name			= "Werewolf"
+	index			= "_werewolf"
+	nohair = TRUE
+	nofacialhair = TRUE
+
+/datum/body_build/werewolf/female
+	gender 			= FEMALE
