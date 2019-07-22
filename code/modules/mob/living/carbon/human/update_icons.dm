@@ -713,6 +713,7 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_head(var/update_icons=1)
+
 	var/image/band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
 	var/image/cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
 	var/image/symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
@@ -747,6 +748,9 @@ var/global/list/damage_icon_parts = list()
 
 		//Create the image
 		var/image/standing = image(icon = t_icon, icon_state = t_state)
+		if (body_build.name == "Gorilla")
+			var/image/gorillahead = image(icon = 'icons/mob/human_races/r_human.dmi', icon_state = "head_m_gorilla") //its the same for male and female
+			standing.overlays += gorillahead
 		if (istype(head, /obj/item/clothing/head/custom_off_cap))
 			var/obj/item/clothing/head/custom_off_cap/CU = head
 			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
@@ -786,7 +790,12 @@ var/global/list/damage_icon_parts = list()
 		overlays_standing[HEAD_LAYER] = standing
 
 	else
-		overlays_standing[HEAD_LAYER]	= null
+		//because for some reason gorilla head doesnt generate
+		if (body_build.name == "Gorilla")
+			var/image/gorillahead = image(icon = 'icons/mob/human_races/r_human.dmi', icon_state = "head_m_gorilla") //its the same for male and female
+			overlays_standing[HEAD_LAYER]	= gorillahead
+		else
+			overlays_standing[HEAD_LAYER]	= null
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_belt(var/update_icons=1)

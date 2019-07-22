@@ -21,6 +21,7 @@
 			force_update_limbs()
 			update_body(1,1)
 			icon = 'icons/mob/human.dmi'
+			regenerate_icons()
 			damage_multiplier = 2
 	else if (type == "Werewolf")
 		switch (time_of_day)
