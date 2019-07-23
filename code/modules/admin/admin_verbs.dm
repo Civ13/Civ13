@@ -60,6 +60,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/view_chemical_reaction_logs,
 	/client/proc/end_all_grace_periods,
 	/client/proc/reset_all_grace_periods,
+	/client/proc/faction_species,
 	/datum/admins/proc/paralyze_mob,
 	/client/proc/toggle_jobs,
 	/client/proc/toggle_factions,
