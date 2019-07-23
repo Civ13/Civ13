@@ -111,7 +111,8 @@ proc/admin_notice(var/message, var/rights)
 				<b>Body type transformation:</b><font size=2><br>These transformations will keep the user as "human" but change the body type.</font><br>
 				<A href='?src=\ref[src];simplemake=default;mob=\ref[M]'>Default</A> |
 				<A href='?src=\ref[src];simplemake=gorilla;mob=\ref[M]'>Gorilla</A> |
-				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Wolfman</A> |
+				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Werewolf</A> |
+				<A href='?src=\ref[src];simplemake=orc;mob=\ref[M]'>Orc</A> |
 				<br>"}
 	body += {"<br><br>
 			<b>Other actions:</b>

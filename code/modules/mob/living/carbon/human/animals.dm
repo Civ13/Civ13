@@ -6,8 +6,7 @@
 			icon = 'icons/mob/human.dmi'
 			icon_update = 1
 			icon_state = "human"
-			if (body_build.name == "Orc")
-				s_tone = prev_tone
+			s_tone = prev_tone
 			src << "<font size=3>You become human again!</font>"
 			body_build = get_body_build(gender,"Default")
 			damage_multiplier = 1
@@ -20,6 +19,8 @@
 			src << "<font size=3 color='red'>You turn into a gorilla!</font>"
 			icon = 'icons/mob/human.dmi'
 			body_build = get_body_build(gender,"Gorilla")
+			prev_tone = s_tone
+			s_tone = null
 			update_hair()
 			change_facial_hair()
 			force_update_limbs()
@@ -47,11 +48,14 @@
 				if (body_build.name != "Default")
 					src << "<font size=3>You become human again!</font>"
 					handle_animalistic("Default")
+					s_tone = prev_tone
 			if ("Night")
 				if (body_build.name == "Default")
 					src << "<font size=3 color='red'>You turn into a werewolf!</font>"
 					icon_state = "werewolf"
 					body_build = get_body_build(gender,"Werewolf")
+					prev_tone = s_tone
+					s_tone = null
 					update_hair()
 					change_facial_hair()
 					force_update_limbs()
