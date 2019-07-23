@@ -754,7 +754,6 @@ var/global/list/damage_icon_parts = list()
 			standing.overlays += addin
 		else
 			standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.01)
-		var/deflayer = layer
 		if (istype(head, /obj/item/clothing/head/custom_off_cap))
 			var/obj/item/clothing/head/custom_off_cap/CU = head
 			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2", layer = layer+0.01)
