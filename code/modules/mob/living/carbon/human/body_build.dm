@@ -60,7 +60,7 @@
 /datum/body_build/gorilla
 	name			= "Gorilla"
 	index			= "_gorilla"
-	nohair = TRUE
+	nohair = FALSE
 	nofacialhair = TRUE
 
 /datum/body_build/gorilla/female
