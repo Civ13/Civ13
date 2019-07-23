@@ -116,6 +116,13 @@
 	apply_colour = TRUE
 	value = 3
 
+/obj/item/stack/material/plastic
+	name = "plastic"
+	icon_state = "sheet-plastic"
+	default_type = "plastic"
+	apply_colour = TRUE
+	value = 3
+
 /obj/item/stack/material/lead
 	name = "lead"
 	icon_state = "sheet-lead"

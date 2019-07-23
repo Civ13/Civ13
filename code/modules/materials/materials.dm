@@ -304,6 +304,15 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
+/material/plastic
+	name = "plastic"
+	icon_colour = "#dddddd"
+	stack_type = /obj/item/stack/material/plastic
+	weight = 8
+	hardness = 36
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
+
 /material/tin
 	name = "tin"
 	icon_colour = "#d3d4d5"

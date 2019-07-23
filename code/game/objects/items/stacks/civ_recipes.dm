@@ -1,19 +1,18 @@
 /*
 /////////////////////////////AGES///////////////////////
-0-15 Stone Age (<5000 BC)
-15-20 Copper Age (2-3k BC)
-20-30 Bronze Age (1000 BC)
-30-40 Iron age/Ancient Age (500 BC to 300 AC)
-40-50 Early Medieval Age (500 to 1200)
-50-60 Late Medieval (1400-1500)
-60-80 Renaissance (1500-1600)
-80-90 Imperial Age (1700s)
-90-100 Napoleonic Age (early 1800s)
-100-110 Early Industrial Age (1850-1870)
-110-120 Industrial Age (1870-1900)
-120-130 Early Modern Age (1900-1910)
-130-140 Interwar period (1910-1950)
-140-150 Space age (1950-Present)
+0-15 Stone Age (?-3000 B.C.)
+15-20 Copper Age (3000 BC to 500 B.C.)
+20-30 Bronze Age (500 B.C. to 400 A.D.)
+30-45 Dark Ages (400 to 700)
+45-60 Middle Ages (700 to 1450)
+60-80 Renaissance (1450 to 1650)
+80-90 Imperial Age (1650 to 1780)
+90-100 Napoleonic Age (1780 to 1850)
+100-120 Industrial Age (1850 to 1895)
+120-147 Early Modern Era (1896 to 1933)
+145-175 World War II (1934 to 1957)
+175-210 Cold War (1958 to 1984)
+210- Modern Era (1985 to 2020)
 ///////////////////////////////////////////////////////
 */
 
@@ -1178,8 +1177,9 @@
 	recipes += new/datum/stack_recipe("geiger counter", /obj/item/weapon/geiger_counter, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 141)
 		recipes += new/datum/stack_recipe("2-way radio", /obj/structure/radio/transmitter_receiver, 15, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("portable radio", /obj/item/weapon/radio, 22, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
-
+		recipes += new/datum/stack_recipe("portable radio", /obj/item/weapon/radio, 18, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (current_res[1] >= 178)
+		recipes += new/datum/stack_recipe("walkie-talkie radio", /obj/item/weapon/radio/walkietalkie, 22, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE)
 /material/woolcloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("wool coat", /obj/item/clothing/suit/storage/coat/fur/white, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -1364,3 +1364,7 @@
 /material/lead/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	if (current_res[3] >= 65)
 		recipes = list(new/datum/stack_recipe("lead safe", /obj/structure/closet/crate/lead, 3, _time = 100, _one_per_turf = TRUE, _on_floor = TRUE))
+
+/material/plastic/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	if (map && map.ordinal_age >= 4 && current_res[3] >= 95)
+		recipes = list(new/datum/stack_recipe("blood pack", /obj/item/weapon/reagent_containers/blood/empty, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE))
