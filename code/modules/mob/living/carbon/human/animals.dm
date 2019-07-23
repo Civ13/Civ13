@@ -23,6 +23,18 @@
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
 			damage_multiplier = 2
+	else if (type == "Orc")
+		if (body_build.name == "Default")
+			src << "<font size=3 color='red'>You turn into an Orc!</font>"
+			icon = 'icons/mob/human.dmi'
+			body_build = get_body_build(gender,"Orc")
+			update_hair()
+			change_facial_hair()
+			force_update_limbs()
+			update_body(1,1)
+			icon = 'icons/mob/human.dmi'
+			regenerate_icons()
+			damage_multiplier = 2
 	else if (type == "Werewolf")
 		switch (time_of_day)
 			if ("Midday","Afternoon","Morning","Early Morning","Evening")

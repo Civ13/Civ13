@@ -292,3 +292,40 @@
 	R.add_fingerprint(user)
 	qdel(held)
 	held = null
+
+
+////////////////sofa///////////////////
+/obj/structure/bed/sofa
+	name = "sofa"
+	desc = "A sofa where you can rest."
+	icon = 'icons/obj/junk.dmi'
+	icon_state = "sofac"
+	anchored = TRUE
+	can_buckle = TRUE
+	buckle_dir = SOUTH
+	buckle_lying = TRUE
+	base_icon = "sofac"
+	applies_material_colour = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+
+/obj/structure/bed/sofa/left
+	icon_state = "sofa"
+	base_icon = "sofa"
+/obj/structure/bed/sofa/right
+	icon_state = "sofa2"
+	base_icon = "sofa2"
+/obj/structure/bed/sofa/get_material()
+	return
+
+/obj/structure/bed/sofa/update_icon()
+	return
+
+/obj/structure/bed/sofa/remove_padding()
+	return
+
+/obj/structure/bed/sofa/add_padding(var/padding_type)
+	return
+
+/obj/structure/bed/sofa/dismantle()
+	return

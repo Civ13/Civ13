@@ -321,12 +321,12 @@
 			new/datum/stack_recipe("log wall corner", /obj/covers/wood_wall/log/corner, 7, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("walls, doors & floors", list(
 			new/datum/stack_recipe("straw wall", /obj/covers/straw_wall, 5, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom sign", /obj/structure/sign/custom, 3, _time = 40, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("floor cover", /obj/item/weapon/covers, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	recipes += new/datum/stack_recipe_list("barricades", list(
 		new/datum/stack_recipe("horizontal wood barrier", /obj/structure/barricade/horizontal, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -670,7 +670,10 @@
 		recipes += list(new/datum/stack_recipe("burn kit", /obj/item/stack/medical/advanced/ointment, 1, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[3] >= 130)
 		recipes += list(new/datum/stack_recipe("custom camo uniform", 	/obj/item/clothing/under/customuniform_modern, 4, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
-
+	if (current_res[3] >= 93)
+		recipes += list(new/datum/stack_recipe("sofa (left)", 	/obj/structure/bed/sofa/left, 8, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("sofa (centre)", 	/obj/structure/bed/sofa, 8, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("sofa (right)", 	/obj/structure/bed/sofa/right, 8, _time = 140, _one_per_turf = TRUE, _on_floor = TRUE))
 	if ((current_res[3] >= 18) && (current_res[3] < 38))
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("mayan headdress", /obj/item/clothing/head/mayan_headdress, 4, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -1093,6 +1096,7 @@
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("wood stove",/obj/structure/oven/woodstove, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("IV drip",/obj/structure/iv_drip, 6, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE)
 
 	if (map && map.ordinal_age >= 5)
 		recipes += new/datum/stack_recipe("steel barrel",/obj/item/weapon/reagent_containers/glass/barrel/modern, 1, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE)

@@ -66,6 +66,16 @@
 /datum/body_build/gorilla/female
 	gender 			= FEMALE
 
+/datum/body_build/orc
+	name			= "Orc"
+	index			= "_orc"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/orc/female
+	gender 			= FEMALE
+
+
 /datum/body_build/wolfman
 	name			= "Wolfman"
 	index			= "_wolfman"

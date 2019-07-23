@@ -51,7 +51,9 @@
 		handle_animalistic("Werewolf")
 	else if (gorillaman)
 		handle_animalistic("Gorilla")
-	else if (!gorillaman && !werewolf && body_build.name != "Default")
+	else if (orc)
+		handle_animalistic("Gorilla")
+	else if (!gorillaman && !werewolf && !orc && body_build.name != "Default")
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
