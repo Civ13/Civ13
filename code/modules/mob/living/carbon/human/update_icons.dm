@@ -747,14 +747,21 @@ var/global/list/damage_icon_parts = list()
 			t_icon = body_build.hat_icon
 
 		//Create the image
-		var/image/standing = image(icon = t_icon, icon_state = t_state)
+		var/image/standing
+		if (body_build.name == "Gorilla")
+			standing = image(icon = 'icons/mob/human_races/r_human.dmi', icon_state = "head_m_gorilla") //its the same for male and female
+			var/image/addin = image(icon = t_icon, icon_state = t_state, layer = layer+0.01)
+			standing.overlays += addin
+		else
+			standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.01)
+		var/deflayer = layer
 		if (istype(head, /obj/item/clothing/head/custom_off_cap))
 			var/obj/item/clothing/head/custom_off_cap/CU = head
-			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
+			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2", layer = layer+0.01)
 			band.color = CU.bandcolor
-			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
+			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1", layer = layer+0.01)
 			cap.color = CU.capcolor
-			symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3")
+			symbol = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l3", layer = layer+0.01)
 			symbol.color = CU.symbolcolor
 			standing.overlays += band
 			standing.overlays += cap
@@ -762,12 +769,12 @@ var/global/list/damage_icon_parts = list()
 
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
 			var/obj/item/clothing/head/custom/fieldcap/CU = head
-			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom")
+			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom", layer = layer+0.01)
 			cap.color = CU.capcolor
 			standing.overlays += cap
 
 		if (head.blood_DNA)
-			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "helmetblood")
+			var/image/bloodsies = image("icon" = species.blood_mask, "icon_state" = "helmetblood", layer = layer+0.01)
 			bloodsies.color = head.blood_color
 			standing.overlays += bloodsies
 
@@ -776,7 +783,7 @@ var/global/list/damage_icon_parts = list()
 			var/obj/item/clothing/head/hat = head
 			if (hat.attachments.len)
 				for (var/attach in hat.attachments)
-					var/image/NI = image("icon_state" = "[attach]")
+					var/image/NI = image("icon_state" = "[attach]", layer = layer+0.01)
 					standing.overlays |= NI
 			var/cache_key = "[hat.light_overlay]_[species.get_bodytype()]"
 			if (hat.on && light_overlay_cache[cache_key])
@@ -788,6 +795,9 @@ var/global/list/damage_icon_parts = list()
 
 	else
 		overlays_standing[HEAD_LAYER]	= null
+		if (body_build.name == "Gorilla")
+			var/image/gorillahead = image(icon = 'icons/mob/human_races/r_human.dmi', icon_state = "head_m_gorilla") //its the same for male and female
+			overlays_standing[HEAD_LAYER] = gorillahead
 	if (update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_belt(var/update_icons=1)

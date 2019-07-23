@@ -16,7 +16,7 @@
 			update_body()
 	else if (type == "Gorilla")
 		if (body_build.name == "Default")
-			src << "<font size=3 color='red'>You turn into a gorilla!</font>"
+			src << "<font size=3 color='red'>You turn into a Gorilla!</font>"
 			icon = 'icons/mob/human.dmi'
 			body_build = get_body_build(gender,"Gorilla")
 			prev_tone = s_tone

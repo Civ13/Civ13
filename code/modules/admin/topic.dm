@@ -146,6 +146,9 @@
 					usr << "This can only be used on instances of type /mob/living/carbon/human"
 					return
 				else
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.orc = 0
 					HM.body_build = get_body_build(M.gender,"Default")
 					HM.update_hair()
 					HM.change_facial_hair()
@@ -159,6 +162,8 @@
 					return
 				else
 					HM.gorillaman = 1
+					HM.werewolf = 0
+					HM.orc = 0
 			if ("werewolf")
 				var/mob/living/carbon/human/HM = M
 				if (!ishuman(M))
@@ -166,6 +171,8 @@
 					return
 				else
 					HM.werewolf = 1
+					HM.gorillaman = 0
+					HM.orc = 0
 			if ("orc")
 				var/mob/living/carbon/human/HM = M
 				if (!ishuman(M))
@@ -173,6 +180,8 @@
 					return
 				else
 					HM.orc = 1
+					HM.gorillaman = 0
+					HM.werewolf = 0
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])
 
