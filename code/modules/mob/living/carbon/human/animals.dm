@@ -1,9 +1,13 @@
+/mob/living/carbon/human
+	var/prev_tone = null
 /mob/living/carbon/human/proc/handle_animalistic(var/type = "Default")
 	if (type == "Default")
 		if (body_build.name != "Default")
 			icon = 'icons/mob/human.dmi'
 			icon_update = 1
 			icon_state = "human"
+			if (body_build.name == "Orc")
+				s_tone = prev_tone
 			src << "<font size=3>You become human again!</font>"
 			body_build = get_body_build(gender,"Default")
 			damage_multiplier = 1
@@ -28,6 +32,8 @@
 			src << "<font size=3 color='red'>You turn into an Orc!</font>"
 			icon = 'icons/mob/human.dmi'
 			body_build = get_body_build(gender,"Orc")
+			prev_tone = s_tone
+			s_tone = null
 			update_hair()
 			change_facial_hair()
 			force_update_limbs()
