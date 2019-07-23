@@ -232,7 +232,7 @@
 							real_name = name
 							add_note("Known Languages", "German")
 							return
-/*
+
 		else if (map.ID == MAP_NOMADS_PANGEA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
@@ -298,7 +298,7 @@
 						real_name = name
 						add_note("Known Languages", "German")
 						return
-*/
+/*
 		else if (map.ID == MAP_NOMADS_PANGEA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
@@ -363,6 +363,7 @@
 						name = species.get_random_russian_name(gender)
 						real_name = name
 						return
+*/
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
