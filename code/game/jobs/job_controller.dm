@@ -372,6 +372,10 @@ var/global/datum/controller/occupations/job_master
 			world << "<span class = 'danger'>WARNING: [H] has no original job!!</span>"
 		#endif
 
+		if (map && H && (H.faction_text in map.orc))
+			H.orc = 1
+		if (map && H && (H.faction_text in map.gorilla))
+			H.gorillaman = 1
 		var/spawn_location = H.original_job.spawn_location
 		H.job_spawn_location = spawn_location
 

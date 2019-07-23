@@ -43,6 +43,43 @@
 		message_admins("[key_name(src)] reset all grace periods!")
 		log_admin("[key_name(src)] reset all grace periods.")
 
+/client/proc/faction_species()
+	set category = "Special"
+	set name = "Faction Species"
+
+	if (!map)
+		return
+
+	var/list/choicelist = list("Cancel")
+	for (var/i in map.faction_organization)
+		choicelist += i
+
+	var/conf = WWinput(src, "Which faction do you wish to change?","Species","Cancel",choicelist)
+	if (conf == "Cancel")
+		return
+	var/choice = WWinput(src, "Which species to turn them into?","Species","Human", list("Human","Orc","Gorilla"))
+	if (choice == "Human")
+		map.human += conf
+		if (conf in map.orc)
+			map.orc -= conf
+		if (conf in map.gorilla)
+			map.gorilla -= conf
+	else if (choice == "Orc")
+		map.orc += conf
+		if (conf in map.human)
+			map.human -= conf
+		if (conf in map.gorilla)
+			map.gorilla -= conf
+	else if (choice == "Gorilla")
+		map.gorilla += conf
+		if (conf in map.orc)
+			map.orc -= conf
+		if (conf in map.human)
+			map.human -= conf
+		message_admins("[key_name(src)] changed the [conf] to [choice].")
+		log_admin("[key_name(src)] changed the [conf] to [choice].")
+	return
+
 var/civilians_toggled = TRUE
 var/british_toggled = TRUE
 var/pirates_toggled = TRUE
