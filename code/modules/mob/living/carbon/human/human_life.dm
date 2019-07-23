@@ -48,10 +48,10 @@
 	if (transforming)
 		return
 	if (werewolf)
-		handle_animalistic("Wolfman")
+		handle_animalistic("Werewolf")
 	else if (gorillaman)
 		handle_animalistic("Gorilla")
-	else if (!gorillaman && !werewolf && icon_state != "human")
+	else if (!gorillaman && !werewolf && body_build.name != "Default")
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
@@ -169,7 +169,7 @@
 			addictions[ad] = 0
 
 //death
-	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 
 // disease stuff
@@ -1706,7 +1706,7 @@
 						return
 
 /mob/living/carbon/human/proc/instadeath_check()
-	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 		return
 	else

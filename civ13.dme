@@ -361,6 +361,7 @@
 #include "code\modules\1713\apparel.dm"
 #include "code\modules\1713\apparel_ancient.dm"
 #include "code\modules\1713\apparel_coldwar.dm"
+#include "code\modules\1713\apparel_creed.dm"
 #include "code\modules\1713\apparel_earlymodern.dm"
 #include "code\modules\1713\apparel_imperial.dm"
 #include "code\modules\1713\apparel_industrial.dm"

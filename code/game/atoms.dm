@@ -489,7 +489,7 @@
 			else
 				visible_message("<span class='danger'>[user] bites the [src]'s [affecting.name]!</span>","<span class='danger'>You bite the [src]'s [affecting.name]!</span>")
 				if (ishuman(src) && ishuman(user))
-					if (user.werewolf && user.icon_state != "human")
+					if (user.werewolf && user.body_build.name != "Default")
 						affecting.createwound(BRUISE, rand(15,21)*user.getStatCoeff("strength"))
 						if (prob(20))
 							target.werewolf = 1

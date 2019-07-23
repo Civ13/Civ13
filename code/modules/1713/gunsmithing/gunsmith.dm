@@ -357,16 +357,16 @@
 
 	switch(stock_type)
 		if ("Rifle Wooden Stock")
-			equiptimer = 18
+			equiptimer = 15
 			effectiveness_mod = 1.1
 		if ("Carbine Wooden Stock")
-			equiptimer = 15
+			equiptimer = 12
 			effectiveness_mod = 1
 		if ("Pistol Grip")
 			equiptimer = 7
 			effectiveness_mod = 0.80
 		if ("Steel Stock")
-			equiptimer = 12
+			equiptimer = 11
 			effectiveness_mod = 1
 		if ("Folding Stock")
 			equiptimer = 12
@@ -379,7 +379,7 @@
 			force = 10
 			throwforce = 20
 			max_shells = 5
-			slot_flags = SLOT_BACK
+			slot_flags = SLOT_SHOULDER
 			recoil = 2 //extra kickback
 			handle_casings = HOLD_CASINGS
 			load_method = SINGLE_CASING | SPEEDLOADER
@@ -564,7 +564,7 @@
 			item_state = "g41"
 			stat = "rifle"
 			w_class = 4
-			slot_flags = SLOT_BACK
+			slot_flags = SLOT_SHOULDER
 			accuracy_list = list(
 
 				// small body parts: head, hand, feet
@@ -628,7 +628,7 @@
 			item_state = "greasegun"
 			stat = "mg"
 			w_class = 3
-			slot_flags = SLOT_BACK|SLOT_BELT
+			slot_flags = SLOT_SHOULDER|SLOT_BELT
 			sel_mode = 1
 			full_auto = TRUE
 			attachment_slots = ATTACH_IRONSIGHTS
@@ -767,7 +767,7 @@
 			full_auto = TRUE
 			fire_sound = 'sound/weapons/mosin_shot.ogg'
 			weight = 3.47
-			slot_flags = SLOT_BACK
+			slot_flags = SLOT_SHOULDER
 			firemodes = list(
 				list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
 				list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
@@ -833,7 +833,7 @@
 			full_auto = TRUE
 			fire_sound = 'sound/weapons/mosin_shot.ogg'
 			weight = 3.47
-			slot_flags = SLOT_BACK
+			slot_flags = SLOT_SHOULDER
 			firemodes = list(
 				list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
 				list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
@@ -950,7 +950,7 @@
 			w_class = 4.0
 			force = 10
 			flags =  CONDUCT
-			slot_flags = SLOT_BACK
+			slot_flags = SLOT_SHOULDER
 			caliber = "12gauge"
 			load_method = SINGLE_CASING
 			ammo_type = /obj/item/ammo_casing/shotgun
@@ -991,14 +991,25 @@
 	switch(barrel_type)
 		if ("Pistol Barrel")
 			effectiveness_mod *= 0.8
+			equiptimer -= 1
 		if ("Carbine Barrel")
 			effectiveness_mod *= 1
+			slot_flags &= ~SLOT_HOLSTER
 		if ("Rifle Barrel")
 			effectiveness_mod *=1.1
+			slot_flags &= ~SLOT_HOLSTER
+			slot_flags &= ~SLOT_BELT
+			equiptimer += 1
 		if ("Long Rifle Barrel")
 			effectiveness_mod *= 1.25
+			slot_flags &= ~SLOT_HOLSTER
+			slot_flags &= ~SLOT_BELT
+			equiptimer += 3
 		if ("Air-Cooled Barrel")
 			effectiveness_mod *= 1.05
+			slot_flags &= ~SLOT_HOLSTER
+			slot_flags &= ~SLOT_BELT
+			equiptimer += 5
 	var/tempdesc = ""
 	switch(caliber)
 		if ("12gauge")
@@ -1322,8 +1333,8 @@
 
 /obj/item/weapon/gun/projectile/custom/proc/set_stock()
 	if (folded)
-		slot_flags = SLOT_BACK|SLOT_BELT
+		slot_flags = SLOT_SHOULDER|SLOT_BELT
 		effectiveness_mod *= 0.87
 	else
-		slot_flags = SLOT_BACK
+		slot_flags = SLOT_SHOULDER
 		effectiveness_mod /= 0.87

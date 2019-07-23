@@ -2,7 +2,7 @@
 
 var/global/obj/map_metadata/map = null
 //Max levels showing players how far to advance, appears on the Character tab
-var/civmax_research = list(130,130,130)
+var/civmax_research = list(230,230,230)
 
 /obj/map_metadata
 	name = ""
@@ -266,7 +266,7 @@ var/civmax_research = list(130,130,130)
 		ordinal_age = 5
 	else if (age == "1943")
 		ordinal_age = 6
-	else if (age == "1973")
+	else if (age == "1969")
 		ordinal_age = 7
 	else if (age == "2013")
 		ordinal_age = 8
@@ -274,7 +274,7 @@ var/civmax_research = list(130,130,130)
 
 
 /obj/map_metadata/proc/autoresearch_proc()
-	if (autoresearch == TRUE && default_research < 130)
+	if (autoresearch == TRUE && default_research < 230)
 		spawn(600) //1 minute = 0.4 points (by default)
 			default_research += autoresearch_mult
 			if (map.ID == MAP_CIVILIZATIONS)
@@ -405,7 +405,7 @@ var/civmax_research = list(130,130,130)
 				count = custom_civs[custom_faction_nr[i]][1]+custom_civs[custom_faction_nr[i]][2]+custom_civs[custom_faction_nr[i]][3]
 				if (count > age7_lim && world.time >= age7_timer)
 					world << "<big>The world has advanced into the Cold War!</big>"
-					age = "1973"
+					age = "1969"
 					set_ordinal_age()
 					age7_done = TRUE
 					default_research = 175
