@@ -1092,6 +1092,8 @@
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 95 && current_res[2] >= 109)
 		recipes += new/datum/stack_recipe("artillery cannon", /obj/structure/cannon/modern, 40, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
+	if (current_res[1] >= 90)
+		recipes += new/datum/stack_recipe("bakelizer", /obj/structure/bakelizer, 18, _time = 300, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
