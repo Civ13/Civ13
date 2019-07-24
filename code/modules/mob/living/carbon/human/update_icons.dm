@@ -551,7 +551,29 @@ var/global/list/damage_icon_parts = list()
 				standing.overlays += green
 				standing.overlays += black
 				standing.overlays += beltm
-
+		if (istype(w_uniform, /obj/item/clothing/under/custompyjamas))
+			var/obj/item/clothing/under/custompyjamas/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompyjamas_base")
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompyjamas_stripes")
+				shirt.color = CU.stripescolor
+				standing.overlays += pants
+				standing.overlays += shirt
+		if (istype(w_uniform, /obj/item/clothing/under/custompontificial))
+			var/obj/item/clothing/under/custompontificial/CU = w_uniform
+			if (!CU.uncolored)
+				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_leggings")
+				pants.color = CU.undercolor
+				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_decore")
+				shirt.color = CU.topcolor
+				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_handdecore")
+				belt.color = CU.handcolor
+				epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_mclines")
+				epaulettes.color = CU.linescolor
+				standing.overlays += pants
+				standing.overlays += shirt
+				standing.overlays += belt
+				standing.overlays += epaulettes
 		//apply blood overlay
 		if (w_uniform.blood_DNA)
 			var/image/bloodsies	= image(icon = species.blood_mask, icon_state = "uniformblood")
