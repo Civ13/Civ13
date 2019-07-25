@@ -376,6 +376,8 @@ var/global/datum/controller/occupations/job_master
 			H.orc = 1
 		if (map && H && (H.faction_text in map.gorilla))
 			H.gorillaman = 1
+		if (map && H && (H.faction_text in map.ant))
+			H.ant = 1
 		var/spawn_location = H.original_job.spawn_location
 		H.job_spawn_location = spawn_location
 

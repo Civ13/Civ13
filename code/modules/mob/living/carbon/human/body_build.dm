@@ -93,3 +93,13 @@
 
 /datum/body_build/werewolf/female
 	gender 			= FEMALE
+
+
+/datum/body_build/ant
+	name			= "Ant"
+	index			= "_ant"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/ant/female
+	gender 			= FEMALE

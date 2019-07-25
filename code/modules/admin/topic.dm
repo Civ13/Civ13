@@ -120,7 +120,7 @@
 
 
 		var/delmob = FALSE
-		if (href_list["simplemake"] != "gorilla" && href_list["simplemake"] != "werewolf" && href_list["simplemake"] != "default" && href_list["simplemake"] != "orc")
+		if (href_list["simplemake"] != "gorilla" && href_list["simplemake"] != "werewolf" && href_list["simplemake"] != "default" && href_list["simplemake"] != "orc"&& href_list["simplemake"] != "ant")
 			switch(WWinput(usr, "Delete old mob?", "Delete Mob", "Yes", list("Yes","No","Cancel")))
 				if ("Cancel")	return
 				if ("Yes")		delmob = TRUE
@@ -149,6 +149,7 @@
 					HM.gorillaman = 0
 					HM.werewolf = 0
 					HM.orc = 0
+					HM.ant= 0
 					HM.body_build = get_body_build(M.gender,"Default")
 					HM.update_hair()
 					HM.change_facial_hair()
@@ -164,6 +165,7 @@
 					HM.gorillaman = 1
 					HM.werewolf = 0
 					HM.orc = 0
+					HM.ant= 0
 			if ("werewolf")
 				var/mob/living/carbon/human/HM = M
 				if (!ishuman(M))
@@ -173,6 +175,7 @@
 					HM.werewolf = 1
 					HM.gorillaman = 0
 					HM.orc = 0
+					HM.ant= 0
 			if ("orc")
 				var/mob/living/carbon/human/HM = M
 				if (!ishuman(M))
@@ -182,6 +185,17 @@
 					HM.orc = 1
 					HM.gorillaman = 0
 					HM.werewolf = 0
+					HM.ant= 0
+			if ("ant")
+				var/mob/living/carbon/human/HM = M
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					HM.ant = 1
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.orc = 0
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])
 

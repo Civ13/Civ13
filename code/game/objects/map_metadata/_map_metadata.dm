@@ -170,6 +170,7 @@ var/civmax_research = list(230,230,230)
 	var/list/orc = list()
 	var/list/human = list()
 	var/list/gorilla = list()
+	var/list/ant = list()
 /obj/map_metadata/New()
 	..()
 	map = src
