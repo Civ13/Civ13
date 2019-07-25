@@ -1186,6 +1186,7 @@
 	recipes += new/datum/stack_recipe("telephone", /obj/structure/telephone, 5, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("radio transmitter", /obj/structure/radio/transmitter, 12, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("radio receiver", /obj/structure/radio, 3, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("television", /obj/structure/TV, 3, _time = 80, _one_per_turf =TRUE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("geiger counter", /obj/item/weapon/geiger_counter, 5, _time = 120, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 141)
 		recipes += new/datum/stack_recipe("2-way radio", /obj/structure/radio/transmitter_receiver, 15, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE)
