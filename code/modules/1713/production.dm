@@ -133,7 +133,12 @@
 			filled -= 1
 			icon_state = "wood_drier[filled]"
 			return
-
+		else if (obj_type == /obj/item/weapon/reagent_containers/food/snacks/driedsalmon)
+			new/obj/item/weapon/reagent_containers/food/snacks/driedsalmon(src.loc)
+			visible_message("The salmon finishes drying.")
+			filled -= 1
+			icon_state = "wood_drier[filled]"
+			return
 /obj/item/weapon/starterjar
 	name = "fermentation starter jar"
 	icon = 'icons/obj/drinks.dmi'
