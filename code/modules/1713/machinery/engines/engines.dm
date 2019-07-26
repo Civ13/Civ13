@@ -140,6 +140,7 @@
 			return
 		var/obj/item/stack/cable_coil/CC = W
 		var/obj/structure/cable/NCC = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		if (!NCC) return
 		NCC.connections += src
 		connections += NCC
 		user << "You connect the cable to the [src]."

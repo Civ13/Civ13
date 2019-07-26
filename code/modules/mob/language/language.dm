@@ -155,6 +155,8 @@
 	var/list/original_words = splittext(input, " ")
 
 	var/mob/living/carbon/human/H = hearer
+	if (!ishuman(H))
+		return
 	var/capitalize = TRUE
 	var/capitalize_next = TRUE
 	if (original_words.len)

@@ -158,9 +158,9 @@ proc/get_radio_key_from_channel(var/channel)
 
 	// This is broadcast to all mobs with the language,
 	// irrespective of distance or anything else.
-	if (speaking && (speaking.flags & HIVEMIND))
-		speaking.broadcast(src,trim(message))
-		return TRUE
+//	if (speaking && (speaking.flags & HIVEMIND))
+//		speaking.broadcast(src,trim(message))
+//		return TRUE
 
 	verb = say_quote(message, speaking)
 

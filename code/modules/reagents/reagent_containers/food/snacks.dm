@@ -383,7 +383,8 @@
 /obj/item/weapon/reagent_containers/food/snacks/egg/throw_impact(atom/hit_atom)
 	..()
 	new/obj/effect/decal/cleanable/egg_smudge(loc)
-	reagents.splash(hit_atom, reagents.total_volume)
+	if (reagents)
+		reagents.splash(hit_atom, reagents.total_volume)
 	visible_message("<span class='warning'>\The [src] has been squashed!</span>","<span class='warning'>You hear a smack.</span>")
 	qdel(src)
 
@@ -512,10 +513,13 @@
 		reagents.add_reagent("food_poisoning", 1)
 		bitesize = 6
 		spawn(2400) //4 minutes
+			if (!src)
+				return
 			icon_state = "rottensalmonfillet"
 			name = "rotten [name]"
 			rotten = TRUE
-			reagents.add_reagent("food_poisoning", 1)
+			if (reagents)
+				reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
 				if (isturf(loc) && prob(30))
 					new/mob/living/simple_animal/mouse(get_turf(src))

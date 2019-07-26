@@ -259,10 +259,17 @@
 		var/named = input(user, "Choose a name for this gun (max 15 characters):", "Gunsmithing", "gun")
 		if (named && named != "")
 			named = sanitize(named,15)
-			current_gun.name = named
+			if (current_gun)
+				current_gun.name = named
+			else
+				return
 		else
-			current_gun.name = "gun"
-		current_gun.finish()
+			if (current_gun)
+				current_gun.name = "gun"
+			else
+				return
+		if (current_gun)
+			current_gun.finish()
 		var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
 		NEWGUN.loc = get_turf(src)
 		current_gun = null

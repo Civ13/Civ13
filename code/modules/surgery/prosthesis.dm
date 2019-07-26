@@ -71,7 +71,7 @@
 
 				var/obj/item/organ/external/LF = C.get_organ("l_foot")
 				var/obj/item/organ/external/RF = C.get_organ("r_foot")
-				if (LF.is_stump() && LF.prosthesis == FALSE && !LL.is_stump())
+				if (LF && LF.is_stump() && LF.prosthesis == FALSE && !LL.is_stump())
 					visible_message("[user] starts to attatch \the [src] to [C]'s left foot stump...","You start attaching \the [src] to [C]'s left foot stump...")
 					if (do_after(user, 130*user.getStatCoeff("medical"), C))
 						visible_message("[user] finishes attaching \the [src] to [C]'s left foot stump.","You finish attaching \the [src] to [C]'s left foot stump.")

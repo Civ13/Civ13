@@ -306,12 +306,13 @@
 			createwound( BURN, burn )
 	else
 		//If there are still hurties to dispense
-		if (spillover)
+		if (spillover && owner)
 			owner.shock_stage += spillover * config.organ_damage_spillover_multiplier
 
 	// sync the organ's damage with its wounds
 	src.update_damages()
-	owner.updatehealth() //droplimb will call updatehealth() again if it does end up being called
+	if (owner)
+		owner.updatehealth() //droplimb will call updatehealth() again if it does end up being called
 	//If limb took enough damage, try to cut or tear it off
 	if(owner && loc == owner && !is_stump())
 		if(!cannot_amputate && (brute_dam + burn_dam + brute + burn + spillover) >= (max_damage * config.organ_health_multiplier))

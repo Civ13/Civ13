@@ -639,9 +639,10 @@ var/global/list/damage_icon_parts = list()
 /*		var/new_screen_loc = find_inv_position(slot_gloves)
 		if (new_screen_loc)
 			gloves.screen_loc = new_screen_loc*/
-		gloves.screen_loc = find_inv_position(slot_gloves)
-		standing.color = gloves.color
-		overlays_standing[GLOVES_LAYER]	= standing
+		if (gloves)
+			gloves.screen_loc = find_inv_position(slot_gloves)
+			standing.color = gloves.color
+			overlays_standing[GLOVES_LAYER]	= standing
 	else
 		if (blood_DNA)
 			var/image/bloodsies	= image("icon" = species.blood_mask, "icon_state" = "bloodyhands")

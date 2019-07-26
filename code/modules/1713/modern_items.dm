@@ -403,7 +403,7 @@
 		H << "You power off the refinery."
 		return
 
-	else if (!active && !powersource.powered)
+	else if (!active && powersource && !powersource.powered)
 		H << "<span class = 'notice'>There is not enough power to start the refinery.</span>"
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))

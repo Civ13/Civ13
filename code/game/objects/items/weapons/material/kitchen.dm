@@ -120,7 +120,7 @@
 		return
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/attack(mob/living/carbon/human/M as mob, mob/living/user as mob)
-	if (user.a_intent == I_HELP && M in range(user,1))
+	if (user.a_intent == I_HELP && M in range(user,1) && ishuman(M))
 		visible_message("[user] starts cutting [M]'s hair...","You start cutting [M]'s hair...")
 		if (do_after(user, 80, M))
 			var/list/hairlist = M.generate_valid_hairstyles(1,1)
