@@ -127,8 +127,8 @@
 	name = "two-stroke gasoline engine"
 	desc = "A cheap and simple two-stroke gasoline engine."
 	icon = 'icons/obj/engines32.dmi'
-	icon_state = "gasoline2_static"
-	engineclass = "gasoline2"
+	icon_state = "gasoline_static"
+	engineclass = "gasoline"
 
 	maxpower = 90
 	torque = 0.83
