@@ -1104,6 +1104,7 @@
 		recipes += new/datum/stack_recipe("bakelizer", /obj/structure/bakelizer, 18, _time = 300, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 4)
 		recipes += new/datum/stack_recipe("petroleum refinery",/obj/structure/refinery, 22, _time = 230, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("biofuel refinery",/obj/structure/refinery/biofuel, 18, _time = 200, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("steam engine",/obj/structure/engine/external/steam, 15, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("wood stove",/obj/structure/oven/woodstove, 8, _time = 250, _one_per_turf = TRUE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("IV drip",/obj/structure/iv_drip, 6, _time = 140, _one_per_turf = FALSE, _on_floor = TRUE)

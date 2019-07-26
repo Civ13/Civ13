@@ -109,7 +109,7 @@
 	maxpower = 66
 	torque = 1.1
 	fuelefficiency = 0.5
-	fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel", "olive_oil") //basically everything
+	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil") //basically everything
 
 /obj/structure/engine/internal/gasoline
 	name = "four-stroke gasoline engine"
@@ -157,7 +157,7 @@
 	maxpower = 86
 	torque = 0.77
 	fuelefficiency = 0.35
-	fuels = list("gasoline","ethanol")
+	fuels = list("gasoline","pethanol")
 
 /obj/structure/engine/internal/gasoline/wankel
 	name = "Wankel rotary gasoline engine"
@@ -181,7 +181,7 @@
 	maxpower = 136
 	torque = 0.88
 	fuelefficiency = 0.4
-	fuels = list("petroleum", "gasoline", "diesel", "ethanol", "biodiesel", "olive_oil")
+	fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil")
 
 /obj/structure/engine/internal/diesel
 	name = "diesel engine"
