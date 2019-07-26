@@ -184,7 +184,7 @@
 	else
 		target_zone = pick("l_foot", "r_foot", "l_leg", "r_leg")
 
-	if (!L.apply_damage(30, BRUTE, target_zone, 0, used_weapon=src))
+	if (!L.apply_damage(35, BRUTE, target_zone, 0, used_weapon=src))
 		return FALSE
 
 	//trap the victim in place
@@ -205,7 +205,7 @@
 		if (istype(L, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = L
 			SA.stop_automated_movement = TRUE
-			SA.adjustBruteLoss(rand(10,20))
+			SA.adjustBruteLoss(rand(20,35))
 			return
 		else
 			attack_mob(L)
