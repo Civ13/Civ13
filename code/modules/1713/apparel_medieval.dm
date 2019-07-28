@@ -22,6 +22,7 @@
 /obj/item/clothing/head/helmet/orc_beserker
 	name = "Orc Beserker Helm"
 	desc = "Orc make good helmet!"
+	icon = 'icons/obj/clothing/suits.dmi'
 	icon_state = "beserkerhelmet"
 	item_state = "beserkerhelmet_item"
 	worn_state = "beserkerhelmet"
@@ -31,6 +32,7 @@
 /obj/item/clothing/head/helmet/orc_spearman
 	name = "Orc spearman Helm"
 	desc = "Orc make good helmet!"
+	icon = 'icons/obj/clothing/suits.dmi'
 	icon_state = "spearmanhelmet"
 	item_state = "spearmanhelmet_item"
 	worn_state = "spearmanhelmet"
@@ -40,6 +42,7 @@
 /obj/item/clothing/head/helmet/orc_captain
 	name = "Orc Captain Helm"
 	desc = "Orc make good helmet!"
+	icon = 'icons/obj/clothing/suits.dmi'
 	icon_state = "captainhelmet"
 	item_state = "captainhelmet_item"
 	worn_state = "captainhelmet"
@@ -49,6 +52,7 @@
 /obj/item/clothing/head/helmet/orc_grunt
 	name = "Orc Grunt Helm"
 	desc = "Orc make good helmet!"
+	icon = 'icons/obj/clothing/suits.dmi'
 	icon_state = "grunthelmet"
 	item_state = "grunthelmet_item"
 	worn_state = "grunt_helmet"
@@ -58,6 +62,7 @@
 /obj/item/clothing/suit/armor/ork_urukhai
 	name = "Ork Urukhai Armor"
 	desc = "Orc make good armor!"
+	icon = 'icons/obj/clothing/suits.dmi'
 	icon_state = "urukhai_armor"
 	item_state = "urukhai_armor_item"
 	worn_state = "urukhai_armor"
@@ -69,6 +74,7 @@
 /obj/item/clothing/suit/armor/ork_whitehand
 	name = "Ork Whitehand Armor"
 	desc = "Orc make good armor!"
+	icon = 'icons/obj/clothing/suits.dmi'
 	icon_state = "whitehand_armor"
 	item_state = "whitehand_armor_item"
 	worn_state = "whitehand_armor"
@@ -80,6 +86,7 @@
 /obj/item/clothing/suit/armor/ork_grunt
 	name = "Ork Grunt Armor"
 	desc = "Orc make good armor!"
+	icon = 'icons/obj/clothing/suits.dmi'
 	icon_state = "grunt_armor"
 	item_state = "grunt_armor_item"
 	worn_state = "grunt_armor"
