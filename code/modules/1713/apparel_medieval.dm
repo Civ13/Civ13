@@ -187,7 +187,7 @@
 /obj/item/clothing/suit/armor/sauronhelm
 	name = "Sauron's Helmet"
 	desc = "The helmet to the armor of Sauron"
-	icon_state = "sauuronhelmet_mob"
+	icon_state = "sauronhelmet_mob"
 	item_state = "sauronhelmet_item"
 	worn_state = "sauronhelmet_mob"
 	body_parts_covered = HEAD|FACE|EYES
@@ -198,7 +198,7 @@
 /obj/item/clothing/suit/armor/sauronarmor
 	name = "Sauron's Armor"
 	desc = "The armor of Sauron"
-	icon_state = "sauuronarmor_mob"
+	icon_state = "sauronarmor_mob"
 	item_state = "sauronarmor_item"
 	worn_state = "sauronarmor_mob"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
