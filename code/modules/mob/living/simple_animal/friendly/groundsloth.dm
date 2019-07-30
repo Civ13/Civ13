@@ -19,7 +19,7 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	attacktext = "kicked"
-	health = 200
+	health = 250
 	mob_size = MOB_HUGE
 	
 /mob/living/simple_animal/groundsloth/Life()
