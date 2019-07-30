@@ -77,3 +77,8 @@
 	permeability_coefficient = 0.05
 	siemens_coefficient = 0.50 //thick work gloves
 
+/obj/item/clothing/gloves/theonering
+	desc = "One ring to rule them all...."
+	name = "The Ring"
+	icon_state = "theonering_obj"
+	item_state = "theonering_obj"

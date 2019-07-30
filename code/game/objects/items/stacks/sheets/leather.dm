@@ -5,6 +5,13 @@
 	icon_state = "sheet-hide"
 	flammable = TRUE
 	value = 0
+/obj/item/stack/material/animalhide/orc
+	name = "orc skin"
+	desc = "A rough skin, it'l like a flexible rock..."
+	singular_name = "orc skin piece"
+	icon_state = "sheet-orcpelt"
+	flammable = TRUE
+	value = 0
 /obj/item/stack/material/animalhide/cat
 	name = "cat hide"
 	desc = "The by-product of cat farming."

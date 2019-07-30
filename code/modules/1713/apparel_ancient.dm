@@ -371,6 +371,15 @@
 	specific = TRUE
 	colorn = 5
 
+/obj/item/clothing/suit/storage/coat/fur/orc
+	name = "orc skin coat"
+	desc = "A coat made of orc skin. Disgusting..."
+	icon_state = "fur_jacket6h"
+	item_state = "fur_jacket6h"
+	worn_state = "fur_jacket6h"
+	specific = TRUE
+	colorn = 6
+	
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
 	if (!specific)
