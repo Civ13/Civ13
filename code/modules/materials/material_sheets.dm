@@ -362,6 +362,15 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/stack/material/orcpelt
+	name = "orc skin"
+	desc = "A rough skin, it'l like a flexible rock..."
+	icon_state = "sheet-orcpelt"
+	default_type = "orcpelt"
+	flammable = TRUE
+	value = 0
+	w_class = 2.0
+
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"
