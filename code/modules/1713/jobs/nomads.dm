@@ -430,6 +430,34 @@
 								name = input_name
 								real_name = input_name
 								return
+	else if (map && map.ID == MAP_TRIBES)
+		if (original_job_title == "Orc tribesman")
+			add_language("Russian",TRUE)
+			remove_language("English")
+			for (var/datum/language/russian/A in languages)
+				default_language = A
+			name = species.get_random_russian_name(gender)
+			real_name = name
+			return
+		else if (original_job_title == "Ant tribesman")
+			add_language("Greek",TRUE)
+			remove_language("English")
+			for (var/datum/language/greek/A in languages)
+				default_language = A
+			name = species.get_random_greek_name(gender)
+			real_name = name
+			return
+		else if (original_job_title == "Gorilla tribesman")
+			add_language("Carib",TRUE)
+			remove_language("English")
+			for (var/datum/language/carib/A in languages)
+				default_language = A
+			name = species.get_random_carib_name(gender)
+			real_name = name
+			return
+		else
+			name = species.get_random_english_name(gender)
+			real_name = name
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
@@ -660,6 +688,130 @@
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/orc
+	title = "Orc tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND1"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>.")
+
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("philosophy", STAT_NORMAL)
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/ant
+	title = "Ant tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND2"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_LOW)
+
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/gorilla
+	title = "Gorilla tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND3"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_LOW)
+
+
+	return TRUE
+
+/datum/job/civilian/fantasy/human
+	title = "Human tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_MEDIUM_HIGH)
 
 
 	return TRUE

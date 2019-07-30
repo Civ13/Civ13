@@ -59,6 +59,8 @@ obj/map_metadata/colony/job_enabled_specialcheck(var/datum/job/J)
 			. = TRUE
 	else
 		. = TRUE
+	if (istype(J, /datum/job/civilian/fantasy))
+		. = FALSE
 /obj/map_metadata/colony/faction2_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 15000 || admin_ended_all_grace_periods)
 
