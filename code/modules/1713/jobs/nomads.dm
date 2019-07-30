@@ -434,6 +434,7 @@
 		spawn(15)
 			if (original_job_title == "Orc tribesman")
 				orc = 1
+				civilization = "Orc Horde"
 				add_language("Black Speech",TRUE)
 				remove_language("English")
 				for (var/datum/language/blackspeech/A in languages)
@@ -443,6 +444,7 @@
 				return
 			else if (original_job_title == "Ant tribesman")
 				ant = 1
+				civilization = "Ant Colony"
 				add_language("Antspeak",TRUE)
 				remove_language("English")
 				for (var/datum/language/ant/A in languages)
@@ -452,6 +454,7 @@
 				return
 			else if (original_job_title == "Gorilla tribesman")
 				gorillaman = 1
+				civilization = "Gorilla Tribe"
 				add_language("Carib",TRUE)
 				remove_language("English")
 				for (var/datum/language/carib/A in languages)
@@ -460,6 +463,7 @@
 				real_name = name
 				return
 			else
+				civilization = "Human Kingdom"
 				name = species.get_random_english_name(gender)
 				real_name = name
 /////////////////////////CIVS////////////////////////
