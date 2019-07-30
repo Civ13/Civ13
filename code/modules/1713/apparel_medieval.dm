@@ -19,82 +19,7 @@
 	item_flags = NOSLIP
 	siemens_coefficient = 0.6
 
-/obj/item/clothing/head/helmet/orc_beserker
-	name = "Orc Beserker Helm"
-	desc = "Orc make good helmet!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "beserkerhelmet"
-	item_state = "beserkerhelmet_item"
-	worn_state = "beserkerhelmet"
-	body_parts_covered = HEAD
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 60, arrow = 80, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
-/obj/item/clothing/head/helmet/orc_spearman
-	name = "Orc spearman Helm"
-	desc = "Orc make good helmet!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "spearmanhelmet"
-	item_state = "spearmanhelmet_item"
-	worn_state = "spearmanhelmet"
-	body_parts_covered = HEAD|FACE|EYES
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 50, arrow = 65, gun = FALSE, energy = FALSE, bomb = 40, bio = 20, rad = 10)
-/obj/item/clothing/head/helmet/orc_captain
-	name = "Orc Captain Helm"
-	desc = "Orc make good helmet!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "captainhelmet"
-	item_state = "captainhelmet_item"
-	worn_state = "captainhelmet"
-	body_parts_covered = HEAD|FACE|EYES
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 85, arrow = 75, gun = 15, energy = 10, bomb = 60, bio = 20, rad = 10)
-/obj/item/clothing/head/helmet/orc_grunt
-	name = "Orc Grunt Helm"
-	desc = "Orc make good helmet!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "grunthelmet"
-	item_state = "grunthelmet_item"
-	worn_state = "grunt_helmet"
-	body_parts_covered = HEAD|FACE|EYES
-	force = WEAPON_FORCE_PAINFUL
-	armor = list(melee = 50, arrow = 65, gun = FALSE, energy = FALSE, bomb = 40, bio = 20, rad = 10)
-/obj/item/clothing/suit/armor/ork_urukhai
-	name = "Ork Urukhai Armor"
-	desc = "Orc make good armor!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "urukhai_armor"
-	item_state = "urukhai_armor_item"
-	worn_state = "urukhai_armor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 70, gun = 10, energy = FALSE, bomb = 60, bio = 20, rad = 10)
-	value = 50
-	slowdown = 1.7
-	health = 50
-/obj/item/clothing/suit/armor/ork_whitehand
-	name = "Ork Whitehand Armor"
-	desc = "Orc make good armor!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "whitehand_armor"
-	item_state = "whitehand_armor_item"
-	worn_state = "whitehand_armor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 70, gun = 10, energy = FALSE, bomb = 60, bio = 20, rad = 10)
-	value = 50
-	slowdown = 1.7
-	health = 50
-/obj/item/clothing/suit/armor/ork_grunt
-	name = "Ork Grunt Armor"
-	desc = "Orc make good armor!"
-	icon = 'icons/obj/clothing/suits.dmi'
-	icon_state = "grunt_armor"
-	item_state = "grunt_armor_item"
-	worn_state = "grunt_armor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 70, arrow = 70, gun = 10, energy = FALSE, bomb = 60, bio = 20, rad = 10)
-	value = 50
-	slowdown = 1.7
-	health = 50
+
 /obj/item/clothing/shoes/medieval/knight
 	name = "armored shoes"
 	desc = "A pair of plated armored shoes."
@@ -259,28 +184,7 @@
 	icon_state = "arab3"
 	item_state = "arab3"
 	worn_state = "arab3"
-/obj/item/clothing/suit/armor/sauronhelm
-	name = "Sauron's Helmet"
-	desc = "The helmet to the armor of Sauron"
-	icon_state = "sauuronhelmet_mob"
-	item_state = "sauronhelmet_item"
-	worn_state = "sauronhelmet_mob"
-	body_parts_covered = HEAD|FACE|EYES
-	armor = list(melee = 80, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
-	value = 70
-	slowdown = 1
-	health = 90
-/obj/item/clothing/suit/armor/sauronarmor
-	name = "Sauron's Armor"
-	desc = "The armor of Sauron"
-	icon_state = "sauuronarmor_mob"
-	item_state = "sauronarmor_item"
-	worn_state = "sauronarmor_mob"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 80, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
-	value = 70
-	slowdown = 1
-	health = 90
+
 /obj/item/clothing/suit/armor/medieval
 	name = "plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
