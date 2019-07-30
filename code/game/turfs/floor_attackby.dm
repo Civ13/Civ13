@@ -837,3 +837,22 @@
 	T.is_mineable = FALSE
 	H.adaptStat("strength", 1)
 	return
+
+/turf/floor/dirt/underground/attack_hand(mob/user)
+	if (istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && ishuman(user))
+		var/turf/floor/dirt/underground/U = src
+		var/mob/living/carbon/human/H = user
+		if (H.ant)
+			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
+				U.collapse_check()
+				if (istype(src, /turf/floor/dirt/underground/empty))
+					return
+				else if (!istype(src, /turf/floor/dirt/underground/empty))
+					mining_proc(H)
+				return TRUE
+		else
+			..()
+	else
+		..()

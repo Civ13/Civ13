@@ -443,11 +443,11 @@
 				return
 			else if (original_job_title == "Ant tribesman")
 				ant = 1
-				add_language("Greek",TRUE)
+				add_language("Antspeak",TRUE)
 				remove_language("English")
-				for (var/datum/language/greek/A in languages)
+				for (var/datum/language/ant/A in languages)
 					default_language = A
-				name = species.get_random_greek_name(gender)
+				name = species.get_random_ant_name(gender)
 				real_name = name
 				return
 			else if (original_job_title == "Gorilla tribesman")
