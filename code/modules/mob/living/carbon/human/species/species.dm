@@ -382,6 +382,10 @@
 		else
 			return capitalize(pick(first_names_male_zulu)) + " " + capitalize(pick(last_names_zulu))
 
+/datum/species/proc/get_random_orc_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_orc))
 
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 

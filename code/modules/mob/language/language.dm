@@ -119,6 +119,12 @@
 	var/full_name = "Philokrates"
 	return full_name
 
+/datum/language/proc/get_random_orc_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_orc))
+
+	var/full_name = "Morgoth"
+	return full_name
 
 /datum/language/proc/get_random_roman_name(name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)

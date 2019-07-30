@@ -431,33 +431,37 @@
 								real_name = input_name
 								return
 	else if (map && map.ID == MAP_TRIBES)
-		if (original_job_title == "Orc tribesman")
-			add_language("Russian",TRUE)
-			remove_language("English")
-			for (var/datum/language/russian/A in languages)
-				default_language = A
-			name = species.get_random_russian_name(gender)
-			real_name = name
-			return
-		else if (original_job_title == "Ant tribesman")
-			add_language("Greek",TRUE)
-			remove_language("English")
-			for (var/datum/language/greek/A in languages)
-				default_language = A
-			name = species.get_random_greek_name(gender)
-			real_name = name
-			return
-		else if (original_job_title == "Gorilla tribesman")
-			add_language("Carib",TRUE)
-			remove_language("English")
-			for (var/datum/language/carib/A in languages)
-				default_language = A
-			name = species.get_random_carib_name(gender)
-			real_name = name
-			return
-		else
-			name = species.get_random_english_name(gender)
-			real_name = name
+		spawn(15)
+			if (original_job_title == "Orc tribesman")
+				orc = 1
+				add_language("Black Speech",TRUE)
+				remove_language("English")
+				for (var/datum/language/blackspeech/A in languages)
+					default_language = A
+				name = species.get_random_orc_name(gender)
+				real_name = name
+				return
+			else if (original_job_title == "Ant tribesman")
+				ant = 1
+				add_language("Greek",TRUE)
+				remove_language("English")
+				for (var/datum/language/greek/A in languages)
+					default_language = A
+				name = species.get_random_greek_name(gender)
+				real_name = name
+				return
+			else if (original_job_title == "Gorilla tribesman")
+				gorillaman = 1
+				add_language("Carib",TRUE)
+				remove_language("English")
+				for (var/datum/language/carib/A in languages)
+					default_language = A
+				name = species.get_random_carib_name(gender)
+				real_name = name
+				return
+			else
+				name = species.get_random_english_name(gender)
+				real_name = name
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
@@ -708,7 +712,7 @@
 	H.give_clothes()
 	H.give_languages()
 
-	H.add_note("Role", "You are a <b>[title]</b>.")
+	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
 
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -739,7 +743,7 @@
 	H.give_clothes()
 	H.give_languages()
 
-	H.add_note("Role", "You are a <b>[title]</b>.")
+	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
 
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
@@ -771,7 +775,7 @@
 	H.give_clothes()
 	H.give_languages()
 
-	H.add_note("Role", "You are a <b>[title]</b>.")
+	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
 
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_LOW)
@@ -801,7 +805,7 @@
 	H.give_clothes()
 	H.give_languages()
 
-	H.add_note("Role", "You are a <b>[title]</b>.")
+	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
 
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)

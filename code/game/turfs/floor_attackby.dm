@@ -639,7 +639,10 @@
 		if (istype(H))
 			visible_message("<span class = 'notice'>[user] starts to break the rocky floor with the [C.name].</span>", "<span class = 'notice'>You start to break the rocky floor with the [C.name].</span>")
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (do_after(user, 110/(H.getStatCoeff("strength"))))
+			var/timera = 110/(H.getStatCoeff("strength"))
+			if (H.ant)
+				timera /= 1.5
+			if (do_after(user, timera))
 				mining_proc(H)
 		else
 			return ..(C, user)

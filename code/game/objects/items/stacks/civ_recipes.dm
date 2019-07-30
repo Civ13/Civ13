@@ -35,6 +35,17 @@
 			else if (civ == "Civilization F Citizen")
 				current_res = map.civf_research
 		generate_recipes_civs(current_res)
+	else if (map && map.ID == MAP_TRIBES)
+		var/list/current_res = list(56,56,56)
+		if (user && user.original_job_title == "Human tribesman")
+			current_res = list(62,62,62)
+		else if (user && user.original_job_title == "Gorilla tribesman")
+			current_res = list(21,21,21)
+		else if (user && user.original_job_title == "Orc tribesman")
+			current_res = list(56,56,56)
+		else if (user && user.original_job_title == "Ant tribesman")
+			current_res = list(21,21,21)
+		generate_recipes_civs(current_res)
 	else
 		if (!recipes)
 			var/list/current_res = list(0,0,0)
@@ -742,7 +753,7 @@
 			new/datum/stack_recipe("grey confederate hat", /obj/item/clothing/head/confederatehat, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("confederate cap", /obj/item/clothing/head/confederatecap, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("union cap", /obj/item/clothing/head/unioncap, 3, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),))
-	if (current_res[3] >= 109)
+	if (current_res[3] >= 109 && (current_res[3] < 139))
 		recipes += new/datum/stack_recipe_list("hats & masks", list(
 			new/datum/stack_recipe("eyepatch", /obj/item/clothing/glasses/eyepatch, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("blindfold", /obj/item/clothing/glasses/sunglasses/blindfold, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),

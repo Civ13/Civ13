@@ -249,7 +249,7 @@
 "eO" = (/obj/item/flashlight/torch/on,/turf/floor/plating/stone_old,/area/caribbean/tribes/wolf)
 "eP" = (/obj/structure/closet/crate/empty{name = "tool crate"},/obj/item/weapon/pickaxe/bone,/obj/item/weapon/pickaxe/bone,/obj/item/weapon/shovel/bone,/obj/item/weapon/shovel/bone,/obj/item/weapon/material/hatchet/tribal,/turf/floor/grass,/area/caribbean/tribes/wolf)
 "eQ" = (/obj/item/stack/farming/seeds/corn{amount = 5},/obj/item/stack/farming/seeds/potato{amount = 5},/obj/item/stack/farming/seeds/tomato{amount = 5},/obj/structure/closet/crate/empty{name = "food seeds"},/turf/floor/grass,/area/caribbean/tribes/wolf)
-"eR" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND"},/turf/floor/plating/stone_old,/area/caribbean/tribes/wolf)
+"eR" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateIND4"},/turf/floor/plating/stone_old,/area/caribbean/tribes/wolf)
 "eS" = (/obj/structure/wild/jungle,/turf/floor/dirt,/area/caribbean/tribes/wolf)
 "eT" = (/obj/item/stack/farming/seeds/hemp{amount = 3},/obj/item/stack/farming/seeds/poppy{amount = 3},/obj/item/stack/farming/seeds/sugarcane{amount = 3},/obj/item/stack/farming/seeds/tobacco{amount = 3},/obj/structure/closet/crate/empty{name = "useful seeds"},/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/weapon/reagent_containers/food/condiment/enzyme,/obj/item/stack/farming/seeds/tree{amount = 4},/turf/floor/dirt,/area/caribbean/tribes/wolf)
 "eU" = (/obj/item/stack/farming/seeds/corn{amount = 5},/obj/item/stack/farming/seeds/potato{amount = 5},/obj/item/stack/farming/seeds/tomato{amount = 5},/obj/structure/closet/crate/empty{name = "food seeds"},/turf/floor/grass,/area/caribbean/tribes/bear{icon_state = "blue3"})

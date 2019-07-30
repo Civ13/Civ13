@@ -85,6 +85,9 @@ var/list/last_names_zulu = file2list("config/names/last_zulu.txt")
 
 var/list/ancient_names = file2list("config/names/ancient_names.txt")
 var/list/epithets = file2list("config/names/epithets.txt")
+
+var/list/first_names_orc = file2list("config/names/first_orc.txt")
+
 /* NOT USED FOR NOW!
 var/list/country_names = file2list("config/names/countries.txt")
 var/civname_a = pick(country_names)
