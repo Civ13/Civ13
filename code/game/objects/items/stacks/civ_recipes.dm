@@ -787,9 +787,7 @@
 			new/datum/stack_recipe("blue flatcap", /obj/item/clothing/head/flatcap2, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("grey flatcap", /obj/item/clothing/head/flatcap3, 2, _time = 55, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("custom officer cap", /obj/item/clothing/head/custom_off_cap, 4, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("custom field cap", /obj/item/clothing/head/custom/fieldcap, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("german gas mask", /obj/item/clothing/mask/gas/german, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("british gas mask", /obj/item/clothing/mask/gas/british, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("custom field cap", /obj/item/clothing/head/custom/fieldcap, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE),))
 
 	if ( current_res[3] < 15)
 		recipes += new/datum/stack_recipe_list("clothing", list(
@@ -1102,7 +1100,7 @@
 	..()
 	if (current_res[1] >= 96)
 		recipes += new/datum/stack_recipe("steel floor", /obj/covers/steelplating, 1, _time = 15, _one_per_turf = TRUE, _on_floor = TRUE)
-		recipes += new/datum/stack_recipe("white floor", /obj/covers/steelplating, 1, _time = 15, _one_per_turf = TRUE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("white floor", /obj/covers/steelplating/white, 1, _time = 15, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 50 && current_res[2] >= 44)
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
@@ -1398,3 +1396,6 @@
 		recipes += new/datum/stack_recipe("blood pack", /obj/item/weapon/reagent_containers/blood/empty, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 7 && current_res[3] >= 150)
 		recipes += new/datum/stack_recipe("lighter",/obj/item/weapon/flame/lighter/random, 3, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (map && map.ordinal_age >= 5 && current_res[3] >= 102)
+		recipes += new/datum/stack_recipe("german gas mask", /obj/item/clothing/mask/gas/german, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("british gas mask", /obj/item/clothing/mask/gas/british, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
