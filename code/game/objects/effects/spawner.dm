@@ -375,7 +375,12 @@
 	max_range = 11
 	create_path = /mob/living/simple_animal/hostile/mammoth
 	timer = 7200
-
+/obj/effect/spawner/mobspawner/troll
+	name = "troll spawner"
+	max_number = 1
+	max_range = 11
+	create_path = /mob/living/simple_animal/hostile/troll
+	timer = 7200
 /obj/effect/spawner/mobspawner/penguins
 	name = "penguin spawner"
 	max_number = 2

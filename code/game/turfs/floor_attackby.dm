@@ -839,7 +839,7 @@
 	return
 
 /turf/floor/dirt/underground/attack_hand(mob/user)
-	if (istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && ishuman(user))
+	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
 		var/turf/floor/dirt/underground/U = src
 		var/mob/living/carbon/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
@@ -848,7 +848,7 @@
 			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
 				U.collapse_check()
 				if (istype(src, /turf/floor/dirt/underground/empty))
-					return
+					return TRUE
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
 				return TRUE

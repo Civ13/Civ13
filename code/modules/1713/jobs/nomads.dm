@@ -43,7 +43,7 @@
 
 		else if (map.ordinal_age == 2)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
-			if (map.ID == MAP_CIVILIZATIONS)
+			if (map && map.ID == MAP_CIVILIZATIONS)
 				spawn(5)
 					if (gender == "male")
 						if (civilization == "West Kingdom")
@@ -57,6 +57,20 @@
 						else
 							equip_to_slot_or_del(new /obj/item/clothing/under/civfg(src), slot_w_uniform)
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
+			else if(map && map.ID == MAP_TRIBES)
+				if (orc)
+					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
+					spawn(10)
+						C.uncolored = FALSE
+					C.shirtcolor = "#000000"
+					C.pantscolor = "#9A1313"
+					equip_to_slot_or_del(C, slot_w_uniform)
+				else if (gorillaman)
+					equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
+				else if (ant)
+					equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(src), slot_w_uniform)
+				else
+					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			else
 				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
@@ -431,7 +445,7 @@
 								real_name = input_name
 								return
 	else if (map && map.ID == MAP_TRIBES)
-		spawn(15)
+		spawn(5)
 			if (original_job_title == "Orc tribesman")
 				orc = 1
 				civilization = "Orc Horde"
@@ -441,6 +455,7 @@
 					default_language = A
 				name = species.get_random_orc_name(gender)
 				real_name = name
+				give_clothes()
 				return
 			else if (original_job_title == "Ant tribesman")
 				ant = 1
@@ -451,6 +466,7 @@
 					default_language = A
 				name = species.get_random_ant_name(gender)
 				real_name = name
+				give_clothes()
 				return
 			else if (original_job_title == "Gorilla tribesman")
 				gorillaman = 1
@@ -461,11 +477,13 @@
 					default_language = A
 				name = species.get_random_gorilla_name(gender)
 				real_name = name
+				give_clothes()
 				return
 			else
 				civilization = "Human Kingdom"
 				name = species.get_random_english_name(gender)
 				real_name = name
+				give_clothes()
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
@@ -713,7 +731,6 @@
 
 /datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-	H.give_clothes()
 	H.give_languages()
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
@@ -745,7 +762,6 @@
 
 /datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-	H.give_clothes()
 	H.give_languages()
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
@@ -778,7 +794,6 @@
 
 /datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-	H.give_clothes()
 	H.give_languages()
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
@@ -810,7 +825,6 @@
 
 /datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
-	H.give_clothes()
 	H.give_languages()
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
