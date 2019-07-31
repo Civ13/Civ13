@@ -28,7 +28,7 @@
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Faction-Based RP"
 /obj/map_metadata/tribes/New()
-	var/newnamea = list("Orc Horde" = list(56,56,56,null,0,"skull","#9A1313","#000000"))
+	var/newnamea = list("Orc Horde" = list(48,48,48,null,0,"skull","#9A1313","#000000"))
 	var/newnameb = list("Ant Colony" = list(21,21,21,null,0,"star","#0C1EA7","#67A7CE"))
 	var/newnamec = list("Gorilla Tribe" = list(21,21,21,null,0,"sun","#9A9A9A","#098518"))
 	var/newnamed = list("Human Kingdom" = list(62,62,62,null,0,"cross","#E5C100","#FFFFFF"))

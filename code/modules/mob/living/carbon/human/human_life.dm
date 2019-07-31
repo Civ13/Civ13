@@ -114,31 +114,37 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
+		var/water_m = 1
+		var/food_m = 1
+		if (orc)
+			food_m = 1.5
+		if (gorillaman)
+			water_m = 0.2
+		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
+			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats.len)
@@ -382,17 +388,15 @@
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
-/*
-// people whine too much about random flu so its removed
+
 		if (disease == FALSE)
-			//0.005%
 			if (prob(1) && map.civilizations)
-				if (prob(1) && !inducedSSD)
+				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_NORMAL)
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
-*/
+
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
 		if (grab_list[1] == null)

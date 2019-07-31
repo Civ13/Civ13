@@ -16,6 +16,7 @@
 	center_of_mass = list("x"=16, "y"=16)
 	w_class = 2
 	decay = 15*600
+	var/non_vegetarian = FALSE
 
 // dynamically scaled bitesizes, now people can eat everything faster - Kachnov
 /obj/item/weapon/reagent_containers/food/snacks/New()
@@ -80,7 +81,10 @@
 				if (blocked)
 					user << "<span class='warning'>\The [blocked] is in the way!</span>"
 					return
-
+				if (H.gorillaman)
+					if (non_vegetarian)
+						user << "<span class='warning'>You are an herbivore! You can't eat this!</span>"
+						return
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 			if (fullness <= 50)
 				C << "<span class='danger'>You hungrily chew out a piece of [src] and gobble it!</span>"
@@ -96,7 +100,12 @@
 		else
 			if (!M.can_force_feed(user, src))
 				return
-
+			if (istype(M,/mob/living/carbon/human))
+				var/mob/living/carbon/human/H = M
+				if (H.gorillaman)
+					if (non_vegetarian)
+						user << "<span class='warning'>[H] is an herbivore! They can't eat this!</span>"
+						return
 			if (fullness <= 580)
 				user.visible_message("<span class='danger'>[user] attempts to feed [M] [src].</span>")
 			else
@@ -288,6 +297,7 @@
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 3, "meat" = 1)
+	non_vegetarian = TRUE
 	decay = 0
 	New()
 		..()
@@ -300,6 +310,7 @@
 	center_of_mass = list("x"=17, "y"=18)
 	nutriment_amt = 3
 	nutriment_desc = list("salt" = 3, "fish" = 1)
+	non_vegetarian = TRUE
 	decay = 0
 	New()
 		..()
@@ -367,6 +378,7 @@
 	var/amount_grown = 0
 	var/growing = FALSE
 	satisfaction = 4
+	non_vegetarian = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/New()
 	..()
@@ -403,6 +415,7 @@
 	nutriment_desc = list("egg" = 2)
 	var/amount_grown = 0
 	var/growing = FALSE
+	non_vegetarian = TRUE
 	decay = 90*600
 	satisfaction = 2
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
@@ -436,6 +449,7 @@
 	filling_color = "#FFDF78"
 	center_of_mass = list("x"=16, "y"=14)
 	decay = 12*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 3)
@@ -443,11 +457,13 @@
 		reagents.add_reagent("blackpepper", 1)
 		bitesize = 1
 	satisfaction = 10
+	non_vegetarian = TRUE
 /obj/item/weapon/reagent_containers/food/snacks/boiledegg
 	name = "Boiled egg"
 	desc = "A hard boiled egg."
 	icon_state = "egg"
 	filling_color = "#FFFFFF"
+	non_vegetarian = TRUE
 	decay = 12*600
 	New()
 		..()
@@ -461,6 +477,7 @@
 	filling_color = "#E00D34"
 	center_of_mass = list("x"=16, "y"=16)
 	raw = TRUE
+	non_vegetarian = TRUE
 	decay = 14*600
 	New()
 		..()
@@ -487,6 +504,7 @@
 	filling_color = "#FFDEFE"
 	center_of_mass = list("x"=17, "y"=13)
 	var/rotten = FALSE
+	non_vegetarian = TRUE
 	decay = 12*600
 	satisfaction = 6
 	New()
@@ -513,6 +531,7 @@
 	var/rotten = FALSE
 	decay = 12*600
 	satisfaction = 6
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
@@ -540,6 +559,7 @@
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 12*600
 	satisfaction = 6
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
@@ -586,6 +606,7 @@
 	center_of_mass = list("x"=16, "y"=16)
 	decay = 12*600
 	satisfaction = 8
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 3)
@@ -599,6 +620,7 @@
 	center_of_mass = list("x"=16, "y"=16)
 	decay = 45*600
 	satisfaction = 8
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 6)
@@ -612,6 +634,7 @@
 	trash = /obj/item/kitchen/plate
 	filling_color = "#FFF9A8"
 	satisfaction = 8
+	non_vegetarian = TRUE
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 12*600
 	//var/herp = FALSE
@@ -643,6 +666,7 @@
 	nutriment_desc = list("waffle" = 8)
 	nutriment_amt = 8
 	decay = 18*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		bitesize = 2
@@ -655,6 +679,7 @@
 	filling_color = "#948051"
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 20*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 10)
@@ -755,6 +780,7 @@
 	filling_color = "#7A3D11"
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 15*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
@@ -772,6 +798,7 @@
 	nutriment_desc = list("poppy seeds" = 2, "pretzel" = 3)
 	nutriment_amt = 5
 	decay = 35*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		bitesize = 2
@@ -866,6 +893,7 @@
 	satisfaction = 8
 	nutriment_amt = 3
 	decay = 15*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
@@ -881,6 +909,7 @@
 	nutriment_desc = list("soup" = 5)
 	nutriment_amt = 5
 	decay = 15*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("tomatojuice", 10)
@@ -896,6 +925,7 @@
 	nutriment_amt = 5
 	decay = 16*600
 	trash = /obj/item/kitchen/snack_bowl
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 4)
@@ -1001,6 +1031,7 @@
 	nutriment_desc = list("tomato" = 3, "noodles" = 3)
 	nutriment_amt = 6
 	decay = 12*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("tomatojuice", 10)
@@ -1193,6 +1224,7 @@
 	center_of_mass = list("x"=16, "y"=9)
 	nutriment_desc = list("bread" = 10)
 	nutriment_amt = 10
+	non_vegetarian = TRUE
 	decay = 17*600
 	New()
 		..()
@@ -1208,6 +1240,7 @@
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=13)
 	decay = 17*600
+	non_vegetarian = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/bananabread
 	name = "Banana-nut bread"
@@ -1393,6 +1426,7 @@
 	slice_path = /obj/item/weapon/reagent_containers/food/snacks/cheesewedge
 	slices_num = 5
 	filling_color = "#FFF700"
+	non_vegetarian = TRUE
 	center_of_mass = list("x"=16, "y"=10)
 	nutriment_desc = list("cheese" = 10)
 	nutriment_amt = 10
@@ -1449,6 +1483,7 @@
 	center_of_mass = list("x"=16, "y"=9)
 	nutriment_desc = list("bread" = 6, "cream" = 3, "cheese" = 3)
 	nutriment_amt = 5
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 15)
@@ -1652,6 +1687,7 @@
 	var/rotten = FALSE
 	decay = 15*600
 	satisfaction = -2
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 1)
@@ -1674,6 +1710,7 @@
 	icon_state = "cutlet"
 	bitesize = 2
 	center_of_mass = list("x"=17, "y"=20)
+	non_vegetarian = TRUE
 	decay = 12*600
 	satisfaction = 5
 	New()
@@ -1689,6 +1726,7 @@
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=15)
 	decay = 17*600
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 2)
@@ -1736,3 +1774,28 @@
 	nutriment_desc = list("raw potato" = 3)
 	nutriment_amt = 3
 	decay = 27*600
+
+/obj/item/weapon/leaves
+	name = "tree leaves"
+	desc = "A bunch of tree leaves."
+	icon_state = "leaves1"
+	throwforce = 0
+	force = 0
+	w_class = 1
+	throw_speed = 3
+	throw_range = 7
+	New()
+		..()
+		icon_state = pick("leaves1","leaves2","leaves3")
+
+/obj/item/weapon/leaves/attack(mob/living/carbon/human/M as mob, mob/living/carbon/human/user as mob)
+	if (!M || !ishuman(M) || !M.gorillaman)
+		return
+	playsound(M.loc,'sound/items/eatfood.ogg', rand(10,50), TRUE)
+
+	if (M != user)
+		visible_message("[user] feeds [M] the leaves.","You feed [M] the leaves.")
+	else
+		M << "You eat the leaves."
+	M.nutrition = min(M.nutrition+40, M.max_nutrition)
+	qdel(src)

@@ -7,6 +7,7 @@
 	center_of_mass = list("x"=16, "y"=14)
 	raw = TRUE
 	var/rotten = FALSE
+	non_vegetarian = TRUE
 	decay = 15*600
 	New()
 		..()
@@ -98,6 +99,7 @@
 	center_of_mass = list("x"=16, "y"=14)
 	raw = TRUE
 	var/rotten = FALSE
+	non_vegetarian = TRUE
 	New()
 		..()
 		reagents.add_reagent("protein", 4)

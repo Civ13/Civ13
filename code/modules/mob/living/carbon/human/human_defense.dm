@@ -39,13 +39,13 @@ bullet_act
 						meat.name = "human meat"
 					if (orc)
 						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
-						HP.amount = 6
-					else if (gorillaman || ant)
-						var/obj/item/stack/material/leather/HP = new/obj/item/stack/material/leather(get_turf(src))
-						HP.amount = 6
+						HP.amount = 3
+					else if (gorillaman)
+						var/obj/item/stack/material/gorillapelt/HP = new/obj/item/stack/material/gorillapelt(get_turf(src))
+						HP.amount = 3
 					else
 						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
-						HP.amount = 6
+						HP.amount = 3
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
 					if (istype(user, /mob/living/carbon/human))
@@ -312,6 +312,8 @@ bullet_act
 /mob/living/carbon/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
 	if (!type || !def_zone) return FALSE
 	var/protection = FALSE
+	if (ant)
+		protection += 25
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
 	for (var/gear in protective_gear)
 		if (gear && istype(gear ,/obj/item/clothing))

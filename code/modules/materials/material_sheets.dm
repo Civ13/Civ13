@@ -371,6 +371,14 @@
 	value = 0
 	w_class = 2.0
 
+/obj/item/stack/material/gorillapelt
+	name = "gorilla pelt"
+	desc = "The skin from a dead gorilla."
+	icon_state = "sheet-gorillapelt"
+	default_type = "gorillapelt"
+	flammable = TRUE
+	value = 3
+	w_class = 2.0
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"

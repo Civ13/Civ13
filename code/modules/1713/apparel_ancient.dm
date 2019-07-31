@@ -370,7 +370,14 @@
 	worn_state = "fur_jacket5"
 	specific = TRUE
 	colorn = 5
-
+/obj/item/clothing/suit/storage/coat/fur/orc
+	name = "orc fur coat"
+	desc = "A thick dark green fur coat, made from disgusting orc pelts."
+	icon_state = "fur_jacket6"
+	item_state = "fur_jacket6"
+	worn_state = "fur_jacket6"
+	specific = TRUE
+	colorn = 6
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
 	if (!specific)
@@ -464,6 +471,14 @@
 	icon_state = "fur5"
 	item_state = "fur5"
 	worn_state = "fur5"
+	specific = TRUE
+
+/obj/item/clothing/shoes/fur/orc
+	name = "orc fur boots"
+	desc = "Dense fur boots made from orc skin."
+	icon_state = "fur6"
+	item_state = "fur6"
+	worn_state = "fur6"
 	specific = TRUE
 /obj/item/clothing/shoes/fur/New()
 	..()

@@ -10,6 +10,7 @@
 	trash = null
 	flammable = TRUE
 	decay = 120*600
+	non_vegetarian = TRUE
 /obj/item/weapon/reagent_containers/food/snacks/MRE/attack(mob/M as mob, mob/user as mob, def_zone)
 	if (!open && opens && M == user)
 		user << "<span class = 'warning'>Open it first.</span>"
