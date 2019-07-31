@@ -353,6 +353,14 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+/obj/item/stack/material/orcpelt
+	name = "Orc Pelt"
+	desc = "The skin of an Orc"
+	icon_state = "sheet-orcpelt"
+	default_type = "orcpelt"
+	value = 0
+	w_class = 2.0
+	flammable = TRUE
 /obj/item/stack/material/humanpelt
 	name = "human pelt"
 	desc = "A skin from a dead person."
@@ -361,6 +369,26 @@
 	value = 0
 	w_class = 2.0
 	flammable = TRUE
+
+	/obj/item/stack/material/antpelt
+		name = "ant pelt"
+		desc = "The skin from a dead ant."
+		icon_state = "sheet-antpelt"
+		default_type = "ant"
+		flammable = TRUE
+		value = 4
+		w_class = 2.0
+
+	/obj/item/stack/material/antpelt/chitin
+	name = "chitin"
+	desc = "The armor of Trilobites...and Ants"
+	icon_state = "chitin_material"
+	default_type = "chitin"
+	flammable = TRUE
+	value = 4
+	w_class = 2.0
+
+
 
 /obj/item/stack/material/orcpelt
 	name = "orc skin"
@@ -379,6 +407,7 @@
 	flammable = TRUE
 	value = 3
 	w_class = 2.0
+
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"
