@@ -1,4 +1,4 @@
-/mob/living/simple_animal/deer/male
+/mob/living/simple_animal/elk/male
 	name = "Elk Bull"
 	desc = "Provides some nice meat, if you can catch it."
 	icon_state = "elk_m"

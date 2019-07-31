@@ -1,6 +1,7 @@
 /mob/living/simple_animal/friendly/groundsloth
 	name = "Giant Ground Sloth"
 	desc = "A very slow and peaceful giant, unless you poke it with a stick."
+	icon = "icons/mob/animals_64.dmi"
 	icon_state = "giantgroundsloth_living"
 	icon_living = "giantgroundsloth_living"
 	icon_dead = "giantgroundsloth_dead"
@@ -18,7 +19,7 @@
 	response_disarm = "gently pushes aside"
 	response_harm   = "kicks"
 	attacktext = "kicked"
-	health = 200
+	health = 250
 	mob_size = MOB_HUGE
 	
 /mob/living/simple_animal/groundsloth/Life()
