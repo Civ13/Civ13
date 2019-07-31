@@ -19,6 +19,13 @@
 	icon_state = "ant_pelt"
 	flammable = FALSE
 	value = 0
+/obj/item/stack/material/animalhide/chitin
+	name = "Chitin"
+	desc = "The armor to Trilobites...and Ants"
+	singular_name = "Ant hide"
+	icon_state = "chitin_material"
+	flammable = FALSE
+	value = 0
 /obj/item/stack/material/animalhide/cat
 	name = "cat hide"
 	desc = "The by-product of cat farming."
