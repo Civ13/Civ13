@@ -131,6 +131,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	return FALSE
 
 /mob/var/next_push = -1
+
 /turf/attack_hand(mob/user)
 	if (!(user.canmove) || user.restrained() || !(user.pulling))
 		return FALSE
@@ -138,6 +139,19 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		return FALSE
 	if (user.pulling.loc != user.loc && get_dist(user, user.pulling) > 1)
 		return FALSE
+	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
+		var/turf/floor/dirt/underground/U = src
+		var/mob/living/carbon/human/H = user
+		if (H.ant)
+			visible_message("<span class = 'notice'>[user] starts to break the rock with their hands...</span>", "<span class = 'notice'>You start to break the rock with the your hands...</span>")
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			if (do_after(user, (160/(H.getStatCoeff("strength"))/1.5)))
+				U.collapse_check()
+				if (istype(src, /turf/floor/dirt/underground/empty))
+					return
+				else if (!istype(src, /turf/floor/dirt/underground/empty))
+					mining_proc(H)
+				return TRUE
 	if (world.time >= user.next_push)
 		if (ismob(user.pulling))
 			var/mob/M = user.pulling

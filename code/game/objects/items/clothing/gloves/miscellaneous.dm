@@ -53,6 +53,12 @@
 	icon_state = "pinkfur"
 	item_state = "pinkfur"
 
+/obj/item/clothing/gloves/thick/leather/orc
+	desc = "These fur gloves are cold and fire-resistant, made from orc skin."
+	name = "orc fur gloves"
+	icon_state = "orcfur"
+	item_state = "orcfur"
+
 /obj/item/clothing/gloves/thick/combat //Combined effect of SWAT gloves and insulated gloves
 	desc = "These tactical gloves are somewhat fire and impact resistant."
 	name = "combat gloves"
@@ -77,8 +83,3 @@
 	permeability_coefficient = 0.05
 	siemens_coefficient = 0.50 //thick work gloves
 
-/obj/item/clothing/gloves/theonering
-	desc = "One ring to rule them all...."
-	name = "The Ring"
-	icon_state = "theonering_obj"
-	item_state = "theonering_obj"

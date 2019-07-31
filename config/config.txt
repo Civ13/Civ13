@@ -162,7 +162,7 @@ RULESURL http://1713.eu/wiki/index.php?title=Rules
 DISCORDURL https://discord.gg/hBEtg4x
 
 ## Wiki address
-WIKIURL http://1713.eu/wiki/
+WIKIURL https://1713.eu/wiki/index.php/Main_Page
 
 ## Website address
 WEBSITEURL http://1713.eu/

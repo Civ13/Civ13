@@ -41,7 +41,7 @@
 			update_body(1,1)
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
-			damage_multiplier = 2
+			damage_multiplier = 1.5
 	else if (type == "Ant")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into an Ant!</font>"

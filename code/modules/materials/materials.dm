@@ -633,6 +633,28 @@ var/list/name_to_material
 	sheet_plural_name = "skins"
 	stack_type = /obj/item/stack/material/humanpelt
 
+/material/gorillapelt
+	name = "gorillapelt"
+	use_name = "gorilla"
+	icon_colour = "#8C7E6E"
+	ignition_point = T0C+400
+	melting_point = T0C+400
+	hardness = 30
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/gorillapelt
+
+/material/orcpelt
+	name = "orcnpelt"
+	use_name = "orc"
+	icon_colour = "#013220"
+	ignition_point = T0C+700
+	melting_point = T0C+700
+	hardness = 45
+	sheet_singular_name = "skin"
+	sheet_plural_name = "skins"
+	stack_type = /obj/item/stack/material/orcpelt
+
 /material/carpet
 	name = "carpet"
 	display_name = "comfy"

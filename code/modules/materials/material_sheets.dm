@@ -369,25 +369,45 @@
 	value = 0
 	w_class = 2.0
 	flammable = TRUE
-	
-/obj/item/stack/material/animalhide/ant
-	name = "Ant Hide"
-	desc = "The hide of a huge ant"
-	singular_name = "Ant Hide"
-	icon_state = "ant_pelt"
-	default_type = "ant"
-	flammable = FALSE
-	value = 0
-	
-/obj/item/stack/material/animalhide/chitin
-	name = "Chitin"
-	desc = "The armor to Trilobites...and Ants"
-	singular_name = "Ant hide"
+
+	/obj/item/stack/material/antpelt
+		name = "ant pelt"
+		desc = "The skin from a dead ant."
+		icon_state = "sheet-antpelt"
+		default_type = "ant"
+		flammable = TRUE
+		value = 4
+		w_class = 2.0
+
+	/obj/item/stack/material/antpelt/chitin
+	name = "chitin"
+	desc = "The armor of Trilobites...and Ants"
 	icon_state = "chitin_material"
 	default_type = "chitin"
-	flammable = FALSE
+	flammable = TRUE
+	value = 4
+	w_class = 2.0
+
+
+
+/obj/item/stack/material/orcpelt
+	name = "orc skin"
+	desc = "A rough skin, it'l like a flexible rock..."
+	icon_state = "sheet-orcpelt"
+	default_type = "orcpelt"
+	flammable = TRUE
 	value = 0
-	
+	w_class = 2.0
+
+/obj/item/stack/material/gorillapelt
+	name = "gorilla pelt"
+	desc = "The skin from a dead gorilla."
+	icon_state = "sheet-gorillapelt"
+	default_type = "gorillapelt"
+	flammable = TRUE
+	value = 3
+	w_class = 2.0
+
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"

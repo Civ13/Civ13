@@ -16,8 +16,9 @@
 			message = pick("grrrr!","woof", "wooof!", "rrrrr!")
 			animalistic = TRUE
 		else if (gorillaman)
-			message = pick("uh uh uh!","UH UH", "OOGA", "BOOGA")
-			animalistic = TRUE
+			if (map && map.ID != MAP_TRIBES)
+				message = pick("uh uh uh!","UH UH", "OOGA", "BOOGA")
+				animalistic = TRUE
 	message = capitalize_cp1251(sanitize(message))
 	var/message_without_html = message
 

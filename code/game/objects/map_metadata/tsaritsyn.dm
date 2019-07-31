@@ -29,6 +29,8 @@
 	gamemode = "Siege"
 obj/map_metadata/tsaritsyn/job_enabled_specialcheck(var/datum/job/J)
 	..()
+	if (istype(J, /datum/job/civilian/fantasy))
+		. = FALSE
 	if (istype(J, /datum/job/russian))
 		if (J.is_rcw == TRUE)
 			. = TRUE

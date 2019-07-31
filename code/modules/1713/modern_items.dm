@@ -909,10 +909,12 @@
 		powersource.currentflow -= powerneeded
 		powersource.lastupdate2 = world.time
 		H << "You power off the [src]."
+		update_icon()
 		return
 
 	else if (!active && !powersource.powered)
 		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"
+		update_icon()
 		return
 	else if (!active && powersource.powered && ((powersource.powerflow-powersource.currentflow) >= powerneeded))
 		active = TRUE
@@ -922,6 +924,7 @@
 		powersource.lastupdate2 = world.time
 		power_on()
 		H << "You power the [src]."
+		update_icon()
 		return
 	else
 		H << "<span class = 'notice'>There is not enough power to start the [src].</span>"

@@ -68,12 +68,6 @@
 
 /obj/item/clothing/suit/storage/jacket/custom
 	var/uncolored = FALSE
-	color = "#FFFFFF"
-	New()
-		..()
-		spawn(5)
-			uncolored = TRUE
-
 
 /obj/item/clothing/suit/storage/jacket/custom/attack_self(mob/user as mob)
 	if (uncolored)
@@ -94,7 +88,6 @@
 				if (!(numtocheck in listallowed))
 					return
 			color = addtext("#",input)
-//			user << "Color: [color]"
 			uncolored = FALSE
 			return
 	else

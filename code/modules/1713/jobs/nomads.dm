@@ -430,6 +430,42 @@
 								name = input_name
 								real_name = input_name
 								return
+	else if (map && map.ID == MAP_TRIBES)
+		spawn(15)
+			if (original_job_title == "Orc tribesman")
+				orc = 1
+				civilization = "Orc Horde"
+				add_language("Black Speech",TRUE)
+				remove_language("English")
+				for (var/datum/language/blackspeech/A in languages)
+					default_language = A
+				name = species.get_random_orc_name(gender)
+				real_name = name
+				return
+			else if (original_job_title == "Ant tribesman")
+				ant = 1
+				civilization = "Ant Colony"
+				add_language("Antspeak",TRUE)
+				remove_language("English")
+				for (var/datum/language/ant/A in languages)
+					default_language = A
+				name = species.get_random_ant_name(gender)
+				real_name = name
+				return
+			else if (original_job_title == "Gorilla tribesman")
+				gorillaman = 1
+				civilization = "Gorilla Tribe"
+				add_language("Ape Speech",TRUE)
+				remove_language("English")
+				for (var/datum/language/ape/A in languages)
+					default_language = A
+				name = species.get_random_gorilla_name(gender)
+				real_name = name
+				return
+			else
+				civilization = "Human Kingdom"
+				name = species.get_random_english_name(gender)
+				real_name = name
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
@@ -660,6 +696,135 @@
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/orc
+	title = "Orc tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND1"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
+	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.")
+
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("philosophy", STAT_NORMAL)
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/ant
+	title = "Ant tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND2"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
+	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_LOW)
+
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/gorilla
+	title = "Gorilla tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND3"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
+	H.add_note("Race Mechanics", "- Very high strength, dexterity, and stamina. Good on unarmed fights.<br>- Can jump further than other races. <br>- Doesn't need to drink as often as other races, as they get water from their food.<br>- Since you are an herbivore, you cannot eat meat, eggs, and so on. You can use grab intent to collect and eat leaves from trees.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_LOW)
+	H.stats["stamina"][1] = 150
+	H.stats["stamina"][2] = 150
+
+	return TRUE
+
+/datum/job/civilian/fantasy/human
+	title = "Human tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
+	H.add_note("Race Mechanics", "- Advanced technology compared to all other races (can build crude gunpowder weapons like arquebuses)<br>- Good crafting and intelligence.<br>- The weakest race physically, compared to other races.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_MEDIUM_HIGH)
 
 
 	return TRUE

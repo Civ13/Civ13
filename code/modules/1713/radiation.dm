@@ -44,6 +44,8 @@
 	for (var/obj/item/organ/external/sorgan in organs)
 		var/blocked = getarmor_rad(sorgan.name)
 		var/new_amount = max(0, (amount/11)*(1 - blocked/100)) //we need to divide it by 11 because there are 11 external body parts. Otherwise the dose is 11 time greater than it is supposed to be.
+		if (orc || ant)
+			new_amount *= 0.5
 		radiation += new_amount
 	for(var/obj/I in src) //Radiation is also applied to items held by the mob, but with the unprotected values in the case of geiger counters
 		if (istype(I, /obj/item/weapon/geiger_counter))

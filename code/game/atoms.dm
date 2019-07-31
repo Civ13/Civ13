@@ -530,7 +530,11 @@
 		var/obj/item/organ/affecting = user.get_organ(limbcheck)
 		if(!affecting)//Oh shit, we don't have have any legs, we can't jump.
 			return
-	if (istype(target, /turf/floor/beach/water) || user.stats["stamina"][1] <= 25 || get_dist(target,user)>2)
+	var/maxdist = 2
+	if (ishuman(user))
+		if (user.gorillaman)
+			maxdist = 3
+	if (istype(target, /turf/floor/beach/water) || user.stats["stamina"][1] <= 25 || get_dist(target,user)>maxdist)
 		return
 	if ((istype(target, /obj) && target.density == TRUE) || (istype(target, /turf) && target.density == TRUE))
 		return
@@ -545,6 +549,22 @@
 				user.setClickCooldown(22)
 				return
 		for(var/turf/T in range(1,user))
+			if (get_dir(user,T) == dir_to_tgt && T.density == TRUE)
+				user << "<span class='danger'>You hit the [T]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
+	if (maxdist == 3 && get_dist(target,user)==3)
+		var/dir_to_tgt = get_dir(user,target)
+		for(var/obj/O in range(2,user))
+			if (get_dir(user,O) == dir_to_tgt && (O.density == TRUE || istype(O, /obj/structure/window/sandbag/railing)))
+				user << "<span class='danger'>You hit the [O]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
+		for(var/turf/T in range(2,user))
 			if (get_dir(user,T) == dir_to_tgt && T.density == TRUE)
 				user << "<span class='danger'>You hit the [T]!</span>"
 				user.adjustBruteLoss(rand(2,7))
