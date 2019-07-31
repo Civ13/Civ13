@@ -118,7 +118,7 @@
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
 		if (prob(3))
 			for(var/mob/living/carbon/human/HM in range(3,src))
-				if (HM != src)
+				if (HM != src && !HM.orc)
 					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
 					HM.mood -= 3
 /mob/living/carbon/human/proc/adjust_hygiene(var/amount)

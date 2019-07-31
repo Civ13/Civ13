@@ -33,10 +33,16 @@
 /obj/item/weapon/reagent_containers/food/snacks/proc/On_Consume(var/mob/M)
 	if (!usr)	return
 	if (raw)
-		M.reagents.add_reagent("food_poisoning", 1)
+		if (ishuman(M))
+			var/mob/living/carbon/human/H = M
+			if (!H.orc)
+				M.reagents.add_reagent("food_poisoning", 1)
 	if (ishuman(M))
 		var/mob/living/carbon/human/HM = M
-		HM.mood += satisfaction
+		if (HM.orc)
+			HM.mood += abs(satisfaction)
+		else
+			HM.mood += satisfaction
 	if (!reagents.total_volume)
 		M.visible_message("<span class='notice'>[M] finishes eating \the [src].</span>","<span class='notice'>You finish eating \the [src].</span>")
 		usr.drop_from_inventory(src)	//so icons update :[
