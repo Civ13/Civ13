@@ -353,6 +353,14 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+/obj/item/stack/material/orcpelt
+	name = "Orc Pelt"
+	desc = "The skin of an Orc"
+	icon_state = "sheet-orcpelt"
+	default_type = "orcpelt"
+	value = 0
+	w_class = 2.0
+	flammable = TRUE
 /obj/item/stack/material/humanpelt
 	name = "human pelt"
 	desc = "A skin from a dead person."
