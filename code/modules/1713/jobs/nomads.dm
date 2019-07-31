@@ -64,7 +64,16 @@
 						C.uncolored = FALSE
 					C.shirtcolor = "#000000"
 					C.pantscolor = "#9A1313"
+					var/image/pants = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_decoration")
+					pants.color = C.pantscolor
+					var/image/shirt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robe")
+					shirt.color = C.shirtcolor
+					var/image/belt = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "tribalrobe_robebelt")
+					overlays += pants
+					overlays += shirt
+					overlays += belt
 					equip_to_slot_or_del(C, slot_w_uniform)
+					update_icons(1)
 				else if (gorillaman)
 					equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
 				else if (ant)
