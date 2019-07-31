@@ -361,7 +361,23 @@
 	value = 0
 	w_class = 2.0
 	flammable = TRUE
-
+	
+/obj/item/stack/material/animalhide/ant
+	name = "Ant Hide"
+	desc = "The hide of a huge ant"
+	singular_name = "Ant Hide"
+	icon_state = "ant_pelt"
+	flammable = FALSE
+	value = 0
+	
+/obj/item/stack/material/animalhide/chitin
+	name = "Chitin"
+	desc = "The armor to Trilobites...and Ants"
+	singular_name = "Ant hide"
+	icon_state = "chitin_material"
+	flammable = FALSE
+	value = 0
+	
 /obj/item/stack/material/glass
 	name = "glass"
 	icon_state = "sheet-glass"
