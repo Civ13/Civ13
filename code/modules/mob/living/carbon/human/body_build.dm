@@ -60,11 +60,21 @@
 /datum/body_build/gorilla
 	name			= "Gorilla"
 	index			= "_gorilla"
-	nohair = TRUE
+	nohair = FALSE
 	nofacialhair = TRUE
 
 /datum/body_build/gorilla/female
 	gender 			= FEMALE
+
+/datum/body_build/orc
+	name			= "Orc"
+	index			= "_orc"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/orc/female
+	gender 			= FEMALE
+
 
 /datum/body_build/wolfman
 	name			= "Wolfman"
@@ -82,4 +92,14 @@
 	nofacialhair = TRUE
 
 /datum/body_build/werewolf/female
+	gender 			= FEMALE
+
+
+/datum/body_build/ant
+	name			= "Ant"
+	index			= "_ant"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/ant/female
 	gender 			= FEMALE

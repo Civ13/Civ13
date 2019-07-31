@@ -132,10 +132,13 @@
 /obj/item/weapon/reagent_containers/food/snacks/rawfish/New()
 	..()
 	spawn(3000) //5 minutes
+		if (!src)
+			return
 		icon_state = "rottenfish"
 		name = "rotten [name]"
-		reagents.remove_reagent("protein", 2)
-		reagents.add_reagent("food_poisoning", 1)
+		if (reagents)
+			reagents.remove_reagent("protein", 2)
+			reagents.add_reagent("food_poisoning", 1)
 		rotten = TRUE
 		spawn(1000)
 			if (isturf(loc) && prob(30))

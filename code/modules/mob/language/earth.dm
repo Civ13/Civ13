@@ -14,6 +14,8 @@
 #define SWAHILI_SYLLABLES list("ak", "al", "am", "an", "ar", "at", "ba", "ch", "en", "ha", "hi", "ia", "ik", "il", "im", "in", "ka", "ki", "ku", "kw", "la", "li", "ma", "mb", "mi", "na", "ng", "ni", "ra", "si", "ta", "ti", "uw", "wa", "we", "ya", "ye", "wa", "ku", "ka", "na", "li", "ma", "an", "ya", "ik", "ak", "al", "am", "ni", "in", "ha", "at", "ki", "ng", "ti", "ba", "uw", "hi", "si", "kw", "ta", "ar", "ra", "il", "we", "mb", "en", "la", "mi", "ia", "ch", "im", "ye", "aka", "ake", "aki", "ali", "ama", "amb", "ana", "ang", "ani", "ara", "ari", "ata", "ati", "eye", "eza", "ika", "iki", "iku", "ili", "ing", "ini", "ish", "ita", "kam", "kat", "kut", "kuw", "kwa", "lik", "mba", "ngu", "sha", "tik", "uli", "uwa", "wak", "wal", "wam", "wan", "yak", "yey", "ali", "kuw", "uwa", "kwa", "ati", "iku", "lik", "kat", "ili", "ika", "mba", "aka", "ana", "ama", "amb", "ake", "tik", "ing", "ini", "kam", "wak", "ani", "sha", "ara", "yak", "ang", "wal", "ish", "aki", "wan", "eza", "ari", "kut", "ata", "wam", "yey", "eye", "ngu", "iki", "uli", "ita")
 #define AINU_SYLLABLES list("da", "do", "de", "ra", "ri", "ro", "re", "tsu", "me", "mi", "ma", "ka", "ki", "ko", "ke", "shi", "sho", "sha", "sa", "se", "su", "si", "ou", "na", "no", "ni", "ne", "te", "ta", "to", "ti", "wa", "wo", "wi", "we", "ho", "ga", "ge", "go", "gi", "al", "an", "bi", "vye", "vo", "go", "dye", "yel", "yen", "yer", "yet", "ka", "ko", "la", "ly", "lo", "l", "na", "nye", "ny", "no", "ov", "ol", "on", "or", "slog", "ot", "po", "pr", "ra", "rye", "ro", "st", "ta", "tye", "to", "t", "at", "bil", "vyer", "yego", "yeny", "yenn", "yest", "kak", "ln", "ova", "ogo", "ili", "oro", "ost", "oto", "pry", "pro", "sta", "stv", "tor", "chto", "eto")
 #define VIETNAMESE_SYLLABLES list("la","duoc","cua","co","va","nam","bai","mot","cac","nay","trong","thang","the","so","de","de","ho","the","lien","ngay","phan","cach","bang","la","hoc","dan","con","viet","loai","bo","ban","da","o","tham","noi","mo","rong","loai","dung","hai","hoan","van","giup","so","den","thanh","khao","quoc","chinh","phap","voi","chinh","c?p","cho","nguoi","truy","khong","phan","ve","quan","danh","tinh","thuoc","khoa","quan","do","gia","chi","ban","vao","tu","hanh","xa","cong","gioi","khi","le","huyen","lop","tai","thi","hinh","nganh","nhung","chien","tong","in","vi","do","ket","cong","boi","tren","vung","sau","cao","nha","trung","thong","phat")
+#define BLACKSPEECH_SYLLABLES list("sh","thr", "th", "m", "Kr", "gl", "sk", "zg", "mb", "mp", "rz", "nk", "dhl", "zh", "û", "á", "ûk", "ul", "ak", "na", "ul", "ag", "Ng", "gh", "h", "s", "z")
+#define ANT_SYLLABLES list("'Ch", "u'", "kra", "ko", "kre", "k'h", "cru", "ka", "tch'", "ach", "ukt", "k'tu", "v'ch", "uk", "-kh", "ak'h", "ke-ta", "kt-", "khe'", "uc", "tc'hu", "'Kh")
 
 /datum/language/portuguese
 	name = "Portuguese"
@@ -201,3 +203,22 @@
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = VIETNAMESE_SYLLABLES
 	mutual_intelligibility = list(/datum/language/chinese = 10)
+
+
+/datum/language/blackspeech
+	name = "Black Speech"
+	desc = "Baldur!"
+	key = "b"
+	colour = "Black Speech"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = BLACKSPEECH_SYLLABLES
+	mutual_intelligibility = list()
+
+/datum/language/ant
+	name = "Antspeak"
+	desc = "Kch!"
+	key = "a"
+	colour = "Antspeak"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = ANT_SYLLABLES
+	mutual_intelligibility = list()

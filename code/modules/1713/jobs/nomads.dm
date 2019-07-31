@@ -232,7 +232,7 @@
 							real_name = name
 							add_note("Known Languages", "German")
 							return
-/*
+
 		else if (map.ID == MAP_NOMADS_PANGEA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
@@ -298,7 +298,7 @@
 						real_name = name
 						add_note("Known Languages", "German")
 						return
-*/
+/*
 		else if (map.ID == MAP_NOMADS_PANGEA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
@@ -363,6 +363,7 @@
 						name = species.get_random_russian_name(gender)
 						real_name = name
 						return
+*/
 //////////////////////////////////////////////////////
 ///////////////////Karafuta-Sakhalinsk////////////////
 //////////////////////////////////////////////////////
@@ -429,6 +430,42 @@
 								name = input_name
 								real_name = input_name
 								return
+	else if (map && map.ID == MAP_TRIBES)
+		spawn(15)
+			if (original_job_title == "Orc tribesman")
+				orc = 1
+				civilization = "Orc Horde"
+				add_language("Black Speech",TRUE)
+				remove_language("English")
+				for (var/datum/language/blackspeech/A in languages)
+					default_language = A
+				name = species.get_random_orc_name(gender)
+				real_name = name
+				return
+			else if (original_job_title == "Ant tribesman")
+				ant = 1
+				civilization = "Ant Colony"
+				add_language("Antspeak",TRUE)
+				remove_language("English")
+				for (var/datum/language/ant/A in languages)
+					default_language = A
+				name = species.get_random_ant_name(gender)
+				real_name = name
+				return
+			else if (original_job_title == "Gorilla tribesman")
+				gorillaman = 1
+				civilization = "Gorilla Tribe"
+				add_language("Carib",TRUE)
+				remove_language("English")
+				for (var/datum/language/carib/A in languages)
+					default_language = A
+				name = species.get_random_carib_name(gender)
+				real_name = name
+				return
+			else
+				civilization = "Human Kingdom"
+				name = species.get_random_english_name(gender)
+				real_name = name
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
@@ -659,6 +696,130 @@
 	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
 	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/orc
+	title = "Orc tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND1"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
+
+	H.setStat("strength", STAT_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_HIGH)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+	H.setStat("philosophy", STAT_NORMAL)
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/ant
+	title = "Ant tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND2"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_VERY_HIGH)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_LOW)
+
+
+
+	return TRUE
+
+
+/datum/job/civilian/fantasy/gorilla
+	title = "Gorilla tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND3"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_LOW)
+
+
+	return TRUE
+
+/datum/job/civilian/fantasy/human
+	title = "Human tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_clothes()
+	H.give_languages()
+
+	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_MEDIUM_HIGH)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_MEDIUM_HIGH)
 
 
 	return TRUE

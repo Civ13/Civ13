@@ -53,10 +53,12 @@ var/global/datum/controller/occupations/job_master
 	var/admin_expected_clients = 0
 
 /datum/controller/occupations/proc/set_factions(var/autobalance_nr = 0)
-	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
-	var/randomfaction_spawn = "Red Goose Tribesman"
-	//sets 2 factions for >=10ppl, 3 factions for >=15, 4 factions for >=20, 5 factions for >=25 and 6 factions for >=30
+//	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
+//	var/randomfaction_spawn = "Red Goose Tribesman"
+//	//sets 2 factions for >=10ppl, 3 factions for >=15, 4 factions for >=20, 5 factions for >=25 and 6 factions for >=30
 	if (map.availablefactions_run == TRUE)
+		map.availablefactions = list("Orc tribesman", "Ant tribesman", "Human tribesman", "Gorilla tribesman")
+/*
 		if (autobalance_nr < 10)
 			randomfaction_spawn = pick(randomfaction)
 			map.availablefactions = list(randomfaction_spawn)
@@ -95,7 +97,7 @@ var/global/datum/controller/occupations/job_master
 			randomfaction_spawn = pick(randomfaction)
 			map.availablefactions = randomfaction
 			world << "All the 6 tribes are enabled."
-
+*/
 	map.availablefactions_run = FALSE
 	return
 
@@ -372,6 +374,12 @@ var/global/datum/controller/occupations/job_master
 			world << "<span class = 'danger'>WARNING: [H] has no original job!!</span>"
 		#endif
 
+		if (map && H && (H.faction_text in map.orc))
+			H.orc = 1
+		if (map && H && (H.faction_text in map.gorilla))
+			H.gorillaman = 1
+		if (map && H && (H.faction_text in map.ant))
+			H.ant = 1
 		var/spawn_location = H.original_job.spawn_location
 		H.job_spawn_location = spawn_location
 

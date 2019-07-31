@@ -309,6 +309,7 @@
 #include "code\game\objects\structures\table_frames.dm"
 #include "code\game\objects\structures\table_rack.dm"
 #include "code\game\objects\structures\target_stake.dm"
+#include "code\game\objects\structures\television.dm"
 #include "code\game\objects\structures\transports.dm"
 #include "code\game\objects\structures\vending.dm"
 #include "code\game\objects\structures\watercloset.dm"
@@ -846,5 +847,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\omaha.dmm"
+#include "maps\5000bc\tribes.dmm"
 // END_INCLUDE

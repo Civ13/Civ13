@@ -37,8 +37,15 @@ bullet_act
 					for (var/v in 1 to rand(5,7))
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 						meat.name = "human meat"
-					var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
-					HP.amount = 6
+					if (orc)
+						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
+						HP.amount = 6
+					else if (gorillaman || ant)
+						var/obj/item/stack/material/leather/HP = new/obj/item/stack/material/leather(get_turf(src))
+						HP.amount = 6
+					else
+						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
+						HP.amount = 6
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
 					if (istype(user, /mob/living/carbon/human))

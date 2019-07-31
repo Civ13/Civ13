@@ -12,6 +12,8 @@
 	for (current in current_list)
 
 		var/mob/M = current
+		if (!M || !ismob(M))
+			return
 
 		if (isDeleted(M))
 			catchBadType(M)

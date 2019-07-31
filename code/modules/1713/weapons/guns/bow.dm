@@ -118,6 +118,7 @@
 	else if (!(istype(loc, /mob/living)))
 		loaded = list()
 		chambered = null
+		update_icon()
 
 /obj/item/weapon/gun/projectile/bow/handle_post_fire()
 	..()

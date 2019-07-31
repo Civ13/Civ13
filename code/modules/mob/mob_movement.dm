@@ -456,7 +456,7 @@
 		var/standing_on_snow = FALSE
 
 		var/mob/living/carbon/human/H = mob
-		if (F && F_is_valid_floor && isnull(H.riding_mob))
+		if (F && ishuman(H) && F_is_valid_floor && isnull(H.riding_mob))
 
 			var/area/F_area = get_area(F)
 			var/no_snow = FALSE

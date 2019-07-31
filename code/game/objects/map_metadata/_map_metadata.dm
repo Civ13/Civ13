@@ -166,12 +166,17 @@ var/civmax_research = list(230,230,230)
 	var/artillery_timer = 3000
 	var/artillery_last = 0
 	var/list/valid_artillery = list("Explosive","Napalm","White Phosphorus")
+
+	var/list/orc = list()
+	var/list/human = list()
+	var/list/gorilla = list()
+	var/list/ant = list()
 /obj/map_metadata/New()
 	..()
 	map = src
 	icon = null
 	icon_state = null
-
+	human = faction_organization.Copy()
 	initial_faction_organization = faction_organization.Copy()
 
 	// get a subfaction, just one, for this round

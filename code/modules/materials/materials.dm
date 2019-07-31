@@ -304,6 +304,15 @@ var/list/name_to_material
 	sheet_singular_name = "ingot"
 	sheet_plural_name = "ingots"
 
+/material/plastic
+	name = "plastic"
+	icon_colour = "#dddddd"
+	stack_type = /obj/item/stack/material/plastic
+	weight = 8
+	hardness = 36
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
+
 /material/tin
 	name = "tin"
 	icon_colour = "#d3d4d5"
@@ -623,6 +632,17 @@ var/list/name_to_material
 	sheet_singular_name = "skin"
 	sheet_plural_name = "skins"
 	stack_type = /obj/item/stack/material/humanpelt
+
+/material/orcpelt
+	name = "orcnpelt"
+	use_name = "orc"
+	icon_colour = "#013220"
+	ignition_point = T0C+700
+	melting_point = T0C+700
+	hardness = 45
+	sheet_singular_name = "skin"
+	sheet_plural_name = "skins"
+	stack_type = /obj/item/stack/material/orcpelt
 
 /material/carpet
 	name = "carpet"

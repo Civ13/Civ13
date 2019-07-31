@@ -4,33 +4,46 @@
 	title = "Tribes (225x225x2)"
 	lobby_icon_state = "civ13"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
-	respawn_delay = 6000 // 10 minutes!
+	respawn_delay = 3600 // 6 minutes!
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
 	faction_organization = list(
-		INDIANS,)
+		CIVILIAN,)
 	available_subfactions = list(
 		)
 	roundend_condition_sides = list(
-		list(INDIANS) = /area/caribbean/british
+		list(CIVILIAN) = /area/caribbean/british
 		)
-	age = "5000 B.C."
-	ordinal_age = 0
-	faction_distribution_coeffs = list(INDIANS = 1)
-	battle_name = "the tribes"
-	mission_start_message = "<big>Six tribes have been inhabiting this area for generations. Will they be able to get along?</big>"
+	age = "the lost time"
+	ordinal_age = 2
+	faction_distribution_coeffs = list(CIVILIAN = 1)
+	battle_name = "the four tribes"
+	mission_start_message = "<big>Four tribes are settling in this land. Will they be able to get along?<br>The grace wall will be up for <b>25 minutes</b>.</big>"
 	ambience = list('sound/ambience/jungle1.ogg')
-	faction1 = INDIANS
+	faction1 = CIVILIAN
+	is_singlefaction = TRUE
+	availablefactions = list("Orc tribesman")
 	availablefactions_run = TRUE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Faction-Based RP"
-obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
+/obj/map_metadata/tribes/New()
+	var/newnamea = list("Orc Horde" = list(56,56,56,null,0,"skull","#9A1313","#000000"))
+	var/newnameb = list("Ant Colony" = list(21,21,21,null,0,"star","#0C1EA7","#67A7CE"))
+	var/newnamec = list("Gorilla Tribe" = list(21,21,21,null,0,"sun","#9A9A9A","#098518"))
+	var/newnamed = list("Human Kingdom" = list(62,62,62,null,0,"cross","#E5C100","#FFFFFF"))
+	custom_civs += newnamea
+	custom_civs += newnameb
+	custom_civs += newnamec
+	custom_civs += newnamed
+	spawn(1)
+
 	..()
-	if (istype(J, /datum/job/indians/tribes))
+
+/obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
+	..()
+	if (istype(J, /datum/job/civilian/fantasy))
 		. = TRUE
-	else if (istype(J, /datum/job/indians/carib) || istype(J, /datum/job/indians/carib_chief) || istype(J, /datum/job/indians/carib_shaman))
-		. = FALSE
 	else
 		. = FALSE
 /obj/map_metadata/tribes/faction2_can_cross_blocks()

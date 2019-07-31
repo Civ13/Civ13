@@ -21,7 +21,7 @@
 					if (matches)	matches += " and "
 					matches += "ID ([client.computer_id])"
 					// if one of us is the host, don't show us this warning. Because we're probably testing.
-					if (!(M.client.holder.rights == 65535) && !(client.holder.rights == 65535))
+					if (M && M.client && !(M.client.holder.rights == 65535) && !(client.holder.rights == 65535))
 						spawn(0) WWalert(src, "You have logged in already with another key this round, please log out of this one NOW or risk being banned!", "Warning!")
 				if (matches)
 					if (M.client)
@@ -38,22 +38,22 @@
 	world.update_status()
 
 	update_client_colour(0)
+	if (src && client)
+		client.images = null				//remove the images such as AIs being unable to see runes
+		client.screen = null				//remove hud items just in case
+		if (hud_used)	qdel(hud_used)		//remove the hud objects
+		hud_used = new /datum/hud(src)
 
-	client.images = null				//remove the images such as AIs being unable to see runes
-	client.screen = null				//remove hud items just in case
-	if (hud_used)	qdel(hud_used)		//remove the hud objects
-	hud_used = new /datum/hud(src)
+		next_move = TRUE
+		sight |= SEE_SELF
+		..()
 
-	next_move = TRUE
-	sight |= SEE_SELF
-	..()
-
-	if (loc && !isturf(loc))
-		client.eye = loc
-		client.perspective = EYE_PERSPECTIVE
-	else
-		client.eye = src
-		client.perspective = MOB_PERSPECTIVE
+		if (loc && !isturf(loc))
+			client.eye = loc
+			client.perspective = EYE_PERSPECTIVE
+		else
+			client.eye = src
+			client.perspective = MOB_PERSPECTIVE
 
 	//set macro to normal incase it was overriden.
 	winset(src, null, "mainwindow.macro=macro hotkey_toggle.is-checked=false input.focus=true input.background-color=#D3B5B5")
