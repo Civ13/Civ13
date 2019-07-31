@@ -7,10 +7,17 @@
 	value = 0
 /obj/item/stack/material/animalhide/orc
 	name = "orc skin"
-	desc = "A rough skin, it'l like a flexible rock..."
+	desc = "A rough skin, it's like a flexible rock..."
 	singular_name = "orc skin piece"
 	icon_state = "sheet-orcpelt"
 	flammable = TRUE
+	value = 0
+/obj/item/stack/material/animalhide/ant
+	name = "Ant Hide"
+	desc = "The hide of a huge ant"
+	singular_name = "Ant Hide"
+	icon_state = "ant_pelt"
+	flammable = FALSE
 	value = 0
 /obj/item/stack/material/animalhide/cat
 	name = "cat hide"
