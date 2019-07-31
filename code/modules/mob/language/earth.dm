@@ -16,7 +16,7 @@
 #define VIETNAMESE_SYLLABLES list("la","duoc","cua","co","va","nam","bai","mot","cac","nay","trong","thang","the","so","de","de","ho","the","lien","ngay","phan","cach","bang","la","hoc","dan","con","viet","loai","bo","ban","da","o","tham","noi","mo","rong","loai","dung","hai","hoan","van","giup","so","den","thanh","khao","quoc","chinh","phap","voi","chinh","c?p","cho","nguoi","truy","khong","phan","ve","quan","danh","tinh","thuoc","khoa","quan","do","gia","chi","ban","vao","tu","hanh","xa","cong","gioi","khi","le","huyen","lop","tai","thi","hinh","nganh","nhung","chien","tong","in","vi","do","ket","cong","boi","tren","vung","sau","cao","nha","trung","thong","phat")
 #define BLACKSPEECH_SYLLABLES list("sh","thr", "th", "m", "Kr", "gl", "sk", "zg", "mb", "mp", "rz", "nk", "dhl", "zh", "û", "á", "ûk", "ul", "ak", "na", "ul", "ag", "Ng", "gh", "h", "s", "z")
 #define ANT_SYLLABLES list("'Ch", "u'", "kra", "ko", "kre", "k'h", "cru", "ka", "tch'", "ach", "ukt", "k'tu", "v'ch", "uk", "-kh", "ak'h", "ke-ta", "kt-", "khe'", "uc", "tc'hu", "'Kh")
-
+#define GORILLA_SYLABLES list("ugh", "bo", "ah", "unga", "'ga", "bunga", "agha", "ah-ah", "ho", "gru", "egh", "gah", "gu", "gch", "ba", "bu", "-cah", "ah", "ouh", "tcha", "ugga", "uk", "uck", "-gogh", "au", "tah", "boh", "teh", "oog", "u'uk", "gra", "na")
 /datum/language/portuguese
 	name = "Portuguese"
 	desc = "Muito bom."
@@ -221,4 +221,13 @@
 	colour = "Antspeak"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ANT_SYLLABLES
+	mutual_intelligibility = list()
+
+/datum/language/ape
+	name = "Ape Speech"
+	desc = "Ooga!"
+	key = "a"
+	colour = "Ape Speech"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = GORILLA_SYLLABLES
 	mutual_intelligibility = list()

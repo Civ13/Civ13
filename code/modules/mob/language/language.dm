@@ -133,6 +133,12 @@
 	var/full_name = "Kch-ak"
 	return full_name
 
+/datum/language/proc/get_random_gorilla_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_gorilla))
+
+	var/full_name = "Oog"
+	return full_name
 
 /datum/language/proc/get_random_roman_name(name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)

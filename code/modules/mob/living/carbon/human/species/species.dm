@@ -392,6 +392,11 @@
 
 		return capitalize(pick(first_names_ant))
 
+/datum/species/proc/get_random_gorilla_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_gorilla))
+
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)

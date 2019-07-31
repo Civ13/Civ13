@@ -455,11 +455,11 @@
 			else if (original_job_title == "Gorilla tribesman")
 				gorillaman = 1
 				civilization = "Gorilla Tribe"
-				add_language("Carib",TRUE)
+				add_language("Ape Speech",TRUE)
 				remove_language("English")
-				for (var/datum/language/carib/A in languages)
+				for (var/datum/language/ape/A in languages)
 					default_language = A
-				name = species.get_random_carib_name(gender)
+				name = species.get_random_gorilla_name(gender)
 				real_name = name
 				return
 			else
