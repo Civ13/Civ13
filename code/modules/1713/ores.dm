@@ -99,28 +99,28 @@
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_skull1"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilskull2
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_skull2"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilskull3
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_skull3"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilleaf1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_leaf1"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 
@@ -128,40 +128,40 @@
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_leaf2"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilleaf3
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_leaf3"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilshell1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_shell1"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilshell2
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_shell2"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilshell3
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_shell3"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
 	
 /obj/item/stack/ore/fossilbone1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_bone1"
-	singular_name "fossil"
+	singular_name = "fossil"
 	flammable = FALSE
