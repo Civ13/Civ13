@@ -375,6 +375,7 @@
 	desc = "The hide of a huge ant"
 	singular_name = "Ant Hide"
 	icon_state = "ant_pelt"
+	default_type = "ant"
 	flammable = FALSE
 	value = 0
 	
@@ -383,6 +384,7 @@
 	desc = "The armor to Trilobites...and Ants"
 	singular_name = "Ant hide"
 	icon_state = "chitin_material"
+	default_type = "chitin"
 	flammable = FALSE
 	value = 0
 	
