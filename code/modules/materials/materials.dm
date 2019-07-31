@@ -633,6 +633,28 @@ var/list/name_to_material
 	sheet_plural_name = "skins"
 	stack_type = /obj/item/stack/material/humanpelt
 
+/material/antpelt
+	name = "antpelt"
+	use_name = "ant"
+	icon_colour = "#0C0000"
+	ignition_point = T0C+700
+	melting_point = T0C+700
+	hardness = 50
+	sheet_singular_name = "pelt"
+	sheet_plural_name = "pelts"
+	stack_type = /obj/item/stack/material/antpelt
+
+/material/chitin
+	name = "chitin"
+	use_name = "chitin"
+	icon_colour = "#3F0000"
+	ignition_point = T0C+800
+	melting_point = T0C+800
+	hardness = 60
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
+	stack_type = /obj/item/stack/material/chitin
+
 /material/gorillapelt
 	name = "gorillapelt"
 	use_name = "gorilla"

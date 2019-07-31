@@ -43,6 +43,9 @@ bullet_act
 					else if (gorillaman)
 						var/obj/item/stack/material/gorillapelt/HP = new/obj/item/stack/material/gorillapelt(get_turf(src))
 						HP.amount = 3
+					else if (ant)
+						var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
+						HP.amount = 2
 					else
 						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
 						HP.amount = 3

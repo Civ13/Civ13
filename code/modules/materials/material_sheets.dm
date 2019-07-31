@@ -361,6 +361,7 @@
 	value = 0
 	w_class = 2.0
 	flammable = TRUE
+
 /obj/item/stack/material/humanpelt
 	name = "human pelt"
 	desc = "A skin from a dead person."
@@ -379,7 +380,7 @@
 		value = 4
 		w_class = 2.0
 
-	/obj/item/stack/material/antpelt/chitin
+	/obj/item/stack/material/chitin
 	name = "chitin"
 	desc = "The armor of Trilobites...and Ants"
 	icon_state = "chitin_material"
@@ -387,7 +388,6 @@
 	flammable = TRUE
 	value = 4
 	w_class = 2.0
-
 
 
 /obj/item/stack/material/orcpelt
