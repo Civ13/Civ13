@@ -1,5 +1,5 @@
 /mob/living/simple_animal/elk/male
-	name = "Elk Bull"
+	name = "elk stag"
 	desc = "Provides some nice meat, if you can catch it."
 	icon_state = "elk_m"
 	icon_living = "elk_m"
@@ -21,7 +21,7 @@
 	health = 80
 	mob_size = MOB_LARGE
 /mob/living/simple_animal/elk/female
-	name = "Elk Cow"
+	name = "elk doe"
 	icon_state = "elk_f"
 	icon_living = "elk_f"
 	icon_dead = "elk_f_dead"
