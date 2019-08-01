@@ -58,10 +58,10 @@ var/global/datum/controller/occupations/job_master
 //	//sets 2 factions for >=10ppl, 3 factions for >=15, 4 factions for >=20, 5 factions for >=25 and 6 factions for >=30
 	if (map.availablefactions_run == TRUE)
 		map.availablefactions = list("Orc tribesman", "Ant tribesman", "Human tribesman", "Gorilla tribesman")
-		if (autobalance_nr < 10)
+		if (autobalance_nr < 12)
 			map.availablefactions = list("Orc tribesman", "Ant tribesman")
 			world << "Due to the current server population, only the <b>Orc</b> and <b>Ant</b> tribes are active."
-		else if (autobalance_nr >= 10 && autobalance_nr < 15)
+		else if (autobalance_nr >= 12 && autobalance_nr < 20)
 			map.availablefactions = list("Orc tribesman", "Ant tribesman", "Gorilla tribesman")
 			world << "Due to the current server population, only the <b>Orc</b>, <b>Ant</b>, and <b>Gorilla</b> tribes are active."
 		else
