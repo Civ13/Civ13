@@ -38,7 +38,7 @@
 	custom_civs += newnamec
 	custom_civs += newnamed
 	spawn(1)
-
+		civilians_forceEnabled = TRUE
 	..()
 
 /obj/map_metadata/tribes/job_enabled_specialcheck(var/datum/job/J)
