@@ -34,7 +34,7 @@
 	if (!.)
 		return
 
-	icon_state = "velociraptor"
+	icon_state = "troll"
 
 	switch(stance)
 
