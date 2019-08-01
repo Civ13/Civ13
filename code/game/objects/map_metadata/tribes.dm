@@ -22,6 +22,7 @@
 	ambience = list('sound/ambience/jungle1.ogg')
 	faction1 = CIVILIAN
 	is_singlefaction = TRUE
+	valid_weather_types = list(WEATHER_RAIN, WEATHER_NONE, WEATHER_STORM, WEATHER_SMOG)
 	availablefactions = list("Orc tribesman")
 	availablefactions_run = TRUE
 	songs = list(

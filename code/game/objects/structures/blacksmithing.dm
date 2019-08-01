@@ -18,7 +18,7 @@ obj/structure/anvil/New()
 	if (H.getStatCoeff("crafting") < 1.7 && map.civilizations)
 		user << "You don't have the skills to use this."
 		return
-	if (!map.civilizations && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
+	if (!map.civilizations && !map.ID == MAP_TRIBES && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 	else
