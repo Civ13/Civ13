@@ -60,7 +60,7 @@
 	w_class = 5
 	heavy = TRUE
 	load_method = MAGAZINE
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	sel_mode = 1
 	full_auto = TRUE
 	attachment_slots = ATTACH_IRONSIGHTS
@@ -152,7 +152,7 @@
 	max_shells = 50
 	caliber = "a792x57_weak"
 	weight = 12.1
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a792x57/weak
 	load_method = MAGAZINE
 	magazine_type = /obj/item/ammo_magazine/mg34

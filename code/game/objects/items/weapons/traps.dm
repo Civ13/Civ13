@@ -174,6 +174,7 @@
 			anchored = FALSE
 			update_icon()
 	else
+		update_icon()
 		..()
 
 /obj/item/weapon/punji_sticks/proc/attack_mob(mob/living/L)
@@ -183,23 +184,16 @@
 	else
 		target_zone = pick("l_foot", "r_foot", "l_leg", "r_leg")
 
-	//armor
-	var/blocked = L.run_armor_check(target_zone, "melee")
-
-	if (blocked >= 2)
-		return
-
-	if (!L.apply_damage(30, BRUTE, target_zone, blocked, used_weapon=src))
+	if (!L.apply_damage(35, BRUTE, target_zone, 0, used_weapon=src))
 		return FALSE
 
 	//trap the victim in place
-	if (!blocked)
-		set_dir(L.dir)
-		can_buckle = TRUE
-		buckle_mob(L)
-		L << "<span class='danger'>You fall into the punji sticks trap, and are stuck!</span>"
-		deployed = FALSE
-		can_buckle = initial(can_buckle)
+	set_dir(L.dir)
+	can_buckle = TRUE
+	buckle_mob(L)
+	L << "<span class='danger'>You fall into the punji sticks trap, and are stuck!</span>"
+	deployed = FALSE
+	can_buckle = initial(can_buckle)
 
 /obj/item/weapon/punji_sticks/Crossed(AM as mob|obj)
 	if (deployed && isliving(AM))
@@ -211,7 +205,7 @@
 		if (istype(L, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = L
 			SA.stop_automated_movement = TRUE
-			SA.adjustBruteLoss(rand(10,20))
+			SA.adjustBruteLoss(rand(20,35))
 			return
 		else
 			attack_mob(L)

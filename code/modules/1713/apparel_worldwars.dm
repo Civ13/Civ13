@@ -101,7 +101,7 @@
 	item_state = "brodie_old"
 	worn_state = "brodie_old"
 
-/obj/item/clothing/mask/glasses/pilot
+/obj/item/clothing/glasses/pilot
 	name = "pilot goggles"
 	desc = "Early 20th century pilot goggles."
 	icon_state = "biker"

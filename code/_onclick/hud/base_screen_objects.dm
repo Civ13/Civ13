@@ -1392,3 +1392,5 @@ obj/screen/tactic
 			if (H.wear_suit) H.wear_suit.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
 		if (slot_wear_mask)
 			if (H.wear_mask) H.wear_mask.screen_loc = (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc
+		if (slot_eyes)
+			if (H.eyes)      H.eyes.screen_loc =      (inv_elem.invisibility == 101) ? null : inv_elem.screen_loc

@@ -419,7 +419,7 @@
 	item_state = "revolver"
 	caliber = "a45"
 //	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_BELT|SLOT_POCKET
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	ammo_type = /obj/item/ammo_casing/a45

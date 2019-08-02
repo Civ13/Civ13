@@ -378,31 +378,34 @@
 					amt = 5
 				if (mob_size == MOB_HUGE)
 					amt = 8
-				for (var/v in TRUE to amt)
-					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-					meat.name = "[name] meatsteak"
+				var/namt = amt-2
+				if (namt <= 0)
+					namt = 1
+				var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+				meat.name = "[name] meatsteak"
+				meat.amount = namt
 				if ((amt-2) >= 1)
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 					bone.name = "[name] bone"
 					bone.amount = amt
 				if (istype(src, /mob/living/simple_animal/hostile/bear))
 					var/obj/item/stack/material/bearpelt/black/NP = new/obj/item/stack/material/bearpelt/black(get_turf(src))
-					NP.amount = 9
+					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
 					var/obj/item/stack/material/bearpelt/white/NP = new/obj/item/stack/material/bearpelt/white(get_turf(src))
-					NP.amount = 9
+					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/bear/brown))
 					var/obj/item/stack/material/bearpelt/brown/NP = new/obj/item/stack/material/bearpelt/brown(get_turf(src))
-					NP.amount = 9
+					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
 					var/obj/item/stack/material/wolfpelt/NP = new/obj/item/stack/material/wolfpelt(get_turf(src))
-					NP.amount = 6
+					NP.amount = 4
 				else if (istype(src, /mob/living/simple_animal/monkey))
 					var/obj/item/stack/material/monkeypelt/NP = new/obj/item/stack/material/monkeypelt(get_turf(src))
-					NP.amount = 4
+					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/cat))
 					var/obj/item/stack/material/catpelt/NP = new/obj/item/stack/material/catpelt(get_turf(src))
-					NP.amount = 3
+					NP.amount = 2
 				if (istype(user, /mob/living/carbon/human))
 					var/mob/living/carbon/human/HM = user
 					HM.adaptStat("medical", amt/3)

@@ -240,8 +240,8 @@
 			winset(src, null, "command=\".configure graphics-hwmode off\"")
 			sleep(2) // wait a bit more, possibly fixes hardware mode not re-activating right
 			winset(src, null, "command=\".configure graphics-hwmode on\"")
-
-	send_resources()
+	if (src)
+		send_resources()
 
 	fix_nanoUI()
 

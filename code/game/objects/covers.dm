@@ -73,6 +73,37 @@
 	..()
 	icon_state = pick("road_1","road_2","road_3")
 
+/obj/covers/steelplating
+	name = "steel floor"
+	icon = 'icons/turf/floors.dmi'
+	icon_state = "floor"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 3
+
+/obj/covers/steelplating/white
+	name = "white floor"
+	icon_state = "white"
+
+/obj/covers/concretefloor
+	name = "concrete floor"
+	icon_state = "concrete6"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 4
+
+/obj/covers/concretefloor/New()
+	..()
+	icon_state = pick("concrete6","concrete7")
+
 /obj/covers/sandstone
 	name = "sandstone floor"
 	icon = 'icons/turf/floors.dmi'

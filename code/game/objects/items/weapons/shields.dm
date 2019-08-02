@@ -38,7 +38,7 @@
 	item_state = "buckler"
 	var/base_block_chance = 25
 	w_class = 2.0
-	slot_flags = SLOT_BACK|SLOT_DENYPOCKET
+	slot_flags = SLOT_BACK
 	var/material = "wood"
 	health = 20 // hardness of wood
 	var/cooldown = 0

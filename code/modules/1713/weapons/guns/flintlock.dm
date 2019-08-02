@@ -11,7 +11,7 @@
 	force = 10
 	throwforce = 10
 	max_shells = 1 //duh
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "musketball"
 	recoil = 3 //extra kickback
 	//fire_sound = 'sound/weapons/sniper.ogg'

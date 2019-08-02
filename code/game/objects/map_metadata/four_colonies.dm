@@ -34,6 +34,8 @@
 
 obj/map_metadata/four_colonies/job_enabled_specialcheck(var/datum/job/J)
 	..()
+	if (istype(J, /datum/job/civilian/fantasy))
+		. = FALSE
 	if (J.is_RP == FALSE)
 		. = FALSE
 	else if (J.is_army == TRUE)

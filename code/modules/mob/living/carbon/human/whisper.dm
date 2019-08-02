@@ -1,7 +1,10 @@
 //Lallander was here
 /mob/living/carbon/human/whisper(message as text)
 	var/alt_name = ""
-
+	if (werewolf || gorillaman)
+		if (map && map.ID != MAP_TRIBES)
+			usr << "<span class = 'red'>You can't whisper.</span>"
+			return
 	if (say_disabled)	//This is here to try to identify lag problems
 		usr << "<span class = 'red'>Speech is currently admin-disabled.</span>"
 		return

@@ -47,6 +47,16 @@
 
 	if (transforming)
 		return
+	if (werewolf)
+		handle_animalistic("Werewolf")
+	else if (gorillaman)
+		handle_animalistic("Gorilla")
+	else if (orc)
+		handle_animalistic("Orc")
+	else if (ant)
+		handle_animalistic("Ant")
+	else if (!gorillaman && !werewolf && !orc && !ant && body_build.name != "Default")
+		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
 	if (lying || stat < CONSCIOUS || prone)
@@ -104,31 +114,37 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
+		var/water_m = 1
+		var/food_m = 1
+		if (orc)
+			food_m = 1.5
+		if (gorillaman)
+			water_m = 0.2
+		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
+			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats.len)
@@ -163,7 +179,7 @@
 			addictions[ad] = 0
 
 //death
-	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 
 // disease stuff
@@ -372,14 +388,15 @@
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
+
 		if (disease == FALSE)
-			//0.005%
 			if (prob(1) && map.civilizations)
-				if (prob(1) && !inducedSSD)
+				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_NORMAL && !("flu" in disease_immunity))
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
+
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
 		if (grab_list[1] == null)
@@ -502,7 +519,7 @@
 		eye_blind =  0
 		blinded =    0
 		eye_blurry = 0
-	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/mask/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
+	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
 		blinded =    1
 		eye_blurry = 1
@@ -1700,7 +1717,7 @@
 						return
 
 /mob/living/carbon/human/proc/instadeath_check()
-	if (getBrainLoss() > 60 || getTotalLoss() > 150)
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
 		death()
 		return
 	else

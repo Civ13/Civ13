@@ -39,7 +39,8 @@
 			continue
 
 		winset(C, null, "command=.update_ping+[world.time+world.tick_lag*world.tick_usage/100]")
-		avg += C.last_ping
+		if (C)
+			avg += C.last_ping
 		++clients_checked
 
 		PROCESS_TICK_CHECK

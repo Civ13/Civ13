@@ -142,7 +142,6 @@
 //Basic friend AI
 /mob/living/simple_animal/cat/fluff
 	var/mob/living/carbon/human/friend
-	var/befriend_job = null
 
 /mob/living/simple_animal/cat/fluff/handle_movement_target()
 	if (friend)
@@ -207,12 +206,10 @@
 		return
 
 	if (ishuman(usr))
-		var/mob/living/carbon/human/H = usr
-		if (H.original_job == befriend_job)
-			friend = usr
-			set_dir(get_dir(src, friend))
-			say("Meow!")
-			return
+		friend = usr
+		set_dir(get_dir(src, friend))
+		say("Meow!")
+		return
 
 	usr << "<span class='notice'>[src] ignores you.</span>"
 	return
@@ -227,7 +224,6 @@
 	item_state = "cat"
 	icon_living = "cat"
 	icon_dead = "cat_dead"
-	befriend_job = "Chief Medical Officer"
 
 /mob/living/simple_animal/cat/kitten
 	name = "kitten"

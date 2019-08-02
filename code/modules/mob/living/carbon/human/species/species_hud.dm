@@ -30,6 +30,8 @@
 		"head" =         slot_head,
 		"shoes" =        slot_shoes,
 		"back" =         slot_back,
+		"shoulder" =     slot_shoulder,
+		"eyes" =         slot_eyes,
 		"id" =           slot_wear_id,
 		"storage1" =     slot_l_store,
 		"storage2" =     slot_r_store,
@@ -52,7 +54,7 @@
 		equip_slots |= slot_in_backpack
 
 	if (slot_w_uniform in equip_slots)
-		equip_slots |= slot_tie
+		equip_slots |= slot_accessory
 
 	equip_slots |= slot_legcuffed
 

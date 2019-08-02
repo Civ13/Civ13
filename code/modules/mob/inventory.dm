@@ -68,6 +68,7 @@
 
 //The list of slots by priority. equip_to_appropriate_slot() uses this list. Doesn't matter if a mob type doesn't have a slot.
 var/list/slot_equipment_priority = list( \
+		slot_shoulder,\
 		slot_back,\
 		slot_wear_id,\
 		slot_w_uniform,\
@@ -76,10 +77,11 @@ var/list/slot_equipment_priority = list( \
 		slot_head,\
 		slot_shoes,\
 		slot_gloves,\
+		slot_eyes,\
 		slot_l_ear,\
 		slot_r_ear,\
 		slot_belt,\
-		slot_tie,\
+		slot_accessory,\
 		slot_l_store,\
 		slot_r_store\
 	)
@@ -188,8 +190,8 @@ var/list/slot_equipment_priority = list( \
 			if (W.invisibility > 0)
 				W.invisibility = FALSE
 
-		if (istype(W, /obj/item/clothing/mask/glasses) && ishuman(src))
-			var/obj/item/clothing/mask/glasses/G = W
+		if (istype(W, /obj/item/clothing/glasses) && ishuman(src))
+			var/obj/item/clothing/glasses/G = W
 			var/mob/living/carbon/human/user = src
 			if(G.toggleable && G.active)
 				G.active = 0
@@ -283,6 +285,12 @@ var/list/slot_equipment_priority = list( \
 	else if (W == wear_mask)
 		wear_mask = null
 		update_inv_wear_mask(0)
+	else if (W == eyes)
+		eyes = null
+		update_inv_eyes(0)
+	else if (W == shoulder)
+		shoulder = null
+		update_inv_shoulder(0)
 	return
 
 /mob/proc/isEquipped(obj/item/I)
@@ -298,7 +306,7 @@ var/list/slot_equipment_priority = list( \
 
 /mob/proc/get_inventory_slot(obj/item/I)
 	var/slot = FALSE
-	for (var/s in slot_back to slot_tie) //kind of worries me
+	for (var/s in slot_back to slot_accessory) //kind of worries me
 		if (get_equipped_item(s) == I)
 			slot = s
 			break

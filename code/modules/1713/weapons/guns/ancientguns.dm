@@ -11,7 +11,7 @@ obj/item/weapon/gun/projectile/ancient
 	force = 13
 	throwforce = 8
 	max_shells = 1 //duh
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "stoneball"
 	recoil = 5 //extra kickback
 	handle_casings = REMOVE_CASINGS
