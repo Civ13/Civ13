@@ -98,7 +98,7 @@
 	load_method = MAGAZINE
 	handle_casings = EJECT_CASINGS
 	effectiveness_mod = 0.94
-/obj/item/weapon/gun/projectile/pistol/nambu/update_icon()
+/obj/item/weapon/gun/projectile/pistol/ww2/nambu/update_icon()
 	..()
 	if (ammo_magazine)
 		icon_state = "nambu_ww2"

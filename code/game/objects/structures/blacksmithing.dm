@@ -70,13 +70,13 @@ obj/structure/anvil/New()
 			return
 		else if (choice == "Swords")
 			if (map.ordinal_age >= 5)
-				display2 = list("Rapier (18)", "Katana (15)","Cancel")
+				display2 = list("Rapier (18)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)" , "Cancel")
 			else if (map.ordinal_age == 4)
-				display2 = list("Sabre (15)", "Rapier (18)", "Katana (15)","Cancel")
+				display2 = list("Sabre (15)", "Rapier (18)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)","Cancel")
 			else if (map.ordinal_age == 3)
-				display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Katana (15)", "Cancel")
+				display2 = list("Small Sword (10)", "Sabre (15)", "Cutlass (12)", "Spadroon (15)", "Rapier (18)", "Longsword (18)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)", "Cancel")
 			else if (map.ordinal_age <= 2)
-				display2 = list("Small Sword (10)", "Arming Sword (15)", "Katana (15)", "Cancel")
+				display2 = list("Small Sword (10)", "Arming Sword (15)", "Katana (15)", "Wakazashi (10)" , "Tanto (5)", "Cancel")
 		else if (choice == "Guns")
 			if (map.ordinal_age == 4)
 				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
@@ -304,6 +304,36 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/material/sword/katana(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Wakazashi (10)")
+			if (steel_amt >= 10)
+				user << "You begin crafting a wakazashi..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 10)
+					user << "You craft a wakazashi."
+					steel_amt -= 10
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/wakazashi(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+
+		if (choice2 == "Tanto (5)")
+			if (steel_amt >= 5)
+				user << "You begin crafting a tanto..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 5)
+					user << "You craft a tanto."
+					steel_amt -= 5
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/weapon/material/sword/tanto(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"

@@ -49,3 +49,16 @@
 	name = "leather satchel"
 	desc = "It's a very fancy satchel made with fine leather."
 	icon_state = "satchel"
+
+/obj/item/weapon/storage/backpack/ww2/jap
+	name = "japanese backpack"
+	desc = "It's a standard issue backpack for japanese military personel"
+	icon_state = "jappack"
+	item_state = "jappack"
+	worn_state = "jappack"
+obj/item/weapon/storage/backpack/ww2/american
+	name = "american backpack"
+	desc = "It's a standard issue backpack for american military personel"
+	icon_state = "uspack"
+	item_state = "uspack"
+	worn_state = "uspack"

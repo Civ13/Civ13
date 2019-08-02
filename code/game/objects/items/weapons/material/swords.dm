@@ -90,6 +90,30 @@
 	value = 60
 	cooldownw = 7
 
+obj/item/weapon/material/sword/wakazashi
+	name = "wakazashi"
+	desc = "A sword used by the japanese for centuries. Made to slice and slash, not chop or saw. Often paired with a katana."
+	icon_state = "wakazashi"
+	item_state = "wakazashi"
+	block_chance = 19
+	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT
+	value = 60
+	cooldownw = 6
+
+obj/item/weapon/material/sword/tanto
+	name = "tanto"
+	desc = "A knife used by the japanese for centuries. Made to slice and slash, not chop or saw. Often the tool of choice for ritual suicide."
+	icon_state = "tanto"
+	item_state = "tanto"
+	block_chance = 10
+	force_divisor = 0.4 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT
+	value = 60
+	cooldownw = 6
+
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"
 
