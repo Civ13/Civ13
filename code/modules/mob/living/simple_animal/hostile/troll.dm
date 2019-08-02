@@ -3,10 +3,10 @@
 	name = "troll"
 	desc = "Huge green troll."
 	icon = 'icons/mob/animal_64.dmi'
-	icon_state = "troll"
-	icon_living = "troll"
-	icon_dead = "troll_dead"
-	icon_gib = "troll_dead"
+	icon_state = "green_troll"
+	icon_living = "green_troll"
+	icon_dead = "green_troll_dead"
+	icon_gib = "green_troll_dead"
 	speak = list("UUUURGH!","UUUH!","WAAAARGH!")
 	speak_emote = list("grunts", "screams")
 	emote_hear = list("grunts","grunts")
