@@ -772,7 +772,7 @@
 		if (H.gorillaman)
 			H << "You start foraging for some edible leaves..."
 			if (do_after(user, 80, src))
-				if (src && H in range(1,src) && leaves >= 1)
+				if (src && H in range(2,src) && leaves >= 1)
 					H << "You collect some edible leaves."
 					new /obj/item/weapon/leaves(get_turf(src))
 					leaves--

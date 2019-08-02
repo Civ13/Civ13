@@ -15,7 +15,7 @@ obj/structure/anvil/New()
 
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
-	if (H.getStatCoeff("crafting") < 1.7 && map.civilizations)
+	if (H.getStatCoeff("crafting") < 1.7)
 		user << "You don't have the skills to use this."
 		return
 	if (!map.civilizations && map.ID != MAP_TRIBES && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
@@ -51,10 +51,10 @@ obj/structure/anvil/New()
 
 /obj/structure/anvil/attack_hand(var/mob/user as mob)
 	var/mob/living/carbon/human/H = user
-	if (H.getStatCoeff("crafting") < 1.7 && map.civilizations)
+	if (H.getStatCoeff("crafting") < 1.7)
 		user << "You don't have the skills to use this."
 		return
-	if (!map.civilizations && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
+	if (!map.civilizations && map.ID != MAP_TRIBES && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 
