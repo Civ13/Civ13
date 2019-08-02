@@ -31,6 +31,8 @@
 	var/ear = null
 	var/hand = null
 	var/suit_store = null
+	var/eyes = null
+	var/shoulder = null
 
 	var/list/backpacks = list(
 		/obj/item/weapon/storage/backpack,
@@ -96,7 +98,8 @@
 	if (hat)			H.equip_to_slot_or_del(new hat (H), slot_head)
 	if (gloves)		H.equip_to_slot_or_del(new gloves (H), slot_gloves)
 	if (belt)		H.equip_to_slot_or_del(new belt (H), slot_belt)
-
+	if (eyes)		H.equip_to_slot_or_del(new eyes (H), slot_eyes)
+	if (shoulder)	H.equip_to_slot_or_del(new shoulder (H), slot_shoulder)
 	if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack))
 		var/list/slots = list( slot_belt, slot_r_store, slot_l_store, slot_r_hand, slot_l_hand )
 		for ( var/path in put_in_backpack )

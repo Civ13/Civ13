@@ -188,7 +188,8 @@
 		Dismantle(1)
 
 /obj/structure/simple_door/proc/Dismantle(devastated = FALSE)
-	material.place_dismantled_product(get_turf(src))
+	if (istype(material))
+		material.place_dismantled_product(get_turf(src))
 	qdel(src)
 
 /obj/structure/simple_door/ex_act(severity = TRUE)

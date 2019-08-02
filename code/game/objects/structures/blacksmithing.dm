@@ -15,10 +15,10 @@ obj/structure/anvil/New()
 
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
 	var/mob/living/carbon/human/H = user
-	if (H.getStatCoeff("crafting") < 1.7 && map.civilizations)
+	if (H.getStatCoeff("crafting") < 1.7)
 		user << "You don't have the skills to use this."
 		return
-	if (!map.civilizations && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
+	if (!map.civilizations && map.ID != MAP_TRIBES && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 	else
@@ -51,10 +51,10 @@ obj/structure/anvil/New()
 
 /obj/structure/anvil/attack_hand(var/mob/user as mob)
 	var/mob/living/carbon/human/H = user
-	if (H.getStatCoeff("crafting") < 1.7 && map.civilizations)
+	if (H.getStatCoeff("crafting") < 1.7)
 		user << "You don't have the skills to use this."
 		return
-	if (!map.civilizations && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
+	if (!map.civilizations && map.ID != MAP_TRIBES && (user.original_job_title != "Blacksmith" && user.original_job_title != "Town Blacksmith" && user.original_job_title != "Ferreiro" && user.original_job_title != "Ferrero" && user.original_job_title != "Grofsmid" && user.original_job_title != "Forgeron" && user.original_job_title != "British Blacksmith" && user.original_job_title != "Marooned Pirate Crew"))
 		user << "You don't have the skills to use this. Ask a blacksmith."
 		return
 
@@ -62,8 +62,8 @@ obj/structure/anvil/New()
 		var/list/display = list("Swords", "Cancel")
 		if (map.ordinal_age == 4)
 			display = list("Swords","Guns", "Cancel")
-		else
-			display = list("Swords", "Cancel")
+		else if (map.ordinal_age >= 5)
+			display = list("Swords", "Armor", "Cancel")
 		var/choice = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display)
 		var/list/display2 = list("Cancel")
 		if (choice == "Cancel")
@@ -82,6 +82,15 @@ obj/structure/anvil/New()
 				display2 = list("Derringer M95 Pistol (15)", "Colt Peacemaker Revolver (25)", "Winchester Rifle (30)", "Coach Gun (22)", "Sharps Rifle (30)","Martini-Henry Rifle (35)", "Gewehr71 (30)", "Cancel")
 			else
 				display2 = list("Cancel")
+		else if (choice == "Armor")
+			if (map.ordinal_age == 5)
+				display2 = list("Dayfield body armor (10)", "breastplate body armor (12)","Cancel")
+			else if (map.ordinal_age == 6)
+				display2 = list("M-1952 Flak Jacket (12)","Cancel")
+			else if (map.ordinal_age == 7)
+				display2 = list("M-1969 Flak Jacket (12)","woodland PASGT (15)","khaki PASGT (15)","Cancel")
+			else if (map.ordinal_age == 8)
+				display2 = list("Interceptor body armor (16)","Cancel")
 		var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [steel_amt] steel", "Cancel", display2)
 		if (choice2 == "Cancel")
 			return
@@ -295,6 +304,105 @@ obj/structure/anvil/New()
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
 					new/obj/item/weapon/material/sword/katana(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+	//modern armor
+		if (choice2 == "Dayfield body armor (10)")
+			if (steel_amt >= 10)
+				user << "You begin crafting a Dayfield body armor..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 10)
+					user << "You craft a Dayfield body armor."
+					steel_amt -= 10
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/clothing/accessory/armor/modern/british(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "breastplate body armor (12)")
+			if (steel_amt >= 12)
+				user << "You begin crafting a breastplate body armor..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 12)
+					user << "You craft a breastplate body armor."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/clothing/accessory/armor/modern/plate(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "M-1952 Flak Jacket (12)")
+			if (steel_amt >= 12)
+				user << "You begin crafting a M-1952 flak jacket..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 12)
+					user << "You craft a M-1952 flak jacket."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/clothing/accessory/armor/coldwar/flakjacket(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "M-1969 Flak Jacket (12)")
+			if (steel_amt >= 12)
+				user << "You begin crafting a M-1969 flak jacket..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 12)
+					user << "You craft a M-1969 flak jacket."
+					steel_amt -= 12
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/clothing/accessory/armor/coldwar/flakjacket(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "woodland PASGT (15)")
+			if (steel_amt >= 15)
+				user << "You begin crafting a woodland PASGT vest..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 15)
+					user << "You craft a woodland PASGT vest."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/clothing/accessory/armor/coldwar/pasgt(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "khaki PASGT (15)")
+			if (steel_amt >= 15)
+				user << "You begin crafting a khaki PASGT vest..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 15)
+					user << "You craft a khaki PASGT vest."
+					steel_amt -= 15
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(user.loc)
+					return
+			else
+				user << "<span class='notice'>You need more steel to make this!</span>"
+				return
+		if (choice2 == "Interceptor body armor (16)")
+			if (steel_amt >= 16)
+				user << "You begin crafting a Interceptor body armor..."
+				playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+				if (do_after(user,150,src) && steel_amt >= 16)
+					user << "You craft a Interceptor body armor."
+					steel_amt -= 16
+					if (steel_amt <= 0)
+						icon_state = "anvil1"
+					new/obj/item/clothing/accessory/armor/coldwar/plates/interceptor(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -552,7 +660,10 @@ obj/structure/anvil/New()
 			else if (map.ordinal_age == 5)
 				display4 = list("Pickelhaube (7)","MesH Pickelhaube (7)", "Pith (7)", "Brodie (10)", "Stahlhelm (10)", "Cancel")
 			else if (map.ordinal_age == 2)
-				display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)", "Cancel")
+				if (H.orc)
+					display4 = list("Grunt Armor (10)", "Urukhai Armor (12)", "Grunt Helmet (10)", "Spearman Helmet (12)", "Berserker Helmet (15)", "Cancel")
+				else
+					display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)", "Cancel")
 			else if (map.ordinal_age == 3)
 				display4 = list("Iron Chestplate (12)", "Conical Helmet (6)", "Protective Conical Helmet (10)", "Cancel")
 			else
@@ -742,7 +853,76 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
-
+			if (choice4 == "Berserker Helmet (15)")
+				if (iron_amt >= 15)
+					user << "You begin crafting the helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 15)
+						user << "You craft the helmet."
+						iron_amt -= 15
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/orc_beserker(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Spearman Helmet (12)")
+				if (iron_amt >= 12)
+					user << "You begin crafting the helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 12)
+						user << "You craft the helmet."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/orc_spearman(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Grunt Helmet (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the helmet..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 10)
+						user << "You craft the helmet."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/head/helmet/orc_grunt(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Urukhai Armor (12)")
+				if (iron_amt >= 12)
+					user << "You begin crafting the armor..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 12)
+						user << "You craft the armor."
+						iron_amt -= 12
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/ork_urukhai(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice4 == "Grunt Armor (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the armor..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,150,src) && iron_amt >= 10)
+						user << "You craft the armor."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/suit/armor/ork_grunt(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
 			if (choice4 == "Pickelhaube (7)")
 				if (iron_amt >= 7)
 					user << "You begin crafting the pickelhaube..."

@@ -3,7 +3,7 @@
 	desc = "A device that launches things."
 	w_class = 5.0
 	flags =  CONDUCT
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	var/load_delay = 10
 	var/release_force = 0
 	var/throw_distance = 10
@@ -109,7 +109,7 @@
 	desc = "Russian multi-use rocket."
 	icon_state = "rpg7_empty"
 	item_state = "rpg"
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	force = 10
 
 /obj/item/weapon/gun/launcher/rocket/rpg7/update_icon()
@@ -141,7 +141,7 @@
 	desc = "German single-use rocket."
 	icon_state = "panzerfaust"
 	item_state = "panzerfaust"
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	force = 10
 	recoil = 2
 	fire_delay = 12
@@ -323,7 +323,7 @@
 	desc = "American multi-use grenade launcher."
 	icon_state = "m79"
 	item_state = "m79"
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	force = 10
 
 /obj/item/weapon/gun/launcher/grenadelauncher/M79/proc/unload(mob/user)

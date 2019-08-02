@@ -12,6 +12,11 @@
 	not_disassemblable = TRUE
 	var/seedtimer = 1
 	var/mob/living/carbon/human/stored_unit = null
+
+	var/edible = FALSE
+	var/leaves = 0
+	var/max_leaves = 0
+
 /obj/structure/wild/proc/seedtimer_proc()
 	spawn(6000)
 		seedtimer = 1
@@ -185,6 +190,9 @@
 	density = TRUE
 	sways = FALSE
 	amount = 5
+	edible = TRUE
+	leaves = 2
+	max_leaves = 2
 
 /obj/structure/wild/tree/live_tree/snow
 	name = "tree"
@@ -194,7 +202,9 @@
 	density = TRUE
 	sways = FALSE
 	amount = 5
-
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
 /obj/structure/wild/tree/live_tree/snow/update_icon()
 	..()
 	icon = 'icons/obj/flora/bigtrees_winter.dmi'
@@ -295,6 +305,9 @@
 	amount = 4
 	var/cooldown_sap = FALSE
 	layer = 5.11
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
 
 /obj/structure/wild/palm/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife) && user.a_intent == I_HELP)
@@ -597,6 +610,10 @@
 	health = 200
 	maxhealth = 200
 	layer = 5.11
+	edible = TRUE
+	leaves = 3
+	max_leaves = 3
+
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))
 		visible_message("<span class = 'warning'>[src] collapses.</span>")
@@ -606,9 +623,15 @@
 	name = "acacia tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'
 	icon_state = "african_acacia"
+	edible = TRUE
+	leaves = 1
+	max_leaves = 1
 /obj/structure/wild/jungle/acacia/dead
 	name = "dead acacia tree"
 	icon_state = "african_acacia_dead"
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
 /obj/structure/wild/jungle/acacia/New()
 	..()
 	icon_state = "african_acacia"
@@ -623,11 +646,15 @@
 	name = "mediterranean pine tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'
 	icon_state = "med_pine"
-
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
 /obj/structure/wild/jungle/medpine/dead
 	name = "dead mediterranean pine tree"
 	icon_state = "med_pine_dead"
-
+	edible = FALSE
+	leaves = 0
+	max_leaves = 0
 /obj/structure/wild/jungle/medpine/New()
 	..()
 	icon_state = "med_pine"
@@ -682,6 +709,9 @@
 	icon_state = "bush1"
 	opacity = FALSE
 	density = FALSE
+	edible = TRUE
+	leaves = 1
+	max_leaves = 1
 
 /obj/structure/wild/largejungle/New()
 	..()
@@ -736,6 +766,21 @@
 		visible_message("[user] punches \the [src]!")
 		health -= 5
 		try_destroy()
+		return
+	else if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
+		var/mob/living/carbon/human/H = user
+		if (H.gorillaman)
+			H << "You start foraging for some edible leaves..."
+			if (do_after(user, 80, src))
+				if (src && H in range(2,src) && leaves >= 1)
+					H << "You collect some edible leaves."
+					new /obj/item/weapon/leaves(get_turf(src))
+					leaves--
+					return
+				else
+					user << "There are no leaves to harvest here."
+			else
+				user << "You stop foraging."
 	else
 		..()
 

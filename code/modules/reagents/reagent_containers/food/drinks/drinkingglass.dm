@@ -184,6 +184,8 @@
 	volume = 0
 	icon_state = "tribalpot_sap"
 	spawn(1200)
+		if (!src || !reagents)
+			return
 		name = "tribal pot"
 		icon_state = "tribalpot"
 		desc = "A tribal clay pot."

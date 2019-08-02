@@ -41,7 +41,7 @@
 	name = "Ethanol" //Parent class for all alcoholic reagents.
 	id = "ethanol"
 	description = "A well-known alcohol with a variety of applications."
-	taste_description = "pure alcohol"
+	taste_description = "alcohol"
 	reagent_state = LIQUID
 	color = "#404030"
 	touch_met = 5
@@ -53,6 +53,12 @@
 	var/adj_temp = FALSE
 	var/targ_temp = 310
 	var/halluci = FALSE
+//purified ethanol (for engines)
+/datum/reagent/ethanol/pethanol
+	name = "Purified Ethanol"
+	id = "pethanol"
+	taste_description = "pure alcohol"
+	strength = 10
 
 /datum/reagent/ethanol/touch_mob(var/mob/living/L, var/amount)
 	if (istype(L))

@@ -70,7 +70,8 @@
 							if (mstack.amount<= 0)
 								qdel(mstack)
 							var/obj/BO = map.globalmarketplace[currlist[k][1]][2]
-							BO.forceMove(get_turf(src))
+							if (BO)
+								BO.forceMove(get_turf(src))
 							map.globalmarketplace[currlist[k][1]][6] = 1
 							user << "You fulfill the order."
 							var/mob/living/carbon/human/seller = map.globalmarketplace[currlist[k][1]][1]

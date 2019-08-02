@@ -82,7 +82,6 @@
 						text2file("[admincheck[i]]|||","SQL/admins.txt")
 				spawn(1)
 					var/full_banlist_new = file2text("SQL/admins.txt")
-					full_banlist_new = replacetext(full_banlist_new,"\n","")
 					text2file(full_banlist_new,"SQL/admins.txt")
 		return
 
@@ -188,7 +187,6 @@
 							text2file("[admincheck[i]]|||","SQL/admins.txt")
 					spawn(1)
 						var/full_banlist_new = file2text("SQL/admins.txt")
-						full_banlist_new = replacetext(full_banlist_new,"\n","")
 						text2file(full_banlist_new,"SQL/admins.txt")
 		message_admins("[key_name_admin(usr)] added the [nominal] permission of [key_name_admin(adm_ckey)]")
 		log_admin("[key_name(usr)] added the [nominal] permission of [key_name(adm_ckey)]")
@@ -202,5 +200,4 @@
 					text2file("[admincheck[i]]|||","SQL/admins.txt")
 			spawn(1)
 				var/full_banlist_new = file2text("SQL/admins.txt")
-				full_banlist_new = replacetext(full_banlist_new,"\n","")
 				text2file(full_banlist_new,"SQL/admins.txt")

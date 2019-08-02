@@ -119,6 +119,26 @@
 	var/full_name = "Philokrates"
 	return full_name
 
+/datum/language/proc/get_random_orc_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_orc))
+
+	var/full_name = "Morgoth"
+	return full_name
+
+/datum/language/proc/get_random_ant_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_ant))
+
+	var/full_name = "Kch-ak"
+	return full_name
+
+/datum/language/proc/get_random_gorilla_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_gorilla))
+
+	var/full_name = "Oog"
+	return full_name
 
 /datum/language/proc/get_random_roman_name(name_count=2, syllable_count=4, syllable_divisor=2)
 	if (!syllables || !syllables.len)
@@ -155,6 +175,8 @@
 	var/list/original_words = splittext(input, " ")
 
 	var/mob/living/carbon/human/H = hearer
+	if (!ishuman(H))
+		return
 	var/capitalize = TRUE
 	var/capitalize_next = TRUE
 	if (original_words.len)

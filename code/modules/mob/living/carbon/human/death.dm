@@ -20,8 +20,9 @@
 	..(species.gibbed_anim)
 	gibs(loc, null, species.flesh_color, species.blood_color)
 	for(var/mob/living/carbon/human/NB in view(6,src))
-		NB.mood -= 15
-		NB.ptsd += 3
+		if (!NB.orc)
+			NB.mood -= 15
+			NB.ptsd += 3
 /mob/living/carbon/human/crush()
 
 	sleep(1)

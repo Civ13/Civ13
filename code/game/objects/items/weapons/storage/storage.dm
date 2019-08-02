@@ -114,8 +114,9 @@
 	user.client.screen -= storage_end
 	user.client.screen -= closer
 	user.client.screen -= contents
-	closer.icon = user.client.prefs.UI_file
-	user.client.screen += closer
+	if (closer)
+		closer.icon = user.client.prefs.UI_file
+		user.client.screen += closer
 	user.client.screen += contents
 	if (storage_slots)
 		boxes.icon = user.client.prefs.UI_file
@@ -194,7 +195,8 @@
 /obj/item/weapon/storage/proc/slot_orient_objs(var/rows, var/cols, var/list/obj/item/display_contents, Xcord=4, Ycord=2)
 	var/cx = Xcord
 	var/cy = Ycord+rows
-	boxes.screen_loc = "[Xcord]:16,2:16 to [Xcord+cols]:16,[Ycord+rows]:16"
+	if (boxes)
+		boxes.screen_loc = "[Xcord]:16,2:16 to [Xcord+cols]:16,[Ycord+rows]:16"
 
 	if (display_contents_with_number)
 		for (var/datum/numbered_display/ND in display_contents)

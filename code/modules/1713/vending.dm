@@ -277,7 +277,7 @@ obj/structure/vending/japweapons_ww2
 		/obj/item/clothing/head/helmet/modern/lwh/black = 15,
 		/obj/item/clothing/head/jungle_hat/khaki = 15,
 		/obj/item/clothing/mask/balaclava = 15,
-		/obj/item/clothing/mask/glasses/nvg = 15,
+		/obj/item/clothing/glasses/nvg = 15,
 	)
 
 /obj/structure/vending/sofweapons

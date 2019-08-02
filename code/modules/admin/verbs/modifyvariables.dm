@@ -141,7 +141,7 @@ var/list/VVckey_edit = list("key", "ckey")
 	if (!check_rights(R_VAREDIT))	return
 	if (!istype(L,/list)) src << "Not a List."
 
-	if (L.len > 1000)
+	if (L && L.len > 1000)
 		var/confirm = WWinput(src, "The list you're trying to edit is very long; continuing may crash the server.", "Warning", "Abort", list("Continue", "Abort"))
 		if (confirm != "Continue")
 			return
@@ -433,21 +433,22 @@ var/list/VVckey_edit = list("key", "ckey")
 	else
 
 		var/list/names = list()
-		for (var/V in O.vars)
-			names += V
+		if (O)
+			for (var/V in O.vars)
+				names += V
 
-		names = sortList(names)
+			names = sortList(names)
 
-		variable = input("Which var?","Var") as null|anything in names
-		if (!variable)	return
-		var_value = O.vars[variable]
+			variable = input("Which var?","Var") as null|anything in names
+			if (!variable)	return
+			var_value = O.vars[variable]
 
-		if (variable in VVlocked)
-			if (!check_rights(R_DEBUG)) return
-		if (variable in VVckey_edit)
-			if (!check_rights(R_SPAWN|R_DEBUG)) return
-		if (variable in VVicon_edit_lock)
-			if (!check_rights(R_FUN|R_DEBUG)) return
+			if (variable in VVlocked)
+				if (!check_rights(R_DEBUG)) return
+			if (variable in VVckey_edit)
+				if (!check_rights(R_SPAWN|R_DEBUG)) return
+			if (variable in VVicon_edit_lock)
+				if (!check_rights(R_FUN|R_DEBUG)) return
 
 	if (!autodetect_class)
 
@@ -558,7 +559,7 @@ var/list/VVckey_edit = list("key", "ckey")
 		if ("text")
 			var/var_new = input("Enter new text:","Text",O.vars[variable]) as null|text
 			if (var_new==null) return
-			if (variable in list("ckey", "key") && var_new in list(usr.ckey, usr.key))
+			if (usr && variable in list("ckey", "key") && var_new in list(usr.ckey, usr.key))
 				if (!O.vars["lastKnownCkey"] || !(O.vars["lastKnownCkey"] == usr.ckey))
 					usr << "<span class = 'danger'>Use the player panel to spawn yourself in as a mob.</span>"
 					return

@@ -1,10 +1,13 @@
 
-/obj/item/clothing/mask/glasses
+/obj/item/clothing/glasses
 	var/toggleable = FALSE
 	var/off_state = ""
 	var/on_state = ""
 	var/overtype = ""
-/obj/item/clothing/mask/glasses/attack_self(mob/living/carbon/human/user)
+	var/active = FALSE
+	var/blocks_scope = FALSE
+
+/obj/item/clothing/glasses/attack_self(mob/living/carbon/human/user)
 	if(toggleable && !user.incapacitated())
 		if(active)
 			active = 0
@@ -58,7 +61,7 @@
 				user.handle_vision()
 		user.update_action_buttons()
 
-/obj/item/clothing/mask/glasses/verb/toggle()
+/obj/item/clothing/glasses/verb/toggle()
 	set name = "Toggle"
 	set category = null
 	set src in usr
@@ -67,41 +70,41 @@
 	else
 		attack_self(usr)
 		return
-/obj/item/clothing/mask/glasses/eyepatch
+/obj/item/clothing/glasses/eyepatch
 	name = "eyepatch"
 	desc = "Yarr."
 	icon_state = "eyepatch"
 	item_state = "eyepatch"
 	body_parts_covered = FALSE
 
-/obj/item/clothing/mask/glasses/monocle
+/obj/item/clothing/glasses/monocle
 	name = "monocle"
 	desc = "Such a dapper eyepiece!"
 	icon_state = "monocle"
 	item_state = "headset" // lol
 	body_parts_covered = FALSE
 
-/obj/item/clothing/mask/glasses/regular
+/obj/item/clothing/glasses/regular
 	name = "Prescription Glasses"
 	desc = "Made by Nerd. Co."
 	icon_state = "glasses"
 	item_state = "glasses"
 	body_parts_covered = FALSE
 
-/obj/item/clothing/mask/glasses/regular/hipster
+/obj/item/clothing/glasses/regular/hipster
 	name = "Prescription Glasses"
 	desc = "Made by Uncool. Co."
 	icon_state = "hipster_glasses"
 	item_state = "hipster_glasses"
 
-/obj/item/clothing/mask/glasses/gglasses
+/obj/item/clothing/glasses/gglasses
 	name = "Green Glasses"
 	desc = "Forest green glasses, like the kind you'd wear when hatching a nasty scheme."
 	icon_state = "gglasses"
 	item_state = "gglasses"
 	body_parts_covered = FALSE
 
-/obj/item/clothing/mask/glasses/sunglasses
+/obj/item/clothing/glasses/sunglasses
 	desc = "Strangely ancient technology used to help provide rudimentary eye cover. Enhanced shielding blocks many flashes."
 	name = "sunglasses"
 	icon_state = "sun"
@@ -110,14 +113,14 @@
 	flash_protection = FLASH_PROTECTION_MODERATE
 	body_parts_covered = FALSE
 
-/obj/item/clothing/mask/glasses/sunglasses/blindfold
+/obj/item/clothing/glasses/sunglasses/blindfold
 	name = "blindfold"
 	desc = "Covers the eyes, preventing sight."
 	icon_state = "blindfold"
 	item_state = "blindfold"
 	tint = TINT_BLIND
 
-/obj/item/clothing/mask/glasses/sunglasses/large
+/obj/item/clothing/glasses/sunglasses/large
 	desc = "Strangely ancient technology used to help provide rudimentary eye cover. Enhanced shielding blocks many flashes."
 	name = "large sunglasses"
 	icon_state = "bigsunglasses"
@@ -126,7 +129,7 @@
 	flash_protection = FLASH_PROTECTION_MAJOR
 	body_parts_covered = FALSE
 
-/obj/item/clothing/mask/glasses/tactical_goggles
+/obj/item/clothing/glasses/tactical_goggles
 	name = "goggles"
 	desc = "Standard combat goggles."
 	icon_state = "tactical_goggles"

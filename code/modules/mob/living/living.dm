@@ -176,7 +176,7 @@ default behaviour is:
 	set name = "Succumb"
 	set desc = "Succumb to death."
 	set category = "IC"
-	if (map.civilizations || getTotalLoss() > 150)
+	if (map.civilizations || getTotalDmg() > 150)
 		adjustBrainLoss(300)
 		death()
 		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
@@ -334,6 +334,9 @@ default behaviour is:
 
 /mob/living/proc/getMaxHealth()
 	return maxHealth
+//since gettotalloss() counts halloss it broke the check_instadeath() proc
+/mob/living/proc/getTotalDmg()
+	return getBruteLoss() + getToxLoss() + getFireLoss() + getBrainLoss()
 
 /mob/living/proc/setMaxHealth(var/newMaxHealth)
 	maxHealth = newMaxHealth
@@ -431,7 +434,8 @@ default behaviour is:
 	fire_stacks = 0
 
 /mob/living/proc/rejuvenate()
-	reagents.clear_reagents()
+	if (reagents)
+		reagents.clear_reagents()
 
 	// shut down various types of badness
 	setToxLoss(0)

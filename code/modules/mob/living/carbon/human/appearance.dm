@@ -43,6 +43,8 @@
 	return TRUE
 
 /mob/living/carbon/human/proc/change_facial_hair(var/facial_hair_style)
+	if (body_build.nofacialhair) return
+
 	if (!facial_hair_style)
 		return
 
@@ -192,4 +194,5 @@
 /mob/living/carbon/human/proc/force_update_limbs()
 	for (var/obj/item/organ/external/O in organs)
 		O.sync_colour_to_human(src)
+		O.update_icon()
 	update_body(0)

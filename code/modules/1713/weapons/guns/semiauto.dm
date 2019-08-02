@@ -118,7 +118,7 @@
 	max_shells = 10
 	caliber = "a762x54"
 	ammo_type = /obj/item/ammo_casing/a762x54
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/svt
 	weight = 3.85
 	load_delay = 8
@@ -143,7 +143,7 @@
 	max_shells = 10
 	caliber = "a762x54"
 	ammo_type = /obj/item/ammo_casing/a762x54
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/mosin
 	weight = 3.85
 	firemodes = list(
@@ -167,7 +167,7 @@
 	max_shells = 10
 	caliber = "a792x57"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
 	weight = 4.9
@@ -191,7 +191,7 @@
 	load_delay = 8
 	caliber = "a792x57"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/g43
 	weight = 4.9
@@ -210,7 +210,7 @@
 	item_state = "stg"
 	base_icon = "stg"
 	load_method = MAGAZINE
-	slot_flags = SLOT_BACK|SLOT_BELT
+	slot_flags = SLOT_SHOULDER|SLOT_BELT
 	w_class = 4
 	caliber = "a792x33"
 	fire_sound = 'sound/weapons/stg.ogg'
@@ -237,7 +237,7 @@
 	max_shells = 8
 	caliber = "a3006"
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a3006
 	magazine_type = /obj/item/ammo_magazine/garand
 	weight = 4.9

@@ -156,7 +156,17 @@
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
-
+	if (H.original_job_title == "Gorilla tribesman" || H.original_job_title == "Ant tribesman")
+		if (findtext(recipe.title, "wood sarissa") || findtext(recipe.title, "wood dory") || findtext(recipe.title, "soft wood wall") || findtext(recipe.title, "log wall"))
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+		if (recipe.result_type == /obj/structure/simple_door/key_door/anyone/wood)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+		if (H.original_job_title == "Ant tribesman")
+			if (findtext(recipe.title, "wall") || findtext(recipe.title, "door"))
+				H << "<span class = 'danger'>You don't know how to make this.</span>"
+				return
 	if (findtext(recipe.title, "tin can"))
 		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
 		if (customname == "" || customname == null)
