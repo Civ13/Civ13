@@ -17,7 +17,7 @@
 */
 
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
-	if (map && map.civilizations)
+	if (map && map.civilizations && map.ID != MAP_TRIBES)
 		var/list/current_res = list(0,0,0)
 		if (civ == "Nomad" && user)
 			current_res = map.custom_civs[user.civilization]

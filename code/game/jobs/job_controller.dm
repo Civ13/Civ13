@@ -154,7 +154,7 @@ var/global/datum/controller/occupations/job_master
 	if (map && map.ID == MAP_TRIBES)
 		set_factions(autobalance_for_players)
 
-	if (map && map.civilizations)
+	if (map && map.civilizations && map.ID != MAP_TRIBES)
 		if (map.ID == MAP_CIVILIZATIONS)
 			set_factions2(15)
 		else

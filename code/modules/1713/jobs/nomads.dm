@@ -750,6 +750,8 @@
 /datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Orc Host"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
 	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.")
@@ -781,6 +783,8 @@
 /datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Ant Colony"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
 	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.")
@@ -813,6 +817,8 @@
 /datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Gorilla Tribe"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Very high strength, dexterity, and stamina. Good on unarmed fights.<br>- Can jump further than other races. <br>- Doesn't need to drink as often as other races, as they get water from their food.<br>- Since you are an herbivore, you cannot eat meat, eggs, and so on. You can use grab intent to collect and eat leaves from trees.")
@@ -844,6 +850,8 @@
 /datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Human Kingdom"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Advanced technology compared to all other races (can build crude gunpowder weapons like arquebuses)<br>- Good crafting and intelligence.<br>- The weakest race physically, compared to other races.")
