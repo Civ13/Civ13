@@ -432,6 +432,57 @@
 							real_name = name
 							add_note("Known Languages", "Ainu")
 							return
+		else if (map && map.ID == MAP_TRIBES)
+			spawn(5)
+				if (original_job_title == "Orc tribesman")
+					orc = 1
+					civilization = "Orc Horde"
+					add_language("Black Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/blackspeech/A in languages)
+						default_language = A
+					name = species.get_random_orc_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Ant tribesman")
+					ant = 1
+					civilization = "Ant Colony"
+					add_language("Antspeak",TRUE)
+					remove_language("English")
+					for (var/datum/language/ant/A in languages)
+						default_language = A
+					name = species.get_random_ant_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Gorilla tribesman")
+					gorillaman = 1
+					civilization = "Gorilla Tribe"
+					add_language("Ape Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/ape/A in languages)
+						default_language = A
+					name = species.get_random_gorilla_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Wolfpack")
+					gorillaman = 1
+					civilization = "Wolfpack"
+					add_language("Wolf",TRUE)
+					remove_language("English")
+					for (var/datum/language/ape/A in languages)
+						default_language = A
+					name = species.get_random_gorilla_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else
+					civilization = "Human Kingdom"
+					name = species.get_random_english_name(gender)
+					real_name = name
+					give_clothes()
 		spawn(10)
 			if (map.ID == MAP_NOMADS_CONTINENTAL || MAP_NOMADS_PANGEA)
 				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
@@ -453,46 +504,6 @@
 								name = input_name
 								real_name = input_name
 								return
-	else if (map && map.ID == MAP_TRIBES)
-		spawn(5)
-			if (original_job_title == "Orc tribesman")
-				orc = 1
-				civilization = "Orc Horde"
-				add_language("Black Speech",TRUE)
-				remove_language("English")
-				for (var/datum/language/blackspeech/A in languages)
-					default_language = A
-				name = species.get_random_orc_name(gender)
-				real_name = name
-				give_clothes()
-				return
-			else if (original_job_title == "Ant tribesman")
-				ant = 1
-				civilization = "Ant Colony"
-				add_language("Antspeak",TRUE)
-				remove_language("English")
-				for (var/datum/language/ant/A in languages)
-					default_language = A
-				name = species.get_random_ant_name(gender)
-				real_name = name
-				give_clothes()
-				return
-			else if (original_job_title == "Gorilla tribesman")
-				gorillaman = 1
-				civilization = "Gorilla Tribe"
-				add_language("Ape Speech",TRUE)
-				remove_language("English")
-				for (var/datum/language/ape/A in languages)
-					default_language = A
-				name = species.get_random_gorilla_name(gender)
-				real_name = name
-				give_clothes()
-				return
-			else
-				civilization = "Human Kingdom"
-				name = species.get_random_english_name(gender)
-				real_name = name
-				give_clothes()
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa

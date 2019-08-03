@@ -172,6 +172,7 @@ var/civmax_research = list(230,230,230)
 	var/list/gorilla = list()
 	var/list/ant = list()
 	var/list/lizard = list()
+	var/list/wolfman = list()
 
 /obj/map_metadata/New()
 	..()
