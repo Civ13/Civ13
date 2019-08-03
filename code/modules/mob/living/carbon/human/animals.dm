@@ -68,6 +68,19 @@
 			update_body(1,1)
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
+	else if (type == "Wolf")
+		if (body_build.name == "Default")
+			src << "<font size=3 color='red'>You turn into a Wolf!</font>"
+			icon = 'icons/mob/human.dmi'
+			body_build = get_body_build(gender,"Wolfman")
+			prev_tone = s_tone
+			s_tone = null
+			update_hair()
+			change_facial_hair()
+			force_update_limbs()
+			update_body(1,1)
+			icon = 'icons/mob/human.dmi'
+			regenerate_icons()
 	else if (type == "Werewolf")
 		switch (time_of_day)
 			if ("Midday","Afternoon","Morning","Early Morning","Evening")

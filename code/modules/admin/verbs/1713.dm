@@ -66,6 +66,8 @@
 			map.gorilla -= conf
 		if (conf in map.ant)
 			map.ant -= conf
+		if (conf in map.lizard)
+			map.lizard -= conf
 	else if (choice == "Orc")
 		map.orc += conf
 		if (conf in map.human)
@@ -74,6 +76,8 @@
 			map.gorilla -= conf
 		if (conf in map.ant)
 			map.ant -= conf
+		if (conf in map.lizard)
+			map.lizard -= conf
 	else if (choice == "Gorilla")
 		map.gorilla += conf
 		if (conf in map.orc)
@@ -82,6 +86,8 @@
 			map.human -= conf
 		if (conf in map.ant)
 			map.ant -= conf
+		if (conf in map.lizard)
+			map.lizard -= conf
 	else if (choice == "Ant")
 		map.ant += conf
 		if (conf in map.orc)
@@ -92,6 +98,16 @@
 			map.gorilla -= conf
 		if (conf in map.lizard)
 			map.lizard -= conf
+	else if (choice == "Lizard")
+		map.lizard += conf
+		if (conf in map.orc)
+			map.orc -= conf
+		if (conf in map.human)
+			map.human -= conf
+		if (conf in map.gorilla)
+			map.gorilla -= conf
+		if (conf in map.ant)
+			map.ant -= conf
 	message_admins("[key_name(src)] changed the [conf] to [choice].")
 	log_admin("[key_name(src)] changed the [conf] to [choice].")
 	return
