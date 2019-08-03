@@ -32,7 +32,7 @@
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into an Orc!</font>"
 			icon = 'icons/mob/human.dmi'
-			body_build = get_body_build(gender,"Orc")
+			body_build = pick(get_body_build(gender,"Orc"),get_body_build(gender,"Dark Orc"))
 			prev_tone = s_tone
 			s_tone = null
 			update_hair()
@@ -46,7 +46,7 @@
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into an Ant!</font>"
 			icon = 'icons/mob/human.dmi'
-			body_build = get_body_build(gender,"Ant")
+			body_build = pick(get_body_build(gender,"Ant"),get_body_build(gender,"Black Ant"))
 			prev_tone = s_tone
 			s_tone = null
 			update_hair()
