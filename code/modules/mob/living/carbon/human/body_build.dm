@@ -75,6 +75,15 @@
 /datum/body_build/orc/female
 	gender 			= FEMALE
 
+/datum/body_build/orc/dark
+	name			= "Dark Orc"
+	index			= "_orc_b"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/orc/dark/female
+	gender 			= FEMALE
+
 
 /datum/body_build/wolfman
 	name			= "Wolfman"
@@ -102,6 +111,15 @@
 	nofacialhair = TRUE
 
 /datum/body_build/ant/female
+	gender 			= FEMALE
+
+/datum/body_build/ant/black
+	name			= "Black Ant"
+	index			= "_bant"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/ant/black/female
 	gender 			= FEMALE
 
 /datum/body_build/lizard
