@@ -103,3 +103,12 @@
 
 /datum/body_build/ant/female
 	gender 			= FEMALE
+
+/datum/body_build/lizard
+	name			= "Lizard"
+	index			= "_lizard"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/ant/female
+	gender 			= FEMALE

@@ -726,8 +726,17 @@
 
 
 	return TRUE
+//////////////////////////////////////SPECIES/////////////////////////
+/datum/job/civilian/fantasy
 
+/datum/job/civilian/fantasy/proc/allocate(var/num=1)
+	if (num<=0)
+		num=1
+	else if (num>4)
+		num=4
 
+	spawn_location = "JoinLateIND[num]"
+	return
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
