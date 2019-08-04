@@ -133,7 +133,7 @@
 	icon_state = "indianbl"
 	item_state = "indianbl"
 
-/obj/item/clothing/head/skullmask
+/obj/item/clothing/mask/skullmask
 	name = "skull mask"
 	desc = "A skull mask, used by shamans."
 	icon_state = "skull_mask"

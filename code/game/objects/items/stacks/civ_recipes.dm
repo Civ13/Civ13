@@ -17,7 +17,7 @@
 */
 
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
-	if (map && map.civilizations)
+	if (map && map.civilizations && map.ID != MAP_TRIBES)
 		var/list/current_res = list(0,0,0)
 		if (civ == "Nomad" && user)
 			current_res = map.custom_civs[user.civilization]
@@ -660,7 +660,7 @@
 
 	..()
 	recipes = list(new/datum/stack_recipe("bone talisman", /obj/item/clothing/accessory/armband/talisman, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE))
-	recipes += list(new/datum/stack_recipe("skull mask", /obj/item/clothing/head/skullmask, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
+	recipes += list(new/datum/stack_recipe("skull mask", /obj/item/clothing/mask/skullmask, 5, _time = 100, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("bone knife", /obj/item/weapon/material/kitchen/utensil/knife/bone, 4, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
 	recipes += list(new/datum/stack_recipe("blowing horn", /obj/item/weapon/horn, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[2] >= 12)

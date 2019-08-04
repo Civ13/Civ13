@@ -76,7 +76,7 @@
 
 //for civ mode
 /obj/structure/bookcase/proc/check_research()
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		return
 	else
 		for (var/obj/item/weapon/book/research/RB in contents)
@@ -147,7 +147,7 @@
 				if (world.time < map.age8_timer && map.custom_civs[user.civilization][1]+map.custom_civs[user.civilization][2]+map.custom_civs[user.civilization][3] >= (map.age7_top*3))
 					user << "You are already too advanced. You can research again in [(map.age8_timer-world.time)/600] minutes."
 					return
-		if (!map.civilizations)
+		if (!map.civilizations || map.ID == MAP_TRIBES)
 			return
 		else if(!contents.len)
 			user << "The [name] is empty."

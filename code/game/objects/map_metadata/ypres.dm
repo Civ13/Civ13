@@ -98,10 +98,7 @@
 			return FALSE
 		ticker.finished = TRUE
 		var/message = ""
-		if (!map.civilizations)
-			message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		else
-			message = "The round has ended!"
+		message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
 			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
 		world << "<font size = 4><span class = 'notice'>[message]</span></font>"
