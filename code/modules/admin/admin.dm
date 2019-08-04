@@ -552,7 +552,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Activates or Deactivates research."
 	set name="Toggle Research"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	if (!(map.research_active))
@@ -570,7 +570,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes research speed in Auto-Research mode."
 	set name="Set Research Speed"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	if (!(map.autoresearch))
@@ -593,7 +593,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the starting research."
 	set name="Set Custom Research"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	else if (!(ticker.current_state == GAME_STATE_PREGAME))
@@ -622,7 +622,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the starting age."
 	set name="Set Custom Age"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	else if (!(ticker.current_state == GAME_STATE_PREGAME))

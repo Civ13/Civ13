@@ -432,6 +432,57 @@
 							real_name = name
 							add_note("Known Languages", "Ainu")
 							return
+		else if (map && map.ID == MAP_TRIBES)
+			spawn(5)
+				if (original_job_title == "Orc tribesman")
+					orc = 1
+					civilization = "Orc Horde"
+					add_language("Black Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/blackspeech/A in languages)
+						default_language = A
+					name = species.get_random_orc_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Ant tribesman")
+					ant = 1
+					civilization = "Ant Colony"
+					add_language("Antspeak",TRUE)
+					remove_language("English")
+					for (var/datum/language/ant/A in languages)
+						default_language = A
+					name = species.get_random_ant_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Gorilla tribesman")
+					gorillaman = 1
+					civilization = "Gorilla Tribe"
+					add_language("Ape Speech",TRUE)
+					remove_language("English")
+					for (var/datum/language/ape/A in languages)
+						default_language = A
+					name = species.get_random_gorilla_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Wolfpack")
+					gorillaman = 1
+					civilization = "Wolfpack"
+					add_language("Wolf",TRUE)
+					remove_language("English")
+					for (var/datum/language/ape/A in languages)
+						default_language = A
+					name = species.get_random_gorilla_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else
+					civilization = "Human Kingdom"
+					name = species.get_random_english_name(gender)
+					real_name = name
+					give_clothes()
 		spawn(10)
 			if (map.ID == MAP_NOMADS_CONTINENTAL || MAP_NOMADS_PANGEA)
 				if (!isemptylist(whitelist_list) && config.use_job_whitelist && !client.prefs.be_random_name)
@@ -453,46 +504,6 @@
 								name = input_name
 								real_name = input_name
 								return
-	else if (map && map.ID == MAP_TRIBES)
-		spawn(5)
-			if (original_job_title == "Orc tribesman")
-				orc = 1
-				civilization = "Orc Horde"
-				add_language("Black Speech",TRUE)
-				remove_language("English")
-				for (var/datum/language/blackspeech/A in languages)
-					default_language = A
-				name = species.get_random_orc_name(gender)
-				real_name = name
-				give_clothes()
-				return
-			else if (original_job_title == "Ant tribesman")
-				ant = 1
-				civilization = "Ant Colony"
-				add_language("Antspeak",TRUE)
-				remove_language("English")
-				for (var/datum/language/ant/A in languages)
-					default_language = A
-				name = species.get_random_ant_name(gender)
-				real_name = name
-				give_clothes()
-				return
-			else if (original_job_title == "Gorilla tribesman")
-				gorillaman = 1
-				civilization = "Gorilla Tribe"
-				add_language("Ape Speech",TRUE)
-				remove_language("English")
-				for (var/datum/language/ape/A in languages)
-					default_language = A
-				name = species.get_random_gorilla_name(gender)
-				real_name = name
-				give_clothes()
-				return
-			else
-				civilization = "Human Kingdom"
-				name = species.get_random_english_name(gender)
-				real_name = name
-				give_clothes()
 /////////////////////////CIVS////////////////////////
 
 /datum/job/civilian/civa
@@ -726,8 +737,17 @@
 
 
 	return TRUE
+//////////////////////////////////////SPECIES/////////////////////////
+/datum/job/civilian/fantasy
 
+/datum/job/civilian/fantasy/proc/allocate(var/num=1)
+	if (num<=0)
+		num=1
+	else if (num>4)
+		num=4
 
+	spawn_location = "JoinLateIND[num]"
+	return
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
@@ -741,6 +761,8 @@
 /datum/job/civilian/fantasy/orc/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Orc Host"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
 	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.")
@@ -772,6 +794,8 @@
 /datum/job/civilian/fantasy/ant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Ant Colony"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
 	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.")
@@ -804,6 +828,8 @@
 /datum/job/civilian/fantasy/gorilla/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Gorilla Tribe"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are strong and nimble and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Very high strength, dexterity, and stamina. Good on unarmed fights.<br>- Can jump further than other races. <br>- Doesn't need to drink as often as other races, as they get water from their food.<br>- Since you are an herbivore, you cannot eat meat, eggs, and so on. You can use grab intent to collect and eat leaves from trees.")
@@ -835,6 +861,8 @@
 /datum/job/civilian/fantasy/human/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
 	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Human Kingdom"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have weak and soft pink skin but are very intelligent and can craft a wide range of things.")
 	H.add_note("Race Mechanics", "- Advanced technology compared to all other races (can build crude gunpowder weapons like arquebuses)<br>- Good crafting and intelligence.<br>- The weakest race physically, compared to other races.")

@@ -60,7 +60,7 @@
 "bh" = (/obj/structure/wild/rock,/turf/floor/dirt/dust,/area/caribbean/island)
 "bi" = (/obj/effect/spawner/mobspawner{max_number = 10},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "bj" = (/obj/structure/religious/totem{icon_state = "bear"},/turf/floor/dirt,/area/caribbean/tribes/caves)
-"bk" = (/obj/item/clothing/head/skullmask,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
+"bk" = (/obj/item/clothing/mask/skullmask,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "bl" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 4},/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)
 "bm" = (/obj/effect/decal/cleanable/cobweb2{icon_state = "cobweb2"; dir = 4},/turf/floor/dirt,/area/caribbean/tribes/caves)
 "bn" = (/obj/item/clothing/suit/storage/jacket/bonearmor,/turf/floor/plating/stone_old,/area/caribbean/tribes/caves)

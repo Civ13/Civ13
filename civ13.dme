@@ -852,4 +852,5 @@
 #include "interface\skin.dmf"
 #include "maps\1713\four_colonies.dmm"
 #include "maps\1903\tsaritsyn.dmm"
+#include "maps\5000bc\tribes.dmm"
 // END_INCLUDE

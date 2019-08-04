@@ -25,6 +25,7 @@
 	valid_weather_types = list(WEATHER_RAIN, WEATHER_NONE, WEATHER_STORM, WEATHER_SMOG)
 	availablefactions = list("Orc tribesman")
 	availablefactions_run = TRUE
+	civilizations = TRUE
 	songs = list(
 		"Words Through the Sky:1" = 'sound/music/words_through_the_sky.ogg',)
 	gamemode = "Faction-Based RP"
