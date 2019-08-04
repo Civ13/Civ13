@@ -134,6 +134,9 @@
 		var/food_m = 1
 		if (orc)
 			food_m = 1.5
+		if (crab)
+			food_m = 0.8
+			water_m = 2.5
 		if (gorillaman)
 			water_m = 0.2
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve

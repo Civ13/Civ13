@@ -150,7 +150,7 @@
 
 /datum/body_build/crab
 	name			= "Crab"
-	index			= "_crab"
+	index			= "_crabman"
 	nohair = FALSE
 	nofacialhair = TRUE
 

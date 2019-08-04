@@ -979,7 +979,7 @@
 	H.civilization = "Crustacean Union"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have a very hard shell and strong claws, but need water to survive.")
-	H.add_note("Race Mechanics", "- Natural armoured skin gives good melee and radioactive defense.<br>- Cannot wear shoes or gloves.<br>- Can only eat meat.<br>- No movement delay on water or sand.")
+	H.add_note("Race Mechanics", "- Natural armoured skin gives good melee and radioactive defense.<br>- Cannot wear shoes or gloves.<br>- Can only eat meat (including rotten, doesn't get food poisoning).<br>- No movement delay on water or sand.")
 
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
