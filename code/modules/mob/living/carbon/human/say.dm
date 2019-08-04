@@ -37,7 +37,7 @@
 		if (dd_hasprefix(normal_message_without_html, rp))
 			normal_message_without_html = copytext(normal_message_without_html, lentext(rp)+1, lentext(normal_message_without_html)+1)
 	if (wolfman && howling)
-		..(normal_message, verb="howls", alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic)
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = TRUE)
 	else
 		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic)
 
