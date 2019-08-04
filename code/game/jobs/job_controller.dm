@@ -56,56 +56,22 @@ var/global/datum/controller/occupations/job_master
 //	var/list/randomfaction = list("Red Goose Tribesman","Blue Turkey Tribesman","Green Monkey Tribesman","Yellow Mouse Tribesman","White Wolf Tribesman","Black Bear Tribesman")
 //	var/randomfaction_spawn = "Red Goose Tribesman"
 //	//sets 2 factions for >=10ppl, 3 factions for >=15, 4 factions for >=20, 5 factions for >=25 and 6 factions for >=30
+	var/list/randomfaction = list("Orc tribesman", "Ant tribesman", "Human tribesman", "Gorilla tribesman", "Lizard tribesman", "Wolf tribesman")
 	if (map.availablefactions_run == TRUE)
-		map.availablefactions = list("Orc tribesman", "Ant tribesman", "Human tribesman", "Gorilla tribesman")
-		if (autobalance_nr < 12)
-			map.availablefactions = list("Orc tribesman", "Ant tribesman")
-			world << "Due to the current server population, only the <b>Orc</b> and <b>Ant</b> tribes are active."
-		else if (autobalance_nr >= 12 && autobalance_nr < 20)
-			map.availablefactions = list("Orc tribesman", "Ant tribesman", "Gorilla tribesman")
-			world << "Due to the current server population, only the <b>Orc</b>, <b>Ant</b>, and <b>Gorilla</b> tribes are active."
-		else
-			map.availablefactions = list("Orc tribesman", "Ant tribesman", "Human tribesman", "Gorilla tribesman")
-/*
-		if (autobalance_nr < 10)
-			randomfaction_spawn = pick(randomfaction)
-			map.availablefactions = list(randomfaction_spawn)
-			world << "Only one tribe is enabled: <b>[replacetext(randomfaction_spawn, "sman", "")]</b>."
-		else if (autobalance_nr >= 10 && autobalance_nr < 15)
-			var/a = pick(randomfaction)
-			var/b = pick(randomfaction-a)
-			randomfaction_spawn = pick(a, b)
-			map.availablefactions = list(a,b)
-			world << "Two tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")]</b>."
-		else if (autobalance_nr >= 15 && autobalance_nr < 20)
+		if (autobalance_nr >= 15 && autobalance_nr < 22)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
 			var/c = pick(randomfaction-a-b)
-			randomfaction_spawn = pick(a, b, c)
 			map.availablefactions = list(a,b,c)
-			world << "Three tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")]</b>."
-		else if (autobalance_nr >= 20 && autobalance_nr < 25)
+//			world << "Three tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")]</b>."
+		else if (autobalance_nr >= 22)
 			var/a = pick(randomfaction)
 			var/b = pick(randomfaction-a)
 			var/c = pick(randomfaction-a-b)
 			var/d = pick(randomfaction-a-b-c)
-			randomfaction_spawn = pick(a, b, c, d)
 			map.availablefactions = list(a,b,c,d)
-			world << "Four tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")]</b>."
-		else if (autobalance_nr >= 25 && autobalance_nr < 30)
-			var/a = pick(randomfaction)
-			var/b = pick(randomfaction-a)
-			var/c = pick(randomfaction-a-b)
-			var/d = pick(randomfaction-a-b-c)
-			var/e = pick(randomfaction-a-b-c-d)
-			randomfaction_spawn = pick(a, b, c, d, e)
-			map.availablefactions = list(a,b,c,d,e)
-			world << "Five tribes are enabled: <b>[replacetext(a, "sman", "")],[replacetext(b, "sman", "")],[replacetext(c, "sman", "")],[replacetext(d, "sman", "")],[replacetext(e, "sman", "")]</b>."
-		else if (autobalance_nr >= 30)
-			randomfaction_spawn = pick(randomfaction)
-			map.availablefactions = randomfaction
-			world << "All the 6 tribes are enabled."
-*/
+//			world << "Four tribes are enabled: <b>[replacetext(a, " tribesman", "")], [replacetext(b, " tribesman", "")], [replacetext(c, " tribesman", "")], [replacetext(d, " tribesman", "")]</b>."
+
 	map.availablefactions_run = FALSE
 	return
 
@@ -151,14 +117,15 @@ var/global/datum/controller/occupations/job_master
 		else
 			world << "<span class = 'warning'>An admin has reset autobalance for [max(_clients, autobalance_for_players)] players.</span>"
 
-	if (map && map.ID == MAP_TRIBES)
-		set_factions(autobalance_for_players)
-
 	if (map && map.civilizations && map.ID != MAP_TRIBES)
 		if (map.ID == MAP_CIVILIZATIONS)
 			set_factions2(15)
 		else
 			set_factions2(autobalance_for_players)
+	spawn(10)
+		if (map && map.ID == MAP_TRIBES)
+			set_factions(autobalance_for_players)
+
 	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
 		civilians_forceEnabled = TRUE
 	for (var/datum/job/J in occupations)
@@ -183,6 +150,7 @@ var/global/datum/controller/occupations/job_master
 				civilians_forceEnabled = TRUE
 	if (map.civilizations)
 		civilians_forceEnabled = TRUE
+
 /datum/controller/occupations/proc/spawn_with_delay(var/mob/new_player/np, var/datum/job/j)
 	// for delayed spawning, wait the spawn_delay of the job
 	// and lock up one job position while np is spawning
@@ -214,7 +182,20 @@ var/global/datum/controller/occupations/job_master
 
 	if (!spawn_location && H.original_job)
 		spawn_location = H.original_job.spawn_location
-
+	if (map.ID == MAP_TRIBES)
+		if (H.original_job_title in map.availablefactions)
+			if (H.original_job_title == map.availablefactions[1])
+				spawn_location = "JoinLateIND1"
+			else if (H.original_job_title == map.availablefactions[2])
+				spawn_location = "JoinLateIND2"
+			else if (H.original_job_title == map.availablefactions[3])
+				spawn_location = "JoinLateIND3"
+			else if (H.original_job_title == map.availablefactions[4])
+				spawn_location = "JoinLateIND4"
+			else
+				spawn_location = "JoinLateIND5"
+		else
+			spawn_location = "JoinLateIND5"
 	#ifdef SPAWNLOC_DEBUG
 	world << "[H]([H.original_job.title]) job spawn location = [H.job_spawn_location]"
 	world << "[H]([H.original_job.title]) original job spawn location = [H.original_job.spawn_location]"

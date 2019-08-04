@@ -190,7 +190,10 @@ proc/get_radio_key_from_channel(var/channel)
 
 	var/italics = FALSE
 	var/message_range = 7
-
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if (H.wolfman && verb == "howls")
+			message_range = 15
 	var/turf/T = get_turf(src)
 
 	//handle nonverbal and sign languages here

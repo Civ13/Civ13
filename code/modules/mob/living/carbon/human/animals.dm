@@ -10,10 +10,12 @@
 			src << "<font size=3>You become human again!</font>"
 			body_build = get_body_build(gender,"Default")
 			damage_multiplier = 1
+			movement_speed_multiplier = 1.0
 			update_hair()
 			change_facial_hair()
 			force_update_limbs()
 			update_body()
+			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
 	else if (type == "Gorilla")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into a Gorilla!</font>"
@@ -28,6 +30,8 @@
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
 			damage_multiplier = 2
+			movement_speed_multiplier = 1.0
+			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
 	else if (type == "Orc")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into an Orc!</font>"
@@ -42,6 +46,8 @@
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
 			damage_multiplier = 1.5
+			movement_speed_multiplier = 0.9
+			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
 	else if (type == "Ant")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into an Ant!</font>"
@@ -53,8 +59,10 @@
 			change_facial_hair()
 			force_update_limbs()
 			update_body(1,1)
+			movement_speed_multiplier = 1.0
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
+			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
 	else if (type == "Lizard")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into a Lizard!</font>"
@@ -67,7 +75,10 @@
 			force_update_limbs()
 			update_body(1,1)
 			icon = 'icons/mob/human.dmi'
+			movement_speed_multiplier = 1.2
 			regenerate_icons()
+			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
+
 	else if (type == "Wolf")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into a Wolf!</font>"
@@ -78,9 +89,12 @@
 			update_hair()
 			change_facial_hair()
 			force_update_limbs()
+			damage_multiplier = 2
 			update_body(1,1)
 			icon = 'icons/mob/human.dmi'
+			movement_speed_multiplier = 1.3
 			regenerate_icons()
+			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws/strong, /datum/unarmed_attack/bite/sharp)
 	else if (type == "Werewolf")
 		switch (time_of_day)
 			if ("Midday","Afternoon","Morning","Early Morning","Evening")
@@ -101,5 +115,7 @@
 					update_body()
 					strip(get_turf(src))
 					damage_multiplier = 3
+					movement_speed_multiplier = 1.4
 					icon_update = 0
 					icon = 'icons/mob/human.dmi'
+					species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)

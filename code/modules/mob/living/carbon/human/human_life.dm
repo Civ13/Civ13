@@ -401,7 +401,7 @@
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
-
+/*
 		if (disease == FALSE)
 			if (prob(1) && map.civilizations)
 				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_NORMAL && !("flu" in disease_immunity))
@@ -409,7 +409,7 @@
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
-
+*/
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
 		if (grab_list[1] == null)

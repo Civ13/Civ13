@@ -20,6 +20,23 @@
 
 	usr.say(message)
 
+/mob/living/carbon/human/verb/howl_verb(message as text)
+	set name = "Howl"
+	set category = "IC"
+	if (!wolfman)
+		set hidden = TRUE
+	if (say_disabled)	//This is here to try to identify lag problems
+		usr << "<span class = 'red'>Speech is currently admin-disabled.</span>"
+		return
+
+	set_typing_indicator(0)
+	if (dd_hasprefix(message, "*scream") && isobserver(src))
+		usr << "<span class = 'warning'>You can't scream, because you're dead.</span>"
+		return
+	if (!wolfman)
+		usr << "<span class = 'warning'>You can't howl.</span>"
+		return
+	usr.say(message, TRUE)
 /mob/verb/me_verb(message as text)
 	set name = "Me"
 	set category = "IC"

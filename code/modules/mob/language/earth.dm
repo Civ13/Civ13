@@ -17,6 +17,8 @@
 #define BLACKSPEECH_SYLLABLES list("sh","thr", "th", "m", "Kr", "gl", "sk", "zg", "mb", "mp", "rz", "nk", "dhl", "zh", "û", "á", "ûk", "ul", "ak", "na", "ul", "ag", "Ng", "gh", "h", "s", "z")
 #define ANT_SYLLABLES list("'Ch", "u'", "kra", "ko", "kre", "k'h", "cru", "ka", "tch'", "ach", "ukt", "k'tu", "v'ch", "uk", "-kh", "ak'h", "ke-ta", "kt-", "khe'", "uc", "tc'hu", "'Kh")
 #define GORILLA_SYLLABLES list("ugh", "bo", "ah", "unga", "'ga", "bunga", "agha", "ah-ah", "ho", "gru", "egh", "gah", "gu", "gch", "ba", "bu", "-cah", "ah", "ouh", "tcha", "ugga", "uk", "uck", "-gogh", "au", "tah", "boh", "teh", "oog", "u'uk", "gra", "na")
+#define WOLF_SYLLABLES list("woo", "aaf", "wof", "woof", "'wa", "wu", "we", "wi", "ai", "aw", "ae", "af", "aw", "ew")
+
 /datum/language/portuguese
 	name = "Portuguese"
 	desc = "Muito bom."
@@ -230,4 +232,22 @@
 	colour = "Ape Speech"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = GORILLA_SYLLABLES
+	mutual_intelligibility = list()
+
+/datum/language/wolf
+	name = "Wolf Howling"
+	desc = "Awoooo!"
+	key = "w"
+	colour = "Wolf Howling"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = WOLF_SYLLABLES
+	mutual_intelligibility = list()
+
+/datum/language/lizard
+	name = "Lizard Hissing"
+	desc = "Hissss!"
+	key = "l"
+	colour = "Lizard Hissing"
+	flags = RESTRICTED | COMMON_VERBS
+	syllables = HEBREW_SYLLABLES
 	mutual_intelligibility = list()

@@ -34,10 +34,15 @@
 	var/newnameb = list("Ant Colony" = list(21,21,21,null,0,"star","#0C1EA7","#67A7CE"))
 	var/newnamec = list("Gorilla Tribe" = list(21,21,21,null,0,"sun","#9A9A9A","#098518"))
 	var/newnamed = list("Human Kingdom" = list(62,62,62,null,0,"cross","#E5C100","#FFFFFF"))
+	var/newnamee = list("Lizard Clan" = list(62,62,62,null,0,"big_cross","#669932","#1E1E1E"))
+	var/newnamef = list("Wolfpack" = list(62,62,62,null,0,"moon","#FFFFFF","#848484"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
+	custom_civs += newnamee
+	custom_civs += newnamef
+
 	spawn(1)
 		civilians_forceEnabled = TRUE
 	..()

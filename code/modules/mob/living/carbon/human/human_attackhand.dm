@@ -268,7 +268,10 @@
 			attack.apply_effects(H, src, armor, rand_damage, hit_zone)
 
 			// Finally, apply damage to target
-			apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge)
+			if (lizard && istype(attack, /datum/unarmed_attack/bite))
+				apply_damage(real_damage, TOX, affecting, armor, sharp=attack.sharp, edge=attack.edge)
+			else
+				apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge)
 
 		if (I_DISARM)
 			M.attack_log += text("\[[time_stamp()]\] <font color='red'>Disarmed [name] ([ckey])</font>")
