@@ -420,7 +420,7 @@
 			new/datum/stack_recipe("coffin", /obj/structure/closet/coffin, 4, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("gallows", /obj/structure/gallows, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("wardrobe", /obj/structure/closet/cabinet, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("cabinet", /obj/structure/closet/cabinet/ceiling, 4, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE)
+			new/datum/stack_recipe("cabinet", /obj/structure/closet/cabinet/ceiling, 4, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("wood pole", /obj/structure/barricade/wood_pole, 2, _time = 50, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else if (current_res[1] >= 14)
 		recipes += new/datum/stack_recipe_list("furniture", list(
