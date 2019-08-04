@@ -193,7 +193,7 @@ proc/get_radio_key_from_channel(var/channel)
 	if (ishuman(src))
 		var/mob/living/carbon/human/H = src
 		if (H.wolfman && howl)
-			message_range = 15
+			message_range = 30
 	var/turf/T = get_turf(src)
 
 	//handle nonverbal and sign languages here

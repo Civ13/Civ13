@@ -42,8 +42,8 @@
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 
 		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 			if (map && map.ID == MAP_CIVILIZATIONS)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 				spawn(5)
 					if (gender == "male")
 						if (civilization == "West Kingdom")
@@ -59,6 +59,7 @@
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			else if(map && map.ID == MAP_TRIBES)
 				if (orc)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
 					spawn(10)
 						C.uncolored = FALSE
@@ -77,14 +78,17 @@
 				else if (gorillaman)
 					equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
 				else if (ant)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(src), slot_w_uniform)
 				else if (lizard)
 					equip_to_slot_or_del(new /obj/item/clothing/under/mayan_loincloth(src), slot_w_uniform)
 				else if (wolfman || crab)
 					equip_to_slot_or_del(new /obj/item/clothing/under/loincotton(src), slot_w_uniform)
 				else
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			else
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
