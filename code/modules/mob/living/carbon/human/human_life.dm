@@ -47,13 +47,14 @@
 
 	if (transforming)
 		return
-	if (werewolf + gorillaman + orc + ant + lizard + wolfman > 1)
+	if (werewolf + gorillaman + orc + ant + lizard + wolfman + crab > 1)
 		werewolf = 0
 		gorillaman = 0
 		orc = 0
 		ant = 0
 		lizard = 0
 		wolfman = 0
+		crab = 0
 		handle_animalistic("Default")
 
 	if (werewolf)
@@ -68,7 +69,9 @@
 		handle_animalistic("Lizard")
 	else if (wolfman)
 		handle_animalistic("Wolf")
-	else if (!gorillaman && !werewolf && !orc && !ant && !lizard && !wolfman && body_build.name != "Default")
+	else if (crab)
+		handle_animalistic("Crab")
+	else if (!gorillaman && !werewolf && !orc && !ant && !lizard && !wolfman && !crab && body_build.name != "Default")
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1

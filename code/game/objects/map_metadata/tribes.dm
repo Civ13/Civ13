@@ -36,12 +36,14 @@
 	var/newnamed = list("Human Kingdom" = list(62,62,62,null,0,"cross","#E5C100","#FFFFFF"))
 	var/newnamee = list("Lizard Clan" = list(21,21,21,null,0,"big_cross","#669932","#1E1E1E"))
 	var/newnamef = list("Wolfpack" = list(21,21,21,null,0,"moon","#FFFFFF","#848484"))
+	var/newnameg = list("Crustacean Union" = list(21,21,21,null,0,"seashell","#EEEEEE","#7F0000"))
 	custom_civs += newnamea
 	custom_civs += newnameb
 	custom_civs += newnamec
 	custom_civs += newnamed
 	custom_civs += newnamee
 	custom_civs += newnamef
+	custom_civs += newnameg
 
 	spawn(1)
 		civilians_forceEnabled = TRUE

@@ -373,6 +373,8 @@ var/global/datum/controller/occupations/job_master
 			H.lizard = 1
 		if (map && H && (H.faction_text in map.wolfman))
 			H.wolfman = 1
+		if (map && H && (H.faction_text in map.crab))
+			H.crab = 1
 		var/spawn_location = H.original_job.spawn_location
 		H.job_spawn_location = spawn_location
 

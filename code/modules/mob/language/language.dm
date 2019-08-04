@@ -145,6 +145,13 @@
 
 	var/full_name = "Wooowa"
 	return full_name
+
+/datum/language/proc/get_random_crab_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
+	if (!syllables || !syllables.len)
+		return capitalize(pick(first_names_crab)) + " " + capitalize(pick(last_names_crab))
+
+	var/full_name = "Mr. Krabs"
+	return full_name
 /datum/language/proc/get_random_lizard_name(name_count=1, syllable_count=4, syllable_divisor=2)//removed var/gender
 	if (!syllables || !syllables.len)
 		return capitalize(pick(first_names_lizard))

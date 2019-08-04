@@ -598,6 +598,9 @@
 				var/mob/living/carbon/human/HH = src
 				if (isnull(HH.riding_mob))
 					move_delay += F.get_move_delay()
+				else if (HH.crab)
+					if (!istype(F, /turf/floor/beach))
+						move_delay += F.get_move_delay()
 			else
 				move_delay += F.get_move_delay()
 

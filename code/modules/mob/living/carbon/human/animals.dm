@@ -78,6 +78,22 @@
 			movement_speed_multiplier = 1.2
 			regenerate_icons()
 			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
+	else if (type == "Crab")
+		if (body_build.name == "Default")
+			src << "<font size=3 color='red'>You turn into a Crustacean!</font>"
+			icon = 'icons/mob/human.dmi'
+			body_build = get_body_build(gender,"Crab")
+			prev_tone = s_tone
+			s_tone = null
+			update_hair()
+			change_facial_hair()
+			force_update_limbs()
+			update_body(1,1)
+			icon = 'icons/mob/human.dmi'
+			movement_speed_multiplier = 0.8
+			damage_multiplier = 1.5
+			regenerate_icons()
+			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
 
 	else if (type == "Wolf")
 		if (body_build.name == "Default")

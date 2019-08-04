@@ -58,7 +58,7 @@
 	var/conf = WWinput(src, "Which faction do you wish to change?","Species","Cancel",choicelist)
 	if (conf == "Cancel")
 		return
-	var/choice = WWinput(src, "Which species to turn them into?","Species","Human", list("Human","Orc","Gorilla","Ant","Lizard"))
+	var/choice = WWinput(src, "Which species to turn them into?","Species","Human", list("Human","Orc","Gorilla","Ant","Lizard","Wolfman","Crab"))
 	if (choice == "Human")
 		map.human += conf
 		if (conf in map.orc)
@@ -69,6 +69,10 @@
 			map.ant -= conf
 		if (conf in map.lizard)
 			map.lizard -= conf
+		if (conf in map.crab)
+			map.crab -= conf
+		if (conf in map.wolfman)
+			map.wolfman -= conf
 	else if (choice == "Orc")
 		map.orc += conf
 		if (conf in map.human)
@@ -79,6 +83,10 @@
 			map.ant -= conf
 		if (conf in map.lizard)
 			map.lizard -= conf
+		if (conf in map.crab)
+			map.crab -= conf
+		if (conf in map.wolfman)
+			map.wolfman -= conf
 	else if (choice == "Gorilla")
 		map.gorilla += conf
 		if (conf in map.orc)
@@ -89,6 +97,10 @@
 			map.ant -= conf
 		if (conf in map.lizard)
 			map.lizard -= conf
+		if (conf in map.crab)
+			map.crab -= conf
+		if (conf in map.wolfman)
+			map.wolfman -= conf
 	else if (choice == "Ant")
 		map.ant += conf
 		if (conf in map.orc)
@@ -99,6 +111,10 @@
 			map.gorilla -= conf
 		if (conf in map.lizard)
 			map.lizard -= conf
+		if (conf in map.crab)
+			map.crab -= conf
+		if (conf in map.wolfman)
+			map.wolfman -= conf
 	else if (choice == "Lizard")
 		map.lizard += conf
 		if (conf in map.orc)
@@ -109,6 +125,40 @@
 			map.gorilla -= conf
 		if (conf in map.ant)
 			map.ant -= conf
+		if (conf in map.crab)
+			map.crab -= conf
+		if (conf in map.wolfman)
+			map.wolfman -= conf
+	else if (choice == "Wolfman")
+		map.wolfman += conf
+		if (conf in map.orc)
+			map.orc -= conf
+		if (conf in map.human)
+			map.human -= conf
+		if (conf in map.gorilla)
+			map.gorilla -= conf
+		if (conf in map.ant)
+			map.ant -= conf
+		if (conf in map.lizard)
+			map.lizard -= conf
+		if (conf in map.crab)
+			map.crab -= conf
+		if (conf in map.wolfman)
+			map.wolfman -= conf
+	else if (choice == "Crab")
+		map.crab += conf
+		if (conf in map.orc)
+			map.orc -= conf
+		if (conf in map.human)
+			map.human -= conf
+		if (conf in map.gorilla)
+			map.gorilla -= conf
+		if (conf in map.ant)
+			map.ant -= conf
+		if (conf in map.lizard)
+			map.lizard -= conf
+		if (conf in map.wolfman)
+			map.wolfman -= conf
 	message_admins("[key_name(src)] changed the [conf] to [choice].")
 	log_admin("[key_name(src)] changed the [conf] to [choice].")
 	return

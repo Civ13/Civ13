@@ -80,6 +80,8 @@
 					equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(src), slot_w_uniform)
 				else if (lizard)
 					equip_to_slot_or_del(new /obj/item/clothing/under/mayan_loincloth(src), slot_w_uniform)
+				else if (wolfman || crab)
+					equip_to_slot_or_del(new /obj/item/clothing/under/loincotton(src), slot_w_uniform)
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			else
@@ -488,6 +490,17 @@
 					for (var/datum/language/lizard/A in languages)
 						default_language = A
 					name = species.get_random_lizard_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Crustacean tribesman")
+					crab = 1
+					civilization = "Crustacean Union"
+					add_language("Clack Tongue",TRUE)
+					remove_language("English")
+					for (var/datum/language/crab/A in languages)
+						default_language = A
+					name = species.get_random_crab_name(gender)
 					real_name = name
 					give_clothes()
 					return
@@ -902,7 +915,7 @@
 	H.civilization = "Wolfpack"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
-	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.")
+	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.")
 
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_LOW)
@@ -941,6 +954,37 @@
 	H.setStat("crafting", STAT_LOW)
 	H.setStat("rifle", STAT_LOW)
 	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("philosophy", STAT_LOW)
+
+	return TRUE
+
+/datum/job/civilian/fantasy/crab
+	title = "Crustacean tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/crab/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Crustacean Union"
+
+	H.add_note("Role", "You are a <b>[title]</b>. You have a very hard shell and strong claws, but need water to survive.")
+	H.add_note("Race Mechanics", "- Natural armoured skin gives good melee and radioactive defense.<br>- Cannot wear shoes or gloves.<br>- Can only eat meat.<br>- No movement delay on water or sand.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
 	H.setStat("swords", STAT_LOW)
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
