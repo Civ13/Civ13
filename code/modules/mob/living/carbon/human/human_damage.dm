@@ -335,8 +335,8 @@ This function restores all organs.
 		if(BURN)
 			damage = damage*species.burn_mod
 			created_wound = organ.take_damage(0, damage, sharp, edge, used_weapon)
-		if (toxic)
-			adjustToxLoss(rand(3,5))
+	if (toxic)
+		adjustToxLoss(rand(3,5))
 	// Will set our damageoverlay icon to the next level, which will then be set back to the normal level the next mob.Life().
 	updatehealth()
 	return created_wound
