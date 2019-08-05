@@ -15,7 +15,11 @@
 			change_facial_hair()
 			force_update_limbs()
 			update_body()
-			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/kick()
+			species.unarmed_attacks += new /datum/unarmed_attack/punch()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite()
 	else if (type == "Gorilla")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into a Gorilla!</font>"
@@ -31,7 +35,11 @@
 			regenerate_icons()
 			damage_multiplier = 2
 			movement_speed_multiplier = 1.0
-			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/kick()
+			species.unarmed_attacks += new /datum/unarmed_attack/punch()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite()
 	else if (type == "Orc")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into an Orc!</font>"
@@ -47,7 +55,11 @@
 			regenerate_icons()
 			damage_multiplier = 1.5
 			movement_speed_multiplier = 0.9
-			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/kick()
+			species.unarmed_attacks += new /datum/unarmed_attack/punch()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite()
 	else if (type == "Ant")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into an Ant!</font>"
@@ -62,7 +74,11 @@
 			movement_speed_multiplier = 1.0
 			icon = 'icons/mob/human.dmi'
 			regenerate_icons()
-			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/kick, /datum/unarmed_attack/punch, /datum/unarmed_attack/bite)
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/kick()
+			species.unarmed_attacks += new /datum/unarmed_attack/punch()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite()
 	else if (type == "Lizard")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into a Lizard!</font>"
@@ -77,7 +93,10 @@
 			icon = 'icons/mob/human.dmi'
 			movement_speed_multiplier = 1.2
 			regenerate_icons()
-			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/claws()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite/sharp()
 	else if (type == "Crab")
 		if (body_build.name == "Default")
 			src << "<font size=3 color='red'>You turn into a Crustacean!</font>"
@@ -93,7 +112,10 @@
 			movement_speed_multiplier = 0.8
 			damage_multiplier = 1.5
 			regenerate_icons()
-			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/claws()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite/sharp()
 
 	else if (type == "Wolf")
 		if (body_build.name == "Default")
@@ -110,7 +132,10 @@
 			icon = 'icons/mob/human.dmi'
 			movement_speed_multiplier = 1.3
 			regenerate_icons()
-			species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws/strong, /datum/unarmed_attack/bite/sharp)
+			species.unarmed_attacks = list()
+			species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+			species.unarmed_attacks += new /datum/unarmed_attack/claws/strong()
+			species.unarmed_attacks += new /datum/unarmed_attack/bite/sharp()
 	else if (type == "Werewolf")
 		switch (time_of_day)
 			if ("Midday","Afternoon","Morning","Early Morning","Evening")
@@ -134,4 +159,7 @@
 					movement_speed_multiplier = 1.4
 					icon_update = 0
 					icon = 'icons/mob/human.dmi'
-					species.unarmed_attacks = list(/datum/unarmed_attack/stomp, /datum/unarmed_attack/claws, /datum/unarmed_attack/bite/sharp)
+					species.unarmed_attacks = list()
+					species.unarmed_attacks += new /datum/unarmed_attack/stomp()
+					species.unarmed_attacks += new /datum/unarmed_attack/claws()
+					species.unarmed_attacks += new /datum/unarmed_attack/bite/sharp()
