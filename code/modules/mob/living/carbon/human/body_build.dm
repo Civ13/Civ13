@@ -145,5 +145,14 @@
 	nohair = FALSE
 	nofacialhair = TRUE
 
-/datum/body_build/ant/female
+/datum/body_build/lizard/female
+	gender 			= FEMALE
+
+/datum/body_build/crab
+	name			= "Crab"
+	index			= "_crabman"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/crab/female
 	gender 			= FEMALE

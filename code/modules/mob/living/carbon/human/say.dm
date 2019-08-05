@@ -1,4 +1,4 @@
-/mob/living/carbon/human/say(var/message)
+/mob/living/carbon/human/say(var/message, var/howling = FALSE)
 
 	// workaround for language bug that happens when you're spawned in
 	if (!languages.len)
@@ -36,8 +36,10 @@
 	for (var/rp in radio_prefixes)
 		if (dd_hasprefix(normal_message_without_html, rp))
 			normal_message_without_html = copytext(normal_message_without_html, lentext(rp)+1, lentext(normal_message_without_html)+1)
-
-	..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic)
+	if (wolfman && howling)
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = TRUE)
+	else
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic)
 
 	for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, src))
 		D.hear_command(message_without_html, src)

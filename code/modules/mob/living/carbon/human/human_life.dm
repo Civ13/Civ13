@@ -47,13 +47,14 @@
 
 	if (transforming)
 		return
-	if (werewolf + gorillaman + orc + ant + lizard + wolfman > 1)
+	if (werewolf + gorillaman + orc + ant + lizard + wolfman + crab > 1)
 		werewolf = 0
 		gorillaman = 0
 		orc = 0
 		ant = 0
 		lizard = 0
 		wolfman = 0
+		crab = 0
 		handle_animalistic("Default")
 
 	if (werewolf)
@@ -67,8 +68,10 @@
 	else if (lizard)
 		handle_animalistic("Lizard")
 	else if (wolfman)
-		handle_animalistic("Wolfman")
-	else if (!gorillaman && !werewolf && !orc && !ant && !lizard && !wolfman && body_build.name != "Default")
+		handle_animalistic("Wolf")
+	else if (crab)
+		handle_animalistic("Crab")
+	else if (!gorillaman && !werewolf && !orc && !ant && !lizard && !wolfman && !crab && body_build.name != "Default")
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
@@ -131,6 +134,9 @@
 		var/food_m = 1
 		if (orc)
 			food_m = 1.5
+		if (crab)
+			food_m = 0.8
+			water_m = 2.5
 		if (gorillaman)
 			water_m = 0.2
 		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
@@ -401,7 +407,7 @@
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
-
+/*
 		if (disease == FALSE)
 			if (prob(1) && map.civilizations)
 				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_NORMAL && !("flu" in disease_immunity))
@@ -409,7 +415,7 @@
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
-
+*/
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
 		if (grab_list[1] == null)

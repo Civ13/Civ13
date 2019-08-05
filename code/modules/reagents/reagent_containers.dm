@@ -166,7 +166,7 @@
 		if (reagents.has_reagent("cholera") && istype(user, /mob/living/carbon/human))
 			var/mob/living/carbon/human/HH = user
 			var/probcholera = reagents.get_reagent_amount("cholera")
-			if (prob(min(probcholera*25,100)) && !HH.orc)
+			if (prob(min(probcholera*25,100)) && !HH.orc && !HH.crab)
 				if (HH.disease == 0)
 					HH.disease_progression = 0
 					HH.disease_type ="cholera"

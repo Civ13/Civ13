@@ -118,6 +118,7 @@
 	var/orc = FALSE
 	var/lizard = FALSE
 	var/wolfman = FALSE
+	var/crab = FALSE
 
 	/* These are stats. They affect how fast and how well you can do certain
 	 * actions. All stats have a min (stats[stat][1]) and a max (stats[stat][2]),

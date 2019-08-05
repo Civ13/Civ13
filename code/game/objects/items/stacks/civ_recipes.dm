@@ -17,9 +17,9 @@
 */
 
 /material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
-	if (map && map.civilizations && map.ID != MAP_TRIBES)
+	if (map && map.civilizations)
 		var/list/current_res = list(0,0,0)
-		if (civ == "Nomad" && user)
+		if ((civ == "Nomad" || map.ID == MAP_TRIBES) && user)
 			current_res = map.custom_civs[user.civilization]
 		else
 			if (civ == "Civilization A Citizen")
@@ -34,17 +34,6 @@
 				current_res = map.cive_research
 			else if (civ == "Civilization F Citizen")
 				current_res = map.civf_research
-		generate_recipes_civs(current_res)
-	else if (map && map.ID == MAP_TRIBES)
-		var/list/current_res = list(56,56,56)
-		if (user && user.original_job_title == "Human tribesman")
-			current_res = list(62,62,62)
-		else if (user && user.original_job_title == "Gorilla tribesman")
-			current_res = list(21,21,21)
-		else if (user && user.original_job_title == "Orc tribesman")
-			current_res = list(56,56,56)
-		else if (user && user.original_job_title == "Ant tribesman")
-			current_res = list(21,21,21)
 		generate_recipes_civs(current_res)
 	else
 		if (!recipes)

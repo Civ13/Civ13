@@ -337,6 +337,9 @@ var/list/global/slot_flags_enumeration = list(
 	if (H.species && !(slot in mob_equip))
 		return FALSE
 
+	if (H.crab && (slot == slot_shoes || slot == slot_gloves))
+		return FALSE
+
 	//First check if the item can be equipped to the desired slot.
 	if ("[slot]" in slot_flags_enumeration)
 		var/req_flags = slot_flags_enumeration["[slot]"]
