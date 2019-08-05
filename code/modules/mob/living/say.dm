@@ -121,7 +121,7 @@ proc/get_radio_key_from_channel(var/channel)
 		return "asks"
 	return verb
 
-/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/alt_message=null, var/animal = FALSE)
+/mob/living/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/alt_message=null, var/animal = FALSE, var/howl = FALSE)
 	if (client)
 		if (client.prefs.muted & MUTE_IC)
 			src << "<span class = 'red'>You cannot speak in IC (Muted).</span>"
@@ -190,7 +190,10 @@ proc/get_radio_key_from_channel(var/channel)
 
 	var/italics = FALSE
 	var/message_range = 7
-
+	if (ishuman(src))
+		var/mob/living/carbon/human/H = src
+		if (H.wolfman && howl)
+			message_range = 30
 	var/turf/T = get_turf(src)
 
 	//handle nonverbal and sign languages here
@@ -232,12 +235,16 @@ proc/get_radio_key_from_channel(var/channel)
 	spawn(30) qdel(speech_bubble)
 
 	for (var/mob/M in listening)
+		if (howl)
+			verb = "howls"
 		M << speech_bubble
 		M.hear_say(message, verb, speaking, alt_name, italics, src, speech_sound, sound_vol, alt_message, animal)
 
 	for (var/obj/O in listening_obj)
 		spawn(0)
 			if (O) //It's possible that it could be deleted in the meantime.
+				if (howl)
+					verb = "howls"
 				O.hear_talk(src, message, verb, speaking)
 
 	log_say("[name]/[key] : [message]")

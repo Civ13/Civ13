@@ -112,7 +112,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked)
@@ -125,7 +125,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (cocked)

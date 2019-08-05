@@ -133,7 +133,6 @@
 		L.adjustBruteLoss(damage)
 		return L
 
-
 /mob/living/simple_animal/hostile/wolf/white
 	name = "white wolf"
 	icon_state = "whitewolf"

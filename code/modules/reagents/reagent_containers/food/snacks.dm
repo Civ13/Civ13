@@ -36,11 +36,11 @@
 	if (raw)
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
-			if (!H.orc)
+			if (!H.orc|| H.crab || H.wolfman)
 				M.reagents.add_reagent("food_poisoning", 1)
 	if (ishuman(M))
 		var/mob/living/carbon/human/HM = M
-		if (HM.orc)
+		if (HM.orc || HM.crab || HM.wolfman)
 			HM.mood += abs(satisfaction)
 		else
 			HM.mood += satisfaction
@@ -85,6 +85,10 @@
 					if (non_vegetarian)
 						user << "<span class='warning'>You are an herbivore! You can't eat this!</span>"
 						return
+				else if (H.wolfman || H.crab)
+					if (!non_vegetarian)
+						user << "<span class='warning'>You are a carnivore! You can't eat this!</span>"
+						return
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 			if (fullness <= 50)
 				C << "<span class='danger'>You hungrily chew out a piece of [src] and gobble it!</span>"
@@ -105,6 +109,10 @@
 				if (H.gorillaman)
 					if (non_vegetarian)
 						user << "<span class='warning'>[H] is an herbivore! They can't eat this!</span>"
+						return
+				else if (H.wolfman || H.crab)
+					if (!non_vegetarian)
+						user << "<span class='warning'>You are a carnivore! You can't eat this!</span>"
 						return
 			if (fullness <= 580)
 				user.visible_message("<span class='danger'>[user] attempts to feed [M] [src].</span>")

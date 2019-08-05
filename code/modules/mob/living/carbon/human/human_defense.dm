@@ -43,9 +43,12 @@ bullet_act
 					else if (gorillaman)
 						var/obj/item/stack/material/gorillapelt/HP = new/obj/item/stack/material/gorillapelt(get_turf(src))
 						HP.amount = 3
-					else if (ant)
+					else if (ant || crab)
 						var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
 						HP.amount = 2
+					else if (wolfman)
+						var/obj/item/stack/material/wolfpelt/HP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+						HP.amount = 3
 					else
 						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
 						HP.amount = 3
@@ -317,6 +320,8 @@ bullet_act
 	var/protection = FALSE
 	if (ant)
 		protection += 25
+	else if (crab)
+		protection += 50
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
 	for (var/gear in protective_gear)
 		if (gear && istype(gear ,/obj/item/clothing))

@@ -42,8 +42,8 @@
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(src), slot_shoes)
 
 		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 			if (map && map.ID == MAP_CIVILIZATIONS)
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 				spawn(5)
 					if (gender == "male")
 						if (civilization == "West Kingdom")
@@ -59,6 +59,7 @@
 							equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(src), slot_head)
 			else if(map && map.ID == MAP_TRIBES)
 				if (orc)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					var/obj/item/clothing/under/customtribalrobe/C = new/obj/item/clothing/under/customtribalrobe(src)
 					spawn(10)
 						C.uncolored = FALSE
@@ -77,10 +78,17 @@
 				else if (gorillaman)
 					equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(src), slot_w_uniform)
 				else if (ant)
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/celtic_blue(src), slot_w_uniform)
+				else if (lizard)
+					equip_to_slot_or_del(new /obj/item/clothing/under/mayan_loincloth(src), slot_w_uniform)
+				else if (wolfman || crab)
+					equip_to_slot_or_del(new /obj/item/clothing/under/loincotton(src), slot_w_uniform)
 				else
+					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 			else
+				equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 				equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
 		else if (map.ordinal_age == 3)
 			equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(src), slot_shoes)
@@ -467,14 +475,36 @@
 					real_name = name
 					give_clothes()
 					return
-				else if (original_job_title == "Wolfpack")
-					gorillaman = 1
+				else if (original_job_title == "Wolf tribesman")
+					wolfman = 1
 					civilization = "Wolfpack"
-					add_language("Wolf",TRUE)
+					add_language("Wolf Howling",TRUE)
 					remove_language("English")
-					for (var/datum/language/ape/A in languages)
+					for (var/datum/language/wolf/A in languages)
 						default_language = A
-					name = species.get_random_gorilla_name(gender)
+					name = species.get_random_wolf_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Lizard tribesman")
+					lizard = 1
+					civilization = "Lizard Clan"
+					add_language("Lizard Hissing",TRUE)
+					remove_language("English")
+					for (var/datum/language/lizard/A in languages)
+						default_language = A
+					name = species.get_random_lizard_name(gender)
+					real_name = name
+					give_clothes()
+					return
+				else if (original_job_title == "Crustacean tribesman")
+					crab = 1
+					civilization = "Crustacean Union"
+					add_language("Clack Tongue",TRUE)
+					remove_language("English")
+					for (var/datum/language/crab/A in languages)
+						default_language = A
+					name = species.get_random_crab_name(gender)
 					real_name = name
 					give_clothes()
 					return
@@ -740,14 +770,6 @@
 //////////////////////////////////////SPECIES/////////////////////////
 /datum/job/civilian/fantasy
 
-/datum/job/civilian/fantasy/proc/allocate(var/num=1)
-	if (num<=0)
-		num=1
-	else if (num>4)
-		num=4
-
-	spawn_location = "JoinLateIND[num]"
-	return
 /datum/job/civilian/fantasy/orc
 	title = "Orc tribesman"
 	rank_abbreviation = ""
@@ -877,5 +899,100 @@
 	H.setStat("medical", STAT_NORMAL)
 	H.setStat("philosophy", STAT_MEDIUM_HIGH)
 
+
+	return TRUE
+
+/datum/job/civilian/fantasy/wolf
+	title = "Wolf tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/wolf/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Wolfpack"
+
+	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
+	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.")
+
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_VERY_HIGH)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_NORMAL)
+	H.setStat("philosophy", STAT_LOW)
+	H.stats["stamina"][1] = 180
+	H.stats["stamina"][2] = 180
+
+	return TRUE
+
+/datum/job/civilian/fantasy/lizard
+	title = "Lizard tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/lizard/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Lizard Clan"
+
+	H.add_note("Role", "You are a <b>[title]</b>. You have a poisonous bite and faster movement in rough terrain.")
+	H.add_note("Race Mechanics", "- Not slowed down by rough terrain (mud, snow). <br>- Poisonous bite gives toxic damage. <br>- Not attacked by wild reptiles.")
+
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_LOW)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_HIGH)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("philosophy", STAT_LOW)
+
+	return TRUE
+
+/datum/job/civilian/fantasy/crab
+	title = "Crustacean tribesman"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateIND4"
+	SL_check_independent = TRUE
+	// AUTOBALANCE
+	min_positions = 9999
+	max_positions = 9999
+
+/datum/job/civilian/fantasy/crab/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+	H.give_languages()
+	H.make_tribesman()
+	H.civilization = "Crustacean Union"
+
+	H.add_note("Role", "You are a <b>[title]</b>. You have a very hard shell and strong claws, but need water to survive.")
+	H.add_note("Race Mechanics", "- Natural armoured skin gives good melee and radioactive defense.<br>- Cannot wear shoes or gloves.<br>- Can only eat meat (including rotten, doesn't get food poisoning).<br>- No movement delay on water or sand.")
+
+	H.setStat("strength", STAT_VERY_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_LOW)
+	H.setStat("pistol", STAT_LOW)
+	H.setStat("bows", STAT_LOW)
+	H.setStat("medical", STAT_MEDIUM_HIGH)
+	H.setStat("philosophy", STAT_LOW)
 
 	return TRUE

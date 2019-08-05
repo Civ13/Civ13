@@ -471,7 +471,7 @@
 			var/snow_message = ""
 			var/snow_span = "notice"
 
-			if (F.icon == 'icons/turf/snow.dmi' && no_snow == FALSE)
+			if (F.icon == 'icons/turf/snow.dmi' && no_snow == FALSE && !H.lizard)
 				standing_on_snow = TRUE
 				if (prob(50))
 					standing_on_snow = 1.25
@@ -510,7 +510,7 @@
 					mob << "<span class = '[snow_span]'>[snow_message]</span>"
 					mob.next_snow_message = world.time+100
 
-			else if (F.muddy)
+			else if (F.muddy && !H.lizard)
 				if (F_area.weather == WEATHER_STORM)
 					standing_on_snow = rand(4,5)
 				else
@@ -597,7 +597,9 @@
 			if (istype(src, /mob/living/carbon/human))
 				var/mob/living/carbon/human/HH = src
 				if (isnull(HH.riding_mob))
-					move_delay += F.get_move_delay()
+					if (HH.crab)
+						if (!istype(F, /turf/floor/beach))
+							move_delay += F.get_move_delay()
 			else
 				move_delay += F.get_move_delay()
 
