@@ -31,7 +31,20 @@
 	slot = "utility"
 	New()
 		..()
-		hold.can_hold = list(/obj/item/weapon/material/sword/katana)
+		hold.can_hold = list(/obj/item/weapon/material/sword/katana,
+		/obj/item/weapon/material/sword/wakazashi)
+
+/obj/item/clothing/accessory/storage/sheath/daisho
+	name = "daisho sheath"
+	desc = "A sheath for a daisho."
+	icon_state = "daisho_sheath"
+	item_state = "daisho_sheath"
+	slots = 2
+	slot = "utility"
+	New()
+		..()
+		hold.can_hold = list(/obj/item/weapon/material/sword/katana,
+		/obj/item/weapon/material/sword/wakazashi)
 
 /obj/item/clothing/accessory/storage/sheath/longer
 	name = "longer sword sheath"
