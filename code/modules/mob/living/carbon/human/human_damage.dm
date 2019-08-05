@@ -295,7 +295,7 @@ This function restores all organs.
 		zone = "head"
 	return organs_by_name[zone]
 
-/mob/living/carbon/human/apply_damage(var/damage = FALSE, var/damagetype = BRUTE, var/def_zone = null, var/blocked = FALSE, var/obj/used_weapon = null, var/sharp = FALSE, var/edge = FALSE)
+/mob/living/carbon/human/apply_damage(var/damage = FALSE, var/damagetype = BRUTE, var/def_zone = null, var/blocked = FALSE, var/obj/used_weapon = null, var/sharp = FALSE, var/edge = FALSE, var/toxic = FALSE)
 
 	//visible_message("Hit debug. [damage] | [damagetype] | [def_zone] | [blocked] | [sharp] | [used_weapon]")
 
@@ -335,7 +335,8 @@ This function restores all organs.
 		if(BURN)
 			damage = damage*species.burn_mod
 			created_wound = organ.take_damage(0, damage, sharp, edge, used_weapon)
-
+		if (toxic)
+			adjustToxLoss(rand(3,5))
 	// Will set our damageoverlay icon to the next level, which will then be set back to the normal level the next mob.Life().
 	updatehealth()
 	return created_wound
