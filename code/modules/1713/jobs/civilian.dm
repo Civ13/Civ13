@@ -718,6 +718,80 @@
 
 	return TRUE
 
+/datum/job/civilian/barkeep
+	title = "Bar Keep/Bar Maiden"
+	en_meaning = "Colony Taverner"
+	rank_abbreviation = "Bartender"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/barkeep/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+
+	//head
+		var/randhead = rand(1,5)
+		if (randhead == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/blue_beret(H), slot_head)
+		else if (randhead == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/red_beret(H), slot_head)
+		else if (randhead== 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/strawhat(H), slot_head)
+		else if (randhead == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/tarred_hat(H), slot_head)
+		else if (randhead == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+
+	//head
+		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
+
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/key/civ/inn(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/weapon/material/knife/butcher(H), slot_belt)
+
+	H.add_note("Role", "You are a <b>Inkeeper</b>. Your job is to man an Inn or Tavern to supply the Colonists with wine and food!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_NORMAL)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+
+
+	return TRUE
+
 
 
 /datum/job/civilian/worker
