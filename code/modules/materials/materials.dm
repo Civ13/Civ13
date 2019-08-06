@@ -650,7 +650,7 @@ var/list/name_to_material
 	icon_colour = "#3F0000"
 	ignition_point = T0C+800
 	melting_point = T0C+800
-	hardness = 60
+	hardness = 51
 	sheet_singular_name = "sheet"
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/chitin

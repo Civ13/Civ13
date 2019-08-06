@@ -1184,7 +1184,7 @@
 	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/orc, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/orc, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur gloves", /obj/item/clothing/gloves/thick/leather/orc, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
-/material/gorillaypelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
+/material/gorillapelt/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
 	recipes += new/datum/stack_recipe("fur coat", /obj/item/clothing/suit/storage/coat/fur/black, 6, _time = 150, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("fur boots", /obj/item/clothing/shoes/fur/black, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -1404,3 +1404,7 @@
 	if (map && map.ordinal_age >= 5 && current_res[3] >= 102)
 		recipes += new/datum/stack_recipe("german gas mask", /obj/item/clothing/mask/gas/german, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("british gas mask", /obj/item/clothing/mask/gas/british, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+
+/material/chitin/generate_recipes_civs(var/list/current_res = list(0,0,0))
+	recipes += new/datum/stack_recipe("chitin mask",/obj/item/clothing/mask/chitinmask, 4, _time = 65, _one_per_turf = FALSE, _on_floor = TRUE)
+	recipes += new/datum/stack_recipe("chitin helmet",/obj/item/clothing/head/helmet/chitin, 7, _time = 115, _one_per_turf = FALSE, _on_floor = TRUE)
