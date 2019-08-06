@@ -776,6 +776,8 @@
 					H << "You collect some edible leaves."
 					new /obj/item/weapon/leaves(get_turf(src))
 					leaves--
+					if (leaves <= 0 && istype(src,/obj/structure/wild/tree/live_tree))
+						icon = 'icons/obj/flora/deadtrees.dmi'
 					return
 				else
 					user << "There are no leaves to harvest here."

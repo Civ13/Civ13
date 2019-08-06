@@ -1785,6 +1785,7 @@
 
 /obj/item/weapon/leaves
 	name = "tree leaves"
+	icon = 'icons/obj/items.dmi'
 	desc = "A bunch of tree leaves."
 	icon_state = "leaves1"
 	throwforce = 0

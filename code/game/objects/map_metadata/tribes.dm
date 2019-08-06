@@ -57,6 +57,7 @@
 		world << "<big>The weather is getting warmer. It is now <b>Spring</b>.</big>"
 		for (var/obj/structure/wild/tree/live_tree/TREES)
 			TREES.update_icon()
+			TREES.leaves = TREES.max_leaves
 		for (var/turf/floor/dirt/winter/D)
 			if (prob(60))
 				D.ChangeTurf(/turf/floor/dirt)
