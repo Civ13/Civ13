@@ -141,6 +141,14 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 25, arrow = 10, gun = 0, energy = 0, bomb = 15, bio = 0, rad = FALSE)
 
+/obj/item/clothing/head/helmet/bone
+	name = "bone helmet"
+	desc = "A helmet made of bones."
+	icon_state = "bone_helmet"
+	item_state = "bone_helmet"
+	worn_state = "bone_helmet"
+	armor = list(melee = 25, arrow = 15, gun = 10, energy = 16, bomb = 16, bio = 16, rad = FALSE)
+
 /obj/item/clothing/mask/wooden
 	name = "wooden mask"
 	desc = "A tribal wooden mask."
