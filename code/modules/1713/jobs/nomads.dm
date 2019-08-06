@@ -787,7 +787,7 @@
 	H.civilization = "Orc Host"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are stronger than the other races but somewhat limited in what to build and use.")
-	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.")
+	H.add_note("Race Mechanics", "- Stronger than humans, good starting strength and average construction skills.<br>- Second most advanced after humans, but no gunpowder.<br>- Radioactive resistance, can't get cholera or food posioning from raw meat, no bad mood from raw meat, gore, or hygiene.<br>- Need to eat more often.<br>- Can handle extreme heat better.")
 
 	H.setStat("strength", STAT_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -820,7 +820,7 @@
 	H.civilization = "Ant Colony"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have very high strength and crafting skills, and can dig much faster, but are very limited in what you can build.")
-	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.")
+	H.add_note("Race Mechanics", "- Very good strength and dexterity, decent construction skills.<br>- Lowest technology of all races. Can't build walls besides dirt walls, can't build doors.<br>- Can dig holes, mine, and collect dirt/sand without tools use grab intent and click on a floor. To dig a hole, right click and use the Dig verb.<br>- Natural armoured skin gives some melee and radioactive defense.<br>- Can't handle the extreme cold or extreme heat.")
 
 	H.setStat("strength", STAT_VERY_HIGH)
 	H.setStat("crafting", STAT_VERY_HIGH)
@@ -919,7 +919,7 @@
 	H.civilization = "Wolfpack"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You are very nimble, strong and with a great sense of organization.")
-	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.")
+	H.add_note("Race Mechanics", "- Fastest race and highest stamina. <br>- Can use howls to communicate with members far away.<br>- Poweful bite.<br>- Not attacked by wild wolves.<br>- Can only eat meat.<br>- Can handle the cold without a coat.")
 
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_LOW)
@@ -952,7 +952,7 @@
 	H.civilization = "Lizard Clan"
 
 	H.add_note("Role", "You are a <b>[title]</b>. You have a poisonous bite and faster movement in rough terrain.")
-	H.add_note("Race Mechanics", "- Not slowed down by rough terrain (mud, snow). <br>- Poisonous bite gives toxic damage. <br>- Not attacked by wild reptiles.")
+	H.add_note("Race Mechanics", "- Not slowed down by rough terrain (mud, snow). <br>- Poisonous bite gives toxic damage. <br>- Not attacked by wild reptiles.<br>- Can't handle the extreme cold or extreme heat.")
 
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_LOW)
