@@ -338,7 +338,7 @@ obj/structure/anvil/New()
 					steel_amt -= 5
 					if (steel_amt <= 0)
 						icon_state = "anvil1"
-					new/obj/item/weapon/material/sword/tanto(user.loc)
+					new/obj/item/weapon/material/knife/tanto(user.loc)
 					return
 			else
 				user << "<span class='notice'>You need more steel to make this!</span>"
@@ -698,7 +698,7 @@ obj/structure/anvil/New()
 				if (H.orc)
 					display4 = list("Grunt Armor (10)", "Urukhai Armor (12)", "Grunt Helmet (10)", "Spearman Helmet (12)", "Berserker Helmet (15)", "Cancel")
 				else
-					display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)", "Cancel")
+					display4 = list("Chainmail (10)", "Iron Chestplate (12)", "Plated Armor (16)", "Conical Helmet (6)", "Kettle Helmet (8)", "Coif (10)", "Protective Conical Helmet (10)", "Coif and Helmet (12)", "Knight Helmet (15)", "Gauntlets (10)", "Plated Boots (10)", "Cancel")
 			else if (map.ordinal_age == 3)
 				display4 = list("Iron Chestplate (12)", "Conical Helmet (6)", "Protective Conical Helmet (10)", "Cancel")
 			else
@@ -776,6 +776,37 @@ obj/structure/anvil/New()
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
 					return
+
+			if (choice4 == "Gauntlets (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the gauntlets..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the gauntlets."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/gloves/gauntlets(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
+			if (choice4 == "Plated Boots (10)")
+				if (iron_amt >= 10)
+					user << "You begin crafting the armored boots..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,130,src) && iron_amt >= 10)
+						user << "You craft the armored boots."
+						iron_amt -= 10
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/clothing/shoes/medieval/knight(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+
 			if (choice4 == "Iron Chestplate (12)")
 				if (iron_amt >= 12)
 					user << "You begin crafting the iron chestplate..."
