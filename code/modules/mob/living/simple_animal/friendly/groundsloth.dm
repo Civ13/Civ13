@@ -51,7 +51,7 @@
 	if (!.)
 		return
 
-	icon_state = "snake"
+	icon_state = "giantgroundsloth_living"
 
 	switch(stance)
 

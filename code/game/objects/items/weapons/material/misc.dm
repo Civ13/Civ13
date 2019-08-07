@@ -479,7 +479,26 @@
 	w_class = 3
 	sharp = TRUE
 	edge = TRUE
-	material = "iron"
+//	origin_tech = "materials=2;combat=1"
+	attack_verb = list("chopped", "torn", "cut")
+	applies_material_colour = TRUE
+	value = 20
+	slot_flags = SLOT_BELT
+	block_chance = 15
+	cooldownw = 11
+
+/obj/item/weapon/material/hatchet/bone_battleaxe
+	name = "bone battle axe"
+	desc = "A very sharpened bone axe blade upon a long wood handle. Not pratical for chopping wood, but pratical for chopping limbs."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "bone_battleaxe"
+	item_state = "bone_battleaxe"
+	default_material = "bone"
+	force_divisor = 0.6 // 30 with hardness 60 (steel)
+	thrown_force_divisor = 0.55 // 15 with weight 20 (steel)
+	w_class = 3
+	sharp = TRUE
+	edge = TRUE
 //	origin_tech = "materials=2;combat=1"
 	attack_verb = list("chopped", "torn", "cut")
 	applies_material_colour = TRUE
