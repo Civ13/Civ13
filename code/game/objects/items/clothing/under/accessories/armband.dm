@@ -143,6 +143,14 @@
 	worn_state = "customtabard"
 	slot = "overcloth"
 
+/obj/item/clothing/accessory/custom/apron
+	name = "apron"
+	desc = "A cloth apron."
+	icon_state = "apron"
+	item_state = "apron"
+	worn_state = "apron"
+	slot = "overcloth"
+
 /obj/item/clothing/accessory/custom/cape
 	name = "cape"
 	desc = "A cloth cape."

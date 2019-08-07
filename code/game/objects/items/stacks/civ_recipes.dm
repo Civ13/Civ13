@@ -1365,19 +1365,22 @@
 			new/datum/stack_recipe("customizable armband", /obj/item/clothing/accessory/custom/armband, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable sash", /obj/item/clothing/accessory/custom/sash, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable cape", /obj/item/clothing/accessory/custom/cape, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("customizable tabard", /obj/item/clothing/accessory/custom/tabard, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("customizable tabard", /obj/item/clothing/accessory/custom/tabard, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable apron", /obj/item/clothing/accessory/custom/apron, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (current_res[3] >= 70 && current_res[3] < 95 )
 		recipes += new/datum/stack_recipe_list("accessories", list(
 			new/datum/stack_recipe("customizable scarf", /obj/item/clothing/accessory/custom/scarf, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable armband", /obj/item/clothing/accessory/custom/armband, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("customizable sash", /obj/item/clothing/accessory/custom/sash, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("customizable sash", /obj/item/clothing/accessory/custom/sash, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable apron", /obj/item/clothing/accessory/custom/apron, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
 	else if (current_res[3] >= 95 )
 		recipes += new/datum/stack_recipe_list("accessories", list(
 			new/datum/stack_recipe("customizable scarf", /obj/item/clothing/accessory/custom/scarf, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable armband", /obj/item/clothing/accessory/custom/armband, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable sash", /obj/item/clothing/accessory/custom/sash, 1, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("customizable tie", /obj/item/clothing/accessory/custom/tie, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
-			new/datum/stack_recipe("customizable bowtie", /obj/item/clothing/accessory/custom/bowtie, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
+			new/datum/stack_recipe("customizable bowtie", /obj/item/clothing/accessory/custom/bowtie, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("customizable apron", /obj/item/clothing/accessory/custom/apron, 2, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE),))
 	if (current_res[3] >= 28)
 		recipes += new/datum/stack_recipe_list("bedsheets", list(
 			new/datum/stack_recipe("white bedsheet", /obj/item/weapon/bedsheet, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),

@@ -722,7 +722,7 @@
 /datum/job/civilian/barkeep
 	title = "Bar Keep/Bar Maiden"
 	en_meaning = "Colony Taverner"
-	rank_abbreviation = "Bartender"
+	rank_abbreviation = "Waiter"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	SL_check_independent = TRUE
