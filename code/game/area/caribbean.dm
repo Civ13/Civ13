@@ -236,7 +236,7 @@
 /area/caribbean/no_mans_land/taiga
 	name = "No Man's Land"
 	icon_state = "purple1"
-	climate = "tundra"
+	climate = "taiga"
 	base_turf = /turf/floor/dirt/winter
 /area/caribbean/no_mans_land/temperate
 	name = "No Man's Land"
@@ -261,6 +261,25 @@
 /area/caribbean/no_mans_land/invisible_wall
 	icon_state = "green1"
 	name = "grace wall"
+
+/area/caribbean/no_mans_land/invisible_wall/tundra
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/invisible_wall/taiga
+	climate = "taiga"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/invisible_wall/temperate
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/invisible_wall/desert
+	climate = "desert"
+	base_turf = /turf/floor/beach/sand/desert
+/area/caribbean/no_mans_land/invisible_wall/semiarid
+	climate = "semiarid"
+	base_turf = /turf/floor/dirt/dust
+/area/caribbean/no_mans_land/invisible_wall/jungle
+	climate = "jungle"
+	base_turf = /turf/floor/dirt/jungledirt
 
 /area/caribbean/no_mans_land/invisible_wall/one
 	icon_state = "green1"

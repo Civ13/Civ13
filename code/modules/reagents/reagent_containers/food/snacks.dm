@@ -36,7 +36,7 @@
 	if (raw)
 		if (ishuman(M))
 			var/mob/living/carbon/human/H = M
-			if (!H.orc|| H.crab || H.wolfman)
+			if (!H.orc && !H.crab && !H.wolfman && !H.lizard)
 				M.reagents.add_reagent("food_poisoning", 1)
 	if (ishuman(M))
 		var/mob/living/carbon/human/HM = M
@@ -1785,6 +1785,7 @@
 
 /obj/item/weapon/leaves
 	name = "tree leaves"
+	icon = 'icons/obj/items.dmi'
 	desc = "A bunch of tree leaves."
 	icon_state = "leaves1"
 	throwforce = 0

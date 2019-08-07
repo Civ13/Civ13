@@ -147,3 +147,39 @@
 				new/mob/living/simple_animal/mouse(get_turf(src))
 		spawn(3600)
 			qdel(src)
+
+
+/obj/item/weapon/reagent_containers/food/snacks/rawcrab
+	name = "raw crab meat"
+	desc = "Fresh crab meat. Looks tasty."
+	icon_state = "raw_crabmeat"
+	health = 180
+	filling_color = "#7F0000"
+	center_of_mass = list("x"=16, "y"=14)
+	raw = TRUE
+	var/rotten = FALSE
+	non_vegetarian = TRUE
+	satisfaction = -15
+	New()
+		..()
+		reagents.add_reagent("protein", 4)
+		reagents.add_reagent("food_poisoning", 1)
+		bitesize = 3
+
+
+/obj/item/weapon/reagent_containers/food/snacks/rawcrab/New()
+	..()
+	spawn(3000) //5 minutes
+		if (!src)
+			return
+		icon_state = "rotraw_crabmeat"
+		name = "rotten [name]"
+		if (reagents)
+			reagents.remove_reagent("protein", 2)
+			reagents.add_reagent("food_poisoning", 1)
+		rotten = TRUE
+		spawn(1000)
+			if (isturf(loc) && prob(30))
+				new/mob/living/simple_animal/mouse(get_turf(src))
+		spawn(3600)
+			qdel(src)

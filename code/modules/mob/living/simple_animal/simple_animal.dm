@@ -345,9 +345,14 @@
 					var/namt = amt-2
 					if (namt <= 0)
 						namt = 1
-					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-					meat.name = "[name] meatsteak"
-					meat.amount = namt
+					if (!istype(src, /mob/living/simple_animal/crab))
+						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+						meat.name = "[name] meatsteak"
+						meat.amount = namt
+					else
+						var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+						meat.amount = namt
+
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 						leather.name = "[name] leather"
@@ -381,9 +386,14 @@
 				var/namt = amt-2
 				if (namt <= 0)
 					namt = 1
-				var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-				meat.name = "[name] meatsteak"
-				meat.amount = namt
+				if (!istype(src, /mob/living/simple_animal/crab))
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+					meat.name = "[name] meatsteak"
+					meat.amount = namt
+				else
+					var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+					meat.amount = namt
+
 				if ((amt-2) >= 1)
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 					bone.name = "[name] bone"

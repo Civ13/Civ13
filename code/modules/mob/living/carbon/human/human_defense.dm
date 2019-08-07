@@ -34,9 +34,13 @@ bullet_act
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-					for (var/v in 1 to rand(5,7))
+					if (!crab)
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "human meat"
+						meat.name = "[src.body_build.name] meat"
+						meat.amount = 4
+					else
+						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+						meat.amount = 4
 					if (orc)
 						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
 						HP.amount = 3

@@ -717,11 +717,11 @@
 	loc_temp += 273.15
 	//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection (convection)
 	var/temp_adj = 0
-	if (loc_temp < bodytemperature-20) //Under 17 degrees = unconfortable without clothing
+	if ((loc_temp < bodytemperature-20) || (loc_temp < bodytemperature-12 && (ant || lizard))) //Under 17 degrees = unconfortable without clothing
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_COLD_DIVISOR) //this will be negative
-	else if (loc_temp > bodytemperature) //Over 37 degrees = unconfortable with too much clothing
+	else if ((loc_temp > bodytemperature) || (loc_temp > bodytemperature-7 && (ant || lizard))) //Over 37 degrees = unconfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
@@ -738,7 +738,7 @@
 	if (map && map.civilizations)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
-	if (bodytemperature >= species.heat_level_1)
+	if (bodytemperature >= species.heat_level_1 && !orc)
 		//Body temperature is too hot.
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
@@ -753,7 +753,7 @@
 		take_overall_damage(burn=burn_dam, used_weapon = "High Body Temperature")
 		fire_alert = max(fire_alert, 2)
 
-	else if (bodytemperature <= species.cold_level_1)
+	else if (bodytemperature <= species.cold_level_1 && !wolfman)
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
 
