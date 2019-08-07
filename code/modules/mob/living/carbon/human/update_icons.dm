@@ -788,7 +788,14 @@ var/global/list/damage_icon_parts = list()
 			standing.overlays += band
 			standing.overlays += cap
 			standing.overlays += symbol
-
+		else if (istype(head, /obj/item/clothing/head/custom_feathered_hat))
+			var/obj/item/clothing/head/custom_feathered_hat/CU = head
+			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "custfeathercap_f_hat", layer = layer+0.01)
+			band.color = CU.bandcolor
+			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "custfeathercap_b_hat", layer = layer+0.01)
+			cap.color = CU.capcolor
+			standing.overlays += band
+			standing.overlays += cap
 		else if (istype(head, /obj/item/clothing/head/custom/fieldcap))
 			var/obj/item/clothing/head/custom/fieldcap/CU = head
 			cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "fieldcap_custom", layer = layer+0.01)

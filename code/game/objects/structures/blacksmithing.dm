@@ -467,6 +467,8 @@ obj/structure/anvil/New()
 				display2 = list("Gladius (10)", "Xiphos (14)", "Cancel")
 			else if (map.ordinal_age == 0)
 				display2 = list("Cancel")
+			if (H.orc)
+				display2 = list("Uruk-Hai Scimitar (16)", "Cancel")
 
 			var/choice2 = WWinput(user, "What do you want to make?", "Blacksmith - [iron_amt] iron", "Cancel", display2)
 			if (choice2 == "Cancel")
@@ -565,6 +567,20 @@ obj/structure/anvil/New()
 						if (iron_amt <= 0)
 							icon_state = "anvil1"
 						new/obj/item/weapon/material/sword/spadroon/iron(user.loc)
+						return
+				else
+					user << "<span class='notice'>You need more iron to make this!</span>"
+					return
+			if (choice2 == "Uruk-Hai Scimitar (16)")
+				if (iron_amt >= 16)
+					user << "You begin crafting an uruk-hai scimitar..."
+					playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+					if (do_after(user,120,src) && iron_amt >= 16)
+						user << "You craft an uruk-hai scimitar."
+						iron_amt -= 16
+						if (iron_amt <= 0)
+							icon_state = "anvil1"
+						new/obj/item/weapon/material/sword/urukhaiscimitar(user.loc)
 						return
 				else
 					user << "<span class='notice'>You need more iron to make this!</span>"
