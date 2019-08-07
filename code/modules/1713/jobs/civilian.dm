@@ -577,6 +577,7 @@
 	rank_abbreviation = "Blacksmith"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
+	whitelisted = TRUE
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
