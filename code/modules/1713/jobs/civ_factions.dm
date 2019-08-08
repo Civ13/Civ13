@@ -556,6 +556,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
 	SL_check_independent = TRUE
+	whitelisted = TRUE
 	is_RP = TRUE
 
 	// AUTOBALANCE
@@ -1328,6 +1329,7 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateSP"
 	SL_check_independent = TRUE
+	whitelisted = TRUE
 	is_RP = TRUE
 
 	// AUTOBALANCE
@@ -2102,6 +2104,7 @@
 	rank_abbreviation = "Ferreiro"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePT"
+	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_RP = TRUE
 
@@ -2876,6 +2879,7 @@
 	rank_abbreviation = "Forgeron"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLatePirate"
+	whitelisted = TRUE
 	SL_check_independent = TRUE
 	is_RP = TRUE
 

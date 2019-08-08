@@ -90,6 +90,58 @@
 	value = 60
 	cooldownw = 7
 
+obj/item/weapon/material/sword/wakazashi
+	name = "wakazashi"
+	desc = "A sword used by the japanese for centuries. Made to slice and slash, not chop or saw. Often paired with a katana."
+	icon_state = "wakazashi"
+	item_state = "wakazashi"
+	block_chance = 19
+	force_divisor = 0.7 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.5 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT
+	value = 60
+	cooldownw = 6
+
+/obj/item/weapon/material/knife/tanto
+	name = "tanto"
+	desc = "A knife used by the japanese for centuries. Made to slice and slash, not chop or saw. Often the tool of choice for ritual suicide."
+	icon_state = "tanto"
+	item_state = "tanto"
+	block_chance = 10
+	force_divisor = 0.4 // 42 when wielded with hardnes 60 (steel)
+	thrown_force_divisor = 0.8 // 10 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT
+	value = 60
+	cooldownw = 6
+/obj/item/weapon/material/knife/tanto/var/suicide = FALSE //To
+/obj/item/weapon/material/knife/tanto/proc/handle_suicide(mob/living/user)
+	if (!ishuman(user))
+		return
+	var/mob/living/carbon/human/M = user
+	suicide = TRUE
+	// realistic WW2 suicide, no hesitation - Kachnov
+	M.visible_message("<span class = 'red'>[user] sticks [M.gender == FEMALE ? "her" : "his"] [src] in [M.gender == FEMALE ? "her" : "his"] gut.</span>")
+	if (!do_after(user, 40))
+		M.visible_message("<span class = 'notice'>[user] failed to commit suicide.</span>")
+		suicide = FALSE
+		return
+
+		user.visible_message("<span class = 'warning'>[user] pulls the trigger.</span>")
+		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves(tried to commit suicide)"
+/obj/item/weapon/material/knife/tanto/attack(atom/A, mob/living/user, def_zone)
+	var/mob/living/carbon/human/H = user
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
+		user << "<span class = 'danger'>You have no idea how to do this.</span>"
+		return
+	if (A == user)
+		var/tgt = user.targeted_organ
+		if (user.targeted_organ == "random")
+			tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+		if (tgt == "groin" && !suicide)
+			handle_suicide(user)
+		else if (user.a_intent == I_HURT && do_after(user, 2, get_turf(user)))
+			attackby(user)
+		return
 /obj/item/weapon/material/sword/katana/iron
 	default_material = "iron"
 
@@ -266,6 +318,19 @@ obj/item/weapon/material/sword/longsword/bronze
 obj/item/weapon/material/sword/longsword/diamond
 	default_material = "diamond"
 
+/obj/item/weapon/material/sword/urukhaiscimitar
+	name = "uruk-hai scimitar"
+	desc = "A broad sword with a curved tip."
+	icon_state = "urukhaiscimitar"
+	item_state = "urukhaiscimitar"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 1 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 40
+	cooldownw = 15
+	value = 55
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."

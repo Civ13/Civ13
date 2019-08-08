@@ -47,6 +47,16 @@
 
 	if (transforming)
 		return
+	if (werewolf + gorillaman + orc + ant + lizard + wolfman + crab > 1)
+		werewolf = 0
+		gorillaman = 0
+		orc = 0
+		ant = 0
+		lizard = 0
+		wolfman = 0
+		crab = 0
+		handle_animalistic("Default")
+
 	if (werewolf)
 		handle_animalistic("Werewolf")
 	else if (gorillaman)
@@ -55,7 +65,13 @@
 		handle_animalistic("Orc")
 	else if (ant)
 		handle_animalistic("Ant")
-	else if (!gorillaman && !werewolf && !orc && !ant && body_build.name != "Default")
+	else if (lizard)
+		handle_animalistic("Lizard")
+	else if (wolfman)
+		handle_animalistic("Wolf")
+	else if (crab)
+		handle_animalistic("Crab")
+	else if (!gorillaman && !werewolf && !orc && !ant && !lizard && !wolfman && !crab && body_build.name != "Default")
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
@@ -114,31 +130,40 @@
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
+		var/water_m = 1
+		var/food_m = 1
+		if (orc)
+			food_m = 1.5
+		if (crab)
+			food_m = 0.8
+			water_m = 2.5
+		if (gorillaman)
+			water_m = 0.2
+		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
+			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
 	if (stats.len)
@@ -382,14 +407,15 @@
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
+/*
 		if (disease == FALSE)
-			//0.005%
 			if (prob(1) && map.civilizations)
-				if (prob(1) && !inducedSSD)
+				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_NORMAL && !("flu" in disease_immunity))
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
+*/
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
 		if (grab_list[1] == null)
@@ -691,11 +717,11 @@
 	loc_temp += 273.15
 	//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection (convection)
 	var/temp_adj = 0
-	if (loc_temp < bodytemperature-20) //Under 17 degrees = unconfortable without clothing
+	if ((loc_temp < bodytemperature-20) || (loc_temp < bodytemperature-12 && (ant || lizard))) //Under 17 degrees = unconfortable without clothing
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_COLD_DIVISOR) //this will be negative
-	else if (loc_temp > bodytemperature) //Over 37 degrees = unconfortable with too much clothing
+	else if ((loc_temp > bodytemperature) || (loc_temp > bodytemperature-7 && (ant || lizard))) //Over 37 degrees = unconfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
@@ -712,7 +738,7 @@
 	if (map && map.civilizations)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
-	if (bodytemperature >= species.heat_level_1)
+	if (bodytemperature >= species.heat_level_1 && !orc)
 		//Body temperature is too hot.
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
@@ -727,7 +753,7 @@
 		take_overall_damage(burn=burn_dam, used_weapon = "High Body Temperature")
 		fire_alert = max(fire_alert, 2)
 
-	else if (bodytemperature <= species.cold_level_1)
+	else if (bodytemperature <= species.cold_level_1 && !wolfman)
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
 

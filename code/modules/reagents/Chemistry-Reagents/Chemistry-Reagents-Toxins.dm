@@ -93,11 +93,12 @@
 	strength = 10
 	metabolism = REM
 
-/datum/reagent/toxin/food_poisoning/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+/datum/reagent/toxin/food_poisoning/affect_blood(var/mob/living/carbon/human/M, var/alien, var/removed)
 	..()
-	M.adjustToxLoss(5 * removed)
-	if (prob(30))
-		M << "<span class = 'warning'>You feel sick...</span>"
+	if (!M.crab)
+		M.adjustToxLoss(5 * removed)
+		if (prob(30))
+			M << "<span class = 'warning'>You feel sick...</span>"
 
 /datum/reagent/toxin/cholera
 	name = "Cholera"

@@ -34,18 +34,28 @@ bullet_act
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-					for (var/v in 1 to rand(5,7))
+					if (!crab)
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "human meat"
+						meat.name = "[src.body_build.name] meat"
+						meat.amount = 4
+					else
+						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+						meat.amount = 4
 					if (orc)
 						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
-						HP.amount = 6
-					else if (gorillaman || ant)
-						var/obj/item/stack/material/leather/HP = new/obj/item/stack/material/leather(get_turf(src))
-						HP.amount = 6
+						HP.amount = 3
+					else if (gorillaman)
+						var/obj/item/stack/material/gorillapelt/HP = new/obj/item/stack/material/gorillapelt(get_turf(src))
+						HP.amount = 3
+					else if (ant || crab)
+						var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
+						HP.amount = 2
+					else if (wolfman)
+						var/obj/item/stack/material/wolfpelt/HP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+						HP.amount = 3
 					else
 						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
-						HP.amount = 6
+						HP.amount = 3
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
 					if (istype(user, /mob/living/carbon/human))
@@ -312,6 +322,10 @@ bullet_act
 /mob/living/carbon/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
 	if (!type || !def_zone) return FALSE
 	var/protection = FALSE
+	if (ant)
+		protection += 25
+	else if (crab)
+		protection += 50
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
 	for (var/gear in protective_gear)
 		if (gear && istype(gear ,/obj/item/clothing))
@@ -481,8 +495,9 @@ bullet_act
 				if(affecting.name != "groin" && prob((I.force * HH.getStatCoeff("strength")/6)))
 					affecting.droplimb(0, DROPLIMB_EDGE)
 					for(var/mob/living/carbon/human/NB in view(6,src))
-						NB.mood -= 10
-						NB.ptsd += 1
+						if (!NB.orc)
+							NB.mood -= 10
+							NB.ptsd += 1
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
 
 	if(I.damtype == BRUTE && !I.edge && prob(I.force * (hit_zone == "mouth" ? 6 : 0)) && O)//Knocking out teeth.

@@ -189,6 +189,22 @@
 	create_path = /mob/living/simple_animal/hostile/bear/polar
 	timer = 3000
 
+/obj/effect/spawner/mobspawner/bears/brown
+	name = "brown bear spawner"
+	hostile = TRUE
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/hostile/bear/brown
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/groundsloth
+	name = "ground sloth spawner"
+	hostile = TRUE
+	max_number = 1
+	max_range = 7
+	create_path = /mob/living/simple_animal/hostile/groundsloth
+	timer = 6000
+
 /obj/effect/spawner/mobspawner/monkeys
 	name = "monkey spawner"
 	max_number = 2
@@ -265,6 +281,19 @@
 	max_number = 2
 	max_range = 10
 	create_path = /mob/living/simple_animal/deer/female
+	timer = 3000
+/obj/effect/spawner/mobspawner/elk_m
+	name = "elk stag spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/elk/male
+	timer = 3000
+
+/obj/effect/spawner/mobspawner/elk_f
+	name = "elk doe spawner"
+	max_number = 2
+	max_range = 10
+	create_path = /mob/living/simple_animal/elk/male
 	timer = 3000
 
 /obj/effect/spawner/mobspawner/reindeer_m
@@ -346,7 +375,12 @@
 	max_range = 11
 	create_path = /mob/living/simple_animal/hostile/mammoth
 	timer = 7200
-
+/obj/effect/spawner/mobspawner/troll
+	name = "troll spawner"
+	max_number = 1
+	max_range = 11
+	create_path = /mob/living/simple_animal/hostile/troll
+	timer = 7200
 /obj/effect/spawner/mobspawner/penguins
 	name = "penguin spawner"
 	max_number = 2

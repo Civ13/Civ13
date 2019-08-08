@@ -392,6 +392,25 @@
 
 		return capitalize(pick(first_names_ant))
 
+/datum/species/proc/get_random_gorilla_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_gorilla))
+
+/datum/species/proc/get_random_wolf_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_wolf)) + " " + capitalize(pick(last_names_wolf))
+
+/datum/species/proc/get_random_lizard_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_lizard))
+/datum/species/proc/get_random_crab_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_crab)) + " " + capitalize(pick(last_names_crab))
+
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 
 	for (var/obj/item/organ/organ in H.contents)
