@@ -365,7 +365,7 @@
 /obj/item/weapon/reagent_containers/glass/bucket/update_icon()
 	overlays.Cut()
 	if (!is_open_container())
-		var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
+	icon_state = "lid_han_gou"
 
 /obj/item/weapon/reagent_containers/glass/small_pot/copper_small
 	desc = "A small copper pot."
