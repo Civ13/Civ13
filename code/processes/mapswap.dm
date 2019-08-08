@@ -120,7 +120,6 @@
 		if (epoch == "Industrial Age (1850-1895)")
 	// 1873 - TDM
 			maps = list(
-				MAP_LITTLE_CREEK = 10,
 				MAP_LITTLE_CREEK_TDM = 0,
 			)
 		if (epoch == "Imperial Age (1650-1780)")
@@ -167,6 +166,7 @@
 				MAP_COLONY = 6,
 				MAP_HUNT = 0,
 				MAP_FOUR_COLONIES = 35,
+				MAP_LITTLE_CREEK = 10,
 			)
 
 		spawn(10)
