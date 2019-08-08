@@ -135,6 +135,11 @@
 	if (current_res[2] >= 54 && map.ordinal_age >= 2)
 		recipes += new/datum/stack_recipe("gunpowder pouch", /obj/item/weapon/reagent_containers/food/drinks/gunpowder, 2, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("bandolier", /obj/item/clothing/accessory/storage/webbing, 3, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("sword sheath", /obj/item/clothing/accessory/storage/sheath, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("longer sword sheath", /obj/item/clothing/accessory/storage/sheath/longer, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("longsword sheath", /obj/item/clothing/accessory/storage/sheath/longsword, 4, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("katana sheath", /obj/item/clothing/accessory/storage/sheath/katana, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("daisho sheath", /obj/item/clothing/accessory/storage/sheath/daisho, 6, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[3] >= 85)
 		recipes += new/datum/stack_recipe("suspenders", /obj/item/clothing/accessory/armband/suspenders1, 1, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("dark suspenders", /obj/item/clothing/accessory/armband/suspenders2, 1, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
@@ -466,7 +471,8 @@
 			new/datum/stack_recipe("wood bowl",/obj/item/kitchen/wood_bowl, 1, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("small mill",/obj/structure/mill, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty, 5, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches, 5, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -480,7 +486,9 @@
 			new/datum/stack_recipe("barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty, 5, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("violin",/obj/item/violin, 10, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("piano",/obj/structure/piano, 18, _time = 195, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("cigar case",/obj/item/weapon/storage/fancy/cigar, 2, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
 	if (current_res[1] < 19)
 		recipes += new/datum/stack_recipe_list("paper & printing", list(
 			new/datum/stack_recipe("scientific literature",/obj/item/weapon/book/research, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE),

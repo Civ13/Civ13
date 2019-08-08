@@ -119,6 +119,110 @@
 
 	return TRUE
 
+/datum/job/civilian/banker
+	title = "Banker"
+	en_meaning = "Master of Funds"
+	rank_abbreviation = "Banker"
+	head_position = TRUE
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+	is_officer = TRUE
+	is_commander = TRUE
+	whitelisted = TRUE
+	SL_check_independent = TRUE
+	is_governor = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 1
+
+/datum/job/civilian/banker/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+//shoes
+	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+//clothes
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
+//jacket
+	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket2(H), slot_wear_suit)
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+//	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony's funds. Organize your men and tax the poor!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_NORMAL)
+	H.setStat("rifle", STAT_NORMAL)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_HIGH)
+	H.setStat("pistol", STAT_MEDIUM_HIGH)
+	H.setStat("bows", STAT_NORMAL)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+/datum/job/civilian/bank_teller
+	title = "Teller"
+	en_meaning = "Bank Teller"
+	rank_abbreviation = "Merchant"
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+	is_merchant = TRUE
+	SL_check_independent = TRUE
+	whitelisted = TRUE
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 2
+
+/datum/job/civilian/bank_teller/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+//shoes
+	if (prob(30))
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots1(H), slot_shoes)
+	else
+		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots1(H), slot_shoes)
+	if (H.gender == "male")
+		var/randcloth = rand(1,5)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
+		else if (randcloth == 4)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
+		else if (randcloth == 5)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+	else
+		var/randcloth = rand(1,3)
+		if (randcloth == 1)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
+		else if (randcloth == 2)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
+		else if (randcloth == 3)
+			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+
+//head
+	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+
+	H.add_note("Role", "You are a <b>[title]</b>, a teller who decided to move in to the new colony to get rich. Keep your bank secure and jew the people out of their money!")
+	H.setStat("strength", STAT_NORMAL)
+	H.setStat("crafting", STAT_MEDIUM_HIGH)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_MEDIUM_HIGH)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_NORMAL)
+
+	return TRUE
+
 /datum/job/civilian/officer
 	title = "Town Guard Officer"
 	en_meaning = "Colony Security Leader"
@@ -292,10 +396,10 @@
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
 	SL_check_independent = TRUE
-
+	whitelisted = TRUE
 	// AUTOBALANCE
 	min_positions = 1
-	max_positions = 20
+	max_positions = 3
 
 /datum/job/civilian/merchant/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
@@ -582,7 +686,7 @@
 
 	// AUTOBALANCE
 	min_positions = 2
-	max_positions = 10
+	max_positions = 3
 
 /datum/job/civilian/blacksmith/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
