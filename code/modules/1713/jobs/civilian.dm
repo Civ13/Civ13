@@ -145,9 +145,8 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/gov(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
 //	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony's funds. Organize your men and tax the poor!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
@@ -165,7 +164,7 @@
 /datum/job/civilian/bank_teller
 	title = "Teller"
 	en_meaning = "Bank Teller"
-	rank_abbreviation = "Merchant"
+	rank_abbreviation = "Teller"
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	is_merchant = TRUE
@@ -208,6 +207,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a teller who decided to move in to the new colony to get rich. Keep your bank secure and jew the people out of their money!")
 	H.setStat("strength", STAT_NORMAL)
