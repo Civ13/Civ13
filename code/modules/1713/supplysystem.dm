@@ -401,7 +401,7 @@
 						return
 
 /obj/structure/exportbook/attack_hand(var/mob/living/carbon/human/H as mob)
-	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
+	if (H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand" && H.original_job_title != "Banker")
 		if (H.original_job_title != "Gobernador" && H.original_job_title != "Governador" && H.original_job_title != "Governeur" && H.original_job_title != "Governor" && H.original_job_title != "British Governor" && H.original_job_title != "British Merchant"  && H.original_job_title != "Merchant" && H.original_job_title != "Mercador" && H.original_job_title != "Comerciante" && H.original_job_title != "Marchand")
 			H << "Only the merchants have access to the international shipping companies. Negotiate with one."
 			return
