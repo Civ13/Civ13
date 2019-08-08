@@ -127,10 +127,8 @@
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateCiv"
 	is_officer = TRUE
-	is_commander = TRUE
 	whitelisted = TRUE
 	SL_check_independent = TRUE
-	is_governor = TRUE
 
 	// AUTOBALANCE
 	min_positions = 1
