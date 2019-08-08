@@ -805,3 +805,24 @@
 	icon_state = "french_army"
 	item_state = "french_army"
 	worn_state = "french_army"
+
+///////////////
+
+/obj/item/clothing/head/furhat
+	name = "fur hat"
+	desc = "A hat made of fur."
+	icon_state = "furhat_hat"
+	item_state = "furhat_hat"
+
+/obj/item/clothing/head/furcap
+	name = "fur cap"
+	desc = "A cap made of fur."
+	icon_state = "furcap_hat"
+	item_state = "furcap_hat"
+
+
+/obj/item/clothing/head/roundcap
+	name = "roundcap"
+	desc = "A cap made of leather."
+	icon_state = "roundcap_hat"
+	item_state = "roundcap_hat"

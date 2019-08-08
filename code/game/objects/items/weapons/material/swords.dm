@@ -290,6 +290,19 @@ obj/item/weapon/material/sword/longsword/bronze
 obj/item/weapon/material/sword/longsword/diamond
 	default_material = "diamond"
 
+/obj/item/weapon/material/sword/urukhaiscimitar
+	name = "uruk-hai scimitar"
+	desc = "A broad sword with a curved tip."
+	icon_state = "urukhaiscimitar"
+	item_state = "urukhaiscimitar"
+	throw_speed = 2
+	throw_range = 2
+	force_divisor = 1 // 60 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.6 // 12 when thrown with weight 20 (steel)
+	slot_flags = SLOT_BELT | SLOT_BACK
+	block_chance = 40
+	cooldownw = 15
+	value = 55
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
