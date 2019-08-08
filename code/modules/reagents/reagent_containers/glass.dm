@@ -349,6 +349,24 @@
 	var/on_stove = FALSE
 	flags = OPENCONTAINER
 
+/obj/item/weapon/reagent_containers/glass/hangou
+	desc = "A japanese pot used by the military all the way back to the meiji era."
+	name = "han-gou"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "han_gou_open"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 200)
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20)
+	volume = 80
+	var/on_stove = FALSE
+	flags = OPENCONTAINER
+/obj/item/weapon/reagent_containers/glass/bucket/update_icon()
+	overlays.Cut()
+	if (!is_open_container())
+		var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
+
 /obj/item/weapon/reagent_containers/glass/small_pot/copper_small
 	desc = "A small copper pot."
 	name = "small copper pot"
