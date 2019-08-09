@@ -377,7 +377,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 				bans += list(full_list_split_two)
 	if (islist(bans) && !isemptylist(bans))
 		for (var/x=1;x<=bans.len;x++)
-			if(ban_type == bans[x][7] && type_specific_info == bans[x][8])
+			if(ban_type == bans[x][4] && type_specific_info == bans[x][5])
 				return TRUE
 	return FALSE
 /* check if we're banned and tell us why we're banned */
