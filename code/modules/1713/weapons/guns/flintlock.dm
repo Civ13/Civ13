@@ -183,6 +183,7 @@
 	effectiveness_mod = 0.87
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 80
+	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/flintlock/crude
 	name = "crude musket"
@@ -261,7 +262,9 @@
 	load_delay = 100
 	value = 70
 	stat = "pistol"
+	equiptimer = 7
 	accuracy_list = list(
+
 
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -316,7 +319,7 @@
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
 	gun_type = GUN_TYPE_SHOTGUN
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
-
+	equiptimer = 15
 	// 15% more accurate than SMGs
 	accuracy_list = list(
 
