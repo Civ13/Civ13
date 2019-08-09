@@ -377,9 +377,9 @@ var/datum/quickBan_handler/quickBan_handler = null
 				bans += list(full_list_split_two)
 	if (islist(bans) && !isemptylist(bans))
 		for (var/x=1;x<=bans.len;x++)
-			return list("reason" = bans[x][7],"ban_date" = bans[x][9], "expire_info" = bans[x][11])
+			if(ban_type == bans[x][7] && type_specific_info == bans[x][8])
+				return TRUE
 	return FALSE
-
 /* check if we're banned and tell us why we're banned */
 /client/proc/quickBan_rejected(var/bantype = "Server")
 
