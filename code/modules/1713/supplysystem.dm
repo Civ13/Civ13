@@ -106,7 +106,7 @@
 		"horse" = 200,
 		"brick crate" = 140,
 		"medical supplies" = 150,
-		"gunpowder barrel" = 230,),
+		"gunpowder barrel" = 230,
 		"musket ammo crate (25)" = 100,
 		"pistol ammo crate (25)" = 60,
 		"blunderbuss crate (15)" = 60,
