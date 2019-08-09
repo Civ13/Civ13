@@ -259,6 +259,7 @@
 #include "code\game\objects\map_metadata\hostages.dm"
 #include "code\game\objects\map_metadata\hunt.dm"
 #include "code\game\objects\map_metadata\island.dm"
+#include "code\game\objects\map_metadata\jungle_colony.dm"
 #include "code\game\objects\map_metadata\karak.dm"
 #include "code\game\objects\map_metadata\khalkhyn_gol.dm"
 #include "code\game\objects\map_metadata\little_creek.dm"
