@@ -107,3 +107,6 @@
 				playsound(loc, 'sound/items/matchstick_hit.ogg', 25, FALSE, -1)
 		W.update_icon()
 		return
+
+/obj/item/weapon/storage/box/matches/full
+	paths = list(/obj/item/weapon/flame/match = 10)

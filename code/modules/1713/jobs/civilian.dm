@@ -15,7 +15,7 @@
 	rank_abbreviation = "Governor"
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivA"
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -59,7 +59,7 @@
 	en_meaning = "Colony Chief Carpenter/Planner"
 	rank_abbreviation = "Architect"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivA"
 	SL_check_independent = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
@@ -125,7 +125,7 @@
 	rank_abbreviation = "Banker"
 	head_position = TRUE
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivB"
 	is_officer = TRUE
 	whitelisted = TRUE
 	SL_check_independent = TRUE
@@ -169,7 +169,7 @@
 	en_meaning = "Bank Teller"
 	rank_abbreviation = "Teller"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivB"
 	is_merchant = TRUE
 	SL_check_independent = TRUE
 	whitelisted = TRUE
@@ -229,7 +229,7 @@
 	en_meaning = "Colony Security Leader"
 	rank_abbreviation = "Officer"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivC"
 	SL_check_independent = TRUE
 	is_officer = TRUE
 	is_commander = TRUE
@@ -252,8 +252,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
@@ -283,7 +282,7 @@
 	en_meaning = "Colony Security"
 	rank_abbreviation = ""
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivC"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -303,8 +302,8 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_shoulder)
+	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton(H), slot_belt)
+
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_r_store)
 	var/obj/item/clothing/accessory/storage/webbing/filled_a = new /obj/item/clothing/accessory/storage/webbing(null)
@@ -755,7 +754,7 @@
 	en_meaning = "Colony Innkeeper/Taverner"
 	rank_abbreviation = "Innkeeper"
 	selection_color = "#2d2d63"
-	spawn_location = "JoinLateCiv"
+	spawn_location = "JoinLateCivD"
 	SL_check_independent = TRUE
 
 	// AUTOBALANCE
@@ -960,6 +959,39 @@
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 
 	H.add_note("Role", "You are a simple <b>Colonist</b>. Build your village!")
+	H.setStat("strength", STAT_MEDIUM_HIGH)
+	H.setStat("crafting", STAT_MEDIUM_LOW)
+	H.setStat("rifle", STAT_MEDIUM_LOW)
+	H.setStat("dexterity", STAT_NORMAL)
+	H.setStat("swords", STAT_MEDIUM_LOW)
+	H.setStat("pistol", STAT_MEDIUM_LOW)
+	H.setStat("bows", STAT_MEDIUM_LOW)
+	H.setStat("medical", STAT_MEDIUM_LOW)
+
+
+	return TRUE
+
+
+/datum/job/civilian/beggar
+	title = "Beggar"
+	en_meaning = "Poor Colonist"
+	rank_abbreviation = ""
+	selection_color = "#2d2d63"
+	spawn_location = "JoinLateCiv"
+	SL_check_independent = TRUE
+
+	// AUTOBALANCE
+	min_positions = 1
+	max_positions = 3
+
+/datum/job/civilian/beggar/equip(var/mob/living/carbon/human/H)
+	if (!H)	return FALSE
+
+
+	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/lighttunic(H), slot_w_uniform)
+
+
+	H.add_note("Role", "You are a penyless colonist. Try to survive!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_LOW)

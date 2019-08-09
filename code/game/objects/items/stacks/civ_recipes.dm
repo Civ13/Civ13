@@ -472,7 +472,7 @@
 			new/datum/stack_recipe("small mill",/obj/structure/mill, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty, 5, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches, 5, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches/full, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -487,7 +487,7 @@
 			new/datum/stack_recipe("violin",/obj/item/violin, 10, _time = 135, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("piano",/obj/structure/piano, 18, _time = 195, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches/full, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("cigar case",/obj/item/weapon/storage/fancy/cigar, 2, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
 	if (current_res[1] < 19)
 		recipes += new/datum/stack_recipe_list("paper & printing", list(

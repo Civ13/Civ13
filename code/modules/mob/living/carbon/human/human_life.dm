@@ -453,7 +453,7 @@
 				handle_hygiene()
 			handle_mood()
 			handle_ptsd()
-		if (!map.civilizations)
+		if (!map.civilizations && map.ID != MAP_COLONY && map.ID != MAP_JUNGLE_COLONY)
 			bowels = 0
 			bladder = 0
 		handle_medical_side_effects()
