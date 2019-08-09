@@ -435,11 +435,6 @@
 		return TRUE
 	return FALSE
 
-/mob/new_player/proc/officerBanned()
-	if (client && client.quickBan_isbanned("Officer"))
-		return TRUE
-	return FALSE
-
 //if the player is "Penal banned", he is reduced to play as a member of a penal battalion
 /mob/new_player/proc/penalBanned()
 	if (client && client.quickBan_isbanned("Penal"))
@@ -514,15 +509,6 @@
 				abandon_mob()
 				spawn(10)
 					usr << "<span class = 'warning'>You're banned from this faction!</span>"
-		return FALSE
-
-	if (officerBanned() && job.is_officer)
-		if (!nomsg)
-			usr << "<span class = 'warning'>You're banned from officer positions!</span>"
-			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
-				abandon_mob()
-				spawn(10)
-					usr << "<span class = 'warning'>You're banned from officer positions!</span>"
 		return FALSE
 
 	if (penalBanned())

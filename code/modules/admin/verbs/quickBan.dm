@@ -3,7 +3,7 @@
  * for this rather small amount of code, so its all done via BYOND's input() */
 
 // bantypes
-var/list/ban_types = list("Faction Ban", "Job Ban", "Officer Ban", "Server Ban", "Playing Ban", "OOC Ban")
+var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban", "OOC Ban")
 
 /datum/quickBan_handler
 /datum/quickBan_handler/Topic(href,href_list[])
@@ -398,9 +398,9 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (reason)
 		if (bantype == "Server")
 			src << "<span class = 'userdanger'>You're banned. Reason: '[reason]'. This ban was assigned on [date] and [expire_info] (after assigned date)</span>"
+			return TRUE
 		else
 			src << "<span class = 'userdanger'>You're [lowertext(bantype)]-banned. Reason: '[reason]'. This ban was assigned on [date] and [expire_info] (after assigned date)</span>"
-		return TRUE
 	return FALSE
 
 /* kick us if we just got banned */
