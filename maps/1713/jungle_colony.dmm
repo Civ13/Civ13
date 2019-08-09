@@ -34,7 +34,7 @@
 "aH" = (/obj/structure/wild/burnedbush,/turf/floor/grass,/area/caribbean/tribes)
 "aI" = (/obj/covers/wood_ship{name = "pier"},/turf/floor/beach/sand,/area/caribbean/tribes)
 "aJ" = (/turf/floor/beach/water,/area/caribbean/tribes)
-"aK" = (/obj/map_metadata/colony,/turf/floor/dirt/underground,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
+"aK" = (/obj/map_metadata/jungle_colony,/turf/floor/dirt/underground,/area/caribbean/void/caves{base_turf = /turf/floor/dirt; name = "The Caves"})
 "aL" = (/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/tribes)
 "aM" = (/turf/floor/grass,/area/caribbean/tribes/swamp)
 "aN" = (/obj/structure/wild/junglebush,/turf/floor/beach/water/swamp{name = "Swamp Water"},/area/caribbean/tribes/swamp)
