@@ -146,6 +146,9 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
 
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
+	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/hall(H), slot_l_store)
 //	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of this colony's funds. Organize your men and tax the poor!")
