@@ -33,6 +33,9 @@ elif map == "SUPPLY_RAID":
 elif map == "COLONY":
 	dmms.append("#include \"maps\\1713\\colony.dmm\"")
 
+elif map == "JUNGLE_COLONY":
+	dmms.append("#include \"maps\\1713\\jungle_colony.dmm\"")
+
 elif map == "FOUR_COLONIES":
 	dmms.append("#include \"maps\\1713\\four_colonies.dmm\"")
 
