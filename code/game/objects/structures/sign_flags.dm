@@ -150,8 +150,13 @@
 
 /obj/structure/sign/flag/japanese
 	name = "Imperial Japanese flag"
-	desc = "A flag with the imperial Japanese flag."
+	desc = "A flag with the imperial Japanese rising sun."
 	icon_state = "japanese"
+
+/obj/structure/sign/flag/chinese
+	name = "Republic of China flag"
+	desc = "A flag with the republic of china design."
+	icon_state = "flag_china"
 
 /obj/structure/sign/flag/french
 	name = "French flag"

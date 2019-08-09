@@ -362,7 +362,7 @@
 	volume = 80
 	var/on_stove = FALSE
 	flags = OPENCONTAINER
-/obj/item/weapon/reagent_containers/glass/bucket/update_icon()
+/obj/item/weapon/reagent_containers/glass/hangou/update_icon()
 	overlays.Cut()
 	if (!is_open_container())	icon_state = "lid_han_gou"
 

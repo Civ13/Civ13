@@ -292,6 +292,11 @@
 	name = "Third Reich Flag"
 	desc = "The Third Reich war flag."
 
+/obj/structure/flag/chinese
+	icon_state = "chinese"
+	name = "Republic of China Flag"
+	desc = "The Republic of China flag."
+
 /obj/structure/noose
 	icon = 'icons/obj/noose.dmi'
 	icon_state = ""

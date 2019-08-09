@@ -186,7 +186,7 @@
 "dD" = (/obj/covers/brick_wall,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 2.14748e+009},/turf/floor/grass,/area/caribbean/roofed)
 "dE" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/grass,/area/caribbean/roofed)
 "dF" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/turf/floor/grass,/area/caribbean/roofed)
-"dG" = (/obj/structure/simple_door/key_door/civ/gov{name = "Governor's Office"},/turf/floor/grass,/area/caribbean/roofed)
+"dG" = (/obj/structure/simple_door/key_door/civ/gov{name = "Governor's Office"},/obj/covers/wood,/turf/floor/grass,/area/caribbean/roofed)
 "dH" = (/obj/covers/wood,/obj/structure/simple_door/key_door/civ/gov{name = "Governor's Quarters"},/turf/floor/grass,/area/caribbean/roofed)
 "dI" = (/obj/covers/wood,/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/grass,/area/caribbean/roofed)
 "dJ" = (/obj/covers/wood,/obj/structure/closet/crate/wood,/turf/floor/grass,/area/caribbean/roofed)
@@ -412,6 +412,8 @@
 "hV" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 "hW" = (/obj/structure/simple_door/key_door/civ/hall{health = 4000; initial_health = 4000; material = "steel"; name = "Bank Vault"},/obj/covers/cobblestone,/turf/floor/grass,/area/caribbean/roofed)
 "hX" = (/obj/covers/wood,/obj/structure/multiz/ladder/ww2/tunneltop{desc = "A floor cover."; icon = 'icons/turf/flooring/wood.dmi'; icon_state = "broken5"; name = "wood floor"},/obj/structure/toilet/pit_latrine,/turf/floor/grass,/area/caribbean/roofed)
+"hY" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/key/civ/room1,/obj/item/weapon/key/civ/room2,/obj/item/weapon/key/civ/room3,/obj/item/weapon/key/civ/room4,/obj/item/weapon/key/civ/room5,/obj/item/weapon/key/civ/room6,/obj/item/weapon/key/civ/room7,/obj/item/weapon/key/civ/room8,/obj/item/weapon/material/knife/butcher,/turf/floor/grass,/area/caribbean/roofed)
+"hZ" = (/obj/covers/wood,/obj/structure/table/wood,/obj/item/weapon/material/kitchen/rollingpin,/turf/floor/grass,/area/caribbean/roofed)
 "ib" = (/obj/structure/wild/rock,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
 
 (1,1,1) = {"
@@ -712,7 +714,7 @@ ababahababababaiabaxaxaxaxaxabababababababhTababababaeababagababababadababababab
 abababababadadadabaxayayaxaxagababababababelababababababababababacababadababftabababacababababababababababbxababababababababauazabababababagabababababahabababadabababasaBdYasaBaBcQaBaBcRaBaBasabababababamadababababdPaqaBaBaBaBdkasdtaBaBaBaBasdtaBfufveoaqdSabbBbBbBbBbBbBbBbBajajajajdcdcdcdcdcdcdcdcdcdcdcdcdcdc
 ababababadabaxaxaxaxayayaxaxabababababababhTabababababababamaeababababababababababbxguadadababadabababababagabababaiabadbbauauababgDababababaoabadabababahadabbQabababaseoeoasdRdtasaBaBaqasasasababaiababababababababdPedaBeofwaBdyaqaBaBaBaBaBaqdtaBeodEeoasdUbBbBbBbBbBbBbBbBbBajajajajdcdcdcdcdcdcdcdcdcdcdcdcdcdc
 ababadabababaxaxaxayaxaxabacabababababaiabhTababababababababababababababababababahahbxabagabababababamabababahahababagabababababacabababababababababababaiababababacabasasasaqasasaqaBaBcSaBaBasabababababababababababdPedaBdhfvaBaBdGaBeoaBaBaBdHaBaBaBaBaBasdUabbBbBbBcvbBbBbBbBbBajajajdcdcdcdcdcdcdcdcdcdcdcdcdcdc
-abababagababaxayaxaxaxaxabadadabababagbxbxhTababababaiababababababababababababababaeabababababababababababababaeabababaeacabababacababaiabababaiababababababauababababasdlflfleodnasaBaBeeaBaBdxabababababababababaiabdPedaBeofuaBdkaqdFfvaBaBaBaqdtaBaBaBaBasdUbBbBbBbBbBbBbBajajajajajdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc
+abababagababaxayaxaxaxaxabadadabababagbxbxhTababababaiababababababababababababababaeabababababababababababababaeabababaeacabababacababaiabababaiababababababauababababasdlflhYhZdnasaBaBeeaBaBdxabababababababababaiabdPedaBeofuaBdkaqdFfvaBaBaBaqdtaBaBaBaBasdUbBbBbBbBbBbBbBajajajajajdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc
 abababahaxaxaxayaxaxababababaeababababababhTaeaeababababaeabababababababaiabamababababababababababadadababababababbxbxababababababexabababababacadababagabahahababababaqaBaBaBaBaBasaBaBaqaBaBasabadababagabahahabababdPaqaBaBaBaBdkaseofuaBaBaBasdtaBaBaBdRaqdSbBbBbBbBbBecbBbBbBajajajdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc
 aiabababaxaxayaxababababababagababaiabababhTababababababagababagabababababababababababaiababababaiababababababababaiababababadababababacababababababadabababababaeababasdqdsaBdmdoefaBaBasdRdtasabababadababauababaeababdVaqasasasaqasaqasdTasaqasaqasasasaqdWabbBbBbBbBbBegbBbBajajajajajdcdcdcdcdcdcdcdcdcdcdcdcdcdc
 abababadaxaxayaxabaeababbxbxabahababababaihTabababababababahabaublabaiabababababababababababababababababagababababababababagababadadabaiababacabacacauababababagabababasasasfxasasaqaBaBaqasasasabacacabababababagababababdXdXdXdXdVaqdYaBaBaBdYaqdWdXdXdXdXabbBabbBbBbBbBbBaFaFciciciciciciciaGdcdcdcdcdcdcdcdcdcdcdc

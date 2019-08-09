@@ -223,6 +223,14 @@ obj/structure/closet/crate/empty
 				/obj/item/stack/farming/seeds/coffee = 3,
 				/obj/item/stack/farming/seeds/peyote = 3,)
 	cratevalue = 50
+
+/obj/structure/closet/crate/brick
+	name = "bricks crate"
+	icon_state = "wood_crate"
+	icon_opened = "wood_crate_opened"
+	icon_closed = "wood_crate"
+	paths = list(/obj/item/weapon/clay/advclaybricks/fired = 70)
+	cratevalue = 120 //100 base value from 100 planks of wood
 ///WEAPONS///
 
 /obj/structure/closet/crate/grenades

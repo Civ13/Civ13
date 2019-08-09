@@ -32,7 +32,7 @@
 		16 = "chicken",
 		17 = "horse",
 		18 = "medical supplies",
-		19 = "gunpowder barrel",
+		19 = "brick crate",
 		20 = "musket ammo crate (25)",
 		21 = "pistol ammo crate (25)",
 		22 = "blunderbuss ammo crate (15)",
@@ -41,7 +41,8 @@
 		25 = "pistol crate (5)",
 		26 = "musket crate (5)",
 		27 = "musketoon crate (5)",
-		28 = "blunderbuss crate (5)",)
+		28 = "blunderbuss crate (5)",
+		29 = "gunpowder barrel",)
 	var/list/itemstobuy = list(
 		"wood crate" = /obj/structure/closet/crate/wood,
 		"iron crate" = /obj/structure/closet/crate/iron,
@@ -61,7 +62,7 @@
 		"chicken" = /mob/living/simple_animal/chicken,
 		"horse" = /mob/living/simple_animal/horse,
 		"medical supplies" = /obj/item/weapon/storage/firstaid/adv,
-		"gunpowder barrel" = /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,
+		"brick crate" = /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,
 		"musket ammo crate (25)" = /obj/structure/closet/crate/musketball,
 		"pistol ammo crate (25)" = /obj/structure/closet/crate/musketball_pistol,
 		"blunderbuss ammo crate (15)" = /obj/structure/closet/crate/blunderbuss_ammo,
@@ -70,7 +71,8 @@
 		"pistol crate (5)" = /obj/structure/closet/crate/pistols,
 		"musket crate (5)" = /obj/structure/closet/crate/muskets,
 		"musketoon crate (5)" = /obj/structure/closet/crate/musketoons,
-		"blunderbuss crate (5)"= /obj/structure/closet/crate/blunderbusses,)
+		"blunderbuss crate (5)"= /obj/structure/closet/crate/blunderbusses,
+		"gunpowder barrel" = /obj/item/weapon/reagent_containers/glass/barrel/gunpowder,)
 
 	var/list/itemprices = list(
 		"wood crate" = 120,
@@ -91,7 +93,7 @@
 		"chicken" = 30,
 		"horse" = 150,
 		"medical supplies" = 150,
-		"gunpowder barrel" = 230,
+		"brick crate" = 140,
 		"musket ammo crate (25)" = 100,
 		"pistol ammo crate (25)" = 60,
 		"blunderbuss crate (15)" = 60,
@@ -100,7 +102,8 @@
 		"pistol crate (5)" = 385,
 		"musket crate (5)" = 550,
 		"musketoon crate (5)" = 440,
-		"blunderbuss crate (5)" = 495,)
+		"blunderbuss crate (5)" = 495,
+		"gunpowder barrel" = 230,)
 /obj/structure/exportbook
 	name = "exporting book"
 	desc = "Use this to export colony products and exchange money. Only merchants and governors have access to it."
