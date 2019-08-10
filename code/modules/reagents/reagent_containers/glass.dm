@@ -349,7 +349,7 @@
 	var/on_stove = FALSE
 	flags = OPENCONTAINER
 
-/obj/item/weapon/reagent_containers/glass/hangou
+/obj/item/weapon/reagent_containers/glass/small_pot/hangou
 	desc = "A japanese pot used by the military all the way back to the meiji era."
 	name = "han-gou"
 	icon = 'icons/obj/kitchen.dmi'
@@ -362,8 +362,7 @@
 	volume = 80
 	var/on_stove = FALSE
 	flags = OPENCONTAINER
-/obj/item/weapon/reagent_containers/glass/hangou/update_icon()
-	overlays.Cut()
+/obj/item/weapon/reagent_containers/glass/small_pot/hangou/update_icon()=
 	if (!is_open_container())	icon_state = "lid_han_gou"
 
 /obj/item/weapon/reagent_containers/glass/small_pot/copper_small
