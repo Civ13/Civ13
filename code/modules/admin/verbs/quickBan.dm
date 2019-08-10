@@ -3,7 +3,7 @@
  * for this rather small amount of code, so its all done via BYOND's input() */
 
 // bantypes
-var/list/ban_types = list("Faction Ban", "Job Ban", "Officer Ban", "Server Ban", "Playing Ban", "OOC Ban")
+var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban", "OOC Ban")
 
 /datum/quickBan_handler
 /datum/quickBan_handler/Topic(href,href_list[])
@@ -377,9 +377,9 @@ var/datum/quickBan_handler/quickBan_handler = null
 				bans += list(full_list_split_two)
 	if (islist(bans) && !isemptylist(bans))
 		for (var/x=1;x<=bans.len;x++)
-			return list("reason" = bans[x][7],"ban_date" = bans[x][9], "expire_info" = bans[x][11])
+			if(ban_type == bans[x][4] && type_specific_info == bans[x][5])
+				return TRUE
 	return FALSE
-
 /* check if we're banned and tell us why we're banned */
 /client/proc/quickBan_rejected(var/bantype = "Server")
 
@@ -398,9 +398,9 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (reason)
 		if (bantype == "Server")
 			src << "<span class = 'userdanger'>You're banned. Reason: '[reason]'. This ban was assigned on [date] and [expire_info] (after assigned date)</span>"
+			return TRUE
 		else
 			src << "<span class = 'userdanger'>You're [lowertext(bantype)]-banned. Reason: '[reason]'. This ban was assigned on [date] and [expire_info] (after assigned date)</span>"
-		return TRUE
 	return FALSE
 
 /* kick us if we just got banned */

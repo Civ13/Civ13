@@ -190,7 +190,7 @@
 	icon_state = "arab3"
 	item_state = "arab3"
 	worn_state = "arab3"
-/obj/item/clothing/suit/armor/sauronhelm
+/obj/item/clothing/head/helmet/sauronhelm
 	name = "Sauron's Helmet"
 	desc = "The helmet to the armor of Sauron"
 	icon_state = "sauronhelmet"
