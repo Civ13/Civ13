@@ -122,6 +122,17 @@
 		if (NORTHWEST) return 315
 		if (SOUTHWEST) return 225
 
+/proc/nearbydirections(direction)
+	switch (direction)
+		if (NORTH)     return list(NORTHWEST, NORTHEAST, NORTH)
+		if (SOUTH)     return list(SOUTHWEST, SOUTHEAST, SOUTH)
+		if (EAST)      return list(NORTHEAST, SOUTHEAST, EAST)
+		if (WEST)      return list(NORTHWEST, SOUTHWEST, WEST)
+		if (NORTHEAST) return list(NORTH, EAST, NORTHEAST)
+		if (SOUTHEAST) return list(SOUTH, EAST, SOUTHEAST)
+		if (NORTHWEST) return list(NORTH, WEST, NORTHWEST)
+		if (SOUTHWEST) return list(SOUTH, WEST, SOUTHWEST)
+
 // Returns the angle in english
 /proc/angle2text(var/degree)
 	return dir2text(angle2dir(degree))
