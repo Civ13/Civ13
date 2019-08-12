@@ -371,6 +371,12 @@
 	w_class = 2.0
 	flammable = TRUE
 
+/obj/item/stack/material/humanpelt/New()
+	..()
+	if (map && !map.civilizations)
+		qdel(src)
+		return
+
 /obj/item/stack/material/antpelt
 	name = "ant pelt"
 	desc = "The skin from a dead ant."
