@@ -511,10 +511,11 @@
 							if (!G.affecting.lying)
 								passthrough = FALSE
 						else
-							L.pre_bullet_act(src)
-							attack_mob(L)
-							if (L && !L.lying)
-								passthrough = FALSE
+							if (!istype(T, /turf/floor/trench) || prob(20))
+								L.pre_bullet_act(src)
+								attack_mob(L)
+								if (L && !L.lying)
+									passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
 					if (O.density || istype(O, /obj/structure/window/classic)) // hack
