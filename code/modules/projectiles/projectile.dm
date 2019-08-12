@@ -511,11 +511,7 @@
 							if (!G.affecting.lying)
 								passthrough = FALSE
 						else
-							L.pre_bullet_act(src)
-							attack_mob(L)
-							if (L && !L.lying)
-								passthrough = FALSE
-							if (!istype(T, /turf/floor/trench) || prob(20))
+							if (!istype(T, /turf/floor/trench) || (istype(get_turf(firer),/turf/floor/trench) && istype(T, /turf/floor/trench) && get_dist(firer,T)<=5) || prob(20))
 								L.pre_bullet_act(src)
 								attack_mob(L)
 								if (L && !L.lying)
