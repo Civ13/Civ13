@@ -168,7 +168,7 @@
 								H.maim()
 							H.adjustFireLoss(rand(25,35))
 						if (3)
-							if (prob(50)
+							if (prob(50))
 								H.adjustFireLoss(rand(15,20))
 	if (prob(25))
 		new/obj/effect/burning_oil(epicenter)
