@@ -2,11 +2,11 @@
 "ab" = (/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "ac" = (/obj/structure/wild/tree/anchored,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "ad" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"ae" = (/turf/floor/dirt/underground,/area/caribbean/japanese/land/inside)
+"ae" = (/turf/floor/dirt/underground,/area/caribbean/void/caves)
 "af" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "ag" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"ah" = (/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"ai" = (/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
+"ah" = (/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"ai" = (/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/item/clothing/head/ghillie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "aj" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "ak" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "al" = (/mob/living/simple_animal/monkey,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
@@ -40,15 +40,15 @@
 "aN" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "aO" = (/obj/structure/barricade/horizontal,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "aP" = (/obj/structure/barbwire,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"aQ" = (/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aR" = (/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aS" = (/obj/structure/bed/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aT" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aU" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aV" = (/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aW" = (/obj/structure/closet/crate/rations/meat,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aX" = (/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"aY" = (/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
+"aQ" = (/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/suit/storage/ghillie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"aR" = (/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"aS" = (/obj/structure/bed/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"aT" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"aU" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"aV" = (/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/item/weapon/punji_sticks,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"aW" = (/obj/structure/sign/custom{desc = "Sleep and rest here. Though you get the feeling you should probably go arm up and get topside instead."; name = "Barracks"},/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"aX" = (/obj/structure/sign/custom{desc = "Guns and ammo here."; name = "Armory"},/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"aY" = (/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/item/ammo_magazine/ak74,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "aZ" = (/obj/item/weapon/material/hatchet,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "ba" = (/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "bb" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
@@ -75,22 +75,22 @@
 "bw" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
 "bx" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
 "by" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
-"bz" = (/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bA" = (/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bB" = (/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/structure/table/wood,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bC" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bD" = (/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bE" = (/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bF" = (/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bG" = (/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bH" = (/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bI" = (/obj/structure/sink/well,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bJ" = (/obj/structure/table/wood,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bK" = (/mob/living/simple_animal/monkey{name = "Ho Chi Badminh"},/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bL" = (/obj/structure/bed/chair/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bM" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bN" = (/obj/structure/table/wood,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"bO" = (/obj/structure/pot,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
+"bz" = (/obj/structure/closet/crate/rations/meat,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bA" = (/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/item/ammo_magazine/ak47,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bB" = (/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/item/weapon/gun/projectile/boltaction/mosin,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bC" = (/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/item/ammo_magazine/c762x25_ppsh,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bD" = (/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/item/weapon/gun/projectile/submachinegun/ak74,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bE" = (/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/structure/table/wood,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/obj/item/weapon/gun/launcher/rocket/rpg7,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bF" = (/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/item/weapon/gun/projectile/submachinegun/ak47,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bG" = (/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/item/weapon/gun/projectile/automatic/pkm,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bH" = (/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/item/ammo_casing/rocket/og7v,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bI" = (/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/item/weapon/gun/projectile/submachinegun/ppsh,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bJ" = (/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/item/ammo_magazine/pkm/c100,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bK" = (/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/item/ammo_casing/rocket/pg7v,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bL" = (/obj/structure/sink/well,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bM" = (/obj/structure/table/wood,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bN" = (/mob/living/simple_animal/monkey{name = "Ho Chi Badminh"},/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"bO" = (/obj/structure/bed/chair/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "bP" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "bQ" = (/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "bR" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
@@ -98,7 +98,7 @@
 "bT" = (/obj/structure/barbwire,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "bU" = (/obj/structure/barbwire,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "bV" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall)
-"bW" = (/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
+"bW" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "bX" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall)
 "bY" = (/obj/structure/wild/jungle,/turf/floor/grass/jungle,/area/caribbean/british/land/outside)
 "bZ" = (/turf/floor/grass/jungle,/area/caribbean/british/land/outside)
@@ -150,15 +150,15 @@
 "cT" = (/obj/structure/wild/largejungle,/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "cU" = (/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/turf/floor/grass/jungle,/area/caribbean/british/land/outside)
 "cV" = (/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/obj/item/ammo_magazine/vickers,/turf/floor/dirt/jungledirt,/area/caribbean/british/land/outside)
-"cW" = (/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"cX" = (/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
+"cW" = (/obj/structure/table/wood,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/obj/item/weapon/grenade/modern/f1,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"cX" = (/obj/structure/sign/custom,/turf/floor/dirt/underground,/area/caribbean/void/caves)
 "cY" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "cZ" = (/mob/living/simple_animal/monkey,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "da" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "db" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dc" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"dd" = (/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"de" = (/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
+"dd" = (/obj/structure/pot,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"de" = (/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "df" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dg" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dh" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
@@ -246,12 +246,12 @@
 "eL" = (/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/trench,/area/caribbean/british/land/outside)
 "eM" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt/jungledirt,/area/caribbean/british/land/outside)
 "eN" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
-"eO" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"eP" = (/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside)
-"eQ" = (/obj/structure/sign/custom{desc = "Sleep and rest here. Though you get the feeling you should probably go arm up and get topside instead."; name = "Barracks"},/turf/floor/dirt/underground,/area/caribbean/japanese/land/inside)
+"eO" = (/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/item/weapon/reagent_containers/food/snacks/vegetablesoup,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"eP" = (/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/item/weapon/reagent_containers/food/snacks/tofu,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"eQ" = (/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/item/weapon/reagent_containers/food/snacks/tofupie,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "eR" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "eS" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/japanese/land/outside{name = "Village"})
-"eT" = (/obj/structure/sign/custom,/turf/floor/dirt/underground,/area/caribbean/japanese/land/inside)
+"eT" = (/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/item/weapon/reagent_containers/food/snacks/stew_wood,/obj/structure/table/wood,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "eU" = (/obj/item/weapon/gun/projectile/automatic/stationary/modern/vickers,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "eV" = (/obj/structure/barbwire,/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "eW" = (/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
@@ -278,16 +278,117 @@
 "fr" = (/obj/covers/wood_ship,/obj/item/weapon/material/hatchet,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "fs" = (/obj/structure/wild/jungle,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "ft" = (/obj/covers/wood_ship,/obj/item/stack/material/catpelt{desc = "A pelt from a skinned cat. You monster."},/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
-"fu" = (/turf/floor/dirt/underground,/area/caribbean/no_mans_land/jungle)
-"fv" = (/turf/floor/plating/concrete,/area/caribbean/no_mans_land/jungle)
-"fw" = (/turf/floor/beach,/area/caribbean/no_mans_land/jungle)
-"fx" = (/turf/floor/beach/water/ice,/area/caribbean/no_mans_land/jungle)
-"fy" = (/turf/floor/broken_floor,/area/caribbean/no_mans_land/jungle)
-"fz" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/jungle)
-"fA" = (/obj/map_metadata/road_to_dak_to,/turf/floor/dirt/underground,/area/caribbean/no_mans_land/jungle)
-"fB" = (/obj/structure/sign/custom{desc = "Guns and ammo here."; name = "Armory"},/turf/floor/dirt/underground,/area/caribbean/japanese/land/inside)
+"fu" = (/turf/floor/plating/concrete,/area/caribbean/void/caves)
+"fv" = (/turf/floor/beach,/area/caribbean/void/caves)
+"fw" = (/turf/floor/beach/water/ice,/area/caribbean/void/caves)
+"fx" = (/turf/floor/broken_floor,/area/caribbean/void/caves)
+"fy" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/void/caves)
+"fz" = (/obj/map_metadata/road_to_dak_to,/turf/floor/dirt/underground,/area/caribbean/void/caves)
 
 (1,1,1) = {"
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeahahahaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaiaQaRaRaeaeaeaeaeaeaeaeaeaeaeaeaSahaSahaSahaSahaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaTahahahahahahahaeaeaeaeaeaeaeaeaeaeaUahaUahaUahaUahaeaeaeaeaeaeaeaeaeaeae
+aeaeaVahahahahahahahahahahahahaeaeaeaeaeaeaSahaSahaSahaSahaeaeaeaeaeaeaeaeaeaeae
+aeaRahahahahaeaeahahahahahahahahaeaeaeaeahaUahaUahaUahaUahaeaeaeaeaeaeaeaeaeaeae
+aeaeaRaRaRaeaeahahaeaeaeahahahahaeaeaeaWahaSahaSahaSaeaSahaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaXahahaeaeaeaeahahahahaeaeahahahaeahahaeaeahahaeaeaeaeaeaeaeaeaeaeae
+aeaeahahahahahahahahaeaeaeahahahahahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaYahahahahaeahaUahaUaeaeaeahahahahahahbzaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aebAahahahaebBahahahahaeaeaeaeaeahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aebCahahaeaebDahaUahaUahbEaeaeaeaeahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeahaeaeaebFahahahahahbGaeaeaeaeaeahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeahbHaeaebIahaUahaUahbJaeaeaeaeaeahahaeaeaeaeaeaebzbzbzbzbzaeaeaeaeaeaeaeaeae
+aeahahbKaeaeaeahahahbzaeaeaeaeaeaeaeahahaeaeaeaeaeahahahahahahahahbLaeaeaeaeaeae
+aeaeahbMaeaeaeahaUbNaUaeaeaeaeaeaeaeahahaeaeaeaeahbObObObObObObObObWbWaeaeaeaeae
+aeahahcWaXahahahahahahaeaeaeaeaeaeaeahahcXaeaeahahaRaRaRaRaRaRaRaRahddaeaeaeaeae
+aeahahahahahahahaUahaUaeaeaeaeaeaeaeahahahahahahahahahahahahahahahahddaeaeaeaeae
+aeaeahahahahahdeahahahaeaeaeaeaeaeahahahahahahahahahahahahahahahahahddaeaeaeaeae
+aeaeahahahahahahaUahaUaeaeaeaeaeahahahahahaeaeaeaeahahahahahahahahahddaeaeaeaeae
+aeaeaeahahahahahahahahahahahaeahahahahaeaeaeaeaeaeaeahahahahahahahbWbWaeaeaeaeae
+aeaeaeaeaeaeaeaeaeahahahahahahahahahaeaeaeaeaeaeaeaeahahahahahahahbLaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeahahahahahahaeaeaeaeaeaeaeaeaeaeaeeOePeQeTaRaRaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaefufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaefufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaefufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaefufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaefufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aefufufufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aefufufufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aefufufufufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+fufufufufufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+fufufufufufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+fufufufufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+fufufufufufufufufufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aefufufufufufufufufufuaeaeaefufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaefufufufufufufufuaeaeaeaeaeaefufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaefufufufufufuaeaefufvfvaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaefvfvfvaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaefvfvfvfvfvfvaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaefvfvfvfvfvfvfvfvaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaefvfvfvfvfvfvfvfvfvaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaefvfvfvfvfvfvfvfvfvfvfvaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaefvfvfvfvfvfvfvfvfvfvfvfvaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaefufufufufufufufufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfufuaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaefufvfvfvfvfvfvfwfwfwfwfwfwfwfwfufuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaefufvfvfvfvfvfvfvfvfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaefufufufufufufufvfvfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaefufxfxfyfyfyfufwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaefufufxfxfyfyfyfufwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaefufwfufufufufufwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaefufufufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfufuaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaefufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfufuaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaefufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfufuaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaefufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfufuaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaefufufufufwfwfwfwfwfwfwfwfwfwfwfwfwaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaefwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfwfuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufwfwfwfwfwfwfwfwfwfwfwfwfwfwfufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefwfwfwfwfwfwfwfwfwfwfwfwfwfufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufwfwfwfwfwfwfwfufufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaefufwfwfufufufufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaefufufuaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+fzaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+"}
+
+(1,1,2) = {"
 aaabababababababacabadadababababababaBaBaDaDaDaDaDaDaDaDaDaDaBaBaEaEabababababac
 adabafabadababababaaabadadabafabababaEaBaBaDaDaDaDaDaDaDaDaDaBaBaEaHabagabababab
 adadababadabajagacadababadajababababaEaEaBaBaDaDaDaDaDaDaDaDaBaEaEaEajacabagabab
@@ -388,107 +489,4 @@ abamfjcgcPcaeNcaeNcaeNcacaeNcaccckcCcaeNcaeucgffaGaGaGaGabababababababababajabab
 abamfjcgcQcacacacacacacacacaccccckcEeNcaeNevcgffaGaGamababababababababababababab
 ababfjcgcRcaeNcaeNcaeNcacaeNcaccckcEcaeNcaewcgfmababajababababajabababababababab
 ababfjekdlcacacacacacacaeXeYeZcfcvcvcvcvcvcvcvfsabababababajabababajabajabajabab
-"}
-
-(1,1,2) = {"
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeahahahaeaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaiaQaRaRaeaeaeaeaeaeaeaeaeaeaeaeaSahaSahaSahaSahaeaeaeaeaeaeaeaefufufu
-aeaeaeaTahahahahahahahaeaeaeaeaeaeaeaeaeaeeOaheOaheOaheOahaeaeaeaeaeaeaeaefufufu
-aeaeaUahahahahahahahahahahahahaeaeaeaeaeaeaSahaSahaSahaSahaeaeaeaeaeaeaeaefufufu
-aeaRahahahahaeaeahahahahahahahahaeaeaeaeaheOaheOaheOaheOahaeaeaeaeaeaeaeaefufufu
-aeaeaRaRaRaeaeahahaeaeaeahahahahaeaeaeeQahaSahaSahaSaeaSahaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaefBahahaeaeaeaeahahahahaeaeahahahaeahahaeaeahahaeaeaeaeaeaeaeaefufufu
-aeaeahahahahahahahahaeaeaeahahahahahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaVahahahahaeaheOaheOaeaeaeahahahahahahaWaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaXahahahaeaYahahahahaeaeaeaeaeahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aebzahahaeaebAaheOaheOahbBaeaeaeaeahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeahaeaeaebCahahahahahbDaeaeaeaeaeahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeePbEaeaebFaheOaheOahbGaeaeaeaeaeahahaeaeaeaeaeaeaWaWaWaWaWaeaeaeaeaeaefufufu
-aeePahbHaeaeaeahahahaWaeaeaeaeaeaeaeahahaeaeaeaeaeahahahahahahahahbIaeaeaefufufu
-aeaeePbJaeaeaeaheObKeOaeaeaeaeaeaeaeahahaeaeaeaeahbLbLbLbLbLbLbLbLbMbMaeaefufufu
-aeePahbNfBahahahahahahaeaeaeaeaeaeaeahaheTaeaeahahaRaRaRaRaRaRaRaRahbOaeaefufufu
-aeahePahahahahaheOaheOaeaeaeaeaeaeaeahahahahahahahahahahahahahahahahbOaeaefufufu
-aeaeahahahahahbWahahahaeaeaeaeaeaeahahahahahahahahahahahahahahahahahbOaeaefufufu
-aeaeahahahahahaheOaheOaeaeaeaeaeahahahahahaeaeaeaeahahahahahahahahahbOaeaefufufu
-aeaeaeahahahahahahahahahahahaeahahahahaeaeaeaeaeaeaeahahahahahahahbMbMaeaefufufu
-aeaeaeaeaeaeaeaeaeahahahahahahahahahaeaeaeaeaeaeaeaeahahahahahahahbIaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeahahahahahahaeaeaeaeaeaeaeaeaeaeaecWcXdddeaRaRaeaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaefufufu
-fufufufufufufufufvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufu
-fufufufufvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufu
-fufufufvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufu
-fufufvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufu
-fufvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufu
-fufvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufu
-fufvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufu
-fvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufu
-fvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufu
-fvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufu
-fvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufu
-fufvfvfvfvfvfvfvfvfvfvfufufufvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufu
-fufufvfvfvfvfvfvfvfvfufufufufufufvfvfvfufufufufufufufufufufufufufufufufufufufufu
-fufufufvfvfvfvfvfvfufufvfwfwfufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufwfwfwfufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufwfwfwfwfwfwfufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufwfwfwfwfwfwfwfwfufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufwfwfwfwfwfwfwfwfwfufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufwfwfwfwfwfwfwfwfwfwfwfufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufwfwfwfwfwfwfwfwfwfwfwfwfufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufvfvfvfvfvfvfvfvfvfvfvfvfvfvfufufufufufufufufufufufufufu
-fufufufufufufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfvfvfufufufufufufufufufufufufu
-fufufufufufufufufufufufvfwfwfwfwfwfwfxfxfxfxfxfxfxfxfvfvfufufufufufufufufufufufu
-fufufufufufufufufufufufvfwfwfwfwfwfwfwfwfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufufufufvfvfvfvfvfvfvfwfwfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufufufufvfyfyfzfzfzfvfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufufufvfvfyfyfzfzfzfvfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufufufvfxfvfvfvfvfvfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufvfvfvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufu
-fufufufufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfvfufufufufufufufufufufufu
-fufufufufufufufufufvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfvfufufufufufufufufufufufufu
-fufufufufufufufufvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfvfufufufufufufufufufufufufu
-fufufufufufufufvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfvfufufufufufufufufufufufufufu
-fufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufufufufu
-fufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufufufufu
-fufufufufufufufvfvfvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfufufufufufufufufufufufufufufufu
-fufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufufufufufu
-fufufufufufufvfvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufufufufufu
-fufufufufufufufxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfufufufufufufufufufufufufufufufu
-fufufufufufufvfxfxfxfxfxfxfxfxfxfxfxfxfxfxfvfvfufufufufufufufufufufufufufufufufu
-fufufufufufufxfxfxfxfxfxfxfxfxfxfxfxfxfvfvfvfufufufufufufufufufufufufufufufufufu
-fufufufufufvfxfxfxfxfxfxfxfvfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufu
-fufufufufufvfxfxfvfvfvfvfvfvfufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufvfvfvfufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufu
-fufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufu
-fAfufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufufu
 "}
