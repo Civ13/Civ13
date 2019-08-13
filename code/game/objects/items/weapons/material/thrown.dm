@@ -34,7 +34,7 @@
 	name = "Throwing knife"
 	desc = "A balanced knife for throwing."
 	icon_state = "throwing_knife"
-	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
+	force_divisor = 0.30 // 15 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.75
 	throw_speed = 8
 	throw_range = 12
@@ -45,3 +45,35 @@
 	..()
 	pixel_x = rand(-8, 8)
 	pixel_y = rand(-8, 8)
+
+/obj/item/weapon/material/tomahawk
+	name = "Tomahawk"
+	desc = "An axe made to be thrown!"
+	icon_state = "tomahawk"
+	force_divisor = 0.25 // 15 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.75
+	throw_speed = 6
+	throw_range = 8
+	sharp = TRUE
+	edge =  TRUE
+
+/obj/item/weapon/material/tomahawk/New()
+	..()
+	pixel_x = rand(-4, 4)
+	pixel_y = rand(-4, 4)
+
+/obj/item/weapon/material/throwing_axe
+	name = "Throwing axe"
+	desc = "A modern version of a tomahawk."
+	icon_state = "throwing_axe"
+	force_divisor = 0.30 // 15 when wielded with hardness 60 (steel)
+	thrown_force_divisor = 0.80
+	throw_speed = 6
+	throw_range = 9
+	sharp = TRUE
+	edge =  TRUE
+
+/obj/item/weapon/material/throwing_axe/New()
+	..()
+	pixel_x = rand(-4, 4)
+	pixel_y = rand(-4, 4)
