@@ -1,7 +1,7 @@
 #define NO_WINNER "No base has been captured."
 /obj/map_metadata/road_to_dak_to
 	ID = MAP_ROAD_TO_DAK_TO
-	title = "Road to Dak To (100x100x2)"
+	title = "Road to Dak To (40x150x2)"
 	lobby_icon_state = "coldwar"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
 	respawn_delay = 300
