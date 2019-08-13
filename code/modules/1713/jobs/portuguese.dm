@@ -23,6 +23,7 @@
 
 /datum/job/portuguese/captain/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -65,6 +66,7 @@
 
 /datum/job/portuguese/qm/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -107,6 +109,7 @@
 
 /datum/job/portuguese/boatswain/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -147,6 +150,7 @@
 
 /datum/job/portuguese/midshipman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -183,6 +187,7 @@
 
 /datum/job/portuguese/surgeon/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -220,6 +225,7 @@
 
 /datum/job/portuguese/carpenter/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
 
@@ -263,6 +269,7 @@
 
 /datum/job/portuguese/cook/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
 
@@ -312,6 +319,7 @@
 
 /datum/job/portuguese/seaman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
 
@@ -366,6 +374,7 @@
 
 /datum/job/portuguese/army_commander/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
@@ -408,6 +417,7 @@
 
 /datum/job/portuguese/army_officer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
@@ -446,6 +456,7 @@
 
 /datum/job/portuguese/field_medic/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 //clothes
@@ -484,6 +495,7 @@
 
 /datum/job/portuguese/soldier/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
@@ -523,6 +535,7 @@
 
 /datum/job/portuguese/chasseur/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 

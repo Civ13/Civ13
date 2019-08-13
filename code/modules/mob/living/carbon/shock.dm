@@ -8,9 +8,9 @@
 	1	* getOxyLoss() + 		\
 	0.7	* getToxLoss() + 		\
 	1.5	* getFireLoss() + 		\
-	1.2	* getBruteLoss() + 		\
+	1.7	* getBruteLoss() + 		\
 	1.7	* getCloneLoss() + 		\
-	2	* halloss + 			\
+	1	* halloss + 			\
 	-1	* analgesic
 
 	// broken or ripped off organs will add quite a bit of pain
@@ -24,11 +24,11 @@
 		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
 			traumatic_shock -= E.volume
 		for (var/datum/reagent/adrenaline/A in ingested.reagent_list)
-			traumatic_shock -= A.volume
-			shock_stage -= A.volume/4
+			traumatic_shock -= A.volume*2
+			shock_stage -= A.volume/2
 		for (var/datum/reagent/opium/O in ingested.reagent_list)
-			traumatic_shock -= O.volume/4
-			shock_stage -= O.volume/8
+			traumatic_shock -= O.volume/2
+			shock_stage -= O.volume/4
 	if (traumatic_shock < 0)
 		traumatic_shock = FALSE
 

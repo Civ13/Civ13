@@ -327,10 +327,8 @@ var/list/coefflist = list()
 				//user.throw_at(target, 200, 4)
 
 		if (2.0)
-			if (!shielded)
-				b_loss += 60
-
-			f_loss += 60
+			b_loss += 60
+			f_loss += 70
 
 			if (prob(getarmor(null, "bomb")))
 				b_loss = b_loss/1.5
@@ -344,6 +342,7 @@ var/list/coefflist = list()
 
 		if (3.0)
 			b_loss += 30
+			f_loss += 30
 			if (prob(getarmor(null, "bomb")))
 				b_loss = b_loss/2
 			if (!istype(l_ear, /obj/item/clothing/ears/earmuffs) && !istype(r_ear, /obj/item/clothing/ears/earmuffs))
