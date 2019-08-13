@@ -369,6 +369,12 @@
 "he" = (/obj/structure/wild/tree/anchored,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hf" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hg" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"hh" = (/obj/structure/vehicle/motorcycle/m125,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"hi" = (/obj/structure/vehicle/motorcycle/m125{icon_state = "motorcycleX"; dir = 8},/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"hj" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"hk" = (/obj/structure/vehicle/motorcycle/m125{icon_state = "motorcycleX"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
+"hl" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"hm" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
 
 (1,1,1) = {"
 aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
@@ -526,15 +532,15 @@ fzaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 (1,1,2) = {"
 aaabababababababacabadadababababababaBaBaDaDaDaDaDaDaDaDaDaDaBaBaEaEabababababac
 adabafabadababababaaabbmadabafabababaEaBaBaDaDaDaDaDaDaDaDaDaBaBaEaHabagabababab
-adadababadabajagacadababadajababababaEaEaBaBaDaDaDaDaDaDaDaDaBaEaEaEajacabagabab
+adadababadabajagacadababadajababababaEaEaBaBaDaDaDaDaDaDhhaDaBaEaEaEajacabagabab
 abadajabadabaaababadababadadbnajabafaEaEaEaBaBaDaDaDaDaDaDaBaBaHaIaEakalajabafab
-amadacabadboadajadadajababadbpabbnaneSaEaEaEaBaDaDaDaDaDaDaBaEaEaJaJabababababaa
-amamabababababbnadaoaoaoaoababababaneSaEfafnaBaDaDaDaDaDaDfoaEaJaJaJabababagapab
-aqamabababafababanaLaLaLaLarabbnabaneSaEaEaEaBaDaDaDaDaDaDaBaEaJaJaEajabafababbp
-aqasabababbpababanaLaLaLaLarabbpabaneSbqaEfnaBaDaDaDaDaDaDaBaBaEaEbgacababbnabab
-aqamamajababbmboanaLaLaLaLbrbnabbnaneSaEaEaEaBaDaDaDaDaDaDaBaBaBaEaEakabababacab
-aqatauabababababanaLaLaLaLarbpababaneSfnaEaEaBaDaDaDaDaDaDaBfpaBfnaEakabbpababab
-aqaqauababafabababavababavababadabaneSaEaEaBaBaDaDaDaDaDaBaBaBaBaEaEabafabababab
+amadacabadboadajadadajababadbpabbnaneSaEaEaEaBaDaDaDaDhiaDaBaEaEaJaJabababababaa
+amamabababababbnadaoaoaoaoababababaneSaEfafnaBaDaDaDaDhjaDfoaEaJaJaJabababagapab
+aqamabababafababanaLaLaLaLarabbnabaneSaEaEaEaBaDaDaDaDaDhkhlaEaJaJaEajabafababbp
+aqasabababbpababanaLaLaLaLarabbpabaneSbqaEfnaBaDaDaDaDaDaDaBhlaEaEbgacababbnabab
+aqamamajababbmboanaLaLaLaLbrbnabbnaneSaEaEaEaBaDaDaDaDaDhkaBaBaBaEaEakabababacab
+aqatauabababababanaLaLaLaLarbpababaneSfnaEaEaBaDaDaDaDaDhkaBfpaBfnaEakabbpababab
+aqaqauababafabababavababavababadabaneSaEaEaBaBaDaDaDaDaDhmaBaBaBaEaEabafabababab
 aqaqauajabababcucucDcNcucDcucuadabaneSaEaEaEaBaBaDaDaDaDaBaBfqaBaEaEamamabajabab
 aqaqauauabagabcucOdjftdwfrdxdyadafanfbaEaEaEaBaBaDaDaDaDaBaBaBaEaEbiamamamababab
 awaqamauamababdzdAdBeIdkeJdkcDadabaneSaEaEaEaBaBaDaDaDaDaBaBaBaEaHaEaxamamabafab

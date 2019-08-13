@@ -156,6 +156,20 @@
 				if (data.objects_with_immunity.Find(AM))
 					continue
 				if (AM && AM.simulated)	AM.ex_act(dist)
+				if (istype(AM, /mob/living/carbon/human))
+					var/mob/living/carbon/human/H = AM
+					switch(dist)
+						if (1)
+							H.maim()
+							H.maim()
+							H.adjustFireLoss(rand(35,70))
+						if (2)
+							if (prob(1-(dist/heavy_impact_range)))
+								H.maim()
+								H.adjustFireLoss(rand(25,35))
+						if (3)
+							if (prob(1-(dist/light_impact_range)))
+								H.adjustFireLoss(rand(15,20))
 	if (prob(25))
 		new/obj/effect/burning_oil(epicenter)
 	var/took = (world.timeofday-start)/10
