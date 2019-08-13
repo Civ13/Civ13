@@ -172,7 +172,7 @@
 "dp" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "dq" = (/obj/structure/window/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "dr" = (/obj/structure/barricade/stone_h,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"ds" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
+"ds" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dt" = (/obj/structure/barricade/stone_h,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "du" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
 "dv" = (/obj/item/weapon/gun/projectile/submachinegun/m16{desc = "An american assault rifle, chambered in 5.56x45mm. This one has 'SJ' engraved on the stock and looks to be in pretty bad shape."; name = "beaten M16"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
@@ -195,7 +195,7 @@
 "dM" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
 "dN" = (/obj/structure/window/sandbag/sandbag/incomplete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
 "dO" = (/obj/item/weapon/covers,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"dP" = (/obj/structure/wild/tallgrass,/obj/item/mine/boobytrap,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"dP" = (/obj/structure/barricade/stone_h,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "dQ" = (/obj/structure/barricade/stone_h,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
 "dR" = (/obj/structure/barricade/stone_h,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dS" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
@@ -235,8 +235,8 @@
 "eA" = (/obj/structure/wild/tallgrass,/obj/item/mine/boobytrap,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "eB" = (/obj/item/weapon/paper{desc = "It's hard to tell what this originally had written on it, but it appears to be some kind of journal entry. You can barely make out the signature of Seymour Jenkins."; name = "ruined page"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "eC" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"eD" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
-"eE" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"eD" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"eE" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "eF" = (/obj/structure/barbwire,/obj/structure/window/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "eG" = (/obj/structure/wild/jungle,/obj/structure/barbwire{icon_state = "barbwire"; dir = 4},/obj/structure/barbwire{icon_state = "barbwire"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "eH" = (/obj/structure/wild/tallgrass,/obj/structure/window/sandbag/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
@@ -363,6 +363,12 @@
 "gY" = (/obj/structure/cannon/mortar,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 "gZ" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt/underground,/area/caribbean/void/caves)
 "ha" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"hb" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"hc" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"hd" = (/obj/structure/wild/tallgrass,/obj/item/mine/boobytrap,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"he" = (/obj/structure/wild/tree/anchored,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"hf" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"hg" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 
 (1,1,1) = {"
 aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
@@ -545,7 +551,7 @@ aqawawaqaqamamababadbnabababababamaGamababababababclcFcFclababalabaZabacababacbn
 aqawawaqaqasamababapababababadabamaGamadbnababajabamaGaGamaPababapabagababababab
 aqawawaqaqamamabababafabajabbnabamaGamboabababababamcFaGamababacababababajabbnab
 aqaqawawaqaqayabacabababadababadamaGamadadajabadapamaGaGamababababacabacabababaa
-aqawawgSgTgUamababagabbnabapababamaGamabababadadadamaGaGamacababababababababbnab
+aqawawgSgTgUamdsdsagabbnabapababamaGamabababadadadamaGaGamacababababababababbnab
 aqawawawaqaqamamamamamabababababcGaGcGabafababbpabamaGaGamababababafabababafabab
 aqawawgVaqaqasamamcHamamababafabaPaGcFcIcScTabababamaGaGamabababadababbpadababab
 aqawawawaqaqamamamaqaqcYafabapababamaGaGclclcScSabcGaGaGcGabajabadadababadababbn
@@ -606,23 +612,23 @@ fMaqaqawawawawawawaCgngnababamaqaqaqaqasabaGaGbnbpababababababgnfPfPfMgnabababab
 gngnaqawawawawawawaqgngnabababamaqaqexamabaGaGabababababababajgngngngMadabababab
 gnaqaqaqawawawawawaqgnababajabamamamamababgOaGaGababbsababgnabgnabbsadajabababab
 gnaqawawawawawawaCaqgngnabgoababgnfPfPgPabadaGaGbnbpababbnababababababababajabab
-gnaqawawawawawawaqgngngngnabababgPfPfPfMbpabgQaGaGabbpbpabadajabababajbnabababab
-aqaqaqawawawawawaqgngngngnababbpgngRgnfWabadabaGaGabgoababababababababgoabbpabab
-amaqaqawawawawawawaqamamacabajababgngnababamamaGaGamamabagafababadacababababadab
-amaqaqaqawawawawawaqaqamamagabababapajgaadamamaGaGamamabadabajabababababbsababab
-amamaqaqawawawawawawaCamamababababababababamdhdidmamamabadabababadababacafbpabab
-gbauamaqawawawawawawaqamasamajabababababambhdmdndmamamamauababacabababababababab
-amauauaqaqawawawawawaqaqamamauamamasamamambhdodpdmamauamamasamababajababababajab
-abamauaCaqaqawawawawaqaqaqaqaCaudqdqaNaNdrcGdsdsbPdraNaNdqdqamamamcYamambaababac
-gcgcgdgdgegfgegggggggggggegegegfgegegegeghgigjgjgighgegegegegegegegegdgkgdgdgdgc
-gcgcgdgdgegfgeggggggggggggggggggggggggggglgjgjgjgjglgegegegegegegegegegegegdgdgd
+gDgeawawawawawawaqgngngngnabababgPfPfPfMbpabgQaGaGabbpbpabadajabababajbnabababab
+aqgegeawawawawawaqgngngngnababbpgngRgnfWabadabaGaGabgoababababababababgoabbpabab
+amaqgeggggggawawawaqamamacabajababgngnababamamaGaGamamabagafababadacababababadab
+amaqaqgeggggawawawaqaqamamagabababapajgaadamamaGaGamamabadabajabababababbsababab
+amamaqaqggggawawawawaCamamababababababababamdhdidmamamabadabababadababacafbpabab
+gbauamaqggggawawawawaqamasamajabababababambhdmdndmamamamauababacabababababababab
+amauauaqgeggawawawawaqaqamamauamamasamamambhdodpdmamauamamasamababajababababajab
+abamauaCaqgeggawawawaqaqaqaqaCaudqdqaNaNdPeDeEeEhbdPaNaNdqdqamamamcYamambaababac
+ababamamaqgfgegggggggggggegegegfgegegegeghgigjgjgighgegegegegegegegegdgkgdgdgdgc
+ababamamaqgfgeggggggggggggggggggggggggggglgjgjgjgjglgegegegegegegegegegegegdgdgd
 abajabamamaqaqaqawawawawawawawawawawawawdtdududududtawawawawawawawaqaqaqaqaqaqat
 ababdvdFamamaqaqaqaqawawawawawawawawawawdtdGdGdududtawawawawawawawawawawaqaqaqaq
 abdHdIdJamamaqaqaqaqaqaqgSawawawawawawawdtdKdKdududtawawawawawawawawawawawawaqaq
 adadabdLasamamamamaqaqaqgTgWawawawawawawdtdMdudNdNdtawawawawawawawawawawawawawaq
 adababdLdOamamasamamaqaqgTaqaqaqaqawawawdtdududKdKdtawawawawawawawawawawawawawaw
 abajabamamababamamamamaFamamaCaqaqaqaqaqdtdududududtawawawawawawawawawawawawawaw
-abababbnamabafababamamcYamamamdPauaqaqaqdQdududududQaqaqaqaqaqaqawawawawawawawaw
+abababbnamabafababamamcYamamhchdauaqaqaqdQdududududQaqaqaqaqaqaqawawawawawawawaw
 ababababamabapabbnabababasamauauamamaNaNdRaGdSdSamdraNaNamaFayaqaqaqaqawawawawaw
 abajabamamgmafababbpababadbnadababamclclclamcFcFamclclclamamamamamaqaqaqawawawaw
 bpababamababababababacabadadabafababadabamaGaGaGamababababacabamamamamaqaqawawaw
@@ -636,26 +642,26 @@ abgpababamamabadadabababamamamabababababbnamaGaGaGambbeyababababadagabadadamamau
 abababababauauetabababajababababagabgqababamamaGamabbbeyabbpababadababadabadabam
 amababajabadamamajbnababababajababgrabababamaGaGamababezababajababgoadabaqaCabab
 amamababababauamababbpabababgnabababababamamaGamamababeAadabababbnababaqaqaqaqab
-aqasamabafabauadcYabababajbpababbpabamamamaGaGamamabgnababbpabababadaqaqaqaqaqab
-aqaqamamababamauamabafbnadabababajabamamaGaGamambpababbnabgoadabacabaqaqaqaCabab
-aqaqaqasamababamamabgoabadababababamamaGaGamamababafababbpababbpalabaqadeBababad
-aqaqaqaqamababamamabacabadajababamamaGaGamamabababababababababababababadadadagab
-amaqaqaqasamabamamamababadabamaGaGaGaGamamababadabajababadajbnabababababababacab
-amasamaqaqaFamamamamamamamaGaGaGaGamamababajababajabafababababababajababadababab
-abamamamaqaqamamamamamamaGaGaGaGamamabababababapabababbpabababababababajabacabab
+geasamabafabauadcYabababajbpababbpabamamamaGaGamamabgnababbpabababadaqaqaqaqaqab
+gegeamamababamauamabafbnadabababajabamamaGaGamambpababbnabgoadabacabaqaqaqaCabab
+gegegeasamababamamabgoabadababababamamaGaGamamababafababbpababbpalabaqadeBababad
+gegegegeamababamamabacabadajababamamaGaGamamabababababababababababababadadadagab
+amgegegeasamabamamamababadabamaGaGaGaGamamababadabajababadajbnabababababababacab
+amasgdgegeheamamamamamamamaGaGaGaGamamababajababajabafababababababajababadababab
+abamamamgegeamamamamamamaGaGaGaGamamabababababapabababbpabababababababajabacabab
 gcgcgdgdgdgegsgegegegegtgdgdgdgdgugdgcgvgwgcgcgcgcgcgcgcgcgxgygcgcgcgzgcgcgvgcgA
 gcgvgcgkgBgBgfgegegegegCgegegegtgegkgdgdgcgcgcgcgcgcgcgcgcgcgDgcgvgcgcgygEgcgzgc
-abafabadauamamamamameCaqaqaqaqeDaqaqaqamamamasasasababadafababbnabbnbnabadababab
-abababababamamamamamamamamamamamaraqaCeEamamaqaqamamamamamabababababadabababajab
-abababababamaGaGabaGamaGaGaGabasamamaCaCaqaqaqaqaqaCaCaqamamabababadadababababab
-ajababeFeFaGbQeFeFbQaGeFeFaGeFeFcSeHamauauamasamauauaqaqaqamauajabadabajabababab
-ababajezezaGezezezdhaGezezaGezezezezacabbsamababauamamaCaqaqauauamauabababbpajbn
-abababababaGabababamaGadamaGabadbpababalababapabadafamamaqaqaqaqaqamamalbnababab
-abajabacabaGabajabamaGadaGambnabababababacabbpabadababamamamaCaCaqaqauamabababab
-abalabababaGabbnbpamaGadabaGabapababababababbnabababababafamamamaCaCaCamamamabab
-ababbpajabaGabababamaGamadaGababajabajababagabbpabajababababamamauamaqaCaqamamam
-abagabababaGaGababamaGaGadaGabababbnabbpababababgnababbnababababamamamaqaqaqaqaq
-gnabbnababeKaGajababamaGadeReUeFeVeVeVeVeVeVeVeWababababababababbnabasamamaqaqaq
+abafabadauamamamamameCgegegegegCgegegegdamamasasasababadafababbnabbnbnabadababab
+abababababamamamamamamamamamamamhfgegfhggdgdgegeamamamamamabababababadabababajab
+abababababamaGaGabaGamaGaGaGabasamamgfgfgegegegegegfgfgegdamabababadadababababab
+ajababeFeFaGbQeFeFbQaGeFeFaGeFeFcSeHamauauamasamauaugegegegdauajabadabajabababab
+ababajezezaGezezezdhaGezezaGezezezezacabbsamababauamgdgfgegegBauamauabababbpajbn
+abababababaGabababamaGadamaGabadbpababalababapabadafamamgegegegegeamamalbnababab
+abajabacabaGabajabamaGadaGambnabababababacabbpabadababamamamgfgfgegeauamabababab
+abalabababaGabbnbpamaGadabaGabapababababababbnabababababafamamgdgfgfgfgdamamabab
+ababbpajabaGabababamaGamadaGababajabajababagabbpabajababababamamauamgegfgegdamam
+abagabababaGaGababamaGaGadaGabababbnabbpababababgnababbnababababamamamgegegegege
+gnabbnababeKaGajababamaGadeReUeFeVeVeVeVeVeVeVeWababababababababbnabasamamgegege
 ababgFbYbZcUcabZcbcbcccacacbcVcdcecececececdccfdamabababababadbpabababamamamasam
 grabakebebebeccaebebebcacaebcgedeeedeeedefedckfdamamabababajababababababamamamam
 goabfecwcwcececacecwcwcacacecgcicheLcheLchcickfdamasabababababababababababababab
