@@ -100,6 +100,7 @@
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
+				MAP_ROAD_TO_DAK_TO = 0,
 			)
 		if (epoch == "World War II (1934-1957)")
 	// 1943 - TDM
