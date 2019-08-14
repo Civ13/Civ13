@@ -363,6 +363,8 @@
 /obj/item/weapon/reagent_containers/glass/small_pot/hangou/update_icon()
 	if (!is_open_container())
 		icon_state = "lid_han_gou"
+	else
+		icon_state = "han_gou_open"
 
 /obj/item/weapon/reagent_containers/glass/small_pot/copper_small
 	desc = "A small copper pot."
