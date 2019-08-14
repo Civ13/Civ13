@@ -214,7 +214,6 @@
 "ef" = (/obj/structure/lamp/lamp_small/alwayson/red,/obj/structure/lamp/lamp_small/alwayson/red,/turf/floor/dirt,/area/caribbean/japanese/land/outside)
 "eg" = (/obj/structure/lamp/lamp_small/alwayson/red{icon_state = "bulb"; dir = 4},/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "eh" = (/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/japanese/land/inside)
-"ei" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/roofed)
 "ej" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass,/area/caribbean/russian/land/outside)
 "ek" = (/obj/structure/table/wood,/obj/structure/lamp/lamp_big/alwayson{icon_state = "tube"; dir = 1},/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "el" = (/obj/covers/wood,/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 1},/turf/floor/dirt,/area/caribbean/russian/land/inside)
@@ -283,7 +282,6 @@
 "fw" = (/obj/structure/wild/tallgrass,/turf/wall/rockwall,/area/caribbean/roofed)
 "fx" = (/turf/floor/dirt,/area/caribbean/roofed)
 "fy" = (/obj/structure/bed/bedroll,/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt,/area/caribbean/japanese/land/inside)
-"fz" = (/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/roofed)
 "fA" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt,/area/caribbean/japanese/land/inside)
 "fB" = (/obj/structure/sign/flag/medical,/turf/wall/rockwall,/area/caribbean/roofed)
 "fC" = (/obj/structure/bed/chair/wood{icon_state = "wooden_chair"; dir = 4},/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJP"},/turf/floor/dirt,/area/caribbean/japanese/land/inside)
@@ -635,7 +633,7 @@ fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfsfsfsfsfsfsfsfsfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcifscFcFcFcFcFcFcFcFehcFcFcFcFcFcFcFcFfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcFcFcFcRcFcFcFcFcFcFcFcFcFcFiSfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsdEcFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscrcrcFcFcxcJcycFcFcFfycFfycFfycFfycFfs
-fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfseifzfsfvczekcAfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscBcCcDcFcFcJcJcMcFcFcFcFcFcFcFcFcFcFfs
+fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsekcJfsfvczekcAfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscBcCcDcFcFcJcJcMcFcFcFcFcFcFcFcFcFcFfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcFemfAcFcFcFcFfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcFcOcFcFcFcFfycFfycFfycFfyiSfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFcFcPcQhwcJcJcFfVfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFcFencFcFcFcFcFcFencFcFcFcFcFcFcFfsfs
 fsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfvcFcFcFcFcFcFcFcFcFcFfWfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfsfscFcFcFfsfsfscuctfsfsfvcifBfsfsctcuctfsfsfsfs

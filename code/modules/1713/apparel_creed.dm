@@ -18,6 +18,7 @@
 	item_state = "ac_shirt"
 	worn_state = "ac_shirt"
 
+
 /obj/item/clothing/suit/armor/creed
 	name = "creed armor"
 	desc = "A leather armor worn by the creed."
@@ -29,6 +30,94 @@
 	value = 45
 	slowdown = 0.2
 	health = 42
+	var/adjusted = FALSE
+
+/obj/item/clothing/suit/armor/creed/verb/toggle_hood()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/suit/armor/creed)
+		return
+	else
+		if (adjusted)
+			item_state = "ac_armor"
+			worn_state = "ac_armor"
+			item_state_slots["slot_w_uniform"] = "ac_armor"
+			usr << "<span class = 'danger'>You take down your armor's hood.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "ac_armor_hood"
+			worn_state = "ac_armor_hood"
+			item_state_slots["slot_w_uniform"] = "ac_armor_hood"
+			usr << "<span class = 'danger'>You put up your armor's hood.</span>"
+			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+			adjusted = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/suit/armor/creed/three
+	name = "creed armor"
+	desc = "A leather armor worn by the creed."
+	icon_state = "ac_armor_1713"
+	item_state = "ac_armor_1713"
+	worn_state = "ac_armor_1713"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	value = 45
+	slowdown = 0.2
+	health = 42
+	adjusted = FALSE
+
+/obj/item/clothing/suit/armor/creed/toggle_hood()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/suit/armor/creed/three)
+		return
+	else
+		if (adjusted)
+			item_state = "ac_armor_1713"
+			worn_state = "ac_armor_1713"
+			item_state_slots["slot_w_uniform"] = "ac_armor_1713"
+			usr << "<span class = 'danger'>You take down your armor's hood.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "ac_armor_1713_hood"
+			worn_state = "ac_armor_1713_hood"
+			item_state_slots["slot_w_uniform"] = "ac_armor_1713_hood"
+			usr << "<span class = 'danger'>You put up your armor's hood.</span>"
+			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+			adjusted = TRUE
+	update_clothing_icon()
+
+/obj/item/clothing/suit/armor/creed/unity
+	name = "creed armor"
+	desc = "A leather armor worn by the creed."
+	icon_state = "ac_armor_napol"
+	item_state = "ac_armor_napol"
+	worn_state = "ac_armor_napol"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	value = 45
+	slowdown = 0.2
+	health = 42
+	adjusted = FALSE
+
+/obj/item/clothing/suit/armor/creed/unity/toggle_hood()
+	set category = null
+	set src in usr
+	if (type != /obj/item/clothing/suit/armor/creed/unity)
+		return
+	else
+		if (adjusted)
+			item_state = "ac_armor_napol"
+			worn_state = "ac_armor_napol"
+			item_state_slots["slot_w_uniform"] = "ac_armor_napol"
+			usr << "<span class = 'danger'>You take down your armor's hood.</span>"
+			adjusted = FALSE
+		else if (!adjusted)
+			item_state = "ac_armor_napol_hood"
+			worn_state = "ac_armor_napol_hood"
+			item_state_slots["slot_w_uniform"] = "ac_armor_napol_hood"
+			usr << "<span class = 'danger'>You put up your armor's hood.</span>"
+			body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HEAD
+			adjusted = TRUE
+	update_clothing_icon()
 
 /obj/item/clothing/gloves/creed
 	name = "creed gauntlets"

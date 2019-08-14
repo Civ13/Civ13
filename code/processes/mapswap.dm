@@ -100,6 +100,7 @@
 	// 1969 - TDM
 			maps = list(
 				MAP_COMPOUND = 0,
+				MAP_ROAD_TO_DAK_TO = 0,
 			)
 		if (epoch == "World War II (1934-1957)")
 	// 1943 - TDM
@@ -164,6 +165,7 @@
 				MAP_NOMADS_PANGEA = 10,
 				MAP_TRIBES = 8,
 				MAP_COLONY = 6,
+				MAP_JUNGLE_COLONY = 6,
 				MAP_HUNT = 0,
 				MAP_FOUR_COLONIES = 35,
 				MAP_LITTLE_CREEK = 10,

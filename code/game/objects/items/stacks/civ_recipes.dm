@@ -215,9 +215,13 @@
 			new/datum/stack_recipe("razor blade", /obj/item/weapon/material/kitchen/utensil/knife/razorblade, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
 			new/datum/stack_recipe("pickaxe", /obj/item/weapon/pickaxe, 3, _time = 80, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("shears", /obj/item/weapon/shears, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE),))
+	if (current_res[1] >= 39 && map.ordinal_age <= 2)
+		recipes += new/datum/stack_recipe_list("throwing weapons", list(
+			new/datum/stack_recipe("shuriken", /obj/item/weapon/material/star, 2, _time = 15, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
+			new/datum/stack_recipe("kunai", /obj/item/weapon/material/kunai_normal, 3, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),
+			new/datum/stack_recipe("throwing knife", /obj/item/weapon/material/throwing_knife, 4, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),))
 	if (current_res[1] >= 39 && current_res[2] >= 40 && map.ordinal_age <= 2)
 		recipes += new/datum/stack_recipe("naginata", /obj/item/weapon/material/naginata, 12, _time = 60, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
-
 	if (current_res[2] >= 80 && map.ordinal_age < 4)
 		recipes += new/datum/stack_recipe_list("bullets", list(
 			new/datum/stack_recipe("musket ball (x2)", /obj/item/stack/ammopart/musketball, 1, _time = 25, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -472,7 +476,7 @@
 			new/datum/stack_recipe("small mill",/obj/structure/mill, 4, _time = 90, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("barrel",/obj/item/weapon/reagent_containers/glass/barrel/empty, 5, _time = 75, _one_per_turf = TRUE, _on_floor = TRUE),
 			new/datum/stack_recipe("dehydrator",/obj/structure/dehydrator, 5, _time = 110, _one_per_turf = TRUE, _on_floor = TRUE),
-			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches, 5, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),))
+			new/datum/stack_recipe("matches",/obj/item/weapon/storage/box/matches, 5, _time = 80, _one_per_turf = TRUE, _on_floor = TRUE),))
 	else
 		recipes += new/datum/stack_recipe_list("kitchen & other", list(
 			new/datum/stack_recipe("loom",/obj/structure/loom, 8, _time = 150, _one_per_turf = TRUE, _on_floor = TRUE),
@@ -674,6 +678,7 @@
 	recipes += list(new/datum/stack_recipe("blowing horn", /obj/item/weapon/horn, 4, _time = 110, _one_per_turf = FALSE, _on_floor = TRUE))
 	if (current_res[1] >= 15)
 		recipes += list(new/datum/stack_recipe("dice", /obj/item/weapon/dice, 2, _time = 90, _one_per_turf = FALSE, _on_floor = TRUE))
+		recipes += list(new/datum/stack_recipe("tomahawk", /obj/item/weapon/material/tomahawk, 4, _time = 30, _one_per_turf = FALSE, _on_floor = TRUE))
 
 /material/cloth/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	..()
@@ -1119,6 +1124,9 @@
 		recipes += new/datum/stack_recipe("[display_name] hatchet", /obj/item/weapon/material/hatchet, 2, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("[display_name]-tipped spear", /obj/item/weapon/material/spear, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]")
 		recipes += new/datum/stack_recipe("steel shield", /obj/item/weapon/shield/steel, 4, _time = 85, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe_list("throwing", list(
+			new/datum/stack_recipe("throwing axe", /obj/item/weapon/material/throwing_axe, 3, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("[display_name] throwing knife", /obj/item/weapon/material/throwing_knife, 2, _time = 20, _one_per_turf = FALSE, _on_floor = TRUE, _supplied_material = "[name]"),))
 	if (current_res[1] >= 71 && current_res[2] >= 79)
 		recipes += new/datum/stack_recipe("cannon", /obj/structure/cannon, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (current_res[1] >= 95 && current_res[2] >= 109)

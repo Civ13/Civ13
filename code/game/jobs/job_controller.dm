@@ -140,7 +140,7 @@ var/global/datum/controller/occupations/job_master
 	if (map && map.subfaction_is_main_faction)
 		announce = FALSE
 
-	if (!is_side_locked(INDIANS) && map && map.faction_organization.Find(INDIANS) && map.ID == MAP_COLONY)
+	if (!is_side_locked(INDIANS) && map && map.faction_organization.Find(INDIANS) && (map.ID == MAP_COLONY || map.ID == MAP_JUNGLE_COLONY))
 		if (map)
 			if (announce)
 				world << "<font size = 3><span class = 'notice'><i>All factions besides <b>Colonists</b> start disabled by default. Admins can enable them.</i></span></font>"

@@ -30,7 +30,7 @@
 			return FALSE
 	else
 		return ..()
-/obj/structure/lamp/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/lamp/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/lightbulb) && !lamp_inside)
 		var/obj/item/lightbulb/L = W
 		if (!L.broken && L.ltype == ltype)
@@ -62,19 +62,17 @@
 			user << "There's already a cable connected here! Split it further from the [src]."
 			return
 		var/obj/item/stack/cable_coil/CC = W
-		if (powersource)
-			powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
-			powersource.connections += src
+		powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+		powersource.connections += src
 		var/opdir1 = 0
 		var/opdir2 = 0
-		if (powersource && powersource.tiledir == "horizontal")
+		if (powersource.tiledir == "horizontal")
 			opdir1 = 4
 			opdir2 = 8
-		else if  (powersource && powersource.tiledir == "vertical")
+		else if  (powersource.tiledir == "vertical")
 			opdir1 = 1
 			opdir2 = 2
-		if (powersource)
-			powersource.update_icon()
+		powersource.update_icon()
 
 		if (opdir1 != 0 && opdir2 != 0)
 			for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
@@ -94,6 +92,7 @@
 		user << "You connect the cable to the [src]."
 	else
 		..()
+
 
 /obj/structure/lamp/update_icon()
 	if (lamp_inside && !lamp_broken && on)
@@ -271,7 +270,7 @@
 	var/product = "gasoline"
 	powerneeded = 1
 
-/obj/structure/refinery/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/refinery/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (isemptylist(barrel))
 			barrel += W
@@ -475,7 +474,7 @@
 	maxvolume = 300
 	product = "ethanol"
 
-/obj/structure/refinery/biofuel/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (isemptylist(barrel))
 			barrel += W
@@ -842,7 +841,7 @@
 	var/plastic = 0
 	powerneeded = 1
 
-/obj/structure/bakelizer/attackby(var/obj/item/stack/W as obj, var/mob/living/carbon/human/H as mob)
+/obj/structure/bakelizer/attackby(var/obj/item/W as obj, var/mob/living/carbon/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/C = W
 		if (C.reagents.has_reagent("petroleum",1))

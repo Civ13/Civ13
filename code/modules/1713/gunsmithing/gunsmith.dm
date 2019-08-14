@@ -967,13 +967,13 @@
 			load_delay = 5
 	switch(feeding_type)
 		if ("Internal Magazine")
-			handle_casings = HOLD_CASINGS
+			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING | SPEEDLOADER
 			load_shell_sound = 'sound/weapons/clip_reload.ogg'
 			max_shells = 5
 			magazine_type = /obj/item/ammo_magazine/emptyclip
 		if ("Tubular")
-			handle_casings = HOLD_CASINGS
+			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING
 			load_shell_sound = 'sound/weapons/clip_reload.ogg'
 			max_shells = 8

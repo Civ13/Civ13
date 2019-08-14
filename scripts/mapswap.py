@@ -33,6 +33,9 @@ elif map == "SUPPLY_RAID":
 elif map == "COLONY":
 	dmms.append("#include \"maps\\1713\\colony.dmm\"")
 
+elif map == "JUNGLE_COLONY":
+	dmms.append("#include \"maps\\1713\\jungle_colony.dmm\"")
+
 elif map == "FOUR_COLONIES":
 	dmms.append("#include \"maps\\1713\\four_colonies.dmm\"")
 
@@ -111,6 +114,8 @@ elif map == "OMAHA":
 	dmms.append("#include \"maps\\1943\\omaha.dmm\"")
 elif map == "TSARITSYN":
 	dmms.append("#include \"maps\\1903\\tsaritsyn.dmm\"")
+elif map == "ROAD_TO_DAK_TO":
+	dmms.append("#include \"maps\\1969\\road_to_dak_to.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()

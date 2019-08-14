@@ -164,6 +164,12 @@
 	item_state = "arabw_robe"
 	worn_state = "arabw_robe"
 
+/obj/item/clothing/under/medieval/lighttunic
+	name = "light brown tunic"
+	desc = "A light, loose fitting tunic."
+	icon_state = "arab1"
+	item_state = "arab1"
+	worn_state = "arab1"
 /obj/item/clothing/under/medieval/arab1
 	name = "light brown arabic tunic"
 	desc = "A light, loose fitting arabic tunic."
@@ -174,9 +180,9 @@
 /obj/item/clothing/under/medieval/arab2
 	name = "light white arabic tunic"
 	desc = "A light, loose fitting arabic tunic."
-	icon_state = "arab1"
-	item_state = "arab1"
-	worn_state = "arab1"
+	icon_state = "arab2"
+	item_state = "arab2"
+	worn_state = "arab2"
 
 /obj/item/clothing/under/medieval/arab3
 	name = "white arabic tunic"
@@ -184,7 +190,7 @@
 	icon_state = "arab3"
 	item_state = "arab3"
 	worn_state = "arab3"
-/obj/item/clothing/suit/armor/sauronhelm
+/obj/item/clothing/head/helmet/sauronhelm
 	name = "Sauron's Helmet"
 	desc = "The helmet to the armor of Sauron"
 	icon_state = "sauronhelmet"

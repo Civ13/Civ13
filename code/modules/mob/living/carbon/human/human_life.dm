@@ -453,7 +453,7 @@
 				handle_hygiene()
 			handle_mood()
 			handle_ptsd()
-		if (!map.civilizations)
+		if (!map.civilizations && map.ID != MAP_COLONY && map.ID != MAP_JUNGLE_COLONY)
 			bowels = 0
 			bladder = 0
 		handle_medical_side_effects()
@@ -1320,7 +1320,7 @@
 		shock_stage = max(shock_stage, 61)
 
 	traumatic_shock = updateshock()
-	if (traumatic_shock >= 80)
+	if (traumatic_shock >= 80 && shock_stage < 160)
 		shock_stage += 1
 
 	else if (health < config.health_threshold_softcrit)
@@ -1366,7 +1366,9 @@
 		if (prob(1))
 			adjustOxyLoss(10)
 	if (getBruteLoss() >= 150)
-		death()
+		spawn(1200)
+			if (getBruteLoss() >= 150)
+				death()
 /mob/living/carbon/human/proc/handle_hud_list()
 
 	if (original_job && never_set_faction_huds)
