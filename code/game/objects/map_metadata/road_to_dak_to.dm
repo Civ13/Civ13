@@ -3,7 +3,7 @@
 	ID = MAP_ROAD_TO_DAK_TO
 	title = "Road to Dak To (40x150x2)"
 	lobby_icon_state = "coldwar"
-	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle)
 	respawn_delay = 300
 	squad_spawn_locations = FALSE
 //	min_autobalance_players = 90
