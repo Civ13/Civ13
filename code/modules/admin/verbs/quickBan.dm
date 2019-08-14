@@ -239,7 +239,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	var/duration_in_x_units = input(src, "How long do you want the ban to last ('5 hours', '4 days': the default unit is days)") as text
 	var/duration_in_days = text2num(ckey(splittext(duration_in_x_units, " ")[1]))
-	duration_in_days = max(0,min(duration_in_x_units,10000))
+	duration_in_days = max(0,min(duration_in_days,10000))
 	if (!isnum(duration_in_days))
 		src << "<span class = 'warning'>Invalid amount.</span>"
 		goto reenter_bantime
