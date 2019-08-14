@@ -86,7 +86,7 @@
 			adjusted = TRUE
 	update_clothing_icon()
 
-/obj/item/clothing/suit/armor/creed/blackflag
+/obj/item/clothing/suit/armor/creed/unity
 	name = "creed armor"
 	desc = "A leather armor worn by the creed."
 	icon_state = "ac_armor_napol"
@@ -98,10 +98,10 @@
 	health = 42
 	adjusted = FALSE
 
-/obj/item/clothing/suit/armor/creed/blackflag/toggle_hood()
+/obj/item/clothing/suit/armor/creed/unity/toggle_hood()
 	set category = null
 	set src in usr
-	if (type != /obj/item/clothing/suit/armor/creed/blackflag)
+	if (type != /obj/item/clothing/suit/armor/creed/unity)
 		return
 	else
 		if (adjusted)

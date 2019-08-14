@@ -250,7 +250,7 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
 	weight = 2.3
-	single_action = TRUE
+	single_action = FALSE
 	blackpowder = TRUE
 	cocked = FALSE
 	load_delay = 5
