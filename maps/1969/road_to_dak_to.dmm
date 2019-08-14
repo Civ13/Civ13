@@ -229,10 +229,9 @@
 "eu" = (/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/structure/table/rack,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/clothing/accessory/storage/webbing/us_vest,/obj/item/clothing/accessory/storage/webbing/us_vest,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 "ev" = (/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/item/weapon/gun/projectile/submachinegun/m16,/obj/structure/table/rack,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/clothing/accessory/storage/webbing/us_vest,/obj/item/clothing/accessory/storage/webbing/us_vest,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 "ew" = (/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/weapon/gun/projectile/automatic/m60,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/item/ammo_magazine/b762,/obj/structure/table/rack,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/item/clothing/accessory/storage/webbing/us_vest,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
-"ex" = (/obj/structure/wild/junglebush,/obj/item/mine/boobytrap,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"ex" = (/obj/structure/wild/tallgrass,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "ey" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
 "ez" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"eA" = (/obj/structure/wild/tallgrass,/obj/item/mine/boobytrap,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "eB" = (/obj/item/weapon/paper{desc = "It's hard to tell what this originally had written on it, but it appears to be some kind of journal entry. You can barely make out the signature of Seymour Jenkins."; name = "ruined page"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "eC" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "eD" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
@@ -365,7 +364,6 @@
 "ha" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "hb" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hc" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"hd" = (/obj/structure/wild/tallgrass,/obj/item/mine/boobytrap,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "he" = (/obj/structure/wild/tree/anchored,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hf" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hg" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
@@ -615,7 +613,7 @@ aqawawawawawawaqaqgngnabababamabamamaGaGaGaGabababgnajadgnababbugnajababadababab
 aqaqawawawawawaqaqgngnabababamamamaqamaGaGaGabababababbpababgngngngMgMbuadabgqab
 gngnaqawawawawawaqaqgngngnabamaqaqaqaqgNabaGaGajbwabababbnajgngnfPfPgMgnababbnbp
 fMaqaqawawawawawawaCgngnababamaqaqaqaqasabaGaGbnbpababababababgnfPfPfMgnabababab
-gngnaqawawawawawawaqgngnabababamaqaqexamabaGaGabababababababajgngngngMadabababab
+gngnaqawawawawawawaqgngnabababamaqaqcYamabaGaGabababababababajgngngngMadabababab
 gnaqaqaqawawawawawaqgnababajabamamamamababgOaGaGababbsababgnabgnabbsadajabababab
 gnaqawawawawawawaCaqgngnabgoababgnfPfPgPabadaGaGbnbpababbnababababababababajabab
 gDgeawawawawawawaqgngngngnabababgPfPfPfMbpabgQaGaGabbpbpabadajabababajbnabababab
@@ -634,7 +632,7 @@ abdHdIdJamamaqaqaqaqaqaqgSawawawawawawawdtdKdKdududtawawawawawawawawawawawawaqaq
 adadabdLasamamamamaqaqaqgTgWawawawawawawdtdMdudNdNdtawawawawawawawawawawawawawaq
 adababdLdOamamasamamaqaqgTaqaqaqaqawawawdtdududKdKdtawawawawawawawawawawawawawaw
 abajabamamababamamamamaFamamaCaqaqaqaqaqdtdududududtawawawawawawawawawawawawawaw
-abababbnamabafababamamcYamamhchdauaqaqaqdQdududududQaqaqaqaqaqaqawawawawawawawaw
+abababbnamabafababamamcYamamhcexauaqaqaqdQdududududQaqaqaqaqaqaqawawawawawawawaw
 ababababamabapabbnabababasamauauamamaNaNdRaGdSdSamdraNaNamaFayaqaqaqaqawawawawaw
 abajabamamgmafababbpababadbnadababamclclclamcFcFamclclclamamamamamaqaqaqawawawaw
 bpababamababababababacabadadabafababadabamaGaGaGamababababacabamamamamaqaqawawaw
@@ -643,11 +641,11 @@ abbnabamabaCaqababababababamauamababaddUdVdWaGdWdVdUafabafadababadamamamaqaqawaw
 abaaabamamadababababajabamamaqamamababbncldXdYcFclaPababgnabbnabababauamaqaqaqaw
 ababababamababajadadabamaqdZaqaqamababbnameaeqeramabadacababababbpabamamamaCaCaq
 ababababamabababadababamaqaqaqamasababbpamescjaGamababcSabadbpetadabadabamamaCaq
-abajabacamabajabadajafabamaqaqexababgoabamamaGaGaGambbeyadadadabbpadadababamauaC
+abajabacamabajabadajafabamaqaqcYababgoabamamaGaGaGambbeyadadadabbpadadababamauaC
 abgpababamamabadadabababamamamabababababbnamaGaGaGambbeyababababadagabadadamamau
 abababababauauetabababajababababagabgqababamamaGamabbbeyabbpababadababadabadabam
 amababajabadamamajbnababababajababgrabababamaGaGamababezababajababgoadabaqaCabab
-amamababababauamababbpabababgnabababababamamaGamamababeAadabababbnababaqaqaqaqab
+amamababababauamababbpabababgnabababababamamaGamamababadadabababbnababaqaqaqaqab
 geasamabafabauadcYabababajbpababbpabamamamaGaGamamabgnababbpabababadaqaqaqaqaqab
 gegeamamababamauamabafbnadabababajabamamaGaGamambpababbnabgoadabacabaqaqaqaCabab
 gegegeasamababamamabgoabadababababamamaGaGamamababafababbpababbpalabaqadeBababad
