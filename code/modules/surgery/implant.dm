@@ -40,9 +40,9 @@
 
 /datum/surgery_step/cavity/make_space
 	allowed_tools = list(
-	/obj/item/weapon/surgery/surgicaldrill = 100,	\
-	/obj/item/weapon/pen = 75,	\
-	/obj/item/weapon/material/handle = 50
+		1 = list("/obj/item/weapon/surgery/surgicaldrill",100),
+		2 = list("/obj/item/weapon/pen",75),
+		3 = list("/obj/item/weapon/material/handle",50),
 	)
 
 	min_duration = 60
@@ -143,9 +143,9 @@
 
 /datum/surgery_step/cavity/implant_removal
 	allowed_tools = list(
-	/obj/item/weapon/surgery/hemostat = 100,	\
-	/obj/item/weapon/wirecutters = 75,	\
-	/obj/item/weapon/material/kitchen/utensil/fork = 20
+		1 = list("/obj/item/weapon/surgery/hemostat",100),
+		2 = list("/obj/item/weapon/wirecutters",75),
+		3 = list("/obj/item/weapon/material/kitchen/utensil/fork",35),
 	)
 
 	min_duration = 80
