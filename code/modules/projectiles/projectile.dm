@@ -457,6 +457,12 @@
 	var/passthrough = TRUE //if the projectile should continue flying
 	var/passthrough_message = null
 
+	if (istype(get_turf(firer), /turf/floor/trench))
+		var/turf/target_t = get_step(get_turf(firer), dir)
+		if (!istype(target_t,/turf/floor/trench) && get_dist(firer,target_t)>2)
+			world << "<span class = 'warning'>The [name] hits \the trench wall!</span>"
+			qdel(src)
+			return
 	if(can_hit_in_trench == 1)
 		if(kill_count < (initial(kill_count) - 1))
 			if(!istype(T, /turf/floor/trench))
@@ -515,6 +521,11 @@
 									L.pre_bullet_act(src)
 									attack_mob(L)
 									passthrough = FALSE
+								else if (L.lying || L.prone)
+									if (prob(30))
+										L.pre_bullet_act(src)
+										attack_mob(L)
+										passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
 					if (O.density || istype(O, /obj/structure/window/classic)) // hack
