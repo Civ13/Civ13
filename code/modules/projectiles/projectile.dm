@@ -521,7 +521,7 @@
 									attack_mob(L)
 									passthrough = FALSE
 								else if (L.lying || L.prone)
-									if (prob(30))
+									if (prob(30) && !istype(T, /turf/floor/trench))
 										L.pre_bullet_act(src)
 										attack_mob(L)
 										passthrough = FALSE
