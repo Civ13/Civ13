@@ -718,6 +718,3 @@
 	var/output = trace.launch(target) //Test it!
 	qdel(trace) //No need for it anymore
 	return output //Send it back to the gun!
-
-/obj/item/projectile/bullet
-	embed = TRUE
