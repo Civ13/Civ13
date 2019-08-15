@@ -511,9 +511,9 @@
 								passthrough = FALSE
 						else
 							if (!istype(T, /turf/floor/trench) || get_dist(firer,T)<=2 || (istype(get_turf(firer),/turf/floor/trench) && istype(T, /turf/floor/trench) && get_dist(firer,T)<=5) || prob(20))
-								L.pre_bullet_act(src)
-								attack_mob(L)
-								if (L && !L.lying)
+								if (L && !L.lying && !L.prone)
+									L.pre_bullet_act(src)
+									attack_mob(L)
 									passthrough = FALSE
 				else if (isobj(AM) && AM != firedfrom)
 					var/obj/O = AM
