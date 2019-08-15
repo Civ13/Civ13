@@ -459,7 +459,7 @@
 
 	if (istype(get_turf(firer), /turf/floor/trench))
 		var/turf/target_t = get_step(get_turf(firer), dir)
-		if (!istype(target_t,/turf/floor/trench) && get_dist(firer,target_t)>2)
+		if (istype(target_t,/turf/floor/trench) && get_dist(firer,target_t)>2)
 			world << "<span class = 'warning'>The [name] hits \the trench wall!</span>"
 			qdel(src)
 			return
