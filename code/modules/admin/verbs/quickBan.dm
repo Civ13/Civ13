@@ -368,10 +368,8 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/list/bans = list()
 	var/full_banlist = file2text("SQL/bans.txt")
 	var/list/full_list_split = splittext(full_banlist, "|||\n")
-	for(var/i=1;i<=full_list_split.len;i++)
+	for(var/i=1;i<full_list_split.len;i++)
 		var/list/full_list_split_two = splittext(full_list_split[i], ";")
-		if (text2num(full_list_split_two[10]) < text2num(num2text(world.realtime,20))) // ban expired?
-			full_list_split_two[10] = 0
 		if (full_list_split_two[1] == "[ckey]" || full_list_split_two[2] == "[computer_id]" || full_list_split_two[3] == "[address]")
 			if (!(text2num(full_list_split_two[10]) < text2num(num2text(world.realtime,20)))) // not expired?
 				bans += list(full_list_split_two)
