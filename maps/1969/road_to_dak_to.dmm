@@ -120,7 +120,7 @@
 "cp" = (/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
 "cq" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
 "cr" = (/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
-"cs" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
+"cs" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "ct" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
 "cu" = (/obj/covers/straw_wall,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "cv" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
@@ -378,6 +378,16 @@
 "hn" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "ho" = (/obj/structure/window/sandbag/sandbag/incomplete,/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "hp" = (/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hq" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"hr" = (/obj/item/weapon/storage/firstaid/adv,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"hs" = (/obj/item/weapon/storage/firstaid/combat,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"ht" = (/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/trench,/area/caribbean/british/land/outside)
+"hu" = (/obj/item/weapon/storage/firstaid/adv,/turf/floor/trench,/area/caribbean/british/land/outside)
+"hv" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/iron,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/trench,/area/caribbean/british/land/outside)
+"hw" = (/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/structure/closet/crate/ww2,/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"hx" = (/obj/structure/cannon/mortar,/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"hy" = (/obj/item/weapon/wrench,/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"hz" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 
 (1,1,1) = {"
 aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
@@ -387,7 +397,7 @@ aeaeaeaTahahahahahahahaegZaeaeaeaeaeaeaeaeaUahaUahaUahaUahaeaeaeaeaeaeaeaeaeaeae
 aeaeaVahahahahahahahahahahahahaeaeaeaeaeaeaSahaSahaSahaSahaeaeaeaeaeaeaeaeaeaeae
 aeaRahahahahaeaeahahahahahahahahaeaeaeaeahaUahaUahaUahaUahaeaeaeaeaeaeaeaeaeaeae
 aeaeaRaRaRaeaeahahaeaeaeahahahahaeaeaeaWahaSahaSahaSaeaSahaeaeaeaeaeaeaeaeaeaeae
-aeaeaeaeaeaeaXahahgZaeaeaeahahahahaegZahahahgZahahaeaeahahaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaXahahgZaeaeaeahahahahaegZahahcsgZcshqaeaehrhsaeaeaeaeaeaeaeaeaeaeae
 aeaehaahhaahahahahahaeaeaeahahahahahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 aeaYahhahaahaeahaUahaUaeaeaeahahahahahahbzaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 aebAhahaahaebBahahahahgZaeaeaeaeahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
@@ -585,10 +595,10 @@ gnaqaqawawawawawaqgngnababgqcJabgoadadabababeWcKaGaGeWbnabababababababgoabababab
 aqaqawawawawawawaqaqgngnababadabadabadabcLcMeGfgaGcLcLababajababbnadgobwabbnabab
 aqaqaqawawawawawawaqgngnabababababababcLcLaGaGaGaGeWabababababbnababadadabbpabab
 gnaqawawawawawawawaqaqabababbnbpajababcKaGaGaGaGaGfhababajababadabababababababab
-gnaqaqawawawawawawaqgnabajabababababajcKaGaGfifAfBfCgnabbnfPfPfPababajababbpabab
-gnaqawawawawawawaqaqgnabababfPfPabababeWaGaGfBfBgngngngnbnfPfPfPajabababbnababab
-gnaqaqawawawawawaqgngnfPababfPfPbnfPgnfDaGaGaGfBgnaqaqgngngngngngnabababababajab
-aqaqaqawawawawawaqgngnfPfPfPfPfPfPfPgnfBaGaGaGaqaqaqaqaqaqgnaqaqgngngngngnababab
+gnaqaqawawawawawawaqgnabajabababababajcKaGaGfifAfBfCgnabbnfNfPfOababajababbpabab
+gnaqawawawawawawaqaqgnababhwhyhxabababeWaGaGfBfBgngngngnbnfUfSfVajabababbnababab
+gnaqaqawawawawawaqgngnfNabhwfPfPbnfOgnfDaGaGaGfBgnaqaqgngngngngngnabababababajab
+aqaqaqawawawawawaqgngnfUfSfSfSfSfSfVgnfBaGaGaGaqaqaqaqaqaqgnaqaqgngngngngnababab
 aqawawawawawawaqaqaqgnababgngngngngngnaqfEfFfGaqaqaqaqaqaqaqaqaqaqaqgngngngngnab
 awawawawawawawaqaqgngngngngngnaqgngnaqaqfHfFfIaqawawawawawaqaqaqaqaqaqgnaqgngngn
 awawawawawawawawaqaqgngnaqgnaqaqaqgndgaqfHfFfIaqawawawawawawawawawawaqaqaqaqaqaq
@@ -673,14 +683,14 @@ abagabababaGaGababamaGaGadaGabababbnabbpababababgnababbnababababamamamgegegegege
 gnabbnababeKaGajababamaGadeReUeFeVeVeVeVeVeVeVeWababababababababbnabasamamgegege
 ababgFbYbZcUcabZcbcbcccacacbcVcdcecececececdccfdamabababababadbpabababamamamasam
 grabakebebebeccaebebebcacaebcgedeeedeeedefedckfdamamabababajababababababamamamam
-goabfecwcwcececacecwcwcacacecgcicheLcheLchcickfdamasabababababababababababababab
+goabfecwcwcececacecwcwcacacecghtcheLcheLchhuckfdamasabababababababababababababab
 abbpfeegeheieicmejejejcacacccnchcichcichcichcnffamamambpababbnabgnajababababajab
-ababfjekeMcoeNcaeNcaeNcacaeNcacicicpcqcrcsctcgffamamamabajabababgoabbpabababajab
+ababfjekeMcoeNcaeNcaeNcacaeNcacicicpcqcrhvctcgffamamamabajabababgoabbpabababajab
 bpamfjekcacacacacacacacacacacacacvcvcvcvcvcvcgffaGamamamababababbpabababajababab
 abamfjeleNcaeNcaeNcaeNcacaeNcacagXgYcxcyczcAcgffaGamamamababababababababababajab
-abgbfjcgcBcacacacafYcacacacacacacacaeNcaeNepcgffaGaGaGaGfkabbnababalajababababfl
+abgbfjcgcBcacacacafYcacacacacahzcacaeNcaeNepcgffaGaGaGaGfkabbnababalajababababfl
 goamfjcgcPcaeNcaeNcaeNcacaeNcaccckcCcaeNcaeucgffaGaGaGaGababababababgnbnbpajabab
 abamfjcgcQcacacacacacacacacaccccckcEeNcaeNevcgffaGaGamabgnababababababababababgo
-bnbpfjcgcRcaeNcaeNcaeNcacaeNcaccckcEcaeNcaewcgfmababajababababajabababababababab
+bnbpfjcgcRcaeNcaeNcaeNcacaeNcaccckcEcaeNgXewcgfmababajababababajabababababababab
 ababfjekdlcacacacacacacaeXeYeZcfcvcvcvcvcvcvcvfsabababgnabajabababajabajabajabbp
 "}
