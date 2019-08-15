@@ -51,8 +51,7 @@
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			if (affected.open == 2)
-				return affected && !affected.cavity
+			return affected && !affected.cavity
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -82,8 +81,7 @@
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			if (affected.open == 2)
-				return affected && affected.cavity
+			return affected && affected.cavity
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -100,7 +98,9 @@
 
 /datum/surgery_step/cavity/place_item
 	priority = FALSE
-	allowed_tools = list(/obj/item = 100)
+	allowed_tools = list(
+		1 = list("/obj/item",100),
+	)
 
 	min_duration = 80
 	max_duration = 100
