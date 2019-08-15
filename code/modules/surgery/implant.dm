@@ -143,7 +143,7 @@
 //					IMPLANT/ITEM REMOVAL SURGERY						//
 //////////////////////////////////////////////////////////////////
 
-/datum/surgery_step/cavity/implant_removal
+/datum/surgery_step/internal/implant_removal
 	allowed_tools = list(
 		1 = list("/obj/item/weapon/surgery/hemostat",100),
 		2 = list("/obj/item/weapon/wirecutters",75),
@@ -159,8 +159,8 @@
 
 	begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("[user] starts poking around inside [target]'s [affected.name] with \the [tool].", \
-		"You start poking around inside [target]'s [affected.name] with \the [tool]" )
+		user.visible_message("[user] starts poking around inside [target]'s [affected.name] with \the [tool]...", \
+		"You start poking around inside [target]'s [affected.name] with \the [tool]..." )
 		target.custom_pain("The pain in your [affected.name] is living hell!",1)
 		..()
 
@@ -173,16 +173,9 @@
 
 			var/obj/item/obj = pick(affected.implants)
 
-/*			if(istype(obj,/obj/item/weapon/implant))
-				var/obj/item/weapon/implant/imp = obj
-				if (imp.legal)
-					find_prob +=60
-				else
-					find_prob +=40
-			else*/
 			find_prob +=50
-
-			if (prob(find_prob))
+			var/mob/living/carbon/human/H = user
+			if (prob(find_prob)*H.getStatCoeff("medical"))
 				user.visible_message("<span class = 'notice'>[user] takes something out of incision on [target]'s [affected.name] with \the [tool].</span>", \
 				"<span class = 'notice'>You take [obj] out of incision on [target]'s [affected.name]s with \the [tool].</span>" )
 				affected.implants -= obj
