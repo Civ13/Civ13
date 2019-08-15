@@ -1743,3 +1743,25 @@
 		return
 	else
 		return
+
+/mob/living/carbon/human/proc/handle_embedded_objects()
+
+	for (var/obj/item/organ/external/organ in organs)
+		if (organ.status & ORGAN_SPLINTED) //Splints prevent movement.
+			continue
+		for (var/obj/item/O in organ.implants)
+			if (/*!istype(O,/obj/item/weapon/implant) && */prob(2)) //Moving with things stuck in you could be bad.
+				// All kinds of embedded objects cause bleeding.
+				if (species.flags & NO_PAIN)
+					src << "<span class='warning'>You feel [O] moving inside your [organ.name].</span>"
+				else
+					var/msg = pick( \
+						"<span class='warning'>A spike of pain jolts your [organ.name] as you bump [O] inside.</span>", \
+						"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>", \
+						"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>")
+					src << msg
+
+				organ.take_damage(rand(1,3), FALSE, FALSE)
+				if (!(species.flags & NO_BLOOD)) //There is no blood in protheses.
+					organ.status |= ORGAN_BLEEDING
+					adjustToxLoss(rand(1,3))

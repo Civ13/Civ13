@@ -11,6 +11,9 @@
 	if (species.slowdown)
 		tally = species.slowdown
 
+	if (embedded_flag)
+		handle_embedded_objects() //Moving with objects stuck in you can cause bad times.
+
 	var/health_deficiency = (maxHealth - health)
 	if (health_deficiency >= 40) tally += (health_deficiency / 25)
 

@@ -260,8 +260,16 @@
 	recipes += new/datum/stack_recipe("iron arm bangles", /obj/item/clothing/accessory/armband/armbangle, 2, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (current_res[1] >= 35 && current_res[3]>= 44)
 		recipes += new/datum/stack_recipe("splints", /obj/item/stack/medical/splint, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE)
-
-	if (current_res[1] >= 35 && current_res[3]>= 67)
+	if (current_res[1] >= 35 && current_res[3]>= 110)
+		recipes += new/datum/stack_recipe_list("medical tools", list(
+			new/datum/stack_recipe("retractor", /obj/item/weapon/surgery/retractor, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("hemostat", /obj/item/weapon/surgery/hemostat, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("cautery",/obj/item/weapon/surgery/cautery, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bone saw",/obj/item/weapon/surgery/bone_saw, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("bone setter",/obj/item/weapon/surgery/bonesetter, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("scalpel", /obj/item/weapon/surgery/scalpel, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("surgical drill", /obj/item/weapon/surgery/surgicaldrill, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),))
+	else if (current_res[1] >= 35 && current_res[3]>= 67)
 		recipes += new/datum/stack_recipe_list("medical tools", list(
 			new/datum/stack_recipe("retractor", /obj/item/weapon/surgery/retractor, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("hemostat", /obj/item/weapon/surgery/hemostat, 2, _time = 50, _one_per_turf = FALSE, _on_floor = TRUE),

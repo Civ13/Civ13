@@ -145,6 +145,17 @@
 	edge = TRUE
 //misc, formerly from code/defines/weapons.dm
 
+/obj/item/weapon/surgery/surgicaldrill
+	name = "surgical drill"
+	desc = "You can drill using this item. You dig?"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "drill"
+	hitsound = 'sound/weapons/circsawhit.ogg'
+	matter = list(DEFAULT_WALL_MATERIAL = 15000, "glass" = 10000)
+	flags = CONDUCT
+	force = WEAPON_FORCE_DANGEROUS
+	w_class = 3
+	attack_verb = list("drilled")
 
 /obj/item/weapon/surgery/bonesetter
 	name = "bone setter"
