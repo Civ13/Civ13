@@ -10,7 +10,7 @@
 	1.5	* getFireLoss() + 		\
 	1.7	* getBruteLoss() + 		\
 	1.7	* getCloneLoss() + 		\
-	1	* halloss + 			\
+	0.5	* halloss + 			\
 	-1	* analgesic
 
 	// broken or ripped off organs will add quite a bit of pain
