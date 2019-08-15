@@ -99,6 +99,7 @@
 	handle_weakened()
 	handle_paralysed()
 	handle_supernatural()
+	handle_mutations_and_radiation()
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
 		simplehunger-=1
@@ -732,4 +733,13 @@
 		for(var/mob/living/ML in range(2,src))
 			return
 
+/mob/living/simple_animal/handle_mutations_and_radiation()
+	if(radiation)
+		radiation -= 0.05
+		switch(radiation)
+			if(100 to INFINITY)
+				adjustFireLoss(radiation*0.002)
+				updatehealth()
 
+		radiation = Clamp(radiation, 0, 750)
+		return
