@@ -248,6 +248,8 @@
 /obj/structure/wild/tree/live_tree/New()
 	..()
 	icon_state = "tree_[rand(1,5)]"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = icon_state
 
 /obj/structure/wild/tree/live_tree/update_icon()
 	..()
