@@ -223,12 +223,7 @@
 				adjustToxLoss(rand(8,12))
 			//3 more minutes
 			else if (disease_progression >= 90 && prob(10) && stat != DEAD)
-				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
-				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
-				var/turf/location = loc
-				if (istype(location, /turf))
-					new /obj/effect/decal/cleanable/vomit/bloody(location)
-				nutrition -= 40
+				vomit_blood()
 			// 3 more minutes
 			else if (disease_progression >= 180 && disease_progression <= 300 && prob(15))
 				adjustBrainLoss(rand(3,5))
