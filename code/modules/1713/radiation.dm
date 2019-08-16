@@ -266,6 +266,10 @@
 		if (world.time <= last && duration > 0)
 			spawn(10)
 				radiation_pulse(epicenter, 100, severity, duration-1, 0)
+	spawn(15)
+		global_colour_matrix = list(0.8, 0.1, 0.1,\
+						0.1, 0.8, 0.1,\
+						0.1, 0.1, 0.8)
 	if (log)
 		log_game("<font color='red'>Nuke detonated in the map!</font>")
 	return TRUE
