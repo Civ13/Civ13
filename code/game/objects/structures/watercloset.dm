@@ -463,17 +463,20 @@
 		user << "<span class='warning'>\The [src] is dry!</span>"
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
+	var/watertype = "water"
+	if (radiation>0)
+		watertype = "irradiated_water"
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
 		if  (volume > 0)
 			if (min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this) > volume)
 				if (istype(src, /obj/structure/sink/puddle))
 					if (prob(10))
 						RG.reagents.add_reagent("food_poisoning", 1)
-						RG.reagents.add_reagent("water", volume-1)
+						RG.reagents.add_reagent(watertype, volume-1)
 					else
-						RG.reagents.add_reagent("water", volume)
+						RG.reagents.add_reagent(watertype, volume)
 				else
-					RG.reagents.add_reagent("water", volume)
+					RG.reagents.add_reagent(watertype, volume)
 				volume = 0
 				spawn(3)
 					update_icon()
@@ -486,9 +489,9 @@
 				if (istype(src, /obj/structure/sink/puddle))
 					if (prob(15))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				else
 					var/dirty = FALSE
 					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
@@ -496,9 +499,9 @@
 							dirty = TRUE
 					if (dirty)
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				if (RG.reagents)
 					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)
@@ -510,7 +513,7 @@
 
 
 	else if (istype(O, /obj/item/weapon/mop))
-		O.reagents.add_reagent("water", 5)
+		O.reagents.add_reagent(watertype, 5)
 		user << "<span class='notice'>You wet \the [O] in \the [src].</span>"
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return

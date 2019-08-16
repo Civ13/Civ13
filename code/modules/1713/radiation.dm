@@ -32,7 +32,7 @@
 		spawn(10)
 			radiation_pulse(epicenter, range, severity, duration-1, 0)
 	if (log)
-		log_game("Radiation emission with size ([range]) and severity [severity] mSv in area [epicenter.loc.name] ")
+		log_game("Radiation emission at ([epicenter.x],[epicenter.y],[epicenter.z]) with size ([range]) and severity [severity] mSv in area [epicenter.loc.name] ")
 	return TRUE
 
 /atom/proc/rad_act(var/severity)
@@ -53,6 +53,12 @@
 			health = health/2
 			maxhealth = maxhealth/2
 		name = "irradiated " + name
+
+/turf/floor/rad_act(amount)
+	if(amount <= 0)
+		return
+	radiation += amount
+	return
 
 //Rad stuff for grass
 /turf/floor/grass/rad_act(amount)
@@ -76,6 +82,17 @@
 		icon_state = "[plant]-dead"
 		desc = "A dead irradiated [plant] plant."
 		name = "dead [plant] plant due to radiation."
+
+/obj/obj/structure/sink/rad_act(amount)
+	if(amount <= 0)
+		return
+	radiation += amount
+
+/mob/living/rad_act(amount)
+	if(amount <= 0)
+		return
+	radiation += amount
+	return
 
 /mob/living/carbon/human/rad_act(amount)
 	if(amount <= 0)
@@ -159,7 +176,7 @@
 		check_radiation(user)
 		return
 
-/obj/item/weapon/geiger_counter/attack(mob/living/M, mob/user)
+/obj/item/weapon/geiger_counter/attack(atom/M, mob/user)
 	if(user.a_intent == I_HELP)
 		user.visible_message("<span class='notice'>[user] scans [M] with [src].</span>", "<span class='notice'>You scan [M]'s radiation levels with [src]...</span>")
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[M.radiation/100] Gy</b></span>"
@@ -176,7 +193,6 @@
 	usr << "<span class='notice'>You switch [scanning ? "on" : "off"] \the [src].</span>"
 	if (scanning)
 		processing()
-
 
 /obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
@@ -197,3 +213,32 @@
 			processing()
 	else
 		return
+
+
+/proc/nuke_map(turf/epicenter, severity, duration, log)
+	duration = round(duration)
+	var/range = 500
+	var/last = world.time + duration
+	if(!epicenter || !severity || duration < 1) return FALSE
+	if(!istype(epicenter, /turf))
+		epicenter = get_turf(epicenter.loc)
+	explosion(epicenter, 10, 18, 23, 200)
+	for (var/turf/floor/TF in range(25,epicenter))
+		TF.ChangeTurf(/turf/floor/dirt/burned)
+		TF.radiation = 20
+	spawn(30)
+		for(var/atom/T in range(range, epicenter))
+			var/cseverity=severity/100
+			var/distance = get_dist(epicenter, T)
+			if(distance < 0)
+				distance = 0
+			if (distance <= 1 && distance <= range)
+				T.rad_act(cseverity)
+			else if (distance > 1 && distance <= range)
+				T.rad_act(cseverity*(1-(distance/range)))
+		if (world.time <= last && duration > 0)
+			spawn(10)
+				radiation_pulse(epicenter, range, severity, duration-1, 0)
+	if (log)
+		log_game("<font color='red'>Nuke detonated in the map!</font>")
+	return TRUE

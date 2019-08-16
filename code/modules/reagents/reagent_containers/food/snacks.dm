@@ -54,6 +54,7 @@
 			else if (istype(trash,/obj/item))
 				usr.put_in_hands(trash)
 		qdel(src)
+	M.radiation += radiation
 	return
 
 /obj/item/weapon/reagent_containers/food/snacks/attack_self(mob/user as mob)
