@@ -894,6 +894,7 @@ var/global/list/global_colour_matrix = null
 	var/conf_2 = input("Seriously? THIS WILL LAG THE GAME FOR A WHILE!") in list ("Yes", "No")
 	if (conf_2 == "No")
 		return
+	var/warning = input("Do you want to give a 30 second warning before the nuke hits?") in list ("Yes", "No")
 
 	if (!mob || !mob.loc)
 		src << "<span class = 'warning'>You can't create a radiation emission here.</span>"
@@ -904,8 +905,15 @@ var/global/list/global_colour_matrix = null
 		return
 
 	var/turf/epicenter = mob.loc
-
-	world << "<font size=3 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
-	nuke_map(epicenter, 200, 180, 0)
-	message_admins("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
-	log_game("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
+	var/warningtimer = 5
+	if (warning == "Yes")
+		world << "<font size=3 color='orange'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>"
+		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
+		for (var/mob/M in player_list)
+			M.client << warning_sound
+		warningtimer = 330
+	spawn(warningtimer)
+		world << "<font size=3 color='red'>A nuclear explosion has happened! <br><i>(Game might freeze/lag for a while while processing, please wait)</i></font>"
+		nuke_map(epicenter, 200, 180, 0)
+		message_admins("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")
+		log_game("[key] nuked the map at ([epicenter.x],[epicenter.y],[epicenter.z]) in area [epicenter.loc.name].")

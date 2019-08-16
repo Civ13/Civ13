@@ -67,13 +67,6 @@
 	if(amount <= 0)
 		return
 	radiation += amount
-	if(radiation >= 15 && icon_state != deadicon_state)
-		if(deadicon_state != "none")
-			icon = deadicon
-			icon_state = deadicon_state
-			name = "irradiated " + name
-		else
-			name = "irradiated " + name
 	update_icon()
 	return
 
@@ -81,10 +74,6 @@
 	if(amount <= 0)
 		return
 	radiation += amount
-	if(radiation >= 20)
-		icon_state = "seashallow_swamp"
-	else
-		icon_state = initial(icon_state)
 	update_icon()
 	return
 
@@ -235,7 +224,6 @@
 
 /proc/nuke_map(turf/epicenter, severity, duration, log)
 	duration = round(duration)
-	var/range = 500
 	var/last = world.time + duration
 	if(!epicenter || !severity || duration < 1) return FALSE
 	if(!istype(epicenter, /turf))
@@ -244,13 +232,16 @@
 	spawn(12)
 		for (var/turf/floor/TF in range(25,epicenter))
 			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
-				if (prob(100-(get_dist(src,epicenter)/25)))
+				if (prob(100*(1-(get_dist(TF,epicenter)/25))))
 					TF.ChangeTurf(/turf/floor/dirt/burned)
+				else
+					if (prob(66))
+						new/obj/effect/burning_oil(TF)
 			TF.radiation = 20
 	spawn(30)
 		for(var/atom/T in world)
 			if (T.z == epicenter.z &&(istype(T, /mob/living) || istype(T, /turf/floor) || istype(T, /obj)))
-				var/cseverity=severity
+				var/cseverity=severity/3
 				if (ismob(T))
 					if (get_area(T).location == 0)
 						cseverity = severity/100
@@ -258,9 +249,15 @@
 						cseverity = severity/30
 
 				T.rad_act(cseverity)
+			if (istype(T, /obj/structure/window))
+				var/obj/structure/window/W = T
+				W.shatter()
+			else if (istype(T, /obj/covers))
+				if (prob(33))
+					T.ex_act(pick(1,2,3))
 		if (world.time <= last && duration > 0)
 			spawn(10)
-				radiation_pulse(epicenter, range, severity, duration-1, 0)
+				radiation_pulse(epicenter, 100, severity, duration-1, 0)
 	if (log)
 		log_game("<font color='red'>Nuke detonated in the map!</font>")
 	return TRUE
