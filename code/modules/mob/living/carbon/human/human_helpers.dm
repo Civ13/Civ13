@@ -133,6 +133,20 @@
 /mob/living/carbon/human/handle_mutations_and_radiation()
 	if(radiation)
 		radiation -= 0.05
+/*		switch(radiation)
+			if(-INFINITY to RAD_LEVEL_NORMAL)
+				icon_state = "geiger_on_1"
+			if(RAD_LEVEL_NORMAL + 1 to RAD_LEVEL_MODERATE)
+				icon_state = "geiger_on_2"
+			if(RAD_LEVEL_MODERATE + 1 to RAD_LEVEL_HIGH)
+				icon_state = "geiger_on_3"
+			if(RAD_LEVEL_HIGH + 1 to RAD_LEVEL_VERY_HIGH)
+				icon_state = "geiger_on_4"
+			if(RAD_LEVEL_VERY_HIGH + 1 to RAD_LEVEL_CRITICAL)
+				icon_state = "geiger_on_4"
+			if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
+				icon_state = "geiger_on_5"
+*/
 		switch(radiation)
 			if(100 to INFINITY)
 				adjustFireLoss(radiation*0.002)

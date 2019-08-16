@@ -256,7 +256,7 @@
 						var/mob/living/carbon/human/H = T
 						H.Weaken(3)
 						if (H.HUDtech.Find("flash"))
-						flick("e_flash", H.HUDtech["flash"])
+							flick("e_flash", H.HUDtech["flash"])
 			if (istype(T, /obj/structure/window))
 				var/obj/structure/window/W = T
 				W.shatter()
