@@ -907,7 +907,7 @@ var/global/list/global_colour_matrix = null
 	var/turf/epicenter = mob.loc
 	var/warningtimer = 5
 	if (warning == "Yes")
-		world << "<font size=3 color='orange'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>"
+		world << "<font size=3 color='red'><center>ATTENTION<br>A nuclear missile is incoming! Take cover!</center></font>"
 		var/warning_sound = sound('sound/misc/siren.ogg', repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << warning_sound

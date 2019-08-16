@@ -123,7 +123,7 @@ var/list/flooring_cache = list()
 	if (istype(src, /turf/floor/grass))
 		var/turf/floor/grass/G = src
 		if(radiation >= 15)
-			if (G.icon != G.deadicon)
+			if (G.icon_state != G.deadicon_state)
 				name = "irradiated " + name
 				if(G.deadicon_state != "none")
 					G.icon = G.deadicon
