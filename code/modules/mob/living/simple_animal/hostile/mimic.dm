@@ -133,6 +133,6 @@
 		//M.attack_animal(src)
 		//return M
 
-/mob/living/simple_animal/death()
+/mob/living/simple_animal/mimic/death()
 	new/obj/structure/closet/crate/loottreasurechest(src.loc)
-	del(src)
+	qdel(src)

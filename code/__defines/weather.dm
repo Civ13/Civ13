@@ -8,4 +8,9 @@
 #define WEATHER_SANDSTORM 5
 #define WEATHER_STORM 6
 #define WEATHER_SMOG 7
+#define WEATHER_FALLOUT 8
+#define WEATHER_ACIDRAIN 9
+#define WEATHER_ACIDSTORM 10
+#define WEATHER_ACIDSNOW 11
+#define WEATHER_ACIDBLIZZARD 12
 #define WEATHER_CONST2TEXT(constant) (constant == WEATHER_NONE ? "NONE" : constant == WEATHER_RAIN ? "RAIN" : constant == WEATHER_SNOW ? "SNOW" : constant == WEATHER_BLIZZARD ? "BLIZZARD" : constant == WEATHER_SANDSTORM ? "SANDSTORM" : constant == WEATHER_STORM ? "STORM" : constant == WEATHER_SMOG ? "SMOG" : "NONE")

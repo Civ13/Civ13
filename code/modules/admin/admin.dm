@@ -1041,3 +1041,33 @@ var/list/atom_types = null
 				O.active = 1
 				O.do_spawn()
 			return
+
+//Radiation/Pollution stuff
+/datum/admins/proc/get_world_values()
+	set category = "Debug"
+	set desc="Display how Irradiated/Polluted the world is."
+	set name="Display Worldvars"
+
+	src << "World Variables:"
+	src << "Radiation: " + get_global_radiation()
+	src << "Pollution: " + get_global_pollution()
+
+/datum/admins/proc/set_world_radiation()
+	set category = "Debug"
+	set desc="Change the radiation level of the world."
+	set name="Change World Radiation"
+
+	var/num = sanitize(input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", custom_event_msg) as message|null, MAX_BOOK_MESSAGE_LEN, extra = FALSE) as num
+	set_global_radiation(num)
+	world.log << "[usr] set the worlds radiation to:" + num
+	src << "Pollution set to: " + num
+
+/datum/admins/proc/set_world_pollution()
+	set category = "Debug"
+	set desc="Change the pollution level of the world."
+	set name="Change World Pollution"
+
+	var/num = sanitize(input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", custom_event_msg) as message|null, MAX_BOOK_MESSAGE_LEN, extra = FALSE) as num
+	set_global_pollution(num)
+	world.log << "[usr] set the worlds pollution to:" + num
+	src << "Pollution set to: " + num
