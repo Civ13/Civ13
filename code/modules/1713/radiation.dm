@@ -38,6 +38,35 @@
 /atom/proc/rad_act(var/severity)
 	return 0
 
+//Rad stuff for plants
+/obj/structure/wild/rad_act(amount)
+	if(amount <= 0)
+		return
+	radiation += amount
+	if(radiation >= 15 && icon_state != deadicon_state)
+		if(deadicon_state != "none")
+			icon = deadicon
+			icon_state = deadicon_state
+			health = health/2
+			maxhealth = maxhealth/2
+		else
+			health = health/2
+			maxhealth = maxhealth/2
+		name = "irradiated " + name
+
+//Rad stuff for grass
+/turf/floor/grass/rad_act(amount)
+	if(amount <= 0)
+		return
+	radiation += amount
+	if(radiation >= 15 && icon_state != deadicon_state)
+		if(deadicon_state != "none")
+			icon = deadicon
+			icon_state = deadicon_state
+			name = "irradiated " + name
+		else
+			name = "irradiated " + name
+
 /mob/living/carbon/human/rad_act(amount)
 	if(amount <= 0)
 		return
