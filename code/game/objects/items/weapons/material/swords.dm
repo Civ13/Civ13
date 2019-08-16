@@ -331,6 +331,7 @@ obj/item/weapon/material/sword/longsword/diamond
 	block_chance = 40
 	cooldownw = 15
 	value = 55
+
 /obj/item/weapon/material/sword/rapier
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
@@ -347,8 +348,6 @@ obj/item/weapon/material/sword/longsword/diamond
 
 obj/item/weapon/material/sword/rapier/iron
 	default_material = "iron"
-
-
 
 /obj/item/weapon/material/sword/gladius
 	name = "gladius"

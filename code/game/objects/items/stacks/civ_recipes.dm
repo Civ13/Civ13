@@ -358,6 +358,11 @@
 		new/datum/stack_recipe("wood fence", /obj/structure/grille/fence, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("wood fence door", /obj/structure/simple_door/fence, 3, _time = 60, _one_per_turf = TRUE, _on_floor = TRUE),
 		new/datum/stack_recipe("wood structure", /obj/structure/barricade, 5, _time = 35, _one_per_turf = TRUE, _on_floor = TRUE,),))
+	if (map.ordinal_age >= 3)
+		recipes += new/datum/stack_recipe_list("hygiene", list(
+			new/datum/stack_recipe("outhouse", /obj/structure/toilet/outhouse, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("male outhouse", /obj/structure/toilet/outhouse/male, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE),
+			new/datum/stack_recipe("female outhouse", /obj/structure/toilet/outhouse/female, 35, _time = 600, _one_per_turf = TRUE, _on_floor = TRUE),))
 
 	if (current_res[2] >= 95)
 		recipes += new/datum/stack_recipe_list("weapons", list(
