@@ -1,5 +1,25 @@
 /var/global/weather = WEATHER_NONE
 /var/global/weather_intensity = 1.0
+/var/global/world_pollution = 0.0
+/var/global/world_radiation = 0.0
+
+/proc/change_global_radiation(amount)
+	world_radiation += amount
+
+/proc/set_global_radiation(amount)
+	world_radiation = amount
+
+/proc/get_global_radiation()
+	return world_radiation
+
+/proc/change_global_pollution(amount)
+	world_pollution += amount
+
+/proc/set_global_pollution(amount)
+	world_pollution = amount
+
+/proc/get_global_pollution()
+	return world_pollution
 
 /proc/change_weather(_weather = WEATHER_NONE, var/bypass_same_weather_check = FALSE)
 
@@ -16,7 +36,6 @@
 	if (season == "WINTER")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
-
 		else if (_weather == WEATHER_BLIZZARD)
 			weather = WEATHER_BLIZZARD
 		else if (_weather == WEATHER_SNOW)
@@ -114,6 +133,32 @@
 				weather = WEATHER_NONE
 	var/area_icon_state = ""
 
+	if(world_radiation >= 300)
+		switch(weather)
+			if(WEATHER_NONE)
+				weather = WEATHER_FALLOUT
+			if(WEATHER_RAIN)
+				weather = WEATHER_ACIDRAIN
+			if(WEATHER_STORM)
+				weather = WEATHER_ACIDSTORM
+			if(WEATHER_SNOW)
+				weather = WEATHER_ACIDSNOW
+			if(WEATHER_BLIZZARD)
+				weather = WEATHER_ACIDBLIZZARD
+
+	if(world_radiation <= 300)
+		switch(weather)
+			if(WEATHER_FALLOUT)
+				weather = WEATHER_NONE
+			if(WEATHER_ACIDRAIN)
+				weather = WEATHER_RAIN
+			if(WEATHER_ACIDSTORM)
+				weather = WEATHER_STORM
+			if(WEATHER_ACIDSNOW)
+				weather = WEATHER_SNOW
+			if(WEATHER_ACIDBLIZZARD)
+				weather = WEATHER_BLIZZARD
+
 	switch (weather)
 		if (WEATHER_SNOW)
 			switch (weather_intensity)
@@ -166,6 +211,44 @@
 		if (WEATHER_SMOG)
 			area_icon_state = "smog"
 
+		if (WEATHER_FALLOUT)
+			area_icon_state = "radioactive_fallout"
+
+		if (WEATHER_ACIDRAIN)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "acidrain1"
+
+				if (2.0)
+					area_icon_state = "acidrain2"
+
+				if (3.0)
+					area_icon_state = "acidrain3"
+
+		if (WEATHER_ACIDSTORM)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "acidmonsoon"
+
+				if (2.0)
+					area_icon_state = "acidmonsoon"
+
+				if (3.0)
+					area_icon_state = "acidmonsoon"
+
+		if (WEATHER_ACIDSNOW)
+			switch (weather_intensity)
+				if (1.0)
+					area_icon_state = "acidmonsoon"
+
+				if (2.0)
+					area_icon_state = "acidmonsoon"
+
+				if (3.0)
+					area_icon_state = "acidmonsoon"
+
+		if (WEATHER_ACIDBLIZZARD)
+			area_icon_state = "nuclear_snow_storm"
 
 	if (map.civilizations)
 		for (var/area/caribbean/A in area_list)
