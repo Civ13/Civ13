@@ -1,6 +1,8 @@
 /obj/structure/wild
 	icon = 'icons/obj/wild.dmi'
 	icon_state = "tree"
+	var/deadicon = "icons/obj/wild.dmi"//Rad stuff what to turn into
+	var/deadicon_state = "burnedtree1"//Rad stuff what to turn into
 	anchored = TRUE
 	var/sways = FALSE
 	var/amount = 0 //how much wood to drop. 0 = none
@@ -16,6 +18,7 @@
 	var/edible = FALSE
 	var/leaves = 0
 	var/max_leaves = 0
+	var/radiation = 0.0//Rad stuff
 
 /obj/structure/wild/proc/seedtimer_proc()
 	spawn(6000)
@@ -141,6 +144,8 @@
 /obj/structure/wild/tree
 	name = "small tree"
 	icon_state = "tree"
+	deadicon = "icons/obj/wild.dmi"
+	deadicon_state = "burnedtree2"
 	opacity = TRUE
 	density = TRUE
 	sways = TRUE
@@ -152,6 +157,8 @@
 	name = "cactus"
 	icon = 'icons/obj/flora/bigtrees.dmi'
 	icon_state = "cactus"
+	deadicon = 'icons/obj/flora/bigtrees.dmi'
+	deadicon_state = "none"
 	opacity = TRUE
 	density = TRUE
 	sways = TRUE
@@ -164,6 +171,8 @@
 	name = "dead tree"
 	icon = 'icons/obj/flora/deadtrees.dmi'
 	icon_state = "tree_1"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = "none"
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
@@ -173,6 +182,8 @@
 	name = "destroyed tree"
 	icon = 'icons/obj/flora/destroyedtrees.dmi'
 	icon_state = "1"
+	deadicon = 'icons/obj/flora/destroyedtrees.dmi'
+	deadicon_state = "none"
 	opacity = FALSE
 	density = TRUE
 	sways = FALSE
@@ -186,6 +197,8 @@
 	name = "tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'
 	icon_state = "tree_1"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = "tree_1"
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
@@ -198,6 +211,8 @@
 	name = "tree"
 	icon = 'icons/obj/flora/bigtrees_winter.dmi'
 	icon_state = "tree_1"
+	deadicon = 'icons/obj/flora/bigtrees_winter.dmi'
+	deadicon_state = "tree_1"
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
@@ -238,20 +253,24 @@
 	..()
 	if (season == "WINTER")
 		icon = 'icons/obj/flora/bigtrees_winter.dmi'
-
 	else if (season == "SUMMER")
 		icon = 'icons/obj/flora/bigtrees.dmi'
-
+		deadicon = 'icons/obj/flora/deadtrees.dmi'
+		deadicon_state = icon_state
 	else if (season == "FALL")
 		if (prob(40))
 			icon = 'icons/obj/flora/deadtrees.dmi'
 		else
 			icon = 'icons/obj/flora/bigtrees.dmi'
+		deadicon = 'icons/obj/flora/deadtrees.dmi'
+		deadicon_state = icon_state
 	else if (season == "SPRING")
 		if (prob(40))
 			icon = 'icons/obj/flora/bigtrees.dmi'
 		else
 			icon = 'icons/obj/flora/deadtrees.dmi'
+		deadicon = 'icons/obj/flora/deadtrees.dmi'
+		deadicon_state = icon_state
 
 /obj/structure/wild/tree/live_tree/try_destroy()
 	if (health <= 0)
@@ -299,6 +318,8 @@
 	name = "palm tree"
 	icon = 'icons/misc/beach2.dmi'
 	icon_state = "palm1"
+	deadicon = 'icons/misc/beach2.dmi'
+	deadicon_state = "dead_palm1"
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
@@ -366,6 +387,8 @@
 /obj/structure/wild/palm/New()
 	..()
 	icon_state = pick("palm1","palm2")
+	deadicon = 'icons/misc/beach2.dmi'
+	deadicon_state = pick("palm1","palm2")
 
 /obj/structure/wild/palm/Destroy()
 	var/nearbyObjects = range(2,src)
@@ -390,6 +413,8 @@
 /obj/structure/wild/bush
 	name = "bush"
 	icon_state = "small_bush"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
 	health = 40
@@ -421,10 +446,14 @@
 /obj/structure/wild/bush/tame/big
 	name = "large cultivated bush"
 	icon_state = "big_bush"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "burnedbush1"
 
 /obj/structure/wild/burnedbush
 	name = "dead twigs"
 	icon_state = "burnedbush1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
 	flammable = FALSE
@@ -435,6 +464,8 @@
 	name = "small vegetation"
 	icon = 'icons/obj/flora/jungleflora.dmi'
 	icon_state = "1"
+	deadicon = 'icons/obj/flora/jungleflora.dmi'
+	deadicon_state = "d_1"
 	opacity = FALSE
 	density = FALSE
 	health = 60
@@ -450,6 +481,8 @@
 	name = "small bush"
 	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "smallbush1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "burnedbush1"
 	opacity = FALSE
 	density = FALSE
 	health = 20
@@ -499,6 +532,8 @@
 /obj/structure/wild/burnedtree
 	name = "burned tree"
 	icon_state = "burnedtree1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "burnedtree1"
 	opacity = FALSE
 	density = FALSE
 	flammable = FALSE
@@ -508,6 +543,8 @@
 /obj/structure/wild/rock
 	name = "rock"
 	icon_state = "rock1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "rock1"
 	opacity = FALSE
 	density = FALSE
 	flammable = FALSE
@@ -519,6 +556,8 @@
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
 	icon_state = "tall_grass_1"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "dead_tall_grass_1"
 	opacity = FALSE
 	density = FALSE
 	layer = 5.1
@@ -534,6 +573,8 @@
 	name = "tall grass"
 	icon = 'icons/obj/wild.dmi'
 	icon_state = "tall_grass_5"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "tall_grass_5"
 	opacity = FALSE
 	density = FALSE
 
@@ -545,10 +586,14 @@
 /obj/structure/wild/tallgrass/New()
 	..()
 	icon_state = "tall_grass_[rand(1,4)]"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "dead_tall_grass_1"
 
 /obj/structure/wild/tallgrass2/New()
 	..()
 	icon_state = "tall_grass_[rand(5,8)]"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "tall_grass_[rand(5,8)]"
 /obj/structure/wild/bush/New()
 	..()
 
@@ -557,28 +602,35 @@
 
 	if (prob(25))
 		icon_state = "grassybush_[rand(1,4)]"
+		deadicon_state = "burnedbush[rand(1,5)]"
 	else if (prob(25))
 		icon_state = "leafybush_[rand(1,3)]"
+		deadicon_state = "burnedbush[rand(1,5)]"
 	else if (prob(25))
 		icon_state = "palebush_[rand(1,4)]"
+		deadicon_state = "burnedbush[rand(1,5)]"
 	else
 		icon_state = "stalkybush_[rand(1,3)]"
+		deadicon_state = "burnedbush[rand(1,5)]"
 
 
 /obj/structure/wild/burnedbush/New()
 	..()
 	icon_state = "burnedbush[rand(1,9)]"
+	deadicon_state = "burnedbush[rand(1,5)]"
 
 /obj/structure/wild/junglebush/New()
 	..()
 	icon_state = "[rand(1,30)]"
+	deadicon = 'icons/obj/flora/dead_jungleflora.dmi'
+	deadicon_state = "[rand(1,30)]"
 
 /obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if(istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
 		user.do_attack_animation(src)
 		if (healthamount == 1)
-			if (prob(25))
+			if (prob(25) && radiation < 15)
 				user << "You harvest some medicinal leaves."
 				new /obj/item/stack/medical/advanced/bruise_pack/herbs(get_turf(user))
 				healthamount = 0
@@ -592,15 +644,20 @@
 /obj/structure/wild/burnedtree/New()
 	..()
 	icon_state = "burnedtree[rand(1,5)]"
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "burnedtree[rand(1,5)]"
 
 /obj/structure/wild/rock/New()
 	..()
 	icon_state = "rock[rand(1,5)]"
-
+	deadicon = 'icons/obj/wild.dmi'
+	deadicon_state = "rock[rand(1,5)]"
 /obj/structure/wild/jungle
 	name = "jungle tree"
 	icon = 'icons/obj/flora/jungletreesmaller.dmi'
 	icon_state = "tree1"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = "tree_1"
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
@@ -623,44 +680,57 @@
 	name = "acacia tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'
 	icon_state = "african_acacia"
+	deadicon = 'icons/obj/flora/bigtrees.dmi'
+	deadicon_state = "african_acacia_dead"
 	edible = TRUE
 	leaves = 1
 	max_leaves = 1
 /obj/structure/wild/jungle/acacia/dead
 	name = "dead acacia tree"
 	icon_state = "african_acacia_dead"
+	deadicon_state = "african_acacia_dead"
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
 /obj/structure/wild/jungle/acacia/New()
 	..()
 	icon_state = "african_acacia"
+	deadicon_state = "african_acacia_dead"
 /obj/structure/wild/jungle/acacia/dead/New()
 	..()
 	icon_state = "african_acacia_dead"
+	deadicon_state = "african_acacia_dead"
 /obj/structure/wild/jungle/New()
 	..()
 	icon_state = "tree[rand(1,7)]"
+	deadicon = 'icons/obj/flora/deadtrees.dmi'
+	deadicon_state = "tree_[rand(1,3)]"
 
 /obj/structure/wild/jungle/medpine
 	name = "mediterranean pine tree"
 	icon = 'icons/obj/flora/bigtrees.dmi'
 	icon_state = "med_pine"
+	deadicon = 'icons/obj/flora/bigtrees.dmi'
+	deadicon_state = "med_pine_dead"
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
 /obj/structure/wild/jungle/medpine/dead
 	name = "dead mediterranean pine tree"
 	icon_state = "med_pine_dead"
+	deadicon = 'icons/obj/flora/bigtrees.dmi'
+	deadicon_state = "med_pine_dead"
 	edible = FALSE
 	leaves = 0
 	max_leaves = 0
 /obj/structure/wild/jungle/medpine/New()
 	..()
 	icon_state = "med_pine"
+	deadicon_state = "med_pine_dead"
 /obj/structure/wild/jungle/medpine/dead/New()
 	..()
 	icon_state = "med_pine_dead"
+	deadicon_state = "med_pine_dead"
 /obj/structure/wild/jungle/try_destroy()
 	if (health <= 0)
 		if (stored_unit)
@@ -707,6 +777,8 @@
 	name = "large jungle bush"
 	icon = 'icons/obj/flora/largejungleflora.dmi'
 	icon_state = "bush1"
+	deadicon = "none"
+	deadicon_state = "none"
 	opacity = FALSE
 	density = FALSE
 	edible = TRUE

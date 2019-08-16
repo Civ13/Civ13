@@ -21,7 +21,6 @@
 #include "code\predefines.dm"
 #include "code\setup.dm"
 #include "code\stylesheet.dm"
-#include "code\world.dm"
 #include "code\__defines\_globals.dm"
 #include "code\__defines\_planes+layers.dm"
 #include "code\__defines\admin.dm"
@@ -853,5 +852,5 @@
 #include "code\processes\zoom\zoom_scopes.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\1943\omaha.dmm"
+#include "maps\special\nomads_continental.dmm"
 // END_INCLUDE
