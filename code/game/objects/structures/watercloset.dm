@@ -131,6 +131,56 @@
 /obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
 	return
 
+/obj/structure/toilet/outhouse
+	name = "outhouse"
+	desc = "An outhouse, more privacy then a pit latrine!"
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_closed"
+	var/icon_state_closed = "outhouse_closed"
+	var/icon_state_open = "outhouse_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/outhouse/New()
+	open = FALSE
+
+/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+	return
+
+/obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
+	if(open == FALSE)
+		open = TRUE
+		icon_state = icon_state_open
+	else
+		open = FALSE
+		icon_state = icon_state_closed
+
+/obj/structure/toilet/outhouse/AltClick(var/mob/living/user)
+	return
+
+/obj/structure/toilet/outhouse/male
+	name = "outhouse"
+	desc = "An outhouse, designated for males."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_male_closed"
+	icon_state_closed = "outhouse_male_closed"
+	icon_state_open = "outhouse_male_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/outhouse/female
+	name = "outhouse"
+	desc = "An outhouse, designated for females."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_female_closed"
+	icon_state_closed = "outhouse_female_closed"
+	icon_state_open = "outhouse_female_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/shower
 	name = "shower"
 	desc = "A basic, hot-and-cold shower system."

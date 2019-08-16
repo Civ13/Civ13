@@ -378,7 +378,7 @@
 	name = "inlaid gold crown"
 	desc = "A crown of gold, with a diamond in it. Extra Fancy."
 	icon_state = "gold_crown_diamond"
-	item_state = "gold_crown"
+	item_state = "gold_crown_diamond"
 	worn_state = "gold_crown_diamond"
 	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
@@ -386,8 +386,8 @@
 	name = "inlaid silver crown"
 	desc = "A crown of silver, with a diamond in it. Extra Fancy."
 	icon_state = "silver_crown_diamond"
-	item_state = "silver_crown"
-	worn_state = "gold_crown_diamond"
+	item_state = "silver_crown_diamond"
+	worn_state = "silver_crown_diamond"
 	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
 /obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W as obj, mob/user as mob)
