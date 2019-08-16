@@ -59,6 +59,7 @@
 	if(amount <= 0)
 		return
 	radiation += amount
+	update_icon()
 	return
 
 //Rad stuff for grass
@@ -74,6 +75,8 @@
 		else
 			name = "irradiated " + name
 	update_icon()
+	return
+
 /turf/floor/beach/water/rad_act(amount)
 	if(amount <= 0)
 		return
@@ -83,6 +86,7 @@
 	else
 		icon_state = initial(icon_state)
 	update_icon()
+	return
 
 /obj/structure/farming/plant/rad_act(amount)
 	if(amount <= 0)
@@ -93,11 +97,14 @@
 		icon_state = "[plant]-dead"
 		desc = "A dead irradiated [plant] plant."
 		name = "dead [plant] plant due to radiation."
+	update_icon()
+	return
 
 /obj/obj/structure/sink/rad_act(amount)
 	if(amount <= 0)
 		return
 	radiation += amount
+	return
 
 /mob/living/rad_act(amount)
 	if(amount <= 0)
@@ -123,7 +130,7 @@
 			var/blocked = getarmor_rad("chest")
 			var/new_amount = max(0, amount*(1 - blocked/100))
 			I.rad_act(new_amount)
-
+	return
 /mob/living/carbon/human/proc/getarmor_rad(organ)
 	return getarmor_organ(get_organ(organ), "rad")
 
@@ -237,12 +244,19 @@
 	spawn(12)
 		for (var/turf/floor/TF in range(25,epicenter))
 			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
-				TF.ChangeTurf(/turf/floor/dirt/burned)
+				if (prob(100-(get_dist(src,epicenter)/25)))
+					TF.ChangeTurf(/turf/floor/dirt/burned)
 			TF.radiation = 20
 	spawn(30)
 		for(var/atom/T in world)
 			if (T.z == epicenter.z &&(istype(T, /mob/living) || istype(T, /turf/floor) || istype(T, /obj)))
-				var/cseverity=severity/20
+				var/cseverity=severity
+				if (ismob(T))
+					if (get_area(T).location == 0)
+						cseverity = severity/100
+					else
+						cseverity = severity/30
+
 				T.rad_act(cseverity)
 		if (world.time <= last && duration > 0)
 			spawn(10)
