@@ -35,12 +35,14 @@ bullet_act
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
 					if (!crab)
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "[src.body_build.name] meat"
-						meat.amount = 4
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
+							meat.name = "[src.body_build.name] meat"
+							meat.radiation = radiation/10
 					else
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-						meat.amount = 4
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+							meat.radiation = radiation/10
 					if (orc)
 						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
 						HP.amount = 3

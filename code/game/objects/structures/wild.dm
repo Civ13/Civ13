@@ -18,7 +18,6 @@
 	var/edible = FALSE
 	var/leaves = 0
 	var/max_leaves = 0
-	var/radiation = 0.0//Rad stuff
 
 /obj/structure/wild/proc/seedtimer_proc()
 	spawn(6000)
@@ -253,26 +252,28 @@
 
 /obj/structure/wild/tree/live_tree/update_icon()
 	..()
-	if (season == "WINTER")
+	if (radiation >= 15)
+		icon = deadicon
+		icon_state = deadicon_state
+		return
+
+	else if (season == "WINTER")
 		icon = 'icons/obj/flora/bigtrees_winter.dmi'
 	else if (season == "SUMMER")
 		icon = 'icons/obj/flora/bigtrees.dmi'
-		deadicon = 'icons/obj/flora/deadtrees.dmi'
-		deadicon_state = icon_state
+
 	else if (season == "FALL")
 		if (prob(40))
 			icon = 'icons/obj/flora/deadtrees.dmi'
 		else
 			icon = 'icons/obj/flora/bigtrees.dmi'
-		deadicon = 'icons/obj/flora/deadtrees.dmi'
-		deadicon_state = icon_state
+
 	else if (season == "SPRING")
 		if (prob(40))
 			icon = 'icons/obj/flora/bigtrees.dmi'
 		else
 			icon = 'icons/obj/flora/deadtrees.dmi'
-		deadicon = 'icons/obj/flora/deadtrees.dmi'
-		deadicon_state = icon_state
+
 
 /obj/structure/wild/tree/live_tree/try_destroy()
 	if (health <= 0)
@@ -390,7 +391,7 @@
 	..()
 	icon_state = pick("palm1","palm2")
 	deadicon = 'icons/misc/beach2.dmi'
-	deadicon_state = pick("palm1","palm2")
+	deadicon_state = "dead_[icon_state]"
 
 /obj/structure/wild/palm/Destroy()
 	var/nearbyObjects = range(2,src)

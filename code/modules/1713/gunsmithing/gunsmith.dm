@@ -252,10 +252,6 @@
 		current_gun.caliber = "smallintermediumrifle"
 		current_gun.ammo_type = /obj/item/ammo_casing/smallintermediumrifle
 	if (choice_caliber != "Cancel" && choice_stock != "Cancel" && choice_barrel != "Cancel" && choice_receiver != "Cancel" && choice_feeding != "Cancel")
-		wood_amt -= using_wood
-		steel_amt -= using_steel
-		using_wood = 0
-		using_steel = 0
 		var/named = input(user, "Choose a name for this gun (max 15 characters):", "Gunsmithing", "gun")
 		if (named && named != "")
 			named = sanitize(named,15)
@@ -270,10 +266,20 @@
 				return
 		if (current_gun)
 			current_gun.finish()
-		var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
-		NEWGUN.loc = get_turf(src)
-		current_gun = null
-		return TRUE
+			wood_amt -= using_wood
+			steel_amt -= using_steel
+			using_wood = 0
+			using_steel = 0
+			var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
+			NEWGUN.loc = get_turf(src)
+			current_gun = null
+			return TRUE
+		else
+			using_wood = 0
+			using_steel = 0
+			current_gun = null
+			return
+
 	else
 		current_gun = null
 		using_wood = 0

@@ -87,6 +87,7 @@
 			user.visible_message("<span class = 'notice'>[user] butchers [src] into a sole meat slab.</span>")
 			var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 			meat.name = "[name] meatsteak"
+			meat.radiation = radiation/2
 			if (istype(user, /mob/living/carbon/human))
 				var/mob/living/carbon/human/HM = user
 				HM.adaptStat("medical", 0.3)
