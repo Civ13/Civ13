@@ -131,25 +131,58 @@
 			return
 
 /mob/living/carbon/human/handle_mutations_and_radiation()
+
 	if(radiation)
 		radiation -= 0.05
-/*		switch(radiation)
-			if(-INFINITY to RAD_LEVEL_NORMAL)
-				icon_state = "geiger_on_1"
-			if(RAD_LEVEL_NORMAL + 1 to RAD_LEVEL_MODERATE)
-				icon_state = "geiger_on_2"
-			if(RAD_LEVEL_MODERATE + 1 to RAD_LEVEL_HIGH)
-				icon_state = "geiger_on_3"
-			if(RAD_LEVEL_HIGH + 1 to RAD_LEVEL_VERY_HIGH)
-				icon_state = "geiger_on_4"
-			if(RAD_LEVEL_VERY_HIGH + 1 to RAD_LEVEL_CRITICAL)
-				icon_state = "geiger_on_4"
-			if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
-				icon_state = "geiger_on_5"
-*/
-		switch(radiation)
-			if(100 to INFINITY)
-				adjustFireLoss(radiation*0.002)
-				updatehealth()
+		if (stat != DEAD)
+			return
+			switch(radiation)
+				if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE) //0.15 Gy, equal to 1 year smoking 1 1/2 packs of cigarettes a day. Avg dose for Chernobyl recovery workers
+					if (prob(0.5))
+						src << "You feel slighly nauseous."
+				if(RAD_LEVEL_MODERATE to RAD_LEVEL_HIGH)//Gives radiation poisoning (passing out, twitches, severe erytrema)
+					if (prob(1))
+						src << "You feel nauseous."
+					if (prob(0.5))
+						emote("twitch")
+					if (prob(0.5))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 6
+						sleeping  = 6
+				if(RAD_LEVEL_HIGH to RAD_LEVEL_VERY_HIGH) //Gives mild radiation poisoning symptoms (vomiting, erytrema)
+					if (prob(2))
+						src << "You feel very nauseous."
+					if (prob(1.5))
+						emote("twitch")
+					if (prob(0.5))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 6
+						sleeping  = 6
+					if (prob(1.5))
+						vomit()
+				if(RAD_LEVEL_VERY_HIGH to RAD_LEVEL_CRITICAL) //Severe radiation poisoning, sometimes fatal
+					adjustBrainLoss(0.05)
+					if (prob(2.5))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 8
+						sleeping  = 8
+					if (prob(2))
+						vomit_blood()
+				if(RAD_LEVEL_CRITICAL to RAD_LEVEL_DEADLY) //LD50
+					adjustBrainLoss(0.07)
+					if (prob(3))
+						death()
+					if (prob(4))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 8
+						sleeping  = 8
+					if (prob(2))
+						vomit_blood()
+				if(RAD_LEVEL_DEADLY to INFINITY) //Always kills
+					death()
+
+		if(radiation >= 100)
+			adjustFireLoss(radiation*0.002)
+		updatehealth()
 
 		radiation = Clamp(radiation, 0, 750)
