@@ -53,6 +53,7 @@
 			health = health/2
 			maxhealth = maxhealth/2
 		name = "irradiated " + name
+	update_icon()
 
 /turf/floor/rad_act(amount)
 	if(amount <= 0)
@@ -72,6 +73,16 @@
 			name = "irradiated " + name
 		else
 			name = "irradiated " + name
+	update_icon()
+/turf/floor/beach/water/rad_act(amount)
+	if(amount <= 0)
+		return
+	radiation += amount
+	if(radiation >= 20)
+		icon_state = "seashallow_swamp"
+	else
+		icon_state = initial(icon_state)
+	update_icon()
 
 /obj/structure/farming/plant/rad_act(amount)
 	if(amount <= 0)
@@ -223,19 +234,16 @@
 	if(!istype(epicenter, /turf))
 		epicenter = get_turf(epicenter.loc)
 	explosion(epicenter, 10, 18, 23, 200)
-	for (var/turf/floor/TF in range(25,epicenter))
-		TF.ChangeTurf(/turf/floor/dirt/burned)
-		TF.radiation = 20
+	spawn(12)
+		for (var/turf/floor/TF in range(25,epicenter))
+			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
+				TF.ChangeTurf(/turf/floor/dirt/burned)
+			TF.radiation = 20
 	spawn(30)
-		for(var/atom/T in range(range, epicenter))
-			var/cseverity=severity/100
-			var/distance = get_dist(epicenter, T)
-			if(distance < 0)
-				distance = 0
-			if (distance <= 1 && distance <= range)
+		for(var/atom/T in world)
+			if (T.z == epicenter.z &&(istype(T, /mob/living) || istype(T, /turf/floor) || istype(T, /obj)))
+				var/cseverity=severity/20
 				T.rad_act(cseverity)
-			else if (distance > 1 && distance <= range)
-				T.rad_act(cseverity*(1-(distance/range)))
 		if (world.time <= last && duration > 0)
 			spawn(10)
 				radiation_pulse(epicenter, range, severity, duration-1, 0)
