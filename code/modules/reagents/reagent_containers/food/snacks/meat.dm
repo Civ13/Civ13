@@ -35,7 +35,13 @@
 		satisfaction = -10
 		spawn(1000)
 			if (isturf(loc) && prob(30))
-				new/mob/living/simple_animal/mouse(get_turf(src))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
 		spawn(3600)
 			qdel(src)
 
@@ -144,7 +150,13 @@
 		rotten = TRUE
 		spawn(1000)
 			if (isturf(loc) && prob(30))
-				new/mob/living/simple_animal/mouse(get_turf(src))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
 		spawn(3600)
 			qdel(src)
 
@@ -180,6 +192,12 @@
 		rotten = TRUE
 		spawn(1000)
 			if (isturf(loc) && prob(30))
-				new/mob/living/simple_animal/mouse(get_turf(src))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
 		spawn(3600)
 			qdel(src)
