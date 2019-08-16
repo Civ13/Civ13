@@ -11,7 +11,7 @@
 	var/list/old_affecting_lights = affecting_lights
 	var/old_lighting_overlay = lighting_overlay
 	var/list/old_lighting_corners = corners
-
+	var/old_radiation = radiation
 	var/turf/W = new N( locate(x, y, z) )
 
 	if (old_fire)
@@ -23,6 +23,7 @@
 	lighting_overlay = old_lighting_overlay
 	affecting_lights = old_affecting_lights
 	corners = old_lighting_corners
+	radiation = old_radiation
 
 	for (var/atom/A in contents)
 		if (A.light)

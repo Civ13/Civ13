@@ -39,6 +39,8 @@
 
 	var/initial_opacity = FALSE
 
+	var/radiation = 0
+
 /atom/Destroy()
 	if (reagents)
 		qdel(reagents)

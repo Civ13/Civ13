@@ -49,7 +49,6 @@
 	var/deadicon = 'icons/turf/floors.dmi'//Rad stuff what to turn into
 	var/deadicon_state = "dead_grass1"//Rad stuff what to turn into
 	var/grassamt = 1
-	var/radiation = 0.0
 	New()
 		icon_state = "grass[pick("0","1","2","3")]"
 		deadicon_state = "dead_grass[pick("0","1","2","3")]"//Rad stuff what to turn into

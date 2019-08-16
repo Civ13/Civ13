@@ -67,6 +67,16 @@
 		else
 			name = "irradiated " + name
 
+/obj/structure/farming/plant/rad_act(amount)
+	if(amount <= 0)
+		return
+	radiation += amount
+	if(radiation >= 8)
+		stage = 15
+		icon_state = "[plant]-dead"
+		desc = "A dead irradiated [plant] plant."
+		name = "dead [plant] plant due to radiation."
+
 /mob/living/carbon/human/rad_act(amount)
 	if(amount <= 0)
 		return
