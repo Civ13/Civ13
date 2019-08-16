@@ -238,7 +238,11 @@
 					if (prob(66))
 						new/obj/effect/burning_oil(TF)
 			TF.radiation = 20
-	spawn(30)
+	spawn(20)
+		for (var/mob/m in player_list)
+			if (m.client)
+				shake_camera(m, 3, (5 - (0.5)))
+	spawn(26)
 		for(var/atom/T in world)
 			if (T.z == epicenter.z &&(istype(T, /mob/living) || istype(T, /turf/floor) || istype(T, /obj)))
 				var/cseverity=severity/3
@@ -247,8 +251,12 @@
 						cseverity = severity/100
 					else
 						cseverity = severity/30
-
-				T.rad_act(cseverity)
+					T.rad_act(cseverity)
+					if (ishuman(T))
+						var/mob/living/carbon/human/H = T
+						H.Weaken(3)
+						if (H.HUDtech.Find("flash"))
+						flick("e_flash", H.HUDtech["flash"])
 			if (istype(T, /obj/structure/window))
 				var/obj/structure/window/W = T
 				W.shatter()
