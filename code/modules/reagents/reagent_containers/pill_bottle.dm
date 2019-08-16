@@ -80,7 +80,19 @@
 		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
 		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
 		new /obj/item/weapon/reagent_containers/pill/pervitin( src )
+/obj/item/weapon/storage/pill_bottle/potassium_iodide
+	name = "bottle of potassium iodide pills"
+	desc = "Contains pills of potassium iodide, used for radiation poisoning."
 
+	New()
+		..()
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
+		new /obj/item/weapon/reagent_containers/pill/potassium_iodide( src )
 
 /obj/item/weapon/storage/pill_bottle/citalopram
 	name = "bottle of Citalopram pills"

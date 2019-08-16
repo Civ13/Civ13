@@ -260,9 +260,9 @@
 			if (istype(T, /obj/structure/window))
 				var/obj/structure/window/W = T
 				W.shatter()
-			else if (istype(T, /obj/covers))
-				if (prob(33))
-					T.ex_act(pick(1,2,3))
+			else if (istype(T, /obj))
+				if (prob(20) && T.density)
+					T.ex_act(1.0)
 		if (world.time <= last && duration > 0)
 			spawn(10)
 				radiation_pulse(epicenter, 100, severity, duration-1, 0)
