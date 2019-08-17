@@ -1463,12 +1463,21 @@
 	recipes += new/datum/stack_recipe("chest drawer",/obj/structure/filingcabinet/chestdrawer, 6, _time = 95, _one_per_turf = TRUE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 4 && current_res[3] >= 95)
 		recipes += new/datum/stack_recipe("blood pack", /obj/item/weapon/reagent_containers/blood/empty, 2, _time = 40, _one_per_turf = FALSE, _on_floor = TRUE)
-	if (map && map.ordinal_age >= 7 && current_res[3] >= 150)
+	if (map && map.ordinal_age >= 7 && current_res[1] >= 150)
 		recipes += new/datum/stack_recipe("lighter",/obj/item/weapon/flame/lighter/random, 3, _time = 95, _one_per_turf = FALSE, _on_floor = TRUE)
 	if (map && map.ordinal_age >= 5 && current_res[3] >= 102)
 		recipes += new/datum/stack_recipe("german gas mask", /obj/item/clothing/mask/gas/german, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
 		recipes += new/datum/stack_recipe("british gas mask", /obj/item/clothing/mask/gas/british, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
-
+	if (map && map.ordinal_age >= 7 && current_res[3] >= 132)
+		recipes += new/datum/stack_recipe("modern gas mask (single sided)", /obj/item/clothing/mask/gas/modern, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+		recipes += new/datum/stack_recipe("modern gas mask (double_sized)", /obj/item/clothing/mask/gas/modern2, 8, _time = 70, _one_per_turf = FALSE, _on_floor = TRUE)
+	if (map && map.ordinal_age >= 6 && current_res[1] >= 125)
+		recipes += new/datum/stack_recipe_list("signs", list(
+			new/datum/stack_recipe("traffic cone", /obj/structure/sign/traffic/cone, 1, _time = 35, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("do not enter sign", /obj/structure/sign/traffic/noentry, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("stop sign", /obj/structure/sign/traffic/stop, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("yeld sign", /obj/structure/sign/traffic/yeld, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("pedestrian crossing sign", /obj/structure/sign/traffic/crossing, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/chitin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	recipes += new/datum/stack_recipe("chitin mask",/obj/item/clothing/mask/chitinmask, 4, _time = 65, _one_per_turf = FALSE, _on_floor = TRUE)
 	recipes += new/datum/stack_recipe("chitin helmet",/obj/item/clothing/head/helmet/chitin, 7, _time = 115, _one_per_turf = FALSE, _on_floor = TRUE)

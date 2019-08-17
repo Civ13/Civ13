@@ -34,6 +34,7 @@
 	if (log)
 		log_game("Radiation emission at ([epicenter.x],[epicenter.y],[epicenter.z]) with size ([range]) and severity [severity] mSv in area [epicenter.loc.name] ")
 	change_global_radiation((severity/100)/100) //Very slow radiation of the entire world.
+
 	return TRUE
 
 /atom/proc/rad_act(var/severity)
@@ -272,4 +273,6 @@
 						0.1, 0.1, 0.8)
 	if (log)
 		log_game("<font color='red'>Nuke detonated in the map!</font>")
+
+	change_global_radiation(310)
 	return TRUE

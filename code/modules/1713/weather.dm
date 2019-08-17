@@ -455,8 +455,8 @@
 					A.icon_state = ""
 					A.weather = WEATHER_NONE
 					A.weather_intensity = weather_intensity
-			if (world_radiation >= 300)
-				A.icon_state = "rad_[A.icon_state]"
+				if (world_radiation >= 300)
+					A.icon_state = "rad_[A.icon_state]"
 	else
 		for (var/area/caribbean/A in area_list)
 			if (istype(A) && A.location == AREA_OUTSIDE)

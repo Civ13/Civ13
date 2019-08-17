@@ -131,7 +131,27 @@
 			return
 
 /mob/living/carbon/human/handle_mutations_and_radiation()
-
+	if (world_radiation > 125)
+		var/area/A = get_area(src)
+		if (A.location == 1)
+			var/multiplier = 1
+			if (world_radiation >= 300)
+				switch(A.weather)
+					if (WEATHER_NONE)
+						multiplier = 1
+					if (WEATHER_RAIN)
+						multiplier = 1.5
+					if (WEATHER_SNOW)
+						multiplier = 1.5
+					if (WEATHER_BLIZZARD)
+						multiplier = 3
+					if (WEATHER_SANDSTORM)
+						multiplier = 1.3
+					if (WEATHER_STORM)
+						multiplier = 2
+					if (WEATHER_SMOG)
+						multiplier = 1
+			radiation += (world_radiation/1000)*multiplier
 	if(radiation)
 		radiation -= 0.05
 		if (stat != DEAD)

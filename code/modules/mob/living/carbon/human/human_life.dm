@@ -1330,16 +1330,16 @@
 	if (shock_stage == 10)
 		src << "<span class='danger'>[pick("It hurts so much", "You really need some painkillers", "Dear god, the pain")]!</span>"
 
-	if (shock_stage >= 30)
+	if (shock_stage >= 55)
 		if (shock_stage == 30) emote("me",1,"is having trouble keeping their eyes open.")
 		eye_blurry = max(2, eye_blurry)
 		stuttering = max(stuttering, 5)
 
-	if (shock_stage == 40)
+	if (shock_stage == 50)
 		src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
 
-	if (shock_stage >= 60)
-		if (shock_stage == 60) emote("me",1,"'s body becomes limp.")
+	if (shock_stage >= 70)
+		if (shock_stage == 90) emote("me",1,"'s body becomes limp.")
 		if (prob(2))
 			src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
 			Weaken(20)
