@@ -481,6 +481,26 @@
 					snow_message = "You're slowed down quite a bit by the snow."
 					snow_span = "warning"
 
+			//Radiation Burns NOT IMPLEMENTED YET
+			/*
+			if(F_area.weather == WEATHER_ACIDRAIN)
+				var/limb = rand(0, 6)
+				switch(limb)
+					if(0)
+						H.apply_damage(damage*0.5*head_exposure, BURN, "head", FALSE, FALSE, "Fire")
+					if(1)
+						H.apply_damage(damage*0.4*chest_exposure, BURN, "chest", FALSE, FALSE, "Fire")
+					if(2)
+						H.apply_damage(damage*0.4*groin_exposure, BURN, "groin", FALSE, FALSE, "Fire")
+					if(3)
+						H.apply_damage(damage*0.2*legs_exposure, BURN, "l_leg", FALSE, FALSE, "Fire")
+					if(4)
+						H.apply_damage(damage*0.2*legs_exposure, BURN, "r_leg", FALSE, FALSE, "Fire")
+					if(5)
+						H.apply_damage(damage*0.15*arms_exposure, BURN, "l_arm", FALSE, FALSE, "Fire")
+					if(6)
+						H.apply_damage(damage*0.15*arms_exposure, BURN, "r_arm", FALSE, FALSE, "Fire")
+			*/
 /* OLD CODE - TO BE REACTIVATED WHEN WE GET SNOW LEVELS
 				switch (S.amount)
 					if (0.01 to 0.8) // more than none and up to ~1/4 feet

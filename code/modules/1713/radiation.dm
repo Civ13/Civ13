@@ -33,6 +33,7 @@
 			radiation_pulse(epicenter, range, severity, duration-1, 0)
 	if (log)
 		log_game("Radiation emission at ([epicenter.x],[epicenter.y],[epicenter.z]) with size ([range]) and severity [severity] mSv in area [epicenter.loc.name] ")
+	change_global_radiation((severity/100)/100) //Very slow radiation of the entire world.
 	return TRUE
 
 /atom/proc/rad_act(var/severity)
@@ -61,7 +62,6 @@
 	radiation += amount
 	update_icon()
 	return
-
 //Rad stuff for grass
 /turf/floor/grass/rad_act(amount)
 	if(amount <= 0)
