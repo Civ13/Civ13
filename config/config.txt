@@ -236,4 +236,4 @@ SHOW_MODS 1
 SHOW_MENTORS 1
 
 #disables field of view if uncommented
-#DISABLE_FOV
+DISABLE_FOV
