@@ -6,6 +6,7 @@
 	item_state = "cockroach"
 	icon_living = "cockroach"
 	icon_dead = "dead_cockroach"
+	icon = 'icons/mob/critter.dmi'
 	speak = list("Chitter!","Chatter!","Click!")
 	speak_emote = list("clicks","chitters","chatters")
 	emote_hear = list("clicks","chitters","chatters")
@@ -38,17 +39,14 @@
 /mob/living/simple_animal/cockroach/death()
 	layer = MOB_LAYER
 	..()
+	new/obj/item/weapon/reagent_containers/food/snacks/cockroach(src.loc)
+	qdel(src)
 
 /mob/living/simple_animal/cockroach/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (stat != DEAD)
 		return ..()
 	if (!istype(W) || !W.sharp)
 		return ..()
-	else if (W.sharp)
-		user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
-		if (do_after(user, 30, src))
-			user.visible_message("<span class = 'notice'>[user] butchers [src].</span>")
-			qdel(src)
 
 /mob/living/simple_animal/cockroach/cannot_use_vents()
 	return

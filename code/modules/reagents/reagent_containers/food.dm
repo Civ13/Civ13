@@ -16,6 +16,8 @@
 	var/decay = 0 //Decay time limit, in deciseconds. 0 means it doesn't decay.
 	var/decaytimer = 0
 	var/satisfaction = 0
+	var/disgusting = FALSE
+
 /obj/item/weapon/reagent_containers/food/New()
 	..()
 	if (decay > 0)
