@@ -1057,17 +1057,19 @@ var/list/atom_types = null
 	set desc="Change the radiation level of the world."
 	set name="Change World Radiation"
 
-	var/num = sanitize(input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", custom_event_msg) as message|null, MAX_BOOK_MESSAGE_LEN, extra = FALSE) as num
+	var/num = input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", 0) as num
+	if (!isnum(num) || num<0)
+		return
 	set_global_radiation(num)
-	world.log << "[usr] set the worlds radiation to:" + num
-	src << "Pollution set to: " + num
+	world.log << "[usr] set the worlds radiation to [num]."
 
 /datum/admins/proc/set_world_pollution()
 	set category = "Debug"
 	set desc="Change the pollution level of the world."
 	set name="Change World Pollution"
 
-	var/num = sanitize(input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", custom_event_msg) as message|null, MAX_BOOK_MESSAGE_LEN, extra = FALSE) as num
+	var/num = input(usr, "Enter what you want the world's pollution to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Pollution", 0) as num
+	if (!isnum(num) || num<0)
+		return
 	set_global_pollution(num)
-	world.log << "[usr] set the worlds pollution to:" + num
-	src << "Pollution set to: " + num
+	world.log << "[usr] set the worlds pollution to [num]."
