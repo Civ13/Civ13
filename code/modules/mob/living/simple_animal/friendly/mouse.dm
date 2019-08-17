@@ -40,7 +40,7 @@
 	..()
 
 	if (!body_color)
-		body_color = pick( list("brown","gray","white") )
+		body_color = pick( list("brown","gray","white", "black") )
 	icon_state = "mouse_[body_color]"
 	item_state = "mouse_[body_color]"
 	icon_living = "mouse_[body_color]"
