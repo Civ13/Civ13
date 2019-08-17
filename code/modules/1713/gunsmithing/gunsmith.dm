@@ -125,17 +125,18 @@
 ////////////////FEEDING/SYSTEM///////////////////////////////
 	var/list/display3 = list("Cancel")
 	if (map.ordinal_age == 5)
-		display3 = list("Internal Magazine","Tubular", "Cancel")
+		display3 = list("Internal Magazine","Tubular")
 	else if (map.ordinal_age >= 6)
-		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)", "Cancel")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)")
 	if (choice_receiver == "Pump-Action")
-		display3 = list("Tubular", "Cancel")
+		display3 = list("Tubular")
 	if (choice_receiver == "Revolver")
-		display3 = list("Revolving", "Cancel")
+		display3 = list("Revolving")
 	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (small)" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine", "Cancel")
-	if (choice_stock == "Pistol Grip")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine")
+	if (choice_stock == "Pistol Grip" && choice_receiver != "Revolver")
 		display3 += "Internal Magazine (Removable)"
+	display3 += "Cancel"
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
 	if (choice_feeding == "Cancel")
 		current_gun = null
@@ -575,7 +576,7 @@
 					VERY_LONG_RANGE_MOVING = 30),
 			)
 			w_class = 2
-			slot_flags = SLOT_BELT|SLOT_POCKET||SLOT_HOLSTER
+			slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 			accuracy_increase_mod = 1.50
 			accuracy_decrease_mod = 2.00
 			KD_chance = KD_CHANCE_LOW

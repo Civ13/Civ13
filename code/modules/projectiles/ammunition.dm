@@ -135,6 +135,16 @@
 	weight = 0.1
 	multiple_sprites = TRUE
 
+/obj/item/ammo_magazine/emptyspeedloader
+	name = "speedloader (6)"
+	mag_type = SPEEDLOADER
+	icon_state = "38"
+	ammo_type = null
+	caliber = null
+	max_ammo = 6
+	weight = 0.1
+	multiple_sprites = TRUE
+
 /obj/item/ammo_magazine/emptymagazine
 	name = "drum magazine (65)"
 	mag_type = MAGAZINE
@@ -144,6 +154,7 @@
 	max_ammo = 65
 	weight = 0.8
 	multiple_sprites = TRUE
+
 
 /obj/item/ammo_magazine/emptymagazine/small
 	name = "magazine (30)"
