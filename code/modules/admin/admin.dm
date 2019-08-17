@@ -1061,8 +1061,8 @@ var/list/atom_types = null
 	if (!isnum(num) || num<0)
 		return
 	set_global_radiation(num)
-	world.log << "[usr] set the worlds radiation to:" + num
-	src << "Radiation set to: " + num
+	world.log << "[usr] set the worlds radiation to [num]"
+	src << "Radiation set to [num]"
 
 /datum/admins/proc/set_world_pollution()
 	set category = "Debug"
@@ -1073,5 +1073,5 @@ var/list/atom_types = null
 	if (!isnum(num) || num<0)
 		return
 	set_global_pollution(num)
-	world.log << "[usr] set the worlds pollution to:" + num
-	src << "Pollution set to: " + num
+	world.log << "[usr] set the worlds pollution to [num]"
+	src << "Pollution set to [num]"
