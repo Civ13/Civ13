@@ -127,13 +127,15 @@
 	if (map.ordinal_age == 5)
 		display3 = list("Internal Magazine","Tubular", "Cancel")
 	else if (map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)", "Cancel")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine","Open (Belt-Fed)", "Cancel")
 	if (choice_receiver == "Pump-Action")
 		display3 = list("Tubular", "Cancel")
 	if (choice_receiver == "Revolver")
 		display3 = list("Revolving", "Cancel")
 	if (choice_receiver == "Bolt-Action" || choice_receiver =="Semi-Auto (small)" || choice_receiver =="Semi-Auto (large)" && map.ordinal_age >= 6)
-		display3 = list("Internal Magazine","Tubular", "External Magazine","Large External Magazine", "Cancel")
+		display3 = list("Internal Magazine", "Tubular", "External Magazine","Large External Magazine", "Cancel")
+	if (choice_stock == "Pistol Grip")
+		display3 += "Internal Magazine (Removable)"
 	var/choice_feeding = WWinput(user, "Choose the feeding system:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", display3)
 	if (choice_feeding == "Cancel")
 		current_gun = null
@@ -142,6 +144,8 @@
 		return
 	else if (choice_feeding == "Internal Magazine")
 		using_steel += 4
+	else if (choice_feeding == "Internal Magazine (Removable)")
+		using_steel += 6
 	else if (choice_feeding == "Tubular")
 		using_steel += 5
 	else if (choice_feeding == "Revolving")
@@ -217,6 +221,9 @@
 
 		if ("Dual Selective Fire", "Triple Selective Fire")
 			caliberlist = list("7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
+	if (choice_feeding == "Internal Magazine (Removable)")
+		caliberlist = list("9mm pistol",".45 pistol","Cancel")
 
 	var/choice_caliber = WWinput(user, "Choose the caliber:", "Gunsmith - [using_steel]/[steel_amt] steel, [using_wood]/[wood_amt] wood", "Cancel", caliberlist)
 	if (choice_caliber == "Cancel")
@@ -978,15 +985,25 @@
 			load_shell_sound = 'sound/weapons/clip_reload.ogg'
 			max_shells = 5
 			magazine_type = /obj/item/ammo_magazine/emptyclip
+		if ("Internal Magazine (Removable)")
+			handle_casings = EJECT_CASINGS
+			load_method = MAGAZINE
+			if (receiver_type == "Semi-Auto (small)")
+				if (caliber == "pistol9")
+					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
+				else
+					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
 		if ("Tubular")
 			handle_casings = EJECT_CASINGS
 			load_method = SINGLE_CASING
 			load_shell_sound = 'sound/weapons/clip_reload.ogg'
 			max_shells = 8
+			slot_flags &= ~SLOT_HOLSTER
 		if ("Revolving")
 			handle_casings = CYCLE_CASINGS
 			max_shells = 6
 		if ("External Magazine")
+			handle_casings = EJECT_CASINGS
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine/small
 			if (receiver_type == "Semi-Auto (small)")
@@ -994,9 +1011,11 @@
 					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol
 				else
 					magazine_type = /obj/item/ammo_magazine/emptymagazine/pistol/a45
+			slot_flags &= ~SLOT_HOLSTER
 		if ("Large External Magazine")
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptymagazine
+			slot_flags &= ~SLOT_HOLSTER
 		if ("Open (Belt-Fed)")
 			load_method = MAGAZINE
 			magazine_type = /obj/item/ammo_magazine/emptybelt
