@@ -16,7 +16,7 @@
 ///////////////////////////////////////////////////////
 */
 
-/material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user)
+/material/proc/get_recipes_civs(var/civ = "none", var/mob/living/carbon/human/user, var/forced=FALSE)
 	if (map && map.civilizations)
 		var/list/current_res = list(0,0,0)
 		if ((civ == "Nomad" || map.ID == MAP_TRIBES) && user)
@@ -36,7 +36,7 @@
 				current_res = map.civf_research
 		generate_recipes_civs(current_res)
 	else
-		if (!recipes)
+		if (!recipes || forced)
 			var/list/current_res = list(0,0,0)
 			if (map)
 				switch (map.ordinal_age)

@@ -9,7 +9,7 @@
 	speak = list("Chitter!","Chatter!","Click!")
 	speak_emote = list("clicks","chitters","chatters")
 	emote_hear = list("clicks","chitters","chatters")
-	emote_see = list("skitters around", "hops", "waves it's intennae")
+	emote_see = list("skitters around", "hops", "waves it's antennae")
 	pass_flags = PASSTABLE
 	speak_chance = TRUE
 	turns_per_move = 5
@@ -47,12 +47,7 @@
 	else if (W.sharp)
 		user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 		if (do_after(user, 30, src))
-			user.visible_message("<span class = 'notice'>[user] butchers [src] into a sole meat slab.</span>")
-			var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-			meat.name = "[name] meatsteak"
-			if (istype(user, /mob/living/carbon/human))
-				var/mob/living/carbon/human/HM = user
-				HM.adaptStat("medical", 0.3)
+			user.visible_message("<span class = 'notice'>[user] butchers [src].</span>")
 			qdel(src)
 
 /mob/living/simple_animal/cockroach/cannot_use_vents()

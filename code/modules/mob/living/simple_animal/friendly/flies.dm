@@ -44,14 +44,6 @@
 				walk_rand(src,4)
 		else
 			walk_rand(src,4)
-		if (prob(10))
-			for (var/mob/living/carbon/human/TG in range(1,src))
-				visible_message("<span class = 'danger'>\The [src] bite [TG]!")
-				TG.adjustBruteLoss(1,2)
-				if (prob(20) && TG.disease == 0)
-					TG.disease_progression = 0
-					TG.disease_type ="malaria"
-					TG.disease = 1
 
 /mob/living/simple_animal/fly/bullet_act(var/obj/item/projectile/Proj)
 	return
