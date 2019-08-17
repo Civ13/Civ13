@@ -19,6 +19,7 @@
 	var/ammotype = /obj/item/cannon_ball
 	var/spritemod = TRUE //if true, uses 32x64
 	var/explosion = TRUE
+	var/nuclear = FALSE
 	var/reagent_payload = "none"
 	var/maxrange = 50
 	var/maxsway = 3
@@ -202,6 +203,9 @@
 			else
 				explosion = FALSE
 				reagent_payload = loaded.reagent_payload
+			if (istype(loaded, /obj/item/cannon_ball/shell/nuclear))
+				explosion = TRUE
+				nuclear = TRUE
 			qdel(loaded)
 			loaded = null
 
@@ -267,6 +271,18 @@
 								explosion(target, 1, 2, 2, 3)
 							else
 								explosion(target, 1, 2, 3, 4)
+						if (nuclear)
+							if (istype(src,/obj/item/cannon_ball/shell/nuclear/W9))
+								radiation_pulse(target, 8, 60, 700, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W19))
+								radiation_pulse(target, 4, 40, 700, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33))
+								radiation_pulse(target, 4, 35, 700, TRUE)
+							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
+								radiation_pulse(target, 8, 40, 700, TRUE)
+							else
+								radiation_pulse(target, 4, 50, 700, TRUE)
+
 							var/target_area_original_integrity = target_area.artillery_integrity
 							if (target_area.location == AREA_INSIDE && !target_area.arty_act(25))
 								for (var/mob/living/L in view(20, target))
