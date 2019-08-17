@@ -336,7 +336,7 @@ obj/item/weapon/material/sword/longsword/diamond
 	name = "rapier"
 	desc = "A light sword with a thin, stright blade. Commonly used by officers and nobility."
 	icon_state = "rapier"
-	item_state = "longsword2"
+	item_state = "rapier"
 	throw_speed = 4
 	throw_range = 4
 	force_divisor = 0.65 // 40 when wielded with hardness 60 (steel)
