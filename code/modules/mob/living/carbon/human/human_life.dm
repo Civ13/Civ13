@@ -123,10 +123,8 @@
 		healing_stage = 0
 	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
 		healing_stage = 0
-		if (getBruteLoss() >= 15)
+		if (getBruteLoss() >= 40)
 			adjustBruteLoss(-2)
-			if (halloss > 40)
-				adjustHalLoss(-10)
 
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)

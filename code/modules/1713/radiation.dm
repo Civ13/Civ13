@@ -45,7 +45,7 @@
 	if(amount <= 0)
 		return
 	radiation += amount
-	if(radiation >= 15 && (icon_state != deadicon_state || icon != deadicon) && !findtext(name,"irradiated"))
+	if(radiation >= 15 && (icon_state != deadicon_state || icon != deadicon))
 		if(deadicon_state != "none")
 			icon = deadicon
 			icon_state = deadicon_state

@@ -18,7 +18,7 @@
 	if (health_deficiency >= 40) tally += (health_deficiency / 25)
 
 	if (!(species && (species.flags & NO_PAIN)))
-		if (halloss >= 30) tally += (halloss / 25) //halloss shouldn't slow you down if you can't even feel it
+		if (halloss >= 10) tally += (halloss / 10) //halloss shouldn't slow you down if you can't even feel it
 
 	switch (nutrition)
 		if (-INFINITY to 50)
