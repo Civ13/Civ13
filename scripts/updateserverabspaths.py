@@ -1,10 +1,9 @@
 # to be called from bot.py only
 
 import os
-import shutil 
+import shutil
 import time
-import subprocess
-import sys 
+
 
 t1 = time.time()
 
