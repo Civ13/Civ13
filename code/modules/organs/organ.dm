@@ -341,7 +341,7 @@ var/list/organ_cache = list()
 				qdel(src)
 
 /obj/item/organ/proc/is_usable()
-	return (status & (ORGAN_CUT_AWAY|ORGAN_MUTATED|ORGAN_DEAD))
+	return !(status & (ORGAN_CUT_AWAY|ORGAN_MUTATED|ORGAN_DEAD))
 
 /obj/item/organ/external/stump/is_usable()
 	return 0
