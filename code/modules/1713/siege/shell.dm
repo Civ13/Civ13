@@ -45,6 +45,13 @@
 	name = "Xylyl Bromide Shell"
 	icon_state = "shell_xb"
 
+/obj/item/cannon_ball/rocket/nuclear
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "Nuclear Rocket"
+	icon_state = "shell_nuclear_rocket"
+	w_class = 4.0
+	value = 80
+
 /obj/item/cannon_ball/shell/nuclear
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "Nuclear Shell"
