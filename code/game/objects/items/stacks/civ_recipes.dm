@@ -1477,6 +1477,7 @@
 			new/datum/stack_recipe("do not enter sign", /obj/structure/sign/traffic/noentry, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("stop sign", /obj/structure/sign/traffic/stop, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("yeld sign", /obj/structure/sign/traffic/yeld, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
+			new/datum/stack_recipe("radiation sign", /obj/structure/sign/radiation, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("pedestrian crossing sign", /obj/structure/sign/traffic/crossing, 2, _time = 75, _one_per_turf = FALSE, _on_floor = TRUE),))
 /material/chitin/generate_recipes_civs(var/list/current_res = list(0,0,0))
 	recipes += new/datum/stack_recipe("chitin mask",/obj/item/clothing/mask/chitinmask, 4, _time = 65, _one_per_turf = FALSE, _on_floor = TRUE)
