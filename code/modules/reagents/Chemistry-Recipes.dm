@@ -464,6 +464,14 @@
 	result_amount = 3
 	log_is_important = TRUE
 
+/datum/chemical_reaction/gunpowder_charcoal
+	name = "Gunpowder"
+	id = "gunpowder"
+	result = "gunpowder"
+	required_reagents = list("sulfur" = 1, "gunpowder" = 1, "potassium" = 1)
+	result_amount = 3
+	log_is_important = TRUE
+
 /datum/chemical_reaction/ngunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()
