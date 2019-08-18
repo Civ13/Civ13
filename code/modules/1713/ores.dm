@@ -40,6 +40,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("iron",5)
+		else
+			..()
 /obj/item/stack/ore/glass
 	name = "sand"
 	icon_state = "ore_glass"
@@ -61,6 +63,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("silver",5)
+		else
+			..()
 /obj/item/stack/ore/gold
 	name = "gold ore"
 	icon_state = "ore_gold"
@@ -77,6 +81,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("gold",5)
+		else
+			..()
 /obj/item/stack/ore/copper
 	name = "copper ore"
 	icon_state = "ore_copper"
@@ -93,6 +99,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("copper",5)
+		else
+			..()
 /obj/item/stack/ore/tin
 	name = "tin ore"
 	icon_state = "ore_tin"
@@ -109,6 +117,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("tin",5)
+		else
+			..()
 /obj/item/stack/ore/diamond
 	name = "diamonds"
 	icon_state = "ore_diamond"
@@ -132,6 +142,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("uranium",5)
+		else
+			..()
 /obj/item/stack/ore/saltpeter
 	name = "saltpeter rock"
 	desc = "A yellowish cristal, consisting of potassium nitrate. A common precursor to many explosives, including gunpowder."
@@ -152,6 +164,8 @@
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("potassium",2.5)
 						ET.reagents.add_reagent("nitrogen",2.5)
+		else
+			..()
 /obj/item/stack/ore/coal
 	name = "mineral coal"
 	desc = "A bunch of mineral coal. Very dense."
@@ -193,6 +207,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("sulfur",5)
+		else
+			..()
 /obj/item/stack/ore/lead
 	name = "lead ore"
 	desc = "A rock of very dense lead ore."
@@ -212,6 +228,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("lead",5)
+		else
+			..()
 /obj/item/stack/ore/mercury
 	name = "cinnabar ore"
 	desc = "A brownish-red rock of mercury sulfide."
@@ -231,6 +249,8 @@
 				if (do_after(H, timera))
 					if (ET.reagents.total_volume <= 0)
 						ET.reagents.add_reagent("mercury",5)
+		else
+			..()
 /obj/item/stack/ore/fossilskull1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"

@@ -152,7 +152,7 @@
 					if (WEATHER_SMOG)
 						multiplier = 1
 			radiation += (world_radiation/1000)*multiplier
-	if(radiation)
+	if(radiation > 0)
 		radiation -= 0.05
 		if (stat != DEAD)
 			return
@@ -205,4 +205,7 @@
 			adjustFireLoss(radiation*0.002)
 		updatehealth()
 
-		radiation = Clamp(radiation, 0, 750)
+		if (radiation < 0)
+			radiation = 0
+		else if (radiation > 750)
+			radiation = 750
