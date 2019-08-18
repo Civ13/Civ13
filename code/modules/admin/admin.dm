@@ -1049,8 +1049,8 @@ var/list/atom_types = null
 	set name="Display Worldvars"
 
 	src << "World Variables:"
-	src << "Radiation: " + get_global_radiation()
-	src << "Pollution: " + get_global_pollution()
+	src << "Radiation: [get_global_radiation()]"
+	src << "Pollution: [get_global_pollution()]"
 
 /datum/admins/proc/set_world_radiation()
 	set category = "Debug"
