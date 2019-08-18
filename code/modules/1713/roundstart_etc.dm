@@ -150,3 +150,12 @@ var/GRACE_PERIOD_LENGTH = 7
 //				qdel(SM)
 
 	return TRUE
+
+//This is roundstart because it is. Periodically reduces radiation in the world.
+/hook/roundstart/proc/world_radiation_decay()
+	spawn(60)
+		if(get_global_radiation() > 0)
+			change_global_radiation(-1)
+			world_radiation_decay()
+		else
+			world_radiation_decay()
