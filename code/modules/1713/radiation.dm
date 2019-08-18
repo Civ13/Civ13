@@ -10,6 +10,8 @@
 #define RAD_LEVEL_CRITICAL 300 //LD50
 #define RAD_LEVEL_DEADLY 500 //Always kills
 
+
+
 //severity: mSv per second. duration: duration in seconds
 /proc/radiation_pulse(turf/epicenter, range, severity, duration, log)
 	duration = round(duration)
@@ -33,7 +35,7 @@
 			radiation_pulse(epicenter, range, severity, duration-1, 0)
 	if (log)
 		log_game("Radiation emission at ([epicenter.x],[epicenter.y],[epicenter.z]) with size ([range]) and severity [severity] mSv in area [epicenter.loc.name] ")
-	change_global_radiation((severity/100)/100) //Very slow radiation of the entire world.
+	change_global_radiation((severity/100)/10000) //Very slow radiation of the entire world. Even slower now because ungas love leaving uranium around.
 
 	return TRUE
 
