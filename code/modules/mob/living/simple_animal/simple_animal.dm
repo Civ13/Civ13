@@ -99,6 +99,7 @@
 	handle_weakened()
 	handle_paralysed()
 	handle_supernatural()
+	handle_mutations_and_radiation()
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
 		simplehunger-=1
@@ -319,7 +320,8 @@
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
-					new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/P  = new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					P.radiation = radiation/2
 					if (istype(user, /mob/living/carbon/human))
 						var/mob/living/carbon/human/HM = user
 						HM.adaptStat("medical", 0.3)
@@ -349,9 +351,11 @@
 						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 						meat.name = "[name] meatsteak"
 						meat.amount = namt
+						meat.radiation = radiation/2
 					else
 						var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
 						meat.amount = namt
+						meat.radiation = radiation/2
 
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
@@ -390,9 +394,11 @@
 					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 					meat.name = "[name] meatsteak"
 					meat.amount = namt
+					meat.radiation = radiation/2
 				else
 					var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
 					meat.amount = namt
+					meat.radiation = radiation/2
 
 				if ((amt-2) >= 1)
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
@@ -732,4 +738,13 @@
 		for(var/mob/living/ML in range(2,src))
 			return
 
+/mob/living/simple_animal/handle_mutations_and_radiation()
+	if(radiation)
+		radiation -= 0.05
+		switch(radiation)
+			if(100 to INFINITY)
+				adjustFireLoss(radiation*0.002)
+				updatehealth()
 
+		radiation = Clamp(radiation, 0, 750)
+		return

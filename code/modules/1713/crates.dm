@@ -49,17 +49,121 @@
 
 obj/structure/closet/crate/chest
 	name = "wood chest"
-	desc = "Maybe there's a treasure insde?"
+	desc = "Maybe there's a treasure inside?"
 	icon_state = "wood_chest"
 	icon_opened = "wood_chest_opened"
 	icon_closed = "wood_chest"
 	storage_capacity = 3 * MOB_MEDIUM
+
+obj/structure/closet/crate/treasurechest
+	name = "treasure chest"
+	desc = "There's probably treasure inside."
+	icon_state = "treasure_chest"
+	icon_opened = "treasure_chest_opened"
+	icon_closed = "treasure_chest"
+	storage_capacity = 5 * MOB_MEDIUM
+
+obj/structure/closet/crate/loottreasurechest
+	name = "wood chest"
+	desc = "There's probably treasure inside."
+	icon_state = "treasure_chest"
+	icon_opened = "treasure_chest_opened"
+	icon_closed = "treasure_chest"
+	storage_capacity = 5 * MOB_MEDIUM
+
+obj/structure/closet/crate/loottreasurechest/New()
+	..()
+	var/rarity = rand(0,10)
+	if(rarity <= 2)
+		paths = list(/obj/item/stack/ore/tin = rand(0, 2),
+				/obj/item/stack/ore/copper = rand(0, 2),
+				/obj/item/stack/ore/coal = rand(0, 2),
+				/obj/item/stack/ore/lead = rand(0, 2),
+				/obj/item/stack/material/bone = rand(0, 2),
+				/obj/item/stack/material/stone = rand(0, 2),
+				/obj/item/stack/material/leather = rand(0, 2),
+				/obj/item/stack/material/cotton = rand(0, 2),
+				/obj/item/stack/material/cloth = rand(0, 2),
+				/obj/item/stack/material/wool = rand(0, 2),
+				/obj/item/stack/material/woolcloth = rand(0, 2),
+				/obj/item/stack/material/rope = rand(0, 2),
+				/obj/item/stack/money/coppercoin = rand(2, 4),
+				/obj/item/stack/money/silvercoin = rand(2, 4),
+				/obj/item/stack/money/goldnugget = rand(1, 2))
+	else if(rarity > 2 && rarity <= 4)
+		paths = list(/obj/item/stack/ore/iron = rand(0, 3),
+				/obj/item/stack/ore/tin = rand(0, 3),
+				/obj/item/stack/ore/copper = rand(0, 3),
+				/obj/item/stack/ore/lead = rand(0, 3),
+				/obj/item/stack/ore/gold = rand(0, 3),
+				/obj/item/stack/ore/silver = rand(0, 3),
+				/obj/item/stack/material/iron = rand(0, 3),
+				/obj/item/stack/material/bronze = rand(0, 3),
+				/obj/item/stack/material/copper = rand(0, 3),
+				/obj/item/stack/material/tin = rand(0, 3),
+				/obj/item/stack/material/stone = rand(0, 3),
+				/obj/item/stack/material/gold = rand(0, 3),
+				/obj/item/stack/material/silver = rand(0, 3),
+				/obj/item/stack/money/coppercoin = rand(2, 4),
+				/obj/item/stack/money/silvercoin = rand(2, 4),
+				/obj/item/stack/money/goldcoin = rand(2, 4),
+				/obj/item/stack/money/gems = rand(1, 2),
+				/obj/item/stack/money/goldnugget = rand(2, 3),)
+
+	else if(rarity > 4 && rarity <= 8)
+		paths = list(/obj/item/stack/ore/iron = rand(0, 4),
+				/obj/item/stack/ore/tin = rand(0, 4),
+				/obj/item/stack/ore/copper = rand(0, 4),
+				/obj/item/stack/ore/lead = rand(0, 4),
+				/obj/item/stack/ore/gold = rand(0, 4),
+				/obj/item/stack/ore/silver = rand(0, 4),
+				/obj/item/stack/material/iron = rand(0, 4),
+				/obj/item/stack/material/bronze = rand(0, 4),
+				/obj/item/stack/material/copper = rand(0, 4),
+				/obj/item/stack/material/tin = rand(0, 4),
+				/obj/item/stack/material/stone = rand(0, 4),
+				/obj/item/stack/material/gold = rand(0, 4),
+				/obj/item/stack/material/silver = rand(0, 4),
+				/obj/item/stack/money/coppercoin = rand(3, 4),
+				/obj/item/stack/money/silvercoin = rand(3, 4),
+				/obj/item/stack/money/goldcoin = rand(3, 4),
+				/obj/item/stack/money/gems = rand(2, 3),
+				/obj/item/stack/money/goldnugget = rand(2, 3),
+				/obj/item/stack/money/goldvaluables = rand(2, 3),
+				/obj/item/stack/money/pearls = rand(2, 3),)
+	else
+		paths = list(/obj/item/stack/ore/iron = rand(0, 4),
+				/obj/item/stack/ore/tin = rand(0, 4),
+				/obj/item/stack/ore/copper = rand(0, 4),
+				/obj/item/stack/ore/lead = rand(0, 4),
+				/obj/item/stack/ore/gold = rand(0, 4),
+				/obj/item/stack/ore/silver = rand(0, 4),
+				/obj/item/stack/material/iron = rand(0, 4),
+				/obj/item/stack/material/bronze = rand(0, 4),
+				/obj/item/stack/material/copper = rand(0, 4),
+				/obj/item/stack/material/tin = rand(0, 4),
+				/obj/item/stack/material/stone = rand(0, 4),
+				/obj/item/stack/material/gold = rand(0, 4),
+				/obj/item/stack/material/silver = rand(0, 4),
+				/obj/item/stack/money/coppercoin = rand(3, 4),
+				/obj/item/stack/money/silvercoin = rand(3, 4),
+				/obj/item/stack/money/goldcoin = rand(3, 4),
+				/obj/item/stack/money/gems = rand(2, 3),
+				/obj/item/stack/money/goldnugget = rand(2, 3),
+				/obj/item/stack/money/goldvaluables = rand(2, 3),
+				/obj/item/stack/money/pearls = rand(2, 3),
+				/obj/item/cursedtreasure = rand(0, 1),
+				/obj/item/weapon/material/sword/longsword/diamond = 1,)
+	for (var/stack in contents)
+		var/obj/item/stack/S = stack
+		S.amount = rand(1+rarity,(rarity+1)*2)
+
 obj/structure/closet/crate/chest/treasury
 	name = "colony treasury"
 	desc = "Where the colony treasury is stored."
-	icon_state = "wood_chest"
-	icon_opened = "wood_chest_opened"
-	icon_closed = "wood_chest"
+	icon_state = "treasure_chest"
+	icon_opened = "treasure_chest_opened"
+	icon_closed = "treasure_chest"
 	anchored = TRUE
 	var/faction = "civilian"
 

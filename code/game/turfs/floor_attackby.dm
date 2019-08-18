@@ -69,7 +69,10 @@
 					if (WT.salty)
 						RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
 						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
-					RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+					var/watertype = "water"
+					if (radiation > 0)
+						watertype = "irradiated_water"
+					RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
 					user.visible_message("<span class='notice'>[user] fills \the [RG] with water.</span>","<span class='notice'>You fill \the [RG] with water.</span>")
 					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 					user.setClickCooldown(5)
@@ -197,6 +200,18 @@
 					return
 				else if (!istype(src, /turf/floor/dirt/underground/empty))
 					mining_proc(H)
+	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+		var/mob/living/carbon/human/H = user
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
+		if (ET.reagents.total_volume > 0)
+			H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+			return
+		if (istype(H))
+			visible_message("<span class = 'notice'>[user] carefully examine \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			var/timera = 110/(H.getStatCoeff("dexterity"))
+			if (do_after(user, timera))
+				extracting_proc(H, C)
 		else
 			return ..(C, user)
 
@@ -644,6 +659,28 @@
 				mining_proc(H)
 		else
 			return ..(C, user)
+	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+		var/mob/living/carbon/human/H = user
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
+		if (ET.reagents.total_volume > 0)
+			H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+			return
+		if (istype(H))
+			visible_message("<span class = 'notice'>[user] carefully examine \the [src] with \the [C.name]...</span>", "<span class = 'notice'>You start to carefully examine \the [src] with \the [C.name].</span>")
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			var/timera = 110/(H.getStatCoeff("dexterity"))
+			if (do_after(user, timera))
+				extracting_proc(H, C)
+		else
+			return ..(C, user)
+
+/turf/proc/extracting_proc(var/mob/living/carbon/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
+	if (!H || !src || !E)
+		return
+	var/list/elements = list("hydrogen", "helium", "lithium", "beryllium", "boron", "nitrogen", "oxygen", "fluorine", "neon", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "argon", "potassium", "calcium", "titanium", "cobalt", "nickel", "zinc", "gallium", "arsenic", "selenium", "krypton", "cadmium", "tellurium", "iodine", "xenon", "cesium", "barium", "tungsten", "iridium", "platinum", "bismuth", "polonium", "radon", "radium", "thorium")
+	var/randreg = pick(elements)
+	if (E.reagents.total_volume <= 0)
+		E.reagents.add_reagent(randreg,5)
 
 /turf/proc/mining_proc(var/mob/living/carbon/human/H)
 	if (!H || !src)

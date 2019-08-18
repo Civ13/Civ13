@@ -39,6 +39,8 @@
 
 	var/initial_opacity = FALSE
 
+	var/radiation = 0
+
 /atom/Destroy()
 	if (reagents)
 		qdel(reagents)
@@ -378,6 +380,11 @@
 		// Make toxins vomit look different
 		if (toxvomit)
 			this.icon_state = "vomittox_[pick(1,4)]"
+
+/atom/proc/add_vomit_floor_bloody(mob/living/carbon/M as mob, var/toxvomit = FALSE)
+	if ( istype(src, /turf) )
+		new /obj/effect/decal/cleanable/vomit/bloody(src)
+
 
 /atom/proc/clean_blood()
 	if (!simulated)

@@ -21,7 +21,7 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 			fcopy("SQL/bans.txt","SQL/bans_backup.txt")
 			fdel(F)
 			var/list/full_list_split = splittext(full_banlist, "|||\n")
-			for(var/i=1;i<full_list_split.len;i++)
+			for(var/i=1;i<=full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (full_list_split_two[1] == "[ckey]" || full_list_split_two[2] == "[cID]" || full_list_split_two[3] == "[ip]")
 					full_list_split_two[10] = 0
@@ -56,27 +56,27 @@ var/datum/quickBan_handler/quickBan_handler = null
 			return
 		else if (option2 == "ckey")
 			var/_ckey = ckey(input(src, "What ckey will you search for?") as null|text)
-			for(var/i=1;i<full_list_split.len;i++)
+			for(var/i=1;i<=full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (full_list_split_two[1] == _ckey)
 					result += list(full_list_split_two)
 
 		else if (option2 == "cID")
 			var/cID = input(src, "What cID will you search for?") as null|text
-			for(var/i=1;i<full_list_split.len;i++)
+			for(var/i=1;i<=full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (full_list_split_two[2] == cID)
 					result += list(full_list_split_two)
 
 		else if (option2 == "ip")
 			var/ip = input(src, "What address will you search for?") as null|text
-			for(var/i=1;i<full_list_split.len;i++)
+			for(var/i=1;i<=full_list_split.len;i++)
 				var/list/full_list_split_two = splittext(full_list_split[i], ";")
 				if (full_list_split_two[3] == ip)
 					result += list(full_list_split_two)
 
 	else if (option == "Show All")
-		for(var/i=1;i<full_list_split.len;i++)
+		for(var/i=1;i<=full_list_split.len;i++)
 			var/list/full_list_split_two = splittext(full_list_split[i], ";")
 			result += list(full_list_split_two)
 	var/html = "<center><big>List of Quick Bans</big></center>"
@@ -239,7 +239,7 @@ var/datum/quickBan_handler/quickBan_handler = null
 
 	var/duration_in_x_units = input(src, "How long do you want the ban to last ('5 hours', '4 days': the default unit is days)") as text
 	var/duration_in_days = text2num(ckey(splittext(duration_in_x_units, " ")[1]))
-
+	duration_in_days = max(0,min(duration_in_days,10000))
 	if (!isnum(duration_in_days))
 		src << "<span class = 'warning'>Invalid amount.</span>"
 		goto reenter_bantime
@@ -370,8 +370,6 @@ var/datum/quickBan_handler/quickBan_handler = null
 	var/list/full_list_split = splittext(full_banlist, "|||\n")
 	for(var/i=1;i<full_list_split.len;i++)
 		var/list/full_list_split_two = splittext(full_list_split[i], ";")
-		if (text2num(full_list_split_two[10]) < text2num(num2text(world.realtime,20))) // ban expired?
-			full_list_split_two[10] = 0
 		if (full_list_split_two[1] == "[ckey]" || full_list_split_two[2] == "[computer_id]" || full_list_split_two[3] == "[address]")
 			if (!(text2num(full_list_split_two[10]) < text2num(num2text(world.realtime,20)))) // not expired?
 				bans += list(full_list_split_two)

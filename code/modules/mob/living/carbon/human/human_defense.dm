@@ -35,12 +35,14 @@ bullet_act
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
 					if (!crab)
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "[src.body_build.name] meat"
-						meat.amount = 4
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
+							meat.name = "[src.body_build.name] meat"
+							meat.radiation = radiation/10
 					else
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-						meat.amount = 4
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+							meat.radiation = radiation/10
 					if (orc)
 						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
 						HP.amount = 3
@@ -112,7 +114,7 @@ bullet_act
 		else
 			SH = r_hand
 		if (istype(P, /obj/item/projectile/arrow/arrow))
-			if (prob(min(SH.base_block_chance*2,92)))
+			if (prob(min(SH.base_block_chance,92)))
 				visible_message("<span class = 'warning'>[src] blocks the arrow with the [SH.name]!</span>")
 				P.blockedhit = TRUE
 				SH.health -= 2
@@ -209,7 +211,7 @@ bullet_act
 	//Shrapnel
 	if (P.can_embed())
 		var/armor = getarmor_organ(organ, "gun")
-		if (prob(20 + max(P.damage - armor, -10)))
+		if (prob(20 + max(P.damage - armor, 10)))
 			var/obj/item/weapon/material/shard/shrapnel/SP = new()
 			SP.name = (P.name != "shrapnel")? "[P.name] shrapnel" : "shrapnel"
 			SP.desc = "[SP.desc] It looks like it was fired from [P.shot_from]."

@@ -1,7 +1,6 @@
 import os
-import shutil 
+import shutil
 import time
-import subprocess
 
 t1 = time.time()
 
@@ -28,7 +27,7 @@ rsc = os.path.join('/home/1713/civ13-git/civ13.rsc')
 
 shutil.copyfile(dmb, '/home/1713/civ13/civ13.dmb')
 
-	
+
 shutil.copyfile(rsc, '/home/1713/civ13/civ13.rsc')
 
 t2 = time.time() - t1

@@ -46,10 +46,12 @@
 	name = "Grass patch"
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "grass1"
+	var/deadicon = 'icons/turf/floors.dmi'//Rad stuff what to turn into
+	var/deadicon_state = "dead_grass1"//Rad stuff what to turn into
 	var/grassamt = 1
-
 	New()
 		icon_state = "grass[pick("0","1","2","3")]"
+		deadicon_state = "dead_grass[pick("0","1","2","3")]"//Rad stuff what to turn into
 		..()
 		spawn(4)
 			if (src)
@@ -62,7 +64,6 @@
 /turf/floor/carpet
 	name = "Carpet"
 	icon_state = "carpet"
-
 	New()
 		if (!icon_state)
 			icon_state = "carpet"
@@ -135,6 +136,7 @@
 /turf/floor/grass/jungle/savanna/New()
 	..()
 	icon_state = "grass_dry"
+	deadicon_state = "dead_grass[pick("0","1","2","3")]"//Rad stuff what to turn into
 
 /turf/floor/winter
 	name = "snow"
@@ -387,7 +389,6 @@
 	icon = 'icons/turf/floors.dmi'
 	icon_state = "white"
 	interior = TRUE
-
 
 /turf/floor/plating/cobblestone
 	name = "road"

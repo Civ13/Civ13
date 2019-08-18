@@ -82,6 +82,10 @@
 /obj/structure/sign
 	anchored = TRUE
 
+/obj/structure/sign/radiation
+	name = "radiation in the area!"
+	icon_state = "radiation"
+
 /obj/structure/sign/traffic
 	name = "STOP sign"
 	desc = ""

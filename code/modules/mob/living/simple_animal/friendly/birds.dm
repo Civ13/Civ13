@@ -144,7 +144,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/egg/New()
 	..()
 	var/malearound = FALSE
-	var/nearbyObjects = range(1,src) //3x3 area around chicken
+	var/nearbyObjects = range(3,src) //3x3 area around chicken
 	for(var/mob/living/simple_animal/rooster/M in nearbyObjects)
 		if (M.stat == CONSCIOUS)
 			malearound = TRUE
@@ -388,7 +388,7 @@
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
 	..()
 	var/malearound = FALSE
-	var/nearbyObjects = range(1,src) //3x3 area around turkey
+	var/nearbyObjects = range(3,src) //3x3 area around turkey
 	for(var/mob/living/simple_animal/turkey_m/M in nearbyObjects)
 		if (M.stat == CONSCIOUS)
 			malearound = TRUE

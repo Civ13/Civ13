@@ -176,7 +176,7 @@ default behaviour is:
 	set name = "Succumb"
 	set desc = "Succumb to death."
 	set category = "IC"
-	if (map.civilizations || getTotalDmg() > 150)
+	if (map.civilizations || getTotalDmg() > 90)
 		adjustBrainLoss(300)
 		death()
 		src << "<span class = 'notice'>You have given up life and succumbed to death.</span>"
@@ -445,6 +445,7 @@ default behaviour is:
 	SetParalysis(0)
 	SetStunned(0)
 	SetWeakened(0)
+	setHalLoss(0)
 
 	// shut down ongoing problems
 	radiation = FALSE

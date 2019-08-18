@@ -131,6 +131,56 @@
 /obj/structure/toilet/pit_latrine/AltClick(var/mob/living/user)
 	return
 
+/obj/structure/toilet/outhouse
+	name = "outhouse"
+	desc = "An outhouse, more privacy then a pit latrine!"
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_closed"
+	var/icon_state_closed = "outhouse_closed"
+	var/icon_state_open = "outhouse_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/outhouse/New()
+	open = FALSE
+
+/obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
+	return
+
+/obj/structure/toilet/outhouse/attack_hand(mob/living/user as mob)
+	if(open == FALSE)
+		open = TRUE
+		icon_state = icon_state_open
+	else
+		open = FALSE
+		icon_state = icon_state_closed
+
+/obj/structure/toilet/outhouse/AltClick(var/mob/living/user)
+	return
+
+/obj/structure/toilet/outhouse/male
+	name = "outhouse"
+	desc = "An outhouse, designated for males."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_male_closed"
+	icon_state_closed = "outhouse_male_closed"
+	icon_state_open = "outhouse_male_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
+/obj/structure/toilet/outhouse/female
+	name = "outhouse"
+	desc = "An outhouse, designated for females."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "outhouse_female_closed"
+	icon_state_closed = "outhouse_female_closed"
+	icon_state_open = "outhouse_female_open"
+	open = FALSE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+
 /obj/structure/shower
 	name = "shower"
 	desc = "A basic, hot-and-cold shower system."
@@ -463,17 +513,20 @@
 		user << "<span class='warning'>\The [src] is dry!</span>"
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
+	var/watertype = "water"
+	if (radiation>0)
+		watertype = "irradiated_water"
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
 		if  (volume > 0)
 			if (min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this) > volume)
 				if (istype(src, /obj/structure/sink/puddle))
 					if (prob(10))
 						RG.reagents.add_reagent("food_poisoning", 1)
-						RG.reagents.add_reagent("water", volume-1)
+						RG.reagents.add_reagent(watertype, volume-1)
 					else
-						RG.reagents.add_reagent("water", volume)
+						RG.reagents.add_reagent(watertype, volume)
 				else
-					RG.reagents.add_reagent("water", volume)
+					RG.reagents.add_reagent(watertype, volume)
 				volume = 0
 				spawn(3)
 					update_icon()
@@ -486,9 +539,9 @@
 				if (istype(src, /obj/structure/sink/puddle))
 					if (prob(15))
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				else
 					var/dirty = FALSE
 					for(var/obj/item/weapon/reagent_containers/food/snacks/poo/PP in range(4,src))
@@ -496,9 +549,9 @@
 							dirty = TRUE
 					if (dirty)
 						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
 					else
-						RG.reagents.add_reagent("water", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
+						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
 				if (RG.reagents)
 					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
 				spawn(3)
@@ -510,7 +563,7 @@
 
 
 	else if (istype(O, /obj/item/weapon/mop))
-		O.reagents.add_reagent("water", 5)
+		O.reagents.add_reagent(watertype, 5)
 		user << "<span class='notice'>You wet \the [O] in \the [src].</span>"
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return

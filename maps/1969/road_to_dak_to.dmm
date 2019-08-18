@@ -120,7 +120,7 @@
 "cp" = (/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/item/stack/medical/bruise_pack/gauze,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
 "cq" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
 "cr" = (/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
-"cs" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
+"cs" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "ct" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/iron,/turf/floor/trench,/area/caribbean/british/land/outside)
 "cu" = (/obj/covers/straw_wall,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "cv" = (/obj/structure/barricade/horizontal,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
@@ -160,7 +160,7 @@
 "dd" = (/obj/structure/pot,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "de" = (/obj/structure/multiz/ladder/ww2/tunnelbottom/vietcong,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "df" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"dg" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"dg" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
 "dh" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "di" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "dj" = (/obj/covers/wood_ship,/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/ricepudding,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
@@ -170,11 +170,11 @@
 "dn" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "do" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
 "dp" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 4},/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/jungle)
-"dq" = (/obj/structure/window/sandbag,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"dq" = (/obj/structure/railing{dir = 4},/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "dr" = (/obj/structure/barricade/stone_h,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "ds" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dt" = (/obj/structure/barricade/stone_h,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
-"du" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
+"du" = (/obj/item/weapon/material/shard/shrapnel{material = "wood"},/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "dv" = (/obj/item/weapon/gun/projectile/submachinegun/m16{desc = "An american assault rifle, chambered in 5.56x45mm. This one has 'SJ' engraved on the stock and looks to be in pretty bad shape."; name = "beaten M16"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dw" = (/obj/covers/wood_ship,/obj/structure/bed/bedroll,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "dx" = (/obj/covers/wood_ship,/obj/structure/bed/bedroll,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
@@ -186,14 +186,14 @@
 "dD" = (/obj/covers/straw_wall,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "dE" = (/obj/structure/curtain/leather,/obj/covers/wood_ship,/turf/floor/grass/jungle,/area/caribbean/japanese/land/inside{name = "Village Huts"})
 "dF" = (/obj/item/ammo_magazine/m16,/obj/item/ammo_magazine/m16,/obj/item/weapon/material/hatchet,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"dG" = (/obj/structure/window/sandbag/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
+"dG" = (/obj/covers/repairedfloor,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "dH" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/hostile/bear/brown,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dI" = (/obj/item/stack/material/wood{amount = 7},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dJ" = (/obj/structure/religious/remains{desc = "Looks like the bears caught him in the middle of building something. Poor guy."; name = "Pvt. Jenkins"},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
-"dK" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
+"dK" = (/obj/covers/repairedfloor,/obj/structure/railing{dir = 8},/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "dL" = (/obj/item/weapon/covers,/obj/item/weapon/covers,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
-"dM" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
-"dN" = (/obj/structure/window/sandbag/sandbag/incomplete,/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/jungle)
+"dM" = (/obj/structure/barbwire,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"dN" = (/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "dO" = (/obj/item/weapon/covers,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "dP" = (/obj/structure/barricade/stone_h,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "dQ" = (/obj/structure/barricade/stone_h,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
@@ -232,6 +232,7 @@
 "ex" = (/obj/structure/wild/tallgrass,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "ey" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 8},/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
 "ez" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
+"eA" = (/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "eB" = (/obj/item/weapon/paper{desc = "It's hard to tell what this originally had written on it, but it appears to be some kind of journal entry. You can barely make out the signature of Seymour Jenkins."; name = "ruined page"},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
 "eC" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
 "eD" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
@@ -317,8 +318,8 @@
 "gf" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "gg" = (/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "gh" = (/obj/structure/barricade/stone_h,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gi" = (/obj/structure/barbwire,/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/jungle)
-"gj" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/no_mans_land/invisible_wall/jungle)
+"gi" = (/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"gj" = (/obj/structure/window/sandbag/sandbag,/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "gk" = (/obj/structure/wild/jungle,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "gl" = (/obj/structure/barricade/stone_h,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "gm" = (/obj/structure/wild/tree/anchored,/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/no_mans_land/jungle)
@@ -364,6 +365,7 @@
 "ha" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateJPCap"},/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
 "hb" = (/obj/structure/window/sandbag/sandbag{step_x = 0; step_y = 0},/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hc" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/jungle)
+"hd" = (/obj/structure/window/sandbag/sandbag{icon_state = "sandbag"; dir = 1},/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
 "he" = (/obj/structure/wild/tree/anchored,/turf/floor/dirt/jungledirt,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hf" = (/obj/structure/window/sandbag{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
 "hg" = (/obj/structure/wild/tree/live_tree,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall/jungle)
@@ -373,6 +375,19 @@
 "hk" = (/obj/structure/vehicle/motorcycle/m125{icon_state = "motorcycleX"; dir = 4},/turf/floor/dirt/dust,/area/caribbean/japanese/land/outside{name = "Village"})
 "hl" = (/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
 "hm" = (/obj/effect/decal/cleanable/blood/oil,/turf/floor/dirt/jungledirt,/area/caribbean/japanese/land/outside{name = "Village"})
+"hn" = (/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/item/weapon/sandbag/sandbag,/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"ho" = (/obj/structure/window/sandbag/sandbag/incomplete,/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/deep/jungle,/area/caribbean/no_mans_land/jungle)
+"hp" = (/obj/covers/repairedfloor,/obj/covers/cobblestone,/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/jungle)
+"hq" = (/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"hr" = (/obj/item/weapon/storage/firstaid/adv,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"hs" = (/obj/item/weapon/storage/firstaid/combat,/turf/floor/dirt/jungledirt,/area/caribbean/void/caves)
+"ht" = (/obj/item/weapon/storage/firstaid/combat/modern,/turf/floor/trench,/area/caribbean/british/land/outside)
+"hu" = (/obj/item/weapon/storage/firstaid/adv,/turf/floor/trench,/area/caribbean/british/land/outside)
+"hv" = (/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/obj/structure/table/iron,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/trench,/area/caribbean/british/land/outside)
+"hw" = (/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/item/cannon_ball/mortar_shell,/obj/structure/closet/crate/ww2,/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"hx" = (/obj/structure/cannon/mortar,/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"hy" = (/obj/item/weapon/wrench,/turf/floor/trench,/area/caribbean/no_mans_land/jungle)
+"hz" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean/british/land/outside)
 
 (1,1,1) = {"
 aeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
@@ -382,7 +397,7 @@ aeaeaeaTahahahahahahahaegZaeaeaeaeaeaeaeaeaUahaUahaUahaUahaeaeaeaeaeaeaeaeaeaeae
 aeaeaVahahahahahahahahahahahahaeaeaeaeaeaeaSahaSahaSahaSahaeaeaeaeaeaeaeaeaeaeae
 aeaRahahahahaeaeahahahahahahahahaeaeaeaeahaUahaUahaUahaUahaeaeaeaeaeaeaeaeaeaeae
 aeaeaRaRaRaeaeahahaeaeaeahahahahaeaeaeaWahaSahaSahaSaeaSahaeaeaeaeaeaeaeaeaeaeae
-aeaeaeaeaeaeaXahahgZaeaeaeahahahahaegZahahahgZahahaeaeahahaeaeaeaeaeaeaeaeaeaeae
+aeaeaeaeaeaeaXahahgZaeaeaeahahahahaegZahahcsgZcshqaeaehrhsaeaeaeaeaeaeaeaeaeaeae
 aeaehaahhaahahahahahaeaeaeahahahahahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 aeaYahhahaahaeahaUahaUaeaeaeahahahahahahbzaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
 aebAhahaahaebBahahahahgZaeaeaeaeahahahahaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
@@ -566,7 +581,7 @@ aqawawawawaqaqaCamamabajabboabbnabbnbpababamamaGaGaGamababababadbnabafabababapab
 aqawawawawaqaqaqamamacabababababapabababbnabamaGaGamamadabajabadabababbsabababab
 aqawawawawawaqaqaqauamabababababababdadbabamamaGaGamababdcabdfabacabababacababac
 aqaqawawawawawaqaqamamafababajababababbnabamamaGaGamabababadadababajabababababab
-aqaqawawawawawawaqaqaNaOaOaOaOaOaOaOaOaOdgbtbtaGbPbtbtaOaOaOaOaOaOaOaOaOaOaOaOaO
+aqaqawawawawawawaqaqaNaOaOaOaOaOaOaOaOaObtbtbtaGbPbtbtaOaOaOaOaOaOaOaOaOaOaOaOaO
 ataqaqawawawawawaqaqasamabaPaPaPajabababaPclclaGcFclclabaPaPaPabababaPaPababadaP
 gnaqawawawawawawaqgnabababababababadabababababaGaGababababababababababababababab
 aqaqaqawawawawawaqgngnabababababababababababbnaGaGadababababababababababababajab
@@ -580,21 +595,21 @@ gnaqaqawawawawawaqgngnababgqcJabgoadadabababeWcKaGaGeWbnabababababababgoabababab
 aqaqawawawawawawaqaqgngnababadabadabadabcLcMeGfgaGcLcLababajababbnadgobwabbnabab
 aqaqaqawawawawawawaqgngnabababababababcLcLaGaGaGaGeWabababababbnababadadabbpabab
 gnaqawawawawawawawaqaqabababbnbpajababcKaGaGaGaGaGfhababajababadabababababababab
-gnaqaqawawawawawawaqgnabajabababababajcKaGaGfifAfBfCgnabbnabababababajababbpabab
-gnaqawawawawawawaqaqgnababababababababeWaGaGfBfBgngngngnbnabgnabajabababbnababab
-gnaqaqawawawawawaqgngngnababababbnabgnfDaGaGaGfBgnaqaqgngngngngngnabababababajab
-aqaqaqawawawawawaqgngnabajabgngngngngnfBaGaGaGaqaqaqaqaqaqgnaqaqgngngngngnababab
+gnaqaqawawawawawawaqgnabajabababababajcKaGaGfifAfBfCgnabbnfNfPfOababajababbpabab
+gnaqawawawawawawaqaqgnababhwhyhxabababeWaGaGfBfBgngngngnbnfUfSfVajabababbnababab
+gnaqaqawawawawawaqgngnfNabhwfPfPbnfOgnfDaGaGaGfBgnaqaqgngngngngngnabababababajab
+aqaqaqawawawawawaqgngnfUfSfSfSfSfSfVgnfBaGaGaGaqaqaqaqaqaqgnaqaqgngngngngnababab
 aqawawawawawawaqaqaqgnababgngngngngngnaqfEfFfGaqaqaqaqaqaqaqaqaqaqaqgngngngngnab
 awawawawawawawaqaqgngngngngngnaqgngnaqaqfHfFfIaqawawawawawaqaqaqaqaqaqgnaqgngngn
-awawawawawawawawaqaqgngnaqgnaqaqaqgnaqaqfHfFfIaqawawawawawawawawawawaqaqaqaqaqaq
-awawawawawawawawaqaqaqaqaqaqaqaqaqaqaqawfJfKfLawawawawawawawawawawawaqaqaqaqaqaq
-awawawawawawawawawawaqaqaqaqaqaqaqaqaqawfJfKfLawawawawawawawawawawawawawawawawaw
-awawawawawawawawawawawawawawawawawawawawfJfKfLawawawawawawawawawawawawawawawawaw
-awawawawawawawawawawawawawawawawawawawawfJfKfLawawawawawawawawawawawawawawawawaw
-awawawawawawawawawawawawawawawawawawawawfJfKfLawaqaqaqaqawawawawawawawawawawawaw
-aqawawawawawawawawawawawawawawawawawawawfJfKfLawaqaqgnaqaqaqaqaqaqawawawawawawaw
+awawawawawawawawaqaqgngnaqgnaqaqaqgndgaqfHfFfIaqawawawawawawawawawawaqaqaqaqaqaq
+awawawawawawawawaqaqaqaqaqaqaqaqaqaqaqawfJfKdqawawawawawawawawawawawaqaqaqaqaqaq
+awawawawawawawawawawaqaqaqaqaqaqaqaqaqawfJfKduawduawawawawawduawawawawawawawawaw
+awawawawawawawawawawawawawawawawawawduawfJfKdGduawawawawawawawawawawawawawawawaw
+awawawawawawawawawawawawawawawawawawawawawdGfLawawawawawawawawawawawawawawawawaw
+awawawawawawawawawawawawawawawawawawawawduawfLawaqdgaqaqawawawawawawawawawawawaw
+aqawawawawawawawawawawawawawawawduawawawdKfKfLawaqaqgnaqaqaqaqaqaqawawawawawawaw
 aqaqawawawawawawawawawawawawawawawawawaqfHfFfIaqaqgngngnaqgnaqgnaqaqawawawawawaw
-fMaqawawawawaqaqaqawawawawawawawawawawaqaGaGaGaqfNgngngnfOgngngngnaqaqaqaqaqaqaw
+fMaqawawawawaqaqaqawawawawawawawawawawdgaGaGaGaqfNgngngnfOgngngngnaqaqaqaqaqaqaw
 gnaqaqawawawaqgnaqaqaqaqaqawaqaqaqaqaqaqaGaGaGaGfNfPfPfPfOgngngngngngnaqgnaqaqaq
 gnaqawawawawaqgngngngngnaqaqaqgngnaqaqgnaGaGaGfQfRfSfSfSfTabababababgngngngngnaq
 aqaqawawawaqaqgngngnababgnfUfSfSfPfPfSfVaGaGaGaGadadbnababadajabababfWgngngngngn
@@ -623,16 +638,16 @@ amaqaqgeggggawawawaqaqamamagabababapajgaadamamaGaGamamabadabajabababababbsababab
 amamaqaqggggawawawawaCamamababababababababamdhdidmamamabadabababadababacafbpabab
 gbauamaqggggawawawawaqamasamajabababababambhdmdndmamamamauababacabababababababab
 amauauaqgeggawawawawaqaqamamauamamasamamambhdodpdmamauamamasamababajababababajab
-abamauaCaqgeggawawawaqaqaqaqaCaudqdqaNaNdPeDeEeEhbdPaNaNdqdqamamamcYamambaababac
-ababamamaqgfgegggggggggggegegegfgegegegeghgigjgjgighgegegegegegegegegdgkgdgdgdgc
-ababamamaqgfgeggggggggggggggggggggggggggglgjgjgjgjglgegegegegegegegegegegegdgdgd
-abajabamamaqaqaqawawawawawawawawawawawawdtdududududtawawawawawawawaqaqaqaqaqaqat
-ababdvdFamamaqaqaqaqawawawawawawawawawawdtdGdGdududtawawawawawawawawawawaqaqaqaq
-abdHdIdJamamaqaqaqaqaqaqgSawawawawawawawdtdKdKdududtawawawawawawawawawawawawaqaq
-adadabdLasamamamamaqaqaqgTgWawawawawawawdtdMdudNdNdtawawawawawawawawawawawawawaq
-adababdLdOamamasamamaqaqgTaqaqaqaqawawawdtdududKdKdtawawawawawawawawawawawawawaw
-abajabamamababamamamamaFamamaCaqaqaqaqaqdtdududududtawawawawawawawawawawawawawaw
-abababbnamabafababamamcYamamhcexauaqaqaqdQdududududQaqaqaqaqaqaqawawawawawawawaw
+abamauaCaqgeggawawawaqaqaqaqaCaufSfSaNaNdPeDeEeEhbdPaNaNfSfSamamamcYamambaababac
+ababamamaqgfgegggggggggggegegegfgegegegeghdMdNdNdMghgegegegegegegegegdgkgdgdgdgc
+ababamamaqgfgegggggggggggggggggggggggggggleAeAdNdNghgegegegegegegegegegegegdgdgd
+abajabamamaqaqaqawawawawawawawawawawawawdtgigigigidtawawawawawawawaqaqaqaqaqaqat
+ababdvdFamamaqaqaqaqawawawawawawawawawawdtgjgjgigidtawawawawawawawawawawaqaqaqaq
+abdHdIdJamamaqaqaqaqaqaqgSawawawawawawawdthdhdgigidtawawawawawawawawawawawawaqaq
+adadabdLasamamamamaqaqaqgTgWawawawawawawdthngihohodtawawawawawawawawawawawawawaq
+adababdLdOamamasamamaqaqgTaqaqaqaqawawawdtgigihdhddtawawawawawawawawawawawawawaw
+abajabamamababamamamamaFamamaCaqaqaqaqaqdQhphphphpdQaqawawawawawawawawawawawawaw
+abababbnamabafababamamcYamamhcexauaqaqaqdQhphphphpdQaqaqaqaqaqaqawawawawawawawaw
 ababababamabapabbnabababasamauauamamaNaNdRaGdSdSamdraNaNamaFayaqaqaqaqawawawawaw
 abajabamamgmafababbpababadbnadababamclclclamcFcFamclclclamamamamamaqaqaqawawawaw
 bpababamababababababacabadadabafababadabamaGaGaGamababababacabamamamamaqaqawawaw
@@ -668,14 +683,14 @@ abagabababaGaGababamaGaGadaGabababbnabbpababababgnababbnababababamamamgegegegege
 gnabbnababeKaGajababamaGadeReUeFeVeVeVeVeVeVeVeWababababababababbnabasamamgegege
 ababgFbYbZcUcabZcbcbcccacacbcVcdcecececececdccfdamabababababadbpabababamamamasam
 grabakebebebeccaebebebcacaebcgedeeedeeedefedckfdamamabababajababababababamamamam
-goabfecwcwcececacecwcwcacacecgcicheLcheLchcickfdamasabababababababababababababab
+goabfecwcwcececacecwcwcacacecghtcheLcheLchhuckfdamasabababababababababababababab
 abbpfeegeheieicmejejejcacacccnchcichcichcichcnffamamambpababbnabgnajababababajab
-ababfjekeMcoeNcaeNcaeNcacaeNcacicicpcqcrcsctcgffamamamabajabababgoabbpabababajab
+ababfjekeMcoeNcaeNcaeNcacaeNcacicicpcqcrhvctcgffamamamabajabababgoabbpabababajab
 bpamfjekcacacacacacacacacacacacacvcvcvcvcvcvcgffaGamamamababababbpabababajababab
 abamfjeleNcaeNcaeNcaeNcacaeNcacagXgYcxcyczcAcgffaGamamamababababababababababajab
-abgbfjcgcBcacacacafYcacacacacacacacaeNcaeNepcgffaGaGaGaGfkabbnababalajababababfl
+abgbfjcgcBcacacacafYcacacacacahzcacaeNcaeNepcgffaGaGaGaGfkabbnababalajababababfl
 goamfjcgcPcaeNcaeNcaeNcacaeNcaccckcCcaeNcaeucgffaGaGaGaGababababababgnbnbpajabab
 abamfjcgcQcacacacacacacacacaccccckcEeNcaeNevcgffaGaGamabgnababababababababababgo
-bnbpfjcgcRcaeNcaeNcaeNcacaeNcaccckcEcaeNcaewcgfmababajababababajabababababababab
+bnbpfjcgcRcaeNcaeNcaeNcacaeNcaccckcEcaeNgXewcgfmababajababababajabababababababab
 ababfjekdlcacacacacacacaeXeYeZcfcvcvcvcvcvcvcvfsabababgnabajabababajabajabajabbp
 "}

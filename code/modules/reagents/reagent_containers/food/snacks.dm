@@ -54,6 +54,7 @@
 			else if (istype(trash,/obj/item))
 				usr.put_in_hands(trash)
 		qdel(src)
+	M.radiation += radiation
 	return
 
 /obj/item/weapon/reagent_containers/food/snacks/attack_self(mob/user as mob)
@@ -527,7 +528,13 @@
 			reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
 				if (isturf(loc) && prob(30))
-					new/mob/living/simple_animal/mouse(get_turf(src))
+					var/scavengerspawn = rand(1,3)
+					if(scavengerspawn == 1)
+						new/mob/living/simple_animal/mouse(get_turf(src))
+					else if(scavengerspawn ==  2)
+						new/mob/living/simple_animal/cockroach(get_turf(src))
+					else
+						new/mob/living/simple_animal/fly(get_turf(src))
 			spawn(3000)
 				qdel(src)
 
@@ -555,7 +562,13 @@
 				reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
 				if (isturf(loc) && prob(30))
-					new/mob/living/simple_animal/mouse(get_turf(src))
+					var/scavengerspawn = rand(1,3)
+					if(scavengerspawn ==  1)
+						new/mob/living/simple_animal/mouse(get_turf(src))
+					else if(scavengerspawn ==  2)
+						new/mob/living/simple_animal/cockroach(get_turf(src))
+					else
+						new/mob/living/simple_animal/fly(get_turf(src))
 			spawn(3000)
 				qdel(src)
 
@@ -1708,7 +1721,13 @@
 				reagents.add_reagent("food_poisoning", 1)
 			spawn(1000)
 				if (isturf(loc) && prob(30))
-					new/mob/living/simple_animal/mouse(get_turf(src))
+					var/scavengerspawn = rand(1,3)
+					if(scavengerspawn ==  1)
+						new/mob/living/simple_animal/mouse(get_turf(src))
+					else if(scavengerspawn ==  2)
+						new/mob/living/simple_animal/cockroach(get_turf(src))
+					else
+						new/mob/living/simple_animal/fly(get_turf(src))
 			spawn(3000)
 				qdel(src)
 /obj/item/weapon/reagent_containers/food/snacks/cutlet

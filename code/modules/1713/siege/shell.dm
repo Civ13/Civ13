@@ -44,3 +44,45 @@
 	reagent_payload = "xylyl_bromide"
 	name = "Xylyl Bromide Shell"
 	icon_state = "shell_xb"
+
+/obj/item/cannon_ball/rocket/nuclear
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "Nuclear Rocket"
+	icon_state = "shell_nuclear_rocket"
+	w_class = 4.0
+	value = 80
+
+/obj/item/cannon_ball/shell/nuclear
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "Nuclear Shell"
+	icon_state = "shell_nuclear"
+	w_class = 4.0
+	value = 15
+
+/obj/item/cannon_ball/shell/nuclear/W9
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "W9 Atomic Demolition Munition"
+	icon_state = "shell_nuclear"
+	w_class = 4.0
+	value = 40
+
+/obj/item/cannon_ball/shell/nuclear/W19
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "W19 Katie Nuclear Shell"
+	icon_state = "shell_nuclear"
+	w_class = 4.0
+	value = 20
+
+/obj/item/cannon_ball/shell/nuclear/W33
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "W33 Nuclear Shell"
+	icon_state = "shell_nuclear"
+	w_class = 4.0
+	value = 10
+
+/obj/item/cannon_ball/shell/nuclear/W33Boosted
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "Boosted W33 Nuclear Shell"
+	icon_state = "shell_nuclear"
+	w_class = 4.0
+	value = 40

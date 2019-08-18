@@ -638,6 +638,34 @@ var/list/rank_prefix = list(\
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 
+/mob/living/carbon/human/proc/vomit_blood()
+
+	if (!check_has_mouth())
+		return
+	if (stat == DEAD)
+		return
+	if (!lastpuke)
+		lastpuke = TRUE
+		src << "<span class='warning'>You feel nauseous...</span>"
+		spawn(150)	//15 seconds until second warning
+			src << "<span class='warning'>You feel like you are about to throw up!</span>"
+			spawn(100)	//and you have 10 more for mad dash to the bucket
+				Stun(5)
+
+				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
+				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
+
+				var/turf/location = loc
+				if (istype(location, /turf))
+					location.add_vomit_floor_bloody(src, TRUE)
+				adjust_hygiene(-25)
+				nutrition -= 40
+				adjustToxLoss(-3)
+				mood -= 8
+				vessel.remove_reagent("blood",10)
+				spawn(1200)	//wait 2 minutes before next volley
+					lastpuke = FALSE
+
 /mob/living/carbon/human/proc/get_visible_gender()
 	if (wear_suit && wear_suit.flags_inv & HIDEJUMPSUIT && ((head && head.flags_inv & HIDEMASK) || wear_mask))
 		return NEUTER

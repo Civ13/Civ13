@@ -17,7 +17,7 @@
 /obj/item/weapon/material/kunai_normal
 	name = "Kunai"
 	desc = "Tool of some ninjas."
-	icon_state = "throwing_knife"
+	icon_state = "kunai_white"
 	force_divisor = 0.18 // 10? when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.70
 	throw_speed = 9

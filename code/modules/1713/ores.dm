@@ -27,7 +27,21 @@
 /obj/item/stack/ore/iron
 	name = "iron ore"
 	icon_state = "ore_iron"
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("iron",5)
+		else
+			..()
 /obj/item/stack/ore/glass
 	name = "sand"
 	icon_state = "ore_glass"
@@ -36,19 +50,75 @@
 /obj/item/stack/ore/silver
 	name = "silver ore"
 	icon_state = "ore_silver"
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("silver",5)
+		else
+			..()
 /obj/item/stack/ore/gold
 	name = "gold ore"
 	icon_state = "ore_gold"
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("gold",5)
+		else
+			..()
 /obj/item/stack/ore/copper
 	name = "copper ore"
 	icon_state = "ore_copper"
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("copper",5)
+		else
+			..()
 /obj/item/stack/ore/tin
 	name = "tin ore"
 	icon_state = "ore_tin"
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("tin",5)
+		else
+			..()
 /obj/item/stack/ore/diamond
 	name = "diamonds"
 	icon_state = "ore_diamond"
@@ -59,70 +129,156 @@
 	radioactive = TRUE
 	radioactive_amt = 7
 	flammable = FALSE
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("uranium",5)
+		else
+			..()
 /obj/item/stack/ore/saltpeter
 	name = "saltpeter rock"
 	desc = "A yellowish cristal, consisting of potassium nitrate. A common precursor to many explosives, including gunpowder."
 	icon_state = "ore_saltpeter"
 	singular_name = "rock"
 	flammable = TRUE
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("potassium",2.5)
+						ET.reagents.add_reagent("nitrogen",2.5)
+		else
+			..()
 /obj/item/stack/ore/coal
 	name = "mineral coal"
 	desc = "A bunch of mineral coal. Very dense."
 	icon_state = "ore_coal"
 	singular_name = "rock"
 	flammable = TRUE
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("carbon",5)
 
+		else
+			..()
 /obj/item/stack/ore/sulphur
 	name = "sulphur rock"
 	desc = "Yellow and smelly."
 	icon_state = "ore_sulphur"
 	singular_name = "rock"
 	flammable = TRUE
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("sulfur",5)
+		else
+			..()
 /obj/item/stack/ore/lead
 	name = "lead ore"
 	desc = "A rock of very dense lead ore."
 	icon_state = "ore_lead"
 	singular_name = "rock"
 	flammable = FALSE
-
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("lead",5)
+		else
+			..()
 /obj/item/stack/ore/mercury
 	name = "cinnabar ore"
 	desc = "A brownish-red rock of mercury sulfide."
 	icon_state = "ore_mercury"
 	singular_name = "rock"
 	flammable = FALSE
-	
+	attackby(var/obj/W as obj, var/mob/living/carbon/human/H as mob)
+		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
+			if (ET.reagents.total_volume > 0)
+				H << "<span class = 'notice'>Empty \the [ET] first.</span>"
+				return
+			if (istype(H))
+				visible_message("<span class = 'notice'>[H] starts to purify \the [src] with \the [W.name]...</span>", "<span class = 'notice'>You start to purify \the [src] with \the [W.name].</span>")
+				playsound(src,'sound/effects/pickaxe.ogg',100,1)
+				var/timera = 110/(H.getStatCoeff("dexterity"))
+				if (do_after(H, timera))
+					if (ET.reagents.total_volume <= 0)
+						ET.reagents.add_reagent("mercury",5)
+		else
+			..()
 /obj/item/stack/ore/fossilskull1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_skull1"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilskull2
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_skull2"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilskull3
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_skull3"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilleaf1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_leaf1"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 
 /obj/item/stack/ore/fossilleaf2
 	name = "Fossils"
@@ -130,35 +286,35 @@
 	icon_state = "fossil_leaf2"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilleaf3
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_leaf3"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilshell1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_shell1"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilshell2
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_shell2"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilshell3
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"
 	icon_state = "fossil_shell3"
 	singular_name = "fossil"
 	flammable = FALSE
-	
+
 /obj/item/stack/ore/fossilbone1
 	name = "Fossils"
 	desc = "An ancient fossil... must be from ages ago!"

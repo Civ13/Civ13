@@ -22,7 +22,7 @@
 		default_type = DEFAULT_WALL_MATERIAL
 	material = get_material_by_name("[default_type]")
 	if (material)
-		recipes = material.get_recipes_civs()
+		recipes = material.get_recipes_civs(forced=TRUE)
 		stacktype = material.stack_type
 
 

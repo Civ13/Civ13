@@ -140,6 +140,7 @@
 	icon_state = "poop2"
 	item_state = "poop"
 	satisfaction = -25 //tastes like shit
+	disgusting = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/New()
 	..()

@@ -225,6 +225,13 @@
 	required_reagents = list("hydrogen_chloride" = 1, "water" = 5)
 	result_amount = 5
 
+/datum/chemical_reaction/potassium_iodide
+	name = "Potassium Iodide"
+	id = "potassium_iodide"
+	result = "potassium_iodide"
+	required_reagents = list("potassium" = 1, "iodine" = 1)
+	result_amount = 1
+
 
 /datum/chemical_reaction/ammonia
 	name = "Ammonia"

@@ -109,6 +109,8 @@ var/world_is_open = TRUE
 		href_logfile = file("data/logs/[date_string]-hrefs.htm")
 		diary = file("data/logs/[date_string].log")
 		diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
+		var/oocdiary = file("ooc.log")
+		oocdiary << "\[[time_stamp()]] New round starting!"
 		if (byond_version < RECOMMENDED_VERSION)
 			diary << "Your server's byond version does not meet the recommended requirements for this server. Please update BYOND."
 

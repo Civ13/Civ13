@@ -939,6 +939,8 @@
 
 
 /obj/structure/bakelizer/proc/refine()
+	if (!powered || !active)
+		return
 	if (volume <= 0)
 		volume = 0
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
@@ -947,6 +949,8 @@
 		volume-=5
 		plastic+=1
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
+		spawn(600)
+			refine()
 		return
 /obj/structure/bakelizer/verb/empty()
 	set category = null

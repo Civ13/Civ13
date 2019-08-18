@@ -404,6 +404,31 @@
 	timer = 3000
 	activated = 0
 
+/obj/effect/spawner/mobspawner/cockroach
+	name = "cockroach spawner"
+	max_number = 4
+	max_range = 20
+	create_path = /mob/living/simple_animal/cockroach
+	timer = 3600
+
+//only spawns after large amounts of radiation
+/obj/effect/spawner/mobspawner/cockroach/nuclear
+	max_number = 3
+	timer = 3200
+
+/obj/effect/spawner/mobspawner/cockroach/nuclear/spawnerproc()
+
+	if (world_radiation > 190)
+		if ((current_number < max_number) && (scalable == 0 || (clients.len > (scalable_nr*scalable_multiplyer))))
+			spawning = TRUE
+		if (current_number < 0)
+			current_number = 0
+		if (activated)
+			if (spawning == TRUE)
+				spawning = FALSE
+				spawnTarget()
+	spawn(rand(timer,timer*1.5))
+		spawnerproc()
 ////////////////////OBJ SPAWNER///////////
 /obj/effect/spawner/objspawner
 	name = "obj spawner"

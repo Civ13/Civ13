@@ -201,6 +201,15 @@
 		reagents.add_reagent("adrenaline", 30)
 
 
+/obj/item/weapon/reagent_containers/pill/potassium_iodide
+	name = "potassium iodide pill"
+	desc = "Used to help with radiation poisoning."
+	icon_state = "pill12"
+	New()
+		..()
+		reagents.add_reagent("potassium_iodide", 10)
+
+
 /obj/item/weapon/reagent_containers/pill/anti_toxin
 	name = "Dylovene pill"
 	desc = "A broad-spectrum anti-toxin."

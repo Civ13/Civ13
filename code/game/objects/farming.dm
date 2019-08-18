@@ -355,6 +355,9 @@
 /obj/structure/farming/plant/New()
 	..()
 	growth()
+	var/turf/T = get_turf(src)
+	if (T.radiation >= 5)
+		radiation = 5
 
 /obj/structure/farming/plant/proc/readyHarvest()
 	if (stage >= readyStageMin && stage <= readyStageMax)
@@ -366,10 +369,11 @@
 
 /obj/structure/farming/plant/proc/spawnProduce()
 	var/fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
-	new fruitpath(loc)
+	var/obj/item/I = new fruitpath(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new fruitpath(loc)
-
+		var/obj/item/I2 = new fruitpath(loc)
+		I2.radiation = radiation/2
 /obj/structure/farming/plant/proc/growth()
 	if (!vstatic)
 		if (stage < 12)
@@ -421,41 +425,57 @@
 
 //some specific, non-food plants
 /obj/structure/farming/plant/hemp/spawnProduce()
-	new/obj/item/stack/material/rope(loc)
+	var/obj/item/stack/material/rope/I = new/obj/item/stack/material/rope(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/rope(loc)
+		var/obj/item/stack/material/rope/I2 = new/obj/item/stack/material/rope(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tobacco/spawnProduce()
-	new/obj/item/stack/material/tobacco(loc)
+	var/obj/item/stack/material/tobacco/I = new/obj/item/stack/material/tobacco(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/tobacco(loc)
+		var/obj/item/stack/material/tobacco/I2 = new/obj/item/stack/material/tobacco(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/coca/spawnProduce()
-	new/obj/item/stack/material/coca(loc)
+	var/obj/item/stack/material/coca/I = new/obj/item/stack/material/coca(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/coca(loc)
+		var/obj/item/stack/material/coca/I2 = new/obj/item/stack/material/coca(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/sugarcane/spawnProduce()
-	new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+	var/obj/item/weapon/reagent_containers/food/condiment/bsugar/I = new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+		var/obj/item/weapon/reagent_containers/food/condiment/bsugar/I2 = new/obj/item/weapon/reagent_containers/food/condiment/bsugar(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tea/spawnProduce()
-	new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+	var/obj/item/weapon/reagent_containers/food/condiment/tealeaves/I = new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+		var/obj/item/weapon/reagent_containers/food/condiment/tealeaves/I2 = new/obj/item/weapon/reagent_containers/food/condiment/tealeaves(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/poppy/spawnProduce()
-	new/obj/item/stack/material/poppy(loc)
+	var/obj/item/stack/material/poppy/I = new/obj/item/stack/material/poppy(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/poppy(loc)
+		var/obj/item/stack/material/poppy/I2 = new/obj/item/stack/material/poppy(loc)
+		I2.radiation = radiation/2
 
 /obj/structure/farming/plant/tree/spawnProduce()
 	var/obj/item/stack/material/wood/NW = new/obj/item/stack/material/wood(loc)
 	NW.amount = 3
+	NW.radiation = radiation/2
 	if (fertilized)
 		NW.amount = 6
+
 /obj/structure/farming/plant/cotton/spawnProduce()
-	new/obj/item/stack/material/cotton(loc)
+	var/obj/item/stack/material/cotton/I = new/obj/item/stack/material/cotton(loc)
+	I.radiation = radiation/2
 	if (fertilized)
-		new/obj/item/stack/material/cotton(loc)
+		var/obj/item/stack/material/cotton/I2 = new/obj/item/stack/material/cotton(loc)
+		I2.radiation = radiation/2

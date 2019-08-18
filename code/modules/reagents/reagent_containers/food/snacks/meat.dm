@@ -35,7 +35,13 @@
 		satisfaction = -10
 		spawn(1000)
 			if (isturf(loc) && prob(30))
-				new/mob/living/simple_animal/mouse(get_turf(src))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
 		spawn(3600)
 			qdel(src)
 
@@ -144,13 +150,19 @@
 		rotten = TRUE
 		spawn(1000)
 			if (isturf(loc) && prob(30))
-				new/mob/living/simple_animal/mouse(get_turf(src))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
 		spawn(3600)
 			qdel(src)
 
 
 /obj/item/weapon/reagent_containers/food/snacks/rawcrab
-	name = "raw crab meat"
+	name = "crab meat"
 	desc = "Fresh crab meat. Looks tasty."
 	icon_state = "raw_crabmeat"
 	health = 180
@@ -180,6 +192,43 @@
 		rotten = TRUE
 		spawn(1000)
 			if (isturf(loc) && prob(30))
-				new/mob/living/simple_animal/mouse(get_turf(src))
+				var/scavengerspawn = rand(1,3)
+				if(scavengerspawn ==  1)
+					new/mob/living/simple_animal/mouse(get_turf(src))
+				else if(scavengerspawn ==  2)
+					new/mob/living/simple_animal/cockroach(get_turf(src))
+				else
+					new/mob/living/simple_animal/fly(get_turf(src))
+		spawn(3600)
+			qdel(src)
+
+
+/obj/item/weapon/reagent_containers/food/snacks/cockroach
+	name = "cockroach"
+	desc = "A dead cockroach. No, please don't make me eat it..."
+	icon_state = "cockroach"
+	health = 180
+	filling_color = "#773B00"
+	raw = TRUE
+	var/rotten = FALSE
+	non_vegetarian = TRUE
+	satisfaction = -20
+	New()
+		..()
+		reagents.add_reagent("protein", 1)
+		reagents.add_reagent("food_poisoning", 1)
+		bitesize = 3
+
+
+/obj/item/weapon/reagent_containers/food/snacks/cockroach/New()
+	..()
+	spawn(3000) //5 minutes
+		if (!src)
+			return
+		icon_state = "rotten_cockroach"
+		name = "rotten [name]"
+		if (reagents)
+			reagents.add_reagent("food_poisoning", 1)
+		rotten = TRUE
 		spawn(3600)
 			qdel(src)
