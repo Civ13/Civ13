@@ -422,22 +422,6 @@
 	M.druggy = max(M.druggy, 250)
 
 
-/datum/reagent/potass_iodide
-	name = "Potassium Iodide"
-	id = "potass_iodide"
-	description = "Efficiently restores low radiation damage."
-	reagent_state = LIQUID
-	color = "#C8A5DC"
-	metabolism = 0.2
-
-/datum/reagent/potass_iodide/on_mob_life(mob/living/M)
-	if(M.radiation > 0)
-		M.radiation -= 6
-	if(M.radiation < 0)
-		M.radiation = 0
-	..()
-	return
-
 /datum/reagent/pen_acid
 	name = "Pentetic Acid"
 	id = "pen_acid"

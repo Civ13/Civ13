@@ -5,7 +5,7 @@
 	icon = 'icons/mob/human.dmi'
 	icon_state = "human_m_s"
 	var/is_murderer = FALSE // for the "find the murderer" gamemode
-
+	var/can_mutate = FALSE //from high rads, into ant etc
 /mob/living/carbon/human/New(var/new_loc, var/new_species = null)
 
 	if (original_job_title && !client)

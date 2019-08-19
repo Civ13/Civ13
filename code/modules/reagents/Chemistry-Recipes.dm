@@ -323,14 +323,14 @@
 	name = "Aqua regia"
 	id = "aqua_regia"
 	result = "aqua_regia"
-	required_reagents = list("nitric_acid" =1, "clorhydric_acid" = 3, )
+	required_reagents = list("nitric_acid" = 1, "clorhydric_acid" = 3, )
 	result_amount = 2
 
 /datum/chemical_reaction/nitric_acid
 	name = "Nitric acid"
 	id = "nitric_acid"
 	result = "nitric_acid"
-	required_reagents = list("nitrogen" =2, "oxygen" =5, "water" = 3 )
+	required_reagents = list("nitrogen" = 2, "oxygen" = 5, "water" = 3 )
 	result_amount = 4
 
 /datum/chemical_reaction/clorhydric_acid
@@ -360,6 +360,13 @@
 	result = "sodium_hypochlorite"
 	required_reagents = list("potassium" =1, "oxygen" = 1, "chlorine" = 1 )
 	result_amount = 2
+
+/datum/chemical_reaction/hydrazine
+	name = "Hydrazine"
+	id = "hydrazine"
+	result = "hydrazine"
+	required_reagents = list("ammonia" =1, "hydrogen" = 1, "nitrogen" = 1 )
+	result_amount = 1
 
 /datum/chemical_reaction/condensedcapsaicin
 	name = "Condensed Capsaicin"
@@ -468,7 +475,7 @@
 	name = "Gunpowder"
 	id = "gunpowder"
 	result = "gunpowder"
-	required_reagents = list("sulfur" = 1, "gunpowder" = 1, "potassium" = 1)
+	required_reagents = list("sulfur" = 1, "charcoal" = 1, "potassium" = 1)
 	result_amount = 3
 	log_is_important = TRUE
 

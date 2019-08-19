@@ -88,7 +88,7 @@
 		stage = 15
 		icon_state = "[plant]-dead"
 		desc = "A dead irradiated [plant] plant."
-		name = "dead [plant] plant due to radiation."
+		name = "radiation-burned dead [plant]"
 	update_icon()
 	return
 
@@ -122,7 +122,7 @@
 			var/blocked = getarmor_rad("chest")
 			var/new_amount = max(0, amount*(1 - blocked/100))
 			I.rad_act(new_amount)
-	if(!orc && !ant && !wolfman && !lizard && !gorillaman && !crab) //If you are not any special race.
+	if(!orc && !ant && !wolfman && !lizard && !gorillaman && !crab && can_mutate) //If you are not any special race.
 		if(radiation >= 300) //If you are super irradiated, and somehow still alive.
 			if (prob(2))
 				if (prob(50))
@@ -185,6 +185,7 @@
 	flammable = TRUE
 	var/scanning = 0
 	var/radiation_count = 0
+	var/checked = FALSE
 
 /obj/item/weapon/geiger_counter/examine(mob/user)
 	..()
@@ -214,10 +215,15 @@
 
 /obj/item/weapon/geiger_counter/rad_act(var/severity)
 	radiation_count = severity*100 //to convert to mSv
+	var/backgroundrad = 0
+	if (world_radiation > 0 && loc.z == world.maxz)
+		backgroundrad = world_radiation/1000
+	radiation_count = (radiation_count+backgroundrad)
 	update_icon()
 
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
-	if(!scanning)
+	if(!scanning || !checked)
+		radiation_count = 0
 		return
 	if (radiation_count >= 1000)
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count/1000] Sv/s</b></span>"
@@ -227,6 +233,8 @@
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
 	else
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
+	radiation_count = 0
+	checked = FALSE
 	return
 
 /obj/item/weapon/geiger_counter/attack_self(mob/user)
@@ -249,11 +257,18 @@
 	scanning = !scanning
 	update_icon()
 	usr << "<span class='notice'>You switch [scanning ? "on" : "off"] \the [src].</span>"
+	if (!scanning)
+		radiation_count = 0
 	if (scanning)
 		processing()
 
 /obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
+		var/backgroundrad = 0
+		if (world_radiation > 0 && loc.z == world.maxz)
+			backgroundrad = world_radiation/1000
+		if (backgroundrad > radiation_count)
+			radiation_count = (radiation_count+backgroundrad)
 		var/rad_min = radiation_count*60 //we check the effects over 1 min
 		switch(rad_min)
 			if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
@@ -267,9 +282,11 @@
 			if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
 				playsound(get_turf(src), pick('sound/machines/geiger/ext1.ogg','sound/machines/geiger/ext2.ogg','sound/machines/geiger/ext3.ogg','sound/machines/geiger/ext4.ogg'),75)
 		update_icon()
+		checked = TRUE
 		spawn(10)
 			processing()
 	else
+		radiation_count = 0
 		return
 
 
@@ -280,22 +297,28 @@
 	if(!istype(epicenter, /turf))
 		epicenter = get_turf(epicenter.loc)
 	explosion(epicenter, 10, 18, 23, 200)
-	spawn(12)
+	spawn(9)
 		for (var/turf/floor/TF in range(25,epicenter))
 			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
 				if (prob(100*(1-(get_dist(TF,epicenter)/25))))
 					TF.ChangeTurf(/turf/floor/dirt/burned)
 				else
-					if (prob(66))
+					if (prob(50))
 						new/obj/effect/burning_oil(TF)
 			TF.radiation = 20
-	spawn(20)
+	spawn(14)
 		for (var/mob/m in player_list)
 			if (m.client)
 				shake_camera(m, 3, (5 - (0.5)))
+	spawn (20)
+		for (var/turf/floor/grass/G in grass_turf_list)
+			G.rad_act(severity /3)
+	spawn (23)
+		for (var/turf/floor/beach/water/G in water_turf_list)
+			G.rad_act(severity /3)
 	spawn(26)
-		for(var/atom/T in world)
-			if (T.z == epicenter.z &&(istype(T, /mob/living) || istype(T, /turf/floor) || istype(T, /obj)))
+		for(var/atom/T)
+			if (T.z == epicenter.z && (istype(T, /mob/living) || istype(T, /obj)))
 				var/cseverity=severity/3
 				if (ismob(T))
 					if (get_area(T).location == 0)
@@ -312,7 +335,7 @@
 				var/obj/structure/window/W = T
 				W.shatter()
 			else if (istype(T, /obj))
-				if (prob(20) && T.density)
+				if (prob(20) && T.density && T.z == epicenter.z)
 					T.ex_act(1.0)
 		if (world.time <= last && duration > 0)
 			spawn(10)

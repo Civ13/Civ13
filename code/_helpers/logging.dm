@@ -23,6 +23,11 @@
 /proc/game_log(category, text)
 	diary << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 
+//sends OOC to a file readable by a bot, who then sends it to the Discord
+/proc/discord_log(name,text)
+	var/oocdiary = file("ooc.log")
+	oocdiary << "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[name]:** [text]"
+
 /proc/attack_log(category, text)
 	attack_log << "\[[time_stamp()]] [game_id] [category]: [text][log_end]"
 

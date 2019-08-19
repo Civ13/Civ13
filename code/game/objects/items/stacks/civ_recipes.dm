@@ -249,6 +249,7 @@
 			new/datum/stack_recipe("magazine (30)", /obj/item/ammo_magazine/emptymagazine/small, 4, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("revolver speedloader (6)", /obj/item/ammo_magazine/emptyspeedloader, 1, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+<<<<<<< HEAD
 	else if (current_res[2] >= 115 && map.ordinal_age >= 8)
 		recipes += new/datum/stack_recipe_list("magazines", list(
 			new/datum/stack_recipe("pistol magazine (8)", /obj/item/ammo_magazine/emptymagazine/pistol/a45, 2, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
@@ -257,6 +258,8 @@
 			new/datum/stack_recipe("drum magazine (65)", /obj/item/ammo_magazine/emptymagazine, 7, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("revolver speedloader (6)", /obj/item/ammo_magazine/emptyspeedloader, 1, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),
 			new/datum/stack_recipe("makeshift AK-47 magazine (28)", /obj/item/ammo_magazine/ak47/makeshift, 6, _time = 45, _one_per_turf = FALSE, _on_floor = TRUE),))
+=======
+>>>>>>> 9427f63ba54f57c7ccd6db1a804c40691c3b931f
 
 	if (current_res[1] >= 95)
 		recipes += new/datum/stack_recipe("canner", /obj/structure/canner, 7, _time = 120, _one_per_turf = TRUE, _on_floor = TRUE)
