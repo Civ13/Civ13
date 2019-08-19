@@ -310,7 +310,7 @@
 							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/W33Boosted))
 								radiation_pulse(target, 10, 40, 700, TRUE)
 							else if (istype(src,/obj/item/cannon_ball/shell/nuclear/makeshift))
-								radiation_pulse(target, 3, 15, 200, TRUE)
+								radiation_pulse(target, 4, 15, 300, TRUE)
 							else if (istype(src,/obj/item/cannon_ball/rocket/nuclear))
 								radiation_pulse(target, 12, 80, 1400, TRUE)
 							else

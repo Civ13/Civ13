@@ -23,7 +23,7 @@
 	icon_state = "baton"
 	item_state = "classic_baton"
 	slot_flags = SLOT_BELT
-	force = WEAPON_FORCE_WEAK
+	force = WEAPON_FORCE_WEAK+1
 	weakens = 1
 	flammable = TRUE
 
@@ -33,7 +33,8 @@
 	icon_state = "club"
 	item_state = "club"
 	slot_flags = SLOT_BACK
-	force = WEAPON_FORCE_NORMAL
+	force = WEAPON_FORCE_WEAK
+	flammable = TRUE
 
 /obj/item/weapon/melee/classic_baton/whip
 	name = "whip"
@@ -42,7 +43,7 @@
 	icon_state = "whip"
 	item_state = "whip"
 	slot_flags = SLOT_BELT
-	force = WEAPON_FORCE_WEAK+3
+	force = WEAPON_FORCE_WEAK+1
 	flammable = TRUE
 
 /obj/item/weapon/melee/attack(mob/M as mob, mob/living/user as mob)

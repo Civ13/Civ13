@@ -687,7 +687,7 @@
 	sel_mode = 1
 
 /obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
-	name = "makeshift AK-47"
+	name = "Makeshift AK-47"
 	desc = "A crude replication of the AK-47, chambered in 7.62x39mm."
 	icon_state = "makeshift ak"
 	item_state = "ak47"

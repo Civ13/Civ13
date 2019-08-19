@@ -236,6 +236,43 @@
 			W.amount = W.amount - 5
 			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(user.loc)
 
+/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+	if (istype(W, /obj/item/stack/ammopart/bullet))
+		if (!(gunpowder >= gunpowder_max*amount))
+			user << "<span class = 'notice'>You need to fill the casings with gunpowder before putting the bullet.</span>"
+			return
+		else if (W.amount < amount)
+			user << "<span class = 'notice'>Not enough bullets. reduce the casings stack or add more bullets.</span>"
+		else if (W.amount >= amount)
+			bulletn = amount
+			W.amount -= amount
+			if (W.amount <= 0)
+				qdel(W)
+	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
+		attack_self(user)
+		return
+	else
+		return
+
 /obj/item/stack/ammopart/casing/artillery/wired/attack_self(mob/user)
 		user << "<span class = 'notice'> You cannot do this yet.</span>"
 		return
