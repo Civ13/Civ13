@@ -165,7 +165,10 @@
 	..()
 
 /obj/item/weapon/geiger_counter/rad_act(var/severity)
-	radiation_count = severity*100 //to convert to mSv
+	var/backgroundrad = 0
+	if (world_radiation > 0 && z == world.maxz)
+		backgroundrad = world_radiation/1000
+	radiation_count = (severity+backgroundrad)*100 //to convert to mSv
 	update_icon()
 
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
@@ -210,8 +213,6 @@
 	if (scanning)
 		radiation_count = 0
 		var/rad_min = radiation_count*60 //we check the effects over 1 min
-		if (world_radiation > 0 && z == world.maxz)
-			rad_min += world_radiation/1000
 		switch(rad_min)
 			if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
 				playsound(get_turf(src), pick('sound/machines/geiger/low1.ogg','sound/machines/geiger/low2.ogg','sound/machines/geiger/low3.ogg','sound/machines/geiger/low4.ogg'),75)
@@ -237,7 +238,7 @@
 	if(!istype(epicenter, /turf))
 		epicenter = get_turf(epicenter.loc)
 	explosion(epicenter, 10, 18, 23, 200)
-	spawn(12)
+	spawn(9)
 		for (var/turf/floor/TF in range(25,epicenter))
 			if (istype(TF, /turf/floor/dirt) || istype(TF, /turf/floor/grass) || istype(TF, /turf/floor/plating) || istype(TF, /turf/floor/beach/sand))
 				if (prob(100*(1-(get_dist(TF,epicenter)/25))))
@@ -246,13 +247,19 @@
 					if (prob(50))
 						new/obj/effect/burning_oil(TF)
 			TF.radiation = 20
-	spawn(20)
+	spawn(14)
 		for (var/mob/m in player_list)
 			if (m.client)
 				shake_camera(m, 3, (5 - (0.5)))
+	spawn (20)
+		for (var/turf/floor/grass/G in grass_turf_list)
+			G.rad_act(severity /3)
+	spawn (23)
+		for (var/turf/floor/beach/water/G in water_turf_list)
+			G.rad_act(severity /3)
 	spawn(26)
-		for(var/atom/T in world)
-			if (T.z == epicenter.z &&(istype(T, /mob/living) || istype(T, /turf/floor) || istype(T, /obj)))
+		for(var/atom/T)
+			if (T.z == epicenter.z && (istype(T, /mob/living) || istype(T, /obj)))
 				var/cseverity=severity/3
 				if (ismob(T))
 					if (get_area(T).location == 0)
