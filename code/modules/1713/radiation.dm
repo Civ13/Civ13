@@ -165,10 +165,7 @@
 	..()
 
 /obj/item/weapon/geiger_counter/rad_act(var/severity)
-	var/backgroundrad = 0
-	if (world_radiation > 0 && z == world.maxz)
-		backgroundrad = world_radiation/1000
-	radiation_count = (severity+backgroundrad)*100 //to convert to mSv
+	radiation_count = severity*100 //to convert to mSv
 	update_icon()
 
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
@@ -211,7 +208,10 @@
 
 /obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
-		radiation_count = 0
+		var/backgroundrad = 0
+		if (world_radiation > 0 && z == world.maxz)
+			backgroundrad = world_radiation/1000
+		radiation_count = (radiation_count+backgroundrad)
 		var/rad_min = radiation_count*60 //we check the effects over 1 min
 		switch(rad_min)
 			if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
@@ -225,6 +225,7 @@
 			if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
 				playsound(get_turf(src), pick('sound/machines/geiger/ext1.ogg','sound/machines/geiger/ext2.ogg','sound/machines/geiger/ext3.ogg','sound/machines/geiger/ext4.ogg'),75)
 		update_icon()
+		radiation_count = 0
 		spawn(10)
 			processing()
 	else
