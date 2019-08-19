@@ -967,7 +967,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return FALSE
 
 /obj/item/organ/external/is_usable()
-	return !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD)) && (pain < pain_disability_threshold)
+	return !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD))
 
 /obj/item/organ/external/proc/embed(var/obj/item/weapon/W, var/silent = FALSE, var/supplied_message)
 
