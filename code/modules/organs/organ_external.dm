@@ -64,10 +64,8 @@
 	var/can_stand
 	var/pain = FALSE
 	var/fracturetimer = 0
-	var/has_tendon = FALSE             // Can this limb be hamstrung?
 	var/artery_name = "artery"         // Flavour text for carotid artery, aorta, etc.
 	var/arterial_bleed_severity = 1    // Multiplier for bleeding in a limb.
-	var/tendon_name = "tendon"         // Flavour text for Achilles tendon, etc.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
 	var/pain_disability_threshold
@@ -969,7 +967,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	return FALSE
 
 /obj/item/organ/external/is_usable()
-	return !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD)) && !(status & ORGAN_TENDON_CUT) && (pain < pain_disability_threshold)
+	return !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD))
 
 /obj/item/organ/external/proc/embed(var/obj/item/weapon/W, var/silent = FALSE, var/supplied_message)
 
@@ -1147,8 +1145,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 	amputation_point = "left shoulder"
 	can_grasp = TRUE
 	artery_name = "basilic vein"
-	tendon_name = "palmaris longus tendon"
-	has_tendon = TRUE
 /obj/item/organ/external/arm/right
 	limb_name = "r_arm"
 	name = "right arm"
@@ -1170,9 +1166,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	joint = "left knee"
 	amputation_point = "left hip"
 	can_stand = TRUE
-	tendon_name = "cruciate ligament"
 	artery_name = "femoral artery"
-	has_tendon = TRUE
 /obj/item/organ/external/leg/right
 	limb_name = "r_leg"
 	name = "right leg"
@@ -1194,9 +1188,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "l_leg"
 	joint = "left ankle"
 	amputation_point = "left ankle"
-	tendon_name = "Achilles tendon"
 	can_stand = TRUE
-	has_tendon = TRUE
 /obj/item/organ/external/foot/removed()
 	if (owner) owner.u_equip(owner.shoes)
 	..()
@@ -1222,9 +1214,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	parent_organ = "l_arm"
 	joint = "left wrist"
 	amputation_point = "left wrist"
-	tendon_name = "carpal ligament"
 	can_grasp = TRUE
-	has_tendon = TRUE
 /obj/item/organ/external/hand/removed()
 	owner.u_equip(owner.gloves)
 	..()
@@ -1359,12 +1349,6 @@ Note that amputating the affected organ does in fact remove the infection from t
 		status |= ORGAN_ARTERY_CUT
 		if(artery_name == "carotid artery" && owner)
 			playsound(owner.loc, 'sound/voice/throat.ogg', 50, 1, -1)
-		return TRUE
-	return FALSE
-
-/obj/item/organ/external/proc/sever_tendon()
-	if(has_tendon && !(status & ORGAN_TENDON_CUT))
-		status |= ORGAN_TENDON_CUT
 		return TRUE
 	return FALSE
 
