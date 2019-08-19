@@ -338,35 +338,37 @@
 						edge_eligible = 1
 				else
 					edge_eligible = 1
-			brute = pure_brute
-			if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_EDGE)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
-			else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(burn/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_BURN)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
-			else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_BLUNT)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
-			else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF && prob(brute/3))
-				if (prob(20))
-					droplimb(0, DROPLIMB_BLUNT)
-					for(var/mob/living/carbon/human/NB in view(6,src))
-						if (!NB.orc)
-							NB.mood -= 10
-							NB.ptsd += 1
+
+			if (!istype(used_weapon, /obj/item/projectile))
+				brute = pure_brute
+				if(edge_eligible && brute >= max_damage / DROPLIMB_THRESHOLD_EDGE && prob(brute/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_EDGE)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
+				else if(burn >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(burn/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_BURN)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
+				else if(brute >= max_damage / DROPLIMB_THRESHOLD_DESTROY && prob(brute/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_BLUNT)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
+				else if(brute >= max_damage / DROPLIMB_THRESHOLD_TEAROFF && prob(brute/3))
+					if (prob(20))
+						droplimb(0, DROPLIMB_BLUNT)
+						for(var/mob/living/carbon/human/NB in view(6,src))
+							if (!NB.orc)
+								NB.mood -= 10
+								NB.ptsd += 1
 
 	if(owner && update_damstate())
 		owner.UpdateDamageIcon()
