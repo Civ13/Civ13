@@ -35,6 +35,19 @@
 	M.hallucination = max(0, M.hallucination - 9 * removed)
 	M.adjustToxLoss(-4 * removed)
 
+/datum/reagent/charcoal
+	name = "Charcoal"
+	id = "charcoal"
+	description = "A black powdery byproduct."
+	taste_description = "charcoal"
+	reagent_state = LIQUID
+	color = "#36454f"
+	scannable = TRUE
+
+/datum/reagent/charcoal/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.adjustToxLoss(-4 * removed)
+	M.radiation -= 1 * removed
+
 /datum/reagent/tricordrazine
 	name = "Tricordrazine"
 	id = "tricordrazine"

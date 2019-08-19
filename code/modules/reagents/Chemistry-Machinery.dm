@@ -22,7 +22,7 @@
 	var/atom/beaker = null
 	var/list/dispensable_reagents = list("lithium","carbon","ammonia","acetone",
 	"sodium","aluminum","silicon","phosphorus","sulfur","hclacid","potassium","iron",
-	"copper","mercury","radium","water","ethanol","sugar","sacid","tungsten")
+	"copper","mercury","radium","water","ethanol","sugar","sacid","tungsten", "charcoal")
 	var/stat = 0
 	not_movable = FALSE
 	not_disassemblable = TRUE

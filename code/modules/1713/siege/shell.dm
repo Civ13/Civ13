@@ -59,6 +59,13 @@
 	w_class = 4.0
 	value = 15
 
+/obj/item/cannon_ball/shell/nuclear/makeshift
+	icon = 'icons/obj/cannon_ball.dmi'
+	name = "Makeshift Nuclear Shell"
+	icon_state = "shell_nuclear"
+	w_class = 4.0
+	value = 10
+
 /obj/item/cannon_ball/shell/nuclear/W9
 	icon = 'icons/obj/cannon_ball.dmi'
 	name = "W9 Atomic Demolition Munition"
