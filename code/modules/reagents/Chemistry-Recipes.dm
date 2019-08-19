@@ -17,6 +17,39 @@
 				chemical_reactions_list[reagent_id] = list()
 			chemical_reactions_list[reagent_id] += D
 
+//prints all the recipes into a txt file
+datum/admins/proc/print_chemical_reactions()
+	set category = "Debug"
+	set desc="Print all the ingame chemical reactions into a txt file."
+	set name="Print Chemical Reactions"
+	var/paths = typesof(/datum/chemical_reaction) - /datum/chemical_reaction
+	var/recipe_list = file("recipes.txt")
+	if (fexists(recipe_list))
+		fdel(recipe_list)
+	for (var/path in paths)
+		var/datum/chemical_reaction/D = new path()
+		var/in_reagents = ""
+		var/cat_reagents = ""
+		var/req_reagents = ""
+		for (var/i in D.required_reagents)
+			var/amt = D.required_reagents[i]
+			req_reagents += " [amt]u. [i]"
+		for (var/j in D.catalysts)
+			var/amt = D.catalysts[j]
+			cat_reagents += " [amt]u. [j]"
+		for (var/k in D.inhibitors)
+			var/amt = D.inhibitors[k]
+			in_reagents += " [amt]u. [k]"
+		var/chemical_reactions_print_var = "[D.name]:"
+		if (req_reagents && req_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Ingredients:[req_reagents],"
+		if (in_reagents && in_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Inhibitors:[in_reagents],"
+		if (cat_reagents && cat_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Catalysts:[cat_reagents],"
+		chemical_reactions_print_var = "[chemical_reactions_print_var] Produces: [D.result_amount]. (ID: [D.id])"
+		recipe_list << chemical_reactions_print_var
+	world.log << "Finished saving all recipes into \"recipes.txt\"."
 //helper that ensures the reaction rate holds after iterating
 //Ex. REACTION_RATE(0.3) means that 30% of the reagents will react each chemistry tick (~2 seconds by default).
 #define REACTION_RATE(rate) (1.0 - (1.0-rate)**(1.0/PROCESS_REACTION_ITER))
