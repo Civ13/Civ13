@@ -268,12 +268,21 @@
 //		if(can_feel_pain() && prob(40))
 //			owner.emote("scream")	//getting hit on broken hand hurts
 	var/canbreak = TRUE
-	if (used_weapon)
-		if (istype(used_weapon, /obj/item/projectile))
-			canbreak = FALSE
 	if(blunt_dam > min_broken_damage && prob(blunt_dam)) //blunt damage is gud at fracturing
 		if (canbreak)
-			fracture()
+			if (istype(used_weapon, /obj/item/projectile))
+				if (prob(35))
+					fracture()
+			else
+				fracture()
+
+	if(brute_dam*0.8 > min_broken_damage && prob(brute_dam*0.7))
+		if (canbreak)
+			if (istype(used_weapon, /obj/item/projectile))
+				if (prob(18))
+					fracture()
+			else
+				fracture()
 
 	var/can_cut = (prob(brute*2) || sharp)
 	var/spillover = 0
