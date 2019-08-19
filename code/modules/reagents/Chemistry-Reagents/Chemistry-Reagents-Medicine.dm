@@ -45,8 +45,8 @@
 	scannable = TRUE
 
 /datum/reagent/charcoal/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
-	M.adjustToxLoss(-4 * removed)
-	M.radiation -= 1 * removed
+	M.adjustToxLoss(-5 * removed)
+	M.radiation -= 3 * removed
 
 /datum/reagent/tricordrazine
 	name = "Tricordrazine"
