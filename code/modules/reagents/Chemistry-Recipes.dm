@@ -468,7 +468,7 @@
 	name = "Gunpowder"
 	id = "gunpowder"
 	result = "gunpowder"
-	required_reagents = list("sulfur" = 1, "gunpowder" = 1, "potassium" = 1)
+	required_reagents = list("sulfur" = 1, "charcoal" = 1, "potassium" = 1)
 	result_amount = 3
 	log_is_important = TRUE
 

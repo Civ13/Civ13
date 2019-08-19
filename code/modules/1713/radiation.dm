@@ -122,7 +122,7 @@
 			var/blocked = getarmor_rad("chest")
 			var/new_amount = max(0, amount*(1 - blocked/100))
 			I.rad_act(new_amount)
-	if(!orc && !ant && !wolfman && !lizard && !gorillaman && !crab) //If you are not any special race.
+	if(!orc && !ant && !wolfman && !lizard && !gorillaman && !crab && can_mutate) //If you are not any special race.
 		if(radiation >= 300) //If you are super irradiated, and somehow still alive.
 			if (prob(2))
 				if (prob(50))
@@ -215,6 +215,10 @@
 
 /obj/item/weapon/geiger_counter/rad_act(var/severity)
 	radiation_count = severity*100 //to convert to mSv
+	var/backgroundrad = 0
+	if (world_radiation > 0 && loc.z == world.maxz)
+		backgroundrad = world_radiation/1000
+	radiation_count = (radiation_count+backgroundrad)
 	update_icon()
 
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
@@ -229,6 +233,7 @@
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
 	else
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
+	radiation_count = 0
 	checked = FALSE
 	return
 
@@ -260,9 +265,10 @@
 /obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
 		var/backgroundrad = 0
-		if (world_radiation > 0 && z == world.maxz)
+		if (world_radiation > 0 && loc.z == world.maxz)
 			backgroundrad = world_radiation/1000
-		radiation_count = (radiation_count+backgroundrad)
+		if (backgroundrad > radiation_count)
+			radiation_count = (radiation_count+backgroundrad)
 		var/rad_min = radiation_count*60 //we check the effects over 1 min
 		switch(rad_min)
 			if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
