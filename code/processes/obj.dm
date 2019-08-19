@@ -18,7 +18,6 @@
 		else
 			catchBadType(O)
 			processing_objects -= O
-		O.radiation += world_radiation/10000
 		PROCESS_LIST_CHECK
 		PROCESS_TICK_CHECK
 

@@ -137,6 +137,7 @@
 	flammable = TRUE
 	var/scanning = 0
 	var/radiation_count = 0
+	var/checked = FALSE
 
 /obj/item/weapon/geiger_counter/examine(mob/user)
 	..()
@@ -169,7 +170,8 @@
 	update_icon()
 
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
-	if(!scanning)
+	if(!scanning || !checked)
+		radiation_count = 0
 		return
 	if (radiation_count >= 1000)
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count/1000] Sv/s</b></span>"
@@ -179,6 +181,7 @@
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count*1000] uSv/s</b></span>"
 	else
 		user << "<font size=2>\icon[getFlatIcon(src)] Reading: <b>[radiation_count] mSv/s</b></span>"
+	checked = FALSE
 	return
 
 /obj/item/weapon/geiger_counter/attack_self(mob/user)
@@ -225,10 +228,11 @@
 			if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
 				playsound(get_turf(src), pick('sound/machines/geiger/ext1.ogg','sound/machines/geiger/ext2.ogg','sound/machines/geiger/ext3.ogg','sound/machines/geiger/ext4.ogg'),75)
 		update_icon()
-		radiation_count = 0
+		checked = TRUE
 		spawn(10)
 			processing()
 	else
+		radiation_count = 0
 		return
 
 
