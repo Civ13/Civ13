@@ -88,7 +88,7 @@
 		stage = 15
 		icon_state = "[plant]-dead"
 		desc = "A dead irradiated [plant] plant."
-		name = "dead [plant] plant due to radiation."
+		name = "radiation-burned dead [plant]"
 	update_icon()
 	return
 
@@ -201,12 +201,17 @@
 	scanning = !scanning
 	update_icon()
 	usr << "<span class='notice'>You switch [scanning ? "on" : "off"] \the [src].</span>"
+	if (!scanning)
+		radiation_count = 0
 	if (scanning)
 		processing()
 
 /obj/item/weapon/geiger_counter/proc/processing()
 	if (scanning)
+		radiation_count = 0
 		var/rad_min = radiation_count*60 //we check the effects over 1 min
+		if (world_radiation > 0 && z == world.maxz)
+			rad_min += world_radiation/1000
 		switch(rad_min)
 			if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
 				playsound(get_turf(src), pick('sound/machines/geiger/low1.ogg','sound/machines/geiger/low2.ogg','sound/machines/geiger/low3.ogg','sound/machines/geiger/low4.ogg'),75)

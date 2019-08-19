@@ -133,8 +133,8 @@
 /mob/living/carbon/human/handle_mutations_and_radiation()
 	if (world_radiation > 125)
 		var/area/A = get_area(src)
+		var/multiplier = 0.7
 		if (A.location == 1)
-			var/multiplier = 1
 			if (world_radiation >= 300)
 				switch(A.weather)
 					if (WEATHER_NONE)
@@ -151,11 +151,11 @@
 						multiplier = 2
 					if (WEATHER_SMOG)
 						multiplier = 1
+		if (z == world.maxz)
 			radiation += (world_radiation/1000)*multiplier
 	if(radiation > 0)
 		radiation -= 0.05
 		if (stat != DEAD)
-			return
 			switch(radiation)
 				if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE) //0.15 Gy, equal to 1 year smoking 1 1/2 packs of cigarettes a day. Avg dose for Chernobyl recovery workers
 					if (prob(0.5))
