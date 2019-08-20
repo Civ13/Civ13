@@ -116,6 +116,8 @@
 			usr << "You are not part of any faction."
 			return
 		else
+			if (WWinput(src, "Are you sure you want to leave your faction?", "", "Stay in faction", list("Leave", "Stay in faction")) == "Stay in faction")
+				return
 			if (map.custom_civs[U.civilization][4] != null)
 				if (map.custom_civs[U.civilization][4].real_name == U.real_name)
 					map.custom_civs[U.civilization][4] = null
