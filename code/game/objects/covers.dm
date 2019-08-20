@@ -611,7 +611,82 @@
 			return
 	..()
 
+/obj/covers/jail/
+	name = "jail"
+	desc = "Do not use this."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "woodjail"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 3
+	health = 100000
+	wall = TRUE
+	explosion_resistance = 100
+	var/buildstackamount = 8
+	var/buildstack = /obj/item/stack/material/wood
 
+/obj/covers/jail/woodjail
+	name = "wood jail bars"
+	desc = "To keep prisoners in."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "woodjail"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 3
+	health = 200
+	wall = TRUE
+	explosion_resistance = 5
+	buildstackamount = 8
+	buildstack = /obj/item/stack/material/wood
+
+/obj/covers/jail/steeljail
+	name = "steel jail bars"
+	desc = "To keep prisoners in better."
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "steeljail"
+	passable = TRUE
+	not_movable = TRUE
+	density = TRUE
+	opacity = TRUE
+	amount = 1
+	layer = 3
+	health = 800
+	wall = TRUE
+	explosion_resistance = 5
+	buildstackamount = 8
+	buildstack = /obj/item/stack/rods
+
+/obj/covers/jail/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench)) //No weapons can harm me! If not weapon and not a wrench.
+		user << "You pound the bars uselessly!"//sucker
+	else if (istype(W,/obj/item/weapon/wrench))//if it is a wrench
+		user << "<span class='notice'>You start disassembling the [src]...</span>"
+		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+		if (do_after(user, 30, target = src))
+			for (var/i = TRUE, i <= buildstackamount, i++)
+				new buildstack(get_turf(src))
+			qdel(src)
+			return
+	return TRUE
+
+/obj/covers/jail/woodjail/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench or hammer since im wood..
+		user << "You pound the bars uselessly!" //sucker
+	else if (istype(W,/obj/item/weapon/wrench) || istype(W,/obj/item/weapon/hammer))//if it is a wrench or hammer since im wood.
+		user << "<span class='notice'>You start disassembling the [src]...</span>"
+		playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
+		if (do_after(user, 30, target = src))
+			for (var/i = TRUE, i <= buildstackamount, i++)
+				new buildstack(get_turf(src))
+			qdel(src)
+			return
+	return TRUE
 
 /obj/covers/New()
 	..()
