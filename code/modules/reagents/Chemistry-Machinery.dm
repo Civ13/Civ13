@@ -252,7 +252,7 @@
 	density = TRUE
 	anchored = TRUE
 	icon = 'icons/obj/chemical.dmi'
-	icon_state = "mixer0"
+	icon_state = "mixer0b"
 //	use_power = TRUE
 //	idle_power_usage = 20
 	var/beaker = null
