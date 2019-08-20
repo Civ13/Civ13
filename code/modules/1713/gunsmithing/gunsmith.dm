@@ -16,7 +16,7 @@
 /obj/structure/gunbench/attackby(obj/item/P as obj, mob/user as mob)
 	if (istype(P, /obj/item/stack/material/wood))
 		user << "You begin cutting the wood..."
-		playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
+		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 		if (do_after(user,15*P.amount,src))
 			user << "<span class='notice'>You cut the wood.</span>"
 			wood_amt += P.amount
