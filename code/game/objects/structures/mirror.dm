@@ -40,7 +40,19 @@
 	..()
 
 /obj/structure/mirror/attackby(obj/item/I as obj, mob/user as mob)
-	if (shattered)
+	if ((istype(I, /obj/item/weapon/hammer)) && (!shattered))
+		var/obj/item/mirror/S = new(loc)
+		user << "You unfasten \the [S] with your [I]."
+		qdel(src)
+		return		
+	else if ((istype(I, /obj/item/weapon/hammer)) && (shattered))
+		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
+		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+		if (do_after(user,50,src))
+			visible_message("<span class='warning'>[user] deconstructs \the [src].</span>")
+			qdel(src)
+			return
+	else if ((!istype(I, /obj/item/weapon/hammer)) && (shattered))
 		playsound(loc, 'sound/effects/hit_on_shattered_glass.ogg', 70, TRUE)
 		return
 
@@ -74,3 +86,30 @@
 		qdel(AC)
 	ui_users.Cut()
 	..()
+
+/obj/item/mirror
+	name = "mirror"
+	desc = "A simple mirrror."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "mirror"
+	w_class = 3		//big
+	value = 0
+	
+/obj/item/mirror/attackby(obj/item/H as obj, mob/user as mob)
+	if (istype(H, /obj/item/weapon/hammer) && isturf(user.loc))
+		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
+		if (direction)
+			var/obj/structure/mirror/S = new(user.loc)
+			switch(direction)
+				if ("North")
+					S.pixel_y = 32
+				if ("East")
+					S.pixel_x = 32
+				if ("South")
+					S.pixel_y = -32
+				if ("West")
+					S.pixel_x = -32
+				else return
+			user << "You fasten \the [S] with your [H]."
+			qdel(src)
+	else ..()
