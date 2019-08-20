@@ -1,6 +1,6 @@
 
 /datum/job/spanish
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/spanish/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_spanish_name(H.gender)
@@ -45,7 +45,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -86,7 +86,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -129,7 +129,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -166,7 +166,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -203,7 +203,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -244,7 +244,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -288,7 +288,9 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
+	return TRUE
 
 
 
@@ -339,6 +341,6 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE

@@ -38,6 +38,10 @@
 					continue
 				else if (RH in friends)
 					continue
+				else if (RH.wolfman && istype(src,/mob/living/simple_animal/hostile/wolf))
+					continue
+				else if (RH.lizard && istype(src,/mob/living/simple_animal/hostile/alligator))
+					continue
 				else
 					if (!RH.stat)
 						stance = HOSTILE_STANCE_ATTACK

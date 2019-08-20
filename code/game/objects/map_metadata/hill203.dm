@@ -17,7 +17,6 @@
 		list(RUSSIAN) = /area/caribbean/island,
 		)
 	age = "1904"
-	ordinal_age = 5
 	faction_distribution_coeffs = list(JAPANESE = 0.5, RUSSIAN = 0.5)
 	battle_name = "Siege of Hill 203"
 	mission_start_message = "<font size=4>The <b>Imperial Japanese Army</b> and the <b>Russian Army</b> are battling for the control of Hill 203! Each side will win if they manage to hold the hilltop for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
@@ -41,7 +40,7 @@
 		else
 			. = TRUE
 	if (istype(J, /datum/job/russian))
-		if (J.is_ww2)
+		if (J.is_ww2 || J.is_rcw)
 			. = FALSE
 		else
 			. = TRUE

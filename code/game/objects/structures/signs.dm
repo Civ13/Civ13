@@ -92,6 +92,11 @@
 	desc = "Points to the exit."
 	icon_state = "exit"
 
+/obj/structure/sign/minefield
+	name = "Minefield"
+	desc = "Achtung! Minen."
+	icon_state = "minefield"
+
 /obj/structure/sign/exit/New()
 	..()
 	if (dir == WEST)
@@ -164,7 +169,7 @@
 	desc = "A still life painting, depicting a table with a piece of white cloth, several fruits and a human skull."
 	name = "painting"
 	icon_state = "painting5"
-	
+
 /obj/structure/sign/painting6
 	desc = "A long-tailed bird with black, olive green and white plumage, resembling a magpie, perches on a tree branch, surrounded by white cherry blossoms."
 	name = "painting"

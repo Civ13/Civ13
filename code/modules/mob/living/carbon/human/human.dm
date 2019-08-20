@@ -5,7 +5,7 @@
 	icon = 'icons/mob/human.dmi'
 	icon_state = "human_m_s"
 	var/is_murderer = FALSE // for the "find the murderer" gamemode
-
+	var/can_mutate = FALSE //from high rads, into ant etc
 /mob/living/carbon/human/New(var/new_loc, var/new_species = null)
 
 	if (original_job_title && !client)
@@ -227,7 +227,7 @@ var/list/coefflist = list()
 			stat("")
 			stat("Attack Intent:", a_intent)
 			stat("Move Mode:", m_intent)
-			if (stats["stamina"][2] > 0)
+			if (stats["stamina"] && stats["stamina"][2] > 0)
 				stat("Stamina: ", "[round((getStat("stamina")/stats["stamina"][2]) * 100)]%")
 			stat("")
 			stat(stat_header("Factions"))
@@ -327,10 +327,8 @@ var/list/coefflist = list()
 				//user.throw_at(target, 200, 4)
 
 		if (2.0)
-			if (!shielded)
-				b_loss += 60
-
-			f_loss += 60
+			b_loss += 60
+			f_loss += 70
 
 			if (prob(getarmor(null, "bomb")))
 				b_loss = b_loss/1.5
@@ -344,6 +342,7 @@ var/list/coefflist = list()
 
 		if (3.0)
 			b_loss += 30
+			f_loss += 30
 			if (prob(getarmor(null, "bomb")))
 				b_loss = b_loss/2
 			if (!istype(l_ear, /obj/item/clothing/ears/earmuffs) && !istype(r_ear, /obj/item/clothing/ears/earmuffs))
@@ -470,7 +469,7 @@ var/list/rank_prefix = list(\
 
 //repurposed proc. Now it combines get_id_name() and get_face_name() to determine a mob's name variable. Made into a seperate proc as it'll be useful elsewhere
 /mob/living/carbon/human/proc/get_visible_name()
-	if ((wear_mask && (wear_mask.flags_inv&HIDEFACE)) || (head && (head.flags_inv&HIDEFACE)))	//Wearing a mask which hides our face, use id-name if possible	//Likewise for hats
+	if ((wear_mask && (wear_mask.flags_inv&HIDEFACE)) || (head && (head.flags_inv&HIDEFACE)) || (werewolf && body_build.name != "Default"))	//Wearing a mask which hides our face, use id-name if possible	//Likewise for hats
 		return rank_prefix_name(get_id_name())
 
 	var/face_name = get_face_name()
@@ -636,6 +635,34 @@ var/list/rank_prefix = list(\
 				nutrition -= 40
 				adjustToxLoss(-3)
 				mood -= 5
+				spawn(1200)	//wait 2 minutes before next volley
+					lastpuke = FALSE
+
+/mob/living/carbon/human/proc/vomit_blood()
+
+	if (!check_has_mouth())
+		return
+	if (stat == DEAD)
+		return
+	if (!lastpuke)
+		lastpuke = TRUE
+		src << "<span class='warning'>You feel nauseous...</span>"
+		spawn(150)	//15 seconds until second warning
+			src << "<span class='warning'>You feel like you are about to throw up!</span>"
+			spawn(100)	//and you have 10 more for mad dash to the bucket
+				Stun(5)
+
+				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
+				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
+
+				var/turf/location = loc
+				if (istype(location, /turf))
+					location.add_vomit_floor_bloody(src, TRUE)
+				adjust_hygiene(-25)
+				nutrition -= 40
+				adjustToxLoss(-3)
+				mood -= 8
+				vessel.remove_reagent("blood",10)
 				spawn(1200)	//wait 2 minutes before next volley
 					lastpuke = FALSE
 

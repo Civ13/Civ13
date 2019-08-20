@@ -6,6 +6,14 @@
 		verbs += /mob/living/carbon/human/proc/become_leader
 		verbs += /mob/living/carbon/human/proc/faction_list
 		verbs += /mob/living/carbon/human/proc/religion_list
+/mob/living/carbon/human/proc/make_tribesman()
+		verbs += /mob/living/carbon/human/proc/transfer_faction
+		verbs += /mob/living/carbon/human/proc/become_leader
+		verbs += /mob/living/carbon/human/proc/faction_list
+		verbs += /mob/living/carbon/human/proc/religion_list
+		verbs += /mob/living/carbon/human/proc/create_religion
+		verbs += /mob/living/carbon/human/proc/abandon_religion
+		verbs += /mob/living/carbon/human/proc/clergy
 //	verbs += /mob/living/carbon/human/proc/create_company
 //	verbs += /mob/living/carbon/human/proc/transfer_company_stock
 /////////////FACTIONS////////////////////////////
@@ -260,7 +268,7 @@
 						return
 					else
 						U = choice2
-						if (U.title != "")
+						if (U && U.title != "")
 							U.fully_replace_character_name(U.real_name,replacetext(U.real_name,"[U.title] ",""))
 							usr << "[src]'s title of [U.title] has been removed by [usr]."
 							U.title = ""

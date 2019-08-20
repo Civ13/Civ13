@@ -65,6 +65,33 @@
 			return
 	else
 		..()
+
+/obj/item/clothing/suit/storage/jacket/custom
+	var/uncolored = FALSE
+
+/obj/item/clothing/suit/storage/jacket/custom/attack_self(mob/user as mob)
+	if (uncolored)
+		var/input = input(user, "Choose a hex color (without the #):", "Color" , "FFFFFF")
+		if (input == null || input == "")
+			return
+		else
+			input = uppertext(input)
+			if (lentext(input) != 6)
+				return
+			var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+			for (var/i = 1, i <= 6, i++)
+				var/numtocheck = 0
+				if (i < 6)
+					numtocheck = copytext(input,i,i+1)
+				else
+					numtocheck = copytext(input,i,0)
+				if (!(numtocheck in listallowed))
+					return
+			color = addtext("#",input)
+			uncolored = FALSE
+			return
+	else
+		..()
 ///////////////ANCIENT//////////////////////////////////////
 /obj/item/clothing/under/custom/toga
 	name = "toga"
@@ -125,8 +152,15 @@
 	item_state = "customarabictunic"
 	worn_state = "customarabictunic"
 
+/obj/item/clothing/suit/storage/jacket/custom/poncho
+	name = "poncho"
+	desc = "A simple cloth poncho."
+	icon_state = "customponcho"
+	item_state = "customponcho"
+	worn_state = "customponcho"
+
 /obj/item/clothing/under/customren
-	name = "renaissance putfit"
+	name = "renaissance outfit"
 	desc = "A renaissance-style outfit."
 	var/uncolored = FALSE
 	var/topcolor = 0
@@ -189,6 +223,118 @@
 			under.color = undercolor
 			overlays += top
 			overlays += under
+			return
+	else
+		..()
+
+/obj/item/clothing/under/custompontificial
+	name = "renaissance outfit"
+	desc = "A renaissance-style pontificial outfit."
+	var/uncolored = FALSE
+	var/topcolor = 0
+	var/undercolor = 0
+	var/linescolor = 0
+	var/handcolor = 0
+	item_state = "custom_pontificial"
+	icon_state = "custom_pontificial"
+	worn_state = "custom_pontificial"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored = TRUE
+
+
+/obj/item/clothing/under/custompontificial/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!topcolor)
+			var/input = input(user, "Top Decore - Choose a hex color (without the #):", "Top Decore Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				topcolor = addtext("#",input)
+
+		if (!undercolor)
+			var/input = input(user, "Leggings - Choose a hex color (without the #):", "Leggings Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				undercolor = addtext("#",input)
+		if (!linescolor)
+			var/input = input(user, "Top Lines - Choose a hex color (without the #):", "Top Lines Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				linescolor = addtext("#",input)
+		if (!handcolor)
+			var/input = input(user, "Hand Decore - Choose a hex color (without the #):", "Hand Decore Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				handcolor = addtext("#",input)
+
+		if (topcolor && undercolor && linescolor && handcolor)
+			uncolored = FALSE
+			var/image/top = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custompont_decore")
+			top.color = topcolor
+			var/image/under = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custompont_leggings")
+			under.color = undercolor
+			var/image/lines = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custompont_mclines")
+			lines.color = linescolor
+			var/image/hand = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custompont_handdecore")
+			hand.color = handcolor
+			overlays += top
+			overlays += under
+			overlays += lines
+			overlays += hand
 			return
 	else
 		..()
@@ -891,6 +1037,138 @@
 			overlays += green
 			overlays += black
 			overlays += belt
+			return
+	else
+		..()
+
+//////////////////CIVILIAN STUFF////////////////////////////
+/obj/item/clothing/under/custompyjamas
+	name = "pyjamas"
+	desc = "Basic striped pyjamas."
+	icon_state = "custompyjamas"
+	item_state = "custompyjamas"
+	worn_state = "custompyjamas"
+	var/stripescolor = 0
+	var/uncolored = TRUE
+
+/obj/item/clothing/under/custompyjamas/attack_self(mob/user as mob)
+	if (uncolored)
+		if (!stripescolor)
+			var/input = input(user, "Stripes - Choose a hex color (without the #):", "Stripes Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				stripescolor = addtext("#",input)
+
+		if (stripescolor)
+			uncolored = FALSE
+			var/image/base = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custompyjamas_base")
+			var/image/stripes = image("icon" = 'icons/obj/clothing/uniforms.dmi', "icon_state" = "custompyjamas_stripes")
+			stripes.color = stripescolor
+			overlays += base
+			overlays += stripes
+			return
+	else
+		..()
+
+
+/////////////////////HATS////////////////////
+/obj/item/clothing/head/custom/customberet
+	name = "beret"
+	desc = "A simple cloth beret."
+	icon_state = "customberet_hat"
+	item_state = "customberet_hat"
+	worn_state = "customberet_hat"
+
+/obj/item/clothing/head/custom/custombandana
+	name = "bandana"
+	desc = "A simple cloth bandana."
+	icon_state = "custombandana_hat"
+	item_state = "custombandana_hat"
+	worn_state = "custombandana_hat"
+
+/obj/item/clothing/head/custom/customnoblehat
+	name = "noble hat"
+	desc = "A fancy noble hat."
+	icon_state = "customnoblehat_hat"
+	item_state = "customnoblehat_hat"
+	worn_state = "customnoblehat_hat"
+
+/obj/item/clothing/head/custom_feathered_hat
+	name = "feathered cap"
+	desc = "A feathered cap."
+	var/uncolored1 = FALSE
+	var/capcolor = 0
+	var/bandcolor = 0
+	item_state = "custfeathercap_hat"
+	icon_state = "custfeathercap_hat"
+	worn_state = "custfeathercap_hat"
+	color = "#FFFFFF"
+	New()
+		..()
+		spawn(5)
+			uncolored1 = TRUE
+
+
+/obj/item/clothing/head/custom_feathered_hat/attack_self(mob/user as mob)
+	if (uncolored1)
+		if (!capcolor)
+			var/input = input(user, "Cap - Choose a hex color (without the #):", "Cap Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				capcolor = addtext("#",input)
+	//			user << "Color: [color]"
+		if (!bandcolor)
+			var/input = input(user, "Feather - Choose a hex color (without the #):", "Feather Color" , "FFFFFF")
+			if (input == null || input == "")
+				return
+			else
+				input = uppertext(input)
+				if (lentext(input) != 6)
+					return
+				var/list/listallowed = list("A","B","C","D","E","F","1","2","3","4","5","6","7","8","9","0")
+				for (var/i = 1, i <= 6, i++)
+					var/numtocheck = 0
+					if (i < 6)
+						numtocheck = copytext(input,i,i+1)
+					else
+						numtocheck = copytext(input,i,0)
+					if (!(numtocheck in listallowed))
+						return
+				bandcolor = addtext("#",input)
+		if (bandcolor && capcolor)
+			uncolored1 = FALSE
+			var/image/band = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "custfeathercap_f_hat")
+			band.color = bandcolor
+			var/image/cap = image("icon" = 'icons/obj/clothing/hats.dmi', "icon_state" = "customcap_b_hat")
+			cap.color = capcolor
+			overlays += band
+			overlays += cap
 			return
 	else
 		..()

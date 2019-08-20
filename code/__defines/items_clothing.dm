@@ -17,9 +17,9 @@
 #define SLOT_BELT       0x200
 #define SLOT_BACK       0x400
 #define SLOT_POCKET     0x800  // This is to allow items with a w_class of 3 or 4 to fit in pockets.
-#define SLOT_DENYPOCKET 0x1000  // This is to  deny items with a w_class of 2 or 1 from fitting in pockets.
+#define SLOT_ACCESSORY  0x1000  // This is to  deny items with a w_class of 2 or 1 from fitting in pockets.
 #define SLOT_TWOEARS    0x2000
-#define SLOT_TIE        0x4000
+#define SLOT_SHOULDER   0x4000
 #define SLOT_HOLSTER	0x8000 //16th bit - higher than this will overflow
 
 // Flags bitmasks.
@@ -71,7 +71,7 @@
 #define slot_belt        6
 #define slot_wear_id     7
 #define slot_l_ear       8
-#define slot_glasses     9
+#define slot_eyes        9
 #define slot_gloves      10
 #define slot_head        11
 #define slot_shoes       12
@@ -84,8 +84,10 @@
 #define slot_legcuffed   19
 #define slot_r_ear       20
 #define slot_legs        21
-#define slot_tie         22
-
+#define slot_shoulder    22
+#define slot_l_arm       23
+#define slot_r_arm       24
+#define slot_accessory   25
 // Inventory slot strings.
 // since numbers cannot be used as associative list keys.
 //icon_back, icon_l_hand, etc would be much better names for these...
@@ -95,6 +97,7 @@
 #define slot_w_uniform_str	"slot_w_uniform"
 #define slot_head_str		"slot_head"
 #define slot_wear_suit_str	"slot_suit"
+#define slot_shoulder_str	"slot_shoulder"
 
 // Bitflags for clothing parts.
 #define HEAD        0x1

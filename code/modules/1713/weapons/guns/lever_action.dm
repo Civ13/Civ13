@@ -12,7 +12,7 @@
 	force = 10
 	throwforce = 10
 	max_shells = 15
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "a44"
 	recoil = 2 //extra kickback
 	load_method = SINGLE_CASING
@@ -85,10 +85,6 @@
 
 	var/recentpump = FALSE
 
-/obj/item/weapon/gun/projectile/leveraction/New()
-	..()
-	loaded = list()
-	chambered = null
 
 /obj/item/weapon/gun/projectile/leveraction/attack_hand(mob/user as mob)
 	if (user.get_inactive_hand() == src)
@@ -110,7 +106,7 @@
 */
 /obj/item/weapon/gun/projectile/leveraction/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (gun_safety && safetyon)

@@ -62,10 +62,6 @@
 	var/base_icon = "semiautomatic"
 	equiptimer = 12
 	gun_safety = TRUE
-/obj/item/weapon/gun/projectile/semiautomatic/New()
-	..()
-	loaded = list()
-	chambered = null
 
 /obj/item/weapon/gun/projectile/semiautomatic/update_icon()
 	if (sniper_scope)
@@ -122,7 +118,7 @@
 	max_shells = 10
 	caliber = "a762x54"
 	ammo_type = /obj/item/ammo_casing/a762x54
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/svt
 	weight = 3.85
 	load_delay = 8
@@ -147,7 +143,7 @@
 	max_shells = 10
 	caliber = "a762x54"
 	ammo_type = /obj/item/ammo_casing/a762x54
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	magazine_type = /obj/item/ammo_magazine/mosin
 	weight = 3.85
 	firemodes = list(
@@ -171,7 +167,7 @@
 	max_shells = 10
 	caliber = "a792x57"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/gewehr98
 	weight = 4.9
@@ -195,7 +191,7 @@
 	load_delay = 8
 	caliber = "a792x57"
 	fire_sound = 'sound/weapons/kar_shot.ogg'
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	ammo_type = /obj/item/ammo_casing/a792x57
 	magazine_type = /obj/item/ammo_magazine/g43
 	weight = 4.9
@@ -214,7 +210,7 @@
 	item_state = "stg"
 	base_icon = "stg"
 	load_method = MAGAZINE
-	slot_flags = SLOT_BACK|SLOT_BELT
+	slot_flags = SLOT_SHOULDER|SLOT_BELT
 	w_class = 4
 	caliber = "a792x33"
 	fire_sound = 'sound/weapons/stg.ogg'
@@ -229,3 +225,26 @@
 		)
 
 	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/semiautomatic/m1garand
+	name = "M1garand"
+	desc = "An American semi-automatic rifle using .30-06 ammunition in a 8 round internal magazine."
+	icon_state = "m1garand"
+	item_state = "m1garand"
+	base_icon = "m1garand"
+	w_class = 4
+	load_method = SINGLE_CASING|SPEEDLOADER
+	max_shells = 8
+	caliber = "a3006"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	slot_flags = SLOT_SHOULDER
+	ammo_type = /obj/item/ammo_casing/a3006
+	magazine_type = /obj/item/ammo_magazine/garand
+	weight = 4.9
+	firemodes = list(
+		list(name="single shot",burst=1, move_delay=2, fire_delay=2)
+		)
+	force = 10
+	throwforce = 20
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
+	effectiveness_mod = 1.05

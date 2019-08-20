@@ -11,11 +11,14 @@
 	if (species.slowdown)
 		tally = species.slowdown
 
+	if (embedded_flag)
+		handle_embedded_objects() //Moving with objects stuck in you can cause bad times.
+
 	var/health_deficiency = (maxHealth - health)
 	if (health_deficiency >= 40) tally += (health_deficiency / 25)
 
 	if (!(species && (species.flags & NO_PAIN)))
-		if (halloss >= 10) tally += (halloss / 10) //halloss shouldn't slow you down if you can't even feel it
+		if (halloss >= 30) tally += (halloss / 25) //halloss shouldn't slow you down if you can't even feel it
 
 	switch (nutrition)
 		if (-INFINITY to 50)
@@ -108,7 +111,8 @@
 	stored_tally = tally
 
 	next_calculate_tally = world.time + 10
-
+	if (werewolf)
+		tally *= 0.7
 	if (!isnull(riding_mob))
 		return 0
 	else

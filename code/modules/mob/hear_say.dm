@@ -1,6 +1,6 @@
 // At minimum every mob has a hear_say proc.
 /mob/var/next_language_learn = -1
-/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null)
+/mob/proc/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "",var/italics = FALSE, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, var/alt_message = null, var/animal = FALSE)
 	if (!client)
 		return
 
@@ -24,7 +24,8 @@
 		if (!say_understands(speaker,language))
 			if (istype(speaker,/mob/living/simple_animal))
 				var/mob/living/simple_animal/S = speaker
-				message = pick(S.speak)
+				if (S && S.speak.len)
+					message = pick(S.speak)
 			else
 				if (language)
 					message = language.scramble(alt_message, src)
@@ -41,7 +42,8 @@
 
 	if (italics)
 		message = "<i>[message]</i>"
-
+	if (animal)
+		language = null
 	var/track = null
 	if (isghost(src))
 		if (italics && is_preference_enabled(/datum/client_preference/ghost_radio))
@@ -70,7 +72,7 @@
 	if (language && ishuman(src))
 		var/mob/living/carbon/human/H = src
 		if (!H.languages.Find(language) && world.time >= src.next_language_learn)
-			src.next_language_learn = world.time + 100 // Cooldown is 100 ticks seconds = 10 seconds
+			src.next_language_learn = world.time + 60 // Cooldown is 60 ticks seconds = 6 seconds
 			var/lname = capitalize(language.name)
 			H.partial_languages[lname] += 1
 			if (H.partial_languages[lname] >= language.difficulty)

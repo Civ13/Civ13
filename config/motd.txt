@@ -3,9 +3,9 @@
 The current map is <b>{server_map}</b>.
 <br>
 This server is running {server_version}, and you are running {client_version}.
-<h2>RULES: https://1713.eu/rules</h2>
+<h2>RULES: http://civ13.com/rules</h2>
 
 <h2><small>Github: https://github.com/civ13-SS13/civ13</small></h2>
 <h2><small>Discord: https://discord.gg/hBEtg4x</small></h2>
-<h2><small>Wiki: https://1713.eu/wiki</small></h2>
+<h2><small>Wiki: http://civ13.com/wiki/index.php/Main_Page</small></h2>
 </i>

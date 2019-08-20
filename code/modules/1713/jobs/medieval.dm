@@ -41,7 +41,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -82,7 +82,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -128,7 +128,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -183,7 +183,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -232,6 +232,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 	return TRUE
 
@@ -297,6 +298,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	give_random_name(H)
 
 	return TRUE
 
@@ -836,7 +838,7 @@
 /////////////////////ARABS/////////////////////////////
 //////////////////////////////////////////////////////
 /datum/job/arab
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/arab/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_arab_name()
@@ -883,6 +885,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 	return TRUE
 
@@ -927,7 +930,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -973,7 +976,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -1027,7 +1030,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -1076,6 +1079,7 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_VERY_HIGH)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 	return TRUE
 
@@ -1116,5 +1120,6 @@
 	H.setStat("pistol", STAT_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_MEDIUM_HIGH)
+	give_random_name(H)
 
 	return TRUE

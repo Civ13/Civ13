@@ -9,7 +9,7 @@
 	force = 6
 	throwforce = 6
 	max_shells = 1 //duh
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "arrow"
 	recoil = 0 //no shaking
 	fire_sound = 'sound/weapons/arrow_fly.ogg'
@@ -93,7 +93,7 @@
 	force = 6
 	throwforce = 6
 	max_shells = 1 //duh
-	slot_flags = SLOT_BACK | SLOT_BELT
+	slot_flags = SLOT_SHOULDER | SLOT_BELT
 	caliber = "stone"
 	ammo_type = /obj/item/ammo_casing/stone
 	accuracy = TRUE
@@ -112,8 +112,13 @@
 
 /obj/item/weapon/gun/projectile/bow/New()
 	..()
-	loaded = list()
-	chambered = null
+	if (map && map.civilizations)
+		loaded = list()
+		chambered = null
+	else if (!(istype(loc, /mob/living)))
+		loaded = list()
+		chambered = null
+		update_icon()
 
 /obj/item/weapon/gun/projectile/bow/handle_post_fire()
 	..()

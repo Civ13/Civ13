@@ -59,7 +59,7 @@
 		user << browse(null, "window=stack")
 	user.set_using_object(src) //for correct work of onclose
 	var/list/recipe_list = recipes
-	if (recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
+	if (recipe_list && recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
 	var/t1 = text("<HTML><HEAD><title>Constructions from []</title></HEAD><body><TT>Amount Left: []<br>", src, get_amount())
@@ -156,7 +156,17 @@
 		if (H.religion == "none")
 			H << "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>"
 			return
-
+	if (H.original_job_title == "Gorilla tribesman" || H.original_job_title == "Ant tribesman")
+		if (findtext(recipe.title, "wood sarissa") || findtext(recipe.title, "wood dory") || findtext(recipe.title, "soft wood wall") || findtext(recipe.title, "log wall"))
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+		if (recipe.result_type == /obj/structure/simple_door/key_door/anyone/wood)
+			H << "<span class = 'danger'>You don't know how to make this.</span>"
+			return
+		if (H.original_job_title == "Ant tribesman")
+			if (findtext(recipe.title, "wall") || findtext(recipe.title, "door"))
+				H << "<span class = 'danger'>You don't know how to make this.</span>"
+				return
 	if (findtext(recipe.title, "tin can"))
 		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
 		if (customname == "" || customname == null)
@@ -662,7 +672,7 @@
 
 	if (recipe.time)
 		var/buildtime = recipe.time
-		if (H)
+		if (H && H.getStatCoeff("strength"))
 			buildtime /= H.getStatCoeff("strength")
 			buildtime /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
 

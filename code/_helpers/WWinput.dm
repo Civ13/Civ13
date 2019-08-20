@@ -27,11 +27,11 @@
 			client = client:client
 
 	var/client/C = client
-
-	C.stopmovingup()
-	C.stopmovingdown()
-	C.stopmovingleft()
-	C.stopmovingright()
+	if (C)
+		C.stopmovingup()
+		C.stopmovingdown()
+		C.stopmovingleft()
+		C.stopmovingright()
 
 	if (!toc1 && !toc2)
 		alert(C, message, title, "Continue")

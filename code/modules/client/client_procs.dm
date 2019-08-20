@@ -65,16 +65,15 @@
 					var/full_banlist = null
 					full_banlist = file2text("SQL/bans.txt")
 					var/list/full_list_split = splittext(full_banlist, "|||\n")
-					for(var/i=1;i<full_list_split.len;i++)
+					for(var/i=1;i<=full_list_split.len;i++)
 						var/list/full_list_split_two = splittext(full_list_split[i], ";")
 						if (text2num(full_list_split_two[10]) <= text2num(num2text(world.realtime,20))) //if the ban expiration has been reached
-							full_list_split[i] = "|||\n"
+							full_list_split_two[10] = 0
 					spawn(1)
-						for(var/i=1;i<full_list_split.len;i++)
+						for(var/i=1;i<=full_list_split.len;i++)
 							var/list/full_list_split_two = splittext(full_list_split[i], ";")
 							if (text2num(full_list_split_two[10]) > text2num(num2text(world.realtime,20))) //if the ban expiration hasnt been reached
-								if (!(full_list_split[i] = "|||\n"))
-									text2file("[full_list_split[i]]|||","SQL/bans.txt")
+								text2file("[full_list_split[i]]|||","SQL/bans.txt")
 							return
 					log_admin(M)
 					message_admins(M)
@@ -240,8 +239,8 @@
 			winset(src, null, "command=\".configure graphics-hwmode off\"")
 			sleep(2) // wait a bit more, possibly fixes hardware mode not re-activating right
 			winset(src, null, "command=\".configure graphics-hwmode on\"")
-
-	send_resources()
+	if (src)
+		send_resources()
 
 	fix_nanoUI()
 

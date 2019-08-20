@@ -53,7 +53,7 @@
 			halloss += effect // Useful for objects that cause "subdual" damage. PAIN!
 		if (IRRADIATE)
 			var/rad_protection = check_protection ? getarmor(null, "rad")/100 : FALSE
-			radiation += max((1-rad_protection)*effect/(blocked+1),0)//Rads auto check armor
+			rad_act(max((1-rad_protection)*effect/(blocked+1),0))//Rads auto check armor
 		if (STUTTER)
 			if (status_flags & CANSTUN) // stun is usually associated with stutter
 				stuttering = max(stuttering,(effect/(blocked+1)))

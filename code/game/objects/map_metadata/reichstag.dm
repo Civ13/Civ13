@@ -28,10 +28,16 @@
 	gamemode = "Siege"
 obj/map_metadata/reichstag/job_enabled_specialcheck(var/datum/job/J)
 	..()
-	if (J.is_ww2 == TRUE)
-		. = TRUE
+	if (istype(J, /datum/job/german))
+		if (J.is_ww2 == TRUE && J.is_reichstag == TRUE)
+			. = TRUE
+		else
+			. = FALSE
 	else
-		. = FALSE
+		if (J.is_ww2 == TRUE || J.is_reichstag == TRUE)
+			. = TRUE
+		else
+			. = FALSE
 
 /obj/map_metadata/reichstag/faction1_can_cross_blocks()
 	return (processes.ticker.playtime_elapsed >= 6000 || admin_ended_all_grace_periods)

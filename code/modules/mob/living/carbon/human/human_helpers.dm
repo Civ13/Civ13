@@ -52,13 +52,13 @@
 
 	if (istype(head, /obj/item/clothing/head))
 		add_clothing_protection(head)
-	if (istype(wear_mask, /obj/item/clothing/mask/glasses))
-		var/obj/item/clothing/mask/glasses/GL = wear_mask
+	if (istype(wear_mask, /obj/item/clothing/glasses))
+		var/obj/item/clothing/glasses/GL = wear_mask
 		process_glasses(GL)
 	if (istype(wear_mask, /obj/item/clothing/mask))
 		add_clothing_protection(wear_mask)
 
-/mob/living/carbon/human/proc/process_glasses(var/obj/item/clothing/mask/glasses/G)
+/mob/living/carbon/human/proc/process_glasses(var/obj/item/clothing/glasses/G)
 	if (G && G.active)
 		equipment_darkness_modifier += G.darkness_view
 		equipment_vision_flags |= G.vision_flags
@@ -116,13 +116,10 @@
 	if (WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
 		usr << "You will wake up in 30 seconds."
 		spawn(300)
-			if (usr.sleeping)
-				usr.sleeping = 0 //Short nap
-				inducedSSD = FALSE
-				usr.forceMove(locate(lastx,lasty,lastz))
-				return
-			else
-				return
+			usr.sleeping = 0 //Short nap
+			inducedSSD = FALSE
+			usr.forceMove(locate(lastx,lasty,lastz))
+			return
 //to keep the character sleeping
 /mob/living/carbon/human/proc/sleep_update()
 	if (!inducedSSD)
@@ -134,11 +131,81 @@
 			return
 
 /mob/living/carbon/human/handle_mutations_and_radiation()
-	if(radiation)
+	if (world_radiation > 125)
+		var/area/A = get_area(src)
+		var/multiplier = 0.7
+		if (A.location == 1)
+			if (world_radiation >= 300)
+				switch(A.weather)
+					if (WEATHER_NONE)
+						multiplier = 1
+					if (WEATHER_RAIN)
+						multiplier = 1.5
+					if (WEATHER_SNOW)
+						multiplier = 1.5
+					if (WEATHER_BLIZZARD)
+						multiplier = 3
+					if (WEATHER_SANDSTORM)
+						multiplier = 1.3
+					if (WEATHER_STORM)
+						multiplier = 2
+					if (WEATHER_SMOG)
+						multiplier = 1
+		if (z == world.maxz)
+			rad_act((world_radiation/1000)*multiplier)
+	if(radiation > 0)
 		radiation -= 0.05
-		switch(radiation)
-			if(100 to INFINITY)
-				adjustFireLoss(radiation*0.002)
-				updatehealth()
+		if (stat != DEAD)
+			switch(radiation)
+				if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE) //0.15 Gy, equal to 1 year smoking 1 1/2 packs of cigarettes a day. Avg dose for Chernobyl recovery workers
+					if (prob(0.5))
+						src << "You feel slighly nauseous."
+				if(RAD_LEVEL_MODERATE to RAD_LEVEL_HIGH)//Gives radiation poisoning (passing out, twitches, severe erytrema)
+					if (prob(1))
+						src << "You feel nauseous."
+					if (prob(0.5))
+						emote("twitch")
+					if (prob(0.5))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 6
+						sleeping  = 6
+				if(RAD_LEVEL_HIGH to RAD_LEVEL_VERY_HIGH) //Gives mild radiation poisoning symptoms (vomiting, erytrema)
+					if (prob(2))
+						src << "You feel very nauseous."
+					if (prob(1.5))
+						emote("twitch")
+					if (prob(0.5))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 6
+						sleeping  = 6
+					if (prob(1.5))
+						vomit()
+				if(RAD_LEVEL_VERY_HIGH to RAD_LEVEL_CRITICAL) //Severe radiation poisoning, sometimes fatal
+					adjustBrainLoss(0.05)
+					if (prob(2.5))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 8
+						sleeping  = 8
+					if (prob(2))
+						vomit_blood()
+				if(RAD_LEVEL_CRITICAL to RAD_LEVEL_DEADLY) //LD50
+					adjustBrainLoss(0.07)
+					if (prob(3))
+						death()
+					if (prob(4))
+						src << "<span class='warning'>You suddently pass out!</span>"
+						paralysis = 8
+						sleeping  = 8
+					if (prob(2))
+						vomit_blood()
+				if(RAD_LEVEL_DEADLY to INFINITY) //Always kills
+					death()
 
-		radiation = Clamp(radiation, 0, 750)
+		if(radiation >= 100)
+			adjustFireLoss(radiation*0.002)
+		updatehealth()
+
+		if (radiation < 0)
+			radiation = 0
+		else if (radiation > 750)
+			radiation = 750

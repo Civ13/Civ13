@@ -10,7 +10,7 @@
 	force = 10
 	throwforce = 20
 	max_shells = 5
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "a762x54"
 	recoil = 2 //extra kickback
 	//fire_sound = 'sound/weapons/sniper.ogg'
@@ -90,11 +90,6 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 
-/obj/item/weapon/gun/projectile/boltaction/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/boltaction/attack_self(mob/user)
 	if (!check_bolt)//Keeps people from spamming the bolt
 		check_bolt++
@@ -137,7 +132,7 @@
 	if (bolt_open)
 		user << "<span class='warning'>You can't fire [src] while the bolt is open!</span>"
 		return FALSE
-	if (!user.has_empty_hand(both = FALSE))
+	if (!user.has_empty_hand(both = FALSE) && !istype(src,/obj/item/weapon/gun/projectile/boltaction/mosin/obrez))
 		user << "<span class='warning'>You need both hands to fire \the [src]!</span>"
 		return FALSE
 	return TRUE
@@ -212,7 +207,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
@@ -236,7 +231,7 @@
 	bolt_safety = FALSE
 	value = 90
 	recoil = 4
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 17
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
@@ -293,7 +288,7 @@
 	bolt_safety = FALSE
 	value = 100
 	recoil = 2
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -329,7 +324,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -352,7 +347,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -371,11 +366,11 @@
 	weight = 3.8
 	fire_sound = 'sound/weapons/kar_shot.ogg'
 	ammo_type = /obj/item/ammo_casing/a77x58
-	magazine_type = /obj/item/ammo_magazine/arisaka
+	magazine_type = /obj/item/ammo_magazine/arisaka99
 	bolt_safety = FALSE
 	effectiveness_mod = 1.05
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -398,7 +393,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.85
 	value = 90
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 10
 	throwforce = 20
@@ -422,7 +417,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.89
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 10
 	throwforce = 25
@@ -445,7 +440,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.91
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 10
 	throwforce = 25
@@ -477,7 +472,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.95
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -530,7 +525,7 @@
 	ammo_type = /obj/item/ammo_casing/a303
 	magazine_type = /obj/item/ammo_magazine/enfield
 	effectiveness_mod = 0.97
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
 	load_shell_sound = 'sound/weapons/clip_reload.ogg'
@@ -549,7 +544,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.85
 	value = 100
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 11
 	throwforce = 25
@@ -570,7 +565,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.98
 	value = 120
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 12
 	throwforce = 20
@@ -593,7 +588,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 0.75
 	value = 120
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 2
 	force = 12
 	throwforce = 20
@@ -628,7 +623,7 @@
 	bolt_safety = FALSE
 	value = 100
 	recoil = 2
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 20
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -661,7 +656,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -684,7 +679,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING
@@ -707,7 +702,7 @@
 	bolt_safety = FALSE
 	value = 80
 	recoil = 3
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	throwforce = 16
 	handle_casings = HOLD_CASINGS
 	load_method = SINGLE_CASING | SPEEDLOADER
@@ -733,9 +728,10 @@
 	fire_sound = 'sound/weapons/mosin_shot.ogg'
 	caliber = "a762x54"
 	weight = 1.4
+	w_class = 2
 	effectiveness_mod = 0.77
 	value = 60
-	slot_flags = SLOT_BELT
+	slot_flags = SLOT_BELT|SLOT_POCKET|SLOT_HOLSTER
 	equiptimer = 9
 
 
@@ -753,7 +749,7 @@
 	bolt_safety = FALSE
 	effectiveness_mod = 1.15
 	value = 130
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	recoil = 1.8
 	force = 11
 	throwforce = 25
@@ -763,6 +759,35 @@
 	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/boltaction/m24/New()
+	..()
+	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
+	SP.attached(null,src,TRUE)
+
+/obj/item/weapon/gun/projectile/boltaction/springfield
+	name = "M1903 Springfield"
+	desc = "A bolt-action rifle made in 1903, chambered in .30-06 with a 5 round internal magazine."
+	icon_state ="springfield_ww2"
+	item_state ="springfield_ww2"
+	base_icon = "springfield_ww2"
+	force = 12
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	caliber = "a3006"
+	weight = 4.5
+	effectiveness_mod = 1.2
+	bolt_safety = FALSE
+	value = 80
+	recoil = 3
+	slot_flags = SLOT_SHOULDER
+	throwforce = 16
+	handle_casings = HOLD_CASINGS
+	load_method = SINGLE_CASING | SPEEDLOADER
+	ammo_type = /obj/item/ammo_casing/a3006
+	magazine_type = /obj/item/ammo_magazine/springfield
+	load_shell_sound = 'sound/weapons/clip_reload.ogg'
+	max_shells = 5
+	equiptimer = 12
+
+/obj/item/weapon/gun/projectile/boltaction/springfield/sniper/New()
 	..()
 	var/obj/item/weapon/attachment/scope/adjustable/sniper_scope/SP = new/obj/item/weapon/attachment/scope/adjustable/sniper_scope(src)
 	SP.attached(null,src,TRUE)

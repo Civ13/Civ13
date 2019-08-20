@@ -129,6 +129,8 @@
 	icon_state = "greatshendyt"
 	item_state = "greatshendyt"
 	worn_state = "greatshendyt"
+/obj/item/clothing/suit/armor
+	health = 40
 
 /obj/item/clothing/suit/armor/ancient/scale
 	name = "scale armor"
@@ -140,6 +142,7 @@
 	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 45, bio = 20, rad = 45)
 	value = 40
 	slowdown = 0.8
+	health = 47
 
 /obj/item/clothing/suit/armor/ancient/linen
 	name = "linothorax armor"
@@ -151,6 +154,7 @@
 	armor = list(melee = 55, arrow = 35, gun = FALSE, energy = 15, bomb = 35, bio = 20, rad = 10)
 	value = 40
 	slowdown = 0.2
+	health = 28
 
 /obj/item/clothing/suit/cape
 	name = "red cape"
@@ -175,6 +179,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 35
 
 /obj/item/clothing/head/helmet/roman_decurion
 	name = "Roman decurion helmet"
@@ -185,6 +190,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 35
 
 /obj/item/clothing/head/helmet/roman_centurion
 	name = "Roman centurion helmet"
@@ -195,6 +201,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 35
 
 /obj/item/clothing/head/helmet/gladiator
 	name = "gladiator helmet"
@@ -205,7 +212,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 60, arrow = 45, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
-
+	health = 40
 
 /obj/item/clothing/head/helmet/horned
 	name = "horned helmet"
@@ -215,6 +222,7 @@
 	worn_state = "viking"
 	body_parts_covered = HEAD
 	armor = list(melee = 45, arrow = 30, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 25
 
 /obj/item/clothing/head/helmet/greek
 	name = "greek helmet"
@@ -225,6 +233,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
 
 /obj/item/clothing/head/helmet/greek_commander
 	name = "Lochagos helmet"
@@ -235,6 +244,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
 
 /obj/item/clothing/head/helmet/greek_sl
 	name = "Dimoerites helmet"
@@ -245,6 +255,7 @@
 	body_parts_covered = HEAD|FACE|EYES
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 62, arrow = 44, gun = 10, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 40
 
 /obj/item/clothing/head/helmet/leather
 	name = "leather helmet"
@@ -254,6 +265,7 @@
 	worn_state = "leatherhelmet"
 	body_parts_covered = HEAD
 	armor = list(melee = 27, arrow = 15, gun = FALSE, energy = 15, bomb = 25, bio = 20, rad = FALSE)
+	health = 20
 
 /obj/item/clothing/head/nemes
 	name = "nemes headdress"
@@ -358,7 +370,14 @@
 	worn_state = "fur_jacket5"
 	specific = TRUE
 	colorn = 5
-
+/obj/item/clothing/suit/storage/coat/fur/orc
+	name = "orc fur coat"
+	desc = "A thick dark green fur coat, made from disgusting orc pelts."
+	icon_state = "fur_jacket6"
+	item_state = "fur_jacket6"
+	worn_state = "fur_jacket6"
+	specific = TRUE
+	colorn = 6
 /obj/item/clothing/suit/storage/coat/fur/New()
 	..()
 	if (!specific)
@@ -452,6 +471,14 @@
 	icon_state = "fur5"
 	item_state = "fur5"
 	worn_state = "fur5"
+	specific = TRUE
+
+/obj/item/clothing/shoes/fur/orc
+	name = "orc fur boots"
+	desc = "Dense fur boots made from orc skin."
+	icon_state = "fur6"
+	item_state = "fur6"
+	worn_state = "fur6"
 	specific = TRUE
 /obj/item/clothing/shoes/fur/New()
 	..()

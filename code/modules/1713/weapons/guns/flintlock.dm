@@ -11,7 +11,7 @@
 	force = 10
 	throwforce = 10
 	max_shells = 1 //duh
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	caliber = "musketball"
 	recoil = 3 //extra kickback
 	//fire_sound = 'sound/weapons/sniper.ogg'
@@ -87,11 +87,6 @@
 	var/jamcheck = 0
 	var/last_fire = -1
 
-/obj/item/weapon/gun/projectile/flintlock/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/flintlock/attack_self(mob/user)
 	var/mob/living/carbon/human/H = user
 	if (istype(H) && H.faction_text == "INDIANS")
@@ -117,7 +112,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked)
@@ -130,7 +125,7 @@
 
 /obj/item/weapon/gun/projectile/flintlock/load_ammo(var/obj/item/A, mob/user)
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (cocked)
@@ -188,6 +183,7 @@
 	effectiveness_mod = 0.87
 	ammo_type = /obj/item/ammo_casing/musketball
 	value = 80
+	equiptimer = 12
 
 /obj/item/weapon/gun/projectile/flintlock/crude
 	name = "crude musket"
@@ -266,7 +262,9 @@
 	load_delay = 100
 	value = 70
 	stat = "pistol"
+	equiptimer = 7
 	accuracy_list = list(
+
 
 		// small body parts: head, hand, feet
 		"small" = list(
@@ -321,7 +319,7 @@
 /obj/item/weapon/gun/projectile/flintlock/blunderbuss
 	gun_type = GUN_TYPE_SHOTGUN
 	fire_sound = 'sound/weapons/guns/fire/shotgun_fire.ogg'
-
+	equiptimer = 15
 	// 15% more accurate than SMGs
 	accuracy_list = list(
 

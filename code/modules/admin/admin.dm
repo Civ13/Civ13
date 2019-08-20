@@ -111,7 +111,9 @@ proc/admin_notice(var/message, var/rights)
 				<b>Body type transformation:</b><font size=2><br>These transformations will keep the user as "human" but change the body type.</font><br>
 				<A href='?src=\ref[src];simplemake=default;mob=\ref[M]'>Default</A> |
 				<A href='?src=\ref[src];simplemake=gorilla;mob=\ref[M]'>Gorilla</A> |
-				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Wolfman</A> |
+				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Werewolf</A> |
+				<A href='?src=\ref[src];simplemake=ant;mob=\ref[M]'>Ant</A> |
+				<A href='?src=\ref[src];simplemake=orc;mob=\ref[M]'>Orc</A> |
 				<br>"}
 	body += {"<br><br>
 			<b>Other actions:</b>
@@ -550,7 +552,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Activates or Deactivates research."
 	set name="Toggle Research"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	if (!(map.research_active))
@@ -568,7 +570,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes research speed in Auto-Research mode."
 	set name="Set Research Speed"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	if (!(map.autoresearch))
@@ -580,8 +582,8 @@ proc/admin_notice(var/message, var/rights)
 			return
 		if (customresearchsp < 0)
 			customresearchsp = 0
-		if (customresearchsp > 200)
-			customresearchsp = 200
+		if (customresearchsp > 230)
+			customresearchsp = 230
 		map.autoresearch_mult = customresearchsp
 		world << "<big>Research increase per minute has been changed to <b>[map.autoresearch_mult]</b></big>"
 		log_admin("[key_name(usr)] has changed the research modifier to [map.autoresearch_mult].")
@@ -591,7 +593,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the starting research."
 	set name="Set Custom Research"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	else if (!(ticker.current_state == GAME_STATE_PREGAME))
@@ -620,7 +622,7 @@ proc/admin_notice(var/message, var/rights)
 	set category = "Special"
 	set desc="Changes the starting age."
 	set name="Set Custom Age"
-	if (!map.civilizations)
+	if (!map.civilizations || map.ID == MAP_TRIBES)
 		usr << "<font color='red'>Error: This is only available on Civ13 mode.</font>"
 		return
 	else if (!(ticker.current_state == GAME_STATE_PREGAME))
@@ -1039,3 +1041,35 @@ var/list/atom_types = null
 				O.active = 1
 				O.do_spawn()
 			return
+
+//Radiation/Pollution stuff
+/datum/admins/proc/get_world_values()
+	set category = "Debug"
+	set desc="Display how Irradiated/Polluted the world is."
+	set name="Display Worldvars"
+
+	src << "World Variables:"
+	src << "Radiation: [get_global_radiation()]"
+	src << "Pollution: [get_global_pollution()]"
+
+/datum/admins/proc/set_world_radiation()
+	set category = "Debug"
+	set desc="Change the radiation level of the world."
+	set name="Change World Radiation"
+
+	var/num = input(usr, "Enter what you want the world's radiation to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Radiation", 0) as num
+	if (!isnum(num) || num<0)
+		return
+	set_global_radiation(num)
+	world.log << "[usr] set the worlds radiation to [num]."
+
+/datum/admins/proc/set_world_pollution()
+	set category = "Debug"
+	set desc="Change the pollution level of the world."
+	set name="Change World Pollution"
+
+	var/num = input(usr, "Enter what you want the world's pollution to be, press cancel or leave blank if you change your mind. Numbers only please!", "Set Pollution", 0) as num
+	if (!isnum(num) || num<0)
+		return
+	set_global_pollution(num)
+	world.log << "[usr] set the worlds pollution to [num]."

@@ -1,5 +1,5 @@
 /datum/job/dutch
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/dutch/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_dutch_name(H.gender)
@@ -44,7 +44,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -85,6 +85,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -128,6 +129,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -165,7 +167,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -202,6 +204,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_VERY_HIGH)
+	give_random_name(H)
 
 
 	return TRUE
@@ -243,6 +246,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
 	return TRUE
@@ -287,8 +291,10 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
+	give_random_name(H)
 
 
+	return TRUE
 
 
 
@@ -338,7 +344,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL) //not used
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -383,7 +389,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 /datum/job/dutch/army_officer
@@ -422,7 +428,7 @@
 	H.setStat("pistol", STAT_MEDIUM_HIGH)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -460,7 +466,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_VERY_HIGH)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -499,7 +505,7 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE
 
@@ -532,7 +538,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/cutlass(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_shoulder)
 	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
@@ -542,6 +548,6 @@
 	H.setStat("pistol", STAT_NORMAL)
 	H.setStat("bows", STAT_NORMAL)
 	H.setStat("medical", STAT_MEDIUM_LOW)
-
+	give_random_name(H)
 
 	return TRUE

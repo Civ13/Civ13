@@ -12,6 +12,8 @@
 	var/misk_icon		= 'icons/mob/mob.dmi'
 	var/belt_icon		= 'icons/mob/belt.dmi'
 	var/backpack_icon	= 'icons/mob/back.dmi'
+	var/shoulder_icon	= 'icons/mob/back.dmi'
+	var/eyes_icon    	= 'icons/mob/eyes.dmi'
 	var/nohair = FALSE
 	var/nofacialhair = FALSE
 
@@ -58,10 +60,37 @@
 /datum/body_build/gorilla
 	name			= "Gorilla"
 	index			= "_gorilla"
-	nohair = TRUE
+	nohair = FALSE
 	nofacialhair = TRUE
 
 /datum/body_build/gorilla/female
+	gender 			= FEMALE
+
+/datum/body_build/orc
+	name			= "Orc"
+	index			= "_orc"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/orc/female
+	gender 			= FEMALE
+
+/datum/body_build/orc/dark
+	name			= "Dark Orc"
+	index			= "_orc_b"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/orc/dark/female
+	gender 			= FEMALE
+
+/datum/body_build/orc/brown
+	name			= "Brown Orc"
+	index			= "_orc_c"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/orc/brown/female
 	gender 			= FEMALE
 
 /datum/body_build/wolfman
@@ -71,4 +100,59 @@
 	nofacialhair = TRUE
 
 /datum/body_build/wolfman/female
+	gender 			= FEMALE
+
+/datum/body_build/werewolf
+	name			= "Werewolf"
+	index			= "_werewolf"
+	nohair = TRUE
+	nofacialhair = TRUE
+
+/datum/body_build/werewolf/female
+	gender 			= FEMALE
+
+
+/datum/body_build/ant
+	name			= "Ant"
+	index			= "_ant"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/ant/female
+	gender 			= FEMALE
+
+/datum/body_build/ant/black
+	name			= "Black Ant"
+	index			= "_bant"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/ant/black/female
+	gender 			= FEMALE
+
+/datum/body_build/ant/yellow
+	name			= "Yellow Ant"
+	index			= "_yant"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/ant/yellow/female
+	gender 			= FEMALE
+
+/datum/body_build/lizard
+	name			= "Lizard"
+	index			= "_lizard"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/lizard/female
+	gender 			= FEMALE
+
+/datum/body_build/crab
+	name			= "Crab"
+	index			= "_crabman"
+	nohair = FALSE
+	nofacialhair = TRUE
+
+/datum/body_build/crab/female
 	gender 			= FEMALE

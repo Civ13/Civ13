@@ -5,6 +5,13 @@
 	icon_closed = "cabinet_closed"
 	icon_opened = "cabinet_open"
 
+/obj/structure/closet/cabinet/ceiling
+	name = "cabinet"
+	desc = "Old will forever be in fashion."
+	icon_state = "cabinet_closed_ceiling"
+	icon_closed = "cabinet_closed_ceiling"
+	icon_opened = "cabinet_open_ceiling"
+	anchored = TRUE
 
 /obj/structure/closet/hideout
 	name = "strange leaves"

@@ -82,6 +82,10 @@
 /obj/structure/sign
 	anchored = TRUE
 
+/obj/structure/sign/radiation
+	name = "radiation in the area!"
+	icon_state = "radiation"
+
 /obj/structure/sign/traffic
 	name = "STOP sign"
 	desc = ""
@@ -150,8 +154,13 @@
 
 /obj/structure/sign/flag/japanese
 	name = "Imperial Japanese flag"
-	desc = "A flag with the imperial Japanese flag."
+	desc = "A flag with the imperial Japanese rising sun."
 	icon_state = "japanese"
+
+/obj/structure/sign/flag/chinese
+	name = "Republic of China flag"
+	desc = "A flag with the republic of china design."
+	icon_state = "flag_china"
 
 /obj/structure/sign/flag/french
 	name = "French flag"
@@ -167,6 +176,11 @@
 	name = "United Kingdom flag"
 	desc = "A flag of the United Kingdom."
 	icon_state = "flag_uk"
+
+/obj/structure/sign/flag/russia
+	name = "Russia flag"
+	desc = "A flag of Russsia."
+	icon_state = "flag_russia"
 
 /obj/structure/sign/flag/vietnam
 	name = "North Vietnam flag"

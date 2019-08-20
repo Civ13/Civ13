@@ -149,6 +149,11 @@
 	throw_speed = 3
 	anchored = FALSE
 
+/obj/item/mine/ap/armed
+	anchored = TRUE
+	layer = TURF_LAYER + 0.01
+	icon_state = "mine_armed"
+
 /obj/item/mine/boobytrap
 	name = "booby trap"
 	desc = "Useful for setting traps or for area denial."

@@ -39,6 +39,8 @@
 
 	var/initial_opacity = FALSE
 
+	var/radiation = 0
+
 /atom/Destroy()
 	if (reagents)
 		qdel(reagents)
@@ -379,6 +381,11 @@
 		if (toxvomit)
 			this.icon_state = "vomittox_[pick(1,4)]"
 
+/atom/proc/add_vomit_floor_bloody(mob/living/carbon/M as mob, var/toxvomit = FALSE)
+	if ( istype(src, /turf) )
+		new /obj/effect/decal/cleanable/vomit/bloody(src)
+
+
 /atom/proc/clean_blood()
 	if (!simulated)
 		return
@@ -481,7 +488,7 @@
 		var/limbcheck = user.targeted_organ
 		if (limbcheck == "random")
 			limbcheck = pick("l_arm","r_arm","l_hand","r_hand")
-		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm"))
+		if(limbcheck in list("l_hand","r_hand","l_arm","r_arm") || user.werewolf)
 			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
 			if(!affecting)
 				user << "<span class='notice'>[src] is missing that body part.</span>"
@@ -489,7 +496,12 @@
 			else
 				visible_message("<span class='danger'>[user] bites the [src]'s [affecting.name]!</span>","<span class='danger'>You bite the [src]'s [affecting.name]!</span>")
 				if (ishuman(src) && ishuman(user))
-					affecting.createwound(BRUISE, rand(6,9)*user.getStatCoeff("strength"))
+					if (user.werewolf && user.body_build.name != "Default")
+						affecting.createwound(BRUISE, rand(15,21)*user.getStatCoeff("strength"))
+						if (prob(20))
+							target.werewolf = 1
+					else
+						affecting.createwound(BRUISE, rand(6,9)*user.getStatCoeff("strength"))
 					target.emote("painscream")
 				else
 					target.adjustBruteLoss(rand(6,7))
@@ -525,22 +537,50 @@
 		var/obj/item/organ/affecting = user.get_organ(limbcheck)
 		if(!affecting)//Oh shit, we don't have have any legs, we can't jump.
 			return
-	if (istype(target, /turf/floor/beach/water) || user.stats["stamina"][1] <= 25 || get_dist(target,user)>2)
+	var/maxdist = 2
+	if (ishuman(user))
+		if (user.gorillaman)
+			maxdist = 3
+	if (istype(target, /turf/floor/beach/water) || user.stats["stamina"][1] <= 25 || get_dist(target,user)>maxdist)
 		return
 	if ((istype(target, /obj) && target.density == TRUE) || (istype(target, /turf) && target.density == TRUE))
 		return
+	for (var/obj/O in get_turf(target))
+		if (O.density)
+			user << "<span class='danger'>You hit the [O]!</span>"
+			user.adjustBruteLoss(rand(2,7))
+			user.Weaken(2)
+			user.setClickCooldown(22)
+			return
+
 	//is there a wall in the way?
 	if (get_dist(target,user)==2)
 		var/dir_to_tgt = get_dir(user,target)
 		for(var/obj/O in range(1,user))
-			if (get_dir(user,O) == dir_to_tgt && (O.density == TRUE || istype(O, /obj/structure/window/sandbag/railing)))
+			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/sandbag/railing)))
 				user << "<span class='danger'>You hit the [O]!</span>"
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)
 				user.setClickCooldown(22)
 				return
 		for(var/turf/T in range(1,user))
-			if (get_dir(user,T) == dir_to_tgt && T.density == TRUE)
+			if ((get_dir(user,T) in nearbydirections(dir_to_tgt)) && T.density == TRUE)
+				user << "<span class='danger'>You hit the [T]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
+	if (maxdist == 3 && get_dist(target,user)==3)
+		var/dir_to_tgt = get_dir(user,target)
+		for(var/obj/O in range(2,user))
+			if ((get_dir(user,O) in nearbydirections(dir_to_tgt)) && (O.density == TRUE || istype(O, /obj/structure/window/sandbag/railing)))
+				user << "<span class='danger'>You hit the [O]!</span>"
+				user.adjustBruteLoss(rand(2,7))
+				user.Weaken(2)
+				user.setClickCooldown(22)
+				return
+		for(var/turf/T in range(2,user))
+			if ((get_dir(user,T) in nearbydirections(dir_to_tgt)) && T.density == TRUE)
 				user << "<span class='danger'>You hit the [T]!</span>"
 				user.adjustBruteLoss(rand(2,7))
 				user.Weaken(2)

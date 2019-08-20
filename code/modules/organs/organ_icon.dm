@@ -70,7 +70,7 @@ var/global/list/limb_icon_cache = list()
 				hair_s.Blend(rgb(h_col[1], h_col[2], h_col[3]), ICON_ADD)
 			overlays |= hair_s
 
-	return mob_icon
+	icon = mob_icon
 
 /obj/item/organ/external/update_icon(var/regenerate = FALSE)
 	if (!owner)//special check

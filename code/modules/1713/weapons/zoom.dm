@@ -262,9 +262,10 @@ Parts of code courtesy of Super3222
 						if (azoom_button_screenX > AB_screenX)
 							++moved
 		else
-			for (var/obj/screen/movable/action_button/AB in user.client.screen)
-				if (AB.name == "Toggle Sights")
-					AB.invisibility = 0
+			if (user && user.client)
+				for (var/obj/screen/movable/action_button/AB in user.client.screen)
+					if (AB.name == "Toggle Sights")
+						AB.invisibility = 0
 
 	// actually shift the button
 	azoom.button.pixel_x = -(moved*32)

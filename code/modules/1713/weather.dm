@@ -1,5 +1,25 @@
 /var/global/weather = WEATHER_NONE
 /var/global/weather_intensity = 1.0
+/var/global/world_pollution = 0.0
+/var/global/world_radiation = 0.0
+
+/proc/change_global_radiation(amount)
+	world_radiation += amount
+
+/proc/set_global_radiation(amount)
+	world_radiation = amount
+
+/proc/get_global_radiation()
+	return world_radiation
+
+/proc/change_global_pollution(amount)
+	world_pollution += amount
+
+/proc/set_global_pollution(amount)
+	world_pollution = amount
+
+/proc/get_global_pollution()
+	return world_pollution
 
 /proc/change_weather(_weather = WEATHER_NONE, var/bypass_same_weather_check = FALSE)
 
@@ -16,7 +36,6 @@
 	if (season == "WINTER")
 		if (_weather == WEATHER_NONE)
 			weather = WEATHER_NONE
-
 		else if (_weather == WEATHER_BLIZZARD)
 			weather = WEATHER_BLIZZARD
 		else if (_weather == WEATHER_SNOW)
@@ -114,58 +133,100 @@
 				weather = WEATHER_NONE
 	var/area_icon_state = ""
 
-	switch (weather)
-		if (WEATHER_SNOW)
-			switch (weather_intensity)
-				if (1.0)
-					area_icon_state = "snow1"
-				if (2.0)
-					area_icon_state = "snow2"
-				if (3.0)
-					area_icon_state = "snow3"
-		if (WEATHER_RAIN)
-			switch (weather_intensity)
-				if (1.0)
-					area_icon_state = "rain1"
-				if (2.0)
-					area_icon_state = "rain2"
-				if (3.0)
-					area_icon_state = "rain3"
-		if (WEATHER_BLIZZARD)
-			switch (weather_intensity)
-				if (1.0)
-					area_icon_state = "snow_storm"
-				if (2.0)
-					area_icon_state = "snow_storm"
+	if (world_radiation < 300)
+		switch (weather)
+			if (WEATHER_SNOW)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "snow1"
+					if (2.0)
+						area_icon_state = "snow2"
+					if (3.0)
+						area_icon_state = "snow3"
+			if (WEATHER_RAIN)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "rain1"
+					if (2.0)
+						area_icon_state = "rain2"
+					if (3.0)
+						area_icon_state = "rain3"
+			if (WEATHER_BLIZZARD)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "snow_storm"
+					if (2.0)
+						area_icon_state = "snow_storm"
 
-				if (3.0)
-					area_icon_state = "snow_storm"
+					if (3.0)
+						area_icon_state = "snow_storm"
 
-		if (WEATHER_SANDSTORM)
-			switch (weather_intensity)
-				if (1.0)
-					area_icon_state = "sandstorm"
+			if (WEATHER_SANDSTORM)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "sandstorm"
 
-				if (2.0)
-					area_icon_state = "sandstorm"
+					if (2.0)
+						area_icon_state = "sandstorm"
 
-				if (3.0)
-					area_icon_state = "sandstorm"
+					if (3.0)
+						area_icon_state = "sandstorm"
 
-		if (WEATHER_STORM)
-			switch (weather_intensity)
-				if (1.0)
-					area_icon_state = "monsoon"
+			if (WEATHER_STORM)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "monsoon"
 
-				if (2.0)
-					area_icon_state = "monsoon"
+					if (2.0)
+						area_icon_state = "monsoon"
 
-				if (3.0)
-					area_icon_state = "monsoon"
+					if (3.0)
+						area_icon_state = "monsoon"
 
-		if (WEATHER_SMOG)
-			area_icon_state = "smog"
+			if (WEATHER_SMOG)
+				area_icon_state = "smog"
+	else
+		switch(weather)
+			if (WEATHER_NONE)
+				area_icon_state = "rad_radioactive_fallout"
 
+			if (WEATHER_RAIN)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "rad_acidrain1"
+
+					if (2.0)
+						area_icon_state = "rad_acidrain2"
+
+					if (3.0)
+						area_icon_state = "rad_acidrain3"
+
+			if (WEATHER_STORM)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "rad_acidmonsoon"
+
+					if (2.0)
+						area_icon_state = "rad_acidmonsoon"
+
+					if (3.0)
+						area_icon_state = "rad_acidmonsoon"
+
+			if (WEATHER_SNOW)
+				switch (weather_intensity)
+					if (1.0)
+						area_icon_state = "rad_acidmonsoon"
+
+					if (2.0)
+						area_icon_state = "rad_acidmonsoon"
+
+					if (3.0)
+						area_icon_state = "rad_acidmonsoon"
+
+			if (WEATHER_BLIZZARD)
+				area_icon_state = "rad_nuclear_snow_storm"
+			if (WEATHER_SMOG)
+				area_icon_state = "rad_smog"
 
 	if (map.civilizations)
 		for (var/area/caribbean/A in area_list)
@@ -394,12 +455,15 @@
 					A.icon_state = ""
 					A.weather = WEATHER_NONE
 					A.weather_intensity = weather_intensity
+				if (world_radiation >= 300)
+					A.icon_state = "rad_[A.icon_state]"
 	else
 		for (var/area/caribbean/A in area_list)
 			if (istype(A) && A.location == AREA_OUTSIDE)
 				A.icon_state = area_icon_state
 				A.weather = weather
 				A.weather_intensity = weather_intensity
+
 /*
 	if (old_weather != weather)
 		announce_weather_change(old_weather, weather)

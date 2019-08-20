@@ -27,5 +27,6 @@
 		crush()
 
 	for(var/mob/living/carbon/human/NB in view(6,src))
-		NB.mood -= 10
-		NB.ptsd += 1
+		if (!NB.orc)
+			NB.mood -= 10
+			NB.ptsd += 1

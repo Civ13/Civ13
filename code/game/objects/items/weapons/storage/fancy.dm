@@ -179,7 +179,11 @@
 	can_hold = list(/obj/item/clothing/mask/smokable/cigarette/cigar)
 	icon_type = "cigar"
 
-/obj/item/weapon/storage/fancy/cigar/New()
+/obj/item/weapon/storage/fancy/cigar/full
+	name = "cigar case"
+	desc = "A case for holding your cigars when you are not smoking them."
+
+/obj/item/weapon/storage/fancy/cigar/full/New()
 	..()
 	flags |= NOREACT
 	for (var/i = 1 to storage_slots)

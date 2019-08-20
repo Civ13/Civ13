@@ -9,15 +9,12 @@
 				s_tone = random_skin_tone()
 			if (current_species.appearance_flags & HAS_EYE_COLOR)
 				randomize_eyes_color()
-			if (current_species.appearance_flags & HAS_SKIN_COLOR)
-				randomize_skin_color()
-
+		b_type = pick("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-")
 		h_style = random_hair_style(gender, species)
 		f_style = random_facial_hair_style(gender, species)
 		randomize_hair_color("hair")
 		randomize_hair_color("facial")
 
-		backbag = 2
 		age = rand(current_species.min_age, current_species.max_age)
 		if (H)
 			copy_to(H,1)
@@ -34,44 +31,11 @@
 		var/green
 		var/blue
 
-		var/col = pick ("blonde", "black", "chestnut", "copper", "brown", "wheat", "old", "punk")
-		switch(col)
-			if ("blonde")
-				red = 255
-				green = 255
-				blue = FALSE
-			if ("black")
-				red = FALSE
-				green = FALSE
-				blue = FALSE
-			if ("chestnut")
-				red = 153
-				green = 102
-				blue = 51
-			if ("copper")
-				red = 255
-				green = 153
-				blue = FALSE
-			if ("brown")
-				red = 102
-				green = 51
-				blue = FALSE
-			if ("wheat")
-				red = 255
-				green = 255
-				blue = 153
-			if ("old")
-				red = rand (100, 255)
-				green = red
-				blue = red
-			if ("punk")
-				red = rand (0, 255)
-				green = rand (0, 255)
-				blue = rand (0, 255)
-
-		red = max(min(red + rand (-25, 25), 255), FALSE)
-		green = max(min(green + rand (-25, 25), 255), FALSE)
-		blue = max(min(blue + rand (-25, 25), 255), FALSE)
+		var/col = pick ("Black", "Light Brown", "Dark Brown", "Red", "Orange", "Light Blond", "Blond", "Dirty Blond", "Light Grey", "Grey")
+		var/hex_hair = hair_colors[col]
+		red = hex2num(copytext(hex_hair, 2, 4))
+		green = hex2num(copytext(hex_hair, 4, 6))
+		blue = hex2num(copytext(hex_hair, 6, 8))
 
 		switch(target)
 			if ("hair")
@@ -88,97 +52,15 @@
 		var/green
 		var/blue
 
-		var/col = pick ("black", "grey", "brown", "chestnut", "blue", "lightblue", "green", "albino")
-		switch(col)
-			if ("black")
-				red = FALSE
-				green = FALSE
-				blue = FALSE
-			if ("grey")
-				red = rand (100, 200)
-				green = red
-				blue = red
-			if ("brown")
-				red = 102
-				green = 51
-				blue = FALSE
-			if ("chestnut")
-				red = 153
-				green = 102
-				blue = FALSE
-			if ("blue")
-				red = 51
-				green = 102
-				blue = 204
-			if ("lightblue")
-				red = 102
-				green = 204
-				blue = 255
-			if ("green")
-				red = FALSE
-				green = 102
-				blue = FALSE
-			if ("albino")
-				red = rand (200, 255)
-				green = rand (0, 150)
-				blue = rand (0, 150)
-
-		red = max(min(red + rand (-25, 25), 255), FALSE)
-		green = max(min(green + rand (-25, 25), 255), FALSE)
-		blue = max(min(blue + rand (-25, 25), 255), FALSE)
+		var/col2 = pick ("Black", "Brown", "Dark Brown", "Green", "Blue")
+		var/hex_eyes = eye_colors[col2]
+		red = hex2num(copytext(hex_eyes, 2, 4))
+		green = hex2num(copytext(hex_eyes, 4, 6))
+		blue = hex2num(copytext(hex_eyes, 6, 8))
 
 		r_eyes = red
 		g_eyes = green
 		b_eyes = blue
-
-	proc/randomize_skin_color()
-		var/red
-		var/green
-		var/blue
-
-		var/col = pick ("black", "grey", "brown", "chestnut", "blue", "lightblue", "green", "albino")
-		switch(col)
-			if ("black")
-				red = FALSE
-				green = FALSE
-				blue = FALSE
-			if ("grey")
-				red = rand (100, 200)
-				green = red
-				blue = red
-			if ("brown")
-				red = 102
-				green = 51
-				blue = FALSE
-			if ("chestnut")
-				red = 153
-				green = 102
-				blue = FALSE
-			if ("blue")
-				red = 51
-				green = 102
-				blue = 204
-			if ("lightblue")
-				red = 102
-				green = 204
-				blue = 255
-			if ("green")
-				red = FALSE
-				green = 102
-				blue = FALSE
-			if ("albino")
-				red = rand (200, 255)
-				green = rand (0, 150)
-				blue = rand (0, 150)
-
-		red = max(min(red + rand (-25, 25), 255), FALSE)
-		green = max(min(green + rand (-25, 25), 255), FALSE)
-		blue = max(min(blue + rand (-25, 25), 255), FALSE)
-
-		r_skin = red
-		g_skin = green
-		b_skin = blue
-
 
 	proc/update_preview_icons()		//seriously. This is horrendous.
 

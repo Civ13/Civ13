@@ -236,7 +236,7 @@
 /area/caribbean/no_mans_land/taiga
 	name = "No Man's Land"
 	icon_state = "purple1"
-	climate = "tundra"
+	climate = "taiga"
 	base_turf = /turf/floor/dirt/winter
 /area/caribbean/no_mans_land/temperate
 	name = "No Man's Land"
@@ -260,7 +260,42 @@
 	base_turf = /turf/floor/dirt/jungledirt
 /area/caribbean/no_mans_land/invisible_wall
 	icon_state = "green1"
+	name = "grace wall"
 
+/area/caribbean/no_mans_land/invisible_wall/tundra
+	climate = "tundra"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/invisible_wall/taiga
+	climate = "taiga"
+	base_turf = /turf/floor/dirt/winter
+/area/caribbean/no_mans_land/invisible_wall/temperate
+	climate = "temperate"
+	base_turf = /turf/floor/dirt
+/area/caribbean/no_mans_land/invisible_wall/desert
+	climate = "desert"
+	base_turf = /turf/floor/beach/sand/desert
+/area/caribbean/no_mans_land/invisible_wall/semiarid
+	climate = "semiarid"
+	base_turf = /turf/floor/dirt/dust
+/area/caribbean/no_mans_land/invisible_wall/jungle
+	climate = "jungle"
+	base_turf = /turf/floor/dirt/jungledirt
+
+/area/caribbean/no_mans_land/invisible_wall/one
+	icon_state = "green1"
+	name = "I grace wall"
+
+/area/caribbean/no_mans_land/invisible_wall/two
+	icon_state = "green1"
+	name = "II grace wall"
+
+/area/caribbean/no_mans_land/invisible_wall/three
+	icon_state = "green1"
+	name = "III grace wall"
+
+/area/caribbean/no_mans_land/invisible_wall/four
+	icon_state = "green1"
+	name = "IV grace wall"
 /area/caribbean/no_mans_land/invisible_wall/inside
 	location = AREA_INSIDE
 
@@ -822,6 +857,17 @@
 	name = "Arena II"
 	icon_state = "blue2"
 
+/area/caribbean/roman/arena3
+	name = "Arena III"
+	icon_state = "blue1"
+
+/area/caribbean/roman/arena4
+	name = "Arena IV"
+	icon_state = "blue2"
+/area/caribbean/roman/arena4/out
+	name = "Arena IV outer ring"
+	icon_state = "blue3"
+
 /area/caribbean/roman/morgue
 	name = "Morgue"
 	icon_state = "red3"
@@ -835,7 +881,9 @@
 /area/caribbean/roman/armory/loot
 	name = "Armory Loots"
 	icon_state = "green2"
-
+/area/caribbean/roman/armory/loot2
+	name = "Armory Loots"
+	icon_state = "green3"
 /area/caribbean/greek
 	name = "Greek Camp"
 	icon_state = "blue1"

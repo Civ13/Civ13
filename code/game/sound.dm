@@ -32,12 +32,15 @@ var/list/spark_sound = list('sound/effects/sparks1.ogg','sound/effects/sparks2.o
 var/list/rustle_sound = list('sound/effects/rustle1.ogg','sound/effects/rustle2.ogg','sound/effects/rustle3.ogg','sound/effects/rustle4.ogg','sound/effects/rustle5.ogg')
 var/list/punch_sound = list('sound/weapons/punch1.ogg','sound/weapons/punch2.ogg','sound/weapons/punch3.ogg', 'sound/weapons/punch4.ogg')
 var/list/swing_hit_sound = list('sound/weapons/genhit1.ogg', 'sound/weapons/genhit2.ogg', 'sound/weapons/genhit3.ogg')
+var/list/stab_sound = list('sound/weapons/stab1.ogg', 'sound/weapons/stab2.ogg', 'sound/weapons/stab3.ogg')
+var/list/slash_sound = list('sound/weapons/slash1.ogg','sound/weapons/slash2.ogg','sound/weapons/slash3.ogg')
 var/list/page_sound = list('sound/effects/pageturn1.ogg', 'sound/effects/pageturn2.ogg','sound/effects/pageturn3.ogg')
 var/list/miss_sound = list ('sound/weapons/guns/misc/miss.ogg','sound/weapons/guns/misc/miss2.ogg','sound/weapons/guns/misc/miss3.ogg','sound/weapons/guns/misc/miss4.ogg')
 var/list/ric_sound = list ('sound/weapons/guns/misc/ric1.ogg','sound/weapons/guns/misc/ric2.ogg','sound/weapons/guns/misc/ric3.ogg','sound/weapons/guns/misc/ric4.ogg','sound/weapons/guns/misc/ric5.ogg')
 var/list/bullet_hit_object_sound = list('sound/weapons/guns/misc/bullethit.ogg')
 var/list/casing_sound = list ('sound/weapons/guns/misc/casingfall1.ogg','sound/weapons/guns/misc/casingfall2.ogg','sound/weapons/guns/misc/casingfall3.ogg')
 var/list/trauma_sound = list('sound/effects/gore/trauma1.ogg', 'sound/effects/gore/trauma2.ogg', 'sound/effects/gore/trauma3.ogg')
+var/list/chop_sound = list('sound/effects/gore/chop.ogg', 'sound/effects/gore/chop2.ogg', 'sound/effects/gore/chop3.ogg', 'sound/effects/gore/chop4.ogg', 'sound/effects/gore/chop5.ogg', 'sound/effects/gore/chop6.ogg')
 var/list/platingfootsteps = list('sound/effects/footsteps/plating/plating1.ogg','sound/effects/footsteps/plating/plating2.ogg','sound/effects/footsteps/plating/plating3.ogg','sound/effects/footsteps/plating/plating4.ogg')
 var/list/erikafootsteps = list('sound/effects/footsteps/tile1.ogg','sound/effects/footsteps/tile2.ogg','sound/effects/footsteps/tile3.ogg','sound/effects/footsteps/tile4.ogg')
 var/list/grassfootsteps = list('sound/effects/footsteps/grass/grass1.ogg','sound/effects/footsteps/grass/grass2.ogg','sound/effects/footsteps/grass/grass3.ogg','sound/effects/footsteps/grass/grass4.ogg')
@@ -209,6 +212,30 @@ var/list/charge_sounds_us = list(
 	'sound/effects/emotes/charge_eng.ogg',)
 var/list/charge_sounds_isr = list(
 	'sound/effects/emotes/charge_isr.ogg',)
+var/list/charge_sounds_orc = list(
+	'sound/effects/emotes/charge_orc1.ogg',
+	'sound/effects/emotes/charge_orc2.ogg',)
+var/list/charge_sounds_wolfman = list(
+	'sound/effects/emotes/charge_wolfman1.ogg',
+	'sound/effects/emotes/charge_wolfman2.ogg',
+	'sound/effects/emotes/charge_wolfman3.ogg',
+	'sound/effects/emotes/charge_wolfman4.ogg',)
+var/list/charge_sounds_ant = list(
+	'sound/effects/emotes/charge_ant1.ogg',
+	'sound/effects/emotes/charge_ant2.ogg',
+	'sound/effects/emotes/charge_ant3.ogg',)
+var/list/charge_sounds_crab  = list(
+	'sound/effects/emotes/charge_crab1.ogg',
+	'sound/effects/emotes/charge_crab2.ogg',
+	'sound/effects/emotes/charge_crab3.ogg',)
+var/list/charge_sounds_lizard = list(
+	'sound/effects/emotes/charge_lizard1.ogg',
+	'sound/effects/emotes/charge_lizard2.ogg',
+	'sound/effects/emotes/charge_lizard3.ogg',)
+var/list/charge_sounds_gorilla = list(
+	'sound/effects/emotes/charge_ape1.ogg',
+	'sound/effects/emotes/charge_ape2.ogg',
+	'sound/effects/emotes/charge_ape3.ogg',)
 // pain, etc sounds from Interbay
 
 /proc/playsound(var/atom/source, soundin, vol as num, vary, extrarange as num, falloff, var/is_global, var/list/excluded = list())
@@ -331,11 +358,14 @@ var/const/FALLOFF_SOUNDS = 0.5
 			if ("rustle") soundin = pick(rustle_sound)
 			if ("punch") soundin = pick(punch_sound)
 			if ("swing_hit") soundin = pick(swing_hit_sound)
+			if ("slash_sound") soundin = pick(slash_sound)
+			if ("stab_sound") soundin = pick(stab_sound)
 			if ("pageturn") soundin = pick(page_sound)
 			if ("miss_sound") soundin = pick(miss_sound)
 			if ("ric_sound") soundin = pick(ric_sound)
 			if ("hitobject") soundin = pick(bullet_hit_object_sound)
 			if ("trauma") soundin = pick(trauma_sound)
+			if ("chop") soundin = pick(chop_sound)
 			if ("platingfootsteps") soundin = pick(platingfootsteps)
 			if ("erikafootsteps") soundin = pick(erikafootsteps)
 			if ("grassfootsteps") soundin = pick(grassfootsteps)
@@ -422,4 +452,16 @@ var/const/FALLOFF_SOUNDS = 0.5
 				soundin = pick(charge_sounds_us)
 			if ("charge_ISRAELI")
 				soundin = pick(charge_sounds_isr)
+			if ("charge_ORC")
+				soundin = pick(charge_sounds_orc)
+			if ("charge_WOLFMAN")
+				soundin = pick(charge_sounds_wolfman)
+			if ("charge_ANT")
+				soundin = pick(charge_sounds_ant)
+			if ("charge_CRAB")
+				soundin = pick(charge_sounds_crab)
+			if ("charge_LIZARD")
+				soundin = pick(charge_sounds_lizard)
+			if ("charge_GORILLA")
+				soundin = pick(charge_sounds_gorilla)
 	return soundin

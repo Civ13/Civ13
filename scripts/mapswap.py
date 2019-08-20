@@ -1,24 +1,23 @@
-import sys 
-import os 
-import shutil 
+import sys
+import os
+import shutil
 import time
-import subprocess
 import psutil
 import signal
 
 if len(sys.argv) == 1:
 	print("Not enough args provided.")
-	sys.exit() 
-	
+	sys.exit()
+
 print("Updating git...")
-	
+
 os.chdir("/home/1713/civ13-git")
 os.system("git pull")
 os.system("git reset --hard origin/master")
-	
+
 map = sys.argv[1]
 dmms = []
-if map == "ISLAND":
+if map:
 	dmms.append("#include \"maps\\1713\\island.dmm\"")
 
 elif map == "NAVAL":
@@ -32,6 +31,9 @@ elif map == "SUPPLY_RAID":
 
 elif map == "COLONY":
 	dmms.append("#include \"maps\\1713\\colony.dmm\"")
+
+elif map == "JUNGLE_COLONY":
+	dmms.append("#include \"maps\\1713\\jungle_colony.dmm\"")
 
 elif map == "FOUR_COLONIES":
 	dmms.append("#include \"maps\\1713\\four_colonies.dmm\"")
@@ -105,6 +107,14 @@ elif map == "KHALKHYN_GOL":
 	dmms.append("#include \"maps\\1943\\khalkhyn_gol.dmm\"")
 elif map == "ARAB_TOWN":
 	dmms.append("#include \"maps\\1969\\arab_town.dmm\"")
+elif map == "GLADIATORS":
+	dmms.append("#include \"maps\\313bc\\gladiators.dmm\"")
+elif map == "OMAHA":
+	dmms.append("#include \"maps\\1943\\omaha.dmm\"")
+elif map == "TSARITSYN":
+	dmms.append("#include \"maps\\1903\\tsaritsyn.dmm\"")
+elif map == "ROAD_TO_DAK_TO":
+	dmms.append("#include \"maps\\1969\\road_to_dak_to.dmm\"")
 else:
 	print("Invalid argument.")
 	sys.exit()
@@ -114,9 +124,9 @@ DME = "/home/1713/civ13-git/civ13.dme"
 lines = []
 with open(DME, "r") as search:
 	for line in search:
-		lines.append(line)	
+		lines.append(line)
 	search.close()
-			
+
 wroteDMMs = False
 DME = open(DME, "w")
 for line in lines:
@@ -129,7 +139,7 @@ for line in lines:
 			wroteDMMs = True
 	else:
 		DME.write(line)
-			
+
 DME.close()
 
 t1 = time.time()
@@ -149,31 +159,31 @@ print("Finished rebuilding in {} seconds".format(t2))
 print("Moving into reboot in 30 seconds!")
 
 time.sleep(30)
-#pid2cpu = dict()
+
 pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 
 for pid in pids:
 	try:
-	
-		# due to BUGS we need to make sure the file we use as a reference is newer than the other 
+
+		# due to BUGS we need to make sure the file we use as a reference is newer than the other
 		# todo: add test server support
 		may_restart_server = []
 		may_restart_server.append("1713")
 
 		if len(may_restart_server) == 0:
 			may_restart_server.append("notathing")
-			
+
 		name = open(os.path.join('/proc', pid, 'cmdline'), 'r').read()
 		if "civ13.dmb" in name:
 			if not "sudo" in name:
 
 				# main server logic: for some reason I could get a valid string/int for port so we're just using "in"
-				
+
 				# civ13 is the active server; restart civ13
 				if "1713" in name and may_restart_server[0] == "1713":
 					if os.path.isfile("/home/1713/civ13-rp/serverdata.txt"):
 						process = psutil.Process(int(pid))
-						if process != None:
+						if process is not None:
 							print("Killing the server...")
 							os.kill(int(pid), signal.SIGKILL)
 							print("Copying binaries...")
@@ -181,12 +191,12 @@ for pid in pids:
 							rsc = os.path.join('/home/1713/civ13-git/civ13.rsc')
 							shutil.copyfile(dmb, '/home/1713/civ13-rp/civ13.dmb')
 							shutil.copyfile(rsc, '/home/1713/civ13-rp/civ13.rsc')
-							time.sleep(8) # important or the process will die
+							time.sleep(8)
 							print("Rebooting the server...")
 							os.system('sudo DreamDaemon /home/1713/civ13-rp/civ13.dmb 1713 -trusted -webclient -logself &')
 							print("Restarted main server on port 1713.")
 
-	except IOError: # proc has already terminated
+	except IOError:
 		continue
 
 print("Done!")

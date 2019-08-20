@@ -1,5 +1,5 @@
 /datum/job/indians
-	faction = "Station"
+	faction = "Human"
 	var/tribe = "Carib"
 
 
@@ -67,7 +67,7 @@
 	uniform.attackby(indianshaman_a, H)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/skullmask(H), slot_head)
+	H.equip_to_slot_or_del(new /obj/item/clothing/mask/skullmask(H), slot_wear_mask)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)

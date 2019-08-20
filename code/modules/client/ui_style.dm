@@ -39,16 +39,14 @@
 	var/choice = WWinput(usr, "Which style?", "Mouse Cursor", "Default", list("Default","Red Crosshair","Green Crosshair","White Crosshair"))
 	if (choice == "Default")
 		mouse_pointer_icon = initial(mouse_pointer_icon)
-		return
 	else if (choice == "Red Crosshair")
 		mouse_pointer_icon = 'icons/effects/red_cursors.dmi'
-		return
 	else if (choice == "White Crosshair")
 		mouse_pointer_icon = 'icons/effects/white_cursors.dmi'
-		return
 	else if (choice == "Green Crosshair")
 		mouse_pointer_icon = 'icons/effects/green_cursors.dmi'
-		return
 	else
 		mouse_pointer_icon = initial(mouse_pointer_icon)
-		return
+	prefs.cursor = mouse_pointer_icon
+	prefs.save_preferences()
+	return

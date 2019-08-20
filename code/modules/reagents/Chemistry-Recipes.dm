@@ -17,6 +17,39 @@
 				chemical_reactions_list[reagent_id] = list()
 			chemical_reactions_list[reagent_id] += D
 
+//prints all the recipes into a txt file
+datum/admins/proc/print_chemical_reactions()
+	set category = "Debug"
+	set desc="Print all the ingame chemical reactions into a txt file."
+	set name="Print Chemical Reactions"
+	var/paths = typesof(/datum/chemical_reaction) - /datum/chemical_reaction
+	var/recipe_list = file("recipes.txt")
+	if (fexists(recipe_list))
+		fdel(recipe_list)
+	for (var/path in paths)
+		var/datum/chemical_reaction/D = new path()
+		var/in_reagents = ""
+		var/cat_reagents = ""
+		var/req_reagents = ""
+		for (var/i in D.required_reagents)
+			var/amt = D.required_reagents[i]
+			req_reagents += " [amt]u. [i]"
+		for (var/j in D.catalysts)
+			var/amt = D.catalysts[j]
+			cat_reagents += " [amt]u. [j]"
+		for (var/k in D.inhibitors)
+			var/amt = D.inhibitors[k]
+			in_reagents += " [amt]u. [k]"
+		var/chemical_reactions_print_var = "[D.name]:"
+		if (req_reagents && req_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Ingredients:[req_reagents],"
+		if (in_reagents && in_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Inhibitors:[in_reagents],"
+		if (cat_reagents && cat_reagents != "")
+			chemical_reactions_print_var = "[chemical_reactions_print_var] Catalysts:[cat_reagents],"
+		chemical_reactions_print_var = "[chemical_reactions_print_var] Produces: [D.result_amount]. (ID: [D.id])"
+		recipe_list << chemical_reactions_print_var
+	world.log << "Finished saving all recipes into \"recipes.txt\"."
 //helper that ensures the reaction rate holds after iterating
 //Ex. REACTION_RATE(0.3) means that 30% of the reagents will react each chemistry tick (~2 seconds by default).
 #define REACTION_RATE(rate) (1.0 - (1.0-rate)**(1.0/PROCESS_REACTION_ITER))
@@ -225,6 +258,13 @@
 	required_reagents = list("hydrogen_chloride" = 1, "water" = 5)
 	result_amount = 5
 
+/datum/chemical_reaction/potassium_iodide
+	name = "Potassium Iodide"
+	id = "potassium_iodide"
+	result = "potassium_iodide"
+	required_reagents = list("potassium" = 1, "iodine" = 1)
+	result_amount = 1
+
 
 /datum/chemical_reaction/ammonia
 	name = "Ammonia"
@@ -316,14 +356,14 @@
 	name = "Aqua regia"
 	id = "aqua_regia"
 	result = "aqua_regia"
-	required_reagents = list("nitric_acid" =1, "clorhydric_acid" = 3, )
+	required_reagents = list("nitric_acid" = 1, "clorhydric_acid" = 3, )
 	result_amount = 2
 
 /datum/chemical_reaction/nitric_acid
 	name = "Nitric acid"
 	id = "nitric_acid"
 	result = "nitric_acid"
-	required_reagents = list("nitrogen" =2, "oxygen" =5, "water" = 3 )
+	required_reagents = list("nitrogen" = 2, "oxygen" = 5, "water" = 3 )
 	result_amount = 4
 
 /datum/chemical_reaction/clorhydric_acid
@@ -353,6 +393,13 @@
 	result = "sodium_hypochlorite"
 	required_reagents = list("potassium" =1, "oxygen" = 1, "chlorine" = 1 )
 	result_amount = 2
+
+/datum/chemical_reaction/hydrazine
+	name = "Hydrazine"
+	id = "hydrazine"
+	result = "hydrazine"
+	required_reagents = list("ammonia" =1, "hydrogen" = 1, "nitrogen" = 1 )
+	result_amount = 1
 
 /datum/chemical_reaction/condensedcapsaicin
 	name = "Condensed Capsaicin"
@@ -457,6 +504,14 @@
 	result_amount = 3
 	log_is_important = TRUE
 
+/datum/chemical_reaction/gunpowder_charcoal
+	name = "Gunpowder"
+	id = "gunpowder"
+	result = "gunpowder"
+	required_reagents = list("sulfur" = 1, "charcoal" = 1, "potassium" = 1)
+	result_amount = 3
+	log_is_important = TRUE
+
 /datum/chemical_reaction/ngunpowder/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/exloc = get_turf(holder.my_atom)
 	var/datum/effect/effect/system/reagents_explosion/e = new()
@@ -554,10 +609,11 @@
 	required_reagents = list("egg" = 3, "flour" = 10, "sugar" = 2)
 	result_amount = TRUE
 /datum/chemical_reaction/dough/on_reaction(var/datum/reagents/holder, var/created_volume = 1)
-	var/location = get_turf(holder.my_atom)
-	for (var/i = 1, i <= created_volume, i++)
-		new /obj/item/weapon/reagent_containers/food/snacks/dough(location)
-	return
+	if (holder)
+		var/location = get_turf(holder.my_atom)
+		for (var/i = 1, i <= created_volume, i++)
+			new /obj/item/weapon/reagent_containers/food/snacks/dough(location)
+		return
 
 /* Alcohol */
 

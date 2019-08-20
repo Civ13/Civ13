@@ -32,6 +32,7 @@
 	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
+	health = 35
 /obj/item/clothing/gloves/gauntlets
 	name = "armored gauntlets"
 	desc = "A pair of armored iron gauntlets."
@@ -44,6 +45,7 @@
 	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
 	slowdown = 0.1
+	health = 23
 
 /obj/item/clothing/under/medieval
 	name = "white tunic"
@@ -162,6 +164,12 @@
 	item_state = "arabw_robe"
 	worn_state = "arabw_robe"
 
+/obj/item/clothing/under/medieval/lighttunic
+	name = "light brown tunic"
+	desc = "A light, loose fitting tunic."
+	icon_state = "arab1"
+	item_state = "arab1"
+	worn_state = "arab1"
 /obj/item/clothing/under/medieval/arab1
 	name = "light brown arabic tunic"
 	desc = "A light, loose fitting arabic tunic."
@@ -172,9 +180,9 @@
 /obj/item/clothing/under/medieval/arab2
 	name = "light white arabic tunic"
 	desc = "A light, loose fitting arabic tunic."
-	icon_state = "arab1"
-	item_state = "arab1"
-	worn_state = "arab1"
+	icon_state = "arab2"
+	item_state = "arab2"
+	worn_state = "arab2"
 
 /obj/item/clothing/under/medieval/arab3
 	name = "white arabic tunic"
@@ -182,7 +190,28 @@
 	icon_state = "arab3"
 	item_state = "arab3"
 	worn_state = "arab3"
-
+/obj/item/clothing/head/helmet/sauronhelm
+	name = "Sauron's Helmet"
+	desc = "The helmet to the armor of Sauron"
+	icon_state = "sauronhelmet"
+	item_state = "sauronhelmet"
+	worn_state = "sauronhelmet"
+	body_parts_covered = HEAD|FACE|EYES
+	armor = list(melee = 80, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
+	value = 70
+	slowdown = 1
+	health = 90
+/obj/item/clothing/suit/armor/sauronarmor
+	name = "Sauron's Armor"
+	desc = "The armor of Sauron"
+	icon_state = "sauronarmor"
+	item_state = "sauronarmor"
+	worn_state = "sauronarmor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 80, arrow = 90, gun = 30, energy = 20, bomb = 70, bio = 20, rad = 45)
+	value = 70
+	slowdown = 1
+	health = 90
 /obj/item/clothing/suit/armor/medieval
 	name = "plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
@@ -193,6 +222,7 @@
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 45)
 	value = 50
 	slowdown = 1.5
+	health = 60
 /obj/item/clothing/suit/armor/medieval/blue
 	name = "blue plated armor"
 	desc = "A thick, expensive iron armor, covering most of the body."
@@ -235,6 +265,7 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = 20)
 	value = 25
 	slowdown = 0.7
+	health = 48
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
 	name = "iron chestplate"
 	desc = "An iron chestplate."
@@ -245,6 +276,7 @@
 	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
 	value = 32
 	slowdown = 0.8
+	health = 52
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/red
 	..()
 	icon_state = "iron_chestplater"
@@ -272,6 +304,7 @@
 	value = 20
 	flammable = TRUE
 	slowdown = 0.2
+	health = 33
 
 /obj/item/clothing/accessory/armor
 	icon = 'icons/obj/clothing/suits.dmi'
@@ -297,6 +330,7 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = 10)
 	value = 30
 	slowdown = 0.6
+	health = 50
 
 /obj/item/clothing/accessory/armor/chainmail
 	name = "chainmail"
@@ -308,6 +342,7 @@
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 30, bio = 20, rad = 10)
 	value = 30
 	slowdown = 0.6
+	health = 50
 
 /obj/item/clothing/suit/armor/medieval/hauberk
 	name = "hauberk"
@@ -319,6 +354,8 @@
 	armor = list(melee = 60, arrow = 55, gun = 10, energy = 20, bomb = 40, bio = 30, rad = 15)
 	value = 40
 	slowdown = 0.75
+	health = 60
+
 /obj/item/clothing/head/helmet/gold_crown
 	name = "gold crown"
 	desc = "A crown of gold. Fancy."
@@ -341,7 +378,7 @@
 	name = "inlaid gold crown"
 	desc = "A crown of gold, with a diamond in it. Extra Fancy."
 	icon_state = "gold_crown_diamond"
-	item_state = "gold_crown"
+	item_state = "gold_crown_diamond"
 	worn_state = "gold_crown_diamond"
 	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
@@ -349,27 +386,37 @@
 	name = "inlaid silver crown"
 	desc = "A crown of silver, with a diamond in it. Extra Fancy."
 	icon_state = "silver_crown_diamond"
-	item_state = "silver_crown"
-	worn_state = "gold_crown_diamond"
+	item_state = "silver_crown_diamond"
+	worn_state = "silver_crown_diamond"
 	armor = list(melee = 25, arrow = 20, gun = 10, energy = 25, bomb = 20, bio = 15, rad = FALSE)
 
 /obj/item/clothing/head/helmet/silver_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return//I really don't understand why this check is needed
+	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
-		qdel(src)
-		qdel(W)
+		if(W.amount <= 1)
+			qdel(src)
+			qdel(W)
+			new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
+		else
+			qdel(src)
+			W.amount = W.amount - 1
+			new/obj/item/clothing/head/helmet/silver_crown_diamond(user.loc)
 
 /obj/item/clothing/head/helmet/gold_crown/attackby(obj/item/W as obj, mob/user as mob)
-	if (!istype(W)) return//I really don't understand why this check is needed
+	if (!istype(W)) return
 	if (istype(W, /obj/item/stack/material/diamond))
 		playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
 		user << "<span class='notice'>You place the diamond in the crown.</span>"
-		new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
-		qdel(src)
-		qdel(W)
+		if(W.amount <= 1)
+			qdel(src)
+			qdel(W)
+			new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
+		else
+			qdel(src)
+			W.amount = W.amount - 1
+			new/obj/item/clothing/head/helmet/gold_crown_diamond(user.loc)
 //continue
 
 /obj/item/clothing/head/helmet/medieval
@@ -382,6 +429,7 @@
 	armor = list(melee = 70, arrow = 90, gun = 10, energy = 15, bomb = 60, bio = 20, rad = 35)
 	flags_inv = BLOCKHAIR
 	restricts_view = 2
+	health = 55
 
 /obj/item/clothing/head/helmet/medieval/templar
 	name = "templar knight helmet"
@@ -401,6 +449,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 35
 
 /obj/item/clothing/head/helmet/medieval/helmet2
 	name = "kettle helmet"
@@ -411,6 +460,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 35, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 28
 
 /obj/item/clothing/head/helmet/medieval/helmet3
 	name = "conical helmet"
@@ -421,6 +471,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 40, arrow = 30, gun = 5, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/coif
 	name = "iron coif"
@@ -431,6 +482,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 45, arrow = 40, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
+	health = 37
 
 /obj/item/clothing/head/helmet/medieval/coif_helmet
 	name = "iron coif and helmet"
@@ -441,6 +493,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 45
 
 /obj/item/clothing/head/helmet/medieval/arab
 	name = "conical arabic helmet and turban"
@@ -451,6 +504,7 @@
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/arab2
 	name = "long arabic helmet and turban"
@@ -461,6 +515,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/arab3
 	name = "long arabic helmet"
@@ -471,7 +526,7 @@
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 55, arrow = 45, gun = 5, energy = 15, bomb = 60, bio = 30, rad = FALSE)
-
+	health = 32
 
 /obj/item/clothing/head/helmet/medieval/arab/New()
 	..()
@@ -565,6 +620,7 @@
 	armor = list(melee = 65, arrow = 75, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
 	slowdown = 0.6
+	health = 40
 
 /obj/item/clothing/suit/armor/samurai/red
 	name = "red samurai armor"
@@ -669,6 +725,7 @@
 	worn_state = "samurai3"
 	body_parts_covered = HEAD
 	armor = list(melee = 65, arrow = 55, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
+	health = 30
 
 /obj/item/clothing/head/helmet/samurai/guard
 	name = "samurai helmet"
@@ -753,3 +810,75 @@ obj/item/clothing/head/helmet/samurai/black
 	icon_state = "gat"
 	item_state = "gat"
 	worn_state = "gat"
+
+/obj/item/clothing/head/helmet/orc_beserker
+	name = "Orc Beserker Helm"
+	desc = "Orc make good helmet!"
+	icon_state = "beserkerhelmet"
+	item_state = "beserkerhelmet"
+	worn_state = "beserkerhelmet"
+	body_parts_covered = HEAD|FACE|EYES
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 70, arrow = 80, gun = FALSE, energy = FALSE, bomb = 50, bio = 20, rad = 10)
+/obj/item/clothing/head/helmet/orc_spearman
+	name = "Orc spearman Helm"
+	desc = "Orc make good helmet!"
+	icon_state = "spearmanhelmet"
+	item_state = "spearmanhelmet"
+	worn_state = "spearmanhelmet"
+	body_parts_covered = HEAD|FACE|EYES
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+/obj/item/clothing/head/helmet/orc_captain
+	name = "Orc Captain Helm"
+	desc = "Orc make good helmet!"
+	icon_state = "captainhelmet"
+	item_state = "captainhelmet"
+	worn_state = "captainhelmet"
+	body_parts_covered = HEAD|FACE|EYES
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 55, arrow = 45, gun = 10, energy = 15, bomb = 60, bio = 30, rad = FALSE)
+/obj/item/clothing/head/helmet/orc_grunt
+	name = "Orc Grunt Helm"
+	desc = "Orc make good helmet!"
+	icon_state = "grunthelmet"
+	item_state = "grunthelmet"
+	worn_state = "grunthelmet"
+	body_parts_covered = HEAD|FACE
+	force = WEAPON_FORCE_PAINFUL
+	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)
+/obj/item/clothing/suit/armor/ork_urukhai
+	name = "Ork Urukhai Armor"
+	desc = "Orc make good armor!"
+	icon_state = "urukhai_armor"
+	item_state = "urukhai_armor"
+	worn_state = "urukhai_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
+	value = 50
+	slowdown = 1.7
+	health = 50
+/obj/item/clothing/suit/armor/ork_whitehand
+	name = "Ork Whitehand Armor"
+	desc = "Orc make good armor!"
+	icon = 'icons/obj/clothing/suits.dmi'
+	icon_state = "whitehand_armor"
+	item_state = "whitehand_armor"
+	worn_state = "whitehand_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = 25)
+	value = 50
+	slowdown = 1.7
+	health = 50
+/obj/item/clothing/suit/armor/ork_grunt
+	name = "Ork Grunt Armor"
+	desc = "Orc make good armor!"
+	icon = 'icons/obj/clothing/suits.dmi'
+	icon_state = "grunt_armor"
+	item_state = "grunt_armor"
+	worn_state = "grunt_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	armor = list(melee = 50, arrow = 35, gun = 6, energy = 10, bomb = 35, bio = 20, rad = 20)
+	value = 50
+	slowdown = 1.7
+	health = 50

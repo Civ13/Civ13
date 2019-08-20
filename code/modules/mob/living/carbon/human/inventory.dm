@@ -244,7 +244,11 @@ This saves us from having to call add_fingerprint() any time something is put in
 			return has_organ("chest")
 		if (slot_in_backpack)
 			return TRUE
-		if (slot_tie)
+		if (slot_shoulder)
+			return TRUE
+		if (slot_accessory)
+			return TRUE
+		if (slot_eyes)
 			return TRUE
 
 /mob/living/carbon/human/u_equip(obj/W as obj)
@@ -286,6 +290,12 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else if (W == shoes)
 		shoes = null
 		update_inv_shoes()
+	else if (W == eyes)
+		eyes = null
+		update_inv_eyes()
+	else if (W == shoulder)
+		shoulder = null
+		update_inv_shoulder()
 	else if (W == belt)
 		belt = null
 		update_inv_belt()
@@ -351,6 +361,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 			back = W
 			W.equipped(src, slot)
 			update_inv_back(redraw_mob)
+		if (slot_shoulder)
+			shoulder = W
+			W.equipped(src, slot)
+			update_inv_shoulder(redraw_mob)
 		if (slot_wear_mask)
 			wear_mask = W
 			if (wear_mask.flags_inv & (BLOCKHAIR|BLOCKHEADHAIR))
@@ -365,6 +379,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 			legcuffed = W
 			W.equipped(src, slot)
 			update_inv_legcuffed(redraw_mob)
+		if (slot_eyes)
+			eyes = W
+			W.equipped(src, slot)
+			update_inv_eyes(redraw_mob)
 		if (slot_l_hand)
 			l_hand = W
 			W.equipped(src, slot)
@@ -373,6 +391,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 			r_hand = W
 			W.equipped(src, slot)
 			update_inv_r_hand(redraw_mob)
+		if (slot_shoulder)
+			shoulder = W
+			W.equipped(src, slot)
+			update_inv_shoulder(redraw_mob)
 		if (slot_belt)
 			belt = W
 			W.equipped(src, slot)
@@ -403,6 +425,10 @@ This saves us from having to call add_fingerprint() any time something is put in
 			gloves = W
 			W.equipped(src, slot)
 			update_inv_gloves(redraw_mob)
+		if (slot_eyes)
+			eyes = W
+			W.equipped(src, slot)
+			update_inv_eyes(redraw_mob)
 		if (slot_head)
 			head = W
 			if (head.flags_inv & (BLOCKHAIR|BLOCKHEADHAIR|HIDEMASK))
@@ -437,7 +463,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			if (get_active_hand() == W)
 				remove_from_mob(W)
 			W.forceMove(back)
-		if (slot_tie)
+		if (slot_accessory)
 			var/obj/item/clothing/under/uniform = w_uniform
 			uniform.attackby(W,src)
 		else
@@ -494,6 +520,8 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (slot_w_uniform)  return w_uniform
 		if (slot_l_ear)      return l_ear
 		if (slot_r_ear)      return r_ear
+		if (slot_eyes)       return eyes
+		if (slot_shoulder)   return shoulder
 	return ..()
 
 /mob/living/carbon/human/get_equipped_items(var/include_carried = FALSE)

@@ -320,6 +320,10 @@
 	if (!name_language)
 		return capitalize(pick(first_names_male_roman)) + " " + capitalize(pick(middle_names_roman)) + " " + capitalize(pick(last_names_roman))
 							//some useless code removed
+/datum/species/proc/get_random_ancient_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(ancient_names)) + " " + pick(epithets)
 
 /datum/species/proc/get_random_arab_name(var/gender, var/jew)
 	if (!name_language)
@@ -378,6 +382,34 @@
 		else
 			return capitalize(pick(first_names_male_zulu)) + " " + capitalize(pick(last_names_zulu))
 
+/datum/species/proc/get_random_orc_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_orc))
+
+/datum/species/proc/get_random_ant_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_ant))
+
+/datum/species/proc/get_random_gorilla_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_gorilla))
+
+/datum/species/proc/get_random_wolf_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_wolf)) + " " + capitalize(pick(last_names_wolf))
+
+/datum/species/proc/get_random_lizard_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_lizard))
+/datum/species/proc/get_random_crab_name(var/gender, var/jew)
+	if (!name_language)
+
+		return capitalize(pick(first_names_crab)) + " " + capitalize(pick(last_names_crab))
 
 /datum/species/proc/create_organs(var/mob/living/carbon/human/H) //Handles creation of mob organs.
 

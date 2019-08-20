@@ -133,7 +133,7 @@
 "cC" = (/turf/floor/dirt,/area/caribbean/roman)
 "cD" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/wood,/obj/covers/wood,/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Walls"})
 "cE" = (/obj/structure/barricade/sandstone_h,/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Walls"})
-"cF" = (/obj/covers/cobblestone,/obj/covers/stone_wall{icon = 'icons/obj/doors/material_doors.dmi'; icon_state = "sandstone"; name = "gate"},/turf/floor/dirt/dust,/area/caribbean/forest/dirt{name = "Walls"})
+"cF" = (/obj/covers/sandstone_wall{icon = 'icons/obj/doors/material_doors.dmi'; icon_state = "sandstone"; name = "gate"},/obj/covers/cobblestone,/turf/floor/dirt/dust,/area/caribbean/forest/dirt{name = "Walls"})
 "cG" = (/obj/structure/wild/tree/dead_tree,/turf/floor/grass,/area/caribbean/roman)
 "cH" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/roman)
 "cI" = (/obj/structure/window/sandbag/railing{icon_state = "sandstone"; dir = 4},/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Walls"})
@@ -316,6 +316,7 @@
 "gd" = (/obj/structure/barricade/sandstone_h/crenelated,/obj/covers/wood,/obj/structure/boiling_oil/south,/turf/floor/dirt,/area/caribbean/forest/dirt{name = "Walls"})
 "ge" = (/obj/item/weapon/wrench,/turf/floor/dirt,/area/caribbean/forest/dirt)
 "gf" = (/obj/item/weapon/wrench,/turf/floor/dirt/dust,/area/caribbean/forest/dirt)
+"gg" = (/obj/covers/cobblestone,/obj/covers/sandstone_wall{icon = 'icons/obj/doors/material_doors.dmi'; icon_state = "sandstone"; name = "gate"},/turf/floor/dirt/dust,/area/caribbean/forest/dirt{name = "Walls"})
 
 (1,1,1) = {"
 aaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaa
@@ -367,7 +368,7 @@ aaaaabagaaaaaaaaaaababababaacububuaqasasasasasasaqaqaoalalalalalalaBayczcKcycycK
 aaaaaaagaaaaaaabaaaaaaaaaaaaaocUbubGaqaqasasasasaqaqalalalcSaocTalgbayczcKcycycKcIaygaalalalalalalalalcVaoalalaqaqapaqaqaqaqasasasasaqaqbubGbububualaaalaaaaaaaa
 aaaaaaadaaaaabaaaaaaaaaaaaaacucucububuaqaqaqaqasasasaqaqcvalalalalaBaycNcXcycycXcWayaAaocvaoalaoaoaqaqcZalaqcvaqasasaqasasasasasasaqaqbubualcualcuaaadaaaaaaaaaa
 aaaaabaaaaadadaaaeagagaaaaaaaaalalaldabGbubYaqasasasasaqaqaqalaoalaBayaycdcycycxayayaAalaldbaqaqaqaqasaqaqaqaqaqasasasasasasasaqaqaqbubualdcalalaaaaaaaaaaaeabaa
-aaaaabaaaaaaaaaaaaaaaaadaaaacucucvcudddddndpaqaqaqasasasasaqaqapalcncgcEgccFcFgccEcgcnaqaqasaqasaqasasasasasasasasasasasasasaqaqbububucucudcalaaaaaaaaaaababaaaa
+aaaaabaaaaaaaaaaaaaaaaadaaaacucucvcudddddndpaqaqaqasasasasaqaqapalcncgcEgcgggggccEcgcnaqaqasaqasaqasasasasasasasasasasasasasaqaqbububucucudcalaaaaaaaaaaababaaaa
 aaaaaaaaababababajabaaaaaaaaaaaaaacualdubudxbubuaqaqasasasasasaqaqaqalcvaldCdCalalalaqaqasasasasasasasasasasasasasasaqaqaqapaqbubucUalcualdcalaaabaaagaaaaaaaaaa
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaadDcuaacucualdcaobGaqaqaqasasasasasasasaqaqaldCdCalaqaqasasasasasasasasasaqasasaqaqaqaqbubububububucualalcvaldccuababaaaaaaaaaaadaa
 adaaaaaaadaaaaaaaaabaaaaaaababaaaaagaaaacudFcUbGbubuaqaqasasasasasasdGasaqdHdHaqasasasasasasasasaqaqaqaqaqapapbubububucucucudIdKdddddddddddKcuaaaaaaabaaaaaaaaaa

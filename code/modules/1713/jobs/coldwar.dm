@@ -1,6 +1,6 @@
 
 /datum/job/vietnamese
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/vietnamese/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_vietnamese_name(H.gender)
@@ -186,16 +186,16 @@
 //back
 	var/pickgun = rand(1,4)
 	if (pickgun == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/sks(H), slot_shoulder)
 	else if (pickgun == 2)
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/m1892(H), slot_belt)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/luger(H), slot_belt)
 	else if (pickgun == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
 	else if (pickgun == 4)
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30(H), slot_shoulder)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
 	else
@@ -224,7 +224,7 @@
 ////////////////////////////////////////////////US////////////////////////////////////////
 
 /datum/job/american
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/american/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_english_name(H.gender)
@@ -232,7 +232,7 @@
 
 
 /datum/job/american/american_lieutenant
-	title = "US Lieutenant"
+	title = "USA Lieutenant"
 	rank_abbreviation = "Lt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
@@ -257,7 +257,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_lightuni(H), slot_w_uniform)
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/lt(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/glasses/sunglasses(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/greasegun(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -277,7 +277,7 @@
 	return TRUE
 
 /datum/job/american/american_sergeant
-	title = "US Sergeant"
+	title = "USA Sergeant"
 	rank_abbreviation = "Sgt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRNCap"
@@ -302,7 +302,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/sgt(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m1911(H), slot_belt)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
@@ -323,7 +323,7 @@
 	return TRUE
 
 /datum/job/american/american_sf
-	title = "US Commando"
+	title = "USA Commando"
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -346,7 +346,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/commando_bandana(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -367,7 +367,7 @@
 	return TRUE
 
 /datum/job/american/american_medic
-	title = "US Field Medic"
+	title = "USA Field Medic"
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -413,7 +413,7 @@
 	return TRUE
 
 /datum/job/american/american_radioman
-	title = "US Radio Operator"
+	title = "USA Radio Operator"
 	rank_abbreviation = "Cpl."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -459,7 +459,7 @@
 	return TRUE
 
 /datum/job/american/american_marksman
-	title = "US Marksman"
+	title = "USA Marksman"
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -485,7 +485,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper, slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	give_random_name(H)
@@ -502,7 +502,7 @@
 	return TRUE
 
 /datum/job/american/american_lmg
-	title = "US Automatic Rifleman"
+	title = "USA Automatic Rifleman"
 	rank_abbreviation = "Spc."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -548,7 +548,7 @@
 	H.setStat("mg", STAT_MEDIUM_HIGH)
 	return TRUE
 /datum/job/american/american_soldier
-	title = "US Rifleman"
+	title = "USA Rifleman"
 	rank_abbreviation = "Pvt."
 	selection_color = "#2d2d63"
 	spawn_location = "JoinLateRN"
@@ -579,7 +579,7 @@
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ushelmet/camo/accessory(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet/military(H), slot_l_store)
 	give_random_name(H)
@@ -618,7 +618,7 @@
 //clothes
 	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_ocp(H), slot_w_uniform)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/glasses/sunglasses(H), slot_wear_mask)
+	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
 
 	H.equip_to_slot_or_del(new /obj/item/garrote(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
@@ -737,7 +737,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
 //back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/arabsword(H), slot_belt)
 
@@ -824,9 +824,9 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/black_shemagh(H), slot_head)
 //back
 	if (prob(33))
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/g3(H), slot_shoulder)
 	else
-		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47(H), slot_shoulder)
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_belt)
 	H.equip_to_slot_or_del(new /obj/item/weapon/key/insurgent(H), slot_l_store)

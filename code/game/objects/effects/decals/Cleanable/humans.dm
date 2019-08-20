@@ -97,8 +97,6 @@ var/global/list/image/splatter_cache=list()
 		perp.track_blood = max(amount,perp.track_blood)
 		if (!perp.feet_blood_DNA)
 			perp.feet_blood_DNA = list()
-		if (blood_DNA)
-			perp.feet_blood_DNA |= blood_DNA.Copy()
 	else if (perp.buckled && istype(perp.buckled, /obj/structure/bed/chair/wheelchair))
 		var/obj/structure/bed/chair/wheelchair/W = perp.buckled
 		W.bloodiness = 4
@@ -124,8 +122,6 @@ var/global/list/image/splatter_cache=list()
 		user << "<span class='notice'>You get some of \the [src] on your hands.</span>"
 		if (!user.blood_DNA)
 			user.blood_DNA = list()
-		if (blood_DNA)
-			user.blood_DNA |= blood_DNA.Copy()
 		user.bloody_hands += taken
 		user.hand_blood_color = basecolor
 		user.update_inv_gloves(1)

@@ -47,6 +47,32 @@
 
 	if (transforming)
 		return
+	if (werewolf + gorillaman + orc + ant + lizard + wolfman + crab > 1)
+		werewolf = 0
+		gorillaman = 0
+		orc = 0
+		ant = 0
+		lizard = 0
+		wolfman = 0
+		crab = 0
+		handle_animalistic("Default")
+
+	if (werewolf)
+		handle_animalistic("Werewolf")
+	else if (gorillaman)
+		handle_animalistic("Gorilla")
+	else if (orc)
+		handle_animalistic("Orc")
+	else if (ant)
+		handle_animalistic("Ant")
+	else if (lizard)
+		handle_animalistic("Lizard")
+	else if (wolfman)
+		handle_animalistic("Wolf")
+	else if (crab)
+		handle_animalistic("Crab")
+	else if (!gorillaman && !werewolf && !orc && !ant && !lizard && !wolfman && !crab && body_build.name != "Default")
+		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
 	if (lying || stat < CONSCIOUS || prone)
@@ -60,13 +86,27 @@
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
 	life_tick++
 
+	if (riding && riding_mob)
+		if (!(riding_mob in range(1,src)))
+			riding = FALSE
+			riding_mob = null
+			forceMove(locate(x+1,y,z))
+			if (riding_mob)
+				riding_mob.ride = FALSE
+				riding_mob.rider = null
+				riding_mob.update_icons()
+				riding_mob.stop_automated_movement = FALSE
+
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
 	// hunger, thirst nerfed by 10% due to popular demand. It's still hardmode - Kachnov
 
 	var/area/currentarea = get_area(src)
-	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall) && map.ID == MAP_CIVILIZATIONS)
-		gib()
+	if (istype(currentarea, /area/caribbean/no_mans_land/invisible_wall))
+		if (faction_text == map.faction1 && !map.faction1_can_cross_blocks())
+			gib()
+		else if (faction_text == map.faction2 && !map.faction2_can_cross_blocks())
+			gib()
 	if (mood > 100)
 		mood = 100
 	else if (mood < 0)
@@ -78,55 +118,66 @@
 	if (stat != DEAD && !map.civilizations)
 		ssd_hiding(config.ssd_invisibility_timer) //makes SSD players invisible after a while
 	if (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable))
-		healing_stage += 1
+		healing_stage += 2
 	else
 		healing_stage = 0
 	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable)))
 		healing_stage = 0
-		if (getBruteLoss() >= 40)
+		if (getBruteLoss() >= 15)
 			adjustBruteLoss(-2)
+			if (halloss > 40)
+				adjustHalLoss(-10)
 
 	// fixes invisibility while alive (from ssd?)
 	if (invisibility == 101)
 		invisibility = 0
 	if (has_hunger_and_thirst)
-		if (inducedSSD) //if sleeping in SDD mode = takes ~72 hours to starve
-			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER)
+		var/water_m = 1
+		var/food_m = 1
+		if (orc)
+			food_m = 1.5
+		if (crab)
+			food_m = 0.8
+			water_m = 2.5
+		if (gorillaman)
+			water_m = 0.2
+		if (inducedSSD) //if sleeping in SSD mode = takes ~72 hours to starve
+			nutrition -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.0025) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
-			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
-			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER)
+			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
+			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 		else
 			switch (stat)
 				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER)
+					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
+					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
 			mood -= 0.02
 	#undef HUNGER_THIRST_MULTIPLIER
-
+	if (stats.len)
 	// hotfixes some stamina bugs
-	if (stats["stamina"][1] < 0)
-		stats["stamina"][1] = 0
+		if (stats["stamina"][1] < 0)
+			stats["stamina"][1] = 0
 
-	if (stats["stamina"][2] < 80)
-		stats["stamina"][2] = 80
+		if (stats["stamina"][2] < 80)
+			stats["stamina"][2] = 80
 
-	if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
-		src << "<span class = 'good'>You feel like you can run for a while.</span>"
+		if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
+			src << "<span class = 'good'>You feel like you can run for a while.</span>"
 
 	nutrition = min(nutrition, max_nutrition)
 	nutrition = max(nutrition, -max_nutrition)
@@ -147,6 +198,10 @@
 			addictions[ad] -= 0.05
 		if (addictions[ad] < 0)
 			addictions[ad] = 0
+
+//death
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
+		death()
 
 // disease stuff
 	if (inducedSSD && disease && disease_progression <= 15)
@@ -170,12 +225,7 @@
 				adjustToxLoss(rand(8,12))
 			//3 more minutes
 			else if (disease_progression >= 90 && prob(10) && stat != DEAD)
-				visible_message("<span class='warning'>[src] throws up blood!</span>","<span class='warning'>You throw up blood!</span>")
-				playsound(loc, 'sound/effects/splat.ogg', 50, TRUE)
-				var/turf/location = loc
-				if (istype(location, /turf))
-					new /obj/effect/decal/cleanable/vomit/bloody(location)
-				nutrition -= 40
+				vomit_blood()
 			// 3 more minutes
 			else if (disease_progression >= 180 && disease_progression <= 300 && prob(15))
 				adjustBrainLoss(rand(3,5))
@@ -354,14 +404,15 @@
 						disease_type = H.disease_type
 						disease_progression = 0
 						disease_treatment = 0
+/*
 		if (disease == FALSE)
-			//0.005%
 			if (prob(1) && map.civilizations)
-				if (prob(1) && !inducedSSD)
+				if (prob(20) && !inducedSSD && hygiene < HYGIENE_LEVEL_NORMAL && !("flu" in disease_immunity))
 					disease = TRUE
 					disease_type = "flu"
 					disease_progression = 0
 					disease_treatment = 0
+*/
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
 		if (grab_list[1] == null)
@@ -399,7 +450,7 @@
 				handle_hygiene()
 			handle_mood()
 			handle_ptsd()
-		if (!map.civilizations)
+		if (!map.civilizations && map.ID != MAP_COLONY && map.ID != MAP_JUNGLE_COLONY)
 			bowels = 0
 			bladder = 0
 		handle_medical_side_effects()
@@ -484,7 +535,7 @@
 		eye_blind =  0
 		blinded =    0
 		eye_blurry = 0
-	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/mask/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
+	else if (!vision || (vision && vision.is_broken()) || istype(wear_mask,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
 		blinded =    1
 		eye_blurry = 1
@@ -644,7 +695,7 @@
 			loc_temp = (max(22,loc_temp-40))
 		else if (loc_temp < 18)
 			loc_temp = (min(18,loc_temp+40))
-	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat))
+	if (loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && map.civilizations && mob_area.location == AREA_INSIDE)
 		heatDamageFromClothingTimer++
 
 		if (heatDamageFromClothingTimer == 5)
@@ -663,11 +714,11 @@
 	loc_temp += 273.15
 	//Body temperature adjusts depending on surrounding atmosphere based on your thermal protection (convection)
 	var/temp_adj = 0
-	if (loc_temp < bodytemperature-20) //Under 17 degrees = unconfortable without clothing
+	if ((loc_temp < bodytemperature-20) || (loc_temp < bodytemperature-12 && (ant || lizard))) //Under 17 degrees = unconfortable without clothing
 		var/thermal_protection = get_cold_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature-10) / BODYTEMP_COLD_DIVISOR) //this will be negative
-	else if (loc_temp > bodytemperature) //Over 37 degrees = unconfortable with too much clothing
+	else if ((loc_temp > bodytemperature) || (loc_temp > bodytemperature-7 && (ant || lizard))) //Over 37 degrees = unconfortable with too much clothing
 		var/thermal_protection = get_heat_protection(loc_temp) //This returns a 0 - 1 value, which corresponds to the percentage of protection based on what you're wearing and what you're exposed to.
 		if (thermal_protection < 1)
 			temp_adj = (1-thermal_protection) * ((loc_temp - bodytemperature) / BODYTEMP_HEAT_DIVISOR)
@@ -684,7 +735,7 @@
 	if (map && map.civilizations)
 		bodytemperature += temp_adj
 	// +/- 50 degrees from 310.15K is the 'safe' zone, where no damage is dealt.
-	if (bodytemperature >= species.heat_level_1)
+	if (bodytemperature >= species.heat_level_1 && !orc)
 		//Body temperature is too hot.
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
@@ -699,7 +750,7 @@
 		take_overall_damage(burn=burn_dam, used_weapon = "High Body Temperature")
 		fire_alert = max(fire_alert, 2)
 
-	else if (bodytemperature <= species.cold_level_1)
+	else if (bodytemperature <= species.cold_level_1 && !wolfman)
 		fire_alert = max(fire_alert, TRUE)
 		if (status_flags & GODMODE)	return TRUE	//godmode
 
@@ -1257,7 +1308,7 @@
 				if (prob(10))
 					Weaken(15)
 
-/mob/living/carbon/human/handle_shock()
+/mob/living/carbon/human/proc/handle_shock()
 	..()
 	if (status_flags & GODMODE)	return FALSE	//godmode
 	if (species && species.flags & NO_PAIN) return
@@ -1265,7 +1316,8 @@
 	if (health < config.health_threshold_softcrit)// health FALSE makes you immediately collapse
 		shock_stage = max(shock_stage, 61)
 
-	if (traumatic_shock >= 80)
+	traumatic_shock = updateshock()
+	if (traumatic_shock >= 80 && shock_stage < 160)
 		shock_stage += 1
 
 	else if (health < config.health_threshold_softcrit)
@@ -1278,16 +1330,16 @@
 	if (shock_stage == 10)
 		src << "<span class='danger'>[pick("It hurts so much", "You really need some painkillers", "Dear god, the pain")]!</span>"
 
-	if (shock_stage >= 30)
+	if (shock_stage >= 55)
 		if (shock_stage == 30) emote("me",1,"is having trouble keeping their eyes open.")
 		eye_blurry = max(2, eye_blurry)
 		stuttering = max(stuttering, 5)
 
-	if (shock_stage == 40)
+	if (shock_stage == 50)
 		src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
 
-	if (shock_stage >= 60)
-		if (shock_stage == 60) emote("me",1,"'s body becomes limp.")
+	if (shock_stage >= 70)
+		if (shock_stage == 90) emote("me",1,"'s body becomes limp.")
 		if (prob(2))
 			src << "<span class='danger'>[pick("The pain is excruciating", "Please, just end the pain", "Your whole body is going numb")]!</span>"
 			Weaken(20)
@@ -1311,7 +1363,9 @@
 		if (prob(1))
 			adjustOxyLoss(10)
 	if (getBruteLoss() >= 150)
-		death()
+		spawn(1200)
+			if (getBruteLoss() >= 150)
+				death()
 /mob/living/carbon/human/proc/handle_hud_list()
 
 	if (original_job && never_set_faction_huds)
@@ -1412,6 +1466,8 @@
 //						holder2.icon_state = "civ3"
 					else
 						holder2.icon_state = ""
+					if (map.ID == MAP_TSARITSYN)
+						holder2.icon_state = "sov_basic"
 
 			hud_list[BASE_FACTION] = holder2
 
@@ -1450,6 +1506,8 @@
 
 /mob/living/carbon/human/rejuvenate()
 	restore_blood()
+	shock_stage = 0
+	traumatic_shock = 0
 	..()
 
 /mob/living/carbon/human/handle_vision()
@@ -1675,3 +1733,32 @@
 						if (prob(9))
 							make_dizzy(6) // It is decreased at the speed of 3 per tick
 						return
+
+/mob/living/carbon/human/proc/instadeath_check()
+	if (getBrainLoss() > 60 || getTotalDmg() > 150)
+		death()
+		return
+	else
+		return
+
+/mob/living/carbon/human/proc/handle_embedded_objects()
+
+	for (var/obj/item/organ/external/organ in organs)
+		if (organ.status & ORGAN_SPLINTED) //Splints prevent movement.
+			continue
+		for (var/obj/item/O in organ.implants)
+			if (/*!istype(O,/obj/item/weapon/implant) && */prob(2)) //Moving with things stuck in you could be bad.
+				// All kinds of embedded objects cause bleeding.
+				if (species.flags & NO_PAIN)
+					src << "<span class='warning'>You feel [O] moving inside your [organ.name].</span>"
+				else
+					var/msg = pick( \
+						"<span class='warning'>A spike of pain jolts your [organ.name] as you bump [O] inside.</span>", \
+						"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>", \
+						"<span class='warning'>Your movement jostles [O] in your [organ.name] painfully.</span>")
+					src << msg
+
+				organ.take_damage(rand(1,3), FALSE, FALSE)
+				if (!(species.flags & NO_BLOOD)) //There is no blood in protheses.
+					organ.status |= ORGAN_BLEEDING
+					adjustToxLoss(rand(1,3))

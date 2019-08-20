@@ -105,11 +105,12 @@
 
 	var/shakecamera = FALSE
 	var/a_intent = I_HELP//Living
-	var/defense_intent = I_PARRY//Living. For dodging and parrying.
+	var/defense_intent = I_DODGE//Living. For dodging and parrying.
 	var/m_intent = "walk"//Living
 	var/obj/buckled = null//Living
 	var/middle_click_intent = "kick" //For doing different things with middle click.
-	var/combat_mode = 0//Living
+	var/obj/item/shoulder = null//Living
+	var/obj/item/eyes = null//Living
 	var/obj/item/l_hand = null//Living
 	var/obj/item/r_hand = null//Living
 	var/obj/item/weapon/back = null//Human/Monkey
@@ -143,8 +144,6 @@
 	var/list/active_genes=list()
 	var/list/mutations = list() //Carbon -- Doohl
 	//see: setup.dm for list of mutations
-
-	var/radiation = 0.0//Carbon
 
 	var/voice_name = "unidentifiable voice"
 

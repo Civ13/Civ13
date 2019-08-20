@@ -152,6 +152,145 @@
 	max_amount = 1
 	value = 4
 
+/obj/item/stack/ammopart/casing/artillery/wired
+	name = "wired empty artillery casing"
+	desc = "A large empty brass casing. Has some wired crudely attached"
+	icon = 'icons/obj/cannon_ball.dmi'
+	icon_state = "casing_wired"
+	force = WEAPON_FORCE_HARMLESS+1
+	throwforce = WEAPON_FORCE_HARMLESS+2
+	resultpath = null
+	gunpowder_max = 5
+	max_amount = 1
+	value = 4
+
+/obj/item/stack/ammopart/casing/artillery/wired/advanced
+	name = "advanced empty artillery casing"
+	desc = "A large empty brass casing. Some electronics are wired to it."
+	icon = 'icons/obj/cannon_ball.dmi'
+	icon_state = "casing_advanced"
+	force = WEAPON_FORCE_HARMLESS+1
+	throwforce = WEAPON_FORCE_HARMLESS+2
+	resultpath = null
+	gunpowder_max = 5
+	max_amount = 1
+	value = 4
+
+/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled
+	name = "uranium filled artillery casing"
+	desc = "A large brass casing. Wired up to some uranium and electronics."
+	icon = 'icons/obj/cannon_ball.dmi'
+	icon_state = "casing"
+	force = WEAPON_FORCE_HARMLESS+1
+	throwforce = WEAPON_FORCE_HARMLESS+2
+	resultpath = null
+	gunpowder_max = 5
+	max_amount = 1
+	value = 4
+
+/obj/item/stack/ammopart/casing/artillery/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return
+	if (istype(W, /obj/item/stack/cable_coil/))
+		if(W.amount < 5)
+			user << "<span class='notice'>You need more wires to do this.</span>"
+		else if(W.amount == 5)
+			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+			user << "<span class='notice'>You attach wires into the shell.</span>"
+			qdel(src)
+			qdel(W)
+			new/obj/item/stack/ammopart/casing/artillery/wired(user.loc)
+		else
+			qdel(src)
+			W.amount = W.amount - 1
+			new/obj/item/stack/ammopart/casing/artillery/wired(user.loc)
+
+/obj/item/stack/ammopart/casing/artillery/wired/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return
+	if (istype(W, /obj/item/stack/material/electronics))
+		if(W.amount < 8)
+			user << "<span class='notice'>You need more electronics to do this.</span>"
+		else if(W.amount == 8)
+			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+			user << "<span class='notice'>You attach electronics to the wires.</span>"
+			qdel(src)
+			qdel(W)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(user.loc)
+		else
+			qdel(src)
+			W.amount = W.amount - 8
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced(user.loc)
+
+/obj/item/stack/ammopart/casing/artillery/wired/advanced/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W)) return
+	if (istype(W, /obj/item/stack/ore/uranium))
+		if(W.amount < 5)
+			user << "<span class='notice'>You need more uranium to do this.</span>"
+		else if(W.amount == 5)
+			playsound(loc, 'sound/machines/click.ogg', 75, TRUE)
+			user << "<span class='notice'>You attach uranium to the electronics and stuff it in the casing.</span>"
+			qdel(src)
+			qdel(W)
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(user.loc)
+		else
+			qdel(src)
+			W.amount = W.amount - 5
+			new/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled(user.loc)
+
+/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
+		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
+			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
+				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
+			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user << "<span class = 'notice'>You need enough gunpowder in a gunpowder container in your hands to fill the casing.</span>"
+				return
+			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
+				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
+				user << "You fill the casings with gunpowder."
+				gunpowder = gunpowder_max*amount
+				return
+	if (istype(W, /obj/item/stack/ammopart/bullet))
+		if (!(gunpowder >= gunpowder_max*amount))
+			user << "<span class = 'notice'>You need to fill the casings with gunpowder before putting the bullet.</span>"
+			return
+		else if (W.amount < amount)
+			user << "<span class = 'notice'>Not enough bullets. reduce the casings stack or add more bullets.</span>"
+		else if (W.amount >= amount)
+			bulletn = amount
+			W.amount -= amount
+			if (W.amount <= 0)
+				qdel(W)
+	if (gunpowder >= gunpowder_max*amount && bulletn >= amount)
+		attack_self(user)
+		return
+	else
+		return
+
+/obj/item/stack/ammopart/casing/artillery/wired/attack_self(mob/user)
+		user << "<span class = 'notice'> You cannot do this yet.</span>"
+		return
+
+/obj/item/stack/ammopart/casing/artillery/wired/advanced/attack_self(mob/user)
+		user << "<span class = 'notice'> You cannot do this yet.</span>"
+		return
+
+/obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attack_self(mob/user)
+	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		for(var/i=1;i<=amount;i++)
+			new/obj/item/cannon_ball/shell/nuclear/makeshift(user.loc)
+		qdel(src)
+		return
+	else
+		user << "<span class = 'notice'>The casing is not complete yet.</span>"
+		return
+
 /obj/item/stack/ammopart/bullet
 	name = "iron bullet"
 	desc = "A molded iron bullet, made to fit in a casing."
@@ -215,8 +354,10 @@
 		var/list/listing = list("Cancel")
 		if (map.ordinal_age == 4)
 			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "Cancel")
-		else if (map.ordinal_age >= 5)
-			listing = list(".45 Colt", ".44-40 Winchester", ".41 Short", "7.62x38mmR Nagant", "8mm Nambu", "9mm Japanese Revolver", "9x19mm Parabellum", "7.65x25mm Parabellum Borchardt", "Cancel")
+		else if (map.ordinal_age == 5)
+			listing = list("9mm pistol",".45 pistol", "Cancel")
+		else if (map.ordinal_age >= 6)
+			listing = list("9mm pistol",".45 pistol", "Cancel")
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -226,16 +367,10 @@
 			resultpath = /obj/item/ammo_casing/a45
 		else if (input == ".44-40 Winchester")
 			resultpath = /obj/item/ammo_casing/a44
-		else if (input == "7.62x38mmR Nagant")
-			resultpath = /obj/item/ammo_casing/a762x38
-		else if (input == "8mm Nambu")
-			resultpath = /obj/item/ammo_casing/c8mmnambu
-		else if (input == "9mm Japanese Revolver")
-			resultpath = /obj/item/ammo_casing/c9mm_jap_revolver
-		else if (input == "9x19mm Parabellum")
-			resultpath = /obj/item/ammo_casing/a9x19
-		else if (input == "7.65x25mm Parabellum Borchardt")
-			resultpath = /obj/item/ammo_casing/a765x25
+		else if (input == ".45 pistol")
+			resultpath = /obj/item/ammo_casing/pistol45
+		else if (input == "9mm pistol")
+			resultpath = /obj/item/ammo_casing/pistol9
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
 				new resultpath(user.loc)
@@ -252,8 +387,11 @@
 		var/list/listing = list("Cancel")
 		if (map.ordinal_age == 4)
 			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)",  ".577/450 Martini-Henry","7.65x53 Mauser", "Cancel")
-		else if (map.ordinal_age >= 5)
-			listing = list(".44-70 Government", "12 Gauge (Buckshot)", "12 Gauge (Slugshot)", "12 Gauge (Beanbag)", "7.62x54mmR Russian", "8x53mm Murata", "6.5x50mmSR Arisaka","7.65x53 Mauser", "7.92x57 Mauser", ".303 British","6.5x52mm Carcano", "Cancel")
+		else if (map.ordinal_age == 5)
+			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+		else if (map.ordinal_age >= 6)
+			listing = list("8mm large rifle","6.5mm small rifle","7.5mm intermediate rifle","5.5mm intermediate rifle","Cancel")
+
 		var/input = WWinput(user, "What caliber do you want to make?", "Bullet Making", "Cancel", listing)
 		if (input == "Cancel")
 			return
@@ -267,26 +405,20 @@
 			resultpath = /obj/item/ammo_casing/shotgun/slug
 		else if (input == "12 Gauge (Beanbag)")
 			resultpath = /obj/item/ammo_casing/shotgun/beanbag
-		else if (input == "7.62x54mmR Russian")
-			resultpath = /obj/item/ammo_casing/a762x54
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "8x53mm Murata")
-			resultpath = /obj/item/ammo_casing/a8x53
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "6.5x50mmSR Arisaka")
-			resultpath = /obj/item/ammo_casing/a65x50
-			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		else if (input == "7.65x53 Mauser")
 			resultpath = /obj/item/ammo_casing/a765x53
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "7.92x57 Mauser")
-			resultpath = /obj/item/ammo_casing/a792x57
+		else if (input == "8mm large rifle")
+			resultpath = /obj/item/ammo_casing/largerifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == ".303 British")
-			resultpath = /obj/item/ammo_casing/a303
+		else if (input == "6.5mm small rifle")
+			resultpath = /obj/item/ammo_casing/smallrifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
-		else if (input == "6.5x52mm Carcano")
-			resultpath = /obj/item/ammo_casing/a65x52
+		else if (input == "7.5mm intermediate rifle")
+			resultpath = /obj/item/ammo_casing/intermediumrifle
+			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
+		else if (input == "5.5mm intermediate rifle")
+			resultpath = /obj/item/ammo_casing/smallintermediumrifle
 			inputbtype = WWinput(user, "Normal, Hollow Point or Armor Piercing?", "Bullet Making", "Normal", list("normal","AP","HP"))
 		if (resultpath != null)
 			for(var/i=1;i<=amount;i++)
@@ -551,6 +683,20 @@
 	projectile_type = /obj/item/projectile/bullet/rifle/a303/weak
 	caliber = "a303_weak"
 
+/obj/item/ammo_casing/a3006
+	name = ".30-06 bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/a3006
+	caliber = "a3006"
+	value = 2
+
+/obj/item/ammo_casing/a3006/weak
+	projectile_type = /obj/item/projectile/bullet/rifle/a3006/weak
+	caliber = "a3006_weak"
+
 /obj/item/ammo_casing/a762x38
 	name = "7.62x38mmR bullet"
 	desc = "A brass casing."
@@ -697,3 +843,63 @@
 	icon_state = "bshell"
 	spent_icon = "bshell_casing"
 	projectile_type = /obj/item/projectile/bullet/shotgun/beanbag
+
+//generic calibers for custom weapons
+/obj/item/ammo_casing/largerifle
+	name = "8mm bullet"
+	desc = "A brass casing."
+	icon_state = "kclip-bullet"
+	spent_icon = "kclip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/largerifle
+	caliber = "largerifle"
+	value = 8
+
+/obj/item/ammo_casing/smallrifle
+	name = "6.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.08
+	projectile_type = /obj/item/projectile/bullet/rifle/smallrifle
+	caliber = "smallrifle"
+	value = 8
+
+/obj/item/ammo_casing/pistol45
+	name = ".45 bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/pistol45
+	caliber = "pistol45"
+	value = 2
+/obj/item/ammo_casing/pistol9
+	name = "9mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/pistol/pistol9
+	caliber = "pistol9"
+	value = 2
+
+/obj/item/ammo_casing/intermediumrifle
+	name = "7.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "clip-bullet"
+	spent_icon = "clip-casing"
+	weight = 0.05
+	projectile_type = /obj/item/projectile/bullet/rifle/intermediumrifle
+	caliber = "intermediumrifle"
+	value = 8
+
+/obj/item/ammo_casing/smallintermediumrifle
+	name = "5.5mm bullet"
+	desc = "A brass casing."
+	icon_state = "pistol_bullet_anykind"
+	spent_icon = "pistolcasing"
+	weight = 0.04
+	projectile_type = /obj/item/projectile/bullet/rifle/smallintermediumrifle
+	caliber = "smallintermediumrifle"
+	value = 2

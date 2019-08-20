@@ -3,17 +3,14 @@
 
 // proc to find out in how much pain the mob is at the moment
 /mob/living/carbon/proc/updateshock()
-	if (species && (species.flags & NO_PAIN))
-		traumatic_shock = FALSE
-		return FALSE
 
 	traumatic_shock = 			\
 	1	* getOxyLoss() + 		\
 	0.7	* getToxLoss() + 		\
 	1.5	* getFireLoss() + 		\
-	1.2	* getBruteLoss() + 		\
+	1.7	* getBruteLoss() + 		\
 	1.7	* getCloneLoss() + 		\
-	2	* halloss + 			\
+	0.5	* halloss + 			\
 	-1	* analgesic
 
 	// broken or ripped off organs will add quite a bit of pain
@@ -26,12 +23,13 @@
 	if (bloodstr)
 		for (var/datum/reagent/ethanol/E in ingested.reagent_list)
 			traumatic_shock -= E.volume
-
+		for (var/datum/reagent/adrenaline/A in ingested.reagent_list)
+			traumatic_shock -= A.volume*2
+			shock_stage -= A.volume/2
+		for (var/datum/reagent/opium/O in ingested.reagent_list)
+			traumatic_shock -= O.volume/2
+			shock_stage -= O.volume/4
 	if (traumatic_shock < 0)
 		traumatic_shock = FALSE
 
 	return traumatic_shock
-
-
-/mob/living/carbon/proc/handle_shock()
-	updateshock()

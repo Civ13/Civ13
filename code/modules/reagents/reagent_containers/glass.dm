@@ -36,6 +36,8 @@
 		/obj/item/stack/ammopart,
 		/obj/structure/vehicle,
 		/obj/structure/fuelpump,
+		/obj/item/stack/ore,
+		/turf/floor/dirt/underground,
 		)
 
 	dropsound = 'sound/effects/drop_glass.ogg'
@@ -88,7 +90,7 @@
 			return
 		if (istype(target, /turf/floor/beach/water))
 			return
-		if (reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
+		if (reagents && reagents.total_volume && !istype(src, /obj/item/weapon/reagent_containers/glass/small_pot))
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			user << "<span class='notice'>You splash the solution onto [target].</span>"
 			if (reagents.has_reagent("petroleum", 5))
@@ -348,6 +350,23 @@
 	volume = 80
 	var/on_stove = FALSE
 	flags = OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/small_pot/hangou
+	desc = "A japanese pot used by the military all the way back to the meiji era."
+	name = "han-gou"
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "han_gou_open"
+	item_state = "bucket"
+	matter = list(DEFAULT_WALL_MATERIAL = 200)
+	w_class = 3.0
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(10,20,30,80)
+	volume = 80
+/obj/item/weapon/reagent_containers/glass/small_pot/hangou/update_icon()
+	if (!is_open_container())
+		icon_state = "lid_han_gou"
+	else
+		icon_state = "han_gou_open"
 
 /obj/item/weapon/reagent_containers/glass/small_pot/copper_small
 	desc = "A small copper pot."
@@ -626,3 +645,46 @@
 	else
 		user << "The [src] is full!"
 	..()
+
+/obj/item/weapon/reagent_containers/glass/extraction_kit
+	name = "extraction kit"
+	desc = "A professional kit for extracting elements from raw ores."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "extraction_kit"
+	amount_per_transfer_from_this = 5
+	volume = 5
+	density = FALSE
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_WEAK
+	flammable = FALSE
+
+	update_icon()
+		overlays.Cut()
+
+		if (!is_open_container())
+			var/image/lid = image(icon, src, "lid_[initial(icon_state)]")
+			overlays += lid
+
+
+		if (reagents.total_volume)
+			var/image/filling = image(icon, src, "[icon_state]_full")
+			filling.color = reagents.get_color()
+			overlays += filling
+/obj/item/weapon/analyser
+	name = "analyser"
+	desc = "An electronic analyser, to check the ingredients of a chemical mixture."
+	icon = 'icons/obj/chemical.dmi'
+	icon_state = "spectrometer"
+	w_class = 2.0
+	slot_flags = SLOT_BELT|SLOT_ID|SLOT_POCKET
+	flammable = TRUE
+	force = WEAPON_FORCE_HARMLESS
+	throwforce = WEAPON_FORCE_WEAK
+
+	afterattack(obj/M, mob/user)
+		if (istype(M, /obj/item/weapon/reagent_containers))
+			var/obj/item/weapon/reagent_containers/RG = M
+			user << "<font color='yellow'><big><b>Reagents detected:</b></big></font>"
+			for(var/i=1 to RG.reagents.reagent_list.len)
+				user << "<font color='yellow'><i><b>[RG.reagents.reagent_list[i].name]: </b>[RG.reagents.reagent_list[i].volume] units</i></font>"
+		..()

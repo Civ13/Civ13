@@ -5,7 +5,7 @@
 	var/base_icon = "smg"
 	// more accuracy than MGs, less than everything else
 	load_method = MAGAZINE
-	slot_flags = SLOT_BACK|SLOT_BELT
+	slot_flags = SLOT_SHOULDER|SLOT_BELT
 	equiptimer = 12
 	gun_safety = TRUE
 	load_delay = 8
@@ -110,11 +110,6 @@
 
 	return
 
-/obj/item/weapon/gun/projectile/submachinegun/New()
-	..()
-	loaded = list()
-	chambered = null
-
 /obj/item/weapon/gun/projectile/submachinegun/mp40
 	name = "MP40"
 	desc = "German submachinegun chambered in 9x19 Parabellum, with a 32 magazine magazine layout. Standard issue amongst most troops."
@@ -154,6 +149,26 @@
 	sel_mode = 1
 	effectiveness_mod = 1.05
 
+/obj/item/weapon/gun/projectile/submachinegun/thompson
+	name = "M1A1 Thompson"
+	desc = "An american SMG, used by support troops."
+	icon_state = "thompson"
+	item_state = "thompson"
+	base_icon = "thompson"
+	weight = 3.6
+	caliber = "a45acp"
+	fire_sound = 'sound/weapons/mp40.ogg'
+	magazine_type = /obj/item/ammo_magazine/thompson
+	full_auto = TRUE
+	slot_flags = SLOT_BELT
+	equiptimer = 8
+	firemodes = list(
+		list(name="full auto",	burst=1, burst_delay=1.6, recoil=1, move_delay=5, dispersion = list(0.7, 1.2, 1.2, 1.3, 1.5)),
+		)
+
+	sel_mode = 1
+	effectiveness_mod = 1.06
+
 /obj/item/weapon/gun/projectile/submachinegun/type100
 	name = "Type-100"
 	desc = "A japanese submachinegun chambered in 8x22mm Nambu, with a 30 round magazine. The first japanese submachinegun produced."
@@ -171,7 +186,7 @@
 		)
 
 	sel_mode = 1
-	effectiveness_mod = 1.03
+	effectiveness_mod = 1.04
 
 /obj/item/weapon/gun/projectile/submachinegun/ppsh
 	name = "PPSh-41"
@@ -218,7 +233,7 @@
 	magazine_type = /obj/item/ammo_magazine/ak47
 	weight = 3.47
 	equiptimer = 15
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
@@ -231,7 +246,7 @@
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms
 	name = "AKMS"
 	desc = "Soviet assault rifle chambered in 7.62x39mm. This is the modernized version with folding stock."
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	icon_state = "akms"
 	item_state = "akms"
 	base_icon = "akms"
@@ -274,10 +289,10 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms/proc/set_stock()
 	if (folded)
-		slot_flags = SLOT_BACK|SLOT_BELT
+		slot_flags = SLOT_SHOULDER|SLOT_BELT
 		effectiveness_mod = 0.84
 	else
-		slot_flags = SLOT_BACK
+		slot_flags = SLOT_SHOULDER
 		effectiveness_mod = 1
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74
@@ -291,7 +306,7 @@
 	magazine_type = /obj/item/ammo_magazine/ak74
 	weight = 3.07
 	equiptimer = 15
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.7, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
@@ -304,7 +319,7 @@
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
 	name = "AKS-74"
 	desc = "Soviet assault rifle chambered in 5.45x39mm, with a folding stock."
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	icon_state = "aks74"
 	item_state = "aks74"
 	base_icon = "aks74"
@@ -356,16 +371,16 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/proc/set_stock()
 	if (folded)
-		slot_flags = SLOT_BACK|SLOT_BELT
+		slot_flags = SLOT_SHOULDER|SLOT_BELT
 		effectiveness_mod = 0.87
 	else
-		slot_flags = SLOT_BACK
+		slot_flags = SLOT_SHOULDER
 		effectiveness_mod = 1.05
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u
 	name = "AKS-74U"
 	desc = "Soviet assault carbine version of the AK-74, chambered in 5.45x39mm, with a folding stock."
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	icon_state = "aks74u"
 	item_state = "aks74u"
 	base_icon = "aks74u"
@@ -419,16 +434,16 @@
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/set_stock()
 	if (folded)
-		slot_flags = SLOT_BACK|SLOT_BELT
+		slot_flags = SLOT_SHOULDER|SLOT_BELT
 		effectiveness_mod = 0.84
 	else
-		slot_flags = SLOT_BACK
+		slot_flags = SLOT_SHOULDER
 		effectiveness_mod = 1.02
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso
 	name = "AKS-74U SpecOps"
 	desc = "Soviet assault carbine version of the AK-74, chambered in 5.45x39mm, with a folding stock. This one has picatinny rails for attachments."
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	icon_state = "aks74uso"
 	item_state = "aks74uso"
 	base_icon = "aks74uso"
@@ -491,7 +506,7 @@
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
 	equiptimer = 15
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
@@ -511,7 +526,7 @@
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3.07
 	equiptimer = 9
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(0.8, 1, 1.1, 1.1, 1.2)),
@@ -574,7 +589,7 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL
 	weight = 3.6
 	equiptimer = 15
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.8, 1.9)),
@@ -599,7 +614,7 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL
 	weight = 4.2
 	equiptimer = 15
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
 		list(name="full auto",	burst=1, burst_delay=1.2, recoil=1.3, move_delay=4, dispersion = list(1, 1.3, 1.5, 1.7, 1.7)),
@@ -618,7 +633,7 @@
 	magazine_type = /obj/item/ammo_magazine/m16
 	weight = 3
 	equiptimer = 10
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.5, recoil=0.5, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.8, move_delay=3, dispersion = list(0.7, 0.9, 1, 1, 1.2)),
@@ -640,7 +655,7 @@
 	weight = 3.5
 	equiptimer = 11
 	effectiveness_mod = 1.05
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.6, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.5, 0.6)),
 		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1, move_delay=3, dispersion = list(0.9, 1.1, 1.2, 1.3, 1.3)),
@@ -662,7 +677,7 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_BARREL|ATTACH_ADV_SCOPE|ATTACH_UNDER
 	weight = 3.8
 	equiptimer = 13
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_SHOULDER
 	firemodes = list(
 		list(name="semi auto",	burst=1, burst_delay=0.6, recoil=0.7, move_delay=2, dispersion = list(0.2, 0.4, 0.4, 0.4, 0.5)),
 		list(name="burst fire",	burst=3, burst_delay=1.5, recoil=1.1, move_delay=3, dispersion = list(0.9, 1.2, 1.2, 1.3, 1.4)),
@@ -670,3 +685,24 @@
 		)
 	effectiveness_mod = 1.08
 	sel_mode = 1
+
+/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
+	name = "Makeshift AK-47"
+	desc = "A crude replication of the AK-47, chambered in 7.62x39mm."
+	icon_state = "makeshift ak"
+	item_state = "ak47"
+	base_icon = "ak47"
+	caliber = "a762x39"
+	fire_sound = 'sound/weapons/mosin_shot.ogg'
+	magazine_type = /obj/item/ammo_magazine/ak47
+	weight = 3.47
+	equiptimer = 15
+	slot_flags = SLOT_SHOULDER
+	firemodes = list(
+		list(name="semi auto",	burst=1, burst_delay=0.8, recoil=0.7, move_delay=2, dispersion = list(0.3, 0.4, 0.5, 0.6, 0.7)),
+		list(name="burst fire",	burst=3, burst_delay=1.4, recoil=0.9, move_delay=3, dispersion = list(1, 1.1, 1.1, 1.3, 1.5)),
+		list(name="full auto",	burst=1, burst_delay=1.3, recoil=1.3, move_delay=4, dispersion = list(1.2, 1.2, 1.3, 1.4, 1.8)),
+		)
+	effectiveness_mod = 1
+	sel_mode = 1
+	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_BARREL

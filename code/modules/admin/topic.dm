@@ -120,7 +120,7 @@
 
 
 		var/delmob = FALSE
-		if (href_list["simplemake"] != "gorilla" && href_list["simplemake"] != "default" && href_list["simplemake"] != "wolfman")
+		if (href_list["simplemake"] != "gorilla" && href_list["simplemake"] != "werewolf" && href_list["simplemake"] != "default" && href_list["simplemake"] != "orc"&& href_list["simplemake"] != "lizard" && href_list["simplemake"] != "ant" && href_list["simplemake"] != "crab" && href_list["simplemake"] != "wolfman")
 			switch(WWinput(usr, "Delete old mob?", "Delete Mob", "Yes", list("Yes","No","Cancel")))
 				if ("Cancel")	return
 				if ("Yes")		delmob = TRUE
@@ -140,47 +140,116 @@
 			if ("mouse")			M.change_mob_type( /mob/living/simple_animal/mouse , null, null, delmob )
 			if ("bear")			M.change_mob_type( /mob/living/simple_animal/hostile/bear , null, null, delmob )
 			if ("velociraptor")			M.change_mob_type( /mob/living/simple_animal/hostile/dinosaur/velociraptor , null, null, delmob )
-
 			if ("default")
+				var/mob/living/carbon/human/HM = M
 				if (!ishuman(M))
 					usr << "This can only be used on instances of type /mob/living/carbon/human"
 					return
 				else
-					var/mob/living/carbon/human/HM = M
-					HM.body_build.index = ""
-					HM.body_build.name = "Default"
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.orc = 0
+					HM.ant= 0
+					HM.lizard = 0
+					HM.wolfman = 0
+					HM.crab = 0
+					HM.body_build = get_body_build(M.gender,"Default")
 					HM.update_hair()
 					HM.change_facial_hair()
 					HM.force_update_limbs()
 					HM.update_body()
 					HM.update_hair()
 			if ("gorilla")
+				var/mob/living/carbon/human/HM = M
 				if (!ishuman(M))
 					usr << "This can only be used on instances of type /mob/living/carbon/human"
 					return
 				else
-					var/mob/living/carbon/human/HM = M
-					HM.body_build.index = "_gorilla"
-					HM.body_build.name = "Gorilla"
-					HM.update_hair()
-					HM.change_facial_hair()
-					HM.force_update_limbs()
-					HM.update_body()
-					HM.update_hair()
+					HM.gorillaman = 1
+					HM.werewolf = 0
+					HM.orc = 0
+					HM.ant= 0
+					HM.lizard = 0
+					HM.wolfman = 0
+					HM.crab = 0
+			if ("werewolf")
+				var/mob/living/carbon/human/HM = M
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					HM.werewolf = 1
+					HM.gorillaman = 0
+					HM.orc = 0
+					HM.ant= 0
+					HM.lizard = 0
+					HM.wolfman = 0
+					HM.crab = 0
+			if ("orc")
+				var/mob/living/carbon/human/HM = M
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					HM.orc = 1
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.ant= 0
+					HM.lizard = 0
+					HM.wolfman = 0
+					HM.crab = 0
+			if ("ant")
+				var/mob/living/carbon/human/HM = M
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					HM.ant = 1
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.orc = 0
+					HM.lizard = 0
+					HM.wolfman = 0
+					HM.crab = 0
+			if ("lizard")
+				var/mob/living/carbon/human/HM = M
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					HM.lizard = 1
+					HM.ant = 0
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.orc = 0
+					HM.wolfman = 0
+					HM.crab = 0
+			if ("crab")
+				var/mob/living/carbon/human/HM = M
+				if (!ishuman(M))
+					usr << "This can only be used on instances of type /mob/living/carbon/human"
+					return
+				else
+					HM.lizard = 0
+					HM.ant = 0
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.orc = 0
+					HM.wolfman = 0
+					HM.crab = 1
 			if ("wolfman")
+				var/mob/living/carbon/human/HM = M
 				if (!ishuman(M))
 					usr << "This can only be used on instances of type /mob/living/carbon/human"
 					return
 				else
-					var/mob/living/carbon/human/HM = M
-					HM.body_build.index = "_wolfman"
-					HM.body_build.name = "Wolfman"
-					HM.update_hair()
-					HM.change_facial_hair()
-					HM.force_update_limbs()
-					HM.update_body()
-					HM.update_hair()
-
+					HM.lizard = 0
+					HM.ant = 0
+					HM.gorillaman = 0
+					HM.werewolf = 0
+					HM.orc = 0
+					HM.wolfman = 1
+					HM.crab = 0
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])
 
@@ -238,7 +307,7 @@
 		if (config.allow_admin_rev)
 			L.revive()
 			message_admins("<span class = 'red'>Admin [key_name_admin(usr)] healed / revived [key_name_admin(L)]!</span>", TRUE)
-			log_admin("[key_name(usr)] healed / Rrvived [key_name(L)]")
+			log_admin("[key_name(usr)] healed / revived [key_name(L)]")
 		else
 			usr << "Admin Rejuvinates have been disabled"
 

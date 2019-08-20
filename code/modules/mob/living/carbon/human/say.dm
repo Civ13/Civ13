@@ -1,17 +1,24 @@
-/mob/living/carbon/human/say(var/message)
+/mob/living/carbon/human/say(var/message, var/howling = FALSE)
 
 	// workaround for language bug that happens when you're spawned in
 	if (!languages.len)
-		languages[1] = default_language
+		languages = list(default_language)
 
 	if (!message)
 		return
-
 	var/alt_name = ""
 
 	if (name != rank_prefix_name(GetVoice()))
 		alt_name = "(as [rank_prefix_name(get_id_name())])"
-
+	var/animalistic = FALSE
+	if ((werewolf || gorillaman) && body_build.name != "Default")
+		if (werewolf)
+			message = pick("grrrr!","woof", "wooof!", "rrrrr!")
+			animalistic = TRUE
+		else if (gorillaman)
+			if (map && map.ID != MAP_TRIBES)
+				message = pick("uh uh uh!","UH UH", "OOGA", "BOOGA")
+				animalistic = TRUE
 	message = capitalize_cp1251(sanitize(message))
 	var/message_without_html = message
 
@@ -29,30 +36,32 @@
 	for (var/rp in radio_prefixes)
 		if (dd_hasprefix(normal_message_without_html, rp))
 			normal_message_without_html = copytext(normal_message_without_html, lentext(rp)+1, lentext(normal_message_without_html)+1)
-
-	..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html)
+	if (wolfman && howling)
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic, howl = TRUE)
+	else
+		..(normal_message, alt_name = alt_name, alt_message = normal_message_without_html, animal = animalistic)
 
 	for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, src))
 		D.hear_command(message_without_html, src)
 
 	message_without_html = handle_speech_problems(message_without_html)[1]
+	if (!animalistic)
+		for (var/obj/structure/radio/RD in range(2,src))
+			if (RD.transmitter && RD.transmitter_on && (RD.check_power() || RD.powerneeded == 0))
+				RD.broadcast(message_without_html, src)
 
-	for (var/obj/structure/radio/RD in range(2,src))
-		if (RD.transmitter && RD.transmitter_on && (RD.check_power() || RD.powerneeded == 0))
-			RD.broadcast(message_without_html, src)
-
-	for (var/obj/item/weapon/radio/PRD in range(1,src))
-		if (PRD.transmitter && PRD.transmitter_on)
-			if (PRD in contents)
-				if (dd_hasprefix(message_without_html, ";"))
-					message_without_html = replacetext(message_without_html,";","",1,2)
+		for (var/obj/item/weapon/radio/PRD in range(1,src))
+			if (PRD.transmitter && PRD.transmitter_on)
+				if (PRD in contents)
+					if (dd_hasprefix(message_without_html, ";"))
+						message_without_html = replacetext(message_without_html,";","",1,2)
+						PRD.broadcast(message_without_html, src)
+				else
 					PRD.broadcast(message_without_html, src)
-			else
-				PRD.broadcast(message_without_html, src)
 
-	for (var/obj/structure/telephone/TL in range(2,src))
-		if (TL.connected)
-			TL.broadcast(message_without_html, src)
+		for (var/obj/structure/telephone/TL in range(2,src))
+			if (TL.connected)
+				TL.broadcast(message_without_html, src)
 
 /mob/living/carbon/human/proc/forcesay(list/append)
 	if (stat == CONSCIOUS)

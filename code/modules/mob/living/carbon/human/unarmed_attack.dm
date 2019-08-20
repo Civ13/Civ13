@@ -68,7 +68,7 @@ var/global/list/sparring_attack_cache = list()
 			if ("chest")
 				if (!target.lying)
 					var/turf/T = get_step(get_turf(target), get_dir(get_turf(user), get_turf(target)))
-					if (!T.density)
+					if (T && !T.density)
 						step(target, get_dir(get_turf(user), get_turf(target)))
 						target.visible_message("<span class='danger'>[pick("[target] was sent flying backward!", "[target] staggers back from the impact!")]</span>")
 					else

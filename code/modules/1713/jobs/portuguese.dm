@@ -1,5 +1,5 @@
 /datum/job/portuguese
-	faction = "Station"
+	faction = "Human"
 
 /datum/job/portuguese/give_random_name(var/mob/living/carbon/human/H)
 	H.name = H.species.get_random_portuguese_name(H.gender)
@@ -23,6 +23,7 @@
 
 /datum/job/portuguese/captain/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -65,6 +66,7 @@
 
 /datum/job/portuguese/qm/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -107,6 +109,7 @@
 
 /datum/job/portuguese/boatswain/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -147,6 +150,7 @@
 
 /datum/job/portuguese/midshipman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -183,6 +187,7 @@
 
 /datum/job/portuguese/surgeon/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
 //clothes
@@ -220,6 +225,7 @@
 
 /datum/job/portuguese/carpenter/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
 
@@ -263,6 +269,7 @@
 
 /datum/job/portuguese/cook/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/chef(H), slot_wear_suit)
 
@@ -312,6 +319,7 @@
 
 /datum/job/portuguese/seaman/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots2(H), slot_shoes)
 
@@ -366,6 +374,7 @@
 
 /datum/job/portuguese/army_commander/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
@@ -408,6 +417,7 @@
 
 /datum/job/portuguese/army_officer/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
@@ -446,6 +456,7 @@
 
 /datum/job/portuguese/field_medic/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 //clothes
@@ -484,6 +495,7 @@
 
 /datum/job/portuguese/soldier/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
@@ -523,6 +535,7 @@
 
 /datum/job/portuguese/chasseur/equip(var/mob/living/carbon/human/H)
 	if (!H)	return FALSE
+	give_random_name(H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
 
@@ -534,7 +547,7 @@
 
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/cutlass(H), slot_belt)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_back)
+	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_shoulder)
 	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

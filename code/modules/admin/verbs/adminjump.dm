@@ -158,6 +158,9 @@ var/turf/default_adminzone_turf = null
 			return TRUE
 
 	var/area/caribbean/admin/admin_zone = locate() in area_list
+	if (!admin_zone)
+		src << "There is no admin zone in this map!"
+		return FALSE
 	for (var/turf/T in admin_zone.contents)
 		if (!T.density && !locate(/obj/structure) in T)
 			mob.loc = T

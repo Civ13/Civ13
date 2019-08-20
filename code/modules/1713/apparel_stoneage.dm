@@ -133,13 +133,21 @@
 	icon_state = "indianbl"
 	item_state = "indianbl"
 
-/obj/item/clothing/head/skullmask
+/obj/item/clothing/mask/skullmask
 	name = "skull mask"
 	desc = "A skull mask, used by shamans."
 	icon_state = "skull_mask"
 	item_state = "skull_mask"
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 25, arrow = 10, gun = 0, energy = 0, bomb = 15, bio = 0, rad = FALSE)
+
+/obj/item/clothing/head/helmet/bone
+	name = "bone helmet"
+	desc = "A helmet made of bones."
+	icon_state = "bone_helmet"
+	item_state = "bone_helmet"
+	worn_state = "bone_helmet"
+	armor = list(melee = 25, arrow = 15, gun = 10, energy = 16, bomb = 16, bio = 16, rad = FALSE)
 
 /obj/item/clothing/mask/wooden
 	name = "wooden mask"
@@ -149,7 +157,21 @@
 	body_parts_covered = FACE|EYES
 	armor = list(melee = 15, arrow = 10, gun = 0, energy = 0, bomb = 10, bio = 0, rad = FALSE)
 
+/obj/item/clothing/mask/chitinmask
+	name = "chitin mask"
+	desc = "A mask made from insect chitin."
+	icon_state = "chitin_mask"
+	item_state = "chitin_mask"
+	body_parts_covered = FACE|EYES
+	armor = list(melee = 19, arrow = 9, gun = 0, energy = 0, bomb = 12, bio = 0, rad = FALSE)
 
+/obj/item/clothing/head/helmet/chitin
+	name = "gold crown"
+	desc = "A crown of gold. Fancy."
+	icon_state = "chitin_helmet"
+	item_state = "chitin_helmet"
+	worn_state = "chitin_helmet"
+	armor = list(melee = 30, arrow = 19, gun = 12, energy = 18, bomb = 18, bio = 19, rad = FALSE)
 /obj/item/clothing/head/chief_hat
 	name = "Chief hat"
 	desc = "A hat made with withe feathers. Worn by tribal leaders."

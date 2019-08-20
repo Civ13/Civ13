@@ -34,11 +34,30 @@ bullet_act
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a few meat slabs.</span>")
-					for (var/v in 1 to rand(5,7))
-						var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
-						meat.name = "human meat"
-					var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
-					HP.amount = 6
+					if (!crab)
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
+							meat.name = "[src.body_build.name] meat"
+							meat.radiation = radiation/10
+					else
+						for(var/i=1;i<=4;i++)
+							var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+							meat.radiation = radiation/10
+					if (orc)
+						var/obj/item/stack/material/orcpelt/HP = new/obj/item/stack/material/orcpelt(get_turf(src))
+						HP.amount = 3
+					else if (gorillaman)
+						var/obj/item/stack/material/gorillapelt/HP = new/obj/item/stack/material/gorillapelt(get_turf(src))
+						HP.amount = 3
+					else if (ant || crab)
+						var/obj/item/stack/material/chitin/HP = new/obj/item/stack/material/chitin(get_turf(src))
+						HP.amount = 2
+					else if (wolfman)
+						var/obj/item/stack/material/wolfpelt/HP = new/obj/item/stack/material/wolfpelt(get_turf(src))
+						HP.amount = 3
+					else
+						var/obj/item/stack/material/humanpelt/HP = new/obj/item/stack/material/humanpelt(get_turf(src))
+						HP.amount = 3
 					var/obj/item/stack/material/bone/bonedrop = new/obj/item/stack/material/bone(get_turf(src))
 					bonedrop.amount = 2
 					if (istype(user, /mob/living/carbon/human))
@@ -48,7 +67,6 @@ bullet_act
 						drop_from_inventory(I)
 					crush()
 					qdel(src)
-
 	else
 		return ..(W, user)
 
@@ -96,7 +114,7 @@ bullet_act
 		else
 			SH = r_hand
 		if (istype(P, /obj/item/projectile/arrow/arrow))
-			if (prob(min(SH.base_block_chance*2,92)))
+			if (prob(min(SH.base_block_chance,92)))
 				visible_message("<span class = 'warning'>[src] blocks the arrow with the [SH.name]!</span>")
 				P.blockedhit = TRUE
 				SH.health -= 2
@@ -156,12 +174,16 @@ bullet_act
 			// P.firer_original_dir is more accurate, since P.dir is never explicitly set? - Kachnov
 			var/turf/behind = get_step(src, P.firer_original_dir ? P.firer_original_dir : P.dir)
 			if (behind)
-				if (behind.density || locate(/obj/structure) in behind)
+				if (behind.density || (locate(/obj/structure) in behind) || (locate(/obj/covers) in behind))
 					var/turf/slammed_into = behind
 					if (!slammed_into.density)
 						for (var/obj/structure/S in slammed_into.contents)
 							if (S.density)
 								slammed_into = S
+								break
+						for (var/obj/covers/CC in slammed_into.contents)
+							if (CC.density)
+								slammed_into = CC
 								break
 					if (slammed_into.density)
 						spawn (1)
@@ -189,7 +211,7 @@ bullet_act
 	//Shrapnel
 	if (P.can_embed())
 		var/armor = getarmor_organ(organ, "gun")
-		if (prob(20 + max(P.damage - armor, -10)))
+		if (prob(20 + max(P.damage - armor, 10)))
 			var/obj/item/weapon/material/shard/shrapnel/SP = new()
 			SP.name = (P.name != "shrapnel")? "[P.name] shrapnel" : "shrapnel"
 			SP.desc = "[SP.desc] It looks like it was fired from [P.shot_from]."
@@ -232,7 +254,7 @@ bullet_act
 			fire_stacks += 1
 		IgniteMob()
 	..(P, def_zone)
-
+	instadeath_check()
 	spawn (0.01)
 		qdel(P)
 
@@ -302,6 +324,10 @@ bullet_act
 /mob/living/carbon/human/proc/getarmor_organ(var/obj/item/organ/external/def_zone, var/type)
 	if (!type || !def_zone) return FALSE
 	var/protection = FALSE
+	if (ant)
+		protection += 25
+	else if (crab)
+		protection += 50
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
 	for (var/gear in protective_gear)
 		if (gear && istype(gear ,/obj/item/clothing))
@@ -319,8 +345,25 @@ bullet_act
 									protection += 10
 	return protection
 
+/mob/living/carbon/human/proc/damage_armor(var/obj/item/organ/external/def_zone, var/dmg = 0)
+	if (!dmg || !def_zone) return FALSE
+	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
+	var/obj/item/organ/external/affecting = get_organ(def_zone)
+	if (!affecting)
+		return
+	for (var/gear in protective_gear)
+		if (gear && istype(gear ,/obj/item/clothing))
+			var/obj/item/clothing/C = gear
+			if (istype(C) && C.body_parts_covered & affecting.body_part)
+				C.health -= dmg
+				C.check_health()
+			if (C.accessories.len)
+				for (var/obj/item/clothing/accessory/AC in C.accessories)
+					if (AC.body_parts_covered & affecting.body_part)
+						AC.health -= dmg
+						AC.check_health()
+	return TRUE
 /mob/living/carbon/human/proc/check_head_coverage()
-
 	var/list/body_parts = list(head, wear_mask, wear_suit, w_uniform)
 	for (var/bp in body_parts)
 		if (!bp)	continue
@@ -405,8 +448,8 @@ bullet_act
 			return
 	visible_message("<span class='danger'>[src] has been [I.attack_verb.len? pick(I.attack_verb) : "attacked"] in the [affecting.name] with [I.name] by [user]!</span>")
 	receive_damage()
-
-	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].")
+	instadeath_check()
+	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 
 	return blocked
@@ -431,7 +474,7 @@ bullet_act
 	if(effective_force > 10 || effective_force >= 5 && prob(33))
 		forcesay(hit_appends)	//forcesay checks stat already
 
-	//Ok this block of text handles cutting arteries, tendons, and limbs off.
+	//Ok this block of text handles cutting arteries, and limbs off.
 	//First we cut an artery, the reason for that, is that arteries are funninly enough, not that lethal, and don't have the biggest impact. They'll still make you bleed out, but they're less immediately lethal.
 	if(I.sharp && prob(I.force/10) && !(affecting.status & ORGAN_ARTERY_CUT))
 		affecting.sever_artery()
@@ -440,22 +483,18 @@ bullet_act
 		else
 			src.visible_message("<span class='danger'><b>[user] slices open [src]'s [affecting.artery_name] artery!</b></span>")
 
-	//Next tendon, which disables the limb, but does not remove it, making it easier to fix, and less lethal, than losing it.
-	else if(I.sharp && prob(I.force/12) && !(affecting.status & ORGAN_TENDON_CUT) && affecting.has_tendon)
-		affecting.sever_tendon()
-		src.visible_message("<span class='danger'><b>[user] slices open [src]'s [affecting.tendon_name] tendon!</b></span>")
-
 	//Finally if we pass all that, we cut the limb off. This should reduce the number of one hit sword kills.
 	else if(I.sharp && I.edge)
 		if (istype(user, /mob/living/carbon/human) && istype(I,/obj/item/weapon/material/sword))
 			var/obj/item/weapon/material/sword/S = I
 			if (S.atk_mode == SLASH)
 				var/mob/living/carbon/human/HH = user
-				if(prob((I.force * HH.getStatCoeff("strength")/6)))
+				if(affecting.name != "groin" && prob((I.force * HH.getStatCoeff("strength")/6)))
 					affecting.droplimb(0, DROPLIMB_EDGE)
 					for(var/mob/living/carbon/human/NB in view(6,src))
-						NB.mood -= 10
-						NB.ptsd += 1
+						if (!NB.orc)
+							NB.mood -= 10
+							NB.ptsd += 1
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in src.organs
 
 	if(I.damtype == BRUTE && !I.edge && prob(I.force * (hit_zone == "mouth" ? 6 : 0)) && O)//Knocking out teeth.
@@ -514,7 +553,7 @@ bullet_act
 			if (prob(6))
 				visible_message("<span class='danger'>[src] has been knocked down!</span>")
 				Weaken(2)
-
+	instadeath_check()
 
 /mob/living/carbon/human/proc/attack_joint(var/obj/item/organ/external/organ, var/obj/item/W, var/blocked)
 	if (!organ || (organ.dislocated == 2) || (organ.dislocated == -1) || blocked >= 2)
@@ -581,8 +620,10 @@ bullet_act
 
 		var/obj/item/organ/external/affecting = get_organ(zone)
 		var/hit_area = affecting.name
+		if (!hit_area)
+			return
 		visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
-		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].") //I guess "melee" is the best fit here
+		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM) //I guess "melee" is the best fit here
 
 		if(armor < 100)
 			var/sharp = O.sharp
@@ -739,7 +780,7 @@ bullet_act
 				for(var/i = 1; i < range; i++)
 					var/turf/new_turf = get_step(target, throw_dir)
 					target = new_turf
-					if(new_turf.density)
+					if(new_turf && new_turf.density)
 						break
 				src.throw_at(target, rand(1,3), src.throw_speed)
 			if(user.lying)

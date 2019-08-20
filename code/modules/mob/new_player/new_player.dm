@@ -435,11 +435,6 @@
 		return TRUE
 	return FALSE
 
-/mob/new_player/proc/officerBanned()
-	if (client && client.quickBan_isbanned("Officer"))
-		return TRUE
-	return FALSE
-
 //if the player is "Penal banned", he is reduced to play as a member of a penal battalion
 /mob/new_player/proc/penalBanned()
 	if (client && client.quickBan_isbanned("Penal"))
@@ -516,15 +511,6 @@
 					usr << "<span class = 'warning'>You're banned from this faction!</span>"
 		return FALSE
 
-	if (officerBanned() && job.is_officer)
-		if (!nomsg)
-			usr << "<span class = 'warning'>You're banned from officer positions!</span>"
-			if (map.ID == MAP_TRIBES || map.civilizations == TRUE)
-				abandon_mob()
-				spawn(10)
-					usr << "<span class = 'warning'>You're banned from officer positions!</span>"
-		return FALSE
-
 	if (penalBanned())
 		if (job.blacklisted == FALSE)
 			if (!nomsg)
@@ -568,7 +554,7 @@
 		if (client && client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
-	if (map.age == "1013" && !map.civilizations && !istype(job, /datum/job/civilian))
+	if (map.ordinal_age == 2 && !map.civilizations && !istype(job, /datum/job/civilian))
 		if (client.prefs.gender == FEMALE)
 			usr << "<span class='danger'>You must be male to play as this faction.</span>"
 			return
@@ -604,7 +590,6 @@
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text()]"
 	dat += "<br>"
-//	dat += "<b>Current Autobalance Status</b>: [alive_british.len] British, [alive_portuguese.len] Portuguese, [alive_spanish.len] Spanish, [alive_french.len] French, [alive_dutch.len] Dutch, [alive_pirates.len] Pirates, [alive_indians.len] Natives, [alive_civilians.len] Civilians."
 	dat += "<b>Current Autobalance Status</b>: "
 	if (BRITISH in map.faction_organization)
 		dat += "[alive_british.len] British "
@@ -621,7 +606,10 @@
 	if (INDIANS in map.faction_organization)
 		dat += "[alive_indians.len] Natives "
 	if (CIVILIAN in map.faction_organization)
-		dat += "[alive_civilians.len] Civilians "
+		if (map && istype(map, /obj/map_metadata/tsaritsyn))
+			dat += "[alive_civilians.len] Soviets "
+		else
+			dat += "[alive_civilians.len] Civilians "
 	if (GREEK in map.faction_organization)
 		dat += "[alive_greek.len] Greeks "
 	if (ROMAN in map.faction_organization)
@@ -635,7 +623,10 @@
 	if (GERMAN in map.faction_organization)
 		dat += "[alive_german.len] German "
 	if (AMERICAN in map.faction_organization)
-		dat += "[alive_american.len] American "
+		if (map && istype(map, /obj/map_metadata/arab_town))
+			dat += "[alive_american.len] Israeli "
+		else
+			dat += "[alive_american.len] American "
 	if (VIETNAMESE in map.faction_organization)
 		dat += "[alive_vietnamese.len] Vietnamese "
 	dat += "<br>"
@@ -667,7 +658,7 @@
 
 	for (var/datum/job/job in job_master.faction_organized_occupations)
 
-		if (job.faction != "Station")
+		if (job.faction != "Human")
 			continue
 
 		if (job.title == "generic job")
@@ -749,6 +740,8 @@
 				prev_side = job.base_type_flag()
 				var/side_name = "<b><h1><big>[job.get_side_name()]</big></h1></b>&&[job.base_type_flag()]&&"
 				if (side_name)
+					if (map && map.ID== "ARAB_TOWN" && side_name == "American")
+						side_name = "Israeli"
 					dat += "<br><br>[side_name]<br>"
 
 			var/extra_span = ""
@@ -879,7 +872,8 @@
 		mind.active = FALSE					//we wish to transfer the key manually
 		mind.original = new_character
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
-
+	if (client.prefs.be_random_body)
+		client.prefs.randomize_appearance_for (new_character)
 	new_character.original_job = original_job
 	new_character.name = real_name
 	new_character.dna.ready_dna(new_character)

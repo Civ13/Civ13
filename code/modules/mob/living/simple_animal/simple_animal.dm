@@ -62,6 +62,7 @@
 	var/predatory_carnivore = 0 //same as carnivore but will actively hunt animals/humans if hungry.
 
 	var/simplehunger = 2000
+
 /mob/living/simple_animal/New()
 	..()
 	verbs -= /mob/verb/observe
@@ -98,6 +99,7 @@
 	handle_weakened()
 	handle_paralysed()
 	handle_supernatural()
+	handle_mutations_and_radiation()
 
 	if (herbivore || carnivore || predatory_carnivore || granivore)
 		simplehunger-=1
@@ -209,6 +211,8 @@
 
 /mob/living/simple_animal/bullet_act(var/obj/item/projectile/proj)
 	if (proj.firer && ishuman(proj.firer) && proj.firedfrom)
+		if (proj.firer == rider)
+			return //we can't hit the animals we are riding
 		var/mob/living/carbon/human/H = proj.firer
 		if (prob(40))
 			switch (proj.firedfrom.gun_type)
@@ -316,7 +320,8 @@
 				user.visible_message("<span class = 'notice'>[user] starts to butcher [src].</span>")
 				if (do_after(user, 30, src))
 					user.visible_message("<span class = 'notice'>[user] butchers [src] into a meat slab.</span>")
-					new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					var/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/P  = new/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog(get_turf(src))
+					P.radiation = radiation/2
 					if (istype(user, /mob/living/carbon/human))
 						var/mob/living/carbon/human/HM = user
 						HM.adaptStat("medical", 0.3)
@@ -342,9 +347,16 @@
 					var/namt = amt-2
 					if (namt <= 0)
 						namt = 1
-					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-					meat.name = "[name] meatsteak"
-					meat.amount = namt
+					if (!istype(src, /mob/living/simple_animal/crab))
+						var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
+						meat.name = "[name] meatsteak"
+						meat.amount = namt
+						meat.radiation = radiation/2
+					else
+						var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+						meat.amount = namt
+						meat.radiation = radiation/2
+
 					if ((amt-2) >= 1)
 						var/obj/item/stack/material/leather/leather = new/obj/item/stack/material/leather(get_turf(src))
 						leather.name = "[name] leather"
@@ -375,31 +387,41 @@
 					amt = 5
 				if (mob_size == MOB_HUGE)
 					amt = 8
-				for (var/v in TRUE to amt)
+				var/namt = amt-2
+				if (namt <= 0)
+					namt = 1
+				if (!istype(src, /mob/living/simple_animal/crab))
 					var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 					meat.name = "[name] meatsteak"
+					meat.amount = namt
+					meat.radiation = radiation/2
+				else
+					var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
+					meat.amount = namt
+					meat.radiation = radiation/2
+
 				if ((amt-2) >= 1)
 					var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
 					bone.name = "[name] bone"
 					bone.amount = amt
 				if (istype(src, /mob/living/simple_animal/hostile/bear))
 					var/obj/item/stack/material/bearpelt/black/NP = new/obj/item/stack/material/bearpelt/black(get_turf(src))
-					NP.amount = 9
+					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/bear/polar))
 					var/obj/item/stack/material/bearpelt/white/NP = new/obj/item/stack/material/bearpelt/white(get_turf(src))
-					NP.amount = 9
+					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/bear/brown))
 					var/obj/item/stack/material/bearpelt/brown/NP = new/obj/item/stack/material/bearpelt/brown(get_turf(src))
-					NP.amount = 9
+					NP.amount = 6
 				else if (istype(src, /mob/living/simple_animal/hostile/wolf))
 					var/obj/item/stack/material/wolfpelt/NP = new/obj/item/stack/material/wolfpelt(get_turf(src))
-					NP.amount = 6
+					NP.amount = 4
 				else if (istype(src, /mob/living/simple_animal/monkey))
 					var/obj/item/stack/material/monkeypelt/NP = new/obj/item/stack/material/monkeypelt(get_turf(src))
-					NP.amount = 4
+					NP.amount = 3
 				else if (istype(src, /mob/living/simple_animal/cat))
 					var/obj/item/stack/material/catpelt/NP = new/obj/item/stack/material/catpelt(get_turf(src))
-					NP.amount = 3
+					NP.amount = 2
 				if (istype(user, /mob/living/carbon/human))
 					var/mob/living/carbon/human/HM = user
 					HM.adaptStat("medical", amt/3)
@@ -716,4 +738,13 @@
 		for(var/mob/living/ML in range(2,src))
 			return
 
+/mob/living/simple_animal/handle_mutations_and_radiation()
+	if(radiation)
+		radiation -= 0.05
+		switch(radiation)
+			if(100 to INFINITY)
+				adjustFireLoss(radiation*0.002)
+				updatehealth()
 
+		radiation = Clamp(radiation, 0, 750)
+		return

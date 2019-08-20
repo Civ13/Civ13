@@ -210,6 +210,8 @@
 			for (var/beat in splittext(lowertext(line), ","))
 				//world << "beat: [beat]"
 				var/list/notes = splittext(beat, "/")
+				if (!notes.len)
+					return
 				for (var/note in splittext(notes[1], "-"))
 					//world << "note: [note]"
 					if (!playing || !isliving(loc))//If the violin is playing, or isn't held by a person
@@ -369,6 +371,8 @@
 			spawn()
 				var/list/lines = splittext(t, "\n")
 				var/tempo = 5
+				if (!lines || !lines.len)
+					return
 				if (copytext(lines[1],1,6) == "BPM: ")
 					tempo = 600 / text2num(copytext(lines[1],6))
 					lines.Cut(1,2)

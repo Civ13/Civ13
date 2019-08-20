@@ -16,6 +16,9 @@
 		return
 
 	avg = 0
+	if (world && world.time > 864000)
+		disabled = TRUE
+		return
 	var/clients_checked = 0
 
 	while (current_list.len)
@@ -36,7 +39,8 @@
 			continue
 
 		winset(C, null, "command=.update_ping+[world.time+world.tick_lag*world.tick_usage/100]")
-		avg += C.last_ping
+		if (C)
+			avg += C.last_ping
 		++clients_checked
 
 		PROCESS_TICK_CHECK

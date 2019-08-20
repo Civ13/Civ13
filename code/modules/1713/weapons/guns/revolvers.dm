@@ -6,7 +6,6 @@
 	icon_state = "revolver"
 	item_state = "revolver"
 	caliber = "a45"
-//	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
 	handle_casings = CYCLE_CASINGS
 	max_shells = 7
 	ammo_type = /obj/item/ammo_casing/a45
@@ -73,10 +72,6 @@
 	aim_miss_chance_divider = 2.00
 	load_delay = 6
 
-/obj/item/weapon/gun/projectile/revolver/New()
-	..()
-	loaded = list()
-	chambered = null
 /obj/item/weapon/gun/projectile/revolver/update_icon()
 	..()
 	if (base_icon)
@@ -131,7 +126,7 @@
 	if (gun_safety && safetyon)
 		user << "<span class='warning'>You can't fire \the [src] while the safety is on!</span>"
 		return FALSE
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
@@ -255,7 +250,7 @@
 	max_shells = 6
 	magazine_type = /obj/item/ammo_magazine/c9mm_jap_revolver
 	weight = 2.3
-	single_action = TRUE
+	single_action = FALSE
 	blackpowder = TRUE
 	cocked = FALSE
 	load_delay = 5
@@ -424,7 +419,7 @@
 	item_state = "revolver"
 	caliber = "a45"
 //	origin_tech = list(TECH_COMBAT = 2, TECH_MATERIAL = 2)
-	slot_flags = SLOT_BACK
+	slot_flags = SLOT_BELT|SLOT_POCKET
 	handle_casings = CYCLE_CASINGS
 	max_shells = 6
 	ammo_type = /obj/item/ammo_casing/a45
@@ -488,10 +483,7 @@
 	stat = "rifle"
 	aim_miss_chance_divider = 2.50
 	load_delay = 7
-/obj/item/weapon/gun/projectile/revolving/New()
-	..()
-	loaded = list()
-	chambered = null
+
 /obj/item/weapon/gun/projectile/revolving/verb/spin_cylinder()
 	set name = "Spin cylinder"
 	set desc = "Fun when you're bored out of your skull."
@@ -534,7 +526,7 @@
 
 /obj/item/weapon/gun/projectile/revolving/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)
@@ -674,10 +666,6 @@
 	aim_miss_chance_divider = 2.00
 	load_delay = 6
 
-/obj/item/weapon/gun/projectile/capnball/New()
-	..()
-	loaded = list()
-	chambered = null
 /obj/item/weapon/gun/projectile/capnball/update_icon()
 	..()
 	if (base_icon)
@@ -729,7 +717,7 @@
 
 /obj/item/weapon/gun/projectile/capnball/special_check(mob/user)
 	var/mob/living/carbon/human/H = user
-	if (istype(H) && H.faction_text == "INDIANS")
+	if (istype(H) && (H.faction_text == "INDIANS" || H.crab))
 		user << "<span class = 'danger'>You have no idea how this thing works.</span>"
 		return FALSE
 	if (!cocked && single_action)

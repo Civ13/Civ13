@@ -40,6 +40,10 @@
 /mob/proc/update_inv_head()
 	return
 
+/mob/proc/update_inv_eyes()
+	return
+/mob/proc/update_inv_shoulder()
+	return
 /mob/proc/update_inv_gloves()
 	return
 

@@ -271,7 +271,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/gin
 	name = "Griffeater Gin"
-	desc = "A bottle of high quality gin, produced in the New London Station."
+	desc = "A bottle of high quality gin."
 	icon_state = "ginbottle"
 	center_of_mass = list("x"=16, "y"=4)
 	New()
@@ -280,7 +280,7 @@
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/gin/empty
 	name = "Griffeater Gin"
-	desc = "A bottle of high quality gin, produced in the New London Station."
+	desc = "A bottle of high quality gin."
 	icon_state = "ginbottle"
 	center_of_mass = list("x"=16, "y"=4)
 	New()
@@ -549,3 +549,23 @@
 	New()
 		..()
 		reagents.add_reagent("ale", 40)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake
+	volume = 50
+	name = "sake"
+	desc = "A bottle of sake."
+	icon_state = "sake"
+	item_state = "beer"
+	center_of_mass = list("x"=16, "y"=10)
+	value = 6
+	New()
+		..()
+		reagents.add_reagent("sake", 50)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/small/sake/empty
+	volume = 50
+	shatter_duration = TRUE
+	flags = FALSE //starts closed
+	rag_underlay = "rag_small"
+	icon_state = "sake_empty"
+	item_state = "beer"

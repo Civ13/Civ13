@@ -15,6 +15,8 @@
 	M.add_chemical_effect(CE_STABLE)
 	M.add_chemical_effect(CE_PAINKILLER, 5)
 	M.add_chemical_effect(CE_PULSE, 1)
+	M.traumatic_shock = max(0,M.traumatic_shock-removed)
+	M.shock_stage = max(0,M.shock_stage-removed/2)
 	M.mood += removed*4
 	M.SetParalysis(0)
 	M.SetWeakened(0)
@@ -32,6 +34,19 @@
 	M.drowsyness = max(0, M.drowsyness - 6 * removed)
 	M.hallucination = max(0, M.hallucination - 9 * removed)
 	M.adjustToxLoss(-4 * removed)
+
+/datum/reagent/charcoal
+	name = "Charcoal"
+	id = "charcoal"
+	description = "A black powdery byproduct."
+	taste_description = "charcoal"
+	reagent_state = LIQUID
+	color = "#36454f"
+	scannable = TRUE
+
+/datum/reagent/charcoal/affect_blood(var/mob/living/carbon/M, var/alien, var/removed)
+	M.adjustToxLoss(-5 * removed)
+	M.radiation -= 3 * removed
 
 /datum/reagent/tricordrazine
 	name = "Tricordrazine"
@@ -406,22 +421,6 @@
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 250)
 
-
-/datum/reagent/potass_iodide
-	name = "Potassium Iodide"
-	id = "potass_iodide"
-	description = "Efficiently restores low radiation damage."
-	reagent_state = LIQUID
-	color = "#C8A5DC"
-	metabolism = 0.2
-
-/datum/reagent/potass_iodide/on_mob_life(mob/living/M)
-	if(M.radiation > 0)
-		M.radiation -= 6
-	if(M.radiation < 0)
-		M.radiation = 0
-	..()
-	return
 
 /datum/reagent/pen_acid
 	name = "Pentetic Acid"

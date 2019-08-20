@@ -108,17 +108,17 @@
 	var/image/smell = image('icons/effects/effects.dmi', "smell")//This is a hack, there has got to be a safer way to do this but I don't know it at the moment.
 	switch(hygiene)
 		if(HYGIENE_LEVEL_NORMAL to INFINITY)
-			overlays_standing[26] = null
+			overlays_standing[27] = null
 		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
-			overlays_standing[26] = null
+			overlays_standing[27] = null
 			mood -= 0.02
 		if(0 to HYGIENE_LEVEL_DIRTY)
-			overlays_standing[26] = smell
+			overlays_standing[27] = smell
 			mood -= 0.04
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
 		if (prob(3))
 			for(var/mob/living/carbon/human/HM in range(3,src))
-				if (HM != src)
+				if (HM != src && !HM.orc)
 					HM << "<span class='notice'>You sense a strong, nasty smell coming from [src].</span>"
 					HM.mood -= 3
 /mob/living/carbon/human/proc/adjust_hygiene(var/amount)

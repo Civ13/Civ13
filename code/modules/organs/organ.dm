@@ -197,7 +197,7 @@ var/list/organ_cache = list()
 
 /obj/item/organ/proc/rejuvenate()
 	damage = FALSE
-
+	status = 0
 /obj/item/organ/proc/is_damaged()
 	return damage > 0
 
@@ -252,9 +252,10 @@ var/list/organ_cache = list()
 	loc = get_turf(owner)
 	processing_objects |= src
 	rejecting = null
-	var/datum/reagent/blood/organ_blood = locate(/datum/reagent/blood) in reagents.reagent_list
-	if (!organ_blood || !organ_blood.data["blood_DNA"])
-		owner.vessel.trans_to(src, 5, TRUE, TRUE)
+	if (reagents)
+		var/datum/reagent/blood/organ_blood = locate(/datum/reagent/blood) in reagents.reagent_list
+		if (!organ_blood || !organ_blood.data["blood_DNA"])
+			owner.vessel.trans_to(src, 5, TRUE, TRUE)
 
 	if (owner && vital)
 		if (user)

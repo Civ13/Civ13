@@ -205,6 +205,18 @@ proc/random_roman_name(gender, species = "Human")
 	else
 		return current_species.get_random_roman_name(gender)
 
+// a mix of celtic, roman, thracian, germanic, etc names, for gladiators
+proc/random_ancient_name(gender, species = "Human")
+	var/datum/species/current_species
+	if (species)
+		current_species = all_species[species]
+
+	if (!current_species || current_species.name_language == null)
+		return capitalize(pick(ancient_names)) + " " + pick(epithets)
+
+	else
+		return current_species.get_random_ancient_name(gender)
+
 
 proc/random_arab_name(gender, species = "Human")
 	var/datum/species/current_species
@@ -225,20 +237,17 @@ proc/random_skin_tone()
 	if (prob(60))
 		pass()
 	else if (prob(15))
-		skin_tone = "afroamerican"
+		skin_tone = "mulatto"
 	else if (prob(10))
 		skin_tone = "african"
 	else if (prob(10))
 		skin_tone = "latino"
-	else
-		skin_tone = "albino"
 
 	switch(skin_tone)
 		if ("caucasian")		. = -10
-		if ("afroamerican")	. = -115
+		if ("mulatto")	. = -115
 		if ("african")		. = -165
 		if ("latino")		. = -55
-		if ("albino")		. = 34
 		else				. = rand(-185,34)
 	return min(max( .+rand(-25, 25), -185),34)
 

@@ -351,42 +351,63 @@ var/list/vocal_emotes = list(
 					if (!muzzled)
 						message = "charges!"
 						m_type = 2
-						if (faction_text == PIRATES)
-							playsound(get_turf(src), "charge_PIRATES", 100)
-						if (faction_text == BRITISH)
-							playsound(get_turf(src), "charge_BRITISH", 100)
-						if (faction_text == FRENCH)
-							if (original_job.is_crusader)
-								playsound(get_turf(src), "charge_CRUSADER", 100)
-							else
-								playsound(get_turf(src), "charge_FRENCH", 100)
-						if (faction_text == SPANISH)
-							playsound(get_turf(src), "charge_SPANISH", 100)
-						if (faction_text == PORTUGUESE)
-							playsound(get_turf(src), "charge_PORTUGUESE", 100)
-						if (faction_text == INDIANS)
-							playsound(get_turf(src), "charge_INDIANS", 100)
-						if (faction_text == DUTCH)
-							playsound(get_turf(src), "charge_DUTCH", 100)
-						if (faction_text == ROMAN)
-							playsound(get_turf(src), "charge_ROMAN", 100)
-						if (faction_text == GREEK)
-							playsound(get_turf(src), "charge_GREEK", 100)
-						if (faction_text == ARAB)
-							playsound(get_turf(src), "charge_ARAB", 100)
-						if (faction_text == JAPANESE)
-							playsound(get_turf(src), "charge_JAPANESE", 100)
-						if (faction_text == RUSSIAN)
-							playsound(get_turf(src), "charge_RUSSIAN", 100)
-						if (faction_text == GERMAN)
-							playsound(get_turf(src), "charge_GERMAN", 100)
-						if (faction_text == AMERICAN)
-							if (map.ID == MAP_ARAB_TOWN)
-								playsound(get_turf(src), "charge_ISRAELI", 100)
-							else
-								playsound(get_turf(src), "charge_AMERICAN", 100)
-						if (faction_text == VIETNAMESE)
-							playsound(get_turf(src), "charge_VIETNAMESE", 100)
+						//Racial charges take priority over normal faction charges
+						//Manually set race variables take charge over TDM nonhuman races
+						//You should never have more then two races.
+						if (orc == 1)
+							playsound(get_turf(src), "charge_ORC", 100)
+						else if (wolfman == 1)
+							playsound(get_turf(src), "charge_WOLFMAN", 100)
+						else if (ant == 1)
+							playsound(get_turf(src), "charge_ANT", 100)
+						else if (crab == 1)
+							playsound(get_turf(src), "charge_CRAB", 100)
+						else if (lizard == 1)
+							playsound(get_turf(src), "charge_LIZARD", 100)
+						else if (gorillaman == 1)
+							playsound(get_turf(src), "charge_GORILLA", 100)
+						else //If you are not a special race, check normal factions.
+							//You should never have more then two factions.
+							switch(faction_text)
+								if (CIVILIAN)
+									if (original_job.is_rcw)
+										playsound(get_turf(src), "charge_RUSSIAN", 100)
+								if (PIRATES)
+									playsound(get_turf(src), "charge_PIRATES", 100)
+								if (BRITISH)
+									playsound(get_turf(src), "charge_BRITISH", 100)
+								if (FRENCH)
+									if (original_job.is_crusader)
+										playsound(get_turf(src), "charge_CRUSADER", 100)
+									else
+										playsound(get_turf(src), "charge_FRENCH", 100)
+								if (SPANISH)
+									playsound(get_turf(src), "charge_SPANISH", 100)
+								if (PORTUGUESE)
+									playsound(get_turf(src), "charge_PORTUGUESE", 100)
+								if (INDIANS)
+									playsound(get_turf(src), "charge_INDIANS", 100)
+								if (DUTCH)
+									playsound(get_turf(src), "charge_DUTCH", 100)
+								if (ROMAN)
+									playsound(get_turf(src), "charge_ROMAN", 100)
+								if (GREEK)
+									playsound(get_turf(src), "charge_GREEK", 100)
+								if (ARAB)
+									playsound(get_turf(src), "charge_ARAB", 100)
+								if (JAPANESE)
+									playsound(get_turf(src), "charge_JAPANESE", 100)
+								if (RUSSIAN)
+									playsound(get_turf(src), "charge_RUSSIAN", 100)
+								if (GERMAN)
+									playsound(get_turf(src), "charge_GERMAN", 100)
+								if (AMERICAN)
+									if (map.ID == MAP_ARAB_TOWN)
+										playsound(get_turf(src), "charge_ISRAELI", 100)
+									else
+										playsound(get_turf(src), "charge_AMERICAN", 100)
+								if (VIETNAMESE)
+									playsound(get_turf(src), "charge_VIETNAMESE", 100)
 					else
 						message = "makes a weak noise."
 						m_type = 2
@@ -655,11 +676,24 @@ var/list/vocal_emotes = list(
 
 			if ("surrender")
 				if (world.time >= next_emote["surrender"])
-					message = "surrenders!"
-					Weaken(50)
-					if (l_hand) unEquip(l_hand)
-					if (r_hand) unEquip(r_hand)
-					next_emote["surrender"] = world.time + 600
+					if (original_job_title == "Gladiator")
+						message = "yields!"
+						Weaken(50)
+						if (l_hand) unEquip(l_hand)
+						if (r_hand) unEquip(r_hand)
+						next_emote["surrender"] = world.time + 600
+						surrendered = TRUE
+						spawn(600)
+							surrendered = FALSE
+					else
+						message = "surrenders!"
+						Weaken(50)
+						if (l_hand) unEquip(l_hand)
+						if (r_hand) unEquip(r_hand)
+						next_emote["surrender"] = world.time + 600
+						surrendered = TRUE
+						spawn(600)
+							surrendered = FALSE
 
 			if ("pee")
 				handle_piss()
@@ -683,7 +717,9 @@ var/list/vocal_emotes = list(
 
 		if (message)
 			log_emote("[name]/[key] : [message]")
-			if (act == "surrender")
+			if (act == "surrender" && message == "surrenders!")
 				custom_emote(m_type,message,"userdanger")
+			else if (act == "surrender" && message=="yields!")
+				custom_emote(m_type,message,"userdanger_yellow")
 			else
 				custom_emote(m_type,message)

@@ -21,18 +21,18 @@
 	if (!default_type)
 		default_type = DEFAULT_WALL_MATERIAL
 	material = get_material_by_name("[default_type]")
+	if (material)
+		recipes = material.get_recipes_civs(forced=TRUE)
+		stacktype = material.stack_type
 
-	recipes = material.get_recipes_civs()
-	stacktype = material.stack_type
 
+		if (apply_colour)
+			color = material.icon_colour
 
-	if (apply_colour)
-		color = material.icon_colour
+		if (material.conductive)
+			flags |= CONDUCT
 
-	if (material.conductive)
-		flags |= CONDUCT
-
-	matter = material.get_matter()
+		matter = material.get_matter()
 	update_strings()
 	return TRUE
 
@@ -41,16 +41,17 @@
 
 /obj/item/stack/material/proc/update_strings()
 	// Update from material datum.
-	singular_name = material.sheet_singular_name
+	if (material)
+		singular_name = material.sheet_singular_name
 
-	if (amount>1)
-		name = "[material.use_name] [material.sheet_plural_name]"
-		desc = "A stack of [material.use_name] [material.sheet_plural_name]."
-		gender = PLURAL
-	else
-		name = "[material.use_name] [material.sheet_singular_name]"
-		desc = "A [material.sheet_singular_name] of [material.use_name]."
-		gender = NEUTER
+		if (amount>1)
+			name = "[material.use_name] [material.sheet_plural_name]"
+			desc = "A stack of [material.use_name] [material.sheet_plural_name]."
+			gender = PLURAL
+		else
+			name = "[material.use_name] [material.sheet_singular_name]"
+			desc = "A [material.sheet_singular_name] of [material.use_name]."
+			gender = NEUTER
 
 /obj/item/stack/material/use(var/used)
 	. = ..()
@@ -59,6 +60,8 @@
 
 /obj/item/stack/material/transfer_to(obj/item/stack/S, var/tamount=null, var/type_verified)
 	var/obj/item/stack/material/M = S
+	if (!M || !M.material)
+		return FALSE
 	if (!istype(M) || material.name != M.material.name)
 		return FALSE
 	var/transfer = ..(S,tamount,1)
@@ -110,6 +113,13 @@
 	name = "tin"
 	icon_state = "sheet-tin"
 	default_type = "tin"
+	apply_colour = TRUE
+	value = 3
+
+/obj/item/stack/material/plastic
+	name = "plastic"
+	icon_state = "sheet-plastic"
+	default_type = "plastic"
 	apply_colour = TRUE
 	value = 3
 
@@ -343,6 +353,15 @@
 	w_class = 2.0
 	flammable = TRUE
 	value = 3
+/obj/item/stack/material/orcpelt
+	name = "Orc Pelt"
+	desc = "The skin of an Orc"
+	icon_state = "sheet-orcpelt"
+	default_type = "orcpelt"
+	value = 0
+	w_class = 2.0
+	flammable = TRUE
+
 /obj/item/stack/material/humanpelt
 	name = "human pelt"
 	desc = "A skin from a dead person."
@@ -351,6 +370,49 @@
 	value = 0
 	w_class = 2.0
 	flammable = TRUE
+
+/obj/item/stack/material/humanpelt/New()
+	..()
+	if (map && !map.civilizations)
+		qdel(src)
+		return
+
+/obj/item/stack/material/antpelt
+	name = "ant pelt"
+	desc = "The skin from a dead ant."
+	icon_state = "sheet-antpelt"
+	default_type = "ant"
+	flammable = TRUE
+	value = 4
+	w_class = 2.0
+
+/obj/item/stack/material/chitin
+	name = "chitin"
+	desc = "The armor of Trilobites...and Ants"
+	icon_state = "chitin_material"
+	default_type = "chitin"
+	flammable = TRUE
+	value = 4
+	w_class = 2.0
+
+
+/obj/item/stack/material/orcpelt
+	name = "orc skin"
+	desc = "A rough skin, it'l like a flexible rock..."
+	icon_state = "sheet-orcpelt"
+	default_type = "orcpelt"
+	flammable = TRUE
+	value = 0
+	w_class = 2.0
+
+/obj/item/stack/material/gorillapelt
+	name = "gorilla pelt"
+	desc = "The skin from a dead gorilla."
+	icon_state = "sheet-gorillapelt"
+	default_type = "gorillapelt"
+	flammable = TRUE
+	value = 3
+	w_class = 2.0
 
 /obj/item/stack/material/glass
 	name = "glass"

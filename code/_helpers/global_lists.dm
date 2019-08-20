@@ -94,6 +94,7 @@ var/global/list/alphabet_uppercase = list("A","B","C","D","E","F","G","H","I","J
 
 var/global/list/turfs = list()						//list of all turfs
 var/global/list/grass_turf_list = list() // list of all /turf/floor/grass
+var/global/list/water_turf_list = list() // list of all /turf/floor/grass
 //Languages/species/whitelist.
 var/global/list/all_species[0]
 var/global/list/all_languages[0]
@@ -122,7 +123,6 @@ var/global/list/facial_hair_styles_female_list = list()
 var/global/list/skin_styles_female_list = list()		//unused
 
 
-var/global/list/backbaglist = list("Nothing", "Backpack", "Satchel", "Satchel Alt")
 var/global/list/exclude_jobs = list()
 
 // Visual nets
@@ -160,15 +160,15 @@ var/global/list/string_slot_flags = list(
 	"back" = SLOT_BACK,
 	"face" = SLOT_MASK,
 	"waist" = SLOT_BELT,
-	"ID slot" = SLOT_ID,
+	"pouch" = SLOT_ID,
 	"ears" = SLOT_EARS,
-	"eyes" = SLOT_EYES,
+	"shoulder" = SLOT_SHOULDER,
 	"hands" = SLOT_GLOVES,
 	"head" = SLOT_HEAD,
 	"feet" = SLOT_FEET,
-	"exo slot" = SLOT_OCLOTHING,
+	"suit" = SLOT_OCLOTHING,
 	"body" = SLOT_ICLOTHING,
-	"uniform" = SLOT_TIE,
+	"shoulder" = SLOT_SHOULDER,
 	"holster" = SLOT_HOLSTER
 )
 

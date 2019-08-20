@@ -348,7 +348,7 @@
 		if (ref && map.check_caribbean_block(mob, ref))
 			mob.dir = direct
 			if (world.time >= mob.next_gracewall_message)
-				mob << "<span class = 'warning'>You cannot pass the invisible wall until the Grace Period has ended.</span>"
+				mob << "<span class = 'warning'>You cannot pass the invisible wall until the <b>Grace Period</b> has ended.</span>"
 				mob.next_gracewall_message = world.time + 10
 			return FALSE
 
@@ -456,7 +456,7 @@
 		var/standing_on_snow = FALSE
 
 		var/mob/living/carbon/human/H = mob
-		if (F && F_is_valid_floor && isnull(H.riding_mob))
+		if (F && ishuman(H) && F_is_valid_floor && isnull(H.riding_mob))
 
 			var/area/F_area = get_area(F)
 			var/no_snow = FALSE
@@ -471,7 +471,7 @@
 			var/snow_message = ""
 			var/snow_span = "notice"
 
-			if (F.icon == 'icons/turf/snow.dmi' && no_snow == FALSE)
+			if (F.icon == 'icons/turf/snow.dmi' && no_snow == FALSE && !H.lizard)
 				standing_on_snow = TRUE
 				if (prob(50))
 					standing_on_snow = 1.25
@@ -481,6 +481,26 @@
 					snow_message = "You're slowed down quite a bit by the snow."
 					snow_span = "warning"
 
+			//Radiation Burns NOT IMPLEMENTED YET
+			/*
+			if(F_area.weather == WEATHER_ACIDRAIN)
+				var/limb = rand(0, 6)
+				switch(limb)
+					if(0)
+						H.apply_damage(damage*0.5*head_exposure, BURN, "head", FALSE, FALSE, "Fire")
+					if(1)
+						H.apply_damage(damage*0.4*chest_exposure, BURN, "chest", FALSE, FALSE, "Fire")
+					if(2)
+						H.apply_damage(damage*0.4*groin_exposure, BURN, "groin", FALSE, FALSE, "Fire")
+					if(3)
+						H.apply_damage(damage*0.2*legs_exposure, BURN, "l_leg", FALSE, FALSE, "Fire")
+					if(4)
+						H.apply_damage(damage*0.2*legs_exposure, BURN, "r_leg", FALSE, FALSE, "Fire")
+					if(5)
+						H.apply_damage(damage*0.15*arms_exposure, BURN, "l_arm", FALSE, FALSE, "Fire")
+					if(6)
+						H.apply_damage(damage*0.15*arms_exposure, BURN, "r_arm", FALSE, FALSE, "Fire")
+			*/
 /* OLD CODE - TO BE REACTIVATED WHEN WE GET SNOW LEVELS
 				switch (S.amount)
 					if (0.01 to 0.8) // more than none and up to ~1/4 feet
@@ -510,7 +530,7 @@
 					mob << "<span class = '[snow_span]'>[snow_message]</span>"
 					mob.next_snow_message = world.time+100
 
-			else if (F.muddy)
+			else if (F.muddy && !H.lizard)
 				if (F_area.weather == WEATHER_STORM)
 					standing_on_snow = rand(4,5)
 				else
@@ -597,7 +617,9 @@
 			if (istype(src, /mob/living/carbon/human))
 				var/mob/living/carbon/human/HH = src
 				if (isnull(HH.riding_mob))
-					move_delay += F.get_move_delay()
+					if (HH.crab)
+						if (!istype(F, /turf/floor/beach))
+							move_delay += F.get_move_delay()
 			else
 				move_delay += F.get_move_delay()
 

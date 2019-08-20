@@ -54,7 +54,7 @@ var/global/FREQ2 = rand(201,250)
 /obj/structure/radio/transmitter_receiver/nopower/faction2/New()
 	..()
 	freq = FREQ2
-/obj/structure/radio/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/radio/attackby(obj/item/W as obj, mob/user as mob)
 	if (!anchored && !istype(W, /obj/item/weapon/wrench))
 		user << "<span class='notice'>Fix the radio in place with a wrench first.</span>"
 		return
