@@ -23,7 +23,7 @@
 	lighting_overlay = old_lighting_overlay
 	affecting_lights = old_affecting_lights
 	corners = old_lighting_corners
-	radiation = old_radiation
+	rad_act(old_radiation)
 
 	for (var/atom/A in contents)
 		if (A.light)

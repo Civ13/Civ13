@@ -152,7 +152,7 @@
 					if (WEATHER_SMOG)
 						multiplier = 1
 		if (z == world.maxz)
-			radiation += (world_radiation/1000)*multiplier
+			rad_act((world_radiation/1000)*multiplier)
 	if(radiation > 0)
 		radiation -= 0.05
 		if (stat != DEAD)

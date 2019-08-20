@@ -108,4 +108,4 @@
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 15
-	M.radiation += removed/3
+	M.rad_act(removed/3)

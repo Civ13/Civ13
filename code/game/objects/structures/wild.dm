@@ -65,7 +65,7 @@
 	check_rads()
 
 /obj/structure/wild/proc/check_rads()
-	radiation += world_radiation/10000
+	rad_act(world_radiation/10000)
 	if (radiation > 60)
 		return
 	else
