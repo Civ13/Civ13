@@ -265,7 +265,7 @@
 	vehicle_m_delay = 12
 	health = 50
 /obj/structure/vehicle/raft/do_vehicle_check()
-	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water))
+	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
 		if (driver in get_turf(src))
 			return TRUE
 		else
@@ -352,7 +352,7 @@
 	var/timer = 15
 	if (!sails || !sails_on)
 		return
-	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water))
+	if (!istype(get_turf(get_step(src,dir)), /turf/floor/beach/water) && !istype(get_turf(get_step(src,dir)), /turf/floor/trench/flooded))
 		visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
 		sails_on = FALSE
 		return
@@ -658,7 +658,7 @@
 		..()
 /obj/structure/vehicle/boat/do_vehicle_check()
 	update_customdesc()
-	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water))
+	if (istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water) || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
 		if (driver in get_turf(loc))
 			return TRUE
 		else
@@ -879,7 +879,7 @@
 		for(var/obj/covers/CVV in get_turf(get_step(src,driver.dir)))
 			if (CVV.density == FALSE)
 				canpass = TRUE
-		if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE)
+		if ((!istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) ||  istype(get_turf(get_step(src,driver.dir)), /turf/floor/beach/water/deep) && canpass == TRUE)&& get_turf(get_step(src,driver.dir)).density == FALSE  || istype(get_turf(get_step(src,driver.dir)), /turf/floor/trench/flooded))
 			if (driver in src.loc)
 				return TRUE
 			else
