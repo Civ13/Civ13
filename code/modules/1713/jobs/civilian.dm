@@ -599,6 +599,7 @@
 	H.setStat("pistol", STAT_MEDIUM_LOW)
 	H.setStat("bows", STAT_MEDIUM_LOW)
 	H.setStat("medical", STAT_NORMAL)
+	H.setStat("farming", STAT_VERY_HIGH)
 
 	return TRUE
 /datum/job/civilian/carpenter

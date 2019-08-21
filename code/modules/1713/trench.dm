@@ -9,7 +9,8 @@ var/list/global/floor_cache = list()
 	plane = UNDERFLOOR_PLANE
 	initial_flooring = /decl/flooring/trench
 	var/trench_filling = 0
-
+	var/flooded = FALSE
+	var/salty = FALSE
 /turf/floor/trench/New()
 	if (!icon_state)
 		icon_state = "trench"
@@ -24,8 +25,11 @@ var/list/global/floor_cache = list()
 			for (var/direction in list(1,2,4,8,5,6,9,10))
 				if (istype(get_step(src,direction),/turf/floor))
 					var/turf/floor/FF = get_step(src,direction)
+					if (istype(FF, /turf/floor/beach/water))
+						var/turf/floor/beach/water/WT = FF
+						flooded = TRUE
+						flood(WT.salty)
 					FF.update_icon() //so siding get updated properly
-
 /turf/floor/trench/make_grass()
 	overlays.Cut()
 	if (islist(decals))
@@ -37,6 +41,22 @@ var/list/global/floor_cache = list()
 
 	ChangeTurf(/turf/floor/trench)
 
+/turf/floor/trench/proc/flood(salts=FALSE)
+	flooded = TRUE
+	if (salts)
+		salty = TRUE
+	if (!salty)
+		name = "flooded trench"
+	else
+		name = "flooded saltwater trench"
+	overlays += image(icon=icon, icon_state="flooded")
+	for (var/direction in list(1,2,4,8,5,6,9,10))
+		if (istype(get_step(src,direction),/turf/floor/trench))
+			var/turf/floor/trench/TR = get_step(src,direction)
+			if (!TR.flooded)
+				TR.flooded = TRUE
+				TR.flood(salts)
+	update_icon()
 /turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype (C, /obj/item/weapon/sandbag) && !istype(C, /obj/item/weapon/sandbag/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))

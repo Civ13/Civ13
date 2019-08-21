@@ -78,6 +78,16 @@
 					user.setClickCooldown(5)
 				return
 
+	if (istype(src, /turf/floor/dirt/ploughed) && istype(C, /obj/item/weapon/reagent_containers/food/snacks/poo/animal))
+		user << "You start fertilizing the ploughed field..."
+		var/mob/living/carbon/human/H = user
+		if (do_after(user, 60/H.getStatCoeff("farming"), src))
+			user << "You fertilize the ploughed field around this plot."
+			for (var/obj/structure/farming/plant/P in range(1,src))
+				P.fertilized = TRUE
+			if (ishuman(user))
+				H.adaptStat("farming", 1)
+			return
 
 	if ((flooring && istype(C, /obj/item/stack/rods)))
 		return ..(C, user)
@@ -331,6 +341,8 @@
 			if (locate(/obj/structure/farming/plant) in src)
 				user << "<span class='notice'>There already is something planted here.</span>"
 				return
+			if (ishuman(user))
+				H.adaptStat("farming", 1)
 			if (istype(C, /obj/item/stack/farming/seeds/potato))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/potato(src)
@@ -339,7 +351,7 @@
 				else
 					qdel(C)
 				return
-			if (istype(C, /obj/item/stack/farming/seeds/carrot))
+			else if (istype(C, /obj/item/stack/farming/seeds/carrot))
 				visible_message("[user] places the seeds in the ploughed field.")
 				new/obj/structure/farming/plant/carrot(src)
 				if (C.amount>1)
@@ -513,9 +525,6 @@
 				else
 					qdel(C)
 				return
-/*					if (ishuman(user)) todo: farming skills
-						var/mob/living/carbon/human/H = user
-						H.adaptStat("crafting", 3) */
 			return
 
 		else
@@ -537,15 +546,20 @@
 				ChangeTurf(/turf/floor/dirt)
 				return
 		else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
-			if (do_after(user, 70, user.loc))
+			var/mob/living/carbon/human/H = user
+			if (do_after(user, 70/H.getStatCoeff("farming"), user.loc))
 				if (istype(T, /turf/floor/dirt/flooded))
 					ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+					if (ishuman(user))
+						H.adaptStat("farming", 2)
 					return
 				else if (istype(T, /turf/floor/dirt/underground))
 					user << "<span class='danger'>You can't plough this type of terrain.</span>"
 					return
 				else
 					ChangeTurf(/turf/floor/dirt/ploughed)
+					if (ishuman(user))
+						H.adaptStat("farming", 2)
 					return
 
 		else

@@ -141,12 +141,22 @@
 	item_state = "poop"
 	satisfaction = -25 //tastes like shit
 	disgusting = TRUE
+	decay = 20*600
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/New()
 	..()
 	icon_state = pick("poop1", "poop2", "poop3", "poop4", "poop5", "poop6", "poop7")
 	reagents.add_reagent("poo", 10)
 	bitesize = 3
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal
+	name = "manure"
+	desc = "Makes good fertilizer at least."
+	icon_state = "animal1"
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/New()
+	..()
+	icon_state = pick("animal1", "animal2", "animal3")
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/throw_impact(atom/hit_atom)
 	//if(prob(50)) //this is so we actually have a chance of recovering some from disposal.
